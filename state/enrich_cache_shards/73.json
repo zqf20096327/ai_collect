@@ -394,11 +394,11 @@
    "Astro": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -422,11 +422,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -452,11 +452,11 @@
    "Starlark": 1,
    "Python": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -481,11 +481,11 @@
    "Dockerfile": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -506,11 +506,11 @@
    "Cuda": 2,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -535,11 +535,11 @@
    "SCSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -557,11 +557,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -587,11 +587,11 @@
    "JavaScript": 6,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -617,11 +617,11 @@
    "CSS": 3,
    "Starlark": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -655,13 +655,13 @@
   }
  },
  "bpwhelan/GameSentenceMiner": {
-  "commit_7d": 4,
-  "commit_90d": 235,
-  "rel_ver": "v2026.10.1-beta.7",
-  "rel_pub": "2026-10-10",
+  "commit_7d": 1,
+  "commit_90d": 256,
+  "rel_ver": "v2026.11.0",
+  "rel_pub": "2026-11-09",
   "rel_days": 7,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -675,10 +675,10 @@
    "HTML": 9,
    "CSS": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

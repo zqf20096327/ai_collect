@@ -173,11 +173,11 @@
    "Cuda": 9,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -203,11 +203,11 @@
    "Rust": 2,
    "Java": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -233,11 +233,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261026",
    "release": "20261026",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -259,11 +259,11 @@
    "Shell": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -289,18 +289,18 @@
    "Ruby": 0,
    "Objective-C++": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "instadeepai/nucleotide-transformer": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -312,21 +312,21 @@
    "Jupyter Notebook": 84,
    "Python": 16
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ls1intum/Artemis": {
-  "commit_7d": 122,
-  "commit_90d": 785,
-  "rel_ver": "10.3.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_7d": 50,
+  "commit_90d": 833,
+  "rel_ver": "9.9.7",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -349,10 +349,10 @@
    "SCSS": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

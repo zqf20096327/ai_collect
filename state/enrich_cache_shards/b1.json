@@ -165,11 +165,11 @@
    "CSS": 8,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -195,11 +195,11 @@
    "Sass": 3,
    "Cuda": 3
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261102",
    "release": "20261102",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -221,11 +221,11 @@
    "Go": 5,
    "C": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -247,11 +247,11 @@
    "Batchfile": 3,
    "PowerShell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -273,11 +273,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -296,11 +296,11 @@
    "Python": 92,
    "Shell": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -326,11 +326,11 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -356,11 +356,11 @@
    "C": 2,
    "Fortran": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -408,11 +408,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -430,11 +430,11 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -459,11 +459,11 @@
    "HTML": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -489,11 +489,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -550,12 +550,12 @@
   }
  },
  "nubenetes/awesome-kubernetes": {
-  "commit_90d": 257,
-  "commit_7d": 0,
-  "rel_ver": "v2.9.66",
-  "rel_pub": "2026-09-27",
-  "rel_days": 20,
-  "rel_n90": 5,
+  "commit_90d": 500,
+  "commit_7d": 119,
+  "rel_ver": "v2.10.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -570,10 +570,10 @@
    "Groovy": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -357,11 +357,11 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -387,11 +387,11 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -405,10 +405,14 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 3,
+  "sec_worst": "high",
+  "sec_last": "2026-11-07",
+  "sec_ids": [
+   "GHSA-whmf-f8j7-c3fv(-,medium)",
+   "GHSA-876x-crhg-hp8h(-,high)",
+   "GHSA-xxx4-frv5-chp2(-,low)"
+  ],
   "contrib_n": 56,
   "lang": {
    "Python": 99,
@@ -417,11 +421,11 @@
    "PowerShell": 0,
    "Rust": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -447,11 +451,11 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -477,11 +481,11 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -503,11 +507,11 @@
   "lang": {
    "TeX": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -529,11 +533,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -555,11 +559,11 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -583,11 +587,11 @@
    "Cython": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -603,11 +607,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -633,11 +637,11 @@
    "C++": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -651,10 +655,14 @@
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 3,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-27",
+  "sec_ids": [
+   "GHSA-f2r6-9fm5-8743(-,medium)",
+   "GHSA-fcjm-xhw8-pmh5(CVE-2026-113703,critical)",
+   "GHSA-7qqj-qmf8-8922(-,low)"
+  ],
   "contrib_n": 21,
   "lang": {
    "Python": 62,
@@ -663,11 +671,11 @@
    "JavaScript": 4,
    "HTML": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -690,11 +698,11 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -761,7 +769,7 @@
  },
  "netease-youdao/Confucius4-TTS": {
   "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -772,10 +780,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -866,11 +874,11 @@
    "JavaScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

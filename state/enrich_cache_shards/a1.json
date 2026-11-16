@@ -58,10 +58,16 @@
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 2,
+  "sec_n": 8,
   "sec_worst": "critical",
-  "sec_last": "2026-07-25",
+  "sec_last": "2026-11-14",
   "sec_ids": [
+   "GHSA-vhjw-gfmx-j3fx(-,medium)",
+   "GHSA-wgxp-vq94-73h8(-,medium)",
+   "GHSA-w454-6hwp-fm58(-,high)",
+   "GHSA-8whg-rvcr-r88r(-,high)",
+   "GHSA-j3r5-x2gg-2hgv(-,critical)",
+   "GHSA-3cjg-8cp8-j269(-,high)",
    "GHSA-g49p-36p7-q46x(CVE-2026-103015,critical)",
    "GHSA-vqf8-hfgc-v5cf(-,critical)"
   ],
@@ -73,11 +79,11 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -102,11 +108,11 @@
    "Java": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -130,11 +136,11 @@
    "HTML": 4,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -153,11 +159,11 @@
    "Python": 100,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -173,11 +179,11 @@
   "sec_ids": [],
   "contrib_n": 18,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -197,11 +203,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -215,10 +221,12 @@
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 1,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-11-05",
+  "sec_ids": [
+   "GHSA-7jvq-8frj-xgfc(-,medium)"
+  ],
   "contrib_n": 26,
   "lang": {
    "TypeScript": 98,
@@ -226,11 +234,11 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -252,11 +260,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -272,18 +280,18 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261030",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261030",
    "release": "20261030",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "oxylabs/agent-skills": {
-  "commit_90d": 18,
-  "commit_7d": 1,
+  "commit_90d": 11,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -295,17 +303,17 @@
    "JavaScript": 53,
    "Python": 47
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "agarwalvishal/claude-chat-exporter": {
-  "commit_90d": 9,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -317,10 +325,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -351,11 +359,11 @@
   }
  },
  "agent-sh/computer-use-linux": {
-  "commit_90d": 113,
-  "commit_7d": 7,
-  "rel_ver": "v0.7.17",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 303,
+  "commit_7d": 63,
+  "rel_ver": "v0.7.54",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -371,10 +379,10 @@
    "Shell": 3,
    "Python": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

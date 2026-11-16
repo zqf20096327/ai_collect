@@ -245,11 +245,11 @@
    "Python": 6,
    "JSON": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -272,11 +272,11 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -299,11 +299,11 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -329,11 +329,11 @@
    "C++": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -359,11 +359,11 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -386,11 +386,11 @@
    "Python": 96,
    "HTML": 4
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -412,11 +412,11 @@
   "lang": {
    "Kotlin": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -442,11 +442,11 @@
    "Shell": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -478,11 +478,11 @@
   }
  },
  "OpenRouterTeam/ai-sdk-provider": {
-  "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_7d": 8,
+  "commit_90d": 34,
   "rel_ver": "3.1.0",
   "rel_pub": "2026-09-19",
-  "rel_days": 28,
+  "rel_days": 58,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -495,10 +495,10 @@
    "TypeScript": 99,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

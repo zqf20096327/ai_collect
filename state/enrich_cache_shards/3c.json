@@ -228,11 +228,11 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -278,11 +278,11 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -298,11 +298,11 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -327,11 +327,11 @@
    "HTML": 15,
    "CSS": 7
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -347,11 +347,11 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -385,7 +385,7 @@
   "commit_90d": 0,
   "rel_ver": "v2.0",
   "rel_pub": "2023-11-13",
-  "rel_days": 1069,
+  "rel_days": 1099,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -401,10 +401,10 @@
    "C": 1,
    "CMake": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -412,7 +412,7 @@
  },
  "InternLM/Intern-Decision": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -426,22 +426,22 @@
    "HTML": 4,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Zhou-Shilin/Aether": {
-  "commit_7d": 6,
-  "commit_90d": 182,
+  "commit_7d": 0,
+  "commit_90d": 80,
   "rel_ver": "2.1.7",
   "rel_pub": "2026-10-11",
-  "rel_days": 6,
-  "rel_n90": 8,
+  "rel_days": 36,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -456,10 +456,10 @@
    "JavaScript": 2,
    "Objective-C": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

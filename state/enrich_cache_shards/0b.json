@@ -65,8 +65,8 @@
   }
  },
  "Fosowl/agenticSeek": {
-  "commit_7d": 7,
-  "commit_90d": 52,
+  "commit_7d": 10,
+  "commit_90d": 67,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -81,10 +81,10 @@
    "Shell": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -295,11 +295,11 @@
    "Astro": 1,
    "Rust": 1
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -325,11 +325,11 @@
    "Shell": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -355,11 +355,11 @@
    "Shell": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -377,11 +377,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -407,11 +407,11 @@
    "HTML": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

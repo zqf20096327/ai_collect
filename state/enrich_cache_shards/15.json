@@ -220,11 +220,11 @@
    "TypeScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -250,11 +250,11 @@
    "C": 1,
    "CMake": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -273,11 +273,11 @@
    "Python": 95,
    "Jupyter Notebook": 5
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -300,11 +300,11 @@
    "Python": 100,
    "Dart": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -324,11 +324,11 @@
    "Scala": 26,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -347,11 +347,11 @@
    "Python": 71,
    "Vim Script": 29
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -374,11 +374,11 @@
    "Python": 98,
    "C++": 2
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

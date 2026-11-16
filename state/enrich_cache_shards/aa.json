@@ -109,11 +109,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -139,11 +139,11 @@
    "Go": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -159,11 +159,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -189,11 +189,11 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -219,11 +219,11 @@
    "ImageJ Macro": 0,
    "Groovy": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -247,11 +247,11 @@
    "TeX": 21,
    "Shell": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -269,11 +269,11 @@
   "lang": {
    "MATLAB": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -298,11 +298,11 @@
    "SCSS": 11,
    "JavaScript": 0
   },
-  "enriched_at": "20261110",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261110",
    "release": "20261110",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -334,11 +334,11 @@
   }
  },
  "QuantClimate/GPJax": {
-  "commit_7d": 2,
-  "commit_90d": 56,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 19,
+  "commit_7d": 12,
+  "commit_90d": 42,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 6,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -351,10 +351,10 @@
    "Python": 99,
    "TeX": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

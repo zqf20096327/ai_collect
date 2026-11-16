@@ -66,11 +66,11 @@
    "Jupyter Notebook": 100,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -88,11 +88,11 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -112,11 +112,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -135,11 +135,11 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -165,11 +165,11 @@
    "PowerShell": 1,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -195,11 +195,11 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -227,11 +227,11 @@
    "CSS": 4,
    "Shell": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -257,11 +257,11 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -287,11 +287,11 @@
    "Batchfile": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -316,11 +316,11 @@
    "Jupyter Notebook": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -353,22 +353,22 @@
    "HTML": 0,
    "Rust": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AndersonBY/vector-vein": {
-  "commit_90d": 13,
-  "commit_7d": 0,
-  "rel_ver": "v0.4.20",
-  "rel_pub": "2026-10-04",
-  "rel_days": 13,
-  "rel_n90": 5,
+  "commit_90d": 74,
+  "commit_7d": 14,
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 7,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -382,22 +382,22 @@
    "JavaScript": 14,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "vllm-project/speculators": {
-  "commit_90d": 200,
+  "commit_90d": 196,
   "commit_7d": 12,
-  "rel_ver": "v0.8.1",
-  "rel_pub": "2026-10-10",
-  "rel_days": 7,
-  "rel_n90": 7,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 28,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -410,10 +410,10 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -470,8 +470,8 @@
   }
  },
  "best-of-ai/best-of-ai": {
-  "commit_90d": 27,
-  "commit_7d": 2,
+  "commit_90d": 50,
+  "commit_7d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -485,10 +485,10 @@
    "Python": 15,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -499,7 +499,7 @@
   "commit_7d": 0,
   "rel_ver": "v3.1.1",
   "rel_pub": "2025-09-30",
-  "rel_days": 382,
+  "rel_days": 412,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -515,22 +515,22 @@
    "JavaScript": 0,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "SonarSource/sonarqube-mcp-server": {
-  "commit_90d": 96,
+  "commit_90d": 147,
   "commit_7d": 17,
-  "rel_ver": "1.29.0.4488",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 7,
+  "rel_ver": "1.32.0.5118",
+  "rel_pub": "2026-11-10",
+  "rel_days": 6,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -544,10 +544,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

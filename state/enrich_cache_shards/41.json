@@ -169,10 +169,12 @@
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-11-10",
+  "sec_ids": [
+   "GHSA-8cw3-7xw3-vpph(-,critical)"
+  ],
   "contrib_n": 97,
   "lang": {
    "Python": 99,
@@ -181,11 +183,11 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -207,11 +209,11 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -234,11 +236,11 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261115",
    "release": "20261115",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -286,11 +288,11 @@
    "Shell": 3,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -315,17 +317,17 @@
    "HTML": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Alanosy/exam-platform": {
-  "commit_90d": 127,
+  "commit_90d": 123,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -338,10 +340,10 @@
    "Java": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -375,11 +377,11 @@
   }
  },
  "VigoZhao/AI-Visual-Prompt-Cookbook": {
-  "commit_90d": 62,
-  "commit_7d": 15,
-  "rel_ver": "v2026.10.15",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 61,
+  "commit_7d": 4,
+  "rel_ver": "v2026.11.15",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -395,10 +397,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -131,11 +131,11 @@
    "CMake": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -161,11 +161,11 @@
    "Shell": 2,
    "CSS": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -181,11 +181,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -203,11 +203,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -221,10 +221,19 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 9,
+  "sec_worst": "critical",
+  "sec_last": "2026-11-02",
+  "sec_ids": [
+   "GHSA-726h-h658-pr62(-,medium)",
+   "GHSA-9r6j-56mx-7357(-,high)",
+   "GHSA-7844-qgp7-5259(-,high)",
+   "GHSA-rrvp-x7hh-wfxw(-,medium)",
+   "GHSA-vhp8-28q6-jvrj(-,medium)",
+   "GHSA-gg8q-h8qq-8pj9(-,high)",
+   "GHSA-5rf5-5rj3-37cv(-,medium)",
+   "GHSA-x89q-mgqp-xhpw(-,critical)"
+  ],
   "contrib_n": 28,
   "lang": {
    "TypeScript": 93,
@@ -233,11 +242,11 @@
    "Python": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -263,11 +272,11 @@
    "HTML": 5,
    "Go": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -289,11 +298,11 @@
    "Python": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -316,11 +325,11 @@
    "JavaScript": 98,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -344,11 +353,11 @@
    "PowerShell": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -387,7 +396,7 @@
   }
  },
  "thu-nics/C2C": {
-  "commit_90d": 3,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -402,10 +411,10 @@
    "Shell": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

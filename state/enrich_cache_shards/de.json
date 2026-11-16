@@ -335,11 +335,11 @@
    "Java": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -359,11 +359,11 @@
    "TypeScript": 49,
    "CSS": 1
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -391,11 +391,11 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -421,11 +421,11 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -444,11 +444,11 @@
    "HTML": 78,
    "Shell": 22
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -474,21 +474,21 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "datagallery-ai/dataagent": {
   "commit_7d": 0,
-  "commit_90d": 36,
+  "commit_90d": 0,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-08-29",
-  "rel_days": 49,
+  "rel_days": 79,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -504,21 +504,21 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Abilityai/trinity": {
-  "commit_7d": 4,
-  "commit_90d": 60,
-  "rel_ver": "v1.0.0-rc3",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_7d": 6,
+  "commit_90d": 40,
+  "rel_ver": "v1.0.5-rc3",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -534,10 +534,10 @@
    "TypeScript": 3,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -72,11 +72,11 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261115",
    "release": "20261115",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -98,11 +98,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -124,17 +124,17 @@
    "Jupyter Notebook": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "ThomasVitale/llm-apps-java-spring-ai": {
-  "commit_90d": 5,
+  "commit_90d": 12,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -147,10 +147,10 @@
    "Java": 100,
    "Smalltalk": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -173,11 +173,11 @@
    "CSS": 2,
    "HTML": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

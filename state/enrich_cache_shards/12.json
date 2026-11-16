@@ -89,8 +89,8 @@
   }
  },
  "NirDiamant/agents-towards-production": {
-  "commit_7d": 5,
-  "commit_90d": 31,
+  "commit_7d": 2,
+  "commit_90d": 32,
   "rel_ver": "book-v1.0",
   "rel_none": false,
   "sec_n": 0,
@@ -105,16 +105,16 @@
    "Kotlin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
   "rel_pub": "2026-10-26",
-  "rel_days": 11,
+  "rel_days": 21,
   "rel_n90": 1,
   "rel_pre": false
  },
@@ -278,11 +278,11 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -310,11 +310,11 @@
    "JavaScript": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -343,11 +343,11 @@
    "Rust": 1,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -373,11 +373,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -403,11 +403,11 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -433,11 +433,11 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -453,11 +453,11 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -483,11 +483,11 @@
    "C": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -509,18 +509,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Shy2593666979/AgentChat": {
-  "commit_7d": 2,
-  "commit_90d": 10,
+  "commit_7d": 0,
+  "commit_90d": 26,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -535,10 +535,10 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -572,10 +572,10 @@
  },
  "pyg-team/pytorch-frame": {
   "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_90d": 0,
   "rel_ver": "0.3.0",
   "rel_pub": "2025-11-02",
-  "rel_days": 349,
+  "rel_days": 379,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -587,10 +587,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -598,10 +598,10 @@
  },
  "oil-oil/wolfcha": {
   "commit_7d": 0,
-  "commit_90d": 26,
+  "commit_90d": 21,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-02-16",
-  "rel_days": 243,
+  "rel_days": 273,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -617,21 +617,21 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "OpenHUTB/hutb": {
-  "commit_7d": 10,
-  "commit_90d": 78,
+  "commit_7d": 5,
+  "commit_90d": 72,
   "rel_ver": "v2.10.0",
   "rel_pub": "2026-07-07",
-  "rel_days": 102,
+  "rel_days": 132,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -647,10 +647,10 @@
    "C": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

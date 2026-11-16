@@ -179,11 +179,11 @@
    "Python": 82,
    "Jinja": 18
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -229,11 +229,11 @@
   "sec_ids": [],
   "contrib_n": 26,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -249,11 +249,11 @@
   "sec_ids": [],
   "contrib_n": 5,
   "lang": {},
-  "enriched_at": "20261106",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261106",
    "release": "20261106",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -275,11 +275,11 @@
    "Smali": 13,
    "CSS": 7
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -309,12 +309,12 @@
   }
  },
  "Anyesh/wardrowbe": {
-  "commit_90d": 337,
-  "commit_7d": 25,
-  "rel_ver": "wardrowbe-v1.11.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
-  "rel_n90": 11,
+  "commit_90d": 358,
+  "commit_7d": 15,
+  "rel_ver": "wardrowbe-v1.13.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 7,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -329,10 +329,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

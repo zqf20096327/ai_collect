@@ -258,11 +258,11 @@
    "Shell": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -276,10 +276,11 @@
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 1,
-  "sec_worst": null,
-  "sec_last": "2026-05-27",
+  "sec_n": 2,
+  "sec_worst": "high",
+  "sec_last": "2026-10-30",
   "sec_ids": [
+   "GHSA-5j72-ffcm-fw55(-,high)",
    "GHSA-c5r6-m4mr-8q5j(CVE-2026-49856,medium)"
   ],
   "contrib_n": 2,
@@ -290,11 +291,11 @@
    "Python": 0,
    "AppleScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -320,11 +321,11 @@
    "Python": 3,
    "CMake": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -344,11 +345,11 @@
    "JavaScript": 46,
    "Shell": 1
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -364,11 +365,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

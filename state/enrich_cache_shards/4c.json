@@ -129,11 +129,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -159,11 +159,11 @@
    "Python": 5,
    "PowerShell": 3
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -189,11 +189,11 @@
    "Starlark": 4,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -219,21 +219,21 @@
    "CSS": 1,
    "NSIS": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "NeuromatchAcademy/course-content-dl": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 5,
+  "commit_90d": 5,
   "rel_ver": "v3.1.4",
   "rel_pub": "2026-07-07",
-  "rel_days": 102,
+  "rel_days": 132,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -247,22 +247,22 @@
    "Python": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "antvis/GPT-Vis": {
-  "commit_7d": 0,
-  "commit_90d": 11,
-  "rel_ver": "1.0.2",
-  "rel_pub": "2026-09-17",
-  "rel_days": 30,
-  "rel_n90": 2,
+  "commit_7d": 7,
+  "commit_90d": 24,
+  "rel_ver": "1.3.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -277,10 +277,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -310,11 +310,11 @@
  },
  "416rehman/DeepZero": {
   "commit_7d": 0,
-  "commit_90d": 49,
-  "rel_ver": "deepzero-v0.4.0",
-  "rel_pub": "2026-08-02",
-  "rel_days": 76,
-  "rel_n90": 2,
+  "commit_90d": 12,
+  "rel_ver": "deepzero-v0.5.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 15,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -326,22 +326,22 @@
    "Python": 99,
    "Jinja": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Hao0321/claude-skill-social-post": {
-  "commit_7d": 3,
-  "commit_90d": 49,
+  "commit_7d": 0,
+  "commit_90d": 23,
   "rel_ver": "v2.5.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 5,
+  "rel_days": 32,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -355,10 +355,10 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

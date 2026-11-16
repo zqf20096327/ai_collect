@@ -299,11 +299,11 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261105",
    "release": "20261105",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -329,11 +329,11 @@
    "Svelte": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -356,11 +356,11 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -374,18 +374,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 16,
+  "sec_n": 18,
   "sec_worst": "critical",
-  "sec_last": "2026-09-12",
+  "sec_last": "2026-11-10",
   "sec_ids": [
+   "GHSA-f7xp-798c-mghg(-,high)",
+   "GHSA-33vh-h489-26cq(-,medium)",
    "GHSA-jv5c-wm2x-qxj6(-,low)",
    "GHSA-w845-x732-gj6p(-,low)",
    "GHSA-v789-xg97-vg68(-,low)",
    "GHSA-m4cr-86fc-6jx9(-,low)",
    "GHSA-6g8h-x538-6fvj(-,low)",
-   "GHSA-pmjr-23rr-w3qh(-,high)",
-   "GHSA-m2xm-956r-59cq(-,high)",
-   "GHSA-qxx2-285f-5fm3(-,high)"
+   "GHSA-pmjr-23rr-w3qh(-,high)"
   ],
   "contrib_n": 39,
   "lang": {
@@ -395,11 +395,11 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -417,11 +417,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -447,11 +447,11 @@
    "Python": 3,
    "Cuda": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -477,22 +477,22 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "wanxingai/LightAgent": {
-  "commit_90d": 49,
-  "commit_7d": 11,
-  "rel_ver": "v0.11.0",
-  "rel_pub": "2026-09-30",
-  "rel_days": 29,
-  "rel_n90": 5,
+  "commit_90d": 68,
+  "commit_7d": 25,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -504,11 +504,11 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261029",
-   "release": "20261029",
-   "security": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -534,11 +534,11 @@
    "JavaScript": 8,
    "Rust": 4
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -554,11 +554,11 @@
   "sec_ids": [],
   "contrib_n": 41,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -576,11 +576,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -601,11 +601,11 @@
    "Shell": 0,
    "Cython": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -624,11 +624,11 @@
    "Python": 95,
    "Jupyter Notebook": 5
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

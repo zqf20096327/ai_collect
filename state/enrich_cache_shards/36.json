@@ -288,11 +288,11 @@
   }
  },
  "54yyyu/zotero-mcp": {
-  "commit_7d": 0,
-  "commit_90d": 691,
-  "rel_ver": "v0.15.2",
-  "rel_pub": "2026-11-01",
-  "rel_days": 8,
+  "commit_7d": 144,
+  "commit_90d": 903,
+  "rel_ver": "v0.17.2",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -308,10 +308,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -331,11 +331,11 @@
    "Jupyter Notebook": 55,
    "Python": 45
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -357,11 +357,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -386,11 +386,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -408,11 +408,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261115",
    "release": "20261115",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -435,11 +435,11 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -461,21 +461,21 @@
   "lang": {
    "Ruby": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "xberg-io/html-to-markdown": {
-  "commit_7d": 55,
-  "commit_90d": 913,
-  "rel_ver": "v3.18.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_7d": 29,
+  "commit_90d": 1011,
+  "rel_ver": "v3.22.2",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -491,10 +491,10 @@
    "C": 1,
    "MDX": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -527,8 +527,8 @@
   }
  },
  "leoncuhk/awesome-quant-ai": {
-  "commit_7d": 0,
-  "commit_90d": 29,
+  "commit_7d": 1,
+  "commit_90d": 42,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,

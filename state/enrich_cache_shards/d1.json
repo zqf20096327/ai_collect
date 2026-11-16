@@ -309,11 +309,11 @@
    "TypeScript": 99,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -336,11 +336,11 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -360,11 +360,11 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -393,11 +393,11 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -423,11 +423,11 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -467,10 +467,14 @@
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 3,
+  "sec_n": 7,
   "sec_worst": "high",
-  "sec_last": "2026-10-01",
+  "sec_last": "2026-10-25",
   "sec_ids": [
+   "GHSA-cjfr-rrgx-2g38(-,low)",
+   "GHSA-543g-qfqh-q498(-,medium)",
+   "GHSA-62cf-6h99-6cv9(-,high)",
+   "GHSA-f7jr-f255-59p6(-,medium)",
    "GHSA-m9w4-p32x-chx9(-,low)",
    "GHSA-c3p6-m657-h629(-,high)",
    "GHSA-5hvw-59r4-7rcq(-,medium)"
@@ -483,11 +487,11 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -509,11 +513,11 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -535,11 +539,11 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261110",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261110",
    "release": "20261110",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -565,11 +569,11 @@
    "R": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -591,18 +595,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "dalisoft/awesome-hosting": {
-  "commit_90d": 54,
-  "commit_7d": 14,
+  "commit_90d": 92,
+  "commit_7d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -611,10 +615,10 @@
   "sec_ids": [],
   "contrib_n": 47,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -651,12 +655,12 @@
   }
  },
  "Stable-Baselines-Team/stable-baselines3-contrib": {
-  "commit_90d": 1,
-  "commit_7d": 1,
-  "rel_ver": "v2.9.0",
-  "rel_pub": "2026-06-15",
-  "rel_days": 124,
-  "rel_n90": 0,
+  "commit_90d": 2,
+  "commit_7d": 0,
+  "rel_ver": "v2.9.2",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -669,10 +673,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

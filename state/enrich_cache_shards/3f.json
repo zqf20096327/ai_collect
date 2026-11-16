@@ -229,11 +229,11 @@
   "sec_ids": [],
   "contrib_n": 22,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -259,11 +259,11 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -283,11 +283,11 @@
    "HTML": 26,
    "Shell": 3
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261028",
    "release": "20261028",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -312,11 +312,11 @@
    "CSS": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -339,11 +339,11 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -369,11 +369,11 @@
    "Vue": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -395,11 +395,11 @@
    "CMake": 2,
    "C": 1
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -422,11 +422,11 @@
    "Python": 98,
    "Dockerfile": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -452,22 +452,22 @@
    "TypeScript": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "symgraph/GhidrAssistMCP": {
-  "commit_90d": 5,
-  "commit_7d": 0,
+  "commit_90d": 21,
+  "commit_7d": 20,
   "rel_ver": "3.0.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 2,
+  "rel_days": 38,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -479,10 +479,10 @@
    "Java": 100,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -490,10 +490,10 @@
  },
  "Bessouat40/RAGLight": {
   "commit_90d": 42,
-  "commit_7d": 37,
+  "commit_7d": 0,
   "rel_ver": "3.4.7",
   "rel_pub": "2026-03-24",
-  "rel_days": 207,
+  "rel_days": 237,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -506,10 +506,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

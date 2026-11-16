@@ -232,11 +232,11 @@
    "CSS": 0,
    "SCSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -259,11 +259,11 @@
    "Python": 71,
    "Shell": 29
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -277,18 +277,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 14,
+  "sec_n": 19,
   "sec_worst": "critical",
-  "sec_last": "2026-10-16",
+  "sec_last": "2026-11-14",
   "sec_ids": [
+   "GHSA-w8p9-5v6q-h9ch(-,high)",
+   "GHSA-hm53-3f6c-cm5h(-,low)",
+   "GHSA-wpp8-2qcw-x4pc(-,medium)",
+   "GHSA-8p26-g7wp-65jw(-,medium)",
+   "GHSA-xhjp-vf97-77wf(-,medium)",
    "GHSA-6q59-m6vq-x65x(-,high)",
    "GHSA-j664-v823-6p9f(-,high)",
-   "GHSA-2mw6-h564-86wv(-,medium)",
-   "GHSA-9x7v-2vjj-xghg(-,medium)",
-   "GHSA-26rx-6fvr-qjqg(-,high)",
-   "GHSA-7w86-2vmv-fqwm(-,medium)",
-   "GHSA-6mvm-q4j3-27qg(-,critical)",
-   "GHSA-2hh8-qjxc-43x3(-,critical)"
+   "GHSA-2mw6-h564-86wv(-,medium)"
   ],
   "contrib_n": 104,
   "lang": {
@@ -298,11 +298,11 @@
    "Shell": 3,
    "CSS": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -328,11 +328,11 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -358,11 +358,11 @@
    "Shell": 3,
    "HTML": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -388,11 +388,11 @@
    "CSS": 7,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -507,11 +507,11 @@
   }
  },
  "Kentucky-ai/opentakeoff": {
-  "commit_7d": 11,
-  "commit_90d": 377,
-  "rel_ver": "mcp-v0.9.98",
-  "rel_pub": "2026-10-11",
-  "rel_days": 6,
+  "commit_7d": 20,
+  "commit_90d": 272,
+  "rel_ver": "mcp-v0.9.105",
+  "rel_pub": "2026-11-07",
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -527,10 +527,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

@@ -267,11 +267,11 @@
   "sec_ids": [],
   "contrib_n": 8,
   "lang": {},
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -296,11 +296,11 @@
    "CSS": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261103",
    "release": "20261103",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -326,11 +326,11 @@
    "Jinja": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -382,11 +382,11 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -409,11 +409,11 @@
    "Python": 92,
    "Shell": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -439,11 +439,11 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -466,23 +466,23 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "tastyeffectco/sandboxd": {
-  "commit_90d": 66,
-  "commit_7d": 3,
-  "rel_ver": "runtime-v0.3.22-preview.5",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 152,
+  "commit_7d": 6,
+  "rel_ver": "v0.3.26",
+  "rel_pub": "2026-10-31",
+  "rel_days": 16,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -496,10 +496,10 @@
    "Dockerfile": 1,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -526,22 +526,22 @@
    "Java": 2,
    "Pug": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "eunomia-bpf/agentsight": {
-  "commit_90d": 275,
+  "commit_90d": 46,
   "commit_7d": 0,
-  "rel_ver": "v1.0.34",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
-  "rel_n90": 12,
+  "rel_ver": "v1.0.35",
+  "rel_pub": "2026-10-23",
+  "rel_days": 24,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -556,10 +556,10 @@
    "Python": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

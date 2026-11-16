@@ -261,11 +261,11 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -280,17 +280,17 @@
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
-  "sec_worst": "critical",
-  "sec_last": "2026-10-14",
+  "sec_worst": "high",
+  "sec_last": "2026-11-06",
   "sec_ids": [
+   "GHSA-9r8f-m39c-5rv5(-,medium)",
+   "GHSA-gxq5-f6xj-f7w2(-,low)",
+   "GHSA-x93c-fqj5-f398(-,medium)",
+   "GHSA-2x65-h9w3-h7hc(-,medium)",
    "GHSA-pg92-mx73-6f5w(-,medium)",
+   "GHSA-4rg8-mr2x-646g(-,medium)",
    "GHSA-756x-wh7m-3xcv(-,medium)",
-   "GHSA-cppv-wvj3-6r9j(-,medium)",
-   "GHSA-wj8j-9jrr-822f(-,medium)",
-   "GHSA-3qvw-5c9g-77xx(-,medium)",
-   "GHSA-gxpp-wxcp-37jf(-,medium)",
-   "GHSA-vpfq-5j3m-j36r(-,medium)",
-   "GHSA-rxgh-62mp-jq63(-,medium)"
+   "GHSA-m5gh-q587-rjvv(-,medium)"
   ],
   "contrib_n": 134,
   "lang": {
@@ -300,11 +300,11 @@
    "Python": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -326,11 +326,11 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261108",
    "release": "20261108",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -352,11 +352,11 @@
    "Python": 2,
    "JavaScript": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -386,11 +386,11 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -416,11 +416,11 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -446,11 +446,11 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -476,11 +476,11 @@
    "Rust": 3,
    "MDX": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -502,11 +502,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -543,11 +543,11 @@
  },
  "dromara/dante-cloud": {
   "commit_7d": 0,
-  "commit_90d": 27,
-  "rel_ver": "v4.1.1.1",
-  "rel_pub": "2026-09-25",
-  "rel_days": 22,
-  "rel_n90": 2,
+  "commit_90d": 34,
+  "rel_ver": "v4.1.2.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -562,10 +562,10 @@
    "PLSQL": 7,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -597,10 +597,10 @@
  },
  "dcnetio/web-dc-api": {
   "commit_7d": 0,
-  "commit_90d": 138,
-  "rel_ver": "v0.3.11",
-  "rel_pub": "2026-09-20",
-  "rel_days": 27,
+  "commit_90d": 47,
+  "rel_ver": "v0.3.12",
+  "rel_pub": "2026-10-28",
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -615,10 +615,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -645,11 +645,11 @@
    "Go Template": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }

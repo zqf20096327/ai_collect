@@ -187,11 +187,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -210,11 +210,11 @@
    "Jupyter Notebook": 87,
    "Python": 13
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -274,11 +274,11 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -412,11 +412,11 @@
   }
  },
  "naqashafzal/AI-Content-Studio": {
-  "commit_90d": 15,
-  "commit_7d": 5,
+  "commit_90d": 20,
+  "commit_7d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-02-11",
-  "rel_days": 248,
+  "rel_days": 278,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -432,22 +432,22 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "lobehub/lobe-tts": {
-  "commit_90d": 9,
-  "commit_7d": 3,
-  "rel_ver": "v6.0.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 4,
+  "commit_90d": 24,
+  "commit_7d": 4,
+  "rel_ver": "v6.1.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -461,22 +461,22 @@
    "JavaScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "MigoXLab/dingo": {
-  "commit_90d": 97,
+  "commit_90d": 6,
   "commit_7d": 0,
   "rel_ver": "v2.5.0",
   "rel_pub": "2026-08-04",
-  "rel_days": 74,
-  "rel_n90": 1,
+  "rel_days": 104,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -487,10 +487,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -524,7 +524,7 @@
   }
  },
  "SunOner/sunone_aimbot_2": {
-  "commit_90d": 4,
+  "commit_90d": 17,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -540,10 +540,10 @@
    "Objective-C++": 1,
    "CMake": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

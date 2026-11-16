@@ -295,11 +295,11 @@
    "PowerShell": 0,
    "Tape": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -317,11 +317,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -347,11 +347,11 @@
    "Nix": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -373,11 +373,11 @@
   "lang": {
    "Kotlin": 100
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261101",
    "release": "20261101",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -402,11 +402,11 @@
    "Shell": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -432,11 +432,11 @@
    "CSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -462,11 +462,11 @@
    "Starlark": 2,
    "Shell": 1
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -485,22 +485,22 @@
    "Shell": 51,
    "Python": 49
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "verygoodplugins/automem": {
-  "commit_90d": 44,
-  "commit_7d": 0,
-  "rel_ver": "v0.16.2",
-  "rel_pub": "2026-08-28",
-  "rel_days": 50,
-  "rel_n90": 1,
+  "commit_90d": 66,
+  "commit_7d": 12,
+  "rel_ver": "v0.16.3",
+  "rel_pub": "2026-11-08",
+  "rel_days": 8,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -515,22 +515,22 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "mistralai/client-python": {
-  "commit_90d": 23,
+  "commit_90d": 18,
   "commit_7d": 0,
-  "rel_ver": "v3.2.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 12,
+  "rel_ver": "v3.7.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 15,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -545,22 +545,22 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "huggingface/kernels": {
-  "commit_90d": 122,
-  "commit_7d": 9,
-  "rel_ver": "v0.17.2",
-  "rel_pub": "2026-10-02",
-  "rel_days": 15,
-  "rel_n90": 5,
+  "commit_90d": 157,
+  "commit_7d": 14,
+  "rel_ver": "v0.18.3",
+  "rel_pub": "2026-11-12",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -575,10 +575,10 @@
    "CMake": 5,
    "Shell": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

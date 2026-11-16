@@ -1,10 +1,10 @@
 {
  "microsoft/OmniParser": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 0,
   "rel_ver": "v.2.0.1",
   "rel_pub": "2025-09-12",
-  "rel_days": 399,
+  "rel_days": 430,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "PowerShell": 4,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -107,11 +107,11 @@
    "Jupyter Notebook": 3,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -137,11 +137,11 @@
    "Cuda": 0,
    "CMake": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -163,11 +163,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -193,11 +193,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -219,22 +219,22 @@
    "C": 0,
    "C++": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "openeverest/openeverest": {
-  "commit_90d": 272,
-  "commit_7d": 8,
+  "commit_90d": 255,
+  "commit_7d": 37,
   "rel_ver": "v1.17.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 4,
-  "rel_n90": 6,
+  "rel_days": 34,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -249,21 +249,21 @@
    "JavaScript": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "jazzyalex/agent-sessions": {
-  "commit_90d": 628,
-  "commit_7d": 46,
-  "rel_ver": "v5.7",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_90d": 632,
+  "commit_7d": 20,
+  "rel_ver": "v6.5",
+  "rel_pub": "2026-11-10",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -279,10 +279,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -341,8 +341,8 @@
   }
  },
  "Blizaine/Maestro": {
-  "commit_90d": 147,
-  "commit_7d": 0,
+  "commit_90d": 379,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -357,10 +357,10 @@
    "CSS": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -389,11 +389,11 @@
   }
  },
  "davidmigloz/langchain_dart": {
-  "commit_90d": 14,
+  "commit_90d": 13,
   "commit_7d": 0,
   "rel_ver": "langchain-v0.9.0",
   "rel_pub": "2026-08-27",
-  "rel_days": 51,
+  "rel_days": 81,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -409,10 +409,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

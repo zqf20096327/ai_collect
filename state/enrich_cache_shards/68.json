@@ -142,11 +142,11 @@
    "CSS": 12,
    "Python": 9
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -171,11 +171,11 @@
    "PowerShell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261109",
    "release": "20261109",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -193,11 +193,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -223,11 +223,11 @@
    "Jupyter Notebook": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -252,11 +252,11 @@
    "Dockerfile": 0,
    "RenderScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -282,11 +282,11 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -308,11 +308,11 @@
    "PowerShell": 2,
    "HTML": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -330,11 +330,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -360,11 +360,11 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -414,11 +414,11 @@
   }
  },
  "google/ml-compiler-opt": {
-  "commit_90d": 17,
-  "commit_7d": 5,
+  "commit_90d": 23,
+  "commit_7d": 2,
   "rel_ver": "inlining-Oz-v1.2",
   "rel_pub": "2025-04-08",
-  "rel_days": 557,
+  "rel_days": 587,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -432,21 +432,21 @@
    "Shell": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Waikato/moa": {
-  "commit_90d": 42,
-  "commit_7d": 4,
+  "commit_90d": 8,
+  "commit_7d": 0,
   "rel_ver": "2024.07.0",
   "rel_pub": "2024-07-18",
-  "rel_days": 821,
+  "rel_days": 851,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -462,10 +462,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

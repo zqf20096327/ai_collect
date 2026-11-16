@@ -198,11 +198,11 @@
    "Meson": 2,
    "Python": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -228,11 +228,11 @@
    "CMake": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -258,11 +258,11 @@
    "Shell": 2,
    "CMake": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261113",
    "release": "20261113",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -291,11 +291,11 @@
    "HTML": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -315,11 +315,11 @@
    "Dockerfile": 2,
    "Makefile": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -343,11 +343,11 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -369,11 +369,11 @@
    "TypeScript": 1,
    "Python": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -399,11 +399,11 @@
    "JavaScript": 4,
    "CSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -425,11 +425,11 @@
   "lang": {
    "PHP": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -448,11 +448,11 @@
    "Jupyter Notebook": 92,
    "Python": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -470,21 +470,21 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261029",
    "release": "20261029",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "mlcommons/croissant": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 4,
+  "commit_90d": 13,
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-05",
-  "rel_days": 12,
+  "rel_days": 42,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -500,10 +500,10 @@
    "JavaScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -511,7 +511,7 @@
  },
  "microsoft/mcp-gateway": {
   "commit_7d": 1,
-  "commit_90d": 12,
+  "commit_90d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 1,
@@ -528,21 +528,21 @@
    "PowerShell": 3,
    "Bicep": 3
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AltimateAI/altimate-code": {
-  "commit_7d": 18,
-  "commit_90d": 173,
-  "rel_ver": "v0.12.7",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
+  "commit_7d": 17,
+  "commit_90d": 198,
+  "rel_ver": "v0.12.10",
+  "rel_pub": "2026-11-06",
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -558,10 +558,10 @@
    "PowerShell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

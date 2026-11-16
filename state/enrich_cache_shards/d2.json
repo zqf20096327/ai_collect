@@ -155,11 +155,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -244,11 +244,11 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -267,11 +267,11 @@
    "Jupyter Notebook": 96,
    "TeX": 4
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -287,21 +287,21 @@
   "sec_ids": [],
   "contrib_n": 17,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Playa-Cyrene/Cyrene-Agent": {
-  "commit_7d": 68,
-  "commit_90d": 1490,
-  "rel_ver": "v1.3.3",
-  "rel_pub": "2026-10-08",
-  "rel_days": 9,
+  "commit_7d": 56,
+  "commit_90d": 1164,
+  "rel_ver": "v1.3.7",
+  "rel_pub": "2026-11-10",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -317,10 +317,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -328,11 +328,11 @@
  },
  "mnemon-dev/mnemon": {
   "commit_7d": 1,
-  "commit_90d": 479,
-  "rel_ver": "v0.2.10",
-  "rel_pub": "2026-10-03",
-  "rel_days": 14,
-  "rel_n90": 11,
+  "commit_90d": 136,
+  "rel_ver": "v0.2.13",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -347,22 +347,22 @@
    "HTML": 2,
    "TypeScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "MichaelKinsy/PiG": {
-  "commit_7d": 1,
-  "commit_90d": 110,
-  "rel_ver": "v0.4.1",
-  "rel_pub": "2026-10-05",
-  "rel_days": 12,
-  "rel_n90": 5,
+  "commit_7d": 57,
+  "commit_90d": 4653,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 11,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -377,10 +377,10 @@
    "Rust": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

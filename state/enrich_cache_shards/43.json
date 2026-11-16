@@ -207,11 +207,11 @@
    "Shell": 4,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -233,11 +233,11 @@
    "CSS": 7,
    "HTML": 3
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -263,11 +263,11 @@
    "CMake": 1,
    "HIP": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -283,11 +283,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -312,11 +312,11 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -342,11 +342,11 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -362,11 +362,11 @@
   "sec_ids": [],
   "contrib_n": 17,
   "lang": {},
-  "enriched_at": "20261031",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261031",
    "release": "20261031",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -388,21 +388,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "retentioneering/retentioneering-tools": {
-  "commit_7d": 4,
-  "commit_90d": 191,
-  "rel_ver": "v5.2.4",
-  "rel_pub": "2026-10-07",
-  "rel_days": 10,
+  "commit_7d": 2,
+  "commit_90d": 205,
+  "rel_ver": "v5.3.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 20,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -418,10 +418,10 @@
    "Makefile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -450,12 +450,12 @@
   }
  },
  "cyberkaida/reverse-engineering-assistant": {
-  "commit_7d": 1,
-  "commit_90d": 15,
-  "rel_ver": "v7.3.1",
-  "rel_pub": "2026-09-03",
-  "rel_days": 44,
-  "rel_n90": 1,
+  "commit_7d": 0,
+  "commit_90d": 20,
+  "rel_ver": "v7.3.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -469,10 +469,10 @@
    "HTML": 2,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -480,11 +480,11 @@
  },
  "guangxiangdebizi/FinanceMCP": {
   "commit_7d": 1,
-  "commit_90d": 49,
+  "commit_90d": 31,
   "rel_ver": "v4.11.2",
   "rel_pub": "2026-09-04",
-  "rel_days": 43,
-  "rel_n90": 6,
+  "rel_days": 73,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -497,10 +497,10 @@
    "JavaScript": 10,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

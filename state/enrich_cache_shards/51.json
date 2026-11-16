@@ -154,11 +154,11 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261027",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261027",
    "release": "20261027",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -181,11 +181,11 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -211,11 +211,11 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -237,11 +237,11 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -266,11 +266,11 @@
    "Shell": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261104",
    "release": "20261104",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -296,11 +296,11 @@
    "TypeScript": 1,
    "Ruby": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -316,11 +316,11 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -345,11 +345,11 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -378,21 +378,21 @@
    "TypeScript": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Blarc/ai-commits-intellij-plugin": {
-  "commit_90d": 34,
-  "commit_7d": 2,
+  "commit_90d": 39,
+  "commit_7d": 4,
   "rel_ver": "v2.20.1",
   "rel_pub": "2026-09-30",
-  "rel_days": 17,
+  "rel_days": 47,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -404,10 +404,10 @@
   "lang": {
    "Kotlin": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -440,12 +440,12 @@
   }
  },
  "DoubleML/doubleml-for-py": {
-  "commit_90d": 10,
-  "commit_7d": 0,
+  "commit_90d": 88,
+  "commit_7d": 9,
   "rel_ver": "0.11.4",
   "rel_pub": "2026-08-10",
-  "rel_days": 68,
-  "rel_n90": 1,
+  "rel_days": 98,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -456,22 +456,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "open-edge-platform/datumaro": {
-  "commit_90d": 32,
+  "commit_90d": 36,
   "commit_7d": 2,
-  "rel_ver": "v1.13.11",
-  "rel_pub": "2026-09-07",
-  "rel_days": 40,
-  "rel_n90": 7,
+  "rel_ver": "v1.13.12",
+  "rel_pub": "2026-10-22",
+  "rel_days": 25,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -484,10 +484,10 @@
    "Rust": 1,
    "C++": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

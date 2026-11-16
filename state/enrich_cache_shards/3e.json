@@ -230,11 +230,11 @@
   "sec_ids": [],
   "contrib_n": 55,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -260,11 +260,11 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -290,11 +290,11 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -319,21 +319,21 @@
    "Python": 17,
    "CSS": 4
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AQBot-Desktop/AQBot": {
-  "commit_90d": 293,
+  "commit_90d": 182,
   "commit_7d": 0,
-  "rel_ver": "v0.0.163",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
+  "rel_ver": "v0.0.165",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -349,22 +349,22 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "liveloveapp/hashbrown": {
-  "commit_90d": 147,
-  "commit_7d": 15,
-  "rel_ver": "v0.7.0",
-  "rel_pub": "2026-10-08",
-  "rel_days": 9,
-  "rel_n90": 1,
+  "commit_90d": 357,
+  "commit_7d": 0,
+  "rel_ver": "v0.8.3",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -378,22 +378,22 @@
    "CSS": 2,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "smallmain/vscode-unify-chat-provider": {
-  "commit_90d": 101,
-  "commit_7d": 0,
-  "rel_ver": "v8.14.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
-  "rel_n90": 12,
+  "commit_90d": 49,
+  "commit_7d": 5,
+  "rel_ver": "v8.15.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 5,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -404,10 +404,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -469,11 +469,11 @@
   }
  },
  "EvotecIT/OfficeIMO": {
-  "commit_90d": 6894,
-  "commit_7d": 1138,
-  "rel_ver": "OfficeIMO-v20261016073836",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
+  "commit_90d": 9885,
+  "commit_7d": 1661,
+  "rel_ver": "OfficeIMO-v3.6.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -489,10 +489,10 @@
    "PowerShell": 1,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

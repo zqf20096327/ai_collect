@@ -240,11 +240,11 @@
    "Shell": 6,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -266,11 +266,11 @@
    "C#": 5,
    "Kotlin": 3
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -296,11 +296,11 @@
    "HTML": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -326,11 +326,11 @@
    "Jupyter Notebook": 4,
    "Shell": 3
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -356,11 +356,11 @@
    "Java": 11,
    "Starlark": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -386,11 +386,11 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -408,11 +408,11 @@
   "lang": {
    "R": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -438,11 +438,11 @@
    "Python": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -468,11 +468,11 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261110",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261110",
    "release": "20261110",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -498,11 +498,11 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -528,21 +528,21 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261105",
    "release": "20261105",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "luongnv89/asm": {
-  "commit_90d": 183,
-  "commit_7d": 10,
-  "rel_ver": "v2.23.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 4,
+  "commit_90d": 203,
+  "commit_7d": 19,
+  "rel_ver": "v2.24.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 27,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -558,10 +558,10 @@
    "HTML": 2,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -586,22 +586,22 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "promptise-com/Foundry": {
-  "commit_90d": 172,
-  "commit_7d": 149,
-  "rel_ver": "v1.3.5",
-  "rel_pub": "2026-10-16",
-  "rel_days": 1,
-  "rel_n90": 9,
+  "commit_90d": 389,
+  "commit_7d": 0,
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 14,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -614,10 +614,10 @@
    "HTML": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -683,11 +683,11 @@
   }
  },
  "pegainfer-project/pegainfer": {
-  "commit_90d": 316,
-  "commit_7d": 19,
+  "commit_90d": 248,
+  "commit_7d": 20,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-08-26",
-  "rel_days": 52,
+  "rel_days": 82,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -703,10 +703,10 @@
    "C++": 1,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -773,12 +773,12 @@
   }
  },
  "zhongkaifu/TensorSharp": {
-  "commit_90d": 843,
-  "commit_7d": 24,
-  "rel_ver": "v2026.10.11",
-  "rel_pub": "2026-10-12",
-  "rel_days": 5,
-  "rel_n90": 5,
+  "commit_90d": 1221,
+  "commit_7d": 238,
+  "rel_ver": "v2026.10.23",
+  "rel_pub": "2026-10-23",
+  "rel_days": 24,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -793,10 +793,10 @@
    "HTML": 4,
    "Cuda": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

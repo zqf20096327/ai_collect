@@ -292,11 +292,11 @@
   "sec_ids": [],
   "contrib_n": 8,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -320,22 +320,22 @@
    "Batchfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "Pasta-Devs/Marinara-Engine": {
   "commit_7d": 0,
-  "commit_90d": 5623,
-  "rel_ver": "v2.5.0",
-  "rel_pub": "2026-10-06",
+  "commit_90d": 9853,
+  "rel_ver": "v2.5.2",
+  "rel_pub": "2026-11-05",
   "rel_days": 11,
-  "rel_n90": 8,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -350,22 +350,22 @@
    "Java": 0,
    "Python": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "BorisPolonsky/dify-helm": {
-  "commit_7d": 1,
-  "commit_90d": 36,
+  "commit_7d": 0,
+  "commit_90d": 13,
   "rel_ver": "dify-0.39.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 5,
+  "rel_days": 32,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -378,10 +378,10 @@
    "Shell": 39,
    "Python": 11
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

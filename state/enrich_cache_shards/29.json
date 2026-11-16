@@ -215,11 +215,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -242,11 +242,11 @@
    "Python": 87,
    "Shell": 13
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261104",
    "release": "20261104",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -272,11 +272,11 @@
    "TypeScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261108",
    "release": "20261108",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -302,11 +302,11 @@
    "Shell": 5,
    "JavaScript": 4
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -330,11 +330,11 @@
    "R": 25,
    "Rez": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -356,11 +356,11 @@
    "Kotlin": 4,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -392,12 +392,12 @@
   }
  },
  "nuwax-ai/nuwax": {
-  "commit_90d": 3096,
-  "commit_7d": 201,
-  "rel_ver": "v1.1.16",
-  "rel_pub": "2026-07-09",
-  "rel_days": 100,
-  "rel_n90": 0,
+  "commit_90d": 3433,
+  "commit_7d": 80,
+  "rel_ver": "v3.0.5",
+  "rel_pub": "2026-10-29",
+  "rel_days": 18,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -412,21 +412,21 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "wangzongming/esp-ai": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": "v2.95.56",
   "rel_pub": "2025-08-18",
-  "rel_days": 425,
+  "rel_days": 455,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -442,10 +442,10 @@
    "Assembly": 1,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -500,8 +500,8 @@
   }
  },
  "moeru-ai/xsai": {
-  "commit_90d": 34,
-  "commit_7d": 13,
+  "commit_90d": 63,
+  "commit_7d": 3,
   "rel_ver": "v1.0.0-beta.3",
   "rel_pub": "2026-10-14",
   "rel_days": 3,

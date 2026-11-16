@@ -254,11 +254,11 @@
    "Python": 100,
    "HTML": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -281,11 +281,11 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -329,11 +329,11 @@
    "PowerShell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -359,11 +359,11 @@
    "HTML": 10,
    "JavaScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -385,20 +385,20 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "NVIDIA/cudnn-frontend": {
-  "commit_7d": 103,
-  "commit_90d": 897,
-  "rel_ver": "v1.32.0.dev74371060",
-  "rel_pub": "2026-10-16",
+  "commit_7d": 233,
+  "commit_90d": 1552,
+  "rel_ver": "v1.33.0.dev82384066",
+  "rel_pub": "2026-11-15",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -415,21 +415,21 @@
    "CMake": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
-   "security": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "vinhnx/VTCode": {
-  "commit_7d": 208,
-  "commit_90d": 2336,
-  "rel_ver": "0.179.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 0,
+  "commit_7d": 241,
+  "commit_90d": 3110,
+  "rel_ver": "0.182.4",
+  "rel_pub": "2026-11-15",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -448,18 +448,18 @@
    "Python": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "langchain-ai/react-agent": {
-  "commit_7d": 8,
-  "commit_90d": 48,
+  "commit_7d": 1,
+  "commit_90d": 57,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -471,10 +471,10 @@
    "Python": 84,
    "Makefile": 16
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

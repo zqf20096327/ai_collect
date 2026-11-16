@@ -34,8 +34,8 @@
   }
  },
  "shareAI-lab/learn-claude-code": {
-  "commit_7d": 13,
-  "commit_90d": 71,
+  "commit_7d": 4,
+  "commit_90d": 44,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -49,10 +49,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261028",
-   "release": "20261028",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -228,11 +228,11 @@
    "Dockerfile": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -288,11 +288,11 @@
    "JavaScript": 0,
    "Metal": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -373,11 +373,11 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -391,10 +391,12 @@
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 1,
+  "sec_worst": "critical",
+  "sec_last": "2026-10-26",
+  "sec_ids": [
+   "GHSA-pr6p-92vv-ffv2(-,critical)"
+  ],
   "contrib_n": 40,
   "lang": {
    "TypeScript": 62,
@@ -403,11 +405,11 @@
    "Dockerfile": 1,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -429,11 +431,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -459,22 +461,22 @@
    "MDX": 1,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "keras-team/keras-hub": {
-  "commit_7d": 8,
-  "commit_90d": 120,
-  "rel_ver": "v0.32.0",
-  "rel_pub": "2026-09-18",
-  "rel_days": 29,
-  "rel_n90": 7,
+  "commit_7d": 14,
+  "commit_90d": 123,
+  "rel_ver": "v0.33.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 13,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -487,10 +489,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

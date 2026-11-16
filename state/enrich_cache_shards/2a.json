@@ -162,11 +162,11 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261107",
    "release": "20261107",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -180,18 +180,18 @@
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 9,
+  "sec_n": 10,
   "sec_worst": "high",
-  "sec_last": "2026-10-14",
+  "sec_last": "2026-10-21",
   "sec_ids": [
+   "GHSA-5rx8-8fr2-f855(CVE-2026-112408,high)",
    "GHSA-g6w4-jvgp-68x2(CVE-2026-110248,medium)",
    "GHSA-7xmc-crrw-fv5r(CVE-2026-83551,high)",
    "GHSA-rq6v-x3j8-7qgf(CVE-2026-8597,medium)",
    "GHSA-7hh5-prp2-mfh5(CVE-2026-8596,high)",
    "GHSA-5r2p-pjr8-7fh7(-,high)",
    "GHSA-62rc-f4v9-h543(CVE-2026-1778,high)",
-   "GHSA-rjrp-m2jw-pv9c(CVE-2026-1777,high)",
-   "GHSA-7pc3-pr3q-58vg(CVE-2024-34073,high)"
+   "GHSA-rjrp-m2jw-pv9c(CVE-2026-1777,high)"
   ],
   "contrib_n": 434,
   "lang": {
@@ -201,11 +201,11 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -231,11 +231,11 @@
    "QML": 19,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -260,11 +260,11 @@
    "Shell": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -288,11 +288,11 @@
    "Dockerfile": 2,
    "Makefile": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -315,11 +315,11 @@
    "Python": 90,
    "Jupyter Notebook": 10
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -342,11 +342,11 @@
    "Python": 85,
    "Jinja": 15
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -368,22 +368,22 @@
    "TeX": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "KylinMountain/TradingAgents-AShare": {
   "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_90d": 6,
   "rel_ver": "v0.8.1",
   "rel_pub": "2026-07-20",
-  "rel_days": 89,
-  "rel_n90": 1,
+  "rel_days": 119,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -398,10 +398,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

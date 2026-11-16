@@ -254,11 +254,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -277,11 +277,11 @@
    "TypeScript": 86,
    "CSS": 14
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -307,11 +307,11 @@
    "Python": 4,
    "Perl": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -337,11 +337,11 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -355,18 +355,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 10,
+  "sec_n": 15,
   "sec_worst": "critical",
-  "sec_last": "2026-10-07",
+  "sec_last": "2026-10-31",
   "sec_ids": [
    "GHSA-929v-v9hq-5xhr(CVE-2026-105140,medium)",
    "GHSA-xhpw-65qw-wj6m(CVE-2026-105139,medium)",
    "GHSA-q5wf-87f5-cxgq(CVE-2026-105138,medium)",
-   "GHSA-6fwv-3h4c-37j9(-,high)",
-   "GHSA-2qcm-3gv6-2mfc(-,high)",
-   "GHSA-xwmw-prc4-v3cr(-,high)",
-   "GHSA-pr6h-vr44-xq8j(-,medium)",
-   "GHSA-jgh3-fggc-mcpm(-,high)"
+   "GHSA-57qx-69p6-3w3g(-,high)",
+   "GHSA-cv8w-jqg2-jg55(-,medium)",
+   "GHSA-x3hf-v55x-jcp6(-,high)",
+   "GHSA-2mfp-9vv3-q737(-,medium)",
+   "GHSA-r3m3-5rmh-h3fm(-,medium)"
   ],
   "contrib_n": 30,
   "lang": {
@@ -376,11 +376,11 @@
    "Go Template": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -457,11 +457,11 @@
   }
  },
  "cloudwego/eino-ext": {
-  "commit_90d": 40,
-  "commit_7d": 0,
-  "rel_ver": "components/model/claude/v0.1.26",
-  "rel_pub": "2026-09-24",
-  "rel_days": 23,
+  "commit_90d": 32,
+  "commit_7d": 1,
+  "rel_ver": "components/model/ark/v0.1.72",
+  "rel_pub": "2026-11-09",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -474,17 +474,17 @@
    "Go": 100,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "markovka17/dla": {
-  "commit_90d": 9,
+  "commit_90d": 15,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -496,10 +496,10 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -507,10 +507,10 @@
  },
  "AkshitIreddy/Interactive-LLM-Powered-NPCs": {
   "commit_90d": 277,
-  "commit_7d": 25,
+  "commit_7d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2023-09-17",
-  "rel_days": 1126,
+  "rel_days": 1156,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -526,10 +526,10 @@
    "TypeScript": 8,
    "PowerShell": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

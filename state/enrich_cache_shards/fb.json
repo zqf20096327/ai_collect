@@ -129,11 +129,11 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -156,11 +156,11 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261030",
    "release": "20261030",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -184,11 +184,11 @@
    "Jupyter Notebook": 6,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -202,10 +202,12 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 1,
+  "sec_worst": "low",
+  "sec_last": "2026-11-13",
+  "sec_ids": [
+   "GHSA-68j6-243q-h2hp(-,low)"
+  ],
   "contrib_n": 10,
   "lang": {
    "Python": 67,
@@ -214,11 +216,11 @@
    "MDX": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -244,11 +246,11 @@
    "C++": 4,
    "HTML": 3
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -269,11 +271,11 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -295,11 +297,11 @@
    "Python": 3,
    "Java": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -354,11 +356,11 @@
  },
  "meme-search/meme-search": {
   "commit_7d": 0,
-  "commit_90d": 69,
+  "commit_90d": 20,
   "rel_ver": "v2.3.2",
   "rel_pub": "2026-08-05",
-  "rel_days": 73,
-  "rel_n90": 3,
+  "rel_days": 103,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -373,10 +375,10 @@
    "Python": 16,
    "JavaScript": 6
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

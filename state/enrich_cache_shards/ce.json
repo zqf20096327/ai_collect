@@ -349,11 +349,11 @@
    "Jinja": 3,
    "Cuda": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -376,11 +376,11 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -432,11 +432,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -455,11 +455,11 @@
    "Python": 100,
    "Jinja": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -485,11 +485,11 @@
    "Rust": 0,
    "CSS": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -515,11 +515,11 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -542,11 +542,11 @@
    "Kotlin": 100,
    "AIDL": 0
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261024",
    "release": "20261024",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -580,8 +580,8 @@
   }
  },
  "open-webui/docs": {
-  "commit_7d": 69,
-  "commit_90d": 795,
+  "commit_7d": 39,
+  "commit_90d": 690,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -595,10 +595,10 @@
    "TypeScript": 20,
    "Python": 19
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -635,11 +635,11 @@
   }
  },
  "daggerhashimoto/openclaw-nerve": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 11,
+  "commit_90d": 18,
   "rel_ver": "v1.5.4",
   "rel_pub": "2026-10-06",
-  "rel_days": 11,
+  "rel_days": 41,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -655,10 +655,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -666,7 +666,7 @@
  },
  "TheBrainLab/Awesome-Spiking-Neural-Networks": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -675,10 +675,10 @@
   "sec_ids": [],
   "contrib_n": 11,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -686,7 +686,7 @@
  },
  "ankane/eps": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -699,10 +699,10 @@
    "Python": 4,
    "R": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4408,10 +4408,10 @@
   }
  },
  "alchaincyf/darwin-skill": {
-  "commit_90d": 4,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 12,
+  "commit_7d": 7,
+  "rel_ver": "v3.0.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -4421,14 +4421,18 @@
    "HTML": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261109",
    "contrib": "20261109",
    "lang": "20261109"
-  }
+  },
+  "rel_pub": "2026-11-14",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false
  },
  "georgekhananaev/excel-ai-assistant": {
   "rel_ver": null,

@@ -188,11 +188,11 @@
    "JavaScript": 1,
    "Python": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -217,11 +217,11 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -244,11 +244,11 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -270,11 +270,11 @@
    "Fluent": 2,
    "Python": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261115",
    "release": "20261115",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -299,11 +299,11 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261112",
    "release": "20261112",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -329,11 +329,11 @@
    "Swift": 15,
    "Shell": 14
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261108",
    "release": "20261108",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -357,11 +357,11 @@
    "Python": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261028",
    "release": "20261028",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -398,11 +398,11 @@
  },
  "kaplanelad/shellfirm": {
   "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v0.3.10",
-  "rel_pub": "2026-05-07",
-  "rel_days": 163,
-  "rel_n90": 0,
+  "commit_90d": 7,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-10-29",
+  "rel_days": 18,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -416,10 +416,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -477,10 +477,10 @@
  },
  "TIGER-AI-Lab/VLM2Vec": {
   "commit_7d": 0,
-  "commit_90d": 17,
+  "commit_90d": 18,
   "rel_ver": "v2.0.1",
   "rel_pub": "2025-06-30",
-  "rel_days": 474,
+  "rel_days": 504,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -493,10 +493,10 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -533,12 +533,12 @@
   }
  },
  "shuxiachai/academic-commercialization-agent": {
-  "commit_7d": 18,
-  "commit_90d": 628,
+  "commit_7d": 126,
+  "commit_90d": 992,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-10-17",
-  "rel_days": 0,
-  "rel_n90": 3,
+  "rel_days": 30,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -553,10 +553,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

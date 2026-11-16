@@ -218,11 +218,11 @@
    "CMake": 1,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -241,11 +241,11 @@
    "Python": 92,
    "Shell": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -269,11 +269,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -299,11 +299,11 @@
    "Jupyter Notebook": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -378,11 +378,11 @@
    "HTML": 29,
    "CSS": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -411,11 +411,11 @@
   }
  },
  "jasmcaus/caer": {
-  "commit_90d": 4,
+  "commit_90d": 5,
   "commit_7d": 0,
   "rel_ver": "v2.0.3",
   "rel_pub": "2021-10-06",
-  "rel_days": 1837,
+  "rel_days": 1867,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -429,21 +429,21 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "r1n7aro/Locus": {
-  "commit_90d": 171,
-  "commit_7d": 1,
-  "rel_ver": "v0.8.4",
-  "rel_pub": "2026-09-23",
-  "rel_days": 24,
+  "commit_90d": 229,
+  "commit_7d": 0,
+  "rel_ver": "v0.9.3",
+  "rel_pub": "2026-11-05",
+  "rel_days": 11,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -459,22 +459,22 @@
    "C#": 10,
    "Python": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "kornia/kornia-rs": {
-  "commit_90d": 118,
-  "commit_7d": 8,
+  "commit_90d": 98,
+  "commit_7d": 46,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-09-26",
-  "rel_days": 21,
-  "rel_n90": 3,
+  "rel_days": 51,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -489,22 +489,22 @@
    "Shell": 0,
    "CMake": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "iffse/pay-respects": {
-  "commit_90d": 0,
+  "commit_90d": 36,
   "commit_7d": 0,
   "rel_ver": "nightly",
   "rel_pub": "2026-04-23",
-  "rel_days": 177,
-  "rel_n90": 0,
+  "rel_days": 207,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -519,10 +519,10 @@
    "Nushell": 1,
    "Mermaid": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

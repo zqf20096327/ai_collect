@@ -123,11 +123,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -151,11 +151,11 @@
    "HTML": 6,
    "Batchfile": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -180,11 +180,11 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -210,18 +210,18 @@
    "Makefile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "R6410418/Jackrong-llm-finetuning-guide": {
   "commit_7d": 1,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -236,11 +236,11 @@
    "CSS": 5,
    "Shell": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
-   "security": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -266,11 +266,11 @@
    "HTML": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -296,11 +296,11 @@
    "HTML": 6,
    "Python": 4
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -326,11 +326,11 @@
    "JavaScript": 1,
    "Jinja": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -349,11 +349,11 @@
    "HTML": 53,
    "CSS": 47
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -371,21 +371,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "AgileRL/AgileRL": {
-  "commit_7d": 12,
-  "commit_90d": 199,
-  "rel_ver": "v2.56.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_7d": 32,
+  "commit_90d": 226,
+  "rel_ver": "v2.64.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -400,10 +400,10 @@
    "Just": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -438,12 +438,12 @@
   }
  },
  "mistralai/mistral-common": {
-  "commit_7d": 5,
-  "commit_90d": 43,
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-09-22",
-  "rel_days": 25,
-  "rel_n90": 2,
+  "commit_7d": 8,
+  "commit_90d": 75,
+  "rel_ver": "v1.13.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 14,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -455,10 +455,10 @@
    "Python": 81,
    "Jinja": 19
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -571,12 +571,12 @@
   }
  },
  "lkimuk/ReArk": {
-  "commit_7d": 1,
-  "commit_90d": 7,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
-  "rel_n90": 3,
+  "commit_7d": 0,
+  "commit_90d": 8,
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 21,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -591,10 +591,10 @@
    "PowerShell": 0,
    "C": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

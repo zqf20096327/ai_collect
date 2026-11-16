@@ -177,11 +177,11 @@
    "Jupyter Notebook": 13,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -207,11 +207,11 @@
    "C#": 5,
    "Python": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -237,11 +237,11 @@
    "EJS": 4,
    "Shell": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -255,10 +255,15 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 4,
+  "sec_worst": "high",
+  "sec_last": "2026-11-14",
+  "sec_ids": [
+   "GHSA-w922-2r33-vcx4(-,high)",
+   "GHSA-4m74-8q96-mp63(-,high)",
+   "GHSA-8q87-xm7v-xv7q(-,high)",
+   "GHSA-fvgp-h89h-v273(-,high)"
+  ],
   "contrib_n": 16,
   "lang": {
    "Go": 45,
@@ -267,11 +272,11 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -297,11 +302,11 @@
    "Shell": 34,
    "JavaScript": 14
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -319,11 +324,11 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261029",
    "release": "20261029",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -349,11 +354,11 @@
    "C#": 2,
    "CMake": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -372,22 +377,22 @@
    "Python": 96,
    "Starlark": 4
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "CopilotKit/aimock": {
-  "commit_90d": 970,
-  "commit_7d": 24,
-  "rel_ver": "v1.47.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 13,
-  "rel_n90": 11,
+  "commit_90d": 934,
+  "commit_7d": 25,
+  "rel_ver": "v1.48.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -402,11 +407,11 @@
    "Go Template": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261109",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
-   "security": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -441,11 +446,11 @@
   }
  },
  "jonfairbanks/local-rag": {
-  "commit_90d": 37,
-  "commit_7d": 4,
+  "commit_90d": 28,
+  "commit_7d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-05-18",
-  "rel_days": 152,
+  "rel_days": 182,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -460,20 +465,20 @@
    "HTML": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "existence-master/Sentient": {
-  "commit_90d": 151,
-  "commit_7d": 95,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 225,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.0-beta.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -486,14 +491,18 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
-  }
+  },
+  "rel_pub": "2026-10-17",
+  "rel_days": 30,
+  "rel_n90": 1,
+  "rel_pre": true
  },
  "lartpang/awesome-segmentation-saliency-dataset": {
   "commit_90d": 8,

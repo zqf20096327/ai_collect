@@ -255,11 +255,11 @@
    "Python": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261104",
    "release": "20261104",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -285,11 +285,11 @@
    "Shell": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -307,7 +307,7 @@
   "sec_worst": "critical",
   "sec_last": "2026-09-29",
   "sec_ids": [
-   "GHSA-8hc4-6xx6-3rh3(-,critical)"
+   "GHSA-8hc4-6xx6-3rh3(CVE-2026-105772,critical)"
   ],
   "contrib_n": 70,
   "lang": {
@@ -317,11 +317,11 @@
    "Go": 0,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -347,11 +347,11 @@
    "Makefile": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -377,18 +377,18 @@
    "Astro": 11,
    "Shell": 4
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
  },
  "weaviate/recipes": {
   "commit_7d": 0,
-  "commit_90d": 20,
+  "commit_90d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -403,10 +403,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -414,10 +414,10 @@
  },
  "ritchieng/deep-learning-wizard": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 0,
   "rel_ver": "v1.0.3",
   "rel_pub": "2024-02-26",
-  "rel_days": 964,
+  "rel_days": 994,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -432,10 +432,10 @@
    "JavaScript": 5,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -466,10 +466,10 @@
  },
  "lucidrains/rotary-embedding-torch": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": "0.8.9",
   "rel_pub": "2025-07-27",
-  "rel_days": 447,
+  "rel_days": 477,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -481,10 +481,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -492,7 +492,7 @@
  },
  "Seanium/FeedMe": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -507,10 +507,10 @@
    "Dockerfile": 1,
    "HTML": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"

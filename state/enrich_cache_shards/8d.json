@@ -244,11 +244,11 @@
    "JavaScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -262,10 +262,13 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
+  "sec_n": 2,
   "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_last": "2026-11-11",
+  "sec_ids": [
+   "GHSA-r7v2-3h32-f5g6(-,medium)",
+   "GHSA-fx5f-49jr-fw6r(-,medium)"
+  ],
   "contrib_n": 27,
   "lang": {
    "JavaScript": 90,
@@ -274,11 +277,11 @@
    "PowerShell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -304,11 +307,11 @@
    "MDX": 4,
    "CSS": 2
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -322,18 +325,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 11,
+  "sec_n": 27,
   "sec_worst": "critical",
-  "sec_last": "2026-10-08",
+  "sec_last": "2026-11-10",
   "sec_ids": [
-   "GHSA-cgf4-38c9-39vr(-,high)",
-   "GHSA-mw9j-m5jf-5r56(-,high)",
-   "GHSA-7pwj-vv9r-rh2m(-,medium)",
-   "GHSA-rmh9-whjx-gfrc(-,medium)",
-   "GHSA-5hfm-crcm-5vh7(-,high)",
-   "GHSA-qrr8-m92f-7vfp(-,high)",
-   "GHSA-c5g7-c47h-f6c3(-,medium)",
-   "GHSA-59mq-hx4p-fw48(-,medium)"
+   "GHSA-693j-ghh7-f3x7(-,medium)",
+   "GHSA-x35v-ppr8-m5vh(-,high)",
+   "GHSA-p62c-7j9g-7598(-,high)",
+   "GHSA-7vp4-rwx5-4j3f(-,critical)",
+   "GHSA-xg9p-cfwv-2gm9(-,critical)",
+   "GHSA-mm72-wr37-26pv(-,high)",
+   "GHSA-cww9-m4gr-cmw5(-,high)",
+   "GHSA-r37g-f5m3-523c(-,critical)"
   ],
   "contrib_n": 26,
   "lang": {
@@ -343,11 +346,11 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -373,11 +376,11 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -401,11 +404,11 @@
    "Jupyter Notebook": 44,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -429,11 +432,11 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -449,11 +452,11 @@
   "sec_ids": [],
   "contrib_n": 51,
   "lang": {},
-  "enriched_at": "20261110",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261110",
    "release": "20261110",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -479,11 +482,11 @@
    "TypeScript": 8,
    "Astro": 4
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261114",
    "release": "20261114",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -501,11 +504,11 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
    "commit": "20261017",
    "release": "20261017",
-   "security": "20261017",
+   "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -539,12 +542,12 @@
   }
  },
  "SMTorg/smt": {
-  "commit_7d": 0,
-  "commit_90d": 10,
-  "rel_ver": "v2.15.0",
-  "rel_pub": "2026-09-08",
-  "rel_days": 39,
-  "rel_n90": 1,
+  "commit_7d": 7,
+  "commit_90d": 25,
+  "rel_ver": "v2.15.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 12,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -558,10 +561,10 @@
    "C++": 0,
    "Cython": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -618,8 +621,8 @@
   }
  },
  "sanidhyy/duolingo-clone": {
-  "commit_7d": 14,
-  "commit_90d": 235,
+  "commit_7d": 15,
+  "commit_90d": 228,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -632,10 +635,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -672,11 +675,11 @@
   }
  },
  "hybridgroup/yzma": {
-  "commit_7d": 6,
-  "commit_90d": 197,
-  "rel_ver": "v1.30.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 2,
+  "commit_7d": 14,
+  "commit_90d": 219,
+  "rel_ver": "v1.33.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -692,10 +695,10 @@
    "HTML": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261116",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261116",
+   "release": "20261116",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
