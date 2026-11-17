@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://infraben.ch/">
     <img
-      src="docs/assets/readme-hero.png"
+      src=".github/assets/readme-hero.png"
       alt="InfraBench — A benchmark for infrastructure agents (HotInfra '26)"
       width="100%"
     />
@@ -39,7 +39,7 @@ Paper: *[InfraBench: Evaluating Infrastructure Agents Across Layers, Lifecycle, 
 
 <p align="center">
   <img
-    src="docs/assets/readme-compare.png"
+    src=".github/assets/readme-compare.png"
     alt="Typical agent benches stop at pass/fail; InfraBench scores layers, lifecycle, and risk"
     width="100%"
   />
@@ -51,16 +51,7 @@ Paper: *[InfraBench: Evaluating Infrastructure Agents Across Layers, Lifecycle, 
 
 This is the **public** InfraBench surface: curated task packages (instruction, environment, verifier). The evaluation runtime (**Syscraft**) is **not open-sourced here yet**.
 
-| Task | Layer | Diff. | Backend |
-|------|:-----:|:-----:|---------|
-| [`hello-world`](tasks/hello-world/) | — | Easy | Docker · start here |
-| [`ipmi-node-power-recovery`](tasks/ipmi-node-power-recovery/) | L1 | Easy | BM Cluster |
-| [`cassandra-nic-split-brain`](tasks/cassandra-nic-split-brain/) | L2 | Medium | BM Cluster |
-| [`cassandra-dead-node-removal`](tasks/cassandra-dead-node-removal/) | L3 | Medium | BM Cluster |
-| [`vm-ceph-bootstrap`](tasks/vm-ceph-bootstrap/) | L3 | Hard | VM cluster |
-| [`db-wal-recovery`](tasks/db-wal-recovery/) | L4 | Hard | Container |
-
-More of the 12-task HotInfra suite will land here over time · [`tasks/README.md`](tasks/README.md)
+The [task index](tasks/README.md) lists all **12 HotInfra ’26 tasks** and the separate `hello-world` example.
 
 <details>
 <summary><strong>Task package shape</strong></summary>

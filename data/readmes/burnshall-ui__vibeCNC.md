@@ -38,6 +38,7 @@
 - **Real-Time Position Display** - Live X, Z, Tool, Spindle Speed, and Feedrate overlay
 - **2D Visualization** - Interactive lathe simulation with zoom, pan, and click-to-jump
 - **Collision Detection** - Automatic chuck limit warnings with visual highlights
+- **Canned Cycles** - G71/G72 roughing, G70 finishing (drawn in cyan), G76 and G92 threading (drawn in yellow) are expanded into the moves they make and played back one at a time; G73-G75 are not drawn yet. G76 follows the control's usual depth schedule (shallower passes, a minimum cut, finishing passes at full depth) and feeds straight in rather than along the flank
 
 ###  AI-Powered Assistance
 - **Dual AI Support** - Works with both Claude (cloud) and Ollama (local)
@@ -94,25 +95,37 @@ python vibe_cnc.py
 
 ### For Local AI (Ollama)
 
+Ollama needs macOS 14 (Sonoma) or newer, Windows or Linux. On an Intel Mac it runs on the CPU only.
+
 ```bash
 # Install Ollama from https://ollama.com
 
-# Pull a model (recommended: granite3.3:8b for speed)
-ollama pull granite3.3:8b
+# Pull a model. The default is qwen3.8:27b: about 18 GB of weights, so a
+# 32 GB machine or a GPU with 24 GB. For less memory try a smaller one, for
+# example qwen3.5:4b (about 3.5 GB), and check it on your own programs.
+ollama pull qwen3.8:27b
 
 # Start Ollama (if not running as service)
 ollama serve
 ```
 
+Ollama can also run on another machine on the network: set `ai.ollama.base_url`
+to `http://<host>:11434/api/chat`.
+
 ### For Cloud AI (Claude)
 
 ```bash
 # Set your API key
-setx ANTHROPIC_API_KEY "sk-ant-..."
+export ANTHROPIC_API_KEY="sk-ant-..."     # macOS / Linux: put it in your shell profile
+setx ANTHROPIC_API_KEY "sk-ant-..."       # Windows
 
 # Update config.yaml
 # Change ai.mode to "claude"
 ```
+
+Then open **Settings → AI** and press **Test connection**: it asks the API whether
+the key works and the model exists, without running the model. The default model is
+`claude-sonnet-5-5`; the Claude SDK (`anthropic`) is installed with `requirements.txt`.
 
 ---
 
@@ -176,13 +189,20 @@ ai:
 
   ollama:
     base_url: "http://127.0.0.1:11434/api/chat"
-    model: "granite3.3:8b"  # Fast and accurate
+    model: "qwen3.8:27b"    # about 18 GB; smaller: qwen3.5:4b
+    num_ctx: 8192           # Ollama's default is 4096 below 24 GiB of VRAM
+    think: false            # skip the thinking of qwen3.x / gpt-oss; remove for other models
 
   anthropic:
-    model: "claude-sonnet-4-20250514"
+    model: "claude-sonnet-5-5"
     api_key_env: "ANTHROPIC_API_KEY"
-    max_output_tokens: 800
+    max_output_tokens: 16000   # thinking counts too; about 21000 is the most without streaming
+    effort: "medium"           # low | medium | high | xhigh | max; empty for models without it
 ```
+
+`claude-sonnet-4-20250514`, the earlier default, was retired on 2026-06-15 and
+requests to it fail. `ai.system_prompt` and `ai.generate_prompt` set what a review and
+a generation are told to do.
 
 ### Machine Settings
 ```yaml
@@ -198,7 +218,7 @@ policies:
 
 ### Tool Library
 
-**Quick Edit:** Right-click any tool in the app → Tool Editor, or use **+ NEUES TOOL** button.
+**Quick Edit:** Right-click any tool in the app → Tool Editor, or use **+ NEW TOOL** button.
 
 **Manual Edit:** Edit `tools/tools.json`:
 ```json
@@ -207,7 +227,7 @@ policies:
   "tool_table": [
     {
       "t": 1,
-      "name": "CNMG1204P-S Außen",
+      "name": "CNMG1204P-S External",
       "type": "turn_rough",
       "insert_radius_mm": 0.8,
       "nose_direction": 3,

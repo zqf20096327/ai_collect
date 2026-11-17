@@ -57,6 +57,14 @@ Idle memory before and after the move from Tauri (1.x) to native GPUI (2.0). The
 
 ## Screenshots
 
+The screenshots use demo connections, listening ports, files, and editor contents.
+
+### Welcome
+
+Resume a saved connection, open a local terminal, or import connections from the welcome screen.
+
+![OxideTerm welcome screen with saved connections and quick actions](docs/screenshots/welcome.png)
+
 ### Mixed workspace
 
 An SSH terminal, a local terminal, Markdown notes and SFTP together in one tab. Mix pages from different servers and your own machine in up to 16 panes.
@@ -73,7 +81,7 @@ Organize saved connections in groups and import them from SSH configuration or o
 
 An SSH session. The sidebar lists what you can open on this server: more terminals, SFTP, the IDE and port forwarding.
 
-![SSH terminal with the server's tools in the sidebar](docs/screenshots/terminal/SSHTERMINAL.png)
+![SSH terminal with colorized output and connection actions in the sidebar](docs/screenshots/terminal/SSHTERMINAL.png)
 
 ### Files
 
@@ -91,7 +99,7 @@ Open a remote project and edit its files in tabs.
 
 OxideTerm lists the ports listening on the server. Forward any of them with one click, or use a quick forward for tools like Jupyter.
 
-![Port forwarding page listing ports detected on the server](docs/screenshots/PORTFORWARD/PORTFORWARD.png)
+![Port forwarding page with quick presets and a list of remote listening ports](docs/screenshots/PORTFORWARD/PORTFORWARD.png)
 
 ### Remote desktop
 
@@ -99,12 +107,22 @@ Open an RDP desktop in a workspace tab, with display sizing and reconnect contro
 
 ![RDP desktop inside an OxideTerm workspace](docs/screenshots/rdp-desktop.png)
 
-<details>
-<summary><b>Watch OxideSens open a terminal from a plain-language request</b></summary>
+### Plugin manager
 
-<a href="docs/media/ai-terminal-demo.mp4">
-  <img src="docs/media/ai-terminal-demo.gif" alt="OxideSens opening a terminal inside OxideTerm" width="720">
-</a>
+Manage installed plugins and browse the marketplace.
+
+![Plugin manager showing installed plugins and category filters](docs/screenshots/plugin-manager.png)
+
+### Cloud sync
+
+Check the status and history of encrypted, self-hosted sync.
+
+![Oxide Cloud Sync overview with demo version details and recent activity](docs/screenshots/cloud-sync.png)
+
+<details>
+<summary><b>Watch how to edit a file in a Docker container</b></summary>
+
+![Editing and saving a file inside a Docker container in OxideTerm](docs/media/container-file-edit.gif)
 
 </details>
 
@@ -118,7 +136,7 @@ Items marked *(plugin)* are installed from the Plugin Marketplace inside the app
 
 - Session Manager for searching, sorting, grouping, importing and exporting saved connections, with nested groups, tags, colors, icons and notes
 - Import from `~/.ssh/config`, including `Match` blocks, `ProxyJump` chains and `RemoteCommand`, with imported hosts kept up to date
-- Import from SecureCRT, Xshell, Termius, MobaXterm, WindTerm, Electerm and FinalShell, with a preview before anything is saved
+- Import from SecureCRT, Xshell, Termius, MobaXterm, WindTerm, Electerm, FinalShell and XTerminal (SSH), with a preview before saving
 - Tab scopes that show all tabs, global pages, local terminals or a single server, while hidden sessions keep running
 - Up to 16 panes in one tab, mixing terminals, SFTP, the IDE, forwards, notes, settings and remote desktops
 - Detached windows: move a tab into its own window and back without dropping its sessions

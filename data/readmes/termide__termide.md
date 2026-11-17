@@ -84,7 +84,7 @@ Editor, LSP, terminal, git and project layouts are a given among terminal editor
 ### Files and data
 
 - **Dual-pane file manager** - Tree with nested git status, glob and regex search, batch operations; zip, tar and ISO archives open like folders and `P` packs the selection; files copy and paste to and from other apps through the system clipboard
-- **Remote filesystems** - SFTP, FTP and FTPS in pure Rust, with copying between local and remote panels; SMB and NFS shares are not built in — mount them with the OS and open the mount point
+- **Remote filesystems** - SFTP, FTP, FTPS, SMB and NFSv3 in pure Rust, with copying between local and remote panels
 - **Background operations** - Copy, move, upload and download with progress, pause, resume and cancel
 - **Database viewer** - SQLite, PostgreSQL and MySQL from a bookmark URL: server-side sort, per-column filters, cell editing, rows as TSV, JSON or INSERT
 - **CSV and TSV tables** - Delimited files as a sortable table with the delimiter and header guessed; read from disk in windows, so a file of any size opens at once
@@ -157,37 +157,37 @@ Download the latest release for your platform from [GitHub Releases](https://git
 
 ```bash
 # Linux x86_64 (also works in WSL)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-x86_64-unknown-linux-gnu.tar.gz
-tar xzf termide-0.49.0-x86_64-unknown-linux-gnu.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-x86_64-unknown-linux-gnu.tar.gz
+tar xzf termide-0.50.0-x86_64-unknown-linux-gnu.tar.gz
 ./termide
 
 # Linux x86_64 (static musl — Alpine, distroless containers, any glibc-free system)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-x86_64-unknown-linux-musl.tar.gz
-tar xzf termide-0.49.0-x86_64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf termide-0.50.0-x86_64-unknown-linux-musl.tar.gz
 ./termide
 
 # macOS Intel (x86_64)
-curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.49.0-x86_64-apple-darwin.tar.gz
-tar xzf termide-0.49.0-x86_64-apple-darwin.tar.gz
+curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.50.0-x86_64-apple-darwin.tar.gz
+tar xzf termide-0.50.0-x86_64-apple-darwin.tar.gz
 ./termide
 
 # macOS Apple Silicon (ARM64)
-curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.49.0-aarch64-apple-darwin.tar.gz
-tar xzf termide-0.49.0-aarch64-apple-darwin.tar.gz
+curl -LO https://github.com/termide/termide/releases/latest/download/termide-0.50.0-aarch64-apple-darwin.tar.gz
+tar xzf termide-0.50.0-aarch64-apple-darwin.tar.gz
 ./termide
 
 # Linux ARM64 (Raspberry Pi, ARM servers)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-aarch64-unknown-linux-gnu.tar.gz
-tar xzf termide-0.49.0-aarch64-unknown-linux-gnu.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-aarch64-unknown-linux-gnu.tar.gz
+tar xzf termide-0.50.0-aarch64-unknown-linux-gnu.tar.gz
 ./termide
 
 # Linux ARM64 (static musl — Android/Termux, Alpine ARM, any glibc-free ARM64)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-aarch64-unknown-linux-musl.tar.gz
-tar xzf termide-0.49.0-aarch64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-aarch64-unknown-linux-musl.tar.gz
+tar xzf termide-0.50.0-aarch64-unknown-linux-musl.tar.gz
 ./termide
 
 # Windows x86_64 (download .zip from Releases, extract, run in Windows Terminal)
-# https://github.com/termide/termide/releases/latest/download/termide-0.49.0-x86_64-pc-windows-msvc.zip
+# https://github.com/termide/termide/releases/latest/download/termide-0.50.0-x86_64-pc-windows-msvc.zip
 ```
 
 </details>
@@ -198,13 +198,13 @@ tar xzf termide-0.49.0-aarch64-unknown-linux-musl.tar.gz
 Termide runs natively on Windows 10+ via ConPTY. Use **Windows Terminal** for
 the best experience.
 
-1. Download `termide-0.49.0-x86_64-pc-windows-msvc.zip` from [GitHub Releases](https://github.com/termide/termide/releases).
+1. Download `termide-0.50.0-x86_64-pc-windows-msvc.zip` from [GitHub Releases](https://github.com/termide/termide/releases).
 2. Extract the archive.
 3. Run `termide.exe` in Windows Terminal.
 
 Configuration, project layouts and logs live under `%APPDATA%\termide\`.
 
-Alternatively, in **WSL/WSL2** use the Linux x86_64 build (`termide-0.49.0-x86_64-unknown-linux-gnu.tar.gz`) as on any Linux.
+Alternatively, in **WSL/WSL2** use the Linux x86_64 build (`termide-0.50.0-x86_64-unknown-linux-gnu.tar.gz`) as on any Linux.
 
 </details>
 
@@ -215,8 +215,8 @@ Download and install the `.deb` package from [GitHub Releases](https://github.co
 
 ```bash
 # x86_64 only (ARM64 use tar.gz above)
-wget https://github.com/termide/termide/releases/latest/download/termide_0.49.0-1_amd64.deb
-sudo dpkg -i termide_0.49.0-1_amd64.deb
+wget https://github.com/termide/termide/releases/latest/download/termide_0.50.0-1_amd64.deb
+sudo dpkg -i termide_0.50.0-1_amd64.deb
 ```
 
 </details>
@@ -228,8 +228,8 @@ Download and install the `.rpm` package from [GitHub Releases](https://github.co
 
 ```bash
 # x86_64 only (ARM64 use tar.gz above)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-1.x86_64.rpm
-sudo rpm -i termide-0.49.0-1.x86_64.rpm
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-1.x86_64.rpm
+sudo rpm -i termide-0.50.0-1.x86_64.rpm
 ```
 
 </details>
@@ -300,8 +300,8 @@ glibc `aarch64-unknown-linux-gnu` build won't run on Android's Bionic libc):
 
 ```bash
 pkg install git openssh   # tools termide shells out to (plus any LSP servers)
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-aarch64-unknown-linux-musl.tar.gz
-tar xzf termide-0.49.0-aarch64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-aarch64-unknown-linux-musl.tar.gz
+tar xzf termide-0.50.0-aarch64-unknown-linux-musl.tar.gz
 ./termide
 ```
 
@@ -362,8 +362,8 @@ the same code, just compiled against musl.
 The easiest way is to grab the pre-built tarball from the release:
 
 ```bash
-wget https://github.com/termide/termide/releases/latest/download/termide-0.49.0-x86_64-unknown-linux-musl.tar.gz
-tar xzf termide-0.49.0-x86_64-unknown-linux-musl.tar.gz
+wget https://github.com/termide/termide/releases/latest/download/termide-0.50.0-x86_64-unknown-linux-musl.tar.gz
+tar xzf termide-0.50.0-x86_64-unknown-linux-musl.tar.gz
 ./termide
 
 # Verify it's fully static — no shared libraries

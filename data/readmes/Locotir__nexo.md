@@ -8,30 +8,28 @@
 
 **No compaction. No summaries. The whole history stays on disk.**
 
-<a href="#proof"><img src="docs/img/hero.svg" width="880" alt="Measured on the same model, 2026-11-10. Against Claude Code, 5 tasks, 3 runs each: 40% fewer tokens (3.65M against 6.04M), every task completed (100% of runs against 93%), lower cost in every run (2.48 dollars against 3.97 in total). Against Codex CLI, one 10-turn session, one run: 41% fewer input tokens (3.86M against 6.53M), 0 compactions, 27 calls against 42; Codex CLI compacted twice and did not solve it"></a>
+<img src="docs/img/hero-tui.png" width="880" alt="A real nexo session, unedited, in a terminal window: deepseek/deepseek-flash runs the failing tests of a small invoice module, fixes two bugs in src/invoice.js (the diff is on screen) and replies with a table of each function, its bug and the fix. The status bar shows the context tokens and the session cost, 0.0020 dollars; the turn line shows 3 steps and a 93% cache hit">
+
+<sub>A real session, unedited: deepseek-flash runs the tests of a small invoice module, fixes the two bugs and answers with a table. 3 steps, 93% cache hit, $0.0020 for the whole session (<code>[ui] detail = "full"</code>).</sub>
 
 [**Install**](#install) · [**Proof**](#proof) · [**How it works**](#how-it-works) · [**Providers**](#providers) · [**Full guide**](nexo/README.md)
 
 [![CI](https://github.com/Locotir/nexo/actions/workflows/ci.yml/badge.svg)](https://github.com/Locotir/nexo/actions/workflows/ci.yml)
 [![Rust 1.89+](https://img.shields.io/badge/Rust-1.89%2B-000000?logo=rust&logoColor=white)](https://www.rust-lang.org)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-2a78d6)](LICENSE)
-[![Linux | Windows](https://img.shields.io/badge/Linux%20%7C%20Windows-supported-52514e)](#install)
+[![Linux | macOS | Windows](https://img.shields.io/badge/Linux%20%7C%20macOS%20%7C%20Windows-supported-52514e)](#install)
 [![Providers](https://img.shields.io/badge/providers-21%20built--in%20%2B%20200%2B-1baf7a)](#providers)
 [![PayPal](https://img.shields.io/badge/PayPal-support%20nexo-00457C?logo=paypal&logoColor=white)](https://www.paypal.me/locotir)
 
 </div>
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Locotir/nexo/main/install.sh | sh    # Linux; Windows and source below
+curl -fsSL https://raw.githubusercontent.com/Locotir/nexo/main/install.sh | sh    # Linux and macOS; Windows and source below
 ```
 
 nexo is a terminal coding agent written in Rust, for any model provider. Its context curator keeps long sessions
 small without summaries: the whole history stays on disk, and the model is sent only what the next step needs.
 It runs as a full-screen TUI, headless for scripts and CI, or inside editors over the Agent Client Protocol (ACP).
-
-<p align="center"><img src="docs/img/demo.svg" width="880" alt="nexo fixing a failing test in the terminal"></p>
-
-<sub>Recorded from the real TUI playing a scripted session: the replies, tool results and figures on screen are sample data.</sub>
 
 | | An agent that compacts | nexo |
 | --- | --- | --- |
@@ -41,7 +39,7 @@ It runs as a full-screen TUI, headless for scripts and CI, or inside editors ove
 
 ## Install
 
-**Linux** (downloads the ready-built file, checked against its SHA-256, to `~/.local/bin`):
+**Linux and macOS** (Apple silicon and Intel; downloads the ready-built file, checked against its SHA-256, to `~/.local/bin`):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Locotir/nexo/main/install.sh | sh
@@ -53,8 +51,10 @@ curl -fsSL https://raw.githubusercontent.com/Locotir/nexo/main/install.sh | sh
 irm https://raw.githubusercontent.com/Locotir/nexo/main/install.ps1 | iex
 ```
 
-**macOS** has no ready-built file: the script builds from source, untested. From source on any system:
-`cargo install --locked --git https://github.com/Locotir/nexo nexo-cli`. CI tests both installers on Linux x64 and ARM and Windows x64 and ARM.
+On macOS the file is signed ad hoc and fetched with `curl`, so Gatekeeper stays quiet. If you download it in a browser instead, clear the quarantine mark first:
+`xattr -d com.apple.quarantine ./nexo-macos-aarch64 && chmod +x ./nexo-macos-aarch64` (use `nexo-macos-x86_64` on an Intel Mac).
+From source on any system: `cargo install --locked --git https://github.com/Locotir/nexo nexo-cli`.
+CI runs both installers on Linux x64 and ARM and Windows x64 and ARM; the macOS (arm64 and Intel) installer jobs are new and have not run yet.
 
 nexo checks for a newer release in the background; `nexo update` installs it. Turn the check off with
 `[ui] update_check = false` or `NEXO_NO_UPDATE_CHECK=1`.
@@ -71,11 +71,17 @@ nexo doctor                      # checks files, provider, model and key with on
 nexo --provider ollama --model qwen3:8b       # no key: a local model
 ```
 
+<p align="center"><img src="docs/img/demo.svg" width="880" alt="nexo fixing a failing test in the terminal"></p>
+
+<sub>Recorded from the real TUI playing a scripted session: the replies, tool results and figures on screen are sample data.</sub>
+
 The status bar shows context use and cost, and you can click it. The screen stays quiet by default;
 `[ui] detail = "full"` brings back every figure and key hint. Each session reopens on its own provider and model.
 Pick a policy in `~/.nexo/config.toml`: `[context] policy = "curator"` (`auto | plain | compact | curator`).
 
 ## Proof
+
+<a href="#proof"><img src="docs/img/hero.svg" width="880" alt="Measured on the same model, 2026-11-10. Against Claude Code, 5 tasks, 3 runs each: 40% fewer tokens (3.65M against 6.04M), every task completed (100% of runs against 93%), lower cost in every run (2.48 dollars against 3.97 in total). Against Codex CLI, one 10-turn session, one run: 41% fewer input tokens (3.86M against 6.53M), 0 compactions, 27 calls against 42; Codex CLI compacted twice and did not solve it"></a>
 
 Same model, same tasks. Each chart has its date, and what it does not show is one click under it.
 

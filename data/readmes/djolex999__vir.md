@@ -23,7 +23,7 @@ developer-tools, mcp, local-first, cross-platform, llm-wiki
   <a href="https://www.npmjs.com/package/@djolex999/vir-cli"><img src="https://img.shields.io/npm/v/@djolex999/vir-cli?color=7c6af7&label=npm" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/@djolex999/vir-cli"><img src="https://img.shields.io/npm/dw/@djolex999/vir-cli?color=4fd1a0" alt="npm downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22d3ee" alt="license"></a>
-  <a href="#project-status"><img src="https://img.shields.io/badge/tests-1490%20passing-22c55e" alt="tests"></a>
+  <a href="#project-status"><img src="https://img.shields.io/badge/tests-1561%20passing-22c55e" alt="tests"></a>
   <a href="#project-status"><img src="https://img.shields.io/badge/platforms-macOS%20%7C%20Linux-lightgrey" alt="platforms"></a>
   <a href="https://modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP-server-c084fc" alt="mcp"></a>
   <a href="#"><img src="https://img.shields.io/badge/local--first-yes-f59e0b" alt="local-first"></a>
@@ -191,7 +191,11 @@ worse results, not better."_ Fair. Vir addresses it in layers:
   context automatically. `vir sync-claude` shows a diff and waits for your
   confirmation. You decide what reaches Claude. Notes that `vir audit` or
   `vir audit --transcript` flagged stay out until you approve them in
-  `vir review --audited`.
+  `vir review --audited`. Each project block opens with one line telling the
+  agent to check vir before debugging or changing that project, and to read
+  its `vir dream` page when one exists. Anthropic's agent-memory research
+  found that telling a model to read memory first mattered more than having
+  memory available.
 - **Plain markdown output.** Every note is a file in your notes folder. Read
   it, edit it, delete it. Nothing is hidden in a database you can't inspect.
 - **Lint and dedupe.** `vir lint` flags contradictions and stale notes;
@@ -216,6 +220,20 @@ worse results, not better."_ Fair. Vir addresses it in layers:
   vault for related notes and synthesizes them into a single topic page under
   `topics/`, with each source wikilinked so it backlinks in Obsidian's graph.
   `--dry-run` previews the sources and cost for free.
+- **Project reference pages** via `vir dream <project>`, a cross-session pass
+  modelled on the "dreaming" in Anthropic's agent-memory research. One model
+  call reads a project's notes together and groups the facts by area. Every
+  entry must quote its source note verbatim, and code drops any entry whose
+  quote isn't in that note. Labels come from your checks, never the model:
+  confirmed (you verified the note, or `vir audit --transcript` found it in
+  its session) or unconfirmed. Notes that disagree are listed under "Needs
+  review", never resolved. Flagged and contradicted notes never reach the
+  prompt, the page never feeds back in as a source, and it is capped at 40
+  entries and 0.35× its notes' size. Agents read it through
+  `vir_project_summary`. On the reference vault's `vir` project (38 notes):
+  26 entries, all 26 quotes found in their notes, 3 dropped for a quote
+  that wasn't there, 2 conflicts, 0.11× the source size. An unchanged
+  project costs nothing to rerun.
 - **Cost transparency.** `vir run --dry-run` estimates per-session cost before
   you spend a cent; `vir cost` reports the actuals (total, median, p90, top
   sessions) from a local `~/.vir/cost.log`. Pricing is provider-aware
@@ -462,7 +480,8 @@ with your distro, init system, and Node version.
 | `vir compose "<topic>"`     | $$    | Synthesize a topic page from related notes |
 | `vir connect --dry-run`     | free  | Find lessons you keep re-learning; show candidates + cost |
 | `vir connect`               | $     | Propose those lessons as cited rules (≤10 LLM calls) |
-| `vir summarize <project>`   | cheap | Cross-session project synthesis           |
+| `vir dream <project>`       | $     | Rebuild a project's reference page: quoted, labelled, size-capped (`--all`, `--dry-run`, `--force`) |
+| `vir summarize <project>`   | $     | Alias for `vir dream <project>`           |
 | `vir summarize --week`      | cheap | Period summary of the week's notes        |
 | `vir journal [date]`        | free  | Daily work journal from transcripts, no LLM calls (default: today) |
 | `vir journal --since <date>` | free | Write every day with activity from that date on |
@@ -720,8 +739,8 @@ improvements. Delete it any time; disable it with `"logQueries": false` in
 
 |                |                                           |
 | -------------- | ----------------------------------------- |
-| Version        | 0.34.1                                    |
-| Tests          | 1490 passing                              |
+| Version        | 0.36.0                                    |
+| Tests          | 1561 passing                              |
 | Platforms      | macOS (launchd), Linux (systemd/cron)     |
 | Node           | 20+                                       |
 | First-run cost | $1 to $5 (Kie.ai optional, ~72% cheaper)  |

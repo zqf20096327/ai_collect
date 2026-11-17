@@ -148,7 +148,8 @@ in the Downloader app.
 **LG webOS** — install `app.vodmax.client_<version>_all.ipk` with the
 [webOS CLI](https://webostv.developer.lge.com/develop/tools/cli-introduction)
 on a TV in Developer Mode (see the [guide](docs/install.md#lg-tv-webos)).
-Other TVs (Samsung...): use the TV browser.
+**Samsung (beta)** — `VodMax.wgt`, unsigned: install it with Apps2Samsung or
+Tizen Studio (see the [guide](docs/install.md#samsung-and-other-tvs)). Other TVs: use the TV browser.
 
 Build from source: [docs/sviluppo.md](docs/sviluppo.md) and
 `scripts/release.sh`.

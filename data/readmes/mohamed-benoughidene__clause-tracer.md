@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-FSL--1.1--ALv2-blue" alt="License: FSL-1.1-ALv2"></a>
-  <img src="https://img.shields.io/badge/status-design%20%26%20prototype-orange" alt="Status: design and prototype">
+  <img src="https://img.shields.io/badge/status-in%20build-orange" alt="Status: in build">
   <img src="https://img.shields.io/badge/platforms-Linux%20%7C%20Windows-lightgrey" alt="Platforms: Linux and Windows">
   <img src="https://img.shields.io/badge/telemetry-none-brightgreen" alt="Telemetry: none">
 </p>
@@ -19,7 +19,7 @@ With **Clause Tracer**, you write a **playbook**, your rules for a good deal: "p
 
 It runs on your own computer, with your own [OpenRouter](https://openrouter.ai) key. Names and addresses are replaced before anything is sent to an AI model. There's no account, no server run by the project and no telemetry.
 
-> **Status: in design.** The spec, design system and a clickable HTML prototype are done. The code skeleton is in place and coding has started, but the app isn't usable yet. [Try the prototype](#try-the-prototype) and [watch the repo](https://github.com/mohamed-benoughidene/clause-tracer) to follow along.
+> **Status: in build.** The spec, design system and a clickable HTML prototype are done. Build stage 1 of 12 is done: the pure rules that pick labels and check the AI's words. No app feature is usable yet. [Try the prototype](#try-the-prototype) and [watch the repo](https://github.com/mohamed-benoughidene/clause-tracer) to follow along.
 
 ## Why Clause Tracer
 
@@ -46,7 +46,7 @@ AI contract review tools are quick, but they can be wrong, and they rarely show 
    | ✕ **Walk-away** | Crosses a line you set |
    | ? **Unsure** | The wording is vague, or the quote couldn't be confirmed |
 
-   A **Missing** list shows what the contract leaves out. A **Not covered** list summarises the parts your playbook doesn't cover.
+   A **Missing** list shows what the contract leaves out. A **Not covered** list shows each part your playbook doesn't cover, with its clause type and first line.
 6. **Check every position.** Confirm or change each label. A walk-away or unsure label needs a real decision, not just a tick.
 7. **Reply.** Write a friendly or formal message asking for changes, rewrite a clause, or export a report.
 
@@ -64,7 +64,7 @@ The [HTML prototype](prototype/) shows every screen and state in version 1. It n
 ```bash
 git clone https://github.com/mohamed-benoughidene/clause-tracer.git
 cd clause-tracer
-python3 -m http.server 8767 --bind 127.0.0.1 --directory prototype
+python3 prototype/serve.py
 ```
 
 Then open http://localhost:8767. Start at First launch, or go to `states.html` for a map of every flow. Open `review.html?sample` for a practice review with one wrong label planted for you to catch.
@@ -87,6 +87,9 @@ Then open http://localhost:8767. Start at First launch, or go to `states.html` f
 | [Spec](docs/spec.md) | What version 1 does: the user flow, labelling rules, AI pipeline, privacy and acceptance tests |
 | [Design system](docs/design-system.md) | Tokens, components and accessibility |
 | [UX copy](docs/ux-copy.md) | The voice and the words on every screen |
+| [System design](docs/system-design.md) | How the parts fit together, and the twelve build stages |
+| [Testing strategy](docs/testing-strategy.md) | Which tests each stage needs, and what must pass before a release |
+| [Plans](docs/plans/) | The task plan of each build stage |
 | [Decisions](docs/adr/) | Architecture decision records |
 | [Brand](docs/clause-tracer-brand-philosophy.md) | Why a red thread and a butterfly |
 | [All docs](docs/) | The index of everything in `docs/` |
@@ -113,7 +116,7 @@ Then check that everything works:
 scripts/check.sh
 ```
 
-This runs the linter, the formatter check, type checks, the import rules and the tests. Use `.venv/bin/uv add <package>` to add a dependency, and commit the updated `uv.lock` with it.
+This runs the linter, the formatter check, type checks, the import rules, the copy lint and the tests. The copy lint checks the words and the look of the prototype against the [UX copy](docs/ux-copy.md). Use `.venv/bin/uv add <package>` to add a dependency, and commit the updated `uv.lock` with it.
 
 ### Sending a change
 

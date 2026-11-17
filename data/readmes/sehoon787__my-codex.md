@@ -9,13 +9,13 @@
 # my-codex
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Agents](https://img.shields.io/badge/agents-17_core_%2B_17_opt--in-blue)
+![Agents](https://img.shields.io/badge/agents-18_core_%2B_17_opt--in-blue)
 ![Skills](https://img.shields.io/badge/skills-29_default_%2F_109_installed-purple)
 ![MCP](https://img.shields.io/badge/MCP-5-green)
 ![Auto Sync](https://img.shields.io/badge/upstream_sync-every_3_days-brightgreen)
 
 **All-in-one agent harness for Codex CLI.**
-**One installer, 17 core agents ready.**
+**One installer, 18 core agents ready.**
 
 Boss discovers every agent, skill, and MCP tool at runtime,<br>
 then routes your task to the right specialist through `spawn_agent`. No config files. No boilerplate.
@@ -81,7 +81,7 @@ Every project my-codex builds on, what it contributes, and exactly how it arrive
 | # | Project | What my-codex takes from it | How it arrives |
 |---|---------|-----------------------------|----------------|
 | 1 | <img src="https://github.com/affaan-m.png?size=32" width="20" height="20" align="center"/> **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** — affaan-m | 61 allowlisted skills: stack patterns (TypeScript, React, Python/Django/FastAPI, Spring Boot/Kotlin, SQL/Redis/Prisma, Docker/Kubernetes), AI and agent engineering, and generic codebase tooling such as onboarding, code tours, and ADRs. Claude Code-specific content is stripped, and an 18-skill web/UI lane stays out of the default install. | submodule `upstream/ecc`; `install.sh` copies only the names allowlisted in `scripts/skill-allowlists.sh` |
-| 2 | <img src="https://github.com/garrytan.png?size=32" width="20" height="20" align="center"/> **[gstack](https://github.com/garrytan/gstack)** — garrytan | 29 sprint-process skill entries — browser QA (`qa`), scope-drift code review (`review`), security audit (`cso`), and the full plan → review → ship workflow — plus a compiled Playwright browser daemon. | submodule `upstream/gstack`, vendored to `~/.codex/vendor/gstack` where its own `./setup --host codex` runs under bun and creates the 27 symlinks under `~/.codex/skills/` alongside the `gstack` root router directory; the 7 ECC skills it supersedes (`benchmark`, `canary-watch`, `safety-guard`, `browser-qa`, `verification-loop`, `security-review`, `design-system`) are removed so only the gstack version stays routable |
+| 2 | <img src="https://github.com/garrytan.png?size=32" width="20" height="20" align="center"/> **[gstack](https://github.com/garrytan/gstack)** — garrytan | 29 sprint-process skill entries — browser QA (`qa`), scope-drift code review (`review`), security audit (`cso`), and the full plan → review → ship workflow — plus a compiled Playwright browser daemon. | submodule `upstream/gstack`, vendored to `~/.codex/vendor/gstack` where its own `./setup --host codex` runs under bun and creates the 28 symlinks under `~/.codex/skills/` alongside the `gstack` root router directory; the 7 ECC skills it supersedes (`benchmark`, `canary-watch`, `safety-guard`, `browser-qa`, `verification-loop`, `security-review`, `design-system`) are removed so only the gstack version stays routable |
 | 3 | <img src="https://github.com/Yeachan-Heo.png?size=32" width="20" height="20" align="center"/> **[oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex)** — Yeachan Heo | 7 allowlisted worker agents: `executor`, `planner`, `architect`, `test-engineer`, `security-reviewer`, `code-reviewer`, `debugger`. Its remaining prompts and its skills duplicate agents this repo already ships, so they are deliberately not installed. | submodule `upstream/omx`; `scripts/md-to-toml.sh` converts the allowlisted prompts from Markdown into `~/.codex/agents/*.toml` |
 | 4 | <img src="https://github.com/obra.png?size=32" width="20" height="20" align="center"/> **[superpowers](https://github.com/obra/superpowers)** — Jesse Vincent | 14 development-process skills: brainstorming, systematic debugging, test-driven development, plan writing and execution, worktree handling, and code-review etiquette. No agent is taken from it — its single `code-reviewer` prompt overlaps the oh-my-codex one. | submodule `upstream/superpowers`; all 15 skill directories install except `dispatching-parallel-agents`, which duplicates the Boss delegation path this repo already owns |
 | 5 | <img src="https://github.com/tt-a1i.png?size=32" width="20" height="20" align="center"/> **[archify](https://github.com/tt-a1i/archify)** — tt-a1i | 1 diagram skill that turns architecture, workflow, sequence, data-flow, and lifecycle descriptions into one self-contained HTML file with inline SVG, a dark/light toggle, and PNG/JPEG/WebP/SVG export. | submodule `upstream/archify`, pinned to tag `v3.0.1` so the sync job leaves it alone; only the repo's top-level `archify/` directory is copied to `~/.codex/skills/archify`, so no `npx skills add` runs at install time |
@@ -185,7 +185,7 @@ Boss cascades every request through a priority chain until the best match is fou
 | Complexity | Model | Used For |
 |-----------|-------|----------|
 | Top-level orchestration | `gpt-6.1-sol` (xhigh) | Boss, and the main session by default |
-| Deep analysis, architecture, review | `gpt-6-astra` | Oracle, Prometheus, Sisyphus, Hephaestus, Atlas, Metis, Momus, architect, planner, code-reviewer, security-reviewer |
+| Deep analysis, architecture, review | `gpt-6-astra` | Oracle, Prometheus, Sisyphus, Hephaestus, Atlas, Metis, Momus, Tracer, architect, planner, code-reviewer, security-reviewer |
 | Standard implementation | `gpt-6.1-sol` | Librarian, Multimodal-Looker, executor, test-engineer, debugger, and 15 of the 17 pack agents |
 | Quick lookup, light analysis | `gpt-6-luna` | data-analyst, prompt-regression-tester |
 
@@ -195,12 +195,12 @@ The three tier IDs live in a single file, `scripts/model-tiers.sh`; `scripts/md-
 
 ### Effort Tiers
 
-Model choice sets *which* brain runs a task; the `model_reasoning_effort` field next to `model` in the same TOML sets *how hard* it thinks. Boss and the nine OMO agents declare it in the committed files under `codex-agents/`, the seven oh-my-codex workers receive theirs from the role table in `scripts/md-to-toml.sh` at conversion time, and each pack agent carries its own:
+Model choice sets *which* brain runs a task; the `model_reasoning_effort` field next to `model` in the same TOML sets *how hard* it thinks. Boss and the ten OMO agents declare it in the committed files under `codex-agents/`, the seven oh-my-codex workers receive theirs from the role table in `scripts/md-to-toml.sh` at conversion time, and each pack agent carries its own:
 
 | Effort | Agents |
 |--------|--------|
 | `xhigh` | Boss, Oracle, Prometheus, architect |
-| `high` | Sisyphus, Hephaestus, Atlas, Metis, Momus, planner, code-reviewer, security-reviewer, and 15 of the 17 pack agents |
+| `high` | Sisyphus, Hephaestus, Atlas, Metis, Momus, Tracer, planner, code-reviewer, security-reviewer, and 15 of the 17 pack agents |
 | `medium` | Librarian, Multimodal-Looker, executor, test-engineer, debugger, data-analyst, prompt-regression-tester |
 
 ### 3-Phase Sprint Workflow
@@ -209,9 +209,9 @@ For end-to-end feature implementation, Boss orchestrates a structured sprint:
 
 | Phase | Mode | What Happens |
 |-------|------|--------------|
-| **1 · Design** | interactive | User decides scope · engineering review · confirm "design done" |
-| **2 · Execute** | autonomous | executor runs the tasks · auto code review · architect verification |
-| **3 · Review** | interactive | Compare against the design doc · present comparison table · user approves or asks for improvement |
+| **1 · Design** | interactive | Recall past notes · clarify only if ambiguous · `writing-plans` saves a plan · `momus` review · one approval gate |
+| **2 · Execute** | autonomous | `executing-plans` runs the tasks test-first · final review · `hephaestus` as fallback |
+| **3 · Review** | interactive | Compare against the plan · present comparison table · user approves or asks for improvement |
 
 ### Structured Final Report
 
@@ -233,7 +233,7 @@ It fires only at the very end of the request — never on a turn that launches o
 
 | Category | Count | Source |
 |----------|------:|--------|
-| **Core agents** (always loaded) | 17 | Boss 1 + OMO 9 + OMX 7 |
+| **Core agents** (always loaded) | 18 | Boss 1 + OMO 10 + OMX 7 |
 | **Agent packs** (opt-in, none enabled by default) | 17 | 2 vendored categories: data-ai 13 + llmops 4 |
 | **Skills exposed** (default `core` profile) | 29 | The always-on set; every other entry is one lane flag away |
 | **Skills installed** (entries under `~/.codex/skills/`) | 109 | ECC 61 · gstack 29 · Superpowers 14 · Core 4 · archify 1 |
@@ -253,7 +253,7 @@ Every agent and skill above is allowlisted in [`scripts/skill-allowlists.sh`](./
 </details>
 
 <details>
-<summary><strong>OMO Agents — Sub-orchestrators and specialists (9)</strong></summary>
+<summary><strong>OMO Agents — Sub-orchestrators and specialists (10)</strong></summary>
 
 | Agent | Model | Role | Source |
 |-------|-------|------|--------|
@@ -264,6 +264,7 @@ Every agent and skill above is allowlisted in [`scripts/skill-allowlists.sh`](./
 | Metis | gpt-6-astra high | Intent analysis, ambiguity detection | oh-my-openagent |
 | Momus | gpt-6-astra high | Plan feasibility review | oh-my-openagent |
 | Prometheus | gpt-6-astra xhigh | Interview-based detailed planning | oh-my-openagent |
+| Tracer | gpt-6-astra high | Evidence-driven causal tracing with competing hypotheses (read-only) | oh-my-claudecode |
 | Librarian | gpt-6.1-sol medium | Open-source documentation search via MCP | oh-my-openagent |
 | Multimodal-Looker | gpt-6.1-sol medium | Image/screenshot/diagram analysis | oh-my-openagent |
 
@@ -307,7 +308,7 @@ Installed to `~/.codex/agent-packs/` and disabled until you opt in — see [Agen
 | [my-codex Core](https://github.com/sehoon787/my-codex) | 4 | boss-advanced, boss-briefing, briefing-vault, gstack-sprint |
 | archify | 1 | archify (architecture / workflow / sequence / data-flow / lifecycle diagrams) |
 
-The gstack entries are the `gstack` root router directory, `plan-eng-review` (a real directory the installer copies from the pinned gstack submodule, because gstack’s `./setup` no longer generates it), and 27 symlinks into `~/.codex/vendor/gstack/.agents/skills/`, created by gstack’s own `./setup`: 24 of the 25 names in `GSTACK_SKILL_ALLOWLIST` and three more it always installs (`gstack-upgrade`, `hackernews-frontpage`, `codex`). All 27 are in the managed catalog, so none of them is link-only — each can be exposed by `core` or by a lane. Of the 109 entries, 82 are real directories and 27 are those symlinks; `find ~/.codex/skills -name SKILL.md | wc -l` reports 85 because `find` does not follow them without `-L`. Skill files stay installed no matter which profile is active — exposure is what changes. See [Skill Profiles and Lanes](#skill-profiles-and-lanes).
+The gstack entries are the `gstack` root router directory and 28 symlinks into `~/.codex/vendor/gstack/.agents/skills/`, created by gstack’s own `./setup`: all 25 names in `GSTACK_SKILL_ALLOWLIST` and three more it always installs (`gstack-upgrade`, `hackernews-frontpage`, `codex`). All 28 are in the managed catalog, so none of them is link-only — each can be exposed by `core` or by a lane. Of the 109 entries, 81 are real directories and 28 are those symlinks; `find ~/.codex/skills -name SKILL.md | wc -l` reports 84 because `find` does not follow them without `-L`. Skill files stay installed no matter which profile is active — exposure is what changes. See [Skill Profiles and Lanes](#skill-profiles-and-lanes).
 
 </details>
 
@@ -476,9 +477,9 @@ Features built specifically for this project, beyond what upstream sources provi
 | Feature | Description |
 |---------|-------------|
 | **Boss Meta-Orchestrator** | Dynamic capability discovery → intent classification → 4-priority routing → delegation → verification |
-| **3-Phase Sprint** | Design (interactive) → Execute (autonomous via executor) → Review (interactive vs design doc) |
+| **3-Phase Sprint** | Design (interactive) → Execute (autonomous via executing-plans) → Review (interactive vs the plan) |
 | **Agent Tier Priority** | core > omo > omx > opt-in packs. Pack agents are skipped if their name collides with an already-installed agent. Most specialized agent wins. |
-| **Cost Optimization** | Three model tiers from one source file (`scripts/model-tiers.sh`), applied to all 34 agents the installer ships |
+| **Cost Optimization** | Three model tiers from one source file (`scripts/model-tiers.sh`), applied to all 35 agents the installer ships |
 | **Skill Exposure Profiles** | A managed catalog of 209 entries with a 29-skill default, 13 optional lanes, snapshots, and rollback — so the skills budget is spent on what the session needs |
 | **Briefing Signals** | Wrapper/session logging feeds `.briefing/agents/agent-log.jsonl`, daily summaries, and routing/profile hints |
 | **Smart Packs** | Project-type detection recommends relevant agent packs at session start |
@@ -495,8 +496,8 @@ Linked via git submodules. Pinned commits are tracked natively by `.gitmodules` 
 | Source | SHA | Date | Diff |
 |--------|-----|------|------|
 | [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `d2ef268` | 2026-11-13 | [compare](https://github.com/affaan-m/everything-claude-code/compare/d2ef268...HEAD) |
-| [gstack](https://github.com/garrytan/gstack) | `1d3c63c` | 2026-11-13 | [compare](https://github.com/garrytan/gstack/compare/1d3c63c...HEAD) |
-| [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) | `610be90` | 2026-11-13 | [compare](https://github.com/Yeachan-Heo/oh-my-codex/compare/610be90...HEAD) |
+| [gstack](https://github.com/garrytan/gstack) | `5dcd76b` | 2026-11-16 | [compare](https://github.com/garrytan/gstack/compare/5dcd76b...HEAD) |
+| [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) | `66ca2c5` | 2026-11-16 | [compare](https://github.com/Yeachan-Heo/oh-my-codex/compare/66ca2c5...HEAD) |
 | [superpowers](https://github.com/obra/superpowers) | `22f0b46` | 2026-11-13 | [compare](https://github.com/obra/superpowers/compare/22f0b46...HEAD) |
 | [archify](https://github.com/tt-a1i/archify) | `2ab3cae` (`v3.0.1`) | 2026-09-28 | [compare](https://github.com/tt-a1i/archify/compare/2ab3cae...HEAD) |
 

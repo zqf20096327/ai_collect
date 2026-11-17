@@ -41,6 +41,8 @@ about Microsoft's 2006 `AutoIndex.sql` prototype: a modern version, with AI doin
 - To collect: `VIEW SERVER STATE` (or `VIEW SERVER PERFORMANCE STATE`), `VIEW DATABASE STATE` and
   `VIEW DEFINITION`. To call the model: `EXECUTE ANY EXTERNAL ENDPOINT`. To create indexes:
   `ALTER` on the tables.
+- A user database. `sp_AIIndexTuner` refuses the system databases and databases that a SQL Server
+  feature owns: the replication distribution database, `SSISDB` and Reporting Services catalogs.
 
 ## Compared with AI SQL Tuner Studio
 
@@ -66,7 +68,7 @@ can apply what it finds.
 
 1. Run [aisqltuner-index-tuner.sql](aisqltuner-index-tuner.sql) in the user database you want to
    tune. It creates the `AIIndexTuner` schema with its tables and procedures, plus
-   `dbo.sp_AIIndexTuner` and `dbo.sp_AIIndexTuner_Apply`. Install it in each database you tune,
+   `dbo.sp_AIIndexTuner`, `dbo.sp_AIIndexTuner_Apply` and `dbo.sp_AIIndexTuner_Purge`. Install it in each database you tune,
    because the endpoint credential is a database scoped credential.
 2. Fill in step 0 of [setup/Configure-Endpoint.sql](setup/Configure-Endpoint.sql) and run the
    whole script. It creates the database master key and the credential, named from the endpoint
@@ -100,7 +102,7 @@ when you report a problem.
 ### Uninstall
 
 Run [setup/Uninstall.sql](setup/Uninstall.sql) in the database. It drops `dbo.sp_AIIndexTuner`,
-`dbo.sp_AIIndexTuner_Apply`, the `AIIndexTuner` schema with everything in it (including all runs
+`dbo.sp_AIIndexTuner_Apply`, `dbo.sp_AIIndexTuner_Purge`, the `AIIndexTuner` schema with everything in it (including all runs
 and recommendations) and the database scoped credential named in `AIIndexTuner.Config`. Indexes the
 tool created or widened are kept; set `RemoveIndexTags = 1` in its step 0 to also remove their
 `AIIndexTuner` extended property, or `DropCredential = 0` to keep the credential. It leaves the
@@ -263,7 +265,10 @@ EXEC dbo.sp_AIIndexTuner_Apply @RunId = 7, @MinPriority = 'Low', @MinConfidence 
 ### Apply-mode safety
 
 - **The model's script is never executed.** Plan cache text goes into the prompt, so a crafted
-  query could try to steer what the model writes. The proc builds the `CREATE INDEX`,
+  query could try to steer what the model writes. The system prompt tells the model to treat
+  query text, predicates and names in the input as data, never as instructions, and query text
+  reaches it only as quoted strings; but that only makes steering harder, so the proc builds the
+  `CREATE INDEX`,
   `CREATE INDEX ... WITH (DROP_EXISTING = ON)` or `DROP INDEX` itself:
   - It uses only the structured fields.
   - It checks every table and column against the catalog.
@@ -292,8 +297,10 @@ EXEC dbo.sp_AIIndexTuner_Apply @RunId = 7, @MinPriority = 'Low', @MinConfidence 
   - indexes named by an index hint in a module, a plan guide or a Query Store hint
   - indexes a forced Query Store plan uses, since the plan would fail with `NO_INDEX`
   - low-use drops before the usage statistics cover 7 days. An index that another index makes
-    redundant can be dropped at any time. Redundant here means the other index has the same leading
-    keys, covers its includes and filter, and keeps any uniqueness. On SQL Server, a low-use drop
+    redundant can be dropped at any time. Redundant here means another nonclustered index has the
+    same leading keys, covers its includes and filter, and keeps any uniqueness. The clustered index
+    does not count: a narrow nonclustered index on the clustering key makes counts and range scans
+    cheaper, so dropping one is a low-use decision. On SQL Server, a low-use drop
     also needs the error log to confirm the period, which takes securityadmin or sysadmin and doesn't
     work inside `INSERT ... EXEC`. On Azure SQL Database a failover can reset the statistics without
     a trace, so the 7 days are counted from the times it can see.
@@ -375,6 +382,10 @@ WHERE ep.name = N'AIIndexTuner';
 | `LockTimeoutSec` | 30 | The longest a drop, an offline build or a columnstore build waits for its locks before it fails (NULL = no limit) |
 | `OnlineWaitMinutes` | 5 | How long an online rowstore build waits at low priority for its locks before it gives up (NULL = wait at normal priority, without limit) |
 | `BuildMaxDop` | NULL | `MAXDOP` for every index build (NULL = the server's setting) |
+| `CollectPhysicalStats` | 1 | 0 skips `sys.dm_db_index_physical_stats` in HEAP TABLE ANALYSIS and INDEX PAGE DENSITY, which read pages of each table |
+| `PhysicalStatsMaxPages` | 1280000 | Those two sections skip a table with more reserved pages (10 GB by default) and list it as skipped (NULL = no limit) |
+| `RetainRunDays` | NULL | Delete runs completed more than this many days ago, with their step log and recommendations, except Applied recommendations (NULL = keep forever). See [Run history retention](#run-history-retention) |
+| `RetainRunDetailDays` | NULL | Clear `CollectedData` and `RawResponse` of runs completed more than this many days ago, keeping the rest of the run (NULL = keep them forever) |
 
 ### Step log
 
@@ -397,6 +408,43 @@ ORDER BY l.RunLogId;
 ```
 
 `@CollectOnly = 1` creates no run, so its rows have a NULL `RunId`.
+
+### Run history retention
+
+Runs, their step log and their recommendations are kept until something deletes them. Set a
+retention in `AIIndexTuner.Config`, and each `sp_AIIndexTuner` run purges older history before it
+starts, so a scheduled CREATE-mode job stays bounded without a second job step. The purge is the
+`Purge run history` step in `AIIndexTuner.RunLog`, whose `Message` gives the counts. It never fails
+the run, and it is not run when `sp_AIIndexTuner` is called inside a transaction.
+
+```sql
+UPDATE AIIndexTuner.Config SET RetainRunDays = 90, RetainRunDetailDays = 14 WHERE ConfigId = 1;
+```
+
+- `RetainRunDays`: a run completed more than that many days ago is deleted, with its
+  `AIIndexTuner.RunLog` rows and its recommendations. A run with `Applied` recommendations keeps its
+  row and those recommendations, with their `AppliedDDL` and `UndoDDL`, the record of what changed
+  in the schema and how to reverse it; its other recommendations, its step log and its detail go.
+  Step log rows of `@CollectOnly` calls older than that are deleted too.
+- `RetainRunDetailDays`: a newer run completed more than that many days ago keeps everything but
+  `CollectedData` and `RawResponse`, the two large columns, which hold query text and histogram
+  values (see [Data disclosure](#data-disclosure)).
+
+A run still `Running` is never touched, and a run another session is applying (it holds the run's
+apply lock) is skipped until the next purge. `sp_AIIndexTuner_Purge` runs the same purge on demand,
+and returns one row per run with what it removed:
+
+```sql
+EXEC dbo.sp_AIIndexTuner_Purge @WhatIf = 1;                           -- what the configured retention would remove
+EXEC dbo.sp_AIIndexTuner_Purge;                                       -- apply the configured retention
+EXEC dbo.sp_AIIndexTuner_Purge @OlderThanDays = 90;                   -- runs completed over 90 days ago
+EXEC dbo.sp_AIIndexTuner_Purge @OlderThanDays = 7, @DetailOnly = 1;   -- only their CollectedData and RawResponse
+EXEC dbo.sp_AIIndexTuner_Purge @OlderThanDays = 365, @IncludeApplied = 1;   -- Applied recommendations too
+```
+
+`@OlderThanDays` replaces the configured retention for that call (0 means every completed run).
+Each run is purged in its own transaction, so run it outside a transaction, except with
+`@WhatIf = 1`.
 
 ## Data disclosure
 
@@ -440,17 +488,22 @@ all of the query text and predicates above; it does not affect the column values
   is set on the Azure OpenAI resource, not by this tool.
 - In the database: with `KeepRunDetail = 1` (the default), `AIIndexTuner.Run` keeps the full
   payload (`CollectedData`) and the raw response (`RawResponse`) of every run, and
-  `AIIndexTuner.Recommendation` keeps the model's rationale and scripts. Nothing deletes them;
-  set `KeepRunDetail = 0` to stop keeping the payload and raw response, and delete old runs
-  yourself. A retention setting and purge procedure are tracked in issue #55.
+  `AIIndexTuner.Recommendation` keeps the model's rationale and scripts. They are kept until
+  deleted: set `RetainRunDetailDays` to clear the payload and raw response after that many days,
+  and `RetainRunDays` to delete whole runs (see [Run history retention](#run-history-retention)),
+  or set `KeepRunDetail = 0` to stop keeping the payload and raw response at all.
+  `sp_AIIndexTuner_Purge` deletes old history on demand.
 
 ## Known limitations
 
 - **Claude:** Claude deployments are not supported yet.
 - **No timeouts:** T-SQL has no per-statement timeout, so a collector section cannot be cut off
-  the way the desktop app's are. Work is bounded by row caps instead, including the 20,000-plan
-  cap on Query Store scope resolution. Each section runs in its own `TRY...CATCH`, so a failed
-  section is reported and skipped.
+  the way the desktop app's are. Work is bounded instead: by row caps, including the 20,000-plan
+  cap on Query Store scope resolution; by `PhysicalStatsMaxPages` for the two sections that read
+  pages; and by a 10-second lock timeout, so a section blocked behind an index rebuild or other
+  schema change is skipped rather than waiting, and queueing others behind it. The collector also
+  runs at `DEADLOCK_PRIORITY LOW`. Each section runs in its own `TRY...CATCH`, so a failed section
+  is reported and skipped.
 - **Error log:** reading it needs `securityadmin` or `sysadmin`. Without that, the usage window
   says which resets it could not see.
 - **`INSERT ... EXEC`:** wrapping `sp_AIIndexTuner` in `INSERT ... EXEC` breaks two parts,

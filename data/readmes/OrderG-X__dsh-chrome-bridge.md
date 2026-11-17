@@ -131,13 +131,26 @@ Until step 2 is done the `browser_*` tools fail **loudly with exactly these step
 > `dsh plugin add` from the CLI refuses the app-managed profile — use the sidebar there.
 > Updating: on DSH 0.2.2 or later, open the bundle on the Plugins page and click "Update to …"; on older DSH, uninstall and install again. A new version can be installed about a day after release, because the pnpm that DSH uses skips brand-new versions by default; to get it right away, use the release tarball (a tarball install can't use Update later).
 
+### 🌍 Tool descriptions in English or Russian
+
+What the model reads for the `browser_*` tools — descriptions, parameter docs, and the errors for bad arguments or a missing connection — is Chinese by default. Point `config.locale` at `en` or `ru` and DSH hands the model English / Russian text instead; tool names, arguments and results stay exactly the same:
+
+```yaml
+# the profile's patch layer, e.g. ~/.dsh/profiles/<profile>/cordis.patch.yml
+- id: chrome-bridge
+  config:
+    locale: en      # en | ru | zh (default)
+```
+
+Restart DSH after changing it — the descriptions are part of the context a session gets when it starts. A translation that misses a key, or drops a `%placeholder` the Chinese text needs, falls back to Chinese for that one string, so nothing ever comes out half-empty or with a missing detail. Not translated yet: tool results, the install steps shown when Chrome isn't connected, errors raised deeper inside some actions (snapshot refs, navigation, drag, downloads, DevTools), the settings card, the popup and the native host messages — that is a separate change. The model handles those Chinese messages fine; they just aren't in your language yet.
+
 ### 👀 What you see while it works
 
-- **Click the toolbar icon** for a live panel: whether Chrome ↔ local host ↔ DSH are connected, **which DSH sessions are driving which tabs** (jump to a tab, or release it with one click), the last actions with their errors, a **pause switch** that makes the browser off-limits until you turn it back on, and *copy diagnostics* for bug reports. The icon badge shows how many tabs are under control (`!` = host down, `⏸` = paused).
+- **Click the toolbar icon** for a live panel (in English, Chinese or Russian, following Chrome's language): whether Chrome ↔ local helper ↔ DSH are connected, **which DSH conversations are driving which tabs** (jump to a tab, or release it with one click), the last actions with their errors, a **pause switch** that makes the browser off-limits until you turn it back on, and *Copy report* for bug reports. The icon badge shows how many tabs are under control (`!` = helper down, `⏸` = paused).
 - **In DSH, Plugins → Chrome Bridge** has a settings card too: connection status, whether the extension is the local or the Web Store build, which tabs are under control (release them all with one click), plus pause, on-page-cursor and separate-window switches. When it isn't connected it tells you the missing step and can open the install page for you. **Resuming control only works from the Chrome extension panel** — the model can reach the DSH side as well, so that click has to be yours.
 - **New pages open in their own Chrome window.** Pages the agent opens go into a separate "work" window of the same Chrome profile, so your logins are all there, but your own window gets no new tabs and keeps focus; the window opens in the background and later pages join it. Close it whenever you like — the next page opens a new one. Prefer background tabs in your current window? Turn off *Open new pages in a separate window* in the panel or the DSH settings card (`cb window off`).
 - **The agent never falls back to the tab you are looking at.** A `browser_*` call without `tab` keeps using the tab that session opened or last named; if there is none it fails and says so. Acting on your current tab takes an explicit `tab="active"`.
-- Every tab the agent touches **joins a blue tab group titled "DSH agent 正在操作"** (pinned tabs and tabs already in one of your groups are left where they are), and the group is taken apart the moment it lets go — after 60s idle, on `cb detach`, if the tab is closed, or if you press *Cancel* on Chrome's debugging banner.
+- Every tab the agent touches **joins a blue tab group titled "DSH at work"** ("DSH 正在操作" / "DSH работает" in a Chinese / Russian Chrome; pinned tabs and tabs already in one of your groups are left where they are), and the group is taken apart the moment it lets go — after 60s idle, on `cb detach`, if the tab is closed, or if you press *Cancel* on Chrome's debugging banner.
 - The little mouse (favicon + toolbar icon) means **there is actually a cursor in that page**: it lights up when the agent draws its on-page cursor (clicking, typing), and goes away when that cursor is hidden, the page navigates, or the agent lets go. Reading a page never lights it up.
 - Inside the page, the on-page cursor draws every click, keystroke, drag and scroll — and it appears in screenshots, so you and the model see the same picture. If it gets in your way, switch it off in the panel (the actions still happen, it just isn't drawn). Password fields only ever show dots.
 

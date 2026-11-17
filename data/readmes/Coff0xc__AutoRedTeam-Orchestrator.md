@@ -8,7 +8,7 @@ The model can decide. This program keeps the permission, the evidence, and the r
 
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Version](https://img.shields.io/badge/version-3.1.0-orange)
+![Version](https://img.shields.io/badge/version-4.0.0-orange)
 ![Status](https://img.shields.io/badge/status-Beta%20%2F%20Research%20Preview-yellow)
 
 [Maturity notes](docs/capability-maturity.md) · [Trust boundaries](docs/security-model.md) · [Security audits](docs/security-audits/)
@@ -91,6 +91,8 @@ From a checkout, `typer` is enough for the read-only commands.
 ```bash
 pip install typer
 python -m cli.main ai-surface scan --path handlers --format sarif -o surface.sarif
+python -m cli.main ai-surface diff --baseline tests/fixtures/ai_surface/handlers.baseline.json --path handlers --ci
+python -m cli.main ai-surface inventory
 python -m cli.main ai-surface scan-mcp-config --path .mcp.json
 python -m cli.main capabilities manifest --profile safe
 python -m cli.main engage init http://127.0.0.1:3000 --profile scan
@@ -115,7 +117,7 @@ pip install -r requirements.txt
 python -m cli.main --help
 ```
 
-Python 3.10 or newer. Version `3.1.0` lives only in `_version.py`. The two commands are `autort` and `autoredteam-mcp`.
+Python 3.10 or newer. Version `4.0.0` lives only in `_version.py`. The two commands are `autort` and `autoredteam-mcp`.
 
 Any subcommand, including `--help`, prints the legal notice on stderr. `--help` does not ask the allowed list.
 
@@ -143,7 +145,7 @@ AUTORT_CAPABILITY_PROFILE=scan autort engage run
 autort engage status
 ```
 
-`engage init`, `status`, and `next` stay on `safe`. They write or read `.autort/engage.yaml`. They do not contact the target. `engage run` needs `scan`. It applies the engagement profile, allowlist, and HITL for the duration of the run, then restores the previous environment. Live `engage.verify` asks HITL when the engagement file sets `hitl` to `approval` or `review_edit`; dry-run skips that gate. A finding is confirmed only after `vuln_verifier`, `statistical_verifier`, `oob_callback`, or `manual_review`. The same execution hash more than three times stops the loop. `--ci` exits 2 when the loop does not pass. CI runs `engage run --path config/engage.lab.example.yaml --dry-run --ci`.
+`engage init`, `status`, and `next` stay on `safe`. They write or read `.autort/engage.yaml`. They do not contact the target. `engage run` needs `scan`. It applies the engagement profile, allowlist, and HITL for the duration of the run, then restores the previous environment. Live `engage.verify` asks HITL when the engagement file sets `hitl` to `approval` or `review_edit`; dry-run skips that gate. A finding is confirmed only after `vuln_verifier`, `statistical_verifier`, `oob_callback`, or `manual_review`. The same execution hash more than three times stops the loop. `--ci` exits 2 when the loop does not pass. The run JSON includes `scorecard` (`autort.engage.scorecard/v1`) with `confirmed`, `unconfirmed`, and `total`. CI runs `engage run --path config/engage.lab.example.yaml --dry-run --ci`.
 
 MCP tools: `engage_init`, `engage_status`, `engage_next` (safe), `engage_run` (scan). A model that only has `safe` can still plan the next step. Live recon needs the operator to raise the level.
 
@@ -290,7 +292,7 @@ Instruction files are markdown, text, YAML, JSON, and TOML. Lockfiles are skippe
 
 ### Two scans, side by side
 
-`autort ai-surface diff` compares a saved JSON scan with a fresh read of the handlers. It is a command, not a tool the model can call.
+`autort ai-surface diff` compares a saved JSON scan with a fresh read of the handlers. It is a command, not a tool the model can call. `--ci` exits 2 when a surface is added, removed, or has a changed first-line description or argument list. Leading and trailing spaces in the description are ignored. This repository pins `handlers/` at `tests/fixtures/ai_surface/handlers.baseline.json` and runs that check in CI.
 
 ```mermaid
 flowchart LR
@@ -359,10 +361,11 @@ These do not contact a target. CVE search reads the local notes.
 
 | Command | You get | Example |
 |---|---|---|
-| `ai-surface scan` | An inventory of the handlers | `autort ai-surface scan --path handlers --format sarif -o surface.sarif` |
+| `ai-surface scan` | Handler inventory plus MCP03/04/10 rules | `autort ai-surface scan --path handlers --format sarif -o surface.sarif` |
+| `ai-surface inventory` | Local MCP client configs and skill roots, no network | `autort ai-surface inventory` |
 | `ai-surface scan-mcp-config` | A read of a client config | `autort ai-surface scan-mcp-config --path .mcp.json` |
-| `ai-surface scan-skills` | Markers in instruction files | `autort ai-surface scan-skills --path ./skills` |
-| `ai-surface diff` | What changed since a saved scan | `autort ai-surface diff --baseline surface.json --path handlers` |
+| `ai-surface scan-skills` | Named skill risks (`skill.prompt_injection`, secrets, downloads) | `autort ai-surface scan-skills --path ./skills` |
+| `ai-surface diff` | What changed since a saved scan | `autort ai-surface diff --baseline tests/fixtures/ai_surface/handlers.baseline.json --path handlers --ci` |
 | `capabilities profiles` | The four levels and their counts | `autort capabilities profiles` |
 | `capabilities manifest` | One level, as data | `autort capabilities manifest --profile safe` |
 | `tools lint` | A contract check of the same parse | `autort tools lint --path handlers` |
@@ -379,15 +382,15 @@ These do not contact a target. CVE search reads the local notes.
 
 | Group | Commands | What it is |
 |---|---|---|
-| `ai-surface` | `scan`, `scan-mcp-config`, `scan-skills`, `diff` | The reader |
+| `ai-surface` | `scan`, `inventory`, `scan-mcp-config`, `scan-skills`, `diff` | The reader |
 | `capabilities` | `matrix`, `readiness`, `manifest`, `profiles` | The allowed list |
 | `tools` | `lint` | Contract check |
 | `skills` | `catalog`, `read` | Pinned SKILL.md packs. Read-only |
 | `engage` | `init`, `status`, `next`, `run`, `resume` | One authorized target. Plan on `safe`, run on `scan` |
 | `code-agent` | `expand` | Who calls whom, from the source |
-| `runtime-api` | `run`, `serve` | A local loop over planned actions, or a read-only view of a saved run |
-| `sandbox` | `docker-smoke` | A local Docker smoke test, network off |
-| `ai-redteam` | `run`, `catalog`, `convert`, `eval-run` | A written scenario or local eval suite. Dry-run unless you go further |
+| `runtime-api` | `run`, `serve` | Allowlisted local audit loop, or a read-only view of a saved run |
+| `sandbox` | `docker-smoke` | A record field on the run, plus local docker-smoke |
+| `ai-redteam` | `eval-run`, `catalog`, `convert`, `run` | eval-run scores local runs. `run` is plan-only Internal |
 
 ### Higher levels
 
@@ -411,7 +414,7 @@ Calls are async. Most return a dict. A failure carries an `"error"` string. If t
 
 ```python
 from autort import Engagement, Exploiter, Reporter
-from autort import __version__  # "3.1.0"
+from autort import __version__  # "4.0.0"
 
 engagement = Engagement("http://127.0.0.1:3000", profile="scan")
 plan = await engagement.run(dry_run=True)
@@ -439,7 +442,7 @@ The example sets `mode` on purpose. Current `main` defaults the Action to `self-
     severity-threshold: high
 ```
 
-The full workflow is [`.github/workflows/self-audit.example.yml`](.github/workflows/self-audit.example.yml). Output defaults to SARIF and is uploaded for code scanning. `self-audit` runs `python -m cli.main ai-surface scan`.
+The full workflow is [`.github/workflows/self-audit.example.yml`](.github/workflows/self-audit.example.yml). Output defaults to SARIF and is uploaded for code scanning. `self-audit` runs `python -m cli.main ai-surface scan`. Pass `baseline` to also run `ai-surface diff --ci`. This repository's CI pins `tests/fixtures/ai_surface/handlers.baseline.json`.
 
 `mode: target-scan` remains for an authorized URL. It runs detection, and it needs `target`.
 
@@ -559,7 +562,7 @@ Issues a `@tool` function can get:
 
 Prompts and resources skip the auth and validator rows. Effect mismatch still applies when the row is local-only and the parameters include a target-shaped name.
 
-SARIF rule ids are grouped by class, not one rule per tool: `mcp_tool.auth-critical`, `mcp_tool.auth-missing`, `mcp_tool.effect-mismatch`, `mcp_tool.target-input`, `mcp_tool.factory`, `mcp_tool.lowlevel`, `mcp_prompt`, `mcp_resource`, `mcp_config`, `skill_instruction`, `surface_inventory_diff`.
+SARIF rule ids are grouped by class, not one rule per tool: `mcp_tool.auth-critical`, `mcp_tool.auth-missing`, `mcp_tool.effect-mismatch`, `mcp_tool.target-input`, `mcp_tool.factory`, `mcp_tool.lowlevel`, `mcp_prompt`, `mcp_resource`, `mcp_config`, `skill.prompt_injection`, `skill.hardcoded_secret`, `skill.suspicious_download_url`, `skill.unverifiable_remote_code`, `skill.missing_skill_md`, `surface_added`, `surface_removed`, `surface_description_changed`, `surface_parameters_changed`.
 
 The comparison (`reconcile_capability_manifest`) joins on `(kind, name)` when you scan the repo root or a directory named `handlers`.
 
@@ -572,7 +575,7 @@ The comparison (`reconcile_capability_manifest`) joins on `(kind, name)` when yo
 
 JSON stores this at `summary.static_coverage`. SARIF stores it at `runs[].properties.static_coverage`.
 
-Diff issues are `surface_added`, `surface_removed`, `surface_description_changed`, and `surface_parameters_changed`. The join key is `(kind or "tool", tool_name)`. A description change quotes the first 200 characters of the saved text. Rule id is `surface_inventory_diff`.
+Diff issues are `surface_added`, `surface_removed`, `surface_description_changed`, and `surface_parameters_changed`. The join key is `(kind or "tool", tool_name)`. A description change quotes the first 200 characters of the saved text. Rule id is the issue name. `--ci` fails on those four issues. Trailing spaces in the description are not a change.
 
 `core/tooling/contract.py` is `autort tools lint`. It reuses the parse and adds duplicate names, missing annotations, a missing `Args:` section, and whether a high-risk tool looks able to return evidence.
 

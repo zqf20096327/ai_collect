@@ -65,6 +65,7 @@ flowchart LR
   - [🏆 Theorem-Proving Models](#-theorem-proving-models)
   - [🔌 Agent Tooling](#-agent-tooling)
   - [🏢 Organizations](#-organizations)
+  - [💼 Companies](#-companies)
 - [🔍 Trust Checklist](#-trust-checklist)
 - [📅 Milestones](#-milestones)
 - [🌍 Community](#-community)
@@ -272,34 +273,34 @@ To try AI vericoding:
 
 > *One page of syntax before your first proof obligation*
 
-- [Learn ACL2 in Y Minutes](primers/acl2.md) - A terminating definition and the theorems the waterfall is expected to prove alone.
-- [Learn ACSL in Y Minutes](primers/acsl.md) - Function contracts, frames, and a loop variant for Frama-C's WP plugin.
-- [Learn Agda in Y Minutes](primers/agda.md) - A proof of associativity and a lookup whose index is a type.
-- [Learn Boogie in Y Minutes](primers/boogie.md) - Uninterpreted functions, axioms, and a loop whose frame is an invariant.
-- [Learn CN in Y Minutes](primers/cn.md) - Ownership, returned on exit, for a pointer and for every cell of an array.
-- [Learn Creusot in Y Minutes](primers/creusot.md) - Pearlite logic functions and the view of a Rust value in that logic.
-- [Learn Dafny in Y Minutes](primers/dafny.md) - Ghost lemmas, a frame, and a binary search whose invariant is the postcondition.
-- [Learn F* in Y Minutes](primers/fstar.md) - Refinements as preconditions and an SMT lemma whose body is the induction.
-- [Learn Flux in Y Minutes](primers/flux.md) - Predicates attached to Rust types, including the overflow check beside them.
-- [Learn Gobra in Y Minutes](primers/gobra.md) - Go comments for contracts, termination, and permission to each slice cell.
-- [Learn Gospel in Y Minutes](primers/gospel.md) - OCaml contracts in comments, including a checks clause a test can monitor.
-- [Learn HOL4 in Y Minutes](primers/hol4.md) - A Holmake script: a definition used by name, then an induction.
-- [Learn Idris 2 in Y Minutes](primers/idris.md) - Totality checking, and a vector whose length is part of its type.
-- [Learn Isabelle in Y Minutes](primers/isabelle.md) - Simplification when it is enough, and an induction when auto will not invent one.
-- [Learn JML in Y Minutes](primers/jml.md) - Java comments whose arithmetic is mathematical, with a bound so the code stays in range.
-- [Learn Kani in Y Minutes](primers/kani.md) - A bounded harness, and a contract the harness does not restate.
-- [Learn Lean 4 in Y Minutes](primers/lean.md) - Tactic proofs, a dependent index, and a loop whose conditions come from mvcgen.
-- [Learn Liquid Haskell in Y Minutes](primers/liquid-haskell.md) - Refinement types and a measure the solver uses without an induction.
-- [Learn Nagini in Y Minutes](primers/nagini.md) - Python calls that are contracts, including the variant of a loop.
-- [Learn Prusti in Y Minutes](primers/prusti.md) - Rust attributes for contracts, with ownership left to the borrow checker.
-- [Learn PVS in Y Minutes](primers/pvs.md) - A recursive definition whose typechecker emits the termination condition.
-- [Learn Rocq in Y Minutes](primers/rocq.md) - A Gallina program and the tactic proof that append distributes over sum.
-- [Learn SPARK in Y Minutes](primers/spark.md) - An expression function and a loop that must also be free of overflow.
-- [Learn Stainless in Y Minutes](primers/stainless.md) - Scala contracts on BigInt, so overflow is not the verification condition.
-- [Learn Velvet in Y Minutes](primers/velvet.md) - Dafny-style methods whose verification conditions are Lean goals.
-- [Learn Verus in Y Minutes](primers/verus.md) - The split between spec, proof, and exec, plus a loop variant.
-- [Learn Viper in Y Minutes](primers/viper.md) - Permissions that must be held, split, and given back.
-- [Learn WhyML in Y Minutes](primers/whyml.md) - A logical function, a variant, and the obligations Alt-Ergo receives.
+- [Learn ACL2 in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/acl2.md) - A terminating definition and the theorems the waterfall is expected to prove alone.
+- [Learn ACSL in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/acsl.md) - Function contracts, frames, and a loop variant for Frama-C's WP plugin.
+- [Learn Agda in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/agda.md) - A proof of associativity and a lookup whose index is a type.
+- [Learn Boogie in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/boogie.md) - Uninterpreted functions, axioms, and a loop whose frame is an invariant.
+- [Learn CN in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/cn.md) - Ownership, returned on exit, for a pointer and for every cell of an array.
+- [Learn Creusot in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/creusot.md) - Pearlite logic functions and the view of a Rust value in that logic.
+- [Learn Dafny in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/dafny.md) - Ghost lemmas, a frame, and a binary search whose invariant is the postcondition.
+- [Learn F* in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/fstar.md) - Refinements as preconditions and an SMT lemma whose body is the induction.
+- [Learn Flux in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/flux.md) - Predicates attached to Rust types, including the overflow check beside them.
+- [Learn Gobra in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/gobra.md) - Go comments for contracts, termination, and permission to each slice cell.
+- [Learn Gospel in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/gospel.md) - OCaml contracts in comments, including a checks clause a test can monitor.
+- [Learn HOL4 in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/hol4.md) - A Holmake script: a definition used by name, then an induction.
+- [Learn Idris 2 in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/idris.md) - Totality checking, and a vector whose length is part of its type.
+- [Learn Isabelle in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/isabelle.md) - Simplification when it is enough, and an induction when auto will not invent one.
+- [Learn JML in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/jml.md) - Java comments whose arithmetic is mathematical, with a bound so the code stays in range.
+- [Learn Kani in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/kani.md) - A bounded harness, and a contract the harness does not restate.
+- [Learn Lean 4 in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/lean.md) - Tactic proofs, a dependent index, and a loop whose conditions come from mvcgen.
+- [Learn Liquid Haskell in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/liquid-haskell.md) - Refinement types and a measure the solver uses without an induction.
+- [Learn Nagini in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/nagini.md) - Python calls that are contracts, including the variant of a loop.
+- [Learn Prusti in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/prusti.md) - Rust attributes for contracts, with ownership left to the borrow checker.
+- [Learn PVS in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/pvs.md) - A recursive definition whose typechecker emits the termination condition.
+- [Learn Rocq in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/rocq.md) - A Gallina program and the tactic proof that append distributes over sum.
+- [Learn SPARK in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/spark.md) - An expression function and a loop that must also be free of overflow.
+- [Learn Stainless in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/stainless.md) - Scala contracts on BigInt, so overflow is not the verification condition.
+- [Learn Velvet in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/velvet.md) - Dafny-style methods whose verification conditions are Lean goals.
+- [Learn Verus in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/verus.md) - The split between spec, proof, and exec, plus a loop variant.
+- [Learn Viper in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/viper.md) - Permissions that must be held, split, and given back.
+- [Learn WhyML in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/whyml.md) - A logical function, a variant, and the obligations Alt-Ergo receives.
 
 ## 🤖 AI Vericoding
 
@@ -337,7 +338,7 @@ To try AI vericoding:
 | [CoqGym](https://arxiv.org/abs/1905.09381)                                                               | 2019 | Rocq                 | 71K proofs from 123 projects  | Proof synthesis                                      |
 | [DafnyBench](https://arxiv.org/abs/2406.08467)                                                           | 2024 | Dafny                | 750+ programs                 | Annotation (hint) generation                         |
 | [FStarDataSet](https://huggingface.co/datasets/microsoft/FStarDataSet)                                   | 2024 | F*                   | 32K definitions               | Proof-oriented program synthesis                     |
-| [MBPP-DFY](https://github.com/Mondego/dafny-synthesis)                                                   | 2024 | Dafny                | 153 verified solutions        | Natural language to verified method                  |
+| [MBPP-DFY](https://github.com/Mondego/vRAG)                                                              | 2024 | Dafny                | 153 verified solutions        | Natural language to verified method                  |
 | [miniCodeProps](https://arxiv.org/abs/2406.11915)                                                        | 2024 | Lean                 | 201 specifications            | Proving program properties                           |
 | [Verus-Bench](https://github.com/microsoft/verus-proof-synthesis)                                        | 2024 | Verus                | 150 tasks                     | Proof generation                                     |
 | [CLEVER](https://arxiv.org/abs/2505.13938)                                                               | 2025 | Lean                 | 161 problems                  | Specification, code, and proof                       |
@@ -364,6 +365,7 @@ To try AI vericoding:
 - [VeCoGen: Automating Generation of Formally Verified C Code with Large Language Models](https://arxiv.org/abs/2411.19275) - Iterates on C code against ACSL specifications until Frama-C proves it correct. *FormaliSE 2025* · [Code](https://github.com/ASSERT-KTH/Vecogen)
 - [AlphaVerus: Bootstrapping Formally Verified Code Generation through Self-Improving Translation and Treefinement](https://arxiv.org/abs/2412.06176) - Bootstraps verified Rust by translating Dafny programs into Verus and refining failures with tree search. *ICML 2025* · [Code](https://github.com/cmu-l3/alphaverus)
 - [Re:Form: Reducing Human Annotations in Scalable Formal Software Verification with RL in LLMs](https://arxiv.org/abs/2507.16331) - Reinforcement learning with the Dafny verifier as reward teaches small models to write verifiable code. *TMLR 2026*
+- [Automating Formal Verification with Reinforcement Learning and Recursive Inference](https://arxiv.org/abs/2605.30914) - Thesis on training Dafny models with verifier rewards, where models exploited weak specifications, and on Lean proof search; adds the Dalek-Bench repository benchmark. *arXiv 2026*
 - [ATLAS: Automated Toolkit for Large-Scale Verified Code Synthesis](https://arxiv.org/abs/2512.10173) - Turns Python solutions into 2.7K verified Dafny programs for fine-tuning, lifting a 7B model on DafnyBench from 32% to 57%. *arXiv 2025*
 - [Propose, Solve, Verify: Self-Play Through Formal Verification](https://arxiv.org/abs/2512.18160) - Self-play in which a model proposes Verus problems and trains on verifier-checked solutions. *arXiv 2025*
 - [WybeCoder: Verified Imperative Code Generation](https://arxiv.org/abs/2603.29088) - Prove-as-you-generate agent for imperative code in Lean that solves 74% of VERINA and 62% of CLEVER. *arXiv 2026* · [Code](https://github.com/facebookresearch/wybecoder)
@@ -395,6 +397,8 @@ To try AI vericoding:
   - [Rango: Adaptive Retrieval-Augmented Proving for Automated Software Verification](https://arxiv.org/abs/2412.14063) - Retrieves relevant proofs and lemmas at every step and introduces the CoqStoq dataset of 197K theorems. *ICSE 2025*
   - [QEDCartographer: Automating Formal Verification Using Reward-Free Reinforcement Learning](https://arxiv.org/abs/2408.09237) - Learns a proof-search value function without hand-designed rewards. *ICSE 2025*
   - [Cobblestone: A Divide-and-Conquer Approach for Automating Formal Verification](https://arxiv.org/abs/2410.19940) - Splits Rocq goals and reuses partial LLM progress to prove more theorems cheaply. *ICSE 2026*
+  - [Agentic Verification of Software Systems](https://arxiv.org/abs/2511.17330) - AutoRocq agent refines Rocq proofs through prover feedback, evaluated on SV-COMP tasks and Linux kernel modules. *arXiv 2025*
+  - [Harnessing Code Agents for Automatic Software Verification](https://arxiv.org/abs/2607.06341) - Lets a code agent choose its own proof strategy for Rocq instead of following a fixed retrieve-and-predict pipeline. *arXiv 2026*
 - Rust and Verus
   - [Leveraging Large Language Models for Automated Proof Synthesis in Rust](https://arxiv.org/abs/2311.03739) - First study of GPT-4 writing Verus proofs, combined with static analysis and a developer in the loop. *arXiv 2023*
   - [AutoVerus: Automated Proof Generation for Rust Code](https://arxiv.org/abs/2409.13082) - Multi-agent pipeline that generates, refines, and repairs Verus proofs, verifying over 90% of Verus-Bench. *OOPSLA 2025*
@@ -404,6 +408,7 @@ To try AI vericoding:
   - [VeruSAGE: A Study of Agent-Based Verification for Rust Systems](https://arxiv.org/abs/2512.18436) - Agents complete over 80% of 849 proof tasks drawn from eight Verus-verified systems. *arXiv 2025*
   - [ExVerus: Verus Proof Repair via Counterexample Reasoning](https://arxiv.org/abs/2603.25810) - Repairs failing Verus proofs by generalizing concrete counterexamples into invariants. *arXiv 2026*
   - [KVerus: Scalable and Resilient Formal Verification Proof Generation for Rust Code](https://arxiv.org/abs/2605.03822) - Proof generation that survives Verus updates and produced upstream-accepted proofs for the Asterinas kernel. *ASE 2026* · [Code](https://github.com/asterinas/KVerus)
+  - [Curriculum proof repair with learned counterexamples](https://arxiv.org/abs/2611.13627) - This framework repairs Verus proofs using learned counterexamples and reinforcement learning across seven benchmarks with 471 problems. *NeurIPS 2026*
 - C and loop invariants
   - [Learning Loop Invariants for Program Verification](https://papers.nips.cc/paper_files/paper/2018/hash/65b1e92c585fd4c2159d5f33b5030ff2-Abstract.html) - Code2Inv learns to propose loop invariants with reinforcement learning and graph neural networks. *NeurIPS 2018* · [Code](https://github.com/PL-ML/code2inv)
   - [CLN2INV: Learning Loop Invariants with Continuous Logic Networks](https://arxiv.org/abs/1909.11542) - Learns invariants by relaxing logical formulas into trainable continuous networks. *ICLR 2020*
@@ -432,6 +437,7 @@ To try AI vericoding:
 - [VERT: Verified Equivalent Rust Transpilation with Large Language Models as Few-Shot Learners](https://arxiv.org/abs/2404.18852) - Checks LLM translations into Rust against an oracle with property-based testing and bounded model checking. *arXiv 2024*
 - [Verified Code Transpilation with LLMs](https://arxiv.org/abs/2406.03003) - Introduces LLMLift, which lifts code into a DSL and generates the invariants needed to prove the translation equivalent. *NeurIPS 2024*
 - [PyVeritas: On Verifying Python via LLM-Based Transpilation and Bounded Model Checking for C](https://arxiv.org/abs/2508.08171) - Transpiles Python to C with an LLM so CBMC can check it. *arXiv 2025*
+- [C-to-Rust Translation Validation at the LLVM IR Level via AI-Assisted Refinement Proof](https://arxiv.org/abs/2611.18036) - Validates C-to-Rust translation by proving in Rocq at the LLVM IR level that the Rust program refines the C program using AI-assisted refinement proofs. *arXiv 2026*
 
 ### 🧪 Field Reports
 
@@ -439,10 +445,12 @@ To try AI vericoding:
 
 - [lean-zip](https://github.com/kim-em/lean-zip) - DEFLATE and zlib in Lean 4, implemented and proved by loosely supervised AI agents, including a proof that decompression inverts compression for every input.
 - [Verifying Move Borrow Checker in Lean: An Experiment in AI-Assisted PL Metatheory](https://proofsandintuitions.net/2026/03/18/move-borrow-checker-lean/) - Ilya Sergey and an AI coding assistant produce 39,000 lines of mechanized metatheory for Move's borrow checker in under a month. *Blog 2026*
+- [Testing, Credible Compilation, and Verification in the Axon Verified Compiler in Lean and Claude Code](https://arxiv.org/abs/2605.01660) - A compiler whose code and proofs were all written in Lean by Claude Code, with a process that combines testing, translation validation, and proof. *PAgE 2026*
 - [A Rust-to-Lean Verification Pipeline with AI Provers: An Experience Report](https://arxiv.org/abs/2605.30106) - Lifts production Rust cryptography to Lean with Aeneas or hax and closes proof obligations with Aristotle and Aleph. *arXiv 2026*
 - [Postmortem for Kernel Soundness Bug #14576](https://leodemoura.github.io/blog/2026-8-1-postmortem-for-kernel-soundness-bug-14576/) - An AI-assisted "disproof" of the Collatz conjecture exploited a soundness bug in Lean's kernel, a reminder that the checker is part of what you trust. *Blog 2026*
 - [An AI Approach to Verified Production Cryptographic Libraries](https://arxiv.org/abs/2608.00965) - CryptoProver re-verifies curve25519-dalek and verifies RustCrypto's chacha20 against RFC 8439 in about 11 hours of agent time. *arXiv 2026*
 - [Fewer Assumptions by Design: A Reusable Skill for LLM-Assisted Verus Verification](https://arxiv.org/abs/2609.34886) - An agent skill that encodes domain knowledge lets LLMs verify doubly linked lists in Verus with fewer trusted assumptions. *FROM 2026*
+- [Introducing AlphaProof Code](https://deepmind.google/blog/introducing-alphaproof-code/) - DeepMind reports agents writing over three million lines of Lean proof for Signal's core cryptography, verified down to machine instructions. *Blog 2026*
 
 ### 🏆 Theorem-Proving Models
 
@@ -485,11 +493,20 @@ To try AI vericoding:
 
 - [ARIA Safeguarded AI](https://aria.org.uk/opportunity-spaces/trust-everything-everywhere/safeguarded-ai) - UK research programme funding AI systems whose behavior comes with formal, quantitative guarantees.
 - [Beneficial AI Foundation](https://www.beneficialaifoundation.org) - Nonprofit whose researchers released the vericoding benchmark and tools.
-- [Galois](https://www.galois.com) - Research company applying formal methods to high-assurance software for government and industry.
-- [Harmonic](https://www.harmonic.fun) - Company building Aristotle, a reasoning system whose outputs are verified in Lean.
 - [Lean FRO](https://lean-lang.org/fro/) - Focused research organization that develops Lean and its ecosystem.
-- [Logical Intelligence](https://logicalintelligence.com) - Company building Aleph, a Lean-based prover for automatic formal verification of generated code.
-- [Theorem](https://theorem.dev) - Startup building a verified software stack and cheaper proofs, starting with verified sandboxes for agents.
+
+### 💼 Companies
+
+> *Businesses that sell verification rather than hope*
+
+- [AdaCore](https://www.adacore.com) 🏭 - Maintains SPARK and GNATprove, with commercial support for high-integrity Ada code.
+- [Axiom](https://axiommath.ai) - Builds Lean-based tooling for machine-checked proofs, including the AXLE interactive proof environment.
+- [Certora](https://www.certora.com) - Develops the Certora Prover, which checks smart contracts against formal specifications.
+- [Galois](https://www.galois.com) - Research company applying formal methods to high-assurance software for government and industry.
+- [Harmonic](https://www.harmonic.fun) - Builds Aristotle, a reasoning system whose outputs are verified in Lean.
+- [Imandra](https://www.imandra.ai) - Sells automated reasoning and formal verification tools for industrial software, built around ImandraX.
+- [Logical Intelligence](https://logicalintelligence.com) - Builds Aleph, a Lean-based prover for automatic formal verification of generated code.
+- [Theorem](https://theorem.dev) - Builds a verified software stack and cheaper proofs, starting with verified sandboxes for agents.
 
 ## 🔍 Trust Checklist
 

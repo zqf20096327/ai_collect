@@ -14,9 +14,6 @@
   <a href="https://pepy.tech/project/be-great">
     <img alt="Downloads" src="https://static.pepy.tech/badge/be-great">
   </a>
-  <a href="https://discord.com/channels/1310217643520819251/1434507060141359134">
-    <img alt="Discord" src="https://img.shields.io/discord/1310217643520819251?color=7289da&label=Discord&logo=discord&logoColor=ffffff">
-  </a>
   <a href="https://colab.research.google.com/github/tabularis-ai/be_great/blob/main/examples/GReaT_colab_example.ipynb">
     <img alt="Open In Colab" src="https://colab.research.google.com/assets/colab-badge.svg">
   </a>

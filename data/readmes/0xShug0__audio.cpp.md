@@ -127,6 +127,7 @@ Core and community models are grouped by task and listed alphabetically within e
 | **sanotts** (C)<br>Ashish [@voidash](https://github.com/voidash) | TTS | en, vi, id, cs, de, es, fr, it, pt, ro, ru, tr, ne, hi | [sanoTTS voice family](docs/models/sanotts.md) | GGUF FP32 |
 | **soprano_tts** (C)<br>[@drzsdrtfg](https://github.com/drzsdrtfg) | TTS | en | [Soprano 1.1 80M](docs/models/soprano_tts.md) | GGUF Q8, Stream |
 | **sopro_tts** (C)<br>[@Brioch](https://github.com/Brioch)<br>[@samuel-vitorino](https://github.com/samuel-vitorino) | TTS, Clone | en, pt, fr, de | [Sopro V2 Turbo (2.2.0)](docs/models/sopro_tts.md) | Safetensors, GGUF F16, Stream |
+| **tiny_voca** (C)<br>Nazeem [@n4ze3m](https://github.com/n4ze3m) | TTS | en | [tiny-voca](docs/models/tiny_voca.md) | GGUF FP32 |
 | **supertonic** | TTS | en, ko, ja, ar, bg, cs, da, de, el, es, et, fi, fr, hi, hr, hu, id, it, lt, lv, nl, pl, pt, ro, ru, sk, sl, sv, tr, uk, vi, na | [Supertonic 3](docs/tts.md#supertonic) | GGUF F32, Stream |
 | **vibevoice** | TTS, Dialogue | en, zh | [VibeVoice-1.5B](docs/tts.md#vibevoice)<br>VibeVoice-7B | GGUF 16/Q8, Stream, LoRA |
 | **vieneu_v3_turbo** (C)<br>Bảo [@pnnbao97](https://github.com/pnnbao97)<br>[@phuocnguyen90](https://github.com/phuocnguyen90) | TTS, Clone | vi, en | [VieNeu-TTS v3 Turbo](docs/models/vieneu_v3_turbo.md) | GGUF |
@@ -210,6 +211,7 @@ Core and community models are grouped by task and listed alphabetically within e
 | **mel_band_roformer** | Sep | lang agnostic | [Mel-Band RoFormer](docs/audio_tools.md#mel-band-roformer) | GGUF 16/Q8 |
 | **miocodec** | Codec, VC | lang agnostic | [MioCodec v2](docs/audio_tools.md#miocodec) | GGUF 16/Q8 |
 | **mossformer2** | Sep, S2S · Enhancement / Super-resolution | lang agnostic | [MossFormer2 SS 16K / SE 48K / SR 48K](docs/models/mossformer2.md) | GGUF F32/F16 |
+| **rosvot** | MIDI | music | [ROSVOT singing transcription](docs/models/rosvot.md) | GGUF F32 |
 | **muscriptor** | MIDI | music | [MuScriptor Small/Medium/Large](docs/models/muscriptor.md) | GGUF F32, Stream |
 | **realtime_reuse** (C) | S2S · Speech enhancement | lang agnostic | [Real-time RE-USE](docs/models/realtime_reuse.md) | GGUF F32, Stream |
 | **reuse** (C) | S2S · Speech restoration | lang agnostic | [RE-USE](docs/models/reuse.md) | GGUF F32/F16/Q8_0 |
@@ -706,6 +708,28 @@ Common interface options:
 - `--weight <id>` selects a discovered weight asset
 - `--device <n>` selects the backend device
 - `--threads <n>` sets backend and OpenMP worker threads
+
+CLI options can also be loaded from a YAML file with `--config-file`. Use the option name
+without its leading dashes; scalar values map to one option, sequences repeat an option, and
+boolean values enable/disable valueless flags. For scalar options supplied in both places, the
+command-line value takes precedence:
+
+```yaml
+task: tts
+family: pocket_tts
+model: /path/to/model
+backend: cuda
+text: "Hello from YAML"
+voice-id: alba
+request-option:
+  - temperature=0.7
+metrics: true
+do-sample: false
+```
+
+```bash
+build/bin/audiocpp_cli --config-file run.yaml --text "CLI text overrides YAML"
+```
 
 Examples:
 

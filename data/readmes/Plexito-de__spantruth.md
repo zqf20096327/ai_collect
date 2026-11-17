@@ -196,7 +196,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: Plexito-de/spantruth@v0.4.2
+      - uses: Plexito-de/spantruth@v0.5.0
         with:
           subject: ./spantruth                       # or a built-in subject, such as openllmetry
           with: ./packages/my-instrumentation        # your checkout, one per line
@@ -233,9 +233,9 @@ endpoint per library, at `https://plexito-de.github.io/spantruth/badges/<subject
 
 - **Providers:** OpenAI Chat Completions and Anthropic Messages, sync and async. The OpenAI
   Responses API has its first scenario, a stream replayed from a recording.
-- **Scenarios (43):** plain call, stream, stream without usage, prompt-cache hit (plain, streamed,
-  with cumulative counts in `message_delta`, and with a 1-hour cache write next to a 5-minute
-  one), parallel tool calls, reasoning tokens, HTTP 429,
+- **Scenarios (45):** plain call, stream, stream without usage, prompt-cache hit (plain, streamed,
+  with cumulative counts in `message_delta`, with a 1-hour cache write next to a 5-minute one, and
+  an OpenAI cache write on GPT-5.6), parallel tool calls, reasoning tokens, HTTP 429,
   a stream the app leaves early (by `close()` and by a `with` block), a dropped connection, and
   Anthropic's mid-stream `error` event. Streams and failures run sync and async. A Responses API
   stream cut after eight recorded events replays kartsan03/wiretruth's

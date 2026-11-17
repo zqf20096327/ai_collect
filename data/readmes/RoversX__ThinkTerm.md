@@ -46,6 +46,12 @@ https://github.com/user-attachments/assets/7317e369-db86-463f-9379-a8a2ed4b602b
       <br><strong>Spaces</strong>
     </td>
   </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="assets/screenshots/mobile.jpeg" alt="ThinkTerm on iOS / iPadOS, built with Swift, and on Android, built with Kotlin" width="100%">
+      <br><strong>iOS, iPadOS and Android</strong>
+    </td>
+  </tr>
 </table>
 
 ## Performance
@@ -220,6 +226,8 @@ See [Browser access](docs/thinkterm/web-access.md) for listener setup, tokens, S
 ### Mobile development
 
 The [iOS](ios) and [Android](android) apps use native interfaces and the shared [mobile core](thinkterm-mobile). They connect over SSH to sessions on another machine. They are under active development and are not presented here as released mobile products.
+
+Android updates: [F-Droid repository](https://github.com/RoversX/fdroid/tree/dist).
 
 ## Getting started
 

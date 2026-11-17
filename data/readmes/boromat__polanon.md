@@ -432,12 +432,22 @@ http://localhost:11434/v1` for Ollama.
 | n8n | the Base URL of the OpenAI credential |
 | Open WebUI | the URL of an OpenAI API connection |
 | LibreChat | the `baseURL` of a custom endpoint in `librechat.yaml` |
+| an app on Anthropic's SDK, Claude Code | `base_url`, or `ANTHROPIC_BASE_URL`, as `http://127.0.0.1:8787` |
+
+A tool that speaks Anthropic's Messages API needs a gateway of its own, started with
+`--upstream https://api.anthropic.com/v1`; its key, sent as `x-api-key` or as a bearer token, is
+passed on as the OpenAI key is, and a base URL ending in `/v1` works for it too.
 
 What it does with a call:
 
-- It serves `/v1/chat/completions` and the Responses API, `/v1/responses`, streamed or not,
-  `/v1/embeddings` and `/v1/models`, and refuses every other endpoint, so nothing it cannot mask
-  leaves as it came.
+- It serves `/v1/chat/completions`, the Responses API, `/v1/responses`, and Anthropic's
+  Messages API, `/v1/messages`, streamed or not, with `/v1/messages/count_tokens`,
+  `/v1/embeddings` and `/v1/models`, and refuses every other endpoint, so nothing it cannot
+  mask leaves as it came.
+- With the Messages API the system prompt, the messages, the tools and the metadata are
+  masked, and the note about tokens joins the system prompt. A thinking block passes as the
+  model wrote it, from masked text: the provider checks its signature. The last check still
+  searches it.
 - With the Responses API the whole conversation comes with every call, as Hermes Agent sends it
   with `store: false`. A call that leaves it at the provider, with `previous_response_id` or
   `conversation`, or asks for a `background` response to fetch later, would bring back tokens no
@@ -457,19 +467,23 @@ What it does with a call:
 - `--paranoid` masks every name the spaCy model finds, as `mode="paranoid"` does. By default
   what it finds in English prose, code and identifiers is left out, since an agent's prompt,
   tools and logs are full of English words the Polish model takes for names.
+- `--allow NAME`, given as many times as needed, and `--allow-file PATH`, a file with one name
+  per line, leave readable the names the model has to see as they are, such as the assistant's
+  own and the company it speaks for; a person named so stays readable too. Everything else in
+  the prompt is masked as before.
 - It keeps nothing on disk. A tool sends the whole conversation with every call, and each call is
   masked and restored on its own. With `POLANON_KEY` set to 64 hexadecimal characters, a person
   keeps one token in every call and in every grammatical case.
 
 Keys stay with whoever runs the gateway, and come from the environment only. By default the
-tool's own key is passed on; `POLANON_UPSTREAM_KEY` sends another one instead. The gateway listens
-on `127.0.0.1`. To reach it from another machine, set `--host` and `POLANON_GATEWAY_KEY`, which
-every client must then send: without the key it refuses to start. The log names the path, the
+tool's own key is passed on; `POLANON_UPSTREAM_KEY` sends another one instead, as a bearer
+token or, to Anthropic, as `x-api-key`. The gateway listens on `127.0.0.1`. To reach it from
+another machine, set `--host` and `POLANON_GATEWAY_KEY`, which every client must then send,
+as a bearer token or as `x-api-key`: without the key it refuses to start. The log names the path, the
 status, the time and how many values of each type were masked, never a value.
 
 There is no hosted service: the gateway runs where it is installed, and whoever runs it answers
-for that machine, its keys and the provider the calls go to. Not supported yet: Anthropic's
-Messages API. The
+for that machine, its keys and the provider the calls go to. The
 [threat model](https://github.com/boromat/polanon/blob/main/docs/THREAT_MODEL.md#the-gateway) says
 what the gateway protects and what it does not.
 

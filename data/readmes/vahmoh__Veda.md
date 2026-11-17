@@ -221,5 +221,5 @@ Veda is free software under the
 Mohammadi. Its other parts (its fonts, firmware, toolchains, video
 decoder, web engine, Python and the crates its programs are built with)
 keep their own licences, whose texts the system carries in
-`/system/licences` and About Veda shows; see
+`/system/licences` and Settings shows on its About page; see
 [Licensing](documentation/LICENSING.md).

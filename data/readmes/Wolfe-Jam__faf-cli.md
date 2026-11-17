@@ -77,7 +77,7 @@ brew install wolfe-jam/faf/faf-cli && faf auto   # Homebrew (auto-taps)
 ## Quick Start
 
 ```bash
-# ANY GitHub repo — one shallow clone, no install, 2 seconds
+# Any public GitHub repo — one shallow clone, no install (fills the tech slots)
 bunx faf-cli git https://github.com/facebook/react
 
 # Your own project
@@ -194,6 +194,7 @@ The full manual lives at **[docs.faf.one](https://docs.faf.one)** — facts for 
 - [Getting started](https://docs.faf.one/getting-started) — install · run · use
 - [Cards](https://docs.faf.one/cards) — one `.fafa` → A2A · Server Card · registry · AI Catalog · ARD
 - [Custom rules](https://docs.faf.one/custom-rules) — pin instructions your AI must follow
+- [Every command](docs/COMMANDS.md) — one section per command, with real output
 
 For a specific agent: [Grok, xAI & Cursor 👀](docs/faf-cli-for-agents.md) · [Claude Code 👀](docs/faf-cli-for-claude.md) · [Bun 👀](docs/faf-cli-for-bun.md)
 

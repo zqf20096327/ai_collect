@@ -245,9 +245,11 @@ binaries in the same directory.
 
 The [release guide](docs/dev/releases.md) covers version selection and publication for macOS and Linux ARM64.
 
-Linux workspace tests run on Ubuntu ARM64 with user, mount, and process namespaces enabled.
+Linux workspace tests run on Ubuntu ARM64 and x86-64 with user, mount, and process namespaces enabled.
+The x86-64 jobs set `EXPERIMENTAL_X86_SUPPORT=TRUE` to test the experimental runtime.
 Unexpected prerequisite skips fail the job. The accepted alias-read limitation and missing
-credential-daemon fixture remain explicit in the report. Deterministic integration failures on either platform fail `CI Gate`.
+credential-daemon fixture remain explicit in the report. Workspace and deterministic integration
+failures on either Linux architecture or macOS fail `CI Gate`.
 
 The [macOS release guide](docs/dev/macos-release.md) covers the native-feature build,
 automated signing, notarization, package verification, and release gates.
@@ -279,6 +281,7 @@ is removed.
 Run `python3 -m unittest discover -s scripts -p 'test_*.py' -v` to test release packaging and the downloader.
 Continuous integration runs the downloader tests on Linux and macOS. These tests use local fixture archives
 and simulated HTTP clients; they do not qualify a published binary or its containment behavior.
+The [release guide](docs/dev/releases.md#rehearse) describes the architecture and system-library checks for Linux ARM64 and x86-64 packages.
 On Linux, the mount test requires util-linux and permission to create a user and mount namespace.
 It creates a `noexec` temporary mount only inside the test process's private namespace.
 

@@ -36,24 +36,27 @@
 
 ## Overview
 
-VT Code brings an agentic coding loop to your repo, in the terminal and as a native macOS app.
-Context, tool calls, and execution policy stay auditable and resumable across long tasks.
-It is open source under **MIT OR Apache-2.0**; see [Contributing](#contributing) and [License](#license).
+VT Code runs an auditable, resumable agentic coding loop in your repo — terminal TUI and native macOS app,
+open source under **MIT OR Apache-2.0** (see [Contributing](#contributing) and [License](#license)).
 
-| At a glance    | What you get                                                                                                                                                                                                                                                                                                                                 |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Planning**   | [Plan read-only](./docs/guides/planning-workflow.md), review [turn diffs](./docs/development/diff-preview.md); [HOVER](./docs/development/hypothesis-revision-validation.md) revises on mismatch.                                                                                                                                            |
-| **Safety**     | [Auditable command policy](./docs/security/SECURITY_MODEL.md) with sandboxing.                                                                                                                                                                                                                                                               |
-| **Long runs**  | [Headless exec](./docs/user-guide/exec-mode.md) with resume and compaction; [snapshots](./docs/user-guide/commands.md) roll back state; [subagents](./docs/user-guide/subagents.md) for parallel work.                                                                                                                                       |
-| **Extensions** | [MCP](./docs/guides/mcp-integration.md), [skills](./docs/skills/SKILLS_GUIDE.md), [plugins](./docs/guides/agent-plugins.md), [hooks](./docs/guides/hooks-guide.md), editor bridges; [A2A](./docs/a2a/README.md), [ACP](./docs/guides/zed-acp.md), [WebMCP](./docs/user-guide/webmcp.md), [Companion](./docs/user-guide/vtcode-companion.md). |
-| **Models**     | [Hosted or local providers](./docs/providers/PROVIDER_GUIDES.md) per task; [evals](./docs/guides/eval.md) measure behavior before release.                                                                                                                                                                                                   |
+<!-- markdownlint-disable MD060 -- compact table; keep pipes unpadded -->
 
-The full entry-point map is in [Documentation](#documentation).
+| At a glance   | What you get                                                                                                                                          |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Plan**      | [Plan read-only](./docs/guides/planning-workflow.md), review [turn diffs](./docs/development/diff-preview.md). |
+| **Safety**    | [Auditable command policy](./docs/security/SECURITY_MODEL.md) with sandboxing.                                                                        |
+| **Long runs** | [Headless exec](./docs/user-guide/exec-mode.md) with resume; [snapshots](./docs/user-guide/commands.md), [subagents](./docs/user-guide/subagents.md). |
+| **Extend**    | [MCP](./docs/guides/mcp-integration.md), [skills](./docs/skills/SKILLS_GUIDE.md), [plugins](./docs/guides/agent-plugins.md), editor bridges.          |
+| **Models**    | [Hosted or local providers](./docs/providers/PROVIDER_GUIDES.md) per task.                                                                            |
+
+<!-- markdownlint-enable MD060 -->
+
+Full map in [Documentation](#documentation).
 
 ## Quick start
 
-Three steps on macOS, Linux, or Windows/WSL. Building from source needs Rust 1.100.0+ (edition 2024).
-VT Code ships its own search engine; see the [installation guide](./docs/installation/README.md) for prerequisites.
+Three steps on macOS, Linux, or Windows/WSL. Windows artifacts are best effort; source builds need Rust 1.100.0+
+(edition 2024). See the [installation guide](./docs/installation/README.md) for all methods.
 
 ### 1. Install
 
@@ -62,42 +65,42 @@ VT Code ships its own search engine; see the [installation guide](./docs/install
 curl -fsSL https://raw.githubusercontent.com/vinhnx/vtcode/main/scripts/install.sh | bash
 ```
 
-Or install with Homebrew or Cargo (desktop cask: see [Desktop app](#desktop-app)):
+Or with Homebrew or Cargo:
 
 ```bash
 brew trust vinhnx/tap
 brew install vinhnx/tap/vtcode
 
-# Or install from crates.io (published; see the installation guide)
+# Or from crates.io (see the installation guide)
 cargo install vtcode
 ```
 
-On Windows (best-effort artifacts; may lag behind macOS/Linux and may not appear in every release):
+Desktop app: see [Desktop app](#desktop-app).
+
+On Windows:
 
 ```powershell
 irm https://raw.githubusercontent.com/vinhnx/vtcode/main/scripts/install.ps1 | iex
 ```
 
-Verify with `vtcode --version`. The [installation guide](./docs/installation/README.md) covers remaining
-methods and desktop flags.
+Verify with `vtcode --version`.
 
 ### 2. Configure your project
 
-From your project directory, scaffold config and store credentials:
+From your project directory:
 
 ```bash
 cd path/to/your/project
-vtcode init                # scaffolds config + AGENTS.md; review before committing
-vtcode secret add openai   # replace `openai` with your provider
+vtcode init # scaffolds vtcode.toml, .vtcode/, and AGENTS.md; review before committing
+vtcode secret add openai # replace `openai` with your provider
 ```
 
-Keys use secure storage (OS keyring or encrypted file); environment variables, a workspace `.env` file, or
-`vtcode login` work where supported. See [getting started](./docs/user-guide/getting-started.md) and the
-[provider guides](./docs/providers/PROVIDER_GUIDES.md). ChatGPT users can use in-process OAuth via
-`vtcode login openai` (or `--from-codex` to reuse the Codex CLI login); GitHub Copilot uses the official
-`copilot` CLI — see [OAuth authentication](./docs/guides/oauth-authentication.md).
+Keys stay in secure storage (OS keyring or encrypted file); env vars, workspace `.env`, or `vtcode login`
+work where supported. See [getting started](./docs/user-guide/getting-started.md) and
+[provider guides](./docs/providers/PROVIDER_GUIDES.md). ChatGPT: `vtcode login openai` (or `--from-codex`);
+Copilot uses the official `copilot` CLI — see [OAuth authentication](./docs/guides/oauth-authentication.md).
 
-> **Caution:** Keep API keys out of Git and `vtcode.toml`; never commit a workspace `.env` file.
+> **Caution:** Keep API keys out of Git and `vtcode.toml`, and never commit a workspace `.env` file.
 
 ### 3. Run your first task
 
@@ -105,12 +108,12 @@ Keys use secure storage (OS keyring or encrypted file); environment variables, a
 vtcode   # open the interactive TUI
 ```
 
-Ask one focused question, review the proposed changes and test results, then commit.
-[Usage](#usage) covers automation and session commands.
+Ask one focused question, review the changes and test results, then commit. See [Usage](#usage) for automation
+and session commands.
 
 ## Usage
 
-Common commands (full list in the [command reference](./docs/user-guide/commands.md)):
+Common commands (full list in [command reference](./docs/user-guide/commands.md)):
 
 | Goal                    | Command                                            |
 | ----------------------- | -------------------------------------------------- |
@@ -124,25 +127,25 @@ Common commands (full list in the [command reference](./docs/user-guide/commands
 | Roll back a snapshot    | `vtcode snapshots` / `vtcode revert`               |
 | Inspect a run log       | `vtcode trajectory`                                |
 
-For larger tasks, start read-only, review the turn diff before committing, and use `/explain` for a
-summary without another model call. See the [interactive guide](./docs/user-guide/interactive-mode.md).
+For larger tasks, start read-only, review the turn diff, and use `/explain` for a summary
+without another model call. See [interactive mode](./docs/user-guide/interactive-mode.md).
 
 ### Modes
 
-- **`ask`** is tool-free: it prints one reply and exits.
-- **`exec`** runs the full tool loop and needs explicit workspace trust: approve the TTY prompt, or set
-  `VTCODE_TRUST_WORKSPACE=full-auto` for non-TTY runs (`deny` refuses trust instead of prompting).
-  `[automation.full_auto]` allow-lists, denies, and execution policy still apply.
-- **`review`** inspects uncommitted changes without running the agent loop.
+- **`ask`** is tool-free: prints one reply and exits.
+- **`exec`** runs the full tool loop and needs workspace trust: approve the TTY prompt, or set
+  `VTCODE_TRUST_WORKSPACE=full-auto` for non-TTY runs (`deny` refuses instead of prompting). Allow/deny lists and
+  execution policy still apply.
+- **`review`** inspects uncommitted changes without the agent loop.
 
-Scheduled work reuses the same exec runtime. Resume or fork with `vtcode continue` (or `--session-id <id>`),
-and resume headless runs with `vtcode exec resume --last "<prompt>"`. See [exec mode](./docs/user-guide/exec-mode.md)
+Scheduled work reuses the exec runtime. Resume with `vtcode continue` (or `--session-id <id>`);
+resume headless runs with `vtcode exec resume --last "<prompt>"`. See [exec mode](./docs/user-guide/exec-mode.md)
 and [full automation](./docs/guides/full-automation.md).
 
 ## Desktop app
 
-The native macOS app (macOS 15+, Apple Silicon or Intel) shares the CLI runloop, providers, tool policy,
-sandboxing, sessions, configuration, and credentials. Configure a provider first (see [Quick start](#quick-start)).
+Native macOS app (macOS 15+) sharing the CLI runloop, providers, tool policy,
+sandboxing, sessions, config, and credentials. Configure a provider first (see [Quick start](#quick-start)).
 
 ### Install (macOS 15+)
 
@@ -151,19 +154,20 @@ brew trust vinhnx/tap
 brew install --cask vinhnx/tap/vtcode-desktop
 ```
 
-Update with `brew upgrade --cask vinhnx/tap/vtcode-desktop`. Without Homebrew, use the
-[latest release](https://github.com/vinhnx/vtcode/releases/latest) or `vtcode desktop --install`, then launch
-with `vtcode desktop` or from Finder.
+Update cask installs with `brew upgrade --cask vinhnx/tap/vtcode-desktop`. Without Homebrew, download the
+[latest release](https://github.com/vinhnx/vtcode/releases/latest) or run `vtcode desktop --install`,
+then launch with `vtcode desktop` or from Finder. The cask ships Apple Silicon builds; Intel Macs install
+from source with `vtcode desktop --install` (see [installation guide](./docs/installation/README.md)).
 
 > [!WARNING]
-> **First launch needs a one-time approval** for ad hoc-signed builds (Homebrew cask included): open once,
-> click **Open Anyway** in **System Settings › Privacy & Security**, then reopen. Notarized releases skip this.
-> See the [desktop workspace guide](./docs/development/desktop-workspace.md) for requirements and troubleshooting.
+> **First launch needs one-time approval** for ad hoc-signed builds (Homebrew cask included):
+> open the app once from Applications, click **Open Anyway** in **System Settings › Privacy & Security**,
+> then reopen from Finder (or `vtcode desktop`). The button expires about an hour after a blocked launch —
+> reopen the app to bring it back. Notarized releases skip this. See [desktop workspace](./docs/development/desktop-workspace.md).
 
 ## Documentation
 
-Start from the [documentation index](./docs/INDEX.md) or [Wiki](https://github.com/vinhnx/vtcode/wiki).
-Curated entry points by task:
+Start from the [documentation index](./docs/INDEX.md) or [Wiki](https://github.com/vinhnx/vtcode/wiki):
 
 ### Start
 
@@ -178,8 +182,8 @@ Curated entry points by task:
 
 ### Automate
 
-- [Full automation](./docs/guides/full-automation.md) and [decisions probe](./docs/guides/decisions-probe.md)
-- [Scheduled tasks](./docs/user-guide/scheduled-tasks.md) and [hooks](./docs/guides/hooks-guide.md)
+- [Full automation](./docs/guides/full-automation.md) and [scheduled tasks](./docs/user-guide/scheduled-tasks.md)
+- [Hooks](./docs/guides/hooks-guide.md) and [decisions probe](./docs/guides/decisions-probe.md)
 
 ### Extend
 
@@ -193,13 +197,13 @@ Curated entry points by task:
 
 - [Development](./docs/development/README.md), [testing](./docs/development/testing.md), and
   [evals](./docs/guides/eval.md)
-- [Architecture](./docs/ARCHITECTURE.md), [desktop app](./docs/development/desktop-workspace.md),
+- [Architecture](./docs/ARCHITECTURE.md), [desktop workspace](./docs/development/desktop-workspace.md),
   [loop engineering](./docs/project/PLAN-loop-engineering.md), and [protocols](./docs/protocols/OPEN_RESPONSES.md)
 
 ## Development
 
-Non-exhaustive sketch of the 25-crate workspace (the [architecture guide](./docs/ARCHITECTURE.md) covers the
-full crate list; `default-members` build only the root binary, `vtcode-core`, and `vtcode-ui`):
+25-crate workspace sketch (full list in the [architecture guide](./docs/ARCHITECTURE.md); `default-members` builds
+only the root binary, `vtcode-core`, and `vtcode-ui`):
 
 ```mermaid
 graph LR
@@ -211,7 +215,7 @@ graph LR
     CORE --> UI["vtcode-ui"]
 ```
 
-Build with Rust 1.100.0+ (edition 2024; workspace version 0.182.3).
+Build with Rust 1.100.0+ (edition 2024; workspace version 0.182.4):
 
 ```bash
 git clone https://github.com/vinhnx/vtcode.git
@@ -221,24 +225,20 @@ cd vtcode
 cargo nextest run          # tests via nextest (see testing guide)
 ```
 
-CI builds with `--locked` and `RUSTFLAGS="-D warnings"`; match locally with
-`RUSTFLAGS="-D warnings" cargo check --locked`. See the [development overview](./docs/development/README.md) and
-[testing guide](./docs/development/testing.md).
+CI uses `--locked` and `RUSTFLAGS="-D warnings"`; match locally with
+`RUSTFLAGS="-D warnings" cargo check --locked`. See [development](./docs/development/README.md) and
+[testing](./docs/development/testing.md).
 
 Release binaries and notes live on [GitHub releases](https://github.com/vinhnx/vtcode/releases).
 
 ## Contributing
 
-VT Code is open source and community-driven. Forking, modifying, and contributing are all welcome.
-
-- **Fork and modify:** keep changes in your fork or send them back as a pull request.
-- **Contribute upstream:** code, docs, [evals](./docs/guides/eval.md), bug fixes, and features are welcome;
-  bug reports should include `vtcode trajectory` output where possible.
-- **Before you open a PR:** read the [contribution guide](./docs/CONTRIBUTING.md); start with a
-  [good first issue](https://github.com/vinhnx/vtcode/labels/good%20first%20issue) or
-  [help wanted](https://github.com/vinhnx/vtcode/labels/help%20wanted) item.
-
-If you fork and ship your own variant, keep the license and third-party notices intact (see [License](#license)).
+VT Code is open source and community-driven. Code, docs, [evals](./docs/guides/eval.md), and fixes are welcome —
+include `vtcode trajectory` output in bug reports where possible. Before a PR, read
+[contributing](./docs/CONTRIBUTING.md) and start with a [good first
+issue](https://github.com/vinhnx/vtcode/labels/good%20first%20issue) or [help
+wanted](https://github.com/vinhnx/vtcode/labels/help%20wanted) item. Forks: keep license and third-party notices
+intact (see [License](#license)).
 
 ## Security
 
@@ -253,14 +253,13 @@ reporting](https://github.com/vinhnx/vtcode/security/advisories/new). See the [s
 - [Good first issues](https://github.com/vinhnx/vtcode/labels/good%20first%20issue) · [Help wanted](https://github.com/vinhnx/vtcode/labels/help%20wanted)
 - [Fork the repo](https://github.com/vinhnx/vtcode/forks)
 
-The [Code of Conduct](./docs/CODE_OF_CONDUCT.md) keeps review constructive.
-Contact: `vinhnguyen2308 [at] gmail [dot] com`.
+The [Code of Conduct](./docs/CODE_OF_CONDUCT.md) keeps review constructive. Contact: `vinhnguyen2308 [at] gmail [dot] com`.
 
 ## Thanks to our contributors
 
 Thank you to everyone below. You are the reason this project keeps moving.
 
-<details>
+<details open> <!-- NOTE: keep open by default. DO NOT CLOSE this -->
 <!-- CONTRIBUTORS-COUNT:START --><summary>View all contributors (31)</summary><!-- CONTRIBUTORS-COUNT:END -->
 
 <!-- CONTRIBUTORS:START -->

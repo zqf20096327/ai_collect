@@ -301,7 +301,7 @@ Open the link it prints, `http://127.0.0.1:8000/?token=…`. Listening beyond th
 loopback, the console asks for an access token: a new one each start, or your own with
 `-e VOXA_TOKEN=…`. Publishing on `127.0.0.1` keeps it off your network as well. Uploads, jobs
 and dubs stay in the mounted folder, and so do keys you add in Settings (in its `.env`); you can
-pass them with `-e` instead. Engines go into the `voxa-engines` volume, from the console's Models
+pass them with `-e` instead. Engines go into the `voxa-engines` volume, from the console's Engines
 page or from the CLI:
 
 ```bash
@@ -367,7 +367,7 @@ voxa doctor --deep     # also loads XTTS and pyannote, which break on dependency
 > **Engines in environments of their own.** Chatterbox pins its own versions of PyTorch and
 > transformers, so `voxa engines install chatterbox` puts it in a separate environment under
 > `~/.voxa/engines` instead of next to Voxa; nothing clashes, and `voxa engines remove
-> chatterbox` deletes it. The console's **Models** page does the same with a click. On a laptop
+> chatterbox` deletes it. The console's **Engines** page does the same with a click. On a laptop
 > CPU it took 40–60 seconds per sentence, so a GPU makes the difference here; every clip it
 > makes carries Resemble AI's inaudible PerTh watermark. With faster-whisper installed, Voxa
 > also cuts the words Chatterbox sometimes adds after a line.
@@ -396,9 +396,10 @@ voxa doctor --deep     # also loads XTTS and pyannote, which break on dependency
 > their training data was released for research only), so check that before commercial
 > use — see [NOTICE](NOTICE.md#47-engines-in-environments-of-their-own-voxa-engines).
 
-**4. GPU acceleration** — optional, NVIDIA only.
+**4. GPU acceleration** — optional: NVIDIA, and experimentally Apple Silicon.
 
-Voxa detects CUDA on its own; there is no flag to turn it on. What it speeds up:
+Voxa detects CUDA on its own; there is no flag to turn it on (`--device cpu` keeps everything on
+the CPU). What it speeds up:
 
 | Stage | On GPU |
 |---|---|
@@ -439,7 +440,14 @@ When the GPU is in use, the run log prints `⚙️  Using device: CUDA` at the t
 > [!NOTE]
 > `--whisper-backend faster` (CTranslate2) runs on the GPU too, but needs NVIDIA's cuBLAS and
 > cuDNN libraries: `pip install nvidia-cublas-cu12 nvidia-cudnn-cu12`.
-> Voxa checks for **CUDA only** — Apple Silicon (MPS) and AMD GPUs fall back to CPU.
+> AMD GPUs fall back to the CPU.
+
+**Apple Silicon (experimental).** `--device mps` (or Settings → Advanced in the console) tries the
+Mac's GPU for Whisper transcription, diarization, Chatterbox and Demucs. Each falls back to the
+CPU if it fails there, so a dub never stops for it; XTTS, VoxCPM2 and `--whisper-backend faster`
+stay on the CPU. It is off by default because it hasn't been measured on a Mac yet: Whisper on
+MPS may even be slower than on the CPU. `voxa doctor` says when the GPU is there; if you try it,
+an issue with what you measured helps decide whether it should become the default.
 
 ## Configuration
 
@@ -506,8 +514,25 @@ voxa video.mp4 --target_lang fr --translator ollama --tts piper
 # See what a run would do — engines, output path, cached steps — without running it
 voxa video.mp4 --target_lang ru --dry-run
 
+# Hear the first 20 seconds before dubbing it all (or --preview 45): video.preview20s_dubbed_ru.mp4
+voxa video.mp4 --target_lang ru --preview
+
 # Subtitles only, no synthesis
 voxa video.mp4 --target_lang es --subtitles-only
+
+# ...in the video too: as a track players can turn on (soft), or drawn onto the picture (hard)
+voxa video.mp4 --target_lang es --subtitles-only --subtitles-in-video hard
+
+# A dub with its subtitles in it
+voxa video.mp4 --target_lang es --subtitles-in-video soft
+
+# Check the translation before it's voiced: it stops once the lines are translated; change
+# any in video_work/translated.json, then run again without --review. Change a line later
+# and run again: only that line is voiced again.
+voxa video.mp4 --target_lang de --review
+
+# Voice lines translated elsewhere (an .srt, or JSON the way translated.json holds them)
+voxa video.mp4 --target_lang de --translation lines.de.srt
 
 # Dub from an existing SRT — skip Whisper (hand-corrected captions, or subtitles you already have)
 voxa video.mp4 --target_lang de --subtitles captions.srt
@@ -517,6 +542,10 @@ voxa screencast.mp4 --target_lang de --subtitles script.srt
 
 # Give every speaker their own voice (interviews, podcasts) — needs a Hugging Face token
 voxa video.mp4 --target_lang de --diarize --num-speakers 2 --hf-token hf_...
+
+# Choose the voice: list a language's voices, then name one
+voxa voices --lang az
+voxa video.mp4 --target_lang az --edge-voice az-AZ-BanuNeural
 
 # Several videos in one command
 voxa a.mp4 b.mp4 c.mp4 --target_lang ru
@@ -558,9 +587,9 @@ Started with `--host 0.0.0.0`, to reach it from another machine, it asks for an 
 given in the link it prints (or yours, from `--token` or `VOXA_TOKEN`).
 
 <div align="center">
-<img src="docs/assets/app-en.png" alt="The local operator console after a finished dubbing job" width="820">
+<img src="docs/assets/app-en.png" alt="The Voxa console: a finished dub, with its translation open to change" width="820">
 <br>
-<sub>Upload a video, pick engines, watch the seven-step pipeline live, download the dub.</sub>
+<sub>A finished dub: watch it, download it with its subtitles, change any line. Only the lines you change are voiced again.</sub>
 </div>
 
 ```bash
@@ -577,6 +606,26 @@ running. Without the extra, or on Linux without GTK or Qt, it opens your browser
 
 The console comes inside the package: no Node, no second terminal. Working on the console
 itself? Run `npm run dev` in [`web/`](web/) next to `voxa serve`.
+
+**Subtitles.** *Make* a dubbed video, or subtitles only, with no voice; and put the subtitles
+in the video as a track players can turn on, or drawn onto the picture for players and sites
+that show none. Either way they are cut to read on screen, at most two lines of about 42
+characters, and the console's player shows them.
+
+**Choose the voices.** *Voices* lists the voices for a language, to hear Edge's and Piper's
+first, and keeps your own clips (3 to 30 seconds of one person) to clone voices from with
+XTTS, Chatterbox and VoxCPM2. A new job takes one of them as its voice; a job being reviewed,
+or a finished one, can take another, and with speakers detected, one for each speaker, heard
+saying their own first line.
+
+**Hear it before dubbing it all.** *Preview the first 20 s* dubs just the start of the video,
+in a minute or two, with the settings you picked; if you like it, *Dub the whole video* starts
+a job for all of it with the same settings, and the preview stays.
+
+**Check the translation before it's voiced.** Tick *Review* on a new job and it stops once the
+lines are translated, each under the line it came from, with about how many characters fit its
+time. Change any, then *Voice it*. A finished job can be changed too (*Change the
+translation*), and only the lines you change are voiced again.
 
 It also carries the settings the CLI reads: API keys (kept in your local `.env`, never echoed
 back), per-provider models with a connection test, translation style, and speech style presets.

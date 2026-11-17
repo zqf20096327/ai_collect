@@ -108,7 +108,21 @@ Before the AI sees anything, you control the pool:
 - **Minimum rating** — Only tracks rated 3+, 4+, etc. (Plex only; Jellyfin has no star ratings)
 - **Exclude live versions** — Skip concert recordings automatically
 
-Real-time track counts show exactly how your filters narrow results.
+Real-time track counts show exactly how your filters narrow results. Your last genre selection is remembered and used as the starting point whenever the AI has no suggestion of its own.
+
+Genre tags that hold several genres in one string ("Rock; Pop") are split on `;` and `,` when the library is synced.
+
+### Smart Genre Grouping
+
+Libraries tagged from several sources can end up with hundreds of genre tags: "Hip-Hop", "Hip Hop" and "Rap/Hip-Hop" side by side, plus things that aren't genres at all ("seen live", "melancholy"). Turn on **Settings → Smart Genre Grouping** and your AI provider sorts the tags into a short list of groups.
+
+- **Off by default.** Settings shows what grouping your library would cost before you turn it on. A Jellyfin library with 200 tags took about 4,500 tokens, under a cent on Gemini 3.8 Flash, and 20 seconds
+- **The genre filter gets a grouped view**: one chip per group, which you can expand to pick individual tags. "All tags" switches back to the raw list. Selecting a group selects the tags in it; filtering always works on your original tags, and nothing is changed on your media server
+- **Non-genre tags** and **Untagged** tracks are listed separately and left out unless you select them
+- **Prompt analysis picks from the groups**, so "mellow jazz" finds every spelling of your jazz tags
+- **Later syncs are cheap**: nothing is sent when the tag list hasn't changed, and otherwise only the new tags are, so existing groups stay put. If more than 30% of the tags are new, everything is regrouped
+- **Regenerate Genre Groups** in Settings regroups everything from scratch; existing groups may change
+- If the AI call fails, or no provider is configured, the previous groups (or the plain tag list) keep working
 
 ### Local Library Cache
 
@@ -130,7 +144,7 @@ Bring your own API key—or run locally:
 | Provider | Max Tracks | Typical Cost | Best For |
 |----------|------------|--------------|----------|
 | **Google Gemini** | ~22,000 | $0.03 – $0.25 | Large libraries, lowest cost |
-| **Anthropic Claude** | ~4,400 (Haiku) / ~22,000 (Sonnet, Opus) | $0.15 – $1.00 | Nuanced recommendations |
+| **Anthropic Claude** | ~22,000 | $0.01 – $0.40 | Nuanced recommendations |
 | **OpenAI GPT** | ~23,000 | $0.01 – $0.20 | Solid all-around |
 | **Ollama** ⚗️ | Varies | Free | Privacy, local inference |
 | **Custom** ⚗️ | Configurable | Free | Self-hosted, OpenAI-compatible APIs |
@@ -151,6 +165,18 @@ Estimated cost displays before you generate. MediaSage auto-detects your provide
 - Remove tracks you don't want
 - Rename the playlist
 - See actual token usage and cost
+
+### Scheduled Refresh
+
+- After saving a playlist made from a prompt, choose **Schedule automatic refreshes** to have MediaSage regenerate it every day or every week at a set hour, replacing its tracks with new picks from the same request and filters
+- **Every refresh calls your AI provider and costs what generating the playlist cost.** The dialog shows the cost per refresh and per month before you confirm; local models (Ollama, custom) cost nothing
+- Manage schedules under **Settings → Scheduled Playlists**: edit, pause, resume, run now, delete, and see the last result, the next run and the total spent
+- A schedule pauses itself after 3 failed runs in a row, and a failed run waits for its next slot instead of retrying
+- Runs missed while MediaSage was stopped happen once when it starts again
+- Refreshes don't appear in the history; on Plex the playlist's description is updated with the new curator note (Jellyfin playlists have no description)
+- Playlists made from a seed track can't be scheduled yet
+
+MediaSage has no login, so anyone who can reach it can create a schedule that spends your AI credit. Keep it on a trusted network.
 
 ---
 
@@ -389,9 +415,9 @@ MediaSage uses a two-model strategy by default:
 | Role | Purpose | Models Used |
 |------|---------|-------------|
 | **Analysis** | Interpret prompts, suggest filters, analyze seed tracks | claude-sonnet-5-5 / gpt-6.1-sol / gemini-3.5-flash-lite |
-| **Generation** | Select tracks from filtered list | claude-haiku-4-5 / gpt-6-luna / gemini-3.5-flash-lite |
+| **Generation** | Select tracks from filtered list | claude-haiku-5-5 / gpt-6-luna / gemini-3.5-flash-lite |
 
-This balances quality with cost. Choose other models in Settings, or with `LLM_MODEL_ANALYSIS` / `LLM_MODEL_GENERATION` (which override Settings). For Claude, a 1M-context generation model such as `claude-sonnet-5-5` fits ~5x more tracks than Haiku at about twice the per-token price. Enable `smart_generation: true` to use the analysis model for everything.
+This balances quality with cost. Choose other models in Settings, or with `LLM_MODEL_ANALYSIS` / `LLM_MODEL_GENERATION` (which override Settings). For Claude, Haiku 5.5 bills a request at five times its base rate once the prompt passes 100,000 tokens (about 3,000 tracks), so sending more tracks than that costs noticeably more. Enable `smart_generation: true` to use the analysis model for everything.
 
 ### Local LLM Setup (Experimental)
 
@@ -528,13 +554,18 @@ Interactive documentation available at `/docs` when running.
 | `/api/generate/stream` | POST | Stream playlist generation (SSE) |
 | `/api/playlist` | POST | Save playlist to Plex or Jellyfin |
 | `/api/playlist/update` | POST | Replace or append to a playlist |
-| `/api/recommend/albums/preview` | GET | Preview album candidates for filters |
+| `/api/recommend/albums/preview` | GET/POST | Preview album candidates for filters |
+| `/api/genres/groups` | GET | Smart genre groups, non-genre tags, untagged count, last run and cost estimate |
+| `/api/genres/groups/regenerate` | POST | Regroup every genre tag from scratch |
 | `/api/recommend/analyze-prompt` | POST | Analyze prompt for genre/decade filters |
 | `/api/recommend/questions` | POST | Generate clarifying questions |
 | `/api/recommend/generate` | POST | Generate album recommendations |
 | `/api/recommend/switch-mode` | POST | Switch library/discovery mode |
 | `/api/results` | GET | List saved result history |
 | `/api/results/{id}` | GET/DELETE | Get or delete a saved result |
+| `/api/schedules` | GET/POST | List scheduled playlist refreshes, or schedule one (`result_id`, `playlist_id`, `frequency` daily/weekly, `hour`, `weekday`, `timezone`, `confirm_cost`) |
+| `/api/schedules/{id}` | PATCH/DELETE | Pause or resume a schedule (`enabled`), change when it runs (`frequency`, `hour`, `weekday`, `timezone`), or delete it |
+| `/api/schedules/{id}/run` | POST | Refresh a scheduled playlist now |
 | `/api/plex/clients` | GET | List active Plex clients |
 | `/api/plex/playlists` | GET | List existing Plex playlists |
 | `/api/jellyfin/playlists` | GET | List existing Jellyfin playlists |

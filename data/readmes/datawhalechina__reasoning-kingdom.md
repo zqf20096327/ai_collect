@@ -19,7 +19,7 @@
 
 1. **前传**：《致未来的推理科学家》——面向青少年和业余读者的推理科学入门
 2. **上卷**：《推理的历史演变》——从熵增到边界，沿历史线索追问推理的本质  
-3. **下卷**：《推理的形式演绎》——从形式系统出发，用逻辑演绎重建推理王国，最终在第23章以永霖–李雅普诺夫对应描述推理系统的收敛边界
+3. **下卷**：《推理的形式演绎》——从形式系统出发，用逻辑演绎重建推理王国，最终在第23章以永霖推论描述推理系统的收敛边界与对数曲线
 
 这不是 AI 工具书，也不是机器学习教程。它追问的是更底层的问题：推理是什么？它的边界在哪里？当 AI 在"推理"，它内部发生了什么？
 
@@ -55,8 +55,6 @@
 - 探索推理的本质：区分"概率预测"与"逻辑推理"
 - 培养科学思考习惯：像科学家一样拆解复杂问题
 
-**新增兔狲学院**：面向即将上大学的高中生（AP学生/准大学生）的维基百科式词条教学，包含数学基础综合、AI数学基础、微积分、线性代数、哲学、Python编程六个章节，每个词条包含官方解释+兔狲老师解释+动手题+动脑题。
-
 ### 上卷：《推理的历史演变》（问题驱动，直觉先行）
 
 从对抗熵增的生存策略出发，沿历史脉络走过符号主义、表示学习、因果推断、复杂度理论，直到现代 Transformer 架构和推理边界。问题驱动，直觉先行。适合对 AI 有基本了解、想理解"为什么"的读者。
@@ -65,7 +63,7 @@
 
 ### 下卷：《推理的形式化重建》（逻辑演绎，地基夯实）
 
-从形式系统的地基出发，严格重建推理的结构：命题逻辑、哥德尔不完备定理、线性逻辑、概率推断、因果演算、计算复杂度、PAC 学习、Kolmogorov 复杂度、Curry-Howard 对应、动力系统稳定性，最终在第23章以永霖–李雅普诺夫对应收束。
+从形式系统的地基出发，严格重建推理的结构：命题逻辑、哥德尔不完备定理、线性逻辑、概率推断、因果演算、计算复杂度、PAC 学习、Kolmogorov 复杂度、Curry-Howard 对应，最终在第23章以永霖推论收束。
 
 目标风格是 Spivak 的《Calculus》和 Axler 的《Linear Algebra Done Right》：定义严格，但叙事把定义粘在一起。作者在场，有判断，有态度。
 
@@ -79,17 +77,17 @@
 
 **词条结构**：每个词条包含官方解释（标准学术定义）、兔狲说（个人解读带立场）、为什么重要、延伸思考、相关词条
 
-**覆盖范围**：153个核心概念，覆盖全书物理、信息、推理、AI、计算、逻辑等多个领域
+**覆盖范围**：152个核心概念，覆盖全书物理、信息、推理、AI、计算、逻辑等多个领域
 
 ---
 
-> 这三部曲说的是同一件事：**推理如何从对抗熵增的生存策略，演变为受计算复杂度限制的算法过程，在形式系统中被严格重建，并在第23章用动力系统描述它的收敛边界。**
+> 这三部曲说的是同一件事：**推理如何从对抗熵增的生存策略，演变为受计算复杂度限制的算法过程，在形式系统中被严格重建，并在第23章用永霖推论描述它的收敛边界与对数曲线。**
 
 ---
 
 ## 目录
 
-### 前传：《致未来的推理科学家》（18章 + 兔狲学院）
+### 前传：《致未来的推理科学家》（18章）
 
 **全书共18章，分四部分**：确定性的宇宙（7章）→ 跨越逻辑的断裂带（2章）→ 神经网络的涌现（6章）→ 通往推理王国（3章）
 
@@ -118,13 +116,6 @@
 | [第16章：什么是真正的推理？（LLM迷思）](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/volume4/chapter16/) | 区分"概率预测"与"逻辑推理" | ✅ |
 | [第17章：推理科学家的工具箱](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/volume4/chapter17/) | 整合算法思维、神经网络思维与推理思维 | ✅ |
 | [第18章：致20岁后的你：作为科学的推理](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/volume4/chapter18/) | 未来推理科学的研究方向与挑战 | ✅ |
-| **兔狲学院：给还没有上大学的小伙伴** | **六个学科章节** | **6章** |
-| [数学基础综合：从自然数到不动点理论](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/academy/math-core/) | 7章完整知识链，从自然数、集合论、逻辑、函数、数列极限到ZFC和不动点理论 | ✅ |
-| [AI数学基础：概率统计到线性模型](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/academy/ai-mathematics/) | 5章完整知识链，概率论、统计学、优化理论、信息论、线性模型 | ✅ |
-| [微积分：从函数到微分方程](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/academy/calculus/) | 12个词条完整知识链，从函数讲到ODE | ✅ |
-| [线性代数：从向量到雅可比矩阵](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/academy/linear-algebra/) | 12个词条完整知识链，从向量讲到雅可比矩阵 | ✅ |
-| [哲学：从古希腊到1840年](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/academy/philosophy/) | 25个词条，5个历史时期，1840年批判视角 | ✅ |
-| [Python编程：从语法到数据结构](https://datawhalechina.github.io/reasoning-kingdom/dear-reasoner/academy/python/) | 10个词条，4个部分，重点实现四种基础数据结构 | ✅ |
 
 > **状态说明**：📝 编写中 | ✅ 已完成 | 🚧 修订中
 
@@ -163,14 +154,14 @@
 | [第20章：启发式的形式合同](https://datawhalechina.github.io/reasoning-kingdom/volume2/chapter20/) | 可采纳性不是工程妥协，是数学承诺 | ✅ |
 | [第21章：学习作为逆推断](https://datawhalechina.github.io/reasoning-kingdom/volume2/chapter21/) | 模型"学到了东西"的形式含义：它找到了更短的描述 | ✅ |
 | [第22章：自指与涌现](https://datawhalechina.github.io/reasoning-kingdom/volume2/chapter22/) | Curry-Howard 对应告诉我们：证明即程序。那么，程序在证明什么？ | ✅ |
-| [第23章：推理系统的稳定性](https://datawhalechina.github.io/reasoning-kingdom/volume2/chapter23/) | 从永霖收敛推导李雅普诺夫函数：推理系统的能量函数如何从行为中浮现 | ✅ |
+| [第23章：永霖推论](https://datawhalechina.github.io/reasoning-kingdom/volume2/chapter23/) | 从 Hessian 谱到智能涌现：一条平凡方程如何必然地长出 scaling law 的直线 | ✅ |
 | [附录：下卷思考题参考提示](https://datawhalechina.github.io/reasoning-kingdom/appendix-thinking-questions) | 下卷各章思考题的思考脚手架与关键点提示 | ✅ |
 
 ### 兔狲教授小词典
 
 | 资源 | 描述 | 状态 |
 | :---- | :---- | :----: |
-| [兔狲教授小词典](https://datawhalechina.github.io/reasoning-kingdom/dictionary) | 153个核心概念的"官方解释+兔狲说"对比词典，拆解学术黑话，体现推理民主化立场 | ✅ |
+| [兔狲教授小词典](https://datawhalechina.github.io/reasoning-kingdom/dictionary) | 152个核心概念的"官方解释+兔狲说"对比词典，拆解学术黑话，体现推理民主化立场 | ✅ |
 
 **词典特点**：
 - **词条结构**：官方解释（标准定义） + 兔狲说（个人解读带立场） + 为什么重要 + 延伸思考 + 相关词条

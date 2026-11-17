@@ -1,36 +1,9 @@
 # Cadence demos
 
 <p align="center">
-  <a href="https://cadence.floatingpragma.ai/"><img src="assets/cadence-live-demos.jpg" alt="Cadence live demos: one brain design that sees, moves, plays and keeps learning. Robot arm, robot arena, Atari, Castlevania, Patch World and Tron, all running live in the browser. 363 of 400 games won against the perfect Connect Four solver." width="100%"></a>
+  <a href="https://cadence.floatingpragma.ai/"><img src="assets/cadence-live-demos.jpg" alt="Cadence live demos: one brain design that sees, moves, plays and keeps learning. Robot arm, robot arena, Atari, Castlevania, Patch World and Tron, all running live in the browser." width="100%"></a>
 </p>
 <h3 align="center">▶ <a href="https://cadence.floatingpragma.ai/">Try them live in your browser: cadence.floatingpragma.ai</a></h3>
-
-## [Parrot](parrot/) (preview): a brain that hears and speaks sounds as symbols
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=amR3cnrmgDo"><img src="https://i.ytimg.com/vi/amR3cnrmgDo/maxresdefault.jpg" alt="Video: a virtual African Grey parrot whose Cadence brain learns spoken words as sounds linked to the things it sees" width="80%"></a>
-</p>
-
-▶ [Watch the video](https://www.youtube.com/watch?v=amR3cnrmgDo)
-
-The video is a recording of an earlier build of this page; for the video the voices were
-re-recorded and the picture was timed to them.
-
-An African Grey parrot whose Cadence brain hears a spoken question and answers in sound. Each
-sound it keeps is a record in the library's long-term memory, linked to its meaning by synapses:
-each word of a question it knows lights as it is spoken, and an answer brings back its sound. The
-questions come from a list and play as spoken sentences; the ear takes a whole utterance for a
-question it keeps a sound for, and the brain answers about the thing in focus. The folder is a
-preview on a development build of the Cadence library, included in the folder. The
-[Parrot README](parrot/README.md) lists what works and what it does not do, and
-[ATTRIBUTION.md](parrot/ATTRIBUTION.md) credits every asset.
-
-```sh
-python3 -m http.server 8842 --directory parrot/site   # open http://localhost:8842/ in Chrome
-```
-
-**The parrot's code is in [`parrot/`](parrot/) as a preview.** To hear of its releases, click
-**Watch** at the top of this page, then **Custom**, then **Releases**.
 
 Small example applications for [Cadence](https://github.com/muellerberndt/cadence):
 brains that learn from experience through bounded patches, local relations,
@@ -122,8 +95,7 @@ settled state behind every action, and Eyes shows the whole brain settling for o
 
 ## The demos
 
-Every demo runs on `cadence-net` 0.95.2, except Out of Sight (0.99.0) and the Parrot preview (a
-development build of the library, included in its folder). Each says on its page what it
+Every demo runs on `cadence-net` 0.95.2, except Out of Sight (0.99.0) and Parrot (0.101.0). Each says on its page what it
 shows about Cadence and why that matters, explains every part of itself under a small question
 mark, and has a help page; [shared/STANDARD.md](shared/STANDARD.md) states the standard they share.
 
@@ -139,7 +111,8 @@ mark, and has a help page; [shared/STANDARD.md](shared/STANDARD.md) states the s
 | [Connectome](connectome/) · [live](https://cadence.floatingpragma.ai/demos/connectome) | **A brain on real animal wiring that learns.** Cadence runs wiring measured cell by cell in real animals as a live brain. A fish's gaze circuit holds a glance in its own activity: teach it to hold, let go and hold again, and its measured connections learn and keep what they learned. | Cadence rate patches in JavaScript, with plastic fish connections and declared body models |
 | [Patch World](patch-world/) · [live](https://cadence.floatingpragma.ai/demos/patch-world) | **A brain that learns while it lives.** Each creature's Cadence brain has real memory and a real state, runs in real time and learns while it lives. When winter makes berries poisonous, learners learn to leave them (99% eaten in summer, 5% late in winter); frozen twins do not. | One continuing `Brain.live` brain per creature, bred by evolution; in the browser, the released library itself, in Pyodide |
 | [Castlevania](castlevania/) · [watch](https://cadence.floatingpragma.ai/demos/castlevania) | **Real memory, a real state, in real time.** A frozen Cadence brain plays from what its eye sees, with a memory of this game's moments and a state it carries from move to move. A look-ahead on the emulator checks its moves near enemies: stage 3 on all nine starts, lives lost 36 to 5. | A deep `Brain.compose` with recall, raised by a savestate teacher and search; a local server runs the emulator |
-| [Parrot](parrot/) · preview | **Sounds as symbols.** A parrot's brain hears a spoken question and answers in sound: each sound it keeps is linked to its meaning, and an answer brings back its sound. The questions come from a list, and it answers about the thing in focus. | A development build of the library with `cadence.meaning` and `cadence.parrot`, included in the folder; in the browser, in Pyodide |
+| [Super Mario Bros.](mario/) | **World 1 from the screen, on your own ROM.** A frozen Cadence brain sees grey blocks of the screen and a few readings of Mario's own body and settles on its buttons every four frames, beside its brain view. In one five-life run it cleared 1-1 to 1-4 with the same weights. | `Brain.compose` (256), raised by a savestate coach with DAgger; a local window runs the emulator |
+| [Parrot](parrot/) | **Sounds as symbols.** A parrot's brain hears a spoken question and answers in sound: each sound it keeps is linked to its meaning, and an answer brings back its sound. The questions come from a list, and it answers about the thing in focus. | `cadence-net` 0.101.0 with the demo's own packages, in the browser, in Pyodide |
 
 ## Putting a demo on your own site
 
@@ -200,6 +173,21 @@ cd castlevania && python -m simon.rom ~/roms && python server.py   # opens http:
 ```
 
 See the [Castlevania README](castlevania/README.md).
+
+## [Super Mario Bros.](mario/): World 1 from the screen
+
+A brain plays Super Mario Bros. from grey blocks of the screen and a few readings of Mario's own
+body, choosing one of seven button combinations every four frames. In one five-life run it cleared
+1-1, 1-2, 1-3 and 1-4 with the same weights, then lost its last lives in 2-1, which it never
+trained on. It was raised by a coach that searches ahead from emulator savestates, with DAgger.
+The game is not included: the demo runs on your own ROM, which `smb/rom.py` checks against the
+dump the brain was raised on. The window shows the game beside the brain view. By Sean Hall.
+
+```sh
+cd mario && python -m smb.rom ~/roms && python play.py   # the five-life run, with the brain view
+```
+
+See the [Mario README](mario/README.md).
 
 ## [Patch World](patch-world/): creatures that learn the seasons
 
@@ -333,5 +321,4 @@ See the [Connectome README](connectome/README.md) to run, teach and check the de
 ## Licence
 
 The code in this repository is GPL-3.0, as Cadence ([`LICENSE`](LICENSE)). Third-party assets keep
-their own licences, named in each demo's model card or attribution file (for the parrot,
-[`parrot/ATTRIBUTION.md`](parrot/ATTRIBUTION.md)).
+their own licences, named in each demo's model card or attribution file.

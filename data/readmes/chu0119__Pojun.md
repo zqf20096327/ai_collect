@@ -54,6 +54,8 @@ git clone --depth 1 https://github.com/chu0119/Pojun.git pojun && cd pojun
 cp .env.example .env    # Windows 用 copy；至少改 POSTGRES_PASSWORD
 # Windows（Docker Desktop，WSL2 后端）：
 docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
+# macOS（Docker Desktop / OrbStack）：
+docker compose -f docker-compose.yml -f docker-compose.macos.yml up -d
 # Linux / 其他：
 docker compose up -d
 # → http://localhost:8787
@@ -62,7 +64,9 @@ docker compose up -d
 **装好之后（3 分钟上手）：**
 
 1. 浏览器打开 `http://<host>:8787` → 初始化管理员密码（≥8 位）
-2. 「LLM 配置」页配模型通道（≥2 个通道 + 开启轮询 = 实战推荐）
+2. 「LLM 配置」页配模型通道（≥2 个通道 + 开启轮询 = 实战推荐）；Anthropic/OpenAI/
+   DeepSeek 等 OpenAI 兼容端点直接填 base_url + key + model（如 DeepSeek：
+   `https://api.deepseek.com` + `deepseek-chat`/`deepseek-reasoner`）
 3. 「宿主环境」页一键装齐工具（Docker 镜像已内置全部 66 件，可跳过）
 4. 新建任务，给一句话目标
 

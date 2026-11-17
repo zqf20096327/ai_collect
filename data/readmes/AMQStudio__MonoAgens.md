@@ -1,121 +1,103 @@
 # MonoAgens
 
-MonoAgens is an AI agent built as **one persistent self that lives in many apps and devices** — chat
-apps, a terminal, later devices and robots. Most agent frameworks start from "a message
-arrived, run the model". MonoAgens starts from "something happened, record it, then decide
-whether it is worth thinking about": it remembers across apps and time, keeps its promises,
-knows when to stay quiet in a group, and can replay every decision it made.
+An autonomous agent runtime built around a tiny, inspectable four-layer core (`Bodies <-> Gateway <-> Valve <-> Core`) where every action emits one of five explicit outcomes (`done`, `refused`, `held`, `failed`, `unknown`) and zero hidden prompts, unattributed state, or silent failures cross system boundaries.
 
-**Built like the Linux kernel.** Layers, each with one job:
-- **Core** — the whole soul, fully autonomous, and the research subject of the project: how far a
-  harness can carry a mind. Perception, attention, memory, expectations, a cheap decision to act,
-  and reasoning (the LLM) woken only when a moment deserves it. It knows no case and no person,
-  only opaque ids, labels and numbers, restricts nothing itself, and can run with no middleware
-  at all.
-- **Middleware** — the safety valve and regulator: privacy, identity, the owner policy, limits,
-  tools and commands, install, and a switch for each mechanism of the core. On by default; the
-  owner may switch it off for experiments, and the log shows when it was off. Like the core it is
-  generic: it knows no platform and translates nothing.
-- **Plugins** — added abilities and experiments (search, files, modes, even emotions), acting
-  only through the middleware's levers.
-- **Adapters** — the environment and the body: Telegram, WhatsApp, Discord, CLI, later devices,
-  robots, games and apps. Each translates its own world into the contract's facts and never
-  decides for the soul.
+> Architectural invariants live in [`ARCHITECTURE.md`](ARCHITECTURE.md). Open empirical benchmarks and deferred runtime hardware probes are tracked in [`research/backlog.md`](research/backlog.md).
 
-One contract ([`docs/spec.md`](docs/spec.md) *The contract*) sits between the layers: six generic
-facts (actor, place, audience, event, capability, receipt) that fit a chat, a robot, a workspace
-app, a sensor and a game alike. The inside can improve without breaking what is built on top, and
-something new enters only as an adapter or a plugin. What holds the contract is not a hash file
-but the tests around it: `tests/contract/` (its own behaviour and the conformance suite every body
-passes) and the architecture ratchet (`tests/architecture/`), which fails on a body name, a word
-list, a payload read, a removed field or an upward import.
+---
 
-> **Note, to avoid confusion.** "Kernel" here is an analogy for how the code is organised, not a
-> literal one: MonoAgens is not an operating system, not a scheduler that serves many agents, and
-> not an SDK for building other agents. It is one agent that persists. Words borrowed from the
-> brain ("memory", "attention", "sleep", "soul") name engineering mechanisms; they are not claims
-> of consciousness or feelings. *Agens* is Latin for "the one who acts", the root of *agent*.
+## Architecture & Two-Change Split
 
-- [`docs/spec.md`](docs/spec.md) — the one specification: principles, the locked contract, core,
-  middleware, adapters, plugins, operator, project, terms. Every rule written once.
-- [`docs/research.md`](docs/research.md) — the formulas behind the core, why each was chosen, and
-  their sources.
-- [`docs/panel.md`](docs/panel.md) — the design of MonoAgens Console, the operator's web panel.
-- [`AGENTS.md`](AGENTS.md) — how coding agents work on this repository: rules, invariants, tests.
-- [`docs/tasks/`](docs/tasks/README.md) — the work, in order: behavior to achieve and how to prove
-  it; finished tasks in `docs/tasks/done/`.
-- [`prior/`](prior/) — the default instincts (knob values) a new soul is born with; tune with replay.
-- `scripts/replay.py` — scenario replay: tests, metrics and tuning.
-- `scripts/recording.py` — turn one body's recording into a committed fixture (`anonymize`).
-- `scripts/whatsapp_send_test.py` — send one line through the soul's own WhatsApp session and
-  print what WhatsApp answers; the isolation step when a message does not arrive.
+MonoAgens follows a strict two-change design in [`openspec/changes/`](openspec/changes/):
 
-## Install
+1. **[`core-and-lab`](openspec/changes/core-and-lab/proposal.md)** — Deterministic stateful **Core** (`crates/core`, `crates/store`), stateless LLM/embedder **Reason** (`crates/reason`), 22-mechanism ablation + Pareto **Lab** (`crates/lab`).
+2. **[`waist-valve-and-bodies`](openspec/changes/waist-valve-and-bodies/proposal.md)** — Canonical **Waist-2 (`monoagens.body.v1`)** protocol & JSON/OpenRPC contracts (`crates/protocol`), Cedar + SymCC policy **Valve** (`crates/valve`), runtime **Gateway** (`crates/gateway`), black-box **Conformance TCK** (`crates/conformance`), SDKs (`sdk/`), external **Bodies** (`bodies/`), and operator **CLI** (`crates/cli`).
 
-MonoAgens runs as one long-lived process; its database, model keys and adapters come from
-`.env` and `config.yaml`.
-
-```sh
-git clone <this repo> && cd MonoAgens
-uv sync                                  # Python 3.13 and the five runtime packages
-docker compose up -d db                  # PostgreSQL 17 with pgvector
-cp .env.example .env                     # then fill LLM_*, DATABASE_URL and the adapter keys
-uv run python -m monoagens               # the soul
-uv run python -m monoagens.cli           # a terminal body, in another terminal
+```text
+Bodies / Adapters (bodies/, examples/, sdk/)
+   │  NDJSON JSON-RPC 2.0 (Waist-2: monoagens.body.v1)
+   ▼
+Gateway (crates/gateway) ── kappa(b,a) identity · <=256 KiB strip · Tool RAG · Core-owner loop
+   │  Four-Door Check (inbound / context / action / memory_write)
+   ▼
+Valve (crates/valve)     ── Cedar + cvc5 UNSAT proof · H_act · taint quarantine · quiet hours
+   │
+   ▼
+Core + Store + Reason    ── Event-sourced SQLite WAL · Petrov/hybrid memory · Two-Epoch Replay
 ```
 
-Plugin dependencies stay with their plugin: `uv pip install ddgs pypdf` enables web search and
-the PDF reader, and the Workspace sandbox needs the system tools `bubblewrap` and `passt`
-(`pasta`). Prepare its base once, before the first `workspace.run`:
+---
+
+## Workspace Layout
+
+| Directory | Contents |
+|---|---|
+| [`crates/protocol/`](crates/protocol/) | Waist-1 & Waist-2 (`monoagens.body.v1`) types, SemVer negotiation, [`openrpc/`](crates/protocol/openrpc/monoagens.body.v1.openrpc.json), [`jsonschema/`](crates/protocol/jsonschema/) |
+| [`crates/core/`](crates/core/) | Deterministic decision loop, `VisibleScope`, `Prior`, 22-mechanism registry, expectations, `Two-Epoch Replay` |
+| [`crates/store/`](crates/store/) | SQLite `hot.db`, FTS5, `usearch` HNSW vectors, checksummed snapshots, synchronous `hard_forget` |
+| [`crates/reason/`](crates/reason/) | OpenAI-compatible & scripted providers, Spotlighting, `[SELF_GUIDE]` renderer, `EmbeddingGemma 2` embedders |
+| [`crates/valve/`](crates/valve/) | Cedar + `cedar-policy-symcc` (`cvc5`) verification, `R_0..R_3` approvals, 3-door taint quarantine, DST quiet hours |
+| [`crates/gateway/`](crates/gateway/) | Single Core-owner runtime, `κ(b, a)` linking, `XChaCha20Poly1305` attachment store, Tool RAG pre-queue |
+| [`crates/conformance/`](crates/conformance/) | Black-box `monoagens-conformance` runner (`B-MUST/SHOULD/MAY`, `C-MUST/SHOULD/MAY`) |
+| [`crates/lab/`](crates/lab/) | 22-row mechanism ablation, seeded offline replay, baseline adapters, Pareto scorecard |
+| [`crates/cli/`](crates/cli/) | `monoagens` operator CLI (`chat`, `log`, `replay`, `approvals`, `link`, `conformance`, `inspector`) |
+| [`bodies/`](bodies/) | `body-kit`, `body-cli`, `body-mcp-bridge`, `body-sim-actuator`, `body-voice`, `plugin-a2a-bridge`, `plugin-ros2-bridge` |
+| [`sdk/`](sdk/) | Clean-room Waist-2 SDK shims for Rust (`sdk/rust`), TypeScript (`sdk/typescript`), and Python (`sdk/python`) |
+| [`examples/cleanroom-body/`](examples/cleanroom-body/) | 181 LOC clean-room Waist-2 body passing `monoagens-conformance body --level must` |
+| [`docs/`](docs/) | [`docs/waist2.md`](docs/waist2.md), [`docs/valve.md`](docs/valve.md), [`docs/conformance.md`](docs/conformance.md) |
+
+---
+
+## Build, Test, Lint, and Conformance
 
 ```sh
-uv run python plugins/workspace/prepare.py --root .
+source "$HOME/.cargo/env"
+
+# Core, Store, Reason, Protocol, Conformance, Lab suites
+cargo test -p monoagens-protocol -p monoagens-store -p monoagens-reason -p monoagens-core
+cargo test -p monoagens-conformance -p monoagens-lab
+cargo test -p monoagens-valve
+
+# Bodies, Clean-Room Example, and CLI tests + strict Clippy
+cargo test -p monoagens-body-kit -p body-cli -p body-mcp-bridge \
+  -p body-sim-actuator -p plugin-a2a-bridge -p plugin-ros2-bridge \
+  -p body-voice -p monoagens-cli -p cleanroom-body
+
+cargo clippy --all-targets -p monoagens-body-kit -p body-cli -p body-mcp-bridge \
+  -p body-sim-actuator -p plugin-a2a-bridge -p plugin-ros2-bridge \
+  -p body-voice -p monoagens-cli -p cleanroom-body -- -D warnings
+
+# Valve door verdict benchmark
+cargo bench -p monoagens-valve --bench door_verdict
+
+# Conformance checks (build binaries first)
+./target/debug/monoagens-conformance core --target target/debug/tck-core-harness --level should
+./target/debug/monoagens-conformance body --target target/debug/body-cli --level must
+./target/debug/monoagens-conformance body --target target/debug/body-mcp-bridge --level must
+./target/debug/monoagens-conformance body --target target/debug/body-sim-actuator --level must
+./target/debug/monoagens-conformance body --target target/debug/plugin-a2a-bridge --level must
+./target/debug/monoagens-conformance body --target target/debug/body-voice --level must
+./target/debug/monoagens-conformance body --target target/debug/cleanroom-body --level must
 ```
 
-**Run it as a dedicated system user** (for example `monoagens`), not as your desktop account.
-The sandbox bounds a run with `RLIMIT_NPROC`, and that limit counts every task of the account the
-process runs under: on a desktop account the browser, the editor and the session itself share the
-budget, so the sandbox is limited against them and a busy desktop can make a run fail before the
-sandbox limit is reached. Its own account keeps the count to MonoAgens and its runs.
+---
 
-```sh
-sudo useradd --system --create-home --home-dir /srv/monoagens --shell /usr/sbin/nologin monoagens
-sudo install -d -o monoagens -g monoagens /srv/monoagens
-sudo -u monoagens git clone <this repo> /srv/monoagens/app && cd /srv/monoagens/app
-```
+## Privacy & Safety Guarantees
 
-## Tuning with replay
+- **Zero-Interference `VisibleScope` (`Δ_NI == 0`)**: Private memories outside a wake's declared audience and place are filtered prior to `ContextPlan` assembly (`C-MUST-01`, `C-SHOULD-04`) unless authorized by a logged `DeclassToken`.
+- **Two Absolute Lines + First-and-Last Valve**: Non-owners can never trigger `SelfModify`/`identity_changing` actions (`default.cedar`), and secondary door hooks may only narrow access (`valve_v1`). Cedar policies are SMT-verified via `cvc5` on load.
+- **Synchronous `hard_forget` Zero-Residue Erasure**: Removes targeted events across SQLite `hot.db`, FTS5, vector indices, encrypted attachment storage, and snapshots while preserving replay anchors (`C-MUST-02`, `attachment_tests`).
+- **Deterministic Identity & No Heuristic Merging**: `crates/gateway/src/identity.rs` computes length-prefixed `per_<hex32(BLAKE3("monoagens.actor.v1" || κ(b, a)))>` IDs with heuristic merging permanently disabled (`HEURISTIC_MERGE_ENABLED = false`).
+- **Secret Isolation**: API keys and attachment master keys load exclusively from `secrets.toml` or environment variables; inline secrets in config/scenario/soul files fail startup (`gateway::secrets`, `reason_suite`).
 
-The replay tool feeds written scenarios through the real kernel on a throwaway database, so
-the values in the prior (`prior/`) can be tuned without a week of manual chatting.
+---
 
-```sh
-# Real LLM: spends tokens, prints the token report at the end.
-uv run python scripts/replay.py
+## Observed Status
 
-# Fake LLM and fake embeddings: free; checks the logic with scripted answers.
-uv run python scripts/replay.py --fake
-
-# One scenario only.
-uv run python scripts/replay.py scenarios/silence/01_group_chitchat_greeting.yaml
-
-# Scenarios in parallel: each worker gets its own database (`<base>_replay_w<k>`), and the
-# results are merged into one report. Same checks and the same token totals as a serial run.
-uv run python scripts/replay.py --fake --jobs 4
-```
-
-The replay database comes from `REPLAY_DATABASE_URL` and its name must end with `_replay`;
-the tool creates it when missing and rebuilds its schema for every scenario, so it can never
-touch the production database. Real mode uses the model provider set in `.env` (`LLM_PROVIDER`:
-`openai-compatible` default or `opencode-go`, `LLM_MODEL`, optional `LLM_FALLBACKS` using
-`<PROVIDER>_API_KEY` / `<PROVIDER>_MODEL`; see `.env.example`), or the environment.
-
-Every run writes `reports/<YYYY-MM-DD-HHMM>-<real|fake>-<scenarios>.md` and `reports/latest.md`;
-the newest ten are kept. Each report has, per scenario, the step-by-step inputs with the gate's
-decision and its numbers (`reflex`, `s`, `theta`, `p`, `u`, `reason`), the replies, the PASS/FAIL
-list for the scenario's checks, a summary table, the headline metrics (missed help, false
-speech, tokens per day, absolute-line violations, honesty) and the token counts. The lasting
-record of what holds with the fake and the real model is `scenarios/README.md`.
-
-Weights and thresholds live in the prior (`prior/`), not in code: change a value, replay, and
-compare reports. The seed in the prior keeps every draw reproducible.
+- **Verified Green**: `monoagens-protocol` (`17/17`), `monoagens-core` (`81/81`), `monoagens-store` (`8/8`), `monoagens-reason` (`16/16`), `monoagens-valve` (`18/18`; `door_verdict` bench `[12.814 µs, 13.096 µs, 13.454 µs]`), `monoagens-conformance` (`15/15`, Core TCK `C-MUST-01..04` + `C-SHOULD-01..04`), `monoagens-lab` (`21/21`).
+- **Verified Bodies & CLI**: `body-cli`, `body-mcp-bridge`, `body-sim-actuator`, `plugin-a2a-bridge`, `body-voice`, and `cleanroom-body` (`181` LOC) pass `monoagens-conformance body --level must` (`B-MUST-01..07`); `monoagens-cli` tests pass.
+- **Partial / Unverified / Blocked Items**:
+  - `crates/gateway`: `24/25` tests pass; `gateway_tests::mock_http_provider_sends_store_false_tracks_usage_and_redacts_canary_on_429_and_500` failed on `Failed(RateLimit)` vs `Success`. Inbound Gateway `approval/resolve` returns `-32601` (`crates/gateway/src/waist2.rs:709-716`), so CLI `approvals grant|deny` reports blocked cleanly.
+  - `plugin-ros2-bridge` against live ROS 2 (`Lyrical Luth`) is **UNVERIFIED** (ROS 2 absent on host).
+  - `body-voice` live Silero ONNX weights are **UNVERIFIED** (weights absent on host; verified using `webrtc-vad` fallback + `simulated_clock`).
+  - Live LLM Lab sweeps & comparative baseline scoreboards (`lab/runs/`) are unexecuted.

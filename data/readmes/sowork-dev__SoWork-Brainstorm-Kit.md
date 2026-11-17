@@ -44,6 +44,10 @@ each other's ideas, then recommend a direction. Do not give me homework.
 
 Full examples: [authored walkthrough](locales/en/examples/persona-council.md) · [recorded GPT-6.1-sol run](examples/test-runs/open-cast-en.md) (see its limitations).
 
+## Use it as a Claude skill
+
+Prefer a reusable skill over attaching a file each time? Copy the folder [`skills/brainstorm-council`](skills/brainstorm-council/SKILL.md) into your Claude skills directory (for Claude Code: `~/.claude/skills/brainstorm-council/`), or zip it and upload it under Settings > Capabilities > Skills in Claude. It is a condensed version of the facilitator protocol; the full text pack above stays the reference for methods and personas.
+
 ## Who it's for
 
 Marketers, founders, creators, and small teams who want a better first draft of thinking before a meeting, pitch, or launch.

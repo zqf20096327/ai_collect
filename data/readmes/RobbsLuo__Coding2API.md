@@ -18,10 +18,12 @@
 - **模型列表按凭证加载**：只列有可用凭证的渠道 → 无幽灵模型。
 - **公共凭证池**：admin 维护、全员共享、加密入库（`APP_SECRET`）；设备码登录、多账号切换、额度探测、签到、token 预刷新。
 - **三角色**：`admin` / `operator` / `viewer`，存 SQLite；一次性激活链接、首登强制改密、改角色 / 停用即时吊销会话；登录与写操作留审计。
-- **成长中心**（仅 CodeBuddy）：领礼、派 Buddy、领任务奖、断登补登、连登兑换、开盲盒。不可逆动作 `GROWTH_IRREVERSIBLE_ACTIONS=false` 关停。
+- **成长中心**（仅 CodeBuddy）：领礼、派 Buddy、领任务奖、断登补登、连登兑换、开盲盒。不可逆动作 `GROWTH_IRREVERSIBLE_ACTIONS=false` 关停。企业版账号自动跳过（个人版活动企业号没有入口）。
 - **脱敏统计**：不存对话；明细 90 天、小时汇总永久；按人 / 渠道 / 模型 / 凭证可视化；成本按 OpenRouter 刊例价估算；速度分正文 / 总产出；明细走 SSE。
 - **月度账单**（`operator` 起）：按月按人 / 按 API Key 汇总请求、token 与成本；CSV（按人）/ JSONL（逐条明细）导出并写审计。按 Key 明细受 90 天保留期限制。
 - **工具调用健壮性**：`id` 缺失按 index 补并记忆；DeepSeek DSML 泄漏回读成结构化调用并改写 `finish_reason`；非流式坏 `arguments` fail-closed（400，不冷却凭证）。
+- **失败分流**：`11134` 供应商过载按排队语义（不罚号、原号等一轮再开）；请求级错误（内容风控 / 上下文超限 / 坏图）换号后不搬会话粘性；全池耗尽 503 带 `Retry-After`（所有候选里最早的自动恢复点）。
+- **出站隐私脱敏**（可选，默认关）：`PRIVACY_RULES` 按规则对**出站副本**打码（连接串 userinfo / 邮箱 / 手机号 / 内网 IP）；`request.raw`、`tool_calls` 参数与 JSON Schema 不动，占位符单向不还原。
 - **渠道 ToS 风险登记**：导入凭证时展示 green / gray / red 与理由（运营判断），审计留等级；只提示不阻断调度。
 - **出口 IP 粘性**（可选）：`CREDENTIAL_PROXY_POOL` 非空时一号一出口（sha256 稳定分配，重启不漂移）；推理、探活、签到、预刷新、成长、管理台单条动作都走同一出口。
 - **上游状态聚合**：并排官方状态页，区分「上游故障」与「本服务凭证 / 额度问题」。只解释、不调度；只存内存。
@@ -79,7 +81,7 @@ docker compose up -d --build
 docker compose exec coding2api python scripts/create_user.py admin --role admin
 ```
 
-拉镜像：`docker compose pull`（或 `docker pull ghcr.io/robbsluo/coding2api:v0.13.1`）。tag `v*` 推 main → `.github/workflows/publish.yml` → 发 `<tag>` + `:latest`。
+拉镜像：`docker compose pull`（或 `docker pull ghcr.io/robbsluo/coding2api:v0.14.0`）。tag `v*` 推 main → `.github/workflows/publish.yml` → 发 `<tag>` + `:latest`。
 
 容器跑在**有公网 IP 的 VPS** 上要 https 入口 → 见「[公网部署（Docker + Caddy 自动 HTTPS）](#公网部署docker--caddy-自动-https)」。
 

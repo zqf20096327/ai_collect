@@ -16,18 +16,24 @@
 </p>
 
 <p align="center">
-  <a href="./LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache_2.0-blue.svg"></a>
-  <a href="https://nodejs.org"><img alt="Node 20+" src="https://img.shields.io/badge/node-%E2%89%A520-43853d.svg"></a>
-  <a href="https://github.com/WhiskeySockets/Baileys"><img alt="Built with Baileys" src="https://img.shields.io/badge/built%20with-Baileys-25D366.svg"></a>
-  <a href="https://github.com/sponsors/sumioshi"><img alt="Sponsor" src="https://img.shields.io/github/sponsors/sumioshi?label=Sponsor&logo=githubsponsors&color=ea4aaa"></a>
-  <a href="https://modelcontextprotocol.io"><img alt="MCP server" src="https://img.shields.io/badge/MCP-36%20tools-6366f1.svg"></a>
-  <a href="https://www.npmjs.com/package/wacrew-mcp"><img alt="npm" src="https://img.shields.io/npm/v/wacrew-mcp.svg?label=npm"></a>
-  <a href="https://glama.ai/mcp/servers/sumioshi/wacrew"><img alt="Glama score" src="https://glama.ai/mcp/servers/sumioshi/wacrew/badges/score.svg"></a>
+  <a href="./LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" height="20"></a>
+  <a href="https://nodejs.org"><img alt="Node 20+" src="https://img.shields.io/badge/node-%E2%89%A520-43853d.svg" height="20"></a>
+  <a href="https://github.com/WhiskeySockets/Baileys"><img alt="Built with Baileys" src="https://img.shields.io/badge/built%20with-Baileys-25D366.svg" height="20"></a>
+  <a href="https://github.com/sponsors/sumioshi"><img alt="Sponsor" src="https://img.shields.io/github/sponsors/sumioshi?label=Sponsor&logo=githubsponsors&color=ea4aaa" height="20"></a>
+  <a href="https://modelcontextprotocol.io"><img alt="MCP server" src="https://img.shields.io/badge/MCP-36%20tools-6366f1.svg" height="20"></a>
+  <a href="https://www.npmjs.com/package/wacrew-mcp"><img alt="npm" src="https://img.shields.io/npm/v/wacrew-mcp.svg?label=npm" height="20"></a>
+  <a href="https://glama.ai/mcp/servers/sumioshi/wacrew"><img alt="Glama score" src="https://glama.ai/mcp/servers/sumioshi/wacrew/badges/score.svg" height="20"></a>
+</p>
+
+<p align="center">
+  <a href="https://m8ven.ai/mcp/sumioshi-wacrew-nirsqy?s=readme"><img alt="M8ven Score" src="https://m8ven.ai/badge/mcp/sumioshi-wacrew-nirsqy" height="20"></a>
 </p>
 
 <p align="center"><a href="https://wacrew.com.br">wacrew.com.br</a> · <a href="./README.pt-BR.md">Leia em português</a> · ⭐ <b>If WACrew helps you, a star helps others find it.</b></p>
 
 <p align="center"><img src="docs/screenshots/demo-auto.gif" width="551" alt="The AI drafts a reply; flipping AUTO on, it types and answers on its own"></p>
+
+<p align="center"><a href="https://wacrew.com.br/en/#video"><img src="docs/assets/vsl-en.jpg" width="640" alt="Watch the 55-second video: from WhatsApp chaos to every client answered"></a><br><sub>▶ Watch the 55-second video</sub></p>
 
 ## Why
 
@@ -77,7 +83,7 @@ More screens in [`docs/screenshots/`](docs/screenshots): org chart, team access,
 
 - **Collector** (`src/`): a Baileys daemon (WhatsApp Web multi-device, no browser). Baileys is isolated behind ports and adapters in `src/whatsapp/`. It writes every message, reaction and media file to `data/<chat>/` and runs the delivery queue that sends replies at a human pace.
 - **Panel** (`web/`): Next.js 16 + React 19. Inbox, conversation view, clients, dashboard, calendar, team, 2D office, settings. Live updates over SSE.
-- **MCP server** (`web/mcp/server.ts`): 36 tools over the same data, for Claude Code, Codex, Qwen Code or any MCP client.
+- **MCP server** (`web/mcp/server.ts`): 36 tools over the same data, for Claude Code, Codex, Antigravity, Gemini CLI, Qwen Code or any MCP client.
 - **Transcriber** (`transcriber/`): Whisper large-v3 via MLX, loaded on demand and released when idle. Off a Mac, set `TRANSCRIBE_BACKEND=openrouter`.
 - **Local or cloud.** Run everything on your machine, or deploy the collector and panel 24/7 with the included `Dockerfile` (a `railway.json` is provided). The local MCP can read straight from the cloud panel (`WAC_MCP_REMOTE=1`), downloading media on demand.
 
@@ -101,7 +107,7 @@ cp .env.example .env   # set PANEL_USER and PANEL_PASS
 docker compose up -d
 ```
 
-[![Deploy on Hostinger](docs/assets/deploy-hostinger-en.svg)](https://www.hostinger.com/vps-hosting?REFERRALCODE=ORISHODIRBUH) [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/wacrew?referralCode=8ZIi5q&utm_medium=integration&utm_source=template&utm_campaign=generic)
+<a href="https://www.hostinger.com/vps-hosting?REFERRALCODE=ORISHODIRBUH"><img alt="Deploy on Hostinger" src="docs/assets/deploy-hostinger-en.svg" height="32"></a> <a href="https://railway.com/deploy/wacrew?referralCode=8ZIi5q&utm_medium=integration&utm_source=template&utm_campaign=generic"><img alt="Deploy on Railway" src="https://railway.com/button.svg" height="32"></a>
 
 <sub>Referral links: you get a discount or credits, and the project earns a commission that helps keep it maintained. On Railway the template sets up the volume, the login and a generated password for you.</sub>
 
@@ -116,6 +122,27 @@ The server is registered by `.mcp.json` (project scope). Claude Code and Qwen Co
 ```bash
 claude mcp add wacrew -e WAC_CLOUD_URL=https://your-panel.example.com \
   -e WAC_CLOUD_USER=admin -e WAC_CLOUD_PASS=change-me -- npx -y wacrew-mcp
+```
+
+**Antigravity plugin.** The repo is also an Antigravity plugin, with the MCP and the skills (`plantao`, `autonomo`, `link-whatsapp`, `comunicacao-cliente`):
+
+```bash
+agy plugin install https://github.com/sumioshi/wacrew
+```
+
+It installs turned off. Open `/plugin` (or Customizations in the editor), turn on WACrew and fill in the panel URL, login and password; other accounts go in the URL field after a space, as below. To add only the MCP, flags go before the name:
+
+```bash
+agy mcp add -e WAC_CLOUD_URL=https://your-panel.example.com \
+  -e WAC_CLOUD_USER=admin -e WAC_CLOUD_PASS=change-me wacrew npx -y wacrew-mcp
+```
+
+**More than one WhatsApp.** One server can talk to several panels. Add the others in `WAC_CONTAS` as `name=https://login:password@address`, separated by spaces (or put them after the main address in `WAC_CLOUD_URL`). Every tool then takes an optional `conta` parameter, and the agent picks the account per call. `WAC_CONTA_NOME` names the default one:
+
+```bash
+claude mcp add wacrew -e WAC_CLOUD_URL=https://work.example.com \
+  -e WAC_CLOUD_USER=admin -e WAC_CLOUD_PASS=change-me -e WAC_CONTA_NOME=work \
+  -e WAC_CONTAS="personal=https://admin:other-pass@personal.example.com" -- npx -y wacrew-mcp
 ```
 
 | Area | Tools |
@@ -189,7 +216,7 @@ Shared logic between the panel and the MCP lives in `web/lib/`. See [CONTRIBUTIN
 
 WACrew is free and open source. Sponsors keep it maintained and get their name or logo here.
 
-<a href="https://github.com/sponsors/sumioshi"><img src="https://img.shields.io/badge/Become%20the%20first%20sponsor-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Become the first sponsor"></a>
+<a href="https://github.com/sponsors/sumioshi"><img src="https://img.shields.io/badge/Become%20the%20first%20sponsor-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white" alt="Become the first sponsor" height="28"></a>
 
 ## License
 

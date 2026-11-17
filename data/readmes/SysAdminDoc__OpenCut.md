@@ -1,12 +1,12 @@
 # OpenCut for Premiere Pro
 
-![Version](https://img.shields.io/badge/version-1.55.1-blue)
+![Version](https://img.shields.io/badge/version-1.57.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)
 ![Python](https://img.shields.io/badge/Python-3.11--3.14-3776AB?logo=python&logoColor=white)
 ![Premiere Pro](https://img.shields.io/badge/Premiere%20Pro-2019+-9999FF?logo=adobepremierepro&logoColor=white)
 ![Routes](https://img.shields.io/badge/API%20Routes-1564-orange)
-![Tests](https://img.shields.io/badge/Tests-14500+-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-15700+-brightgreen)
 
 > Route count is generated from `opencut/_generated/route_manifest.json` and
 > reflects **shipped** routes only. Each route is tagged
@@ -15,8 +15,8 @@
 > `python -m opencut.tools.dump_route_manifest --check` to verify it is in
 > sync with the live Flask app, and `GET /system/route-readiness` for the live
 > shipped count and stub list. The same manifest carries a literal first-party
-> surface map: **310 shipped routes** have literal first-party panel, palette, CLI, and curated MCP references,
-> while **1,254 integration-only routes** are backend/integration surfaces rather than advertised panel workflows.
+> surface map: **312 shipped routes** have literal first-party panel, palette, CLI, and curated MCP references,
+> while **1,252 integration-only routes** are backend/integration surfaces rather than advertised panel workflows.
 > Generic `opencut route` and opt-in extended MCP remain available for deliberate route-level access.
 
  > **OpenCut replaces ~$1,400/year of video-editing subscriptions** with a free, MIT-licensed Premiere Pro extension. Unlimited, reviewable silence-cut passes direct to timeline, cross-project media search, stem separation, voice cloning, 55-style animated captions with exportable artifacts, local LLM highlights, and multi-platform social export, with no subscriptions, no usage caps, and no API keys required for core local features. Cloud providers, Edge-TTS, downloads, telemetry, and social uploads are optional, explicit network features.
@@ -76,7 +76,7 @@ is the one step that needs the maintainer's PyPI account.
 ### Prerequisites
 
 - **Adobe Premiere Pro** 2019 or later (CEP panel) / 25.6+ (UXP panel)
-- **Windows 10/11, macOS, or Linux** (Windows installer, macOS/Linux source launchers, and Linux Flatpak/AppImage release packaging)
+- **Windows 10/11** for the installer, which is the supported way to run OpenCut. macOS and Linux run from source with the launchers below. No macOS or Linux package has been published since 1.25.1, and the Flatpak and AppImage recipes are for local builds only.
 - **Python 3.11-3.14** for source installs; the Windows installer bundles its own runtime
 - **FFmpeg** must be installed and on your system PATH for all video/audio processing. The Windows installer handles this automatically; source installs require a manual install (see below)
 
@@ -84,7 +84,7 @@ is the one step that needs the maintainer's PyPI account.
 
 **Option A: Windows Installer (recommended for Windows):**
 
-The latest published Windows installer is [OpenCut v1.55.1](https://github.com/SysAdminDoc/OpenCut/releases/tag/v1.55.1). It was built from the current source tree. Release artifacts are named `OpenCut-Setup-<version>.exe` and handle everything: server, FFmpeg, CEP extension, registry, and optional model downloads. No Python is needed for the packaged release.
+The latest published Windows installer is [OpenCut v1.57.0](https://github.com/SysAdminDoc/OpenCut/releases/tag/v1.57.0). It was built from the current source tree. Release artifacts are named `OpenCut-Setup-<version>.exe` and handle everything: server, FFmpeg, CEP extension, registry, and optional model downloads. No Python is needed for the packaged release.
 
 Every assembled installer includes `release-composition.json`,
 `opencut-artifact-sbom.cyclonedx.json`, `THIRD-PARTY-NOTICES.txt`, and
@@ -101,6 +101,11 @@ you run an installer, and it will show it again after every update, because an
 unsigned file builds no reputation. Microsoft's own guidance is that signing no
 longer guarantees the prompt goes away either, so this is a permanent part of
 installing OpenCut rather than something waiting on a certificate.
+
+The Premiere panel inside the Windows installer is signed, though. Adobe
+accepts self-signed certificates for panels, and the signature is timestamped,
+so the installer leaves Adobe's `PlayerDebugMode` off. Tick **Also allow
+unsigned Adobe panels** on the options page if another panel you use needs it.
 
 To proceed past the warning: click **More info**, then **Run anyway**.
 
@@ -129,12 +134,12 @@ cd OpenCut
 ```
 
 Then right-click `Install.bat` and select **Run as Administrator**. The installer will:
-1. Install or upgrade FFmpeg and reject releases below 8.1.3 or snapshots before 2026-07-06
+1. Check FFmpeg, and when it's missing or refused (every tagged release is, for now), download the pinned 2026-11-11 snapshot into `ffmpeg\` and check its hashes
 2. Verify Python 3.11-3.14 is on your PATH (unsupported versions are rejected before installation)
 3. Install all Python dependencies (Flask, click, rich, etc.)
 4. Install the OpenCut Python package
 5. Optionally install Whisper for caption generation
-6. Copy the CEP extension to Adobe's extensions folder
+6. Copy the CEP extension to Adobe's extensions folder, leaving out the `.debug` file that opens a DevTools port
 7. Set the `PlayerDebugMode` registry key so unsigned extensions load
 8. Create `Start-OpenCut.bat` on your desktop to launch the backend server
 
@@ -144,10 +149,9 @@ After the installer finishes, you are ready to use OpenCut. See **Launch** below
 
 If you prefer manual control or are on macOS/Linux, follow these steps:
 
-1. **Install a dated post-fix git-master snapshot** of FFmpeg and make sure it is on your system PATH. OpenCut blocks older and unparseable builds before media processing because 8.1.2 is affected by CVE-2026-64832, CVE-2026-64833, CVE-2026-64835, and CVE-2026-66041. No tagged release currently clears those: 8.1.2 closed the 8.1 line, 8.1.3 was never published, and the 9.0 series branched on 2026-06-26 before those fixes landed on master. A 9.0.x build is refused until someone shows the fixes were backported onto that branch. A higher version number on its own is not evidence:
-   - Windows: download the `ffmpeg-git-full` snapshot from https://www.gyan.dev/ffmpeg/builds/ (the bundled build is `2026-08-03-git-01a25f74cc-full_build-www.gyan.dev`, source commit `01a25f74cc446a683318bab13dfd98a467082ef7`) and add its `bin` folder to your PATH
-   - macOS: `brew install ffmpeg`
-   - Linux: `sudo apt install ffmpeg` (Debian/Ubuntu) or equivalent for your distro
+1. **Install a dated post-fix git-master snapshot** of FFmpeg and make sure it is on your system PATH. OpenCut blocks older and unparseable builds before media processing. No tagged release clears the graded advisories yet. The newest tags, 8.1.3 and 9.0.2, both carry the June and July 2026 fixes but miss the ones for CVE-2026-125064, CVE-2026-125180 and CVE-2026-107675. A tagged release is accepted only once each fix is shown to be on its branch, because a higher version number on its own is not evidence:
+   - Windows: download the `ffmpeg-git-full` snapshot from https://www.gyan.dev/ffmpeg/builds/ (the bundled build is `2026-11-11-git-23c4540053-full_build-www.gyan.dev`, source commit `23c454005319dee4a5bcae5c370f75fdeb325230`) and add its `bin` folder to your PATH
+   - macOS and Linux: Homebrew and distro packages ship tagged releases, which are refused. Build the pinned source snapshot the way the `Dockerfile` does (it checks the archive's SHA-256 and passes `--extra-version=-2026-11-11-git-23c4540053` so OpenCut can read the snapshot date), or run the Docker image
    - Verify: `python scripts/verify_ffmpeg_provenance.py` must report `RESULT: OK`
 
 `RESULT: OK` means the build clears every advisory OpenCut grades against a
@@ -159,9 +163,9 @@ output rather than letting a pass read as a clean bill of health; the current
 list lives in `UNGRADED_ADVISORIES` in `opencut/core/ffmpeg_provenance.py`.
 
 The bundled Windows archive is pinned to SHA-256
-`8c32ed9800ff421bbcfda96beb0a66783a64a7cd98869b87ec1b494d3c855fcc`. Its
+`6fa482b30da6b3a5b51ae4776d1873488a949724d0302aa5e96cad143e483776`. Its
 corresponding FFmpeg source archive is pinned to SHA-256
-`02f09346860e4b0549eb03003443c66dceb9f355c2db4f01746db33984f1e3cf`.
+`81c206f525b8206a5e3406fd0aacd92fd7070dff6a5cf28842b82e65640aa1e1`.
 
 2. **Clone and install the Python package:**
    ```bash
@@ -230,7 +234,7 @@ host secret, then recreate the affected services with
 lane. A direct, owner-writable `0600` secret-file backend supports
 `opencut-server --rotate-auth`, while a `0400` file returns the explicit
 `REMOTE_AUTH_TOKEN_FILE_READ_ONLY` error. The image builds the exact FFmpeg
-snapshot commit `01a25f74cc446a683318bab13dfd98a467082ef7` from the
+snapshot commit `23c454005319dee4a5bcae5c370f75fdeb325230` from the
 checksum-pinned upstream source archive and fails its build-time provenance
 gate if the binary falls below OpenCut's security floor. Image assembly also
 installs Python from the universal `requirements-release-lock.txt` with
@@ -296,8 +300,9 @@ On Premiere 2026 and later, look under **Window > Extensions (Legacy)**. Adobe
 moved CEP panels there when UXP became the primary extension platform, so the
 plain **Extensions** menu can be empty even though the install succeeded. On
 Premiere 2025 and earlier the panel is under **Window > Extensions**. If it is
-in neither, confirm the extension folder was copied and that `PlayerDebugMode`
-is set, then restart Premiere.
+in neither, confirm the extension folder was copied, then restart Premiere. A
+panel installed from source or with `Install.bat` is unsigned and also needs
+`PlayerDebugMode` set.
 
 **"Invalid or missing CSRF token" when you click an action:**
 The panel connects and reports healthy, then every action fails with this
@@ -306,6 +311,8 @@ server, and it has either never received one or is holding a stale one.
 Reconnect the panel first. Click the connection indicator, or close and
 reopen the OpenCut panel in Premiere. This refetches the token. If it keeps
 happening, restart the backend server and reopen the panel, in that order. The
+server and Premiere also have to run under the same user account, since the
+panel proves who it is with a file only that account can read. The
 response now carries a `code` of `CSRF_INVALID` and a suggestion naming which
 of the two causes applied; `GET /system/audit-log` records refused bootstraps
 with the origin that asked.
@@ -313,8 +320,10 @@ with the origin that asked.
 **"Module not found" errors for AI features:**
 Most AI features are optional dependencies. Open the **Settings** tab in the panel and scroll to the **Dependency Dashboard**. It shows every optional package with its install status and the exact pip command to install missing ones. Or install all audited extras at once: `pip install -e ".[all]"`.
 
+With the Windows installer, run `OpenCut-Server.exe --install-tools auto-editor,edge-tts,mediapipe` from the install's `server` folder to add those tools where the packaged server loads them. That's what the installer's optional tools checkbox does. auto-editor is a checked download. edge-tts and mediapipe need 64-bit (x64) Python 3.13 from python.org, and the server imports each one before keeping it.
+
 **FFmpeg missing or blocked:**
-The server requires FFmpeg 8.1.3+ (or a dated post-fix snapshot from 2026-07-06 onward) on your PATH. Run `python scripts/verify_ffmpeg_provenance.py` to see the detected version and reason. If missing or below the floor, install the current `ffmpeg-git-full` build from https://www.gyan.dev/ffmpeg/builds/ or build the checksum-verified upstream source snapshot. Restart the terminal and OpenCut server after upgrading. `Install.ps1 -SkipFFmpeg` skips automatic installation only; it cannot bypass this security check.
+The server requires a git-master FFmpeg snapshot dated 2026-11-06 or later on your PATH, since no tagged release carries every graded fix yet. Run `python scripts/verify_ffmpeg_provenance.py` to see the detected version and reason. If missing or below the floor, install the current `ffmpeg-git-full` build from https://www.gyan.dev/ffmpeg/builds/ or build the checksum-verified upstream source snapshot. Restart the terminal and OpenCut server after upgrading. `Install.ps1 -SkipFFmpeg` skips automatic installation only; it cannot bypass this security check.
 
 **Python not found or wrong version:**
 OpenCut requires Python 3.11-3.14. Run `python --version` to check. On Windows, if Python is installed but not on PATH, use `py -3.12 -m opencut.server` instead, or re-run the Python installer and check "Add Python to PATH". Python 3.15+ is rejected until the dependency matrix has verified it.
@@ -347,7 +356,7 @@ Premiere 26.x now ships Object Mask, Generative Extend, Media Intelligence searc
 
 ## Feature Overview
 
-OpenCut v1.55.1 includes **1,564 shipped API routes** (implemented or dependency-gated; 29 strategic 501 stubs are tracked separately and excluded), **8 panel tabs** with **50+ sub-tabs**, and covers every major video editing automation task. Of those shipped routes, **310** have literal first-party panel, palette, CLI, and curated MCP references; **1,254 integration-only routes** are explicitly classified rather than presented as direct user workflows.
+OpenCut v1.57.0 includes **1,564 shipped API routes** (implemented or dependency-gated; 29 strategic 501 stubs are tracked separately and excluded), **8 panel tabs** with **50+ sub-tabs**, and covers every major video editing automation task. Of those shipped routes, **312** have literal first-party panel, palette, CLI, and curated MCP references; **1,252 integration-only routes** are explicitly classified rather than presented as direct user workflows.
 
 ### Cut & Clean
 
@@ -500,7 +509,7 @@ without returning transcript text.
 
 | Feature | Description |
 |---------|-------------|
-| Footage Search | Index your entire media library across projects by spoken content, then query it through the panel, REST, MCP, or CLI |
+| Footage Search | Index your entire media library across projects by spoken content, then query it through the panel, REST, MCP, or CLI. Visual mode in either panel finds shots in the open project by what's on screen |
 | FTS5 Database Search | SQLite full-text search index with auto-indexing and cleanup |
 | Natural Language Commands | Type in English. OpenCut maps commands to API routes via keyword matching or LLM |
 | Chat Editor | Multi-turn LLM-powered editing assistant with session memory and action parsing |
@@ -601,7 +610,7 @@ Creative Cloud or the Unified Plugin Installer Agent needs an Adobe signing
 identity, which this project does not have yet, so the developer-mode path
 above is the supported local install for now.
 
-> **Premiere 26 compatibility:** Both CEP (`[13.0, 99.9]` host range) and UXP (`minVersion 25.6`) panels cover Premiere 26.x. Adobe's published plan ends ExtendScript support in Premiere Pro in September 2026, and the CEP panel drives every host mutation through ExtendScript, so UXP is the panel that outlives it.
+> **Premiere 26 compatibility:** Both CEP (`[13.0, 99.9]` host range) and UXP (`minVersion 25.6`) panels cover Premiere 26.x. Adobe [plans to support CEP and UXP side by side for a calendar year](https://github.com/Adobe-CEP/Samples/blob/master/PProPanel/ReadMe.md) after the November 2025 Premiere Pro 25.6 update, so OpenCut plans around CEP support ending near November 2026. Adobe hasn't announced an exact date. The CEP panel drives every host mutation through ExtendScript, so UXP is the panel that outlives it.
 
 ---
 
@@ -721,16 +730,26 @@ publishes a compatible dependency lane.
 ### GPU Acceleration
 
 ```bash
-pip install "torch>=2.10" "torchvision>=0.25" torchaudio --index-url https://download.pytorch.org/whl/cu128
+pip install "torch>=2.10" "torchvision>=0.25" torchaudio --index-url https://download.pytorch.org/whl/cu132
 ```
 
 That command is for a source install. The packaged Windows app runs its own Python 3.13 and loads add-ons only from `%USERPROFILE%\.opencut\packages`, so install the GPU build there with a matching Python:
 
 ```bat
-py -3.13 -m pip install --upgrade --target "%USERPROFILE%\.opencut\packages" "torch>=2.10" "torchvision>=0.25" torchaudio --index-url https://download.pytorch.org/whl/cu128
+py -3.13 -m pip install --upgrade --target "%USERPROFILE%\.opencut\packages" "torch>=2.10" "torchvision>=0.25" torchaudio --index-url https://download.pytorch.org/whl/cu132
 ```
 
-RTX 50-series cards need this CUDA 12.8 build. Older CUDA builds have no kernels for them, and OpenCut says so in Settings before a job starts.
+The cu132 (CUDA 13) build needs NVIDIA driver 580 or newer and a Turing or newer card. `python install.py` reads your driver and GPU and prints the index that fits, with the reason:
+
+| Driver and GPU | Index |
+|----------------|-------|
+| Driver 580+, RTX 20-series or newer (RTX 50 included) | `cu132` |
+| Driver 525 to 579, RTX 50-series | `cu128` (PyTorch stops at 2.11 there) |
+| Driver 525 to 579, RTX 20 to 40-series | `cu126` |
+| Driver 525 or newer, GTX 900/10-series or Volta | `cu126` |
+| Driver older than 525, or no NVIDIA GPU | CPU build |
+
+faster-whisper's CTranslate2 is a CUDA 12 build. Next to a cu132 torch it runs in its own process and needs its CUDA 12 libraries in `%USERPROFILE%\.opencut\cuda12`. With the Windows installer, run `OpenCut-Server.exe --install-tools cuda12` to download them (about 1.3 GB). From a checkout, `install.py` prints the pip command. The server log names the command when they're missing. ONNX models follow the torch lane, with `onnxruntime-gpu>=1.27` on cu132 and `onnxruntime-gpu<1.27` on the CUDA 12 lanes. Settings still names the right build when an installed one has no kernels for your card.
 
 GPU-heavy routes have built-in rate limiting (one GPU job at a time) and cancellation support. Choose the active CUDA adapter from the CEP or UXP Settings panel, or set `OPENCUT_GPU_INDEX` to a non-negative device index before starting the server. The selected adapter is reported by `/system/status`; invalid indexes return the available-device list instead of silently falling back.
 
@@ -958,23 +977,27 @@ pre-commit install --hook-type pre-push
 
 ### Fail-closed local releases
 
-Release actions use a short-lived receipt bound to a clean `main` commit. Run
-the complete Python, Node, rendered-panel, manifest, lock, provenance, and
-source checks with:
+Release actions use a short-lived receipt bound to a clean `main` commit. Bump
+the version and commit it first, so the gate checks the exact commit you'll tag:
+
+```bash
+python scripts/sync_version.py --set 1.44.0
+```
+
+Then run the complete Python, Node, rendered-panel, manifest, lock, provenance,
+and source checks on that commit:
 
 ```bash
 python scripts/release_gate.py verify --receipt build/release-receipt.json
 ```
 
 The command writes a machine-readable receipt only when every required check
-passes. A version change must consume that fresh receipt:
+passes. It runs the whole pytest suite on up to 4 workers and the rendered panel
+tests on 2. Set `OPENCUT_GATE_PYTEST_WORKERS` or `OPENCUT_RENDERED_WORKERS` to
+change that on a machine with less memory or more.
 
-```bash
-python scripts/sync_version.py --set 1.44.0 --receipt build/release-receipt.json
-```
-
-After committing the synchronized version and generating a fresh receipt,
-smoke-test an unsigned installer before creating its local tag:
+With the receipt in hand, smoke-test an unsigned installer before creating its
+local tag:
 
 ```powershell
 python scripts/release_gate.py promote `
@@ -989,7 +1012,7 @@ Missing, stale, skipped, failed, wrong-branch, source-drifted, or
 artifact-unsmoked evidence refuses the action. The driver never signs
 artifacts or pushes tags.
 
-14,500+ estimated tests across 363 root test files covering route smoke tests,
+15,700+ estimated tests across 394 root test files covering route smoke tests,
 core module unit tests, feature integration tests, plugin tests, and the
 ExtendScript mock harness.
 
@@ -1058,7 +1081,7 @@ extension/
     main.js          # UXP panel (~10,186 lines)
     index.html       # UXP panel UI
     style.css        # UXP dark theme
-tests/               # pytest test suite (14,500+ estimated tests, 363 root test files)
+tests/               # pytest test suite (15,700+ estimated tests, 394 root test files)
 RESEARCH.md          # Current consolidated research conclusions
 ROADMAP.md           # Active open-work tracker
 docs/

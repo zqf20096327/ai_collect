@@ -14,7 +14,7 @@
 - 支持技能（Skill）：把写好的操作手册放进手机，模型需要时自己读
 - 支持插件（Plugin）：安装一个 zip 就能带来新工具、新的上下文注入与新的执行闸门
 - 目标与斜杠指令：输入 `/goal 一句话目标`，助手会在当前会话持续推进并记录进度，直到确认完成、遇到卡点或被停止。`/goal` 查看，`/goal resume` 继续，`/goal clear` 清除。输入 `/` 可找其他工具，直接调用仍受审批档与助手禁用表约束。
-- 当前源码版本：**0.9.1**（`versionCode` 729）
+- 当前源码版本：**0.9.5**（`versionCode` 733）
 
 ## 界面与设计
 
@@ -68,6 +68,12 @@
 
 Agent 的 `terminal_open/list/read/write/interrupt/close` 复用会话工具审批。Agent 自建终端只归所属聊天使用；用户手动开的终端需要授权当前任务，人工输入或点击“接管”会撤销授权。终端使用 Android 应用身份，可访问本应用私有文件。
 
+### 虚拟屏
+
+v0.9 已交付独立虚拟屏。让助手调用 `ui_virtual_screen`：`open` 开启屏幕，`open_app` 打开目标应用，`screenshot` 取帧，`preview` 显示或收起预览，`close` 关闭屏幕。虚拟屏开启期间，`ui_*` 和 `open_app` 自动指向它；关闭后恢复主屏操作。
+
+预览浮窗支持手动触摸接管；收起预览时屏内应用继续运行。第三方应用在虚拟屏上启动需要 root，触摸操作需要无障碍权限；虚拟屏取帧直接使用 ImageReader。
+
 ARM64 设备可在终端页按需安装实验性的 Alpine 3.22.2 或 Debian 12 环境。下载固定镜像并核对 SHA-256，安装后在本机检查 shell 和包管理器，成功才开放使用；不兼容的 ROM 会明确报错。`/workspace` 映射到应用工作区，Python / Node / Git 通过用户点击后运行发行版包管理器安装。PRoot 的 root 是模拟身份，仍受 Android 应用权限限制；系统、ROM 和后台兼容性需要设备实际验证。
 
 **助手（人设）**
@@ -88,23 +94,25 @@ ARM64 设备可在终端页按需安装实验性的 Alpine 3.22.2 或 Debian 12 
 
 ### 工具
 
-内置 **58 个工具**，分 13 个工具包；分组由工具包自己声明，加一个工具、删一个工具，分组和人数自动跟着变。
+内置工具由 [ToolRegistry](app/src/main/java/com/suixing/agent/tools/Tool.kt) 注册，分组由工具包自己声明。下表列出当前内置工具；实际可用列表还会随助手禁用项、MCP 和插件变化，可在应用的工具页查看。
 
-| 分组 | 数量 | 工具 |
-| --- | --- | --- |
-| 系统 | 10 | `device_info` `list_apps` `open_app` `open_url` `clipboard_read` `clipboard_write` `memory_write` `memory_read` `profile_write` `profile_read` |
-| 文件 | 6 | `read_file` `write_file` `edit_file` `list_dir` `find_files` `grep_files`（前三个与 `list_dir`/`find_files`/`grep_files` 都在应用内执行，不 fork 进程；`mkdir`/`stat`/`mv`/`rm` 直接用 `run_shell`） |
-| 界面操作 | 11 | `ui_dump` `ui_screenshot` `ui_tap` `ui_long_press` `ui_swipe` `ui_click_text` `ui_type` `ui_type_into` `ui_key` `ui_current_app` `ui_wait` |
-| 后台任务 | 4 | `job_start` `job_list` `job_output` `job_kill` |
-| 定时提醒 | 4 | `schedule_create` `schedule_list` `schedule_update` `schedule_delete` |
-| 技能 | 4 | `skill_list` `skill_read` `skill_save` `skill_download` |
-| 网络 | 3 | `web_fetch` `web_download` `web_search` |
-| 任务清单 | 2 | `todo_write` `todo_read` |
-| 语音 | 2 | `speak` `stop_speaking` |
-| Shell | 4 | `run_shell` `app_action`（start / force_stop / clear_data / uninstall / disable / enable / info / permissions / install）`settings_get` `settings_put` |
-| 其它（未声明分组） | 1 | `create_assistant` |
-| 会话 | 1 | `get_session_status` |
-| 交互式终端 | 6 | `terminal_open` `terminal_list` `terminal_read` `terminal_write` `terminal_interrupt` `terminal_close` |
+| 分组 | 工具 |
+| --- | --- |
+| 系统 | `device_info` `list_apps` `open_app` `open_url` `clipboard_read` `clipboard_write` `memory_write` `memory_read` `profile_write` `profile_read` |
+| 文件 | `read_file` `write_file` `edit_file` `deliver_file` `list_dir` `find_files` `grep_files`（前三个与 `list_dir`/`find_files`/`grep_files` 都在应用内执行，不 fork 进程；`mkdir`/`stat`/`mv`/`rm` 直接用 `run_shell`） |
+| 界面操作 | `ui_dump` `ui_screenshot` `ui_tap` `ui_long_press` `ui_swipe` `ui_click_text` `ui_type` `ui_type_into` `ui_key` `ui_current_app` `ui_wait` |
+| UI自动化 | `ui_virtual_screen` |
+| 后台任务 | `job_start` `job_list` `job_output` `job_kill` |
+| 定时提醒 | `schedule_create` `schedule_list` `schedule_update` `schedule_delete` |
+| 技能 | `skill_list` `skill_read` `skill_save` `skill_download` |
+| 网络 | `web_fetch` `web_download` `web_search` |
+| 任务清单 | `todo_write` `todo_read` |
+| 目标 | `goal` `goal_read` `goal_resume` `goal_update` |
+| 语音 | `speak` `stop_speaking` |
+| Shell | `run_shell` `app_action`（start / force_stop / clear_data / uninstall / disable / enable / info / permissions / install）`settings_get` `settings_put` `bash` |
+| 其它（未声明分组） | `create_assistant` |
+| 会话 | `get_session_status` |
+| 交互式终端 | `terminal_open` `terminal_list` `terminal_read` `terminal_write` `terminal_interrupt` `terminal_close` |
 
 - 另有引擎自己拦截的**虚拟工具** `compress_context`（手动压缩上下文），以及动态接入的 MCP 工具 `mcp__服务器名__工具名` 与插件工具 `<插件id>_<工具名>`。
 - `get_session_status` 让模型随时能问「现在用的是哪个模型、哪个接口、上下文窗口多大、当前助手是谁、会话总数多少」——它是**只读**的，不碰会话内容。
@@ -251,23 +259,26 @@ rustup target add --toolchain 1.98.0 aarch64-linux-android armv7-linux-androidea
 cargo +1.98.0 fetch --locked --manifest-path app/src/main/rust/suixing-search/Cargo.toml
 ```
 
-Rust crate 保留目录名 `app/src/main/rust/suixing-search`，承载下列核心模块；第三方依赖的确切版本与校验由 `Cargo.lock` 锁定，许可证见[第三方声明](THIRD_PARTY_NOTICES.md)。CMake 为四种 ABI 构建同一份 Rust 静态归档，再链接到 `libsuixing_search.so` 和 `libsuixing_terminal.so`；C++ 保留 JNI 参数、字节与异常桥接，Rust 中间产物留在构建目录。
+Rust crate 保留目录名 `app/src/main/rust/suixing-search`，承载下列核心模块；第三方依赖的确切版本与校验由 `Cargo.lock` 锁定，许可证见[第三方声明](THIRD_PARTY_NOTICES.md)。CMake 为四种 ABI 构建同一份 Rust 静态归档，再链接到 `libsuixing_search.so` 和 `libsuixing_terminal.so`；C++ 承担 JNI 桥接和 Termux 终端仿真核心，Rust 中间产物留在构建目录。
 
-| 入口 | Rust 执行范围 | Kotlin / Android 边界与兼容处理 |
+| 入口 | Rust / C++ 执行范围 | Kotlin / Android 边界与兼容处理 |
 |---|---|---|
 | `grep_files` | 普通文本的批量字面搜索；支持区分大小写，以及查询和文件均为 ASCII 时的忽略大小写 | 正则、Unicode 忽略大小写、无效 UTF-8、读取条件变化与不可无损表示的输入交回 Kotlin；权限、候选遍历和输出格式由 Kotlin 持有 |
 | `find_files` | 深度优先目录遍历、访问数 / 深度 / 命中数 / 时间预算与 ASCII 名称、glob 匹配 | Unicode 和特殊 glob 谓词回调 Kotlin；无法表示的系统文件名或过大响应使用 Kotlin 后备；权限、根路径解析与结果格式保留 |
 | 用量刷新 | 从确定 generation 的只读 FD 读取已提交 JSONL 区间，仅投影角色、时间、模型与 token，并返回消息数和字节水位 | 不兼容 schema / Unicode 或超预算的完整切片使用同 FD 的 Kotlin 解码；日期、缓存、删除前归档、写入、日志提交与恢复继续由 Kotlin 管理 |
 | SSE（OpenAI / Anthropic / Responses） | 增量处理 SSE 行、事件边界、结束标记及 JSON 节点 | 不支持的事件 payload 交回 Kotlin，库不可用时在读流前选择 Kotlin；已发送事件不重放，网络请求、取消与 `StreamTurn` 保留原生命周期 |
-| 历史 Markdown | 批量冷解析 block AST 与行内文本、样式和链接目标扫描 | 已有缓存、解析 owner 和流式尾部增量解析保留；不支持或超预算的文档回 Kotlin；Compose 布局、字体、注解与点击回调继续在 Kotlin |
+| Markdown | Rust 批量冷解析与流式尾块解析、行内文本/样式/链接扫描、图文切段；代码续接只检查新增字符，图片返回 UTF-16 范围 | Kotlin 持有已完成块、表格行身份与展示字符串；不兼容文档使用原解析器；Compose 布局、字体、注解与点击回调保留 |
+| 会话 JSONL | Rust 在已提交 FD 区间分块扫描、批量解码 JSON 树、查找消息 ID 与轮次切窗 | Kotlin serializer 保留字段默认值和类型语义；原扫描探测范围、提交边界与损坏记录报错保留；元数据、追加/换代和恢复由 Kotlin 管理 |
+| 转录分组与分页 | Rust 选择回答分支、分配工具与插话归属、生成气泡分组和分页索引 | 正文、图片与原消息引用留在 Kotlin；时间标签、展示对象、阅读位置与 Compose 状态由 Kotlin 持有 |
 | 交互式 PTY | Android PTY 创建、FD 读写与 poll、窗口尺寸、进程组信号、等待退出和关闭 | JNI 转换参数、字节及错误；终端会话、前后台服务、页面与权限保留 Kotlin，加载或系统调用失败按终端错误路径处理 |
+| 终端 VT/ANSI | C++ 字节解码、控制序列、主/备用屏、滚屏缓冲、尺寸重排与行样式存储；统一样式行保留一个值 | 平台 Unicode 分类、键盘协议和回调保留 Java；现有 Canvas 绘制只缓存可见行，移除会话记录时释放原生缓冲 |
 | `read_file` / `edit_file` | 有界文本读取、行裁剪与 UTF-16 revision；精确匹配、非重叠替换及结果大小检查 | 读取保持同一个已打开 FD；Unicode 不兼容读取回同 FD 后备；权限、乐观 revision 检查、原用户文件写入与文件活动记录由 Kotlin 执行 |
 | 共享 JSON 解码 | 对象、数组和原始值的受限原生 JSON 树解析，接入会话、设置、用量、插件和其它存储读取 | 原 Kotlin serializer / Json 配置仍决定字段默认值、枚举、未知字段与类型；不兼容语法、Unicode 或超预算时使用原解析器 |
 | JSON 文档编码 | 整份文档的结构遍历、字符串转义、UTF-8 长度与有界分块输出；HTTP 与 compact JSON 字节存储共用 | Kotlin 构建类型化 JsonElement 与字符串引用池；Base64 通过引用分段使用。网络、IO 异常及原子提交留在 Kotlin；prettyPrint 和 DataStore 字符串保留原格式 |
 | 上下文与退出规则 | Token 字符估算、历史预算裁剪、工具截图预算、重试与运行终态动作选择 | Kotlin 缓存核对完整估算输入，保留消息模型、错误原对象、事件 / 统计 / 状态回调顺序与协程所有权 |
 | 记忆提示词 | UTF-16 键排序、前 40 条选择、每条 400 单位裁剪和提示文本构建 | 不可变快照缓存与磁盘内容摘要由 Kotlin 管理；原子写成功才更新缓存，字符串不经过有损 UTF-8 往返 |
 | 用量聚合 | 增量 day/model/dailyModel 合并、全局 totals/coverage/deletedCoverage、窗口汇总排序、会话连续 run 统计 | 日期、source/generation 与 byte 水位、归档和事务提交留在 Kotlin；保留 known/unreported、负值及 JVM 整数规则 |
-| 上下文组装 | 按批次生成历史重放描述、摘要正文与工具说明 | 保留原消息/图片引用；普通正文按引用复用，仅包装文本生成 UTF-16；完整准备后再追加 wire 与来源 span |
+| 上下文组装 | 按批次生成历史重放描述、摘要正文、工具说明和上下文压缩专用文本 | 保留原消息/图片引用；工具摘要输出沿用 2000 个 UTF-16 单位截取和原文案；压缩切点、checkpoint 与提交由 Kotlin 管理 |
 | Skill 文档与目录 | frontmatter 范围与 name/description、固定单行清洗、整批 catalog 文本 | 文件发现/排序、安装、enabled/origin、路径与执行校验保留；敏感 Regex/Unicode 空白和超预算整操作回 Kotlin |
 | 列表分区与顺序 | 大批次置顶/普通分区、稳定时间顺序和顺序表过滤，返回原 source 索引 | UI 与原对象留 Kotlin；小批次先走原路径，自定义 Set 的会员语义保留；不改变原视觉、重复 ID 与手动顺序规则 |
 
@@ -277,11 +288,12 @@ Rust crate 保留目录名 `app/src/main/rust/suixing-search`，承载下列核�
 # 编译 Kotlin 和四种 ABI 的原生库，不出包
 ./gradlew :app:compileReleaseKotlin :app:externalNativeBuildRelease
 
-# 单元测试（1012 个 @Test / 149 个文件 —— 这是静态注解计数，不是某次运行的通过数：
+# 单元测试（源码位于 app/src/test，本次运行的测试数与结果以 Gradle 报告为准：
 # 协议层往返、HTML 转纯文本、Markdown 解析与增量复用、
 # 工具批次的并行判定、敏感数据屏蔽、会话日志的追加/换代/自愈、接口报错翻译、
 # 提供方与模型分组、消息分叉的选取逻辑等，无需设备）
 ./gradlew :app:testReleaseUnitTest
+# 报告 app/build/reports/tests/testReleaseUnitTest/index.html
 
 # 出包（只出 release）
 ./gradlew :app:assembleRelease
@@ -292,7 +304,7 @@ Rust crate 保留目录名 `app/src/main/rust/suixing-search`，承载下列核�
 - **CI 跟仓库 wrapper 走**：`.github/workflows/android.yml` 用 `gradle/actions/setup-gradle@v6` + `./gradlew`，不再由 `gradle-version` 钉死版本，Gradle 版本只由 `gradle/wrapper/` 决定（曾经出现过的 `Minimum supported Gradle version is 9.6.0` 已修）。
 - **出包纪律**：只出 release，不构建 debug——debug 的 `applicationId` 带 `.debug` 后缀，装上去会变成另一个应用。打包要等放行。
 - 装机前必须 `aapt dump badging` 核对 APK 的 `versionName` / `versionCode`（历史上出过一次「构建没跑、把旧包当新包装机」的事故；几个版本的 APK 字节数完全相同，光看大小分不出来）。发错了用 `gh release upload --clobber` 覆盖附件。
-- 推送到 GitHub 后 `.github/workflows/android.yml` 会自动跑：`./gradlew :app:testReleaseUnitTest` → 上传测试报告 → `./gradlew :app:assembleDebug :app:assembleRelease` → 上传 `suixing-debug` / `suixing-release` 两个 APK artifact。单测跑的是 **Release 变体**（与出包同一份编译配置，Release-only 的问题才拦得住）。
+- 推送到 GitHub 后 [Android 工作流](.github/workflows/android.yml) 会自动跑 Release 单元测试并上传报告，再执行 `:app:assembleRelease`，上传 `suixing-release` APK artifact。
 - release 用仓库内的 `app/sideload.keystore` 自签（alias / 密码都是更名前的 `lingshu`。**不要改**：keystore 就是用这个名字生成的，改了等于换签名，已装的版本将无法覆盖安装）——这是自用侧载包，不是上架包；该 keystore 必须入库，否则覆盖安装会失败。**由此带来的安全含义（签名不等于来源证明）与校验方法见 [SECURITY.md](SECURITY.md)。**
 - release **已开 R8**（`isMinifyEnabled = true` / `isShrinkResources = true`，见 `app/build.gradle.kts`）：
   APK 从 **18,556,906 B（0.8.613，未开 R8）** 降到 **5,272,728 B（0.8.614 起）**；
@@ -321,7 +333,7 @@ app/src/main/java/com/suixing/agent/
 │   └── TranscriptRedaction.kt   落盘时的敏感数据屏蔽
 ├── capability/                  能力探测：无障碍状态、Shizuku 绑定、root 探测、Shell 执行
 ├── service/                     无障碍服务、前台保活服务、悬浮窗控制台、定时任务服务、开机广播
-├── tools/                       工具层：Tool 契约 + ToolRegistry + 12 组工具
+├── tools/                       工具层：Tool 契约、ToolRegistry 与内置工具包
 ├── mcp/                         MCP 客户端：协议、stdio/http 传输、连接管理
 ├── plugins/                     插件：清单模型、校验、运行时（工具 / 钩子 / 上下文注入）、安装与启用
 ├── skills/SkillStore.kt         技能库：扫描 / 解析 frontmatter / 导入与开关
@@ -341,7 +353,7 @@ app/src/main/java/com/suixing/agent/
     ├── theme/                   配色（手调 M3 角色）、排版、圆角、文件类型色
     ├── components/              通用组件、品牌标记、Markdown 渲染器、预解析注入（PreparedMarkdown）
     ├── drawer/                  抽屉：会话列表、行手势与长按菜单、拖动排序（DrawerOrderStore 落盘）
-    ├── chat/                    会话页（39 个文件）：转录虚拟列表、折叠块、工具条、输入区、滚动、
+    ├── chat/                    会话页：转录虚拟列表、折叠块、工具条、输入区、滚动、
     │                            轮次导航条，以及
     │                            DeltaBuffer（流式增量缓冲）、LiveParts（流式增量规则）、
     │                            LivePinState（读历史时的钉住状态）、ConversationViewport（阅读窗口）
@@ -382,10 +394,6 @@ GLM、OpenAI 兼容（自填地址）、本机 Ollama、Kimi、千问、硅基�
 - Shizuku 在设备重启后需要重新启动（无线调试或 root 方式）
 - stdio 方式的 MCP 服务器读不到 Termux 的私有目录（见上面 MCP 一节）
 
-## 路线图
-
-- **v0.9**：虚拟屏（Shower 式虚拟显示，独立 native 组件）——真屏注入已在 v0.8 覆盖日常自动化，虚拟屏留到下一轮
-
 ## 性能与稳定性（v0.8.4xx 起）
 
 这一轮把「感觉慢、数字乱跳、偶发闪退」当作主线做了一轮收口，几处值得写下来：
@@ -406,6 +414,13 @@ GLM、OpenAI 兼容（自填地址）、本机 Ollama、Kimi、千问、硅基�
 - **抽屉滚动**：`onGloballyPositioned` 只在长按菜单打开时挂载，不再每帧给每个可见行写一次测量状态；拖动排序期间只更新预览顺序，松手才落盘。
 - **冷启动不读盘**：`Application.onCreate` 不再 `runBlocking` 读 DataStore，主题模式改从一个几百字节的 `SharedPreferences` 同步读；DataStore 的收集器继续负责后续更新。
 - **审批弹卡**：待审批请求带单调序号，显式取最早的一条，不再依赖 `Map` 的迭代顺序。
+
+## 贡献者
+
+- [zeng6125-rgb](https://github.com/zeng6125-rgb)：项目维护与开发。
+- Codex：代码实现、问题修复与性能优化协作。
+
+提交贡献记录见 [GitHub Contributors](https://github.com/zeng6125-rgb/suixing/graphs/contributors)。
 
 ## 开源许可与第三方声明
 

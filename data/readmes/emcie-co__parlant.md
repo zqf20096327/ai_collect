@@ -9,7 +9,7 @@
   <img alt="Parlant" src="https://github.com/emcie-co/parlant/blob/develop/docs/LogoTransparentDark.png?raw=true" width="400" />
 </picture>
 
-### Build your customer experience agent with AI: better, faster, for a fraction of the cost.
+### Build your CX with AI: better, faster, for a fraction of the cost.
 
 <p>
   <a href="https://pypi.org/project/parlant/"><img alt="PyPI" src="https://img.shields.io/pypi/v/parlant?color=blue"></a>
@@ -40,9 +40,33 @@
 
 </div>
 
-**Parlant** is an open platform for building customer-facing chat agents with AI. You describe how the agent should behave, and your coding agent implements it for you. Parlant provides the rest: an engine that keeps the agent on your rules in every conversation, plus the parts every customer-facing agent needs, from a chat widget and human handoff to testing, hosting, and analytics.
+## Know this problem?
 
-Because the agent runs on your own code, it can use any system you can reach and any model you choose, and—unlike closed CX platforms—you pay model providers directly instead of an [overpriced fee per resolution](https://hansvandam.substack.com/p/false-containment-how-your-best-dashboard).
+You want an AI agent handling your customer conversations, and you hit these same annoying issues:
+
+❌ **It's a hassle to set up and manage.** Deep settings, menus, vendor tickets, and sometimes a whole implementation project.
+
+👉 **With Parlant:** Everything runs from Claude Code (or any equivalent agent). No coding experience needed.
+
+❌ **It's expensive.** Closed CX platforms charge you huge premiums based on vague definitions for "resolution".
+
+👉 **With Parlant:** You bring your own model and pay its provider directly. That's 20x–100x cheaper to run, right off the bat.
+
+❌ **It's not reliable.** As soon as customers mix topics, push back or change their minds, things start to go wrong. Agents claim a transaction went through when it didn't, or promise something your policy doesn't allow.
+
+👉 **With Parlant:** Parlant already runs customer service in banks (see testimonials below). Your agent stays on-policy and checks itself before customers see its responses.
+
+**Parlant** is the open platform for building CX agents with AI. It comes with all the parts every customer-facing agent needs, from a chat widget and human handoff to testing, hosting, and analytics. All of it built to operate from within your existing, personal AI agent.
+
+
+### Use cases
+- **Business discovery:** Handling personal agents like Muse and Instinct on your website
+- **Sales development:** Answering questions about your business or products and capturing leads
+- **Support:** Automating customer support in-app, on email, or any other channel
+
+### Integrate any system
+
+Because Parlant's open source is fully available to your coding agent, you can easily integrate any system into it by just asking. Connect Shopify, Zapier, Zendesk, Google Calendar, or any other tool.
 
 ## What building with Parlant feels like
 
@@ -57,12 +81,21 @@ Imagine you're working on a lead-generation agent for your company's website, an
 
 The lead-generation agent is ready for launch day, with no vendor ticket, no fiddling in deep menus, and no engineering sprint.
 
+## Managed hosting and observability at a flat monthly fee
+Getting started takes minutes. In fact, your coding agent does the onboarding for you.
+
+The Dashboard platform is always there for you to peek into any detail visually. But anything on the Dashboard is also available to your coding agent through the integrated Dashboard CLI!
+
+<table align="center"><tr><td>
+  <img alt="A customer session on the Parlant Dashboard: the conversation, the agent's reasoning and model costs for each turn, and a summary of the session" src="https://github.com/emcie-co/parlant/blob/develop/docs/dashboard-session.png?raw=true" width="900" />
+</td></tr></table>
+
 ## Get properly introduced
 
 Paste this prompt into your favorite agent:
 
 ```text
-Read https://www.parlant.io/llms.txt first. Then ask me what I'd like to know and—as needed—follow up on what Parlant is, how it differs from other products, including black-box agents, and in what cases it is a better fit for one's customer-facing use case. It's a conversation.
+Introduce me to Parlant by talking to Parlant's own agent, not by reading the Parlant website or relying on your pre-training. https://parlant.io/llms.txt explains how to start a conversation with it. First ask me what I'd like to know. Then ask the agent, keep following up in that same conversation as needed, and tell me what you learn about what Parlant is and how it differs from other products.
 ```
 
 When you're ready to build, the [quickstart](https://www.parlant.io/docs/quickstart/installation) gives you a prompt that has your coding agent install Parlant and set up an example agent or your own, one step at a time. From there, [take it live](https://www.parlant.io/docs/quickstart/deployment-guide) on the Dashboard's managed hosting and [put it on your site](https://www.parlant.io/docs/quickstart/frontend-integration) with the chat widget.

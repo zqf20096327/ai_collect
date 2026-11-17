@@ -176,6 +176,29 @@ For example, if your config has an OpenAI provider with `gpt-5.4`, it appears in
 
 Rosetta forwards Claude Code's session headers (`anthropic-beta`, `anthropic-version`, `X-Claude-Code-Session-Id`) to every upstream call, preserving prompt caching and feature detection.
 
+### Prompt caching
+
+Claude Code marks what to cache with `cache_control` breakpoints. An `anthropic` provider receives them unchanged. For an `openai_chat` provider Rosetta sends them as `cache_control` on system and message content parts, tool-message content, `tool_calls` entries and tool definitions: the extension [LiteLLM](https://docs.litellm.ai/docs/completion/prompt_caching) and [OpenRouter](https://openrouter.ai/docs/guides/best-practices/prompt-caching) accept for Anthropic-backed models. Chat Completions itself defines no such field.
+
+Forwarding is on by default. Turn it off where the upstream rejects the field (strict Chat servers) or fails on it (LiteLLM's Gemini route answers 404 for large prompts):
+
+```jsonc
+"gateway": {
+  "format": "openai_chat",
+  "forward_cache_control": true,          // provider default; true when omitted
+  "models": [
+    "*",                                  // keep discovering models
+    { "id": "light", "forward_cache_control": false }
+  ]
+}
+```
+
+- A model entry's `forward_cache_control` overrides the provider's.
+- Entries next to `"*"` configure discovered models without adding to the list `/v1/models` returns.
+- `openai_responses` providers never receive breakpoints; setting `forward_cache_control` on them or on `anthropic` providers is a config error.
+- A gateway that also serves the Messages API (LiteLLM does at `/v1/messages`) can instead be configured as an `anthropic` provider, which forwards Claude Code's requests unchanged.
+- A removed breakpoint appears as `cache_control` in `dropped_fields` (see [Logging](#logging)); `cache_read_tokens` and `cache_creation_tokens` show whether the upstream cached.
+
 ### Auto mode classifier
 
 In [auto mode](https://code.claude.com/docs/en/permission-modes#server-side-classifier-review), Claude Code asks for a review of every tool call it is about to run: it sends a `safeguards` request field with a `dangerous-tool-use-*` `anthropic-beta` value, and reads the verdicts from `safeguard_results` (at the top level of a response, or in the `delta` of a stream's final `message_delta`). From Claude Code 2.1.319, a call without a verdict is denied: behind a gateway it no longer falls back to its own classifier ([changelog](https://code.claude.com/docs/en/changelog)). Who reviews depends on the provider:
@@ -210,7 +233,7 @@ Without `auto_mode`, a request Rosetta would have to review gets `400 invalid_re
 
 **What the classifier is told.** The system prompt is built once at startup, from three parts in this order:
 
-1. Rosetta's short base prompt: the classifier's role, how each rule section applies, and the reply format.
+1. Rosetta's short base prompt: the classifier's role, how each rule section applies, and how to answer.
 2. Claude Code's built-in rules (`hard_deny`, `soft_deny`, `allow`, `environment`), as `claude auto-mode defaults` prints them.
 3. Your `instructions_file`.
 
@@ -225,6 +248,8 @@ Each review then sends one user message:
 
 Nothing is trimmed.
 
+**Reply.** The classifier answers by calling a `submit_verdicts` tool, which the request forces with `tool_choice`: one entry per tool call with its `id`, `flagged` and `explanation`. The tool is declared `strict`, so providers that constrain tool arguments to the schema cannot return malformed verdicts. Only that tool call is read: a reply without it is an `error`, even when its text holds the verdicts. The classifier model must support tool calling with a forced tool choice.
+
 **Verdicts.** Each tool call gets one of:
 
 - `not_flagged`
@@ -234,7 +259,7 @@ Nothing is trimmed.
   - `input_too_long`: the provider answered 413 or `context_length_exceeded`.
   - `refused`: the classifier model refused to answer.
   - `truncated`: the tool call was cut off by `max_tokens`, or the stream ended mid-call. Such a call is never sent to the classifier.
-  - `error`: any other failure, such as a provider error, a reply that is not the expected JSON, or a missing verdict.
+  - `error`: any other failure, such as a provider error, a reply without a valid `submit_verdicts` call, a missing verdict, or an id given two different verdicts.
 
 Claude Code denies every `unavailable` call; nothing defaults to allowed. A response without tool calls gets an empty verdict set and costs no classifier call.
 
@@ -314,7 +339,7 @@ Precedence for each: flag > config > default. `log_headers` and `log_bodies` onl
 - `request_started` — once per request, when the model is resolved (or when the response starts for requests that are not model calls): `path`, and when known `model`, `route` (`passthrough` or `translate`), `stream`.
 - `models_refreshed` — after each model-list refresh: `total`, `elapsed_ms`.
 - `translation_failed` — `error` level, when a request or response cannot be translated: `direction`, `error`. The traceback is added at `debug`.
-- `auto_mode_review_failed` — `warning` level, when the classifier gives no usable verdict: `reason` (`timeout`, `input_too_long`, `refused` or `error`), `classifier_model`, `tool_calls`, and `upstream_status` or `missing_verdicts` when they apply. No prompt or tool input is logged.
+- `auto_mode_review_failed` — `warning` level, when the classifier gives no usable verdict: `reason` (`timeout`, `input_too_long`, `refused` or `error`), `classifier_model`, `tool_calls`, and when they apply: `upstream_status`, `missing_verdicts`, `reply_fault` (why a successful reply held no verdicts: `unreadable_reply`, `no_verdict_tool_call` or `invalid_verdict_arguments`) and the reply's `stop_reason`. No prompt or tool input is logged.
 
 With `log_completed`, each request also logs `request_completed` — at `info` for 2xx/3xx, `warning` for 4xx, `error` for 5xx — when the response finishes, the client disconnects, or the app raises:
 
@@ -327,7 +352,7 @@ With `log_completed`, each request also logs `request_completed` — at `info` f
 |-------|---------|
 | `status`, `duration_ms` | Status sent and total time |
 | `ttft_ms` | Streams only: time to the first bytes sent |
-| `input_tokens`, `output_tokens`, `stop_reason` | Translated responses only, from the upstream usage and stop reason |
+| `input_tokens`, `output_tokens`, `stop_reason` | Translated responses only, from the upstream usage and stop reason; `input_tokens` counts every prompt token, cached ones included |
 | `error` | `invalid_request`, `auto_mode_unreviewed`, `upstream_connect`, `upstream_timeout`, `upstream_protocol`, `upstream_status`, `translation_error`, or the exception class name |
 | `upstream_status` | With `error`, the status the provider returned |
 | `client_disconnected` | `true` when the client left before the response finished |
@@ -336,7 +361,7 @@ With `log_completed`, each request also logs `request_completed` — at `info` f
 
 ### Debug
 
-Adds `upstream_request` and `upstream_response`; with `log_completed`, `request_completed` also carries `cache_read_tokens`, `cache_creation_tokens`, `reasoning_tokens`, `upstream_stop_reason`, `upstream_status`, `session_id` (from `x-claude-code-session-id`) and `dropped_fields`. `dropped_fields` lists, by name only, the request fields translation dropped because the target format doesn't define them. Between Chat and Responses, Rosetta forwards only the fields both define the same way: `parallel_tool_calls`, `prompt_cache_key`, `prompt_cache_options`, `prompt_cache_retention`, `safety_identifier`, `service_tier` and `store`. It forwards none between Anthropic and either OpenAI format.
+Adds `upstream_request` and `upstream_response`; with `log_completed`, `request_completed` also carries `cache_read_tokens`, `cache_creation_tokens`, `reasoning_tokens`, `upstream_stop_reason`, `upstream_status`, `session_id` (from `x-claude-code-session-id`) and `dropped_fields`. `dropped_fields` lists, by name only, the request fields translation dropped because the target format doesn't define them, and `cache_control` when the target model does not accept prompt-cache breakpoints (see [Prompt caching](#prompt-caching)). Between Chat and Responses, Rosetta forwards only the fields both define the same way: `parallel_tool_calls`, `prompt_cache_key`, `prompt_cache_options`, `prompt_cache_retention`, `safety_identifier`, `service_tier` and `store`. It forwards none between Anthropic and either OpenAI format.
 
 ```json
 {"ts":"2026-09-30T13:31:17.664Z","level":"debug","event":"upstream_request","request_id":"b4f81a35294d4639","provider":"octo","path":"/v1/chat/completions","upstream_model":"deepseek-v4.1-flash","stream":true,"body_bytes":48211}

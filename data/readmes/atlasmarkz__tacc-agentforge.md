@@ -1,144 +1,45 @@
-# TACC AgentForge
+<h1 align="center"><img src="docs/images/logo.svg" width="42" alt=""> TACC AgentForge</h1>
 
-![TACC AgentForge — shopping and budget advisor with quantized language models, evidence retrieval, and agent tools](docs/images/project-cover.svg)
+<p align="center"><strong>A TACC-hosted shopping agent that uses a quantized 27B model to recommend products with source links and budget-checked totals.</strong></p>
 
-TACC AgentForge is a course project for **Advanced AI Computing and Systems**. The project explores how to deploy a large language model on the TACC platform and build a shopping and budget advisor on top of the deployed model.
+<p align="center">
+  <a href="#live-demo">Live Demo</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#quick-start">Quick Start</a> ·
+  <a href="#evaluation">Evaluation</a>
+</p>
 
-## Project Goals
+The project combines two-GPU model serving with a browser-based shopping advisor for the **Advanced AI Computing and Systems** course. The advisor can ask for missing details, resume after the user answers, and revise a recommendation when the budget changes.
 
-- Deploy and serve a large language model on TACC.
-- Build an agent that can reason, use tools, and complete multi-step tasks.
-- Acquire shopping evidence through SerpApi and build a source-linked knowledge base.
-- Explore post-training to improve instruction following and tool use.
-- Study model quantization and inference acceleration under limited GPU resources.
-- Evaluate the system in terms of correctness, latency, throughput, and resource utilization.
-- Study practical systems issues such as model loading, GPU scheduling, communication overhead, and inference optimization.
+## Live Demo
 
-## Planned Architecture
+<p align="center">
+  <img src="docs/images/browser-demo.gif" width="900" alt="The shopping agent searches for earbuds, validates the price against a $100 budget, and returns a recommendation with its source.">
+</p>
 
-![Shopping advisor planned architecture: application, SerpApi acquisition and knowledge retrieval, post-training, inference, evaluation, and TACC infrastructure](docs/images/planned-architecture.svg)
+The demo runs on TACC. The agent recommends earbuds costing **$22.99 before tax** and shows the source alongside the **$77.01** left in the budget. Idle waits are shortened in the recording.
 
-SerpApi data is normalized into a persistent SQLite knowledge base with source
-links, timestamps, and versioned snapshots. The knowledge module now includes
-quota-bounded incremental collection, compact FTS5 queries, and adapters for the
-agent's existing tool ports. See [knowledge setup and interfaces](knowledge/README.md).
-Budget validation remains a separate integration responsibility.
+## Architecture
 
-For a fresh clone, use Python 3.12+ and run `python -m knowledge bootstrap`,
-then `python -m knowledge doctor`. The pinned offline seed is versioned under
-`assets/knowledge/`; no personal data path or API key is needed for queries.
-See [team setup and harness integration](knowledge/README.md) and
-[TACC knowledge CPU worker](deploy/tacc/knowledge-worker/README.md).
+![Target architecture with six layers: Application, Knowledge, Post-training, Inference, Evaluation, and TACC](docs/images/target-architecture.png)
 
-Training, quantization, and serving variants will be compared on fixed held-out tasks.
+*Target architecture, including cloud-hosted knowledge services and LoRA training.*
 
-- [Development plan and design decisions](tasks/plan.md)
-- [Implementation tasks and acceptance checks](tasks/todo.md)
-- [Baseline design and pipeline metrics](docs/evaluation-metrics.md)
-- [Two-page project proposal](output/pdf/shopping-budget-advisor-proposal.pdf)
+In the deployment used for the demo, the browser receives live progress from a local Python backend, which connects to TACC over SSH. A single two-GPU job runs the agent and vLLM with **Qwen3.8-27B AWQ INT4**. The agent searches a pinned SQLite catalog and verifies offer costs and the remaining budget before returning a recommendation. The live query path uses the existing catalog snapshot.
 
-The first deployed model is the course-provided `Qwen3.8-27B-AWQ-INT4`
-checkpoint, served through vLLM with the API alias `qwen3.8-27b`.
-Agent implementation, post-training, and new quantization are planned;
-model and method selection depend on available TACC resources and compatibility.
+[Deployment runbook](deploy/tacc/service/RUNBOOK.md) · [Knowledge base](knowledge/README.md) · [Agent internals](agent/ARCHITECTURE.md)
 
-## Verified TACC Deployment
+## Quick Start
 
-On October 16, 2026, a two-GPU quantized service and a separate CPU client
-successfully completed arithmetic and Chinese question-answering smoke tests.
-The working configuration uses eager execution, 4K context, and tensor parallelism
-of two. The original compiled 32K configuration did not become ready in the
-first trial and is not claimed as verified. The service was stopped after testing.
-
-- [Deployment and reproduction](deploy/tacc/README.md)
-- [Experiment results and complete logs](docs/experiments/2026-10-16-27b/README.md)
-
-This milestone deploys existing quantized weights; it does not yet implement
-new quantization, an agent, or a performance benchmark.
-
-## Prerequisites
-
-- A registered TACC account and SSH public key
-- The TACC `tcloud` SDK
-- Python 3.10 or later
-- Access to the compute resources required by the selected model
-
-## TACC Setup
-
-Configure the local `tcloud` client with your TACC username and private key:
+From the repository root on macOS or Linux, with the TACC SDK configured and `tcloud` on your PATH:
 
 ```bash
-tcloud config --username <TACC_USERNAME>
-tcloud config --file <SSH_PRIVATE_KEY_PATH>
-tcloud init
+bash deploy/tacc/service/qwen-service/stage.sh serve --harness
+(cd deploy/tacc/service/qwen-service && tcloud submit)
 ```
 
-Do not commit private keys, passwords, access tokens, model credentials, or generated cluster configuration containing sensitive information.
+Once the service is ready, run `python -m app.backend` and open [the local app](http://127.0.0.1:8765). Try asking for wireless earbuds for your commute with a **$100** budget. The [application guide](app/README.md#运行) covers SSH settings and the local demo mode.
 
-## Planned Repository Structure
+## Evaluation
 
-```text
-tacc-agentforge/
-|- agent/          # Agent planning, tools, and memory
-|- app/            # Browser interface, backend, and TACC request bridge
-|- knowledge/      # SerpApi acquisition, SQLite evidence, and retrieval
-|- training/       # Post-training and adapter export
-|- quantization/   # Model calibration and quantization
-|- inference/      # Model client and serving benchmark
-|- configs/        # Model, agent, and experiment configurations
-|- scripts/        # TACC deployment and job scripts
-|- evaluations/    # Benchmarks and evaluation tasks
-|- tests/          # Automated tests
-|- docs/           # Design notes and experiment reports
-`- README.md
-```
-
-`knowledge/` implements collection, storage, snapshots, retrieval and tool adapters.
-`app/` and `evaluations/` remain separate integration work for their owners.
-Stub modules raise `NotImplementedError("TODO(Task N)")`; see [tasks/todo.md](tasks/todo.md).
-
-## Roadmap
-
-- [x] Initialize the project repository
-- [x] Select an initial checkpoint and inference framework
-- [x] Run a minimal inference job on TACC
-- [x] Expose the model through a reusable inference interface
-- [ ] Verify SDK file transfer and the TACC worker runtime
-- [x] Collect and normalize SerpApi shopping evidence
-- [x] Build versioned knowledge snapshots and evidence retrieval
-- [ ] Implement the initial agent loop
-- [ ] Add budget validation, tools, and session memory
-- [ ] Connect the browser and backend to the TACC worker
-- [ ] Design evaluation tasks and baselines
-- [ ] Verify training resources and select a post-training model
-- [ ] Prepare training data and run an SFT baseline
-- [ ] Explore preference optimization if resources permit
-- [ ] Quantize the selected model and evaluate quality-memory tradeoffs
-- [ ] Benchmark inference acceleration with controlled comparisons
-- [ ] Measure latency, throughput, and GPU utilization
-- [ ] Document results and system limitations
-
-## Status
-
-Initial quantized model serving and API smoke tests are complete. The knowledge
-module has been integrated and tested with 80 detail-bearing provider groups,
-380 review records, and 3,525 source-linked evidence records. Knowledge tools
-integrate with the existing agent runtime. Real TACC CPU smoke validation
-verified the snapshot and exercised catalog search, Top-5 retrieval and evidence
-resolution.
-TACC latency benchmarks, real LLM/harness integration, actual SKU review,
-complete budget validation and held-out end-to-end evaluation remain necessary.
-Post-training, new quantization, and inference acceleration experiments remain
-in the planning stage.
-
-## Course
-
-**Advanced AI Computing and Systems**
-
-## License
-
-No license has been selected yet. Unless a license is added, all rights are reserved by the repository owner.
-
-## PR-Agent code review
-
-An opt-in PR-Agent workflow can use MiniMax for pull request reviews. See [setup and limitations](docs/pr-agent-minimax.md).
+The full agent scored **42 successes in 96 attempts** on the frozen four-category held-out baseline. That result is tied to the recorded code and catalog snapshot. The [baseline report](docs/experiments/baseline.md) records the scoring rules, latency, and failure traces.

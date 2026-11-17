@@ -85,19 +85,25 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   the `-search` fallback.
 - Common CSS: selectors, cascade and inheritance, box model (including
   `box-sizing` and min/max sizes), margins, borders, backgrounds, text styling,
-  lists, tables, CSS custom properties, viewport-width `@media` queries, viewport units, and basic flex rows with
-  alignment and ordering.
+  lists, tables, CSS custom properties, viewport-width `@media` queries,
+  viewport units, simple `calc()`, basic flex rows with alignment and ordering,
+  left/right floats with line wrapping and `clear`, and `overflow` clipping
+  for bounded panels.
 - PNG/JPEG/GIF/WebP/BMP/SVG/data-URI images when enabled with `-graphics` (`auto`,
-  `kitty`, `iterm`, or `blocks` for half-block art); press `I` to cycle full
+  `kitty`, `iterm`, or `blocks` for half-block art); press `i` to cycle full
   graphics, blocks and none. Images are off by default for speed.
 - Session-only memory cache for CSS, scripts and decoded images, with a 32 MiB
   default budget and `-cache` to change or disable it.
+- In-memory back/forward cache for up to 10 visited pages: Back and Forward
+  restore the page, its DOM and its JavaScript state without a network reload,
+  and pause page timers while a page is cached. Nothing is written to disk.
 - Light JavaScript: DOM queries and mutation, `classList`/`style`, click
   handlers, timers, alert/confirm/prompt and native `<dialog>` open/close,
   same-origin `fetch`/`XMLHttpRequest` plus simple CORS cross-origin requests,
   and in-memory storage/cookies. Script
   errors turn the footer `JavaScript` label into a red `JavaScript:Error`;
-  click it to open the console.
+  `J` or clicking that label toggles scripting for the session and reloads the
+  page, while `!` opens the console.
 - JavaScript console (`!`): tabbed view of logs, requests, cookies and
   in-memory storage, the raw page HTML, and a Tools tab for read-only page
   inspection (`help`, `form`, `links`, `requests`, `logs`, `source`,
@@ -113,9 +119,9 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   already render a dark background keep their own palette; otherwise
   backgrounds, text, links and borders are remapped to a dark palette. Images
   keep their original colors.
-- Vimium-style link hints (`f`): highlights letters from each visible link's
-  own text with a yellow background and underline (two adjacent letters only
-  when hints share a first letter), then follows one when you type them; `F`
+- Vimium-style link hints (`f`): highlights letters from each visible link or
+  form control, then follows the link or activates the control when you type
+  them; `F`
   shows the destination highlighted in yellow first and waits for confirmation;
   `Esc` or scrolling dismisses the hints.
 - Headless MCP automation (`-mcp`): navigate, snapshot page text and links,
@@ -127,13 +133,16 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   a bookmarks button when `-bookmarks` is supplied, a config gear and a centered
   page title.
 - Keyboard and mouse navigation, including the kitty keyboard protocol in
-  kitty, WezTerm, Ghostty and foot, `/` incremental find (including multi-word
+  kitty, WezTerm, Ghostty and foot, a standard Tab order through links and form
+  controls (Space/Enter activate, arrows or h/j/k/l change selects, radios and ranges),
+  `/` incremental find (including multi-word
   phrases) with highlighted matches
   (also in the console HTML tab), a draggable page scrollbar, history (including
   a top-right History page listing the session's links, with `#` anchors as
   entries and back/forward restoring each page's last scroll position),
   bookmarks imported with `-bookmarks` from a
-  Netscape HTML export, scrolling, focus, link hover targets in the footer,
+  Netscape HTML export, scrolling, focus, link hover targets and CSS/JS hover
+  menus,
   text selection (`y` copies selected text, or the current URL when nothing is
   selected), fixed-overlay hiding (`X`), and a `!` JavaScript console.
 
@@ -153,14 +162,17 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
 - No video/audio playback, WebGL, WebAssembly, workers, WebSockets, iframes,
   Shadow DOM, custom elements, real observers or full History API.
 - Basic CSS grid rows are supported, along with `position:relative`,
-  `position:absolute` and `position:fixed`; floats, `position:sticky`,
-  `z-index`, CSS
-  variables, animations, transitions, generated content, `@import` and
-  background images are unsupported or approximated as block flow.
+  `position:absolute` and `position:fixed`, left/right floats with line
+  wrapping and `clear`, and `overflow` clipping for bounded boxes.
+  `position:sticky`, `z-index`, CSS variables, animations, transitions,
+  generated content, `@import` and background images are unsupported or
+  approximated as block flow.
 - SVG support is partial: text inside SVG, `<use>/<symbol>`, filters, masks and
   CSS-in-SVG may be missing. Animated WebP is not supported.
 - Oversized images are capped at 40% of the viewport width and 16 rows,
-  preserving their aspect ratio.
+  preserving their aspect ratio. Images with a definite CSS box (both width and
+  height) use `object-fit`/`object-position` and fill or crop into that box
+  instead of hitting those caps.
 - No tabs or automatic downloads; download links and non-HTML responses open a
   popup with a copyable `curl` command instead, and multipart/file uploads are
   not implemented (clicking a file input shows an unsupported notice). Selected

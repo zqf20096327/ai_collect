@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img width="300" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v6.1.5/media/showcase.gif" alt="Chat list, photo viewer, reactions, swipe-to-reply, emoji keyboard, photo attachments, a voice note, a streamed AI reply and swipe-to-archive" />
+  <img width="300" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.0.1/media/showcase.gif" alt="Chat list, photo viewer, reactions, swipe-to-reply, emoji keyboard, photo attachments, a voice note, a streamed AI reply and swipe-to-archive" />
 </p>
 
 <p align="center">
@@ -64,17 +64,17 @@
 <table align="center">
 <tr>
 <td align="center" valign="top" width="190">
-  <a href="https://cryptoc-app.web.app/"><img src="https://cryptoc-app.web.app/img/icon.png?v=3" width="76" height="76" alt="cryptoc app icon" /></a>
+  <a href="https://getcryptoc.app/"><img src="https://getcryptoc.app/img/icon.png?v=3" width="76" height="76" alt="cryptoc app icon" /></a>
   <br /><br />
-  <img src="https://cryptoc-app.web.app/img/qr-get.png?v=2" width="124" height="124" alt="QR code that installs cryptoc" />
+  <img src="https://getcryptoc.app/img/qr-get.png?v=2" width="124" height="124" alt="QR code that installs cryptoc" />
   <br />
   <sub>Scan to install</sub>
   <br /><br />
   <!-- App Store button hidden for now
-  <a href="https://apps.apple.com/app/cryptoc/id1333169178"><img height="40" src="https://cryptoc-app.web.app/img/appstore.svg?v=2" alt="Download on the App Store" /></a>
+  <a href="https://apps.apple.com/app/cryptoc/id1333169178"><img height="40" src="https://getcryptoc.app/img/appstore.svg?v=2" alt="Download on the App Store" /></a>
   <br />
   -->
-  <a href="https://play.google.com/store/apps/details?id=co.ssoul.CryptoC"><img height="59" src="https://cryptoc-app.web.app/img/googleplay.png?v=2" alt="Get it on Google Play" /></a>
+  <a href="https://play.google.com/store/apps/details?id=co.ssoul.CryptoC"><img height="59" src="https://getcryptoc.app/img/googleplay.png?v=2" alt="Get it on Google Play" /></a>
 </td>
 <td valign="top">
 
@@ -134,8 +134,8 @@ That is the whole setup - everything below is optional.
 <!-- chat-showcase:start -->
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v6.1.5/media/features-light.gif" />
-    <img width="760" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v6.1.5/media/features-dark.gif" alt="A chat with an assistant, opened on a big waving emoji and quick replies: a long press adds a heart reaction, a swipe quotes the message in the composer, the reply is sent and its ticks turn to read, the assistant's answer streams in word by word with a link preview, a held mic sends a voice note, a round video note is filmed and sent, a photo is picked from the attachment sheet, then the same chat switches to the dark theme. Beside it, the features list and the other built-in features" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.0.1/media/features-light.gif" />
+    <img width="760" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.0.1/media/features-dark.gif" alt="A chat with an assistant, opened on a big waving emoji and quick replies: a long press adds a heart reaction, a swipe quotes the message in the composer, the reply is sent and its ticks turn to read, the assistant's answer streams in word by word with a link preview, a held mic sends a voice note, a round video note is filmed and sent, a photo is picked from the attachment sheet, then the same chat switches to the dark theme. Beside it, the features list and the other built-in features" />
   </picture>
 </p>
 <!-- chat-showcase:end -->
@@ -205,8 +205,8 @@ Kept in sync with upstream [`react-native-gifted-chat`](https://github.com/Farid
 | Added in this fork | react-native-gifted-chat | @kesha-antonov/react-native-chat |
 | --- | :---: | :---: |
 | Active maintenance | 💤 sporadic | ✅ active |
-| Modern default UI (modern messenger look) | dated 2020 look | ✅ wallpaper, tails, inline time, fully overridable |
-| Light/Dark **theme system** | per-component color props | ✅ `theme` / `darkTheme` tokens, runtime switch |
+| Modern default UI (modern messenger look) | dated 2020 look | ✅ four built-in appearances, inline time, fully overridable |
+| Light/Dark **theme system** | per-component color props | ✅ `appearance` presets + `theme` / `darkTheme` tokens, runtime switch |
 | Streaming (AI) messages | ❌ | ✅ token-by-token + typing cursor |
 | Emoji reactions | ❌ | ✅ long-press picker + reaction pills |
 | Emoji keyboard | ❌ | ✅ built in: tabs, search, recents, skin tones |
@@ -224,12 +224,16 @@ Kept in sync with upstream [`react-native-gifted-chat`](https://github.com/Farid
 ### Theming in one line
 
 <details>
-<summary><strong>Override any token, light and dark</strong></summary>
+<summary><strong>Pick a built-in look, then override any token, light and dark</strong></summary>
 
 ```jsx
-// Modern defaults out of the box, or override any token (light + dark):
+// 'plain' (default), 'wallpaper', 'mono' or 'soft', each with a light and a dark theme:
+<Chat appearance='soft' {...props} />
+
+// Override any token on top of it (light + dark):
 <Chat
-  theme={{ colors: { accent: '#3390EC', outgoingBubble: '#EFFEDE' } }}
+  appearance='plain'
+  theme={{ colors: { accent: '#3390EC' } }}
   darkTheme={{ colors: { background: '#0E1621' } }}
   {...props}
 />
@@ -400,6 +404,7 @@ Overridable names: `send`, `mic`, `camera`, `play`, `pause`, `check`, `checkAll`
   - [TypeScript](#typescript)
   - [Building blocks](#building-blocks)
 - [Platform Notes](#-platform-notes)
+- [Security](#-security)
 - [Performance](#-performance)
 - [Testing](#-testing)
 - [Example App](#-example-app)
@@ -623,9 +628,10 @@ Every group below is collapsed - open the one you need.
 - **`messageIdGenerator`** _(Function)_ - Generate an id for new messages. Defaults to a simple random string generator.
 - **`locale`** _(String)_ - Locale to localize the dates. You need first to import the locale you need (ie. `require('dayjs/locale/de')` or `import 'dayjs/locale/fr'`)
 - **`colorScheme`** _('light' | 'dark')_ - Force color scheme (light/dark mode). When set to `'light'` or `'dark'`, it overrides the system color scheme. When `undefined`, it uses the system color scheme. Default is `undefined`.
-- **`theme`** _(Object)_ - Override the default light theme tokens (`colors` / `radii` / `spacing` / `typography` / `avatar` / `sendButton` / `composer` / `voice` / `bubble` / `wallpaper` / `nameColors`). Deep-merged over `defaultLightTheme`; any subset is allowed. See [Theming & Dark Mode](#theming--dark-mode).
-- **`renderWallpaper`** _(Function | null)_ - The chat background. By default `Chat` draws a swirl gradient from `theme.wallpaper`, turning one step per message you send. Return your own element (an image, `ChatWallpaper` with other props...) to replace it, or pass `null` for the plain `theme.colors.background`.
-- **`darkTheme`** _(Object)_ - Same as `theme`, applied when the resolved color scheme is dark (deep-merged over `defaultDarkTheme`).
+- **`appearance`** _('plain' | 'wallpaper' | 'mono' | 'soft' | `{ light, dark }`)_ - The built-in look to start from, each a complete light and dark theme: `'plain'` (default: a neutral background, white incoming and solid accent outgoing bubbles), `'wallpaper'` (the swirl wallpaper with tails, pale green bubbles by day and a purple-to-blue gradient by night), `'mono'` (black and white, square-ish corners) and `'soft'` (lavender, rounded). Or pass your own pair of themes, e.g. built from `chatAppearances.soft`. `theme` and `darkTheme` are merged on top of it. See [Theming & Dark Mode](#theming--dark-mode).
+- **`theme`** _(Object)_ - Override the light theme tokens (`colors` / `radii` / `spacing` / `typography` / `avatar` / `sendButton` / `composer` / `voice` / `bubble` / `wallpaper` / `nameColors`). Deep-merged over the `appearance`'s light theme; any subset is allowed. See [Theming & Dark Mode](#theming--dark-mode).
+- **`renderWallpaper`** _(Function | null)_ - The chat background. With `theme.wallpaper.isEnabled` (the `'wallpaper'` appearance) `Chat` draws a swirl gradient from `theme.wallpaper`, turning one step per message you send; otherwise `theme.colors.background`. Return your own element (an image, `ChatWallpaper` with other props...) to replace it, or pass `null` for the plain `theme.colors.background`.
+- **`darkTheme`** _(Object)_ - Same as `theme`, applied when the resolved color scheme is dark (deep-merged over the `appearance`'s dark theme).
 - **`icons`** _(Object)_ - Icon override registry. Supply a render function for any built-in icon to replace it (e.g. with `lucide-react-native`). See [Custom icons](#custom-icons-eg-lucide).
 - **`labels`** _(Object)_ - Override any UI string. See [Localization (i18n)](#localization-i18n).
 
@@ -985,7 +991,7 @@ const list = useChatList(initialChats)
 | `isSearchEnabled` / `filterChat` / `onSearchChange` | Search; a custom match; a server-side search |
 | `isArchiveOpen` / `onArchiveOpenChange` | Control which list shows |
 | `renderChat` / `renderEmpty` / `listProps` / `style` | A custom row (`ChatListCell` is the built-in one), the empty text, FlatList props (`onEndReached`, `refreshControl`...) |
-| `theme` / `darkTheme` / `colorScheme` / `locale` / `labels` / `icons` | As on `Chat`; the list's colors are `theme.chatList` |
+| `appearance` / `theme` / `darkTheme` / `colorScheme` / `locale` / `labels` / `icons` | As on `Chat` (pass the same `appearance` to `Chat`, `ChatList` and `ChatHeader`); the list's colors are `theme.chatList` |
 
 `ChatListCell`, `ChatListAvatar`, `ChatListShimmer`, `sortChats`, `getChatPreview` and `formatChatListDate` are exported for building your own row or screen.
 
@@ -1281,8 +1287,31 @@ For a prototype, `useChatMessages({ initialMessages, user })` keeps the messages
 - **`getUser`** _(Function)_ - `(userId) => User | undefined`, who reacted. As in Telegram, a pill shows up to three reactors' avatars instead of a count in a one-to-one chat, and in a group while the message has three reactions or fewer, when every reactor is known. Defaults to the senders of the loaded messages (and you)
 - **`renderReactions`** _(Function)_ - Override the reactions-display component rendered below the bubble
 - **`renderReactionPicker`** _(Function)_ - Override the picker shown on long-press (use for a full emoji browser). It receives [`ReactionPickerProps`](src/Reactions/types.ts): `visible`, `message`, `emojis`, `onSelect`, `onDismiss`, `position`, the bubble's on-screen box (`pageX`, `pageY`, `bubbleWidth`, `bubbleHeight`), the two picker styles and:
+  - **`reactionTarget`** _(`{ x, y }`, optional)_ - Where the picked reaction's pill is, relative to the bubble's box, once the pick has been applied and the pill drawn. Pass it on to `ContextMenu` so the pick flies to its own pill
   - **`messagePreview`** _(ReactNode, optional)_ - A copy of the pressed bubble to draw lifted above your backdrop at the bubble's box. While it is mounted the original bubble is hidden, so the message seems to rise out of the list; if you never render it, the original simply stays put. The easiest way to get the built-in look is to render the exported `ContextMenu` with `items={[]}` (see [Message actions](#message-actions-long-press-context-menu) for its props)
 - **`renderExpandedPicker`** _(Function(`{ onSelect }`) | null, optional)_ - The expand button. The reactions bar (in the quick picker and above the context menu) ends in a chevron that grows the bar in place into a panel holding what this returns. Defaults to the built-in emoji grid (8 columns, search, tabs, recents); pass your own, or `null` to drop the button. Call `onSelect(emoji)` with the pick; the overlay closes and `onReactionPress` is called. Also passed to a custom `renderReactionPicker`
+- **`renderReactionIcon`** _(Function(`{ emoji, place, size, color, isChosen }`), optional)_ - Draws a reaction as an icon instead of its emoji text, everywhere a reaction shows: the pills on a message (`place: 'pill'`), the reactions bar of the long-press overlay (`'picker'`) and the pick flying from the bar to the message (`'flight'`). `emoji` is the reaction's key, `size` the emoji's font size there (16 in a pill, 26 in the bar), `color` the text color there, and `isChosen` is true for the current user's own reaction. Return `null` to keep the text for a key. With it, `emojis` and `MessageReaction.emoji` can hold keys of your own (`'like'`, `'question'`) drawn with your icon set; the built-in emoji grid behind the chevron still shows emoji, so pair it with `renderExpandedPicker: null` when only your keys are allowed. Also passed to a custom `renderReactions` and `renderReactionPicker`, and `ReactionIcon` is exported for drawing a reaction the same way in your own components:
+
+  ```tsx
+  import ThumbsUp from 'lucide-react-native/icons/thumbs-up'
+  import Heart from 'lucide-react-native/icons/heart'
+
+  const ICONS = { like: ThumbsUp, love: Heart }
+
+  <Chat
+    reactions={{
+      onReactionPress,
+      emojis: ['like', 'love'],
+      renderExpandedPicker: null,
+      renderReactionIcon: ({ emoji, size, color, isChosen }) => {
+        const Icon = ICONS[emoji as keyof typeof ICONS]
+        return Icon ? <Icon size={size} color={color} fill={isChosen ? color : 'none'} /> : null
+      },
+    }}
+  />
+  ```
+
+  See `example/components/chat-examples/ReactionIconsExample.tsx`
 - **`containerStyle`**, **`reactionStyle`**, **`reactionActiveStyle`**, **`reactionTextStyle`**, **`reactionCountStyle`** - Styles for the reaction pills
 - **`pickerContainerStyle`**, **`pickerEmojiStyle`** - Styles for the quick picker
 
@@ -1308,13 +1337,17 @@ Message text is automatically scanned for URLs, emails, and phone numbers; hasht
     linkStyle: { left: { color: '#1d9bf0' }, right: { color: '#fff' } },
     onPress: (message, url, type) => {
       // type: 'url' | 'email' | 'phone' | 'mention' | 'hashtag'
-      Linking.openURL(url)
+      // The URL comes from the sender: open only schemes you trust.
+      if (isSafeLinkUrl(url))
+        Linking.openURL(url)
     },
   }}
 />
 ```
 
 For full control, pass custom `matchers` (`{ type, pattern, getLinkUrl?, getLinkText?, renderLink?, onPress? }[]`) to add or override patterns. See the Links example in the [example app](#-example-app).
+
+Without an `onPress`, a link opens only when its scheme is `http`, `https`, `mailto`, `tel` or `sms`; see [Security](#-security).
 
 </details>
 
@@ -1364,8 +1397,9 @@ import { Copy, Trash2 } from 'lucide-react-native' // optional icons
 
 `ContextMenu` is exported for custom pickers and menus. Beyond `visible`, `items`, `onDismiss` (called once its exit has played), `position` and the bubble's box (`pageX`, `pageY`, `bubbleWidth`, `bubbleHeight`), it takes these optional props:
 
-- **`reactions`** _(Object)_ - `{ emojis, onSelect, selected?, containerStyle?, emojiStyle?, renderAccessory?, renderExpandedPicker? }`. `selected` lists the reactions the user already picked (drawn smaller, in a circle); `renderAccessory` adds content at the end of the bar; `renderExpandedPicker` adds the expand button and the panel it opens (see `reactions.renderExpandedPicker` above)
+- **`reactions`** _(Object)_ - `{ emojis, onSelect, selected?, containerStyle?, emojiStyle?, renderAccessory?, renderExpandedPicker?, renderReactionIcon? }`. `selected` lists the reactions the user already picked (drawn smaller, in a circle); `renderAccessory` adds content at the end of the bar; `renderExpandedPicker` adds the expand button and the panel it opens; `renderReactionIcon` draws the reactions as icons (see `reactions.renderExpandedPicker` and `reactions.renderReactionIcon` above)
 - **`touchX`**, **`touchY`** _(Number)_ - Where the finger was, in window coordinates; the menu opens beside it (beside the bubble's middle without them)
+- **`reactionTarget`** _(`{ x, y }`)_ - Where a picked reaction lands: the center of its pill's emoji, relative to the bubble's box (`pageX`, `pageY`). Without it the pick lands where a message's first pill sits
 - **`messagePreview`** _(ReactNode)_ - The copy of the message drawn above the scrim in place; pass the one a custom picker receives
 - **`children`** _(ReactNode)_ - Drawn above everything else in the overlay, e.g. a full emoji sheet
 
@@ -1398,10 +1432,20 @@ If a message must own every touch that lands on it, set `isMessageGestureEnabled
 <details>
 <summary><strong>Token groups, runtime switching and themed components</strong></summary>
 
-The default look is a modern messenger style: a classic day theme (pale green outgoing bubbles over a green swirl wallpaper) and a dark blue night theme (a purple-to-blue outgoing gradient fixed to the screen). Every value is a token. Override any subset via `theme` (light) and `darkTheme` (dark); your overrides are deep-merged over `defaultLightTheme` / `defaultDarkTheme`, and the resolved theme switches at runtime with the color scheme (system, or forced via `colorScheme`). Explicit per-component style props still win over the theme.
+The look starts from an **appearance**, a complete light and dark theme picked with the `appearance` prop:
+
+| `appearance` | Day | Night |
+| --- | --- | --- |
+| `'plain'` (default) | Neutral #F4F5F7 background, white incoming bubbles, solid blue outgoing with white text | Near-black background, dark grey incoming, the same blue outgoing |
+| `'wallpaper'` | Green swirl wallpaper, pale green outgoing bubbles with tails | Dark blue, a purple-to-blue outgoing gradient fixed to the screen |
+| `'mono'` | White, light grey incoming, black outgoing, grey avatars, 12pt corners | Black, the bubbles reversed |
+| `'soft'` | Faint violet background, lavender outgoing bubbles with dark text, 20pt corners | Deep plum |
+
+Every value is a token. Override any subset via `theme` (light) and `darkTheme` (dark); your overrides are deep-merged over the appearance, and the resolved theme switches at runtime with the color scheme (system, or forced via `colorScheme`). Explicit per-component style props still win over the theme. For a look of your own, pass `appearance={{ light, dark }}`, for example `{ light: mergeTheme(chatAppearances.mono.light, {...}), dark: ... }`. Pass the same `appearance` to `ChatList` and `ChatHeader` so the whole app matches.
 
 ```tsx
 <Chat
+  appearance='wallpaper'
   theme={{
     colors: { accent: '#3390EC', outgoingBubble: '#3390EC', outgoingText: '#FFFFFF' },
     radii: { bubble: 18 },
@@ -1422,108 +1466,4 @@ Token groups: `colors`, `radii`, `spacing`, `typography`, `avatar`, `sendButton`
 - **`textScale`** - the text size the user picked, a multiplier of every `typography` size (1 by default): messages, times, names, day and service pills, quotes and the composer grow together, e.g. `theme={{ textScale: 1.2 }}`.
 - **`chatList.headerSubtitle` / `chatList.headerSubtitleActive`** - `ChatHeader`'s status line, grey and in the accent color.
 
-A few behaviours follow from the tokens: setting `colors.outgoingBubble` turns the gradient off, setting `colors.senderName` empties `nameColors`, and setting `avatar.palette` without `paletteEnd` draws flat avatars - so an app that picks its own colors keeps seeing them. Bubbles in a run (same sender, at most five minutes apart, `utils.isSameGroup`) share one tail and one name, 2pt apart (`spacing.withinGroup`), with 6pt between runs (`spacing.betweenGroups`).
-
-Build your own theme-aware components with the exported hooks:
-
-```tsx
-import { useTheme, useThemedStyles } from '@kesha-antonov/react-native-chat'
-import { StyleSheet } from 'react-native'
-
-const MyBadge = () => {
-  const theme = useTheme()
-  const styles = useThemedStyles(t => StyleSheet.create({
-    badge: { backgroundColor: t.colors.accent, borderRadius: t.radii.bubble },
-  }))
-  return <View style={styles.badge} />
-}
-```
-
-Also exported: `defaultLightTheme`, `defaultDarkTheme`, `ChatWallpaper`, and the `ChatTheme` / `PartialChatTheme` types.
-
-The built-in panels have their own token groups: `emojiKeyboard`, `contextMenu`, `attachments` and `chatList`. The full set of tokens and their default values is the `ChatTheme` type and `defaultLightTheme` / `defaultDarkTheme`.
-
-</details>
-
-### Localization (i18n)
-
-<details>
-<summary><strong>Built-in translations and label overrides</strong></summary>
-
-All built-in UI strings (composer placeholder, send/cancel, load earlier, today, voice/video/location labels, slide-to-cancel, reply/edit banner, camera-permission text) route through a label table. Built-in translations ship for `es`, `fr`, `de`, `ru`, `zh`, `ar`, `pt`, `ja`, `ko`, `it`, `tr`, `hi`, `nl`, `pl` and `id`, with English as the default, selected by the existing `locale` prop. A regional tag falls back to its base language, so `pt-BR` resolves to `pt`. Override any individual string with `labels`:
-
-```tsx
-<Chat
-  locale="fr"                       // pick a built-in translation
-  labels={{ placeholder: 'Votre message...' }}  // override any string
-  {...props}
-/>
-```
-
-Right-to-left layout follows the locale (Arabic, Hebrew, Persian, Urdu and a few others). `forceRTL` overrides the guess: `true` for an RTL language not in that set, `false` to keep a left-to-right layout.
-
-Exported helpers: `ChatLabels` (type), `defaultLabels`, `translations`, `resolveLabels`, and the `useLabels` hook for reading the resolved labels in custom components.
-
-</details>
-
-### Message Status
-
-<details>
-<summary><strong>Tick indicators for sent / delivered / read</strong></summary>
-
-Set `sent`, `received`, `pending` or `isFailed` on a message to show its delivery status. The status is yours to set: add a message with `pending: true` in `onSend`, then set `sent` and `received` as your backend confirms. Every outgoing message shows it, voice notes, round notes, files and photos included. They render beside the time: one check once sent, two once received (read), a spinning clock while pending, a red badge when sending failed. `isEdited` or `editedAt` prefix the time with "edited":
-
-```tsx
-const message: IMessage = {
-  _id: 1,
-  text: 'Delivered!',
-  createdAt: new Date(),
-  user: { _id: 1 },
-  sent: true,
-  received: true,
-}
-```
-
-Customize the indicators with `renderTicks` (full override) or `tickStyle` (style only):
-
-```tsx
-<Chat
-  renderTicks={message => (message.received ? <MyReadIcon /> : null)}
-  tickStyle={{ color: '#1d9bf0' }}
-/>
-```
-
-</details>
-
-### TypeScript
-
-<details>
-<summary><strong>Generic over your own message type</strong></summary>
-
-Chat ships complete type definitions and is generic over your message type. Extend `IMessage` to add custom fields and everything stays typed end to end:
-
-```tsx
-import { Chat, IMessage } from '@kesha-antonov/react-native-chat'
-
-interface MyMessage extends IMessage {
-  reactions?: { emoji: string, userIds: (string | number)[] }[]
-}
-
-<Chat<MyMessage>
-  messages={messages}
-  onSend={msgs => {/* msgs is typed as MyMessage[] */}}
-  user={{ _id: 1 }}
-/>
-```
-
-</details>
-
-### Building blocks
-
-<details>
-<summary><strong>Lower-level components and helpers</strong></summary>
-
-`Chat` is assembled from exported parts, so you can reuse them in your own screens or render props:
-
-- **Rows and bubbles**: `Message`, `Bubble`, `MessageText`, `MessageImage`, `MessageVideo`, `MessageAudio`, `MessageFile`, `MessageLocation`, `MessageReply`, `SystemMessage`, `Day`, `Time`, `Avatar`, `ChatAvatar`, `UnreadSeparator`, `ChatEmpty`, `LinkPreviewCard`, `MediaCard`
-- **Compose
+A few behaviours follow from the tokens: setting `colors.outgoingBubble` turns the gradient off, setting `colors.senderName` empties `nameColors`, and setting `avatar.palette` without `paletteEnd` draws flat avatars - so an app that picks its own colors keeps seeing them. Bubbles in a run (same sender, at most five minutes apart, `utils.isSameGroup`) share one tail and one name, 2pt apart (`spacing.withinGroup`), with 6pt between runs (

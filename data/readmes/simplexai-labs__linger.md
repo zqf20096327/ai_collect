@@ -87,9 +87,16 @@ One command detects your hardware, recommends the best model, installs it and ch
 
 ### Wiki and memory: It remembers your business
 
-<a href="docs/wiki-and-memory.md"><img src="assets/card-memory.webp" width="100%" alt="Wiki and memory: tell one agent, every agent knows. Your sources, Gmail, Outlook, Slack, Calendar, meetings, files and agent chats, flow into a nightly update at 00:00. A model proposes edits section by section: add “Pricing: $48k, 200 seats”, rewrite the Directions with a reason, add the open item “revised quote”; every edit is checked against the page it replaces. The checked edits land in the personal wiki, a graph with one page per entity: clients Acme and Globex, contacts Dana Lee and Sam Park, the project Acme rollout, the sessions Weekly sync and Acme call. The pages move aside to make room, a new Topic page, Pricing, joins the graph and the Acme rollout page lights up. Then an agent searches for “Acme rollout pricing, 200 seats, revised quote”: the rest of the graph dims and three pages are ranked, 1 Pricing, 2 Acme rollout, 3 Acme call"></a>
+<a href="docs/wiki-and-memory.md"><img src="assets/feature-locomo.webp" width="100%" alt="Wiki and memory: 95% on the LoCoMo memory benchmark. LoCoMo accuracy on questions about long conversations, higher is better: Linger 95%, Zep 94.7%, Mem0 92.5%, EverMemOS 92.3%, Hindsight 92%, Backboard 90%, MemOS 88.83%, Memobase 75.78%, Letta 74%, GPT-4o-mini Full Context 72.9%, OpenAI Memory 52.9%"></a>
 
 Tell one agent, and every agent knows. Another Me reads back through your inbox, then each night files your mail, chats and meetings into wiki pages that every agent can search. It keeps the information, preferences and decisions that matter across conversations, on your device instead of in a provider's account.
+
+<details>
+<summary><b>How it works:</b> your sources become wiki pages every night, and every agent searches them</summary>
+
+<a href="docs/wiki-and-memory.md"><img src="assets/card-memory.webp" width="100%" alt="Wiki and memory: tell one agent, every agent knows. Your sources, Gmail, Outlook, Slack, Calendar, meetings, files and agent chats, flow into a nightly update at 00:00. A model proposes edits section by section: add “Pricing: $48k, 200 seats”, rewrite the Directions with a reason, add the open item “revised quote”; every edit is checked against the page it replaces. The checked edits land in the personal wiki, a graph with one page per entity: clients Acme and Globex, contacts Dana Lee and Sam Park, the project Acme rollout, the sessions Weekly sync and Acme call. The pages move aside to make room, a new Topic page, Pricing, joins the graph and the Acme rollout page lights up. Then an agent searches for “Acme rollout pricing, 200 seats, revised quote”: the rest of the graph dims and three pages are ranked, 1 Pricing, 2 Acme rollout, 3 Acme call"></a>
+
+</details>
 
 ### Proactive Another Me: It speaks up when it matters
 
@@ -147,6 +154,31 @@ setup screen sets up a Linger server on this computer too.
 
 There is no package for Intel Macs; use Docker Compose there. Check each
 download against `SHA256SUMS.txt` from the same release.
+
+The macOS package is not yet signed with a certificate Apple recognizes, so
+macOS blocks the first launch. Allow it once:
+
+1. Open Linger from Applications. In the **“Linger” Not Opened** dialog, click
+   **Done**. Do not click **Move to Trash**, the highlighted button.
+
+   <img src="assets/install-macos-not-opened.webp" width="320" alt="The macOS dialog “Linger” Not Opened says Apple could not verify Linger is free of malware, with a highlighted Move to Trash button above a Done button">
+
+2. Open **System Settings › Privacy & Security** and scroll to **Security**.
+   Next to **“Linger” was blocked to protect your Mac**, click **Open Anyway**.
+
+   <img src="assets/install-macos-open-anyway.webp" width="560" alt="System Settings with Privacy &amp; Security selected in the sidebar. Under Security, the message “Linger” was blocked to protect your Mac has an Open Anyway button next to it, and red arrows point to Privacy &amp; Security and to Open Anyway">
+
+3. Click **Open Anyway** again and enter your password or use Touch ID.
+
+If macOS says Linger "is damaged and can't be opened", or **Open Anyway** does
+not appear, run this in Terminal and open Linger again:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Linger.app
+```
+
+See [Install the desktop app](https://docs.heylinger.com/install/desktop-app)
+for the Windows and Linux steps and for help when setup fails.
 
 ### Option 2: Docker Compose
 
@@ -220,6 +252,10 @@ Choose the channel that best fits your question:
 - [GitHub Issues](https://github.com/simplexai-labs/linger/issues): report reproducible bugs and track engineering work. Read the [contribution guide](CONTRIBUTING.md) before opening one.
 - [Email](mailto:tonyzhang@simplexai.com): write to tonyzhang@simplexai.com for anything that does not fit an issue.
 - [Security policy](SECURITY.md): report a vulnerability privately, never in a public issue.
+
+Star Linger on GitHub to follow along, and choose **Watch → Custom → Releases** to hear about every new release.
+
+<a href="https://github.com/simplexai-labs/linger"><img src="assets/github-star.webp" width="100%" alt="Starring simplexai-labs/linger on GitHub: the camera zooms in on the Star button, which shows 349; a click turns it into Starred 350"></a>
 
 ## Acknowledgements
 

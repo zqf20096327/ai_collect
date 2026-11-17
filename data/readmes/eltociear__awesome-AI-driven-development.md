@@ -1,3 +1,7 @@
+[AI-Driven Development Summit is coming soon! Online streaming will also be available!](https://aid.connpass.com/event/411003/)
+
+---
+
 
 ![Logo](/logo.png)
 # 🤖 Awesome AI-Driven Development
@@ -671,4 +675,4 @@ Frameworks, libraries, and configurations for building and enhancing AI coding a
 - [AI Governor Framework](https://github.com/Fr-e-d/AI-Governor-Framework) - The Keystone Framework for AI-Driven Code ! Turn any AI coding assistant into a disciplined, project-aware engineering partner that respects your architecture and coding standards
 - [ZCF](https://github.com/UfoMiao/zcf) - Zero-config, one-click setup for Claude Code with bilingual support, intelligent agent system and personalized AI assistant
 - [Claude Code Guardrails](https://github.com/wangbooth/Claude-Code-Guardrails) - Protective hooks for Claude Code that prevent accidental code loss through branch protection, automatic checkpointing, and safe commit squashing
-- [Deliberate Agentic Development](https://github.com/Matt-Hulme/deliberate-agentic-development) - A structured workflow system for AI coding agents like Claude Code, Cu
+- [Deliberate Agentic Development](

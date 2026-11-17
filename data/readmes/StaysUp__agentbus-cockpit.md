@@ -29,7 +29,7 @@ This repository is for working on the cockpit itself, with its dev server.
 
 ## Demo
 
-[![AgentBus cockpit demo](https://img.youtube.com/vi/si0HHQFcCD0/maxresdefault.jpg)](https://youtu.be/si0HHQFcCD0)
+[![AgentBus 0.5.9: Codex reviews Claude Code's change and finds a P1; every model call with its cost. Click to watch the 2-minute demo.](docs/assets/cockpit-059.png)](https://github.com/StaysUp/agentbus-cockpit/releases/tag/v0.5.9)
 
 ## Work on the cockpit
 

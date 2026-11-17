@@ -194,6 +194,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Tencent CloudBase AI Toolkit](https://github.com/TencentCloudBase/CloudBase-AI-Toolkit)                                                         | Tencent CloudBase database, auth, and cloud functions                            | TypeScript        |
 | [Terraform MCP](https://github.com/hashicorp/terraform-mcp-server)                                                                               | Official HashiCorp Terraform / OpenTofu                                          | Go                |
 | [Vercel Next DevTools MCP](https://github.com/vercel/next-devtools-mcp)                                                                          | Official Next.js dev tools for coding agents                                     | TypeScript        |
+| [Zorven](https://github.com/tkodcumpeg4/zorven) | Publish localhost services over HTTPS with private networking and MCP | Go |
 
 ### Productivity
 
@@ -294,6 +295,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [MeetStream](https://github.com/meetstream-ai/meetstream-mcp)                                                                                    | Official meeting bots for Zoom, Meet and Teams: record and transcribe            | TypeScript        |
 | [Microsoft Teams MCP](https://github.com/InditexTech/mcp-teams-server)                                                                           | Teams channels, messages, meetings                                               | Python            |
 | [needhave](https://github.com/PrivateAISystems/needhave)                                                                                         | Public need/have list agents read and post to over remote MCP, no key            | JavaScript        |
+| [OsmO Phone Calls](https://github.com/Mountainheads-Private-limited/osmo-ai-plugins)                                                             | AI places real phone calls to businesses and helplines, then reads the summary   | Remote            |
 | [Plainmail](https://plainmail.dev/docs)                                                                                                          | Mailboxes on your own domains: add a domain, set DNS, read and send mail         | Remote            |
 | [Reddit MCP Publisher](https://github.com/Bl0ck154/reddit-mcp-publisher)                                                                         | Read Reddit context and publish via owner-approved browser previews              | TypeScript        |
 | [Resend MCP](https://github.com/resend/resend-mcp)                                                                                               | Official Resend transactional email                                              | TypeScript        |
@@ -320,6 +322,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | Server                                                                                                                                           | Description                                                                      | Language          |
 | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | ----------------- |
 | [AISOTools MCP](https://aisotools.com/mcp)                                                                                                       | AI-tool catalog search, comparison, and alternatives lookup                      | Remote            |
+| [ClickHouse Loom](https://github.com/ClickHouse/loom) | Self-hosted shared memory, document search and a code index for AI agents | Python |
 | [Cognee MCP](https://github.com/topoteretes/cognee)                                                                                              | Memory and knowledge-graph engine with an MCP server                             | Python            |
 | [Dreamtune MCP](https://docs.dreamtunelabs.com/connect/mcp)                                                                                      | Model requests, tool APIs, GPU jobs and request traces with a workspace key      | Remote            |
 | [FindAIforWork](https://findaiforwork.com/llms.txt)                                                                                              | Search and compare curated AI tools for work, with category browsing             | Remote            |
@@ -353,6 +356,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [DSCR Loan Calculator MCP](https://github.com/theluckystrike/dscr-loan-calculator-mcp)                                                           | DSCR, max loan, rent needed and amortization for rental property loans           | TypeScript        |
 | [Equibles](https://equibles.com/mcp)                                                                                                             | SEC filings, XBRL financials, earnings calls, insider trades and 13F holdings    | Remote            |
 | [Estate and Gift Tax Exemption Calculator MCP](https://github.com/theluckystrike/estate-gift-tax-exemption-calculator-mcp)                       | Federal estate and gift tax exemption 2025-2026, $15M amount, gift checks        | TypeScript        |
+| [ExitValue M&A Multiples](https://github.com/nickcals/exitvalue-mcp) | Median EV/EBITDA and EV/Revenue M&A multiples by industry, deal size and year | Python |
 | [FactLot](https://github.com/9mp96ygnbk-alt/factlot)                                                                                             | Commercial real estate calculators with audit trails, IDs and fact validation    | TypeScript        |
 | [Fair Value Calculator](https://www.fairvalue-calculator.com/integrations)                                                                       | Stock fair values, quality scores, screening and watchlist alerts                | Remote            |
 | [Financial Modeling Prep MCP](https://github.com/imbenrabi/Financial-Modeling-Prep-MCP-Server)                                                   | FMP market data and fundamentals                                                 | TypeScript        |
@@ -389,6 +393,7 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Yahoo Finance MCP](https://github.com/Alex2Yang97/yahoo-finance-mcp)                                                                            | Stock data and financial info                                                    | Python            |
 | [Zerodha Kite MCP](https://github.com/zerodha/kite-mcp-server)                                                                                   | Official Zerodha Kite server for Indian holdings, orders and quotes              | Go                |
 | [Zovo Grant Finder](https://grant-finder.zovo.one/)                                                                                              | Search Grants.gov federal grants and export XLSX trackers and ICS deadlines      | Remote            |
+| [EU & Nordic Open Data MCP](https://github.com/itulo/eu-nordic-open-data-mcp) | Official EU and Nordic open data for tenders, sanctions, VAT and companies | JavaScript |
 
 ### Monitoring & Observability
 
@@ -432,8 +437,10 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Kling AI MCP](https://kling.ai/app/mcp/guide)                                                                                                   | Generate media and query tasks; OAuth, paid credits; https://kling.ai/mcp/plugin | Remote            |
 | [mesh2cad](https://github.com/emirmrkaljevic/mesh2cad)                                                                                           | Convert STL meshes to STEP and editable CAD scripts, refusing bad fits           | Python            |
 | [MuAPI MCP](https://github.com/SamurAIGPT/muapi-mcp-server)                                                                                      | Image, video and audio generation across 100+ generative AI models               | Python            |
+| [NukeBG](https://nukebg.com/mcp-server)                                                                                                          | Official server to remove image backgrounds, erase objects and upscale 2x/4x     | Remote            |
 | [OrkasVideoStudio](https://github.com/Orkas-AI/Orkas-VideoStudio)                                                                                | Compose, edit, analyze, and render video from coding agents                      | TypeScript        |
 | [Photoshop MCP](https://github.com/loonghao/photoshop-python-api-mcp-server)                                                                     | Adobe Photoshop automation                                                       | Python            |
+| [SVGMaker MCP](https://github.com/GenWaveLLC/svgmaker-mcp) | Generate, edit and convert SVGs, and remove image backgrounds | TypeScript |
 | [UberLLM](https://uberllm.dev/docs/mcp)                                                                                                          | Make images and videos, list models with prices and check balance -- needs key   | Remote            |
 | [VideoGen MCP](https://videogen.io/videogen-mcp)                                                                                                 | Create and edit videos, images, voiceovers, music, and avatars                   | TypeScript        |
 | [Webflow MCP](https://github.com/webflow/mcp-server)                                                                                             | Official Webflow server for sites, pages, CMS, and components                    | TypeScript        |
@@ -490,12 +497,4 @@ An MCP server runs as a trusted extension of your assistant, with your files and
 | [Scrapewise](https://docs.scrapewise.ai/connect/mcp) | Scrape, clean and match product and price data from any website | Remote |
 | [Skyvern](https://github.com/Skyvern-AI/skyvern/tree/main/integrations/mcp)                                                                      | Browser workflow automation via LLMs and computer vision, over MCP               | Python            |
 | [TinyRex MCP](https://github.com/emirmrkaljevic/tinyrex-mcp)                                                                                     | Run TinyRex Apify scrapers for remote jobs, Shopify stores and B2B leads         | Python            |
-| [Xquik MCP](https://github.com/Xquik-dev/x-twitter-scraper)                                                                                      | X/Twitter search, profile tweets, posting, and media tools                       | TypeScript        |
-
-### Media & Entertainment
-
-| Server                                                                                                                                           | Description                                                                      | Language          |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | ----------------- |
-| [Ableton MCP](https://github.com/ahujasid/ableton-mcp)                                                                                           | Control Ableton Live sessions, tracks, clips, and MIDI from an agent             | Python            |
-| [Arr MCP](https://github.com/aplaceforallmystuff/mcp-arr)                                                                                        | Manage Sonarr, Radarr, and other arr media library services                      | TypeScript        |
-| [GetYouTubeTranscript](https://github.com/tubeagentkit/youtube-mcp)                                                                              | Get YouTube transcripts 
+| [Xquik MCP](https://github.com/Xquik-dev/x-twitter-scraper)                                                                                      | X/Twitter search, profile tweets, posting, and media tools    

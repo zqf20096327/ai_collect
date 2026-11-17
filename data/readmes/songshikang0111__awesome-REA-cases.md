@@ -8,9 +8,9 @@
 
 A curated collection of **AI-assisted reverse-engineering projects, experiments, and ideas** for device interoperability, app rebuilding and game preservation—including failed attempts and author corrections.
 
-# 2310 cases & projects
+# 2358 cases & projects
 
-**Latest case update:** November 16, 2026, 04:12 · **Last maintained:** November 16, 2026, 04:12 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
+**Latest case update:** November 17, 2026, 04:14 · **Last maintained:** November 17, 2026, 04:14 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,18 +22,18 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**: recover an old compiler, repair a keyboard, or update a radio without returning to its stock system. Human testing and community research remain part of the story. Dates identify sources or author updates, not collection dates.
+**10 worth reading**: recover a compiler, regain device control, preserve a game, or reconstruct a filmed event. Look for working references, repair loops and explicit limits—not promises of effortless automation. Dates identify sources or author updates, not collection dates.
 
 1. **[borland-reborn: recover a 1991 compiler](cases/en/borland-reborn-bcc20-exhume-byte-matching.md)** · `2026-11-14` report and pinned docs — Exhume's Claude Code skills support **reportedly byte-identical BCC.EXE/CPP.EXE rebuilds**. A separate modding build has 1,836 compile comparisons and 83% coverage, not every path or uniquely recovered original source. Not rebuilt here. `Unverified here`
-2. **[Ember mug: probe Bluetooth, build a personal controller](cases/en/dmitriy-ember-mug-codex-bluetooth-probing-report.md)** · `2026-11-14` author report — Dmitriy says **Codex probed characteristics against the iOS app** and built temperature/light controls in about an hour. The no-web rule was author-imposed; coffee-level accuracy and code unchecked. `Unverified here`
+2. **[Minimal Phone MP01: move E-ink control from FPGA to GPU](cases/en/josef-prusa-mp01-eink-fpga-gpu-63hz-report.md)** · `2026-11-16` author report — Josef Prusa reports **FPGA research, GPU pixel control and 63 'fps' Doom/Sonic demos**. He links the work to AI agents but leaves their tasks unspecified; no complete Android release, code or hardware test here. `In progress`
 3. **[Fujifilm X half: camera to Mac without the phone](cases/en/fujifilm-x-half-opus-wireless-mac-import-report.md)** · `2026-11-12` author report — **Opus reportedly identifies Bluetooth/Wi-Fi differences** for JPEG imports and Google Photos uploads. Incremental camera tests, not an iteration-free build; code and traces unchecked here. `Unverified here`
-4. **[Anker recorder: ask an agent for last week's conversation](cases/en/berryxia-anker-recorder-rea-mcp-knowledge-app.md)** · `2026-11-12` author report — **REA Bluetooth research and MCP recording retrieval**, with local Qwen ASR or online transcription. Source release is planned after refinement/testing; code and device path unchecked here. `In progress`
+4. **[Horizon: Minecraft Java behavior, rebuilt in Rust](cases/en/horizon-minecraft-java-rust-ai-differential-reimplementation.md)** · `2026-11-16` report and pinned docs — **AI-assisted reconstruction with 281 reported differential harnesses**, existing saves and vanilla multiplayer. Public docs and a Codex-credited commit were read, not the full test results; performance claims are hardware-specific. Own game required; not built here. `In progress`
 5. **[Fallout Van Buren: six years of research meet REA](cases/en/fallout-van-buren-kran-rea-human-guided-reconstruction.md)** · `2026-11-14` author thread — Kran credits **manual research, shenmarukai's decompilation and an IDA database**, not a from-zero agent. DX9 migration is reported; 64-bit remains a goal for this tech demo, not a complete game. Not built here. `In progress`
 6. **[Lemmings for Windows 95: match functions, not headlines](cases/en/lemmings-win95-human-led-ai-reconstruction-report.md)** · `2026-11-12` report; `2026-11-09` pinned docs — Human-led REA/Claude/Codex work reports **696/696 functions matched across eight modules**. Whole EXE/DLL files still differ; portable builds and original-compiler matching are separate. Own assets required; not built here. `In progress`
 7. **[Mario Kart World: translate code, measure each change](cases/en/mkw-recomp-claude-aarch64-c-port.md)** · `2026-11-14` report and pinned docs — **Claude-assisted AArch64-to-C, same-run A/B and console-image checks** bring reported PC racing. Not original-source recovery; menus, AMD hangs and no online play remain. Own game required; not built here. `In progress`
 8. **[X6200: update the radio without swapping back to stock](cases/en/x6200-claude-base-firmware-upgrade-reimplementation.md)** · `2026-11-16` report and PR merge — **Claude-assisted reconstruction of Xiegu's updater** reaches OpenX6X00. The project CI passed; the author reports upgrades and rollback on one radio. No flash readback, recovery not hardware-tested, and no reproduction here. `Unverified here`
 9. **[Fireface UCX: Linux control beyond basic USB audio](cases/en/johan-fireface-ucx-linux-rea-claude-driver.md)** · `2026-11-15` author article — Johan reports **REA/Claude driver research, a terminal mixer and 3.5 ms round-trip audio at 48 kHz**. Community command-format research and a week of hands-on checks matter; tested on one first-generation unit, not reproduced here. `Unverified here`
-10. **[Split60HE: stop a used keyboard from typing every key](cases/en/matias-split60he-claude-flash-calibration-repair-report.md)** · `2026-11-15` author thread — Matías says **Claude traced flash calibration using firmware, KiCad and live USB readings**. After backup and v1.11 flashing, all 69 keys reportedly read 0% at rest. Logs and repair unchecked here; calibration is device-specific. `Unverified here`
+10. **[Starship catch: footage to an interactive 3D reconstruction](cases/en/mollick-starship-catch-video-threejs-reconstruction-report.md)** · `2026-11-16` author thread — Mollick publishes **Opus 5.5/Fable 5.2 prompts, view switching and replay-sync requests** for about 40 seconds in Three.js. Repair prompts matter; dimensions are largely estimated, not recovered engineering drawings. No scene or accuracy tests run here. `Unverified here`
 
 ## Classic cases
 
@@ -49,10 +49,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **458** |
-| [Hardware & interoperability](categories/en/hardware.md) | **617** |
-| [Applications & clients](categories/en/apps.md) | **957** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **278** |
+| [Games & preservation](categories/en/games.md) | **466** |
+| [Hardware & interoperability](categories/en/hardware.md) | **633** |
+| [Applications & clients](categories/en/apps.md) | **976** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **283** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

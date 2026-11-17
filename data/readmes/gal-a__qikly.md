@@ -7,7 +7,7 @@
 <!-- mcp-name: io.github.gal-a/qikly -->
 
 [![Agent Skill](https://img.shields.io/badge/Agent_Skill-qikly%20--install--skill-7e22ce)](https://github.com/gal-a/qikly/blob/main/docs/skill.md)
-[![2,100+ tests](https://img.shields.io/github/actions/workflow/status/gal-a/qikly/ci.yml?branch=main&event=push&label=2%2C100%2B%20tests)](https://github.com/gal-a/qikly/actions/workflows/ci.yml)
+[![2,600+ tests](https://img.shields.io/github/actions/workflow/status/gal-a/qikly/ci.yml?branch=main&event=push&label=2%2C600%2B%20tests)](https://github.com/gal-a/qikly/actions/workflows/ci.yml)
 [![pypi](https://img.shields.io/pypi/v/qikly?color=blue)](https://pypi.org/project/qikly/)
 [![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://pypi.org/project/qikly/)
 [![license](https://img.shields.io/badge/license-Apache%202.0-blue)](https://github.com/gal-a/qikly/blob/main/LICENSE)
@@ -15,23 +15,34 @@
 [![Claude Code](https://img.shields.io/badge/Claude_Code-one--line_MCP_setup-D97757?logo=claude&logoColor=white)](https://github.com/gal-a/qikly#use-it-from-your-coding-agent)
 [![VS Code](https://img.shields.io/badge/VS_Code-Install_qikly_MCP-0098FF?logo=visualstudiocode&logoColor=white)](https://vscode.dev/redirect/mcp/install?name=qikly&config=%7B%22name%22%3A%22qikly%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--from%22%2C%22qikly%5Bmcp%5D%22%2C%22qikly-mcp%22%5D%7D)
 
-[![qikly: one spec in, code and tests out, written by a coding agent and a test agent that are kept apart](https://raw.githubusercontent.com/gal-a/qikly/main/docs/images/qikly_hero.png)](https://test.qikly.com)
+**Find out what your tests miss.** Free, no key, about 30 seconds, from your
+project's root folder:
 
-**The problem: Your AI writes both the code and its tests. How do you know the tests are really valid?**
+```
+pip install qikly
+qikly --score my_module.py
+```
+
+[![qikly --score on the bundled pricing example: 10 of 13 planted faults missed, and three of the questions they leave open](https://raw.githubusercontent.com/gal-a/qikly/main/docs/images/qikly_score.png)](#start-here)
+
+It plants faults in a copy of your code, one at a time, and turns each one your
+tests miss into a question about behaviour nothing checks. Nothing of yours is
+changed. Above, a real run on the bundled
+[pricing example](https://github.com/gal-a/qikly/tree/main/docs/examples/pricing),
+whose two tests both pass.
+
+**Watch it first:** a [10-minute walkthrough](https://towardsdatascience.com/qikly/)
+of all three steps on the bundled pricing example, with English subtitles.
+
+**Then close the gaps: your AI writes both the code and its tests. How do you know the tests are really valid?**
+
+[![qikly: one spec in, code and tests out, written by a coding agent and a test agent that are kept apart](https://raw.githubusercontent.com/gal-a/qikly/main/docs/images/qikly_hero.png)](https://test.qikly.com)
 
 *One logged run. The test agent builds the test suite: it was told, from the
 spec's acceptance criteria, that a rate may not exceed 100. The coding agent
 never saw the acceptance criteria and discovered that rate limit from a failing
 test: it then added `or rate > 100` by itself, so the 9 of 9 is code eventually
 passing the test suite after applying fixes in an automated repair loop.*
-
-[![qikly --score on the bundled pricing example: 10 of 13 planted faults missed, and three of the questions they leave open](https://raw.githubusercontent.com/gal-a/qikly/main/docs/images/qikly_score.png)](#start-here)
-
-**Try it now, free and with no API key:** `pip install --upgrade qikly`, then
-`qikly --score my_module.py` from your project's root folder. It plants faults
-in a copy of your code, one at a time, and turns each one your tests miss into a
-question about behaviour nothing checks. Above, a real run on the bundled
-[pricing example](https://github.com/gal-a/qikly/tree/main/docs/examples/pricing).
 
 **Run on 50 young Python libraries,** it surfaced 4 real problems as well as the
 test gaps, each confirmed by hand and reported upstream. 2 are fixed so far:
@@ -124,7 +135,7 @@ qikly --tasks my_module.py       # 3. the run                      a cent or so
    Without a key, every answer is yours to write, and the `requirements`
    line is marked `TODO: MODIFY THIS:`. On a folder it writes one task file
    for each module step 1 asked about. Lines starting `#?` are notes for you,
-   and neither agent reads them. This file is the one source of truth: change
+   and no agent reads them. This file is the one source of truth: change
    it and run step 3 again. `qikly --validate my_module.py` checks it, free,
    and shows each short answer as the criterion it becomes.
 3. **`--tasks` runs it**, which needs an API key (Google Gemini, Anthropic or
@@ -777,7 +788,7 @@ a run.
 
 **Two ways to pin, and the choice is yours.** `@v0` is a moving alias that
 this project repoints at every release, so you receive fixes without receiving
-a breaking change. `@v0.6.2` is an exact pin that never moves, so nothing
+a breaking change. `@v0.6.3` is an exact pin that never moves, so nothing
 changes under you and nothing reaches you either. The templates use `@v0`
 because most people want the fixes; use the exact form if your policy requires
 it.
@@ -843,7 +854,7 @@ left holding afterwards.
 | **Cost forecast** | Printed before a run starts, from your own history when you have any, labelled as a projection rather than a price |
 | **PR comments** | `--pr-comment` renders the latest run as markdown; the template workflow updates one comment in place rather than adding many |
 | **Pre-commit hook** | `qikly-validate`, the free check, so a hook never bills you for typing `git commit` |
-| **GitHub Action** | `gal-a/qikly@v0.6.2`, uploading the suite, the code and the JUnit XML |
+| **GitHub Action** | `gal-a/qikly@v0.6.3`, uploading the suite, the code and the JUnit XML |
 
 ## Where it fits today
 
@@ -930,7 +941,7 @@ The design write-up is in three parts, and each stands on its own.
 |---|---|
 | **[1. The case](https://github.com/gal-a/qikly/blob/main/docs/design_1_case_study.md)** | Why an agent that writes its own tests is grading its own homework, and one `CALC_TAX` repair followed end to end: what the coding agent was given, the test it failed, the reasoning it produced from the failure alone, and the one-line patch. Start here. |
 | **[2. How well it works](https://github.com/gal-a/qikly/blob/main/docs/design_2_performance.md)** | Three sweeps and 967 runs, the benchmark defect found and corrected between them, the unit-stage gap, what makes a run stall, and the results this project measured and then withdrew. |
-| **[3. How it is built](https://github.com/gal-a/qikly/blob/main/docs/design_3_mechanism.md)** | What separates this from the alternatives, the five agents and what each may read, the FIX and PATCH separation, the thirteen example tasks, watching a run live, supplying your own code or tests, and the tools for generating and evaluating acceptance criteria. |
+| **[3. How it is built](https://github.com/gal-a/qikly/blob/main/docs/design_3_mechanism.md)** | What separates this from the alternatives, the six agents and what each may read, the FIX and PATCH separation, the thirteen example tasks, watching a run live, supplying your own code or tests, and the tools for generating and evaluating acceptance criteria. |
 
 ---
 

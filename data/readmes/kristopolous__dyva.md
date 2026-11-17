@@ -13,7 +13,7 @@
 https://github.com/user-attachments/assets/9417c9fc-2e13-4844-9b17-5fc4cdbefcee
 
 
-**Dyva** is a dynamic proxy that routes to  [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Fooocus](https://github.com/lllyasviel/Fooocus), [Strata](https://github.com/Niko1221/Strata), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [Gradio](https://gradio.app/), and [ComfyUI](https://comfy.org) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling, and honeypot detection. 
+**Dyva** is a dynamic proxy that routes to  [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Fooocus](https://github.com/lllyasviel/Fooocus), [Strata](https://github.com/Niko1221/Strata), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [Gradio](https://gradio.app/), [Chatterbox](https://github.com/resemble-ai/chatterbox) and [ComfyUI](https://comfy.org) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling, and honeypot detection. 
 
 Capable of text generation, embeddings, systemone (JEV) decision models, vision, tool calling, image generation and editing, video generation, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
 
@@ -31,11 +31,11 @@ uvx dyva
 curl -fsSL https://9ol.es/dyvash | bash
 ```
 
-It installs to `~/free-ollama`; start it again anytime with `~/free-ollama/start.sh` (any dyva flags pass straight through). macOS note: the built-in `python3` is 3.9, which is too old — install a newer one first with `brew install python` or from [python.org](https://www.python.org/downloads/).
+It installs to `~/free-ollama`; start it again anytime with `~/free-ollama/start.sh` (any dyva flags pass straight through). macOS note: the built-in `python3` is 3.9, which is too old install a newer one first with `brew install python`, pyenv, or from [python.org](https://www.python.org/downloads/).
 
 Along with being so ollama-compatible the ollama client doesn't know the difference, dyva has a feature-rich front-end with chat that includes image generation, web search, sub-agents, documents, host drilldown and exploration, video generation, tts, stats, geomaps, and even graphically tweaking the routing algorithm.
 
-Memory footprint is under 1GB. Has both light and dark mode. Out of whim and mischief you toggle it by clicking on the D in the logo. what do the letters do? Find out!
+Memory footprint is under 200MB. Has both light and dark mode. Out of whim and mischief you toggle it by clicking on the D in the logo. what do the letters do? Find out!
 <div align="center">
   <img width="45%" alt="sshot" src="https://github.com/user-attachments/assets/7e02db46-bf57-43fd-bacb-21c83c14d3ae" />
   <img width="45%" alt="sshot" src="https://github.com/user-attachments/assets/5126f11a-5d08-4136-95cc-2cbfa37f49fa" />

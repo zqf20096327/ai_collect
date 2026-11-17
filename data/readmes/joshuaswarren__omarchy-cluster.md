@@ -20,7 +20,10 @@ Part of the Omarchy on Apple Silicon ecosystem:
 omarchy-cluster runs one local model across the machines on your network: Macs on
 macOS, Macs on Omarchy M+ Linux, even an iPhone. The machines measure each other,
 decide which node runs which layers, and serve the cluster as one
-OpenAI-compatible endpoint on :8020.
+OpenAI-compatible endpoint on :8020. Memory stays per node: each machine holds
+its own layers and KV cache in its own (unified) memory, and the cluster does
+not pool memory across machines - see
+[docs/adr-unified-memory.md](docs/adr-unified-memory.md).
 
 Use a split when a model does not fit on any one machine you own. In the
 measured runs, a split added capacity at a cost in speed. When one machine
@@ -188,6 +191,9 @@ curl -s http://127.0.0.1:8020/v1/chat/completions \
 Or chat in the terminal: `omarchy-cluster chat` talks to the gateway on :8020
 (`--gateway URL` for another one), keeps the conversation, and prints the speed
 of each reply in tokens per second. `/reset` starts over, `/exit` leaves.
+Tokens stream into the terminal as they decode: send `"stream": true` to
+`/v1/chat/completions` and the gateway answers SSE delta chunks ending with
+`data: [DONE]`; without the flag the reply stays one JSON body.
 
 `omarchy-cluster stop` stops everything. For a model bigger than one node, pick
 the split yourself so a machine you use for other work keeps free memory, for

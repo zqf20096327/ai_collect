@@ -2,6 +2,8 @@
 
 English | [简体中文](README.zh-CN.md)
 
+# [🚀观看我的哔哩哔哩视频](https://space.bilibili.com/3493277319825652)
+
 Spec-driven delivery for the [Pi coding agent](https://pi.dev): you and the model write a short contract for one change (a *charter*), you approve it, and a gated pipeline of separate agents implements it, runs your project's checks, audits it independently and, optionally, tidies it up. You get back a report generated from recorded facts, not from a model's summary of itself.
 
 The workflow is a state machine enforced by code. A model cannot approve its own spec, skip the audit, edit the contract after approval, or declare work verified that was not.

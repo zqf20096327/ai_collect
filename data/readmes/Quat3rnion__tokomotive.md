@@ -18,11 +18,16 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
 - Maps a client model name to a Route. A Route has one or more Deployments.
   Each Deployment is a Provider and an upstream model name.
 - Selects Deployments with the strategy `priority`, `round_robin` or `weighted`.
+- Applies ordered [request rules and Canary splits](docs/usage.md#request-rules-and-canary-splits)
+  before the strategy. Rules select a Deployment set or another Route, or reject
+  the request. Canary assignment stays the same for each conversation.
 - Tries Fallbacks and the next Provider Key when a Deployment fails with a
   connection error, a 429 or a 5xx.
 - Uses a Circuit Breaker for each Deployment. A failing Deployment rests for a
   cooldown. Then one probe request tests it.
 - Limits the number of upstream attempts for each request with `max_attempts`.
+- Sets request, connect and stream idle timeouts, concurrency, bounded waits,
+  retries and backoff for each Provider. Changes apply without a restart.
 - Sends Provider traffic through an optional HTTP, HTTPS or SOCKS5 egress proxy.
   Each Provider can use the global default, connect directly or use its own
   encrypted proxy URL. See [Egress proxies](docs/usage.md#egress-proxies).
@@ -37,6 +42,9 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
 - Offers an encrypted [exact response cache](docs/usage.md#exact-response-cache)
   for JSON and SSE. Each Route sets its lifetime and Virtual Key, Team or global scope.
   Hits have zero Cost and a configurable Price. The cache is off by default.
+- Offers an opt-in [semantic response cache](docs/usage.md#semantic-response-cache).
+  It uses accounted embedding requests and encrypted vectors to find similar
+  prompts. Virtual Key scope is the default. Exact matches take priority.
 - Applies [Guardrails](docs/usage.md#guardrails) to prompts and responses.
   Attach rule sets to Routes, Teams or Virtual Keys. Block, redact or log
   regex, keyword, PII and secret matches. Rules also apply in Simple Mode.
@@ -48,6 +56,8 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
 - Supports OpenAI-compatible APIs (`/v1/chat/completions`, `/v1/responses`,
   `/v1/embeddings`, `/v1/images/generations`, `/v1/images/edits`) and the
   Anthropic API (`/v1/messages`), with and without streaming.
+- Accepts [Google GenAI and AWS Bedrock clients](docs/usage.md#google-genai-sdk),
+  with native JSON, SSE and AWS event-stream responses and Virtual Key access.
 - Counts input tokens at `POST /v1/messages/count_tokens`. Non-Anthropic
   deployments return a marked estimate without an inference charge.
 - Routes `POST /v1/rerank` to Cohere or compatible Providers, with search-unit
@@ -70,6 +80,8 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
 - Shows account health and subscription quota windows on Providers and Overview,
   with reset times and Prometheus metrics. Quota scheduling prefers accounts
   with more capacity, preserves session pins, and skips exhausted or invalid accounts.
+- Supports adaptive routing by success and latency, with exploration, live
+  Deployment scores, attempt traces and Prometheus metrics.
 
 ### Accounting
 
@@ -92,8 +104,12 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
 ### Operations
 
 - Shows ordered attempt timelines and request-log filters in the Ledger.
+- Streams new Ledger Entries with the current filters. Live is off by default.
+  Pause and Resume keep the page bounded to 200 entries.
 - Exports request and attempt spans with GenAI attributes through OTLP/HTTP
   JSON. Export is off by default and uses a bounded background queue.
+- Sends native Datadog LLM spans and optional metrics, or Maxim trace batches,
+  through bounded, privacy-controlled exporters in Settings.
 - Captures bodies only when a Route or Virtual Key enables capture. Captures
   are redacted, size-capped, encrypted and retained for 7 days by default.
   Only Admins can read them. See [Request diagnostics](docs/usage.md#request-diagnostics).
@@ -111,6 +127,9 @@ The terms in this document are defined in [GLOSSARY.md](GLOSSARY.md).
 - Encrypts Provider Keys with AES-256-GCM. The Master Key comes from
   `TOKOMOTIVE_SECRET_KEY` or from a generated `secret.key` file.
 - Lets a Provider Key refer to an environment variable with `env:NAME`.
+  Owners can also select Vault, AWS, GCP, Bitwarden Secrets Manager or
+  `bw serve` references. Resolved values stay only in memory. See
+  [Secret stores](docs/configuration.md#secret-stores).
 - Shows requests, tokens, latency, time to first token, Cost, Price and Profit
   per Model, User and Team in the dashboard.
 - Exports Prometheus metrics at `/metrics`, optionally with a token.
@@ -129,7 +148,8 @@ controls. The default is **Full**. See [usage.md](docs/usage.md#simple-mode).
 The screenshots show demo data from a local test server. The keys are not real.
 The dashboard has a dark and a light theme. The two large images show the
 theme of your GitHub appearance setting.
-The current images do not show the new exact-cache controls, hit flag or hit rate.
+The current images do not show the new exact and semantic cache controls,
+hit flags or hit rates.
 The capture manifest records these changes for the next image refresh.
 
 <picture>
@@ -157,6 +177,10 @@ The capture manifest records these changes for the next image refresh.
 | [Overview in Simple Mode](docs/images/overview-simple.png) | The Overview without money data: requests, tokens, latency, errors and attempts. |
 | [Teams](docs/images/teams.png) | Teams with their Budgets, spend and member counts. |
 | [Settings](docs/images/settings.png) | The operating mode, routing settings, metrics and alert controls. |
+| [Secret stores](docs/images/secrets.png) | Owner-only Secret stores settings with encrypted auth settings, a private-address control and a refresh interval. |
+| [Single sign-on](docs/images/oidc.png) | Owner-only OIDC settings with the redirect URI, masked client secret and structured group-to-role mappings. |
+| [My account](docs/images/account.png) | The signed-in account with its OIDC identity count and Single sign-on status. |
+| [Hooks](docs/images/hooks.png) | Signed request, response and event hooks with stage controls, attachment pickers, failure mode and a signed sample test. |
 | [Audit log](docs/images/audit.png) | The audit log: who changed what and when, with filters and the pager. |
 | [Guardrails](docs/images/guardrails.png) | A rule set in the rule editor with a detector, a regex and a keyword rule, its Route attachment and a test box for pasted text. |
 | [MCP servers](docs/images/mcp-servers.png) | MCP servers with masked credentials, a connection test and cached tool descriptions. |
@@ -258,6 +282,14 @@ dashboard. An optional `--config PATH` file seeds the database once. See
 - On the image endpoints, the Proxy treats cached tokens as text tokens. Cached
   image input tokens are recorded as image input, not as cache read.
 - `/metrics` has no authentication when no metrics token is set.
+
+## Future work
+
+These items are not scheduled. Each item has an issue for discussion.
+
+- A Customer level above Teams, for operators who resell access. ([#29](https://git.lumina.software/quaternion/tokomotive/-/work_items/29))
+- MCP agent mode and sandboxed code execution. ([#31](https://git.lumina.software/quaternion/tokomotive/-/work_items/31))
+- Postgres storage and more than one Proxy process for each database. ([#32](https://git.lumina.software/quaternion/tokomotive/-/work_items/32))
 
 ## Development
 

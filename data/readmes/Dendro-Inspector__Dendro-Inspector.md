@@ -23,12 +23,18 @@ review &rarr; bounded decision**
 Models may propose each artifact. Deterministic code decides what is admissible, when a run
 must retry or escalate, and how specific and confident the final answer may be.
 
-**What it is:** a reference implementation for evidence handling, adversarial review,
-calibrated uncertainty, evaluation and CI in a multimodal agent.
+**What it is:** a tree and wood identification system in research preview. It names a taxon,
+usually a genus, only when observations read from the photographs support it against that
+taxon's reference card. A name it suspects but cannot confirm is reported separately, as an
+unconfirmed hypothesis. When the photographs support no name it says so and asks for the
+photograph that would help. It is also a reference implementation of evidence handling,
+adversarial review, calibrated uncertainty, evaluation and CI in a multimodal agent.
 
-**What it is not:** a tree identification app, a dataset, or a source of botanical truth.
-Dendrology is the *reference domain*; the engineering subject is evidence handling, review,
-calibrated uncertainty, evaluation and CI. The 27 taxon cards shipped here carry an AI-assisted
+**What it is not:** a chat assistant, a validated identification service, a dataset, or a
+source of botanical truth. No model writes the verdict or the answer text: seven nodes ask a
+model for a plan, observations, candidates and review findings, and code decides and composes
+everything else. How often the answer is right has been measured only on a small development
+set ([Status](#status)). The 28 taxon cards in `knowledge/taxa/` carry an AI-assisted
 botanical review; no independent dendrologist has reviewed them.
 
 **It is not a replacement for professional identification.** Do not use it to decide
@@ -52,6 +58,7 @@ flowchart TD
     PHOTO_PLANNER[Additional photo planner]
     CANDIDATE_GENERATOR[Candidate generator]
     ATTACHMENT_AUTHORITY_GATE[Attachment authority gate]
+    ADAPTIVE_GATE{Which reviewers are needed?}
     BOTANICAL_REVIEWER[Botanical reviewer]
     CONFUSION_REVIEWER[Confusion reviewer]
     CONFIDENCE_REVIEWER[Confidence reviewer]
@@ -79,6 +86,11 @@ flowchart TD
     ATTACHMENT_AUTHORITY_GATE --> BOTANICAL_REVIEWER
     ATTACHMENT_AUTHORITY_GATE --> CONFUSION_REVIEWER
     ATTACHMENT_AUTHORITY_GATE --> CONFIDENCE_REVIEWER
+    ATTACHMENT_AUTHORITY_GATE -->|adaptive routing on| ADAPTIVE_GATE
+    ADAPTIVE_GATE -->|if planned| BOTANICAL_REVIEWER
+    ADAPTIVE_GATE -->|if planned| CONFUSION_REVIEWER
+    ADAPTIVE_GATE -->|if planned| CONFIDENCE_REVIEWER
+    ADAPTIVE_GATE -->|no reviewer model planned| REVIEW_SYNTHESIZER
     BOTANICAL_REVIEWER --> REVIEW_SYNTHESIZER
     CONFUSION_REVIEWER --> REVIEW_SYNTHESIZER
     CONFIDENCE_REVIEWER --> REVIEW_SYNTHESIZER
@@ -105,7 +117,7 @@ it cannot change the taxon, resolution, confidence or requested follow-up photog
 
 ## What the graph may return
 
-A run returns one of five statuses for each subject in the frame:
+A run returns one of six statuses for each subject in the frame:
 
 | Outcome | Meaning |
 | --- | --- |
@@ -114,6 +126,7 @@ A run returns one of five statuses for each subject in the frame:
 | `insufficient_evidence` | Nothing defensible, plus the photograph that would fix it |
 | `conflicting_evidence` | Visible evidence contradicts the leading candidate's own card |
 | `unsupported_user_claim` | What you said it is does not match what the image shows |
+| `knowledge_coverage_gap` | The photographs show diagnostic features the reference cards cannot represent: the gap is in the knowledge base, not in the photograph |
 
 Resolution is one of `family`, `genus`, `species_group`, `species`, `unknown`. **It is never
 forced to species.** For bark, genus is the ceiling and low confidence is the cap. The selected
@@ -123,6 +136,18 @@ declared identity broad enough for the bound, the result is `unknown`.
 If you supplied your own version, it gets its own ruling: `accepted`, `possible`, `doubtful`
 or `rejected`. Rejection is deliberately hard to reach — it needs contrary evidence above
 bark level and no field context from you.
+
+A confirmed name and a suspected one are never the same field. When the leading candidate has
+a reading its own card treats as diagnostic, and only review that code cannot check held the
+name back, the verdict stays as it is and the name is reported beside it. The structured
+result carries `validated_identity` (the confirmed name, or null) and `visual_hypothesis`
+(the unconfirmed one), and the text adds "Unconfirmed hypothesis. Most likely ... — not
+confirmed." A hypothesis carries no confidence and is not counted as an answer by
+`dendro eval` or `coverage-audit`.
+
+Each result also says which subject it is about (`subject_role`: `target`, `context` or
+`unspecified`). A lone subject is the target. When the photographs show several and none is
+designated, the answer opens by saying so instead of presenting one of them as the answer.
 
 ## Why the boundaries matter
 
@@ -161,14 +186,41 @@ ranking; recommendations floating elsewhere in a review are inert.
 ## Quickstart — no API key required
 
 ```bash
-git clone <your-fork-url> && cd dendro-inspector
+git clone https://github.com/Dendro-Inspector/Dendro-Inspector.git && cd Dendro-Inspector
 python -m venv .venv && . .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e ".[dev,images]"                    # 'images' bounds the bytes each call sends
 
 dendro graph                                       # print the executable agent graph
 dendro inspect --fake primary-pass --image examples/log.jpg --location "Kyiv Oblast, Ukraine"
-dendro eval --suite public                         # run the twenty-four public conformance cases
+dendro eval --suite public                         # run the public conformance suite
 pytest                                             # full test suite, offline
+```
+
+The `inspect` line replays a recorded scenario, so its evidence comes from a fixture and not
+from a model looking at `examples/log.jpg`. After two log lines it prints an answer in the
+shape every answer has: a verdict, the evidence it rests on, what stays uncertain, and the
+photograph that would settle more.
+
+```text
+Assessment. Let us go through it feature by feature.
+
+### Subject: foreground_log_1
+
+**Verdict.** Probable: Pinus (pine) (genus), confidence 70–84/100.
+
+**Evidence:**
+- needles.fascicles = two (medium reliability)
+
+**What remains uncertain:**
+- season unknown
+- No scale reference in frame; needle length cannot be measured.
+- img-1: no scale reference in the frame
+
+**Confidence:** 70–84/100
+
+**For a firmer conclusion, photograph:** `cone_photo` — Would add missing organ-level evidence for the leading candidate.
+
+_The verdict stands on the evidence listed, and falls without it._
 ```
 
 Answers are in English by default, as the domain prompt specifies. Add `--lang uk` for
@@ -181,6 +233,19 @@ dendro inspect --image examples/trunk.jpg --claim "дуб" --field-context
 `--field-context` says you know things the photograph cannot show — foliage out of frame,
 the fruit, where the tree was felled. It blocks the system from contradicting you sharply,
 because in that situation you have evidence it does not.
+
+A fruit on the lawn or a leaf in your hand is not credited to a tree by default: a
+photograph cannot show where it fell from, and several photographs sent together are not
+proof that they show one tree. If you picked it up under the tree, say so:
+
+```bash
+dendro inspect --image trunk.jpg --image crown.jpg --image nuts.jpg --attest-part 3=1,2
+```
+
+`--attest-part PARTS=TREE` states that the loose parts in photographs `PARTS` came from the
+tree in photographs `TREE`, by their position among the `--image` options. Such evidence
+counts as capped support: it can back an identification, it cannot settle one, and the
+answer says which observations were counted on your word.
 
 To challenge a previous result, resubmit the photograph and relevant context with
 `--challenge`. API callers set `CaseInput.user_challenges_previous_result=True`. This
@@ -244,7 +309,8 @@ the shared image/policy prefix for caching; changing a native output schema can 
 File references reduce repeated upload bytes; image tokens still depend on visual processing
 and caching. To use inline base64 instead, set `OPENAI_IMAGE_TRANSPORT=inline` or
 `ANTHROPIC_IMAGE_TRANSPORT=inline`. OpenAI inline mode uses Chat Completions for compatible
-endpoints. Older bridge servers also need inline mode. The bridge accepts Responses,
+endpoints. Older bridge servers also need inline mode, and so do Azure AI Foundry endpoints,
+which refuse an upload that expires after one hour. The bridge accepts Responses,
 native Anthropic schemas and prompt schemas, and retains its local request evidence files
 after upload references expire or are deleted. See
 [the bridge guide](docs/agent-as-provider.md).
@@ -271,7 +337,7 @@ dendro prompt-info      # prompt/manifest hashes, policy revision and compatibil
 ```
 
 The runtime validates `prompts/versions.yaml` before constructing any provider. That manifest
-pins policy revision `0.9.0`, the canonical domain prompt path and hash, the node-prompt root
+pins policy revision `1.0.0a1`, the canonical domain prompt path and hash, the node-prompt root
 and revision, and the exact node-prompt file set and hashes. Composition uses the cached
 validated bytes, so a prompt changed after validation cannot silently enter a request.
 
@@ -305,10 +371,11 @@ The original stays in the repository as the authoritative specification; to run 
 ```bash
 export DENDRO_DOMAIN_PROMPT_PATH=prompts/domain/system-prompt.md
 export DENDRO_PROMPT_MANIFEST_PATH=prompts/versions.uk.yaml
-``` A missing file, path mismatch, hash mismatch
-or incompatible policy revision is a loud `PromptPolicyError`, never a silent default. Prompt
-and manifest hashes appear in every execution trace, tying an answer to the exact admitted
-bundle.
+```
+
+A missing file, path mismatch, hash mismatch or incompatible policy revision is a loud
+`PromptPolicyError`, never a silent default. Prompt and manifest hashes appear in every
+execution trace, tying an answer to the exact admitted bundle.
 
 ## Documentation
 
@@ -321,30 +388,45 @@ bundle.
 | [docs/evaluation.md](docs/evaluation.md) | Public conformance cases, metrics, how to add one |
 | [docs/review-pipeline.md](docs/review-pipeline.md) | Finding admissibility and reason codes |
 | [docs/regional-packs.md](docs/regional-packs.md) | Regional priors and how they are constrained |
+| [docs/human-review.md](docs/human-review.md) | Exporting a case for a specialist and recording their answers |
 | [docs/dataset-policy.md](docs/dataset-policy.md) | Placeholder content, images, licensing, PII |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting and prompt-injection handling |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, gates, PR expectations |
 | [AGENTS.md](AGENTS.md) | Rules for humans and coding agents working in this repo |
 
+## How it is evaluated
+
+Changes are decided by measurement, at three levels that answer different questions:
+
+| Level | Runs on | Question it answers | Where it runs |
+| --- | --- | --- | --- |
+| Conformance suite, `dendro eval --suite public` | Hand-built cases replayed from recorded provider responses | Does the machinery follow its contracts, and does any claim outrun its evidence tier? | CI, on every pull request and every push to `main` |
+| Offline replay, `dendro coverage-audit --replay` | Traces of earlier live runs | What would another policy have answered on the same evidence, with no model call? | Locally, on your own traces |
+| Labelled live runs, `dendro coverage-audit --labels` | Real photographs with a reference genus | How often is the name right, wrong, broader than the label, or missing? | Locally; the maintainers' photographs are not redistributable |
+
+The first is a conformance and regression suite, not an accuracy benchmark: its cases are
+synthetic by design, and a green run says nothing about real photographs. The other two are
+how a change in behaviour is judged. Experimental policies ship off by default, so they can
+be compared with the released behaviour on recorded runs first.
+
+One level is missing. No independent held-out set exists yet. `dendro heldout-check`
+validates one (no photograph shared with development, no tree labelled with two genera, the
+state of specialist review), but the set has not been assembled. Until it is, every figure
+from real photographs is in-sample. Details in [docs/evaluation.md](docs/evaluation.md).
+
 ## Status
 
-v0.9.0 — a public, provider-complete vertical slice, not a production system. The graph runs
-end to end through OpenAI, Anthropic, Gemini, NVIDIA, OpenRouter and Ollama adapters; live
-calls can be exercised without an SDK client through the agent-as-provider bridge.
-Image-aware caching, bounded image transport, bounded reviewer context, reviewer-call
-attribution, evidence vocabulary diagnostics and prompt-policy compatibility are enforced in
-code. This release narrows what a model's own labels can decide: a candidate's support
-strength is adjudicated against its card, the escalation gate decides on the verdict the
-graph would return, a contradiction needs identification authority before it can reject the
-user's version, abstention is visible and costs a resolution level, a hedged claim is ruled
-on as the user wrote it, and every verdict's derivation is recorded in the trace. The public
-suite defines twenty-four deterministic conformance cases, all passing with zero
-overconfidence against the frozen `public-v0.9.0` baseline. One existing case now calls the
-arbiter because its provisional verdict is high; its taxon, resolution, confidence and status
-are unchanged. The knowledge pack is 27 taxa with an AI-assisted botanical review and no independent
-dendrologist review — every card says so in its `provenance` block.
+Research preview, not a production system. This is pre-release 1.0.0-alpha.1 (package
+version `1.0.0a1`): an engineering baseline, not a release candidate. What it adds since
+0.9.0 is in [CHANGELOG.md](CHANGELOG.md): unconfirmed hypotheses, subject roles, specialist
+review packages, evidence history with replay, a spend limit for one inspection, and
+several experiments that are off by default. What has to be shown before 1.0.0 is fixed in
+advance in [docs/specs/v1-heldout-protocol.md](docs/specs/v1-heldout-protocol.md). The
+graph runs end to end through OpenAI, Anthropic, Gemini, NVIDIA, OpenRouter and Ollama
+adapters; live calls can be exercised without an SDK client through the agent-as-provider
+bridge. Provider adapters are integration boundaries rather than hardened clients.
 
-What the numbers do and do not prove:
+What is established and what is not:
 
 | Claim | Supported? |
 | --- | --- |
@@ -352,10 +434,48 @@ What the numbers do and do not prove:
 | Architectural behaviour under the declared contracts | yes |
 | Regression protection against silent drift | yes |
 | Calibration policy — no claim outruns its evidence tier | yes |
-| **Identification accuracy on real photographs** | **no — not measured** |
+| **Identification accuracy on real photographs** | **no — measured only in-sample, below** |
 
-Provider adapters are integration boundaries rather than hardened clients, and nothing here
-has been validated against real photographs at scale.
+### What has been measured on real photographs
+
+The set is the maintainers' own photographs: 41 inspection units (250 photographs) of seven
+common genera, 16 of the units pine, each labelled with the genus its owner recorded. The
+reference cards were developed with these photographs at hand, so every figure below is
+in-sample. They describe these units and are not an accuracy estimate.
+
+On 2026-11-14 one model (`gpt-5-mini`) was run on all 41 units twice: alone, and in every
+role of the graph under the released review policy.
+
+| Arm | Correct genus | Wrong genus | Family only | No name | Run failed |
+| --- | --- | --- | --- | --- | --- |
+| Model alone, one structured call | 38 | 2 | 0 | 0 | 1 |
+| Graph | 18 | 1 | 7 | 14 | 1 |
+
+On these units the graph named the right genus 20 times fewer than the model it is built on.
+The two units the model alone got wrong, an alder and a pile of beech firewood, are units the
+graph gave no name; the graph's one wrong name was a tree in the background. The graph also
+cost more: 7.9 model calls, 196,000 input tokens and 141 seconds per unit, against one call,
+13,000 input tokens and 43 seconds.
+
+Part of that gap is names that review withdraws on a reviewer's recommendation alone. The
+experimental `DENDRO_REVIEW_AUTHORITY=evidence_bound` policy targets them: under it a
+recommended level lowers a claim only through a finding code can check. It was measured on
+2026-11-16 in two ways, both on units from the same set:
+
+- Replaying the recorded reviews, for the 25 units whose records can be replayed and that
+  have one gradable subject: 19 correct genus names against 13 under the released policy,
+  and no wrong name under either.
+- A fresh run of 8 units that had no genus name under the released policy: 6 named correctly,
+  2 still unnamed, none named wrongly.
+
+It is off by default.
+
+What these runs do not show: anything about photographs outside this set, anything about a
+taxon that has no card (every unit here is a genus the cards cover), or how much one run
+differs from the next (each figure is a single run). A held-out set is the next measurement
+([docs/evaluation.md](docs/evaluation.md#the-held-out-set)), compared with the model alone
+under rules fixed before any result is read
+([docs/specs/v1-heldout-protocol.md](docs/specs/v1-heldout-protocol.md)).
 
 Intentionally deferred items are listed in [CHANGELOG.md](CHANGELOG.md).
 

@@ -66,6 +66,7 @@ It has no default, and `serve` uses the sockets of systemd socket activation whe
 Setting both or neither is an error, and `check` does not require `listen`.
 A `url` is an absolute `http(s)` URL or `unix:///<socket path>`.
 With `authTokens`, a map of names to tokens, set, every route but `/health` and `/readiness` requires a matching bearer token, which is stripped before forwarding.
+`authTokenCredentials`, a systemd credential glob with a single trailing `*` as in `ImportCredential=`, adds every matching credential as a token named by the part the `*` matched, read at startup, and keeps tokens required while none matches.
 A model's `headers` are applied last, so a configured `Authorization` replaces the client's.
 Unknown keys are rejected, and `llmhop check config.json` validates a config without binding a port or expanding secrets.
 
@@ -119,6 +120,7 @@ See the [options reference](https://mirkolenz.github.io/llmhop/) for every optio
 ### Gateways
 
 `services.llmhop.gateway.type` selects at most one gateway, configured by the option set of the same name, which routes every model of every backend by its `name`.
+The gateway runs only while some backend serves a model, which the read-only `services.llmhop.gateway.active` reports.
 
 | `type`      | Gateway                                                          | Unix sockets | Detectors |
 | ----------- | ---------------------------------------------------------------- | ------------ | --------- |
@@ -136,6 +138,8 @@ SMG and Bifrost listen on `127.0.0.1:8080` by default, configured through `host`
   The `default` listener serves `127.0.0.1:8080` and `environment` and `environmentFile` are forwarded to the service.
   Its generated config is validated at build time with `llmhop check`.
   Reference secrets in `settings` as `${cred:name}` and grant them through `credentials`.
+  `settings.authTokenCredentials = "llmhop.token.*"` imports the tokens of `/etc/credstore/llmhop.token.<client>`, or encrypted ones of `/etc/credstore.encrypted`, so clients come and go without a rebuild by adding or deleting their file.
+  Natively, `systemctl reload llmhop` then re-imports the credentials and swaps the tokens without a restart, while a container needs `systemctl restart llmhop`, whose sockets hold new connections meanwhile.
 - **SMG** reads its workers from a generated discovery file. `settings` takes its CLI flags, where `${cred:name}` resolves to a file path, as in `settings.api-key-file = "\${cred:smg.api-key}"`, which requires an SMG build newer than v1.13.0. The native `package` is a [`mkUvEnv`](#native-vllm-and-sglang-from-prebuilt-wheels) environment.
 - **Bifrost** gets every model as a key of its `vllm` provider, or `sgl` for SGLang. `settings` is its `config.json`, with secrets as `env.NAME` references loaded from `environmentFile`. The native `package` comes from Bifrost's own flake.
 
@@ -295,7 +299,7 @@ Native vLLM and SGLang run from upstream's wheels, pinned in a small [uv](https:
 [project]
 name = "vllm-env"
 requires-python = "==3.12.*"
-dependencies = [ "vllm==0.16.2" ]
+dependencies = ["vllm==0.16.2"]
 ```
 
 `mkUvEnv` builds against the lowest admitted Python and bakes the GPU driver runpath into the wheels, while the driver itself comes from `hardware.graphics` and your vendor configuration.

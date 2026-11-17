@@ -41,12 +41,12 @@ One command. Full AI development workstation. Claude Code, web UI, headless brow
 
 You know the drill. You want Claude Code. But you also want it in a browser. With a headless browser for screenshots and testing. With Playwright configured. With every AI CLI. With TypeScript, Python, deployment tools, database clients, GitHub CLI.
 
-v1.6.9 updates the bundled AI CLIs and developer tools using official upstream releases. Node and Python Playwright are aligned at 1.64.1, with Debian Chromium 156.0.8078.79 for AMD64 and ARM64. The Docker client remains an opt-in Full-derived recipe; stock images still ship without it. See the [deferred replacements](docs/official-dependency-updates.md) for integrations that still need an equivalent official release.
+v1.7.0 updates the Node runtime, Claude Code, Gemini CLI, Codex and Apprise using official upstream releases. Node and Python Playwright are aligned at 1.64.1, with Debian Chromium 156.0.8078.79 for AMD64 and ARM64. The Docker client remains an opt-in Full-derived recipe; stock images still ship without it. See the [deferred replacements](docs/official-dependency-updates.md) for integrations that still need an equivalent official release.
 
 > [!WARNING]
 > Dependency scans still run. Accepted upstream vulnerabilities remain listed with their installed versions, raw severity and available fixes; acceptance does not mean fixed. Retained modified third-party artifacts are identified separately from official releases. HolyClaude source checks, artifact integrity and runtime tests still block delivery. See the [dependency policy](security/upstream-dependency-policy.json) and the release's scan evidence before deploying.
 
-Release-sensitive facts are also published in [`contracts/product-facts.json`](contracts/product-facts.json). The release workflow checks that contract against the Dockerfile and Compose files before building images.
+Release-sensitive facts are also published in [`contracts/product-facts.json`](contracts/product-facts.json). The release workflow checks that contract against the Dockerfile and Compose files before building images. Native Full/Slim × AMD64/ARM64 builds feed separate qualification jobs using immutable image digests. Matching release tags promote those tested images to Docker Hub and GHCR. See the [release procedure](docs/local-release.md).
 
 So you start installing things. One by one. Then Chromium won't launch because Docker's shared memory is 64MB. Then Xvfb isn't configured. Then the UID inside the container doesn't match your host and everything is permission denied. Then you realize Claude Code's installer hangs when WORKDIR is root-owned. Then SQLite locks on your NAS mount. Then—
 
@@ -613,9 +613,9 @@ This is not a minimal container. This is an entire development workstation.
 
 | CLI | Command | Version | What it's for |
 |-----|---------|---------|---------------|
-| **Claude Code** | `claude` | 2.1.318 | The main event — you're running inside this |
-| **Gemini CLI** | `gemini` | 0.67.0 | Google's AI coding agent |
-| **OpenAI Codex** | `codex` | 0.166.0 | OpenAI's coding agent |
+| **Claude Code** | `claude` | 2.1.325 | The main event — you're running inside this |
+| **Gemini CLI** | `gemini` | 0.68.0 | Google's AI coding agent |
+| **OpenAI Codex** | `codex` | 0.169.0 | OpenAI's coding agent |
 | **Cursor** | `cursor` | `2026.09.15-d2fe57e` | Cursor's AI agent |
 | **TaskMaster AI** | `task-master` | 0.43.1 | Task planning and orchestration |
 
@@ -1417,7 +1417,7 @@ If it saved you time, here's how you can help:
 
 <!-- sponsors: start. Drawn by the HolyCore bot from the live sponsor list; shows nothing until the first sponsor. -->
 <p align="center">
-  <a href="https://holycore.coderluii.dev/activity/sponsor/list/holyclaude"><picture><source media="(prefers-color-scheme: dark)" srcset="https://holycore.coderluii.dev/activity/sponsor/wall/holyclaude.svg?theme=dark"><img src="https://holycore.coderluii.dev/activity/sponsor/wall/holyclaude.svg?theme=light" width="100%" align="top" alt="HolyClaude supporters"></picture></a><br><a href="https://github.com/sponsors/CoderLuii"><picture><source media="(prefers-color-scheme: dark)" srcset="https://holycore.coderluii.dev/activity/sponsor/button/github.svg?theme=dark&project=holyclaude"><img src="https://holycore.coderluii.dev/activity/sponsor/button/github.svg?theme=light&project=holyclaude" alt="Sponsor on GitHub" width="50%" align="top"></picture></a><a href="https://buymeacoffee.com/coderluii"><picture><source media="(prefers-color-scheme: dark)" srcset="https://holycore.coderluii.dev/activity/sponsor/button/bmac.svg?theme=dark&project=holyclaude"><img src="https://holycore.coderluii.dev/activity/sponsor/button/bmac.svg?theme=light&project=holyclaude" alt="Buy Me a Coffee" width="50%" align="top"></picture></a>
+  <a href="https://holycore.coderluii.dev/activity/sponsor/list/holyclaude"><picture><source media="(prefers-color-scheme: dark)" srcset="https://holycore.coderluii.dev/activity/sponsor/wall/holyclaude.svg?theme=dark"><img src="https://holycore.coderluii.dev/activity/sponsor/wall/holyclaude.svg?theme=light" width="800" align="top" alt="HolyClaude supporters"></picture></a><a href="https://github.com/sponsors/CoderLuii"><picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/btn-github-dark.png"><img src=".github/assets/btn-github-light.png" alt="Sponsor on GitHub" width="400" height="34" align="top"></picture></a><a href="https://buymeacoffee.com/coderluii"><picture><source media="(prefers-color-scheme: dark)" srcset=".github/assets/btn-coffee-dark.png"><img src=".github/assets/btn-coffee-light.png" alt="Buy me a coffee" width="400" height="34" align="top"></picture></a>
 </p>
 <!-- sponsors: end -->
 

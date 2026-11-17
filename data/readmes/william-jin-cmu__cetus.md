@@ -2,7 +2,7 @@
 
 <h1 align="center">Human in the loop is the bottleneck.</h1>
 
-<p align="center"><strong>Cetus</strong> is a desktop client for reviewing and managing the work of every agent you run — Claude Code, Codex, DeepSeek Harness, OpenCode, Grok Build, Kimi CLI, or the built-in runtime.</p>
+<p align="center"><strong>Cetus</strong> is a desktop client for reviewing and managing the work of every agent you run — Claude Code, Codex, DeepSeek Harness, OpenCode, Grok Build, Kimi CLI, Antigravity, or the built-in runtime.</p>
 
 <p align="center"><a href="https://cetus.run">Official website · cetus.run</a></p>
 
@@ -106,7 +106,7 @@ Every capability that touches your screen, mic, or apps is opt-in, and everythin
 Cetus runs on **Apple Silicon** Macs with macOS 13 or later, and updates itself.
 
 1. [Download Cetus.dmg](https://github.com/william-jin-cmu/cetus/releases/latest/download/Cetus.dmg), open it, and move Cetus to Applications.
-2. Use the built-in runtime, or pick an installed and signed-in `claude`, `codex`, or `dsh` (DeepSeek Harness) CLI.
+2. Use the built-in runtime, or pick an installed and signed-in CLI, including `claude`, `codex`, `dsh` (DeepSeek Harness), or `agy` ([Antigravity setup](docs/antigravity.md)).
 3. Choose a workspace and give the agent its first task.
 
 > **Early release:** Cetus is under active development. Please [open an issue](https://github.com/william-jin-cmu/cetus/issues) if something breaks or a workflow is missing.

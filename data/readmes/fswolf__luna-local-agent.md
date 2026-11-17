@@ -34,6 +34,10 @@ live view of it all while it happens. It started as a voice front end
 for LM Studio (this repo used to be called *LM-Studio-AI-Voice*) and
 grew from there.
 
+<img width="1210" alt="The ideal setup, one mind for the whole house: Luna on your PC in the middle, with your mic, speakers and screen, her memory, moods, people and tools. A model server with a big graphics card runs her models over the home network. Phones and tablets around the house are stations, paired over home Wi-Fi. Her tools reach home automation, security (doors, locks and what's on your network) and your NAS and servers. Start with one PC that can run her model; everything around it is optional." src="assets/luna-setup.png" />
+
+<img width="1210" alt="How Luna's models work together. The chat model is her mind, in the middle, and the only one required. Whisper (her hearing, on the CPU) and the vision adapter (her eyes) feed what you say and show into it. Kokoro speaks her replies. Every turn, the embedding model and the reranker find the facts, notes and tools that fit. Only when you ask, she can put one short question to a bigger cloud model: Claude, Grok or ChatGPT. Leave the optional parts out and she does without." src="assets/luna-models.png" />
+
 ```bash
 git clone https://github.com/fswolf/luna-local-agent.git ~/luna-ai
 ```
@@ -96,6 +100,17 @@ at about 15 frames a second, from a camera of her own, so your screen can
 stay at bust while the fan shows all of her. An HDMI fan just shows the
 portrait page. Which fans work and what to buy:
 [hologram fans](docs/fans.md).
+
+## Talk to her from another room
+
+<img width="300" alt="The Luna Station app on an Android phone in Portrait view: Luna in a cosy room by a window at night, the start of her reply under her, and a big microphone button" src="assets/station-app-portrait.jpg" /> <img width="300" alt="The Luna Station app in Chat view: the end of a short story she wrote and her question after it, then the text box with its paperclip for sending a file, and the microphone" src="assets/station-app-chat.jpg" />
+
+The [Luna Station app](https://github.com/fswolf/luna-station-android) turns
+an Android phone or tablet into a room device for her: her portrait full
+screen with one big talk button, or the conversation, and a picture or a
+file sent with a message. Pairing is a QR code from her settings page, and
+it only ever talks to your PC over the home network. Any other phone or
+tablet works in its browser ([relay stations](docs/stations.md)).
 
 ## Not just a yes-machine
 

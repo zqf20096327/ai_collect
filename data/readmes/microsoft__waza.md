@@ -165,6 +165,20 @@ A newer version of waza is available: v0.24.0 → v0.28.0. Run: waza update
 
 Run `waza update` to download and execute the official OS-specific installer after an explicit confirmation prompt. It uses the Bash installer on macOS/Linux and the PowerShell installer on native Windows. Use `waza update --yes` to skip the prompt in scripted environments. The check is non-blocking (never slows commands), cached for 24 hours, and can be disabled with `--no-update-check` or `WAZA_NO_UPDATE_CHECK=1`.
 
+## Product Usage Telemetry
+
+Waza includes an opt-out product usage telemetry client that is **inert in this
+build**: no collector endpoint is configured, so it makes no network requests,
+creates no installation identifier, and keeps no event queue. Activation awaits
+privacy and security approval, a ready collector, and an explicit decision on
+the collection default and CI policy. Opt out at any time with
+`WAZA_TELEMETRY_OPTOUT=1`, `--no-telemetry`, `waza telemetry disable`,
+`telemetry.disabled: true` in `.waza.yaml`, or `DO_NOT_TRACK=1`. Run
+`waza telemetry status` to see the current state. See
+[docs/USAGE-TELEMETRY.md](docs/USAGE-TELEMETRY.md) for the closed event
+contract, opt-out precedence, and the
+[Microsoft Privacy Statement](https://go.microsoft.com/fwlink/?LinkId=521839).
+
 ## Quick Start
 
 For contributor regression gates and sanitized MCP, CLI, and repository
@@ -213,6 +227,9 @@ waza init [directory]
 
 # Update waza to the latest release
 waza update
+
+# Inspect or change product usage telemetry (local-only)
+waza telemetry status
 
 # Create a new skill
 waza new skill skill-name
@@ -512,7 +529,18 @@ into exactly one public runner call, and `waza runner adapter dispatch --store
 .waza-artifacts < descriptor.json` (or `--endpoint URL`) performs that call once
 and returns the mapped status and manifest digest. Scheduler fields such as
 queue, priority or placement are rejected (exit 6) rather than dropped; Waza
-stays translation-only. See [portable external execution adapters](site/src/content/docs/guides/runner-adapters.mdx).
+stays translation-only. An optional `--provenance-verifier PATH` runs a
+configured verifier after a terminal response; the adapter records its state
+but does not authenticate its assertion or change the execution outcome. See
+[portable external execution adapters](site/src/content/docs/guides/runner-adapters.mdx).
+
+**Release qualification (planned for v0.42.0):** the manual `Release
+Qualification` workflow accepts only the exact current `main` commit and
+uploads evidence and an assurance package to that workflow run. It creates no
+version tag, GitHub Release, or public registry image. The tag release path
+reuses the same validation, binary/image build, attestations, offline
+verification, and evidence packaging before publication. Only the tag-release
+path publishes a versioned runner image and inventory to GHCR.
 
 **Provenance commands (unreleased, planned for v0.42.0):** `waza runner provenance
 generate` writes a signed in-toto/DSSE bundle binding the canonical request,
@@ -527,9 +555,9 @@ managed-KMS signing report an explicit unavailable state (exit 5). See
 inventory generate` writes a CycloneDX inventory bound to a runner image or
 plugin sha256 digest; `waza runner inventory verify --inventory FILE
 --image-digest sha256:<hex>` (or `--plugin FILE`) checks offline that it
-describes exactly what you consumed (exit 0 verified, 1 failed). Reference
-images publish a signed inventory attestation, and provenance bundles bind it
-with `--bind component-inventory=PATH` and `verify --require-inventory`. See
+describes exactly what you consumed (exit 0 verified, 1 failed). Tag-released reference images publish a signed inventory attestation. Provenance
+bundles bind the inventory with `--bind component-inventory=PATH` and
+`verify --require-inventory`. See
 [component inventories](docs/COMPONENT_INVENTORY.md).
 
 The [local container reference](site/src/content/docs/guides/runner-container.mdx)
@@ -606,6 +634,20 @@ Update waza to the latest release by running the official OS-specific installer 
 waza update
 waza update --yes
 ```
+
+### `waza telemetry`
+
+Manage product usage telemetry. All subcommands are local-only and never collected.
+
+| Subcommand | Description |
+|------------|-------------|
+| `status` | Show whether collection is active and why |
+| `disable` | Persistently disable collection and delete the installation ID |
+| `enable` | Remove a persistent disable; opt-outs still win |
+| `reset-id` | Delete the installation ID |
+
+The global `--no-telemetry` flag disables collection for one invocation and its
+child processes.
 
 ### `waza init [directory]`
 
@@ -1941,32 +1983,4 @@ An explicit empty task `skill_directories: []` disables discovery for that task;
 Scenario `2.0` bypasses result caching with an explicit notice because external
 workflow dependencies are not fully fingerprinted; legacy caching is unchanged.
 
-Remote grader refs use Go-module-style paths: `<host>/<owner>/<repo>[/path][#export]@<version>`. The remote module must provide a `waza.registry.yaml` manifest and export a grader preset. Config-only grader presets expand to built-in grader types by default; remote program graders require explicit trust with `waza registry add --allow-exec` or interactive confirmation. Run `waza get eval.yaml` after manually adding or changing refs so `waza.lock` records the resolved commit and digest.
-
-`waza assure` and the separately selected `waza assure calibrate` materialize
-locked grader presets from the local cache only, rechecking digest, trust and
-offline schema/override admission after preflight. Missing or changed pins/cache
-fail without fetching. Original eval bytes retain the reference binding;
-resolved-config and declaration digests bind the materialized configuration.
-Direct assurance API references remain unsupported, and materialization neither
-authenticates presets nor authorizes paid calls.
-
-`waza assure calibrate --output` uses private sibling staging and atomic
-replacement on Unix only. Other platforms, including Windows, reject an explicit
-`--output` with exit 2 before preflight, producer, paid notice or engine creation;
-omit the flag and capture stdout instead. Default stdout remains available on
-every platform.
-
-Private calibration consumes bounded source-bound rubric copies through canonical
-native construction, rather than reopening retained audit files. Selected native
-metadata identifies `acquired:sha256:<digest>`; ordinary path/builtin APIs are
-unchanged. Retained-source decoding follows the same acquisition boundary. Audit
-files stay in the worktree cache. The shared store retains worktree, cache and
-private-directory roots for audit creation and cleanup, checking cache/private
-directory identities before and after writes. Changed namespaces fail closed;
-unknown residual files are retained with an explicit cleanup failure. POSIX
-checks reject group/world-writable cache parents and private children with
-group/other mode bits. These retained-root checks do not certify Windows ACLs,
-cache confidentiality or whole-filesystem ancestry.
-
-A source build currently emits `results.json` at `schemaVersion` `1.9`; published `v0.39.1` writes `1.7`. V
+Remote grader refs use Go-module-style paths: `<host>/<owner>/<repo>[/path][#export]@<version>`. The remote module must provide a `waza.registry.yaml` manifest and export a grader prese

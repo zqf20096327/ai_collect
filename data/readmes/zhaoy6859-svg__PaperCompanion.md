@@ -10,25 +10,29 @@
 
 ## Windows 桌面预览版
 
-**[下载 Windows 版 2.4.1](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.4.1-windows-beta.1)** · Windows 10/11 x64 · **已在实机演示通过**
+**[下载 Windows 版 2.4.3](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.4.3-windows-beta.1)** · Windows 10/11 x64 · **已在实机演示通过**
 
 - `.exe` 安装程序；`.zip` 解压后运行 `PaperCompanion.exe`
 - 同一只伴侣：PDF 阅读、熟悉度、右侧问答、长对话记忆、多语言精翻、LaTeX 学习报告
 - 已移植**划线笔记**（页面上高亮、点开写笔记、右侧「笔记」页）和**框选识别**（截图交给视觉模型转写，需开启页面图片，不是离线 OCR）
 - 自带 Tectonic 排版引擎与中文字体；首次生成 PDF 需联网下载 TeX 排版资源
-- 安装包未签名：SmartScreen 提示时选「更多信息 → 仍要运行」，可用 [SHA256SUMS.txt](https://github.com/zhaoy6859-svg/PaperCompanion/releases/download/v2.4.1-windows-beta.1/SHA256SUMS.txt) 校验
+- 阅读区与对话区之间可拖动调宽，宽度自动记住
+- 修复 `\top` 等常见公式命令导致的「不支持的 LaTeX 命令」；回答结构对齐网页版助手
+- 安装包未签名：SmartScreen 提示时选「更多信息 → 仍要运行」，可用 [SHA256SUMS.txt](https://github.com/zhaoy6859-svg/PaperCompanion/releases/download/v2.4.3-windows-beta.1/SHA256SUMS.txt) 校验
 - 每服务独立 Key、跨平台数据迁移尚未移植；细节见 [desktop/README.md](desktop/README.md)
 
 ## ⬇️ macOS 下载安装
 
-**[下载 论文伴侣 2.3.0（macOS 13+）](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.3.0)** · DMG 5.9 MB
+**[下载 论文伴侣 2.3.1（macOS 13+）](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.3.1)** · DMG 5.9 MB
 
-1. 打开上面的 Release 页面，下载 `PaperCompanion-2.3.0.dmg`
+1. 打开上面的 Release 页面，下载 `PaperCompanion-2.3.1.dmg`
 2. 把「论文伴侣」拖进「应用程序」
 3. 首次打开若被 Gatekeeper 拦下：右键 →「打开」，或执行
    `xattr -dr com.apple.quarantine "/Applications/论文伴侣.app"`
 
 > 只阅读和问答不需要额外依赖；要让「译文 / 学习报告」排版跑通，需要本机安装 MacTeX 或 TeX Live（`xelatex`）。
+
+2.3.1：伴侣回答改为网页版结构（结论 → 原文引用 → 逐符号解释 → 类比/边界，数学强制 LaTeX）；阅读区与对话区可拖动调宽并记住宽度。
 
 觉得有用的话，点右上角 ⭐ **Star** 支持一下，也欢迎邮件交流：**zhaoy6859@gmail.com**
 
@@ -130,6 +134,10 @@ swiftc -parse-as-library -framework AppKit -framework WebKit tests/RichTranscrip
 
 资源来源和完整插画提示词见 `Resources/Companion/PROVENANCE.md`；本地网页依赖版本和许可见 `Resources/Chat/THIRD_PARTY.md`。
 
+
+## 学习：这个 App 是怎么搭出来的
+
+从窗口、PDF、流式请求、Markdown/KaTeX 渲染、LaTeX 排版到打包与 CI 的完整拆解，包含 8 个里程碑和 5 个练手改动：[docs/BUILDING.md](docs/BUILDING.md)
 
 ## 交流
 

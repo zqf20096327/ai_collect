@@ -21,6 +21,19 @@ git clone https://github.com/FareedKhan-dev/production-grade-agentic-system
 cd production-grade-agentic-system
 ```
 
+To run it with Docker:
+
+```bash
+cp .env.example .env.development
+# In .env.development, set OPENAI_API_KEY and JWT_SECRET_KEY. The API refuses to start
+# without a long random JWT secret; generate one with:
+python -c "import secrets; print(secrets.token_urlsafe(64))"
+
+make docker-run-env ENV=development    # the API docs are then at http://localhost:8000/docs
+```
+
+> **About the code in this guide.** The guide started as an article whose code used an `app/` layout. The repository keeps the code under [`src/`](src/), and the listings below use those paths. The listings are condensed for reading (some comments, logging and error handling are left out), so the files under `src/` are the reference. [CHANGELOG.md](CHANGELOG.md) lists what changed in each release.
+
 ## Table of Content
 
 *   [Creating Modular Codebase](#ab61)
@@ -67,16 +80,17 @@ This means separating different components of the application into distinct modu
 Let’s create a structured directory layout for our AI system:
 
 ```bash
-├── app/                         # Main Application Source Code
-│   ├── api/                     # API Route Handlers
-│   │   └── v1/                  # Versioned API (v1 endpoints)
-│   ├── core/                    # Core Application Config & Logic
-│   │   ├── langgraph/           # AI Agent / LangGraph Logic
-│   │   │   └── tools/           # Agent Tools (search, actions, etc.)
-│   │   └── prompts/             # AI System & Agent Prompts
-│   ├── models/                  # Database Models (SQLModel)
-│   ├── schemas/                 # Data Validation Schemas (Pydantic)
-│   ├── services/                # Business Logic Layer
+├── src/                         # Main Application Source Code
+│   ├── agent/                   # AI Agent / LangGraph workflow
+│   │   ├── prompts/             # AI System & Agent Prompts
+│   │   └── tools/               # Agent Tools (web search)
+│   ├── config/                  # Settings loaded from the environment
+│   ├── data/                    # Data layer
+│   │   ├── models/              # Database Models (SQLModel)
+│   │   └── schemas/             # Data Validation Schemas (Pydantic)
+│   ├── interface/               # API Route Handlers (auth, chat)
+│   ├── services/                # LLM service (retries, fallback)
+│   ├── system/                  # Logging, metrics, middleware, rate limiting
 │   └── utils/                   # Shared Helper Utilities
 ├── evals/                       # AI Evaluation Framework
 │   └── metrics/                 # Evaluation Metrics & Criteria
@@ -85,19 +99,19 @@ Let’s create a structured directory layout for our AI system:
 │   └── dashboards/              # Grafana Dashboards
 │       └── json/                # Dashboard JSON Definitions
 ├── prometheus/                  # Prometheus Monitoring Configuration
-├── scripts/                     # DevOps & Local Automation Scripts
-│   └── rules/                   # Project Rules for Cursor
+├── scripts/                     # DevOps scripts, load test
+├── tests/                       # Tests (pytest, against a real PostgreSQL)
 └── .github/                     # GitHub Configuration
-    └── workflows/               # GitHub Actions CI/CD Workflows
+    └── workflows/               # GitHub Actions CI
 ```
 
 **This directory structure might seem complex to you at first but we are following a generic best-practice pattern** that is used in many agentic systems or even in pure software engineering. Each folder has a specific purpose:
 
-*   `app/`: Contains the main application code, including API routes, core logic, database models, and utility functions.
+*   `src/`: Contains the main application code, including API routes, core logic, database models, and utility functions.
 *   `evals/`: Houses the evaluation framework for assessing AI performance using various metrics and prompts
 *   `grafana/` and `prometheus/`: Store configuration files for monitoring and observability tools.
 
-You can see many components have their own subfolders (like `langgraph/` and `tools/`) to further separate concerns. We are going to build out each of these modules step-by-step in the upcoming sections and also understand why each part is important.
+You can see many components have their own subfolders (like `agent/` and `tools/`) to further separate concerns. We are going to build out each of these modules step-by-step in the upcoming sections and also understand why each part is important.
 
 ### <a id="d7f1"></a>**Managing Dependencies**
 
@@ -111,9 +125,9 @@ Let’s create a `pyproject.toml` file for our project and start adding our depe
 # ==========================
 # Basic information about your Python project as defined by PEP 621
 [project]
-name = "My Agentic AI System"              # The distribution/package name
-version = "0.1.0"                          # Current project version (semantic versioning recommended)
-description = "Deploying it as a SASS"     # Short description shown on package indexes
+name = "production-grade-agentic-system"  # The distribution/package name
+version = "1.0.0"                          # Current project version (semantic versioning recommended)
+description = "Production-grade agentic system: FastAPI, LangGraph, PostgreSQL, Langfuse, Prometheus and Grafana"
 readme = "README.md"                       # README file used for long description
 requires-python = ">=3.13"                 # Minimum supported Python version
 ```
@@ -133,62 +147,56 @@ Since we are building an agentic AI system (For ≤10K users actively using our 
 
 dependencies = [
     # --- Web framework & server ---
-    "fastapi>=0.121.0",        # High-performance async web framework
-    "uvicorn>=0.34.0",         # ASGI server used to run FastAPI
-    "asgiref>=3.8.1",          # ASGI utilities (sync/async bridges)
-    "uvloop>=0.22.1",          # Faster event loop for asyncio
+    "fastapi>=0.163.1",        # High-performance async web framework
+    "uvicorn>=0.54.0",         # ASGI server used to run FastAPI
+    "uvloop>=0.23.0; sys_platform != 'win32'",  # Faster event loop for asyncio (not on Windows)
 
     # --- LangChain / LangGraph ecosystem ---
-    "langchain>=1.0.5",                    # High-level LLM orchestration framework
-    "langchain-core>=1.0.4",               # Core abstractions for LangChain
-    "langchain-openai>=1.0.2",             # OpenAI integrations for LangChain
-    "langchain-community>=0.4.1",          # Community-maintained LangChain tools
-    "langgraph>=1.0.2",                    # Graph-based agent/state workflows
-    "langgraph-checkpoint-postgres>=3.0.1",# PostgreSQL-based LangGraph checkpointing
+    "langchain>=1.0.5,<2",                       # Needed by Langfuse's LangChain callback handler
+    "langchain-core>=1.8.1,<2",                  # Core abstractions for LangChain
+    "langchain-openai>=1.8.0,<2",                # OpenAI (and OpenAI-compatible) chat models
+    "langgraph>=1.2.22,<2",                      # Graph-based agent/state workflows
+    "langgraph-checkpoint-postgres>=3.2.1,<4",   # PostgreSQL-based LangGraph checkpointing
+    "openai>=3.51.0,<4",                         # Error types for retries, client for the evals
 
     # --- Observability & tracing ---
-    "langfuse==3.9.1",          # LLM tracing, monitoring, and evaluation
-    "structlog>=25.2.0",        # Structured logging
+    "langfuse>=3.15.0,<4",      # LLM tracing, monitoring, and evaluation
+    "structlog>=26.1.0",        # Structured logging
 
     # --- Authentication & security ---
-    "passlib[bcrypt]>=1.7.4",   # Password hashing utilities
-    "bcrypt>=4.3.0",            # Low-level bcrypt hashing
-    "python-jose[cryptography]>=3.4.0", # JWT handling and cryptography
-    "email-validator>=2.2.0",   # Email validation for auth flows
+    "bcrypt>=5.0.0,<6",         # Password hashing
+    "pyjwt>=2.15.1,<3",         # JWT signing and verification
 
     # --- Database & persistence ---
-    "psycopg2-binary>=2.9.10",  # PostgreSQL driver
-    "sqlmodel>=0.0.24",         # SQLAlchemy + Pydantic ORM
-    "supabase>=2.15.0",         # Supabase client SDK
+    "psycopg[binary,pool]>=3.3.9,<4",  # PostgreSQL driver (ships its own libpq)
+    "sqlalchemy>=2.1.8,<3",            # SQL toolkit under SQLModel
+    "sqlmodel>=0.0.50",                # SQLAlchemy + Pydantic ORM
 
     # --- Configuration & environment ---
-    "pydantic[email]>=2.11.1",  # Data validation with email support
-    "pydantic-settings>=2.8.1", # Settings management via environment variables
-    "python-dotenv>=1.1.0",     # Load environment variables from .env files
+    "pydantic[email]>=2.14.3,<3",  # Data validation with email support
+    "python-dotenv>=1.2.4",        # Load environment variables from .env files
 
     # --- API utilities ---
-    "python-multipart>=0.0.20", # Multipart/form-data support (file uploads)
-    "slowapi>=0.1.9",            # Rate limiting for FastAPI
+    "python-multipart>=0.0.34", # Form data support (the login form)
+    "slowapi>=0.1.10",          # Rate limiting for FastAPI
 
     # --- Metrics & monitoring ---
-    "prometheus-client>=0.19.0", # Prometheus metrics exporter
-    "starlette-prometheus>=0.7.0",# Prometheus middleware for Starlette/FastAPI
+    "prometheus-client>=0.26.0", # Prometheus metrics and the /metrics endpoint
 
     # --- Search & external tools ---
-    "duckduckgo-search>=3.9.0", # DuckDuckGo search integration
-    "ddgs>=9.6.0",               # DuckDuckGo search client (alternative)
+    "ddgs>=9.16.1",             # DuckDuckGo search, for the agent's web search tool
 
     # --- Reliability & utilities ---
-    "tenacity>=9.1.2",           # Retry logic for unstable operations
-    "tqdm>=4.67.1",               # Progress bars
-    "colorama>=0.4.6",            # Colored terminal output
+    "tenacity>=9.2.1",          # Retry logic for unstable operations
+    "tqdm>=4.70.1",             # Progress bars
+    "colorama>=0.4.6",          # Colored terminal output
 
     # --- Memory / agent tooling ---
-    "mem0ai>=1.0.0",              # AI memory management library
+    "mem0ai>=2.2.1,<3",         # Long-term memory
 ]
 ```
 
-You might have notice (This must be important in almost all cases) that we are using specific versions for each dependency (using `>=` operator). This is extremely important in production systems to avoid **dependency hell** where different libraries require incompatible versions of the same package.
+You might have noticed (this matters in almost every project) that each dependency has a minimum version (`>=`), and the ones whose next major version could change an API we use also have a ceiling (`<2`). mem0 2, for example, moved the user ID of `search()` into a `filters` argument; a ceiling makes such an upgrade a deliberate step instead of a surprise. The exact versions every install gets are pinned in `uv.lock`, which `uv sync` and the Docker image install from. This is how production systems avoid **dependency hell**, where different libraries require incompatible versions of the same package.
 
 Then comes the development dependencies section. There is a very high possibility that when you build something or if it’s in development phase, many developers are going to work on the same codebase. To ensure code quality and consistency, we need a set of development tools like linters, formatters, and type checkers.
 
@@ -219,8 +227,9 @@ Then we define dependency groups for testing. This allows us to logically group 
 
 [dependency-groups]
 test = [
-    "httpx>=0.28.1",     # Async HTTP client for testing APIs
-    "pytest>=8.3.5",     # Testing framework
+    "httpx>=0.28.1",     # HTTP client for testing APIs
+    "pytest>=9.2.0",     # Testing framework
+    "pyyaml>=6.0.3",     # The tests read docker-compose.yml
 ]
 
 # ==========================
@@ -235,6 +244,8 @@ python_files = [
     "*_test.py",
     "tests.py",
 ]
+testpaths = ["tests"]
+pythonpath = ["."]       # so the tests can import src
 
 # ==========================
 # Black (Code Formatter)
@@ -332,7 +343,7 @@ So, let’s create a `.env.example` file and add all the necessary environment v
 # Application Settings
 # ==================================================
 APP_ENV=development              # Application environment (development | staging | production)
-PROJECT_NAME="Project Name"     # Human-readable project name
+PROJECT_NAME="Web Assistant"    # Human-readable project name
 VERSION=1.0.0                    # Application version
 DEBUG=true                       # Enable debug mode (disable in production)
 ```
@@ -357,8 +368,8 @@ ALLOWED_ORIGINS="http://localhost:3000,http://localhost:8000"
 # Langfuse Observability Settings
 # ==================================================
 # Used for LLM tracing, monitoring, and analytics
-LANGFUSE_PUBLIC_KEY="your-langfuse-public-key"      # Public Langfuse API key
-LANGFUSE_SECRET_KEY="your-langfuse-secret-key"      # Secret Langfuse API key
+LANGFUSE_PUBLIC_KEY=                                # Public Langfuse API key (empty: no tracing)
+LANGFUSE_SECRET_KEY=                                # Secret Langfuse API key
 LANGFUSE_HOST=https://cloud.langfuse.com            # Langfuse cloud endpoint
 ```
 
@@ -373,15 +384,26 @@ We are also going to use industry standard`Langfuse` for observability and monit
 # LLM (Large Language Model) Settings
 # ==================================================
 OPENAI_API_KEY="your-llm-api-key"  # API key for LLM provider (e.g. OpenAI)
-DEFAULT_LLM_MODEL=gpt-4o-mini       # Default model used for chat/completions
+# OPENAI_BASE_URL=http://localhost:11434/v1  # Any OpenAI-compatible server (Azure, vLLM, Ollama...)
+DEFAULT_LLM_MODEL=gpt-5-mini        # Default model used for chat/completions
 DEFAULT_LLM_TEMPERATURE=0.2         # Controls randomness (0.0 = deterministic, 1.0 = creative)
+MAX_TOKENS=2000                     # Most tokens the model may write in one answer
+MAX_CONTEXT_TOKENS=16000            # Most tokens of history sent with each request
+
+# Long-term memory (mem0): the dimensions must match the embedding model
+LONG_TERM_MEMORY_MODEL=gpt-5-nano
+LONG_TERM_MEMORY_EMBEDDER_MODEL=text-embedding-3-small
+LONG_TERM_MEMORY_EMBEDDER_DIMS=1536
 
 # ==================================================
 # JWT (Authentication) Settings
 # ==================================================
-JWT_SECRET_KEY="your-jwt-secret-key"  # Secret used to sign JWT tokens
-JWT_ALGORITHM=HS256                    # JWT signing algorithm
-JWT_ACCESS_TOKEN_EXPIRE_DAYS=30        # Token expiration time (in days)
+# Required. Anyone who knows it can sign in as any user, so the API refuses to start
+# without a long random value. Generate one with:
+#   python -c "import secrets; print(secrets.token_urlsafe(64))"
+JWT_SECRET_KEY=
+JWT_ALGORITHM=HS256                    # JWT signing algorithm (HS256, HS384 or HS512)
+JWT_ACCESS_TOKEN_EXPIRE_DAYS=7         # Token expiration time (in days)
 
 # ==================================================
 # Database (PostgreSQL) Settings
@@ -397,9 +419,9 @@ POSTGRES_POOL_SIZE=5           # Base number of persistent DB connections
 POSTGRES_MAX_OVERFLOW=10       # Extra connections allowed above pool size
 ```
 
-We are going to use `OpenAI` as our primary LLM provider so we need to set the API key, default model, and temperature settings.
+We are going to use `OpenAI` as our primary LLM provider so we need to set the API key, default model, and temperature settings. `OPENAI_BASE_URL` points the same code at any OpenAI-compatible server instead, such as Azure OpenAI, vLLM or a local Ollama.
 
-Then comes the `JWT Settings` which plays an important role in authentication and session management. We need to set a secret key for signing tokens, the algorithm to encode/decode them, and the token expiration time.
+Then comes the `JWT Settings` which plays an important role in authentication and session management. We need a secret key for signing tokens, the algorithm to encode/decode them, and the token expiration time. The secret deserves special care: every token is a signature made with it, so anyone who knows it can mint a token for any user. That is why the example leaves it empty and the API refuses to start until it holds a long random value (more on that below).
 
 For the database, we are using `PostgreSQL` which is a industrial-strength relational database. Normally when your agentic system scales, you need to have proper connection pooling settings to avoid overwhelming the database with too many connections. Here we are setting the pool size of 5 and allowing a maximum overflow of 10 connections.
 
@@ -407,7 +429,7 @@ For the database, we are using `PostgreSQL` which is a industrial-strength relat
 # ==================================================
 # Rate Limiting Settings (SlowAPI)
 # ==================================================
-# Default limits applied to all routes
+# Default limits for routes without their own limit (see the rate limiting section)
 RATE_LIMIT_DEFAULT="1000 per day,200 per hour"
 
 # Endpoint-specific limits
@@ -427,7 +449,7 @@ Finally, we have the `Rate Limiting` and `Logging` settings to make sure our API
 
 Now that we have our dependency management and settings management strategies in place, we are ready to start working on the core logic of our AI system and the first step to use these settings in our application code.
 
-We need to create a `app/core/config.py` file that will load these environment variables using `Pydantic Settings Management`.
+We need a `src/config/settings.py` file that loads these environment variables into a single `Settings` object. It is a plain Python class; `python-dotenv` reads the env files for it.
 
 Let’s import the necessary modules first:
 
@@ -448,7 +470,7 @@ from typing import (  # For type annotations
 from dotenv import load_dotenv  # For loading environment variables from .env files
 ```
 
-These are some basic imports we need for file handling, type annotations, and loading environment variables from `.env.example` file.
+These are some basic imports we need for file handling, type annotations, and loading environment variables from the `.env.*` files (`.env.example` is only the template you copy them from).
 
 Next, we need to define our environment types using an enumeration.
 
@@ -581,7 +603,7 @@ class Settings:
         # ==========================
         # Application Basics
         # ==========================
-        self.PROJECT_NAME = os.getenv("PROJECT_NAME", "FastAPI LangGraph Agent")
+        self.PROJECT_NAME = os.getenv("PROJECT_NAME", "FastAPI LangGraph Template")
         self.VERSION = os.getenv("VERSION", "1.0.0")
         self.API_V1_STR = os.getenv("API_V1_STR", "/api/v1")
         self.DEBUG = os.getenv("DEBUG", "false").lower() in ("true", "1", "t", "yes")
@@ -594,11 +616,19 @@ class Settings:
         # ==========================
 
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-        self.DEFAULT_LLM_MODEL = os.getenv("DEFAULT_LLM_MODEL", "gpt-4o-mini")
+        # Any OpenAI-compatible server; always passed explicitly to the clients
+        self.OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL") or "https://api.openai.com/v1"
+        self.DEFAULT_LLM_MODEL = os.getenv("DEFAULT_LLM_MODEL", "gpt-5-mini")
+        # Models to fall back to, in order. Unset: the built-in OpenAI list. Empty: no fallback.
+        fallback_models = os.getenv("LLM_FALLBACK_MODELS")
+        self.LLM_FALLBACK_MODELS = (
+            None if fallback_models is None else [m.strip() for m in fallback_models.split(",") if m.strip()]
+        )
         self.DEFAULT_LLM_TEMPERATURE = float(os.getenv("DEFAULT_LLM_TEMPERATURE", "0.2"))
-        
+
         # Agent specific settings
-        self.MAX_TOKENS = int(os.getenv("MAX_TOKENS", "2000"))
+        self.MAX_TOKENS = int(os.getenv("MAX_TOKENS", "2000"))  # per answer
+        self.MAX_CONTEXT_TOKENS = int(os.getenv("MAX_CONTEXT_TOKENS", "16000"))  # history per request
         self.MAX_LLM_CALL_RETRIES = int(os.getenv("MAX_LLM_CALL_RETRIES", "3"))
 
         # ==========================
@@ -613,7 +643,7 @@ class Settings:
         # ==========================
         self.POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
         self.POSTGRES_PORT = int(os.getenv("POSTGRES_PORT", "5432"))
-        self.POSTGRES_DB = os.getenv("POSTGRES_DB", "postgres")
+        self.POSTGRES_DB = os.getenv("POSTGRES_DB", "food_order_db")
         self.POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
         self.POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
         
@@ -627,22 +657,30 @@ class Settings:
         # ==========================
         # Security (JWT)
         # ==========================
-        self.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "unsafe-secret-for-dev")
+        # Deliberately no default key: the API refuses to start until JWT_SECRET_KEY holds a
+        # long random value (see check_jwt_settings below).
+        self.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "")
         self.JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-        self.JWT_ACCESS_TOKEN_EXPIRE_DAYS = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_DAYS", "30"))
+        self.JWT_ACCESS_TOKEN_EXPIRE_DAYS = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_DAYS", "7"))
 
         # ==========================
         # Rate Limiting
         # ==========================
         self.RATE_LIMIT_DEFAULT = parse_list_from_env("RATE_LIMIT_DEFAULT", ["200 per day", "50 per hour"])
-        
-        # Define endpoint specific limits
+
+        # Define endpoint specific limits; RATE_LIMIT_<ENDPOINT> overrides each one
+        default_endpoints = {
+            "chat": ["30 per minute"],
+            "chat_stream": ["20 per minute"],
+            "messages": ["50 per minute"],
+            "register": ["10 per hour"],
+            "login": ["20 per minute"],
+            "root": ["10 per minute"],
+            "health": ["20 per minute"],
+        }
         self.RATE_LIMIT_ENDPOINTS = {
-            "chat": parse_list_from_env("RATE_LIMIT_CHAT", ["30 per minute"]),
-            "chat_stream": parse_list_from_env("RATE_LIMIT_CHAT_STREAM", ["20 per minute"]),
-            "auth": parse_list_from_env("RATE_LIMIT_LOGIN", ["20 per minute"]),
-            "root": parse_list_from_env("RATE_LIMIT_ROOT", ["10 per minute"]),
-            "health": parse_list_from_env("RATE_LIMIT_HEALTH", ["20 per minute"]),
+            endpoint: parse_list_from_env(f"RATE_LIMIT_{endpoint.upper()}") or limits
+            for endpoint, limits in default_endpoints.items()
         }
 
         # Apply logic to override settings based on environment
@@ -650,27 +688,34 @@ class Settings:
 
     def apply_environment_settings(self):
         """
-        Apply rigorous overrides based on the active environment.
-        This ensures production security even if .env is misconfigured.
+        Apply defaults that depend on the active environment. A value set
+        explicitly in the environment (or the env file) always wins.
         """
-        if self.ENVIRONMENT == Environment.DEVELOPMENT:
-            self.DEBUG = True
-            self.LOG_LEVEL = "DEBUG"
-            self.LOG_FORMAT = "console"
-            # Relax rate limits for local development
-            self.RATE_LIMIT_DEFAULT = ["1000 per day", "200 per hour"]
-            
-        elif self.ENVIRONMENT == Environment.PRODUCTION:
-            self.DEBUG = False
-            self.LOG_LEVEL = "WARNING"
-            self.LOG_FORMAT = "json"
-            # Stricter limits for production
-            self.RATE_LIMIT_DEFAULT = ["200 per day", "50 per hour"]
+        env_settings = {
+            Environment.DEVELOPMENT: {
+                "DEBUG": True,
+                "LOG_LEVEL": "DEBUG",
+                "LOG_FORMAT": "console",
+                "RATE_LIMIT_DEFAULT": ["1000 per day", "200 per hour"],  # relaxed locally
+            },
+            Environment.PRODUCTION: {
+                "DEBUG": False,
+                "LOG_LEVEL": "WARNING",
+                "RATE_LIMIT_DEFAULT": ["200 per day", "50 per hour"],  # stricter
+            },
+            # ... staging and test have their own entries ...
+        }
+        for key, value in env_settings.get(self.ENVIRONMENT, {}).items():
+            # Only override if the environment variable wasn't explicitly set
+            if key not in os.environ:
+                setattr(self, key, value)
 ```
+
+Note the last line: the environment defaults never override a value you set. So a `.env.production` copied from `.env.example`, which sets `DEBUG=true` and `LOG_LEVEL=DEBUG` for development, keeps debug logging on in production until you change those lines.
 
 In our `Settings` class, we read various configuration values from environment variables, applying sensible defaults where necessary. We also have an `apply_environment_settings` method that adjusts certain settings based on whether we are in development or production mode.
 
-You can also see `checkpoint_tables` which defines the necessary tables for LangGraph persistence in PostgreSQL.
+You can also see `CHECKPOINT_TABLES`, which lists the tables LangGraph's checkpointer keeps in PostgreSQL.
 
 Finally, we initialize a global `settings` object that can be imported and used throughout the application.
 
@@ -678,6 +723,37 @@ Finally, we initialize a global `settings` object that can be imported and used 
 # Initialize the global settings object
 settings = Settings()
 ```
+
+One setting must never run with a weak value: the JWT secret. If it is missing, short, or a value someone published as an example, anyone can sign a token for any user. So `settings.py` also has a check, and the API calls it before anything else at startup and refuses to start when it fails (fail closed):
+
+```python
+# Values published as examples (in this repository, its README or the article). Anyone can
+# read them, so a token signed with one of them can be forged by anyone.
+KNOWN_PLACEHOLDER_SECRETS = frozenset({
+    "supersecretkeythatshouldbechangedforproduction",
+    "your-jwt-secret-key",
+    "unsafe-secret-for-dev",
+    "changeme", "change-me", "secret",
+})
+
+# RFC 7518, section 3.2: an HMAC key must be at least as long as the hash output.
+JWT_MIN_SECRET_BYTES = {"HS256": 32, "HS384": 48, "HS512": 64}
+
+def check_jwt_settings(secret: str, algorithm: str) -> Optional[str]:
+    """Say why the JWT settings are unsafe, or return None when they are fine."""
+    if algorithm not in JWT_MIN_SECRET_BYTES:
+        return f"JWT_ALGORITHM must be one of {', '.join(JWT_MIN_SECRET_BYTES)}, not {algorithm!r}"
+    if not secret:
+        return "JWT_SECRET_KEY is not set"
+    if secret.strip().lower() in KNOWN_PLACEHOLDER_SECRETS:
+        return "JWT_SECRET_KEY is a published example value, so anyone could sign tokens with it"
+    minimum = JWT_MIN_SECRET_BYTES[algorithm]
+    if len(secret.encode("utf-8")) < minimum:
+        return f"JWT_SECRET_KEY is shorter than {minimum} bytes, the minimum for {algorithm}"
+    return None
+```
+
+Earlier versions of this guide gave the key a default in `settings.py` and in the compose file. Defaults like that are exactly how deployments end up running with a key printed in a public README, which is why there is none now.
 
 So far, we have created a dependency management strategy and a settings management for our production-grade AI system.
 
@@ -690,8 +766,6 @@ The reason why we are using dockerization is because in a production-grade syste
 First, we have to define the Database service. Since we are building an AI agent that needs **Long-Term Memory**, a standard PostgreSQL database is not enough. We need vector similarity search capabilities.
 
 ```yaml
-version: '3.8'
-
 # ==================================================
 # Docker Compose Configuration
 # ==================================================
@@ -709,7 +783,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}      # Database user
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Database password
     ports:
-      - "5432:5432"                # Expose PostgreSQL to host (dev use only)
+      - "127.0.0.1:5432:5432"      # Reachable from this machine only (the app uses db:5432)
     volumes:
       - postgres-data:/var/lib/postgresql/data  # Persistent database storage
     healthcheck:
@@ -722,7 +796,7 @@ services:
       - monitoring
 ```
 
-We are explicitly using the `pgvector/pgvector:pg16` image instead of the standard `postgres` image. This gives us the vector extensions out-of-the-box, which are required by `mem0ai` and LangGraph checkpointing.
+We are explicitly using the `pgvector/pgvector:pg16` image instead of the standard `postgres` image. This gives us the pgvector extension out-of-the-box, which `mem0ai` needs to store long-term memory as vectors (LangGraph's checkpointer only needs plain PostgreSQL).
 
 We also include a `healthcheck` this is important in deployment because our API service needs to wait until the database is fully ready to accept connections before it tries to start up.
 
@@ -740,30 +814,37 @@ Next, we define our main Application service. This is where our FastAPI code run
     ports:
       - "8000:8000"                # Expose FastAPI service
     volumes:
-      - ./app:/app/app               # Hot-reload application code
-      - ./logs:/app/logs             # Persist application logs
+      - app-logs:/app/logs           # Persist application logs
+    # Every open connection is a file descriptor; Docker's default soft limit
+    # inside a container (1024) fails requests past ~1000 concurrent clients
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    # Every setting, including JWT_SECRET_KEY, comes from this file. There is
+    # deliberately no fallback secret: the API refuses to start without a strong one.
     env_file:
       - .env.${APP_ENV:-development} # Load environment-specific variables
     environment:
       - APP_ENV=${APP_ENV:-development}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-supersecretkeythatshouldbechangedforproduction}
     depends_on:
       db:
         condition: service_healthy   # Wait until DB is ready
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      # The slim Python image has no curl, so the check is a line of Python
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 20s
     restart: on-failure
     networks:
       - monitoring
 ```
 
-Notice the `volumes` section here. We are mapping our local `./app` folder to the container's `/app` directory. This enables **Hot-Reloading**.
+Notice what is *not* here. The container receives its settings from the env file at runtime, and the image never contains them (`.dockerignore` keeps `.env.*` files out of it). The `environment` section sets no secret either. An earlier version of this file set `JWT_SECRET_KEY=${JWT_SECRET_KEY:-supersecretkey...}` there. Compose fills in that default whenever it cannot see the variable itself, as with a plain `docker compose up`, which reads `.env` but not `.env.development`. And because `environment` wins over `env_file`, the published default silently replaced the key you had put in the env file.
 
-If you change a line of python code in your editor, the container detects it and restarts the server instantly. This is common practice and provides a great developer experience without sacrificing the isolation of Docker.
+The logs go to a named volume, which Docker creates with the ownership the image gives `/app/logs`, so the non-root user in the container can write to it. For hot reloading while you develop, run the API outside Docker with `make dev` (uvicorn with `--reload`); the container runs the code it was built with.
 
 Now, a production system is flying blind without observability. The dev team need to know if their API is slow or if errors are spiking. For this, we use the `Prometheus + Grafana` stack.
 
@@ -772,9 +853,9 @@ Now, a production system is flying blind without observability. The dev team nee
   # Prometheus (Metrics Collection)
   # ==================================================
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v3.16.0   # pinned: "latest" changes under you on the next pull
     ports:
-      - "9090:9090"                 # Prometheus UI
+      - "127.0.0.1:9090:9090"       # Prometheus UI, from this machine only
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
@@ -793,15 +874,16 @@ Then we add Grafana, which is the “visualizer”.
   # Grafana (Metrics Visualization)
   # ==================================================
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:13.3.1
     ports:
-      - "3000:3000"                 # Grafana UI
+      - "127.0.0.1:3000:3000"       # Grafana UI, from this machine only
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
       - ./grafana/dashboards/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}  # set it in the env file
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
       - monitoring
@@ -817,9 +899,9 @@ Finally, the third important piece is to track the health of the containers them
   # cAdvisor (Container Metrics)
   # ==================================================
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
     ports:
-      - "8080:8080"                 # cAdvisor UI
+      - "127.0.0.1:8080:8080"       # cAdvisor UI, from this machine only
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
@@ -836,11 +918,14 @@ networks:
   monitoring:
     driver: bridge                  # Shared network for all services
 volumes:
+  app-logs:                         # Persist application logs
   grafana-storage:                  # Persist Grafana dashboards & data
   postgres-data:                    # Persist PostgreSQL data
 ```
 
-We wrap everything up by defining a shared `monitoring` network so all these services can talk to each other securely, and named `volumes` to ensure our database and dashboard settings survive even if we restart the containers.
+We wrap everything up by defining a shared `monitoring` network so all these services can talk to each other, and named `volumes` to ensure our database and dashboard settings survive even if we restart the containers.
+
+Only the API's port is published to the outside. PostgreSQL, Prometheus, Grafana and cAdvisor listen on `127.0.0.1`, so on a server they are reachable through an SSH tunnel and not from the internet. A database or dashboard port open to the world is one of the most common ways small deployments get breached.
 
 ## <a id="c31d"></a>Building Data Persistence Layer
 
@@ -860,7 +945,7 @@ In software engineering, **Don’t Repeat Yourself (DRY)** is a core principle. 
 ![Structured Modeling](https://miro.medium.com/v2/resize:fit:875/1*5cuOQQn4h0tPyKG-hn9CFA.png)
 *Structured Modeling (Created by Fareed Khan)*
 
-For that, create `app/models/base.py` file which will hold our abstract base model:
+For that, create `src/data/models/base.py` file which will hold our abstract base model:
 
 ```python
 from datetime import datetime, UTC
@@ -891,17 +976,17 @@ Similar to how api based ai models providers handle user data, we will create a 
 ![Entity Definition](https://miro.medium.com/v2/resize:fit:875/1*6xN_OBlno3BUyj-g7ur9ig.png)
 *Entity Definition (Created by Fareed Khan)*
 
-Create `app/models/user.py` file to define the User model:
+Create `src/data/models/user.py` file to define the User model:
 
 ```python
 from typing import TYPE_CHECKING, List
 import bcrypt
 from sqlmodel import Field, Relationship
-from app.models.base import BaseModel
+from src.data.models.base import BaseModel
 
 # Prevent circular imports for type hinting
 if TYPE_CHECKING:
-    from app.models.session import Session
+    from src.data.models.session import Session
 
 # ==================================================
 # User Model
@@ -926,27 +1011,42 @@ class User(BaseModel, table=True):
         """
         Verifies a raw password against the stored hash.
         """
-        return bcrypt.checkpw(password.encode("utf-8"), self.hashed_password.encode("utf-8"))
+        return password_matches(password, self.hashed_password)
     @staticmethod
     def hash_password(password: str) -> str:
         """
         Generates a secure Bcrypt hash/salt for a new password.
         """
-        salt = bcrypt.gensalt()
-        return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
+        secret = password.encode("utf-8")
+        # bcrypt only reads the first 72 bytes; refuse longer passwords instead of cutting them
+        if len(secret) > BCRYPT_MAX_BYTES:
+            raise ValueError(f"Password must be at most {BCRYPT_MAX_BYTES} bytes long")
+        return bcrypt.hashpw(secret, bcrypt.gensalt()).decode("utf-8")
+
+
+BCRYPT_MAX_BYTES = 72
+
+def password_matches(password: str, hashed_password: str) -> bool:
+    """
+    Check a password against a bcrypt hash. bcrypt 5 raises on more than 72 bytes where
+    older versions cut silently, so cut here to keep accepting accounts created back then.
+    """
+    return bcrypt.checkpw(password.encode("utf-8")[:BCRYPT_MAX_BYTES], hashed_password.encode("utf-8"))
 ```
 
 We embedded the password hashing logic directly into the model. This is an implementation of **Encapsulation** the logic for handling user data lives *with* the user data, preventing security mistakes elsewhere in the app.
 
-Next, we need to organize our AI interactions. Users don’t just have one giant endless conversation, they have distinct **Sessions** (or “Chats”). For that we need to create `app/models/session.py`.
+bcrypt is slow on purpose (a quarter of a second of CPU per hash is normal), which is what makes stolen hashes expensive to crack. It also means the API must not call it on the event loop, or every other request waits while a password is checked. The endpoints below run it in a thread pool of its own, one thread short of the number of cores, so that even a burst of logins leaves a core for everything else.
+
+Next, we need to organize our AI interactions. Users don’t just have one giant endless conversation, they have distinct **Sessions** (or “Chats”). For that we need to create `src/data/models/session.py`.
 
 ```python
 from typing import TYPE_CHECKING, List
 from sqlmodel import Field, Relationship
-from app.models.base import BaseModel
+from src.data.models.base import BaseModel
 
 if TYPE_CHECKING:
-    from app.models.user import User
+    from src.data.models.user import User
 
 # ==================================================
 # Session Model
@@ -960,8 +1060,8 @@ class Session(BaseModel, table=True):
     # We use String IDs (UUIDs) for sessions to make them hard to guess
     id: str = Field(primary_key=True)
     
-    # Foreign Key: Links this session to a specific user
-    user_id: int = Field(foreign_key="user.id")
+    # Foreign Key: Links this session to a specific user (indexed: we list sessions by user)
+    user_id: int = Field(foreign_key="user.id", index=True)
     
     # Optional friendly name for the chat (e.g., "Recipe Ideas")
     name: str = Field(default="")
@@ -979,7 +1079,7 @@ Finally, we need a model for **LangGraph Persistence**. LangGraph is stateful, i
 ![DTOs](https://miro.medium.com/v2/resize:fit:1250/1*OTpUnG6hUc3TEnAnyoiGig.png)
 *DTOs (Created by Fareed Khan)*
 
-We need a `Thread` model that acts as an anchor for these checkpoints. Create `app/models/thread.py`.
+We need a `Thread` model that acts as an anchor for these checkpoints. Create `src/data/models/thread.py`.
 
 ```python
 from datetime import UTC, datetime
@@ -998,14 +1098,16 @@ class Thread(SQLModel, table=True):
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 ```
 
-To keep our imports clean in the rest of the application, we aggregate these models into a single entry point and that exist in our `app/models/database.py`.
+The application does not import this model yet, so the table is not created; the checkpointer keeps the state in its own tables either way. The SQL for the tables the application does create is in [`schema.sql`](schema.sql), and a test keeps it in step with the models.
+
+To keep our imports clean in the rest of the application, we aggregate these models into a single entry point and that exist in our `src/data/models/database.py`.
 
 ```python
 """
 Database Models Export.
-This allows simple imports like: `from app.models.database import User, Thread`
+This allows simple imports like: `from src.data.models.database import Thread`
 """
-from app.models.thread import Thread
+from src.data.models.thread import Thread
 
 # Explicitly define what is exported
 __all__ = ["Thread"]
@@ -1017,7 +1119,7 @@ A common mistake in beginner API development is exposing your database models di
 
 These schemas define the “contract” between your API and the outside world.
 
-Let’s define the schemas for **Authentication**. We need strict validation here passwords must meet complexity requirements, and emails must be valid formats. For that we need to have a separate auth schema file so we should create `app/schemas/auth.py`.
+Let’s define the schemas for **Authentication**. We need strict validation here passwords must meet complexity requirements, and emails must be valid formats. For that we need to have a separate auth schema file so we should create `src/data/schemas/auth.py`.
 
 ```python
 import re
@@ -1050,7 +1152,10 @@ class UserCreate(BaseModel):
             raise ValueError("Password must contain at least one number")
         if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
             raise ValueError("Password must contain at least one special character")
-            
+        # bcrypt reads only the first 72 bytes, and non-ASCII characters take several bytes each
+        if len(password.encode("utf-8")) > 72:
+            raise ValueError("Password must be at most 72 bytes long")
+
         return v
 
 class Token(BaseModel):
@@ -1071,11 +1176,11 @@ class UserResponse(BaseModel):
     token: Token
 ```
 
-Next, we define the schemas in `app/schemas/chat.py` for the **Chat Interface**. This handles the input message from the user and the streaming response from the AI.
+Next, we define the schemas in `src/data/schemas/chat.py` for the **Chat Interface**. This handles the input message from the user and the streaming response from the AI.
 
 ```python
 import re
-from typing import List, Literal
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 # ==================================================
@@ -1083,9 +1188,12 @@ from pydantic import BaseModel, Field, field_validator
 # ==================================================
 class Message(BaseModel):
     """
-    Represents a single message in the conversation history.
+    A message sent by the client. The server keeps the conversation (LangGraph's
+    checkpointer), so a request only carries the new user turn. Accepting "system" or
+    "assistant" here would let any client replace the system prompt or put words in
+    the assistant's mouth.
     """
-    role: Literal["user", "assistant", "system"] = Field(..., description="Who sent the message")
+    role: Literal["user"] = Field(..., description="Only user messages are accepted")
     content: str = Field(..., description="The message content", min_length=1, max_length=3000)
     @field_validator("content")
     @classmethod
@@ -1097,6 +1205,14 @@ class Message(BaseModel):
             raise ValueError("Content contains potentially harmful script tags")
         return v
 
+class ChatMessage(BaseModel):
+    """
+    A message of the conversation as the API returns it. No length limit: the 3000
+    characters apply to what clients send, and the assistant's answers are often longer.
+    """
+    role: Literal["user", "assistant"]
+    content: str
+
 class ChatRequest(BaseModel):
     """
     Payload sent to the /chat endpoint.
@@ -1107,7 +1223,7 @@ class ChatResponse(BaseModel):
     """
     Standard response from the /chat endpoint.
     """
-    messages: List[Message]
+    messages: List[ChatMessage]
 
 class StreamResponse(BaseModel):
     """
@@ -1115,9 +1231,12 @@ class StreamResponse(BaseModel):
     """
     content: str = Field(default="")
     done: bool = Field(default=False)
+    error: Optional[str] = Field(default=None)  # set on the last event if the answer failed
 ```
 
-Finally, we need a schema for **LangGraph State**. LangGraph works by passing a state object between nodes (Agents, Tools, Memory). We need to explicitly define what that state looks like. Let’s create `app/schemas/graph.py`:
+Note the two message models. An earlier version used one `Message` for both directions, so the 3000-character limit meant for requests also applied to the assistant's answers: any answer longer than that made the endpoint fail with a 500, and so did every later attempt to load that conversation's history.
+
+Finally, we need a schema for **LangGraph State**. LangGraph works by passing a state object between nodes (Agents, Tools, Memory). We need to explicitly define what that state looks like. Let’s create `src/data/schemas/graph.py`:
 
 ```python
 from typing import Annotated
@@ -1169,12 +1288,12 @@ We need to implement **Rate Limiting** and **Sanitization utilities** before we 
 ![Rate Limit test](https://miro.medium.com/v2/resize:fit:875/1*Q77Wxu2NrSShL9A_PHGPDA.png)
 *Rate Limit test (Created by Fareed Khan)*
 
-First, let’s look at Rate Limiting. We are going to use `SlowAPI`, a library that integrates easily with FastAPI. We need to define *how* we identify a unique user (usually by IP address) and apply the default limits we defined in our settings earlier. Let's create a `app/core/limiter.py` for this:
+First, let’s look at Rate Limiting. We are going to use `SlowAPI`, a library that integrates easily with FastAPI. We need to define *how* we identify a unique user (usually by IP address) and pass the default limits we defined in our settings earlier. Let's create a `src/system/rate_limit.py` for this:
 
 ```python
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from app.core.config import settings
+from src.config.settings import settings
 
 # ==================================================
 # Rate Limiter Configuration
@@ -1189,6 +1308,8 @@ limiter = Limiter(
 
 This way we can later decorate any specific API route with `@limiter.limit(...)` to apply granular control.
 
+One detail of SlowAPI is worth knowing: the decorated routes are the ones it limits. The `default_limits` apply to the other routes only through `SlowAPIMiddleware`, which this application does not add, so the routes without a decorator (the session endpoints, `/api/v1/health` and `/metrics`) have no limit. To limit every route, add `app.add_middleware(SlowAPIMiddleware)` and exempt the endpoints that are polled on a schedule, or Prometheus and the health checks will hit the default limits first (`@limiter.exempt`).
+
 ### <a id="ed53"></a>Sanitization Check Logic
 
 Next, we need **Sanitization**. Even though modern frontend frameworks handle a lot of XSS (Cross-Site Scripting) protection, a backend API should never blindly trust incoming strings.
@@ -1196,7 +1317,7 @@ Next, we need **Sanitization**. Even though modern frontend frameworks handle a 
 ![Sanitization Check](https://miro.medium.com/v2/resize:fit:875/1*1t7zcACiaGjfp9-d1whZdw.png)
 *Sanitization Check (Created by Fareed Khan)*
 
-We need a utility function to sanitize strings. We will create `app/utils/sanitization.py` for this step:
+We need a utility function to sanitize strings. We will create `src/utils/sanitization.py` for this step:
 
 ```ruby
 import html
@@ -1235,65 +1356,86 @@ def sanitize_email(email: str) -> str:
 
 We defined the *Schema* for our tokens earlier, but now we need the logic to actually **Mint** (create) and **Verify** them.
 
-For that we are going to use **JSON Web Tokens (JWT)**. These are stateless, meaning we don’t need to query the database every time a user hits an endpoint just to check if they are logged in, we just verify the cryptographic signature. So, let’s create `app/utils/auth.py`.
+For that we are going to use **JSON Web Tokens (JWT)**. The signature proves a token is genuine without a database lookup: whoever holds the secret key can tell a token we issued from a forged one. We still look up the user or session behind the token on each request, so deleting one takes effect immediately. So, let’s create `src/utils/auth.py`.
+
+There are two kinds of tokens. A **user token** comes from registering or logging in and says who the user is. A **session token** comes from creating a chat session and gives access to that one conversation. Each endpoint accepts one kind, so a token gets a `type` claim; without it, a session token's subject (a session ID) and a user token's subject (a user ID) would be interchangeable strings.
 
 ```python
-import re
+import uuid
 from datetime import UTC, datetime, timedelta
-from typing import Optional
-from jose import JWTError, jwt
+from typing import Any, Dict, Literal, Optional
 
-from app.core.config import settings
-from app.schemas.auth import Token
-from app.utils.sanitization import sanitize_string
-from app.core.logging import logger
+import jwt  # PyJWT
+
+from src.config.settings import check_jwt_settings, settings
+from src.data.schemas.auth import Token
+from src.system.logs import logger
+
+TokenType = Literal["user", "session"]
 
 # ==================================================
 # JWT Authentication Utilities
 # ==================================================
-def create_access_token(subject: str, expires_delta: Optional[timedelta] = None) -> Token:
+def _signing_key() -> str:
+    """Return JWT_SECRET_KEY, refusing to sign or verify anything with an unsafe key."""
+    problem = check_jwt_settings(settings.JWT_SECRET_KEY, settings.JWT_ALGORITHM)
+    if problem:
+        raise RuntimeError(problem)
+    return settings.JWT_SECRET_KEY
+
+
+def create_access_token(subject: str, token_type: TokenType, expires_delta: Optional[timedelta] = None) -> Token:
     """
     Creates a new JWT access token.
-    
+
     Args:
-        subject: The unique identifier (User ID or Session ID)
+        subject: The user ID for a user token, the session ID for a session token
+        token_type: "user" or "session"
         expires_delta: Optional custom expiration time
     """
-    if expires_delta:
-        expire = datetime.now(UTC) + expires_delta
-    else:
-        expire = datetime.now(UTC) + timedelta(days=settings.JWT_ACCESS_TOKEN_EXPIRE_DAYS)
+    now = datetime.now(UTC)
+    expire = now + (expires_delta or timedelta(days=settings.JWT_ACCESS_TOKEN_EXPIRE_DAYS))
     # The payload is what gets encoded into the token
     to_encode = {
-        "sub": subject,           # Subject (standard claim)
-        "exp": expire,            # Expiration time (standard claim)
-        "iat": datetime.now(UTC), # Issued At (standard claim)
-        
-        # JTI (JWT ID): A unique identifier for this specific token instance.
-        # Useful for blacklisting tokens if needed later.
-        "jti": sanitize_string(f"{subject}-{datetime.now(UTC).timestamp()}"), 
+        "sub": subject,          # Subject (standard claim)
+        "type": token_type,      # Which endpoints accept it
+        "iat": now,              # Issued At (standard claim)
+        "exp": expire,           # Expiration time (standard claim)
+        "jti": uuid.uuid4().hex, # JWT ID: a unique identifier for this token
     }
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
-    
+    encoded_jwt = jwt.encode(to_encode, _signing_key(), algorithm=settings.JWT_ALGORITHM)
     return Token(access_token=encoded_jwt, expires_at=expire)
 
 
-def verify_token(token: str) -> Optional[str]:
+def decode_token(token: str) -> Optional[Dict[str, Any]]:
     """
-    Decodes and verifies a JWT token. Returns the subject (User ID) if valid.
+    Returns the claims of a token whose signature and expiry check out, or None.
     """
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-        subject: str = payload.get("sub")
-        
-        if subject is None:
-            return None
-            
-        return subject
-    except JWTError as e:
-        # If the signature is invalid or token is expired, jose raises JWTError
+        return jwt.decode(
+            token,
+            _signing_key(),
+            algorithms=[settings.JWT_ALGORITHM],  # never accept the algorithm the token names
+            options={"require": ["sub", "type", "iat", "exp"]},
+        )
+    except jwt.InvalidTokenError:
+        # Bad signature, expired, malformed, or missing a claim
         return None
+
+
+def verify_token(token: str, token_type: TokenType) -> Optional[str]:
+    """
+    Verifies a token and returns its subject, or None if it is invalid, expired,
+    or of the other type.
+    """
+    claims = decode_token(token)
+    if claims is None or claims.get("type") != token_type:
+        logger.warning("token_rejected", expected=token_type)
+        return None
+    return claims["sub"]
 ```
+
+We use [PyJWT](https://pyjwt.readthedocs.io/) here; earlier versions used `python-jose`, which is far less maintained.
 
 Now that we have authentication and sanitization utilities, we can focus on preparing messages for the LLM context window.
 
@@ -1306,70 +1448,74 @@ One of the hardest parts of scaling AI apps is **Context Window Management**. If
 ![Context Management](https://miro.medium.com/v2/resize:fit:875/1*9l6m-J1-7tzquFSxSt_uaA.png)
 *Context Management (Created by Fareed Khan)*
 
-We also need to handle the quirky output formats of newer models. For example, some reasoning models return **Thought Blocks** separate from the actual text. For that we need to create `app/utilss/graph.py`.
+We also need to handle the quirky output formats of newer models. For example, some reasoning models return **Thought Blocks** separate from the actual text. For that we need to create `src/utils/graph.py`.
 
 ```python
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import BaseMessage
+from typing import Any
+
+from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_core.messages import trim_messages as _trim_messages
-from app.core.config import settings
-from app.schemas.chat import Message
+from langchain_core.messages.utils import count_tokens_approximately
+from src.config.settings import settings
 
 # ==================================================
 # LangGraph / LLM Utilities
 # ==================================================
-def dump_messages(messages: list[Message]) -> list[dict]:
+def dump_messages(messages: list) -> list[dict]:
     """
-    Converts Pydantic Message models into the dictionary format 
-    expected by OpenAI/LangChain.
+    Converts Pydantic Message models (or LangChain messages) into the dictionary
+    format expected by OpenAI/LangChain.
     """
     return [message.model_dump() for message in messages]
 
-def prepare_messages(messages: list[Message], llm: BaseChatModel, system_prompt: str) -> list[Message]:
+def message_text(content: Any) -> str:
+    """
+    Returns the text of a message's content. Most models return a string; some (GPT-5
+    through the Responses API, for one) return a list of blocks such as
+    [{'type': 'reasoning', ...}, {'type': 'text', 'text': '...'}], of which only the
+    text blocks are meant for the user.
+    """
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        return "".join(
+            block if isinstance(block, str) else block.get("text", "")
+            for block in content
+            if isinstance(block, str) or (isinstance(block, dict) and block.get("type") == "text")
+        )
+    return ""
+
+def prepare_messages(messages: list, system_prompt: str) -> list:
     """
     Prepares the message history for the LLM context window.
-    
-    CRITICAL: This function prevents token overflow errors.
-    It keeps the System Prompt + the most recent messages that fit 
-    within 'settings.MAX_TOKENS'.
+
+    CRITICAL: This function prevents token overflow errors. It keeps the System
+    Prompt + the most recent messages that fit within 'settings.MAX_CONTEXT_TOKENS'.
     """
-    try:
-        # Intelligent trimming based on token count
-        trimmed_messages = _trim_messages(
-            dump_messages(messages),
-            strategy="last",            # Keep the most recent messages
-            token_counter=llm,          # Use the specific model's tokenizer
-            max_tokens=settings.MAX_TOKENS,
-            start_on="human",           # Ensure history doesn't start with a hanging AI response
-            include_system=False,       # We append system prompt manually below
-            allow_partial=False,
-        )
-    except Exception as e:
-        # Fallback if token counting fails (rare, but safety first)
-        trimmed_messages = messages
+    trimmed_messages = _trim_messages(
+        dump_messages(messages),
+        strategy="last",            # Keep the most recent messages
+        token_counter=count_tokens_approximately,  # About four characters per token
+        max_tokens=settings.MAX_CONTEXT_TOKENS,
+        start_on="human",           # Ensure history doesn't start with a hanging AI response
+        include_system=False,       # We append system prompt manually below
+        allow_partial=False,
+    )
     # Always prepend the system prompt to enforce agent behavior
-    return [Message(role="system", content=system_prompt)] + trimmed_messages
+    return [SystemMessage(content=system_prompt)] + trimmed_messages
 
 def process_llm_response(response: BaseMessage) -> BaseMessage:
     """
-    Normalizes responses from advanced models (like GPT-5 preview or Claude).
-    Some models return structured 'reasoning' blocks separate from content.
-    This function flattens them into a single string.
+    Flattens structured content (reasoning and text blocks) into the text the user sees.
     """
     if isinstance(response.content, list):
-        text_parts = []
-        for block in response.content:
-            # Extract plain text
-            if isinstance(block, dict) and block.get("type") == "text":
-                text_parts.append(block["text"])
-            # We can log reasoning blocks here if needed, but we don't return them to the UI
-            elif isinstance(block, str):
-                text_parts.append(block)
-        response.content = "".join(text_parts)
+        response.content = message_text(response.content)
     return response
 ```
 
 By adding `prepare_messages`, we are making sure that our application won't crash even if a user has a conversation with 500 messages. The system automatically forgets the oldest context to make room for the new, keeping our costs and errors under control.
+
+Two details matter here. The budget is its own setting, `MAX_CONTEXT_TOKENS`: an earlier version trimmed to `MAX_TOKENS`, the 2000-token cap on one *answer*, so a single long answer pushed everything before it out of the context and the agent forgot the conversation. And tokens are estimated rather than counted with the model's tokenizer, which works the same for every model (including ones served through `OPENAI_BASE_URL`), needs no tokenizer download, and cannot fail on content blocks a tokenizer does not know.
 
 Once we have configured our dependencies, settings, models, schemas, security, and utilities, we need to build our **Service Layer** which is responsible for the core business logic of our application.
 
@@ -1389,19 +1535,21 @@ To solve this, we are going to use **Connection Pooling**. We keep a pool of ope
 ![Connection Pool](https://miro.medium.com/v2/resize:fit:875/1*9GQ9H6JV3Kb_-aWNz6zD6Q.png)
 *Connection Pool (Creation by Fareed Khan)*
 
-Let’s create `app/services/database.py` for this:
+Let’s create `src/data/db_manager.py` for this:
 
 ```python
+import asyncio
 from typing import List, Optional
 from fastapi import HTTPException
+from sqlalchemy import URL, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.pool import QueuePool
 from sqlmodel import Session, SQLModel, create_engine, select
 
-from app.core.config import Environment, settings
-from app.core.logging import logger
-from app.models.session import Session as ChatSession
-from app.models.user import User
+from src.config.settings import Environment, settings
+from src.system.logs import logger
+from src.data.models.session import Session as ChatSession
+from src.data.models.user import User
 
 # ==================================================
 # Database Service
@@ -1416,10 +1564,14 @@ class DatabaseService:
         Initialize the engine with robust pooling settings.
         """
         try:
-            # Create the connection URL from settings
-            connection_url = (
-                f"postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}"
-                f"@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"
+            # URL.create escapes the credentials, so passwords containing @, / or : work
+            connection_url = URL.create(
+                "postgresql+psycopg",
+                username=settings.POSTGRES_USER,
+                password=settings.POSTGRES_PASSWORD,
+                host=settings.POSTGRES_HOST,
+                port=settings.POSTGRES_PORT,
+                database=settings.POSTGRES_DB,
             )
             # Configuring the QueuePool is critical for production.
             # pool_size: How many connections to keep open permanently.
@@ -1445,45 +1597,70 @@ class DatabaseService:
     # --------------------------------------------------
     # User Management
     # --------------------------------------------------
-    async def create_user(self, email: str, password_hash: str) -> User:
+    # SQLModel sessions are synchronous. Each method runs its queries in a worker thread
+    # (asyncio.to_thread): run directly in an async endpoint, a query would block the
+    # event loop, and with it every other request, until the database answers.
+    async def create_user(self, email: str, password: str) -> User:
         """Create a new user with hashed password."""
-        with Session(self.engine) as session:
-            user = User(email=email, hashed_password=password_hash)
-            session.add(user)
-            session.commit()
-            session.refresh(user)
-            return user
+        def _create() -> User:
+            with Session(self.engine) as session:
+                user = User(email=email, hashed_password=password)
+                session.add(user)
+                session.commit()
+                session.refresh(user)
+                return user
+        return await asyncio.to_thread(_create)
+
     async def get_user_by_email(self, email: str) -> Optional[User]:
         """Fetch user by email for login flow."""
-        with Session(self.engine) as session:
-            statement = select(User).where(User.email == email)
-            return session.exec(statement).first()
+        def _get() -> Optional[User]:
+            with Session(self.engine) as session:
+                return session.exec(select(User).where(User.email == email)).first()
+        return await asyncio.to_thread(_get)
+
     # --------------------------------------------------
     # Session Management
     # --------------------------------------------------
     async def create_session(self, session_id: str, user_id: int, name: str = "") -> ChatSession:
         """Create a new chat session linked to a user."""
-        with Session(self.engine) as session:
-            chat_session = ChatSession(id=session_id, user_id=user_id, name=name)
-            session.add(chat_session)
-            session.commit()
-            session.refresh(chat_session)
-            return chat_session
-    async def get_user_sessions(self, user_id: int) -> List[ChatSession]:
-        """List all chat history for a specific user."""
-        with Session(self.engine) as session:
-            statement = select(ChatSession).where(ChatSession.user_id == user_id).order_by(ChatSession.created_at)
-            return session.exec(statement).all()
+        def _create() -> ChatSession:
+            with Session(self.engine) as session:
+                chat_session = ChatSession(id=session_id, user_id=user_id, name=name)
+                session.add(chat_session)
+                session.commit()
+                session.refresh(chat_session)
+                return chat_session
+        return await asyncio.to_thread(_create)
+
+    async def delete_session(self, session_id: str) -> bool:
+        """Delete a session and the conversation LangGraph stored for it."""
+        def _delete() -> bool:
+            with Session(self.engine) as session:
+                chat_session = session.get(ChatSession, session_id)
+                if not chat_session:
+                    return False
+                session.delete(chat_session)
+                # The checkpointer keys the conversation by thread_id, which is the session ID
+                connection = session.connection()
+                for table in settings.CHECKPOINT_TABLES:
+                    if connection.execute(text("SELECT to_regclass(:t)"), {"t": table}).scalar():
+                        connection.execute(text(f"DELETE FROM {table} WHERE thread_id = :id"), {"id": session_id})
+                session.commit()
+                return True
+        return await asyncio.to_thread(_delete)
+
+    # get_user, get_session, get_user_sessions, update_session_name and
+    # health_check follow the same pattern; see src/data/db_manager.py.
 
 # Create a global singleton instance
-database_service = DatabaseService()
+db_manager = DatabaseService()
 ```
 
 Here, `pool_pre_ping=True` is important. Databases sometimes close idle connections silently. Without this flag, your API would throw a "Broken Pipe" error on the first request after a quiet period. With it, SQLAlchemy checks the connection health before handing it to you.
 
 We are also setting the `pool_recycle` to 30 minutes. Some cloud providers (like AWS RDS) automatically close connections after a certain idle time. Recycling connections prevents this issue.
 
-The other component are pretty simple CRUD methods for creating and fetching users and chat sessions.
+The other components are simple CRUD methods for users and chat sessions. Deleting a session also deletes the messages LangGraph stored for it: a user who deletes a chat expects the conversation to be gone, not just its entry in a list.
 
 ### <a id="2fe7"></a>LLM Unavailability Handling
 
@@ -1497,14 +1674,21 @@ We are going to implement two advanced patterns here:
 1.  **Automatic Retries:** If a request fails due to a network blip, try again.
 2.  **Circular Fallback:** If `gpt-4o` is down, automatically switch to `gpt-4o-mini` or another backup model.
 
-We will use the `tenacity` library which is used for exponential backoff retries and `LangChain` for model abstraction. Let's create `app/services/llm.py`:
+We will use the `tenacity` library which is used for exponential backoff retries and `LangChain` for model abstraction. Let's create `src/services/llm_provider.py`:
 
 ```python
+import logging
 from typing import Any, Dict, List, Optional
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import BaseMessage
 from langchain_openai import ChatOpenAI
-from openai import APIError, APITimeoutError, OpenAIError, RateLimitError
+from openai import (
+    APIConnectionError,
+    APITimeoutError,
+    InternalServerError,
+    OpenAIError,
+    RateLimitError,
+)
 from tenacity import (
     before_sleep_log,
     retry,
@@ -1514,8 +1698,8 @@ from tenacity import (
 )
 
 
-from app.core.config import settings
-from app.core.logging import logger
+from src.config.settings import settings
+from src.system.logs import logger
 
 # ==================================================
 # LLM Registry
@@ -1529,47 +1713,46 @@ class LLMRegistry:
     # We pre-configure models with different capabilities/costs
     LLMS: List[Dict[str, Any]] = [
         {
-            "name": "gpt-5-mini", # Hypothetical or specific model alias
+            "name": "gpt-5-mini",
             "llm": ChatOpenAI(
                 model="gpt-5-mini",
                 api_key=settings.OPENAI_API_KEY,
+                base_url=settings.OPENAI_BASE_URL,
                 max_tokens=settings.MAX_TOKENS,
                 # New "reasoning" feature in newer models
-                reasoning={"effort": "low"}, 
+                reasoning={"effort": "low"},
             ),
         },
-        {
-            "name": "gpt-4o",
-            "llm": ChatOpenAI(
-                model="gpt-4o",
-                temperature=settings.DEFAULT_LLM_TEMPERATURE,
-                api_key=settings.OPENAI_API_KEY,
-                max_tokens=settings.MAX_TOKENS,
-            ),
-        },
+        # ... gpt-5 (reasoning effort "medium"), gpt-5-nano ("minimal") and gpt-4o
+        #     (temperature, top_p and penalties) follow the same pattern ...
         {
             "name": "gpt-4o-mini", # Cheaper fallback
             "llm": ChatOpenAI(
                 model="gpt-4o-mini",
                 temperature=settings.DEFAULT_LLM_TEMPERATURE,
                 api_key=settings.OPENAI_API_KEY,
+                base_url=settings.OPENAI_BASE_URL,
+                max_tokens=settings.MAX_TOKENS,
             ),
         },
     ]
     @classmethod
-    def get(cls, model_name: str) -> BaseChatModel:
-        """Retrieve a specific model instance by name."""
-        for entry in cls.LLMS:
-            if entry["name"] == model_name:
-                return entry["llm"]
-        # Default to first if not found
-        return cls.LLMS[0]["llm"]
+    def get(cls, model_name: str, **kwargs) -> BaseChatModel:
+        """
+        Retrieve a model by name. A name that is not in LLMS gets a plain ChatOpenAI
+        instance, so any model the configured endpoint serves can be used.
+        """
+        entry = next((e for e in cls.LLMS if e["name"] == model_name), None)
+        if entry is None or kwargs:
+            options = {"temperature": settings.DEFAULT_LLM_TEMPERATURE, "max_tokens": settings.MAX_TOKENS, **kwargs}
+            return ChatOpenAI(model=model_name, api_key=settings.OPENAI_API_KEY, base_url=settings.OPENAI_BASE_URL, **options)
+        return entry["llm"]
     @classmethod
     def get_all_names(cls) -> List[str]:
         return [entry["name"] for entry in cls.LLMS]
 ```
 
-In this registry, we define multiple models with different capabilities and costs. This allows us to switch between them dynamically if needed.
+In this registry, we define multiple models with different capabilities and costs. This allows us to switch between them dynamically if needed. Because every client gets `base_url=settings.OPENAI_BASE_URL`, the same code runs against Azure OpenAI, vLLM or a local Ollama: set the URL, and set `DEFAULT_LLM_MODEL` to a model that server has.
 
 Next, we build the `LLMService` which is responsible for all LLM interactions and also handles retries and fallbacks:
 
@@ -1578,40 +1761,48 @@ Next, we build the `LLMService` which is responsible for all LLM interactions an
 # LLM Service (The Resilience Layer)
 # ==================================================
 
+# Worth retrying on the same model: the request may succeed a few seconds later.
+# Anything else (a bad request, a missing model, a wrong key) goes straight to the next model.
+RETRYABLE_ERRORS = (RateLimitError, APITimeoutError, APIConnectionError, InternalServerError)
+
 class LLMService:
     """
     Manages LLM calls with automatic retries and fallback logic.
     """
 
     def __init__(self):
-        self._llm: Optional[BaseChatModel] = None
-        self._current_model_index: int = 0
-        
-        # Initialize with the default model from settings
-        try:
-            self._llm = LLMRegistry.get(settings.DEFAULT_LLM_MODEL)
-            all_names = LLMRegistry.get_all_names()
-            self._current_model_index = all_names.index(settings.DEFAULT_LLM_MODEL)
-        except ValueError:
-            # Fallback safety
-            self._llm = LLMRegistry.LLMS[0]["llm"]
+        # DEFAULT_LLM_MODEL first, then LLM_FALLBACK_MODELS (by default, the registry)
+        fallback = settings.LLM_FALLBACK_MODELS
+        if fallback is None:
+            fallback = LLMRegistry.get_all_names()
+        self._model_names = list(dict.fromkeys([settings.DEFAULT_LLM_MODEL, *fallback]))
+        self._current_model_index = 0
+        self._tools: List = []
+        self._llm: Optional[BaseChatModel] = LLMRegistry.get(self._model_names[0])
+
+    @property
+    def model_name(self) -> str:
+        return self._model_names[self._current_model_index]
+
+    def _use_model(self, index: int) -> None:
+        """Make the model at `index` the current one, with the agent's tools bound to it."""
+        llm = LLMRegistry.get(self._model_names[index])
+        self._llm = llm.bind_tools(self._tools) if self._tools else llm
+        self._current_model_index = index
 
     def _switch_to_next_model(self) -> bool:
         """
-        Circular Fallback: Switches to the next available model in the registry.
+        Circular Fallback: Switches to the next model in the list, tools included.
         Returns True if successful.
         """
         try:
-            next_index = (self._current_model_index + 1) % len(LLMRegistry.LLMS)
-            next_model_entry = LLMRegistry.LLMS[next_index]
-            
+            next_index = (self._current_model_index + 1) % len(self._model_names)
             logger.warning(
-                "switching_model_fallback", 
-                old_index=self._current_model_index, 
-                new_model=next_model_entry["name"]
+                "switching_to_next_model",
+                from_model=self.model_name,
+                to_model=self._model_names[next_index],
             )
-            self._current_model_index = next_index
-            self._llm = next_model_entry["llm"]
+            self._use_model(next_index)
             return True
         except Exception as e:
             logger.error("model_switch_failed", error=str(e))
@@ -1624,13 +1815,12 @@ class LLMService:
     # Tenacity will wait (exponentially) and try again.
     @retry(
         stop=stop_after_attempt(settings.MAX_LLM_CALL_RETRIES), # Stop after 3 tries
-        wait=wait_exponential(multiplier=1, min=2, max=10),     # Wait 2s, 4s, 8s...
-        retry=retry_if_exception_type((RateLimitError, APITimeoutError, APIError)),
-        before_sleep=before_sleep_log(logger, "WARNING"),       # Log before waiting
+        wait=wait_exponential(multiplier=1, min=2, max=10),     # Exponential, between 2s and 10s
+        retry=retry_if_exception_type(RETRYABLE_ERRORS),
+        before_sleep=before_sleep_log(logger, logging.WARNING), # Log before waiting
         reraise=True,
     )
-
-    async def _call_with_retry(self, messages: List[BaseMessage]) -> BaseMessage:
+    async def _call_llm_with_retry(self, messages: List[BaseMessage]) -> BaseMessage:
         """Internal method that executes the actual API call."""
         if not self._llm:
             raise RuntimeError("LLM not initialized")
@@ -1639,44 +1829,43 @@ class LLMService:
     async def call(self, messages: List[BaseMessage]) -> BaseMessage:
         """
         Public interface. Wraps the retry logic with a Fallback loop.
-        If 'gpt-4o' fails 3 times, we switch to 'gpt-4o-mini' and try again.
+        If one model fails (after its retries), the next one gets the request.
         """
-        total_models = len(LLMRegistry.LLMS)
+        total_models = len(self._model_names)
         models_tried = 0
-        
+        last_error = None
+
         while models_tried < total_models:
             try:
                 # Attempt to generate response
-                return await self._call_with_retry(messages)
-            
+                return await self._call_llm_with_retry(messages)
+
             except OpenAIError as e:
                 # If we exhausted retries for THIS model, log and switch
+                last_error = e
                 models_tried += 1
-                logger.error(
-                    "model_failed_exhausted_retries", 
-                    model=LLMRegistry.LLMS[self._current_model_index]["name"],
-                    error=str(e)
-                )
-                
+                logger.error("llm_call_failed_after_retries", model=self.model_name, error=str(e))
+
                 if models_tried >= total_models:
-                    # We tried everything. The world is probably ending.
+                    # We tried everything.
                     break
-                
+
                 self._switch_to_next_model()
-        raise RuntimeError("Failed to get response from any LLM after exhausting all options.")
+        raise RuntimeError(f"failed to get response from llm after trying {models_tried} models. last error: {last_error}")
 
     def get_llm(self) -> BaseChatModel:
         return self._llm
-    
 
     def bind_tools(self, tools: List) -> "LLMService":
-        """Bind tools to the current LLM instance."""
-        if self._llm:
-            self._llm = self._llm.bind_tools(tools)
+        """Bind tools to the current LLM, and to every model switched to later."""
+        self._tools = list(tools)
+        self._use_model(self._current_model_index)
         return self
 ```
 
-Here we `switch_to_next_model` in a circular manner. If the current model fails after exhausting its retries, we move to the next one in the list. In our retry decorator, we specify which exceptions should trigger a retry (like `RateLimitError` or `APITimeoutError`).
+Here `_switch_to_next_model` moves along the list in a circular manner. If the current model fails after exhausting its retries, we move to the next one in the list. In our retry decorator, we specify which exceptions should trigger a retry: the transient ones (rate limits, timeouts, dropped connections, 5xx errors). A bad request would fail the same way three times, so it goes straight to the next model instead.
+
+Two details are easy to get wrong here. The tools must be bound again on every switch: a fallback model that does not know the tools can no longer search, and an earlier version lost them that way after its first fallback. And `before_sleep_log` takes the level as a number (`logging.WARNING`); the logger looks levels up by number, so the string `"WARNING"` would fail with a `KeyError` at the very first retry instead of retrying.
 
 ### <a id="0d26"></a>**Circuit Breaking**
 
@@ -1692,13 +1881,13 @@ Finally, we create a global instance of the `LLMService` for easy access through
 llm_service = LLMService()
 ```
 
-If a provider has a major outage, `tenacity` rotates to backup models. This make sure your users rarely see a 500 Error, even when the backend APIs are unstable.
+If a provider has a major outage, `tenacity` retries the same model, and the loop in `call` then moves to the backup models. This makes sure your users rarely see a 500 Error, even when the backend APIs are unstable.
 
 ## <a id="2767"></a>Multi-Agentic Architecture
 
 Now we will start working on our stateful AI Agentic system using **LangGraph**. Unlike linear chains (Input →→ LLM →→ Output), LangGraph allows us to build **Stateful Agents**.
 
-These agents can loop, retry, call tools, remember past interactions, and persist their state into a database so they can pick up exactly where they left off — even if the server restarts.
+These agents can loop, retry, call tools, remember past interactions, and persist their state into a database so they can pick up exactly where they left off, even if the server restarts.
 
 In many chat applications, users expect the AI to remember *facts about them* across sessions. For example, if a user tells the AI “I love hiking” in one session, they expect the AI to remember that in future sessions.
 
@@ -1709,7 +1898,7 @@ So, we are also going to integrate **Long-Term Memory** using `mem0ai`. While th
 ![Long term memory](https://miro.medium.com/v2/resize:fit:1250/1*wyBkaRzagua7iX7fR453NQ.png)
 *Long term memory (Created by Fareed Khan)*
 
-In a production system, we treat prompts as **Assets** which means separating them from code. This allows prompt engineers to update/improve prompts without changing application logic. We store them as Markdown files. Let’s create `app/core/prompts/system.md` that will define the system prompt for our agent:
+In a production system, we treat prompts as **Assets** which means separating them from code. This allows prompt engineers to update/improve prompts without changing application logic. We store them as Markdown files. Let’s create `src/agent/prompts/system.md` that will define the system prompt for our agent:
 
 ```yaml
 # Name: {agent_name}
@@ -1732,12 +1921,12 @@ Notice the placeholders like `{long_term_memory}`. We will dynamically inject th
 
 This is a simple prompt, but in a real application, you would want to make it much more detailed, specifying the agent’s personality, constraints, and behavior according to your use case.
 
-Now, we need a utility to load this so we need `app/core/prompts/__init__.py` that will read the markdown file and format it with dynamic variables:
+Now, we need a utility to load this so we need `src/agent/prompts/__init__.py` that will read the markdown file and format it with dynamic variables:
 
 ```python
 import os
 from datetime import datetime
-from app.core.config import settings
+from src.config.settings import settings
 
 def load_system_prompt(**kwargs) -> str:
     """
@@ -1760,27 +1949,47 @@ Many modern AI agents need to interact with external systems to be truly useful.
 ![Tool feature](https://miro.medium.com/v2/resize:fit:875/1*R_nkHq1wBXFUWclqu2_oSg.png)
 *Tool feature (Created by Fareed Khan)*
 
-We need to create a separate `app/core/langgraph/tools/duckduck...rch.py` for this because each tool should be modular and testable:
+We need to create a separate `src/agent/tools/web_search.py` for this because each tool should be modular and testable. It calls the [`ddgs`](https://pypi.org/project/ddgs/) package directly (the LangChain team is sunsetting `langchain-community`, where a ready-made DuckDuckGo tool used to live):
 
 ```python
-from langchain_community.tools import DuckDuckGoSearchResults
+import json
 
-# Initialize the tool
-# We set num_results=10 to give the LLM plenty of context
-duckduckgo_search_tool = DuckDuckGoSearchResults(num_results=10, handle_tool_error=True)
+from ddgs import DDGS
+from langchain_core.tools import tool
+
+from src.system.logs import logger
+
+MAX_RESULTS = 10  # plenty of context for the LLM
+
+@tool("web_search")
+def duckduckgo_search_tool(query: str) -> str:
+    """Search the web with DuckDuckGo. Use it for recent events and for facts you are not sure about.
+
+    Returns a JSON list of results, each with a title, a link and a snippet.
+    """
+    try:
+        results = DDGS().text(query, max_results=MAX_RESULTS)
+    except Exception as e:
+        # Network errors and rate limits: log them, and tell the model, which can answer without the search
+        logger.warning("web_search_failed", error=str(e))
+        return f"The search failed: {e}"
+    return json.dumps(
+        [{"title": r.get("title"), "link": r.get("href"), "snippet": r.get("body")} for r in results],
+        ensure_ascii=False,
+    )
 ```
 
-And then we will be exporting it in `app/core/langgraph/tools/__init__.py`:
+The docstring is what the model reads to decide when to use the tool, so it says what the tool is for and what it returns. And then we will be exporting it in `src/agent/tools/__init__.py`:
 
 ```python
 from langchain_core.tools.base import BaseTool
-from .duckduckgo_search import duckduckgo_search_tool
+from .web_search import duckduckgo_search_tool
 
 # Central registry of tools available to the agent
 tools: list[BaseTool] = [duckduckgo_search_tool]
 ```
 
-Now we are going to build the most complex and critical file in the entire project: `app/core/langgraph/graph.py`. There are four main components to this file:
+Now we are going to build the most complex and critical file in the entire project: `src/agent/workflow.py`. There are four main components to this file:
 
 1.  **State Management:** Loading/Saving conversation state to Postgres.
 2.  **Memory Retrieval:** Fetching user facts from `mem0ai`.
@@ -1789,31 +1998,31 @@ Now we are going to build the most complex and critical file in the entire proje
 
 An ai engineer might already be aware of why these components are necessary, since it holds the core logic of the AI agent.
 
-`mem0i` is a vector database optimized for AI applications, it is used widely for Long-Term Memory storage. We will use it to store and retrieve user-specific context. Let's code it step-by-step:
+`mem0` is a memory layer for AI applications, widely used for Long-Term Memory: it extracts facts from conversations with an LLM and stores them as vectors, here in pgvector. We will use it to store and retrieve user-specific context. Let's code it step-by-step:
 
 ```python
 import asyncio
-from typing import AsyncGenerator, Optional
+from typing import Any, AsyncGenerator, Optional
 from urllib.parse import quote_plus
-from asgiref.sync import sync_to_async
 
-from langchain_core.messages import ToolMessage, convert_to_openai_messages
+from langchain_core.messages import AIMessage, ToolMessage, convert_to_openai_messages
+from langchain_core.runnables import RunnableConfig
 from langfuse.langchain import CallbackHandler
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.graph import END, StateGraph
-from langgraph.graph.state import Command, CompiledStateGraph
-from langgraph.types import RunnableConfig, StateSnapshot
+from langgraph.graph.state import CompiledStateGraph
+from langgraph.types import Command, StateSnapshot
 
 from mem0 import AsyncMemory
 
 from psycopg_pool import AsyncConnectionPool
-from app.core.config import Environment, settings
-from app.core.langgraph.tools import tools
-from app.core.logging import logger
-from app.core.prompts import load_system_prompt
-from app.schemas import GraphState, Message
-from app.services.llm import llm_service
-from app.utils import dump_messages, prepare_messages, process_llm_response
+from src.config.settings import Environment, settings
+from src.agent.tools import tools
+from src.system.logs import logger
+from src.agent.prompts import load_system_prompt
+from src.data.schemas import ChatMessage, GraphState, Message
+from src.services.llm_provider import llm_service
+from src.utils import dump_messages, message_text, prepare_messages, process_llm_response
 
 class LangGraphAgent:
     """
@@ -1823,22 +2032,31 @@ class LangGraphAgent:
         # Bind tools to the LLM service so the model knows what functions it can call
         self.llm_service = llm_service.bind_tools(tools)
         self.tools_by_name = {tool.name: tool for tool in tools}
-        
+
         self._connection_pool: Optional[AsyncConnectionPool] = None
         self._graph: Optional[CompiledStateGraph] = None
         self.memory: Optional[AsyncMemory] = None
+        # The first requests on a fresh server arrive together; the locks make them
+        # share one graph and one memory client instead of each building their own
+        self._graph_lock = asyncio.Lock()
+        self._memory_lock = asyncio.Lock()
+        # asyncio only keeps a weak reference to a task: background tasks live here until done
+        self._background_tasks: set[asyncio.Task] = set()
         logger.info("langgraph_agent_initialized", model=settings.DEFAULT_LLM_MODEL)
     async def _long_term_memory(self) -> AsyncMemory:
         """
         Lazy-load the mem0ai memory client with pgvector configuration.
         """
-        if self.memory is None:
-            self.memory = await AsyncMemory.from_config(
-                config_dict={
+        if self.memory is not None:
+            return self.memory
+        async with self._memory_lock:
+            if self.memory is None:
+                config = {
                     "vector_store": {
                         "provider": "pgvector",
                         "config": {
-                            "collection_name": "agent_memory",
+                            "collection_name": settings.LONG_TERM_MEMORY_COLLECTION_NAME,
+                            "embedding_model_dims": settings.LONG_TERM_MEMORY_EMBEDDER_DIMS,
                             "dbname": settings.POSTGRES_DB,
                             "user": settings.POSTGRES_USER,
                             "password": settings.POSTGRES_PASSWORD,
@@ -1848,15 +2066,34 @@ class LangGraphAgent:
                     },
                     "llm": {
                         "provider": "openai",
-                        "config": {"model": settings.DEFAULT_LLM_MODEL},
+                        "config": {
+                            "model": settings.LONG_TERM_MEMORY_MODEL,
+                            "api_key": settings.OPENAI_API_KEY,
+                            "openai_base_url": settings.OPENAI_BASE_URL,
+                        },
                     },
                     "embedder": {
-                        "provider": "openai", 
-                        "config": {"model": "text-embedding-3-small"}
+                        "provider": "openai",
+                        "config": {
+                            "model": settings.LONG_TERM_MEMORY_EMBEDDER_MODEL,
+                            "api_key": settings.OPENAI_API_KEY,
+                            "openai_base_url": settings.OPENAI_BASE_URL,
+                            "embedding_dims": settings.LONG_TERM_MEMORY_EMBEDDER_DIMS,
+                        },
                     },
                 }
-            )
+                # mem0 2 builds the client synchronously (it connects to pgvector and creates
+                # its tables), so build it in a worker thread instead of blocking the event loop
+                self.memory = await asyncio.to_thread(self._build_memory_client, config)
         return self.memory
+
+    @staticmethod
+    def _build_memory_client(config: dict) -> AsyncMemory:
+        memory = AsyncMemory.from_config(config)
+        # mem0 creates its entity store lazily and without a lock; when the first searches
+        # arrive together, their CREATE EXTENSION / CREATE TABLE statements collide. Create it now.
+        getattr(memory, "entity_store", None)
+        return memory
  
     async def _get_connection_pool(self) -> AsyncConnectionPool:
         """
@@ -1872,7 +2109,7 @@ class LangGraphAgent:
                 connection_url,
                 open=False,
                 max_size=settings.POSTGRES_POOL_SIZE,
-                kwargs={"autocommit": True}
+                kwargs={"autocommit": True, "connect_timeout": 5, "prepare_threshold": None}
             )
             await self._connection_pool.open()
         return self._connection_pool
@@ -1891,8 +2128,7 @@ class LangGraphAgent:
         SYSTEM_PROMPT = load_system_prompt(long_term_memory=state.long_term_memory)
         
         # Prepare context window (trimming)
-        current_llm = self.llm_service.get_llm()
-        messages = prepare_messages(state.messages, current_llm, SYSTEM_PROMPT)
+        messages = prepare_messages(state.messages, SYSTEM_PROMPT)
         try:
             # Invoke LLM (with retries handled by service)
             response_message = await self.llm_service.call(dump_messages(messages))
@@ -1916,8 +2152,14 @@ class LangGraphAgent:
         """
         outputs = []
         for tool_call in state.messages[-1].tool_calls:
-            # Execute the tool
-            tool_result = await self.tools_by_name[tool_call["name"]].ainvoke(tool_call["args"])
+            tool = self.tools_by_name.get(tool_call["name"])
+            logger.info("tool_called", tool=tool_call["name"])
+            if tool is None:
+                # Models sometimes call a tool that does not exist; tell it instead of crashing
+                tool_result = f"Error: there is no tool named {tool_call['name']!r}."
+            else:
+                # Execute the tool
+                tool_result = await tool.ainvoke(tool_call["args"])
             
             # Format result as a ToolMessage
             outputs.append(
@@ -1938,442 +2180,4 @@ class LangGraphAgent:
         """
         Builds the state graph and attaches the Postgres checkpointer.
         """
-        if self._graph is not None:
-            return self._graph
-        graph_builder = StateGraph(GraphState)
-        
-        # Add Nodes
-        graph_builder.add_node("chat", self._chat)
-        graph_builder.add_node("tool_call", self._tool_call)
-        
-        # Define Flow
-        graph_builder.set_entry_point("chat")
-        
-        # Setup Persistence
-        connection_pool = await self._get_connection_pool()
-        checkpointer = AsyncPostgresSaver(connection_pool)
-        await checkpointer.setup() # Ensure tables exist
-        self._graph = graph_builder.compile(checkpointer=checkpointer)
-        return self._graph
-
-    # ==================================================
-    # Public Methods
-    # ==================================================
-    async def get_response(self, messages: list[Message], session_id: str, user_id: str) -> list[dict]:
-        """
-        Primary entry point for the API.
-        Handles memory retrieval + graph execution + memory update.
-        """
-        if self._graph is None:
-            await self.create_graph()
-        # 1. Retrieve relevant facts from Long-Term Memory (Vector Search)
-        # We search based on the user's last message
-        memory_client = await self._long_term_memory()
-        relevant_memory = await memory_client.search(
-            user_id=user_id, 
-            query=messages[-1].content
-        )
-        memory_context = "\n".join([f"* {res['memory']}" for res in relevant_memory.get("results", [])])
-        # 2. Run the Graph
-        config = {
-            "configurable": {"thread_id": session_id},
-            "callbacks": [CallbackHandler()], # Langfuse Tracing
-        }
-        
-        input_state = {
-            "messages": dump_messages(messages), 
-            "long_term_memory": memory_context or "No relevant memory found."
-        }
-        
-        final_state = await self._graph.ainvoke(input_state, config=config)
-        # 3. Update Memory in Background (Fire and Forget)
-        # We don't want the user to wait for us to save new memories.
-        asyncio.create_task(
-            self._update_long_term_memory(user_id, final_state["messages"])
-        )
-        return self._process_messages(final_state["messages"])
-    async def _update_long_term_memory(self, user_id: str, messages: list) -> None:
-        """Extracts and saves new facts from the conversation to pgvector."""
-        try:
-            memory_client = await self._long_term_memory()
-            # mem0ai automatically extracts facts using an LLM
-            await memory_client.add(messages, user_id=user_id)
-        except Exception as e:
-            logger.error("memory_update_failed", error=str(e))
-    def _process_messages(self, messages: list) -> list[Message]:
-        """Convert internal LangChain messages back to Pydantic schemas."""
-        openai_msgs = convert_to_openai_messages(messages)
-        return [
-            Message(role=m["role"], content=str(m["content"]))
-            for m in openai_msgs
-            if m["role"] in ["assistant", "user"] and m["content"]
-        ]
-```
-
-So, let’s debug what we just built:
-
-1.  **Graph Nodes:** We defined two main nodes: `_chat` which handles LLM calls, and `_tool_call` which executes any requested tools.
-2.  **State Management:** The graph uses `AsyncPostgresSaver` to persist state after each step, allowing recovery from crashes.
-3.  **Memory Integration:** Before starting the chat, we fetch relevant user facts from `mem0ai` and inject them into the system prompt. After the chat, we asynchronously extract and save new facts.
-4.  **Observability:** We attach `Langfuse CallbackHandler` to trace every step of the graph execution.
-5.  and finally, we expose a simple `get_response` method that the API can call to get the agent's response given a message history and session/user context.
-
-In a production environment, you cannot simply expose your AI agent to the public internet. You need to know **Who** is calling your API (Authentication) and **What** they are allowed to do (Authorization).
-
-## <a id="458a"></a>Building The API Gateway
-
-We are going to build the Authentication endpoints first. This includes Registration, Login, and Session Management. We will use FastAPI’s **Dependency Injection** system to secure our routes efficiently.
-
-Let’s start building `app/api/v1/auth.py`.
-
-First, we need to set up our imports and define the security scheme. We use `HTTPBearer`, which expects a header like `Authorization: Bearer <token>`.
-
-```python
-import uuid
-from typing import List
-
-from fastapi import (
-    APIRouter,
-    Depends,
-    Form,
-    HTTPException,
-    Request,
-)
-from fastapi.security import (
-    HTTPAuthorizationCredentials,
-    HTTPBearer,
-)
-from app.core.config import settings
-from app.core.limiter import limiter
-from app.core.logging import bind_context, logger
-from app.models.session import Session
-from app.models.user import User
-from app.schemas.auth import (
-    SessionResponse,
-    TokenResponse,
-    UserCreate,
-    UserResponse,
-)
-from app.services.database import DatabaseService, database_service
-from app.utils.auth import create_access_token, verify_token
-from app.utils.sanitization import (
-    sanitize_email,
-    sanitize_string,
-    validate_password_strength,
-)
-router = APIRouter()
-security = HTTPBearer()
-```
-
-Now comes the most critical part of our API security: **The Dependency Functions**.
-
-### <a id="8a02"></a>**Auth Endpoints**
-
-In FastAPI, we don’t manually check tokens inside every route function. That would be repetitive and error-prone. Instead, we create a reusable dependency called `get_current_user`.
-
-![Auth Flow](https://miro.medium.com/v2/resize:fit:875/1*NmVazl_uTgX__Fg-YyVdxg.png)
-*Auth Flow (Created by Fareed Khan)*
-
-When a route declares `user: User = Depends(get_current_user)`, FastAPI automatically:
-
-1.  Extracts the token from the header.
-2.  Runs this function.
-3.  If successful, injects the User object into the route.
-4.  If failed, aborts the request with a 401 error.
-
-```python
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> User:
-    """
-    Dependency that validates the JWT token and returns the current user.
-    """
-    try:
-        # Sanitize token input prevents injection attacks via headers
-        token = sanitize_string(credentials.credentials)
-
-        user_id = verify_token(token)
-        if user_id is None:
-            logger.warning("invalid_token_attempt")
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid authentication credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        # Verify user actually exists in DB
-        user_id_int = int(user_id)
-        user = await database_service.get_user(user_id_int)
-        
-        if user is None:
-            logger.warning("user_not_found_from_token", user_id=user_id_int)
-            raise HTTPException(
-                status_code=404,
-                detail="User not found",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        # CRITICAL: Bind user context to structured logs.
-        # Any log generated after this point will automatically include user_id.
-        bind_context(user_id=user_id_int)
-        return user
-        
-    except ValueError as ve:
-        logger.error("token_validation_error", error=str(ve))
-        raise HTTPException(
-            status_code=422,
-            detail="Invalid token format",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-```
-
-We also need a dependency for **Sessions**. Since our chat architecture is session-based (users can have multiple chat threads), we sometimes need to authenticate a specific session rather than just the user.
-
-```python
-async def get_current_session(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-) -> Session:
-    """
-    Dependency that validates a Session-specific JWT token.
-    """
-    try:
-        token = sanitize_string(credentials.credentials)
-
-        session_id = verify_token(token)
-        if session_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
-        session_id = sanitize_string(session_id)
-        # Verify session exists in DB
-        session = await database_service.get_session(session_id)
-        if session is None:
-            raise HTTPException(status_code=404, detail="Session not found")
-        # Bind context for logging
-        bind_context(user_id=session.user_id, session_id=session.id)
-        return session
-    except ValueError as ve:
-        raise HTTPException(status_code=422, detail="Invalid token format")
-```
-
-Now we can build the endpoints. First, **User Registration**.
-
-### <a id="0d8e"></a>**Real-Time Streaming**
-
-We apply our `limiter` here because registration endpoints are prime targets for spam bots.
-
-![Real time stream](https://miro.medium.com/v2/resize:fit:875/1*ixpKUpSWC45SExT9kPDegw.png)
-*Real time stream (Created by Fareed Khan)*
-
-We also aggressively sanitize inputs to keep our database clean.
-
-```python
-@router.post("/register", response_model=UserResponse)
-@limiter.limit(settings.RATE_LIMIT_ENDPOINTS["register"][0])
-async def register_user(request: Request, user_data: UserCreate):
-    """
-    Register a new user.
-    """
-    try:
-        # 1. Sanitize & Validate
-        sanitized_email = sanitize_email(user_data.email)
-        password = user_data.password.get_secret_value()
-        validate_password_strength(password)
-
-        # 2. Check existence
-        if await database_service.get_user_by_email(sanitized_email):
-            raise HTTPException(status_code=400, detail="Email already registered")
-        # 3. Create User (Hash happens inside model)
-        # Note: User.hash_password is static, but we handle it in service/model logic usually.
-        # Here we pass the raw password to the service which should handle hashing, 
-        # or hash it here if the service expects a hash. 
-        # Based on our service implementation earlier, let's hash it here:
-        hashed = User.hash_password(password)
-        user = await database_service.create_user(email=sanitized_email, password_hash=hashed)
-        # 4. Auto-login (Mint token)
-        token = create_access_token(str(user.id))
-        return UserResponse(id=user.id, email=user.email, token=token)
-        
-    except ValueError as ve:
-        logger.warning("registration_validation_failed", error=str(ve))
-        raise HTTPException(status_code=422, detail=str(ve))
-```
-
-Next is **Login**. Standard OAuth2 flows typically use form data (`username` and `password` fields) rather than JSON for login. We support that pattern here.
-
-```python
-@router.post("/login", response_model=TokenResponse)
-@limiter.limit(settings.RATE_LIMIT_ENDPOINTS["login"][0])
-async def login(
-    request: Request, 
-    username: str = Form(...), 
-    password: str = Form(...), 
-    grant_type: str = Form(default="password")
-):
-    """
-    Authenticate user and return JWT token.
-    """
-    try:
-        # Sanitize
-        username = sanitize_string(username)
-        password = sanitize_string(password)
-
-        if grant_type != "password":
-            raise HTTPException(status_code=400, detail="Unsupported grant type")
-        # Verify User
-        user = await database_service.get_user_by_email(username)
-        if not user or not user.verify_password(password):
-            logger.warning("login_failed", email=username)
-            raise HTTPException(
-                status_code=401,
-                detail="Incorrect email or password",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        token = create_access_token(str(user.id))
-        
-        logger.info("user_logged_in", user_id=user.id)
-        return TokenResponse(
-            access_token=token.access_token, 
-            token_type="bearer", 
-            expires_at=token.expires_at
-        )
-    except ValueError as ve:
-        raise HTTPException(status_code=422, detail=str(ve))
-```
-
-Finally, we need to manage **Sessions**. In our AI agent architecture, a User can have multiple “Threads” or “Sessions”. Each session has its own memory context.
-
-The `/session` endpoint generates a *new* unique ID (UUID), creates a record in the database, and returns a token specifically for that session. This allows the frontend to easily switch between chat threads.
-
-```python
-@router.post("/session", response_model=SessionResponse)
-async def create_session(user: User = Depends(get_current_user)):
-    """
-    Create a new chat session (thread) for the authenticated user.
-    """
-    try:
-        # Generate a secure random UUID
-        session_id = str(uuid.uuid4())
-
-        # Persist to DB
-        session = await database_service.create_session(session_id, user.id)
-        # Create a token specifically for this session ID
-        # This token allows the Chatbot API to identify which thread to write to
-        token = create_access_token(session_id)
-        logger.info("session_created", session_id=session_id, user_id=user.id)
-        return SessionResponse(session_id=session_id, name=session.name, token=token)
-        
-    except Exception as e:
-        logger.error("session_creation_failed", error=str(e))
-        raise HTTPException(status_code=500, detail="Failed to create session")
-
-@router.get("/sessions", response_model=List[SessionResponse])
-async def get_user_sessions(user: User = Depends(get_current_user)):
-    """
-    Retrieve all historical chat sessions for the user.
-    """
-    sessions = await database_service.get_user_sessions(user.id)
-    return [
-        SessionResponse(
-            session_id=s.id,
-            name=s.name,
-            # We re-issue tokens so the UI can resume these chats
-            token=create_access_token(s.id) 
-        )
-        for s in sessions
-    ]
-```
-
-By structuring our Authentication this way, we have secured the gateway to our application. Every request is rate-limited, sanitized, and cryptographically verified before it ever touches our AI logic.
-
-## <a id="86b1"></a>Observability & Operational Testing
-
-In a system serving 10,000 users, we need to know how fast it’s working, who is using it, and where errors are happening. This is what we call **Observability**.
-
-On production scale this is achieve through **Prometheus Metrics** and **Context-Aware Logging** which helps us trace issues back to specific users/sessions.
-
-![Observability](https://miro.medium.com/v2/resize:fit:875/1*StUmX5gXNVk3yEp-QzClHA.png)
-*Observability (Created by Fareed Khan)*
-
-First, let’s define the metrics we want to track. We use the `prometheus_client` library to expose counters and histograms.
-
-### <a id="0055"></a>Creating Metrics to Evaluate
-
-For that we need `app/core/metrics.py` that will define and expose our Prometheus metrics:
-
-```python
-from prometheus_client import Counter, Histogram, Gauge
-from starlette_prometheus import metrics, PrometheusMiddleware
-
-# ==================================================
-# Prometheus Metrics Definition
-# ==================================================
-
-# 1. Standard HTTP Metrics
-# Counts total requests by method (GET/POST) and status code (200, 400, 500)
-http_requests_total = Counter(
-    "http_requests_total", 
-    "Total number of HTTP requests", 
-    ["method", "endpoint", "status"]
-)
-
-# Tracks latency distribution (p50, p95, p99)
-# This helps us identify slow endpoints.
-http_request_duration_seconds = Histogram(
-    "http_request_duration_seconds", 
-    "HTTP request duration in seconds", 
-    ["method", "endpoint"]
-)
-
-# 2. Infrastructure Metrics
-# Helps us detect connection leaks in SQLAlchemy
-db_connections = Gauge(
-    "db_connections", 
-    "Number of active database connections"
-)
-
-# 3. AI / Business Logic Metrics
-# Critical for tracking LLM performance and cost. 
-# We use custom buckets because LLM calls are much slower than DB calls.
-llm_inference_duration_seconds = Histogram(
-    "llm_inference_duration_seconds",
-    "Time spent processing LLM inference",
-    ["model"],
-    buckets=[0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0] 
-)
-llm_stream_duration_seconds = Histogram(
-    "llm_stream_duration_seconds",
-    "Time spent processing LLM stream inference",
-    ["model"],
-    buckets=[0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 60.0]
-)
-def setup_metrics(app):
-    """
-    Configures the Prometheus middleware and exposes the /metrics endpoint.
-    """
-    app.add_middleware(PrometheusMiddleware)
-    app.add_route("/metrics", metrics)
-```
-
-Here we are basic HTTP metrics (request counts and latencies), database connection gauges, and LLM-specific metrics to track inference times.
-
-Now, defining metrics is useless unless we actually update them. We also have a logging problem: logs usually look like “Error processing request”. In a busy system, which request? Which user?
-
-### <a id="9c23"></a>***Middleware Based Testing***
-
-Developers normally solve both problems with **Middleware**. Middleware wraps every request, allowing us to:
-
-1.  Start a timer before the request.
-2.  Stop the timer after the response.
-3.  Inject `user_id` and `session_id` into the logging context.
-
-![Middleware Test](https://miro.medium.com/v2/resize:fit:1250/1*AlBXtTdH6i4txlp48qx_eQ.png)
-*Middleware Test (Created by Fareed Khan)*
-
-Let’s create `app/core/middleware.py` file that will implement both Metrics and Logging Context middleware:
-
-```python
-import time
-from typing import Callable
-from fastapi import Request
-from jose import JWTError, jwt
-from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response
-
-fro
+        if self._gr

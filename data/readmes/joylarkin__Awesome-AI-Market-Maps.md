@@ -68,6 +68,9 @@ OR
 #### AI Finance 
 - [The Private Markets Forum - AI in Private Markets Map - November 2026](https://lnkd.in/p/g26qddZW?utm_source=awesome-ai-market-maps)
 
+#### Healthcare AI
+- [Greg Yap & JP Sanday & Croom Beatty & Johnny Hu & Derek Xiao & Sabrina Lu — Menlo Ventures - 2026: The State of AI in Healthcare - November 2026](https://menlovc.com/perspective/2026-the-state-of-ai-in-healthcare/?utm_source=awesome-ai-market-maps)
+
 #### Legal AI
 - [Harshith Viswanath - Mapping the AI-Native Law Firm - November 2026](https://harshithviswanath.substack.com/p/mapping-the-ai-native-law-firm?utm_source=awesome-ai-market-maps)
 
@@ -1155,5 +1158,4 @@ OR
 #### AI DevTools and Integrations
 - [Yoko Li — a16z - A Deep Dive Into MCP and the Future of AI Tooling - March 2025](https://a16z.com/a-deep-dive-into-mcp-and-the-future-of-ai-tooling/?utm_source=awesome-ai-market-maps)
 - [Auchenberg - AI Tools and Integrations Market Map - March 2025](https://github.com/auchenberg/ai-tools-integrations-market-map?utm_source=awesome-ai-market-maps)
-- [Thomvest Ventures - Market Map: 130+ companies transforming the AI Software Development market - March 2025](https://blog.thomvest.com/market-map-130-companies-transforming-the-ai-software-development-market-1e8ef2179439?utm_source=awesome-ai-market-maps)
-- [Yujian Tang - LLM Stack Market Map - March 2025](https://www.linkedin.com/posts/yujiantang_seattlestartupsumm
+- [Thomvest Ventures - Market Map: 130+ companies transforming the AI Software Development market -

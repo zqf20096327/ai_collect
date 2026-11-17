@@ -19,7 +19,7 @@ Additional implementations of the algorithm, including this one, are listed at [
 Add this line to your `Cargo.toml`:
 ```toml
 [dependencies]
-bhtsne = "0.7.12"
+bhtsne = "0.7"
 ```
 ### Documentation
 
@@ -70,7 +70,7 @@ In the example euclidean distance is used, but any other distance metric on data
 
 The tree-accelerated `barnes_hut` and `barnes_hut_with_neighbors` support an embedding dimensionality `D` of 2, 3, 4, 5, 6, or 7, the dimensionalities a Z-order code covers with ample precision (32, 21, 16, 25, 21, and 18 bits per axis, respectively). The exact `exact` path stays general for any `D`.
 
-The Morton (Z-order) linear tree the Barnes-Hut path walks lives in the sibling [`barnes-hut-tree`](barnes-hut-tree/README.md) crate, which the workspace also publishes standalone. Any other force-approximation problem that needs a Z-order linear tree in a contiguous arena can pull it in directly through its `Arena`, `Morton`, and `Dim` API, without depending on `bhtsne`.
+The Morton (Z-order) linear tree the Barnes-Hut path walks lives in the sibling [`barnes-hut-tree`](barnes-hut-tree/README.md) crate, which the workspace also publishes standalone. Any other force-approximation problem that needs a Z-order linear tree in a contiguous arena can pull it in directly through its `BarnesHutTree`, `Morton`, and `Dim` API, without depending on `bhtsne`.
 
 ## FIt-SNE
 

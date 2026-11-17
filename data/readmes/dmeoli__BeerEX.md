@@ -33,7 +33,10 @@ the **2017 Beer Styles Study Guide** and the **Beer & Food Course**.
   per-style numeric ranges (ABV/IBU/SRM/OG/FG/CO₂), qualitative profile (palate,
   hop, malt, serving temperature, glassware) and authoritative **food pairings**
   (cheese / entrée / dessert).
-- **Transparent, per-beer explanations** ("pale colour μ1.00, high bitterness μ0.50,
+- **Questions in everyday words**, in English and Italian: each answer has a
+  plain label (no ">=30" age ranges or cocoa percentages), while the codes the
+  rules reason on are unchanged.
+- **Transparent, per-beer explanations** ("pale color, high bitterness (partly),
   matches its CraftBeer pairing").
 - **Reusable fuzzy library** — [`dmeoli/FuzzyCLIPS`](https://github.com/dmeoli/FuzzyCLIPS),
   fuzzy logic written in pure CLIPS, validated against the original FuzzyCLIPS engine,
@@ -46,7 +49,7 @@ the **2017 Beer Styles Study Guide** and the **Beer & Food Course**.
 ## Architecture
 
 ```
-            Telegram bot (async)  /  CLIPS CLI
+     Telegram bot (async)  /  web API  /  CLIPS CLI
                        │  one CLIPS env per user
                        ▼
    dialogue ── questions ──► best-* evidence ──► selection backend
@@ -70,7 +73,9 @@ the **2017 Beer Styles Study Guide** and the **Beer & Food Course**.
 | `clips/beerex-fuzzy.clp` | Wires the fuzzy backend into the selection stage |
 | `third_party/FuzzyCLIPS/` | The reusable pure-CLIPS fuzzy library (submodule) |
 | `scripts/extract_*.py` | Reproducible KB extraction from the CraftBeer sources |
+| `beerex_engine.py` | Dialogue engine shared by the bot and the web API |
 | `BeerEX.bot.py` | Telegram bot (PTB v21, one CLIPS session per chat) |
+| `beerex_api.py` | Web API (FastAPI, stateless by replay) |
 | `BeerEX.clp` | CLI entry point |
 
 ## Quickstart
@@ -78,7 +83,7 @@ the **2017 Beer Styles Study Guide** and the **Beer & Food Course**.
 ### Telegram bot — Docker (recommended)
 
 ```bash
-git clone --recurse-submodules https://github.com/DonatoMeoli/BeerEX.git
+git clone --recurse-submodules https://github.com/dmeoli/BeerEX.git
 cd BeerEX
 cp .env.example .env          # put your @BotFather TOKEN in .env
 docker compose up --build
@@ -105,8 +110,10 @@ python BeerEX.bot.py
 | `/cf` · `/fuzzy` | Switch the reasoning backend (CF / fuzzy) |
 | `/en` · `/it` | Switch the output language (English base / Italian overlay) |
 
-> `/cf`, `/fuzzy`, `/en` and `/it` take effect on the next `/new`. English is
-> always the base; Italian is an overlay that falls back to English where untranslated.
+> Every answer is a button under the question, with ❓ Why, ℹ️ What do these
+> mean? (where a question has one) and ◀️ Back next to it. The language
+> follows the Telegram app at the first contact; `/cf`, `/fuzzy`, `/en` and
+> `/it` take effect on the next consultation.
 
 ### Command-line REPL
 
@@ -117,10 +124,31 @@ bash scripts/build-clips.sh    # builds CLIPS 6.4.2 into ~/.local/bin
 clips -f BeerEX.clp
 ```
 
+### Web API
+
+`beerex_api.py` serves the same engine over HTTP. It is stateless: each
+`POST /step` sends all the answers given so far, the server replays them on a
+fresh CLIPS environment and returns the current screen (going back is sending a
+shorter list).
+
+```bash
+pip install -r requirements-api.txt
+uvicorn beerex_api:app --port 8781
+curl -X POST localhost:8781/step -H 'content-type: application/json' \
+     -d '{"lang": "it", "backend": "fuzzy", "answers": ["pale"], "seed": 0}'
+```
+
+The reply is either a question (`kind`, `id`, `text`, `help`, `why`,
+`options` as `{value, label}`, `step`) or the result (`kind`, `title`,
+`items` as `{name, url, detail, score}`, `text`); an answer that is not an
+option of its question gets a 400. The `seed` fixes the order of the randomly
+ordered questions, so a dialogue keeps the same `lang`, `backend` and `seed`.
+`Dockerfile.api` builds the image, and `make deploy-api` deploys it to Cloud Run.
+
 ## Testing
 
 ```bash
-make test                      # engine smoke test over clipspy (no token needed)
+make test                      # engine, web API and scripted consultation tests (no token needed)
 make test-clips                # the CLIPS test suite (needs the clips 6.4.x CLI)
 ```
 
@@ -131,7 +159,8 @@ original FuzzyCLIPS engine (`third_party/FuzzyCLIPS/tests/diff_test.sh`).
 
 GitHub can't host a long-running bot, but CI publishes the image to **GHCR**
 (`ghcr.io/dmeoli/beerex`); run it on any small host (VPS, Fly.io, Railway, a
-Raspberry Pi) with `docker run` or `docker compose up`.
+Raspberry Pi) with `docker run` or `docker compose up`;
+[`deploy/`](deploy/README.md) has a stack that updates itself on every push.
 
 ## License
 

@@ -8,6 +8,8 @@
 [![Documentation](https://img.shields.io/badge/Documentation-docs.nvidia.com-blue.svg)](https://docs.nvidia.com/skills/skillevaluator/)
 [![Paper](https://img.shields.io/badge/arXiv-2608.20614-b31b1b.svg)](https://arxiv.org/abs/2608.20614)
 [![NVIDIA Developer Blog](https://img.shields.io/badge/Blog-NVIDIA%20Developer-76B900.svg)](https://developer.nvidia.com/blog/evaluating-ai-agent-skill-performance-with-nvidia-skillevaluator/)
+[![Stars](https://img.shields.io/github/stars/NVIDIA/SkillEvaluator)](https://github.com/NVIDIA/SkillEvaluator/stargazers)
+[![Forks](https://img.shields.io/github/forks/NVIDIA/SkillEvaluator)](https://github.com/NVIDIA/SkillEvaluator/forks)
 
 > 📺 **Livestream:** [Ask the Experts: Evaluating Agent Skills](https://www.youtube.com/watch?v=4rI0zATFxYI)
 
@@ -22,61 +24,65 @@ the [NVIDIA Verified Skills pipeline](https://github.com/NVIDIA/skills).
 
 Three ways in, one CLI, same results.
 
-<table>
-<tr>
-<th width="33%">1. Run the CLI directly</th>
-<th width="33%">2. Add it to your repo via CI</th>
-<th width="33%">3. Wire it to your agent</th>
-</tr>
-<tr valign="top">
+<table><thead><tr>
+<th width="33%" align="left">1. Run the CLI directly</th>
+<th width="33%" align="left">2. Add it to your repo via CI</th>
+<th width="33%" align="left">3. Wire it to your agent</th>
+</tr></thead><tbody><tr valign="top">
 <td>
 
-Install (or `uv tool install`):
+Install with pip:
 
 ```bash
 pip install skillevaluator
 ```
 
-Run all Tier 1 checks, no API key:
+<details><summary>Or install with uv</summary>
+
+```bash
+uv tool install \
+  skillevaluator
+```
+
+</details>
+
+Then check your skill, no API key:
 
 ```bash
 skillevaluator validate \
   ./my-skill --tiers 1
 ```
 
-Or run from a clone: [Quickstart](#quickstart).
+Other tiers: [installation guide](https://docs.nvidia.com/skills/skillevaluator/installation).
 
 </td>
 <td>
 
-Check changed skills on every pull request. On GitHub, run:
+Our CI template checks every skill change. No evaluation code to maintain.
+
+Run this in your GitHub repository. It opens a setup PR:
 
 ```bash
 skillevaluator ci init
 ```
 
-It opens a setup PR. On GitLab, copy the [CI template](https://github.com/NVIDIA/SkillEvaluator/tree/main/ci/bundles/0.9.0).
+GitLab and details: [repository guide](https://docs.nvidia.com/skills/skillevaluator/repository-integration).
 
 </td>
 <td>
 
-Add the [SkillEvaluator skill](skills/skillevaluator/) to Claude Code, Codex or any skill-aware agent:
+Add the skill to Claude Code, Codex or another agent:
 
 ```bash
 npx skills add \
   NVIDIA/SkillEvaluator
 ```
 
-Then ask: *"Is my skill any good?"* No Node.js? [Copy the folder](docs/agent-skill.mdx#install).
+Then ask: *"Is my skill any good?"*
+See the [agent guide](https://docs.nvidia.com/skills/skillevaluator/agent-skill).
 
 </td>
-</tr>
-</table>
-
-Guides: [installation](https://docs.nvidia.com/skills/skillevaluator/installation),
-[CI setup](docs/cli-onboarding.mdx) ([GitHub](docs/github-actions.mdx),
-[GitLab](docs/gitlab-ci.mdx), [report examples](ci/examples/README.md)) and
-[agent skill](docs/agent-skill.mdx).
+</tr></tbody></table>
 
 ## Quickstart
 
@@ -106,7 +112,7 @@ uv run --python 3.13 skillevaluator quality-check \
   -r cli -r json -o reports/first-quality
 ```
 
-No API key, scanner, GPU or Docker is needed. The example scores **86.2/100 (B)**,
+No API key, scanner, GPU or Docker is needed. The example scores **88.8/100 (B)**,
 exits `0` and saves `reports/first-quality/skillevaluator-quality.json`. The
 passing threshold defaults to 70.
 
@@ -141,7 +147,7 @@ The same key supports Tier 2 embeddings and supported Tier 3 agents. See the
 
 ## Three-tier overview
 
-![SkillEvaluator three-tier pipeline: Skill → Tier 1 Validation → Tier 2 Deduplication → Tier 3 Live Evaluation → Reports](https://raw.githubusercontent.com/NVIDIA/SkillEvaluator/ad2815fe78c045db91d230681d32863698da08cf/docs/assets/three-tier-overview.svg)
+![SkillEvaluator three-tier pipeline: Skill, Tier 1 Validation, Tier 2 Deduplication, Tier 3 Live Evaluation, Reports](https://raw.githubusercontent.com/NVIDIA/SkillEvaluator/ad2815fe78c045db91d230681d32863698da08cf/docs/assets/three-tier-overview.svg)
 
 Each tier is independent. Add its extra to your command:
 

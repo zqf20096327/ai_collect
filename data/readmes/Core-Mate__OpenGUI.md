@@ -42,6 +42,16 @@ OpenGUI uses real screenshots to understand apps and carry out phone operations 
 - **Visible execution**: use the WorkBuddy workbench to view the phone screen, task steps, and reports, or take over and stop a task.
 - **Host integration**: use OpenGUI in WorkBuddy or DeepSeek Harness; the DSH plugin also supports managed browser operations.
 
+## Meet CoreMate
+
+**The AI workforce for social media and growth teams.** Scale outreach and follow-ups across many accounts and cloud phones, without adding headcount.
+
+CoreMate puts AI agents to work in real mobile apps. They tap, type, read screens, send messages, and record results, running on **Android cloud phones that we host, update, and maintain for you**.
+
+Describe your goal in plain language. CoreMate turns it into a step-by-step plan your team can review, then executes it in parallel across as many cloud phones as you need.
+
+Try CoreMate through the [Core-Mate](https://www.core-mate.com/).
+
 ## Common Commands
 
 After installation and authorization, enter these instructions in the corresponding host's chat. Replace `[placeholders]` with your task details.

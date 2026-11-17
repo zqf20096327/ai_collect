@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/github-banner.jpg" alt="Bastra Recall — persistent memory for AI coding agents: works with Claude Code, Cursor and MCP, stores memories as readable Markdown, open source" width="100%" />
+  <img src="./assets/github-banner.jpg" alt="Bastra Recall — persistent memory for AI coding agents: connects over MCP, stores memories as readable Markdown, open source" width="100%" />
 </p>
 
 # Bastra Recall
@@ -23,11 +23,11 @@ Keep your preferences, decisions and hard-won fixes available beyond a single ch
 
 [What you can use Recall for](./docs/use-cases.md#english) gives practical examples for conversations, rules, tasks, documents and shared work.
 
-On prepared main, due tasks can wake the chat you last used within 30 minutes: Claude Code after setup consent, or a Codex CLI terminal started with `bastra codex`. Both share one selection and one delivery claim. macOS notification and board remain available. [Setup and limits](https://github.com/n0mad-ai/bastra-recall/wiki/Active-Chat-Notifications#english).
+Since 1.2.0, due tasks can wake the chat you last used within 30 minutes: Claude Code after setup consent, or a Codex CLI terminal started with `bastra codex`. Both share one selection and one delivery claim. macOS notification and board remain available. [Setup and limits](https://github.com/n0mad-ai/bastra-recall/wiki/Active-Chat-Notifications#english).
 
-This describes prepared main for v1.2.0; published v1.1.8 keeps the opt-in preview. Proactive tasks are **on by default from v1.2.0**, for new and existing installations. An explicit earlier opt-out is preserved. Disable them in Settings (`tasks.enabled=false`) or with `BASTRA_TASKS=0`, then restart the daemon and clients/hooks. Remote MCP does not expose `task_*` tools. On current main, agents manage all task levels. The user’s instruction in chat authorizes execution and is recorded with its origin; no separate signing step is needed. Retired signing commands only point to this chat authorization. Recurring tasks can pause, and optional macOS notifications surface due work. [Instructions and limits](https://github.com/n0mad-ai/bastra-recall/wiki/Proactive-Tasks). Local project, worktree, task-phase, symbol and metadata snapshots can trigger tasks; see [coverage and setup](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Task-State-Adapters).
+Proactive tasks are **on by default since 1.2.0**, for new and existing installations. An explicit earlier opt-out is preserved. Disable them in Settings (`tasks.enabled=false`) or with `BASTRA_TASKS=0`, then restart the daemon and clients/hooks. Remote MCP does not expose `task_*` tools. Agents manage all task levels. The user’s instruction in chat authorizes execution and is recorded with its origin; no separate signing step is needed. Retired signing commands only point to this chat authorization. Recurring tasks can pause, and optional macOS notifications surface due work. [Instructions and limits](https://github.com/n0mad-ai/bastra-recall/wiki/Proactive-Tasks). Local project, worktree, task-phase, symbol and metadata snapshots can trigger tasks; see [coverage and setup](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Task-State-Adapters).
 
-On current main, local app state uses SQLite while memories remain Markdown. The web UI includes shared [settings](./docs/Settings.md#english), including stored task and telemetry switches; invalid JSON blocks saving, and environment overrides still win. [Database and rollback](https://github.com/n0mad-ai/bastra-recall/wiki/Local-App-Database).
+Since 1.2.0, local app state uses SQLite while memories remain Markdown. The web UI includes shared [settings](./docs/Settings.md#english), including stored task and telemetry switches; invalid JSON blocks saving, and environment overrides still win. [Database and rollback](https://github.com/n0mad-ai/bastra-recall/wiki/Local-App-Database). The web UI also exposes twelve existing environment options and managed login registration. [Settings and defaults](./docs/Settings.md#environment-controls-in-the-web-ui). Its agent window keeps a conversation history in the same database (list, reopen, delete; nothing goes into the vault on its own). Under each answer, **Save as memory** opens an editable preview; only your confirmation writes exactly one memory. [Chat history and saving](./docs/app-database.md#agent-chat-history-schema-v2). In the web UI, the free Soul settings let you choose the assistant’s base personality and add a short preference in your own words. It applies to the agent window and new connected-client sessions; learning and episodes come later. [Personality settings](./docs/Settings.md#agent-and-personality).
 
 
 Supported integrations help assistants save useful lessons and retrieve relevant memories before starting work. You can inspect and edit the files yourself, with Obsidian or any text editor. Automatic recall depends on the client integration and the assistant; it does not guarantee that every instruction will be followed.
@@ -44,7 +44,7 @@ Bastra Recall picks up there:
 
 Keep your CLAUDE.md. Recall adds the knowledge that doesn't belong in every session.
 
-**Version 1.1.8 is available.** Find published downloads in the [latest release](https://github.com/n0mad-ai/bastra-recall/releases/latest), changes in the [changelog](./CHANGELOG.md), and tested integrations in the [support matrix](#supported-surfaces).
+**Version 1.2.1 is available.** Find published downloads in the [latest release](https://github.com/n0mad-ai/bastra-recall/releases/latest), changes in the [changelog](./CHANGELOG.md), and tested integrations in the [support matrix](#supported-surfaces).
 
 <p align="center">
   <img src="./assets/recall-demo-cmux.gif" alt="Real work in cmux: Claude Code and Codex retrieve memories with Bastra Recall, exchange findings and use expanded live Ember panels." width="100%" />
@@ -59,9 +59,9 @@ https://github.com/user-attachments/assets/58e68703-8b0d-46c3-b468-33063e8ebf83
 
 </details>
 
-1.1.8 adds the rulebook: your saved rules reach the assistant in full, with bounded checks on supported hook hosts. It also adds remote MCP with OAuth, Windows setup improvements and English status panels. Reliability targets remain unmeasured. After updating, rerun `bastra install claude-code` or `bastra install codex`. Node 22.22–26 are supported. [Changelog](./CHANGELOG.md) · [rulebook](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook) · [remote access](./docs/REMOTE-ACCESS.md).
+1.1.8 adds the rulebook. With hooks (on supported hook hosts), your saved rules reach the assistant at session start, with bounded checks: always-rules in full, the others as a list. Clients without hooks get the rules only when the assistant calls `list_rules`. It also adds remote MCP with OAuth, Windows setup improvements and English status panels. Reliability targets remain unmeasured. After updating, rerun `bastra install claude-code` or `bastra install codex`. Node 22.22–26 are supported. [Changelog](./CHANGELOG.md) · [rulebook](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook) · [remote access](./docs/REMOTE-ACCESS.md).
 
-On `main`, users confirm rule proposals in chat, and rule saves and edits request a review of the complete lasting guidance, without classifying wording. [Rulebook guide](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook). Explicitly rejected save suggestions can be suppressed individually per project and restored. [Suggestion controls](https://github.com/n0mad-ai/bastra-recall/wiki/Pending-Relay). On macOS, local UI and task access are bound to the vault owner account. [Account boundary](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Account-Boundary).
+Since 1.2.0, users confirm rule proposals in chat, and rule saves and edits request a review of the complete lasting guidance, without classifying wording. [Rulebook guide](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook). Explicitly rejected save suggestions can be suppressed individually per project and restored. [Suggestion controls](https://github.com/n0mad-ai/bastra-recall/wiki/Pending-Relay). On macOS, local UI and task access are bound to the vault owner account. [Account boundary](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Account-Boundary).
 
 ### Install
 
@@ -97,18 +97,15 @@ You can repeat the lookup in another connected client using the same vault. This
 
 | AI client | Status | Setup and behavior |
 |---|---|---|
-| **Claude Code** | Tested — in daily use | MCP, Skill, 12 hook registrations (10 without optional Stop/harvest), required chat lifecycle cleanup at SessionEnd, save notices and statusline. [Hooks](./docs/hooks.md) |
+| **Claude Code** (CLI) | Tested | MCP, Skill, 12 hook registrations (10 without optional Stop/harvest). Stop is on by default; `--no-stop-hook` leaves it out. Required chat lifecycle cleanup at SessionEnd, save notices and statusline. [Hooks](./docs/hooks.md) |
 | **Claude Desktop** | Tested | MCP and memory guidance; session context on the first tool call. [Setup](https://github.com/n0mad-ai/bastra-recall/wiki/Claude-Desktop), including the macOS `.mcpb` extension |
-| **Codex CLI** | Verified for the v1.0 integration | MCP, Skill and native hooks. [Setup](./docs/CODEX.md) |
-| **Codex IDE + ChatGPT Desktop** | Implemented; not yet field-tested | Share the local Codex configuration. [Setup and limitations](./docs/CODEX.md) |
-| **Cursor** | Implemented; not yet field-tested | MCP registration; add project rules with `bastra rules cursor` |
-| **ChatGPT web + iPhone app** | Tested; remote MCP included in 1.1.8 | Remote MCP with OAuth through your own HTTPS address and tunnel; the computer running Recall must be online. [Remote access](./docs/REMOTE-ACCESS.md) |
-| **claude.ai custom connectors** | Untested | Same remote MCP address and OAuth login; expected to work. [Remote access](./docs/REMOTE-ACCESS.md#claudeai-custom-connectors-untested) |
-| **ChatGPT Custom GPT Actions** | Legacy | OpenAI retires Custom GPTs on 2026-12-11; use the remote MCP connection instead. [Legacy setup](./docs/openapi-generation.md#legacy-custom-gpt-action) |
+| **Codex CLI** | Tested | MCP, Skill and native hooks. [Setup](./docs/CODEX.md) |
+| **ChatGPT desktop app with Codex** | Tested | Shares the local Codex configuration with Codex CLI. [Setup and limitations](./docs/CODEX.md) |
+| **ChatGPT** (web and phone app) | Tested; connects over remote MCP, included since 1.1.8 | Remote MCP with OAuth through your own HTTPS address and tunnel; the computer running Recall must be online. [Remote access](./docs/REMOTE-ACCESS.md) |
 
-Other MCP clients can connect through the forwarder, or remotely over [`/api/v1/mcp`](./docs/REMOTE-ACCESS.md), but are untested. Scripts and other integrations can use the [REST API](./docs/USAGE.md#rest-api-for-non-mcp-clients). MCP is the protocol that lets an AI assistant use external tools such as this memory service.
+Recall speaks MCP. Other MCP clients may work, but they are not tested; we add them here once they are. The older ChatGPT Custom GPT Actions route is legacy: OpenAI retires Custom GPTs on 2026-12-11 ([legacy setup](./docs/openapi-generation.md#legacy-custom-gpt-action)). Scripts and other integrations can use the [REST API](./docs/USAGE.md#rest-api-for-non-mcp-clients). MCP is the protocol that lets an AI assistant use external tools such as this memory service.
 
-The evidence ledger in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) separates host capabilities from the shipped Bastra path and records sources, runtime evidence, all eight capabilities and tool coverage. The summary below concerns Bastra's hook paths; Cursor/Desktop/remote MCP have no Bastra hook gate. Codex CLI 0.162.1 and 0.166.0 have verified deny coverage for `exec_command`/Bash and `view_image`; `apply_patch` deny and MCP remain unverified on both versions; Fork is verified only on 0.162.1. Hosted WebSearch is unsupported; `write_stdin` has no fresh deny boundary. Other Codex versions remain preparation-only. Stop continuation never guarantees that text is hidden before display. `validate_artifact` requires connected Recall MCP with the write/full tool surface.
+The evidence ledger in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) separates host capabilities from the shipped Bastra path and records sources, runtime evidence, all eight capabilities and tool coverage. The summary below concerns Bastra's hook paths; Claude Desktop and remote MCP have no Bastra hook gate. Codex CLI 0.162.1 and 0.166.0 have verified deny coverage for `exec_command`/Bash and `view_image`; `apply_patch` deny and MCP remain unverified on both versions; Fork is verified only on 0.162.1. Hosted WebSearch is unsupported; `write_stdin` has no fresh deny boundary. Other Codex versions remain preparation-only. Stop continuation never guarantees that text is hidden before display. `validate_artifact` requires connected Recall MCP with the write/full tool surface.
 
 | Surface | Runtime | Bastra pre_tool_deny | Bastra must_load_gate |
 |---|---|---|---|
@@ -116,7 +113,6 @@ The evidence ledger in [host-capabilities.ts](./packages/daemon/src/host-capabil
 | codex | 0.162.1 | supported | supported |
 | codex | 0.166.0 | supported | supported |
 | codex | unverified / not version-pinned | preparation-only | preparation-only |
-| cursor | unverified / not version-pinned | unsupported | unsupported |
 | claude-desktop | unverified / not version-pinned | unsupported | unsupported |
 | replay | unverified / not version-pinned | preparation-only | preparation-only |
 | remote-mcp | unverified / not version-pinned | unsupported | unsupported |
@@ -126,7 +122,7 @@ The evidence ledger in [host-capabilities.ts](./packages/daemon/src/host-capabil
 | Platform | Status | Availability |
 |---|---|---|
 | **macOS** (Apple Silicon and Intel) | Supported | Homebrew and npm installation, `bastra autostart`, Claude Desktop `.mcpb` extension (release builds carry the verified compiled hook client manifest, like npm; the client itself is downloaded only after you opt in), `open_document` and compiled hook client |
-| **Linux** (x86_64 and arm64) | Daemon, CLI, MCP and hooks | Install with npm; compiled hook client available. No Homebrew install path, macOS LaunchAgent (`bastra autostart`), `.mcpb` extension installation or `open_document`. The forwarder starts the daemon on demand. |
+| **Linux** (x86_64 and arm64) | Untested in real use (the test suite runs on Linux in CI) — daemon, CLI, MCP and hooks | Install with npm; compiled hook client available. No Homebrew install path, macOS LaunchAgent (`bastra autostart`), `.mcpb` extension installation or `open_document`. The forwarder starts the daemon on demand. On Linux, Recall cannot yet check which user account a local request comes from: every program of every user on the computer reaches the local service. Run it there only on a computer with a single user — not on a shared computer, and not in a container that shares its network with others. Private memories stay hidden from such callers there too. |
 | **Windows** (x64) | Experimental preparation only | Hook-client cross-build and `.exe` registration configured; executable production and real Windows use not validated. [Acceptance pending (#348)](https://github.com/n0mad-ai/bastra-recall/issues/348). |
 
 ### Why
@@ -136,7 +132,7 @@ A project decision made on Monday should still be available on Thursday, even if
 - **Keep useful context:** preferences, decisions, project facts and lessons from solved problems.
 - **Recall before work:** supported hooks surface context at session start and before actions; the shared Skill guides the assistant's own searches and saves.
 - **Own the files:** memories are plain Markdown with structured metadata, readable and editable outside Bastra.
-- **See what is remembered:** `bastra map` opens the local vault map for browsing, search and memory care.
+- **See what is remembered:** `bastra map` opens the web UI (UI v2) at `/ui/` on the local daemon for browsing, search and memory care. The user UI includes private memories; external graph reads retain their filter. [Graph access and counts](./docs/Graph-Views.md#english). On macOS the web UI is on by default since 1.2.0, because only your own user account can open it there. On Linux it stays off until you switch it on (`bastra map` or `bastra config set ui.enabled true`); Linux has not yet been properly tested in real use. [Web UI default](./docs/Settings.md#english).
 
 [Examples from a working week](./docs/USAGE.md#cookbook) show how these fit together.
 
@@ -162,7 +158,7 @@ If a vault root recorded in `~/.bastra/vault-roots.json` later disappears (for e
 
 - [Import existing memories](https://github.com/n0mad-ai/bastra-recall/wiki/Importing-Memories) — lists, chat exports, rules and memory folders. Folder imports go directly into a separate intake area; the other paths stage candidates for review.
 - [Vault map](https://github.com/n0mad-ai/bastra-recall/wiki/Vault-Map) — explore, search and flag memories for care.
-- [Updates](https://github.com/n0mad-ai/bastra-recall/wiki/Updating) — update with `bastra update`, or opt into automatic updates.
+- [Updates](https://github.com/n0mad-ai/bastra-recall/wiki/Updating) — update with `bastra update`, or opt into automatic updates. `bastra update` updates the way you installed: Homebrew, or the npm package you installed (`bastra-recall` or `@bastra-recall/daemon`). Coming from 1.1.8 or older with `npm install -g bastra-recall`? Run `npm install -g bastra-recall@latest` once, then `bastra update` ([details](./docs/USAGE.md#updating--what-bastra-update-installs)).
 - [Model recommendations](./docs/USAGE.md#model-recommendations--when-a-release-suggests-a-different-local-text-model) — a release can suggest a better local text model; you are asked, never switched automatically.
 - [Reviewed-miss harvester](./docs/reviewed-miss-harvester.md) — an offline repository tool for reviewing missed recall opportunities; it applies nothing automatically.
 - [Remote access](./docs/REMOTE-ACCESS.md) — connect ChatGPT on the web and phone to your own Recall through your own HTTPS address.
@@ -199,11 +195,11 @@ Bewahre deine Vorlieben, Entscheidungen und erarbeiteten Lösungen über einzeln
 
 [Wofür du Recall nutzen kannst](./docs/use-cases.md#deutsch) zeigt Beispiele für Gespräche, Regeln, Aufgaben, Dokumente und gemeinsame Arbeit.
 
-Auf vorbereitetem main können fällige Aufgaben den zuletzt von dir benutzten Chat innerhalb von 30 Minuten wecken: Claude Code nach Zustimmung in der Einrichtung oder ein mit `bastra codex` gestartetes Codex-CLI-Terminal. Beide teilen dieselbe Auswahl und einen Zustellversuch. Mac-Mitteilung und Brett bleiben verfügbar. [Einrichtung und Grenzen](https://github.com/n0mad-ai/bastra-recall/wiki/Active-Chat-Notifications#deutsch).
+Seit 1.2.0 können fällige Aufgaben den zuletzt von dir benutzten Chat innerhalb von 30 Minuten wecken: Claude Code nach Zustimmung in der Einrichtung oder ein mit `bastra codex` gestartetes Codex-CLI-Terminal. Beide teilen dieselbe Auswahl und einen Zustellversuch. Mac-Mitteilung und Brett bleiben verfügbar. [Einrichtung und Grenzen](https://github.com/n0mad-ai/bastra-recall/wiki/Active-Chat-Notifications#deutsch).
 
-Dies beschreibt das vorbereitete main für v1.2.0; die veröffentlichte v1.1.8 bleibt bei der Opt-in-Vorschau. Proaktive Aufgaben sind **ab v1.2.0 standardmäßig an**, bei neuen und bestehenden Installationen. Eine ausdrücklich frühere Abschaltung bleibt erhalten. In den Einstellungen (`tasks.enabled=false`) oder mit `BASTRA_TASKS=0` ausschalten, danach Daemon und Clients/Hooks neu starten. Die MCP-Fernzugangstür bietet keine `task_*`-Werkzeuge. Auf aktuellem main verwalten Agenten alle Aufgabenstufen. Die Nutzeranweisung im Chat gibt die Ausführung frei und wird mit ihrer Herkunft festgehalten; ein gesonderter Signierschritt entfällt. Stillgelegte Signierbefehle weisen nur auf diese Chat-Freigabe hin. Serien sind pausierbar und optionale Mac-Mitteilungen melden Fälliges. [Anleitung und Grenzen](https://github.com/n0mad-ai/bastra-recall/wiki/Proactive-Tasks). Lokale Projekt-, Worktree-, Aufgabenphasen-, Symbol- und Metadatenzustände können Aufgaben auslösen; siehe [Abdeckung und Einrichtung](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Task-State-Adapters#deutsch).
+Proaktive Aufgaben sind **seit 1.2.0 standardmäßig an**, bei neuen und bestehenden Installationen. Eine ausdrücklich frühere Abschaltung bleibt erhalten. In den Einstellungen (`tasks.enabled=false`) oder mit `BASTRA_TASKS=0` ausschalten, danach Daemon und Clients/Hooks neu starten. Die MCP-Fernzugangstür bietet keine `task_*`-Werkzeuge. Agenten verwalten alle Aufgabenstufen. Die Nutzeranweisung im Chat gibt die Ausführung frei und wird mit ihrer Herkunft festgehalten; ein gesonderter Signierschritt entfällt. Stillgelegte Signierbefehle weisen nur auf diese Chat-Freigabe hin. Serien sind pausierbar und optionale Mac-Mitteilungen melden Fälliges. [Anleitung und Grenzen](https://github.com/n0mad-ai/bastra-recall/wiki/Proactive-Tasks). Lokale Projekt-, Worktree-, Aufgabenphasen-, Symbol- und Metadatenzustände können Aufgaben auslösen; siehe [Abdeckung und Einrichtung](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Task-State-Adapters#deutsch).
 
-Auf dem aktuellen main verwendet lokaler App-Zustand SQLite; Erinnerungen bleiben Markdown. Die Web-UI enthält gemeinsame [Einstellungen](./docs/Settings.md#deutsch), einschließlich gespeicherter Aufgaben- und Telemetrieschalter; ungültiges JSON blockiert Speichern, Umgebungsvariablen gewinnen weiter. [Datenbank und Rückweg](https://github.com/n0mad-ai/bastra-recall/wiki/Local-App-Database).
+Seit 1.2.0 verwendet lokaler App-Zustand SQLite; Erinnerungen bleiben Markdown. Die Web-UI enthält gemeinsame [Einstellungen](./docs/Settings.md#deutsch), einschließlich gespeicherter Aufgaben- und Telemetrieschalter; ungültiges JSON blockiert Speichern, Umgebungsvariablen gewinnen weiter. [Datenbank und Rückweg](https://github.com/n0mad-ai/bastra-recall/wiki/Local-App-Database). Die Weboberfläche zeigt zusätzlich zwölf vorhandene Umgebungsoptionen und die verwaltete Login-Registrierung. [Einstellungen und Standards](./docs/Settings.md#env-einstellungen-in-der-weboberfläche). Ihr Agentenfenster speichert einen Gesprächsverlauf in derselben Datenbank (Liste, wieder öffnen, löschen; von selbst gelangt nichts in den Vault). Unter jeder Antwort öffnet **Als Memory speichern** eine bearbeitbare Vorschau; erst deine Bestätigung legt genau ein Memory an. [Gesprächsverlauf und Speichern](./docs/app-database.md#agent-chat-history-schema-v2). In der Weboberfläche kannst du mit den freien Soul-Einstellungen die Grundpersönlichkeit wählen und einen kurzen eigenen Wunsch ergänzen. Sie wirkt im Agentenfenster und in neuen Sitzungen angebundener Clients; Lernen und Episoden kommen später. [Persönlichkeit einstellen](./docs/Settings.md#agent-und-persoenlichkeit).
 
 
 Unterstützte Integrationen helfen Assistenten, wichtige Erkenntnisse zu speichern und relevante Erinnerungen vor neuen Aufgaben abzurufen. Du kannst die Dateien selbst prüfen und bearbeiten – mit Obsidian oder jedem Texteditor. Automatischer Abruf hängt von der Integration und dem Assistenten ab; er garantiert nicht, dass jede Anweisung befolgt wird.
@@ -220,7 +216,7 @@ Bastra Recall setzt dort an:
 
 Deine CLAUDE.md kann bleiben. Recall ergänzt sie um das Wissen, das nicht in jede Sitzung gehört.
 
-**Version 1.1.8 ist verfügbar.** Veröffentlichte Downloads findest du im [aktuellen Release](https://github.com/n0mad-ai/bastra-recall/releases/latest), Änderungen im [Changelog](./CHANGELOG.md) und getestete Integrationen in der [Support-Matrix](#unterstützte-oberflächen).
+**Version 1.2.1 ist verfügbar.** Veröffentlichte Downloads findest du im [aktuellen Release](https://github.com/n0mad-ai/bastra-recall/releases/latest), Änderungen im [Changelog](./CHANGELOG.md) und getestete Integrationen in der [Support-Matrix](#unterstützte-oberflächen).
 
 <p align="center">
   <img src="./assets/recall-demo-cmux.gif" alt="Echte Arbeit in cmux: Claude Code und Codex laden Erinnerungen mit Bastra Recall, tauschen Befunde aus und nutzen vollständig geöffnete Ember-Panels mit Live-Daten." width="100%" />
@@ -235,9 +231,9 @@ https://github.com/user-attachments/assets/58e68703-8b0d-46c3-b468-33063e8ebf83
 
 </details>
 
-1.1.8 bringt das Regelbuch: Deine gespeicherten Regeln erreichen den Assistenten vollständig, mit begrenzten Prüfungen auf unterstützten Hook-Hosts. Dazu kommen Remote-MCP mit OAuth, eine verbesserte Windows-Einrichtung und englische Status-Panels. Zuverlässigkeitsziele sind weiterhin ungemessen. Nach dem Update `bastra install claude-code` oder `bastra install codex` erneut ausführen. Node 22.22–26 werden unterstützt. [Changelog](./CHANGELOG.md) · [Regelbuch](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook) · [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch).
+1.1.8 bringt das Regelbuch. Mit Hooks (auf unterstützten Hook-Hosts) erreichen deine gespeicherten Regeln den Assistenten beim Sitzungsstart, mit begrenzten Prüfungen: Always-Regeln vollständig, die übrigen als Liste. Clients ohne Hooks bekommen die Regeln nur, wenn der Assistent `list_rules` aufruft. Dazu kommen Remote-MCP mit OAuth, eine verbesserte Windows-Einrichtung und englische Status-Panels. Zuverlässigkeitsziele sind weiterhin ungemessen. Nach dem Update `bastra install claude-code` oder `bastra install codex` erneut ausführen. Node 22.22–26 werden unterstützt. [Changelog](./CHANGELOG.md) · [Regelbuch](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook) · [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch).
 
-Auf `main` bestätigen Nutzer Regelvorschläge im Chat; Regel-Saves und -Edits bitten um Prüfung der vollständigen dauerhaften Vorgabe, ohne Wortlauterkennung. [Regelbuch-Anleitung](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook). Ausdrücklich abgelehnte Speichervorschläge lassen sich einzeln je Projekt ausblenden und zurücksetzen. [Vorschlagssteuerung](https://github.com/n0mad-ai/bastra-recall/wiki/Pending-Relay#deutsch). Auf macOS sind lokale Oberfläche und Aufgaben-Zugriff an das Besitzerkonto des Vaults gebunden. [Kontogrenze](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Account-Boundary#deutsch).
+Seit 1.2.0 bestätigen Nutzer Regelvorschläge im Chat; Regel-Saves und -Edits bitten um Prüfung der vollständigen dauerhaften Vorgabe, ohne Wortlauterkennung. [Regelbuch-Anleitung](https://github.com/n0mad-ai/bastra-recall/wiki/Rulebook). Ausdrücklich abgelehnte Speichervorschläge lassen sich einzeln je Projekt ausblenden und zurücksetzen. [Vorschlagssteuerung](https://github.com/n0mad-ai/bastra-recall/wiki/Pending-Relay#deutsch). Auf macOS sind lokale Oberfläche und Aufgaben-Zugriff an das Besitzerkonto des Vaults gebunden. [Kontogrenze](https://github.com/n0mad-ai/bastra-recall/wiki/Local-Account-Boundary#deutsch).
 
 ### Installation
 
@@ -273,18 +269,15 @@ Wiederhole die Abfrage bei Bedarf in einem anderen verbundenen Client mit demsel
 
 | KI-Client | Status | Einrichtung und Verhalten |
 |---|---|---|
-| **Claude Code** | Getestet – im täglichen Einsatz | MCP, Skill, 12 Hook-Registrierungen (10 ohne optionalen Stop/Harvest), verpflichtendes Aufräumen der Chat-Registrierung bei SessionEnd, Speicherhinweise und Statusline. [Hooks](./docs/hooks.md#deutsch) |
+| **Claude Code** (CLI) | Getestet | MCP, Skill, 12 Hook-Registrierungen (10 ohne optionalen Stop/Harvest). Stop ist standardmäßig an; `--no-stop-hook` lässt ihn weg. Verpflichtendes Aufräumen der Chat-Registrierung bei SessionEnd, Speicherhinweise und Statusline. [Hooks](./docs/hooks.md#deutsch) |
 | **Claude Desktop** | Getestet | MCP und Memory-Anleitung; Sitzungskontext beim ersten Tool-Aufruf. [Einrichtung](https://github.com/n0mad-ai/bastra-recall/wiki/Claude-Desktop), einschließlich macOS-Extension `.mcpb` |
-| **Codex CLI** | Für die v1.0-Integration verifiziert | MCP, Skill und native Hooks. [Einrichtung](./docs/CODEX.md) |
-| **Codex IDE + ChatGPT Desktop** | Implementiert; noch nicht im Feld getestet | Nutzen die lokale Codex-Konfiguration gemeinsam. [Einrichtung und Grenzen](./docs/CODEX.md) |
-| **Cursor** | Implementiert; noch nicht im Feld getestet | MCP-Registrierung; Projektregeln mit `bastra rules cursor` ergänzen |
-| **ChatGPT Web + iPhone-App** | Getestet; Remote-MCP in 1.1.8 enthalten | Remote-MCP mit OAuth über deine eigene HTTPS-Adresse und einen Tunnel; der Rechner mit Recall muss online sein. [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch) |
-| **claude.ai Custom Connectors** | Ungetestet | Dieselbe Remote-MCP-Adresse und derselbe OAuth-Login; sollte funktionieren. [Fernzugriff](./docs/REMOTE-ACCESS.md#claudeai-custom-connectors-untested) (Englisch) |
-| **ChatGPT Custom GPT Actions** | Veraltet | OpenAI stellt Custom GPTs am 11.12.2026 ein; nutze stattdessen die Remote-MCP-Verbindung. [Bisherige Einrichtung](./docs/openapi-generation.md#legacy-custom-gpt-action) |
+| **Codex CLI** | Getestet | MCP, Skill und native Hooks. [Einrichtung](./docs/CODEX.md) |
+| **ChatGPT-Desktop-App mit Codex** | Getestet | Nutzt dieselbe lokale Codex-Konfiguration wie Codex CLI. [Einrichtung und Grenzen](./docs/CODEX.md) |
+| **ChatGPT** (Web und Handy-App) | Getestet; verbindet sich über Remote-MCP, seit 1.1.8 enthalten | Remote-MCP mit OAuth über deine eigene HTTPS-Adresse und einen Tunnel; der Rechner mit Recall muss online sein. [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch) |
 
-Weitere MCP-Clients können den Forwarder oder aus der Ferne [`/api/v1/mcp`](./docs/REMOTE-ACCESS.md) verwenden, sind aber ungetestet. Skripte und andere Integrationen nutzen die [REST-API](./docs/USAGE.md#rest-api-für-nicht-mcp-clients). MCP ist das Protokoll, mit dem ein KI-Assistent externe Werkzeuge wie diesen Gedächtnisdienst verwendet.
+Recall spricht MCP. Andere MCP-Clients können funktionieren, sind aber nicht getestet; wir nehmen sie hier auf, sobald sie getestet sind. Der ältere Weg über ChatGPT Custom GPT Actions ist veraltet: OpenAI stellt Custom GPTs am 11.12.2026 ein ([bisherige Einrichtung](./docs/openapi-generation.md#legacy-custom-gpt-action)). Skripte und andere Integrationen nutzen die [REST-API](./docs/USAGE.md#rest-api-für-nicht-mcp-clients). MCP ist das Protokoll, mit dem ein KI-Assistent externe Werkzeuge wie diesen Gedächtnisdienst verwendet.
 
-Die Belegtabelle in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) trennt Host-Fähigkeiten vom ausgelieferten Bastra-Pfad und nennt Quellen, Laufzeitbelege, alle acht Fähigkeiten und Tool-Grenzen. Die Übersicht beschreibt Bastras Hook-Pfade; Cursor/Desktop/Remote-MCP haben kein Bastra-Hook-Gate. Für Codex CLI 0.162.1 und 0.166.0 ist Deny bei `exec_command`/Bash und `view_image` belegt; `apply_patch`-Deny und MCP bleiben auf beiden Versionen ungeprüft; Fork ist nur auf 0.162.1 belegt. Hosted WebSearch ist nicht unterstützt; `write_stdin` hat keine neue Deny-Grenze. Andere Codex-Versionen bleiben Vorbereitung. Eine Stop-Fortsetzung garantiert nie, dass Text vor der Anzeige zurückgehalten wird. `validate_artifact` braucht verbundenes Recall-MCP mit der Tool-Oberfläche write/full.
+Die Belegtabelle in [host-capabilities.ts](./packages/daemon/src/host-capabilities.ts) trennt Host-Fähigkeiten vom ausgelieferten Bastra-Pfad und nennt Quellen, Laufzeitbelege, alle acht Fähigkeiten und Tool-Grenzen. Die Übersicht beschreibt Bastras Hook-Pfade; Claude Desktop und Remote-MCP haben kein Bastra-Hook-Gate. Für Codex CLI 0.162.1 und 0.166.0 ist Deny bei `exec_command`/Bash und `view_image` belegt; `apply_patch`-Deny und MCP bleiben auf beiden Versionen ungeprüft; Fork ist nur auf 0.162.1 belegt. Hosted WebSearch ist nicht unterstützt; `write_stdin` hat keine neue Deny-Grenze. Andere Codex-Versionen bleiben Vorbereitung. Eine Stop-Fortsetzung garantiert nie, dass Text vor der Anzeige zurückgehalten wird. `validate_artifact` braucht verbundenes Recall-MCP mit der Tool-Oberfläche write/full.
 
 | Surface | Runtime | Bastra pre_tool_deny | Bastra must_load_gate |
 |---|---|---|---|
@@ -292,7 +285,6 @@ Die Belegtabelle in [host-capabilities.ts](./packages/daemon/src/host-capabiliti
 | codex | 0.162.1 | supported | supported |
 | codex | 0.166.0 | supported | supported |
 | codex | unverified / not version-pinned | preparation-only | preparation-only |
-| cursor | unverified / not version-pinned | unsupported | unsupported |
 | claude-desktop | unverified / not version-pinned | unsupported | unsupported |
 | replay | unverified / not version-pinned | preparation-only | preparation-only |
 | remote-mcp | unverified / not version-pinned | unsupported | unsupported |
@@ -302,7 +294,7 @@ Die Belegtabelle in [host-capabilities.ts](./packages/daemon/src/host-capabiliti
 | Plattform | Status | Verfügbarkeit |
 |---|---|---|
 | **macOS** (Apple Silicon und Intel) | Unterstützt | Homebrew- und npm-Installation, `bastra autostart`, Claude-Desktop-Extension `.mcpb` (Release-Builds enthalten wie npm das Manifest des verifizierten kompilierten Hook-Clients; den Client selbst lädt es erst, wenn du zustimmst), `open_document` und kompilierter Hook-Client |
-| **Linux** (x86_64 und arm64) | Daemon, CLI, MCP und Hooks | Installation mit npm; kompilierter Hook-Client verfügbar. Kein Homebrew-Installationsweg, macOS-LaunchAgent (`bastra autostart`), `.mcpb`-Extension-Installation oder `open_document`. Der Forwarder startet den Daemon bei Bedarf. |
+| **Linux** (x86_64 und arm64) | Im echten Einsatz ungetestet (die Testsuite läuft in der CI unter Linux) – Daemon, CLI, MCP und Hooks | Installation mit npm; kompilierter Hook-Client verfügbar. Kein Homebrew-Installationsweg, macOS-LaunchAgent (`bastra autostart`), `.mcpb`-Extension-Installation oder `open_document`. Der Forwarder startet den Daemon bei Bedarf. Unter Linux kann Recall noch nicht prüfen, von welchem Benutzerkonto eine lokale Anfrage kommt: Jedes Programm jedes Benutzers auf dem Rechner erreicht den lokalen Dienst. Betreibe Recall dort nur auf einem Rechner mit einem einzigen Benutzer – nicht auf einem gemeinsam genutzten Rechner und nicht in einem Container, der sein Netzwerk mit anderen teilt. Private Memories bleiben auch dort für solche Aufrufer verborgen. |
 | **Windows** (x64) | Experimentell vorbereitet | Cross-Build des Hook-Clients und `.exe`-Registrierung eingerichtet; Erzeugung einer ausführbaren Datei und Nutzung auf echtem Windows noch nicht geprüft. [Abnahme offen (#348)](https://github.com/n0mad-ai/bastra-recall/issues/348). |
 
 ### Warum
@@ -312,7 +304,7 @@ Eine Projektentscheidung vom Montag soll am Donnerstag noch verfügbar sein, auc
 - **Nützlichen Kontext bewahren:** Vorlieben, Entscheidungen, Projektwissen und Erkenntnisse aus gelösten Problemen.
 - **Vor der Arbeit erinnern:** Unterstützte Hooks liefern Kontext beim Sitzungsstart und vor Aktionen; der gemeinsame Skill leitet die eigenen Such- und Speichervorgänge des Assistenten an.
 - **Die Dateien behalten:** Erinnerungen sind Markdown mit strukturierten Metadaten und außerhalb von Bastra lesbar und bearbeitbar.
-- **Gespeichertes nachvollziehen:** `bastra map` öffnet die lokale Vault-Map zum Stöbern, Suchen und Pflegen.
+- **Gespeichertes nachvollziehen:** `bastra map` öffnet die Weboberfläche (UI v2) unter `/ui/` am lokalen Daemon zum Stöbern, Suchen und Pflegen. Die Nutzer-UI enthält private Memories; externe Graph-Abrufe behalten ihren Filter. [Graph-Zugriff und Zähler](./docs/Graph-Views.md#deutsch). Unter macOS ist die Weboberfläche seit 1.2.0 standardmäßig an, weil sie dort nur dein eigenes Benutzerkonto öffnen kann. Unter Linux bleibt sie aus, bis du sie einschaltest (`bastra map` oder `bastra config set ui.enabled true`); Linux ist im echten Einsatz noch nicht richtig getestet. [Standard der Weboberfläche](./docs/Settings.md#deutsch).
 
 [Beispiele aus einer Arbeitswoche](./docs/USAGE.md#kochbuch) zeigen das Zusammenspiel.
 
@@ -338,7 +330,7 @@ Verschwindet ein in `~/.bastra/vault-roots.json` vermerkter Vault-Root später (
 
 - [Vorhandene Erinnerungen importieren](https://github.com/n0mad-ai/bastra-recall/wiki/Importing-Memories) – Listen, Chat-Exporte, Regeln und Memory-Ordner. Ordnerimporte landen direkt in einem getrennten Bereich; die anderen Wege bereiten Kandidaten zur Prüfung vor.
 - [Vault-Map](https://github.com/n0mad-ai/bastra-recall/wiki/Vault-Map) – Erinnerungen erkunden, suchen und zur Pflege markieren.
-- [Updates](https://github.com/n0mad-ai/bastra-recall/wiki/Updating) – mit `bastra update` aktualisieren oder automatische Updates aktivieren.
+- [Updates](https://github.com/n0mad-ai/bastra-recall/wiki/Updating) – mit `bastra update` aktualisieren oder automatische Updates aktivieren. `bastra update` aktualisiert so, wie du installiert hast: über Homebrew oder das npm-Paket, das du installiert hast (`bastra-recall` oder `@bastra-recall/daemon`). Du kommst von 1.1.8 oder älter und hast mit `npm install -g bastra-recall` installiert? Dann einmal `npm install -g bastra-recall@latest` ausführen, danach `bastra update` ([Details](./docs/USAGE.md#aktualisieren--was-bastra-update-installiert)).
 - [Modell-Empfehlungen](./docs/USAGE.md#modell-empfehlungen--wenn-ein-release-ein-anderes-lokales-textmodell-vorschlägt) – ein Release kann ein besseres lokales Textmodell vorschlagen; du wirst gefragt, nie automatisch umgestellt.
 - [Reviewed-Miss-Harvester](./docs/reviewed-miss-harvester.md#deutsch) — ein Offline-Repo-Werkzeug zum Prüfen verpasster Abrufchancen; es wendet nichts automatisch an.
 - [Fernzugriff](./docs/REMOTE-ACCESS.md) (Englisch) – ChatGPT im Web und auf dem Handy über deine eigene HTTPS-Adresse mit deinem Recall verbinden.

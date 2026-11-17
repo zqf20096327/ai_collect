@@ -76,13 +76,23 @@ flight prices were fabricated. [Photo credits and licenses →](#screenshot-cred
 
 **Requirements:** Node.js **22.19+**, npm and Git. Chrome is needed only for flight scans.
 
+**1. Install the dependencies** — once, in the repository root (the folder with `package.json`,
+`client/` and `server/`). This is an npm workspace: do not install inside `client/` or `server/`, and
+do not use `--omit=dev` or `npm install --production`, which skip Vite and tsx.
+
 ```bash
 npm install
+```
+
+**2. Start the app:**
+
+```bash
 npm run dev
 ```
 
-Open the URL printed as `[dev] client ready on …`. Ports are assigned automatically, and the launcher
-connects Vite to the backend. Press Ctrl+C to stop both.
+Without step 1 the launcher stops with `Cannot find package 'vite'`. Once it starts, open the URL
+printed as `[dev] client ready on …`. Ports are assigned automatically, and the launcher connects
+Vite to the backend. Press Ctrl+C to stop both.
 
 1. Create a trip with **＋ New trip**.
 2. Open **⚙** in the assistant and save your provider connection.
@@ -98,6 +108,16 @@ TRAVELMORE_DATA_DIR=/tmp/travelmore-demo npm run dev
 
 The default data directory is `~/.travelmore/`. Records, credentials, media and caches stay outside the
 repository. Do not run multiple backends against the same directory. [Configuration options →](#configuration)
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `Cannot find package 'vite'` when running `npm run dev` | Dependencies are missing. Run `npm install` in the repository root; `--omit=dev` and `npm install --production` skip Vite and tsx. |
+| `Node.js … is too old` | Install Node.js 22.19 or newer; `node --version` should report 22.19+ (23.x/24.x are fine). |
+| Port already in use | The launcher picks free ports itself; a failure here usually means another copy is already running. |
+
+`dev.mjs` checks these before starting and prints the fix instead of a stack trace.
 
 ### A prompt to start with
 

@@ -51,7 +51,9 @@ the HTTP and streaming API around your graphs.
 > 🚧 **Status: pre-alpha, but end-to-end.** Development and self-hosted production work today, with
 > Fetch, Express, Fastify, NestJS, and Next.js adapters. See the [roadmap](./docs/roadmap.md).
 
-Use **Node 24** (recommended), then create a project:
+Use **Node 26** (recommended), then create a project:
+
+Node 22.14+ within 22.x and Node 24 are also supported. Node 20 and earlier Node 22 releases are unsupported.
 
 ```bash
 npm create skein-js@latest my-agent
@@ -155,8 +157,10 @@ For AI tools, [llms.txt](./llms.txt) indexes the docs and [llms-full.txt](./llms
 
 Start with [triage-agent](./examples/triage-agent) for background work, schedules, and approvals
 without an API key, or [chat-app](./examples/chat-app) for a research assistant with a Next.js UI.
-For a generated component UI, try the [json-render plan builder](./examples/json-render): stream a
+For a generated component UI, try the [json-render UI playground](./examples/json-render): stream a
 plan, restore it from thread state, revise it through buttons/forms, and approve it.
+The [Angular A2UI UI playground](./examples/a2ui) demonstrates streamed surfaces, bound form input,
+checkpointed review and restoration with Google's A2UI protocol.
 The [examples directory](./examples) also includes framework integrations, migration, and local apps.
 For durable embedded calls and external command queues, use the
 [native/BullMQ approval example](./examples/native-transports) and

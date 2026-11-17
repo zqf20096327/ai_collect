@@ -47,7 +47,7 @@ python pod.py down               # pulls, then terminates: billing stops
 
 - **Python 3.8 or newer.** Windows: [python.org](https://www.python.org/downloads/) or `winget install Python.Python.3.12`. macOS and Linux usually have it (`python3 --version`).
 - **Git**, to clone and update this repository. GitHub's "Download ZIP" button works too.
-- **A Runpod API key.** In the console: Account, Credentials, API Keys, Create API Key. Choose *Restricted*, set **api.runpod.io/graphql** to **Read / Write** and leave **api.runpod.ai** on **None**. `setup` stores the key in `~/.ainvfx-runpod/config.json`, readable by your account only. Never paste it in a chat or a slide.
+- **A Runpod API key.** In the console: Account, Credentials, API Keys, Create API Key. Choose *Restricted*, set **api.runpod.io/graphql** to **Read / Write** and leave **api.runpod.ai** on **None**. `setup` stores the key in `~/.ainvfx-runpod/config.json`, readable by your account only. Never paste it in a chat or a slide. `setup` asks for this key first; a Hugging Face token (it starts with `hf_`) goes in with `setup --hf-token`, and `setup` says so if you paste one at the key prompt.
 - **`ssh`**, optional: only `pod.py ssh` uses it.
 
 ## Commands
@@ -62,7 +62,7 @@ python pod.py down               # pulls, then terminates: billing stops
 | `push [pod] FILES` | Copies files into ComfyUI's input folder. `--dataset NAME` sends files and folders into `/workspace/dataset/NAME`, for training |
 | `push [pod] URL` | The pod downloads a web address itself: one file, or every file that a folder page lists. `--frames 480-600` keeps the frames of that range, `--into NAME` names the folder under ComfyUI's input. With `--dataset NAME`, the files go to `/workspace/dataset/NAME` |
 | `pull [pod]` | Downloads every new file of the pod's output folder into `outputs/<pod name>/` |
-| `down [pod]` | Pulls, terminates, then gives the pod's cost and the credit left. `--all` for every pod recorded here, `--no-pull` to skip the download |
+| `down [pod]` | Pulls, terminates, then gives the pod's cost and the credit left. `--all` for every pod recorded here, `--no-pull` to skip the download, `--when-done` to wait first for the training run in progress on the pod ([A first run](#a-first-run)) |
 | `ssh [pod]` | A terminal on the pod |
 | `list` | Every pod of your account, and which ones this computer knows |
 | `doctor` | Checks Python, ssh, the API key and the settings |
@@ -79,13 +79,13 @@ A profile is a set of models in [`models.json`](models.json), with the custom no
 |---|---|---|---|---|
 | `image` | Z-Image, Qwen-Image-Edit, ControlNet, SAM 3.1, BiRefNet, SeedVR2, the Qwen-Image-2512 panorama set, FLUX 3 Image Klein, MOSS-Image and its colour and depth control | RTX 5090 (32 GB) | 118 GB | 170 GB |
 | `3d` | TRELLIS.2, Pixal3D, TripoSplat and Idol, SAM 3D Body, MoGe, BiRefNet | RTX 5090 | 36 GB | 100 GB |
-| `video` | LTX 2.5 and its IC-LoRAs (LoRAs that follow a reference video: ainvfx-fluid and LTX Ripple among them), SDPose (the pose reader for union control), SeedVR2 7B fp16, RIFE | RTX PRO 6000 (96 GB) | 104 GB | 150 GB |
+| `video` | LTX 2.5 and its IC-LoRAs (LoRAs that follow a reference video: ainvfx-fluid and LTX Ripple among them), the distilled LoRA (the second stage of a two-stage render, when the full model makes the first), SDPose (the pose reader for union control), SeedVR2 7B fp16, RIFE | RTX PRO 6000 (96 GB) | 113 GB | 160 GB |
 | `train` | the two trainers ([Training a LoRA](#training-a-lora)) | RTX PRO 6000 | none at start, up to 70 GB per run | 190 GB |
 | `image+3d` | | RTX 5090 | 152 GB | 210 GB |
-| `image+video` | | RTX PRO 6000 | 222 GB | 290 GB |
+| `image+video` | | RTX PRO 6000 | 231 GB | 300 GB |
 | `image+train` | | RTX PRO 6000 | 118 GB, then up to 70 GB per run | 320 GB |
-| `video+train` | | RTX PRO 6000 | 104 GB, then up to 68 GB per run | 300 GB |
-| `all` | | RTX PRO 6000 | 256 GB, then up to 68 GB per run | 480 GB |
+| `video+train` | | RTX PRO 6000 | 113 GB, then up to 68 GB per run | 310 GB |
+| `all` | | RTX PRO 6000 | 265 GB, then up to 68 GB per run | 490 GB |
 
 A combination rents the GPU of its largest profile. The disk is 115% of the models plus 30 GB for the environment, rounded up to 10 GB and never under 100 GB. With `train`, it counts the largest recipe's base files, plus 70 GB for the trainers, the caption model, caches and checkpoints. `up` computes the disk from the list the pod will download, yours included, and prints it before it creates anything; `--disk` overrides it.
 
@@ -106,7 +106,7 @@ Three ways to change a value, from the most lasting to the most temporary:
 | Variable | Default | What it sets |
 |---|---|---|
 | `AINVFX_PROFILE` | `image` | The profiles to download. `up <profiles>` sets it for you |
-| `AINVFX_COMFY_TAG` | `v0.45.3` | The ComfyUI release: a git tag, or a branch (`master` for the latest commit) |
+| `AINVFX_COMFY_TAG` | `v0.45.4` | The ComfyUI release: a git tag, or a branch (`master` for the latest commit) |
 | `AINVFX_PYTHON` | `3.13` | The Python of the pod's environment, installed by uv |
 | `AINVFX_TORCH` | `torch torchvision torchaudio` | The PyTorch packages, with pip flags if wanted (`--pre ...` for nightlies) |
 | `AINVFX_TORCH_INDEX` | `https://download.pytorch.org/whl/cu130` | The wheel index PyTorch comes from (`.../whl/nightly/cu130` for nightlies) |
@@ -171,8 +171,9 @@ The `train` profile makes the pod a training machine too. After ComfyUI, it inst
 | `ltx_images` | a look, on LTX 2.5, from still images | images | 70 GB | 1,500 · 1e-4 · 32 |
 | `ltx_iclora` | a control video turned into a result (an IC-LoRA) | clip pairs | 70 GB | 2,000 · 1e-4 · 32 |
 | `ltx_av` | the picture and the sound together, on LTX 2.5 | clips with sound | 70 GB | 1,500 · 1e-4 · 32 |
+| `ltx_mix` | the look, the motion and the sound together, on LTX 2.5 | stills, clips and sound files | 70 GB | 1,500 · 1e-4 · 32 |
 
-A dataset is one folder. **Images**: each image with its caption, a `.txt` file of the same name. **Clips**: each clip of 121 frames or more with its caption; the trainer reads its first 121 frames at 25 fps. **Pairs**: a `targets` folder (the results, with their captions) and a `control` folder (what the model is given: the image to edit, or the control clip), with the same file names.
+A dataset is one folder. **Images**: each image with its caption, a `.txt` file of the same name. **Clips**: each clip with its caption. The trainer reads each clip at 25 fps and takes its first 121 frames: it leaves out a shorter clip ([Clips of several lengths](#clips-of-several-lengths)). **Pairs**: a `targets` folder (the results, with their captions) and a `control` folder (what the model is given: the image to edit, or the control clip), with the same file names. **Stills, clips and sound**: up to three sub-folders, `images/`, `clips/` and `audio/` ([Stills, clips and sound in one run](#stills-clips-and-sound-in-one-run)).
 
 ### A first run
 
@@ -190,10 +191,11 @@ train caption mychar --trigger mychr            # writes a caption for every ima
 train zimage mychar_v1 --dataset mychar         # trains in the background; its log follows on screen
 ```
 
-- **Read every caption before training.** JupyterLab opens the `.txt` files under `workspace/dataset/mychar`. The caption model makes mistakes, and a wrong word is learned like the others. `train caption` ends with the words found in most captions: a word that describes the style goes in `--avoid`, then `train caption mychar --trigger mychr --avoid "watercolor,brush" --overwrite`.
+- **Read every caption before training.** JupyterLab opens the `.txt` files under `workspace/dataset/mychar`. The caption model makes mistakes, and a wrong word is learned like the others. `train caption` ends with the words found in most captions: a word that describes the style goes in `--avoid`, then `train caption mychar --trigger mychr --avoid "watercolor,brush" --overwrite`. For `ltx_av`, `--audio` adds what is heard to each clip's caption: the caption model hears nothing and guesses the sound from the picture, so read those lines too.
 - **During the run**, Ctrl+C stops the display, never the run. `train log` shows it again, `train status` says where it stands, `train stop` stops it. Run no workflow in ComfyUI meanwhile: the run needs the GPU's memory.
 - **Every 250 steps**, a checkpoint and test images (samples) land in `ComfyUI/output/train/<run>/`, and the checkpoint appears in ComfyUI's LoRA list under `train/<run>/` (press r in ComfyUI to refresh it). Judge the samples, not the loss curve: stop when they stop improving.
 - **At the end**, `python pod.py pull` or `down` brings the run home with the rest of the output folder. An LTX checkpoint weighs about 0.65 GB in each of its two formats.
+- **To stop paying when the run ends**, once the run has started, leave `python pod.py down --when-done` running on your computer. It looks at the run once a minute. When the run has ended, it pulls the output folder, then terminates the pod. Your computer must stay on, awake and online until then. Ctrl+C stops the wait and leaves the pod running. A run that failed or was stopped ends the wait too, so stop the wait before you stop a run to launch another. A run whose process died without a word, after a pod restart, is seen after 5 minutes without a sign of life.
 
 ### Options of a run
 
@@ -216,7 +218,58 @@ train ltx_iclora fx_s1 --dataset fx/low.toml \
   --then fx --from fx_s2 --steps 500 --lr 2e-5 --dataset fx/high.toml
 ```
 
-The musubi-tuner recipes repeat settings proven on RTX PRO 6000 pods. The `moss` recipe follows the MOSS-Image guide of sd-scripts and is not yet proven on a pod. FLUX 3 Image Klein has no recipe: neither trainer supports it yet.
+The musubi-tuner recipes repeat settings proven on RTX PRO 6000 pods, except `ltx_mix`: it follows the trainer's guide for mixed audio and video training, with the settings of `ltx_av`, and has not yet run to the end on a pod. The `moss` recipe follows the MOSS-Image guide of sd-scripts and is not yet proven on a pod. FLUX 3 Image Klein has no recipe: neither trainer supports it yet.
+
+### Clips of several lengths
+
+The trainer reads every clip at 25 frames per second: from a clip filmed at 50 fps, it keeps every second frame. The `ltx`, `ltx_av` and `ltx_iclora` recipes take the first 121 frames of each clip (4.8 seconds) and leave out a shorter clip, and the trainer's log does not say so. So before any GPU time, `train` reads the length of every clip. It says how many clips the trainer will leave out, names the first ones with their frames at 25 fps, and stops when no clip is long enough. A clip filmed slower than 24 fps is a special case: the trainer keeps every frame, numbers them at 25 fps and stops at number 121, so from a 16 fps clip it reads 78 frames. These recipes then leave that clip out, whatever its length, and `train` says so. A clip without its caption stops it too, since the trainer would stop on that clip.
+
+To keep shorter clips with `ltx` or `ltx_av`, have each clip read whole, up to 121 frames. Save this dataset config as `/workspace/dataset/mychar_full.toml`, with your folder's name in it, then give it to the run: `train ltx mychar_v1 --dataset mychar_full.toml`.
+
+```toml
+[general]
+caption_extension = ".txt"
+enable_bucket = true
+resolution = [960, 544]
+batch_size = 1
+
+[[datasets]]
+video_directory = "/workspace/dataset/mychar"
+cache_directory = "/workspace/cache/ltx/mychar_full"
+frame_extraction = "full"
+max_frames = 121
+target_fps = 25.0
+num_repeats = 1
+```
+
+Each clip then gives all its frames up to 121, rounded down to a length of 8k + 1 frames, the lengths LTX's video encoder takes: 97 stays 97, 100 becomes 97. The trainer decodes each clip whole before it keeps the start, so cut a long clip first. The `ltx_mix` recipe reads its clips this way.
+
+### Stills, clips and sound in one run
+
+The `ltx_mix` recipe trains the look, the motion and the sound of a subject in one run. Put each kind of file in its own sub-folder of the dataset folder, each file with its caption. Each sub-folder is optional:
+
+| Sub-folder | Files | What they teach |
+|---|---|---|
+| `images/` | stills | the look; a still teaches the sound nothing |
+| `clips/` | clips of any length, with or without a sound track | the motion, and the sound when the clip has one |
+| `audio/` | sound files: `.wav`, `.flac`, `.mp3`, `.ogg`, `.m4a`, `.aac`, `.opus` or `.wma` | the sound alone |
+
+Any mix works: stills and clips, clips and sound files, stills and sound files, or all three. A dataset folder without these sub-folders works too: `train` sorts its files by kind. Each file then needs its own name, since a still and a clip of the same name would share one caption.
+
+```bash
+python pod.py push --dataset mysubject mysubject/     # mysubject/images, mysubject/clips, mysubject/audio
+train ltx_mix mysubject_v1 --dataset mysubject        # in a terminal on the pod
+```
+
+Before any GPU time, `train` checks the mix:
+
+- **The share of steps with sound.** In each pass over the dataset, the trainer takes every file once, so the share of steps with sound is the share of files with sound. Many stills slow the sound down. The trainer's guide aims at 30 to 50% of steps with sound. `train` repeats the clips and the sound files, up to 10 times in each pass, until at least 30% of the steps have sound, and writes the repeats in the run's `dataset.toml` (`num_repeats`). `--audio_batch_probability 0.4` then spreads the steps with sound through each pass.
+- **A clip without a sound track** trains the picture only. The trainer's sound cache counts it as failed (`No audio stream found`), so `train` names those clips first.
+- **No sound at all** stops the run, since the recipe trains the sound too. For the picture alone, train `ltx_images` on the stills, then `ltx` on the clips with `--from` the first run.
+- **A file without its caption**: a still is left out; a clip or a sound file stops the run, since the trainer would stop on it.
+- **Clips of any length** count: the recipe reads each clip whole, up to 121 frames ([Clips of several lengths](#clips-of-several-lengths)).
+
+**Captions.** `train caption mysubject --trigger mysbj` gives each kind its own prompt: a still is described as an image, a clip with a sound track with what is seen and what is heard, a silent clip with what is seen. The caption model sees pictures and hears nothing: for a clip, it guesses what is heard from what it sees, so read every line about sound. It writes nothing for a sound file. `train caption` lists those, and you write each caption yourself, in a `.txt` of the same name: the trigger word, then what is heard (a voice and its words, a place, a noise).
 
 ## How `up` picks a GPU
 
@@ -246,7 +299,7 @@ The template's start command runs [`bootstrap.sh`](bootstrap.sh). Every line it 
 | `TRAINERS OK` | With `train`: the trainers and the `train` command are ready |
 | `SELFTEST OK` | MOSS-Image made a test image: a thank-you poster with this repository's address. It needs the `image` profile |
 | `READY` | The pod is ready. The line gives the ComfyUI and JupyterLab links |
-| `WARNING` | Something is wrong or slow, such as an old driver or a slow disk. The line says what to do |
+| `Warning:` | Something is wrong or slow, such as an old driver or a slow disk. The line says what to do |
 | `ACTION NEEDED` | Gated files did not come (below) |
 | `FAILED` | The pod cannot work on that machine. It stays up so the log can be read, and it bills |
 
@@ -257,7 +310,7 @@ The log is also written to `/workspace/ComfyUI/input/ainvfx/bootstrap.log`, so t
 - **`FAILED` in the log.** The pod cannot work on that machine: Python, PyTorch or ComfyUI could not be installed, or PyTorch cannot see the GPU. The line says which. Terminate the pod and create another (`python pod.py down`, then `up`): it lands on another machine. `up` stops on that line.
 - **`ACTION NEEDED` in the log.** Some gated files did not come. Logged in to Hugging Face with the account the log names, click "Agree and access repository" on each page listed. Then fetch them on the same pod: `bash /tmp/ainvfx-bootstrap.sh models`, in JupyterLab's terminal or after `python pod.py ssh`. A pod without a token needs one first (`setup --hf-token`), then a new pod.
 - **The trainers did not install.** The log says why. `bash /tmp/ainvfx-bootstrap.sh trainer` tries again on the same pod.
-- **No container after 8 minutes.** `up` prints a warning in capitals: the host is still fetching the image, or does not respond. The pod bills meanwhile. Run `python pod.py down`, then `up` again, usually in another data center.
+- **No container after 8 minutes.** `up` prints a warning: the host is still fetching the image, or does not respond. The pod bills meanwhile. Run `python pod.py down`, then `up` again, usually in another data center.
 - **A blank "403" page from the Connect button.** Press Enter in the address bar. ComfyUI refuses a page opened by a click from another site (a protection against sites that would control it), never an address typed or opened by `pod.py open`.
 - **GitHub unreachable at start.** The start command falls back to Runpod's own `/start.sh`: the pod still starts SSH and JupyterLab, so you can read the error.
 - **Any other error after the pod exists.** `pod.py` prints a message that names the pod, never a traceback. `python pod.py list` shows your pods, `down` terminates one. `AINVFX_DEBUG=1` prints the full trace for a bug report.

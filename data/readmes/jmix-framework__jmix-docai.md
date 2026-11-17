@@ -157,7 +157,7 @@ docker compose up -d --wait
 ./gradlew bootRun
 ```
 
-Open <http://localhost:8080/docai> and log in as `admin` / `admin`. Compose starts OpenSearch on `127.0.0.1:19200` and returns once it answers. Without OpenSearch the application starts, and the search says it is unavailable; start OpenSearch and restart the application.
+Open <http://localhost:8080/docai> and log in as `admin` / `admin`. Compose starts OpenSearch on `127.0.0.1:19200` and returns once it answers. Without OpenSearch the application starts, the search says it is unavailable, and an empty database waits for the demo set; start OpenSearch and restart the application.
 
 The first start loads the English demo set. The database and the document files live under `.jmix/`, see [Configuration](#-configuration).
 
@@ -167,7 +167,7 @@ Without `OPENAI_API_KEY` the application shows no AI button, tab, menu item or s
 
 ### Reset the demo data
 
-Stop the application and run `./gradlew resetDemoData`. It deletes the HSQLDB file database, the document files and the search indexes `docai_document` and `docai_document_vectors`, and the next start loads the set of `DOCAI_DEMO_DATA` again.
+Stop the application and run `./gradlew resetDemoData`. It deletes the HSQLDB file database, the document files and the search indexes `docai_document` and `docai_document_vectors`, and the next start loads the set of `DOCAI_DEMO_DATA` again. The application also clears both indexes itself whenever it loads a set into an empty database.
 
 The database, the files and the indexes belong together: after you replace the database in another way, run `docker compose down -v`, and the application fills the indexes again at start.
 
@@ -180,8 +180,7 @@ Gradle builds the jar, and Compose puts it into an image and runs it next to Ope
 docker compose --profile app up -d --build
 ```
 
-The application answers on port 8080 of the host at `/docai`. Its database and files live in the `docai-data` volume, the search indexes in `opensearch-data`; `docker compose --profile app down -v` deletes both. Compose passes `DOCAI_ACTIVE_PROFILE`, `DOCAI_DEMO_DATA`, `DOCAI_AI_ENABLED` and `OPENAI_API_KEY` from the environment; without them the stand runs with the `local` profile. Another profile, for example `prod`, leaves the login form empty and loads no demo set unless `DOCAI_DEMO_DATA` names one.
-
+The application answers on port 8080 of the host at `/docai`. Its database and files live in the container, and the search indexes in the `opensearch-data` volume: a new container starts on a fresh database with the demo set for that day, a restart keeps the data, and the application clears its own search indexes before it loads a set into an empty database. Compose passes `DOCAI_ACTIVE_PROFILE`, `DOCAI_DEMO_DATA`, `DOCAI_AI_ENABLED` and `OPENAI_API_KEY` from the environment. The stand runs with a profile of its own, `stand`, unless `DOCAI_ACTIVE_PROFILE` names another: the login form stays empty, and an empty database gets the English demo set at start. Another profile, for example `prod`, also leaves the login form empty and loads no demo set unless `DOCAI_DEMO_DATA` names one.
 ### Run the tests
 
 | Command | Needs | Runs |
@@ -204,8 +203,8 @@ The repository ships the [Jmix Agent Toolkit](https://github.com/jmix-framework/
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `DOCAI_ACTIVE_PROFILE` | `local` | Spring profile; `local` pre-fills the login form |
-| `DOCAI_DEMO_DATA` | `en` in the `local` profile, `none` in others | Demo set an empty database gets at the start: `en`, `ru` or `none` |
+| `DOCAI_ACTIVE_PROFILE` | `local`, `stand` in Compose | Spring profile; `local` pre-fills the login form |
+| `DOCAI_DEMO_DATA` | `en` in the `local` and `stand` profiles, `none` in others | Demo set an empty database gets at the start: `en`, `ru` or `none` |
 | `DOCAI_DB_URL` | `jdbc:hsqldb:file:.jmix/hsqldb/docai` | JDBC URL of the database |
 | `DOCAI_DB_USERNAME` | `sa` | Database user |
 | `DOCAI_DB_PASSWORD` | empty | Database password |
@@ -224,23 +223,25 @@ The repository ships the [Jmix Agent Toolkit](https://github.com/jmix-framework/
 
 At the first start, an empty database gets the demo set that `DOCAI_DEMO_DATA` names: `en`, `ru` or `none`. Both sets hold the same folders, people and scenes: 46 documents with versions, types, fields, statuses, tags, comments and access, favorites of each user, and a few items in the trash.
 
-The history of a set, its uploads, versions, comments and deletions, moves to the days before the first start, so the last change happened yesterday; the dates of the documents and of their fields, and the texts of their files, stay as written.
-
 | Folder | Access | What to try |
 |---|---|---|
 | Inbox | Inherits: every employee edits | Three scans without a type for **Fill with AI** |
-| Contracts | Inherits | Lease Agreement No. 112 with three versions and comments on its penalty, for the assistant to sum up; a recruitment agreement open to Helen only |
-| Invoices and Certificates | Inherits | An invoice due on November 30, 2026, for the AI assistant |
+| Contracts | Inherits | Lease Agreement No. 112 with three versions and comments on its penalty, for the assistant to sum up; a recruiting agreement open to Helen only |
+| Invoices and Certificates | Inherits | An invoice due at the end of the month, for the AI assistant |
 | Procurement | Inherits | 27 documents of the corpus of the AI search |
-| Archive 2025 | Legal department and Accounting view, Alice edits | 3 more documents of the corpus |
-| HR, HR / Vacations | HR department manages, every employee views Vacations | A hiring order, an employment contract and the vacation schedule with a comment by Peter |
-| Trash | As before the deletion | The Drafts folder and the first edition of Lease Agreement No. 112, to restore or to delete forever as `admin` |
+| Archive of the last year, such as Archive 2025 | Legal department and Accounting view, Alice edits | 3 more documents of the corpus |
+| HR, HR / Vacations | HR department manages, every employee views Vacations | An offer letter, an employment agreement and the vacation schedule with a comment by Peter |
+| Trash | As before the deletion | The Drafts folder and the first draft of Lease Agreement No. 112, to restore or to delete forever as `admin` |
 
-The corpus holds 12 documents about farm machinery and 18 about other machinery and goods, and none of them says "agricultural". Search by words for *agricultural machinery* finds nothing; AI search finds the 12, or 9 for `peter`, who may not open Archive 2025. Search by words for *fumigation* finds the one contract with the word only inside its PDF.
+The corpus holds 12 documents about farm machinery and 18 about other machinery and goods, and none of them says "agricultural". Search by words for *agricultural machinery* finds nothing; AI search finds the 12, or 9 for `peter`, who may not open the archive. Search by words for *fumigation* finds the one contract with the word only inside its PDF.
 
 `demo-uploads/en` and `demo-uploads/ru` hold two invoices to upload during a demo: Invoice 1610, to fill with AI, and Invoice 2231 for a combine harvester under a neutral name, to find with AI search.
 
-The sets lie in `src/main/resources/com/company/docai/demo/`; their PDFs use PT Serif and PT Sans by ParaType, under the SIL Open Font License. To load a set again, [reset the demo data](#reset-the-demo-data).
+A set is generated for the day it loads. Each of its dates counts from that day: the uploads, comments and deletions of its history, the dates of the documents and of their fields, the dates and years in the names and in the texts of the files. So the last change happened yesterday, the nearest deadlines lie ahead, and some contracts end this quarter. A document declares its dates once in `demo-data.json`, such as `"dates": {"issued": "-5d", "due": "month-end"}`, and its date, fields, history and texts refer to them by name; a date of ISO 8601, such as `2006-07-27`, stays where it is. The files of the versions are made at the load from the texts in `texts/`: a PDF renders its text, and a plain text file is its text, both with the dates of the day; so a document of a set changes by its text. The start log names the day: `The demo set 'en' is loaded for 2026-11-16: …`.
+
+A database keeps the dates of its load: in Docker the application keeps its database in the container, so a new container starts on a fresh database with the set for that day, while a restart keeps the data.
+
+The sets lie in `src/main/resources/com/company/docai/demo/`: `demo-data.json` and the texts of their files in `texts/`. The PDFs use PT Serif and PT Sans by ParaType, which lie in `fonts/` there with their licenses, the SIL Open Font License 1.1. To load a set again, [reset the demo data](#reset-the-demo-data).
 
 ## 👥 Application Accounts
 
@@ -250,12 +251,12 @@ The sets lie in `src/main/resources/com/company/docai/demo/`; their PDFs use PT 
 | `peter` | `peter` | Peter Wilson | Employee | An employee with narrow access |
 | `alice` | `alice` | Alice Morgan | Employee | Office manager: files the incoming documents |
 | `helen` | `helen` | Helen Carter | Employee, HR department | HR manager |
-| `maria` | `maria` | Maria Lopez | Employee, Accounting | Accountant |
+| `maria` | `maria` | Maria Lopez | Employee, Accounting | Controller |
 | `john` | `john` | John Doe | Employee, Legal department | Lawyer |
 
 The employees and their department roles come from the demo changelog `020-demo-users.xml`; delete it before the first start of a real deployment. The Russian set gives the employees Russian names, with the same logins and passwords.
 
-> **Warning:** these are development credentials, and the `local` profile pre-fills the login form. Before you deploy the application anywhere, change the `admin` password and set `DOCAI_ACTIVE_PROFILE` to another value, for example `prod`.
+> **Warning:** these are development credentials, and the `local` profile pre-fills the login form. Before you deploy the application anywhere, change the `admin` password and run it with another profile: `stand`, which Compose sets, or, for example, `prod`.
 
 ## ⚙️ Domain Model
 

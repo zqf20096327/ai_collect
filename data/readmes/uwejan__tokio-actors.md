@@ -50,7 +50,7 @@ Every lifecycle promise is a mechanism the runtime enforces, not a documentation
 | Uniform crash semantics | `Err` from `handle` stops the actor the same way whether the message arrived via `send` or `notify` - one crash path, not two. Recoverable conditions belong in the `Response` type as `Ok` values; crash cleanup belongs in `on_stopped`, which receives the `StopReason`. |
 | Observable lifecycle | `ActorHandle::status()` and `wait_stopped()` form a runtime plane, a per-actor cell the runtime writes directly: `status()` answers without the actor's help even when an actor is stuck at an `.await` point, and `wait_stopped()` resolves when the actor ends, an abort included; `get_status()` serves the richer queue-plane snapshot. |
 | Bounded, truthful shutdown | `ActorSystem::shutdown()` stops roots only, in reverse registration order, so each supervisor tears down its own subtree: it takes every root actor through its stop ladder to a terminal state, or to the `Unresponsive` verdict for a root that does not end even when aborted, and returns a `ShutdownReport`: `outcomes` for the roots, `swept` for any non-root leftover the final sweep handles (normally empty): each leftover is waited on, bounded by the global deadline (the earlier of the call's `ShutdownPolicy::timeout`, taken as no earlier than the moment the sweep begins, and the deadline the system already holds from another shutdown's sweep; the system drops the held deadline when the last shutdown in flight ends, provided a shutdown has completed since the system was last `Active`), and the ones still running then are force-stopped; after the deadline a shutdown can run on for the forced roots' longest kill grace plus the abort settle time, then the forced leftovers' longest kill grace plus the abort settle time, and, for either of those two steps, that time once more plus the abort settle time when the abort of an actor it forces, scheduled with the system, is issued late. A leftover whose task ended without publishing `Stopped` reads `Aborted`. One that published `Stopped` reads `Killed` when its end became final at or after the deadline (or carries no instant) or when the shutdown's force took a `Kill` on it, and `Graceful` when it became final before the deadline. A leftover reads `Unresponsive` when even the abort did not end it within the settle time after it. With a root to wait on, it needs a Tokio runtime with the time driver enabled that is driven, not only entered; a system with no root completes without the time driver, and with no runtime current only if it also has no leftover. The walk runs in a task of the system on the runtime current at the call, and registrations are refused from the call's first poll: it survives a caller that is dropped, abandoned or never polled again, and a call made from inside an actor that the walk stops (that actor is stopped like any other root, and the walk goes on). It does not survive its own runtime: if that ends first and nothing is still waiting on the call, the system keeps refusing registrations, and `reactivate` works again once a shutdown of the system has completed (an earlier one counts) and none is in flight; a caller still waiting walks the system itself, with the same needs. |
-| Matchable errors | `ActorError` carries structured `Timer`/`Stream`/`Supervision` variants instead of stringified messages, `send_timeout` spans one call-wide deadline (`AskError::Timeout { enqueued }`: `enqueued: false` means the request never reached the mailbox and is safe to retry; `true` means the deadline raced the reply, retry only if idempotent), and every error enum is exhaustive. |
+| Matchable errors | `ActorError` carries structured `Timer`/`Supervision` variants instead of stringified messages, `send_timeout` spans one call-wide deadline (`AskError::Timeout { enqueued }`: `enqueued: false` means the request never reached the mailbox and is safe to retry; `true` means the deadline raced the reply, retry only if idempotent), and every error enum is exhaustive. |
 
 In the same spirit: one-shot schedules are lazy and `#[must_use]` (a dropped builder never fires), `.every_with(factory)` covers recurring messages that are not `Clone`, and `ActorSystem::get_by_id` resolves an `ActorId` to a live handle.
 
@@ -348,7 +348,7 @@ async fn handle(&mut self, msg: Cmd, ctx: &mut ActorContext<Self>) -> ActorResul
 
 #### SupervisorRef
 
-`SupervisorRef::of(&handle)` manages the children of a supervisor from outside it, with the calls of OTP's `supervisor` module: `start_child(factory, configure)`, `terminate_child(id)`, `restart_child(id)`, `delete_child(id)`, `which_children()` and `count_children()`. A call is answered at a boundary of the supervisor's run loop, so it does not queue behind the mailbox and is answered while the mailbox is full. A call from the supervisor's own task returns `SupervisorRefError::CallingSelf` at once, a supervisor that has ended gives `SupervisorRefError::Gone`, and a supervision error is carried as `SupervisorRefError::Supervision`. `start_child` registers the child with the options its `configure` closure sets and answers when the child is registered, and a panic in the factory or the closure fails the supervisor. `terminate_child` answers once the child and every actor it spawned have ended, and the stop completes if the caller drops its future. A call waits without a bound, as OTP's `supervisor` calls do; `SupervisorRef::of(&handle).timeout(d)` bounds every call made through the reference, a call that is not answered in time answers `SupervisorRefError::Timeout` (and `SupervisorRefError::NoTimeDriver` where the calling runtime has no time driver; with `panic = "abort"` a call on such a runtime ends the process, as the first timer of the crate does), and a request that was already queued is still served, so a child that then outlasts the whole of its stop ends the supervisor with `ChildUnresponsive`, as when a caller drops its future. `count_children` counts the specs, the active children (those with an incarnation alive; a child being restarted is not active), the supervisors and the workers.
+`SupervisorRef::of(&handle)` manages the children of a supervisor from outside it, with the calls of OTP's `supervisor` module: `start_child(factory, configure)`, `terminate_child(id)`, `restart_child(id)`, `delete_child(id)`, `which_children()`, `get_childspec(id)` and `count_children()`. A call is answered at a boundary of the supervisor's run loop, so it does not queue behind the mailbox and is answered while the mailbox is full. A call from the supervisor's own task returns `SupervisorRefError::CallingSelf` at once, a supervisor that has ended gives `SupervisorRefError::Gone`, and a supervision error is carried as `SupervisorRefError::Supervision`. `start_child` registers the child with the options its `configure` closure sets and answers when the child is registered, and a panic in the factory or the closure fails the supervisor. `terminate_child` answers once the child and every actor it spawned have ended, and the stop completes if the caller drops its future. A call waits without a bound, as OTP's `supervisor` calls do; `SupervisorRef::of(&handle).timeout(d)` bounds every call made through the reference, a call that is not answered in time answers `SupervisorRefError::Timeout` (and `SupervisorRefError::NoTimeDriver` where the calling runtime has no time driver; with `panic = "abort"` a call on such a runtime ends the process, as the first timer of the crate does), and a request that was already queued is still served, so a child that then outlasts the whole of its stop ends the supervisor with `ChildUnresponsive`, as when a caller drops its future. `count_children` counts the specs, the active children (those with an incarnation alive; a child being restarted is not active), the supervisors and the workers.
 
 #### Strict Start, Awaited Starts and Auto Shutdown
 
@@ -542,6 +542,102 @@ A `Behavior` is a state that handles a message and names the state that handles 
 
 A caller of the message that returned `Next::Stop` still gets the response, after the stop is sealed. `Next::Stop(StopReason::Kill)` is refused as `ctx.stop(StopReason::Kill)` is (`StopError::KillRefused`), and the actor then fails with a user error, and a panic in `handle` fails the actor like any handler panic.
 
+### State Machines
+
+A `StateMachine` is the `gen_statem` behaviour: a plain type with one `handle_event` that cannot await. It gets the state, a `StatemEvent` and a `StatemContext`, and returns a `Transition`. `StatemActor::new(machine, initial)` runs it as an ordinary actor, and a `Harness` runs the same machine in a test with no runtime. Below, `Lock` holds a `code: u32`; clients use `door.cast(code)`, `door.call(())` and `door.call_timeout(call, d)`.
+
+The events are `Cast`, `Call` with its `ReplyTo`, `Internal` (inserted with `cx.next_event`) and the time-outs `EventTimeout`, `StateTimeout` and `Timeout(name, ..)`. A `Transition` is `Next(state)`, a state change only when the state differs, `Keep`, `Repeat`, which runs `on_enter` again, or `Stop(reason)`. `on_enter` runs once before the first event and after every state change. A call is answered with `cx.reply(from, value)`, at once or after `cx.postpone`, which handles the event again, oldest first, after the next state change; `postpone` and `next_event` refuse, returning the event, once the events the machine holds (postponed, inserted, queued time-out events and a continued event) have reached the mailbox capacity (64 under a `Harness`). A state change cancels the state time-out, any other event handled cancels the event time-out, and under `StatemActor` each time-out setter needs the Tokio time driver and panics without it; a `Harness` needs none. A `ReplyTo` dropped without a reply while the machine runs answers its caller `AskError::Actor(ActorError::NoReply)`; once the machine is stopping or ended, the caller reads `AskError::ResponseDropped` with the machine's final reason. A panic in `handle_event` fails the machine, and the calls it holds then read `AskError::ResponseDropped` with the failure. `Transition::Stop(reason)` handles no further event and sends the replies recorded in that call first; `Stop(StopReason::Kill)` is refused and fails the machine with an error. `terminate` runs once at the stop, unless the machine is killed or its start failed, and has no context, so it cannot reply: a call still held ends with the machine. See `examples/statem_door.rs`.
+
+```rust
+#[derive(Clone, PartialEq)]
+enum Door { Locked, Open }
+
+impl StateMachine for Lock {
+    type State = Door;
+    type Event = u32;
+    type Call = ();
+    type Reply = bool;
+    type TimerName = ();
+    fn handle_event(&mut self, state: &Door, event: StatemEvent<Self>,
+                    cx: &mut StatemContext<'_, Self>) -> Transition<Door> {
+        match (state, event) {
+            (Door::Locked, StatemEvent::Cast(code)) if code == self.code => {
+                cx.state_timeout(Duration::from_millis(50), 0);
+                Transition::Next(Door::Open)
+            }
+            (Door::Open, StatemEvent::StateTimeout(_)) => Transition::Next(Door::Locked),
+            (state, StatemEvent::Call((), from)) => {
+                cx.reply(from, *state == Door::Open);
+                Transition::Keep
+            }
+            _ => Transition::Keep,
+        }
+    }
+}
+```
+
+### Event Managers
+
+An `EventManager<E, C, R>` is the `gen_event` behaviour: an actor that owns a list of `EventHandler`s for events of type `E`, each with plain `fn`s that cannot await. An event goes to every handler, newest first. A handler that panics or returns `Handled::Remove`, from an event or from a call, is removed on its own after its `terminate` runs, and the manager and the other handlers go on.
+
+`EventManagerRef::of(&handle)` is the client. `notify` queues an event and returns, and `sync_notify` returns once every handler has handled it, with a `HandlerExit` for each handler that left meanwhile. `add_handler` returns a `HandlerId`; `call(id, call)` reaches that handler's `handle_call` and answers `EventError::NoReply` when it gives no reply; `delete_handler` returns what the handler's `terminate` returned, and `swap_handler(id, f)` replaces a handler in its place and gives `f` that value. `ctx.add_sup_handler(&alarms, handler, map)`, with `alarms` an `EventManagerRef`, adds a handler the calling actor supervises: the actor receives `map(HandlerExit)` once when the handler leaves or the manager ends, and the manager removes the handler when the actor ends. `call` waits 5 seconds by default, so it needs the time driver, and the other calls wait without a bound; `timeout(d)` bounds every call of a reference and `unbounded()` lifts every bound. A call made from the manager's own task answers `EventError::CallingSelf`. See `examples/event_alarms.rs`.
+
+```rust
+struct Count(u32);
+
+impl EventHandler for Count {
+    type Event = String;
+    type Call = ();
+    type Reply = u32;
+
+    fn handle_event(&mut self, _alarm: &String) -> Handled {
+        self.0 += 1;
+        Handled::Keep
+    }
+
+    fn handle_call(&mut self, _: ()) -> (Handled, Option<u32>) {
+        (Handled::Keep, Some(self.0))
+    }
+}
+
+let manager = EventManager::<String, (), u32>::new().spawn().await?;
+let alarms = EventManagerRef::of(&manager);
+let counter = alarms.add_handler(Count(0)).await?;
+alarms.sync_notify("door forced".to_string()).await?;
+assert_eq!(alarms.call(counter, ()).await?, 1);
+```
+
+### Applications
+
+An `Application` is the `application` behaviour: a top actor, usually a supervisor, in a named `ActorSystem`, started and stopped as a unit by an `Applications` controller (`Applications::spawn()`). Its `start(&mut self, system)` spawns the top actor in `system` and returns `AppRoot::of(&top)`; below, `Top` is a supervisor that spawns two workers (see the example). By default (`AppSystem::Own`) an application runs in a system named as itself, shut down at each stop and after a failed start, and reactivated at the next start, and `AppSystem::Shared(name)` uses a system that other applications and your own actors may share, which the controller never shuts down. An actor spawned without `on_system` joins the default system and belongs to no application.
+
+`start(name, kind)` takes a `RestartType` that says what the application's end means for the node, and an application is never restarted. It refuses with `AppError::DependencyNotRunning` unless every name in `dependencies()` runs, and `ensure_all_started` starts the loaded dependencies first and returns the names it started. A stop runs `prep_stop`, stops the top, waits for its subtree, runs `stop`, and shuts down an own system; `stop_all` and `shutdown` stop every running application in reverse start order, and `shutdown` also ends the controller. When something the application owns has not ended within the stop's bounds, `AppStop::held` is true and the application reads `AppState::Held`, answering `AppError::Held` until it has. One start or stop runs per system at a time (`AppError::StartInFlight`, `AppError::StopInFlight`, which a start also gets while `stop_all`, `shutdown` or a node verdict is queued or running), a panic in a hook is caught, and a panic in `start` fails the start. The crate never exits the process: `node_shutdown()` resolves with a `NodeShutdown` once the top of a `Permanent` application ends on its own, the top of a `Transient` one ends on its own with any reason but `Graceful`, or the `start` of a `Permanent` or `Transient` one fails or panics; a stop the controller orders and a start it refuses before it begins set nothing, and the binary decides what to do. See `examples/app_tree.rs`.
+
+```rust
+struct Shop;
+
+impl Application for Shop {
+    fn name(&self) -> &str {
+        "shop"
+    }
+
+    async fn start(&mut self, system: &Arc<ActorSystem>) -> Result<AppRoot, StartError> {
+        let top = Top
+            .spawn()
+            .on_system(system)
+            .named("top")
+            .with_supervision(SupervisionConfig::one_for_one())
+            .await?;
+        Ok(AppRoot::of(&top))
+    }
+}
+
+let apps = Applications::spawn().await?;
+apps.load(Shop).await?;
+apps.start("shop", RestartType::Permanent).await?;
+let rows = apps.shutdown().await?;
+```
+
 ### Timers with Drift Control
 
 ```rust
@@ -673,83 +769,4 @@ Recipes for Erlang/OTP behaviors the crate does not offer directly, built from t
 | Kill latency, or turn atomicity | `kill_grace(Duration::ZERO)` gives Erlang/OTP's kill latency for a callback that awaits; a grace beyond any practical bound keeps every turn whole, and makes every wait that runs on that grace, its parent's stop budget included, last for the grace, which in practice is as long as under `Shutdown::Infinity`, while `stop_within(StopReason::Kill, d)` still aborts after `d`. |
 | Locality | An actor reaches only the actors whose handles it holds, except through its system, which knows every registered actor by id: `get` and `get_by_id` return a typed handle to a registered actor of the type asked for (`get` only for a named one), `actor_ids`, `registered` and `actor_status` read the registry, `stop` and `kill` act on a named actor, and `kill_by_id` on any registered id. |
 | Address identity | An actor's address is its handle's channels; its `ActorId` and name are aliases a restarted child keeps, so a handle to an ended incarnation and one to its successor compare equal: check `is_alive()` or resolve the id again with `get_by_id`. A caller that talks to a restartable actor resolves it by name (`get`) or by id (`get_by_id`) for each call instead of keeping a handle: a lookup that finds nothing is final for an actor that nothing restarts; for a supervised actor it means either that the next incarnation is not registered yet or that its supervisor will not restart it, so bound the retries, and a handle whose send returned `Closed` belongs to an ending incarnation, so wait for it with `wait_stopped` and look the actor up again. |
-| Postpone, stash | Push the message onto a bounded queue in the actor's own fields and replay it from `handle` once the state allows; the queue sits outside the mailbox bound, so cap it yourself. |
-| Delivery at the end | A message accepted while the actor runs a supervisor's final deliveries or `on_stopped` is dropped unhandled; from the return of `on_stopped` (the loop's end under a `Kill`) on, sends are refused. |
-| A send that never blocks | `ActorConfig::default().with_mailbox_capacity(usize::MAX)` (clamped to `Semaphore::MAX_PERMITS`) makes `notify` never wait; the queue then grows without bound, so a flood can exhaust memory. |
-| The `gen_server:stop` order | Send a `Stop` message whose handler calls `ctx.self_handle().stop(..)`, so earlier mail is handled first. |
-
----
-
-## Deep Rust Patterns
-
-### Recurring Timer Messages: `Clone`, Not `Sync`
-
-Recurring timers do not require `A::Message: Sync`. The per-tick factory is a `Box<dyn FnMut() -> Message + Send>` owned by exactly one forwarder task, so `Sync` is never demanded. `.every(msg)` needs `A::Message: Clone` (the factory clones `msg` each tick); `.every_with(|| build_message())` drops the `Clone` bound entirely by calling your factory closure instead. One-shot schedules (`.at()`, `.after()`) need only `Send` - no `Clone`, no `Sync`.
-
-### ActorHandle Equality
-
-Handles implement `PartialEq` based on the `ActorId` and the system the actor was spawned in, not channel identity (a system that was shut down and dropped does not make a later system of the same name its successor, so their handles are never equal):
-
-```rust
-let actor1 = MyActor.spawn().named("foo").await?;
-let actor2 = actor1.clone();
-
-assert_eq!(actor1, actor2);  // Same actor ID
-
-let actor3 = MyActor.spawn().named("bar").await?;
-assert_ne!(actor1, actor3);  // Different actor ID
-```
-
-This allows handles to be used in `HashSet` and `HashMap` for deduplication and routing. Clippy's `mutable_key_type` lint fires on such a key because a handle holds channels, but its `Hash` and `Eq` read only the `ActorId` and the identity of its system, which never change, so allowing the lint at that site is sound.
-
-### Bounded Mailbox Backpressure
-
-When the mailbox is full:
-- `notify().await` **blocks** until space is available, except from the actor's own task, where it answers `SendError::Full` at once
-- `try_notify()` returns `TrySendError::Full` immediately
-- `send().await` **blocks** (same as notify, just with response)
-
-The default capacity is 64. A larger capacity is a per-actor opt-in through `ActorConfig::with_mailbox_capacity`, and `usize::MAX` (clamped to `tokio::sync::Semaphore::MAX_PERMITS`) makes the mailbox effectively unbounded: `notify` and `send` then never wait for room, so a producer that outruns the actor grows the queue until the process runs out of memory. Memory is taken as messages queue, and each queued message holds its value (and a reply channel for a send); size the capacity for the largest burst you accept to hold.
-
-During a `MissPolicy::CatchUp` burst the extra missed ticks are sent without waiting for room. When the mailbox is full the burst pauses, and the timer then waits for room before it sends the pending tick, so no tick is lost and the actor is never blocked by its own timer.
-
----
-
-## API at a Glance
-
-### SpawnBuilder Chain
-
-```rust
-actor.spawn()                     // Start the builder
-    .named("my-actor")            // Optional: assign a name/ID
-    .on_system(&sys)              // Optional: target a specific ActorSystem
-    .with_config(config)          // Optional: custom ActorConfig
-    .supervisor()                 // Optional: supervise children (default config)
-    .with_supervision(sup_config) // Optional: enable supervision (custom config)
-    .start_timeout(dur)           // Optional: bound init instead of waiting forever
-    .kill_grace(dur)              // Optional: time between a Kill and the abort (default 120 ms)
-    .detached()                   // Optional, instead of .start_timeout: skip the init ack
-    .await?;                      // Finalize: registers and spawns the task, then awaits pre_start + on_started (not when detached)
-```
-
-`.start_timeout(dur)` and `.detached()` both set how the spawn treats the init ack, and the one called last wins: chain one of them.
-
-A root spawn can watch or link the new actor for the actor that spawns it, as Erlang/OTP's `spawn_monitor/1` and `spawn_link/1` do: chain `.monitored(&mut ctx, map)` (it resolves to the handle and a `MonitorId`), `.linked(&mut ctx)` (it resolves to the handle), or `.monitored(&mut ctx, map).linked()` for both, as the last call before `.await`. The monitor or link is made after the init ack, so an actor that ends at once is never missed, and a start that fails (`pre_start` or `on_started` returns `Err`, `start_timeout` expires, the name is taken) returns its `SpawnError` with nothing armed and no `Down` or exit signal following. A `.detached()` spawn has no ack to wait for, so its monitor or link is made as soon as the task is spawned. A spawn made by an actor that is stopping returns `SpawnError::OwnerStopping` before anything is spawned. A supervised child has no such form: after `spawn_child(..).await`, `ctx.monitor(&child, map)` or `ctx.link(&child)` is the same registration, and a child whose first start fails still sends its `Down`, because that start is not awaited.
-
-A spawn waits for `pre_start` and `on_started` before it resolves, so spawning many actors one after another pays that wait once per actor. To start many at once, run the spawns together (`futures::future::join_all`, or a `tokio::task::JoinSet` that you keep to a bounded number in flight) so the waits overlap, and spawn from a task on the runtime rather than from a plain thread that blocks on each one. For an actor whose start failure nobody needs to hear about, `.detached()` resolves once the task is spawned; a failing `pre_start` is not reported to the spawn. A call that has not been answered when the actor ends gets no reply: one still queued is dropped without running, and one the actor was handling when a `Kill` ended its task is cut short, so a `send` returns `AskError::ResponseDropped` (the handler may have run in part); later calls return `Closed`, and `wait_stopped()` reports the end.
-
-### ActorHandle Methods
-
-| Method | Description |
-|--------|-------------|
-| `notify(msg)` | Fire-and-forget (awaits mailbox space) |
-| `try_notify(msg)` | Non-blocking fire-and-forget |
-| `send(msg)` | Request-response (awaits processing); a call from the actor's own task to itself returns `AskError::CallingSelf` |
-| `send_timeout(msg, dur)` | Request-response bounded by one deadline spanning enqueue + response |
-| `stop(reason)` | Stop via the stop lane (bypasses the system channel and a full mailbox alike) |
-| `stop_within(reason, within)` | Stop bounded by `within`; reports `StopOutcome` (Graceful/Killed/Aborted/Unresponsive) |
-| `get_status()` | Rich introspection snapshot via system channel (queue plane); it reports the actor's trap flag and the counts of its links, joined groups, group monitors, aliases and requests in flight |
-| `status()` | Instant lifecycle phase from the runtime plane (answers even for a hung actor) |
-| `wait_stopped()` | Awaits the actor's terminal state and returns its stop reason |
-| `observe_subtree()` | Returns a `SubtreeObserver` for this incarnation's subtree, before or after the actor's end; its `wait_ended()` waits for the actor's end and then for every actor below it, and answers `Ended`, or `Unresponsive` when the stop budgets the subtree carries ran out with an actor still running; the answer is for the caller alone, and the wait records no verdict on any supervisor |
-| `is_alive()` | Check if actor is still running: false from the moment its message loop is done (the return of `on_stopped`, or the loop's end under a `Kill`), through the teardown of the actor's children, while `status()` reads `Stopping` until `Stopped`
+| Postpone, stash | Push the message on

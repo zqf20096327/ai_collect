@@ -1,4 +1,6 @@
-<p align="center">🦀</p>
+<p align="center">
+  <img src="assets/showcase/mascot.svg" alt="Decapod kawaii crab mascot" width="136" />
+</p>
 
 <h1 align="center">Decapod</h1>
 
@@ -18,6 +20,14 @@
   <a href="https://github.com/DecapodLabs/decapod/blob/master/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <a href="assets/constitution.json#L5"><img alt="Constitution: core/DECAPOD" src="https://img.shields.io/badge/Constitution-core%2FDECAPOD-0A66C2"></a>
   <a href="https://decapodlabs.github.io/accountable-agentic-execution/"><img alt="Research" src="https://img.shields.io/badge/Research-Accountable%20Agentic%20Execution-blueviolet"></a>
+</p>
+
+<p align="center">
+  <a href="assets/showcase/generated/decapod-showcase.mp4"><img src="assets/showcase/generated/decapod-showcase.gif" alt="Decapod governance kernel: persistent state, enforced boundaries, and commit-bound proof." width="760"></a>
+</p>
+
+<p align="center">
+  <a href="https://decapodlabs.github.io/">Decapod Labs</a> · <a href="https://decapodlabs.github.io/decapod/">Documentation</a>
 </p>
 
 Decapod gives coding agents a persistent way to check their work against the project's intent. Requirements, decisions, task ownership, and validation evidence stay with the repository across agents and sessions.

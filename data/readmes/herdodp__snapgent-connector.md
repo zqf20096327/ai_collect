@@ -10,7 +10,7 @@
 
 [![License](https://img.shields.io/badge/LICENSE-GPL--3.0-FACC15?style=flat-square&labelColor=111111&logo=opensourceinitiative&logoColor=FACC15)](LICENSE)
 [![Manifest](https://img.shields.io/badge/MANIFEST-V3-FACC15?style=flat-square&labelColor=111111&logo=googlechrome&logoColor=FACC15)](https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3/)
-[![Release](https://img.shields.io/badge/RELEASE-V3.9.5-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.5)
+[![Release](https://img.shields.io/badge/RELEASE-V3.9.10-FACC15?style=flat-square&labelColor=111111&logo=semanticrelease&logoColor=FACC15)](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.10)
 [![MCP](https://img.shields.io/badge/PROTOCOL-MCP-FACC15?style=flat-square&labelColor=111111&logo=modelcontextprotocol&logoColor=FACC15)](https://modelcontextprotocol.io/)
 
 </div>
@@ -145,7 +145,7 @@ npm run dist     # build the Windows installer into dist/
 
 **① Load the extension**
 
-1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.5).
+1. Download and extract the [latest SnapgentV3 release](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.10).
 2. Open `edge://extensions` (Edge) or `chrome://extensions` (Chrome).
 3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the `snapgent-extension` folder.
@@ -196,6 +196,32 @@ On macOS, Roblox Studio MCP is detected at
 Linux does not auto-detect Roblox Studio MCP. If you have a compatible Linux
 MCP executable, set `ZS_STUDIO_MCP_PATH` to its path before running the
 launcher; Roblox Studio itself may not be available on your Linux distribution.
+
+**Optional: use the Word target (`.docx`)**
+
+The **Word** target works differently from VS Code. It does not follow the open VS Code workspace, and it does **not** need Microsoft Word to be installed. It runs the `office-word-mcp-server` package, which creates, reads and edits `.docx` files directly on disk.
+
+*Requirements*
+
+- **`uv`** installed, so that `uvx` is available. Get it from [docs.astral.sh/uv](https://docs.astral.sh/uv/).
+- Internet access on the first run, because `uvx` downloads `office-word-mcp-server` when it is first used. This first download can take a while, so wait for it to finish and watch its progress in the bridge console window.
+- The bridge started with the normal launcher (`start.bat`, `MacOS_Start.command` or `Linux_Start.sh`) **after** `uv` is installed.
+
+*How it is set up*
+
+`setup-config.ps1` (Windows) and `setup-config.py` (macOS/Linux) look for `uvx` and, when found, register a `word` server in the local `config.json`. When `uv` is missing, the launcher prints `uv not found; Word MCP not configured` and the other targets keep working. If you install `uv` later, close the launcher and start it again.
+
+*How to use*
+
+1. Install `uv`, then start the launcher. Look for `Word MCP detected (uvx)` in its output.
+2. Open a supported AI chat site, start a new chat and click **Start**.
+3. In the **MCP target** selector on the chat bar, choose **Word**. If it is not listed, open **MCP servers** from the three-dots (...) menu on the snapgent bar and tick `word`, then reload the extension and refresh the chat tab.
+4. Describe the document you want, for example: *"Create a report in `D:\Documents\report.docx` with a title, three headings and a table."* If you give only a file name (for example `report.docx`), the file is created inside the main Snapgent folder, the same folder that contains `start.bat`, `bridge.exe` and `config.json`, because this target does not use the VS Code workspace folder. To save it somewhere else, give the full path of the `.docx` file.
+5. To work on code again, switch the target back to **VS Code**.
+
+**First run:** the first time you use the Word target, `uvx` downloads `office-word-mcp-server` and its dependencies. Wait until the download finishes before sending more requests, and follow the progress in the bridge console (the terminal window running `start.bat`, `MacOS_Start.command` or `Linux_Start.sh`). If the Word target seems stuck or does not respond right after you select it, check that console first. Later runs are usually faster because `uvx` caches the package.
+
+Tip: close the `.docx` file in Word (or any other viewer) before asking the AI to edit it, so the file is not locked.
 
 **④ Start a session**
 
@@ -302,6 +328,6 @@ snapgent-full/
 
 **Built for creators who want to spend more time making.**
 
-[Latest release V3.9.5](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.5) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
+[Latest release V3.9.10](https://github.com/herdodp/snapgent-connector/releases/tag/V3.9.10) · [Issues](https://github.com/herdodp/snapgent-connector/issues) · [License](LICENSE)
 
 </div>

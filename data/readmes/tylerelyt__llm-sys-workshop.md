@@ -2,13 +2,13 @@
 
 # 动手学习大模型系统
 
-从模型原理，到知识应用与 Agent 实战。
+理解模型如何学习与生成，动手构建知识应用与 Agent。
 
 [模型基础](#模型基础) · [数据与适配](#数据与适配) · [知识与推理](#知识与推理) · [Agent 与 Harness](#agent-与-harness) · [快速开始](#快速开始) · [参考阅读](#参考阅读)
 
 </div>
 
-模型提供理解与生成能力，检索、工具、状态和反馈将这些能力组织成可以执行的任务。这里从模型原理与数据出发，通过中文讲解、实现代码和对照实验，逐步构建知识应用与 Agent。
+模型负责理解、推理与生成，Harness 管理上下文、工具执行和任务状态。这里结合中文讲解、代码实验与参考阅读，学习模型原理、数据与适配、知识与推理，以及 Agent 的构建，理解 **Agent = Model + Harness** 怎样落实为一个系统。
 
 <a id="选择学习入口"></a>
 
@@ -19,7 +19,14 @@
   <img src="images/learning-map.svg" alt="从模型能力到系统能力">
 </picture>
 
-从[模型接口与 Session](chapter4/model_service/README.md)理解一次请求，再进入[文档问答](chapter6/vector_qa/README.md)、[工具循环](chapter8/manual_tool_loop/README.md)和[Agent Harness](chapter9/mcp_harness/README.md)。研究模型怎样学习，则从[冻结表示与分类头](chapter3/README.md)进入[指令与偏好数据](chapter5/README.md)。
+| 想弄清什么 | 学习内容 | 动手入口 |
+| --- | --- | --- |
+| 模型怎样学习、怎样提供能力 | 表示学习、Token、生成接口与无状态推理 | [冻结表示与分类头](chapter3/frozen_classifier/README.md) · [模型接口与 Session](chapter4/model_service/SESSION.md) · [Token 与生成预算](chapter4/model_service/TOKENS.md) |
+| 任务要求怎样进入模型 | 指令、示例、训练候选与偏好数据 | [数据与适配](#数据与适配) · [训练数据与运行时示例](chapter5/README.md#连接训练与应用) |
+| 外部知识与求解过程怎样组织 | 提示、文档、检索、结构化查询与推理编排 | [知识应用](chapter6/README.md) · [推理方法](chapter7/README.md) |
+| 模型怎样执行并持续完成任务 | 工具循环、上下文、记忆、权限、协议与恢复 | [工具与记忆](chapter8/README.md) · [Harness 的组织](chapter9/README.md) |
+
+可以按主题直接进入独立实验。第一次调用模型，从[模型接口与 Session](chapter4/model_service/SESSION.md)开始；搭建知识应用，从[文档问答](chapter6/vector_qa/README.md)开始；已有调用经验，进入[工具循环](chapter8/manual_tool_loop/README.md)和[最小 Harness](chapter9/mcp_harness/README.md)。
 
 模型基础与系统机制的原理见[配套专栏](#配套专栏)和[参考阅读](#参考阅读)，各主题的实践与代码在[完整索引](#练习索引)中可以直接打开。
 
@@ -100,7 +107,9 @@ python chapter4/model_service/maas_session.py
 
 | 实践 | 重点 | 代码 |
 | --- | --- | --- |
-| [标记化、模型服务与无状态推理](chapter4/model_service/README.md) | Token、接口消息、输出预算与 Session | [源码](chapter4/model_service/maas_session.py) |
+| [模型接口与 Session](chapter4/model_service/SESSION.md) | MaaS、请求消息、用量与应用保存的历史 | [源码](chapter4/model_service/maas_session.py) |
+| [Token 与生成预算](chapter4/model_service/TOKENS.md) | 标记化、逐 Token 预测与文本续写 | [源码](chapter4/model_service/example1.py) |
+| [Completion 与 Chat 输入](chapter4/model_service/CHAT.md) | 原始文本、角色消息、聊天模板与训练方式 | [源码](chapter4/model_service/example2.py) |
 | [冻结嵌入与线性分类](chapter3/frozen_classifier/README.md) | 冻结表示、分类头权重与留出集结果 | [源码](chapter3/frozen_classifier/dashscope_lr_sentiment.py) |
 
 ### 数据与适配
@@ -132,7 +141,10 @@ python chapter4/model_service/maas_session.py
 | [多模态图像分析](chapter6/image_context/README.md) | 原图与 OCR 保留的信息 | [源码](chapter6/image_context/image_analyzer.py) |
 | [文档提取与问答](chapter6/document_qa/README.md) | 读取范围、页码与原文依据 | [源码](chapter6/document_qa/document_processing.py) |
 | [法律文书分析](chapter6/legal_qa/README.md) | 条款冲突、原文更新与未知信息 | [源码](chapter6/legal_qa/document_qa.py) |
-| [CoT 与推理编排](chapter7/cot_workflows/README.md) | 多步求解、任务交接与约束保留 | [源码](chapter7/cot_workflows/example1.py) |
+| [CoT 提示](chapter7/cot_workflows/PROMPTING.md) | 单次请求中的求解提示与独立复算 | [源码](chapter7/cot_workflows/example1.py) |
+| [多轮上下文传递](chapter7/cot_workflows/CONTEXT.md) | 应用传入的中间结果与原始约束 | [源码](chapter7/cot_workflows/example2.py) |
+| [角色与任务交接](chapter7/cot_workflows/HANDOFF.md) | 分工、交接内容与代码行为 | [源码](chapter7/cot_workflows/example3.py) |
+| [检查点与停止条件](chapter7/cot_workflows/CHECKPOINTS.md) | 候选结果、模型评议与失败后停止 | [源码](chapter7/cot_workflows/example4.py) |
 | [自一致性](chapter7/self_consistency/README.md) | 多次采样、投票、错误与弃权 | [源码](chapter7/self_consistency/example1.py) |
 
 ### Agent 与 Harness
@@ -206,6 +218,8 @@ python chapter4/model_service/maas_session.py
 - **推理方法**：[CoT](https://arxiv.org/abs/2201.11903)、[Self-Consistency](https://arxiv.org/abs/2203.11171)。更多见[推理与搜索](chapter7/README.md#参考阅读)。
 - **工具与记忆**：[ReAct](https://arxiv.org/abs/2210.03629)、[MemGPT](https://arxiv.org/abs/2310.08560)。更多见[智能体构建](chapter8/README.md#参考阅读)。
 - **Harness 与上下文工程**：[构建 Manus 的上下文工程经验](https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus)。更多见[认知架构与交互协议](chapter9/README.md#参考阅读)。
+
+Agent 如何在持续运行中积累经验、维护记忆和更新方法，见[动手学习自进化智能体](https://github.com/tylerelyt/self-evolving-agent-harness)。
 
 ## 一起动手
 

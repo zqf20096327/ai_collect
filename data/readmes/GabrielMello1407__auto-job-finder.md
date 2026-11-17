@@ -32,21 +32,21 @@
 ## What it does
 
 1. **Builds your profile** from whatever you have: a resume (PDF or DOCX), your LinkedIn PDF, a portfolio, GitHub, some text, or by answering questions.
-2. **Finds jobs** on job boards, on the Gupy portal (Brazil) and across the web (LinkedIn, Indeed), and **scores each one** against your profile: fit, gaps, dealbreakers and scam signals. The freshest, best-fitting jobs come first, and possible ghost jobs (old, reposted, talent pools) are flagged. The same job posted on several sites shows up once, and jobs that already closed are dropped before a package is made. A job you got through a referral, an e-mail or WhatsApp works too, even without a link: the agent looks for the official posting and the company on the web and checks whether the job is real.
+2. **Finds jobs** on job boards, on the Gupy portal (Brazil), on Google for Jobs (with a free [SerpApi](https://serpapi.com/users/sign_up) key) and across the web (LinkedIn, Indeed), and **scores each one** against your profile: fit, gaps, dealbreakers and scam signals. The freshest, best-fitting jobs come first, and possible ghost jobs (old, reposted, talent pools) are flagged. It can search on its own every day, even with the app closed (Windows, macOS and Linux), take a whole job alert e-mail at once, and follow the companies you like. The same job posted on several sites shows up once, and jobs that already closed are dropped before a package is made. A job you got through a referral, an e-mail or WhatsApp works too, even without a link: the agent looks for the official posting and the company on the web and checks whether the job is real.
 3. **Prepares a package** for every good job:
    - an ATS-friendly resume tailored to the job, in PDF;
    - a cover letter, when the market expects one;
    - the application e-mail, messages for the recruiter, a follow-up and a thank-you note, with the e-mail ready to open in your mail program (resume already attached) or in Gmail;
    - a short cover message for the platforms' "message" field;
-   - a sheet with the fields that application platforms ask for (Gupy, InHire, Greenhouse...), ready to copy, with your standard answers (salary, availability, work authorization);
+   - a sheet with the fields that application platforms ask for (Gupy, InHire, Greenhouse...), ready to copy, with your standard answers (salary, availability, work authorization), plus an optional browser bookmark that fills those fields in for you (it never clicks Submit);
    - step-by-step instructions to apply through the right channel;
    - answers to application-form questions ("Why do you want to work here?"), typed or read from a screenshot of the form, which you refine in a chat.
 4. **Helps you ask for a referral:** LinkedIn searches for people at the company (you open them; the agent never goes into LinkedIn) and short, honest messages.
-5. **Tracks your applications:** reminds you of up to two follow-ups, prepares an interview guide, records how far each rejection went and shows on a **Results** page what gets more replies (channel, timing, triage score). The ideas behind these features come from [research on hiring](docs/how-it-works.md#research-behind-the-features).
+5. **Tracks your applications:** reminds you of up to two follow-ups, prepares an interview guide, records how far each rejection went and shows on a **Results** page what gets more replies (channel, timing, triage score, and which version of your resume). The ideas behind these features come from [research on hiring](docs/how-it-works.md#research-behind-the-features).
 6. **Looks after your LinkedIn:** writes a plan to attract recruiters and reviews your current profile, showing what is right, what is missing and what to fix.
 7. **Keeps up with your career:** tell it about something new (a project, a job, a course) and the AI proposes the profile changes. You review the before and after, and your resumes are rebuilt. It also points out the results on your resume that lack a number, for you to fill in.
 
-It works with the AI you **already have**: a **Claude**, **ChatGPT** (Codex) or **Google** (Gemini) subscription, no API key needed. It also takes APIs: Anthropic, OpenAI or compatible (OpenRouter, Groq, Ollama), Gemini, Amazon Bedrock and Google Vertex.
+It works with the AI you **already have**: a **Claude**, **ChatGPT** (Codex) or **Google** (Gemini) subscription, no API key needed. It also takes APIs: Anthropic, OpenAI or compatible (OpenRouter, Groq, Ollama), Gemini, Amazon Bedrock and Google Vertex. The web search, the part that spends the most, can use a different AI than the rest.
 
 > **You stay in control.** The agent prepares; you review and send. It never applies for you, never sends e-mails and never touches your LinkedIn.
 
@@ -88,7 +88,7 @@ The first time, it opens the **profile setup**: drop in your resume and answer w
 
 1. **🔎 Buscar vagas** (search jobs) or **🚀 Piloto automático** (autopilot): searches, scores and builds packages for the best jobs. Got a job from someone? **➕ Colar vaga** (paste a job), even without a link.
 2. In **Para decidir** (to decide), build the package for the jobs worth it.
-3. In **Prontas** (ready), check the resume, apply and click **✅ Já me candidatei** (I applied).
+3. In **Prontas** (ready), check the resume, apply and click **✅ Já me candidatei** (I applied). With several ready, **📨 Modo candidatura** (apply mode) goes through them one by one: link, form sheet, short message and "sent" on one screen.
 4. In **Em andamento** (in progress), send the follow-up and record interviews, offers or rejections.
 5. When your career changes, use **Perfil → ➕ Contar uma novidade** (Profile → tell something new).
 

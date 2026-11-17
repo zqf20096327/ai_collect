@@ -258,6 +258,47 @@ differs, when the difference is within run-to-run noise, or when the noise is
 larger than the allowed regression, so a noisy runner cannot pass by chance.
 The same check ships as a GitHub Action; see [Perf gate in CI](#perf-gate-in-ci).
 
+### Import vLLM bench and AIPerf results
+
+`import` converts results you already have into an
+`llmtracefx.imported_benchmark` artifact, without rerunning:
+
+```bash
+uv run llmtracefx-optimizer import vllm-bench vllm-result.json --output runs/base-0.json
+uv run llmtracefx-optimizer import aiperf profile_export_aiperf.json --output runs/base-0.json
+```
+
+`vllm-bench` reads the file written by `vllm bench serve --save-result`.
+`aiperf` reads `profile_export_aiperf.json` (schema 1.0 to 1.7). The artifact
+records the source tool, its version if the file has one, and the sha256 of the
+source file. Statistics the tool computed, such as `p99_ttft_ms`, are labelled
+`imported_derived`, and counts it reported are labelled `imported_reported`.
+They are not LLMTraceFX measurements. Missing fields are omitted and listed,
+never guessed. Malformed files, unsupported AIPerf schemas, cancelled or
+incomplete runs, runs mixing models or phases, and multi-document
+`--append-result` files are refused with exit code 2. Without `--output` the
+artifact is written to stdout.
+
+Imported artifacts work with `gate` only. Gate N baseline imports against N
+candidate imports from the same tool, model, endpoint and load, naming a metric
+and statistic:
+
+```bash
+uv run llmtracefx-optimizer gate --baseline runs/base --candidate runs/head \
+  --metric ttft_ms.p99
+```
+
+Runs are comparable only when their total input tokens match, and for latency
+metrics their total output tokens too. Use a fixed dataset and seed, and for
+vLLM pass `--ignore-eos` so every run generates the same number of tokens.
+Otherwise the gate reports inconclusive. Runs with failed requests are not
+used.
+
+They cannot be used with `compare` (no per-prompt hashes or correctness
+results), mixed with LLMTraceFX records, or gated across tools. See
+[`docs/ecosystem-gap-analysis.md`](docs/ecosystem-gap-analysis.md) for the
+full mapping and refusal rules.
+
 ### Verification and resumability
 
 The workload catalog covers code completion, structured JSON, and prose
@@ -474,7 +515,7 @@ run cannot be replayed into another. No account, workspace, or profile
 identifier may appear in it.
 
 `run` would then import the SDK, probe it against the pinned and inspected Modal
-1.5.5 API surface, and validate the standard local Modal profile with a
+1.6.4 API surface, and validate the standard local Modal profile with a
 read-only probe whose output is discarded, all before the app module is
 imported or any resource-creating or paid provider operation begins. Only then
 would it execute staging, verification, the eager canary, the
@@ -661,8 +702,8 @@ uv run llmtracefx-optimizer optimize \
 | Metal and `xctrace` | macOS, full Xcode command-line tools, and a locally available Instruments template | `uv run llmtracefx-optimizer instruments capability` |
 | Hosted API collection | An HTTPS OpenAI-compatible endpoint and a provider key stored in an environment variable | Use `collect-api --dry-run` before making a request |
 | Modal planning | No Modal account or SDK is required | `uv run llmtracefx-deploy plan --help` |
-| Modal execution | An approved plan, current price inputs, Modal account and auth, optional `modal` extra, proxy auth token, pinned model revision, and pinned serving image | `uv sync --locked --extra modal` (the constraint is still `>=1.0.5`, but the lock now resolves `modal==1.5.5`) |
-| Modal L4 crossover execution | Currently refused: the sealed design is infeasible on an L4. Would otherwise need a signed authorization, cleared credential-exposure attestation, fresh rate receipt, run-bound signed headroom, and the exactly pinned SDK | `uv sync --locked --extra modal-l4-execute` (installs `modal==1.5.5`) |
+| Modal execution | An approved plan, current price inputs, Modal account and auth, optional `modal` extra, proxy auth token, pinned model revision, and pinned serving image | `uv sync --locked --extra modal` (the constraint is still `>=1.0.5`, but the lock now resolves `modal==1.6.4`) |
+| Modal L4 crossover execution | Currently refused: the sealed design is infeasible on an L4. Would otherwise need a signed authorization, cleared credential-exposure attestation, fresh rate receipt, run-bound signed headroom, and the exactly pinned SDK | `uv sync --locked --extra modal-l4-execute` (installs `modal==1.6.4`) |
 
 Hosted API requests, Modal staging, deployment, health checks, and inference can
 incur provider charges. None runs from the quickstart or from
@@ -873,6 +914,11 @@ outputs. Set `fail-on-inconclusive: "false"` to report without failing when
 the runs are too few or too noisy to decide. `@v1` follows the latest 1.x
 release. Pin a release tag such as `@v1.11.0` or a commit SHA for fully
 reproducible CI.
+
+The baseline and candidate can also be directories of imported vLLM bench or
+AIPerf artifacts (see
+[Import vLLM bench and AIPerf results](#import-vllm-bench-and-aiperf-results)),
+with a metric such as `ttft_ms.p99`.
 
 The same check runs locally:
 

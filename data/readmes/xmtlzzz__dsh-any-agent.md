@@ -70,16 +70,13 @@ from DSH's tool surface is proxied, duplicated or preloaded.
 
 **Dispatch on demand**: `dsh_send` passes a goal, not a tool manifest, and the caller
 does not need to know DSH's tool list. The DSH agent picks what it needs — including
-capabilities added after this server was built (for example the experimental Agent
-Teams). This server does not grow one MCP tool per DSH feature.
+capabilities added after this server was built (for example Agent Teams). This
+server does not grow one MCP tool per DSH feature.
 
 **Team mode (opt-in since 0.5.0)**: off by default. Run `dsh-any-agent team on`
-and reconnect; the profile switches to `dsh-team` (the experimental Agent Teams
-packages), and `dsh_send` then adds a short "form a team if this needs parallel or
-multi-role work" line; simple tasks are not forced into a team. Turn it off with
-`dsh-any-agent team off`, or for one call with `dsh_send(team=false)`. The team
-profile disables the legacy `subagent` tools and replaces them with nine team
-tools; teammates share one workspace.
+and reconnect to use the `dsh-team` profile by default. From DSH `0.2.2-rc.2`, new
+sessions use DSH's shared task board and standard subagent tools. Earlier DSH
+versions use the experimental team tools. Teammates share one workspace.
 
 **Only dispatch semantics become tools**: start, send, read, get, review, interject,
 interrupt, approve, queue, inbox, status, release, takeover, doctor. No file I/O, no
@@ -88,8 +85,7 @@ shell, no editor, no task board.
 **When to add something outside DSH**: only when you need a *guarantee* rather than a
 *behavior* — for example, several top-level sessions editing the same repository need
 worktree isolation (`dsh_start(isolation="worktree")` gives each conversation its own git
-worktree and branch). For collaboration, prefer letting DSH run the team itself
-(mount the experimental team packages into the profile; teammates share one workspace).
+worktree and branch). For collaboration, prefer letting DSH run the team itself.
 
 ## Quick start
 
@@ -141,7 +137,7 @@ Only using Cursor or VS Code? Add it in one click instead (runs `npx -y dsh-any-
 | `dsh_get` | Conversation details and turn results. Pass `run_id` or `client_run_id` for a specific turn, or use the conversation ID alone for the current or most recently started turn. Retained results and review tickets remain queryable after a restart |
 | `dsh_review` | **Caller review.** Submit `pass` / `partial` / `fail` for a completed run, with notes and optional findings. The verdict is written to `<state dir>/reviews/<conversation_id>/<run_id>.review.json` and back into the in-memory run and sentinel. Advisory by default: it never blocks the next `dsh_send` |
 | `dsh_interject` | Interject while it's busy: `interject` = stop and redirect, `queue` = wait for the current turn, then speak. **This round writes a sentinel too**, and the reply carries its `sentinel_file`. In both modes, and on an idle conversation, it **blocks until the new turn ends**; to queue without blocking, use `dsh_send(queue=true)` |
-| `dsh_takeover` | **Preempt the write lock.** The only way out when another DSH process holds it (DSH has no steal API — preempting means killing the holder). It classifies the holder first: our own orphaned child → taken automatically; another live instance → needs `force`; **GUI/unknown → never killed**, reported instead |
+| `dsh_takeover` | **Preempt the write lock.** Verifies the holder’s OS start time before terminating it. Another live instance also requires `force=true`. See [Write locks](docs/en/locking.md) for recovery when the holder’s identity cannot be verified. |
 | `dsh_interrupt` | Stop the current turn without sending anything new (the conversation stays healthy); to stop and redirect, use `dsh_interject` |
 | `dsh_release` | Hand the conversation back (frees the write lock so you can open it in your own DSH GUI). Still resumable; `forget=true` writes a tombstone — by-id lookups are refused until you delete `$DSH_HOME/.dsh-any-agent-forgotten/<id>.json` |
 | `dsh_approval_decide` | Adjudicate a pending approval (only when `on_approval=ask`) |
@@ -205,11 +201,8 @@ dsh-any-agent dashboard --open
 
 ## 🧑‍🤝‍🧑 Team mode (opt-in)
 
-Off by default. Run `dsh-any-agent team on` and reconnect; the profile switches
-to `dsh-team` (the experimental Agent Teams packages) and `dsh_send` adds a
-short "form a team when this needs parallel or multi-role work" line. Simple
-tasks are not forced into a team. Turn it off with `dsh-any-agent team off`, or
-for one call with `dsh_send(team=false)`.
+Run `dsh-any-agent team on` or `dsh-any-agent team off`, then reconnect. DSH
+`0.2.2-rc.2` and newer remember the team setting for each session.
 
 > Full steps (commands, verification, rollback) are in [Team mode](docs/en/team.md).
 

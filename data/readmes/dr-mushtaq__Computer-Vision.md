@@ -334,7 +334,7 @@ explore transformer architecture in the context of computer vision and learn how
 | [**2- Image Classification with KNN**](https://coursesteach.com/mod/page/view.php?id=10661&forceview=1)| [1](https://drive.google.com/file/d/1PsHeoxMSC88JvgHKsXI3rH5kA9-G_3qH/view?usp=sharing)[-2](https://youtu.be/phzKCvyxcuE) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 | [**3-Linear Classifiers**](https://coursesteach.com/mod/page/view.php?id=10665&forceview=1)| [1](https://drive.google.com/file/d/17d0wLGMGpFQOfm3Tzr1fq5Y26QqndUww/view?usp=sharing)[-2](https://youtu.be/1TOGEhQ-DxA?si=mpm89o03vE9rEbL7)[-3](https://youtu.be/-aYbbWAjtyo?si=8u-mvjQ0OumYnP3J) |[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 | [**4-Logistic Regression Training Gradient Descen**](https://coursesteach.com/mod/page/view.php?id=10670)| [1](https://drive.google.com/file/d/1enR0IXMgAFYIC6SfPgIHzZTr9DVfoaxd/view?usp=sharing)[-2](https://youtu.be/o0u7KnKbxpU?si=arXPS3W34NR23mcH)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
-
+| [**5-Mini-Batch Gradient Descent**](https://coursesteach.com/mod/page/view.php?id=10670)| [1](https://drive.google.com/file/d/110HfFG8x-P4sUJvoKU3bdgXtcs3Lhirw/view?usp=sharing)[-2](https://youtu.be/ISeqjXjurek?si=RPn6aV2SpJQOeBiw)|[![Colab icon](https://img.shields.io/badge/Colab-Open-blue.svg?logo=colab&logoColor=white)](https://github.com/dr-mushtaq/Computer-Vision/blob/main/notebooks/Unit%203%20-%20Vision%20Transformers/transfer-learning-image-classification.ipynb)|---|---|
 
 </details>
 
@@ -507,6 +507,4 @@ delve into the realm of zero-shot learning in computer vision, covering aspects 
 
 ## 🔹Chapter4: - **Colab Notebooks**
 | Title/link| Description | Code |
-|---|---|---|
-|[**✅1- Top Computer Vision Google Colab Notebooks**](https://www.qblocks.cloud/creators/computer-vision-google-colab-notebooks)|Here is a list of the top google colab notebooks that use computer vision to solve a complex problem such as object detection, classification etc:|---|
-|[**✅2-roboflow/Notebooks**](https://github.com/roboflow/notebooks)|This repository offers a growing collection of computer vision tutorials. Learn to use SOTA models like YOLOv11, SAM 2, Floren
+|---|--

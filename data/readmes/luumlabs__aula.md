@@ -1,139 +1,158 @@
+<!-- Keep in sync with README.es.md: same sections in the same order, same media (the -es stills). -->
 <p align="right"><b>English</b> · <a href="README.es.md">Español</a></p>
 
 <p align="center">
-  <img src="docs/media/aula-icon.png" width="128" height="128" alt="Aula's app icon: a brick-red arch drawn in ink and watercolor, with the sun rising inside it">
+  <img src="docs/media/landing/icon-176.png" width="88" height="88" alt="Aula's app icon: a brick-red arch drawn in ink and watercolor, with the sun rising inside it">
 </p>
 
 <h1 align="center">Aula</h1>
 
+<h3 align="center">Turn your class notes into a course, with an AI tutor that studies it with you.</h3>
+
 <p align="center">
-  <b>Your notes become a course. Then Aula studies it with you.</b><br>
-  A study app for macOS, Windows and Linux, with a companion for iPad and iPhone.<br>
-  Give it your notes, slides, recordings and past exams, or just a topic.
+  A free, open-source desktop study app. Drop in your lecture notes, slides or past exams, bring them from Moodle or
+  Canvas, or just name a topic, and get lessons, exercises checked as you answer, flashcards and mock exams. Works with
+  the ChatGPT or Claude plan you already have, or a free local LLM that runs offline.
 </p>
 
 <p align="center">
-  <a href="https://github.com/luumlabs/aula/releases/latest"><img src="https://img.shields.io/github/v/release/luumlabs/aula?style=flat-square&label=download&color=1d1d1f" alt="Latest release"></a>
-  <a href="LICENSE.md"><img src="https://img.shields.io/badge/license-AGPL--3.0-B9553A?style=flat-square" alt="License: AGPL-3.0"></a>
-  <img src="https://img.shields.io/badge/macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-6b6b6b?style=flat-square" alt="macOS, Windows and Linux">
-  <img src="https://img.shields.io/badge/status-early%20access-D9822B?style=flat-square" alt="Status: early access">
-  <a href="https://www.reddit.com/user/astrolafi"><img src="https://img.shields.io/badge/Reddit-u%2Fastrolafi-FF4500?style=flat-square&logo=reddit&logoColor=white" alt="Follow u/astrolafi on Reddit"></a>
+  <a href="https://github.com/luumlabs/aula/releases/latest"><img src="https://img.shields.io/github/v/release/luumlabs/aula?style=flat-square&label=download&color=B4502F" alt="Download the latest release"></a>
+  <a href="LICENSE.md"><img src="https://img.shields.io/badge/open%20source-AGPL--3.0-1d1d1f?style=flat-square" alt="Open source under the AGPL-3.0 license"></a>
 </p>
 
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/20fd0765-a471-4f6f-87be-39ccd13d7d93" controls muted playsinline></video>
-  <br><sub><b>90 seconds, no voice.</b> A whole course end to end: the lesson, an exercise checked as you answer, the
-mistakes notebook, flashcards and the mock exam. If the player doesn't start, <a href="docs/media/demo/aula-demo-90s.mp4">watch the file</a></sub>
-</p>
-
-<p align="center">
-  <a href="https://github.com/luumlabs/aula/releases/download/v0.1.0/Aula-film-web.mp4">
-    <img src="docs/media/film-poster.png" width="1000" alt="Watch the short film about Aula (1:50): at night, a student with a red scarf walks through flying pages towards a great lit arch">
+  <a href="#see-it-in-90-seconds">
+    <picture>
+      <source media="(prefers-reduced-motion: reduce)" srcset="docs/media/landing/hero-still.jpg">
+      <img src="docs/media/landing/hero.gif" width="960" alt="Ten seconds of Aula: lecture notes, slides, a whiteboard photo and a class recording are dropped into a new course, Statistics for psychology; a team of AI agents plans it, writes the lessons and exercises and checks the answers, and the course is ready with 4 topics, 36 exercises and 24 flashcards">
+    </picture>
   </a>
-  <br><sub><b>Nine days.</b> A short animated film about Aula, painted by code (1:50, 26 MB video)</sub>
+  <br>
+  <sub><a href="#see-it-in-90-seconds">Watch the 90-second demo</a> · the real app, sped up, with the simulated AI from its tests</sub>
 </p>
-<!-- Maintainers: for an inline player, drop a ≤10 MB cut of the film here in GitHub's web editor (first check that your
-     commit email is the noreply address: GitHub → Settings → Emails). -->
 
-You get short lessons, exercises that are checked as you answer them, flashcards and a mock exam shaped like the real
-one. Then Aula helps you work through all of it, a bit each day, until the exam.
+<p align="center">
+  <a href="https://github.com/luumlabs/aula/releases/latest"><b>Download for Windows, macOS or Linux</b></a>
+  &nbsp;·&nbsp; free, no account, no tracking
+</p>
 
-It isn't tied to one subject. Calculus, organic chemistry, anatomy, a language, a driving test, a book you want to
-understand properly. If you have class materials, Aula uses them, so the course follows your syllabus. If you don't, a line like *Statistics for psychology, final in May* is enough to get started.
+## What you can do
 
-Your courses and progress are stored on your computer. Aula works with the AI you already pay for (a Claude or ChatGPT subscription, or an
-API key) or with a free model that runs on your own machine. There's no account and no tracking.
+### AI tutor
 
-### At a glance
+Ask about anything you're studying. Aula looks it up in your own notes, tells you the page and draws what it explains.
+Next to every exercise, it gives you hints without giving the answer away.
 
-- **Any material becomes a course.** PDFs, slides, photos of the whiteboard, audio and video recordings of a class,
-  links, or what is on your school platform. [Courses](#courses)
-- **Lessons that teach before they ask.** Figures, real pictures, graphs and 3D you can turn, and a worked example
-  before the first exercise. [Lessons](#lessons)
-- **Practice that sticks.** Exercises checked as you answer, a notebook of your mistakes, flashcards with spaced
-  repetition and mock exams shaped like the real one. [Practice](#practice)
-- **A tutor that knows what you're doing.** Ask about the exercise in front of you or the document you have open, and
-  make or change a course just by asking. [Talking to Aula](#talking-to-aula)
-- **Always on, if you want.** It checks your school platform and your calendar, reminds you of deadlines and leaves a
-  short review ready before an exam. It only reads: it never submits anything for you. [Everything else](#everything-else)
-- **On your iPad, iPhone and Android.** Your courses stay on your Mac, or on a server of your own with no Mac at all,
-  and you study from your own devices. [Devices](docs/DEVICES.md) · [Server](docs/SERVER.md)
-- **Private and yours.** No account, no tracking, your data on your computer, and the AI you choose, including a free
-  one that runs offline. [Privacy](#privacy)
+![Aula's chat answering “Why is cos 210° negative?”: it quotes the student's Unit 3 lecture notes, cites page 3 and plots y = cos x with 210° marked](docs/media/landing/tutor-en.jpg)
+
+<sub>This answer comes from the simulated AI that Aula's tests use, on the example course. Your AI writes its own.</sub>
+
+### Courses
+
+Short lessons that ask you to guess before they explain, with figures plotted from the real math, worked examples,
+exercises checked as you answer and flashcards with spaced repetition.
+
+<p>
+  <picture>
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/media/landing/lesson-still.jpg">
+    <img src="docs/media/landing/lesson.gif" width="800" alt="A lesson in Aula: asked to guess the reference angle of 150° before reading on, the student picks 30° and gets “Well reasoned!”; then a figure draws 150° and its 30° reference angle">
+  </picture>
+</p>
+
+### Notes
+
+Aula turns a course into notes you can print: a study guide, a summary or a cheat sheet with the formulas and the
+mistakes to avoid, as PDF or Word. Your own PDFs open in a reader where you can highlight and ask about a page.
+
+![The top of a cheat sheet Aula made for a trigonometry exam: formulas on the left and, on the right, common mistakes, each with the wrong answer, the right one and why](docs/media/landing/notes-en.jpg)
+
+### Exams
+
+A timed mock exam with the same sections, minutes and points as your real one. When you finish, you get a report by
+topic and a button to practice what you missed. You can also print a practice exam.
+
+![Aula's mock exam for a trigonometry exam: 15 questions, 75 minutes and 100 points, sections that keep the real exam's points, and the button to start](docs/media/landing/exam-en.jpg)
+
+## See it in 90 seconds
+
+<!-- The video is the bare attachment URL on a line of its own: GitHub turns it into a player that also plays for
+     visitors who aren't signed in. A <video src="…"> tag keeps the github.com URL, which they can't open. -->
+
+https://github.com/user-attachments/assets/7becaa0b-db21-4d95-b9d6-fc581fab9b4d
+
+<sub>A whole course, end to end: built from four files, then a lesson, an exercise that catches a common mistake, the
+mistakes notebook, flashcards, a mock exam and the plan for today. No voice. Player not loading?
+<a href="https://github.com/luumlabs/aula/raw/main/docs/media/demo/aula-demo-90s.mp4">Download the MP4 (9 MB)</a>.</sub>
+
+## Why Aula
+
+- **Any subject, your syllabus.** Calculus, organic chemistry, anatomy, a language, a driving test. With your class
+  materials the course follows your syllabus. Without them, a line like *Statistics for psychology, final in May* is
+  enough.
+- **It reads what you already have.** PDFs, Word, PowerPoint, photos of the whiteboard, recordings of a class, links, or
+  your school platform: Moodle, Canvas, Blackboard, Google Classroom, Brightspace and more. It only reads: it never
+  submits anything for you.
+- **Your AI, or a free one that runs offline.** The Claude or ChatGPT subscription you already pay for, an API key, or a
+  local LLM (llama.cpp, Ollama, LM Studio) on your own computer.
+- **It remembers for you.** Flashcards with spaced repetition (FSRS), a notebook that brings your mistakes back after 1,
+  3, 7, 16 and 35 days, and a plan for today that starts with what will raise your grade the most.
+- **Wherever you study.** Windows, macOS and Linux. With Aula on a Mac or on a [server at home](docs/SERVER.md), you
+  can open it from your [iPhone, iPad or Android](docs/DEVICES.md) too.
+
+Every screen, tool and shortcut: [docs/FEATURES.md](docs/FEATURES.md).
+
+<sub>Aula is young and built in the open. If it looks useful, starring the repo (the Star button at the top of this
+page) helps other students find it.</sub>
+
+## Quick start
+
+**Use it.** Get the installer for your system from the
+[latest release](https://github.com/luumlabs/aula/releases/latest). It's free and needs no account.
+
+- **Windows** 10 and 11 (x64 and ARM): `Aula-Setup-<version>.exe`. If SmartScreen shows up, click *More info → Run
+  anyway* (Aula isn't code-signed for Windows yet).
+- **macOS** 13 or later (Apple Silicon and Intel): `Aula-<version>-mac.dmg`. Drag Aula to *Applications* and open
+  it: it's signed with an Apple Developer ID and notarized.
+- **Linux** x64 and ARM64: the `.AppImage` (`chmod +x` it, then open it) or, on x64, the `.deb`
+  (`sudo apt install ./Aula-<version>-linux-amd64.deb`).
+- **Android** 8 or later: `Aula-<version>-android.apk`, a window to Aula running on your Mac or on
+  [your own server](docs/SERVER.md) (see [Devices](docs/DEVICES.md)).
+
+The first time, Aula asks your name, helps you [pick an AI](#pick-an-ai) and gives you example courses to try. It
+updates itself (with the `.deb`, it tells you when a new version is out). Step by step, updating from 0.1.x, Linux notes
+and troubleshooting: [docs/INSTALL.md](docs/INSTALL.md).
 
 > [!NOTE]
-> Aula is in early access. It works, but you will find bugs and rough edges, and things will change between versions.
-> Please don't make it the only way you prepare for an important exam yet. If something breaks,
-> [tell me](#report-a-bug-or-suggest-an-idea).
+> Aula is in early access. It works, but you'll find bugs and rough edges, and things change between versions. Please
+> don't make it the only way you prepare for an important exam yet, and [tell me](#how-to-help) when something breaks.
 
-<p align="center">
-  <img src="docs/media/screenshots/home-light-en.png" width="1000" alt="Aula's Today screen: a greeting with today's plan and goal, the streak, the next exam with its countdown and estimated grade, the plan for today and a small calendar of the week">
-</p>
+**Run it from source** (Node.js 22.12 or later, and Git):
 
-## Download and install
+```bash
+git clone https://github.com/luumlabs/aula.git && cd aula
+npm install
+npm run dev
+```
 
-Download the file for your system from the [latest release](https://github.com/luumlabs/aula/releases/latest):
-
-| System | File | First launch |
-| --- | --- | --- |
-| macOS 13 or later (Apple Silicon and Intel) | `Aula-0.2.5-mac.dmg` | Open the .dmg and drag Aula to *Applications*. Aula isn't notarized by Apple yet, so macOS asks you to confirm the first time. On macOS 15 or later, try to open it, then go to *System Settings → Privacy & Security* and click *Open Anyway*. On macOS 13 and 14, right-click Aula and choose *Open*. |
-| Windows 10 and 11 (x64 and ARM, one installer) | `Aula-Setup-0.2.5.exe` | Run the installer (it doesn't need admin rights). If SmartScreen shows up, click *More info → Run anyway*. Aula isn't code-signed yet. |
-| Linux x64 | `Aula-0.2.5-linux-x86_64.AppImage` or `Aula-0.2.5-linux-amd64.deb` | AppImage: make it executable (`chmod +x Aula-*.AppImage`) and open it. Debian or Ubuntu: `sudo apt install ./Aula-0.2.5-linux-amd64.deb`. |
-| Linux ARM64 | `Aula-0.2.5-linux-arm64.AppImage` | Make it executable (`chmod +x`) and open it. |
-| Android 8 or later (phones and tablets) | `Aula-0.2.5-android.apk` | Open it on your phone and allow installing from that app when Android asks. It is a window to Aula on your Mac or on [a server of your own](docs/SERVER.md): see [Devices](docs/DEVICES.md). |
-
-> **Updating from 0.1.x:** install the current version by hand this one time (download it here and install it over
-> your copy; your courses and settings stay). Aula 0.1.x will say the new version's signature isn't valid: since 0.2.0
-> Aula is signed with new keys, because the old ones were lost. From 0.2.0 on, Aula updates itself again. On a Mac, macOS asks once more for
-> permission to use Aula's saved keys.
-
-On Linux you need a 64-bit distribution with glibc. Install GNOME Keyring or KWallet too, or Aula has to store your
-keys unencrypted.
-
-The first time you open Aula it asks your name, helps you [pick an AI](#pick-an-ai) and, if you want, connects your
-study platform. Your library starts with two example courses, so you can try everything before making your own.
-
-**Updates.** Aula looks for a new version when it starts and every six hours. It downloads it in the background, checks
-its signature and installs it when you quit (or when you click *Restart to update* in the sidebar). On macOS, keep Aula in
-*Applications* for this to work; if a new version doesn't start, Aula goes back to the previous one. The AppImage
-updates itself too. The `.deb` doesn't: Aula tells you when a new version is out, and you
-download its `.deb` from the [releases](https://github.com/luumlabs/aula/releases) and install it the same way.
-
-<details>
-<summary><b>Troubleshooting</b></summary>
-
-| Problem | What to do |
-|---|---|
-| macOS can't verify the developer, or there's no *Open* button | See the macOS row above. On macOS 15 or later, *Open Anyway* only shows up in *Privacy & Security* after you've tried to open Aula once. |
-| macOS says the app is damaged | Move Aula to *Applications* and try again. If it still won't open, run `xattr -dr com.apple.quarantine /Applications/Aula.app` in Terminal. |
-| macOS doesn't install an update | Check that Aula is in *Applications*, not in *Downloads* or running from the .dmg. *Settings → About* says what went wrong and lets you try again or download the update. |
-| The AppImage doesn't start | Make it executable (`chmod +x`). It needs FUSE 2: `sudo apt install libfuse2` (on Ubuntu 24.04 and later, `libfuse2t64`). |
-| Ubuntu 23.10 or later, with the AppImage | Ubuntu restricts the user namespaces that Chromium's sandbox needs, so the AppImage starts with that sandbox turned off. Aula still works, but the pages it opens (your study platform, for example) are less isolated. On x64, use the `.deb` instead: it keeps the sandbox on by installing the AppArmor profile Ubuntu needs. |
-| Aula can't find `claude` or `codex` | Install the CLI and open it once in a terminal to sign in. After that, *Settings → Your AI* finds it. For ChatGPT, *Connect with ChatGPT* can also download the official Codex for you. |
-| A course stopped at a usage limit | Nothing is lost. Open it and press *Resume* when your limit renews, or keep what's already there. |
-| *Settings → About* says your keys aren't encrypted | On Linux without GNOME Keyring or KWallet your system can't encrypt them. Install one and sign in again. |
-| Anything else | [Open an issue](https://github.com/luumlabs/aula/issues/new/choose). |
-</details>
+The first `npm run dev` downloads Electron and then opens the app with hot reload. No AI key? Run
+`AULA_FAKE_AI=1 npm run dev` (in PowerShell, `$env:AULA_FAKE_AI=1; npm run dev`) for a simulated one. If you also use
+Aula day to day, set `AULA_HOME` to an empty folder as well, so the dev build keeps its own data.
 
 ## Pick an AI
 
-Aula needs an AI model to write your courses and to talk to you. It picks the best one it can find on its own, and you
-can change it any time in *Settings → Your AI*. Without one you can still study the example courses and any course you
-already have.
+Already pay for ChatGPT or Claude? Aula uses that plan. If not, it can set up a free AI on your computer that works
+offline. It picks the best option it finds, and you can change it any time in *Settings → Your AI*. Without any AI, you
+can still study the example courses and any course you already have.
 
-| Option | What you need | Notes |
-| --- | --- | --- |
-| Claude subscription (Pro or Max) | The official `claude` CLI, signed in | No API key and no extra cost. |
-| ChatGPT subscription (Plus or Pro) | *Connect with ChatGPT* in Aula | Uses the official Codex CLI. Aula can download it for you and checks its SHA-256. |
-| A model on your computer | Nothing. Aula checks how much RAM your computer has and suggests a model that fits | One click downloads the official `llama.cpp` server and a verified model (from about 1 GB to tens of GB, depending on your computer). After that it's free and works offline. Ollama and LM Studio are detected too. |
-| An API key | A key from Anthropic, OpenAI, Google Gemini, OpenRouter, DeepSeek, Mistral, Groq, xAI, Xiaomi MiMo, OpenCode Zen or any OpenAI-compatible service | You pay the provider directly. Aula shows what you've spent and can stop at a daily limit. Keys are encrypted with your system's keychain. |
+- **Claude subscription** (Pro or Max): the official `claude` CLI, signed in. Included in your plan.
+- **ChatGPT subscription** (Plus or Pro): *Connect with ChatGPT* in Aula (it uses the official Codex CLI). Included in
+  your plan.
+- **A model on your computer**: nothing to set up. Aula suggests one that fits your RAM and downloads `llama.cpp` and a
+  verified model. Ollama and LM Studio are detected too. Free, and it works offline.
+- **An API key** from Anthropic, OpenAI, Google Gemini, OpenRouter, DeepSeek and more, or from any OpenAI-compatible
+  service. You pay the provider, with an optional daily limit.
 
-OpenCode works too, if it's installed and signed in.
-
-
-<p align="center">
-  <img src="docs/media/screenshots/settings-light-en.png" width="900" alt="Settings, Your AI: Claude in use with your subscription, a free model on this computer or an API key, then your study platforms and Aula always on">
-</p>
+OpenCode works too, if it's installed and signed in. More detail: [docs/FEATURES.md](docs/FEATURES.md#your-ai-in-detail).
 
 <p align="center">
   <picture>
@@ -144,145 +163,16 @@ OpenCode works too, if it's installed and signed in.
   <sub>Logos are trademarks of their owners and only identify each service (sources in <a href="THIRD_PARTY_NOTICES.md#ai-provider-logos">THIRD_PARTY_NOTICES.md</a>).</sub>
 </p>
 
-## What it does
+## Privacy
 
-### Courses
-
-Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>N</kbd> and say what you want to study. Add the exam date if there is one, and
-any files you have: PDF, Word, PowerPoint, Excel, EPUB, web pages, Markdown, text or code files, links, pasted text, or
-photos of your notes or the whiteboard (read with OCR), and audio or video recordings of a class. Aula transcribes a
-recording from the subtitles next to the file or with the transcription service of an API key you have added, and a
-citation opens it at the minute where it was said. Aula can also pull your materials from your study platform.
-
-A small team of agents then builds the course, and you can watch them work. Readers go through your materials. A
-planner turns them into a map of topics, weighted by what the exam asks. Authors write the lessons, exercises and
-flashcards, and a verifier solves every exercise that has a checkable answer again, without
-looking at the answer key. When the two disagree, a referee
-decides and fixes the key. If your AI hits a usage limit halfway, the course is saved and you press *Resume* later.
-
-You can keep changing a course after it's built (*add 10 harder exercises on identities*), and undo a change if you
-don't like it.
-
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/screenshots/create-light-en.png" alt="New course: what you want to study, the exam date and level, your materials and the course size"></td>
-    <td width="50%"><img src="docs/media/screenshots/course-light-en.png" alt="A course: the estimated grade with a square for each topic, the exam countdown, what to do now and the course map"></td>
-  </tr>
-</table>
-
-### Lessons
-
-You can go through a lesson step by step (Aula explains, shows an example and checks you got it before moving on),
-explore it freely, or just read it. Math is typeset with KaTeX, chemistry notation included. Lessons can have graphs
-with sliders, labeled diagrams you can practice on, 3D molecules with their real geometry, simulations, maps,
-flowcharts and slides. Images come from Wikimedia Commons with their author and license, and Aula can read any lesson
-aloud with your system's voices.
-
-<p align="center">
-  <img src="docs/media/screenshots/learn-light-en.png" width="900" alt="A lesson step by step: reference angles explained, then a question to think about before reading on">
-</p>
-
-### Practice
-
-Aula grades most answers itself, without asking the AI. Its math engine understands
-fractions, radicals, π and equivalent expressions, and there are 16 kinds of answers, from multiple choice and
-equations to labeling a figure or balancing a reaction. Open answers are graded against a rubric. When you make a
-common mistake, Aula recognizes it and tells you why it's wrong. In language courses accents count, so *murio* is not
-*murió*. Whatever you miss goes into a mistakes notebook and comes back after 1, 3, 7, 16 and 35 days.
-
-Flashcards use FSRS spaced repetition. Mock exams copy the structure of your real one (sections, points, difficulty),
-run on a timer and end with a report by topic and a button to practice what you missed. The *Today* screen puts
-everything that's due across your courses into one plan, starting with what will raise your grade the most.
-
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/screenshots/cards-light-en.png" alt="Reviewing a flashcard"></td>
-    <td width="50%"><img src="docs/media/screenshots/exam-light-en.png" alt="A mock exam in progress: the timer, the questions answered, the section and an answer field with math input"></td>
-  </tr>
-</table>
-
-### Talking to Aula
-
-<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>2</kbd> opens a chat that knows your courses, your calendar and how you're doing.
-Tell it *I have an English test on Monday at 10* and it offers to add the test to your calendar and build a course for it. You see each step as it happens, and anything that would change something waits for you to approve it. It can put
-quizzes and flashcards right in the chat, draw graphs and formulas, and cite your own materials (click a citation and
-the document opens on that page).
-
-Every exercise also has a tutor next to it. It sees the exercise and your answer, and gives hints without giving the
-answer away.
-
-<p align="center">
-  <img src="docs/media/screenshots/chat-light-en.png" width="900" alt="A quick quiz inside the chat with Aula: a question about where a parabola crosses the x axis, answered and checked, with its explanation">
-</p>
-
-### Everything else
-
-- **Calendar** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>3</kbd>): your exams, platform deadlines and your own events in month,
-  week or agenda view. Type events in plain words (*Physics lab every Tuesday at 4pm until June*), subscribe to
-  calendar links, or import and export `.ics` files. Every exam has a *Prepare for this exam* button.
-- **Tools** (<kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>5</kbd>): a calculator, a grapher, the periodic table, chemistry helpers,
-  3D molecules, a unit converter, a Pomodoro timer, statistics, matrices, geometry, physics simulations and a list of
-  formulas and constants.
-- **Statistics**: study time, accuracy, a 12-week consistency heatmap, mastery by topic, your estimated grade over time
-  and sixteen achievements.
-- **Documents**: turn a course into a study guide, a summary, a one-page cheat sheet, printable flashcards, a practice
-  exam or slides, as PDF, Word or Markdown. PDFs and photos open in a reader where you can highlight, take notes and
-  ask about a page.
-- **Study platforms**: Canvas, Moodle, Blackboard, Google Classroom, Brightspace, Schoology, Microsoft Teams, Sakai,
-  itslearning, Open edX or any class website. You sign in once in Aula's own browser and it stays signed in. Aula only
-  reads: it blocks anything that would submit work, start a quiz, post, delete or pay, and it never types your
-  password.
-- **Aula always on** (optional): with the window closed, Aula can send you a morning summary, check your platform, remind
-  you of deadlines and write a weekly summary. It all lands in the Inbox, and it stops for the day when it reaches its daily budget.
-- **Your iPad and iPhone** (optional, with Aula on a Mac): open Aula from your own devices while your courses, your AI
-  and your data stay on the Mac. The iPad gets the whole app; the iPhone, Aula as your assistant (what it did, what is
-  pending, the chat and the calendar). Devices reach the Mac over your private Tailscale network and are linked once
-  with a code. From there you can also open Aula's browser live: sign in to your platform away from home, or do an
-  assignment yourself and hand it to Aula to review before you submit it. A linked device can also open Settings for
-  the daily-use part (which AI to use among those ready on the Mac, appearance, language, *Aula always on*, memory);
-  keys, platforms and your data are managed on the Mac. See [docs/DEVICES.md](docs/DEVICES.md). The Android app works
-  the same way ([native/android](native/android/README.md)).
-- **Aula as a server** (optional): run Aula without a window on a computer that is always on (a home server, a NAS, a
-  Linux container: `ghcr.io/luumlabs/aula-server`) and use it only from your devices. The first device you link is its
-  owner and manages the AI, platforms and devices from there. See [docs/SERVER.md](docs/SERVER.md).
-- **Memory**: Aula remembers what helps it teach you, like how you prefer explanations or what you find hard. You can
-  see, edit, pause or export all of it in *Settings → What Aula remembers*.
-- **Search**: <kbd>Ctrl</kbd>/<kbd>⌘</kbd> <kbd>K</kbd> finds screens, courses and tools, and anything inside your
-  courses.
-
-The interface is in English and Spanish, and courses can be written in 12 languages. There's a light and a dark mode,
-and animations follow your system's *reduce motion* setting.
-
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/screenshots/calendar-light-en.png" alt="The calendar in month view"></td>
-    <td width="50%"><img src="docs/media/screenshots/stats-dark-en.png" alt="Statistics in dark mode: summary figures, the consistency heatmap, minutes by weekday and accuracy by topic"></td>
-  </tr>
-  <tr>
-    <td width="50%"><img src="docs/media/screenshots/tools-light-en.png" alt="The tools: calculator, grapher, periodic table, chemistry, 3D molecules, units, timer, statistics, matrices, geometry, physics and formulas"></td>
-    <td width="50%"><img src="docs/media/screenshots/inbox-light-en.png" alt="The Inbox: a new assignment found on the study platform, a deadline reminder and the morning summary"></td>
-  </tr>
-</table>
+- Your courses, progress, calendar, chats, documents, notes and memory are files on your computer. No account, no ads,
+  no analytics.
+- Only what each task needs goes to the AI you picked, and nothing does with a local model. Keys are encrypted with your
+  system's keychain.
+- The full policy: [docs/PRIVACY.md](docs/PRIVACY.md).
 
 <details>
-<summary><b>Keyboard shortcuts</b></summary>
-
-<kbd>Ctrl</kbd> on Windows and Linux, <kbd>⌘</kbd> on macOS.
-
-| Shortcut | What it does |
-| --- | --- |
-| <kbd>⌘</kbd> <kbd>K</kbd> | Search |
-| <kbd>⌘</kbd> <kbd>N</kbd> · <kbd>⌘</kbd> <kbd>O</kbd> | New course · Import a course (`.aulapack`) |
-| <kbd>⌘</kbd> <kbd>1</kbd> … <kbd>7</kbd> | Today · Aula · Calendar · Statistics · Tools · Documents · Inbox |
-| <kbd>⌘</kbd> <kbd>J</kbd> | Ask Aula |
-| <kbd>⌘</kbd> <kbd>,</kbd> | Settings |
-| <kbd>⌘</kbd> <kbd>[</kbd> / <kbd>]</kbd> (macOS) · <kbd>Alt</kbd> <kbd>←</kbd> / <kbd>→</kbd> (Windows, Linux) | Back · Forward |
-| Exercises | <kbd>Enter</kbd> check · <kbd>A</kbd>–<kbd>Z</kbd> or <kbd>1</kbd>–<kbd>9</kbd> pick an option · <kbd>⌘</kbd> <kbd>Enter</kbd> submit an open answer |
-| Flashcards | <kbd>Space</kbd> flip · <kbd>1</kbd>–<kbd>4</kbd> rate · <kbd>H</kbd> hint · <kbd>⌘</kbd> <kbd>Z</kbd> undo |
-| Mock exam | <kbd>Alt</kbd> <kbd>←</kbd> / <kbd>→</kbd> previous / next · <kbd>⌘</kbd> <kbd>⇧</kbd> <kbd>L</kbd> flag |
-</details>
-
-## Privacy
+<summary><b>Everything that can leave your computer, and when</b></summary>
 
 - Your courses, progress, calendar, chats, documents, notes and memory are stored on your computer, in
   `~/Library/Application Support/Aula` (macOS), `%APPDATA%\Aula` (Windows) or `~/.config/Aula` (Linux). You can study
@@ -307,27 +197,73 @@ and animations follow your system's *reduce motion* setting.
 - *Settings → Privacy and data* opens your data folder, exports everything as a `.zip` (without keys or platform
   sessions) or deletes all your data.
 
-## Report a bug or suggest an idea
+</details>
 
-Bug reports are the most useful thing you can send right now.
+## How to help
 
-- If something broke, [open a bug report](https://github.com/luumlabs/aula/issues/new?template=bug_report.yml). Say
-  what you did, what you expected and what happened, plus your system, Aula's version (*Settings → About*) and the AI
-  you use. A screenshot helps.
-- If you have an idea, [suggest it here](https://github.com/luumlabs/aula/issues/new?template=idea.yml).
-- Issues are public, so never paste API keys, passwords, private calendar links or anything personal from your courses.
-- Security problems should be reported privately. See [`SECURITY.md`](SECURITY.md).
+<a href="https://github.com/luumlabs/aula/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/luumlabs/aula/good%20first%20issue?style=flat-square&label=good%20first%20issues&color=B4502F" alt="Open good first issues"></a>
 
-## Build from source
+Aula is made in the open, and you don't need to be an expert to help.
 
-You need **Node.js 22** (22.12 or later; 20.19 or later also works) and Git.
+- **Pick a [good first issue](https://github.com/luumlabs/aula/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).**
+  Each one is small, names the files to touch and says how to check it: a unit converter fix, new formulas, tests, a
+  translation. Comment on it so nobody else starts the same one.
+- **Report what breaks.** [Open a bug report](https://github.com/luumlabs/aula/issues/new?template=bug_report.yml) with
+  what you did, what happened, your system, Aula's version (*Settings → About*) and your AI. Issues are public, so never
+  paste keys, passwords, private calendar links or anything personal.
+- **Suggest an idea** [here](https://github.com/luumlabs/aula/issues/new?template=idea.yml).
+- **Translate.** The interface is in English and Spanish. Issues labelled
+  [translation](https://github.com/luumlabs/aula/labels/translation) are a good way in.
+- **Tell someone who's studying**, or share Aula in your class group. It helps more than you'd think.
+- **Sponsor it** through [GitHub Sponsors](https://github.com/sponsors/luumlabs), monthly or once. Aula is free and will
+  stay free.
 
-```bash
-git clone https://github.com/luumlabs/aula.git
-cd aula
-npm install                 # .npmrc already sets legacy-peer-deps
-npm run dev                 # the app with hot reload
+To work on the code, [run it from source](#quick-start): it takes three commands, and `AULA_FAKE_AI=1` gives you a
+simulated AI, so you don't need a key. Then start with [CONTRIBUTING.md](CONTRIBUTING.md) and
+[How it's built](#how-its-built). Security problems go privately: see [SECURITY.md](SECURITY.md).
+
+## Community
+
+Aula grows in public. To follow along, see how it's going or ask something that isn't a bug, I'm on Reddit as
+[u/astrolafi](https://www.reddit.com/user/astrolafi).
+
+## How it's built
+
+Aula is an Electron app written in TypeScript and React. The same app runs without a window as a server
+([`--server` or the Docker image](docs/SERVER.md)), and the phone and tablet apps are windows to it.
+
+```mermaid
+flowchart LR
+  subgraph app["Aula · desktop or --server"]
+    direction LR
+    ui["Interface<br/>React · src/renderer"]
+    preload["Preload bridge<br/>src/preload"]
+    shell["Main process<br/>src/main/electron"]
+    services["Services<br/>src/main/services"]
+    engine["Study engine<br/>src/engine"]
+    ui -->|"typed IPC"| preload --> shell --> services
+    ui -.-> engine
+    services -.-> engine
+  end
+  phones["iPhone · iPad · Android<br/>native/"] -->|"Tailscale"| shell
+  cli["CLI agents<br/>Claude Code · Codex · OpenCode"] -->|"stdio"| mcp["MCP bridge<br/>src/main/mcp"] --> services
+  services -->|"JSON"| data[("Your data folder")]
+  services -->|"prompts"| ai["Your AI<br/>API key · llama.cpp · Ollama"]
+  services -->|"read-only"| lms["Study platforms<br/>Moodle · Canvas · Blackboard"]
 ```
+
+<details>
+<summary><b>Where things live, commands and environment variables</b></summary>
+
+| Folder | What's there |
+| --- | --- |
+| `src/renderer` | The React interface. Every text goes through i18n (`i18n/locales/{en,es}`) |
+| `src/preload` | The only bridge between the interface and the main process (`window.aula`), with `contextIsolation` and a sandbox |
+| `src/main/electron` | The only code that imports Electron: windows, the typed IPC, the keychain, updates, the device server |
+| `src/main/services` | Plain Node: courses, AI providers, the agents that build courses, the tutor, file import, study platforms |
+| `src/engine` | Pure TypeScript shared by both sides: grading, exact math, FSRS, chemistry, the course validator |
+| `src/main/mcp` | The MCP bridge that lets Claude Code, Codex and OpenCode use Aula's tools |
+| `native/` · `server/` | The iPhone/iPad and Android apps, the Tailscale sidecar, and Aula as a headless server (`--server`, Docker) |
 
 | Command | What it does |
 | --- | --- |
@@ -337,8 +273,8 @@ npm run dev                 # the app with hot reload
 | `npm run e2e` | Builds and runs the end-to-end tests on the real Electron app with a simulated AI (on Linux, prefix it with `xvfb-run -a`) |
 | `npm run dist:mac` · `dist:win` · `dist:linux` | Installers into `release/` |
 
-Handy environment variables: `AULA_HOME` (use another data folder), `AULA_FAKE_AI=1` (a simulated AI, for tests) and
-`AULA_NO_UPDATES=1`. Publishing a release is described in [`docs/PUBLISHING.md`](docs/PUBLISHING.md).
+Handy environment variables: `AULA_HOME` (use another data folder), `AULA_FAKE_AI=1` (a simulated AI) and
+`AULA_NO_UPDATES=1`.
 
 The app is built with Electron 44, React 19, TypeScript and Tailwind CSS 4. The study engine in `src/engine` (grading,
 exact math, FSRS, chemistry, the course validator) is plain TypeScript shared by the main process and the interface.
@@ -347,18 +283,10 @@ import and study platforms, and only `src/main/electron` talks to Electron. The 
 over one typed IPC channel, with `contextIsolation`, a sandbox and a strict CSP. There are more notes for developers in
 [`CLAUDE.md`](CLAUDE.md).
 
-Pull requests are welcome. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) first.
+</details>
 
-## Community
-
-Aula grows in public. If you want to follow along, see how it's going or ask something that isn't a bug, I'm on
-Reddit as [u/astrolafi](https://www.reddit.com/user/astrolafi).
-
-## Support Aula
-
-Aula is free and will stay free. If it helps you and you'd like to support its development, you can do it through
-[GitHub Sponsors](https://github.com/sponsors/luumlabs), monthly or just once. Starring the
-repository, reporting bugs and telling a friend who's studying help a lot too.
+Before a pull request, read [CONTRIBUTING.md](CONTRIBUTING.md). The code rules, IPC contracts and data formats are in
+[CLAUDE.md](CLAUDE.md), and releases in [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
 ## Thanks
 

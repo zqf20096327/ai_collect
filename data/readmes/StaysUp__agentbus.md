@@ -11,11 +11,11 @@
 [![Latest release](https://img.shields.io/github/v/release/staysup/agentbus)](https://github.com/staysup/agentbus/releases)
 [![CI](https://github.com/StaysUp/agentbus/actions/workflows/ci.yml/badge.svg)](https://github.com/StaysUp/agentbus/actions/workflows/ci.yml)
 
-[Quickstart](#quickstart) &nbsp;&bull;&nbsp; [Demo](https://youtu.be/si0HHQFcCD0) &nbsp;&bull;&nbsp; [Docs](#docs) &nbsp;&bull;&nbsp; [Releases](https://github.com/staysup/agentbus/releases)
+[Quickstart](#quickstart) &nbsp;&bull;&nbsp; [Demo](https://github.com/user-attachments/assets/674686dc-394d-4431-9e0b-a48ef3d8ef9d) &nbsp;&bull;&nbsp; [Docs](#docs) &nbsp;&bull;&nbsp; [Releases](https://github.com/staysup/agentbus/releases)
 
 </div>
 
-[![AgentBus demo](https://img.youtube.com/vi/si0HHQFcCD0/maxresdefault.jpg)](https://youtu.be/si0HHQFcCD0)
+[![AgentBus 0.5.9: Codex reviews Claude Code's change and finds a P1; every model call with its cost. Click to watch the 2-minute demo.](docs/assets/cockpit-059.png)](https://github.com/StaysUp/agentbus/releases/tag/v0.5.9)
 
 AgentBus sits between your coding agents and every model vendor. It runs the agents you already
 have (Claude Code, Codex, Antigravity or any OpenRouter model) and tracks every step.
@@ -121,15 +121,20 @@ their defaults are in `/docs`, under Settings).
   copied.
 - **Permissions:** the AgentBus tools agents may use (ask another agent, review), whether they may
   start their own subagents (off by default, so the work is recorded), and whether an agent may
-  apply its own changes (off by default; you always may).
+  apply its own changes (off by default; you always may). **Commands** in three lists: **Allow**
+  (agents run them without asking), **Ask** (the agent is told to wait, and a card above the
+  message box lets you allow it, from then on, or refuse it) and **Refuse** (never). Refuse wins
+  over Ask, Ask over Allow.
 - **Isolation:** the sandbox walls each session to its folder and its home. Network contain lets
-  agents reach only the hosts you list. Commands: what agents may run, and what they may never run.
-  Both are off by default.
+  agents reach only the hosts you list. Both are off by default.
 - **Limits:** how much work one message may cause: how deep agents may ask each other, how many
   turns, and the cost.
 
 ## Known limits
 
+- Ask works for plain commands such as `git push origin main`. A Claude Code command chained with `;`
+  or `&&`, or started with environment variables, is checked by Claude Code's own rules too, which
+  can block it even after you allow it. One gate for every agent is planned for the next release.
 - On Ubuntu 24.04 and later, AppArmor allows user namespaces only to a program with a profile, so
   the sandbox and network contain need one. The install script offers it when it installs into a
   folder only root can change: `curl -fsSL https://raw.githubusercontent.com/staysup/agentbus/main/install.sh | sudo AGENTBUS_INSTALL_DIR=/usr/local/bin sh`.

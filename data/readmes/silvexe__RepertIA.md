@@ -18,11 +18,11 @@
 
 ![RepertIA: a simulated demo flight animated on the local map](docs/media/repertia-demo.gif)
 
-🎬 **Watch the demo** (test data from a public image by Josh Hickman and a simulated flight, declared in the video). Download: [English](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-demo-3.0.4-en.mp4) · [Italian](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-demo-3.0.4-it.mp4)
+🎬 **Watch the demo** (test data from a public image by Josh Hickman and a simulated flight, declared in the video). Download: [English](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-demo-3.0.4-en.mp4) · [Italian](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-demo-3.0.4-it.mp4)
 
 https://github.com/user-attachments/assets/68d625e6-56ce-40e6-846f-564f1489c70c
 
-📘 **Illustrated guide:** [Italian and English, one page](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-guida-3.0.4.html)
+📘 **Illustrated guide:** [Italian and English, one page](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-guida-3.0.5.html)
 
 RepertIA analyses forensic images (E01, raw/dd, dmg), from 2.20 full file system extractions of iPhones and Android
 phones, from 3.0 drone flight logs and, from 3.0.2, logical sources (zip, tar, 7z and rar archives, FTK Imager AD1
@@ -108,14 +108,14 @@ From 3.0.4 also **RAM memory dumps** of Windows computers (raw, mem, vmem, crash
 
 | System | File |
 |---|---|
-| Windows (installer) | [RepertIA-3.0.4-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Setup.exe) |
-| Windows (portable) | [RepertIA-3.0.4-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Windows.zip) |
-| Mac (Apple Silicon) | [RepertIA-3.0.4-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Mac.zip) |
-| Linux x86_64 (experimental) | [RepertIA-3.0.4-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-3.0.4-Linux.tar.gz) |
-| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-collaudo.zip) |
-| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/SHA256SUMS.txt) |
-| Checksum signature | [SHA256SUMS.txt.minisig](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/SHA256SUMS.txt.minisig) |
-| Illustrated guide (HTML) | [Italian and English](https://github.com/silvexe/RepertIA/releases/download/v3.0.4/RepertIA-guida-3.0.4.html) |
+| Windows (installer) | [RepertIA-3.0.5-Setup.exe](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-3.0.5-Setup.exe) |
+| Windows (portable) | [RepertIA-3.0.5-Windows.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-3.0.5-Windows.zip) |
+| Mac (Apple Silicon) | [RepertIA-3.0.5-Mac.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-3.0.5-Mac.zip) |
+| Linux x86_64 (experimental) | [RepertIA-3.0.5-Linux.tar.gz](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-3.0.5-Linux.tar.gz) |
+| Acceptance test (*collaudo*) | [RepertIA-collaudo.zip](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-collaudo.zip) |
+| SHA-256 checksums | [SHA256SUMS.txt](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/SHA256SUMS.txt) |
+| Checksum signature | [SHA256SUMS.txt.minisig](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/SHA256SUMS.txt.minisig) |
+| Illustrated guide (HTML) | [Italian and English](https://github.com/silvexe/RepertIA/releases/download/v3.0.5/RepertIA-guida-3.0.5.html) |
 
 All versions: <https://github.com/silvexe/RepertIA/releases>
 
@@ -135,6 +135,7 @@ button downloads only the source code, not the program to install.
 | File systems | NTFS, FAT/exFAT, ext, HFS+, APFS (FileVault too, with the key); deleted and orphan files, ADS; unallocated space; Volume Shadow Copies and APFS snapshots |
 | Encrypted volumes | Detection of BitLocker, LUKS, FileVault, VeraCrypt (high entropy); decryption of BitLocker, LUKS1 and APFS with the key (never stored) |
 | Windows artifacts | For every installation on the disk (including Windows.old): accounts and logons (SAM and event logs), Prefetch, Amcache, UserAssist, ShimCache, BAM, SRUM, LNK files and jump lists, ShellBags, Activity History, NTFS journal `$UsnJrnl`, events (services, power on/off, Remote Desktop, Defender, USB), networks, Recycle Bin, browsers; from 3.0.2 Windows Search index (`Windows.edb`), Internet Explorer history (`WebCacheV01.dat`), Sticky Notes, Google Drive |
+| Decoded (3.0.5) | Preview tab for Windows `.lnk` shortcuts, jump lists, Prefetch files and Recycle Bin indexes (`$I`): the whole content of the file, with one entry for each folder of the path (names, dates, NTFS reference), volume and path, computer name and MAC address from the tracker data; it can be saved as text. In Metadata the NTFS dates of `$STANDARD_INFORMATION` and `$FILE_NAME` side by side |
 | macOS artifacts | Data volume, quarantine, launch items, TCC, iMessage, recent documents, Safari, KnowledgeC, Bluetooth, Time Machine |
 | RAM memory (3.0.4) | Memory dumps of Windows computers (raw, mem, vmem, crash dump) read with MemProcFS, the same engine on Mac, Windows and Linux: processes, network connections, loaded modules, drivers, scheduled tasks, services, users and the memory timeline; Windows artifacts from the registry hives still in memory; files still in memory copied into the case as derived copies. Debug symbols on request, with no case open and after consent, for the running state of services; no network request while a case is open |
 | Logical source (3.0.2) | zip, tar, tar.gz, 7z, rar, FTK Imager AD1 (also segmented; FTK's MD5/SHA-1 recalculated for every file), ISO 9660 and UDF CD/DVD images including multi-session CD-Rs with VAT (files only in previous VATs shown as deleted), or a folder; phone databases recognised by name, KML/GPX as map layers |
@@ -280,7 +281,7 @@ The images are in the `RepertIA-collaudo.zip` archive in the Releases. Details i
 
 ## License
 
-Copyright (C) 2026 silvexe.
+Copyright (C) 2026 silvexe - Antonio Silvestre.
 
 RepertIA is free software: you can redistribute it and/or modify it under the terms of the **GNU Affero General Public
 License** as published by the Free Software Foundation, **either version 3 of the License, or (at your option) any

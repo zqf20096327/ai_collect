@@ -103,6 +103,7 @@ With MLX-LM-LoRA you can, train Large Language Models locally on Apple Silicon u
   - [Examples Repository (moved)](#-examples-have-moved-)
   - [Training Your Custom Preference Model](#training-your-custom-preference-model)
   - [MCP Server](#mcp-server)
+  - [Distributed Training Across Macs (Thunderbolt)](#distributed-training-across-macs-thunderbolt)
 - [Configuration](#configuration)
 - [Dataset Formats](#dataset-formats)
 - [Memory Optimization](#memory-optimization)
@@ -795,6 +796,72 @@ Or over HTTP: transport *HTTP*, URL `http://127.0.0.1:8765/mcp`, header
 **Other clients:** stdio command `mlx-lm-lora-mcp` (or `python -m mlx_lm_lora.mcp_server`),
 or streamable HTTP at `http://<host>:<port>/mcp`.
 
+The MCP server starts single-machine runs only. Multi-Mac runs need passwordless
+SSH, the same Python environment and the same model/data paths on every Mac, and
+`mlx.launch` exits with code 0 even when a rank crashes, so the server could not
+report their outcome reliably. Start distributed runs from a terminal as shown
+in the next section.
+
+### Distributed Training Across Macs (Thunderbolt)
+
+Every training mode supports data-parallel training with MLX's distributed
+backends. Each process (one per Mac) holds a full copy of the model and trains
+on its own slice of every batch; gradients are averaged after each step, so the
+result matches one Mac training with the same global `--batch-size`.
+
+**1. Cable and network.** Connect the Macs with Thunderbolt cables (a ring
+works for 3+ Macs: A↔B, B↔C, C↔A; two Macs need one cable). Enable *Remote
+Login* (System Settings → General → Sharing) on every Mac and set up
+passwordless SSH from the Mac you launch on (`ssh-copy-id user@other-mac.local`).
+Install the same Python environment with `mlx-lm-lora` at the same path on
+every Mac, and put the model and data at the same paths too (or use Hugging Face
+ids so every Mac downloads them).
+
+**2. Hostfile.** MLX can discover the Thunderbolt links and write the hostfile:
+
+```bash
+mlx.distributed_config --verbose --hosts mac1.local,mac2.local --over thunderbolt --backend ring --auto-setup --output-hostfile hosts.json
+```
+
+For JACCL (RDMA over Thunderbolt 5, macOS 26.2 or newer, enabled with
+`rdma_ctl enable` in Recovery mode) use `--backend jaccl` instead. A ring
+hostfile written by hand lists each Mac's SSH name and its Thunderbolt IPs:
+
+```json
+[
+  {"ssh": "mac1.local", "ips": ["192.168.10.1"]},
+  {"ssh": "mac2.local", "ips": ["192.168.10.2"]}
+]
+```
+
+**3. Launch.** Run the normal training command through `mlx.launch`:
+
+```bash
+mlx.launch --hostfile hosts.json --backend ring -- mlx_lm_lora.train --config train.yaml --distributed-backend ring
+```
+
+- `--batch-size` is the **global** batch and must be divisible by the number of
+  processes; each Mac processes `batch_size / N` rows per step.
+- `--distributed-backend` (`any`, `ring`, `jaccl`, `mpi`; default `any`) picks
+  the backend inside the training script. `any` uses whatever `mlx.launch` set up.
+- Rank 0 prints the logs, reports to WandB, and writes adapters and the shared
+  checkpoint files; every rank writes its own `rank_NNNNN.*` RNG state, so
+  `--resume` works across Macs. Only rank 0's Mac has the adapters, so fuse or
+  copy them from there.
+- Online modes (GRPO, KLPO, Online DPO, XPO, PPO, RLHF-REINFORCE) generate and
+  judge completions for each Mac's own prompts in parallel. GRPO/KLPO groups
+  stay on one Mac, so group advantages are exact; PPO normalizes advantages over
+  the whole global batch. The `human` judge is not supported in distributed runs.
+- Losses that average over tokens (SFT, GRPO, KLPO, RLHF-REINFORCE) are averaged
+  per Mac and then across Macs, so they equal the single-process value only when
+  every Mac sees the same number of tokens (the same approximation mlx-lm uses).
+
+Try it on one Mac first with two local processes:
+
+```bash
+mlx.launch -n 2 --backend ring -- mlx_lm_lora.train --config train.yaml
+```
+
 ---
 
 ## Configuration
@@ -865,8 +932,35 @@ See [QAT section above](#quantization-aware-training-qat) for usage examples.
 --adapter-path ./adapters        # Save/load path for adapters
 --save-every 100                 # Save frequency
 --resume-adapter-file <path>     # Resume from checkpoint
+--resume-checkpoint <directory>  # Resume full training state (all modes)
+--no-save-training-state         # Only save weights, no resumable state
 --fuse                           # Fuse and save trained model
 ```
+
+Every training mode writes a resumable `NNNNNNN_training_checkpoint/` directory
+next to each `--save-every` weight snapshot, plus `final_training_checkpoint/`
+when training finishes. A checkpoint holds the trainable weights, the optimizer
+state (including the learning-rate schedule step), the MLX and NumPy random
+states, partially accumulated gradients and the iteration counters. SFT, DPO,
+CPO, ORPO, Online DPO, XPO, PPO and RLHF-REINFORCE resume bit-identically to an
+uninterrupted run; DSLA, FTPO, GRPO and KLPO restore the same state but start a
+new shuffled pass over the training data. Resume with the original
+configuration and the original total `--iters`:
+
+```bash
+mlx_lm_lora.train --config config.yaml \
+  --resume-checkpoint adapters/0000500_training_checkpoint
+```
+
+Checkpoints work with distributed (`mlx.launch`) training: rank 0 writes the
+shared weights and optimizer state once, and every worker writes its own RNG
+state and pending gradients (`rank_NNNNN.*`). Resume with the same number of
+workers.
+
+`--resume-adapter-file` still loads weights only (a fresh optimizer and
+iteration count); the two flags cannot be combined. Checkpoint directories also
+store optimizer moments, so for large full fine-tunes pass
+`--no-save-training-state` if disk space matters more than resumability.
 
 ### Algorithm-Specific Parameters
 

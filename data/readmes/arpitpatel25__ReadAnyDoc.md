@@ -53,7 +53,7 @@ pip install readanydoc                  # model-only mode, no local models
 
 The engine also uses [Tesseract](https://github.com/tesseract-ocr/tesseract) when it is installed
 (`brew install tesseract` / `apt install tesseract-ocr`). The layout and OCR weights (about 200 MB, Apache-2.0)
-are downloaded on first use, so the very first parse takes a few minutes longer; later runs start straight away. Python 3.12.
+are downloaded on first use, so the very first parse takes a few minutes longer; later runs start straight away. Python 3.12 or 3.13.
 
 Set your model provider's key: `export ANTHROPIC_API_KEY=...` (or `OPENAI_API_KEY` for OpenAI models).
 
@@ -93,7 +93,12 @@ class Invoice(BaseModel):
 out = readanydoc.extract("invoice.pdf", schema=Invoice)
 out.data                      # Invoice(number="INV-2041", issued="2026-03-01", total=1575.0)
 out.citations["total"]        # [Citation(content="1,575.00", bbox=BoundingBox(page=1, left=0.81, ...))]
+out.report["fields"]["total"] # {"value": 1575.0, "status": "found", ...}; "conflict" when the document gives two totals
 ```
+
+Every field also says how it was found: `found`, `conflict` (with each candidate and its page), `inferred` (not stated
+in the document), `blank`, `not_applicable`, `not_in_document` or `unreadable`, plus flags for conversions to check.
+See the [field report](https://arpitpatel25.github.io/ReadAnyDoc/docs/guides/extract/#field-report).
 
 A JSON Schema dict works as well as a pydantic class. `instructions=` is the system prompt for the extraction
 model; `array_extract=True` processes long documents in parts and merges their lists.

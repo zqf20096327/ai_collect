@@ -1,6 +1,6 @@
 ![OpenOutSend Logo](docs/logo.png)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 # OpenOutSend
 
@@ -280,6 +280,7 @@ came across with the transport now assert against this side's own models.
 | `openoutsend/core/` | app `outsend_core` — the outreach agent, its templates, the sending window, and the stored site configuration |
 | `openoutsend/docs/` | how the agent and its templating work |
 | `openoutsend/sequences/` | the built-in cold sequence, one prompt file per step |
+| `openoutsend/leads/lifecycle.py` | the deal machine ([AgenticFSM](https://github.com/eracle/AgenticFSM)): every way a deal's state may change, in one list; the state and a log of each move live in the library's `agentic_fsm_*` tables. `agfsm --machine openoutsend.leads.lifecycle:deals show` prints it |
 | `openoutsend/planner.py` | what is due, from which box, and when the next send can go |
 | `openoutsend/settings.py` | this repo's own Django settings — one host of the apps, not the only one |
 | `openoutsend/defaults.py` | what any host must splat: `APPS`, `state_dir()`, `app_settings()` |
@@ -359,4 +360,4 @@ in the `openoutreach-docs` repo. The parts this side owes:
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache 2.0 — see [LICENSE](LICENSE).

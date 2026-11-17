@@ -71,7 +71,8 @@ The HTTP API has no file-content search: `FileSystemClient.FindEntriesAsync` ran
 | Configuration, projects, references | `client.Config`, `client.Projects`, `client.References` | — |
 | Server info and pairing | `client.Server` | [Connection modes](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/docs/guide/connection-modes.md) |
 | Locations | `client.GetLocationAsync`, `client.ReloadLocationsAsync`, `client.Debug` | [Requests](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/docs/guide/requests.md) |
-| Web search and RPC | `client.Websearch`, `client.Rpc` | — |
+| Web search | `client.Websearch` | — |
+| Plugin RPC, raw or through a typed definition | `client.Rpc` | [Requests](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/docs/guide/requests.md) |
 | Operations upstream marks experimental | `client.Experimental` | [Experimental APIs](https://github.com/opencode-dotnet/opencode-sdk-dotnet/blob/master/docs/guide/experimental.md) |
 
 The two terminal connections (`pty.connect`, `experimental.persistentPty.connect`) are WebSocket
@@ -151,6 +152,7 @@ Pick the connection mode that matches where your server lives:
 
 | You want… | Use | Who stops the server |
 |---|---|---|
+| The CLI's explicit / standalone / managed precedence | `OpenCodeServer.ResolveAsync()` | Disposal ends only an owned standalone server |
 | A private server for this app only | `OpenCodeServer.StartAsync()` | The SDK, when you dispose it |
 | A server you already run | `new OpenCodeClient(options)` | You |
 | The background service the CLI shares with other clients | `OpenCodeServer.DiscoverAsync()` or `EnsureAsync()` | Nobody, unless you call `StopAsync()` |

@@ -4,7 +4,7 @@
 
 <h1 align="center">astro-weights</h1>
 
-<p align="center"><b>Small course corrections for open LLMs.</b><br>Agent-driven weight-space edits, exported as standard LoRA adapters.</p>
+<p align="center"><b>Small course corrections for open LLMs.</b><br>Agent-driven weight edits. Democratizing AI for all.</p>
 
 <p align="center">
   <a href="https://pypi.org/project/astro-weights/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/astro-weights"></a>
@@ -13,15 +13,23 @@
 </p>
 
 <p align="center">
-  <a href="https://astro-weights.dev/">Docs</a> ·
+  <a href="https://astro-weights.dev/docs/">Docs</a> ·
   <a href="https://pypi.org/project/astro-weights/">PyPI</a> ·
   <a href="https://github.com/astro-weights/astro-weights/blob/main/CHANGELOG.md">Changelog</a> ·
   <a href="https://github.com/astro-weights/astro-weights/blob/main/CONTRIBUTING.md">Contributing</a>
 </p>
 
-The goal: an agent proposes small, targeted low-rank edits to a model's weights, and the ones that hold up under paired tests are saved as plain PEFT LoRA adapters. Today (0.1.0) the library covers the edit core (build low-rank edits, save and load them as LoRA adapters, apply them to transformers models), difference-of-means directions with a split-half gate, and paired eval statistics. LoRA is the output format because every serving stack already loads it (transformers, PEFT, vLLM, llama.cpp and the rest), so an edit needs no custom runtime: ship the adapter, load it like any other, and drop it to get the base model back.
+The goal is an agent that proposes small, targeted low-rank edits to a model's weights and keeps the ones that hold up under paired tests, saved as plain PEFT LoRA adapters. The agent loop is not here yet. What the library ships today is the toolkit that loop needs:
 
-> **Status: pre-alpha.** 0.1.0 is on PyPI. The API will change without notice until 1.0.
+- Edits: build low-rank edits from numpy recipes, rebuild one from a recipe file (`astro-weights build`), or convert a dense update with `from_dense`.
+- Export: save and load edits as hash-checked LoRA adapters, write a GGUF adapter for llama.cpp, and write a Hugging Face model card.
+- Runners: apply edits to transformers models and remove them again, and generate eval records from a local model or an OpenAI-compatible endpoint.
+- Directions: difference-of-means directions with a split-half gate.
+- Eval: graders and paired comparison of a base arm and an edit arm.
+
+LoRA is the output format because every serving stack already loads it (transformers, PEFT, vLLM, llama.cpp and the rest), so an edit needs no custom runtime: ship the adapter, load it like any other, and drop it to get the base model back.
+
+> **Status: pre-alpha.** The API will change without notice until 1.0.
 
 ## Install
 
@@ -57,17 +65,21 @@ Summarize and verify the saved adapter:
 astro-weights inspect my-edit
 ```
 
-Apply it to a transformers model (`hf` extra), and remove it again:
+To apply an edit to a real model, build it from that model's own weights; the edit above is random and 16x48, so it matches no real model. [Tutorial: first edit](https://astro-weights.dev/docs/tutorials/first-edit/) does this end to end on a small model that runs on CPU. Once you have an adapter built for your base model, apply and remove it like this (`hf` extra):
 
 ```python
+from transformers import AutoModelForCausalLM
+
 from astro_weights.export import load_peft
 from astro_weights.runners.hf import apply, remove
 
-peft_model = apply(model, load_peft("my-edit"))  # model: a transformers causal LM
+edit = load_peft("my-adapter")  # an adapter built for its base model
+model = AutoModelForCausalLM.from_pretrained(edit.base_model)
+peft_model = apply(model, edit)
 model = remove(peft_model)  # base weights were never modified
 ```
 
-`apply` also finds layers named differently, as in text-only and multimodal loads of one checkpoint: see [How-to: apply across model classes](https://astro-weights.dev/how-to/apply-across-model-classes/).
+`apply` also finds layers named differently, as in text-only and multimodal loads of one checkpoint: see [How-to: apply across model classes](https://astro-weights.dev/docs/how-to/apply-across-model-classes/).
 
 ## Development
 

@@ -12,11 +12,11 @@ CodeSlice 是一款本地优先的 AI 代码阅读桌面应用。添加代码仓
 
 | 平台 | 架构 | 安装包 |
 | --- | --- | --- |
-| Windows 10 / 11 | x64 | `CodeSlice-0.2.6-Setup.exe` |
-| macOS 11+ | Apple Silicon（arm64） | `CodeSlice-0.2.6-arm64.dmg` |
-| macOS 11+ | Intel（x64） | `CodeSlice-0.2.6-x64.dmg` |
-| Linux（Ubuntu 22.04+ / Debian 12+） | x86_64 | `CodeSlice-0.2.6-x86_64.AppImage`、`-amd64.deb`、`-x86_64.rpm` |
-| Linux（Ubuntu 22.04+ / Debian 12+） | arm64 | `CodeSlice-0.2.6-arm64.AppImage`、`-arm64.deb`、`-aarch64.rpm` |
+| Windows 10 / 11 | x64 | `CodeSlice-0.3.0-Setup.exe` |
+| macOS 11+ | Apple Silicon（arm64） | `CodeSlice-0.3.0-arm64.dmg` |
+| macOS 11+ | Intel（x64） | `CodeSlice-0.3.0-x64.dmg` |
+| Linux（Ubuntu 22.04+ / Debian 12+） | x86_64 | `CodeSlice-0.3.0-x86_64.AppImage`、`-amd64.deb`、`-x86_64.rpm` |
+| Linux（Ubuntu 22.04+ / Debian 12+） | arm64 | `CodeSlice-0.3.0-arm64.AppImage`、`-arm64.deb`、`-aarch64.rpm` |
 
 安装包由 GitHub Actions 在对应的原生 runner 上构建：Windows 使用 NSIS，macOS 使用
 DMG，Linux 使用 AppImage / deb / rpm。暂未提供 Windows ARM64 与 Linux ARMv7 安装包。
@@ -60,6 +60,14 @@ CodeSlice 会在回答中附带引用。点击文件与行号引用，即可直�
 
 ![浏览已保存的 CodeSlice 知识库笔记](docs/screenshots/knowledge-base.png)
 
+### 笔记引用回到写作时的版本
+
+代码被删改后，笔记里的引用仍能回到写作时的提交。点击引用时，只有代码标签和左侧“源代码管理”栏切到那个提交；顶部工作区、文件树和你当前选择的分支保持不变。
+
+![代码删除后，笔记引用显示历史状态](docs/screenshots/git-note-refs.png)
+
+![打开历史提交的只读代码，顶部工作区仍停在当前分支](docs/screenshots/git-note-history.png)
+
 ### 在独立的代码图谱与笔记图谱中探索
 
 代码图谱与笔记图谱独立切换，共用静态画布和右侧检查器栏，跟随浅色 / 深色主题。图谱构建一次即持久化到本地数据库，再次打开瞬时呈现。支持按关系族筛选、按社区显示 / 隐藏、搜索定位、悬浮详情；只有社区中心节点常驻标签。检查器列出调用者与被调用者，并可用你配置的模型流式总结节点与全部直接邻点；对话可以跳到对应代码节点。笔记链接只记录共享文件夹、项目或文件引用，不代表语义相似。详见 [图谱交互与验证](docs/GRAPH_EXPLORER.md)。
@@ -90,6 +98,13 @@ or reject it. Approval is required before the operation runs.
 Save useful explanations as searchable notes. Code references in a note take
 you back to the original source.
 
+### Follow a note reference back to its commit
+
+When the quoted code has changed or been deleted, a note reference still opens
+the commit it was written from. The code tab and the source-control sidebar
+follow that commit; the worktree, file tree, and branch you selected stay where
+they are.
+
 ### Explore code and notes in separate graphs
 
 Switch between independent code and note graphs with the same static canvas.
@@ -107,7 +122,7 @@ references; they do not assert semantic similarity.
 ## 目录
 
 - [实战演示](#实战演示)
-- [v0.2.6 更新](#v026-更新)
+- [v0.3.0 更新](#v030-更新)
 - [快速开始](#快速开始)
 - [功能一览](#功能一览)
 - [运行要求](#运行要求)
@@ -128,7 +143,46 @@ references; they do not assert semantic similarity.
 
 ---
 
-## v0.2.6 更新
+## v0.3.0 更新
+
+- **Git 版本视图**：顶部版本选择器会标出工作区当前分支；可以切到任意分支、标签或提交，
+  只读查看那一版的代码、文件树、图谱和符号导航，不 checkout、不改动工作区。
+- **只读源代码管理**：新增“源代码”侧栏，按提交查看更改文件、增删行和提交时间线；
+  点开文件可用 Monaco 双栏对照该提交与其第一父提交。工作区视图列出未提交更改。
+- **笔记跟着 Git 走**：每条笔记记录写作时的提交；查看某个版本时，会区分“当时已存在”
+  与“此后新增”，并重算每处引用的状态（一致、移动、历史、已修改、已删除）。
+- **引用回溯**：笔记里的代码片段在最新代码中不存在时，点击引用会打开写作提交的只读文件
+  和高亮行；顶部工作区、文件树以及你选择的版本保持不变，只有代码标签和源代码管理栏
+  跟着这次查看移动。需要整页切换版本时，仍从版本选择器或提交时间线显式操作。
+- **历史导航**：在历史版本的代码里，F12、引用列表和 hover 也使用该版本的符号索引，
+  不会跳回工作区。
+- **发布**：版本号统一到 0.3.0，标签为 `v0.3.0`。
+
+<details>
+<summary>English</summary>
+
+- **Git revision views.** The top revision picker names the branch the worktree
+  is on. Switching to a branch, tag, or commit shows that revision's code, tree,
+  graph, and symbol navigation read-only, without checking anything out.
+- **Read-only source control.** A new Source Control sidebar lists the changes in
+  the worktree or any commit, shows the commit timeline, and opens a two-pane
+  Monaco diff against the first parent.
+- **Notes follow Git.** Every note records the commit it was written from.
+  Viewing a revision marks notes as already existing or written later, and
+  re-resolves every code reference.
+- **Reference history.** When a quoted block is gone from the latest code,
+  clicking the reference opens the writing commit read-only at the old lines.
+  The worktree, file tree, and selected revision stay put; only the code tab and
+  Source Control sidebar follow that local view. Whole-app revision changes still
+  happen only through the revision picker or commit timeline.
+- **Historical navigation.** Go-to-definition, references, and hover inside a
+  historical file use that revision's symbol index instead of the worktree.
+- **Release:** version bumped to 0.3.0; tag `v0.3.0`.
+
+</details>
+
+<details>
+<summary>v0.2.6 更新</summary>
 
 - **修复“排布刚开始就被当成完成”**：vis 的 `stabilize()` 在启动时会先触发一次
   `stabilized` 事件，旧代码把它当作完成信号，于是把初始坐标直接存成了最终布局，
@@ -164,6 +218,8 @@ references; they do not assert semantic similarity.
 - **Old layouts are retired once.** `LAYOUT_VERSION` is now 3, so coordinates
   saved as a ball are discarded and regenerated after the upgrade.
 - **Release:** version bumped to 0.2.6.
+
+</details>
 
 </details>
 
@@ -362,7 +418,7 @@ references; they do not assert semantic similarity.
 ## 快速开始
 
 1. 从 [最新 GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest)
-   下载对应平台的安装包：Windows 使用 `CodeSlice-0.2.6-Setup.exe`；macOS 按芯片选择
+   下载对应平台的安装包：Windows 使用 `CodeSlice-0.3.0-Setup.exe`；macOS 按芯片选择
    arm64（Apple Silicon）或 x64（Intel）的 `.dmg`；Linux 按架构选择 x86_64 或 arm64
    的 AppImage、`.deb`、`.rpm`。
 2. 启动 CodeSlice，点击添加项目并选择本地代码仓库所在的文件夹。
@@ -383,7 +439,7 @@ API Key 保存在系统凭据管理器中。
 
 1. Download the package for your platform from the
    [latest GitHub Release](https://github.com/ctianye/CodeSlice/releases/latest):
-   `CodeSlice-0.2.6-Setup.exe` for Windows; an arm64 (Apple Silicon) or x64
+   `CodeSlice-0.3.0-Setup.exe` for Windows; an arm64 (Apple Silicon) or x64
    (Intel) `.dmg` for macOS; or the x86_64 / arm64 AppImage, `.deb`, or `.rpm`
    for Linux.
 2. Start CodeSlice and add a local repository by selecting its folder.
@@ -422,6 +478,9 @@ manually deleting the user data directory removes that local data.
   以及从对话跳到代码。
 - 像 IDE 一样在代码间跳转：`F12` / `Ctrl+Click` 到定义，`Shift+F12` 查看引用，
   `Alt+←/→` 前进后退。
+- 查看 Git 版本：在顶部切换分支、标签或提交，只读查看该版本的代码、文件树、图谱和符号导航。
+- 只读源代码管理：查看工作区或任一提交的更改、提交时间线和双栏 diff。
+- 笔记引用可回溯到写作提交；查看历史代码不会移动当前工作区。
 - 对话、索引与应用数据全部保存在本地。
 
 <details>
@@ -440,6 +499,12 @@ manually deleting the user data directory removes that local data.
   navigation.
 - Jumps between symbols like an IDE: `F12` / `Ctrl+Click` for go-to-definition,
   `Shift+F12` for references, and `Alt+←/→` for back/forward.
+- Explores Git revisions: switch branches, tags, or commits from the top bar and
+  read that revision's code, tree, graph, and symbol navigation read-only.
+- Read-only source control: inspect worktree or commit changes, the commit
+  timeline, and a two-pane diff.
+- Follows note references back to the writing commit without moving the current
+  worktree.
 - Saves conversations, indexes, and application data locally.
 
 </details>
@@ -600,7 +665,7 @@ please explain the problem, reproduction steps, and expected behavior.
 **启动握手**：后端在真正开始监听之后，向 stdout 打印一行
 
 ```
-CODESLICE_READY {"port": 54746, "token": "xN-Nxo...", "version": "0.2.6"}
+CODESLICE_READY {"port": 54746, "token": "xN-Nxo...", "version": "0.3.0"}
 ```
 
 Electron 主进程读到这一行才知道该连哪个端口、用什么 Token。
@@ -729,7 +794,7 @@ cd desktop; npm run dev
 # 1) 后端 → packaging\dist-backend\codeslice-backend.exe（扁平布局）
 pwsh -File packaging\build_backend.ps1
 
-# 2) 前端 + Electron → desktop\release\CodeSlice-0.2.6-Setup.exe
+# 2) 前端 + Electron → desktop\release\CodeSlice-0.3.0-Setup.exe
 pwsh -File packaging\build_desktop.ps1
 ```
 
@@ -764,7 +829,7 @@ CI）中运行：
 PyInstaller 产物必须在目标架构的 Linux 上生成，不能从 Windows 交叉编译；arm64 包同理，
 需要 arm64 runner 或 arm64 机器。GitHub Actions 已按架构分别构建：推送 `v*` 标签后，
 Windows、macOS x64/arm64、Linux x64/arm64 会并行打包，汇总后自动创建 / 更新 Release
-并上传 `SHA256SUMS-v0.2.6.txt`。也可以手动触发 `release` workflow；填写
+并上传 `SHA256SUMS-v0.3.0.txt`。也可以手动触发 `release` workflow；填写
 `publish_tag` 可把本次构建发布到已有的 tag（不填则只上传 Actions artifact）。
 
 AppImage / deb / rpm 输出到 `desktop/release-linux/`。只想重新打包前端或复用已有后端时，
@@ -1115,13 +1180,13 @@ PyInstaller 产出的 exe 没有代码签名，属于典型误报。点「更多
 
 **Q：Linux 上怎么安装？**
 
-- AppImage：`chmod +x CodeSlice-0.2.6-x86_64.AppImage` 后直接运行，不需要安装；
-  arm64 机器使用 `CodeSlice-0.2.6-arm64.AppImage`。若提示缺少 FUSE，可
-  `sudo apt install libfuse2`，或运行 `./CodeSlice-0.2.6-x86_64.AppImage --appimage-extract-and-run`。
-- deb：`sudo apt install ./CodeSlice-0.2.6-amd64.deb`（arm64 为
-  `CodeSlice-0.2.6-arm64.deb`）。
-- rpm：`sudo dnf install ./CodeSlice-0.2.6-x86_64.rpm`（arm64 为
-  `CodeSlice-0.2.6-aarch64.rpm`，或 `sudo rpm -i ...`）。
+- AppImage：`chmod +x CodeSlice-0.3.0-x86_64.AppImage` 后直接运行，不需要安装；
+  arm64 机器使用 `CodeSlice-0.3.0-arm64.AppImage`。若提示缺少 FUSE，可
+  `sudo apt install libfuse2`，或运行 `./CodeSlice-0.3.0-x86_64.AppImage --appimage-extract-and-run`。
+- deb：`sudo apt install ./CodeSlice-0.3.0-amd64.deb`（arm64 为
+  `CodeSlice-0.3.0-arm64.deb`）。
+- rpm：`sudo dnf install ./CodeSlice-0.3.0-x86_64.rpm`（arm64 为
+  `CodeSlice-0.3.0-aarch64.rpm`，或 `sudo rpm -i ...`）。
 
 deb / rpm 默认安装到 `/opt/CodeSlice`，启动项会出现在应用菜单中。安装包未做代码签名，
 系统可能提示来源未知；确认文件来自本仓库 Release 后可继续安装。
@@ -1181,7 +1246,7 @@ uv run fastapi dev app/main.py --port 8123
 **Q：安装后 `CodeSlice.exe` 是 Electron 的默认图标？**
 
 说明打包时 rcedit 那一步没生效。正常的打包输出里应该有
-`[ok] icon verified: ...` 与 `[ok] version info: CodeSlice 0.2.6.0`。
+`[ok] icon verified: ...` 与 `[ok] version info: CodeSlice 0.3.0.0`。
 原因是 `desktop/electron-builder.yml` 里 `signAndEditExecutable: false`（本地不签名），
 electron-builder 因此跳过写图标/版本；而打开它的替代路径需要解压含符号链接的
 winCodeSign 包，非管理员做不到。`packaging\build_desktop.ps1` 改为

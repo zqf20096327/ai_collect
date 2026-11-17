@@ -31,8 +31,9 @@ one command. Built and tuned on a Core Ultra 5 125H with 32 GB of RAM: no discre
 - **A web UI that searches and talks**: the model can search the web and read pages (the server fetches them,
   public addresses only), and you can talk to it: the microphone stays open (Gemma 4 E4B / 12B hear the audio
   themselves; with `--whisper auto` Qwen3-ASR writes it down for any model), it answers aloud sentence by sentence,
-  can be interrupted, and looks things up while it talks. Speech to text also fills a **Transcripts** and a
-  **Meetings** tab. From a phone or anywhere it works through a Cloudflare Tunnel with a password, installable as
+  can be interrupted, and looks things up while it talks. Speech to text also fills the **Transcripts** menu:
+  audio and video files, recordings, and meetings (your microphone and the meeting's sound, written as Me / Others),
+  each with a summary. From a phone or anywhere it works through a Cloudflare Tunnel with a password, installable as
   an app ([docs/remote-access.md](docs/remote-access.md)).
 - **Long documents read properly**: a document the context takes comes whole; a longer one by its outline, page
   ranges or a search; and for all of it, `digest_file` has the model read it part by part (sections and functions
@@ -60,7 +61,7 @@ GPU runtime and nothing else (bash, curl): [docs/install.md](docs/install.md#lin
 
 On Windows:
 
-1. Download `inferzero-<version>-win64.zip` (6 MB) from the
+1. Download `inferzero-<version>-win64.zip` (10 MB) from the
    **[latest release](https://github.com/rizagp/inferzero/releases/latest)** and unpack it anywhere.
 2. Double-click `zero-launcher.cmd` (Windows may ask once: "More info", "Run anyway").
    Packages released before the rename (up to 2026.11.10.3) are named `arcinferzero-<version>-win64.zip` and start
@@ -139,11 +140,12 @@ the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named)
   (2026.11.13.11). The switches still off by default (`ARC_X16`, `ARC_GV_IQ3S`, `ARC_H8_NORM`, H8 on MoE models,
   `--chunk 8192`) were measured there on 2026-11-14 and none is faster: [docs/xe2-tuning.md](docs/xe2-tuning.md).
 - **One Pro B70** on native Linux ([issue #27](https://github.com/rizagp/inferzero/issues/27), joshdev-de, Fedora 45):
-  4K prompt 2,315 tok/s on the code of release 2026.11.15.01 (2,219 on 2026-11-14 before its two prompt changes),
-  generation 31.9 tok/s, 57.8 with MTP. Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
+  4K prompt 2,694 tok/s (release 2026.11.16.01, with decoded weights kept resident), generation 35.2 tok/s, 70.6
+  with MTP (2026.11.16.02). Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
   release 2026.11.13.06, before the weight prefetch; a rerun is asked for): 2,105 tok/s, generation 32.2, 75.2 with MTP.
 - **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
-  330 tok/s (release 2026.11.13.11, its default 32x16 XMX tiles with H8; 302 on 2026.11.11).
+  357 tok/s (release 2026.11.15.11, XMX with H8 and 32x16 tiles), generation 6.1 tok/s, 14.6 with MTP (at its
+  memory's limit).
 - **One model over several GPUs** (`runz` / `serverz --gpus N`, tensor parallel):
   - 4 Pro B60s on Windows (issue #4; no peer access there, so the sums go through host memory): the 27B's 4K prompt
     1,597 / 1,724 / 1,888 tok/s over 2 / 3 / 4 cards (2026.11.13.05 and .11, before the weight prefetch), generation
@@ -163,9 +165,7 @@ the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named)
   - A GPU that hangs makes the request fail and `/health` answer 503; the server itself stays up.
   - A model that cannot be split loads on one GPU.
 
-In progress:
-- an f16 XMX prompt GEMM (`ARC_X16=1`, off until measured);
-- MTP / DFlash2 on a split model.
+Not built yet: MTP / DFlash2 drafting on a split model (off there).
 
 How to measure on such a card, and every switch: [docs/xe2-tuning.md](docs/xe2-tuning.md). The split model and
 its failsafes: [docs/multi-gpu.md](docs/multi-gpu.md). The plan: QUEUE.md, F31.

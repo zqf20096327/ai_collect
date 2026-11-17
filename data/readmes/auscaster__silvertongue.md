@@ -9,7 +9,7 @@
 <h3>Write like anyone famous.</h3>
 
 An open catalogue of famous writing voices for your agent, your browser and your pull requests.<br>
-Pick a voice. Switch any time. Keep your point.
+Pick a voice. Switch any time. Your message stays yours.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/auscaster/silvertongue/ci.yml?branch=main&style=flat-square&label=ci&labelColor=111&color=111)](https://github.com/auscaster/silvertongue/actions/workflows/ci.yml)
 [![Format: VOICE.md v0 (experimental)](https://img.shields.io/badge/format-VOICE.md%20v0%20%28experimental%29-111?style=flat-square)](spec/voice/v0/README.md)
@@ -50,7 +50,7 @@ Pick a voice. Switch any time. Keep your point.
 ## How it works
 
 1. **Pick a voice.** Every voice in the catalogue is a researched study of how a famous person writes: how they open, argue, land a line, and what they never say.
-2. **Bring your point.** Your brief, your facts, your numbers, your story. The voice changes the delivery and leaves the substance alone.
+2. **Say what you want to say.** Your facts, your numbers, your story. The voice changes how it's said and leaves the substance alone.
 3. **Switch any time.** Same idea, another voice, one swap. Mid-draft or mid-thread.
 
 ## An example, side by side

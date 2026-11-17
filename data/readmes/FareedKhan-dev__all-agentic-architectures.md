@@ -4,7 +4,7 @@
 
 # Agentic Architectures
 
-### Thirty-five production-grade agentic AI patterns. End to end.
+### Thirty-six production-grade agentic AI patterns. End to end.
 
 A library *and* a living textbook — real LLM outputs, provider-agnostic,
 deterministic-picker discipline throughout, and a comparative benchmark
@@ -39,7 +39,7 @@ leaderboard that ranks every architecture against every relevant task.
 
 <table>
 <tr>
-<td align="center" width="140"><h2><kbd>&nbsp; 35 &nbsp;</kbd></h2><sub>ARCHITECTURES</sub></td>
+<td align="center" width="140"><h2><kbd>&nbsp; 36 &nbsp;</kbd></h2><sub>ARCHITECTURES</sub></td>
 <td align="center" width="140"><h2><kbd>&nbsp; 283 &nbsp;</kbd></h2><sub>PASSING TESTS</sub></td>
 <td align="center" width="140"><h2><kbd>&nbsp; 17 &nbsp;</kbd></h2><sub>BENCHMARK TASKS</sub></td>
 <td align="center" width="140"><h2><kbd>&nbsp; 9 &nbsp;</kbd></h2><sub>LLM PROVIDERS</sub></td>
@@ -55,16 +55,16 @@ leaderboard that ranks every architecture against every relevant task.
 
 ## Overview
 
-A single Python library that packages every major agentic AI pattern from the literature as a runnable `Architecture` class with a uniform contract. Each pattern ships with a fully executed Jupyter notebook whose theory is written *against* the captured run — not synthetic examples. The library is multi-provider (Nebius, OpenAI, Anthropic, Groq, Ollama, Together, Fireworks, Mistral, Google) and built on top of LangGraph state machines.
+A single Python library that packages every major agentic AI pattern from the literature as a runnable `Architecture` class with a uniform contract. Each pattern ships with a fully executed Jupyter notebook whose theory is written *against* the captured run, not synthetic examples. The library is multi-provider (Nebius, OpenAI, Anthropic, DeepSeek, Groq, Ollama, Together, Fireworks, Mistral, Google, OpenRouter) and built on top of LangGraph state machines.
 
-The central technical discipline of the repository is the **deterministic-picker pattern** — every LLM-as-Scorer surface has the LLM commit to categorical features (booleans, enums) and lets Python compose the deciding signal. This is the universal escape from the LLM-as-Scorer flat-band pathology, applied in 13 of 35 architectures; 9 more are architecturally immune by design.
+The central technical discipline of the repository is the **deterministic-picker pattern** — every LLM-as-Scorer surface has the LLM commit to categorical features (booleans, enums) and lets Python compose the deciding signal. This is the universal escape from the LLM-as-Scorer flat-band pathology, applied in 13 of 36 architectures; 9 more are architecturally immune by design.
 
 ---
 
 ## Quickstart
 
 ```bash
-pip install "agentic-architectures[nebius,faiss,tavily]"
+pip install "agentic-architectures[nebius,mcp]"
 ```
 
 ```python
@@ -78,7 +78,9 @@ print(result.output)
 print("score:", result.metadata["final_score"], "/ 10")
 ```
 
-Same `.run(task)` interface across all 35 architectures. Same `ArchitectureResult` return shape. Swap the class, swap the pattern — your downstream code does not change.
+Same `.run(task)` interface across all 36 architectures. Same `ArchitectureResult` return shape. Swap the class, swap the pattern: your downstream code does not change.
+
+Web search needs no key: `SEARCH_BACKEND=mcp` in `.env` searches through Parallel's free MCP server (or set a Tavily key). With no API key at all, run everything locally with [Ollama](https://ollama.com): `ollama pull qwen3:8b` and `ollama pull nomic-embed-text`, then `LLM_PROVIDER=ollama`.
 
 <details>
 <summary><b>Set up a virtualenv from a fresh clone</b></summary>
@@ -93,10 +95,10 @@ python -m venv .venv
 .venv\Scripts\activate              # Windows
 source .venv/bin/activate           # macOS / Linux
 
-pip install -e ".[dev,test,docs,nebius,faiss,tavily,networkx]"
+pip install -e ".[dev,test,docs,nebius,mcp,tavily,faiss,networkx]"
 cp .env.example .env                # then fill in NEBIUS_API_KEY etc.
 
-pytest -q                           # 283 tests pass in ~30s
+pytest -q                           # 310 tests pass in a few seconds
 ```
 
 </details>
@@ -154,7 +156,7 @@ From one search tool to a real Chromium browser.
 #### [Multi-Agent](docs/architectures/index.md#multi-agent)
 Specialists, debate, multi-perspective research.
 <br><br>
-<sub><a href="notebooks/05_multi_agent.ipynb">Multi-Agent</a> · <a href="notebooks/07_blackboard.ipynb">Blackboard</a> · <a href="notebooks/28_debate.ipynb">Debate</a> · <a href="notebooks/30_storm.ipynb">STORM</a> · <a href="notebooks/11_meta_controller.ipynb">Meta-Controller</a></sub>
+<sub><a href="notebooks/05_multi_agent.ipynb">Multi-Agent</a> · <a href="notebooks/07_blackboard.ipynb">Blackboard</a> · <a href="notebooks/28_debate.ipynb">Debate</a> · <a href="notebooks/30_storm.ipynb">STORM</a> · <a href="notebooks/11_meta_controller.ipynb">Meta-Controller</a> · <a href="notebooks/36_mixture_of_agents.ipynb">Mixture of Agents</a></sub>
 
 </td>
 </tr>
@@ -188,7 +190,7 @@ Patterns that appear across families.
 
 ---
 
-## The 35 architectures
+## The 36 architectures
 
 <details open>
 <summary><b>Reasoning &amp; Reflection</b></summary>
@@ -266,6 +268,7 @@ Patterns that appear across families.
 | **Debate** | N agents × K rounds | Du 2023 |
 | **STORM** | Multi-perspective research → article | Shao 2024 |
 | **Meta-Controller** | Router over architectures | this repo |
+| **Mixture of Agents** | Layers of proposers, each refining the last, then an aggregator | Wang 2024 |
 
 </details>
 
@@ -287,24 +290,26 @@ Patterns that appear across families.
 
 <table>
 <tr><th>Provider</th><th>Install extra</th><th>Notes</th></tr>
-<tr><td><b>Nebius</b> &nbsp;<sub><i>(default)</i></sub></td><td><code>[nebius]</code></td><td>Llama-3.3-70B + Qwen3-Thinking; cheapest for the included demos</td></tr>
+<tr><td><b>Nebius</b> &nbsp;<sub><i>(default)</i></sub></td><td><code>[nebius]</code></td><td>Nemotron 3.5 Lightning by default; cheapest for the included demos</td></tr>
 <tr><td>OpenAI</td><td><code>[openai]</code></td><td>All architectures work; highest quality for reasoning patterns</td></tr>
 <tr><td>Anthropic</td><td><code>[anthropic]</code></td><td>Strong on long context; required for production Computer-Use</td></tr>
+<tr><td>DeepSeek</td><td><code>[deepseek]</code></td><td>Through langchain-deepseek; deepseek-flash by default</td></tr>
 <tr><td>Groq</td><td><code>[groq]</code></td><td>Fast inference; great for high-volume Self-Consistency</td></tr>
-<tr><td>Ollama &nbsp;<sub><i>(local)</i></sub></td><td><code>[ollama]</code></td><td>No API key; tool calling depends on the model</td></tr>
+<tr><td>Ollama &nbsp;<sub><i>(local)</i></sub></td><td><code>[ollama]</code></td><td>No API key; qwen3:8b by default, every architecture verified end to end on qwen3</td></tr>
 <tr><td>Together</td><td><code>[together]</code></td><td>Wide model catalogue</td></tr>
 <tr><td>Fireworks</td><td><code>[fireworks]</code></td><td>Function-calling first-class</td></tr>
 <tr><td>Mistral</td><td><code>[mistral]</code></td><td>EU-hosted option</td></tr>
-<tr><td>Google</td><td><code>[google]</code></td><td>Gemini 2.x via Generative AI API</td></tr>
+<tr><td>Google</td><td><code>[google]</code></td><td>Gemini 3.5 Flash-Lite by default, free tier</td></tr>
+<tr><td>OpenRouter</td><td><code>[openrouter]</code></td><td>One key for hundreds of models (MiniMax, Qwen, DeepSeek, ...)</td></tr>
 </table>
 
-Switch via `LLM_PROVIDER` + the corresponding key in `.env`. No code changes.
+Switch via `LLM_PROVIDER` + the corresponding key in `.env`. No code changes. Leave `LLM_MODEL` empty for each provider's recommended model; the [provider guide](docs/getting-started/providers.md) lists them, checked against each provider's deprecation pages in November 2026, and how to point the `openai` provider at any OpenAI-compatible server.
 
 ---
 
 ## Benchmarks
 
-A 17-task suite runs every architecture and scores results. Most recent run, real Nebius Llama-3.3-70B, ~25 min, ~$1.50 in tokens:
+A 17-task suite runs every architecture and scores results. Most recent run (May 2026), real Nebius Llama-3.3-70B, ~25 min, ~$1.50 in tokens:
 
 <table>
 <tr>
@@ -352,7 +357,7 @@ Four curated reading orders, depending on what you're trying to do.
 <tr>
 <td><b>Multi-agent</b></td>
 <td>Coordination</td>
-<td><sub>Multi-Agent → Blackboard → Debate → STORM → Meta-Controller</sub></td>
+<td><sub>Multi-Agent → Blackboard → Debate → STORM → Meta-Controller → Mixture of Agents</sub></td>
 </tr>
 <tr>
 <td><b>Safety</b></td>
@@ -383,15 +388,15 @@ Four curated reading orders, depending on what you're trying to do.
 
 ```
 pytest -q
-283 passed, 37 skipped (env-gated integration), 1 warning in ~30s
+310 passed, 38 skipped (env-gated integration) in a few seconds
 ```
 
 <table>
 <tr><th width="280">Suite</th><th>Coverage</th></tr>
-<tr><td><b>Registry sweep</b></td><td>All 35 architectures (metadata + instantiate + build)</td></tr>
+<tr><td><b>Registry sweep</b></td><td>All 36 architectures (metadata + instantiate + build)</td></tr>
 <tr><td><b>Pure-Python helpers</b></td><td>Haiku checker, composite scorers, subprocess executor, safety gate, sandbox path</td></tr>
-<tr><td><b>Notebook integrity</b></td><td>All 35 notebooks executed, no error outputs, §9 commentary tailored from real captured runs</td></tr>
-<tr><td><b>Integration</b> &nbsp;<sub><i>(env-gated)</i></sub></td><td>One real-LLM happy-path per architecture, gated via <code>RUN_INTEGRATION=1</code></td></tr>
+<tr><td><b>Notebook integrity</b></td><td>All 36 notebooks executed, no error outputs, §9 commentary tailored from real captured runs</td></tr>
+<tr><td><b>Integration</b> &nbsp;<sub><i>(env-gated)</i></sub></td><td>One real-LLM happy-path per architecture, gated via <code>RUN_INTEGRATION=1</code>. For 1.0.0 all 38 ran on LangChain 1.5 and LangGraph 1.2 against local models through Ollama, with no API key, and every one passed on <code>qwen3:8b</code>, the default local model (MetaController on a rerun, after the free MCP search tier's rate limit stopped it).</td></tr>
 </table>
 
 ---
@@ -418,7 +423,12 @@ Contributions welcome. Two paths:
 1. **Add a new architecture** — follow the [5-step recipe](docs/tutorials/adding-your-own.md). The PR template includes a deterministic-picker checklist.
 2. **Improve an existing one** — bug fix, prompt tuning, performance, scoring rubric. Open an issue first to discuss scope.
 
-See [**CONTRIBUTING.md**](CONTRIBUTING.md) for the dev setup, code style, and commit-message convention (Conventional Commits — `release-please` auto-generates the CHANGELOG).
+See [**CONTRIBUTING.md**](CONTRIBUTING.md) for the dev setup, code style, and commit-message convention (Conventional Commits; `release-please` auto-generates the CHANGELOG).
+
+## Community
+
+- [Chinese translation of the course](https://github.com/wxt2rr/all-agentic-architectures) by [@wxt2rr](https://github.com/wxt2rr) (of an earlier version of the notebooks, #3).
+- [Agentic Architectures Arena](https://github.com/theaiautomators/agentic-architectures), a live dashboard that runs every pattern, built for [this video walkthrough](https://www.youtube.com/watch?v=PZsJfBVDZZc) by [@theaiautomators](https://github.com/theaiautomators) (#19).
 
 ---
 
@@ -426,7 +436,7 @@ See [**CONTRIBUTING.md**](CONTRIBUTING.md) for the dev setup, code style, and co
 
 ```bibtex
 @misc{khan2026agentic,
-  title         = {Agentic Architectures: A Library of 35 Production-Grade Agentic AI Patterns},
+  title         = {Agentic Architectures: A Library of 36 Production-Grade Agentic AI Patterns},
   author        = {Khan, Fareed},
   year          = {2026},
   howpublished  = {\url{https://github.com/FareedKhan-dev/all-agentic-architectures}},

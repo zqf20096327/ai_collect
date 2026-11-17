@@ -2,14 +2,15 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[English](README.en.md) · [让 AI 安装](#安装) · [查看四个 skill 的示例](docs/examples.md)
+[English](README.en.md) · [让 AI 安装](#安装) · [查看使用示例](docs/examples.md)
 
-**贴一条简历经历，直接拿到面试官可能问的主问题和追问。** 无需先做模拟面试，一次生成 Markdown 题单，可附简短参考回答。
+**从写简历到练面试。** 有项目材料时，可以先提炼中文简历条目。选好要写进简历的条目后，可以生成 Markdown 题单，提前准备面试官可能问的主问题和追问。
 
-想练临场回答时，可以选前端、Java/Go/C++ 后端或 AI 应用开发模拟面试。AI 会根据你的回答逐轮追问，结束后给出反馈。
+想练临场回答时，可以选前端、Java/Go/C++ 后端或 AI 应用开发模拟面试。AI 会根据你的回答逐轮追问，结束后给出反馈。每个 skill 都可以单独使用。
 
-| 你想练什么 | Skill | 你会得到什么 |
+| 你想准备什么 | Skill | 你会得到什么 |
 | --- | --- | --- |
+| 从项目或实习材料里提炼简历亮点 | [简历条目打磨](#简历条目打磨) | 中文候选条目、推荐条目，以及量化指标的依据和验证方法 |
 | 提前准备简历里可能被问到的内容 | [简历批量出题](#简历批量出题) | 按简历条目组织的题单，可附简短参考回答 |
 | 浏览器前端、React 或 Vue 面试 | [前端模拟面试](#前端模拟面试) | 项目与技术追问、可选编码题、面试反馈 |
 | Java、Go、C++ 后端面试 | [后端模拟面试](#后端模拟面试) | 项目与技术追问、面试反馈 |
@@ -20,7 +21,8 @@
 把下面这段话发给支持 Agent Skills、能读取 GitHub 仓库并写入 skill 目录的 AI 工具。
 
 ```text
-请从 https://github.com/Hazenix/interview-prep-skills 安装以下四个 skill：
+请从 https://github.com/Hazenix/interview-prep-skills 安装以下 skill：
+- skills/resume-bullets/
 - skills/resume-interview-question-generator/
 - skills/frontend-interview-simulator/
 - skills/backend-interview-simulator/
@@ -32,6 +34,20 @@
 只想安装其中一个时，保留对应的目录即可。如果安装后找不到 skill，请让 AI 检查安装位置和 `SKILL.md`，再按当前工具的规则重新加载或开启新会话。
 
 装好后，选下面任意一个 skill 的示例发给 AI。可以先用示例里的虚构经历试跑，再换成自己的简历条目。
+
+## 简历条目打磨
+
+[`resume-bullets`](skills/resume-bullets/SKILL.md)
+
+提供实习、个人项目或开源项目的代码和文档，AI 会提炼候选条目，并从中推荐适合放进简历的几条。默认从项目材料提炼亮点，也可以选择个人贡献模式，按自己的 commit 和 PR 筛选。
+
+条目用具体的业务或工程指标说明收益。缺少实测数据时，可在草案中保留标明待验证的估算，并附验证方法。完整候选文档默认保存在当前工作目录的 `./resume/`。
+
+```text
+用 resume-bullets 根据 ./task-dashboard 的代码和 README 打磨中文简历条目。这是个人项目，重点提炼任务重试和批量导入的收益。
+```
+
+[查看简历条目示例](docs/examples.md#简历条目打磨)
 
 ## 简历批量出题
 
@@ -130,7 +146,7 @@ AI 从面试官视角为你选定的简历条目出题。贴项目、实习经�
 ```text
 .
 ├── docs/
-│   └── examples.md                            # 四个 skill 的输入与输出示例
+│   └── examples.md                            # 五个 skill 的输入与输出示例
 ├── skills/
 │   ├── ai-dev-interview-simulator/
 │   │   ├── SKILL.md                           # AI 应用开发模拟面试
@@ -141,6 +157,9 @@ AI 从面试官视角为你选定的简历条目出题。贴项目、实习经�
 │   ├── frontend-interview-simulator/
 │   │   ├── SKILL.md                           # 逐轮前端模拟面试
 │   │   └── references/                        # 前端考察点、编码题与评分规则
+│   ├── resume-bullets/
+│   │   ├── SKILL.md                           # 简历条目打磨
+│   │   └── agents/openai.yaml                  # Codex 展示信息与调用示例
 │   └── resume-interview-question-generator/
 │       └── SKILL.md                           # 简历批量出题
 ├── README.md
@@ -155,8 +174,8 @@ AI 从面试官视角为你选定的简历条目出题。贴项目、实习经�
 
 ## 许可证与致谢
 
-本项目采用 [MIT License](LICENSE)。技术知识库部分引用了 [JavaGuide](https://github.com/Snailclimb/JavaGuide) 的高频面试题整理，仅作为面试考察点使用，不改变其原有许可。感谢 JavaGuide 和 [xiaolincoding](https://xiaolincoding.com/) 提供的公开资料。
+本项目采用 [MIT License](LICENSE)。
 
-AI 应用开发模拟面试 skill 来自 [Hazenix/ai-dev-interview-simulator](https://github.com/Hazenix/ai-dev-interview-simulator/tree/13010073f1473fa393752a5aee675c9ff764ce51)，适用相同的 MIT 许可证。
+技术知识库部分引用了 [JavaGuide](https://github.com/Snailclimb/JavaGuide) 的高频面试题整理，仅作为面试考察点使用，不改变其原有许可。感谢 JavaGuide 和 [xiaolincoding](https://xiaolincoding.com/) 提供的公开资料。
 
-前端模拟面试的设计参考了 [Witcher-xiang/frontend-interview-skill](https://github.com/Witcher-xiang/frontend-interview-skill) 的技术覆盖方向；本仓库的面试流程与题库独立编写。
+

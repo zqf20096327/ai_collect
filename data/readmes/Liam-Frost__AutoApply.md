@@ -25,6 +25,7 @@
 - [What it will not do](#what-it-will-not-do)
 - [Install](#install)
 - [First run](#first-run)
+- [On a server](#on-a-server)
 - [How an application goes out](#how-an-application-goes-out)
 - [AI services, backups and allowance](#ai-services-backups-and-allowance)
 - [Your data](#your-data)
@@ -42,7 +43,7 @@
 | **Scores them** | Against rules written in plain language that you can edit. Postings that cannot fit (wrong country, wrong level) are dropped before any AI is spent on them. |
 | **Drafts the application** | Opens the real form, reads every question, and answers from your profile only. Each answer shows where it came from and how sure it is. Questions it cannot answer are left for you, not guessed. |
 | **Waits for you** | You review the draft, change anything in plain words ("make the second paragraph about my internship"), and approve. |
-| **Fills in the form** | A driver fills the form, the program checks what the form itself reports, and an AI takes over whatever is left. You press *Submit* yourself unless you have chosen otherwise. |
+| **Fills in the form** | The AI agent reads each page of the real form and fills it from the approved draft; the program reads every value back and asks the form what it still complains about. An approved draft is then submitted, unless you kept the last click for yourself. |
 | **Tracks the result** | Reads your mailbox (read-only) for confirmations, rejections and interview invitations and updates each application. |
 
 It adapts to who you are: a first-run guide asks your career stage (internship, new graduate, experienced), field and target roles, and sets up filters, scoring rules and the interface accordingly. Not only for software jobs.
@@ -67,7 +68,7 @@ These are fixed in code and have no switch:
 
 - **It does not invent anything about you.** Answers, cover letters and tailored résumés use only your résumé and the profile you confirmed.
 - **It does not submit what you have not approved.** The tools the AI is given cannot press Submit.
-- **It does not get around a site's protections.** No CAPTCHA solving, no disguised browser. A site that refuses the program's browser is handed to you.
+- **It does not solve CAPTCHAs or type verification codes.** Those steps, and any site that turns the program's browser away, are handed to you. A second browser backend that sign-in pages are less likely to turn away can be switched on per site under *Settings → Network*; it is off by default.
 - **It does not call a form filled in while the form says otherwise.** If a field is still empty or rejected, you are told which one.
 - **It does not see your passwords.** They are in the system keyring; the AI only learns "signed in" or "needs you".
 
@@ -79,12 +80,12 @@ Download from the [latest release](https://github.com/Liam-Frost/AutoApply/relea
 |---|---|---|
 | **Windows 10 / 11** | `AutoApply-Setup-<version>.exe` | Run it. Choose where to install and which shortcuts you want. |
 | **macOS 12+** | `AutoApply-<version>-macos.dmg` | Open it and drag AutoApply to Applications. |
-| **Linux** | `AutoApply-<version>-linux.run` | `sh AutoApply-<version>-linux.run` |
+| **Linux** | `AutoApply-<version>-linux.run` | `sh AutoApply-<version>-linux.run` (x86-64 and ARM64; add `--yes` to install without questions, for a server) |
 | Any, portable | `AutoApply-<version>.zip` | Unzip, then `start.bat` (Windows) or `./start.sh`. |
 
 <p align="center"><img src="docs/images/setup-en.png" alt="The setup window" width="560"></p>
 
-The installer needs no administrator rights and puts everything in your user folder. The first run downloads [uv](https://docs.astral.sh/uv/), Python, the dependencies and the program's own browser (about 600 MB, a few minutes). The same installer upgrades, repairs and removes the program; an upgrade never touches your data. Its language follows your system (Chinese or English) and can be switched in the window.
+The installer needs no administrator rights and puts everything in your user folder. It brings [uv](https://docs.astral.sh/uv/) with it and uses it to download Python, the dependencies and the program's own browser (about 600 MB, a few minutes; you can cancel, and running it again continues). Running a newer installer upgrades: your data is never touched, AutoApply has to be quit first (the installer says so and waits), and if the new version cannot be made ready the previous one is put back. Running it again when the same version is installed repairs it. Remove it from *Settings → Apps*; you are asked whether your data goes too. Its language follows your system (Chinese or English) and can be switched in the window.
 
 > **The packages are not code-signed.** Windows shows *Windows protected your PC*: choose *More info → Run anyway*. On macOS, right-click the app the first time and choose *Open*. Every package is built by [the release workflow](.github/workflows/release.yml), installed and started on its own system before it is published, and listed with its SHA-256 in `SHA256SUMS.txt`.
 
@@ -92,7 +93,7 @@ Cover letters, résumé tailoring and Word previews need a Word-to-PDF converter
 
 ## First run
 
-An icon appears in the tray (menu bar on macOS) and the page opens at `http://127.0.0.1:8000`.
+An icon appears in the tray (menu bar on macOS) and the page opens at `http://127.0.0.1:8000`. The first time, it asks you to choose the administrator's name and password; from then on it asks for them, on this computer too. Forgotten: the tray menu's *Reset the administrator password*.
 
 <p align="center"><img src="docs/images/tray-en.png" alt="The tray menu" width="300"></p>
 
@@ -103,6 +104,29 @@ An icon appears in the tray (menu bar on macOS) and the page opens at `http://12
 
 After that it works on a schedule: scan, score, draft, and tell you when something needs you (in the page, and on Telegram if you set it up).
 
+## On a server
+
+AutoApply is an agent that is meant to keep running, so it can live on a Linux server, a NAS or any computer without a screen, and be used from the browser of another computer or a phone.
+
+**With Docker** (the image brings the browser, its system libraries, a virtual screen, LibreOffice and Chinese fonts):
+
+```bash
+curl -O https://raw.githubusercontent.com/Liam-Frost/AutoApply/master/docker-compose.yml
+docker compose up -d
+docker compose exec autoapply autoapply set-admin     # choose the administrator's name and password
+```
+
+Then open `http://127.0.0.1:8000` on that computer. Everything that is yours is in the volume `autoapply-data`.
+
+**Without Docker**: `sh AutoApply-<version>-linux.run --yes --service` installs for the current user and registers a systemd user service (started with the computer, restarted when it fails). `autoapply doctor --deep` then lists what the computer lacks - the browser's libraries, a virtual screen, LibreOffice, fonts - each with the command that adds it; the same list is under *Settings → Advanced*.
+
+What is different on a server:
+
+- **Windows that need you open in the web page.** Signing in to a site, pressing *Submit* yourself, taking over a form: on a desktop these open a browser window. Without a screen the page is shown in AutoApply's own page - a notice at the top, and a Telegram message with a link if you set that up - and you click and type there. A site that refuses a hidden browser gets a real window on a virtual screen, which is shown the same way.
+- **Use HTTPS from other devices.** The server speaks plain HTTP. For access from anywhere but the computer itself, put a reverse proxy that does HTTPS in front and turn on *a reverse proxy does the HTTPS* under *Settings → Access & security*. Until then the remote window is refused to other devices, because passwords are typed into it.
+- **Passwords and keys are in an encrypted file**, `data/secrets.bin`, because a server has no keyring. By default its master key is beside it; to keep the key elsewhere set `AUTOAPPLY_MASTER_KEY_FILE` (a Docker secret, a systemd credential). Keep a copy of that key: without it the saved passwords are lost.
+- **A sign-in that cannot be done on a server can be carried over.** Passkeys, and sites that only accept a computer they know: sign in with AutoApply on your own computer, export the sign-in under *Site accounts* (encrypted with a passphrase), import it on the server.
+
 ## How an application goes out
 
 ```mermaid
@@ -111,7 +135,7 @@ flowchart LR
     B --> C[Form read,<br>draft prepared]
     C --> D{You review}
     D -- change it --> C
-    D -- approve --> E[Driver fills the form]
+    D -- approve --> E[Agent fills the form,<br>every value read back]
     E --> F{Form reports<br>a problem?}
     F -- no --> H[Submit]
     F -- yes --> G[AI finishes the page<br>from your profile]
@@ -125,10 +149,10 @@ flowchart LR
 Three things about this chain are worth knowing:
 
 - **The form has the last word.** After filling, the program asks the page itself what is wrong: fields it marks invalid, its error messages, required fields still empty. Neither the driver nor the AI can declare a page done while the page disagrees.
-- **The AI is the fallback, not the pilot.** Deterministic drivers do the routine work quickly and for free. The AI steps in for a form nobody has seen before, a field that appeared after an answer, or a value the form rejects, and it may only use what your profile states.
-- **What it learns stays.** Notes about a site, the form's own wording for your answers and the fields it discovered are kept, so the next run needs less help.
+- **The agent reads the form; code keeps the rules.** Every site's form is read and filled by the AI agent, page by page; the coded drivers sign in and serve as its tools. What the agent may not do is fixed in code: nothing is made up, nothing outside the approved draft is entered, and every value is read back and compared before anything is sent.
+- **What it learns stays.** Notes about a site, the form's own wording for your answers and the fields it discovered are kept, so the next run needs less help. And when a run stands out - a step much slower than usual, the AI taking over again and again - the AI writes down what the program should do differently on that site, as a recipe or a small piece of code; that is checked, tried in the runs that follow, taken out again if it fails, and kept in your data folder across upgrades. *Analysis → Time & learning* shows all of it.
 
-Who presses *Submit* is your choice per site: by default an approved draft on a well-proven site is submitted for you, and anything the AI had to touch, any site without a dedicated driver, and any answer you were unsure about waits for your click.
+Who presses *Submit* is your choice per site or company: by default the program submits an approved draft once every value has been read back. It waits for your click when you kept the last click for that site, when an answer is below your confidence bar, or when the run cannot vouch for what the form holds.
 
 ## AI services, backups and allowance
 
@@ -155,9 +179,10 @@ The Claude subscription is the best-tested service. Others work through the same
 ## Your data
 
 - Everything is on your computer: a SQLite database, your files, and a few Markdown documents you can read and edit (your profile, the scoring rules, notes about sites).
-- Passwords and API keys are in the system keyring. Saved sign-ins are encrypted.
+- Passwords and API keys are in the system keyring - on a server, which has none, in an encrypted file. Saved sign-ins are encrypted.
 - Nothing is sent anywhere except to the AI service you chose and to the job sites themselves. There is no telemetry and no account.
-- The server listens on `127.0.0.1` only and answers only its own pages: requests from other websites open in your browser are refused.
+- The page asks for a login - one account, whose name and password you choose the first time you open it on the computer it runs on. Only a salted hash of the password is kept.
+- The server listens on `127.0.0.1` unless you change that under Settings -> Access & security, and answers only its own pages: requests from other websites open in your browser are refused. It does not do HTTPS itself; for access from outside your own network, put a reverse proxy that does in front of it.
 - *Settings → Advanced → Export all data* writes one zip; `uv run autoapply restore <file.zip>` brings it back on another computer.
 
 ## What the previous version got wrong, and what changed
@@ -188,8 +213,11 @@ Honest status, kept in [docs/STATUS.md](docs/STATUS.md). In short:
 | Windows 10 / 11 | used daily |
 | Greenhouse; forms explored by the AI (Microsoft Careers, BambooHR, JazzHR sites) | real applications submitted and confirmed by mail |
 | Ashby | filled and read back on real forms; none submitted yet |
-| Workday, the UBC portal driver | written from earlier manual runs; the steps after sign-in have not been run for real |
-| Windows installer (install, upgrade over a running copy, repair, uninstall) | run end to end |
+| Forms read and filled by the agent, then submitted by the program | used for real: applications submitted and confirmed by the employer |
+| Workday | one form read and walked to its review page |
+| UBC portal | postings imported for real; signing in and scanning through the program not yet confirmed |
+| The login, the listening address and the path prefix | login run end to end on a scratch copy; access from another device or behind a real reverse proxy not run |
+| Windows installer (install, upgrade, refusing to run over a running copy, cancel with the previous version put back, uninstall) | run end to end into a scratch folder, by CI on every release |
 | Failover between AI services | run once for real, when a subscription had actually run out |
 | macOS and Linux packages | built, installed and started by CI on every release; not used day to day by the author |
 | Other AI services than the Claude subscription | interface tested; application quality not compared |
@@ -208,12 +236,14 @@ cd AutoApply
 | `uv run pytest` | the tests (they never reach a real AI service or a real website) |
 | `uv run autoapply serve` | the server only, in the terminal |
 | `uv run autoapply tray` | the tray launcher |
+| `uv run autoapply reset-admin` | forget the administrator's password; the next visit from this computer sets a new one |
+| `uv sync --extra nodriver` | install the optional second browser backend |
 | `cd frontend && npm run dev` | the interface with hot reload |
 | `uv run python scripts/demo.py --serve 8020` | a demo copy with made-up data (what the screenshots show) |
 | `uv run python scripts/make_release.py` | the portable zip |
 | `uv run python scripts/make_installer.py` | the Windows installer |
 
-Layout: `backend/autoapply` (FastAPI, SQLite, Playwright; `ats/` holds the drivers and the page audit, `executor.py` the fallback chain, `repair.py` the AI take-over, `llm.py` the services and their failover), `frontend` (Vue 3), `scripts` (packaging, setup, demo), `docs`.
+Layout: `backend/autoapply` (FastAPI, SQLite, Playwright; `ats/` holds the drivers and the page audit, `executor.py` the fallback chain, `repair.py` the AI take-over, `llm.py` the services and their failover, `access.py` the login and where the server listens), `frontend` (Vue 3), `scripts` (packaging, setup, demo), `docs`.
 
 **Releasing.** Set the version in `pyproject.toml`, add the section to `CHANGELOG.md`, then:
 
@@ -235,5 +265,7 @@ Contributions that add one entry to a list (an employer, a job board, a sign-in 
 ## License
 
 [PolyForm Noncommercial 1.0.0](LICENSE): free for personal and other noncommercial use.
+
+The interface includes [noVNC](https://github.com/novnc/noVNC) (MPL 2.0), unmodified, for showing a virtual screen; its source is at that address.
 
 You are responsible for following the terms of use of the job sites you apply through. The program fills in your own applications with your own information; it is not a tool for applying on behalf of others or in bulk.

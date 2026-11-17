@@ -34,6 +34,9 @@ curl -fsSL https://griffin.paziresh24.com/install.sh | bash
 
 It prints the address to open and how to read the login token. Run the same line again to update: the
 new version replaces the old one only once it is healthy, and your data stays in Docker volumes.
+Griffin also looks at this repository's `main` every few hours and shows a «new version» line in the
+sidebar with what changed and that same command (set `GRIFFIN_UPDATE_CHECK=off` to stop the lookup).
+It only tells; the update itself is the command, run on the server.
 Options go before `bash` (`curl … | GRIFFIN_PORT=3200 GRIFFIN_PROXY=http://host:port bash`); see the
 top of [`docs/install.sh`](docs/install.sh) for all of them.
 
@@ -193,7 +196,9 @@ process that holds them exposes only named tools with schemas. More in
    emergency SSH paths, GitLab, object storage, routers, shell hosts.
 2. Put the credentials in a vault (OpenBao/Vault KV) — [`docs/configuration.md`](docs/configuration.md)
    lists the item names the broker looks up.
-3. Start the broker: `COMPOSE_PROFILES=tools docker compose -f deploy/compose.yaml up -d --build`.
+3. Start the broker. The one-command installer already runs it next to Griffin (container `griffin-broker`,
+   sharing the `griffin-run` socket volume) and mounts `/etc/griffin/site.json` when it exists, so re-run the
+   install command after writing that file. From a checkout: `COMPOSE_PROFILES=tools docker compose -f deploy/compose.yaml up -d --build`.
 4. In **#/agents**, switch the new tools on for the agent that should have them — or import
    `examples/agents/platform.json` and edit it.
 

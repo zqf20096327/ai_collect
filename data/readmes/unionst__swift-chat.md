@@ -34,6 +34,7 @@ Building an AI chat app? One modifier, `.chatStyle(.assistant)`, turns the same 
 ## Requirements
 
 - iOS 18 or later
+- On the Mac, a Mac Catalyst app on macOS 26 or later. See [On the Mac](#on-the-mac).
 - Xcode 26.1 or later. The binary's module interface is built with Swift 6.2, and an older compiler cannot read it.
 
 ## Installation
@@ -339,6 +340,41 @@ A group wears `ChatGroupAvatar`, which clusters up to seven faces the way Messag
     }
 }
 ```
+
+### Folded phones
+
+A folded phone (iPhone Duo, iOS 27.1) moves its status bar and tab bar into a column along one edge, and unfolds into a window wide enough for two columns. The chat reads both layouts itself:
+
+- A tab bar standing in the side column is beside the chat, so the input bar rests at the bottom of the screen instead of holding a tab bar’s room beneath it.
+- Unfolded, the chat works as the detail column of a `NavigationSplitView`. The plus menu opens centred on its plus, over the thread it belongs to.
+- The photo panel’s grid runs under the side column.
+
+The one thing the host says is where the header starts. With the status bar in the column there is nothing across the top, so the header would sit against the screen’s edge. Give it the room system apps leave there:
+
+```swift
+ChatHeaderPlacement.topMargin = hasSideColumn ? 24 : 0
+```
+
+`hasSideColumn` is yours to read: `UITraitCollection.verticalBarEdge` is `.leading` or `.trailing` while the column stands. The margin is zero by default, and on a phone with a status bar across the top it should stay zero.
+
+### On the Mac
+
+Swift Chat runs on the Mac as a Mac Catalyst app, from the same package and with the same API. Nothing in your chat code changes.
+
+In a multiplatform target, open the target’s General tab and under Supported Destinations replace **Mac** with **Mac (Mac Catalyst)**. The transcript is built on UIKit, so a native AppKit destination has no build of the package to link; Catalyst is the Mac destination that does.
+
+What the chat does differently on a Mac:
+
+- Return sends, and Shift-Return or Option-Return makes a new line. Return while an input method is composing confirms the composition.
+- The transcript follows the window as it is resized, and a thread resting on its last message stays there.
+
+A Mac window can be far wider than a phone, which puts the two sides of a conversation at opposite edges of the screen. Cap how wide the conversation is drawn and it stays centred while the transcript still scrolls across the whole pane:
+
+```swift
+ChatLayoutConstants.readableWidth = 720
+```
+
+It is `nil` by default, which draws edge to edge. The same line suits an iPad or a split view.
 
 ### Tapbacks and the long-press menu
 

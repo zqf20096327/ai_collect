@@ -17,27 +17,57 @@
 
 <sub>功能一览（无声，已加速）：链接卡片 · 讨论串 · 后台任务 · Bot 的电脑 · 先问再做 · 群聊 · Bot 私信 · 画图 · 定时任务 · 应用 · 技能 · 记忆 · 费用 · <a href="docs/images/promo.mp4">看完整宣传片（2 分钟，有配音）</a></sub>
 
+<sub>录于 2026-11-08（v0.7.0）。之后加的主要有：资料库变成大家一起写的文档（评论叫醒 Bot、版本历史、数据库和看板，Claude Code、Codex 也能写，能从 Notion 导入）、事件、观测页、生成视频、搜 X / Reddit / 小红书的帖子、把任务派到你的 Mac。<a href="#看看长什么样">新截图在下面</a>。最新版本见 <a href="https://github.com/kadaliao/open-super-agent/releases/latest">发布页</a>，每一版的变化见 <a href="CHANGELOG.md">更新日志</a>。</sub>
+
 </div>
 
 ## 亮点
 
-- **会聊天，也会派活**：每个 Bot 有自己的人设、记忆和对话。耗时的活交给后台任务，你接着聊；几个 Bot 能拉群，一个查完资料，自动交给另一个写总结。
+- **会聊天，也会派活**：每个 Bot 有自己的人设、记忆和对话。耗时的活交给后台任务，你接着聊，每一步做了什么都看得到；几个 Bot 能拉群，一个查完资料，自动交给另一个写总结。
+- **大家一起写的资料库**：Bot 做好的计划、报告存成页面，打开就能像 Notion 那样直接改。几个 Bot 能在同一页上按段接着写，每段标着是谁写的；
+  在某一段上写评论，写这段的 Bot 就去改、在评论里回你；每一版都能看、能回退。还能建数据库当任务看板，Claude Code、Codex 经 MCP 也能读写，Notion 里的能导进来。
 - **一台能看、能接手的电脑**：Bot 在电脑上查资料、填表、下载文件，你能实时看屏幕；遇到验证码、登录这类步骤，它请你来做。几个任务同时做，各开一个浏览器窗口，不用排队。
   电脑可以是 Bot 自己的，也可以就是你的 Mac：给了权限，它能用鼠标键盘操作微信、访达、备忘录这些 App，你一动鼠标它就停下。
+- **查得到最新的**：搜网页、读网页能换着用几家（DeepSeek、Exa、Tavily……），一家不行换下一家；还能搜 X、Reddit、小红书上的帖子，带点赞和评论数。
 - **连上你在用的应用**：应用市场收录了 40 个，Notion、Gmail、GitHub、飞书、钉钉、腾讯文档……登录或填 token 就能接，也能接任意 MCP。
 - **先问再做**：发邮件、提交表单这类操作先弹卡片问你；密钥加密存在保险库里，不进聊天记录。
-- **模型随便换，花多少看得到**：DeepSeek、Kimi、智谱、OpenAI、本机的 Ollama，任何兼容 OpenAI 的接口都行。按任务和天统计费用，有每日预算。
-- **教一遍就会**：点“演示一遍”，在电脑上亲手做一次，Bot 把操作整理成[技能](docs/skills.md)，以后输入 `/名字` 就能重做；技能能带脚本和参考资料，也能从技能市场装现成的、导入 Claude 的 SKILL.md；说“每天 9 点帮我……”就建好定时任务。
+- **模型随便换，花多少看得到**：DeepSeek、Kimi、智谱、OpenAI、本机的 Ollama，任何兼容 OpenAI 的接口都行。“观测”页里看花了多少、做得快不快、哪里出了错，有每日预算。
+  画图、照着图片改图、生成视频也按配置接各家。
+- **教一遍就会，到点就做**：点“演示一遍”，在电脑上亲手做一次，Bot 把操作整理成[技能](docs/skills.md)，以后输入 `/名字` 就能重做；技能能带脚本和参考资料，也能从技能市场装现成的、导入 Claude 的 SKILL.md。
+  说“每天 9 点帮我……”就建好定时任务，说“这个网页有变化就告诉我”就建好[事件](docs/events.md)。
 - **在国内好用**：在飞书、钉钉、企业微信里直接和 Bot 说话；默认配置不需要国外的付费服务；界面有中文和英文。
 - **数据在你手里**：跑在你自己的机器上；全部数据（连同密钥）能导出成一个加密文件，换台机器接着用。
 
 完整的功能见 [功能一览](docs/features.md)。
 
+## 看看长什么样
+
+<table>
+<tr>
+<td width="50%"><img src="docs/images/chat-group.webp" alt="群聊“2.0 发布小组”：Nova 把活分给 Radar，Radar 挑出三条竞品价格的差异点交给 Quill，Quill 写好发布公告的开头段存进资料库"><br><sub><b>群聊分工</b>：Nova 派活，Radar 查完竞品交给 Quill，Quill 把公告开头写进资料库</sub></td>
+<td width="50%"><img src="docs/images/task-steps.webp" alt="Radar 的后台任务做完，右栏列着每一步：搜网页、搜 Reddit、搜小红书、搜 X、读网页，各用了几秒"><br><sub><b>后台任务</b>：查“双链笔记”最近两周的讨论，右栏是每一步（搜网页、搜 X / Reddit / 小红书、读网页）</sub></td>
+</tr>
+<tr>
+<td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/doc-comments-dark.webp"><img src="docs/images/doc-comments.webp" alt="资料库页面《潮汐笔记 2.0 发布计划》：每段左边一条颜色标着作者，右边评论面板里你让 Quill 把 X 的帖子改短，Quill 改完在评论里回复"></picture><br><sub><b>一起写的页面</b>：每段左边的颜色是作者；在段上评论，写它的 Bot 改完回你</sub></td>
+<td><img src="docs/images/doc-history.webp" alt="页面的历史：选中 Claude Code 改的版本 5，和现在比，改过的段标出删掉和加上的字，每段能单独恢复"><br><sub><b>版本历史</b>：Nova、Radar、Quill 和 Claude Code 各改了哪一版，和现在比差在哪，能只恢复一段</sub></td>
+</tr>
+<tr>
+<td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/db-board-dark.webp"><img src="docs/images/db-board.webp" alt="数据库《发布任务》的看板视图：待办、进行中、已完成三列，卡片上有编号、负责人、截止日期、优先级"></picture><br><sub><b>数据库看板</b>：Nova 按发布计划建的任务库，负责人里有你也有 Bot</sub></td>
+<td><img src="docs/images/applet.webp" alt="对话里的小应用“发布倒计时”：离上线还有 3 天 15 小时，下面是还没完成的任务，能勾选"><br><sub><b>小应用</b>：一句话让 Nova 做的发布倒计时，读的是看板里的任务</sub></td>
+</tr>
+<tr>
+<td><img src="docs/images/observe.webp" alt="观测页：今天的费用、token、任务数、多久开始回复，按小时的费用走势，各个 Bot 的花费"><br><sub><b>观测</b>：花了多少、做得快不快、哪里出了错，能按 Bot 看</sub></td>
+<td><img src="docs/images/apps.webp" alt="应用市场：Notion、flomo、腾讯文档、钉钉文档、飞书云文档、语雀、印象笔记、Gmail、QQ 邮箱等，按类筛选"><br><sub><b>应用市场</b>：40 个应用，登录或填 token 就能连</sub></td>
+</tr>
+</table>
+
+<sub>截图录于 2026-11-16（v0.24.0 的网页界面），用的是演示数据：一个独立开发者准备发布“潮汐笔记 2.0”，三个 Bot 和页面里的内容都是真模型（DeepSeek）跑出来的。GitHub 用夜间模式时，页面和看板两张显示夜间界面。</sub>
+
 ## 在哪用
 
 | 用法 | 说明 |
 |---|---|
-| 💻 **macOS 桌面 App** | 下载 dmg 打开就能用：约 45 MB，自带运行环境，不用装 Docker 和 Python。Bot 默认直接用这台电脑：浏览器，给了权限还有屏幕和鼠标键盘；也能换成 Docker 沙盒或云电脑。关掉窗口后在菜单栏接着跑；也能连到你的服务器，让服务器上的 Bot 用这台 Mac。见 [桌面 App](docs/desktop.md) |
+| 💻 **macOS 桌面 App** | 下载 dmg 打开就能用：约 45 MB，自带运行环境，不用装 Docker 和 Python。Bot 默认直接用这台电脑：浏览器，给了权限还有屏幕和鼠标键盘；也能换成 Docker 沙盒或云电脑。关掉窗口后在菜单栏接着跑；也能连到你的服务器，服务器上的 Bot 能把要在 Mac 上做的任务派过来。见 [桌面 App](docs/desktop.md) |
 | 🖥️ **服务器** | 一条 `docker compose up` 放到 VPS 或家里的机器上，一直开着；浏览器、桌面 App、手机、聊天软件都能连。见 [用 Docker Compose 部署](docs/docker.md) |
 | 📱 **iPhone App**（TestFlight 内测） | 用相机扫电脑上的二维码就连上；要你确认的事、做完的任务推送到手机，内容加密，锁屏上就能看。见 [iPhone App](docs/mobile.md) |
 | 💬 **聊天软件** | 在 Telegram、飞书、钉钉、企业微信、Discord 里直接和 Bot 说话，要你确认的操作变成消息里的按钮。见 [聊天软件](docs/channels.md) |
@@ -116,9 +146,9 @@ docker build --build-arg APT_MIRROR=mirrors.ustc.edu.cn -t osa-computer:2 osa/co
 |---|---|
 | [功能一览](docs/features.md) | 全部功能，按主题分组 |
 | [用 Docker Compose 部署](docs/docker.md) | 一条命令跑起来、自动 HTTPS、数据和备份、国内网络 |
-| [配置](docs/configuration.md) | 模型服务和各项工作用的模型、限额与单价、电脑、应用、确认规则与保险库、定时任务、推送、远程访问 |
+| [配置](docs/configuration.md) | 模型服务和各项工作用的模型、画图和生成视频、搜索和读网页、限额与单价、电脑、应用、确认规则与保险库、资料库（数据库、外部 Agent、从 Notion 导入）、定时任务、推送、远程访问 |
 | [事件](docs/events.md) | 某件事发生时让 Bot 处理：webhook、GitHub、订阅源、网页变化、邮件、日程、天气、地震、价格、公网 IP……；地址和安全、写一个新来源 |
-| [桌面 App](docs/desktop.md) | 在这台电脑上运行或连接服务器、让服务器上的 Bot 用这台 Mac、系统通知、菜单栏、自动更新 |
+| [桌面 App](docs/desktop.md) | 在这台电脑上运行或连接服务器、把服务器上的任务派到这台 Mac、系统通知、菜单栏、自动更新 |
 | [iPhone App（内测）](docs/mobile.md) | 扫码连接、推送怎么送到手机、推送中转看得到什么、开发 |
 | [聊天软件](docs/channels.md) | 连接 Telegram、飞书、钉钉、企业微信、Discord，配对，权限和常见问题 |
 | [给应用市场加应用](docs/apps.md) | 应用清单的格式、图标、在本机试、提 PR |

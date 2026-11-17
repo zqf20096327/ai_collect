@@ -177,10 +177,10 @@ inherit the manager's launch capability.
 - **semantic-edit-historical-cap-boundary**: historical capped a/b observation at 20k/200k ops shows a 29.329% reduction; this is a capped historical sample, not eligible as a live guarantee.
 - **context-bundle-v2-structural-only**: structural-only validation; live fleet remeasurement pending.
 
-## What's new in 0.13.1
+## What's new in 0.13.3
 
-- Opening a task no longer hangs on "Loading task": a failed, slow or reconnected detail request now shows an error you can retry by clicking the task again.
-- Flutter validation runs to completion in the sandbox, and the MCP tool surface is smaller.
+- The dashboard runs in its own process, isolated from the MCP server, and the manager tool surface is smaller.
+- Reviewer lenses run in parallel, and accept no longer fails on canonical files leaked into a review worktree.
 - The full release history is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Documentation

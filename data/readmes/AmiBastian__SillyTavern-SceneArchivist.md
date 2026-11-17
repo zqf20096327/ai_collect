@@ -1,4 +1,4 @@
-# Scene Archivist 2.1.8
+# Scene Archivist 2.1.10
 
 Your character can remember a grudge from childhood but somehow the brass key you gave them four messages ago is gone. Of course it is.
 
@@ -205,7 +205,11 @@ Reviewed archive and condensation runs can offer suggestions. Approve the ones y
 | A shorter character memory list | Use **Tools → Maintain → Character memories → Condense character memories**. **Organize saved memories** is a separate reviewed rewrite. |
 | A shorter diary | Use **Characters → Character diaries → Condense diary**. |
 
-The **Token target** is flexible. Use **0** to let the model aim for the shortest faithful wording. The review checks dates, times, quotations, and required structure. Read the comparison for subtler things such as motives, promises, and who did what. If a recap is missing required details, Scene Archivist sends them together in one correction request, using the draft and relevant sources when they fit the model's context. If details are still missing, choose **Edit recap draft** in the job panel to see the full list, read those originals, and correct the draft. **Check corrected draft** runs validation before opening the normal recap review. You can also use **Retry failed stage** for another model attempt.
+**Create recap** reads the full selection and groups related events into phases of one arc. With **Token target** at **0**, a complex arc aims for roughly 1,200 to 1,800 words. Set a token target or specify a length in **Recap writing prompt** if the arc needs a different length. The default prompt uses story dates or date ranges and leaves exact clock times out of headings and narration. Use broad times of day such as morning or evening where they help the chronology. Review the important events, promises, and changes in relationships before saving.
+
+**Shorten individual entries** checks required dates, clock times, and quotations against each source. If an older recap job has a draft that failed those detail checks, **Retry failed stage** can continue to review with the retained draft. Use **Edit recap draft** if you want to edit it first.
+
+If a reply has a JSON formatting error, open **Recover recap JSON** in the job panel. Check the retained reply or paste the complete recap JSON or the response body copied from your browser's Network tab. **Check recap JSON** opens the review when the draft passes. Click **Save selected** in the review. If the reply was cut off, you can adjust **Recap writing prompt** and use **Retry failed stage**.
 
 Use **Recap writing prompt** for the combined recap's title, sections, and style. Use **Archive condense prompt** for individual entries. If you had customized the shared prompt, its wording is copied into the recap prompt on upgrade. Character memories have separate prompt controls under **Maintain → Character memories**.
 

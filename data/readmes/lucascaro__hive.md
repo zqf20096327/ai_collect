@@ -34,7 +34,8 @@ What works:
   waiting for you, exited — derived from what the terminal renders, so
   every agent and plain shell gets it. Claude sessions get a more
   precise answer via Claude Code hooks: every session Hive spawns sets
-  `HIVE_SESSION_ID` / `HIVE_SOCKET` in the child's environment, and
+  `HIVE_SESSION_ID` / `HIVE_SOCKET` / `HIVE_SESSION_TOKEN` in the
+  child's environment, and
   `hived hook` (invoked by hooks Hive wires through `claude --settings`)
   reports prompts, turn-end, and permission prompts back to the daemon
   over that socket. The same hooks carry Claude's task list, shown as a
@@ -140,7 +141,9 @@ What works:
   does the same from an ordinary shell (exact id or exact name only).
   Plugins cannot send messages. A session can message its siblings only
   if you let it: tick **May direct other sessions** in the launcher, or
-  toggle it from the command palette. Its agent
+  toggle it from the command palette. The grant limits only agents that
+  use Hive's messaging; any agent with a shell can reach Hive directly
+  (see [SECURITY.md › Trust model](SECURITY.md#trust-model)). Its agent
   can then run `hived msg <id-or-name> <text…>` to reach another agent
   session in the same project; the note arrives marked as coming from
   that session, is always queued, and a plain shell is refused. Revoking
@@ -242,6 +245,28 @@ The agent ships inside the app bundle at
 renamed the bundle to on install). It is a client like
 the GUI — it talks to the daemon over the wire protocol and never opens
 a PTY of its own.
+
+### Dictate into a session from any app
+
+Press **⌃⌥Space** anywhere, with Hive in front or not, and a small box
+opens over whatever you are doing. Dictate into it with macOS Dictation,
+Handy or any other tool that types or pastes, or just type. The box says
+which session the text will go to. That defaults to the session a Hive
+window last showed you; **↑/↓** picks another live session. Nothing
+reaches the agent until you press **↩**, which sends it the way ⇧⌘M
+does. If the agent is working, the box says so and a second ↩ queues the
+text for when it settles (an ACP session can't queue, so the box asks
+you to try again once it is idle). **⇧↩** starts a new line and **Esc** throws
+the text away; either way focus goes back to the app you were in.
+
+Hive itself never listens to the microphone, and needs no Accessibility
+permission for the hotkey, which is active whenever Hive's daemon is
+running. Rebind it, or remove it, under
+`Settings ▸ Shortcuts ▸ Global (system-wide)`. The menu bar's
+**Dictate into a Session…** item opens the same box and shows the
+current hotkey, or says so when another app already owns it. One press
+opens the box and a second starts your dictation tool: macOS gives an
+app no supported way to start Dictation for you.
 
 ## Reloading vs restarting
 
@@ -371,6 +396,7 @@ These are the defaults. Rebind any of them, and any plugin command, under **Sett
 | ⌘E | Worktrees in the active project (browse, resume, delete) |
 | ⌘I | Capture an idea for later (note, kind, project) |
 | ⇧⌘I | Ideas captured for the active project |
+| ⌃⌥Space | Dictate into a session from any app (macOS; system-wide, opens the menu bar's capture box — see [The menu bar](#the-menu-bar-macos)) |
 | ⇧⌘M | Message the active session: a note sent to it — through the agent's own inbox for Claude Code and Pi, otherwise typed when it is quiet (queued if it is working) |
 | ⌥⌘B | Notify me once when the active session stops working (Ctrl+Alt+Shift+B on Windows and Linux) |
 | ⌘1–9 | Jump to nth session |

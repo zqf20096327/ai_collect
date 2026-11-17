@@ -13,7 +13,7 @@
 
 > Daimon gives your coding agent a memory of its past sessions. When a session ends, it saves what was decided and what is still open. When the next session starts, your agent gets that back as a short briefing.
 
-**What you do:** install it once. On Claude Code, Codex and Kimi Code, hooks do the rest, so in normal use there are no commands to run. Saving a session uses your `claude` CLI or any OpenAI-compatible endpoint. Gemini CLI needs a manual hook setup and Windsurf only captures for now, see [hosts](https://daily-nerd.github.io/daimon/docs/hosts/).
+**What you do:** install it once. On Claude Code the plugin registers the hooks itself. On Codex and Kimi Code you run `daimon hooks install codex` or `daimon hooks install kimi` once. After that the hooks do the rest, so in normal use there are no commands to run. Saving a session uses your `claude` CLI or any OpenAI-compatible endpoint. Gemini CLI needs a manual hook setup and Windsurf only captures for now, see [hosts](https://daily-nerd.github.io/daimon/docs/hosts/).
 
 **What it is not:**
 
@@ -68,7 +68,7 @@ uv tool install 'daimon-briefing[pretty]'   # pipx works identically
 ```
 
 > [!TIP]
-> If the `claude` CLI is on your PATH you are **zero-config**: `daimon configure` prints `✓ ready` and you're done. Otherwise any OpenAI-compatible endpoint or headless CLI works. See [configuration](https://daily-nerd.github.io/daimon/docs/getting-started/configuration/).
+> If the `claude` CLI is on your PATH you are **zero-config**: `daimon configure` prints `✓ ready` and you're done. Otherwise any OpenAI-compatible endpoint or headless CLI works. See [configuration](https://daily-nerd.github.io/daimon/docs/reference/configuration/).
 
 **Claude Code (plugin, recommended):**
 
@@ -77,14 +77,22 @@ uv tool install 'daimon-briefing[pretty]'   # pipx works identically
 /plugin install daimon@daimon
 ```
 
+**Codex and Kimi Code (hooks):**
+
+```sh
+daimon hooks install codex
+daimon hooks install kimi
+```
+
 **Agent-side skills, any host:**
 
 ```sh
-npx skills add Daily-Nerd/daimon
+daimon skill install            # detects the hosts on this machine
+daimon skill install codex      # or name one: claude, codex, windsurf, cursor, gemini, kimi
 ```
 
 > [!NOTE]
-> This adds `daimon-briefing` and `daimon-end` to whichever agent it detects. Use `--skill daimon-briefing` for just one of them. Claude Code users who installed the plugin above already have both, so there is no need to run this as well.
+> `daimon skill install` is daimon's own installer: it installs `daimon-briefing` and `daimon-end` where each host reads skills, and `daimon skill status` audits what it wrote. Re-run it after an upgrade. `npx skills add Daily-Nerd/daimon` also works as a generic alternative, but it installs through a third-party tool that daimon does not track. Claude Code users who installed the plugin above already have both skills, so there is no need to run either.
 
 **Other hosts** (Windsurf, Codex, Kimi Code, Gemini CLI): per-host guides at [daily-nerd.github.io/daimon/docs/hosts](https://daily-nerd.github.io/daimon/docs/hosts/).
 
@@ -93,7 +101,7 @@ That's it. End a session → a checkpoint is written; start the next → the bri
 ## Beyond the briefing
 
 - **`daimon recall <terms>`:** full-text search over your whole checkpoint history (and your team's, if enabled). This is also the working-set boundary, stated plainly: one live checkpoint per project feeds the briefing, and an item that falls out of [carry](https://daily-nerd.github.io/daimon/docs/concepts/carry/) never re-enters a briefing on its own. It stays reachable here, permanently, but only when asked for.
-- **`daimon why <item-id>`:** inspect a recalled item's independent capture, provenance, source, byte-integrity, current-support, verifier, lifecycle, and corroboration evidence. Add `--source` for one bounded redacted source window. See the [Trust Inspector guide](docs/trust-inspector.md).
+- **`daimon why <item-id>`:** inspect a recalled item's independent capture, provenance, source, byte-integrity, current-support, verifier, lifecycle, and corroboration evidence. Add `--source` for one bounded redacted source window. See the [inspect-an-item guide](https://daily-nerd.github.io/daimon/docs/guides/inspect-an-item/).
 - **Context switching:** `daimon projects`, `daimon brief --slug <slug>`: read another project's memory deliberately, provenance-labeled, never automatic.
 - **Proactive recall:** when a new prompt overlaps prior work from an older session, the briefing surfaces it, in English or Spanish.
 - **Code anchors:** `daimon anchor <file> <symbol>` pins a belief to a code symbol; drift is flagged in the next briefing. Offline, stdlib `ast`.
@@ -143,6 +151,7 @@ current component map is documented in
 
 - **[Documentation site](https://daily-nerd.github.io/daimon/)**: setup, hosts, configuration, concepts
 - [Runtime Architecture](./docs/RUNTIME-ARCHITECTURE.md): current layers, components, and data flow
+- [Docs folder index](./docs/README.md): which documents are current and which are historical
 - [MVP: Dream-Briefing](./docs/MVP-DREAM-BRIEFING.md): historical foundation of the shipped runtime
 - [Research Logbook](./research/README.md): findings, decisions, evidence trail
 - [Contributing](./CONTRIBUTING.md): dev setup, tests, lint, pre-commit hooks

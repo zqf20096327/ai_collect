@@ -207,6 +207,7 @@ Hermes folds your message into the turn that is reporting the result, and the ma
 
 - **Hermes Agent** 0.22 or later (verified against v0.22.7).
 - Moving long commands to the background needs Hermes' default `plugins.isolation: in_process`. With `host`, commands simply stay in the foreground, and `hermes super-agent status` is not available because Hermes does not register plugin CLI commands in the plugin host.
+- Moving commands to the background uses two Hermes functions (`tools.interrupt.request_yield` and `consume_yield`) that are not on Hermes' published plugin API. If a Hermes release moves them, commands stay in the foreground, and the startup check tells the main agent once.
 - **Python** 3.10 or later, with zero runtime dependencies.
 - **CI** runs `ruff check` and `pytest` across Python 3.10 through 3.14.
 

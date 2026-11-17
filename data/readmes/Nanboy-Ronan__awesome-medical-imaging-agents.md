@@ -16,22 +16,22 @@ For broader medical AI research beyond agentic systems, see the companion list [
   - [Pathology Agents (Whole-Slide Imaging · Digital Pathology) (42)](#pathology-agents-whole-slide-imaging--digital-pathology-42)
   - [Ultrasound Agents (Echocardiography · Robotic Ultrasound) (30)](#ultrasound-agents-echocardiography--robotic-ultrasound-30)
   - [Endoscopy and Surgical Imaging Agents (29)](#endoscopy-and-surgical-imaging-agents-29)
-  - [Ophthalmology Agents (17)](#ophthalmology-agents-17)
+  - [Ophthalmology Agents (18)](#ophthalmology-agents-18)
 - [Cross-Domain Tasks and Representations](#cross-domain-tasks-and-representations)
   - [3D CT / MRI / Volumetric Imaging Agents (43)](#3d-ct--mri--volumetric-imaging-agents-43)
   - [Segmentation and Annotation Agents (24)](#segmentation-and-annotation-agents-24)
-  - [Report Generation Agents (24)](#report-generation-agents-24)
+  - [Report Generation Agents (25)](#report-generation-agents-25)
   - [Medical Vision-Language Model (VLM) Agents (43)](#medical-vision-language-model-vlm-agents-43)
 - [Tool-Using and Multi-Agent Frameworks](#tool-using-and-multi-agent-frameworks)
   - [Clinical Reasoning Agents (79)](#clinical-reasoning-agents-79)
-  - [Workflow and Simulation Agents (63)](#workflow-and-simulation-agents-63)
+  - [Workflow and Simulation Agents (64)](#workflow-and-simulation-agents-64)
   - [Agent Skills and Tool Learning (12)](#agent-skills-and-tool-learning-12)
 - [Benchmarks and Evaluation](#benchmarks-and-evaluation)
   - [Benchmark Overview](#benchmark-overview)
-  - [Benchmark Papers (58)](#benchmark-papers-58)
-  - [Safety, Robustness, and Fairness (44)](#safety-robustness-and-fairness-44)
+  - [Benchmark Papers (60)](#benchmark-papers-60)
+  - [Safety, Robustness, and Fairness (45)](#safety-robustness-and-fairness-45)
 - [Toolboxes](#toolboxes)
-- [Surveys and Position Papers (27)](#surveys-and-position-papers-27)
+- [Surveys and Position Papers (28)](#surveys-and-position-papers-28)
 - [Related Awesome Lists](#related-awesome-lists)
 - [Classification Guide](docs/taxonomy.md)
 
@@ -44,9 +44,9 @@ Classify each work along four independent axes: **where it is used**, **what it 
 | Browse by | Categories | Entry points |
 |---|---|---|
 | **Application and input** | Radiology, pathology, ultrasound, endoscopy/surgery, ophthalmology; CT/MRI/PET volumes; multimodal inputs | [Imaging domains](#imaging-domains) · [3D imaging](#3d-ct--mri--volumetric-imaging-agents-43) · [Medical VLMs](#medical-vision-language-model-vlm-agents-43) |
-| **Clinical task** | Acquisition and navigation; diagnosis and reasoning; segmentation and annotation; reporting; treatment planning; workflow and simulation | [Segmentation](#segmentation-and-annotation-agents-24) · [Reporting](#report-generation-agents-24) · [Reasoning](#clinical-reasoning-agents-79) · [Workflows](#workflow-and-simulation-agents-63) |
+| **Clinical task** | Acquisition and navigation; diagnosis and reasoning; segmentation and annotation; reporting; treatment planning; workflow and simulation | [Segmentation](#segmentation-and-annotation-agents-24) · [Reporting](#report-generation-agents-25) · [Reasoning](#clinical-reasoning-agents-79) · [Workflows](#workflow-and-simulation-agents-64) |
 | **Agent mechanism** | Tool use, retrieval, multi-agent collaboration, reinforcement learning, human feedback, memory and self-improvement | [Frameworks](#tool-using-and-multi-agent-frameworks) · [Skills](#agent-skills-and-tool-learning-12) · [Mechanism index](docs/themes.md#agent-mechanisms) |
-| **Evaluation and resources** | Task/process evaluation; reliability, safety, fairness and privacy; benchmarks, datasets, tools, foundation models and surveys | [Benchmarks](#benchmarks-and-evaluation) · [Trustworthiness index](docs/themes.md#trustworthiness) · [Datasets](docs/datasets.md) · [Foundation models](docs/foundation-models.md) · [Surveys](#surveys-and-position-papers-27) |
+| **Evaluation and resources** | Task/process evaluation; reliability, safety, fairness and privacy; benchmarks, datasets, tools, foundation models and surveys | [Benchmarks](#benchmarks-and-evaluation) · [Trustworthiness index](docs/themes.md#trustworthiness) · [Datasets](docs/datasets.md) · [Foundation models](docs/foundation-models.md) · [Surveys](#surveys-and-position-papers-28) |
 
 The main list gives each paper a primary home; the [themes index](docs/themes.md) provides overlapping views. Section counts describe entries in that section, not disjoint totals across the taxonomy. See the [classification guide](docs/taxonomy.md) for definitions, examples, and contribution rules.
 
@@ -259,10 +259,11 @@ Agents for gastrointestinal endoscopy, surgical scene understanding, and autonom
 - [SurgVisAgent: Multimodal Agentic Model for Versatile Surgical Visual Enhancement](https://arxiv.org/abs/2507.02252) - Identifies distortion categories and severity in endoscopic images via in-context few-shot reasoning and chain-of-thought to apply targeted enhancements such as low-light correction, smoke removal, and motion deblurring (arXiv, 2025).
 - [SurgRAW: Multi-Agent Workflow with Chain of Thought Reasoning for Robotic Surgical Video Analysis](https://arxiv.org/abs/2503.10265) - Hierarchical orchestrator directs specialized agents through parallel chain-of-thought reasoning streams with a panel-discussion mechanism and RAG-grounded surgical knowledge, introducing the SurgCoTBench reasoning benchmark (arXiv, 2025; [Code](https://github.com/jinlab-imvr/SurgRAW)).
 
-### Ophthalmology Agents (17)
+### Ophthalmology Agents (18)
 
 Agents for fundus, OCT, glaucoma, diabetic retinopathy, myopia, and neuro-ophthalmic decision support.
 
+- [A multimodal tool-augmented agent for evidence-based clinical decision support in longitudinal AMD follow-up](https://doi.org/10.1038/s41746-026-03412-9) - AMDagent combines quantitative retinal imaging tools and guideline retrieval for longitudinal follow-up recommendations; a curated 20-case proof of concept finds 92.0% of decision-support units appropriate and 83.3% of audited major claims explicitly grounded (npj Digital Medicine, 2026).
 - [RetinaGuard: Risk-Controlled Agentic Triage for Multi-Disease Retinal Screening](https://arxiv.org/abs/2611.10689) - Quality, diagnostic, uncertainty, verification, and explanation agents gather evidence per fundus photograph, a failure predictor estimates whether the decision is unsafe, and conformal risk control certifies the acceptance threshold; on RFMiD the gain over uncertainty-based referral is clear with a weaker primary model and shrinks with a stronger one. (arXiv, 2026).
 - [An Agentic AI Workflow for Automated Macular Hole Diagnosis and Structured Report Generation](https://doi.org/10.1007/s40123-026-01523-w) - A sequential workflow agent invokes a fine-tuned RETFound classifier on OCT B-scans and passes its diagnosis to GPT-4 for patient-friendly reports; evaluated on 1,014 external images and 40 reviewed reports, with diagnosis restricted to macular hole versus normal and no language-model influence on classification (Ophthalmology and Therapy, 2026).
 - [OphthaAgent: Learning Cognitive Prudence for Reliable Fundus Diagnosis via Tool-Augmented Reinforcement Learning](https://papers.miccai.org/miccai-2026-sat/OMIA_007.html) - Trains a tool-augmented fundus MLLM in an online multi-turn environment to decide when to call specialist tools and when to trigger reflective verification, countering blind trust in brittle tools; reports state-of-the-art in- and out-of-distribution results on two fundus benchmarks and emergent self-correction (MICCAI 2026 OMIA workshop, 2026; [Code](https://github.com/rikey123/OphthaAgent)).
@@ -349,6 +350,4 @@ Agents that plan, prompt, refine, or evaluate segmentation and annotation workfl
 - [Human and AI collaboration for pulmonary nodule segmentation](https://arxiv.org/abs/2606.22486) - Hi-Seg lets medical and non-medical annotators iteratively refine SAM prompts through trial-and-error and semantic reasoning for pulmonary nodule segmentation, reaching a mean Dice near 85% across 1,179 patients at 12 centers — 10-22% above five deep-learning baselines — while reducing annotation time for medical annotators (arXiv, 2026).
 - [Active few-shot segmentation by reinforcing data selection](https://arxiv.org/abs/2607.22371) - EMA4MICCAI 2026 (2026).
 - [Understanding From Human Perspective: A Multi-agent System for Interactive Egocentric Medical Image Segmentation](https://arxiv.org/abs/2607.17341) - EgoMed-Agent confirms the clinician-intended target through a reliability-scored grounding workflow and keeps interactive segmentation locked onto that target across egocentric smart-glasses video via localization-guided mask propagation, reaching 71.34% average Dice versus 11.70% for the best text-prompted baseline (arXiv, 2026; [Code](https://github.com/wdyyyyyy/EgoMed-Agent)).
-- [MedVeriSeg: Teaching LISA-Like Medical Segmentation Models to Verify Query Validity Without Extra Training](https://arxiv.org/abs/2604.10242) - Training-free verification agent adds a similarity-based response quality score and a routed multi-agent module so LISA-like medical segmentation models can reject invalid or hallucinated queries without retraining (arXiv, 2026).
-- [TopoAgent: An Agentic Framework for Automated Topology Learning in Medical Imaging](https://arxiv.org/abs/2606.29763) - LLM-driven agent that automatically selects and applies topological descriptors (persistent homology) for a given medical imaging dataset without task-specific training (arXiv, 2026).
-- [MARL-MambaContour: Unl
+- [MedVeriSeg: Teaching LISA-Like Medical Segmentation Models to Verify Query Validity Without Extra Training](https://arxiv.org/abs/2604.10242) - Training-free verification agent adds a similarity-based response quality score and a routed multi-agent module s

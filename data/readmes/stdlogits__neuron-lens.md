@@ -15,8 +15,8 @@ labels, to see what changes with size.
 - **Catalog:** [`stdlogits/neuron-lens`](https://huggingface.co/datasets/stdlogits/neuron-lens): every
   neuron's and head's reads, activation statistics, token drivers and tests of each read; what the residual
   holds where each neuron fires, what drives it and how neurons are wired; labels in
-  words; for Gemma 4, what each neuron responds to in images and sound; and the same tables, without labels,
-  for nine more Qwen3 models.
+  words; for Gemma 4, what each neuron responds to in images and sound; and the same tables for nine more
+  Qwen3 models, with labels for the post-trained ones.
 - **Results:** [docs/findings.md](docs/findings.md). **Methods:** [docs/design.md](docs/design.md).
 
 By [@_a9lim](https://x.com/_a9lim) and [@treetowntree](https://x.com/treetowntree), with Claude. [Matthew Khoriaty](https://www.lesswrong.com/users/matthew-khoriaty) raised the
@@ -99,7 +99,7 @@ directions, so reads describe directions, not effect sizes.
 
 Every neuron has a `+` and a `−` pole, so the catalog has 884,736 neuron entries and 1,152 heads for
 Qwen3-8B, and 1,474,560 neuron entries and 768 heads for Gemma 4 12B. Qwen3-0.6B, 1.7B, 4B and 14B and the
-bases 0.6B to 14B add 6,103,040 neuron entries and 8,448 heads, without labels. Each is read from three sides:
+bases 0.6B to 14B add 6,103,040 neuron entries and 8,448 heads, labelled but for the bases. Each is read from three sides:
 
 - **from the weights,** through both lenses: what a neuron writes and what its read direction responds
   to; what a head copies (OV) and attends to (QK), token by token;
@@ -170,7 +170,7 @@ for inputs through L13, and the R-lens for inputs and writes from L11;
 
 ## Findings
 
-Findings 1-12, 17 and 18 are Qwen3-8B's, 13-16 Gemma 4 12B's, and 19 compares Qwen3's sizes. Numbers are medians or means over a layer's poles
+Findings 1-12, 17 and 18 are Qwen3-8B's, 13-16 Gemma 4 12B's, and 19 and 20 compare Qwen3's sizes. Numbers are medians or means over a layer's poles
 unless stated. Each heading links to its findings section, with setup, controls and limits.
 
 ### 1. The lenses are stable, and their corpus changes tokens, not concepts
@@ -284,7 +284,10 @@ at L28-L35, 34% at L0-L8; chance 25%). Firing labels are scored on firings, whic
 tie them at L13-L27 and lead for writes (contexts: 54%); both together reach 0.89 and 63%. Claude Opus explains no better than Sonnet, which suggests
 the bottleneck is the evidence. Claude Haiku then labelled all 884,736 poles for $105; on 100 more
 random poles, with a card that keeps only the reads that carry signal at each layer plus top contexts,
-it matches Sonnet (0.82 against 0.83) ([§8](docs/findings.md#8-describing-neurons)).
+it matches Sonnet (0.82 against 0.83). The labels in the catalog now come from a leaner card, one input and one write
+read a pole chosen for its depth, for Qwen3-0.6B to 14B and Gemma 4: their firing labels pick a pole's held-out firings out from
+another pole's at 0.82-0.88 (another pole's label: 0.44-0.54), as well as the earlier labels on the same poles, at half the
+cost ([§8](docs/findings.md#8-describing-neurons)).
 
 ![Blind test](docs/figures/14_lens_blind.png)
 
@@ -440,15 +443,34 @@ write through L20 is as often unrelated to the pole's read as the same concept, 
 Nine more Qwen3 models, 0.6B to 14B, post-trained and base, each with its own lenses and the same documents, show which
 reads depend on size. Late ones don't: at every size a late write's R-lens read predicts steering at r 0.98-0.99 and promotes
 what follows the firings for a quarter of poles, and the R-lens names the inputs of a fifth to a third. Early ones do. The
-S-lens names the firing token for 16-25% of mid-network poles in the 28-layer models but 2-8% from 36 layers on, and early
-writes predict steering less at every step in size (first-quarter r 0.62 at 0.6B, 0.31 at 14B). Heads' reads fall a little
-with size too. The bases read like their siblings except through the R-lens, whose input reads trail at every size, which suggests
-post-training lines up what a neuron reads with what the model is about to say
+S-lens names the firing token for 16-25% of mid-network poles in the 28-layer models but 2-8% from 36 layers on (a step
+between lineages too: finding 20), and early writes predict steering less at every step in size (first-quarter r 0.62 at
+0.6B, 0.31 at 14B). Heads' reads fall a little with size too. The bases read like their siblings. Their R-lens input reads seem to trail at every size, but only against a
+null pooled over each layer: through a base's lens about 1% of poles read as frequent function words and match every pole's
+drivers, which raises the bar for all; held to its own null, a pole passes as often in the base (Qwen3-8B and 4B). Post-training
+moves every matrix by 5-13% and keeps each neuron's directions (cosines above 0.99); its clearest added directions read as
+questions, hedges and contrast (and `Wait` in the 4B), likely the style of the models' reasoning
 ([§19](docs/findings.md#19-the-qwen3-family-what-changes-with-size)).
+
+### 20. Qwen3-4B and 0.6B are pruned from the 8B and the 1.7B
+
+In the 4B and the 0.6B a neuron's index tracks its activation (Spearman ρ to −0.76), where every other model's indices
+are exchangeable (±0.03). The 4B's near-silent neurons fill the end of its L1 and L3. Each pair shares its attention heads
+one for one (their weight norms correlate at 0.93-0.98 by layer). A linear map fitted on those heads takes the parent's
+residual to the model's, and through it 99-100% of the 4B's neurons from L1 to L34 match a parent neuron: matched pairs
+keep their activation scale (ρ 0.85-0.95) and promote the same tokens. The order follows the parent neuron's activation,
+and the neurons cut were the parent's least active: at L1-L3, its near-silent ones. This is what width pruning by
+activation leaves, as in Minitron. So finding 19's five sizes are three lineages, and its step from 28 to 36 layers is also a step
+between them. In these two models a range of neuron indices is a slice by activation rank, not a random sample. Each
+neuron's parent can be named. It is identified when the weight match is also what an independent signal picks: the
+correlation of the two neurons' activations over the same text, or the tokens their writes promote. That covers 93% of
+the 4B's neurons (96.5% of those that fire) and 85% of the 0.6B's, with chance agreement under 0.2% a layer. The 4B's
+near-silent neurons match only as a class. The catalog's `lineage` table holds each neuron's parent, or child, and
+neuron-lens.com links the two ([§20](docs/findings.md#20-qwen3-4b-and-06b-are-pruned-from-the-8b-and-the-17b)).
 
 ### Limits
 
-- Two models read in depth, and nine Qwen3 sizes without labels; one lens corpus for text (English-heavy web text), and COCO photos and ESC-50 sounds for
+- Two models read in depth, and nine more Qwen3 models (the four post-trained ones labelled, the bases not); one lens corpus for text (English-heavy web text), and COCO photos and ESC-50 sounds for
   Gemma 4's media lenses; lenses averaged over 128-token documents.
 - Activations are bf16 passes over documents of up to 256 tokens; the exact drivers match an fp32 rerun
   through L9 on Qwen3-8B, and later layers are unchecked.

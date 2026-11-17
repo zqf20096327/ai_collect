@@ -19,12 +19,14 @@ And **Qwen-Image 2.1 Turbo** (Qwen team; with the 4-step Lightning LoRA by Light
 About 40 s for 512x768, about 40-50 s for an edit (768x512 from a 512x512 photo); the weights (~14 GB, optional download) are streamed from storage for every picture. **Non-commercial use only** (Qwen Research License), see below.
 And **Mage-Flow-Edit-Turbo** (Microsoft, MIT): a 4B model that draws and **edits photos by a prompt** in about 12 seconds a picture (a text encoder, a ViT, a 12-block transformer and the VAE, all on the NPU). The weights are about 8.7 GB (optional download) and are streamed from storage for every picture.
 And **MiniMax-H3-Image** (MiniMax, 33B transformer and a Qwen3-VL text encoder, INT8-ConvRot, 6 steps without CFG, or 2 with the pDMD LoRA): sizes from 512 to 2048, about 2 minutes for 512x768 (the weights stream from storage for every picture). It is an optional 48 GB download from its own public repository `ayanoby/hexanima-h3`; **MiniMax community licence: not for the US, EU, UK and South Korea, outputs must not be used to improve other AI models** (the app asks for consent first). Powered by MiniMax-H3-Image.
+And **FLUX.3 Image Klein** (Black Forest Labs, 5.6B, non-commercial FLUX Kommunity License): photorealism and legible text, 16 steps without CFG, about a minute for 512x512, with a live preview (9 GB, in the download catalog).
+And **LTX-2.5 Video** (Lightricks, 22B distilled, LTX-2 Community License): short video from a prompt or from a photo (17-97 frames, 8 steps, no sound), saved as an MP4 with a player in the app (31 GB, in the download catalog). **MiniMax-H3 Ref2VA** makes video with a reference photo (the converted files are put in by hand, see `h3/NOTES_REF2VA.md`).
 
 ## Features
 
 - Fully offline after the models are downloaded; nothing leaves the phone.
 - Base models only, speed from a LoRA file you pick: a **Turbo LoRA** row under every model (any compatible `.safetensors`, a strength slider, a check at once) and the **number of steps entered by hand** (the LoRA's own step count, usually 4 or 8). Anima, Qwen-Image 2.1 Turbo and MOSS-Image all work this way.
-- Anima: MiaoMiao models in 2B and 2.9B, base checkpoints with CFG and a negative prompt, or with a Turbo LoRA (Anima Turbo v1.1, TURBO V4 and others) for 4 steps; one-tap model manager with search, resumable downloads, sha256 verification, delete to free space.
+- Anima: MiaoMiao models in 2B and 2.9B (any size with sides that are multiples of 16 up to 65536 patches, e.g. 4096×4096: the attention is chunked and big blocks run in windows; 2560×2048 takes about 80 s per DiT step on 2B), base checkpoints with CFG and a negative prompt, or with a Turbo LoRA (Anima Turbo v1.1, TURBO V4 and others) for 4 steps; one-tap model manager with search, resumable downloads, sha256 verification, delete to free space.
 - Own wallpaper with adjustable block transparency; a ZIP of the whole History in one tap; unlimited prompt history with saved prompts.
 - Size picker with portrait / landscape / square presets (all multiples of 16) and custom sizes, seed, batch of several pictures, stop button.
 - History with favourites, trash, multi-select, share and save; settings are stored in the PNG, so any picture can be reopened with its prompt and seed.
@@ -172,6 +174,7 @@ Qualcomm may terminate that license at any time, in which case distribution of t
 - `app/`: the Android app (plain Java, built without Gradle by `app/build.sh`), package `com.hexanima.npu`. Languages in `app/assets/lang/`.
 - `phone/`: the on-device server (`animad.cpp`) and `anima.sh`, which the app runs.
 - `chainrun/`, `hexagon/mega/`: helper processes and the Hexagon HMX kernels (see `THIRD_PARTY.md` for the Qualcomm files you have to supply).
+- `flux3/`, `ltx/`: FLUX.3 Klein and LTX-2.5 (kernels, runners, pack conversion; `flux3/hexagon/mega` is the kernel tree shared with MiniMax-H3 Ref2VA, whose runner is `h3/hexagon/mega/r2vrun.cpp`). See `flux3/README.md`, `ltx/README.md`, `h3/NOTES_REF2VA.md`.
 - `patches/`: patches for stable-diffusion.cpp (NPU/TE/VAE hooks, serve mode); `android/build_sd.sh` builds it.
 - `export/`, `tools/`: model conversion (`make_pack.py` builds the downloadable packs), translations (`build_lang.py`, `lang/`), `stage_jnilibs.sh`.
 - `docs/PITFALLS.md`: engineering notes on the NPU work.

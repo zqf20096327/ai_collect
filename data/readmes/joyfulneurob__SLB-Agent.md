@@ -82,17 +82,17 @@
 
 ## 📦 下载安装
 
-最新版本 **v1.1.15** · 全平台 7 个安装包 · 到 [**Releases 页面**](https://github.com/joyfulneurob/SLB-Agent/releases/latest) 下载对应文件：
+最新版本 **v1.1.16** · 全平台 7 个安装包 · 到 [**Releases 页面**](https://github.com/joyfulneurob/SLB-Agent/releases/latest) 下载对应文件：
 
 | 平台 | 架构 | 文件 | 大小 |
 |---|---|---|---|
-| **Windows** 10/11 | x64 + x86 | `SLB-Agent-1.1.15-Windows.exe` | ≈ 179.9 MB |
-| **macOS** | Apple 芯片（M1/M2/M3/M4） | `SLB-Agent-1.1.15-Mac-M.dmg` | ≈ 104.5 MB |
-| **macOS** | Intel 芯片 | `SLB-Agent-1.1.15-Mac-Intel.dmg` | ≈ 111.1 MB |
-| **Linux** | x86_64（Ubuntu/Debian/UOS/麒麟） | `SLB-Agent-1.1.15-Linux-x64.deb` | ≈ 91.3 MB |
-| **Linux** | x86_64（其他发行版，免安装） | `SLB-Agent-1.1.15-Linux-x64.AppImage` | ≈ 113.2 MB |
-| **Linux** | arm64（deb） | `SLB-Agent-1.1.15-Linux-arm64.deb` | ≈ 90.1 MB |
-| **Linux** | arm64（AppImage） | `SLB-Agent-1.1.15-Linux-arm64.AppImage` | ≈ 113.6 MB |
+| **Windows** 10/11 | x64 + x86 | `SLB-Agent-1.1.16-Windows.exe` | ≈ 180.3 MB |
+| **macOS** | Apple 芯片（M1/M2/M3/M4） | `SLB-Agent-1.1.16-Mac-M.dmg` | ≈ 104.7 MB |
+| **macOS** | Intel 芯片 | `SLB-Agent-1.1.16-Mac-Intel.dmg` | ≈ 111.3 MB |
+| **Linux** | x86_64（Ubuntu/Debian/UOS/麒麟） | `SLB-Agent-1.1.16-Linux-x64.deb` | ≈ 91.4 MB |
+| **Linux** | x86_64（其他发行版，免安装） | `SLB-Agent-1.1.16-Linux-x64.AppImage` | ≈ 113.4 MB |
+| **Linux** | arm64（deb） | `SLB-Agent-1.1.16-Linux-arm64.deb` | ≈ 90.3 MB |
+| **Linux** | arm64（AppImage） | `SLB-Agent-1.1.16-Linux-arm64.AppImage` | ≈ 113.8 MB |
 
 > 💡 **不知道选哪个？**
 > - Mac：点左上角苹果图标 →「关于本机」→ 看「芯片」一栏，Apple M 系列选 M 芯片版，Intel 选 Intel 版
@@ -105,7 +105,7 @@
 <details>
 <summary><b>🪟 Windows</b></summary>
 
-1. 下载 `SLB-Agent-1.1.15-Windows.exe`，双击运行
+1. 下载 `SLB-Agent-1.1.16-Windows.exe`，双击运行
 2. 若弹出 SmartScreen「Windows 已保护你的电脑」→ 点「更多信息」→「仍要运行」
 3. 按向导完成安装，桌面生成快捷方式
 
@@ -124,7 +124,7 @@
 <summary><b>🐧 Linux（deb）</b></summary>
 
 ```bash
-sudo apt install ./SLB-Agent-1.1.15-Linux-x64.deb
+sudo apt install ./SLB-Agent-1.1.16-Linux-x64.deb
 # 之后在开始菜单打开 SLB-Agent
 # 卸载：sudo apt remove slbagent
 ```
@@ -135,8 +135,8 @@ sudo apt install ./SLB-Agent-1.1.15-Linux-x64.deb
 <summary><b>🐧 Linux（AppImage）</b></summary>
 
 ```bash
-chmod +x SLB-Agent-1.1.15-Linux-x64.AppImage
-./SLB-Agent-1.1.15-Linux-x64.AppImage
+chmod +x SLB-Agent-1.1.16-Linux-x64.AppImage
+./SLB-Agent-1.1.16-Linux-x64.AppImage
 ```
 
 > Ubuntu 22.04+ 若提示缺 libfuse2：`sudo apt install libfuse2`
@@ -150,13 +150,13 @@ chmod +x SLB-Agent-1.1.15-Linux-x64.AppImage
 
 | 文件 | SHA-256 |
 |---|---|
-| `SLB-Agent-1.1.15-Mac-M.dmg` | `8159c7d11b18905f24c0d0ead86b6f3041ce09a1db6376e17c58b7c66ad5365e` |
-| `SLB-Agent-1.1.15-Mac-Intel.dmg` | `0fed0193a8068213a64196a0df6e82d86d4b75259876f089d5b357ca9952113f` |
-| `SLB-Agent-1.1.15-Windows.exe` | `f9c20eec9e501c09b263eae629e7d3c3a194d52d0f9fff8565a1117877e1e9aa` |
-| `SLB-Agent-1.1.15-Linux-x64.AppImage` | `9aa0bf0e731117099bb2077db7f592c920886a76f65e62fc2ff1a33917e78acc` |
-| `SLB-Agent-1.1.15-Linux-x64.deb` | `e0f4c880432129b8f79037622454753404ec69526e3f13b6cb35378a00018fde` |
-| `SLB-Agent-1.1.15-Linux-arm64.AppImage` | `d6ea07b968ae2f793a6675233a90d3ca605e2ec825c6b9db043e752aa1648083` |
-| `SLB-Agent-1.1.15-Linux-arm64.deb` | `4f75b75b088ba6af20bac9f6ed19dfae9e7cf4702e947d01a5109850e494e451` |
+| `SLB-Agent-1.1.16-Mac-M.dmg` | `4ab5e681378c4af2ef8868bc507373501e112ebf9f3f5b2fafed431f23164b5e` |
+| `SLB-Agent-1.1.16-Mac-Intel.dmg` | `48324725c9f09be711200501efce0cd96262e8e138ed42959bf4eafd0e0e3c12` |
+| `SLB-Agent-1.1.16-Windows.exe` | `d6e34d9e7426d8bbb965dd5506b81975aa23572ed3557ec8b5fbc18b5178c844` |
+| `SLB-Agent-1.1.16-Linux-x64.AppImage` | `bf0d534725c7dadad528e57d49f23d0cea650ddf47f30fad95036cbde2184995` |
+| `SLB-Agent-1.1.16-Linux-x64.deb` | `1326ccd81d05a882149fcf7b243b6bece33db974990115209f3c583510730040` |
+| `SLB-Agent-1.1.16-Linux-arm64.AppImage` | `d985e9fb1088149204153b56f8742f3c107f490e35aca34c61166afdb374ee4f` |
+| `SLB-Agent-1.1.16-Linux-arm64.deb` | `53e01ff3f0df4d7f6121f44e3c3c73278778433160cf702ab8c9f9202765cc40` |
 
 ```bash
 # macOS

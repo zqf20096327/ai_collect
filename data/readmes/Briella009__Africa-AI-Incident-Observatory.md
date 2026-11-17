@@ -265,6 +265,12 @@ Use the [structured Incident submission form](https://github.com/Briella009/Afri
 
 Please do **not** submit private personal data, leaked credentials, graphic abuse material, operational instructions that enable wrongdoing, or unsupported allegations.
 
+## Related research — a separate publication
+
+**[Explainable AI for Security Operations: Improving Cyber Threat Intelligence Reporting and Visibility Across African Organizations](https://www.scimetech.com/issues/vol2/issue1/V2I1A24.html)** — Blessing N. Ezeobioha, *Sciences Methods and Technologies International Journal (SciMeTech)*, 2(1), 2026 (presented at AISEC 2026).
+
+This security-operations paper and AAIO share a concern with making African incident evidence more visible, structured and traceable. **They are distinct research outputs with different subject matter:** the publication focuses on explainable cyber threat intelligence reporting, whereas AAIO documents AI-related incidents and supports research on AI governance. AAIO's data, evaluations and Zenodo DOI are **not** presented as outputs or validation of the security-operations paper.
+
 ## Research foundation
 
 - [AI Incident Database: Strengthening AI Incident Monitoring and Reporting in Africa for Global AI Safety](https://incidentdatabase.ai/blog/strengthening-ai-incident-monitoring-and-reporting-in-africa-for-global-ai-safety/)

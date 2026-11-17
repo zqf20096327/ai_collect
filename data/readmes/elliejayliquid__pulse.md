@@ -13,7 +13,7 @@ Pulse gives your AI companion a life of their own. It runs in the background, le
 - **Heartbeat loop** — Your companion gets periodic "free-think" ticks where they can decide to reach out, stay quiet, journal, or schedule follow-ups
 - **Telegram chat** — Bidirectional messaging with tool use (your companion can save memories, set reminders, search their journal mid-conversation). Tools are loaded dynamically — only ~10 core tools per API call, with 50+ more available on demand via semantic search
 - **Persistent memory** — Semantic search over stored facts and conversation summaries, stored in per-persona SQLite databases
-- **Legacy conversation archive** — Preview and curate exports from ChatGPT, Claude, Grok, OpenRouter, Markdown, and common JSON shapes in the GUI, then add sanitized chats to persona-local searchable history. Pulse can prepare local background embeddings while idle; semantic retrieval, live continuation, and optional summary enrichment are still in progress
+- **Legacy conversation archive** — Preview and curate exports from ChatGPT, Claude, Grok, OpenRouter, Markdown, and common JSON shapes in the GUI, then add sanitized chats to persona-local searchable history. Pulse prepares local embeddings while idle for search by meaning, and can optionally write signed archive notes with a local or API model; live continuation is still in progress
 - **Journal** — Pinned identity entries (who am I, who is my human, what's our relationship) plus transient reflections as clean markdown with YAML frontmatter
 - **Self-scheduling** — The companion can set their own reminders and recurring tasks ("daily 8:00"), with priority levels (urgent/routine/creative)
 - **Cloud or local** — Use a local GGUF model via llama.cpp, OpenAI-compatible APIs, native Anthropic, or AWS Bedrock
@@ -253,13 +253,16 @@ All `{name}` and `{user_name}` placeholders are resolved automatically. YAML is 
 
 #### Telegram commands
 
+Send `/help` for this list in the chat; the commands also show up in Telegram's `/` menu. Prefer a wider typing box? Set `channels.telegram.command_menu: false` (per persona if you like) and restart: the Menu button goes away, `/help` stays.
+
 | Command | What it does |
 |---------|--------------|
 | `/start` | Register this chat so the companion can reach you |
+| `/help` | List all commands |
 | `/status` | Show heartbeat interval, away mode, quiet-mode state, LLM status, and active schedules |
-| `/quiet` | Sticky toggle — stop all proactive messages (even while you chat). Send again to resume; check state with `/status` |
+| `/quiet` | Sticky toggle — stop all proactive messages (even while you chat, and across restarts). Send again to resume; check state with `/status` |
 | `/heartbeat` | Run one heartbeat right now (ignores quiet hours and `/quiet`, since you asked for it). If the companion chooses not to message, the bot tells you so |
-| `/heartbeat once` \| `taper` \| `always` | Switch the [away mode](#heartbeat-configyaml) until restart; `/heartbeat default` goes back to the config setting, `/heartbeat mode` shows it |
+| `/heartbeat once` \| `taper` \| `always` | Switch the [away mode](#heartbeat-configyaml) (kept across restarts); `/heartbeat default` goes back to the config setting, `/heartbeat mode` shows it |
 | `/ping` | Instant "is the bot alive?" check (no LLM call) |
 | `/remind <text>` | Quick reminder via the scheduler |
 | `/tasks`, `/tasks_clear` | Show or clear the companion's task list |
@@ -375,9 +378,11 @@ Original JSON files are kept as backups — they're not deleted.
 Bring your conversation history with you. Pulse can import conversations from previous AI providers so your companion can search and reference things you discussed before they existed.
 
 > **Importer status:** The GUI workflow is usable now for preview, saved review,
-> curation, archive-only import, and resumable local Tier 1 embeddings. It is
-> still under active development; live continuation and optional Tier 2 summary
-> enrichment are review/planning surfaces, not completed apply/worker flows yet.
+> curation, archive-only import, resumable local Tier 1 embeddings, and semantic
+> archive search over them. Optional Tier 2 archive notes work when you turn
+> them on in a persona's config; their GUI settings window is still to come.
+> It is still under active development; live continuation is a review/planning
+> surface, not a completed apply flow yet.
 
 **Available now:**
 
@@ -394,10 +399,31 @@ Bring your conversation history with you. Pulse can import conversations from pr
 - Search archived history immediately through full-text/archive tools. An
   archive-only import with no continuation selected is a complete supported
   outcome.
-- Queue and persist private local embeddings for the upcoming semantic archive
-  search. While Pulse is running and the companion has been idle for a few
-  minutes, it processes one durable exchange chunk at a time with pause, retry,
-  and restart recovery.
+- Queue and persist private local embeddings of the archive. While Pulse is
+  running and the companion has been idle for a few minutes, it processes one
+  durable exchange chunk at a time with pause, retry, and restart recovery.
+- Search the archive by meaning as well as by words: once a conversation's
+  embeddings are ready, `search_legacy` adds **related passages** next to the
+  exact message matches, so describing a moment ("planning a garden for
+  nighttime") finds it even when no keyword matches. Each passage points at
+  the most relevant source message for `get_legacy_context` drill-down.
+  Everything runs locally on CPU; nothing leaves the machine.
+- Optional **archive notes** (Tier 2): an LLM reads the archive in ~3k-token
+  stretches while the companion is idle and writes short notes from the
+  companion's point of view ("we", "I"). Each note is signed with the model
+  that wrote it and rolled up into one note per conversation, and search
+  matches it sentence by sentence and drills down to the source messages.
+  Turn it on per persona with `enrichment.tier2` in its `config.yaml` (see
+  the commented example in the base `config.yaml`). `local` uses any
+  OpenAI-compatible server on localhost or a private network address, such
+  as your own llama-server or a GPU machine on your LAN; Pulse refuses any
+  other address, so nothing leaves your network. `api` sends chat text only
+  to the destination named in `consent`: OpenRouter, OpenAI and Anthropic
+  are reached only at their own addresses, and a `custom` server's consent
+  must name its exact origin. Before every call the worker reserves an upper
+  bound on its cost (the text's UTF-8 bytes plus framing and the full output
+  allowance) and pauses rather than pass the approved `token_cap`; if a
+  provider ever bills a call past its reservation, the job stops.
 - Remove an archived conversation while it is still archive-only. Once a future
   live continuation is linked, Pulse refuses that narrow removal path rather
   than silently breaking provenance.
@@ -405,9 +431,9 @@ Bring your conversation history with you. Pulse can import conversations from pr
 **Still in progress:**
 
 - Applying the reviewed continuation plan to create a live landing session.
-- Optional Tier 2 local/API summaries, recursive rollups, provider/privacy
-  confirmation, and model guidance for narrative-quality local summarization.
-- Semantic retrieval over the prepared Tier 1 archive embeddings.
+- A GUI window for archive notes (mode, provider and model, the "your chat
+  text goes to…" line, cost estimate, progress), and model guidance for
+  narrative-quality local summarization.
 - Incremental re-import with explicit overlap diffs and artifact reuse.
 - More real-export fixtures and source-specific handling as provider formats
   evolve; Gemini does not yet have a dedicated parser.

@@ -12,6 +12,7 @@ Built for humans, CI, and AI coding agents (Claude Code, Codex, any MCP client).
 [![npm](https://img.shields.io/npm/v/devready-cli)](https://www.npmjs.com/package/devready-cli)
 [![DevReady](https://img.shields.io/badge/DevReady-%E2%9C%93%20ready-2ea44f)](https://github.com/Evalogical-Inc/devReady)
 [![Website](https://img.shields.io/badge/website-devready--ten.vercel.app-ff6a35)](https://devready-ten.vercel.app/)
+[![Product Hunt](https://img.shields.io/badge/Product%20Hunt-DevReady-ff6154?logo=producthunt&logoColor=white)](https://www.producthunt.com/products/devready-2)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Dependencies: 0](https://img.shields.io/badge/dependencies-0-brightgreen)
@@ -301,7 +302,7 @@ See [docs/security.md](docs/security.md) for the model, [docs/versioning.md](doc
 
 ## Limitations
 
-- Checks today: Python, Git (+ identity set), Node.js, npm, project pins (`.nvmrc`, `.node-version`, `.python-version`, `.tool-versions`, `package.json` engines, `pyproject.toml` requires-python), `.env.example` vs `.env` key names, Docker CLI + daemon, compose file validity and image platform (arm64 vs amd64) mismatch (only when the project has a Dockerfile/compose file), free disk space, Windows long paths, PowerShell policy, line endings, WSL version and Docker Desktop engine, macOS/Linux build tools, and (only when the project declares them) Go, Ruby, Java, Rust, .NET, pnpm, Yarn and Bun pins, `.env` not git-ignored, `node_modules` vs lockfile, and declared ports already in use.
+- Checks today: Python, Git (+ identity set), Node.js, npm, project pins (`.nvmrc`, `.node-version`, `.python-version`, `.tool-versions`, `package.json` engines, `pyproject.toml` requires-python), `.env.example` vs `.env` key names, Docker CLI + daemon, compose file validity and image platform (arm64 vs amd64) mismatch (only when the project has a Dockerfile/compose file), free disk space, Windows long paths, PowerShell policy, line endings, WSL version and Docker Desktop engine, macOS/Linux build tools, and (only when the project declares them) Go, Ruby, Java, Rust, .NET, pnpm, Yarn, Bun, Terraform and Deno pins, PHP and Dart requirements, `.env` not git-ignored, `node_modules` vs lockfile, and declared ports already in use.
 - The version-range matcher covers common npm/PEP 440 syntax; pre-releases and exotic ranges report `skip` rather than guess.
 - The Python version compared is the project's (`.venv`/`venv`, else the first `python` on PATH), and the result names the interpreter checked. DevReady does not look at other virtualenv locations (poetry, conda, pyenv shims).
 

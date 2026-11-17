@@ -349,12 +349,12 @@ plots query latency for all 113 queries in the benchmark.
 <img src="benchmarks/JOB-bench/job_benchmark_log_bars.svg" alt="JOB benchmark" height="300"></img>
 </p>
 
-In the current second-pass snapshot, Datalevin completed the 113 queries in
-38.1 seconds. PostgreSQL's retained 128.2-second total is 3.37X Datalevin's,
-while SQLite's 281.8-second completed-query subtotal is 7.40X Datalevin's, with
-another nine queries reaching the one-minute timeout. The gain is mainly due to
-shorter query execution time as Datalevin's query optimizer generates better
-plans.
+In the November 4, 2026 snapshot, Datalevin completed the 113 queries
+in 28.9 seconds, including planning. PostgreSQL's retained 128.2-second total is
+4.44X Datalevin's, while SQLite's 281.8-second completed-query subtotal is 9.76X
+Datalevin's, with another nine queries reaching the one-minute timeout. The
+PostgreSQL and SQLite measurements are from August 23, 2026; the benchmark
+README records the dates, procedure, and raw timings for each system.
 
 #### Graph
 
@@ -422,7 +422,7 @@ issue](https://github.com/datalevin/datalevin/issues/383).
 The goal of Datalevin is to simplify data storage and access. We aim to support
 diverse workloads and use cases.
 
-* 1.3.0 Direct analytics and federation
+* 1.3.0 Data federation, encryption at rest and in transit.
 * 1.4.0 Derived-fact views, rule-head aggregation, and incremental maintenance
 * 2.0.0 Compression and KV TTL
 * 2.1.0 Entity-level security

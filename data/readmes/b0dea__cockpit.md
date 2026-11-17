@@ -58,13 +58,13 @@ npm install --save-dev --save-exact @b00dea/cockpit
 
 ```sh
 npx --no cockpit init                          # previews what it would write; writes nothing yet
-npx --no cockpit init --interactive            # confirm the preview with yes, answer each question
+npx --no cockpit init --interactive            # ask each question, then write
 npx --no cockpit sync --config cockpit.toml    # rerun after every edit of cockpit.toml
 npx --no cockpit check --config cockpit.toml   # fail on drift; run it in CI too
 ```
 
 `init` proposes values from files it can read (a `package.json` script, a Dockerfile `EXPOSE`, the
-variable names in `.env.example`) and marks where each came from; you confirm every one. Commit what it
+variable names in `.env.example`) and marks where each came from; review the diff, then commit what it
 wrote. An agent started in the repository now gets the same instructions and skills in each tool you
 listed, with the guard live (in Codex once a person trusts its hook). The same push is refused in all
 three tools, each through its own transport:
@@ -127,14 +127,14 @@ switches on when you declare Compose files (Docker), and agent-run grading when 
 | **[Every repository in reach](docs/harness-surfaces.md#sibling-projection-and-standing-cost)** | Declare each once; `setup` clones or finds it, its guides are copied into the root `AGENTS.md` (the one route that loaded in all three tools in dated runs), and every tool is granted its directory. A changed guide is drift until a person runs `sync`, so an agent cannot quietly change what later agents load. |
 | **[The product running, per checkout](docs/environment.md)** | `session` runs your own Compose files on the live checkouts and leases each checkout, worktrees included, a port family. `up`, `logs`, `down` and the rest drive the stack; it stops only when no checkout still holds it, and `reset` wipes only the volumes you declared resettable. |
 | **[Parallel work in worktrees](docs/environment.md#serve-a-sibling-from-a-worktree)** | `use` serves a repository from a worktree, so each agent runs the whole product on its own branch. `check` refuses a fixed `container_name` that would make two stacks collide, and `stacks prune` removes what a deleted worktree's stack left behind. |
-| **[One guard in every tool](docs/safety-and-autonomy.md)** | The same script lets agents run known development tools inside the cockpit, asks about unknown programs and inline code, and refuses a blocked list: secrets and credentials, writes outside it, force pushes and protected branches, production hosts you declare, and changes to the guard itself. |
+| **[One guard in every tool](docs/safety-and-autonomy.md)** | The same script lets agents run what it cannot prove unsafe, asks only where a person's judgment is the point, and refuses a blocked list: secrets and credentials, writes outside it, force pushes and protected branches, production hosts you declare, and changes to the guard itself. |
 | **[Secrets kept out of the agent's context](docs/environment.md#secret-sources-and-environment-schemas)** | The guard refuses `.env` reads; `cockpit env keys` gives an agent the variable names instead, and [Varlock](https://varlock.dev) `.env.schema` files are validated without reading a value. |
 | **[Test gates that cannot fake a pass](docs/work-and-browser.md#choose-the-proving-test-tier)** | `test-run` runs your own gate (Vitest, Jest, pytest, Bazel and others) and reports PASS only for a complete, stable run whose checks all passed. A change that deletes, skips or loosens tests is flagged. |
 | **[Judged, not just gated](docs/work-and-browser.md#how-an-order-earns-done)** | Optional work orders hold a change to an objective, a scope and criteria. The grader is optional: another agent tool (the default), the same tool in a separate run, a subagent of the working agent, the checks alone, the agent's own report, or none ([how grading can run](docs/work-and-browser.md#how-grading-can-run)). The record always says which. |
 | **[Proof in a real browser](docs/work-and-browser.md#browser-evidence)** | `browser drive` and `browser screenshot` visit every declared route through your own [Playwright](https://playwright.dev) project, signed in as a declared role if you ask, and record each screenshot's digest and each route's console errors. |
 | **[Skills for driving it](docs/harness-surfaces.md#skills)** | Each listed tool gets cockpit's skills for fixing a bug with proof, running a work order, explaining a refusal and, once a browser is declared, checking the app in it. They call cockpit's own commands, so the stack, tests and grading work the same way in every tool. |
-| **[Agents that unblock themselves](docs/safety-and-autonomy.md#who-decides)** | An agent runs what only reads, fast-forwards or repairs cockpit's own state without asking. Widening access, lowering the grading bar and, by default, deleting data stay a person's. |
-| **[MCP servers you approve](docs/harness-surfaces.md#mcp-servers-and-restrictions)** | A server reaches an agent only after a person approves its exact SHA-256; a changed declaration needs approval again. `[mcp.allowed_tools]` limits it to exact tools in Claude Code and Codex; a tool that cannot enforce that does not get the server. |
+| **[Agents that unblock themselves](docs/safety-and-autonomy.md#who-decides)** | An agent runs what only reads, fast-forwards or repairs cockpit's own state without asking. Widening what agents may do, lowering the grading bar and deleting data without a declared seed stay a person's, each with one yes. |
+| **[MCP servers you approve](docs/harness-surfaces.md#mcp-servers-and-restrictions)** | A server reaches an agent only after a person approves it with one yes at `sync --interactive`; a changed declaration needs approval again. `[mcp.allowed_tools]` limits it to exact tools in Claude Code and Codex; a tool that cannot enforce that does not get the server. |
 | **[Decisions and docs kept true](docs/docs-check.md)** | A work order cannot sign off while a recorded decision is unresolved, and `docs check` reports documents citing removed paths. |
 | **[Checked, not assumed](docs/capability-matrix.md)** | `check` fails in CI ([a ready-made action](docs/harness-surfaces.md#publish-and-verify) included) and reports drift to the agent as a Claude Code or Codex session starts. The capability matrix records what each tool actually enforced, from dated runs of the real tool. |
 
@@ -202,36 +202,32 @@ criteria:
 `work signoff` closes it. By default the grader is a fresh, read-only run of an agent tool that starts
 outside the repository and never sees the session that did the work; run from inside Claude Code or
 Codex, another listed tool grades first. It also judges what a fixed rule cannot: whether a change outside `scope` was
-needed and whether a test change was justified. Switching to a weaker mode is refused until a person
-confirms it. [How an order earns done](docs/work-and-browser.md#how-an-order-earns-done) has the
+needed and whether a test change was justified. Switching to a weaker mode waits for a person's `sync --interactive` yes. [How an order earns done](docs/work-and-browser.md#how-an-order-earns-done) has the
 modes.
 
 ## The guard
 
-- **Allows known tools by default.** A command runs when its executable is a development tool the
-  guard knows (Git, `gh`, package managers, interpreters running project files, build and test tools,
-  read and text utilities, file utilities inside the cockpit, archive and copy tools, `curl`, cockpit),
-  judged by that tool's own rules. A blocked list is refused and no rule overrides it: secrets (`.env`
-  and `.env.*` files other than documentation names such as `.env.example`, `.secrets`, declared
-  instances, credential stores such as `~/.ssh`, `~/.aws` and other tools' logins, credential-printing
+- **Allows what it cannot prove unsafe.** A command runs, a program the guard does not know and
+  inline code included, unless a word of it, wherever it sits, names a blocked item. A blocked list is
+  refused and no rule overrides it: secrets (`.env` and `.env.*` files other than documentation names
+  such as `.env.example`, `.secrets`, declared instances, credential stores such as `~/.ssh`, `~/.aws` and other tools' logins, credential-printing
   commands and environment dumps), writes outside the cockpit, force pushes, pushes to protected
   branches (`main` and `master` by default) and rewriting them, commands that reach a declared host,
   Git verbs that would overwrite guard files, global tool configuration and installs, `gh` commands
   that bypass or change branch protection, changes to the guard itself, and privilege escalation or
-  downloaded code piped to an interpreter. An agent may run `sync` where `[autonomy] sync = "agent"`,
-  except for an edit that widens what agents may do, which a person confirms at `sync --interactive`.
-  `[guards] default = "ask"` is the strict mode, which asks for every command the guard cannot prove
-  safe.
+  downloaded code piped to an interpreter. An agent may run `sync`, except for an edit that
+  widens what agents may do, which a person confirms at `sync --interactive`.
+  For a stricter boundary, run the agent tool in its own OS sandbox.
 - **Sees** shell commands in all three tools. In Claude Code also its Edit and Write tools, and its
   Read tool through generated deny rules. Those rules also refuse documentation names such as
   `.env.example`, to Read and to a recognized shell read such as `cat` (measured 2026-11-05), so an
   agent reaches them with `cockpit env keys` and `cockpit env schema`. In OpenCode the plugin
   restates its native read, grep and glob as the shell command that reads the same paths.
-- **Asks about what it does not know.** An unknown program and inline code (`python3 -c`, `node -e`,
-  an interpreter reading a script from stdin, `find -exec`, `make --eval`, an `awk` that writes a file)
-  ask: a prompt in Claude Code, a refusal in Codex and OpenCode, which have no prompt tier. A person
-  approves or runs the command, or admits the program with a `[guards] allow` rule, which never
-  admits a blocked item. Input it cannot parse is refused.
+- **Asks rarely.** A person is asked before merges, releases and other `gh` changes, `git clean -f`,
+  a push or Git write whose branch or files the guard cannot resolve, Git location variables, and
+  cockpit commands that change what agents may do: a prompt in Claude Code, a refusal in Codex and
+  OpenCode, which have no prompt tier. A person approves or runs the command, or admits it with a
+  `[guards] allow` rule, which never admits a blocked item. Malformed input is refused.
 - **Judges what it can see.** It reads command text only. A program an allowed tool runs, such as
   `node script.js` or a package script, can still read or write anything your account can, and can
   defeat the guard on purpose. It prevents mistakes, not determined circumvention, so the boundaries
@@ -264,9 +260,9 @@ settings, and the FAQ says [when not to use cockpit](docs/faq.md#when-should-i-n
   warns until then.
 - **Measured, per tool.** The [capability matrix](docs/capability-matrix.md) says what each tool
   enforces, measured on which date and version. Cursor and Grok Build get files but no guard.
-- Enabling an MCP server and `reset` (it wipes data) need a person by default. Process gates can be
-  handed to the agent; guardrails cannot
-  ([Fully agentic setup](docs/safety-and-autonomy.md#fully-agentic-setup)).
+- Enabling an MCP server and widening what agents may do need a person's one yes at
+  `sync --interactive`; so does `reset` where no seed is declared
+  ([Who decides](docs/safety-and-autonomy.md#who-decides)).
 
 ## Built with
 

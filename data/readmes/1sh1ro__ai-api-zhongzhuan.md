@@ -17,13 +17,6 @@ AI API 公益站与 Token 中转站导航 / 比价雷达，整理免费 API、�
 >
 > [**前往 TeamoRouter →**](https://teamorouter.com/?i=5ffc6af2c3) · 
 
-> [!TIP]
-> **💱 FREE TOKEN**
->
-> 点击领glm-5.3-flash无限token
->
-> [**前往zcode注册 →**](https://zcode.z.ai/invite/S2XSF7WD) 
-
 
 
 > [!WARNING]
@@ -44,21 +37,16 @@ AI API 公益站与 Token 中转站导航 / 比价雷达，整理免费 API、�
 > 同一站点会按模型或能力在多个分类重复出现，方便横向比较；“特别优惠”提供优惠速览，“综合多模型入口”收录跨模型生态的站点。
 
 ## 特别优惠
-
-TeamoRouter 按维护者推荐置顶；其余条目优先展示免费、免费额度、明确的低倍率和订阅优惠，按“免费/免费额度 → 已知低倍率 → 订阅套餐”排列；`限时`、`不稳定` 和 `动态` 均保留站点当前标注。下面的关键词分类会再次列出同一批入口，方便直接比较。
+实时更新注册人数较多的站点
 
 | 站点 | URL | 特别优惠 | 页面状态 | 信息来源 |
 | --- | --- | --- | --- | --- |
-| TeamoRouter | [前往 TeamoRouter →](https://teamorouter.com/?i=5ffc6af2c3) | 置顶推荐。官网限时补贴，低至官方价 1 折；GLM-5.3-Flash / DeepSeek V4.1 Flash 免费版近乎 0 元；Claude 全系约 3 折、GPT-6 Astra 约 2 折；一个 Key 直接接 Codex / Claude Code；额度不过期，$5 起充，支持支付宝 | 首页与价格页可访问（2026-11-11） | [价格页](https://teamorouter.com/models)；[Issue #48](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/48) |
-| API Nebula | [API Nebula](https://apinebula.ai/A89Bk1) | GPT 约 0.0583x；Claude/Grok 最低约 0.0747x；Gemini 约 0.1196x；GPT Image 2/2.5 ¥0.05/次  | 用户提供价格快照（2026-10-17）[折算明细](docs/apinebula-pricing-2026-10-17.md) |
+| TeamoRouter | [TeamoRouter →](https://teamorouter.com/?i=5ffc6af2c3) | 置顶推荐。官网限时补贴，低至官方价 1 折；GLM-5.3-Flash / DeepSeek V4.1 Flash 免费版近乎 0 元；Claude 全系约 3 折、GPT-6 Astra 约 2 折；一个 Key 直接接 Codex / Claude Code；额度不过期，$5 起充，支持支付宝 | 首页与价格页可访问（2026-11-11） | [价格页](https://teamorouter.com/models)；[Issue #48](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/48) |
 | APIKEY.FUN | [APIKEY.FUN](https://apikey.fun/register?aff=GLVRZSHR5MKQ) | 用户补充模型覆盖全面、线路相对稳定、Grok 价格友好；公开价格接口当前返回 13 个活跃分组，覆盖 OpenAI、Claude、Gemini、Grok、Kimi、DeepSeek、智谱等；Grok 企业版页面显示 1x，按官方价折算约 0.14x（1.4 折、节省 86%），支持 Grok 4.6/4.5、图片和视频 | 可访问（公开注册/价格页；2026-09-03） | [价格页](https://apikey.fun/pricing)；[公开分组数据](https://apikey.fun/api/v1/pricing/groups)；本地访问核验 |
-| OrcaRouter | [OrcaRouter](https://www.orcarouter.ai/ref/ref_feec389da7083bc9a430) | 当前免费模型（5 个）：`deepseek/deepseek-v4-flash-free`、`fish-audio/s2.1-pro-free`、`qwen/qwen3.8-27b-free`、`s2.1-pro-free`、`tencent/hy3-free` | 可访问（2026-08-27） | [免费模型页](https://www.orcarouter.ai/zh-CN/offers)；[文档](https://docs.orcarouter.ai/)；本地访问核验 |
 | AIZZZ | [AIZZZ](https://api.aizzz.xyz/sign-up?aff=zAnM) | 登录后模型广场显示 57 个模型、26 个分组；最低 GPT 扶贫 0.01x、GPT 狂欢 0.05x、Codex 福利 0.06x；另有 Claude、Grok、国产模型和生图/视频分组 | 登录后可访问（2026-08-29） | [模型广场](https://api.aizzz.xyz/pricing)；本地浏览器登录会话核验 |
-| onomeo | [onomeo](https://onomeo.com/?ref=AC-9W6NGP) | 免费用量按次数计，不用签到、没有站内积分：17 个免费模型（DeepSeek V4 Flash、GLM、Gemini Flash、Codestral 等），每个账号每 5 小时 30 次、每把密钥每分钟 12 次，注册不用绑卡；网页画图每个账号每天 10 张免费。Claude、GPT 等大模型和 DeepSeek 编程专线按量付费（5 美元起充，美元余额不过期），仅向充过值的账号开放；付款后 35 天内免费模型上限为每 5 小时 90 次。经邀请链接注册并在两个不同日期使用后，邀请双方的免费模型上限提高到每 5 小时 45 次（7 天），并各得 2 次网页对话中的大模型免费回答。免费模型由第三方服务商提供，数据处理方式因模型而异（见模型页） | 注册/模型/额度说明页可访问（2026-09-25；未实际注册或调用）；运营方更新（2026-10-10，维护者未复核）；公测中，不保证所有功能都能正常使用，正在大量收集用户反馈，欢迎提交 | [模型与价格](https://onomeo.com/zh/models)；[接入文档](https://onomeo.com/zh/integrations)；[使用条款](https://onomeo.com/zh/terms)；[Issue #14](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/14) |
 | AIJWS | [AIJWS](https://api.aijws.com/register?aff=RMW5KZQC2PWJ) | `[限时]国模` 0.001x；图片 0.01x；Codex 福利 0.08x；Grok 混池 0.15x；部分分组标注不稳定或受额度影响 | 可访问（登录后；2026-08-27） | [密钥分组选项](https://api.aijws.com/keys)；本地访问核验 |
 | Horizon API | [Horizon API](https://api.honglin.asia/register?aff=FFEYRLUHUVMH) | 站内充值比 1:5；按页面倍率折算：GPT 特价 0.08x（页面 0.4x）、GPT 稳定 0.17x（页面 0.85x）、GPT Pro 0.2x（页面 1x）、国模羊毛 0.0002x（页面 0.001x）、image 0.2x（页面 1x）；订阅区截图显示 6 种商品，价格 ¥5.6、¥28.1、¥31.5、¥62.5、¥157.5、¥350 | 用户提供截图（2026-08-29） | 用户提供截图；[注册页](https://api.honglin.asia/register?aff=FFEYRLUHUVMH) |
 | FastAI 模型 | [FastAI](https://www.fastaitoken.com/register?aff=AAYGR6B5HJA8) | OpenAI 福利 0.06x（限时）；普通 0.2x、备用 0.25x、Pro 0.3x（均限时）；Claude/国产 0.7x；视频 1x | 可访问（登录后；2026-08-27） | [可用渠道](https://www.fastaitoken.com/available-channels)；本地访问核验 |
-| MoLiFang | [MoLiFang](https://molifangapi.com/register?aff=6FBBCBLMAV7C) | Plus 0.08x；稳定Pro 0.17x；系统按渠道动态选择，具体以站内为准 | 可访问（登录后；2026-08-27） | 用户提供；本地访问核验 |
 | Token-X | [Token-X](https://token-x.com/sign-up?aff=H4g2) | CodeX-Pro 订阅：Mini 周卡实付 ¥9.9、到账 ¥20（7 天，限购 1，用量参考约 1 亿 Token）；Lite 月卡实付 ¥30、到账 ¥45；Plus 月卡实付 ¥60、到账 ¥100；Pro 月卡实付 ¥169、到账 ¥300；MAX 月卡实付 ¥299、到账 ¥570；Ultra 月卡实付 ¥599、到账 ¥1,200（以上月卡均 30 天）；基础倍率 0.045x，月卡可叠加 5—6.6 折，最低倍率 0.0225x；第二轮抽奖抽 10 份 Plus 月卡，每份内含 ¥100 额度；试运营阶段主要提供 GPT 系列模型，上游统一使用自建 Pro 20× 号池，不混用 Free 或 Plus 账号资源；无生效订阅时自动使用钱包 | 用户提供套餐及活动信息（2026-08-31） | 用户提供；[Token-X](https://token-x.com/)；[注册页](https://token-x.com/sign-up?aff=H4g2) |
 
 ## OpenAI GPT Codex 倍率
@@ -199,10 +187,9 @@ TeamoRouter 按维护者推荐置顶；其余条目优先展示免费、免费�
 | KaiGPT | [KaiGPT](https://gptzzz.ai/register) | OpenAI 与 Claude 主流模型官网标注 0.1x；账户模型和具体价格需从模型广场核对 | [官网](https://gptzzz.ai/)；[模型广场](https://gptzzz.ai/model-plaza)；[文档](https://gptzzz.ai/docs/) |
 | YonshoreAPI | [YonshoreAPI](https://api.yonshore.com/register) | 多个 GPT 与 Claude 模型、Responses/Messages 接口；公开价格 API 按模型和上下文提供计价配置 | [公开价格 JSON](https://api.yonshore.com/api/pricing)；[Issue #10](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/10) |
 | otter Link | [otter Link](https://otterl.com/) | 公开价格接口列出 49 个模型、11 个分组，覆盖 GPT、Claude、Gemini、绘图及国产模型 | [公开价格 JSON](https://otterl.com/api/pricing)；[站点状态/公告](https://otterl.com/api/status)；[Issue #7](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/7) |
-| OrcaRouter | [OrcaRouter](https://www.orcarouter.ai/ref/ref_feec389da7083bc9a430) | 多模型统一入口；当前免费列表含 DeepSeek、Fish Audio、Qwen、Tencent 等模型 | [免费模型页](https://www.orcarouter.ai/zh-CN/offers)；[文档](https://docs.orcarouter.ai/) |
 | AIZZZ | [AIZZZ](https://api.aizzz.xyz/sign-up?aff=zAnM) | 其他分组：Gemini 0.3x、Adobe 渠道生图 0.33x、default/即梦/香蕉2/MiniMax/可灵视频 1x、AzGPT 生图 2x | 登录后可见；[模型广场](https://api.aizzz.xyz/pricing) |
 | MoLiFang | [MoLiFang](https://molifangapi.com/register?aff=6FBBCBLMAV7C) | Plus 0.08x；稳定Pro 0.17x；系统按渠道动态选择 | 用户提供；本地访问核验 |
-| Krill AI | [Krill AI](https://www.krill-ai.com/register?invite=0FZVR9NRFB) | `.net` 会话公告显示 10 人拼团并使用 88 折码后，周卡 0.15x、月卡 0.14x；另有 77 折活动但未展示折后倍率 | [当前会话域名](https://www.krill-ai.net/) |
+| Krill AI | [Krill AI](https://www.krill-ai.com/register?invite=0FZVR9NRFB) | 公告显示 10 人拼团并使用 88 折码后，周卡 0.15x、月卡 0.14x；另有 77 折活动但未展示折后倍率 | [当前会话域名](https://www.krill-ai.net/) |
 | APIKEY.FUN | [APIKEY.FUN](https://apikey.fun/register?aff=GLVRZSHR5MKQ) | 覆盖 OpenAI、Claude、Gemini、Grok、Kimi、DeepSeek、智谱等 13 个活跃分组；页面的部分“x 倍率”是站内分组倍率，需按官方价折算；Grok 企业版页面 1x，实际约 0.14x（1.4 折） | [价格页](https://apikey.fun/pricing)；[公开分组数据](https://apikey.fun/api/v1/pricing/groups) |
 | Zerouter | [Zerouter](https://www.zerouter.ai/login?ref=Q32i5Dt7&redirect=/dashboard/caller) | 一个 Key 调 Claude、GPT、Gemini、Grok、Kimi，按量计费无月费；价格页逐模型对照官方价；OpenAI / Anthropic 两种接口 | 运营方自荐（2026-10-18）；[价格页](https://www.zerouter.ai/pricing)；[接入文档](https://www.zerouter.ai/docs) |
 | znbcode | [znbcode](https://znbcode.com/register?aff=NAV-1SH1RO) | 公开价格接口列出 GPT、Claude、Gemini、Grok、DeepSeek、GLM、Kimi、MiniMax 与生图分组；支持 Anthropic /v1/messages、OpenAI /v1/chat/completions 与 /v1/responses、Gemini /v1beta；[接入文档](https://znbcode.com/docs/) | 运营方提交（2026-11-03）；[公开分组价格 JSON](https://znbcode.com/api/v1/model-plaza)；[Issue #24](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/24) |
@@ -274,18 +261,4 @@ API Key:  在站点控制台自行创建
 
 <a id="modelrush"></a>
 
-## ModelRush（付费多模态 API 平台）
 
-> 文本、图片、视频和语音模型共用一个 API 入口。具体模型、地区和请求格式以[模型目录](https://modelrush.ai/models)与[文档](https://modelrush.ai/docs)为准。
-
-| 项目 | 说明 |
-| --- | --- |
-| API 地址 | `https://api.modelrush.ai/v1`（OpenAI 兼容） |
-| 支持接口 | Chat Completions、图片生成/编辑、视频生成、语音合成/转录 |
-| 模型 API 计费 | 按实际用量从预付额度扣费 |
-| Agent Basic | US$10/月；符合条件的新用户可获需绑卡的 30 天试用。订阅费不含模型 API 用量 |
-| 价格示例 | DeepSeek V4.1 Flash：输入 US$0.33、输出 US$1.32 / 百万 Token；GPT Image 2：US$0.006 / 张；Wan 3 Spicy（480P）：US$0.0385 / 秒 |
-| 年龄限制 | 部分带 Spicy 标识的模型要求账号完成成人访问确认，请先查看模型说明与服务条款 |
-| 核验状态 | 2026-09-25 可访问；未创建账号或发起付费调用。价格页标注数据更新于 2026-09-23，具体以当前页面为准 |
-
-**入口：** [注册](https://modelrush.ai/sign-up) · [模型目录](https://modelrush.ai/models) · [实时价格](https://modelrush.ai/pricing) · [API 文档](https://modelrush.ai/docs) · [Issue #8](https://github.com/1sh1ro/ai-api-zhongzhuan/issues/8)

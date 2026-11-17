@@ -1049,6 +1049,44 @@ Three things this buys, and one thing to know:
 4. A real completion: `POST /v1/chat/completions` asking for one word back. Log lines
    `✅ Chat input found — logged in` and `📥 Response received` are the end-to-end proof.
 
+## When the composer will not submit: the web RPC transport
+
+Measured on Chrome 151, 2026-11-15, against a signed-in Pro account: the Gemini composer
+accepts text from CDP and the send button renders enabled, but **no synthetic submit
+commits**. Enter, an in-page `el.click()`, a trusted `page.mouse.click` on
+`button[aria-label="Send message"]`, hand-dispatched pointer events and a `?q=` prefill all
+leave the prompt sitting in the composer — no chat request is attempted and nothing throws.
+`Shift+Enter` still inserts a newline, and other controls (settings, the model picker) still
+open, so the page is alive; only that one action is inert. A hard reload with the cache
+cleared and a brand-new tab both reproduce it.
+
+The page's own `batchexecute` RPC answers normally with the same cookies, so the lane can
+talk to that instead of the DOM. Set `GEMINI_RPC_URL` and the gemini lane skips the browser:
+
+```bash
+GEMINI_RPC_URL=http://127.0.0.1:8801   # unset -> the browser path runs unchanged
+```
+
+The sidecar behind it (`webchat_worker/gemini-rpc/server.py`, a `python -m venv` plus
+[`gemini_webapi`](https://github.com/HanaokaYuzu/Gemini-API)) loads the profile's
+`__Secure-1PSID` / `__Secure-1PSIDTS` cookies, sends one prompt, and returns the reply text.
+It keeps **one chat session**, because the gateway's tool loop does not replay history
+between rounds — the tab used to supply that continuity. `server.js` therefore calls
+`resetGeminiRpcThread()` at a request boundary instead of `openNewChat()`.
+
+Two things worth knowing before you point it at a model you care about:
+
+- **Cookies go stale fast.** A copied `__Secure-1PSIDTS` makes the session read as
+  unauthenticated: the model registry then collapses to a single guest model and premium
+  tiers silently disappear. Re-dump the cookies from a live tab and restart the sidecar;
+  `GET /health` plus a quota line in the log ("Gemini Pro [None-4] — N/2400 credits") is the
+  proof it authenticated.
+- **The model header's last field is the model number, not decoration.**
+  `x-goog-ext-525001261-jspb` is `[1,null,null,null,<16-hex id>,null,null,0,[4,5,6,8],
+  null,null,2,null,null,<model_number>]`. Building a model the library has no entry for by
+  copying another one's fields serves *that* model — an Argon id with Pro's `3` answered as
+  3.1 Pro. Argon is id `e051ce1aa80aa576`, model number `8`.
+
 ## Send pacing: 5-30s on every lane
 
 Every send waits a fresh random interval in `[SEND_GAP_MIN_MS, SEND_GAP_MAX_MS]`, default

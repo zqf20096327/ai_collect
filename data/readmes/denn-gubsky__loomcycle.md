@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.153) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.156) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -212,16 +212,22 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.153.0) gives every setting one place. 150 environment
-variables are no longer read: policy and tuning moved to the yaml, limits
-nobody changed became fixed values, and seven feature switches are gone. Two
-presets, `personal` and `server`, stand for a whole installation. It also adds
-a knowledge-base question router with read-only tool grants, conversion
-workers that take file conversion out of the runtime's process (off by
-default), and a fix to the pacing of password sign-ins sent together. This
-release stops the boot for some existing configurations: read its upgrade
-notes in [`REVISIONS.md`](REVISIONS.md) and
-[`docs/SETTINGS_MIGRATION.md`](docs/SETTINGS_MIGRATION.md) first.
+The most recent line (v1.156.0) lets people download a Document as a file:
+a download menu on the document toolbar (PDF, Word, HTML, Markdown, Canvas),
+`GET /v1/_document/export/{id}`, the TS client's `exportDocument` and MCP
+`file op=render` without a run. Teams declared in the yaml are written into
+the shared tier at boot and are changed only there, and an explicit token
+pepper becomes legacy so it can be retired. Read the upgrade notes in
+[`REVISIONS.md`](REVISIONS.md).
+
+Before it, v1.155.0 rendered a Document back into a file: `File op=render`
+writes Markdown, HTML, Word or PDF (typeset by Typst in the conversion
+worker), with a render log per document, and added `kb/survey`.
+
+Before that, v1.153.0 gave every setting one place: 150 environment variables
+are no longer read. Read its upgrade notes and
+[`docs/SETTINGS_MIGRATION.md`](docs/SETTINGS_MIGRATION.md) before upgrading
+across it.
 
 Before it, v1.152.0 fixed what a measurement of knowledge-base agents found
 and rewrote every annotation once.

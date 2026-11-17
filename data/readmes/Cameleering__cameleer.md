@@ -100,10 +100,11 @@ and the full report, [docs/BENCHMARKS.md](docs/BENCHMARKS.md). Run it yourself w
 [`scripts/cloud-bench`](scripts/cloud-bench/) for about a dollar of cloud time.
 
 **How, without changing what Camel means:**
-- **Nothing but the Rust standard library.** TLS, SSH, HTTP/2, gRPC, AMQP, MQTT, the Kafka
-  protocol, the PostgreSQL, Redis, MongoDB and Cassandra wire protocols, XML and JSON are all
-  written from scratch. There's no dependency tree, no build-time downloads and no supply-chain
-  surprise.
+- **Nothing but the Rust standard library and our own std-only crates.** TLS, SSH, AMQP, MQTT, the
+  Kafka protocol, the PostgreSQL, Redis, MongoDB and Cassandra wire protocols, XML and JSON are all
+  written from scratch. HTTP, HTTP/2 and gRPC run on [simoom](https://crates.io/crates/simoom), the
+  std-only HTTP engine of the same family (an event loop per core, HTTP/1.1 and HTTP/2, no third-party
+  code). There's no third-party dependency tree, no build-time downloads and no supply-chain surprise.
 - **No JVM, no garbage collector.** The compiler guarantees memory safety, and routing never pauses
   for GC.
 - **Engineered hot paths:**
@@ -601,7 +602,7 @@ See [docs/INTEROP.md](docs/INTEROP.md).
 | crate | contents |
 |---|---|
 | `cameleer-core` | `CamelContext`, `Exchange`/`Message`/`Value`, routes and the Rust DSL, EIPs, error handling, languages, data formats, core components |
-| `cameleer-http` | HTTP/1.1 server and client, `platform-http`, `http`, REST DSL with OpenAPI, `netty` TCP/UDP |
+| `cameleer-http` | HTTP/1.1 and HTTP/2 server and client on simoom, `platform-http`, `http`, REST DSL with OpenAPI, `netty` TCP/UDP |
 | `cameleer-yaml` | YAML parser, Camel YAML DSL, XML DSL, route templates |
 | `cameleer-protocols` | ftp, smtp/pop3/imap, websocket, syslog (with embedded test servers) |
 | `cameleer-health` | the health pack, not in the default build: HL7 v2 and MLLP, FHIR R4, DICOM (DIMSE, DICOMweb), de-identification |
@@ -612,7 +613,7 @@ See [docs/INTEROP.md](docs/INTEROP.md).
 | `cameleer-sql` | embedded SQL engine, PostgreSQL client, sql / jdbc components, JDBC repositories |
 | `cameleer-cloud` | AWS (incl. Bedrock), Azure (incl. OpenAI), Google Cloud (incl. Vertex AI), with verifying emulators |
 | `cameleer-ssh` | SSH-2 + SFTP: sftp and ssh components |
-| `cameleer-grpc` | HTTP/2 + HPACK, protobuf, grpc component and protobuf data format |
+| `cameleer-grpc` | gRPC client and server on simoom, protobuf, grpc component and protobuf data format |
 | `cameleer-datastores` | spring-redis, mongodb, elasticsearch/opensearch, cql (Cassandra), couchdb (with embedded test servers) |
 | `cameleer-xml` | XML 1.0 parser + DOM, XPath 1.0, XSLT 1.0, XML Schema validation, `xj`, `xmlsecurity-sign`/`-verify` |
 | `cameleer-ai` | `ai-tool`, `ai-resource`, `ai-prompt`, the tool registry and reliability envelope, the MCP server, client and gateway, the `mcp` component |

@@ -9,6 +9,10 @@
 [![React](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev)
 [![Node.js](https://img.shields.io/badge/Node.js-24+-339933.svg)](https://nodejs.org)
 
+<p>
+  <a href="https://atomgit.com/Ch1rpys/Mirrai"><img alt="AtomGit" src="https://atomgit.com/Ch1rpys/Mirrai/star/new_badge.svg"></a>
+</p>
+
 **简体中文** | [English](README.en.md)
 
 ![Mirrai 落地页](docs/images/landing-hero.png)

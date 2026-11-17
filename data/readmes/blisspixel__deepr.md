@@ -3,7 +3,7 @@
 [![CI](https://github.com/blisspixel/deepr/actions/workflows/ci.yml/badge.svg)](https://github.com/blisspixel/deepr/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Version](https://img.shields.io/badge/version-2.51.9-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.51.9)
+[![Version](https://img.shields.io/badge/version-2.51.12-blue)](https://github.com/blisspixel/deepr/releases/tag/v2.51.12)
 
 **Persistent domain experts built from bounded, auditable research.**
 
@@ -16,6 +16,13 @@ Deepr is for people and agent teams making recurring decisions in domains that
 keep changing. Instead of rebuilding context for every run, they consult the
 same inspectable expert state through the CLI or MCP and can see what changed,
 what supports a position, and what remains unknown.
+
+An outside orchestrator is optional. It may consult Deepr as a domain advisor
+through the CLI or the local-only fleet-seat profile (`deepr mcp seat-profile`).
+That consultation grants no spend, mutation, or workflow authority. Deepr does
+not require a particular orchestrator, and listing a seat consumer does not
+certify it. The [supported surface](docs/SUPPORTED_SURFACE.md) records the
+seat limits.
 
 The expert's knowledge base connects research, concepts, explanations, and
 reasoned positions. Temporal records preserve changes; readable notebooks and
@@ -175,7 +182,7 @@ budget, or approving a prompt cannot enable those other paths.
 
 ```bash
 deepr capacity
-deepr research "A bounded premium question" --provider openai --model gpt-5.6-sol --preview
+deepr research "A bounded premium question" --provider openai --model gpt-6.1-sol --preview
 deepr research "Compare model families" --provider openrouter --model qwen/qwen3.8-flash --preview
 deepr research "A bounded premium question" --provider openrouter --model qwen/qwen3.8-flash --limit 0.50
 deepr providers openrouter-check
@@ -320,6 +327,12 @@ for tested behavior and the distinction from draft standards and host certificat
 
 ## Direction
 
+v2.51.11 records the Gemini 2.5 Pro and Flash shutdown on 2026-12-01
+and explains that Anthropic research is registered, not admitted.
+
+v2.51.10 moves new-request defaults and reference deploy allowlists
+to `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6-luna`, and `gpt-6-astra`.
+
 v2.51.9 publishes the GitHub Release with the wheel and SHA256SUMS attached,
 so the README installer works again. v2.51.8 shipped without those assets
 because the release was already published before the workflow could upload.
@@ -332,8 +345,8 @@ stores the default reports path as an absolute `data/reports` directory
 v2.51.7 records the Claude Sonnet 4.5 retirement on 2026-11-30, including
 `claude-sonnet-4-5-20250929`. From that date the API returns
 `model_shut_down`. Explicit requests stay on the requested id. Opus 4.5 and
-Haiku 4.5 stay undated. The reference deploy allowlists name `gpt-5.6-sol`
-and `gpt-5.6-terra`.
+Haiku 4.5 stay undated. That release's reference deploy allowlists named
+`gpt-5.6-sol` and `gpt-5.6-terra`.
 
 v2.51.6 upgrades the locked transitive `pyasn1` from 0.6.4 to 0.6.5. The
 0.6.4 decoder has four high-severity denial-of-service advisories

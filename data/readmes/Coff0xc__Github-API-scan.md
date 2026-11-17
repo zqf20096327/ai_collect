@@ -10,7 +10,7 @@ The raw key stays on the machine that ran the scan.
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/license-MIT-111827" alt="MIT license">
   <img src="https://img.shields.io/badge/entry-main__v2.2.py-1d4ed8" alt="Entry point main_v2.2.py">
-  &nbsp;<a href="README.zh.md">中文</a>
+  &nbsp;<a href="README.zh.md">Chinese</a>
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ How a row is built: extract key shapes from the file (and unique git blobs for a
 | Open `http://127.0.0.1:5000` after someone else has scanned. | Run `python main_v2.2.py` and name the organization or the folder. |
 | Each row is one place a key showed up: the service, a shortened preview, and the file. | When it finishes, the same rows are in `findings.json`. |
 | Tell the owner those three things. Do not paste the real key into chat. | The real key stays in the local database, scrambled if you set a passphrase. |
-| After the key is revoked, mark the row **Rotated**. If it was only an example, mark it **False alarm**. | The header of the page switches between **EN** and **中文**. |
+| After the key is revoked, mark the row **Rotated**. If it was only an example, mark it **False alarm**. | The header of the page switches between **EN** and **Chinese**. |
 
 ## A scan, from the top
 
@@ -259,7 +259,7 @@ python main_v2.2.py --authorized --scan-local D:\repos\target
 
 Each of those writes `findings.json` in the working directory. Another path: `--findings-json reports/findings.json`. If you pass only that flag and no target, it exports the database you already have and exits.
 
-While the scan runs, the terminal title is **AI API Key Scanner**. The table under the counters is **发现记录**: service, shortened preview, status, and place. It is the same idea as the screenshot, in the terminal. There is no balance column.
+While the scan runs, the terminal title is **AI API Key Scanner**. The table under the counters is **Findings**: service, shortened preview, status, and place. It is the same idea as the screenshot, in the terminal. There is no balance column.
 
 Set `AI_FILTER_ENABLED=1` if you want a model to drop rows that look like examples. It is off unless you turn it on. See [docs/AI_ASSISTED_ANALYSIS.md](docs/AI_ASSISTED_ANALYSIS.md).
 

@@ -15,7 +15,7 @@
 </div>
 
 > [!NOTE]
-> **v0.3.0.** Live on [PyPI](https://pypi.org/project/agentboxx/) (`pip install agentboxx`). Validated end-to-end with sandboxed execution, cryptographic signing, loop detection, and live model execution. Interfaces may evolve before v1.0. Known gaps are listed under [Limitations](#limitations).
+> **v0.3.1.** Live on [PyPI](https://pypi.org/project/agentboxx/) (`pip install agentboxx`). Validated end-to-end with sandboxed execution, cryptographic signing, loop detection, and live model execution. Interfaces may evolve before v1.0. Known gaps are listed under [Limitations](#limitations).
 
 ---
 
@@ -39,12 +39,16 @@ Most agent tooling records what the agent *says* it did, from inside the agent's
 
 | Module | Role |
 |---|---|
-| `signer.py` | Hash-chained event log, HMAC signatures and Ed25519 run receipts |
-| `executor.py` | Local command runner, error fingerprints, workspace hashing |
-| `docker_backend.py` | Runs commands in a locked-down container |
-| `loop_detector.py` | Exact repeat, repeated error, no-progress and cycle detection |
-| `recorder.py` | Main API: `Recorder.run(command)` |
-| `agent.py` | Minimal ReAct-style loop that feeds detector hints back to the model |
+| `signer.py` | Hash-chained event log, HMAC signatures, and Ed25519 run receipts |
+| `contract.py` | Task contracts, step/duration/deadline budgets, safe file and command assertions |
+| `bundle.py` | Self-contained signed evidence bundles for offline auditing (`agentbox bundle`) |
+| `docker_backend.py` | Hardened container sandbox and ephemeral evaluation container |
+| `egress_proxy.py` | Outbound network filtering proxy with connection audit logging |
+| `loop_detector.py` | State-aware repeat, repeated error, no-progress, and cycle detection |
+| `toolcall.py` | First-class MCP and function tool-call recording with payload capping |
+| `executor.py` | Command execution, process-tree termination, workspace hashing |
+| `recorder.py` | Main API: `Recorder.run()`, `record_step()`, `record_tool_call()` |
+| `agent.py` | ReAct-style agent loop that injects detector hints back into observations |
 
 ## Quick start
 
@@ -81,6 +85,8 @@ agentbox keygen                          # generate Ed25519 keypair (~/.agentbox
 agentbox report runs/agent-demo.ndjson   # readable summary
 agentbox verify runs/agent-demo.ndjson   # symmetric integrity check
 agentbox verify runs/agent-demo.ndjson --pubkey ~/.agentbox/ed25519.pub  # public-key receipt check
+agentbox bundle runs/agent-demo.ndjson -o demo.agentbox.zip              # package self-contained offline evidence bundle
+agentbox verify demo.agentbox.zip                                        # verify directly from offline archive
 agentbox replay runs/agent-demo.ndjson   # step through a session in an interactive terminal player
 agentbox --version
 ~~~
@@ -136,6 +142,23 @@ rec.close("done")                        # also stops the container
 ~~~
 
 `agentbox.agent.run_agent` wraps this in a ReAct-style loop. `ScriptedModel` needs no API key. `GeminiModel` connects to Google Gemini via standard-library REST (needs `GEMINI_API_KEY`, validated end-to-end). `AnthropicModel` is an optional adapter (`pip install anthropic`, set `ANTHROPIC_API_KEY`).
+
+### Record tool calls (MCP and other agent frameworks)
+
+Agents built on the Model Context Protocol, the OpenAI Agents SDK or LangChain act through tool calls, not shell commands. Record each one with `record_tool_call`:
+
+~~~python
+rec.record_tool_call(
+    tool_name="search_issues",
+    tool_source="mcp:github",            # free text: mcp:<server>, builtin, langchain, function...
+    arguments={"query": "is:open label:bug"},
+    result={"total": 3},
+    duration_ms=412,
+    is_error=False,
+)
+~~~
+
+A tool call is a step: it shares `step_index` with commands, counts toward a contract's `max_steps`, and feeds the loop detectors. Secrets in `arguments` and `result` are removed before anything is signed (including values under keys such as `password` or `api_key`). Anything larger than 64 KB is cut to its head and tail, with its size and a SHA-256 of the whole redacted value kept. Tool calls appear in `agentbox report` (text, JSON and HTML), in `agentbox replay`, and `agentbox verify` prints how many a verified log holds. Details: [docs/log-format.md](docs/log-format.md#tool-calls).
 
 ### LangChain & LangGraph integration
 
@@ -253,6 +276,9 @@ Repeated-error detection compares normalized error signatures, so the same failu
 | Python | Tracebacks | Exception name, e.g. `ZeroDivisionError` |
 | Node.js | Uncaught errors with stack frames | e.g. `TypeError`, `Error[ERR_MODULE_NOT_FOUND]` |
 | Go | Panics, fatal errors, compile errors | `GoPanic`, `GoFatalError`, `GoCompileError` |
+| Rust | Panics, compile errors | `RustPanic`, `RustCompileError[E0308]` |
+| Java | Exceptions, caused-by chains, compile errors | Exception class (e.g. `java.lang.NullPointerException`), `JavaCompileError[cannot find symbol]` |
+| Ruby | Runtime errors, quote styles | Exception name, e.g. `ZeroDivisionError` |
 
 Anything else falls back to hashing the last lines of stderr. To add a language, see `src/agentbox/error_signatures.py`.
 
@@ -273,10 +299,11 @@ The log format is documented in [docs/log-format.md](docs/log-format.md) and des
 
 ## Threat model
 
-- **Docker backend:** commands run as a non-root user in a container with no network, a read-only root filesystem, all Linux capabilities dropped, `no-new-privileges`, and CPU, memory and process limits. The signing key and logs stay on the host and are never mounted into the container.
-- **Local backend:** no isolation. The agent runs as your user and could read the signing key. Use it only for trusted experiments.
-- Docker isolation is strong but not a perfect boundary. Run untrusted agents in a disposable VM.
-- The log shows that records were not altered after writing. It does not prove the agent's intent, and it cannot see anything that bypasses the executor.
+- **Docker backend (Recommended & Primary Boundary):** Commands run as a non-root user in a container with disabled network (or explicit domain allowlisting via `EgressPolicy`), a read-only root filesystem, all Linux capabilities dropped (`--cap-drop ALL`), `no-new-privileges:true`, and strict CPU, memory and process limits. The signing key and logs remain strictly on the host and are never mounted into the container. Contract assertion commands (`assert_command`) execute in fresh, ephemeral containers with workspace mounted read-only (`:ro`).
+- **Local backend (Dev-Only / Untrusted-Unsupported):** The local backend provides **no isolation boundary**. Commands execute with your host user privileges and could access host files or the signing key. It is strictly intended for local development, unit tests, and trusted experiments. Untrusted workloads are explicitly **unsupported** on the local backend. As a defense-in-depth safeguard, contract `assert_command` execution is refused on the local backend unless `allow_unsafe_host_exec=True` is explicitly specified (which emits a high-severity security warning).
+- **File & Contract Assertions:** Host-side file assertions use `_safe_resolve()`, `_safe_read()`, and `_safe_lstat()` to reject symlinks, FIFOs, device nodes, and path traversal escaping the workspace. Test suite files are integrity-hashed prior to agent execution to detect and record any tampering.
+- **Defense in depth:** Docker isolation is strong but not an absolute hypervisor boundary. In production or multi-tenant environments, run Docker inside disposable virtual machines.
+- **Log integrity:** Hash-chained records and Ed25519 run receipts prove that records were not altered, reordered, or forged after execution; they do not prove model intent and cannot capture operations that bypass the registered execution harness.
 
 ## Limitations
 
@@ -284,7 +311,7 @@ The log format is documented in [docs/log-format.md](docs/log-format.md) and des
 - Detector thresholds are initial values, not calibrated on real agent traces.
 - Network egress: outbound connections are filtered by domain and recorded as signed audit events; full HTTP/HTTPS request and response payload capture is not recorded.
 - No semantic drift detection yet; detection is command and state based.
-- Error signatures cover Python, Node.js and Go only. Other languages use a generic fallback.
+- Error signatures cover Python, Node.js, Go, Rust, Java and Ruby. Other languages use a generic fallback.
 
 ## Roadmap
 
@@ -292,7 +319,7 @@ The log format is documented in [docs/log-format.md](docs/log-format.md) and des
 - [x] Docker sandbox backend
 - [x] Loop detection with hint feedback
 - [x] ReAct-style agent loop
-- [x] Stable error signatures for Python, Node.js and Go
+- [x] Stable error signatures for Python, Node.js, Go, Rust, Java and Ruby
 - [x] Truncation detection with a signed closing manifest
 - [x] Secret redaction before signing
 - [x] Output size cap and process-tree kill on timeout ([#22](https://github.com/Agentboxx-dev/Agentboxx/issues/22))
@@ -301,7 +328,7 @@ The log format is documented in [docs/log-format.md](docs/log-format.md) and des
 - [x] Validate against a live model ([#5](https://github.com/Agentboxx-dev/Agentboxx/issues/5))
 - [x] Network egress filtering proxy & connection audit events ([#24](https://github.com/Agentboxx-dev/Agentboxx/issues/24))
 - [x] Session replay UI ([#29](https://github.com/Agentboxx-dev/Agentboxx/issues/29))
-- [ ] First-class MCP tool-call recording ([#50](https://github.com/Agentboxx-dev/Agentboxx/issues/50))
+- [x] First-class MCP tool-call recording ([#50](https://github.com/Agentboxx-dev/Agentboxx/issues/50))
 - [ ] Semantic drift detector
 - [ ] Threshold calibration on recorded sessions
 

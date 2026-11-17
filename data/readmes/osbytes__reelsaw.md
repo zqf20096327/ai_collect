@@ -58,7 +58,8 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 **Editing**
 
 - **Workspace and clip editor** – source player and clickable transcript on the left, clips streaming in on the right as they render, with score, layout badge, post caption + hashtags copy and download. The editor has a live preview of the source with the clip's framing and captions and a multi-lane timeline (ruler, transcript words, clip range, layout track, layers) with zoom, snapping to words/scene cuts/playhead, nudge buttons, typed timestamps and I/O keys for frame-accurate trims. Split the layout track (⌘/Ctrl+B, the Split button, a double-click or the right-click menu) into sections that are Auto or forced to face/split/stack/fit/centre; drag the picture to re-centre a section; right-click for Set crop… (a box on the source, or `crop` / `crop2` / `contentCrop` on `update_clip`); "Use for all clips…" copies one clip's framing to the project (`apply_framing`). Add, drag and remove transitions; ⌘/Ctrl+Z / ⇧⌘Z undo and redo every edit.
-- **Deletes can be undone** – deleting a project or a clip (card ⋯, the selection bar, the editor, ⌘K) stops its work and hides it. The toast always offers **Undo**, **Delete forever**, and **See deletions**. Everything restorable lives on **Deleted** (account menu) as one selectable list: each row says when it was deleted and when it is deleted forever, and a compact bar restores the selection or deletes it forever. Storage still counts until you delete it forever (MCP `list_deleted` plus `purge_project` / `purge_clip` / `purge_asset` / `purge_layer_template`; `reelsaw purge-project`, `purge-clip`, `library purge`, `templates purge`). Minutes, hourly creates and first-video-free are never refunded. Re-picking moments keeps every clip you made or edited (text, bounds, framing, style, intro/outro) and only replaces untouched AI picks, which can be restored too. The same through MCP (`delete_clip`, `delete_clips`, `restore_project`, `restore_clip`, `list_deleted`) and the CLI (`reelsaw deleted`, `restore`, `delete-clip`, `delete-clips`, `restore-clip`, `purge`, `purge-project`, `purge-clip`).
+- **Act on many projects at once** – tick projects on the Projects page (hover a card, or tap the box on a phone; while something is selected a click adds or removes a card, Esc clears) and a compact bar retries the failed ones, re-renders their clips or deletes them. Every action asks first and shows its progress until the server is done. The selection is in the link (`#sel=`). The same through MCP (`delete_projects`, `retry_projects`, `rerender_projects`) and the CLI (`reelsaw delete-projects`, `retry-projects`, `rerender-projects`).
+- **Deletes can be undone** – deleting a project or a clip (card ⋯, the selection bars, the editor, ⌘K) stops its work and hides it. The toast always offers **Undo**, **Delete forever**, and **See deletions**. Everything restorable lives on **Deleted** (account menu) as one selectable list: each row says when it was deleted and when it is deleted forever, and a compact bar restores the selection or deletes it forever. Storage still counts until you delete it forever (MCP `list_deleted` plus `purge_project` / `purge_clip` / `purge_asset` / `purge_layer_template`; `reelsaw purge-project`, `purge-clip`, `library purge`, `templates purge`). Minutes, hourly creates and first-video-free are never refunded. Re-picking moments keeps every clip you made or edited (text, bounds, framing, style, intro/outro) and only replaces untouched AI picks, which can be restored too. The same through MCP (`delete_clip`, `delete_clips`, `delete_projects`, `restore_project`, `restore_clip`, `list_deleted`) and the CLI (`reelsaw deleted`, `restore`, `delete-clip`, `delete-clips`, `restore-clip`, `purge`, `purge-project`, `purge-clip`).
 - **Learns from your decisions** – what you accept, reject, cut, correct and edit is kept in a decision log (with the words or clip text it was about, the models that proposed it and a fingerprint of the source video) that outlives deleted projects: cuts you rejected are shown to the filler detector as examples to keep, and an export turns your decisions into eval cases (`reelsaw decisions export`, `export_decisions`, the `decisions` suite). Settings → Learning turns it off or forgets everything; deleting a project (or "Delete forever") can forget what it learned from that project, applied when it is purged, even automatically. It never leaves your instance. See [docs/specs/decision-log.md](docs/specs/decision-log.md).
 - **Command palette and bulk export** – ⌘K searches projects and clips with status, length and age, opens a row's actions (open, export, resume, retry failed clips, re-run refine, re-render, download, delete project or clip), takes pasted links (one project each, or opens the existing one) and offers retry-all shortcuts. "Export all" zips every rendered clip with platform-ready metadata: a paste-ready `.txt` (title, description, tags, caption), a `.youtube.json` (YouTube Data API v3 `videos.insert` body, private by default) and a `.tiktok.json` (Content Posting API `post_info`, `SELF_ONLY`) per clip, plus `manifest.json`, `clips.csv` (with rendered duration) and a README. Descriptions carry a timestamped link to the exact moment in the parent video.
 - **Share links** – a clip's ⋯ menu copies a link anyone can download it from without signing in (the project and selection menus do the same for the zip), for schedulers (Buffer, Metricool), Instagram's `video_url`, Zapier/Make file fields or a person. The link answers with the file itself (a plain 200, no redirect), serves the clip's latest render, lasts 90 days by default (`MEDIA_LINK_TTL_DAYS`; "Never" where `MEDIA_LINK_ALLOW_NEVER`), and can be revoked one at a time, per clip or project, or all at once under Settings → Share links. MCP `get_media_links`, `list_media_links`, `revoke_media_link`; `reelsaw media-links`. See [docs/specs/media-links.md](docs/specs/media-links.md).
@@ -340,7 +341,11 @@ The Users page lists accounts a page at a time, pending first, with whether each
 verified; search and the status, verification and flag filters (any flag, or one reason such as shared ip; a
 flag chip lists everyone flagged for that reason) run in the database and stay in the link. "Group by flag"
 splits the same list into sections, one per reason and then the unflagged (folded), each with its own count,
-paging and "Select all" over just that section; an account flagged twice is in both. Check rows (or "Select all" to take every match, not only the loaded page) to approve,
+paging and "Select all" over just that section; an account flagged twice is in both. Inside shared ip and
+signup burst the accounts are split again by sign-up address, busiest first, so you see which accounts came from
+which address and can select or suspend one address's accounts at once. "Group by address" does the same for the
+whole list: one section per address that more than one account signed up from, then the rest (folded); "Only this
+address" narrows the page to one. Check rows (or "Select all" to take every match, not only the loaded page) to approve,
 require approval again, suspend, reinstate or delete them together; each account goes through the same checks as one at a
 time (never yourself, never the last admin) and anything refused is listed with the reason. The same
 list and actions are `list_users` / `manage_users` over MCP and `reelsaw users` / `reelsaw users-bulk`
@@ -584,6 +589,8 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `export_project` | A download link for a zip of the project's rendered clips with YouTube/TikTok metadata; a share link that needs no sign-in by default for connectors signed in through OAuth. |
 | `report_issue` | A download link for an issue-report zip (the same file Report an issue in the app saves; admins may include instance-wide diagnostics). |
 | `retry_project` | Resume a failed or stuck project from its furthest completed stage: re-render unfinished clips if there are clips, else pick clips, refine or transcribe again. |
+| `retry_projects` | Resume several failed projects, each from its furthest completed stage (as retry_project). |
+| `rerender_projects` | Re-render every finished or failed clip of several projects (the Projects page selection bar's Re-render), for instance after a change to your default intro/outro. |
 | `refine_project` | Re-run refine steps on the existing transcript: entities (name spelling), disfluency (filler and repeat cuts), scenes (shot cuts); all three when steps is omitted. |
 | `reanalyze_project` | Pick clips again from the existing transcript (needs one), optionally with new settings. |
 | `search_assets` | Find assets. |
@@ -603,6 +610,7 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `apply_framing` | Make one clip's framing the whole project's, for a recording whose layout never changes (a slide deck with a webcam tile, a fixed camera): the clip's section at `at` (else its first framed section) gives the mode and its nudge / subject / crop, which become the project's reframe and reframeAdjust; every clip's own sections are cleared (unless keepOverrides) and the finished clips re-render. |
 | `apply_layer_template` | Write a template onto clips of one project (up to 200 clipIds, or all): its layers fitted to each clip's length, and the intro / outro it sets as each clip's own. |
 | `delete_project` | Delete one of your projects and all its clips; work in progress stops. |
+| `delete_projects` | Delete several of your projects in one step (the Projects page selection bar's Delete); work in progress stops. |
 | `purge_project` | Permanently remove a deleted project and its files so the storage is freed (find it with list_deleted or list_projects deleted: true). |
 | `restore_project` | Bring back a deleted project with its clips and files (find it with list_deleted or list_projects deleted: true); restoring a project that is not deleted changes nothing. |
 | `restore_clip` | Bring back a deleted clip or one a re-analyze replaced (list_deleted or get_project → replacedClips); it goes to the end of the project's clips. |
@@ -661,8 +669,8 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | --- | --- |
 | `reelsaw version [--json]` | running version, latest published release, how to upgrade |
 | `reelsaw releases [--json] [--limit n]` | published versions from GitHub (reelsaw.com/releases / list_releases) |
-| `reelsaw users [--q text] [--status s] [--verified yes\|no] [--flagged yes] [--flag shared_ip\|signup_burst\|disposable_email] [--held rule] [--in shared_ip\|…\|none] [--limit n] [--cursor c] [--json]` | list accounts a page at a time: role, status, email verified, sign-up date |
-| `reelsaw users --group flag [filter flags] [--limit n] [--json]` | the same list in sections, one per abuse flag then the unflagged, each with its count (Users page "Group by flag", list_users groupBy); --in <key> takes one section |
+| `reelsaw users [--q text] [--status s] [--verified yes\|no] [--flagged yes] [--flag shared_ip\|signup_burst\|disposable_email] [--held rule] [--ip address] [--shared-ip yes\|no] [--in shared_ip\|…\|none] [--limit n] [--cursor c] [--json]` | list accounts a page at a time: role, status, email verified, sign-up date |
+| `reelsaw users --group flag\|ip [filter flags] [--limit n] [--json]` | the same list in sections, each with its count (Users page "Group", list_users groupBy): flag = one per abuse flag then the unflagged, --in <key> takes one; ip = one per sign-up address shared by several accounts, busiest first, then the rest (--ip <address> or --shared-ip no takes one) |
 | `reelsaw users-bulk <approve\|hold\|suspend\|reinstate\|delete> (<email…> \| --all \| filter flags) [--reason text]` | act on many accounts (same as the Users selection bar and manage_users); hold sends active ones back to approval; filter flags as for `users` (--held "ip 203.0.113.0/24": accounts that sign-up rule held); delete is forever |
 | `reelsaw approve <email>` | approve a waiting account (when email is off or the admin is locked out) |
 | `reelsaw make-admin <email>` | promote an account to admin (approves it first if needed) |
@@ -686,6 +694,9 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw reanalyze <projectId> [--set key=value]…` | pick clips again from the existing transcript, optionally with new selection settings; clips made or edited by hand stay (same as projects.reanalyze and reanalyze_project) |
 | `reelsaw refine <projectId> [--steps entities,disfluency,scenes] [--vocabulary text]` | re-run refine steps on the existing transcript, then re-render (same as projects.refine and refine_project) |
 | `reelsaw delete-project <projectId> [--forget-decisions]` | delete a project, restorable like a clip (same as projects.delete and delete_project); --forget-decisions forgets its decisions when it is purged |
+| `reelsaw delete-projects <projectId…> [--forget-decisions]` | delete several projects (same as the Projects selection bar, projects.deleteMany and delete_projects) |
+| `reelsaw retry-projects <projectId…>` | resume the failed ones of several projects (projects.retryMany and retry_projects); others are skipped |
+| `reelsaw rerender-projects <projectId…>` | re-render every finished or failed clip of several projects (projects.rerenderMany and rerender_projects) |
 | `reelsaw export <projectId> [clipId…] --out <file.zip>` | write the zip of rendered clips with YouTube / TikTok metadata; the same conditions as the Export button and export_project (every picked clip must belong to the project, at least one rendered) |
 | `reelsaw create-clip <projectId> <startSec> <endSec> [--mode exact\|ai]` | add a clip from a time range of the source: exact keeps the bounds, ai picks the best moment inside them (same as clips.create and create_clip) |
 | `reelsaw update-clip <clipId> [--title t] [--hook t] [--caption t] [--start s] [--end s] [--rerender\|--no-rerender]` | edit one clip; a change burned into the video re-renders it unless told not to (same as clips.update and update_clip) |
@@ -886,30 +897,4 @@ short reason per failing check (`db`, `events`, `queue`, `workers`), and the log
 
 **Errors and product analytics (optional).** `SENTRY_DSN` turns on Sentry: the server reports
 every `error` or `fatal` log line that carries an error, tagged with the line's ids (5xx
-responses, unexpected MCP tool errors, a job's final failed attempt, a job the reconciler gave up
-on, failed emails and billing syncs, process crashes; a retry still to come is a warning); the web app reports
-render errors and unhandled rejections, but not the 4xx refusals it already shows the person. The
-worker heartbeat (`heartbeat-<WORKER_ID or role>`), the reconciler and the daily billing reconcile
-check in as Sentry cron monitors, so a stopped worker or a loop that no longer runs raises an alert.
-`SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE` (default 0) keeps a fully masked replay of the moments before
-a browser error. `POSTHOG_KEY` (and `POSTHOG_HOST`, EU cloud or self-hosted) turns on PostHog: the
-server sends sign-ups, approvals, email verification, project created / done / failed / cancelled,
-clip done / failed, jobs a person asked for, quota refusals, clip downloads and exports, MCP tool
-calls (tool, outcome, client name), and billing and abuse-flag events, each with the surface it came
-through (`web`, `api`, `mcp`, `cli`); the web app sends page views and a handful of product events
-(`lib/telemetry.ts`). Event properties are ids, counts, durations and names, never a title, an
-error message or other free text; people are identified by user id, role and plan only, with no
-autocapture and no session recording. Both are off unless set, the browser gets the public keys
-from `system.status`, and the SDK chunks are only requested when on. Prompts, transcripts and media
-never go through either (`apps/server/src/telemetry.ts`). Release images upload their source maps to
-Sentry when the release workflow has `SENTRY_AUTH_TOKEN` (`.github/workflows/release.yml`); no map
-ships in the image.
-
-
-```
-OTEL_ENABLED=true
-OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318   # OTLP/HTTP; traces + metrics
-OTEL_SERVICE_NAME=reelsaw
-```
-
-Sentry's OTLP endpoint takes traces and logs (`…/integration/otlp`, plus `OTEL_EXPORTER_OTLP_HEADERS`). Each pino line that passes its level is exported to `/v1/logs`, with the active trace id attached; prompt, transcript 
+responses, unexpected MCP tool errors, a job'

@@ -468,8 +468,10 @@ in one click.
   On a **Bitbucket** repo with a **linked Jira project**, the same row
   surfaces linked-Jira issues (`KEY-123`) as **mention-only** *Relates to*
   chips (Jira tickets aren't closed from PR text). Editing a PR peels any
-  trailing `Closes #N` / `Relates to #N` lines back into chips, so the chips
-  stay the single editor for the ref block.
+  trailing `Closes #N` / `Relates to #N` lines back into chips and writes
+  them back on save, so the chips are where you edit the ref block; a chip
+  adds no line when the app can tell the description already says as much
+  on a plain line of its own.
 - **Conflicts with the base**: every open PR keeps a strip under its
   header, so you always know whether it merges into its base. It reads
   **Checking for conflicts…** while the answers load, and **No conflicts with
@@ -1319,8 +1321,9 @@ review via its subscription login. The full list is under
   and the app says so when you post. On GitHub.com and Enterprise Cloud,
   attached images that GitHub hosts at its `user-attachments` links load
   in descriptions, comments, review threads, discussions and release notes,
-  and in most issue and pull request Previews while you write, through your
-  GitHub CLI sign-in, so they show in private repositories too.
+  and in Preview while you write a GitHub issue, pull request, comment,
+  review, discussion or release, through your GitHub CLI sign-in, so they
+  show in private repositories too.
 - **References are links**: `#123` and `@user` in a rendered description,
   comment, review thread, AI review, or release note open what they name. On
   GitHub, `#123` opens that issue or pull request in the app, whichever it

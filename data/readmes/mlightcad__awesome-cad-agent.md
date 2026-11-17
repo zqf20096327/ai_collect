@@ -439,6 +439,34 @@ Key Features
 - Recorded, replayable agent sessions with full tool-call transcripts
 - Editor collaboration workflow for viewport picks and cell references
 
+#### Blender Agent Skills (EL4CTEO)
+
+https://github.com/EL4CTEO/blender-skills
+
+Professional Blender workflows packaged as agent skills for AI coding agents, covering the full 3D production pipeline.
+
+Key Features
+
+- 28 skills spanning modeling, UVs, texturing, baking, rigging, animation, clothing, hair, environments, optimization, export, rendering, simulation, and QA
+- Built and verified for Blender 5.2 LTS+ (tested on 5.3), with every script executed in a real Blender instance
+- Multi-harness installer for Claude Code, Codex, OpenCode, Gemini CLI, GitHub Copilot, and Cursor
+- PBR materials, texture baking, geometry-nodes procedural modeling, and game-optimization workflows
+- Export pipelines for Roblox, Unity, Unreal, Godot, web, and USD
+
+#### Blender Skills (arjun988)
+
+https://github.com/arjun988/blender-skills
+
+A comprehensive pack of 94 Blender agent skills featuring an orchestration director, reference-image matching, and direct Blender MCP execution.
+
+Key Features
+
+- 94 specialized skills across modeling, production, technical, pipeline, art styles, horror packs, worlds, moods, and gameplay genres
+- `blender-director` skill that analyzes requests and routes them through the correct workflow automatically
+- Reference-image matching with camera match, geometry tiers, and a screenshot comparison loop
+- Executes directly inside Blender via the BlenderMCP addon; compatible with Cursor, Claude Code, Kiro, and Codex
+- Production standards including polycount budgets, naming conventions, asset optimization, and validation checklists
+
 ---
 
 ## 🧰 CAD Harness Plugins
@@ -536,6 +564,22 @@ Key Features
 - Replayable operation graphs with JSON export and replay
 - Semantic tags, STEP AP242/STL export, and editable FreeCAD package translation
 - Agent-oriented STEP/BREP reconstruction with stable entity IDs and measured acceptance gates
+
+#### sand3d
+
+https://github.com/Sandflow-ai/sand3d
+
+A Python library for writing 3D objects as short programs — profiles, solids, edits, frames, joints, and assemblies — over Blender's `bpy`, designed specifically for LLMs.
+
+Key Features
+
+- Compact API (~3,600 tokens) that fits entirely in a system prompt
+- Named parts, edges, and faces instead of hand-computed coordinates
+- 2–6× fewer tokens than Blender Python, CadQuery, or FeatureScript for the same part
+- Deterministic output — the same program builds the same mesh bit for bit
+- Profiles, solids, and edits (cut, join, hole, pocket, fillet, chamfer, shell), plus joints and assemblies
+- Export to GLB, URDF, USD, IFC, OBJ, and STL
+- Hugging Face datasets of sand3d programs across five 3D object sources
 
 ---
 

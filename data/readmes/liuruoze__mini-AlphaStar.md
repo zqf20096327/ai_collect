@@ -1,5 +1,7 @@
 # mini-AlphaStar
 
+**English** | [中文](doc/README_CHS.MD)
+
 ## Introduction
 
 The mini-AlphaStar (mini-AS, or mAS) project is a **mini-scale** version of the AlphaStar (AS) program. AlphaStar is the intelligent AI proposed by DeepMind to play StarCraft II. Note the mini-AS is a research project. It is not an official product of DeepMind.
@@ -8,214 +10,10 @@ The "mini-scale" means making the original AS's hyper-parameters **adjustable** 
 
 We referred to the "Occam's Razor Principle" when designing the mini-AS: **simple** is good. Therefore, we build the mini-AS from scratch. Unless the function significantly impacts speed and performance, we shall omit it. Meanwhile, we also try not to use too many dependency packages so that mini-AS should only depend on the PyTorch. In this way, we simplify the learning cost of the mini-AS and make the architecture of mini-AS relatively **easy**. 
 
-The [Chinese](doc/README_CHS.MD) shows a simple readme in Chinese;
-it now also carries a Chinese version of the 2026-11 branch note below
-(section 「2026-11 改进（评估分支说明）」).
+## Demo
 
-> ### Branch note (2026-11): two evaluation campaigns on this branch
->
-> This tree is an **evaluation branch**. It carries (a) the earlier *batch acting*
-> experiment and (b) a four-day SL/RL improvement campaign. Both produced results that
-> are partly positive and partly negative; both are reported as measured, not as claims.
->
-> #### Part 1 — batch acting (earlier work)
->
-> The performance result is **negative**. At the default production configuration
-> (15 Workers x 2 actors, 3x RTX 4090), batch acting is **6.3% slower** than local
-> inference: **107.03 vs 100.69 step/s**, measured over 1800 s each, with the model mode
-> (`eval`) and every other knob held identical. Batching only pays off when the actor
-> count is large: ~0.96x at 2 actors, ~2.55x at 24 actors.
->
-> One correctness result is **positive and independent of performance**. The distillation
-> term in `alphastarmini/core/rl/rl_algo.py::kl` was a *masked partial sum over the common
-> support*, not a KL: it can be negative, and on `action_type` it is **23.6x larger** than
-> the true KL (0.4999 vs 0.0212 on one real batch). A corrected, renormalized implementation
-> is available via `MAS_KL_MODE=renorm`; the default deliberately stays `legacy` until an
-> ablation decides it.
->
-> #### Part 2 — SL/RL improvement campaign (2026-11-02 → 11-04)
->
-> **Result in one line.** SL was raised from *"0% win rate, collects 2,676 resources"* to
-> *"4.3% win rate, collects 9,010 resources (95% of the official 2021 SL model)"*.
-> **It did not reach the official SL win rate (17.5%).** The RL loop was then brought up
-> from "never executed" to "runs, collects trajectories, trains, and logs every loss",
-> but its win rate did not move within the one-hour budget.
->
-> | Stage | Model | n | Win rate (Wilson 95%) | Collected | Killed | Army |
-> |---|---|---|---|---|---|---|
-> | baseline | old SL (1/60 data silently) | 20 | 0.0% | 2,676 | 145 | — |
-> | **SL (this branch)** | `SOUP_prior3` | **230** | **4.3% [2.4, 7.8]** | **9,010** | 1,439 | **21.2** |
-> | reference | official SL `sl_21-12-29` | 80 | **17.5% [10.7, 27.3]** | 9,494 | 1,811 | 14.0 |
-> | reference | official RL `rl_22-02-09` | 28 | 21.4% | 9,533 | 1,787 | — |
->
-> Two reference numbers were themselves corrected during this work: the official SL win
-> rate had been quoted as **7.1%** for many rounds; re-measuring the same checkpoint over
-> 80 games gives **17.5% [10.7, 27.3]**. The old 7.1% was a 28-game point estimate.
-> **Every "we caught up" claim made against 7.1% was therefore void** — see the errata list
-> in the local working notes (not shipped with this repository, see the note below).
->
-> **Three structural defects were found and fixed** (each one explained a symptom that had
-> been mis-attributed to hyper-parameters for several rounds):
->
-> 1. **Silent data down-scaling.** `SIMPLE_TEST = not P.on_server` plus
->    `replay_files[:2]` meant that forgetting one environment variable made a 2.5-hour
->    training run use **1 replay out of 60** (`train_set = 120` sequences). Fixed by making
->    smoke mode explicit (`MAS_SL_SMOKE=1`) and printing `[SL-config] files=… smoke=…` on
->    the first screen.
-> 2. **Action distribution distorted by frame sampling.** The converter samples by a fixed
->    frame stride (~every 20 frames) while the agent issues one command every 8 frames, so
->    most sampled frames are labelled `no_op`: the training data is **81.0% `no_op`,
->    2.7% `Build_Pylon`, 1.1% `Train_Probe`**, while the official model plays with
->    **0% `no_op`, 29.8% `Build_Pylon`, 21.1% `Train_Probe`**. The model was a faithful
->    mirror of its data: it idled 99.9% of the time. Fixed by **action re-weighting**
->    (importance weights `w[a] = clip((target[a]/data[a])**1.0, 0.1, 50)` on the
->    `action_type` head), which brought live `no_op` from **37% to 6.7%**.
-> 3. **Weight checkpoint selection by validation accuracy was inverted.** `val action acc`
->    rewards conservatism: epoch 3 had val 0.44 but idled only 50% of the time, epoch 10
->    had val 0.83 but idled 96.8%. Model selection must use **behaviour** (killed, idle
->    ratio, win rate), not action-classification accuracy.
->
-> **One zero-cost trick that worked twice: weight-space averaging.** Averaging the weights
-> of adjacent epochs from the same run (`experiments/_avg_models.py`) raised the kill
-> ceiling from 2,550 to 6,900 and the win rate from 1.9% to 5.1% at n=158 (and 4.3% at
-> n=230 after more samples). Averaging *more* snapshots (5 instead of 3) is worse: the
-> aggressive epoch gets diluted.
->
-> **Negative results are listed too**, because they cost the most time: more data
-> (3.7x) hurt the army; training longer made the policy conservative again; attack
-> re-weighting (1.5x and 3.0x), `units/location` re-weighting (10x/5x), filtering replays
-> by combat density, and fine-tuning from the averaged model all failed. See
-> `doc/IMPROVEMENTS_2026_11.md` §5 for the complete table, and the local working notes
-> (`ERRATA.md` — not shipped with this repository) for every claim that was later withdrawn.
->
-> #### Part 3 — RL loop status: runs, and the bug that looked like a deadlock
->
-> The A3C loop (`rl_vs_inner_bot_mp`) had **never been executed** before this campaign.
-> Bringing it up required **eight** fixes: `MAS_RL_INIT_MODEL` (it silently loaded a
-> deliberately-broken SL checkpoint), a configurable win-rate window, a zero-row statistics
-> crash, a heartbeat, a spawn/subprocess constants mismatch, un-gated debug prints, a
-> per-episode frame cap that shrank with the time budget, and — the decisive one — the
-> result consumer killing itself.
->
-> **What a clean run looks like now (soak #5):**
->
-> ```
-> 1503.9 s (25 min)   4/4 processes alive   12 episodes completed
-> [agent_4] steps=5720 | 吞吐 3.80 step/s (mode=local)
-> Parameter_Server end:
-> == done ==                                 <- exits on its own at the wall clock
->
-> tensorboard:
->   loss/learner_0                     n=204   last=-0.0028
->   learner_0/loss_upgo_               n=204   -0.0029 ~ 0.1799
->   learner_0/all_kl_loss_action_type_ n=204    0 ~ 0.0009
->   winrate/every_2_episodes           n=3      0.0 / 0.0 / 0.0
->   meanpoints/every_2_episodes        n=3      0.0344 -> 0.1781 -> 0.1750
-> ```
->
-> **The decisive bug (#57) was not a lock and not CUDA.** `Parameter_Server` was written as
->
-> ```python
-> outcome = q_winloss.get(timeout=600)     # queue.Empty -> fall through to `except` -> exit
-> ```
->
-> An episode takes **800–1300 s** (2250 env steps at ~2–4 steps/s). So the only consumer of
-> results **declared itself dead after 10 minutes**, while the actors kept playing. Results
-> piled up (`q_winloss = 6, 7, 8 …`) and nothing was ever written to tensorboard. On the
-> surface this is indistinguishable from a deadlock — which is why the first two diagnoses
-> went to locks and shared memory and were both wrong. Fixed by treating `queue.Empty` as
-> "this episode has not finished yet" and continuing as long as the parent process is alive;
-> the real exit conditions are the sentinel from the reaper thread and parent death.
->
-> Two observation bugs made this hard to see, and both are worth recording:
->
-> * **#53** — `python run_rl.py > log.txt` gives the Python parent *and* 6–8 SC2 children
->   the same file descriptor with independent offsets, so they **overwrite each other**.
->   "The heartbeat stopped at t = N" was partly an artefact. Use `>>` or one file per process.
-> * **#54/#55/#56** — the diagnosis only converged after adding three channels that share
->   no fd: a heartbeat file, a per-actor step trace, and `faulthandler`. The actor trace is
->   what proved "the actors are fine, the *consumer* is gone"; `faulthandler` writing zero
->   stacks is what ruled out a C-level crash.
->
-> **Soak status at hand-off — one clean run, one regression, stated together:**
->
-> * **soak #5: 25 minutes clean** — 1503.9 s, 4/4 processes, 12 episodes, `q_winloss`
->   never accumulated, `== done ==` on its own.
-> * **soak #6 (the 50-minute follow-up): froze at step 200.** All six actor traces stopped
->   at the same step, the heartbeat file stopped at t = 60 s, **all 5 processes were still
->   alive and `faulthandler` recorded zero stacks**. That is a genuine global stall, not a
->   logging artefact, and it is a *different* failure from #57 (there the producers kept
->   running while the consumer had died; here the producers stopped too).
->
-> So a 30–60 minute soak is **not proven**. What is proven is that the algorithm chain is
-> correct and that a 25-minute run can now complete end-to-end with full statistics.
-> The next diagnostic step is `py-spy dump` on the stalled process group — that was the one
-> tool missing here, and it would identify the blocked frame in seconds.
->
-> **Win rate did not move** (0/12). With a 4.3% starting policy, 12 losses are expected 59%
-> of the time, so this is not evidence of failure — but it is not evidence of learning either.
-> `meanpoints` rising 0.034 → 0.178 over the same 12 episodes is a live reward signal, not a
-> proven improvement.
-
-> #### How this was done (human-in-the-loop, multiple agents)
->
-> This campaign was run by **one human supervisor directing several LLM agents**, not by a
-> single autonomous model:
->
-> | Role | Who | What they actually did |
-> |---|---|---|
-> | Supervisor / repository owner | **Ruo-Ze Liu (`liuruoze`)** | Set the goal each round, supplied the official 2021/2022 checkpoints and the missing 30 replays, corrected wrong directions (e.g. pointed at the official model release when an agent was guessing), enforced a "reflection → plan → log" discipline, and rejected claims that were not backed by measurements |
-> | Executor (this campaign) | **DeepSeek-V4.1-Flash** | Ran the experiments end-to-end: static audits, training/evaluation jobs, instrumentation, and the write-ups numbered **#23–#52** in `BATCH_ACTING_EXECUTION_LOG_DS12.md` |
-> | Code review (earlier rounds) | **GLM** (#1–#22), **Kimi 3.1 Pro**, **MiniMax H3.1**, **space-bunny** | Reviewed diffs, challenged conclusions, and in several cases caught errors that the executor had already written down as conclusions (see `ERRATA.md`, a local working note not shipped here: 78 entries, including 5 that were withdrawn by the executor itself) |
->
-> Two habits made the difference, and both came from the supervisor: **(a)** every claim must
-> carry a falsifiable criterion and a measured number, and **(b)** every withdrawn claim goes
-> into an errata file rather than being quietly deleted. Most of the "discoveries" in this
-> branch were preceded by a wrong guess that the errata records.
->
-> The working notes — 30+ documents of run logs, plans, reviews and `ERRATA.md` (the
-> errata list cited above) — are deliberately **kept out of this repository**; they contain
-> machine-specific paths. Any `ERRATA.md` / `BATCH_ACTING_EXECUTION_LOG_*.md` reference in
-> this branch points to those unpublished notes, not to a file you can open here.
-> Treat every number above as **one measured snapshot on one machine** (4x RTX 4090,
-> 128 cores), not as a reproduced benchmark.
->
-> Acceptance tests / benchmarks / soak orchestration live in **[`experiments/`](experiments/README.md)**
-> and are **not** part of the library.
->
-> #### Reproducing the reported SL number
->
-> ```bash
-> # 1) train: 20 replay files x 2 epochs, action re-weighting on, 30 replay-epochs total
-> MAS_ON_SERVER=1 MAS_SL_MAX_FILES=20 MAS_SL_WORKERS=0 MAS_SL_EPOCHS=2 \
-> MAS_SL_ACTION_REWEIGHT=1 MAS_SL_PRIOR_EXP=1.0 \
-> CUDA_VISIBLE_DEVICES=0 python run_sl.py --path1 ./data/replay_data_v3/
->
-> # 2) average the checkpoints of the same run (zero extra training)
-> python experiments/_avg_models.py \
->   --a model/<run>_ep01.pth --b model/<run>_ep02.pth --more model/<other-run>_ep03.pth \
->   --out model/BEST_SL.pth
->
-> # 3) evaluate, 4 shards x N games, native outcome only
-> MAS_ON_SERVER=1 python experiments/_eval_winrate.py \
->   --model model/BEST_SL.pth --games-per-shard 15 --shards 4 --gpus 0,1,2,3
-> ```
->
-> #### Reproducing the RL loop
->
-> ```bash
-> # one hour, 8 actors, explicit SL initialisation, heartbeat every 60 s
-> MAS_ON_SERVER=1 MAS_RL_INIT_MODEL=model/BEST_SL.pth \
-> MAS_MAX_TIME=3000 MAS_ACTOR_NUMS=2 MAS_PARALLEL=4 \
-> MAS_STATIC_NUM=4 MAS_HEARTBEAT_SEC=60 MAS_QUEUE_TIMEOUT=900 \
-> MAS_GPU_LIST=1,2,3 CUDA_VISIBLE_DEVICES=0,1,2,3 python -u run_rl.py
-> ```
->
-> `MAS_RL_INIT_MODEL` is **not optional in practice**: without it the loader picks the
-> lexicographically last `sl_*.pth` in `model/`, which during this campaign was a
-> deliberately broken checkpoint.
-
-Below 4 GIFs are mini-AS' trained performance on Simple64, supervised learning on 50 expert replays.
+Four GIFs of mini-AS on Simple64 after supervised learning on 50 expert replays, from the v_1.09 era;
+they are not the model in the update below.
 
 <p float="left">
   <img src="https://github.com/liuruoze/Useful-Big-Resources/blob/main/gifs/start.gif" width="360" />
@@ -232,6 +30,134 @@ Below 4 GIFs are mini-AS' trained performance on Simple64, supervised learning o
 **Left:** The agent's 1st attack.      **Right:** The agent's 2nd Attack.
 
 ## Update
+
+This push touches **supervised learning (SL)** only: the score, the training method, and what differs from
+v_1.09. Reinforcement learning is untouched and has no usable model yet.
+
+The change is in the **training data**: 5 human replays are mixed into the machine data. Architecture,
+hyper-parameters and evaluation are unchanged; the strict win rate goes from 31.2% to **45.6%** (+14.4 points).
+
+The full record is in [IMPROVEMENTS_2026_11.md](doc/IMPROVEMENTS_2026_11.md), the conclusions and
+the evaluation gates are in [CONCLUSIONS.md](docs/exp/CONCLUSIONS.md), and the naming rules are in
+[NAMING.md](docs/exp/NAMING.md).
+
+Two win verdicts. **Strict**: `raw_reward == +1`, games that stop at the step cap do not count. **Lenient**:
+`outcome == 1`, or `outcome == 0` with `killed_points > 4000`, used to line up with the 2021 documents and
+older records. Numbers from different conditions (difficulty, steps, seeds) cannot be subtracted.
+
+Results below. Five objects: the v_1.09 release weight, B0 retrained with the new code, the two recipes,
+and the best weight of this round; each row states its own condition.
+
+Terms: a recipe is one fixed combination of data, hyper-parameters and training procedure; rerunning the
+same recipe with another seed gives one run. Games is the number played under that condition.
+
+Object | Training data | Condition | Games | Strict win | Lenient win | Note
+------------ | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
+v_1.09 release weight | 90 human replays (2021) | D1 / 40k | 20 | 15% | 40% | left-top 7/8 = 88%, matching its documented 0.85
+same | same | D2 / 40k | 10 | 0% | 20% | both lenient wins stop at the step cap
+same | same | D3 / 40k | 20 | 0% | 0% | 55-61 supply at 9 minutes, overrun by the first push
+`Base` (B0) | the same 90 replays, retrained with the 2026 code | 30k / seed 3038 only | 4 | 0% | 25% | 4 games on seed 3038 only, from different snapshots, not a recipe score
+`ExpertGuided` (self-play plus rule-expert data) | 30 self-play + 30 rule-expert replays (DAgger) | D3 / 40k | 80 | **31.2%** | 62.5% (40 games; that run's strict win is 42.5%) | 4 runs pooled; lenient can only be computed on the single run `cwB_ep4`
+`HumanHybrid` (that data plus human replays) | the same + 5 human replays | D3 / 40k | 316 | **45.6%** | 51.1% (180 games) | 15 runs pooled, Wilson [40.2, 51.1]; lenient computed on the 6 no_op-only runs, whose strict score is also 45.6%
+`HumanHybrid`, best weight | the same | D3 / 40k | 39 | 64.1% | 66.7% | selection bias, an asset rather than a recipe score
+
+The two lenient cells come from the subset whose raw output is still on disk; the bracket is the game
+count, and they are **not the same games** as the full strict totals (316 and 80).
+
+Only the difficulty 3 rows can be compared: v_1.09 is 0/20, `ExpertGuided` 31.2%, `HumanHybrid` 45.6%.
+
+Training has three steps: build the base with DAgger, mix in human replays, train with the settings at the
+end of this section.
+
+DAgger (Dataset Aggregation) lets the current policy run, collects the states it actually reaches, has the
+expert label the actions, and aggregates the new data into the training set; repeat for a few rounds.
+Training only on expert trajectories makes the model drift into unseen states once it plays on its own, and
+the error grows with the number of steps.
+
+The expert is the rule script v5 (`experiments/_rule_expert_v5.py`), not a human.
+
+It is split into decisions and placement. Plain Python with numpy only; it reads the raw observation and
+emits raw actions, so it can run inside the DAgger collector.
+
+Each frame it computes minerals, gas, supply, supply cap and idleness with `summarize()`, then emits one
+action by fixed priority: supply, first Pylon, probes, gateways, units, defence, attack, mining.
+
+Placement does not use fixed coordinates. The whole building footprint is checked against
+`placement_grid`; a Protoss building must also sit in a Pylon power field, on the same height level, on
+explored ground and clear of minerals. An ordered site goes on cooldown and a blacklist so a rejected
+command is not re-sent.
+
+Each game draws a strategy from its seed (fast rush, two gate, heavy gate, macro, harass, turtle, late),
+with probe count, gateway count and attack threshold jittering inside a range, so the 30 games are not the
+same game.
+
+Strictly DAgger iterates; here it is **round 1** only: 30 bot self-play games, 21,983 frames; 30 rule-expert
+games, 9,578 frames; 31,561 frames in total.
+
+The expert frames drop **`Cancel_Last_quick`** (8.5% of them), which otherwise teaches a cancel-and-reissue
+loop. Training requires `MAS_DAGGER=1`; without it the trainer refuses to start.
+
+### The five versions of the rule expert
+
+Expert strength sets the quality of the expert frames, which is **the ceiling of DAgger**. From v1 to v5 the
+changes sit in the decision layer and the placement layer.
+
+The last column holds whatever each version could measure: a win rate once it could play, a build-site
+dedup rate before that (v1 0.086, v2 0.018, neither a win rate).
+
+Version | Play style | Decisions | Randomisation | In a real game
+------------ | ------------- | ------------- | ------------- | -------------
+v1 | minimal intervention, acting only on a clear gap | takes a hand-built summary (supply, cap, probes, Pylons, gateways, army, minerals) and defines 5 actions: Pylon, gateway, stalker, zealot, attack; build sites come from a fixed template in the collector | none | in practice only 1-2 of them ever fire, degenerating into a Pylon loop; build-site dedup rate 0.086
+v2 | same as v1, plus dynamic placement | the decision logic stays v1; adds `LocationPicker`: anchor at the Nexus (19,23), ring candidates at radius 4-12, avoid tiles occupied within 2, rotate by tick | none | interface and self-test only, never wired into the collector; the dedup rate in the data is still 0.018
+v3 | follows PiGBot's B2GM opening table, by default 2-Gate Expand on one base | step through the table: supply, build order, probes, units, fallback Pylon, attack; placement uses the terrain height map and the Pylon power field | none | stuck on the assimilator step, 6,000 steps with no intervention; build failures fall from 89.8% to 6-7%, but difficulty 3 is still 0/5
+v4 | drops the table for a pure Zealot rush | acts every frame: supply and first Pylon, probes, gateways, units, defence, attack, mining; pulls back when the enemy is within 8 tiles; cancels the learner's queued probes to free minerals | each game draws a strategy from its seed (fast rush, two gate, heavy gate, macro, harass, turtle, late), with probe count, gateway count and attack threshold jittering inside a range | the goal is to beat difficulty 1 on its own with the learner doing nothing
+v5 | same as v4 | same as v4 | same as v4, only the fast-rush branch is retuned: 15-18 probes, 3 gateways, attack threshold 9-12, no retreat refresh; the Zealot hold window goes from 6-9 frames to 3-6 | the current default (`MAS_EXPERT_IMPL=v5`); the expert frames here come from it
+
+This round uses **v5**; its code is almost identical to v4, only the fast-rush branch was retuned.
+
+Second, the human data: 5 replays from the 2021-11-21 batch, 4,545 frames, 12.6% of all training frames.
+Of these, 4,247 are **`no_op`** and 298 are action frames. Keeping only the `no_op` frames (11.86%) scores the
+same, so that part is what does the work.
+
+Training settings are **identical** to `ExpertGuided`; only the data differs.
+
+Item | Value
+------------ | -------------
+architecture | the one in v_1.09, 128 entities
+trainer | `run_sl.py -p1`
+epochs | 4
+learning rate | 1e-3
+gamma | 0.2
+step size | 3
+batch | 24
+sequence length | 4
+train / validation split | by game, 60 files for training and 5 for validation
+class weights | `train_probe` 0.15, `build_pylon` 8, `build_gateway` 8, `build_nexus` 0.1, `train_zealot` 4
+runs | 15 seeds, about 31 minutes each, score pooled over every game of every run
+
+Control: the same 5 replays with action frames only, **32.4%** over 179 games, no different from the 31.2%
+baseline.
+
+Reproducing takes two steps. Train one run:
+
+```bash
+DATA=$PWD/data/replay_data_a3nc_h5 MAS_ON_SERVER=1 MAS_DAGGER=1 \
+MAS_SL_LR=1e-3 MAS_SL_EPOCHS=4 \
+MAS_SL_CLASS_WEIGHTS="train_probe=0.15,build_pylon=8,build_gateway=8,build_nexus=0.1,train_zealot=4" \
+  bash experiments/train_bvb_m30.sh <tag> 4 <seed> <gpu>
+```
+
+Second, evaluate the 20 standard seeds:
+
+```bash
+OFF_DIFFICULTY=3 OFF_GAME_STEPS=40000 \
+  bash experiments/run_p8_eval.sh <tag> $(seq 3038 3057)
+```
+
+Note: **`MAS_RL_INIT_MODEL` is required**. Without it the loader takes the lexicographically last `sl_*.pth`
+in `model/`, which in this round is a deliberately broken checkpoint.
+
+## Version
 
 This release is the "v_1.09" version. The main changes are as follows:
 
@@ -468,7 +394,6 @@ The [An Introduction of mini-AlphaStar](https://arxiv.org/abs/2104.06890) is a t
 ## Rethinking
 
 The [Rethinking of AlphaStar](https://arxiv.org/abs/2108.03452) is our thinking of the advantages and disadvantages of AlphaStar.
-
 
 ## Paper
 

@@ -13,6 +13,8 @@
 
 Glance at the notch to see what your agents are doing and how much provider allowance remains. Send a quick message without opening the workspace, reply to a specific session when it is idle, or talk with your agent through continuous **Voice mode**. Expand into the full workspace when you want to inspect files, review changes, answer an approval, or manage your bots and tasks.
 
+Session activity remains visible in the sidebar and notch when you switch conversations, including pinned and project sessions.
+
 In-chat approvals, questions, and input requests keep their actions compact; errors use the same clear callout treatment.
 
 When Hermes supplies edit previews, completed replies show a changes card with expandable file diffs. These previews can omit files or lines and are not a complete working-tree diff.
@@ -633,6 +635,8 @@ Short drafts keep the composer compact; it grows as text wraps.
 Background processes listed for the current chat can be stopped after confirmation,
 even when the general activity capability probe is unavailable. Process output
 continues refreshing after the turn finishes; Stop targets only that session's process.
+The composer disclosure shows the running count and the latest running process output;
+expand it to inspect process states and stop a running process.
 
 The **Effort** control uses Hermes' model catalog to offer inputs for the selected
 provider and model. Unsupported or unverified availability is shown in place;
@@ -949,5 +953,4 @@ The session inspector's **Browser** tab is a real Chromium browser that you and 
 - **Embedded pages.** The cursor also follows observed pointer and focus events in supported embedded frames, including cross-origin frames. Page changes made without a pointer or focus event show browser activity without a fabricated cursor position. When a frame cannot be mapped, its cursor events are omitted while browsing continues.
 - **Hermes can show inspector tabs.** Hermes' `focus_pane` (files, terminal, review) and the `herm_inspector` tool from the `herm` plugin (`Sources/Herm/Resources/HermesPlugins/herm`) expand the inspector to the requested tab in that chat.
 - **Use Herm's browser** (Settings → Browser, on by default) opens pages Hermes shows (`desktop_preview`) in the Browser tab and blocks terminal `open <url>` or `open -a <browser>`, so "open the page" lands in Herm. Off, those pages open in your default browser; Hermes' browser tools still use Herm's browser.
-- **Take over and hand back.** **Take over** pauses Herm so you can handle a login or captcha yourself. **Hand back to Herm** then tells it to continue from that page. While Herm is working, your clicks and typing are ignored so they can't interfere with it. While Herm is in control, an accent glow slowly swells and ebbs around the page edge and a "Herm is using your tab" pill floats at the bottom. Each Herm click sends a wave out from its cursor that briefly lights the page edge.
-- **Page dialogs** (alerts, confirmations, prompts, "Leave this page?"
+- **Take over and hand back.** **Take over** pauses Herm so you can handle a login or captcha yourself. **Hand back to Herm** then tells it to continue from that page. While Herm is working, your clicks and typing are ignored so they can't interfere with it. While Herm is in 

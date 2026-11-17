@@ -23,10 +23,10 @@ tinybrain 是一个从零写起的中文小模型项目。和 [MiniMind](https:/
 
 ## 现状
 
-2026-11-15：代码、四档预训练数据、整套后训练和评测都写完了，有测试；整条链（预训练 → 退火 → SFT → agent RL → RLAIF → 专家 → RLVR → MOPD → 评测）在一个 2300 万参数的演示模型上跑通过。**训练好的权重还没有发布。**
+2026-11-16：代码、四档预训练数据、整套后训练和评测都写完了，有测试；整条链（预训练 → 退火 → SFT → agent RL → RLAIF → 专家 → RLVR → MOPD → 评测）在一个 2300 万参数的演示模型上跑通过。**训练好的权重还没有发布。**
 
-- **medium**（4.99 亿参数）正在预训练：训到约 10.6 亿词时验证损失 2.75。small 训到同样的词数时是 3.01，medium 低了 0.26。
-- **small**（1.67 亿参数）训到约 33 亿词（第 100,400 步）时验证损失 2.85，已经走到曲线的平缓段，暂停了。
+- **medium**（4.99 亿参数）正在预训练 base 档：训到约 61 亿词时验证损失 2.50。small 训到 74 亿词才到 2.76，medium 用更少的数据低了 0.26。
+- **small**（1.67 亿参数）也在接着训 base 档：训到约 74 亿词（第 226,400 步）时验证损失 2.76，和按之前的曲线预测的一致；照这条曲线，训完整个 base 档（202 亿词）约 2.67。
 - 现在的存档只会续写，还不会对话。用 `tinybrain serve` 打开[聊天网页](#聊天网页)，在「续写」里能看到它学到了什么。medium 训完会接着做后训练，到时候发布权重和评测分数。
 
 ---
@@ -36,6 +36,7 @@ tinybrain 是一个从零写起的中文小模型项目。和 [MiniMind](https:/
 - [现状](#现状)
 - [要花多少](#要花多少)
 - [快速开始](#快速开始)
+- [完整训一遍 small](#完整训一遍-small)
 - [聊天网页](#聊天网页)
 - [代码结构](#代码结构)
 - [模型](#模型)
@@ -48,6 +49,7 @@ tinybrain 是一个从零写起的中文小模型项目。和 [MiniMind](https:/
 - [推理](#推理)
 - [演示结果](#演示结果)
 - [还没做的](#还没做的)
+- [联系与赞助](#联系与赞助)
 - [许可证](#许可证)
 - [参考](#参考)
 
@@ -105,7 +107,7 @@ tinybrain serve           # 聊天网页：浏览器打开 http://127.0.0.1:8001
 - 换更大的数据：`--data data/pretrain_mini.parquet`；换尺寸：`--preset medium`（写到 `out/medium/`）。
 - 显存不够：`--batch-size 8 --grad-accum 2`，等效的批大小不变；中断了加 `--resume` 接着跑。
 - 日志每行都有损失、梯度范数、速度和剩余时间；想看曲线用 `tinybrain tensorboard`（见「N 卡训练」一节）。
-- 其余阶段（退火、领域专家、MOPD、RL）见[后训练](#后训练)。
+- small 从预训练到评测按顺序怎么跑、要开几个终端，见[完整训一遍 small](#完整训一遍-small)；每个阶段的原理见[后训练](#后训练)。
 - 只想看整条链能不能跑：`tinybrain demo` 在一个 2300 万参数的小模型上把所有阶段跑一遍（M4 Max 上约 3.3 小时）。
 - 没装成命令也没关系：`tinybrain pretrain` 就是 `python -m training.train_pretrain`，每个命令对应的模块见 `tools/cli.py`。
 
@@ -132,6 +134,68 @@ tinybrain demo         在一个 2300 万参数的小模型上把整条链跑一
 tinybrain tensorboard  把训练日志同步成 TensorBoard
 tinybrain judge-check  检查评审模型打分靠不靠谱
 ```
+
+---
+
+## 完整训一遍 small
+
+快速开始只跑了预训练和 SFT。下面是 small 的整条链：预训练 → 退火 → SFT → 强化学习 → 评测，按一张 RTX 5070 Ti 16GB 写。
+
+**要开几个终端**
+
+| 终端 | 跑什么 | 什么时候要开 |
+|---|---|---|
+| 1 | 主线：下面的命令按顺序一条条跑 | 一直 |
+| 2 | 评审模型（给 RLAIF 和评测打分） | 第 4、5 步 |
+| 3（可选） | `tinybrain tensorboard` 看曲线 | 想看的时候 |
+
+**终端 1：主线**
+
+```bash
+# 0. 下数据
+modelscope download --dataset caiwangzsnm/tinybrain-dataset pretrain_mini.parquet \
+    posttrain/sft_small.parquet posttrain/rl_small.parquet posttrain/eval_tasks.parquet --local_dir data
+mv data/posttrain/* data/
+tinybrain benchmarks prepare      # 下载 C-Eval、CMMLU、GSM8K，只在本地评测用
+
+# 1. 预训练：mini 档 50 亿词 → out/small/pretrain                    5070 Ti 上约 20 小时
+tinybrain pretrain --data data/pretrain_mini.parquet
+
+# 2. 退火 → out/small/anneal                                          约 2 小时
+#    先把 SFT 语料切成「整段都算损失」的对话数据，再用九成预训练数据 + 一成对话数据训 0.1 轮
+tinybrain prepare --chat --train-on all --input data/sft_small.parquet --out data/tokens/chat-all
+tinybrain pretrain --init out/small/pretrain/ckpt.pt --data data/pretrain_mini.parquet:0.9,data/tokens/chat-all:0.1 \
+    --epochs 0.1 --warmup-steps 0 --lr-mult 0.1 --final-lr-frac 0
+
+# 3. SFT：从退火出发 → out/small/sft
+tinybrain sft
+
+# 4. 强化学习：agent RL + RLAIF，从 SFT 出发 → out/small/rl（先把终端 2 开起来）
+tinybrain rl --judge-url http://<评审机地址>:8080/v1 --judge-workers 1 --judge-timeout 600
+
+# 5. 评测：留出题 + C-Eval、CMMLU、GSM8K
+tinybrain eval out/small/rl/ckpt.pt --tasks data/eval_tasks.parquet --bench ceval cmmlu gsm8k \
+    --judge-url http://<评审机地址>:8080/v1 --judge-workers 1
+```
+
+第 3 到 5 步的时间还没在显卡上量过。每个阶段跑完都可以先看看效果：预训练和退火之后用 `tinybrain generate`，SFT 之后用 `tinybrain chat --demo`。
+
+**终端 2：评审模型**
+
+评审模型是 Qwen3.8-27B，16GB 的显卡装不下，要放在另一台机器上，终端 1 通过局域网访问它：
+
+- **Apple 芯片的 Mac**（内存 32GB 以上）：4-bit 版约占 15GB。它一次只算一个请求，所以终端 1 里用 `--judge-workers 1`。`--host 0.0.0.0` 会让局域网里的其他机器都能访问，只在自己的网络里这样开。
+
+  ```bash
+  pip install mlx-lm
+  python -m mlx_lm.server --model mlx-community/Qwen3.8-27B-4bit --host 0.0.0.0 --port 8080
+  ```
+
+- **40GB 以上的显卡**：用 vLLM 跑 FP8 版，能同时处理很多请求，终端 1 里的 `--judge-workers 1` 可以去掉（默认 16）。
+
+**已经有预训练存档**
+
+跳过第 1 步，从第 2 步开始：把 `--init` 换成你的存档，`--data` 里的预训练数据换成你预训练时用的那份。`--epochs 0.1` 是按整份数据算的，base 档就是 20 亿词；嫌长可以改成 `--steps 10000`（每步 16 × 2048 词，共约 3.3 亿词，5070 Ti 上一个多小时）。
 
 ---
 
@@ -509,6 +573,7 @@ tinybrain rl --judge-url http://localhost:8000/v1        # RL：从 sft 出发�
 预训练最后一段（默认最后 10% 的步数）换数据接着训：九成预训练数据 + 一成对话格式的数据（整段都算损失），学习率从 0.1 倍降到 0。用的还是 `train_pretrain.py`：
 
 ```bash
+tinybrain prepare --chat --train-on all --input data/sft_small.parquet --out data/tokens/chat-all    # 一成的对话数据：整段都算损失
 tinybrain pretrain --init out/small/pretrain/ckpt.pt --data data/pretrain_mini.parquet:0.9,data/tokens/chat-all:0.1 \
     --epochs 0.1 --warmup-steps 0 --lr-mult 0.1 --final-lr-frac 0          # 给了 --init 默认写到 out/small/anneal
 ```
@@ -705,6 +770,10 @@ CUDA 上生成走静态缓存：键值缓存按最大长度预先分配，每一
 - 诗词格律换成平水韵的字表。
 
 ---
+
+## 联系与赞助
+
+训练用的算力是我自己出钱租的。如果你愿意赞助算力，或者想合作，欢迎写信到 [3995756625@qq.com](mailto:3995756625@qq.com)；赞助方会写进 README 和之后的视频。提问和反馈请直接开 [issue](https://github.com/logitcai/tinybrain/issues)。
 
 ## 许可证
 

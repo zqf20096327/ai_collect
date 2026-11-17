@@ -56,7 +56,7 @@ Rig installs the cockpit into a Claude Code project:
   for context injection, enriched with graphify relationship data (god nodes,
   module communities, dependency paths) when available
 
-> **Tested against:** rtk 1.2.0 · jcodemunch-mcp ~1.108.x · graphify 0.9.104 · headroom 0.43.1 · superpowers 7.0.2
+> **Tested against:** rtk 1.2.0 · jcodemunch-mcp ~1.108.x · graphify 0.9.111 · headroom 0.44.0 · superpowers 7.0.2
 > This line is generated from [`.github/dependency-versions.json`](.github/dependency-versions.json)
 > (the machine-checkable source of truth, including each tool's repo coordinates).
 > To bump a tested version, edit the manifest and run `npm run sync:versions` — don't edit the line by hand.
@@ -81,7 +81,7 @@ structural instead of persuasive, and projects that fit can graduate from
 ## Requirements
 
 - [Claude Code](https://claude.ai/code) CLI
-- Node.js 18+
+- Node.js 18+ (22.12+ recommended -- older versions print engine warnings on `npm install`, and the test suite does not start on Node 18)
 - [superpowers](https://github.com/obra/superpowers) -- base skills framework (required; all skill chain skills wrap `superpowers:*` skills)
 - [rtk](https://github.com/rtk-ai/rtk) -- token-optimized command proxy (strongly recommended; tool router redirects `grep`/`find`/`cat` through rtk when available)
 - [jcodemunch](https://github.com/jgravelle/jcodemunch-mcp) -- indexed code search MCP server
@@ -261,6 +261,10 @@ emitted to the agent as `additionalContext`), or `silent` (logs only). Active
 enforcement rules are emitted at session start and referenced dynamically by
 skill templates -- set `no_mocks: silent` to disable no-mock enforcement
 entirely.
+
+An optional `.harness.yaml.local` sits on top of `.harness.yaml`: same
+format, merged over it, gitignored by `rig init` -- machine-local levels
+without touching the shared config.
 
 ## Skill chain
 

@@ -58,7 +58,18 @@ For both chains, choose a change id or name of 1–100 characters using lowercas
 
 🔁 Propose, apply, verify, with up to two automatic fix loops. A lighter chain: no score, plan review or manual checks.
 
-Needs: the skills `openspec-propose`, `openspec-apply-change` and `openspec-verify-change`, the `openspec` CLI for `--archive`, Node.js 24+ and `git`. [Details](docs/REFERENCE.md).
+Use OpenSpec `2.0.0`, Node.js 24+ and `git`. The pipeline needs `openspec-propose`, `openspec-apply-change` and `openspec-verify-change`. The default core profile omits verify. For a new configuration, select the required workflows and tools with the following commands.
+
+```sh
+npm install -g @fission-ai/openspec@2.0.0
+openspec config set profile custom
+openspec config set workflows '["propose","apply","verify"]'
+openspec init --tools claude,codex --profile custom
+```
+
+Profile commands change global OpenSpec configuration. Before updating an existing selection, inspect `openspec config get profile` and `openspec config get workflows`, then retain every additional workflow you use in the custom array. Scripted fixtures isolate HOME and XDG configuration/data/cache paths.
+
+For an existing project, preserve customized generated instructions in Git and review `openspec update --dry-run` before `openspec update`. Reconcile retained legacy files before removing them individually. Explicit `init --tools claude,codex --profile custom` restores tool selection when all legacy tool files have been removed. Shared skills live in `.agents/skills/`, with relative Claude links in `.claude/skills/`. Commit the shared targets, `.agents/skills/.openspec-target` and Claude links so fresh run worktrees contain them, then confirm skill discovery in a fresh child from the run root. `--archive` also needs the CLI on PATH. [Setup and upgrade details](docs/REFERENCE.md#openspec-200-setup-and-upgrade).
 
 ### 🔟 10xDevs
 
@@ -73,7 +84,7 @@ Needs: the skills `openspec-propose`, `openspec-apply-change` and `openspec-veri
 
 Needs: the skills `10x-plan`, `10x-plan-review`, `10x-goal-implement` and `10x-impl-review`, Node.js 24+ and `git`.
 
-💡 Each run works in its own worktree on the branch `agent-smith/<change-id>`, and ends with that branch pushed and a pull request open for human review. agent-smith never merges it. Needs a `github.com` remote and `gh` for the pull request. Running without a worktree (no push, no pull request): see [Run isolation](docs/REFERENCE.md).
+💡 Each run works in its own worktree and ends with its branch pushed and a pull request open for human review. Branches use `isolation.branchPrefix` plus the change id, with `agent-smith/` as the default. agent-smith never merges the PR. A `github.com` remote and `gh` are required. The reference covers configured naming and the `isolation.require: false` opt-out. [Run isolation](docs/REFERENCE.md)
 
 ### Claude Code invocation
 
@@ -118,25 +129,32 @@ Opt-in extras: restricted step agents, advisor prompts, confirmation review roun
 
 ### Claude Code subagent depth
 
-This repository caps Claude Code subagent depth at one layer. Plugin users can optionally merge this entry into their project’s `.claude/settings.json`.
+This repository permits the orchestrator → step → child layers. Plugin users enable delegation by merging this entry into their project’s `.claude/settings.json`.
 
 ```json
 {
   "env": {
-    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1"
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2"
   }
 }
 ```
 
-The cap affects every Claude session in that project, including workflows outside the pipeline. Commit the setting before creating run worktrees, then start a fresh Claude session from the intended project root. The reference covers version support, overrides and verification. [Subagent depth](docs/REFERENCE.md)
+The cap affects every Claude session in that project, including workflows outside the pipeline. Commit the setting before creating run worktrees, then start a fresh Claude session from the intended project root. Use awaited foreground children with the guarded `agent-smith:step` identity. Native collection was observed on Claude Code 2.1.311 headless; interactive collection remains quota-blocked and full pipeline qualification is pending. The reference covers version support, overrides, usage coverage and recovery. [Subagent depth](docs/REFERENCE.md)
 
 ## 📚 More
 
 - [`docs/REFERENCE.md`](docs/REFERENCE.md): every rule, threshold and edge case.
 - [`docs/ADR/`](docs/ADR/): why it works this way.
-- [`AGENTS.md`](AGENTS.md): contributor guide.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — contributor guide and submission terms.
+- [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) — participation standards and conduct reporting.
+- [`AGENTS.md`](AGENTS.md) — repository rules and architectural conventions.
+- [`SECURITY.md`](SECURITY.md): security policy and private reporting process.
 - [Releases](https://github.com/xycu/agent-smith/releases): changelog, [SemVer](https://semver.org) tags `vX.Y.Z`.
 
 ## 📄 License
 
-Free for non-commercial open source projects. Commercial use is free for a 60-day trial. Any other use needs a written license: contact Błażej Ksycki, [blazej@ksycki.pl](mailto:blazej@ksycki.pl). Full terms in [`LICENSE`](LICENSE).
+Copyright (c) 2026 Błażej Ksycki. Project-owned code, documentation and other material are licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0). You may share unadapted copies for noncommercial purposes with attribution. The license permits producing adaptations for noncommercial purposes, with sharing of adaptations requiring separate permission. Full terms appear in [LICENSE](LICENSE) and the [official license summary](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+
+The additional contribution permission covers noncommercial sharing of project-owned adaptations through forks and pull requests to propose or review contributions to agent-smith. Incoming contribution terms cover the maintainer's revision, incorporation and distribution of future contributions under the project's licensing terms, with contributors retaining ownership. [Contribution permission](CONTRIBUTING.md#contribution-permission) · [Incoming contribution terms](CONTRIBUTING.md#incoming-contribution-terms)
+
+Separately credited third-party material, including the header image and bundled OpenSpec skills with MIT notices, retains its own rights and terms. Earlier versions remain governed by the license supplied with them. For permissions beyond CC BY-NC-ND 4.0, contact Błażej Ksycki at [blazej@ksycki.pl](mailto:blazej@ksycki.pl).

@@ -1,7 +1,17 @@
 <div align="center">
-  <img src="src/assets/creativefield-logo.png" alt="CreativeField" width="360">
+  <img src="docs/screens/creativefield/header.webp" alt="CreativeField: the Boy and Squarehead, the CreativeField mascots, on a night film set" width="100%">
 
-  <a href="https://www.creativefield.app/examples/creativefield-promo-v3.mp4"><img src="docs/screens/creativefield/creativefield-promo-v3.webp" alt="Watch the CreativeField introduction video" width="100%"></a>
+  <p>
+    <a href="https://www.creativefield.app/"><img alt="Try it online" src="https://img.shields.io/badge/try_it-online-FFD200?style=flat-square&labelColor=0b0b0f"></a>
+    <a href="https://github.com/rhymeas/Creativefield/releases"><img alt="Release" src="https://img.shields.io/github/v/release/rhymeas/Creativefield?style=flat-square&labelColor=0b0b0f&color=2fa8ff"></a>
+    <a href="LICENSE"><img alt="License: GPL-3.0" src="https://img.shields.io/badge/license-GPL--3.0-2fa8ff?style=flat-square&labelColor=0b0b0f"></a>
+    <img alt="Runs on ComfyUI" src="https://img.shields.io/badge/runs_on-ComfyUI-2fa8ff?style=flat-square&labelColor=0b0b0f">
+    <img alt="Windows and NVIDIA" src="https://img.shields.io/badge/Windows-NVIDIA_GPU-2fa8ff?style=flat-square&labelColor=0b0b0f">
+    <img alt="Local first" src="https://img.shields.io/badge/local-first-FFD200?style=flat-square&labelColor=0b0b0f">
+    <a href="https://github.com/rhymeas/Creativefield/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/rhymeas/Creativefield?style=flat-square&labelColor=0b0b0f&color=FFD200"></a>
+  </p>
+
+  <b><a href="#install-it-in-five-steps">Install in five steps</a> · <a href="https://www.creativefield.app/">Try it online</a> · <a href="#what-is-new">What is new</a></b>
 
   [▶ Watch the CreativeField video](https://www.creativefield.app/examples/creativefield-promo-v3.mp4)
 
@@ -19,6 +29,32 @@
 | ![Opening the Video and Image menus](docs/screens/creativefield/guide-pick.webp) | ![Typing a prompt in Create Video](docs/screens/creativefield/guide-prompt.webp) | ![Pressing Generate](docs/screens/creativefield/guide-generate.webp) |
 
 ## What is new
+
+| All tools opens on a moving hero | Every tile and menu entry plays its own loop |
+|---|---|
+| ![All tools: the Creative Field loops fill the hero under a dark scrim, the title sits centred](docs/screens/creativefield/features/all-tools-hero.webp) | ![Nine tile loops: hoverbike, short film cuts, keyframes, grey blockout to real, ember storm, radio booth, sneaker splash, orbital greenhouse, day to night](docs/screens/creativefield/features/moving-tiles.webp) |
+| **The Image menu** | **The Video menu** |
+| ![Image menu: Make a picture, Ad Studio, My characters, Camera angles, Relight, FotoField](docs/screens/creativefield/features/image-menu.webp) | ![Video menu: Create, Change, Upscale and Film Studio rows, each with a Creative Field loop](docs/screens/creativefield/features/video-menu.webp) |
+
+- **A hero that moves.** All tools opens on the Creative Field loops, full width under a dark scrim with light film grain, the question in large type with the start field under it.
+- **Tiles that move.** Make a video, Effect clips, Ad Studio, Make it talk, 3D models, Make a picture, My characters, Turn it around and all of Film Studio play short loops made with HyperFlow H3 Flash on this computer. Short film cuts from wide to close-up, Keyframes shows its two key pictures with a marker running between them, Block a shot wipes from the grey blockout to the real scene. Tool names are bold and larger.
+- **Menus that match.** The Video and Image dropdowns play the same loops as the tiles; Upscale wipes from a pixelated picture to the sharp one, Edit video shows its trim timeline and crop frame, Relight turns a street from day to night.
+- **One tool for changing a thing.** Remix Studio is gone from the menus; Swap a thing does that job.
+
+#### Earlier
+
+| Quick select finds the parts by itself | Compare zooms both pictures together |
+|---|---|
+| ![Quick select: the picture shimmers while it is analysed, outlines appear, one click selects hair, face, jacket](docs/screens/creativefield/features/quick-select.webp) | ![Compare: before and after side by side, the mouse wheel zooms both](docs/screens/creativefield/features/compare-zoom.webp) |
+| **Detailed upscale redraws tile by tile** | **Before/after tiles on All tools** |
+| ![Detailed Quick upscale on a dragon: finished tiles get a check, the active one shimmers](docs/screens/creativefield/features/detailed-upscale.webp) | ![All tools: the before/after line sweeps on its own and follows the pointer](docs/screens/creativefield/features/before-after-tiles.webp) |
+
+- **FotoField Quick select analyses the picture by itself.** Choose Quick select (S): the picture shimmers while SAM 3 finds the background, the person and their parts (hair, face, clothing, trousers, shoes) or the parts of a scene, outlines appear one by one, and one click selects a part. Shift adds, Alt removes; a field still takes any name.
+- **Modify looks real and blends in.** Fibo, Qwen and MiniMax H3 Image redraw a selection with a little fresh noise in every step, at the size the picture needs (MiniMax at least 8 MP, Fibo 2 MP at 8 steps); the result is colour-matched to its surroundings and fades in across the selection edge. Small blurry details such as a damaged eye are redrawn, not copied.
+- **Compare before and after.** Every image edit opens beside the picture it started from, in the Library and in Runs; the mouse wheel zooms both pictures together and a drag pans both.
+- **Detailed upscale on Fibo.** Quick upscale redraws textured tiles with Fibo 2 (about 4x the fine detail, closer to the original, 18 s per tile) and leaves flat areas alone; a picture up to about 1 MP is done in one run.
+- **FotoField works like a photo editor.** Selections are a thin blue line with a travelling glint, tool letters and shortcuts work after any click, Ctrl+C / Ctrl+V copy a layer and paste it back in place even after many undo steps, Transform frames only the layer's visible pixels, selections may start beside the picture, and new layers are named after the model and the prompt.
+- **New All tools pictures.** Every tile shows the Creative Field characters in a new scene; Swap a thing, New look and Upscale show a real before and after.
 
 - **Keyframes on a timeline.** Put pictures at exact moments, drag them to any second, describe each transition on its own, and get one animation that hits every frame on time. Locally with HyperFlow H3 Flash, online with Seedance 2.5 or MiniMax H3.
 - **Make it real.** Block out a scene with grey 3D shapes and a camera move, and turn that animation into a real-looking video that keeps the camera path, the timing and where everything stands.
@@ -44,17 +80,10 @@
 | **Change a picture** | **Camera angles** | **Relight** | **Sharper and bigger** |
 | ![Change a picture](docs/screens/creativefield/functions/edit.webp) | ![Camera angles](docs/screens/creativefield/functions/angles.webp) | ![Relight](docs/screens/creativefield/functions/relight.webp) | ![Sharper and bigger](docs/screens/creativefield/functions/upscale.webp) |
 
-These loops are the previews the menus play; they show what kind of change a function makes, not a measured result of one workflow.
 
 Made for the [#OpenSourceHiggsfield](https://comfy.org/open-source-higgsfield/) challenge.
 
 ## Why CreativeField
-
-CreativeField is a welcoming place to turn a small idea into something you can see, hear and share. Start with a few words or a picture, explore a result, then take it further: make a video, adjust an image in FotoField, or try another angle. Your work stays together in the project library, ready when inspiration strikes again.
-
-**Made for a comfortable creative flow.** Choose what you want to do from visual menus, add your ingredients and generate. Hover over a tool to see a preview, compare results, and revisit a take with its settings when you want another version. ComfyUI does the heavy lifting in the background; you can open the nodes when you want more control.
-
-**On an RTX 4090, locally.** CreativeField has been developed and tested on a Windows computer with an RTX 4090 and 64 GB of RAM. In one separate experimental HyperFlow H3 Flash and Deno run, a 3.04-second image-to-video clip took about **3 minutes** to generate and refine to 1088 × 1440. This is one measured result from an experimental setup, not a speed promise for the current app: clip length, resolution, model loading, settings and other work on the computer all affect the wait. The app shows the run's progress and records its time so you can see what your own setup does.
 
 Having a pro-grade palette at your fingertips, and every feature ComfyUI brings with it, does not mean you need a toolbox with all the equipment in it. Most of the time the work comes down to a few core moves: you start from an input and you want a video, a picture, or an edit of a picture. CreativeField is built around exactly those moves.
 
@@ -80,7 +109,7 @@ CreativeField picks one model per job instead of offering a long list. On your c
 | **Fibo 2.0** | Edits images: multi-picture edits, masked edits, Ad Studio and Remix variations |
 | **Qwen Image 2.1** | The first choice for AI edits in FotoField; also creates images, turns objects to new angles, and is the fallback for FLUX 3 Klein |
 
-Online, on Comfy Router: FLUX 2 Pro (pictures, angles, relight), Seedance 2.5 and MiniMax H3 (video, keyframes, effects), Kling V3 Omni (new look, swaps, copied moves), Kling Lip Sync, FLUX video upscale, Bria upscale and background removal.
+Online, on Comfy Router: FLUX Pro (pictures, angles, relight), Seedance 2.5 and MiniMax H3 (video, keyframes, effects), Kling V3 Omni (new look, swaps, copied moves), Kling Lip Sync, FLUX video upscale, Bria upscale and background removal.
 
 If the first choice for a job is not installed on your computer, the app takes the next one that is ready and says so. Workflow folders named `flux2-klein-*` keep their old names but run FLUX 3 Klein weights.
 
@@ -90,7 +119,7 @@ A few jobs stay with specialised models: SAM 3.1 for masks, SeedVR2 and Z-Image 
 
 **FotoField**, our image editor, has layers, masks, selections, smart objects, blend modes, crop, transform and brushes, and its AI tools (modify, magic eraser, subject select) run through ComfyUI on your machine. No subscription and no account; nothing leaves your computer unless you choose a cloud route. The rest of CreativeField puts the same idea around video, image and 3D: each tool is a real ComfyUI workflow behind a plain panel, and you can open the graph when you want it.
 
-It is an early preview, not a Photoshop clone. FotoField covers the everyday layered-editing and AI-editing path; it does not yet match Photoshop's depth (see [Current limits](#current-limits)).
+It is an early preview. FotoField covers the everyday layered-editing and AI-editing path; it does not yet match Photoshop's depth (see [Current limits](#current-limits)).
 
 ## Status
 
@@ -144,11 +173,25 @@ It is an early preview, not a Photoshop clone. FotoField covers the everyday lay
 |---|---|---|
 | ![Phone start screen](docs/screens/creativefield/phone-start.png) | ![Phone Create Video](docs/screens/creativefield/phone-video.png) | ![Phone menu sheet](docs/screens/creativefield/phone-menu.png) |
 
-These screenshots show the application in a demo project. They show the interface, not a claim about output quality; the Nodes view shows a sample image graph.
-
 ### Camera moves are measured, not assumed
 
 On MiniMax H3 a camera move is a direction in the prompt, not a fixed path: the model follows it, but not by an exact amount. When a shot needs one exact path, use **Block a shot**: H3 keeps the camera path of the grey layout frame for frame. The `wan22-fun-camera` workflow, which takes a fixed path, also stays in `native-workflows/`. `scripts/camera-check.mjs` measures how far any clip really moved, and `scripts/motion-check.mjs` tells a living clip from a still one. `scripts/seam-check.mjs` says whether a clip loops cleanly or jumps at the loop point, judges a cut inside a clip, and can trim a clip to its best closing window; it is a port of the Seam Doctor in [OpenField](https://github.com/wexloops/openfield) and the seam check in [Body Double](https://github.com/lucataco/open-source-higgsfield).
+
+## Install it in five steps
+
+No experience needed. If you can download a game mod, you can do this.
+
+**What you need:** a Windows computer with an NVIDIA graphics card (the stronger, the faster), plenty of free disk space (one model is often 10 to 30 GB), and internet for the first start.
+
+1. **Get Node.js.** Go to [nodejs.org](https://nodejs.org), press the big **LTS** button, open the file and click **Next** until it says **Finish**. Node.js is the engine that runs CreativeField.
+2. **Get ComfyUI.** Go to the [ComfyUI download page](https://github.com/comfyanonymous/ComfyUI#installing), take the **Windows portable** version, unzip it, and double-click `run_nvidia_gpu.bat` once. When a browser page with boxes and lines opens, ComfyUI works. Leave that black window open.
+3. **Get CreativeField.** On this page, press the green **Code** button at the top, then **Download ZIP**. Right-click the ZIP, choose **Extract All**, and put the folder somewhere easy, like your Desktop.
+4. **Start it.** Open the folder and double-click **`Start CreativeField.bat`**. The first time it installs itself, which takes a few minutes. Then your browser opens CreativeField. Keep the black window open while you work; close it when you are done.
+5. **Make something.** Click **All tools**, pick a tile like **Make a picture**, type what you want to see, and press **Generate**. The first time a tool runs, open **Models** to see which model it needs and download it there.
+
+**Stuck?** Close both black windows and start again from step 4. Still stuck? [Open an issue](https://github.com/rhymeas/Creativefield/issues) and tell us what the black window says.
+
+**No graphics card?** Use the [online version](https://www.creativefield.app/) instead. It runs on your own Comfy account.
 
 ## Run it
 

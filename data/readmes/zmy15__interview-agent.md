@@ -8,7 +8,6 @@
 </p>
 
 <h1 align="center">🎯 Interview Agent</h1>
-<p align="center"><strong>AI 模拟面试平台 — 双视角演练 · RAG 知识库 · 实时辅助</strong></p>
 
 <p align="center">
   <a href="#-简介">简介</a> •
@@ -33,16 +32,6 @@ Interview Agent 是一个基于大语言模型的 **AI 模拟面试平台**。�
 | 🎯 **你是面试官**（`interviewer`） | 你扮演面试官向 AI 求职者提问。AI 结合岗位 JD、简历、代码与知识库给出专业回答，适合练习提问技巧、快速验证候选人口径 |
 | 🧑 **你是求职者**（`candidate`） | AI 扮演面试官向你提问。系统按 JD 与简历出题，支持设置时长、推算题量、追踪进度，结束后生成多维度评估报告 |
 
-### 三大「实战辅助」能力
-
-除模拟演练外，本项目还提供了面向**真实面试场景**的实时辅助（均基于 Windows 平台能力）：
-
-| 能力 | 抓取对象 | 用途 |
-|------|----------|------|
-| 📷 **截图答题** | 屏幕画面（Windows Graphics Capture） | 一键截取主显示器，交给视觉模型提取题目并作答 |
-| 🎧 **系统音频转写** | 扬声器回环（WASAPI Loopback） | 抓取会议软件 / 视频里对方说的话，实时转文字 |
-| 🎤 **语音输入 / 朗读** | 麦克风（STT）与扬声器（TTS） | 按住说话转文字；AI 回复一键朗读 |
-
 ---
 
 ## ✨ 功能特性
@@ -55,12 +44,13 @@ Interview Agent 是一个基于大语言模型的 **AI 模拟面试平台**。�
 - 🧑‍💻 编程题模式：按岗位类型从题库选题（仅求职者模式 + 技术岗生效）
 - 📝 面试报告：多维度评估（技术能力 / 沟通表达 / 综合素质），支持结构化 QA 逐题评估
 - 🗂️ 题库管理：自建题目、从 LeetCode 题库导入、三种使用模式（严格 / 混合 / 灵活改编）
+- 📎 提示词资料：上传 txt / md 等文档（也支持 pdf / docx），作为背景资料随对话一起发给 AI
 - 💬 会话历史：完整回放历史对话，含思维链与 token 计数
 
 **知识与检索**
 - 📚 RAG 向量知识库：上传 PDF / Word / 文本 / 代码 / 项目压缩包，FAISS 向量检索增强回答
 - 🌐 联网搜索：集成 DuckDuckGo，实时补充最新技术资讯
-- 🗂️ 岗位管理：一个岗位可挂多份 JD，可指定对话使用哪一份
+- 🗂️ 岗位管理：一个岗位可挂多份 JD，创建时可一并粘贴第一份 JD，可指定对话使用哪一份
 
 **平台与体验**
 - 🔐 用户系统：JWT 认证（access + refresh），数据按用户隔离；也可一键切换到**单用户免登录模式**
@@ -103,7 +93,7 @@ JWT_SECRET=请换成一串足够长的随机字符串
 
 > **国内用户**：`.env.example` 已默认配置 HuggingFace 镜像 `HF_ENDPOINT=https://hf-mirror.com`，首次启动下载 Embedding 模型（约 90MB）无需额外操作。
 >
-> 也可以完全不填 `DEEPSEEK_API_KEY` —— 前端支持在界面上直接填写 API Key（仅存本地浏览器），此时界面的 Key 优先级更高。
+> 也可以完全不填 `DEEPSEEK_API_KEY` —— 在界面里填一次即可（密钥加密保存在服务端数据库，不进浏览器），此时界面的 Key 优先级更高。
 
 ### 第二步：选择一种启动方式
 
@@ -150,29 +140,15 @@ python main.py --desktop --no-topmost --width 1366 --height 768
 | 前端 | Vite dev（5173，热更新） | 后端托管的 `dist` 构建产物 |
 | 语音微服务 | 各自一个 cmd 窗口 | 桌面进程内，**不弹窗** |
 | 可见窗口 | 4 个控制台 + 1 个浏览器 | **只有 1 个独立窗口 + 托盘图标** |
-| 任务栏 | 多个按钮 | 默认不出现图标，由托盘图标代替 |
 
-> 桌面版**默认免登录**（单用户模式，数据归属本机账号 `desktop@local`）。想恢复登录页：`.env` 中设 `AUTH_REQUIRED=true`，或 `start_app.bat --auth-required true`。
->
-> 桌面版**默认不询问语音开关**，是否启用完全由 `.env` 中的 `VOICE_ENABLED` / `STT_ENABLED` / `TTS_ENABLED` 决定，保持双击即用。
->
-> **全程没有终端窗口**：启动器由 PowerShell 以 `-WindowStyle Hidden` 启动，应用用
-> `pythonw.exe` 运行，两者都不分配控制台。日志写入 `logs/start_app.log`（启动器）、
-> `logs/desktop.log`（应用）、`logs/app-stderr.log`（应用的标准错误，含未捕获异常的
-> traceback）。排查问题用 `.\start_app.ps1 -Foreground` 在当前终端里跑，日志直接可见。
->
-> **托盘图标**（`--tray`，启动器默认开启）：单击图标显示/隐藏窗口，右键菜单提供
-> 显示/隐藏、打开日志、退出。窗口隐藏时应用与服务继续在后台运行。窗口隐藏时任务栏
-> 图标一并移除，避免留下点不开的死按钮；不想要托盘可用 `-NoTray`，想保留任务栏图标
-> 用 `-ShowTaskbar`。
->
-> **点右上角 X = 收进托盘**（`--close-to-tray`，默认跟随 `--tray`），不会退出程序，
-> 并弹一次气泡提示告知「还在托盘里」。真正退出请用托盘右键菜单的「退出」。
-> 想保留旧的「X 直接退出」行为：`-ExtraArgs --close-to-tray false`。
-> 注意浏览器窗口模式（`--shell browser`）的窗口属于浏览器进程，**无法拦截关闭**，
-> 点 X 仍会退出应用。
->
-> 独立窗口要求先构建前端：`cd frontend && npm run build`（`start_app.ps1` 会在产物缺失或源码更新时自动重新构建）。
+几条默认行为：
+
+- **默认免登录**（单用户模式，数据归属本机账号 `desktop@local`）。想恢复登录页：`.env` 设 `AUTH_REQUIRED=true`，或 `start_app.bat --auth-required true`。
+- **默认不询问语音开关**，是否启用完全由 `.env` 的 `VOICE_ENABLED` / `STT_ENABLED` / `TTS_ENABLED` 决定。
+- **全程没有终端窗口**，日志写在 `logs/start_app.log`（启动器）、`logs/desktop.log`（应用）、`logs/app-stderr.log`（未捕获异常）。想看实时日志用 `.\start_app.ps1 -Foreground`。
+- **托盘图标**（默认开启）：单击显隐窗口，右键可打开日志或退出；窗口隐藏时连任务栏图标一起收回，不留点不开的死按钮。不想要托盘用 `-NoTray`。
+- **点右上角 X 是收进托盘**而不是退出（浏览器窗口模式无法拦截，点 X 仍会退出）。
+- 独立窗口要求先构建前端；`start_app.ps1` 会在产物缺失或源码更新时自动构建。
 
 **常用启动参数**
 
@@ -188,15 +164,17 @@ python main.py --desktop --no-topmost --width 1366 --height 768
 | `--opacity N` | `1.0` | 窗口透明度 `0.2`–`1.0`（也可写 `20`–`100` 百分数） |
 | `--zoom N` | `1.0` | 界面缩放 `0.5`–`2.0`（也可写百分数） |
 | `--capture-exclude [BOOL]` | `true` | 从截屏 / 录屏中排除窗口（仅 native 真正生效） |
+| `--click-through [BOOL]` | `false` | 鼠标穿透：点击 / 滚轮直接落到窗口下方，可编辑被浮窗盖住的文本。运行中按 **F9** 或托盘菜单切换（仅 native 生效） |
 | `--hide-taskbar [BOOL]` | `false` | 隐藏任务栏图标（开 `--tray` 时默认变为 `true`） |
 | `--tray [BOOL]` | `false` | 显示系统托盘图标：单击显隐窗口，右键可退出 |
+| `--tray-notify [BOOL]` | `false` | 托盘气泡提示（注册时 + 收进托盘时各一次）。默认关闭，因为 Win11 会渲染成右下角系统通知并遮挡内容 |
 | `--close-to-tray [BOOL]` | 跟随 `--tray` | 点 X 收进托盘而不是退出（浏览器模式无法拦截） |
 | `--fullscreen [BOOL]` | `false` | 全屏启动 |
 | `--app PATH` | — | 启动后打开的页面，如 `--app /login` |
 | `--browser PATH` | — | 【browser 模式】指定浏览器可执行文件 |
 | `--user-data-dir PATH` | `~/.interview-agent/desktop-profile` | 【browser 模式】浏览器用户数据目录 |
 | `--debug` | `false` | 【native 模式】开启 WebView 开发者工具 |
-| `--hide-console [BOOL]` | `true` | 启动后隐藏启动器控制台。**注意**：Windows 11 默认终端（Windows Terminal）下这个开关无效，见下方说明；用 `start_app.ps1` 启动不会有控制台 |
+| `--hide-console [BOOL]` | `true` | 启动后隐藏启动器控制台。**注意**：Windows 11 默认终端（Windows Terminal）下这个开关无效；用 `start_app.ps1` 启动则不会有控制台 |
 | `--auth-required [BOOL]` | `false` | 是否要求登录；`true` 恢复登录页 |
 | `--no-console` | `false` | 不输出启动日志 |
 | `--open-timeout SEC` | `90` | 等待服务就绪的最长秒数 |
@@ -208,11 +186,7 @@ python main.py --desktop --no-topmost --width 1366 --height 768
 | `native`（auto 时优先） | Edge WebView2 | ✅ | ✅ 真正生效 | ✅ 窗口失焦也能触发 | `pywebview` + WebView2 运行时 |
 | `browser` | 系统 Edge / Chrome `--app` | ✅ | ❌ 系统跨进程限制 | ⚠️ 仅窗口聚焦时 | 无（零依赖） |
 
-> 未安装 `pywebview` 时自动回退到 `browser` 模式，功能不受影响（仅捕获排除无效）。
->
-> **为什么 `browser` 做不到捕获排除？** Windows 的 `SetWindowDisplayAffinity` 只能作用于本进程拥有的窗口；`browser` 模式窗口属于浏览器进程，跨进程调用会被系统拒绝。`native` 模式下窗口由本进程创建，因此截屏 / 录屏 / 直播中该窗口内容不可见。
->
-> **为什么 `browser` 做不到全局热键？** 网页 JS 的 `keydown` 只在窗口聚焦时才有事件，这是浏览器的安全边界。`native` 模式改由 Python 侧调用 Win32 `RegisterHotKey` 注册，系统投递 `WM_HOTKEY`，因此焦点在任何窗口上都能触发。
+> 未安装 `pywebview` 时自动回退到 `browser` 模式，功能不受影响 —— 但 `browser` 模式的窗口属于浏览器进程，受系统安全边界限制，**做不到捕获排除与全局热键**（热键只在窗口聚焦时生效）。
 
 #### 方式三：Docker Compose
 
@@ -308,44 +282,9 @@ docker run -d \
 | `PREFIX_CACHE_MAX_ENTRIES` | `64` | 最多缓存多少场面试的稳定前缀 |
 | `PREFIX_CACHE_MAX_TOKENS` | `200000` | 单条稳定前缀的 token 上限，超过则不缓存 |
 | `PREFIX_CACHE_TTL_SECONDS` | `1800` | 稳定前缀缓存存活时间（秒） |
-
-### 上下文结构（前缀缓存）
-
-每轮发给模型的 messages 顺序固定为：
-
-```
-system:  静态指令 → 经验级别 → 轮次 → 岗位类型 → 题库/补充说明 → 简历 → JD →（时间预算）
-user:    历史提问……（每轮只在尾部追加）
-user:    本轮提问 + 【参考上下文】RAG / 联网搜索 / 编程题   ← 唯一每轮变化的部分
-```
-
-这套顺序是为**服务端前缀缓存（prefix caching）**服务的：DeepSeek 按 token
-前缀匹配 KV，只要前缀逐字节一致就能复用，省下重复的 prefill。因此
-
-- 静态指令排在简历/JD **之前**，跨会话可复用的前缀最长；
-- `system` 在同一场面试里只构建一次并进程内缓存，绝不逐轮重建；
-- RAG 检索结果、联网搜索、编程题等**每轮变化**的内容，一律追加到
-  **最后一条 user 消息的末尾**，绝不放进 `system`（放进去会让它之后的 KV 全部失效）；
-- token 裁剪只作用于对话部分，`system` 原样透传（裁它会让前缀变短、缓存失效）。
-
-> **实测（deepseek-flash，2026-10）**：缓存确实是「从第 0 个 token 起的严格前缀匹配」。
-> 用同一段 nonce 前缀做对照实验——只改尾部时 `cache_hit=128`（命中前半段），
-> 而在前缀**中途**插入一句话则 `cache_hit=0`（整条前缀连同后面全部作废）。
-> 这就是「变化的内容只能放尾部」的实证依据。
->
-> 真实面试场景下同前缀连发三轮的命中率约 82–85%，未命中的部分正好是本轮新增的问答。
-> 需要复现可跑 `scripts/verify_prefix_cache.py`（只读 `.env` 的 Key，不写业务数据）。
-
-日志里可直接观测命中情况：
-
-```
-Prefix cache HIT | fp=xxxx | 1537 chars / ~1500 tokens      # 进程内前缀复用
-Context: 22 messages, ~1843 tokens (... prefix=cache, fp=xxxx)
-LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%   # 服务端前缀缓存
-```
-
-配置开关见 `PREFIX_CACHE_*`；`prefix=client` 表示前端回传的 system 与后端
-权威前缀一致（这是最理想的情况）。
+| `PROMPT_DOC_MAX_CHARS` | `80000` | 单份附加文档最多保留多少字符（超出截断） |
+| `PROMPT_DOC_MAX_TOTAL_CHARS` | `200000` | 所有附加文档合计字符上限（超出不再附加） |
+| `PROMPT_DOC_MAX_FILES` | `8` | 最多同时附加多少份文档 |
 
 ### RAG 知识库
 
@@ -422,8 +361,12 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 | `VOICE_ENABLED` | `false` | 语音功能总开关 |
 | `STT_ENABLED` | `false` | 语音识别（语音转文字） |
 | `TTS_ENABLED` | `false` | 语音合成（文字转语音） |
-| `STT_MODEL` | `base` | Whisper 模型：`tiny` / `base` / `small` / `medium` / `large-v3-turbo` |
-| `STT_DEVICE` | `cpu` | 推理设备：`cpu` / `cuda`（GPU 需 **CUDA 12**：cuBLAS 12 + cuDNN 9） |
+| `STT_BACKEND` | `qwen3_asr` | 识别后端：`qwen3_asr`（中文更准）/ `faster_whisper`（旧 Whisper 链路） |
+| `STT_QWEN_MODEL` | `Qwen/Qwen3-ASR-0.6B` | Qwen3-ASR 权重：HF repo id 或本地目录（相对路径按项目根解析）。1.7B 更准但约 4GB 显存 |
+| `STT_LANGUAGE` | `auto` | `auto` = Qwen 自判语种（中英混说更稳）/ `zh` = 强制中文 |
+| `STT_QWEN_MAX_NEW_TOKENS` | `256` | Qwen3-ASR 单块最大生成 token 数 |
+| `STT_MODEL` | `base` | Whisper 模型（仅 `STT_BACKEND=faster_whisper` 时生效）：`tiny` / `base` / `small` / `medium` / `large-v3-turbo` |
+| `STT_DEVICE` | `cpu` | 推理设备：`cpu` / `cuda`。Whisper 需 **CUDA 12**（cuBLAS 12 + cuDNN 9）；Qwen 需 **CUDA 版 torch** |
 | `STT_COMPUTE_TYPE` | `int8` | 量化类型：`int8` / `float16` / `int8_float16`（留空按设备自动：GPU→float16，CPU→int8） |
 | `STT_SERVICE_URL` | `http://stt:8000` | STT 微服务地址（本地运行为 `http://localhost:8001`） |
 | `STT_WS_URL` | `ws://stt:8000/stream` | STT WebSocket 地址 |
@@ -460,7 +403,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 创建岗位 → 添加 JD → 上传知识库 → 上传简历/代码 → 切换为「你是面试官」 → 向 AI 求职者提问
 ```
 
-1. 在**岗位管理**页创建岗位并添加职位描述（JD）
+1. 在**岗位管理**页创建岗位，弹窗里可直接粘贴 JD（留空也行，之后用「管理 JD」补）
 2. 在**知识库**页上传相关文档（技术规范、FAQ 等）
 3. 在**上传**页上传候选人简历（PDF / Word）与代码文件
 4. 进入 **AI 对话**页，选择 **🎯 你是面试官** 模式
@@ -483,7 +426,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 
 ### 场景三：实战辅助
 
-- **截图答题**：在 AI 对话页点击输入框右侧的 **截图** 按钮，或直接按 **`F8`**。截图会连同输入框中的补充要求一起发给模型，回答直接渲染在对话里。
+- **截图答题**：在 AI 对话页点击输入框右侧的 **截图** 按钮，或直接按 **`F8`**。截图会接着当前对话的上文，连同输入框中的补充要求一起发给模型（只发本次这一张图），回答直接渲染在对话里。
 - **系统音频转写**：在**设置 → 监听系统音频**中开启（或设 `SYSTEM_AUDIO_ENABLED=true`），即可把电脑正在播放的声音实时转成文字。
 - **语音输入 / 朗读**：启用语音功能后，输入框出现录音按钮；AI 回复下方出现朗读按钮。
 
@@ -515,6 +458,10 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
   "interview_round": "first",
   "interview_duration_minutes": 30,
   "interview_question_count": 10,
+  "prompt_documents": [
+    {"name": "personal.md", "text": "个人经历 / 项目细节……"},
+    {"name": "project.md", "text": "项目架构与关键技术点……"}
+  ],
   "question_bank_ids": [],
   "question_bank_mode": "mixed"
 }
@@ -539,6 +486,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 | `interview_question_count` | `int` | `0` | 计划题目数量（0 表示按默认 8 题） |
 | `interview_coding_min` | `int` | `0` | 编程题预留时间（分钟） |
 | `prompt_notes` | `string` | `null` | 界面 PromptEditor 的补充说明，追加到 system prompt 末尾 |
+| `prompt_documents` | `{name,text}[]` | `null` | 随提示词附带的背景文档（插在 system 之后、对话之前） |
 | `question_bank_ids` | `string[]` | `null` | 从题库中选定的题目 ID 列表 |
 | `question_bank_mode` | `string` | `"mixed"` | 题库使用模式：`strict` / `mixed` / `adaptive` |
 
@@ -576,7 +524,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 
 | 模块 | 方法 | 路径 | 说明 |
 |------|------|------|------|
-| 岗位 | `GET` `POST` | `/positions` | 列表 / 创建岗位 |
+| 岗位 | `GET` `POST` | `/positions` | 列表 / 创建岗位（可顺带提交第一份 JD） |
 | 岗位 | `GET` `PUT` `DELETE` | `/positions/{name}` | 岗位详情 / 更新 / 删除 |
 | 岗位 | `POST` `PUT` `DELETE` | `/positions/{name}/jds` | JD 管理（一个岗位可挂多份 JD） |
 | 题库 | `GET` `POST` | `/question-bank/` | 题目列表 / 新增题目 |
@@ -586,6 +534,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 | 上传 | `POST` | `/upload/resume` | 上传简历 |
 | 上传 | `POST` | `/upload/code` | 上传代码 |
 | 上传 | `POST` | `/upload/project` | 上传项目（解析目录结构与技术栈） |
+| 上传 | `POST` | `/upload/document` | 上传提示词附加文档（只解析文本，不落库） |
 | 上传 | `GET` `DELETE` | `/upload/files` | 上传记录列表 / 清空 |
 | 上传 | `GET` `DELETE` | `/upload/files/{id}` | 单条记录详情 / 删除 |
 | 知识库 | `POST` | `/knowledge/upload` | 上传文档并建索引 |
@@ -615,7 +564,7 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 | 模块 | 方法 | 路径 | 说明 |
 |------|------|------|------|
 | 截图 | `GET` | `/screenshot/info` | 截图能力、显示器与视觉模型信息 |
-| 截图 | `POST` | `/screenshot/capture` | 截取主显示器并交给视觉模型识别作答 |
+| 截图 | `POST` | `/screenshot/capture` | 截取主显示器并交给视觉模型识别作答（可带 `messages` 延续上文，图片仅本次一张） |
 | 系统音频 | `GET` | `/system-audio/info` `devices` `status` | 能力 / 设备列表 / 运行状态 |
 | 系统音频 | `POST` | `/system-audio/start` `stop` `clear` | 开始 / 停止捕获 / 清空转写 |
 | 系统音频 | `GET` | `/system-audio/transcript` | 增量拉取转写结果（`?since=<seq>`） |
@@ -641,6 +590,10 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 **使用要点**
 
 - 截图使用界面**模型选择器**中选中的模型；不支持图片输入时会直接提示，**不会**把图片发给纯文本模型（纯文本模型收到图片不会报错，而是编造答案）。
+- 截图**接着当前对话继续**：此前的消息会作为纯文本上下文一起发送（最多最近 20 条 / 12000 字符，超出从最旧的开始丢），所以可以先聊几轮、再说「接着刚才那题讲」，然后按 F8。
+- 整次请求**只发一张图** —— 就是本次截到的屏幕；历史消息一律只发文本，不会把旧图再发一遍。
+- 回答**只输出答案**：不复述题干，也不输出「识别到的题目」「不确定性」这类小节；需要额外要求可在输入框里写。
+- 消息上方那行 `📷 屏幕截图 · 尺寸 · 耗时 · 模型` 只是界面状态（`Message.meta`），**不会进入上下文**，后续聊天和再次截图都不会把它发给模型。
 - 输入框里可以先写一句要求（例如「只给答案，不要解释」），截图时会一并作为提问发出，所以可以「先打好要求，再按 F8」。
 - **独立窗口模式**下 F8 是系统级全局热键，**窗口失焦也能触发**（这正是截图场景的关键）；浏览器模式下 F8 仅在窗口聚焦时生效。
 - 独立窗口模式下，截图前会自动把本应用从屏幕捕获中排除，不会把自己拍进去。
@@ -664,67 +617,16 @@ LLM usage | prompt=1504 (cache_hit=1408, cache_miss=96) | cache_hit_rate=93.6%  
 
 ---
 
-## 🧪 运行测试
+## 🧪 运行测试与代码检查
 
 ```bash
-pytest tests/ -v
+pytest tests/ -v      # 后端测试
+ruff check .          # Python 静态检查（可选）
 ```
 
-测试标记（`pytest.ini`）：
+带 `windows_only` / `slow` 标记的用例在 Linux CI 上跳过；CI 还会跑前端 `npm run build`（含 `tsc` 类型检查）。
 
-| 标记 | 含义 |
-|------|------|
-| `windows_only` | 依赖 Windows 专有依赖（`windows-capture` / `soundcard` / `pywebview`），在 Linux CI 上跳过 |
-| `slow` | 需要真实时间等待的用例 |
-
-CI（[.github/workflows/ci.yml](.github/workflows/ci.yml)）在 Ubuntu 上跑 Python 3.11 / 3.12 的后端测试，以及前端 `npm run build`（含 `tsc` 类型检查）。前端 Lint 目前**不阻断**构建（仓库存在历史 lint 问题）。
-
----
-
-## 🧹 代码检查（pre-commit）
-
-项目使用 [pre-commit](https://pre-commit.com) 在提交前自动检查代码，并由 [pre-commit.ci](https://pre-commit.ci) 在 PR 上自动运行与修复。
-
-### 本地启用
-
-```bash
-pip install pre-commit
-pre-commit install          # 安装 git hook，之后每次 commit 自动检查
-```
-
-### 常用命令
-
-| 命令 | 说明 |
-|------|------|
-| `pre-commit run --all-files` | 对全部文件跑一遍检查 |
-| `pre-commit run <hook-id>` | 只跑某个钩子，如 `pre-commit run ruff` |
-| `pre-commit autoupdate` | 把钩子版本升级到最新 tag |
-| `git commit --no-verify` | 跳过本次检查（仅在确有必要时使用） |
-
-### 包含的检查
-
-| 钩子 | 作用 |
-|------|------|
-| `check-yaml` / `check-json` / `check-toml` | 校验配置文件语法 |
-| `check-merge-conflict` | 拦截未解决的合并冲突标记 |
-| `check-added-large-files` | 拦截超过 1MB 的大文件 |
-| `mixed-line-ending` | 统一换行为 LF |
-| `end-of-file-fixer` / `trailing-whitespace` | 修正文件末尾换行与行尾空白 |
-| `detect-private-key` | 兜底防止私钥误提交 |
-| `ruff` | Python 静态检查，并自动修复导入排序、未使用导入等问题 |
-
-> **未启用 `ruff-format`**：它会重写 64/70 个 Python 文件（约 3.7 万行），与功能改动混在一起会让代码审查失去意义。如需统一格式，建议单独开一个只做格式化的提交，届时再在配置中打开该钩子。
->
-> 静止规则集刻意从窄到宽（见 `pyproject.toml`），目前只启用确定性问题与导入排序；`UP`（如 `Optional[X]` → `X | None`）等会带来大量改动的规则尚未开启，可在后续逐步收紧。
-
-### CI 行为
-
-登录 [pre-commit.ci](https://pre-commit.ci) 用 GitHub 账号授权本仓库即可启用，无需额外配置：
-
-- 每个 PR 自动运行钩子，并直接向 PR 提交修复
-- 每周一约 16:00 UTC 自动提交钩子版本升级 PR
-- 在 PR 中单独一行评论 `pre-commit.ci run` 可重新触发
-- 提交信息含 `[skip ci]` / `[skip pre-commit.ci]` 时跳过
+提交前可选安装 [pre-commit](https://pre-commit.com)（`pip install pre-commit && pre-commit install`），它会检查配置语法、大文件、换行与行尾空白、私钥等；PR 上由 [pre-commit.ci](https://pre-commit.ci) 自动运行。
 
 ---
 
@@ -745,7 +647,7 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 | Token 计数与裁剪 | tiktoken (cl100k_base) |
 | 文档解析 | PyMuPDF + python-docx |
 | 联网搜索 | DuckDuckGo Search |
-| STT | faster-whisper（CTranslate2）+ Silero VAD |
+| STT | Qwen3-ASR-0.6B（transformers）/ faster-whisper（CTranslate2）可切换 + Silero VAD |
 | TTS | Piper TTS |
 
 ### 前端
@@ -788,7 +690,8 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 - **`/chat/stream` 只读取请求体里的 `api_key`**，不读取 `X-DEEPSEEK-API-KEY` 请求头（`/chat/models` 两者都读）。若只通过请求头传 Key，对话会静默回退到 `.env` 的 `DEEPSEEK_API_KEY`。
 - **`code_context` 字段目前不生效**，代码与项目上下文统一走 RAG 向量检索提供。
 - **`position_name` 同时是 RAG 的触发条件**：传入岗位名才会检索该岗位的知识库。
-- **岗位名有字符限制**：2–50 个字符，仅允许字母、数字、中文、下划线、连字符（不允许空格、点、斜杠）。同一用户下重名返回 **409**。
+- **岗位名有字符限制**：2–50 个字符，允许字母、数字、中文、下划线、连字符 **和空格**（不允许点、斜杠等符号）。同一用户下重名返回 **409**。
+- **新建岗位可一并提交第一份 JD**：`POST /positions` 的 `jd_content` 字段（留空则不建 JD）。
 - **`position_type` 在岗位创建时判定后不再变化**。「技术支持」「设计 / UI / UX」被归为**非技术岗**，此类岗位下编程题不会启用。
 - **`/interview/report` 失败时返回 HTTP 200**，正文为 `报告生成失败: ...`，前端需自行识别。
 
@@ -799,6 +702,7 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 | `/upload/resume` | **5MB** | `.pdf` `.docx` `.doc` `.txt` | 413 |
 | `/upload/code` | **2MB** | `.py` `.js` `.ts` `.jsx` `.tsx` `.java` `.go` `.cpp` `.c` `.h` `.hpp` `.rs` `.rb` `.php` `.swift` `.kt` `.scala` `.cs` `.vue` `.html` `.css` `.scss` `.sql` `.sh` `.bash` `.yaml` `.yml` `.json` `.xml` `.md` `.r` `.m` | 413 |
 | `/upload/project` | **50MB** | `.zip` `.tar.gz` `.tgz` `.tar.bz2` `.tar.xz` `.tar` `.7z`（`.7z` 需 `py7zr`） | 413 |
+| `/upload/document` | **5MB** | `.txt` `.md` `.markdown` `.text` `.rst` `.csv` `.tsv` `.json` `.yaml` `.yml` `.xml` `.log` `.ini` `.pdf` `.docx` | 413 |
 | `/knowledge/upload`（`doc_type=faq`） | **10MB** | 同简历格式（**不支持 `.md`**） | 413 |
 | `/knowledge/upload`（`doc_type=code`） | **10MB** | 同代码格式 | 413 |
 | `/knowledge/upload`（`doc_type=project`） | **50MB** | 同压缩包格式 | 413 |
@@ -809,6 +713,7 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 - 知识库检索的 `top_k` 仅接受 **1–20**，越界时静默回退为 3。
 - 文件解析失败返回 **422**，扩展名不支持返回 **400**。
 - 只有**代码**与**项目**会被索引进向量库（简历不索引）。
+- `/upload/document` 只返回解析出的文本（GBK 编码的 txt 会自动识别），不写入上传记录、也不建向量索引；超长内容会被截断并在正文末尾留标记。
 - 项目解析会自动跳过系统垃圾文件，并推断技术栈（Python / React / Java / Go / Rust / Docker 等）。
 
 ### Windows 专有功能
@@ -827,66 +732,59 @@ pre-commit install          # 安装 git hook，之后每次 commit 自动检查
 - **`--capture-exclude` 仅在 native 模式真正生效**，browser 模式受 Windows 跨进程限制无法生效（界面上该开关显示为禁用）。
 - **`--opacity` 下限为 20%**，避免窗口过淡导致无法操作。
 - 窗口项（置顶 / 透明度 / 缩放 / 捕获排除 / 隐藏任务栏）均可在界面「设置」面板中**运行中实时调整**，启动参数只决定初始状态。
+- **鼠标穿透（`--click-through`）**：点击与滚轮直接落到下层窗口，适合「透过浮窗编辑后面的文本」。它作用于**整个窗口**，开启后本窗口的按钮全部失效，只能按 **F9** 或从托盘菜单关回来；浏览器 `--app` 模式不支持。
 
 ### 语音功能
 
 - **三个开关默认全为 `false`**，未启用时接口不注册、依赖不加载，对系统零影响。
 - **本地运行时**，`STT_SERVICE_URL` / `TTS_SERVICE_URL` 需指向 `http://localhost:8001` / `http://localhost:8002`；Docker 内部网络则是 `http://stt:8000` / `http://tts:8000`。`start.bat` 会自动设置前者。
-- **`STT_DEVICE=cuda` 需要 CUDA 12**：`faster-whisper` 1.x 依赖 `ctranslate2` 4.x，其 wheel 只提供 CUDA 12 构建，因此需要 CUDA 12 的 **cuBLAS + cuDNN 9**（Windows 轮子里自带 `cudnn64_9.dll`），与 `torch` 无关。缺运行库时模型加载会直接失败（如 `CUDA failed with error ...` 或找不到 cuBLAS DLL），请把 `STT_DEVICE` 改回 `cpu`。
-- **想用 CUDA 11.8 跑 GPU**：只能整体降级到 `ctranslate2==3.24.0` + `faster-whisper==0.10.1`（Python ≤ 3.12，且 PyAV 10 没有 Windows wheel），不推荐；详见 `stt_service/requirements.txt` 顶部说明。
-- **Whisper 模型选择**：`tiny` / `base` 体积小但中文准确率偏低，建议使用 `large-v3-turbo`。
-- 首次转录时 STT 需要加载模型，因此心跳与连接超时设置得比较宽松，避免误报「连不上」。
+- **两种识别后端**（`STT_BACKEND`）：
+  - `qwen3_asr`（默认）：中文、方言准确率明显高于 Whisper，0.6B 权重约 1.8GB 显存、6 秒音频约 1 秒出字。
+  - `faster_whisper`：原链路，纯 CPU 也能跑，生态更老。
+
+#### 在 Qwen3-ASR 与 Whisper 之间切换
+
+两个后端共用同一套代码路径，**只改 `.env` + 重启**，不用动代码：
+
+| 场景 | `STT_BACKEND` | `STT_DEVICE` | 依赖装在 |
+|---|---|---|---|
+| 有独显、中文优先（默认） | `qwen3_asr` | `cuda` | `.venv-stt` |
+| **纯 CPU 机器** | `faster_whisper` | `cpu` | 主 `.venv` |
+| 有独显但显存吃紧 | `faster_whisper` | `cuda` | 主 `.venv` |
+
+首次启动会按本机硬件自动写入这三项（`python scripts/detect_stt_env.py --patch .env` 可手动重跑）：有 ≥6GB 显存的 NVIDIA 显卡走 Qwen + CUDA，否则退回 Whisper + CPU + `small`。
+
+首次启动的下载量：Qwen 环境约 4.8GB + 权重 1.8GB（装在 `.venv-stt/`）；Whisper 环境约 100MB + 权重（`base` 145MB / `small` 480MB）。
+
+想换更大的 Qwen 权重：`STT_QWEN_MODEL=Qwen/Qwen3-ASR-1.7B`（repo id，自动下载）或 `STT_QWEN_MODEL=models/Qwen3-ASR-1.7B`（本地目录，先用 `python scripts/download_qwen_asr.py --model 1.7b` 下好）。
+
+**CPU 机器切回 Whisper**：`.env` 改成 `STT_BACKEND=faster_whisper` / `STT_DEVICE=cpu` / `STT_MODEL=small`（`STT_COMPUTE_TYPE` 留空即自动 int8），主环境 `pip install faster-whisper ctranslate2`，重启即可 —— 启动脚本会按后端自动挑解释器（Qwen → `.venv-stt`，Whisper → 主 `.venv`）。验证：`curl http://localhost:8001/health` 的 `backend` 字段。
+
+几点说明：
+
+- 两个后端**可以共存**，来回切换不用重装。Qwen 必须跑在独立环境 `.venv-stt`（它要求的 `transformers` 版本与主环境冲突），该环境由启动脚本首次启动时自动创建。
+- CPU 上 `small` 约 0.35x 实时（准实时，术语与标点偏弱），`large-v3-turbo` 约 1x（够转写、不够实时字幕）。
+- `STT_DEVICE=cuda` 时：Whisper 走 ctranslate2，需要 CUDA 12 的 cuBLAS + cuDNN 9；Qwen 走 torch，必须是 CUDA 版 torch。
+- 彻底不再用 Qwen：删 `.venv-stt` 与 `models/Qwen3-ASR-*`（合计约 6.6GB），再把 `STT_BACKEND` 设为 `faster_whisper`。
 
 ### 前端与本地存储
 
-- **API Key 保存在浏览器 localStorage 中（明文）**。界面已提示「仅保存在本地浏览器中，不会上传到服务器」，但共享机器上仍需注意。清除方式：把界面的 API Key 输入框留空并确认。
-- **登录令牌同样存在 localStorage**，收到 401 时会自动刷新。
-- **对话消息只保留最近 100 条**（两种模式各自独立），QA 记录保留最近 30 条。
-- **刷新页面会重置练习进度**，需要重新点击「开始模拟练习」。
-- **不要使用前端 dev server 作为生产部署方式**。`start.bat` / `start.sh` 启动的是带热更新的 dev server；Docker 与独立窗口模式才使用构建产物。
+- **登录令牌与界面偏好存在浏览器 localStorage**；API Key 不落本地 —— 它加密保存在服务端数据库，界面只显示掩码。
+- **对话消息只保留最近 100 条**（两种模式各自独立），QA 记录保留最近 30 条；刷新页面会重置练习进度。
+- **不要用前端 dev server 做生产部署**：`start.bat` / `start.sh` 起的是带热更新的 dev server，Docker 与独立窗口模式才使用构建产物。
 
 ### 启动脚本
 
-- `start.bat`（转调 `start.ps1`）/ `start.sh` / `start_app.ps1` 首次启动会自动创建 `.venv` 虚拟环境，并把 `requirements.txt` 装进这个虚拟环境（不污染系统 Python）。依赖装好后会在 `.venv` 里写一个标记，`requirements.txt` 未变化时下次启动直接跳过安装。
-- 自动创建虚拟环境需要 **Python 3.11+**；Linux 上若报「创建虚拟环境失败」，先装 `python3-venv`（`sudo apt install python3-venv`）。
-- `start.bat` 现在只是一个转发器（和 `start_app.bat` 同一套路），实际逻辑在同目录的 `start.ps1`：`start.bat` 负责双击可用，`start.ps1` 负责干活。`start.ps1` 支持 `-SkipDeps`（跳过建虚拟环境 + 装依赖，依赖已就绪时可明显加快启动）。
-- `start.ps1` / `start.sh` 会**交互询问**是否启用语音；`start_app.bat` / `start_app.ps1` 则完全从 `.env` 读取，不提问。
-- 语音相关的安装与设备选择在 `start.ps1` 中**只在当前窗口会话内生效，不会写回 `.env`**。想让配置长期生效，请手动写入 `.env`。
-- 脚本只检查「是否安装了 Node」，并未校验版本。由于前端使用 Vite 8，建议使用 **Node 20+**。
-- `start_app.bat` 接受并透传任意参数给 `desktop.py`，例如 `start_app.bat --width 1600 --height 900 --no-topmost`。
-- `start_app.ps1` 是实际干活的启动器，`start_app.bat` 只是转发（因为双击 .bat 一定会先出现一个终端窗口）。常用开关：
-  `-Foreground`（前台运行看日志）、`-SkipDeps`、`-NoBuild`、`-NoTray`、`-ShowTaskbar`。
-- **托盘模式下点窗口右上角 X 不会退出程序**，只会把窗口收进托盘（见上文 `--close-to-tray`）。
-  退出请用托盘图标的右键菜单。这个「关不掉」是刻意设计：避免面试进行中误点 X 丢掉会话。
-- **`start_app.ps1` 必须以 UTF-8 BOM 保存**：Windows PowerShell 5.1 在没有 BOM 时按系统
-  ANSI 代码页读取 `.ps1`，中文会变乱码并破坏引号配对，脚本直接语法报错。（PowerShell 7 不受影响。）
-
-### 为什么双击 .bat 的终端窗口藏不掉
-
-这不是没实现，而是 Windows 11 的终端架构决定的，实测结论：
-
-- 默认终端是 **Windows Terminal** 时，`cmd` 跑在 ConPTY 伪控制台里；
-- 子进程调用 `GetConsoleWindow()` 拿到的是 `conhost.exe` 名下的
-  `PseudoConsoleWindow`（真实类名，可用 `EnumWindows` 验证）；
-- 对它调用 `ShowWindow(SW_HIDE)` 会**返回成功**，`IsWindowVisible` 也变成 `False`，
-  但屏幕上那个真正的终端窗口纹丝不动。
-
-也就是说「应用自己去隐藏启动它的终端」这条路走不通。`start_app.ps1` 改用
-`Start-Process -WindowStyle Hidden`（经由 `STARTUPINFO.wShowWindow` 让系统从一开始就不
-显示窗口）+ `pythonw.exe`（GUI 子系统，不分配控制台），因此**根本不存在**需要隐藏的窗口。
-
-> 另一个相关坑：`pythonw.exe` 下 `sys.stdout` / `sys.stderr` 为空，未捕获异常的
-> traceback 会彻底消失。启动器因此显式把子进程的 stdout/stderr 重定向到
-> `logs/app-stdout.log` 与 `logs/app-stderr.log` —— 既拿到崩溃现场，也避免子进程
-> 继承启动器的句柄、在启动器退出后因句柄失效而静默死掉（这个坑实际踩过）。
+- `start.bat`（转发给 `start.ps1`）/ `start.sh` / `start_app.bat` 首次启动会自动创建 `.venv` 并装依赖（不污染系统 Python），`requirements.txt` 未变化时跳过安装。需要 **Python 3.11+**，前端需要 **Node 20+**。
+- `start.ps1` / `start.sh` 会交互询问是否启用语音；`start_app.*` 完全从 `.env` 读取、不提问。语音相关的选择只在当前窗口会话内生效，想长期生效请写进 `.env`。
+- `start.ps1` 支持 `-SkipDeps`（跳过建环境与装依赖）；`start_app.ps1` 支持 `-Foreground`（前台看日志）、`-SkipDeps`、`-NoBuild`、`-NoTray`、`-ShowTaskbar`。
+- **托盘模式下点窗口右上角 X 不会退出程序**，只会收进托盘；退出请用托盘右键菜单（刻意设计，避免面试中误点丢会话）。
 
 ### 排查技巧
 
-- `/api/*` 返回 404 且带「功能开关未开启」提示时，说明该功能的路由压根没注册 —— 检查对应的 `.env` 开关并**重启服务**。
-- 排查前端拿到 HTML 导致的 `Unexpected token '<'` 报错：本项目已在应用级把 `/api/*` 的 404 兜底为结构化 JSON，若仍见到该报错，请确认请求路径是否真的以 `/api` 开头。
-- 桌面版日志在 `logs/desktop.log`（控制台会被自动隐藏）。
-- 依赖装不上时优先检查网络；国内环境请确认 `HF_ENDPOINT` 未被改动。
-- **HuggingFace 下载卡在 0 字节**：`config.py` 已默认设置 `HF_HUB_DISABLE_XET=1`。新版 `huggingface_hub` 默认启用 Xet 存储后端，其域名不受 `HF_ENDPOINT` 影响，在国内会出现「元数据全部 200，但权重停在 0 字节」的现象。该变量必须**在任何 HF 相关库导入之前**注入，因此写在 `config.py` 顶部。
+- `/api/*` 返回 404 且带「功能开关未开启」提示 = 该功能的路由没注册，检查对应的 `.env` 开关并重启服务。
+- 桌面版日志在 `logs/desktop.log`，隐藏控制台后的 stdout/stderr 在 `logs/app-*.log`。
+- HuggingFace 下载卡在 0 字节：`config.py` 已默认设置 `HF_HUB_DISABLE_XET=1`；国内环境再确认 `HF_ENDPOINT` 未被改动。
 
 ---
 

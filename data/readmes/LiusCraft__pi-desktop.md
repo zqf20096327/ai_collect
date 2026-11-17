@@ -18,6 +18,14 @@
 ![node](https://img.shields.io/badge/Node-%E2%89%A522.12-339933?logo=nodedotjs&logoColor=white)
 ![tests](https://img.shields.io/badge/tests-vitest%20%2B%20playwright-6E9F18?logo=vitest&logoColor=white)
 
+<p align="center">
+  <a href="https://surgecode.org">
+    <img src="docs/surgecode-logo.svg" alt="SurgeCode" width="190">
+  </a>
+  <br>
+  <sub>SurgeCode 赞助 · Sponsored by SurgeCode · OpenAI / Claude compatible API access</sub>
+</p>
+
 ---
 
 <p align="center">
@@ -124,6 +132,8 @@ Renderer (src/renderer)            Main (src/main)                  Agent host (
 | `src/agent/models-dev.ts` | models.dev 目录（按天缓存）：按模型 ID / canonical ID 匹配上下文、输出上限和价格 |
 | `src/agent/scheduler.ts` / `src/shared/schedule.ts` | 定时任务：任务存储与调度循环（host 内）；计划类型、cron 解析、下次运行时间（host 与界面共用的纯函数） |
 | `src/agent/customize.ts` / `src/agent/agents.ts` | Customize 页后端（技能 / MCP / 插件 / 提示模板读写 pi 自己的文件）；子 agent 身份加载 |
+| `src/agent/plugins.ts` / `src/agent/plugin-host.ts` | 桌面插件：清单发现与启用/授权登记（`~/.pi-desktop/plugins.json`）；host 入口在 agent 进程里加载并回答页面的调用 |
+| `src/main/plugins.ts` / `src/shared/plugin-sdk.ts` | `pidesk-plugin://` 文件服务（包内路径 + CSP）与页面调用的转发；iframe 里的 `pidesk` API |
 | `src/agent/pr-watch.ts` | host 内的 PR watcher（轮询 `gh pr view` / `glab mr view`，必要时起 turn） |
 | `src/agent/naming.ts` / `src/agent/suggest.ts` | 后台小请求：会话命名与下一句输入预测（`completeSimple`，不进会话上下文） |
 | `src/agent/side-model.ts` | 给后台请求挑同 provider 里最便宜的小模型 |
@@ -169,7 +179,7 @@ Renderer (src/renderer)            Main (src/main)                  Agent host (
 
 ### 历史消息操作
 
-历史用户消息下方提供复制、回退和创建分支。回退移除当前上下文中的该消息和后续对话，并把文字与可恢复的附件放回输入框；新分支创建独立会话、保留原对话，从所选消息之前开始并恢复原文。消息使用 pi 的稳定 entry ID 定位，重复文字不会定位错；回退位置会立即持久化。任务运行时暂时禁用历史操作；这些操作只改变对话，已经产生的文件改动会保留。
+历史用户消息下方提供复制、回退和创建分支。回退会移除当前上下文中的该消息和后续对话，按逆序恢复期间由 Pi Desktop 的 edit / write 工具产生的文件改动，并把文字与可恢复的附件放回输入框；新分支创建独立会话、保留原对话，从所选消息之前开始并恢复原文。消息使用 pi 的稳定 entry ID 定位，重复文字不会定位错；回退位置和文件恢复会立即持久化。任务运行时暂时禁用历史操作。
 
 ### 上下文压缩
 
@@ -267,6 +277,7 @@ Code 会话输入框上方的 PR 条报告当前分支的 PR：状态颜色、`+
 | Skills | `SKILL.md` 技能目录 |
 | Connectors | MCP 服务器（`mcp.json`，个人级和 `<项目>/.pi/mcp.json`） |
 | Plugins | pi packages（`settings.json` 的 `packages`） |
+| 桌面插件 | 同一个包里的 `piDesktop` 段：侧边栏页面 + 它自己的 host 入口，见 [docs/plugins.md](docs/plugins.md) |
 | Commands | 提示模板（`/` 命令） |
 | Subagents | 子 agent 身份，见下 |
 

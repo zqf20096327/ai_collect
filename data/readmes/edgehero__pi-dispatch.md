@@ -24,8 +24,9 @@ A dark factory runs with the lights off, because nobody needs to stand on the fl
 work: **dark engineering**. It runs the [pi](https://github.com/earendil-works/pi) coding agent for you in the background, on
 your own computer or server. Agents start on their own and do the work, and a second agent can review it. Each job happens in
 a sealed box that is thrown away afterwards, stops at the spending limit you set, and shows up live on one web page. On a project
-on GitHub or GitLab, the work stops today at a proposed change: pi-dispatch never merges it into your project, so what ships
-stays a person's decision.
+on GitHub or GitLab, the work stops by default at a proposed change, so what ships stays a person's decision.
+You can [explicitly allow a kind of job to land its change](docs/triggers.md#allowing-a-job-to-land-its-change),
+subject to your project's checks and approvals.
 
 It is free and open source. You pay your AI provider for what the agent uses, or use a subscription you already have.
 
@@ -74,7 +75,7 @@ pi install npm:@edgehero/pi-dispatch-admin
 
 ```bash
 mkdir my-dispatch && cd my-dispatch
-npx --yes --ignore-scripts @edgehero/pi-dispatch@5.3.2 up --console
+npx --yes --ignore-scripts @edgehero/pi-dispatch@5.3.3 up --console
 ```
 
 It checks the folder first, then lists what it will do and asks before it starts anything. It installs into that folder and
@@ -84,7 +85,7 @@ opens your browser on the checklist, already signed in.
 
 ```bash
 mkdir my-dispatch && cd my-dispatch && npm init -y
-npm install --save-exact @edgehero/pi-dispatch@5.3.2 @edgehero/pi-dispatch-admin@5.3.2 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
+npm install --save-exact @edgehero/pi-dispatch@5.3.3 @edgehero/pi-dispatch-admin@5.3.3 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
 ./node_modules/.bin/pi-dispatch up --console
 ```
 
@@ -199,6 +200,10 @@ results when it suits you. **Zero touch** tells you how far you have
 come: how often runs needed a person, per project, over the last 7, 30 or 90 days.
 ([Triggers](docs/triggers.md), [watching alerts](docs/watch.md), [Zero touch](docs/zero-touch.md))
 
+A label, comment or review can also start a job in a folder on your machine. Several arriving together can become one job;
+more arriving while it works leave at most one follow up. Jobs sharing that folder take turns, including scheduled jobs.
+Your technical person sets up [what runs and who may start it](docs/triggers.md#a-forge-event-running-a-local-command).
+
 **To get here:** read **Zero touch** under Runs. It counts per project and repository, not per kind of work, with a goal of zero
 and a marker at 5%. When a project rarely needs you, add a job that reviews each proposed change, let it run, and read what comes
 back. You are out of the loop for that work, and still in charge of what ships.
@@ -217,8 +222,8 @@ back. You are out of the loop for that work, and still in charge of what ships.
   <img src="docs/images/console/console-zero-touch.png?v=2026-11-03" alt="The Zero touch page: how often runs needed a person, what the cause was, and which projects run without help">
 </picture>
 
-Out of the loop does not mean out of control. The spending limits hold with nobody watching, every job stays in its
-box, and a person still merges.
+Out of the loop does not mean out of control. The spending limits hold with nobody watching and every job stays in its
+box. By default, a person still merges. You can explicitly [allow a job to land its change](docs/triggers.md#allowing-a-job-to-land-its-change).
 
 ## Manage a swarm of agents
 
@@ -241,8 +246,8 @@ practice, and your job changes: you stop watching an agent and start looking aft
   gone out.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-dark.png?v=2026-11-03">
-  <img src="docs/images/console/console-overview.png?v=2026-11-03" alt="The console's overview page: one question and two jobs that need you, five jobs waiting and why, four running, 15 dollars spent of a 25 dollar daily limit, and a timeline of every project's runs with the jobs in line after the now line">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-dark.png?v=2026-11-16">
+  <img src="docs/images/console/console-overview.png?v=2026-11-16" alt="The console's overview page: one question and two jobs that need you, five jobs waiting and why, four running, 15 dollars spent of a 25 dollar daily limit, and a timeline of every project's runs with the jobs in line after the now line">
 </picture>
 
 <sub>The overview: what needs you, what is waiting, what is running and what today has cost.</sub>
@@ -342,8 +347,8 @@ order. The page shows which model is resting and why, and suggests a cheaper mod
 ([model roles](docs/model-roles.md), [fallback models](docs/model-failover.md), [canaries](docs/canary.md)).
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-models-dark.png?v=2026-11-05">
-  <img src="docs/images/console/console-models.png?v=2026-11-03" alt="The Models page: each role with its model and its fallbacks in order, a model cooling down after a rate limit, which models are in use, and proposals with their comparisons">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-models-dark.png?v=2026-11-16-922">
+  <img src="docs/images/console/console-models.png?v=2026-11-16-922" alt="The Models page: each role with its model and its fallbacks in order, a model cooling down after a rate limit, which models are in use, and proposals with their comparisons">
 </picture>
 
 **Your subscription's limits:** how much of its five hour and seven day windows is used, and when each resets
@@ -407,8 +412,8 @@ updates by itself ([updates](docs/console.md#updates)).
 A schedule also gets a button that fires it now ([triggers](docs/triggers.md)).
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-trigger-dark.png?v=2026-11-12-847">
-  <img src="docs/images/console/console-trigger.png?v=2026-11-12-847" alt="What its jobs get, on one trigger's page, with two changes not written yet: a pill per machine saying what differs or that it is unknown, then the model and its job cap, the flow, a switch for the staged packages and one for each of your extensions, the outside systems with linear switched on, pi's own tools with bash off and a switch for each tool the newest run that says what it loaded lists, the image and secrets, what the last run had under each, and a bar with Preview the change and Discard">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-trigger-dark.png?v=2026-11-16-922">
+  <img src="docs/images/console/console-trigger.png?v=2026-11-16-922" alt="What its jobs get, on one trigger's page, with two changes not written yet: a pill per machine saying what differs or that it is unknown, then the model and its job cap, the flow, a switch for the staged packages and one for each of your extensions, the outside systems with linear switched on, pi's own tools with bash off and a switch for each tool the newest run that says what it loaded lists, the image and secrets, what the last run had under each, and a bar with Preview the change and Discard">
 </picture>
 
 **Your phone:** every page fits, for answering a question from wherever you are. The console listens only on its own machine
@@ -416,8 +421,8 @@ unless you set it up otherwise, so reaching it from a phone takes a private tunn
 ([from another machine](docs/console.md#from-another-machine)).
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-phone-dark.png?v=2026-11-05">
-  <img src="docs/images/console/console-overview-phone.png?v=2026-11-03" alt="The overview page on a phone, one column, with the questions that need you at the top" width="320">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-overview-phone-dark.png?v=2026-11-16">
+  <img src="docs/images/console/console-overview-phone.png?v=2026-11-16" alt="The overview page on a phone, one column, with the questions that need you at the top" width="320">
 </picture>
 
 ## Bring your own pi setup
@@ -496,15 +501,15 @@ machine the console runs on, and says how to undo it. One
 **Confirm** saves it, the console records who did, and **Undo** puts it back, or says what to edit by hand where it cannot.
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-trigger-change-dark.png?v=2026-11-12-847">
-  <img src="docs/images/console/console-trigger-change.png?v=2026-11-12-847" alt="The preview of that change, in words: linear on and where its jobs would now connect, bash off, when the change takes effect, a waiting job that would now be refused, that a job on a machine without linear is refused and which machines have it, who it is recorded under, the lines of the file as they would change, the way to undo it, and one Confirm button">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/console/console-trigger-change-dark.png?v=2026-11-16-922">
+  <img src="docs/images/console/console-trigger-change.png?v=2026-11-16-922" alt="The preview of that change, in words: linear on and where its jobs would now connect, bash off, when the change takes effect, a waiting job that would now be refused, that a job on a machine without linear is refused and which machines have it, who it is recorded under, the lines of the file as they would change, the way to undo it, and one Confirm button">
 </picture>
 
 **Some changes that would only fail later are refused before they cost you anything.** A job cap can only lower the limit you set for all jobs. If a trigger's model is too
 expensive for even one request under its cap, the page refuses the change and names the amount a short task needs, rather than letting a job start and fail.
 If the page is out of date, it asks you to reload rather than write over someone else's change.
 
-**Some of this only a person sets.** The commands pi-dispatch gives an AI cannot set a trigger's job cap, the list of models its jobs may use, its fallback models,
+**Some of this only a person sets.** The commands pi-dispatch gives an AI cannot set a trigger's job cap, the list of models its jobs may use, its fallback models, random model pools,
 its outside systems, which tools its jobs lose (pi's own or those your extensions add), whether they load your packages, or which of your packages and extensions
 they leave out. A command that tries is refused, and you are never asked to confirm it. You set those on the page,
 or your technical person sets them in the triggers file ([what the card can say, and what it refuses](docs/console.md#what-a-triggers-jobs-get)).
@@ -716,8 +721,8 @@ live, and which the console and the panel can edit, or you by hand. Each entry i
 | `pull_request` | a PR or MR event, a submitted GitHub review, or a close | the PR title and body |
 | `issue` | an issue closes | the issue title and body |
 
-`run` names a `flow` or a registered pi `command`. **Who may fire a trigger is decided by your forge, not by pi-dispatch**:
-[`SECURITY.md`](SECURITY.md) states each forge's rule. Each optional `run` field, in a line:
+`run` names a `flow` or a registered pi `command`. **Who may fire a trigger follows your forge's permission checks**, with an
+optional reviewed grant for local review listeners below. [`SECURITY.md`](SECURITY.md) states each forge's rule. Each optional `run` field, in a line:
 
 - `steer`: a running job takes messages ([steering](docs/steering.md)).
 - `resume`, `awaitInput`: follow up jobs continue the session, and the agent can ask and wait ([sessions](docs/sessions.md)).
@@ -731,12 +736,13 @@ live, and which the console and the panel can edit, or you by hand. Each entry i
 - `excludeExtensions`: leaves named staged packages and overlay extensions out of its jobs ([leaving one out](docs/exclude-tools.md#leaving-an-extension-out-runexcludeextensions)).
 - `excludeExtensionTools`: removes named tools an extension adds. If no staged package or overlay extension brought a name, the job can stop before its agent starts ([an extension's tools](docs/exclude-tools.md#an-extensions-tools-runexcludeextensiontools)).
 - `provider`, `model`: the model its jobs run on ([choosing the model](docs/triggers.md#choosing-the-model-and-the-turn-limit)).
+- `modelSelection`: choose one model at random from a reviewed list, keeping its choice through retries ([random model pools](docs/triggers.md#choosing-randomly-from-a-reviewed-pool)).
 - `models`, `fallbackModels`, `maxCostUsd`: the models a job may call, the ones to try when one is rate limited, and its own dollar cap ([limiting models](docs/triggers.md#limiting-which-models-a-job-may-call), [fallback models](docs/model-failover.md), [a dollar cap](docs/triggers.md#a-dollar-cap-per-job)).
 - `replicas`: races independent sandboxes on one event ([replicas](docs/replicas.md)).
 - `waitFor`: holds a job, unstarted and unbilled, until a time or your own check ([waiting](docs/wait-for.md)).
 - `instructions`, `skillsDir`, `github`, `portfolio`: the rest are in [`docs/triggers.md`](docs/triggers.md#optional-run-fields).
 
-On a trigger's page in the console, a person changes `flow`, `provider`, `model`, `maxCostUsd`, `models`, `fallbackModels`, `mcp`, `packages`, `excludeTools`, `excludeExtensions` and
+On a trigger's page in the console, a person changes `flow`, `provider`, `model`, `maxCostUsd`, `models`, `fallbackModels`, `modelSelection`, `mcp`, `packages`, `excludeTools`, `excludeExtensions` and
 `excludeExtensionTools` with one preview and one Confirm ([what a trigger's jobs get](docs/console.md#what-a-triggers-jobs-get)). The page writes this host's file,
 so on a fleet where each host keeps its own, a host keeps what it has until its copy changes. A few others have the page's Edit form. The rest change in the file, and editing the file works as it always has.
 
@@ -749,6 +755,32 @@ A whole project can get one environment from your secrets manager, granted once 
 hours pause a repo or folder by weekday and timezone ([`docs/pause-windows.md`](docs/pause-windows.md)). The
 portfolio manager example plans a budget split for the week and reports what it asked for
 ([`docs/portfolio-manager.md`](docs/portfolio-manager.md)).
+
+### Start a local command from a forge event
+
+A forge event can start a registered pi extension command in a local folder, inside the same job container as a scheduled
+command. For example, run your installed `sweep` command when a GitHub review is submitted:
+
+```json
+{
+  "version": 5,
+  "triggers": [{
+    "on": { "type": "pull_request", "forge": "github", "id": "pr-sweep",
+      "action": ["review_submitted"], "debounceSeconds": 10, "reviewAuthors": ["review-app[bot]"] },
+    "run": { "kind": "local", "worker": "runner-a", "folder": "/srv/automation", "command": "sweep" }
+  }]
+}
+```
+
+Set `PI_WORKER_NAME=runner-a` on the owning worker. Matching events coalesce for ten quiet seconds, capped at five minutes;
+events during a run leave at most one pending follow up. Jobs using the same actual folder run one at a time. Give a paired
+cron rule the same `run.worker` and `run.folder`.
+
+The command receives no event text or actor identity, including in `/job/event.json`; it reads the current state it needs itself.
+The optional `reviewAuthors` list admits those exact GitHub logins, including Apps, alongside the usual collaborator check.
+The service's own identity stays refused. This grants permission to start the command; [merge permission remains a separate
+option for forge flows](docs/triggers.md#allowing-a-job-to-land-its-change).
+Upgrade the worker, receiver and console before using this version 5 rule. See the [full setup and matching rules](docs/triggers.md#a-forge-event-running-a-local-command).
 
 ## Flows: the custom prompt a trigger runs
 
@@ -924,7 +956,7 @@ Label an issue, and a container works on a fresh clone, opens a PR and comments 
 - **Only a collaborator's label, `@pi` comment or formal review starts a job.** A PR from a stranger's fork never starts a job on its
   own. A review is gated on the **reviewer**, so a collaborator reviewing that fork PR does start one.
 - **The token can merge.** GitHub puts push and merge behind the same permission, so under every auth source the job's token could
-  merge. pi-dispatch never does, and **branch protection on your default branch is the real control**. The worker refuses a repo
+  merge. The harness never calls merge, and a job may do so only with explicit trigger permission. **Branch protection on your default branch is the real control**. The worker refuses a repo
   without it, before any spend.
 - **Which token a job holds depends on the auth source.** The GitHub App mints one per job, for one repo, valid for an hour. The default
   `gh` source forwards **your own login, full scope and never expiring**, and `pi-dispatch doctor` warns about that.
@@ -1024,8 +1056,9 @@ Jobs start with `--pull=never`, so build or pull every image first ([job image](
 | `launch/` | the recipes that render every image here |
 
 **What a change needs.** The specs change in the same pull request as the code, with a revision row. A pull request that breaks a `CONST-*` entry is
-asked to justify changing the rule first, not the code. pi and its packages stay on exact pins. Nothing in this project merges anything, and CI greps
-for it. Sign off your commits with `git commit -s`: this project uses the [DCO](https://developercertificate.org/), not a CLA.
+asked to justify changing the rule first, not the code. pi and its packages stay on exact pins. The harness never calls a merge or approval API, and CI greps
+for those calls. A reviewed trigger can explicitly permit its job's agent to land its own change through the forge's checks and approvals.
+Sign off your commits with `git commit -s`: this project uses the [DCO](https://developercertificate.org/), not a CLA.
 
 **The look.** A change to the console lands in `design/` first and is pasted into the console by hash. `python3 design/tools/build.py` rebuilds and checks
 the cards, and `node launch/render-images.mjs --console --only <golden>` draws any state of any page, so you can look at it. [`AGENTS.md`](AGENTS.md) is the

@@ -1,7 +1,4 @@
-# Enterprise Scale Azure Factory (ESAF) - submodule 
-- "<b>Dare to delete"</b> | "Project based"  | "Ops: Dev,Stage,Prod" |"Secure from day 1/private" |"Battle tested since 2019 | Only GA:No AVD,AZD
-- <b>"Result & Value" - Get AI to Production</b>, accelerated: 147 templates with Ops, such as below "Live voice AI chat" created in <1h
-
+# Enterprise Scale Azure Factory (ESAF) - 
 ![](./documentation/v2/20-29/images/26-esaf-agent-chat-voice-purple.png)
 <br>
 
@@ -11,7 +8,7 @@
 
 Creates a standalone test Factory and project 001. This button **does not deploy ESAF Agent Chat** or AI models.
 
-**Deploy ESAF Agent Chat + live voice (preview)**
+**Deploy ESAF Agent Chat + live voice**
 
 [![Deploy ESAF Agent Chat to Azure](./portal/agent-chat/deploy-button.svg)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjostrm%2Fazure-enterprise-scale-ml%2Fmain%2Fportal%2Fagent-chat%2Fazuredeploy.json)
 
@@ -65,6 +62,9 @@ Governed Microsoft Foundry, Azure Machine Learning and up to <b>+54</b> Azure re
 - **Private by design.** Hub-spoke or Virtual WAN, private endpoints and DNS, isolation per team, Bicep through GitHub Actions or Azure DevOps.
 - **Operating models included.** DataOps, MLOps and GenAIOps templates that run on the secure infrastructure, with [+147 usecase templates to choose from](usecase_code/readme.md).
 - **Subscription vending (auto).**: Choose 1 team per Subscription/LZ or Multiple teams (e.g.Hackathons,Sandbox)
+submodule 
+- "<b>Dare to delete"</b> | "Project based"  | "Ops: Dev,Stage,Prod" |"Secure from day one" |"Battle tested since 2019 | Only GA:No AVD,AZD
+
 
 <p align="center">
 <a href="./documentation/v2/20-29/24-end-2-end-setup.md"><b>Set up</b></a> &nbsp;·&nbsp;

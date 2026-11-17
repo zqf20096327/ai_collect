@@ -23,6 +23,7 @@
   <a href="./README_ru.md">Русский</a> |
   <a href="./README_es.md">Español</a> |
   <a href="./README_pt.md">Português (Brasil)</a> |
+  <a href="./README_tr.md">Türkçe</a> |
   <a href="https://modelflare.dev/?utm_source=anymodelbot&utm_campaign=amb_readme">Modelflare</a> |
   <a href="https://modelflare.dev/pricing?utm_source=anymodelbot&utm_campaign=amb_readme">价格</a> |
   <a href="./docs/development.md">开发文档</a> |
@@ -45,6 +46,8 @@
 [![QQ][qq-shield]][qq-link]
 [![Telegram][telegram-shield]][telegram-link]
 [![Discord][discord-shield]][discord-link]
+
+[![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to)
 
 </div>
 

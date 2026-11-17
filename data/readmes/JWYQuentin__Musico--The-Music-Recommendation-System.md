@@ -151,7 +151,8 @@ python -m m4a_rec.demo        # writes data/processed/demo/index.html; open it i
 ## Use it: a local API
 
 The trained system also runs as a service. Both stages run at request time, and it
-recommends for any listener, including someone the models never saw, from their listens.
+recommends for any listener, including someone the models never saw, from their listens,
+and for someone with no listens at all, from a three-question form.
 
 ```bash
 python -m m4a_rec.bundle      # gathers the trained models into data/processed/serving/, seconds
@@ -162,6 +163,8 @@ python -m m4a_rec.api         # then open http://127.0.0.1:8000/docs to try ever
 |---|---|
 | `GET /users/{user_id}/recommendations?k=10` | a listener in the data, from the vector learned for them |
 | `POST /recommendations` | anyone, from their listens: `{"plays": [{"track_id": "...", "timestamp": "..."}], "k": 10}` |
+| `POST /onboarding` | someone with no listens, from a form: `{"artists": ["..."], "genres": ["..."], "mainstream": "deep cuts", "k": 10}` |
+| `GET /genres` | the 685 genre names a form may use |
 | `GET /tracks/{track_id}/similar?k=10` | the nearest tracks in the retrieval model's space |
 | `GET /health` | what the service holds |
 
@@ -193,6 +196,12 @@ in the reply.
   ([`reports/listens_curve.md`](reports/listens_curve.md)).
 
   ![NDCG@10 by how much a new listener has played](reports/figures/listens_curve.png)
+- **Weighting recent tracks in the fold-in did not survive `test`.** Halving a track's
+  weight every 10 places down a newcomer's recency order raised NDCG@10 on `val` from
+  0.0446 to 0.0490, but on `test` it gave 0.0299 against 0.0332 (interval on the gap
+  −0.0082 to +0.0017) and clearly lower Recall@100 and @500. It is not used; the
+  decision was made after reading `test` and is recorded as such
+  ([`reports/decisions.md`](reports/decisions.md)).
 - **With no listens at all, three answers are worth about one or two recent tracks.**
   The same listeners were served from nothing but the answers they would give to a short
   form, read off their own listens, so these are upper bounds on a real form. Naming
@@ -203,8 +212,10 @@ in the reply.
   Asking more adds nothing: seven questions score 0.0184. How genre answers are used
   matters. Averaging the vectors of the 50 known listeners with the closest taste works;
   playing each genre's most popular track for the newcomer scores 0.0058, below
-  popularity. The API does not take a form yet
-  ([`reports/questionnaire.md`](reports/questionnaire.md)).
+  popularity ([`reports/questionnaire.md`](reports/questionnaire.md)). `POST /onboarding`
+  serves the two measured forms: favourite artists when any is in the catalogue (seed
+  tracks, then both stages), otherwise genres and the optional mainstream answer
+  (look-alike listeners, retrieval only). Its lists are the ones the report scored.
 - **Fast:** a median of 21 ms per request for a known listener and 56 ms for someone new,
   on an Apple-silicon Mac with 10 cores.
 

@@ -22,7 +22,7 @@
 
 `e2e-skills` provides three open-source skills for Playwright and Cypress end-to-end (E2E) testing with Claude Code, Codex, and other compatible AI coding agents. Generate Playwright tests, review existing Playwright/Cypress tests and PRs, and fix a failing test without changing product code.
 
-**Your E2E test is green. Is the feature?** In 34 of 200 popular React repositories, we found a test that can stay green while the feature it names is broken. [Scope and limits](#evidence-and-limits) · [Data](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/770f2de79848c65b80116219ce2d03747a3ae370/raw/oss-prevalence-and-reviewer-20261106/oss-cases/summary.md) The linked HF snapshot retains the pre-correction figures; see the [correction](CHANGELOG.md#swallowed-wait-re-audit).
+**Your E2E test is green. Is the feature?** In 34 of 200 popular React repositories, we found a test that can stay green while the feature it names is broken. [Scope and limits](#evidence-and-limits) · [Data](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/770f2de79848c65b80116219ce2d03747a3ae370/raw/oss-prevalence-and-reviewer-20261106/oss-cases/summary.md)
 
 `e2e-skills` helps check whether tests prove the behavior they name. Start with [Install and try it](#install-and-try-it): add the free memo, install the skills, then run a 30-second scan.
 
@@ -108,7 +108,7 @@ test('shows the welcome message', async ({ page }) => {
 The bundled scanner catches the false-green assertions without project configuration. Here is the text report (without `--format text` the scanner prints the same result as JSON):
 
 ```console
-$ npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan tests/ --format text
+$ npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills scan tests/ --format text
 Node source scan (canonical report view)
 Status: COMPLETE; confirmed P0: 2, P0 candidates: 0, unresolved locations: 0.
 Next:
@@ -163,7 +163,7 @@ Starting with cases where tests pass despite bugs, the talk covers combining lin
 Copy the [memo block](docs/test-authoring-memo.md#the-memo) into your project’s `AGENTS.md` (Codex) or `CLAUDE.md` (Claude Code), keeping existing instructions, or insert it from the project directory (Node.js 22+). Use `--host claude` for `CLAUDE.md` and `--dry-run` to preview; the command writes the memo, not skills:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills guidance --host codex --project . --memo
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills guidance --host codex --project . --memo
 ```
 
 ### 2. Install the skills
@@ -181,7 +181,7 @@ Review and debugging work right away. Test generation also needs Playwright's of
 A static scan takes about 30 seconds on a typical test directory (Node.js 22+):
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan tests/ --format text --fail-on p0 --allow-incomplete
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills scan tests/ --format text --fail-on p0 --allow-incomplete
 ```
 
 `INCOMPLETE` in the report means some code was not analysed, so exit 0 is not a clean result ([terms](docs/scanner-cli.md#glossary)).
@@ -225,8 +225,8 @@ Then restart your agent in the project. In Claude Code, approve the project's `p
 Optionally, add the [test-authoring memo](docs/test-authoring-memo.md) to the instruction file your agent loads, so agents also test failure paths. For Claude Code, use your E2E test directory; for Codex, use the repository root, or the E2E test directory if you start Codex there. Add `--dry-run` first to preview:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills guidance --host claude --project path/to/e2e-tests --memo
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills guidance --host codex --project path/to/repository --memo
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills guidance --host claude --project path/to/e2e-tests --memo
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills guidance --host codex --project path/to/repository --memo
 ```
 
 In our dev pilot the memo file made the biggest difference: without it the skills caught fewer failure-path faults (Claude 42/54, Codex 27/54) than with the memo in the root instruction file (53/54, 45/54).
@@ -236,12 +236,12 @@ In our dev pilot the memo file made the biggest difference: without it the skill
 The scanner runs without installing the skills, so you can use it locally or in CI:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan path/to/tests --format text
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills scan path/to/tests --format text
 ```
 
 On a real repository the scan often ends `INCOMPLETE` with exit code 2: some code could not be analysed, which does not mean your tests failed. Ask your agent to run the `e2e-reviewer` skill on the same tests; in CI, add `--allow-incomplete` so the exit code follows only the analysed findings. Reading the report: a `P0` (`[P0][CONFIRMED]`) is a mechanically confirmed test that can pass without checking anything; `LLM-TRIAGE` marks an unconfirmed candidate for the `e2e-reviewer` skill to confirm or reject, and a `P0 candidate` (`[P0?]`) is one that would be P0 if confirmed. `provenance-unsupported` means the scanner could not prove where a value such as `page` came from, so that code was not checked. Every other term in the report is defined in the [glossary](docs/scanner-cli.md#glossary).
 
-If `npx` fails with `ETARGET` ("No matching version found ... with a date before"), your `.npmrc` sets `min-release-age`, which hides releases newer than that many days. Lift it for this one pinned command only, without editing `.npmrc`: `npm_config_min_release_age=0 npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan path/to/tests --format text`.
+If `npx` fails with `ETARGET` ("No matching version found ... with a date before"), your `.npmrc` sets `min-release-age`, which hides releases newer than that many days. Lift it for this one pinned command only, without editing `.npmrc`: `npm_config_min_release_age=0 npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills scan path/to/tests --format text`.
 
 ### Alternatives and troubleshooting
 
@@ -262,7 +262,7 @@ The first pair is for Claude Code, the second for Codex. Test generation still n
 If a skill does not appear or generation stays not ready, run the read-only diagnostic. It reports installed skill copies (including stale duplicates and leftover copies of the removed debugger skills), official agents and MCP configuration, and next steps, and changes nothing:
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills doctor --host claude --project /path/to/playwright-project
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills doctor --host claude --project /path/to/playwright-project
 ```
 
 Use `--host codex` for Codex. See the [installation guide](docs/installation.md) for prerequisites, an installer that also prepares the project setup, and manual setup.
@@ -313,12 +313,12 @@ Review cost: roughly $1–2 per repository in the recorded Claude `claude-sonnet
 
 These are scoped observations, not general accuracy or causal claims: source judgments are not runtime proof, the sample is not random, and review results depend on model and project. [Data and limits](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/tree/770f2de79848c65b80116219ce2d03747a3ae370/raw/oss-prevalence-and-reviewer-20261106)
 
+<details>
+<summary>Benchmark scope and model results</summary>
+
 The [3.0.0 validation record](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/2992d57564bb5b0d7eae0650a64f392481211d41/snapshots/git-93afd3b105b869b15589634c88676230c7d92254/benchmarks/release-readiness-v1/README.md) covers installation, scanner behavior, safety rules, and selected Playwright/Cypress runs, with retained evidence and result scope.
 
 The [October 20 checks](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/2992d57564bb5b0d7eae0650a64f392481211d41/snapshots/git-93afd3b105b869b15589634c88676230c7d92254/benchmarks/release-readiness-v1/README.md#october-20-successor) exercise isolated installation, official-agent/MCP test generation and execution in Claude Code and Codex, and selected Cypress assertion-mutation and app-fault probes. The original generator cohort and later replay remain separately reported.
-
-<details>
-<summary>Benchmark scope and model results</summary>
 
 Reviewer results depend on the model: on the same frozen snapshot and 36 public development cases with five repetitions per arm, `gpt-6-sol` passed [v22](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/2992d57564bb5b0d7eae0650a64f392481211d41/snapshots/git-93afd3b105b869b15589634c88676230c7d92254/benchmarks/reviewer-holdout-v22/README.md), `gpt-6.1-sol` passed [v24](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/2992d57564bb5b0d7eae0650a64f392481211d41/snapshots/git-93afd3b105b869b15589634c88676230c7d92254/benchmarks/reviewer-holdout-v24/README.md), and `gpt-6-luna` failed [v23](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/2992d57564bb5b0d7eae0650a64f392481211d41/snapshots/git-93afd3b105b869b15589634c88676230c7d92254/benchmarks/reviewer-holdout-v23/README.md), with all three models completing all 540 calls in each run. These tool-free results measure supplied instructions, not scanner benefit or accuracy on unseen projects. Scores apply only to the reported snapshots. See [benchmark status](benchmarks/STATUS.md) for model-specific scores, protocols, negative findings, and claim boundaries, and [CHANGELOG.md](CHANGELOG.md) for behavior changes.
 
@@ -386,14 +386,14 @@ Weak but not wrong: addressed when refactoring.
 
 ## Failure debugging
 
-**Replaced in 3.5.** One thin `e2e-debugger` replaces `playwright-debugger` and `cypress-debugger`. In two Claude measurements on 24 real failure cases each, the old debuggers were no more accurate than a plain agent (20/24 vs 22/24; 22/24 vs 23/24 on 3.4.0), at about 1.6–1.7× the cost and 1.8× the runtime. To fix a failing test, ask for it in plain language ("This test is failing, fix it.") and [`e2e-debugger`](skills/e2e-debugger/SKILL.md) loads the failure-handling rules of the [test-authoring memo](docs/test-authoring-memo.md#failure-handling) for that request, so no instruction-file setup is needed. It reruns the test three times with retries off and stops at FLAKY on mixed results; otherwise it decides whether the app or the test is wrong, reports a suspected app regression without changing product code or the test, and repairs only a proven test defect without weakening it, then scans the changed spec and requires three passing reruns. It may hand the repair to the official Playwright healer with the same rules pasted into the prompt. Why: in a [prepared healer study](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/5ba1d3e97f9dd810cf03ebc3b01dca54b12b4c6f/raw/evidence-20261106b/healer-memo-v5/tab2-results/memov5-heal-20261106.md), Claude Sonnet 5.5 and Codex GPT-6 Sol each edited app code in 10/16 regression cases with a 136-word memo and 0/16 with memo v5 (301 words). Development data, not held-out. A [separate development replication](docs/test-authoring-memo.md#failure-handling) reported 16/16 without the note on each model, versus 0/16 (Claude) and 1/16 (Codex) with it; these are separate study results. Both arms placed the memo in the root instruction file, with one run per case; the study does not separate wording from length effects. The skill delivers the failure-handling rules without the instruction file; that delivery has not been measured yet. For a test made green by weakening it, use `e2e-reviewer`. The installer and `e2e-skills doctor` warn about a copy of a removed debugger left by an older install and never delete it; remove it yourself if you no longer use it.
+One thin `e2e-debugger` replaces `playwright-debugger` and `cypress-debugger`. In two Claude measurements on 24 real failure cases each, the old debuggers were no more accurate than a plain agent (20/24 vs 22/24 and 22/24 vs 23/24), at about 1.6–1.7× the cost and 1.8× the runtime. To fix a failing test, ask for it in plain language ("This test is failing, fix it.") and [`e2e-debugger`](skills/e2e-debugger/SKILL.md) loads the failure-handling rules of the [test-authoring memo](docs/test-authoring-memo.md#failure-handling) for that request, so no instruction-file setup is needed. It reruns the test three times with retries off and stops at FLAKY on mixed results; otherwise it decides whether the app or the test is wrong, reports a suspected app regression without changing product code or the test, and repairs only a proven test defect without weakening it, then scans the changed spec and requires three passing reruns. It may hand the repair to the official Playwright healer with the same rules pasted into the prompt. Why: in a [prepared healer study](https://huggingface.co/datasets/voidmatcha/e2e-skills-benchmarks/blob/5ba1d3e97f9dd810cf03ebc3b01dca54b12b4c6f/raw/evidence-20261106b/healer-memo-v5/tab2-results/memov5-heal-20261106.md), Claude Sonnet 5.5 and Codex GPT-6 Sol each edited app code in 10/16 regression cases with a 136-word memo and 0/16 with memo v5 (301 words). Development data, not held-out. A [separate development replication](docs/test-authoring-memo.md#failure-handling) reported 16/16 without the note on each model, versus 0/16 (Claude) and 1/16 (Codex) with it; these are separate study results. Both arms placed the memo in the root instruction file, with one run per case; the study does not separate wording from length effects. The skill delivers the failure-handling rules without the instruction file; that delivery has not been measured yet. For a test made green by weakening it, use `e2e-reviewer`. The installer and `e2e-skills doctor` warn about a copy of a removed debugger left by an older install and never delete it; remove it yourself if you no longer use it.
 
 ## Standalone scanner
 
 Run the code scanner directly without asking an AI agent. It reports possible problems for review; it does not run your tests or decide whether they prove the intended behavior.
 
 ```bash
-npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.1 e2e-skills scan path/to/tests --format text
+npx --yes --package=@voidmatcha/e2e-skills-scanner@3.5.3 e2e-skills scan path/to/tests --format text
 ```
 
 Requires Node.js 22 or newer; the TypeScript parser is bundled. npx downloads the package and its dependencies if they are not already cached. The scanner itself does not download tools or load executable project configuration, and it does not execute tests. Use `--format json` for structured output or `--report-file <new-file>` to save a full report without overwriting an existing file.
@@ -479,7 +479,7 @@ jobs:
           format: text
 ```
 
-The `v3` tag must point to a release containing this action before this example can run; this local change does not create that tag.
+The action is also listed on the GitHub Marketplace as [E2E Skills static scan](https://github.com/marketplace/actions/e2e-skills-static-scan).
 
 ## Detailed documentation
 

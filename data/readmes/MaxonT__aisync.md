@@ -1,11 +1,15 @@
 
 
 
+
+
 <div align="center">
 
 <img src="docs/assets/banner.svg" width="100%" alt="aisync: Multi-Agent Context Management, Coordination & Observability"/>
 
 # aisync: Multi-Agent Context Management, Coordination & Observability
+
+<!-- mcp-name: io.github.MaxonT/aisync -->
 
 **One local hub for developers working with multiple AI coding agents: share the right context, coordinate concurrent work, and verify what happened.**
 
@@ -16,9 +20,13 @@ aisync is **agent-agnostic at its core**. It provides native hooks for Claude Co
 ![python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![deps](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![license](https://img.shields.io/badge/license-MIT-green)
+[![PyPI](https://img.shields.io/pypi/v/aisync-cli?label=PyPI&logo=pypi&logoColor=white)](https://pypi.org/project/aisync-cli/)
+[![npm](https://img.shields.io/npm/v/%40mingyang2026%2Faisync-cli?label=npm&logo=npm&logoColor=white)](https://www.npmjs.com/package/@mingyang2026/aisync-cli)
+[![Homebrew](https://img.shields.io/badge/Homebrew-maxont%2Ftap-FBB040?logo=homebrew&logoColor=white)](https://github.com/MaxonT/homebrew-tap)
+[![GHCR](https://img.shields.io/badge/GHCR-container-2496ED?logo=docker&logoColor=white)](https://github.com/MaxonT/aisync/pkgs/container/aisync)
 [![GitHub stars](https://img.shields.io/github/stars/MaxonT/aisync.svg?style=social)](https://github.com/MaxonT/aisync/stargazers)
 
-**English** · [中文](README.zh-CN.md) · [Website](https://maxont.github.io/aisync/) · [Demo status board](https://maxont.github.io/aisync/board/)
+**English** · [中文](README.zh-CN.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md) · [Português](README.pt.md) · [Русский](README.ru.md) · [Website](https://maxont.github.io/aisync/) · [Demo status board](https://maxont.github.io/aisync/board/)
 
 </div>
 
@@ -30,7 +38,13 @@ aisync is **agent-agnostic at its core**. It provides native hooks for Claude Co
 > - **Multi-agent coordination:** declare file claims, detect overlapping claims (exit code 3), release ownership, and surface blockers and other agents' activity.
 > - **Observability & verification:** inspect agent activity, blockers, and health through the journal, status reports, and board; `aisync verify` checks the journal's hash chain for tampering.
 >
-> File claims are **cooperative**, not OS-enforced locks: agents must use the claim protocol. Hash-chain verification detects changes to recorded events; it does not prove every claimed action occurred.
+> File claims are **cooperative**, not OS-enforced locks: agents must use the claim protocol. Hash-chain verification detects an edited event or a deleted one that a later event points at; it does not detect deleting the last line(s) of the journal (tested on 0.2.10; keep the hub in git to catch that), and it does not prove every claimed action occurred.
+
+**Try it** (needs [uv](https://docs.astral.sh/uv/); runs `aisync demo` on a throwaway hub in your temp folder with synthetic data, and your own hub is not touched):
+
+```sh
+uvx --from aisync-cli aisync demo
+```
 
 ## Who it's for
 
@@ -42,7 +56,12 @@ Developers running **two or more AI coding agents** across one or multiple repos
 
 ### The Agent Swarm Floor
 
-https://github.com/user-attachments/assets/b28bed86-c262-4efa-b92d-9eeca2bf5b73
+<img width="705" height="875" alt="cover" src="https://github.com/user-attachments/assets/cee23378-2379-49a5-960b-ac63764bb95f" />
+
+
+
+https://github.com/user-attachments/assets/f741ef6f-0c10-46f4-8c94-769c6e02d30e
+
 
 
 
@@ -75,6 +94,15 @@ curl -fsSL https://maxont.github.io/aisync/install.sh | bash
 
 Needs Python 3.11+ and git, on macOS or Linux. Nothing else: aisync uses only the standard library.
 
+**📦 Or from a package manager.** The command is still `aisync`:
+
+```bash
+pipx install aisync-cli           # 🐍 PyPI (or: uv tool install aisync-cli)
+npx @mingyang2026/aisync-cli --version   # npm 0.2.9
+brew install maxont/tap/aisync    # 🍺 Homebrew tap (Python 3.14 first)
+docker run --rm ghcr.io/maxont/aisync --version   # 🐳 GHCR image
+```
+
 
 ### Two agents, one file
 
@@ -94,7 +122,7 @@ Step by step: [how it works](https://maxont.github.io/aisync/how-it-works/) · t
 
 aisync also does the rules part: one rules block copied into every tool's own rule file, synced 3-way, conflicts never overwritten.
 
-**Dogfooded:** 6,700+ journal events from 7 AI tools over 4 weeks.
+**Dogfooded:** 6,700+ journal events on the author's own hub.
 
 ## Why not just AGENTS.md?
 
@@ -105,7 +133,7 @@ Keep AGENTS.md for a repo's standing instructions. aisync sits beside it and cov
 | Scope | Standing instructions for agents working in a repo | A shared hub across configured agents and repositories |
 | When it is read | When a session starts | At start, and mid-session through hooks |
 | Who is editing what | Not covered | Cooperative claims: an overlap returns exit 3 to the caller |
-| Tamper evidence | Not provided by the file format | Hash-chained journal: `aisync verify` detects alterations to recorded events |
+| Tamper evidence | Not provided by the file format | Hash-chained journal: `aisync verify` detects edited events and deleted events that a later event points at (not the last lines) |
 | Context per session | Whole file, every time | Triggered rules only: always-loaded rules 20,673 → 7,876 tokens* |
 
 <sub>\* Measured once on one author's own hub (2026-11-08), always-loaded rules before and after layered loading. One machine, not a benchmark: your numbers will differ. `aisync tidy` reports your own rule budget and uncited rules.</sub>
@@ -143,7 +171,7 @@ aisync release -a codex -p api
 | `guard` | Claude Code hook: one session per repo; denies an edit when another session holds the repo (opt-in, see below) |
 | `lease` | who holds which repo (`lease status`), or free one by hand (`lease release --key`) |
 | `wt` | a session's own git worktree: `wt start` opens it; `wt land` lands it on main and needs `--yes` (without it: a dry run) |
-| `mcp` | serve the hub to any MCP agent over stdio (`pip install 'aisync[mcp]'`) |
+| `mcp` | serve the hub to any MCP agent over stdio (`pip install 'aisync-cli[mcp]'`) |
 | `claim` / `release` / `claims` | who is working on which files right now; overlap = exit 3 |
 | `news` | what other tools did since this session last looked |
 | `hook <tool>` | entry point for Claude Code, Codex and Cursor hooks (reads hook JSON, never fails) |
@@ -156,6 +184,11 @@ aisync release -a codex -p api
 | `sync` / `watch` | run one sync cycle / the debounced, event-driven loop |
 | `resolve` / `resume` | rule on a rule conflict / clear failure counters after a pause |
 | `demo` | the throwaway hub shown above |
+| `version` / `-v` / `-V` / `--version` | print the version |
+| `help [command]` | this screen, or one command's options (`aisync help log`) |
+| `update` | check GitHub for a newer release and print the command that upgrades (uv, pipx, install.sh, brew or pip); it never installs by itself |
+| `doctor` | check python, git, the hub folder and the journal chain (exit 1 on any failure) |
+| `completion` | print a shell completion script for bash, zsh or fish: `eval "$(aisync completion zsh)"` |
 
 ## New in 0.2.0: rules as interfaces, loaded in layers
 
@@ -166,15 +199,13 @@ A rules file grows until every session pays for it and nobody reads it. 0.2.0 tr
   `rule rewrite` reshapes old rules by ID and refuses a rewrite that drops a path, number or command.
 - **Layers.** Mark a tool copy `layer = "core"`: it carries `core_topics` in full and every other topic as one line.
   When a prompt or tool call touches a topic's keywords (`[shelf]`), the hook injects that topic once per session.
-  On the author's own hub this cut the always-loaded rules from 20,673 to 7,876 tokens; replaying 7 days of
-  transcripts, 98.9% of the 189 times a folded rule was cited, it had been injected before the citation.
+  On the author's own hub this cut the always-loaded rules from 20,673 to 7,876 tokens.
 - **A stable prefix.** `progress_file` moves the live progress table out of the shared page, so the page stays
-  byte-identical and prompt caches keep hitting: the next session after a journal event read 61,151 cached tokens
-  instead of 13,060.
+  byte-identical and prompt caches keep hitting.
 - **A clerk, not a janitor.** `aisync tidy` proposes (duplicates, uncited rules, budget overruns) and never edits;
   a replaced rule moves to `rules-archive.md` with its ID, nothing is deleted.
 - **Any agent.** Three doors: the AGENTS.md page, the CLI, and `aisync mcp` (tools: rules, rule_add, log, claim,
-  release, news, status, tidy). The core stays standard-library only; the MCP SDK is the optional `aisync[mcp]` extra.
+  release, news, status, tidy). The core stays standard-library only; the MCP SDK is the optional `aisync-cli[mcp]` extra.
 
 ## How it works
 
@@ -243,7 +274,7 @@ delete the `PreToolUse` and `SessionEnd` entries whose command ends in ` guard` 
 | [![Claude Code stars](https://img.shields.io/github/stars/anthropics/claude-code?style=social&label=Claude%20Code)](https://github.com/anthropics/claude-code) | Mid-session news rides on Claude Code hooks: `aisync install-hooks` adds SessionStart, UserPromptSubmit and PostToolUse entries to ~/.claude/settings.json, and `aisync hook claude-code` answers with hookSpecificOutput.additionalContext only when another tool changed something. |
 | [![Codex stars](https://img.shields.io/github/stars/openai/codex?style=social&label=Codex)](https://github.com/openai/codex) | Codex reads ~/.codex/AGENTS.md, which is where aisync seeds the shared rules block, and its hooks.json takes the same SessionStart / UserPromptSubmit / PostToolUse events, so `aisync hook codex` reuses the Claude Code reply format. |
 | [Cursor](https://cursor.com/docs/agent/hooks) | Cursor hooks (~/.cursor/hooks.json) deliver the rules and progress at sessionStart and the news after each postToolUse through additional_context, because Cursor's User Rules live inside the app instead of a file aisync could sync. |
-| [![git stars](https://img.shields.io/github/stars/git/git?style=social&label=git)](https://github.com/git/git) | The journal borrows git's hash chain: every event stores the id of the one before it and its own id is a SHA-256 of that link plus its body, so `aisync verify` spots any edited, lost or reordered line. The hub itself is a local git repo. |
+| [![git stars](https://img.shields.io/github/stars/git/git?style=social&label=git)](https://github.com/git/git) | The journal borrows git's hash chain: every event stores the id of the one before it and its own id is a SHA-256 of that link plus its body, so `aisync verify` spots an edited line, or a lost or reordered line that a later line points at (a deleted last line is not caught). The hub itself is a local git repo. |
 
 aisync is an independent project, not affiliated with the projects above.
 
@@ -257,6 +288,12 @@ The images are generated: the terminal GIF is a recorded real run of
 [`.github/refine/demo-terminal.json`](.github/refine/demo-terminal.json), the how-it-works animation
 comes from [`.github/refine/how-it-works.stages.json`](.github/refine/how-it-works.stages.json), and the
 credits above from [`.github/refine/lineage.json`](.github/refine/lineage.json). All demo data is synthetic.
+
+**Contributing.** See [CONTRIBUTING.md](CONTRIBUTING.md). Open work you can pick up:
+[good first issues](https://github.com/MaxonT/aisync/issues?q=is%3Aopen+label%3A%22good+first+issue%22) and
+[help wanted](https://github.com/MaxonT/aisync/issues?q=is%3Aopen+label%3A%22help+wanted%22). Known gaps are filed
+as issues with a repro, for example [#23](https://github.com/MaxonT/aisync/issues/23) (`verify` does not detect a
+deleted last journal line). Questions and ideas go to [Discussions](https://github.com/MaxonT/aisync/discussions).
 
 MIT licensed.
 

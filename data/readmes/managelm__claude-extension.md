@@ -132,7 +132,7 @@ Beyond the skills, the portal gives Claude 33 built-in tools. A few only appear 
 | `get_account_info` | Plan, usage limits, groups and sites |
 | `list_team_members` | Team members with roles, permissions and SSH keys |
 | `search_inventory` | Search packages, services, containers across the fleet |
-| `search_security` | Search audit findings, pentest findings and threat alerts, with a time range |
+| `search_security` | Search audit and vulnerability findings, pentest findings, threat alerts and exposure checks, with a time range |
 | `search_activity` | Search logins, failed logins, sudo commands and file changes, with a time range |
 | `search_ssh_keys` / `search_sudo_rules` | Search SSH keys and sudo privileges with identity mapping |
 | `search_certificates` | Certificates discovered on your servers (expiring, weak, self-signed) |

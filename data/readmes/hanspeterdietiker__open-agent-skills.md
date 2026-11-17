@@ -140,27 +140,36 @@ Open-Agents-Skills/
 
 ### Com o Claude Code
 
-1. Clone o repositório:
+Instale via `npx` com o [`skills`](https://github.com/vercel-labs/skills) CLI — não precisa clonar o repositório (requer [Node.js](https://nodejs.org/) 22.20+):
+
+1. Veja as Skills disponíveis:
 
    ```bash
-   git clone https://github.com/hanspeterdietiker/Open-Agents-Skills.git
+   npx skills add hanspeterdietiker/Open-Agents-Skills --list
    ```
 
-2. Copie a pasta da Skill desejada para o diretório de Skills do Claude Code:
+2. Instale a Skill desejada:
 
    ```bash
-   # Skills pessoais (disponíveis em todos os projetos)
-   cp -r Open-Agents-Skills/skills/<nome-da-skill> ~/.claude/skills/
+   # Skills do projeto (em .claude/skills/, compartilhadas com o time via git)
+   npx skills add hanspeterdietiker/Open-Agents-Skills --skill <nome-da-skill> -a claude-code
 
-   # Skills do projeto (compartilhadas com o time via git)
-   cp -r Open-Agents-Skills/skills/<nome-da-skill> .claude/skills/
+   # Skills pessoais (em ~/.claude/skills/, disponíveis em todos os projetos)
+   npx skills add hanspeterdietiker/Open-Agents-Skills --skill <nome-da-skill> -a claude-code -g
+
+   # Todas as Skills de uma vez
+   npx skills add hanspeterdietiker/Open-Agents-Skills --skill '*' -a claude-code
    ```
+
+   Para atualizar depois: `npx skills update`. Para remover: `npx skills remove <nome-da-skill>`.
 
 3. Pronto! O Claude passará a acionar a Skill automaticamente quando a tarefa corresponder à sua descrição — ou você pode chamá-la diretamente com `/<nome-da-skill>`.
 
 ### Com outros agentes
 
-O formato `SKILL.md` é simples e baseado em Markdown, portanto pode ser adaptado para outros agentes e frameworks: basta incluir o conteúdo da Skill no contexto do agente quando a tarefa correspondente for detectada.
+O mesmo comando instala em outros agentes suportados pelo CLI (Codex, Cursor, Gemini CLI, GitHub Copilot e outros) — troque `-a claude-code` pelo agente desejado ou omita `-a` para escolher interativamente.
+
+O formato `SKILL.md` é simples e baseado em Markdown, portanto também pode ser adaptado para outros agentes e frameworks: basta incluir o conteúdo da Skill no contexto do agente quando a tarefa correspondente for detectada.
 
 ---
 

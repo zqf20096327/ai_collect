@@ -8,7 +8,7 @@
 <p align="center"><sub>Open-source AI novel writing assistant and long-form production studio.</sub></p>
 
 <p align="center">
-  <a href="https://ai-novel-writing-assistant.mintlify.app"><strong>🌐 项目官网｜使用文档、下载安装与更新说明</strong></a>
+  <a href="https://biznovelstudio.com"><strong>🌐 项目官网｜使用文档、下载安装与更新说明</strong></a>
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@
 
 <p align="center">
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/releases/latest"><strong>下载 Windows 桌面版</strong></a> ·
-  <a href="https://ai-novel-writing-assistant.mintlify.app">项目官网与文档</a> ·
+  <a href="https://biznovelstudio.com">项目官网与文档</a> ·
   <a href="#快速开始">第一次使用</a> ·
   <a href="#源码运行">源码运行</a> ·
   <a href="https://github.com/ExplosiveCoderflome/AI-Novel-Writing-Assistant/issues">问题反馈</a>
@@ -54,26 +54,20 @@
 
 ## 最新更新
 
-### 2026-11-15 · v0.8.6
+### 2026-11-16 · v0.8.7
 
-桌面版本 `v0.8.6`：新增厂商默认关闭思考，兼容探测遇限流自动重试，工作台加入 BLG 夺冠庆祝彩蛋；桌面正式发布改为各平台先打包校验、再上传已通过的安装包与更新元数据。
-
-#### 新增
-
-- 品牌标识连点五次触发 BLG 夺冠庆祝：彩带与奖杯庆祝层，点空白、按 Esc 或点「继续创作」关闭。
-
-#### 优化
-
-- 新增厂商默认关闭思考：新建自定义厂商与首次配置的内置厂商默认关闭，已有厂商的设置保持不变。
-- 桌面正式发布改为各平台并行打包并先完成校验，再上传已经通过检查的安装包与更新说明；Mac 两个架构的更新信息会合并后再发布，避免互相覆盖。
+桌面版本 `v0.8.7`：大纲「交互完善」提案在依赖写错、章节未标明所属卷或误改卷章节列表时，会给出可读中文提示并拒绝采纳，不再出现笼统的服务器错误；采纳失败不会留下半截结果。书级方案生成固定关闭深度思考、输出上限随候选数量调整，遇 Token 上限自动换路重试，失败卡上一键恢复。
 
 #### 修复
 
-- 兼容探测遇限流或服务端错误时自动退避重试，探测预算放宽，突发限流下探测也可完成。
+- 大纲「交互完善」提案：依赖写错成节点编号、新增章节未标明所属卷、或误改卷的章节列表时，会给出可读的中文提示并拒绝采纳，不再出现笼统的服务器错误；采纳失败不会留下半截结果。
+- 书级方案生成固定关闭深度思考，输出上限随候选数量调整，模型路由上已配更高上限时以路由为准。
+- 书级方案生成遇输出 Token 上限时自动提高上限重试一次，上限封顶 32768；其他失败原因不重试。
+- 书级方案生成失败时，失败卡上出现恢复按钮：关闭深度思考并重试、提高输出上限并重试（上限已满时不出现），点一下改设置并原地重试。
 
 [查看完整更新历史](docs/releases/release-notes.md)
 
-正式桌面版以 GitHub Release 的 **v0.8.6** 五平台安装包为准；`v0.8.5` 为上一完整五平台版本，`v0.8.4` 缺 Windows 包，`v0.8.3` 标签曾推送但打包失败、无安装包，`v0.8.2` 附注标签也不对应可下载版本。功能与致谢见[完整更新历史](docs/releases/release-notes.md)。
+正式桌面版以 GitHub Release 的 **v0.8.7** 五平台安装包为准；`v0.8.6` 为上一完整五平台版本，`v0.8.5` 亦为完整五平台，`v0.8.4` 缺 Windows 包，`v0.8.3` 标签曾推送但打包失败、无安装包，`v0.8.2` 附注标签也不对应可下载版本。功能与致谢见[完整更新历史](docs/releases/release-notes.md)。
 
 
 ## 现在已经能做什么
@@ -319,7 +313,7 @@ V1 与 V2 分别编排这条链，已保存的小说资料可以复用。章节�
 | 原理、模块边界与开发规范 | [开发 Wiki](./docs/wiki/README.md) · [文档目录](./docs/README.md) · [协作规则](./AGENTS.md) |
 | 历史更新与后续方向 | [完整更新记录](./docs/releases/release-notes.md) · [当前路线图](./TASK.md) |
 
-也可以在[在线文档站](https://ai-novel-writing-assistant.mintlify.site)搜索模块与使用问题。
+也可以在[在线文档站](https://biznovelstudio.com)搜索模块与使用问题。
 
 ## 源码运行
 

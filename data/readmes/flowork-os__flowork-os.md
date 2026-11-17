@@ -211,6 +211,24 @@ We welcome pull requests, custom tools, and kernel enhancements!
 
 ---
 
+## 👑 Doktrin Pengembangan Sistem & Perubahan Berkas (3 Sovereign Rules)
+
+Setiap modifikasi sistem, refaktorisasi, atau penambahan fitur baru WAJIB mematuhi 3 aturan mutlak berikut:
+
+### 1. Push ke GitHub (Auto-Updater OTA)
+- Perubahan telah di-commit ke repositori utama (`/home/awenkaudico/flowork-os-repo`).
+- Berhasil dipush ke GitHub via `upload-flowork-os.sh` (`main -> main`, Exit Code 0) sehingga sistem auto-updater (Delta OTA) langsung mendistribusikan pembaruan ke seluruh pengguna.
+
+### 2. Persistensi Sistem (Anti-Reset Saat Restart)
+- Seluruh perubahan dikunci permanen pada lokasi sistem (`/opt/floworkos/bin/flowork-apk-window`, `/opt/floworkos/bin/flowork-apk`, `/etc/skel`, dan `/usr/share/themes/`).
+- Konfigurasi pengguna baru dan template desktop dipersistensikan di `/etc/skel` agar tidak pernah ter-reset saat sistem di-reboot.
+
+### 3. Inklusi ISO Builder
+- Seluruh berkas baru maupun yang dimodifikasi berada di dalam root `/opt/floworkos` dan path sistem yang otomatis di-bundle ke dalam berkas squashfs saat `build-live-iso.sh` dijalankan untuk membangun Live ISO resmi Flowork OS.
+
+---
+
+
 <div align="center">
 
 **Flowork OS — The Autonomous Future of Personal Computing.**  

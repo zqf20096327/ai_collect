@@ -45,8 +45,6 @@
 
 ## 核心特性
 
-> **v1.2.0 新功能**：⏱️ [时间线注入](#️-时间线注入让模型知道过了多久)——让模型知道「你隔了多久才回来」，只改最后一条消息，上游前缀缓存零影响。默认关闭，系统设置一键开启。
-
 ### 🧭 双协议接入
 
 | 协议 | 端点 | 说明 |
@@ -220,6 +218,7 @@ curl -sS http://127.0.0.1:3001/v1/decisions \
 | **Kimi K2.x** | `thinking.type=disabled` | 只开关，无强度档 → `thinking.type=enabled` |
 | **GLM-4.5** | `thinking.type=disabled` | 只开关，无强度档 → `thinking.type=enabled` |
 | **Qwen3 / 3.5 / 3.6 / 3.7** | `enable_thinking=false` | 无 effort 档 → `enable_thinking=true` + `thinking_budget` 分档（low=1024 / medium=4096 / high=8192） |
+| **MiMo V2.6** (flash/pro) | `reasoning_effort=none` 原样透传 | 原生支持 `low/high`；`xhigh` / `max` 自动降为 `high`（枚举上限） |
 | **OpenAI o3/o4/GPT-5** | `reasoning_effort=none` | 原生支持，完全透传 |
 
 - 请求体没有 `reasoning_effort` 时**零开销**（原样透传，不改 body）
@@ -227,6 +226,37 @@ curl -sS http://127.0.0.1:3001/v1/decisions \
 - 单条请求即可控制，无需每模型单独适配——**一套代码接入所有思考模型**
 
 > **Qwen 系列差异说明**：Qwen3/3.5/3.6/3.7 都是混合思考模型（`enable_thinking` + `thinking_budget`），但默认状态不同——Qwen3.5 开源小模型**默认禁用思考**（显式开启才有推理），Qwen3/3.6 默认思考（可关闭）；Qwen3 支持 `/think` `/no_think` 提示词软切换，Qwen3.6 不支持。**Qwen2.5 无思考模式**，不匹配本特性，原样透传。
+
+> **MiMo 强度档实测**：经聚合站（opencode-zen / 基元律动）转发的 MiMo V2.6，`reasoning_effort` 各档位**在服务端表现无差别**（与上游 issue 结论一致）；`xhigh/max` 须降档是因为上游枚举只到 `high`，原样透传会 400「Invalid request parameters」。
+
+### 🔁 思考链回传兼容（reasoning_content echo-back）
+
+部分思考模型在**多轮工具调用**场景要求：历史 assistant 轮的思考链 `reasoning_content` 必须**原样回传**，否则上游返回 400（DeepSeek / Kimi 官方文档），或**静默降级**为「指令遵循下降、幻觉增多」（MiMo 官方文档原话）——表现为模型"变笨、忘事"。
+
+**璇玑在网关层做了缓存 + 注入**：从上游响应里提取 assistant 轮的 `reasoning_content` 缓存（`tool_call_id` + `content` 指纹双索引，内存 + SQLite 双写、跨重启持久化），下一轮请求转发前补齐历史消息里缺失的字段。
+
+**当前覆盖范围（重要）：**
+
+| 模型族 | 状态 | 说明 |
+|---|---|---|
+| **DeepSeek V4 / V3.1+** | ✅ 已做 | 严格要求回传，缺失即 400；网关注入修复 |
+| **GLM-4.x / 5.x** | ✅ 已做 | 官方建议回传（提升效果与缓存命中）；实测 gs/基元律动 空串/空格/真实文本均 200 不报错 |
+| **MiMo V2.6** | ✅ 已做（网关侧） | 官方要求回传（缺失静默降级）；经聚合站无思考链可缓存，实际不触发，待直连小米验证 |
+| **Kimi / Qwen / OpenAI 等** | ⏳ 不注入 | 未知上游可能严格校验未知字段，保持保守 |
+
+**回传注入的兼容性实测（2026-10-05，直连上游、assistant 历史带 `reasoning_content`）：**
+
+- `gs` / `基元律动`（glm-5.3-flash）：空串、空格、真实文本 **均 200 不报错**；
+- `opencode-zen`（MiMo）：被 Cloudflare 拦直连无法直测，但实测其响应**不含** `reasoning_content`，缓存无数据来源、注入实际不会触发。
+
+**注意事项：**
+
+- 实测 gs（glm-5.3-flash）的 tool-call 轮 `reasoning_content` 多为**空串**——缓存/注入空串（空串也是有效标记），语义上等同"该轮无思考"，不改变上游行为；一旦上游开始透出真实思考链，注入自动携带，无需改代码；
+- 客户端侧自送的场景（如 GLM `clear_thinking:false` 保留式思考、Hermes 直连小米的 echo pad）：消息里已有该字段时注入自动跳过，不覆盖客户端值。
+
+**客户端侧已有兜底**：Hermes ≥ 0.21.3 在客户端对**直连** `*.xiaomimimo.com` / provider `xiaomi` 的模型做了 echo-back pad（`_REASONING_ECHO_RULES` 的 `mimo` 家族），直连场景已自洽；经网关的聚合站链路不受影响。
+
+**待办（TODO）**：直连小米官方端点（`api.xiaomimimo.com`）恢复可用后，补测 MiMo 回传兼容（空串/真实文本）并观察聚合站是否开始透出 `reasoning_content`；注入门控 `needsReasoningEcho` 已覆盖 mimo，届时无需改代码。
 
 ### 🎯 最佳思考等级（自动推荐 + 强制覆盖）
 
@@ -274,53 +304,6 @@ curl -sS http://127.0.0.1:3001/v1/decisions \
 - **思考型模型兼容**：max_tokens 不足时模型可能返回"只有思考无正文"的响应——只要思考字段（`reasoning`/`reasoning_content`）有值即视为正常透传，不误判为故障切换上游
 - **模型映射**：客户端简单名 ↔ 上游真实名自动转换，`THUDM/GLM-4-9B-0414` → `glm4:9b`
 
-### ⏱️ 时间线注入（让模型知道「过了多久」）
-
-> **新功能（v1.2.0）**，默认关闭，在「系统设置 → 时间线注入」一键开启。
-
-大模型没有时间感。你和它聊了三小时再回来接着问，它还以为刚刚才说过话；客户端把历史消息原样发过来，里面一个时间戳也没有。
-
-璇玑可以在**最后一条 user 消息前**补上两行：
-
-```
-【时间】2026-09-10 14:05 周四（Asia/Shanghai）
-【距上轮】3 小时 22 分钟
-过了很久我又来了…
-```
-
-**为什么是「只改最后一条」**：前面所有历史消息一个字节都不动，上游的**前缀缓存完全不受影响**——这是本功能能做到「零成本」的关键。若给每条消息都打时间戳，缓存会当场全废。
-
-**会话怎么识别**（无需客户端配合）：网关是无状态的，只能靠指纹认人：
-
-- `chainKey` = hash(API Key + 全部消息内容)，对长对话做前缀采样（首 4 条 + 末 3 条），保证跨轮哈希稳定
-- `tailKey` = hash(最后一条消息)，用来区分「新的一轮」与「同一轮重发」——重试不会把间隔清零
-- 客户端每轮会把 assistant 回复追加进历史，前后两轮不是前缀关系，所以用**多候选回退**（截掉尾部 1~3 条逐一试查）把两者接上
-
-**存储**：内存 LRU（默认上限 10 万会话、TTL 30 天）+ SQLite 异步落库，**进程重启后「距上轮」依然连续**。只存哈希与时间戳，不落任何消息明文。
-
-**配置项**（全部在管理界面）：
-
-| 键 | 默认 | 说明 |
-|---|---|---|
-| `proxy.time_context_enabled` | `false` | 总开关 |
-| `proxy.time_context_tz` | `Asia/Shanghai` | 时区（IANA 名） |
-| `proxy.time_context_format` | `%Y-%m-%d %H:%M` | strftime 格式 |
-| `proxy.time_context_template` | `【时间】{{datetime}} {{weekday}}（{{tz}}）` | 注入模板 |
-| `proxy.time_context_min_gap` | `5` | 间隔小于 N 分钟不显示 |
-| `proxy.time_context_include_gap` | `true` | 是否显示「距上轮」 |
-| `proxy.time_context_max_sessions` | `100000` | 会话表上限 |
-| `proxy.time_context_ttl_days` | `30` | 会话保留天数 |
-| `proxy.time_context_persist` | `true` | 重启后是否保留 |
-
-**适用范围**：`/v1/chat/completions`、`/v1/messages`（Anthropic）、Gemini 三个入口共用同一张会话表，切协议时时间线连续。纯工具回填轮次（content 只有 `tool_result`/`tool_use`）自动跳过。
-
-**已知边界**（说清楚比藏着好）：
-
-- 用户在客户端里**编辑或删除历史消息** → 指纹变了，会被当成新会话，丢失一次间隔记忆（不会报错）；
-- 两个不同会话恰好共享完全相同的历史前缀 → 可能被合并（实际极少见）；
-- 间隔粒度取决于会话表 TTL，超过 30 天视为新会话；
-- 这是**近似**方案。如果你用 Hermes Agent 这类支持插件的客户端，[hermes-time-context](https://github.com/icefairy/hermes-time-context) 能做到精确到秒且不受上述限制——两者可共存，也可只开一头。
-
 ## 快速开始
 
 > **📖 新手请看图文教程**：[璇玑网关使用说明（小白版，含截图）](docs/使用说明.md)
@@ -356,15 +339,15 @@ docker run -d --name xuanji \
   xuanji
 ```
 
-数据持久化：数据库存 `/opt/xuanji.db`（卷映射到宿主机 `./data` 目录），升级容器不丢配置。
+数据持久化：数据库存 `/data/xuanji.db`（卷映射到宿主机 `./data` 目录），升级容器不丢配置。
 
 ### Supervisor 部署（裸机）
 
 ```ini
 # /etc/supervisor/conf.d/xuanji.conf
 [program:xuanji]
-command=/opt/xuanji/xuanji-server --port 3001 --db /opt/xuanji/xuanji.db
-directory=/opt/xuanji
+command=/data/xuanji/xuanji-server --port 3001 --db /data/xuanji/xuanji.db
+directory=/data/xuanji
 stopasgroup=true
 autorestart=true
 user=root
@@ -408,7 +391,7 @@ user=root
 
 ```bash
 go build ./... && go test ./...
-# 499 个测试全绿，覆盖协议转换、路由选择、熔断、思考归一化与最佳等级注入、时间线会话指纹
+# 185 个测试全绿，覆盖协议转换、路由选择、熔断、思考归一化与最佳等级注入
 ```
 
 ## 与同类项目对比
@@ -476,6 +459,19 @@ go build ./... && go test ./...
 | MCP / Skills | 不涉及（纯网关，不碰工具配置） | 管理工具侧配置 |
 
 **一句话总结**：CC Switch 是"多套配置之间的切换器"，璇玑是"所有配置之上的调度器"。用璇玑之后，你不再需要"切换"这个动作——Claude Code 配一次 `ANTHROPIC_BASE_URL` 指向网关，之后所有渠道变更都在网关后台完成，客户端无感。
+
+## 关联项目
+
+同一作者维护的一套「AI 自用基础设施」，彼此可独立使用，也可组合成完整工作流：
+
+| 项目 | 简介 |
+| --- | --- |
+| [开阳 Mizar](https://github.com/icefairy/mizar) | 极简、零依赖、单文件、可自举的 AI Agent 框架——Go 核心 + TS 插件 + SKILL.md 技能 + MCP 工具，主星与辅星互为陪伴，北斗第六星 |
+| **璇玑 Xuanji**（本仓库） | OpenAI / Anthropic 双协议 AI 网关，多上游自动分流、故障切换、成本调度 |
+| [飞鹤输入法 Feihe](https://github.com/icefairy/feihe) | Windows TSF 双拼输入法，Rust + windows-rs 实现；小鹤双拼引擎、内置词库、不联网不弹窗、源码全开 |
+| [hmem · Hermes 记忆系统](https://github.com/icefairy/hmem_hermes_agent) | 仿生混合记忆引擎，为 AI Agent 提供长期记忆；SQLite + sqlite-vec + jieba + bge-m3，支持反思引擎、知识图谱与时间衰减 |
+
+> 组合玩法：开阳负责「干活」，hmem 负责让它「记得住」，璇玑负责「用得上、用得起」——Agent 与各类工具统一指向璇玑网关，由它调度多上游。
 
 ## License
 

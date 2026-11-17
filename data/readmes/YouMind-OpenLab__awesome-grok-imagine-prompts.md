@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3410** |
+| 📝 Total Prompts | **3420** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-15** |
+| 🔄 Last Updated | **2026-11-16** |
 
 ---
 
@@ -189,6 +189,141 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Grok Imagine Dragon Dew Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A creative video prompt for Grok Imagine featuring dragons sleeping in a field waking up and shaking off dew which refracts sunlight.
+
+#### 📝 Prompt
+
+```
+Dragons sleeping in field up flowers wakes up and shakes off the dew dew drops refract early morning sunlight into many colors and hues
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122193276073873408/img/B_PLpnoh1ScMflKQ.jpg" width="600" alt="Grok Imagine Dragon Dew Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13918)**
+
+**Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2122193351017648184) | **Published:** Nov 16, 2026
+
+---
+### Grok Imagine Video Prompt: Astro Lifting Weights
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for generating a video of the character Astro lifting weights in a gym setting with background activity.
+
+#### 📝 Prompt
+
+```
+Have Astro lifting weights in the gym, only a few women running on a treadmill behind him. He is saying "no pain, no gain. Happy Sunday friends!...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122192892005412864/img/I_-7rG5jBKWPwSX8.jpg" width="600" alt="Grok Imagine Video Prompt: Astro Lifting Weights">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13922)**
+
+**Author:** [Astro 💫](https://x.com/_Astro_Maniac_) | **Source:** [Link](https://x.com/_Astro_Maniac_/status/2122192907394482189) | **Published:** Nov 16, 2026
+
+---
+### Sci-Fi Rocket Cockpit Zero-G Shot
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed cinematic prompt for generating an 8-second continuous shot inside a rocket cockpit at the moment gravity cuts out, specifying camera angles, film grain, and audio silence.
+
+#### 📝 Prompt
+
+```
+Live-action cinematic sci-fi, 8s, 16:9, single continuous shot, no cuts, rocketship cockpit at the moment gravity cuts out, 47° diagonal field of view, camera fixed at chest height 2 meters from her at screen-left, Kodak Vision3 500T grain, silent.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122185125320658944/img/9v38FPreL-aP7uVW.jpg" width="600" alt="Sci-Fi Rocket Cockpit Zero-G Shot">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13920)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2122185137911980311) | **Published:** Nov 16, 2026
+
+---
+### Grok Imagine Plankton Squidward Steal
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A humorous video prompt for Grok Imagine featuring SpongeBob characters stealing a Nintendo Switch from Walmart.
+
+#### 📝 Prompt
+
+```
+Plankton and Squidward steals Nintendo switch from Walmart (managers reaction that alarm goes off)
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122094031677120512/img/HpIW6nJaHNA1TOk4.jpg" width="600" alt="Grok Imagine Plankton Squidward Steal">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13919)**
+
+**Author:** [L Bergeron](https://x.com/LBergeron335488) | **Source:** [Link](https://x.com/LBergeron335488/status/2122094098790142393) | **Published:** Nov 15, 2026
+
+---
+### Plankton and Squidward Stealing iPads
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A humorous scenario prompt featuring SpongeBob characters Plankton and Squidward stealing iPad Pros from Target, including manager reactions.
+
+#### 📝 Prompt
+
+```
+Plankton and Squidward steals iPad Pro x's from target (managers reaction that alarm goes off)
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122091441845374976/img/0XHqXC-HH6k1YyZX.jpg" width="600" alt="Plankton and Squidward Stealing iPads">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13921)**
+
+**Author:** [L Bergeron](https://x.com/LBergeron335488) | **Source:** [Link](https://x.com/LBergeron335488/status/2122091562175975903) | **Published:** Nov 15, 2026
+
+---
+### Arctic Wolf Mecha Armor Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for a sci-fi transformation video featuring a chibi boy in arctic wolf mecha armor.
+
+#### 📝 Prompt
+
+```
+Arctic Wolf Mecha Armor
+A tiny Chibi boy with white hair, a torn icy-blue wolf hood and a wooden backpack walks through a frozen mountain village. A giant holographic wolf appears behind him. Blue robotic components rush toward his body, forming heavy ice-resistant armor. A mechanical wolf-head helmet locks into position.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121963860970057728/img/FOk6YXuCjqavz2IN.jpg" width="600" alt="Arctic Wolf Mecha Armor Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13925)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2121964325296578588) | **Published:** Nov 15, 2026
+
+---
+### Chibi Demon Slayer Armor Transformation Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for a video showing a chibi girl transforming into crimson combat armor in a futuristic battlefield.
+
+#### 📝 Prompt
+
+```
+Crimson Demon Slayer
+A Chibi girl with red eyes, black hair and a ragged red hood walks through a ruined futuristic battlefield. Red energy flames surround her. Hundreds of mechanical plates assemble into crimson combat armor. Two curved plasma swords emerge from her arms. Her helmet forms with glowing red horns.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121909975442472960/img/NfutRYiinJpLgGzZ.jpg" width="600" alt="Chibi Demon Slayer Armor Transformation Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13927)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2121910047517114851) | **Published:** Nov 15, 2026
+
+---
 ### Grok Imagine Prompt: Subtle Natural Motion
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -212,12 +347,12 @@ Subtle natural motion: the freckled man with slightly thinned and subtly receded
 
 ![English](https://img.shields.io/badge/lang-English-blue)
 
-> A humorous video prompt where a dog gains superpowers, shoots lasers, and fights Godzilla.
+> A creative action prompt giving a dog superpowers, laser eyes, and fighting Godzilla.
 
 #### 📝 Prompt
 
 ```
-give this dog superpowers, shoots lasers from eyes, blows up building, fights godzilla, knock over Godzilla
+Give this dog superpowers, shoots lasers from eyes, blows up building, fights Godzilla, knocks over Godzilla
 ```
 
 <img src="https://pbs.twimg.com/amplify_video_thumb/2121833110413434880/img/DIJtsx_stv06t8Qf.jpg" width="600" alt="Dog Superpowers Godzilla Fight">
@@ -376,6 +511,46 @@ Remove head gear and replace with colorful rainbow hats. Change what he is sayin
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13880)**
 
 **Author:** [Edwin Chee](https://x.com/EdwinAlephOmega) | **Source:** [Link](https://x.com/EdwinAlephOmega/status/2121603615148437639) | **Published:** Nov 14, 2026
+
+---
+### Mechanical Butterfly Warrior Transformation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A highly detailed prompt describing a chibi girl transforming into combat armor surrounded by robotic butterflies, suitable for video generation.
+
+#### 📝 Prompt
+
+```
+Mechanical Butterfly Warrior
+A beautiful Chibi girl with pink hair, a delicate torn pink hood and butterfly-shaped decorations walks through a magical forest. Thousands of glowing robotic butterflies surround her. Their metallic wings attach to her clothing, transforming it into pink-and-silver combat armor. Two enormous mechanical butterfly wings unfold behind her.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121574574244433920/img/cwn_PeJbQ8eyXd1T.jpg" width="600" alt="Mechanical Butterfly Warrior Transformation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13923)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2121574659552412049) | **Published:** Nov 14, 2026
+
+---
+### Chibi Golden Lion Guardian Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for a video showing a chibi boy transforming into lion armor with a golden hammer in ancient ruins.
+
+#### 📝 Prompt
+
+```
+Golden Lion Guardian
+A little Chibi boy with golden hair, a ragged brown lion-ear hood and a wooden lantern walks through ancient ruins. Golden energy spreads across his body. Metallic lion armor assembles over his clothes. A huge robotic lion mane unfolds around his helmet, and a golden energy hammer materializes in his hands.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121554568500617216/img/ZgQ5IzBNWe3QnzkD.jpg" width="600" alt="Chibi Golden Lion Guardian Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13926)**
+
+**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2121554612079534348) | **Published:** Nov 14, 2026
 
 ---
 ### Colorize 1937 Instrument Player
@@ -1220,6 +1395,25 @@ Last Frame: wide panorama of billboard canyon and crowd. All billboards show abs
 **Author:** [BMX](https://x.com/bmx_ai13) | **Source:** [Link](https://x.com/bmx_ai13/status/2119818224338661830) | **Published:** Nov 9, 2026
 
 ---
+### Cinematic Fuel Tanker Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed prompt for generating a photorealistic cinematic video of a fuel tanker truck on a highway using Grok Imagine.
+
+#### 📝 Prompt
+
+```
+Create an ultra-photorealistic, Hollywood-level cinematic 15-second video in 4K resolution. A massive stainless-steel fuel tanker truck, clearly designed for transporting diesel and petrol, is driving along a realistic modern highway during daylight....
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2119748603426295808/img/IM70t68JSavZojGD.jpg" width="600" alt="Cinematic Fuel Tanker Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13924)**
+
+**Author:** [Blairy](https://x.com/Blair_54q0) | **Source:** [Link](https://x.com/Blair_54q0/status/2119748851271905456) | **Published:** Nov 9, 2026
+
+---
 ### Static Background Particle Control Prompt
 
 ![日本語](https://img.shields.io/badge/lang-日本語-green)
@@ -1714,145 +1908,4 @@ At the start: A sleek, form-fitting base combat suit stands inert in a dimly lit
 Principal event: Transformation sequence activates. Plates begin shifting and expanding with hydraulic precision—chest and shoulder modules unfold outward, interlocking layered armor expands across the torso and limbs, gauntlets reconfigure into heavy weapon-ready forms, helmet seals shut with a multi-segment faceplate locking into place, and glowing energy cores ignite along the spine, joints, and chest reactor. Servos lock, thrusters extend from the calves and back, and a full-body energy shield lattice briefly flares then stabilizes as the armor reaches combat configuration.
 At the end: The fully transformed combat armor stands fully activated in a dynamic ready stance—helmet glowing with HUD light, energy lines pulsing bright cyan, plating locked and battle-scarred with realistic metal textures, ready for immediate engagement.
 
-[Maintain Consistency]
-Keep the armor as a single continuous entity throughout: same base silhouette evolving only through mechanical transformation, consistent matte-black and brushed-metal materials, cyan energy accents, and no change in overall scale or core design language. No additional characters, weapons beyond integrated systems, or environment shifts.
-
-The visuals present ultra-realistic Sci-Fi materials with micro-scratches, oil sheen, heat distortion around energy vents, volumetric lighting, and sharp depth of field.
-The camera uses a continuous cinematic orbit starting from a low three-quarter medium shot of the inactive suit, smoothly pushing in and circling during the transformation to capture plate mechanics and energy ignition in extreme close-ups of hinges and cores, then pulling back to a heroic full-body stance at the end.
-The sound includes deep hydraulic hisses, metallic plate clanks and servo whirs, rising energy hums and power-up chimes, a final heavy lock-in thud, and a low ambient hangar drone with distant machinery.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118214379577466880/img/BwjxKE4VgaiN6GAp.jpg" width="600" alt="Sci-Fi Combat Armor Transformation Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13550)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118214893291905466) | **Published:** Nov 5, 2026
-
----
-### Grok Imagine Cinematic Fantasy Knight Video Prompt
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> A detailed video generation prompt for Grok Imagine creating a high-quality 3D cinematic fantasy scene featuring a female knight with red magic effects and dynamic camera work.
-
-#### 📝 Prompt
-
-```
-Faithfully maintain the character design, facial features, hairstyle, armor, weapon, and colors of the original image.
-
-Ultra-high quality 3D CG cinematic fantasy footage.
-
-A beautiful female knight stands proudly on the battlefield, holding her sword. Her long hair and cape flow in the wind, and the fine decorations on her armor reflect the light.
-
-As the camera slowly approaches, vivid red magical energy overflows from the sword, and red particles of light dance around.
-
-The female knight looks forward with a sharp gaze and swings her sword powerfully. A massive red slash tears through space, spreading shockwaves.
-
-Cinematic dynamic camera work, natural and smooth human movements...
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118206378787708928/img/6ObFG3H2YUNBW3jL.jpg" width="600" alt="Grok Imagine Cinematic Fantasy Knight Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13557)**
-
-**Author:** [KyoukahanabiAITO](https://x.com/Kyoukahanabi135) | **Source:** [Link](https://x.com/Kyoukahanabi135/status/2118206409175453837) | **Published:** Nov 5, 2026
-
----
-### Grok Imagine Video Prompt: Dress Transformation
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> A complex video generation prompt for Grok Imagine featuring a woman in a tulle dress transitioning between poses in a ruined setting, referencing two input images.
-
-#### 📝 Prompt
-
-```
-Video Prompt (Grok Imagine)
-Global Settings & Consistency Maintenance
- * Character: Woman from @Image1 and @Image2 (same person). Completely maintain black tulle frill dress, ribbon choker at neck, black hair up-style, natural makeup.
- * Background/Atmosphere: Chic ruin-like space. Light and shadow hitting walls, mysterious and ennui atmosphere.
- * BGM: Melancholic and quiet chill lo-fi hip-hop, or ambient piano piece.
-Cut Composition (Total 8 seconds / Switch every 4 seconds)
-[CUT 1] (0:00 - 0:04)
- * Reference Image: @Image1
- * Pose 1 (0:00 - 0:02): Right hand placed behind head, looking quietly at the camera with an ennui expression.
- * Pose 2 (0:02 - 0:04): Gaze drops slightly, fingertips gently touch the ribbon on the neck choker.
-[CUT 2] (0:04 - 0:08)
- * Reference Image: @Image2
- * Pose 1 (0:04 - 0:06): Left hand wrapped behind head, tilting neck slightly and smiling at the camera.
- * Pose 2 (0:06 - 0:08): Pull face back slightly, gently touching hair while shyly averting gaze.
-```
-
-<img src="https://cms-assets.youmind.com/media/1793951411817_swqq6d_HWQN4x3a0AAINdr.jpg" width="600" alt="Grok Imagine Video Prompt: Dress Transformation">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13604)**
-
-**Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2118184025399378348) | **Published:** Nov 5, 2026
-
----
-### Stick to Police Car Transformation Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A complex video generation prompt for Grok Imagine describing a woman transforming a stick into a police car and catching a thief.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a continuous next-level transformation video. The core subject is a woman who drops a stick on the ground so it transforms into a police car; she gets inside the car, drives away, and catches a thief from the next street.
-
-[Event Script]
-At the start: The woman stands holding a plain stick, focused and ready. She drops the stick onto the ground in front of her. The stick immediately begins transforming—stretching, reshaping, and glowing as it expands into a full-sized police car with lights, badge markings, and a solid body. She steps forward, opens the driver’s door, sits inside, closes the door, starts the engine, and drives away down the street.
-
-Principal event: The police car turns onto the next street. A thief is running ahead along the sidewalk or roadway, carrying stolen goods. The woman accelerates, positions the car to cut off the thief’s path, exits quickly, and catches the thief by grabbing and restraining him so he cannot escape.
-
-At the end: The thief is securely caught and held by the woman next to the parked police car; the stick-to-police-car transformation remains complete and stable with no reversion.
-
-[Maintain Consistency]
-Keep the woman’s identity, clothing, and appearance consistent throughout. Maintain a single stick that fully becomes one police car. Preserve the causal sequence: drop → transform → enter car → drive away → catch the thief from the next street. Keep spatial relationships clear (ground drop location, street path, next-street capture). No dialogue or subtitles.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118157848110829568/img/wq812izbBA7yJfHF.jpg" width="600" alt="Stick to Police Car Transformation Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13549)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118157892272496679) | **Published:** Nov 5, 2026
-
----
-### Cowboy Eagle Head Alien Planet
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A surreal video prompt featuring a cowboy with an eagle head on an alien planet.
-
-#### 📝 Prompt
-
-```
-A close-up of an old cowboy, staring at the sky at night. the camera pulls back to reveal that he is sitting on  a horse with a proportionately sized ￼head of an eagle. ￼As a camera continues to pull back it is revealed that they are on the top of dusty hill on an alien planet under alien stars. He turns his steed around and slowly rides off as the camera pulls back for a wide shot
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118055156185227264/img/J3H4c43Dnw0pVIlt.jpg" width="600" alt="Cowboy Eagle Head Alien Planet">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13547)**
-
-**Author:** [Carlton Hinds](https://x.com/methuselaschild) | **Source:** [Link](https://x.com/methuselaschild/status/2118055239005913545) | **Published:** Nov 4, 2026
-
----
-### Female Character Crystal Suit Transformation
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt for Grok Imagine featuring a female character destroying surroundings with lasers while transforming her dress into a crystal suit.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a next-level transformation sequence where the female character drops laser energy from her hand to the ground, destroying everything around her, while her dress transforms into a white and black crystal suit.
-
-[Event Script]
-At the start: She stands ready in her original form and dress, hand raised. 
-Principal event: She channels and drops intense laser beams from her hand straight down to the ground. The lasers impact and erupt into a massive destructive wave that obliterates everything in the environment—structures shatter, debris flies, surfaces crack and vaporize in bright flashes. Simultaneously, her dress morphs and crystallizes: fabric hardens and reforms into a sleek 
+[Maintain

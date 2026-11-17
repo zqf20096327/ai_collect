@@ -1,6 +1,4 @@
-<h1 align="center">
-  <img src="./docs/assets/liki-c3.svg" alt="Liki Skill logo" width="72" align="center" valign="middle"> Liki Skill
-</h1>
+<h1 align="center">Liki Skill</h1>
 
 <p align="center">
   Professional Astrology Skill.<br>
@@ -11,7 +9,6 @@
 
 <p align="center">
   <a href="./README.zh.md"><img alt="中文" src="https://img.shields.io/badge/中文-4a9e6b?style=flat-square"></a>
-  <a href="https://github.com/ml8s/liki/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/ml8s/liki/actions/workflows/ci.yml/badge.svg"></a>
   <a href="./LICENSE"><img alt="license" src="https://img.shields.io/badge/license-MIT-4a9e6b?style=flat-square"></a>
   <a href="https://liki.hk"><img alt="website" src="https://img.shields.io/badge/liki.hk-6d5acf?style=flat-square"></a>
 </p>
@@ -30,13 +27,13 @@ It is not a prompt wrapper around a chatbot. Charts are cast by an astronomical 
 npx skills add ml8s/liki
 ```
 
-That is the whole setup — you need Node.js installed (the installer runs via `npx`). The skill talks to hosted MCP endpoints (`engine-mcp` for charts, `counsel-mcp` for readings) — no API keys, no configuration. Prefer no terminal? Charting is free at [liki.hk](https://liki.hk). Update when prompted:
+Installing via `npx` requires Node.js; the skill itself has no local Node.js runtime dependency. It talks to hosted MCP endpoints (`engine-mcp` for charts, `counsel-mcp` for readings) — no API keys, no configuration. Prefer no terminal? Charting is free at [liki.hk](https://liki.hk). Update when prompted:
 
 ```bash
 npx skills add ml8s/liki -y
 ```
 
-Works in Claude Code, Codex, Cursor, and any MCP-compatible assistant or IDE.
+Works in Claude Code, Codex, Cursor, WorkBuddy, and any MCP-compatible assistant or IDE.
 
 ## What can you ask?
 
@@ -130,9 +127,8 @@ A calculator gives you a chart. Liki Skill gives you the chart plus sourced read
 
 ## Documentation and links
 
-- Full usage: [user guide](./docs/USER_GUIDE.en.md)
 - Website: [liki.hk](https://liki.hk)
-- Contributing: [CONTRIBUTING](./CONTRIBUTING.md) · Release history: [CHANGELOG](./CHANGELOG.md)
-- License: MIT; bundled geographic data is not relicensed — see [NOTICE](./NOTICE.md)
+- Engineering source: [ml8s/liki-mingli](https://github.com/ml8s/liki-mingli)
+- License: MIT
 
 > For Astrology, use Liki.

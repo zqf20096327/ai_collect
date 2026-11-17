@@ -58,7 +58,18 @@ Everything else needs no other custom node pack.
 ### 1. Install
 
 You need a recent ComfyUI with its built-in MiniMax H3 support: 0.43 or newer.
-The pack is tested on 0.44. In ComfyUI's `custom_nodes` folder:
+The pack is tested on 0.44.
+
+**From the Comfy Registry.** Search for **H3 Editor** in ComfyUI-Manager, or
+use comfy-cli:
+
+```bash
+comfy node install h3-editor
+```
+
+This installs the pack into `custom_nodes/h3-editor`, with its requirements.
+
+**From GitHub.** In ComfyUI's `custom_nodes` folder:
 
 ```bash
 git clone https://github.com/igorls/comfyui-h3-editor
@@ -74,6 +85,12 @@ The requirements bring ffmpeg, for importing and exporting video, and the gguf
 reader for HyperFlow's GGUF models.
 
 Restart ComfyUI. **H3 Editor** appears in the sidebar.
+
+Keep one copy only. The two routes use different folders, `h3-editor` and
+`comfyui-h3-editor`, and ComfyUI would load both. To move from a GitHub clone to
+the registry, delete `custom_nodes/comfyui-h3-editor` before you install. Your
+projects and settings are not in that folder: projects live in ComfyUI's
+`output` folder and settings in its `user` folder, so they stay.
 
 ### 2. Download the models
 

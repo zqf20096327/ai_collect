@@ -268,11 +268,18 @@ Enter to skip; you can add it later from the web UI).
   children and nothing else, so a busy channel never wakes it. What arrives is
   the child's own summary plus pointers (branch, diff link) — never the diff
   itself, which on a large session costs far more than it is worth. The link is
-  set automatically at spawn; you can also change it by hand. A 🔗 on the tab
-  marks any agent that has a link, and its menu cuts it from **either** end — the
+  set automatically at spawn; you can also change it by hand: an agent's tab
+  menu cuts it from **either** end — the
   child's own "Detach from…", or, on the parent, "Children reporting here…" to
   drop an agent whose reports you no longer want. An agent can do the same over
   the CLI with `pilotctl set-parent <id> <parent|none>`.
+  The agents column **draws the link as a tree**: the agents an agent launched
+  sit indented under it, and the ▾ count on its tab folds them away (folded, it
+  carries the mood of what it hides — a child waiting for an answer still
+  shows). Nothing is arranged by hand and nothing is stored: the tree follows
+  the link. It never overrides where you filed an agent, though — a child you
+  put in another folder or group stays there, and when a parent is closed its
+  children simply move up a level.
 - **Quota gauges + pace guard** — 5h and 7d subscription usage, with an
   optional block when you're burning faster than the window elapses (any
   message can force through).
@@ -371,12 +378,17 @@ Enter to skip; you can add it later from the web UI).
   **Board group** and every such conversation is closed at once.
 - **Link to a message** — every message (yours and the agent's, and a **room**'s
   too) has a 🔗 link button beside copy. It copies a URL like
-  `…/#agent=<session>&msg=<id>` for an agent, `…/#room=<room>&msg=<id>` for a
+  `…/a/<session>#msg=<id>` for an agent, `…/#room=<room>&msg=<id>` for a
   room; whoever opens it — someone who already has access to this cockpit, after
   the usual sign-in — lands on that conversation, scrolled to that message,
-  highlighted. The link lives in the URL's `#` part, so it never reaches the
-  server or a proxy log. A message older than the history shown, or a
-  conversation that was closed, says so instead of opening somewhere else.
+  highlighted. The message lives in the URL's `#` part, so it never reaches the
+  server or a proxy log. The agent's id sits in the path on purpose: pasted into
+  Slack, WhatsApp, iMessage or Telegram, the link **previews** as a card naming
+  the agent and the cockpit (`/share/card.png`, generated on the fly in the
+  cockpit's colour) — and that is all it reveals, to anyone holding the link:
+  never a message. Older `#agent=<session>&msg=<id>` links still open. A message
+  older than the history shown, or a conversation that was closed, says so
+  instead of opening somewhere else.
 - **Run the command an agent asks you to** — when an agent writes `! cmd` for
   you to run (typically because it cannot), a ▶ run button sits right on that
   command's code block, beside its copy button — so it runs where it was
@@ -392,8 +404,15 @@ Enter to skip; you can add it later from the web UI).
 - **Provide the variable an agent asks for** — when an agent names a missing
   credential in code (`` `HUBSPOT_TOKEN missing from the environment` ``), a
   **+** sits right after it: one click opens the secret vault with the name
-  filled in and the agent's profile ticked, so you only paste the value (then
-  reload the agent when offered — a value reaches a process at spawn). Only
+  filled in and the agent's profile ticked, so you only paste the value — and
+  on *Add* **that agent is reloaded for you**, since a value only reaches a
+  process at spawn. Three cases it declines to do silently: an agent **mid-turn**
+  is offered instead of cut short (a reload is a respawn: the history is kept,
+  a running turn is not), an agent that **no binding feeds** is named so you can
+  tick a profile rather than restart it for nothing, and a **stopped** one needs
+  nothing — it reads the vault when it next launches. Any other live agent on a
+  profile that receives the secret is still offered, with a count of those
+  mid-turn. Only
   names that look like a credential or a connection setting get one (`…_TOKEN`,
   `…_KEY`, `…_URL`, `…_ID`…), never `NODE_ENV` nor shadok's own `SHADOK_*`.
 - **`/` commands** — type `/` in the composer and a menu lists the Skill
@@ -1256,6 +1275,23 @@ Dock or taskbar signals it, and a notification appears. It wraps the web page
 as it is, so the server needs no change. `cd desktop && npm install && npm start`;
 packaging and shortcuts are in [`desktop/README.md`](desktop/README.md).
 
+### On a phone: Home Screen app and notifications
+
+The cockpit installs like an app: on iPhone, **Share → Add to Home Screen**;
+on Android or desktop Chrome/Edge, **Install**. The icon carries the cockpit's
+title, so several instances stay apart.
+
+From that installed app (on iOS, only from there), tick **Notify this device**
+in the version menu (click the version number). The server then sends a push
+notification when an agent asks a question or finishes a turn that produced
+something. Muted agents and muted instances stay quiet. Tapping the notification
+opens that agent, and **Send a test notification** checks the device right away.
+
+This needs HTTPS (see "Behind TLS"). Each person gets notifications only for
+the agents they can see. The push service relays an encrypted payload it cannot
+read. `SHADOK_PUSH_SUBJECT` sets the contact sent to push services (default:
+the project's URL). Design: `docs/superpowers/specs/2026-11-16-web-push-design.md`.
+
 ### Signing in to Claude
 
 A fresh machine — most often a fresh container — has two things in its way, and
@@ -1398,7 +1434,7 @@ machine, which silently shifts every daily prompt on a server running in UTC.
 | `SHADOK_AUTO_RELOAD_IDLE_SEC` | how long an agent must be quiet before that automatic reload (120) |
 | `SHADOK_SUBMIT_RECOVERY=0` | don't restart an agent whose terminal stopped taking input — report the failed message as an error instead |
 | `SHADOK_PERMISSION_MODE` | mode new agents start in (default `acceptEdits`) |
-| `SHADOK_AUTOUPDATE` | fallback only — the GUI setting wins once used |
+| `SHADOK_AUTOUPDATE=0` | don't apply a newer release by itself (**ON by default** under the supervisor, i.e. `npx shadok-ai`; a server run directly never self-updates, since nothing would respawn it). `0`/`false` turns it off, `1`/`true` forces it on; the GUI setting wins over either once used |
 | `SHADOK_PILOT_PROMPT=0` | don't inject the cockpit system prompt |
 | `SHADOK_GREETING=0` | the lead agent starts silent — no first-message greeting |
 | `SHADOK_LEDGER=0` | turn OFF the shared-ledger reflex — a per-instance state table siblings read/write so they stop re-surfacing resolved work, plus a `⟦ledger⟧` delta pushed ahead of each message (**ON by default**; `SHADOK_LEDGER=0` or the GUI/config setting turns it off) |
@@ -1481,7 +1517,7 @@ TUI in the engine room.
 npm install
 npm run build      # tsc → dist/
 npm test
-npm run web        # run the server directly (no supervisor, no auto-update)
+npm run web        # run the server directly (no supervisor, so no auto-update)
 ```
 
 ### Update channels
@@ -1514,52 +1550,4 @@ The `postinstall` script fixes the executable bit of node-pty's
 `spawn-helper` (a known npm prebuilds bug on macOS).
 
 Note that `npx shadok-ai` does **not** run your working tree: it runs a
-supervisor that manages an auto-updating npm-installed copy. To test a local
-build, see "Running YOUR build" in [`CLAUDE.md`](CLAUDE.md).
-
-## One-shot CLI
-
-Separate from the cockpit: run a single prompt and print the answer.
-
-```bash
-shadok-ai-run [options] "<prompt>"      # or: node dist/cli.js …
-
-  --cwd <dir>       working directory of the claude session
-  --continue, -c    resume the latest session of this directory
-  --resume <id>, -r resume a specific session (id printed at end of run)
-  --watch           mirror the TUI live on stdout
-  --keep            keep the session open at the end
-  --timeout <sec>   max wait for the response (default 600)
-```
-
-Without `--continue`/`--resume`, every run starts a **new** session. The
-session id is printed at the end of the run (found in
-`~/.claude/projects/<encoded cwd>/`, like any Claude Code session):
-
-```bash
-shadok-ai-run --cwd ~/my-project "Explain this project's structure"
-# ▶ session: 5fe046dd-…
-
-shadok-ai-run --cwd ~/my-project --resume 5fe046dd-… "Now refactor it"
-shadok-ai-run --cwd ~/my-project -c "Continue on the latest session"
-```
-
-## WebSocket protocol (to replace the interface)
-
-The interface is a plain static page: all the intelligence lives server-side.
-Any client (another front-end, a bot, a script…) can replace it by speaking
-this JSON protocol on `ws://…/ws`. The built-in Telegram bridge *is* such a
-client — it connects to the same server over loopback.
-
-**Shared sessions**: the server keeps a single claude process per session id.
-If several clients (tabs, browsers, interfaces) `start` the same id, they
-attach to the same process and all receive the same events — other clients'
-prompts (`prompt-echo`), answers, dialogs, screen. Closing a connection
-detaches the client; the session is reclaimed after `SHADOK_IDLE_MIN` with no
-client, or immediately on an explicit `stop` (which ends it for everyone).
-
-**client → server**
-
-| Message | Purpose |
-|---|---|
-| `{type:"start", cwd?, resume?, continue?, worktree?, branch?, repo?, profile?, parent?, origin?}` | starts or attaches to the session (once per connection). `origin` (`"web"`, `"cron"`, `"telegram"`, `"agent"`, `"peer"`, `"cli"`) travels with `prompt-echo` so other clients can say who spoke. It is DERIVED by the server from what the connection proved (system-drive secret, Telegram-bridge secret, agent session key, peer token, same-origin browser); the frame's own `origin` is only honoured to narrow an unauthenticated local client to `"cli"`/`"boot"`. A line of the prompt text shaped like a header, ledger block or 
+supervisor that manages an auto-updating npm-installed copy. To te

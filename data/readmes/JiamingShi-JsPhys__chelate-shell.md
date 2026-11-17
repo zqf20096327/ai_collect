@@ -76,6 +76,15 @@ Visit the GitHub repository `https://github.com/JiamingShi-JsPhys/chelate-shell`
 
 Claude Code, Codex, dsh and CodeBuddy install with a one-line plugin command; Cursor, Windsurf, Cline, Continue, Roo Code, GitHub Copilot and opencode read rule files, and one script writes all of them. Every command, every flag and the optional dependencies are on one page: **[docs/INSTALL_COMMANDS.md](docs/INSTALL_COMMANDS.md)**.
 
+The npm registry is covered there too. The published tarball is the same tree the release zip is — `index.js`, the DSH patch, `core/`, `lib/`, `contracts/`, `commands/`, `agents/` and all 19 folders under `skills/` — so it suits a project dependency or a DSH profile:
+
+```bash
+npm install chelate-shell                        # as a dependency in a project
+dsh plugin --profile <profile> add chelate-shell # into a DSH profile
+```
+
+An npm install places the files; it does not register the plugin with a host, so Claude Code, Codex, CodeBuddy and the rule-file hosts still need the commands above for that step. Optional skill dependencies (`pandas`, `sympy`, `rdkit`, …) are never installed by this package — see [Requirements](#requirements).
+
 ### Keeping an installed copy current
 
 A host installs the plugin into a cache of its own, so the copy that actually runs is frozen at the moment of installation — a fixed bug keeps running until that cache is refreshed. Two commands close the gap:
@@ -279,6 +288,8 @@ This pipeline writes files and runs external commands, so the boundaries are in 
 
 Threat model, the 26 adversarial cases (including how three self-approval routes were closed and why two probes are reported as passing), and the known boundary: **[docs/SAFETY.md](docs/SAFETY.md)**.
 
+**Evidence.** The adversarial matrix is `tests/test_irreversible_actions.py` — 26 cases, each written as "the agent tries X, the shell must not do it"; two scripts that attempt self-approval live in `tests/attacks/`. The end-to-end demonstration and its measured output are in [docs/SAFETY.md](docs/SAFETY.md#reproducing-the-demonstration), and the static-analysis result (0 findings on shipped code) is [here](docs/SAFETY.md#static-analysis).
+
 ---
 
 ## Requirements
@@ -288,7 +299,8 @@ Python 3.10+ and nothing else up front: the microkernel and most skills use the 
 ## Tests
 
 ```bash
-python -m pytest tests/ -q
+python -m pytest tests/ -q                                 # the full suite
+python -m pytest tests/test_irreversible_actions.py -q    # the 26 adversarial cases
 ```
 
 413 tests: 402 pass and 11 skip with the optional dependencies installed; in a pytest-only environment the dependency-gated cases skip instead, and what runs is the `UNVERIFIED` path a fresh user actually meets. Seven skills also keep their own upstream suites under `skills/<skill>/tests/`, each run in its own process. Both environments, the coverage list and the per-skill counts: **[docs/TESTING.md](docs/TESTING.md)**.

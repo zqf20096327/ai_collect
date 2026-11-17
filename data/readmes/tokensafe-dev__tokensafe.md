@@ -6,9 +6,9 @@
 <!-- mcp-name: dev.tokensafe/tokensafe -->
 
 <p align="center">
-  <b>Make AI coding agents 3x faster without burning team quotas.</b><br>
-  Exact code context. Fewer tokens. Safer changes.<br>
-  TokenSafe intercepts AI tool calls locally, replacing thousands of lines of irrelevant code with precise function bodies and typed signatures. Preserve prompt caches and protect secrets before they reach your AI transcripts.<br>
+  <b>Your coding agent isn't getting dumber. Your context is just full of trash.</b><br>
+  When chat sessions fill up with massive lockfiles and endless build logs, your AI loses focus.<br>
+  TokenSafe strips the noise with Tree-sitter AST slicing so your agent stays razor-sharp, changes only the lines you asked for, and never leaks your secrets.<br>
   Works with <b>Cursor, Claude Code, Codex, Windsurf, Google Antigravity, Gemini CLI, and ChatGPT</b>.
 </p>
 
@@ -25,6 +25,7 @@
 <p align="center">
   <a href="#install--agents">Install</a> &bull;
   <a href="#cli-quickstart">Quickstart</a> &bull;
+  <a href="#whats-new-in-v40">What's New in v4.0</a> &bull;
   <a href="#why-tokensafe">Why TokenSafe</a> &bull;
   <a href="#benchmarks">Benchmarks</a> &bull;
   <a href="#pricing-and-7-day-team-trial">Pricing</a> &bull;
@@ -32,6 +33,22 @@
   <a href="#reference">Reference</a> &bull;
   <a href="https://tokensafe.dev">Website &amp; Docs</a>
 </p>
+
+---
+
+## What's New in v4.0
+
+TokenSafe 4.0 is a major architecture release designed for **Zero Mid-Day Lockouts, 3-Second Turn Latency, Exact Code Context (Zero Loss), and Developer Flow**:
+
+- **⚡ SQLite FTS5 BM25 Code Indexer & Search (`scoped_search`, `tokensafe search`)**: Native SQLite full-text search with trigram tokenization and BM25 relevance ranking (<1ms) across the repository. Replaces raw terminal grep entirely with zero-token-waste search.
+- **🔗 SQLite Graph Cache & Cross-Boundary Route Linking**: Persistent SQLite caching (`.tokensafe/cache/graph.db`) with bidirectional semantic linking between frontend client endpoints (`fetch`, `axios`, `apiClient`) and backend HTTP routes (`FastAPI`, `Express`, `Flask`, `Next.js`).
+- **🖼️ Vision Image Downscaler (`optimize_image`, `tokensafe optimize-image`)**: Automatically scales down oversized screenshots, architecture diagrams, and mockups (>1024px) via Pillow or macOS `sips`, saving 50–75% vision tokens while keeping original files intact.
+- **🧠 Anti-Stuck Dead-Ends Ledger (`get_mistakes`, `tokensafe mistakes`)**: Persistent project memory tracking failed hypotheses, loop guard trips, and git reverts to prevent agents from cycling through already-failed solutions.
+- **🧹 Transcript Superseded Output Pruning (`prune_superseded`, `tokensafe prune-superseded`)**: Prunes obsolete intermediate tool reads that were superseded by subsequent edits or re-reads in long agent transcripts (-30-40% context).
+- **🧼 ANSI Escape Sequence Stripper**: Cleans all ANSI/VT100 escape codes from tool outputs, test runners, and proxy streams before they enter model context.
+- **👻 Ghost Tokens Auditor (`tokensafe doctor`)**: Detects and cleans redundant multi-IDE configuration files (`.cursorrules`, `CLAUDE.md`, `.windsurfrules`, `.clinerules`) and oversized rule files, saving 2,000–5,000 wasted ghost tokens on every turn.
+- **🛡️ Exact Code Context & Reversible Stash (`expand_ref`)**: 100% byte-exact target symbol preservation with reversible 8-char hash anchors (`#a1b2c3d4`) to instantly recover any folded block.
+- **🌲 C# Tree-sitter Support**: Native AST slicing and God Nodes detection for C# (`tree-sitter-c-sharp`) alongside TypeScript, JavaScript, Python, Go, Rust, Java, Kotlin, and PHP.
 
 ---
 
@@ -251,6 +268,9 @@ No modeling: fifteen popular repositories across 10 languages (Python, TypeScrip
 | serde (Rust) | Symbol read (AST skeleton) | 69,610 | 42,671 | **-38.7%** | PASS |
 | gin (Go) | Symbol read (AST skeleton) | 23,567 | 14,938 | **-36.6%** | PASS |
 | flask (Py) | Secret guard (cat .env -> deny, 0 leak) | 153 | 82 | **-46.4%** | PASS |
+| flask (Py) | Tree-sitter AST (13 langs) | 18,864 | 2,410 | **-87.2%** | PASS |
+| fastapi (Py) | Reversible Hash Stashing (#hash) | 7,605 | 37 | **-99.5%** | PASS |
+| rich (Py) | Context Tax & Ghost Token Audit | 13,425 | 699 | **-94.8%** | PASS |
 | rich (Py) | Verbose test output (noise strip) | 746 | 385 | **-48.4%** | PASS |
 | composer (PHP) | Prompt compaction (TOCP) | 138 | 46 | **-66.7%** | FAIL |
 | flask (Py) | Full-suite pytest output | 6,402 | 6,191 | **-3.3%** | PASS |
@@ -263,6 +283,64 @@ tokensafe bench --real                        # all 15 pre-registered repos
 tokensafe bench --real --repo=pallets/flask   # one repo
 tokensafe bench --real --here                 # your current repository
 ```
+
+## Head-to-Head Competitor Benchmark (Measured on Real Repositories)
+
+We cloned 8 popular open-source repositories across Python, Go, C, and Java, and tested **JayPokale/Chisle**, **alexgreensh/token-optimizer**, and **TokenSafe (v4.1.2)** on the exact same hub files and target functions. Every token was counted with a calibrated BPE tokenizer on real bytes.
+
+Deterministic **zero-loss gates** disqualify any output where the code fails to compile/parse, or where the targeted function is missing. Savings without code correctness are just destructive truncation.
+
+| Repository & Target File | Baseline Tokens | JayPokale / Chisle | alexgreensh / token-optimizer | TokenSafe (v4.1.2) | Zero-Loss Gate Result |
+|:---|---:|---:|---:|---:|:---|
+| **flask** (`src/flask/app.py`)<br>Target: `full_dispatch_request` | 18,864 | 18,864 (0.0%) | 317 (-98.3%)<br>❌ *GATE FAIL: SyntaxError / Symbol Dropped* | **3,784** (-79.9%) | **TokenSafe PASS**<br>Valid AST, target 100% intact |
+| **requests** (`src/requests/sessions.py`)<br>Target: `Session.request` | 9,743 | 9,743 (0.0%) | 651 (-93.3%)<br>✅ *Heuristic match* | **2,849** (-70.8%) | **TokenSafe PASS**<br>Valid AST, target 100% intact |
+| **fastapi** (`fastapi/routing.py`)<br>Target: `APIRouter.add_api_route` | 73,721 | 73,721 (0.0%) | 139 (-99.8%)<br>❌ *GATE FAIL: SyntaxError / Symbol Dropped* | **39,529** (-46.4%) | **TokenSafe PASS**<br>Valid AST, target 100% intact |
+| **rich** (`rich/console.py`)<br>Target: `Console.print` | 28,675 | 28,675 (0.0%) | 585 (-98.0%)<br>❌ *GATE FAIL: SyntaxError / Symbol Dropped* | **7,710** (-73.1%) | **TokenSafe PASS**<br>Valid AST, target 100% intact |
+| **httpie** (`httpie/core.py`)<br>Target: `main` | 2,933 | 2,933 (0.0%) | 266 (-90.9%)<br>✅ *Heuristic match* | **689** (-76.5%) | **TokenSafe PASS**<br>Valid AST, target 100% intact |
+| **gin** (`context.go`, Go)<br>Target: `Context.Next` | 15,032 | 15,032 (0.0%) | 115 (-99.2%)<br>❌ *GATE FAIL: Unsupported Lang / Truncated* | **9,904** (-34.1%) | **TokenSafe PASS**<br>Native Tree-sitter Go grammar |
+| **curl** (`lib/url.c`, C)<br>Target: `Curl_connect` | 23,246 | 23,246 (0.0%) | 204 (-99.1%)<br>❌ *GATE FAIL: Unsupported Lang / Truncated* | **5,343** (-77.0%) | **TokenSafe PASS**<br>Native Tree-sitter C grammar |
+| **retrofit** (`Retrofit.java`, Java)<br>Target: `Retrofit.create` | 8,189 | 8,189 (0.0%) | 127 (-98.4%)<br>❌ *GATE FAIL: Unsupported Lang / Truncated* | **4,617** (-43.6%) | **TokenSafe PASS**<br>Native Tree-sitter Java grammar |
+
+> **Key empirical takeaways:**
+> - **Chisle scores 0.0% reduction on code reads**: its lifecycle hook hardcodes `const NEVER_COMPRESS = ['read', 'edit', 'write']` to avoid breaking diffs without an AST parser.
+> - **token-optimizer failed 6 out of 8 zero-loss gates**: on Python files, its `structure_map.py` emits invalid pseudo-YAML text outlines and caps methods at 4 (`MAX_SKELETON_METHODS_PER_CLASS = 4`), discarding up to 56 methods including the target function. On Go, C, and Java, it performs blind regex truncation.
+> - **TokenSafe achieves 34.1% to 79.9% real token reduction with a 100% Gate PASS rate**: using native Tree-sitter AST polyglot grammars, TokenSafe keeps 100% of the target function's executable body intact byte-for-byte, produces valid syntax, and enables 0ms bit-exact restoration via `#hash` and `expand_ref`.
+
+## Architectural Comparison: TokenSafe vs. Competitors
+
+| Capability | JayPokale / Chisle | alexgreensh / token-optimizer | TokenSafe (v4.1.3) |
+|---|---|---|---|
+| **Parsing & AST Engine** | None (Markdown rulesets only) | Regex & heuristic bracket lexers | **Native Tree-sitter AST (13 languages)** with zero-loss fallback |
+| **Context Reversibility** | Irreversible (bash pipe cut) | Disk archiving with shell expand command | **Reversible Hash Stashing (`#hash` + `expand_ref` 100% byte recovery)** |
+| **Integration Surface** | System prompt instructions | Claude Code & Codex hooks wrapper | **18-tool MCP Server + universal proxy** (Cursor, Claude, Antigravity, Windsurf, Codex, Gemini) |
+| **Pre-Git Security Guard** | None | None | **Sub-30ms interception**: blocks `.env` reads, hardcoded fallbacks in `os.environ.get`, & dangerous shell commands |
+| **KV-Cache Prefix Locking** | None | Session cache hints | **Monotonic Append-Only Epoch Governor** (90.8% hit rate at 0.10x cached rate) |
+| **Environment Context Tax** | None | Claude Code audit command | **`tokensafe doctor`**: S–F grading + multi-IDE redundant rule pruning (Ghost Tokens) |
+| **Polyglot Language Scope** | Prompt-only | Python, TS/JS heuristics | **13 polyglot languages**: Python, TS, JS, Go, Rust, Java, C#, C, C++, PHP, Kotlin, Swift, Ruby |
+| **Team FinOps & Telemetry** | None | Local SQLite database | **Local SQLite + Cloud Team Dashboard** (`measured` vs `estimated` audit trail) |
+
+### Why token-optimizer Reports Smaller Token Numbers (and Why It Fails Zero-Loss Gates)
+
+When running benchmarks on large repositories, developers often ask: *Why does token-optimizer show 317 tokens on Flask while TokenSafe shows 3,784 tokens?*
+
+The answer lies in what each tool actually passes to the model:
+
+1. **Pseudo-YAML vs. Executable Code:** `token-optimizer` replaces Python source code with a plain text outline (`lines: 1687\nimports (50):\nclasses (1): ...`). This is not valid Python syntax; running `ast.parse()` on it raises an immediate `SyntaxError`.
+2. **Arbitrary Method Dropping:** In `structure_map.py`, token-optimizer enforces `MAX_SKELETON_METHODS_PER_CLASS = 4`. Flask's `App` class defines over 60 methods. token-optimizer took the first 4 methods and discarded the other 56 methods, including the exact target function `full_dispatch_request` the agent was supposed to inspect and edit!
+3. **The Book Analogy:** Tearing out 98% of the pages in a novel and handing someone only a 4-line table of contents reduces token count by 98%, but completely destroys the chapter. If an agent cannot see the function body, it cannot fix bugs or generate valid diffs; it is forced to hallucinate code.
+4. **TokenSafe's Zero-Loss Guarantee:** TokenSafe reduces Flask from 18,864 down to 3,784 tokens (-79.9%) using native Tree-sitter AST parsing. It preserves 100% of the target function's executable body byte-for-byte, keeps 1-hop typed caller contracts, produces 100% valid Python syntax, and allows any folded block to be recovered via `#hash` and `expand_ref`.
+5. **Why Chisle Shows 0% on File Reads:** JayPokale/Chisle lacks an AST parser. To prevent models from hallucinating edits against missing code, its lifecycle hook hardcodes `const NEVER_COMPRESS = ['read', 'edit', 'write']`. As a result, reading code files (the largest source of context consumption) passes 100% uncompressed into context.
+
+### Why Alternative Approaches Fall Short
+
+1. **Prompt Engineering Alone (Chisle) Cannot Enforce Contracts:**
+   Prompt rulesets like Chisle ("be concise", "caveman prose", "YAGNI code") rely entirely on the LLM's willingness to follow negative instructions. As context grows past 10–15 messages, models suffer *Lost in the Middle* amnesia, ignore prompt rules, and revert to dumping 2,000 lines of boilerplate. Furthermore, truncating bash command outputs via shell pipes permanently destroys tracebacks and compiler errors, causing agents to enter infinite repair loops.
+2. **Heuristic Regex Slicing (token-optimizer) Breaks on Real Codebases:**
+   Regex-based AST slicing fails when parsing modern polyglot codebases with nested generics (`<T extends Map<K, V>>`), decorators, async generators, and multi-line macros. TokenSafe uses **native C Tree-sitter grammars across 13 languages** with exact start/end byte offsets, eliminating bracket miscounts while preserving 1-hop caller contracts.
+3. **The Zero-Loss Invariant (`#hash` & `expand_ref`):**
+   Unlike tools that irreversibly discard folded content, TokenSafe hashes every compressed artifact into an 8-character anchor (`[TokenSafe folded: #a1b2c3d4 ...]`). Any agent can call `tokensafe:expand_ref('a1b2c3d4')` to retrieve 100% bit-exact original bytes in 0ms without re-running commands.
+4. **Pre-Git Security vs. Blind Agents:**
+   Autonomous coding agents frequently run `git add .` containing `.env` files or introduce hardcoded API keys as fallback parameters in environment lookups. TokenSafe is the only tool with an inline security guard that blocks both credential fallbacks and secret file reads locally before anything reaches LLM transcripts or git commits.
 
 ## Metrics Honesty
 
@@ -312,18 +390,23 @@ All hook adapters fail open: an internal error never stalls your agent. Failures
 ## Reference
 
 <details>
-<summary><b>Local MCP tools (13)</b></summary>
+<summary><b>Local MCP tools (18)</b></summary>
 
 | Tool | What it does |
 |---|---|
-| `get_architecture_graph` | Architectural hotspots and dependency topology before multi-file reading; shared team symbol index reuse |
+| `get_architecture_graph` | Architectural hotspots, dependency topology, and God Nodes detection before multi-file reading (persisted in SQLite cache) |
 | `get_api_surface` | Compact markdown map of all exported interfaces, classes, and types |
-| `smart_read_file` | AST-skeletonized file read preserving a target symbol and 1-hop dependencies; OpenAPI/Prisma/GraphQL/SQL files auto-slice (symbol = spec path / model / type / table) |
+| `smart_read_file` | AST-skeletonized file read preserving a target symbol and 1-hop dependencies; OpenAPI/Prisma/GraphQL/SQL auto-slice; lockfiles/CSV/TSV/SQL dump auto-reduction with reversible stash |
 | `smart_bundle` | 3–8 related symbols across files in one call: merged skeletons, deduplicated shared imports, unified 1-hop signatures |
-| `scoped_search` | Token-bounded symbol and text search with line-numbered matches |
+| `scoped_search` | Sub-millisecond keyword and symbol search powered by native SQLite FTS5 trigram index with BM25 relevance ranking (<1ms) |
+| `expand_ref` | Reversible stash expansion: recovers original un-truncated content by its 8-char hex hash anchor (`#a1b2c3d4`) without re-running tools |
+| `read_web_page` | Web reader & HTML-to-Markdown compactor: strips scripts, styles, navbars, and cookie banners (-80% to -95% tokens) |
+| `optimize_image` | Downscales oversized visual assets (>1024px) via Pillow or macOS `sips`, saving 50–75% vision tokens |
+| `prune_superseded` | Prunes obsolete intermediate tool reads that were superseded by subsequent edits or re-reads in long agent transcripts (-30-40% context) |
+| `get_mistakes` | Anti-stuck persistent ledger: retrieves past dead-ends, loop guard trips, and git reverts to prevent repeating failed paths |
 | `list_dir` | Clean directory tree without permissions, timestamps, or lockfiles |
 | `slice_diff` | Unified diff slicing omitting lockfiles and minimizing context lines |
-| `sanitize_command` | Per-stage shell command rewrites with bounded output |
+| `sanitize_command` | Per-stage shell command rewrites (`git push` --no-progress, `git commit` hook wrapping, bun/python/jest test folding, lockfile exclusions, bounded logs) |
 | `guard_inspect` | Pre-flight security and hygiene audit for commands or code snippets |
 | `context_budget` | Context window usage estimate with thresholds and recommendations |
 | `compress_prompt` | Compiles a verbose developer prompt into a compact S-expression |
@@ -354,31 +437,41 @@ Endpoint: `https://api.tokensafe.dev/mcp`, auth `Authorization: Bearer <TS1./TS2
 </details>
 
 <details>
-<summary><b>Full CLI reference (24 commands)</b></summary>
+<summary><b>Full CLI reference (30 commands)</b></summary>
 
 ```text
-tokensafe stats / markdown / html   Savings analytics (terminal / .md report / dashboard)
-tokensafe benchmark                 Zero-context-loss benchmark suite (simulated harness)
-tokensafe graph / map / skeleton    Architecture graph / API surface / AST skeleton of a file
-tokensafe test "<prompt>"           Preview prompt compaction on custom input
-tokensafe guard "<command>"         Pre-flight safety check for a shell command
-tokensafe guard audit [path]        Recursive source audit for secrets & vulnerabilities
-tokensafe doctor                    Audit MCP tool overhead and context token tax
-tokensafe digest [--send]           Compile (and optionally dispatch) the weekly team digest
-tokensafe mcp list|disable|enable   Manage configured MCP servers
-tokensafe proxy [port]              Local transparent AI proxy (127.0.0.1:8765/v1; host via TOKENSAFE_HOST)
-tokensafe proxy on/off/status       Daemon + agent wiring with one-command rollback
-tokensafe install / setup [--all]   Configure detected agent environments
-tokensafe update / check-update     Self-update / check for a newer version
-tokensafe activate <KEY>            Activate a Team or Solo license key
-tokensafe license                   Show active tier and trial state
-tokensafe providers                 List distillation providers and active mode
-tokensafe sync                      Sync local telemetry with the cloud dashboard
-tokensafe prune [--days N]          Compact metrics database (roll old events)
-tokensafe vacuum                    Reclaim SQLite disk space
-tokensafe tests [pytest]            Run the unit test suite (compact failure report)
-tokensafe reset                     Reset all local token metrics
-tokensafe --version                 Print version and exit
+tokensafe stats / markdown / html     Savings analytics (terminal / .md report / dashboard)
+tokensafe search <query> [--path <p>] Fast SQLite FTS5 BM25 code search (<1ms)
+tokensafe index [dir] [--clear]       Index repository into SQLite FTS5 trigram database
+tokensafe expand-ref <hash8>          Restore folded tool/command/file result by its 8-char hash
+tokensafe optimize-image <path>       Downscale image >1024px via Pillow or macOS sips
+tokensafe prune-superseded <path>     Prune obsolete intermediate tool reads from transcript
+tokensafe mistakes [list|record|clear] Anti-stuck dead-ends ledger & prompt guard
+tokensafe web <url>                   Fetch web page/docs and print clean compact Markdown
+tokensafe wrap <command>              Run command with compact output folding & ANSI stripping
+tokensafe doctor [--cleanup]          Audit MCP tool overhead, ghost tokens & conflicts
+tokensafe benchmark                   Zero-context-loss benchmark suite (simulated harness)
+tokensafe bench --real                Measured benchmark on real repos (zero-loss gates)
+tokensafe graph / map / skeleton      Architecture graph / API surface / AST skeleton of a file
+tokensafe test "<prompt>"             Preview prompt compaction on custom input
+tokensafe guard "<command>"           Pre-flight safety check for a shell command
+tokensafe guard audit [path]          Recursive source audit for secrets & vulnerabilities
+tokensafe digest [--send]             Compile (and optionally dispatch) the weekly team digest
+tokensafe mcp list|disable|enable     Manage configured MCP servers
+tokensafe proxy [port]                Local transparent AI proxy (127.0.0.1:8765/v1)
+tokensafe proxy on/off/status         Daemon + agent wiring with one-command rollback
+tokensafe install / setup [--all]     Configure detected agent environments
+tokensafe update / check-update       Self-update / check for a newer version
+tokensafe activate <KEY>              Activate a Team or Solo license key
+tokensafe login / logout              Authorize or unlink this device via browser
+tokensafe license                     Show active tier and trial state
+tokensafe providers                   List distillation providers and active mode
+tokensafe sync                        Sync local telemetry with the cloud dashboard
+tokensafe prune [--days N]            Compact metrics database (roll old events)
+tokensafe vacuum                      Reclaim SQLite disk space
+tokensafe tests [pytest]              Run the unit test suite (compact failure report)
+tokensafe reset                       Reset all local token metrics
+tokensafe --version                   Print version and exit
 ```
 </details>
 

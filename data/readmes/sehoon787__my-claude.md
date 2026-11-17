@@ -80,12 +80,12 @@ as version-pinned CLIs, hosted MCP servers, or files vendored with attribution.
 
 | # | Project | What my-claude takes from it | How it arrives |
 |---|---------|------------------------------|----------------|
-| 1 | <img src="https://github.com/Yeachan-Heo.png?size=32" width="20" height="20" align="center"/> **[oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)** (OMC) — Yeachan Heo | 19 specialist agents (architect, debugger, code reviewer, security reviewer, …) that divide work by role, plus 13 orchestration skills — autopilot, ralph, team. Magic keywords like `autopilot:` activate automatic parallel execution. | Submodule `upstream/omc`, SHA-pinned (see [Bundled Upstream Versions](#bundled-upstream-versions)); `install.sh` runs `npm i -g oh-my-claude-sisyphus@latest` and enables the `oh-my-claudecode@omc` plugin. |
+| 1 | <img src="https://github.com/Yeachan-Heo.png?size=32" width="20" height="20" align="center"/> **[oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode)** (OMC) — Yeachan Heo | 19 specialist agents (architect, debugger, code reviewer, security reviewer, …) that divide work by role, plus 13 orchestration skills — autopilot, ralph, team. Magic keywords like `autopilot:` activate automatic parallel execution. | Submodule `upstream/omc`, SHA-pinned (see [Bundled Upstream Versions](#bundled-upstream-versions)); `install.sh` installs `oh-my-claude-sisyphus` at the version in the submodule's `package.json`, or the newest published version below it while npm does not have that one yet. It never uses `@latest` and does not update an installed `oh-my-claudecode@omc` plugin. |
 | 2 | <img src="https://github.com/code-yeongyu.png?size=32" width="20" height="20" align="center"/> **[oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)** (omo) — code-yeongyu | A multi-platform harness that routes across 8 providers (Claude, GPT, Gemini, …) by category and bridges to Claude Code via `claude-code-agent-loader` and `claude-code-plugin-loader`. Its 9 agents (Sisyphus, Atlas, Oracle, …) are adapted here as standalone `.md` files. | Not a submodule: the 9 agents live in `agents/omo/`; `install.sh` runs `npm i -g oh-my-opencode@latest` for the `omo` CLI. |
 | 3 | <img src="https://github.com/forrestchang.png?size=32" width="20" height="20" align="center"/> **[andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)** — forrestchang | The 4 AI-coding behavioral guidelines — Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution — always active. | `install.sh` curls `CLAUDE.md` at the pinned SHA `aa4467f`, checksum-verifies it, and appends it to `~/.claude/CLAUDE.md`. No code vendored. |
 | 4 | <img src="https://github.com/affaan-m.png?size=32" width="20" height="20" align="center"/> **[everything-claude-code](https://github.com/affaan-m/everything-claude-code)** (ECC) — affaan-m | 278 skills + 67 agents + 94 commands + language rules upstream. my-claude installs a curated 61-skill subset (79 with the opt-in `web` lane) — stack patterns, AI/agent engineering, codebase tooling — plus 9 rule sets and slash commands like `/tdd`, `/plan`, `/code-review`, `/build-fix`. | Submodule `upstream/ecc`, SHA-pinned; `install.sh` tries `claude plugin add affaan-m/everything-claude-code` first and falls back to the submodule. |
-| 5 | <img src="https://www.anthropic.com/favicon.ico" width="20" height="20" align="center"/> **[anthropic/skills](https://github.com/anthropics/skills)** — Anthropic | Anthropic's own skill repository: PDF parsing, Word/Excel/PowerPoint manipulation, MCP server creation. | `claude plugin add anthropics/skills`, run by `install.sh`. Deliberately not manifest-tracked. |
-| 6 | <img src="https://github.com/garrytan.png?size=32" width="20" height="20" align="center"/> **[gstack](https://github.com/garrytan/gstack)** — garrytan | Garry Tan's sprint-process harness: 25 skills plus the `gstack` root router (26 total) — browser QA (`/qa`), scope-drift code review (`/review`), security audit (`/cso`), and the full Plan→Review→QA→Ship workflow (Boss P0 lane). Ships a compiled Playwright browser daemon for real-browser testing. | Submodule `upstream/gstack`, SHA-pinned. |
+| 5 | <img src="https://www.anthropic.com/favicon.ico" width="20" height="20" align="center"/> **[anthropic/skills](https://github.com/anthropics/skills)** — Anthropic | Anthropic's own skill repository: PDF parsing, Word/Excel/PowerPoint manipulation, MCP server creation. | `install.sh` clones the repo into `~/.claude/skills`. Deliberately not manifest-tracked. |
+| 6 | <img src="https://github.com/garrytan.png?size=32" width="20" height="20" align="center"/> **[gstack](https://github.com/garrytan/gstack)** — garrytan | Garry Tan's sprint-process harness: 25 skills plus the `gstack` root router (26 total) — browser QA (`/qa`), scope-drift code review (`/review`), security audit (`/cso`), and the full Plan→Review→QA→Ship workflow (Boss P0 lane). Ships a compiled Playwright browser daemon for real-browser testing. | Submodule `upstream/gstack`, SHA-pinned; `install.sh` builds the browser runtime in `~/.gstack/runtime` from the same SHA and never turns on gstack auto-upgrade. |
 | 7 | <img src="https://github.com/obra.png?size=32" width="20" height="20" align="center"/> **[superpowers](https://github.com/obra/superpowers)** — Jesse Vincent | Jesse Vincent's dev-process library: 14 of its 15 skills — brainstorming, systematic debugging, TDD, plan writing and execution, code-review etiquette. `dispatching-parallel-agents` is excluded because Boss and Agent Teams already own that path. | Submodule `upstream/superpowers`, SHA-pinned. |
 | 8 | <img src="https://github.com/getagentseal.png?size=32" width="20" height="20" align="center"/> **[codeburn](https://github.com/getagentseal/codeburn)** — getagentseal | Local-first token and cost tracking over the session files Claude Code and Codex already write — no proxy, no API key, nothing leaves the machine. The usage-guard hooks install by default (`--no-codeburn-guard` opts out) with the hard cost cap disabled: it's estimated from the transcript at API list-price rates, so on a subscription plan a normal session reaches the $15 default in minutes and the guard would deny every further tool call. Edit `hardUSD` in `~/.config/codeburn/guard.json` to set a cap of your own. | `npm i -g codeburn@0.9.25`; `install.sh` also starts or reuses one shared cross-harness dashboard — see [Where to See Results](#where-to-see-results). MIT. |
 | 9 | <img src="https://github.com/oraios.png?size=32" width="20" height="20" align="center"/> **[serena](https://github.com/oraios/serena)** — oraios | A language server's symbol graph over MCP: `find_symbol`, `get_symbols_overview`, `find_referencing_symbols`, `replace_symbol_body`, `insert_after_symbol` — the tokens spent scale with the symbol, not the file. | `uv tool install -p 3.13 serena-agent==1.7.0`, registered as a user-scope stdio MCP server (`serena start-mcp-server --context claude-code --project-from-cwd`). The distributed package is GPL-3.0-or-later as a whole (PyPI's MIT classifier is inaccurate); used as an external server, never vendored. |
@@ -153,9 +153,9 @@ For end-to-end feature implementation, Boss orchestrates a structured sprint:
 
 | Phase | Mode | What Happens |
 |-------|------|--------------|
-| **1 · Design** | interactive | User decides scope · engineering review · confirm "design done" |
+| **1 · Design** | interactive | Plan saved to `.briefing/plans/` · Momus review · one approval gate |
 | **2 · Execute** | autonomous | ralph runs execution · auto code review · architect verification |
-| **3 · Review** | interactive | Compare against the design doc · present comparison table · user approves or asks for improvement |
+| **3 · Review** | interactive | Compare against the plan · present comparison table · user approves or asks for improvement |
 
 ### Structured Final Report
 
@@ -249,7 +249,7 @@ Commands: `node ~/.claude/hooks/persona-rule.js learn <cmd>`: `list`, `show <id|
 | **Upstream submodules** | 5 | ecc, omc, gstack, superpowers, archify |
 | **CLI Tools** | 7 | omc, omo, ast-grep, comment-checker, codeburn, serena, headroom |
 
-Every agent, skill, and rule above is allowlisted in [`scripts/skill-allowlists.sh`](./scripts/skill-allowlists.sh) and tracked in the install manifest. Anthropic's official document skills (pdf, docx, …) are added separately via `claude plugin add anthropics/skills` and are deliberately not manifest-tracked.
+Every agent, skill, and rule above is allowlisted in [`scripts/skill-allowlists.sh`](./scripts/skill-allowlists.sh) and tracked in the install manifest. Anthropic's official document skills (pdf, docx, …) are cloned separately from github.com/anthropics/skills into `~/.claude/skills` and are deliberately not manifest-tracked.
 
 <details>
 <summary><strong>Specialist Agents — 32 across 4 tiers</strong></summary>
@@ -337,7 +337,7 @@ Per-agent models are in [Model Routing](#model-routing); where each source comes
 
 **Quiet plugin hooks.** `merge-settings.js` sets `env.OMC_QUIET=2` unless you already set it. OMC's own plugin hooks otherwise append an advisory line ("Use parallel execution…", "Background operation detected…") to nearly every Bash, Edit, and Read call, and every one of those lines is re-sent as context on every later request. Level 2 drops the advisories and the "Completed: N" agent summaries; real failures are still reported.
 
-**Earlier auto-compaction.** `merge-settings.js` also sets `env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=75` unless you already set it, so a long session compacts before the tail of its transcript gets expensive. The variable can only lower the trigger. See the [environment variable reference](https://code.claude.com/docs/en/env-vars).
+**Auto-compaction.** my-claude leaves auto-compaction to Claude Code's per-model `auto` window and sets no `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`. An upgrade (re-running `install.sh`) removes the `75` that earlier installs wrote and keeps any other value you set. A fixed 75% is the wrong default on a ~200k-window model, where it triggers at about the size a long session's context already has right after compacting, so Claude Code stops with "Autocompact is thrashing". See the [environment variable reference](https://code.claude.com/docs/en/env-vars).
 
 </details>
 
@@ -448,7 +448,7 @@ Features built specifically for this project, beyond what upstream sources provi
 | Feature | Description |
 |---------|-------------|
 | **Boss Meta-Orchestrator** | Dynamic capability discovery → intent classification → 5-priority routing → delegation → verification |
-| **3-Phase Sprint** | Design (interactive) → Execute (autonomous via ralph) → Review (interactive vs design doc) |
+| **3-Phase Sprint** | Design (interactive) → Execute (autonomous via ralph) → Review (interactive vs the plan) |
 | **Agent Tier Priority** | core > omo > omc > vendored deduplication. Most specialized agent wins. |
 | **Lane Ownership** | Orchestration → OMC, dev process → superpowers, ship/QA/deploy/security → gstack (Boss P0), language and stack knowledge → ECC, AI and domain work → vendored agents |
 | **Curated Allowlists** | `scripts/skill-allowlists.sh` is the single source of truth — 106 skills, 3 always-on common rules and 8 path-scoped language rule sets survive from thousands upstream, so nothing unlisted ever reaches a session's context |
@@ -467,7 +467,7 @@ Linked via git submodules. Pinned commits are tracked natively by `.gitmodules` 
 |--------|-----|------|------|
 | [everything-claude-code](https://github.com/affaan-m/everything-claude-code) | `d2ef268` | 2026-11-13 | [compare](https://github.com/affaan-m/everything-claude-code/compare/d2ef268...HEAD) |
 | [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) | `dec7e41` | 2026-11-13 | [compare](https://github.com/Yeachan-Heo/oh-my-claudecode/compare/dec7e41...HEAD) |
-| [gstack](https://github.com/garrytan/gstack) | `1d3c63c` | 2026-11-13 | [compare](https://github.com/garrytan/gstack/compare/1d3c63c...HEAD) |
+| [gstack](https://github.com/garrytan/gstack) | `5dcd76b` | 2026-11-16 | [compare](https://github.com/garrytan/gstack/compare/5dcd76b...HEAD) |
 | [superpowers](https://github.com/obra/superpowers) | `22f0b46` | 2026-11-13 | [compare](https://github.com/obra/superpowers/compare/22f0b46...HEAD) |
 | [archify](https://github.com/tt-a1i/archify) | `2ab3cae` (`v3.0.1`) | 2026-09-28 | [compare](https://github.com/tt-a1i/archify/compare/2ab3cae...HEAD) |
 

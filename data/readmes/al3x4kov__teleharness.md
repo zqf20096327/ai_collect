@@ -4,7 +4,7 @@
 
 ## One chat for multiple AI coding CLIs
 
-**Switch between Claude Code and opencode in the same conversation — without starting over.**
+**Switch between Claude Code, opencode and Codex in the same conversation — without starting over.**
 
 Teleharness is an open-source, self-hosted web UI for AI coding agents. It runs the real CLIs on your machine,
 with their native agents, skills, MCP servers, hooks and project context, and lets you hand a chat from one CLI
@@ -28,7 +28,7 @@ to another when a subscription hits its usage limit.
 [Contributing](CONTRIBUTING.md) •
 [Русский](README.ru.md)
 
-<img src="docs/screenshots/demo.gif" alt="Teleharness on a phone: chat list, a turn with subagent cards, a handoff to another engine, subscriptions" width="300">
+<img src="docs/screenshots/demo.gif" alt="Teleharness 1.21 on a phone: waiting for approval, Allow, context and subscription, Codex, handoff, phone pairing QR" width="300">
 
 </div>
 
@@ -36,18 +36,22 @@ to another when a subscription hits its usage limit.
 
 ## Switch CLI mid-conversation
 
-Start a task with Claude Code, then continue it with opencode on GLM or any other model opencode supports — or
-the other way round.
+Start a task with Claude Code, then continue it with opencode on GLM or any other model opencode supports, or with
+Codex — in any direction.
 
 - **From the chat menu, at any time:** *Continue in…* → engine and model.
 - **When a subscription runs out:** the usage-limit notice offers *Continue in &lt;model&gt;* — one tap.
 - **What carries over:** the project folder, one shared feed with a handoff mark, the turns the new CLI missed
   (sent with its first prompt) and, if a knowledge-base folder is set, the full chat journal.
-- **What doesn't:** the previous CLI's private session state. The switch is one tap, not automatic.
+- **Automatically, if you want:** turn on *Continue automatically on a usage limit* in Settings → Model & agents and
+  list up to three backup models; the server hands the chat over and asks the new CLI to go on, even with your phone
+  locked. Off by default.
+- **What doesn't:** the previous CLI's private session state.
 
 <p align="center">
   <img src="docs/screenshots/phone-light-relay.png" alt="Handoff mark in one feed: Claude Opus → GLM-5.3" width="240">
   <img src="docs/screenshots/phone-light-relay-sheet.png" alt="Choosing the engine and model to continue on" width="240">
+  <img src="docs/screenshots/phone-light-autorelay.png" alt="Settings: Continue automatically on a usage limit" width="240">
 </p>
 
 Details, limits and FAQ: [docs/cross-cli-handoff.md](docs/cross-cli-handoff.md).
@@ -59,17 +63,19 @@ MCP servers, hooks, project memory — but they live in a terminal on your desk.
 
 Teleharness puts a mobile-first web UI in front of those CLIs, so the full harness is one tap away:
 
-- **CLIs, not models.** Each chat runs through `opencode serve` or the `claude` CLI. Whatever you have
-  configured there — agents, skills, plugins, MCP — works from your phone.
+- **CLIs, not models.** Each chat runs through `opencode serve`, the `claude` CLI or the `codex` CLI. Whatever you
+  have configured there — agents, skills, plugins, MCP — works from your phone.
 - **Many providers through one portal.** opencode talks to Z.ai GLM, OpenAI, Google Gemini, Anthropic,
-  OpenRouter, local models and more; Claude Code brings your Claude subscription. Pick the engine and
-  model per chat.
+  OpenRouter, local models and more; Claude Code brings your Claude subscription, Codex your ChatGPT
+  subscription. Pick the engine and model per chat.
 - **A task survives a usage limit.** When a subscription runs out mid-task, hand the chat over to another
   engine or model: same folder, one feed, and the new engine receives the turns it missed.
 - **Memory that outlives a chat.** An Obsidian vault works as an active cache: agents get a snapshot
   of your notes at the start of a chat and leave a digest after each turn.
 - **Your machine, your data.** Files, tools and history stay on your server. Providers only see the
   prompts and tool results needed for inference.
+- **You stay in control.** Per chat, choose whether the agent asks before edits and commands; approve or deny
+  right in the chat or from a push notification.
 - **Share it safely.** Multiple users with their own folders, quotas and system prompts; on Windows
   their commands run in an AppContainer sandbox.
 
@@ -125,19 +131,33 @@ All screenshots are taken from `npm run demo` — what you see is what you get.
 </p>
 <p align="center"><sub>A Claude Code chat in the dark theme.</sub></p>
 
+<p align="center">
+  <img src="docs/screenshots/desktop-light-codex.png" alt="Codex on desktop: GPT-6.1 Sol, file edits, tests and context meter" width="820">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/desktop-light-pair.png" alt="Desktop settings: Connect a phone with QR code, link and expiry" width="820">
+</p>
+
 ## Features
 
 | | | |
 |---|---|---|
-| 💬 | **Two engines, one UI** | opencode (any provider) and Claude Code side by side; a chat stays bound to its engine, model and agent. |
+| 💬 | **Three engines, one UI** | opencode (any provider), Claude Code and Codex CLI side by side; a chat stays bound to its engine, model and agent. Codex is admin-only for now, on every OS — it needs its own sandbox before other users get it.<br><img src="docs/screenshots/phone-light-picker-codex-detail.png" alt="Model picker with opencode, Claude and Codex engine groups" width="180"> <img src="docs/screenshots/phone-light-codex.png" alt="Codex chat: file edits, 212 passing tests, Ask mode and subscription" width="180"> |
+| 🛡️ | **Permission mode per chat** | *Ask* — the agent asks before file edits and commands, you approve or deny in the chat (Claude through a permission bridge, Codex natively); *Edits without asking*; *No questions* (admin only).<br><img src="docs/screenshots/phone-light-ask.png" alt="In-chat permission request for a migration command with Allow and Deny" width="180"> <img src="docs/screenshots/phone-light-permission-modes.png" alt="Permission modes: Ask, Edits without asking, No questions" width="180"> |
+| ⏸️ | **Waiting for you** | A chat list filter with a count of chats where an agent waits for your decision, plus a push notification when it starts waiting.<br><img src="docs/screenshots/phone-light-waiting.png" alt="Waiting for you filter enabled with one chat needing approval" width="180"> |
+| 📈 | **Context and cost** | A meter above the composer: how full the model's context window is (with a warning past 80 %) and what the chat has cost — or that it runs on a subscription.<br><img src="docs/screenshots/phone-light-context.png" alt="Answer footer: subscription and Context 41 percent" width="180"> <img src="docs/screenshots/phone-light-context-warning.png" alt="Context warning at 86 percent, almost full" width="180"> |
 | 🧠 | **Agent steps** | Live turn progress: reasoning, tool calls with output, subagent cards with their own steps, background tasks. Undo a turn and its file edits. |
-| 🔀 | **Relay between engines** | Hit a usage limit mid-task? Continue the same chat on another engine or model: same folder, one feed, and the new engine gets the turns it missed. |
+| 🧾 | **Turn changes and Git** | An answer that edited files gets a *Changes · N files* row: open it for a per-file diff — what this turn changed, or the file now against the last commit (one column on a phone, two panes on a desktop). The Git screen of the chat folder shows the branch, ahead/behind and changed files: tick the files to commit, let the chat's own model suggest the message in a separate short request (it never lands in the chat history), commit, and push — push is for the admin only. Other users work with git in their own folders, without push or branch switching. Settings → Git holds the commit author, the message language and the default selection. |
+| 🌙 | **Background subagents keep working** | Claude Code answers right away while subagents it started in the background keep running after the answer. A band above the composer shows who is still working; a new message waits in the queue, and Claude picks up their results and answers again when they finish. |
+| 🔀 | **Relay between engines** | Hit a usage limit mid-task? Continue the same chat on another engine or model: same folder, one feed, and the new engine gets the turns it missed. Optionally automatic, with your own order of backup models. |
 | 📊 | **Subscriptions** | Usage and remaining quota per connected provider, where the provider reports it through an official API. |
 | 📡 | **Reliable streaming** | One SSE hub for every engine with replay, stall detection and loop protection — survives flaky mobile networks. |
 | 📎 | **Files** | Attach files and images, get result files as cards, browse allowed folders. A folder per chat. |
 | 🗂️ | **Obsidian as active cache** | Vault snapshot in context, turn digests and a per-chat journal written back, an isolated zone per user. |
 | 🎙️ | **Voice** | Local speech-to-text and text-to-speech (Python worker, CPU only) and a hands-free voice mode. |
-| 🔔 | **Push notifications** | Get notified when a long turn is done (Web Push, VAPID). |
+| 🔔 | **Push notifications** | Get notified when a long turn is done or an agent needs your decision (Web Push, VAPID). |
+| 📲 | **Phone pairing by QR** | Settings → Connect a phone shows a one-time QR code (valid 10 minutes); scan it and the phone is signed in to your account — no token typing. Needs `ZAI_PUBLIC_URL`.<br><img src="docs/screenshots/phone-light-pair.png" alt="Connect a phone: QR code, expiry, one-time link and Copy" width="180"> |
 | 👥 | **Multi-user** | Admin and users with own folders, system prompts, MCP sets, upload and voice quotas, rate limits. |
 | 📱 | **Mobile-first** | Built for iOS Safari: keyboard-aware layout, safe areas, light and dark themes, English and Russian UI. |
 | 🪶 | **Zero runtime dependencies** | The backend is plain Node.js stdlib. |
@@ -151,9 +171,20 @@ All screenshots are taken from `npm run demo` — what you see is what you get.
 | [Node.js](https://nodejs.org) | ≥ 22 | the portal |
 | [opencode](https://opencode.ai) | 2.x (tested with 2.2.6) | the opencode engine |
 | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | 2.x | the Claude engine |
+| [Codex CLI](https://github.com/openai/codex) | 0.169+ | optional, the Codex engine (admin only) |
 | Python | 3.11+ | optional, voice |
 
-You need at least one of the two engines.
+You need at least one engine.
+
+### One command
+
+```bash
+npx github:al3x4kov/teleharness            # → http://127.0.0.1:4180/zai/
+```
+
+It checks Node, keeps its data in `~/.teleharness`, builds the UI on the first run, tells you which engines it
+found (and how to install the missing ones) and prints the admin token. Options: `--port N`, `--host 0.0.0.0`
+(reachable from your LAN), `--rebuild`. opencode serve is not started for you — the installer prints the command.
 
 ### Install and run
 
@@ -161,7 +192,7 @@ You need at least one of the two engines.
 <summary><b>macOS / Linux</b></summary>
 
 ```bash
-git clone --branch v1.19.4 https://github.com/al3x4kov/teleharness.git
+git clone --branch v1.21.0 https://github.com/al3x4kov/teleharness.git
 cd teleharness
 npm ci && npm run build
 
@@ -180,7 +211,7 @@ claude setup-token                 # Claude engine: put the token into .env as C
 <summary><b>Windows (PowerShell)</b></summary>
 
 ```powershell
-git clone --branch v1.19.4 https://github.com/al3x4kov/teleharness.git
+git clone --branch v1.21.0 https://github.com/al3x4kov/teleharness.git
 cd teleharness
 npm ci; npm run build
 
@@ -212,7 +243,8 @@ On first start the portal creates an admin and writes the login token to `data/a
 
 | | macOS | Linux | Windows |
 |---|:---:|:---:|:---:|
-| Portal, both engines, files, push | ✅ | ✅ | ✅ |
+| Portal, opencode and Claude engines, files, push | ✅ | ✅ | ✅ |
+| Codex engine | admin only | admin only | admin only |
 | Obsidian cache, voice | ✅ | ✅ | ✅ |
 | Shell commands for non-admin users | — | — | ✅ (AppContainer sandbox) |
 
@@ -226,7 +258,7 @@ so the Windows sandbox is intentionally not ported to other systems.
 
 - **Portal** (`server.js`) — API, auth and users, the event hub, chat-to-engine binding, the handoff between
   engines. One adapter per engine: a client for `opencode serve` (1.x and 2.x) and a runner that starts
-  `claude` per turn.
+  `claude` (or the Codex shim over `codex app-server`) per turn.
 - **Harness** — everything around the CLI: agents and orchestration (oh-my-opencode-slim), the
   knowledge-base and sandbox plugin for opencode (`ops/opencode/plugin-v2` for 2.x, `vault-cache.ts` for 1.x),
   Claude Code hooks, skills, MCP servers. This decides what an agent can do and
@@ -251,6 +283,9 @@ Everything is configured with environment variables; the schema with types, defa
 | `ZAI_OC_PASSWORD` | — | HTTP Basic password of `opencode serve` 2.x |
 | `CLAUDE_CODE_OAUTH_TOKEN` | — | Claude subscription token (`claude setup-token`) |
 | `ZAI_ADMIN_TOKEN` | generated | admin login token |
+| `ZAI_PUBLIC_URL` | — | public https address of the portal root (`https://host/zai/`) for the phone pairing QR code; empty — no QR |
+| `ZAI_CODEX` | on | `off` hides the Codex engine even when `codex` is installed and signed in |
+| `ZAI_CODEX_BIN` | `codex` from npm global or `PATH` | path to the codex binary or its `bin/codex.js` |
 | `ZAI_DATA_DIR` | `./data` | users, sessions, logs |
 | `ZAI_FILE_ROOTS` | home folder | folders available in the file browser |
 | `ZAI_KB_ROOT` | `off` | Obsidian vault folder for agents, e.g. `~/Obsidian/agents` |
@@ -290,7 +325,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Changes are listed in [CHANGELOG.md](CHA
 
 ## Built with
 
-[opencode](https://opencode.ai) · [Claude Code](https://docs.anthropic.com/en/docs/claude-code) ·
+[opencode](https://opencode.ai) · [Claude Code](https://docs.anthropic.com/en/docs/claude-code) · [Codex CLI](https://github.com/openai/codex) ·
 [oh-my-opencode-slim](https://www.npmjs.com/package/oh-my-opencode-slim) · [Preact](https://preactjs.com) ·
 [esbuild](https://esbuild.github.io) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) ·
 [highlight.js](https://highlightjs.org) · [Piper](https://github.com/rhasspy/piper) · [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)

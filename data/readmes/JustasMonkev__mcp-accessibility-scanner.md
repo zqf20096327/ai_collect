@@ -479,7 +479,7 @@ Direct DOM value assignments can bypass application event handlers, and syntheti
 Record a session once with Playwright's codegen, then hand the file to the server:
 
 ```bash
-npx playwright@1.65.0 codegen --save-storage=auth.json https://example.com/login
+npx playwright@1.65.1 codegen --save-storage=auth.json https://example.com/login
 ```
 
 Sign in in the opened browser, then close it — `auth.json` now holds the cookies and local storage.

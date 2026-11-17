@@ -23,7 +23,7 @@
 <p align="center">
   <a href="https://github.com/Blaizzy/mlx-audio/actions/workflows/python-publish.yml"><img src="https://github.com/Blaizzy/mlx-audio/actions/workflows/python-publish.yml/badge.svg" alt="Upload Python Package"></a>
   <a href="https://pypi.org/project/mlx-audio/"><img src="https://img.shields.io/pypi/v/mlx-audio" alt="PyPI version"></a>
-  <a href="https://pypi.org/project/mlx-audio/"><img src="https://img.shields.io/badge/python-3.10%2B-blue" alt="Python 3.10+"></a>
+  <a href="https://pypi.org/project/mlx-audio/"><img src="https://img.shields.io/badge/python-3.11%2B-blue" alt="Python 3.11+"></a>
   <a href="https://github.com/Blaizzy/mlx-audio/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Blaizzy/mlx-audio" alt="MIT license"></a>
 </p>
 
@@ -233,7 +233,7 @@ See the model READMEs for API details, streaming examples, and conversion steps.
 | Model | Description | Languages | Repo |
 |-------|-------------|-----------|------|
 | **MiniMax Music 3** | Hierarchical AR + flow-matching song generation with lyrics and 44.1 kHz stereo output | Multilingual lyrics | [BF16](https://huggingface.co/mlx-community/MiniMax-Music3-bf16), [8-bit](https://huggingface.co/mlx-community/MiniMax-Music3-8bit), [6-bit](https://huggingface.co/mlx-community/MiniMax-Music3-6bit), [4-bit](https://huggingface.co/mlx-community/MiniMax-Music3-4bit), [MXFP8](https://huggingface.co/mlx-community/MiniMax-Music3-mxfp8), [MXFP4](https://huggingface.co/mlx-community/MiniMax-Music3-mxfp4), [NVFP4](https://huggingface.co/mlx-community/MiniMax-Music3-nvfp4), [guide](mlx_audio/music/models/minimax_music3/README.md) |
-| **Stable Audio 3** | Text to sound effects or music, 44.1 kHz stereo, up to 120 seconds | EN | [small-sfx](https://huggingface.co/mlx-community/stable-audio-3-small-sfx), [small-music](https://huggingface.co/mlx-community/stable-audio-3-small-music) |
+| **Stable Audio 3** | Text to sound effects or music, 44.1 kHz stereo, up to 380 seconds | EN | [small-sfx](https://huggingface.co/mlx-community/stable-audio-3-small-sfx), [small-music](https://huggingface.co/mlx-community/stable-audio-3-small-music), [medium](https://huggingface.co/mlx-community/stable-audio-3-medium) |
 
 ## Model Examples
 
@@ -769,7 +769,7 @@ Looking for Swift/iOS support? Check out [mlx-audio-swift](https://github.com/Bl
 
 ## Requirements
 
-- Python 3.10+
+- Python 3.11+
 - Apple Silicon Mac (M1/M2/M3/M4)
 - MLX framework
 - **ffmpeg** (required for MP3/FLAC/OGG/Opus/Vorbis audio encoding)

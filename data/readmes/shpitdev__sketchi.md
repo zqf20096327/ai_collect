@@ -68,26 +68,22 @@ prompt ─▶ model candidate ─▶ typed diagram ─▶ deterministic layout �
 
 | Package                       | Owns                                                                    |
 | ----------------------------- | ----------------------------------------------------------------------- |
-| `packages/diagram/core`       | diagram contracts (Effect Schema), semantic validation, shared rules    |
-| `packages/diagram/generation` | model prompts, gateway calls, candidate parsing and repair              |
-| `packages/diagram/agent`      | the Code Mode build: normalize, validate, render, export, store         |
-| `packages/diagram/renderer`   | deterministic layout and routing for every family                       |
-| `packages/diagram/excalidraw` | Excalidraw conversion and real-scene validation                         |
+| `packages/diagrams`          | family contracts, layout, readout, shared graph, build and generation    |
+| `packages/cloudflare`        | concrete shared AI Gateway binding adapter                             |
+| `packages/drawing` | Excalidraw conversion, real-scene validation and SVG import             |
 | `packages/diagram/scenarios`  | maintained scenarios and the scenario CLI                               |
-| `packages/diagram/ui`         | shared React canvas and preview components, and the diagram Storybook   |
+| `packages/editor`         | native React drawing editor; family compositions live in tools/storybook   |
 | `packages/icons/*`            | the icon catalog and search, community icons, and hand-drawn logos      |
-| `packages/svg-excalidraw`     | SVG to native Excalidraw elements and libraries                         |
-| `packages/studio/projects`    | Studio project and diagram persistence                                  |
 | `packages/observability`      | span telemetry for every Worker request                                 |
 | `packages/ui`                 | shadcn primitives and tokens for the Tailwind apps                      |
 
-| App          | Serves                                                                 |
-| ------------ | ---------------------------------------------------------------------- |
-| `cli`        | the `sketchi` command                                                  |
-| `playground` | playground.sketchi.app: Studio, the HTTP API and the MCP server       |
-| `web`        | sketchi.app: home, docs and agent setup                                |
-| `icons`      | icons.sketchi.app                                                      |
-| `excalidraw` | an internal Excalidraw workspace for checking real scenes              |
+| App (`apps/`) | Nx project   | Serves                                                          |
+| ------------- | ------------ | --------------------------------------------------------------- |
+| `cli`         | `sketchi-cli` | the `sketchi` command                                          |
+| `studio`      | `playground` | playground.sketchi.app: Studio, the HTTP API and the MCP server |
+| `web`         | `web`        | sketchi.app: home, docs and agent setup                         |
+| `icons`       | `icons`      | icons.sketchi.app                                               |
+| `editor`      | `excalidraw` | an internal Excalidraw workspace for checking real scenes       |
 
 Every app except the CLI is a Cloudflare Worker. See the
 [architecture guide](docs/architecture.md) and, for each family,
@@ -101,14 +97,15 @@ Every app except the CLI is a Cloudflare Worker. See the
 mise trust && mise install
 pnpm install
 pnpm dev                    # every app, through Portless
-pnpm nx dev playground      # one app
+pnpm nx dev playground      # one app (apps/studio)
 ```
 
 `pnpm ci:local` is the gate: lint and format, typecheck (TypeScript 6 and the
 native TypeScript 7 compiler), build and test for every project the change
 affects, plus the tooling, deploy and Storybook checks. Remote CI on a pull
-request is one Nx-affected typecheck. [AGENTS.md](AGENTS.md#proof) lists the
-fuzz suites and other checks to run locally when their inputs change.
+request is one Nx-affected typecheck. [AGENTS.md](AGENTS.md#proof) explains
+unit gates against a verified staging base, the full gate required for signoff,
+and additional checks when their inputs change.
 
 A CLI change that should ship gets a changeset (`pnpm changeset`); merging the
 Version Packages pull request publishes it.
@@ -119,7 +116,8 @@ against production or a preview.
 
 ## Deployment
 
-Merging to `main` deploys the Worker apps a change affects. A pull request gets
+Production Worker deploys require an explicit `app-production-deploy` workflow
+dispatch; merging to `main` does not deploy production. A pull request gets
 preview Workers when it carries the `preview` label; see
 [preview deployments](docs/preview-deploys.md) and the
 [production domain runbook](docs/production-domain-cutover.md).

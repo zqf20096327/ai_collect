@@ -81,6 +81,7 @@ Vector, graph, episodic, and hybrid memory architectures for persistent agent co
 - [**ReMe**](https://github.com/agentscope-ai/ReMe#readme) - Memory management kit for agents. File-based and vector-based memory systems. SOTA on LoCoMo and HaluMem benchmarks. by [@agentscope-ai](https://github.com/agentscope-ai) (3,786 stars)
 - [**MemMachine**](https://github.com/MemMachine/MemMachine#readme) - Universal memory layer for AI agents. Episodic (graph-based), profile (SQL), and working memory with scalable storage and retrieval. by [@MemMachine](https://github.com/MemMachine) (3,086 stars)
 - [**datachain**](https://github.com/datachain-ai/datachain#readme) - Operational data context layer for AI agents providing typed and versioned datasets over multimodal content. by [@datachain-ai](https://github.com/datachain-ai) (2,831 stars)
+- [**deja-vu**](https://github.com/vshulcz/deja-vu#readme) - Local cross-agent session memory that indexes existing coding-agent transcripts for search, handoff, and code recovery via CLI and MCP. by [@vshulcz](https://github.com/vshulcz) (1,513 stars)
 - [**nocturne_memory**](https://github.com/Dataojitori/nocturne_memory#readme) - Lightweight, rollbackable Long-Term Memory Server for MCP Agents with graph-like structured memory. by [@Dataojitori](https://github.com/Dataojitori) (1,426 stars)
 - [**Awesome-AI-Memory**](https://github.com/IAAR-Shanghai/Awesome-AI-Memory#readme) - Curated knowledge base on AI memory for LLMs and agents, covering long-term memory, reasoning, retrieval, and system design. by [@IAAR-Shanghai](https://github.com/IAAR-Shanghai) (1,307 stars)
 - [**Mem9**](https://github.com/mem9-ai/mem9#readme) - Unlimited persistent memory layer for AI agents. Cloud-synced memory across sessions and tools. by [@mem9-ai](https://github.com/mem9-ai) (1,236 stars)
@@ -209,6 +210,7 @@ Projects focused on controlling agent actions, enforcing policies, and preventin
 - [**NeMo Guardrails**](https://github.com/NVIDIA-NeMo/Guardrails#readme) - NVIDIA's toolkit for adding programmable guardrails to LLM conversational systems. Policy-based safety controls. by [@NVIDIA-NeMo](https://github.com/NVIDIA-NeMo) (7,472 stars)
 - [**AgentDoG**](https://github.com/AI45Lab/AgentDoG#readme) - Diagnostic guardrail framework for AI agent safety and security. Detects and intercepts unsafe agent behavior at runtime. by [@AI45Lab](https://github.com/AI45Lab) (708 stars)
 - [**SEMAPRAX**](https://github.com/wavect/semaprax#readme) - Beta systems language and toolchain for coding-agent workflows, with semantic graph and context inspection and review- and replay-checked semantic patch transactions. by [@wavect](https://github.com/wavect) (25 stars)
+- [**Memory Poisoning Lab**](https://github.com/RishabhPande/memory-poison-lab#readme) - Local teaching range for agent-memory poisoning with six synthetic scenarios, scripted deterministic agents, origin-aware defenses, and conflict-scoped repair. by [@RishabhPande](https://github.com/RishabhPande) (1 star)
 <!-- /AUTOGEN:safety -->
 
 ## Embodied AI
@@ -249,6 +251,7 @@ Projects connecting AI agents to physical devices, robotics, and real-world envi
 - [Agent0: Unleashing Self-Evolving Agents from Zero Data](https://arxiv.org/abs/2511.16043) (arXiv'25) - Curriculum and executor competition for self-improvement.
 - [SEMAG: Self-Evolutionary Multi-Agent Code Generation](https://arxiv.org/abs/2603.15707) (arXiv'26) - Self-evolutionary agents that auto-upgrade backbone models. 52.6% on CodeContests.
 - [SAGE: Multi-Agent Self-Evolution for LLM Reasoning](https://arxiv.org/abs/2603.15255) (arXiv'26) - Four co-evolving agents from shared LLM backbone.
+- [Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction](https://arxiv.org/abs/2611.10439v1) (arXiv'26) - MixUA distills independent user-agent trajectories into user-agent, user, agent, or global memory scopes to support experience transfer under privacy constraints.
 
 ### Memory Optimization
 
@@ -276,6 +279,7 @@ Projects connecting AI agents to physical devices, robotics, and real-world envi
 - [Learning Evolving Tools for Large Language Models](https://arxiv.org/abs/2410.06617) (ICLR'25) - Agents adapt tool-use behavior to changing external APIs using execution feedback.
 - [CREATOR: Tool Creation for Disentangling Abstract and Concrete Reasoning](https://arxiv.org/abs/2305.14318) (EMNLP'23) - Agents that create their own tools.
 - [ToolRL: Reward is All Tool Learning Needs](https://arxiv.org/abs/2504.13958) (arXiv'25) - Reinforcement learning for tool use optimization.
+- [SwarmEvolve: Latent Agent Swarms for Evolutionary Discovery and Optimization](https://arxiv.org/abs/2611.08483v1) (arXiv'26) - Evolves programs with swarms of latent agents that share KV caches instead of text. Reports a median 3–8 minutes to reach the baselines' 60-minute scores across 21 problems. [Benchmarks](https://github.com/Qile-J/SwarmEvolve) (framework code not yet released).
 
 ### Reasoning and Planning
 

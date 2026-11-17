@@ -2,7 +2,7 @@
   <a href="https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=hero">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://media.vibefather.ai/readme/hero-dark.9495a003fe.webp">
-      <img src="https://media.vibefather.ai/readme/hero-light.d5c8b60773.webp" width="100%" alt="A wall of live websites built by AI coding agents — 272 templates on VibeFather">
+      <img src="https://media.vibefather.ai/readme/hero-light.d5c8b60773.webp" width="100%" alt="A wall of live websites built by AI coding agents — 274 templates on VibeFather">
     </picture>
   </a>
 </p>
@@ -10,29 +10,29 @@
 <h1 align="center">Awesome Vibe Coding Websites</h1>
 
 <p align="center">
-  <b>272 original website templates and 559 live demos built by AI coding agents — each with the exact prompt and a DESIGN.md.</b><br>
+  <b>274 original website templates and 564 live demos built by AI coding agents — each with the exact prompt and a DESIGN.md.</b><br>
   Pick one, swap the <code>[VARIABLES]</code>, paste it into Claude Code, Cursor or Codex, and ship your own.
 </p>
 
 <p align="center">
   <a href="https://awesome.re"><img src="https://awesome.re/badge-flat2.svg" alt="Awesome"></a>
-  <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dtemplates&style=flat-square" alt="272 templates"></a>
-  <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dsites&style=flat-square" alt="559 live demos"></a>
+  <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dtemplates&style=flat-square" alt="274 templates"></a>
+  <a href="https://vibefather.ai/templates?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dsites&style=flat-square" alt="564 live demos"></a>
   <a href="https://vibefather.ai/models?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=badge"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fvibefather.ai%2Fapi%2Fv1%2Fbadge%3Fm%3Dmodels&style=flat-square" alt="9 AI models"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/prompts-CC_BY--NC_4.0-111?style=flat-square" alt="CC BY-NC 4.0"></a>
 </p>
 
 <p align="center">
-  <a href="https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=top-cta"><b>▶ Browse all 559 live demos</b></a> &nbsp;·&nbsp; <a href="README.zh-CN.md">简体中文</a> &nbsp;·&nbsp; <a href="#use-it-with-your-ai-coding-agent">Use with your agent</a>
+  <a href="https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=top-cta"><b>▶ Browse all 564 live demos</b></a> &nbsp;·&nbsp; <a href="README.zh-CN.md">简体中文</a> &nbsp;·&nbsp; <a href="#use-it-with-your-ai-coding-agent">Use with your agent</a>
 </p>
 
-**Awesome Vibe Coding Websites** is a free, open library of 272 original vibe coding website templates and 559 live demos, built by 9 AI models — Gemini 4 Carbon, Kimi K3.1 Pro, GPT-6.1 Sol, Claude Opus 5.5, Grok 4.7, GPT-6 Astra, Claude Sonnet 5.5, DeepSeek V4.1 Flash and GLM-5.3. Every template ships the exact prompt that built its demo and a DESIGN.md, so you can paste it into Claude Code, Cursor, Codex or any other AI coding tool and get the same kind of site: landing pages, SaaS sites, portfolios, online stores, dashboards, 3D scenes and browser games. Preview every site live on [VibeFather](https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=intro).
+**Awesome Vibe Coding Websites** is a free, open library of 274 original vibe coding website templates and 564 live demos, built by 9 AI models — Gemini 4 Carbon, Kimi K3.1 Pro, GPT-6.1 Sol, Claude Opus 5.5, Grok 4.7, GPT-6 Astra, Claude Sonnet 5.5, DeepSeek V4.1 Flash and GLM-5.3. Every template ships the exact prompt that built its demo and a DESIGN.md, so you can paste it into Claude Code, Cursor, Codex or any other AI coding tool and get the same kind of site: landing pages, SaaS sites, portfolios, online stores, dashboards, 3D scenes and browser games. Preview every site live on [VibeFather](https://vibefather.ai/?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=intro).
 
-**Categories:** [Landing Pages & Product Launches](#landing-pages--product-launches) <sub>13</sub> · [SaaS, AI & App Sites](#saas-ai--app-sites) <sub>46</sub> · [Games, 3D & Interactive Toys](#games-3d--interactive-toys) <sub>37</sub> · [Interactive Explainers & Slides](#interactive-explainers--slides) <sub>22</sub> · [Portfolios, Studios & Blogs](#portfolios-studios--blogs) <sub>33</sub> · [E-commerce & Product Pages](#e-commerce--product-pages) <sub>30</sub> · [Local Business & Services](#local-business--services) <sub>65</sub> · [Restaurants, Hotels & Travel](#restaurants-hotels--travel) <sub>12</sub> · [Events & Communities](#events--communities) <sub>10</sub> · [More Landing Pages](#more-landing-pages) <sub>4</sub>
+**Categories:** [Landing Pages & Product Launches](#landing-pages--product-launches) <sub>13</sub> · [SaaS, AI & App Sites](#saas-ai--app-sites) <sub>48</sub> · [Games, 3D & Interactive Toys](#games-3d--interactive-toys) <sub>37</sub> · [Interactive Explainers & Slides](#interactive-explainers--slides) <sub>22</sub> · [Portfolios, Studios & Blogs](#portfolios-studios--blogs) <sub>33</sub> · [E-commerce & Product Pages](#e-commerce--product-pages) <sub>30</sub> · [Local Business & Services](#local-business--services) <sub>65</sub> · [Restaurants, Hotels & Travel](#restaurants-hotels--travel) <sub>12</sub> · [Events & Communities](#events--communities) <sub>10</sub> · [More Landing Pages](#more-landing-pages) <sub>4</sub>
 
 ## Same prompt, two AI models
 
-Each pair below was built from the identical prompt by two different models — the clearest way to see how they differ at front-end design. [All 9 model comparisons →](#browse-more)
+Each pair below was built from the identical prompt by two different models — the clearest way to see how they differ at front-end design. [All 12 model comparisons →](#browse-more)
 
 <table>
 <tr>
@@ -47,9 +47,9 @@ Each pair below was built from the identical prompt by two different models — 
 <sub>Claude Sonnet 5.5 <i>vs</i> Gemini 4 Carbon · <a href="compare/claude-sonnet-5-5-vs-gemini-4-carbon.md">all 8</a></sub>
 </td>
 <td width="33%" valign="top">
-<a href="https://vibefather.ai/compare/deepseek-v4-1-flash-vs-kimi-k3-1-pro?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=compare-strip"><img src="https://media.vibefather.ai/t/3d-flower-garden-toy/336c2b24-c257-42e0-83bf-0371a80455cc/shot_desktop.be6303142d.webp" width="49%" alt="3D Flower Garden Toy built by DeepSeek V4.1 Flash"> <img src="https://media.vibefather.ai/t/3d-flower-garden-toy/e399ce80-c391-421e-bfba-9cfb8e44f580/shot_desktop.f2752e65f1.webp" width="49%" alt="3D Flower Garden Toy built by Kimi K3.1 Pro"></a><br>
-<b>3D Flower Garden Toy</b><br>
-<sub>DeepSeek V4.1 Flash <i>vs</i> Kimi K3.1 Pro · <a href="compare/deepseek-v4-1-flash-vs-kimi-k3-1-pro.md">all 70</a></sub>
+<a href="https://vibefather.ai/compare/gemini-4-carbon-vs-gpt-6-astra?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=compare-strip"><img src="https://media.vibefather.ai/t/liquid-glass-product-page/89dc8bdc-f96b-411d-a68c-a0e7a4d82a34/shot_desktop.597a69b55f.webp" width="49%" alt="Liquid Glass Product Page built by Gemini 4 Carbon"> <img src="https://media.vibefather.ai/t/liquid-glass-product-page/cc1b4850-ba96-4073-aa05-ec1ebefa21fe/shot_desktop.2c4a46e842.webp" width="49%" alt="Liquid Glass Product Page built by GPT-6 Astra"></a><br>
+<b>Liquid Glass Product Page</b><br>
+<sub>Gemini 4 Carbon <i>vs</i> GPT-6 Astra · <a href="compare/gemini-4-carbon-vs-gpt-6-astra.md">all 3</a></sub>
 </td>
 </tr>
 </table>
@@ -107,7 +107,7 @@ Each pair below was built from the identical prompt by two different models — 
 
 ### SaaS, AI & App Sites
 
-<sub>46 templates · Software marketing sites, app landings, dashboards and docs.</sub>
+<sub>48 templates · Software marketing sites, app landings, dashboards and docs.</sub>
 
 <table>
 <tr>
@@ -126,22 +126,24 @@ Each pair below was built from the identical prompt by two different models — 
 </tr>
 <tr>
 <td width="50%" valign="top">
-<a href="https://vibefather.ai/templates/saas-app-dashboard-starter?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps"><img src="https://media.vibefather.ai/t/saas-app-dashboard-starter/aa4ad3fa-4a25-4da0-b2db-41b21e198663/webp.9c92615049.webp" width="100%" alt="SaaS App Dashboard Starter website template — live demo built by GPT-6 Astra"></a><br>
-<b><a href="templates/saas-app-dashboard-starter">SaaS App Dashboard Starter</a></b> <sup>PRO</sup><br>
-<sub>A working analytics app with onboarding, account tables, team settings, keys, and local billing flows.</sub><br>
-<sub>GPT-6 Astra · <a href="https://vibefather.ai/templates/saas-app-dashboard-starter?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps">Live demo</a> · <a href="templates/saas-app-dashboard-starter/prompt.md">Prompt</a></sub>
+<a href="https://vibefather.ai/templates/social-media-content-calendar?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps"><img src="https://media.vibefather.ai/t/social-media-content-calendar/dfb54b60-e32d-4c1d-9b67-961bc3d635fe/webp.46c368918b.webp" width="100%" alt="Social Media Content Calendar website template — live demo built by GPT-6 Astra"></a><br>
+<b><a href="templates/social-media-content-calendar">Social Media Content Calendar</a></b> <sup>PRO</sup><br>
+<sub>Plan four weeks of posts, try four formats, and move a draft from its first idea to the calendar.</sub><br>
+<sub>GPT-6 Astra · <a href="https://vibefather.ai/templates/social-media-content-calendar?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps">Live demo</a> · <a href="templates/social-media-content-calendar/prompt.md">Prompt</a></sub>
 </td>
 <td width="50%" valign="top">
-<a href="https://vibefather.ai/templates/ai-tools-directory-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps"><img src="https://media.vibefather.ai/t/ai-tools-directory-website/83a6661d-9e30-4bee-b47a-ebeea56efd3b/webp.f960c508e6.webp" width="100%" alt="AI Tools Directory Website website template — live demo built by GPT-6 Astra"></a><br>
-<b><a href="templates/ai-tools-directory-website">AI Tools Directory Website</a></b><br>
-<sub>A lime-and-lilac directory with 64 fictional tools, live filters, saved picks and useful comparisons.</sub><br>
-<sub>GPT-6 Astra · <a href="https://vibefather.ai/templates/ai-tools-directory-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps">Live demo</a> · <a href="templates/ai-tools-directory-website/prompt.md">Prompt</a></sub>
+<a href="https://vibefather.ai/templates/resume-builder-web-app?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps"><img src="https://media.vibefather.ai/t/resume-builder-web-app/8aa9cb28-cf3b-4f29-b071-e107bc0ca7d4/webp.f57c8a46e5.webp" width="100%" alt="Resume Builder Web App website template — live demo built by GPT-6 Astra"></a><br>
+<b><a href="templates/resume-builder-web-app">Resume Builder Web App</a></b><br>
+<sub>Edit your experience beside the printed page, check its reading order, and save a copy to take with you.</sub><br>
+<sub>GPT-6 Astra · <a href="https://vibefather.ai/templates/resume-builder-web-app?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps">Live demo</a> · <a href="templates/resume-builder-web-app/prompt.md">Prompt</a></sub>
 </td>
 </tr>
 </table>
 
 | Template | What it is | Built with | |
 |---|---|---|---|
+| [SaaS App Dashboard Starter](templates/saas-app-dashboard-starter) <sup>PRO</sup> | A working analytics app with onboarding, account tables, team settings, keys, and local billing flows. | GPT-6 Astra | [Live demo](https://vibefather.ai/templates/saas-app-dashboard-starter?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps) · [Prompt](templates/saas-app-dashboard-starter/prompt.md) |
+| [AI Tools Directory Website](templates/ai-tools-directory-website) | A lime-and-lilac directory with 64 fictional tools, live filters, saved picks and useful comparisons. | GPT-6 Astra | [Live demo](https://vibefather.ai/templates/ai-tools-directory-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps) · [Prompt](templates/ai-tools-directory-website/prompt.md) |
 | [AI Chat App Interface](templates/ai-chat-app-interface) <sup>PRO</sup> | A warm AI workspace with streaming replies, useful history, editable profiles, and local attachments. | GPT-6 Astra | [Live demo](https://vibefather.ai/templates/ai-chat-app-interface?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps) · [Prompt](templates/ai-chat-app-interface/prompt.md) |
 | [AI Music Generator Landing Page](templates/ai-music-generator-landing-page) <sup>PRO</sup> | Holographic music software with original bundled audio, a real spectrum, and an honest local demo workflow. | GPT-6.1 Sol, GLM-5.3 | [Live demo](https://vibefather.ai/templates/ai-music-generator-landing-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps) · [Prompt](templates/ai-music-generator-landing-page/prompt.md) |
 | [Kids Learning App Landing Page](templates/kids-learning-app-landing-page) | A bright clay learning app page with playful lessons, age-aware paths, and a useful parent view. | GPT-6.1 Sol, GLM-5.3 | [Live demo](https://vibefather.ai/templates/kids-learning-app-landing-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-saas-ai-apps) · [Prompt](templates/kids-learning-app-landing-page/prompt.md) |
@@ -304,7 +306,7 @@ Each pair below was built from the identical prompt by two different models — 
 | [Jet Engine Interactive Explainer](templates/jet-engine-interactive-explainer) <sup>PRO</sup> | A scroll-driven 3D turbofan with cutaways, relative rotor speeds, live airflow, and a working throttle. | Kimi K3.1 Pro, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/jet-engine-interactive-explainer?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/jet-engine-interactive-explainer/prompt.md) |
 | [Annual Report Data Story](templates/annual-report-data-story) <sup>PRO</sup> | A scrolling annual report with count-up numbers, charts that draw themselves and a dot-grid office map. | Claude Opus 5.5, Claude Sonnet 5.5 | [Live demo](https://vibefather.ai/templates/annual-report-data-story?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/annual-report-data-story/prompt.md) |
 | [Interactive Lesson Slides](templates/interactive-lesson-slides) | A working lesson deck with instant quizzes, a live code slide, drawing tools and a link to every slide. | Claude Opus 5.5, Claude Sonnet 5.5 | [Live demo](https://vibefather.ai/templates/interactive-lesson-slides?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/interactive-lesson-slides/prompt.md) |
-| [Solar System 3D Explainer](templates/solar-system-3d-explainer) <sup>PRO</sup> | Fly through a 3D solar system, flip to true scale and watch the planets vanish into the dark. | Claude Opus 5.5, Claude Sonnet 5.5, Gemini 4 Carbon | [Live demo](https://vibefather.ai/templates/solar-system-3d-explainer?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/solar-system-3d-explainer/prompt.md) |
+| [Solar System 3D Explainer](templates/solar-system-3d-explainer) <sup>PRO</sup> | Fly through a 3D solar system, flip to true scale and watch the planets vanish into the dark. | Claude Opus 5.5, Claude Sonnet 5.5, Gemini 4 Carbon, GPT-6 Astra | [Live demo](https://vibefather.ai/templates/solar-system-3d-explainer?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/solar-system-3d-explainer/prompt.md) |
 | [Interactive Apartment Floor Plan Tour](templates/interactive-apartment-floor-plan-tour) <sup>PRO</sup> | Move from a measured floor plan to a furnished apartment, one room at a time. | GPT-6.1 Sol | [Live demo](https://vibefather.ai/templates/interactive-apartment-floor-plan-tour?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/interactive-apartment-floor-plan-tour/prompt.md) |
 | [3D Exploded View Product Showcase](templates/3d-exploded-view-product-showcase) <sup>PRO</sup> | A scroll-driven mechanical assembly with labeled parts, cutaway controls, and reversible playback. | Kimi K3.1 Pro, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/3d-exploded-view-product-showcase?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/3d-exploded-view-product-showcase/prompt.md) |
 | [Conference Talk Slide Deck](templates/conference-talk-slide-deck) | Stage-black slide website with keyboard navigation, code slides with hand-rolled highlighting, an overview grid and a print handout. | GLM-5.3, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/conference-talk-slide-deck?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-explainers-slides) · [Prompt](templates/conference-talk-slide-deck/prompt.md) |
@@ -383,7 +385,7 @@ Each pair below was built from the identical prompt by two different models — 
 | [Wedding Photographer Portfolio](templates/wedding-photographer-portfolio) <sup>PRO</sup> | Cinematic four-page photographer portfolio with story galleries, a couple-in-silhouette frame, a lightbox, packages and inquiry. | GLM-5.3, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/wedding-photographer-portfolio?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-portfolios-blogs) · [Prompt](templates/wedding-photographer-portfolio/prompt.md) |
 | [Neo-Brutalist Blog and Portfolio](templates/neo-brutalist-blog-and-portfolio) | A neo-brutalist home and blog for a writer-illustrator: thick borders, hard shadows and one loud orange. | Claude Opus 5.5 | [Live demo](https://vibefather.ai/templates/neo-brutalist-blog-and-portfolio?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-portfolios-blogs) · [Prompt](templates/neo-brutalist-blog-and-portfolio/prompt.md) |
 | [Swiss Design Agency Portfolio](templates/swiss-design-agency-portfolio) | Swiss-style agency portfolio on a strict 12-column grid, with morphing case-study page transitions. | Claude Opus 5.5 | [Live demo](https://vibefather.ai/templates/swiss-design-agency-portfolio?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-portfolios-blogs) · [Prompt](templates/swiss-design-agency-portfolio/prompt.md) |
-| [Retro Desktop OS Portfolio](templates/retro-desktop-os-portfolio) <sup>PRO</sup> | A fictional 90s-style desktop OS portfolio with draggable windows, a start menu and looping motion previews. | Claude Opus 5.5, Gemini 4 Carbon | [Live demo](https://vibefather.ai/templates/retro-desktop-os-portfolio?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-portfolios-blogs) · [Prompt](templates/retro-desktop-os-portfolio/prompt.md) |
+| [Retro Desktop OS Portfolio](templates/retro-desktop-os-portfolio) <sup>PRO</sup> | A fictional 90s-style desktop OS portfolio with draggable windows, a start menu and looping motion previews. | Claude Opus 5.5, Gemini 4 Carbon, GPT-6 Astra | [Live demo](https://vibefather.ai/templates/retro-desktop-os-portfolio?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-portfolios-blogs) · [Prompt](templates/retro-desktop-os-portfolio/prompt.md) |
 
 <p align="right"><sub><a href="#awesome-vibe-coding-websites">↑ Back to top</a></sub></p>
 
@@ -408,10 +410,10 @@ Each pair below was built from the identical prompt by two different models — 
 </tr>
 <tr>
 <td width="50%" valign="top">
-<a href="https://vibefather.ai/templates/liquid-glass-product-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce"><img src="https://media.vibefather.ai/t/meniscus/3eb3df01-6006-4d7c-81d6-a8a840642a3f/webp.e1c9a712d7.webp" width="100%" alt="Liquid Glass Product Page website template — live demo built by Claude Opus 5.5, Claude Sonnet 5.5 and Gemini 4 Carbon"></a><br>
+<a href="https://vibefather.ai/templates/liquid-glass-product-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce"><img src="https://media.vibefather.ai/t/meniscus/3eb3df01-6006-4d7c-81d6-a8a840642a3f/webp.e1c9a712d7.webp" width="100%" alt="Liquid Glass Product Page website template — live demo built by Claude Opus 5.5, Claude Sonnet 5.5, Gemini 4 Carbon and GPT-6 Astra"></a><br>
 <b><a href="templates/liquid-glass-product-page">Liquid Glass Product Page</a></b> <sup>PRO</sup><br>
 <sub>A liquid-glass preorder page for premium hardware: refractive panels over product photos, specs and editions.</sub><br>
-<sub>Claude Opus 5.5 · Claude Sonnet 5.5 · Gemini 4 Carbon · <a href="https://vibefather.ai/templates/liquid-glass-product-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce">Live demo</a> · <a href="templates/liquid-glass-product-page/prompt.md">Prompt</a></sub>
+<sub>Claude Opus 5.5 · Claude Sonnet 5.5 · Gemini 4 Carbon · GPT-6 Astra · <a href="https://vibefather.ai/templates/liquid-glass-product-page?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce">Live demo</a> · <a href="templates/liquid-glass-product-page/prompt.md">Prompt</a></sub>
 </td>
 <td width="50%" valign="top">
 <a href="https://vibefather.ai/templates/bridal-boutique-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce"><img src="https://media.vibefather.ai/t/bridal-boutique-website/9025942f-90fc-445a-b6a9-7487dc7bf9c7/webp.716cb8bf2f.webp" width="100%" alt="Bridal Boutique Website website template — live demo built by GLM-5.3 and Kimi K3.1 Pro"></a><br>
@@ -445,6 +447,4 @@ Each pair below was built from the identical prompt by two different models — 
 | [Pizza Ordering Website](templates/pizza-ordering-website) | A warm pizzeria menu with a live pizza builder, cart, time slots, and a complete demo order flow. | Kimi K3.1 Pro, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/pizza-ordering-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/pizza-ordering-website/prompt.md) |
 | [Furniture Store Catalog](templates/furniture-store-catalog) | Warm showroom furniture catalogue with room navigation, materials filter, SVG dimension diagrams and a bag drawer. | GLM-5.3, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/furniture-store-catalog?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/furniture-store-catalog/prompt.md) |
 | [Skincare Brand Shop](templates/skincare-brand-shop) | Apothecary-clean skincare shop with a routine-builder quiz, ingredient-first product pages, bundles and a cart. | GLM-5.3 | [Live demo](https://vibefather.ai/templates/skincare-brand-shop?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/skincare-brand-shop/prompt.md) |
-| [Florist Shop Website](templates/florist-shop-website) | Florist shop with a bouquet catalogue, size and vase options, delivery date picker, gift message and a client-side cart. | GLM-5.3, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/florist-shop-website?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/florist-shop-website/prompt.md) |
-| [Fashion Online Store](templates/fashion-online-store) <sup>PRO</sup> | Four-page fashion storefront with filterable collections, variant product pages, a cart drawer and a mock checkout. | GLM-5.3, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/fashion-online-store?utm_source=github&utm_medium=readme&utm_campaign=awesome-vibe-coding-websites&utm_content=readme-ecommerce) · [Prompt](templates/fashion-online-store/prompt.md) |
-| [3D Product Configurator Page](templates/3d-product-configurator-page) <sup>PRO</sup> | Drag a code-built 3D headphone, pick finish, cushions and engraving, then scroll to take it apart. | Claude Sonnet 5.5, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai/templates/3d-
+| [Florist Shop Website](templates/florist-shop-website) | Florist shop with a bouquet catalogue, size and vase options, delivery date picker, gift message and a client-side cart. | GLM-5.3, DeepSeek V4.1 Flash | [Live demo](https://vibefather.ai

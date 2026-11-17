@@ -206,9 +206,7 @@ Whether you're just entering the AI space or a seasoned practitioner looking for
 </p>
 
 <sub>Building • Learning • Researching • Sharing</sub>
-
 <br/>
-
 ⭐ <strong>If this repository helped you, consider giving it a star!</strong> ⭐
 
 <img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" />

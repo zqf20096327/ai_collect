@@ -50,8 +50,7 @@ Every row comes from the two commands under
 [Reproduce the table](#reproduce-the-table). Model files, checksums and the
 long-context tiers are in [docs/benchmark.md](docs/benchmark.md). Models under
 2B parameters are no longer benchmarked, because they have little practical
-use. Gemma 4 E4B, the DeepSeek-R1-Distill-Qwen family and the other Qwen2.5
-sizes run as well.
+use. Gemma 4 E4B, Qwen2.5-7B and Qwen3.6-35B-A3B run as well.
 
 ## Reproducible
 
@@ -109,7 +108,7 @@ LD_LIBRARY_PATH=build/core guile -L bindings/guile/scheme
 (display (generate model session "The three laws of thermodynamics are" 64))
 ```
 
-The same calls are available from C (`sb_llm_*` in
+The same calls are available from C (`boom_llm_*` in
 [`capi.h`](capi/include/sonicboom/capi.h)).
 
 ### Serve an OpenAI-compatible API
@@ -145,6 +144,11 @@ LLAMA_BIN=/path/to/llama.cpp/build/bin tools/bench.sh models/qwen2.5-7b-instruct
 LLAMA_BIN=/path/to/llama.cpp/build/bin tools/bench.sh models/qwen2.5-7b-instruct-1m-q4_k_m.gguf --runs 3 --long
 ```
 
+Both `llama-bench` and `llama-server` come from `LLAMA_BIN`; add `--no-llama`
+to measure SonicBoom alone, in which case every llama.cpp cell reads
+`skipped`. The script prints its own command line, the llama.cpp version and
+commit, and the SM clock sampled inside each measurement window.
+
 The first command prints the code-editing rows, and the second the decode and
 prefill rows, for your GPU. The protocol is described in
 [docs/benchmark.md](docs/benchmark.md#code-editing). Post your run in the
@@ -162,6 +166,9 @@ cmake --build build --target docs-site     # writes build/site/sonicboom/
 Open `build/site/sonicboom/index.html`, or serve the directory with
 `python3 -m http.server` to use the search box. `ctest -L docs` checks the
 Guile docstrings, the API reference and the generated site.
+
+The published documentation is at
+[hardenedvault.com/sonicboom](https://hardenedvault.com/sonicboom/).
 
 ### Thanks
 

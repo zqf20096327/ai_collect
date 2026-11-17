@@ -1,0 +1,72 @@
+# Aspera CLI
+
+[![Gem Version](https://badge.fury.io/rb/aspera-cli.svg)](https://badge.fury.io/rb/aspera-cli)
+[![unit tests](https://github.com/IBM/aspera-cli/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/IBM/aspera-cli/actions)
+[![coverage](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/IBM/aspera-cli/main/docs/coverage.json)](tests/README.md#coverage)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/5861/badge)](https://bestpractices.coreinfrastructure.org/projects/5861)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+![Hootput the Owl](docs/mascot.svg)
+
+**`ascli`** is the command-line interface for IBM Aspera products.
+Use it from the terminal or in scripts to:
+
+- Drive **Aspera on Cloud**, **Faspex**, **Shares**, **Node**, **Console**, **Orchestrator**, and **High-Speed Transfer Server**
+- Call REST APIs and run high-speed transfers (**FASP**)
+- Automate workflows with config, presets, and scripting
+
+## Use with AI assistants
+
+`ascli` is built to be used by AI assistants and AI agents (LLM), so that they can operate IBM Aspera products (Aspera on Cloud, Faspex, High-Speed Transfer Server, Node API, Shares, Console, Orchestrator) for you:
+
+- **In a shell** (coding agents): nothing to set up. Give the agent [`llms.txt`](https://github.com/IBM/aspera-cli/blob/main/llms.txt), or install the agent skill [`skills/ascli`](https://github.com/IBM/aspera-cli/tree/main/skills/ascli): the agent then discovers commands, arguments and options by itself.
+- **MCP server** (Model Context Protocol): `ascli mcp server` exposes all commands to an AI client, with restrictions, and without showing secrets to the AI.
+
+See [Leveraging AI Assistance](https://github.com/IBM/aspera-cli/blob/main/docs/README.md#leveraging-ai-assistance) in the manual.
+
+## Documentation
+
+Choose what best suits you:
+
+| Resource | Link |
+| -------- | ---- |
+| **Documentation site** | [ibm.github.io/aspera-cli](https://ibm.github.io/aspera-cli/) (one page per section, [llms.txt](https://ibm.github.io/aspera-cli/llms.txt) for AI assistants) |
+| **Online manual** | [GitHub docs/README.md](https://github.com/IBM/aspera-cli/blob/main/docs/README.md) |
+| **PDF manual** | In [GitHub Releases](https://github.com/IBM/aspera-cli/releases) |
+| **RubyGems** | [rubygems.org/gems/aspera-cli](https://rubygems.org/gems/aspera-cli) |
+| **RubyDoc** | [rubydoc.info/gems/aspera-cli](https://www.rubydoc.info/gems/aspera-cli) |
+| **Docsify** | [online](https://docsify-this.net/?basePath=https://raw.githubusercontent.com/IBM/aspera-cli/main/docs&homepage=README.md&sidebar=true&browser-tab-title=Aspera%20CLI%20Manual&hide-credits=true&maxLevel=4&externalLinkTarget=_blank&image-captions=true&dark-mode=auto) |
+
+## Install
+
+Install **Ruby** ≥ 3.3
+
+```bash
+gem install aspera-cli
+ascli config transferd install
+```
+
+The second command installs the **FASP** transfer engine (`ascp`).
+For other install methods (single executable, Docker, Chocolatey, Homebrew), see the [user manual](https://github.com/IBM/aspera-cli/blob/main/docs/README.md#installation).
+
+**Quick check:**
+
+```bash
+ascli -v
+```
+
+## Contributing
+
+- **Bugs & features:** [BUGS.md](https://github.com/IBM/aspera-cli/blob/main/BUGS.md)
+- **Security vulnerabilities:** [SECURITY.md](https://github.com/IBM/aspera-cli/blob/main/SECURITY.md)
+- **How to contribute:** [CONTRIBUTING.md](https://github.com/IBM/aspera-cli/blob/main/CONTRIBUTING.md)
+- **Code of conduct:** [CODE_OF_CONDUCT.md](https://github.com/IBM/aspera-cli/blob/main/CODE_OF_CONDUCT.md)
+- **Governance:** [GOVERNANCE.md](https://github.com/IBM/aspera-cli/blob/main/GOVERNANCE.md)
+- **Release notes:** [CHANGELOG.md](https://github.com/IBM/aspera-cli/blob/main/CHANGELOG.md)
+
+Commands map to Aspera REST APIs; see the manual for options.
+For debugging, use `--log-level=debug`.
+
+## License
+
+[Apache-2.0](https://github.com/IBM/aspera-cli/blob/main/LICENSE)

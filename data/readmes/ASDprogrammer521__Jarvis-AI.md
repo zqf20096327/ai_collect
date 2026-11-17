@@ -159,6 +159,45 @@ Ship the beta on Friday.
 
 The first note creates a home for your cards at `…/hand_space_notes` and pins it automatically. Notes without front matter simply use the default note colour.
 
+### Live cards
+
+Some cards are not files — they show live data and keep updating while Hand Space is open. Open one (pinch it) for the big view; scroll it like any note.
+
+| Card | What it shows | Refresh |
+|---|---|---|
+| 🌤 **Weather** | Temperature, feels-like, humidity, wind and a 5-day outlook with animated icons | every 10 min |
+| 🎵 **Now Playing** | What Spotify is playing, with a spinning disc and equaliser | every 4 s |
+| 🖥 **System** | CPU and memory gauges with history graphs, disk, network speed, battery, uptime | every second |
+| 🕐 **Clock** | Digital time and an analog dial, date, progress of the day and year | every second |
+| 📅 **Calendar** | Meetings grouped by day, with times and places | every 5 min |
+| 📬 **Mail** | Unread count and your latest emails (read-only) | every 5 min |
+| 💳 **Expenses** | Spent / income / balance, a category donut, bars with budget warnings and the latest entries | every 2 min |
+
+Optional settings in `config/api_keys.json`:
+
+```json
+{ "hs_weather_city": "Tashkent", "hs_weather_units": "c" }
+```
+
+> [!NOTE]
+> **Weather uses the network.** Data comes from [Open-Meteo](https://open-meteo.com/) (free, no key). Without `hs_weather_city` it finds your rough location from your IP address through ipapi.co — set the city if you would rather not. Use `"hs_weather_units": "f"` for °F / mph. **Now Playing** reads Spotify's window title on Windows, so it shows the song only while Spotify is running.
+
+### 🏝 Dynamic Island
+
+A floating glass player sits at the top of your screen — a little below the edge — and stays **above everything, Hand Space included**.
+
+* **Resting:** a small dark pill. Time | weather and an orange dot; while music plays: a round cover, an equaliser and the dot.
+* **Hover, click, or a new song:** it opens into the card tinted with the colour of the cover. **Click the orange dot** for the next page: the player (cover, title, artist, a progress bar you can click to seek, ⏮ ⏯ ⏭) → the calendar (the day big, the month with today in red) → clock, date and weather.
+* **Pull it down** with the mouse to open it (it follows your hand and stays open if you pull far enough); **pull it up** to shut it. **Shift+drag** (or drag sideways) moves it — the spot is remembered. **Right-click:** open / close, reset position, or hide. Off for good: `"dynamic_island": false`.
+
+It works with **any player** on Windows (Spotify, YouTube in Chrome, VLC…) through the `winrt-*` packages (they are in `requirements.txt` and work on Python 3.14). Without them it falls back to Spotify's window title: title and artist only, no cover or progress.
+
+```bash
+pip install winrt-runtime winrt-Windows.Foundation winrt-Windows.Foundation.Collections winrt-Windows.Media.Control winrt-Windows.Storage.Streams
+```
+
+Weather and music use the same sources and settings as the [live cards](#live-cards).
+
 ### Hand outline
 
 The **Show hand outline** switch on the Hand Space page draws the thin bones of your hand. Off = only the fingertip and pinch rings. Hand Space draws on the graphics card when GPU acceleration is on and falls back to the standard renderer on its own if needed (Settings → Appearance → Performance).
@@ -550,7 +589,7 @@ Jarvis-ai/
 ├── requirements.txt        # the only requirements file
 ├── actions/                # built-in tools
 ├── plugins/                # drop-in plugins
-├── core/                   # avatar, audio, LLM, updater, camera hub (gestures + Face ID), Hand Space…
+├── core/                   # avatar, audio, LLM, updater, camera hub (gestures + Face ID), Hand Space, live card feeds…
 ├── dashboard/              # remote server + web companion
 ├── android/JarvisApp/      # native Android companion (Kotlin) — dialer, calls, quick actions
 ├── scripts/build_exe.ps1   # local Windows packaging

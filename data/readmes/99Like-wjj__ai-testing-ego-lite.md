@@ -28,29 +28,24 @@
 
 ## 当前版本
 
-当前正式版本为 **[0.2.1](https://github.com/99Like-wjj/ai-testing-ego-lite/releases/tag/v0.2.1) / attachments-review-2**。仓库、安装包与 Skill 标识统一为 `ai-testing-ego-lite`，显式调用 `$ai-testing-ego-lite`；中文展示名为“AI 自动化测试”。使用前核对完整安装内容的身份。本次附件与评审改动及验证范围见[验证记录](docs/evaluations/attachment-review-20261106/validation.md)。
-
-完整编译包与安装说明见[安装指南](INSTALL.zh-CN.md)，不把源码ZIP当作安装包。升级时完整安装新名称 Skill，验证后删除旧入口，不保留旧名别名；历史数据保持原样。实现设计见[0.2.1设计](docs/v0.2.1-design.md)，当前验证范围见[开发自测](docs/v0.2.1-development-validation.md)。
+当前正式版本为 0.2.2 / report-performance-1，下载见 **[v0.2.2 Release](https://github.com/99Like-wjj/ai-testing-ego-lite/releases/tag/v0.2.2)**，主要优化 HTML 报告打开与交互性能。Skill 标识继续为 `ai-testing-ego-lite`，显式调用 `$ai-testing-ego-lite`；安装与升级见[安装说明](INSTALL.zh-CN.md)，验证范围见[发布验证](docs/v0.2.2-release-validation.md)。旧报告不自动改写。
 
 ## 版本演变
 
-![0.2.1正式版及前三个历史版本0.1.9、0.1.8、0.1.7；能力示意并非实际证据。](docs/images/readme-version-history.zh-CN.png)
+![0.2.2 正式版及前三个历史版本0.2.1、0.1.9、0.1.8；能力示意并非实际证据。](docs/images/readme-version-history.zh-CN.png)
 
 图中保留最新版本与前三个历史版本；更早版本和原验证记录保留在[完整版本演变](docs/version-history.md)。
 
-## 0.2.1 做了什么
+## 0.2.2 做了什么
 
-- 在一次工具编排中组合已确定的本地步骤，避免只为运行脚本增加模型往返；AI仍自主判断业务路径。
-- 按目标读取：progress/context默认摘要、goals索引、point完整必要语义，长内容明确导出，不覆盖原件。
-- 入账即反馈：record提交收据与结构缺项分别返回，提示失败不改写已成功提交，重放仍使用原revision。
-- 可选用量统计：只读显式导出、去重请求、区分缓存和推理子项；缺失保留未知，不自动计费。
-- 测试附件保留已登记原件、用途与关联，支持单文件下载及静态 ZIP 合集；安全预览不执行主动内容，缺失与排除状态明确展示。
-- 用例评审支持筛选巡览、历史前进/后退阅读位置恢复、通过/继续评审及意见导出；UI 标记不代替正式确认或执行授权。
-- 统一新Skill身份与构建路径；用例审阅、知识读取、完整对话、证据报告、回归复用和并发约束继续适用。
+- 页面主数据只解析一次，默认中文不再重复解析包含 Base64 截图的整份 JSON。
+- 完整记录与历史详情首次展开时渲染；切步骤和证据局部更新，复用目录、概览及已展开记录。
+- bundle 普通截图使用本地原件附件按需加载；inline 保留单 HTML，复用 Blob 图片地址。
+- 保留原目标、业务四态、证据 ID、历史来源及测试附件；旧报告不改写。
 
-存储契约仍为v9，知识为v3，回归为v2；交付清单升级为deliveryVersion 2。新CLI读取和record输出使用独立版本，详情见[格式与命令](docs/asset-formats.md)及[工具箱](skills/ai-testing-ego-lite/references/local-toolbox.md)。已有v0.1.9包与旧报告不自动替换。
+主存储仍为 v9，知识 v3、回归 v2、交付清单 deliveryVersion 2；HTML 图片资产的表示变化、工程自测与合成浏览器测量见[0.2.2 方案与验证](docs/v0.2.2-report-performance.md)。独立缩略图、搜索索引及长对话分批渲染留待测量后决定。
 
-报告继续跟随用户语言，分别记录用例生成与执行阶段的模型和思考等级来源；未知不补造，原始证据不翻译。
+报告继续跟随用户语言，分别记录用例生成与执行阶段的模型和思考等级来源；未知不补造，原始证据不翻译。详见[语言与模型来源](skills/ai-testing-ego-lite/references/report-language-model.md)。
 
 ## 用例与证据
 
@@ -109,9 +104,9 @@
 
 ## Windows 快速开始
 
-本节源码示例针对 0.2.1，使用本仓库构建的 .build/runtime；不会自动替换用户安装。安装与升级请先阅读[安装说明](INSTALL.zh-CN.md)，并核对版本、revision 和实际加载目录。
+本节源码示例针对 0.2.2，使用本仓库构建的 .build/runtime；不会自动替换用户安装。安装与升级请先阅读[安装说明](INSTALL.zh-CN.md)，并核对版本、revision 和实际加载目录。
 
-完整安装包、SHA-256 校验值与发布说明见 [v0.2.1 Release](https://github.com/99Like-wjj/ai-testing-ego-lite/releases/tag/v0.2.1)。GitHub 自动生成的 Source code 压缩包不是完整安装包。
+完整安装包、SHA-256 校验值与发布说明见 [v0.2.2 Release](https://github.com/99Like-wjj/ai-testing-ego-lite/releases/tag/v0.2.2)。GitHub 自动生成的 Source code 压缩包不是完整安装包。
 
 先按 [Ego 官方 Windows 快速开始](https://lite.ego.app/document/en/docs/windows/quick-start)准备 Ego 与官方 ego-browser Skill。本仓库不安装或替代官方浏览器。仅设计用例无需浏览器连接。
 
@@ -121,7 +116,7 @@
 npm ci
 npm run build
 $Tool = Join-Path (Get-Location).Path '.build/runtime/scripts/ego.mjs'
-node $Tool tool-info --expect-version 0.2.1 --expect-revision attachments-review-2
+node $Tool tool-info --expect-version 0.2.2 --expect-revision report-performance-1
 ```
 
 独立安装包则使用实际加载 SKILL.md 根目录下 scripts/ego.mjs。核对安装完整性，不混用旧工具根。真实资产保存在源码仓库外：
@@ -183,7 +178,7 @@ AI workers 独立留证、封存包，协调者显式复核并导入。完整调
 
 ## 需求与实现边界
 
-当前正式版本为 0.2.1，实际范围与限制见[发布验证](docs/v0.2.1-release-validation.md)。较早 0.1.8 版本的原始[需求](docs/v0.1.8-requirements.md)、[调研](docs/v0.1.8-feasibility-research.md)和[前瞻](docs/v0.1.8-preview.md)保留为设计历史，不代表每项设想均已交付。后续发布仍需核对实际验证范围。
+0.1.9 已整理为正式版本，实际范围与限制见[发布验证](docs/v0.1.9-release-validation.md)。上一正式版 0.1.8 的原始[需求](docs/v0.1.8-requirements.md)、[调研](docs/v0.1.8-feasibility-research.md)和[前瞻](docs/v0.1.8-preview.md)保留为设计历史，不代表每项设想均已交付。后续发布仍需核对实际验证范围。
 
 ## 继续阅读
 

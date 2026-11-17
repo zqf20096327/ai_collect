@@ -225,9 +225,11 @@ Choose the compaction mode in `$ZOT_HOME/config.json`, then restart zot:
   This makes provider prompt-cache reuse possible, but cache hits and speedups
   depend on the provider. When recent messages are retained verbatim, only the
   older prefix is sent for summarization. Context-window or payload-size rejection
-  retries once using the side request. An unexpected tool call retries in place once
-  with a stronger no-tools instruction, then falls back to the side request if the
-  model requests tools again. The side fallback can still fail, including if it is too large.
+  retries once using the side request. An unexpected tool call or an empty summary
+  retries in place once with a stronger instruction to output a non-empty summary
+  without tools, then falls back to the side request if either problem persists.
+  Recovery is limited to two in-place attempts and one side request. The side
+  fallback can still fail, including if it is too large or returns an empty summary.
 
 Both modes apply to manual and automatic compaction and continuous-host summaries.
 Zot never executes local tools during summarization. Failed attempts do not replace
@@ -757,7 +759,11 @@ Sends the current transcript through the model with a structured summarization p
 
 In interactive mode, zot also auto-compacts during long-running tasks. After a tool batch finishes and its results are appended, the agent checks the latest context usage before the next model request. If usage reaches the configured threshold, it condenses history and continues the same task with the summary and recent messages. It also checks before a new user request and after a successful run finishes.
 
-For locally executed interactive sessions, the status bar shows `compactions: N` after a successful compaction. This counts manual and automatic compactions since the latest user request began, including pre-request compaction and context-overflow recovery. The count remains visible after the response finishes and resets when the next request starts. Queued input resets it only when it enters the conversation. Failed or cancelled compactions do not increment it. Zero is hidden. The count is display-only, is not restored from saved sessions, and is not currently synchronized to attached continuous-host views.
+For locally executed interactive sessions, the status bar shows `compactions: N` for successful compactions, with nonzero recovery and failure counts appended, for example `compactions: 4, 1 side fallback, 1 failed`. A side fallback counts an in-place compaction that switched to a side request, whether that request succeeded or failed. Explicit side mode and successful in-place retries do not increment the fallback count. Terminal failures do not increment the successful count. Timeouts count as failures, but cancellation does not.
+
+These counts include manual and automatic compactions since the latest user request began, including pre-request compaction and context-overflow recovery. They remain visible after the response finishes and reset together when the next request starts. Queued input resets them only when it enters the conversation. The whole label is hidden when all counts are zero. Counts are display-only, are not restored from saved sessions, and are not currently synchronized to attached continuous-host views.
+
+Direct core users can call `Agent.CompactWithStats` to inspect `CompactionStats.SideFallback` without changing the existing `Agent.Compact` API.
 
 Choose `off`, `70%`, `80%`, `85%` (default), or `90%` under `/settings` → **auto-compact threshold**. You'll see `condensing history, esc to cancel` above the status bar and an `(auto)` tag next to the context percentage. Prompts entered during compaction are queued for the next response. `esc` cancels compaction and the active run without replacing the transcript. A failed compaction also stops the run and surfaces an error. Checks use the latest provider-reported input usage, so newly added tool output may not be reflected until the next response. Turning the percentage trigger off does not disable automatic compaction and retry after a context-window or payload-too-large response.
 
@@ -1058,8 +1064,4 @@ Reasoning levels (`--reasoning off|minimum|low|medium|high|xhigh|max`, also conf
 
 Claude Opus 5.5 is available through Anthropic (`--provider anthropic --model claude-opus-5-5`) and GitHub Copilot (`--provider github-copilot --model claude-opus-5.5`, subject to account availability). Both entries support a 1,000,000-token context window and up to 128,000 output tokens. Adaptive thinking is always on, with `low`, `medium`, `high`, `xhigh`, and `max` effort levels. The default, `off`, and `minimum` requests use `low` instead. The reasoning selector omits unsupported levels. Catalog prices per million tokens are $4 input, $20 output, $0.20 cache reads, and $5 cache writes. Copilot billing remains governed by your plan.
 
-Copilot's dollar display is an API-equivalent estimate, not a GitHub invoice or remaining quota. Its built-in token prices are sourced from the `github-copilot` catalog at [models.dev](https://models.dev/api.json), including cache prices and supported long-context tiers. Prices are bundled with zot, not fetched automatically at runtime. Sonnet 5 uses $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes per million tokens. Previously recorded session costs are not recalculated when catalog prices change.
-
-Claude Sonnet 5.5 is the default for direct Anthropic when no model is selected (`--provider anthropic --model claude-sonnet-5-5`). It supports a 1,000,000-token context window and up to 128,000 output tokens. Adaptive thinking is always on with the same `low` through `max` effort levels as Opus 5.5, and `off` or `minimum` requests use `low`. Temperature is not sent. Catalog prices per million tokens are $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes.
-
-The direct Anthropic catalog omits retired Opus 4/4.1, Sonnet 4, Sonnet 3.5/3.7, Haiku 3.5, and Opus 3 entries. A saved selection of a removed model foll
+Copilot's dollar display is an API-equivalent estimate, not a GitHub invoice or remaining quota. Its built-in token prices are sourced from the `github-copilot` catalog at [models.dev](https://models.dev/api.json), including cache prices and supported long-context tiers. Prices are bundled with zot, not fetched automatically at runtime. Sonnet 5 uses $2 input, $10 output, $0.20 cache reads, and $2.50 cache writes per million tok

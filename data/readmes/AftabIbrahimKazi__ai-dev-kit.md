@@ -366,6 +366,8 @@ Pipeline for a new, non-trivial ask: `intent-capture` (pin *what*) → `plan-fir
 | [resolve-conflicts](skills/workflow/resolve-conflicts.md) | Resolve merge/rebase conflicts by mode (both, ours, theirs), pace (all, auto, step) and developer role; `scope.js` companion lists the conflict set and verifies role scope; [roles example](skills/workflow/resolve-conflicts.roles.example.json) ships `frontend` and `backend` |
 | [responsive-check](skills/workflow/responsive-check.md) | Range-based viewport check and fix (RULE 17 zones by default; `--range`, `--min`, `--max`, `--width`, `--detect`); `probes.js` plans viewports and detects breakpoints, `measure.js` measures in Playwright |
 | [optimize-assets](skills/workflow/optimize-assets.md) | Convert (webp, avif, jpg, mp4, woff2 ...), compress and pre-compress (gzip, brotli) assets with the converters installed; `convert.js` companion also scans for heavy assets and lists references; originals are never touched |
+| [implicit-state-audit](skills/standards/implicit-state-audit.md) | Find hidden state machines in UI code (boolean-flag explosion, scattered DOM state, timer-sequenced state); `scan.js` companion finds them for 0 tokens, an optional Gemini or Ollama reviewer reads only flagged files |
+| [readme-writer](skills/workflow/readme-writer.md) | Write, restructure or fact-check a README: hook first, every count, flag and metric checked against the code; `audit.js` companion checks links, counts, flags, sample sizes and size |
 | [version-bump](skills/workflow/version-bump.md) | Bump a `package.json` version (major/feature/patch/alpha/beta/rc/release) and insert the matching `CHANGELOG.md` entry, scoped to the whole project, one group, or one package; `bump.js` companion runs the mechanical edit |
 | [perf-audit](skills/workflow/perf-audit.md) | Measured, ranked performance audit (payload → loading → runtime → 3D) |
 | [role-session](skills/workflow/role-session.md) | Parallel-session lane protocol — role charters, atomic file claims, git token, session ids (+ [templates](skills/workflow/role-session.templates.md), [cross-tool protocol](skills/workflow/role-session.protocol.md)) |
@@ -419,6 +421,8 @@ Pipeline for a new, non-trivial ask: `intent-capture` (pin *what*) → `plan-fir
 | [teardown](skills/addons/teardown.md) | Interactive 3D simulators of any machine or model on Triforge: `teardown.cli.js` detects the project, its `.glb` models and the machine from a plain description, drafts a spec, scaffolds a gears, crank or custom starter under one machine-agnostic page (parts, isolate, cutaway, camera and tour from the real bounds), checks it, builds an offline page, renders review sheets and drives the live page like a visitor (`probe`) in headless Chrome; capped cutaways, glass mode, synced charts, callouts and a V8-capable crank starter; loads on its own for simulator, cutaway or exploded-view requests; opt-in; `/teardown` |
 | [teardown-film](skills/addons/teardown-film.md) | Optional add-on to `teardown`: `teardown-film.cli.js` records a simulator's tour to an H.264 MP4 by stepping the page frame by frame in headless Chrome and encoding with ffmpeg; `--preview` for a quick look; mixes in the score if there is one; opt-in; `/teardown-film` |
 | [teardown-sound](skills/addons/teardown-sound.md) | Optional add-on to `teardown`: `teardown-sound.cli.js` writes a simulator's score as a WAV from the tour's timeline (chord bed, a hum at the machine's gear-mesh or firing frequency, a tick per beat, a whoosh on the cut), reproducible and mastered to -14 LUFS with the peak at or below -2 dBFS; opt-in; `/teardown-sound` |
+| [modern-web](skills/addons/modern-web.md) | Optional add-on: `modern-web.cli.js` runs Chrome's modern-web-guidance `legacy-scan` (pinned version, fetched with npx) and prints a short table of legacy patterns (jQuery modals, XHR, old layout tricks) with the guide to fetch for each; kit standards win on modals and forms; offline it skips quietly |
+| [kaggle](skills/cloud/kaggle/kaggle.md) | Optional add-on: sends a finished, executor-ready plan to a private Kaggle GPU notebook running qwen3-coder (Ollama), pulls the files back into a staging folder, gates them locally, retries failures twice, and hands Claude only what is left; budget ledger, 40-minute cap, no cancel needed |
 | [figma-code](skills/addons/figma-code.md) | Optional add-on: `figma-code.cli.js` turns an exported Figma SVG into pixel-matched HTML and CSS (real text, flex where the geometry is exact, inline SVG for gradients and paths), then proves it with a headless-browser pixel diff; rule-driven standards pass (risky rules reverted on their own) and Next, Astro and Laravel components; `/figma-code` |
 | [project-context](skills/addons/project-context.md) | Private, gitignored `project-context/` docs folder with an `INDEX.md` per sub-folder (setup by auto-detect, project type or custom list); `scan.js` companion tracks changes so only new files are re-read; guarded against commits |
 
@@ -466,7 +470,7 @@ Free and local tools for any MCP-capable agent (Claude Code, OpenCode, others): 
 
 ## Slash commands
 
-Slash commands are shortcuts **you** type; the agent never runs them on its own. Anything typed after the name is passed to the command (`/audit src/components`). Most of the kit needs no command: the mods and git hooks fire by themselves, and skills load when the agent recognises their trigger. Reach for a command at the moments below. Type `/kit` in a session for this table.
+Slash commands are shortcuts **you** type; the agent never runs them on its own. Anything typed after the name is passed to the command (`/audit src/components`). Most of the kit needs no command: the mods and git hooks fire by themselves, and skills load when the agent recognises their trigger. Reach for a command at the moments below. Type `/kit` in a session for this table. New machine? [`docs/first-run.md`](docs/first-run.md) shows what to install, if anything.
 
 ### Most useful commands
 
@@ -504,6 +508,9 @@ Slash commands are shortcuts **you** type; the agent never runs them on its own.
 | `/resolve-conflicts` | Resolves merge/rebase conflicts: mode `both` (default), `ours`, `theirs`; pace `all`, `auto` (default), `step`; role guardrails | `--role frontend|backend`, `--out leave|ours|theirs`, `--note "…"` | `resolve-conflicts` |
 | `/responsive-check` | Checks a page at range-based viewports (the six RULE 17 zones by default) and proposes range-based fixes | `--range a-b` (repeatable), `--min N`, `--max N`, `--width W`, `--ranges a-b,…`, `--detect`, `--max-probes N` | `responsive-check` |
 | `/optimize-assets` | Finds heavy assets, converts them (`webp`, `avif`, `jpg`, `mp4`, `woff2`, ...) or compresses them in place of the same format; originals are never touched | `scan [dir]`, `convert <paths> --to webp,avif`, `compress <paths>`, `precompress <paths>`, `tools`, `refs <assets>`, `--preset vision|web` | `optimize-assets` |
+| `/state-audit` | Finds hidden state machines in UI code: 3 or more boolean flags in one scope (FAIL when loading, error and success flags all exist), scattered class or attribute state, timer-sequenced state | `[file\|folder ...]`, `--changed`, `--json`, `--no-cache` | `implicit-state-audit` |
+| `/goldfish` | Reviews a plan with fresh reviewers that see only the plan and the files it names, in 5 stages (zoom-out, comprehension, critic, zoom-out again, implementation readiness); `prepare` has Claude run them inline (subagents only if you ask), `local` runs them on a local or Gemini model for 0 Claude tokens | `prepare <plan.md>`, `local <plan.md>`, `--delay <seconds>` | `plan-first` |
+| `/dupe` | Copies a block wrapped in `<!-- dupe:name -->` markers into other files, swapping per-file text and image values; re-running replaces the earlier copy | `--from <file> --block <name> --to a,b --slots <json>`, `--lines a-b`, `--before/--after <text>`, `--dry-run`, `--json` | `plan-first` |
 | `/version-bump` | Bumps a `package.json` version and inserts the matching `CHANGELOG.md` entry | `<major\|feature\|patch\|alpha\|beta\|rc\|release> [scope]`, `--added/--changed/--fixed/--removed "…"`, `--for major\|feature\|patch`, `--force`, `--dry-run` | `version-bump` |
 | `/perf` | Weighs a build: JS/CSS gzip totals, heavy chunks and images, fonts, blocking scripts, lazy and LCP attributes; ranked, no fix applied | `--dist <folder>`, `--top N` | `perf-audit` |
 | `/e2e` | Playwright scaffold status, or writes the config, fixtures and smoke test and wires `package.json`; installs nothing | `status`, `init [--port N] [--command "…"] [--dry-run] [--force]` | `e2e-scaffold` |
@@ -512,6 +519,7 @@ Slash commands are shortcuts **you** type; the agent never runs them on its own.
 | `/figma <folder>` | Turns exported Figma PNG/SVG files into `project-context/design/figma.md`: frame sizes, colors, fonts, type sizes, text. No MCP, no Figma account tokens, no connector cost | a folder or files of exports, optional `--link <figma url>`, `--write` to save | `project-context` |
 | `/narration <setting>` | Controls reply narration without opening a file | `mute`, `unmute`, `stop`, `replay`, `status`, `voice male|female`, `volume 0-100`, `speed 0.5-2`, `pitch -12..12`, `maxSeconds 30-1800` | `narrate` |
 | `/persona <setting>` | Chooses how replies are worded; applies from the next session | `set female|male novice|mid|pro`, `off`, `status`, `list` | `personality` |
+| `/device` | Scans RAM, disk, GPU, Python, ffmpeg, Laya, local-vision, Ollama and Kaggle; prints Have / Missing / Next and a `lite`, `standard` or `full` preset. Read-only, downloads nothing | `--json`, `--preset lite\|standard\|full` | none |
 | `/kit` | This cheat sheet | optional: describe your situation | none |
 | `/eta` | Restates the active task's time estimate and checkpoint, no script | none | `plan-first` |
 | `/format <name>` | Sets the response shape for the session, no script | `table`, `bullets`, `oneline`, `bool`, `reset` | none |
@@ -528,7 +536,7 @@ Slash commands are shortcuts **you** type; the agent never runs them on its own.
 | Standards | `/coding-standards`, `/code-audit`, `/comment-style` | editing code, auditing, or changing comment level |
 | Memory | `/memory-bank`, `/memory-gardener`, `/skill-ablation` | recording decisions, pruning notes, testing which skills are still needed |
 | Setup and authoring | `/install-kit`, `/mod-setup`, `/mod-writer`, `/command-writer`, `/cli-writer`, `/skill-scope`, `/skill-writer` | installing the kit or mods, writing a skill or mod |
-| Add-ons | `/project-context`, `/narrate`, `/personality`, `/diagram`, `/teardown`, `/teardown-film`, `/teardown-sound`, `/figma-code` | setting up that add-on |
+| Add-ons | `/project-context`, `/narrate`, `/personality`, `/diagram`, `/teardown`, `/teardown-film`, `/teardown-sound`, `/figma-code`, `/modern-web`, `/kaggle` | setting up that add-on |
 | Stack and tools | `/astro-page`, `/threejs-scene`, `/shopify-toolkit-install`, `/mcp-manager`, `/system1-prefilter`, `/strata-css`, `/triforge` | working in that stack or setting up that tool |
 | Claude models | `/claude-all-models`, `/fable-5-1`, `/fable-5`, `/opus-5-5`, `/opus-5`, `/opus-4-8`, `/opus-as-fable`, `/sonnet-5-5`, `/sonnet-5`, `/haiku-5-5`, `/haiku-4-5`, `/hooks-enforcement` | choosing or prompting a Claude model |
 | OpenCode models | `/opencode-all-models` (holds all the per-model protocols) | choosing or prompting an open-weight model |
@@ -630,6 +638,7 @@ Mods are small, optional Claude Code plug-ins in [`mods/`](mods/). They run in c
 | `feature-usage` | Records which skills load, commands are typed and kit scripts run, one name-only row each in `~/.ai-dev-kit/usage/log`; adds `/kit-usage` (on, off, notify, status, report). Switchable at install (`--usage on\|off`) and in plain words | observes only | `session-budget`'s `usage.js` for the report |
 | `precommit-gate` | Gates `git commit` and `git push`: blocks leaked secrets, secret files, bad messages and `--no-verify`; warns once on stray files and debug leftovers | blocks | the `pre-commit` skill |
 | `guard` | Denies edits to secret files, lockfiles and `.git`, and destructive commands (root-like recursive deletes, force push, deleting remote main, `reset --hard`, `clean -f`, publish, download piped into a shell); settings in `.claude/guard.json` | blocks | nothing |
+| `state-audit` | After each edit of UI code, runs the free hidden-state scan and shows the model only the findings; an optional Gemini or Ollama reviewer reads only flagged files; a clean file adds nothing | reminds | the `implicit-state-audit` skill |
 | `edit-check` | After each edit, runs syntax, ESLint, Stylelint and standards checks and shows the model only the problems; a clean file adds nothing | reminds | the `pre-merge-gate` skill |
 | `standards-chain` | Denies the first edit of a file until its coding-standards chain has been read, and again after a compaction | blocks | a `coding-standards/` folder |
 | `debug-nudge` | One reminder at the first failed test or build, and one at the second failed fix, to stop editing and apply `debug-protocol`; also reads failure text hidden by pipes | reminds | the `debug-protocol` skill |
@@ -661,6 +670,13 @@ Scripts are plain Node (no packages) that do the mechanical work so the agent do
 | `resolve-conflicts/scope.js` | Lists the conflict set with a side legend and checks role scope | `/resolve-conflicts` |
 | `responsive-check/probes.js` and `measure.js` | Plans viewports from your breakpoints, then measures layout problems in a browser (Playwright) | `/responsive-check` |
 | `optimize-assets/convert.js` | Finds heavy assets, converts (webp, avif, jpg, mp4, woff2, and more), compresses and pre-compresses them; originals are never touched | `/optimize-assets` |
+| `readme-writer/audit.js` | Checks a README's links, "N skills, mods, commands" claims, flags, measured claims and size against the repository; never edits it | the `readme-writer` skill |
+| `implicit-state-audit/scan.js` | Deterministic hidden-state scan with a file-hash cache; also used by the `state-audit` mod and `/state-audit` | `/state-audit`, the mod |
+| `plan-first/reviewer.js` | Asks Gemini, then a local Ollama model, to review one file; fails open; only when `.claude/state-audit.json` allows it | the `state-audit` mod |
+| `modern-web/cli.js` | Runs Chrome's modern-web-guidance `legacy-scan` (pinned 1.0.0, via npx), filters vendor files, caches 24 hours and prints a short table; needs Node 22 | `/modern-web` |
+| `kaggle/cli.js`, `kaggle/worker.py` | Plan lint, prompt assembly, push/poll/fetch of a Kaggle GPU job, staging and local gates, GPU-hours ledger; the worker runs the tasks on qwen3-coder | `/kaggle` |
+| `plan-first/goldfish.js` | Builds the plan bundle and the five goldfish stage prompts (outside the project), prints the subagent dispatch, or runs the stages on a local or Gemini model | `/goldfish` |
+| `plan-first/dupe.js` | Copies a marked block into other files with per-file literal slot values (plain Node, edits only the targets) | `/dupe` |
 | `version-bump/bump.js` | Bumps a `package.json` version and inserts the matching `CHANGELOG.md` entry, scoped to the whole project, one group, or one package | `/version-bump` |
 | `perf-audit/weigh.js` | Static payload weigh-in of a build: JS/CSS totals with gzip, chunks over 150 KB, images over 200 KB, PNG/JPEG without a modern sibling, fonts and `font-display`, blocking scripts, lazy and LCP attributes, unhashed names | by the skill |
 | `e2e-scaffold/init.js` | Detects the stack (framework, port, package manager, Playwright), writes the config, fixtures and smoke test from the templates, wires `package.json` and `.gitignore`; refuses to re-scaffold | by the skill |
@@ -674,10 +690,13 @@ Scripts are plain Node (no packages) that do the mechanical work so the agent do
 | `skill-scope/auto.js pickup` | Prints the queued task with what its mode means, the handover verbatim and the archived-skills report; `apply --require-task` also writes the `## Next task` and `## Skills` lines | `/pickup`, `/next` |
 | `handover/draft.js` | The mechanical half of a handover: header line, commits since the last one, uncommitted files, existing next task, size check, optional session-journal facts | `/wrap-up` |
 | `session-budget/usage.js` | Feature-usage switch and report: `on`, `off`, `notify on\|off`, `status`, `report [--days N] [--all-projects]`, `reset --yes`; reads the log the `feature-usage` mod writes and lists installed features never used | `/kit-usage` |
+| `skill-scope/device.js` | Read-only machine scan: RAM, disk, GPU, Python, ffmpeg, Laya, local-vision, Ollama, Kaggle (presence only, never reads credentials); Have / Missing / Next table and a preset with download sizes | `/device`, `install-kit` last step |
 | `skill-scope/kit.js` | Keyword scorer over the command table: prints the single best command for a situation, or the whole table | `/kit` |
 | `skill-scope/auto.js run` | Restores an archived skill, then runs its script; the six commands for archivable skills call it | `/audit`, `/stale`, `/version-bump` and three more |
 | `memory-gardener/stale.js` | Lists memory and handover bullets that name deleted files (report only) | `/stale` |
 | `misfire-log/append.js` and `report.js` | Logs a skill or mod that should have fired but did not; ranks repeat offenders | by the skill |
+| `meta/usage-mine.js` | Zero-token retry miner: reads your Claude Code transcripts (and the `feature-usage` log when present) and ranks skills by loads, sessions with a retry after the load, and median session tokens; prints counts only, never prompt text | by you: `node skills/meta/usage-mine.js [--days N] [--out file]` |
+| `meta/ab-gate.js` | Per-task A/B gate: accepts a candidate only if its mean beats the baseline and no single task got worse; pure arithmetic over two score files | by you, before shipping a skill or script change |
 | `project-context/scan.js` and `figma.js` | Tracks which project docs changed; turns exported Figma PNG or SVG files into a design summary | `/ctx`, `/figma` |
 | `install-kit/cli.js` | Installs, updates, uninstalls, archives/unarchives skills and merges git hooks — the mechanical half of the installer; asks a plain numbered-menu question for any flag left out outside Claude Code (no package install needed) | by the installer |
 | `install-kit/verify.js` | Re-checks an install on disk before it is reported done | by the installer |
@@ -794,63 +813,4 @@ Add or change docs later? Run `company sync` again. Check where things stand wit
 - **Token-lean by design.** Skill descriptions are hard-capped, bodies stay under ~120 lines, read-efficiency rules are part of the standards, and the `memory-gardener` skill prunes accumulated knowledge.
 - **Intent before implementation, a self-check before handoff.** `intent-capture` pins down goal/constraints/done-when on ambiguous asks before any plan is made; `pre-merge-gate` re-checks a diff against the loaded standards before a commit or review handoff — both are prose protocols, not tool-specific.
 - **Measured, not promised.** Where a claim has a number, the number and its sample size are stated: Haiku 5.5 running a written plan cost $0.049 against $0.581 for Sonnet 5.5 on six test plans (both passed all six); the audit script found the same lines as a model-led audit in 0.2 s with no tokens, where the model cost $0.026 and missed one file (one project, three rules); the output compactor shrank a verbose passing test log by 59% and failure output by about 0%. These are small samples from the author's own projects: indicative, not guarantees.
-- **Claude Code enhancements stay optional and isolated.** Where a Claude Code-only mechanism (like hook-based enforcement in `hooks-enforcement`) can mechanically assist a rule, it lives under `skills/models/claude/` as an opt-in add-on — the underlying contract in `coding-standards/ai-standards.md` works the same with or without it, on any tool.
-
-## How the kit fits together
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/diagram/kit.dark.svg">
-  <img src="docs/diagram/kit.light.svg" alt="The installer copies standards, skills and mods into a project; meta skills build the add-ons and commands.">
-</picture>
-
-Drawn by the `diagram` add-on from [`docs/diagram/kit.spec.json`](docs/diagram/kit.spec.json): edit the spec, then run `node skills/addons/diagram.cli.js build docs/diagram/kit.spec.json`.
-
-## Repository layout
-
-```
-skills/
-  README.md        ← catalog + install instructions (start here)
-  models/          ← per-model protocols + fleet routing (claude/ lineup + Claude Code hooks, opencode/ open-weight)
-  workflow/        ← intent capture, planning, handover, debugging, budget, commits, pre-merge checks, perf, agent-usage discipline, session-mode gating, parallel sessions, e2e scaffolding
-  standards/       ← the coding-standards enforcement skill
-  memory/          ← repo-committed memory, knowledge gardening, periodic skill ablation
-  stack/           ← Three.js, Astro, Shopify (live-pulled from Shopify's own toolkit, never forked)
-  libraries/       ← skills for the author's own libraries (strata-css, triforge)
-  meta/            ← skill-writer (quality bar), install-kit (installer), skill-scope (pin/archive/addon classification)
-  addons/          ← opt-in, user-opted capabilities, never installed by default (system1-prefilter + local Laya, project-context, narrate, personality)
-  mcp/             ← opt-in MCP servers: mcp-manager + one companion per server (stitch, local-vision, image-gen)
-  commands/        ← opt-in slash-command templates (/audit, /commit-check, /quiet, /stale, /githooks, /pickup, /wrap-up, /next, /eta, /resolve-conflicts, /responsive-check, /optimize-assets, /version-bump, /perf, /e2e, /recon, /untrack, /ctx, /figma, /narration, /persona, /kit); each runs a kit script or is a plain instruction template (/eta, /kit)
-mods/              ← optional Claude Code mods (budget-ledger, precommit-gate, guard, edit-check, debug-nudge, standards-chain, output-compact, prefilter-rank, eta-nudge, design-audit-offer, marker-guard, gap-log, learnings-inject, aiignore-guard, skill-hint, session-journal), a local marketplace; each wraps a tool-agnostic script from a skill, a loopback-only local call (prefilter-rank), or a few pure rules (eta-nudge)
-extensions/        ← optional VS Code extension (narrate-buttons): footer tray, sidebar and Play button for narration and persona; `node extensions/narrate-buttons/install.js`
-tests/             ← tests for the kit's scripts (node tests/<name>.test.js) plus real captured logs under fixtures/
-migrations/
-  RENAMES.md       ← skill rename ledger — install-kit reads it to migrate old installs (never delete)
-coding-standards/
-  index.md         ← system map: layers, reading order, file-to-role mapping (start here)
-  *-standards.md   ← global rules per discipline (css, html, js/ts, git, seo, a11y, qa, ai, …)
-  */               ← file-role partials per discipline
-  frameworks/      ← framework additions/overrides (astro, bootstrap, strata-css)
-  tooling/         ← lint configs enforcing the machine-checkable rules
-  CLAUDE.example.md← session-protocol template — wire into CLAUDE.md (Claude Code) or AGENTS.md (OpenCode)
-```
-
-The documentation website is not in this tree. It lives on the separate `site` branch (see below), so a normal clone of this repo does not check it out.
-
-## The documentation website
-
-The kit has a docs site at [https://ai-dev-kit-docs.vercel.app](https://ai-dev-kit-docs.vercel.app) (Next.js, deployed on Vercel). Its source lives on a separate git branch called `site`, not on `main`. That keeps the site's files out of the folder you get when you clone the kit.
-
-**What you get when you clone.** `git clone` checks out `main` only, so there is no `site/` folder in your working copy. Git still downloads the `site` branch's history in the background. To skip that too, clone with `git clone --single-branch`.
-
-**To work on the site**, from the root of your kit checkout:
-
-```bash
-git worktree add site/ai-dev-kit-doc-site site
-cd site/ai-dev-kit-doc-site
-npm install
-npm run dev
-```
-
-`site/` is ignored by `main`, so the worktree never shows up in `git status` here. Keeping the site at that exact path matters: the scripts that rebuild the site's kit map (`scripts/build-kit-graph.ts`, `scripts/build-map-links.ts`) read the kit's files three folders up.
-
-**To change the kit's content and refresh the site**, commit the kit change on `main`, then re-run those two scripts inside the site 
+- **Claude Code enhancements stay optional and i

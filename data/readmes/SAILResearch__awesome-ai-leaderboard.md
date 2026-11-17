@@ -422,6 +422,7 @@ Also, a leaderboard should be included if only:
 | [EvoEval](https://evo-eval.github.io/leaderboard.html) | EvoEval is a benchmark to evaluate the coding abilities of LLMs, created by evolving existing benchmarks into different targeted domains. |
 | [InfiBench](https://infi-coder.github.io/infibench) | InfiBench is a benchmark to evaluate code models on answering freeform real-world code-related questions. |
 | [InterCode](https://intercode-benchmark.github.io) | InterCode is a benchmark to standardize and evaluate interactive coding with execution feedback. |
+| [IonWarp AI Code Review Benchmarks](https://ionwarp.com/benchmarks) | IonWarp AI Code Review Benchmarks is a benchmark to evaluate LLMs and hosted code review apps on the same open-source pull requests with known issues, reporting F1, precision, recall, cost per review and median review time across nine review types. |
 | [Julia LLM Leaderboard](https://github.com/svilupp/Julia-LLM-Leaderboard?tab=readme-ov-file#results-preview) | Julia LLM Leaderboard is a platform to compare code models' abilities in generating syntactically correct Julia code, featuring structured tests and automated evaluations for easy and collaborative benchmarking. |
 | [LiveCodeBench](https://livecodebench.github.io/leaderboard.html) | LiveCodeBench is a benchmark to evaluate code models across code-related scenarios over time. |
 | [LiveCodeBench GSO](https://livecodebench.github.io/gso.html) | LiveCodeBench GSO is a benchmark to evaluate code models on generation, self-repair, and optimization tasks. |
@@ -611,6 +612,4 @@ Also, a leaderboard should be included if only:
 | [TravelPlanner](https://huggingface.co/spaces/osunlp/TravelPlannerLeaderboard) | TravelPlanner is a benchmark to evaluate LLM agents in tool use and complex planning within multiple constraints. |
 | [VAB](https://github.com/THUDM/VisualAgentBench?tab=readme-ov-file#leaderboard) | VisualAgentBench (VAB) is a benchmark to evaluate and develop LMMs as visual foundation agents, which comprises 5 distinct environments across 3 types of representative visual agent tasks. |
 | [VisualWebArena](https://jykoh.com/vwa) | VisualWebArena is a benchmark to evaluate the performance of multimodal web agents on realistic visually grounded tasks. |
-| [WebArena](https://docs.google.com/spreadsheets/d/1M801lEpBbKSNwP-vDBkC_pF7LdyGU1f_ufZb_NWNBZQ) | WebArena is a standalone, self-hostable web environment to evaluate autonomous agents. |
-| [WebsiteBench](https://website-bench.com/#results) | Leaderboard for agents reconstructing full-stack websites through browser exploration; read the historical cohort and protocol with each result. [Code](https://github.com/TIGER-AI-Lab/WebsiteBench). |
-| [W
+| [WebArena](https://docs.google.com/spreadsheets/d/1M801lEpBbKSNwP-vDBkC_pF7LdyGU1f_ufZb_NWNBZQ) | WebArena is a standalone, 

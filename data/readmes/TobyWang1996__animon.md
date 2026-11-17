@@ -6,7 +6,7 @@
 [简体中文](#简体中文) · [English](#english)
 
 **作者 / Authors**  
-Z. Y. Wang, Z. L. Qin, H. T. Lu, B. S. Yu, Z. P. Chen
+Z. Y. Wang, Z. L. Qin, H. T. Lu, B. S. Yu, L. W. Jiang, Z. P. Chen
 
 ---
 

@@ -15,8 +15,8 @@ it learned from**. Then it played itself and got stronger again.
 
 | Neural network vs hand-tuned evaluation | Result |
 |---|---|
-| Equal thinking time, 40 ms per move | **+163 ± 14 Elo** (72% of points, 3,000 games) |
-| Self-play, against the first network it improved on | **+83 ± 13**, then **+38 ± 12** more (3,000 games each) |
+| Equal thinking time, 40 ms per move | **+206 ± 15 Elo** (77% of points, 3,000 games) |
+| Self-play, against the first network it improved on | **+83 ± 13**, then **+38 ± 12** and **+16 ± 12** more (3,000 games each) |
 | Against an open-source AlphaZero, 800 simulations per move | **+258 ± 62 Elo** (81.5% of points, 200 games, the AlphaZero thinking longer) |
 | Equal positions searched | **+141 ± 13 Elo** (3,000 games, 128 × 32 network) |
 
@@ -94,7 +94,8 @@ What made the difference, measured:
 | 64 × 16 at equal time, 3× faster inference | +112 ± 13 |
 | + one generation of self-play | +148 ± 14 |
 | + a fine-tuned second self-play run | +174 ± 14 |
-| **+ a third run** | **+163 ± 14**, and +38 ± 12 head to head: the one that ships |
+| + a third run | +163 ± 14, and +38 ± 12 head to head |
+| **+ a fourth run** | **+206 ± 15**, and +16 ± 12 head to head: the one that ships |
 | Target: search value only / outcome only | −127 / −84 (raw board) |
 
 Go and PyTorch, trained on the same data, reach the same validation error

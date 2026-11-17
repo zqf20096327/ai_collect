@@ -29,7 +29,7 @@ The default `hybrid` mode chooses a route for each Turn: a direct answer for sel
 
 </div>
 
-Fleet needs Python **3.11–3.13**, [uv](https://docs.astral.sh/uv/), an existing PostgreSQL database, a Daytona organization and Volume, and access to a DSPy supported model. Databricks is optional; it can provide model access or MLflow tracking, independently of each other.
+Fleet needs Python **3.11–3.13**, [uv](https://docs.astral.sh/uv/), a Neon PostgreSQL database, a Daytona organization and Volume, and access to a DSPy supported model. MLflow runs locally by default.
 
 ```bash
 git clone https://github.com/Qredence/fleet-rlm.git
@@ -115,7 +115,7 @@ A selected dataset prevents Hybrid from choosing a context-free direct answer. R
 | Manage Skills             | `/skills`, `/skills require <names...>`, `/skills clear`                    |
 | Review and improve        | `/improve`                                                                  |
 
-Bundled Skills and user Skills in `.fleet/skills/` are available in Session workspaces. A user Skill with the same name replaces a bundled Skill.
+Bundled Skills and user Skills in `.fleet/skills/` are available in Session workspaces. A user Skill with a bundled name is ignored with a warning; the bundled Skill stays active.
 
 <div align="center">
 

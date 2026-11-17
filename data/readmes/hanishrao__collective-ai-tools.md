@@ -125,6 +125,7 @@ Use these hashtags in search to filter out the tools
 
 ## App Builder
 
+- [EveryApp](https://everyapp.pro/app-builder) - AI app builder that turns a plain-language description into your own private web app at its own address, shared with the people you invite. `#freemium` `#nocode`
 - [FlutterFlow](https://www.flutterflow.io/)- FlutterFlow helps you build high quality, customized Mobile apps quickly. `#paid`
 - [Glif](https://glif.app/) - Build AI mini-apps and chatbots using LLMs. `#freemium`
 - [LoginLlama](https://loginllama.app/) - Enhance Security with LoginLlama's Suspicious Login Detection `#freemium`
@@ -333,7 +334,7 @@ Use these hashtags in search to filter out the tools
 - [CSV-GPT](https://getluminal.com/) - Enables users to ask natural language questions about their data and receive instant analysis and insights. `#free`
 - [Datacircle](https://datacircle.dev/) - Datacircle lists all the GTM APIs. Our MCP server is open to anyone, with no key: add api.datacircle.dev/mcp to Claude, ChatGPT or Cursor. `#free` `#mcp`
 - [Dataspot](https://dataspot.com/) - Understand any data instantly using AI `#freemium`
-- [DC Hub](https://dchub.cloud/) - DC Hub is the live data layer for data-center site selection. Its Data Center Power Index (DCPI) is a daily score of where data centers can get grid power, across 300+ markets. Add https://dchub.cloud/mcp as an MCP server in Claude, ChatGPT or Cursor. `#freemium` `#mcp`
+- [DC Hub](https://dchub.cloud/) - DC Hub is the orchestration layer for data center and energy intelligence: start with execute_plan for electricity prices and power grid questions. It also publishes the Data Center Power Index (DCPI), a daily score of where data centers can get grid power across 300+ markets. Add https://dchub.cloud/mcp as an MCP server in Claude, ChatGPT or Cursor. DCHUB_API_KEY is optional. `#mcp`
 - [Excel Formula Bot](https://excelformulabot.com/) - Create Excel formulas in seconds with AI-powered formula generators. `#freemium`
 - [Excelly-AI](https://excelly-ai.io/) - Text-to-formula for Excel and Google Sheets. `#free`
 - [Excelmatic](https://excelmatic.ai/) - Chat with Excel, effortlessly process(analyze) Excel data using natural language with Excelmatic `#freemium`
@@ -380,6 +381,7 @@ Use these hashtags in search to filter out the tools
 - [Book Witch](https://bookwitch.io/) - Use the power of AI to create complete e-books with just one click! `#freemium`
 - [Canva](https://www.canva.com/) - Use it to create social media posts, presentations, posters, videos, logos and more. `#freemium`
 - [Canva AI](https://www.canva.com/ai-image-generator/) - AI-powered design platform with image generation and editing tools. `#freemium`
+- [Cross-Stitch Studio](https://cross-stitch.erwan-boehm.fr/photo-to-cross-stitch/) - Turn photos into editable cross-stitch charts with DMC thread colors and optional AI photo preparation. `#freemium` `#design`
 - [DALL-E 3](https://openai.com/dall-e-3) - OpenAI's advanced AI image generator with improved quality and safety. `#freemium`
 - [DESIGN:OS Studio](https://jangtrinh.github.io/design-os-studio/) - FREE desktop design studio where your own AI agent designs on .fig files and you refine on a GPU canvas. `#free` `#design`
 - [Designs AI](https://designs.ai/) - Make a logo, video, social media banner, business card, flyer, mockup and more with AI. `#freemium`
@@ -519,6 +521,7 @@ Use these hashtags in search to filter out the tools
 - [Oh My Android](https://github.com/ateymoori/oh-my-android) - Native macOS control panel for the Android Emulator and real phones, with a built-in MCP server (18 tools) so Claude Code, Codex and Cursor can see and drive the emulator. `#mcp` `#free` `#opensource`
 - [Ollama](https://ollama.com/) - Run LLMs locally with GPU acceleration. Llama, Mistral, DeepSeek, Gemma and more. `#free` `#opensource`
 - [n8n](https://n8n.io/) - Open-source workflow automation with AI agent nodes, MCP support, and 400+ integrations. `#freemium` `#opensource`
+- [No Stairs Please MCP](https://nostairsplease.com/mcp) - Remote MCP server for searching 2,200+ North American live-music venues, load-in stairs, drive-time routing, and booking contacts. `#freemium` `#mcp`
 - [Omega MCP Router](https://github.com/Omega-JS-Stack/omega/tree/main/packages/mcp-router) - Stdio MCP proxy that runs many MCP servers behind one connection, serving tool schemas from a disk cache and starting each server only on its first call. `#free` `#mcp`
 - [ONE](https://one.workrr.ai/) - Free API-first commons where externally run AI agents discover collaborators, exchange reusable work, and join public discussions with human-readable live logs. `#free`
 - [OpenCode](https://github.com/anomalyco/opencode) - Open-source terminal AI coding agent with skills, MCP, and custom workflows. `#free` `#opensource`
@@ -535,7 +538,9 @@ Use these hashtags in search to filter out the tools
 - [Respan](https://www.respan.ai/ai-gateway) - Full-stack AI engineering platform for tracing, evals, prompt management, and a gateway to 250+ models. `#freemium`
 - [ReviewCerberus](https://github.com/Kirill89/reviewcerberus) - 100% free, open-source AI code review tool for analyzing git branch differences with comprehensive security, performance, and quality analysis. `#free`
 - [Safurai](https://www.safurai.com/) - The AI Code Assistant that really helps developers. `#free`
+- [Sage](https://github.com/ZHangZHengEric/Sage) - Open-source agent harness with Desktop, Server and Python hosts, MCP tools, and task-feedback evaluation with user-selected version adoption; configured model providers may charge usage fees. `#opensource` `#agents`
 - [SandBase CLI](https://github.com/sandbaseai/cli) - Open-source CLI and MCP bridge for OpenAI-compatible access to 2,000+ AI models through usage-based pricing and a free plan. `#freemium` `#opensource`
+- [Shazeus](https://www.shazeus.com/en/skills) - Free English and Turkish directory of agent skills for Claude Code, Codex and Cursor with source repositories, pinned revisions, license links, and install commands. `#free`
 - [ShellWire](https://shellwire.com/) - Software discovery directory with explainable utility rankings, source-backed tool comparisons, and a remote Streamable HTTP MCP server for AI assistants. `#free`
 - [SitePatent](https://sitepatent.com/) - Discovery directory for newly launched startups, SaaS tools and online products, with a free read-only remote MCP server (https://sitepatent.com/api/mcp) that lets AI assistants search listings, read full profiles and find alternatives, no API key. `#free` `#mcp`
 - [Sizzle AI](https://web.szl.ai/) - AI-powered tutor for math and coding problems. `#free`
@@ -602,6 +607,7 @@ Use these hashtags in search to filter out the tools
 
 - [Etsy Search & Shop Sales MCP](https://github.com/GeminiGeorge22/etsy-sales-mcp) - MCP server that gives AI assistants Etsy search results by keyword, marketplace and category plus daily sales counts and growth for any Etsy shop; runs on your own Apify token. `#opensource` `#mcp`
 - [EverAlice AI](https://everalice.studio/) - All-in-one AI studio for Etsy and digital-product sellers: turns one artwork or idea into listing copy and SEO tags for 25 marketplaces, studio mockups, print-ready files, listing videos, a launch marketing pack and a customer delivery ZIP, with bulk runs of up to 100 products. `#freemium`
+- [PlushSource MCP](https://github.com/quickman924/plushsource-mcp) - MCP server that lets AI assistants search and compare the 55 custom plush manufacturers in the PlushSource directory (plushsource.com) by MOQ, lead time and OEM/ODM, with facts compiled from each manufacturer's website. `#opensource` `#mcp` `#free`
 - [Shop Guru AI](https://www.shopguru.io/) - Analyze customer reviews, providing you with trusted answers based on specific product information. `#free`
 - [Xiyu](https://xiyu.taobao.com/) - Taobao ecosystem secure login entry gateway. 87 `#free`
 - [YOO Resume](https://yooresume.com/) - Taoist cultural products and ritual services. `#paid`
@@ -977,18 +983,3 @@ Use these hashtags in search to filter out the tools
 **[⬆️ Back to Top](#table-of-contents)**
 
 
-## Models
-
-- [AI/ML API](https://aimlapi.com) - One API, 100+ AI Models, Accessible 24/7. `#freemium`
-- [ArtificialWatch](https://artificialwatch.com/) - AI model release tracker that checks provider APIs every 60 seconds and alerts you by email, push, SMS or phone call when a new model goes live. `#freemium`
-- [Bloom](https://huggingface.co/docs/transformers/model_doc/bloom) - BLOOM by Hugging Face is a model similar to GPT-3 `#free`
-- [Chatbot Arena](https://chat.lmsys.org/) - Crowdsourced model "battle" leaderboard. `#free`
-- [Claude 2](https://claude.ai/) - Talk to Claude, an AI assistant from Anthropic. `#paid`
-- [Claude 3.5 Haiku](https://claude.ai/) - Anthropic's fastest model for quick responses and simple tasks `#freemium`
-- [Command R+](https://cohere.com/) - Cohere's latest model optimized for enterprise applications `#freemium`
-- [Gemini 1.5 Pro](https://gemini.google.com/) - Google's advanced model with 1M token context window `#freemium`
-- [Gopher](https://www.deepmind.com/blog/language-modelling-at-scale-gopher-ethical-considerations-and-retrieval) - Gopher by DeepMind is a 280 billion parameter language model. `#free`
-- [GPT-4o Mini](https://openai.com/gpt-4o-mini) - OpenAI's efficient and cost-effective model for everyday tasks `#freemium`
-- [LiteLLM](https://litellm.ai/) - An open-source library to simplify LLM completion + embedding calls. `#opensource`
-- [LLaMA](https://llama.meta.com/) - A foundational, 65-billion-parameter large language model by Meta. `#opensource`
-- [Llama 2](https://llama.meta.com/) - The n

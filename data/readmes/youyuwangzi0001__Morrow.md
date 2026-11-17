@@ -122,7 +122,7 @@ Release builds, source archives and checksums live in [Releases](https://github.
 ## Known limitations
 
 - Windows x64 only. Both executables are unsigned.
-- ComfyUI, llama.cpp, Ollama, LM Studio, FFmpeg, ACE-Step and TTS engines are not bundled; when they are missing, the related action fails with an explanation.
+- ComfyUI, llama.cpp, Ollama, LM Studio, FFmpeg, MiniMax Music3 and TTS engines are not bundled; when they are missing, the related action fails with an explanation.
 - Subscription logins and quotas belong to the provider. Channels that have not been verified on a real machine are not shown as connected.
 - Model quality, engine speed and long media runs depend on your environment.
 

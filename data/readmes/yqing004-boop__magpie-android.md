@@ -54,13 +54,12 @@ http://127.0.0.1:3425/v1
 
 ## 界面预览
 
-> 以下为 ⋮ →「打开控制后台」里的 **magpie 自带网页管理界面**截图。
-> 原生主界面（概览 / 用量 / 账号 / 路由）的截图待补。
+> 原生主界面（概览 / 用量 / 账号 / 路由）截图。
 > 截图中的账号、密钥、局域网 IP 和用量均已打码或使用示例信息。不要把自己的网关密钥或带 `?k=` 的管理页地址公开发布。
 
-| 路由与账号选择 | 局域网共享 | 请求与用量 |
-| --- | --- | --- |
-| ![Magpie 网页路由页面](screenshots/routing.jpg) | ![Magpie 局域网共享弹窗](screenshots/lan-share.jpg) | ![Magpie 请求与用量页面](screenshots/usage.jpg) |
+| 概览 | 用量 | 账号 | 路由 |
+| --- | --- | --- | --- |
+| ![Magpie 概览页](screenshots/overview.jpg) | ![Magpie 用量页](screenshots/usage.jpg) | ![Magpie 账号页](screenshots/accounts.jpg) | ![Magpie 路由页](screenshots/routes.jpg) |
 
 ## 快速开始
 

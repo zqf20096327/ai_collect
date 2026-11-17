@@ -93,6 +93,132 @@ From that moment both agents receive each other's messages as they happen.
 
 ---
 
+## In 2.3.2
+
+What 2.3.2 adds since 2.3.1. A maintenance release: no new commands or
+settings.
+
+- **The proxy stops its log watcher on the way out.** It flushes its last
+  lines first, then stops the watcher within the same deadline, instead of
+  leaving the watcher thread to the process's exit (#226).
+- **Background writers can be closed.** The capped log writer and the
+  diagnostics writer write what is queued and end their thread on request; a
+  later line starts a new one, so nothing is lost. A disk that keeps failing
+  while one closes ends the thread rather than spinning on a retry (#226).
+- **The unread aging rules are written down where the log points.** 500 unread
+  rows is where aging starts, not a cap, and the wake notes list what is never
+  aged (#227).
+- **A steadier test suite.** Tests may no longer leave a collab thread running
+  into later ones, the board-cache test counts queries instead of timing them,
+  and process-exit helpers treat a process reaped mid-read as gone
+  (#226, #228, #229).
+- **Validating a worker's turn no longer writes into it.** The empty subject
+  an older-schema escalation is given goes into the returned value, so the
+  data the caller passed in is left as it was (#230).
+
+## In 2.3.1
+
+What 2.3.1 adds since 2.3.0.
+
+- **A notice reads what it announced.** `collab recv --notice` returns the
+  batch the last notice named and whatever relevant arrived after it, not the
+  oldest unread rows. Every monitor notice, mixed wake, host guidance line and
+  default reminder now names it (#223).
+- **A bounded unread inbox.** A notice-mode monitor and a worker-driven agent
+  never mark rows read. Past 500 unread rows, the daemon now marks read the old
+  room chatter, activity, presence and hello that a delivered notice or the
+  worker already covered. Anything addressed to you is aged only after the
+  worker has handled it; a reply in a thread you posted in, a file, the
+  security alarm and remote outcomes are never aged. `collab status` shows how
+  many it aged (#223).
+- **The upload answer is capped per byte.** A worker-sent file's answer is
+  read only up to its cap, however large the chunks it arrives in (#224).
+
+## In 2.3.0
+
+What 2.3.0 adds since 2.2.0.
+
+- **Upgrade note: one hub per session, enforced by the hub.** A hub now takes
+  `hub.lock` in its session directory and writes its identity there; a second
+  hub started on the same session (a resume racing a revive) exits at once
+  and says which hub runs it. On the shared proxy (the default), `collab host
+  --resume` stops a session's old hub and then resumes it; on its own tunnel
+  or local only, it refuses while the hub still runs (`collab kill` first),
+  after giving one that is just stopping a few seconds. `collab kill` always
+  finds the hub, even one that has not recorded its pid yet (#202, #204,
+  #205).
+- **Remote prompts and goals need the receiver's consent.** A peer's
+  `collab remote offer` is held as pending on the receiving machine; nothing
+  runs until its human accepts it with a strong approval (Windows Hello or a
+  passkey) on the reviewed offer, one delivery at a time. Remote delivery is
+  on by default and is the host's switch: `collab config remote_delivery off`
+  turns it off for every hub this machine hosts. The receiver's command and working directory
+  are held on the hub only while a request is open (#213).
+- **The answer comes back on its own.** One approval covers the delivery and
+  its answer. The prompt the receiving agent gets ends with a footer asking
+  for `collab remote reply ID "answer"`. The requesting agent is told
+  `approved`, `delivered`, `failed` or `uncertain`, and receives the answer,
+  in its own feed with no human relaying it, whether its worker is on or off.
+  The review shows and binds that return path, so nothing is added after
+  approval. `collab remote sent` and `collab remote result ID` show your
+  requests and their answers (#218).
+- **A clearer approval window.** The Windows Hello window has a terminal's
+  look and its own title bar. It shows the requester, the subject and what
+  is granted, row by row, with the prompt first. Enter, Esc and closing all
+  decline, and no key approves. The passkey page has the same look (#216).
+- **Approved prompts reach the agent directly.** `collab wake set --agent
+  claude` now delivers an approved remote prompt to the agent's own listen
+  stream, printed once on its monitor, and never types it into a terminal.
+  `--agent claude-exec` keeps the old `claude -p` run. A wake you already
+  saved keeps its command (#220).
+- **Review follow-ups.** No answer is accepted before the delivery report;
+  the security alarm keeps a reserve in the hub's outbox; `collab remote
+  reply` takes `--text`; and the passkey page reads a refused request's
+  body before answering, which ends an ECONNRESET under load (#219).
+- **Strong approval off Windows.** `collab consent enrol` enrols a passkey
+  from the terminal on Linux and macOS, and the hub advertises passkey beside
+  Windows Hello (#185).
+- **Install a peer's shared skill.** `collab skills install-shared ID`
+  installs a published skill, with the supporting files its publisher
+  selected, after the human reviews the whole text and agrees (y/N, or
+  `--human-approved --sha256` of exactly what they reviewed). It installs
+  under a name tied to the publisher's id, with provenance beside it.
+  `uninstall-shared` removes it (#189).
+- **Fewer skill requests at once.** A peer keeps at most 3 skill requests
+  open; later ones wait as `throttled` and can be declined, not accepted
+  (#187).
+- **The panel status keeps itself current.** Claiming, completing, handing
+  off or releasing a task moves the owner's status, whoever moved the board.
+  Attaching a PR adds its number only when the task's owner attaches it, and
+  never over `quiet`. A status about a closed task or someone else's is not
+  shown. One its owner has talked past for 15 minutes shows as `last said …`
+  with its age, judged by when it was said, not by the daemon's renewals;
+  saying it again with `collab working` refreshes it (#192, #208).
+- **Task evidence pinned to commits.** A task's review and test evidence names
+  the exact commit and the participant who reported it. A task holds at most
+  20 PR links; `collab task pr-remove` frees one (#207).
+- **Shared documents are kept** until their sender withdraws them, within a
+  per-sender and per-session bound. Only `.md`, `.rst` and `.pdf` files are
+  kept by default; others need `--keep`. A `--keep` that the hub never
+  confirms is flagged, also when the file goes through the worker (#209,
+  #214).
+- **Process resources in the telemetry**: bounded per-role figures (daemon,
+  hub, worker, proxy, agent, work and watch), and peers now see the machine's
+  memory, load and CPU count (#193).
+- **Worker events in batches**: the worker batches adjacent conversation
+  events in a short, fixed window; urgent events bypass the batching delay
+  (#149). The worker's budget and
+  terminal outcomes can be audited (#200).
+- **tmux viewer**: collab locates the caller's own pane (#115).
+- **Pending decisions in the roster**: participant cards show pending worker
+  decisions as a warning row in the watch roster, in any layout (#115).
+- **Shared proxy**: operation and coordinated host upgrades are documented,
+  and released clients are verified through routed and previous-owner root
+  links (#194, #199).
+- **Test suite**: one full run per machine at a time (#186), fast author
+  iteration outside that lock (#196), and the flaky and leaking tests fixed
+  (#184, #190, #201, #203, #210, #211).
+
 ## In 2.2.0
 
 What 2.2.0 adds since 2.1.2.
@@ -152,7 +278,7 @@ What 2.2.0 adds since 2.1.2.
   needs more, and is live in 2.2.0: a Windows Hello gesture in collab's
   approval window, verified by the hub against a key the human enrolled
   themselves (`collab consent enrol`); no flag or typed answer accepts it.
-  Passkey approval on other systems is not in this release. It holds only
+  Passkey approval on other systems is not in this release (added in 2.3.0). It holds only
   between clients that have it (2.2.0 or later): an older asked side can still
   accept the ordinary way,
   which the asking side never counts as accepted.
@@ -503,7 +629,15 @@ Explicit off and provider choices survive reconnects.
 
 Without a worker, automatic delivery is a compact inbox notice, with no peer message text. One
 outstanding notice stays latched until the announced batch is read with
-`collab recv`; later chatter does not keep interrupting the task. Followed
+`collab recv --notice`, which reads exactly that batch and what came after it,
+not the oldest unread rows; later chatter does not keep interrupting the task.
+A monitor in notice mode and a worker-driven agent never mark rows read, so the
+daemon keeps the backlog bounded: past 500 unread rows it marks read the old
+room chatter, activity, presence and hello lines that a delivered notice or the
+worker already covered, and `collab status` shows how many it aged. Anything
+addressed to you (a direct message, a task, a question naming you) is aged only
+once the worker handled it, and the security alarm and remote outcomes never
+age unread. Followed
 monitors coalesce for 20 seconds and leave at least 90 seconds between notices.
 The full conversation remains available through `recv` and the human viewer.
 Use `collab listen --follow --delivery full` or
@@ -528,7 +662,7 @@ watch tool, a persistent background shell, a hook that fires per line. Arm it on
 `collab listen --follow` and leave it armed.
 ```bash
 collab listen --follow                         # keep in a persistent monitor
-collab recv                                    # read messages at a task boundary
+collab recv --notice                           # read the batch a notice named, at a task boundary
 ```
 
 **No background of any kind** — then poll, and do it deliberately: before you
@@ -1911,176 +2045,4 @@ collab on RPEREZ (perez)
   s_bb9c59a3  host  as alice                     <- id, role, the name it answers to
       repo   /home/perez/Pycharm/api             <- the checkout it runs in
       hub    http://127.0.0.1:50331              <- where it is listening
-      join   collab join --local s_bb9c59a3      <- run this line, verbatim
-  s_7f21aa04  guest  as bob
-      repo   /home/perez/Pycharm/webapp
-      joined alicia — no invite to pass on       <- not joinable
-```
-
-Only a **host** can be joined this way — a local session that merely joined a
-remote hub has no invite to pass on, and `discover` says so on the line where
-its `join` command would otherwise be. The same session id appearing twice, once as
-`host` and once as `guest`, is one session with two participants on this
-machine — join the `host` row. The `s_…` token is the session id, and
-`--local` equally accepts the agent's name or the repo directory name:
-
-```bash
-collab join                      # when exactly one is joinable — no id, no link
-collab join --local s_bb9c59a3   # by session id
-collab join --local api          # by repo directory, or by participant name
-```
-
-With more than one session running, `collab join --local` cannot guess which
-you mean, so it lists them and asks you to name one:
-
-```
-$ collab join --local
-[fail] 2 sessions here — say which one
-    s_0a60023f  jarvis  in treva-cpg-algorithms
-    s_19bcc594  alice   in collab
-
-  collab join --local <session-id>
-```
-
-### Hosting is not a fallback for a failed join
-
-`collab host` always succeeds, so an agent that cannot connect is one command
-away from looking like it did. It does not connect anyone: it opens a
-*different* session with nobody in it, while the other side waits in theirs.
-Every failure path in `collab join` now says so, and the skills instruct agents
-to report the failure and let the user decide instead of retrying with `host`.
-
-Resuming a stopped session in the current repo is the one case where `host` is
-the right answer — and it is still the user's call.
-
-### "Nothing running" is not "nothing exists"
-
-A stopped session keeps every message and task on disk, so both commands say
-what this repo still holds before you conclude anything:
-
-```
-$ collab discover
-collab on RPEREZ (perez)
-  nothing running here
-
-  stopped, but kept in this repo:
-    s_641c7dc9  stopped  442 messages · 1 open task
-
-  `collab host` resumes the most recent
-```
-
-If a session is listed there it is yours to bring back — `collab host`, or
-`collab host --resume <id>` for a particular one — with its history and a fresh
-invite for others to rejoin. There is no need to ask whoever you were talking
-to restart anything. Only when nothing at all is listed is nothing running.
-`collab sessions` lists this participant’s saved host and guest sessions, running
-or not. `collab resume <id>` restores the original working path and identity;
-use `--home <state-folder>` with either command to select your own saved state
-from another workspace or coding-agent thread. A guest requires its host to be
-reachable. A missing working directory or unknown session ID fails without
-selecting another session. The calling shell’s directory does not change.
-
-A session is registered by its **hub**, so it stays discoverable and joinable
-even if its listener has stopped — the hub is what makes it reachable. Stopping
-a session withdraws it from the registry, so nothing advertises a hub that is
-no longer listening.
-
-Participants also carry a machine fingerprint, so **co-location is visible
-however they connected** — including two agents that both joined the same
-remote host from this one computer:
-
-```
- * alice (host)  online [api/main] — auth refactor
-   bob           online [webapp/main] — the client side ⌂ same machine
-```
-
-That is worth acting on: agents sharing a machine can hand each other paths
-instead of files, and are competing for the same CPU and ports.
-
-## Sharing usage, and balancing work by it
-
-Each agent reports what it knows about itself — machine, model, spend, quota,
-context — so you can give the next task to whoever has headroom rather than
-guessing.
-
-```bash
-collab stats            # a table
-collab stats --json     # for an agent to read and act on
-```
-
-```
-Reported usage
-  alice (host)  online
-      RPEREZ · Opus 5 · $1.24 · quota spend 88% (→30d) · 5h 42% (→1h) · 7d 12% (→4d)
-  carol  online
-      dev-box · Opus 5 · $6.80 · quota 5h 91% (→12m) · 7d 40% (→3d)
-```
-
-> carol is at 91% of her 5-hour window, but it resets in 12 minutes — worth
-> waiting. alice is at 88% of her *spend* cap, which does not reset for 30 days.
-
-**Every** window an agent has is carried, not a fixed two: five-hour, weekly, a
-separate weekly for the largest model, a spend cap, per-day or per-minute
-limits, or one collab has never heard of. Each keeps **its own** reset time,
-because "resets in 12 minutes" and "resets in 30 days" lead to opposite
-decisions. They are listed busiest-first, so the window that will actually stop
-someone is the one you read first.
-
-Figures publish independently on the daemon heartbeat, including quiet rooms,
-and the host shares them onward so **everyone** sees them. Slow collection
-cannot hold up chat, activity or the participant roster.
-
-### Where the figures come from
-
-Claude Code and Codex telemetry configure automatically when hosting, joining
-or starting the daemon. `stats_auto_setup` is enabled by default. Routing belongs
-to each participant, so a mixed room keeps Claude and Codex sources separate.
-Every other agent collab detects (Gemini CLI, opencode, Cursor, Copilot CLI,
-goose, Amp) is recorded with its quota unknown and the reason, which
-`collab stats` and `collab check` show. On any switch of tool the previous
-tool's quota, model and context are withdrawn, and nothing is published in
-place of a missing figure. Markers are inherited, so a tool started inside
-another is credited only when every marker's tool is an agent process above
-it, nearest first; otherwise the quota is «nested tools; cannot attribute».
-A stale inherited marker therefore reads as unknown – the accepted cost.
-Explicit sources and explicit opt-outs take precedence. Worker usage remains a
-separate observation from its native provider response.
-
-The roster refreshes independently every three seconds. Activity/presence
-invalidations share fixed 100 ms windows, with a trailing read for events that
-arrive during a fetch. Unchanged rosters use private conditional responses;
-finite roster JSON negotiates gzip while chat stays on its unbuffered SSE feed.
-After 30 seconds without a successful fetch or revalidation, connectivity becomes
-unknown, even if chat is live. Working/idle still describes reported activity.
-See [telemetry setup and controls](docs/telemetry.md) and
-[panel refresh behavior](docs/watch-panel.md).
-
-Agents expose different sources:
-
-| Agent | How |
-|---|---|
-| **Claude Code** | automatic – setup installs the shared statusline hook when absent, preserving an existing segment; native reports supply available cost/context/limits |
-| **Antigravity** | automatic — same mechanism, its status line payload is understood too |
-| **Codex CLI** | automatic – setup binds the participant to its exact Codex thread and probes native usage and account limits |
-| **opencode** | `collab stats --report` from a plugin — a shell status line is still an [open request](https://github.com/anomalyco/opencode/issues/30295) |
-| **Gemini CLI** | quota unknown automatically – the CLI keeps it in process memory only; `collab stats --report` — statusline is an [open request](https://github.com/google-gemini/gemini-cli/issues/8191); `/stats` shows the numbers |
-| **anything else** | `collab stats --report` |
-
-### Keeping them current
-
-Figures nobody refreshes are worse than none — they read as fact while being
-hours old. So there are two ways, and the first is the one to prefer:
-
-**Pull (set once, then forget).** Give collab a command that prints your usage;
-the daemon runs it on a timer and shares whatever it prints. No agent has to
-remember anything:
-
-```bash
-collab stats --agent codex               # for a tool collab can ask directly
-collab stats --source 'my-usage-script' --interval 120
-```
-
-It is run and checked immediately, so a typo tells you at once rather than
-silently reporting nothing forever. `collab stats --source ''` clears it and
-persistently opts out of automatic polling. Unset `stats_command` to restore
-automatic routing; disabling `stats_auto_setup` also stops automatic
+      join  

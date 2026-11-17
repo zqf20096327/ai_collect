@@ -19,7 +19,7 @@ A Kubernetes controller that generates [CycloneDX 1.6 ML-BOM][cyclonedx-ml] docu
 
 Organizations running AI workloads on Kubernetes — inference services, agent applications, RAG systems, training jobs — face a growing requirement to produce auditable inventories of *what is actually running in production*. Build-time AI bill-of-materials tools describe what was intended to be deployed. Runtime tools describe what is in fact serving inference, calling external APIs, holding embeddings, or training on which datasets.
 
-This distinction matters in any environment subject to AI governance: [EU AI Act][eu-ai-act] Article 12 logging requirements and Article 50 transparency obligations; [NIST AI RMF][nist-ai-rmf] Govern/Map/Measure/Manage controls that require knowing what AI systems are deployed and how; [ISO/IEC 42001][iso-42001] inventory and lifecycle clauses. Each of these requires evidence about deployed systems, not just intentions.
+This distinction matters in any environment subject to AI governance: [EU AI Act][eu-ai-act] Article 12 logging requirements and Article 50 transparency obligations; [NIST AI RMF][nist-ai-rmf] Govern/Map/Measure/Manage functions, whose outcomes include knowing what AI systems are deployed and how; [ISO/IEC 42001][iso-42001] inventory and lifecycle clauses. Each of these requires evidence about deployed systems, not just intentions.
 
 k8s-aibom produces that evidence as a side effect of normal cluster operation. Install the controller, opt in a namespace, and CycloneDX 1.6 ML-BOM documents are produced for each AI workload, with explicit confidence flags and evidence locators on every attribute.
 
@@ -89,9 +89,9 @@ Verification is configured via the `spec.verification` block of `AIBOMController
 
 k8s-aibom outputs are designed to serve as evidence for the following framework requirements:
 
-- **EU AI Act Article 12** — Logging requirements for high-risk AI systems. The AIBOM CR's per-workload status and the write-once BOM archive in external sinks provide the per-system inventory and logging artifacts the article requires.
-- **EU AI Act Article 50** — Transparency obligations. The model identity, runtime, and provenance attributes in each BOM support the disclosure obligations applicable to deployers of general-purpose AI systems.
-- **NIST AI RMF (Govern, Map, Measure, Manage)** — Several measures across the framework require maintaining an inventory of AI systems and tracking changes. k8s-aibom produces and maintains that inventory automatically.
+- **EU AI Act Article 12** — Logging requirements for high-risk AI systems. Article 12 requires the high-risk AI system itself to technically allow automatic recording of events (logs) over its lifetime; k8s-aibom does not generate those logs. The AIBOM CR's per-workload status and the write-once BOM archive in external sinks record which models, runtimes and configuration were deployed, which can supplement them as inventory evidence.
+- **EU AI Act Article 50** — Transparency obligations for providers and deployers of certain AI systems. The Article 50 duties are to inform people that they are interacting with an AI system (50(1)), to mark synthetic outputs in a machine-readable format (50(2)), and to inform people exposed to emotion recognition, biometric categorisation or deep fakes (50(3), 50(4)). A BOM does not perform any of these. Its model identity, runtime, and provenance attributes can help a provider or deployer record which system and model a duty attaches to.
+- **NIST AI RMF (Govern, Map, Measure, Manage)** — A voluntary framework. GOVERN 1.6 reads "Mechanisms are in place to inventory AI systems and are resourced according to organizational risk priorities." k8s-aibom produces and maintains an inventory of AI workloads running on the Kubernetes clusters it observes, which can serve as evidence for that outcome; it does not cover AI systems outside those clusters.
 - **ISO/IEC 42001** — AI Management System inventory and lifecycle clauses. The BOM's confidence model and evidence locators provide the auditable lineage the standard's certification path requires.
 
 k8s-aibom does not certify compliance with any framework; it produces evidence that organizations can use as inputs to their compliance processes.
@@ -106,7 +106,7 @@ Releases publish a signed multi-arch image (linux/amd64, linux/arm64) with build
 
 ```bash
 helm install k8s-aibom oci://ghcr.io/googlecloudplatform/charts/k8s-aibom \
-  --version 1.6.2 \
+  --version 1.7.0 \
   --namespace k8s-aibom-system \
   --create-namespace
 ```
@@ -117,9 +117,9 @@ The chart carries the CRDs in its `crds/` directory, which Helm installs once an
 
 ```bash
 helm install k8s-aibom-crds oci://ghcr.io/googlecloudplatform/charts/k8s-aibom-crds \
-  --version 1.6.2 --namespace k8s-aibom-system --create-namespace
+  --version 1.7.0 --namespace k8s-aibom-system --create-namespace
 helm install k8s-aibom oci://ghcr.io/googlecloudplatform/charts/k8s-aibom \
-  --version 1.6.2 --namespace k8s-aibom-system
+  --version 1.7.0 --namespace k8s-aibom-system
 ```
 
 Both charts ship at the same version from the same release and are attested the same way. The main chart's `crds/` directory stays, so a single-chart install keeps working; Helm skips CRDs that already exist.
@@ -127,7 +127,7 @@ Both charts ship at the same version from the same release and are attested the 
 ### Install with kubectl
 
 ```bash
-kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/v1.6.2/install.yaml
+kubectl apply -f https://github.com/GoogleCloudPlatform/k8s-aibom/releases/download/v1.7.0/install.yaml
 ```
 
 Always install from a release asset; the `install.yaml` at the repo root is a development artifact.

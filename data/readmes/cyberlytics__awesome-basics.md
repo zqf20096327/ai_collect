@@ -310,6 +310,7 @@ Werkzeuge:
 		- Term Variations: Model-Driven Software-Development (MDSD) / MD Architecture (MDA) / MD Design (MDD) / MD Engineering (MDE) / Round-Trip Engineering (RTE)
 		- Remark: Model-Driven can be really complex (Round-Trip Support) or relatively simple (Code Generation)
 - Anforderungsmanagement Einstieg
+	- Praktische Einführung: [Principles of Requirements Engineering or Requirements Management 101](https://www.inflectra.com/Ideas/Whitepaper/Principles-of-Requirements-Engineering.aspx) (2024) von Adam M. Sandman
 	- Traditionell: [**CPRE** Foundation Level – Handbuch nach dem **IREB**-Standard](https://www.ireb.org/content/downloads/3-cpre-foundation-level-handbook/cpre_foundationlevel_handbook_de_v1.0.pdf)
 		- Broschüre [Requirements Engineering » Ein Überblick](https://docplayer.org/6915991-Requirements-engineering-ein-ueberblick.html) (3. Auflage, 2012) von Christine Rupp \[Es gab auch eine 4. Auflage, zusammen mit Klaus Pohl\]
 		- Broschüre [Requirements- Engineering » Die kleine RE-Fibel](https://www.sophist.de/fileadmin/user_upload/Bilder_zu_Seiten/Publikationen/Wissen_for_free/RE-Broschuere_3-Auflage_mit_Lesezeichen.pdf) (2016) von Christine Rupp und die SOPHISTen
@@ -317,6 +318,7 @@ Werkzeuge:
 		- Broschüre [Agiles Requirements-Engineering](https://www.sophist.de/fileadmin/user_upload/Bilder_zu_Seiten/Publikationen/Wissen_for_free/Agil-Broschuere_Int/Agiles_Requirements-Engineering_1-Auflage.pdf) (2021) von die SOPHISTen
 		- Broschüre [Requirements Engineering für die agile Softwareentwicklung](https://www.assets.dpunkt.de/openbooks/Bergsmann_Openbook.pdf) (2020) von Bergsmann sowie sein Artikel [Definition of Ready für agile Requirements](https://www.sigs-datacom.de/uploads/tx_dmjournals/bergsmann_OTS__Requirement_15.pdf)
 		- Webartikel über die [**3Cs** von User Stories](https://premieragile.com/3cs-of-user-story/): Cards, Conversation Confirmation
+	- Requirements Traps: [Karl Wiegers Describes 10 Requirements Traps to Avoid](10 Requirements Traps to Avoid) (2000), [»eh klar« Anforderungen](https://www.dogado.partners/blog/online-marketing/requirements-engineering-das-ist-doch-eh-klar) (engl. Obviousness Trap) und [Falsche-Konsensus-Effekt](https://karrierebibel.de/falsche-konsensus-effekt/) sowie Jerry Weinbergs Ambiguity-Technik [Mary had a little lamb](https://shrinik.blogspot.com/2021/07/revisiting-jerrys-famous-mary-had.html) (MHALL)
 	- Personas: vgl. Abschnitt [Bachelor-level Bonusliste](#bsc-bonusliste)
 	- Non-Functional Requirements / Qualitätsanforderungen: **[\*-ilities](https://en.wikipedia.org/wiki/List_of_system_quality_attributes)**-Liste
 	- Kritik/Zeitenwandel:
@@ -664,6 +666,4 @@ Werkzeuge:
 		- Grundlegend #1 (konzeptionell): Webartikel [Developing **With Project Dependencies - When to Package, When Not To**](https://www.softwaremeadows.com/posts/developing_with_project_dependencies_-_when_to_package__when_not_to/) (2021) von Charles Flatt
 		- Grundlegend #2 (historisches): Zeitgrafik [Microsoft **.NET History**](https://time.graphics/line/593132) | Webartikel **[Managing Dependencies in .NET](https://fossa.com/blog/managing-dependencies-net-csproj-packagesconfig/)** (2021) von Cristian Taran u.a. zu .csproj, .packages.config und project.json
 		- Grundlegend #3 (technisch): Webartikel **[Managing output in the .NET SDK projects](https://cezarypiatek.GitHub.io/post/managing-output-in-sdk-projects/)** (2019) von Cezary Piątek
-			- (Einstiegsalternative: (€) Buch [.NET Core in Action](https://www.manning.com/books/dotnet-core-in-action) (2018) von Dustin Metzgar, Kapitel 3 „How to build with .NET Core“)
-			- Zwei Build-Arten: .NET Framework (**msbuild**; Windows-only; Visual Studio) vs. .NET / .NET Core (**dotnet build**; Cross-Platform; .NET CLI)
-			- Zwei Referenztypen: **[ProjectReference](https://github.com/dotnet/msbuild/blob/main/documentation/ProjectReference-Protocol.md)** (u.a. [PreserveNewest](https://stackoverflow.com/questions/62991404/how-does-project-item-metadata-preservenewest-actually-work) sowie „Copy Local“ = Private:false) vs. **[PackageReference](https://learn.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files)
+			- (Einstiegsalternative: (€) B

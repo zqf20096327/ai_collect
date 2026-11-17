@@ -36,12 +36,15 @@ telemetry — nothing leaves your computer unless you turn on AI polish yourself
 
 - **Instant capture** — the windows are created at startup and hidden, so the
   shortcut shows them in milliseconds
-- **Local-first** — one database file (attachments included), exportable and
-  backup-able from Settings
+- **Local-first** — one database file (attachments included), backup-able from
+  Settings. Export your notes as a Markdown checklist that opens in any editor
+  (or as JSON), and import it back without losing anything
 - **Looks** — six built-in colour themes, or make your own with a live editor
   that refuses anything hard to read; share any look with a one-line code
 - **AI polish** — optional. Off by default; when you turn it on, your note goes
-  straight to the provider you picked with your own API key
+  straight to the provider you picked: Claude, OpenAI, Gemini,
+  OpenRouter, any OpenAI-compatible server, or Ollama on your own computer.
+  Keys live in your system keychain, never in the settings
 - **In-app updates** — signed installers, one click, nothing auto-runs
 - **Later** — press L on a to-do you won't get to today. It leaves Today and
   the inbox and waits in Later, your backlog, until you bring it back. No dates,
@@ -84,7 +87,7 @@ your OS. On Debian/Ubuntu:
 
 ```sh
 sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
-  librsvg2-dev libxdo-dev libssl-dev build-essential
+  librsvg2-dev libxdo-dev libssl-dev libdbus-1-dev build-essential
 ```
 
 ```sh

@@ -1,0 +1,287 @@
+<div align="center">
+
+# 🤖 CocoCV（原 Resume-Agent）
+
+### 帮你把经历聊成一份好简历：AI 生成、可解释诊断与 LaTeX 高清排版
+
+**🌐 官方网站 / 在线体验：[https://cococv.cn](https://cococv.cn)**
+
+<p>
+  <a href="https://cococv.cn"><img src="https://img.shields.io/badge/🌐_在线体验-cococv.cn-36BCF7?style=for-the-badge" alt="Live Demo" /></a>
+  <a href="https://github.com/wycocoyu/cococv/stargazers"><img src="https://img.shields.io/github/stars/wycocoyu/cococv?style=for-the-badge&color=yellow" alt="Stars" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" /></a>
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React 18" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white" alt="Python 3.12+" />
+  <img src="https://img.shields.io/badge/DeepSeek-4D6BFE" alt="DeepSeek" />
+  <img src="https://img.shields.io/badge/LaTeX-008080?logo=latex&logoColor=white" alt="LaTeX" />
+</p>
+
+<img src="docs/readme/home.png" alt="CocoCV 首页" width="95%" />
+
+</div>
+
+---
+
+## 📖 项目简介
+
+**CocoCV（[cococv.cn](https://cococv.cn)，原 Resume-Agent）** 是一个面向中文求职场景的全栈 AI 简历平台，打通了从 **一句话对话生成 / PDF 与图片导入 → 可解释简历诊断与 ATS 检查 → 自然语言增量改写 → 双栏可视化排版与 LaTeX PDF 导出** 的全流程，让你把精力放回经历打磨本身，告别深夜反复调格式。
+
+## ✨ 核心特性
+
+| 模块 | 核心能力 |
+|:--|:---|
+| 🚀 **三种起点自由开局** | 支持一句话自然语言引导生成、上传已有 PDF / 图片简历自动解析（`glm-ocr` + `glm-4.6v`），或直接套用内置 LaTeX 标准模板从零编辑 |
+| 💬 **AI 助手左聊右看** | 进程内 Agent 实时调用生成、诊断与修改工具，右侧同步渲染 PDF 预览，生成满意后一键「导入到编辑器」继续精修 |
+| 🔍 **可解释诊断与 ATS 清单** | 评分依据逐字引用简历原文；针对目标岗位 JD 输出 **ATS 兼容检查清单**，精准点出空泛套话、量化缺失与技能掌握度短板 |
+| 🛠️ **单条建议应用与缺口补齐** | 每条改进建议支持独立点击「帮我改这条」；涉及真实业务数据缺口的条目支持弹窗「补充信息并修改」 |
+| 🎨 **双栏可视化精细排版** | 涵盖基本信息、教育、工作、实习、项目、开源、技能、获奖、自评、科研 10 大板块（支持自定义模块）；支持公司/学校 Logo、工作年限、独立字号、正文蓝字重点高亮与多级列表 |
+| 📄 **LaTeX PDF 极速直连导出** | 服务端 XeLaTeX 高清编译，自动嵌入中文字体 `/ToUnicode` CMap（兼容无外部字映射的内置 PDF.js 阅读器），并归一化中英混排引号与连接符保障 ATS 解析 |
+| 🔑 **可视化密钥配置与防呆热更新** | `/settings` 页面内置 DeepSeek 与智谱 GLM-OCR 密钥管理面板，支持一键连通性检测、跨平台格式防呆拦截与多 Worker 进程零重启热加载 |
+
+## 📸 核心界面预览
+
+<table>
+<tr>
+<td width="50%">
+  <b>1. 双栏可视化编辑工作区（LaTeX 实时预览）</b><br/>
+  <sub>左侧 10 大模块化表单与排版控制，右侧实时编译高清多页 PDF（内置学校与大厂 Logo）</sub><br/><br/>
+  <img src="docs/readme/workspace.png" alt="双栏可视化编辑工作区" />
+</td>
+<td width="50%">
+  <b>2. AI 助手对话生成与实时预览</b><br/>
+  <sub>左侧自然语言对话驱动简历生成与诊断工具链，右侧同步渲染最新 PDF 简历</sub><br/><br/>
+  <img src="docs/readme/agent-chat.png" alt="AI 助手对话与诊断" />
+</td>
+</tr>
+<tr>
+<td width="50%">
+  <b>3. 多路径快速开始向导</b><br/>
+  <sub>支持 PDF/图片解析导入、AI 引导式问答创建、或直接以经典 LaTeX 模板起步</sub><br/><br/>
+  <img src="docs/readme/create-new.png" alt="新建简历向导" />
+</td>
+<td width="50%" valign="middle" align="center">
+  <b>🌐 在线即刻体验</b><br/><br/>
+  👉 <a href="https://cococv.cn"><b>访问 cococv.cn 体验完整功能</b></a><br/><br/>
+  <sub>支持深色模式与多套清新界面皮肤一键切换</sub>
+</td>
+</tr>
+</table>
+
+## 🤖 AI Agent / Skills 本地使用（免登录 · 零 LaTeX 依赖）
+
+不想打开网页填表，也可以直接把 **CocoCV Skill** 装进你的 **Codex、Claude Code** 或其他 AI 编程助手里。全程在本地运行，**无需预先登录账号、无需本地安装 XeLaTeX**（仅需 Python 3.10+），就能对话生成简历并导出 `.html`、`.png` 预览图或 `.pdf`。
+
+### 1. 给你的 Agent 安装（任选一种）
+
+| 客户端 | 安装方式 | 触发方式 |
+|:--|:--|:--|
+| **Codex（CLI / Desktop）** | 克隆本仓库后运行 `resume-agent skill install --harness codex`（或直接安装根目录 `.codex-plugin/` 插件清单，或将 `skills/resume-agent/` 软链到 `~/.codex/skills/resume-agent`） | 对话中输入 `$resume-agent` |
+| **Claude Code** | 在 Claude Code 中添加本地/GitHub 插件市场（根目录已内置 `.claude-plugin/marketplace.json` 与 `plugin.json`），或运行 `resume-agent skill install --harness claude` | 对话中输入 `/resume-agent` |
+| **其他 Agent（Cursor / OpenCode / Pi / WorkBuddy）** | 运行 `resume-agent skill install --harness pi`（或 `workbuddy`），或直接把仓库内 `skills/resume-agent/` 目录复制到对应工具的 `skills/` 目录 | 自然语言提及「用 resume-agent 做简历」 |
+
+> 💡 **查看本机支持的全部宿主与安装路径**：运行 `resume-agent skill list` 或 `resume-agent skill status`（只安装 `skills/resume-agent/` 单个目录也可独立工作，内置 `scripts/cococv_local.py` 零依赖脚本）。
+
+### 2. 安装完后，直接这样跟 Agent 对话
+
+Agent 会先静默探测本机环境，再引导你走以下三条路线之一（不会上来就甩参数或要求登录）：
+
+- **手上有现成简历（本地路径直接读，免抄写）**
+  > 「用 `$resume-agent` 帮我重新排版简历，文件在 `~/Desktop/我的简历.pdf`（支持 `.pdf` / `.docx` / `.md` / `.txt` / `.html` / `.json` / 简历截图）」
+  Agent 会直接调用本地脚本读取文件，提取真实经历、标出缺失项为 `【待补】` 并生成新版。
+
+- **手上没有简历（对话一步步引导生成）**
+  > 「用 `$resume-agent` 帮我从零写一份后端开发简历」
+  Agent 会分轮只问 2～3 个关键问题（目标岗位与页数 → 教育与核心经历 → 技术栈与量化成果），绝不杜撰事实。
+
+- **已有简历想对照 JD 改写、诊断或换模板**
+  > 「用 `$resume-agent` 对照这份岗位 JD 优化我的 `resume.json`，并给我看看哪几个模板合适」
+  Agent 会先推荐 3～5 套匹配模板，也可一键生成单文件对比画廊 `template-gallery.html` 用你的真实内容同屏对比，再按需导出：
+  - **本地 HTML 预览（`-o resume.html`）**：零依赖 100% 可出，浏览器打开可看可打印导出 PDF
+  - **逐页预览图（`-o resume.png`）**：适合手机核对或让 Agent 自检是否多出 2～3 行溢出
+  - **本地导出 PDF（`-o resume.pdf --png`）**：调用本机 Chrome 或 XeLaTeX 离线直出
+  - **网页工作台精修（`handoff`）**：仅在你主动要求时生成 60 分钟临时链接导入 `cococv.cn` 拖拽微调
+
+### 3. 27 套工作台真实简历模板总览
+
+工作台共内置 **27 套真实模板**：`Classic LaTeX`（服务端 XeLaTeX 精排）、7 套网页实时 HTML 经典模板（`LaTeX Style` / `Single Column` / `Two Column` / `Modern` / `Modern 2-Col` / `Clean` / `Vivid`）以及 19 套高密度 ASu 系列（`asu-tech` + `asu-01`～`asu-18`，均支持本地 CLI 离线直出）。你也可以随时打开免登录在线模板广场 [**cococv.cn/templates**](https://cococv.cn/templates)，预览真实排版、导入自己的 `resume.json` 试套、直接留在本地浏览器编辑，或一键复制口令发给你的 AI Agent：
+
+<div align="center">
+  <img src="docs/readme/template-overview.png" alt="CocoCV 27 套工作台真实简历模板总览" width="95%" />
+</div>
+
+## 🏗️ 技术架构与目录结构
+
+> 📚 **深入开发与二次定制**：完整前端架构、Agent 流式协议、数据库表结构、领域术语表与 ADR 请查阅 [**开发者文档索引 (`docs/README.md`)**](docs/README.md)。
+
+| 目录 / 层级 | 技术栈 | 职责说明 |
+|:--|:--|:--|
+| `frontend/` | React 18 · TypeScript · Vite · Tailwind | 简历双栏可视化工作区、AI 助手对话流、多皮肤主题与简历管理 |
+| `backend/` | FastAPI · Python 3.12+ · SQLAlchemy | 主业务 API、进程内 `backend/agent/` 智能体引擎、PDF 编译路由 |
+| `web/` | Next.js 16 · BetterAuth · PostgreSQL | 统一身份认证服务（线上共享登录态，本地单机体验可按需启用） |
+| **AI 模型层** | DeepSeek 官方（`deepseek-flash` / `deepseek-v4-pro`）· 智谱 GLM（`glm-ocr` / `glm-4.6v`） | DeepSeek 负责对话、诊断与结构化生成，智谱负责 PDF/图片 OCR 与版面识别 |
+| **PDF 引擎** | XeLaTeX · CTeX | 服务端中英混排编译、Logo 嵌入渲染与 ATS 字符归一化 |
+
+## 🚀 本地快速启动
+
+### 1. 环境准备
+
+- **Python** `3.12+`（推荐使用 [`uv`](https://github.com/astral-sh/uv) 管理依赖）
+- **Node.js** `18+`
+- **XeLaTeX**（PDF 编译必需）
+  - macOS：安装 [MacTeX](https://www.tug.org/mactex/)
+  - Ubuntu / Debian：`sudo apt install texlive-xetex texlive-lang-chinese fonts-noto-cjk`
+
+### 2. 克隆仓库与安装依赖
+
+```bash
+git clone https://github.com/wycocoyu/cococv.git
+cd cococv
+pip install uv
+uv pip install -r requirements.txt
+cd frontend && npm install && cd ..
+```
+
+### 3. 配置环境变量
+
+复制根目录 `.env.example` 为 `.env`：
+
+```bash
+cp .env.example .env
+```
+
+在 `.env` 中填入以下核心配置（也可先启动服务，再打开 `http://localhost:5173/settings` 在「AI 与 OCR 服务配置」面板可视化保存并一键检测连通性）：
+
+```ini
+DEEPSEEK_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+ZHIPU_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxx
+JWT_SECRET_KEY=replace-with-any-random-string
+```
+
+| 变量名 | 是否必填 | 格式与用途说明 |
+|:--|:--|:--|
+| `DEEPSEEK_API_KEY` | 必填 | 以 `sk-` 开头；驱动 AI 对话、简历诊断与导入后的 JSON 结构化组装（[DeepSeek 开放平台](https://platform.deepseek.com/api_keys)） |
+| `ZHIPU_API_KEY` | 推荐 | 格式为 `id.secret`（含英文点号 `.`）；驱动 PDF / 图片简历导入的 `glm-ocr` 版面识别，单份简历 OCR 成本约 `¥0.001`（[智谱开放平台](https://open.bigmodel.cn/usercenter/apikeys)） |
+| `JWT_SECRET_KEY` | 必填 | 本地签名密钥，填入任意随机字符串即可 |
+
+> 💡 数据库默认使用本地 SQLite，开箱即用。如需切换 PostgreSQL，可在 `.env` 中启用 `USE_POSTGRESQL=true` 与 `POSTGRESQL_URL`。前端默认连接 `http://127.0.0.1:9000`，如需自定义可执行 `cp frontend/.env.example frontend/.env.local`。
+
+### 4. 启动前后端服务
+
+启动后端 API 与内置 Agent（端口 `9000`）：
+
+```bash
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 9000
+```
+
+另起终端启动前端开发服务器（端口 `5173`）：
+
+```bash
+cd frontend && npm run dev
+```
+
+启动后访问：
+
+| 服务 | 本地地址 |
+|:--|:--|
+| 🖥️ **前端应用** | http://localhost:5173 |
+| ⚙️ **后端 API** | http://127.0.0.1:9000 |
+| 📖 **Swagger 接口文档** | http://127.0.0.1:9000/docs |
+
+### 5. 构建与测试校验
+
+前端类型检查与生产构建：
+
+```bash
+cd frontend && npm run build
+```
+
+后端单元测试：
+
+```bash
+python -m pytest backend/tests/ -q
+```
+
+## 🐳 Docker 容器化一键部署
+
+> 无需本地安装 Python / Node / XeLaTeX，一条命令拉起完整服务（后端镜像内置 XeLaTeX 中文编译环境与 Adobe 中文字体）。
+
+### 1. 配置环境变量
+
+```bash
+cp .env.example .env
+```
+
+在 `.env` 中填入 `DEEPSEEK_API_KEY`（必填）、`ZHIPU_API_KEY`（推荐，PDF/图片导入）与 `JWT_SECRET_KEY`，Docker Compose 会自动读取并注入后端容器；也可启动后在 `http://localhost/settings` 页面可视化配置并热更新。
+
+### 2. 一键启动基础栈
+
+```bash
+docker compose up -d --build
+```
+
+启动完成后访问：
+
+| 服务 | 地址 |
+|:--|:--|
+| 🖥️ **前端应用** | http://localhost |
+| ⚙️ **后端 API** | http://localhost:9000（`BACKEND_PORT` 可改） |
+| 📖 **Swagger 接口文档** | http://localhost:9000/docs |
+
+前端 Nginx 已配置 `/api/` 反向代理与 SSE 流式透传（`proxy_buffering off`），AI 对话与 PDF 渲染进度实时输出，无需任何额外配置。
+
+### 3. 数据持久化说明
+
+| 宿主机目录 | 容器挂载点 | 内容 |
+|:--|:--|:--|
+| `./data/` | `/app/data` | SQLite 数据库（`resume.db`）与用户数据 |
+| `./logs/` | `/app/logs` | 后端 / LaTeX 编译 / 前端日志 |
+
+容器重建（`docker compose down && up`）后数据与日志不丢失；彻底清空数据请手动删除 `./data` 与 `./logs` 目录。
+
+### 4. 多用户认证栈（可选）
+
+需要统一身份认证（Next.js BetterAuth + PostgreSQL）时，以 auth profile 启动：
+
+```bash
+docker compose --profile auth up -d --build
+```
+
+将额外拉起 `postgres:16-alpine`（数据落在 `pgdata` 卷）与 `web` 认证服务（http://localhost:3000），并在 `.env` 中补充共享密钥：
+
+```ini
+FASTAPI_INTERNAL_AUTH_SECRET=与-web-一致的内部签名密钥
+BETTER_AUTH_SECRET=BetterAuth-Cookie-签名密钥
+```
+
+### 5. 常用环境变量
+
+| 变量 | 默认值 | 说明 |
+|:--|:--|:--|
+| `FRONTEND_PORT` | `80` | 前端（Nginx）对外端口 |
+| `BACKEND_PORT` | `9000` | 后端 API 对外端口 |
+| `WEB_PORT` | `3000` | 认证服务对外端口（auth profile） |
+| `POSTGRES_PASSWORD` | `resume_auth_password` | 认证库密码（auth profile，生产环境务必修改） |
+| `DEEPSEEK_API_KEY` | 空 | AI 对话 / 诊断 / 结构化生成 |
+| `ZHIPU_API_KEY` | 空 | PDF / 图片简历 OCR 导入 |
+| `JWT_SECRET_KEY` | 占位值 | 本地签名密钥 |
+
+其他后端环境变量（`RUOLI_API_KEY`、`COS_SECRET_KEY` 等）同样在 `.env` 中配置后自动透传进容器；完整清单见 `.env.example`。
+
+## ⭐ Star History
+
+<div align="center">
+  <img src="docs/readme/star-history.svg" alt="Star History" width="85%" />
+</div>
+
+## 🤝 参与贡献
+
+欢迎通过 [Issues](https://github.com/wycocoyu/cococv/issues) 反馈问题或提交 [Pull Requests](https://github.com/wycocoyu/cococv/pulls)。如果本项目对你有帮助，欢迎点亮右上角 ⭐ **Star** 支持！
+
+## 📄 开源许可
+
+本项目基于 [MIT License](LICENSE) 开源。

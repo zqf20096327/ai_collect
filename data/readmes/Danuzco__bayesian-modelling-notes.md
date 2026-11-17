@@ -10,7 +10,7 @@ by [**Daniel Uzcategui**](https://doctoradoia.cl/cuerpo-academico/daniel-uzcateg
 [![Status: in progress](https://img.shields.io/badge/status-course_in_progress-e8a33d)](#about)
 [![Lectures](https://img.shields.io/badge/lectures-10-2b6cb0)](#course-map)
 [![Pages](https://img.shields.io/badge/handwritten_pages-280-805ad5)](#course-map)
-[![Notebooks](https://img.shields.io/badge/notebooks-8-f37626?logo=jupyter&logoColor=white)](#code)
+[![Notebooks](https://img.shields.io/badge/notebooks-9-f37626?logo=jupyter&logoColor=white)](#code)
 [![PyMC](https://img.shields.io/badge/PyMC-6-1f4e79)](https://www.pymc.io/)
 [![JAX](https://img.shields.io/badge/JAX-inference_from_scratch-a855f7)](#code)
 [![Notes: CC BY 4.0](https://img.shields.io/badge/notes-CC_BY_4.0-lightgrey)](NOTES_LICENSE.md)
@@ -51,14 +51,14 @@ hierarchical models.
 | 2 | **Probability** | axioms, interpretations of probability, counting, independence, conditional probability, total probability, Bayes' theorem | [PDF](lecture02_probability/lecture02_probability.pdf) · 35 pp · [typeset](lecture02_probability/lecture02_probability_typeset.pdf) | — |
 | 3 | **Random Variables** | PMF/PDF/CDF, Bernoulli → Poisson (derived from first principles), exponential, normal, joint and conditional distributions, expectation, variance, covariance | [PDF](lecture03_random_variables/lecture03_random_variables.pdf) · 64 pp · [typeset](lecture03_random_variables/lecture03_random_variables_typeset.pdf) | — |
 | 4 | **Classical Inference** | maximum likelihood, confidence intervals, hypothesis testing | [PDF](lecture04_classical_inference/lecture04_classical_inference.pdf) · 14 pp · [typeset](lecture04_classical_inference/lecture04_classical_inference_typeset.pdf) | — |
-| 5 | **Bayesian Statistics** | posterior and predictive distributions, Beta–Binomial, Gaussian–Gaussian, Normal–Inv-χ², exponential family, multivariate normal, linear Gaussian systems, model selection | [PDF](lecture05_bayesian_statistics/lecture05_bayesian_statistics.pdf) · 67 pp | [1 notebook](lecture05_bayesian_statistics/code) |
-| 6 | **Kalman Filters** | state-space models, Bayesian filtering equations, full Kalman derivation (Woodbury identity), forecasting | [PDF](lecture06_kalman_filters/lecture06_kalman_filters.pdf) · 18 pp | [1 notebook](lecture06_kalman_filters/code) |
+| 5 | **Bayesian Statistics** | posterior and predictive distributions, Beta–Binomial, Gaussian–Gaussian, Normal–Inv-χ², exponential family, multivariate normal, linear Gaussian systems, model selection | [PDF](lecture05_bayesian_statistics/lecture05_bayesian_statistics.pdf) · 67 pp · [typeset](lecture05_bayesian_statistics/lecture05_bayesian_statistics_typeset.pdf) | [2 notebooks](lecture05_bayesian_statistics/code) |
+| 6 | **Kalman Filters** | state-space models, Bayesian filtering equations, full Kalman derivation (Woodbury identity), forecasting | [PDF](lecture06_kalman_filters/lecture06_kalman_filters.pdf) · 18 pp · [typeset](lecture06_kalman_filters/lecture06_kalman_filters_typeset.pdf) | [1 notebook](lecture06_kalman_filters/code) |
 | 7 | **Gaussian Processes** | Bayesian linear regression, GP prior and posterior, prediction at new inputs, kernels | [PDF](lecture07_gaussian_processes/lecture07_gaussian_processes.pdf) · 17 pp | [1 notebook](lecture07_gaussian_processes/code) |
 | 8 | **Markov Chain Monte Carlo** | sampling instead of integrating, Metropolis–Hastings and detailed balance, Hamiltonian Monte Carlo, leapfrog, Gelman–Rubin R̂ | [PDF](lecture08_mcmc/lecture08_mcmc.pdf) · 20 pp | [3 notebooks](lecture08_mcmc/code) |
 | 9 | **Variational Inference** | KL divergence, ELBO via Jensen, mean-field VI, ADVI, score-function gradients | [PDF](lecture09_variational_inference/lecture09_variational_inference.pdf) · 11 pp | [1 notebook](lecture09_variational_inference/code) |
 | 10 | **Hierarchical Models** | complete, no and partial pooling, plate diagrams, the eight-schools model | [PDF](lecture10_hierarchical_models/lecture10_hierarchical_models.pdf) · 10 pp | [1 notebook](lecture10_hierarchical_models/code) |
 
-Lectures 1–4 also have a typeset LaTeX version, with its source in each folder's `latex/`. Each lecture folder has its own README with a short outline and a description of its notebooks.
+Lectures 1–6 also have a typeset LaTeX version, with its source in each folder's `latex/`. Each lecture folder has its own README with a short outline and a description of its notebooks.
 
 ## How the lectures connect
 
@@ -80,6 +80,7 @@ flowchart LR
 
 | Lecture | Notebook | What it does |
 |---|---|---|
+| 5 | [`coin_bayesian_updating`](lecture05_bayesian_statistics/code/coin_bayesian_updating.ipynb) | Beta–Binomial updating for a coin: priors, flip-by-flip posteriors, shrinkage toward the MLE, posterior predictive vs. plug-in, and a Gamma–Poisson example |
 | 5 | [`gaussian_2d_inference`](lecture05_bayesian_statistics/code/gaussian_2d_inference.ipynb) | Posterior of a 2D Gaussian mean with known Σ, as a special case of a linear Gaussian system (Iris *setosa* data) |
 | 6 | [`nile_kalman`](lecture06_kalman_filters/code/nile_kalman.ipynb) | Local-level Kalman filter for the annual flow of the Nile |
 | 7 | [`gp_linear_and_nonlinear`](lecture07_gaussian_processes/code/gp_linear_and_nonlinear.ipynb) | GP regression: a linear kernel reproduces Bayesian linear regression, then a Gaussian kernel fits a nonlinear function |
@@ -109,7 +110,7 @@ Or with pip: `pip install -r requirements.txt`.
 bayesian-modelling-notes/
 ├── lecture01_set_theory/
 │   ├── lecture01_set_theory.pdf      # handwritten notes
-│   ├── lecture01_set_theory_typeset.pdf  # typeset version (Lectures 1–4)
+│   ├── lecture01_set_theory_typeset.pdf  # typeset version (Lectures 1–6)
 │   ├── latex/                        # LaTeX source of the typeset version
 │   └── README.md                     # outline of the lecture
 ├── ...

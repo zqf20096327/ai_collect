@@ -1,0 +1,163 @@
+# ✨ All RL Algorithms from Scratch
+
+<div align="center">
+
+![made-with-Python](https://img.shields.io/badge/Made%20with-Python-blue)
+![made-with-Jupyter](https://img.shields.io/badge/Made%20with-Jupyter-orange)
+![Educational](https://img.shields.io/badge/Purpose-Educational-green)
+![RL Algorithms](https://img.shields.io/badge/RL%20Algorithms-19-brightgreen)
+![Language](https://img.shields.io/github/languages/top/fareedkhan-dev/all-rl-algorithms)
+![Maintained](https://img.shields.io/maintenance/yes/2026)
+![Last Commit](https://img.shields.io/github/last-commit/fareedkhan-dev/all-rl-algorithms)
+![Size](https://img.shields.io/github/repo-size/fareedkhan-dev/all-rl-algorithms)
+[![contributions welcome](https://img.shields.io/static/v1.svg?label=Contributions&message=Welcome&color=0059b3&style=flat-square)](https://github.com/fareedkhan-dev/all-rl-algorithms)
+![License](https://img.shields.io/github/license/fareedkhan-dev/all-rl-algorithms)
+![Stars](https://img.shields.io/github/stars/fareedkhan-dev/all-rl-algorithms?style=social)
+
+</div>
+
+
+This repository is a collection of Python implementations of various Reinforcement Learning (RL) algorithms. The *primary* goal is **educational**: to get a deep and intuitive understanding of how these algorithms work under the hood. 🧠 Due to the recent explosion in the AI domain especially Large Language Models, and many more applications it is important to understand core reinforcement learning algorithms.
+
+This repository also includes a [comprehensive cheat sheet](cheatsheet.md) summarizing key concepts and algorithms for quick reference.
+
+**This is *not* a performance-optimized library!** I prioritize readability and clarity over speed and advanced features. Think of it as your interactive textbook for RL.
+
+
+## 📌 Updates
+
+| Date | Update |
+|------|--------|
+| **16 November 2026** | **Version 1.0.0.** Every notebook re-run from the top after fixing bugs that changed what they teach: terminal states and the Cliff Walking rules in Q-learning, GAE and critic targets in PPO, A2C and TRPO, gradient accumulation in A3C, the MCTS backup, HAC's lost low-level experience, and more. New notebook 19 on bandits for dynamic pricing, plus tests and CI. See the [changelog](CHANGELOG.md). |
+| **2 April 2025** | Added a comprehensive [RL Cheat Sheet](cheatsheet.md) summarizing all implemented algorithms and core concepts. Repository now includes **18 algorithm notebooks**. |
+| **30 March 2025** | Added **18 new algorithms**. |
+
+
+
+
+
+## 🌟 Why This Repo?
+
+- **Focus on Fundamentals:** Learn the core logic *without* the abstraction of complex RL libraries. We use basic libraries (NumPy, Matplotlib, PyTorch) to get our hands dirty. 🛠️
+- **Beginner-Friendly:** Step-by-step explanations guide you through each algorithm, even if you're new to RL. 👶
+- **Interactive Learning:** Jupyter Notebooks provide a playground for experimentation. Tweak hyperparameters, modify the code, and *see* what happens! 🧪
+- **Clear and Concise Code:** We strive for readable code that closely mirrors the mathematical descriptions of the algorithms. No unnecessary complexity! 👌
+- **Quick Reference:** Includes a detailed [Cheat Sheet](cheatsheet.md) for fast lookups of formulas, pseudocode, and concepts.
+
+## 🗺️ Roadmap: Algorithms Covered (and Coming Soon)
+
+The repository currently includes implementations of the following RL algorithms, with more planned:
+
+**Algorithm Quick Reference**
+
+| #  | Algorithm | Type | Description | Notebook |
+|----|-----------|------|-------------|----------|
+| 01 | **Simple Exploration Bot** | Basic | Demonstrates the core loop: interacting with the environment and storing experienced rewards for later action selection. *Does not actually learn in a true RL sense*. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](01_simple_rl.ipynb) |
+| 02 | **Q-Learning** | Value-Based | Learns an optimal action-value function (Q-function) through the Bellman equation, enabling goal-directed behavior. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](02_q_learning.ipynb) |
+| 03 | **SARSA** | Value-Based | On-policy learning algorithm that updates Q-values based on the actions actually taken, often resulting in more cautious behavior. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](03_sarsa.ipynb) |
+| 04 | **Expected SARSA** | Value-Based | On-policy with reduced variance, updates Q-values using the expected value of next actions, balancing exploration and exploitation. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](04_expected_sarsa.ipynb) |
+| 05 | **Dyna-Q** | Model-Based | Combines direct RL (Q-learning) with planning via a learned environment model, improving sample efficiency. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](05_dyna_q.ipynb) |
+| 06 | **REINFORCE** | Policy-Based | A Monte Carlo policy gradient method that directly optimizes a parameterized policy based on complete episode returns. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](06_reinforce.ipynb) |
+| 07 | **Proximal Policy Optimization (PPO)** | Actor-Critic | State-of-the-art, stabilizes policy updates via clipped surrogate objective. Balances exploration and exploitation efficiently. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](07_ppo.ipynb) |
+| 08 | **Advantage Actor-Critic (A2C)** | Actor-Critic | Uses a critic to estimate advantages, reducing variance compared to REINFORCE. Synchronous updates. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](08_a2c.ipynb) |
+| 09 | **Asynchronous Advantage Actor-Critic (A3C)** | Actor-Critic | An asynchronous version of A2C, using multiple workers to collect data and update the global network. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](09_a3c.ipynb) |
+| 10 | **Deep Deterministic Policy Gradient (DDPG)** | Actor-Critic | Learns a deterministic policy (the actor) together with a Q-function (the critic), for continuous action spaces. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](10_ddpg.ipynb) |
+| 11 | **Soft Actor-Critic (SAC)** | Actor-Critic | Off-policy actor-critic for continuous action spaces, based on maximum entropy RL. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](11_sac.ipynb) |
+| 12 | **Trust Region Policy Optimization (TRPO)** | On-Policy | Imposes a limit on how much the policy distribution can change in a single step. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](12_trpo.ipynb) |
+| 13 | **Deep Q-Network (DQN)** | Value-Based | Combines Q-learning with deep neural networks to handle high-dimensional state spaces. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](13_dqn.ipynb) |
+| 14 | **Multi-Agent DDPG (MADDPG)** | Actor-Critic | Extends DDPG to multi-agent settings with a centralized critic per agent, addressing non-stationarity (here with discrete actions). | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](14_maddpg.ipynb) |
+| 15 | **QMIX** | Value-Based (MARL) | Cooperative multi-agent Q-learning: per-agent Q-values combined by a monotonic mixing network. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](15_qmix.ipynb) |
+| 16 | **Hierarchical Actor-Critic (HAC)** | Hierarchical | A high level sets subgoals for a low level, and both learn at once thanks to hindsight. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](16_hac.ipynb) |
+| 17 | **Monte Carlo Tree Search (MCTS)** | Planning | Best-first search algorithm guided by Monte Carlo rollouts. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](17_mcts.ipynb) |
+| 18 | **PlaNet (Deep Planning Network)** | Planning | Model-based RL: learns a model of the environment and plans with it (simplified here to an MLP model of the state and CEM planning). | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](18_planet.ipynb) |
+| 19 | **Multi-Armed Bandits for Dynamic Pricing** | Bandit | Learns which price earns the most from sales alone, comparing ε-greedy, UCB1 and Thompson Sampling by revenue and regret. | [![Open Notebook](https://img.shields.io/badge/Open-Notebook-blue)](19_bandits_dynamic_pricing.ipynb) |
+
+
+Each algorithm has its own Jupyter Notebook (`.ipynb`) file with a detailed explanation and implementation.
+
+## 📚 RL Cheat Sheet
+
+Complementing the detailed notebooks, a comprehensive **[RL Cheat Sheet](cheatsheet.md)** is included in this repository. It serves as a quick reference guide covering:
+
+*   Core RL Concepts (MDPs, Bellman Equations, etc.)
+*   Algorithm Summaries (Core Idea, Math, Pseudocode)
+*   Key Hyperparameters and Tuning Tips
+*   Pros & Cons and Use Cases
+*   Code Snippets for key update rules
+
+>➡️ **[View the RL Cheat Sheet here](cheatsheet.md)**
+
+## 🛠️ Installation and Setup
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/fareedkhan-dev/all-rl-algorithms.git
+   cd all-rl-algorithms
+   ```
+
+2. **Install the dependencies** with [uv](https://docs.astral.sh/uv/), which reads `pyproject.toml` and `uv.lock` and creates `.venv/` for you:
+
+   ```bash
+   uv sync
+   ```
+
+   Or with pip, in a virtual environment of your own (Python 3.10 or newer):
+
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate        # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt jupyter
+   ```
+
+3. **Start Jupyter** and open any notebook: `uv run jupyter lab`, or `jupyter lab` with pip.
+
+4. **A3C:** run the script version from a terminal, `uv run python a3c_training.py`, because multiprocessing does not work reliably inside a notebook.
+
+> 💡 No uv yet? See the [installation guide](https://docs.astral.sh/uv/getting-started/installation/), or `pip install uv`.
+
+## 🧑‍🏫 How to Use This Repo: A Learning Guide
+
+1.  **Start with the Basics (`01_simple_rl.ipynb`):** This notebook introduces fundamental RL concepts like states, actions, rewards, and policies.
+2.  **Explore Core Algorithms:** Dive into the individual notebooks for Q-Learning (`02_q_learning.ipynb`), SARSA (`03_sarsa.ipynb`), and REINFORCE (`06_reinforce.ipynb`). Understand their update rules, strengths, and limitations.
+3.  **Analyze the Code:** Carefully read the code comments, which explain the purpose of each function and variable.
+4.  **Experiment!:** This is where the real learning begins. Try these:
+    *   Change hyperparameters (learning rate, discount factor, exploration rate) and observe the effect on learning curves.
+    *   Modify the environment (e.g., change the grid size, add obstacles) and see how the algorithms adapt.
+    *   Extend the algorithms (e.g., implement epsilon decay, add a baseline to REINFORCE).
+5.  **Consult the Cheat Sheet:** Refer to the **[RL Cheat Sheet](cheatsheet.md)** for quick summaries, formulas, and pseudocode while studying the notebooks.
+6.  **Tackle Advanced Methods:** Gradually work through the more complex notebooks on DQN (`13_dqn.ipynb`), Actor-Critic (`08_a2c.ipynb`), PPO (`07_ppo.ipynb`), Model-Based RL with PlaNet (`18_planet.ipynb`), and multi-agent learning with MADDPG (`14_maddpg.ipynb`) and QMIX (`15_qmix.ipynb`).
+7.  **Run the A3C Implementation:** Due to complexities with multiprocessing in Jupyter Notebooks, the A3C implementation is in `a3c_training.py`. Run it from the command line: `python a3c_training.py`
+
+## 🖼️ What You'll See: Visualizing Learning
+
+Each notebook includes visualizations to help you understand the agent's behavior:
+
+-   **Learning Curves:** Plots of episode rewards, episode lengths, and loss functions.
+-   **Q-Table Visualizations:** Heatmaps to visualize Q-values across the state space (tabular methods).
+-   **Policy Grids:** Arrows showing the learned policy (action choice) in each state.
+-   **More Advanced Visualizations:** Visualizations may depend on each particular algorithm.
+
+## ⚠️ Disclaimer: Simplifications
+
+This repository is for learning. Several notebooks simplify the published algorithms to keep them readable (PlaNet, HAC and MADDPG among them), and each one says where. The outputs and the analysis next to them come from running each notebook from the top on its current code. If you find a bug, please open an issue or a pull request.
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+- 🐞 **Fix Bugs:** Found an error or a way to improve the code? Submit a pull request!
+- ✍️ **Improve Explanations:** Clarify confusing sections in the notebooks or add more helpful comments.
+- ⚡ **Add More Algorithms:** Implement algorithms currently marked as "Planned."
+- 📊 **Create More Visualizations:** Develop insightful visualizations to better understand the learning process.
+- 🌍 **Add More Environment Examples:** Implement known RL tasks.
+- 📐 **Follow Guidelines:** Please follow the project's coding style and documentation guidelines.  
+- 📝 **Open Discussions:** Create a new issue to discuss your contribution before starting work.
+
+If you change a notebook, re-run it from the top (Restart Kernel and Run All) and commit it with its outputs, so the outputs always match the code. Then run the tests with `uv run pytest`: they check that every notebook ran in order without errors and that the algorithms behave as expected on small cases worked out by hand. CI runs the same tests on every pull request.
+
+
+## Contributor Wall of Fame
+
+[![Contributors](https://contrib.rocks/image?repo=FareedKhan-dev/all-rl-algorithms)](https://github.com/FareedKhan-dev/all-rl-algorithms/graphs/contributors)

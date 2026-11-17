@@ -4,14 +4,14 @@ Every open internship and graduate role at 31 AI labs and AI & machine learning 
 
 From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you can filter these by city, firm and focus, and see experienced roles too. Also: [2027 Quant Internships & Graduate Roles](https://github.com/quant-scraper/Quant-Student-Roles) · [2027 Big Tech Internships & Graduate Roles](https://github.com/quant-scraper/Big-Tech-Student-Roles).
 
-**36** internships · **29** graduate roles · updated 2026-11-15 12:46 UTC
+**36** internships · **28** graduate roles · updated 2026-11-17 00:49 UTC
 
 ## Where the roles are
 
 | | Americas | Europe, Middle East & Africa | Asia Pacific | All |
 |---|---:|---:|---:|---:|
 | Research | [19](https://quant-scraper.com/ai?for=students&discipline=research&region=AMER) | [5](https://quant-scraper.com/ai?for=students&discipline=research&region=EMEA) | — | [22](https://quant-scraper.com/ai?for=students&discipline=research) |
-| Engineering & technology | [29](https://quant-scraper.com/ai?for=students&discipline=technology&region=AMER) | [10](https://quant-scraper.com/ai?for=students&discipline=technology&region=EMEA) | [4](https://quant-scraper.com/ai?for=students&discipline=technology&region=APAC) | [43](https://quant-scraper.com/ai?for=students&discipline=technology) |
+| Engineering & technology | [28](https://quant-scraper.com/ai?for=students&discipline=technology&region=AMER) | [10](https://quant-scraper.com/ai?for=students&discipline=technology&region=EMEA) | [4](https://quant-scraper.com/ai?for=students&discipline=technology&region=APAC) | [42](https://quant-scraper.com/ai?for=students&discipline=technology) |
 
 <sub>A role open in several regions counts once in each.</sub>
 
@@ -20,9 +20,9 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 - [Internships](#internships) (36)
   - [Research](#research--internships) (21)
   - [Engineering & technology](#engineering--technology--internships) (15)
-- [Graduate roles](#graduate-roles) (29)
+- [Graduate roles](#graduate-roles) (28)
   - [Research](#research--graduate-roles) (1)
-  - [Engineering & technology](#engineering--technology--graduate-roles) (28)
+  - [Engineering & technology](#engineering--technology--graduate-roles) (27)
 
 ## Internships
 
@@ -92,8 +92,7 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 | ↳ | [Member of Technical Staff, AI Products (Early Career - Industry)](https://jobs.ashbyhq.com/Perplexity/daa9120e-94ff-46e0-b4bd-4d2d290cb409) | San Francisco | AI / ML | USD 180k–270k | Sep 23 |
 | **[Cerebras](https://quant-scraper.com/companies/cerebras)** | [Supplier Quality Engineer - New Grad](https://jobs.ashbyhq.com/cerebras/04ce4198-d9b6-4aae-ad11-97708033f94a) | Sunnyvale | General | — | Sep 18 |
 | **[OpenAI](https://quant-scraper.com/companies/openai)** | [Software Engineer, Applied Emerging Talent (2027)](https://jobs.ashbyhq.com/openai/55150071-fce8-48f5-aea4-14ed78b83511) | San Francisco | Software | USD 180k | Sep 14 |
-| **[Fireworks AI](https://quant-scraper.com/companies/fireworks)** | [Member of Technical Staff, New Grad (BS/MS)](https://jobs.ashbyhq.com/fireworks/0c78aede-7c21-4d1e-88f1-f309deb9819e) | San Mateo, New York | General | USD 160k–180k | Sep 8 |
-| ↳ | [Member of Technical Staff, Systems Infrastructure (2026 PhD New Grad)](https://jobs.ashbyhq.com/fireworks/ad58a098-ef75-4a4b-8475-55c2653213ef) | San Mateo, New York | Systems | USD 200k–230k | Sep 8 |
+| **[Fireworks AI](https://quant-scraper.com/companies/fireworks)** | [Member of Technical Staff, Systems Infrastructure (2026 PhD New Grad)](https://jobs.ashbyhq.com/fireworks/ad58a098-ef75-4a4b-8475-55c2653213ef) | San Mateo, New York | Systems | USD 200k–230k | Sep 8 |
 | **Sierra** | [Software Engineer, Agent (New Grad 2027)](https://jobs.ashbyhq.com/Sierra/79953d72-60d4-43e0-8c8c-6eccda422dce) | Singapore | Agents | — | Sep 7 |
 | **Applied Intuition** | [Cybersecurity Software Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/a561fff8-aa38-4a5d-8b29-66c191f7328e) | Sunnyvale | Security | USD 130k–158k | Sep 2 |
 | ↳ | [Forward Deployed Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/31140958-d768-452c-8498-0b1c7f403943) | Sunnyvale | Forward deployed & solutions | USD 130k–158k | Sep 2 |

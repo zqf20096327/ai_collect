@@ -26,14 +26,14 @@
   <img src="https://img.shields.io/badge/License-GPL--3.0-green?style=for-the-badge">
   <img src="https://img.shields.io/badge/Version-v3.4-green?style=for-the-badge">
   <a href="https://discord.gg/2Shwqj3Xpx"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
-  <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fhuggingface.co%2FVxtzq%2FCrowd-v1%2Fraw%2Fmain%2Fbadge_tokens.json" alt="Tokens Processed">
+  <img src="https://img.shields.io/endpoint?style=for-the-badge&url=https%3A%2F%2Fhuggingface.co%2FVxtzq%2FCrowd-v2%2Fraw%2Fmain%2Fbadge_tokens.json" alt="Tokens Processed">
 </p>
 
 <p align="center">
   <strong>The best 0$ AI.</strong>
 </p>
 
-# Benchmarks (epoch 374)
+# Crowd-v1 Benchmarks
 <p align="center">
   <a href="https://crowdgpt.net">
     <picture>
@@ -49,11 +49,8 @@
 
 **Disclaimer: This does not mean Crowd-v1 is an intelligent model. It just means it is good at general english** (these benchmarks are generally not hard)
 
-# CrowdGPT v3.4 changelog
-- Merged numerous pull requests
-- Prepared ground for Crowd-v2
-- Released evaluation toolkit 🥳
-- Implemented auto-pause which should work (while not pausing the client for no reason 😭)
+# CrowdGPT v3.5 changelog
+- Crowd-v1.5 is coming...
   
 ## What is CrowdGPT?
 
@@ -173,6 +170,19 @@ and `--vram-gb` are honored for the checks.
 | `CROWDGPT_EMAIL` | Email for `--register` |
 | `CROWDGPT_VRAM_GB` | Same as `--vram-gb` |
 | `CROWDGPT_ENGRAM=0` | Don't train the engram table (same as `--no-engram`) |
+| `CROWDGPT_CLIENT_OPTIM` | Inner optimizer: `auto` (default), `adamw`, `sgd`. `auto` picks SGD+Nesterov when the server asks for ≤ 2 optimizer steps per round, because a cold AdamW's first step is `sign(g)` per coordinate and averaging signs across shards is a coin flip |
+| `CROWDGPT_CLIENT_LR` | Inner learning rate. Unset = derived from the server's optimizer-step budget |
+| `CROWDGPT_CLIENT_LR_RULE` | `linear` (default), `sqrt` or `none`: how the lr scales with the larger batch a shorter round implies |
+| `CROWDGPT_CLIENT_LR_REF_STEPS` | `16`: the optimizer steps per round the base lr (`CROWDGPT_CLIENT_BASE_LR`, default `1e-4`) was tuned at |
+| — | Micro-batches per optimizer step come from the task payload's `targetAccumSteps` (32 = v1's batch); the client uses it verbatim and reports the actual optimizer-step count it ran |
+| `CROWDGPT_CLIENT_ENGRAM_LR` | Engram learning rate, default `1e-4`. Independent of the base lr |
+| `CROWDGPT_CLIENT_GRAD_CLIP` | Gradient-clip norm for the base model, default `1.0` |
+
+A round trains the same number of tokens whatever the optimizer-step budget is: the server
+sends `crossCheck.targetOptimizerSteps`, and the client groups its 500 micro-steps into that
+many optimizer steps (`accum = ceil(500 / targetOptimizerSteps)`) instead of deriving `accum`
+from the batch size. The delta then reports `optimizerSteps` and `accum` so the coordinator can
+normalise by the steps actually taken.
 
 The headless client opens a full-screen terminal dashboard on a TTY. It shows the same
 training metrics as the desktop app: round, step progress, loss graph, tokens/sec, ETA,

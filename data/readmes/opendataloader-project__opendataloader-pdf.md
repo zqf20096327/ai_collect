@@ -431,12 +431,13 @@ Combine formats: `format="json,markdown"`
 
 | Field | Description |
 |-------|-------------|
-| `type` | Element type: heading, paragraph, table, list, image, caption, formula |
+| `type` | Element type: heading, paragraph, table, list, image, caption, formula, form field |
 | `id` | Unique identifier for cross-referencing |
 | `page number` | 1-indexed page reference |
 | `bounding box` | `[left, bottom, right, top]` in PDF points (72pt = 1 inch) |
 | `heading level` | Heading depth (1+) |
 | `content` | Extracted text |
+| `field role`, `checked` | Form field (tagged PDF with `--use-struct-tree`): `check box` or `radio button`; `on`, `off`, or `neutral` |
 
 [Full JSON Schema](https://opendataloader.org/docs/reference/json-schema)
 
@@ -444,7 +445,7 @@ Combine formats: `format="json,markdown"`
 
 ### Tagged PDF Support
 
-When a PDF has structure tags, OpenDataLoader extracts the **exact layout** the author intended — no guessing, no heuristics. Headings, lists, tables, and reading order are preserved from the source.
+When a PDF has structure tags, OpenDataLoader extracts the **exact layout** the author intended — no guessing, no heuristics. Headings, lists, tables, and reading order are preserved from the source. Printed check boxes and radio buttons (`Form` elements with `PrintField` attributes) become `form field` elements in JSON and task list items (`- [x]`, `- [ ]`) in Markdown.
 
 > **Output quality depends on tag quality.** Not all tagged PDFs are well-tagged. For PDFs with sparse or incorrect tags, the default heuristic mode or `--hybrid docling-fast` often produces better results.
 
@@ -557,6 +558,27 @@ opendataloader_pdf.convert(
 ```
 
 [Full CLI Options Reference](https://opendataloader.org/docs/reference/cli-options)
+
+### PDF Bytes In, String Out
+
+Convert a PDF that you have in memory, and get the output as a string:
+
+```python
+markdown = opendataloader_pdf.convert_bytes(pdf_bytes)                   # format="markdown" (default)
+json_text = opendataloader_pdf.convert_bytes(pdf_bytes, format="json", password="...")
+```
+
+```typescript
+import { convertBytes } from '@opendataloader/pdf';
+
+const markdown = await convertBytes(pdfBuffer);                     // format: 'markdown' (default)
+const jsonText = await convertBytes(pdfBuffer, { format: 'json', pages: '1-3' });
+```
+
+- One format for each call: `markdown`, `text`, `json`, or `html`. The other options of `convert()` apply, except the output folder, `to_stdout`, and the image folder.
+- Images are off by default. Use `image_output="embedded"` (`imageOutput: 'embedded'`) for Base64 images.
+- The bytes go to a private temporary file, which is removed after the call. Each call starts one Java process: for many files, `convert()` with a list of paths is faster.
+- For a file, `convert(..., format="markdown", to_stdout=True)` (`toStdout: true`) also returns the output as a string.
 
 ## PDF Accessibility & PDF/UA Conversion
 

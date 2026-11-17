@@ -27,6 +27,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 - [AI Bomber Game](https://bomberman-bice.vercel.app/) - Bomberman-style 3D arena where you drop bombs to clear crates and enemies, with switchable bomb types. Built with Three.js.
 - [Bash Fighter](https://bashfighter.com/) - Smash-style platform fighter where up to 20 players and bots knock each other off one arena, on phone or desktop. Open source, built and run end to end by an AI agent. Built with Claude · PixiJS.
 - [ClaudeSpace](https://ladegeraet.github.io/claudespace/) - Top-down space shooter with shields and shockwaves against asteroids and enemy ships. Built with Phaser.
+- [Cookiesaner](https://cookiesaner.itch.io/demo) - Survivor-like bullet heaven starring the creator's dog, who auto-fires ćevapi, eats Balkan food to grow through five belly stages and rolls through the horde on a full belly. Free browser demo. Built with Godot.
 - [DOOMscroll](https://gisnep.com/doomscroll/) - Doom-style shooter you control only by scrolling, with real news headlines on the in-game plaques. Built with GPT-5 · HTML5 Canvas.
 - [Dyson Defender](https://dyson-defender.vercel.app/) - Fly around a Dyson sphere and shoot down waves of alien ships before they reach it. Built with Cursor, Claude, Grok, gptme · Three.js.
 - [Eyrie](https://playeyrie.com/) - Drop-in co-op wave roguelike where you catch spirits, feed the shrine and fight the obelisk. Vibe Jam 2026 Most Atmospheric award. Built with Three.js.
@@ -34,6 +35,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 - [KÖTTBULLAR METAL](https://kottbullar-metal.vercel.app/) - Survive 15 minutes in a mosh pit where the death metal lyrics are IKEA product names. Vibe Jam 2026 Funniest Game award. Built with HTML5 Canvas.
 - [Null Range](https://nullrange.com/) - Multiplayer first-person space dogfights inspired by Elite: Dangerous, with sonar, boost and lasers. Vibe Jam 2026 Best Art Direction award. Built with Cursor · Three.js.
 - [Quasar Saz](https://github.com/cleak/quasar-saz/releases/tag/v1.1) - Six-stage action game with a boss fight that Claude Code designed from a dog's random keystrokes. Built with Claude Code · Godot.
+- [Ram Man: Half Goat, Half God](https://azreal-the-fallen.itch.io/ram-man) - Brawl through a rainy neon city as a half-goat demigod, throwing cars and enemies and hunting secret caches across Neon Row's four quarters. Built with Claude · Three.js, cannon-es.
 - [Rose & Blade](https://danielv8.itch.io/rose-and-blade) - Physics sword fighting where every knight is an active ragdoll and you swing the blade with your mouse, solo, in co-op or in peer-to-peer fights of up to 16 players. Built with Claude Code · Three.js, Rapier.
 - [Spirit Call](https://spirit-call.typeonce.dev/) - Top-down action game for phones where you switch between three elemental spirits in four-minute fights, dodging blows and setting off element bursts. Built with Claude Code, Codex · Three.js.
 - [Swingers](https://swing.offmylawn.com/) - Swing through a city with friends and compete to cause the most damage to critical infrastructure. Vibe Jam 2026 Most Unhinged award. Built with Three.js.
@@ -49,9 +51,11 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 - [Flight Simulator 2025](https://fly.pieter.com/) - Multiplayer flight sim where you take off, fly over a shared world and dogfight other players. Built with Cursor, Grok 3 · Three.js.
 - [Formula Minus One](https://fm1.moises.cloud/) - Futuristic racer inspired by F-Zero and Wipeout, rendered with WebGPU. Built with Codex, Claude · Three.js.
 - [FULL SEND](https://fullsend.game/) - Instant-loading racer with scenery from OpenStreetMap, online multiplayer and lap leaderboards. Vibe Jam 2026 Most Portal Transfers award. Built with Cursor, Claude · HTML5 Canvas.
+- [Kart Rush](https://stevkazt.github.io/kart-rush/) - Cartoon kart racing in a phone browser against five rivals on seven tracks, with items, drifting and a Grand Prix, its models, textures and sound all generated in code. Built with Claude Code · Three.js, cannon-es.
 - [Lift & Coast](https://lift-and-coast.vercel.app/) - Race a 2026-rules Formula One car on real circuits through a full race weekend, managing tires, ERS and weather. Built with Three.js.
 - [Mars Landing Simulator](https://marslanding.vercel.app/) - Fly a rocket between Mars bases, managing fuel, tilt and wind to land safely. Built with Three.js.
 - [Neon Zenith](https://zenith.billpwchan.art/) - Fly a hover car out of a rainy night market through a neon Kowloon of 9,373 buildings, chasing medal time trials and hidden data shards. Built with Claude Code · Three.js.
+- [OpenAero DFW](https://mutaafaziz.com/openaero/) - Fly a Boeing 737-800, Cessna 172S or F-16C over real satellite imagery of Dallas-Fort Worth in today's METAR weather, with every landing graded. Built with Claude Code · Three.js.
 - [Swervle](https://swervle.com/) - Wordle-style racing game with a new procedurally generated 90-second route every day. Built with GPT-5.6, Claude Opus 5 · Three.js.
 - [The Great Taxi Assignment](https://great-taxi-assignment.netlify.app/) - GTA-style taxi game where you ferry passengers across a 3D city before time runs out. Vibe Jam 2025 winner. Built with Cursor, Claude 3.7 Sonnet · Three.js.
 - [Turbo Rumble](https://turborumble.rastwork.pl/) - Party racer where 2–8 players drift and fire at rivals on three 3D tracks, using keyboards, bots or phones as controllers. Built with Codex · Three.js, Rapier.
@@ -77,18 +81,22 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 ### Simulation & Strategy
 
 - [2 Minute Drill Game](https://2minutedrillgame.app/) - Call every play in a real late-game NFL drive and see each call graded on win probability against the best option and the real head coach's choice. Built with Claude Code · Next.js.
+- [A Guilda](https://labiel1.itch.io/a-guilda) - Run a failing fantasy guild by choosing who goes on each mission, as the heroes' bonds, scars and choices change the story. Download for Windows or Android. Built with Godot.
 - [AI2U - Guns & Girlfriends](https://helixngc7293.itch.io/gandg) - Red Alert-style strategy game with base building, nukes and three rival factions. AI Browser Game Jam 4 runner-up. Built with Claude Code, Gemini · Three.js.
 - [Almost Surgery](https://almostsurgery.ragim.dev/) - Darkly comic surgery sim where you saw, cut and electrocute patients for money. Vibe Jam 2026 Most Cursed award. Built with Godot.
 - [Cream's Cozy Cottage](https://creamcozycottage.itch.io/creams-cozy-cottage) - Merge matching materials to craft treats, beds and toys and care for Cream the cat, in a free browser demo. Built with Codex · Godot.
+- [Dou Dizhu](https://doudizhu.pocketplay.win/) - The Chinese three-player card game Fight the Landlord: bid to become the landlord, then the two farmers team up against them, with computer players, a random online table or friends by room code. Built with Claude Code.
 - [Emoji Sim](https://emojisim.com/) - Watch emoji villagers gather wood, wool and meat, and place buildings to grow the village. Built with HTML5 Canvas.
 - [Expo Tycoon](https://expotycoon.com/) - Idle tycoon game where you grow a trade show from one table to a full hall, with shared seasons that follow the moon and a net-worth leaderboard. Built with Claude Code · Three.js.
 - [Firewood Splitting Simulator](https://screen.toys/firewood/) - Tactile wood-chopping toy with a 3D-scanned stump, axe and logs, plus recorded sounds. Built with Claude · Three.js.
 - [Fishing](https://fishing.lureconcept.com/) - Sail across the open sea, cast lures for fish and spend coins on new lures. Built with Cursor, Claude, Grok · Three.js.
+- [HALFLIGHT](https://csaf.itch.io/halflight) - Run a vault of 43 decaying isotopes across five decay chains, where the decay pays you and a breach is a timed crisis you can still trade against. Built with HTML5 Canvas.
 - [Harness Hollow](https://harvest-hollow.up.railway.app/) - Co-op farming game for two, where you plant, raise animals and craft on one shared farm in real time, on desktop or phone. Built with Claude Code, Codex · Three.js.
 - [Inkline Town](https://inkline.typeonce.dev/) - City builder where you lay roads, house settlers and set up production chains to grow an island hamlet into a city, drawn in thin 3D line art. Built with Claude Code, Codex · Three.js.
 - [Kanso](https://www.kansogame.com/) - Cultivate living digital bonsai trees in calm, detailed scenes. Vibe Jam 2026 Most Zen award. Built with Three.js.
 - [Macro Data Refinement](https://macro-data-refinement-five.vercel.app/) - Sort scary numbers into bins on a Lumon terminal, recreating the Macrodata Refinement work from Severance.
 - [MOGUL](https://everygamemade.com/play/mogul.html) - Buy, auction and trade property in online rooms or against self-play neural-net bots, with dice you can verify after the game. Built with Claude Code.
+- [Next, Please!](https://robertchaba.github.io/next-please/) - Examine patients, check paperwork and stamp fitness-for-work certificates under bureaucratic and political pressure in a darkly comic clinic sim set in 1983 Poland. Built with Codex.
 - [Orbit Foundry](https://kimchistan.itch.io/orbit-foundry) - Arrange machines around a star, combine neighbouring boosts and time reactor pulses to grow an orbital factory. Built with Codex · LÖVE.
 - [Orbits](https://onomeo.com/demo/orbits.html) - Gravity sandbox where you fling planets around a sun and watch them settle into stable paths or fall into the sun. Built with Claude Code · HTML5 Canvas.
 - [Otherlife / 人生岔路](https://lancerlsy.github.io/life-crossroads/) - Chinese-language pixel life sim where you draw a birth and live a life shaped by relationships, spending, travel and branching timelines. Built with Codex · React, HTML5 Canvas.
@@ -105,6 +113,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 - [20-0](https://www.20-0.com/) - Draft an all-time NFL roster from random franchise eras and chase a perfect season. Built with Claude, Kimi.
 - [3D Tetris](https://3d-tetris-platforms.lovable.app/) - Stack 3D tetrominoes on floating platforms and fill whole layers to clear them. Built with Lovable · Three.js.
 - [After Hours: The Call from Room 214](https://tandemcasebook.itch.io/after-hours-room-214) - Two-player mystery where each player sees different clues on their own screen and you talk them through to trace a call from a room with no phone. First chapter free. Built with Codex · Three.js.
+- [EraGuessr](https://eraguessr.ai/play/daily) - Guess when and where a photorealistic scene from history is set, with a new scene every day. Built with Claude Code, Codex.
 - [GeoSports](https://geosports.app/) - Daily sports-geography quiz where you pin the locations behind five trivia questions on a map. Built with Claude.
 - [Grid Golf](https://gridgolf.netlify.app/) - Grid-based golf where you pick one of eight directions, get random shot power and try to finish under par. Built with HTML5 Canvas.
 - [Hack://TheSystem](https://wietske.itch.io/hackthesystem) - Unsettling text-driven horror game where you try to hack a mysterious system through four puzzle stages and a final boss. Built with Claude Opus 5.5 · Unity.
@@ -126,6 +135,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 - [Asteroid Assault](https://asteroid-ep9.pages.dev/) - Asteroids remake where you rotate, thrust and shoot rocks, grab power-ups and chase a global leaderboard. Built with HTML5 Canvas.
 - [BeetleJump](https://beetlejump.com/) - Multiplayer platformer race to climb to the top and become king. Vibe Jam 2026 Rage-Quit award. Built with Three.js.
 - [Flappi Bird](https://flappi-bird.vercel.app/) - Flappy Bird in 3D with procedural obstacles, bee swarms, combos and power-ups. Built with Cursor, Claude, Grok · Three.js.
+- [Gravity](https://gravity.hertzmc.com/) - Grow a little planet with eyes from pebble to black hole by eating smaller space rocks, across six levels with boss fights plus an Endless mode, on phone or desktop. Built with Claude Code · HTML5 Canvas.
 - [Ophidian](https://ophidian.vercel.app/) - Minimalist Snake with on-screen arrow keys for mobile. Built with Claude · PixiJS.
 - [Oyster Arcade](https://arcade.oyster.to/) - CRT-style arcade cabinet with four games, including Invaders and Carrier Defense, and shared leaderboards. Built with Claude Code · HTML5 Canvas.
 - [Pocket Salvage](https://pocket-salvage.web.app/) - Drive a swinging crane, swap between a magnet and a claw, and sort scrap into bins before the clock runs out, through five weather levels. Built with Claude, Codex · Godot.
@@ -139,6 +149,7 @@ Hand-picked AI games, grouped by genre. Each entry says what you do in the game.
 
 Agent setups, MCP servers, starter kits and assets for vibe coding games with Claude Code, Cursor and other AI agents.
 
+- [Appside app catalog](https://appside.build/docs/catalog/) - Free game listing for agents: Claude Code, Cursor or another AI agent registers a game through a remote MCP server, proves ownership with a token on the game's domain and gets a public page, with a sandboxed Play button for web builds.
 - [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) - Claude Code setup that simulates a game studio with dozens of specialized agents and workflow skills.
 - [deed.page](https://deed.page/) - Free static hosting for agents: Claude Code, Cursor or another AI agent publishes an HTML5 game or a build folder to its own HTTPS address with one request, no account, through a remote MCP server or an [agent skill](https://github.com/f-o-x11/deed-page-skill).
 - [Godot-MCP](https://github.com/IvanMurzak/Godot-MCP) - Open-source MCP server connecting AI agents to the Godot Editor and runtime (Godot 4.x, C#).
@@ -146,6 +157,7 @@ Agent setups, MCP servers, starter kits and assets for vibe coding games with Cl
 - [Playable Gift](https://playablegift.com/) - Hosted game maker that uses AI to create a personal browser game about a recipient from details the sender supplies, with a public MCP server for AI assistants.
 - [Ritmo](https://github.com/typeonce-dev/ritmo) - Open-source, type-safe ECS runtime for TypeScript games, built for coding agents: wrong code doesn't compile and the error names the fix, with an agent skill, one-prompt setup, headless devtools and an llms.txt.
 - [Sketchfab](https://sketchfab.com/) - A platform for publishing, sharing, and discovering 3D, VR and AR content. Useful for game developers to showcase 3D models and interactive experiences.
+- [SpriteForge](https://www.spriteforge.tech/game-kit) - Hosted MCP server and Claude Code plugin that draws a matching pixel-art kit for the game an agent is building: hero, enemies, items, tiles and animations in one style, saved into the project as PNGs and sprite sheets.
 - [Unity-MCP](https://github.com/IvanMurzak/Unity-MCP) - Open-source MCP server connecting AI agents to the Unity Editor and runtime, with 100+ built-in tools.
 - [Unreal-MCP](https://github.com/IvanMurzak/Unreal-MCP) - Open-source MCP server connecting AI agents to Unreal Engine 5.7, editor and runtime (C++ plugin + .NET sidecar).
 - [viber3d](https://github.com/instructa/viber3d) - A modern starter kit for 3D browser games powered by React Three Fiber and Three.js.
@@ -156,11 +168,13 @@ Game jams and sites with more AI-generated games. Some publish games from a sing
 
 - [AI Browser Game Jam](https://itch.io/jam/ai-jam-5) - Recurring itch.io jam for browser games made mostly with AI. The fifth edition runs October 17–31, 2026.
 - [AI Built Games](https://aibuiltgames.com/) - A curated collection of innovative games built with artificial intelligence, generated by simply prompting LLMs like Grok, Claude, or GPT.
+- [Claude Code Games](https://claudecodegames.com/) - Free browser games made with Claude, GPT and other AI tools, each game page crediting the AI tool and the maker, playable with no download or account.
 - [EveryGameMade](https://everygamemade.com/ai/claude-games.html) - Free, ad-free browser games built with Claude, from original games like MOGUL, LEXEME and ANTE to classic card and board games, playable with no account.
 - [GameDaily.ai](https://gamedaily.ai/) - A brand-new AI-generated browser game published every day — the concept, code, art, and sound all created entirely by AI. Hundreds of free games to play instantly, no download or sign-up, browsable by genre.
 - [klyo games](https://games.klyo.pl/) - Browser games from independent developers, including games built with AI assistants, playable from a link with no install or account.
 - [Neon Gamewall](https://neongamewall.com/) - Hand-picked free browser games, more than half credited to AI tools by their own creators, each with a page naming the tool and linking to the creator's site.
 - [OpenAI Developers Showcase: Games](https://developers.openai.com/showcase/games) - Official gallery of games built with Codex and GPT models, including the prompts behind them.
+- [OttersPlay](https://ottersplay.com/made-with-ai/) - Directory of AI-assisted browser games with creator credits, coding-tool and engine notes, controls, and links to the original games.
 - [Player1AI](https://player1ai.com/) - Curated directory of 500+ free browser games made with AI, filterable by phone, controller and multiplayer, with every Play link going to the creator's own page.
 - [Vibe Jam](https://vibejam.com/) - Annual browser game jam where AI must write most of the code, with over 2,000 entries across 2025 and 2026.
 - [vibecode.game](https://vibecode.game/vibe-coded-games) - Directory of vibe-coded games, filterable by AI tool, engine and genre.
@@ -172,6 +186,7 @@ Game jams and sites with more AI-generated games. Some publish games from a sing
 - [Awesome AI Game](https://github.com/bowen-aigame/awesome-ai-game) - Games where AI powers the gameplay itself, such as AI characters and generated worlds.
 - [Awesome AI Game Generation](https://github.com/Anil-matcha/awesome-ai-game-generation) - Tools, models and research for generating games with AI.
 - [Awesome AI Games](https://github.com/aviaryan/awesome-ai-games) - Classic-style games remade or built from scratch with AI, playable in the browser.
+- [Awesome Fable 5.2](https://github.com/fengyiqicoder/awesome-fable-5.2) - Games, 3D worlds and web pages built with Claude Fable 5.2, each with a GIF preview and a link to play or watch.
 - [Awesome Vibe Coding](https://github.com/filipecalegario/awesome-vibe-coding) - References for vibe coding, collaborating with AI to write code.
 
 ## Contributing

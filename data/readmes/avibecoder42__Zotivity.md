@@ -136,10 +136,11 @@ WebView2 runtime is required (included in Windows 10/11; the setup warns if it i
 close the window, Zotivity asks whether to continue in the background. If the Zotero plugin starts Zotivity, it runs
 without a window and ends a few minutes after Zotero; "Open Zotivity" in Zotero shows the window.
 
-**Updates:** under *Settings → Program & data*, enter an update source – an HTTPS address or network path to the file
-`zotivity-update.json` that the build creates next to the installer. Zotivity checks at start-up, downloads the
-installer, verifies its SHA-256 checksum, installs silently and restarts. Settings, index, corpora and keys are kept
-(also when uninstalling).
+**Updates:** at start-up Zotivity asks GitHub for the latest version (the file `zotivity-update.json` in the latest
+release; can be switched off under *Settings → Program & data*). GitHub sees the IP address, nothing else. After you
+confirm, Zotivity downloads the installer, verifies its SHA-256 checksum, installs silently and restarts. Settings,
+index, corpora and keys are kept (also when uninstalling). The update source is fixed; only for tests does the
+environment variable `ZOTIVITY_UPDATE_URL` name another one.
 
 **Building the installer:** `.\packaging\build.ps1` (tests → icons → PyInstaller → self-test of the EXE including the
 window → Inno Setup 6 → update manifest). With `-UpdateBaseUrl https://…` the download address goes into the manifest.
@@ -199,7 +200,11 @@ whole interface can be zoomed.
 4. **Index:** current text, progress, remaining time, next and last processed texts, problems (e.g. scans without
    text). A **queue** takes further runs while one is working. Optionally automatic in the background.
 5. **Ask:** answers with clickable citations `[3]` (preview with "Open PDF (p. x)" and "Show in Zotero"); the retrieved
-   passages are listed below, each with a **relevance** indicator. "Passages only" searches without an LLM.
+   passages are listed below, each with a **relevance** indicator. "Passages only" searches without an LLM. If the texts
+   in scope fit the language model, it gets the **whole texts** with page marks (scope "Automatic", "Passages", "Whole
+   texts"; "Ask this text" in a corpus). Otherwise "Automatic" adapts the search to the number of texts; overview
+   questions get a card per text. Long texts can be read chapter by chapter ("In stages"). A plan line shows before
+   sending how much text is used.
 
 Keyboard: Ctrl+1–5 project views, Ctrl+6 search, Ctrl+7 CSL editor, Ctrl+8 index, Ctrl+, settings, F1 help, Ctrl+P switch project. Appearance: system,
 light, grey, dark (the window title bar follows).

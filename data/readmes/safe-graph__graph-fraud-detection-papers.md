@@ -585,6 +585,7 @@ To facilitate deep research, we developed a local [RAG-based LLM chatbot](https:
 [Realtime Fraud Detection with GNN on DGL](https://github.com/awslabs/realtime-fraud-detection-with-gnn-on-dgl)
 
 [GraphScope: A One-Stop Large-Scale Graph Computing System from Alibaba](https://github.com/alibaba/GraphScope)
+[GNN Fraud Ring Detection](https://github.com/RishabhPande/GNN-fraud-ring-detection)
 
 ## Dataset [[Back to Top](#llm-and-transformer-papers)]
 
@@ -612,4 +613,3 @@ To facilitate deep research, we developed a local [RAG-based LLM chatbot](https:
 
 [Risk Commodities Detection on Large-Scale E-commerce Graphs](https://tianchi.aliyun.com/competition/entrance/531976/introduction?lang=en-us)
 
-[Fraudster Nodes in Dynamic Financial Social Network](https://dgraph.xinye.com/da

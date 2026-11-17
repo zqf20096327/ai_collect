@@ -33,6 +33,7 @@ or medical crisis.
 ### What makes neal interesting
 
 - **Roles, not one monolithic agent.** Planner, coder, and reviewer are independent, separately configurable roles. Mix vendors and models per role (e.g. Codex codes, Claude reviews).
+- **Reviewers read the full committed diff from files.** Scope review, final completion review, and `neal review` use an index and numbered patches under `.neal/`, with the same delivery for every provider. Reviewers page through large patches; inline summaries are previews. See [docs/storage.md](docs/storage.md).
 - **The reviewer is read-only.** Declared at provider registration and enforced mechanically in each adapter (OS sandbox for Codex, SDK tool allowlist for Claude, a neal-owned jailed toolset for OpenRouter models). See [SECURITY.md](SECURITY.md) and [docs/providers.md](docs/providers.md).
 - **`neal compat`.** A built-in harness that qualifies any OpenAI-compatible / OpenRouter model across all three roles and emits a dated PASS/FAIL whitelist. See [docs/compatible-models.md](docs/compatible-models.md).
 - **Crash-safe and resumable.** Every run's state and artifacts live under `.neal/`. `neal resume` continues an interrupted run.
@@ -109,8 +110,9 @@ neal grew out of a large frontend upgrade (Ember 3.28 to Ember 5) where the agen
 npm install -g @navels/neal
 ```
 
-neal requires Node.js >= 26.13.0 and drives your configured provider CLIs/SDKs
-(OpenAI Codex, Anthropic Claude, or any OpenAI-compatible / OpenRouter model).
+neal requires Node.js >= 26.13.0 and Git >= 2.30 on `PATH`. It drives your
+configured provider CLIs/SDKs (OpenAI Codex, Anthropic Claude, or any
+OpenAI-compatible / OpenRouter model).
 See [Provider setup](#provider-setup).
 
 ### Run from source / contribute
@@ -523,6 +525,34 @@ including correctness regressions. Guidance that conflicts with that floor is
 ignored on that point. See [Custom guidance](#custom-guidance) for where the
 file lives.
 
+### Review limits
+
+Two limits stop a run that isn't converging. Both are config keys, set in the
+repo's `neal.yml` or in `~/.neal/config.yml`.
+
+```yaml
+neal:
+  max_review_rounds: 20
+  final_completion_continue_execution_max: 3
+```
+
+- `neal.max_review_rounds` (default `20`) is the number of reviewer rounds
+  allowed **per scope**, not per plan. The count starts over at every scope
+  boundary, so a 17-scope plan gets up to 20 rounds for each scope. Plan
+  refinement uses the same limit for its own rounds. A scope that reaches it
+  with blocking findings still open blocks the run. The value is
+  saved into the run when it starts, so changing it doesn't affect a run that's
+  already in progress.
+- `neal.final_completion_continue_execution_max` (default `3`) is how many
+  times the final whole-plan review may send execution back for a follow-on
+  scope. If the reviewer asks again after that, the run blocks. This value is
+  read each time the final review runs, so raising it takes effect on a run in
+  progress, as long as the cap hasn't already tripped.
+
+A run blocked at the final review is terminal. `neal resume` reports that it
+can't be resumed, with or without `--message`. Its commits are intact: inspect
+it with `neal status`, then put any remaining work in a new plan.
+
 ### Custom guidance
 
 neal supports additive guidance files for local preferences alongside the built-in protocol prompts:
@@ -611,6 +641,22 @@ Roles carry very different privilege: the coder role (and the inherited planner)
 
 Notifications are opt-in. If `neal.notify_bin` is configured, neal runs that command with one notification-text argument for `blocked`, `complete`, `done`, and `retry`. Messages start with `[neal] <planName>:` followed by the reason or status. Blocked and interactive-recovery retry messages append `| consultant advice (read-only): triage <category>; suggested directive: <directive>` when consultant advice is available.
 
+A `blocked` notification is also sent when a provider failure ends the run, including usage limits and invalid provider output. Provider-failure notification text is capped at 300 characters with an ellipsis; the `notify.blocked` event retains the full reason.
+
 `NEAL_NOTIFY_BIN` overrides the configured command. Set it to another path to use that command, or set it to an empty value to disable notifications for the process. Notification command failures never fail or change the result of a run.
 
 `neal check` reports the resolved notification command and, in an interactive terminal, can send a test notification after confirmation.
+
+### Usage limits
+
+When Claude or Codex reports a future usage reset within six hours (including a
+60-second buffer), neal waits and resumes automatically. There isn't a flag or
+config key. It sends one notification per stop:
+`[neal] <plan>: <provider> usage limit reached; waiting until <local time>, then resuming`.
+After three waits without a phase, scope, or review-round change, neal stops.
+Unknown, past, or more distant resets fail immediately with a notification.
+
+During a wait, `neal status` reports `waiting_for_usage_limit`. The writer keeps
+its lock and the saved run stays `failed`. Ctrl-C stops the wait; use
+`neal resume --run <id>` later. Weekly limits outside the cap and billing
+exhaustion need operator action. `neal compat` never waits.

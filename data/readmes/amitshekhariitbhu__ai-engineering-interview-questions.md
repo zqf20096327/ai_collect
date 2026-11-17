@@ -451,7 +451,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is adapter-based fine-tuning?
   - Answer: Explained in this video: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk)
 - Explain the difference between pre-training, supervised fine-tuning (SFT), and preference optimization (RLHF/DPO).
-  - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
+  - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining) and [How does Instruction Tuning work?](https://outcomeschool.com/blog/instruction-tuning)
 - What is RLHF (Reinforcement Learning from Human Feedback), and how is it used to align LLMs?
   - Answer: [Reinforcement Learning from Human Feedback (RLHF)](https://outcomeschool.com/blog/reinforcement-learning-from-human-feedback-rlhf)
 - What is a reward model, and how is it trained?
@@ -461,7 +461,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - Why did DPO displace PPO-based RLHF at many labs? When is online RL still better?
   - Answer: [Direct Preference Optimization (DPO)](https://outcomeschool.com/blog/direct-preference-optimization-dpo) and [Proximal Policy Optimization (PPO)](https://outcomeschool.com/blog/proximal-policy-optimization-ppo)
 - What is instruction tuning, and why is it important for chat models?
-  - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt)
+  - Answer: [Decoding InstructGPT](https://outcomeschool.com/blog/decoding-instructgpt) and [How does Instruction Tuning work?](https://outcomeschool.com/blog/instruction-tuning)
 - How do you prepare a dataset for fine-tuning an LLM?
 - What is catastrophic forgetting, and how do you prevent it during fine-tuning?
   - Answer: [Continual Learning in LLMs](https://outcomeschool.com/blog/continual-learning-in-llms)
@@ -755,6 +755,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What are the key data privacy considerations (GDPR, CCPA) when building AI applications?
 - How do you handle PII in LLM inputs and outputs?
 - What is explainability in AI, and why does it matter?
+  - Answer: [What is Explainable AI?](https://outcomeschool.com/blog/explainable-ai-xai)
 - What is the difference between interpretability and explainability?
 - What is mechanistic interpretability, and why do AI labs invest in it?
 - How do you build trust with users in AI-powered applications?

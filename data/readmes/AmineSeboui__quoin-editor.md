@@ -32,7 +32,7 @@ Quoin is a rich markdown editor and block editor for React. Every text block sta
 npm install quoin-editor
 ```
 
-React 18.2 or 19, TypeScript 5.4 or later. Tailwind is optional, v3 and v4 both work. The npm tarball is about 1 MB packed, under 5 MB unpacked: ESM and CommonJS builds, and sourcemaps for the ESM one that leave out the source text. A page loads only the entries it imports.
+React 18.2 or 19, TypeScript 5.4 or later. Tailwind is optional, v3 and v4 both work. The npm tarball is about 1 MB packed, about 5 MB unpacked: ESM and CommonJS builds, and sourcemaps for the ESM one that leave out the source text. A page loads only the entries it imports.
 
 ## Quickstart
 
@@ -76,7 +76,7 @@ What `onChange` hands you, and what you store:
 
 Each competitor cell links to the page that shows it; the Tiptap UI cell also draws on the review in [#73](https://github.com/AmineSeboui/quoin-editor/issues/73) (2026-10-12).
 
-| Feature | Quoin 2.3 | Tiptap 3 | BlockNote | Editor.js | Lexical | Plate |
+| Feature | Quoin 2.4 | Tiptap 3 | BlockNote | Editor.js | Lexical | Plate |
 | --- | --- | --- | --- | --- | --- | --- |
 | Stored document | Block array, markdown per text block | [JSON, or HTML][tt-store] | [Block JSON][bn-formats] | [JSON][ej-repo] | [Editor state, as JSON][lx-intro] | [Slate JSON][pl-docs] |
 | Markdown | The storage format | [`@tiptap/markdown`, an early release][tt-md] | [Export and import, documented as lossy][bn-formats] | [Community plugin][ej-awesome] | [`@lexical/markdown`, in and out][lx-md] | [`@platejs/markdown`, in and out][pl-md] |

@@ -35,7 +35,7 @@ $ iph tap "General"
 |---|---|
 | Host | macOS, Windows 10/11 (x64) |
 | Device | A real iPhone, **iOS 27 or later** (verified on **one iPhone 15 Pro Max with iOS 27.0.1** only, Korean interface). Touch and text input go through the phone's screen-sharing service (`com.apple.coredevice.displayservice`, new in iOS 27), so input is not expected to work on iOS 26 or earlier (not tried) |
-| Connection | USB or the same Wi-Fi (verified over Wi-Fi on the Mac, over USB on Windows) |
+| Connection | USB or the same LAN (the computer may use Ethernet; verified over USB and Wi-Fi on Windows) |
 | Out of scope | Simulators, Android, Linux hosts, landscape |
 
 On Windows, `doctor`, reading, touch and scripts were checked with one iPhone19,4 on iOS 27.2 over USB.
@@ -91,15 +91,27 @@ Setup requirements and how to interpret the checks are in [docs/onboarding.md](d
 
 ### Wi-Fi setup and troubleshooting
 
-The same Wi-Fi alone is not enough. On supported devices, `EnableWifiConnections` **and** `EnableWifiDebugging` in lockdown's `com.apple.mobile.wireless_lockdown` domain need to be `true` for wireless discovery. With either disabled, the phone may not advertise Bonjour's `_apple-mobdev2._tcp.local.` service, so usbmuxd has no `Network` entry even on the same subnet.
+Pair by USB first, then keep the iPhone unlocked on the same LAN. The computer may use Ethernet. To enable wireless connections, run this while USB is attached:
 
-- Connect by USB, unlock and trust the computer, then run `iph setup` or `iph doctor` to read `SupportsWifi`, `SupportsWifiSyncing` and both enable flags. Both commands leave wireless flags unchanged by default.
-- To explicitly enable wireless setup, run `iph setup --fix-wifi` or `iph doctor --fix-wifi` (`iph_doctor` MCP: `fix_wifi: true`). If either support flag is `true`, only enable flags explicitly reported as `false` are set to `true` and read back. Unsupported or unknown values are not changed. Add `--human` to doctor for terminal output; setup keeps its interactive, human-readable output.
-- After enabling the flags, setup briefly checks (up to 4 seconds) for the **same phone's** usbmuxd `Network` entry. `checks[].auto_fixed` records confirmed flag changes; `wifi` remains a warning until the network entry appears. Wi-Fi is optional, so that warning does not prevent USB readiness.
-- If flags are off, doctor names them. Manual alternatives are Finder → select iPhone → “Show this iPhone when on Wi-Fi” (Apple Devices on Windows), and Xcode → Devices and Simulators → “Connect via network”. If an automatic write is rejected or cannot be verified, `detail` contains the key and error; check trust/unlock and retry, or use those controls.
-- If both flags are on but `Network` is absent, check the same Wi-Fi subnet, AP/client isolation and blocked mDNS/Bonjour (`_apple-mobdev2._tcp.local.`). Run doctor again after a short wait. Unreadable flags and failed usbmuxd queries are reported separately rather than assumed to mean disabled flags or a subnet problem.
+```sh
+iph doctor --fix-wifi
+```
+
+If the phone is still not discovered, register its IP below. [Wireless setup details](docs/onboarding.md#wi-fi-연결) (Korean).
 
 **Notification banners take taps near the top of the screen.** Banners cover the top of the screen and are not part of the accessibility tree. A tap near the top then lands on the banner and opens another app (this happened once during development). For long unattended work turn Do Not Disturb on with `iph dnd on`, and put it back with `iph dnd off` afterwards. Details: [Do Not Disturb](#do-not-disturb) below.
+
+### Direct IP when automatic discovery fails
+
+For a USB-trusted phone missing from discovery, use the IP shown in Settings → Wi-Fi → the network's info button:
+
+```sh
+iph devices                                      # while USB is attached: note the UDID
+iph --udid <UDID> connect --ip <iPhone-IP>         # after unplugging USB
+iph --udid <UDID> read
+```
+
+The Apple device service is still required. CLI, MCP and scripts share the saved address for the selected UDID; register it again if the IP changes. [Connection details](docs/onboarding.md#ip-직접-연결) (Korean).
 
 ## Commands
 
@@ -107,6 +119,7 @@ Every command prints JSON; add `--human` for people. The device is chosen by `--
 
 | Command | Does |
 |---|---|
+| `iph connect --ip <IP>` | Verify and save the selected paired phone's IP |
 | `iph devices` | Connected phones, iOS version, connection, readiness |
 | `iph setup` / `iph doctor` | Preparation and checks |
 | `iph read [--app] [--all] [--full] [--raw] [--max-age ms]` | Elements on screen. `--all` includes off-screen ones, `--full` adds identifiers (about 0.5 s more), `--raw` attaches every numbered attribute |
@@ -290,7 +303,7 @@ ln -s "$PWD/skills/iph" ~/.claude/skills/iph                    # Claude Code
 ln -s "$PWD/skills/iph" ~/.codex/skills/iph                     # Codex
 ```
 
-Tools: `iph_read`, `iph_find`, `iph_tap`, `iph_swipe`, `iph_scroll`, `iph_type`, `iph_key`, `iph_button`, `iph_launch`, `iph_apps`, `iph_screenshot`, `iph_batch`, `iph_script`, `iph_run`, `iph_scripts`, `iph_doctor`, `iph_dnd`. Arguments and results are the same as the CLI's. `iph_script` takes `code` (JavaScript) and `args`; `iph_run` takes `name` and `args`. Guidance for agents: [skills/iph/SKILL.md](skills/iph/SKILL.md).
+Tools: `iph_connect`, `iph_read`, `iph_find`, `iph_tap`, `iph_swipe`, `iph_scroll`, `iph_type`, `iph_key`, `iph_button`, `iph_launch`, `iph_apps`, `iph_screenshot`, `iph_batch`, `iph_script`, `iph_run`, `iph_scripts`, `iph_doctor`, `iph_dnd`. Arguments and results are the same as the CLI's. `iph_script` takes `code` (JavaScript) and `args`; `iph_run` takes `name` and `args`. Guidance for agents: [skills/iph/SKILL.md](skills/iph/SKILL.md).
 
 ## Speed
 

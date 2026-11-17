@@ -23,6 +23,15 @@ Each folder in this repository matches an article from the Substack and includes
 - ⚙️ Quarkus configurations and Dev Services integration
 - 📦 Companion projects, including Maven, Gradle, JBang, and script-based examples
 
+## Maintenance and support
+
+These projects are educational companions to The Main Thread articles, provided
+as-is. There is no commitment to ongoing maintenance, dependency updates, security
+fixes, compatibility with future releases, or support. Examples may stop building
+or running as dependencies and external services change. Build badges report past
+CI results; they are not a guarantee of continued compatibility or maintenance.
+Review and adapt the code before using it in your own applications.
+
 ## Companion projects and build status
 
 This catalog includes every tracked companion folder, whether or not it has a
@@ -39,6 +48,7 @@ An em dash means metadata or test reports are unavailable; it does not mean test
 | **[a2a-deskflow](https://github.com/myfear/the-main-thread/tree/main/a2a-deskflow)** | 25 | 3.35.2 | ✅ 2/2 | [Article](https://www.the-main-thread.com/p/a2a-java-quarkus-helpdesk) | ![a2a-deskflow](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/a2a-deskflow.json) |
 | **[agent-memory-storage](https://github.com/myfear/the-main-thread/tree/main/agent-memory-storage)** | — | — | — | — | Not configured |
 | **[agent-topology](https://github.com/myfear/the-main-thread/tree/main/agent-topology)** | 25 | 3.35.1 | — | [Article](https://www.the-main-thread.com/p/quarkus-langchain4j-topology-http) | ![agent-topology](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/agent-topology.json) |
+| **[atem-recorder](https://github.com/myfear/the-main-thread/tree/main/atem-recorder)** | 25 | 3.40.1.1 | — | [Article](https://www.the-main-thread.com/p/local-rtmp-recorder-mediamtx-quarkus) | ![atem-recorder](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/atem-recorder.json) |
 | **[badge-platform](https://github.com/myfear/the-main-thread/tree/main/badge-platform)** | 21 | 3.34.3 | ✅ 1/1 | [Article](https://www.the-main-thread.com/p/build-digital-credentialing-platform-quarkus) | ![badge-platform](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/badge-platform.json) |
 | **[barcode-lab](https://github.com/myfear/the-main-thread/tree/main/barcode-lab)** | 21 | 3.36.0 | ✅ 42/42 | [Article](https://www.the-main-thread.com/p/quarkus-barcode-generation) | ![barcode-lab](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/barcode-lab.json) |
 | **[bazel-rest-jackson](https://github.com/myfear/the-main-thread/tree/main/bazel-rest-jackson)** | — | — | — | — | Not configured |
@@ -145,6 +155,7 @@ An em dash means metadata or test reports are unavailable; it does not mean test
 | **[pglite-endive](https://github.com/myfear/the-main-thread/tree/main/pglite-endive)** | 21 | 3.37.3 | ✅ 10/10 | [Article](https://www.the-main-thread.com/p/pglite-quarkus-endive) | ![pglite-endive](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/pglite-endive.json) |
 | **[photocraft-techvoices-hero](https://github.com/myfear/the-main-thread/tree/main/photocraft-techvoices-hero)** | — | — | — | — | Not configured |
 | **[pipeline-demo](https://github.com/myfear/the-main-thread/tree/main/pipeline-demo)** | 25 | 3.32.3 | ✅ 1/1 | [Article](https://www.the-main-thread.com/p/tekton-pipeline-quarkus-kubernetes-ci-java) | ![pipeline-demo](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/pipeline-demo.json) |
+| **[pixel-art-converter](https://github.com/myfear/the-main-thread/tree/main/pixel-art-converter)** | 25 | 3.40.1.2 | ✅ 8/8 | [Article](https://www.the-main-thread.com/p/java-21-virtual-threads-quarkus-image-processing) | ![pixel-art-converter](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/pixel-art-converter.json) |
 | **[post-quantum-first-message](https://github.com/myfear/the-main-thread/tree/main/post-quantum-first-message)** | 25 | — | ✅ 50/50 | [Article](https://www.the-main-thread.com/p/post-quantum-cryptography-java-25) | ![post-quantum-first-message](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/post-quantum-first-message.json) |
 | **[problem-demo](https://github.com/myfear/the-main-thread/tree/main/problem-demo)** | 21 | 3.30.8 | — | [Article](https://www.the-main-thread.com/p/rfc-9457-quarkus-api-error-handling-swagger) | ![problem-demo](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/problem-demo.json) |
 | **[product-catalog-fts](https://github.com/myfear/the-main-thread/tree/main/product-catalog-fts)** | 21 | 3.30.5 | — | [Article](https://www.the-main-thread.com/p/quarkus-cursor-pagination-full-text-search-infinite-scroll) | ![product-catalog-fts](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/product-catalog-fts.json) |
@@ -208,6 +219,7 @@ An em dash means metadata or test reports are unavailable; it does not mean test
 | **[vaultflow](https://github.com/myfear/the-main-thread/tree/main/vaultflow)** | 25 | 3.36.2 | ✅ 3/3 | [Article](https://www.the-main-thread.com/p/quarkus-semgrep-agent-security-guardrails) | ![vaultflow](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/vaultflow.json) |
 | **[verdictiq](https://github.com/myfear/the-main-thread/tree/main/verdictiq)** | 25 | 3.36.2 | ✅ 6/9 (⏭️ 3) | [Article](https://www.the-main-thread.com/p/quarkus-langchain4j-ollama-signals) | ![verdictiq](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/verdictiq.json) |
 | **[vibe-api](https://github.com/myfear/the-main-thread/tree/main/vibe-api)** | 21 | 3.30.5 | — | [Article](https://www.the-main-thread.com/p/java-quarkus-ai-emotion-detection-tokenization) | ![vibe-api](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/vibe-api.json) |
+| **[virtual-threads-demo](https://github.com/myfear/the-main-thread/tree/main/virtual-threads-demo)** | 25 | 3.40.1.2 | ✅ 6/6 | [Article](https://www.the-main-thread.com/p/quarkus-virtual-threads-java-tutorial) | ![virtual-threads-demo](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/virtual-threads-demo.json) |
 | **[webauthn-passkey-demo](https://github.com/myfear/the-main-thread/tree/main/webauthn-passkey-demo)** | 21 | 3.31.1 | — | [Article](https://www.the-main-thread.com/p/apple-passkeys-quarkus-webauthn-passwordless-java) | ![webauthn-passkey-demo](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/webauthn-passkey-demo.json) |
 | **[webdav-server](https://github.com/myfear/the-main-thread/tree/main/webdav-server)** | 21 | 3.30.8 | — | [Article](https://www.the-main-thread.com/p/webdav-server-java-quarkus-vertx) | ![webdav-server](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/webdav-server.json) |
 | **[windowwatch](https://github.com/myfear/the-main-thread/tree/main/windowwatch)** | 25 | 3.36.2 | ✅ 5/5 | [Article](https://www.the-main-thread.com/p/quarkus-langchain4j-chat-memory-budget) | ![windowwatch](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/myfear/the-main-thread/badges/windowwatch.json) |

@@ -18,6 +18,9 @@ Different modes are available, allowing for both "full ML" simulations, and simu
 where intermolecular non-bonded interactions are calculated by the force field. ML/MM
 simulations are also possible. Both `sander` and `pmemd` are supported.
 
+TorchANI-Amber has been tested with the latest `AmberTools` and `pmemd` versions (2026).
+Apply all patches with `update_amber` before installation.
+
 If you find this work useful please cite the following articles:
 - *TorchANI-Amber: Bridging neural network potentials and classical biomolecular simulations* <br>
     https://doi.org/10.1021/acs.jpcb.5c05725 
@@ -51,12 +54,6 @@ Other NN-IPs supported out of the box:
     Small, medium and large are supported (wB97M-D3BJ)
 
 Including your custom NN-IP is simple if you follow the TorchANI 2 API
-
-Important: For running ML/MM charged systems with `AimNet2` and `Nutmeg`, you will need
-to patch `sander` from your `AmberTools` version, *before compilation* unless using
-`AmberTools26`. To do this, replace the file in
-`amber_src/AmberTools/sander/qm2_extern_torchani_module.F90` with
-`AmberTools25-patch/qm2_extern_torchani_module.F90`.
 
 ## Installing from source
 
@@ -147,7 +144,7 @@ Familiarity with Amber, Pmemd and/or Sander is assumed in what follows.
 
 To use TorchANI-Amber to run full-ML simulations, you need three different
 namelists in your input file:
-- The usual `&cntrl` namelist, which *must have* the flag `iextpot = 1`, together
+- The usual `&cntrl` namelist, which *must have* the flag `iextpot = 2`, together
   with the usual simulation configuration.
 - Second, the `&extpot` namelist, with the only setting `extprog = 'TORCHANI'`.
 - Third, the `&ani` namelist, with the actual `TorchANI` configuration.
@@ -156,7 +153,7 @@ The `&ani` namelist supports the following basic options:
 - `model_type` (*string*)
    The neural network to choose. Possible values are `"ani1x"`, `"ani1ccx"`, `"ani2x"`,
    `anidr`. For usage of custom models see section *Support for custom
-   models*. Default is `"ani1x"` (case sensitive).
+   models*. Default is `"ani2x"` (case sensitive).
 - `use_double_precision` (*bool*)
    Determines whether the network runs using float64 parameters. Defaults to `.true.` We
    recommend this setting for accurate dynamics.
@@ -171,6 +168,9 @@ There are also some advanced options:
    Whether to use the cuAEV cuda extension to accelerate potentials that support it.
 - `use_amber_neighborlist` (*bool*)
    Whether to let Sander | Pmemd handle the neighborlist calculation.
+- `use_all_amber_nonbond` (*bool*)
+   Whether to let Sander handle all inter-molecular non-bonded interactions. See
+   section *Amber-NB configuration*. Default is `.false.`.
 - `model_index` (*int*)
    Select a specific model (0-indexed) from a model ensemble. The default is to use the
    whole ensemble (set to -1). We recommend you do *not* set this flag unless you know
@@ -185,7 +185,7 @@ An example `mdin` input file with the correct format:
 
 ```
 &cntrl
-    iextpot = 1 ! Required to run full-ML TorchANI-Amber
+    iextpot = 2  ! Required to run full-ML TorchANI-Amber
     ! ... Add the rest of the Sander options here
 /
 &extpot
@@ -200,19 +200,58 @@ An example `mdin` input file with the correct format:
 /
 ```
 
+## Amber-NB configuration
+
+In the Amber-NB configuration, the NN-IP only calculates the *intra-molecular*
+interactions, and all *inter-molecular* non-bonded interactions (van der Waals and PME
+electrostatics) are calculated by the force field. Molecules are defined by the
+`ATOMS_PER_MOLECULE` section of the topology file. This configuration is useful, for
+example, for memory-hungry models, or for offloading long range interactions to the FF.
+
+To use it, set `use_all_amber_nonbond = .true.` in the `&ani` namelist of a full-ML
+input. The other namelists stay the same.
+Pmemd is (currently) not supported for this configuration. Periodic boundary conditions
+(`igb = 0`) are required.
+
+An example `mdin` input file for the Amber-NB configuration is, schematically:
+
+```
+&cntrl
+    iextpot = 2  ! Required to run full-ML TorchANI-Amber
+    cut = 8.0  ! Cutoff for the inter-molecular FF non-bonded interactions
+    ! ... Add the rest of the Sander options here
+/
+&extpot
+    extprog = "TORCHANI"  ! Required to run full-ML TorchANI-Amber
+/
+&ani
+    model_type = "ani2x"
+    use_all_amber_nonbond = .true.  ! Required for the Amber-NB configuration
+    use_double_precision = .true.
+    use_cuda_device = .true.
+    use_cuaev = .true.
+    ! ... Add the rest of the TorchANI-Amber config options here
+/
+```
+
+For a full example see `inputs/ala-dipep-fullml-ani2x-nb/`.
+
 ## Usage of the interface for ML/MM
 
 TorchANI-Amber is also integrated with the QM/MM Sander subsystem, which means you can
 perform ML/MM simulations with it. Sander is *required* for this, Pmemd is not
 supported.
 
-If you want to run this kind of dynamics, **instead** of setting `iextpot = 1` and
+If you want to run this kind of dynamics, **instead** of setting `iextpot = 2` and
 including the `&extpot` namelist, you should set `ifqnt = 1`, and include the `&qmmm`
 namelist.
 
 Many options can be used in the `&qmmm` namelist, but `qmmm_int = 1` (default),
-`qm_ewald = 0` (default), and `qmmm_theory = 'EXTERN'` (must be specified) are *required*
-to run ML/MM simulations with TorchANI-Amber.
+`qm_ewald = 0`, and `qm_theory = 'EXTERN'` (must be specified) are *required* to run
+ML/MM simulations with TorchANI-Amber. The default for `qm_ewald` is `1`, and it is only
+turned off automatically if `ntb = 0` or `use_pme = 0`, so it must be set explicitly
+for periodic systems. The QM region has no default, it must be selected with `qmmask`
+(or `iqmatoms`). `qmcut` defaults to the value of `cut` in the `&cntrl` namelist.
 
 The `&ani` namelist remains the same, with the following extra available options:
 
@@ -229,10 +268,10 @@ Output related options:
 ML/MM and electrostatic related options:
 - `use_torchani_charges` (bool)
    **This option can only be specified if a charge-predicting model is selected.**
-   Currently the only available `model_type` that supports it is `animbis`. Partial
-   charges for the QM atoms will be predicted by TorchANI (MBIS atomic charges at the
-   `wB97X/def2-TZVPP` level of theory, *in vacuo*, for ANI-mbis) in each step. This
-   charges are geometry-dependent, and the derivativse w.r.t. coordinates are used to
+   Currently the `model_type`s that support it are `animbis` and `aimnet2-*-mbis-*`.
+   Partial charges for the QM atoms will be predicted by TorchANI (MBIS atomic charges at
+   the `wB97X/def2-TZVPP` level of theory, *in vacuo*, for ANI-mbis) in each step. These
+   charges are geometry-dependent, and the derivatives w.r.t. coordinates are used to
    calculate their contribution to the forces.
 - `mlmm_coupling` (int = `0` or `1`)
    Currently available are: `0` (*coulombic coupling*) and `1` (*simple polarizable*
@@ -241,8 +280,6 @@ ML/MM and electrostatic related options:
 We recommend using one of the following two settings:
 - *mlmm_coupling = 1* and *use_torchani_charges=.true.* (variable nn-predicted charges)
 - *mlmm_coupling = 0* and *use_torchani_charges=.false.* (fixed topology charges)
-
-TODO: Check what the defaults are for qm_ewald and qm_mask
 
 A template for the first setting (simple polarizable with variable charges) is:
 
@@ -259,7 +296,7 @@ A template for the first setting (simple polarizable with variable charges) is:
     qmcut = 15.0  ! Recommended
 /
 &ani
-    model_type = 'animbis'  ! Charge-predicting model. Currently available: 'animbis'
+    model_type = 'animbis'  ! Charge-predicting model, 'animbis' or 'aimnet2-*-mbis-*'
     use_torchani_charges = .true.  ! Use geometry dependent, nn-predicted charges
     mlmm_coupling = 1  ! Simple polarizable coupling
     use_torch_coupling = .True.  ! Accelerated torch coupling
@@ -379,6 +416,20 @@ an extra dim prepended in this case, which indexes the models in the network.
 To run the `Amber` integration tests do `pytest -v ./tests/test_sander.py` (a working Sander
 binary is assumed to be on `PATH`). This will run CPU and CUDA tests for the ML/MM
 and Full-ML Amber integrations.
+
+## Debug logging
+
+The C++ library logs debugging information (model path, atomic numbers, initialization
+steps, and the wall time of each energy and force calculation) using LibTorch's
+built-in logging. These messages are hidden by default. To print
+them to `stderr`, set the `TORCH_CPP_LOG_LEVEL` environment variable when running Amber:
+
+```bash
+TORCH_CPP_LOG_LEVEL=INFO sander -O -i md.in ...
+```
+
+Valid values are `INFO`, `WARNING` (default), `ERROR` and `FATAL`. Note that this also
+enables LibTorch's own messages at the chosen level.
 
 ## Notes on LibTorch (C++) and PyTorch (Python) compatibility
 

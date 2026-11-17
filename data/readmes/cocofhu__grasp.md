@@ -106,7 +106,7 @@ Image tags and digests can be overridden in `.env`; see [`.env.example`](.env.ex
 
 ### Bundled role agents
 
-`agents/` includes five prebuilt roles: `PMAgent`, `ClarifyAgent`, `ImplementAgent`, `TestReviewAgent`, and `DeliverAgent`.
+`agents/` includes four prebuilt roles: `ClarifyAgent`, `ImplementAgent`, `TestReviewAgent`, and `DeliverAgent`.
 
 ```bash
 ./agents/pack.sh               # pack all into agents/dist/
@@ -136,7 +136,7 @@ Clarify → Research → Human gate
 Repository layout:
 
 - `web/` — Vue 3 + Vue Flow frontend (workflow canvas, home clarification, run details, inbox, Agent Studio)
-- `server/` — Go backend (FSM engine, HTTP API, SQLite, Artifact MCP, scheduler, audit)
+- `server/` — Go backend (FSM engine, HTTP API, SQLite, Artifact MCP, audit)
 - `sandbox-gateway/` — Sandbox lifecycle control plane (`gateway/`) and universal sandbox image/runtime (`sandbox/`)
 - `agents/` — Importable role agent workspaces
 - `docs/` — Project website and bilingual help docs

@@ -1,0 +1,1002 @@
+# mnemostack
+
+[![PyPI](https://img.shields.io/pypi/v/mnemostack.svg)](https://pypi.org/project/mnemostack/)
+[![Python versions](https://img.shields.io/pypi/pyversions/mnemostack.svg)](https://pypi.org/project/mnemostack/)
+[![CI](https://github.com/udjin-labs/mnemostack/actions/workflows/ci.yml/badge.svg)](https://github.com/udjin-labs/mnemostack/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+> Self-hosted memory and retrieval for agents and applications.
+
+mnemostack keeps context beyond a session, retrieves relevant evidence, and gives you controls for maintaining and operating that memory. Ingest notes, messages, documents, or application events; search them with configurable hybrid retrieval; track when facts were valid and whether their sources still support them. Run it inside your application or as a service with a separate tenant for each consumer.
+
+The Python SDK, CLI, HTTP API, and MCP server are interfaces to the same memory and retrieval components. Agent integrations decide when to capture or recall context; mnemostack provides the backend and its controls.
+
+## What you can do with it
+
+| Your task | What mnemostack provides | Start here |
+| --- | --- | --- |
+| Keep context across sessions | File indexing and streaming ingestion, deterministic chunk IDs, structured markdown, and enrichment hooks | [Ingestion](#streaming-ingest-api) |
+| Find evidence that fits the question | Vector, lexical, temporal, and optional graph retrieval; fusion, ranking, reranking, and token budgets | [Retrieval design](#architecture) |
+| Maintain facts as they change | Invalidation, validity intervals and `as_of` reads, source metadata, and citation resolution against current files | [Memory lifecycle](docs/memory-model.md#maintain-facts-and-their-evidence) |
+| Understand a missed result | Per-retriever and per-stage traces, explicit fallback tags, and `RecallTrace.loss_report(expected_ids)` | [Diagnosis and feedback](docs/memory-model.md#inspect-retrieval-before-tuning-it) |
+| Operate memory for different consumers | Service-key scopes, tenant isolation across vector/graph/learning state, quotas, metering, export, and offboarding | [Service operations](docs/deployment.md#security) |
+
+These capabilities have different activation points. The [memory model and boundaries](docs/memory-model.md) distinguish shipped interfaces, optional settings, and SDK components that your application assembles.
+
+## Start with your own context
+
+- **OpenClaw memory:** retain existing notes and connect recall through the [companion plugin](#openclaw-auto-recall-companion-plugin) or an [existing recall entry point](#install-for-an-openclaw-style-agent). The companion adds retrieved context to the agent prompt; ingestion remains a separate operation.
+- **One personal archive, several agents:** index a messenger export once and let your authorized agents query the same backend. The [two-local-client walkthrough](examples/two-local-clients-demo.md) rehearses shared reads; access from different PCs needs a protected connection to that backend. It does not configure automatic messenger capture or synchronization.
+- **Local memory for a Hermes agent:** use a local mnemostack backend through the agent's memory integration. The separate `hermes-mnemostack` provider is listed in the [integration roadmap](#roadmap); its installation and capture behavior belong to that integration, not to the core quickstart.
+- **Workplace infrastructure:** serve multiple applications or agents from one deployment, with **a separate tenant for each consumer**. Use [service-key authentication](#http-server-optional) to enforce ownership. Sharing the infrastructure does not imply sharing their context.
+
+The same interfaces also support document RAG, code search, personal knowledge bases, and time-aware application retrieval.
+
+<a id="quickstart-agent-memory-over-mcp"></a>
+
+## Quickstart: index, retrieve, inspect
+
+Follow the [local quickstart](examples/quickstart.md) to index one synthetic message with Ollama and Qdrant, retrieve its fact and filename, and optionally generate an answer or connect an MCP client. It keeps one collection and embedding model throughout. The explicitly tested `full_reorder` setting is a configuration workaround for the selected LLM, not a change to the default reranker.
+
+Choose the [interface](#interfaces) your application needs after the first retrieval works. Connecting tools alone does not make an agent capture messages or query memory automatically.
+
+**Status:** Actively developed. See the [API stability guide](docs/api-stability.md) for stable contracts versus experimental components, and [CHANGELOG.md](CHANGELOG.md) for release changes.
+
+**Upgrading to 3.0:** Qdrant 1.20+ is required. The `lexical` and
+`qdrant_bm25` text-search modes and `recall.text_search_fields` were removed.
+For server-side BM25, upgrade Qdrant, run `mnemostack text-index` with your
+collection configuration, and set `recall.text_search: native_bm25`.
+See [the 3.0.0 changelog](CHANGELOG.md#300---2026-10-28) for Python API removals
+and the new LLM options environment variable.
+
+## Why hybrid memory?
+
+A useful memory query may depend on an exact identifier, a paraphrased decision, a date, or a relationship. Configurable retrieval sources let you combine these signals instead of relying on a single nearest-vector lookup. Traces and source evidence help you check whether the configured path found what your application needed.
+
+## Use cases
+
+Use mnemostack when retaining context also requires retrieving, updating, or operating it: agent memory across restarts, a personal archive queried by several clients, grounded answers over documents, or a service with isolated consumers. Choose the corpus, ownership boundary, and ingestion path explicitly. The [memory model](docs/memory-model.md) explains how those choices relate.
+
+<a id="three-ways-to-use-mnemostack"></a>
+
+## Interfaces
+
+| Interface | Use it when | Entry point |
+| --- | --- | --- |
+| Python SDK | Your application owns ingestion and composes retrieval components | [Python API](#python-api), [streaming ingest](#streaming-ingest-api) |
+| CLI | You import, query, inspect, or maintain a corpus from scripts or a terminal | [Local quickstart](examples/quickstart.md), [CLI reference](docs/api-stability.md#cli) |
+| HTTP API | Applications in any language need a running memory service | [HTTP server](#http-server-optional), [deployment](docs/deployment.md) |
+| MCP | An agent client needs memory tools in its existing tool protocol | [MCP guide](docs/mcp.md), [host integrations](integrations/README.md) |
+
+SDK composition is explicit: `Recaller.recall()` does not automatically build the serving surfaces' full ranking pipeline. CLI search/answer, HTTP, and MCP use the shared `recall_flow()` chain with their configured components. See [defaults and composition](docs/memory-model.md#choose-the-interface-and-components).
+
+## Architecture
+
+### Mental model
+
+Your application or agent keeps its current working context. mnemostack keeps the corpus you explicitly ingest and returns selected evidence when called. Qdrant holds vectors and payloads, optional Memgraph holds temporal relationships, and the ranking state store holds feedback separately from the corpus. An integration decides what to write, when to query, and how to use the results.
+
+Retention, retrieval, and correction are separate actions: storing a fact does not guarantee it will rank first, and marking it stale does not erase it. That separation lets you inspect recall, preserve historical validity, and choose explicit removal policies.
+
+### How it works, in one paragraph
+
+Configured retrievers collect candidates from vector, lexical, temporal, and optional graph sources. Reciprocal Rank Fusion combines their ranked lists. The ranking pipeline can adjust the result using exact tokens, freshness, and feedback state; graph resurrection and LLM reranking add further configured steps. The serving chain cuts the final result to the requested limit and optional text-token budget. Answers are an additional LLM synthesis step over retrieved evidence. The response order is authoritative: `score` is not calibrated confidence and need not sort the response. See [the score contract](docs/api-stability.md#what-score-is-not).
+
+![mnemostack architecture](docs/images/mnemostack-architecture.jpg)
+
+### Where mnemostack fits
+
+mnemostack is an independent memory and retrieval layer. You can embed its components in an application, expose them through a service, or connect an agent integration. Alongside retrieval, it provides explicit memory lifecycle operations and service controls. Your application still owns conversation state, ingestion decisions, domain-specific extraction, and any automatic policy for reconciling conflicting facts.
+
+### Design
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for module behavior and the recall chain, [the memory model](docs/memory-model.md) for capabilities and boundaries, and [deployment](docs/deployment.md) for persistence and operations.
+
+### Storage, index, and retrieval layers
+
+- **Corpus and indexes:** Qdrant stores vectors and payloads; lexical retrieval can use an in-process corpus or configured Qdrant-native text search. Memgraph is optional.
+- **Retrieval and ranking:** configured sources feed fusion and the ranking chain. A token budget bounds returned memory text using the configured counter; it is not a bound on the whole prompt or answer.
+- **Lifecycle and evidence:** idempotent ingest, pruning, invalidation, validity views, and citation resolution give explicit controls over stored information.
+- **Service operations:** authentication and tenant scopes govern consumers; quotas, metering, diagnostics, export, and offboarding support operators.
+
+### Pipeline state
+
+Explicit feedback updates Q-learning and exposure state. HTTP exposure/access recording are opt-in; access reinforcement is a bounded bonus, not automatic forgetting. CLI and MCP can use existing state and accept explicit feedback. `FileStateStore` uses `flock` so processes on the same host can share a local POSIX state file. Multi-host deployments, network filesystems, and high-write workloads need a suitable shared store or restricted stateful writes; see [state persistence](docs/deployment.md#state-store).
+
+### Graceful degradation
+
+A failed retriever can leave results from other sources, and a failing LLM reranker can leave the pre-rerank order. Inspect `degraded` together with `notes`: entries present only in `degraded` identify actual faults. Request `include_trace` on HTTP/MCP to inspect the stages. A plausible answer alone does not demonstrate that every component worked.
+
+Query expansion is an exception: misconfiguration or a provider failure before retrieval surfaces as an error. The [architecture guide](ARCHITECTURE.md#recall-pipeline-hybrid) describes the contract.
+
+## Comparison and benchmarks
+
+On LoCoMo, Mnemostack reaches **82.9% strict accuracy** in the evaluation setup below. These runs measure the specified retrieval-and-answer configuration, not the complete current service: the runtime LLM reranker is excluded, and tenant operations, integrations, and lifecycle policies are not benchmarked by these figures. The table below includes our baseline runs and externally reported numbers for context. Results depend on dataset version, configuration, judge model, scoring rules, and query type. Treat externally reported numbers as directional unless they were run with the same harness and settings.
+
+### Benchmarks
+
+Full LoCoMo runs use the official SNAP-Research dataset (10 samples / **1986 QA**) from a clean state. Across the tables below: **Strict** = exact match, **Combined** = strict + partial. Counts in cells are `correct / total`.
+
+Some LoCoMo `cat_5` questions have empty ground-truth answers. Under the current scorer, these are counted as correct because there is no expected answer to match. To avoid overstating recall quality, we also report **signal-only** scores with those questions removed. Signal-only scores are computed on the 1,540 questions with non-empty ground-truth answers.
+
+### LoCoMo, current judge (`gemini-3-flash-preview`)
+
+| Run | Strict (full) | Combined (full) | Strict (signal-only) | Combined (signal-only) |
+| --- | --- | --- | --- | --- |
+| Baseline v0.3.0 (Vector + BM25 + 8-stage pipeline) | 76.7% (1524 / 1986) | 88.1% (1750 / 1986) | 70.0% (1078 / 1540) | 84.7% (1304 / 1540) |
+| Retrieval improvements (`window_size=3`, query expansion, top-K 25) | 82.5% (1639 / 1986) | 92.2% (1832 / 1986) | 77.5% (1193 / 1540) | 90.0% (1386 / 1540) |
+| **v0.4.5 + photo captions** (same config as above) | **82.9%** (1647 / 1986) | **92.7%** (1842 / 1986) | **78.0%** (1201 / 1540) | **90.6%** (1396 / 1540) |
+
+> **Honest numbers disclaimer.** `(full)` is the headline aggregate across **all 1986 questions**, the format vendors typically report — some publish only their strongest sub-category, we publish the full aggregate because it's what actually predicts behavior on mixed workloads. `(signal-only)` strips the `cat_5` auto-pass artifact described above, so what you read there is the real recall quality on questions that have a ground-truth answer.
+
+**Per-category breakdown** (v0.4.5 + photo captions run):
+
+| Category | Strict | Combined |
+| --- | --- | --- |
+| `cat_1` single-hop lists | 51.4% | 88.3% |
+| `cat_2` temporal | 79.8% | 85.7% |
+| `cat_3` open-domain reasoning | 62.5% | 79.2% |
+| `cat_4` multi-hop reasoning | 88.0% | 94.6% |
+| `cat_5` adversarial open-domain | 100.0% | 100.0% |
+
+Notes:
+
+- Judge model matters: `gemini-3-flash-preview` is more accurate than the previous Gemini Flash judge on synonyms, partial matches, and empty ground truth.
+- `cat_5` questions have empty ground truth in this new run and are auto-scored as correct by the benchmark harness. That makes the new `cat_5` strict score (446 / 446, 100.0%) useful for aggregate harness accounting, but not directly comparable to the historical `cat_5` strict score (89.7%) from the older adversarial-question evaluation.
+- Pipeline: Vector retrieval with Gemini embeddings + BM25 + RRF + configurable reranking pipeline. The LLM reranker is not part of the benchmark loop (it is a runtime/server feature), so `rerank_mode` does not affect these numbers.
+- The v0.4.5 run additionally ingests the photo captions (`blip_caption`) that LoCoMo attaches to image-sharing turns — 697 of the 1540 signal questions cite image turns as evidence, and earlier runs silently dropped that content. Answer prompts also show the time of day of each memory since v0.4.5.
+
+### Historical LoCoMo results (`gemini-2.5-flash` judge)
+
+| Metric | First full run | mnemostack 0.2.1 |
+| --- | --- | --- |
+| **Strict** | 66.4% (1319 / 1986) | **67.8%** (1346 / 1986) |
+| Partial | 12.8% (254 / 1986) | 12.6% (250 / 1986) |
+| Wrong | 20.8% (413 / 1986) | 19.6% (390 / 1986) |
+| **Combined** | 79.2% (1573 / 1986) | **80.4%** (1596 / 1986) |
+
+By question category (`combined` not tracked for the first full run):
+
+| Category | First run Strict | 0.2.1 Strict | 0.2.1 Combined | Δ Strict |
+| --- | --- | --- | --- | --- |
+| `cat_1` single-hop lists | 34.8% | 34.4% | 74.1% | −0.4pp |
+| `cat_2` temporal | 64.5% | **69.8%** | 77.9% | **+5.3pp** |
+| `cat_3` open-domain reasoning | 31.2% | **41.7%** | 49.0% | **+10.5pp** |
+| `cat_4` multi-hop reasoning | 69.2% | **69.6%** | 82.0% | +0.4pp |
+| `cat_5` adversarial open-domain | 90.1% | 89.7% | 89.7% | −0.4pp |
+
+_Last historical run: 2026-04-27, mnemostack 0.2.1, same dataset, judged by `gemini-2.5-flash`._
+
+### Comparison with reported numbers from other systems
+
+Caveat: different judges, evaluation protocols, and in some cases category cherry-picking. Vendor numbers below are taken at face value from their published material.
+
+| System | LoCoMo correct |
+| --- | --- |
+| Hindsight (reported range) | 78–85% |
+| Memobase (temporal subset) | 85% |
+| **mnemostack** | **82.9%** |
+| Letta filesystem agent | 74% |
+| Mem0 graph variant | ~68.5% |
+| Zep (independently replicated) | 58.4% |
+
+### Real-corpus needle benchmark
+
+LoCoMo measures generic long-term dialogue recall. We also run a private needle-in-haystack benchmark on the production workload that drove the original design — a ~17k-point memory stack indexed from a long-running assistant. Queries mix exact tokens (IP addresses, tickers), telegram IDs, paraphrased facts, and temporal probes.
+
+| Metric | Value |
+| --- | --- |
+| recall@1 | 90% (9/10) |
+| recall@5 | **100%** (10/10) |
+| recall@10 | 100% (10/10) |
+| Query latency p50 | 1.26 s |
+| Query latency max | 1.70 s |
+
+> **Honest numbers disclaimer.** Reporting only `recall@5 = 100%` would look impressive, but it would also hide the harder top-1 behavior. `recall@1 = 90%` is what an agent reading only the top hit actually experiences, and the gap between `@1` and `@5` is where reranker quality (or the lack of it) shows up. We publish all three so you can read the metric that matches your downstream usage.
+
+Useful because LoCoMo's failure modes (list exhaustion, open-domain reasoning) are orthogonal to what production memory stacks actually spend time on (find the specific fact the user mentioned weeks ago). This benchmark is not in the public repo; its methodology is in `benchmarks/synthetic_longhorizon.py`, which is the closest reproducible approximation.
+
+### Reproduce LoCoMo from a fresh clone
+
+```bash
+pip install -e '.[dev]'
+bash benchmarks/download_locomo.sh   # fetches SNAP Research's public dataset
+export GEMINI_API_KEY=...
+bash benchmarks/run_locomo.sh        # full 10-sample run, writes results/ts.{json,log}
+```
+
+Details, category definitions, and notes on the judge protocol: [benchmarks/README.md](benchmarks/README.md).
+
+## Who is this for?
+
+Build it in if you need:
+
+- Long-lived agent memory that survives session restarts and doesn't drift into irrelevance as the corpus grows.
+- Recall quality on **mixed workloads** — exact-token lookups (IDs, tickers, error strings), semantic queries, temporal questions, multi-hop reasoning — not just one of them.
+- A stack you can **plug into your own infrastructure**: bring your own embedding model, LLM, vector store, or graph DB.
+
+Not the best fit if you only need a single call to `text-embedding-3-small` + cosine similarity — something simpler will do. mnemostack earns its complexity on mixed, long-horizon workloads.
+
+## Features
+
+- 🧠 **4-source hybrid retrieval** — Vector (Qdrant) + BM25 (exact tokens) + Memgraph (knowledge graph) + Temporal (time-aware vector), all fused via Reciprocal Rank Fusion. Pluggable `Retriever` abstraction — add your own sources.
+- ⚖️ **Weighted & adaptive RRF fusion** — `reciprocal_rank_fusion(weights=[...])` lets you lift sources you trust more; `Recaller(adaptive_weights=True)` picks a per-query-shape profile (exact-token / person / temporal / general). See the honest write-up below for where this helps and where it doesn't.
+- 🧪 **HyDE retriever (opt-in)** — embeds a hypothetical answer instead of the query. Useful for query↔document vocabulary gaps in documentation-style corpora; does **not** reliably help on dialogue-backed memory and always costs one extra LLM roundtrip per `search()`. Not included in the default `Recaller`.
+- 🪜 **Configurable recall pipeline** — ClassifyQuery, CalibrateRelevance, ExactTokenRescue, HubDampen (SDK-only with non-empty `hub_degrees`, absent on CLI, HTTP and MCP paths), QLearningReranker (when enabled), CuriosityBoost (when enabled), FreshnessBlend, GravityDampen, InhibitionOfReturn (when enabled), ExactTokenProtection, and GraphResurrection (when a graph URI is supplied). Used by CLI search/answer and the HTTP/MCP serving paths; SDK users compose it explicitly. Feedback updates are explicit, and HTTP recall exposure logging is off unless `--auto-record-ior` is enabled.
+- 🔁 **Reranking** — Gemini Flash (or any LLM) reorders top-K by relevance, or plug a cross-encoder / hosted rerank service through the score-based `ScoringReranker`. See [docs/recipes.md](docs/recipes.md) for a runnable `bge-reranker-v2-m3` example.
+- 🔤 **Pluggable BM25 analyzer** — the default is lowercase + Unicode word split (great for exact tokens); pass `BM25Retriever(tokenizer=...)` for stemming / lemmatization / language routing. Core stays dependency-free; [docs/recipes.md](docs/recipes.md) has per-language recipes.
+- ⚡ **Async API** — every blocking surface has a signature-stable async mirror: `Recaller.recall_async`, `recall_flow_async`, `Ingestor.ingest_async` / `ingest_one_async`, `AnswerGenerator.generate_async`, `synthesize_async`, plus `AsyncVectorStore` over the native async Qdrant client. Retrievers dispatch in parallel; five concurrent HTTP recalls finish in roughly one single-recall wall-clock.
+- 🕰️ **Stale-fact invalidation** — mark superseded memories stale without deleting or re-embedding them: `store.invalidate(ids, valid_until=...)` sets bi-temporal payload keys (`invalidated_at` system-time, `valid_until`/`valid_from` world-time) via a cheap merge write. Recall hides invalidated facts by default; `include_invalidated=True` shows them and `as_of="<iso>"` reconstructs what was valid at a past instant from `valid_from`/`valid_until` — each optional, and `invalidated_at` is not read there at all, so a point-in-time view can be a superset of the default one ([contract](docs/api-stability.md#on-disk--payload-contracts)). The vector-side twin of the graph's `valid_until` model. CLI `mnemostack invalidate <id>...`, MCP `mnemostack_invalidate`, and — since 2.2 — HTTP `POST /invalidate` (with `DELETE /memories` for irreversible erasure), selecting either an id list or a whole `source`.
+- 🌍 **Unicode-aware entity resolution** — Memgraph retriever probes by `telegram_id`, handle, and precomputed `name_lower` so non-ASCII names match correctly (Memgraph's `toLower()` lower-cases ASCII only).
+- 📥 **Streaming `Ingestor` API** — batched, idempotent, LRU-cached ingest from any Python code. Lazy iterator means large corpora ingest with bounded memory. Same `(source, offset, text)` → same deterministic UUID-shaped content id, so re-runs are no-ops.
+- 📝 **Markdown indexer** — `mnemostack index-markdown <dir>` indexes a folder of markdown with structure: YAML frontmatter → payload filters, header-aware chunking with heading paths, and `[[wikilinks]]` / `[text](note.md)` → `File -[LINKS_TO]-> File` graph edges (with a Memgraph URI). Generic for any markdown folder; Obsidian vaults work as a side effect. Depends only on the already-present `pyyaml`.
+- 🌐 **HTTP API** (optional) — `pip install 'mnemostack[server]'` gives you `/recall`, `/answer`, the write/lifecycle surface (`POST`/`GET`/`DELETE /memories`, `/invalidate`, `/triples`), `/health`, `/docs`, plus `/metrics` in Prometheus text format. See the HTTP server section below.
+- 🔌 **Pluggable embeddings** — Gemini, Ollama, or HuggingFace (local GPU), via provider registry
+- 🤖 **Pluggable LLM** — Gemini Flash / Ollama for answer generation and reranking
+- 📚 **Temporal knowledge graph** — facts have `valid_from`/`valid_until`, query point-in-time state; graph resurrection stage recovers evicted-but-relevant memories.
+- 💬 **Answer mode** — inference layer synthesizes concise factual answers with source citations and confidence. Category-aware prompts (lists / temporal / multi-hop / inference / adversarial), specificity resolver, and `cat_3` inference retry with query decomposition are on by default.
+- 📋 **Knowledge synthesis** — `synthesize(entity)` rolls up everything memory knows about a person, project, or topic into a structured profile (`SynthesisFact` / `SynthesisResult`, markdown or JSON). CLI: `mnemostack synthesize <entity>`. Optional related-entities expansion via graph and LLM summarization pass.
+- 📏 **Progressive Tiers API** — `search --tier {1,2,3}` and `answer --tier {1,2,3}` bound output size (~50 / ~200 / ~500 tokens) so agents can pay only for the detail they actually need. Omit `--tier` for unchanged full output.
+- ✂️ **Chunkers + sliding window** — plain, fixed-size, and `MessagePairChunker` for chat transcripts (keeps user↔assistant pairs together). The new `vector.window_size` config carries adjacent-turn context inside each chunk; `window_size=3` was worth **+5.8pp strict / +4.1pp combined** on LoCoMo (v0.4.0). Memories written through the HTTP API or MCP get the same chunks with the opt-in `ingest.remote_window_size` ([docs/remote-windows.md](docs/remote-windows.md)).
+- 🔎 **Query expansion + smart retry** — `Recaller(query_expansion=True, expansion_llm=...)` widens recall with reformulated queries; `AnswerGenerator(retry_with_expansion=True)` retries low-confidence answers with the expanded query and a HyDE-style hypothetical before giving up. Opt-in via `--query-expansion` on `mnemostack answer`.
+- ⚙ **Consolidation runtime** — phase orchestrator with built-in health checks and application-supplied phases; scheduling, semantic consolidation, and forgetting policies are supplied by the application ([scope](ARCHITECTURE.md#consolidation--decay))
+- 🔌 **MCP server** — expose memory tools to Claude Desktop, ChatGPT, Cursor, etc.
+- 🛡 **Graceful degradation** — retrieval keeps working if graph or any retriever is down
+- 🔐 **Multi-tenancy — soft filters or a hard auth boundary** — `filters={"tenant": "a"}` applies inside *every* retriever (exact match + ranges) on HTTP/MCP/CLI/library; results never include points outside the scope, verified by adversarial isolation tests. Filters are **caller-supplied**, so for a real trust boundary run the server with **service-key auth** (`serve --auth` / `mcp-serve --auth`): the tenant is resolved from the key (a client can't assert another's), enforced across the vector store, the knowledge graph, and per-tenant learning state. Optional per-tenant **storage quotas** apply at ingest, and **request-rate quotas** on the authenticated **HTTP** surface (`serve --auth`). Off by default. See the HTTP API section.
+- 🧩 **Ingest enrichment + answer projection** — `Ingestor(enrich=callable)` extracts structured facts into payloads at ingest (fail-open, `--refresh-payloads` updates existing collections without re-embedding); `context_fields=[...]` shows them to the answer LLM; `rewrite_followup()` resolves conversational follow-ups before recall.
+- 🧠 **Reasoning-model friendly** — Ollama `think` is off by default (reasoning models otherwise burn the whole token budget on thoughts and return empty text); `options={...}` passes any generation option through.
+
+## Recall tuning: fusion weights & HyDE
+
+Some of the newer knobs help in specific workloads and do nothing (or mildly hurt) in others. Measured, not promised — both are opt-in by design, and the default `Recaller` stays classical equal-weight RRF over Vector + BM25 (+ Memgraph + Temporal when supplied).
+
+**`Recaller(adaptive_weights=True)`** — picks a weight profile per query shape:
+
+| Query shape | Detection | Profile (bm25 / memgraph / vector / temporal) |
+| --- | --- | --- |
+| `exact_token` | IPv4 / port / version / UUID / API-style tokens | 1.4 / 1.4 / 1.0 / 0.9 |
+| `person` | "who is", `@handle`, `username`, `contact`, etc. | 1.0 / 1.5 / 1.0 / 0.9 |
+| `temporal` | "when", "yesterday", "today", dates | 1.0 / 1.0 / 1.0 / 1.4 |
+| `general` | everything else | classical equal-weight RRF |
+
+Measured on a real production corpus with 10 needle probes: **recall@1 went 50% → 60%, recall@5 stayed at 90%** (zero regression). On LoCoMo (pure dialogue questions, all classified `general`), adaptive weights had no effect — the profile simply isn't triggered. Rule of thumb: turn it on for production ops-style workloads (IPs, tickers, IDs, named entities); leave it off, or don't expect a lift, for dialogue benchmarks. Static `retriever_weights={...}` always wins over adaptive when both are set.
+
+**`HyDERetriever`** — generates a short hypothetical answer via your LLM and embeds that instead of the raw query, then fuses alongside the other retrievers. Useful when the question and the stored answer use very different vocabulary (documentation corpora, FAQ-style content). On our LoCoMo cat_3 smoke (`conv-43`, 14 open-domain reasoning questions) it moved accuracy from 14.3% to 21.4% (+1 correct answer); on dialogue-backed memory overall it's roughly a wash. It **always** costs one extra LLM call per `search()`, so budget accordingly and treat it as a tool for specific workloads rather than a default.
+
+## Utilities
+
+Agent runtimes often wrap transcript messages in metadata envelopes before the real body, which can dominate embeddings and make unrelated turns look similar. Clean messages before chunking/indexing with `strip_metadata_blocks()`:
+
+```python
+from mnemostack.utils import strip_metadata_blocks
+
+clean = strip_metadata_blocks(raw_message)
+```
+
+Built-in profiles cover OpenClaw webchat and Telegram envelopes; pass `profiles=` or `extra_patterns=` to tune the cleanup for your runtime.
+
+## Environment
+
+| Variable | Purpose | Required for |
+| --- | --- | --- |
+| `GEMINI_API_KEY` | Google Generative AI key | Gemini embedding + Gemini Flash LLM |
+| `OLLAMA_HOST` | Ollama server URL (default `http://localhost:11434`) | Ollama embeddings / LLM |
+| `MNEMOSTACK_COLLECTION` | Qdrant collection name (default `mnemostack`) | CLI convenience |
+| `MNEMOSTACK_QDRANT_URL` | Qdrant URL (default `http://localhost:6333`) | Remote Qdrant |
+| `MNEMOSTACK_GRAPH_URI` / `MNEMOSTACK_MEMGRAPH_URI` | Memgraph bolt URI | Graph retriever / GraphStore |
+| `MNEMOSTACK_TENANT` | Tenant every recall is scoped to when the call names none (`recall.tenant` in the config, `--tenant` on the CLI) | Recall on every surface |
+| `MNEMOSTACK_ALLOW_CROSS_TENANT` | Deliberately allow tenantless recall over a multi-tenant collection (tooling inside the trust boundary; not a security control) | Recall / `serve` startup |
+| `MNEMOSTACK_QUANTIZATION_RESCORE` / `MNEMOSTACK_QUANTIZATION_OVERSAMPLING` | Qdrant quantization search parameters for dense queries (`vector.quantization_*` in the config); unset = not sent. See [the recipe](docs/recipes.md#quantizing-a-collection-without-losing-recall-quality) | Dense search on a quantized collection |
+| `MNEMOSTACK_LLM_HOST` / `MNEMOSTACK_LLM_TIMEOUT` | LLM endpoint (ollama: default inherits the embedding `--ollama-host`; openai: required base URL) and LLM request timeout | Answer / reranker / expansion LLM |
+| `MNEMOSTACK_LLM_API_KEY` | Bearer token for the `openai` LLM provider; unset or `none` = no auth header (keyless vLLM / llama.cpp) | Answer / reranker / expansion LLM |
+| `MNEMOSTACK_LLM_OPTIONS` | JSON payload options for the `openai` provider, e.g. `{"reasoning_effort":"none","chat_template_kwargs":{"enable_thinking":false}}`; explicit constructor options override the environment | Answer / reranker / expansion LLM |
+| `MNEMOSTACK_PROVIDER` / `MNEMOSTACK_EMBEDDING_PROVIDER` | Embedding provider | CLI / HTTP / MCP |
+| `MNEMOSTACK_LLM` / `MNEMOSTACK_LLM_PROVIDER` | LLM provider | Answer generation / reranking |
+| `MNEMOSTACK_BM25_PATHS` | BM25 corpus paths separated by `os.pathsep` (`:` on Unix) | CLI / HTTP / MCP BM25 retriever |
+| `MNEMOSTACK_TEXT_SEARCH` | Lexical arm: `auto`, `off`, `bm25`, `native_bm25`, or `sparse` | CLI / HTTP / MCP recall |
+| `MNEMOSTACK_AUTO_RECORD_IOR` | `true`/`false` toggle for HTTP recall exposure logging | HTTP stateful pipeline |
+| `MNEMOSTACK_EMBEDDING_MODEL` / `MNEMOSTACK_LLM_MODEL` | Override the embedding / LLM model name | CLI / HTTP / MCP |
+| `MNEMOSTACK_VECTOR_HOST` / `MNEMOSTACK_VECTOR_COLLECTION` | Aliases for the Qdrant URL / collection | CLI / HTTP / MCP |
+| `MNEMOSTACK_VECTOR_FLOOR` | Keep top-N raw vector hits in results even when fusion/rerank would drop them (0 = off) | Recall tuning |
+| `MNEMOSTACK_RECALL_OVERALL_DEADLINE` | Optional shared recall deadline in seconds, positive and finite; unset disables it | Recall tuning |
+| `MNEMOSTACK_RERANK_MODE` | LLM reranker mode: `relevant_only` (default) or `full_reorder` | HTTP / MCP runtime reranker |
+| `MNEMOSTACK_TOKEN_BUDGET` | Default recall token budget — cut results to the ranked prefix that fits (unset = off) | CLI / HTTP / MCP recall surfaces |
+| `MNEMOSTACK_GRAPH_TIMEOUT` / `MNEMOSTACK_GRAPH_HEALTH_TIMEOUT` | Memgraph query / health-check timeouts in seconds | Graph retriever |
+| `MNEMOSTACK_CONFIG` | Path to the YAML config file | All entry points |
+
+Only the providers you actually use need their keys. HuggingFace local-GPU embeddings need no keys at all. `mnemostack init` writes the same settings as YAML; explicit CLI flags override config/env defaults.
+
+## Setup and usage details
+
+### Try it in 30 seconds (Docker)
+
+Fastest way to kick the tyres. No Python install, no manual Qdrant / Memgraph setup.
+
+```bash
+git clone https://github.com/udjin-labs/mnemostack && cd mnemostack
+cp README.md examples/notes/              # any markdown will do
+GEMINI_API_KEY=your-key docker compose -f examples/docker-compose.yml up -d --build
+
+# Index the notes volume and ask a question over HTTP
+docker compose -f examples/docker-compose.yml exec mnemostack \
+    mnemostack index /data --provider gemini --collection demo
+
+curl -s http://localhost:8000/recall \
+    -H 'content-type: application/json' \
+    -d '{"query":"what is this about","limit":5}' | jq
+```
+
+The mnemostack container runs the HTTP API on port 8000 by default. Interactive docs are at [http://localhost:8000/docs](http://localhost:8000/docs). Use `docker compose exec mnemostack mnemostack <cmd>` for CLI-style operations (`index`, `search`, `health`) against the same stack.
+
+Tear down with `docker compose -f examples/docker-compose.yml down -v` (the `-v` wipes Qdrant + Memgraph state).
+
+Prefer Ollama (no cloud key needed)? Run Ollama on the host and pass `--provider ollama` everywhere instead of `gemini`. The endpoint resolves as: `--ollama-host` flag > `MNEMOSTACK_OLLAMA_HOST` env / `embedding.ollama_host` config > the native `OLLAMA_HOST` variable > `http://localhost:11434` — so a client running in a container or VM can reach a remote Ollama daemon directly. An ollama **LLM** follows the same chain and inherits the embedding host by default; set `llm.host` / `MNEMOSTACK_LLM_HOST` only when generation lives on a different box:
+
+```bash
+mnemostack index-markdown memory/ \
+    --provider ollama \
+    --embedding-model qwen3-embedding:8b \
+    --ollama-host http://192.0.2.10:11434 \
+    --embedding-timeout 180 \
+    --embedding-batch-size 64
+```
+
+`recall.overall_deadline` (environment: `MNEMOSTACK_RECALL_OVERALL_DEADLINE`) defaults to
+`null`, which disables the overall deadline. A positive finite number sets one shared budget
+in seconds across retrieval, expansion, ranking, answer generation, and retries. It bounds
+waits for parallel retriever arms, query-expansion LLM calls, vector fallback, LLM reranking,
+and answer LLM calls including specificity rewrites. Ranking stages check the budget between
+stages; skipped work or a timed-out wait returns the best results collected so far and records `recall:deadline`.
+Synchronous work already running is not interrupted and may finish in the background.
+At most 64 abandoned workers can remain live process-wide; beyond that, calls run without a bounded wait until workers finish.
+GraphResurrection retains its own `graph_timeout`.
+A guard still running inside an abandoned worker cannot fail the request; other arms' results return with `recall:deadline`.
+
+Embedding uses the batch `POST /api/embed` endpoint (one request per batch; servers too old for it are detected once and served per-item with a loud warning). The embedding timeout (`--embedding-timeout` / `MNEMOSTACK_EMBEDDING_TIMEOUT`, default 180s) is independent of the short Qdrant liveness timeout — cold loads of larger local models are legitimately slow. Vector dimensions come from the model tables (quantization-suffix aware) or, for unknown models, a one-shot probe of the live model — there is no blind fallback dimension, so a wrong-size collection can't be created.
+
+**Behind an OpenAI-compatible endpoint** (LiteLLM proxy, vLLM, llama.cpp server, an API gateway)? Use the `openai` LLM provider — it speaks `POST {base}/v1/chat/completions`, which all of them accept:
+
+```bash
+MNEMOSTACK_LLM_API_KEY=sk-... mnemostack serve \
+    --llm openai --llm-model team-llm
+```
+
+with `llm.host: http://gateway:4000` in the config (or `MNEMOSTACK_LLM_HOST`). Both the base URL and the model name are required — gateways have no meaningful defaults, so a missing one is a loud, actionable error (`serve` logs it and disables `/answer`) instead of a silent dial to the wrong place. A base URL already ending in `/v1` (the OpenAI SDK convention) works too. Leave the key unset (or set it to `none`) for keyless vLLM / llama.cpp deployments; embeddings are unaffected and keep their own provider. Redirects are refused outright — a gateway 3xx becomes a normal error instead of carrying the bearer token to another origin. Reasoning models pointed straight at the cloud OpenAI endpoint (o1 family) reject the classic fields; via the SDK, `get_llm("openai", token_param="max_completion_tokens", options={"temperature": None})` renames the budget field and drops the fields they refuse (gateways normally translate this themselves).
+
+**Reasoning models** (qwen3, deepseek-r1 and similar): mnemostack disables thinking by default (`think=False` in `OllamaLLM`) — with thinking on, these models spend the whole token budget on thoughts and return empty text, silently degrading reranking, expansion and extraction. Pass `get_llm("ollama", think=None)` to keep the model's own default, or `think=True` to force it on models that support thinking. Extra generation options go through `options={...}` (e.g. `{"num_ctx": 8192}`).
+
+### Installation
+
+```bash
+# From PyPI
+pip install mnemostack
+
+# Optional extras
+pip install 'mnemostack[huggingface]'  # local GPU embeddings
+pip install 'mnemostack[mcp]'          # MCP server
+pip install 'mnemostack[dev]'          # tests + linters
+```
+
+Run a local Qdrant for the vector store:
+
+```bash
+# tag rule: match your installed qdrant-client - same major, minor within 1
+docker run -p 6333:6333 qdrant/qdrant:v1.20.0
+```
+
+Optionally a Memgraph for the knowledge graph:
+
+```bash
+docker run -p 7687:7687 memgraph/memgraph:latest
+```
+
+### CLI quick start
+
+```bash
+# Health check
+mnemostack health --provider ollama
+
+# Index a directory of notes
+mnemostack index ./my-notes/ --provider gemini --collection my-memory --recreate
+
+# Hybrid recall
+mnemostack search "what did we decide about auth" --provider gemini --collection my-memory
+
+# Synthesize answer
+mnemostack answer "what is the capital of France" --provider gemini --collection my-memory
+
+# Record explicit feedback into the same state file used by the HTTP/MCP pipeline
+mnemostack feedback <hit-id> --signal clicked --query "what did we decide about auth" \
+  --source-list vector --source-list bm25
+
+# MCP server (for Claude Desktop, Cursor, etc.)
+mnemostack mcp-serve --provider gemini --collection my-memory
+```
+
+#### Progressive tiers — pay only for the detail you need
+
+`search` and `answer` accept an optional `--tier {1,2,3}` flag that bounds how
+much output a call produces. Useful when a recall is called from a long-running
+agent loop where full recall output would burn context unnecessarily.
+
+```bash
+# Tier 1 (~50 tokens) — just "is there anything in memory about this?"
+# Returns position, score, source labels; no text.
+mnemostack search "VPN failover" --tier 1 --provider gemini
+
+# Tier 2 (~200 tokens) — triage with short snippets (~40 chars each)
+mnemostack search "VPN failover" --tier 2 --provider gemini
+
+# Tier 3 (~500 tokens) — full 200-char previews, up to 10 results
+mnemostack search "VPN failover" --tier 3 --provider gemini
+```
+
+Omit `--tier` to get the full, uncapped output (backward compatible). Rule of
+thumb for agents: **tier 1 for navigation / existence checks, tier 3 only when
+you actually need to read the memories.** `answer` is already compressed, so it
+needs a tier less often — use `--tier 1` there to drop the `SOURCES:` block
+when only the answer text is wanted.
+
+### Streaming ingest API
+
+When you want to feed items into mnemostack from code — a chatbot that logs every message, a scraper, a daemon tailing a log — use the `Ingestor`. It handles batching, deduplication, and idempotency for you.
+
+```python
+from mnemostack.embeddings import get_provider
+from mnemostack.vector import VectorStore
+from mnemostack import Ingestor, IngestItem
+
+emb = get_provider("gemini")
+store = VectorStore(collection="my-memory", dimension=emb.dimension)
+store.ensure_collection()
+
+ing = Ingestor(embedding=emb, vector_store=store, batch_size=64)
+
+stats = ing.ingest([
+    IngestItem(text="alice joined acme on 2024-03-01", source="notes/alice.md",
+               timestamp="2024-03-01T09:00:00Z"),  # event time — drives temporal recall
+    IngestItem(text="alice left acme on 2025-06-15", source="notes/alice.md", offset=100),
+])
+print(stats)  # IngestStats(seen=2, embedded=2, upserted=2, skipped=0, failed=0)
+```
+
+Guarantees:
+
+- **Idempotent.** Each item gets a deterministic UUID-shaped content id computed from `(source, offset, text)`. Re-running with the same input is a no-op: Qdrant upsert replaces the point onto itself, and an in-process LRU cache skips even the embedding call for items already seen in this session.
+- **Batched.** Items are embedded in batches of `batch_size`, so provider HTTP overhead amortises across many items.
+- **Dated.** Every payload records `indexed_at` (UTC). Pass `timestamp=` (or `metadata={"timestamp": ...}`) to set the event time the temporal retriever filters on. With `window_size > 1`, sliding-window chunks also carry the window's temporal range as `window_start_ts` / `window_end_ts` payload keys.
+
+#### Images in the input (optional)
+
+A memory stack that indexes only text answers "Not in memory" to questions whose answer lived in a photo. If your data contains images, describe them at ingest time and index the description:
+
+```python
+from mnemostack.llm import get_llm
+
+llm = get_llm("gemini")                 # or get_llm("ollama", model="llava") with a local vision model
+desc = llm.describe_image(photo_bytes, mime_type="image/jpeg")  # one vision call per image
+caption = f" [shared a photo: {desc.text}]" if desc.ok and desc.text else ""
+item = IngestItem(text=f"{message_text}{caption}", source=..., timestamp=...)
+```
+
+`describe_image` is fully opt-in — nothing in the ingest or recall paths calls it, and text-only pipelines are unaffected. It works with any provider that has vision support (Gemini; Ollama vision models such as llava, llama3.2-vision, qwen2.5-vl) — providers without it return a normal fail-open error response. The default prompt produces a dense, index-oriented description (objects, any text/signs verbatim, setting, actions); pass `prompt=` to customize.
+- **Streaming-friendly.** `ing.stream(item_iter)` yields per-batch stats so long feeds can be monitored without waiting for the whole stream to drain.
+- **Graceful.** If a single item fails to embed, it is counted as `failed` but the rest of the batch still lands.
+
+```python
+# Long-lived feed (e.g. inside a FastAPI or Celery worker)
+for item in your_firehose():
+    ing.ingest_one(IngestItem(text=item.body, source=item.channel, metadata={
+        "user_id": item.user_id,
+        "ts": item.ts.isoformat(),
+    }))
+```
+
+### Python API
+
+```python
+from mnemostack.embeddings import get_provider
+from mnemostack.vector import VectorStore
+from mnemostack.recall import Recaller, AnswerGenerator
+from mnemostack.llm import get_llm
+
+emb = get_provider("gemini")
+store = VectorStore(collection="my-memory", dimension=emb.dimension)
+store.ensure_collection()
+
+# ... index data here ...
+
+recaller = Recaller(embedding_provider=emb, vector_store=store)
+results = recaller.recall("what did we decide", limit=10)
+
+# Each result: .id .text .score .sources (retriever labels) .payload
+# The list order is authoritative — .score need not follow it, and is not a
+# confidence; re-sorting by it undoes reranking. docs/api-stability.md#what-score-is-not
+
+# Optional: synthesize a concise answer
+gen = AnswerGenerator(llm=get_llm("gemini"))
+answer = gen.generate("what did we decide", results)
+print(answer.text, answer.confidence, answer.sources)
+```
+
+**Count and "list all X" questions** need set completeness, which similarity top-K does not guarantee — the model counts what it sees and undercounts, returning a subset. For those, retrieve a wide candidate pool and enable the two-pass extract-and-aggregate mode:
+
+```python
+gen = AnswerGenerator(llm=get_llm("gemini"), list_extract_mode=True)
+pool = recaller.recall("how many trips did user A take", limit=150)   # wide pool, not top-10
+answer = gen.generate("how many trips did user A take", pool)
+```
+
+`list_extract_mode` routes count/list questions through an extract pass (pulls every matching item as JSON) and a finalize pass (formats the list or count); other question categories are unaffected. The extract pass walks the **whole pool you pass in**, in batches of `list_extract_batch_size` (default 40), merging items across batches — so pool order does not decide whether a memory is seen, and the cost is one LLM call per batch plus finalize. An empty extract over a non-empty pool is retried once before abstaining. For guaranteed exhaustiveness on a bounded slice, build the pool from a full scan (`VectorStore.scroll`) filtered to the relevant slice. To evaluate it on your own data, the benchmark harness exposes the same knobs: `benchmarks/locomo_single.py --list-extract --pool 150`.
+
+`list_finalize="verbatim"` skips the finalize LLM pass and assembles the answer deterministically from the extracted items (the count for count questions, the comma-joined items otherwise). Recommended for non-English corpora: an LLM finalize pass can paraphrase or distort items instead of repeating them verbatim. The default `"llm"` keeps the formatting pass.
+
+**Enriching payloads at ingest.** `Ingestor(enrich=callable)` calls your function for every final item (including assembled window chunks) and merges the returned dict into the chunk payload — the mechanism is core, the extractor is yours (content extraction is corpus- and language-specific, so mnemostack ships none). Fail-open: a raising hook logs a warning and the item is indexed without enrichment; `text`/`source`/`offset` and an explicit item timestamp can't be overridden. From the CLI: `mnemostack index docs/ --enrich mypkg.extractors:invoice_fields`. Enriched fields combine with the rest of the stack: scope recall with `filters={"amount": {"gte": 100}}` and show them to the answer LLM with `context_fields=["amount"]`.
+
+```python
+def invoice_fields(item):          # yours — any language, any domain
+    amounts = AMOUNT_RE.findall(item.text)
+    return {"amounts": amounts} if amounts else {}
+
+ing = Ingestor(embedding=emb, vector_store=store, enrich=invoice_fields)
+```
+
+Already-indexed collections don't need re-embedding to pick up enrichment: `mnemostack index docs/ --enrich ... --refresh-payloads` rewrites the payloads of existing chunks in place (Qdrant `set_payload`, vectors untouched) — only genuinely new chunks pay for embedding.
+
+**Structured payload fields in the answer prompt.** By default the answer context shows each memory's timestamp, source and text. `AnswerGenerator(context_fields=["author", "amount"])` additionally projects the named payload fields into each memory's context line (`author=…`, lists comma-joined, long values truncated; memories without the field render without it). Use it for structured facts the answer needs — who said it, amounts, your own ingest-time enrichments. Note the boundary: projection only changes what the answer prompt *shows* — retrieval ranks by `text`, so content that must be *findable* (image captions and similar) belongs in the text itself, not in a payload field.
+
+**Conversational follow-ups.** "And who wrote that?" carries none of the conversation, so recall misses. `rewrite_followup(query, history, llm)` resolves pronouns and ellipses into a standalone question before recall — mnemostack holds no dialog state, you pass the history (`(question, answer)` pairs or plain lines, oldest first). One LLM call; the prompt instructs the model to return a self-contained question unchanged, and any failure falls back to the original query. To skip the call entirely for queries you already know are standalone, pass `needs_rewrite=callable` — that trigger heuristic is language-dependent, so core ships none (same boundary as `question_classifier`).
+
+```python
+from mnemostack.recall import rewrite_followup
+
+standalone = rewrite_followup("а кто это написал?", history, llm)
+results = recall_flow(recaller, standalone, limit=10, pipeline=pipeline)
+```
+
+**Non-English corpora.** The built-in answer prompts and the question classifier are English; on other languages the extract/finalize passes degrade instead of helping. Both are pluggable:
+
+```python
+gen = AnswerGenerator(
+    llm=llm,
+    list_extract_mode=True,
+    prompt_overrides={                       # any subset; templates in YOUR corpus language
+        "list_extract": MY_EXTRACT_TEMPLATE,    # must contain {context} and {query}
+        "list_finalize": MY_FINALIZE_TEMPLATE,  # must contain {query} and {items}
+        "temporal": MY_TEMPORAL_TEMPLATE,       # category prompts: {context} and {query}
+    },
+)
+# the classifier's patterns are English too — route question classes yourself:
+answer = gen.generate(query, pool, category="count")
+```
+
+Override names: the seven category prompts (`general`, `list`, `count`, `temporal`, `multihop`, `inference`, `adversarial`) plus `list_extract` / `list_finalize`. Required placeholders are validated at construction. mnemostack ships no translations by design — prompt quality is corpus- and domain-specific, so you own the templates.
+
+#### Full stack: 4-source retrieval + configurable pipeline + reranker
+
+This is the full runtime configuration. The LoCoMo numbers above are produced by a subset of it: the benchmark loop runs Vector + BM25 retrieval, the configurable pipeline, `window_size=3`, query expansion, and top-K 25 — the LLM reranker and the graph retriever are runtime-only features and are not part of the benchmark methodology (see `benchmarks/run_locomo.sh` for the exact reproduction path).
+
+```python
+from mnemostack.embeddings import get_provider
+from mnemostack.llm import get_llm
+from mnemostack.vector import VectorStore
+from mnemostack.recall import (
+    Recaller, Reranker,
+    VectorRetriever, BM25Retriever,
+    MemgraphRetriever, TemporalRetriever,
+    build_full_pipeline,
+)
+from mnemostack.recall.pipeline import FileStateStore, default_state_path
+
+emb = get_provider("gemini")
+store = VectorStore(collection="my-memory", dimension=emb.dimension)
+
+retrievers = [
+    VectorRetriever(embedding=emb, vector_store=store),
+    BM25Retriever(docs=bm25_docs),                       # see "Building a BM25 corpus" below
+    MemgraphRetriever(uri="bolt://localhost:7687"),      # optional
+    TemporalRetriever(embedding=emb, vector_store=store),
+]
+recaller = Recaller(retrievers=retrievers)
+raw = recaller.recall("what did we decide", limit=30)
+
+pipeline = build_full_pipeline(state_store=FileStateStore(default_state_path()))
+reranked = pipeline.apply("what did we decide", raw)
+reranker = Reranker(llm=get_llm("gemini"), max_items=20)
+final = reranker.rerank("what did we decide", reranked)[:10]
+```
+
+`Reranker` is generative: it asks an LLM to return candidate IDs. If you have
+a backend that returns numeric relevance scores instead (a local cross-encoder
+or a hosted rerank service), use `ScoringReranker`:
+
+```python
+from mnemostack.recall import ScoringReranker
+
+scoring_reranker = ScoringReranker(scorer=my_relevance_scorer, max_items=100)
+final = scoring_reranker.rerank("retention policy", reranked)[:10]
+```
+
+The scorer object only needs `score(query, documents) -> Iterable[float]`.
+Scores are relative; no absolute threshold is applied by default. Generative
+LLMs can be wrapped as scorers, but dedicated rerank models/services are the
+more stable default because they avoid ID-format parsing.
+
+##### Building a BM25 corpus
+
+`BM25Retriever` needs a list of `BM25Doc`. Each doc is the atomic unit BM25 will rank — typically a paragraph or chunk of one of your source files:
+
+```python
+from mnemostack.recall import BM25Doc
+from pathlib import Path
+
+docs = []
+for i, path in enumerate(Path("my-notes/").rglob("*.md")):
+    text = path.read_text()
+    # chunk however you like — here: 800-char windows
+    for j in range(0, len(text), 800):
+        chunk = text[j : j + 800]
+        if chunk.strip():
+            docs.append(BM25Doc(
+                id=f"{path.name}:{j}",
+                text=chunk,
+                payload={"source": str(path), "offset": j},
+            ))
+```
+
+For transcript-like inputs (adjacent user and assistant turns), prefer `MessagePairChunker` so related turns stay in the same chunk. See `mnemostack.chunking`.
+
+If your canonical memory corpus is already stored in Qdrant payloads, build the BM25 corpus from the same collection instead of maintaining a separate markdown export. This keeps exact-token lookup aligned with vector search (IDs, commit hashes, filenames, quoted phrases):
+
+```python
+from qdrant_client import QdrantClient
+from qdrant_client.models import FieldCondition, Filter, MatchValue
+from mnemostack.recall import BM25Retriever
+
+client = QdrantClient(host="localhost", port=6333)
+bm25 = BM25Retriever.from_qdrant(
+    client,
+    "memory",
+    scroll_filter=Filter(
+        must=[FieldCondition(key="chunk_type", match=MatchValue(value="transcript"))]
+    ),
+    limit=40_000,
+)
+
+hits = bm25.search("api_key_rotation", limit=5)
+```
+
+You can also call `bm25_docs_from_qdrant(...)` directly if you want to combine Qdrant payload chunks with local `BM25Doc`s before constructing `BM25Retriever`.
+
+For morphologically rich languages or domain-specific normalization, pass a
+custom tokenizer/analyzer. The same analyzer is applied to corpus and query
+text; the default exact-token behavior is unchanged when omitted.
+
+```python
+from mnemostack.recall import BM25Retriever
+
+def analyzer(text: str) -> list[str]:
+    # Normalize only what your corpus needs; preserve IDs, hashes and paths.
+    ...
+
+bm25 = BM25Retriever.from_qdrant(client, "memory", tokenizer=analyzer)
+```
+
+If you pre-tokenize `BM25Doc` objects yourself, pass `retokenize=False` when
+constructing `BM25`/`BM25Retriever` with the same analyzer. The
+`BM25Retriever.from_qdrant(...)` helper does this automatically.
+
+### HTTP server (optional)
+
+If you want mnemostack available to callers that aren't Python — any service written in Node, Go, Rust, or a plain `curl` from a shell script — install the server extra and expose it over HTTP:
+
+```bash
+pip install 'mnemostack[server]'
+export GEMINI_API_KEY=...
+mnemostack serve --provider gemini --collection memory --port 8000
+```
+
+`mnemostack serve` binds to `127.0.0.1` by default. Use
+`--host 0.0.0.0` only behind your own auth/rate-limit layer.
+
+Endpoints:
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET`  | `/health`  | Qdrant + Memgraph reachability + config summary |
+| `GET`  | `/healthz` | Liveness probe — `200` whenever the process is up (no backend checks) |
+| `GET`  | `/readyz`  | Readiness probe — `503` when Qdrant is unreachable (graph is fail-soft, never gates) |
+| `GET`  | `/status`  | Operator snapshot — config, live dependency reachability, headline counters |
+| `POST` | `/recall`  | Hybrid recall with optional configurable pipeline |
+| `POST` | `/answer`  | Recall + LLM answer synthesis with citations |
+| `GET`  | `/resolve/{chunk_id}` | Verify a citation — resolve a chunk id back to its source document — `read` |
+| `POST` | `/feedback` | Explicit click/usefulness feedback for stateful learning |
+| `POST` | `/memories` | Create memories (server-side embedding, store-backed dedup) — `write` |
+| `GET`  | `/memories` | List what the tenant holds from one `source` (ids + integrity metadata, no text) — `read` |
+| `DELETE` | `/memories` | Irreversible erasure by id list or `source` — `write` |
+| `POST` | `/invalidate` | Non-destructive retraction by id list or `source` — `write` |
+| `POST` | `/triples` | Write knowledge-graph facts — `write` |
+| `GET`  | `/metrics` | Prometheus scrape endpoint (counters + summary histograms) |
+| `GET`  | `/docs`    | Interactive OpenAPI UI |
+
+```bash
+curl -s http://localhost:8000/recall \
+    -H 'content-type: application/json' \
+    -d '{"query": "what did we decide about auth", "limit": 10}' | jq
+```
+
+Response shape (abridged):
+
+```jsonc
+{
+  "query": "what did we decide about auth",
+  "results": [
+    { "id": "...", "text": "...", "score": 0.72, "source": "notes/...md", "metadata": {}, "annotations": {} }
+  ],
+  "degraded": [],  // fallback signals plus routine tags duplicated from notes; entries absent from notes indicate faults
+  "notes": [],     // routine signals for stages that did not apply, e.g. "temporal:no_parse" on a date-less query; never a fault
+  "tokens_estimate": 512   // estimated text tokens of the returned results
+}
+```
+
+Ranking `annotations` contains `flags`, `dampened`, `echo_penalty`, `access_boost`, `freshness`, `ior_penalty`, `curiosity_boosted`, and `q_value` when the corresponding stages act on that result. A payload copy of an annotation is written only when stored metadata has no key of that name; payload copies are deprecated in favour of `annotations`. For stored metadata using any of these eight names, the payload keeps the client value, and client-stored `flags` is no longer appended to.
+
+The order of `results` is authoritative — do not re-sort by `score`: many stages and fallback paths write that number on different scales, and a rerank changes the order without rewriting it. See [what `score` is not](docs/api-stability.md#what-score-is-not).
+
+Pass `"include_trace": true` in the request body to additionally get a `trace` object with per-retriever ranked lists, the fused order, the order after each ranking-pipeline stage (`stages`), and the post-rerank order — useful when debugging why a memory did or didn't surface. In Python, `RecallTrace.loss_report(expected_ids)` turns a trace into the position of each expected id at every step and the steps where it entered or left the top 1/5/10/20/30.
+
+Pass `"token_budget": 2000` to cap how much prompt space the results may occupy: the final ranking is cut to the prefix whose total text tokens fit the budget (a hard cap — never overshot, so an oversized top hit yields an empty list rather than a blown prompt). `tokens_estimate` in the response is the value the budget is enforced against; counting uses a dependency-free heuristic (≈4 chars/token for ASCII, ≈2 for non-ASCII scripts), so leave yourself margin rather than budgeting to the exact context limit. A server-wide default can be set with `recall.token_budget` in the config file (or `MNEMOSTACK_TOKEN_BUDGET`); per-request values override it. The same parameter is available on `/answer` (caps the memories fed to the LLM), on MCP `mnemostack_search` / `mnemostack_answer`, on the CLI as `--token-budget`, and in the library as `recall_flow(..., token_budget=...)` — where you can also pass an exact `token_counter=` (e.g. a tiktoken encoder) instead of the heuristic.
+
+Pass `"filters": {...}` to scope recall by payload fields — exact match (`{"tenant": "a"}`) or inclusive ranges (`{"timestamp": {"gte": "2026-01-01"}}`). Filters apply inside **every** retriever, not as a post-filter on the output: the candidate pool itself is restricted, so top-K stays full and results never include points outside the scope — this is the isolation contract for multi-tenant and per-user memory. Sources that cannot attribute their results to the scope contribute nothing rather than leak. The knowledge-graph retriever attributes its hits where it can: a filter key the hit's own node metadata carries (e.g. `index_root`) is checked in place, the rest is proven through the hit's vector chunks — a graph file hit (with a recorded root, pinning the probe to its exact document) passes the filter exactly when at least one of its chunks does; entity nodes and anything else without pinnable chunks are still excluded, never leaked. The same `filters` parameter is available on `/answer` (the answer is generated only from in-scope memories, including retry sub-recalls), on MCP `mnemostack_search` / `mnemostack_answer`, on the CLI as `--filters '{"tenant": "a"}'`, and in the library as `recaller.recall(query, filters=...)` / `recall_flow(..., filters=...)`.
+
+The `/answer` endpoint adds `{ answer, confidence, sources }` alongside the memories and carries the same `degraded` / `notes` / opt-in `trace` fields, plus `tokens_used` — the LLM provider's reported token usage for answer generation plus a specificity rewrite when it changes the answer (provider-specific semantics; `null` when the provider reports nothing). If the LLM isn't configured, `/answer` returns `503` and `/recall` still works — graceful degradation applies at the HTTP layer too.
+
+Start the server with `--retry-on-weak` if you want a recall that comes back nearly empty to be paraphrased by the answer LLM and asked again, fusing the rounds by reciprocal rank — so a memory that two phrasings both find outranks one that only a single phrasing did, and a later paraphrase can beat an earlier one. What counts as "weak" is a COUNT (`--retry-weak-below`, default 1 — only a recall that returned nothing), not a score: fused scores are RRF values encoding rank, not confidence, so a threshold on them would measure nothing. One extra round, at most two paraphrases, and every retry carries the caller's tenant, filters, validity view and budget unchanged. Budget for it accordingly: each variant repeats your recall in full, reranker included, so a weak recall costs up to three LLM calls (one paraphrase plus one rerank per variant) and two extra retrieval rounds — not the single call the name suggests. Two consequences worth knowing before you switch it on: a retried response fuses over several rounds where an unretried one fuses over a single one, so the rank basis behind `score` differs and the two are never comparable — threshold on rank, not on the number, and see [what `score` is not](docs/api-stability.md#what-score-is-not) for what the number holds on each path; and a retry never returns fewer memories than it was given — if the fused list plus your token budget would hand back less than the recall already had, the original results come back untouched. That is a guarantee about the size of the response, not its membership: at a fixed `limit` a hit that a paraphrase ranks first will take the slot of one your original phrasing ranked last, which is what asking again is for. Off by default, and a request can only opt *out* of it — the server pays for the LLM call, so enabling it is the operator's call.
+
+Stateful learning is explicit. Start the server with `--auto-record-ior` if you want `/recall` and `/answer` responses to update inhibition-of-return state, and with `--record-access` (or `MNEMOSTACK_RECORD_ACCESS`) if you want them to stamp `access_count`/`last_accessed` on every point they return — the reinforcement the freshness stage reads, recorded where the retrieval actually happens instead of in each client. Both are **off by default**: they turn reads into writes. Access recording is fail-open (a failed write is logged and counted, never raised), best-effort on the count (no atomic increment exists; concurrent recalls of one point can record one increment, and the reader clamps reinforcement at 10 anyway), and scoped to the caller's tenant.
+
+It also changes what ranking means, so know which direction it moves things: recording these keys makes the freshness stage's access term live, and that term is a **bonus, not a decay**. A memory that has been retrieved gets a multiplier in `[1.0, 1 + access_bonus_max]` (0.25 by default, reached at 10 accesses) which fades back toward 1.0 as the access ages and stops there — use can raise a memory's rank, never lower it. A memory nothing has ever retrieved sits at exactly 1.0, so a deployment that records no accesses ranks exactly as it did before. Set `--access-bonus-max 0` (or `MNEMOSTACK_ACCESS_BONUS_MAX=0`, honoured by `serve`, `search`, `answer` and `mcp-serve` alike) to take the access signal out of ranking entirely — the switch to reach for if your clients stamp `last_accessed` themselves, since leaving `--record-access` off does not help there: the stage reads those keys whoever wrote them. Values are clamped to `[0, 1]`. Because this is the one term a recall's own output feeds back into, it is bounded on purpose — small ceiling, saturating counter, and only the points actually handed to the caller are recorded. Send user actions to `/feedback` to update Q-learning:
+
+```bash
+curl -s http://localhost:8000/feedback \
+    -H 'content-type: application/json' \
+    -d '{"hit_id":"...","signal":"clicked","query":"what did we decide about auth","sources":["vector","bm25"]}' | jq
+```
+
+`signal` is one of `useful`, `clicked`, or `irrelevant`; pass the `retrievers` list returned by `/recall` as `sources` so Q-learning can update the right source weights.
+The same state update is available from CLI as `mnemostack feedback ...` and from MCP as `mnemostack_feedback`.
+
+**Tenantless recall over multi-tenant data is refused.** A recall that names no tenant — no `tenant=` argument, no `Recaller(default_tenant=...)`, no `MNEMOSTACK_TENANT` — is refused with `CrossTenantRecallError` when what it would read holds more than one `tenant_id` — every collection behind the recaller is asked, and so is a configured graph, and one tenant each in two stores counts as two (two small server-side queries per collection, exact with or without a payload index; the answer is cached and re-checked every minute), instead of silently searching every tenant at once. An unauthenticated `serve` over such data (collections and graph together) refuses to start, and the MCP `mnemostack_graph_query` tool refuses an unscoped query over a graph holding several tenants. Collections with a single tenant — including one tenant plus legacy points that carry no `tenant_id` — are unaffected, and `allow_cross_tenant=True` / `--allow-cross-tenant` / `MNEMOSTACK_ALLOW_CROSS_TENANT` restores the old behavior for deliberate cross-tenant tooling. A configured scope applies to the whole surface: on an unauthenticated `serve` or `mcp-serve` it scopes writes as well as reads (list, invalidate and delete included), the CLI's `search`, `answer`, `synthesize`, `feedback` and `resolve` default to it, and a file-backed BM25 corpus is stamped as that tenant's; `mnemostack index` takes its own explicit `--tenant`. **Scoping hides points that carry no `tenant_id`** — before switching an existing collection to a scope, stamp its points with `mnemostack tenant-migrate --tenant <id>` (a scoped `serve` warns at startup when it finds unstamped points). This guard catches misconfiguration; it is not a security boundary. It refuses only data verifiably holding several tenants: a probe that cannot answer (store down, timeout) lets the request through (the recall guard logs a warning once; the MCP graph query does not). A verdict is re-checked after a minute; a refresh that cannot answer keeps a known multi-tenant verdict (it keeps refusing until a probe answers again), while a single-tenant one turns undetermined and the graph sits out meanwhile. And whoever holds the store credentials can query the store directly. With auth off, a tenant scope configured on the server (`MNEMOSTACK_TENANT`) confines every request to that one tenant but is not access control (with auth on, the key decides the tenant and the configured scope does not restrict it), and a `tenant=` a caller passes itself is not verified at all. Untrusted consumers therefore need `serve --auth` below (the key decides the tenant) or an authentication layer in front.
+
+**Multi-tenant auth.** By default the server is unauthenticated (single-tenant; put it behind your own auth layer). For a hard, per-tenant boundary, start it with `--auth` and issue service keys:
+
+```bash
+mnemostack keys add --tenant acme --scopes read,write   # prints the key once
+mnemostack serve --auth                                  # default-deny on every data endpoint
+curl -s http://localhost:8000/recall \
+    -H 'X-API-Key: msk_...' -H 'content-type: application/json' \
+    -d '{"query":"..."}'                                  # or: Authorization: Bearer msk_...
+```
+
+The **tenant is resolved from the key** (a client can't assert another's), enforced across the vector store, the tenant-scoped knowledge graph, and per-tenant learning state — so it's a real authorization boundary, unlike the caller-supplied `filters` above. `/recall`, `/answer` and `GET /memories` require `read`; `/feedback`, `POST`/`DELETE /memories`, `/invalidate` and `/triples` require `write`; a missing/invalid key is `401`, insufficient scope `403`. Cap each tenant with `mnemostack quota set --tenant <id> --max-points N --max-rps R` (storage enforced at ingest, rate on the HTTP surface → `429`). The operator endpoints (`/health`, `/healthz`, `/readyz`, `/status`, `/metrics`) stay reachable without a key; under `--auth`, `/metrics` shows tenant labels only to an `admin` key. Protect them at your proxy if sensitive. Auth is **off by default**; you can still front the server with your own reverse proxy (nginx, Caddy, Traefik) either way. See [`docs/deployment.md`](docs/deployment.md) and [`docs/api-stability.md`](docs/api-stability.md).
+
+### Knowledge graph (optional)
+
+```python
+from mnemostack.graph import GraphStore
+
+graph = GraphStore(uri="bolt://localhost:7687")
+graph.add_triple("alice", "works_on", "project-x", valid_from="2024-01-01")
+graph.add_triple("alice", "works_on", "project-y", valid_from="2024-07-01")
+
+# Who was alice working on in March?
+march_facts = graph.query_triples(subject="alice", as_of="2024-03-15")
+```
+
+Current graph facts use the explicit `valid_until="current"` marker. If you
+created graph data with an older release, run
+`mnemostack graph-migrate-current --dry-run` first, then
+`mnemostack graph-migrate-current` to backfill legacy `NULL` markers.
+
+The apply command also creates the Memgraph indexes that the writes of triples and
+file links use: `Entity(name)`, `File(name)` and `File(name_lower)`. A statement the
+backend rejects is reported as a warning and does not stop the command. Dry runs do
+not create indexes.
+
+### MCP server for Claude Desktop
+
+Add the entry below to your Claude Desktop config file:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- Linux: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "mnemostack": {
+      "command": "mnemostack",
+      "args": ["mcp-serve", "--provider", "gemini", "--collection", "my-memory"],
+      "env": {
+        "GEMINI_API_KEY": "your-key-here"
+      }
+    }
+  }
+}
+```
+
+Claude will then be able to call `mnemostack_search`, `mnemostack_answer`, and graph tools.
+
+### Custom embedding provider
+
+```python
+from mnemostack.embeddings import EmbeddingProvider, register_provider
+
+class MyProvider(EmbeddingProvider):
+    @property
+    def name(self): return "my-provider"
+    @property
+    def dimension(self): return 512
+    def embed(self, text): ...
+    def embed_batch(self, texts): ...
+
+register_provider("my-provider", MyProvider)
+```
+
+`embed`/`embed_batch` are the neutral primitives and stay the required
+surface. Ingestion and retrieval call the inherited *role methods* —
+`embed_document(s)` for chunks, `embed_query`/`embed_queries` for queries —
+which apply the model family's **embedding profile** exactly once before
+delegating to your primitives. Built-in profiles cover asymmetric families
+(Qwen3-Embedding's query instruction; E5's `query: `/`passage: ` prefixes;
+the multilingual-E5-instruct variant's instruction format);
+symmetric models resolve to the identity profile and behave exactly as
+before. Transforms touch only inference input — stored text, chunk ids,
+lexical search and citations keep the original document text. To teach
+mnemostack a new family without patching it:
+
+```python
+from mnemostack.embeddings import EmbeddingProfile, register_embedding_profile
+
+register_embedding_profile("ollama", EmbeddingProfile(
+    name="my-family",
+    version=1,
+    model_patterns=("my-family-embed:*",),
+    query_transform={"kind": "prefix", "prefix": "query: "},
+))
+```
+
+Indexed points are stamped with a document-space fingerprint (provider +
+model + document transform + dimension + provider inference knobs —
+profile name/version are metadata and never hashed; upgrading from 1.x? see
+[docs/migration-1.x-to-2.0.md](docs/migration-1.x-to-2.0.md)); `mnemostack index` /
+`index-markdown` refuse a collection embedded under a different space, and
+`doctor` reports the active profile and fingerprint.
+
+## Install for an OpenClaw-style agent
+
+If you run an OpenClaw-style assistant with its own `scripts/recall.sh` or similar recall entry point, you don't have to wire mnemostack in by hand. Ask the assistant to do it and it can follow the steps below verbatim.
+
+(These steps are written against the markdown-backed memory layout popularised by [OpenClaw](https://clawhub.ai) / [OpenClaw](https://github.com/openclaw/openclaw) — the reasoning applies to any assistant whose memory lives in `MEMORY.md` + daily notes.)
+
+**Assistant, read this section and follow the steps if your user asks you to install mnemostack.**
+
+1. **Install the package into whichever Python env your recall scripts use.**
+
+   ```bash
+   pip install mnemostack
+   ```
+
+   Confirm with `python3 -c "import mnemostack; print(mnemostack.__version__)"`.
+
+2. **Make sure Qdrant and (optionally) Memgraph are reachable.** If either is missing, start them:
+
+   ```bash
+   # tag rule: match your installed qdrant-client - same major, minor within 1
+   docker run -d -p 6333:6333 --name qdrant qdrant/qdrant:v1.20.0
+   docker run -d -p 7687:7687 --name memgraph memgraph/memgraph:latest   # optional
+   ```
+
+   Check with `curl -sf http://localhost:6333/collections` and `echo 'RETURN 1;' | cypher-shell -a bolt://localhost:7687`.
+
+3. **Populate the vector store with the assistant's existing memory.** Almost every OpenClaw-style assistant stores memory as markdown files — `MEMORY.md`, `memory/*.md` daily notes, maybe `USER.md` / `TOOLS.md`. Those files are the ground truth; Qdrant is just a searchable index on top of them. So "migration" here really means a first-time ingest.
+
+   Two cases:
+
+   **Case A — user has no Qdrant yet (default OpenClaw setup, markdown-only memory).**
+
+   Stand up Qdrant (see step 2), then index the workspace in one command:
+
+   ```bash
+   mnemostack index ~/.openclaw/workspace/ \
+       --provider gemini \
+       --collection memory \
+       --chunk-size 800
+   ```
+
+   This walks every `*.md` / `*.txt` under the workspace, chunks them, embeds each chunk with the chosen provider, and upserts into Qdrant. For a typical workspace (a few megabytes of notes) this finishes in a minute or two and stays well inside free-tier embedding quotas.
+
+   **Re-running is safe.** `mnemostack index` uses a deterministic id per `(source, offset, content)` chunk, so a second run skips unchanged chunks (no duplicates, no wasted embedding calls) and only re-embeds chunks whose content changed or moved. Use `--recreate` if you deliberately want to wipe and rebuild from scratch.
+
+   Memgraph is optional — skip it for a pure markdown-backed memory and `MemgraphRetriever` just won't be part of the retriever list.
+
+   **Case B — user already has Qdrant / Memgraph populated by another plugin or a prior assistant run.** Don't re-index. mnemostack reads existing collections and graphs as-is; payload like `chat_id`, `memory_class`, `valid_from` is preserved. Just point `VectorStore(collection=...)` at the existing collection name and `MemgraphRetriever(uri=...)` at the existing graph.
+
+   **Critical for both cases:** use the *same embedding model* for the query that was used for the stored points. Mixing providers/models across ingest and query silently returns garbage — no error, just bad results. Indexing commands now enforce this for documents: points carry a document-space fingerprint and `index`/`index-markdown` refuse a collection embedded under a different provider/model/profile.
+
+4. **Point your recall entry at mnemostack.** Swap your search helper to use the 4-retriever `Recaller` from the "Full stack" example above. If your recall script has a `--unified` flag, route to mnemostack first and fall back to the legacy code path on any exception.
+
+5. **Keep the fallback wired.** Don't delete the existing recall implementation. Route mnemostack as the primary, fall back to the old recall on any exception. A bad upgrade becomes a one-minute rollback, not an outage.
+
+6. **Smoke-test on real queries from the user's memory**, not toy strings. Ask at least one exact-token query (an IP, a ticker, an error string), one semantic query, one temporal query ("what did we decide last March"), and one list query. If any regresses vs the old recall, keep both running in parallel until you understand why.
+
+7. **Write a short note in the user's daily memory** describing what changed: which command was used to ingest, which embedding provider, which collection name, and where the fallback lives. Future sessions need this to avoid re-indexing with a different model and trashing recall quality.
+
+If you're a human operator and you'd rather do this yourself, the same steps apply; treat them as a checklist.
+
+## OpenClaw auto-recall companion plugin
+
+This repository also includes a self-contained OpenClaw companion plugin in [`openclaw-plugin/`](openclaw-plugin/). mnemostack remains the recall backend — vector + BM25 + graph + temporal retrieval, fusion, reranking, and answer synthesis — while the plugin connects that backend to OpenClaw's `before_prompt_build` hook.
+
+Zero-config path: install mnemostack, run the daemon on the default local port, install/enable the plugin, and OpenClaw will automatically inject bounded recall answers for recall-style questions:
+
+```bash
+mnemostack serve --host 127.0.0.1 --port 18793
+cd openclaw-plugin
+npm test
+```
+
+The plugin defaults to `http://127.0.0.1:18793/answer`, supports English/Russian trigger defaults with extensible language-agnostic trigger lists, and can fall back to a Script backend such as `recall-selfeval.sh` when you are not running the daemon.
+
+## Roadmap
+
+- [x] Embedding provider registry (Gemini / Ollama / HuggingFace)
+- [x] LLM provider registry (Gemini Flash / Ollama / any OpenAI-compatible endpoint)
+- [x] Qdrant wrapper
+- [x] BM25 + RRF recall pipeline
+- [x] Answer mode with confidence + citations
+- [x] LLM-based reranker
+- [x] Memgraph wrapper with temporal validity
+- [x] Consolidation runtime (phase orchestrator)
+- [x] CLI (`mnemostack health/doctor/inspect/search/answer/index/mcp-serve`)
+- [x] MCP server (Model Context Protocol)
+- [x] Text → graph triple extractor helpers (`mnemostack.graph.TripleExtractor`)
+- [x] Config file support YAML/JSON (`mnemostack.config`, `mnemostack init`/`config` CLI)
+- [x] Async variants for high-throughput servers (`mnemostack.vector.AsyncVectorStore`)
+- [x] Docker compose examples (`examples/docker-compose.yml`)
+- [x] Reproducible LoCoMo benchmark harness in-tree (`benchmarks/run_locomo.sh`)
+- [x] First-class FastAPI/Starlette service wrapper (`pip install 'mnemostack[server]'`, `mnemostack serve`)
+- [x] Async `Recaller.recall_async` and parallel retriever dispatch (proven: 5 concurrent HTTP recalls complete in ~1x single-request wall-clock)
+- [x] Benchmarks on longer-horizon synthetic corpora (`benchmarks/synthetic_longhorizon.py`)
+- [x] Streaming `Ingestor` API (`mnemostack.ingest`)
+- [x] Prometheus `/metrics` endpoint on the HTTP server
+- [x] Unicode-aware `MemgraphRetriever` probes (`telegram_id`, handle, `name_lower`)
+- [x] Community health: Code of Conduct, Security policy, issue/PR templates
+- [x] Per-retriever latency in `/metrics` (`mnemostack_recall_<name>_latency_ms`)
+- [x] Weighted RRF fusion (`reciprocal_rank_fusion(weights=[...])`)
+- [x] Adaptive per-query-shape weights in `Recaller` (`adaptive_weights=True`)
+- [x] `HyDERetriever` (opt-in, not in default `Recaller`)
+- [x] Two-pass graph extraction (full + detail) in the agent's graph-sync pipeline
+- [x] Progressive Tiers API on `search`/`answer` (`--tier {1,2,3}`, backward-compatible)
+- [x] MCP integration guides for Claude Desktop/Code, Cursor, OpenClaw (`integrations/`)
+- [x] Silent-zero fix in `TemporalRetriever` + dispatch-by-type filter builder (`0.2.0a1`)
+- [x] Canonical `recall_flow()` — CLI/HTTP/MCP rank identically (`0.5.0`)
+- [x] Chunk lifecycle: `index --prune` (root-scoped) + `--refresh-payloads` without re-embedding
+- [x] Recall `filters=` on every surface with adversarially-tested tenant isolation
+- [x] Ingest-time enrichment hook (`Ingestor(enrich=...)`) + `context_fields` answer projection
+- [x] Ollama `think` control (off by default) + generation `options` passthrough
+- [x] Follow-up question rewriting (`rewrite_followup`)
+- [x] Access reinforcement instead of punitive decay — being used raises rank, going unused never lowers it (`access_boost`, `--access-bonus-max`) (2.3.1)
+- [x] Half-open circuit breaker for an unreachable graph store + `MNEMOSTACK_GRAPH_URI=""` off switch (2.3.2)
+- [x] `llm.host` / `llm.timeout` reaching the LLM on every construction surface (2.3.2)
+- [x] `openai` LLM provider — LiteLLM proxies, vLLM, llama.cpp server, API gateways (2.4.0)
+- [x] hermes-agent memory provider — `hermes-mnemostack` on PyPI, listed in the official Hermes plugin catalog
+- [x] OpenClaw companion plugin published on ClawHub (`@udjin79/mnemostack-auto-recall`)
+
+## Contributing
+
+Issues and PRs are welcome. Public APIs are intended to remain stable; new functionality should land additively where possible.
+
+## License
+
+Apache 2.0 — see [LICENSE](LICENSE).

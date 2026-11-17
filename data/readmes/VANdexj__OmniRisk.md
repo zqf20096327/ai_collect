@@ -4,7 +4,7 @@
 
 ### Omnidirectional Trajectory-Risk Learning for Agile Quadrotor Dynamic Avoidance
 
-Yifan He<sup>†1</sup> · <a href="https://ly041021.github.io/">Yang Liu</a><sup>†1,2</sup> · Wenhao Zhao<sup>†1</sup> · Hai Lin<sup>1</sup> · Deping Zhang<sup>1</sup> · Mingze Ma<sup>1</sup> · <a href="https://zhouxin.me/">Xin Zhou</a><sup>1</sup><br>
+<a href="https://vandexj.github.io/homepage/">Yifan He</a><sup>†1</sup> · <a href="https://ly041021.github.io/">Yang Liu</a><sup>†1,2</sup> · Wenhao Zhao<sup>†1</sup> · Hai Lin<sup>1</sup> · Deping Zhang<sup>1</sup> · Mingze Ma<sup>1</sup> · <a href="https://zhouxin.me/">Xin Zhou</a><sup>1</sup><br>
 <a href="https://scholar.google.com/citations?user=4RObDv0AAAAJ">Fei Gao</a><sup>1,2</sup> · Huan Yu<sup>\*1,2</sup> · <a href="http://zipengdai.com/">Zipeng Dai</a><sup>\*1</sup> · Ziming Ding<sup>\*1</sup><br>
 <sup>1</sup>Differential Robotics · <sup>2</sup>Zhejiang University&nbsp;&nbsp;&nbsp;<sup>†</sup>equal contribution · <sup>\*</sup>corresponding
 

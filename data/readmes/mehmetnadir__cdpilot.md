@@ -182,6 +182,10 @@ its `{{placeholder}}` steps type on. The error (exit 2, nothing typed) lists eac
 origin in `value_steps`; `--dry-run` shows them without the flag. A flow that needs no value runs as
 before. A save that changes a flow's steps starts its run counts (`runs`, `ok`, `drift`) again.
 
+### Where MCP screenshots are written
+
+MCP tools (`browser_screenshot`, `browser_screenshot_diff`) save and compare screenshots in a private per-user directory: `<tempfile.gettempdir()>/cdpilot-shots-<uid>` on POSIX and `%TEMP%\cdpilot-shots` on Windows. The folder is created with mode 0700 (owner-only access) and verified to be a real directory owned by the current user and not accessible to group or others. The CLI commands (`cdpilot shot`, `cdpilot screenshot-diff`) keep their defaults.
+
 ### Smaller MCP tool list
 
 `cdpilot mcp --tools core` (or `CDPILOT_MCP_TOOLS=core`; the flag wins) lists 10 core
@@ -1644,15 +1648,4 @@ print(result.stdout)
 | `CDPILOT_MCP_ALLOW_FILE` | unset | `1` = MCP tools may also open `file:` URLs (default: http, https and about:blank only) |
 | `CDPILOT_MCP_ALLOW_CONNECT` | unset | `1` = MCP `browser_connect` may move the project to another browser (with `--auto`, your own logged-in browser) |
 | `CDPILOT_MCP_ALLOW_VARS` | unset | `1` = MCP flows may type `CDPILOT_VAR_*` values (the model could read a typed value back) |
-| `CDPILOT_LOG_DAYS` | `14` | Days of session log to keep; older day files are deleted on the first write of a day (`0` keeps all) |
-
-## How It Works
-
-```
-┌─────────────┐     HTTP/WebSocket      ┌──────────────┐
-│  cdpilot │ ◄──────────────────────► │ Brave/Chrome │
-│   (CLI)     │    Chrome DevTools       │  (CDP mode)  │
-└─────────────┘     Protocol             └──────────────┘
-       │                                        │
-       │  Zero npm dependencies                 │  Isolated profile
-       │  Pure HTTP + WebSocket              
+| `CDPILOT_LOG_DAYS` | `14` | Days of session log 

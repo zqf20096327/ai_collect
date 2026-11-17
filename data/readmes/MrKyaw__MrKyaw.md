@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="https://www.linkedin.com/in/mrkyawkyawoo/"><img src="https://img.shields.io/badge/LinkedIn-mrkyawkyawoo-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-  <a href="https://mrkyaw.github.io/kyawkyawoo"><img src="https://img.shields.io/badge/Portfolio-Live-1F6FEB?logo=googlechrome&logoColor=white" alt="Portfolio"></a>
+  <a href="https://kyawkyawoo.vercel.app"><img src="https://img.shields.io/badge/Portfolio-Live-1F6FEB?logo=googlechrome&logoColor=white" alt="Portfolio"></a>
   <a href="https://scholar.google.com/citations?user=BWPq9wQAAAAJ&hl=en&authuser=6"><img src="https://img.shields.io/badge/Google%20Scholar-Publications-4285F4?logo=google&logoColor=white" alt="Google Scholar"></a>
   <a href="https://www.youtube.com/@PrimeInProd"><img src="https://img.shields.io/badge/YouTube-Trustworthy%20PRIME-FF0000?logo=youtube&logoColor=white" alt="YouTube Trustworthy PRIME"></a>
   <a href="https://medium.com/@kyaw.future.ai"><img src="https://img.shields.io/badge/Medium-@kyaw.future.ai-000000?logo=medium&logoColor=white" alt="Medium"></a>

@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/esmeralda_logo.png" alt="Esmeralda logo" width="350" />
   <h1><code>esmeralda</code></h1>
-  <p>An opinionated, commercial-grade reference blueprint for taking autonomous AI Agents and MCP tool servers from prototype to zero-trust production on Google Cloud.</p>
+  <p>An open-source blueprint for a governed multi-agent platform on Google Cloud: ADK and A2A agents on Agent Runtime, private MCP tool servers, Agent Gateway (Preview), Agent Identity and Agent Registry, Apigee token quotas, and per-team chargeback, deployed with Terraform and operated with the <code>esmeralda</code> CLI.</p>
 
   <p>
     <a href="#the-challenge">Why Esmeralda</a> &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -12,10 +12,11 @@
   </p>
 
   <p>
+    <a href="https://google.github.io/esmeralda/"><img src="https://img.shields.io/badge/docs-google.github.io%2Fesmeralda-1f8a70" alt="Documentation" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License" /></a>
     <a href="https://cloud.google.com/"><img src="https://img.shields.io/badge/Cloud-Google_Cloud-4285F4?style=flat&logo=google-cloud&logoColor=white" alt="Google Cloud" /></a>
     <a href="https://www.terraform.io/"><img src="https://img.shields.io/badge/IAC-Terraform-623CE4?style=flat&logo=terraform&logoColor=white" alt="Terraform" /></a>
-    <a href="https://cloud.google.com/vertex-ai"><img src="https://img.shields.io/badge/AI-Vertex_AI-00C1FF?style=flat&logo=google-cloud&logoColor=white" alt="Vertex AI" /></a>
+    <a href="https://docs.cloud.google.com/gemini-enterprise-agent-platform/govern"><img src="https://img.shields.io/badge/AI-Agent_Platform-00C1FF?style=flat&logo=google-cloud&logoColor=white" alt="Gemini Enterprise Agent Platform" /></a>
   </p>
 </div>
 
@@ -71,7 +72,7 @@ flowchart LR
     end
 
     subgraph Gov["3. East–West Zero-Trust Control Plane (Layer 4)"]
-        AGW["GEAP Central Agent Gateway (10.200.0.2)<br/>• Agent Registry Allowlist<br/>• Per-Target UAP / IAP (roles/iap.egressor)<br/>• Semantic Governance (NLC) & Model Armor"]
+        AGW["GEAP Central Agent Gateway (10.200.0.2)<br/>• Agent Registry Allowlist<br/>• Per-Target UAP / IAP (roles/iap.egressor)<br/>• Semantic Governance (NLC) & Model Armor (optional)"]
         Gemini["Gemini 3.7 Flash<br/>(Vertex AI API)"]
         FinOps["Central Telemetry & FinOps Hub<br/>(OTel Baggage • BigQuery Chargeback Views)"]
     end
@@ -108,7 +109,7 @@ flowchart LR
 | :--- | :--- | :--- | :--- |
 | **External / Partner API Plane** | **Apigee X** (`partner.esmeralda.internal` / `10.0.1.3`) | **North–South** | Authenticates external B2B partners (`VerifyAPIKey` / OAuth), curates exposed agents (`partner-agents`) and MCP tools (`partner-mcp`), enforces commercial `<LLMTokenQuota>` (`429`), and meters per-consumer token usage. |
 | **Workload & User Identity Plane** | **GEAP Agent Identity & Auth Manager** (`agents.global.org-<ORG>.system.id.goog`) | **End-to-End Identity** | Provisions a non-impersonatable X.509 **SPIFFE ID (`principal://`)** per Reasoning Engine and brokers **3-Legged OAuth (3LO)** end-user tokens (`X-Esmeralda-User-Token`) so tools can verify both *which agent* and *which human* initiated the action. |
-| **Internal Agent Egress Plane** | **GEAP Central Agent Gateway** (`10.200.0.2`) | **East–West** | Intercepts every outbound call an agent makes, enforcing **Agent Registry** allowlists, per-target **Unified Access Policies (UAP / IAP)**, **Semantic Governance (Natural Language Constraints, NLC)** against Confused Deputy tool calls, and **Model Armor** inspection. |
+| **Internal Agent Egress Plane** | **GEAP Central Agent Gateway** (`10.200.0.2`) | **East–West** | Intercepts every outbound call an agent makes, enforcing **Agent Registry** allowlists, per-target **Unified Access Policies (UAP / IAP)**, **Semantic Governance (Natural Language Constraints, NLC)** against Confused Deputy tool calls, and optional **Model Armor** inspection (unary MCP tool calls and agent cards when enabled). |
 | **Private Service Routing Plane** | **Internal HTTPS Entry Point** (`*.esmeralda.internal` / `10.0.1.2`) | **Private VPC Fabric** | Terminates internal TLS signed by the Layer 3 Root CA and routes each `*.esmeralda.internal` host directly to its Cloud Run serverless NEG or Agent Runtime PSC NEG (`direct` backend by default, or optional `envoy` / `apigee` adapters). |
 
 ---
@@ -120,18 +121,30 @@ flowchart LR
 | :--- | :--- | :--- |
 | **Multi-Track Parallelism** | **Decoupled 6-Layer Architecture** | Modular Terragrunt progression—Shared CI/CD (`L0`), Projects (`L1`), Networking (`L2`), Security & PKI (`L3`), Governance (`L4`), and Workloads (`L5`)—allowing platform, security, tool, AI, and partner API teams to ship independently. |
 | **Cryptographic Identity** | **GEAP SPIFFE Identity & Auth Manager (3LO)** | Every Reasoning Engine runs with an attested SPIFFE identity (`principal://`) bound per target on the Central Agent Gateway (zero shared service accounts or org-wide wildcards), paired with Auth Manager 3LO user delegation and zero-latency MCP claims verification (`esmeralda.mcp_authz`). |
-| **Zero-Trust Governance** | **Central Agent Gateway, UAPs & Semantic NLC** | Google-managed egress control plane enforcing **Agent Registry** discovery, per-target **Unified Access Policies (UAPs)**, runtime **Semantic Governance (Natural Language Constraints)** to block Confused Deputy / SSN exfiltration attacks, and **Model Armor**. |
+| **Zero-Trust Governance** | **Central Agent Gateway, UAPs & Semantic NLC** | Google-managed egress control plane enforcing **Agent Registry** discovery, per-target **Unified Access Policies (UAPs)**, runtime **Semantic Governance (Natural Language Constraints)** to block Confused Deputy / SSN exfiltration attacks, and optional **Model Armor** (unary MCP tool calls and agent cards when enabled). |
 | **Partner Monetization** | **Removable Apigee X Capability Modules** | Optional Layer 5 capability bundles (`partner-agents`, `partner-mcp`, `token-quota`, `usage-metering`, `cross-cloud`) and tiered API Products (`bronze`, `silver`, `gold`) toggled declaratively via `governance.capabilities` in `env.yaml`. |
 | **Multi-Agent & MCP Ecosystem** | **A2A Protocol & Serverless FastMCP** | The CX orchestrator (Google ADK) delegates underwriting over **A2A** to the AI CoE specialist, which invokes private Cloud Run **FastMCP** servers (`legacy-dms`, `income-verification`, `corporate-email`) at `https://<svc>.esmeralda.internal/mcp`. |
 | **Observability & FinOps** | **OpenTelemetry Baggage & BigQuery Chargeback** | Cross-project W3C baggage propagation (`BaggageSpanProcessor`), structured token telemetry, hub-and-spoke log sinks, automated BigQuery chargeback SQL views (`vw_monthly_agent_chargeback`), and Cloud Monitoring Golden Signals. |
-| **Unified Developer CLI** | **`esmeralda` CLI & MCP Server** | First-class CLI (`uv run esmeralda ...`, published as `esmeralda-platform`) and read-only MCP server (`uv run esmeralda mcp`) for local development, guarded Terraform plans/applies, live partner & internal verification (`esmeralda verify --partner`), and AI-assisted operations. |
+| **Unified Developer CLI** | **`esmeralda` CLI & MCP Server** | First-class CLI (`uv run esmeralda ...` from a checkout of this repository; not published on PyPI) and read-only MCP server (`uv run esmeralda mcp`) for local development, guarded Terraform plans/applies, live partner & internal verification (`esmeralda verify --partner`), and AI-assisted operations. |
 
 ---
 
 <a id="quick-start"></a>
 ### Quick Start
 
-Requires `gcloud`, `terraform`, `terragrunt`, and [`uv`](https://docs.astral.sh/uv/). Export your billing account (`ESMERALDA_BILLING_ACCOUNT`, and optionally `ESMERALDA_ORG_ID`) and review `infrastructure/live/<env>/env.yaml`.
+<a id="prerequisites"></a>
+#### Prerequisites
+
+| Tool | Version | Used for |
+|---|---|---|
+| [`uv`](https://docs.astral.sh/uv/getting-started/installation/) | recent | Python 3.12+ toolchain, the `esmeralda` CLI and every workspace package |
+| [`gcloud`](https://cloud.google.com/sdk/docs/install) | recent | Authentication (`gcloud auth application-default login`), image builds and live checks |
+| [`terraform`](https://developer.hashicorp.com/terraform/install) | >= 1.5 | Infrastructure modules |
+| [`terragrunt`](https://terragrunt.gruntwork.io/docs/getting-started/install/) | recent (the `run --all` command and `exclude` blocks) | Per-environment units under `infrastructure/live/` |
+| [`jq`](https://jqlang.org/download/) | any | Parsing Terraform outputs in the `make` targets (`build-images`, `deploy-all`) and `scripts/` (`esmeralda verify`) |
+| `git`, `make`, `bash` | any | Checkout, `make` targets and helper scripts |
+
+`uv run esmeralda doctor --env dev` checks that these tools are on your `PATH`. Export your billing account (`ESMERALDA_BILLING_ACCOUNT`, and optionally `ESMERALDA_ORG_ID` and `ESMERALDA_ALERT_EMAIL`, the address that receives the governance alerts) and review `infrastructure/live/<env>/env.yaml`.
 
 #### 1. Using the `esmeralda` CLI (Recommended)
 
@@ -143,9 +156,9 @@ uv run esmeralda status --env dev          # live status of layers, catalog host
 uv run esmeralda contracts                 # inspect gateway & catalog architectural contracts
 uv run esmeralda guard --all               # run security & hygiene guards across the repo
 
-# Local development: run an agent + local MCP servers in one command
-uv run esmeralda query apps/agents/cx-mortgage-orchestrator \
-  -q "Can you verify Julian Sterling's income?"
+# Local development: start the agent's local MCP servers, query it in-process, stop them
+uv run esmeralda query --agent-dir apps/agents/cx-mortgage-orchestrator --local-mcp \
+  "Can you verify Julian Sterling's income?"
 
 # Infrastructure lifecycle & end-to-end verification
 uv run esmeralda units --env dev           # list all deployable Terragrunt units
@@ -155,20 +168,32 @@ uv run esmeralda verify --env dev          # probe every catalog route + live or
 uv run esmeralda logs cx-mortgage-orchestrator --env dev
 ```
 
+Build, deploy and release with the same CLI. Every unit goes through the `apply` path (plan to a planfile, destroy guard, apply), and a deploy stops at the first failure:
+
+```bash
+uv run esmeralda deploy --all --env dev --dry-run    # plan every unit read-only, print build commands
+uv run esmeralda deploy --all --env dev              # layer 0 -> 1-3 -> 4 -> build images -> 5
+uv run esmeralda build images                        # test, then build and push every Layer 5 image
+uv run esmeralda deploy --layer 5 --env dev          # workloads in dependency order, then image check
+uv run esmeralda build --verify --env dev            # running digests match the expected images
+uv run esmeralda release status                      # current release/prd.yaml
+uv run esmeralda destroy --env dev --confirm dev     # layers 5 -> 1, never layer 0, refuses prd
+```
+
 Coding agents can also inspect the workspace directly via the read-only MCP server:
 
 ```bash
 uv run esmeralda mcp
 ```
 
-#### 2. Using `make` Targets (Full-Stack Automation)
+#### 2. Using `make` Shortcuts
 
-The root `Makefile` wraps full-environment bootstrap, testing, image builds, and multi-layer deployments:
+The root `Makefile` covers bootstrap and offline tests, and keeps short aliases for the CLI (for example `make deploy-all ENV=dev` runs `esmeralda deploy --all --env dev`):
 
 ```bash
 make bootstrap                 # preflight checks + uv workspace sync
 make test-all                  # Python unit tests + Terraform validation + gateway harness
-make deploy-all ENV=dev        # Layer 0 -> 1-3 -> 4 -> build images -> 5
+make deploy-all ENV=dev        # shortcut for: uv run esmeralda deploy --all --env dev
 make test-e2e ENV=dev          # specialist, then orchestrator -> specialist through the gateway
 make test-gateway ENV=dev      # probe every *.esmeralda.internal route + live query
 ```

@@ -139,6 +139,12 @@ jobs:
           cache-path: '.promptfoo-cache'
 ```
 
+The action reads changed files in pages of 100. GitHub returns at most 3,000
+files per pull request. When the list reaches that limit, the action warns and
+evaluates all files matching `prompts` so changes beyond the limit are covered.
+This can increase model usage. If no files match, or if `use-config-prompts` is
+enabled, the evaluation uses the prompts in `config`.
+
 ### Manual Trigger (workflow_dispatch)
 
 You can also trigger evaluations manually using workflow_dispatch:
@@ -182,7 +188,9 @@ When triggered manually:
 - If `files` is provided, those paths are treated as the changed-file set.
 - Only changed files that also match `prompts` are passed through
   `--prompts`.
-- If `base` is provided, the action compares that ref with `HEAD`.
+- If `base` is provided, the action compares that ref with `HEAD`. Git-based
+  comparisons preserve each filename, including accented characters, tabs,
+  and line breaks. The manual `files` input accepts one path per line.
 - If neither input is provided, the action compares `HEAD~1` with `HEAD`.
 - Results will be displayed in the workflow summary instead of a PR comment
 
@@ -274,7 +282,7 @@ jobs:
           env-files: '.env,.env.test.local' # Load multiple .env files
 ```
 
-This is particularly useful for Next.js applications or other frameworks that use `.env` files for configuration. The environment variables from these files will be available to promptfoo during evaluation.
+Files are loaded in the order listed. A later file overrides earlier files and existing workflow environment variables. Explicit provider inputs still take precedence when the action runs Promptfoo. The action masks supported provider credentials loaded from these files in workflow logs. Quoted values can span multiple lines, including when the runner sets `DOTENV_FAST=true`.
 
 ## Custom Provider Detection
 
@@ -300,6 +308,7 @@ changed files.
    providers:
      - file://providers/*.py          # All Python files in providers/
      - file://lib/**/*.js            # All JS files recursively in lib/
+     - file://providers/{alpha,beta}/entry.js  # Either named provider entry point
    ```
 
 ### How It Works
@@ -559,8 +568,9 @@ To reduce console output in CI, set `no-table: true` and `no-progress-bar: true`
 The action creates a uniquely named JSON result file for internal processing and
 deletes it after parsing. It does not leave `output.json` in the workspace.
 
-The PR comment or workflow summary contains aggregate results and a viewer link
-when sharing succeeds. Workflows that require a persistent raw result file
+The PR comment and workflow summary report successful tests, assertion failures,
+and execution errors separately. Older CLI versions that omit the error count
+show zero errors. When sharing succeeds, the summary also includes a viewer link. Workflows that require a persistent raw result file
 should run the Promptfoo CLI directly with `--output <path>` and upload that
 file separately.
 

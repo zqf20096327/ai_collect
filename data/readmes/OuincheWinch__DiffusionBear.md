@@ -1,15 +1,16 @@
 <p align="center">
-  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.5">
-    <img src="docs/screenshots/0.4.5/annonce_045.webp" alt="DiffusionBear v0.4.5 — Local AI Image Studio for Apple Silicon" width="100%">
+  <a href="https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.0">
+    <img src="docs/screenshots/0.5.0/050_annonce.webp" alt="DiffusionBear v0.5.0 — Local AI Image Studio for Apple Silicon" width="100%">
   </a>
 </p>
 
 <h1 align="center">DiffusionBear</h1>
 
-<p align="center"><strong>v0.4.5</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
+<p align="center"><strong>v0.5.0</strong> &nbsp;·&nbsp; a local-first image generation studio for Apple Silicon</p>
 
 <p align="center">
   <a href="https://www.diffusionbear.com"><strong>Website</strong></a> &nbsp;·&nbsp;
+  <a href="https://www.diffusionbear.com/agentic-api.html"><strong>Agentic API</strong></a> &nbsp;·&nbsp;
   <a href="https://www.youtube.com/watch?v=D6Nq4XPxHf8&t=1s"><strong>Video tutorial</strong></a> &nbsp;·&nbsp;
   <a href="https://x.com/DiffusionBear"><strong>x.com/DiffusionBear</strong></a> &nbsp;·&nbsp;
   <a href="https://diffusionbear.com/discord"><strong>Discord</strong></a>
@@ -30,6 +31,36 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 — released under the [MIT licence](LICENSE).
 
 ---
+
+## What's new in v0.5.0
+
+- **Full deletion of PyTorch & trimmed MLX bundle (`-52%` `.app`, `-45%` `.zip`):** **1.3 GB → 615 MB**
+  `.app` (**396.7 MB → 217.1 MB** arm64 `.zip`). `torch`, `torchvision`,
+  `torchaudio`, `diffusers`, and `accelerate` are 100% deleted from the
+  packaged `.app` and default runtime. Only the exact runtime modules needed are
+  bundled (`mlx`, `safetensors`, NumPy, `transformers`, `tokenizers`, and `--no-deps` `mlx-vlm`), compiled with `0` build warnings.
+- **Rebuilt 3-Stage / 4-Stage MLX Generation Pipeline:** replaced the monolithic
+  pipeline with a strict sequential memory lifecycle so **only one heavy model
+  tree is resident in Unified Memory at a time**:
+  - **3-stage (Text-to-Image):** **Encode** (Text Encoder → embeddings → evict) → **Generate** (DiT/UNet → latents → evict) → **Decode** (VAE / fast TAEF mini-VAE → pixels → evict).
+  - **4-stage (Reference / img2img / Edit):** adds **Stage 1/4 Reference Encode** at the start — loading the VAE (or Vision-Language encoder), encoding reference image(s) into latent space (`image_latents` + `image_latent_ids`), and evicting the reference encoder before prompt encoding, denoising with injected reference latents, and final VAE decoding.
+- **Generation speed (Apple M1 16 GB, 512×768 medians):** 19-config / 209-run suite
+  finishes in **5h 24m 26s** (**-58.5%** vs prior 13h 01m 38s reference, **-4.7%** step-matched):
+  - **MOSS-Image SFT 5B (4s DMD):** **83.57 s** (**-96.7%** vs 25-step stock)
+  - **Qwen-Image 2.1 (2s + DMD2):** **46.77 s** (**-32.0%**) · **Turbo 8s:** **158.64 s** (**-19.4%**)
+  - **FLUX.1-schnell (4s):** **74.22 s** (**-16.5%**) · **RealVisXL V5.0 (8s):** **38.78 s** (**-16.0%**)
+  - **Juggernaut XL Lightning (4s):** **8.80 s** (**-9.9%**) · **Bria FIBO 2.0 Edit Turbo (4s):** **93.68 s** (**-8.3%**)
+  - **FLUX.2-klein 9B (4s):** **96.54 s** (**-8.0%**) · **FLUX.2-klein 4B (4s):** **44.09 s** (**-7.2%**)
+  - **SDXL persistent q4 cache:** warm SDXL + LoRA reloads drop from ~34 s to ~3.45 s via staged TE/UNet eviction and persistent prequantized artifacts.
+- **Kromoss 5B (4-bit MLX) + 8-step Accelerator LoRA:** added support for **Kromoss 5B** (`Ouinche/kromoss-mlx-q4`, a 4-bit MLX distillation of MOSS / `lodestones/Kromoss`), running natively on the pure-MLX MOSS engine with its automatic **8-step DMD2 Accelerator LoRA** (**129.43 s median** at 512×768).
+- **Canonical Model Families & Qwen 2.5 Prompt Enhancers:** every architecture now belongs to its own canonical family (`sdxl`, `flux1`, `flux2`, `flux3`, `krea2`, `z-image`, `qwen`, `moss`, `fibo2`) with a dedicated local **Qwen 2.5** (0.5B / 1.5B MLX) prompt-enhancer profile.
+- **Qwen-Image 2.1 & Turbo Alpha Channel (RGBA Transparency):** added a toggle in **Advanced Settings** to force 4th-channel alpha transparency at generation time, with checkerboard preview across Canvas, Browser, and Image Cards.
+- **First-run model SHA-256 verification & partial repair:** hashes installed built-in models once on first launch against SHA-256 manifests embedded in the binary (custom user models untouched), flags mismatches from legacy upgrades, and offers shard-level partial or full redownload — also available anytime on the **Models** tab.
+- **Open Agentic REST API & Remote Browser Access (`http://127.0.0.1:8001`):**
+  drive any installed model, LoRA, Reference Edit, mask, or Virtual Box
+  programmatically from local or remote AI agents (`Claude Code`, `Cursor`, `Antigravity`) or scripts — **no cloud tokens, no subscriptions, zero per-image billing** — or generate remotely using **only one web browser** (`Chrome`, `Firefox`, `Opera`, `Safari` on Mac/iPhone/iPad) with managed `dbk_...` keys (`SHA-256`), `Authorization: Bearer` / `X-API-Key`, wildcard bind fail-safe, and `429` queue rate limits. Interactive guide at
+  **[diffusionbear.com/agentic-api.html](https://www.diffusionbear.com/agentic-api.html)**
+  and step-by-step setup in **[docs/parameters-api-guide.md](docs/parameters-api-guide.md)**.
 
 ## What's new in v0.4.5 (beta)
 
@@ -87,15 +118,16 @@ Made by **[Ouinche](https://www.ouinche.com)** — follow on X:
 
 `DiffusionBear.app` is a self-contained macOS application: it bundles the backend, one relocatable Python/MLX runtime, and the studio interface inside one `.app`. **You do not need to install Python, Node, Xcode, or Homebrew.**
 
-**[⬇ Download DiffusionBear for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.4.5/DiffusionBear-0.4.5-arm64.zip)** &nbsp;·&nbsp; [v0.4.5 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.4.5)
+**[⬇ Download DiffusionBear for macOS (Apple Silicon)](https://github.com/OuincheWinch/DiffusionBear/releases/download/v0.5.0/DiffusionBear-0.5.0-arm64.zip)** &nbsp;·&nbsp; [v0.5.0 Release Notes & Checksums](https://github.com/OuincheWinch/DiffusionBear/releases/tag/v0.5.0)
 
 | | Detail |
 |---|---|
 | **Requires** | An Apple Silicon Mac (M1 / M2 / M3 / M4 / M5 / M6), **macOS 26.2 or later**, 16 GB unified memory recommended. |
 | **Your files** | Settings, gallery, LoRA registry, and model store live in `~/Library/Application Support/DiffusionBear`. To put the store on an external drive, write an absolute path into `~/Library/Application Support/DiffusionBear/store_path`. |
 | **Model weights** | Downloaded on first use from Hugging Face or [Civitai](https://civitai.com/?ref_code=88C8VEBA) into your local store. After that, the app works 100% offline. |
+| **Package size** | **217.1 MB** arm64 `.zip` → **615 MB** standalone `.app` (pure MLX, no PyTorch or `diffusers`). |
 
-**0.4.5 package SHA-256:** `196afeb2c43c8622ca13b9779e4c76ee619a333f475c1f3a678d863b041cb330`
+**0.5.0 SHA-256:** zip `f2d3bf2865fb53ef215cefcaefb331793ef76119a88cb79dabb7ec38c27a94fa` · dmg `4a2ed3eba57378c47a80c4a3b4d15bfa50bc461c8986126c1324d4fd7725ec9b` (all checksums recorded in [packaging/ALL_SHA256SUMS](packaging/ALL_SHA256SUMS)).
 
 ### 🍎 How to Open on First Launch (macOS Gatekeeper Bypass)
 
@@ -109,7 +141,7 @@ Because DiffusionBear is a free, open-source project signed ad-hoc (without a pa
 
 **Follow this one-time 60-second procedure:**
 
-1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.4.5-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
+1. **Unzip and move to `/Applications`:** Unzip `DiffusionBear-0.5.0-arm64.zip` and drag **`DiffusionBear.app`** into your **/Applications** folder *(do not launch it from `~/Downloads` or inside the zip)*.
 2. **Bypass Gatekeeper (choose Option A or Option B):**
    * **Option A — Fastest (Terminal 1-Liner):** Open **Terminal.app**, paste this command, and press Return:
      ```bash
@@ -138,11 +170,12 @@ Once authorized, macOS remembers your choice and **never shows the alert again**
 | **FLUX.2-klein 9B** | FLUX.2 | 4 | 9-billion-parameter flagship DiT with up to 10 reference images, LoRAs, and superior detail. |
 | **FLUX.3-klein 5.6B** | FLUX.3 | 16 | 16-step flow-matching distilled, up to 10 reference images, and interactive **Virtual Boxes** on the Studio Canvas. |
 | **Krea 2 Turbo 13B** | Krea 2 | 4–8 | 13B photorealistic engine with 1 reference image, LoRAs, persistent Q4 text-encoder cache, and auto-applied 4-step distilled LoRA. |
+| **Kromoss 5B** | MOSS | 8 | 4-bit MLX distillation of MOSS with automatic **8-step DMD2 Accelerator LoRA** (`8-steps-dmd2-lora.safetensors`), Virtual Boxes, and pure-MLX staged execution. |
 | **MOSS-Image SFT 5B** *(+ Base 5B)* | MOSS | 4–8 (DMD) / 25 | Interactive **Virtual Boxes**, reference image, LoRAs, MLX q8-g64 text encoder, and automatic **4-step (`⚡ DMD 4`) / 8-step (`⚡ DMD 8`)** distillation adapters. |
 | **Qwen-Image Edit** | Qwen-Image | 8–25 | Instruction-based editing with up to 3 reference images, negative prompts and guidance, plus 8/15/20/25-step presets. No 2-step adapter (the 60-layer edit transformer is incompatible with Qwen-Image 2.1 DMD2). |
-| **Qwen-Image-2.1** | Qwen-Image | 2–25 | 7B single-stream DiT with Qwen3-VL text encoder, 1 reference image, negative prompts, and an auto-injected **2-step DMD2 LoRA** (`linoyts/Qwen-Image-2.1-DMD2-2steps`, ~33–50 s). |
-| **Qwen-Image-Turbo-2.1** | Qwen-Image | 4–8 | 8-step distilled Qwen-Image 2.1 variant for 16 GB Macs, with its own 4-step distillation LoRA (slightly slower than the 2-step DMD2 path). |
-| **SDXL & Derivatives** *(Juggernaut XL Lightning, RealVisXL V5.0 Lightning / Hyper-SD, Juggernaut XI v11, Custom SDXL / Pony / Illustrious)* | SDXL | 4–50 | Ultra-fast 4-step Lightning (~9s) or full 20–50 step custom `.safetensors` checkpoints (auto-converted), negative prompts, sampler picker, CLIP Skip, DeepCache, and TAESD fast decode. |
+| **Qwen-Image-2.1** | Qwen-Image | 2–25 | 7B single-stream DiT with Qwen3-VL text encoder, 1 reference image, negative prompts, optional **RGBA alpha-channel transparency** in Advanced Settings, and an auto-injected **2-step DMD2 LoRA** (`linoyts/Qwen-Image-2.1-DMD2-2steps`, ~33–50 s). |
+| **Qwen-Image-Turbo-2.1** | Qwen-Image | 4–8 | 8-step distilled Qwen-Image 2.1 variant for 16 GB Macs, with optional **RGBA alpha-channel transparency** and its own 4-step distillation LoRA. |
+| **SDXL & Derivatives** *(Juggernaut XL Lightning, RealVisXL V5.0 Lightning / Hyper-SD, Juggernaut XI v11, Custom SDXL / Pony / Illustrious)* | SDXL | 4–50 | 4-step Lightning (8.80 s) or 20–50 step custom `.safetensors` checkpoints (auto-converted), negative prompts, sampler picker, CLIP Skip, DeepCache, and TAESD fast decode. |
 | **Z-Image-Turbo 6B** | Z-Image | 6–8 | Compact 6B engine with 1 reference image, LoRAs, fast VAE, and crisp architectural geometry. |
 
 > **Recommended fast path:** Qwen-Image 2.1 at 2 steps with the `linoyts/Qwen-Image-2.1-DMD2-2steps` LoRA (downloaded automatically on first use, guidance locked to 1.0). Qwen-Image Turbo 2.1 uses its separate 4-step LoRA and is slightly slower. Qwen-Image Edit has no 2-step adapter.
@@ -151,71 +184,31 @@ Once authorized, macOS remembers your choice and **never shows the alert again**
 
 ---
 
-## Screenshots & MOSS-Image Showcase Gallery
-
-All images below were generated locally in DiffusionBear on an **Apple MacBook Pro M1 with 16 GB of RAM**.
-
-### 🏆 Featured MOSS-Image SFT 5B Generation (Apple Silicon Native)
-
-<p align="center">
-  <img src="docs/screenshots/0.4.1/MOSS/0c24ff15b83a4edc9c77e1edeff77826.png" alt="Featured MOSS-Image SFT 5B Generation: A cozy corner café at golden hour with hand-drawn chalkboard lettering" width="85%">
-</p>
-
-> ☕ **Prompt:** *"A cozy corner café at golden hour. A chalkboard sign by the door reads "MOSS Image" in hand-drawn lettering, with “runs on your Mac with DiffusionBear" written smaller underneath. Warm light pours through the window onto a wooden counter with ceramic cups. Shallow depth of field, 35mm photograph, natural colors."*
->
-> **Generation Metadata (Generated Locally in DiffusionBear):**  
-> • **Hardware:** Apple MacBook Pro M1 (16 GB Unified Memory / RAM)  
-> • **Generation Time:** `7,525.2 s` (~2 h 05 min — full stock 50-step CFG trajectory)  
-> • **Active LoRAs:** None (Base MOSS-Image pipeline)  
-> • **Model:** `OpenMOSS-Team/MOSS-Image-SFT` (5B Parameters, Native MLX Text Encoder)  
-> • **Resolution:** `1024 × 1024` &nbsp;·&nbsp; **Steps:** `50` (Stock CFG Flow-Matching Euler Trajectory)  
-> • **Guidance (CFG):** `3.0` &nbsp;·&nbsp; **Sampler:** `flow_match_euler_discrete` &nbsp;·&nbsp; **Seed:** `1000`  
-> • **Text Encoder:** Custom 8-bit MLX Quantized Qwen3.5 TE ([`Ouinche/moss-image-qwen3.5-te-mlx-q8g64`](https://huggingface.co/Ouinche/moss-image-qwen3.5-te-mlx-q8g64))
-
----
-
-### 🎨 MOSS-Image Studio Gallery (⚡ DMD 4-Step, ⚡ DMD 8-Step & Virtual Boxes)
-
-The following original images demonstrate the versatility of **MOSS-Image SFT 5B** inside DiffusionBear on a **MacBook Pro M1 (16 GB RAM)**, using both built-in **DMD step-distillation adapters** (generating in 7–13 minutes instead of 2 hours) and interactive **Virtual Boxes** spatial layout:
-
-| Studio Product — Matte Sneaker (⚡ DMD 8-Step) | Alpine Lakes Minimalist Poster (⚡ DMD 4-Step) |
-| :---: | :---: |
-| <img src="docs/screenshots/0.4.1/MOSS/09b4724a373c4c8f9bb528b41915b586.png" width="450" alt="Matte moss-green sneaker on rough grey stone pedestal with MOSS embossed"> | <img src="docs/screenshots/0.4.1/MOSS/4e9e37bfd3ec4b8ab150e344c1d96fa1.png" width="450" alt="Minimalist travel poster of still mountain lake at dawn"> |
-| **Prompt:** *"Studio product photograph of a matte moss-green sneaker resting on a rough grey stone pedestal. Soft diffused lighting, seamless off-white backdrop, the word 'MOSS' embossed on the heel tab. Crisp fabric texture, subtle shadow, high detail."*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 825.1 s (~13 min 45 s)<br>• **Active LoRA:** `lodestones-8step` (scale 1.0, ⚡ DMD 8-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 8<br>• **Size:** 768×768 · **Steps:** 8 (CFG 1.0)<br>• **Sampler:** `moss_dataspace_dmd` · **Seed:** 1003 | **Prompt:** *"A minimalist travel poster of a still mountain lake at dawn, flat vector style with soft gradients. A bold title 'ALPINE LAKES' across the top and the tagline 'breathe the quiet' in small capitals along the bottom. Teal, cream and dusty pink palette, clean typography, centered composition."*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 464.1 s (~7 min 44 s)<br>• **Active LoRA:** `darask0-4step` (scale 1.0, ⚡ DMD 4-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 4<br>• **Size:** 512×768 · **Steps:** 4 (CFG 1.0)<br>• **Sampler:** `moss_dataspace_dmd` · **Seed:** 1002 |
-
-| Vintage Botanical Plate — Bryophyta (⚡ DMD 4-Step) | Vintage Pink Shutter Shades (⚡ DMD 4-Step) |
-| :---: | :---: |
-| <img src="docs/screenshots/0.4.1/MOSS/ea931ffda9a64afe8de2d69953830c5b.png" width="450" alt="Vintage botanical illustration plate of forest moss and ferns"> | <img src="docs/screenshots/0.4.1/MOSS/45f47322daf040e4a5dd8c8c1fde6bf3.png" width="450" alt="Vintage pink plastic shutter shades on stone pedestal with MOSS x DiffusionBear engraved"> |
-| **Prompt:** *"A vintage botanical illustration plate of forest moss and ferns on aged cream paper, fine ink linework with watercolor washes. A caption at the bottom in serif type reads 'Bryophyta' and below it, smaller, 'plate XII'. Scientific illustration style, balanced layout."*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 497.9 s (~8 min 18 s)<br>• **Active LoRA:** `darask0-4step` (scale 1.0, ⚡ DMD 4-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 4<br>• **Size:** 1024×1024 · **Steps:** 4 (CFG 1.0)<br>• **Sampler:** `moss_dataspace_dmd` · **Seed:** 1005 | **Prompt:** *"A studio photograph of a pair of vintage pink plastic shutter shades, resting on a stone pedestal. Facing the viewer. Novelty sunglasses feature a molded pink frame with horizontal slats... backdrop with poster on the wall, the word 'MOSS x DiffusionBear' engraved on the stone base."*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 795.1 s (~13 min 15 s)<br>• **Active LoRA:** `darask0-4step` (scale 1.0, ⚡ DMD 4-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 4<br>• **Size:** 1024×768 · **Steps:** 4 (CFG 1.0)<br>• **Sampler:** `moss_dataspace_dmd` · **Seed:** 1003 |
-
-| Interactive Virtual Boxes: Multi-Subject Spatial Layout (⚡ DMD 4-Step) |
-| :---: |
-| <img src="docs/screenshots/0.4.1/MOSS/cb1b6cba98f14289a32f14f7d365a900.png" width="700" alt="Spatial virtual box layout with shutter shades on pedestal and logo poster on wall"> |
-| **Virtual Box Spatial Layout:** Studio scene with shutter shades on stone pedestal + interactive bounded box `wall_1` (`[35, 0, 527, 1000]`): *"Logo from Image 1 posterized on the wall"*<br>• **Hardware:** MacBook Pro M1 (16 GB RAM)<br>• **Generation time:** 415.2 s (~6 min 55 s)<br>• **Active LoRA:** `darask0-4step` (scale 1.0, ⚡ DMD 4-step kit)<br>• **Model:** MOSS-Image SFT 5B + ⚡ DMD 4 (`darask0-4step`) with **Studio Virtual Boxes**<br>• **Size:** 1024×768 · **Steps:** 4 (CFG 1.0) · **Sampler:** `moss_dataspace_dmd` · **Seed:** 1003<br>• ⚠️ **Reference image notice:** *A reference image was supplied for this test ("Logo from Image 1..."), but **reference images are not supported on MOSS-Image** (MOSS-Image is a pure text-to-image and layout-to-image model; reference-image conditioning is not part of its architecture and is ignored). The spatial layout was driven by the Virtual Box only.* |
-
----
-
-### 🖥️ Studio Interface Screenshots
+## Studio Interface Screenshots
 
 | Studio Generation (Dark Mode) | Studio Generation (Light Mode) |
 |---|---|
-| ![DiffusionBear Studio generation interface in dark mode](docs/screenshots/0.4.5/045_en_screenshot_generate_dark.png) | ![DiffusionBear Studio generation interface in light mode](docs/screenshots/0.4.5/045_en_screenshot_generate_light.png) |
+| ![DiffusionBear Studio generation interface in dark mode](docs/screenshots/0.5.0/050_en_generate_dark.webp) | ![DiffusionBear Studio generation interface in light mode](docs/screenshots/0.5.0/050_en_generate_light.webp) |
 
 | Gallery / Browser (Dark Mode) | Gallery / Browser (Light Mode) |
 |---|---|
-| ![DiffusionBear Gallery with search and favorites in dark mode](docs/screenshots/0.4.5/045_en_screenshot_browser_dark.png) | ![DiffusionBear Gallery with search and favorites in light mode](docs/screenshots/0.4.5/045_en_screenshot_browser_light.png) |
+| ![DiffusionBear Gallery with search and favorites in dark mode](docs/screenshots/0.5.0/050_en_browser_dark.webp) | ![DiffusionBear Gallery with search and favorites in light mode](docs/screenshots/0.5.0/050_en_browser_light.webp) |
 
-| Models: Installed & Manage | Models: Hugging Face Browser |
+| Models: Installed & Integrity Check | Models: Hugging Face Browser |
 |---|---|
-| ![DiffusionBear Models tab and installed model management](docs/screenshots/0.4.5/045_en_screenshot_models_installed_dark.png) | ![DiffusionBear Hugging Face model browser](docs/screenshots/0.4.5/045_en_screenshot_models_browse_light.png) |
+| ![DiffusionBear Models tab and installed model management](docs/screenshots/0.5.0/050_en_models_installed_dark.webp) | ![DiffusionBear Hugging Face model browser](docs/screenshots/0.5.0/050_en_models_browse_light.webp) |
 
 | Parameters: Engine, GPU Memory & Model Defaults | Parameters: Language & System Preferences |
 |---|---|
-| ![DiffusionBear Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.4.5/045_en_screenshot_parameters_preferences_dark.png) | ![DiffusionBear Parameters preferences in light mode](docs/screenshots/0.4.5/045_en_screenshot_parameters_preferences_light.png) |
+| ![DiffusionBear Parameters tab with GPU memory and custom model defaults](docs/screenshots/0.5.0/050_en_parameters_preferences_dark.webp) | ![DiffusionBear Parameters preferences in light mode](docs/screenshots/0.5.0/050_en_parameters_preferences_light.webp) |
+
+| Parameters: API Keys & Remote Access | Parameters: Qwen 2.5 Prompt Enhancer |
+|---|---|
+| ![DiffusionBear Parameters API keys and remote connection](docs/screenshots/0.5.0/050_en_parameters_api_dark.webp) | ![DiffusionBear Parameters Qwen 2.5 prompt enhancer](docs/screenshots/0.5.0/050_en_parameters_enhancer_dark.webp) |
 
 | Models: Detected on Disk | Models: Import from Draw Things / DiffusionBee |
 |---|---|
-| ![DiffusionBear models detected on disk](docs/screenshots/0.4.5/045_en_screenshot_models_detected_dark.png) | ![DiffusionBear import from Draw Things and DiffusionBee](docs/screenshots/0.4.5/045_en_screenshot_models_import_dark.png) |
+| ![DiffusionBear models detected on disk](docs/screenshots/0.5.0/050_en_models_detected_dark.webp) | ![DiffusionBear import from Draw Things and DiffusionBee](docs/screenshots/0.5.0/050_en_models_import_dark.webp) |
 
 ---
 
@@ -278,10 +271,47 @@ CFG-free step schedule. The **DMD distillation** control has four positions:
 
 Forcing DMD 4 or DMD 8 at a higher requested step count still runs the 4- or
 8-step codes (the engine clamps the loop and drops CFG, which has no effect on
-the dataspace schedule). On a 16 GB M1 that is roughly **1 min (4 steps)** /
-**3 min (8 steps)** at 768×512, against 20–45 min stock. If a kit is missing
+the dataspace schedule). On a 16 GB M1, 4-step DMD2/DMD (`darask0`) measures
+**83.57 s median** at 512×768 (**60.45–84.95 s** across 512×512–512×768), against ~41 min stock. If a kit is missing
 the app **downloads it automatically** when the run needs it (resumable); with
 no network it falls back to the stock trajectory rather than failing.
+
+---
+
+## Agentic Local REST API — Build & Script Locally
+
+DiffusionBear exposes a complete, unthrottled local REST engine at
+`http://127.0.0.1:8001` so coding agents (`Claude Code`, `Cursor`, `Antigravity`),
+design scripts, and asset pipelines can generate icons, illustrations, edited
+mockups, and spatially arranged layouts straight on your Mac's GPU without cloud
+keys or per-image billing.
+
+**Full interactive guide & copy-paste agent system prompt:**
+**[diffusionbear.com/agentic-api.html](https://www.diffusionbear.com/agentic-api.html)**
+&nbsp;·&nbsp; Raw LLM spec:
+[site/assets/agentic-api-reference.md](site/assets/agentic-api-reference.md)
+
+**Three-call workflow:**
+
+1. `GET /api/models` — inspect installed models, default dimensions/steps, and capabilities
+2. `POST /api/generate` — enqueue a job (`prompt`, `model`, `steps`, `width`, `height`, `loras`, `reference_images`, `mask`, `spatial_boxes`) → returns `{"job_id": "..."}` (HTTP `429` if queue cap is reached)
+3. `GET /api/jobs/{job_id}` → poll until `"status": "done"`, then fetch raw bytes from `GET /api/images/{image_id}/file` (or JSON metadata from `GET /api/images/{image_id}`)
+
+```bash
+curl -s -X POST http://127.0.0.1:8001/api/generate \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"flux2-klein-4b","prompt":"flat geometric espresso bear emblem, clean cream paper","steps":4,"width":512,"height":512}'
+```
+
+- **Reference edits, inpainting & LoRAs:** upload reference PNGs via
+  `POST /api/uploads`, pass `reference_images` + `reference_strength` (or base64
+  PNG `mask`), and pre-check LoRA architecture fit with
+  `GET /api/loras/{name}/compatibility` and `POST /api/generate/steps/preflight`.
+- **Hardened local security (`v0.5.0`):** `LocalHostMiddleware` and
+  `LocalAPIMiddleware` restrict traffic to loopback clients by default; enabling
+  API Mode via `/api/security/mode` + `/api/security/keys` enforces strong token
+  authentication (`Authorization: Bearer`, `X-MLX-API-Token`, or `X-API-Token`)
+  before allowing requests.
 
 ---
 
@@ -290,6 +320,10 @@ no network it falls back to the stock trajectory rather than failing.
 - **Generation runs on the Metal GPU** through MLX (`mflux` for the
   flow-matching families, a native MLX daemon for SDXL, dedicated engines for
   MOSS and Qwen). Weights are 4-bit so a 4–13 B model fits a 16 GB machine.
+- **100% PyTorch-free runtime:** `torch`, `torchvision`, `torchaudio`,
+  `diffusers`, and `accelerate` are completely removed from the app bundle and
+  default backend — every engine executes via MLX, `safetensors`, NumPy,
+  `transformers`, and `tokenizers`.
 - **The prompt enhancer is a local LLM too** (Qwen2.5 0.5B or 1.5B, MLX) —
   rewriting a prompt never leaves the machine.
 - **No telemetry, no analytics, no network calls at generation time.** Once the
@@ -307,32 +341,32 @@ exactly what MLX is built to exploit.
 
 ## Benchmarks
 
-Measured on a **2021 MacBook Pro M1 (16 GB)** — the reference machine this project is tuned for. Comprehensive **snapshot** (198 timed studio generations across 18 model configurations at 512×768 resolution), plus the latest RealVisXL Lightning and Qwen-Image 2-step runs:
+Measured on a **2021 MacBook Pro M1 (16 GB)** running **v0.5.0** across **20 model configurations × 11 prompts = 220 timed studio generations** (10 portrait prompts at `512×768` + 1 icon prompt at `512×512`, total suite wall time **5h 47m 38s**; across the **19 matched configs / 209 runs**: **5h 24m 26s** vs **13h 01m 38s** in the reference, **-58.5%** total / **-4.7%** step-matched):
 
-| Model | Steps | Median | Range | Family / Notes |
+| Model | Steps | Median (`512×768`) | Range (`512×768`) | Family / Notes |
 |---|---|---|---|---|
-| **RealVisXL V5.0 Lightning** | 4 | **9.3 s** | 6.4 – 19.5 s | SDXL · 4-step Lightning, native MLX |
-| **Juggernaut XL Lightning** | 4 | **9.4 s** | 7.8 – 20.8 s | SDXL · native MLX engine, TAESD fast VAE |
-| **Juggernaut XI v11** | 8 | **40.8 s** | 26.9 – 61.4 s | SDXL · Hyper-SD 8-step, native MLX |
-| **RealVisXL V5.0** | 8 | **40.7 s** | 27.1 – 60.8 s | SDXL · Hyper-SD 8-step, native MLX |
-| **FLUX.2-klein 4B** | 4 | **48.3 s** | 35.1 – 49.2 s | FLUX.2 · Compact 4B rectified flow |
-| **FLUX.3-klein 5.6B** | 4 | **54.8 s** | 35.5 – 56.8 s | FLUX.3 · 5.6B flow-matching + Virtual Boxes |
-| **Qwen-Image 2.1 2-step** | 2 | **1:15 min** | 53.7 – 79.1 s | Qwen-Image · 7B DiT + DMD2; latest 512×768 run **68.7 s** |
-| **FLUX.1-schnell** | 4 | **1:20 min** | 55.8 – 82.4 s | FLUX.1 · Classic 4-step rectified flow |
-| **Bria FIBO 2.0 Edit Turbo** | 4 | **1:29 min** | 1:05 – 2:12 min | FIBO 2.0 · 4-step DiT (4.2B) + Qwen3-VL 4B, 1–4 ref images |
-| **FLUX.2-klein 4B (8s)** | 8 | **1:36 min** | 70.8 – 96.6 s | FLUX.2 · High-detail 8-step mode |
-| **FLUX.2-klein 9B** | 4 | **1:45 min** | 76.8 – 116.8 s | FLUX.2 · Flagship 9B rectified flow |
-| **FLUX.3-klein 5.6B (8s)** | 8 | **1:46 min** | 70.6 – 110.5 s | FLUX.3 · High-detail 8-step mode |
-| **Pony Diffusion V6 XL** | 25 | **1:47 min** | 1:12 – 1:54 min | SDXL · Full 25-step anime/illustrative, native MLX |
-| **Z-Image Turbo 6B** | 8 | **2:04 min** | 1:17 – 2:07 min | Z-Image · Sharp geometry 8-step |
-| **Krea 2 Turbo 13B** | 4 | **2:55 min** | 2:33 – 3:16 min | Krea 2 · 13B photorealistic (Distilled) |
-| **Qwen-Image 2.1 Turbo** | 8 | **3:20 min** | 2:24 – 3:47 min | Qwen-Image · 8-step distilled 7B DiT |
-| **FLUX.2-klein 9B (8s)** | 8 | **3:29 min** | 2:35 – 3:30 min | FLUX.2 · Flagship 9B 8-step |
-| **Krea 2 Turbo 13B (8s)** | 8 | **5:14 min** | 3:38 – 5:55 min | Krea 2 · 13B native 8-step |
-| **Qwen-Image 2.1** | 20 | **7:26 min** | 5:12 – 7:44 min | Qwen-Image · Full 20-step 7B DiT |
-| **MOSS-Image SFT 5B** | 25 | **26:28 min** | 20:19 – 27:45 min | MOSS · Full 25s stock (~1 min with ⚡ DMD 4) |
+| **Juggernaut XL Lightning** | 4 | **8.80 s** | 8.66 – 12.14 s | SDXL · Native MLX, q4 cache + TAESD (`-9.9%` vs reference) |
+| **RealVisXL V5.0 Lightning** | 6 | **15.23 s** | 13.69 – 24.81 s | SDXL · 6-step Lightning, native MLX + TAESD |
+| **RealVisXL V5.0** | 8 | **38.78 s** | 38.73 – 43.82 s | SDXL · Hyper-SD 8-step, native MLX (`-16.0%`) |
+| **Juggernaut XI v11** | 8 | **41.22 s** | 39.91 – 66.25 s | SDXL · Hyper-SD 8-step, native MLX |
+| **FLUX.2-klein 4B** | 4 | **44.09 s** | 44.07 – 44.31 s | FLUX.2 · Compact 4B rectified flow (`-7.2%`) |
+| **Qwen-Image 2.1 (2s + DMD2)** | 2 | **46.77 s** | 46.32 – 47.93 s | Qwen-Image · 7B DiT + 2-step DMD2 (`-32.0%`) |
+| **FLUX.3-klein 5.6B** | 4 | **51.38 s** | 51.17 – 51.76 s | FLUX.3 · 5.6B flow-matching + Virtual Boxes (`-3.1%`) |
+| **FLUX.1-schnell** | 4 | **74.22 s** | 74.07 – 75.02 s | FLUX.1 · Classic 4-step rectified flow (`-16.5%`) |
+| **MOSS-Image SFT 5B (DMD 4s)** | 4 | **83.57 s** | 80.61 – 84.95 s | MOSS · Pure MLX 5B DiT + 4-step DMD (`-96.7%` vs 25s stock) |
+| **FLUX.2-klein 4B (8s)** | 8 | **89.73 s** | 89.58 – 89.91 s | FLUX.2 · High-detail 8-step mode |
+| **Bria FIBO 2.0 Edit Turbo** | 4 | **93.68 s** | 92.32 – 95.03 s | FIBO 2.0 · 4.2B DiT + Qwen3-VL 4B (`-8.3%`) |
+| **FLUX.2-klein 9B** | 4 | **96.54 s** | 96.34 – 97.04 s | FLUX.2 · Flagship 9B rectified flow (`-8.0%`) |
+| **FLUX.3-klein 5.6B (8s)** | 8 | **98.35 s** | 98.24 – 98.57 s | FLUX.3 · High-detail 8-step mode (`-3.3%`) |
+| **Pony Diffusion V6 XL** | 25 | **104.69 s** | 104.56 – 108.74 s | SDXL · Full 25-step anime/illustrative, native MLX (`-4.9%`) |
+| **Z-Image Turbo 6B** | 8 | **114.97 s** | 114.86 – 118.35 s | Z-Image · Sharp geometry 8-step (`-1.1%`) |
+| **Kromoss 5B (DMD2 8s)** | 8 | **129.43 s** | 128.34 – 137.04 s | MOSS · Pure MLX 5B DiT + 8-step DMD2 LoRA (new in v0.5.0) |
+| **Krea 2 Turbo 13B** | 4 | **156.81 s** | 142.20 – 171.97 s | Krea 2 · 13B photorealistic 4-step distilled (`-0.4%`) |
+| **Qwen-Image 2.1 Turbo** | 8 | **158.64 s** | 158.08 – 162.12 s | Qwen-Image · 8-step distilled 7B DiT (`-19.4%`) |
+| **FLUX.2-klein 9B (8s)** | 8 | **191.38 s** | 191.29 – 191.40 s | FLUX.2 · Flagship 9B 8-step (`-1.5%`) |
+| **Krea 2 Turbo 13B (8s)** | 8 | **299.18 s** | 243.57 – 371.42 s | Krea 2 · 13B native 8-step |
 
-For the interactive side-by-side visual duel arena, prompt latency breakdowns, and historical September comparisons, visit **[diffusionbear.com/benchmark.html](https://www.diffusionbear.com/benchmark.html)**.
+For the full interactive visual duel arena, per-prompt latency deltas (`-green` / `+red` vs reference), and historical September baselines, visit **[diffusionbear.com/benchmark.html](https://www.diffusionbear.com/benchmark.html)**.
 
 ## Model vs model — visual arena
 
@@ -344,9 +378,10 @@ Head-to-head comparisons on original, royalty-free scenes. Explore interactive s
 ## Everything else the app does
 
 - **Model browser & downloader** — search Hugging Face and Civitai side by side,
-  classify, download with progress/speed/cancel, direct URLs, and convert
-  single-file Civitai SDXL checkpoints to runnable diffusers directories
-  out-of-process.
+  classify, download with progress/speed/cancel, direct URLs, and optionally
+  convert raw single-file Civitai SDXL `.safetensors` checkpoints out-of-process
+  when external `torch`/`diffusers` packages are present (every bundled engine
+  runs 100% PyTorch-free on MLX and `safetensors`).
 - **Reference images** — FLUX.2/FLUX.3 take up to 10 (`Image 1`, `Image 2`, …),
   Bria FIBO 2.0 takes up to 4 (`image_1` to `image_4`), Z-Image, Krea 2, Qwen
   and FLUX.1 take one; studio-canvas backdrops on the box-capable engines.
@@ -372,14 +407,30 @@ Head-to-head comparisons on original, royalty-free scenes. Explore interactive s
 
 ---
 
+## Remote browser & API keys (`Chrome`, `Firefox`, `Opera`, `Safari`, AI Agents)
+
+Because DiffusionBear serves its entire React studio interface from the Mac (`127.0.0.1:8001`), another computer, iPhone, or iPad needs **only one web browser**:
+
+1. **Host Mac (`Parameters → API`):** create a managed key (`dbk_...`) per device, click **Use in this browser**, flip **API mode → ON**, and expose loopback over HTTPS with `tailscale serve --bg --https=443 http://127.0.0.1:8001` (or launch the CLI with `--host 0.0.0.0` on a private LAN).
+2. **Remote browser (`Chrome`, `Firefox`, `Opera`, `Safari`):** open `https://<mac>.ts.net` (or `http://<LAN-IP>:8001`), go to **Parameters → API → Backend connection**, **leave `Backend URL` empty** (already talking to the Mac serving the page), paste the key, click **Test → Save connection**.
+   - **Chrome:** prefer `https://` via Tailscale Serve (avoids Mixed Content) and allow *Local network access* on LAN HTTP. Keys live per profile in `localStorage`.
+   - **Firefox:** open `https://<mac>.ts.net` or a numeric IP (`192.168.x.x` / `100.x.y.z`) if DNS over HTTPS is on, and allow site storage.
+   - **Opera:** turn **OFF Opera's built-in VPN** for LAN/Tailscale URLs so traffic stays inside your private network.
+   - **Safari (macOS / iOS / iPadOS):** pair Tailscale HTTPS (`https://<mac>.ts.net`) or trusted LAN HTTP (`http://<LAN-IP>:8001`), leave **Backend URL empty**, paste your `dbk_...` key, and tap **Test → Save connection** so all calls and `<img>` thumbnails stay strictly same-origin under *Prevent Cross-Site Tracking*. On iPhone/iPad, **Share → Add to Home Screen** creates a full-screen web app with its own `localStorage` (paste the key once inside the Home Screen app too).
+3. **Avoid locking yourself out (`security.json` recovery):** managed `dbk_...` keys are revealed once at creation (stored as SHA-256 hashes) and saved per browser profile (`DiffusionBear.app`, Chrome, Brave, Safari do not share `localStorage`). Save your key in a password manager and click **Use in this browser** before flipping **API mode → ON**. If locked out on your own Mac, edit `~/Library/Application Support/DiffusionBear/data/security.json` (or `backend/data/security.json`) and set `"enabled": false`—your keys stay intact and loopback opens immediately.
+4. **AI agents:** send `Authorization: Bearer $DB_KEY` or `X-API-Key: $DB_KEY` on `/api/*` (`GET /api/version` stays public; `GET` image/upload routes accept `?token=` for `<img>` tags). Full guide: [`docs/parameters-api-guide.md`](docs/parameters-api-guide.md) · [`docs/agentic-api-reference.md`](docs/agentic-api-reference.md).
+
+---
+
 ## For developers
 
 Everything above is the app; this section is the minimum needed to clone, build
 and run it from source.
 
-**Requirements:** an Apple Silicon Mac, macOS 26.2 or later, Python 3.10 (main
-runtime, used by every engine including SDXL), and Node.js 18 or later. Git and
-Homebrew are only needed to install those prerequisites.
+**Requirements:** an Apple Silicon Mac, macOS 26.2 or later, Python 3.10 (pure
+MLX runtime — PyTorch, `diffusers`, and `accelerate` are completely removed
+across every bundled engine, including SDXL), and Node.js 18 or later. Git
+and Homebrew are only needed to install those prerequisites.
 
 **Clone the repository:**
 
@@ -426,6 +477,7 @@ credential-shaped files and weights, and refuses to ship anything unsafe;
 
 ## Documentation
 
+- **[Agentic REST API Guide](https://www.diffusionbear.com/agentic-api.html)** & [site/assets/agentic-api-reference.md](site/assets/agentic-api-reference.md) — local endpoints, agent system prompt, and automation examples
 - [CHANGELOG.md](CHANGELOG.md) — what changed in each release
 - [RELEASE_NOTES.md](RELEASE_NOTES.md) — release notes and the Gatekeeper guide
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to build, verify and propose a change
@@ -433,6 +485,7 @@ credential-shaped files and weights, and refuses to ship anything unsafe;
 - [PRIVACY.md](PRIVACY.md) — when the app goes online and what stays local
 - [USER_GUIDE.md](USER_GUIDE.md) — full usage guide
 - [docs/VirtualBox.md](docs/VirtualBox.md) — How Virtual Boxes work
+- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) — open-source dependency and model licence notices
 
 ---
 
@@ -452,12 +505,50 @@ Please **do not open a public issue** for a security problem. Use GitHub's
 or email the author -hello -at- -DiffusionBear-.-com- with the subject `[DiffusionBear security]`.
 Scope is in [SECURITY.md](SECURITY.md). Network behaviour and local data are in [PRIVACY.md](PRIVACY.md).
 
-## License
+## Third-party credits
+
+Native MLX MOSS-Image support is adapted from the experimental
+[`vanch007/mflux`](https://github.com/vanch007/mflux) branch
+`feature/moss-image-sft` (commit `b1fe66cc62109f374fe7d713411c589d3810d0c0`),
+which builds on [Filip Strand's mflux](https://github.com/filipstrand/mflux)
+under the MIT licence. The vendored adaptation lives in `backend/moss_mlx/`.
+
+MOSS-Image weights are by the OpenMOSS Team (Apache-2.0), converted to MLX Q4 by
+mflux-community. The Qwen 3.5 text encoder retains the Qwen licence. Full terms
+are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+- **Built with Qwen**: The local prompt enhancement (Qwen2.5) and Qwen-Image generation capabilities are powered by models from Alibaba Cloud.
+
+### Third-Party Models
+
+- **MOSS & KROMOSS**: Powered by models from the OpenMOSS Team, licensed under Apache 2.0.
+- **FIBO**: Generation and editing powered by Bria AI's FIBO models, licensed under CC BY-NC 4.0.
+
+## License & Commercial Model Rights
 
 [MIT](LICENSE) — Copyright © 2026 **[Ouinche](https://www.ouinche.com)**. This
-covers the project's source code only. Model weights carry their own terms
-(FLUX.2/FLUX.3 are Black Forest Labs non-commercial; the Juggernaut and
-RealVisXL checkpoints are non-commercial too), and none of them are
-redistributed here — they are downloaded from Hugging Face or
-[Civitai](https://civitai.com/?ref_code=88C8VEBA) on first use. The app shows
-the full per-package and per-model licences in its **⚖ Licences** tab.
+covers DiffusionBear's source code and the packaged PyTorch-free MLX runtime
+(`torch`, `torchvision`, `torchaudio`, `diffusers`, and `accelerate` are not
+bundled or redistributed). Model weights are never bundled — they are downloaded
+directly from Hugging Face or [Civitai](https://civitai.com/?ref_code=88C8VEBA)
+under their upstream terms. The in-app **⚖ Licences** tab shows full package
+and model terms offline; always verify trademark, copyright, and likeness rights
+before commercial sale:
+
+| Model | Upstream Licence | Sell generated images? | Weights / API / key conditions |
+|---|---|---|---|
+| **FLUX.2-klein 4B**, **FLUX.1-schnell** | `Apache-2.0` | **Yes** | Permissive commercial use & weights (preserve licence/attribution notices) |
+| **MOSS-Image SFT 5B**, **MOSS-Image Base 5B**, **Kromoss 5B** | `Apache-2.0` | **Yes** | Permissive commercial use & weights |
+| **Z-Image Turbo 6B**, **Qwen-Image Edit** | `Apache-2.0` | **Yes** | Permissive commercial use & weights |
+| **Qwen2.5-1.5B / 0.5B Instruct** *(prompt enhancers)* | `Apache-2.0` | **Yes** | Permissive commercial use & weights |
+| **RealVisXL V5.0** & **Lightning** | `OpenRAIL++` | **Yes** | Commercial outputs & weights allowed under OpenRAIL++ ethical-use terms |
+| **Juggernaut XL Lightning** | `CreativeML OpenRAIL-M` | **Yes** | Outputs allowed; paid API / hosted commercial deployment requires RunDiffusion licence |
+| **Pony Diffusion V6 XL** | `Modified Fair AI Public License 1.0-SD` | **Yes** | Outputs allowed; monetized API hosting barred outside Civitai & HF; derivatives stay Share-Alike |
+| **FLUX.2-klein 9B** | `FLUX Non-Commercial License` | **Yes** *(Outputs)* | Section 2(d) allows commercial **Outputs** (filters + AI disclosure required); **Weights** remain Non-Commercial |
+| **FLUX.3-klein 5.6B** | `FLUX Kommunity License v1.0` | **Conditional** | Free commercial use/outputs under **US$5,000,000/yr** combined gross revenue (filters + AI disclosure) |
+| **Krea 2 Turbo 13B** | `Krea 2 Community License` | **Conditional** | Free commercial use/outputs under **US$1,000,000/yr** trailing 12-month revenue incl. affiliates |
+| **Qwen-Image 2.1** & **Turbo** | `Qwen Research License` | **No** | Research & evaluation only; commercial deployment requires separate Qwen licence |
+| **FIBO 2.0 Edit Turbo** | `CC BY-NC 4.0` | **No** | Non-commercial only; commercial licence available from Bria AI |
+| **Juggernaut XI v11** | `CC BY-NC-ND 4.0` | **No** | Strictly non-commercial, no derivatives, no paid API or redistribution without RunDiffusion licence |
+
+*Third-party LoRAs and Civitai checkpoints (e.g., Outlined icons LoRA) carry their own terms shown on the LoRA row in the app.*

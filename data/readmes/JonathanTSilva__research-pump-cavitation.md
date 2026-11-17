@@ -1,12 +1,14 @@
-<!-- archive-banner:start -->
-> [!NOTE]
-> **This repository is archived.** It is read-only and no longer maintained. It is kept as a record of the work.
-<!-- archive-banner:end -->
+<!-- brand:header:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/brand/header-82f8f0ad-dark.svg">
+  <img alt="research-pump-cavitation: Diagnostic system for hydraulic pump failures by means of electric current analysis and machine learning tools" src="assets/brand/header-82f8f0ad-light.svg" width="100%">
+</picture>
+<!-- brand:header:end -->
 
 <!-- PROJECT LOGO -->
 <h1 align="center">
   <br>
-  <a href="https://github.com/JonathanTSilva/SI-Cavitation"><img src="./Images/logo-cavitation.png" alt="Logo" width="200"></a>
+  <a href="https://github.com/JonathanTSilva/research-pump-cavitation"><img src="./Images/logo-cavitation.png" alt="Logo" width="200"></a>
   <br>
   Scientific Iniciation - Cavitation
   <br>
@@ -18,19 +20,19 @@
 
 <!-- PROJECT SHIELDS -->
 <p align="center">
-  <a href="https://github.com/JonathanTSilva/SI-Cavitation/graphs/contributors">
+  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Contributors">
   </a>
-  <a href="https://github.com/JonathanTSilva/SI-Cavitation/network/members">
+  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/network/members">
     <img src="https://img.shields.io/github/forks/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Members">
   </a>
-  <a href="https://github.com/JonathanTSilva/SI-Cavitation/stargazers">
+  <a href="https://github.com/JonathanTSilva/research-pump-cavitation">
     <img src="https://img.shields.io/github/stars/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Stargazers">
   </a>
-  <a href="https://github.com/JonathanTSilva/SI-Cavitation/issues">
+  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/issues">
     <img src="https://img.shields.io/github/issues/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Issues">
   </a>
-  <a href="https://github.com/JonathanTSilva/SI-Cavitation/blob/main/LICENSE">
+  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="License">
   </a>
 </p>
@@ -52,25 +54,21 @@ The condition monitoring of equipment is essential in industries, in order to pr
 
 ## Getting Started
 
-
-
 ## Quick Guide
-
-
 
 ## Contributing
 
-
 <!-- MIT License -->
-<a href="https://github.com/JonathanTSilva/SI-Cavitation/blob/main/LICENSE"><img width="100px" src="https://miro.medium.com/max/886/1*C87EjxGeMPrkTuVRVWVg4w.png" align="right" /></a>
+<a href="https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE"><img alt="MIT License" width="100px" src="https://miro.medium.com/max/886/1*C87EjxGeMPrkTuVRVWVg4w.png" align="right" /></a>
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/JonathanTSilva/SI-Cavitation/blob/main/LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE) for more information.
 
 ## Contact
-[Jonathan T. da Silva](https://www.linkedin.com/in/JonathanTSilva/) - jonathan.t@aluno.ifsp.edu.br <br/>
-Project Link: [JonathanTSilva/SI-Cavitation](https://github.com/JonathanTSilva/SI-Cavitation)
+
+[Jonathan T. da Silva](https://www.linkedin.com/in/JonathanTSilva/) - <jonathan.t@aluno.ifsp.edu.br> <br/>
+Project Link: [JonathanTSilva/SI-Cavitation](https://github.com/JonathanTSilva/research-pump-cavitation)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- Caso utilize as imagens em markdown, sempre seguir este padrão!-->
@@ -86,16 +84,23 @@ Project Link: [JonathanTSilva/SI-Cavitation](https://github.com/JonathanTSilva/S
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 <!--
 [contributors-shield]: https://img.shields.io/github/contributors/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[contributors-url]: https://github.com/JonathanTSilva/SI-Cavitation/graphs/contributors
+[contributors-url]: https://github.com/JonathanTSilva/research-pump-cavitation/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[forks-url]: https://github.com/JonathanTSilva/SI-Cavitation/network/members
+[forks-url]: https://github.com/JonathanTSilva/research-pump-cavitation/network/members
 [stars-shield]: https://img.shields.io/github/stars/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[stars-url]: https://github.com/JonathanTSilva/SI-Cavitation/stargazers
+[stars-url]: https://github.com/JonathanTSilva/research-pump-cavitation
 [issues-shield]: https://img.shields.io/github/issues/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[issues-url]: https://github.com/JonathanTSilva/SI-Cavitation/issues
+[issues-url]: https://github.com/JonathanTSilva/research-pump-cavitation/issues
 [license-shield]: https://img.shields.io/github/license/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[license-url]: https://github.com/JonathanTSilva/SI-Cavitation/blob/main/LICENSE
+[license-url]: https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/JonathanTSilva/
 -->
 <!-- [product-screenshot]: -->
+
+<!-- brand:footer:start -->
+<p align="right"><a href="https://www.jontobias.com"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/JonathanTSilva/.github/main/assets/brand/jontobias-dark.svg">
+  <img alt="jontobias.com" src="https://raw.githubusercontent.com/JonathanTSilva/.github/main/assets/brand/jontobias-light.svg" width="200">
+</picture></a></p>
+<!-- brand:footer:end -->

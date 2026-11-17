@@ -11,8 +11,8 @@ Desktop app para localização assistida de mangá e quadrinhos. Conheça a demo
   <a href="https://github.com/Zentsy/MangAItranslator/releases/latest">
     <img alt="Baixar para Windows x64" src="https://img.shields.io/badge/Baixar-Windows%20x64-00A884?style=for-the-badge&logo=windows&logoColor=white">
   </a>
-  <a href="https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.0">
-    <img alt="Release atual v0.4.0" src="https://img.shields.io/badge/Release-v0.4.0-2F3342?style=for-the-badge">
+  <a href="https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.1">
+    <img alt="Release atual v0.4.1" src="https://img.shields.io/badge/Release-v0.4.1-2F3342?style=for-the-badge">
   </a>
   <a href="https://ko-fi.com/zentsy">
     <img alt="Apoiar no Ko-fi" src="https://img.shields.io/badge/Apoiar-Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white">
@@ -30,7 +30,7 @@ O MangAI Translator ajuda você a importar um capítulo, gerar um rascunho com I
 
 - **Site Oficial**: [zentsy.github.io/MangAItranslator](https://zentsy.github.io/MangAItranslator/) — Apresentação visual detalhada, fluxo de trabalho, galeria e download rápido.
 - **Baixar a versão mais recente**: [GitHub Releases (Instalador Windows x64)](https://github.com/Zentsy/MangAItranslator/releases/latest)
-- **Release atual**: [v0.4.0](https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.0)
+- **Release atual**: [v0.4.1](https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.1)
 
 Se o projeto te ajudar e você quiser apoiar o desenvolvimento contínuo, você pode contribuir no [Ko-fi](https://ko-fi.com/zentsy).
 
@@ -66,7 +66,7 @@ Se você baixou o app deste repositório oficial e quiser testar mesmo assim, re
 
 ### Recomendado
 
-- `Gemini`: melhor experiência geral para qualidade, OCR e consistência (Gemini 3.8 Flash nativo).
+- `Gemini`: melhor experiência geral para qualidade, OCR e consistência (Gemini 4 Hydrogen, Gemini 4 Argon e Gemini 3.8 Flash nativos).
 - `Groq`: modo turbo para páginas leves com velocidade quase instantânea no hardware LPU.
 - `OpenRouter Auto grátis`: seleciona automaticamente modelos vision gratuitos com rotação de chaves e fallback seguro.
 
@@ -79,7 +79,13 @@ Se você baixou o app deste repositório oficial e quiser testar mesmo assim, re
 
 No OpenRouter, a qualidade depende do modelo gratuito disponível no momento. O app tenta corrigir respostas duplicadas, vazias ou mal formatadas, filtra automaticamente blocos internos de raciocínio (`<think>`) e tem fallback inteligente, mas alguns modelos pequenos podem apenas transcrever o texto em vez de traduzir.
 
-## ✒️ Novidades da Versão 0.4.0
+## ✒️ Novidades da Versão 0.4.1
+
+- **Suporte Oficial ao Gemini 4 Hydrogen & Geração 2026**: inclusão do `gemini-4-hydrogen` (workhorse recomendado de 1M tokens), `gemini-4-argon`, `claude-fable-5.2`, `claude-sonnet-5.5`, `gpt-6-astra` e `qwen4-max`.
+- **Identificador Visual '★ NEW'**: insígnia nos seletores de modelo para identificar facilmente as opções de IA mais recentes e de melhor custo-benefício.
+- **System Prompts Técnicos em Inglês**: prompts de sistema reescritos inteiramente em inglês para máxima precisão de OCR, respeito rigoroso ao schema JSON e tradução refinada direta em PT-BR.
+
+## 📜 Novidades da Versão 0.4.0
 
 - **Nova Identidade Visual "Paper Light"**: modo claro reconstruído do zero com papéis Washi cru, contrastes em nanquim e selos Hanko (認, 済, 動, 筆).
 - **Segunda Passada de Naturalidade**: revisão opcional pós-tradução para refinar a fluidez dos diálogos em português brasileiro sem perder o contexto dramático.
@@ -135,7 +141,7 @@ O editor é o coração do app, agora com monitor de tradução em lote em tempo
 | Modelos e Motores | Tema Paper Light |
 | --- | --- |
 | ![Seleção de modelos e motores](screenshots/configs_v3.png) | ![Dashboard no tema claro](screenshots/tema%20branco%20-%20home.png) |
-| Gemini 3.8 Flash, Claude Sonnet 5, GPT-6 Astra, Groq LPU e modelos locais. | Interface editorial inspirada em papel Washi cru e Nanquim tradicional. |
+| Gemini 4 Argon, Gemini 3.8 Flash, Claude Fable 5.2, GPT-6 Astra, Groq LPU e modelos locais. | Interface editorial inspirada em papel Washi cru e Nanquim tradicional. |
 
 ## Fluxo rápido
 

@@ -287,6 +287,7 @@ In this step, we will learn how to make LLMs faster and cheaper to run. A demo t
 In this step, we will learn what to do when prompting and RAG are not enough: when the customer needs a specific style, format, or domain behavior, or wants a smaller and cheaper model that matches a bigger one. An FDE must know when fine-tuning is the right call and when it is not.
 
 - [How does Fine-Tuning work?](https://outcomeschool.com/blog/how-does-fine-tuning-work)
+- [How does Instruction Tuning work?](https://outcomeschool.com/blog/instruction-tuning)
 - [What is LoRA (Low-Rank Adaptation)?](https://outcomeschool.com/blog/lora-low-rank-adaptation-of-llms)
 - [How does Prefix Tuning work?](https://outcomeschool.com/blog/how-does-prefix-tuning-work)
 - [How does Knowledge Distillation work?](https://outcomeschool.com/blog/how-does-knowledge-distillation-work)
@@ -336,6 +337,7 @@ In this step, we will see everything come together in one of the most requested 
 - [How does speculative LLM generation start replying before the user finishes?](https://outcomeschool.com/blog/speculative-generation-in-voice-agents)
 - [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
 - [How does a voice agent hide the delay of a slow tool call?](https://outcomeschool.com/blog/slow-tool-calls-in-voice-agents)
+- [How does a voice AI agent answer a phone call?](https://outcomeschool.com/blog/phone-calls-in-voice-agents)
 
 ### Step 14: Prepare for Forward Deployed Engineer Interviews
 

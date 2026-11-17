@@ -17,8 +17,8 @@
 </p>
 
 FastAgent serves an agent directory (`SYSTEM.md`, `skills/`, TypeScript tools) as a live service: inside your app,
-as a Telegram, Slack or Feishu bot, on a schedule, or behind your own channel. You keep the files you have. There is no
-new framework to learn.
+over HTTP through its Agent API, or on a schedule, and no message is lost across a restart. You keep the files you have.
+There is no new framework to learn.
 
 <p align="center">
   <img src="https://cdn.jsdelivr.net/gh/fastagent-sh/fastagent@main/assets/demo.svg" alt="Three acts in one terminal: a coding agent vibes a support agent into a directory; fastagent dev serves it live, answering a Telegram message and a Slack mention and firing a daily schedule; fastagent deploy docker writes the container it runs in." width="860">
@@ -30,7 +30,7 @@ With a coding agent (Claude Code, Codex, Cursor, …), paste:
 
 > Read https://fastagent.sh/start.md and build an agent in this project.
 
-By hand (Node ≥ 24.15 or Bun ≥ 1.4):
+By hand (Node ≥ 24.15):
 
 ```bash
 npm i -g @fastagent-sh/fastagent
@@ -39,8 +39,11 @@ fastagent dev                 # serve locally, reloading on edits
 fastagent invoke "hello"      # send it one message
 ```
 
-Then add a channel (`fastagent add telegram && fastagent channels setup telegram`) or run it in a container
-(`fastagent deploy docker`). The [quickstart](https://fastagent.sh/docs/quickstart/) walks through it.
+The agent depends on its own version of FastAgent, and a `fastagent` installed globally runs that version inside it.
+Without a global install, the agent's scripts (`npm run dev`, `npm run build`, `npm start`) and
+`npx @fastagent-sh/fastagent <command>` run it too. Never `npx fastagent`: that name on npm is another package.
+
+Then run it in a container (`fastagent deploy docker`). The [quickstart](https://fastagent.sh/docs/quickstart/) walks through it.
 
 ## Embed it in your app
 

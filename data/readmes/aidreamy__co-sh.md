@@ -2,6 +2,9 @@
 
 **English** | [Português](./docs/readme/README.pt-BR.md) | [Español](./docs/readme/README.es.md) | [Русский](./docs/readme/README.ru.md) | [中文](./docs/readme/README.zh-CN.md) | [日本語](./docs/readme/README.ja.md)
 
+> [!WARNING]
+> **WhatsApp is under development.** The WhatsApp feature (`cosh-whatsapp`) is still experimental and is **not recommended for use** yet.
+
 Cosh is a general-purpose coding agent for the terminal, with software engineering tools and *computer tools* that let it interact with graphical applications.
 
 ## Why co-sh?
@@ -64,6 +67,7 @@ After installing, run `cosh` in your terminal. If the install directory isn't on
 | [`cosh-tui`](./crates/cosh-tui/README.md) | TUI widget library (markdown/diff rendering, layout) — the components the app's terminal interface is built on |
 | [`cosh-sdk`](./crates/cosh-sdk/README.md) | SDK for building agents on top of cosh |
 | [`cosh-recall`](./crates/cosh-recall/README.md) | Memory and context recall |
+| [`cosh-whatsapp`](./crates/cosh-whatsapp/README.md) | WhatsApp Web (multi-device) integration: pairing, normalized events and typed sends |
 | [`cosh-onnx`](./crates/cosh-onnx/README.md) | ONNX decision engine (behind the `onnx` feature) |
 
 ## Roadmap

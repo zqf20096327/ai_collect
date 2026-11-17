@@ -69,7 +69,9 @@ The optional sudo integration is tied to the GUI session. It does not install a 
 ### Useful integrations
 
 - **Persistent memory:** an editable local Markdown file for preferences and facts worth carrying across conversations.
-- **Web tools:** an MCP search/read adapter for a separately running [OmniSearch](https://codeberg.org/gabrielf/omnisearch) service.
+- **GBrain:** optional on-demand memory for project facts and decisions. Open the read-only viewer beside **Skills** to filter the latest 50 active facts.
+- **Web tools:** optional Tavily search, Startpage browser fallback, and public page reading.
+- **Skill scan:** optional static skill inspection with NVIDIA SkillSpector from Settings.
 - **System telemetry:** optional CPU/GPU power, VRAM temperature and memory clock readings through existing RAPL/LACT interfaces.
 - **Native Codex updater:** check for, install, or roll back a separately managed Codex agent build.
 
@@ -93,7 +95,7 @@ Some features depend on other software being installed or configured; Relay does
                           │                 │
                        Your model       Your workspace
 
-           Optional: OmniSearch MCP · sudo session · LACT telemetry
+           Optional: Web MCP · sudo session · LACT telemetry
 ```
 
 Relay's helper roles are implemented as internal subcommands of the same executable. The installed `relay-engine`, `relay-codex`, `relay-web`, and related compatibility names are symlinks—not separate Python utilities.
@@ -105,7 +107,7 @@ Relay's helper roles are implemented as internal subcommands of the same executa
 - A working **Strata** installation or accessible, appropriately configured Strata inference service.
 - A compatible **Codex** executable. Relay can also manage a private Codex installation from its interface.
 
-**Optional:** OmniSearch for web tools, LACT for additional hardware telemetry, and working sudo authentication for privileged actions.
+**Optional:** LACT for additional hardware telemetry, and working sudo authentication for privileged actions.
 
 > Relay is currently source-built and under active development. Behavior and configuration may change as the project evolves.
 
@@ -172,6 +174,24 @@ A minimal example (adjust for your installation):
 ```
 
 `start_command` and `stop_command` are arrays of executable/argument strings, not shell command strings. Leave them empty if you manage Strata separately. Configured model profiles are read from `~/.config/relay/models.json`.
+
+### Optional web search
+
+Open **Settings → Web search**, paste your own Tavily API key into the masked field, and click **Apply**. Relay stores it separately in `~/.config/relay/tavily-key` with owner-only permissions. **Remove saved key** deletes that local copy. The helper checks the saved key for every search, then checks `TAVILY_API_KEY` in its environment. Relay source and installs contain no default key.
+
+The default Relay-managed Codex profile gets the `relay_web` MCP tool automatically. When using an explicit `codex_home`, register `~/.local/libexec/relay/relay-web` under `[mcp_servers.web]` in that profile.
+
+`search_web` sends the search query to Tavily and returns ranked links and snippets. It uses basic search. The existing `read_page` tool can retrieve public sources for citations. When no key is configured, or automatic search fails, Relay provides a Startpage browser link and reports the reason.
+
+### Optional skill scan
+
+Install the [NVIDIA SkillSpector CLI](https://github.com/NVIDIA/SkillSpector#installation) on your PATH. In **Settings → Skill scan**, enter the local folder, Markdown file, or ZIP and click **Scan**. Relay shows the risk assessment, findings, and an incomplete-coverage indicator when applicable. It uses static analysis with `--no-llm`. SkillSpector may send dependency names and versions to OSV.dev.
+
+### Optional GBrain memory
+
+Set up a local brain using the [GBrain installation guide](https://github.com/garrytan/gbrain/blob/master/INSTALL_FOR_AGENTS.md). In Relay's Codex profile, register it as an MCP server named `gbrain` with `serve --surface verbs`. For browsing with the agent unloaded, make `~/.local/libexec/relay/relay-gbrain` an executable launcher that forwards arguments to the same brain.
+
+Relay includes a snapshot of Persistent Memory when starting or resuming a chat. GBrain facts are retrieved as needed. Ask the agent to remember or forget a GBrain fact, then refresh the viewer to see the change.
 
 ## Local files and data
 

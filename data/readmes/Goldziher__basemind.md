@@ -452,8 +452,10 @@ LSP server.
 
 Resolution **refines, but never shrinks, a result set.** `code_refs` with a `path` (callers of the
 definition in that file) reports every call site whose callee is exactly that name — the same sound
-floor a `code_refs` call without `path` uses — and marks each hit `resolved` when resolution proved
-it binds to that definition (`resolved_total` counts them). Matching is on the whole identifier, so
+floor a `code_refs` call without `path` uses — and gives each hit it checked a `resolved` flag: `true`
+when resolution proved it binds to that definition (`resolved_total` counts them), `false` when it
+checked and could not, and no flag at all for a hit it did not check (`resolution` says why when that
+holds for the whole definition). Matching is on the whole identifier, so
 `open` no longer counts `open_store`; pass `match: "substring"` for the looser match. It deliberately
 does *not* return only the resolved subset: resolution cannot see through a module-object import
 (`from pkg import mod` then `mod.f()`) or an unresolvable path alias, so filtering to it would drop
@@ -583,7 +585,9 @@ lists the two commands that verify the ceiling is real rather than merely config
 The daemon can additionally serve MCP over streamable HTTP on loopback, but that front-end is
 **opt-in**: it binds only when `BASEMIND_ALLOW_HTTP` is truthy in the daemon's environment, and every
 request must then present the bearer token published as the second line of `<comms_dir>/http.addr`
-(mode `0600`). Plugin manifests and the CLI use the stdio transport and need none of this.
+(mode `0600`; `<comms_dir>` is the generation directory, `comms/g1/` under the data directory). The
+first line of that file is the bound address: the default port is `51786`, but a daemon that finds it
+in use binds another. Plugin manifests and the CLI use the stdio transport and need none of this.
 
 </details>
 
@@ -598,7 +602,8 @@ that's cheap to skim, and the full body, fetched only when an agent wants to rea
 sees its own posts in its inbox. Idle threads auto-archive. `wait` blocks for 30 seconds by default
 (at most 40) and ends early when the client cancels the request.
 
-The client–daemon protocol is version 4: the daemon serves it on an 8-worker async runtime, and
+The client–daemon protocol is version 6 (a client and a daemon of different versions refuse each
+other at connect): the daemon serves it on an 8-worker async runtime, and
 every request carries an id, so replies are matched to
 requests and most calls have a deadline (`BASEMIND_COMMS_REQUEST_TIMEOUT_SECS`, 10 s;
 `BASEMIND_COMMS_HANDSHAKE_TIMEOUT_SECS`, 30 s). After an upgrade, run `basemind comms stop` so the
@@ -1164,7 +1169,7 @@ degrading to a truncated in-memory view.
 | `eval --tasks <file> [--out --report --markdown --baseline --tolerance --cost-tolerance --min-recall --warmup --mode]` | Score retrieval quality and token savings against gold from a JSONL task file; `--baseline` gates regressions. See [`benchmarks/eval/`](benchmarks/eval/README.md). |
 | `tokens --stdin` | Count tokens in stdin with the real o200k tokenizer (needs the `tokenizer` feature). |
 
-Index commands live at the top level: `status` (`index_status`), `rescan [paths] [--full]`
+Index commands live at the top level: `status` (`index_status`), `rescan [paths]`
 (`index_rescan`) and `cache stats|gc|clear` (CLI only).
 
 **Cache (`basemind cache`)**
@@ -1199,8 +1204,9 @@ after handling it so each thread's inbox cursor advances independently.
 
 | Command | Purpose |
 |---|---|
-| `daemon` / `start` / `stop [--all]` / `status` | The broker daemon: run it, ensure it, stop it (`--all` stops every live daemon on the machine), or inspect pid / version / uptime. |
-| `doctor [--probe --clear-fatal]` | List every live daemon on the machine (pid / comms dir / version / uptime), pruning dead registry entries, and flag a pile-up over the ceiling (`BASEMIND_MAX_DAEMONS`, default 8). `--probe` also asks each daemon whether it can serve; `--clear-fatal` acknowledges a recorded fatal store error. |
+| `daemon` / `start` / `stop [--all]` / `status` | The broker daemon: run it, ensure it, stop it (`--all` stops every live daemon of this version's protocol generation on the machine), or inspect pid / version / uptime. |
+| `doctor [--probe --clear-fatal]` | List every live daemon of this version's protocol generation on the machine (pid / comms dir / version / uptime), pruning dead registry entries, and flag a pile-up over the ceiling (`BASEMIND_MAX_DAEMONS`, default 8). `--probe` also asks each daemon whether it can serve; `--clear-fatal` acknowledges a recorded fatal store error. |
+| `cleanup [--dry-run --older-than <days>]` | Remove the comms files of other protocol generations and of releases up to 0.33 once no daemon holds their lock and they have been idle for 30 days. |
 
 **Workspace (`basemind workspace`, `--features comms`)**
 
@@ -1213,7 +1219,7 @@ after handling it so each thread's inbox cursor advances independently.
 | Command | Purpose |
 |---|---|
 | `scan [--staged \| --rev <REV>] [--no-git-history] [--rebuild-git-history]` | Full scan, or index the git index / one revision. Ctrl-C stops it cleanly. |
-| `rescan [<path>…] [--full] [--no-git-history] [--rebuild-git-history]` | Update the given paths, or the whole tree. Routed through the daemon when one runs. |
+| `rescan [<path>…] [--no-git-history] [--rebuild-git-history]` | Update the given paths, or with none the whole tree. Routed through the daemon when one runs. |
 | `status` | Index health for this workspace: file counts, languages, scan age. |
 | `doctor` | Check root, config, index, grammars, pre-commit hook and daemon; exits 1 on a failed check. |
 | `completions <shell>` / `man` | Print a shell completion script (`bash`, `zsh`, `fish`, `elvish`, `powershell`) / the man page (roff) to stdout. |

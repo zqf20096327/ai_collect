@@ -114,9 +114,10 @@ exact samples from your own library and a synthesized 808. With
 `ABLETON_MCP_PROFILE=full`, an assistant runs it end to end from here:
 
 1. `index_sound_library()` once: a job that indexes the User Library and the
-   Core Library's samples (about a minute per 9,000 sounds).
+   Core Library's samples (about 35 seconds for 12,000 sounds).
 2. `dissect_reference(path=...)` (or an audio clip) starts the analysis as a
-   job and returns its id at once; about 5 minutes for a 2-minute song.
+   job and returns its id at once; about 4 minutes for a 2-minute song
+   (7 the first time).
 3. `reference_job(job_id=..., wait=20)` waits for the next step with progress
    notifications, and once done gives tempo, meter, sections, each pad's
    sample with its match verdict, the 808's notes and the files written.
@@ -138,7 +139,27 @@ one folder per song, named after its file), job records to `~/.ableton-mcp/jobs/
 [blueprint](docs/blueprint-v1.md), a JSON format anything can write.
 Measured on macOS with Apple Silicon only; 16 GB of RAM recommended (an
 analysis peaks at about 2 GB). Needs Live 12.4 to load samples by path
-(earlier versions go through the browser by file name).
+(earlier versions go through the browser by file name). In Live 12.4.16 a
+whole song's blueprint (10 tracks, 1,881 notes) built in about 7 seconds
+and recorded the same, sample for sample, as reference-dissector's own build.
+The jobs ran the pinned refdissect for real on 2026-11-16: the library index
+took 34 seconds for 12,093 sounds; a 2-minute song took 7.4 minutes the first
+time (setup included) and 3.7 the next, and its blueprint built in Live
+12.4.16 in under 5 seconds with clean read-backs.
+
+To turn the full profile on:
+
+- Claude Code (the plugin): type `full` in the plugin's "Tool profile"
+  option (`/plugin`, Installed, ableton-live, Configure options) and start a
+  new session; or start Claude Code with the variable in its environment,
+  `ABLETON_MCP_PROFILE=full claude`, which wins over the option.
+- Claude Desktop (the extension): type `full` in the extension's "Tool set"
+  setting (the extension sets the variable itself; the shell's is not used).
+- An MCP client configured by hand: add `"env": {"ABLETON_MCP_PROFILE":
+  "full"}` to the server's entry, or `-e ABLETON_MCP_PROFILE=full` to
+  `claude mcp add`.
+
+`doctor` says when the server runs without these tools.
 
 ---
 
@@ -223,7 +244,8 @@ Run only one MCP client against Live at a time. Ask the assistant to call
 `doctor` to confirm the server and the script
 versions match.
 
-Environment variables: `ABLETON_MCP_PROFILE=full` (every original tool),
+Environment variables: `ABLETON_MCP_PROFILE=full` (the reference-song tools
+and every original tool),
 `ABLETON_HOST` / `ABLETON_PORT` (where the server looks for Live),
 `ABLETON_MCP_TOKEN` (the session token, when the server cannot read
 `~/.ableton-mcp/live-session.json`), `ABLETON_MCP_REFDISSECT` (a local
@@ -324,7 +346,7 @@ connection, open dialogs and Live's log, and says how to fix what it finds.
 
 ```bash
 uv sync
-uv run --with pytest pytest -q            # 434 tests, no Live or models required
+uv run --with pytest pytest -q            # 469 tests, no Live or models required
 (cd extension && npm ci && npm test)       # the Extensions SDK add-on
 uvx ruff check .
 uv run python packaging/build_mcpb.py     # dist/ableton-live-mcp-<version>.mcpb

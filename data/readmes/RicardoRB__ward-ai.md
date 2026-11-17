@@ -22,7 +22,6 @@ team, and Ward checks every change against them, from the first edit to producti
 
 <img src="website/public/ward-layers.svg" alt="Four nested shields around your code: Edit, Commit, Push, and CI. Faster checks sit close to the code, stricter ones further out." width="720">
 
-<img src=".github/assets/ward-demo.webp" alt="An agent's change fails a quality check, the agent fixes it, and the quick check and the stricter pre-push check pass" width="900">
 <br>
 <sub>An agent's change fails a quality check, the agent fixes it, and the fast and pre-push checks pass. (<a href=".github/assets/ward-demo.webm">WebM version</a>)</sub>
 
@@ -228,7 +227,7 @@ Cline, Factory Droid, and Amp. See [integrations](https://ricardorb.github.io/wa
 
 ## Project status
 
-**Alpha** (`0.9.1`). Runs as a native binary on Linux x86_64, macOS (Apple Silicon), and
+**Alpha** (`0.10.0`). Runs as a native binary on Linux x86_64, macOS (Apple Silicon), and
 Windows x86_64, or as a JAR built from source on JDK 25 (the way to run it on an Intel Mac). Only the
 latest release receives fixes. See
 [CHANGELOG.md](CHANGELOG.md) for what changed in each release.

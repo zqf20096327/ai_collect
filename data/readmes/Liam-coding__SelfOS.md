@@ -48,15 +48,21 @@ Requires **Python 3.10+**, Git, and an Anthropic Messages or OpenAI-compatible C
 
     The interface defaults to English. Choose **Settings > Language** for Simplified Chinese.
 
-4. Open **Import center** to inspect conversation sources, uploaded originals, current tasks and committed results. **Preview a small local sample** enters the bounded setup flow; **Upload or organize files** opens file selection and drag/drop. Opening the center does not scan conversations or call a model. See [import center](docs/knowledge-import.md#import-center).
+4. Select **Import sources** to open the **Import center** to inspect conversation sources, uploaded originals, current tasks and committed results. **Preview a small local sample** enters the bounded setup flow; **Upload or organize files** opens file selection and drag/drop. Opening the center does not scan conversations or call a model. See [import center](docs/knowledge-import.md#import-center).
+
+   Select **Ask your knowledge** to focus the chat panel in **Ask knowledge** mode to ask about retained decisions, current work or preferences. Answers include record and original-source links, with separate labels for model interpretation, corrections and history. Project scope, privacy exclusions and bounded requests apply. See [knowledge questions](docs/knowledge-qa.md).
+
+   Select **Tasks** to prepare a sourced project brief and retained next-step proposals. Saving requires an explicit **Save brief** action; stop, retry, authenticated download and guarded undo are available. This local task makes no model calls and does not execute project work. See [controlled tasks](docs/controlled-tasks.md).
 
    On a fresh knowledge profile, **Get started** also opens source/exclusion setup and a local preview. **Start sample** processes at most 2 compact parts with a cumulative 12-request allowance. Stop/resume preserves progress and remaining requests. Existing users can reopen setup through **Settings > Resume setup**. See [first-run setup](docs/first-run-onboarding.md).
 
-   **Preview more conversations** offers a separate larger preview without launching all history. The ordinary organizer remains available under **Choose what matters**. Use **Browse knowledge** for published records and original sources.
+   **Preview more conversations** offers a separate larger preview without launching all history. Organization preferences, life updates and staged changes are available in **Settings > Knowledge and life tools**. Optional **Conversation schedule** organizes small increments while the server runs, with selected sources and a request cap; it defaults to off. See [scheduling and stop behavior](docs/conversation-schedule.md). Search and browse published records in the knowledge section; expand **Filters** for project, source or date constraints. **Overall** opens a dedicated life overview page with a left-arrow return link. See [dashboard navigation](docs/product-navigation.md).
 
 Before using the vault as agent context, review `vault/PROFILE.md`, `vault/NOW.md` and `vault/GOALS.md` and personalize their contents.
 
 ## What SelfOS keeps
+
+Selected previews show reusable work and rough source-token estimates before organization. Actual provider usage is recorded separately; request allowances include retries and reviews. See [workload estimates and measured tokens](docs/workload-estimates.md).
 
 | Category | What belongs here |
 | --- | --- |
@@ -71,6 +77,11 @@ You choose the domains and wording detail. Retention follows meaning and evidenc
 Use global search to find records across all categories, filter by project context,
 source or date, and inspect matching excerpts and original evidence. See the
 [search guide](docs/knowledge-search.md).
+
+Open a record to browse explained connections, add a link, or explicitly request
+bounded model suggestions. Accepted suggestions retain their unverified model
+origin; corrections, rejection history, backups and privacy rules apply.
+See [knowledge connections](docs/knowledge-relationships.md).
 
 ## How importing works
 
@@ -93,7 +104,7 @@ Originals live under vault/.knowledge_uploads/originals/, with a content-based r
 ## Stop, resume and undo
 
 - **Stop:** click the stop button. Active requests may still finish saving; wait for the stopped status before closing the server.
-- **Resume:** click Organize my knowledge again. Unchanged successful checkpoints are reused. Refreshing or losing the stream also requests cooperative stopping; the page follows the existing saving/stopped task, and remaining work resumes on your next click.
+- **Resume:** reopen Import sources and continue the stopped task. Unchanged successful checkpoints are reused. Refreshing or losing the stream also requests cooperative stopping; the page follows the existing saving/stopped task, and remaining work resumes on your next click.
 - **Undo:** use the dashboard's undo action or `python -m selfos knowledge --restore-last`. Restore rejects later file edits so it does not overwrite newer changes.
 
 On the next import, changed retention settings trigger a rebuild under the new policy. Completed staging work and backups remain available for recovery; see the [guide](docs/knowledge-import.md#stop-retry-and-restore).
@@ -128,7 +139,13 @@ The separate Harvest workflow remains available with `python -m selfos harvest` 
 
 Markdown storage and source paths stay local. **Organizing and chat send redacted text and relevant context to your configured API.** Local storage does not imply offline inference, and redaction cannot guarantee removal of every sensitive detail.
 
-Source references make records traceable; AI summaries and candidate reviews do not independently prove accuracy. Multi-project conversations can still lose context. Supported inputs are local Claude Code and Codex JSONL sessions, admitted UTF-8 TXT/Markdown documents, and the pinned OpenCode profile below. Unknown chat-export formats are rejected.
+Source references make records traceable; AI summaries and candidate reviews do not independently prove accuracy. Multi-project conversations can still lose context. Supported inputs are local Claude Code and Codex JSONL sessions, admitted UTF-8 TXT/Markdown documents, and the pinned OpenCode and DeepSeek Harness profiles below. Unknown chat-export formats are rejected.
+
+### DeepSeek Harness sources
+
+In **Import sources → Manage sources**, choose **DeepSeek Harness folder**, add an absolute log root, project folder or session folder, and save it. Local preview makes no model calls; Start organizes at most two compact parts with the existing twelve-request allowance. Stop/resume, source verification, backups and opt-in scheduling reuse the existing import pipeline.
+
+Support targets official deepseek-ai/deepseek-harness commit 39163dd30f703a79079e2d2446545cff3c453738, physical **v4 JSONL and checksummed Zstandard logs**. The newest canonical generation is selected without fallback to older history. Human evidence comes from original user events; injected messages, surface replacements and inherited summaries are filtered. Logs are limited to 8 MiB, and directory discovery to 2,000 entries; choose a smaller project/session folder for larger roots. [Format, limits and migration details](docs/deepseek-import.md).
 
 ### OpenCode sources
 
@@ -138,7 +155,7 @@ The adapter targets the session/message/part projection and info/messages JSON e
 
 SQLite transactions are read-only, including committed WAL data; SelfOS never migrates or checkpoints OpenCode storage. Coordinate WAL when copying a live database. Scan limits are 10 seconds, 100 sessions, 2,000 messages and 8 MiB of text; oversized records are diagnosed rather than truncated. Previews use two 40-message pages and at most two sealed parts. Exports are UTF-8, at most 20 MiB and 2,000 messages. SelfOS checkpoints are limited to 8 MiB each and 128 MiB in aggregate.
 
-Progress and archived scans live under vault/.knowledge_harness_scans/; previews use vault/.knowledge_harness/previews/. Admitted originals and processing history use vault/.knowledge_uploads/. Knowledge retains verified source locators and recoverable backups. Restoring knowledge requeues inputs whose canonical completion receipts no longer match. Rebuilding retained native knowledge stops before replacement if its 2,000-message/8 MiB replay allowance is exceeded. Cross-platform migration retains unresolved native permissions and never enables foreign database paths automatically. DeepSeek Harness support awaits identification of its distribution and format; compatibility with every OpenCode release is not claimed.
+Progress and archived scans live under vault/.knowledge_harness_scans/; previews use vault/.knowledge_harness/previews/. Admitted originals and processing history use vault/.knowledge_uploads/. Knowledge retains verified source locators and recoverable backups. Restoring knowledge requeues inputs whose canonical completion receipts no longer match. Rebuilding retained native knowledge stops before replacement if its 2,000-message/8 MiB replay allowance is exceeded. Cross-platform migration retains unresolved native permissions and never enables foreign database paths automatically. Compatibility with every OpenCode release is not claimed.
 
 ## Documentation and contributing
 

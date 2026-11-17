@@ -1,11 +1,10 @@
 # pi-freeflow
 
-> 32 free models with up to 1M context. No API keys to manage. Add your own relays to spread requests across more IPs.
+> 31 verified free models (plus dynamically discovered Kilo models) with up to 1M context. No API keys to manage. Add your own relays to spread requests across more IPs.
 
 Thin by design: a model list, a relay proxy, and a log. The host (`pi-ai`) handles thinking, normalization, and provider behavior.
 
-[![npm version](https://img.shields.io/npm/v/pi-freeflow?style=flat-square&color=00E5FF)](https://www.npmjs.com/package/pi-freeflow)
-[![npm downloads](https://img.shields.io/npm/dm/pi-freeflow?style=flat-square)](https://www.npmjs.com/package/pi-freeflow)
+[![release](https://img.shields.io/github/v/release/trefeon/pi-freeflow?style=flat-square&color=00E5FF)](https://github.com/trefeon/pi-freeflow/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Pi](https://img.shields.io/badge/Powered%20by-Pi-7c3aed?style=flat-square)](https://github.com/earendil-works/pi)
 [![Oh My Pi](https://img.shields.io/badge/Compatible-OMP-black?style=flat-square)](https://github.com/can1357/oh-my-pi)
@@ -16,7 +15,7 @@ Thin by design: a model list, a relay proxy, and a log. The host (`pi-ai`) handl
 
 | Feature | What it does | Cost |
 | :--- | :--- | :--- |
-| **32 free models** | 8 from OpenCode Zen, 15 from KiloCode Gateway, 1 from Cline, 8 from OVHcloud AI Endpoints, context windows up to 1M. Full list below. | **$0** |
+| **31+ free models** | 12 from OpenCode Zen, 10 from KiloCode Gateway (plus compatible free Kilo models discovered dynamically), 1 from Cline, 8 from OVHcloud AI Endpoints, context windows up to 1M. Full list below. | **$0** |
 | **Relay pool** | Route requests through your own relays: a self-hosted egress pool (many egress IPs on one small host) or Cloudflare Workers / Deno Deploy / Vercel Edge workers. Traffic spreads across the pool, or stays on one sticky relay. A relay that rate-limits, times out, or drops the connection cools down while healthy ones take its traffic. | **$0** beyond your host or platforms' free tiers |
 | **Automatic fallback** | When every relay is cooling down, requests go direct to upstream instead of failing. | **$0** |
 | **Short model names** | Most models have a slash-free, colon-free alias, plus an optional `:effort` suffix for thinking depth. You type `freeflow/<name>` (including `cline-super-vl` for Cline). | **$0** |
@@ -28,21 +27,30 @@ Thin by design: a model list, a relay proxy, and a log. The host (`pi-ai`) handl
 
 ### Install
 
-**On Oh My Pi (OMP):**
+pi-freeflow ships as a GitHub release tarball — the same asset `/freeflow update`
+installs, so no registry account or npm session is involved.
+
+**As a host plugin (OMP / Pi):**
 ```bash
-omp plugin install pi-freeflow
-# or local dev (repo checkout)
-omp plugin link /path/to/pi-freeflow
+omp plugin install pi-freeflow            # OMP, from its registry
+omp plugin link /path/to/pi-freeflow      # OMP, local dev checkout
+pi install npm:pi-freeflow                # Pi
 ```
 
-**On Pi:**
+**From a release tarball** (independent of any registry):
 ```bash
-pi install npm:pi-freeflow
+curl -fL -o pi-freeflow.tgz https://github.com/trefeon/pi-freeflow/releases/latest/download/pi-freeflow.tgz
+tar -xzf pi-freeflow.tgz                  # extracts package/
+omp plugin install ./package              # or: pi install ./package
+# global install instead: npm i -g ./pi-freeflow.tgz  (or bun add -g ./pi-freeflow.tgz)
 ```
 
-> Both commands fetch the same npm package from the registry. pi-freeflow
-> is an extension loaded by the host, not a standalone CLI. It works on OMP
-> and Pi only (they share the extension API).
+> npm 12 refuses remote and git specifiers by default (`allow-remote`,
+> `allow-git` = none), so every path above installs a **local file**.
+> `/freeflow update` follows the same rule: it reads the newest GitHub release
+> tag, downloads that release's tarball, and installs it with npm or bun.
+> pi-freeflow is an extension loaded by the host, not a standalone CLI; it works
+> on OMP and Pi only (they share the extension API).
 
 ### Pick a model
 
@@ -215,7 +223,7 @@ The same command set works identically in OMP and Pi:
 
 ---
 
-### 30 models, one command
+### 31 baseline models, one command
 
 ```bash
 /model → freeflow → pick
@@ -225,7 +233,7 @@ Every model specification is reconciled against [models.dev](https://models.dev/
 
 The host catalog carries text and image inputs only. Upstream video and audio support (MiMo: audio + video; GLM 5.3 Flash: video + PDF; Nemotron Super VL and Nano Omni: video) is therefore not selectable from the picker and is not declared in `input`.
 
-#### OpenCode Zen (11 models), Chat Completions API
+#### OpenCode Zen (12 models), Chat Completions API
 
 Good defaults for long coding sessions and agentic work.
 
@@ -239,9 +247,10 @@ Good defaults for long coding sessions and agentic work.
 | `beam-free` | Reflection AI | **1M** (1.048.576) | **131K** (131.072) | `low … max` | ❌ |
 | `deepseek-v4.1-flash-free` | DeepSeek | **1M** (1.048.576) | **393K** (393.216) | `low / high / max` | ✅ |
 | `flint-40b-free` | Recursive | **262K** (262.144) | **65K** (65.536) | `low … max` | ❌ |
-| `crouton-alpha-free` | Stealth (Thinking Machines) | **1M** (1.048.576) | **270K** (270.000) | `minimal … max` | ✅ |
 | `iceman-free` | Stealth | **262K** (262.144) | **131K** (131.072) | `low / high / max` | ❌ |
 | `inkling-2-small-free` | Thinking Machines | **1M** (1.048.576) | **131K** (131.072) | `minimal … max` | ✅ |
+| `longcat-2.5-free` | Meituan | **1M** (1.048.576) | **262K** (262.144) | `minimal … xhigh` | ✅ |
+| `hy4-flash-free` | Tencent | **1M** (1.048.576) | **65K** (65.536) | `high` | ✅ |
 
 #### KiloCode Gateway (10 models), OpenRouter compatible
 
@@ -352,12 +361,13 @@ To stop it manually, run `/freeflow kill`. The next freeflow use starts it again
 **Why did my long session stop with a "reasoning was not issued to this caller" error?**
 The upstream backend signs each thinking block so only the backend that produced it can read it back. When a later turn reaches a different backend, the old blocks get rejected and the session stalls. pi-freeflow keeps each conversation on the relay that produced its thinking while that relay is healthy. When the relay has to change anyway (rate limit, relay removed, direct-mode switch), that turn is sent without the old thinking blocks so the new backend accepts it, and only the rejected blocks are dropped afterwards. Messages, tool calls, and tool results are always kept.
 
-**Why is it installed via npm?**
-The npm package is the distribution channel only. Both hosts resolve it internally:
-`omp plugin install pi-freeflow` and `pi install npm:pi-freeflow` install the same
-package from the npm registry. pi-freeflow is an extension, not a standalone CLI.
-The host (OMP or Pi) loads and runs it. A plain `npm install` just downloads the
-files; it is not a supported way to run the extension.
+**Why is it installed from a GitHub release?**
+The release tarball is the distribution channel: it is the file you install and
+the file `/freeflow update` installs. pi-freeflow is an extension, not a
+standalone CLI, so the host (OMP or Pi) loads and runs it; a plain `npm install`
+only downloads the files. No registry account or npm session is needed at any
+point, and npm 12's default refusal of remote specifiers is why the tarball is
+downloaded first and installed as a local file.
 
 **Which hosts can use it?**
 Oh My Pi (OMP) and Pi only. They share the same extension API, so one
@@ -391,7 +401,7 @@ pnpm smoke       # verifies extensions/index.ts loads without crashing
 #### Project structure
 
 ```
-├── models.ts                # 32-model catalog definitions
+├── models.ts                # 31-model baseline catalog definitions
 ├── index.ts                 # extension entry, lifecycle hooks
 ├── catalog.ts               # model catalog cache (24h disk)
 ├── proxy.ts                 # local proxy server (127.0.0.1:28180)
@@ -414,7 +424,7 @@ pnpm smoke       # verifies extensions/index.ts loads without crashing
 ├── deploy.ts                # guided relay deploy (vercel/cloudflare/deno)
 ├── cline-accounts.ts        # per-slot Cline key pool with failover
 ├── cline-device-auth.ts     # Cline WorkOS device-flow login
-├── update-checker.ts        # npm registry version check, cached
+├── update-checker.ts        # GitHub release version check, cached
 ├── update-core.ts           # version facts and update step runner
 ├── updater.ts               # package-manager choice for /freeflow update
 ├── atomic-write.ts          # temp-file + rename writes, retried across Windows locks

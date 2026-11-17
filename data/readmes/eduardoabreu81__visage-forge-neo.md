@@ -1,10 +1,14 @@
+<p align="center">
+  <img src=".github/banner.jpg" alt="Visage for Forge Neo banner"/>
+</p>
+
 # 🎭 Visage for Forge Neo
 
 <div align="center">
 
 [![Forge Neo](https://img.shields.io/badge/Forge-Neo-blue)](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo)
 [![Gradio](https://img.shields.io/badge/Gradio-4.40.0-orange)](https://gradio.app/)
-[![Version](https://img.shields.io/badge/Version-0.4.0-brightgreen)](https://github.com/eduardoabreu81/visage-forge-neo)
+[![Version](https://img.shields.io/badge/Version-0.5.0-brightgreen)](https://github.com/eduardoabreu81/visage-forge-neo)
 ![Status](https://img.shields.io/badge/Status-Preview-orange)
 [![License](https://img.shields.io/badge/License-AGPL--3.0-green.svg)](LICENSE)
 
@@ -303,5 +307,7 @@ AGPL-3.0 - see [LICENSE](LICENSE)
 Made with ❤️ for the Stable Diffusion community
 
 **[Report Bug](https://github.com/eduardoabreu81/visage-forge-neo/issues)** • **[Request Feature](https://github.com/eduardoabreu81/visage-forge-neo/issues)** • **[☕ Ko-fi](https://ko-fi.com/eduardoabreu81)**
+
+<sub>More Forge Neo extensions at <a href="https://eduardoabreu81.github.io/">eduardoabreu81.github.io</a></sub>
 
 </div>

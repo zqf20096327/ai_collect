@@ -217,6 +217,12 @@ Sim. O `/build-company-list` pergunta a tecnologia e o país e monta a planilha 
 </details>
 
 <details>
+<summary><b>Se eu rodar o <code>/build-company-list</code> de novo, ele repete empresas?</b></summary>
+
+Não. A pergunta 7 pede quantas empresas **novas** você quer (de 1 a 500). Antes de pesquisar cada empresa, ele confere o histórico (`controle/empresas-vistas.json`, montado com as suas planilhas anteriores, o `progresso.json` e as coletas antigas) e pula na hora as que já viu. Ele para quando chega à meta, quando passa 5 minutos sem achar empresa nova ou depois de 5 buscas seguidas sem novidade, e diz: "Achei X de N empresas novas". A planilha anterior nunca é sobrescrita: a nova sai como `empresas-<tecnologia>-<país>-2.xlsx` (depois `-3`…), com a numeração continuando de onde a anterior parou. O `perfil.local.md` passa a apontar para a planilha nova, e o próximo `/next-companies` coloca as empresas novas na fila, depois das que ainda faltavam.
+</details>
+
+<details>
 <summary><b>Preciso pagar alguma coisa?</b></summary>
 
 O projeto é grátis (licença MIT). O que muda é o plano do Claude:
@@ -288,7 +294,7 @@ Os termos do LinkedIn restringem automação. Este projeto só lê, no navegador
 </a>
 </p>
 
-Quer ajudar? Veja o [CONTRIBUTING.md](CONTRIBUTING.md) e o [ROADMAP.md](ROADMAP.md). Os testes rodam com `python3 -m pytest`.
+Quer ajudar? Veja o [CONTRIBUTING.md](CONTRIBUTING.md) e o [ROADMAP.md](ROADMAP.md). Os testes rodam com `python3 -m pytest`. No macOS, os testes que abrem o painel num navegador usam só o Brave (sem ele, são pulados); o laboratório de navegadores roda só no GitHub Actions.
 
 ## Autor
 

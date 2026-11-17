@@ -21,6 +21,8 @@ Left alone, most agent sessions forget everything between runs, call work done w
 
 **Try a pre-launch website check.** The demo site served the page over both HTTP and HTTPS. [Run the free check on your public URL](https://betterloopai.com/check/from-agent-readme) without signing up. Pick one finding to verify and fix. When you rerun the check, allow the 15-minute report cache to expire. [Watch the 30-second redirect walkthrough](https://github.com/fainir#two-things-i-built-and-tested).
 
+If `/docs` redirects to `/docs/` and `/docs/` is the intended search URL, check the full `/docs` address. If the report flags a canonical redirect, use the final HTTP 200 URL in the canonical tag, sitemap and matching `hreflang` links.
+
 For AI crawler access, save the public HTML and robots.txt, then verify any crawler visits in your CDN or server logs. [Follow the AI crawler access checklist](https://betterloopai.com/docs/ai-crawler-access?utm_source=github&utm_medium=readme&utm_campaign=mcasp-crawler-guide).
 
 If you maintain several client sites, Betterloop Pro gives you daily insight runs across up to five projects for $19 a month plus applicable tax. [See Pro pricing and how to start](https://betterloopai.com/pricing/from-readme).
@@ -101,7 +103,7 @@ The prompt supports both paths (see `IMPLEMENTATION POSTURE` inside it):
 
 To choose, add a line after the prompt, for example `Use harness-wrapper mode around Claude Code.` or `Use native runtime mode on the Claude Agent SDK, in TypeScript.`
 
-A small services team spending 10 hours a week on lead follow-up can capture enquiries in its CRM and draft replies for a person to approve. Start with one inbound channel and track how many drafts need edits. [Request implementation help from AI Your Work](https://aiyourwork.chat/services?utm_source=github&utm_medium=readme&utm_campaign=agent-workflow-assessment#implementation-request).
+A small services team spending 10 hours a week on lead follow-up can capture enquiries in its CRM and draft replies for a person to approve. Start with one inbound channel and track how many drafts need edits. Run a fictional enquiry in your browser, then replay it to see how the example keeps one CRM record and one draft. [Try the sample handoff](https://aiyourwork.chat/guides/lead-follow-up-for-service-companies?utm_source=github&utm_medium=readme&utm_campaign=lead-follow-up-demo-en#sample-enquiry). [Request implementation help from AI Your Work](https://aiyourwork.chat/services?utm_source=github&utm_medium=readme&utm_campaign=agent-workflow-assessment#implementation-request).
 
 ## What to expect
 
@@ -2704,23 +2706,4 @@ The system must be able to survive:
 - runtime swaps
 - IDE changes
 - provider changes
-- migration from local-only to hub-and-worker
-- migration from single-machine to multi-machine
-
-To enable this:
-- isolate vendor-specific code behind adapters
-- keep profiles and rules data-driven
-- keep state formats legible and documented
-- avoid business logic that depends on one hidden tool
-
-OPEN STANDARDS AND INTEGRATION READINESS
-
-Where useful, design so the system can later integrate with:
-- tool registries
-- connector ecosystems
-- agent-to-agent protocols
-- model context protocols
-- event buses
-- external schedulers
-
-Do not 
+- mi

@@ -5,6 +5,14 @@
 I built LIA because I wanted to pick up a conversation without piecing its context together again.
 This free, open-source, self-hosted AI assistant brings your emails, meeting notes and open commitments into view, then helps you prepare the next step. The software is free; hosting and connected services may incur costs.
 
+Personal AI assistants take several approaches. Agents such as OpenClaw and Hermes Agent offer command execution and automation, with configuration aimed at people comfortable operating their own tools. OpenClaw also supports individual sign-in, shared sessions and roles for several users. [Its multi-user documentation](https://docs.openclaw.ai/concepts/multi-user) describes those boundaries.
+
+On the other side, consumer assistants like Meta Muse offer a managed experience, with Spaces for lists, notes and documents. The service is hosted and operated by Meta; it is not an instance you install and administer on your own server ([Meta's Spaces announcement](https://about.fb.com/news/2026/11/introducing-spaces-customize-muse-app/)).
+
+LIA brings these two worlds together and creates her own category: a personal, family and sovereign AI platform from end to end, installed on the server of your choice.
+
+A complete environment of 60+ building blocks under the free AGPL license, combining an AI that can act for you, everyday tools that use no AI at all when you work them yourself, and professional-grade safeguards.
+
 https://github.com/user-attachments/assets/dcd4f489-edf2-4d35-96ac-62ee993f2e36
 
 **[Watch the presentation film in 1080p](https://github.com/jgouviergmail/LIA-Assistant/releases/download/v3.0.0/lia-presentation-v3.0.0.mp4)** (1 min 54, French) · [About the film](#product-presentation)
@@ -226,7 +234,7 @@ Every capability below is documented in an architecture decision record (ADR) or
 #### Long-term memory
 
 - Facts are extracted after each conversation, pinned or edited by hand, and injected by relevance with their scores visible in the debug panel ([LONG_TERM_MEMORY](docs/technical/LONG_TERM_MEMORY.md), [MEMORY_RESOLUTION](docs/technical/MEMORY_RESOLUTION.md)).
-- Newly learned standing instructions are pinned automatically. You can edit, unpin or delete them; automatic maintenance respects their protection. An export of your memories (CSV or JSON) is imported back whole or not at all, with exact counts.
+- Newly learned standing instructions are pinned automatically. You can edit, unpin or delete them; automatic maintenance respects their protection. An export of your memories (CSV or JSON) is imported back whole or not at all, with exact counts, from the settings or a confirmed request in the chat with the file attached.
 - The planner, the ReAct loop and the phone look them up on purpose through one lookup door that answers what was asked, never just the latest memories ([ADR-313](docs/architecture/ADR-313-Long-Term-Memory-As-An-Active-Lookup.md)).
 
 #### Personal journals
@@ -237,7 +245,7 @@ Every capability below is documented in an architecture decision record (ADR) or
 
 #### Knowledge spaces
 
-- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive and OneDrive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 566 questions cover every feature a person can use, in six languages.
+- Personal document bases in 15+ formats with hybrid search (pgvector cosine + BM25), Google Drive and OneDrive folder sync, a Gmail label as a source, and a system space that indexes the product's own help corpus so LIA can explain itself — drawn from the in-app FAQ, whose 576 questions cover every feature a person can use, in six languages.
 - A document that cannot be indexed says why in your language — a scanned PDF without a text layer names its remedy.
 - Search spaces by their name or a file's, sort them by name, recency, file count or activity, and keep favourites in their own group, right after Meetings in the menu: a favourite changes the list, never what retrieval reads.
 - Any indexed document, paused space or not, attaches to a chat message as a copy from the composer's « + » ([ADR-295](docs/architecture/ADR-295-Knowledge-Documents-As-Message-Attachments.md), [GUIDE_RAG_SPACES](docs/guides/GUIDE_RAG_SPACES.md), [ADR-055](docs/architecture/ADR-055-RAG-Spaces-Architecture.md), [ADR-058](docs/architecture/ADR-058-System-RAG-Spaces.md)).
@@ -245,7 +253,7 @@ Every capability below is documented in an architecture decision record (ADR) or
 #### Meetings and minutes
 
 - Search complete minutes from the meeting list, with server-side filtering and pagination, and delete a meeting from its row.
-- Record from the phone or the computer while the chat stays usable, with a capture that survives reloads and lost microphones.
+- Record from the phone or the computer while the chat stays usable, with a capture that survives reloads and lost microphones. Its result returns to the discussion on screen when recording started, or to Main if that discussion has since been retired.
 - Import a recording you already hold — WAV, MP3 or M4A — and it becomes a meeting with its minutes: sent in chunks under published bounds, read only as the format it claims, its length measured before any engine is paid.
 - A chain of transcription engines walked at processing time.
 - Minutes filled from one of thirty built-in templates or your own, reformatted in place or derived into a second set from the same transcript ([ADR-258](docs/architecture/ADR-258-Meeting-Recording-And-Structured-Minutes.md), [ADR-259](docs/architecture/ADR-259-Meeting-Template-Library-And-Reformatting.md), [MEETINGS](docs/technical/MEETINGS.md)).
@@ -420,7 +428,7 @@ A ticket has a lifecycle, a holder and a result ([ADR-276](docs/architecture/ADR
 
 #### Routines and reminders
 
-- A scheduled routine or reminder uses the timezone-aware recurrence engine ("every three days", "the 2nd Tuesday of the month").
+- A scheduled routine or reminder uses the timezone-aware recurrence engine ("every three days", "the 2nd Tuesday of the month"). A reminder that rang can be postponed from its chat card or Telegram keyboard without moving the recurring series. **Stop** ends the series and prevents its future occurrences.
 - A condition routine has no schedule: it is checked at the system's cadence for its source and records a run only when it fires. A weather condition always reads Google Weather and fires only on a change due within the next hours, above a published precipitation threshold, the run told the hour, the day and the source.
 - A condition can watch a public web page: the system reads it with no model, at its own cadence, and the routine runs when new lines appear — a price, a stock notice, a date ([ADR-387](docs/architecture/ADR-387-A-Watched-Page-Is-Read-Without-A-Model.md)).
 - A third clock starts a routine on another system's signed call: its own address, a secret shown once, an HMAC-SHA256 signature, a call stored before it is acknowledged and read as another system's words, never as instructions ([ADR-386](docs/architecture/ADR-386-A-Signed-Call-Starts-A-Routine.md), [ROUTINE_WEBHOOKS](docs/technical/ROUTINE_WEBHOOKS.md)).
@@ -526,8 +534,9 @@ for projection and performance limits.
 #### Wherever you are
 
 - Six languages end to end (UI, approvals, notifications, Telegram, skills).
-- A bidirectional Telegram channel with OTP linking and localized approval keyboards ([GUIDE_TELEGRAM](docs/guides/GUIDE_TELEGRAM_INTEGRATION.md)).
+- A bidirectional Telegram channel with OTP linking, readable replies, photos and documents, generated files, optional spoken answers, localized approval keyboards and the same stop and waiting-message controls as the chat ([GUIDE_TELEGRAM](docs/guides/GUIDE_TELEGRAM_INTEGRATION.md)).
 - Native Android and iOS shells that load _your_ server, with native push and the sign-in flow Google permits ([ADR-246](docs/architecture/ADR-246-Native-Push-And-Wake-Relay.md), [GUIDE_MOBILE_ANDROID](docs/guides/GUIDE_MOBILE_ANDROID.md), [GUIDE_MOBILE_IOS](docs/guides/GUIDE_MOBILE_IOS.md)).
+- Notifications without Google, in the free ntfy app: on a public server or on the instance's own, which the installer offers; a notice by default, the full text if you choose it ([ADR-391](docs/architecture/ADR-391-Ntfy-Brings-The-Notifications-To-Any-Device.md), [NTFY](docs/technical/NTFY.md)).
 - An offline-capable PWA ([ADR-146](docs/architecture/ADR-146-Offline-PWA.md)).
 
 </details>
@@ -552,7 +561,7 @@ for projection and performance limits.
 - An attachment is read too — its text when it has one, the vision slot for a picture or a scan — bounded, paginated and treated as what a stranger sent ([ADR-296](docs/architecture/ADR-296-Mail-Attachments-Read-By-Text-Or-Vision.md)).
 - Your mailbox drafts — Gmail, Outlook, iCloud — are saved, listed, edited and trashed from the conversation without a confirmation, since nothing reaches anyone; sending one asks once, on a card that shows the draft as the mailbox holds it, and a draft edited elsewhere since is not sent ([ADR-344](docs/architecture/ADR-344-Mailbox-Drafts-Kept-Freely-Sent-After-One-Confirmation.md)).
 - A listed mail says whether it was answered: one read of the page's conversations, no model call, shown on the chat's cards, the home and the Tools. LIA stops offering to answer what you answered, and a state that could not be read is « not known », never « unanswered » ([ADR-379](docs/architecture/ADR-379-A-Listed-Mail-Says-Whether-It-Was-Answered.md), [MAIL_REPLY_STATE](docs/technical/MAIL_REPLY_STATE.md)).
-- E-mails are drafted in your own voice: a profile of how you write — greeting, sign-off, signature, register —, learned from your latest sent e-mails and never from what they said, stored encrypted, shown in the settings and forgotten on request ([ADR-383](docs/architecture/ADR-383-A-Draft-Speaks-In-The-Persons-Voice.md), [WRITING_STYLE](docs/technical/WRITING_STYLE.md)).
+- E-mails are drafted in your own voice: a profile of how you write — greeting, sign-off, signature, register —, learned when you ask (in the settings or in a conversation) from your latest sent e-mails and never from what they said, stored encrypted, shown in the settings and forgotten on request; words you dictate are sent as they are, any other text goes through LIA's writer ([ADR-383](docs/architecture/ADR-383-A-Draft-Speaks-In-The-Persons-Voice.md), [WRITING_STYLE](docs/technical/WRITING_STYLE.md)).
 
 #### Connected from the first day
 
@@ -739,7 +748,7 @@ These examples use the services and permissions enabled on your instance. Genera
 | **Relevant context, ready to reuse**       | Memory, knowledge, meeting records, saved answers and Relations support relevant requests from their authorized sources. You can inspect and correct what is kept.                                  |
 | **Help when you ask and between requests** | Conversation, daily briefing and personal Radio, alongside reminders, scheduled work, conditional routines, proactive suggestions and opt-in discussions with their own source and timing controls. |
 | **A clear next step**                      | Rich results, reviewable drafts, downloadable documents and compatible skills or MCP apps present information and controls in the appropriate form.                                                 |
-| **A choice of how to work**                | Pipeline builds and validates a plan before execution; ReAct explores iteratively from tool results. Chat and Live voice use documented provider and mode capabilities.                             |
+| **A choice of how to work**                | Pipeline builds and validates a plan before execution; ReAct explores iteratively from tool results; the automatic mode picks one per request. Chat and Live voice use documented provider and mode capabilities.                             |
 | **One installation for several people**    | Separate accounts have their own connectors, memory and preferences. Accepted connections choose what to share and can exchange messages through their assistants.                                  |
 | **A system you can inspect and operate**   | Open code, a documented architecture, registers, model configuration, account and instance budgets, administration, Grafana dashboards and alert rules.                                             |
 
@@ -1018,27 +1027,4 @@ The [Administration & Monitoring](#administration--monitoring) section below inc
 <details>
 <summary><strong>Capture notes, manifests and reproduction commands</strong></summary>
 
-The World view is captured from the current application's canvas with fictional people and an isolated session. Its [provenance manifest](apps/web/public/screenshots/proof/world-manifest.json) records the unmodified screenshot.
-
-Explore the real application interface in English and light mode, filled with fictional demonstration data. The geographic maps and walking route use [real Google Maps imagery and geographic data](apps/web/e2e/fixtures/maps/provenance.json), prepared separately and served locally with attribution. The browser captures exercise the actual pages, controls and widgets without model inference, provider calls, connected accounts or external actions. Radio uses a local silent audio fixture. The interactive budget is a custom skill example produced by an executed [Python fixture generator](apps/web/e2e/capture/render_trip_budget.py); its estimates are illustrative and no booking is made.
-
-Open any image at full resolution. The [home capture manifest](apps/web/public/screenshots/manifest.json), [workflow manifest](apps/web/public/screenshots/proof/manifest.json) and [extended application manifest](apps/web/public/screenshots/proof/extended-manifest.json) record the images and their provenance. Reproduce the campaigns with the [public capture workflow](apps/web/e2e/README.md#public-screenshots), [workflow runner](apps/web/e2e/capture/run-landing-proof.mjs) and [extended capture runner](apps/web/e2e/capture/run-extended-screenshots.mjs).
-
-</details>
-
----
-
-## Product presentation
-
-<details>
-<summary><strong>About the presentation film and its editable sources</strong></summary>
-
-The film at the [top of this page](#lia) runs 1 min 54 in French and follows six
-chapters: what LIA knows about you, what it produces, how it anticipates, where it
-follows you, the circle it connects and the control you keep, before every
-capability links up around it. Every screen is rebuilt from the product's own
-interface with fictional demonstration data, and the companions are played by
-their real animation rig. The landing's blue **Presentation** button opens the
-same film with sound and controls in an exclusive fullscreen player.
-
-The [editable construction](tools/lia-motion/src/promo/README.md) holds th
+The World view is captured from the current application's canvas with fictional people and an isolated session. Its [pro

@@ -12,7 +12,7 @@
 
 A curated list of open-source software for mineral exploration: geophysics, geological modelling, drillholes, geostatistics, geochemistry, remote sensing, prospectivity mapping and drone surveys, with the open data portals they work from.
 
-Every tool here is open source, has a licence and has been updated in the last 18 months, except those under No longer maintained, at the end. Icons show the main language; the licence follows each description. Curated by [XploraHub](https://xplorahub.com), open ground for exploration & mining technology.
+Every tool here is open source, has a licence and has been updated in the last 18 months, except those under No longer maintained, at the end. Icons show the main language; the licence follows each description. Curated by [XploraHub](https://xplorahub.com), open ground for exploration & mining technology. To search the list from Claude or ChatGPT, [connect XploraHub](https://xplorahub.com/connect?ref=github-awesome-mineral-exploration).
 
 ## Contents
 
@@ -38,6 +38,9 @@ How the methods work: [magnetics, gravity, ERT, IP, MT and more](https://xplorah
 - [geoapps](https://github.com/MiraGeoscience/geoapps) - <img src="assets/icons/python.svg" alt="Python" height="16"> Notebook apps for exploration inversion and interpretation, built on SimPEG. MIT.
 - [geoh5py](https://github.com/MiraGeoscience/geoh5py) - <img src="assets/icons/python.svg" alt="Python" height="16"> Python API for geoh5, an open file format for geoscience data. LGPL-3.0.
 - [Tomofast-x](https://github.com/TOMOFAST/Tomofast-x) - <img src="assets/icons/fortran.svg" alt="Fortran" height="16"> Parallel 3D inversion, including joint gravity and magnetic inversion. MIT.
+- [Tomofast-x-q](https://github.com/TOMOFAST/tomofast-x-q) - <img src="assets/icons/python.svg" alt="Python" height="16"> QGIS and ArcGIS Pro plugin that prepares data, meshes and parameter files for Tomofast-x inversions. MIT.
+- [GeoMos Nullspace](https://github.com/jgeomos/GeoMos-nullspace) - <img src="assets/icons/python.svg" alt="Python" height="16"> Explores alternative geological models that fit the same gravity data, by null-space navigation. MIT.
+- [transd-levelset](https://github.com/jgeomos/transd-levelset) - <img src="assets/icons/python.svg" alt="Python" height="16"> Trans-dimensional Bayesian inversion of potential-field data for 3D geological geometry, using level sets. MIT.
 - [PyGMI](https://github.com/Patrick-Cole/pygmi) - <img src="assets/icons/python.svg" alt="Python" height="16"> Processing, modelling and interpretation of potential-field and radiometric data, aimed at exploration. GPL-3.0.
 - [pyGIMLi](https://github.com/gimli-org/pyGIMLi) - <img src="assets/icons/python.svg" alt="Python" height="16"> Modelling and inversion library, widely used for ERT and IP. Apache-2.0.
 - [ResIPy](https://gitlab.com/hkex/resipy) - <img src="assets/icons/python.svg" alt="Python" height="16"> Graphical interface and Python API for processing and inverting resistivity and IP surveys. GPL-3.0.
@@ -69,6 +72,8 @@ How the methods work: [geological modelling](https://xplorahub.com/methods/geolo
 - [GemPy](https://github.com/gempy-project/gempy) - <img src="assets/icons/python.svg" alt="Python" height="16"> Implicit 3D structural geological modelling from contacts and orientations, with uncertainty. EUPL-1.2.
 - [GemGIS](https://github.com/cgre-aachen/gemgis) - <img src="assets/icons/python.svg" alt="Python" height="16"> Prepares GIS and spatial data for geological modelling with GemPy. LGPL-3.0.
 - [LoopStructural](https://github.com/Loop3D/LoopStructural) - <img src="assets/icons/python.svg" alt="Python" height="16"> 3D structural geological modelling library, including folds and faults. MIT.
+- [Noddy](https://github.com/Loop3D/noddy_qt) - <img src="assets/icons/c.svg" alt="C" height="16"> Builds a 3D geological model from a sequence of folds, faults, unconformities and intrusions and computes its gravity and magnetic anomalies; exports Tomofast-x inversion files. MIT.
+- [loopUI](https://github.com/Loop3D/loopUI) - <img src="assets/icons/python.svg" alt="Python" height="16"> Measures the uncertainty across an ensemble of 3D geological models. MIT.
 - [geoML](https://github.com/italo-goncalves/geoML) - <img src="assets/icons/python.svg" alt="Python" height="16"> Gaussian-process spatial modelling, including implicit geological models. GPL-3.0.
 - [curlew](https://github.com/samthiele/curlew) - <img src="assets/icons/python.svg" alt="Python" height="16"> 2D and 3D geological models built from neural fields, following the geological history, with synthetic models for testing. MIT.
 - [APSG](https://github.com/ondrolexa/apsg) - <img src="assets/icons/python.svg" alt="Python" height="16"> Structural geology and fabric analysis. MIT.
@@ -76,6 +81,9 @@ How the methods work: [geological modelling](https://xplorahub.com/methods/geolo
 - [BlenderGeoModeller](https://github.com/bsomps/BlenderGeoModeller) - <img src="assets/icons/python.svg" alt="Python" height="16"> Blender add-on that imports drillholes and builds block models and grade shells, with GemPy integration. MIT.
 - [fractoolbox](https://github.com/ICWallis/fractoolbox) - <img src="assets/icons/python.svg" alt="Python" height="16"> Structural geology and borehole image analysis of fractures. Apache-2.0.
 - [structuralGeology](https://github.com/nfcd/structuralGeology) - <img src="assets/icons/python.svg" alt="Python" height="16"> Jupyter notebooks for structural geology, from a university course. MIT.
+- [GEOL-QMAPS](https://github.com/swaxi/GEOL-QMAPS) - <img src="assets/icons/python.svg" alt="Python" height="16"> QGIS plugin and field template for digital geological mapping with QField: harmonises legacy field data, syncs with desktop QGIS and manages field databases. MIT.
+- [QField Geological Compass](https://github.com/swaxi/compass) - <img src="assets/icons/qt.svg" alt="QML" height="16"> QField plugin that reads dip, dip direction, strike and plunge from the phone's sensors into new field records. MIT.
+- [QField Structural Geology Calculator](https://github.com/liviumatenco/Qfield-Structural-Geology-Calculator) - <img src="assets/icons/qt.svg" alt="QML" height="16"> QField plugin for structural calculations and live stereonets in the field. MIT.
 - [OpenGeode-Geosciences](https://github.com/Geode-solutions/OpenGeode-Geosciences) - <img src="assets/icons/cplusplus.svg" alt="C++" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Data structures for geological models and geological objects, built on the OpenGeode framework. MIT.
 - [OpenGeode-GeosciencesIO](https://github.com/Geode-solutions/OpenGeode-GeosciencesIO) - <img src="assets/icons/cplusplus.svg" alt="C++" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Reads and writes GOCAD (TS, PL, VS, VO, WL, ML, LSO), OMF, GeoTIFF, DEM, GRDECL, shapefiles and well files for OpenGeode models; its sister module [OpenGeode-Inspector](https://github.com/Geode-solutions/OpenGeode-Inspector) checks meshes and models for topology errors, intersections and degenerate elements. MIT.
 - [ferreus_rbf](https://github.com/graphic-goose/ferreus_rbf_rs) - <img src="assets/icons/rust.svg" alt="Rust" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Fast global radial basis function interpolation and isosurface extraction for millions of points in 1D, 2D and 3D, with Python bindings. MIT.
@@ -115,6 +123,7 @@ How the methods work: [portable XRF](https://xplorahub.com/methods/portable-xrf)
 
 - [pyrolite](https://github.com/morganjwilliams/pyrolite) - <img src="assets/icons/python.svg" alt="Python" height="16"> Processing, normalisation and plotting of geochemical data. MIT.
 - [Geochemistry QAQC](https://github.com/GeoscienceAustralia/Geochemistry) - <img src="assets/icons/python.svg" alt="Python" height="16"> Geoscience Australia's script for checking standards and duplicates in geochemical data. Apache-2.0.
+- [Geochemistry Plotting Tools](https://github.com/swaxi/geochem-plots) - <img src="assets/icons/python.svg" alt="Python" height="16"> QGIS plugin for spider, discrimination, classification and ternary diagrams from point layers, linked to the map. MIT.
 - [GeoCluster Research Harness](https://github.com/EigenformAI/geocluster-research-harness) - <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Research agent in a Docker image, with a bundled geological MCP server, that cleans assay tables, clusters geochemistry, ranks anomalies and answers questions from technical reports, using your own model provider. Apache-2.0. [XploraHub page](https://xplorahub.com/products/geocluster-research-harness-eigenform).
 
 ## Remote sensing

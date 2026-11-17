@@ -46,7 +46,7 @@ Firefox under the hood, a quiet sidebar, nothing to sign up for, nothing to swit
 <p align="center"><img src="docs/images/live-recap-en.gif" alt="The agent compares the world's biggest tidal bores and fills a live recap"></p>
 
 **Local AI**
-- **Workflows** and **watches** run on your Mac with Ollama: a small model decides, another one writes.
+- **Workflows** and **watches** run on your Mac with Ollama: a small local model decides, and your Claude Code or Codex account writes (it counts against your subscription limits).
 - A home page with widgets.
 
 <table>
@@ -79,7 +79,7 @@ Ressac is in closed beta, with a small group of testers. They get a DMG signed a
 
 - **To browse**: macOS 14 or later, Apple Silicon.
 - **For the agent**: Docker ([OrbStack](https://orbstack.dev) or Docker Desktop) and a Claude or ChatGPT account (or an API key). Ressac starts the container app itself when it is installed.
-- **For local AI**: [Ollama](https://ollama.com). Ressac starts it, or downloads it for you (190 MB).
+- **For local AI**: [Ollama](https://ollama.com). Ressac starts it, or downloads it for you (190 MB). Widget summaries and action pages are written by your Claude Code or Codex account instead, so one of them must be signed in.
 
 ## Build from source
 
@@ -106,7 +106,9 @@ Ressac stands on the work of others:
 - [surfer](https://github.com/zen-browser/surfer) by the Zen Browser team (MPL 2.0), the build tool.
 - [Node.js](https://nodejs.org) and [node-pty](https://github.com/microsoft/node-pty) (MIT), bundled for the agent's host.
 - [Ollama](https://ollama.com) (MIT), for local models, downloaded on demand.
-- [Gemma 4](https://ai.google.dev/gemma) by Google and pplx-decider-flash by Perplexity (Apache 2.0), local models pulled on demand.
+- [Gemma 4](https://ai.google.dev/gemma) by Google (Apache 2.0), a local model pulled on demand through Ollama, used for the ⌘T bar.
+- [d1-2B](https://huggingface.co/LiquidAI/d1-2B-GGUF) by Liquid AI (LFM Open License v1.0), the small model that sorts widget items and watches the agent; Ressac downloads it itself, it is not bundled.
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT), its `llama-server` ships in the app and runs d1-2B.
 - [Claude Code](https://claude.com/claude-code) by Anthropic and [Codex](https://github.com/openai/codex) by OpenAI, the agents, installed in the container and used with your own account.
 - [Svelte](https://svelte.dev), [Vite](https://vite.dev), and the fonts [Geist](https://vercel.com/font) and [Funnel Display](https://fonts.google.com/specimen/Funnel+Display) (OFL).
 

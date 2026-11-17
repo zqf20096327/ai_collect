@@ -30,11 +30,11 @@
 
 <p align="center">
   <a href="assets/promo/adelie-promo.mp4">
-    <img src="assets/promo/adelie-promo-poster.png" alt="Adelie 宣传片：57 秒看懂它在你的桌面上怎么干活" width="920" />
+    <img src="assets/promo/adelie-promo-preview.gif" alt="Adelie 宣传片前 9 秒：图标落位、字标出现，接着划掉「大多数 AI，只会陪你聊天」" width="800" />
   </a>
 </p>
 
-<p align="center"><sub>57 秒宣传片 · 1920×1080 · 点封面播放</sub></p>
+<p align="center"><sub>60 秒宣传片 · 1920×1080 · 无声 · 上图是开头 9 秒的循环预览，点它下载整片 mp4 · <a href="assets/promo/adelie-promo-poster.png">封面图</a></sub></p>
 
 ## 为什么选择 Adelie
 

@@ -498,8 +498,10 @@ initial system record. Literal control-marker text in user messages is encoded a
 text, never as an XTML control token.
 
 Chat defaults to `--gen 4096` and, like batch generation, to greedy decoding. Passing any
-of `--temperature`, `--top-p` or `--seed` turns sampling on (temperature `1.0`, top-p
-`0.95` unless given); `--greedy` forces argmax even then. Sampling uses
+of `--temperature`, `--top-p`, `--top-k` or `--seed` turns sampling on (temperature `1.0`,
+top-p `0.95` and no top-k cutoff unless given); `--greedy` forces argmax even then.
+`--top-k K` keeps only the K most probable tokens eligible, and with `--top-p` as well the
+nucleus is measured within those K, as the Hugging Face and vLLM samplers do. Sampling uses
 PCG32; `--seed N` deterministically derives one stream per assistant turn, so replaying the
 same transcript with the same seed is reproducible. The 32K prompt / 4096 generation limits
 are existing engine limits, not new chat limits; chat fails clearly and retains the history
@@ -539,7 +541,7 @@ Scripts can rely on these.
 | `0` | success |
 | `1` | a tensor failed to bind, or a forward pass failed |
 | `2` | usage error, or a config that could not be read with confidence; the engine declines to guess |
-| `3` | the run finished but the `--out` file could not be written, so the results a harness reads are missing |
+| `3` | the run finished but an output file could not be written: the `--out` JSON, the `--dump-logits` file or the `--dump-cache-trace` files, so results a harness reads are missing or incomplete |
 | `4` | the run finished, but at least one routed expert failed to load, so the emitted ids are unsound. Distinct from `1` because the process otherwise succeeded, and it is the code that catches silent numerical corruption |
 | `5` | stopped early by Ctrl-C. The step in flight finished, and the state file, `--out` and the reports were all written, but the token list is shorter than asked for. A second Ctrl-C kills the process instead |
 
@@ -723,6 +725,8 @@ anywhere, in CI included.
 
 # Part II: How it works
 
+*The code in this part is condensed from the source for reading: names, comments and error handling are sometimes simplified, and paths a section does not discuss are left out. The files under [`src/`](src/) are the reference.*
+
 ## The problem: a model that does not fit
 
 [Kimi K3](https://huggingface.co/moonshotai/Kimi-K3) has **2.78 trillion parameters** and
@@ -882,7 +886,7 @@ src/
   core/k3_ops.c     # every numeric kernel: RMSNorm, KDA, MLA, MoE, MXFP4 matmul
   io/k3_st.c        # safetensors reader, hand-written JSON scan, O_DIRECT reads
   io/k3_load.c      # locating one expert's bytes inside a shard
-  io/k3_trunk.c     # streaming the dense trunk, pinned prefix plus a ring slot
+  io/k3_trunk.c     # streaming the dense trunk, pinned layers plus a ring slot
   cache/k3_cache.c  # the routed-expert LRU cache and its batch prefetch
   model/k3_bind.c   # binding checkpoint tensor names to kernel arguments
   tokenizer/k3_tok.h# byte-level BPE loaded from tiktoken.model
@@ -1055,7 +1059,9 @@ int64_t k3_st_read_aligned(const K3St *s, int shard, int64_t off, int64_t nbytes
 
     int64_t got = 0;
     while (got < len) {
-        ssize_t r = pread(dfd, (char *)buf + got, (size_t)(len - got), (off_t)(lo + got));
+        /* at most K3_PREAD_MAX (1 GiB) per call: Darwin refuses one pread of 2 GiB or more */
+        const int64_t req = (len - got < K3_PREAD_MAX) ? (len - got) : K3_PREAD_MAX;
+        ssize_t r = pread(dfd, (char *)buf + got, (size_t)req, (off_t)(lo + got));
         if (r <= 0) break;      /* the last window may run past EOF */
         got += r;
     }
@@ -1681,9 +1687,18 @@ void k3_kda_step(float *S, float *o, const float *q, const float *k,
         for (int j = 0; j < dv; j++) row[j] *= a;
     }
 
-    /* 2. read the state along k: u = S^T k */
-    float *u = (float *)calloc((size_t)dv, sizeof(float));
-    if (!u) k3_fatal_oom("KDA recurrence temporary", (size_t)dv * sizeof(float));
+    /* 2. read the state along k: u = S^T k. This runs once per head per token per KDA
+     *    layer, 6,624 times per token, so u lives on the stack rather than the heap */
+    float  ubuf[K3_KDA_STEP_DV];
+    float *uheap = NULL;
+    float *u = ubuf;
+    if (dv > K3_KDA_STEP_DV) {
+        uheap = (float *)calloc((size_t)dv, sizeof(float));
+        if (!uheap) k3_fatal_oom("KDA recurrence temporary", (size_t)dv * sizeof(float));
+        u = uheap;
+    } else {
+        for (int j = 0; j < dv; j++) u[j] = 0.0f;   /* calloc's zeroing, explicitly */
+    }
     for (int i = 0; i < dk; i++) {
         const float ki = k[i];
         if (ki == 0.0f) continue;
@@ -1707,7 +1722,7 @@ void k3_kda_step(float *S, float *o, const float *q, const float *k,
         const float *row = S + (size_t)i * dv;
         for (int j = 0; j < dv; j++) o[j] += qi * row[j];
     }
-    free(u);
+    free(uheap);                                  /* free(NULL) is a no-op */
 }
 ```
 
@@ -1855,7 +1870,8 @@ only that, and rebuilds the per-head keys and values from it when they are neede
 ![The query and the token both pass through a small shared latent](docs/images/mla-latent.png)
 
 The latent is 512 dimensions for the key and value content plus 64 more, and those 64 are
-where **invariant four** lives.
+where **invariant four** lives. In the engine this projection is the first step of
+`k3_mla_cached` in `src/core/k3_ops.c`; condensed, it looks like this.
 
 ```c
 /* NoPE: the 64 rope dimensions are projected and cached, but never rotated. */
@@ -1882,8 +1898,12 @@ readable output.
 ```c
     for (int t = 0; t < T; t++) {
         const int p = cached + t;
+#ifdef _OPENMP
+#       pragma omp parallel for schedule(static)
+#endif
         for (int h = 0; h < H; h++) {
             const float *qt = q + ((size_t)t * H + h) * qh;
+            float *sch = sc + (size_t)h * (last + 1);     /* this head's scores only */
             float m = -INFINITY;
             for (int s = 0; s <= p; s++) {                 /* causal: s <= p */
                 const float *ks = K3_KV_AT(s) + (size_t)h * kvd;
@@ -1893,18 +1913,19 @@ readable output.
                 /* the rope slot is UNROTATED but still scored, and the SAME 64
                  * values serve every head */
                 for (int i = 0; i < qr; i++) d += (double)qt[qn + i] * (double)kr[i];
-                sc[s] = (float)d * scale;
-                if (sc[s] > m) m = sc[s];
+                sch[s] = (float)d * scale;
+                if (sch[s] > m) m = sch[s];
             }
             double z = 0.0;
-            for (int s = 0; s <= p; s++) { sc[s] = expf(sc[s] - m); z += sc[s]; }
+            for (int s = 0; s <= p; s++) { sch[s] = expf(sch[s] - m); z += sch[s]; }
 ```
 
 The score is two dot products added together. The first runs over the 128 content
 dimensions, which are per head. The second runs over the 64 rope dimensions, which are
 **shared**: `K3_ROPE_AT(s)` takes no head index, so all 96 heads score against the same 64
 numbers. That is what makes the cache 576 wide instead of 96 × 320, and skipping the
-second term is the quiet way to get a model that still speaks.
+second term is the quiet way to get a model that still speaks. Each head writes its scores
+to its own row of `sc`, which is what lets the 96 heads run in parallel.
 
 ![Twenty-four MLA layers, expanded k and v in fp32, per position](docs/images/eq_mla_kv.png)
 
@@ -1923,8 +1944,10 @@ discovering the problem an hour in:
 /* The context limit is the MLA KV cache, not any array size. */
 if (incremental) {
     const double kv_need = (double)(np + gen + 1) * K3_KV_BYTES_PER_POS;
-    const double avail   = mem_available_bytes();
-    if (avail > 0.0 && kv_need > avail * 0.9) {
+    K3MemAvail mp;
+    const double avail   = mem_available_bytes(&mp);  /* MemAvailable, capped by any cgroup limit */
+    if (mp.malformed) return 2;                         /* a limit file we cannot read: refuse */
+    if (mp.known && kv_need > avail * 0.9) {
         fprintf(stderr,
             "\nREFUSING: the KV cache for %d positions needs %s but only %s is\n"
             "available. This is a MEMORY limit, not an engine ceiling: MLA caches\n"
@@ -2198,50 +2221,4 @@ void k3_moe(float *out, const float *x, const K3MoeW *w, const K3Cfg *c,
 
         /* 5. back up to full width */
         float *ot = out + (size_t)t * E;
-        k3_mmw(ot, accL, w->up, w->wdt, L, E);
-
-        /* 6. shared experts, on the ORIGINAL input, added UNWEIGHTED */
-        const int SI = I * c->n_shared;
-        k3_mmw(gu,      xt, w->sh1, w->wdt, E, SI);
-        k3_mmw(gu + SI, xt, w->sh3, w->wdt, E, SI);
-        k3_situ_glu(act, gu, SI, c->situ_b1, c->situ_b2);
-        k3_mmw(edn, act, w->sh2, w->wdt, SI, E);
-        for (int i = 0; i < E; i++) ot[i] += edn[i];
-    }
-}
-```
-
-The activation inside each expert is SiTU-GLU, a gated unit with both halves passed
-through bounded tanh functions.
-
-![SiTU-GLU with beta1 = 4 and beta2 = 25, so the product is bounded](docs/images/eq_situ_glu.png)
-
-```c
-void k3_situ_glu(float *y, const float *x, int n, float b1, float b2)
-{
-    const float *gate = x;
-    const float *up   = x + n;
-    for (int i = 0; i < n; i++) {
-        const float g = gate[i];
-        /* the sigmoid takes the UNCAPPED gate */
-        const float a = b1 * tanhf(g / b1) * sigmoidf_(g);
-        const float u = b2 * tanhf(up[i] / b2);
-        y[i] = a * u;
-    }
-}
-```
-
-The sigmoid reads the **uncapped** gate `g`, not the capped `b1 * tanh(g / b1)`. Feeding it
-the capped value gives a function that is still smooth, still bounded, still produces
-fluent output, and is a different activation.
-
-Because both factors are bounded, the product can never exceed 4 × 25 = 100, and the
-fixture drives it deliberately to that exact analytic cap:
-
-```text
-  PASS  situ_glu       n=48     worst=0.00x tol
-        bound check |out|=100.000 must be <= b1*b2=100.0 : ok
-```
-
-A fixture that only tested the near-linear region would pass an implementation with the
-caps left out entirely, because for small inputs the tanh is almost t
+        k3_mmw(ot, ac

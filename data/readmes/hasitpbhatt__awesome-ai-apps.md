@@ -9,7 +9,7 @@ A curated list of the best AI applications and tools, organized by category. Upd
   <img alt="Last commit" src="https://img.shields.io/github/last-commit/hasitpbhatt/awesome-ai-apps?style=for-the-badge&logo=git&logoColor=white&color=0EA5E9">
 </p>
 
-**Total: 150 AI apps across 11 categories**
+**Total: 153 AI apps across 11 categories**
 
 ## Contents
 
@@ -37,6 +37,7 @@ A curated list of the best AI applications and tools, organized by category. Upd
 - **[Le Chat](https://chat.mistral.ai/)**: Mistral's chatbot for general assistance and coding.
 - **[Meta AI](https://www.meta.ai/)**: Meta's assistant built into Facebook, Instagram, and WhatsApp.
 - **[Poe](https://poe.com/)**: Quora's aggregator for accessing and comparing multiple AI models in one place.
+- **[Quock](https://github.com/matteocelani/quock)**: Open-source iOS client for Ollama Cloud, with sign-in via an ollama.com account and on-device chat history.
 - **[Qwen Chat](https://chat.qwen.ai/)**: Alibaba's multilingual assistant powered by the Qwen model family.
 - **[Replika](https://replika.com/)**: AI companion designed for emotional support and conversation practice.
 - **[Sen](https://apps.apple.com/us/app/sen-ai-mental-wellness/id6818973571)**: iOS wellness companion that listens, tracks mood and guides breathing in English or Vietnamese, with a separate safety check that surfaces verified local helplines.
@@ -64,6 +65,7 @@ A curated list of the best AI applications and tools, organized by category. Upd
 - **[Roo Code](https://roocode.com/)**: Open-source VS Code agent with role-based modes (Code, Architect, Debug).
 - **[v0](https://v0.dev/)**: Generative UI tool that turns prompts into production-ready React/Next.js code.
 - **[Windsurf](https://windsurf.com/)**: Agentic IDE with Cascade for planning and executing multi-step changes.
+- **[YYLO](https://github.com/yylo-dev/yylo)**: Open-source command-line orchestrator for coding agents with typed task, validation, merge, and release-readiness boundaries.
 
 ## AI Search & Research
 
@@ -190,6 +192,7 @@ A curated list of the best AI applications and tools, organized by category. Upd
 - **[Dify](https://dify.ai/)**: Open-source LLM app platform with visual workflows and RAG.
 - **[Flowise](https://flowiseai.com/)**: Open-source drag-and-drop builder for LLM agents.
 - **[Gumloop](https://www.gumloop.com/)**: AI agent builder for marketing, sales, and ops workflows.
+- **[JuzPost](https://www.juzpost.com/)**: Social media scheduler that drafts and schedules posts from inside ChatGPT and Claude through its plugin and MCP server.
 - **[LangGraph](https://www.langchain.com/langgraph)**: LangChain's framework for production-grade agent workflows.
 - **[Make](https://www.make.com/)**: Visual automation for connecting apps and services.
 - **[n8n](https://n8n.io/)**: Open-source workflow automation with AI integrations for 400+ apps.

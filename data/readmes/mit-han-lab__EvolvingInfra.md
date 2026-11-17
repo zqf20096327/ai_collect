@@ -30,7 +30,7 @@
 
 ---
 
-https://github.com/user-attachments/assets/d158ee7e-d554-47f0-a40f-1db343a6cf91
+https://github.com/user-attachments/assets/1e97febe-fc77-41a2-8489-5ec518034fc9
 
 Evolving Infra is an LLM serving system that adapts itself to the agent workload **purely online**,
 with **no offline profiling**. Serving coding, math and computer-use agents with GLM-5.2 and Kimi K2.6
@@ -142,7 +142,7 @@ Join the InferenceRSI community to discuss the project, on [Discord](https://dis
 
 <p align="center"><a href="https://discord.gg/UEffTj99N"><img src="https://img.shields.io/badge/Discord-Inference--RSI-5865F2.svg?logo=discord&logoColor=white" alt="Join the Inference-RSI Discord"></a></p>
 
-<p align="center"><img src="docs/assets/wechat-group.png" alt="InferenceRSI WeChat group QR code" width="240"></p>
+<p align="center"><img src="docs/assets/wechat-group.jpg" alt="InferenceRSI WeChat group QR code (valid until 11/23)" width="240"></p>
 
 ## Citation
 

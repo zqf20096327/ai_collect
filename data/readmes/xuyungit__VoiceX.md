@@ -162,9 +162,11 @@ Windows 不需要额外授权。只有当系统关闭了麦克风权限时才会
 
 - **系统语音**（仅 macOS）：离线、免配置，默认使用「系统设置 → 辅助功能 → 朗读内容」中的声音。
 - **Microsoft Edge 在线朗读**：无需账号和密钥，Windows 上的默认引擎。
-- **火山引擎豆包 Seed-TTS 2.0**、**阿里云百炼**（Qwen-Audio、Qwen3-TTS 方言音色、CosyVoice）、**小米 MiMo**、**Microsoft Azure Speech**。
+- **火山引擎豆包 Seed-TTS 2.0**、**阿里云百炼**（Qwen-Audio、Qwen3-TTS 方言音色、CosyVoice）、**小米 MiMo**、**DeepSeek**、**Microsoft Azure Speech**。
 
-云端引擎均为流式合成，按下热键约 0.5 秒后开始出声，长文本按句连续合成。每个引擎的音色、语速、音量独立保存，可先试听；部分阿里云模型还支持用一句话描述朗读风格。
+云端引擎均为流式合成，开始出声的时间因服务和网络而异，长文本分段合成。音色和支持的参数按引擎保存，可先试听；部分阿里云模型还支持用一句话描述朗读风格。
+
+DeepSeek 语音识别和朗读与 DeepSeek 大模型共用 API Key；语速不可调。已完成接口调用测试，尚需在应用内完成实机验证。
 
 **Windows：** 没有系统语音，默认使用 Edge 在线朗读。以管理员身份运行的应用读不到选中文字，除非 VoiceX 也以管理员身份运行。
 
@@ -190,7 +192,7 @@ cargo run --manifest-path src-tauri/Cargo.toml --bin voicex-tts -- notes.md --tt
 cargo run --manifest-path src-tauri/Cargo.toml --bin voicex-tts -- notes.md --translate --to en --save-text notes.en.txt -o notes.en.mp3
 ```
 
-默认输出为输入文件名加 `.mp3`（如 `notes.md.mp3`），完整选项见 `--help`。桌面端选择系统语音时，导出改用 Edge。合成全部成功后才替换目标文件，失败时保留原文件。
+默认输出为输入文件名加 `.mp3`（如 `notes.md.mp3`），完整选项见 `--help`。桌面端选择系统语音时，导出改用 Edge；DeepSeek 暂不支持 MP3 导出，请使用 `--tts` 选择其他引擎。合成全部成功后才替换目标文件，失败时保留原文件。
 
 ### 数据去向
 
@@ -221,6 +223,7 @@ cargo run --manifest-path src-tauri/Cargo.toml --bin voicex-tts -- notes.md --tr
 | Soniox | 云端实时 | 默认 `stt-rt-v6`；支持热词和语言提示 |
 | StepAudio（阶跃星辰） | 录完识别 | 默认 `stepaudio-3-asr-max`；单次录音最长 30 分钟 |
 | 小米 MiMo | 录完识别 | `mimo-v2.5-asr` |
+| DeepSeek | 录完识别 | 自动检测语言；单次最长 120 秒、8 MiB，不支持热词 |
 | OpenAI | 云端实时 / 录完识别 | `gpt-live-transcribe` / `gpt-transcribe`；词典作为关键词传入；支持多语种 |
 | ElevenLabs | 云端实时 / 录完识别 | 可选 `scribe_v3_live` / `scribe_v3`，默认仍为 `scribe_v2_realtime` / `scribe_v2`；可在录音结束后整段精修；词典只在录完识别时传入，实时阶段不使用 |
 | [Coli](https://www.npmjs.com/package/@marswave/coli) | 本地离线 | 基于 SenseVoice / Whisper，需单独安装 |
@@ -270,7 +273,7 @@ cargo run --manifest-path src-tauri/Cargo.toml --bin voicex-tts -- notes.md --tr
 
 ## 词典与替换规则
 
-- **词典** — 每行一个词。只有在 ASR 页为当前引擎打开「此服务使用热词 / 词典」时，语音识别才会把词典作为提示传给该引擎。开关按引擎分别保存，默认开启；Google Gemini 默认关闭，因为模型可能在静音时复述词表。Cohere、小米 MiMo 和 Coli 不使用词典。大模型纠错使用词典，不受这个开关影响。
+- **词典** — 每行一个词。只有在 ASR 页为当前引擎打开「此服务使用热词 / 词典」时，语音识别才会把词典作为提示传给该引擎。开关按引擎分别保存，默认开启；Google Gemini 默认关闭，因为模型可能在静音时复述词表。Cohere、小米 MiMo、DeepSeek 和 Coli 不使用词典。大模型纠错使用词典，不受这个开关影响。
 - **替换规则** — 精确、包含或正则匹配，在输入前替换识别结果；精确匹配忽略末尾标点。
 - **短句去标点** — 自动去掉短句末尾的标点，字数阈值可调。
 
@@ -289,15 +292,15 @@ cargo run --manifest-path src-tauri/Cargo.toml --bin voicex-tts -- notes.md --tr
   </picture>
 </p>
 
-- 按日期分组浏览全部听写，可回放录音、复制、查看详情，并对比原始识别结果与大模型纠正结果。
-- 搜索本机保存的全部历史，包括原文、输出文本和修改稿；空格分隔的关键词须全部命中，英文忽略大小写。可按听写、翻译听写、翻译朗读或识别失败筛选，结果标亮命中内容并保留原有操作。
+- 按日期分组浏览全部听写，点击行即可查看详情，也可回放录音、复制，并对比原始识别结果与大模型纠正结果。
+- 搜索本机保存的全部历史，包括原文、输出文本和修改稿；空格分隔的关键词须全部命中，英文忽略大小写。可按听写、翻译听写、翻译朗读、识别失败或目标应用筛选，结果标亮命中内容并保留原有操作。
 - 可直接编辑最终文本，修改后标记为「已修改」，复制时使用修改稿；修改只保存在本机。
 - 在「输入」中开启「记录输入后的修改」后，会短时观察你在支持的应用中对文字的后续修改，并在「历史 → 修改记录」中展示前后对比（默认关闭）。
 - 可把某条记录翻译成英文并复制译文。
 - 可对任意录音换一个引擎重新识别，对比效果；也可以把结果重新输入到当前应用。
 - 识别失败的录音会保留下来，稍后可重新识别，不必重说。
 - 文本和录音的保留期可选 7 / 30 / 180 / 365 天或永久。
-- 概览统计听写和朗读的总量、时长、速度和 AI 调用次数，同时给出账户总计与本机数据。
+- 概览统计听写和朗读的总量、时长、速度和 AI 调用次数（同时给出账户总计与本机数据），并展示近 52 周的听写活动与各目标应用的使用分布。
 
 ## 跨设备同步
 
@@ -306,7 +309,6 @@ cargo run --manifest-path src-tauri/Cargo.toml --bin voicex-tts -- notes.md --tr
 ## 已知限制
 
 - macOS 安装包仅支持 Apple Silicon，且未经 Apple 公证。
-- 以下 Windows 功能尚未在真机上完整验证：录音时静音、托盘朗读、字幕鼠标穿透、记录输入后的修改。
 - 本地 Qwen3-ASR 暂不支持 Windows。
 
 ## 从源码构建

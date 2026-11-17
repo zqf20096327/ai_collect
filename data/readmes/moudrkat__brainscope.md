@@ -512,7 +512,7 @@ with one flag. That's the trade: brainscope is slower, but it sees
 everything. It's a lab instrument for development - run it next to
 production, not instead of it.
 
-**What does your model do that you can't explain?** I'd like to hear it: [tell-me](https://github.com/moudrkat/tell-me).
+**What does your model do that you can't explain?** I'd like to hear it: [tell-me](https://github.com/moudrkat/tell-me). Want to change something? [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Where this sits in the lab
 

@@ -314,6 +314,12 @@
 
 ## Video Generation
 
+- **JVT: Just Video Transformer makes pixel-space video diffusion simple** (2026.11) \
+  **Description**: JVT uses a large-patch diffusion transformer to generate videos directly in pixel space without a pretrained autoencoder or specialized multi-stage architecture. It also jointly generates camera-conditioned RGB video and disparity, improving camera following while providing explicit scene geometry. \
+  <a href="https://arxiv.org/abs/2611.18549"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
+  <a href="https://zhoutimemachine.github.io/JVT/"><img src="assets/icons/project.svg" alt="Project" width="20"></a>
+  <a href="https://github.com/ZhouTimeMachine/JVT"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
+
 - **StreamEval: Evaluating Interactive Streaming Video Generation Models** (2026.10) \
   **Description**: StreamEval is a benchmark for interactive streaming video generation across avatar dialogue and performance, world generation, and video editing. Its 300 scripted cases span 15–300-second sessions and use ten metrics to assess task execution, state consistency, visual fidelity, and audio-visual coordination. \
   <a href="https://arxiv.org/abs/2610.28402"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
@@ -832,10 +838,4 @@
 - **CapRL: Stimulating Dense Image Caption Capabilities via Reinforcement Learning** (2025.09) \
   **Description**: This paper introduces CapRL, the first RLVR framework for open-ended image captioning, which rewards captions by whether a vision-free language model can answer image questions using only the generated description. The resulting CapRL-3B model produces more informative and diverse captions, while its generated caption data improves large vision-language model pretraining across 12 benchmarks. \
   <a href="https://arxiv.org/abs/2509.22647"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/InternLM/CapRL"><img src="assets/icons/github.svg" alt="Code" width="20"></a>
-  <a href="https://huggingface.co/internlm/CapRL-3B"><img src="assets/icons/huggingface.svg" alt="Hugging Face" width="20"></a>
-
-- **Visual Planning: Let's Think Only with Images** (2025.05) \
-  **Description**: This paper introduces Visual Planning, a paradigm that performs step-by-step planning through sequences of images rather than text for vision-first spatial tasks. Its Visual Planning via Reinforcement Learning (VPRL) framework uses GRPO to post-train large vision models and improves planning on FrozenLake, Maze, and MiniBehavior. \
-  <a href="https://arxiv.org/abs/2505.11409"><img src="assets/icons/arxiv.svg" alt="Paper" width="20"></a>
-  <a href="https://github.com/yix8/VisualPlanning"><img src="assets/icons/github.s
+  <a href="https://github.com/InternLM/CapRL"><img src="assets/icons/github.svg" alt="Code" width

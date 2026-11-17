@@ -35,7 +35,7 @@ Every LLM provider claims to be "fast". **TTFB, streaming throughput and p95 tai
 
 ![llmrace demo](docs/demo.gif)
 
-*A multi-model race — classic `gpt-4o-mini` vs the reasoning `gpt-5-nano` (🧠 hidden-reasoning tokens, honest throughput) against local Ollama and the instant mock lane — finishing in the ranked table and the `--winner` podium, then live model discovery (`--models`) and `--doctor` diagnostics. Reproducible via [`docs/demo.tape`](docs/demo.tape) ([vhs](https://github.com/charmbracelet/vhs); needs `OPENAI_API_KEY` in the environment).*
+*A multi-model race — classic `gpt-4o-mini` vs the reasoning `gpt-5-nano` (🧠 hidden-reasoning tokens) against local Ollama and the instant mock lane — finishing in the ranked table, the `--winner` podium and a Welch significance verdict (in this recording: p = 0.85, honestly "could be noise"), then live model discovery (`--models`) and `--doctor` diagnostics. Reproducible via [`docs/demo.tape`](docs/demo.tape) ([vhs](https://github.com/charmbracelet/vhs); needs `OPENAI_API_KEY` in the environment).*
 
 ## Why
 
@@ -74,6 +74,28 @@ cargo binstall llmrace
 ```
 
 Or grab a binary for your platform from the [releases page](https://github.com/dfbustosus/llmrace/releases) — Linux (x86_64), macOS (Apple Silicon & Intel), Windows (x86_64), each with SHA-256 checksums.
+
+**Docker** (no Rust, no Homebrew needed):
+
+```bash
+docker run --rm -e OPENAI_API_KEY ghcr.io/dfbustosus/llmrace openai -n 5
+# 3 MB FROM-scratch static image (musl):
+docker run --rm -e OPENAI_API_KEY ghcr.io/dfbustosus/llmrace-scratch:scratch openai -n 5
+# reports land in /report — mount a volume to keep them:
+docker run --rm -v "$PWD:/report" -e OPENAI_API_KEY ghcr.io/dfbustosus/llmrace openai --json
+```
+
+**GitHub Actions** (one line in any workflow):
+
+```yaml
+- uses: dfbustosus/llmrace-action@v1
+  with:
+    providers: openai groq
+    args: "-n 5 --winner --json"
+  env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+```
 
 **Shell completions:**
 
@@ -126,6 +148,11 @@ llmrace openai groq -c 8 -n 5
 
 # Saturation curve: race at each concurrency level, find the throughput knee
 llmrace openai groq --ramp 1,2,4,8 -n 3
+
+# Time-bounded runs keep every round in memory for statistics
+# (~2 KB/round/lane: inter-token gaps dominate). A 24 h --duration run at
+# one round per lane every ~2 s holds roughly 100 MB per lane — for
+# horizon monitoring prefer --watch, which aggregates each round instead.
 
 # CI gate: fail if any provider exceeds 500ms TTFB
 llmrace openai groq --max-ttfb 500 --quiet
@@ -180,12 +207,15 @@ Every provider with a matching env var races automatically — no config file:
 | `cohere` | `CO_API_KEY` | `command-a-03-2025` |
 | `openrouter` | `OPENROUTER_API_KEY` | `openai/gpt-4o-mini` |
 | `ollama` | — (local) | `llama3.2` |
+| `bedrock` | `AWS_ACCESS_KEY_ID` + `AWS_SECRET_ACCESS_KEY` + `AWS_REGION` | `anthropic.claude-3-5-haiku-20241022-v1:0` — **experimental**¹ |
 | `lmstudio` | — (opt-in local, port 1234) | loaded model |
 | `llamacpp` | — (opt-in local, port 8080) | loaded model |
 | azure | `AZURE_OPENAI_API_KEY` (library: `ProviderSpec::azure_openai`) | per deployment |
 | custom | `--endpoint` + `--api-key-env` | any OpenAI-compatible server |
 
 Opt-in local daemons (`lmstudio`, `llamacpp`) only race when named explicitly, so they never pollute auto-detected runs with error lanes.
+
+¹ Bedrock's SigV4 signing and binary event-stream decoding are verified against published AWS test vectors and fuzzed, but the end-to-end path has not been run against a live AWS account yet — reports from Bedrock users are especially welcome ([#126](https://github.com/dfbustosus/llmrace/issues/126)).
 
 ## What it measures
 
@@ -303,16 +333,16 @@ A ready-to-copy workflow lives in [`docs/example-latency-gate.yml`](docs/example
 
 ## Real-world results
 
-Measured 2026-11-14 from South America — three OpenAI models head-to-head (`openai=model` lanes) vs local inference (Ollama on Apple M5 Pro / 48 GB), 5 rounds each, warmup excluded:
+Measured 2026-11-15 from South America — three OpenAI models head-to-head vs local inference (Ollama on Apple M5 Pro / 48 GB), 5 rounds each, warmup excluded:
 
-| Provider | Model | TTFB | Latency (mean ± 95% CI) | Tokens/s | Notes |
-|---|---|---:|---:|---:|---|
-| openai | `gpt-4o-mini` | 567 ms | 1351 ± 78 ms | **215.3** | best all-rounder |
-| openai | `gpt-4.1` | 602 ms | 1323 ± 191 ms | 191.8 | |
-| openai | `gpt-5-nano` | 1911 ms | 1922 ± 359 ms | 163.0 | 🧠 1275 hidden reasoning tokens |
-| ollama | `llama3.2:1b` | 130 ms | 2989 ± 90 ms | 65.3 | local, ~0 network |
+| Provider | Model | TTFB | p95 | Tokens/s | ITL p95 | Notes |
+|---|---|---:|---:|---:|---:|---|
+| openai | `gpt-4o-mini` | 625 ms | 1647 ms | **209.9** | 14 ms | fastest all-round |
+| openai | `gpt-5-nano` | 1778 ms | 1870 ms | 163.2 | — | 🧠 1275 hidden reasoning tokens |
+| openai | `gpt-4.1` | 548 ms | 2416 ms | 122.4 | 29 ms | long generations, spikier ITL |
+| ollama | `llama3.2:1b` | 109 ms | 2697 ms | 75.6 | 18 ms | local, ~0 network |
 
-The reasoning story, honestly measured: gpt-5-nano spends **1.9 s thinking** before its first visible token (TTFB includes reasoning — see the 🧠 count), then delivers everything in a burst. Once streaming, the cloud lanes sustain 2.5–3.3× local throughput, while the local lane prefills in 130 ms. Tokens/s for reasoning models is computed over the server-side window, not the burst, so the numbers are comparable. In tool-calling mode (`--tools`), gpt-4o-mini returns valid JSON tool arguments 3/3 rounds at ~600 ms round trip, while local `llama3.2:1b` complies only ~80% of the time — validity rate is a real metric, not noise. Reproduce:
+And the statistic llmrace exists to surface: **`⚖ gpt-4o-mini vs gpt-5-nano: Δ −351 ms, significant (p=0.010)`** — the classic model really is faster end-to-end, while gpt-5-nano spends 1.8 s thinking before its first visible token (🧠 1275 of its token budget). Reproduce:
 
 ```bash
 llmrace openai=gpt-4o-mini openai=gpt-4.1 openai=gpt-5-nano -n 5 --warmup 1 --winner
@@ -324,7 +354,7 @@ PRs with results from other regions are welcome — record with `--json` and ext
 
 | | llmrace | provider CLIs | load testers (k6/vegeta) | router dashboards |
 |---|---|---|---|---|
-| Multi-provider streaming race | ✅ 14 + any OpenAI-compatible | one at a time | ✝ hand-written scripts | ❌ passive |
+| Multi-provider streaming race | ✅ 17 + any OpenAI-compatible | one at a time | ✝ hand-written scripts | ❌ passive |
 | TTFB / tokens/s / p95 / t-CI | ✅ built-in | varies | ✝ you build it | ✅ but only routed traffic |
 | Live terminal race view | ✅ | ❌ | ❌ | ❌ |
 | CI regression gate (`--baseline`) | ✅ | ❌ | ✝ heavy scripting | ❌ |
@@ -338,7 +368,7 @@ Missing a capability you need? [Open an issue](https://github.com/dfbustosus/llm
 
 ## Engineering
 
-- `#![deny(missing_docs)]` and `#![deny(clippy::unwrap_used)]` on the library
+- `#![deny(missing_docs)]`, `#![deny(clippy::unwrap_used)]` and `#![forbid(unsafe_code)]` — **100% safe Rust, enforced at compile time**; the binary's runtime paths contain zero `unwrap`/`expect` calls
 - Typed errors via `thiserror`; `anyhow` only at the binary edge
 - Zero-alignment-allocation SSE parser that survives arbitrary network chunk boundaries (exhaustively tested at every split point)
 - Criterion benchmarks for the parsing and statistics hot paths

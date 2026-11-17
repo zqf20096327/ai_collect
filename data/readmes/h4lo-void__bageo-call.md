@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml"><img src="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/release-v1.1.0-brightgreen.svg" alt="Release v1.1.0"></a>
+  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/release-v1.3.0-brightgreen.svg" alt="Release v1.3.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg" alt="License: AGPL-3.0-only"></a>
   <a href="COMMERCIAL_LICENSE.md"><img src="https://img.shields.io/badge/commercial-dual%20license-gold.svg" alt="Commercial License Available"></a>
 </p>
@@ -156,7 +156,7 @@ The AI's voice, the built-in prompts, the web console, the phone app and the not
 ## How it works
 
 <p align="center">
-  <img src="docs/images/how-it-works.en.svg" width="900" alt="How Bageo works: the caller reaches your spare rooted phone over the mobile network; the phone passes the call audio over USB or Wi-Fi to the Bageo agent on your computer, which talks to Gemini Live. Recordings stay on your disk, notifications go to 32 channels, and you manage everything in the web console.">
+  <img src="docs/images/how-it-works.en.svg" width="900" alt="How Bageo works: the caller reaches your spare rooted phone over the mobile network; the phone passes the call audio over USB or Wi-Fi to the Bageo program on your computer, which talks to Gemini Live. Recordings stay on your disk, notifications go to 32 channels, and you manage everything in the web console.">
 </p>
 
 The phone only carries the call; everything else runs on your own computer. The AI connects while the phone is still ringing, so its first word comes about **0.43 s** after pick-up (measured median). One call, step by step: [Architecture](docs/en/ARCHITECTURE.md).
@@ -182,7 +182,7 @@ The phone only carries the call; everything else runs on your own computer. The 
     <td width="33%" align="center" valign="top">
       <img src="docs/images/icons/contacts.svg" width="56" height="56" alt=""><br>
       <strong>Knows who is calling</strong><br>
-      Import contacts from vCard, CSV, Excel, Word, PDF or a photo of a business card.
+      Import contacts from vCard, Excel, PDF or a photo of a business card. Put each person on one of four lists: contact, Whitelist, Blacklist or stall list.
     </td>
     <td width="33%" align="center" valign="top">
       <img src="docs/images/icons/switch.svg" width="56" height="56" alt=""><br>
@@ -199,7 +199,7 @@ The phone only carries the call; everything else runs on your own computer. The 
     <td width="33%" align="center" valign="top">
       <img src="docs/images/icons/notify.svg" width="56" height="56" alt=""><br>
       <strong>32 notification channels</strong><br>
-      A summary after every call, on Telegram, Discord, Slack, LINE, ntfy, Gmail and more.
+      A summary after every call on Telegram, Discord, Slack, LINE and more. Act on it with one tap in the notification, or send commands from the chat.
     </td>
     <td width="33%" align="center" valign="top">
       <img src="docs/images/icons/local.svg" width="56" height="56" alt=""><br>
@@ -233,7 +233,7 @@ Stuck? Every step in detail: [Getting started](docs/en/GETTING_STARTED.md) · [P
 | | |
 |---|---|
 | **Start** | [Getting started](docs/en/GETTING_STARTED.md) · [Phone setup](docs/en/PHONE.md) · [Troubleshooting & FAQ](docs/en/TROUBLESHOOTING.md) |
-| **Use** | [Features](docs/en/FEATURES.md) · [Writing the prompt](docs/en/PROMPTS.md) · [Settings reference](docs/en/SETTINGS.md) · [Notifications](docs/en/NOTIFICATIONS.md) |
+| **Use** | [Features](docs/en/FEATURES.md) · [Chat commands & notifications control](docs/en/CHAT_COMMANDS.md) · [Writing the prompt](docs/en/PROMPTS.md) · [Settings reference](docs/en/SETTINGS.md) · [Notifications](docs/en/NOTIFICATIONS.md) |
 | **Go deeper** | [Architecture](docs/en/ARCHITECTURE.md) · [API](docs/en/API.md) · [Roadmap](docs/en/ROADMAP.md) · [Release notes v1.0](CHANGELOG.md) · [`android/`](android/README.md) · [`tools/sms_forward/`](tools/sms_forward/README.md) |
 | **Legal** | [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md) · [Legal disclaimer & operator terms](LEGAL.md) · [Dual & commercial licensing](COMMERCIAL_LICENSE.md) · [Project security & compliance audit](AUDIT_REPORT.md) |
 

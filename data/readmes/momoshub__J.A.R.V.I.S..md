@@ -188,6 +188,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `quick-review <pr-url\|help\|prompt> [--policy first\|after] [what to look at]` (alias `rv`) | pal, executer, admin | quick review of a PR, **only when a person asks** (tag the bot with `review <pr-url>` or `approve <pr-url>`, or type this; never from a thread, workflow, hand-back or GitHub request - see [Asking for a review in words](#asking-for-a-review-in-words)): read it first, post a blockers-only comment on GitHub *and* back in the thread (PRs owned by an account in `REVIEW_EXTENDED_OWNERS` also get the non-blocking findings as bullets); request changes on a blocker only, other repos drop non-blocking findings (big PRs are cloned + reviewed by child agents). CI is read first: red requests changes before the review, a running CI gets a watcher (see [CI comes first](#ci-comes-first)). Runs full-access. |
 | `bomb [categories] [count] <message-link>` (alias `br`) | admin | reaction-bomb a message. Combine categories with commas and set a count: `bomb money,face,negative 9 <link>`. Up to 23; `bomb help` lists every category |
 | `brief <thread-link\|reference> <text>` (`brief help`) | admin | leave a short note FOR another thread: what you posted there, why, what you wait for. Posts nothing, starts no turn; that thread's session reads it on its next turn, whoever speaks (it is part of that turn's message, so the session keeps it for the turns after), then it is marked read for that access tier. It is background information only, never instructions. The receiver sees only an opaque reference to your thread (never a link) and answers with `brief <reference> <text>`. `tell` is for when the other side must act now |
+| `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. Needed because the Slack proxy only lets a turn write into its own channel. Owner only (anyone else is told who can), audit logged like every command, and it files a `brief` in the target thread so its session knows why; the bot must be in the channel |
 | `reply <message-link>` (alias `jrp`) | admin | draft and post an AI reply to a message |
 | `rm-msg <message-link>` (aliases `rmmsg`, `unsend`) | admin | delete a message the bot posted (a bot token cannot delete anyone else's) |
 | `workflow <task>` / `workflow stop [<thread-link>]` / `workflow status` (alias `wf`) | executer, admin | start a long task in this thread and keep talking to it (see [Workflows](#workflows)) |
@@ -272,6 +273,15 @@ X/jv cloudwatch --group /ecs/prod-api --last 15m fields @timestamp, @message | f
 **Output** is clipped for Slack: at most 25 rows, each cell and row cut, about 2.8k characters, secrets redacted, and a line saying how many rows were left out or that the limit was hit. A query is stopped (`stop-query`) when it runs past 3 minutes, because the scan is billed while it runs.
 
 The buttons carry `jv:cloudwatch:confirm` / `jv:cloudwatch:cancel` ids but are decided in code and never handed to the model like other `jv:` presses, so a model turn cannot confirm its own query.
+
+### Lazy MCP servers in a bot turn
+
+A bot turn's stdio MCP servers (the database servers) are started lazily: each is
+wrapped in `bin/mcp-lazy-proxy.ts`, which answers the tool list from
+`~/.jarvis/mcp-schema-cache` and starts the real server only on the first tool
+call, and a role that may not use a server (`mcp__<server>` in its denied tools)
+does not get it in the config at all. The first turn after a new or edited
+server still starts it once to fill the cache.
 
 ## Investigating
 
@@ -1331,25 +1341,4 @@ actual system prompt it runs on, which is no secret - it is in this repository.
 
 Both exist because the question used to cost a review: asked to explain itself,
 the bot ran `quick-review help`, took the word "help" as a target, and spent minutes
-reviewing a pull request by that name on the asker's own credential. An argument
-now has to look like a pull request - a url, `owner/repo#123`, or a bare number -
-before anything expensive starts.
-
-## Steering a review
-
-Anything typed next to the url is guidance, not a second target:
-
-```
-//bot quick-review <pr-url> the migration is the risky bit
-//bot quick-review <pr-url> hotfix, only care about data loss on the delete path
-//bot quick-review <pr-url> check it against GEN-1234
-```
-
-It points the review at what you already suspect, which is usually faster and
-better aimed than a cold read: the review starts there, weights it, and says
-what it found about that specifically.
-
-The note is quoted into the prompt, never merged into the instructions. It can
-aim attention and nothing else - it cannot skip a PR, waive the approve/request
-flows, invent an approval, change the house style, or have something called
-clea
+r

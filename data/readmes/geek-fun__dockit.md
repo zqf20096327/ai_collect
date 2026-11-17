@@ -25,7 +25,7 @@
 
 [Download](https://www.geekfun.club/download) · [Docs](https://www.geekfun.club/docs/dockit/) · [Website](https://www.geekfun.club/products/dockit/) · [Releases](https://github.com/geek-fun/dockit/releases)
 
-English · [简体中文](README_zh.md)
+English · [简体中文](README_zh.md) · [Português (BR)](README_pt-BR.md) · [日本語](README_ja.md) · [한국어](README_ko.md) · [Español](README_es.md)
 
 </div>
 
@@ -61,6 +61,8 @@ DocKit replaces browser consoles like Kibana and AWS Console with a single nativ
 <a href="https://www.geekfun.club/products/dockit/">
   <img src="https://img.shields.io/badge/Website-geekfun.club-blue&logo=google-chrome&logoColor=white" alt="Website">
 </a>
+
+Closing the DocKit window keeps background tasks and the MCP server running. Use **Show Window** from the DocKit menu-bar or system-tray icon to return to your session. Choose **Quit** from that menu to stop the app.
 
 ## Community vs Ultimate
 

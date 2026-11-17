@@ -31,23 +31,25 @@ Cluaiz is one engine process that runs local models and serves them to apps, scr
 
 - **GGUF models** through a fork of [llama.cpp](https://github.com/ggml-org/llama.cpp) linked into the engine:
   chat, vision, audio input, embeddings.
-- **ONNX models** through ONNX Runtime: text-to-speech (Kokoro and others), speech-to-text (Whisper), embeddings
+- **ONNX models** through ONNX Runtime: text-to-speech (Kokoro and others), speech-to-text (Whisper, Moonshine), embeddings
   and vision encoders.
 - **A placement planner** that measures the free GPU memory and RAM on every load and chooses where the model
   runs, how large the context is and which KV cache type fits. You can override any of it.
 - **MoE models larger than the GPU, and larger than free RAM:** attention stays on the GPU, the experts sit in
-  RAM, and whatever does not fit RAM is read from the SSD when it is used.
+  RAM with llama.cpp's MoE GPU cache sized by the planner, and experts that do not fit RAM are read from the
+  memory-mapped model file on the disk when used (at the disk's speed; a dedicated SSD prefetch is planned).
 - **APIs** that existing clients already speak (OpenAI-compatible and Ollama-style routes), plus CEP, one
   JSON-RPC 2.0 protocol for everything engine-specific, over HTTP, MCP or a C library.
 - **Tools for agents:** skills, plugins and MCP servers, with permission levels, approvals and an audit log.
 
-On the same model file, placement and settings, Cluaiz generates as fast as llama.cpp's own `llama-bench`, and
-reads prompts up to 2x faster when a model is split across GPU and RAM (see [Benchmarks](#benchmarks)).
+On the same model file, placement and settings, Cluaiz runs at the speed of official llama.cpp's `llama-bench` on
+the GPU and on a GPU + RAM split. On the CPU alone, generation is equal, prompts were 6-26% slower on an 8-thread
+laptop, and one quantization (Q2_0) was 13-20% slower on a 1 vCPU server (see [Benchmarks](#benchmarks)).
 
 > [!TIP]
 > **A 26B model on a 4 GB laptop GPU.** Gemma 4 26B A4B (MoE, 13.3 GB file) on an RTX 3050 Laptop with 4 GB
 > VRAM: **16–18 tokens/s** with about 8 GB of free RAM, and still **7.4 tokens/s** with only about 3 GB free,
-> when more of the experts are read from the SSD. The planner picks this placement by itself (`n_cpu_moe`); no flags
+> when more of the experts are read from the model file on the disk (measured 2026-10-12). The planner picks this placement by itself (`n_cpu_moe`); no flags
 > needed. Dense models that do not fit RAM + VRAM are refused with the reason instead of crawling from the disk.
 > [Details](test/engine_regression/RESULTS.md#gemma-4-26b-a4b-moe-1327-gb-file-4-gb-gpu).
 
@@ -120,7 +122,7 @@ from `permission.json` (`cluaiz permission port <n>`).
 | Text chat, tool calls, thinking models | Supported | Not available | [Chat](docs/api/inference/chat_completions.md) |
 | Images, audio, video frames, documents in chat | With a compatible vision / audio projector (Gemma 4 E4B tested) | Not available | [Chat](docs/api/inference/chat_completions.md) |
 | Text-to-speech | Experimental | Kokoro and other supported families | [Speech](docs/api/inference/audio_speech.md) |
-| Speech-to-text | Not available | Whisper | [Transcriptions](docs/api/inference/audio_transcriptions.md) |
+| Speech-to-text | Not available | Whisper, Moonshine | [Transcriptions](docs/api/inference/audio_transcriptions.md) |
 | Text embeddings | Supported (BGE, EmbeddingGemma-2 tested) | Supported (BGE tested) | [Embeddings](docs/api/inference/embeddings.md) |
 | Image embeddings | Not available | CLIP-style vision models (FashionCLIP tested, 512-dim vectors) | [Embeddings](docs/api/inference/embeddings.md), [Ingest](docs/api/inference/ingest.md) |
 | Document and image ingest | Vision models write text from pages and images; text embeddings for chunks | Text embeddings for chunks; CLIP-style vision models for image and page vectors | [Ingest](docs/api/inference/ingest.md) |
@@ -157,8 +159,8 @@ Not included yet: the OCR pack and a persistent vector index. Details:
 
 ### Placement and memory
 
-- Candidates on every load: **full GPU**, **GPU + RAM split**, **MoE experts in RAM** (or read from the SSD when
-  they do not fit RAM), **CPU only**. The plan picks the context size and the KV cache type (F16, then Q8_0) and
+- Candidates on every load: **full GPU**, **GPU + RAM split**, **MoE experts in RAM** with llama.cpp's MoE GPU cache
+  (read from the memory-mapped file on the disk when they do not fit RAM), **CPU only**. The plan picks the context size and the KV cache type (F16, then Q8_0) and
   keeps a VRAM buffer free.
 - The plan is checked against llama.cpp's own dry run, and the VRAM a load really takes is remembered per model,
   so the next plan is closer.
@@ -232,23 +234,27 @@ What release v0.1.0 ships (core + GPU packs, chosen by the installer) and where 
 | **NVIDIA GPU**, Linux | CUDA 12 / CUDA 13 | `linux-x64` core + `llama-cuda12` / `llama-cuda13` | ✅ Tesla T4 16 GB, Ubuntu 24.04 (CUDA 12 pack, driver 580); NVIDIA L4 23 GB, Debian 13 (CUDA 13 pack, driver 620) ([run](test/cloud/runs/2026-11-14-run8-linux-l4/SUMMARY.md)) |
 | **AMD Radeon RX / Pro, Intel Arc A / B**, Windows and Linux | Vulkan | core + `llama-vulkan` | 🧪 Built, not yet run on this hardware |
 | **Apple Silicon** (M1 or newer), macOS 14 or newer | Metal (inside the core) | `mac-arm64` core | ✅ MacBook Air M5 16 GB: installs and chats at llama.cpp's speed ([run](test/mac/runs/2026-10-28-m5-air-16gb/SUMMARY.md)); macOS 15 (GitHub runner, virtual M1): install, and auto placement on the Metal GPU ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)) |
-| **x86-64 CPU** (SSE4.2 to AVX-512) | CPU, best build picked at start | any core | ✅ Ryzen 7 7435HS (Windows 11), Xeon 2.3 GHz (Ubuntu), Xeon Platinum 8488C with AVX-512 / AMX (Ubuntu 24.04, Windows Server 2025, Debian 13, Fedora 42) ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)) |
+| **x86-64 CPU** (SSE4.2 to AVX-512) | CPU, best build picked at start | any core | ✅ Ryzen 7 7435HS (Windows 11), Xeon 2.3 GHz (Ubuntu), Xeon Platinum 8488C with AVX-512 / AMX (Ubuntu 24.04, Windows Server 2025, Debian 13, Fedora 42) ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)), AMD EPYC 9354P VPS with 1 vCPU and 3.8 GB RAM (Ubuntu 24.04) ([run](test/cloud/runs/2026-11-16-run19-vps-deep/SUMMARY.md)) |
 | **ARM64 Linux** | CPU (NEON and newer) | `linux-arm64` core | ✅ AWS Graviton2 (Neoverse-N1), Ubuntu 24.04 ([run](test/cloud/runs/2026-11-09-run6-cpu-os-matrix/RESULTS.md)) |
 
 ROCm/HIP, OpenVINO, SYCL and CANN builds are not part of the release yet.
 
 ## Benchmarks
 
-Every number comes from [`test/engine_regression/run.py`](test/engine_regression/run.py): the same model file,
-placement and settings on Cluaiz (through its chat API) and on llama.cpp's `llama-bench` built from the same
-llama.cpp commit. Higher is better.
+The same model file, placement and settings on Cluaiz and on llama.cpp's `llama-bench`. Higher is better.
 
 | | Cluaiz vs llama.cpp |
 | :--- | :--- |
-| Generation | Equal in every test (within the normal run-to-run noise) |
-| Prompt, model fully on the GPU | Equal (after the prompt fixes on `main`) |
-| Prompt, model split across GPU and RAM | Cluaiz 1.4x to 2.2x faster on the laptop, up to 1.6x on the T4 |
-| Prompt, CPU only | Equal |
+| Generation, GPU and GPU + RAM split | Equal (within the run-to-run noise) |
+| Generation, CPU only | Equal, except Ternary-Bonsai Q2_0 on a 1 vCPU server: 13-20% slower ([run 16](test/cloud/runs/2026-11-16-run16-vps-ollama/SUMMARY.md)) |
+| Prompt, model fully on the GPU | Equal on the laptop and the T4; llama.cpp up to 11% faster on the L4 |
+| Prompt, model split across GPU and RAM | Equal with `cluaiz bench` (prompt 512, [run 17](test/cloud/runs/2026-11-16-run17-laptop-same-settings/SUMMARY.md)). Through the chat API, a prompt just over 512 tokens (about 530) was 1.4x to 2.2x faster on the laptop and up to 1.6x on the T4, because Cluaiz cuts it into two even chunks; on the L4 0.82x to 1.3x |
+| Prompt, CPU only | Equal on a 1 vCPU server ([run 15](test/cloud/runs/2026-11-16-run15-vps-cpu/SUMMARY.md)); 6-26% slower on 8 threads ([run 17](test/cloud/runs/2026-11-16-run17-laptop-same-settings/SUMMARY.md)), not explained yet |
+
+On a 1 vCPU / 3.8 GB server without a GPU, Ollama generated 14-23% slower than Cluaiz with the same settings and
+could not load Llama 3.2 3B ([run 16](test/cloud/runs/2026-11-16-run16-vps-ollama/SUMMARY.md)). Nine chat models
+from 0.6B to 4B, speech and embeddings ran there, with a per-second memory log
+([run 19](test/cloud/runs/2026-11-16-run19-vps-deep/SUMMARY.md)).
 
 <details>
 <summary><b>All benchmark tables</b></summary>
@@ -271,7 +277,7 @@ llama.cpp commit. Higher is better.
 | | split | 18 of 36 blocks on GPU | **15.9 t/s** | 14.9 t/s | +7% |
 | **Gemma 4 E4B (Q4_K_M)** | gpu | Full GPU | **32.3 t/s** | 32.0 t/s | +1% |
 | | split | 21 of 42 blocks on GPU | **14.5 t/s** | 14.6 t/s | same |
-| **Gemma 4 26B MoE (13.3 GB)** | auto (split) | Attention GPU + RAM/SSD Experts | **16.0 - 18.0 t/s** | ~4.4 t/s or OOM (user-reported) | Runs on 4 GB VRAM |
+| **Gemma 4 26B MoE (13.3 GB)** | auto (split) | Attention GPU, experts in RAM (disk via mmap) | **16.0 - 18.0 t/s** | not measured | Runs on 4 GB VRAM |
 
 #### Prompt processing speed (~530 tokens prompt)
 
@@ -285,9 +291,9 @@ llama.cpp commit. Higher is better.
 | **Bonsai 27B** | 47 vs 30 t/s (shared mem) | **230 vs 110 t/s** | **2.1x faster** |
 
 > [!NOTE]
-> **Why Split Prompt is 1.4x–2.2x Faster**: Upstream llama.cpp chunks prompts into fixed 512-token batches (leaving trailing tokens under 32 to run on CPU). Cluaiz balances chunk sizes evenly (e.g. 265 + 265), keeping all prompt chunks on the accelerated path.
+> **Why Split Prompt was 1.4x–2.1x Faster on this laptop (2026-10-12; on the L4 in run 11 it was 0.82x–1.21x)**: Upstream llama.cpp chunks prompts into fixed 512-token batches (leaving trailing tokens under 32 to run on CPU). Cluaiz balances chunk sizes evenly (e.g. 265 + 265), keeping all prompt chunks on the accelerated path.
 > 
-> **Time To First Token (TTFT)**: **0.09s - 0.10s** (warm prompt with persistent template caching, down from 0.31s).
+> **Time To First Token (TTFT)**, measured 2026-10-12: **0.09s - 0.10s** (warm prompt with persistent template caching, down from 0.31s).
 > 
 > **Complete Reproducible Benchmark**: Full test tables, methodology, and reproduction scripts (`python test/engine_regression/run.py`) are documented in [`test/engine_regression/RESULTS.md`](test/engine_regression/RESULTS.md).
 >
@@ -318,8 +324,8 @@ placement Cluaiz chose.*
 
 #### Prompt processing speed (~535 tokens prompt)
 
-Measured with the prompt fixes on `main` (commits `6120d017`, `4228752a`; not in release v0.1.0). Before them the
-T4 showed llama.cpp 7–22% ahead in the cases marked below.
+Measured with the prompt fixes (commits `6120d017`, `4228752a`), which the current v0.1.0 includes; the build
+tested first on this T4 did not, and showed llama.cpp 7–22% ahead in the cases marked below.
 
 | Model | Full GPU (Cluaiz vs llama.cpp) | Split GPU + RAM (Cluaiz vs llama.cpp) | Split Speedup |
 | :--- | :---: | :---: | :---: |
@@ -344,7 +350,8 @@ Gemma 4 31B 4 vs 4 t/s.
 > **Reading the T4 numbers**: generation equals llama.cpp in every test (-3% to +8%; the T4's clock moves a few
 > percent between runs). Prompt processing equals llama.cpp on full GPU after the two fixes and stays up to 1.6x
 > faster when a model is split across GPU and RAM. A dense model larger than RAM + VRAM is refused by the planner
-> instead of thrashing the disk; streaming from the SSD is used for MoE experts (Gemma 4 26B above).
+> instead of thrashing the disk; only MoE experts are read from the memory-mapped file on the disk when RAM is
+> short (Gemma 4 26B above).
 >
 > **Full Report**: methodology, every setting, the exact llama-bench commands and all logs are in
 > [`test/cloud/runs/2026-10-28-run5-linux-t4-regression/RESULTS.md`](test/cloud/runs/2026-10-28-run5-linux-t4-regression/RESULTS.md).
@@ -427,7 +434,7 @@ flowchart TB
     end
 
     subgraph PLANNING["Placement planning"]
-        PLAN["engine/plan<br/>candidates: full GPU · GPU + RAM split ·<br/>MoE experts in RAM / SSD · CPU only<br/>context size, KV type, VRAM buffer"]
+        PLAN["engine/plan<br/>candidates: full GPU · GPU + RAM split ·<br/>MoE experts in RAM + MoE GPU cache · CPU only<br/>context size, KV type, VRAM buffer"]
         HW["engine/hardware<br/>CPU, RAM, GPU (NVML), disk<br/>free memory measured live"]
         MODELS["engine/models<br/>GGUF reader, model registry,<br/>Hugging Face fetcher, capabilities"]
         CORE["engine/core<br/>settings snapshot, paths, units, contracts"]
@@ -528,7 +535,7 @@ sequenceDiagram
         A-->>C: SSE chunk
     end
     L-->>A: timings (prompt and generation tokens per second)
-    A-->>C: final chunk with usage and engine timings
+    A-->>C: final chunk with usage and engine timings (when stream telemetry is on)
 ```
 
 <details>

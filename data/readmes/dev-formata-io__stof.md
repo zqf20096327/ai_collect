@@ -28,12 +28,15 @@
 ## JSON, plus a function
 
 ```rust
-// doc.stof
+// acme.stof: one customer's pricing
 {
-    "values": { "a": 42, "b": 24 },
+    "customer": "acme",
+    "plan": { "rate": 0.02, "included": 1000 },
 
-    fn sum() -> int {
-        self.values.a + self.values.b
+    fn price(units: int) -> float {
+        const billable = units - self.plan.included;
+        if (billable <= 0) return 0;
+        billable * self.plan.rate
     }
 }
 ```
@@ -41,8 +44,16 @@
 ```typescript
 import { StofDoc } from '@formata/stof';
 
-const doc = await StofDoc.new(source);   // doc.stof
-await doc.call('sum');                    // 66
+const doc = await StofDoc.new(source);   // acme.stof
+await doc.call('price', 5000);           // 80
+```
+
+```python
+from pystof import Doc
+
+doc = Doc()
+doc.parse(source)                         # acme.stof
+doc.call('price', 5000)                   # 80.0
 ```
 
 Any JSON is already a Stof document. Add a function where the logic belongs, and your app calls it the way it reads a
@@ -90,8 +101,18 @@ await doc.call('leak');
 // throws: 'fs::read' isn't available: this host hasn't given documents file system access
 ```
 
+The same in Python:
+
+```python
+doc.lib('Host', 'greet', lambda name: f'hello, {name}')
+
+doc.call('greet', 'world')   # 'hello, world'
+doc.call('leak')             # raises ValueError: 'fs::read' isn't available: ...
+```
+
 A document sees itself and the functions your app registers. There's no file system, network, or environment unless
-you turn them on, and network access can be limited to the hosts you list (`doc.allowHttp(['api.example.com'])`).
+you turn them on, and network access can be limited to the hosts you list (`doc.allowHttp(['api.example.com'])` in
+JavaScript, `doc.allow_http_hosts(['api.example.com'])` in Python).
 Every call has a time and memory limit. You can also seal the parts you trust, so nothing can change them, and confine
 code from somewhere else so it sees only what you list. See [Security and the Sandbox](https://stof.dev/start/security).
 
@@ -118,8 +139,13 @@ in-process on every call.
 ```bash
 npm i @formata/stof     # JavaScript / TypeScript
 cargo add stof          # Rust
-pip install stof        # Python
-cargo install stof-cli  # command line: stof run, stof test
+pip install stof        # Python (import pystof)
+```
+
+The `stof` command line (`stof run`, `stof test`, and the language server) is prebuilt for macOS, Linux, and Windows. See [stof-cli](https://github.com/dev-formata-io/stof-cli#install), or on macOS and Linux:
+
+```bash
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/dev-formata-io/stof-cli/releases/latest/download/stof-cli-installer.sh | sh
 ```
 
 **TypeScript**
@@ -178,6 +204,17 @@ helps.
 **Why not have the model write Python and run it in a container?**
 You can, but that's infrastructure, startup time, and a lot of access to lock down, and what a person reviews is a
 program. Stof runs inside your process, starts instantly, has no access by default, and a change is a diff to a document.
+
+**Why not Lua?**
+Lua is a great language for scripting your own app. Stof is for documents that carry logic. With Lua, the data lives
+somewhere else, each host language needs its own Lua binding, and schemas, units, tests, and the sandbox are yours to
+build. A Stof document holds the data and its logic together, runs the same in Rust, JavaScript, and Python, and starts
+with no access. Any JSON is already a Stof document, so there's nothing to migrate.
+
+**Why not CEL or JSONLogic?**
+Expression languages are safe because they're small: one expression, no functions of your own, no state. That's
+enough for a single condition, and it runs out quickly for pricing, scoring, or an agent's tools. Stof has functions,
+types, and tests, inside the same kind of sandbox.
 
 **Why not WebAssembly?**
 WebAssembly needs a compiler toolchain, and its binaries are large to send. Stof is readable, small, and travels with

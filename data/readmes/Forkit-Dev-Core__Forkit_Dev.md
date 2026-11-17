@@ -327,12 +327,19 @@ forkit sync push https://example.com/sync/passports --target main-server
 forkit sync pull https://example.com/export --source remote-dev
 ```
 
+`forkit lineage <passport-id>` lists ancestors and descendants with `[model]`
+or `[agent]` labels, followed by each passport's name, version, and short ID.
+
 The CLI is local-first. `forkit sync push` and `forkit sync pull` are generic
 sync primitives for self-hosted or custom HTTP endpoints that preserve
 `passport_id`.
 
 `examples/register_model.yaml` is runnable as checked in. `examples/register_agent.yaml`
 is a second-step sample and expects an already registered model passport ID in `model_id`.
+
+`forkit lineage <passport-id>` exits with status 1 and prints `Not found: <id>`
+to stderr for an unknown passport ID. For a known passport, each empty ancestor
+or descendant section displays `(none)`.
 
 To prepare a source verification proof, set `metadata.source_url` on the
 passport before registration (models can also use `hub_url`). Provide a GitHub,

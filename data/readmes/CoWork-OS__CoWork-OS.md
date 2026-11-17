@@ -141,7 +141,7 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 | [Security Guide](docs/security-guide.md) | Threat model, guardrails, sandboxing, credential storage |
 | [Self-Hosting](docs/self-hosting.md) | Linux server, Docker and remote access |
 | [Development](docs/development.md) | Build from source and run the tests |
-| [All docs](docs/index.md) · [Changelog](CHANGELOG.md) · [Release Notes 0.5.62](docs/release-notes-0.5.62.md) | |
+| [All docs](docs/index.md) · [Changelog](CHANGELOG.md) · [Release Notes 0.5.63](docs/release-notes-0.5.63.md) | |
 
 ## Community
 
@@ -157,15 +157,15 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 
 | Signal | Current | All time |
 |---|---:|---:|
-| GitHub stars | 550 | n/a |
-| GitHub forks | 102 | n/a |
-| Installer/server downloads | 3,353 | 3,353 |
-| Download delta | +51 | n/a |
-| npm downloads | 103 (last week) | 10,743 |
+| GitHub stars | 551 | n/a |
+| GitHub forks | 101 | n/a |
+| Installer/server downloads | 3,431 | 3,431 |
+| Download delta | +78 | n/a |
+| npm downloads | 102 (last week) | 10,751 |
 | GitHub views, last 14-ish days | 1,917 total / 1,019 unique | n/a |
 | GitHub clones, last 14-ish days | 6,544 total / 876 unique | n/a |
 
-Generated 2026-11-15T10:48:25.341Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
+Generated 2026-11-16T11:11:15.297Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
 <!-- COWORK_PUBLIC_ADOPTION_STATS_END -->
 
 ## License

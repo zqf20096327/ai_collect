@@ -1,8 +1,11 @@
-# IntegratedLearner - Integrated machine learning for multi-omics prediction and classification
+# IntegratedLearner <img src="man/figures/logo.png" align="right" height="139" alt="" />
+
+**Integrated machine learning for multi-omics prediction and classification**
 
 The repository houses the **`IntegratedLearner`** R package for multi-omics prediction and classification. Binary, multiclass, continuous, and survival outcomes are supported through a single high-level interface.
 
 Optional dependency for BART workflows:
+
 - `sl_bart` and BART uncertainty utilities rely on `bartMachine` and a working Java setup.
 - If Java/BART are unavailable, use another continuous/binary learner (`SL.randomForest` is a standard SuperLearner alternative) or a native multiclass learner for multiclass outcomes.
 
@@ -17,14 +20,16 @@ Seven small MAE tutorial fixtures live in `inst/extdata` and total about **258 K
 Each assay has at most **25 variable features**; paired cohorts share feature IDs
 and order. All samples and outcomes are retained. Read the RDS files directly
 using `readRDS(system.file("extdata", "PRISM_MAE.rds", package = "IntegratedLearner"))`;
-see the [fixture inventory](inst/extdata/README.md) and
-[selection recipe](inst/scripts/build_mae_vignette_data.R). The former `data()`
+see the [fixture inventory](https://github.com/himelmallick/IntegratedLearner/blob/master/inst/extdata/README.md) and
+[selection recipe](https://github.com/himelmallick/IntegratedLearner/blob/master/inst/scripts/build_mae_vignette_data.R). The former `data()`
 objects, raw tables, and duplicate PCL datasets have been removed. PCL inputs
 remain supported using user-supplied data.
 
 ## Installation
 
-Once the dependencies are installed, `IntegratedLearner` can be loaded using the following command:
+`IntegratedLearner` was accepted into Bioconductor. It is initially available
+through Bioconductor devel once the nightly build succeeds. In a Bioconductor
+devel environment, install it with:
 
 ```r
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
@@ -33,7 +38,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) {
 BiocManager::install("IntegratedLearner")
 ```
 
-For the development version, use:
+To install directly from GitHub, use:
 
 ```r
 BiocManager::install("himelmallick/IntegratedLearner")
@@ -88,6 +93,7 @@ Naming conventions:
 * Multiclass learners use native IDs without either prefix, such as `randomforest`, `ranger`, `xgboost`, `glmnet`, `mbart`, and `multinom`.
 
 Feature workflow (when enabled):
+
 1. Filtering happens first (`filter_method`, `filter_pct`) on the training feature table.
 2. Screening happens second (`run_screening = TRUE`, `screen_pct`) within CV folds and again for final model fit.
 
@@ -197,6 +203,10 @@ IntegratedLearner(
 Custom metadata names are optional. If omitted, defaults remain `outcome_col = "Y"` and `subject_id_col = "subjectID"` (backward compatible).
 ### Arguments
 
+Call `set.seed()` before fitting to make the run reproducible. To display fit
+progress, wrap the call in `progressr::with_progress()`. Print the fitted object
+with `print(fit)` to see its summary.
+
 * `MAE_train` / `MAE_valid`: primary `MultiAssayExperiment` inputs for training and optional validation.
 * `PCL_train` / `PCL_valid`: legacy list inputs (`feature_table`, `sample_metadata`, `feature_metadata`) retained for backward compatibility.
 * `experiment`: Selected MAE experiment names/indices (optional; defaults to all in `MAE_train`).
@@ -205,7 +215,6 @@ Custom metadata names are optional. If omitted, defaults remain `outcome_col = "
 * `subject_id_col`: Subject identifier column name in `sample_metadata` / `colData`. Default is `"subjectID"`.
 * `na.rm`: Logical; drop features containing missing values after extraction/prep.
 * `folds`: Integer. Number of folds for cross-validation. Default is `5`.
-* `seed`: Integer seed for reproducibility. Default is `1234`.
 * `base_learner`: Binary/continuous uses IntegratedLearner `sl_*` wrappers by default (standard SuperLearner `SL.*` learners are also supported); multiclass uses native multiclass learners; survival uses supported `surv.*` learners. Not used when `run_intermediate = TRUE`.
 * `base_screener`: Deprecated. Kept for backward compatibility.
 * `filter_method`: Optional feature filtering method (`"prevalence"` or `"variance"`).
@@ -223,10 +232,10 @@ Custom metadata names are optional. If omitted, defaults remain `outcome_col = "
 * `cooperative_type_measure`: Optional `multiview` CV loss/score. If `NULL`, IL uses an outcome-appropriate default.
 * `drop_poor_performing_layers`: If `TRUE`, layers with poor single-layer performance are removed from early and late fusion only (`AUC < 0.5` for binary, `R2 < 0.5` for continuous, `C-index < 0.5` for survival). Single-layer outputs are still retained. Ignored when `run_intermediate = TRUE`.
 * `family`: `gaussian()` (continuous), `binomial()` (binary or multiclass), or survival family/metadata.
-* `verbose`: Logical progress flag.
 * `...`: Additional backend parameters. For survival, includes options such as `do_early_fusion` and learner-specific hyperparameters (or `model_args`).
 
 Automatic outcome coercion:
+
 * `gaussian()`: outcome is coerced to numeric (errors if conversion fails).
 * binary `binomial()`: two classes are mapped internally to `{0,1}`.
 * multiclass `binomial()`: class labels are retained.
@@ -246,7 +255,7 @@ Supported fusion modules:
 
 #### The IntegratedLearner workflow
 
-![Flow Chart](images/Flowchart.png)
+![Flow Chart](man/figures/Flowchart.png)
 
 #### Value
 
@@ -260,8 +269,21 @@ For continuous/binary fits (`IL_conbin` path):
 * `model_fits$model_cooperative`, `yhat.train[, "cooperative"]`, and `yhat.test[, "cooperative"]`: standalone cooperative `multiview` model and predictions when `run_intermediate = TRUE`.
 * `cooperative_feature_importance`, `cooperative_feature_importance_by_layer`, `cooperative_feature_importance_signed`, and `cooperative_feature_importance_signed_by_layer`: coefficient-based feature-importance scores from the selected cooperative `multiview` model when `run_intermediate = TRUE`.
 * `AUC.train`/`AUC.test` (binomial) or `R2.train`/`R2.test` (gaussian).
-* `feature_importance_signed`: Global signed feature importance.
-* `feature_importance_signed_by_layer`: Per-layer signed feature importance.
+* `feature_importance_signed` and `feature_importance_signed_by_layer`: Signed one-feature-at-a-time regression coefficients, globally and by layer.
+
+**Native fusion importance for binary and continuous outcomes**
+
+For binary and continuous outcomes, native feature importance is available for concatenated and stacked models using one of these base learners.
+
+| `base_learner` | Importance from the fitted model |
+|---|---|
+| `SL.xgboost` | Split gain |
+| `SL.glmnet`, `sl_lasso`, `sl_glmnet2`, `sl_enet` | Absolute coefficients at the selected penalty |
+| `SL.ranger` | Impurity decrease |
+| `SL.randomForest` | Mean decrease in impurity |
+| `SL.gbm` | Relative influence at the selected number of trees |
+| `sl_bart` | Posterior split inclusion proportions |
+| `SL.glm` | Absolute logistic or linear regression coefficients |
 
 For multiclass fits (`IL_multiclass` path):
 
@@ -351,9 +373,3 @@ Issues
 ------
 
 We are happy to troubleshoot any issues with the package. Please contact the maintainer via email or [open an issue](https://github.com/himelmallick/IntegratedLearner/issues) in the GitHub repository.
-
-Future Release
---------------
-
-We are currently in the process of submitting
-**`IntegratedLearner`** to [Bioconductor](https://www.bioconductor.org/). Likewise, please keep an eye out for a future release of **`IntegratedLearner`** as an R/Bioconductor package while this repository remains the development version of the package.

@@ -662,6 +662,60 @@ permutation **1.000**. Copy-only phase B keeps old **0.950/0.994** (naive) or
 **0.982/0.980** on seed 1), so the next issue is composition, not retention.
 [`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
 
+**Six-statement copy-only (positive, gate passed):** six statements, six names,
+sequence length 37, six attr-key slots. Phase A old **1.000** with all positions
+and permutation **1.000**. Copy-only phase B: naive old **0.998/0.914**, new
+**1.000**, held **0.988/1.000**, permutation **0.998/0.924**; replay
+**1.000/1.000**, held **1.000/0.998**, permutation **1.000/1.000**. Balanced
+positions, permutation invariance, and held composition all pass on both seeds.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Seven-statement copy-only (positive, gate passed):** seven statements, seven
+names, sequence length 42. Phase A old **1.000/0.998**, all positions and
+permutation **1.000**. Copy-only phase B: naive old **1.000/0.986**, new
+**1.000**, held **0.998/0.966**, permutation **1.000/0.986**; replay
+**1.000/1.000**, held **0.988/0.994**, permutation **1.000/1.000**. The gate
+passes on both seeds at seven statements.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Relaxed structure (partial):** variable filler lengths 0/1/2 with
+token-triggered boundaries/read. Replay keeps old/new at **1.000** and
+permutation at **1.000**, but held composition drops to **0.803/0.651**. A
+0->1->2->mixed filler curriculum with 6k stories and 9k phase-A steps gives
+**0.786/0.611** — no improvement. The gate fails on held-out composition, not on
+old/new or balance; more filler-length practice does not fix it.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Factorized color-object attention (positive, gate passed):** separate color
+and object keys/queries with multiplied attention distributions. Relaxed
+structure: old/new/held **1.000/1.000/1.000**, permutation **1.000**, and held
+**1.000** at every filler length, on both seeds. The earlier held gap was the
+additive key, not data or training.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Eight-statement factorized relaxed (positive, gate passed):** eight names,
+eight slots, sequence length 63, fillers 0/1/2. Replay: old/new/held
+**1.000/1.000/1.000**, permutation **1.000**, held **1.000** at every filler
+length on both seeds. The factorized mechanism scales to eight statements.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Multi-token answer (positive with curriculum):** answer is name + color, with
+a query-color copy for the second token. Seed 0 reaches exact
+**1.000/1.000/1.000** and permutation **1.000**; seed 1 initially fails the name
+read (old **0.231**, new **0.354**, held **0.341**) though its color token is
+**1.000**. A 3k red-only warmup + 6k red+blue + 3k phase B fixes both seeds to
+exact **1.000/1.000/1.000**, permutation **1.000**, name/color 1.000 at every
+filler length.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Learned boundaries, two-token answers (positive, gate passed):** statements
+end with a generic `|`; learned write/read gates replace the known `.`/`?`
+boundaries. Two seeds: phase-A old **1.000**, phase-B old/new/held
+**1.000/1.000/1.000**, permutation **1.000**, name/color 1.000 at every filler
+length. The remaining structure is a task-specific color/object factor and a
+task-specific color-copy readout, not a general language model.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
 **Curriculum without the attention loss (negative):** a padded 1 -> 2 -> 3
 statement curriculum trained with the copy loss only reaches spike **0.412**
 (permuted 0.392, last-position-biased) and rate **0.212**. It does not replace

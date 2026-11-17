@@ -79,6 +79,13 @@ dart run skills@ get
 To check a desktop setup without a model, run `dart run llamadart:doctor`; see
 [setup report scope](https://llamadart.leehack.com/docs/platforms/diagnose-setup#desktop-setup-report).
 
+Hosts bundling a Linux Vulkan runtime can preflight the system loader with
+`probeLinuxVulkanUnavailableReason()` from `package:llamadart/backend.dart`;
+see [API levels](https://llamadart.leehack.com/docs/guides/api-levels).
+Native llama.cpp automatically skips unavailable Vulkan initialization on Linux
+under `GpuBackend.auto`, retaining the other bundled backends. An explicit
+`GpuBackend.vulkan` load reports `LlamaUnsupportedException` with a remedy.
+
 ## First generation
 
 ```dart

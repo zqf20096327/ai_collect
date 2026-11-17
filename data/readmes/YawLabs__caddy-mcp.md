@@ -2,7 +2,7 @@
 
 [![Add to Yaw MCP](https://yaw.sh/yaw-mcp-button.svg)](https://yaw.sh/mcp/install?name=Caddy&command=npx&args=-y%2C%40yawlabs%2Fcaddy-mcp&description=Manage%20Caddy%20web%20servers%20-%20config%2C%20routes%2C%20TLS%2C%20PKI&source=https%3A%2F%2Fgithub.com%2FYawLabs%2Fcaddy-mcp)
 
-One click adds this to your local Yaw MCP config so it's available in every Yaw Terminal session. Or install manually below.
+One click adds this to your local Yaw MCP config so it's available in every Yaw Terminal session. Tested with Yaw MCP 1.1.13 or newer. Or install manually below.
 
 [![npm version](https://img.shields.io/npm/v/@yawlabs/caddy-mcp)](https://www.npmjs.com/package/@yawlabs/caddy-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -107,11 +107,11 @@ clear.
 **Runtime (oam or Node):**
 
 The `caddy-mcp` command prefers [oam](https://oamjs.org) when it finds a usable
-one and otherwise runs on Node. It never serves on an oam older than 0.19.5.
+one and otherwise runs on Node. It never serves on an oam older than 0.20.2.
 
 | Environment variable | Default | Description |
 |---|---|---|
-| `CADDY_MCP_RUNTIME` | `auto` | `auto`: the newest oam at 0.19.5 or newer, else Node. `oam`: oam or exit with an error. `node`: always Node -- the escape hatch when a problem only shows up under oam. Trimmed and case-insensitive. |
+| `CADDY_MCP_RUNTIME` | `auto` | `auto`: the newest oam at 0.20.2 or newer, else Node. `oam`: oam or exit with an error. `node`: always Node -- the escape hatch when a problem only shows up under oam. Trimmed and case-insensitive. |
 | `CADDY_MCP_SANDBOX` | (unset) | `1` or `true` (any case) runs the server under oam's `--permission` sandbox: network limited to the `CADDY_ADMIN_URL` host and port, filesystem limited to `CADDY_MCP_SNAPSHOT_DIR`, no child processes. Needs oam; under `auto` a machine without one runs unsandboxed, so pair it with `CADDY_MCP_RUNTIME=oam` when the sandbox has to hold. A unix-socket `CADDY_ADMIN_URL` is not reachable under the sandbox yet. Any other non-empty value leaves the sandbox off and warns on stderr. |
 | `OAM_BIN` | (unset) | Path to the oam binary to use. Otherwise the launcher checks `OAM_INSTALL_DIR`, the installed locations (`~/.oam/bin`, and `%LOCALAPPDATA%\oam\bin` on Windows) and `PATH`, and takes the newest. |
 

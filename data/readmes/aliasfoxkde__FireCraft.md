@@ -27,7 +27,7 @@ The goal is not to reproduce Adobe's code or redistribute its assets. The goal i
 
 The workspace version is 0.2.5. Development continues beyond that release: the active roadmap includes editor reachability, daily-driver canvas workflows, and a dedicated CS6-inspired shell-fidelity campaign. FireCraft is functional software under active development—not yet a feature-complete replacement for every Fireworks CS6 workflow.
 
-The current documented engine surface includes **253 registered commands** and a CS6 DOM parity matrix of **268 carried, 3 partial (evidence-gated), and 0 missing**. These figures describe the engine/DOM surface, not complete GUI parity: some commands are available through the command palette or automation surfaces before they have a corresponding menu or polished inspector workflow.
+The current documented engine surface includes **257 registered commands** and a CS6 DOM parity matrix of **268 carried, 3 partial (evidence-gated), and 0 missing**. These figures describe the engine/DOM surface, not complete GUI parity: some commands are available through the command palette or automation surfaces before they have a corresponding menu or polished inspector workflow.
 
 ### What is implemented
 
@@ -52,7 +52,7 @@ The editor is being brought closer to the Fireworks CS6 workspace rather than tr
 - Remaining panel work, including Optimize, Common Library, CSS Properties, Find and Replace, and Slices.
 - UI snapshot and interaction gates to prevent visual and behavioral regressions.
 
-Some of these items are partially implemented or still planned. The authoritative, task-level status is maintained in [`docs/NEXT.md`](docs/NEXT.md); see its Phase 22 for the shell-fidelity campaign.
+Some of these items are partially implemented or still planned. The authoritative, task-level status is the live ledger in [`docs/TASKS.md`](docs/TASKS.md); [`docs/NEXT.md`](docs/NEXT.md) carries the Phase 22 shell-fidelity campaign's acceptance criteria for additional detail.
 
 ## Start here
 
@@ -153,13 +153,12 @@ The GUI and automation interfaces are intended to drive the same engine commands
 | [Features](docs/FEATURES.md) | Implemented feature surface and evidence/gates |
 | [Usage](docs/USAGE.md) | Build instructions, CLI, shortcuts, browser bridge, MCP |
 | [Next / Roadmap](docs/NEXT.md) | Active phases, acceptance criteria, and open tasks |
-| [Gaps](docs/GAPS.md) | What is missing or evidence-gated, with the authority for each count |
+| [Gaps](docs/GAPS.md) | Historical audit of what was missing (2026-10-21); current work is on the [task board](docs/TASKS.md) |
 | [Doc index](docs/README.md) | The full documentation map |
 | [Releasing](docs/RELEASING.md) | Artifact build and deployment procedures |
 | [Progress](docs/PROGRESS.md) | Session-level status and historical progress |
 | [Planning](docs/PLANNING.md) | Product plan, file-format notes, and architecture |
 | [Handoff](docs/HANDOFF.md) | Engineering handoff and agent runbook |
-| [Gaps](docs/GAPS.md) | Current gaps and evidence-gated items |
 | [Task board](docs/TASKS.md) | Active tasks, priority, and status |
 | [Toolchains](docs/TOOLCHAINS.md) | Platform toolchains and packaging recipes |
 | [WebOS](docs/WEBOS.md) | Browser embedding contract |

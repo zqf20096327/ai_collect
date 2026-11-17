@@ -99,8 +99,11 @@ stops: Claude Code parks the turn until the reset, and Codex ends it with
 
 The thread records each step ("claude hit its usage limit — codex carries on;
 claude is back around 19:00"), and your phone gets a push. By default only
-your other CLI agents take over, never a metered API model. Set the order
-with `relay.to`. `relay.auto: false` only reports the limit, and
+your other CLI agents take over, never a metered API model. Another account of
+the same CLI gets first choice: an enabled, idle instance on a different account,
+or a new instance using an unused registered account. Instances sharing a capped
+config directory share its cooldown. Busy or disabled instances aren't cloned
+around. `relay.to` sets the fallback order after these same-CLI accounts. `relay.auto: false` only reports the limit, and
 `relay.handBack: false` keeps the stand-in. Limits are read from what Claude
 and Codex report about their usage windows, and from the error text any CLI
 gives ("usage limit", "rate limited", "quota exceeded", with "try again at…"
@@ -213,6 +216,113 @@ loom orchestrate "add OAuth login with tests" -o claude-code -w codex,antigravit
 - **A restart doesn't lose the run.** If Loom stops mid-run, the run says it
   was interrupted. **Resume** (or `loom orchestra:resume <run>`) picks up the
   tasks that were running and briefs the orchestrator again.
+
+Workers can report progress during a turn with one command per update:
+
+```bash
+loom report --checkpoint "Implementation finished; running tests"
+loom report --needs-input "Which API version should I support?"
+loom report --stuck "The dependency is unavailable"
+loom report --done
+```
+
+Loom supplies `LOOM_API` (daemon origin), `LOOM_PROJECT_ID`, `LOOM_RUN_ID`,
+`LOOM_TASK_ID`, and a private `LOOM_REPORT_TOKEN` to each local worker process.
+The token grants only report POSTs for that run. A worker without a shell can
+emit the same report in its message; the transcript stays intact:
+
+````text
+```loom-report
+checkpoint: Implementation finished; running tests
+```
+````
+
+Use `checkpoint`, `needs_input`, `stuck`, or `done` in the fence. Reports appear
+in `loom orchestra <run> --wait --progress` (with `--json`, progress is JSON lines
+on stderr). `needs_input` and `stuck` are batched for five seconds into one note
+to the orchestrator, even while workers are running. A busy orchestrator receives
+the note on its next turn; a run waiting on a human stays paused. Checkpoints and
+`done` reports do not wake it. Reports do not change task status: a `done` report
+still waits for the worker's turn to end and its work to merge.
+
+API clients POST `{ "kind": "checkpoint", "text": "…" }` to
+`/api/projects/:id/orchestra/:run/tasks/:task/report`, authenticated with the run's
+report token or an owner/admin bearer token. Text is limited to 4,000 characters
+and required except for `done`. The response is `{ report: { at, kind, text } }`;
+`at` is server time in milliseconds. GET orchestra runs include each task's
+`reports` (latest 20, oldest first) and `lastReport` (`null` before any report).
+An `orchestra` WS event with phase `task_report` includes `runId`, `taskId`,
+`report`, and the updated `task` summary for clients to render live.
+
+Use `agent[@model][:effort][xN]` to choose a model and build a fleet without
+adding roster entries. Agent names, kinds and aliases all work; `xN` (or `×N`)
+adds 1–100 instances per spec. The orchestrator takes the same syntax with count
+1. Model names and effort values are passed to the agent's provider unchanged.
+Omitted selections inherit the roster's options, then the provider's defaults.
+
+```sh
+loom orchestrate "implement and verify the feature" \
+  -o claude-code@claude-opus-5-5 \
+  -w claude-code@claude-opus-5-5x2,codex@gpt-5.6-sol:highx2,codex@gpt-6-solx2 -p 3
+
+# Chain lines accept the same specs, including with --check:
+# my-project :: [-o codex@gpt-6-sol -w codex@gpt-5.6-solx2 -p 2] implement the feature
+```
+
+Instances have distinct ids, such as `codex@gpt-5.6-sol:high#2`. Repeating a spec
+adds another instance. `-p` caps concurrent tasks across the fleet, including
+races. The planner sees each worker's model and can override a task with
+`{"type":"spawn","agent":"codex@gpt-6-sol","title":"review","prompt":"…","model":"gpt-5.6-sol","effort":"high"}`.
+These choices stay pinned through follow-ups and restarts, without changing the
+roster. Model and effort overrides currently apply to local workers; `team:<kind>`
+continues to use the teammate's configured agent.
+
+`loom orchestra <run>` shows the selections. Its `--json` output includes
+`orchestrator`, `workers`, `workerDetails` and `taskDetails`, while `tasks` retains
+its outcome counts. For API clients, `POST /api/projects/:id/orchestra` accepts
+`workers: string[]` of fleet specs and an `orchestrator` spec. Start, list and
+run-detail responses retain `workers: string[]` of instance ids and add
+`workerDetails: [{ id, kind, model?, effort? }]`; `orchestrator` and each entry in
+`run.tasks` also carry `model?` and `effort?`. The `started` event includes
+`workerDetails`, and task events and `/subagents` include task selections.
+Absent selections mean provider defaults; older runs may lack `workerDetails`.
+Web and phone fleet controls can use these fields without parsing instance ids.
+
+**Ask several coding agents.** `loom compare` gives the same prompt to 2–8 entrants,
+each in its own worktree, using Orchestra's race mode. Names, kinds and aliases
+resolve to enabled agents in this project; `acp:gemini` selects a configured ACP
+agent with the Gemini preset. Repeated specs and `xN` count toward the eight-entry
+limit. Model and effort selections follow the fleet rules above.
+
+```sh
+loom compare "add OAuth login with tests" \
+  -w claude-code@claude-opus-5-5,codex@gpt-5.6-sol,acp:gemini --wait
+loom compare <run-id> --wait
+loom compare <run-id> --keep <task-id>
+```
+
+Without `--wait`, the command returns immediately with the run id and a snapshot.
+The comparison table shows each agent/model, task id, status, elapsed time, cost
+and files/lines changed. `--keep` waits and applies the chosen finished task using
+race apply; the other worktrees are removed, with branches retained for diff/history.
+It can also accompany a new prompt with `-w`. Inspect replies in
+`loom orchestra <run-id> --json` (`taskDetails`), or through the API.
+
+For composer and phone clients, `POST /api/projects/:id/compare` accepts
+`{ "prompt": "...", "entrants": ["codex@model", "acp:gemini"], "chat": "main" }`
+and returns `{ run }`, with `run.compare: true` and `run.race: true`. `chat` is
+optional; an existing chat keeps the run in that thread. Invalid specs, unknown
+agents and counts outside 2–8 return HTTP 400 with `{ error }`. Poll
+`GET /api/projects/:id/orchestra/:runId` or consume the existing `orchestra`
+WebSocket events. Each task has `agent`, `kind`, `model?`, `effort?`, `status`,
+`chat`, `result?`, `files?`, `costUsd?`, `startedAt?` and `finishedAt?` (Unix
+milliseconds), plus `diffStat: { files, insertions, deletions }` once its turn
+finishes. Unknown costs are omitted; binary files count as files with zero lines.
+`GET /api/projects/:id/orchestra/:runId/tasks/:taskId/diff` returns `{ patch }`,
+the unified diff against the run's base commit (capped at 400,000 characters).
+“Keep this one” is `POST /api/projects/:id/orchestra/:runId/apply` with
+`{ "task": "<task-id>" }`; only a `done` entrant can be picked, once per run.
+Approach credit: T3 Code's multi-model threads.
 
 Under the hood: [`src/core/orchestra.ts`](src/core/orchestra.ts).
 `node scripts/verify-orchestra.mjs` runs a real orchestra against your installed
@@ -428,7 +538,71 @@ per message. Memory import dedupes by file and units are project-scoped, so
 what one session learns the others retrieve. One baton still rules them all:
 two sessions of a kind never means two writers at once.
 
+## Several accounts per CLI
+
+Register each Claude Code or Codex subscription with its own config directory:
+
+```sh
+loom accounts add codex --label personal
+loom accounts add codex --label work --dir ~/codex-work
+loom accounts                         # IDs, paths and CLI-reported sign-in status
+loom accounts login <id>              # interactive login in this terminal
+loom agents:add codex --account work  # accepts an ID or a label of this kind
+```
+
+Use `claude-code` instead of `codex` for Claude subscriptions. Without `--dir`,
+Loom creates a directory under `~/.loom/accounts/<id>` with mode 0700. `LOOM_HOME`
+relocates this registry and its default directories. `accounts.json` stores only
+`{ accounts: [{ id, kind, label, configDir }] }`; Loom never reads or copies the
+credentials inside those directories. Sign-in status comes from the CLI's own
+status command; `unknown` means it couldn't establish a verdict.
+
+An agent config can set `account: "<id>"` or `options.configDir: "/absolute/path"`.
+`~` is expanded; relative paths are rejected. A named account wins over
+`options.configDir`, which wins over the matching `options.env` variable.
+Claude gets `CLAUDE_CONFIG_DIR`, Codex gets `CODEX_HOME`. Unconfigured agents
+retain their normal CLI environment. Resolved paths are saved with agents added
+through Loom, so forgetting an account doesn't change their login.
+
+Quota Relay tries these accounts before switching CLIs. Orchestra distributes
+fleet copies round-robin across a kind's registered accounts: `codexx2` with two
+accounts runs one worker on each. A selected account starts the rotation; a
+single explicitly configured worker keeps its account. `workerDetails` records
+the account ID and resolved `configDir`, alongside model and effort, for clients
+and saved runs. Remote workers use their own machine's account configuration.
+
+`options.configDir` also maps to [Grok's `GROK_HOME`](https://docs.x.ai/build/settings)
+and [OpenCode's `OPENCODE_CONFIG_DIR`](https://github.com/anomalyco/opencode/issues/63129).
+OpenCode's config directory alone does not isolate its stored credentials; the
+accounts registry supports only Claude Code and Codex. Antigravity has no verified
+config-home override here.
+
+The daemon API is available to the owner and unscoped paired clients:
+
+| Endpoint | Request / response |
+| --- | --- |
+| `GET /api/accounts` | `{ accounts: [{ id, kind, label, configDir, authed }] }`; `authed` is `true`, `false`, or `null` |
+| `POST /api/accounts` | `{ kind, label, configDir? }` → `{ account: { id, kind, label, configDir } }` |
+| `DELETE /api/accounts/:id` | `{ forgotten: true }`; removes only the registry entry, never the directory |
+| `POST /api/accounts/:id/login` | `{ command, bin, args, env }`; displays a terminal command without running a login |
+
+The login display command uses POSIX shell syntax (PowerShell on Windows).
+Local clients can execute `bin` with `args` and merge `env` into their terminal
+environment without a shell. Project agent creation accepts `account` alongside
+`kind`, `role`, `options`, and `count`; successful responses contain the resolved
+account ID and `options.configDir`. Project agent status exposes `account?` and
+`configDir?`, and usage-limit readings are shared only within one account. No web
+or phone account screens are included.
+
 ## The Browser tab
+
+On **Loom Desktop**, external HTTP(S) pages open in an isolated browser guest,
+including sites that refuse iframe embedding. Back, forward and reload use the
+page’s own history; the address bar remembers visited URLs separately for each
+project and pane. Cookies and site storage persist in the dedicated
+`persist:loom-browser` session, separate from Loom. Permissions, downloads and
+popup windows are denied. Local dev-server previews still use Loom’s proxy and
+iframe; web and phone builds keep their existing iframe behavior.
 
 Agents write Playwright specs constantly and could never watch them run. The
 **Browser** tab (next to Console in the dock) lists the project's specs
@@ -590,6 +764,35 @@ context switch, no second browser tab.
   <em>Linear is off until you connect it — and Loom tells you exactly how, because it holds no token of its own.</em>
 </p>
 
+PRs opened by Loom (orchestra delivery, crews, board cards and maintenance helpers)
+are recorded in the project's `.loom/prs.json`. Every two minutes, Loom checks open
+PRs with your `gh` CLI. A failed check queues “CI failed on PR #N (check): … — fix
+it and push.” in the owning chat, waiting for any running turn. Failures are sent
+once per check and commit; review comments are sent once per comment id, including
+inline replies. These signatures survive a restart. GitHub errors back off up to
+30 minutes. Tracked team PRs use this queue for CI fixes; older team goals without
+a tracking record retain their existing landing loop. Merges and unmerged closes
+add a status line and stop polling that PR.
+
+Use `loom prs [--json]` to list watches and their last state, or
+`loom prs:watch <number-or-url> [--chat <id-or-title>]` to attach an existing PR
+(default: Main). Attaching requires the machine owner's token. A PR has one owning
+chat; attaching it again to that chat is idempotent.
+
+Clients can use these API shapes (web and phone controls are separate work):
+
+- `GET /api/projects/:id/prs` → `{ prs: TrackedPr[] }`, including terminal history.
+  Each row has `prNumber`, `repo`, `chat`, optional `agentId`, `source`
+  (`delivery`, `board`, `orchestra`), `openedAt`, `state` (`OPEN`, `MERGED`, `CLOSED`),
+  `url`, and optional `mergeable`, `headRefOid`, `checkedAt`. Times are epoch ms.
+- `POST /api/projects/:id/chats/:chat/prs` with `{ pr: number | string }` →
+  `{ pr: TrackedPr }`. Strings are positive PR numbers or HTTPS PR URLs.
+- `PATCH /api/projects/:id/chats/:chat` with `{ prFeedback: "off" | "ci" | "ci+reviews" }`
+  → `{ chat: ChatInfo }`. Main is supported. Default is `ci`; `off` suppresses fix
+  prompts while merge/close notices still appear. `ci+reviews` also queues review
+  bodies, discussion comments and inline comments. Bots and Loom's own automated
+  review messages are skipped. The chat list exposes the effective setting.
+
 **Loom holds no token of its own.** GitHub goes through your `gh` CLI; Linear reads
 `LINEAR_API_KEY` from the daemon's own environment (you `export` it) and never stores,
 logs, or transmits it anywhere else. No key → an honest "not connected", never a dead
@@ -602,6 +805,30 @@ cd your-project
 loom init          # detects the agents installed on this machine, assigns roles
 loom               # opens the TUI — a tabbed workspace (Thread · Board · Brain · Diff)
 ```
+
+To start somewhere new, run `loom new "My project"` or
+`loom clone https://github.com/you/repo.git --name "My project"` from any directory.
+Both print the registered project id. Folders go under `~/Loom Projects` on the
+daemon's machine; set `projectsRoot` to an absolute path in `~/.loom/daemon.json`
+to choose another location (`LOOM_HOME` overrides `~/.loom`). Names become lowercase
+slugs of up to 60 characters, and existing folders are always refused.
+
+`loom new` creates a README, ignores `.loom/`, initializes Git and makes a first
+commit, using Loom's identity if Git has none. Use `--no-git` to skip Git, or
+`--agent codex@your-modelx2 --agent opencode` to choose agents and counts (1–8 per
+entry; `×2` also works). Without `--agent`, Loom detects installed agents.
+
+Remote clients can use `POST /api/projects/new` with `{ name, agents?: [{ kind,
+model?, count? }], git?: boolean }`, returning `{ project, config }`, or
+`POST /api/projects/clone` with `{ url, name? }`, returning HTTP 202 `{ jobId, dir }`.
+Clones accept HTTPS, `git@host:path`, and SSH URLs. Poll
+`GET /api/projects/jobs/:jobId` for `{ status: "cloning" | "done" | "failed",
+project?, error?, progress? }`. Jobs last until daemon restart; recent completed
+jobs are retained for reconnecting clients. Failed clones remove their partial
+folder so the name can be retried. These endpoints require the owner token or an
+unscoped paired device; guests and scoped tokens receive 403.
+Their WebSockets receive `{ type: "project-job", jobId, dir, status, ... }` as
+progress changes and `{ type: "projects", project }` after registration.
 
 ```
   ██      ▄████▄  ▄████▄  ▄█▄▄█▄
@@ -653,6 +880,9 @@ loom route planner,executor "fix the flaky test"  # ad-hoc: roles…
 loom route claude-code,opencode,claude-code "…"   # …or agent ids, any length
 ```
 
+Routes started in a chat stay in that chat, including queued `auto` prompts: every
+hop, question and route update appears in the original thread.
+
 **`auto` is dynamic routing**: after every hop, a router looks at the task, the hop
 history, and the last replies, then picks the next agent — or declares the task done.
 The router is Claude (headless, small model, JSON out) with a deterministic
@@ -667,7 +897,7 @@ What happens per hop: interrupt-safe **handoff** → shared-memory **projection*
 - step finishes cleanly → Loom advances to the next agent automatically;
 - the agent asks a question → the route **pauses** (`waiting_human`), you get a
   notification, `loom route --status` and the board show the question; you answer in
-  the shared thread (`loom send "…"`) and the route **resumes by itself**;
+  the same thread (`loom send "…" --chat <chat>`) and the route **resumes by itself**;
 - an agent errors or a step times out (45 min default) → the route fails loudly —
   unless the step carries an [`onFail`](#routes-that-loop-and-steps-that-skip), which
   sends it back to an earlier step instead;
@@ -706,8 +936,11 @@ detects at least two roles.
 |---|---|
 | `loom` | **The TUI** — tabbed workspace (Thread · Board · Brain · Diff), `shift+tab` switches view, `tab` shifts agents, `/`-commands + `ctrl+p` palette inline |
 | `loom init` | Make the current directory a Loom project (auto-detects agents); in a git repo it offers to add `.loom/` to `.gitignore` (`--gitignore` / `--no-gitignore` to skip the question) |
+| `loom new <name> [--agent kind[@model][xN] ...] [--no-git]` | Create and register a new folder in `projectsRoot`; print its project id |
+| `loom clone <url> [--name <name>]` | Clone into `projectsRoot`, wait for registration, and print its project id |
 | `loom chat` | Same thread as a plain line REPL (`/handoff`, `/interrupt`, `@agent`) |
 | `loom send <text>` | One-shot message (`-a <agent>` to address someone specific). `--wait` blocks until the turn ends and prints the reply and cost (`--json` for one object, `--timeout <s>`); it exits 0 done, 1 failed, 2 the agent asked a question, 124 timed out — so a script can drive an agent without reading `.loom/log.db`. Before resuming a session of 100k+ tokens whose prompt cache has likely expired, it warns with the re-read's estimated cost; `--fresh` starts the agent's session in that chat over |
+| `loom steer <text> [--chat <chat>]` | Add input to a running turn; otherwise queue it and explain why. `--agent <id>` overrides the chat binding |
 | `loom handoff <agent>` | Pass the baton — interrupts, projects memory, briefs the target |
 | `loom route <spec> "<task>"` | Run a pipeline (name, or `a,b,c` ids/roles); `--status` / `--abort` / `--detach` |
 | `loom routes` | List named pipelines defined for this project |
@@ -730,6 +963,7 @@ detects at least two roles.
 | `loom providers:set <id> [--key --base-url --header]` | Point Loom at a provider — the key goes to `~/.loom/providers.json` (0600) or the env, never a project |
 | `loom providers:rm <id>` | Forget a provider's key and settings |
 | `loom models [agentId] [--provider --free --refresh]` | With an agent: the models it reports. Without: what every configured provider has right now |
+| `loom btw "<question>" [--chat c]` | Ask a private read-only side question with the parent’s agent and model |
 | `loom ask "<text>" [--models a,b,c \| --free --limit n]` | One prompt to several models at once, a thread each, side by side |
 | `loom up [--tailnet] [--restart]` / `loom down` / `loom daemon` | Daemon lifecycle (`--tailnet` binds to your Tailscale IP) |
 | `loom pair` | QR deep link that pairs a phone (single-use token) |
@@ -869,6 +1103,7 @@ loom agents:add acp --cmd "my-agent --acp" --as mine
 ```
 
 - **Sessions:** each Loom chat is one ACP session, and it resumes with `session/load` when the agent supports it.
+- **MCP servers:** enabled project servers that pass Loom's health filtering are sent when a session is created or loaded. Stdio servers include their arguments and environment; HTTP and SSE servers include their headers and are sent only when the agent advertises support for that transport.
 - **What you see:** the agent's thoughts, its plan, each tool call and the diffs it reports show
   up in the thread like any other agent's. Diffs appear as file edits.
 - **Permissions are Loom's:**
@@ -876,6 +1111,22 @@ loom agents:add acp --cmd "my-agent --acp" --as mine
   - Auto runs Loom's Auto policy on the call.
   - Always ask puts each request on an approval card in Loom and on your phone.
   - A request that fails or is interrupted is answered "cancelled", never allowed.
+
+### Several agents on one model
+
+Add up to eight sessions at once, each pinned to the same model:
+
+```sh
+loom agents:add claude-code --model claude-opus-5-5 --count 3 --as opus
+loom orchestrate "add OAuth login with tests" -o claude-code -w opus,opus-2,opus-3
+```
+
+This creates `opus`, `opus-2`, and `opus-3`, each with `options.model` set to
+`claude-opus-5-5`. Names already in use get the next free suffix. Omit `--as`
+to use the agent kind as the base name. `--model` works with any kind that
+accepts a model, including `claude-code`, `codex`, `opencode`, `grok-code`,
+`model`, and `acp`. In the app, Add agent offers a model field with suggestions
+and a count from 1–8; Orchestra's **+ model** uses the same picker.
 
 ## Agents that are models
 
@@ -964,10 +1215,126 @@ touches the repository; a conversation doesn't need it, and taking it would
 stop whatever is actually working. The main thread still follows the baton,
 because that's what makes it the main thread.
 
-A thread may pin a **model** as well, for agents that can change model per turn
-(the `model` kind). Pinning one to an agent whose model is baked into a spawned
-process is refused at the point of pinning — a setting that silently does
-nothing is worse than an error.
+A thread may pin a **model** and, where supported, **reasoning effort**, without
+changing the agent's defaults or restarting its current turn. Claude Code and
+Codex receive the selection through their native provider sessions. ACP uses
+`session/set_model` when the session advertises models. Other adapters keep a
+separate warm instance per agent, model and effort; turns on the same agent
+still run in order. Native state stays separate between those model instances.
+
+```sh
+loom chat:create "Review" --agent codex --model gpt-5.4 --effort high
+loom chat:agent "Review" codex --model gpt-5.4 --effort low
+loom chat:agent "Review" codex          # restore the agent's model/effort defaults
+loom chat:agent "Review" --clear        # follow the baton again
+loom send --chat "Review" "Review the changes"
+```
+
+The API returns `{ "chat": ChatInfo }`, and chat listing includes `agentId`,
+`model`, and `effort`. Create with `POST /api/projects/:id/chats` and a body such
+as `{ "title": "Review", "agentId": "codex", "model": "gpt-5.4", "effort": "high" }`.
+Replace the selection with `POST /api/projects/:id/chats/:chatId/agent` and
+`{ "agentId": "codex", "model": "gpt-5.4", "effort": "low" }`. This replaces all
+three fields: omitted or empty model/effort values inherit the agent defaults;
+`{ "agentId": null }` clears all three. Model and effort require a bound agent.
+Main continues to follow the baton and cannot be pinned. An explicit send to
+another agent uses that agent's defaults. A change leaves an in-flight answer
+alone; queued messages retain the selection captured when submitted.
+
+Use `loom send "Review the changes" --model gpt-5.4 --effort high` to override
+the model or effort for just one message. The API accepts the same optional
+`model` and `effort` strings in `POST /api/projects/:id/messages`, alongside
+`text`, `chat`, and `agentId`. For example:
+`{ "text": "Review the changes", "chat": "<chat-id>", "effort": "high" }`.
+Each omitted or blank field inherits the chat selection (or the agent default
+when the chat does not bind that agent). Values are trimmed and validated just
+like chat bindings; invalid selections return HTTP 400. These overrides never
+change the stored chat or agent defaults. Queued message items carry `model`
+and `effort`, with `null` meaning agent defaults, so later chat edits do not
+change a waiting message's selection. This also survives a daemon restart.
+
+Effort is supported by Claude Code, Codex, and Antigravity CLI (and the test
+`echo` adapter). Unsupported effort choices are rejected. Model IDs are
+provider-specific strings (up to 200 characters). For an ACP agent without
+session model selection, configure `options.modelFlag` with its documented
+startup flag, for example `"--model"`, to use separate model processes. Without
+either mechanism, a requested model fails before the prompt is sent.
+
+Approach credit: [T3 Code](https://github.com/pingdotgg/t3code) (MIT), for
+per-thread provider and model selection. Web and phone picker updates are
+separate from this API and CLI support.
+
+## Move a chat to another machine
+
+`loom chat:move <chat> --to <runner>` accepts a chat id or title and a runner's
+exact label or device id. Pair the destination with `loom runner pair` / `join`
+first, and share the project with the team. `--no-wait` returns busy if the chat
+is running; `--json` prints `{ chat, jobId }`. A teammate's runner must be shared
+and the repo's reviewed `loom.team.json` must allow `runners.shared`.
+
+The owner-only API is `POST /api/projects/:id/chats/:chat/move` with
+`{ "to": "runnerDeviceId", "wait": true }` (`wait` defaults to true). It waits for
+the active turn, then returns `{ chat: ChatInfo, jobId }` once the sealed job is
+queued. Queued prompts must be sent or removed first. A competing move or send
+returns 409 while the move waits. `GET /api/projects/:id/chats` includes
+`movedTo: { device, name, at, jobId }` on the source, whose further sends return
+409 `moved to <name>`. `at` is epoch milliseconds.
+
+Poll `GET /api/projects/:id/team/runners` for the job's `state` and `error`;
+a completed `chat_move` job includes `result: { projectId, chatId }` identifying
+the chat on the destination daemon. A registered project with the same repo is used;
+otherwise the runner keeps a new clone as a normal project. The transfer does
+not copy uncommitted files. Bring a conversation back by moving the destination
+chat to a runner on the original machine; the old source remains readable.
+
+History and instructions travel encrypted to the team. Imported message/tool
+events retain text, authors and timestamps, with
+`payload.imported: { jobId, eventId, chat }` identifying their source. Payloads
+are capped at 2 MiB before sealing: raw tool output is omitted first, then oldest
+events, with the omitted-event count on the target's `chat_imported` status.
+The target selects its own agent of the same kind, model and effort when
+available. Native cursors are sent only to the same owner's machine. A locally
+known provider session from a moved chat can resume; otherwise the next turn
+gets a one-shot history briefing, which survives daemon restarts. Native session
+files and agent credentials are never transferred. Web and phone menus can use
+this API; they are not included in this change.
+
+## Side questions
+
+`loom btw "why this approach?" [--chat c]` asks the parent chat's agent and model
+without interrupting its work. It prints the side reply and closes the side session.
+Main follows the baton; a pinned chat uses its bound agent and model. The selection
+is captured when the side opens. Side messages stay in daemon memory, never enter
+the project event log or brain, and disappear when closed or when the daemon stops.
+
+Claude and Codex fork the parent's native session in a separate process, in plan
+mode with read-only permissions. If there is no native session, or the provider
+cannot fork it, the last twenty parent messages supply context instead. Model
+endpoint agents use that context with read tools only; echo supports the same path
+for testing. Adapters without enforceable read-only execution (including OpenCode)
+return an explicit error. Side questions can run while the parent's turn is busy.
+
+The API is ready for web and phone drawers; their screens are separate work:
+
+- `POST /api/projects/:id/chats/:chatId/side` with `{ "text": "question" }`
+  returns `{ "sideId": "…" }` immediately. Posting again continues the open drawer.
+  An optional `sideId` targets that exact side and returns 404 if it was closed.
+  Concurrent sends to one side return 409; empty/non-string text or text over
+  32,000 characters returns 400.
+- `GET /api/projects/:id/chats/:chatId/side/:sideId` returns
+  `{ "messages": [{ "role": "user", "text": "question", "at": 123 }], "busy": true }`.
+  Replies have role `agent`; `at` is epoch milliseconds. A failed turn sets
+  `busy: false` and an `error` string. Close a failed side before reopening it.
+- `DELETE` at the same URL cancels and forgets the side, returning `{ "deleted": true }`.
+- WebSocket frames have `{ type: "side", projectId, chat, sideId }` plus one of
+  `delta` (text), `message` (the complete message), or `done: true` (optionally `error`).
+  A completed agent message replaces the accumulated deltas for that turn. GET is
+  the authoritative snapshot after reconnecting; side frames are not log events.
+
+Only owners and unscoped devices can access side HTTP endpoints or receive their
+frames; shared-chat guests and project-scoped devices cannot. “Bring back” should
+quote the selected answer into the main composer locally. It enters the main
+conversation only when the person submits that composer through the normal API.
 
 ## Asking several models at once
 
@@ -1224,539 +1591,72 @@ next to GitHub in the status bar, or `git.delivery` in `.loom/config.json`.
 A failed push never un-finishes a run. The error is shown, and **Retry delivery**
 is one click.
 
-## Rewind: put the work back the way it was
+## Edit and retry as chat branches
 
-An agent turn can touch forty files, and until now the honest answer to *undo
-that* was "read the diff and retype it". So **Loom writes down what the files
-were before every turn**, and the turn's Update card offers **Rewind**.
-
-It is a working tree, not a history. Rewinding restores what changed, removes
-what was created, brings back what was deleted — and does not move HEAD, does
-not touch your commits, and does not edit the thread. What happened still
-happened; the files just don't have to live with it.
-
-**Three things it will never touch.** Checkpoints are taken with `git add -A`,
-so `.gitignore` applies at capture: your `node_modules`, your build output and
-your `.env` are never read, never stored and never restored. `.loom/` is
-ignored too, which is why a rewind cannot eat the event log.
-
-**It is itself rewindable.** A rewind saves what it is about to replace before
-it replaces it, and hands you that checkpoint back — in the thread as *Undo the
-rewind*, and on the command line as the id to pass next. A one-way undo is a
-trap, and the one time it matters is the time someone rewinds past work they
-meant to keep.
-
-**It refuses while an agent is mid-turn**, naming who. Replacing the tree under
-a running agent gives it a working directory that contradicts everything it has
-read, and the damage lands in whatever it writes next.
+The daemon API and CLI support alternate turns inside a chat (#375). Editing a
+user message or retrying an agent reply activates a new sibling branch and sends
+its prompt. Later messages on the previous branch remain available. Web and phone
+branch controls are separate work; these commands work now:
 
 ```sh
-loom rewind                 # the points you can go back to
-loom rewind cm8x2k1p        # go back to one (asks first)
+loom chat:branches --chat main --json
+loom chat:edit 123 "Revised prompt" --chat main
+loom chat:retry 124 --chat main         # 124 is an agent reply event id
+loom chat:branch 0 --chat main          # original history; files stay as they are
+loom chat:branch abc123 --preview       # inspect the fork checkpoint's patch
+loom chat:branch abc123 --rewind-files  # show patch, confirm, then restore files
 ```
 
-Checkpoints live on hidden refs under `refs/loom/checkpoints/`, so no branch
-listing, no stash and no `git log` ever shows them. The newest 60 are kept.
-
-## Review Triage: what to read first
-
-An agent hands back twelve changed files and you have five minutes. Most are
-fine to skim; one deleted a test, one touched the auth middleware, one added a
-dependency. Every turn card now ranks its files by what a reviewer would want
-to see first and puts the top ones up front, each with its reason:
-
-> **Review first** `session.ts` touches auth or security code · `ci.yml` changes CI, build or deploy
-
-A chip opens the diff on that file, and its header carries the reason. What it
-flags, most serious first:
-
-- an added secret key or hard-coded credential
-- a deleted test file, a skipped or focused test, or test assertions removed
-- a database migration or schema change
-- auth, session, token, permission or other security code
-- CI, build and deploy files; new or changed dependencies; project config
-- added risky calls: `eval`, shell commands, `rm -rf` or `git push --force`,
-  raw HTML injection, TLS checks turned off, a silenced type or lint check
-- a large source change in a turn that touched no test
-
-Lockfiles and generated files sink to the bottom. Triage reads only what the
-diff shows and never guesses why: it says "a test was removed", not "the agent
-cheated". The phone's turn card lists the same files.
-
-## Opening a PR from a card
-
-With `git.branchPerTask` on, dragging a card to **Working** cuts its branch.
-When it reaches **Review**, the card offers **Open PR** — which first shows
-what would be pushed: the branch, the commits `main` doesn't have, the files
-they touch, and the exact `git push` and `gh pr create` it will run. Asking
-pushes nothing. Publishing happens on the button and nowhere else.
-
-## While you were away
-
-Come back to a project you haven't looked at in a while and Loom says what
-happened: goals started and finished, what landed, what failed, what a server
-did, and what is waiting on you — newest first, each line clicking through to
-the moment it came from. It says what happened and never guesses at why; a
-line without an event behind it doesn't get written.
-
-The mark is per device, because "when did you last look" is a fact about this
-window. From the terminal: `loom digest --since 8`.
-
-## Night Shift: run the list while you sleep
-
-Line up work before bed and wake up to a report you can trust. Each task runs
-in its own chat, one after another, through the queue. While the shift runs:
-
-- **Proof** checks every "done" against what ran and a clean re-run of the tests.
-- **Loop watch** nudges an agent going in circles (on by default during a shift).
-- **Quota Relay** hands the work on if an agent runs out.
-- **A question doesn't hold up the line.** It stays open in its chat, and the
-  next task goes.
-
-When the last task settles, one report card lands in the thread and on your
-phone: each task marked **Verified**, **Done**, **Didn't hold**, **Failed**,
-**Needs you** or **Not started**, with what decided it, the files it changed,
-and what it cost. Click a task to open its chat.
-
-```bash
-loom shift "fix the flaky date test" "add a --json flag to loom costs" --to codex --until 7:00 --max 5
-loom shift            # how it's going, or the last report
-loom shift --stop     # the running task finishes; nothing new starts
-```
-
-In the desktop app, type the tasks in the composer, one per line, and choose
-**⋯ → Night shift…** to pick the agent, a stop-by time and a budget. On the
-phone, type them and tap 🌙. `--until` and `--max` stop *new* tasks from
-starting; the one running always finishes. A shift survives a daemon restart.
-A task the restart cut off is reported as failed, and the rest carry on.
-
-## Share live: a teammate in the same chat
-
-Let a teammate into a running chat, so you both talk to the same agent, see the same tool calls
-and steer the work together. Open the chat's menu ▸ **Share live…**, or run:
-
-```bash
-loom share --live --name Priya --role approve --hours 8
-```
-
-Choose what they can do:
-
-- **view:** read along.
-- **reply:** talk to the agent and stop a turn.
-- **approve:** also answer the agent's tool approvals in that chat.
-
-They open the link in a browser, with nothing to install. Their messages carry their name, and
-the thread says who allowed what. The link works once and its access expires. Revoke it any
-time with Settings ▸ Devices or `loom clients --revoke`.
-
-Their token reaches that one chat and nothing else on your machine: no other chats, terminals,
-files, git, settings or team. Over Loom Cloud it works from anywhere.
-
-The approach comes from [Nuphos](https://github.com/nuphos/nuphos)'s shared sessions.
-
-## Triggers: the next turn starts itself
-
-A schedule or a webhook starts an agent's turn, with nobody sitting in the chat. Each trigger
-gets its own thread, and its turns go through the project's queue like anything you type.
-A trigger whose last run is still waiting in the queue skips its next firing instead of piling up.
-
-```bash
-loom triggers:add "Summarise yesterday's merged PRs" --cron "0 9 * * 1-5"
-loom triggers:add "Check the error dashboard" --every 2h --agent codex
-loom triggers:add "CI failed on {{body.workflow_run.head_branch}}: look into it" --webhook --min-interval 60
-loom triggers            # each one, its next run, and its last few runs
-loom triggers:fire <id>  # now (a webhook's with --payload test.json)
-loom triggers:off <id>   # or :on, :rm
-```
-
-- **Webhooks:** each one prints its URL and secret once. The sender signs the body (GitHub's
-  `X-Hub-Signature-256` works as is) or sends the secret as `X-Loom-Secret`.
-- **Prompt templating:** `{{body.path}}`, `{{body}}` and `{{event}}` fill the prompt from the payload.
-- **Duplicates:** a redelivered webhook runs once, and `--min-interval` ignores bursts.
-- **Reaching it from the internet:** `tailscale funnel`, or `loom up --tailnet` for your tailnet.
-- **Who can manage triggers:** only this machine's owner can add, change or fire one, because a
-  trigger runs your agents, as you, unattended.
-
-## Slack and Discord: your agents in the team conversation
-
-Mention the bot in Slack or Discord and the message goes to a Loom thread. The agent's answer
-comes back in that Slack thread or Discord channel, and replies there need no mention.
-
-The bot runs inside your daemon with your own bot's tokens: Slack over Socket Mode, Discord over
-its gateway. Nothing needs a public URL, and no hosted service sits in between.
-
-```bash
-loom bridge slack --bot-token xoxb-… --app-token xapp-… --user U012ABC --channel C034DEF
-loom bridge discord --bot-token … --user 1234567890 --project api
-loom bridge            # both, connected or not, and how many messages each heard and ignored
-loom bridge slack --off   # or --remove to forget the tokens
-```
-
-- **Who it hears:** only the people you list. Everyone else, and other bots, are ignored.
-- **Approvals:** these stay in Loom and on your phone. The channel is told when a turn is waiting on one.
-- **Slack app setup:** turn on Socket Mode and give the bot the `app_mentions:read`,
-  `channels:history`, `chat:write` and `im:history` scopes, plus an app-level token with
-  `connections:write`.
-- **Discord bot setup:** turn on the Message Content intent.
-
-## What the agents cost this machine
-
-```bash
-loom top          # each agent CLI / MCP server / dev server the daemon started: MB, CPU, processes
-loom top --watch  # refresh every 2 s
-```
-
-`loom top` shows each one beside free memory, load and the turn cap. When memory runs low, `loom limits` sets how many turns run at once.
-
-## Search every session, and the audit trail
-
-```bash
-loom find --all "rate limit"   # every chat in every project, newest first, with where each hit is
-loom audit --since 7d          # who let what happen
-```
-
-The audit trail covers approvals answered (and by whom), teammates' messages in shared chats,
-messages from Slack and Discord, triggers that fired or didn't, and baton handoffs. Only this
-machine's owner can read it. A token scoped to some projects searches only those. In the
-composer, **/ ▸ Compact the agent's context** sends the agent its own `/compact`.
-
-## Scorecards: which agent can you trust with this?
-
-"Finished without an error" isn't the same as "did what it said". Proof, the
-loop watch and the shield record, per agent, whether its work held up, and
-the Observatory's leaderboard (and the phone's) has a **Held up** column:
-
-- how many of its checked "done"s were verified, out of all it claimed (for
-  example `9/10`, green above 90%)
-- the times the loop watch caught it going in circles (↻) and the shield
-  caught a command that can't be taken back (⛔)
-- **cost per verified result**: its spend over the "done"s that held, which
-  is what a result you can trust costs from that agent
-
-```bash
-loom scorecard            # every agent's record in this project
-loom scorecard --days 7
-```
-
-The same numbers are on every agent in `/api/projects/:id/insights/turns` as
-`trust`.
-
-## Replay: a run you can send anyone
-
-Export any chat as one self-contained HTML page:
-- what you asked and what the agents said;
-- every command they ran, with its output folded away;
-- every diff, with Review Triage's "read first";
-- what Loom checked along the way: Proof's verdicts, the loop watch, the
-  shield, a Night Shift's report.
-
-Across the top is a one-line summary: who worked, how many turns, how long,
-files changed, checks verified, cost. Send it to a teammate, attach it to a
-PR, or post it. It opens in any browser, offline, with nothing to install.
-
-```bash
-loom replay                       # the main chat → <project>-main.replay.html
-loom replay --chat "night" --open
-```
-
-In the desktop app it's **⋯ → Export as replay**, beside Export as
-Markdown. The page runs no scripts and loads nothing: every value is
-escaped, and a Content-Security-Policy forbids the rest. It does contain the
-code and output from the chat, so share it the way you'd share the repo.
-
-## Blast-Radius Shield: what can't be taken back
-
-Rewind puts the files back. It can't un-push a force-push, restore a dropped
-table, or un-publish a package. The shield watches every command an agent
-runs, and when one can't be taken back it says so at once, with a red card
-in its chat and a push to your phone, naming the command and why it matters:
-
-- **git:** force-push (not `--force-with-lease`), `reset --hard`,
-  `clean -fd`, discarding every change, `branch -D`, history rewrites
-- **files:** a recursive delete outside the project (`/`, your home, `..`,
-  an absolute path elsewhere). Inside the project is fine.
-- **data:** `DROP TABLE`, `TRUNCATE`, a `DELETE` with no `WHERE`, database resets
-- **infrastructure and publishing:** `terraform destroy`, `kubectl delete`,
-  `npm publish`, `docker system prune -a`
-- **the machine:** `sudo`, piping a download into a shell, `chmod 777`,
-  writing to a disk device
-
-Most CLIs report a command after it has run, so the shield can't veto that
-first command. What it can do is stop the turn before it does more:
-
-```json
-{ "shield": { "auto": "stop" } }
-```
-
-`"notify"` (the default) tells you and offers **Stop the turn**. `"stop"`
-stops it immediately, and is the default during a Night Shift, when nobody
-is watching. `"off"` turns the shield off.
-
-## Loop watch: an agent going in circles
-
-The expensive failure isn't the error. It's the agent that hits the same red
-test eight times while you're away, burning tokens on fixes that don't work.
-Loom counts what each agent runs within a turn, and when the same command has
-failed three times (or the exact same call has been made five times) it says
-so: a card in the thread with the command, its last output, and three ways
-out, plus a push to your phone under Questions.
-
-- **Stop**: end the turn.
-- **Nudge it**: stop the turn and tell the agent to say what's actually
-  failing and try a different approach.
-- **Hand it off**: give the original request to another agent, told what the
-  first one kept getting wrong. The changes stay in the working tree.
-
-```json
-{ "watchdog": { "auto": "nudge" } }
-```
-
-`"notify"` (the default) only tells you. `"nudge"` also nudges on its own,
-once; if the agent is still going in circles after that, it's yours to decide.
-`"off"` turns the watch off. A person speaking in the chat starts every count
-over.
-
-## Fleet: what every agent is doing
-
-The **Fleet** tab (and the phone's Fleet screen) shows every agent in every open
-project, updated live:
-- its thread;
-- whether it's mid-turn, and for how long;
-- its permission mode;
-- the last thing it did: the command it ran, the file it edited, or what it said.
-
-Orchestra tasks are listed too, each with a link to its thread.
-`GET /api/activity` serves the same data.
-
-## Updating
-
-Loom tells you when a newer version is published — a quiet pill in the status
-bar, never a banner — and **Settings → Updates** has the button.
-
-It says what it will do before it does it, because that depends on how you
-installed it: a **git checkout** pulls, installs and rebuilds; a **global npm
-install** reinstalls itself; anything else is pointed at the release rather
-than having a command guessed at and run over it. A checkout with uncommitted
-changes is refused — that tree is yours. The commands are shown in full, their
-output streams while they run, and the daemon restarts itself on the new build
-with the page reconnecting to it.
-
-From the terminal: `loom update --check` to look, `loom update` to do it.
-
-**The desktop app** has its own, under **Help → Check for Updates…**, because
-an installed application is not a checkout:
-
-- **Windows** and the **Linux AppImage** update themselves — it asks before
-  downloading, installs on quit, and restarts only when you press Restart.
-- **macOS** finds the build for your architecture, downloads it, and
-  **verifies its SHA-256** against the checksums the release publishes (a file
-  that doesn't match is deleted, not opened), then opens the disk image for
-  you to drag across. The drag stays yours: macOS only lets an app signed by a
-  certificate it already trusts replace itself, and this build is ad-hoc
-  signed. Automating the *checking* is the part worth having — the checksums
-  have shipped since 0.2.0 and nobody compares them by hand.
-- A **`.deb`** is left to the package manager that owns it — and so is a
-  **Homebrew** install: `brew install --cask` means `brew upgrade --cask`, and
-  Loom says so rather than downloading over a copy brew is tracking. It also
-  offers to **run that command in Loom's own terminal**, the one in the dock,
-  so you watch the upgrade happen instead of it happening inside the app:
-
-  > Loom Desktop 0.2.4 was installed with Homebrew
-  > &nbsp;&nbsp;`brew upgrade --cask loom-desktop`
-  > &nbsp;&nbsp;[Run it in Loom] [Copy command] [Close]
-
-  It replaces the app in place, so restart Loom when it finishes. An upgrade
-  that happens invisibly inside an app is an upgrade nobody can check.
-
-**On a Mac, Homebrew is the easy way in:**
-
-```sh
-brew tap nickthelegend/loom https://github.com/nickthelegend/loom
-brew install --cask loom-desktop
-brew upgrade --cask loom-desktop
-```
-
-The cask lives in this repo because the official tap requires every cask to be
-signed and notarized by Apple, and Loom's macOS build is ad-hoc signed. **There
-is no free Developer ID for open-source projects** — Apple's fee waiver covers
-nonprofits, schools and government entities, and a free Apple ID cannot sign
-for distribution at all — so the honest options are to buy one, to be one of
-those entities, or to ship unsigned and say so.
-
-Installing with Homebrew does **not** get past Gatekeeper: brew applies the
-quarantine attribute to cask downloads deliberately, and removed the flag that
-used to skip it. The first launch asks, exactly as it does for a dmg you
-downloaded yourself — right-click, Open, Open, once. Some taps strip the
-attribute in a postflight; this one doesn't, because quarantine is the
-protection that exists *because* the app is unsigned. What the cask buys is a
-one-line install and a real update path owned by a package manager you already
-trust.
-
-## More than one goal, when they can't collide
-
-One orchestra goal at a time is the default, and for good reason: two goals
-editing the same files is a merge nobody can explain. Set
-`maxConcurrentGoals` in `.loom/config.json` and Loom will start a second one —
-but only when the paths can't collide. A goal's scope is the `touches` its
-plan declares; a goal that hasn't said what it touches counts as touching
-everything, and waits. Anything overlapping queues as it always did, with the
-overlap named: *waiting for "rework billing" — both touch src/billing/\*\* and
-src/billing/tax.ts*.
-
-## What a goal may spend
-
-`loom orchestrate --max-usd 2 "…"` stops that goal at $2: running work
-finishes its turn, nothing new starts, and the goal goes to **needs you** with
-what it spent. Replying allows one more budget's worth. A project default
-lives in `.loom/config.json` as `budgets.perGoalUsd`, and there's a word in the
-thread at 80% — hearing about a budget for the first time when the goal halts
-is a bad way to learn it exists.
-
-## Before you send: the forecast
-
-The composer shows what a turn on the chosen agent usually costs and takes:
-`~$0.12 · 1m 40s`. The numbers come from that agent's own recent turns in
-this project, not from a price list. "Typical" is the median of its last 30
-turns, and the tooltip shows the 80th percentile, so one marathon turn doesn't
-skew it. An agent on a subscription reports no spend, so it gets a time-only
-forecast. If the agent has a daily budget, the chip turns amber when one more
-long turn could cross it. The same numbers are on every agent in
-`/api/projects/:id` as `forecast`.
-
-## The prompt queue — line up the next ones
-
-Type while an agent is mid-turn, or while a goal is still running, and the
-prompt waits above the composer instead of being refused or lost. It stays
-yours until it's sent:
-
-- **Queue as many as you like.** They run strictly one at a time, in order.
-- **Send each one where you want it:** one agent by name, the **orchestrator**
-  (a whole new goal, started when the running one finishes), or **Auto** to let
-  the router pick. Change a waiting prompt's target from the list on the item.
-- **Edit, reorder, drop.** Click a queued prompt to edit it (⌘⏎ saves, Esc
-  cancels), move it up or down, or remove it — all before it runs.
-- **Pause and resume** the whole queue. **Stop** pauses it too: stopping a turn
-  never silently discards what you lined up behind it.
-- **A question holds the queue.** If the agent stops to ask you something, the
-  next queued prompt would answer a question you never read — so the queue
-  waits and says who asked. Your reply goes out at once and lifts the hold; a
-  pause you set yourself stays until you resume it.
-- A prompt enters the conversation when it is actually sent, not when it's
-  queued, so the thread stays an honest record of what the agent was asked.
-- **Reorder by dragging** (the arrows stay, for anyone who can't drag).
-- **Queue for later.** A prompt can wait for a time, for a goal to *land*
-  (not merely finish), for that goal's checks to go green, or for the project
-  to be quiet for a while: `loom queue at 03:00 "…"`,
-  `loom queue after landed:<runId> "…"`, `loom queue after green:<runId> "…"`.
-  The row says what it's waiting for, and one click releases it.
-- **Save a queue as a recipe** and run it anywhere: `loom queue save ship`,
-  `loom queue run ship`, `loom queue recipes`. Steps remember who they go to by
-  **role**, so a recipe travels between projects; anything a project can't
-  resolve becomes an Auto prompt rather than a refusal.
-
-It survives a daemon restart (reloaded paused, so an hour-old queue doesn't
-start itself), and lives in the project's `.loom/queue.json`. Over the API:
-`GET/POST /api/projects/:id/queue`, `PATCH|DELETE .../queue/:itemId` (text,
-target, or `to` for its position), `POST .../queue/pause`, `DELETE .../queue`.
-
-## Prompt manager
-
-A clipboard manager for prompts, built into the chat bar (⌘⇧V):
-- **Saved** prompts: pinned first, then most used.
-- **Recent:** every prompt you actually sent (chats, plans, orchestra goals),
-  de-duplicated and searchable.
-
-Everything is stored in `~/.loom/prompts.json` and never leaves the machine.
-
-## Teams — see each other's agents
-
-Five people, each with their own agents, on one repo. **Phases 1 to 6 are built.** Phase 1:
-teammates see each other's live agents and goals, and a team feed collects goals,
-plans, PRs and CI in one place. Content is end-to-end encrypted to the team, so
-the hub can't read goal titles.
-
-```bash
-loom hub --host 0.0.0.0 --secret <join-secret>   # one teammate runs a hub (or use hosted Loom Teams)
-loom team signin http://<hub>:7430 --secret <join-secret>
-loom team create "Acme"
-loom team invite            # one-time link; it carries the team key, so send it like a password
-loom team join '<link>'     # a teammate
-loom team share             # in a project: its repo now shows up for the team
-loom team                   # who's doing what, right now
-```
-
-- **What teammates see:** agents, state, branch, the files each task declared
-  it will touch, and goal and task titles. They never see your prompts or your
-  agents' transcripts.
-- **Sharing is opt-in per project.** A clone whose `origin` matches a team repo
-  is shared automatically, and `loom team unshare` opts it out.
-- **Removing a member rotates the team key.** The new key is sealed to every
-  remaining device, so the person who left can't read anything new.
-- **Worker commits carry `Loom-Goal`, `Loom-Task`, `Loom-Agent` and `Loom-Member`
-  trailers.** `git log` alone tells you which goal, task and agent wrote a line.
-
-**Two people, one goal — the agents split it themselves.** When teammates turn
-on team auto-orchestration (`loom team auto on`, or **Turn on** in the Team tab),
-a goal you start splits across both machines. Your orchestrator gets their agents
-as `team:codex`, `team:opencode`…; a task sent to one is claimed by their Loom on
-its own, run with **their** agent and subscription, and merged back into your
-goal's branch — still one PR. A teammate who goes offline doesn't stall you: an
-unclaimed task returns to your orchestrator after 10 minutes. `loom team auto`
-says what's missing; `loom orchestrate "…" --solo` keeps a goal on your machine.
-See [docs/teams.md](docs/teams.md#two-people-one-goal-team-auto-orchestration).
-
-**Phase 2 (stop colliding) is built too:**
-- **Declaring touches.** On a team project, every orchestra task declares the files
-  it will `touch`, and Loom takes a lease on them.
-- **Overlap needs a decision.** If a teammate's goal already holds some of those
-  files, the task waits until the orchestrator decides: wait for their PR, narrow
-  its scope, or proceed with a reason the team can see.
-- **Hard zones.** Areas listed in `loom.team.json` (migrations, lockfiles) take one
-  goal at a time. Other tasks queue and start on their own when the area frees up.
-- **Conflict prediction.** Work in progress goes to hidden `refs/loom/wip/*` refs,
-  and `git merge-tree` predicts merge conflicts before anyone opens a PR. Both
-  people involved hear about it.
-- **Team policy.** `loom.team.json` on your default branch sets a permission
-  ceiling, the allowed agents, protected branches and concurrency caps. Changing it
-  takes a reviewed PR.
-
-```jsonc
-// loom.team.json
-{ "hardZones": ["db/migrations/**", "package-lock.json"],
-  "permissions": { "ceiling": "auto", "bypassRequiresPlan": true },
-  "delivery": { "protected": ["main"] },
-  "orchestra": { "maxParallelPerMember": 6, "teamMaxConcurrentAgents": 20 } }
-```
-
-**Phase 3 (one brain) is built too:**
-- **What one agent learns, the team's agents know.** Durable memories
-  (constraints, failures, decisions, conventions, facts) from a shared project
-  reach teammates, encrypted to the team. `task` notes, memories you mark
-  private, and anything learned while reading outside content (web pages, issue
-  and PR text) stay on your machine.
-- **Every briefed line says how sure to be.** Briefings rank team canon first,
-  then memories confirmed by two or more teammates, then your own, then a single
-  teammate's proposal, and label each one. When two people's agents learn the
-  same thing, it becomes one memory with two confirmations.
-- **Canon lives in `AGENTS.md`, reviewed like code.** "Propose as canon" adds a
-  memory to a Loom-managed section of `AGENTS.md` on one rolling `loom/canon` PR,
-  and adds `@AGENTS.md` to `CLAUDE.md`. Once merged, every agent reads it, Loom or
-  not. Edit or delete a line in any PR to change canon.
-- **An inbox for what needs a human:** contradictions between teammates' memories,
-  near-duplicates, corrections waiting on a decision, untrusted memories, and
-  memories ready for canon. Resolving keeps the loser, linked to the winner.
-- **Live team context.** Worker briefings also say which teammates hold leases on
-  the same paths, which open PRs change them, which checks are failing, and where
-  a conflict is predicted.
-
-```bash
-loom team brain                     # the team's memories and your inbox
-loom team brain promote <id>        # propose as canon (opens or updates the loom/canon PR)
-loom team brain resolve <keep> <drop> "why"
-loom team brain trust <id>          # an untrusted memory is fine: share it
-```
-
-**Phase 4 (land safely) is built too:**
-- **CI comes back to the owner.** Your daemon watches your goal PRs. A failing
-  required check is rerun once; if it passes, it's labelled flaky and no agent
-  touches it. A
+`--chat` accepts an id or title and defaults to `main`. Non-interactive file rewinds
+require `--yes`. Branch changes return HTTP 409 while work is running or prompts
+are queued. Clear the queue or let it finish before switching.
+
+API paths below start with `/api/projects/:id/chats/:chat`:
+
+| Method and suffix | Request / response |
+| --- | --- |
+| `GET /branches` | `{ branches, active, siblingsByEventId }` |
+| `POST /branches` | `{ fromEventId, mode: "edit", text }` or `{ fromEventId, mode: "retry" }` → `{ branch }` |
+| `GET /branches/:branchId/rewind` | Read-only `{ checkpoint, changed: string[], diff }` preview, including untracked files |
+| `POST /branches/:branchId/activate` | `{ rewindFiles?: boolean }` → `{ active, rewind?: { restored, undo, changed, diff } }` |
+
+Each branch is `{ id, parent: string|null, forkEventId, createdAt, label? }`;
+`createdAt` is epoch milliseconds. Root is `"0"`. `ChatInfo.branches` and
+`ChatInfo.activeBranch` are optional for legacy chats. Events optionally carry
+`branch`; its absence means root. A branch inherits its parent's events through
+`forkEventId`, inclusive, then its own events. Editing replaces the selected user
+turn; retrying repeats the user prompt that led to the selected agent reply. Both
+discard that turn and its later continuation from the new branch's visible history.
+Targets must be visible in the active branch. Existing event ids never change.
+
+`siblingsByEventId` maps the original and alternate prompt/reply event ids to an
+ordered array of branch ids, original first. For a **‹ n/m ›** control, walk from
+`active` up its parents until a choice matches, then use that choice's index + 1
+and the array's length. Activating a choice changes the whole chat's active history.
+Refetch `/events?chat=:chat` and `/branches` after switching; a `status` event with
+`state: "branch_activated"` announces explicit switches. Chat paging, replay,
+agent history and Brain extraction follow the same lineage. Project-wide audit
+and cost history still includes every branch.
+
+Switching defaults to history only. A client should show the rewind preview before
+sending `rewindFiles: true`. Rewinding restores the selected branch's fork checkpoint;
+returning to root restores the fork being left. It preserves Git HEAD and ignored
+files, saves an undo checkpoint, and returns the actual applied patch. Missing or
+pruned fork checkpoints return 409; switching history still works. Branches share
+the working tree, so a new agent turn can edit the current files regardless of the
+selected history.
+
+Native resume cursors are isolated by chat, branch and agent. Codex uses
+`thread/fork` with the last retained `lastTurnId`; Claude uses `resume`,
+`forkSession: true` and the last retained message UUID as `resumeSessionAt`.
+These fields were verified against the locally generated Codex app-server types
+and installed Claude Agent SDK types. Codex servers that reject the turn-boundary parameter fall back to a whole-session
+fork with the divergence briefing. Older histories without native boundary ids
+(including a fork before the first turn) use a separate session fork and an explicit
+text briefing of the divergence point; that fallback does not physically truncate
+the native transcript. Other adapters start an isolated branch session briefed
+with the visible history as text. Session cursors and branch metadata survive daemon
+restarts. Branching does not undo already extracted shared memories or external
+side effects.
+
+Approach credit: A

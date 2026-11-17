@@ -12,6 +12,9 @@
 
 ## Latest
 
+- **17 Nov** - Keenable joins the web search choices in Settings > Tools and is the first that works with no key (its
+  public endpoint; an optional key lifts the rate limits). DuckDuckGo stays the default. Proposed by KGKallasmaa (#139).
+  [CHANGELOG](docs/xolotl/CHANGELOG.md#keenable-as-a-web-search-choice-with-or-without-a-key-17-nov).
 - **14 Nov** - Qwen3.8-27B with DFlash2: the 8-token verify pass got cheaper, **171 -> 204 tok/s** on a best-case 2K
   prompt (our 13.7 GiB XQ quant, one 4090). The dense engine now reads one position of all 8 drafted tokens per load
   and uses the multi-column layout the other engines already had. Same text, bit for bit; default on. Real agent-task
@@ -115,7 +118,12 @@ conversation with tool-output turns, Maya 512K as served; since the RAM upgrade 
 prefill 454 tok/s on a fresh 25K prompt.
 Prefill = a fresh 6K-17K-token prompt (`tools/throughput.py`), DeepSeek-V4.1's with its dense half at Q8_0. In the
 Gauntlet DeepSeek-V4.1 runs with its dense half at Q6_K, as it is served. More numbers, the Q8_0 references, the speed log and the older HumanEval table (every model 19-21/21
-there, so it no longer separates them): [docs/xolotl/BENCHMARKS.md](docs/xolotl/BENCHMARKS.md).</sub>
+there, so it no longer separates them): [docs/xolotl/BENCHMARKS.md](docs/xolotl/BENCHMARKS.md).
+Qwen4-Max on OpenRouter (16 Nov, the same 6 tasks / 10 turns as below): **5.50/6** greedy and **5.50/6** at
+temperature 1.0, 47K completion tokens, 56.8 tok/s e2e, ~$0.34 a run — the baseline the local Qwen4 quant will be
+scored against. Reaching for `reasoning_effort=max` made it *worse* (4.50/6, 145K tokens, 3.4x the wall time: it
+reasoned over `04-log-needle` for all ten turns and never wrote the answer file):
+[arms, raw JSON and throughput](docs/benchmarks/2026-11-16-qwen4-max-openrouter-gauntlet-v3-small.md).</sub>
 
 **Smaller cards.** The engine fits the work to the card, and what doesn't fit lives in RAM and on the SSD, so RAM
 matters as much as VRAM. Community runs on 12 GB cards: DeepSeek-V4.1 at 8-10 tok/s (RTX 3060, 46 GB RAM),

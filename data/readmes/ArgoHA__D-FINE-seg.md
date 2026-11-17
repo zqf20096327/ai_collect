@@ -64,7 +64,7 @@ One frame, three tasks, one config flag:
 - **Multi-channel inputs** - train on RGB + thermal / depth / NIR stacks (4-channel `.npy`), not just RGB
 - **Modern training stack** - Muon optimizer, DDP, EMA, mosaic + affine augs, knowledge distillation, OneCycle, early stopping, rare-class sampling (LVIS repeat-factor), WandB, auto-batch size.
 - **C++ core** - `libdfine.so` for all four tasks: TensorRT plus fused CUDA pre/postprocessing, no dependencies beyond CUDA and TensorRT, built to embed on robots and Jetson boards - a 1080p frame in under 1.6 ms with S ([numbers](#c-core))
-- **Beyond the model** - ByteTrack tracking, SAM3 auto-labeling, Gradio demo, INT8 quantization (OpenVINO / CoreML)
+- **Beyond the model** - ByteTrack tracking, SAM3 auto-labeling, browser demo, INT8 quantization (OpenVINO / CoreML)
 
 How it works - backbone, encoder and every task's decoder: [docs/arch.md](https://github.com/ArgoHA/D-FINE-seg/blob/main/docs/arch.md).
 
@@ -74,7 +74,7 @@ How it works - backbone, encoder and every task's decoder: [docs/arch.md](https:
 
 ```bash
 pip install dfine-seg           # inference + training
-pip install 'dfine-seg[all]'    # + every export backend, SAM3, Gradio demo
+pip install 'dfine-seg[all]'    # + every export backend, SAM3
 ```
 
 Pretrained weights auto-download from [Hugging Face](https://huggingface.co/ArgoSA/D-FINE-seg) on first use: detection on COCO (`dfine_{n,s,m,l,x}_coco.pt`, and `dfine_{n,s,m,l,x}_obj2coco.pt` - Objects365 pretraining, then COCO), COCO instance segmentation (`dfine_seg_{n,s,m,l,x}_coco.pt`), Cityscapes semantic segmentation (`dfine_sem_{n,s,m,l,x}_cityscapes.pt`), COCO person keypoints (`dfine_kpts_s_coco.pt`).
@@ -88,7 +88,6 @@ Pretrained weights auto-download from [Hugging Face](https://huggingface.co/Argo
 | `pip install 'dfine-seg[export]'` | onnx, onnxruntime, openvino, nncf, coremltools | `dfine export` |
 | `pip install 'dfine-seg[trt]'` | tensorrt *(Linux)* | TensorRT engines - build on the target GPU |
 | `pip install 'dfine-seg[label]'` | transformers | SAM3 auto-labeling |
-| `pip install 'dfine-seg[demo]'` | gradio | the Gradio UI |
 | `pip install 'dfine-seg[all]'` | everything above | full setup |
 
 </details>
@@ -233,7 +232,7 @@ train:
 | `dfine ov-int8` | INT8 accuracy-aware quantization for OpenVINO (can take hours) |
 | `dfine trt-int8` | TensorRT INT8 calibration |
 | `dfine main` | train -> export -> bench in sequence (same as the bare `make` target) |
-| `dfine demo` | launch the Gradio UI (needs `pip install 'dfine-seg[demo]'`) |
+| `dfine demo` | launch the browser demo (image, webcam, video; SAM3 with `[label]`) |
 | `dfine predict` | run a model on an image or folder, no config needed |
 | `dfine hw_bench` | measure Torch inference throughput on this device (cuda/mps/cpu); `--batch` to saturate a GPU |
 | `dfine version` | print the installed version |
@@ -285,9 +284,20 @@ Enable **DDP** (multi-GPU) by setting `train.ddp.enabled: True` and `train.ddp.n
 
 > **Tip**: FP16 is the best latency/accuracy trade-off for GPU (TensorRT) and CPU (OpenVINO). For Apple Silicon (CoreML), FP32 is faster.
 
-> **Warning**: run TensorRT engines at **batch 1**. On TRT 10.13.3.9 a batched engine does not compute batch elements independently - feeding four identical images through a single `execute_async_v3` call returns four different results (score spread up to 0.20, and different labels), so a detection's score depends on what it happened to be batched with. Batch 1 is exact, and reproduces in raw TensorRT for FP16 and FP32 and for every optimization-profile shape, while torch and ONNX Runtime stay identical across slots ([NVIDIA/TensorRT#4813](https://github.com/NVIDIA/TensorRT/issues/4813)).
+> **Note**: exported graphs compute the deformable attention's bilinear sampling with gathers instead of `GridSample`. TensorRT (10.13 to 11.4) mis-executes `GridSample` in this attention ([NVIDIA/TensorRT#4813](https://github.com/NVIDIA/TensorRT/issues/4813)): engines lost accuracy even at batch 1, and a batched engine returned different results per batch slot for identical images. With the gather graph a batched engine (`export.max_batch_size > 1`) is identical across slots and to batch 1. Engines exported before this change keep the problem - re-export them.
 
 After export, a parity self-check (`export.parity`, on by default) runs each backend on a shared input and writes one cosine per backend - over the sorted top-K detection scores vs torch - to `parity.csv` next to the weights.
+
+From Python, `export` needs only a checkpoint, no config or run directory: the architecture comes from the weights and the input size from the checkpoint's metadata (else a `config.yaml` next to it, else 640x640). Artifacts are written next to the checkpoint under the same name, and it raises if a requested format is not produced. `dfine export` maps the config onto this same function.
+
+```python
+from dfine_seg import export
+
+paths = export("weights/coco_s.pt", ["tensorrt"], half=True, max_batch_size=1)
+paths["tensorrt"]  # Path("weights/coco_s.engine")
+```
+
+Other options: `img_size`, `task` (`"detect"` from segment weights), `dynamic_input`, `sem_seg_probs`, `device`, `output_dir` / `name` (where the artifacts go) and `parity` / `parity_image`.
 
 For `task: kpts` the graph has one more output, `kpts` `[B, K_top, num_kpts, 4]`: x, y in input pixels plus the presence and visible scores, gathered with the same top-K as the boxes. ONNX, TensorRT, OpenVINO and CoreML carry it.
 
@@ -320,15 +330,15 @@ Also provided:
 
 A simplified ByteTrack ([Zhang et al., ECCV 2022](https://arxiv.org/abs/2110.06864)) is included for persistent object tracking across video frames - uses constant-velocity motion prediction with EMA-smoothed velocity instead of a Kalman filter, blends IoU with centroid distance in the match cost, and does per-class matching by default.
 
-### Gradio Demo
+### Demo
 
 ```bash
-dfine demo         # == make demo   (pip: pip install 'dfine-seg[demo]')
+dfine demo         # == make demo, then open http://127.0.0.1:7860
 ```
 
-A web UI for running inference on uploaded images and videos (or a webcam snapshot). It starts on COCO detection `s` - no setup. The **Model** panel then swaps in any other model at runtime: a size preset, or a path/upload of your own `.pt` / `.onnx` / `.engine` / `.xml`, with a box for the class names. `detect`, `segment` and `sem_seg` checkpoints all render, and SAM3 is selectable as a second backend for text-promptable segmentation (prompts are comma- or newline-separated - each one becomes a class).
+A small web UI with no extra dependencies for running a model on an image (upload, drag-and-drop or paste), the live webcam, or a video file. Default model - COCO detection `s`. The **Model** panel allows you to pick another weights that were released (all supported tasks) or upload of your own `.pt` / `.onnx` / `.engine` / `.xml`. The confidence slider re-runs the current image as you drag. SAM3 is selectable as a second backend for text-promptable segmentation (needs `pip install 'dfine-seg[label]'`; prompts are comma-separated, each one becomes a class).
 
-It serves on `0.0.0.0:7860` (LAN-reachable) and prints a warning on startup: the Model panel loads any path the browser sends, so anyone who can reach the port can load files off this machine. `dfine demo --host 127.0.0.1` restores local-only.
+It serves on `0.0.0.0:7860` (LAN-reachable) and prints a warning on startup: the Model panel loads any path the browser sends, so anyone who can reach the port can load files off this machine. `dfine demo --host 127.0.0.1` restores local-only. Browsers allow the webcam only on `localhost` or https, so from another machine open it through an SSH tunnel (`ssh -L 7860:localhost:7860 host`).
 
 ## Benchmarks
 

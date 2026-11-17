@@ -82,6 +82,7 @@ Toolkit on the host; not tested yet). Built and smoke-tested with every release 
 
 | Model | Size | Measured | Notes |
 |---|---|---|---|
+| [Kate - Qwen 27B - GGUF - SpedUp - Abliterated](https://huggingface.co/sirfyyn/Kate-Qwen-27B-GGUF-SpedUp-Abliterated) | dense 27B, IQ4_XS 15.48 GB + DSpine head 1.26 GB | decode **152.6 tok/s** on agent tasks, 153.6 on code; full speed from 20 GB | `flelink run kate-27b-dspine`; Katy with the refusal direction removed (OR-Bench hard 88 → 1 of 100, clearly harmful prompts still refused 70 of 100); FLE engine v1.3.0 (dense line), one 32 GB RTX PRO 4500 (Nov 2026); [report as video](https://youtu.be/Bye6WPpkxA4) |
 | [Qwen3.8-Flash-Next · FLE](https://huggingface.co/sirfyyn/Qwen3.8-Flash-Next-FLE-GGUF) | 125B MoE, 88.9 GB | decode **91 tok/s** (Strata 74, llama.cpp 36) | one 32 GB RTX PRO 4500, 128 GB RAM, same machine for all three (6 Oct 2026); smaller than Unsloth IQ4_XS at the same KL divergence |
 | [DeepSeek-V4.1-Flash-1017 · ISTA-DASLab GSQ-RCO](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) | 763B MoE, IQ2_XXS 232 GiB | with the [DSpark draft](https://huggingface.co/sirfyyn/DeepSeek-V4.1-Flash-1017-DSpark-FLE-GGUF): **about 50 tok/s** (the draft does not change the output at temperature 0: same answer every run); 37.6 without it by hand, 37.2 through FLE Link | `flelink run deepseek-v41-ista-dspark` / `deepseek-v41-ista`; one 32 GB RTX PRO 4500, 128 GB RAM (an expert store in RAM of about 90 GB, an unlimited memlock limit), Ryzen 9 9950X3D, Linux, FLE engine v1.2.5 (5 Nov 2026). `deepseek-v41-ista-iq1m`: the IQ1_M quant for speed, less exact |
 | [Rin - Deepseek V4.1 Flash 1017](https://huggingface.co/sirfyyn/Rin-Deepseek-V4.1-Flash-1017-FLE-GGUF) | 763B MoE, 2-bit, split hot/cold | `flelink run rin-deepseek-v41-dspark`: 53.4 tok/s (about +6 % over ISTA IQ2_XXS), KL divergence 0.29 against the original (ISTA IQ2_XXS 0.25); needs FLE v1.2.6 or newer | built from ISTA DASLab's GSQ-RCO quants: the hot half stays on the GPU, the cold half is served from RAM; lossy, see the model card |
@@ -199,6 +200,11 @@ values; nothing runs code.
 A recipe is one TOML file: model, engine, start values, chat defaults, and optionally a draft model for speculative decoding.
 A recipe sets only the engine's own switches, but it does choose the files and the engine arguments, so treat one from someone else like a program: `flelink run my.recipe.toml` shows what it sets and asks first. Keep the settings that work for you in `<data>/recipes/` and share the file to reproduce them elsewhere. Format and places: [docs/RECIPES.md](docs/RECIPES.md). Plugins add recipes and engines as files:
 [docs/PLUGINS.md](docs/PLUGINS.md).
+
+The FLE engine comes in two lines, `moe` (v1.2.x, for mixture-of-experts models such as Rin) and `dense` (v1.3.0 and
+newer, for dense models such as Kate). A recipe names its line (`[engine] line = "dense"`; missing: `moe`), and FLE Link
+installs, updates and starts only engines of that line for it; both lines can be installed at once
+([docs/RECIPES.md, Engine lines](docs/RECIPES.md#engine-lines)).
 
 ## In the Studio
 

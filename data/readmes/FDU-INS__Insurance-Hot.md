@@ -2,7 +2,7 @@
   <img src="docs/assets/readme/brand-lockup.svg" alt="InsuranceHot" width="360">
 </p>
 
-<p align="center"><b>全球保险资讯，人可以读，AI 可以用。</b></p>
+<p align="center"><b>全球保险资讯，人与AI皆可用。</b></p>
 
 <p align="center">
   <a href="https://www.insurance-hot.com"><img src="https://img.shields.io/badge/Website-insurance--hot.com-0969da" alt="Website"></a>
@@ -38,6 +38,7 @@
   - [RSS](#rss)
 - [使用须知](#notes)
 - [反馈与支持](#feedback)
+- [致谢（Acknowledgements）](#acknowledgements)
 - [Star 历史](#star-history)
 
 <a id="intro"></a>
@@ -338,6 +339,20 @@ claude mcp add --transport http insurancehot 'https://www.insurance-hot.com/api/
 内容摘要和分析由 AI 辅助整理，引用时请以原文为准。使用中的问题或信源更正，欢迎通过网站的[反馈](https://www.insurance-hot.com/feedback)提交。
 
 觉得有用，欢迎 **Star**，方便下次回来。
+
+<a id="acknowledgements"></a>
+
+## 致谢
+
+本项目基于 [AIHOT](https://github.com/KKKKhazix/AIHOT) 开源项目进行二次开发。我们在其基础框架和核心工作流程之上，结合保险行业的业务特点与资讯需求，对信息采集、内容筛选、事件组织及行业报告等功能进行了进一步开发与扩展。
+
+同时，本项目在产品设计与功能构思方面受到 [AI Safety HOT](https://github.com/wuyoscar/AISafetyHot) 的启发，借鉴了其在实时资讯聚合、热点事件追踪以及专题信息组织与呈现方面的设计思路。
+
+我们衷心感谢 AIHOT 和 AI Safety HOT 的开发者及其开源社区，感谢他们分享的优秀项目、技术实践与设计理念，为本项目的开发提供了重要的基础与启发。
+
+**此外，我们衷心感谢所有参与本项目开发与建设的成员，包括林陈威、张麟琪、还鸿新、陈昌昱、曹琬清和程岩，他们均为复旦大学许闲教授团队的成员。**
+
+商务合作或问题反馈，请联系：[insurance@fudan.edu.cn](mailto:insurance@fudan.edu.cn)。
 
 <a id="star-history"></a>
 

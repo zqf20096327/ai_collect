@@ -75,3 +75,11 @@ This is a structural package validator, not a test of Antigravity's actual activ
 ## Compatibility note
 
 The package uses the directory-based `SKILL.md` convention described in the Antigravity Skill Vault README supplied by the user. This environment cannot inspect the user's local Antigravity installation or install files directly into their machine. No unverified slash commands are referenced. Verify host-specific skill directories and activation behavior locally before deployment.
+
+
+---
+
+## Author & Case Study
+
+- **Case Study:** [AstraForge on veerajmatnale.me](https://veerajmatnale.me/work/astraforge)
+- **Author:** [Veeraj Sanjog Matnale](https://veerajmatnale.me) · Founder & CEO, [Triverse Solutions Private Limited](https://triversesolutions.co.in)

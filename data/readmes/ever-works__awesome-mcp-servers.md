@@ -157,7 +157,7 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Developer Tools MCP Servers (3)](#developer-tools-mcp-servers-2)
 - [Development Tools (6)](#development-tools)
 - [Development Tools Mcp Servers (3)](#development-tools-mcp-servers)
-- [Development Tools MCP Servers (25)](#development-tools-mcp-servers-1)
+- [Development Tools MCP Servers (26)](#development-tools-mcp-servers-1)
 - [Development Tools MCP Servers (7)](#development-tools-mcp-servers-2)
 - [DevOps & CI/CD MCP Servers (4)](#devops--cicd-mcp-servers)
 - [DevOps & Cloud MCP Servers (1)](#devops--cloud-mcp-servers)
@@ -168,8 +168,9 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Documentation & Knowledge MCP Servers (15)](#documentation--knowledge-mcp-servers)
 - [Documentation & Learning Resources (15)](#documentation--learning-resources)
 - [Documentation Learning Resources (14)](#documentation-learning-resources)
-- [E Commerce (3)](#e-commerce)
-- [E-Commerce (1)](#e-commerce-1)
+- [E Commerce (1)](#e-commerce)
+- [E Commerce (3)](#e-commerce-1)
+- [E-Commerce (1)](#e-commerce-2)
 - [Email Marketing (2)](#email-marketing)
 - [Enterprise Data (4)](#enterprise-data)
 - [Entertainment (1)](#entertainment)
@@ -569,4 +570,4 @@ The public-facing website is based on the open-source [Directory Website Templat
 - [Milvus](https://milvus.io) - MCP server for searching, querying, and interacting with data in Milvus Vector Database, enabling AI agents to perform vector similarity searches. ([Read more](/details/milvus.md)) `Vector Database` `Semantic Search` `Similarity`
 - [Milvus MCP Server](https://github.com/tailabs/mcp-milvus) - Official Model Context Protocol server for Milvus vector database enabling AI assistants to search, query, and interact with vector data for semantic search and similarity matching applications. ([Read more](/details/milvus-mcp-server.md)) `Vector Database` `Semantic Search` `Embeddings`
 - [MongoDB](https://github.com/mongodb-js/mongodb-mcp-server) - MCP server supporting both MongoDB Community Server and MongoDB Atlas, enabling AI agents to manage and query MongoDB databases through natural language. ([Read more](/details/mongodb.md)) `Document Database` `Nosql` `Atlas`
-- [MongoDB Lens](https://github.com/furey/mongodb-lens) - Full featured MCP server for MongoDB databases, providing comp
+- [MongoDB Lens](https://github.com/furey/mongodb-lens) - Full featured MCP server for

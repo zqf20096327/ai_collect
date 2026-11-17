@@ -16,7 +16,7 @@ Weekly materials for the 14-week course **Machine Learning in Economics and Fina
 
 **Code for the theory weeks:** each notebook reproduces the simulations behind the figures and tables in that week's lecture notes and slides (simulated data, fixed random seeds, so the numbers match the course materials). The notebooks are in Turkish and run in Google Colab with no installation; locally they need `numpy`, `pandas`, `matplotlib` and `scikit-learn` (Week 6 also uses `shap`, which the notebook installs if missing).
 
-*Last updated: 8 November 2026*
+*Last updated: 17 November 2026*
 
 ## Theory block
 
@@ -27,7 +27,7 @@ Weekly materials for the 14-week course **Machine Learning in Economics and Fina
 | 3 | Model performance: overfitting, bias–variance, cross-validation, data leakage | [PDF](https://www.songurmehmet.com/assets/dersler/ml/Hafta03_Slaytlar.pdf) | [Watch](https://youtu.be/TzWIzMklU9Q) | [Notebook](code/Hafta03_Model_Basarisi.ipynb) · [Colab](https://colab.research.google.com/github/mehmetsongur/Machine-Learning-in-Economics-and-Finance/blob/main/code/Hafta03_Model_Basarisi.ipynb) |
 | 4 | Regression and regularization: OLS, Ridge, Lasso | [PDF](https://www.songurmehmet.com/assets/dersler/ml/Hafta04_Slaytlar.pdf) | [Watch](https://youtu.be/ikeSm14HldU) | [Notebook](code/Hafta04_Ridge_ve_Lasso.ipynb) · [Colab](https://colab.research.google.com/github/mehmetsongur/Machine-Learning-in-Economics-and-Finance/blob/main/code/Hafta04_Ridge_ve_Lasso.ipynb) |
 | 5 | Classification: logistic regression, confusion matrix, ROC-AUC, imbalanced data | [PDF](https://www.songurmehmet.com/assets/dersler/ml/Hafta05_Slaytlar.pdf) | [Watch](https://youtu.be/I_KFG54WLYQ) | [Notebook](code/Hafta05_Siniflandirma.ipynb) · [Colab](https://colab.research.google.com/github/mehmetsongur/Machine-Learning-in-Economics-and-Finance/blob/main/code/Hafta05_Siniflandirma.ipynb) |
-| 6 | Trees and ensemble methods (random forest, boosting); interpretability (SHAP) | — | — | [Notebook](code/Hafta06_Agaclar_ve_SHAP.ipynb) · [Colab](https://colab.research.google.com/github/mehmetsongur/Machine-Learning-in-Economics-and-Finance/blob/main/code/Hafta06_Agaclar_ve_SHAP.ipynb) |
+| 6 | Trees and ensemble methods (random forest, boosting); interpretability (SHAP) | [PDF](https://www.songurmehmet.com/assets/dersler/ml/Hafta06_Slaytlar.pdf) | [Watch](https://youtu.be/vVVAFPZKVwg) | [Notebook](code/Hafta06_Agaclar_ve_SHAP.ipynb) · [Colab](https://colab.research.google.com/github/mehmetsongur/Machine-Learning-in-Economics-and-Finance/blob/main/code/Hafta06_Agaclar_ve_SHAP.ipynb) |
 | 7 | Unsupervised learning and text analysis: k-means, PCA; turning text into numbers (bag of words, TF-IDF), dictionary-based tone measurement, intuition for topic modelling, text classification with LLMs | — | — | — |
 | 8 | Midterm exam | | | |
 

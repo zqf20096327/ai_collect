@@ -58,11 +58,15 @@
 >   [4-ref](workflows/h3-image/h3-image-edit-4ref.api.json)
 > - **Streaming 4× video upscale** — ReCaVSR: one-step diffusion VSR on Wan2.2, 16.9 MP on 24 GB, with
 >   source audio and frame rate preserved. [ReCaVSR X4](workflows/recavsr/api/video-upscale-recavsr-x4.api.json)
+> - **Recast or edit any clip** — Viggle Remake: a two-LoRA H3 pair for character swaps, object removal
+>   and weather/setting changes, driven by painted frames; source motion, camera and soundtrack are kept.
+>   [Swap](workflows/viggle-remake/api/viggle-remake-swap.api.json),
+>   [edit](workflows/viggle-remake/api/viggle-remake-edit.api.json)
 > - **Looping videos** — seamless 154-frame H3 loops with synchronized audio and a ×2 seam check,
 >   built on the [MiniMax H3 base](https://huggingface.co/Comfy-Org/MiniMax-H3).
 >   [Perfect loop](workflows/minimaxh3/api/perfect-loop-minimax-h3.api.json)
 >
-> These are brand-new innovations in the MiniMax H3 ecosystem, and Comfiest supports all six.
+> These are brand-new innovations in the MiniMax H3 ecosystem, and Comfiest supports all seven.
 
 Comfiest packages the parts of an AI production pipeline that normally live in someone's head:
 model routing, workflow templates, hardware limits, submission loops, output provenance, and the
@@ -78,6 +82,7 @@ Built for the [Comfy Org Open Source Higgsfield](https://comfy.org/open-source-h
 | **Speech** | Fish Audio Drama 3 — single/dual speaker, voice clone |
 | **Music** | YuE2 3B, MiniMax Music 3 |
 | **Video from text or references** | MiniMax H3 — Pika H3 Flex 6-step default, fastvideo variants, 1–2 pictures, video/audio references, forced lip-sync, character swap |
+| **Video recast / edit** | Viggle Remake — H3 LoRA pair for character swaps, object removal, and setting/weather changes |
 | **Video with joint audio** | LTX-2.5 22B distilled — text, identity reference, or first frame |
 | **Video upscale / restoration** | RelayVSR X2 — one-step pixel-space 2×; ReCaVSR X4 — one-step streaming 4× with audio passthrough |
 | **2K upscale / refine** | MiniMax H3 refiner — latent-space t2v/v2v upscale to 2560×1440, with 2-step re-synthesis or 3-step IC fidelity |
@@ -111,7 +116,7 @@ If your agent supports skills:
 - Copy `skills/SKILL.md` to `<client-skills>/comfiest/SKILL.md` for the umbrella rules and routing.
 - Copy `skills/minimaxh3/`, `skills/minimaxh3-pika/`, `skills/minimaxh3-character-replace/`,
   `skills/minimaxh3-upscale/`, `skills/minimaxh3-perfect-loop/`, `skills/ltx2-5/`, `skills/relayvsr/`,
-  `skills/ph3-image/`, `skills/h3-image/`, `skills/recavsr/`, `skills/sam3/`, `skills/prompt-writing/`, `skills/workflow-development/`, and
+  `skills/ph3-image/`, `skills/h3-image/`, `skills/recavsr/`, `skills/viggle-remake/`, `skills/sam3/`, `skills/prompt-writing/`, `skills/workflow-development/`, and
   `skills/fish-audio-drama3/` as sibling skill directories if your client discovers each skill
   separately. `skills/prompt-writing/` contains eight family skills; copy its child directories
   individually if your client requires a flat layout.
@@ -121,8 +126,8 @@ The umbrella carries the hard rules and routing; the subskills carry family and 
 ## What your agent gets
 
 - **Routing that respects hardware.** Krea/Flux/MOSS/H3-Image for images, YuE2/Music 3 for songs,
-  Drama 3 for speech, MiniMax H3/Pika for video, 2K refine, 4× upscale, and seamless loops. Heavy
-  models are called out before they blow up a 24 GB card.
+  Drama 3 for speech, MiniMax H3/Pika for video, 2K refine, 4× upscale, recast/edit, and seamless loops.
+  Heavy models are called out before they blow up a 24 GB card.
 - **Workflow templates that actually run.** UI files for ComfyUI, pre-slimmed `api/*.api.json`
   mirrors for MCP execution, and conversion notes for the frontend-only nodes that break API runs.
 - **A development loop for new workflows.** Scratch copies, UI-to-API conversion, target preflight,
@@ -210,6 +215,7 @@ host:
 | LTX-2.5 ref2v / i2v | `example.png` | Upload a subject image for ref2v, or a first frame for i2v; replace the file in `work/uploads/<project>/`. |
 | RelayVSR | `example.mp4` | Upload the source clip; output is 2× its size and keeps its audio. |
 | ReCaVSR | `example.mp4` | Upload the source clip; output is 4× its size and keeps its audio and frame rate. |
+| Viggle Remake | `example.mp4` + `example.png` | Upload a 24 fps source clip and one painted reference frame; both modes default to `example.*`. |
 | IC 2K refiner | `example.mp4` | Upload a Pika H3 Flex 1344×768 draft; the graph refines it to 2K and muxes its audio. |
 | H3-Image edit | `example.png` | Upload the source picture and each reference; every image slot defaults to `example.png`. |
 | P-H3-Image edit | `example.png` | Upload the subject plus 3–4 references; every image slot defaults to `example.png`. |
@@ -239,6 +245,7 @@ host:
 | Video with joint audio | LTX-2.5 22B distilled | [LTX workflows](workflows/ltx/api/) | t2v / ref2v / i2v; 512×960; 8.04 s |
 | Video 2× upscale | RelayVSR X2 | [RelayVSR workflow](workflows/relayvsr/api/video-upscale-relayvsr-x2.api.json) | pixel-space 2×; audio passthrough; 24/48 fps sources |
 | Video 4× upscale | ReCaVSR X4 | [ReCaVSR workflow](workflows/recavsr/api/video-upscale-recavsr-x4.api.json) | one-step streaming; 16.9 MP on 24 GB; audio + fps preserved |
+| Video recast / edit | Viggle Remake | [Swap](workflows/viggle-remake/api/viggle-remake-swap.api.json), [edit](workflows/viggle-remake/api/viggle-remake-edit.api.json) | H3 LoRA pair; 1 painted ref; 480p; audio carried |
 
 MiniMax H3 is the video workhorse: text-to-video, 1–2 picture references, video/audio references,
 forced-audio lip-sync, and character replacement. See
@@ -272,6 +279,7 @@ Music 3, and Drama 3; the index maps each to its workflow.
 │   ├── ltx2-5/SKILL.md                # LTX-2.5 video + joint audio
 │   ├── relayvsr/SKILL.md              # RelayVSR X2 video upscale
 │   ├── recavsr/SKILL.md               # ReCaVSR X4 streaming video upscale
+│   ├── viggle-remake/SKILL.md         # Viggle Remake H3 recast/edit LoRAs
 │   ├── ph3-image/SKILL.md             # P-H3-Image multi-ref edit + T2I
 │   ├── h3-image/SKILL.md              # MiniMax-H3-Image 4–16 MP T2I + edit
 │   ├── sam3/SKILL.md                  # native masking family
@@ -285,7 +293,7 @@ Music 3, and Drama 3; the index maps each to its workflow.
 │   ├── wait_job.py          # poll /history when the MCP wait fails
 │   ├── fetch_output.py      # download outputs when fetch_outputs fails
 │   └── comfy_api.py         # shared /history lookup with the ?max_items fallback
-├── workflows/               # 74 workflow templates
+├── workflows/               # 78 workflow templates
 │   ├── *.json
 │   ├── fishdrama3/          # TTS base + variants
 │   ├── h3-image/            # MiniMax-H3-Image T2I and edit
@@ -294,6 +302,7 @@ Music 3, and Drama 3; the index maps each to its workflow.
 │   ├── recavsr/             # ReCaVSR X4 streaming video upscale
 │   ├── relayvsr/            # RelayVSR X2 video upscale
 │   ├── sam3/                # native image/video matte graphs
+│   ├── viggle-remake/       # Viggle Remake swap/edit graphs
 │   └── minimaxh3/           # H3 base, UI variants, api/ mirrors
 └── work/                    # writable agent workspace (not required to run)
     ├── inbox/  scratch/  uploads/  outputs/
@@ -321,8 +330,8 @@ This repository is the sanitized public edition of a working production suite:
 
 - Non-functional LoRAs (character, style, anatomy, adult-oriented) were removed. The surviving LoRAs
   are functional: MiniMax H3 turbo adapters (v1.2 and 4–8 step), Pika H3 Flex fl2va/ref2va, the 2K
-  re-synthesis refiner, the rank-21 IC fidelity adapter, the LMS sharpener, the LTX Best-FaceID
-  identity LoRA, and the MOSS-Image DMD sampler.
+  re-synthesis refiner, the rank-21 IC fidelity adapter, the LMS sharpener, the Viggle Remake
+  swap/edit adapters, the LTX Best-FaceID identity LoRA, and the MOSS-Image DMD sampler.
 - Every baked-in prompt was replaced with a neutral demo prompt (fox-themed for t2v). Reference
   image, video, and audio names were genericized to `example.*`.
 - UI workflows were conversion-validated against a live ComfyUI target. Seven API graphs have since
@@ -339,16 +348,16 @@ fork rather than editing the shipped template.
 - `comfy-cli` + `comfy-mcp` (Python 3.12 tested).
 - Node packs: the full set is installed by [`COMFY-SETUP.md`](COMFY-SETUP.md) — rgthree, RES4LYF,
   WAS, Easy-Use, various, KJNodes, VideoHelperSuite, Drama3, krea2edit, Conditioning Rebalance,
-  PlagueKind, Context-Loop, BFSNodes, RelayVSR, ReCaVSR, Fill-Nodes, Spectrum, Impact Pack, and
-  Depth-Anything-TensorRT.
+  PlagueKind, Context-Loop, BFSNodes, RelayVSR, ReCaVSR, Viggle Remake, Fill-Nodes, Spectrum, Impact
+  Pack, and Depth-Anything-TensorRT.
   Optional: Frame-Interpolation (the H3 graphs use Fill-Nodes `FL_RIFE`), the latent upscaler, and
   ComfyUI-GGUF (legacy GGUF graphs only).
 - Models: Krea 2 Turbo/Edit, Flux.2 Klein 9B + Qwen3-8B fp8mixed, MOSS-Image, MiniMax-H3-Image w4a8 +
   image VAE (16 MP), P-H3-Image w4a8,
   YuE2 3B, MiniMax Music 3, Fish Audio Drama 3, MiniMax H3 fastvideo stack + Pika H3 Flex adapters +
   2K re-synthesis refiner/upscaler + rank-21 IC fidelity LoRA and the loop Turbo adapter, LTX-2.5 22B
-  distilled + Gemma 4 12B + Best-FaceID identity LoRA, RelayVSR X2, ReCaVSR X4, SAM3 segmentation.
-  Exact filenames live in the workflow sections of
+  distilled + Gemma 4 12B + Best-FaceID identity LoRA, RelayVSR X2, ReCaVSR X4, Viggle Remake swap/edit
+  LoRAs, SAM3 segmentation. Exact filenames live in the workflow sections of
   [`skills/SKILL.md`](skills/SKILL.md); verify each host with `/object_info/<LoaderClass>` option
   lists. `/models/<folder>` can return an empty body even when the model is installed.
   The full download list, Hugging Face locations, and folder layout are in

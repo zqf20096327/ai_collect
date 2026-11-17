@@ -14,8 +14,10 @@
   <a href="https://github.com/Yiuky/PrivioSentry/actions/workflows/ci.yml"><img src="https://github.com/Yiuky/PrivioSentry/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB.svg?logo=python&logoColor=white" alt="Python"></a>
   <a href="https://github.com/tesseract-ocr/tesseract"><img src="https://img.shields.io/badge/OCR-Tesseract%205-5C2D91.svg" alt="Tesseract OCR"></a>
-  <a href="https://ollama.com/"><img src="https://img.shields.io/badge/LLM%20local-Ollama-000000.svg?logo=ollama&logoColor=white" alt="Ollama"></a>
+  <a href="https://github.com/ultralytics/ultralytics"><img src="https://img.shields.io/badge/Assinaturas-YOLO%20%C2%B7%20Ultralytics-111F68.svg" alt="YOLO (Ultralytics)"></a>
+  <a href="https://ollama.com/"><img src="https://img.shields.io/badge/IA%20local-Ollama%20%7C%20LM%20Studio-000000.svg?logo=ollama&logoColor=white" alt="IA local: Ollama ou LM Studio"></a>
   <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/API-FastAPI-009688.svg?logo=fastapi&logoColor=white" alt="FastAPI"></a>
+  <a href="docs/mcp.md"><img src="https://img.shields.io/badge/Agentes-MCP-6E56CF.svg" alt="Servidor MCP para agentes"></a>
   <a href="#-limitações"><img src="https://img.shields.io/badge/Status-est%C3%A1gio%20inicial-E67E22.svg" alt="Status: estágio inicial"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/Licen%C3%A7a-AGPL--3.0--or--later-blue.svg" alt="Licença AGPL-3.0-or-later"></a>
 </p>
@@ -35,7 +37,7 @@
 ---
 
 <p align="center">
-  <img src="docs/img/editor.png" alt="Editor do SENTRY Redact com tarjas sugeridas sobre CPF e endereço residencial de um formulário fictício" width="94%" />
+  <img src="docs/img/editor.png" alt="Editor do SENTRY Redact com tarjas sugeridas sobre nome, CPF, endereço residencial, telefone, e-mail e a assinatura achada pelo YOLO num formulário fictício; ao lado, tarefas na fila, pendente, em revisão e concluída" width="94%" />
 </p>
 
 > **Proteja os dados antes que sejam expostos.** · Detectar. Revisar. Proteger.
@@ -65,7 +67,7 @@ um provedor de IA na nuvem se um administrador liberar isso de propósito (`AI_A
 | 🤖 **A IA sugere** | Os modelos só apontam detecções *potenciais*; cada uma vira uma caixa editável que a pessoa aceita, move, redimensiona ou remove |
 | 🙋 **O humano confirma** | O processamento automático gera só um PDF **preliminar**, com as sugestões da IA; a versão para uso sai quando o revisor confere as caixas e clica em **Aplicar proteção** |
 | 🔒 **Falha fechado** | Na dúvida (IA falhou, CPF do original sem tarja, página não verificada), o documento fica como **"Requer revisão"** em vez de "Concluído", com alertas por página |
-| 📜 **Política e registro** | Hoje a política é fixa (CPF + endereços pessoais) e o único registro é o log da tarefa. Motor de políticas configurável e trilha de auditoria estão **planejados, não implementados** ([Visão](#-visão-futuro-não-implementado)) |
+| 📜 **Política e registro** | O que tarjar vem do **perfil de política** (`POLICY_PROFILE`, ou escolhido por documento na interface). O registro é o log da tarefa, que também guarda os destinos de IA externa usados. Trilha de auditoria está **planejada, não implementada** ([Visão](#-visão-futuro-não-implementado)) |
 
 ## ⚠️ Leia primeiro: é uma ferramenta de apoio, não uma garantia
 
@@ -95,8 +97,8 @@ Processamento local é uma escolha de arquitetura, não uma conclusão jurídica
 sua implantação (rede, logs, arquivos temporários, comportamento dos modelos). O rótulo **LOCAL PROCESSING**
 da interface indica onde o processamento ocorre; não afirma que a máquina esteja offline.
 
-A LGPD distingue *dado pessoal* de *dado pessoal sensível* (saúde, biométrico, genético...). Hoje só CPF e
-endereços residenciais (dados pessoais) são alvo. Veja
+A LGPD distingue *dado pessoal* de *dado pessoal sensível* (saúde, biométrico, genético...). Os perfis cobrem
+dados pessoais; as categorias sensíveis estão no catálogo, mas ainda não são detectadas. Veja
 [docs/brand/LGPD_PRODUCT_POSITIONING.md](docs/brand/LGPD_PRODUCT_POSITIONING.md) e as fontes oficiais:
 [LGPD](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm) ·
 [ANPD](https://www.gov.br/anpd/pt-br).
@@ -107,10 +109,11 @@ endereços residenciais (dados pessoais) são alvo. Veja
 |---|---|
 | 🖼️ **Renderização + OCR** | Cada página vira imagem e passa pelo **Tesseract** (com coordenadas de cada palavra) |
 | 🔢 **CPFs** | Duas passagens de OCR; validação pelos dígitos verificadores; CNPJs poupados; datas e horas excluídas |
-| ✍️ **Assinaturas** | Detector **YOLO** recorta as assinaturas; OCR + **LLM de visão** ([Ollama](https://ollama.com)) procuram CPFs manuscritos ou difíceis de ler |
+| ✍️ **Assinaturas** | Detector **YOLO** recorta as assinaturas; OCR + **LLM de visão** (servidor de IA pela API: [Ollama](https://ollama.com), LM Studio...) procuram CPFs manuscritos ou difíceis de ler |
+| 🪪 **Outros dados** | Conforme o perfil: RG, CNH, telefone, e-mail, dados bancários, Pix e outros por regras (dígito verificador, formato, palavra de contexto); nomes com o GLiNER opcional |
 | 🏠 **Endereços** | O LLM de visão descobre os endereços e os classifica (pessoal / profissional / secundário); só os *pessoais* são tarjados, por casamento determinístico com as palavras do OCR |
 | 📄 **Exportação** | PDF final por **tarja nativa** sobre o original (remove o texto e queima os pixels) ou por páginas rasterizadas, mais um JSON com as caixas |
-| ✅ **Verificação pós-tarja** | Relê a saída e confronta o *original* (OCR em DPI maior) para garantir que todo CPF encontrado esteja coberto |
+| ✅ **Verificação pós-tarja** | Relê a saída e confronta o *original* (OCR em DPI maior) para conferir que todo CPF encontrado esteja coberto |
 | 🖊️ **Editor web** | Adicionar, mover, apagar e aprovar tarjas antes de gerar o PDF final |
 
 ### Como funciona
@@ -129,6 +132,83 @@ flowchart LR
     H -- sem alertas --> I[Concluído]
     H -- dúvida --> J[⚠️ Requer revisão]
     J --> F
+```
+
+### Fluxos
+
+**Da chegada ao PDF aprovado.** Nenhum caminho automático chega ao PDF final: ele só sai depois que o revisor aplica
+a proteção e a verificação passa.
+
+```mermaid
+stateDiagram-v2
+    [*] --> NaFila: envio (portal, API ou MCP)
+    NaFila --> Processando
+    Processando --> Concluido: sem alerta
+    Processando --> RequerRevisao: dúvida, falha da IA ou página não verificada
+    Processando --> Pendente: cota do provedor esgotada (opção pendente)
+    Pendente --> NaFila: nova tentativa depois do prazo
+    Concluido --> Editor
+    RequerRevisao --> Editor
+    Editor --> Verificacao: Aplicar proteção
+    Verificacao --> Aprovado: sem alerta
+    Verificacao --> RequerRevisao: CPF sem tarja ou erro
+    Aprovado --> [*]: download final (/download?final=true)
+    NaFila: Na fila
+    RequerRevisao: Requer revisão
+    Concluido: Concluído (PDF preliminar)
+    Verificacao: Verificação pós-tarja
+    Aprovado: PDF aprovado
+```
+
+**Cada pedido à IA.** A trava de saída e o limitador ficam entre o pipeline e qualquer servidor de IA.
+
+```mermaid
+flowchart LR
+    P[Página ou recorte] --> T{Destino fora<br>desta rede?}
+    T -- não --> L[Limitador de<br>pedidos por minuto]
+    T -- sim --> X{IA externa<br>liberada?}
+    X -- não --> R[⚠️ Bloqueado:<br>página vai para revisão]
+    X -- sim --> L
+    L --> S[Servidor de IA<br>principal ou reserva]
+    S -- resposta --> V[Validadores +<br>casamento com o OCR]
+    S -- 429 por minuto --> L
+    S -- cota esgotada --> Q{AI_LIMIT_ACTION}
+    Q -- revisao --> R
+    Q -- pendente --> PD[⏳ Documento Pendente,<br>refeito depois]
+```
+
+**Modelos de documento.** Formulários de layout conhecido são tarjados pelos rótulos, sem IA, e o modelo nunca aprova
+sozinho.
+
+```mermaid
+flowchart LR
+    D[Documento revisado] --> RS[Rascunho do modelo<br>frases + campos]
+    RS --> TE[Testar no documento] --> AP[Aprovar]
+    AP --> RC{Novo documento:<br>um só modelo reconhecido?}
+    RC -- não --> PI[Pipeline normal com IA]
+    RC -- sim --> TR[Tarja pelos rótulos<br>zero token]
+    TR --> IN[Inspeção: agente ou regras]
+    IN --> HR{{🖊️ Revisão humana}}
+    PI --> HR
+```
+
+**Agentes de IA (MCP).** O agente envia e acompanha; quem aprova é a pessoa no editor.
+
+```mermaid
+sequenceDiagram
+    participant A as Agente de IA
+    participant M as sentry_mcp.py
+    participant S as SENTRY (API)
+    participant H as Revisor
+    A->>M: sentry_submit_pdf(PDF)
+    M->>S: POST /upload
+    S-->>A: task_id
+    A->>M: sentry_wait(task_id)
+    S-->>A: Requer revisão / Concluído (sem texto do documento)
+    H->>S: revisa no editor e aplica a proteção
+    A->>M: sentry_download_final(task_id)
+    M->>S: GET /download?final=true
+    S-->>A: só o PDF aprovado
 ```
 
 ### Destaques
@@ -155,12 +235,30 @@ flowchart LR
 - **Portal, API e agentes:** o mesmo serviço atende o editor, scripts ([docs/api.md](docs/api.md)) e agentes de
   IA por um **servidor MCP local** ([docs/mcp.md](docs/mcp.md)). Agentes enviam e acompanham; quem aprova é o
   revisor humano.
+- **Limite de uso da IA:** um limitador de pedidos por minuto, por servidor, vale para todos os documentos em
+  processamento (ligado por padrão em provedor externo: mais lento, mas sem recusas). Se a cota do provedor acabar,
+  o documento pode ficar **Pendente** e ser refeito depois, em vez de ir para revisão (`AI_LIMIT_ACTION=pendente`).
 - **Falha fechado:** qualquer incerteza vira alerta e o estado **"Requer revisão"**; a CLI devolve o código
   `3` nesses casos.
 - **Seguro por padrão:** escuta só em `127.0.0.1`, valida uploads e IDs (UUID), token opcional (`API_TOKEN`)
   e segredo interno entre os *workers* e o serviço.
 - **Interface acessível:** pt-BR por padrão com seletor en-US, contraste WCAG AA, foco visível e atalhos
   `N`/`P`/`Esc`.
+
+### Telas
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/img/admin.png" alt="Tela Administração, seção IA e provedores, com atalhos de provedor, IA principal e limitador de pedidos por minuto" /></td>
+    <td width="50%"><img src="docs/img/modelos.png" alt="Gerenciador de modelos de documento com o rascunho criado a partir de um formulário fictício e o teste reconhecendo o documento" /></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Administração:</strong> servidores de IA, limite de uso, detecção, OCR e fila, sem editar o <code>.env</code></td>
+    <td align="center"><strong>Modelos de documento:</strong> rascunho a partir de um documento revisado, teste e aprovação</td>
+  </tr>
+</table>
+
+As capturas usam só dados fictícios e são refeitas com `python scripts/make_screenshots.py`.
 
 ---
 
@@ -189,7 +287,7 @@ Detectar e tarjar esses tipos **apoia** práticas alinhadas a essas referências
 | Python | **3.10 – 3.12** |
 | Tesseract OCR | 5.x com o idioma português (`por`) |
 | Servidor de IA | Ollama, **LM Studio**, vLLM, llama.cpp ou um servidor da organização (API no padrão da OpenAI), com um modelo de visão (ex.: Qwen3.5 9B, Gemma 4) |
-| Hardware | RAM/VRAM compatível com o modelo escolhido. O DPI de renderização padrão é alto: reduza `BASE_DPI` em máquinas modestas |
+| Hardware | RAM/VRAM compatível com o modelo escolhido. O DPI de renderização padrão é 300 (`BASE_DPI`): acima disso a leitura de CPF piora ([benchmarks](docs/benchmarks.md)) |
 | Detector de assinaturas | `models/signature_stamp_detector.pt` (incluído; veja o [model card](models/MODEL_CARD.md)) |
 
 ## ⚡ Instalação
@@ -260,6 +358,7 @@ variáveis estão em [docs/configuration.md](docs/configuration.md). As principa
 | `TESSERACT_PATH` | Caminho do executável do Tesseract (Windows) |
 | `AI_PROVIDER`, `AI_BASE_URL`, `AI_VISION_MODEL` (ou `OLLAMA_*`) | Servidor de IA (Ollama ou API da OpenAI) e modelos; `AI_SECONDARY_*` para a reserva |
 | `AI_API_KEY`, `AI_ALLOW_EXTERNAL` | Chave do provedor e liberação explícita de IA fora desta rede (desligada por padrão) |
+| `AI_REQUESTS_PER_MINUTE`, `AI_LIMIT_ACTION` | Limitador de pedidos por minuto e o que fazer quando a cota do provedor acaba (`revisao` ou `pendente`) |
 | `PORTAL_ENABLED`, `ADMIN_ENABLED` | Rodar só como API e desligar a Administração |
 | `POLICY_PROFILE`, `NER_ENGINE` | O que tarjar (perfil de política) e o detector de nomes |
 | `YOLO_MODEL_PATH` | Pesos do detector de assinaturas |
@@ -318,12 +417,16 @@ python main.py --input examples/sample_input.pdf --output saida
 ## 🏗️ Arquitetura
 
 ```text
-Navegador ─► gatekeeper.py (:8000, opcional) ─proxy─► app_service.py (:8001, FastAPI)
+Navegador ─► gatekeeper.py (:8000, opcional) ─proxy─► app_service.py (:8001, FastAPI: portal, API e /admin)
               liga/desliga + watchdog                   │ tasks.json (gravação atômica)
+Agente de IA ─► sentry_mcp.py (MCP, stdio) ─── API ───►│
                                                         └─ um processo worker por tarefa ─► main.py (SentryApp)
                                                                ├─ utils/ocr_engine.py       Tesseract
                                                                ├─ utils/yolo_engine.py      assinaturas (YOLO)
-                                                               ├─ utils/ai_client.py        LLM de visão (Ollama)
+                                                               ├─ utils/ai_client.py        IA pela API (Ollama ou padrão OpenAI)
+                                                               ├─ utils/egress.py           trava de saída (IA externa)
+                                                               ├─ utils/detect/             perfis e regras (RG, telefone...)
+                                                               ├─ utils/doc_templates/      modelos de documento
                                                                ├─ utils/address_redactor.py endereços
                                                                ├─ utils/session.py          pastas, logs, PDF final
                                                                └─ utils/verifier.py         verificação pós-tarja
@@ -390,15 +493,15 @@ ligado na Administração; nesse caso, o que ele faz com os dados depende do con
 <summary><strong>Preciso de internet ou de GPU?</strong></summary>
 
 Internet só para instalar as dependências e baixar o modelo do Ollama. Depois, OCR, YOLO e LLM rodam na sua
-máquina. GPU não é obrigatória, mas acelera muito o LLM de visão; sem ela, prefira modelos menores e um
-`BASE_DPI` mais baixo.
+máquina (um provedor na nuvem só com liberação explícita na Administração). GPU não é obrigatória, mas acelera
+muito o LLM de visão; sem ela, prefira modelos menores.
 </details>
 
 <details>
 <summary><strong>O documento marcado como "Concluído" está livre de dados pessoais?</strong></summary>
 
 Não necessariamente. "Concluído" significa que as verificações automáticas não deixaram alerta pendente. A
-detecção é probabilística e só cobre CPF e endereços pessoais: **sempre revise** antes de publicar.
+detecção é probabilística e só cobre os tipos do perfil de política escolhido: **sempre revise** antes de publicar.
 </details>
 
 <details>
@@ -445,7 +548,7 @@ Se o PRIVIO SENTRY ajudou num trabalho acadêmico ou técnico, use o botão **Ci
 documents. Its first capability, **SENTRY Redact**, finds **Brazilian CPF numbers** and **personal
 (residential) addresses** in PDF files and prepares redactions for a person to review in a web editor:
 
-- **Local pipeline:** Tesseract OCR, a YOLO signature detector and a vision LLM served by Ollama, all running
+- **Local pipeline:** Tesseract OCR, a YOLO signature detector and a vision LLM on a local AI server (Ollama, LM Studio...), all running
   on your machine by default (a cloud AI provider only with explicit permission); the UI loads no external
   assets.
 - **Human in the loop:** the AI only *suggests*; automatic processing yields a *preliminary* PDF, and the protected

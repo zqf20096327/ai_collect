@@ -12,7 +12,6 @@ Companion indexes: [data-structures](https://github.com/cartercpp/data-structure
 - [Backpropagation from Scratch](https://github.com/cartercpp/backprop-impl-with-comments)
 - [Forward-Forward](https://github.com/cartercpp/forward-forward)
 - [Recurrent Neural Network](https://github.com/cartercpp/recurrent-neural-network)
-- [LSTM](https://github.com/cartercpp/simple-lstm-cell)
 - [Echo State Network](https://github.com/cartercpp/echo-state-network)
 - [Extreme Learning Machine](https://github.com/cartercpp/extreme-learning-machine)
 - [Autoencoder](https://github.com/cartercpp/autoencoder)
@@ -38,13 +37,11 @@ Companion indexes: [data-structures](https://github.com/cartercpp/data-structure
 ### Clustering
 - [K-Means Clustering](https://github.com/cartercpp/k-means-clustering)
 - [Mean-Shift](https://github.com/cartercpp/mean-shift-clustering)
-- [Hierarchical Clustering](https://github.com/cartercpp/hierarchical-clustering)
 - [DBSCAN](https://github.com/cartercpp/db-scan)
 - [Gaussian Mixture Model](https://github.com/cartercpp/gaussian-mixture-model)
 
 ### Regression
 - [Linear Regression](https://github.com/cartercpp/linear-regression)
-- [Ridge Regression](https://github.com/cartercpp/ridge-regression)
 - [Polynomial Regression](https://github.com/cartercpp/polynomial-regression)
 - [Kernel Regression](https://github.com/cartercpp/kernel-regression)
 - [Isotonic Regression](https://github.com/cartercpp/isotonic-regression)
@@ -53,7 +50,6 @@ Companion indexes: [data-structures](https://github.com/cartercpp/data-structure
 ### Reinforcement Learning & Game AI
 - [Maze AI (Q-Learning)](https://github.com/cartercpp/maze-ai-from-scratch)
 - [Deep Q-Network](https://github.com/cartercpp/deep-q-network)
-- [Minimax Tic-Tac-Toe](https://github.com/cartercpp/minimax-tic-tac-toe)
 
 ### Natural Language Processing
 - [CBOW](https://github.com/cartercpp/cbow)

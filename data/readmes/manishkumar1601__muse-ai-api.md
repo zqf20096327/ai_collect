@@ -33,6 +33,7 @@ memory/               dated session logs — the "why" behind every design decis
 recon/                phase 0 — JS chunks, grep catalogs, decoded protobuf descriptors
 ```
 
+- **What's done, what's pending** → [docs/status.md](docs/status.md).
 - **Just want to use it?** → [docs/phases-overview.md](docs/phases-overview.md) → [docs/anthropic-compat.md](docs/anthropic-compat.md) or [docs/openai-compat.md](docs/openai-compat.md).
 - **Want to understand how it works?** → [docs/architecture.md](docs/architecture.md) → [docs/wire-protocol.md](docs/wire-protocol.md) → [docs/request-flow.md](docs/request-flow.md) → [docs/api-reference.md](docs/api-reference.md).
 - **Want to extend it?** → [docs/development.md](docs/development.md) + the relevant [memory/](memory/) entry.
@@ -41,25 +42,113 @@ recon/                phase 0 — JS chunks, grep catalogs, decoded protobuf des
 
 ## Quick start
 
+### Prerequisites
+
+- Node.js **22+**
+- A working **muse.ai** account you can log into with your Meta credentials
+- Tested on Windows 11. Should also run on macOS / Linux + Node 22
+
+### 1. Clone + install
+
 ```bash
+git clone https://github.com/manishkumar1601/muse-ai-api.git
+cd muse-ai-api
 npm install
-
-# Dump your logged-in muse.ai cookies via Playwright or your browser into ./storage_state.json
-
-npm run bootstrap    # Produces session.json
-npm start            # Runs the OpenAI+Anthropic proxy on 127.0.0.1:8787
+npx playwright install chromium   # one-time; needed by `npm run login`
 ```
 
-Then point any OpenAI or Anthropic SDK at the proxy:
+### 2. Log in to muse.ai (one-shot)
 
 ```bash
-# OpenAI:
-OPENAI_BASE_URL=http://127.0.0.1:8787/v1  OPENAI_API_KEY=anything  <your tool>
-
-# Anthropic (e.g. Claude Code):
-ANTHROPIC_BASE_URL=http://127.0.0.1:8787  ANTHROPIC_AUTH_TOKEN=anything
-ANTHROPIC_MODEL=muse-spark  ANTHROPIC_DEFAULT_OPUS_MODEL=muse-spark
+npm run login
 ```
+
+A Chromium window opens. Log in with your Meta account. When you see the muse.ai chat UI, come back to the terminal and press Enter. The script writes:
+
+- `storage_state.json` — your browser cookies
+- `session.json` — Hatch session tokens (short-lived; re-run `npm run login` when they expire)
+
+Both are gitignored.
+
+### 3. Start the proxy
+
+```bash
+npm start
+```
+
+Logs `{"msg":"listening","host":"127.0.0.1","port":8787}`. Leave it running in its own terminal.
+
+Sanity check:
+
+```bash
+curl http://127.0.0.1:8787/healthz   # {"ok":true}
+curl http://127.0.0.1:8787/v1/models # one model entry: muse-spark
+```
+
+### 4. Use with Claude Code (scoped to the shell — won't touch your global `~/.claude` config)
+
+**PowerShell** (uses the bundled helper):
+
+```powershell
+. .\scripts\use-with-claude.ps1
+claude
+```
+
+Isolated per-project side chat (recommended — keeps muse.ai threads separate):
+
+```powershell
+. .\scripts\use-with-claude.ps1 my-project-name
+claude
+```
+
+**Bash / zsh**:
+
+```bash
+export ANTHROPIC_BASE_URL=http://127.0.0.1:8787
+export ANTHROPIC_AUTH_TOKEN=anything
+export ANTHROPIC_MODEL=muse-spark
+export ANTHROPIC_DEFAULT_OPUS_MODEL=muse-spark
+export ANTHROPIC_DEFAULT_SONNET_MODEL=muse-spark
+export ANTHROPIC_DEFAULT_HAIKU_MODEL=muse-spark
+export CLAUDE_CODE_SUBAGENT_MODEL=muse-spark
+# Per-project side chat:
+export ANTHROPIC_CUSTOM_HEADERS="X-Muse-Session: my-project-name"
+claude
+```
+
+Close the shell → Claude Code reverts to your real Anthropic account.
+
+### 5. Use with Codex / OpenAI SDK / Continue.dev / any OpenAI-compatible client
+
+```bash
+export OPENAI_BASE_URL=http://127.0.0.1:8787/v1
+export OPENAI_API_KEY=anything
+export OPENAI_MODEL=muse-spark
+# Optional per-session isolation:
+export OPENAI_DEFAULT_HEADERS='{"X-Muse-Session":"my-project-name"}'
+```
+
+Then run `codex`, your Python `openai` client, your IDE plugin — anything that respects `OPENAI_BASE_URL` will hit the proxy.
+
+**Python example**:
+
+```python
+from openai import OpenAI
+client = OpenAI(base_url="http://127.0.0.1:8787/v1", api_key="anything")
+print(client.chat.completions.create(
+    model="muse-spark",
+    messages=[{"role":"user","content":"hello"}],
+).choices[0].message.content)
+```
+
+### Troubleshooting (quick)
+
+- **`{"error":{"message":"bootstrap failed..."}}`** — cookies expired. Re-run `npm run login`.
+- **PowerShell curl JSON errors** — single-quoted strings in PS pass `"` verbatim but Windows strips them again. Use `Invoke-RestMethod` or send the body via `--data-binary "@body.json"`.
+- **Attestation dump** — set `DUMP_ATTESTATION=1` before `npm start` to write `attestation-dump.json` on the next handshake; `npm run inspect:attestation` decodes it.
+- **Verbose proxy log** — set `PROXY_DEBUG=1` before `npm start` to append per-chunk + per-poll diagnostics to `./proxy-debug.log`.
+
+Everything else: [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ## What works today
 
@@ -70,14 +159,18 @@ ANTHROPIC_MODEL=muse-spark  ANTHROPIC_DEFAULT_OPUS_MODEL=muse-spark
 - **Per-API-session side chats** — pass `X-Muse-Session: <any-string>` and the proxy creates a dedicated side chat on muse.ai for that key, continues it on subsequent calls, isolates history from other sessions. Omit the header → shared main chat (backward compatible). See [docs/architecture.md §2a](docs/architecture.md) and [memory/05-10-2026-side-chat-routing.md](memory/05-10-2026-side-chat-routing.md).
 - OpenAI `/v1/chat/completions` (stream + non-stream) and Anthropic `/v1/messages` (stream + non-stream) wire formats.
 - Automatic session re-bootstrap on first HatchClient open failure.
+- **Multiplex-pool HatchClient** — one Noise handshake amortized across all requests; concurrent requests multiplex over a single WS via per-stream dispatch. First caller pays ~500 ms handshake; the rest overlap. Closes + reopens on error.
+- **Token counts** via `js-tiktoken` (`cl100k_base` encoder) on `usage` for both OpenAI and Anthropic, stream + non-stream. Accurate for GPT-4-family, close-enough for Claude. Chars/4 fallback if the encoder fails to load.
+- **Cancel-on-disconnect** — Hono's request `AbortSignal` is threaded through `runChat` into every poll loop; a dropped HTTP client breaks out of chat waits + returns partial text.
+- **Images / widgets / app cards** surfaced as vendor extension `x_muse_presentations` / `x_muse_presentation`. Main chat only.
+- **Opt-in debug log** — set `PROXY_DEBUG=1` to append per-chunk + per-poll diagnostics to `./proxy-debug.log`. Off by default.
 
 ## Known limits
 
-- Text only. The agent can push images / widgets / app cards (`delta.presentation` events). Those are logged but not surfaced to the OpenAI/Anthropic client.
+- `x_muse_presentations` is captured on the main chat only — side chat (`X-Muse-Session`) polls `/chat/history` and never sees `delta.*` events.
 - Multi-turn conversation threading is server-side only. The proxy flattens your `messages[]` into a single prompt per request.
-- Faked token counts (zeros). Hatch does not expose a tokenizer.
-- No cancel-on-disconnect. A dropped client doesn't abort the in-flight Hatch request.
-- No connection pooling — one Noise handshake per proxy request (~500 ms).
+- Token counts use `cl100k_base` — accurate for OpenAI clients, approximate for Anthropic (Claude's vocab differs). Hatch itself exposes no tokenizer; this is a client-side estimate.
+- Pool multiplexes over one HatchClient; opening a second client is not implemented (if muse ever rate-limits per-WS we would need a client-set here).
 - Only tested on Windows 11 + Node 22. Most things should work elsewhere.
 
 ## Non-obvious things I discovered the hard way

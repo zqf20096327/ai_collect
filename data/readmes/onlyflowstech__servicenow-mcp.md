@@ -65,8 +65,11 @@ and **Codex** automatically; **Claude Desktop**, **Cursor**, **VS Code** and
 2. **Set up a connection:** `servicenow-mcp-setup`. It asks for your instance
    and credential, checks them against the instance, asks which tables to
    allow, and registers Claude Code and Codex if their CLIs are installed.
-   Choose **OAuth** when the wizard asks for the authentication type; Basic
-   is the wizard's default but is [deprecated by ServiceNow](#basic-default-deprecated-by-servicenow).
+   The wizard's authentication type defaults to **OAuth client credentials**,
+   so you can press Enter at that prompt. You need an Application Registry
+   entry on the instance first: see [OAuth 2.0](#oauth-20-recommended). Basic
+   is still offered, marked legacy, because ServiceNow is
+   [retiring it for REST calls](#basic-legacy-deprecated-by-servicenow).
 3. **Open your client and ask.** There is no server to start; the client
    launches `servicenow-mcp` itself.
 
@@ -114,19 +117,32 @@ instance. Press Ctrl+C at any point to stop; nothing will be saved.
 Profile name [dev]: dev
 ServiceNow instance (for example dev12345.service-now.com): dev12345.service-now.com
 Authentication:
-  1) basic (default)
-  2) oauth
-  3) apikey
+  1) oauth (default) - client credentials, recommended
+  2) apikey - inbound API key
+  3) basic - legacy, not recommended: ServiceNow is retiring it
+Choice [1]: 1
+
+OAuth client credentials need these on the instance:
+  - an Application Registry entry (System OAuth > Application Registry)
+    with a client ID and client secret
+  - the client credentials grant enabled for it
+  - an OAuth Application User: the integration user this server acts as,
+    with only the roles it needs, not an administrator
+Steps: README, section Authentication > OAuth 2.0.
+
+OAuth grant type:
+  1) client_credentials (default)
+  2) password
 Choice [1]: 1
 How should the credential be stored?:
   1) encrypted (default)
   2) reference
 Choice [1]: 1
-ServiceNow username: integration.user
+OAuth client id (not a secret): <your-client-id>
 
 Enter each secret now. Input is hidden — nothing you type from here
 is displayed.
-credential:
+clientSecret:
 
 Verifying against the instance...
   ok  https://dev12345.service-now.com accepted the credential.
@@ -161,7 +177,7 @@ ok    node: v22.11.0
 ok    server command: servicenow-mcp resolves on PATH; clients spawn it over stdio
 ok    config directory: ~/.servicenow-mcp (0700)
 ok    profile dev: instance: https://dev12345.service-now.com
-ok    profile dev: credential: basic credential resolves from its encrypted source
+ok    profile dev: credential: oauth clientSecret resolves from its encrypted source
 ok    profile dev: table access: 1 read, 1 write, 1 target(s)
 
 All checks passed.
@@ -191,11 +207,23 @@ servicenow-mcp-setup doctor --profile dev
 global install, and `servicenow-mcp setup` is an alias for
 `servicenow-mcp-setup`.
 
+If you choose Basic and the instance answers 401, the wizard explains the
+Basic Auth restriction and asks what next: `retry` with the same settings,
+switch to `oauth` (it discards the Basic credential and asks the OAuth
+questions, keeping the profile name and instance), or `stop`. Nothing is
+saved until a credential verifies.
+
 ### Scripted setup
 
 Pass any flag, or run without a terminal, and the wizard steps aside for the
 original non-interactive behavior — so CI and provisioning scripts are
-unaffected. `--non-interactive` forces it explicitly:
+unaffected. `--non-interactive` forces it explicitly. Only the interactive
+wizard defaults to OAuth. `servicenow-mcp-profile create` has no default you
+should rely on: pass `--auth-type oauth` (recommended) or `--auth-type basic`.
+Left out, it still creates a Basic profile, as it always has, so existing
+scripts keep working, and it prints a deprecation notice only when standard
+error is an interactive terminal, so output a script captures is unchanged. A
+future release may require the flag.
 
 ```bash
 servicenow-mcp-setup --non-interactive --clients none --json
@@ -217,7 +245,9 @@ servicenow-mcp-setup grant --profile dev --read incident,problem --write inciden
 `grant` and the wizard print a warning, and still grant, when write access
 lands on a privilege-sensitive table: role, group, approval, script,
 property, user or authentication tables such as `sys_user_has_role`,
-`sysapproval_approver` or `sys_script`.
+`sysapproval_approver`, `sys_script` or `sp_widget`, and the MID Server queue
+(`ecc_queue` and its rotation shards), whose records can run commands on MID
+Server hosts.
 
 `--force` regenerates the owner/client identifiers but deliberately preserves
 `SN_PROFILE_ENCRYPTION_KEY`, which decrypts every credential envelope in
@@ -334,7 +364,8 @@ MCP_OWNER_ID=local-owner \
 MCP_CLIENT_ID=local-client \
 SN_PROFILE_NAME=dev \
 SN_INSTANCE=https://yourinstance.service-now.com \
-SN_USER=your_user \
+SN_AUTH_TYPE=oauth \
+SN_CLIENT_ID=your-non-secret-client-id \
 SN_ALLOWED_READ_TABLES=incident,problem,change_request \
 SN_ALLOWED_WRITE_TABLES=incident,change_request \
 SN_TABLE_ACCESS_TARGETS='[{"table":"incident","kind":"canonical","tools":["sn_query","sn_get","sn_create","sn_update","sn_incident_add_comment","sn_incident_add_work_note","sn_delete","sn_batch"],"closureComplete":true,"relatedTables":["incident"]},{"table":"problem","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["problem"]},{"table":"change_request","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["change_request"]}]' \
@@ -379,8 +410,8 @@ without putting them in argv, and it writes the file with the right ownership
 and mode:
 
 ```bash
-servicenow-mcp-profile create --name dev  --instance https://mydev.service-now.com  --auth-type basic --username admin    --source reference --provider env
-servicenow-mcp-profile create --name prod --instance https://myprod.service-now.com --auth-type basic --username api.user --source reference --provider env
+servicenow-mcp-profile create --name dev  --instance https://mydev.service-now.com  --auth-type oauth --client-id <dev-client-id>  --source reference --provider env
+servicenow-mcp-profile create --name prod --instance https://myprod.service-now.com --auth-type oauth --client-id <prod-client-id> --source reference --provider env
 
 servicenow-mcp-setup grant --profile dev  --read incident,problem --write incident
 servicenow-mcp-setup grant --profile prod --read incident
@@ -395,8 +426,9 @@ The resulting `~/.servicenow-mcp/config.json` looks like this. Note
   "profiles": {
     "dev": {
       "instance": "https://mydev.service-now.com",
-      "username": "admin",
-      "credential": { "type": "secret_ref", "provider": "env", "reference": "SN_PASSWORD_DEV" },
+      "authType": "oauth",
+      "clientId": "your-dev-client-id",
+      "clientSecret": { "type": "secret_ref", "provider": "env", "reference": "SN_CLIENT_SECRET_DEV" },
       "description": "Development instance",
       "tableAccess": {
         "readTables": ["incident", "problem"],
@@ -428,7 +460,7 @@ The resulting `~/.servicenow-mcp/config.json` looks like this. Note
 ```
 
 Have the approved supervisor, orchestrator, keychain, or secret manager provide
-the values referenced by `SN_PASSWORD_DEV` and `SN_PASSWORD_PROD` in the
+the values referenced by `SN_CLIENT_SECRET_DEV` and `SN_CLIENT_SECRET_PROD` in the
 environment the server is spawned with, or in `~/.servicenow-mcp/server.env`,
 which the server falls back to. Do not type either value into a shell command,
 command argument, dotenv file, or command history.
@@ -492,8 +524,10 @@ administrative write; the MCP boundary never consults it.
 
 If no config file exists, canonical `SN_*` connection values are exposed only
 through an explicit `SN_PROFILE_NAME` mapping. For example, set
-`SN_PROFILE_NAME=dev` with `SN_INSTANCE`, `SN_USER`, and `SN_PASSWORD`, then
-call tools with `profile: "dev"`. Without `SN_PROFILE_NAME`, bare connection
+`SN_PROFILE_NAME=dev` with `SN_INSTANCE`, `SN_AUTH_TYPE=oauth`, `SN_CLIENT_ID`
+and `SN_CLIENT_SECRET`, then call tools with `profile: "dev"`. Without
+`SN_AUTH_TYPE` the environment profile is Basic (`SN_USER` and `SN_PASSWORD`),
+as it has always been; set `SN_AUTH_TYPE` explicitly. Without `SN_PROFILE_NAME`, bare connection
 variables create no profile and cannot route a request. Secret values remain
 runtime-only environment references and are never persisted as plaintext.
 
@@ -501,13 +535,19 @@ runtime-only environment references and are never persisted as plaintext.
 
 ## Authentication
 
-Three ServiceNow auth types are available per profile, selected with `authType` (default: `basic`). Profile configuration is managed out of band by the service operator. This is the only authentication involved: the transport is stdio, so there is no endpoint in front of the server to protect.
+Three ServiceNow auth types are available per profile, selected with `authType`. The setup wizard and every example here use OAuth client credentials. A saved profile that has no `authType` is read as Basic, because that is what such a profile has always meant; saved profiles are never rewritten. Profile configuration is managed out of band by the service operator. This is the only authentication involved: the transport is stdio, so there is no endpoint in front of the server to protect.
 
 > **Heads up:** ServiceNow's [inbound Basic Auth restriction program](https://support.servicenow.com/kb?id=kb_article_view&sysparm_article=KB3096078) is phasing out basic auth for API requests — instances can start hard-rejecting it at any time (exemptions: Web-Service-Access-Only accounts or the `snc_basic_auth_api_access` role). **OAuth is the recommended auth type.** The server prints a startup warning for basic-auth profiles.
 
 ### OAuth 2.0 (recommended)
 
-`client_credentials` grant (default) — create an OAuth API endpoint client in ServiceNow (**System OAuth → Application Registry**) and reference the secret via `env:` indirection:
+`client_credentials` grant (default). On the instance you need three things:
+
+1. An **Application Registry** entry, an OAuth API endpoint for external clients (**System OAuth → Application Registry**), which gives you a client ID and a client secret.
+2. The **client credentials grant enabled** for it: on current releases the system property `glide.oauth.inbound.client.credential.grant_type.enabled` must be `true`.
+3. An **OAuth Application User** set on that entry: the integration user the server acts as. Give it the least roles that do the job, not an administrator.
+
+Then create the profile with the wizard (`servicenow-mcp-setup`, press Enter at the authentication prompt) or `servicenow-mcp-profile create --auth-type oauth --client-id <client-id>`, or reference the secret via `env:` indirection:
 
 ```json
 {
@@ -553,7 +593,9 @@ For instances using Inbound Authentication Profiles with API keys. The header na
 }
 ```
 
-### Basic (default, deprecated by ServiceNow)
+### Basic (legacy, deprecated by ServiceNow)
+
+Basic is no longer the wizard's default. Use it only for an instance that still accepts it.
 
 ```json
 {
@@ -563,7 +605,7 @@ For instances using Inbound Authentication Profiles with API keys. The header na
 }
 ```
 
-On a 401, the error explains the Basic Auth restriction program (KB3096078) and how to move to OAuth.
+On a 401 for a basic-auth profile, the error explains the Basic Auth restriction program (KB3096078): the role `snc_basic_auth_api_access` or a Web-Service-Access-Only account is needed, and OAuth is the recommended way to move off Basic Auth. The setup wizard gives the same explanation when it verifies the credential.
 
 ### Timeouts & retries
 
@@ -626,7 +668,8 @@ export SN_ALLOWED_WRITE_TABLES="incident,change_request"
 export SN_TABLE_ACCESS_TARGETS='[{"table":"incident","kind":"canonical","tools":["sn_query","sn_get","sn_create","sn_update","sn_incident_add_comment","sn_incident_add_work_note","sn_delete","sn_batch"],"closureComplete":true,"relatedTables":["incident"]},{"table":"problem","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["problem"]},{"table":"change_request","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["change_request"]}]'
 export SN_PROFILE_NAME="dev"
 export SN_INSTANCE="https://yourinstance.service-now.com"
-export SN_USER="your_username"
+export SN_AUTH_TYPE="oauth"
+export SN_CLIENT_ID="your-non-secret-oauth-client-id"
 npm run build
 npm start
 ```
@@ -715,9 +758,41 @@ in this section is needed to use this server.
 |------|-------------|
 | `sn_relationships` | CMDB CI graph traversal — upstream/downstream/both, configurable depth |
 | `sn_attach` | List attachments, return downloads as inline base64, and upload inline base64 content; never touches a host filesystem path |
-| `sn_syslog` | Query system logs with severity/source/time filters |
-| `sn_codesearch` | Search business rules, script includes, client scripts, etc. Part of the default read grant, so a plain read grant on a code table allows it |
+| `sn_syslog` | Query system logs with severity/source/time filters, newest first. `tail: true` starts a tail (the newest entries, oldest first, plus a `cursor`); each later call with `after_cursor` returns only the entries after it, oldest first, plus a new `cursor` ([Tailing the system log](#tailing-the-system-log)) |
+| `sn_codesearch` | Search business rules, script includes, client scripts, etc., with a snippet around each match ([Code search](#code-search)). Part of the default read grant, so a plain read grant on a code table allows it |
 | `sn_discover` | Discover tables, scoped apps, store apps, plugins |
+
+#### Tailing the system log
+
+`sn_syslog` can follow the log without re-reading it. The first call sends
+`tail: true` and gets the newest `limit` entries (inside the `since` window),
+oldest first, and a `cursor`. Each later call sends that cursor as
+`after_cursor` and gets only the entries created after it, oldest first, and a
+new `cursor`; poll no faster than every few seconds.
+
+- **No skips, no repeats.** Many log rows share one `sys_created_on` second, so
+  the cursor holds the second and the row's `sys_id`, and a call returns the
+  rows after that pair. It is an opaque token: pass it back as given.
+- **`has_more`.** If more than `limit` entries are waiting, the call returns
+  `limit` of them with `has_more: true` and a cursor at the last one; call again
+  with it. A response cut to fit the byte budget does the same, and the cursor
+  always names the last entry actually returned. Tail pages carry no `total` and
+  no `next_offset`, and `offset` cannot be combined with a tail.
+- **Same filters on every call.** The cursor is bound to the `level`, `source`
+  and `message` it was issued for. A call that changes them is refused (so is a
+  malformed, oversized or altered cursor) with a fixed message that does not
+  repeat the cursor. `since` applies to the first call only, but a cursor older
+  than the longest `since` (525,600 minutes, one year) is refused with a fixed
+  message: start a new tail. With nothing to return, the call gives the same
+  position back, so keep polling with it. If the first call finds no entries in
+  its window it returns no cursor; call it again.
+- **Reads go straight to the instance**, never through the metadata cache, and
+  use the same table and field policy as an ordinary `sn_syslog` read. A tail
+  also reads `sys_id` and `sys_created_on` to place the cursor, so a field policy
+  that withholds either refuses it.
+- **Limits.** Order is by creation second, then `sys_id`. A row the instance
+  stores late with a creation time at or before the cursor's second is not seen
+  by a tail that has already moved past it.
 
 ### Testing & Automation
 
@@ -843,14 +918,86 @@ Two failure modes are worth knowing:
 builds the request policy with only `allowedHosts` and `allowedOrigins`, so the
 limit is always 1 MiB and no environment variable changes it.
 
+### Code search
+
+`sn_codesearch {search_term, table?, field?, limit?, offset?}` finds records
+whose script contains the text, in the business rules, script includes, UI
+scripts, client scripts, scripted REST operations, ES modules and ATF step
+scripts of the instance. Each row
+is `{table, table_label, sys_id, name, snippet, line}`: `snippet` is about 200
+characters of the script centred on the first match (`...` marks a cut) and
+`line` is the line that match is on. The comparison is the instance's
+case-insensitive `LIKE`; if the text holds no literal match for the term, the
+snippet is the head of the script and the row has no `line`.
+
+- **One table or all.** With `table`, one table is searched (and `field` can
+  name another field of it, such as `name`). With none, every code table the
+  profile may read is searched, and the tables left out are named in a warning
+  (`Not searched, because this profile does not allow sn_codesearch to read
+  them: sys_script, sys_ws_operation. To include one, run servicenow-mcp-setup
+  grant --profile <profile> --read <table> --tools sn_codesearch.`). A table is
+  left out when the table policy does not bind `sn_codesearch` to it or the field
+  policy does not let the profile read its script field. The call fails only when
+  none can be read, and the error says why.
+- **ES modules** are `sys_module`: the script is its `content` column and a row
+  is named by its `path`, because the table has no `name`. A profile reads it
+  once the table policy allows it: `servicenow-mcp-setup grant --profile dev
+  --read sys_module`, or a read wildcard. It is cached by default like the other
+  code tables, and `fields=all` reads `content`. A default `sn_query` of it lists
+  `sys_id`, `path` and `sys_updated_on`. `sys_module` is a built-in system table
+  (the 24th), so a `"*"` entry in the field policy does not narrow it: a profile
+  whose `"*"` entry limits `readable` and that can read `sys_module` now reads
+  `content`, where it did not before. To narrow it, name it in `fieldPolicy`
+  (`"sys_module": { "readable": ["sys_id", "path"] }`).
+- **ATF step scripts** are searched with `table: "sys_atf_step"`. A step's script
+  is not a column of the step but the value of its script input, a row of
+  `sys_variable_value`. The search reads only the rows whose `document` is
+  `sys_atf_step` and whose `variable` ends with `script`, a condition fixed in
+  the server: no argument can widen it to another table's variables, and `field`
+  is refused. Each result is the step (`sys_id` is the step's), named
+  `<test name> > step <order>` where `order` is the step's own order value, and
+  the steps and then their tests are read by id to say so. Three tables are read,
+  so the profile needs read on `sys_variable_value`, `sys_atf_step` and
+  `sys_atf_test`, each bound to `sn_codesearch`:
+  `servicenow-mcp-setup grant --profile dev --read sys_variable_value,sys_atf_step,sys_atf_test`
+  (or `--tools sn_codesearch` to bind only this tool: `sys_variable_value` also
+  holds other tables' variable values, which that grant does not let this tool
+  search). `grant --atf` binds those tables to `sn_atf_author` only, so a profile
+  that has it adds this grant on top. A search with no `table` includes ATF
+  step scripts when all three are held and names `sys_atf_step` in the warning
+  when they are not. These tables are not in the default cache list: the reads go
+  straight to the instance.
+- **A page is shared among the tables.** A search of several tables takes turns:
+  each table's first match (script includes first, then business rules, UI
+  scripts, client scripts, scripted REST operations, ES modules), then each
+  table's second,
+  and so on, each table in `sys_id` order. No table crowds the others off page
+  1, and the order depends only on the data, so `offset` and `next_offset` page
+  through it exactly. A table with few matches leaves its share to the others.
+- **Large pages degrade, they do not fail.** A script can be hundreds of
+  kilobytes, so a page of them does not fit one response. A search of one table
+  with `limit` 49 or less reads the scripts with the rows, in one request (and
+  falls back to the two steps below if that page passes the cap). A larger page, or a search of several tables, first finds the rows without
+  their scripts and then reads the scripts of the rows it returns, 50 at a time,
+  narrowing a batch that is still too large. One search spends at most 12 such
+  requests and 8 MiB, and only for the rows one response can hold (about 280);
+  when that is spent, the remaining rows keep an empty `snippet` and a warning
+  says how many (lower `limit`). A script too large to read even on its own gives
+  its row an empty `snippet` and `note: "script too large to preview"`; read it
+  with `sn_get`. If the rows alone pass the response cap, the
+  error says the response was too large and to lower `limit` or `offset`.
+- **The scripts are still field-policy readable fields.** The search reads the
+  identifier, the name and the searched field of each table, each subject to the
+  profile's field policy, and the sensitive-name rules apply to `field`.
+
 ### Metadata cache
 
 Stable ServiceNow metadata reads are cached per instance and credential identity
 for 24 hours by default. The default cached table patterns are
 `sys_glide_object`, `sys_dictionary`, `sys_db_object`, `sys_app`, `sys_plugins`,
-`sys_metadata*`, `sys_flow*`, and the five code tables `sn_codesearch`
+`sys_metadata*`, `sys_flow*`, and the six code tables `sn_codesearch`
 searches: `sys_script`, `sys_script_include`, `sys_ui_script`,
-`sys_script_client`, and `sys_ws_operation`. A repeated code search or
+`sys_script_client`, `sys_ws_operation`, and `sys_module`. A repeated code search or
 `sn_query` page on those tables is served from the cache while the table's
 watermark is unchanged. Set `metadataCache.ttlMs` and
 `metadataCache.tables` on a file-backed profile, or `SN_METADATA_CACHE_TTL_MS`
@@ -908,7 +1055,7 @@ reads were served: `hit` (all from the cache), `miss` (from ServiceNow: nothing
 cached yet, the watermark moved, the entry expired, the table could not be
 cached just then, or the response is small and not kept), `bypass` (a `force_recache: true` refresh), or `mixed` (the
 call made several cacheable reads with different outcomes, such as an
-`sn_codesearch` with no `table` over the five code tables). It is absent when
+`sn_codesearch` with no `table` over the code tables). It is absent when
 the call read no cache-eligible table. `timing` is `{ total_ms, upstream_ms,
 watermark_ms }` in whole milliseconds, measured wall-clock: `total_ms` is the
 whole tool call; `upstream_ms` is the time during which at least one request to
@@ -1109,16 +1256,27 @@ servicenow-mcp-setup grant --profile dev --flows   # sn_flow_view's 15 tables, b
 A read grant without `--tools` binds `sn_query`, `sn_get`, `sn_aggregate`,
 `sn_schema` and `sn_codesearch` to each table it names. `sn_codesearch` is
 authorized per code table it searches (`sys_script`, `sys_script_include`,
-`sys_ui_script`, `sys_script_client`, `sys_ws_operation`), so
+`sys_ui_script`, `sys_script_client`, `sys_ws_operation`, `sys_module`), so
 `servicenow-mcp-setup grant --profile dev --read sys_script_include` lets that
-profile search script includes; a search with no `table` needs a read grant on
-all five. On any other table the binding is inert. **A profile written before
+profile search script includes. A search with no `table` searches the code tables
+the profile may read and names the others in a warning; it fails only when the
+profile may read none of them. On any other table the binding is inert. **A profile written before
 `sn_codesearch` was a default keeps the tool list it was saved with** and is not
 rewritten: re-run the same `grant --read <code table>` to add it, or pass
 `--tools sn_codesearch` to add only that tool. Neither removes a tool. The
 profile's field policy still decides the script field: `sn_codesearch` is
 denied on a code table whose script field is not readable, exactly as `sn_query`
-is for that field.
+is for that field (in a search with no `table` that table is left out and named
+in the warning instead).
+
+A call the table policy refuses says which table and which tool were refused, and
+whether the table is missing from the profile or only the tool is, and it gives
+the command that lifts it: `Table access was denied by policy: "sys_script_include"
+is granted to this profile, but not for sn_codesearch. To allow it, run:
+servicenow-mcp-setup grant --profile <profile> --read sys_script_include --tools
+sn_codesearch`. `--tools` adds to the tools a table already has, so that command
+removes nothing. The message names only the table and the tool of that call,
+never the rest of the profile's rules.
 
 Allowlist entries may be exact table names or the literal `*` to allow every
 table for that operation. Table names are trimmed, lowercased, deduplicated,
@@ -1135,8 +1293,8 @@ and must be valid ServiceNow identifiers.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `SN_ALLOWED_READ_TABLES` | ❌ | deny all | Tables permitted for read operations on the explicit `SN_PROFILE_NAME` environment profile only. Use `*` to allow every readable table. |
-| `SN_ALLOWED_WRITE_TABLES` | ❌ | deny all | Tables permitted for create, update, incident journal append, delete, upload, and confirmed batch operations on the explicit `SN_PROFILE_NAME` environment profile only. Use `*` to allow every writable table. Write permission never implies read permission. |
+| `SN_ALLOWED_READ_TABLES` | ❌ | deny all | Tables permitted for read operations on the explicit `SN_PROFILE_NAME` environment profile only. Use `*` to allow every readable table except `sys_audit`, `sys_journal_field`, `sys_history_line`, `sys_audit_delete`, `sys_attachment_doc` and `sys_email`, which are covered only when named (see [Field policy](#field-policy)). |
+| `SN_ALLOWED_WRITE_TABLES` | ❌ | deny all | Tables permitted for create, update, incident journal append, delete, upload, and confirmed batch operations on the explicit `SN_PROFILE_NAME` environment profile only. Use `*` to allow every writable table except the same six named-only tables. Write permission never implies read permission. |
 | `SN_TABLE_ACCESS_TARGETS` | Required for exact allowlisted caller-addressable tables; optional with `*` | `[]` | Trusted JSON classification with `table`, exact permitted `tools`, `kind` (`canonical`, `alias`, `view`, or `extension`), literal `closureComplete: true`, and `relatedTables`: the target itself plus any backing or parent tables the operator declares. The loader checks that every related table has the target's operation permission; it does not derive the list from the instance, and the list grants no access. A self-only list is valid for a `canonical` target; `alias`, `view` and `extension` targets must name at least one backing table, and a view or alias should declare every table it reads, because it returns data from each of them whatever the list says. With `*`, omitted target entries use the wildcard operation grant; explicit target entries can still narrow tools and check their related tables. |
 | `SN_FIELD_POLICY_DEFINITIONS` | ❌ | no narrowing | Field policy for the explicit `SN_PROFILE_NAME` environment profile only, like the `SN_ALLOWED_*` variables. **If `~/.servicenow-mcp/config.json` exists, setting this variable stops startup**; give those profiles their own `fieldPolicy` instead. The value is trusted JSON, at most 65,536 characters: either a table map keyed by table name or `*`, the same shape as a profile's `fieldPolicy`, or an object holding the profile keys (`fieldPolicy`, or `readableTableFields` / `writableTableFields`), not both. Each field set is a list of exact field names or `"*"`; `["*"]` means `"*"` in that exact form only, and patterns such as `"u_*"` are rejected. A malformed value stops startup with the key named. Sensitive field names are always denied. See [Field policy](#field-policy). |
 | `SN_ENCODED_QUERY_READ_POLICY` | ❌ | deny all | Trusted JSON object containing bounded `rules` for an exact `sn_query`/table pair. Each rule requires `maxLength`, `maxTerms`, readable `fields`, supported `operators`, `maxLimit`, `maxOffset`, and `maxResponseBytes`. No rule can authorize a write or another tool. |
@@ -1163,8 +1321,9 @@ startup configuration. File-backed profile example:
   "profiles": {
     "dev": {
       "instance": "https://dev.service-now.com",
-      "username": "integration.user",
-      "credential": "env:SN_PASSWORD",
+      "authType": "oauth",
+      "clientId": "your-oauth-client-id",
+      "clientSecret": "env:SN_CLIENT_SECRET",
       "tableAccess": {
         "readTables": ["incident", "sys_dictionary"],
         "writeTables": ["incident"],
@@ -1186,7 +1345,23 @@ startup configuration. File-backed profile example:
 `run`/`run-suite` return migration guidance; use `sn_atf_run` with an explicit
 `atf.execute` profile grant. Typed ATF steps use the authenticated native form
 to save and verify inputs and output references without ACL changes or an
-installed application. See [ATF workflow](docs/ATF-WORKFLOW.md).
+installed application. `sn_atf_author` checks each step that names a table
+against the profile's grants: a `record_query`, `record_validation`,
+`field_values_validation` or `open_existing_record` step needs a read grant on its
+table, and an `open_new_form` or `set_field_values` step a write grant (a
+named-only table must be named, for either). The conditions of the three steps
+that have them may use only the operators that compare a field with a literal
+(`=`, `!=`, `<`, `<=`, `>`, `>=`, `LIKE`, `NOT LIKE`, `STARTSWITH`, `ENDSWITH`,
+`IN`, `NOT IN`, `ISEMPTY`, `ISNOTEMPTY`, `BETWEEN`), name plain fields the field
+policy lets the profile read (no dot-walks), and may refer to an earlier step's
+output only by its record id or sys_id (`record_id`, `first_record`, `sys_id`
+or `user`), as may the values a `set_field_values` step sets; a refused term
+refuses the whole call. The fields a `set_field_values` step sets must be
+writable on its table under the profile's field policy, as for `sn_update`. `record_query` and `record_validation` also refuse
+`enforce_security: false`; leave it out and it stays `true`. The impersonated
+user's ACLs still apply on top of all this. Suites authored in the instance are
+not checked by the server's table grants, and `atf.execute` stays opt-in. See
+[ATF workflow](docs/ATF-WORKFLOW.md).
 
 #### Field policy
 
@@ -1196,6 +1371,13 @@ denies a table the profile grants. A profile with no field policy may read and
 write every field of a granted table, except that sensitive-looking names
 (`password`, `token`, `secret`, `api_key` and similar) are always denied, and
 the class and domain fields below must be listed before they can be written.
+Fields of type `password`, `password2`, `masked` or `encrypted_text` are denied
+the same way, whatever their name, and a `sys_properties` value shows only for
+a known non-secret `type`. The types come from a cached `sys_dictionary` read,
+so the integration user needs read access to `sys_dictionary` and
+`sys_db_object`; without it the tools refuse, unless the profile sets
+`"fieldTypes": { "dictionary": "not_required" }` to hide by name only (see
+[Production security](docs/PRODUCTION-SECURITY.md#password-type-fields)).
 
 State it on a profile in `~/.servicenow-mcp/config.json`, beside
 `tableAccess`, in one of two forms. A profile that states both fails to load.
@@ -1284,20 +1466,23 @@ The same policy in the list form:
 }
 ```
 
-**Which tables a `"*"` entry reaches.** Tables fall into three groups:
+**Which tables a `"*"` entry reaches.** Tables fall into four groups:
 
 - **ITSM tables:** `incident`, `change_request`, `problem`, `sc_request`,
   `sc_req_item`, `sc_task`, `task`, `cmdb_ci`, `cmdb_ci_server`,
   `cmdb_ci_computer`, `kb_knowledge`.
 - **Every table without a built-in entry:** `u_*` and `x_*` tables, and
   platform tables such as `change_task` and `sys_properties`.
-- **The 23 system tables:** `sys_script`, `sys_script_include`,
-  `sys_script_client`, `sys_ui_script`, `sys_ws_operation`, `sys_user`,
+- **The 24 system tables:** `sys_script`, `sys_script_include`,
+  `sys_script_client`, `sys_ui_script`, `sys_ws_operation`, `sys_module`, `sys_user`,
   `sys_user_group`, `sys_user_grmember`, `sys_db_object`, `sys_app`,
   `sys_store_app`, `v_plugin`, `sys_atf_test`, `sys_atf_test_suite`,
   `sys_atf_test_suite_test`, `sys_atf_test_result`, `sys_atf_step`,
   `sys_element_mapping`, `sys_variable_value`, `sys_atf_test_suite_result`,
   `sys_atf_test_result_step`, `sys_atf_agent`, `syslog`.
+- **The 6 named-only tables:** `sys_audit`, `sys_journal_field`,
+  `sys_history_line`, `sys_audit_delete`, `sys_attachment_doc`, `sys_email`. A
+  `"*"` entry reaches them once the profile names them in `tableAccess` (below).
 
 On an ITSM table or a table without a built-in entry, named in the policy or
 not, `readable` and `writable` each resolve from the table's own entry, then
@@ -1309,10 +1494,71 @@ projections, trimmed to the effective `readable` set.
 A `"*"` entry never reaches a system table, named or not: each key comes from
 the table's own entry, or else covers every field. The system tables include
 the script tables (`sys_script`, `sys_script_include`, `sys_script_client`,
-`sys_ui_script`, `sys_ws_operation`), whose records hold server- or
+`sys_ui_script`, `sys_ws_operation`, `sys_module`), whose records hold server- or
 client-side code, and the user and group tables (`sys_user`,
 `sys_user_group`, `sys_user_grmember`). Name a system table to narrow it, and
 grant it in `tableAccess` only deliberately.
+
+**Six tables are granted by name.** A `"*"` entry in `readTables` or
+`writeTables` covers every other table, but not `sys_audit`, `sys_journal_field`,
+`sys_history_line`, `sys_audit_delete`, `sys_attachment_doc` or `sys_email`.
+Their rows hold the old and new values of other tables' fields, comments and
+work notes, the history built from them, deleted records, attachment content
+and email bodies. A profile reaches one only when `tableAccess` names it, for
+example
+`servicenow-mcp-setup grant --profile <profile> --read sys_audit --tools sn_query`.
+Without that, every tool refuses it, `sn_query`, `sn_get`, `sn_aggregate`,
+`sn_schema` and `sn_batch` included, and the message names the table and the
+grant that allows it. A `relatedTables` list that reaches one of them under a
+`"*"` grant stops the profile loading, and the message names the table and says
+to grant it by name.
+
+Once named, these tables follow the profile's field policy like an ITSM table:
+a `"*"` field entry narrows them, and an entry for the table narrows or widens
+them. A read that names no `fields` leaves out the value columns, which are asked
+for by name: `oldvalue` and `newvalue` for `sys_audit`; `value` for
+`sys_journal_field`; `old`, `new`, `old_value` and `new_value` for
+`sys_history_line`; `payload` for `sys_audit_delete`; `data` for
+`sys_attachment_doc`; and `body`, `body_text`, `subject`, `recipients`,
+`copied`, `blind_copied`, `reply_to`, `headers` and `error_string` for
+`sys_email`. `sn_attach` is unchanged: it uses the Attachment API, under the
+grants for `sys_attachment` and the record's table, and never reads
+`sys_attachment_doc`.
+
+**A `"*"` write grant does not cover three ATF tables.** `sys_atf_step`,
+`sys_variable_value` and `sys_element_mapping` hold the step types, input values
+and pill mappings that `sn_atf_author` checks when it adds a step. Under a `"*"`
+write grant they are written by `sn_atf_author` only; `sn_create`, `sn_update`, `sn_delete`, `sn_batch` and
+attachment uploads reach them only when `tableAccess` names the table for write,
+and the refusal names the table and the grant that allows it. Reads are
+unchanged. `sys_variable_value` and `sys_element_mapping` also hold other
+variables' values and mappings (catalog variables, for example), so a profile
+that writes those with the generic tools needs to name them.
+
+**Database views and extension tables are not covered by the name list.** The
+six tables are matched by table name. A database view built over one of them (a
+`sys_db_view` that joins any of the six) has a different name, so a `"*"` grant
+reaches the view and, through it, the columns of the joined table. The same holds
+for a custom table that extends one of the six. Do not grant such a view or table
+unless you mean to expose those rows, and on a profile with a `"*"` grant ask
+your instance administrator to review database views first; a profile with an
+explicit table list never reaches a view it does not name. To have the loader
+check it, declare the view as a `view` target with every table it reads in
+`relatedTables`: the profile then fails to load unless it also names each of
+those tables (for a named-only table, by name).
+
+**Code tables list without their scripts.** A read of `sys_script`,
+`sys_script_include`, `sys_ui_script`, `sys_script_client` or `sys_ws_operation`
+that names no `fields` returns identifiers and metadata, not the script body, so
+a page of them is not cut short by a few large bodies. For `sys_script_include`
+that is `sys_id`, `name`, `api_name`, `active` and `sys_updated_on`; the others
+keep `sys_id`, `name`, `active`, `sys_updated_on` and what identifies them
+(`collection` and `when` for a business rule, `table` and `type` for a client
+script, `http_method` and `relative_path` for a scripted REST operation, `global`
+for a UI script). The body is one named field away, and `fields=all` and
+`response_format: "detailed"` still include it:
+`sn_query {table: "sys_script_include", fields: "sys_id,name,script"}`. A profile
+that states its own `defaults` for one of these tables keeps them.
 
 **Read-only profiles.** A `"*"` entry with `writable: []` does not make a
 profile read-only, because it never reaches the system tables. To make a
@@ -1329,6 +1575,31 @@ Otherwise the write is denied with:
 
 ```text
 Write denied by policy: field "sys_domain" on "incident" changes the record's class or domain, so a writable wildcard never covers it. List it explicitly in fieldPolicy.incident.writable to allow this write.
+```
+
+**Record payload columns.** Some columns carry other records' content or
+packaged content, so no wildcard covers them: not the open default of a
+profile with no field policy, a `"*"` entry, or `"*"` on the table's own
+entry. They are `payload` and `payload_diff` on `sys_update_xml`,
+`sys_update_version`, `sys_update_preview_xml`, `sys_update_diff`,
+`sys_sync_preview_remote`, `sys_upgrade_history_log`, `sys_metadata_link`,
+`sys_metadata_delete`, `sys_audit_delete`, `sys_archive_log` and
+`clone_preserved_data`; `payload` on `ecc_queue`, `data_replication_queue`,
+`sys_rt_change_log`, `sys_hub_snapshot` and `sys_hub_flow_version`; `payload`
+and `payload_short` on `sys_replication_queue`; `payload` and
+`previous_payload` on every `cdc_queue_*` table except `cdc_queue_state_*`;
+`data` on `sys_hub_snapshot_chunk`; and
+`encoded_keystore` on `sn_disco_certmgmt_certificate_ca_credentials`. The
+numbered rotation shards of the queue tables (`ecc_queue0003`,
+`sys_replication_queue5`, ...) are covered too, each as its own table. Each
+column is read only where it is named in that table's own `readable`, and
+written only where it is named in its own `writable`. Until then it is
+refused by name and as a filter, order, group-by, aggregate or write field,
+and is left out of `fields=all`, detailed and default reads and write
+echoes. A named read is denied with:
+
+```text
+Read denied by policy: field "payload" on "sys_update_xml" holds record payloads, so a readable wildcard never covers it. List it explicitly in fieldPolicy.sys_update_xml.readable to allow this read.
 ```
 
 **`readable: []` and `writable: []`.** `readable: []` makes a table
@@ -1490,7 +1761,7 @@ smaller.
 | `SN_INSTANCE` | ✅* | — | Instance URL (e.g. `https://yourinstance.service-now.com`) |
 | `SN_USER` | ✅* | — | ServiceNow username (basic auth / OAuth password grant) |
 | `SN_PASSWORD` | ✅* | — | ServiceNow password (basic auth / OAuth password grant) |
-| `SN_AUTH_TYPE` | ❌ | `basic` | Auth scheme: `basic`, `oauth`, or `apikey` |
+| `SN_AUTH_TYPE` | ❌ | `basic` (legacy; set `oauth` explicitly) | Auth scheme: `basic`, `oauth`, or `apikey` |
 | `SN_CLIENT_ID` | ❌ | — | OAuth client id (`SN_AUTH_TYPE=oauth`) |
 | `SN_CLIENT_SECRET` | ❌ | — | OAuth client secret (`SN_AUTH_TYPE=oauth`) |
 | `SN_GRANT_TYPE` | ❌ | `client_credentials` | OAuth grant: `client_credentials` or `password` |
@@ -1576,74 +1847,4 @@ MCP_OWNER_ID=local-owner \
 MCP_CLIENT_ID=local-client \
 SN_ALLOWED_READ_TABLES=incident,problem,change_request \
 SN_ALLOWED_WRITE_TABLES=incident,change_request \
-SN_TABLE_ACCESS_TARGETS='[{"table":"incident","kind":"canonical","tools":["sn_query","sn_get","sn_create","sn_update","sn_incident_add_comment","sn_incident_add_work_note","sn_delete","sn_batch"],"closureComplete":true,"relatedTables":["incident"]},{"table":"problem","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["problem"]},{"table":"change_request","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["change_request"]}]' \
-SN_PROFILE_NAME=dev \
-SN_INSTANCE=https://yourinstance.service-now.com \
-SN_USER=your_user \
-npm start
-
-# Build and run with source maps for local development
-MCP_OWNER_ID=local-owner \
-MCP_CLIENT_ID=local-client \
-SN_ALLOWED_READ_TABLES=incident,problem,change_request \
-SN_ALLOWED_WRITE_TABLES=incident,change_request \
-SN_TABLE_ACCESS_TARGETS='[{"table":"incident","kind":"canonical","tools":["sn_query","sn_get","sn_create","sn_update","sn_incident_add_comment","sn_incident_add_work_note","sn_delete","sn_batch"],"closureComplete":true,"relatedTables":["incident"]},{"table":"problem","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["problem"]},{"table":"change_request","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["change_request"]}]' \
-SN_PROFILE_NAME=dev \
-SN_INSTANCE=https://yourinstance.service-now.com \
-SN_USER=your_user \
-npm run dev
-```
-
-### Testing with MCP Inspector
-
-Use the isolated, exactly locked Inspector toolchain on Node.js 22.19 or newer;
-the server itself remains supported on Node.js 20. Set the non-secret
-`MCP_PROFILE`, install from `tools/inspector/package-lock.json`, and run the
-local-only launcher:
-
-```bash
-MCP_PROFILE=dev npm run inspector
-```
-
-(Run `npm ci --prefix tools/inspector --engine-strict --ignore-scripts` first.)
-
-The launcher prints the exact **STDIO** command and arguments to enter in the
-Inspector UI. There is no endpoint and no bearer to type. Include the explicit
-profile in every call. The Inspector spawns the server itself and inherits a
-scrubbed environment with every `MCP_*` and `SN_*` value removed; the server
-still resolves its credential, because it reads the owner-only
-`~/.servicenow-mcp/server.env` at startup rather than relying on what it was
-handed. The launcher does not expose Inspector beyond loopback or create a
-tunnel.
-
-`npm run smoke` is the second client. It spawns `dist/index.js` the same way and
-needs only `MCP_PROFILE`:
-
-```bash
-MCP_PROFILE=dev npm run smoke
-```
-
-See [`docs/RELEASE-VALIDATION.md`](docs/RELEASE-VALIDATION.md) for the release
-gates, write confirmation, evidence, and rollback procedure.
-
----
-
-## Roadmap
-
-- [x] **stdio transport** — the client spawns the server; a Streamable HTTP runtime exists but is [dormant](docs/ENTERPRISE-RELEASE-BOUNDARY.md#the-dormant-http-transport)
-- [x] **OAuth 2.0** authentication support (client_credentials + password grants, API keys)
-- [ ] **sn_script** background-script execution (SNS-39) — future state, deliberately not shipped in 2.0; requires automating the `sys.scripts.do` UI endpoint with session auth
-- [ ] **Streaming** for large result sets
-- [ ] **Caching** for schema and relationship lookups
-
----
-
-## License
-
-MIT © [OnlyFlows](https://onlyflows.tech)
-
----
-
-<p align="center">
-  Built with ❤️ by <a href="https://onlyflows.tech">OnlyFlows</a> · <a href="https://github.com/onlyflowstech">@onlyflowstech</a>
-</p>
+SN_TABLE_ACCESS_TARGETS='[{"table":"incident","kind":"canonical","tools":["sn_query","sn_get","sn_create","sn_update","sn_incident_add_comment","sn_incident_add_work_note","sn_delete","sn_batch"],"closureComplete":true,"relatedTables":["incident"]},{"table":"problem","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables":["problem"]},{"table":"change_request","kind":"canonical","tools":["sn_query","sn_get"],"closureComplete":true,"relatedTables

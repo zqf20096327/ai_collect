@@ -39,8 +39,8 @@ NVIDIA Inception). We update the total only when credits land.
 <!-- models:start -->
 | Program | Bootstrapped gets | Expires | Claude | GPT | Open models | We got | Checked |
 |---|---|---|---|---|---|---|---|
-| [AWS Activate (Founders)](https://aws.amazon.com/startups/credits) | $1,000 direct; up to $10,000 total via NVIDIA Inception | about 2 years | yes (Bedrock) | some | yes | $10,000 ($5,000 via Clerky, topped up to $10,000 via NVIDIA Inception) | 2026-11-12 |
-| [OpenRouter Startup Program](https://openrouter.ai/startups) | up to $3,000 + 12 months without fees | 6 months after activation | yes | yes | yes | - | 2026-11-14 |
+| [AWS Activate (Founders)](https://aws.amazon.com/startups/credits) (above $1,000 needs a provider code; without an investor, Clerky perks and NVIDIA Inception give one) | $1,000 direct; up to $10,000 total via NVIDIA Inception | about 2 years | yes (Bedrock) | some | yes | $10,000 ($5,000 via Clerky, topped up to $10,000 via NVIDIA Inception) | 2026-11-12 |
+| [OpenRouter Startup Program](https://openrouter.ai/startups) (needs a partner referral key; without an investor, the key is in the Mercury perks) | up to $3,000 + 12 months without fees; Brex and Mercury also give a separate $1,000 OpenRouter perk | 6 months after activation | yes | yes | yes | - | 2026-11-14 |
 | [OpenAI (Brex partner perk, US companies only)](https://www.brex.com/support/brex-partner-perks) | $1,000 | 1 year | no | yes | no | $2,500 (earlier, larger version of this offer) | 2026-11-14 |
 | [Microsoft for Startups (no investor code)](https://www.microsoft.com/en-us/startups) | $200, then $5,000 after business verification, then $25k / $50k / $150k | 90 days / 180 days, the $25k step lasts 2 years | no (Claude in Foundry is billed via Marketplace) | yes | DeepSeek, Grok | - | 2026-11-14 |
 | [Google for Startups Cloud (Start tier)](https://cloud.google.com/startup) | $2,000, plus $1,000 GenAI App Builder | 1 to 2 years | no (Claude on Vertex is a Marketplace purchase) | no | Gemini | $3,000 | 2026-10-19 |

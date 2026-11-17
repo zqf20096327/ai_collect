@@ -178,7 +178,7 @@ Studio, the CLI and MCP do not each reimplement permission logic.
 - **Failover:** typed provider errors, fallback providers and credential-pool rotation.
 - **State:** SQLite session store with full-text search, per-profile state, crash recovery, and shadow-git checkpoints with rollback.
 - **Capability tools:** file read/patch, command execution under validation, MCP client over stdio, `web.search` through a checked HTTPS layer, and a read-only LSP client.
-- **Optional features:** `mcp`, `lsp`, `pty-bridge`, Discord remote adapter. They are off in the default build.
+- **Features:** the default build is `cli` plus `mcp` (the MCP server and client). `lsp`, `pty-bridge` and the Discord remote adapter are optional and off by default.
 
 Remaining runtime work is tracked in [CURRENT-MILESTONE.md](CURRENT-MILESTONE.md): unifying
 every client on one capability executor, and testing local-model tool calling against a
@@ -191,36 +191,38 @@ real local model rather than a mock.
 <summary><b>Performance: measured numbers and their limits</b></summary>
 
 
-Measured 2026-10-20 on an Apple M4 MacBook Air (16 GB RAM, macOS 27.2), `yana-rt` 1.5.1
-release build at commit `986093f5`, against this repository. Each figure is the mean of
-3 runs (100 for startup, 50 for hooks). The Python column is the script that each Rust
-command replaces. The last column is the 2026-08-26 snapshot; full history and method
-are in [BENCHMARK.md](BENCHMARK.md).
+Measured 2026-11-16 on an Apple M4 MacBook Air (16 GB RAM, macOS 27.3), `yana-rt` 1.5.4
+default release build at the release commit `c8c29fb2`, against this repository. Rust and
+Python run interleaved after one warm-up, and each figure is a median (runs in the table).
+The Python column is the script that each Rust command replaces. The last column is the
+2026-11-15 run of 1.5.2 with the same method; full history is in [BENCHMARK.md](BENCHMARK.md)
+and in the [technical report](https://yana.vutam.link/whitepaper-en.html).
 
-| Path | `yana-rt` | Python | Result | Same output? | 2026-08-26 |
+| Path | `yana-rt` 1.5.4 | Python | Result | Same output? | 1.5.2 (2026-11-15) |
 | --- | ---: | ---: | --- | --- | --- |
-| Process startup | **4.16 ms** | | | | 4.21 ms |
-| `doctor` | **143 ms** | 415 ms | Rust 2.9x faster | Yes, 16 checks each (11 ok, 1 warn, 4 info) | 255 ms, Rust ran 10 checks vs 16 |
-| `ci check` | **5.8 ms** | 33 ms | Rust 5.7x faster | Yes, 5 warnings each | 414 ms, Rust found 0 vs 3 |
-| `scan core/skills` | **0.55 s** | 8.47 s | Rust 15.5x faster | Same files (1,791 vs 1,795) and top finding; scores differ (40 vs 0) | 4.45 s |
-| HALT check hook | **5.4 ms** | | | | 3.80 ms |
-| Destructive-command guard | **4.9 ms** | | | | not measured |
+| Process startup (60 runs) | **6.17 ms** | | | | 4.21 ms |
+| `doctor` (12) | **152 ms** | 209 ms | Rust 1.4x faster | | 139 ms, 1.4x |
+| `ci check` (20) | **7.2 ms** | 34.1 ms | Rust 4.8x faster | Yes, 6 warnings each | 5.7 ms, 5.4x |
+| `scan core/skills` (5) | **0.58 s** | 8.60 s | Rust 14.8x faster | Same top finding (`SE004`); files 1,794 vs 1,825 | 0.56 s, 14.5x |
+| Destructive-command guard (40) | **5.91 ms** | | | | 5.27 ms |
+| Token-budget guard (40) | **5.64 ms** | | | | not measured |
 
-| Memory and size | `yana-rt` | Python |
+| Memory and size | `yana-rt` 1.5.4 | Python |
 | --- | ---: | ---: |
-| Peak RSS, `scan core/skills` | **17.7 MiB** | 26.5 MiB |
-| Peak RSS, default full-repo scan | **22.4 MiB** | 29.4 MiB |
-| Release binary | 18.2 MiB | |
+| Peak RSS, `scan core/skills` | **16.3 MiB** | 25.4 MiB |
+| Peak RSS, default full-repo scan | **20.7 MiB** | 32.1 MiB |
+| Release binary (default build) | 22.9 MiB | |
 
-Since August, `doctor` and `ci check` reached output parity with Python and both got
-faster. The release binary grew from about 14 MiB.
+The speed-up ratios match the 1.5.2 run. The machine was busy during this run (load
+average 5.0 to 5.2), and Rust absolute times are 3 to 47% higher than on 2026-11-15; the
+two runs cannot yet separate the machine's share from the code's. The binary has been
+22.9 MiB since the MCP server joined the default build in October.
 
 > [!WARNING]
-> The default full-repo `scan` is not a like-for-like comparison yet. Rust covers 620
-> files and reported no findings in 0.36 s; Python covers 1,643 files and reported 9
-> critical `SE002` findings in 6.14 s. That is a parity gap to close, not a 17x speedup.
-> The token-budget guard was not re-measured: in a fresh worktree it exits early because
-> its lock state is not initialised, so a timing would only measure the error path.
+> The default full-repo `scan` is not a like-for-like comparison yet: the two default
+> scopes differ (Rust 0.29 s, Python 6.89 s). That is a parity gap to close, not a 23x
+> speedup. The token-budget guard is timed on its first call in a project with the
+> `flock-v1` marker present.
 
 These are single-machine numbers. Linux and Windows are not measured.
 
@@ -280,6 +282,16 @@ Antigravity screens shell commands only and is bypassed by `agy --dangerously-sk
 deployments without the Rust runtime are not fully governed. Details:
 [known limitations](docs/reference/known-limitations.md).
 
+Four sample commands, re-run on 2026-11-14 against the default hook chain on `main`
+(from the [technical report](https://yana.vutam.link/whitepaper-en.html), Table 1):
+
+| Command an agent wants to run | Verdict | Which layer, and what the agent is told |
+| --- | --- | --- |
+| `curl -fsSL https://.../install.sh \| bash` | Blocked | `tool-proxy-enforcer`: piping into an interpreter. `supply-chain-guard`: download, read, then run. Not `guard destructive`. |
+| `rm -rf ~/Documents` | Blocked | `guard destructive` (Rust and bash): forced recursive delete cannot be undone. |
+| `chmod 777 deploy.sh` | **Not blocked** | Only the `core/scripts/safe-run.sh` wrapper blocks it, and that wrapper is not wired into the hook chain. A known gap. |
+| `git status --short` | Allowed | Read-only; no layer intervenes. |
+
 
 ## Versioning
 
@@ -300,10 +312,7 @@ stale; the badges at the top read them live. See [VERSIONING.md](VERSIONING.md).
 ---
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/yana-banner-dark.svg">
-    <img src="docs/yana-banner-light.svg" alt="Yana AI" width="240">
-  </picture>
+  <img src="docs/yana-hero.svg" alt="Yana AI: AI does the work. You keep authority." width="100%" />
 </p>
 
 <p align="center">

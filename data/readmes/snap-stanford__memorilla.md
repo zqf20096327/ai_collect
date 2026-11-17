@@ -10,6 +10,16 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-green" alt="License: Apache-2.0"></a>
 </p>
 
+<p align="center">
+ <a href="https://www.star-history.com/snap-stanford/memorilla">
+  <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=snap-stanford/memorilla&type=trending&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=snap-stanford/memorilla&type=trending" />
+   <img alt="GitHub Trending Repository of the Day" src="https://api.star-history.com/badge?repo=snap-stanford/memorilla&type=trending" />
+  </picture>
+ </a>
+</p>
+
 This repository provides code for training and evaluating Memorilla, a memory system that gathers information from an
 entire document collection into a fixed number of query-dependent memory tokens for a frozen LLM. The code is based on
 our paper *[Memorilla: Latent Semantic Memory for LLMs](https://arxiv.org/abs/2610.21375)*.
@@ -276,6 +286,16 @@ run untrusted ones in an isolated environment.
   [GHSA-29pf-2h5f-8g72](https://github.com/advisories/GHSA-29pf-2h5f-8g72),
   [GHSA-63cw-57p8-fm3p](https://github.com/advisories/GHSA-63cw-57p8-fm3p)). They apply only to untrusted models and
   checkpoints.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=snap-stanford%2Fmemorilla&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=snap-stanford/memorilla&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=snap-stanford/memorilla&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=snap-stanford/memorilla&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ## Citation
 

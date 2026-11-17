@@ -1,16 +1,8 @@
----
-title: HashiruAI
-emoji: 🍆
-colorFrom: green
-colorTo: yellow
-sdk: docker
-app_port: 7860
-pinned: false
----
+# <img src="docs/logo.png" alt="" width="40" align="top"> HASHIRU: Hierarchical Agent System for Hybrid Intelligent Resource Utilization
 
-<p align="center"><img src="HASHIRU_LOGO.png" alt="HASHIRU" width="120"></p>
+https://github.com/user-attachments/assets/ab79c053-9809-4060-85b8-4653fdb934f6
 
-# HASHIRU: Hierarchical Agent System for Hybrid Intelligent Resource Utilization
+<p align="center"><sub>A 55-second tour: a local run that cost $0.00, the hiring tree, approvals, plan mode, private chat and the three ways to connect (<a href="docs/hashiru-promo.mp4">also in docs/</a>).</sub></p>
 
 <p align="center"><img src="docs/hiring-tree.svg" width="820" alt="You talk to the CEO, which holds a $0.50 pool. It hires a manager ($0.20), a worker on a local model ($0.10 and 3.5 GB of memory) and a remote A2A agent ($0.001 a message); the manager hires a worker on a cloud model ($0.05). Hires and messages go over A2A; the CEO and managers call tools over MCP."></p>
 

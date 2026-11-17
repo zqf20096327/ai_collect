@@ -56,11 +56,12 @@ architecture in English, French, Spanish, and Russian. Start with
 - Document generation
 - MCP servers, 572 built-in skills
 - Large MoE models from disk
-- Voice chat
-- Local image generation
+- Voice chat, with a local or cloud voice
+- Image generation, local or through a cloud provider
+- Pictures in answers, opened in a viewer
 - OpenAI-compatible local server
 - External runtimes and cloud APIs
-- Cost counters for cloud usage
+- Cost counters for cloud usage, with local turns priced at OpenRouter rates
 
 ## Installing and requirements
 
@@ -69,7 +70,7 @@ Installers for Windows (`.exe`), macOS (`.zip`), and Linux (`.deb`, `.rpm`) are 
 Draggy suggests a model sized for your hardware and downloads it directly. See
 [Installation](https://docs.draggy.org/installation) for system requirements and platform setup details.
 
-Image generation is optional and installed from Settings, under Models. The engine is a separate download of 17 to 900 MB depending on the build, and a model needs about 2 GB of video memory for Stable Diffusion 1.5 or 6 GB for Z-Image Turbo. With less, the weights stay in system memory.
+Image generation is optional and installed from Settings, under Models. The engine is a separate download of 17 to 900 MB depending on the build, and a model needs about 2 GB of video memory for Stable Diffusion 1.5 or 6 GB for Z-Image Turbo. With less, the weights stay in system memory. A cloud image model from a connected provider can be picked in the same place and needs no engine.
 
 Large models are managed from Settings, under Models, in the Large models panel. Draggy downloads colibri on demand, along with a small private Python runtime on Windows. Below 3 tokens per second it switches to slow mode: fewer tool rounds per turn, thinking off unless you turn it on, and a notification when a long answer is ready.
 
@@ -120,6 +121,13 @@ Operational events write to `app.log` in the application data folder, while deta
 - Output quality depends on the selected model size and quantization.
 - Inference speed depends on available CPU and GPU memory bandwidth.
 - Large models depend on drive speed. A hard disk or USB drive is usually too slow to be useful.
+
+## Related repositories
+
+- [Lucki74/draggy-website](https://github.com/Lucki74/draggy-website): the source of [draggy.org](https://draggy.org)
+- [Lucki74/draggy-docs](https://github.com/Lucki74/draggy-docs): the source of [docs.draggy.org](https://docs.draggy.org)
+
+Report a problem with the website or the docs in its own repository.
 
 ## License
 
