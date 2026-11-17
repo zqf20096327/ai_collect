@@ -1040,11 +1040,11 @@
   }
  },
  "vEduardovich/dodari": {
-  "commit_7d": 1,
-  "commit_90d": 19,
+  "commit_7d": 0,
+  "commit_90d": 12,
   "rel_ver": "v2.1",
   "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "rel_days": 36,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1058,18 +1058,18 @@
    "Shell": 3,
    "Batchfile": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Alexey-Popov/awesome-ai-architect": {
-  "commit_7d": 3,
-  "commit_90d": 11,
+  "commit_7d": 0,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1078,10 +1078,10 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1089,7 +1089,7 @@
  },
  "DevMiser/DaVinci": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1100,10 +1100,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1163,7 +1163,7 @@
  },
  "meilisearch/meilisearch-mcp": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1175,10 +1175,10 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1211,10 +1211,10 @@
  },
  "HoldMyBeer-gg/blenderwright": {
   "commit_7d": 0,
-  "commit_90d": 87,
-  "rel_ver": "v2.2.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
+  "commit_90d": 157,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 22,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1228,10 +1228,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1267,12 +1267,12 @@
   }
  },
  "microsoft/simplechat": {
-  "commit_7d": 0,
-  "commit_90d": 773,
-  "rel_ver": "v0.261.027",
-  "rel_pub": "2026-09-17",
-  "rel_days": 31,
-  "rel_n90": 4,
+  "commit_7d": 9,
+  "commit_90d": 308,
+  "rel_ver": "v0.261.065",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 4,
@@ -1292,10 +1292,10 @@
    "CSS": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1386,13 +1386,13 @@
   }
  },
  "Zhou-Yujing114514/deepseek-harness-linux": {
-  "commit_7d": 525,
-  "commit_90d": 18852,
+  "commit_7d": 1,
+  "commit_90d": 9377,
   "rel_ver": "v0.2.1-rc.2",
   "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "rel_days": 31,
   "rel_n90": 2,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1406,10 +1406,10 @@
    "JavaScript": 1,
    "Swift": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

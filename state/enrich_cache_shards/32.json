@@ -819,11 +819,11 @@
   }
  },
  "smaramwbc/statewave": {
-  "commit_7d": 6,
-  "commit_90d": 149,
+  "commit_7d": 0,
+  "commit_90d": 116,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-08-30",
-  "rel_days": 49,
+  "rel_days": 79,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -839,10 +839,10 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -981,12 +981,12 @@
   }
  },
  "microsoft/Agents-for-net": {
-  "commit_7d": 21,
-  "commit_90d": 515,
-  "rel_ver": "v1.8.77",
-  "rel_pub": "2026-08-24",
-  "rel_days": 55,
-  "rel_n90": 3,
+  "commit_7d": 24,
+  "commit_90d": 487,
+  "rel_ver": "v1.9.205",
+  "rel_pub": "2026-10-19",
+  "rel_days": 29,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -999,18 +999,18 @@
    "HTML": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Vieeeeeee/wibi-style": {
-  "commit_7d": 2,
-  "commit_90d": 141,
+  "commit_7d": 0,
+  "commit_90d": 86,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1021,10 +1021,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

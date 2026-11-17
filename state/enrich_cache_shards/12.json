@@ -947,12 +947,12 @@
   }
  },
  "Gurobi/gurobi-machinelearning": {
-  "commit_7d": 0,
-  "commit_90d": 34,
+  "commit_7d": 18,
+  "commit_90d": 42,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-07-28",
-  "rel_days": 82,
-  "rel_n90": 1,
+  "rel_days": 112,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -965,10 +965,10 @@
    "Jupyter Notebook": 28,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1022,10 +1022,10 @@
  },
  "mpecan/tokf": {
   "commit_7d": 0,
-  "commit_90d": 30,
+  "commit_90d": 8,
   "rel_ver": "tokf-v0.2.54",
   "rel_pub": "2026-09-06",
-  "rel_days": 42,
+  "rel_days": 72,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1041,18 +1041,18 @@
    "TypeScript": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "sivaprasadreddy/sivalabs-agent-skills": {
-  "commit_7d": 1,
-  "commit_90d": 7,
+  "commit_7d": 0,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1064,10 +1064,10 @@
    "Python": 65,
    "Shell": 35
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -787,12 +787,12 @@
   }
  },
  "Atomic-Mail/atomic-mail-agentic": {
-  "commit_90d": 83,
-  "commit_7d": 0,
-  "rel_ver": "v0.3.31",
-  "rel_pub": "2026-09-27",
-  "rel_days": 21,
-  "rel_n90": 7,
+  "commit_90d": 100,
+  "commit_7d": 11,
+  "rel_ver": "v0.3.34",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -806,10 +806,10 @@
    "JavaScript": 19,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -846,11 +846,11 @@
   }
  },
  "thoughtbot/rails-audit-thoughtbot": {
-  "commit_90d": 1,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-03-06",
-  "rel_days": 226,
+  "rel_days": 256,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -860,10 +860,10 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -920,10 +920,10 @@
  },
  "dev-toolings/superpowers-symfony": {
   "commit_90d": 35,
-  "commit_7d": 0,
+  "commit_7d": 1,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-10-05",
-  "rel_days": 13,
+  "rel_days": 43,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -936,10 +936,10 @@
    "TypeScript": 79,
    "Shell": 21
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -966,11 +966,11 @@
   }
  },
  "patlux/pi-commandcode-provider": {
-  "commit_90d": 191,
-  "commit_7d": 12,
-  "rel_ver": "v0.7.8",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 187,
+  "commit_7d": 14,
+  "rel_ver": "v0.8.6",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -983,10 +983,10 @@
    "TypeScript": 81,
    "JavaScript": 19
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1043,12 +1043,12 @@
   }
  },
  "biosshot/easyeda-copilot": {
-  "commit_90d": 238,
-  "commit_7d": 19,
+  "commit_90d": 231,
+  "commit_7d": 1,
   "rel_ver": "v1.3.2",
   "rel_pub": "2026-10-15",
-  "rel_days": 3,
-  "rel_n90": 8,
+  "rel_days": 33,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1063,10 +1063,10 @@
    "Python": 2,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1096,12 +1096,12 @@
   }
  },
  "28naem-del/mnemosyne": {
-  "commit_90d": 21,
+  "commit_90d": 305,
   "commit_7d": 0,
-  "rel_ver": "v2.0.0-rc.9",
-  "rel_pub": "2026-09-13",
-  "rel_days": 35,
-  "rel_n90": 2,
+  "rel_ver": "v3.0.0-rc.4",
+  "rel_pub": "2026-10-29",
+  "rel_days": 19,
+  "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -1116,18 +1116,18 @@
    "CSS": 2,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "sunyuzheng/lizheng-open-context": {
-  "commit_90d": 38,
-  "commit_7d": 16,
+  "commit_90d": 53,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1138,22 +1138,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "dinglebear-ai/unraid": {
-  "commit_90d": 146,
+  "commit_90d": 23,
   "commit_7d": 0,
-  "rel_ver": "unraid-rs-v0.6.1",
-  "rel_pub": "2026-09-29",
-  "rel_days": 19,
-  "rel_n90": 12,
+  "rel_ver": "unraid-rs-v0.6.3",
+  "rel_pub": "2026-10-24",
+  "rel_days": 24,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1168,10 +1168,10 @@
    "JavaScript": 10,
    "Shell": 8
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

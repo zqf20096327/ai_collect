@@ -701,8 +701,8 @@
   }
  },
  "Azure-Samples/Legacy-Modernization-Agents": {
-  "commit_90d": 231,
-  "commit_7d": 0,
+  "commit_90d": 282,
+  "commit_7d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -717,21 +717,21 @@
    "CSS": 4,
    "Python": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ROCm/MIVisionX": {
-  "commit_90d": 44,
-  "commit_7d": 2,
+  "commit_90d": 70,
+  "commit_7d": 14,
   "rel_ver": "mivisionx-3.6.0",
   "rel_pub": "2026-06-27",
-  "rel_days": 113,
+  "rel_days": 143,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -746,21 +746,21 @@
    "CMake": 2,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Lethe044/hermes-life-os": {
-  "commit_90d": 66,
-  "commit_7d": 6,
-  "rel_ver": "v1.41.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "commit_90d": 89,
+  "commit_7d": 7,
+  "rel_ver": "v1.53.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -773,10 +773,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -806,11 +806,11 @@
   }
  },
  "BESSER-PEARL/BESSER": {
-  "commit_90d": 682,
-  "commit_7d": 0,
-  "rel_ver": "v8.1.0",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
+  "commit_90d": 953,
+  "commit_7d": 34,
+  "rel_ver": "v8.10.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -826,10 +826,10 @@
    "ANTLR": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -866,7 +866,7 @@
   }
  },
  "AetherCore-Dev/relay-radar": {
-  "commit_90d": 12,
+  "commit_90d": 13,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -881,10 +881,10 @@
    "Tape": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

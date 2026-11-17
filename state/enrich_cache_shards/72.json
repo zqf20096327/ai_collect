@@ -1015,11 +1015,11 @@
   }
  },
  "bzsanti/oxidizePdf": {
-  "commit_7d": 1,
-  "commit_90d": 388,
-  "rel_ver": "v5.4.2",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
+  "commit_7d": 28,
+  "commit_90d": 501,
+  "rel_ver": "v5.6.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1036,10 +1036,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1072,11 +1072,11 @@
   }
  },
  "lab-emi/OpenDPD": {
-  "commit_7d": 12,
-  "commit_90d": 179,
-  "rel_ver": "v2.4.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_7d": 0,
+  "commit_90d": 187,
+  "rel_ver": "v2.4.2",
+  "rel_pub": "2026-10-24",
+  "rel_days": 24,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1092,10 +1092,10 @@
    "HTML": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1133,7 +1133,7 @@
  },
  "touchine-ojo/OJO-Design-Skills": {
   "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1144,10 +1144,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1155,11 +1155,11 @@
  },
  "S2thend/cursor-history": {
   "commit_7d": 0,
-  "commit_90d": 128,
+  "commit_90d": 17,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-08-16",
-  "rel_days": 63,
-  "rel_n90": 2,
+  "rel_days": 93,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1172,21 +1172,21 @@
    "JavaScript": 3,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "EmergentOrder/onnx-scala": {
-  "commit_7d": 0,
-  "commit_90d": 14,
+  "commit_7d": 1,
+  "commit_90d": 22,
   "rel_ver": "v0.17.0",
   "rel_pub": "2022-12-22",
-  "rel_days": 1396,
+  "rel_days": 1426,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1199,22 +1199,22 @@
    "Scala": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "imbenrabi/Financial-Modeling-Prep-MCP-Server": {
-  "commit_7d": 39,
-  "commit_90d": 66,
-  "rel_ver": "v2.8.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
-  "rel_n90": 2,
+  "commit_7d": 0,
+  "commit_90d": 94,
+  "rel_ver": "v2.9.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 12,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1226,21 +1226,21 @@
    "TypeScript": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "mikeoliphant/NeuralAudio": {
-  "commit_7d": 0,
-  "commit_90d": 41,
+  "commit_7d": 9,
+  "commit_90d": 36,
   "rel_ver": "v0.1.3",
   "rel_pub": "2026-07-18",
-  "rel_days": 92,
+  "rel_days": 122,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1255,18 +1255,18 @@
    "C#": 4,
    "C": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "photon-hq/rapid-ai-dev": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1277,10 +1277,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1392,10 +1392,10 @@
  },
  "Lvyizhuo/MyProject-SDAgent": {
   "commit_7d": 0,
-  "commit_90d": 14,
+  "commit_90d": 15,
   "rel_ver": "V1.0",
   "rel_pub": "2026-03-27",
-  "rel_days": 205,
+  "rel_days": 235,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1411,10 +1411,10 @@
    "Shell": 3,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1444,12 +1444,12 @@
   }
  },
  "andrefetch/postal": {
-  "commit_7d": 1,
-  "commit_90d": 193,
-  "rel_ver": "v0.0.35",
-  "rel_pub": "2026-09-13",
-  "rel_days": 35,
-  "rel_n90": 12,
+  "commit_7d": 39,
+  "commit_90d": 78,
+  "rel_ver": "v0.0.39",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1461,10 +1461,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

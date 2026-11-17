@@ -720,11 +720,11 @@
   }
  },
  "RailtownAI/railtracks": {
-  "commit_90d": 134,
-  "commit_7d": 11,
-  "rel_ver": "v1.5.8",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 135,
+  "commit_7d": 6,
+  "rel_ver": "v1.8.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -742,10 +742,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -782,11 +782,11 @@
   }
  },
  "ozgurcd/gograph": {
-  "commit_90d": 119,
-  "commit_7d": 0,
-  "rel_ver": "v1.7.14",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
+  "commit_90d": 157,
+  "commit_7d": 34,
+  "rel_ver": "v1.7.21",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -802,10 +802,10 @@
    "JavaScript": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -841,12 +841,12 @@
   }
  },
  "etalab-ia/OpenGateLLM": {
-  "commit_90d": 143,
-  "commit_7d": 33,
-  "rel_ver": "0.9.0",
-  "rel_pub": "2026-09-29",
-  "rel_days": 19,
-  "rel_n90": 5,
+  "commit_90d": 182,
+  "commit_7d": 22,
+  "rel_ver": "0.9.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -861,10 +861,10 @@
    "Shell": 0,
    "Mako": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -927,10 +927,10 @@
   }
  },
  "sb2702/websr": {
-  "commit_90d": 1,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 10,
+  "commit_7d": 9,
+  "rel_ver": "v0.1.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -943,14 +943,18 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 2,
+  "rel_pre": false
  },
  "lordx64/phantom-kv": {
   "commit_90d": 34,
@@ -979,12 +983,12 @@
   }
  },
  "Talus-Network/nexus-sdk": {
-  "commit_90d": 50,
-  "commit_7d": 4,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
-  "rel_n90": 3,
+  "commit_90d": 42,
+  "commit_7d": 6,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -999,10 +1003,10 @@
    "Move": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1032,11 +1036,11 @@
   }
  },
  "arbiterForge/codeArbiter": {
-  "commit_90d": 808,
-  "commit_7d": 90,
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_90d": 802,
+  "commit_7d": 5,
+  "rel_ver": "v3.8.9",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1052,10 +1056,10 @@
    "Go": 6,
    "JavaScript": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

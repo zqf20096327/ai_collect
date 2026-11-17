@@ -865,12 +865,12 @@
   }
  },
  "linearis-oss/linearis": {
-  "commit_90d": 123,
+  "commit_90d": 17,
   "commit_7d": 0,
   "rel_ver": "v2026.9.0-next.1",
   "rel_pub": "2026-09-09",
-  "rel_days": 39,
-  "rel_n90": 9,
+  "rel_days": 69,
+  "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -882,10 +882,10 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -991,12 +991,12 @@
   }
  },
  "andreiramani/pgvector_pgsql_windows": {
-  "commit_90d": 5,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": "0.8.6_18",
   "rel_pub": "2026-07-30",
-  "rel_days": 80,
-  "rel_n90": 12,
+  "rel_days": 110,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1005,10 +1005,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1133,11 +1133,11 @@
   }
  },
  "Azure/agent-app-ingestion": {
-  "commit_90d": 114,
-  "commit_7d": 2,
-  "rel_ver": "v2.4.13-hotfix.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 141,
+  "commit_7d": 0,
+  "rel_ver": "v3.1.4",
+  "rel_pub": "2026-10-30",
+  "rel_days": 18,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1153,10 +1153,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1186,12 +1186,12 @@
   }
  },
  "mistralai/client-ts": {
-  "commit_90d": 22,
+  "commit_90d": 36,
   "commit_7d": 0,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 9,
-  "rel_n90": 7,
+  "rel_ver": "v3.5.0",
+  "rel_pub": "2026-11-01",
+  "rel_days": 16,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -1206,10 +1206,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

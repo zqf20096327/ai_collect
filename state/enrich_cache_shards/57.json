@@ -719,12 +719,12 @@
   }
  },
  "fronalabs/frona": {
-  "commit_7d": 0,
-  "commit_90d": 235,
-  "rel_ver": "v2026.10.0",
-  "rel_pub": "2026-10-03",
+  "commit_7d": 28,
+  "commit_90d": 284,
+  "rel_ver": "v2026.11.0",
+  "rel_pub": "2026-11-02",
   "rel_days": 15,
-  "rel_n90": 3,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -739,10 +739,10 @@
    "Python": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -801,8 +801,8 @@
   }
  },
  "SilvioBaratto/optimizer": {
-  "commit_7d": 0,
-  "commit_90d": 247,
+  "commit_7d": 222,
+  "commit_90d": 1460,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -817,18 +817,18 @@
    "JavaScript": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "slrbl/Intrusion-and-anomaly-detection-with-machine-learning": {
-  "commit_7d": 1,
-  "commit_90d": 2,
+  "commit_7d": 0,
+  "commit_90d": 16,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -843,18 +843,18 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "WLM1ke/poptimizer": {
-  "commit_7d": 0,
-  "commit_90d": 19,
+  "commit_7d": 12,
+  "commit_90d": 48,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -868,10 +868,10 @@
    "CSS": 5,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

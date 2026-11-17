@@ -770,8 +770,8 @@
   }
  },
  "teddykoker/blog": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -786,20 +786,20 @@
    "HTML": 0,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "termide/termide": {
-  "commit_90d": 786,
-  "commit_7d": 120,
-  "rel_ver": "0.43.0",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 1316,
+  "commit_7d": 162,
+  "rel_ver": "0.50.0",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -816,21 +816,21 @@
    "Tape": 0,
    "Nix": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Xuanwo/cida": {
-  "commit_90d": 218,
+  "commit_90d": 142,
   "commit_7d": 0,
-  "rel_ver": "v1.5.1",
-  "rel_pub": "2026-10-03",
-  "rel_days": 15,
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -846,18 +846,18 @@
    "Shell": 5,
    "CSS": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "OscarKjell/text": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 22,
+  "commit_7d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -869,10 +869,10 @@
    "R": 84,
    "Python": 16
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -936,11 +936,11 @@
   }
  },
  "opencrust-org/opencrust": {
-  "commit_90d": 0,
+  "commit_90d": 21,
   "commit_7d": 0,
   "rel_ver": "v0.2.9",
   "rel_pub": "2026-04-11",
-  "rel_days": 190,
+  "rel_days": 220,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -956,18 +956,18 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "aru-labs/lossless-memory": {
-  "commit_90d": 7,
-  "commit_7d": 0,
+  "commit_90d": 8,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -978,10 +978,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1221,11 +1221,11 @@
   }
  },
  "drajb/whisper-local": {
-  "commit_90d": 45,
-  "commit_7d": 1,
-  "rel_ver": "v0.22.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "commit_90d": 48,
+  "commit_7d": 4,
+  "rel_ver": "v0.24.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1241,10 +1241,10 @@
    "Ruby": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

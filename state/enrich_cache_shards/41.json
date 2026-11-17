@@ -871,8 +871,8 @@
   }
  },
  "Amal-David/awesome-jev": {
-  "commit_90d": 174,
-  "commit_7d": 28,
+  "commit_90d": 271,
+  "commit_7d": 20,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -885,10 +885,10 @@
    "HTML": 6,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -915,11 +915,11 @@
   }
  },
  "dssg/triage": {
-  "commit_90d": 1,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": "v6.0.0",
   "rel_pub": "2026-03-18",
-  "rel_days": 214,
+  "rel_days": 244,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -935,10 +935,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -989,8 +989,8 @@
   }
  },
  "saccofrancesco/deepshot": {
-  "commit_90d": 72,
-  "commit_7d": 6,
+  "commit_90d": 128,
+  "commit_7d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1002,10 +1002,10 @@
    "Jupyter Notebook": 73,
    "Python": 27
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1188,12 +1188,12 @@
   }
  },
  "lawrencewzen/wx-bot": {
-  "commit_90d": 48,
-  "commit_7d": 1,
-  "rel_ver": "v0.4.8",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
-  "rel_n90": 10,
+  "commit_90d": 57,
+  "commit_7d": 0,
+  "rel_ver": "v0.5.1",
+  "rel_pub": "2026-10-23",
+  "rel_days": 25,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1206,10 +1206,10 @@
    "Shell": 7,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -761,11 +761,11 @@
   }
  },
  "cocoonstack/cocoon": {
-  "commit_90d": 149,
-  "commit_7d": 3,
-  "rel_ver": "v0.7.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 155,
+  "commit_7d": 9,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -781,10 +781,10 @@
    "Python": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -814,11 +814,11 @@
   }
  },
  "llm-ring/lmring": {
-  "commit_90d": 9,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": "v1.7.0",
   "rel_pub": "2026-06-11",
-  "rel_days": 129,
+  "rel_days": 159,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -834,18 +834,18 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ZhuLinsen/alphaevo": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -857,10 +857,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -892,11 +892,11 @@
   }
  },
  "lumpenspace/raft": {
-  "commit_90d": 30,
+  "commit_90d": 27,
   "commit_7d": 0,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-09-14",
-  "rel_days": 34,
+  "rel_days": 64,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -908,17 +908,17 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Malitha123/awesome-video-self-supervised-learning": {
-  "commit_90d": 25,
+  "commit_90d": 9,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -931,18 +931,18 @@
    "HTML": 58,
    "Python": 42
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "tubecreate/tubecli": {
-  "commit_90d": 716,
-  "commit_7d": 36,
+  "commit_90d": 628,
+  "commit_7d": 34,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -957,10 +957,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1015,11 +1015,11 @@
   }
  },
  "sweetrb/apple-notes-mcp": {
-  "commit_90d": 183,
-  "commit_7d": 12,
-  "rel_ver": "v2.15.9",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 158,
+  "commit_7d": 7,
+  "rel_ver": "v2.16.8",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1035,17 +1035,17 @@
    "Objective-C": 1,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "w4-advisory/plexiglass": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1059,10 +1059,10 @@
    "Shell": 10,
    "Makefile": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

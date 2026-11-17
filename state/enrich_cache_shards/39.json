@@ -838,11 +838,11 @@
   }
  },
  "brainglobe/cellfinder": {
-  "commit_90d": 12,
-  "commit_7d": 1,
+  "commit_90d": 8,
+  "commit_7d": 0,
   "rel_ver": "v1.11.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "rel_days": 32,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -854,18 +854,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "JackYFL/awesome-VLLMs": {
-  "commit_90d": 2,
-  "commit_7d": 2,
+  "commit_90d": 4,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -874,10 +874,10 @@
   "sec_ids": [],
   "contrib_n": 13,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -934,8 +934,8 @@
   }
  },
  "PAIR-code/lumi": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 13,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -950,22 +950,22 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "alibaizhanov/mengram": {
-  "commit_90d": 209,
+  "commit_90d": 113,
   "commit_7d": 0,
-  "rel_ver": "v2.43.0",
-  "rel_pub": "2026-09-14",
-  "rel_days": 34,
-  "rel_n90": 3,
+  "rel_ver": "v2.49.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 22,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -980,10 +980,10 @@
    "TypeScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1042,11 +1042,11 @@
   }
  },
  "rohasnagpal/legal-ai-skills": {
-  "commit_90d": 115,
-  "commit_7d": 0,
-  "rel_ver": "v4.1.1",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
+  "commit_90d": 59,
+  "commit_7d": 2,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1061,10 +1061,10 @@
    "HTML": 3,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1125,11 +1125,11 @@
   }
  },
  "liampetti/fulloch": {
-  "commit_90d": 19,
+  "commit_90d": 15,
   "commit_7d": 2,
-  "rel_ver": "v2.4.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "rel_ver": "v2.4.6",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1145,10 +1145,10 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

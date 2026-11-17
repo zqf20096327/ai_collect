@@ -956,7 +956,7 @@
  },
  "feiskyer/codex-settings": {
   "commit_7d": 0,
-  "commit_90d": 9,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -970,18 +970,18 @@
    "Shell": 18,
    "HTML": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "PetrIvan/chord-seq-ai-app": {
-  "commit_7d": 2,
-  "commit_90d": 30,
+  "commit_7d": 0,
+  "commit_90d": 25,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -995,21 +995,21 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "yeasy/agentic_ai_guide": {
-  "commit_7d": 2,
-  "commit_90d": 60,
+  "commit_7d": 0,
+  "commit_90d": 29,
   "rel_ver": "preview-pdf",
   "rel_pub": "2026-03-29",
-  "rel_days": 203,
+  "rel_days": 233,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1021,10 +1021,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1176,8 +1176,8 @@
   }
  },
  "AbuZar-Ansarii/Needle": {
-  "commit_7d": 1,
-  "commit_90d": 26,
+  "commit_7d": 0,
+  "commit_90d": 31,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1188,10 +1188,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

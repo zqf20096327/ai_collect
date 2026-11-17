@@ -677,12 +677,12 @@
   }
  },
  "mgonzs13/llama_ros": {
-  "commit_90d": 64,
-  "commit_7d": 18,
-  "rel_ver": "6.2.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 5,
+  "commit_90d": 71,
+  "commit_7d": 4,
+  "rel_ver": "6.2.5",
+  "rel_pub": "2026-11-14",
+  "rel_days": 3,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -696,10 +696,10 @@
    "CMake": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -807,12 +807,12 @@
   }
  },
  "filipi86/drogonsec": {
-  "commit_90d": 53,
+  "commit_90d": 18,
   "commit_7d": 0,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 3,
+  "rel_days": 50,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -826,10 +826,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

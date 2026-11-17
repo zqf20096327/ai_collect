@@ -880,10 +880,10 @@
  },
  "FankChen/tracecrate": {
   "commit_90d": 10,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-09-13",
-  "rel_days": 35,
+  "rel_days": 65,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -898,22 +898,22 @@
    "CSS": 2,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "bat/BAT.jl": {
-  "commit_90d": 160,
-  "commit_7d": 9,
-  "rel_ver": "v5.2.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "commit_90d": 123,
+  "commit_7d": 0,
+  "rel_ver": "v5.2.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -924,10 +924,10 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -962,7 +962,7 @@
   "commit_7d": 0,
   "rel_ver": "1.1.0",
   "rel_pub": "2025-06-04",
-  "rel_days": 501,
+  "rel_days": 531,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -975,10 +975,10 @@
    "TypeScript": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1042,12 +1042,12 @@
   }
  },
  "GoogleCloudPlatform/genai-factory": {
-  "commit_90d": 23,
+  "commit_90d": 41,
   "commit_7d": 5,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 1,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 11,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1062,10 +1062,10 @@
    "Dockerfile": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1098,7 +1098,7 @@
   }
  },
  "FennelFetish/qapyq": {
-  "commit_90d": 13,
+  "commit_90d": 5,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1113,10 +1113,10 @@
    "Jinja": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -4253,5 +4253,31 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "liguozheng-ac/Lingbo-Desk": {
+  "commit_90d": 9,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 50,
+   "JavaScript": 29,
+   "Vue": 17,
+   "HTML": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261117",
+  "dim_ts": {
+   "commit": "20261117",
+   "release": "20261117",
+   "security": "20261117",
+   "contrib": "20261117",
+   "lang": "20261117"
+  }
  }
 }

@@ -838,10 +838,10 @@
  },
  "holtwood/awesome-cursorrules-zh": {
   "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_90d": 5,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-04-16",
-  "rel_days": 185,
+  "rel_days": 215,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -853,10 +853,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -894,10 +894,10 @@
  },
  "yeasy/ai_beginner_guide": {
   "commit_7d": 2,
-  "commit_90d": 55,
+  "commit_90d": 26,
   "rel_ver": "preview-pdf",
   "rel_pub": "2026-03-29",
-  "rel_days": 203,
+  "rel_days": 233,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -909,10 +909,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -940,11 +940,11 @@
  },
  "Mangaba-ai/mangaba_ai": {
   "commit_7d": 0,
-  "commit_90d": 7,
-  "rel_ver": "v3.2.0",
-  "rel_pub": "2026-04-26",
-  "rel_days": 175,
-  "rel_n90": 0,
+  "commit_90d": 10,
+  "rel_ver": "v4.0.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 30,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -958,10 +958,10 @@
    "PowerShell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -969,10 +969,10 @@
  },
  "zeus-12/uxie": {
   "commit_7d": 0,
-  "commit_90d": 33,
+  "commit_90d": 12,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-08-30",
-  "rel_days": 49,
+  "rel_days": 79,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -988,10 +988,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1027,7 +1027,7 @@
  },
  "microsoft/Azure-Analytics-and-AI-Engagement": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1042,21 +1042,21 @@
    "TSQL": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "OpenSTEF/openstef": {
-  "commit_7d": 4,
-  "commit_90d": 52,
-  "rel_ver": "v4.4.8",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_7d": 5,
+  "commit_90d": 57,
+  "rel_ver": "v4.7.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1068,21 +1068,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "vlang/vtl": {
-  "commit_7d": 159,
-  "commit_90d": 603,
+  "commit_7d": 46,
+  "commit_90d": 664,
   "rel_ver": "v0.2.0-beta.1",
   "rel_pub": "2026-06-02",
-  "rel_days": 138,
+  "rel_days": 168,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1098,10 +1098,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

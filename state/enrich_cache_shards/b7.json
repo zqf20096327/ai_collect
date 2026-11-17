@@ -876,11 +876,11 @@
   }
  },
  "YuvrajSingh-mist/NeatRL": {
-  "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_7d": 2,
+  "commit_90d": 63,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-06",
-  "rel_days": 12,
+  "rel_days": 42,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -893,18 +893,18 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "gokayfem/ComfyUI-fal-API": {
-  "commit_7d": 0,
-  "commit_90d": 62,
+  "commit_7d": 7,
+  "commit_90d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -917,20 +917,20 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "node9-ai/node9-proxy": {
-  "commit_7d": 94,
-  "commit_90d": 779,
-  "rel_ver": "v2.33.0",
-  "rel_pub": "2026-10-18",
+  "commit_7d": 43,
+  "commit_90d": 1135,
+  "rel_ver": "v2.65.0",
+  "rel_pub": "2026-11-17",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -945,10 +945,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1029,12 +1029,12 @@
   }
  },
  "huggingface/pwc-cli": {
-  "commit_7d": 9,
-  "commit_90d": 76,
+  "commit_7d": 7,
+  "commit_90d": 48,
   "rel_ver": "pwc-cli-0.4.4",
   "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 12,
+  "rel_days": 36,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1046,10 +1046,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1057,7 +1057,7 @@
  },
  "huggingface/Google-Cloud-Containers": {
   "commit_7d": 0,
-  "commit_90d": 4,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1071,10 +1071,10 @@
    "Python": 3,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1186,11 +1186,11 @@
   }
  },
  "faucetdb/faucet": {
-  "commit_7d": 2,
-  "commit_90d": 26,
+  "commit_7d": 0,
+  "commit_90d": 27,
   "rel_ver": "v0.1.15",
   "rel_pub": "2026-10-09",
-  "rel_days": 9,
+  "rel_days": 39,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1206,10 +1206,10 @@
    "Shell": 2,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4903,6 +4903,32 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "apissaj/humanizer-id": {
+  "commit_90d": 223,
+  "commit_7d": 86,
+  "rel_ver": "v2.4.4",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261117",
+  "dim_ts": {
+   "commit": "20261117",
+   "release": "20261117",
+   "security": "20261117",
+   "contrib": "20261117",
+   "lang": "20261117"
   }
  }
 }

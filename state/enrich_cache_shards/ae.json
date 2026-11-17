@@ -795,7 +795,7 @@
  },
  "mindspore-ai/akg": {
   "commit_7d": 0,
-  "commit_90d": 39,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -810,10 +810,10 @@
    "Jinja": 2,
    "CMake": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -846,11 +846,11 @@
   }
  },
  "kaanaksit/odak": {
-  "commit_7d": 5,
-  "commit_90d": 74,
+  "commit_7d": 2,
+  "commit_90d": 68,
   "rel_ver": "0.2.7",
   "rel_pub": "2026-04-11",
-  "rel_days": 190,
+  "rel_days": 220,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -864,10 +864,10 @@
    "TeX": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -904,11 +904,11 @@
   }
  },
  "ai-markdown/ai-markdown": {
-  "commit_7d": 29,
-  "commit_90d": 647,
-  "rel_ver": "v3.4.2",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "commit_7d": 10,
+  "commit_90d": 513,
+  "rel_ver": "v3.5.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -924,10 +924,10 @@
    "Astro": 1,
    "MDX": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

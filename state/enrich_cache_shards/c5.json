@@ -929,11 +929,11 @@
   }
  },
  "deepjavalibrary/djl-serving": {
-  "commit_7d": 2,
-  "commit_90d": 14,
+  "commit_7d": 1,
+  "commit_90d": 17,
   "rel_ver": "v0.36.0",
   "rel_pub": "2026-03-12",
-  "rel_days": 220,
+  "rel_days": 250,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -949,10 +949,10 @@
    "Shell": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1056,11 +1056,11 @@
   }
  },
  "claudioemmanuel/squeez": {
-  "commit_7d": 0,
-  "commit_90d": 191,
-  "rel_ver": "v1.48.18",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
+  "commit_7d": 5,
+  "commit_90d": 181,
+  "rel_ver": "v1.49.3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1076,10 +1076,10 @@
    "Python": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1222,13 +1222,13 @@
   }
  },
  "mujingquan835/Dawang-ppt": {
-  "commit_7d": 1,
-  "commit_90d": 1,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-07-16",
-  "rel_days": 94,
-  "rel_n90": 0,
-  "rel_pre": false,
+  "commit_7d": 6,
+  "commit_90d": 106,
+  "rel_ver": "v0.2.0-preview.20261104",
+  "rel_pub": "2026-11-04",
+  "rel_days": 13,
+  "rel_n90": 3,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1241,10 +1241,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

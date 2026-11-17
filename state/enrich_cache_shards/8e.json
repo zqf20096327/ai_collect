@@ -815,12 +815,12 @@
   }
  },
  "Private-Garden-Labs/garden-desk": {
-  "commit_90d": 174,
-  "commit_7d": 3,
-  "rel_ver": "v1.2.0",
-  "rel_pub": "2026-09-30",
-  "rel_days": 18,
-  "rel_n90": 4,
+  "commit_90d": 154,
+  "commit_7d": 0,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-20",
+  "rel_days": 28,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -835,21 +835,21 @@
    "CSS": 6,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "icoretech/codex-pooler": {
-  "commit_90d": 3084,
-  "commit_7d": 130,
-  "rel_ver": "codex-pooler-v0.13.5",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 2642,
+  "commit_7d": 46,
+  "rel_ver": "codex-pooler-v0.16.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -865,10 +865,10 @@
    "Astro": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

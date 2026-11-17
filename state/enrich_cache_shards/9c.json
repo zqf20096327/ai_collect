@@ -719,7 +719,7 @@
   }
  },
  "jidouqie/redbeacon": {
-  "commit_90d": 1,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -733,10 +733,10 @@
    "Python": 36,
    "HTML": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -887,10 +887,10 @@
   }
  },
  "AnastasiyaW/codex-claude-code-config": {
-  "commit_90d": 321,
-  "commit_7d": 47,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 431,
+  "commit_7d": 33,
+  "rel_ver": "v2026.10.24",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -903,21 +903,25 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-10-24",
+  "rel_days": 24,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "linora-u/AgentLoom": {
-  "commit_90d": 701,
-  "commit_7d": 97,
+  "commit_90d": 775,
+  "commit_7d": 3,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-05-09",
-  "rel_days": 162,
+  "rel_days": 192,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -933,10 +937,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -965,12 +969,12 @@
   }
  },
  "MattDevy/pi-extensions": {
-  "commit_90d": 6,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": "pi-continuous-learning-v0.14.4",
   "rel_pub": "2026-08-11",
-  "rel_days": 68,
-  "rel_n90": 2,
+  "rel_days": 98,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -982,10 +986,10 @@
    "TypeScript": 96,
    "JavaScript": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -843,11 +843,11 @@
   }
  },
  "microsoft/SWE-bench-Live": {
-  "commit_90d": 14,
+  "commit_90d": 18,
   "commit_7d": 0,
   "rel_ver": "v1.0-multi-language-multi-os-benchmarking",
   "rel_pub": "2026-03-08",
-  "rel_days": 224,
+  "rel_days": 254,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -860,10 +860,10 @@
    "Python": 93,
    "Shell": 7
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -893,12 +893,12 @@
   }
  },
  "quantbelt/jupyter-quant": {
-  "commit_90d": 61,
-  "commit_7d": 4,
-  "rel_ver": "v2606.1",
-  "rel_pub": "2026-06-25",
-  "rel_days": 115,
-  "rel_n90": 0,
+  "commit_90d": 78,
+  "commit_7d": 9,
+  "rel_ver": "v2611.1",
+  "rel_pub": "2026-11-14",
+  "rel_days": 3,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -911,18 +911,18 @@
    "Dockerfile": 45,
    "Python": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "basetenlabs/truss-examples": {
-  "commit_90d": 3,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -937,10 +937,10 @@
    "Cuda": 0,
    "C++": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -973,7 +973,7 @@
   }
  },
  "brycewang-stanford/Auto-Research-Skills": {
-  "commit_90d": 13,
+  "commit_90d": 21,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -989,10 +989,10 @@
    "HTML": 3,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1003,7 +1003,7 @@
   "commit_7d": 0,
   "rel_ver": "1.0.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1016,10 +1016,10 @@
    "Python": 100,
    "Linker Script": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1050,7 +1050,7 @@
   }
  },
  "microsoft/SkillLens": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1063,10 +1063,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1145,11 +1145,11 @@
   }
  },
  "riteshbonthalakoti/HELPDESK.AI": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 32,
+  "commit_7d": 11,
   "rel_ver": "v1.0.0-preview",
   "rel_pub": "2026-05-26",
-  "rel_days": 145,
+  "rel_days": 175,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1165,21 +1165,21 @@
    "PowerShell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Larens94/codedna": {
-  "commit_90d": 38,
+  "commit_90d": 44,
   "commit_7d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-03-16",
-  "rel_days": 216,
+  "rel_days": 246,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1195,10 +1195,10 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1282,7 +1282,7 @@
   }
  },
  "video-db/skills": {
-  "commit_90d": 12,
+  "commit_90d": 25,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,

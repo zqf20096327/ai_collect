@@ -860,8 +860,8 @@
   }
  },
  "inoue0426/awesome-computational-biology": {
-  "commit_7d": 0,
-  "commit_90d": 253,
+  "commit_7d": 20,
+  "commit_90d": 203,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -872,21 +872,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "askie/grix": {
-  "commit_7d": 41,
-  "commit_90d": 1190,
-  "rel_ver": "v3.2.11+3051",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
+  "commit_7d": 39,
+  "commit_90d": 1147,
+  "rel_ver": "v3.3.0+3089",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -902,10 +902,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -984,12 +984,12 @@
   }
  },
  "reshaprio/reshapr": {
-  "commit_7d": 19,
-  "commit_90d": 268,
-  "rel_ver": "1.1.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
-  "rel_n90": 7,
+  "commit_7d": 16,
+  "commit_90d": 265,
+  "rel_ver": "1.1.1",
+  "rel_pub": "2026-11-03",
+  "rel_days": 14,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1004,10 +1004,10 @@
    "Shell": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

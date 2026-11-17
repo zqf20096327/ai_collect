@@ -681,7 +681,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-03-20",
-  "rel_days": 212,
+  "rel_days": 242,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -697,17 +697,17 @@
    "Dockerfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "microsoft/Planetary-Explorer": {
-  "commit_90d": 3,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -723,22 +723,22 @@
    "PowerShell": 2,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "madebyaris/native-cli-ai": {
-  "commit_90d": 0,
+  "commit_90d": 42,
   "commit_7d": 0,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-07-12",
-  "rel_days": 98,
-  "rel_n90": 0,
+  "rel_ver": "v0.66.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 12,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -751,10 +751,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -847,7 +847,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.3.130",
   "rel_pub": "2026-09-03",
-  "rel_days": 45,
+  "rel_days": 75,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -863,10 +863,10 @@
    "Kotlin": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -933,11 +933,11 @@
   }
  },
  "gaopengbin/cesium-mcp": {
-  "commit_90d": 53,
+  "commit_90d": 30,
   "commit_7d": 0,
-  "rel_ver": "cesium-mcp-webmcp@0.5.0",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
+  "rel_ver": "cesium-mcp-webmcp@1.0.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -953,20 +953,20 @@
    "CSS": 1,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "sweetcornna/free-search-mcp": {
-  "commit_90d": 35,
-  "commit_7d": 7,
-  "rel_ver": "v0.14.1",
-  "rel_pub": "2026-10-18",
+  "commit_90d": 36,
+  "commit_7d": 4,
+  "rel_ver": "v0.18.2",
+  "rel_pub": "2026-11-17",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -981,10 +981,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

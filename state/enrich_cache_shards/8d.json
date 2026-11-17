@@ -975,11 +975,11 @@
   }
  },
  "cacheplane/threadplane": {
-  "commit_7d": 103,
-  "commit_90d": 678,
-  "rel_ver": "v0.3.2",
-  "rel_pub": "2026-10-09",
-  "rel_days": 9,
+  "commit_7d": 112,
+  "commit_90d": 962,
+  "rel_ver": "v0.3.7",
+  "rel_pub": "2026-11-06",
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -995,10 +995,10 @@
    "Python": 5,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1058,11 +1058,11 @@
   }
  },
  "helmholtz-analytics/heat": {
-  "commit_7d": 11,
-  "commit_90d": 129,
+  "commit_7d": 3,
+  "commit_90d": 112,
   "rel_ver": "v1.9.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 24,
+  "rel_days": 54,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1077,10 +1077,10 @@
    "Jupyter Notebook": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1115,12 +1115,12 @@
   }
  },
  "SentryPeer/SentryPeer": {
-  "commit_7d": 20,
-  "commit_90d": 83,
+  "commit_7d": 0,
+  "commit_90d": 60,
   "rel_ver": "v5.0.0",
   "rel_pub": "2026-10-15",
-  "rel_days": 3,
-  "rel_n90": 2,
+  "rel_days": 33,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -1137,21 +1137,21 @@
    "CMake": 3,
    "Makefile": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "pelmesh619/itmo_conspects": {
-  "commit_7d": 46,
-  "commit_90d": 133,
+  "commit_7d": 52,
+  "commit_90d": 277,
   "rel_ver": "VI.2026a",
   "rel_pub": "2026-06-02",
-  "rel_days": 138,
+  "rel_days": 168,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1167,22 +1167,22 @@
    "Python": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "AMD-AGI/GEAK": {
-  "commit_7d": 9,
-  "commit_90d": 574,
-  "rel_ver": "v4.1.0",
-  "rel_pub": "2026-08-07",
-  "rel_days": 72,
-  "rel_n90": 1,
+  "commit_7d": 105,
+  "commit_90d": 618,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1195,10 +1195,10 @@
    "JavaScript": 17,
    "Shell": 7
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1206,10 +1206,10 @@
  },
  "conorluddy/xclaude-plugin": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": "v0.4.1",
   "rel_pub": "2025-12-15",
-  "rel_days": 307,
+  "rel_days": 337,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1222,10 +1222,10 @@
    "TypeScript": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1255,12 +1255,12 @@
   }
  },
  "bradeGithub/DSH-Plugins-Marketplace": {
-  "commit_7d": 38,
-  "commit_90d": 731,
-  "rel_ver": "v1.7.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
-  "rel_n90": 12,
+  "commit_7d": 29,
+  "commit_90d": 626,
+  "rel_ver": "v1.7.2",
+  "rel_pub": "2026-10-26",
+  "rel_days": 22,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1273,10 +1273,10 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1309,12 +1309,12 @@
   }
  },
  "dnotitia/akb": {
-  "commit_7d": 4,
-  "commit_90d": 634,
-  "rel_ver": "backend-v0.16.2",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 7,
+  "commit_7d": 21,
+  "commit_90d": 609,
+  "rel_ver": "backend-v0.17.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 29,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1329,10 +1329,10 @@
    "JavaScript": 2,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1340,7 +1340,7 @@
  },
  "haoyiyin/basjoo": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 65,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1355,10 +1355,10 @@
    "Shell": 1,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1389,7 +1389,7 @@
  },
  "chelinho139/wow-ai": {
   "commit_7d": 0,
-  "commit_90d": 37,
+  "commit_90d": 41,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1404,10 +1404,10 @@
    "PowerShell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

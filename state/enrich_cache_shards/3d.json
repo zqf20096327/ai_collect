@@ -919,11 +919,11 @@
  },
  "0xMassi/stik_app": {
   "commit_7d": 0,
-  "commit_90d": 106,
+  "commit_90d": 76,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-09-08",
-  "rel_days": 40,
-  "rel_n90": 12,
+  "rel_days": 70,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -938,10 +938,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -949,11 +949,11 @@
  },
  "imedslab/solt": {
   "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v0.2.1",
-  "rel_pub": "2025-06-01",
-  "rel_days": 504,
-  "rel_n90": 0,
+  "commit_90d": 72,
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-10-25",
+  "rel_days": 23,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -966,10 +966,10 @@
    "Python": 2,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1003,7 +1003,7 @@
  },
  "MK2112/nn-zero-to-hero-notes": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1015,10 +1015,10 @@
    "Jupyter Notebook": 98,
    "Python": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1124,10 +1124,10 @@
  },
  "Big-Sh0t114/NachoBot": {
   "commit_7d": 12,
-  "commit_90d": 187,
-  "rel_ver": "v0.14.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 192,
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1143,10 +1143,10 @@
    "CSS": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1205,8 +1205,8 @@
   }
  },
  "mindspore-ai/docs": {
-  "commit_7d": 11,
-  "commit_90d": 160,
+  "commit_7d": 26,
+  "commit_90d": 164,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1221,10 +1221,10 @@
    "HTML": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

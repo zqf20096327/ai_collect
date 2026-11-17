@@ -982,10 +982,10 @@
  },
  "sigstore/model-transparency": {
   "commit_90d": 24,
-  "commit_7d": 5,
+  "commit_7d": 0,
   "rel_ver": "v1.1.1",
   "rel_pub": "2025-10-10",
-  "rel_days": 373,
+  "rel_days": 403,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1000,10 +1000,10 @@
    "Shell": 6,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1108,12 +1108,12 @@
   }
  },
  "pivoshenko/kasetto": {
-  "commit_90d": 144,
-  "commit_7d": 18,
-  "rel_ver": "v3.11.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
-  "rel_n90": 12,
+  "commit_90d": 147,
+  "commit_7d": 9,
+  "rel_ver": "v3.13.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 2,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1128,21 +1128,21 @@
    "Python": 6,
    "CSS": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "mlcommons/storage": {
-  "commit_90d": 151,
-  "commit_7d": 0,
+  "commit_90d": 35,
+  "commit_7d": 1,
   "rel_ver": "v3.0",
   "rel_pub": "2026-09-17",
-  "rel_days": 31,
+  "rel_days": 61,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1156,10 +1156,10 @@
    "Shell": 3,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1225,7 +1225,7 @@
  },
  "Hyacehila/humanizer-zh-next": {
   "commit_90d": 5,
-  "commit_7d": 3,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1236,10 +1236,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1276,12 +1276,12 @@
   }
  },
  "aphp/edsnlp": {
-  "commit_90d": 17,
-  "commit_7d": 0,
-  "rel_ver": "v0.23.0",
-  "rel_pub": "2026-09-22",
-  "rel_days": 26,
-  "rel_n90": 1,
+  "commit_90d": 36,
+  "commit_7d": 1,
+  "rel_ver": "v0.24.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1293,10 +1293,10 @@
    "Python": 99,
    "Cython": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1330,11 +1330,11 @@
   }
  },
  "ZSeven-W/rish-app": {
-  "commit_90d": 446,
+  "commit_90d": 486,
   "commit_7d": 0,
   "rel_ver": "runtime-environments-2026-09-15-r2",
   "rel_pub": "2026-09-15",
-  "rel_days": 33,
+  "rel_days": 63,
   "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
@@ -1350,10 +1350,10 @@
    "Kotlin": 10,
    "Objective-C": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1616,11 +1616,11 @@
   }
  },
  "zhuobichen/weflow-cli": {
-  "commit_90d": 460,
-  "commit_7d": 79,
-  "rel_ver": "v1.12.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 654,
+  "commit_7d": 10,
+  "rel_ver": "v1.21.17",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1636,10 +1636,10 @@
    "JavaScript": 3,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

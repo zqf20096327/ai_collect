@@ -888,12 +888,12 @@
   }
  },
  "idwts/Crayotter": {
-  "commit_90d": 20,
-  "commit_7d": 1,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-06-26",
-  "rel_days": 114,
-  "rel_n90": 0,
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 17,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -908,10 +908,10 @@
    "CSS": 5,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -970,8 +970,8 @@
   }
  },
  "fhhyyp/serein-flow": {
-  "commit_90d": 125,
-  "commit_7d": 6,
+  "commit_90d": 151,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -986,10 +986,10 @@
    "CSS": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1026,7 +1026,7 @@
   }
  },
  "lumenastrum/clio-style-preview": {
-  "commit_90d": 20,
+  "commit_90d": 10,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1040,17 +1040,17 @@
    "Python": 23,
    "JavaScript": 20
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "machuangtao/LLM-KG4QA": {
-  "commit_90d": 0,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1064,10 +1064,10 @@
    "HTML": 19,
    "CSS": 10
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

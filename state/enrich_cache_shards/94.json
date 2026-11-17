@@ -887,8 +887,8 @@
   }
  },
  "pab1it0/awesome-a2a": {
-  "commit_7d": 8,
-  "commit_90d": 50,
+  "commit_7d": 0,
+  "commit_90d": 56,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -897,10 +897,10 @@
   "sec_ids": [],
   "contrib_n": 60,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1059,11 +1059,11 @@
   }
  },
  "juspay/neurolink": {
-  "commit_7d": 47,
-  "commit_90d": 819,
-  "rel_ver": "v13.4.1",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_7d": 24,
+  "commit_90d": 738,
+  "rel_ver": "v13.12.3",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1079,10 +1079,10 @@
    "Shell": 1,
    "Svelte": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1114,11 +1114,11 @@
   }
  },
  "wsshow/feikong-teams": {
-  "commit_7d": 0,
-  "commit_90d": 14,
-  "rel_ver": "v0.29.1",
-  "rel_pub": "2026-08-12",
-  "rel_days": 67,
+  "commit_7d": 84,
+  "commit_90d": 85,
+  "rel_ver": "v0.31.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1134,10 +1134,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1300,11 +1300,11 @@
   }
  },
  "BeyteFlow/ReadmeGenAI": {
-  "commit_7d": 2,
-  "commit_90d": 86,
+  "commit_7d": 3,
+  "commit_90d": 73,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-03-06",
-  "rel_days": 226,
+  "rel_days": 256,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1319,10 +1319,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

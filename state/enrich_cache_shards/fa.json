@@ -702,12 +702,12 @@
   }
  },
  "RumbleDB/rumble": {
-  "commit_7d": 49,
-  "commit_90d": 218,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 13,
-  "rel_n90": 1,
+  "commit_7d": 27,
+  "commit_90d": 257,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -722,10 +722,10 @@
    "XQuery": 1,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -816,12 +816,12 @@
   }
  },
  "stevereiner/flexible-graphrag": {
-  "commit_7d": 2,
-  "commit_90d": 17,
-  "rel_ver": "v0.8.5",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
-  "rel_n90": 8,
+  "commit_7d": 1,
+  "commit_90d": 20,
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -839,21 +839,21 @@
    "Batchfile": 1,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "modelplaneai/modelplane": {
-  "commit_7d": 5,
-  "commit_90d": 317,
-  "rel_ver": "v0.5.0",
-  "rel_pub": "2026-10-02",
-  "rel_days": 16,
+  "commit_7d": 0,
+  "commit_90d": 514,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -868,10 +868,10 @@
    "Go": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -904,12 +904,12 @@
   }
  },
  "pc-style/x-md": {
-  "commit_7d": 19,
-  "commit_90d": 117,
-  "rel_ver": "v1.1.2",
-  "rel_pub": "2026-09-11",
-  "rel_days": 37,
-  "rel_n90": 3,
+  "commit_7d": 0,
+  "commit_90d": 188,
+  "rel_ver": "mdfromx@0.1.2",
+  "rel_pub": "2026-11-04",
+  "rel_days": 13,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -923,10 +923,10 @@
    "CSS": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

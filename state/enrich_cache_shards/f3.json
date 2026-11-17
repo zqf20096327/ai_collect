@@ -894,11 +894,11 @@
   }
  },
  "mfmezger/conversational-agent-langchain": {
-  "commit_90d": 9,
+  "commit_90d": 11,
   "commit_7d": 0,
   "rel_ver": "4.0.0",
   "rel_pub": "2025-11-30",
-  "rel_days": 322,
+  "rel_days": 352,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -914,10 +914,10 @@
    "Bru": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1087,12 +1087,12 @@
   }
  },
  "biasvariancelabs/aitlas": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v2.0.0",
-  "rel_pub": "2026-07-03",
-  "rel_days": 107,
-  "rel_n90": 0,
+  "commit_90d": 13,
+  "commit_7d": 13,
+  "rel_ver": "v2.0.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1106,21 +1106,21 @@
    "Cuda": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "mage0535/hermes-memory-installer": {
-  "commit_90d": 15,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": "v3.5.1",
   "rel_pub": "2026-06-26",
-  "rel_days": 114,
+  "rel_days": 144,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1134,10 +1134,10 @@
    "Shell": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1228,11 +1228,11 @@
   }
  },
  "DCBIA-OrthoLab/SlicerAutomatedDentalTools": {
-  "commit_90d": 468,
-  "commit_7d": 13,
-  "rel_ver": "ALI_IOS_models",
-  "rel_pub": "2026-08-05",
-  "rel_days": 74,
+  "commit_90d": 384,
+  "commit_7d": 4,
+  "rel_ver": "MRI2CBCT_Dataset516",
+  "rel_pub": "2026-10-26",
+  "rel_days": 22,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1245,20 +1245,20 @@
    "Python": 99,
    "CMake": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "tryvinci/vinci-clips": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v1.0.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1271,14 +1271,18 @@
    "Dockerfile": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-04",
+  "rel_days": 13,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "ferreirafabio/video2tfrecord": {
   "commit_90d": 0,

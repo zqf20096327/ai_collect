@@ -690,8 +690,8 @@
   }
  },
  "lightseekorg/TorchSpec": {
-  "commit_7d": 0,
-  "commit_90d": 43,
+  "commit_7d": 2,
+  "commit_90d": 24,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -705,10 +705,10 @@
    "Dockerfile": 0,
    "Just": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -850,12 +850,12 @@
   }
  },
  "upsidelab/enthusiast": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v1.7.1",
-  "rel_pub": "2026-06-17",
-  "rel_days": 123,
-  "rel_n90": 0,
+  "commit_7d": 5,
+  "commit_90d": 12,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -870,10 +870,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -924,8 +924,8 @@
   }
  },
  "sanidhyy/brainwave": {
-  "commit_7d": 12,
-  "commit_90d": 122,
+  "commit_7d": 8,
+  "commit_90d": 133,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -938,10 +938,10 @@
    "HTML": 2,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

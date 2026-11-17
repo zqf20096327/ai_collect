@@ -936,10 +936,10 @@
  },
  "firebolt-db/firebolt-core": {
   "commit_7d": 0,
-  "commit_90d": 3,
-  "rel_ver": "v5.0.0-pre.0.20261009231028.35a6a7db2e57",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_90d": 1,
+  "rel_ver": "v5.0.0-pre.0.20261114125429.c7292e78e3ad",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -954,10 +954,10 @@
    "Csound": 3,
    "Thrift": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -977,10 +977,10 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1119,11 +1119,11 @@
   }
  },
  "AXERA-TECH/ax-llm": {
-  "commit_7d": 7,
-  "commit_90d": 64,
+  "commit_7d": 0,
+  "commit_90d": 36,
   "rel_ver": "latest",
   "rel_pub": "2026-05-22",
-  "rel_days": 149,
+  "rel_days": 179,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1139,10 +1139,10 @@
    "Shell": 1,
    "C": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

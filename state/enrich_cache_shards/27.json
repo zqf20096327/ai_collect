@@ -714,9 +714,9 @@
  "69gg/Undefined": {
   "commit_90d": 29,
   "commit_7d": 2,
-  "rel_ver": "v3.18.6",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "rel_ver": "v3.20.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -732,17 +732,17 @@
    "CSS": 2,
    "Rust": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "huggingface/carbon": {
-  "commit_90d": 0,
+  "commit_90d": 67,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -755,21 +755,21 @@
    "Python": 83,
    "Shell": 17
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ShadowLoveElysia/AiNiee-Next": {
-  "commit_90d": 59,
-  "commit_7d": 24,
+  "commit_90d": 66,
+  "commit_7d": 5,
   "rel_ver": "V2.7.5",
   "rel_pub": "2026-06-10",
-  "rel_days": 130,
+  "rel_days": 160,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -785,18 +785,18 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "CNSeniorious000/free-chat": {
-  "commit_90d": 84,
-  "commit_7d": 6,
+  "commit_90d": 120,
+  "commit_7d": 31,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -811,22 +811,22 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "arconia-io/arconia": {
-  "commit_90d": 209,
-  "commit_7d": 66,
+  "commit_90d": 396,
+  "commit_7d": 38,
   "rel_ver": "early-access",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 4,
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -839,10 +839,10 @@
    "Shell": 0,
    "Nix": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -879,7 +879,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.7.2",
   "rel_pub": "2026-09-26",
-  "rel_days": 22,
+  "rel_days": 52,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -893,10 +893,10 @@
    "Python": 36,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
