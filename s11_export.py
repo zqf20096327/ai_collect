@@ -3,7 +3,8 @@
 
 契约：demo_public_repo/DATASET_PLAN.md（字段级定稿）+ demo_public_repo/_DESIGN.md（目录/边界）。
 产出（OUT_DIR，默认 ./ai-repo-atlas/）：
-  data/catalog.jsonl            一仓一行，fn 字典序稳定，九组字段
+  data/catalog/partNN.jsonl     分片主表（crc32(fn)%8 稳定分片,fn 字典序,九组字段）
+  data/catalog/MANIFEST.json    分片清单（片名/行数/字节/sha256/总数）
   data/cards/{首字母}/*.md      人读卡（GitHub 可索引）
   data/schema/card.schema.json  JSON Schema（自 demo 复制，velocity 去陈旧域字段）
   data/vocab.json               场景词表 v1.0（双向契约的公开面）
@@ -15,10 +16,12 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
 import time
+import zlib
 from collections import Counter
 from pathlib import Path
 
@@ -367,6 +370,44 @@ def build_weekly(rows: list[dict], vel_items: dict) -> str:
     return "\n".join(L) + "\n"
 
 
+# ---------------------------------------------------------------- 分片主表
+CATALOG_PARTS = 8          # GitHub 单文件 100MB 硬限:47k 卡 ~123MB,8 片后每片 ~15MB,
+                           # 规模翻三倍仍离红线很远;crc32 稳定分片,插入新仓不扰动其他片
+
+
+def write_catalog(out: Path, rows: list[dict]) -> dict:
+    """分片写出主表 + MANIFEST,并清理旧版整文件(100MB 墙根源)。"""
+    pdir = out / "data" / "catalog"
+    pdir.mkdir(parents=True, exist_ok=True)
+    buckets: dict[int, list[str]] = {i: [] for i in range(CATALOG_PARTS)}
+    for r in rows:
+        buckets[zlib.crc32(r["fn"].encode()) % CATALOG_PARTS].append(
+            json.dumps(r, ensure_ascii=False))
+    manifest = {"total": len(rows), "shard_key": f"crc32(fn)%{CATALOG_PARTS}",
+                "sort": "fn 字典序(片内)", "generated_at": time.strftime("%F %T"),
+                "parts": []}
+    keep = set()
+    for i in range(CATALOG_PARTS):
+        name = f"part{i:02d}.jsonl"
+        keep.add(name)
+        text = "".join(ln + "\n" for ln in buckets[i])
+        (pdir / name).write_text(text, encoding="utf-8", newline="\n")
+        manifest["parts"].append(
+            {"file": name, "cards": len(buckets[i]),
+             "bytes": len(text.encode("utf-8")),
+             "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]})
+    for old in pdir.glob("part*.jsonl"):            # 片数调整后清残片
+        if old.name not in keep:
+            old.unlink()
+    (pdir / "MANIFEST.json").write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
+    legacy = out / "data" / "catalog.jsonl"
+    if legacy.exists():
+        legacy.unlink()
+        print("已移除旧版整文件 catalog.jsonl(曾涨破 GitHub 100MB 单文件硬限)")
+    return manifest
+
+
 # ---------------------------------------------------------------- 主流程
 def main():
     ap = argparse.ArgumentParser()
@@ -402,11 +443,9 @@ def main():
     for g in "0123456789abcdefghijklmnopqrstuvwxyz":
         (out / "data" / "cards" / g).mkdir(exist_ok=True)
 
-    # 主表 + 人读卡
+    # 主表(分片) + 人读卡
     series = load_star_series()
-    with (out / "data" / "catalog.jsonl").open("w", encoding="utf-8", newline="\n") as fh:
-        for r in rows:
-            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+    manifest = write_catalog(out, rows)
     for r in rows:
         letter = (r["fn"].split("/")[0][0] or "0").lower()
         p = out / "data" / "cards" / letter / (r["fn"].replace("/", "__") + ".md")
@@ -454,7 +493,9 @@ def main():
     print(f"导出 {n} 行 -> {out}")
     print(f"信号覆盖: maintenance {n_sig} / velocity {n_sig} / downloads {n_dl}")
     print(f"场景标签卡 {n_tag};替代映射产品 {len(alts)} 个(≥2 仓)")
-    print(f"体积: catalog {((out / 'data' / 'catalog.jsonl').stat().st_size // 1024)} KB")
+    print(f"catalog 分片: {len(manifest['parts'])} 片, "
+          f"最大片 {max(p['bytes'] for p in manifest['parts']) / 1048576:.1f}MB, "
+          f"共 {manifest['total']} 行")
 
 
 def build_progress(rows: list[dict], n_sig: int, n_tag: int, n_dl: int) -> str:
@@ -524,9 +565,9 @@ GitHub 上的开源 AI 项目有几十万个,README 长短不一、真假混杂�
 
 **人看**——每仓一张 markdown 卡,按首字母浏览 [`data/cards/`](data/cards)。
 
-**程序用**——一行一仓的 JSONL 主表,带 [JSON Schema](data/schema/card.schema.json):
+**程序用**——一行一仓的 JSONL 主表(分片 `data/catalog/partNN.jsonl` + `MANIFEST.json`),带 [JSON Schema](data/schema/card.schema.json):
 ```bash
-jq -c 'select(.filters.license_risk=="permissive" and .meta.stars>10000)' data/catalog.jsonl
+cat data/catalog/part*.jsonl | jq -c 'select(.filters.license_risk=="permissive" and .meta.stars>10000)'
 ```
 
 **AI 助手用**——根目录 [`llms.txt`](llms.txt) 是标准发现入口;场景词表在 [`data/vocab.json`](data/vocab.json)。
@@ -567,14 +608,14 @@ Docs:
 - [CHANGELOG.md](CHANGELOG.md): 数据与格式的变更历史。
 
 Data:
-- [data/catalog.jsonl](data/catalog.jsonl): 机器主表,{n} 行,一仓一行 JSON,按 fn 排序。
+- [data/catalog/](data/catalog/): 机器主表,{n} 行,一仓一行 JSON,fn 字典序;分片 part00..part07(每片 ~15MB,GitHub 单文件上限内),[MANIFEST.json](data/catalog/MANIFEST.json) 载片名/行数/sha256。读全表:`cat data/catalog/part*.jsonl`。
 - [data/schema/card.schema.json](data/schema/card.schema.json): 主表 JSON Schema。
 - [data/vocab.json](data/vocab.json): 场景标签受控词表 v1.0(47 标签/10 组,含定义与别名;查询解析与打标共用)。
 - [data/cards/](data/cards): 人读 markdown 卡片,一仓一文件,路径 `data/cards/{{owner首字母}}/{{owner}}__{{repo}}.md`。
 - [data/views/alternatives.jsonl](data/views/alternatives.jsonl): 商业产品→开源替代映射表。
 - [trends/](trends): 周度趋势报告。
 
-Usage: 查询示例——找"可商用、能本地部署"的 AI 项目,读 catalog.jsonl 过滤 `filters.license_risk=="permissive" and filters.deploy in ("self-host","desktop")`;`null` 表示 README 未提及,不是"没有"。
+Usage: 查询示例——找"可商用、能本地部署"的 AI 项目,`cat data/catalog/part*.jsonl` 后过滤 `filters.license_risk=="permissive" and filters.deploy in ("self-host","desktop")`;`null` 表示 README 未提及,不是"没有"。
 """
     changelog = f"""# CHANGELOG
 
