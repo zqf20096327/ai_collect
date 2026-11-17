@@ -426,11 +426,11 @@
   }
  },
  "microsoft/archai": {
-  "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_7d": 2,
+  "commit_90d": 22,
   "rel_ver": "v1.0.0",
   "rel_pub": "2023-09-15",
-  "rel_days": 1129,
+  "rel_days": 1159,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -445,18 +445,18 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "EvolvingAgentsLabs/evolving-agents": {
-  "commit_7d": 52,
-  "commit_90d": 205,
+  "commit_7d": 0,
+  "commit_90d": 202,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -471,10 +471,10 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -510,12 +510,12 @@
   }
  },
  "BaYue-SYJ/shuixian-prompts": {
-  "commit_7d": 2,
-  "commit_90d": 56,
-  "rel_ver": "v1.0.5",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
-  "rel_n90": 6,
+  "commit_7d": 4,
+  "commit_90d": 54,
+  "rel_ver": "v1.0.10",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -529,10 +529,10 @@
    "CSS": 16,
    "Python": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -563,12 +563,12 @@
   }
  },
  "lakeday-org/perch": {
-  "commit_7d": 4,
-  "commit_90d": 178,
-  "rel_ver": "v0.4.3",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
-  "rel_n90": 9,
+  "commit_7d": 0,
+  "commit_90d": 224,
+  "rel_ver": "v0.5.2",
+  "rel_pub": "2026-11-04",
+  "rel_days": 13,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -580,18 +580,18 @@
    "JavaScript": 85,
    "TypeScript": 15
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "PetroIvaniuk/llms-tools": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 10,
+  "commit_90d": 30,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -600,10 +600,10 @@
   "sec_ids": [],
   "contrib_n": 16,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -637,11 +637,11 @@
  },
  "ZeKaiNie/universal-examprep-skill": {
   "commit_7d": 0,
-  "commit_90d": 19,
-  "rel_ver": "v5.2.0-flash",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 2,
+  "commit_90d": 22,
+  "rel_ver": "v5.3.0-flash",
+  "rel_pub": "2026-10-19",
+  "rel_days": 29,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -653,10 +653,10 @@
    "Python": 99,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

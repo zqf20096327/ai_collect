@@ -604,12 +604,12 @@
   }
  },
  "vegu-ai/talemate": {
-  "commit_90d": 1,
+  "commit_90d": 2,
   "commit_7d": 0,
-  "rel_ver": "0.39.0",
-  "rel_pub": "2026-08-29",
-  "rel_days": 50,
-  "rel_n90": 1,
+  "rel_ver": "0.40.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 21,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -624,10 +624,10 @@
    "JavaScript": 2,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -660,12 +660,12 @@
   }
  },
  "biagiomaf/smart-comfyui-gallery": {
-  "commit_90d": 15,
-  "commit_7d": 1,
-  "rel_ver": "2.24.3",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
-  "rel_n90": 9,
+  "commit_90d": 8,
+  "commit_7d": 0,
+  "rel_ver": "2.24.4",
+  "rel_pub": "2026-10-18",
+  "rel_days": 30,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -680,10 +680,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -720,11 +720,11 @@
   }
  },
  "projectglow/glow": {
-  "commit_90d": 11,
+  "commit_90d": 12,
   "commit_7d": 0,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-09-17",
-  "rel_days": 31,
+  "rel_days": 61,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -740,10 +740,10 @@
    "Java": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -830,10 +830,10 @@
  },
  "QwenLM/Qwen-Live-Harness": {
   "commit_90d": 70,
-  "commit_7d": 2,
+  "commit_7d": 0,
   "rel_ver": "qwen-live-harness-host-v1.0.0",
   "rel_pub": "2026-09-21",
-  "rel_days": 27,
+  "rel_days": 57,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -849,10 +849,10 @@
    "Objective-C++": 1,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

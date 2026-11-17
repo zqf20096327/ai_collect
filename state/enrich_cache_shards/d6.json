@@ -145,11 +145,11 @@
  },
  "traceloop/openllmetry": {
   "commit_7d": 2,
-  "commit_90d": 22,
-  "rel_ver": "0.63.0",
-  "rel_pub": "2026-11-05",
-  "rel_days": 5,
-  "rel_n90": 2,
+  "commit_90d": 24,
+  "rel_ver": "0.63.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -161,22 +161,22 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261110",
-   "release": "20261110",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mizorewww/laya-mlx": {
-  "commit_7d": 11,
-  "commit_90d": 31,
-  "rel_ver": "v0.6.0",
-  "rel_pub": "2026-10-29",
+  "commit_7d": 4,
+  "commit_90d": 35,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
-  "rel_n90": 4,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -187,10 +187,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -827,11 +827,11 @@
  },
  "Sunhaiy/Reflex": {
   "commit_7d": 0,
-  "commit_90d": 64,
-  "rel_ver": "v1.0.24",
-  "rel_pub": "2026-09-13",
-  "rel_days": 35,
-  "rel_n90": 12,
+  "commit_90d": 9,
+  "rel_ver": "v1.0.25",
+  "rel_pub": "2026-10-27",
+  "rel_days": 21,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -846,10 +846,10 @@
    "Python": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

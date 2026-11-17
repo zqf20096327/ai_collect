@@ -764,11 +764,11 @@
   }
  },
  "Context-Engine-AI/Context-Engine": {
-  "commit_90d": 0,
+  "commit_90d": 20,
   "commit_7d": 0,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-07-08",
-  "rel_days": 102,
+  "rel_days": 132,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -784,22 +784,22 @@
    "Shell": 1,
    "SCSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "momori777/Artemis": {
-  "commit_90d": 113,
-  "commit_7d": 1,
-  "rel_ver": "1.8.9",
-  "rel_pub": "2026-10-16",
+  "commit_90d": 72,
+  "commit_7d": 10,
+  "rel_ver": "1.9.0",
+  "rel_pub": "2026-11-15",
   "rel_days": 2,
-  "rel_n90": 6,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -814,18 +814,18 @@
    "PowerShell": 3,
    "HTML": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Dominic789654/awesome-deepseek-harness": {
-  "commit_90d": 613,
-  "commit_7d": 28,
+  "commit_90d": 516,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -838,21 +838,21 @@
    "Python": 27,
    "Shell": 14
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "spencermarx/open-code-review": {
-  "commit_90d": 13,
-  "commit_7d": 0,
-  "rel_ver": "v2.5.0",
-  "rel_pub": "2026-07-28",
-  "rel_days": 82,
+  "commit_90d": 43,
+  "commit_7d": 4,
+  "rel_ver": "v2.5.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 16,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -868,10 +868,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -928,11 +928,11 @@
   }
  },
  "pegaltier/awesome-utils-dev": {
-  "commit_90d": 113,
-  "commit_7d": 1,
+  "commit_90d": 110,
+  "commit_7d": 4,
   "rel_ver": "2.0.0",
   "rel_pub": "2020-05-24",
-  "rel_days": 2338,
+  "rel_days": 2368,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -946,10 +946,10 @@
    "Shell": 37,
    "TypeScript": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4595,6 +4595,63 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "FareedKhan-dev/train-deepseek-r1": {
+  "commit_90d": 4,
+  "commit_7d": 4,
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 97,
+   "Python": 3
+  },
+  "enriched_at": "20261117",
+  "dim_ts": {
+   "commit": "20261117",
+   "release": "20261117",
+   "security": "20261117",
+   "contrib": "20261117",
+   "lang": "20261117"
+  }
+ },
+ "FunctionLab/selene": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "0.6.0",
+  "rel_pub": "2024-12-16",
+  "rel_days": 701,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Jupyter Notebook": 96,
+   "Python": 4,
+   "Shell": 0,
+   "Cython": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261117",
+  "dim_ts": {
+   "commit": "20261117",
+   "release": "20261117",
+   "security": "20261117",
+   "contrib": "20261117",
+   "lang": "20261117"
   }
  }
 }

@@ -533,10 +533,10 @@
  },
  "viveknaskar/everything-ai-ml": {
   "commit_7d": 7,
-  "commit_90d": 63,
+  "commit_90d": 83,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-04-02",
-  "rel_days": 199,
+  "rel_days": 229,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -550,22 +550,22 @@
    "JavaScript": 8,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "milvus-io/milvus-lite": {
-  "commit_7d": 3,
-  "commit_90d": 18,
+  "commit_7d": 0,
+  "commit_90d": 8,
   "rel_ver": "v3.2.2",
   "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 4,
+  "rel_days": 35,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -578,23 +578,23 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "nudgebee/nudgebee": {
-  "commit_7d": 10,
-  "commit_90d": 2874,
-  "rel_ver": "v1.11.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_7d": 14,
+  "commit_90d": 3816,
+  "rel_ver": "v1.14.0-rc.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -608,22 +608,22 @@
    "Python": 8,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Adityaraj0421/naksha-studio": {
-  "commit_7d": 4,
-  "commit_90d": 4,
-  "rel_ver": "v5.1.2",
+  "commit_7d": 0,
+  "commit_90d": 70,
+  "rel_ver": "v6.0.0",
   "rel_pub": "2026-10-18",
-  "rel_days": 0,
-  "rel_n90": 1,
+  "rel_days": 30,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -637,10 +637,10 @@
    "TypeScript": 22,
    "JavaScript": 16
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -728,8 +728,8 @@
   }
  },
  "122-syf-wcy/PhysicsOS": {
-  "commit_7d": 4,
-  "commit_90d": 277,
+  "commit_7d": 109,
+  "commit_90d": 581,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -744,10 +744,10 @@
    "Rust": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

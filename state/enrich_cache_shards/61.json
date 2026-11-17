@@ -782,7 +782,7 @@
  },
  "MiniMax-AI/MiniMax-M3": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -791,10 +791,10 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -824,12 +824,12 @@
   }
  },
  "mlhher/late-cli": {
-  "commit_7d": 11,
-  "commit_90d": 69,
-  "rel_ver": "v2.0.2",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
-  "rel_n90": 6,
+  "commit_7d": 0,
+  "commit_90d": 66,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 10,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -844,10 +844,10 @@
    "Python": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -880,7 +880,7 @@
  },
  "qifan777/dive-into-spring-ai": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -895,22 +895,22 @@
    "JavaScript": 2,
    "Smalltalk": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "aallan/vera": {
-  "commit_7d": 47,
-  "commit_90d": 1087,
-  "rel_ver": "v0.2.4",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 12,
+  "commit_7d": 35,
+  "commit_90d": 696,
+  "rel_ver": "v0.2.8",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -923,10 +923,10 @@
    "JavaScript": 1,
    "Vim Script": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -934,10 +934,10 @@
  },
  "dmtrKovalenko/subtitler": {
   "commit_7d": 1,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": "v1.1",
   "rel_pub": "2024-10-28",
-  "rel_days": 720,
+  "rel_days": 750,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -953,22 +953,22 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "rengwu/chartr": {
-  "commit_7d": 25,
-  "commit_90d": 729,
-  "rel_ver": "v0.3.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "commit_7d": 0,
+  "commit_90d": 216,
+  "rel_ver": "v0.3.3",
+  "rel_pub": "2026-11-07",
+  "rel_days": 10,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -983,10 +983,10 @@
    "TypeScript": 2,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -994,10 +994,10 @@
  },
  "GreyhavenHQ/greywall": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 0,
   "rel_ver": "v0.3.7",
   "rel_pub": "2026-06-01",
-  "rel_days": 139,
+  "rel_days": 169,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1012,10 +1012,10 @@
    "Makefile": 1,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4925,6 +4925,36 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "nexu-io/openmotion": {
+  "commit_90d": 467,
+  "commit_7d": 385,
+  "rel_ver": "v0.6.8-test.21",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 31,
+  "lang": {
+   "TypeScript": 65,
+   "HTML": 26,
+   "CSS": 5,
+   "JavaScript": 5,
+   "Python": 0
+  },
+  "enriched_at": "20261117",
+  "dim_ts": {
+   "commit": "20261117",
+   "release": "20261117",
+   "security": "20261117",
+   "contrib": "20261117",
+   "lang": "20261117"
   }
  }
 }

@@ -345,11 +345,11 @@
   }
  },
  "a2aproject/a2a-go": {
-  "commit_90d": 47,
-  "commit_7d": 5,
-  "rel_ver": "v2.6.0",
-  "rel_pub": "2026-09-25",
-  "rel_days": 23,
+  "commit_90d": 96,
+  "commit_7d": 15,
+  "rel_ver": "v2.8.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 11,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -363,10 +363,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -423,11 +423,11 @@
   }
  },
  "bodo-ai/Bodo": {
-  "commit_90d": 105,
-  "commit_7d": 0,
-  "rel_ver": "2026.10",
-  "rel_pub": "2026-10-02",
-  "rel_days": 16,
+  "commit_90d": 69,
+  "commit_7d": 1,
+  "rel_ver": "2026.11",
+  "rel_pub": "2026-11-04",
+  "rel_days": 13,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -443,10 +443,10 @@
    "Kotlin": 6,
    "Cython": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -558,8 +558,8 @@
   }
  },
  "Billy1900/Awesome-AI-for-cybersecurity": {
-  "commit_90d": 6,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -568,10 +568,10 @@
   "sec_ids": [],
   "contrib_n": 6,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -747,11 +747,11 @@
   }
  },
  "microsoft/quicksand": {
-  "commit_90d": 71,
-  "commit_7d": 11,
-  "rel_ver": "quicksand-ubuntu/v0.10.1",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_90d": 69,
+  "commit_7d": 0,
+  "rel_ver": "quicksand-ubuntu/v0.10.2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -767,10 +767,10 @@
    "Bicep": 1,
    "Jinja": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -959,11 +959,11 @@
   }
  },
  "FeatherHunter/dsh-mattpocock-skills-deck": {
-  "commit_90d": 2267,
-  "commit_7d": 690,
-  "rel_ver": "v1.9.0-beta.4",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 4373,
+  "commit_7d": 11,
+  "rel_ver": "v1.9.0-beta.33",
+  "rel_pub": "2026-11-01",
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -979,10 +979,10 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

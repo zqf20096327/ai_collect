@@ -662,11 +662,11 @@
   }
  },
  "canyongbs/advisingapp": {
-  "commit_90d": 214,
-  "commit_7d": 16,
-  "rel_ver": "1.147.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 222,
+  "commit_7d": 12,
+  "rel_ver": "1.151.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -686,22 +686,22 @@
    "Vue": 2,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Nongfsq/ftop": {
-  "commit_90d": 42,
-  "commit_7d": 3,
-  "rel_ver": "v0.2.6",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
-  "rel_n90": 9,
+  "commit_90d": 72,
+  "commit_7d": 6,
+  "rel_ver": "v0.2.11",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -715,10 +715,10 @@
    "Shell": 1,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -745,7 +745,7 @@
   }
  },
  "JyChen9811/FaithDiff": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -761,23 +761,23 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "PunGrumpy/logixlysia": {
-  "commit_90d": 186,
-  "commit_7d": 0,
-  "rel_ver": "logixlysia@6.10.0",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
+  "commit_90d": 215,
+  "commit_7d": 25,
+  "rel_ver": "recording-pr-636",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -791,10 +791,10 @@
    "CSS": 0,
    "Tape": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -823,12 +823,12 @@
   }
  },
  "myylogic/cevahir-ai": {
-  "commit_90d": 14,
-  "commit_7d": 4,
-  "rel_ver": "research-2026.10.13-v4",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 4,
+  "commit_90d": 335,
+  "commit_7d": 321,
+  "rel_ver": "research-2026.11.16-v6",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -840,10 +840,10 @@
    "Python": 100,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1341,12 +1341,12 @@
   }
  },
  "BotHarness/DeepSeekBot": {
-  "commit_90d": 2127,
-  "commit_7d": 706,
-  "rel_ver": "v1.3.1",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
-  "rel_n90": 4,
+  "commit_90d": 5286,
+  "commit_7d": 1058,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1361,20 +1361,20 @@
    "Astro": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "bigfish1913/pi-rust": {
-  "commit_90d": 506,
-  "commit_7d": 89,
-  "rel_ver": "v0.5.1",
-  "rel_pub": "2026-10-18",
+  "commit_90d": 1237,
+  "commit_7d": 60,
+  "rel_ver": "v0.25.0",
+  "rel_pub": "2026-11-17",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1391,10 +1391,10 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

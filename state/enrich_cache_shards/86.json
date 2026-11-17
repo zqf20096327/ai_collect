@@ -710,7 +710,7 @@
  },
  "bentoml/BentoDiffusion": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -721,21 +721,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "cosai-oasis/project-codeguard": {
-  "commit_7d": 1,
-  "commit_90d": 38,
+  "commit_7d": 0,
+  "commit_90d": 22,
   "rel_ver": "v1.5.0",
   "rel_pub": "2026-09-29",
-  "rel_days": 19,
+  "rel_days": 49,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -748,22 +748,22 @@
    "Python": 99,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "hiddenstateresearch/visualtorch": {
-  "commit_7d": 1,
-  "commit_90d": 9,
+  "commit_7d": 0,
+  "commit_90d": 2,
   "rel_ver": "v1.4.1",
   "rel_pub": "2026-07-28",
-  "rel_days": 82,
-  "rel_n90": 2,
+  "rel_days": 112,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -775,10 +775,10 @@
    "Python": 99,
    "TeX": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

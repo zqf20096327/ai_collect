@@ -531,11 +531,11 @@
   }
  },
  "Agent-Field/CodeAF": {
-  "commit_90d": 3199,
-  "commit_7d": 31,
-  "rel_ver": "staging-20261017-922bd9e0902c",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 1965,
+  "commit_7d": 36,
+  "rel_ver": "dev-20261117-a597fdcc394f",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -551,10 +551,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -641,11 +641,11 @@
   }
  },
  "yzr278892/arxiv-daily-researcher": {
-  "commit_90d": 503,
+  "commit_90d": 456,
   "commit_7d": 0,
   "rel_ver": "v4.7",
   "rel_pub": "2026-09-26",
-  "rel_days": 22,
+  "rel_days": 52,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -661,10 +661,10 @@
    "HTML": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -725,13 +725,13 @@
   }
  },
  "helixnow/deep-student": {
-  "commit_90d": 1488,
-  "commit_7d": 38,
-  "rel_ver": "v0.10.6",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 1417,
+  "commit_7d": 26,
+  "rel_ver": "v0.20.4",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -745,10 +745,10 @@
    "JavaScript": 1,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

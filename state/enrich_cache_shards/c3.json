@@ -525,12 +525,12 @@
   }
  },
  "matrixmapai/openabcode": {
-  "commit_90d": 21,
+  "commit_90d": 44,
   "commit_7d": 0,
-  "rel_ver": "v1.1.0",
-  "rel_pub": "2026-09-16",
-  "rel_days": 32,
-  "rel_n90": 1,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-07",
+  "rel_days": 10,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -545,10 +545,10 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -570,22 +570,22 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "lobehub/lobe-cli-toolbox": {
-  "commit_90d": 6,
-  "commit_7d": 5,
-  "rel_ver": "@lobehub/i18n-cli@1.7.1",
-  "rel_pub": "2023-09-06",
-  "rel_days": 1138,
-  "rel_n90": 0,
+  "commit_90d": 32,
+  "commit_7d": 0,
+  "rel_ver": "@lobehub/seo-cli@1.8.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -599,22 +599,22 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "llm-d/llm-d-router": {
-  "commit_90d": 774,
-  "commit_7d": 102,
+  "commit_90d": 951,
+  "commit_7d": 58,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "rel_days": 32,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -629,21 +629,21 @@
    "Makefile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "moss-site/moss-trade-bot-skills": {
-  "commit_90d": 1,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": "v1.0.28",
   "rel_pub": "2026-06-01",
-  "rel_days": 139,
+  "rel_days": 169,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -655,10 +655,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -712,11 +712,11 @@
   }
  },
  "FORARTfe/HyMPS": {
-  "commit_90d": 7,
-  "commit_7d": 1,
+  "commit_90d": 17,
+  "commit_7d": 9,
   "rel_ver": "v1.1",
   "rel_pub": "2025-03-21",
-  "rel_days": 576,
+  "rel_days": 606,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -726,21 +726,21 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Cotal-AI/Cotal": {
-  "commit_90d": 6382,
-  "commit_7d": 196,
-  "rel_ver": "v0.85.0",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 10520,
+  "commit_7d": 891,
+  "rel_ver": "v0.165.4",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -756,18 +756,18 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "cporter202/awesome-ai-tools": {
-  "commit_90d": 6,
-  "commit_7d": 3,
+  "commit_90d": 8,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -776,20 +776,20 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "kLOsk/adloop": {
-  "commit_90d": 212,
-  "commit_7d": 36,
-  "rel_ver": "v0.32.1",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 304,
+  "commit_7d": 22,
+  "rel_ver": "v0.45.0",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -803,10 +803,10 @@
    "Python": 99,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -862,12 +862,12 @@
   }
  },
  "rollroyces/py-idp": {
-  "commit_90d": 88,
-  "commit_7d": 8,
-  "rel_ver": "v0.5.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
-  "rel_n90": 3,
+  "commit_90d": 97,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.2",
+  "rel_pub": "2026-10-23",
+  "rel_days": 25,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -881,10 +881,10 @@
    "Dockerfile": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

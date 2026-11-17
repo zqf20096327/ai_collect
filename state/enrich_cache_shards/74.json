@@ -299,10 +299,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261105",
-   "release": "20261105",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -957,12 +957,12 @@
   }
  },
  "Ammaar-Alam/minebench": {
-  "commit_90d": 770,
-  "commit_7d": 50,
-  "rel_ver": "4.7.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 12,
+  "commit_90d": 639,
+  "commit_7d": 10,
+  "rel_ver": "4.8.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -976,10 +976,10 @@
    "CSS": 1,
    "PLpgSQL": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1035,11 +1035,11 @@
   }
  },
  "JiangNanGenius/floe-agent": {
-  "commit_90d": 1957,
-  "commit_7d": 48,
-  "rel_ver": "v1.7.34",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 4436,
+  "commit_7d": 347,
+  "rel_ver": "v1.8.41",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1055,22 +1055,22 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "jegly/OfflineLLM": {
-  "commit_90d": 14,
+  "commit_90d": 58,
   "commit_7d": 11,
-  "rel_ver": "5.1.1",
-  "rel_pub": "2026-08-18",
-  "rel_days": 61,
-  "rel_n90": 1,
+  "rel_ver": "v5.1.4",
+  "rel_pub": "2026-10-31",
+  "rel_days": 17,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1083,10 +1083,10 @@
    "C++": 12,
    "CMake": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

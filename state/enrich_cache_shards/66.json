@@ -680,12 +680,12 @@
   }
  },
  "sosoj92/jarvis-assistant-vocal": {
-  "commit_90d": 192,
-  "commit_7d": 5,
+  "commit_90d": 135,
+  "commit_7d": 0,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-08-07",
-  "rel_days": 72,
-  "rel_n90": 1,
+  "rel_days": 102,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -700,21 +700,21 @@
    "CSS": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "professorpalmer/Puppetmaster": {
-  "commit_90d": 710,
-  "commit_7d": 19,
-  "rel_ver": "v1.45.1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 674,
+  "commit_7d": 10,
+  "rel_ver": "v1.50.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -730,17 +730,17 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "usepr/eva": {
-  "commit_90d": 16,
+  "commit_90d": 12,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -752,10 +752,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -859,11 +859,11 @@
   }
  },
  "xiaomoBoy/pi-bluebook": {
-  "commit_90d": 76,
-  "commit_7d": 8,
+  "commit_90d": 79,
+  "commit_7d": 0,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-09-12",
-  "rel_days": 36,
+  "rel_days": 66,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -877,10 +877,10 @@
    "JavaScript": 32,
    "Python": 24
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

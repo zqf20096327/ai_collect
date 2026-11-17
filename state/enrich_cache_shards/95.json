@@ -976,12 +976,12 @@
   }
  },
  "livekit/python-sdks": {
-  "commit_90d": 76,
-  "commit_7d": 19,
-  "rel_ver": "api-v1.2.1",
-  "rel_pub": "2026-09-17",
-  "rel_days": 31,
-  "rel_n90": 1,
+  "commit_90d": 108,
+  "commit_7d": 14,
+  "rel_ver": "rtc-v1.3.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -996,17 +996,17 @@
    "TypeScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "MiniMax-AI/MiniMax-M2.7": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1016,10 +1016,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1056,8 +1056,8 @@
   }
  },
  "aaryansamanta/aaryansamanta.github.io": {
-  "commit_90d": 7,
-  "commit_7d": 0,
+  "commit_90d": 19,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1071,10 +1071,10 @@
    "CSS": 14,
    "JavaScript": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1123,10 +1123,10 @@
    "Python": 100,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1163,11 +1163,11 @@
   }
  },
  "czhou578/llm-god": {
-  "commit_90d": 17,
-  "commit_7d": 1,
+  "commit_90d": 21,
+  "commit_7d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2025-11-23",
-  "rel_days": 329,
+  "rel_days": 359,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1182,10 +1182,10 @@
    "JavaScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1456,7 +1456,7 @@
   }
  },
  "Jaasssoooonnnnn/FirstLight_CR": {
-  "commit_90d": 7,
+  "commit_90d": 12,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1472,10 +1472,10 @@
    "Shell": 1,
    "Assembly": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

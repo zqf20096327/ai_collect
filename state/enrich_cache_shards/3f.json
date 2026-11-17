@@ -652,11 +652,11 @@
   }
  },
  "zeraix/zeraix": {
-  "commit_90d": 198,
-  "commit_7d": 2,
-  "rel_ver": "v2.3.3",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_90d": 87,
+  "commit_7d": 0,
+  "rel_ver": "v2.3.4",
+  "rel_pub": "2026-10-19",
+  "rel_days": 29,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -672,10 +672,10 @@
    "HTML": 2,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -712,7 +712,7 @@
   }
  },
  "238SAMIxD/discord-ai-bot": {
-  "commit_90d": 0,
+  "commit_90d": 30,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -726,10 +726,10 @@
    "Makefile": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

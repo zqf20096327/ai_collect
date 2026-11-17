@@ -643,10 +643,10 @@
   }
  },
  "Tiledesk/design-studio": {
-  "commit_90d": 43,
-  "commit_7d": 4,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 49,
+  "commit_7d": 7,
+  "rel_ver": "1.0.7",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -659,22 +659,26 @@
    "JavaScript": 2,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-10-06",
+  "rel_days": 42,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "NVIDIA/aicr": {
-  "commit_90d": 907,
-  "commit_7d": 91,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-05",
-  "rel_days": 13,
-  "rel_n90": 7,
+  "commit_90d": 935,
+  "commit_7d": 95,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -689,17 +693,17 @@
    "Markdown": 5,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "kraiskil/onnx2c": {
-  "commit_90d": 13,
+  "commit_90d": 7,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -715,18 +719,18 @@
    "CMake": 4,
    "PureBasic": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "fregu856/papers": {
-  "commit_90d": 40,
-  "commit_7d": 13,
+  "commit_90d": 91,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -735,21 +739,21 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "apple/pfl-research": {
-  "commit_90d": 12,
-  "commit_7d": 2,
+  "commit_90d": 15,
+  "commit_7d": 0,
   "rel_ver": "v0.5.2",
   "rel_pub": "2026-09-16",
-  "rel_days": 32,
+  "rel_days": 62,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -765,10 +769,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -779,7 +783,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-08-27",
-  "rel_days": 52,
+  "rel_days": 82,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -795,10 +799,10 @@
    "HTML": 0,
    "CMake": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -888,11 +892,11 @@
   }
  },
  "zilliztech/vector-graph-rag": {
-  "commit_90d": 21,
-  "commit_7d": 3,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_90d": 20,
+  "commit_7d": 8,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -908,10 +912,10 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

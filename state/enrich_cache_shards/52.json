@@ -742,8 +742,8 @@
   }
  },
  "linghungegeg/Linghun": {
-  "commit_7d": 0,
-  "commit_90d": 44,
+  "commit_7d": 2,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -758,10 +758,10 @@
    "Python": 0,
    "Go": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -781,22 +781,22 @@
    "Python": 94,
    "Shell": 6
   },
-  "enriched_at": "20261101",
+  "enriched_at": "20261117",
   "dim_ts": {
    "commit": "20261101",
    "release": "20261101",
-   "security": "20261018",
+   "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "deepagent-ltd/deepagent-code": {
-  "commit_7d": 22,
-  "commit_90d": 113,
-  "rel_ver": "app-v2.0.4-main.83",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
-  "rel_n90": 1,
+  "commit_7d": 0,
+  "commit_90d": 114,
+  "rel_ver": "v2.0.5",
+  "rel_pub": "2026-11-05",
+  "rel_days": 12,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -811,20 +811,20 @@
    "JavaScript": 1,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "inclusionAI/AReno": {
-  "commit_7d": 9,
-  "commit_90d": 81,
-  "rel_ver": "v0.9.0",
-  "rel_pub": "2026-10-12",
+  "commit_7d": 11,
+  "commit_90d": 90,
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-11-11",
   "rel_days": 6,
   "rel_n90": 4,
   "rel_pre": false,
@@ -841,10 +841,10 @@
    "JavaScript": 4,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -953,12 +953,12 @@
   }
  },
  "mingchen666/Reviva": {
-  "commit_7d": 2,
+  "commit_7d": 5,
   "commit_90d": 25,
-  "rel_ver": "v1.4.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
-  "rel_n90": 10,
+  "rel_ver": "v1.5.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 2,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -973,10 +973,10 @@
    "Python": 5,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1003,12 +1003,12 @@
   }
  },
  "yennanliu/InvestSkill": {
-  "commit_7d": 18,
-  "commit_90d": 151,
-  "rel_ver": "v1.13.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
-  "rel_n90": 4,
+  "commit_7d": 21,
+  "commit_90d": 154,
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1021,10 +1021,10 @@
    "CSS": 10,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

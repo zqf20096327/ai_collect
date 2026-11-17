@@ -136,8 +136,8 @@
   }
  },
  "rushter/MLAlgorithms": {
-  "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_7d": 2,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -149,10 +149,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261016",
-   "release": "20261016",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -529,10 +529,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -565,12 +565,12 @@
   }
  },
  "gao-lab/GLUE": {
-  "commit_90d": 0,
+  "commit_90d": 9,
   "commit_7d": 0,
-  "rel_ver": "v0.4.1",
-  "rel_pub": "2026-09-24",
-  "rel_days": 24,
-  "rel_n90": 1,
+  "rel_ver": "v0.5.2",
+  "rel_pub": "2026-11-03",
+  "rel_days": 14,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -585,10 +585,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -647,12 +647,12 @@
   }
  },
  "JuliaGraphs/GraphNeuralNetworks.jl": {
-  "commit_90d": 26,
-  "commit_7d": 1,
-  "rel_ver": "GraphNeuralNetworks-v0.6.12",
-  "rel_pub": "2026-07-31",
-  "rel_days": 79,
-  "rel_n90": 5,
+  "commit_90d": 23,
+  "commit_7d": 3,
+  "rel_ver": "GraphNeuralNetworks-v1.1.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 13,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -664,10 +664,10 @@
    "Julia": 74,
    "Jupyter Notebook": 26
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

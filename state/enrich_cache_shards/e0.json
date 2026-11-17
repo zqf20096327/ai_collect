@@ -599,7 +599,7 @@
  },
  "zimingttkx/AI-Practices": {
   "commit_7d": 8,
-  "commit_90d": 98,
+  "commit_90d": 101,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -614,10 +614,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -702,11 +702,11 @@
   }
  },
  "Fergana-Labs/stash": {
-  "commit_7d": 57,
-  "commit_90d": 606,
+  "commit_7d": 6,
+  "commit_90d": 399,
   "rel_ver": "pr-815-images",
   "rel_pub": "2026-07-15",
-  "rel_days": 95,
+  "rel_days": 125,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -722,10 +722,10 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -762,7 +762,7 @@
  },
  "yohasebe/openai-chat-api-workflow": {
   "commit_7d": 0,
-  "commit_90d": 9,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -773,10 +773,10 @@
   "lang": {
    "Ruby": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -809,11 +809,11 @@
   }
  },
  "unixwin/WinuxCmd": {
-  "commit_7d": 64,
-  "commit_90d": 532,
-  "rel_ver": "v1.1.14",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_7d": 438,
+  "commit_90d": 1531,
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-11-02",
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -829,10 +829,10 @@
    "Shell": 1,
    "CMake": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

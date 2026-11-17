@@ -482,12 +482,12 @@
   }
  },
  "localai-org/vllm.cpp": {
-  "commit_90d": 5488,
-  "commit_7d": 50,
+  "commit_90d": 3716,
+  "commit_7d": 55,
   "rel_ver": "v0.0.2",
   "rel_pub": "2026-08-11",
-  "rel_days": 68,
-  "rel_n90": 3,
+  "rel_days": 98,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -502,17 +502,17 @@
    "Cuda": 3,
    "HIP": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ZumingHuang/awesome-ocr-resources": {
-  "commit_90d": 114,
+  "commit_90d": 149,
   "commit_7d": 14,
   "rel_ver": null,
   "rel_none": true,
@@ -525,17 +525,17 @@
    "Python": 98,
    "Jinja": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "gyunggyung/AGI-Papers": {
-  "commit_90d": 5,
+  "commit_90d": 10,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -545,10 +545,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -579,8 +579,8 @@
   }
  },
  "google-deepmind/representations4d": {
-  "commit_90d": 10,
-  "commit_7d": 0,
+  "commit_90d": 12,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -592,21 +592,21 @@
    "Jupyter Notebook": 62,
    "Python": 38
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "kelos-dev/kelos": {
-  "commit_90d": 485,
-  "commit_7d": 20,
-  "rel_ver": "v0.60.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_90d": 403,
+  "commit_7d": 37,
+  "rel_ver": "v0.64.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -622,10 +622,10 @@
    "CSS": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -688,12 +688,12 @@
   }
  },
  "NVIDIA/TensorRT-Model-Connect": {
-  "commit_90d": 828,
-  "commit_7d": 55,
+  "commit_90d": 876,
+  "commit_7d": 146,
   "rel_ver": "trtmc-nightly-20260814T132928Z-75e25af75499",
   "rel_pub": "2026-08-14",
-  "rel_days": 65,
-  "rel_n90": 1,
+  "rel_days": 95,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -708,10 +708,10 @@
    "Cuda": 1,
    "CMake": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -923,11 +923,11 @@
   }
  },
  "canivel/dynolab": {
-  "commit_90d": 79,
-  "commit_7d": 5,
-  "rel_ver": "v0.6.9",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 115,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.18",
+  "rel_pub": "2026-11-05",
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -942,10 +942,10 @@
    "PowerShell": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

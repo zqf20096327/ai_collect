@@ -87,8 +87,8 @@
   }
  },
  "microsoft/PhiCookBook": {
-  "commit_90d": 34,
-  "commit_7d": 2,
+  "commit_90d": 37,
+  "commit_7d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -103,10 +103,10 @@
    "JavaScript": 0,
    "Kotlin": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -547,11 +547,11 @@
   }
  },
  "vijaymasand/PyChem-Pro": {
-  "commit_90d": 74,
-  "commit_7d": 0,
+  "commit_90d": 47,
+  "commit_7d": 2,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-07-05",
-  "rel_days": 105,
+  "rel_days": 135,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -565,17 +565,17 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "amitshekhariitbhu/llm-inference-engineering": {
-  "commit_90d": 18,
+  "commit_90d": 12,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -587,10 +587,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -689,11 +689,11 @@
   }
  },
  "mlr-org/mlr3book": {
-  "commit_90d": 9,
+  "commit_90d": 10,
   "commit_7d": 0,
   "rel_ver": "submission",
   "rel_pub": "2023-07-04",
-  "rel_days": 1202,
+  "rel_days": 1232,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -708,22 +708,22 @@
    "SCSS": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "abdulmominsakib/localmind": {
-  "commit_90d": 143,
-  "commit_7d": 7,
-  "rel_ver": "1.9.0+95",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
-  "rel_n90": 12,
+  "commit_90d": 117,
+  "commit_7d": 1,
+  "rel_ver": "1.9.1+96",
+  "rel_pub": "2026-10-21",
+  "rel_days": 27,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -738,10 +738,10 @@
    "Ruby": 0,
    "Swift": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -801,8 +801,8 @@
   }
  },
  "dl-cv/OpenIVS": {
-  "commit_90d": 68,
-  "commit_7d": 6,
+  "commit_90d": 76,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -817,10 +817,10 @@
    "C": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

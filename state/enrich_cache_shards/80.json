@@ -342,11 +342,11 @@
   }
  },
  "huggingface/Mongoku": {
-  "commit_7d": 5,
-  "commit_90d": 15,
+  "commit_7d": 0,
+  "commit_90d": 12,
   "rel_ver": "1.3.0",
   "rel_pub": "2019-07-31",
-  "rel_days": 2649,
+  "rel_days": 2666,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -362,10 +362,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -704,8 +704,8 @@
   }
  },
  "amitshekhariitbhu/machine-learning-interview-questions": {
-  "commit_7d": 2,
-  "commit_90d": 16,
+  "commit_7d": 14,
+  "commit_90d": 54,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -716,10 +716,10 @@
   "lang": {
    "Markdown": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -755,13 +755,13 @@
   }
  },
  "caipe-io/ai-platform-engineering": {
-  "commit_7d": 16,
-  "commit_90d": 765,
-  "rel_ver": "1.3.0-rc.8",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
+  "commit_7d": 53,
+  "commit_90d": 715,
+  "rel_ver": "1.3.6",
+  "rel_pub": "2026-11-02",
+  "rel_days": 15,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -775,10 +775,10 @@
    "JavaScript": 1,
    "Go Template": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -839,11 +839,11 @@
   }
  },
  "anthropics/anthropic-sdk-java": {
-  "commit_7d": 32,
-  "commit_90d": 347,
-  "rel_ver": "v2.73.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_7d": 27,
+  "commit_90d": 544,
+  "rel_ver": "v3.9.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -858,10 +858,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -898,11 +898,11 @@
   }
  },
  "wh000wh000/awesome-jev-live": {
-  "commit_7d": 88,
-  "commit_90d": 89,
+  "commit_7d": 60,
+  "commit_90d": 320,
   "rel_ver": "v2026.09.21",
   "rel_pub": "2026-09-21",
-  "rel_days": 27,
+  "rel_days": 57,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -914,10 +914,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4806,10 +4806,10 @@
  "mvdctop/Movie_Data_Capture": {
   "commit_90d": 4,
   "commit_7d": 0,
-  "rel_ver": "8.2.4",
-  "rel_pub": "2026-11-08",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "rel_ver": "8.2.5",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4824,10 +4824,10 @@
    "PowerShell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261110",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261110",
-   "release": "20261110",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261103",
    "contrib": "20261103",
    "lang": "20261103"

@@ -609,10 +609,10 @@
   }
  },
  "marcusquinn/aidevops": {
-  "commit_90d": 3990,
-  "commit_7d": 394,
-  "rel_ver": "v3.39.41",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 4750,
+  "commit_7d": 677,
+  "rel_ver": "v3.39.215",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -631,18 +631,18 @@
    "JavaScript": 7,
    "TypeScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "oomol-lab/wiki-graph": {
-  "commit_90d": 187,
-  "commit_7d": 27,
+  "commit_90d": 113,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -655,21 +655,21 @@
    "Jinja": 5,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "guanguans/ai-commit": {
-  "commit_90d": 76,
+  "commit_90d": 45,
   "commit_7d": 0,
   "rel_ver": "1.15.5",
   "rel_pub": "2025-05-17",
-  "rel_days": 519,
+  "rel_days": 549,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -682,22 +682,22 @@
    "PHP": 99,
    "Tape": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "xlang-ai/OSWorld-V2": {
-  "commit_90d": 53,
-  "commit_7d": 4,
+  "commit_90d": 26,
+  "commit_7d": 1,
   "rel_ver": "osworld-v2.1",
   "rel_pub": "2026-09-16",
-  "rel_days": 32,
-  "rel_n90": 2,
+  "rel_days": 62,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -712,10 +712,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -746,7 +746,7 @@
  },
  "pytorch/pytorch.github.io": {
   "commit_90d": 14,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -761,22 +761,22 @@
    "JavaScript": 3,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "oleksiijko/pmb": {
-  "commit_90d": 33,
-  "commit_7d": 0,
+  "commit_90d": 36,
+  "commit_7d": 17,
   "rel_ver": "v1.2.3",
   "rel_pub": "2026-08-16",
-  "rel_days": 63,
-  "rel_n90": 1,
+  "rel_days": 93,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -791,10 +791,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

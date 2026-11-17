@@ -387,7 +387,7 @@
   }
  },
  "Azure-Samples/AI-Gateway": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
@@ -403,10 +403,10 @@
    "PowerShell": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -581,12 +581,12 @@
   }
  },
  "materialyzeai/maml": {
-  "commit_7d": 0,
-  "commit_90d": 4,
-  "rel_ver": "v2025.4.1",
-  "rel_pub": "2025-04-02",
-  "rel_days": 564,
-  "rel_n90": 0,
+  "commit_7d": 8,
+  "commit_90d": 29,
+  "rel_ver": "v2026.11.12",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -600,10 +600,10 @@
    "Inform 7": 3,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -611,7 +611,7 @@
  },
  "currents-dev/playwright-best-practices-skill": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -620,10 +620,10 @@
   "sec_ids": [],
   "contrib_n": 5,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -657,12 +657,12 @@
   }
  },
  "ModelEngine-Group/unified-cache-management": {
-  "commit_7d": 16,
-  "commit_90d": 132,
-  "rel_ver": "nightly/v0.9.0-20261018-1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_7d": 13,
+  "commit_90d": 164,
+  "rel_ver": "nightly/v0.10.0-20261117-1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -677,10 +677,10 @@
    "Shell": 1,
    "Cuda": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

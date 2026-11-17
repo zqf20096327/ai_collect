@@ -701,11 +701,11 @@
   }
  },
  "prevalentWare/opencode-goal-plugin": {
-  "commit_90d": 59,
-  "commit_7d": 4,
-  "rel_ver": "v0.1.64",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 91,
+  "commit_7d": 3,
+  "rel_ver": "v0.1.98",
+  "rel_pub": "2026-11-10",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -718,21 +718,21 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "apoorvdarshan/fud-ai": {
-  "commit_90d": 1391,
-  "commit_7d": 313,
-  "rel_ver": "android-v7.2",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
+  "commit_90d": 1496,
+  "commit_7d": 0,
+  "rel_ver": "ios-v8.1.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 11,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -748,10 +748,10 @@
    "TypeScript": 5,
    "HTML": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -789,10 +789,10 @@
  },
  "neiii/bridle": {
   "commit_90d": 23,
-  "commit_7d": 23,
+  "commit_7d": 0,
   "rel_ver": "skills-locate-v0.4.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "rel_days": 31,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -804,10 +804,10 @@
   "lang": {
    "Rust": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -815,7 +815,7 @@
  },
  "andriygav/MachineLearningSeminars": {
   "commit_90d": 4,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -826,10 +826,10 @@
   "lang": {
    "Jupyter Notebook": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -846,10 +846,10 @@
   "sec_ids": [],
   "contrib_n": 11,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1139,8 +1139,8 @@
   }
  },
  "xcisxc29/dsh-wechat": {
-  "commit_90d": 66,
-  "commit_7d": 29,
+  "commit_90d": 72,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1152,10 +1152,10 @@
    "TypeScript": 86,
    "JavaScript": 14
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1312,11 +1312,11 @@
   }
  },
  "WSL043/dsh-codex-subscription": {
-  "commit_90d": 615,
-  "commit_7d": 108,
-  "rel_ver": "v3.0.1",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_90d": 852,
+  "commit_7d": 46,
+  "rel_ver": "v3.2.19",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1329,10 +1329,10 @@
    "JavaScript": 99,
    "PowerShell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -30,11 +30,11 @@
   }
  },
  "decolua/9router": {
-  "commit_7d": 28,
-  "commit_90d": 468,
+  "commit_7d": 39,
+  "commit_90d": 476,
   "rel_ver": "v0.5.35",
   "rel_pub": "2026-07-16",
-  "rel_days": 116,
+  "rel_days": 124,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -845,7 +845,7 @@
   }
  },
  "Hainrixz/open-carrusel": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -859,21 +859,21 @@
    "JavaScript": 5,
    "CSS": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "griddynamics/rosetta": {
-  "commit_90d": 242,
-  "commit_7d": 9,
-  "rel_ver": "v3.1.16",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_90d": 191,
+  "commit_7d": 20,
+  "rel_ver": "v3.1.29",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -889,21 +889,21 @@
    "Shell": 5,
    "Go Template": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "hogeheer499-commits/strix-halo-guide": {
-  "commit_90d": 64,
+  "commit_90d": 42,
   "commit_7d": 0,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-10-02",
-  "rel_days": 16,
+  "rel_days": 46,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -918,10 +918,10 @@
    "HTML": 7,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -983,8 +983,8 @@
   }
  },
  "martenlienen/torchode": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 40,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -995,10 +995,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1028,11 +1028,11 @@
   }
  },
  "general-molecular-simulations/so3lr": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 531,
+  "commit_7d": 132,
   "rel_ver": "v0.1.0",
   "rel_pub": "2025-11-20",
-  "rel_days": 332,
+  "rel_days": 362,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1044,10 +1044,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

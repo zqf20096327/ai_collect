@@ -707,10 +707,10 @@
  },
  "inseq-team/inseq": {
   "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_90d": 5,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-02-02",
-  "rel_days": 258,
+  "rel_days": 288,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -724,10 +724,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -759,12 +759,12 @@
  },
  "canyonroad/agentsh": {
   "commit_7d": 0,
-  "commit_90d": 6,
-  "rel_ver": "v0.20.5",
-  "rel_pub": "2026-06-23",
-  "rel_days": 117,
-  "rel_n90": 0,
-  "rel_pre": false,
+  "commit_90d": 9,
+  "rel_ver": "v0.20.6-rc2",
+  "rel_pub": "2026-10-27",
+  "rel_days": 21,
+  "rel_n90": 2,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -778,10 +778,10 @@
    "Shell": 1,
    "C++": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -792,7 +792,7 @@
   "commit_90d": 6,
   "rel_ver": "v0.7.6.2",
   "rel_pub": "2026-06-11",
-  "rel_days": 129,
+  "rel_days": 159,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -808,10 +808,10 @@
    "JavaScript": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -830,21 +830,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261117",
   "dim_ts": {
    "commit": "20261111",
    "release": "20261111",
-   "security": "20261018",
+   "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "upgini/upgini": {
-  "commit_7d": 0,
-  "commit_90d": 21,
+  "commit_7d": 1,
+  "commit_90d": 15,
   "rel_ver": "v1.2.0",
   "rel_pub": "2024-09-04",
-  "rel_days": 774,
+  "rel_days": 804,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -860,21 +860,21 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Azornes/Comfyui-LayerForge": {
-  "commit_7d": 0,
-  "commit_90d": 130,
+  "commit_7d": 2,
+  "commit_90d": 9,
   "rel_ver": "v1.6.0",
   "rel_pub": "2026-08-20",
-  "rel_days": 59,
+  "rel_days": 89,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -890,10 +890,10 @@
    "CSS": 3,
    "HTML": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

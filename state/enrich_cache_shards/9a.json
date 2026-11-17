@@ -349,11 +349,11 @@
   }
  },
  "google-deepmind/synthid-text": {
-  "commit_90d": 12,
+  "commit_90d": 13,
   "commit_7d": 1,
   "rel_ver": "0.2.1",
   "rel_pub": "2024-11-14",
-  "rel_days": 716,
+  "rel_days": 733,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -366,10 +366,10 @@
    "Python": 69,
    "Jupyter Notebook": 31
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261031",
-   "release": "20261031",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -626,8 +626,8 @@
   }
  },
  "seyedehsanhadi/sloptrim": {
-  "commit_90d": 39,
-  "commit_7d": 0,
+  "commit_90d": 21,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -641,22 +641,22 @@
    "Shell": 5,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "microsoft/SwiftStreamingMarkdown": {
-  "commit_90d": 5,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": "v0.7.0",
   "rel_pub": "2026-08-02",
-  "rel_days": 77,
-  "rel_n90": 1,
+  "rel_days": 107,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -669,17 +669,17 @@
    "Shell": 2,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "yifanzhang-pro/deep-delta-learning": {
-  "commit_90d": 5,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -692,21 +692,21 @@
    "Python": 94,
    "HTML": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "zj-unicom-ai/UniEmployee": {
-  "commit_90d": 99,
+  "commit_90d": 96,
   "commit_7d": 0,
-  "rel_ver": "v0.21.6",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
+  "rel_ver": "v0.24.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -722,21 +722,21 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "IMNMV/ClaudeR": {
-  "commit_90d": 51,
-  "commit_7d": 0,
+  "commit_90d": 45,
+  "commit_7d": 4,
   "rel_ver": "v0.16.0",
   "rel_pub": "2026-09-14",
-  "rel_days": 34,
+  "rel_days": 64,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -750,22 +750,22 @@
    "R": 40,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Prompthon-IO/agent-systems-handbook": {
-  "commit_90d": 30,
-  "commit_7d": 2,
+  "commit_90d": 19,
+  "commit_7d": 0,
   "rel_ver": "release-2026.10.16.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "rel_days": 32,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -780,10 +780,10 @@
    "JavaScript": 2,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

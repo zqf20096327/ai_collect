@@ -605,8 +605,8 @@
   }
  },
  "zapplyjobs/awesome-ml-internships-2027": {
-  "commit_7d": 943,
-  "commit_90d": 7057,
+  "commit_7d": 950,
+  "commit_90d": 11193,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -615,22 +615,22 @@
   "sec_ids": [],
   "contrib_n": 3,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "google-deepmind/dm_pix": {
-  "commit_7d": 4,
-  "commit_90d": 17,
-  "rel_ver": "v0.4.5",
-  "rel_pub": "2026-06-02",
-  "rel_days": 138,
-  "rel_n90": 0,
+  "commit_7d": 0,
+  "commit_90d": 47,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 12,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -642,10 +642,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -678,12 +678,12 @@
   }
  },
  "ohdearquant/lionagi": {
-  "commit_7d": 320,
-  "commit_90d": 1945,
-  "rel_ver": "v0.35.5",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 12,
+  "commit_7d": 107,
+  "commit_90d": 2039,
+  "rel_ver": "v0.37.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 15,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -698,10 +698,10 @@
    "Rust": 2,
    "Swift": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -790,10 +790,10 @@
   }
  },
  "BerriAI/moyai": {
-  "commit_7d": 162,
-  "commit_90d": 703,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 6,
+  "commit_90d": 842,
+  "rel_ver": "v0.1.6",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -806,14 +806,18 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-06",
+  "rel_days": 11,
+  "rel_n90": 7,
+  "rel_pre": false
  },
  "twhsi/skills": {
   "commit_7d": 0,
@@ -862,11 +866,11 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
    "commit": "20261115",
    "release": "20261115",
-   "security": "20261018",
+   "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
   }
@@ -1065,12 +1069,12 @@
   }
  },
  "OmooLab/AnyImage": {
-  "commit_7d": 3,
-  "commit_90d": 46,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
-  "rel_n90": 5,
+  "commit_7d": 0,
+  "commit_90d": 101,
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1081,10 +1085,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

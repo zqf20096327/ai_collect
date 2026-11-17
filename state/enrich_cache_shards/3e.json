@@ -573,8 +573,8 @@
   }
  },
  "jennyzzt/awesome-open-ended": {
-  "commit_90d": 7,
-  "commit_7d": 0,
+  "commit_90d": 20,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -583,10 +583,10 @@
   "sec_ids": [],
   "contrib_n": 24,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -644,12 +644,12 @@
   }
  },
  "KernelTuner/kernel_tuner": {
-  "commit_90d": 95,
-  "commit_7d": 0,
-  "rel_ver": "1.5.0",
-  "rel_pub": "2026-08-21",
-  "rel_days": 58,
-  "rel_n90": 1,
+  "commit_90d": 145,
+  "commit_7d": 14,
+  "rel_ver": "1.6.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -662,10 +662,10 @@
    "Cuda": 1,
    "Julia": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -729,11 +729,11 @@
   }
  },
  "skygazer42/GustoBot": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 5,
+  "commit_7d": 3,
   "rel_ver": "v0.1.2",
   "rel_pub": "2026-04-22",
-  "rel_days": 179,
+  "rel_days": 209,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -749,10 +749,10 @@
    "Dockerfile": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -785,11 +785,11 @@
   }
  },
  "ucsandman/DashClaw": {
-  "commit_90d": 589,
-  "commit_7d": 0,
-  "rel_ver": "platform-v5.38.0",
-  "rel_pub": "2026-09-26",
-  "rel_days": 22,
+  "commit_90d": 151,
+  "commit_7d": 6,
+  "rel_ver": "v5.39.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -805,10 +805,10 @@
    "HTML": 8,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -827,10 +827,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -913,8 +913,8 @@
   }
  },
  "salitronic/eda-agent": {
-  "commit_90d": 159,
-  "commit_7d": 23,
+  "commit_90d": 544,
+  "commit_7d": 128,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -928,10 +928,10 @@
    "HTML": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -990,10 +990,10 @@
   }
  },
  "Pal-AI-Lab/Cortico": {
-  "commit_90d": 314,
-  "commit_7d": 62,
-  "rel_ver": "v0.2.3",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 482,
+  "commit_7d": 15,
+  "rel_ver": "v0.2.16",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1010,10 +1010,10 @@
    "HTML": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

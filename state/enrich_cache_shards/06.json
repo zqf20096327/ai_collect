@@ -506,11 +506,11 @@
   }
  },
  "expectedparrot/edsl": {
-  "commit_90d": 295,
-  "commit_7d": 13,
+  "commit_90d": 360,
+  "commit_7d": 34,
   "rel_ver": "wasm-wheel",
   "rel_pub": "2026-03-13",
-  "rel_days": 219,
+  "rel_days": 249,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -526,10 +526,10 @@
    "Jinja": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -570,7 +570,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.0.11",
   "rel_pub": "2026-05-13",
-  "rel_days": 158,
+  "rel_days": 188,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -583,10 +583,10 @@
    "JavaScript": 98,
    "Python": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -623,12 +623,12 @@
   }
  },
  "open-spaced-repetition/fsrs-rs": {
-  "commit_90d": 26,
-  "commit_7d": 0,
-  "rel_ver": "v6.6.2",
-  "rel_pub": "2026-08-28",
-  "rel_days": 51,
-  "rel_n90": 1,
+  "commit_90d": 41,
+  "commit_7d": 2,
+  "rel_ver": "v7.0.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 7,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -640,21 +640,21 @@
    "Rust": 100,
    "Nix": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Green-PT/honey-for-devs": {
-  "commit_90d": 42,
+  "commit_90d": 29,
   "commit_7d": 0,
-  "rel_ver": "v1.3.1",
-  "rel_pub": "2026-08-03",
-  "rel_days": 76,
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 30,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -669,22 +669,22 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "sleuth-io/sx": {
-  "commit_90d": 167,
-  "commit_7d": 1,
+  "commit_90d": 59,
+  "commit_7d": 0,
   "rel_ver": "v2.3.9",
   "rel_pub": "2026-09-03",
-  "rel_days": 45,
-  "rel_n90": 11,
+  "rel_days": 75,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -699,10 +699,10 @@
    "JavaScript": 0,
    "NSIS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -784,8 +784,8 @@
   }
  },
  "octree-labs/octree": {
-  "commit_90d": 18,
-  "commit_7d": 5,
+  "commit_90d": 70,
+  "commit_7d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -800,10 +800,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -832,11 +832,11 @@
   }
  },
  "alvarolorentedev/opencode-mobile": {
-  "commit_90d": 316,
-  "commit_7d": 53,
-  "rel_ver": "v1.0.76",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 682,
+  "commit_7d": 14,
+  "rel_ver": "v1.0.150",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -852,10 +852,10 @@
    "Python": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

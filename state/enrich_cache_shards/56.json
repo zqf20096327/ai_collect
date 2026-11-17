@@ -502,12 +502,12 @@
   }
  },
  "NPC-Worldwide/incognide": {
-  "commit_7d": 14,
-  "commit_90d": 105,
-  "rel_ver": "V0.2.33",
-  "rel_pub": "2026-09-29",
-  "rel_days": 19,
-  "rel_n90": 6,
+  "commit_7d": 26,
+  "commit_90d": 151,
+  "rel_ver": "v0.2.35",
+  "rel_pub": "2026-11-10",
+  "rel_days": 7,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -522,10 +522,10 @@
    "CSS": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -598,12 +598,12 @@
   }
  },
  "flyteorg/flytekit": {
-  "commit_7d": 0,
-  "commit_90d": 8,
-  "rel_ver": "v1.16.29",
-  "rel_pub": "2026-10-02",
-  "rel_days": 16,
-  "rel_n90": 3,
+  "commit_7d": 1,
+  "commit_90d": 11,
+  "rel_ver": "v1.16.32",
+  "rel_pub": "2026-11-03",
+  "rel_days": 14,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -618,21 +618,21 @@
    "Makefile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "fabrikt-io/fabrikt": {
-  "commit_7d": 11,
-  "commit_90d": 119,
-  "rel_ver": "28.0.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 9,
+  "commit_7d": 6,
+  "commit_90d": 160,
+  "rel_ver": "29.1.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -646,10 +646,10 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4347,6 +4347,36 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "microsoft/copilot-sdk": {
+  "commit_90d": 283,
+  "commit_7d": 9,
+  "rel_ver": "v2.0.0-preview.2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 127,
+  "lang": {
+   "Java": 26,
+   "Rust": 21,
+   "C#": 18,
+   "Go": 15,
+   "Python": 14
+  },
+  "enriched_at": "20261117",
+  "dim_ts": {
+   "commit": "20261117",
+   "release": "20261117",
+   "security": "20261117",
+   "contrib": "20261117",
+   "lang": "20261117"
   }
  }
 }

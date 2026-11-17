@@ -259,10 +259,10 @@
    "Python": 96,
    "JavaScript": 4
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261102",
-   "release": "20261102",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -816,11 +816,11 @@
   }
  },
  "swytchcodehq/swytchcode-examples": {
-  "commit_90d": 27,
+  "commit_90d": 14,
   "commit_7d": 0,
   "rel_ver": "latest",
   "rel_pub": "2026-07-03",
-  "rel_days": 107,
+  "rel_days": 137,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -836,18 +836,18 @@
    "JavaScript": 2,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Beliavsky/Fortran-code-on-GitHub": {
-  "commit_90d": 12,
-  "commit_7d": 2,
+  "commit_90d": 33,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -856,10 +856,10 @@
   "sec_ids": [],
   "contrib_n": 7,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -944,11 +944,11 @@
   }
  },
  "illuin-tech/vidore-benchmark": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": "v5.0.0",
   "rel_pub": "2025-02-19",
-  "rel_days": 606,
+  "rel_days": 636,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -961,21 +961,21 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "alibaba/tair-kvcache": {
-  "commit_90d": 99,
-  "commit_7d": 7,
+  "commit_90d": 98,
+  "commit_7d": 12,
   "rel_ver": "__binary-dependency-0.0.2",
   "rel_pub": "2026-02-12",
-  "rel_days": 248,
+  "rel_days": 278,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -991,10 +991,10 @@
    "Java": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

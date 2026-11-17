@@ -20,11 +20,11 @@
   }
  },
  "onlook-dev/onlook": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v0.2.32",
   "rel_pub": "2025-07-17",
-  "rel_days": 463,
+  "rel_days": 488,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -44,10 +44,10 @@
    "PLpgSQL": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -131,12 +131,12 @@
   }
  },
  "datalab-to/chandra": {
-  "commit_7d": 3,
-  "commit_90d": 3,
-  "rel_ver": "v0.2.0",
-  "rel_pub": "2026-03-18",
-  "rel_days": 219,
-  "rel_n90": 0,
+  "commit_7d": 2,
+  "commit_90d": 5,
+  "rel_ver": "v0.3.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -148,22 +148,22 @@
    "Python": 80,
    "HTML": 20
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "bytedance/flowgram.ai": {
-  "commit_7d": 2,
-  "commit_90d": 19,
+  "commit_7d": 3,
+  "commit_90d": 20,
   "rel_ver": "desktop-preview",
   "rel_pub": "2026-10-21",
-  "rel_days": 16,
-  "rel_n90": 4,
+  "rel_days": 27,
+  "rel_n90": 3,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -178,10 +178,10 @@
    "CSS": 1,
    "Less": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -878,8 +878,8 @@
   }
  },
  "modelscope/ms-cookbook": {
-  "commit_7d": 5,
-  "commit_90d": 69,
+  "commit_7d": 0,
+  "commit_90d": 104,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -894,10 +894,10 @@
    "CSS": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -905,11 +905,11 @@
  },
  "VicenteVivan/geo-clip": {
   "commit_7d": 0,
-  "commit_90d": 9,
-  "rel_ver": "v1.2.3",
-  "rel_pub": "2026-10-07",
-  "rel_days": 11,
-  "rel_n90": 3,
+  "commit_90d": 10,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 23,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -920,21 +920,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "cocofhu/grasp": {
-  "commit_7d": 35,
-  "commit_90d": 1381,
-  "rel_ver": "v2.2.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_7d": 113,
+  "commit_90d": 1351,
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -950,10 +950,10 @@
    "Vue": 13,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1013,12 +1013,12 @@
   }
  },
  "deepgram/deepgram-js-sdk": {
-  "commit_7d": 2,
-  "commit_90d": 168,
-  "rel_ver": "v5.15.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 10,
+  "commit_7d": 6,
+  "commit_90d": 147,
+  "rel_ver": "v5.20.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1032,10 +1032,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

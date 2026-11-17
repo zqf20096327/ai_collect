@@ -561,12 +561,12 @@
   }
  },
  "juyterman1000/entroly": {
-  "commit_90d": 1560,
-  "commit_7d": 44,
-  "rel_ver": "entroly-v1.0.87",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 12,
+  "commit_90d": 465,
+  "commit_7d": 74,
+  "rel_ver": "entroly-v1.0.90",
+  "rel_pub": "2026-11-14",
+  "rel_days": 3,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -581,22 +581,22 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "9tigerio/db2rest": {
-  "commit_90d": 6,
-  "commit_7d": 1,
-  "rel_ver": "1.6.8",
-  "rel_pub": "2025-12-21",
-  "rel_days": 301,
-  "rel_n90": 0,
+  "commit_90d": 27,
+  "commit_7d": 12,
+  "rel_ver": "1.6.9",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -611,10 +611,10 @@
    "TSQL": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -649,7 +649,7 @@
   }
  },
  "ag2ai/Agents_Failure_Attribution": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -661,10 +661,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -694,12 +694,12 @@
   }
  },
  "PriorLabs/tabpfn-extensions": {
-  "commit_90d": 46,
-  "commit_7d": 2,
+  "commit_90d": 33,
+  "commit_7d": 0,
   "rel_ver": "v0.6.3",
   "rel_pub": "2026-09-21",
-  "rel_days": 27,
-  "rel_n90": 5,
+  "rel_days": 57,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -710,21 +710,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "jiabaobei/memory-bridge": {
-  "commit_90d": 64,
+  "commit_90d": 71,
   "commit_7d": 0,
-  "rel_ver": "v0.31.0",
-  "rel_pub": "2026-10-03",
-  "rel_days": 15,
+  "rel_ver": "v0.33.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -737,22 +737,22 @@
    "Python": 100,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "vllm-project/compressed-tensors": {
-  "commit_90d": 102,
-  "commit_7d": 9,
-  "rel_ver": "0.19.0",
-  "rel_pub": "2026-09-21",
-  "rel_days": 27,
-  "rel_n90": 2,
+  "commit_90d": 97,
+  "commit_7d": 1,
+  "rel_ver": "0.20.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 20,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -765,23 +765,23 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "theexperiencecompany/gaia": {
-  "commit_90d": 467,
+  "commit_90d": 447,
   "commit_7d": 29,
-  "rel_ver": "cli-v0.7.0-beta.3",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "rel_ver": "web-v0.26.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 22,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -795,10 +795,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

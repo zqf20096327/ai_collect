@@ -756,10 +756,10 @@
   }
  },
  "liliang-cn/cortexdb": {
-  "commit_90d": 445,
-  "commit_7d": 88,
-  "rel_ver": "v2.132.0",
-  "rel_pub": "2026-10-17",
+  "commit_90d": 595,
+  "commit_7d": 45,
+  "rel_ver": "v2.154.6",
+  "rel_pub": "2026-11-16",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -776,10 +776,10 @@
    "Python": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -842,8 +842,8 @@
   }
  },
  "WangJingyao07/Awesome-GRPO": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -854,10 +854,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -963,7 +963,7 @@
   }
  },
  "simple-agent-lab/RSIHub": {
-  "commit_90d": 540,
+  "commit_90d": 93,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -979,10 +979,10 @@
    "Shell": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

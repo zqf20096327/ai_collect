@@ -654,12 +654,12 @@
   }
  },
  "a2aproject/a2a-java": {
-  "commit_7d": 3,
-  "commit_90d": 152,
-  "rel_ver": "v1.4.0.Final",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 5,
+  "commit_7d": 0,
+  "commit_90d": 135,
+  "rel_ver": "v1.5.1.Final",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 5,
@@ -679,10 +679,10 @@
    "Groovy": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -690,7 +690,7 @@
  },
  "quchangle1/LLM-Tool-Survey": {
   "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -699,21 +699,21 @@
   "sec_ids": [],
   "contrib_n": 8,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "modelstudioai/cli": {
-  "commit_7d": 40,
-  "commit_90d": 569,
-  "rel_ver": "v2.3.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_7d": 42,
+  "commit_90d": 522,
+  "rel_ver": "v2.10.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -728,18 +728,18 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "quuuuj/hrm": {
-  "commit_7d": 8,
-  "commit_90d": 81,
+  "commit_7d": 2,
+  "commit_90d": 104,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -754,10 +754,10 @@
    "Less": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -820,12 +820,12 @@
   }
  },
  "Pancakes-Labs/astrbot_plugin_proactive_chat": {
-  "commit_7d": 3,
-  "commit_90d": 101,
-  "rel_ver": "v1.2.6",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 2,
+  "commit_7d": 0,
+  "commit_90d": 335,
+  "rel_ver": "v1.3.0-beta.2",
+  "rel_pub": "2026-11-09",
+  "rel_days": 8,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -840,21 +840,21 @@
    "HTML": 3,
    "Batchfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "BBC-Esq/VectorDB-Plugin": {
-  "commit_7d": 50,
-  "commit_90d": 192,
-  "rel_ver": "v10.0.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 9,
+  "commit_7d": 2,
+  "commit_90d": 197,
+  "rel_ver": "v10.1.0",
+  "rel_pub": "2026-10-18",
+  "rel_days": 30,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -869,10 +869,10 @@
    "CSS": 5,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1006,11 +1006,11 @@
  },
  "gensecaihq/Wazuh-MCP-Server": {
   "commit_7d": 0,
-  "commit_90d": 87,
+  "commit_90d": 25,
   "rel_ver": "v5.0.0",
   "rel_pub": "2026-09-24",
-  "rel_days": 24,
-  "rel_n90": 2,
+  "rel_days": 54,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1024,10 +1024,10 @@
    "Dockerfile": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

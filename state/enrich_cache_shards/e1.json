@@ -149,11 +149,11 @@
   }
  },
  "scikit-learn-contrib/hdbscan": {
-  "commit_7d": 10,
-  "commit_90d": 19,
+  "commit_7d": 8,
+  "commit_90d": 29,
   "rel_ver": "release-0.8.44",
   "rel_pub": "2026-06-01",
-  "rel_days": 162,
+  "rel_days": 169,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -169,10 +169,10 @@
    "TeX": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261110",
-   "release": "20261110",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -573,12 +573,12 @@
   }
  },
  "opensolon/solon-ai": {
-  "commit_7d": 6,
-  "commit_90d": 296,
+  "commit_7d": 24,
+  "commit_90d": 307,
   "rel_ver": "v4.1.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 17,
-  "rel_n90": 5,
+  "rel_days": 47,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -590,10 +590,10 @@
    "Java": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -729,12 +729,12 @@
   }
  },
  "Saramanda9988/LunaBox": {
-  "commit_7d": 26,
-  "commit_90d": 305,
-  "rel_ver": "v1.13.3",
-  "rel_pub": "2026-10-06",
-  "rel_days": 12,
-  "rel_n90": 12,
+  "commit_7d": 28,
+  "commit_90d": 261,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 5,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -749,10 +749,10 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

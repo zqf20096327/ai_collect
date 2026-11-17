@@ -667,7 +667,7 @@
   }
  },
  "elixir-nx/scholar": {
-  "commit_90d": 34,
+  "commit_90d": 25,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -679,21 +679,21 @@
   "lang": {
    "Elixir": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "h2oai/h2o4gpu": {
-  "commit_90d": 6,
-  "commit_7d": 3,
+  "commit_90d": 10,
+  "commit_7d": 0,
   "rel_ver": "rel-0.4.1",
   "rel_pub": "2020-07-13",
-  "rel_days": 2288,
+  "rel_days": 2318,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -709,10 +709,10 @@
    "C": 8,
    "Groovy": 8
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -751,9 +751,9 @@
  "qualcomm/ai-hub-apps": {
   "commit_90d": 1,
   "commit_7d": 1,
-  "rel_ver": "v0.39.1",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "rel_ver": "v0.41.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -769,22 +769,22 @@
    "PowerShell": 11,
    "Kotlin": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "john-rocky/coreai-model-zoo": {
-  "commit_90d": 375,
-  "commit_7d": 17,
-  "rel_ver": "mac-2.0.9",
-  "rel_pub": "2026-09-09",
-  "rel_days": 39,
-  "rel_n90": 1,
+  "commit_90d": 310,
+  "commit_7d": 18,
+  "rel_ver": "mac-2.0.3.12",
+  "rel_pub": "2026-10-31",
+  "rel_days": 17,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -799,10 +799,10 @@
    "Metal": 1,
    "Jinja": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -833,12 +833,12 @@
   }
  },
  "marciok/gust": {
-  "commit_90d": 131,
-  "commit_7d": 0,
-  "rel_ver": "v0.1.40",
-  "rel_pub": "2026-09-25",
-  "rel_days": 23,
-  "rel_n90": 4,
+  "commit_90d": 151,
+  "commit_7d": 9,
+  "rel_ver": "v0.1.42",
+  "rel_pub": "2026-11-10",
+  "rel_days": 7,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -853,10 +853,10 @@
    "Dockerfile": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -914,11 +914,11 @@
   }
  },
  "jasonacox/TinyLLM": {
-  "commit_90d": 0,
+  "commit_90d": 7,
   "commit_7d": 0,
   "rel_ver": "v0.16.5",
   "rel_pub": "2025-11-20",
-  "rel_days": 332,
+  "rel_days": 362,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -934,10 +934,10 @@
    "Shell": 3,
    "Jupyter Notebook": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -967,12 +967,12 @@
   }
  },
  "seesee75-commits/ComfyUI-MiniMaxH3-Director": {
-  "commit_90d": 65,
-  "commit_7d": 1,
-  "rel_ver": "v0.3.2",
-  "rel_pub": "2026-10-01",
-  "rel_days": 17,
-  "rel_n90": 12,
+  "commit_90d": 258,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-03",
+  "rel_days": 14,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -984,10 +984,10 @@
    "JavaScript": 61,
    "Python": 39
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1215,12 +1215,12 @@
   }
  },
  "HRuiCcc/RuiC-oc-ferry": {
-  "commit_90d": 3,
-  "commit_7d": 1,
-  "rel_ver": "v0.3.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 2,
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 22,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1235,10 +1235,10 @@
    "Swift": 1,
    "NSIS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

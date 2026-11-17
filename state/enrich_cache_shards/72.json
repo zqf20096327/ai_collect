@@ -850,8 +850,8 @@
   }
  },
  "manumerous/wb_humanoid_mpc": {
-  "commit_7d": 1,
-  "commit_90d": 4,
+  "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -866,10 +866,10 @@
    "Makefile": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -877,11 +877,11 @@
  },
  "rishabhops/CipherElite": {
   "commit_7d": 0,
-  "commit_90d": 79,
+  "commit_90d": 38,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-08-01",
-  "rel_days": 78,
-  "rel_n90": 1,
+  "rel_days": 108,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -893,21 +893,21 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "guaardvark/guaardvark": {
-  "commit_7d": 412,
-  "commit_90d": 2480,
-  "rel_ver": "v3.2.1",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_7d": 149,
+  "commit_90d": 3273,
+  "rel_ver": "v3.5.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -923,10 +923,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1046,8 +1046,8 @@
   }
  },
  "bdg9412/artex-ko-plus": {
-  "commit_7d": 4,
-  "commit_90d": 15,
+  "commit_7d": 0,
+  "commit_90d": 37,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1062,10 +1062,10 @@
    "PLpgSQL": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1102,11 +1102,11 @@
   }
  },
  "runloom/pier": {
-  "commit_7d": 0,
-  "commit_90d": 425,
-  "rel_ver": "v0.1.46",
-  "rel_pub": "2026-10-02",
-  "rel_days": 16,
+  "commit_7d": 7,
+  "commit_90d": 133,
+  "rel_ver": "v0.1.61",
+  "rel_pub": "2026-11-16",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1122,10 +1122,10 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

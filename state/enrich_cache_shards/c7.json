@@ -519,12 +519,12 @@
   }
  },
  "devcxl/mattpocock-skills-zh": {
-  "commit_90d": 41,
+  "commit_90d": 36,
   "commit_7d": 1,
-  "rel_ver": "v1.3.3",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 6,
+  "rel_ver": "v1.3.7",
+  "rel_pub": "2026-11-01",
+  "rel_days": 16,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -536,10 +536,10 @@
    "Shell": 69,
    "JavaScript": 31
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -599,7 +599,7 @@
  },
  "operatorai/modelstore": {
   "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -613,10 +613,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -647,11 +647,11 @@
   }
  },
  "Desert-Ant-Labs/desert-ant-core": {
-  "commit_90d": 405,
-  "commit_7d": 12,
-  "rel_ver": "v4.0.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 291,
+  "commit_7d": 0,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -667,10 +667,10 @@
    "Kotlin": 8,
    "Shell": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -762,11 +762,11 @@
   }
  },
  "HinataYoki/YokiFrame": {
-  "commit_90d": 106,
-  "commit_7d": 1,
+  "commit_90d": 80,
+  "commit_7d": 0,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-10-07",
-  "rel_days": 11,
+  "rel_days": 41,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -782,10 +782,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

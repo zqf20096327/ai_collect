@@ -642,11 +642,11 @@
   }
  },
  "qdrant/rust-client": {
-  "commit_90d": 9,
+  "commit_90d": 15,
   "commit_7d": 0,
-  "rel_ver": "v1.19.0",
-  "rel_pub": "2026-08-04",
-  "rel_days": 75,
+  "rel_ver": "v1.20.0",
+  "rel_pub": "2026-10-22",
+  "rel_days": 26,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -659,10 +659,10 @@
    "Rust": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -681,10 +681,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -717,11 +717,11 @@
   }
  },
  "zillionare/zillionare": {
-  "commit_90d": 182,
-  "commit_7d": 19,
+  "commit_90d": 256,
+  "commit_7d": 30,
   "rel_ver": "v1.0.0",
   "rel_pub": "2021-04-25",
-  "rel_days": 2002,
+  "rel_days": 2032,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -736,10 +736,10 @@
    "Go Template": 11,
    "Shell": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -795,12 +795,12 @@
   }
  },
  "niki914/zafiro": {
-  "commit_90d": 738,
-  "commit_7d": 113,
-  "rel_ver": "v14-1.8.0",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
-  "rel_n90": 11,
+  "commit_90d": 758,
+  "commit_7d": 82,
+  "rel_ver": "v19-1.11.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -815,10 +815,10 @@
    "Shell": 0,
    "AIDL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

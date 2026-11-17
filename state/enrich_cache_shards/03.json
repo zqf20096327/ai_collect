@@ -887,11 +887,11 @@
   }
  },
  "nameforjt-afk/session-knowledge": {
-  "commit_90d": 49,
-  "commit_7d": 2,
+  "commit_90d": 50,
+  "commit_7d": 0,
   "rel_ver": "v0.1.3",
   "rel_pub": "2026-09-29",
-  "rel_days": 19,
+  "rel_days": 49,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -907,10 +907,10 @@
    "Python": 95,
    "Shell": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

@@ -505,11 +505,11 @@
   }
  },
  "lucidrains/rectified-flow-pytorch": {
-  "commit_90d": 18,
-  "commit_7d": 1,
+  "commit_90d": 14,
+  "commit_7d": 0,
   "rel_ver": "0.6.6",
   "rel_pub": "2026-01-28",
-  "rel_days": 263,
+  "rel_days": 293,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -521,10 +521,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -681,11 +681,11 @@
   }
  },
  "opensec-git/Pi-Bolt": {
-  "commit_90d": 2508,
-  "commit_7d": 343,
-  "rel_ver": "bolt-v0.9.4",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 3318,
+  "commit_7d": 70,
+  "rel_ver": "bolt-v1.2.1",
+  "rel_pub": "2026-11-11",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -701,10 +701,10 @@
    "HTML": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -790,7 +790,7 @@
   }
  },
  "arthurflor23/handwritten-text-recognition": {
-  "commit_90d": 120,
+  "commit_90d": 221,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -802,10 +802,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261117",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261117",
+   "release": "20261117",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
