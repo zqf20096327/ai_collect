@@ -4504,5 +4504,26 @@
    "lang": "20261116"
   }
  },
- "edgerunners2/capri-ai-desktop": {}
+ "edgerunners2/capri-ai-desktop": {},
+ "mibazarow/bitrix-mcp-public-server": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 94,
+   "Python": 6,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ }
 }

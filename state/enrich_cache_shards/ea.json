@@ -5415,7 +5415,70 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 4
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  },
- "yzsind/mydb": {}
+ "yzsind/mydb": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 97,
+   "Python": 2,
+   "Clojure": 0,
+   "Shell": 0,
+   "C": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "pixie-agent/pixie": {
+  "rel_ver": "app-v1.1.9",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 52,
+   "TypeScript": 46,
+   "CSS": 2,
+   "Shell": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ }
 }

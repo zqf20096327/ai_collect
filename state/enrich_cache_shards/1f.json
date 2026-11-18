@@ -4323,5 +4323,50 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "xu826Jamin/applyfirst": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 84,
+   "JavaScript": 13,
+   "CSS": 3,
+   "HTML": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "47thtechcorner/RayCodes_ZONOS3-Mini": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

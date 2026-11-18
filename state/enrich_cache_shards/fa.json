@@ -4421,5 +4421,48 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "ausboss/ComfyUI-AusBoss-LoRA-Previews": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 55,
+   "JavaScript": 45
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "louvain-ai/louvain-engine": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 82,
+   "Python": 12,
+   "Shell": 3,
+   "CSS": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

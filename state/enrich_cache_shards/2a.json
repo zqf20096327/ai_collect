@@ -4823,5 +4823,68 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "sanchorelaxo/openclaw-raspberry-installer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 66,
+   "Python": 21,
+   "HTML": 13
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "martian56/aviary": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-07-17",
+  "rel_days": 124,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "engrshoaibh/owasp-security-audit-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

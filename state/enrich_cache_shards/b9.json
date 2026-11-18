@@ -5168,5 +5168,28 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "dmz1207/viscosity": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 19,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TeX": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

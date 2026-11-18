@@ -4395,5 +4395,53 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "projecthellhound/bounty-hunter": {
+  "rel_ver": "v13.21-classic-ui",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 91,
+   "Shell": 8,
+   "HTML": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "yepapa-nest/eke-hive": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 47,
+   "Cuda": 26,
+   "Python": 25,
+   "Shell": 1,
+   "NASL": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

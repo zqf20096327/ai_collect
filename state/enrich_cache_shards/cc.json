@@ -4674,5 +4674,32 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "Momoyeyu/momo": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 37,
+   "TypeScript": 31,
+   "JavaScript": 16,
+   "Java": 11,
+   "CSS": 3
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

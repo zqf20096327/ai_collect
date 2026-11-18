@@ -4767,5 +4767,78 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "managedcode/LlmTestServer": {
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-10-28",
+  "rel_days": 21,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 84,
+   "HTML": 9,
+   "PowerShell": 3,
+   "Python": 2,
+   "CSS": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "laimis91/assistant-framework": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Shell": 73,
+   "Python": 22,
+   "JavaScript": 6,
+   "jq": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "dsAI-Q/locmodel-downloader": {
+  "rel_ver": "v1.1.15",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

@@ -4839,5 +4839,31 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "baaadtrippp/slack-agent-starter": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 79,
+   "JavaScript": 19,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

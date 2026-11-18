@@ -4495,9 +4495,9 @@
   }
  },
  "GuruProduction/GURUbyUnusLumen": {
-  "rel_ver": "v3.77",
-  "rel_pub": "2026-11-17",
-  "rel_days": 1,
+  "rel_ver": "v3.78",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -4505,6 +4505,39 @@
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
-  "contrib_n": 1
+  "contrib_n": 1,
+  "lang": {
+   "Kotlin": 73,
+   "C": 17,
+   "Rust": 8,
+   "TypeScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "rockerBOO/sd-ext": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

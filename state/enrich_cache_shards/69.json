@@ -4484,5 +4484,83 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "oriliz/agent-crop": {
+  "rel_ver": "v0.8.5-dev.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 64,
+   "JavaScript": 35,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "T-Crypt/replicator": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "QML": 27,
+   "GLSL": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "JsonLee12138/Ruum": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 20,
+  "lang": {
+   "Rust": 98,
+   "Shell": 2,
+   "Python": 0,
+   "Makefile": 0,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

@@ -6200,5 +6200,103 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "jpe-nix/nix-ai": {
+  "rel_ver": "v8.39.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Nix": 69,
+   "Shell": 22,
+   "Python": 8,
+   "JavaScript": 1,
+   "TypeScript": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "microsoft/frontier-agentic-modernization-rvas": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "JavaScript": 40,
+   "C#": 20,
+   "HTML": 17,
+   "Python": 9,
+   "HCL": 4
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "hemitoncode/DailySAT": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 7,
+   "CSS": 2,
+   "Dockerfile": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "kangdacool/hwpx-editing-skill": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-07-30",
+  "rel_days": 111,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

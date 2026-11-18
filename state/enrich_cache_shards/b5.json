@@ -4923,5 +4923,57 @@
    "lang": "20261115"
   }
  },
- "Outpostkrewhirl86/Capri-AI": {}
+ "Outpostkrewhirl86/Capri-AI": {},
+ "STARDUSTLC666/dsh-dream": {
+  "rel_ver": "v0.15.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 67,
+   "TypeScript": 23,
+   "CSS": 10
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "neerajdad123-byte/moe": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 28,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Cuda": 46,
+   "C++": 31,
+   "Python": 20,
+   "C": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ }
 }

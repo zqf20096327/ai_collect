@@ -5208,5 +5208,51 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "esrat-services/remote-admin-tool": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "Maneet7805/Phrasor": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 10,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "C#": 86,
+   "HTML": 7,
+   "JavaScript": 6,
+   "CSS": 2,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

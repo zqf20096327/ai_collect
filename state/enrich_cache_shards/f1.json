@@ -4871,5 +4871,31 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "dwamaker/PatchTicker": {
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 62,
+   "JavaScript": 32,
+   "HTML": 6,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

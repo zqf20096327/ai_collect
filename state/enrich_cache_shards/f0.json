@@ -4555,5 +4555,56 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "sl251/astrbot_plugin_antigravity_acp": {
+  "rel_ver": "v0.7.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 89,
+   "JavaScript": 7,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "2skr1996-cloud/kira-ai-plugin-multi-decision": {
+  "rel_ver": "B3.1.4",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 61,
+   "JavaScript": 30,
+   "HTML": 8
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

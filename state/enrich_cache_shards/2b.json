@@ -4221,5 +4221,59 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "OfinTech/ofinTech-Dask": {
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 67,
+   "TypeScript": 29,
+   "CSS": 2,
+   "HTML": 1,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "iT-CAF/CAF-AI": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 85,
+   "CSS": 12,
+   "HTML": 2,
+   "Shell": 1,
+   "PowerShell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

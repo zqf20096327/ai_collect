@@ -5310,5 +5310,29 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "Kiant98/dsh-hoi4-modding": {
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 98,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

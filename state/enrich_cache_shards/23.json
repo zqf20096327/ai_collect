@@ -4191,5 +4191,32 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "rightcommit/rightcommit": {
+  "rel_ver": "v1.6.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 62,
+   "JavaScript": 32,
+   "Python": 4,
+   "HTML": 1,
+   "TypeScript": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }
