@@ -254,10 +254,11 @@ Otari is optional. If you'd like to try it during the hackathon:
   [Otari repo](https://github.com/mozilla-ai/otari) are welcome, and so are stars.
 
 An open agentic website can use Otari as its LLM router:
-- **Hosted Otari** (`https://api.otari.ai/api/v1`) allows calls from the browser, so a
-  static site can use it with your Otari API key. Some models fail on every request, so
-  start with `alibaba/qwen3.8-flash`. The examples in this repo use hosted Otari with
-  that model by default.
+- **Hosted Otari** (`https://api.otari.ai/api/v1`, or `https://eu.api.otari.ai/api/v1` for
+  an EU account) allows calls from the browser, so a static site can use it with your
+  Otari API key. Some models fail on every request, so start with
+  `alibaba/qwen3.8-flash`. The examples in this repo use hosted Otari with that model by
+  default.
 - **Self-hosted Otari** works once you allow the site's origin in Otari's
   `cors_allow_origins`. It can also run local models through Ollama, with no provider key.
 

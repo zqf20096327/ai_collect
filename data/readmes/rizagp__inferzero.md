@@ -140,12 +140,19 @@ the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named)
   (2026.11.13.11). The switches still off by default (`ARC_X16`, `ARC_GV_IQ3S`, `ARC_H8_NORM`, H8 on MoE models,
   `--chunk 8192`) were measured there on 2026-11-14 and none is faster: [docs/xe2-tuning.md](docs/xe2-tuning.md).
 - **One Pro B70** on native Linux ([issue #27](https://github.com/rizagp/inferzero/issues/27), joshdev-de, Fedora 45):
-  4K prompt 2,694 tok/s (release 2026.11.16.01, with decoded weights kept resident), generation 35.2 tok/s, 70.6
-  with MTP (2026.11.16.02). Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
+  4K prompt 2,694 tok/s (release 2026.11.16.01, with decoded weights kept resident), 8K 2,727 (2026.11.16.12),
+  generation 35.2 tok/s, 70.6 with MTP (2026.11.16.02). Qwen3.6 35B-A3B: 8K prompt 5,612 tok/s (the MoE register
+  file of 2026.11.16.14; 5,377 before), 4K 4,903-4,969, 16K 5,153-5,174, generation 95-98 tok/s. Flash Next, 46 % of
+  its experts in the card's 32 GB: 4K prompt 1,186, 16K 1,145, generation 7.1 tok/s. Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
   release 2026.11.13.06, before the weight prefetch; a rerun is asked for): 2,105 tok/s, generation 32.2, 75.2 with MTP.
 - **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
   357 tok/s (release 2026.11.15.11, XMX with H8 and 32x16 tiles), generation 6.1 tok/s, 14.6 with MTP (at its
   memory's limit).
+- **Arc B390** (Panther Lake's Core Ultra X7 358H, Xe3, [issue #1](https://github.com/rizagp/inferzero/issues/1)): 4K
+  prompt 583-592 tok/s with H8 on the wide-tile XMX GEMM (the default for iGPUs with 16-lane XMX since 2026.11.17.01)
+  and 16 GB of decoded weights kept resident (the default with a 64+ GiB GPU share since 2026.11.17.02; 546-560 without)
+  (258-268 on the plain XMX path before; KL 0.0018 between the two), generation 5.9 tok/s, 16.8 with MTP. Qwen3.6
+  35B-A3B: 4K prompt 1,370 tok/s, generation 26 tok/s, 46 with MTP.
 - **One model over several GPUs** (`runz` / `serverz --gpus N`, tensor parallel):
   - 4 Pro B60s on Windows (issue #4; no peer access there, so the sums go through host memory): the 27B's 4K prompt
     1,597 / 1,724 / 1,888 tok/s over 2 / 3 / 4 cards (2026.11.13.05 and .11, before the weight prefetch), generation
@@ -158,7 +165,8 @@ the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named)
     against 1,442 through host memory, generation 37.8 tok/s, the same logits.
   - DeepSeek-V4.1-Flash over 4 Pro B60s with 1 TB of RAM (issue #4, release 2026.11.14.09): ISTA's IQ2_XS generates
     10.3 / 18.0 / 16.6 / 17.6 tok/s on 1 / 2 / 3 / 4 cards, its 512-token prompt 171 / 227 tok/s over 3 / 4; Unsloth's
-    UD-Q8_K_XL 109 / 7.6 over 3 ([docs/multi-gpu.md](docs/multi-gpu.md)).
+    UD-Q8_K_XL 109 / 7.6 over 3 ([docs/multi-gpu.md](docs/multi-gpu.md)). Over 4 with 32 GiB of its experts per card
+    kept in RAM (the default since 2026.11.16.16): 512-token prompt 24.0 tok/s, generation 9.25 (3.55 without).
   - A slow link sets the pace: with one card in an x4 slot at 2.4 GB/s (issue #19, the 27B UD-Q5_K_XL) the prompt over
     2 cards is half of one card's (620 against 1,223 tok/s). A layer split for such links is planned, not built.
   - Batched slots work over a split model.

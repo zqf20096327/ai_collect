@@ -1,12 +1,15 @@
 # Antigravity Suite
 
-> **专为 Google Antigravity 桌面端（macOS）打造的一站式免改包体验增强套件**
+> **给 Google Antigravity 桌面端（macOS）加实用功能的小工具——不修改官方安装包，不影响官方升级，随时可关。**
 
-在不改动官方安装包的前提下，将**📱 手机极速 PWA 遥控（Tailscale / 同 Wi-Fi 内网直连）**、**上下文与双池配额看板**、**全中文界面与零 Token 思考中译**、**右侧文件行内编辑**、**下一步 `Tab` 补全**以及**高危命令红框预警**直接注入桌面端，开箱即用：
+装好后，你的 Antigravity 会多出下面 **6 样实用功能**：
 
-- **零修改官方包**：不修改 `Antigravity.app` 原文件，保留 macOS 系统签名，官方升级不受影响
-- **随客户端自启**：打开 Antigravity 自动挂载增强界面，关闭客户端自动休眠，无需手动启动
-- **秒级无痕还原**：随时执行 `ag-context-meter stop`，即可立即卸下全部增强组件恢复原版
+1. **📱 手机/电脑远程控制（三码合一）**：在手机或另一台电脑上扫码就能聊、传图、批命令，还能看到几台设备连着你。
+2. **🇨🇳 全中文界面 + 思考过程自动中译**：装好即变中文，英文思考与会话标题本地自动翻译，可在 `⚙️` 里免重启秒切中英。
+3. **📊 上下文与额度看板**：右上角直接看这次对话用了多少上下文，以及 Gemini / Claude 5 小时与每周额度还剩多少。
+4. **🔄 自动检测更新 & 一键升级**：有新版时右上角 `⚙️` 会亮小红点，点一下 **「立即更新」**，免重启立刻生效。
+5. **⚡ 顺手小工具**：按 **`⌘1`～`⌘9`** 快速切换左侧对话、右侧预览直接改文件并 `⌘S` 保存、`Tab` 一键补全下一步建议、右上角 `>_ CLI` 一键开本地终端。
+6. **🛡️ 危险命令红框提醒**：AI 准备运行 `rm -rf`、`git reset --hard`、`sudo` 等高危命令时自动亮红框拦截，必须你亲手确认。
 
 <p align="center">
   <img src="assets/mac-preview.png" alt="Antigravity Suite macOS 桌面端真实全景效果" width="100%">
@@ -14,75 +17,18 @@
 
 ---
 
-## 一、装上它，能帮你解决哪 6 个日常痛点？
+## 一、怎么安装？（二选一）
 
-1. **📱 手机极速 PWA 遥控（核心主打 · 告别官方远程卡顿、杀后台与键盘遮挡）**
-   - 官方 Remote 依赖 Google 云端中继，在手机 Safari 中常见加载慢、切后台断连与键盘遮挡输入框的问题。
-   - **一键扫码添加主屏**：确保手机与 Mac 连着同一 Wi-Fi 或双方已开启 Tailscale，点击 **桌面端右上角工具栏中的「📱 遥控」按钮** 弹出高清配对二维码（或终端运行 `ag-context-meter remote`），用 iPhone 扫码在 Safari 打开后点底部 **「分享」→「添加到主屏幕」**，即可作为**纯内网毫秒直连的全屏独立 App** 稳定使用，切后台也不易断连。
-   - **外出 4G/5G 也能控**：只要保持 Mac 与手机端的 Tailscale 在线，服务端会自动热绑定 Tailscale `100.x` IP；若不慎泄露链接，可在弹窗点 **「🔑 重置密钥」**（或运行 `ag-context-meter remote --reset-token`）立即作废旧链接。
-   - **流畅不遮挡 & 完整操控**：全宽无框 Markdown 排版、灵动岛与 `visualViewport` 键盘动态适配、切回前台 **50ms 内**瞬时重连；复刻 Mac 圆角输入卡，支持**全屏右滑切换会话**、内嵌**切换模型（`XHigh/High/Medium/Low`）与权限预设**、**`+` 拍照/相册压缩传图**、**`G4/C` 双窗口配额**与**高危命令红框一键审批**。
-   - **安全可控**：不碰账号鉴权与私有 API，所有对话均在桌面正版端运行，仅允许私网 IP 访问并带 48 位随机配对口令保护。
-
-<p align="center">
-  <img src="assets/mobile-preview.jpg" alt="手机极速 PWA 遥控真机效果（主对话界面与全屏右滑抽屉）" width="88%">
-</p>
-
-2. **🇨🇳 全中文界面 + 英文思考过程自动中译（零大模型 Token）**
-   - **完整本地汉化**：菜单、设置页、权限弹窗、报错提示全面中文化（适配 `2.32.1`，含 **2,282 条** 精确词条与 **239 条** 动态正则）。
-   - **思考与标题自动中译**：AI 的英文**思考过程 (Thought)** 与左侧英文会话标题自动译为中文并本地缓存复用，**不消耗任何 AI 模型 Token**。
-   - **防误折、防回弹**：正在阅读展开的思考块时，新消息到达不会自动折叠，并保持当前滚动位置；手动重命名对话后自动锁定标题；左下角 **`EN/中`** 按钮可随时切回原版英文。
-
-3. **📊 告别“额度与上下文盲盒”**
-   - **顶栏实时看板**：显示当前上下文用量（如 `97.3K (38%)`）与输出速度；点击展开提示词 / 思考 / 工具占比、**52 周使用热力图**与折算 API 账单。
-   - **双模型配额池（`G4` / `C`）**：同屏对比 **Gemini 4** 与 **Claude / GPT** 最紧余量；悬停或点开查看 **5 小时限额 + 每周限额** 双进度条和精准重置倒计时（支持 `0%` 耗尽精准展示）。
-   - **输入框底部能量条**：实时跟踪输出速度（`tok/s`）、缓存命中率与 5 小时窗口倒计时。
-
-4. **⚡ 少打字、快翻找（下一步 `Tab` 补全 + 快捷胶囊 + 电梯导航）**
-   - **零 Token 下一步建议**：AI 回复结束后、输入框为空时自动推演 2～4 条下一步操作；按 **`Tab` 或 `→`** 一键补全，**`↓`/`↑`** 切换候选，**`Esc`** 收起（开始打字、唤醒 `@`/`/` 菜单或 AI 思考时自动隐藏）。
-   - **输入区快捷胶囊**：常驻输入框上方，一键触发 `/compact` 压缩、`/plan` 规划、重载 `AGENTS`、复制会话 ID 与导出完整 Markdown。
-   - **悬浮长对话电梯**：贴边悬浮于输入框右侧（平时仅露图标不遮文字，悬停展开文字），一键跳转 `⏫ 顶部`、`🔼 上一轮`、`🔽 下一轮`、`⏬ 底部` 与 `💡 展开/收起思考`。
-
-5. **✏️ 右侧预览直接改文件 + 外链直达系统浏览器**
-   - **所见即改**：在右侧预览 `.md` 方案或代码时，顶栏自动提供 **`✏️ 编辑`** 按钮——一键就地修改，按 **`⌘S` / `Ctrl+S`**（或点 `💾 保存`）写回硬盘，后台刷新也不会打断编辑，点 **`↩️ 完成`** 退出并同步预览。
-   - **系统浏览器打开外链**：在聊天区或文档中按住 **`⌘ Cmd` + 点击**任意网址或 `` `https://...` `` 行内代码链接，直接用系统默认浏览器打开，不再被塞进右侧窄栏预览。
-
-6. **🛡️ 省心又防闯祸（高危命令红框预警 + 安全自动确认）**
-   - **安全步骤自动放行**：开启 **`🤖 自动确认`** 后，常规文件读写与安全步骤确认按钮将自动点击。
-   - **高危指令强拦截**：一旦检测到 `rm -rf`、`git reset --hard`、`git clean -f`、`git push`、`sudo`、`kill -9`、`DROP/DELETE`、`op item` 等高危命令，卡片会立刻显示**醒目红框与顶部警示条**，且自动确认**强制跳过**，交由你人工把关。
-
----
-
-## 二、各位置核心组件速查表
-
-| 界面位置 | 组件名称 | 核心作用 |
-| :--- | :--- | :--- |
-| **顶栏右上工具条** | **手机遥控一键配对 (`📱 遥控`)** | 位于工具条最左侧，点击弹出高清配对二维码、切换 Tailscale/Wi-Fi 或重置密钥 |
-| **顶栏右侧** | **上下文圆环 & 费用看板** | 实时显示上下文占比与速度；点开查看 Token 分类、52 周热力图、API 折算费用及分模型预算 |
-| **顶栏右侧** | **模型额度双胶囊 (`G4` / `C`)** | 展示 Gemini 4 与 Claude/GPT 最紧窗口余量；悬停/点击看 **5h + 每周** 双进度条及重置倒计时 |
-| **左下角 & 全局** | **全汉化 + 零 Token 译文** | 全界面汉化、英文思考与会话标题缓存中译、防误折/防回弹、`EN/中` 秒切原版 |
-| **右侧预览栏** | **行内编辑器 (`✏️ 编辑`)** | 查看文件时直接点击编辑、`⌘S` 保存回本地、`↩️ 完成` 退出并刷新预览 |
-| **聊天主区** | **高危命令红框 (`🛡️`) & `⌘` 外链** | 高危指令自动红框警告；按住 `⌘ Cmd` 点击外链或代码内网址直接用系统浏览器打开 |
-| **输入框上方** | **常用快捷胶囊栏** | 一键填入 `/compact`、`/plan `、重载 `AGENTS`；复制会话 UUID、导出 Markdown、开关自动确认、查看 Brain 缓存体积 |
-| **输入框内部** | **下一步建议补全 (`Tab` / `→`)** | AI 回复后零 Token 智能推荐下一步动作，支持 `Tab` / `→` 填入、`↓`/`↑` 切换、`Esc` 隐藏 |
-| **输入框右侧** | **长对话电梯** | 贴边悬浮导航条，一键跳转顶部、上一轮、下一轮、底部或批量展开/收起思考块 |
-| **输入框底边** | **实时能量条 (`Pulse`)** | 动态显示生成速度（`tok/s`）、上下文占用比例、缓存命中与 5 小时窗口倒计时 |
-
-> ⚡ **可选内置 Agent 提速规则**：仓库内附带 [`rules/fast-io-AGENTS.md`](rules/fast-io-AGENTS.md)（源自 `oil-oil/agy-fast-io`），通过只读白名单命令绕过桌面端云端审查、同轮并行读文件及合并必审命令，可显著减少 AI 回合数与等待耗时，可直接并入你的全局 `AGENTS.md` / `CLAUDE.md`。
-
----
-
-## 三、怎么安装？（二选一）
-
-需要环境：**macOS + Node.js 22.4+**（零外部 `npm` 依赖）。
+运行环境：**macOS + 已安装 Antigravity + Node.js 22.4 或更高版本**（没装 Node 可在终端运行 `brew install node@22`）。
 
 ### 方式 1：复制一句话发给你的 AI Agent（最省心）
 
-把下面这段话直接发给 Antigravity / Claude Code / Codex，它会自动检查环境、安装配置并教你使用：
+把下面这段话直接发给 Antigravity / Claude Code / Codex，它会自动完成检查和安装：
 
 ```text
 请帮我安装并配置 https://github.com/iamvicliu/antigravity-suite 这套 Antigravity 免改包增强套件。
 请克隆到 ~/.local/share/antigravity-context-viewer，并严格按照仓库 README.md 中折叠的「AI Agent 自动安装执行规范」完成环境检查、安装与开启随客户端自启。
-完成后运行 ag-context-meter status 向我汇报各项状态，并简单告诉我日常怎么开关和卸载。
+完成后运行 ~/.local/bin/ag-context-meter status 向我汇报各项状态，并简单告诉我日常怎么开关和卸载。
 ```
 
 <details>
@@ -92,26 +38,30 @@
 
 1. **只读预检**
    - 检查 `node -v` 是否为 **`v22.4.0` 及以上**（不足时提示用户或通过 `brew install node@22` 安装）。
-   - 检查 `~/Library/Application Support/Antigravity/DevToolsActivePort` 是否存在：
-     - 存在：安装后可**免重启立即热生效**；
-     - 不存在：提醒用户确认 Antigravity 桌面端已打开（或带 `--remote-debugging-port` 启动），安装完成后重启客户端即可自动挂载。
+   - 检查运行中 Antigravity 调试端口：支持读取 `~/Library/Application Support/Antigravity/DevToolsActivePort`，若受 macOS TCC 权限限制无法读取该目录，CLI 亦内置 `lsof -nP -a -c Antigravity -iTCP -sTCP:LISTEN` 免权回退探测：
+     - 已检测到：安装后可**免重启立即热生效**；
+     - 未检测到：提醒用户完全退出 Antigravity 并以 `open -a Antigravity --args --remote-debugging-port=9222` 启动（或开启调试端口后重启客户端）。
 2. **下载仓库到本地**
    ```bash
    git clone https://github.com/iamvicliu/antigravity-suite.git ~/.local/share/antigravity-context-viewer
    cd ~/.local/share/antigravity-context-viewer
    ```
-3. **运行安装与随客户端自启脚本**
+3. **运行安装脚本（零改包原则）**
    ```bash
    ./scripts/setup-macos-cdp.sh
    ```
-   > 该脚本零修改官方包，会把管理命令软链到 `~/.local/bin/ag-context-meter`，并配置 `~/Library/LaunchAgents/` 监听 `DevToolsActivePort`（打开软件自动挂载、关闭自动休眠）。
-4. **验收状态并指导用户**
-   - 运行 `~/.local/bin/ag-context-meter status`（或 `ag-context-meter status`），逐项确认均为 `✅`。
-   - 告知用户日常打开 Antigravity 即可自动生效；需要临时退出或还原英文原版时，运行 `ag-context-meter stop` 即可。
+   > **安全核验说明**：
+   > - 本套件在 `cli.js` 与 `bin/ag-context-meter` 入口均已禁用改写 `app.asar` 或客户端二进制的命令，仅通过纯内存 CDP 挂载界面。
+   > - 若 `~/Library/Application Support` 无写权限，状态缓存自动回退至 `~/.config/antigravity-context-meter`。
+   > - 可选参数：`--no-auto` 跳过写入 `~/Library/LaunchAgents/` 开机/随客户端自启；`--no-remote`（或环境变量 `AG_DISABLE_MOBILE_REMOTE=1`）禁用远程控制端口。
+4. **验收状态**
+   - 运行 `~/.local/bin/ag-context-meter status`，确认各项为 `✅`，并提醒用户若想直接运行 `ag-context-meter` 需将 `~/.local/bin` 加入 `~/.zshrc` 的 `PATH`。
 
 </details>
 
-### 方式 2：终端手动 3 行安装
+### 方式 2：终端手动 3 步安装
+
+**第 1 步：下载并运行安装脚本**
 
 ```bash
 git clone https://github.com/iamvicliu/antigravity-suite.git ~/.local/share/antigravity-context-viewer
@@ -119,40 +69,168 @@ cd ~/.local/share/antigravity-context-viewer
 ./scripts/setup-macos-cdp.sh
 ```
 
-> 如仅需命令行手动管理、不想开启“随客户端自动加载”，将最后一行改为 `./scripts/setup-macos-cdp.sh --no-auto`。
+> 可选参数：加 `--no-auto` 只在当前窗口启用，以后打开 Antigravity 时不会自动加载；加 `--no-remote` 关闭手机/电脑远程控制端口。
+
+**第 2 步：让 `ag-context-meter` 命令随处可用**
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**第 3 步：验证安装是否成功**
+
+```bash
+ag-context-meter status
+```
+
+看到 **「中文汉化：✅ 已生效」**，且 Antigravity 右上角出现 **`📱远程`** 和 **`⚙️`** 按钮，就装好了。如果没出现，请看下方第五节的排查方法。
 
 ---
 
-## 四、日常怎么开关、升级和卸载？
+## 二、装好后点哪里？（6 行界面地图）
+
+| 你在界面上看到的 | 点它有什么用 |
+| :--- | :--- |
+| **右上角 `📱远程`**（有时带数字 `· 1`） | 弹出配对二维码和链接，手机扫码或电脑打开就能远程对话、传图、审批；旁边的数字表示当前连着几台设备 |
+| **右上角 `⚙️`**（有新版本时带小红点） | 换主题配色、切换中英文、配置终端 CLI、管理套餐订阅，以及在有新版本时一键升级 |
+| **右上角 `>_ CLI`** | 一键在你常用的 Mac 终端里打开 `agy` 命令行会话 |
+| **右上角圆环 + `G4` / `C`** | 圆环看这次对话用了多少上下文及 Token 账单图表；`G4` / `C` 看 Gemini 与 Claude 的 5 小时和每周配额 |
+| **输入框上方小按钮 & 底部细条** | 上方按钮快速发 `/compact`、`/plan`、导出对话或开关自动确认；底部细条看生成速度和缓存命中率 |
+| **输入框右侧导航条 & 右侧 `✏️ 编辑`** | 右侧细条一键跳到顶部/上一轮/下一轮/底部；预览文件时点 **`✏️ 编辑`** 就地修改，按 `⌘S` 直接保存 |
+
+> 💡 **快速切换对话快捷键**：按 **`⌘1`～`⌘9`** 快速切换左侧前 9 个对话（按住 **`⌘`** 键自动浮现序号角标），按 **`⌘⇧[`** / **`⌘⇧]`**（或 **`⌃Tab`**）切换上/下一个对话。
+
+---
+
+## 三、核心功能怎么用？
+
+### 1. 📱 手机 / 电脑远程控制 &「三码合一」怎么用？
+
+> **一句话**：一个二维码里同时装了 **3 条连接路线**，哪条能通自动走哪条，不用你来回换码。
+
+1. 在电脑右上角点 **`📱远程`**，弹出配对二维码。
+2. 手机用系统相机扫码并在 Safari 打开。
+3. 点 Safari 底部 **「分享」→「添加到主屏幕」**——以后从手机桌面图标点开，就是全屏独立体验，支持在对话区向右轻滑切换会话、`+` 号选图或拍照压缩发送。
+
+**为什么叫「三码合一」？**
+二维码里同时写入了电脑的三种地址（在弹窗里点任意一行也可以手动切换优先入口）：
+- **同一 Wi-Fi**：手机和电脑连同一个路由器时用它，速度最快。
+- **Tailscale（异地 / 4G / 5G）**：出门在外不在同一 Wi-Fi 时自动接管（电脑和手机登录同一 Tailscale 账号即可，可用时默认优先作为主入口）。
+- **Bonjour（局域网域名）**：家里路由器重新分配 IP 也不用重扫码，通过 `电脑名.local` 自动找到电脑。
+
+**查看连了多少设备 & 一键踢出旧设备**：
+- 右上角按钮会实时显示已配对数量（例如 **`📱远程 · 1`**），点开弹窗就能看到 **`已关联 N 台设备（M 台在线）`** 和具体设备（如 `iPhone`、`iPad`、`Mac`）。
+- 发现陌生设备或链接不小心发给了别人，点弹窗里的 **「重置密钥」**（或终端运行 `ag-context-meter remote --reset-token`），立刻踢出全部旧设备并作废旧二维码。
+
+**用另一台电脑远程（比如用 MacBook 控制家里 Mac mini）**：
+- 在另一台电脑浏览器打开弹窗复制出来的链接（或扫码），宽屏窗口会自动变成**左边常驻会话列表（可收起）、右边居中聊天与宽屏输入框**的双栏界面，直接把图片拖进窗口或按 `⌘V` 粘贴截图就能发给 AI，按 `Esc` 可顺次收起弹层。
+
+<p align="center">
+  <img src="assets/mobile-preview.jpg" alt="手机极速 PWA 遥控真机效果（主对话界面与全屏右滑抽屉）" width="88%">
+</p>
+
+### 2. 🔄 自动检测更新 & 一键升级
+
+- **不用自己记着检查**：后台会自动对比 GitHub 最新版本；有新版本时，右上角 **`⚙️` 按钮会自动亮起小红点**。
+- **怎么升级**：点开 **`⚙️`**，在面板最顶部看到版本对比提示后直接点 **`「立即更新」`**（或在终端运行 `ag-context-meter update`），后台会自动拉取代码并热刷新当前窗口，无需重启 Antigravity。
+- **前提注意**：一键更新要求你是通过 **`git clone` 安装**，且**没有自己修改过仓库里的文件**（避免覆盖你的改动）；如果你是下载 zip 压缩包安装的，请重新下载新版覆盖，或改用 `git clone` 安装。
+
+### 3. 🇨🇳 全中文界面 & 中英文秒切
+
+- 装好后菜单、设置弹窗、报错和权限提示会自动变中文；AI 的英文思考过程（Thought）与左侧英文会话标题会自动翻译为中文并缓存在本地，**不消耗任何 AI 模型额度**。
+- 正在展开阅读某段思考时，新消息进来也不会突然帮你折叠回去；手动重命名过的会话标题也会自动保留。
+- 想临时切换回英文：点右上角 **`⚙️`** → 语言选择 **`English`**，立刻全部切回英文，无需重启。
+
+### 4. 📊 看懂上下文与配额看板
+
+- **右上角圆环**：代表当前这次对话已经用了多少上下文容量；点开可以查看今日 / 本月 / 本年 Token 用量、52 周使用热力图以及按 API 价格估算的参考费用。
+- **`G4` / `C` 胶囊**：代表 Gemini 4 与 Claude/GPT 套餐剩余额度；点开能看 **5 小时窗口** 和 **每周总限额** 双进度条以及准确重置时间。
+- **输入框底部细条**：实时显示当前模型窗口上限（如 `1M` / `512k` / `128k`）、每秒生成速度（`tok/s`）与缓存命中率。
+
+> **小抄**：**上下文** = AI 这一轮会话里还能“记住”的文字长度；**Token** = AI 计费与计量单位，大约对应一小段字词；**配额** = 你的账号在当前时间窗口内还能用多少额度。
+
+### 5. ⚡ 顺手小工具 & 🛡️ 危险命令红框拦截
+
+- **快捷键极速切换对话**：按 **`⌘1`～`⌘9`** 直接切换到左侧列表第 1～9 个对话（按住 **`⌘`** 键不松时，左侧前 9 个对话右侧会自动浮现序号提示；已避开 `⌘⇧3/4/5` 系统截图键）；按 **`⌘⇧[`** / **`⌘⇧]`**（或 **`⌃Tab`** / **`⌃⇧Tab`**）可循环切换到上一个 / 下一个对话。
+- **右侧预览直接改文件**：查看右侧 `.md` 方案或代码时，顶栏点 **`✏️ 编辑`** 即可原地修改，按 **`⌘S`** 直接保存回本地硬盘，点 **`↩️ 完成`** 退出并刷新预览。
+- **`Tab` 补全下一步建议**：AI 回复完、输入框空着时，会自动推荐 2～4 句下一步可以怎么接；按 **`Tab` 或 `→`** 直接填入，**`↓`/`↑`** 切换，**`Esc`** 隐藏。
+- **一键开本地终端 (`>_ CLI`)**：自动探测 Terminal、iTerm2、Ghostty、Warp、Kitty、WezTerm、cmux 等终端拉起 CLI。*（提示：设置里的 `--dangerously-skip-permissions` 免审核开关打开后命令行执行不再逐条询问，日常建议保持关闭，仅在测试或隔离目录使用。）*
+- **高危命令红框强拦截**：AI 准备执行 `rm -rf`、`git reset --hard`、`git clean -f`、`git push`、`sudo`、`kill -9`、`DROP/DELETE`、`op item` 等危险操作时，确认卡片会亮起醒目红框和警示条；就算你打开了右上角「自动确认」，高危步骤也会强制停下等你亲手决定。
+
+---
+
+## 四、日常命令与彻底卸载
+
+### 日常命令
+
+> **记住区分这两条**：`stop` = **只关这一次**（下次打开 Antigravity 还会自动挂载）；`auto-off` = **关闭自动挂载**（以后打开 Antigravity 也不再自动启动）。
 
 | 命令 | 作用 |
 | :--- | :--- |
-| `ag-context-meter remote` | 显示**手机极速版 PWA 遥控链接与终端二维码**（支持 `--reset-token` / `--json`） |
-| `ag-context-meter status` | 查看各模块运行状态与官方安装包签名完整性 |
-| `ag-context-meter live` | 立即将增强界面热注入到当前运行的 Antigravity 窗口 |
-| `ag-context-meter stop` | **秒级无痕还原**：停止桥接服务并卸下所有附加界面，恢复纯英文原版 |
-| `ag-context-meter auto-on` | 开启「每次打开 Antigravity 自动挂载」 |
-| `ag-context-meter auto-off` | 关闭自动挂载并清理当前窗口增强界面 |
-| `ag-context-meter upstreams` | 检查 6 个参考上游仓库更新并与基线账本 [`upstreams.json`](upstreams.json) 比对（内置 GitHub API 限流三段式回退） |
+| `ag-context-meter status` | 查看各模块是否已生效、随客户端自启状态，以及 `app.asar` 是否未被本套件修改 |
+| `ag-context-meter remote` | 在终端打印「三码合一」链接、已关联设备统计与二维码（支持 `--reset-token` / `--json`） |
+| `ag-context-meter update` | 从 GitHub 拉取最新版本并自动热刷新运行中的 Antigravity 窗口 |
+| `ag-context-meter live` | 立即把增强功能挂载到当前打开的 Antigravity 窗口 |
+| `ag-context-meter stop` | **本次暂时关闭**：停止后台桥接并恢复纯英文原版界面（下次启动软件会自动恢复加载） |
+| `ag-context-meter auto-off` | **关闭随软件自启**，并卸下当前窗口全部增强界面 |
+| `ag-context-meter auto-on` | 重新开启“打开 Antigravity 自动挂载”，并立即加载一次 |
 
-> 💡 **想让 AI Agent 帮你检查并安全合入参考项目更新？** 直接对 Agent 说：
-> `请运行 ag-context-meter upstreams --json，过滤掉改写 app.asar / 二进制解锁的提交，把安全可吸收的新词条、新模型价格或好用的交互移植进项目并更新 upstreams.json 基线。`
+### 怎么彻底卸载？（4 步清干净）
+
+```bash
+# 1. 关闭自启并停止当前挂载
+ag-context-meter auto-off
+
+# 2. 删除开机/随客户端自启配置
+rm -f ~/Library/LaunchAgents/com.$(id -un).ag-live-helper.plist
+
+# 3. 删除命令行快捷方式
+rm -f ~/.local/bin/ag-context-meter
+
+# 4. 删除程序目录（请勿删错路径）
+rm -rf ~/.local/share/antigravity-context-viewer
+```
+
+*可选*：如果你希望连同翻译缓存、远程配对密钥和个人设置一起清空，再多跑一条：
+
+```bash
+rm -rf ~/Library/Application\ Support/AntigravityContextMeter
+```
 
 ---
 
-## 五、安全性、跨平台与开源致谢
+## 五、遇到问题怎么办？
 
-### 为什么这套方案很安全？
+| 遇到的情况 | 先做什么 |
+| :--- | :--- |
+| **装完右上角没出现 `📱远程` 和 `⚙️`** | 1. 终端跑一次 `ag-context-meter status`；<br>2. 如果提示未连接，完全退出 Antigravity（`⌘Q`），用这条命令带调试端口重开：`open -a Antigravity --args --remote-debugging-port=9222`；<br>3. 再跑一次 `ag-context-meter live`。 |
+| **终端提示 `ag-context-meter: command not found`** | 说明 `~/.local/bin` 还没加进终端 `PATH`，运行：<br>`echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc` |
+| **手机扫码打不开页面** | 1. 看手机和电脑是不是在**同一个 Wi-Fi**（如果走 Tailscale，确认手机也已登录同一个账号）；<br>2. 在电脑上打开弹出浮窗切换另一种通道试试，或检查系统防火墙是否放行 `18765` 端口。 |
+| **点「立即更新」提示失败** | 确认你是用 `git clone` 安装的（zip 下载不支持自动拉取），并且自己没有改过仓库目录里的代码。 |
+| **想临时变回全英文原版界面** | 点右上角 **`⚙️`** 把语言切回 `English`，或在终端运行 `ag-context-meter stop`。 |
 
-1. **绝不修改 `app.asar`**：不解包、不改包、不重签名 `/Applications/Antigravity.app/Contents/Resources/app.asar`，完整保留官方苹果代码签名。
-2. **封堵高危底层补丁**：[`live-host.js`](live-host.js) 与 CLI 默认禁用所有二进制解锁与内核改包入口，避免破坏客户端完整性。
-3. **本地数据与代码仓库隔离**：翻译缓存、自定义会话标题等保存在 `~/Library/Application Support/AntigravityContextMeter/`；侧边栏文件编辑器严格限制路径白名单，拒绝访问系统目录、`Antigravity.app` 与敏感凭据目录。
+---
 
-### 💻 为什么目前只提供 macOS 一键版？
+## 六、安全说明、进阶细节与开源致谢
 
-1. **macOS 系统签名校验更严格**：直接改动客户端 `app.asar` 容易触发“应用已损坏”警告、丢失系统权限或影响官方更新，因此本套件重点针对 Mac 做了「零改包 CDP 热注入 + 自动监听恢复」适配。
-2. **一键自启脚本依赖苹果 `launchd`**：[`setup-macos-cdp.sh`](scripts/setup-macos-cdp.sh) 与 [`ag-context-meter`](bin/ag-context-meter) 基于 `~/Library/LaunchAgents/` 监听客户端启动，暂未打包 Windows / Linux 一键守护脚本。
-   - **Windows / Linux 也能用全部前端功能**：核心逻辑 [`cli.js`](cli.js)、[`live-host.js`](live-host.js) 及所有界面增强模块本身跨平台兼容；安装 Node.js 22.4+ 并在 Antigravity 开启调试端口后，执行 `node cli.js live` 即可使用（`node cli.js status` 查看状态）。
+### 为什么这套方案比较安全？
+
+1. **绝不修改官方软件**：不解包、不改写 `Antigravity.app` 内的 `app.asar`，保留苹果原装签名。
+2. **远程控制仅限私网 + 口令访问**：服务端只允许内网或 Tailscale 私网访问，每次请求与配对链接都带有 48 位随机口令，可随时一键重置作废。
+3. **翻译与设置保存在本地**：翻译缓存与配置仅存于本机 `~/Library/Application Support/AntigravityContextMeter/`；文件编辑器通过黑名单禁止访问常见系统目录与密钥目录（重要项目仍建议搭配 Git 使用）。
+
+<details>
+<summary>🔧 展开查看：进阶与安全实现细节（监听端口、响应头、Windows/Linux 用法与上游同步）</summary>
+
+- **远程服务监听与安全响应头**：默认启用 IPv4/IPv6 双栈 `[::]:18765` 监听并强制校验来访 IP 与 `Origin` 为本机回环或 RFC1918/CGNAT 私网地址；页面下发 `Content-Security-Policy` 与 `X-Content-Type-Options: nosniff`，设备标识可结合 `X-AG-Device-Hint` 区分桌面端 UA 的现代 `iPad`。
+- **更新实现细节**：右上角 `⚙️` 一键更新与 `ag-context-meter update` 仅在安装目录具备 `.git` 且工作区无未提交修改时，通过 `git pull --ff-only` 更新后热重载目标窗口；文件行内编辑通过前缀黑名单阻止读写 `/System`、`/usr`、`/etc`、`Antigravity.app` 及 `.ssh` / `.gnupg` / `1Password` 等凭据路径。
+- **Windows / Linux 手动使用**：`setup-macos-cdp.sh` 与 `~/Library/LaunchAgents/` 后台自启为 macOS 专属；Windows / Linux 用户安装 Node.js 22.4+ 并让 Antigravity 以远程调试端口启动后，进入仓库目录手动运行 `node cli.js live` 也可加载核心面板增强逻辑（`node cli.js status` 查看状态）。
+- **检查 6 个上游参考仓库**：可运行 `ag-context-meter upstreams` 与本地基线 [`upstreams.json`](upstreams.json) 比对。如想让 AI Agent 帮你安全合入参考项目更新，可对 Agent 说：
+  > `请运行 ag-context-meter upstreams --json，过滤掉改写 app.asar / 二进制解锁的提交，把安全可吸收的新词条、新模型价格或好用的交互移植进项目并更新 upstreams.json 基线。`
+- **内置 Agent 提速规则**：仓库附带 [`rules/fast-io-AGENTS.md`](rules/fast-io-AGENTS.md)（源自 `oil-oil/agy-fast-io`），通过只读白名单命令、同轮并读文件与合并必审命令减少 AI 工具往返耗时，可按需合并到个人全局规则中。
+
+</details>
 
 ### 参考与致谢（Credits & Acknowledgements）
 
@@ -160,11 +238,11 @@ cd ~/.local/share/antigravity-context-viewer
 
 | 参考项目 | 作者 / 贡献者 | 参考与吸收内容 |
 | :--- | :--- | :--- |
-| **[elviscjn-cjn/antigravity-context-viewer](https://github.com/elviscjn-cjn/antigravity-context-viewer)** | [@elviscjn-cjn](https://github.com/elviscjn-cjn)、[@Jia131313](https://github.com/Jia131313)、[@Azreal2021](https://github.com/Azreal2021)、[@MoiraToki](https://github.com/MoiraToki)、[@nocoo](https://github.com/nocoo) | 基础框架、顶部上下文圆环看板 (`v0.8.3`)、Token 分类统计与 52 周热力图、API 费用估算、5h+Weekly 双窗口配额与 `0%` 修复、占位符模型兜底与顶栏对齐优化 |
-| **[akelabs/antigravity-pulse](https://github.com/akelabs/antigravity-pulse)** | [@akelabs](https://github.com/akelabs) | 输入框底部能量条 (`v1.3.1`)：输出速率、缓存命中与 5 小时窗口倒计时 |
-| **[n2ns/antigravity-panel](https://github.com/n2ns/antigravity-panel)** | [@n2ns](https://github.com/n2ns) | 模型额度监控、Auto-Accept 安全自动确认与 Brain 缓存体积监控思路 |
-| **[yiheng8023/antigravity-chinese](https://github.com/yiheng8023/antigravity-chinese)** | [@yiheng8023](https://github.com/yiheng8023) | 适配 Antigravity `2.32.1` (`v3.3.48`) 的 **2,282 条** 精确词条与 **239 条** 动态正则规则 |
-| **[wycocoyu/agy-context-dashboard](https://github.com/wycocoyu/agy-context-dashboard)** | [@wycocoyu](https://github.com/wycocoyu) | 轻量状态栏排布与指标展示思路（已整合去重） |
+| **[elviscjn-cjn/antigravity-context-viewer](https://github.com/elviscjn-cjn/antigravity-context-viewer)** | [@elviscjn-cjn](https://github.com/elviscjn-cjn)、[@Jia131313](https://github.com/Jia131313)、[@Azreal2021](https://github.com/Azreal2021)、[@MoiraToki](https://github.com/MoiraToki)、[@nocoo](https://github.com/nocoo) | 基础框架、顶部上下文圆环看板 (`v0.8.6`)、Token 分类统计与 52 周热力图、API 费用估算、5h+Weekly 双窗口配额与 `0%` 修复 |
+| **[akelabs/antigravity-pulse](https://github.com/akelabs/antigravity-pulse)** | [@akelabs](https://github.com/akelabs) | 输入框底部能量条 (`v1.3.2`)：输出速率、缓存命中与 5 小时窗口倒计时 |
+| **[n2ns/antigravity-panel](https://github.com/n2ns/antigravity-panel)** | [@n2ns](https://github.com/n2ns) | 模型额度监控 (`v2.8.5`)、Auto-Accept 安全自动确认与 Brain 缓存体积监控思路 |
+| **[yiheng8023/antigravity-chinese](https://github.com/yiheng8023/antigravity-chinese)** | [@yiheng8023](https://github.com/yiheng8023) | 适配 Antigravity `2.32.1` (`v3.3.49`) 的中文界面精确词条与安全动态正则规则 |
+| **[wycocoyu/agy-context-dashboard](https://github.com/wycocoyu/agy-context-dashboard)** | [@wycocoyu](https://github.com/wycocoyu) | 轻量状态栏排布与指标展示思路 (`v0.8.16`，已整合去重) |
 | **[oil-oil/agy-fast-io](https://github.com/oil-oil/agy-fast-io)** | [@oil-oil](https://github.com/oil-oil) | 桌面端 Fast IO 提速规则 (`v0.2.1`)：免审白名单命令、同轮并读与回合压缩规范 |
 
 ---

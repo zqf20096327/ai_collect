@@ -23,7 +23,7 @@
   <a href="https://tokeneconomizer.github.io"><img src="https://img.shields.io/badge/project-page-2f6fb0.svg" alt="Project page"></a>
   <a href="https://x.com/aaron_jli/status/2114797313613053952"><img src="https://img.shields.io/badge/X-post-000000.svg?logo=x&logoColor=white" alt="X post"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776ab.svg" alt="Python 3.10+">
-  <img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="Apache 2.0 license">
+  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT license">
 </p>
 
 <p align="center">
@@ -146,6 +146,11 @@ codex plugin add tokeneconomizer@tokeneconomizer
 Start `codex`, choose **Trust and continue** for the folder, then at **Hooks need review**
 choose **Trust all and continue**. The hooks take effect from your next Codex session, so quit
 (`/exit`), start `codex` again, and check with `$tokeneconomizer:status`.
+
+**GitHub Copilot in VS Code**
+
+See [VS Code setup](plugin/README.md#github-copilot-in-vs-code) to install from the editor
+with the **Copilot** session target, without GitHub CLI or standalone Copilot CLI.
 
 **Copilot CLI**
 
@@ -535,4 +540,4 @@ result. It is not part of the installed plugin; the two share only `tokeneconomi
 
 ## License
 
-Apache 2.0; see [`LICENSE`](LICENSE).
+[`MIT LICENSE`](LICENSE).

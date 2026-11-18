@@ -35,6 +35,15 @@ localharness update                  # the latest release from PyPI
 
 `plugins enable` and `plugins disable` write `overrides.yaml` and leave your `config.yaml` alone; `--workspace` changes a bundled plugin for one project only. Inside a session, `/plugins enable <name>` asks what the plugin needs, checks it, and restarts with your conversation kept. Keyboard shortcuts and multi-line input: [docs/terminal-keys.md](docs/terminal-keys.md).
 
+`localharness start --private` keeps nothing of the session when it ends: no conversation, memory, logs, task documents, pictures or saved pages, and no answer to a permission question. Files you have the agent write into your project are yours and stay, the way a private browser window keeps your downloads. The session's own state lives in a folder in your project, `.localharness/run/<id>/` (in the config folder's `run/` when there is no project or another account can write it), that is deleted when it ends; a `.localharness/run/` it made in the project stays, holding only a `.gitignore`. The agent cannot write the files a later session would load, such as `CLAUDE.md`. Four things to know:
+
+- a crash leaves that folder until the next session in this project;
+- settings you change stay;
+- `/model` pointed at a remote endpoint sends the chat there;
+- a private chat on the phone (the `Private chat` button in `localharness mobile`) stays on the machine, asleep, until you end it or `localharness mobile` stops.
+
+What it does not hide is listed in [SECURITY.md](SECURITY.md#private-sessions).
+
 ## What agents can do
 
 Agents are YAML. A project's agents live in its `.localharness/agents/` and yours in `~/.localharness/agents/`, the project's file winning a shared name; the model is told about both and sees a new one as soon as it is used or created, and `localharness agent list` shows where each comes from. The built-in tools are read, write, edit, glob, grep, bash, python, web search and fetch, delegation to helper agents, and MCP servers, so a session works as a coding agent or a research agent. Drive it from the terminal, from Zed ([`localharness acp`](docs/zed.md)), from your phone on your own network ([`localharness mobile`](docs/mobile.md)) or from Discord ([`--channel discord`](docs/plugins/dispatch.md)). With a vision model, drop a screenshot on the terminal, paste one into Zed or the phone page, or attach one on Discord. Every reply passes a panel of critic agents before it reaches you, and `/task new <objective>` runs bigger work as a pipeline of fresh agents, a plan and then each step, with critics after each: [docs/metaharness.md](docs/metaharness.md).
@@ -79,13 +88,13 @@ A skill is a folder holding a `SKILL.md` in the open [Agent Skills](https://agen
 
 ## Status
 
-Early stage (v0.28.0, pre-1.0). Interfaces and config schema may change without notice. Each release's known limitations are listed in the [CHANGELOG](CHANGELOG.md).
+Early stage (v0.28.2, pre-1.0). Interfaces and config schema may change without notice. Each release's known limitations are listed in the [CHANGELOG](CHANGELOG.md).
 
 ## Links
 
 - [SECURITY.md](SECURITY.md): trust boundaries, the permission gate, the prompt-injection threat model
 - [src/localharness/](src/localharness/): the source, one package per component; the CLI is [`cli/`](src/localharness/cli/)
-- [docs/metaharness.md](docs/metaharness.md): the critics that read a reply after a turn that used a tool, and the task pipeline `/task` drives, with an [example workflow](examples/workflows/research-note/)
+- [docs/metaharness.md](docs/metaharness.md): the critics that read a reply after a turn that used a tool, and the task pipeline `/task` drives
 - [docs/reference-architectures/](docs/reference-architectures/README.md): tested hardware and setup notes
 - [docs/running-agents-locally.md](docs/running-agents-locally.md): where LocalHarness fits among local agent tools, and where it is behind
 - [LocalShift](https://github.com/ahwurm/localshift): the companion project that moves a headless Claude Code job onto LocalHarness once a local model proves good enough

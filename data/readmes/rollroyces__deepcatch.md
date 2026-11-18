@@ -10,7 +10,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/)
-![Tests](https://img.shields.io/badge/Tests-794%20collected-blue)()
+![Tests](https://img.shields.io/badge/Tests-926%20collected-blue)()
 [![Real-data CI](https://img.shields.io/badge/Real_data_CI-see%20results%2F-lightgrey)](results/)
 [![Model Card](https://img.shields.io/badge/Model_Card-MODEL.md-blue)](MODEL.md)
 [![Docs](https://img.shields.io/badge/Docs-rollroyces.github.io-blue)](https://rollroyces.github.io/deepcatch/)
@@ -46,9 +46,9 @@ Scope that would be useful, in order of what unblocks the most:
 3. **Stage I vs late-stage labels** — the stage breakdown is implemented and waiting for data.
 4. **Matched tumour tissue** — enables tumour-specific fragmentomics instead of tumour-agnostic ones.
 
-Everything is MIT-licensed and every number in the repository traces to a committed JSON artifact, so a collaborator can audit the analysis end to end before deciding anything. See [`TEAM.md`](TEAM.md) §2 for the contribution model and [`docs/PRODUCTION_ROADMAP.md`](docs/PRODUCTION_ROADMAP.md) for the validation plan.
+Everything is MIT-licensed and every number in the repository traces to a committed JSON artifact, so a collaborator can audit the analysis end to end before deciding anything. See [`TEAM.md`](TEAM.md) §2 for the contribution model, [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to set the project up, run the tests and bring a cohort in, and [`docs/PRODUCTION_ROADMAP.md`](docs/PRODUCTION_ROADMAP.md) for the validation plan.
 
-**How to reach us**: open a *External cohort validation (collaboration)* issue — the template asks for cohort metadata only, so no patient data ever has to leave your institution. Questions about the analysis itself are better in [Discussions](https://github.com/rollroyces/deepcatch/discussions).
+**How to reach us**: open a *External cohort validation (collaboration)* issue — the template asks for cohort metadata only, so no patient data ever has to leave your institution. Questions about the analysis itself are better in [Discussions](https://github.com/rollroyces/deepcatch/discussions). Code contributions are governed by [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
 
 ---
 
@@ -91,7 +91,7 @@ Real `uvicorn api.main:app` server on `127.0.0.1:8000`. The recording shows Swag
 - **Multi-modal fragmentomics** — DELFI (5Mb / 100kb bin ratios), MFS, nucleosome positioning, FSD histograms, THEMIS 4-mer end-motif frequencies — fused into a per-sample ~70-feature vector.
 - **Cross-study cancer detection** — pooled 5-seed × 5-fold OOF on open-data cfDNA (FinaleDB pubs 6 + 8, n=627 samples across 8 cancer types + healthy); `scripts/cross_study_finallydb.py` with `--gc-correction` (default) and `--include-motifs` flags.
 - **External validation on never-trained public data** — train on FinaleDB pubs 6+8 (n=627), test on pubs 1/7/9 fetched from the public API + S3 (no IRB): **AUC 0.9444** [0.8731, 1.0] on pub 7 (WGS, n=31), 0.708 on pub 1 (WGS, n=52), 0.7385 pooled over the publications carrying both classes; the whole-exome publication transfers only partly (breast 0.6938, prostate 0.7127) — an assay-platform shift on top of a study shift.
-- **Honest confound controls** — true-confound control (cancer=study A, healthy=study B) collapses to ~0.50 under per-study z-score harmonization; the permuted-label null is 0.446 and its *measured* null on this paired design is 0.42 ± 0.12 (not 0.5), so the control is read against the measured null rather than against chance.
+- **Honest confound controls** — true-confound control (cancer=study A, healthy=study B) collapses to ~0.50 under per-study z-score harmonization; the permuted-label null is 0.446 and its *measured* null on this paired design is 0.4063 ± 0.1143 (not 0.5), so the control is read against the measured null rather than against chance.
 - **Mutation-informed detection panel** — TCGA-derived panel of 5,738 LUAD mutations with CADD-PHRED-scored Top-K=20 selection; AUC 0.92 at 0.1% ctDNA on synthetic cfDNA dilution (spike-in, not clinical plasma).
 - **Tumor-naive + mutation fusion** — naive average of fragmentomics + mutation channels reaches AUC 0.988 on the 627 cohort (a what-if pairing — the mutation channel is calibrated to AUC 0.92, not paired).
 - **Late fusion that works at this sample size** — the neural encoder scores 0.554 on the honest paired cohort against an LR baseline of 0.910; a regularized late fusion reaches **0.9825 ± 0.0094** and a Bayesian model average **0.9650 ± 0.0089** on the same folds (`src/foundation/regularized_fusion.py`).
@@ -163,13 +163,39 @@ flowchart LR
 
 ## Installation
 
-```bash
-git clone https://github.com/rollroyces/deepcatch.git
-cd deepcatch
+DeepCatch is **two repositories and one data step**. The headline
+numbers come from a feature cache that lives in the *companion pipeline
+repository*, and that cache is in **neither** repository — it is
+rebuilt from the public FinaleDB API, so nothing has to be downloaded
+by hand and no credentials are needed.
 
-# Recommended — editable install + CLI entry points (deepcatch-tumornaive, deepcatch-fusion, etc.)
+```bash
+# 1. The companion pipeline — do this FIRST. DeepCatch's scripts import
+#    its feature loader and its per-study harmoniser, and it is where
+#    the feature cache is built.
+git clone https://github.com/rollroyces/cfdna-fragmentomics-pipeline
+cd cfdna-fragmentomics-pipeline
+python3.11 -m venv .venv && source .venv/bin/activate   # Windows: use WSL2
 pip install -e .
+
+# 2. Materialise the feature cache (~600 MB for 627 samples; the raw
+#    downloads are ~100 GB and are deleted as they are processed).
+#    This is the one long step.
+python run_cross_study.py --parallel 8 --max-mb 500
+
+# 3. DeepCatch itself.
+cd ../deepcatch
+python3.11 -m venv .venv && source .venv/bin/activate
+pip install -e .        # editable install + CLI entry points
 ```
+
+With the two repositories cloned side by side, every script and the
+reproduction driver find the cache, the labels and the sister pipeline
+without any further configuration. [`USAGE.md`](USAGE.md) has the full
+sequence with the platform notes; [`paper/REPRODUCE.md`](paper/REPRODUCE.md)
+documents the one-command reproduction; and
+[`docs/PUBLIC_DATA_SOURCES.md`](docs/PUBLIC_DATA_SOURCES.md) lists the
+public archives every number comes from.
 
 **Minimum dependencies** (CPU fragmentomics only):
 ```bash
@@ -181,11 +207,20 @@ pip install numpy scipy scikit-learn pandas statsmodels
 pip install "torch>=2.0.0" torch-geometric pysam
 ```
 
-**Docker:**
+**Docker** (runs the bioinformatics validation suite, not the pipeline —
+the pipeline runs from the repository):
 ```bash
 docker build -t deepcatch:latest .
 docker run --rm -v $(pwd)/results:/app/results deepcatch:latest
 ```
+
+**Importing the library:** the installed distribution is `deepcatch`, and
+its modules are importable under their repository path — `from
+src.fragmentomics import ...` — while the CLI entry points
+(`deepcatch-tumornaive`, `deepcatch-fusion`, `deepcatch-decisioncurve`)
+are installed as commands. Inside the repository the same modules are
+usually imported with `src/` on `sys.path`, as `fragmentomics`,
+`foundation`, `methylation_gnn` and so on.
 
 Validate the install:
 ```bash
@@ -221,6 +256,8 @@ print(f"AUC {np.mean(aucs):.4f} ± {np.std(aucs):.4f}")
 ```
 
 ### B. Cross-study benchmark CLI (the headline number)
+
+Needs the feature cache from Installation step 2.
 
 ```bash
 # Production run (5 seeds × 5 folds, ~5 min on 627 samples)
@@ -260,7 +297,7 @@ proba = fusion.predict_proba(modalities)   # shape (N, 2)
 
 ### D. Tumor-naive + mutation-informed fusion
 
-See [`docs/TUMOR_NAIVE.md`](docs/TUMOR_NAIVE.md) for the cross-repo adapter and `scripts/cross_study_finallydb.py --include-motifs`. Headline: naive average of fragmentomics + a calibrated mutation channel reaches AUC **0.9884 ± 0.0010** on the 627 cohort over 10 seeds (paired-t p < 0.0001). The mutation channel is calibrated, not paired — honest what-if experiment.
+See [`docs/FUSION_ISOTONIC.md`](docs/FUSION_ISOTONIC.md) for the tumor-naive + fusion result and `scripts/cross_study_finallydb.py --include-motifs` to reproduce the cross-study benchmark. Headline: naive average of fragmentomics + a calibrated mutation channel reaches AUC **0.9884 ± 0.0010** on the 627 cohort over 10 seeds (paired-t p < 0.0001). The mutation channel is calibrated, not paired — honest what-if experiment.
 
 ### E. Reproduce everything
 
@@ -326,7 +363,7 @@ Deep details live in each module's docstrings (e.g. `python -c "import src.fragm
 | `src/variant_calling/` | Bayesian + contrastive DL (synthetic) | `docs/CADD_FLARE_VALIDATION.md` |
 | `src/preprocessing/` | CHIP filter | — |
 
-For the **mutation-informed channel** see `docs/CADD_WEIGHTED_LLR.md`, `docs/CADD_PER_SUBGROUP_LLR.md`, `docs/CADD_GDC_VALIDATION.md`, `docs/CADD_ALPHAMISSENSE_COMBINED.md`, `docs/ALPHAMISSENSE_REAL_LLR.md`. For **tumor-naive + fusion** see `docs/TUMOR_NAIVE.md` and `docs/FUSION_ISOTONIC.md`. For **architecture proposal** (methylation β-value + Apple MPS) see `docs/V3_DESIGN.md`.
+For the **mutation-informed channel** see `docs/CADD_WEIGHTED_LLR.md`, `docs/CADD_PER_SUBGROUP_LLR.md`, `docs/CADD_GDC_VALIDATION.md`, `docs/CADD_ALPHAMISSENSE_COMBINED.md`, `docs/ALPHAMISSENSE_REAL_LLR.md`. For **tumor-naive + fusion** see `docs/FUSION_ISOTONIC.md` and `docs/CROSS_STUDY_BENCHMARK.md`. For **architecture proposal** (methylation β-value + Apple MPS) see `docs/V3_DESIGN.md`.
 
 ---
 
@@ -337,7 +374,7 @@ For the **mutation-informed channel** see `docs/CADD_WEIGHTED_LLR.md`, `docs/CAD
 env -u PYTHONPATH ./.venv/bin/python -m pytest \
     test/ src/foundation/test_integration.py \
     -m "not slow" --tb=line -q
-# → 573 passed, 23 skipped, 13 deselected (slow real-data smoke)
+# → 702 passed, 19 skipped, 13 deselected (slow real-data smoke)
 
 # Full per-module discovery
 env -u PYTHONPATH ./.venv/bin/python -m pytest src/ -m "not slow"
@@ -355,14 +392,16 @@ env -u PYTHONPATH ./.venv/bin/python scripts/foundation_real_smoke.py \
 
 | Module | Tests | Status |
 |---|---:|---|
-| `test/test_publication_readiness.py` | 15 | ✅ all passing |
+| `test/test_publication_readiness.py` | 16 | ✅ all passing |
 | `test/test_biomedical_review_fixes.py` | 37 | ✅ all passing |
 | `test/test_foundation_smoke.py` | 8 | ✅ all passing |
+| `test/test_label_control.py` | 17 | ✅ all passing |
+| `test/test_public_tree_has_no_personal_contact.py` | 3 | ✅ all passing |
 | `src/foundation/test_integration.py` | 43 | ✅ all passing |
 | Full `src/` discovery | 228 collected | ✅ 217 run, 11 deselected (slow) |
-| **Combined fast-path gate** | **609 collected** | **573 passed + 23 skipped + 13 deselected** |
+| **Combined fast-path gate** | **741 collected** | **709 passed + 19 skipped + 13 deselected** |
 
-The 13 deselected tests are the slow real-data foundation smoke and per-study harmonization checks; they run in dedicated GitHub Actions workflows (`foundation-real-smoke`, `validate.yml`) on real datasets.
+The 13 deselected tests are the slow real-data foundation smoke and per-study harmonization checks. Eleven of them live in `src/foundation/test_integration.py` and run in the deep-learning job of `validate.yml`, which does not deselect them. The other two — `test/test_cross_study_per_cancer_integration.py` and `test/test_load5_with_motifs.py` — need the companion repository's extracted feature cache, which CI does not have; they are deselected here and run only where that cache is present.
 
 ---
 
@@ -370,6 +409,7 @@ The 13 deselected tests are the slow real-data foundation smoke and per-study ha
 
 | Channel | Required data | Source |
 |---|---|---|
+| **Feature cache (the input to every headline number)** | `cfdna-fragmentomics-pipeline/data/features/` — 627 samples × 5 channels | **built by `run_cross_study.py` from the public FinaleDB API; in *neither* repository** (Installation step 2) |
 | Fragmentomics 5-channel | BAM / FASTQ (WGS) | FinaleDB (pubs 6 + 8), TCGA WXS |
 | GC / mappability correction | Reference GC track (hg19/hg38) | ENCODE, UCSC goldenPath |
 | 4-mer end motifs (`--include-motifs`) | End 5-mer counts from .bam | derived from BAM |
@@ -409,7 +449,7 @@ deepcatch/
 │   ├── py/                       # Python validation modules (11)
 │   ├── tcga/                     # TCGA data loaders + validators
 │   └── *.py                      # Bioinformatics-grade modules
-├── test/                         # 42 test files (596 fast-path tests)
+├── test/                         # 48 test files (698 fast-path tests)
 ├── results/                      # Cached JSON + 4 figures + ablation artifacts
 ├── paper/                        # LaTeX manuscript + REPRODUCE.sh
 ├── docs/                         # 30+ docs + 4 figures + 3 demo WebM/MP4/GIF (real browser_exec recordings) + terminal asciicasts
@@ -443,9 +483,9 @@ Full history: `git log --oneline`. What changed in v2.3.0: [`CHANGELOG.md`](CHAN
 - **[USAGE.md](USAGE.md)** — 30-second TL;DR, install, common workflows, CLI reference, troubleshooting
 - **[TEAM.md](TEAM.md)** — who's involved, open roles, governance
 - **[RESULTS.md](RESULTS.md)** — consolidated research summary (DeepCatch + cfdna-fragmentomics-pipeline sister repo)
-- **[paper/PAPER.md](paper/PAPER.md)** / **[paper/paper.tex](paper/paper.tex)** — research paper
+- **[paper/paper.tex](paper/paper.tex)** — research paper (preprint source; the compiled PDF is [paper/biorxiv_submission_v2.3.0.pdf](paper/biorxiv_submission_v2.3.0.pdf))
 - **[REVIEWERS.md](REVIEWERS.md)** — review notes for expert reviewers
-- **[docs/](docs/)** — 30+ deep-dive docs (CADD / TUMOR_NAIVE / CROSS_STUDY_BENCHMARK* / FUSION_ISOTONIC / V3_DESIGN / etc.)
+- **[docs/](docs/)** — 30+ deep-dive docs (CADD / CROSS_PLATFORM_BENCHMARK / CROSS_STUDY_BENCHMARK* / FUSION_ISOTONIC / V3_DESIGN / etc.)
 - **[ULTRA_EARLY_READINESS.md](ULTRA_EARLY_READINESS.md)** — single-source readiness doc for ultra-early cancer signaling (every claim ties to a `results/*.json` artifact)
 - **[paper/REPRODUCE.sh](paper/REPRODUCE.sh)** — one-command reproduction of every §3 artifact
 

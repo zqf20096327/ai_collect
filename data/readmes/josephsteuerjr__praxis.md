@@ -23,6 +23,78 @@ Hélène is a desktop home for agents with their own character, lasting memory,
 settings and working files. Talk in the desktop window, connect Telegram, or use
 a paired phone and web interface while the host is online. Powered by Praxis.
 
+## Reading the source
+
+This branch includes the Hélène 2.8.9 source and the live cloud Praxis snapshot
+from 18 November 2026. The two products share a base but have separate runtime
+and interface layers:
+
+| Path | Source |
+| --- | --- |
+| [`desk/`](desk/) | Hélène desktop host, lifecycle, installer and interfaces |
+| [`helene/core/`](helene/core/) | Hélène engine adaptations over the shared base |
+| [`praxis/`](praxis/) | Live cloud Praxis engine, tools and schemas |
+| [`remote/praxis-desk/`](remote/praxis-desk/) | Praxis server backend, Telegram MiniApp and PWA |
+| [`RELAY-SOURCE.json`](RELAY-SOURCE.json) | Published relay source and exact runtime binary binding |
+
+Use the immutable [`v2.8.9` tag](https://github.com/josephsteuerjr/praxis/tree/v2.8.9)
+to inspect the shipped Hélène composition. Main also carries newer cloud engine
+changes; they require separate porting and qualification before a new desktop
+release. [Source bindings](SOURCE-SNAPSHOTS.md) record the snapshot dates and
+verification scope.
+
+The cloud snapshot also includes the qualified phone Stop and Forge history
+recovery repair: one cancellation identity, preserved corrupt bytes and explicit
+same-host reboot evidence. The server MiniApp/PWA now shows the author during an active turn. The engine checks exact run manifests during turn preparation.
+
+## Included in 2.8.9
+
+The desktop avoids repeated settings reads and status flushes while idle.
+Context preparation validates memory timestamps and checks exact run manifests.
+See the [release notes](desk/docs/RELEASE-2.8.9.md).
+
+## Included in 2.8.8
+
+Server-bridge installation and existing-server setup work; Forge history failures
+have precise diagnostics and explicit recovery controls. Windows edges resize
+again while maximized corner controls remain reachable. See the
+[release notes](desk/docs/RELEASE-2.8.8.md).
+
+## Included in 2.8.7 Beta
+
+The window is smooth again while the agent works: scrolling, typing, animations
+and buttons no longer wait behind half-second repaints of the whole window. On
+Windows the window follows the cursor when it is moved or resized, like any
+other window. See the [release notes](desk/docs/RELEASE-2.8.7.md).
+
+## Included in 2.8.6 Beta
+
+The external desktop supervisor now remains available while the engine prepares
+its sandbox or recovers interrupted work. Restart requests are handled by the
+process owner, and the window shows the startup phase and elapsed time. Stop
+remains available during startup; readiness requires the real engine heartbeat.
+See the [release notes](desk/docs/RELEASE-2.8.6.md).
+
+## Included in 2.8.5 Beta
+
+Shell commands no longer stall on the agent's personal Git: at start Hélène removes
+owner backups and service files from its history, deletes leftover temporary packs and
+turns automatic repacking off, and the snapshot before each command stages only what
+changed, never files over 50 MB. Includes the 2.8.3 fixes (maximized window edges,
+nested hand calls in Telegram groups, received files with a path and checksum), the
+2.8.2 Windows fixes, the 2.8.1 startup hotfix and all 2.8.0 features below.
+
+### Features introduced in 2.8.0
+
+The interface and agent context each support Russian, English, French and Chinese,
+with independent settings. Includes resident skills, optional living prose,
+Windows MCP, exact program arguments, code navigation and stronger process custody.
+The bundled relay can switch ChatGPT subscriptions on quota exhaustion.
+The [Latest Beta for all platforms](https://github.com/josephsteuerjr/praxis/releases/latest) includes these fixes.
+On cold macOS and Linux starts, the process guardian now allows up to 60 seconds
+for preparation while keeping launch refusal and cleanup on timeout. See the
+[changes and qualification limits](desk/docs/RELEASE-2.8.5.md).
+
 ## Included in 2.7.2 Beta
 
 Fixes ChatGPT subscription sign-in on the desktop: browser and device-code

@@ -5,15 +5,13 @@
 **An OpenAI-compatible HTTP API for a FreePi account.**<br>
 A single Rust binary, no runtime and no extra services.
 
-![version](https://img.shields.io/badge/version-0.2.1-blue)
+![version](https://img.shields.io/badge/version-0.2.2-blue)
 ![msrv](https://img.shields.io/badge/msrv-1.89%2B-orange)
 ![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)
 
 </div>
 
 Language: English | [Indonesia](README.id.md)
-
-OpenAI-compatible API for a FreePi account. One static Rust binary, no runtime.
 
 FreePi's API only accepts its own client and needs an ad impression before free
 completions work. The bridge handles both and forwards requests to
@@ -38,7 +36,8 @@ once on some machine.
 4. **Point your app at it**:
    - Base URL: `http://127.0.0.1:8787/v1`
    - API key: your `BRIDGE_API_KEY` if you set one, otherwise any placeholder
-   - Model: pick one from `freepi-bridge models`
+   - Model: any id from `freepi-bridge models`, or from
+     [freepi.ai/models](https://freepi.ai/models) which also shows quotas
 
 Test it:
 
@@ -47,9 +46,6 @@ curl http://127.0.0.1:8787/v1/chat/completions \
   -H 'content-type: application/json' \
   -d '{"model":"particle","messages":[{"role":"user","content":"hi"}]}'
 ```
-
-`freepi-bridge models` prints the whole catalog. `deepseek-v4.1-flash` is a good
-pick for coding.
 
 > **Windows PowerShell 5.1:** `curl` is an alias for `Invoke-WebRequest`.
 > Use `curl.exe`, or:
@@ -135,13 +131,15 @@ freepi-bridge logs | grep 'ad impression'
 | `stop`, `restart` | control the daemon |
 | `status`, `logs [-f]` | inspect it |
 | `models` | list available models |
+| `usage` | today's credits, lane and token spend |
+| `reset [--yes]` | free a session slot held by a crashed client |
 | `doctor` | check token, upstream, bridge, bind |
 | `token`, `ads` | print the JWT in use / the ad page URL |
 | `config [--init]` | show or create `config.env` |
 | `update [--check] [--tag TAG]` | install the latest (or a pinned) release |
 
-Exit code is `0` on success, `1` on error. Add `--json` to `status`, `models`
-and `doctor` for scripts.
+Exit code is `0` on success, `1` on error. Add `--json` to `status`, `models`,
+`usage` and `doctor` for scripts.
 
 ## Configuration
 
@@ -156,8 +154,21 @@ after editing.
 | `HOST`, `PORT` | `127.0.0.1`, `8787` | listen address |
 | `FREEPI_AUTO_AD` | `1` | auto-report ads, `0` to disable |
 | `FREEPI_AD_REFRESH_SECS` | `600` | seconds between reports (min 30) |
+| `FREEPI_MAX_INFLIGHT` | `1` | completions sent upstream at once; `0` removes the gate |
+| `FREEPI_QUEUE_WAIT_SECS` | `30` | how long a second request waits for the slot before answering `429` |
 | `FREEPI_AUTO_UPDATE` | unset | `start --bg` and `restart` check at most once a day: unset prints a notice, `1` installs the release, `0` never checks. A running daemon is never checked by itself |
 | `FREEPI_BRIDGE_DIR` | `~/.freepi-bridge` | state and log directory |
+| `FREEPI_CREDENTIALS` | `~/.free-pi/agent/credentials.json` | token file the bridge reads |
+| `FREEPI_BASE_URL` | `https://api.freepi.ai` | upstream API base; point it at a mirror or a test server |
+| `FREEPI_BRIDGE_DOWNLOAD_BASE` | unset | mirror for release downloads in `update` |
+| `FREEPI_BRIDGE_INSECURE` | unset | `1` equals `--insecure`, for platforms that cannot pass flags |
+| `TZ` | `UTC` | timezone sent with ad requests |
+
+FreePi serves one completion per account at a time. The bridge therefore holds a
+slot and lets a second request wait for it instead of failing straight away, up to
+`FREEPI_QUEUE_WAIT_SECS`. A request that gives up waiting answers `429` with
+`Retry-After`. Set `FREEPI_QUEUE_WAIT_SECS=0` to fail fast, or
+`FREEPI_MAX_INFLIGHT=0` to send every request upstream unchanged.
 
 Binding to a non-loopback address (`--bind 0.0.0.0`) requires `BRIDGE_API_KEY`
 unless you pass `--insecure`.
@@ -200,11 +211,11 @@ Installed with `--system` or `PREFIX`? Delete the binary from there instead.
 | `401` | no token found: run `freepi-bridge token`, if empty see [Token](#token) |
 | `403 ads_required` | see [Ads](#ads); `FREEPI_AUTO_AD=1` clears it without a browser |
 | `403` with a browser open | the page was not counted; keep `/ads` visible and check `freepi-bridge logs \| grep 'ad impression'` |
-| `409 concurrent_session` | the account already holds its four CLI session slots; the bridge calls `/session/reset` and retries once, and a retry that still fails means another machine holds a slot |
+| `409 concurrent_session` | the account already holds its four CLI session slots; the bridge calls `/session/reset` and retries once. A retry that still fails means another machine holds the slot, so run `freepi-bridge reset` once the other client is closed |
 | `409 model_at_capacity` | that model is busy upstream; wait a few minutes or pick another free model |
-| `429 concurrent` | one active request per account; another client or a second agent is using the same FreePi account |
+| `429 concurrent` | the account serves one request at a time and the bridge waited `FREEPI_QUEUE_WAIT_SECS` without getting the slot; another client keeps holding it, so raise the wait or give the second agent its own account |
 | `429 hourly_ceiling` | hourly cap reached, wait for the reset. Ads cannot be skipped, and the cap is per account |
-| `429 premium_allowance` | premium quota spent; move to a model marked `Free Unlimited` in `freepi-bridge models` (`particle`, `deepseek-v4.1-flash`, `glm-5.3-flash`, `deepseek-v4-flash`), since an id ending in `-flash` does not make a model free |
+| `429 premium_allowance` | premium quota spent; switch to a model that reports `"free": true` in `freepi-bridge models --json`, since an id ending in `-flash` does not make a model free |
 | anything else | `freepi-bridge doctor`, then `freepi-bridge logs` |
 
 ## Endpoints

@@ -13,6 +13,7 @@
 </p>
 
 <p align="center">
+  <a href="https://discord.gg/K9TjZNwC4"><img height="28" alt="Join our Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&amp;logoColor=white&amp;style=for-the-badge"></a>
   <a href="https://x.com/HeyLingerAI"><img height="28" alt="Follow on X" src="https://img.shields.io/badge/@HeyLingerAI-000000?logo=x&logoColor=white&amp;style=for-the-badge"></a>
   <a href="https://www.youtube.com/@HeyLingerAI"><img height="28" alt="YouTube" src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white&amp;style=for-the-badge"></a>
   <a href="https://www.reddit.com/user/HeyLinger/"><img height="28" alt="Reddit" src="https://img.shields.io/badge/Reddit-FF4500?logo=reddit&logoColor=white&amp;style=for-the-badge"></a>
@@ -42,7 +43,7 @@ Efficient AI model–harness co-design brings a full local agent to consumer Mac
     <th align="center" width="2600">RTX 3060<br>12 GB</th>
     <th align="center" width="2600">RTX 5090<br>32 GB</th>
   </tr>
-  <tr><td>Qwen3.8-Flash-Next</td><td align="center">95 (IQ1_M)¹</td><td align="center">45.5</td><td align="center">179</td></tr>
+  <tr><td>Qwen3.8-Flash-Next</td><td align="center">38.1 (Q2_0)¹</td><td align="center">45.5</td><td align="center">179</td></tr>
   <tr><td>LFM2.5-24B-A2B</td><td align="center">70–73</td><td align="center">97.8</td><td align="center">480–485</td></tr>
   <tr><td>Flint 40B-A2.5B</td><td align="center">61–63</td><td align="center">65.5</td><td align="center">251–252</td></tr>
   <tr><td>Qwen3.6-35B-A3B</td><td align="center">94–100</td><td align="center">91.8</td><td align="center">394–395</td></tr>
@@ -51,7 +52,7 @@ Efficient AI model–harness co-design brings a full local agent to consumer Mac
   <tr><td>Tiel Coder 35B-A3B</td><td align="center">83</td><td align="center">78.8</td><td align="center">337–345</td></tr>
 </table>
 
-¹ The IQ1_M result comes from the [Autopilot reference configuration](docs/local-inference.md#planning): NVIDIA 8 GB, 32 GB RAM and 64K context. The source does not specify the GPU model.
+¹ Not from PolyStrata's results: our lab measured the Q2_0 file with a short prompt on a 96 GB card held to an 8 GB budget, with 32 GB of RAM and a 64K context. It is not a real 8 GB card, and it does not settle the earlier 95 tok/s IQ1_M figure: Flash-Next Coder IQ1_M gave 32.1 under the same conditions, and the full-model UD-IQ1_M was not tested.
 
 Full results (**5 more models**!) can be found in [PolyStrata](https://github.com/simplexai-labs/PolyStrata#how-fast-is-it).
 
@@ -66,6 +67,8 @@ One command detects your hardware, recommends the best model, installs it and ch
 <details>
 <summary><b>By machine:</b> what each Mac and RTX tier gets, how fast it writes and which cloud model it matches</summary>
 
+<!-- BEGIN GENERATED: public-tiers tiers, from llm-inference-lab docs/public-tiers.json; run scripts/public_tiers_sync.py there, do not edit here -->
+
 <table>
   <tr>
     <th align="left" width="2400">Hardware</th>
@@ -74,14 +77,17 @@ One command detects your hardware, recommends the best model, installs it and ch
     <th align="center" width="1200">SimplexAI</th>
     <th align="left" width="2700">Compares with</th>
   </tr>
-  <tr><td>Mac 16 GB</td><td>Spark-X2.6-4B</td><td align="center">165</td><td align="center">31.5</td><td>Beats GPT-4o¹</td></tr>
-  <tr><td>Mac 24 GB</td><td>Underdog-Saluki-27B</td><td align="center">49.7</td><td align="center">48.4</td><td>Beats Gemini 2.5 Pro</td></tr>
-  <tr><td>RTX 8 GB + 32 GB</td><td>Qwen3.8-Flash-Next</td><td align="center">95</td><td align="center">51.9</td><td>≈ Claude Opus 4.5</td></tr>
-  <tr><td>RTX 12 GB + 32 GB</td><td>Qwen3.8-Flash-Next</td><td align="center">120</td><td align="center">54.8</td><td>≈ Claude Sonnet 4.6</td></tr>
-  <tr><td>RTX 24 GB + 64 GB</td><td>Qwen3.8-Flash-Next</td><td align="center">167</td><td align="center">59.3</td><td>≈ Claude Opus 4.6</td></tr>
+  <tr><td>Mac 16 GB</td><td>Spark-X2.6-4B Q4_K_M†</td><td align="center">37.6 short (37.4–37.8); 13.3 after a 126K prompt (13.30–13.31)</td><td align="center">Not ranked</td><td>—</td></tr>
+  <tr><td>Mac 24 GB</td><td>Qwen3.8-27B UD-IQ3_S</td><td align="center">46.06 single session (median of 3); 48.43 for 2 sessions together</td><td align="center">51.9</td><td>≈ Claude Opus 4.5</td></tr>
+  <tr><td>Mac 32 GB</td><td>Qwen3.8-27B UD-Q4_K_M</td><td align="center">45.44 single session (median of 3)</td><td align="center">54.0</td><td>≈ Claude Sonnet 4.6</td></tr>
+  <tr><td>Linux NVIDIA 8 GB + 32 GB</td><td>Qwen3.6-35B-A3B UD-Q3_K_M</td><td align="center">121–146 short; 88–103 after a 62K prompt</td><td align="center">35.4</td><td>≈ Gemini 2.5 Pro</td></tr>
+  <tr><td>Linux NVIDIA 12 GB + 32 GB</td><td>Qwen3.8-Flash-Next GSQ-RCO Q2_0†</td><td align="center">21.3 short (19.8–25.4); 34.1 after a 62K prompt (12.0–37.3), first token after about 3 minutes</td><td align="center">57.3</td><td>≈ Claude Opus 4.6</td></tr>
+  <tr><td>Linux NVIDIA 24 GB + 64 GB</td><td>Qwen3.8-27B UD-Q4_K_M</td><td align="center">32.5–33.2 single session at 130K; 28–41 per session with two sessions at about 8K</td><td align="center">54.0</td><td>≈ Claude Sonnet 4.6</td></tr>
 </table>
 
-<sub>SimplexAI scores sit on the third-party AIHOT scale, where 50 is the average of 123 reference models; within 3 points we say "on par". ¹ GPT-4o is not rated by AIHOT; vendor-reported GPQA Diamond 77.1 vs 53.6 and SWE-bench Verified 62.8 vs 33.2. Best results under ideal lab conditions.</sub>
+<sub>Decode speeds were measured in our lab, mostly on a simulated tier (a larger card held to the tier's memory budget, or a larger Mac planned as the tier), so a real machine of the tier can be slower. SimplexAI scores sit on the third-party AIHOT scale, where 50 is the reference average, and scores within 3 points count as the same level. † Not this machine's default recommendation. Not ranked: AIHOT has no third-party results for the model. Test conditions, defaults and self-tests are in <a href="docs/local-inference.md#planning">Local inference</a>.</sub>
+
+<!-- END GENERATED: public-tiers tiers -->
 
 </details>
 
@@ -141,41 +147,18 @@ No second time needed. Name the kind and it changes whether you are told; name t
 
 ### Option 1: the desktop app
 
-For one person on one computer. Download the package for your platform from
-[GitHub Releases](https://github.com/simplexai-labs/linger/releases). The app
+For one person on one computer. Choose your platform below. The app
 opens Linger, connects this computer and runs its agents. **Quick Install** on its
 setup screen sets up a Linger server on this computer too.
 
-| Platform             | Package                                                                                            |
-| -------------------- | -------------------------------------------------------------------------------------------------- |
-| macOS, Apple silicon | `Linger-<version>-macos-arm64.dmg`                                                                 |
-| Windows x64          | `Linger-<version>-windows-x64-setup.exe`, or `-windows-x64-portable.zip` to run without installing |
-| Linux x64            | `Linger-<version>-linux-x64.tar.gz` (glibc 2.35 or newer)                                          |
+| Platform                                                                | Package                                                                                            |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| [macOS 14.0 or later, Apple silicon](docs/macos.md)                     | `Linger-<version>-macos-arm64.dmg`                                                                 |
+| [Windows x64](https://github.com/simplexai-labs/linger/releases/latest) | `Linger-<version>-windows-x64-setup.exe`, or `-windows-x64-portable.zip` to run without installing |
+| [Linux x64](https://github.com/simplexai-labs/linger/releases/latest)   | `Linger-<version>-linux-x64.tar.gz` (glibc 2.35 or newer)                                          |
 
 There is no package for Intel Macs; use Docker Compose there. Check each
 download against `SHA256SUMS.txt` from the same release.
-
-The macOS package is not yet signed with a certificate Apple recognizes, so
-macOS blocks the first launch. Allow it once:
-
-1. Open Linger from Applications. In the **“Linger” Not Opened** dialog, click
-   **Done**. Do not click **Move to Trash**, the highlighted button.
-
-   <img src="assets/install-macos-not-opened.webp" width="320" alt="The macOS dialog “Linger” Not Opened says Apple could not verify Linger is free of malware, with a highlighted Move to Trash button above a Done button">
-
-2. Open **System Settings › Privacy & Security** and scroll to **Security**.
-   Next to **“Linger” was blocked to protect your Mac**, click **Open Anyway**.
-
-   <img src="assets/install-macos-open-anyway.webp" width="560" alt="System Settings with Privacy &amp; Security selected in the sidebar. Under Security, the message “Linger” was blocked to protect your Mac has an Open Anyway button next to it, and red arrows point to Privacy &amp; Security and to Open Anyway">
-
-3. Click **Open Anyway** again and enter your password or use Touch ID.
-
-If macOS says Linger "is damaged and can't be opened", or **Open Anyway** does
-not appear, run this in Terminal and open Linger again:
-
-```bash
-xattr -dr com.apple.quarantine /Applications/Linger.app
-```
 
 See [Install the desktop app](https://docs.heylinger.com/install/desktop-app)
 for the Windows and Linux steps and for help when setup fails.
@@ -207,6 +190,27 @@ Open <http://localhost:3000> and sign in. The app then shows the commands that
 connect your computer. See
 [Install with Docker Compose](https://docs.heylinger.com/install/docker-compose)
 to serve other computers on your network and to turn on voice.
+
+#### Local models
+
+The Compose containers run only the Linger server; models and agents run on the
+computer you connect. On that macOS (Apple silicon) or Linux computer, run the
+guided installer:
+
+```bash
+./scripts/install/install.sh
+```
+
+It checks your hardware, installs and verifies a local model after your
+approval, and connects `linger-computer` to your Linger server. Run
+`./scripts/install/install.sh --help` for day-2 commands (`--status`, `--up`,
+`--remove`), or see [Bring your own runtime](docs/local-inference.md) for other
+model setups.
+
+If Compose ports are busy, the installer offers to select free ports. It saves
+LiveKit's port mappings and matching RTC startup arguments in
+`.local/compose.ports.yml` and enables the override through `.env`. This requires
+Docker Compose 2.24.4 or later. Rerunning the installer reuses those ports.
 
 ## Learn more
 

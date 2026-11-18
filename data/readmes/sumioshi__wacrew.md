@@ -20,7 +20,7 @@
   <a href="https://nodejs.org"><img alt="Node 20+" src="https://img.shields.io/badge/node-%E2%89%A520-43853d.svg" height="20"></a>
   <a href="https://github.com/WhiskeySockets/Baileys"><img alt="Built with Baileys" src="https://img.shields.io/badge/built%20with-Baileys-25D366.svg" height="20"></a>
   <a href="https://github.com/sponsors/sumioshi"><img alt="Sponsor" src="https://img.shields.io/github/sponsors/sumioshi?label=Sponsor&logo=githubsponsors&color=ea4aaa" height="20"></a>
-  <a href="https://modelcontextprotocol.io"><img alt="MCP server" src="https://img.shields.io/badge/MCP-36%20tools-6366f1.svg" height="20"></a>
+  <a href="https://modelcontextprotocol.io"><img alt="MCP server" src="https://img.shields.io/badge/MCP-37%20tools-6366f1.svg" height="20"></a>
   <a href="https://www.npmjs.com/package/wacrew-mcp"><img alt="npm" src="https://img.shields.io/npm/v/wacrew-mcp.svg?label=npm" height="20"></a>
   <a href="https://glama.ai/mcp/servers/sumioshi/wacrew"><img alt="Glama score" src="https://glama.ai/mcp/servers/sumioshi/wacrew/badges/score.svg" height="20"></a>
 </p>
@@ -83,7 +83,7 @@ More screens in [`docs/screenshots/`](docs/screenshots): org chart, team access,
 
 - **Collector** (`src/`): a Baileys daemon (WhatsApp Web multi-device, no browser). Baileys is isolated behind ports and adapters in `src/whatsapp/`. It writes every message, reaction and media file to `data/<chat>/` and runs the delivery queue that sends replies at a human pace.
 - **Panel** (`web/`): Next.js 16 + React 19. Inbox, conversation view, clients, dashboard, calendar, team, 2D office, settings. Live updates over SSE.
-- **MCP server** (`web/mcp/server.ts`): 36 tools over the same data, for Claude Code, Codex, Antigravity, Gemini CLI, Qwen Code or any MCP client.
+- **MCP server** (`web/mcp/server.ts`): 37 tools over the same data, for Claude Code, Codex, Antigravity, Gemini CLI, Qwen Code or any MCP client.
 - **Transcriber** (`transcriber/`): Whisper large-v3 via MLX, loaded on demand and released when idle. Off a Mac, set `TRANSCRIBE_BACKEND=openrouter`.
 - **Local or cloud.** Run everything on your machine, or deploy the collector and panel 24/7 with the included `Dockerfile` (a `railway.json` is provided). The local MCP can read straight from the cloud panel (`WAC_MCP_REMOTE=1`), downloading media on demand.
 
@@ -149,7 +149,7 @@ claude mcp add wacrew -e WAC_CLOUD_URL=https://work.example.com \
 |---|---|
 | Read | `listar_grupos`, `ler_mensagens`, `buscar`, `listar_contatos`, `caixa_de_entrada`, `novidades`, `resumo_do_dia`, `ler_notas`, `estado_triagem` |
 | Media | `transcrever`, `ver_imagem`, `ver_video`, `assistir_video`, `ler_documento` |
-| Reply | `preparar_resposta`, `revisar_texto`, `responder`, `responder_midia`, `editar_mensagem`, `reagir`, `status_envio`, `cancelar_envio` |
+| Reply | `preparar_resposta`, `revisar_texto`, `responder`, `responder_midia`, `editar_mensagem`, `reagir`, `status_envio`, `cancelar_envio`, `gerar_voz` |
 | Triage and CRM | `marcar_resolvido`, `silenciar_grupo`, `anotar`, `etiquetar`, `alertar_chat`, `definir_modo`, `definir_contrato`, `registrar_feature`, `dashboard`, `editar_perfil` |
 | Calendar | `agenda_ver`, `agenda_marcar`, `agenda_editar`, `agenda_apagar` |
 
@@ -158,6 +158,7 @@ Highlights:
 - `buscar` finds text **inside transcripts** too.
 - `ver_imagem` and `ver_video` hand the media to the model, which is handy for bug screenshots. `assistir_video` has a Gemini model watch a video with its audio, attached or from a link.
 - `responder` returns a **ticket**. The message leaves later at a human pace: seconds in a live chat, minutes to hours in a cold one. The ticket is interrupted if the client writes or you answer by hand. `status_envio` tracks it and `cancelar_envio` cancels it.
+- `gerar_voz` measures how you write from the messages you typed yourself (what the automation sent is left out) and returns a ready voice skill for your agent, split into work and personal.
 - `preparar_resposta` returns your recent style and what the client left open. Pass 2 or 3 `candidatos` to `responder` and the least out-of-character one is sent.
 
 Tool names are in Portuguese because the project started in Brazil. Descriptions are clear enough for any model.

@@ -1,8 +1,21 @@
 # Ralphy
 
-Ralphy gives your coding agent a trend base that refreshes itself and watches your own niche, a local panel with **Content** and **Accounts**, and the ability to post to your own accounts through your agent. A component base (reusable effects, layouts and assets) is coming.
+Ralphy is a plugin for your coding agent (Claude Code, Codex, or any agent that reads skills) that
+makes short vertical videos for your own accounts. You talk to your agent; Ralphy gives it what it
+cannot keep on its own:
 
-It is a plugin: agent skills plus the `ralphy` command-line program. You ask in chat; the agent drives the CLI.
+1. **Trendwatching.** A hosted trend base of videos that beat their creator's usual numbers, plus
+   scouting for your own niche. Every video starts from a reference that already worked.
+2. **The panel.** `ralphy panel` starts a local page with your Content and your Accounts in the
+   background and opens it in your browser.
+3. **Posting.** Your agent posts to your own YouTube, TikTok, Instagram and X accounts from a
+   separate browser profile per account, after you approve each post.
+4. **A component library.** Ready motion components, video blocks and prompts your agent can reuse.
+
+The method: the agent copies a reference video as exactly as it can (structure, timing, cuts on the
+beat, text, sound), then reworks the copy for your account (your style, subject, text and offer),
+compares the result with the copy and the reference, and shows you the cost before any paid
+generation.
 
 ## Install
 
@@ -13,49 +26,71 @@ It is a plugin: agent skills plus the `ralphy` command-line program. You ask in 
 /plugin install ralphy@ralphy
 ```
 
-A SessionStart hook downloads the `ralphy` binary for the plugin's version on first run and puts it on PATH for the session. Nothing happens when a new enough binary is already installed.
-
 **Codex**
 
 ```
 codex plugin marketplace add alecs5am/ralphy
 ```
 
-Codex does not run the hook, so install the binary yourself:
+**Any other agent**
 
 ```
-curl -fsSL https://raw.githubusercontent.com/alecs5am/ralphy/main/install.sh | sh
+git clone https://github.com/alecs5am/ralphy
+export PATH="$PWD/ralphy/bin:$PATH"
+ralphy setup
 ```
 
-**Other agents**
+Point the agent at `ralphy/skills/`.
+
+[uv](https://docs.astral.sh/uv/) installs itself on the first run (set `RALPHY_NO_AUTO_INSTALL=1` to
+install it yourself) and creates the Python environment from `uv.lock`. Bun is needed only when you
+render a video with HyperFrames, and installs itself on the first render if Bun and Node are both
+missing. You also need [ffmpeg](https://ffmpeg.org) (`brew install ffmpeg` on macOS) and Google
+Chrome for posting.
+
+## First steps
 
 ```
-npx skills add alecs5am/ralphy
-curl -fsSL https://raw.githubusercontent.com/alecs5am/ralphy/main/install.sh | sh
+ralphy setup      # creates ~/ralphy and ~/.config/ralphy, checks your machine
+ralphy doctor     # what is installed, which keys are set (names only)
 ```
 
-`install.sh` accepts `RALPHY_VERSION=v0.4.0` (pin a release), `RALPHY_BIN_DIR` (default `~/.local/bin`) and `RALPHY_NO_RC=1` (leave shell rc files alone).
-
-## First run
-
-```
-ralphy setup      # creates your data root; FAL_KEY is required, ElevenLabs and OpenRouter are optional
-ralphy panel      # opens the local panel on 127.0.0.1
-```
-
-`ralphy setup` initializes the data root and prints how to store provider keys (`ralphy provider auth set <provider> --stdin`, typed in your own terminal, never in chat). Without a source checkout the data root is `~/.ralphy`.
+Put your keys in `~/.config/ralphy/keys.env` with your own editor, one `NAME=value` per line:
+`FAL_KEY` (generation through fal), and optionally `ELEVENLABS_API_KEY` and `OPENROUTER_API_KEY`.
+Never paste keys into the chat. To give your agent the fal tools, start it from a shell that has
+`FAL_KEY` set, or connect fal with OAuth (`ralphy-setup` skill has both ways).
 
 Then ask your agent, for example:
 
-- "What is trending in my niche this week? Show me the three scripts worth copying."
-- "Make a 30-second short from the best one, for my UI Effects account, and show me the cost first."
+- "Create an account UI Effects for TikTok and YouTube Shorts, my handle is @ui.effects."
+- "What is working in UI motion this month? Show me five references."
+- "Copy the second one, then remake it for UI Effects with our product. Show me the cost first."
+- "Post it to TikTok tomorrow at 18:00."
 
-## What it stores and sends
+## Where your files live
 
-All data stays in the local data root. Provider calls go to the services whose keys you set; nothing goes to the Ralphy authors. Details in [PRIVACY.md](PRIVACY.md).
+```
+~/ralphy/
+  ui-effects/                     an Account
+    account.md                    persona, style, platforms
+    posts.csv  stats.csv          what was posted, how it did
+    videos/001-type-charge/       one video: the composition, notes, versions, media, render.mp4
+    refs/<slug>/                  a reference with its breakdown
+  inbox/                          videos not assigned to an account yet
+~/.config/ralphy/                 keys.env, browser profiles
+~/.cache/ralphy/                  caches, safe to delete
+```
+
+Everything is plain files you can open, back up or edit. Media and saved versions are never deleted.
+`render.mp4` is the one working render of each video; every render replaces it.
+
+## Privacy
+
+Ralphy has no telemetry and sends nothing to its authors. Requests go only to the services you set
+keys for and to your own accounts. Details: [PRIVACY.md](PRIVACY.md).
 
 ## Developing Ralphy
 
-See [docs/developing-ralphy.md](docs/developing-ralphy.md). Checks: `bun run lint`, `bun test tests/unit`.
+See [AGENTS.md](AGENTS.md). Checks: `uv run ruff check ralphy tools tests` and `uv run pytest`.
 
 License: [Apache-2.0](LICENSE).

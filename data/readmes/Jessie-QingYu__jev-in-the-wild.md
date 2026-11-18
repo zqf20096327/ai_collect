@@ -2,7 +2,7 @@
 
 **Real-world use cases, open-source projects, benchmarks and criticism of [Jev](https://typesafe.ai), TypeSafe AI's System One model — what people actually build with it, and where it actually fails.**
 
-![entries](https://img.shields.io/badge/entries-505-2f81f7) ![open source](https://img.shields.io/badge/open%20source%20projects-281-2f81f7) ![updated](https://img.shields.io/badge/updated-2026--11--16-2f81f7) ![data license](https://img.shields.io/badge/data-CC0--1.0-2f81f7)
+![entries](https://img.shields.io/badge/entries-505-2f81f7) ![open source](https://img.shields.io/badge/open%20source%20projects-281-2f81f7) ![updated](https://img.shields.io/badge/updated-2026--11--17-2f81f7) ![data license](https://img.shields.io/badge/data-CC0--1.0-2f81f7)
 
 Three things make this different from the other Jev lists:
 
@@ -51,7 +51,7 @@ Three things make this different from the other Jev lists:
 | Where the entries come from | GitHub 265, Reddit 143, YouTube 39, Hacker News 25, blogs and web 69 |
 | Languages of the code | Python 89, TypeScript 55, JavaScript 32, Rust 19, Go 12, HTML 12 |
 | Categories | 12 |
-| Last refreshed | 2026-11-16 |
+| Last refreshed | 2026-11-17 |
 
 Signals: ★ GitHub stars · ▲ Reddit or Hacker News points · ▶ views · ♥ likes. They come from four different platforms and **are not comparable with each other** — they are a popularity reading, never a quality one.
 
@@ -60,7 +60,7 @@ Signals: ★ GitHub stars · ▲ Reddit or Hacker News points · ▶ views · �
 Hand-picked, and picked for evidence rather than for stars: an entry is here because it reports what it measured.
 
 1. **[Classified 261 IRS forms at 100% accuracy](https://github.com/kyotofin/tax-doc-classifier)** — The clearest measured win in the whole index: 261 IRS tax pages, 100% strict accuracy, ~$0.001 a page, 34× cheaper and 6× faster than the LLM pipeline it replaced.  
-   <sub>use case · Classification and routing · ★ 520 · kyotofin/tax-doc-classifier · 2026-09-18</sub>
+   <sub>use case · Classification and routing · ★ 521 · kyotofin/tax-doc-classifier · 2026-09-18</sub>
 
 2. **[Trade futures every 30 seconds with Jev](https://reddit.com/r/ObsideAI/comments/1wkpsxs/i_let_jev_ai_trade_every_30_seconds_for_more_than)** — The clearest measured loss, and it belongs here for the same reason: a futures bot ran on Jev decisions for 24 hours and finished 3.15% down over ~731 simulated trades.  
    <sub>use case · Real-time and games · ▲ 25 · r/ObsideAI · 2026-09-19</sub>
@@ -177,7 +177,7 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | --- | --- | --- | --- | --- |
 | [Categorize meal-planning lists faster than an LLM](https://news.ycombinator.com/item?id=49802160) | A builder reports using Jev to categorize preset meal-planning lists in under a second, compared with 30–60 seconds using DeepSeek V4 Flash at similar cost. | use case | ▲ 95 | 2026-09-23 |
 | [Cloudflare search relevance engine using Jev](https://github.com/superagents-lab/jev-search) | Cloudflare Worker app uses Jev for query interpretation, source selection, and relevance ranking, with TypeSafe, Vercel, and Workers AI provider paths. | code | ★ 562 | 2026-09-17 |
-| [Classified 261 IRS forms at 100% accuracy](https://github.com/kyotofin/tax-doc-classifier) | A tax-page classifier reports 100% strict accuracy at about $0.001 per page, 34× cheaper and 6× faster than its previous LLM pipeline. | use case | ★ 520 | 2026-09-18 |
+| [Classified 261 IRS forms at 100% accuracy](https://github.com/kyotofin/tax-doc-classifier) | A tax-page classifier reports 100% strict accuracy at about $0.001 per page, 34× cheaper and 6× faster than its previous LLM pipeline. | use case | ★ 521 | 2026-09-18 |
 | [Clarify queries before retrieval](https://reddit.com/r/Rag/comments/1x38uno/we_started_using_jev_to_clarify_queries_before) | An enterprise knowledge-management team is testing Jev before embedding and searching user questions, to detect unclear intent or multiple questions before retrieval. | use case | ▲ 88 | 2026-10-11 |
 | [Navigates Neo4j graphs with Jev classification](https://github.com/jexp/neo4jev) | A repository using Jev to classify neighbouring graph relationships and navigate a Neo4j graph. | code | ★ 189 | 2026-09-16 |
 | [Triage inbound leads with Jev](https://github.com/deepdave98/jev-playground) | A benchmarked Jev experiment reports 90% routing accuracy at 366 ms and $0.04 per thousand leads for inbound lead triage. | use case | ★ 33 | 2026-09-22 |
@@ -267,12 +267,12 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | What | What it does | Kind | Signal | Date |
 | --- | --- | --- | --- | --- |
 | [Run coding-agent workflows as Jev-guided graphs](https://reddit.com/r/ClaudeCode/comments/1wp9nga/the_agentic_loop_is_outdated) | Jive is an open-source agent harness that represents execution as dependent DAG nodes, combining bash and Jev calls to reduce unnecessary LLM calls during tasks such as repository investigation. | code | ▲ 304 | 2026-09-24 |
-| [Agent memory with Jev reranking](https://github.com/kitfunso/hippo-memory) | A zero-dependency SQLite/MCP memory system that includes an opt-in hosted Jev reranker and benchmarks retrieval. | code | ★ 792 | 2026-03-15 |
-| [Local gateway routing coding-agent tool calls through Jev](https://github.com/vinilana/jev-gateway) | Gateway uses Jev to choose coding-agent tools, supports Codex and Claude Code launchers, and enables routing-on/off comparisons. | code | ★ 325 | 2026-09-18 |
+| [Agent memory with Jev reranking](https://github.com/kitfunso/hippo-memory) | A zero-dependency SQLite/MCP memory system that includes an opt-in hosted Jev reranker and benchmarks retrieval. | code | ★ 793 | 2026-03-15 |
+| [Local gateway routing coding-agent tool calls through Jev](https://github.com/vinilana/jev-gateway) | Gateway uses Jev to choose coding-agent tools, supports Codex and Claude Code launchers, and enables routing-on/off comparisons. | code | ★ 328 | 2026-09-18 |
 | [Hermes plugin compacts context without rewriting messages](https://reddit.com/r/hermesagent/comments/1wkpl3q/integrated_the_jev_context_engine_into_hermes) | A Hermes plugin uses Jev to remove or shrink old tool-call bulk while preserving user and agent messages verbatim. It includes fallbacks, metrics, shadow comparison, and a FastAPI dashboard. | code | ▲ 138 | 2026-09-19 |
 | [Codex router driven by Jev](https://github.com/0xNatoshi/jev-codex-router) | A GitHub router that selects Codex’s model, reasoning depth, and speed mode on every turn using Jev decisions. | code | ★ 275 | 2026-09-17 |
 | [Adaptive Thinking gates extra LLM reasoning](https://reddit.com/r/LocalLLaMA/comments/1xa9ffa/jev_based_adaptive_thinking_for_llms) | The open-source project uses a Jev-like gate to trigger additional reasoning when token-level entropy indicates uncertainty, and to select among parallel thought paths. | code | ▲ 98 | 2026-10-19 |
-| [Control agent memory with Jev](https://github.com/libingzheren/Jev-Mem) | Jev-Mem uses Jev to govern memory admission, graph relationships, retrieval routing, scoring, and stopping while another model generates answers. | code | ★ 270 | 2026-09-20 |
+| [Control agent memory with Jev](https://github.com/libingzheren/Jev-Mem) | Jev-Mem uses Jev to govern memory admission, graph relationships, retrieval routing, scoring, and stopping while another model generates answers. | code | ★ 271 | 2026-09-20 |
 | [Jive terminal agent built from Jev-backed execution graphs](https://reddit.com/r/coolgithubprojects/comments/1wmp07o/jive_rethinking_the_agentic_loop_with_system_one) | Open-source coding agent replacing sequential tool calls with DAGs containing tool and Jev calls. Reports faster benchmark runs than Codex and Claude Code on several tasks. | code | ▲ 51 | 2026-09-21 |
 | [Rank agent skills with Jev and live session context](https://github.com/Dicklesworthstone/skillranker) | A Rust CLI ranks skills for the next agent step using Jev, with Claude Code hooks, structured JSON, abstention, and local feedback. | code | ★ 142 | 2026-09-17 |
 | [Automate Pokémon Red decisions with Jev](https://github.com/christianmat/jev-pokemon/blob/main/README.md) | An open-source harness reports completing Pokémon Red in 37h 40m for about $1.65 by giving Jev legal actions and game facts while code handles emulator mechanics. | use case | ★ 134 | 2026-09-25 |
@@ -345,7 +345,7 @@ Every other Jev list is a highlight reel. These are the entries that report a li
 | --- | --- | --- | --- | --- |
 | [Argues Jev repackages classifier behavior and needs classifier benchmarks](https://reddit.com/r/LocalLLaMA/comments/1woe70t/jev_isnt_new_tech_its_marketing_targets_people) | The author says Jev's constrained probabilistic outputs and zero-shot labels are not novel, and that comparisons should include strong classifiers rather than only LLMs. | opinion | ▲ 768 | 2026-09-23 |
 | [Evaluates Jev as a classification model](https://youtube.com/watch?v=X117w2Rark8&t=114s) | A video presents an evaluation of whether Jev is an effective general-purpose classification model. | opinion | ▶ 322k | 2026-09-18 |
-| [Benchmark Jev against encoder and fine-tuned models](https://github.com/cookiespiggy/agentic-rl) | The Chinese Agentic RL tutorial includes a reproducible comparison of discriminative models, LLM-LoRA, and rules, alongside a chapter discussing Jev/System One’s capability boundaries. | code | ★ 146 | 2026-06-03 |
+| [Benchmark Jev against encoder and fine-tuned models](https://github.com/cookiespiggy/agentic-rl) | The Chinese Agentic RL tutorial includes a reproducible comparison of discriminative models, LLM-LoRA, and rules, alongside a chapter discussing Jev/System One’s capability boundaries. | code | ★ 147 | 2026-06-03 |
 | [Cloudflare’s Clef models challenge Jev’s decision-model niche](https://reddit.com/r/Futurology/comments/1wwgk02/cloudflare_says_its_new_clef_model_means_humans) | The post presents Clef and Clef-flash as direct Jev competitors, highlighting their multiple-choice probabilities, multimodal support and reported latency. | opinion | ▲ 412 | 2026-10-03 |
 | [Jev is better calibrated but costly on short inputs](https://reddit.com/r/LocalLLaMA/comments/1wq2hfc/jev_vs_kev_opensource_jev_alternative_tested_side) | A side-by-side test against Kev 4B found similar accuracy and better Jev calibration and paraphrase detection, but Jev’s fixed input-token overhead can make short requests up to 12× more expensive. | opinion | ▲ 130 | 2026-09-25 |
 | [Add Jev to a model benchmark](https://github.com/iammrduncan/typesafe-ai-benchmark/blob/main/docs/jev.md) | A benchmark repository compares direct Jev calls with Qwen structured output and preserves validated responses, raw requests, and timings. | code | ★ 39 | 2026-09-17 |

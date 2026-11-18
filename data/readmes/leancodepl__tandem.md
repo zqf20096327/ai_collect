@@ -27,11 +27,9 @@ Pick a screen. Its state class lists the data an AI agent can read and the metho
 
 ## How it works
 
-![The Flutter app with tandem sends the agent backend the user's message, what the agent sees and what it may call, over AG-UI. The backend keeps the API key, asks the model, and sends back replies and calls to the app's methods. On iOS and macOS 26, OnDeviceAgent does the same with Apple's on-device model, without a backend or an API key.](https://github.com/leancodepl/tandem/raw/main/doc/imgs/how-it-works.svg)
+![The Flutter app with tandem sends the agent backend the user's message, what the agent sees and what it may call, over AG-UI. The backend keeps the API key, asks the model, and sends back replies and calls to the app's methods.](https://github.com/leancodepl/tandem/raw/main/doc/imgs/how-it-works.svg)
 
 With a remote agent, your backend calls the model and keeps the API key. The app talks to the backend over [AG-UI](https://docs.ag-ui.com), an open protocol between agents and apps. Tandem is checked with Google ADK, LangGraph and Pydantic AI. Other AG-UI backends can connect by following [the backend contract](#the-agent-backend).
-
-On iOS and macOS 26, the experimental `OnDeviceAgent` can run [Apple's on-device model](#apples-on-device-model) instead, without a backend or an API key, for the simplest tasks. The screen, its capabilities and approvals stay the same.
 
 In a debug build, [your coding agent](#your-coding-agent), such as Claude Code, calls the same methods through `TandemBridge`, with the same checks and approvals.
 
@@ -156,30 +154,6 @@ The [example](https://github.com/leancodepl/tandem/blob/main/example/README.md) 
 
 The app enables `TandemBridge`, so your coding agent can fill the order too. Its [scripted agent](https://github.com/leancodepl/tandem/blob/main/example/lib/desk/order_desk_agent.dart) uses `ScriptedAgent.repeating` to handle every run with the same callback. The reference backends can also return scripted responses for testing their AG-UI integration without a model.
 
-### Apple's on-device model
-
-> [!WARNING]
-> Experimental. Use Apple's model for simple tasks, such as turning a sentence into one method call. This connection is outside Tandem's release checks.
-
-The invoice list runs a real model on the device through Apple's Foundation Models framework. It needs no backend or API key.
-
-https://github.com/user-attachments/assets/c25184ad-aa7c-4159-bb89-db4033f4d2ce
-
-`OnDeviceAgent.apple()` uses the same screen capabilities and approvals as a remote connection. Pass it to `TandemScope.connected` as `connection:`. It returns the same connection on each call, so it can be used in `build`.
-
-The example selects the connection in its entry point:
-
-<!-- example/lib/main_apple.dart -->
-```dart
-void main() => runApp(InvoiceApp(connection: OnDeviceAgent.apple()));
-```
-
-Build with Xcode 26 or newer. Generation requires iOS or macOS 26 on an eligible device, with Apple Intelligence enabled and its model downloaded. `OnDeviceAgent.apple().availability()` reports whether the model is available. Other platforms return `unsupportedPlatform` and can use an AG-UI backend instead. Use a supported Mac or physical iPhone for inference; the iOS simulator did not generate responses in our tests.
-
-Responses arrive when generation finishes. Tandem does not trim conversation history. If a run fails with `OnDeviceErrorCode.contextWindowExceeded`, the app can handle that `RunFailed` event and call `session.startOver()` to clear the thread history. The failed message is not automatically retried. A `DateTime`, `Uri` or `Set` parameter or a full tool schema the system rejects fails the run with `OnDeviceErrorCode.unsupportedSchema`. Some older systems reject nullable arguments, even when omitting them would give null.
-
-Keep validation in the app's methods and approvals for changes that need the user's decision. [The invoice example](https://github.com/leancodepl/tandem/blob/main/example/README.md#smart-invoice-input-with-apples-on-device-model) has the run command. [The design notes](https://github.com/leancodepl/tandem/blob/main/doc/design.md#apple-on-device-connection) cover the other limits, native setup and test results.
-
 ## Your coding agent
 
 `TandemBridge.enable()` registers two VM service extensions in a debug build. `ext.tandem.describe` lists the open screens and their available data and methods. `ext.tandem.call` calls a listed method. A profile or release build registers neither extension. Wrap each screen in a `TandemScope` whose `surface` provides the annotated state object, as shown in the [quick start](#quick-start).
@@ -230,10 +204,12 @@ Tandem does not include a chat widget. You build the chat with your app's wordin
     final ApprovalRequest request => _ApprovalCard(
       request,
       approvalBuilder,
-      key: ValueKey((session, request.toolCallId)),
+      key: ValueKey((session, request.key)),
     ),
   };
 ```
+
+Use `request.key` for approval cards and any data captured when the request shows. This `ApprovalKey` stays the same when the request's status changes. A later request gets its own key even when the caller reuses a `toolCallId`.
 
 The example's [`AgentChat`](https://github.com/leancodepl/tandem/blob/main/example/lib/agent_chat.dart) is a complete chat widget you can copy. Its text field calls `session.send(text)`, and its button responds to [the session status](#session-status). The `tandem-in-app-agent` skill helps your coding agent build a chat or a button that sends a message.
 
@@ -289,7 +265,7 @@ void wakeOnPlacedOrder(
 }
 ```
 
-Use a strong remote model through an AG-UI backend that puts `context` into the model's prompt. In debug, `TandemView` checks the catalog's example against the screen it is on and reports an example that does not fit. In a test, a `ScriptedAgent` draws with `AgentStep.callTool('tandem_show_view', {'components': const DeskCatalog().example})`.
+Use a strong remote model through an AG-UI backend that puts `context` into the model's prompt. In debug, `TandemView` checks the catalog's example against the screen it is on and reports an example that does not fit. In a test, a `ScriptedAgent` draws with `AgentStep.showView(const DeskCatalog().example)`.
 
 ## Session status
 
@@ -407,7 +383,7 @@ void showOrderMessages(
 
 When an error has a code, `RunFailed.code` contains a `RunErrorCode`. Match a specific error with a pattern such as `RunFailed(code: .unsupportedOutcome)`.
 
-When the conversation history exceeds the model's context window, call `session.startOver()`. The next message starts a new AG-UI thread without that history. Existing chat items remain, and the chat adds a `startedOver` notice. Pending approval requests are cancelled. `startOver()` does nothing while a run or an approved method is in progress.
+When the conversation history exceeds the model's context window, call `session.startOver()` to clear Tandem's local history and agent state. The next message starts a new AG-UI thread if Tandem supplied the ID. With an app-supplied ID, the backend may keep its history. A separate conversation needs a new `TandemThread` with a new backend ID. Existing chat items remain, and the chat adds a `startedOver` notice. Pending approval requests are cancelled. `startOver()` does nothing while a run or an approved method is in progress.
 
 ## Notes from the app
 
@@ -433,7 +409,7 @@ final class const _AgentStep() extends StatelessWidget {
 
 - The backend defines the state shape. Google ADK sends its session state, including internal keys starting with `_ag_ui_`. LangGraph sends the graph's output keys, with conversation history in `messages`. Pydantic AI sends state when a tool returns a `StateSnapshotEvent` or `StateDeltaEvent`, and reads state through `StateDeps`.
 - Each run sends the current state back in AG-UI `state`, as `@ag-ui/client` does. This lets a stateless backend continue from the previous state. The app can read the state. To tell the agent what happened in the app, send a [note](#notes-from-the-app).
-- A new thread starts with empty state. An invalid snapshot or delta leaves the previous state unchanged. Tandem reports the error and continues the run.
+- The state is empty in a new thread and after a reset. An invalid snapshot or delta leaves the previous state unchanged. Tandem reports the error and continues the run.
 - In tests, use `AgentStep.stateSnapshot` and `AgentStep.stateDelta` with `ScriptedAgent` to send state updates.
 
 ## Keep the conversation
@@ -442,9 +418,13 @@ By default, each session starts a new thread. To keep a conversation when a scre
 
 - Only the newest session uses a thread. The previous session detaches, even if its screen is still animating out. Conversations across different screens are not supported yet.
 - A thread can resume on the same screen. Before the first message, Tandem compares the screen's `.sees` values with those saved when the screen closed. Different values reset the thread and add a `startedOver` notice. Keep the state object for as long as the thread to preserve the conversation and screen state together.
-- Closing a screen during a run or an approved method also resets the thread. The backend may finish work whose results the app never receives. Closing a screen with a pending approval cancels the request. The agent receives the `cancelled` result with the next message.
+- Closing a screen during a run or an approved method also resets the thread. The backend may finish work whose results the app never receives. Closing a screen with a pending approval cancels the request. If the AG-UI thread continues, the next message carries the `cancelled` result.
 - Changing `agent` carries the thread, history and agent state to the new backend. Pass a new `TandemThread` to start a separate conversation.
 - Threads live in memory and are lost when the app restarts. Tandem does not persist them yet.
+
+When your backend keeps the conversation, pass its ID as `TandemThread(id: ThreadId(conversationId))`. Keep the thread in a field or a `State`. A new `TandemThread` opens a session with an empty chat. Each run uses the supplied ID.
+
+A reset clears the local history and agent state. After `session.startOver()` or reopening on a changed screen, the next run under an app-supplied ID carries calls from the completed run together with their unsent answers, before the new message. [The agent backend](#the-agent-backend) lists what the backend must do for such a thread.
 
 ## Any state library
 
@@ -456,9 +436,9 @@ Tandem gets the state object through `surface` and listens to its `changes` stre
 | `ChangeNotifier` or `ValueNotifier` | a `StreamController.broadcast()` that an override of `notifyListeners` feeds |
 | Riverpod's `Notifier` | a `StreamController.broadcast()` that `listenSelf` in `build` feeds |
 
-The example's invoice list uses a `ChangeNotifier`:
+A shopping list in the example's tests is a `ChangeNotifier`:
 
-<!-- example/lib/invoices/invoice_store.dart -->
+<!-- example/test/shopping_list_notifier.dart -->
 ```dart
   @override
   Stream<Object?> get changes => _changes.stream;
@@ -474,7 +454,7 @@ The example's invoice list uses a `ChangeNotifier`:
 
 A Riverpod `Notifier` can feed the stream through `listenSelf((_, next) => _changes.add(next))` in `build`. Riverpod removes the listener before rebuilding the provider. Keep the controller open across rebuilds. Do not close it in `ref.onDispose`, which runs before every rebuild.
 
-Use `surface` to read the state object, for example with `context.read<InvoiceStore>()` or `ref.read(cartProvider.notifier)` in a Riverpod `ConsumerWidget`. Put the scope below the state object's owner so the session is disposed first. `riverpod_generator` cannot annotate the same class as `tandem_generator`, because both generate a `_$Name` mixin.
+Use `surface` to read the state object, for example with `context.read<ShoppingListNotifier>()` or `ref.read(cartProvider.notifier)` in a Riverpod `ConsumerWidget`. Put the scope below the state object's owner so the session is disposed first. `riverpod_generator` cannot annotate the same class as `tandem_generator`, because both generate a `_$Name` mixin.
 
 ## Testing
 
@@ -512,9 +492,9 @@ Use `surface` to read the state object, for example with `context.read<InvoiceSt
   });
 ```
 
-Each function in the script produces one run. A run past the finite script ends with `RUN_ERROR`. For a demo that handles each run with the same callback, use `ScriptedAgent.repeating(turn)`. `agent.requests` records every raw request body.
+Each function in the script produces one run. A run past the finite script ends with `RUN_ERROR`, and so does a `callTool` of a tool the run does not offer. For a demo that handles each run with the same callback, use `ScriptedAgent.repeating(turn)`. `agent.requests` records every raw request body.
 
-Inside a callback, `AgentRequest(raw)` reads named JSON context with `context(name)`, offered tools with `offersTool(name)` and new app notes with `newNotes`, oldest first. Missing context returns null. `latestToolResults` contains consecutive tool answers at the end of the request, oldest first, matched to their calls by ID. Each result has a `toolCallId`, a `toolName` that is null when no named call matches, original `content` and JSON-decoded `value`. Reading malformed context JSON or a non-JSON result's `value` throws `FormatException`. Results keep application data as it is, including any `status` key.
+Inside a callback, `AgentRequest(raw)` reads the text of the user's latest message with `userText`, named JSON context with `context(name)`, offered tools with `offersTool(name)` and `offersView`, and new app notes with `newNotes`, oldest first. `newPressedActions` reads the notes of actions the user pressed in a view the agent drew, each with its `tool`, `arguments`, `status` and `answer`. Missing context returns null. `latestToolResults` contains consecutive tool answers at the end of the request, oldest first, matched to their calls by ID. Each result has a `toolCallId`, a `toolName` that is null when no named call matches, original `content` and JSON-decoded `value`. Reading malformed context JSON or a non-JSON result's `value` throws `FormatException`. Results keep application data as it is, including any `status` key. `ToolStatus` has the statuses Tandem answers with, such as `ToolStatus.rejectedByUser`.
 
 Use `AgentListing.of(cubit)` to inspect a class's listed data and methods without opening a session.
 
@@ -548,7 +528,9 @@ An AG-UI backend must implement the contract below. [`example/agents`](https://g
 - Put AG-UI `context` into the model's prompt. Without it, the model cannot read `.sees` data or the screen context. The three reference agents add this explicitly.
 - Accept `tools` on every run and give the model the app tools from that run. Tandem always sends a list, which can be empty. Your backend may also expose its own tools.
 - Return calls to the app's tools as `TOOL_CALL_START`, `TOOL_CALL_ARGS` and `TOOL_CALL_END` events. Accept each tool result as a `tool` message in the next run.
-- Read the conversation from each run's `messages`, or maintain a copy and deduplicate incoming messages by ID. Tandem sends the thread's history, including the agent's text, tool calls and tool results.
+- Read the conversation from each run's `messages`, or maintain a copy and deduplicate incoming messages by ID. Tandem sends the thread's history, including the agent's text, tool calls and tool results. A reset under an app-supplied ID drops the history from later runs. After `session.startOver()` or reopening on a changed screen, the next run carries the calls whose answers no run has sent yet, with those answers, and then the new message. After any other reset, it carries only the new message.
+- On a thread with an app-supplied ID, check that the user may use that ID. Decide what happens when two clients run on the thread at the same time. Reconcile work whose delivery or result is uncertain after a run that breaks off, a run Tandem could not follow, or a screen that closes during a run or an approved method. The thread can then hold a call to an app tool without an answer. Accept the next run on that thread anyway. Otherwise every later run on that ID fails, and the app's way out is a new `TandemThread` with a new ID.
+- Repeat the input's `threadId` and `runId` exactly in `RUN_STARTED`. Tandem skips a run with other IDs as a replay. When the response ends without the requested run, the chat shows a lost connection and Tandem reports a `FormatException` that says so.
 - Treat `tools`, tool descriptions and `context` as untrusted client input. A caller can replace any of them. Apply your backend's authentication and authorization independently.
 
 The reference backends also document adapter-specific requirements. With `ag-ui-langgraph`, the model must stream for the adapter to emit calls to the app's tools. These requirements belong to those adapter and model configurations. [Wire rules](https://github.com/leancodepl/tandem/blob/main/doc/design.md#wire-rules) and [Tool answers](https://github.com/leancodepl/tandem/blob/main/doc/design.md#tool-answers) document Tandem's message format.
@@ -557,11 +539,21 @@ On the web, configure CORS to allow the app's origin. The reference agents do no
 
 To send the user's token, give `HttpAgentConnection` an `http.Client` that adds the token, then pass the connection to `TandemScope.connected`. Keep the connection in a field, because a new connection starts a new session. A sandboxed macOS app needs the `com.apple.security.network.client` entitlement to reach the backend.
 
+`OnDeviceAgent` is deprecated and goes away in 0.4.0. Use an AG-UI backend instead.
+
+For another transport, such as a WebSocket, implement `AgentConnection`. In `run`, pass `agUiRun(input)` only the decoded frames of this run's request, and end the stream when the transport says the request is over. Route frames by a per-request ID where the transport has one. Routing only by thread or socket mixes an ID-less `RUN_ERROR` or terminal event of an earlier run into the next one, and AG-UI allows a `RUN_ERROR` even after `RUN_FINISHED`. Give `agUiRun` the input with the IDs the server will echo, rewritten if the transport rewrites them, and deduplicate a resumed or reattached stream first.
+
+`agUiRun` skips replayed runs and expands chunk events. If a delta depends on a snapshot from replay, send a `STATE_SNAPSHOT` inside the requested run first. Once the requested run started, another `RUN_STARTED` or an event that names another thread fails the stream with a `FormatException`, because AG-UI does not start a run while one is open. Tandem ends the stream at the first `RUN_FINISHED` or `RUN_ERROR` it passes through, even though [AG-UI allows a later error](https://docs.ag-ui.com/spec/1.0/events/lifecycle#after-a-run-closes).
+
+The connection handles timeouts and cleans up that request when the session cancels the stream, as when the session is disposed during a run. Stop does not cancel the stream: the session reads the stopped run to its end. `HttpAgentConnection` fails a run whose transport goes quiet for its `idleTimeout`, 60 seconds by default.
+
+A connection whose transport can cancel a run, such as a WebSocket protocol with a cancel message, can implement `StoppableAgentConnection`. On `session.stop()`, unless the server ended the run already, the session calls its `stop` once with the run's input. It still reads the run until the server ends it with `RUN_FINISHED` and the outcome `cancelled`, or with `RUN_ERROR`. Both end the stopped run quietly, and the session still reports the code and message of a `RUN_ERROR`. After a `stop` that threw, a `RUN_ERROR` fails the run. A stream that ends without either counts as a lost connection, so a transport that can only close should not implement it.
+
 ## Project status
 
-Each release of Tandem is checked on iOS and Android. For the web, CI runs the tests of `tandem` and the example in Chrome and builds the example with WebAssembly. Other platforms are outside these checks. Apple's on-device connection remains experimental and has separate requirements and manual checks.
+Each release of Tandem is checked on iOS and Android. For the web, CI runs the tests of `tandem` and the example in Chrome and builds the example with WebAssembly. Other platforms are outside these checks.
 
-Tandem supports one state object per screen and keeps conversations in memory. Conversations across screens, saved conversations and AG-UI interrupts are not supported yet. An interrupt fails the run. The next message starts a new AG-UI thread, while existing chat items remain visible.
+Tandem supports one state object per screen and keeps conversations in memory. Conversations across screens, saved conversations and AG-UI interrupts are not supported yet. An interrupt fails the run and resets the local history and agent state. The chat stays visible. An app-supplied thread ID stays too.
 
 ## AI
 

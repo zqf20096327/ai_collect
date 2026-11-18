@@ -1323,6 +1323,47 @@ Let's get started: [How does a voice AI agent answer a phone call?](https://outc
 
 ---
 
+## How do SIP and RTP carry a phone call to a voice agent?
+
+In this blog, we will learn about how SIP and RTP carry a phone call to a voice agent. We will also see how a normal phone call reaches the internet, how SIP rings the voice agent and agrees on the audio format, how RTP packs the voice into small packets, what happens inside the voice agent when those packets arrive, how the agent speaks back, and how the call finally ends.
+
+We will cover the following:
+
+- The journey of a phone call to a voice agent
+- What is SIP?
+- What does a SIP call setup look like?
+- What is SDP?
+- What is RTP?
+- What is inside an RTP packet?
+- What the voice agent does with the RTP packets
+- How the voice agent speaks back
+- How the call ends
+- SIP vs RTP
+
+Let's get started: [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
+
+---
+
+## Why does phone audio make speech recognition worse?
+
+In this blog, we will learn about why phone audio makes speech recognition worse. We will also see how our voice travels over a phone call, why the phone cuts off the high sounds of our voice, how compression and lost packets damage the audio further, how noise and echo add to the problem, why a model trained on clean audio struggles with phone audio, and what we can do to make speech recognition work better on phone calls.
+
+We will cover the following:
+
+- What is Speech Recognition?
+- How Does Our Voice Travel Over a Phone Call?
+- Reason 1: The Phone Cuts Off the High Sounds
+- Reason 2: Compression Throws Away More Detail
+- Reason 3: Lost Packets Leave Holes in the Audio
+- Reason 4: Noise, Echo, and Small Microphones
+- Reason 5: The Model Learned From Different Audio
+- How All the Problems Stack Up
+- How to Make Speech Recognition Work Better on Phone Audio
+
+Let's get started: [Why does phone audio make speech recognition worse?](https://outcomeschool.com/blog/phone-audio-and-speech-recognition)
+
+---
+
 ## More blogs and videos coming soon!
 
 ### License

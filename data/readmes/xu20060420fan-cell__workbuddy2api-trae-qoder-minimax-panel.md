@@ -5,12 +5,12 @@
 <h1 align="center">WorkBuddy2API Panel</h1>
 
 <p align="center">
-  <b>一个面板，统管 WorkBuddy / CodeBuddy / Trae / Qoder / MiniMax / 豆包 / 华为云 CodeArts 全部账号 → 统一 OpenAI 兼容网关</b><br>
-  Web 面板 · OAuth 浏览器登录 · 账号池轮转 · 熔断与冷却 · 会话粘性 · 定时签到 / 活跃 / 旅行 / 保活 · <b>成长任务一键完成（17/18）</b> · 流式 / 非流式
+  <b>一个面板，统管 WorkBuddy / CodeBuddy / Trae / Qoder / MiniMax / 豆包 / 华为云 CodeArts / Google Gemini 全部账号 → 统一 OpenAI 兼容网关</b><br>
+  Web 面板 · OAuth 浏览器登录 · 账号池轮转 · 熔断与冷却 · 会话粘性 · 定时签到 / 活跃 / 旅行 / 保活 · <b>成长任务一键完成（国服 17/18）</b> · 流式 / 非流式
 </p>
 
 <p align="center">
-  <b>Multi-platform AI account hub: WorkBuddy · CodeBuddy · Trae · Qoder · MiniMax · Doubao · Huawei Cloud CodeArts — one OpenAI-compatible gateway + web panel.</b><br>
+  <b>Multi-platform AI account hub: WorkBuddy · CodeBuddy · Trae · Qoder · MiniMax · Doubao · Huawei Cloud CodeArts · Google Gemini — one OpenAI-compatible gateway + web panel.</b><br>
   Account pool rotation · circuit breaker · session stickiness · daily check-in / keep-alive for every platform · one-click growth tasks.
 </p>
 
@@ -21,9 +21,10 @@
 >
 > | 账号 | 自己的 grantId | 领取时刻 | 附加包余额 |
 > |---|---|---|---|
-> | `2108643821@qq.com` | `01a1a477-96d3-…` | 2026-11-04 10:51:03 | total 1700 / used 0 / remaining 1700 |
-> | `xu20060420fan@gmail.com` | `01a1a463-e178-…` | 2026-11-04 10:29:31 | total 900 / used 558 / remaining 342 |
+> | 账号 45da34 | `01a1a477-96d3-…` | 2026-11-04 10:51:03 | total 1700 / used 0 / remaining 1700 |
+> | 账号 569875 | `01a1a463-e178-…` | 2026-11-04 10:29:31 | total 900 / used 558 / remaining 342 |
 >
+> （本文所有账号一律用**不可逆短码**表示，不出现真实邮箱。）
 > 两个号看到的是**同一条** campaign，但 **grantId 不同、领取时刻不同、额度余额各自独立**
 > —— **每个账号各领各的一份**。两号的设备模式还不同（一个 `real`、一个 `derived`），
 > 照样各领各的 100。
@@ -44,16 +45,17 @@
 > | 平台 | 接入形态 | 面板能力 |
 > |---|---|---|
 > | **CodeBuddy / WorkBuddy 国内版** | 主号池（`auths/*.json`） | 聊天网关、签到、余额、成长任务一键完成、模型与档位 |
-> | **WorkBuddy 国际版** | 主号池（`realm=global`） | 同上（国际版无签到 / 成长体系） |
+> | **WorkBuddy 国际版** | 主号池（`realm=global`） | 同上（国际版无签到；成长路径为 5 项 checklist，需在 WorkBuddy 客户端完成，见 [🌍 国际版成长路径](#-国际版成长路径需在客户端完成)） |
 > | **Trae** | IDE 账号池 | 账号管理、切号、签到、积分、客户端提取令牌 |
 > | **Qoder** | IDE 账号池 | 账号管理、切号、签到（**每日额度按账号各发一份**，服务端判同人才只发一份）、积分、凭证自动续期 |
 > | **MiniMax Code** | 账号池 | **浏览器登录**（OAuth 设备码 + S256 PKCE，无需本机客户端）、签到、积分、**凭证自动续期**（1h token / 轮换 RT 双向同步客户端）、模型通道（`minimax:` 前缀） |
 > | **豆包（Doubao）** | Cookie 签到池 | 签到（CDP 无头浏览器通道）、多账号、客户端 Cookie 一键提取 / 手动粘贴 |
 > | **华为云 CodeArts（码道）** | Cookie 签到池 | 浏览器登录抓取会话、每日领取签到、**积分总览**（每天可领 / 剩余 / 将过期）、多账号各自独立会话 |
+> | **Google Gemini** | 官方 API Key 通道 | 密钥文件分组管理、模型列表动态拉取（64 个模型）、OpenAI 兼容直调（`gemini:` 前缀），**无签到**（官方计费） |
 >
 > - 面板左侧「**IDE 账号池**」视图统管 Qoder / Trae IDE / WorkBuddy 三套客户端账号（添加、切号、移除、积分、签到）。
 > - 面板「**签到池**」视图的「**一键签到**」一个按钮覆盖 **主号池 + WorkBuddy + Qoder + MiniMax + Trae + 豆包** 全部平台，并按平台分别统计成功 / 已签 / 失败。
-> - 模型按 **realm 前缀**分流：`cn:`（国服 CodeBuddy）、`global:`（国际版）、`trae:`（Trae 通道）、`minimax:`（MiniMax 通道）—— 同一套 `/v1/chat/completions` 与 `/v1/responses` 端点即可调用全部平台的模型。
+> - 模型按 **realm 前缀**分流：`cn:`（国服 CodeBuddy）、`global:`（国际版）、`trae:`（Trae 通道）、`minimax:`（MiniMax 通道）、`gemini:`（Google Gemini 官方 API Key 通道）—— 同一套 `/v1/chat/completions` 与 `/v1/responses` 端点即可调用全部平台的模型。
 > - 账号凭证（`accessToken` / `refreshToken`）只落在本机 `auths/`、`data/`，**不入库**。
 
 > ### 🔎 这个仓库能做什么（关键词索引）
@@ -144,10 +146,15 @@ WorkBuddy2API 是一个自托管的 **OpenAI 兼容反向代理网关**，将腾
 | 📊 **可观测** | 每请求一行表格日志（TTFB / token 速率 / uid）；`/healthz` 带 `service` 身份标识可接负载均衡 / 宿主探活 |
 | 💾 **状态持久化** | 池状态本地原子落盘 + Upstash Redis 异步镜像（可选），重启择新恢复 |
 | 🖥️ **Web 管理面板** | 内嵌单页面板（明暗主题，九个视图）：账号池运维 / 签到池 / 用量与积分分析 / 任务中心 / IDE 账号池 / 模型档位条件查询 / 在线改配置（热生效）/ 运行日志（含**调用来源 IP·UA** 与时间区间），见 [Web 管理面板](#-web-管理面板) |
+| 🤖 **Gemini 官方 API Key 通道** | 挂载 Google 官方 API Key，用 `gemini:` 模型前缀直接调用（上游本身 OpenAI 兼容）；密钥分组管理、多 key 轮换、支持出站代理，见 [Google Gemini 官方 API Key 通道](#-google-gemini-官方-api-key-通道) |
 
-## 🎯 成长任务一键完成（17/18）
+## 🎯 成长任务一键完成（国服 18 项可自动）
 
 官方「成长计划」的 18 个成长任务中，**17 个可在面板上一键纯 API 完成**——无需安装官方客户端、无需人工交互，点一下「一键完成」即自动推进进度、等待异步计分落定并**自动领奖**。剩余任务展示操作指引。
+
+> 2026-11-17 起，后续版本追加的 `skill_share`（分享一个技能给好友）也已实测可纯 API 完成 ⇒ **当前 18 个任务可自动完成**，仅 2 个需人工（见下表）。
+
+> ⚠️ **口径说明：本节全部为国服（`www.codebuddy.cn` / `www.workbuddy.cn`）实测结论。国际版（`www.workbuddy.ai`）的成长路径是另一套 5 项 checklist，纯 API 点不亮，详见 [🌍 国际版成长路径](#-国际版成长路径需在客户端完成)。**
 
 ### 任务覆盖与奖励
 
@@ -169,15 +176,17 @@ WorkBuddy2API 是一个自托管的 **OpenAI 兼容反向代理网关**，将腾
 | `Hp_Appearance` | +100c +5e | 主题设置 + 皮肤生效事件 |
 | `Expert_lighthouse` | +100c +5e | 轻量云专家召唤+使用链（真实对话 requestId，**可免费领一个月轻量服务器**） |
 | `skill_1` | +100c +5e | 真实对话 + 技能加载事件（skill_info） |
+| `skill_share` | +50c +5e | 市场真实技能 → 服务端创建分享链接 → `skill_share_channel_action`（微信分享成功口径，2026-11-17 两账号实测点亮） |
 | `black_cat` | 随官方成长计划（夜猫子按夜间窗口计数，奖励由上游下发） | 夜猫子：23:00–08:00 窗口内 glm-5.2 真实对话 + chat 事件上报；**窗口外不计分**，面板会提示稍后再试，由网关 `blackcat_hours`（默认 23 点）排程自动补足 |
 
-**表内 16 项合计 ≈ +1950 credits +78 能量**（`black_cat` 的奖励随官方成长计划按夜间窗口下发，未计入该合计）。其中仅数个任务涉及真实对话（`Model_chat_GLM5.2` 一条、`expert_5`/`Expert_team_use_3`/`skill_1` 各数条 fast-model 短对话），其余全部为行为事件上报，零对话消耗。
+**表内 17 项合计 ≈ +2000 credits +83 能量**（`black_cat` 的奖励随官方成长计划按夜间窗口下发，未计入该合计）。其中仅数个任务涉及真实对话（`Model_chat_GLM5.2` 一条、`expert_5`/`Expert_team_use_3`/`skill_1` 各数条 fast-model 短对话），其余全部为行为事件上报，零对话消耗。
 
-### 不可自动的 1 个
+### 不可自动的 2 个
 
 | 任务 | 原因 |
 |---|---|
 | `Expert_Philanthropy` | 需真实捐款（服务端领奖时校验捐赠回执，已实测无法绕过） |
+| `wb_wechat_oa_subscribe_task` | 需在微信里关注「腾讯 WorkBuddy」官方公众号并**满 24 小时**（服务端按真实关注状态判定，无对应行为事件可上报） |
 
 ### 实现原理（简述）
 
@@ -185,11 +194,56 @@ WorkBuddy2API 是一个自托管的 **OpenAI 兼容反向代理网关**，将腾
 
 > ⚠️ 行为事件按天幂等：重复点「一键完成」不会重复扣资源，已达标的任务自动跳过。
 
+#### `skill_share` 的判据链（2026-11-17 实测）
+
+`skill_share`（「分享一个技能给好友」）此前被归到「需人工」，实测**可以纯 API 完成**，四步缺一不可：
+
+1. **accept 报名** —— 不 accept 时上游 `target=0`，行为事件不计分；accept 后 `target` 变 1；
+2. **取真实市场技能** —— `POST /portal/operation-platform/market/skill/list`（GET 会 404，必须 POST），编造的 `skillId` 不计数；
+3. **服务端创建分享链接** —— `POST /api/v2/open-platform/asset-shares/c2c/channels`，请求体里的 `asset_ref` 必须是 **JSON 字符串**且键名为 `asset_id`（写成对象或 `assetId` 会被上游拒为「请求参数不合法」），成功后拿到 `channel_id`；
+4. **上报判据事件** —— `skill_share_channel_action`，且只认 **`action=wechat` + `panelAction=success`**（`panelAction=click` 实测不计分），`id` 填上一步的 `channel_id`。
+
+实测：两个国服账号 `skill_share` 均从 `0/1` → `1/1 completed`，并自动领奖 **+50 分 +5 能**。
+
+### 🌍 国际版成长路径（需在客户端完成）
+
+国际版（`www.workbuddy.ai`，账号 realm = `global`）不走上面这套 18 项成长计划，而是一份**独立的 5 项 checklist**，只读端点只有两个：
+
+| 端点 | 用途 |
+|---|---|
+| `GET /v2/activity/growth/tasks` | 拉 5 项 checklist 状态 |
+| `GET /v2/activity/growth/profile` | 回读 `completed / total / level / first_visit` |
+
+| checklist 任务码 | 面板分类 | 说明 |
+|---|---|---|
+| `first_chat` | `client` | 发一次真实对话（`/v2/chat/completions` 或 `/console/chat/completions`），并按客户端口径上报 `chat_response_complete` |
+| `skill_installed` | `client` | 安装一个技能（国际版**无对外技能列表接口**，面板取不到真实 `skillId`，只按最小口径上报并如实说明） |
+| `expert_summoned` | `client` | 召唤一次专家（真实专家列表 `POST /portal/operation-platform/market/expert/list` 可用，面板会取真实专家 id 上报） |
+| `template_used` | `client` | 用一次模板（国际版**无对外模板列表接口**，面板取不到真实 `template_id`，只按最小口径上报并如实说明） |
+| `wechat_linked` | `manual` | 链接微信，纯人工 |
+
+**面板行为（v1.15.10-panel 起）**：
+
+- 扫描到国际版这 4 项时**不再标成「可自动完成」**，而是标为 **`client`（需在 WorkBuddy 客户端完成）**，并在待办行内直接给出逐项客户端操作指引；
+- 但它们**仍然进入执行队列**——面板会按 WorkBuddy 客户端的真实事件口径（任务码即 `eventCode` + 真实业务字段 + 真实设备指纹 + `reportDelay`/`timestamp`）把事件上报一遍，再回读 `profile`；**上游一旦放开计分即自动点亮**；
+- 回读没点亮的一律记为 **`unverified`（未核销）**，绝不谎报「已完成」。执行结果文案会明说「上游返回成功但成长路径仍不计分，请到客户端完成该操作，完成后回面板刷新即可自动核销」。
+
+> ⚠️ **实测更正（推翻 2026-10-15 的旧结论）**：旧结论写的是「国际版成长任务已支持一键完成」。这个结论是错的——当时面板上报的 `DesktopChatSequence` 事件序列**缺 `reportDelay` 与 `timestamp`**，而国际版 `/v2/report` 端点对缺这两个字段的事件直接 **400 丢弃**：
+>
+> ```json
+> {"code":10001,"msg":"10001:event missing both reportDelay and timestamp fields"}
+> ```
+>
+> 也就是说旧版所谓的「上报成功」其实是**从未被服务端接收**（国服端点宽容，所以旧版只在国服实测过就下了结论）。补齐 `reportDelay`/`timestamp` 后上游返回 `HTTP 200 {"code":0,"msg":"OK"}`，但 5 项 checklist **仍不计分**——穷尽实测（仅事件链 / 真实对话 + 事件链 / 两域真实对话 / 裸 eventCode / 带真实专家 id / `chat_response_complete` 双通道）均返回 200 仍不亮，判定为**服务端对国际版 checklist 另有计分判据**，纯 API 点不亮。
+>
+> 结论：**国际版 checklist 必须由用户在 WorkBuddy AI 国际版客户端（`C:\Program Files\WorkBuddy-AI\WorkBuddyAI.exe`）真实操作一次**（发一次对话 / 装一个技能 / 召唤一次专家 / 用一个模板 / 链接微信），完成后回面板刷新即自动核销。
+
 ### 🧭 任务中心（面板新视图）
 
 「任务中心」视图把散落的任务能力收拢成一处：
 
 - **全账号任务扫描**：一键拉取每个账号的成长任务（未完成且可自动化的 19 项，含小程序口径的「校园日」与「小程序首对话」），列表一目了然
+- **三类待办分区**：`auto`（可纯 API 完成）、`client`（**需在 WorkBuddy 客户端完成**，国际版 checklist 走这一类，行内直接给操作指引）、`manual`（纯人工，如关注公众号 / 链接微信）；`client` 与 `auto` 都会进执行队列，未核销的一律显示「未核销」而非「已完成」
 - **执行队列**：把待办按账号排队执行——账号内串行（与单任务/一键完成共用互斥锁），账号间可选并发（1-3）；执行进度实时更新到每个条目
 - **开学季券码查询**：任务中心提供开学季券码查询入口（`GET /panel/api/school/vouchers`）。⚠️ 开学季的**自动化**部分（分享 / 抽奖 / 5 任务状态矩阵）**尚未实现**——`share-complete`、`wheel/draw` 等端点在当前代码中不存在，活动（期至 2026-09-24）也已结束
 - **日志分频道**：运行日志按「任务 / 对话 / 系统」三个频道筛选——对话流量再大，任务结果也不会被冲掉；日志条目带频道徽标与时间
@@ -237,6 +291,7 @@ WorkBuddy2API 是一个自托管的 **OpenAI 兼容反向代理网关**，将腾
 | **浏览器内 OAuth 添加账号** | 面板「添加账号」按钮完成设备授权 → 凭证落盘 → **热加载进池（免重启）**，替代命令行 `login.sh` 流程 |
 | **MiniMax 浏览器登录** | OAuth 2.0 设备码（RFC 8628）+ **强制 S256 PKCE**：面板出验证码与授权链接，浏览器登录完自动换 token 入号池并签到；国际版端点与网关基址整体切到 `account.minimax.io` / `agent.minimax.io`（号池按账号记 `region`，续期与签到各走各的域） |
 | **豆包（Doubao）签到池** | 客户端 Cookie 提取 / 手动粘贴两通道，凭据走 CDP 无头浏览器通道打豆包签到接口；实测可真实扫到（返回当天已签与上游签到规则原文） |
+| **Google Gemini 官方 API Key 通道** | `internal/gemini`，模型名带 `gemini:` 前缀。上游 `generativelanguage.googleapis.com/v1beta/openai` **本身就是 OpenAI 兼容**，故只做「改写 model + 带 key 转发 + 流式透传」，不做协议翻译。密钥文件 `data/gemini_api_keys.json` 分组管理（每组一个模型前缀，便于「订阅 / 按量」隔离），组内多 key 轮换 |
 | **在线配置编辑（热生效）** | 面板直接改 `config.json`：API 密钥 / `soft_rate` / 脱敏开关 / 池参数 / 任务排程**立即生效**；装配期字段（listen 等）保存后提示需重启。写入采用深合并 + 原子替换，保留未知键 |
 | **积分任务体系** | 任务列表 / 接受 / 领取接口 + 面板弹窗；「一键完成」覆盖 **17 个任务**（对话 / 领养 / 桌面行为链 / 模板 / 灵感案例 / 画布 / 专家召唤 / 技能尝鲜 / 主题 / 资料库 / 夜猫子等），推进进度、等待异步计分落定后**自动领奖**，纯 API 零客户端依赖 |
 | **首启自动生成配置** | 目录下无 `config.json` 时自动生成推荐配置（含 `crypto/rand` 随机 `api_key`），双击即开 |
@@ -285,6 +340,8 @@ flowchart LR
     P -. "状态镜像" .-> REDIS[("Upstash Redis\n可选")]
     U -->|"chat/completions (SSE)"| CB["CodeBuddy\ncopilot.tencent.com"]
     U -->|"billing / auth / growth"| CB
+    H --> GM["Gemini 通道\ninternal/gemini"]
+    GM -->|"chat/completions (OpenAI 兼容)"| GE["Google Gemini\ngenerativelanguage\n.googleapis.com"]
 ```
 
 上游请求在出站前经历统一的改写管线（`internal/upstream/payload.go`）：强制 `stream:true`、`developer` 角色归一、tool_choice 归一、`image_url` 字符串兼容为 OpenAI 对象形态、DeepSeek 思维链注入、`reasoning_effort` 档位降级、`reasoning_content` 回填、指纹脱敏。
@@ -457,6 +514,77 @@ curl -s http://localhost:7863/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{"model":"deepseek-v4-flash","messages":[{"role":"user","content":"hi"}],"stream":false}'
 ```
+
+## 🤖 Google Gemini 官方 API Key 通道
+
+除账号池外，网关还可直接挂 **Google Gemini 官方 API Key**——把它当成又一个平台，用同一套 OpenAI 兼容端点调用。
+
+### 配置
+
+密钥文件放在 `state_file` 同目录，默认 `data/gemini_api_keys.json`（**不入库**）：
+
+```json
+{
+  "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
+  "enabled": true,
+  "proxy_url": "http://127.0.0.1:10808",
+  "groups": [
+    {
+      "id": "gemini",
+      "name": "Gemini 官方",
+      "keys": ["AQ.Ab8RN6…"]
+    },
+    {
+      "id": "gemx",
+      "name": "Gemini 备用",
+      "keys": ["AQ.Ab8RN6…"]
+    }
+  ]
+}
+```
+
+| 字段 | 说明 |
+|---|---|
+| `base_url` | 上游地址；留空 = 用内置默认 `https://generativelanguage.googleapis.com/v1beta/openai` |
+| `enabled` | `false` = 通道整体关闭（`/v1/models` 不出现 `gemini:` 条目） |
+| `proxy_url` | **出站代理**；留空则按「环境变量 `HTTPS_PROXY`/`HTTP_PROXY` → Windows 系统代理注册表」依次回退 |
+| `groups[].id` | **模型前缀**：`id` 为 `gemini` ⇒ 模型名 `gemini:gemini-3-flash-preview`；多组可把「订阅」与「按量」彻底隔离，互不抢额度 |
+| `groups[].keys` | 该组的 API Key 列表，组内**轮换**；单 key 失效/欠费/限流（401 / 402 / 429）自动换下一把 |
+
+> 兼容老格式 `{"keys":[…]}`：会被当作 `id=gemini` 的单个分组。
+
+### 出站代理（重要）
+
+Gemini 在部分网络环境下**不可直连**。本项目实测：直连 `generativelanguage.googleapis.com` 25 秒超时，走本机 HTTP 代理则 **683ms 返回 HTTP 200**。
+
+代理地址的解析优先级：
+
+1. 密钥文件里的 `proxy_url`（最可控，推荐显式写）；
+2. 环境变量 `HTTPS_PROXY` / `HTTP_PROXY`；
+3. **Windows 注册表系统代理**（`ProxyEnable=1` + `ProxyServer`，即浏览器/Electron 用的那套）。
+
+三条都取不到才直连。这里**刻意不用** Go 的 `http.ProxyFromEnvironment`——它只读环境变量、**不读注册表**，而服务由计划任务拉起时环境变量常被清空，结果就是静默直连卡死（旧版本 502 的真正成因）。
+
+### 调用
+
+```bash
+# 模型列表（动态拉取上游，缓存 30 分钟）
+curl -s http://localhost:7863/v1/models -H "Authorization: Bearer your-api-key"
+
+# 对话（流式 / 非流式皆可，上游原样透传）
+curl -s http://localhost:7863/v1/chat/completions \
+  -H "Authorization: Bearer your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"gemini:gemini-3-flash-preview","messages":[{"role":"user","content":"hi"}]}'
+```
+
+模型名带 `gemini:` 前缀时，网关会把它路由到 Gemini 通道并剥掉前缀再发给上游；其它前缀（`cn:` / `global:` / `trae:` / `minimax:`）走原有逻辑，**互不干扰**。
+
+### 已知边界（均为实测）
+
+- **免费层配额有限**：`gemini-3.1-pro-preview` 等 Pro 系模型在免费 key 上返回 `429`（额度为 0，约 5 小时重置），Flash 系可用；
+- **`gemini-2.5-flash` / `gemini-2.5-pro` 已被 Google 对新用户下线**（返回 404 并提示改用新模型），模型列表里仍会出现，别据此判断可用性；
+- **模型可用性以上游为准**：同一个 key 的不同模型状态可能不同（403 / 404 / 429 / 503 都实测出现过）。
 
 ## 配置说明
 
@@ -1028,8 +1156,8 @@ python3 scripts/probe_max_tokens.py   --base http://127.0.0.1:7863/v1 --key sk-x
 
 | 账号 | 自己的 grantId | 领取时刻 | 附加包余额 |
 |---|---|---|---|
-| `2108643821@qq.com` | `01a1a477-96d3-…` | 2026-11-04 10:51:03 | total 1700 / used 0 / remaining 1700 |
-| `xu20060420fan@gmail.com` | `01a1a463-e178-…` | 2026-11-04 10:29:31 | total 900 / used 558 / remaining 342 |
+| 账号 45da34 | `01a1a477-96d3-…` | 2026-11-04 10:51:03 | total 1700 / used 0 / remaining 1700 |
+| 账号 569875 | `01a1a463-e178-…` | 2026-11-04 10:29:31 | total 900 / used 558 / remaining 342 |
 
 - 两个号看到的是**同一条** campaign（`01a199dd-c0ea-…`）—— 这是**活动**相同，
   **不是额度**相同；各自的 `grantId`、`claimedAt`、余额全都不同。
@@ -1092,7 +1220,7 @@ python3 scripts/probe_max_tokens.py   --base http://127.0.0.1:7863/v1 --key sk-x
 >
 > | 账号 | 生效身份 | 结果 |
 > |---|---|---|
-> | `xu20060420fan@gmail.com` | `derived` | 面板 `pending`，**领不到**当天额度 |
+> | 账号 569875 | `derived` | 面板 `pending`，**领不到**当天额度 |
 > | 同一号改成 `real` | `real` | **立刻签到成功 +100 Credits** |
 >
 > 即 **派生身份会被上游按设备维度过滤掉每日额度**（拿不到当天的活动实例）。
@@ -1215,6 +1343,10 @@ sudo chown -R 10001:10001 ./auths ./data ./config.json
 | Redis 粘性镜像 7 天 TTL | `internal/redisstore/redisstore.go:21` |
 | 静态模型表含 `deepseek-v4-flash` 等 | `internal/upstream/model.json`（`deepseek-v4-flash` 条目） |
 | `/v1/responses` 协议适配层 | `internal/server/responses.go`（请求/响应翻译）、`internal/server/responses_stream.go`（SSE 事件翻译）、注册 `internal/server/handler.go` |
+| Gemini 通道按 `gemini:` 前缀分流（在 realm 判断与选号之前） | `internal/server/handler.go` chatCompletions 分流段、`internal/server/gemini.go` |
+| Gemini 上游模型 id 剥 `models/` 前缀 | `internal/gemini/gemini.go` Models 段（`strings.TrimPrefix(id, "models/")`） |
+| Gemini 出站代理解析（配置 > 环境变量 > 注册表系统代理） | `internal/gemini/proxy.go`（`resolveProxy`）、`internal/gemini/proxy_windows.go`（读注册表） |
+| Gemini 400 只在 body 明说 key 失效时才轮换 key | `internal/gemini/gemini.go` `bodyIndicatesBadKey` |
 
 ## 📦 归档：原各平台独立项目
 

@@ -87,6 +87,16 @@ Other things you can ask:
 - "Reopen yesterday's session on the landing page and ask it to finish the tests."
 - "Restart the `fix-cache` agent on the frontier tier with high thinking."
 
+### Fewer approval prompts in Claude
+
+Every tool tells Claude what it does, so Claude asks only where it matters:
+
+- **Reading tools run without asking**: `list_agents`, `get_agent`, `get_diff`, `wait_for_agents`, `capture_screen`, `discover_sessions`, `list_models`, `get_model_policy`.
+- **Tools that act ask until you allow them**: `start_agent`, `send_message`, `adopt_session`, `set_model_policy`. Click **Always allow** on the first prompt, or set them all at once in **Customize › Connectors › agent-bridge › Tool permissions**.
+- **Destructive tools keep asking**: `stop_agent` (can delete an agent's copy and branch) and `press_keys` (can approve a command an agent wants to run). You can still allow them there, knowingly.
+
+These are Claude's prompts. An agent's own approval prompts, inside its session, are a separate thing: see `auto_approve` under [Security](#security).
+
 ## Tools
 
 | Tool | What it does |
@@ -177,7 +187,7 @@ Yes. The omp engine uses every model omp exposes on your machine. `list_models` 
 No. claude.ai only reaches public HTTPS MCP servers, which would mean exposing control of your terminal to the internet. Use Claude Desktop or Claude Code.
 
 **What about tool approvals?**
-By default, agents follow your normal approval settings. When one is waiting, `capture_screen` shows it and `press_keys` answers it. `auto_approve=true` (`omp --auto-approve` / `claude --dangerously-skip-permissions`) removes the stops. It is refused until you run `agent-bridge auto-approve on` yourself; see [Security](#security).
+Claude's own prompts before each tool call are covered in [Fewer approval prompts in Claude](#fewer-approval-prompts-in-claude). Inside an agent's session, agents follow your normal approval settings. When one is waiting, `capture_screen` shows it and `press_keys` answers it. `auto_approve=true` (`omp --auto-approve` / `claude --dangerously-skip-permissions`) removes the stops. It is refused until you run `agent-bridge auto-approve on` yourself; see [Security](#security).
 
 **How is this different from Claude Code subagents?**
 Subagents live inside one session and one checkout. agent-bridge agents are full, independent sessions you can watch and type into, each on its own branch and its own model, and they survive restarts. Existing sessions can be adopted.

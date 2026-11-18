@@ -44,7 +44,7 @@ Grok Bot 是 xAI 的 AI 助手应用，有 Windows、Mac、iPhone 等客户端�
 ## 能做什么
 
 - **用原版 Grok Bot。** 界面、Agent、工具调用、记忆、定时任务、操作审批都是原版的，只是服务端在你自己手里。
-- **接你想用的模型。** Claude、GPT、DeepSeek、Grok，或各种中转、聚合网关，只要支持工具调用就行。思考强度从 `none` 到 `max` 可调，也可以按任务难度自动选模型。
+- **按 Bot 路由你想用的模型。** Claude、GPT、DeepSeek、Grok、中转和聚合网关都能一起添加，只要支持工具调用。每个 Bot 可分别指定主模型、思考强度和有序备用模型；已有配置仍可沿用按任务难度路由。
 - **Bot 有自己的电脑。** 服务端自带一台 Linux 桌面，Bot 在上面跑命令、开浏览器、处理文件，你可以随时看实时画面，也可以接手操作。
 - **让 Bot 操作你的电脑。** Mac 上能执行命令和操作图形界面；Windows 上能执行命令，每次执行前先弹窗问你。
 - **联网和生图。** 用模型自带的联网能力搜索、读网页；用 OpenAI 兼容的图片接口生图，能按比例出图，也能拿参考图修改。
@@ -180,15 +180,16 @@ AI 会先列出要准备的东西，再部署服务端、配置模型、生成�
 
 APK 用只属于你的密钥签名，以后升级要用同一个密钥。Android 版不支持 Tailcat，外网使用请用 VPN、内网穿透或 HTTPS 域名。生成方法见[客户端安装说明](docs/AI-INSTALL.md#client-packages)。
 
-### 三种模型接口
+### 三种模型接口与 Bot 路由
 
-<p align="center"><img src="docs/images/admin-model.png" alt="管理页的对话模型设置：接口格式、Base URL、API Key、默认模型和思考强度" width="760"></p>
+<p align="center"><img src="docs/images/admin-model.png" alt="管理页的模型设置：服务、档案、默认路由和 Bot 路由" width="760"></p>
 
-上游只支持 OpenAI Chat Completions。Plus 加了 **Anthropic Messages** 和 **OpenAI Responses**，三种格式都完整支持图片、文件、工具调用、思考强度和多轮推理接续：
+上游只支持 OpenAI Chat Completions。Plus 加了 **Anthropic Messages** 和 **OpenAI Responses**，三种格式都完整支持图片、文件、工具调用、思考强度和多轮推理接续。管理页把模型服务、模型档案、默认路由和 Bot 路由分开：一个服务可有多个档案，单个 Bot 可覆盖主模型、思考强度和备用顺序。
 
 - 对话中途换模型、换格式不会出错；
 - 服务商不支持某个可选参数时，自动去掉再试；
 - 自动安全审查也能用这三种格式。
+- 主模型还未输出可见文字或工具调用时，402、408、429、5xx、网络错误和 Host 上游 I/O 空闲超时会按顺序尝试备用模型；同一 Key 只在明确额度耗尽时跳过。已经输出后绝不切换，避免重复回复或工具执行。
 
 ### 联网和生图
 

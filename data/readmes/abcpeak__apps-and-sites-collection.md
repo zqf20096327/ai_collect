@@ -921,7 +921,7 @@ Enjoy 🤩
   - [Evermusic](https://apps.apple.com/us/app/evermusic-cloud-music-player/id885367198) (iOS) 支持WebDAV，适合MP3
   - [Flacbox](https://apps.apple.com/jp/app/id1097564256) (iOS) 适合无损 Hi-Res，用FFMPEG解码稀有格式，支持WebDAV，
   - [Evertag](https://apps.apple.com/app/id1450763230) (iOS) 音乐标签（Metadata）编辑器
-- ![GitHub Repo stars](https://img.shields.io/github/stars/maotoumao/MusicFree) [MusicFree](https://github.com/maotoumao/MusicFree) (Android, Windows) ![Last Commit](https://img.shields.io/github/release-date/maotoumao/MusicFree)
+
 - [LMP Music Hub](https://apps.apple.com/app/id6451009326) (iOS) 支持歌词API，支持本地lrc歌词，灵动岛歌词，不支持infini-cloud，支持koofr ⭐
 - [Music Downloader / MP3 Player](https://apps.apple.com/us/app/music-downloader-mp3-player/id1447312762)  (iOS)(🟢)
 - [BTR AMP Advanced Music Player](https://apps.apple.com/app/id1489180128) (iOS) 拉动进度条有卡顿bug
@@ -953,9 +953,11 @@ Enjoy 🤩
 - [Nobars](https://apps.apple.com/us/app/offline-music-player-nobars/id6805929959) (iOS)
 - ![GitHub Repo stars](https://img.shields.io/github/stars/MrsEWE44/musicDownload) [musicDownload](https://github.com/MrsEWE44/musicDownload) 音乐下载器
 - ![GitHub Repo stars](https://img.shields.io/github/stars/sonorahq/sonora) [Sonora](https://github.com/sonorahq/sonora) A native music streaming client, built with Rust and GPUI
+- ![GitHub Repo stars](https://img.shields.io/github/stars/unchihugo/FluentFlyout) [FluentFlyout](https://github.com/unchihugo/FluentFlyout) (Windows)
 
 - 🗃️Archived
   - [Moosync](https://github.com/Moosync/Moosync) (最后更新2024.12)
+  - ![GitHub Repo stars](https://img.shields.io/github/stars/maotoumao/MusicFree) [MusicFree](https://github.com/maotoumao/MusicFree) (Android, Windows) ![Last Commit](https://img.shields.io/github/release-date/maotoumao/MusicFree)
   - [Fiiomusic](https://apps.apple.com/us/app/fiio-music-for-audiophiles/id1235959662) (iOS) (最后更新2023.8)
   - [Grover Podcast](https://apps.microsoft.com/detail/9nblggh6c4bc?hl=en-us&gl=US) manage your favorite podcasts on Windows
   - [Doppler](https://brushedtype.co/doppler) (iOS, macOS)
@@ -1281,5 +1283,4 @@ Enjoy 🤩
 > 所见即所得（WYSIWYG）编辑器：Marktext、Typora、Obsidian、VS Code（需安装插件）和思源（Siyuan）。本地编辑工具：Typora、Visual Studio Code、Notepad++、Obsidian和Trilium。富文本编辑器（如Word、OneNote）也支持所见即所得。Obsidian、Joplin、Logseq和Typora都扩展了Markdown语法。Typora和Obsidian在Markdown编辑上存在缺陷，如手动换行和某些LaTeX符号无法。
 
 - ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Linux) 使用Rust和Flutter构建
-- ![GitHub Repo stars](https://img.shields.io/github/stars/zed-industries/zed) [Zed](https://github.com/zed-industries/zed) (Windows, macOS, Linux) code editor
-- ![GitHub Repo stars](https://img.shields.io/github/stars/markte
+- ![GitHub Repo stars](https://img.shields.io/github/stars/zed-industri

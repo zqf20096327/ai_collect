@@ -11,9 +11,9 @@
 
 <p>
   <a href="https://ml4sci.com/en/"><img alt="Read online at ml4sci.com" src="https://img.shields.io/badge/read%20online-ml4sci.com-4f46e5?logo=bookstack&logoColor=white"></a>
-  <img alt="219 chapters" src="https://img.shields.io/badge/chapters-219-0284c7">
-  <img alt="1,358 quiz questions" src="https://img.shields.io/badge/quiz%20questions-1%2C358-7c3aed">
-  <img alt="261 graded exercises" src="https://img.shields.io/badge/graded%20exercises-261-059669?logo=python&logoColor=white">
+  <img alt="226 chapters" src="https://img.shields.io/badge/chapters-226-0284c7">
+  <img alt="1,406 quiz questions" src="https://img.shields.io/badge/quiz%20questions-1%2C406-7c3aed">
+  <img alt="268 graded exercises" src="https://img.shields.io/badge/graded%20exercises-268-059669?logo=python&logoColor=white">
   <br>
   <img alt="Runs in your browser" src="https://img.shields.io/badge/runs%20in-your%20browser-0f766e?logo=webassembly&logoColor=white">
   <img alt="No sign-up" src="https://img.shields.io/badge/sign--up-not%20needed-d97706">
@@ -36,7 +36,7 @@
 **Machine Learning for Science** ([ml4sci.com](https://ml4sci.com/en/)) is an interactive digital book for **scientists and engineers** who want to bring machine learning into their research, and for **AI researchers** who want to work on real scientific problems. You read, move interactive figures, write Python and get it graded, all in your browser. There is nothing to install and no account to create.
 
 <p align="center">
-  <a href="https://ml4sci.com/en/"><img src=".github/assets/en/demo.gif" alt="A short demo: a lesson with a quiz, an interactive figure, grading code in the browser and the 3D library" width="100%"></a>
+  <a href="https://ml4sci.com/en/"><img src=".github/assets/en/demo.gif" alt="A short demo: a lesson with a quiz, an interactive figure, grading code in the browser and the 3D bookshelf" width="100%"></a>
 </p>
 
 > [!NOTE]
@@ -57,23 +57,23 @@ Every chapter is built around the same loop. You read an idea, try it with your 
 |---|---|---|
 | **1&nbsp;·&nbsp;Read** | Lessons with math, figures and an outline that tracks your place. | `Learning objectives → Concepts → Lab → Failure cases → Pass criteria` |
 | **2&nbsp;·&nbsp;Try** | Sliders and live plots let you test an idea before you read the proof. | Interactive figures throughout the text |
-| **3&nbsp;·&nbsp;Code** | Write Python in a built-in editor, press *Grade* and see each test pass or fail. | 261 exercises, run with [Pyodide](https://pyodide.org) |
-| **4&nbsp;·&nbsp;Check** | Concept quizzes explain the misconception behind every wrong answer, and missed questions come back for review. | 1,358 questions and a review queue |
+| **3&nbsp;·&nbsp;Code** | Write Python in a built-in editor, press *Grade* and see each test pass or fail. | 268 exercises, run with [Pyodide](https://pyodide.org) |
+| **4&nbsp;·&nbsp;Check** | Concept quizzes explain the misconception behind every wrong answer, and missed questions come back for review. | 1,406 questions and a review queue |
 
 ## ✨ Features
 
 <p align="center">
-  <img src=".github/assets/en/features.webp" alt="Feature cards: Library, Lessons, Figures, Grading, Quizzes, Review and Terminal" width="100%">
+  <img src=".github/assets/en/features.webp" alt="Feature cards: Roadmap, Lessons, Figures, Grading, Quizzes, Review and Terminal" width="100%">
 </p>
 
 | | |
 |---|---|
-| 🧭 **A roadmap, not a pile of chapters** | 219 chapters in 33 parts and 12 tracks, arranged in 7 layers. Each chapter declares what it builds on, so you always know what to read next. |
+| 🧭 **A roadmap, not a pile of chapters** | 226 chapters in 33 parts and 12 tracks, arranged in 7 layers. Each chapter declares what it builds on, so you always know what to read next. |
 | 🐍 **Python in the browser** | Code cells run in place with Pyodide (NumPy, SciPy, pandas, matplotlib, scikit-learn). PyTorch and GPU examples are shown read-only with a copy button; run them on your own machine with each chapter's downloadable lab files. |
 | ✅ **Auto-graded exercises** | A built-in code editor with *Run* and *Grade* buttons and per-test results. Each chapter's lab files also download as a `.zip` to run locally. |
 | 🧠 **Quizzes with feedback** | Every wrong answer explains the misconception behind it, and missed questions go to a review queue. |
-| 📚 **A 3D library** | Browse the 33 books as a fan you can drag and turn, grouped by field, with your progress on every book. |
-| 🖥️ **A learning desktop** | Lessons, review, notes, docs, a code editor, a terminal and a file browser open as windows side by side. A dashboard shows your progress and today's tasks. |
+| 📚 **A 3D bookshelf** | The Roadmap lays out the 33 books as a fan you can drag and turn, grouped by field, with your progress on every book. |
+| 🖥️ **A learning desktop** | Seven apps open as windows side by side: Roadmap, Recap, Notes, Reference, Code, Terminal and Settings. A dashboard shows your progress and today's tasks. |
 | 🔒 **Private by design** | No login. Progress stays in your browser, and you can export it to a file and import it again. |
 
 ## 🧭 Curriculum
@@ -116,7 +116,7 @@ Twelve tracks are arranged in seven layers. A track builds only on tracks in the
 
 ## 📈 Status
 
-**Version 1.0 is live** in Korean and English. All 219 chapters, 1,358 quiz questions and 261 auto-graded exercises are online in both languages. The book keeps improving: chapters are reviewed and revised continuously, and reported errors are fixed in place.
+**Version 1.0 is live** in Korean and English. All 226 chapters, 1,406 quiz questions and 268 auto-graded exercises are online in both languages. The book keeps improving: chapters are reviewed and revised continuously, and reported errors are fixed in place.
 
 ## ❓ FAQ
 
@@ -159,7 +159,7 @@ It is free, and there are no accounts. You can read the whole book, run the code
 <details>
 <summary><strong>Where is my progress stored? Can I continue on another device?</strong></summary>
 <br>
-Only in your browser's local storage. Nothing is sent to a server, and there are no analytics or cookies. To continue on another device, export a progress file from the settings in <em>My PC</em> and import it there. The English and Korean editions share the same progress, so switching languages keeps your place.
+Only in your browser's local storage. Nothing is sent to a server, and there are no analytics or cookies. To continue on another device, export a progress file from the <em>Settings</em> app and import it there. The English and Korean editions share the same progress, so switching languages keeps your place.
 </details>
 
 <details>

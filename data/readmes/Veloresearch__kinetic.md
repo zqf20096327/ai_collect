@@ -571,7 +571,7 @@ checks every hash and the signature. Format: [FORMAT.md](crates/kinetic-ktc/FORM
 
 | | CPU | NVIDIA (CUDA) | Vulkan |
 |---|---|---|---|
-| Hardware | x86-64 with AVX2 | RTX 20, GTX 16, newer | AMD, Intel, NVIDIA |
+| Hardware | x86-64 with AVX2 | GTX 10, P100, newer | AMD, Intel, NVIDIA |
 | Models | all | all text models | Llama, Qwen, LFM3 |
 | Bigger than the GPU | | layer split, MoE offload | coming |
 | Needs | nothing | the NVIDIA driver | the graphics driver |
@@ -799,7 +799,7 @@ More: [FAQ and troubleshooting](https://veloresearch.github.io/kinetic/faq.html)
 | Area | Coming next |
 |---|---|
 | RAD-1 | block drafters: many tokens guessed per pass |
-| GPU | faster short prompts, two GPUs |
+| GPU | faster short prompts, more models on several GPUs |
 | Models | Gemma 4 26B A4B, LFM2.5 MoE, Qwen3 MoE |
 | Formats | PrismML's 1-bit types at full speed |
 | Vulkan | MoE, layer split, faster prompts |

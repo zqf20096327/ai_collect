@@ -938,6 +938,7 @@ Table of Contents
 - [objaverse.allenai](https://objaverse.allenai.org/) Objaverse is a Massive Dataset with 800K+ Annotated 3D Objects
 - [animation-library](https://github.com/readyplayerme/animation-library)
 - [Gridwright Studio](https://gridwright.store/) - Pixel-art game asset packs (tilesets, characters, UI, icons, effects, isometric, music and SFX) for any engine, with free samples and free tool editions; full library by subscription.
+- [CSAF Core Systems Asset Factory](https://csaf.itch.io/) itch.io catalogue of game assets: tilesets, sprite packs, sound effects, music, UI kits, PSX low poly 3D characters and engine plugins, with free samplers (made with AI assisted tools, disclosed on every page)
 
 ## Game-Design-Tool
 #### Collection
@@ -982,6 +983,7 @@ Table of Contents
 - https://github.com/CyberAgentGameEntertainment/AudioConductor
 - https://github.com/Yunasawa/YNL-Audio
 - [Online Tone Generator](https://theaudiostuff.com/tools/signal-generator/) Free browser tone, noise and sweep generator (sine, square, triangle, saw; white, pink, brown noise) with WAV export, no signup. 免费在线音频信号发生器，可导出 WAV。
+- [UI Sound Board](https://anipixels.github.io/tools/ui-sound-board/) Free browser board to play 133 game UI sound effects and short jingles (clicks, coins, puzzle, card, cozy and winter sounds) with search, pack filter and volume; the sounds are free WAV/OGG downloads, commercial use allowed, credit optional. 免费在线试听 133 个游戏 UI 音效和短音乐。
 #### Music-Tool/Editor
 - https://www.image-line.com/
 - https://www.goldwave.com
@@ -1204,6 +1206,7 @@ Table of Contents
 - [pixelover](https://deakcor.itch.io/pixelover)
 - [spritemate](http://www.spritemate.com/)
 - [pixelatorapp](http://pixelatorapp.com/) Pixelator is a smart software to convert images into pixel art sprites and cover arts. With Pixelator you can use any source picture to easily generate Pixelated graphics for games or posters.
+- [PixelArtHive Pixel Art Upscaler](https://pixelarthive.com/pixel-art-upscaler) - Free browser tool for scaling pixel-art sprites at whole-number sizes without blur; images are processed locally.
 - [PiskelApp](https://www.piskelapp.com/) Piskel is a free online editor for animated sprites & pixel art
 - [ProMotion](https://www.cosmigo.com/) pro motion is a pixel drawing and animation software designed similar to the famous Amiga Deluxe Paint (DPaint). Ideal for artists working on detailed and pixel precise graphics as required for mobile games and portable game consoles. It also suites well to create light weight graphics for web games.
 - [pixenapp](https://pixenapp.com/) Pixen is a professional pixel art editor designed for working with low-resolution raster art, such as those 8-bit sprites found in old-school video games. Pixen packs all the tools pixel artists need in an intuitive, native interface including support for high zoom levels, animation editing, color palettes, and a lot more.
@@ -1688,10 +1691,4 @@ Table of Contents
 - [PrefabPainter](https://github.com/Roland09/PrefabPainter) github
 - [prefab-brush](https://assetstore.unity.com/packages/tools/utilities/prefab-brush-44846) unity-plugin
 - [landscape-auto-material-64132](https://assetstore.unity.com/packages/tools/terrain/landscape-auto-material-64132)
-- [prefab-painter](https://assetstore.unity.com/packages/tools/painting/prefab-painter-2-61331) unity-plugin
-- [transform-tools](https://assetstore.unity.com/packages/tools/utilities/transform-tools-177218) unity-plugin
-- [prefab-world-builder](https://assetstore.unity.com/packages/tools/level-design/prefab-world-builder-185406) unity-plugin
-- [grabbit-editor-physics-transforms](https://assetstore.unity.com/packages/tools/utilities/grabbit-editor-physics-transforms-182328) unity-plugin
-- [flexalon-3d-layouts](https://assetstore.unity.com/packages/tools/utilities/flexalon-3d-layouts-230509)
-- [Hey-Area-Object-Spawner](https://github.com/JahnStar/Hey-Area-Object-Spawner)
-- https://github.com/Ogbest/Unity_MapEditor_Terrain 动态渲染Unity地形网格，记录网格是否是玩家的行走范围，然后导出编辑好的网格用于服务器导航、验证使用 https://github.com/frankhjwx/Unity
+- [prefab-pa

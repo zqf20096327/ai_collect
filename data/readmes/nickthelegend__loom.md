@@ -4,6 +4,19 @@
 [![npm](https://img.shields.io/npm/v/@loompad/cli)](https://www.npmjs.com/package/@loompad/cli)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
+> **Loom 2 is here.** Every agent, every model, as many as you want: two Claude Code on Opus next
+> to two Codex on GPT‑5.6 in one Orchestra run, steered from your desk or your phone, with a
+> scoreboard of which model wins, and skills and an MCP server so agents can drive Loom themselves.
+> Try it with no agents and no keys:
+>
+> ```bash
+> npm i -g @loompad/cli && loom try
+> ```
+>
+> [loompad.tech](https://loompad.tech) · [download](https://loompad.tech/download) ·
+> [phone app](https://loompad.tech/mobile) · [what's new](docs/release-notes/v2.0.0.md) ·
+> [how 2.0 was chosen](docs/v2/LOOM-2.md)
+
 **The shared-memory layer for AI dev environments.** Every coding agent — Claude Code,
 OpenCode, Antigravity, Codex, … — keeps its own brain in its own files. Loom makes them
 **one brain**: connect your ADEs, and their memory, decisions, and context become a
@@ -50,6 +63,103 @@ and memory they don't share on their own.
   <br>
   <em>One thread over every agent — projects and chats on the left, the shared conversation in the middle, the Explorer on the right, and a composer you switch agents from without leaving the box.</em>
 </p>
+
+## Try it
+
+With Node 22.5+ and Git installed, no agent CLI, API key, or repository is needed:
+
+```sh
+npx @loompad/cli try
+# Or, after installing Loom:
+loom try --no-open
+```
+
+This starts the daemon, copies a tiny todo app to `<projectsRoot>/loom-demo`,
+creates its first Git commit, seeds a shared decision, and opens the project URL
+with `?tour=1`. Three **Demo — scripted, offline, free** agents use `demo-smart`
+and `demo-fast` models. Ask “add dark mode”, “add a todo filter”, “write tests”,
+or “explain this repo”. File edits and diffs are real; command output and token
+counts are simulated, and cost is always $0.00. Each turn streams for about three
+seconds so you can steer or interrupt it. Connect a real agent for custom work.
+
+Use `--dir <path>` to choose a destination and `--agents 1..8` to size a new demo.
+Running it again reuses the demo's files, history and roster. Existing unrelated
+folders are refused. Run `npm test` inside the demo for actual verification.
+Demo also works in Orchestra, races and comparisons, including fleets such as
+`demo@demo-smart x2, demo@demo-fast x2`. Tests can shorten streaming by setting
+`LOOM_DEMO_DURATION_MS=0` (milliseconds; default 3000, maximum 6000).
+
+For web and phone clients, authenticated `POST /api/try` accepts
+`{ "dir": "/optional/absolute/path", "agents": 3 }` or `{}` and returns
+`{ "project": { "id", "name", "dir", "agents": [{ "id": "demo-1", "kind": "demo", "role": "demo", "options": { "model": "demo-smart" } }] } }`
+(with the full roster). It permits owner/admin and unscoped own devices, and
+refuses guests and project-scoped devices. Open `/app?tour=1#p/<project.id>` and
+use an `agents[].id` as `agentId` on the existing send/steer endpoints. The web
+and phone walkthrough screens are separate from this API.
+
+### Get started and agent installs
+
+`loom setup` prints a checklist with ✓/○ progress and the next command for each
+open step. `loom setup --json` returns the same report used by web and phone.
+Progress comes from actual state: a demo project's `.loom/demo.json`, a real CLI
+found and signed in (or an explicitly configured provider), a registered project,
+a finished chat turn, a run that started two or more workers, a paired device,
+and all bundled Loom skills current in at least one agent directory. A demo agent
+alone means “tried”; it does not complete the real-agent step. Sharing is optional.
+
+```sh
+loom setup
+loom setup install codex
+codex login
+loom setup --json
+```
+
+The installer runs a fixed command on the **daemon's machine**, then runs the
+CLI's `--version` to verify it is reachable on that machine's PATH. Sign-in is
+separate. Supported kinds and exact commands:
+
+| Kind | Command |
+| --- | --- |
+| `codex` | `npm i -g @openai/codex` |
+| `claude-code` | `npm i -g @anthropic-ai/claude-code` |
+| `opencode` | `npm i -g opencode-ai` |
+
+These are the publishers' documented packages ([Codex](https://developers.openai.com/codex/cli),
+[Claude Code](https://code.claude.com/docs/en/setup), [OpenCode](https://opencode.ai/docs/)).
+Loom never invokes sudo or accepts a package name, command, path or argument override. If
+npm reports EACCES, configure a user-owned npm prefix or Node version manager and restart
+Loom with its bin directory on PATH. Grok and Antigravity ship native installers, so they
+keep their manual install hints.
+
+API contract for web/phone clients (screens are separate work):
+
+- `GET /api/onboarding` → `{ steps: [{ id, title, done, detail, action, optional? }], dismissed }`.
+  Ordered IDs/actions are `demo`/`try`, `agent`/`install-agent`,
+  `project`/`open-project`, `message`/`send-message`, `fleet`/`run-fleet`,
+  `phone`/`pair-phone`, `skills`/`skills`, `share`/`share`. Only share has
+  `optional: true`. Actions are stable button keys, not executable commands.
+- `POST /api/onboarding/dismiss` and `/restore` → `{ dismissed }`. Owner/admin
+  only; stored in `daemon.json`, independently of progress.
+- `POST /api/setup/install { "kind": "codex" }` → `{ ok: true, version }`.
+  Owner/admin only; paired devices, scoped tokens and guests receive 403.
+  Unknown kinds or extra fields receive 400; a simultaneous install of the same
+  kind receives 409. Failure returns HTTP 500 with `{ ok: false, version: null, error }`.
+  Installs time out after ten minutes; version detection has a ten-second deadline.
+- Subscribe to `/ws` before installing. Unscoped clients receive
+  `{ type: "setup:install", kind, phase }`: `started` adds `command`, `output`
+  adds `stream: "stdout" | "stderr"` and `line`, and `finished` adds the install
+  result. Frames are transient; the HTTP response is authoritative.
+- `GET /api/setup/requirements` → `{ node, git, npm, disk }`. Every item has
+  `ok`, `detail`, `fix` (empty when okay); detected tools also have `version`.
+  npm adds `prefix` and `needsSudo` (null if unknown). Disk adds `freeBytes`
+  (null if unknown) and `minimumBytes` (512 MiB), checked on the global npm
+  install filesystem, or LOOM_HOME when npm is unavailable.
+
+Checklist and requirement reads permit owner/admin and unscoped paired devices;
+guests and scoped tokens cannot inspect machine-wide progress. The exported types
+and route comments in `src/core/onboarding.ts`, `src/core/setup-install.ts`, and
+`src/daemon/routes/{onboarding,setup}.ts` define the response/event shapes.
+
 
 ## One link — a teammate, their agents, your repo
 
@@ -287,6 +397,29 @@ run-detail responses retain `workers: string[]` of instance ids and add
 `workerDetails`, and task events and `/subagents` include task selections.
 Absent selections mean provider defaults; older runs may lack `workerDetails`.
 Web and phone fleet controls can use these fields without parsing instance ids.
+
+**Saved fleets.** Store a comma-separated spec once in `LOOM_HOME/fleets.json`
+(default `~/.loom`), then use `@name` in orchestra, compare or chain worker specs:
+
+```sh
+loom fleets:save mixed "claude-code@claude-opus-5-5x2,codex@gpt-5.6-solx2"
+loom fleets
+loom orchestrate "implement the feature" -w @mixed
+loom compare "solve this bug" -w @mixed --wait
+loom chain goals.txt -w @mixed
+loom fleets:rm mixed
+```
+
+Saving validates `agent[@model][:effort][xN]` syntax; availability is checked in
+the target project when running. An orchestrator may use `-o @name` when the fleet
+resolves to exactly one agent. Saving an existing name replaces it. Names are
+case-sensitive (letters, digits, `_`, `-`, up to 64 characters, starting with a
+letter or digit); saved specs contain concrete rows, not other fleet references.
+`GET /api/fleets` returns `{ fleets: [{ name, spec }] }` sorted by name;
+`PUT /api/fleets` with `{ name, spec }` returns `{ fleet: { name, spec } }`;
+`DELETE /api/fleets` with `{ name }` (or `?name=...`) returns `{ removed: true }`.
+These user-wide endpoints require an owner or unscoped paired device. Invalid
+input returns 400, and deleting a missing fleet returns 404.
 
 **Ask several coding agents.** `loom compare` gives the same prompt to 2–8 entrants,
 each in its own worktree, using Orchestra's race mode. Names, kinds and aliases
@@ -1010,7 +1143,10 @@ detects at least two roles.
 | `loom specs` / `loom specs:run <file>` | The project's Playwright specs · run one through the daemon |
 | `loom mcp:health` | Each MCP server's live state from the background poll |
 | `loom costs --series [days]` | The spend ledger day by day, per agent |
-| `loom open` / `loom version` | Open this project in the web app · what's installed |
+| `loom open` / `loom version` | Open Loom in the web app · what's installed |
+| `loom open --in <editor> [file[:line]]` | Open the current project or file in an installed editor. `--in last` reuses this user's last choice; a file without `--in` also uses it |
+| `loom chat:title <chat> [title] [--auto]` | Show or set a chat title. `--auto` derives a title from the first prompt while the chat still has its default name |
+| `loom triage [--agent <kind>] [--project <project>] [--issue] [command...]` | Save redacted doctor results, versions and the last 200 daemon log lines in `LOOM_HOME/triage-<date>.md`. Optionally ask an agent in a new chat or print a GitHub issue body; never posts it |
 | `loom rename <name>` / `loom find <query>` | Rename the project (id never moves) · search the thread |
 
 ## Supported agents
@@ -1024,7 +1160,8 @@ detects at least two roles.
 | Antigravity | adapter (full-duplex) | `agy -p` headless, `--conversation <id>` to resume | ✅ verified against agy 1.1.6; re-verified 1.2.6 (2026-09-18) |
 | Cursor | — | `cursor-agent --print` | 🔜 coming soon |
 | **Model (API)** | adapter (full-duplex) | `POST /v1/chat/completions`, streamed — any OpenAI-compatible provider | ✅ no CLI to install; tools are read-only unless you allow more (see [below](#agents-that-are-models)) |
-| Echo | adapter (demo/tests) | in-process | ✅ |
+| Demo | adapter (scripted, offline, free) | in-process; real edits, simulated commands and tokens | ✅ `loom try`; `demo-smart` and `demo-fast` |
+| Echo | adapter (tests only) | in-process | ✅ |
 | Kiro | **bridge** (driveable) | Chromium debug port — types into the real chat panel and reads the panel back | 🔶 mechanism verified; its selectors are not (see below) |
 
 **Context and limits.** For Claude Code and Codex, the composer shows the chosen
@@ -1214,6 +1351,46 @@ Pinning does **not** take the baton. The baton is the write lock for work that
 touches the repository; a conversation doesn't need it, and taking it would
 stop whatever is actually working. The main thread still follows the baton,
 because that's what makes it the main thread.
+
+Unnamed chats receive a deterministic 3–6 word title (at most 48 characters) after
+their first finished turn, derived locally from the first user message. No network
+request is made for the default title mode. Explicit user names—including names
+like "Chat 2"—are preserved; Main stays Main. Set `"chatTitles": "model"` in
+`.loom/config.json` to opt into a provider title: Loom picks the lowest estimated
+cost from configured providers' free or priced models, requests at most eight
+output tokens, and falls back locally on unavailable pricing, failure, an invalid
+title, or a five-second deadline (including model discovery). Model prices come
+from the provider catalogue; models without known prices are not guessed.
+
+`POST /api/projects/:id/chats/:chatId/rename` accepts either `{ "title": "My title" }`
+or `{ "auto": true }`, and returns `{ "chat": ChatInfo }`. Automatic requests leave
+user names unchanged. Both successful rename paths emit a normal WebSocket event
+with `kind: "status"`, `chat: id`, and
+`payload: { state: "chat_renamed", title, titleSource }`. `titleSource` is
+`"default"`, `"user"`, or `"auto"`; legacy numbered chats without provenance are
+treated as defaults.
+
+Editors are detected on PATH and in standard app locations: VS Code (`code`),
+Cursor, Zed, Windsurf, JetBrains launchers (`idea`, `webstorm`, `pycharm`, `goland`,
+`clion`, `rider`, `phpstorm`, `rubymine`), Sublime (`subl`), and Xcode on macOS.
+`GET /api/editors` returns `{ editors: [{ id, label }], lastEditor: string | null }`.
+`POST /api/projects/:id/open-in` accepts `{ editor, path?, line? }` and returns
+`{ editor, path, line? }` after spawning the launcher. `path` defaults to the project
+root; API relative paths are project-relative, while CLI paths are shell-relative.
+Lines are positive integers. Traversal and symlink escapes are rejected. These
+endpoints admit only the owner and their own unscoped devices. The last successful
+choice is saved per OS user in `LOOM_HOME/editor.json` and shared with those devices.
+Launchers receive literal argv arrays without a shell.
+
+For support, run `loom triage --issue -- loom send "the failing prompt"` to save
+and print a redacted report. The supplied failing command is recorded, never
+executed. Add `--agent <kind> --project <id-or-name>` to open a diagnosis chat in
+that project (the current project is the default). An existing enabled agent of
+that kind is reused, or one is added. Only redacted evidence is sent to the chat.
+The report includes the same checks as `loom doctor --json`, CLI/Node/daemon
+versions, and recent logs, with tokens, keys, emails and home paths removed.
+Reports use private file permissions and remain available when the daemon is down.
+Web and phone menus can consume the API; their screens are separate work.
 
 A thread may pin a **model** and, where supported, **reasoning effort**, without
 changing the agent's defaults or restarting its current turn. Claude Code and
@@ -1482,181 +1659,4 @@ The daemon serves a full phone app at `/app` — board, live thread, agent chips
 No app store, no build step; it ships inside Loom.
 
 **Pair from the app.** The web/desktop window has a **Connect a phone** button next to the
-terminal: it opens a modal with a QR (and a copy link) and a **Local network / Tailnet**
-toggle. Pick one and, if the daemon is still localhost-only, hit **Enable phone access** —
-Loom adds a *second listener* on that LAN or tailnet IP (localhost is never disturbed, so
-the window you're in doesn't blink) and shows a QR your phone can actually reach. Same
-single-use token, no terminal needed.
-
-**Or pair from the terminal:**
-
-```bash
-loom up --tailnet     # daemon binds to your Tailscale IP (never 0.0.0.0)
-loom pair             # QR appears in the terminal (also `/pair` inside `loom tui`)
-```
-
-Scan the QR with your phone camera (for the tailnet path, the phone must be on your
-tailnet — install the Tailscale app and sign in; the local-network path just needs the
-same Wi-Fi). The link opens `…/app#pair=<token>`; the app claims the **single-use,
-10-minute** pairing token from the URL fragment (fragments never hit the network log) and
-exchanges it for its own client token. Then:
-
-- **Board** — every project, needs-input dots, baton holder, live route progress.
-- **Thread** — the same shared conversation, streaming over WebSocket.
-- **Agent chips** — tap `opencode`, hit send: baton shifts (projection + briefing
-  included), exactly like `tab` in the TUI.
-- **Routes** — the ➤ button opens a picker: choose **auto** (LLM picks each hop), any
-  named pipeline, or custom steps, type the task, go. Live banner with hop progress and
-  reasons, an abort button, and when a route pauses on a question you answer right
-  there and it resumes.
-- Chrome menu → *Add to Home screen* installs it like an app.
-
-**Push notifications** come with the native app ([`app/`](app/README.md)): open it once
-after pairing and it registers its Expo push token with the daemon. From then on your
-phone buzzes when an agent **needs input**, when a **route completes or fails**, and
-when a solo turn finishes — route hops are deliberately silent (a 5-step pipeline
-buzzes once, not five times). Verify with `loom clients --ping`.
-
-## Your phone, for every computer
-
-The phone app pairs with each computer you run Loom on: your desktop, your laptop, a box in the
-cloud. **Account ▸ Computers** shows them all live (answering or not, and how fast), and one tap
-switches between them. With Loom Cloud on, each answers from any network, through its own key.
-
-**Approve from the lock screen:** when an agent asks to use a tool, the alert has **Allow** and
-**Deny** buttons. The answer goes straight to the computer that asked, without opening the app.
-
-## Permissions: bypass, auto, or always ask
-
-Every agent CLI has its own idea of "may I?". Loom gives you one dropdown with
-three words and maps them onto each CLI. Every cell below was checked against the
-real CLI with `node scripts/verify-permissions.mjs`, not read off `--help`.
-
-| | Bypass | Auto | Always ask |
-|---|---|---|---|
-| Claude Code | `bypassPermissions` | `acceptEdits` + Loom's Auto policy *(default)* | **real approvals**: each tool call waits for your Allow / Deny in Loom, on desktop or phone |
-| Codex | no sandbox | `workspace-write` *(default)* | **real approvals**: a `read-only` sandbox, and each command or edit waits for your Allow / Deny in Loom |
-| Antigravity | `--dangerously-skip-permissions` *(default)* | ✗ unavailable: agy 1.2.6 headless writes into its own scratch folder, not your project | `--mode plan` |
-| Grok | `bypassPermissions` *(default)* | `auto` | `plan` |
-| OpenCode | allow-all | its defaults *(default)* | ✗ unavailable: opencode 1.18.31 ignores read-only settings on its headless API |
-
-- **What Auto lets Claude Code do.** It edits files and runs commands inside the
-  project, its tests included, the same as Codex's `workspace-write`. Refused,
-  with the rule that fired named in the refusal: a path outside the project, a
-  command that can't be undone (the [shield](#blast-radius-shield-what-cant-be-taken-back)'s
-  list), and MCP tools nobody allowed. The project's test command
-  (`proof.testCommand` or the detected one) always runs. To allow more, add
-  `.loom/config.json` → `permissions.allow`: command prefixes (`"docker compose up"`),
-  tool names (`"WebFetch"`) or globs (`"mcp__github__*"`). Add folders an
-  agent may read but not write with `readPaths` (`["../chatterbox-api"]`).
-- An agent whose Auto is unavailable runs in its default instead (Antigravity
-  runs Bypass). Hover a permission badge to see what that agent's mode actually
-  allows.
-- "Unavailable" cells are shown disabled with the reason, and the API refuses them.
-- **Always ask** is answered inside the daemon: Claude Code's permission prompts
-  arrive through the Agent SDK's `canUseTool`, and Codex's through app-server
-  approval requests. The request appears in the thread as an approval card; nothing
-  happens until you answer, and a card closes by itself if the turn ends first.
-- `node scripts/verify-approvals.mjs` proves it against the real CLI: the file does
-  not exist until you press Allow.
-
-## Plan mode
-
-Turn on **Plan** in the composer and agents write plans, not code.
-
-- **In a chat:** the agent investigates, then writes
-  `.loom/plans/<date>-<slug>.md` — Loom's folder, not a new one in your repo — (Goal, Context, Approach, self-contained Tasks, Risks,
-  Verification) and stops.
-- **In an orchestra** (`loom orchestrate --plan "<goal>"`):
-  - the orchestrator's plan becomes `plans/<run>/PLAN.md` plus one spec file per
-    task, committed to the run's branch *before* any worker starts;
-  - each worker is pointed at its own spec;
-  - when the run ends, statuses and results are written back.
-
-Every file has front matter (`id`, `agent`, `depends_on`, `status`) and is written
-so another agent, or a teammate, can pick up any task with no other context.
-
-## Git delivery: commit, push, or open a PR
-
-One per-project setting decides what happens to finished work. It's the toggle
-next to GitHub in the status bar, or `git.delivery` in `.loom/config.json`.
-
-| | Chat turns | A finished orchestra |
-|---|---|---|
-| **No commit** *(default)* | left uncommitted | waits on its branch until you Apply |
-| **Commit only** | committed, agent as co-author | merged into your branch |
-| **Commit & push** | committed and pushed | merged and pushed |
-| **Commit & open PR** | committed | its branch pushed, and a PR opened with `gh`: summary, task table, PLAN.md |
-
-A failed push never un-finishes a run. The error is shown, and **Retry delivery**
-is one click.
-
-## Edit and retry as chat branches
-
-The daemon API and CLI support alternate turns inside a chat (#375). Editing a
-user message or retrying an agent reply activates a new sibling branch and sends
-its prompt. Later messages on the previous branch remain available. Web and phone
-branch controls are separate work; these commands work now:
-
-```sh
-loom chat:branches --chat main --json
-loom chat:edit 123 "Revised prompt" --chat main
-loom chat:retry 124 --chat main         # 124 is an agent reply event id
-loom chat:branch 0 --chat main          # original history; files stay as they are
-loom chat:branch abc123 --preview       # inspect the fork checkpoint's patch
-loom chat:branch abc123 --rewind-files  # show patch, confirm, then restore files
-```
-
-`--chat` accepts an id or title and defaults to `main`. Non-interactive file rewinds
-require `--yes`. Branch changes return HTTP 409 while work is running or prompts
-are queued. Clear the queue or let it finish before switching.
-
-API paths below start with `/api/projects/:id/chats/:chat`:
-
-| Method and suffix | Request / response |
-| --- | --- |
-| `GET /branches` | `{ branches, active, siblingsByEventId }` |
-| `POST /branches` | `{ fromEventId, mode: "edit", text }` or `{ fromEventId, mode: "retry" }` → `{ branch }` |
-| `GET /branches/:branchId/rewind` | Read-only `{ checkpoint, changed: string[], diff }` preview, including untracked files |
-| `POST /branches/:branchId/activate` | `{ rewindFiles?: boolean }` → `{ active, rewind?: { restored, undo, changed, diff } }` |
-
-Each branch is `{ id, parent: string|null, forkEventId, createdAt, label? }`;
-`createdAt` is epoch milliseconds. Root is `"0"`. `ChatInfo.branches` and
-`ChatInfo.activeBranch` are optional for legacy chats. Events optionally carry
-`branch`; its absence means root. A branch inherits its parent's events through
-`forkEventId`, inclusive, then its own events. Editing replaces the selected user
-turn; retrying repeats the user prompt that led to the selected agent reply. Both
-discard that turn and its later continuation from the new branch's visible history.
-Targets must be visible in the active branch. Existing event ids never change.
-
-`siblingsByEventId` maps the original and alternate prompt/reply event ids to an
-ordered array of branch ids, original first. For a **‹ n/m ›** control, walk from
-`active` up its parents until a choice matches, then use that choice's index + 1
-and the array's length. Activating a choice changes the whole chat's active history.
-Refetch `/events?chat=:chat` and `/branches` after switching; a `status` event with
-`state: "branch_activated"` announces explicit switches. Chat paging, replay,
-agent history and Brain extraction follow the same lineage. Project-wide audit
-and cost history still includes every branch.
-
-Switching defaults to history only. A client should show the rewind preview before
-sending `rewindFiles: true`. Rewinding restores the selected branch's fork checkpoint;
-returning to root restores the fork being left. It preserves Git HEAD and ignored
-files, saves an undo checkpoint, and returns the actual applied patch. Missing or
-pruned fork checkpoints return 409; switching history still works. Branches share
-the working tree, so a new agent turn can edit the current files regardless of the
-selected history.
-
-Native resume cursors are isolated by chat, branch and agent. Codex uses
-`thread/fork` with the last retained `lastTurnId`; Claude uses `resume`,
-`forkSession: true` and the last retained message UUID as `resumeSessionAt`.
-These fields were verified against the locally generated Codex app-server types
-and installed Claude Agent SDK types. Codex servers that reject the turn-boundary parameter fall back to a whole-session
-fork with the divergence briefing. Older histories without native boundary ids
-(including a fork before the first turn) use a separate session fork and an explicit
-text briefing of the divergence point; that fallback does not physically truncate
-the native transcript. Other adapters start an isolated branch session briefed
-with the visible history as text. Session cursors and branch metadata survive daemon
-restarts. Branching does not undo already extracted shared memories or external
-side effects.
-
-Approach credit: A
+terminal: it opens a modal with a QR (and a copy link) a

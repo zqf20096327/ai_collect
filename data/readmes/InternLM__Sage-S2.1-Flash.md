@@ -1,6 +1,6 @@
 # Sage S2.1 Flash
 
-[**Official Website**](https://internlm.github.io/Sage-S2.1-Flash/) · [**Introduction**](#introduction) · [**Model Downloads**](#model-downloads) · [**Evaluation**](#evaluation-results) · [**Deployment**](#deployment) · [**License**](#license)
+[**Official Website**](https://internlm.github.io/Sage-S2.1-Flash/) · [**Introduction**](#introduction) · [**Model Downloads**](#model-downloads) · [**Evaluation**](#evaluation-results) · [**Deployment**](#deployment) · [**Community**](#community) · [**License**](#license)
 
 ## Introduction
 
@@ -385,6 +385,14 @@ Use the following deployment guides for tasks such as coding, office productivit
 
 - [Sage S2.1 Flash Deployment Guide](https://huggingface.co/internlm/Sage-S2.1-Flash/blob/main/deployment_guide.md)
 - [Sage S2.1 Flash FP8 Deployment Guide](https://huggingface.co/internlm/Sage-S2.1-Flash-FP8/blob/main/deployment_guide.md)
+
+## Community
+
+Scan the QR code to join the Sage S2.1 Flash WeChat user group.
+
+<p align="center">
+  <img src="assets/wechat-user-group.png" alt="Sage S2.1 Flash WeChat user group QR code" width="360" />
+</p>
 
 ## License
 

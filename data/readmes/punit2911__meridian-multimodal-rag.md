@@ -68,6 +68,65 @@ Check the loaded corpus with `Invoke-RestMethod http://127.0.0.1:8001/api/health
 
 Good demo questions: *What torque should I use for the HX-200 impeller bolt?* (conflict: manual 45 Nm vs bulletin 52 Nm) · *Is the HX-200 rated for fluid at 150 °C?* (false premise) · *What is the HX-500 specific power at 50% load?* (value read from a chart image) · *Which alarm code occurs most often in the maintenance log?* (exact analytics) · *Who is the CEO of Helix Dynamics?* (abstains).
 
+## Architecture and data flow
+
+Meridian has two connected pipelines: document changes build the knowledge base, and user questions retrieve and verify evidence from it.
+
+### Document ingestion and indexing
+
+```mermaid
+flowchart TD
+    A["PDF, DOCX, CSV/XLSX, TXT/MD, or image"] --> B["Format-specific parsing"]
+    B --> C["Citable chunks, metadata, and structured facts"]
+    C --> D["Persist documents and chunks in SQLite"]
+    C --> E["Save derived page images, figure crops, and table data"]
+    D --> F["Build a new index snapshot"]
+    F --> G["Lexical and character indexes"]
+    F --> H["Entity, fact, visual, and graph indexes"]
+    F --> I["Dense vectors: offline LSA by default"]
+    I --> J["In-memory store (Python) or Qdrant (Docker Compose)"]
+    G --> K["Swap in the complete snapshot"]
+    H --> K
+    J --> K
+```
+
+Parsers preserve useful structure: table rows become searchable evidence and facts; scanned pages use OCR; figures can be classified and charts digitized when readable; safety callouts remain separate evidence. Adding, replacing, or deleting a document automatically rebuilds the indexes from the stored corpus. The snapshot is swapped only after it is built, so retrieval does not use a partially rebuilt index. In the Docker setup, Qdrant is the dense-vector backend; the other indexes are built by Meridian.
+
+### Question answering
+
+```mermaid
+flowchart TD
+    A["Question and optional image"] --> B["Starlette API"]
+    B --> C["Optional image perception"]
+    C --> D["Analyze intent, model, codes, quantities, and premise"]
+    D --> E{"Unknown model named?"}
+    E -->|"Yes"| X["Abstain rather than answer for another model"]
+    E -->|"No"| F{"Log analytics intent?"}
+    F -->|"Yes"| G["Exact pandas calculation over uploaded log"]
+    G -->|"Computed"| L
+    G -->|"Not applicable"| H
+    F -->|"No"| H["Hybrid document retrieval"]
+    H --> I["BM25, dense, character, entity, fact, visual, and PRF candidates"]
+    I --> J["Weighted rank fusion, graph expansion, reranking, and MMR"]
+    J --> K{"Evidence grader"}
+    K -->|"Insufficient; retries remain"| H
+    K -->|"Still insufficient"| X
+    K -->|"Supported or ambiguous"| M["Expand evidence and run relevant tools"]
+    M --> N["Spec lookup and conflict resolution; chart reading; premise checks"]
+    N --> L{"Answer composer"}
+    L -->|"Default / fallback"| O["Offline evidence-extractive composer"]
+    L -->|"LLM configured"| P["Optional tool-using LLM writer"]
+    P -->|"May call"| Q["search_documents or lookup_spec"]
+    Q --> P
+    O --> R["Claim-level verifier"]
+    P --> R
+    R -->|"Unsupported claim"| S["Repair, fall back, or abstain"]
+    R -->|"Verified"| T["Cited answer, confidence, and trace to UI"]
+    S --> T
+```
+
+The deterministic controller decides whether the evidence is sufficient. With no LLM configured, Meridian composes an answer directly from evidence; when an LLM is configured, its cited answer goes through the same verifier and falls back to the offline composer if unavailable or not sufficiently supported. If repair cannot produce a verified answer, Meridian abstains. The API can stream trace events to the UI. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for retrieval and verification details, and [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for persistence and deployment limitations.
+
 ## Optional: use an LLM
 
 Meridian supports any OpenAI-compatible LLM server, including **Ollama** running locally.

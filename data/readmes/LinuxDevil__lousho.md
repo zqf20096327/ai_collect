@@ -42,7 +42,7 @@ TypeScript AI agents you can test in CI, pause for approval, and resume after a 
 
 ## Try it in 60 seconds, no API key
 
-You need Node.js 22.19 or newer and a network connection to install packages. You do not need an API key.
+You need Node.js 22 (22.19 or newer) or 24, the LTS lines, and a network connection to install packages. You do not need an API key.
 
 ```bash
 npm create lousho@latest my-agent -- --yes
@@ -123,7 +123,7 @@ For a side-by-side look at the Vercel AI SDK, OpenAI Agents SDK, Mastra and Lang
 
 ## Installation
 
-Requires Node.js 22.19 or newer. To start a new project, see [Try it](#try-it-in-60-seconds-no-api-key) above. To chat with that agent, copy `.env.example` to `.env`, put your API key in it and run `npm run dev`.
+Requires Node.js 22 (22.19 or newer) or 24. To start a new project, see [Try it](#try-it-in-60-seconds-no-api-key) above. To chat with that agent, copy `.env.example` to `.env`, put your API key in it and run `npm run dev`.
 
 To add Lousho to an existing project:
 

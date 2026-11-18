@@ -11,6 +11,7 @@ SSH · Mosh · Telnet · Serial · RDP/VNC · SFTP · port forwarding · code ed
 No account. No subscription. No telemetry. No Electron.
 
 [![Latest release](https://img.shields.io/github/v/release/AnalyseDeCircuit/oxideterm?label=release)](https://github.com/AnalyseDeCircuit/oxideterm/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/AnalyseDeCircuit/oxideterm/total)](https://github.com/AnalyseDeCircuit/oxideterm/releases)
 [![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-blue)](#install)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/AnalyseDeCircuit/oxideterm?style=social)](https://github.com/AnalyseDeCircuit/oxideterm/stargazers)
@@ -320,7 +321,11 @@ The release page also has portable archives, signatures and a `sha256sums.txt` f
 
 ### macOS
 
-If Gatekeeper blocks the app, remove the quarantine flag:
+```bash
+brew install --cask AnalyseDeCircuit/tap/oxideterm
+```
+
+If you install from the DMG manually and Gatekeeper blocks the app, remove the quarantine flag:
 
 ```bash
 xattr -cr /Applications/OxideTerm.app
@@ -328,7 +333,12 @@ xattr -cr /Applications/OxideTerm.app
 
 ### Windows
 
-If SmartScreen shows a warning, choose **More info → Run anyway**.
+```powershell
+scoop bucket add extras
+scoop install oxideterm
+```
+
+If you run the `.exe` installer manually and SmartScreen shows a warning, choose **More info → Run anyway**.
 
 ### Linux
 
@@ -341,6 +351,9 @@ sudo dpkg -i OxideTerm_*_linux_*.deb && sudo apt-get install -f
 
 # Fedora / RHEL-compatible
 sudo dnf install ./OxideTerm_*_linux_*.rpm
+
+# Arch Linux (AUR)
+yay -S oxideterm-bin
 
 # Nix; updates are managed by Nix
 nix run github:AnalyseDeCircuit/oxideterm

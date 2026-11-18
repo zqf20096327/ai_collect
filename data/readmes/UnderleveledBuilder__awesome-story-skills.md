@@ -16,6 +16,8 @@
 
 收录 845 个项目：356 个 skill 和提示词、467 个框架和应用、22 个研究代码 · 元数据更新于 2026-11-16
 
+✍️ **想把一个点子写成竖屏短剧剧本**：[dramawriter](https://write.shortdramaskills.com) 是本清单维护者做的网站。你写一句话，zenstory、山音、jtydhr88 三个编剧 skill 各写一份方案，你盲选，选完才揭晓是谁写的。方案、全剧骨架、人物和分集大纲前 5 集免费，往后按积分付费。它不影响收录和排名。
+
 **图例**：🌟 精选 · 📝 提示词 · ⚙️ 框架 · 🧩 应用 · 🎓 研究代码 · 💤 超过 180 天未更新 · 📦 已归档 · ⚠️ 仓库失效
 
 > [!NOTE]
@@ -720,6 +722,4 @@
 
 - **[kapaiverki](https://github.com/Idun/kapaiverki)** · ★ 10<br>用卡牌组合主题、类型、角色、情节和世界观灵感卡，按可改的雪花写作法模板生成小说大纲；另有四阶段角色塑造工坊和情节/角色专家对话<br><sub>方法：规划 · 理论 · 人物</sub><br><sub>更新于 2025-10-11 💤 · 🧩 应用 · 中文 · MIT</sub><br><sub>💡 只出大纲，不写正文</sub>
 
-- **[leehong0704/ai-novel](https://github.com/leehong0704/ai-novel)** · ★ 10<br>设定→章纲→正文，正文中插【标记】让 AI 只重写标记处；定稿时自动抽取人物变化同步角色卡，并增量更新全书梗概和近三章回顾<br><sub>方法：规划 · 记忆 · 修订</sub><br><sub>更新于 2026-04-13 💤 · 🧩 应用 · 中文 · EPL-1.0</sub><br><sub>💡 Python 桌面应用，支持 DeepSeek/OpenAI/Gemini；仓库另附 Windows 打包 zip（release/ai-novel.zip），源码完整</sub>
-
-- **[novel-copilot](https://github.com/doctoroyy/novel-copilot)** · ★ 10<br>Story Bible→大纲→逐章/批量生成，滚动摘要+角色状态快照+伏笔依赖图+节奏控制注入上下文，多维 QC（一致性/节奏/目标）不过即进修复循环<br><su
+- **[leehong0704/ai-novel](https://github.com/leehong0704/ai-novel)** · ★ 10<br>设定→章纲→正文，正文中插【标记】让 AI 只重写标记处；定稿时自动抽取人物变化同步角色卡，并增量更新全书梗概和近三章回顾<br><sub>方法：规划 · 记忆 · 修订</sub><br><sub>更新于 2026-04-13 💤 · 🧩 应用 · 中文 · EPL-1.0</sub><br><sub>💡 Python 桌面应用，支持 DeepSeek/OpenAI/Gemini；仓库另附 Windows 打包 zip（releas

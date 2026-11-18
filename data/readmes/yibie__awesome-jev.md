@@ -63,13 +63,13 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 
 - [Classification & Routing](categories/classification-routing.md) — 79 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
-- [Verification & Guardrails](categories/verification-guardrails.md) — 66 entries
+- [Verification & Guardrails](categories/verification-guardrails.md) — 67 entries
 - [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
-- [Agent Decisions](categories/agent-decisions.md) — 69 entries
+- [Agent Decisions](categories/agent-decisions.md) — 70 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 53 entries
-- [Calibration & Research](categories/calibration-research.md) — 60 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 133 entries
+- [Calibration & Research](categories/calibration-research.md) — 61 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 134 entries
 - [Game & Simulation](categories/game-simulation.md) — 29 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 11 entries
@@ -288,6 +288,7 @@ Source file: [`categories/verification-guardrails.md`](categories/verification-g
 - [OnlyRead](https://github.com/onlyreadai/onlyread) ![type: extension](https://img.shields.io/badge/type-extension-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/onlyreadai/onlyread?style=flat-square&label=%E2%98%85) - Browser agent security: asks Jev one `Noul` per request an AI agent's browser sends to a guarded site (does it create, modify or delete data?), lets clear reads through, refuses clear writes, and sends the uncertain band to a review model, refusing anything still unsure.
 - [SystemOne gate](https://github.com/talalkashar/systemone) ![stars](https://img.shields.io/github/stars/talalkashar/systemone?style=flat-square&label=%E2%98%85) - Pre-execution gate: any agent can be the brain, and SystemOne checks its decision before a computer-use program is allowed to run, with mock answers documented explicitly as fixed wiring rather than a model or a judgment.
 - [jevban](https://github.com/FMXExpress/JevBan) ![stars](https://img.shields.io/github/stars/FMXExpress/JevBan?style=flat-square&label=%E2%98%85) - Security: reads web server access logs, spots clients probing for holes, asks a decision model whether each one is really attacking, and bans the ones it convicts - fail2ban with a judge, written in Pascal.
+- [AgentBeam](https://github.com/whyashthakker/beam-cli) ![stars](https://img.shields.io/github/stars/whyashthakker/beam-cli?style=flat-square&label=%E2%98%85) - Agent security: installs hooks into twenty-seven agent harnesses and can optionally route a proposed action through Jev first, asking two independent Noul risk questions or scoring it against a damage rubric.
 
 ### Scoring & Ranking
 
@@ -342,5 +343,4 @@ Source file: [`categories/scoring-ranking.md`](categories/scoring-ranking.md)
 
 Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 
-- [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.shields.io/github/stars/harshithsunku/learn-jev-end-to-end?style=flat-square&label=%E2%98%85) - Developer education: a 12-notebook Python course whose hand-rolled agent loop asks Jev a `Choice` (allow / ask / block) with `Noul` irreversibility and exfiltration checks before every tool call, sends ask verdicts to a human and fails closed on errors, and adds a `Choice` model router with a confidence fallback and a `Noul` "am I done?" gate, each measured against labeled fixtures.
-- [Hermes JIT Context OS](https://github.com/wojciechwiesner/jit-context) ![stars](https://img.shields.io/github/stars/wojciechwiesner/jit-context?style=flat-square&label=%E2%98%85) - Coding agents: uses Jev as a sub-mil
+- [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.shields.io/github/stars/harshithsunku/learn-jev-end-to-end?style=flat-square&label=%E2%98%85) - Developer education: a 12-notebook Python course whose hand-rolled agent loop asks Jev a `Choice` (allow / ask / block) with `Noul` irreversibility and exfiltration checks before every tool call, sends ask verdicts to a human and fails

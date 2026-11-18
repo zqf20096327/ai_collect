@@ -918,6 +918,7 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 ## Phone
 
 - [PhoneInfoga](https://sundowndev.github.io/phoneinfoga/) - Advanced open-source tool for scanning and investigating international phone numbers.
+- [1Lookup](https://www.1lookup.io/tools/reverse-phone-lookup) - Free reverse phone and reverse email lookups, plus a number's carrier, line type and HLR status.
 - [CallSpy](https://callspy.profiler.me/) - Get real-time details about any phone number from our 10+ sources, including Truecaller, Eyecon, CallApp, and many more.
 - [Phonerator](https://www.martinvigo.com/tools/phonerator/) - An advanced valid phone number generator.
 - [Reverse Phone Lookup](https://www.idcrawl.com/phone) - Find out who's behind the phone: Reverse phone lookup made easy.
@@ -1064,5 +1065,4 @@ It takes a 'snapshot' of a webpage that will always be online even if the origin
 ## LinkedIn
 
 - [LinkedIn Search](https://recruitin.net/) - Easily use Google to search profiles on LinkedIn.
-- [LinkedIn Search Engine](https://cse.google.com/cse?cx=daaf18e804f81bed0) - Custom google search for linkedin.
-- [LinkedIn Email Reverse Lookup](https://osint.support/chrome-extensions/2019/09/03/linkedin-email-reverse-lookup.html) - Chrome ex
+- [LinkedIn Search Engine](https://cse.google.com/cse?cx=daaf18e804f81bed0) - Custo

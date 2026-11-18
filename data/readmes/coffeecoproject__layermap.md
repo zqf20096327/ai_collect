@@ -210,6 +210,11 @@ Maps stay in your user cache (`~/Library/Caches/layermap`, `~/.cache/layermap` o
 nothing anywhere ([privacy](https://github.com/coffeecoproject/layermap/blob/main/PRIVACY.md),
 [security](https://github.com/coffeecoproject/layermap/blob/main/SECURITY.md)).
 
+The MCP server tells a client that asks for progress which step a long check is on, and keeps a
+line for each tool call in `logs/calls.jsonl` in the cache: the tool, its arguments, the
+repository, how long each step took and the first line of the answer, to review how the tools are
+used and where their time goes.
+
 | Tool | Use |
 |---|---|
 | `project_explore_map` | A directory, a file, or a declaration's callers and callees (`direction` INCOMING or OUTGOING, `depth` up to 8). |
@@ -225,7 +230,8 @@ npx layermap search "invoice total"
 npx layermap refs src/billing/tax.ts calculateTax
 npx layermap check --base main
 npx layermap check test/billing.test.ts   # also: what of the change this test does not run
-npx layermap check --json                 # related tests by rank and what the map cannot follow, as JSON
+npx layermap check --json                 # as JSON: related tests by rank, what the map cannot follow, the imports and calls it changes between files
+npx layermap imports --json               # every import of the project as it is now, test files apart: file and line, the file imported, and why the rest reach no file
 ```
 
 ## FAQ

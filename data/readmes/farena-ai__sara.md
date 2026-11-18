@@ -24,7 +24,7 @@
 
 **Update:** on a Linux server `sudo sara update` (backs up first, rolls back if she doesn't answer) · Docker: `sudo git pull && sudo docker compose up -d --build` · Windows and Mac apps: Settings → Privacy & system → Updates · Android: Google Play. [Upgrading](docs/INSTALL.md#upgrading).
 
-> **Status:** 3.18.0, [Self-repair, friends fixing friends, quieter communities](https://github.com/farena-ai/sara/releases/tag/v3.18.0). She finds and fixes her own setup problems with undo, proposes new skills, can test and apply code fixes after one approval, and a linked friend can fix things with a fix pass. [See what changed](#whats-new)
+> **Status:** 3.18.2, [Several Google accounts from either mail page, approved code fixes on servers](https://github.com/farena-ai/sara/releases/tag/v3.18.2). One account list with + Add an account on both mail pages, a different Google sign-in always adds, and server installs can apply owner-approved code fixes with rollback. [See what changed](#whats-new)
 >
 > Windows installer: unsigned ([SmartScreen guidance](docs/INSTALL.md)). The macOS release process requires signed and notarized downloads; each build is qualified separately. Android: [Google Play](https://play.google.com/store/apps/details?id=com.backstagecoding.sara). iPhone: [home-screen web app](docs/PHONE.md).
 
@@ -164,20 +164,22 @@ Recent releases · 6 November 2026. [Full changelog](CHANGELOG.md) · [All downl
 
 | Release | What changed for you |
 |---|---|
+| **[3.18.2](https://github.com/farena-ai/sara/releases/tag/v3.18.2)** | **[Several Google accounts from either mail page, approved code fixes on servers](docs/MAIL_ACCOUNTS.md)** — Add as many Google, Gmail, Outlook and other accounts as you like from either mail page; signing in to another Google address adds it; Linux server installs take approved, tested code fixes through a locked-down helper. |
+| **[3.18.1](https://github.com/farena-ai/sara/releases/tag/v3.18.1)** | **[Message notices you can't miss, one Windows install, second mailboxes kept](docs/MESSAGES.md)** — New one-to-one messages show a card in front of you (also after reopening); Windows updates land on the existing install and remove a duplicate; a second mailbox no longer replaces the first. |
 | **[3.18.0](https://github.com/farena-ai/sara/releases/tag/v3.18.0)** | **[Self-repair, friends fixing friends, quieter communities](docs/SELF_REPAIR.md)** — Self-repair from health checks and errors with automatic undo; grow new skills; tested code fixes with rollback where the install allows; ask a linked friend's Sara to fix your server with your approval; popups for messages and quiet community counts. |
 | **[3.17.0](https://github.com/farena-ai/sara/releases/tag/v3.17.0)** | **[Documents end to end, agent teams, support link, alerts where you want](docs/AGENT_TEAMS.md)** — Fill templates and draft from past documents with sources; revise with real tracked changes; get a ready-to-sign PDF; run a team of helpers on a big job; let a friend's Sara look at redacted health and logs; send alerts to the project you choose. |
 | **[3.16.0](https://github.com/farena-ai/sara/releases/tag/v3.16.0)** | **[Writing that sounds human, meetings, keeping in touch, trips](docs/WRITING_STYLE.md)** — Rewrite documents and reports in plain language; record or upload meetings for transcripts, decisions and drafted follow-ups; see who waits for your reply and what you promised; trips from booking emails with alerts and rebooking options. |
 | **[3.15.0](https://github.com/farena-ai/sara/releases/tag/v3.15.0)** | **[Choices to tap, goals, research, ask anything, private messages](docs/CHOICES.md)** — Pick-an-answer buttons in the app, Telegram and Discord; goals with milestones and nudges; research from the web and your files to Word/PDF; ask across mail, files, chats and calendars; linked-server messages and communities the agents never see. |
-| **[3.14.1](https://github.com/farena-ai/sara/releases/tag/v3.14.1)** | **[Saved documents count as saved](docs/DOCUMENTS.md)** — Making a document, filling a form, invoices, exports and Docs/Sheets/Excel edits now count as proof that it was saved. |
-| **[3.14.0](https://github.com/farena-ai/sara/releases/tag/v3.14.0)** | **[All your accounts together, and her own icon](docs/MAIL_ACCOUNTS.md)** — Calendars from Google, Outlook, iCloud, Fastmail and Yahoo labeled by account; the app icon, browser tab and notifications use her own picture. |
 
 <!-- sara:recent-releases:end -->
 
 <details>
-<summary><b>Earlier 2.6x releases</b>: 3.13.1 back to 2.61.5</summary>
+<summary><b>Earlier 2.6x releases</b>: 3.14.1 back to 2.61.5</summary>
 
 | Release | What changed for you |
 |---|---|
+| **[3.14.1](https://github.com/farena-ai/sara/releases/tag/v3.14.1)** | **[Saved documents count as saved](docs/DOCUMENTS.md)** — Making a document, filling a form, invoices, exports and Docs/Sheets/Excel edits now count as proof that it was saved. |
+| **[3.14.0](https://github.com/farena-ai/sara/releases/tag/v3.14.0)** | **[All your accounts together, and her own icon](docs/MAIL_ACCOUNTS.md)** — Calendars from Google, Outlook, iCloud, Fastmail and Yahoo labeled by account; the app icon, browser tab and notifications use her own picture. |
 | **[3.13.1](https://github.com/farena-ai/sara/releases/tag/v3.13.1)** | **[Her pictures with ComfyUI, sent where you choose](docs/PHOTOS.md)** — A new Send her pictures to setting: a chat just for her pictures, one of your chats, a project chat, and/or Telegram and Discord. |
 | **[3.13.0](https://github.com/farena-ai/sara/releases/tag/v3.13.0)** | **[A calmer, premium Settings](docs/HOW_DO_I.md)** — Search finds a single setting and highlights it (Ctrl+K); phones drill down from group to page; every option and old link still works. |
 | **[3.12.0](https://github.com/farena-ai/sara/releases/tag/v3.12.0)** | **[Work apps, family, trust and voice ready](docs/WORK_APPS.md)** — Member tool rules enforced on the server, audit export and retention; phone calls built and off until you connect a provider; facts in six languages, accessibility and automation templates. |
@@ -513,8 +515,4 @@ sudo sara access       # how you reach her (change: tailscale, local, domain, la
 | [What computer do I need?](docs/REQUIREMENTS.md) · [Choosing a model](docs/CHOOSING_A_MODEL.md) · [What it costs](docs/COSTS.md) | Before you start: hardware, models with GPU sizes, running costs |
 | [Your phone](docs/PHONE.md) · [Moving to a new computer](docs/MOVING.md) | Phone setup start to finish; backup, install, restore |
 | [Security checklist](docs/SECURITY_CHECKLIST.md) · [What leaves your server](docs/PRIVACY.md) | Five minutes after installing; every outgoing connection and how to turn it off |
-| [FAQ and glossary](docs/FAQ.md) | Common questions, and what the words mean |
-| [Apps and clients](docs/clients.md) · [Desktop apps](docs/desktop.md) · [Home Assistant](docs/HOME_ASSISTANT.md) | Terminal, VS Code, Windows and macOS; Sara in Home Assistant and Home Assistant in Sara |
-| [Other apps](docs/OTHER_APPS.md) · [Bring her from another app](docs/IMPORT.md) | OpenAI-compatible API (SillyTavern, Open WebUI, scripts), MCP (Claude Code, Cursor, Claude Desktop), character cards; importing chats from Character.AI, SillyTavern, Replika, Nomi, Kindroid, ChatGPT or Claude |
-| [Several Saras in one app](docs/SERVERS.md) · [Private local mode](docs/PRIVATE_LOCAL.md) · [Household mode](docs/HOUSEHOLD.md) | Switch between servers; keep everything on one computer; share a server with the people you live with |
-| [Group chats](docs/
+| [FAQ and glossary](docs/FAQ.md) | Common questions,

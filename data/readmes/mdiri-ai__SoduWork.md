@@ -111,7 +111,7 @@ See [Run from source: send your first AI message](docs/getting-started.en.md#sen
 <details>
 <summary><b>Try the live demo</b></summary>
 
-Download the client from [Releases](https://github.com/mdiri-ai/SoduWork/releases), enter `https://soduwork.ai` under **Connection** on the sign-in screen, then sign up and sign in.
+Download the client from [Releases](https://github.com/mdiri-ai/SoduWork/releases/latest), enter `https://service.soduwork.ai` under **Connection** on the sign-in screen, then sign up and sign in.
 
 > The demo is for evaluation only. Don't upload real business data or anything sensitive.
 
@@ -119,6 +119,8 @@ Download the client from [Releases](https://github.com/mdiri-ai/SoduWork/release
 
 <details>
 <summary><b>Install the desktop client</b></summary>
+
+Follow the illustrated [desktop installation and first conversation guide](docs/desktop-quickstart.en.md).
 
 | OS | Package |
 | --- | --- |
@@ -374,7 +376,7 @@ Ideas are welcome in [Discussions](https://github.com/mdiri-ai/SoduWork/discussi
 - **Chat**: [Discord](https://discord.gg/AXYNrAYHy)
 - **Bugs and feature requests**: [GitHub Issues](https://github.com/mdiri-ai/SoduWork/issues)
 - **Questions and ideas**: [GitHub Discussions](https://github.com/mdiri-ai/SoduWork/discussions)
-- **Enterprise**: private deployment, integration and support. Email [soduwork@outlook.com](mailto:soduwork@outlook.com).
+- **Enterprise**: private deployment, integration and support. Email [contact@soduwork.ai](mailto:contact@soduwork.ai).
 
 ## Contributing
 

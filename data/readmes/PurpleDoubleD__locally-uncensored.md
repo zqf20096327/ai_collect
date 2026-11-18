@@ -31,54 +31,46 @@ Free and open source. In local mode everything runs on your own machine. No Dock
 
 ---
 
+## In short
+
+- **What it is:** one desktop app for AI on your own machine: chat, a coding agent, images and video. Free and open source (AGPL-3.0), no account needed for local use.
+- **Who it is for:** anyone who wants local AI without a terminal, Docker or config files, from first try to daily use.
+- **Download:** Windows 10 and 11 (`setup.exe`), macOS 14 or newer on Apple Silicon (`.dmg`), Linux (`.AppImage`, `.deb`, `.rpm`) and Android (`.apk`). The files are in the [Download](#download) table.
+- **Your hardware:** chat runs on most PCs with 8 GB of RAM. Images want a graphics card with 6 to 8 GB of VRAM, the bigger video models 12 GB or more.
+- **Not enough GPU?** Optional LU Cloud runs the big models on hosted GPUs from the same app, with the Cloud switch: a credit pack for €15 with no subscription, or Hosted for €19 a month. [Plans and packs](https://lu-labs.ai/pricing?src=github&utm_source=github&utm_medium=readme). Local mode stays free.
+
 ## Download
 
 Take the latest build from [Releases](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest).
 
 | Platform | File | Status |
 |----------|------|--------|
-| Windows 10 and 11 | [`Locally.Uncensored_3.0.10_x64-setup.exe`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.0.10_x64-setup.exe) (NSIS, recommended) or [`Locally.Uncensored_3.0.10_x64_en-US.msi`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.0.10_x64_en-US.msi) | Tested every release, signed auto update channel |
-| Linux | [`Locally.Uncensored_3.0.10_amd64.AppImage`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.0.10_amd64.AppImage), [`Locally.Uncensored_3.0.10_amd64.deb`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.0.10_amd64.deb) or [`Locally.Uncensored-3.0.10-1.x86_64.rpm`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored-3.0.10-1.x86_64.rpm) | Built on every release |
-| macOS 14 or newer, Apple Silicon (Beta) | [`LU_3.0.10_aarch64.dmg`](https://github.com/PurpleDoubleD/locally-uncensored/releases/download/v3.0.10/LU_3.0.10_aarch64.dmg) | Signed with an Apple Developer ID and notarized by Apple. Intel Macs are not supported. The app has run on one Mac so far. Voice has been tried by hand in the app on a Mac and works. Computer control is in the Mac app but not fully tested yet on macOS. Remote Access and the automatic update are not confirmed on macOS |
-| Android 7.0 or newer (arm64) | [`LU-3.0.10-Android.apk`](https://github.com/PurpleDoubleD/locally-uncensored/releases/download/v3.0.10/LU-3.0.10-Android.apk) | The phone app. Not in the Play Store yet: install the file from this page. SHA-256 `dbd515d81bbc8ab70f21b850424f9f8b57ae88ae24962225beefc4116d139d2f` |
+| Windows 10 and 11 | [`Locally.Uncensored_3.1.1_x64-setup.exe`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.1.1_x64-setup.exe) (NSIS, recommended) or [`Locally.Uncensored_3.1.1_x64_en-US.msi`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.1.1_x64_en-US.msi) | Tested every release, signed auto update channel |
+| Linux | [`Locally.Uncensored_3.1.1_amd64.AppImage`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.1.1_amd64.AppImage), [`Locally.Uncensored_3.1.1_amd64.deb`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored_3.1.1_amd64.deb) or [`Locally.Uncensored-3.1.1-1.x86_64.rpm`](https://github.com/PurpleDoubleD/locally-uncensored/releases/latest/download/Locally.Uncensored-3.1.1-1.x86_64.rpm) | Built on every release |
+| macOS 14 or newer, Apple Silicon (Beta) | [`LU_3.1.1_aarch64.dmg`](https://github.com/PurpleDoubleD/locally-uncensored/releases/download/v3.1.1/LU_3.1.1_aarch64.dmg) | Signed with an Apple Developer ID and notarized by Apple. Intel Macs are not supported. The app has run on one Mac so far. Voice has been tried by hand in the app on a Mac and works. Computer control is in the Mac app but not fully tested yet on macOS. Remote Access and the automatic update are not confirmed on macOS |
+| Android 7.0 or newer (arm64) | [`LU-3.1.1-Android.apk`](https://github.com/PurpleDoubleD/locally-uncensored/releases/download/v3.1.1/LU-3.1.1-Android.apk) | The phone app. Not in the Play Store yet: install the file from this page. SHA-256 `8ee0d6dffcdbcf6fe05f135a575acf84c3eefae8e9a23d680fdfaaf13bfde7a4` |
 
 <!-- MAC: the macOS row above is the one place in this file that says whether there is a Mac build. This is the Mac version of the row. It is true only for the .dmg that the release run built, signed and notarized, so it goes out after that run is green. -->
 
 Some antivirus engines flag unsigned NSIS installers that download other binaries, which is a false positive. The installer is built by GitHub Actions from the public source on `master`, and the update channel is signed against a public minisign key, so you can verify both: see [SECURITY.md](SECURITY.md#antivirus--browser-false-positives).
 
-Code signing for the Windows installers: free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org). SignPath Foundation has accepted the project. The production certificate is not in place yet, and until it is the installers ship unsigned.
+**Windows shows a blue "Windows protected your PC" box?** That is SmartScreen, and it is expected for now: the installer does not carry a code signing certificate yet, so Windows does not know it. Click **More info**, then **Run anyway**. The installer is built by GitHub Actions from the public source, and [SECURITY.md](SECURITY.md#antivirus--browser-false-positives) shows how to check it before you run it.
 
-Current release: **v3.0.10** (November 2026). Every change since 1.0.0 is in [CHANGELOG.md](CHANGELOG.md).
+Code signing for the Windows installers: free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org). SignPath Foundation has accepted the project, and the box goes away once the certificate is in place.
 
-3.0.10 fixes lost chats from 3.0.8 and 3.0.9. A backup no longer replaces the only complete copy of your chats, a note at launch says when the backup holds chats that are missing from your list, and Settings, Chat Backup has Restore chats from backup. The Android app is back as an APK, with the keyboard staying open in the Create prompt.
+Current release: **v3.1.1** (November 2026). Every change since 1.0.0 is in [CHANGELOG.md](CHANGELOG.md).
 
-3.0.9 brings Liquid's LFM3 models for small machines: 1.7B and 2B, about 1 to 1.7 GB each, for text, pictures and speech, on the LU Engine, on Ollama or as MLX builds on a Mac; the LU Engine moves to llama.cpp b11960 for them. A group chat now sends every speaker the context you picked, can redo one speaker and lets you set who speaks when. A compaction is one quiet line in the chat, and the conversation before it stays one click away. Animate takes an end image and, with MiniMax H3, up to nine reference pictures, and Krea 2, Qwen-Image 2.1 and FLUX.2 take reference pictures for a style, a person or a pose. Local videos run up to 15 seconds without drifting in colour, and a video shows a rough preview while it renders. The trainer learns a style, a concept or a pose next to a character (Beta). "Use this model" on Hugging Face opens the download in LU, and a model from the search comes in a quant that fits your graphics card. A status menu sits in the Mac menu bar and the Windows and Linux tray, and the Linux AppImage starts again on systems without the tray library. What has only run in automated tests is listed under Known limits in the [release notes](https://github.com/PurpleDoubleD/locally-uncensored/releases/tag/v3.0.9).
+3.1.1 fixes the cost of long conversations on paid models: the provider can reuse what it already read again, instead of charging every step in full. It also offers the ComfyUI update when 3D needs a newer one.
 
-3.0.8 makes web search in the chat work again: LU asks five search services in turn and needs no key for any of them. A video made in the chat plays in the chat, and a long one renders in the background while you write on. A picture attached in the chat reaches the image tool, and with two graphics cards chat and ComfyUI can each get their own. The LU Engine plans a model's memory from the file itself and offers a shorter context with one click. AMD cards on Windows get AMD's current ROCm build. New: the chat can read and change LU's settings with a confirmation card, the Model Manager can make a copy of a local model that refuses less, and Settings, Storage puts models, gallery and runtime in one folder of your choice. What has only run in automated tests is listed under Known limits in the [CHANGELOG](CHANGELOG.md).
+3.1.0 rebuilds the coding agent (review changes hunk by hunk, steer a running task, rewind to before any message), adds watchers that run a task on a schedule, makes 3D models in Create on your own computer or on LU Cloud, and gives your characters one place in Create. Web search reads the pages for you with sources, the gallery keeps every picture, the chat gets its own look, Neurons is back as a plugin, and Parakeet joins Whisper for dictation. The full list is in [CHANGELOG.md](CHANGELOG.md).
 
-3.0.5 was about Create: LTX 2.5, FastH3 and YuE2 run on your own machine, Qwen-Image 2.1 gets a transparent background and its prompt enhancer, Edit, Remove Background and Enhance Image take up to 50 images in one go, and LU Cloud adds Qwen Image 2.1, LTX 2.5, MiniMax H3 and Wan 3.0 Reference. Chat takes any file, each model in a group chat can have its own persona, dropdowns stay inside the window (issue 149), and the speech install works again on Ubuntu 24.04.
-
-3.0.4 fixed the Code agent and the agent in chat on LU Cloud: writing a long file no longer ends the run, "continue" picks up where a run stopped instead of starting over, the agent keeps a plan only when you ask for one, and cloud context is 32K by default and can be set per model. It also fixed the bugs reported on GitHub and Discord since 3.0.3 (issues 144 to 147): MiniMax H3 runs as a video model with sound, Edit takes up to three extra images with Qwen-Image 2.1, a missing encoder or VAE is named and offered as a download instead of ending in "Value not in list", the LoRA stack follows the loras folder, and group chat works with every LU Engine model.
-
-3.0.3 was a hotfix: chats with many images no longer run the app out of memory, Create reads a model's family from the file instead of its name, and the five bugs reported on GitHub since 3.0.2 are fixed (issues 139 to 143).
-
-3.0.2 was a hotfix: the Code tab lost its scrollbar and its input box once a conversation grew taller than the window (issue 138, a regression in 3.0.1) and is held to the window height again, and the count of open cloud models now takes the Create Studio endpoints in, which makes it fourteen video models and seven image models.
-
-### What is new in 3.0.1
-
-- **Qwen-Image 2.1 runs locally on Windows and Linux.** One model generates a picture from a prompt and edits one from a reference image, with no mask to paint. About 16 GB of files, ComfyUI 0.37.0 or newer, and a research license that does not allow commercial use.
-- **Models has a LoRAs tab of its own.** Search CivitAI, download into ComfyUI's `models/loras` folder, see what is installed with its size and trigger word, and delete what you no longer want.
-- **A GPU whose free memory could not be measured is planned more carefully**, and the log now says total capacity instead of calling it free.
-- **The Linux AppImage stops handing its own runtime to every program LU starts**, so a healthy system Python, pip, git or ffmpeg keeps working, and a distribution that blocks pip in the system Python keeps the isolated environment LU built.
-- **The local model runs one conversation at a time and says so**, with a line showing how many chats are ahead. Stop works while a chat is still waiting.
-- **Temperature, Top P and Max tokens belong to the conversation you moved them in**, instead of every open chat sharing one value.
-- **Cloud video renders offer the clip lengths the picked model really supports**, read from the live catalog.
+3.0.10 fixed lost chats from 3.0.8 and 3.0.9. Short summaries of the earlier releases, 3.0.9 back to 3.0.1, are at the end of [CHANGELOG.md](CHANGELOG.md#release-summaries-from-the-readme).
 
 ## Mobile app (Android, iPhone)
 
-LU is also available as an app for your phone. The current APK comes from the 3.0.10 release.
+LU is also available as an app for your phone. The current APK comes from the 3.1.1 release.
 
-- **Android:** download `LU-3.0.10-Android.apk` from the [3.0.10 release](https://github.com/PurpleDoubleD/locally-uncensored/releases/tag/v3.0.10). Needs Android 7.0 or newer on a 64-bit (arm64) phone. Allow installing apps from your browser or file app when Android asks. SHA-256: `dbd515d81bbc8ab70f21b850424f9f8b57ae88ae24962225beefc4116d139d2f`
+- **Android:** download `LU-3.1.1-Android.apk` from the [3.1.1 release](https://github.com/PurpleDoubleD/locally-uncensored/releases/tag/v3.1.1). Needs Android 7.0 or newer on a 64-bit (arm64) phone. Allow installing apps from your browser or file app when Android asks. SHA-256: `8ee0d6dffcdbcf6fe05f135a575acf84c3eefae8e9a23d680fdfaaf13bfde7a4`
 - **iPhone:** in review at the App Store.
 - **Google Play:** coming later.
 
@@ -132,7 +124,7 @@ npm run tauri build  # desktop binary
 
 ## Optional: LU Labs Cloud
 
-Some models are larger than any desktop card. Flip the Cloud switch in the same app and those run on hosted GPUs instead, with the heavy Create lanes alongside them. The same account works in the browser at [lu-labs.ai](https://lu-labs.ai), on a plan or on credit packs that do not expire. The local app stays free either way, and switching back to local costs nothing: [plans and prices](https://lu-labs.ai/pricing). With Create in chat (Beta), a cloud chat model can put together an order for images, video, music or voice, and nothing runs until you approve it.
+Some models are larger than any desktop card. Flip the Cloud switch in the same app and those run on hosted GPUs instead, with the heavy Create lanes alongside them. The same account works in the browser at [lu-labs.ai](https://lu-labs.ai/?src=github&utm_source=github&utm_medium=readme), on a plan or on credit packs that do not expire. The local app stays free either way, and switching back to local costs nothing: [plans and prices](https://lu-labs.ai/pricing?src=github&utm_source=github&utm_medium=readme). With Create in chat (Beta), a cloud chat model can put together an order for images, video, music or voice, and nothing runs until you approve it.
 
 Since 3.0.0 the catalogue says what it can back up. Every cloud chat model was asked the same two questions twice and judged on the answer, and a longer three-round test on 2026-10-05 took the mark from five more: 13 of the 36 we measured answer in full, and only those carry the No Filter mark in the picker. Across all measured answers, 5% were refusals. Ten more chat models that their makers release to answer without refusing are listed as a group of their own, marked Uncensored (Beta). They were not part of the measurement above. On an active plan, 11 models on Hosted and 12 on Pro and Max cost no credits in chat, up to a daily limit. For images and video, 14 video and 7 image models run without a built-in content restriction, most of them with Uncensored in the name, and your account decides what they may produce.
 
@@ -228,13 +220,22 @@ For most chat, writing and coding, yes, with a good 8B to 14B local model, and i
 Remote access is off until you start it, sits behind a six-digit passcode, and shows when a device is connected. On your own network the chat goes straight from phone to PC. Over the internet Cloudflare relays it: the traffic is encrypted to and from Cloudflare, not end to end, so Cloudflare could read it.
 
 **What about macOS?**
-The macOS row of the [Download](#download) table says whether the current release has a Mac build. On a Mac, chat runs on local models through the bundled server with Metal, and Create makes images and video on the Mac itself, without ComfyUI, so what this README says about ComfyUI, VRAM and LoRA folders describes Windows and Linux. On any Mac you can use LU Cloud in the browser at [lu-labs.ai](https://lu-labs.ai), which runs chat, images and video on hosted GPUs.
+The macOS row of the [Download](#download) table says whether the current release has a Mac build. On a Mac, chat runs on local models through the bundled server with Metal, and Create makes images and video on the Mac itself, without ComfyUI, so what this README says about ComfyUI, VRAM and LoRA folders describes Windows and Linux. On any Mac you can use LU Cloud in the browser at [lu-labs.ai](https://lu-labs.ai/?src=github&utm_source=github&utm_medium=readme), which runs chat, images and video on hosted GPUs.
 
 ## Roadmap
 
-Updated 5 November 2026. Everything up to 3.0.10 has shipped; [Releases](https://github.com/PurpleDoubleD/locally-uncensored/releases) has the history.
+Updated 17 November 2026. Everything up to 3.1.1 has shipped; [Releases](https://github.com/PurpleDoubleD/locally-uncensored/releases) has the history.
 
-**Just out: 3.0.10**
+**Just out: 3.1.0**
+
+- A rebuilt coding agent: review hunk by hunk, steer a running task, rewind files and chat
+- Watchers: tasks the AI runs on a schedule, with a notification when they ran
+- 3D in Create, on a Mac, on Windows and Linux through ComfyUI, and on LU Cloud
+- One place for your characters in Create
+- Web search that reads the pages and answers with sources
+- Parakeet dictation and talking to your computer from the phone
+
+**3.0.10**
 
 - Lost chats from 3.0.8 and 3.0.9: a note at launch when the backup still holds them, and Restore chats from backup in Settings
 - The Android app as an APK again, with the keyboard staying open in the Create prompt

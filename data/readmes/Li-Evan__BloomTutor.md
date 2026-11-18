@@ -73,11 +73,13 @@ Then say: `Create a new folder and help me learn [any topic]`
 /plugin install bloom@li-evan
 ```
 
-**Or use it in [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)**: this repository is also the `bloomtutor-dsh` plugin, with the same skills:
+**Or use it in [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)**: the same skills ship as the `bloomtutor-dsh` plugin on npm:
 
 ```bash
-dsh plugin --profile web add github:Li-Evan/BloomTutor
+dsh plugin --profile web add bloomtutor-dsh
 ```
+
+Or straight from this repository: `dsh plugin --profile web add github:Li-Evan/BloomTutor`.
 
 Details in [integrations/deepseek-harness](./integrations/deepseek-harness/README.md).
 

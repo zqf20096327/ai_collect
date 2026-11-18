@@ -44,9 +44,11 @@ stopped 1  http://127.0.0.1:8787 -> https://api.anthropic.com
 
 Each tool call goes through three stages:
 
-1. **Request-only checks.** A call is blocked if it uses a tool the request never declared, or if its arguments contain a host (URL or bare IP) that appears nowhere in the conversation. The model's own earlier turns don't count.
-2. **[atif-scan](https://github.com/huggingface/atif-scan) checks.** The conversation becomes an ATIF trace, so atif-scan's detectors run on the pending call: reading `/proc/1/environ`, `curl --noproxy`, a Kubernetes service-account token, `unshare`/`nsenter`, ... Findings at or above `--block-severity` (default `high`) are blocked, milder ones make the call suspicious.
-3. **Decision model** (optional). Suspicious calls go to a judge model, which answers `allow` or `block`. Without a judge, they are only logged.
+1. **Request-only checks.** A call is blocked if it uses a tool the request never declared, or if its arguments contain a host (URL or bare IP) that appears nowhere in the conversation. The model's own earlier turns don't count. Calls against the proxy itself (stopping or killing it, editing `~/.safeagents`, redirecting the harness's base URL) are blocked too.
+2. **[atif-scan](https://github.com/huggingface/atif-scan) checks.** The conversation becomes an ATIF trace, so atif-scan's detectors run on the pending call: reading `/proc/1/environ`, `curl --noproxy`, a Kubernetes service-account token, `unshare`/`nsenter`, ... Findings at or above `--block-severity` (default `high`) are blocked, milder ones make the call suspicious. The examples above are all `medium`, so with the defaults they make a call suspicious, not blocked.
+3. **Decision model** (optional). Suspicious calls go to a judge model, which answers `allow` or `block`.
+
+**Without a judge, stage 2 blocks only at `high` and above.** A suspicious call passes unchanged and the agent sees nothing. It shows up only as a `WARN` line in the monitor or proxy log and in the journal (`~/.safeagents/calls.jsonl`, see [Watching the calls](#watching-the-calls)). For example, `cat /proc/1/environ` is a `medium` finding and runs in the default configuration. To stop such calls, configure a judge or lower `--block-severity` to `medium`.
 
 The judge only sees what the user wrote, the tool call and the findings, never the agent's reasoning or tool results, since an agent that wants a call to run would argue its case there. It can add blocks but never lift one, and clean calls never reach it.
 
@@ -99,7 +101,15 @@ The full form is `hf://[TYPE/]OWNER/REPO[@REV][/FILE][:FACTORY]`:
 - `/FILE`: the file in the repo; by default the only `.py` file at the repo's root.
 - `:FACTORY`: `checks` by default.
 
-The file is downloaded once and cached by `huggingface_hub`, so it also loads offline (`HF_HUB_OFFLINE=1`); a private repo needs a token (`hf auth login` or `HF_TOKEN`). The plugin runs as code in the proxy's process, so load plugins only from repos you trust, and pin a commit (`hf://harness-hub/qwen-safeagents-plugin@<commit>`) for reproducible runs. To publish one: `hf upload harness-hub/my-plugin my_pack.py`.
+The file is downloaded once and cached by `huggingface_hub`, so it also loads offline (`HF_HUB_OFFLINE=1`); a private repo needs a token (`hf auth login` or `HF_TOKEN`). The plugin runs as code in the proxy's process, so load plugins only from repos you trust, and pin a commit (`hf://harness-hub/qwen-safeagents-plugin@<commit>`) for reproducible runs.
+
+#### Community plugins
+
+Plugins shared on the Hub are gathered in the [safeagents plugins collection](https://huggingface.co/collections/harness-hub/safeagents-plugins). For example, [`harness-hub/safeagents-dotenv-plugin`](https://huggingface.co/harness-hub/safeagents-dotenv-plugin) blocks commands that send a `.env` file or a credential over the network:
+
+```
+safeagents start http://localhost:8000 --plugin hf://harness-hub/safeagents-dotenv-plugin
+```
 
 ## Publishing trajectories
 

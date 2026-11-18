@@ -10,7 +10,7 @@
   <a href="README.fr.md">Lire en français</a>
 </p>
 
-<p align="center"><sub>Closed beta · macOS 14+ · Apple Silicon · Open source</sub><br><a href="https://getressac.app/#invite"><b>Join the beta</b></a></p>
+<p align="center"><sub>Closed beta · macOS 13.3+ · Apple Silicon · Open source</sub><br><a href="https://getressac.app/#invite"><b>Join the beta</b></a></p>
 
 <p align="center"><img src="docs/images/overview-en.jpg" alt="Ressac: a calm page, the sidebar with its tabs and spaces"></p>
 
@@ -46,7 +46,8 @@ Firefox under the hood, a quiet sidebar, nothing to sign up for, nothing to swit
 <p align="center"><img src="docs/images/live-recap-en.gif" alt="The agent compares the world's biggest tidal bores and fills a live recap"></p>
 
 **Local AI**
-- **Workflows** and **watches** run on your Mac with Ollama: a small local model decides, and your Claude Code or Codex account writes (it counts against your subscription limits).
+- The **⌘T bar** finds a page you visited by what it was about, in French or English, with a small search model that runs on your Mac.
+- **Workflows** and **watches** run on your Mac: a small local model decides, and your Claude Code or Codex account writes (it counts against your subscription limits).
 - A home page with widgets.
 
 <table>
@@ -68,7 +69,7 @@ Firefox under the hood, a quiet sidebar, nothing to sign up for, nothing to swit
 
 - **No account.** Ressac itself needs none. The agent uses your own Claude or ChatGPT account, an API key, or local models.
 - **Your browsing stays on your Mac.** The agent only sees the pages it opens in its own tab and what you give it.
-- **AI stays off until you switch it on.** Docker, Ollama and the agent start only once you say yes.
+- **AI stays off until you switch it on.** Docker, the local models and the agent start only once you say yes.
 - **Open source.** Built on Firefox, under the MPL 2.0.
 
 During the beta, Ressac sends crash and error reports (without page addresses) and an anonymous install id to its developer, to fix bugs; turn it off in Réglages › Vie privée.
@@ -77,9 +78,9 @@ During the beta, Ressac sends crash and error reports (without page addresses) a
 
 Ressac is in closed beta, with a small group of testers. They get a DMG signed and notarized by Apple, and Ressac then updates itself. **To join, ask for an invite on [getressac.app](https://getressac.app/#invite).**
 
-- **To browse**: macOS 14 or later, Apple Silicon.
-- **For the agent**: Docker ([OrbStack](https://orbstack.dev) or Docker Desktop) and a Claude or ChatGPT account (or an API key). Ressac starts the container app itself when it is installed.
-- **For local AI**: [Ollama](https://ollama.com). Ressac starts it, or downloads it for you (190 MB). Widget summaries and action pages are written by your Claude Code or Codex account instead, so one of them must be signed in.
+- **To browse**: macOS 13.3 or later, Apple Silicon.
+- **For the agent**: Docker ([OrbStack](https://orbstack.dev) or Docker Desktop) and a Claude or ChatGPT account (or an API key, or your own [Ollama](https://ollama.com) for local models). Ressac starts the container app itself when it is installed.
+- **For local AI**: nothing to install. When you switch AI on, Ressac downloads its two small models once, each checked against its SHA-256: d1-2B (1.1 GB) and EmbeddingGemma (334 MB). Widget summaries and action pages are written by your Claude Code or Codex account instead, so one of them must be signed in.
 
 ## Build from source
 
@@ -105,10 +106,9 @@ Ressac stands on the work of others:
 - [Firefox](https://www.mozilla.org/firefox/) by Mozilla (MPL 2.0), the engine and most of the browser.
 - [surfer](https://github.com/zen-browser/surfer) by the Zen Browser team (MPL 2.0), the build tool.
 - [Node.js](https://nodejs.org) and [node-pty](https://github.com/microsoft/node-pty) (MIT), bundled for the agent's host.
-- [Ollama](https://ollama.com) (MIT), for local models, downloaded on demand.
-- [Gemma 4](https://ai.google.dev/gemma) by Google (Apache 2.0), a local model pulled on demand through Ollama, used for the ⌘T bar.
 - [d1-2B](https://huggingface.co/LiquidAI/d1-2B-GGUF) by Liquid AI (LFM Open License v1.0), the small model that sorts widget items and watches the agent; Ressac downloads it itself, it is not bundled.
-- [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT), its `llama-server` ships in the app and runs d1-2B.
+- [EmbeddingGemma](https://ai.google.dev/gemma/docs/embeddinggemma) 300M by Google, the search model of the ⌘T bar; Ressac downloads it itself from Hugging Face ([ggml-org's Q8_0 GGUF](https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF)), it is not bundled. Gemma is provided under and subject to the Gemma Terms of Use found at [ai.google.dev/gemma/terms](https://ai.google.dev/gemma/terms).
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) (MIT), its `llama-server` ships in the app and runs d1-2B and EmbeddingGemma.
 - [Claude Code](https://claude.com/claude-code) by Anthropic and [Codex](https://github.com/openai/codex) by OpenAI, the agents, installed in the container and used with your own account.
 - [Svelte](https://svelte.dev), [Vite](https://vite.dev), and the fonts [Geist](https://vercel.com/font) and [Funnel Display](https://fonts.google.com/specimen/Funnel+Display) (OFL).
 

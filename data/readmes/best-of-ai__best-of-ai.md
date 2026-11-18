@@ -1,6 +1,6 @@
 <div align="center">
 
-🌐 **English** &nbsp;·&nbsp; [Español](README_ES.md) &nbsp;·&nbsp; [Français](README_FR.md) &nbsp;·&nbsp; [日本語](README_JA.md) &nbsp;·&nbsp; [Deutsch](README_DE.md)
+🌐 **English** &nbsp;·&nbsp; [Español](README_ES.md) &nbsp;·&nbsp; [Français](README_FR.md) &nbsp;·&nbsp; [日本語](README_JA.md) &nbsp;·&nbsp; [Deutsch](README_DE.md) &nbsp;·&nbsp; [Português](README_PT.md)
 
 # Awesome Best of AI
 
@@ -1058,4 +1058,4 @@ Visit **[bestofai.io](https://bestofai.io)** for the full interactive directory 
 
 - **[Confluence AI](https://www.atlassian.com/software/confluence)** — [review](https://bestofai.io/tools/confluence-ai/) — Atlassian's AI-enhanced team wiki and documentation platform for organising knowledge, meeting no... ![Paid](https://img.shields.io/badge/-Paid-8b949e?style=flat-square)
 - **[GitBook](https://www.gitbook.com)** — [review](https://bestofai.io/tools/gitbook/) — Modern documentation platform for teams to write, organise, and share technical knowledge with AI... ![Freemium](https://img.shields.io/badge/-Freemium-d29922?style=flat-square)
-- **[Archbee](https://www.archbee.com)** — [revie
+- **[Arch

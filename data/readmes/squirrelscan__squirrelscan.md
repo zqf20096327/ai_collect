@@ -49,9 +49,9 @@ Ordered by how much a failure usually costs you, not by how many rules each one 
 | Core SEO | 14 | The per-page fundamentals: title, meta description, H1, canonical, charset, doctype, robots meta, Open Graph and Twitter cards, plus canonical form drift across the site |
 | Agent Experience | 17 | How ready you are for AI agents to read, discover and act on the site: whether GPTBot and Claude-User get the same content a browser does, AGENTS.md, llms.txt, Markdown responses, API and MCP discovery, licensing and noai signals, pay-per-crawl, response token weight |
 | Site Integrity | 9 | Signs the site has been compromised: injected doorway pages, phishing kit signatures, obfuscated scripts, brand impersonation, cloaking, known-malicious URLs |
-| Security | 28 | Transport and header hygiene: HTTPS and HSTS, CSP, cookie flags, mixed content, subresource integrity, leaked secrets, tokens in web storage, unprotected and downgraded forms, open GraphQL introspection and mutations over GET, API endpoints that return data without authentication, credentials and bulk personal data in JSON API responses, exposed .git, .env and backup files, auth endpoints that leak password hashes or the user record |
+| Security | 32 | Transport and header hygiene: HTTPS and HSTS, CSP, cookie flags, mixed content, subresource integrity, leaked secrets, tokens in web storage, unprotected and downgraded forms, open GraphQL introspection and mutations over GET, API endpoints that return data without authentication, credentials and bulk personal data in JSON API responses, exposed .git, .env and backup files, auth endpoints that leak password hashes or the user record, open redirects, admin APIs that answer without credentials, exposed Spring Boot Actuator endpoints, Supabase tables readable with the public anon key |
 | Links | 15 | Internal and external link health: broken and dead links, in-page anchors whose target is gone, redirect chains, anchor-text quality, orphan and dead-end pages, pages linked only from sitewide chrome, HTTPS downgrades |
-| Content | 29 | Text quality and honesty: common misspellings, duplicate titles and descriptions, title-template consistency, readability, voice consistency, terminology consistency, word count, freshness, stale dated copy, heading hierarchy, keyword stuffing, hidden text, placeholder media and contact details, encoding damage |
+| Content | 30 | Text quality and honesty: common misspellings, duplicate titles and descriptions, title-template consistency, readability, font consistency, voice consistency, terminology consistency, word count, freshness, stale dated copy, heading hierarchy, keyword stuffing, hidden text, placeholder media and contact details, encoding damage |
 | Performance | 32 | Core Web Vitals and delivery: LCP, CLS and INP hints, TTFB, compression, caching, render-blocking resources, DOM size, font delivery, legacy and unminified JS/CSS |
 | Reliability | 5 | Scripts, stylesheets and fonts that fail to load (a first-party bundle that answers 404 or 500 after a deploy, third-party and font failures), and forms that lose submissions |
 | Images | 16 | Alt text, modern formats, responsive `srcset`, intrinsic dimensions and aspect-ratio mismatches, lazy loading above versus below the fold, file weight |
@@ -107,26 +107,26 @@ npm install -g squirrelscan
 
 **npx (run without installing):**
 ```bash
-npx squirrelscan audit example.com
+npx squirrelscan audit nutshop.squirrelscan.com
 ```
 
 ### Quick start
 
 ```bash
 # Audit a website
-squirrel audit example.com
+squirrel audit nutshop.squirrelscan.com
 
 # Generate HTML report
-squirrel audit example.com -f html -o report.html
+squirrel audit nutshop.squirrelscan.com -f html -o report.html
 
 # Pipe to Claude for AI analysis
-squirrel audit example.com --format llm | claude
+squirrel audit nutshop.squirrelscan.com --format llm | claude
 
 # Quick audit for a fast first look (other levels: surface, full)
-squirrel audit example.com --level quick
+squirrel audit nutshop.squirrelscan.com --level quick
 
 # run only agent experience and performance rules
-squirrel audit example.com --rule-include ax,performance
+squirrel audit nutshop.squirrelscan.com --rule-include ax,performance
 
 # login for cloud audits and cloud rendering
 squirrel auth login
@@ -251,7 +251,7 @@ Prerequisites: [Bun 1.4.4](https://bun.sh/) and Git.
 git clone https://github.com/squirrelscan/squirrelscan.git
 cd squirrelscan
 bun install --frozen-lockfile
-bun run dev -- audit https://example.com --max-pages 10
+bun run dev -- audit https://nutshop.squirrelscan.com --max-pages 10
 ```
 
 Run the same checks used in pull requests:
@@ -281,7 +281,7 @@ squirrel self settings set telemetry false
 Or disable all telemetry and install registration for any invocation by defining `NO_TELEMETRY` (any defined value works, including an empty value, `0`, or `false`) or `DO_NOT_TRACK=1` (or `true`). A project can opt out with `"telemetry": false` in `.squirrel/settings.json`:
 
 ```bash
-NO_TELEMETRY=1 squirrel audit https://example.com
+NO_TELEMETRY=1 squirrel audit https://nutshop.squirrelscan.com
 ```
 
 ## Links

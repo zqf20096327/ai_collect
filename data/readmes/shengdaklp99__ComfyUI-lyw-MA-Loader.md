@@ -4,6 +4,26 @@ A standalone, visual LoRA loader node for ComfyUI — organize LoRAs into groups
 
 中文说明：[README.zh.md](README.zh.md)
 
+## Changelog
+
+Only notable changes are listed here; minor visual or text tweaks are omitted.
+
+### 1.0.4
+
+- Added preset and favorites export/import in Settings
+- Trigger-word toggling moved to right-click; multi-word triggers support per-word blocking and only enabled words are previewed
+- Folder ignore now uses a dedicated eye button; clicking the folder title collapses or expands it
+- Added CLIP weight follow/custom modes
+- Added one-click metadata refresh for all LoRAs in the current workflow
+- Added "Save as preset group" to the folder context menu
+- Added target-group selection in the Add LoRA dialog
+- Added a layout guard that keeps the embedded panel aligned with the node width
+- Added a layout option to hide the CLIP weight column
+
+### 1.0.3
+
+- Initial public ComfyUI Registry release with groups, presets, Civitai metadata, Lora Manager integration, colors, chaining and i18n
+
 **Main node UI**
 
 ![lyw-MA Loader node](docs/preview-node.png)
@@ -16,7 +36,7 @@ A standalone, visual LoRA loader node for ComfyUI — organize LoRAs into groups
 
 ## Credits
 
-This plugin is based on and modified from [ComfyUI-Magic-Assistant](https://github.com/shigjfg/ComfyUI-Magic-Assistant.git) by **shigjfg**. Special thanks to the original author for the work this plugin is built on.
+This plugin is based on and modified from [ComfyUI-ZML-Image](https://github.com/zml-w/ComfyUI-ZML-Image) by original author [**zml-w**](https://github.com/zml-w), and [ComfyUI-Magic-Assistant](https://github.com/shigjfg/ComfyUI-Magic-Assistant) by original author [**shigjfg**](https://github.com/shigjfg). Special thanks to both original authors for the work this plugin is built on. Thanks also to group friend **you** for contributing fixes, new features, and improvement suggestions.
 
 ## Features
 

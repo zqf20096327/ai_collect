@@ -36,6 +36,25 @@ Running agents in real projects raises three questions: *which model ran this st
 - **Provider fallback.** Priority-based chains across OpenAI-compatible providers (NVIDIA, OpenRouter, and others) and Codex OAuth.
 - **Terminal-first UX.** A non-interactive `run` command, an interactive `chat` REPL and a full-screen `tui`.
 
+## Project structure
+
+The current module boundaries are:
+
+| Path | Responsibility |
+|---|---|
+| `src/cli.ts` | Argument parsing and command routing. |
+| `src/core/` | Run orchestration, config, registry and the single-agent loop. |
+| `src/providers/` | Provider adapters, profiles, fallback and model routing. |
+| `src/tools/` | Built-in tools, path confinement, sandbox and web tools. |
+| `src/skills/`, `src/mcp/` | Skills and MCP capability integrations. |
+| `src/audit.ts`, `src/ledger.ts`, `src/metrics.ts`, `src/tracing.ts` | Audit, cost, metrics and tracing. |
+| `src/chat/`, `src/tui/` | REPL and full-screen terminal UI. |
+| `src/attachments/` | Image artifact store and privacy checks. |
+| `src/doctor.ts` | Diagnostics behind `astro doctor`. |
+| `tests/` | Test suites mirroring `src/`. |
+
+The orchestration and config modules now live under `src/core/`; the wider event-bus and runtime-boundary split (ADR-0020/0021/0022) is still not implemented, and the table above is the current contract.
+
 ## Installation
 
 **Requirements:** Node.js 18 or newer. The pinned Bun runtime ships as a platform dependency, so you do not need a global Bun installation.
@@ -127,6 +146,7 @@ All commands run as `astro <command>`. From a clone, `bun src/cli.ts <command>` 
 | `eval` | Runs the golden dataset in mock mode as a regression gate. |
 | `bench` | Reports latency, tokens per second and cost per model. |
 | `health` | Validates configuration, credentials and provider connectivity. |
+| `doctor [--json] [--fix] [--online]` | Local diagnostics without network (versions, dependencies, dist, config, credentials by name, skills, MCP, disk permissions). `--online` adds the F6-6 provider health checks (5s timeout per provider). `--json` emits a stable `doctor/v1` payload with `name/status/message` (`error` on failure); `--fix` creates only `$ASTRO_HOME`, refusing relative, `..` or symlink values. Details: [`docs/doctor.md`](docs/doctor.md). |
 | `cost --by-agent` | Shows cost per agent and profile, read from the ledger. |
 | `handoff show <handoff_id>` | Inspects a durable handoff and its compaction audit. |
 | `serve` | Exposes `/metrics` in Prometheus format. |
@@ -158,7 +178,13 @@ ASTRO is in **alpha**. Interfaces may still change before a stable release.
 |---|---|
 | Foundation, multi-agent core, tools, evaluation, production hardening and ecosystem (F0–F7) | Done |
 | Layer 0: durable handoffs, model pools and profiles, per-agent cost, provider fallback | In progress |
-| Skills, MCP integration, web tools, advanced agents, quality and organization (C1–C5, C7) | Planned |
+| C1 skills and C2 MCP client | Done |
+| C3 `web_search` and `web_fetch` | Done |
+| C4 agent profiles and isolated subagents | In progress: cheap/strong routing and the `task` tool shipped; the blackboard is pending |
+| C5 deterministic completion gate | In progress: 65-case golden dataset, bench success rate/summary, six integration flows and the 80% coverage gate shipped; the deterministic completion gate remains pending |
+| C7 `astro doctor` diagnostics | Done |
+| C7 modular `src/core` and `src/providers` split | Done; the wider event-bus/runtime-boundary split is still unimplemented |
+| C7 session budget and per-environment profiles | Planned |
 | REPL, TUI and sessions improvements (T1–T4) | Planned |
 
 The detailed plan lives in [`docs/roadmap.md`](docs/roadmap.md) and [`docs/roadmap-complementar.md`](docs/roadmap-complementar.md).
@@ -172,6 +198,10 @@ bun run cli -- run "..."     # run a task from source
 bun run build                # build dist/cli.js and dist/launcher.js
 bun run smoke                # build and check the launcher with Bun removed from PATH
 bun run doctor               # local environment diagnostics, no network
+bun src/cli.ts doctor        # same checks through the CLI
+bun src/cli.ts doctor --json # stable doctor/v1 payload for scripts and CI
+bun src/cli.ts doctor --fix  # create $ASTRO_HOME; never the artifact root
+bun src/cli.ts doctor --online # add provider health checks (network)
 bun link                     # after a build, make the global `astro` command point to this checkout
 ```
 
@@ -190,8 +220,11 @@ bun run typecheck
 | [`docs/review-checklist.md`](docs/review-checklist.md) | Pull request review checklist. |
 | [`docs/invariants.md`](docs/invariants.md) | Invariants I-01 to I-22, mapped to code. |
 | [`docs/decisions.md`](docs/decisions.md) | Decisions D-01 to D-20. |
+| [`docs/config-parity.md`](docs/config-parity.md) | CLI, TUI and REPL configuration parity, ownership and precedence (D-31, D-CFG2/Q-10). |
 | [`docs/adr/`](docs/adr/) | Architecture decision records. |
 | [`docs/providers.md`](docs/providers.md) | Providers, credentials and SDKs. |
+| [`docs/release.md`](docs/release.md) | Release gate, tag, publish and rollback. |
+| [`docs/eval.md`](docs/eval.md) | Golden dataset, bench metrics and CI scheduling. |
 | [`docs/roadmap.md`](docs/roadmap.md) and [`docs/roadmap-complementar.md`](docs/roadmap-complementar.md) | Completed phases and planned layers. |
 
 ## Contributing

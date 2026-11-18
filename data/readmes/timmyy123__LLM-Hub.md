@@ -61,7 +61,7 @@ Free code signing provided by [SignPath.io](https://about.signpath.io), certific
 | **💬 Chat** | Multi-turn conversations with RAG memory, web search, TTS auto-readout, and multimodal input |
 | **🤖 AI Agent** | **[NEW]** Autonomous device agent with function calling, interactive maps, device tools, MCP tools, and Termux terminal command generation on Android |
 | **🤖 creAItor** | **[NEW]** Design custom AI personas with specialized system prompts (PCTF) in seconds |
-| **💻 Vibe Coder** | **[NEW]** Build apps with live HTML/JS preview; Android also integrates Codex through Termux using your selected local model |
+| **💻 Vibe Coder** | **[NEW]** Build apps with live HTML/JS preview; Android also runs Codex and Claude Code through Termux using your selected local model |
 | **✍️ Writing Aid** | Summarize, expand, rewrite, improve grammar, or generate code from descriptions |
 | **🎨 Image Generator** | Create images from text prompts using Stable Diffusion 1.5 with swipeable gallery |
 | **🎵 Music Generator** | **[NEW]** Generate music and sound effects locally with SoundGen on Android and Magenta Realtime 2 on iOS, including live playback as music is generated |
@@ -96,8 +96,10 @@ The offline **Transcriber** feature on Android supports on-device Whisper models
 ### 🔎 Media Search & Video Moment Finder
 On Android and iOS, **Instant Media Search** uses EmbeddingGemma 2 to index photos and videos locally, then find matches from a text description or reference image. **Video Moment Finder** combines video frames and audio from two-second windows so you can search for a scene or event and play the matching moment. Download a compatible EmbeddingGemma 2 model and choose the media to index; search runs on-device.
 
-### 💻 Android Vibe Coder & Codex
+### 💻 Android Vibe Coder, Codex & Claude Code
 Enable **Codex mode** in Vibe Coder's model settings to use the selected on-device model with the Codex app server running in Termux. Codex can inspect project files, edit code and run project commands, with streamed activity and terminal output in the app. This mode requires an ARM64 device running Android 10 or newer and does not require an OpenAI login. Install Termux, allow external app commands, grant LLM Hub permission to run Termux commands, and use the in-app **Install Codex** action before starting.
+
+Enable **Claude Code mode** in the same settings to run Claude Code in Termux on the selected on-device model instead. It reads and edits project files and runs commands the same way, and does not require an Anthropic account. The requirements and Termux setup are the same; use the in-app **Install Claude Code in Termux** action before starting. Only one of the two modes can be on at a time.
 
 ### 🎥 Android Video Generation
 The Android Video Generator runs [Lightricks LTX-Video 2B 0.9.8 distilled](https://huggingface.co/Lightricks/LTX-Video) fully on-device, from a text prompt or a starting image, in 8 denoising steps.
@@ -123,13 +125,6 @@ The iOS Music Generator supports **Live generation** with Magenta Realtime 2: he
 - Direct downloads from HuggingFace
 - 17 language interfaces
 
-## 🚧 Upcoming Features & Roadmap
-
-### Desktop Expansion (Windows & macOS)
-- **Advanced Vibe Coder** — Enhanced code generation with desktop IDE integration, cursor control, and Claude Code–like experiences
-- **OpenClaw-like Agent** — Autonomous tool-using agent framework for complex multi-step tasks
-- **Advanced Media Generation** — Professional-grade image/video synthesis with ComfyUI/Draw Things feature parity and extended controls
-
 Quick Start
 1. Download from **Google Play** or the **App Store**, get [LLM Hub Desktop](https://github.com/timmyy123/LLM-Hub/releases/tag/desktop-v0.1.3) for your computer, or build from source
 2. Open Settings → Download Models → Download or Import a model
@@ -144,7 +139,7 @@ Technology
 - **Music Gen**: Magenta Realtime 2 with MLX/LiteRT (iOS), SoundGen with LiteRT (Android)
 - **Media Search**: EmbeddingGemma 2 for local media indexing and video moment retrieval (Android and iOS)
 - **Android TTS**: Kokoro, Supertonic 3 with ONNX Runtime, and PocketTTS.cpp with an NDK/JNI integration for local voice cloning
-- **Android Coding Agent**: Codex app server in Termux, connected to the app's local model through a loopback inference server
+- **Android Coding Agent**: Codex app server or Claude Code in Termux, connected to the app's local model through a loopback inference server
 
 
 Acknowledgments
@@ -158,7 +153,7 @@ Acknowledgments
 - [Lightricks LTX-Video](https://huggingface.co/Lightricks/LTX-Video) — Android video generation model (LTX-Video Open Weights License)
 - [stable-diffusion.cpp](https://github.com/leejet/stable-diffusion.cpp) — Android video generation runtime, extended with LTX-Video 0.9 and a QNN backend
 - [calcuis/ltxv-gguf](https://huggingface.co/calcuis/ltxv-gguf) — GGUF builds of LTX-Video, T5-XXL and the VAE
-- **Google, OpenAI, Meta, Microsoft, IBM, LiquidAI, Mistral, Primsm ML, HuggingFace** — model and tooling contributions
+- **Google, OpenAI, Meta, Microsoft, IBM, LiquidAI, Mistral, HuggingFace** — model and tooling contributions
 
 Development Setup
 
@@ -172,27 +167,17 @@ cd LLM-Hub/android
 
 ### Android-only local configuration
 
-#### Hugging Face tokens
-The app ships no Hugging Face token. The models in the catalog download without one. To search and download private or gated repositories, enter your own token in the app under Settings > Hugging Face Token.
+`android/local.properties` is not in the repository. It holds only your SDK path, which Android Studio writes for you, and one optional flag:
 
-#### Dev Premium Flag
-To skip ads and unlock all premium features locally without a real IAP purchase, add this to `android/local.properties`:
 ```properties
+sdk.dir=/path/to/Android/sdk
 DEBUG_PREMIUM=true
 ```
-Set it back to `false` before making a production build.
 
-#### Model License Acceptance
-Some models on HuggingFace (especially from Google and Meta) require explicit license acceptance before downloading. When building the app locally:
+`DEBUG_PREMIUM=true` unlocks all premium features locally without a real purchase. Leave it out or set it to `false` for a production build. There are no API keys or tokens to add.
 
-1. Ensure you have a valid HuggingFace read token in `local.properties` (see above)
-2. **For each model you want to download:**
-   - Visit the model's HuggingFace page (e.g., https://huggingface.co/google/gemma-3n-E2B-it-litert-lm)
-   - Click the "Access repository" or license acceptance button
-   - Grant consent to the model's license terms
-   - Try downloading the model in the app again
-
-**Note:** This is only required for local development builds. The Play Store version uses different authentication and does not require manual license acceptance for each model.
+#### Hugging Face tokens
+The app ships no Hugging Face token. The models in the catalog download without one. To search and download private or gated repositories, enter your own token in the app under Settings > Hugging Face Token.
 
 ### iOS local development (macOS + Xcode)
 
@@ -206,8 +191,11 @@ Some models on HuggingFace (especially from Google and Meta) require explicit li
 ```bash
 git clone https://github.com/timmyy123/LLM-Hub.git
 cd LLM-Hub
+cp ios/LLMHub/Secrets.debug.xcconfig.template ios/LLMHub/Secrets.debug.xcconfig
+cp ios/LLMHub/Secrets.release.xcconfig.template ios/LLMHub/Secrets.release.xcconfig
 open ios/LLMHub/LLMHub.xcodeproj
 ```
+   The two `Secrets.*.xcconfig` files are not in the repository and the project will not build without them. They hold one setting, `BYPASS_PREMIUM_UNLOCK`: set it to `YES` in the debug file to unlock all premium features locally, and keep it `NO` in the release file. There are no API keys or tokens to add.
 2. In Xcode, select target **LLMHub** → **Signing & Capabilities**:
    - Set your **Team**
    - Set a unique **Bundle Identifier** (for example: `com.yourname.llmhub`)
@@ -248,15 +236,13 @@ Contributing
 License
 - Source code is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE).
 - You are free to use, study, and build on this project for non-commercial purposes.
-- **Commercial use — including distributing the app, charging for it, or monetizing it with ads or IAP — is not permitted without explicit written permission from the author.**
-- Contact timmy@llm-hub.app for commercial licensing enquiries.
+- **Commercial use, including distributing the app, charging for it, or monetizing it with ads or IAP, requires a paid commercial license from the author.**
+- Contact timmy@llm-hub.app to buy a commercial license.
+
+Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=timmyy123/llm-hub&type=date&legend=top-left)](https://www.star-history.com/?repos=timmyy123%2Fllm-hub&type=date&legend=top-left)
 
 Support
 - Email: timmy@llm-hub.app
 - Issues & Discussions: GitHub
-
-Notes
-- This README is intentionally concise — consult `ModelData.kt` for exact model variants, sizes, and format details.
-
-
-

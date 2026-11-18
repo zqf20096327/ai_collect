@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml"><img src="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.3.0"><img src="https://img.shields.io/badge/release-v1.3.0-brightgreen.svg" alt="Release v1.3.0"></a>
+  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/release-v1.4.0-brightgreen.svg" alt="Release v1.4.0"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg" alt="License: AGPL-3.0-only"></a>
   <a href="COMMERCIAL_LICENSE.md"><img src="https://img.shields.io/badge/commercial-dual%20license-gold.svg" alt="Commercial License Available"></a>
 </p>
@@ -319,9 +319,9 @@ voice stack is not part of the supported setup ([Roadmap](docs/en/ROADMAP.md)).
 
 ## License & Legal Disclaimer
 
-**Dual-licensed** by **h4lo-void**:
+**Dual-licensed** by **h4lo-void** (see [LICENSING.md](LICENSING.md)):
 
-- **Open-Source Community License:** [GNU Affero General Public License v3.0 only (`AGPL-3.0-only`)](LICENSE) — free for personal, academic, and open-source use. Modifying Bageo and letting others interact with it over a network or phone line requires releasing the complete corresponding source code under `AGPL-3.0-only`.
-- **Obtain a Commercial License:** Operators, enterprises, SaaS/call-center providers, or hardware vendors who wish to deploy, embed, or host Bageo without `AGPL-3.0-only` source-code disclosure can purchase a separate written proprietary license — see [**Commercial License Terms**](COMMERCIAL_LICENSE.md).
+- **Open-Source Community License:** [GNU Affero General Public License v3.0 only (`AGPL-3.0-only`)](LICENSE), with the Section 7 additional terms in [LICENSING.md](LICENSING.md) — free for personal, academic, and open-source use. Modifying Bageo and letting others interact with it over a network or phone line requires releasing the complete corresponding source code under `AGPL-3.0-only`.
+- **Obtain a Commercial License:** Operators, enterprises, SaaS/call-center providers, or hardware vendors who wish to deploy, embed, or host Bageo without `AGPL-3.0-only` source-code disclosure can obtain a separate written proprietary license — see [**Commercial License Terms**](COMMERCIAL_LICENSE.md).
 
-**Legal responsibility:** Bageo is self-hosted software provided strictly "AS IS" without warranty. You alone are the operator and data controller of your installation and bear full legal responsibility for call recording, AI disclosure, dialing, hardware rooting, and carrier/API charges. Read [**LEGAL.md**](LEGAL.md), [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md), and the [`gemini-4-carbon` Project Audit Report](AUDIT_REPORT.md) before use. Third-party notices are in [NOTICE.md](NOTICE.md). Not affiliated with Google LLC; Pixel, Android, and Gemini are trademarks of Google LLC.
+**Disclaimer & local law:** Bageo is self-hosted software provided "AS IS" without warranty; the author operates no service and receives no user data. Whoever deploys it is responsible for complying with local laws on call recording, AI disclosure, and automated dialing, and for hardware rooting and carrier/API charges. Read [**LEGAL.md**](LEGAL.md), [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md), and the [v1.0 AI-assisted internal review note](AUDIT_REPORT.md) (`gemini-4-carbon`, not a third-party audit) before use. Third-party notices (including OpenCC `Apache-2.0` dictionaries) are in [NOTICE.md](NOTICE.md). Not affiliated with Google LLC; Pixel, Android, and Gemini are trademarks of Google LLC.

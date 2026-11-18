@@ -20,8 +20,7 @@
 > **Try it in one minute.** You need one free key from [Groq](https://console.groq.com/keys) (no credit card). No Go toolchain, no config file. On Linux or macOS:
 >
 > ```bash
-> VERSION=0.1.4
-> curl -fsSL https://github.com/kaiser-data/free-llm-proxy-router/releases/download/v$VERSION/free-llm-proxy-router_${VERSION}_$(uname -s | tr A-Z a-z)_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/;s/armv6l/armv6/;s/armv7l/armv7/').tar.gz | tar xz
+> curl -fsSL https://raw.githubusercontent.com/kaiser-data/free-llm-proxy-router/main/scripts/install.sh | sh
 > GROQ_API_KEY=gsk_... ./free-llm-proxy
 > ```
 >
@@ -32,7 +31,7 @@
 >   -d '{"model":"auto","messages":[{"role":"user","content":"In one sentence: why do free LLM tiers run dry?"}]}'
 > ```
 >
-> The `X-Used-Model` header tells you which free model answered. The archive brings its own provider list and a catalog of 253 free models. Windows: the `.zip` on the [releases page](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest), or Docker (see [Install](#install)).
+> The script picks the latest release for your OS and CPU (amd64, arm64, armv6, armv7, riscv64), checks it against `checksums.txt` and unpacks it into the current directory; `VERSION=x.y.z` pins a release, `DIR=…` picks another directory. The `X-Used-Model` header tells you which free model answered. The archive brings its own provider list and a catalog of 253 free models. Windows: the `.zip` on the [releases page](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest), or Docker (see [Install](#install)).
 
 <p align="center">
   <img src="docs/img/fallback.svg" width="860" alt="A real request on 31 October 2026. A tool sends model auto to the proxy on localhost. The proxy first tries Groq kimi-k2, which returns 404 model not found, and puts that model on a one-hour cooldown. It then tries Groq gpt-oss-20b, which answers. The other providers were not needed. The client saw one clean 200 after 0.45 seconds.">
@@ -61,13 +60,15 @@ This proxy does that once, locally, for every tool you use.
    | Upstream says | The proxy does |
    |---|---|
    | `429` rate limited | cools down that model on that key until the provider's reset time, and retries it at once with your next key if you have several |
-   | `400` bad request | skips that provider for this request and cools down that model for an hour (`413`/`422`: skip only) |
+   | `400` bad request | skips that provider for this request (also `413`/`422`, and a moderation `403`). If the error blames the model itself (decommissioned, not a chat model), that model sits out for an hour and the provider's next model is tried at once |
    | `404` model not found | cools down that model for an hour |
-   | `401`/`403` bad key | cools down the provider for ten minutes |
+   | `401`/`403` bad key | cools down that key for ten minutes and tries your next key; the provider sits out only when no key works |
+   | error inside a `200` stream | handled like the same status sent as a plain response, as long as no content has been sent yet |
+   | `5xx` server error | rests that model for 30 seconds and lowers the provider's reliability score |
    | timeout or connection error | moves on and lowers that provider's reliability score |
    | `200` with no content | tries another model; an empty reply cut off by `max_tokens` is kept only as a last resort |
-4. **The first good answer** goes back to your tool. If you asked for `stream: true`, it arrives as standard SSE chunks.
-5. **If every free model fails**, or `fallback.request_timeout` (90 s) passes, you get `503` with a `Retry-After` header, never a fake answer.
+4. **The first good answer** goes back to your tool. With `stream: true` the provider's own SSE stream is passed through token by token: the chain still falls back on anything that fails before the first content chunk (an error status, an error event, an empty stream, a dropped connection), then commits to that provider.
+5. **If every free model fails**, or `fallback.request_timeout` (90 s) passes, you get `503` with a `Retry-After` header, never a fake answer. If the request itself was rejected (`400`/`413`/`422`) by every provider that was called, and none was merely skipped for a cooldown (or two different providers rejected it), you get that error instead, since retrying would not help.
 
 ## Why not a full AI gateway?
 
@@ -186,6 +187,7 @@ Several keys per provider are pooled automatically: add `GROQ_API_KEY_2`, `GROQ_
 
 | | Command |
 |---|---|
+| **Install script** (Linux, macOS) | `curl -fsSL https://raw.githubusercontent.com/kaiser-data/free-llm-proxy-router/main/scripts/install.sh \| sh` ([read it first](scripts/install.sh)) |
 | **Docker** (amd64, arm64) | `docker run --rm -p 127.0.0.1:8080:8080 -e GROQ_API_KEY=gsk_... ghcr.io/kaiser-data/free-llm-proxy-router:latest` |
 | **Debian, Fedora, Alpine** | `.deb`, `.rpm` and `.apk` on the [releases page](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest) |
 | **Archive** (Linux, macOS, Windows) | `.tar.gz` / `.zip` on the [releases page](https://github.com/kaiser-data/free-llm-proxy-router/releases/latest); keep `configs/` next to the binaries |
@@ -204,7 +206,7 @@ Every package ships three binaries plus `configs/` (the provider definitions and
 <summary><b>Package install, step by step</b></summary>
 
 ```bash
-VERSION=0.1.4
+VERSION=0.1.7
 # Debian/Ubuntu
 curl -LO https://github.com/kaiser-data/free-llm-proxy-router/releases/download/v$VERSION/free-llm-proxy-router_${VERSION}_amd64.deb
 sudo dpkg -i free-llm-proxy-router_${VERSION}_amd64.deb      # or: sudo rpm -i …rpm / sudo apk add --allow-untrusted …apk
@@ -301,14 +303,14 @@ configs/            bundled config and the free-model catalog
 ## Honest limits
 
 - **Free tiers are small, and they change.** The proxy makes the most of them. It does not create capacity, and it is not a fit for production traffic with an SLA.
-- **Streaming is buffered.** Providers are called without streaming so that a failure can fall back mid-request; the answer is re-emitted as SSE once it is complete. Time to first token equals the full response time.
+- **A stream that breaks after its first token cannot fall back.** The client already has part of the answer, so the stream ends with an SSE error event (`stream_interrupted`), never with a clean end that would look like a complete answer. Gemini is still buffered (its thought blocks are stripped from the full answer) and re-emitted as SSE.
 - **The catalog can lag a provider's change by up to a week.** Models that vanish are cooled down on the first 404 and skipped.
 - **Local quota tracking is best-effort.** The proxy honours the providers' rate-limit headers, but under heavy concurrency a provider may still send the occasional 429, which simply triggers the fallback.
 
 ## Development
 
 ```bash
-go test -race ./...    # 97 tests
+go test -race ./...    # 128 tests
 go vet ./...
 make build
 ```

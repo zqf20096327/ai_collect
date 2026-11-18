@@ -43,7 +43,7 @@ Paste a YouTube link. Clipsmith finds the best 30–60 second moments, crops the
 2. **Picks the moments** that open strong, stand on their own and end on a complete thought, and gives each a viral score, a title, an on-screen hook, a caption and hashtags.
 3. **Reframes** to 9:16, following the speaker's face. Wide shots get the full frame over a blurred background instead.
 4. **Captions** every word as it's spoken, in one of three styles.
-5. **Exports** MP4s you can download and upload to YouTube Shorts, TikTok or Reels.
+5. **Exports** MP4s you can download, or post and schedule straight to YouTube.
 
 ## Install
 
@@ -81,7 +81,16 @@ cd clipsmith
 - **Windows:** double-click `run.bat`
 - **macOS / Linux:** `./run.sh`
 
-Then open **http://127.0.0.1:8765**, paste a YouTube link and click **Get clips**.
+Then open **http://127.0.0.1:8765**, paste a YouTube link (or drop in a video file) and click **Get clips**.
+
+## Using it
+
+- **Clip settings:** pick the number of clips, the clip length and the aspect ratio (9:16, 1:1 or 16:9). Choose a caption style and framing, and switch the opening hook text and pause/"uh" removal on or off.
+- **Focus (optional):** describe what the clips should be about, or limit them to part of the video with **From** and **To** (like `12:30`).
+- **Progress:** each video shows three steps (get the video, pick the best moments, cut and caption) with what's happening right now. Finished clips appear while the rest are still rendering.
+- **Your clips:** each clip shows its rank, length, score, the hook it opens with and why it was picked. **Download** it, **Post to YouTube**, or open the **⋯** menu to copy the caption, post again or delete the clip. Fold any clip into one line with the arrow; posted clips fold by themselves. Older videos start folded too.
+
+The page works with a keyboard and a screen reader: every control has a label and a visible focus ring, and progress and upload changes are announced.
 
 ## How long it takes
 
@@ -108,18 +117,18 @@ On a machine with more RAM or a GPU, try a bigger local model for better picks, 
 
 - The small local model sometimes gets facts or numbers wrong in titles. **Check titles before posting.**
 - Face tracking is basic (OpenCV). Fast camera cuts can make the crop lag.
-- No direct posting to YouTube yet; you download the MP4 and upload it yourself.
+- Posting is built in for YouTube only; for TikTok and Reels, download the MP4 and upload it yourself.
 
 ## Roadmap
 
-- [ ] Filler word and silence removal
-- [ ] "Prompt to clip": describe the moment you want
+- [x] Filler word and silence removal
+- [x] "Prompt to clip": describe the moment you want
+- [x] Post and schedule directly to YouTube
 - [ ] Edit clip start/end and caption text before export
 - [ ] Keyword and emoji highlights in captions
 - [ ] Brand template (logo, fonts, colours)
-- [x] Post and schedule directly to YouTube
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) and the [`good first issue`](https://github.com/AbdulSamad94/clipsmith/labels/good%20first%20issue) label. If Clipsmith saves you money, a ⭐ helps other people find it.
+Contributions are welcome! **Designers especially:** UI/UX ideas are wanted, see [issue #24](https://github.com/AbdulSamad94/clipsmith/issues/24). See [CONTRIBUTING.md](CONTRIBUTING.md) and the [`good first issue`](https://github.com/AbdulSamad94/clipsmith/labels/good%20first%20issue) label. If Clipsmith saves you money, a ⭐ helps other people find it.
 
 ## Use responsibly
 

@@ -74,25 +74,6 @@ ai-context-kit/
 │   │   └── marketplace.json                          # Repo-scoped Codex marketplace
 │   └── skills/                                       # Codex skill discovery symlinks
 │
-├── prompts/                                          # Prompt wrappers and implementation loop
-│   ├── skills/                                       # Skill-wrapper prompts (route to canonical skills)
-│   │   ├── create-usercontext-instructions.prompt.md # Generate user context instruction files
-│   │   ├── create-project-instructions.prompt.md     # Generate project-context AGENTS.md files
-│   │   ├── create-agents-md.prompt.md                # Generate AGENTS.md files
-│   │   ├── create-skill.prompt.md                    # Generate skill files
-│   │   ├── create-checkpoint.prompt.md               # Capture session state as a checkpoint
-│   │   ├── restore-checkpoint.prompt.md              # Restore session state from a checkpoint
-│   │   ├── validate-usercontext-instructions.prompt.md # Validate user context files
-│   │   ├── validate-project-instructions.prompt.md   # Validate project-context AGENTS.md files
-│   │   ├── validate-agents-md.prompt.md              # Validate AGENTS.md files
-│   │   └── validate-skill.prompt.md                  # Validate skill files
-│   └── loop/                                         # Implementation loop prompts (invoke in order)
-│       ├── 01-readiness-check.prompt.md              # Assess the target slice before any changes
-│       ├── 02-implementation.prompt.md               # Execute the approved step on a feature branch
-│       ├── 03-self-review.prompt.md                  # Review and emit STATUS: PASS or BLOCKED
-│       ├── 04-learnings.prompt.md                    # Capture key lessons (optional)
-│       └── 05-human-in-the-loop.prompt.md            # Commit-readiness checklist; waits for go-ahead
-│
 ├── specs/
 │   └── context_aware_ai_session_spec.md              # Specification for AI session management
 │
@@ -102,7 +83,9 @@ ai-context-kit/
 │  └── skill_template/SKILL.md                        # Canonical skill template
 │
 └── skills/
-   └── README.md                                      # Canonical location for skill instances
+   ├── README.md                                      # Canonical location for skill instances
+   ├── ack-*/                                         # Create, validate, checkpoint and governance skills
+   └── ack-loop-01-readiness/ … ack-loop-05-commit/   # Implementation loop, one skill per step (invoke in order)
 ```
 
 ---
@@ -126,7 +109,7 @@ ai-context-kit/
 - "Review this code for security issues"
 - "Run the AGENTS validation workflow and list blocking issues"
 
-`prompts/skills/` are composition wrappers that route to canonical skills. `prompts/loop/` contains the numbered implementation loop prompts (readiness-check → implementation → self-review → learnings → human-in-the-loop). Canonical workflow logic lives in `skills/`.
+All workflow logic lives in `skills/`, including the implementation loop: `ack-loop-01-readiness` → `ack-loop-02-implement` → `ack-loop-03-review` → `ack-loop-04-learnings` (optional) → `ack-loop-05-commit`. There are no separate prompt files (ADR-010).
 
 ---
 
@@ -136,9 +119,8 @@ When guidance differs across files, use this authority order:
 
 1. `specs/context_aware_ai_session_spec.md` (normative)
 2. `templates/` (canonical artifact structures)
-3. `skills/` (canonical operational workflows)
-4. `prompts/skills/` (composition wrappers) and `prompts/loop/` (implementation loop)
-5. `usercontexts/` and validation artifacts (illustrative examples)
+3. `skills/` (canonical operational workflows, including the implementation loop)
+4. `usercontexts/` and validation artifacts (illustrative examples)
 
 Canonical template structures live in:
 - `templates/usercontext_template.instructions.md`
@@ -200,33 +182,30 @@ This repository provides for reusable **Agent Skills** for authoring and validat
 - Canonical paths:
   - `templates/skill_template/SKILL.md`
   - `skills/`
-  - `prompts/` (composition wrappers)
 
 ### Skill-First Authority Model
 Operational workflow authority is skill-first:
-1. `skills/` is the canonical source for create/validate/governance workflow logic.
-2. `prompts/` are available as composition wrappers to orchestrate skills.
-3. Prompt wrappers should stay concise and must not reintroduce full checklists/rubrics already defined in skills.
+1. `skills/` is the canonical source for create, validate, governance and loop workflow logic.
+2. Skills are the only entrypoint; there are no wrapper prompt files.
 
 ### Skill Workflow
 1. Author or update workflow behavior in `skills/*/SKILL.md` plus skill-local `references/`.
-2. Keep detailed operational logic in skills; use prompts as composition wrappers only.
+2. Keep detailed operational logic in skills and their `references/`.
 3. Always validate skills and keep `SKILL.validation.md` current.
 
 > **Validation scope:** Validation scores reflect structural compliance with the spec format as assessed by an AI model against a structured scoring rubric intended to be applied consistently. They do not guarantee real-world session effectiveness or consistent LLM behavior across providers. Treat scores as a structural checklist result, not a quality certification.
 
 ### Available Skills
-- `skills/create-usercontext-instructions/`
-- `skills/create-project-instructions/`
-- `skills/create-agents-md/`
-- `skills/validate-usercontext-instructions/`
-- `skills/validate-project-instructions/`
-- `skills/validate-agents-md/`
-- `skills/repository-drift-control/`
-- `skills/create-skill/`
-- `skills/validate-skill/`
-- `skills/create-checkpoint/`
-- `skills/restore-checkpoint/`
+- `skills/ack-create-user-context/`
+- `skills/ack-create-agents-md/`
+- `skills/ack-validate-user-context/`
+- `skills/ack-validate-agents-md/`
+- `skills/ack-drift-control/`
+- `skills/ack-create-skill/`
+- `skills/ack-validate-skill/`
+- `skills/ack-create-checkpoint/`
+- `skills/ack-restore-checkpoint/`
+- `skills/ack-loop-01-readiness/` to `skills/ack-loop-05-commit/` (the implementation loop)
 
 ### Invoking Skills
 
@@ -247,13 +226,12 @@ In repo-aware environments (VS Code Copilot Chat with `#file:` access, Claude Pr
 - Skills must remain provider-neutral and runtime-portable.
 - Use relative paths for skill-local references.
 - Treat tool execution permissions as explicit policy decisions.
-- Keep prompt wrappers thin and non-authoritative to avoid logic drift.
 
 ---
 
 ## File Path Conventions
 
-This repository relies on **stable, predictable file paths** so that AGENTS context, skills, specifications, prompts, and validators can reference each other safely.
+This repository relies on **stable, predictable file paths** so that AGENTS context, skills, specifications, and validators can reference each other safely.
 
 The following paths are considered **canonical**:
 
@@ -263,8 +241,6 @@ The following paths are considered **canonical**:
   - Canonical instruction templates (spec v2.0.0-beta.1)
 - `skills/`
   - Canonical workflow skills (`SKILL.md`-based folders)
-- `prompts/`
-  - Composition wrappers for instruction/skill workflows
 - `specs/context_aware_ai_session_spec.md`
   - Authoritative specification (v2.0.0-beta.1)
 - Root `README.md`
@@ -278,17 +254,16 @@ If paths must change, update the specification and README first, then adjust ski
 
 1. **Create Your User Context Artifact**
    - **Manual (canonical):** Copy `templates/usercontext_template.instructions.md`, fill in your details, and save as `yourname_usercontext.instructions.md`
-   - **Skill:** Use `skills/create-usercontext-instructions/SKILL.md` to generate your user context file
+   - **Skill:** Use `skills/ack-create-user-context/SKILL.md` to generate your user context file
 
 2. **Create Project AGENTS Context**
    - **Manual (canonical):** Copy `templates/AGENTS_template.md` and define your project context
-   - **Skill:** Use `skills/create-agents-md/SKILL.md` (or `skills/create-project-instructions/SKILL.md` where that workflow is preferred)
+   - **Skill:** Use `skills/ack-create-agents-md/SKILL.md` (root mode for the repository root, nested mode for a folder)
    - Save as `AGENTS.md` in your project root (or scoped nested `AGENTS.md` where needed)
 
 3. **Validate Artifacts**
-   - Use `skills/validate-usercontext-instructions/SKILL.md` for user context files
-   - Use `skills/validate-agents-md/SKILL.md` for `AGENTS.md`
-   - Use `skills/validate-project-instructions/SKILL.md` when validating project-context `AGENTS.md` artifacts
+   - Use `skills/ack-validate-user-context/SKILL.md` for user context files
+   - Use `skills/ack-validate-agents-md/SKILL.md` for root and nested `AGENTS.md` files
 
 4. **Load Context Into Your AI Environment**
    - See platform-specific instructions below
@@ -367,23 +342,26 @@ claude --plugin-dir ./path/to/ai-context-kit
 Skills are namespaced to the plugin name. Inside a session:
 
 ```
-/ai-context-kit:create-usercontext-instructions
-/ai-context-kit:validate-agents-md
+/ai-context-kit:ack-create-user-context
+/ai-context-kit:ack-validate-agents-md
 ```
 
 | Skill | What it does |
 |-------|-------------|
-| `create-usercontext-instructions` | Generate a new user context file through structured discovery |
-| `create-agents-md` | Generate a root `AGENTS.md` for any repository |
-| `create-project-instructions` | Generate a project-context `AGENTS.md` with role/phase defaults |
-| `create-skill` | Generate a new canonical `SKILL.md` artifact |
-| `validate-usercontext-instructions` | Validate a user context file with scored report |
-| `validate-agents-md` | Validate a root `AGENTS.md` with scored report |
-| `validate-project-instructions` | Validate a project-context `AGENTS.md` with scored report |
-| `validate-skill` | Validate a `SKILL.md` artifact with scored report |
-| `repository-drift-control` | Check and enforce consistency across spec, templates, and docs |
-| `create-checkpoint` | Capture session state as a checkpoint artifact (spec section 4.4) |
-| `restore-checkpoint` | Restore session state from a checkpoint artifact (spec section 4.4) |
+| `ack-create-user-context` | Generate a new user context file through structured discovery |
+| `ack-create-agents-md` | Generate a root `AGENTS.md` (full template, including project context and the OpenSpec section) or a nested one for a folder |
+| `ack-create-skill` | Generate a new canonical `SKILL.md` artifact |
+| `ack-validate-user-context` | Validate a user context file with scored report |
+| `ack-validate-agents-md` | Validate a root or nested `AGENTS.md` with one scored rubric |
+| `ack-validate-skill` | Validate a `SKILL.md` artifact with scored report |
+| `ack-drift-control` | Check and enforce consistency across spec, templates, and docs |
+| `ack-create-checkpoint` | Capture session state as a checkpoint artifact (spec section 4.4) |
+| `ack-restore-checkpoint` | Restore session state from a checkpoint artifact (spec section 4.4) |
+| `ack-loop-01-readiness` | Loop step 01: confirm the OpenSpec change is apply-ready and pick the next task group |
+| `ack-loop-02-implement` | Loop step 02: implement the approved task group task by task on a feature branch |
+| `ack-loop-03-review` | Loop step 03: two-axis self-review (Spec, Standards); STATUS: PASS or BLOCKED |
+| `ack-loop-04-learnings` | Loop step 04 (optional): teach the lessons from the step and its review |
+| `ack-loop-05-commit` | Loop step 05: commit checklist; archive the change after review approval |
 
 ### Update
 
@@ -408,12 +386,12 @@ If you clone this repo and run Codex from within it, all 11 skills are discovere
 Skills surface as chips in the Codex skill picker. You can also invoke them explicitly:
 
 ```
-$create-usercontext-instructions
-$validate-agents-md
-$repository-drift-control
+$ack-create-user-context
+$ack-validate-agents-md
+$ack-drift-control
 ```
 
-`repository-drift-control` is a governance action: invoke it explicitly. No per-skill sidecar blocks implicit invocation, so Codex may also select it on its own.
+`ack-drift-control` is a governance action: invoke it explicitly. No per-skill sidecar blocks implicit invocation, so Codex may also select it on its own.
 
 ### Installing the plugin instead of using repo-local discovery
 

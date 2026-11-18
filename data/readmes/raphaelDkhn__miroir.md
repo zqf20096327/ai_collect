@@ -71,6 +71,7 @@ The episode receives a reward of `1` only if the invoice is paid.
 - [How Miroir works](https://raphaeldkhn.github.io/miroir/introduction.html#how-it-works)
 - [Build an environment](https://raphaeldkhn.github.io/miroir/make/image.html)
 - [Train and evaluate](https://raphaeldkhn.github.io/miroir/run/serve.html)
+- [Run in Harbor](https://raphaeldkhn.github.io/miroir/run/harbor.html): Claude Code, Codex and other agents on an env's tasks
 
 **[Gitea example](examples/gitea)** — Unmodified Gitea with 144 tasks across 12 task families.
 

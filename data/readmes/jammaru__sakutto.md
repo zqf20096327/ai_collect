@@ -151,7 +151,7 @@ No account is needed. The model weights are not in this repository or in the sto
 
 The same actions are in the toolbar popup and the right-click menu. Chrome owns extension shortcuts, so change them in Chrome's editor: the settings page has a **Keyboard shortcuts** panel, and the popup has a **Change shortcuts** link. Firefox uses Alt+Shift+letter by default and opens Firefox's own editor.
 
-If Chrome has assigned a command, it is delivered even while a text field is focused. If Chrome never assigned it, the in-page default still works, but Sakutto leaves the keydown unprevented so Option+letter can type. That fallback does not run on `chrome://` pages or in the PDF viewer. Alt+D is not a default because Chrome uses it for the address bar.
+Chrome delivers assigned commands even while a text field is focused. If a command is Not set, the popup and options show a notice with a button to `chrome://extensions/shortcuts`; assign it there. Sakutto does not listen for page keydown events as a fallback, because its runtime content scripts are injected only after you invoke the extension. No additional host permission is requested. Alt+D is not a default because Chrome uses it for the address bar.
 
 ## FAQ
 
@@ -191,7 +191,7 @@ Yes, on Firefox 153 or later. The Firefox build uses PLaMo only, with page, sele
 
 ## Privacy
 
-Translation runs on your device by default. Sakutto does not send page text, selections, your glossary, or translations to the developer. There is no account, no advertising, no analytics, and no telemetry.
+Translation runs on your device by default. Sakutto does not send page text, selections, your glossary, or translations to the developer. There is no account, no advertising, no analytics, and no telemetry. The built-in engine's own network request is the model download from Hugging Face. On Chrome and Edge, first-run preselects a shared model folder; browser storage remains one click away. Firefox stores the model in browser storage, and can copy official models from a shared folder once; copied files are checked by size and SHA-256. Choosing a shared folder on Chromium moves verified models into it, and switching back to browser storage copies them into the browser without deleting the folder files. Grant access from the Settings tab and pick “Allow on every visit” when offered (Japanese Chrome: 「サイトアクセス時は常に許可」; Japanese Edge: 「常に許可」). A one-click re-grant may sometimes be needed. That folder stays on this computer. Existing users who already use a folder keep it.
 
 The built-in engine's own network traffic is limited to:
 

@@ -86,7 +86,7 @@ separate until the qualification work in #730 is complete.
 | PyPI package | [`kicad-mcp-pro`](https://pypi.org/project/kicad-mcp-pro/) |
 | npm wrapper | [`kicad-mcp-pro`](https://www.npmjs.com/package/kicad-mcp-pro) |
 | MCP Registry name | `io.github.oaslananka/kicad-mcp-pro` |
-| Version | `4.16.0` | <!-- x-release-please-version -->
+| Version | `4.19.0` | <!-- x-release-please-version -->
 | OSS maturity report | [`docs/repo-maturity-report.md`](docs/repo-maturity-report.md) |
 | OpenSSF evidence | [`docs/openssf-evidence.md`](docs/openssf-evidence.md) |
 
@@ -148,6 +148,28 @@ and choose **Manage access** for the project to grant/revoke each AI client's
 no write controls are presented as functional. Local MCP use does not require
 a Cloud account. Selecting a different project on a paired device is not yet
 supported in this foreground CLI.
+
+**Owner-operated Cloud editing (opt-in, not available on the public Cloud by default):**
+After a Cloud operator has enabled the signed write service, obtain its
+**public** Ed25519 issuer key and independently verify the operator-provided
+SHA-256 SPKI fingerprint. From an interactive Windows terminal, for a device
+that is already paired, run:
+
+```powershell
+kicad-mcp-pro cloud trust-write-issuer --public-key-file .\issuer-public.pem --sha256 <verified-64-character-SPKI-sha256>
+kicad-mcp-pro cloud connect --enable-native-write
+```
+
+The key and fingerprint are pinned to the current Windows user's credential
+store; a different issuer cannot replace them silently. The foreground
+owner command also checks and prepares the Windows-local replay-protection
+directory. Neither command gives an AI app access to any design. The AI client must separately request and
+receive OAuth projects:write consent, then the owner must allow editing for
+that **specific client and project** in Cloud Devices. Existing clients
+and projects remain read-only. The write service and real KiCad save/reopen
+acceptance must be operational before presenting editing as available. Do not
+enable editing on production designs to validate the feature; use a disposable
+KiCad test board and verify its independent on-disk state.
 
 `setup` guides the local MCP client configuration without requiring a Cloud
 account. For scripts, use `kicad-mcp-pro setup --agent claude-code`; the

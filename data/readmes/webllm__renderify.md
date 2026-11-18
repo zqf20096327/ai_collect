@@ -1,95 +1,160 @@
-<img src="./logo.png" alt="Renderify logo" width="128">
+<p align="center">
+  <img src="./logo.png" alt="Renderify logo" width="120">
+</p>
 
-# Renderify
+<h1 align="center">Renderify</h1>
 
-![Node CI](https://github.com/webllm/renderify/workflows/CI/badge.svg)
-![npm](https://img.shields.io/npm/v/renderify.svg)
-![license](https://img.shields.io/npm/l/renderify)
+<p align="center">
+  <strong>Renderify renders the UI your model describes.</strong><br>
+  Validated RuntimePlans (JSON with state, lists, forms, and events) render by default;
+  model-written JSX runs in a sandboxed iframe when a plan is not enough.
+  No build server, no deploy step.
+</p>
 
-[Documentation](https://webllm.github.io/renderify/docs/) · [Renderer-only Playground](https://webllm.github.io/renderify/playground/)
+<p align="center">
+  <a href="https://github.com/webllm/renderify/actions/workflows/ci.yml"><img src="https://github.com/webllm/renderify/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://www.npmjs.com/package/renderify"><img src="https://img.shields.io/npm/v/renderify.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/renderify"><img src="https://img.shields.io/npm/types/renderify.svg" alt="TypeScript types included"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/npm/l/renderify.svg" alt="MIT license"></a>
+</p>
 
-> LLM generates JSX/TSX → browser renders it directly at runtime — no backend build server, no deploy step, JSPM package support with an explicit compatibility contract.
+<p align="center">
+  <a href="https://webllm.github.io/renderify/docs/"><strong>Documentation</strong></a> ·
+  <a href="https://webllm.github.io/renderify/playground/"><strong>Playground</strong></a> ·
+  <a href="docs/getting-started.md"><strong>Getting Started</strong></a> ·
+  <a href="docs/integrations.md"><strong>Integrations</strong></a> ·
+  <a href="#examples-and-templates"><strong>Examples</strong></a>
+</p>
 
-> Renderify is a runtime-first, bundleless dynamic renderer that lets LLMs produce real, interactive UI on the fly. It bridges the gap between "LLM can generate code" and "users can see and interact with that UI instantly" — with inline transpilation via `@babel/standalone`, and no backend compiler/deploy pipeline in the loop.
+<p align="center">
+  <img src="docs/assets/renderify-demo.gif" alt="Renderify demo" width="820">
+</p>
 
-A modern runtime renderer that lets LLMs generate JSX/TSX and render interactive UI instantly in the browser — no build step, no backend compiler.
+Renderify is the rendering layer for generative UI. Return a RuntimePlan from a
+Vercel AI SDK, AG-UI, or MCP tool and render it with `<RenderifyView>` in React,
+with the browser runtime in any page, or inside an MCP Apps host. Plans are
+validated and policy-checked before they render, and only the actions you allow
+reach your app.
 
-<a id="bundleless-contract"></a>
-Renderify is **bundleless by design**: it does not rely on a traditional bundling pipeline to run generated UI. Instead, it resolves and rewrites module imports at runtime (JSPM/CDN + `moduleManifest` pinning) and executes under explicit security policy and sandbox controls.
-In other words, bundleless runtime execution does **not** mean full npm bundler compatibility; Renderify intentionally targets a browser-ESM-compatible subset with explicit guarantees. See [JSPM package support (tiered contract)](#what-renderify-does) for the exact compatibility boundary.
+<details>
+<summary><strong>Table of contents</strong></summary>
 
-![Renderify demo](docs/assets/renderify-demo.gif)
+- [30-Second Example](#30-second-example)
+- [Where Renderify Fits](#where-renderify-fits)
+- [What Renderify Does](#what-renderify-does)
+  - [Highlights](#highlights)
+- [Who This Is For](#who-this-is-for)
+- [Runtime Pipeline](#runtime-pipeline)
+- [Implemented Capabilities](#implemented-capabilities)
+- [SDK Quick Start (Non-CLI)](#sdk-quick-start-non-cli)
+- [CLI Quick Start](#cli-quick-start)
+  - [Playground Hash Deep-Link](#playground-hash-deep-link)
+- [Killer Demo](#killer-demo)
+- [Programmatic Example](#programmatic-example)
+- [Renderer-only Usage (No Built-in LLM)](#renderer-only-usage-no-built-in-llm)
+  - [Renderer-only TSX + Dependency Package (JSPM)](#renderer-only-tsx--dependency-package-jspm)
+  - [Bundleless Contract](#bundleless-contract)
+- [MCP Apps (Offline Declarative)](#mcp-apps-offline-declarative)
+- [Package Topology](#package-topology)
+- [Documentation](#documentation)
+- [Examples and Templates](#examples-and-templates)
+- [Technical Highlights](#technical-highlights)
+- [Contributing](#contributing)
+- [License](#license)
 
-## 30-Second JSX Example
+</details>
 
-Want to edit and render this kind of source without installing the repo? Use the
-[static Playground](https://webllm.github.io/renderify/playground/). It runs the
-renderer in the browser and never makes an LLM request.
+## 30-Second Example
 
-```tsx
-import { renderTrustedPlanInBrowser } from "renderify";
-
-await renderTrustedPlanInBrowser(
-  {
-    specVersion: "runtime-plan/v1",
-    id: "hello_jsx_runtime",
-    version: 1,
-    root: { type: "text", value: "Loading..." },
-    source: {
-      language: "tsx",
-      runtime: "preact",
-      code: `
-        import { format } from "date-fns/format";
-
-        export default function App() {
-          return <section>Today: {format(new Date(), "yyyy-MM-dd")}</section>;
-        }
-      `,
-    },
-  },
-  { target: "#mount" },
-);
+```bash
+npm install @renderify/react @renderify/ir
 ```
 
-Defaults (no extra config):
+```tsx
+import { RenderifyFrame, RenderifyView } from "@renderify/react";
 
-1. Execute reviewed JSX/TSX through the trusted browser source lane.
-2. Resolve bare imports through JSPM (`auto-pin-latest`).
-3. Pin resolved URLs into `moduleManifest` before execution.
+// A RuntimePlan from your model, for example a tool result.
+<RenderifyView plan={plan} onEvent={(event, state) => console.log(event, state)} />;
 
-## The Problem
+// Model-written JSX, rendered in an opaque-origin sandboxed iframe.
+<RenderifyFrame source={code} allowedActions={["save"]} onAction={save} />;
+```
 
-LLMs are increasingly capable of generating UI code, but **there is no good way to render that output directly in the browser**:
-| Existing Approach | Limitation |
-| --- | --- |
-| **v0 / Bolt.new** | Requires a full build backend (Next.js compile + deploy). Not embeddable as a runtime in your own app. |
-| **Streamlit / Gradio** | Python-based, server-rendered. Not a frontend runtime. |
-| **MCP Apps** | Standardizes the host/resource envelope; applications still need a rendering model and security boundary. |
-| **Anthropic Artifacts** | Closed implementation, not open-source, not embeddable. |
-| **JSON schema renderers (A2UI, json-render)** | LLM fills parameters into a predefined component catalog. Cannot express anything outside the schema. |
-| **Sandpack / WebContainers** | Full in-browser bundlers — powerful but heavyweight, not optimized for the LLM → UI hot path. |
-**The missing piece**: a lightweight, security-governed runtime where LLMs output JSX/TSX (or structured plans) and the browser renders it immediately — with broad browser-ESM npm access via JSPM, without any backend compile step.
+Want to try plans or JSX without installing anything? Use the
+[static Playground](https://webllm.github.io/renderify/playground/). It runs the
+renderer in your browser and never makes an LLM request. The
+[Getting Started guide](docs/getting-started.md) covers plain JavaScript, agent
+frameworks, and MCP servers.
+
+## Where Renderify Fits
+
+Agent frameworks and protocols decide how UI travels between a model, your
+backend, and your app. Renderify is the renderer at the end of that path, so it
+works alongside them:
+
+| | What it standardizes | How Renderify fits |
+| --- | --- | --- |
+| **Vercel AI SDK, CopilotKit, assistant-ui** | Tool calling and chat state in your app | A `render_ui` tool returns a RuntimePlan and `<RenderifyView>` renders it. See [integrations](docs/integrations.md). |
+| **AG-UI** | Events between agent backends and frontends | Plans travel in tool results and render in any AG-UI frontend. |
+| **MCP Apps** | How MCP servers ship UI into host applications | `@renderify/mcp-app` serves the view and renders validated, offline plans inside it. |
+| **A2UI** | Declarative UI composed from the client's trusted component catalog | Complementary: A2UI composes your catalog's native components across platforms; Renderify describes web UI at the element level with its own state, or runs model-written JSX in a sandbox. |
+| **App builders and in-browser IDEs** (v0, Bolt.new, Sandpack, WebContainers) | Building and running whole projects | Renderify renders one UI inside your existing app at runtime, without a project build. |
+
+In each case Renderify adds one validated IR with a security policy checked
+before anything renders, local interactivity without another model call, and a
+sandboxed lane for open-ended code.
 
 ## What Renderify Does
 
-```
-LLM output (JSX/TSX or structured plan)
-  → CodeGen (parse + normalize)
-    → Security policy check (before any execution)
-      → Runtime execution (Babel transpile + JSPM module resolution)
-        → Rendered UI in the browser
+Renderify has two lanes. Plans are the default; the sandboxed lane is there for
+UIs a plan cannot express.
+
+```mermaid
+flowchart LR
+    Model["Model or agent tool"]
+    Model -->|"RuntimePlan JSON"| Check["Validate and policy-check"]
+    Check --> View["Declarative renderer<br/>state, lists, forms, events"]
+    Model -->|"JSX or TSX"| Frame["Sandboxed iframe<br/>opaque origin, strict CSP"]
+    View -->|"events"| App["Your app or MCP tools"]
+    Frame -->|"allowlisted actions"| App
 ```
 
+|                   | Validated plans (default)                                                    | Sandboxed JSX                                                        |
+| ----------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Input**         | RuntimePlan JSON                                                             | JSX or TSX source                                                    |
+| **What runs**     | No model code: the plan is validated, then rendered                          | Model code, inside an opaque-origin `sandbox="allow-scripts"` iframe |
+| **Interactivity** | State, lists, conditions, forms, and bound inputs, without another model call | Anything Preact- or React-compatible, with npm packages from JSPM    |
+| **React**         | `<RenderifyView plan={plan} />`                                              | `<RenderifyFrame source={code} />`                                   |
+| **Without React** | `renderPlanInBrowser(plan, { target })`                                      | `createRenderifyFrame({ container })`                                |
+| **Good for**      | Forms, dashboards, cards, MCP Apps                                           | Charts with npm libraries, custom components                         |
+
+### Highlights
+
+**Render**
+
+- **Interactive declarative plans**: lists (`each`), conditions (`if`), two-way `bind` for form fields, form submit, and state transitions, with no code execution. See the [RuntimePlan IR reference](docs/runtime-plan-ir.md).
 - **Zero-build rendering**: LLM-generated JSX/TSX runs directly in the browser via `@babel/standalone` + JSPM CDN. No backend build server, no deploy step, no server round-trip.
 - **JSPM package support (tiered contract)**: Compatibility aliases (`preact`/`react` bridge, `recharts`) are guaranteed; pure browser ESM packages (for example `lodash-es`, `date-fns`, `@mui/material`) are best-effort. Node.js builtins and unsupported schemes are rejected deterministically. This is the concrete scope of the [bundleless contract](#bundleless-contract).
 - **Default auto-pin-latest for bare imports**: `renderPlanInBrowser` automatically resolves bare source imports (for example `import { format } from "date-fns"`) through JSPM latest and injects pinned `moduleManifest` entries before policy check and execution.
+
+**Secure**
+
+- **Sandboxed source lane**: `@renderify/frame` runs model-written JSX/TSX in an opaque-origin iframe with a strict CSP, an action allowlist, loop guards, and a watchdog. See [ADR-0002](docs/adr/0002-sandboxed-source-frame.md).
 - **Security-first execution**: Every plan passes through a policy checker (blocked tags, module allowlists, tree depth limits, execution budgets) _before_ any code runs. Four built-in profiles: `strict`, `balanced`, `trusted`, `relaxed`; strict and balanced reject runtime source modules.
 - **JSPM-only strict preset**: Set `RENDERIFY_RUNTIME_JSPM_ONLY_STRICT_MODE=true` to force strict profile + manifest/integrity enforcement + preflight fail-fast + no fallback CDNs.
+
+**Integrate**
+
+- **React bindings**: `@renderify/react` provides `<RenderifyView>`, `<RenderifyFrame>`, and `useRenderifySession`, with a [Next.js chat template](templates/nextjs-chat) and an [MCP server template](templates/mcp-server).
+- **Official MCP Apps adapter**: `@renderify/mcp-app` serves a self-contained `ui://` resource for offline declarative RuntimePlans, with official protocol lifecycle handling and a strict no-source/no-network boundary by default; an opt-in source mode renders model-written JSX in a nested sandboxed frame.
+- **Pluggable at every stage**: 10 hook points (`beforeLLM`, `afterCodeGen`, `beforeRender`, etc.) let you inject custom logic without forking the core.
+
+**Generate**
+
+- **One contract for every model**: the same JSON Schema, validation, and repair diagnostics for OpenAI, Anthropic, Google, Ollama, LM Studio, and Codex, measured by nightly [generation evals](docs/generation-evals.md).
 - **Dual input paths**: Accepts both structured JSON RuntimePlans (for precise LLM structured output) and raw TSX/JSX code blocks (for natural LLM text generation).
 - **LLM is optional**: You can use Renderify as a renderer-only runtime by supplying RuntimePlan/source from your own backend or model pipeline.
-- **Official MCP Apps adapter**: `@renderify/mcp-app` serves a self-contained `ui://` resource for offline declarative RuntimePlans, with official protocol lifecycle handling and a strict no-source/no-network boundary.
 - **Streaming-first rendering**: `renderPromptStream` emits `llm-delta` / `preview` / `final` chunks so chat UIs can progressively render.
-- **Pluggable at every stage**: 10 hook points (`beforeLLM`, `afterCodeGen`, `beforeRender`, etc.) let you inject custom logic without forking the core.
 
 ## Who This Is For
 
@@ -120,6 +185,9 @@ flowchart TD
 ```
 
 ## Implemented Capabilities
+
+<details>
+<summary>Runtime protocol, sandbox profiles, source pipeline, dependency preflight, and tooling</summary>
 
 - Runtime plan model with optional `state` (when provided, `state.initial` is required)
 - Runtime quotas and limits:
@@ -170,6 +238,8 @@ flowchart TD
 - PR changeset enforcement for release-relevant package changes
 - Benchmark workflow with JSON artifacts uploaded per CI run
 
+</details>
+
 ## SDK Quick Start (Non-CLI)
 
 Use Renderify directly in your app code (no `pnpm cli`).
@@ -217,6 +287,25 @@ pnpm cli -- render-plan examples/runtime/counter-plan.json
 
 # Local development Playground (includes optional LLM actions)
 pnpm playground
+```
+
+The playground listens only on `127.0.0.1` by default. Remote access requires
+an explicit `--host <host>` option or `RENDERIFY_PLAYGROUND_HOST` override; use
+a non-loopback binding only on a trusted network.
+
+The playground always processes plans through the server's configured
+security/runtime boundary first. Eligible reviewed `source.runtime: "preact"`
+plans are then transpiled and mounted in the browser so hooks, React-compatible
+packages, CSS-in-JS, and event handlers remain interactive. Other source modes
+display the server-rendered result only. Hash payloads cannot bypass the active
+security profile. The optional display iframe is a presentation boundary, not
+a security boundary for arbitrary hostile source.
+
+<details>
+<summary>Playground flags, LLM providers, and runtime environment variables</summary>
+
+```bash
+# Playground flags
 pnpm cli -- playground --host 0.0.0.0 # trusted networks only
 pnpm cli -- playground --debug
 pnpm cli -- playground --no-llm-log
@@ -268,21 +357,11 @@ RENDERIFY_RUNTIME_BROWSER_SANDBOX_FAIL_CLOSED=true pnpm playground
 RENDERIFY_LLM_USE_STRUCTURED_OUTPUT=false pnpm playground
 ```
 
-The playground listens only on `127.0.0.1` by default. Remote access requires
-an explicit `--host <host>` option or `RENDERIFY_PLAYGROUND_HOST` override; use
-a non-loopback binding only on a trusted network.
-
 By default, playground prints outbound LLM request/response payload logs in terminal (`[playground-llm]`) with sensitive fields redacted. Use `--no-llm-log` or `RENDERIFY_PLAYGROUND_LLM_LOG=false` to disable.
 
 When debug mode is enabled, playground logs key inbound/outbound request summaries, exposes `GET /api/debug/stats`, and shows an in-page **Debug Stats** panel with auto-refresh.
 
-The playground always processes plans through the server's configured
-security/runtime boundary first. Eligible reviewed `source.runtime: "preact"`
-plans are then transpiled and mounted in the browser so hooks, React-compatible
-packages, CSS-in-JS, and event handlers remain interactive. Other source modes
-display the server-rendered result only. Hash payloads cannot bypass the active
-security profile. The optional display iframe is a presentation boundary, not
-a security boundary for arbitrary hostile source.
+</details>
 
 ### Playground Hash Deep-Link
 
@@ -416,6 +495,12 @@ Auto-pin-latest workflow (`renderTrustedPlanInBrowser` default for reviewed sour
 
 Use `manifest-only` in production (`autoPinLatestModuleManifest: false`) when you want fully pre-pinned, reviewable dependency mappings.
 
+### Bundleless Contract
+
+Renderify is **bundleless by design**: it does not rely on a traditional bundling pipeline to run generated UI. Instead, it resolves and rewrites module imports at runtime (JSPM/CDN + `moduleManifest` pinning) and executes under explicit security policy and sandbox controls.
+
+In other words, bundleless runtime execution does **not** mean full npm bundler compatibility; Renderify intentionally targets a browser-ESM-compatible subset with explicit guarantees. See [JSPM package support (tiered contract)](#what-renderify-does) for the exact compatibility boundary.
+
 ## MCP Apps (Offline Declarative)
 
 Use the dedicated adapter when an MCP tool should display a portable interactive
@@ -423,7 +508,7 @@ view. This path intentionally accepts a narrower contract than the general
 runtime: element/text RuntimePlans and local state transitions only.
 
 ```ts
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from "@modelcontextprotocol/server";
 import { registerRenderifyApp } from "@renderify/mcp-app";
 
 const server = new McpServer({ name: "dashboard", version: "1.0.0" });
@@ -441,58 +526,59 @@ await registerRenderifyApp(server, {
 });
 ```
 
-The handler's second argument is the official MCP request context, including
-`authInfo`, cancellation signal, session ID, and request metadata when supplied
-by the transport.
+The handler's second argument is the official MCP SDK v2 `ServerContext`:
+`mcpReq.signal` for cancellation, `mcpReq.id`, `sessionId`, and
+`http?.authInfo` when the transport supplies authentication.
 
 Runtime source, imports, component modules, network access, timers, persistent
-storage, and undeclared UI-to-tool calls fail closed. See the
+storage, and undeclared UI-to-tool calls fail closed. Apps registered with
+`sourceMode: true` can return model-written JSX instead, which the view renders
+in a sandboxed frame nested inside it
+([source mode](packages/mcp-app/README.md#source-mode)). See the
 [MCP Apps architecture](docs/architecture/mcp-app-runtime-modules.md) and
 [threat model](docs/threat-model.md).
 
 ## Package Topology
 
-| Package               | Responsibility                                                   |
-| --------------------- | ---------------------------------------------------------------- |
-| `renderify`           | Official top-level SDK facade (recommended app entry)            |
-| `@renderify/ir`       | Runtime IR contracts (plan/node/state/action/event/capabilities) |
-| `@renderify/runtime`  | Runtime execution engine + JSPM loader + one-line embed API      |
-| `@renderify/security` | Policy profiles + plan/module/source static checks               |
-| `@renderify/mcp-app`  | Official MCP Apps adapter for offline declarative RuntimePlans   |
-| `@renderify/core`     | Legacy orchestration facade (optional compatibility layer)       |
-| `@renderify/llm`      | LLM provider package (OpenAI + OpenAI Codex + Anthropic + Google + local providers) |
-| `@renderify/cli`      | CLI + browser playground                                         |
+| Layer                 | Package                                    | Responsibility                                                                             |
+| --------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| **App entry**         | [`renderify`](packages/renderify)          | Official top-level SDK facade (recommended app entry)                                      |
+| **Render**            | [`@renderify/react`](packages/react)       | React components and hooks: `RenderifyView`, `RenderifyFrame`                              |
+|                       | [`@renderify/runtime`](packages/runtime)   | Runtime execution engine + JSPM loader + one-line embed API                                |
+|                       | [`@renderify/frame`](packages/frame)       | Sandboxed iframe for model-written JSX/TSX and plans                                       |
+| **Contract & policy** | [`@renderify/ir`](packages/ir)             | Runtime IR contracts (plan/node/state/action/event/capabilities)                           |
+|                       | [`@renderify/security`](packages/security) | Policy profiles + plan/module/source static checks                                         |
+| **Hosts**             | [`@renderify/mcp-app`](packages/mcp-app)   | Official MCP Apps adapter: offline declarative plans, plus an opt-in sandboxed source mode |
+| **Generation**        | [`@renderify/llm`](packages/llm)           | LLM provider package (OpenAI + OpenAI Codex + Anthropic + Google + local providers)        |
+|                       | [`@renderify/core`](packages/core)         | Legacy orchestration facade (optional compatibility layer)                                 |
+| **Tooling**           | [`@renderify/cli`](packages/cli)           | CLI + browser playground                                                                   |
 
-## Integration Docs
+## Documentation
 
 The same documents are published as a searchable
 [Fumadocs website](https://webllm.github.io/renderify/docs/).
 
-- Renderer-only website Playground: [`docs/website-playground.md`](docs/website-playground.md)
-- Website deployment: [`docs/website-deployment.md`](docs/website-deployment.md)
-- Architecture overview: [`docs/architecture/index.md`](docs/architecture/index.md)
-- Visual architecture diagrams (Mermaid): [`docs/architecture-visual.md`](docs/architecture-visual.md)
-- RuntimePlan IR reference: [`docs/runtime-plan-ir.md`](docs/runtime-plan-ir.md)
-- Runtime execution engine: [`docs/runtime-execution.md`](docs/runtime-execution.md)
-- Dependency verification model: [`docs/runtime-execution.md#verification-model`](docs/runtime-execution.md#verification-model)
-- Browser embedding: [`docs/browser-integration.md`](docs/browser-integration.md)
-- Security guide: [`docs/security.md`](docs/security.md)
-- Threat model: [`docs/threat-model.md`](docs/threat-model.md)
-- MCP Apps: [`docs/architecture/mcp-app-runtime-modules.md`](docs/architecture/mcp-app-runtime-modules.md)
-- Plugin system: [`docs/plugin-system.md`](docs/plugin-system.md)
-- Troubleshooting & FAQ: [`docs/troubleshooting-faq.md`](docs/troubleshooting-faq.md)
-- Cookbook / common integration patterns: [`docs/cookbook.md`](docs/cookbook.md)
-- Performance tuning guide: [`docs/performance-tuning.md`](docs/performance-tuning.md)
+| Topic | Guides |
+| --- | --- |
+| **Start here** | [Getting started](docs/getting-started.md) · [Renderer-only website Playground](docs/website-playground.md) · [Cookbook / common integration patterns](docs/cookbook.md) · [Troubleshooting & FAQ](docs/troubleshooting-faq.md) |
+| **Integrate** | [Agent framework integrations](docs/integrations.md) (AI SDK, CopilotKit, assistant-ui, AG-UI, MCP Apps) · [Browser embedding](docs/browser-integration.md) · [MCP Apps](docs/architecture/mcp-app-runtime-modules.md) · [Plugin system](docs/plugin-system.md) |
+| **Sandbox & security** | [Sandboxed frame for model-written source](docs/sandboxed-frame.md) · [Security guide](docs/security.md) · [Threat model](docs/threat-model.md) · [Dependency verification model](docs/runtime-execution.md#verification-model) |
+| **Reference** | [RuntimePlan IR reference](docs/runtime-plan-ir.md) · [Runtime execution engine](docs/runtime-execution.md) · [Architecture overview](docs/architecture/index.md) · [Visual architecture diagrams](docs/architecture-visual.md) · [Performance tuning guide](docs/performance-tuning.md) |
+| **Project** | [Generation evals](docs/generation-evals.md) · [Website deployment](docs/website-deployment.md) |
 
-## Browser Examples
+## Examples and Templates
 
-- Runtime plan flow: [`examples/runtime/browser-runtime-example.html`](examples/runtime/browser-runtime-example.html)
-- TSX runtime flow (Babel + JSPM): [`examples/runtime/browser-tsx-jspm-example.html`](examples/runtime/browser-tsx-jspm-example.html)
-- Recharts + Preact RuntimePlan: [`examples/runtime/recharts-dashboard-plan.json`](examples/runtime/recharts-dashboard-plan.json)
-- MCP Apps stdio server: [`examples/mcp-app/README.md`](examples/mcp-app/README.md)
-- Killer demo: one-line chat dashboard embed: [`examples/killer/one-line-chat-dashboard.html`](examples/killer/one-line-chat-dashboard.html)
-- Killer demo: one-line form/state/date-fns embed: [`examples/killer/one-line-chat-form.html`](examples/killer/one-line-chat-form.html)
-- Killer demo: one-line worker-sandbox source embed: [`examples/killer/one-line-sandbox-worker.html`](examples/killer/one-line-sandbox-worker.html)
+| Kind                | Example                              | Source                                                                                             |
+| ------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| **Templates**       | Next.js chat with the Vercel AI SDK  | [`templates/nextjs-chat`](templates/nextjs-chat)                                                   |
+|                     | MCP Apps task board server           | [`templates/mcp-server`](templates/mcp-server)                                                     |
+| **MCP Apps**        | MCP Apps stdio server                | [`examples/mcp-app/README.md`](examples/mcp-app/README.md)                                         |
+| **Browser runtime** | Runtime plan flow                    | [`examples/runtime/browser-runtime-example.html`](examples/runtime/browser-runtime-example.html)   |
+|                     | TSX runtime flow (Babel + JSPM)      | [`examples/runtime/browser-tsx-jspm-example.html`](examples/runtime/browser-tsx-jspm-example.html) |
+|                     | Recharts + Preact RuntimePlan        | [`examples/runtime/recharts-dashboard-plan.json`](examples/runtime/recharts-dashboard-plan.json)   |
+| **Killer demos**    | One-line chat dashboard embed        | [`examples/killer/one-line-chat-dashboard.html`](examples/killer/one-line-chat-dashboard.html)     |
+|                     | One-line form/state/date-fns embed   | [`examples/killer/one-line-chat-form.html`](examples/killer/one-line-chat-form.html)               |
+|                     | One-line worker-sandbox source embed | [`examples/killer/one-line-sandbox-worker.html`](examples/killer/one-line-sandbox-worker.html)     |
 
 ## Technical Highlights
 
@@ -502,6 +588,13 @@ Beyond the end-to-end pipeline, several components have standalone value:
 - **Security policy framework** — a systematic approach to validating untrusted declarative plans and governing reviewed dynamic source: blocked tags, module allowlists, execution budgets, and source pattern analysis. Source scanning and browser sandbox adapters are defense-in-depth controls, not a guarantee that arbitrary hostile JavaScript is safe.
 - **Browser ESM module graph materialization** — the `fetch → rewrite imports → blob URL` pipeline solves a problem browser standards have not natively addressed (bare specifiers are not usable in browsers). This module loading strategy can be extracted as an independent utility.
 
+## Contributing
+
+Issues and pull requests are welcome. The [contributing guide](docs/contributing.md)
+covers setup, development commands, testing, and the changeset-based release
+process. Report security vulnerabilities privately as described in
+[SECURITY.md](SECURITY.md).
+
 ## License
 
-MIT
+[MIT](LICENSE)

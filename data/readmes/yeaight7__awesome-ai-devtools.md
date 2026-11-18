@@ -8,7 +8,7 @@
 
 <p align="center">Window-shop coding agents, IDE assistants, MCP tooling, evals, observability, security, and self-hosted AI dev stacks.</p>
 
-<p align="center"><code>390 tools</code> <code>302 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
+<p align="center"><code>391 tools</code> <code>303 reviewed</code> <code>88 draft</code> <code>18 active reviewed shelves</code></p>
 
 ## Why this exists
 
@@ -70,7 +70,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ### Build with agents
 
-[Coding agents](#coding-agents) (34) · [Terminal agents](#terminal-agents) (23) · [IDE assistants](#ide-assistants) (17) · [Browser agents](#browser-agents) (25)
+[Coding agents](#coding-agents) (35) · [Terminal agents](#terminal-agents) (23) · [IDE assistants](#ide-assistants) (17) · [Browser agents](#browser-agents) (25)
 
 ### Extend agents
 
@@ -90,7 +90,7 @@ No rankings. No launch hype. Just a clean storefront for discovering tools worth
 
 ## Comparison Matrix
 
-_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 302 reviewed tools._
+_Showing a curated top 50 tools. See [docs/COMPARISON.md](docs/COMPARISON.md) for the full matrix of all 303 reviewed tools._
 
 | Tool | Main shelf | OSS | Local | Self-hosted | CLI | IDE | MCP | Links |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -156,6 +156,7 @@ Agentic tools that can inspect, modify, and reason about source code.
 | Tool | Good for | Experience | Links |
 | --- | --- | --- | --- |
 | [Aider](https://aider.chat/) | Open-source terminal pair programmer that edits tracked files in a local Git repository. | CLI · Local | [Website](https://aider.chat/) / [Docs](https://aider.chat/docs/) / [Repo](https://github.com/Aider-AI/aider) |
+| [Althar](https://althar.ai/) | Desktop ADE that turns requests into tasks, assigns coding agents, and sends their changes to another model for review. | Desktop · Local | [Website](https://althar.ai/) / [Repo](https://github.com/AltharIDE/althar) |
 | [Amazon Q Developer](https://aws.amazon.com/q/developer/) | AWS coding assistant with IDE, CLI, and GitHub agents for coding, testing, review, and transformations. | CLI · GitHub app · IDE · Hybrid | [Website](https://aws.amazon.com/q/developer/) / [Docs](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/what-is.html) |
 | [Amp](https://ampcode.com/) | Terminal-centric coding agent with deep codebase context, editor links, and automation-oriented SDK features. | API · CLI · Hybrid | [Website](https://ampcode.com/) / [Docs](https://ampcode.com/manual) |
 | [Atomic Agent](https://atomicagent.io) | Local-first CLI and TUI coding agent that runs open-weight models on your machine via llama.cpp, with 56 built-in tools and MCP support. | CLI · MCP · Local | [Website](https://atomicagent.io) / [Docs](https://atomicagent.io/docs) / [Repo](https://github.com/AtomicBot-ai/atomic-agent) |
@@ -512,5 +513,4 @@ Tools that help developers run or integrate local models in coding workflows.
 | [AutoGPTQ](https://github.com/AutoGPTQ/AutoGPTQ#readme) | Python library for GPTQ weight-only quantization of Transformer language models for efficient local inference. | Library · Local | [Docs](https://github.com/AutoGPTQ/AutoGPTQ#readme) / [Repo](https://github.com/AutoGPTQ/AutoGPTQ) |
 | [ChromaDB](https://www.trychroma.com) | Lightweight vector database and Python library for local embeddings storage and RAG-style similarity search. | API · Library · Local | [Website](https://www.trychroma.com) / [Docs](https://docs.trychroma.com) / [Repo](https://github.com/chroma-core/chroma) |
 | [Docker Model Runner](https://www.docker.com/products/model-runner) | Docker Desktop-integrated local model runtime that runs GGUF models via an OpenAI-compatible API. | API · CLI · Local | [Website](https://www.docker.com/products/model-runner) / [Docs](https://docs.docker.com/ai/model-runner/) |
-| [ExLlamaV2](https://github.com/turboderp-org/exllamav2#readme) | Inference library for running GPTQ-quantized LLMs on modern consumer GPUs with high performance. | CLI · Library · Local | [Docs](https://github.com/turboderp-org/exllamav2#readme) / [Repo](https://github.com/turboderp-org/exllamav2) |
-| [GPT4All](https://gpt4all.io) | Local LLM desktop client and Python library with optional OpenAI-compatible API server on localhost. | API · Desktop · Library · Local | [Website](https://gpt4all.io) / [Docs](https://d
+| [ExLlamaV2](https://github.com/turboderp-org/exllamav2#readme) | Inference library for running GPTQ-quantized LLMs on modern consumer GPUs with high performance. | CLI · Library · Local | [Docs](https://github.com/turboderp-org/exllamav2#readme) / [Repo](https://github

@@ -61,7 +61,11 @@ literally-aeo verify audit-run.aeo.zip   # offline verification
   the host model calls, and a DataForSEO login for Google AI Overviews, the
   consumer apps and factual grounding searches.
 - For coding-agent surfaces, the CLI of each one you measure (Claude Code,
-  Codex, Cursor) and its own login.
+  Codex, Cursor) and its own login. A logged-in Claude Code tells the model
+  the account's email address, so auditing your own company from your own
+  account can tilt its answers toward you. To measure it without an
+  identity, set `ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN` and
+  `ANTHROPIC_BASE_URL` for an Anthropic-compatible gateway.
 - For `moneyPages`, Playwright's Chromium, which renders each page for the
   renderability check (`literally-aeo doctor` names the install command).
   Money pages must be public https pages on the brand's site or its

@@ -1,10 +1,35 @@
 <p align="center"><a href="https://keepandroidopen.org/"><b>ANDROID WILL BECOME A LOCKED-DOWN PLATFORM</b></a></p>
 
-# ささやき　（sasayaki）
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/icon.png" alt="Sasayaki logo" width="128">
+</p>
 
-<a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/{%22id%22:%22com.sasayaki%22,%22url%22:%22https://github.com/pluja/sasayaki%22,%22author%22:%22pluja%22,%22name%22:%22Sasayaki%22,%22additionalSettings%22:%22{\%22about\%22:\%22A%20tiny%20dictation%20app.%20Connect%20any%20OpenAI-compatible%20backend%20and%20type%20by%20speaking.\%22}%22}"><img src="/assets/badge_obtainium.png" alt="Get it on Obtainium" height="60"></a>
+<h1 align="center">Sasayaki</h1>
 
-A tiny (2MB) Android dictation app. Point it at any OpenAI-compatible backend and type by speaking.
+<p align="center"><b>ささやき</b> · <i>whisper</i></p>
+
+<p align="center">
+  Voice dictation for any Android app, using speech servers you choose.
+</p>
+
+<p align="center">
+  <a href="https://github.com/pluja/sasayaki/releases/latest"><img src="https://img.shields.io/github/v/release/pluja/sasayaki?label=release&color=006B5A" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-006B5A" alt="License: GPL-3.0"></a>
+  <img src="https://img.shields.io/badge/Android-9%2B-006B5A" alt="Android 9 or later">
+</p>
+
+<p align="center">
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/{%22id%22:%22com.sasayaki%22,%22url%22:%22https://github.com/pluja/sasayaki%22,%22author%22:%22pluja%22,%22name%22:%22Sasayaki%22,%22additionalSettings%22:%22{\%22about\%22:\%22A%20tiny%20dictation%20app.%20Connect%20any%20OpenAI-compatible%20backend%20and%20type%20by%20speaking.\%22}%22}"><img src="/assets/badge_obtainium.png" alt="Get it on Obtainium" height="56"></a>
+</p>
+
+<p align="center">
+  <a href="#features">Features</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#backends">Backends</a> ·
+  <a href="#development">Development</a>
+</p>
+
+A small (under 5 MB) Android dictation app. Point it at any OpenAI-compatible backend and type by speaking.
 
 Sasayaki does the same job as [WisprFlow](https://wisprflow.ai), except it costs nothing and is more private, connecting to your own models.
 
@@ -18,10 +43,10 @@ Sasayaki does the same job as [WisprFlow](https://wisprflow.ai), except it costs
   - Long-press it to switch profile. Toggle it from a Quick Settings tile.
   - Recordings with no speech are dropped on the phone instead of being sent.
   - It refuses to record into password fields and apps it recognises as banking or payment apps, so nothing meant for them reaches a provider or your history.
-  - Make the bubble as small as you like and its recording controls larger, or make it see-through or monochrome, from Appearance.
+  - Make the bubble as small as you like and its recording controls larger, or make it see-through or monochrome, from Settings → Bubble.
 - **Keyboard mic key**: turn on Sasayaki voice input in Settings, and the mic key of keyboards like HeliBoard and FlorisBoard opens Sasayaki in the keyboard area, with your profiles one tap away. It types what you said and stays open for more; the keyboard key takes you back. No accessibility access needed, and the bubble can stay off.
 - **Keep screen on while recording**: enabled by default for the keyboard panel and bubble. Pausing or finishing releases it; manual locking still works. Turn it off in Settings → Recording.
-- **Providers**: add any number of OpenAI-compatible servers, each with a default speech and cleanup model picked from its own model list. Keys are optional for self-hosted servers.
+- **Providers**: add any number of OpenAI-compatible servers, each with a default speech and cleanup model picked from its own model list. Keys are optional for self-hosted servers, which can use plain http on your local network or tailnet, or a certificate from your own authority installed on the phone.
 - **Profiles** bundle a language, a speech model, an optional cleanup model and a writing style. Switch the active one from the bubble, and Sasayaki remembers your pick for each app.
 - **Post-processing**: a small model turns what you said into a clean written message.
   - "Uh... Yeah, let's meet at 8.. No sorry, at 9!" → "Let's meet at 9."
@@ -31,32 +56,16 @@ Sasayaki does the same job as [WisprFlow](https://wisprflow.ai), except it costs
   - Text added mid-sentence gets the spacing it needs.
 - **Vocabulary**: names and jargon reach both the speech model and the cleanup model, so they come out spelled your way.
 - Replacement rules fix the words your ASR keeps mangling. Plain text or regex, and each profile chooses which ones apply.
-- Write your own post-processing prompts and switch them on per profile, alongside the built-in ones.
+- Write your own cleanup instructions and switch them on per profile, alongside the built-in ones.
 - History keeps past dictations and their audio, up to a limit you choose, and can be switched off. Turn on "Count words without history" to keep your totals while nothing else is saved.
 - Nothing leaves the phone except requests to your providers: no analytics, no cloud backup, no device-to-device transfer.
 - The bubble comes back on its own after a reboot.
 
-<table>
-  <tr>
-    <td><img src="/assets/screenshot02.png" width="400"></td>
-    <td><img src="/assets/screenshot04.png" width="400"></td>
-  </tr>
-  <tr>
-    <td align="center"><i>Recording in a chat</i></td>
-    <td align="center"><i>Done: the text is in the field</i></td>
-  </tr>
-</table>
-
-<table>
-  <tr>
-    <td><img src="/assets/screenshot01.png" width="250"></td>
-    <td><img src="/assets/screenshot03.png" width="250"></td>
-  </tr>
-  <tr>
-    <td align="center"><i>Home</i></td>
-    <td align="center"><i>A profile's writing style</i></td>
-  </tr>
-</table>
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="260">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="260">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" width="260">
+</p>
 
 ## Install
 
@@ -130,6 +139,12 @@ There is no emulator in the build container, so screens are checked with screens
 make screenshots
 ```
 
+The store listing lives in `fastlane/metadata/android/`, where F-Droid reads it. To refresh its screenshots, put device screenshots in `fastlane/raw-screenshots/` (1.png to 6.png, in the order of the captions in `scripts/store-images.sh`) and frame them (needs ImageMagick with Pango and the Noto fonts):
+
+```sh
+make store-images
+```
+
 The design rules the UI follows are in [docs/design-system.md](docs/design-system.md).
 
 Two further suites measure the post-processing prompts against real models. They skip themselves unless `OPENAI_ENDPOINT` and `OPENAI_API_KEY` are set, so they never run by accident:
@@ -152,9 +167,17 @@ Set it up once:
 
 `make build` then signs locally, reading the password from `SASAYAKI_KEYSTORE_PASSWORD` or asking for it.
 
+### Releasing
+
+The version lives in `app/build.gradle.kts` as literals, because F-Droid rebuilds each tag and reads it from there.
+
+1. `make bump` sets the version to today's date (a second release on the same day becomes `.2`) and creates the changelog file under `fastlane/metadata/android/en-US/changelogs/`.
+2. Write the release notes in that file (500 characters at most), commit, and tag the commit with the new version name, for example `v20261117`.
+3. Push the tag. The release workflow refuses a tag that does not match the version in the build file.
+
 ## License
 
-GPLv3
+[GPL-3.0](LICENSE)
 
 ## Why ささやき?
 

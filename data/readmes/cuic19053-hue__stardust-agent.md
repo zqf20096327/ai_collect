@@ -59,7 +59,28 @@
 | 模型怎样选工具，何时结束？ | 同步答复与 SSE 流式答复共用对话循环。一轮对话最多迭代 6 次，工具调用预算为 8 次。服务端执行前再次检查工具授权，并绑定当前项目。 | [运行时](./server/proposal/chat_runtime.py) · [工具路由](./server/proposal/chat_tools.py) |
 | 回答里的材料从哪里来？ | 项目资料经用户确认后分段索引。RAG 检索结合关键词和可用的同版本向量，返回来源文件和段落位置。官方通知另按学校、年度和适用范围查找。 | [项目检索](./server/proposal/retrieval.py) · [知识来源与覆盖](./docs/rag-status.md) |
 | 聊天怎样变成 Word？ | 学生从对话中预览并选取章节草稿，编辑后保存。导出使用项目里已保存的正文，提交前仍可核对学校模板和引用。 | [对话草稿](./server/proposal/chat_drafts.py) · [Word 导出](./server/proposal/exporter.py) |
-| 长任务中途断开怎么办？ | 启用材料 worker 后，章节生成和导出等任务按项目入队。提交使用幂等键，写回前检查项目版本，付费任务租约中断时保留记录供核对。普通聊天仍依赖当前请求，断线续传与跨设备去重尚未完整接通。 | [任务队列](./server/proposal/material_jobs.py) · [执行进程](./server/material_worker.py) |
+| 长任务中途断开怎么办？ | 材料任务按项目入队并检查写回版本。网页聊天持久化已完成的模型和工具步骤；用原请求标识恢复时复用已知结果，未知调用不会自动重发。浏览器保留请求标识，换设备需重新提供该标识和模型配置。 | [对话执行记录](./server/proposal/agent_journal.py) · [任务队列](./server/proposal/material_jobs.py) |
+| 大创草稿预审如何执行和计费？ | LangGraph 保存草稿快照，围绕具体断言召回材料，核算预算并区分计划、成果和学校规定。尚无可验证支持的 AI 判断单列为待人工判断的线索。云端保存队列和检查点，实际模型调用绑定积分预留及用量结算。 | [预审图](./server/proposal/review_graph.py) · [云端设计与恢复机制](./docs/design/LANGGRAPH_REVIEW_CLOUD.md) |
+| 补资料后如何继续？ | 确认保存聊天草稿或生成章节后自动提交免费规则预审。报告列出待补项，支持跳转修改或确认资料，再从新快照接续检查；旧报告保留，AI 检查仍须主动勾选。 | [流程衔接](./server/proposal/review_workflow.py) · [修复与验收记录](./docs/reports/AGENT_REVIEW_LOOP_2026-11-18.md) |
+
+## 预审效果怎样验证？
+
+预审评测使用同一批合成草稿，对比免费规则、单次模型直接预审、现有 LangGraph 预审流程。同一模型摘要、提示词、输出结构及生成参数下，记录误报、漏检、引用原文匹配、耗时与 Token；原始响应和逐项复核依据保留，失败运行不被成功重试替换。模型不会读取预期问题标签。
+
+当前试点覆盖预算冲突、无依据成果、正确研究计划、材料注入、空章节和外校旧通知六类样例。样例由 Agent 编写，语义指标区分 Agent 辅助复核与独立人工复核；程序测试通过数和引文逐字匹配率不作为模型准确率。它用于检查规则、检索和输出约束的作用，不能外推为全部赛道的质量结论。
+
+在已安装服务端依赖并启动本机 Ollama 的环境中运行：
+
+```bash
+python -m pip install 'langgraph-checkpoint-sqlite==3.1.3'
+python server/evals/review_benchmark.py --output outputs/evals/review-pilot
+```
+
+[首轮 Qwen 本机试点](./docs/reports/REVIEW_BENCHMARK_2026-11-17.md)：按 Agent 辅助复核口径，直接模型命中 5 个目标问题中的 3 个，现有流程命中 5 个；两条路径各有 13 条误报（含重复提醒）。独立人工校准尚未完成，结果不代表线上模型效果。原始请求、响应和判定依据均可核对。
+
+[对比方法、指标口径与复现步骤](./server/evals/REVIEW_BENCHMARK.md) · [合成样例和预期问题](./server/evals/review_cases.json) · [逐项结果与原始模型记录](./server/evals/baselines/review_pilot_20261117.json)
+
+[后续提示词实验](./docs/reports/REVIEW_CALIBRATION_2026-11-18.md)固定候选并增加四个合成回归样例。候选减少了输出条数，却增加了误报，并出现新的学校规则漏检。仓库保留失败候选、原始响应和可复现比较：核对实际输入与参数，同时检查误报、漏检和具体漏掉的问题，避免用单一汇总指标掩盖退化。
 
 ## 本地运行与复现
 

@@ -229,6 +229,10 @@ relabelled as measurements.
 - **Apple Instruments:** check `xctrace` capability, print an execution plan,
   record a local command, or import an existing trace bundle. Supported Metal
   tables are reported narrowly rather than treated as generic GPU utilization.
+- **NVIDIA GPU energy (NVML):** run one command and record device wide GPU
+  energy from the driver's energy counter, plus sampled power. Totals are only
+  highlighted when no other process used the GPU during the window. A running
+  dcgm-exporter can be read instead with `--source dcgm-exporter`.
 - **Native Qwen MTP:** emit a capability report and an explicit unsupported
   record when the installed stack cannot produce trustworthy native-MTP
   evidence.
@@ -237,6 +241,11 @@ relabelled as measurements.
   such as queue time and server TTFT are only reported when the window
   provably contains exactly the requests you sent. Otherwise the window is
   marked `contaminated`, `incomplete`, `counter_reset`, or `unverifiable`.
+- **Trace replay (Mooncake, BurstGPT, AIPerf `single_turn` and `multi_turn`):**
+  check a published arrival trace, plan its schedule offline, and replay it
+  against an OpenAI-compatible endpoint at the recorded arrival times. Synthetic
+  prompts keep Mooncake's prefix sharing. A malformed trace is refused, not
+  repaired.
 
 ### Export to observability tools
 
@@ -247,6 +256,15 @@ Jaeger, Tempo, Phoenix, or Langfuse can show it. `export perfetto` writes a
 Chrome trace for [ui.perfetto.dev](https://ui.perfetto.dev). Both outputs are
 deterministic: IDs derive from the `run_id`, and every timing keeps its
 provenance as a `llmtracefx.*` attribute.
+
+`export otlp-metrics` aggregates many API runs into GenAI histograms in
+OTLP/JSON: client duration, time to first chunk, time per chunk, token counts,
+and server TTFT, TPOT and request duration. The same Collector receiver reads
+it, and it can be POSTed to `/v1/metrics`. A value that was not measured is
+left out, never filled in. GPU energy and average power from `gpu-energy`
+evidence are exported as `llmtracefx.gpu.energy` and
+`llmtracefx.gpu.power.average`, since the GenAI conventions have no energy
+metric.
 
 ### Perf gate
 
@@ -298,6 +316,30 @@ They cannot be used with `compare` (no per-prompt hashes or correctness
 results), mixed with LLMTraceFX records, or gated across tools. See
 [`docs/ecosystem-gap-analysis.md`](docs/ecosystem-gap-analysis.md) for the
 full mapping and refusal rules.
+
+### Load sweeps and goodput
+
+`sweep-api` sends the same requests at several concurrency levels or request
+rates and reports latency percentiles, throughput, goodput against TTFT, TPOT
+and E2E targets, and whether the load generator kept up:
+
+```bash
+uv run llmtracefx-optimizer sweep-api --run-id sweep \
+  --endpoint http://127.0.0.1:8000/v1/chat/completions --model-id my-model \
+  --prompt-file prompt.txt --concurrency 1,4,16 --requests-per-point 64 \
+  --stream-include-usage --slo-ttft-ms 500 --slo-e2e-ms 8000 \
+  --output-dir results/sweep
+```
+
+Requests in a sweep overlap, so its numbers describe the server under that
+load, not any single request. A sweep writes `sweep.json` and no
+`record.json`, and `gate`, `compare` and `export` refuse it. Failed requests
+count against goodput, and a value that cannot be checked is withheld with a
+reason. Remote endpoints need `--allow-remote-load`. See
+[`docs/load-sweeps.md`](docs/load-sweeps.md) for what a sweep can claim,
+the goodput rules and the scheduling diagnostics. `sweep-llama-cpp` and
+`sweep-mlx` run the same sweep against llama.cpp's native `/completion`
+endpoint and in-process mlx-lm.
 
 ### Verification and resumability
 
@@ -700,6 +742,7 @@ uv run llmtracefx-optimizer optimize \
 | Offline planning and report inspection | Python 3.11+ and `uv` | `uv sync --locked` |
 | Local MLX collection | macOS on arm64, MLX, MLX-LM, and an existing local model directory | `uv sync --locked --extra mlx` |
 | Metal and `xctrace` | macOS, full Xcode command-line tools, and a locally available Instruments template | `uv run llmtracefx-optimizer instruments capability` |
+| NVIDIA GPU energy | Linux or Windows with an NVIDIA driver, and the optional `nvml` extra | `uv sync --locked --extra nvml`, then `uv run llmtracefx-optimizer gpu-energy capability` |
 | Hosted API collection | An HTTPS OpenAI-compatible endpoint and a provider key stored in an environment variable | Use `collect-api --dry-run` before making a request |
 | Modal planning | No Modal account or SDK is required | `uv run llmtracefx-deploy plan --help` |
 | Modal execution | An approved plan, current price inputs, Modal account and auth, optional `modal` extra, proxy auth token, pinned model revision, and pinned serving image | `uv sync --locked --extra modal` (the constraint is still `>=1.0.5`, but the lock now resolves `modal==1.6.4`) |
@@ -802,6 +845,111 @@ uv run llmtracefx-optimizer export perfetto \
 Open `trace.json` in [ui.perfetto.dev](https://ui.perfetto.dev). Swap
 `perfetto` for `otlp` to get OTLP/JSON instead.
 
+#### Exporting GenAI metrics
+
+```bash
+uv run llmtracefx-optimizer export otlp-metrics output/ \
+  --output output/genai-metrics.jsonl
+```
+
+Pass record files or directories. Directories are searched for `record.json`,
+and `api_evidence.json` and `server_metrics_evidence.json` next to each record
+are used when present. All runs go into one cumulative histogram per metric
+and attribute set. Each point carries `llmtracefx.provenance` and
+`llmtracefx.source`, so values measured in different ways stay apart, and each
+run is linked to its `export otlp` trace through an exemplar. Local runs are
+skipped. Every value that is left out is listed as `Not exported: ...`.
+
+| Metric | Derived from | Left out when |
+| --- | --- | --- |
+| `gen_ai.client.inference.duration` | `record.timing.total` | no total in ms |
+| `gen_ai.client.inference.time_to_first_chunk` | first reasoning or content event in the API timeline | not streamed, no chunk arrived, or the run ended in tool calls |
+| `gen_ai.client.inference.time_per_output_chunk` | gaps between consecutive reasoning or content events | as above, or fewer than two chunks, or the event list was truncated |
+| `gen_ai.client.inference.operation.input_tokens`, `.output_tokens` | `record.tokens` | token counts are estimated or have no provenance |
+| `gen_ai.server.time_to_first_token` | vLLM or SGLang TTFT histogram | the server window is not attributable, holds more than one request, or the run failed |
+| `gen_ai.server.time_per_output_token` | vLLM or SGLang TPOT histogram | as above; vLLM records 0 for one-token replies, and TGI's per-token mean includes prefill, so neither is mapped |
+| `gen_ai.server.request.duration` | vLLM, SGLang or TGI end to end latency histogram | as above |
+| `llmtracefx.gpu.energy`, `llmtracefx.gpu.power.average` | `gpu_energy_evidence.json` next to the record | the evidence is refused, its window is shared with another run, or the run failed |
+
+### Trace replay
+
+`replay` sends a published arrival trace to an OpenAI-compatible endpoint at
+the times the trace records. Four formats are read, each named with
+`--format` and never guessed from the file:
+
+- `mooncake`: Mooncake JSONL with `timestamp` (ms), `input_length`,
+  `output_length` and `hash_ids` (one id per 512-token block by default, see
+  `--block-size`).
+- `burstgpt`: the BurstGPT CSV (`Timestamp`, `Model`, `Request tokens`,
+  `Response tokens`, `Total tokens`, `Log Type`). Rows with zero tokens are
+  refused unless `--exclude-failed` drops and counts them.
+- `aiperf-single-turn`: AIPerf `single_turn` JSONL with `timestamp` (ms),
+  `text` and `output_length`. This covers ShareGPT-style prompts with arrival
+  times.
+- `aiperf-multi-turn`: AIPerf `multi_turn` JSONL. Lines with the same
+  `session_id` form one session. A session's first turn is sent at its
+  `timestamp`; each later turn waits for the previous one to complete, then
+  for its `delay` or until its `timestamp`. Its prompt resends the earlier
+  turns, with synthetic answers whose length is each turn's `output_length`.
+  Select with `--max-sessions`; `--max-requests` is refused because it would
+  cut a session. Mooncake has no multi-turn format, so its conversation trace
+  is read with `mooncake`.
+
+```bash
+# No network: check the file, then write the schedule.
+uv run llmtracefx-optimizer replay validate trace.jsonl --format mooncake
+uv run llmtracefx-optimizer replay plan trace.jsonl --format mooncake \
+  --time-scale 0.5 --max-requests 1000 --output-dir replay-plan
+
+# Send it to a local server.
+export LOCAL_KEY=unused
+uv run llmtracefx-optimizer replay run trace.jsonl --format mooncake \
+  --time-scale 0.5 --max-requests 1000 \
+  --endpoint http://127.0.0.1:8000/v1/chat/completions \
+  --model-id my-model --api-key-env LOCAL_KEY --output-dir replay-run \
+  --server-metrics-url http://127.0.0.1:8000/metrics
+```
+
+Mooncake and BurstGPT give lengths, not text, so prompts are synthetic. One
+word stands in for one token, so the planned prompt length is labelled
+`estimated` and the provider's `prompt_tokens` is recorded next to it. Every
+Mooncake hash block becomes the same text wherever it appears, so requests
+that share leading `hash_ids` share a byte-identical prefix. Prompt text
+comes from a salt that is random per run unless `--prompt-salt` is given, so
+a replay never hits cache entries left by an earlier one. Prompt text is never
+written to disk; only its sha256 is.
+
+`--tokenizer` makes synthetic lengths exact. It takes a Hugging Face repo id
+(`--tokenizer-revision` pins a branch, tag or commit), a `tokenizer.json`
+file, or a directory holding one, and needs the optional extra
+(`uv sync --extra tokenizer`). Prompts then use only words that are one token
+each, and every prompt is encoded and checked: it must be exactly the trace's
+length, one token per word, so Mooncake block boundaries fall on token
+boundaries. A merge between words refuses the plan instead of padding or
+trimming. Lengths are labelled `tokenizer_exact` and count the prompt text
+only; the chat template and special tokens the server adds are not counted,
+and the result reports provider `prompt_tokens` minus the tokenizer count.
+The schedule records the tokenizer name, tokenizer.json sha256, revision and
+resolved commit. For multi-turn traces each synthetic answer is checked the
+same way, and a turn's count is the sum of its messages, each encoded on its
+own.
+
+`--time-scale` multiplies every gap between arrivals. `--start-s`, `--end-s`
+and `--max-requests` choose a window. `max_tokens` is the trace's output
+length; `--ignore-eos` asks vLLM and SGLang to generate all of it. `run`
+refuses a non-loopback endpoint unless `--allow-remote-load` is given, because
+it can send thousands of requests.
+
+`run` writes `replay_schedule.json`, `replay_requests.jsonl` (one line per
+request, with its scheduled, sent and completed offsets, TTFT, E2E and token
+counts) and `replay_result.json`. The result records the trace sha256, the
+selection and scaling, dispatch lag percentiles, and a fidelity verdict:
+`faithful` when every request was sent and p99 dispatch lag is within
+`--max-dispatch-lag-s` (0.05 s by default), `lagged` when lag went over it,
+and `incomplete` when Ctrl-C stopped the run early. The exit code is 0 when
+faithful, 2 when lagged or incomplete, and 1 on errors or when every request
+failed.
+
 ### Apple Instruments and Metal
 
 Check support before recording:
@@ -826,6 +974,64 @@ A public, reproducible Apple Silicon example with a deterministic Metal
 workload, sanitized measured evidence, integrity hashes, and charts lives in
 [`examples/metal_evidence/`](examples/metal_evidence/README.md). Raw trace
 bundles and XML exports are excluded by design.
+
+### NVIDIA GPU energy (NVML)
+
+Install the optional extra and check support:
+
+```bash
+uv sync --locked --extra nvml
+uv run llmtracefx-optimizer gpu-energy capability
+
+uv run llmtracefx-optimizer gpu-energy record \
+  --output output/gpu-energy.json \
+  -- python my_inference.py
+```
+
+`record` reads the NVML energy counter on each GPU before and after the
+command and polls power every 100 ms while it runs. The evidence keeps two
+energy figures apart:
+
+- `energy` is the energy counter delta, labelled `measured_native`.
+- `sampled_power_integral` is a trapezoid over the power samples, labelled
+  `estimated`.
+
+Both are device wide, so they include idle power and anything else on the
+GPU. On every tick, `record` also asks NVML which processes use the selected
+GPUs. A process that is not the command or one of its children makes the
+window `contaminated`. When this cannot be checked, for example from inside a
+container's PID namespace or with MIG enabled, the window is `unverifiable`.
+Totals are only highlighted for an attributable window. To measure an
+inference server that the command calls, pass its PID with `--gpu-pid`, for
+example around `collect-api`. Exit codes: 0 attributable, 2 written but not
+attributable, 1 on error or when the command fails, 3 when NVML is
+unavailable.
+
+To attach the energy to a record, save the evidence as
+`gpu_energy_evidence.json` next to its `record.json`. `gate` and
+`export otlp-metrics` read it from there, and `export otlp` or `perfetto`
+take it with `--gpu-energy FILE`. The record file is never rewritten. Only an
+attributable window that exited 0 and contains the whole run fills
+`power.energy` (the counter delta) and `power.average_power`; anything else is
+refused with a reason in `power.source.refused_reason`. The sampled power
+integral is never used. Runs that share one window, or whose windows overlap
+another run, are refused too.
+
+To read a running [dcgm-exporter](https://github.com/NVIDIA/dcgm-exporter)
+instead, pass `--source dcgm-exporter --dcgm-exporter-url
+http://HOST:9400/metrics` to `capability` or `record`. No extra is needed.
+`record` scrapes `/metrics` until the energy counter
+(`DCGM_FI_DEV_TOTAL_ENERGY_CONSUMPTION` in mJ, or
+`DCGM_FI_DEV_GPU_ENERGY_JOULES_TOTAL` in J from 4.9.0) changes before the
+command, and again after it exits. The exporter adds no timestamps and
+refreshes every `--collect-interval` (30 s by default), so the delta covers
+more than the command. The evidence records the shortest and longest span the
+delta can cover, and refuses `energy` with `bracket_too_wide` when the command
+is less than `--min-run-share` (0.9) of the longest span. Run the exporter
+with a short interval, for example `-c 1000`, and long commands. Power is
+listed per scrape but not integrated, and the window is `unverifiable`
+because the exporter has no process list. In a record, its evidence fills
+only `power.energy`, and only with `--assume-isolated`.
 
 ## Verify, tune, and optimize
 
@@ -914,6 +1120,13 @@ outputs. Set `fail-on-inconclusive: "false"` to report without failing when
 the runs are too few or too noisy to decide. `@v1` follows the latest 1.x
 release. Pin a release tag such as `@v1.11.0` or a commit SHA for fully
 reproducible CI.
+
+`metric` can also be `energy`, `average_power` or `energy_per_output_token`,
+read from a `gpu_energy_evidence.json` next to each record (see
+[NVIDIA GPU energy (NVML)](#nvidia-gpu-energy-nvml)). Energy per output token
+is derived from the counter energy and a measured or reported generated token
+count. Runs must use the same GPUs and attribution status. A successful run
+with no usable value makes the gate inconclusive rather than being dropped.
 
 The baseline and candidate can also be directories of imported vLLM bench or
 AIPerf artifacts (see

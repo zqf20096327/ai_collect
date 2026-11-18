@@ -126,6 +126,8 @@ A finance agent is only as good as the data and tools it can call. This chapter 
 - [Firecrawl](https://github.com/firecrawl/firecrawl-mcp-server) - Official MCP server for web search, scraping, and crawling, with SEC EDGAR filings and 10-K/10-Q item sections through Firecrawl Alexandria.
 - [Redstone Markets](https://github.com/mihaitv/redstone-mcp) - Public read-only MCP for return and risk analytics on US stocks and ETFs.
 - [Tapetide Indian Stock Market MCP](https://github.com/Tapetide-hq/nse-bse-indian-stock-market-data-mcp) - 🇮🇳 Official MCP server for NSE and BSE stocks: financials, a ratio screener, technicals, FII/DII flows, end-of-day option chains, filings, and point-in-time data for backtests.
+- [exitvalue-mcp](https://github.com/nickcals/exitvalue-mcp) - Read-only MCP server for median EV/EBITDA and EV/Revenue M&A multiples by industry, deal size and year from disclosed transactions, over stdio or a hosted endpoint with no API key.
+- [lava-mcp](https://github.com/dustinliang666-blip/lava-mcp) - 🇨🇳 Hosted remote MCP and agent skill for A-share stock and concept-sector news-heat monitoring: structured, timestamped concepts, tickers, and summary points over Streamable HTTP. Requires an API key or OAuth.
 
 ### Official broker and exchange agent kits
 
@@ -194,6 +196,7 @@ Research agents read filings, transcripts, news, and data rooms, then produce so
 - [Seris](https://github.com/aowang-ai/seris) - Desktop AI market research assistant: chat beside live charts, price alerts, and local backtests with your own model.
 - [OpenChart](https://github.com/longsurf-ai/openchart) - Open-source trading workspace with charts, alerts, and AI research agents.
 - [FinceptTerminal](https://github.com/Fincept-Corporation/FinceptTerminal) - Open-source finance terminal (AGPL) with market analytics, built-in AI research agents, and broker/backtest hooks.
+- [FastTrade AI](https://github.com/kingabzpro/FastTrade-AI) - Web research workspace that turns Alpaca IEX or Yahoo candles into LLM BUY/HOLD/SELL preferences behind risk threshold checks, with a budgeted batch API and reproducible checksummed backtests; never places orders.
 - [go-stock](https://github.com/ArvinLovegood/go-stock) - 🇨🇳 Local-first desktop AI stock analysis for A/HK/US: quotes, news and fund-flow analysis, screening, alerts.
 - [tick-stock-panel](https://github.com/shy3130/tick-stock-panel) - 🇨🇳 Self-hosted A-share workbench: LLM-assisted strategy building, monitoring, backtests, and reviews.
 - [PanWatch](https://github.com/TNT-Likely/PanWatch) - 🇨🇳 AI stock monitoring for A/HK/US built on TradingAgents, with portfolio insights and alerts.
@@ -347,6 +350,7 @@ Agents for bookkeeping, reconciliation, invoices, tax, and reporting, plus MCP a
 - [shinkoku](https://github.com/kazukinagata/shinkoku) - Japanese tax-return agent plugin covering bookkeeping through e-Tax entry.
 - [mcp-fiscal-brasil](https://github.com/DeHor-Labs/mcp-fiscal-brasil) - Brazilian tax and fiscal MCP: CNPJ, NF-e, SPED, Simples Nacional, and more.
 - [opentax](https://github.com/filedcom/opentax) - Open-source US federal tax engine shipped as a single CLI with agent skills.
+- [Agent Payment Node](https://github.com/nuanu-ai/agent-payment-node) - Local-first CLI and stdio MCP payment runtime for agents, with transfers, x402, receipts, and owner-set limits. macOS Apple Silicon with Node 24 only; it is a payment-execution layer, not a bookkeeping ledger.
 
 ### Accounting-system MCP servers
 
@@ -451,6 +455,7 @@ Measure research QA, trading decisions, safety, and live arena performance. With
 - [LLM-Trading-Lab](https://github.com/LuckyOne7777/LLM-Trading-Lab) - Public experiment where ChatGPT manages a small real-money micro-cap portfolio, with logs and code. (live)
 - [nof0](https://github.com/wquguru/nof0) - 🇨🇳 Open-source AI trading arena in the style of nof1 Alpha Arena.
 - [continuous-record-llm-trading-agents](https://github.com/ProjectDXAI/continuous-record-llm-trading-agents) - Data and artifacts from a continuous-record study of what LLM trading agents actually do. (paper)
+- [ai-stock-league](https://github.com/alphabazaar/ai-stock-league) - Daily open data (CC BY 4.0) from a forward-only AI stock-picking league: every model's call and reasoning in hash-chained logs, with no-AI baselines (random pick, SPY, momentum). (sim)
 
 ### Safety and trustworthiness
 

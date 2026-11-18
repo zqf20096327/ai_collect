@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23550667.svg)](https://doi.org/10.5281/zenodo.23550667) [![Blurps hatched (est.)](https://img.shields.io/badge/%F0%9F%90%A3%20Blurps%20hatched%20%28est.%29-392-f5a623)](https://pypistats.org/packages/babyseat) [![Blurps alive (est.)](https://img.shields.io/badge/%F0%9F%90%A3%20Blurps%20alive%20%28est.%29-~155-f5a623)](https://github.com/chedim/babyseat/issues/1096) [![Docker pulls](https://img.shields.io/docker/pulls/chedim/babyseat?label=%F0%9F%90%B3%20Docker%20pulls&color=f5a623)](https://hub.docker.com/r/chedim/babyseat)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23550667.svg)](https://doi.org/10.5281/zenodo.23550667) [![Blurps hatched (est.)](https://img.shields.io/badge/%F0%9F%90%A3%20Blurps%20hatched%20%28est.%29-436-f5a623)](https://pypistats.org/packages/babyseat) [![Blurps alive (est.)](https://img.shields.io/badge/%F0%9F%90%A3%20Blurps%20alive%20%28est.%29-~155-f5a623)](https://github.com/chedim/babyseat/issues/1096) [![Docker pulls](https://img.shields.io/docker/pulls/chedim/babyseat?label=%F0%9F%90%B3%20Docker%20pulls&color=f5a623)](https://hub.docker.com/r/chedim/babyseat)
 ![babyseat](docs/logo/logo-1280x640.png)
 
 **Talk to it. It remembers.**
@@ -15,7 +15,7 @@ files written in **c1f**, the field's own language, so the model can read, chang
 > is its memory layer, so the `membrane` command alias, the `membrane/` source folder, the `.membrane` folders and the Home Assistant domain keep that
 > name. **cliffvm** is the program. **cliffhanger** is the reactive graph language it runs ([chedim/cliffhanger](https://github.com/chedim/cliffhanger)).
 
-Version **0.7.62**. This is a rebuild: the 0.7 Python seat is retired (see [Upgrading](#upgrading-from-the-python-seat-07x)).
+Version **0.7.63**. This is a rebuild: the 0.7 Python seat is retired (see [Upgrading](#upgrading-from-the-python-seat-07x)).
 
 ## What you get
 
@@ -28,6 +28,7 @@ Version **0.7.62**. This is a rebuild: the 0.7 Python seat is retired (see [Upgr
 - **Home Assistant.** A HACS integration runs the seat inside Home Assistant (or connects to one you run), makes it an Assist conversation agent and lets the model use the house
   ([docs/home-assistant.md](docs/home-assistant.md)).
 - **Your choice of model.** The default backend is a local Ollama (`seat_backend`, `http://127.0.0.1:11434`): no model is chosen at the start, and the page opens a window while a model or a name is not chosen, with a dropdown of the chat models Ollama lists. Any OpenAI-compatible endpoint works too (the boot fact `cloud_models`); the `claude` CLI is a developer mode ([docs/cliffvm.md](docs/cliffvm.md)). Pull a model first: `ollama pull <name>`.
+- **Seats and programs can share a graph (0.7.63).** Local programs over shared memory (the fact `peers`), other machines through `graphlink-bridge` (TCP with tokens and TLS), and two seats reading each other's nodes: [docs/graph-link.md](docs/graph-link.md), section 18. The protocol and its crates: [chedim/graphlink](https://github.com/chedim/graphlink).
 - **Local and strict.** The door listens on `127.0.0.1`; every route needs a signed token; the page gets one only from this machine ([docs/auth.md](docs/auth.md)).
 
 Not in this release: the 3D field view (built, switched off: `membrane/apps/field.c1f`), the Home Assistant sidebar panel and relay, Blurp and the
@@ -40,11 +41,11 @@ macOS and Linux (x86_64 and arm64); there is no Windows build. The macOS binarie
 
 | How | Command | State |
 |---|---|---|
-| pip | `pip install babyseat`, then `babyseat` (`--port N`, `--data-dir <dir>`) | at the 0.7.62 release |
-| installer | `curl -fsSL https://raw.githubusercontent.com/chedim/membrane/main/install.sh \| sh` (installs `~/.local/share/membrane-app/<version>` and a `~/.local/bin/babyseat` link; `--version X.Y.Z` picks one) | at the 0.7.62 release |
-| Docker | `docker run -p 127.0.0.1:4096:4096 -v babyseat-data:/data chedim/babyseat --fact seat_backend=http://host.docker.internal:11434` (the image has no `claude` CLI; Ollama runs on the host; the admin token: `docker exec <container> cat /data/admin.token`) | at the 0.7.62 release |
-| binary | the GitHub release's `babyseat-0.7.62-<target>.tar.gz` and its `.sha256` (targets: `aarch64-apple-darwin`, `x86_64-apple-darwin`, `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`, `x86_64-unknown-linux-musl`, `aarch64-unknown-linux-musl`): check the sha256, unpack, run `bin/cliffvm serve` | at the 0.7.62 release |
-| Home Assistant | the HACS integration downloads the seat's binary and runs it inside Home Assistant (next section) | at the 0.7.62 release |
+| pip | `pip install babyseat`, then `babyseat` (`--port N`, `--data-dir <dir>`) | at the 0.7.63 release |
+| installer | `curl -fsSL https://raw.githubusercontent.com/chedim/membrane/main/install.sh \| sh` (installs `~/.local/share/membrane-app/<version>` and a `~/.local/bin/babyseat` link; `--version X.Y.Z` picks one) | at the 0.7.63 release |
+| Docker | `docker run -p 127.0.0.1:4096:4096 -v babyseat-data:/data chedim/babyseat --fact seat_backend=http://host.docker.internal:11434` (the image has no `claude` CLI; Ollama runs on the host; the admin token: `docker exec <container> cat /data/admin.token`) | at the 0.7.63 release |
+| binary | the GitHub release's `babyseat-0.7.63-<target>.tar.gz` and its `.sha256` (targets: `aarch64-apple-darwin`, `x86_64-apple-darwin`, `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`, `x86_64-unknown-linux-musl`, `aarch64-unknown-linux-musl`): check the sha256, unpack, run `bin/cliffvm serve` | at the 0.7.63 release |
+| Home Assistant | the HACS integration downloads the seat's binary and runs it inside Home Assistant (next section) | at the 0.7.63 release |
 | from source | the next section | works today |
 
 `babyseat` and `membrane` are one command: it starts `cliffvm serve` and nothing else. The old subcommands (`opencode`, `store`, `ingest`, ...) are gone.
@@ -53,9 +54,9 @@ macOS and Linux (x86_64 and arm64); there is no Windows build. The macOS binarie
 
 ```
 git clone https://github.com/chedim/membrane && cd membrane
-scripts/dist/build.sh --out ./dist/0.7.62          # builds native/ (about a minute warm) and assembles the dist folder
+scripts/dist/build.sh --out ./dist/0.7.63          # builds native/ (about a minute warm) and assembles the dist folder
 ollama pull <a chat model> && ollama pull mxbai-embed-large   # the model that makes the memory's vectors
-./dist/0.7.62/bin/cliffvm serve                 # then pick the model in the window the page opens
+./dist/0.7.63/bin/cliffvm serve                 # then pick the model in the window the page opens
 ```
 
 The model is picked in the page; see [Which model answers](#which-model-answers). It prints, in this order:
@@ -135,7 +136,7 @@ Layout: `native/` (the VM and the host: Rust), `membrane/packs/` (the seat's pac
 
 ## Status
 
-A working lab used every day to build itself. Version **0.7.62**; the API and flag surfaces may still move. Licensing: **MIT** (see [LICENSE](LICENSE)); releases up to 0.7.2 stay under PolyForm Noncommercial 1.0.0.
+A working lab used every day to build itself. Version **0.7.63**; the API and flag surfaces may still move. Licensing: **MIT** (see [LICENSE](LICENSE)); releases up to 0.7.2 stay under PolyForm Noncommercial 1.0.0.
 
 ## Cite
 

@@ -781,6 +781,7 @@ Use these hashtags in search to filter out the tools
 - [Cortexa](https://cortexanote.com/en/scribe/) - AI medical scribe that generates reviewable clinical notes, with a free tier for unlimited transcription and an optional clip-on recorder. `#freemium`
 - [Enlitic](https://enlitic.com/) - an AI-driven application that lets you transform big data into relevant insights that can help you make more accurate, strategic, and timely decisions. `#paid`
 - [MIRI](https://www.miri.health/) - Comprehensive Wellness Platform That Puts Experts in Your Pocket 24/7 `#free`
+- [Telo](https://telo.ferryman.app/) - iPhone and Apple Watch health dashboard with optional read-only MCP access for authorized questions about synced sleep, activity, readiness scores, and health logs. `#freemium` `#mcp`
 - [Viz.AI](https://www.viz.ai/) - Offers a wide range of features to help healthcare professionals run their operations more efficiently and accurately. `#paid`
 
 **[⬆️ Back to Top](#table-of-contents)**
@@ -977,9 +978,4 @@ Use these hashtags in search to filter out the tools
 ## Model
 
 - [DeepSeek (R1)](https://www.deepseek.com/) - High-performance reasoning open-source model. `#paid`
-- [Llama](https://www.llama.com/) - Meta's family of open-weight large language models, free for research and most commercial use. `#free` `#opensource`
-- [Mistral](https://mistral.ai/) - French AI lab's open-weight and API models, including Mistral Large and Codestral. `#freemium` `#opensource`
-
-**[⬆️ Back to Top](#table-of-contents)**
-
-
+- [Llama](https://www.llama.com/) - Meta's family of open-weight large language models, free for research and most com

@@ -61,7 +61,7 @@ Throughout the repository and documentation, we follow a single end-to-end scena
 flowchart LR
     subgraph NS["1. North–South Front Door (Layer 5)"]
         Partner["External Partner / B2B App<br/>(API Key / OAuth + 3LO Token)"]
-        Apigee["Apigee X Partner Front Door<br/>(partner.esmeralda.internal / 10.0.1.3)<br/>API Products • LLMTokenQuota • Metering"]
+        Apigee["Apigee X Partner Front Door<br/>(partner.esmeralda.internal on the entry point)<br/>API Products • LLMTokenQuota • Metering"]
         Caller["Internal Loan Officer / CLI<br/>(esmeralda query)"]
     end
 
@@ -72,13 +72,13 @@ flowchart LR
     end
 
     subgraph Gov["3. East–West Zero-Trust Control Plane (Layer 4)"]
-        AGW["GEAP Central Agent Gateway (10.200.0.2)<br/>• Agent Registry Allowlist<br/>• Per-Target UAP / IAP (roles/iap.egressor)<br/>• Semantic Governance (NLC) & Model Armor (optional)"]
+        AGW["GEAP Central Agent Gateway<br/>(Google-managed • PSC egress)<br/>• Agent Registry Allowlist<br/>• Per-Target UAP / IAP (roles/iap.egressor)<br/>• Semantic Governance (NLC) & Model Armor (optional)"]
         Gemini["Gemini 3.7 Flash<br/>(Vertex AI API)"]
         FinOps["Central Telemetry & FinOps Hub<br/>(OTel Baggage • BigQuery Chargeback Views)"]
     end
 
     subgraph EastWest["4. Private Entry Point & MCP Tools (Layer 5)"]
-        EP["Internal HTTPS Entry Point<br/>(*.esmeralda.internal / 10.0.1.2)<br/>Built-in direct routing (optional Envoy)"]
+        EP["Internal HTTPS Entry Point<br/>(*.esmeralda.internal • reserved VIP)<br/>Built-in direct routing (optional Envoy)"]
         DMS["legacy-dms<br/>(Cloud Run FastMCP)"]
         Inc["income-verification<br/>(Cloud Run FastMCP)"]
         Email["corporate-email<br/>(Cloud Run FastMCP)"]
@@ -107,10 +107,12 @@ flowchart LR
 
 | Plane | Component | Direction | What It Governs |
 | :--- | :--- | :--- | :--- |
-| **External / Partner API Plane** | **Apigee X** (`partner.esmeralda.internal` / `10.0.1.3`) | **North–South** | Authenticates external B2B partners (`VerifyAPIKey` / OAuth), curates exposed agents (`partner-agents`) and MCP tools (`partner-mcp`), enforces commercial `<LLMTokenQuota>` (`429`), and meters per-consumer token usage. |
+| **External / Partner API Plane** | **Apigee X** (`partner.esmeralda.internal`, served on the entry point VIP) | **North–South** | Authenticates external B2B partners (`VerifyAPIKey` / OAuth), curates exposed agents (`partner-agents`) and MCP tools (`partner-mcp`), enforces commercial `<LLMTokenQuota>` (`429`), and meters per-consumer token usage. |
 | **Workload & User Identity Plane** | **GEAP Agent Identity & Auth Manager** (`agents.global.org-<ORG>.system.id.goog`) | **End-to-End Identity** | Provisions a non-impersonatable X.509 **SPIFFE ID (`principal://`)** per Reasoning Engine and brokers **3-Legged OAuth (3LO)** end-user tokens (`X-Esmeralda-User-Token`) so tools can verify both *which agent* and *which human* initiated the action. |
-| **Internal Agent Egress Plane** | **GEAP Central Agent Gateway** (`10.200.0.2`) | **East–West** | Intercepts every outbound call an agent makes, enforcing **Agent Registry** allowlists, per-target **Unified Access Policies (UAP / IAP)**, **Semantic Governance (Natural Language Constraints, NLC)** against Confused Deputy tool calls, and optional **Model Armor** inspection (unary MCP tool calls and agent cards when enabled). |
-| **Private Service Routing Plane** | **Internal HTTPS Entry Point** (`*.esmeralda.internal` / `10.0.1.2`) | **Private VPC Fabric** | Terminates internal TLS signed by the Layer 3 Root CA and routes each `*.esmeralda.internal` host directly to its Cloud Run serverless NEG or Agent Runtime PSC NEG (`direct` backend by default, or optional `envoy` / `apigee` adapters). |
+| **Internal Agent Egress Plane** | **GEAP Central Agent Gateway** (Google-managed; enters the VPC through the PSC attachment `agw-egress-na-<env>`) | **East–West** | Intercepts every outbound call an agent makes, enforcing **Agent Registry** allowlists, per-target **Unified Access Policies (UAP / IAP)**, **Semantic Governance (Natural Language Constraints, NLC)** against Confused Deputy tool calls, and optional **Model Armor** inspection (unary MCP tool calls and agent cards when enabled). |
+| **Private Service Routing Plane** | **Internal HTTPS Entry Point** (`*.esmeralda.internal` → `<entrypoint-ip>`) | **Private VPC Fabric** | Terminates internal TLS signed by the Layer 3 Root CA and routes each `*.esmeralda.internal` host directly to its Cloud Run serverless NEG or Agent Runtime PSC NEG (`direct` backend by default, or optional `envoy` / `apigee` adapters). |
+
+The entry point VIP is reserved by Layer 2 in the core subnet: GCP picks a free address unless you pin one with the networking module's `entrypoint_ip_address` variable. Every `*.esmeralda.internal` host, including `partner.esmeralda.internal`, resolves to it. To read it for an environment, run `uv run esmeralda status --env <env> --unit layer-2-networking --output entrypoint_address`.
 
 ---
 
@@ -144,14 +146,14 @@ flowchart LR
 | [`jq`](https://jqlang.org/download/) | any | Parsing Terraform outputs in the `make` targets (`build-images`, `deploy-all`) and `scripts/` (`esmeralda verify`) |
 | `git`, `make`, `bash` | any | Checkout, `make` targets and helper scripts |
 
-`uv run esmeralda doctor --env dev` checks that these tools are on your `PATH`. Export your billing account (`ESMERALDA_BILLING_ACCOUNT`, and optionally `ESMERALDA_ORG_ID` and `ESMERALDA_ALERT_EMAIL`, the address that receives the governance alerts) and review `infrastructure/live/<env>/env.yaml`.
+`uv run esmeralda doctor --env dev` (or `make preflight`) checks that these tools are on your `PATH` (and Python >= 3.10, Terraform >= 1.5). Export your billing account (`ESMERALDA_BILLING_ACCOUNT`, and optionally `ESMERALDA_ORG_ID` and `ESMERALDA_ALERT_EMAIL`, the address that receives the governance alerts) and review `infrastructure/live/<env>/env.yaml`. If your projects sit under a folder (`folder_id`), set `ESMERALDA_ORG_ID`, or give the identity running Terraform `resourcemanager.folders.get` on the folder chain (for example `roles/browser`) so the Agent Identity trust domain can resolve the organization.
 
 #### 1. Using the `esmeralda` CLI (Recommended)
 
 The `esmeralda` CLI inspects your environment, validates contracts, runs local or remote agent queries, plans and applies infrastructure units with destroy-guard protection, and verifies every route end to end:
 
 ```bash
-uv run esmeralda doctor --env dev          # preflight checks (tools, auth, env.yaml)
+uv run esmeralda doctor --env dev          # preflight checks (tools, auth, env file, uv.lock, local state)
 uv run esmeralda status --env dev          # live status of layers, catalog hosts & gateways
 uv run esmeralda contracts                 # inspect gateway & catalog architectural contracts
 uv run esmeralda guard --all               # run security & hygiene guards across the repo
@@ -191,7 +193,8 @@ uv run esmeralda mcp
 The root `Makefile` covers bootstrap and offline tests, and keeps short aliases for the CLI (for example `make deploy-all ENV=dev` runs `esmeralda deploy --all --env dev`):
 
 ```bash
-make bootstrap                 # preflight checks + uv workspace sync
+make bootstrap                 # check uv, sync the uv workspace, install git hooks, then esmeralda doctor
+make preflight ENV=dev         # shortcut for: uv run esmeralda doctor --env dev
 make test-all                  # Python unit tests + Terraform validation + gateway harness
 make deploy-all ENV=dev        # shortcut for: uv run esmeralda deploy --all --env dev
 make test-e2e ENV=dev          # specialist, then orchestrator -> specialist through the gateway

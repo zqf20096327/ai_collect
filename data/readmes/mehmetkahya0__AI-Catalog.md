@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 15, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 17, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 15, 2026
+- **Last Updated**: November 17, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -468,6 +468,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Atlas Cloud](https://www.atlascloud.ai)** 💰 - AI API gateway: one key for LLM, image, video and audio models
 - **[looot](https://looot.ai)** 💰 - Pay-per-call business data API and MCP server for AI agents
 - **[OneTag AI](https://onetagai.com)** 🔄 - Add AI to any static site with one script tag, no backend
+- **[HiAPI](https://hiapi.ai)** 💰 - Pay-as-you-go API for image, video, audio and text models; OpenAI-compatible
 - **[HopBase](https://hop-base.com)** 💰 - AI API gateway: one base URL for Claude, GPT, Gemini, DeepSeek plus image and video models
 - **[CloudGPU](https://cloudgpu.app)** 💰 - Per-minute RTX 4090/5090 GPU rental, OpenAI-compatible model API and MCP server
 - **[Vectoree](https://vectoree.ai)** 💰 - Hosted backend for coding agents with one OpenAI-compatible project key, auth, Postgres and storage
@@ -549,6 +550,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[OpusClip](https://opus.pro)** 🆕🔄 - Auto short clips from long videos
 - **[shortshort](https://www.shortshort.io)** 🆕🔄 - Turns one long video into vertical 9:16 shorts with captions
 - **[ScaleReach](https://www.scalereach.ai)** 💰 - Turns long videos into 9:16 clips with AI captions and face-tracking crop
+- **[Clips Kitty](https://colingpt9.github.io/clips-studio/)** 🆓 - Free open-source desktop app that turns long videos into captioned 9:16 clips on your PC
 - **[Pic2Video AI](https://pic2videoai.com/)** 🔄 - Turns still photos into short animated videos in the browser
 - **[Hotel Lobby AI](https://hotellobbyai.top/)** 🆕🔄 - Two uploaded photos become a cinematic duet clip on a staged hotel lobby
 - **[UGCFast](https://ugcfast.ai)** 💰 - Persona-matched AI UGC video ads for Meta and TikTok from a product URL
@@ -613,6 +615,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Kissable](https://kissable.app)** 💰 - AI companion with persistent memory, photo/video generation, and community scenarios
 - **[Auferet](https://auferet.com/)** - AI game master for text adventures and tabletop RPGs with story memory
 - **[Poe](https://poe.com)** 🔄 - Multiple AI models in one platform
+- **[Adoree](https://adoree.ai)** 🔄 - AI relationship assistant that helps couples say what they mean and find next steps
 
 #### 🌐 Browser Integration
 - **[Brave Search](https://search.brave.com)** 🆓 - Privacy-focused search with AI
@@ -903,6 +906,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Motion](https://usemotion.com)** 💰 - AI calendar and task planner
 - **[NeverApply](https://neverapply.co)** 🔄 - AI job-search agent: matches jobs, tailors resumes, and applies with your approval.
 - **[CookLLM](https://cookllm.com/en/jobs/match)** 💰 - AI job matcher: emails new AI jobs from 1,300+ companies, scored against your resume
+- **[Telo](https://telo.ferryman.app/)** 🔄 - AI health coach: summarizes Apple Health data and answers questions on sleep and workouts
 - **[Reclaim.ai](https://reclaim.ai)** 🔄 - AI calendar scheduling
 
 #### 📧 Communication

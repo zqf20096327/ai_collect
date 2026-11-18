@@ -1,0 +1,174 @@
+# dsh-redline
+
+English · [Português (Brasil)](README.pt-BR.md) · [简体中文](README.zh-CN.md)
+
+[![npm](https://img.shields.io/npm/v/dsh-redline)](https://www.npmjs.com/package/dsh-redline) [![downloads](https://img.shields.io/npm/dm/dsh-redline)](https://www.npmjs.com/package/dsh-redline) [![license](https://img.shields.io/github/license/klaus-2/dsh-redline)](LICENSE) [![release](https://img.shields.io/github/v/release/klaus-2/dsh-redline)](https://github.com/klaus-2/dsh-redline/releases) [![discussions](https://img.shields.io/github/discussions/klaus-2/dsh-redline)](https://github.com/klaus-2/dsh-redline/discussions)
+
+**Point at any element on the page. Your agent fixes the code.**
+
+`dsh-redline` is a visual feedback and design review plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) — think Figma comments / Vercel Toolbar, but the feedback goes straight to your coding agent. Select an element, leave a comment, adjust styles live, and confirm — the annotations travel to your agent as structured context attached to your next message, with a cropped screenshot of exactly the region you marked.
+
+`dsh plugin --profile web add dsh-redline`
+
+---
+
+## Why this exists
+
+Describing a UI problem in words loses the pointer. "The button in the middle section looks off" makes your agent guess. Redline keeps the feedback attached to the element: selector, role, text, your comment, a cropped screenshot, and every style tweak you tried — delivered in one structured block the agent can act on.
+
+## Product tour
+
+![Redline demo loop](docs/assets/demo.svg)
+
+1. Press **C** (comment) or **V** (adjust) in any page opened in the harness browser.
+2. Click an element. A popover opens anchored to it.
+3. Write the comment, or open the inspector and adjust text, colors, typography, size, spacing, borders and effects — every change previews live on the page.
+4. Confirm. The card above the composer collects your pins. Send, and the annotations reach the agent as a snapshot alongside your message — rendered as the Redline chat row.
+5. Press **D** for the free annotation canvas: brush, lines, arrows, rectangles, ellipses, numbered step markers and text — send the full page to the chat with every drawing composited into the screenshot.
+
+## What the agent receives
+
+For each pin, one block in a single snapshot:
+
+- `Target` — tag, role, accessible label
+- `Target selector` — a CSS path back to the element
+- `Target text` / `Component` — content and framework hints
+- `Screenshot (cropped around the target)` — a JPEG of the marked region with surrounding context
+- `Comment` — what you asked for
+- `Requested visual changes` — every live adjustment as `prop: before -> after`
+- `Requested text change` — when you edited the element's text
+
+## Features
+
+- Element picking with hover highlight on any page the harness browser renders
+- Per-pin comments, editable in place, with resolve/reopen/delete
+- Live style inspector with rollback: drag-to-scrub numbers, color pickers, presets, linked box-model and radius edits, shadow and transform composers, per-row reset
+- Design-token suggestions in the inspector: the page's own `var(--token)` is offered when its resolved value matches the value being edited
+- CSS patch export: the committed adjustments render as a copyable `selector { prop: value; }` rule in the overlay and as a `Requested CSS:` block in the agent context
+- Copy selector button in the pin popover: puts the pin's CSS selector on the clipboard verbatim
+- Stale pin re-anchoring: when the target element leaves the DOM the pin is flagged and the popover warns, and dragging the marker re-binds it
+- Pin popover shows the target's live dimensions (W×H px), falling back to the pinned snapshot when the element is gone
+- The pin bubble warns when a selector matches more than one element, with the count.
+- Duplicate a pin to reuse its comment and adjustments on another element.
+- Focus mode dims the page and keeps the selected element interactive; Esc exits it.
+- Overlay themes: dark (default), light and a high-contrast variant, chosen in the plugin settings and persisted
+- Inspector undo/redo: Ctrl+Z / Ctrl+Shift+Z (or the panel buttons) step the uncommitted adjustments and text back and forward while the panel is open
+- Clicking a pin in the chat card scrolls the page to its element and highlights it for a moment
+- Paste an image into the comment composer: it is downscaled (max 1600px, JPEG), shown as a removable chip, and delivered with the pin for the agent to read
+- Before/after screenshots per adjusted pin: the after crop is captured live, then the page is restored and the before crop is captured from the same frame
+- Group comments: toolbar group mode collects N elements and posts one comment copied to every member pin (page-scoped — groups cannot span pages)
+- Comment templates insert a reusable sentence into the composer in one click.
+- Responsive preview presets: constrain the page to 375/768/1280 px or reset to full width; pins created under a preset record its width (note: `100vw` units and `position: fixed` navbars do not respect the constraint)
+- Accessibility audit in the pin popover and across the whole page, grouped by check type.
+- Quick fixes raise text contrast and add image alt text, with a preview before you confirm.
+- A dismissible toast in the page confirms copy and resolve/delete actions; the chat card shows an inline notice for report export and bulk results.
+- Pending report export: download the pending annotations as Markdown or JSON from the pending card (secret-gated, pending-only scope)
+- Preview the exact context, images and comments that will be sent to the agent.
+- Cropped screenshots per pin (not the whole viewport)
+- Select several pins in the card and resolve or delete them at once.
+- Annotations attach to the next message of the session you are viewing, rendered as one Redline chat row that claims the message (the generic context disclosure is replaced, not duplicated), and the row survives a session reload
+- Removing a pin from the card removes it from the page overlay too; a resolved pin is kept and marked as resolved.
+- English, Português (Brasil) and 简体中文 in the overlay UI, chosen from the browser locale
+
+## Install
+
+```bash
+dsh plugin --profile web add dsh-redline
+dsh web
+```
+
+For a private or unreleased build, install from a git URL or a local path:
+
+```bash
+dsh plugin --profile web add git+https://github.com/klaus-2/dsh-redline.git
+dsh plugin --profile web add ./dsh-redline
+```
+
+## Use
+
+| Key | Action |
+| --- | --- |
+| `C` | Comment mode — pick an element, write what should change |
+| `V` | Adjust mode — pick an element, open the live style inspector |
+| `D` | Free canvas — draw over the page, send it with the screenshot |
+| `H` | Show or hide the pins — markers, popovers and the comment composer disappear, the toolbar stays |
+| `Esc` | Cancel the current mode, popover or preview |
+| `Enter` | Save the annotation from the popover |
+
+Every one of the three mode keys can be changed in the plugin settings, and a shortcut can carry
+modifiers: `Ctrl+Shift+A` is a shortcut too. The modifiers must match exactly — `Ctrl+A` does
+not fire a shortcut set to `Ctrl+Shift+A`, and a plain key does not fire while a modifier is
+held. Two modes cannot share the same shortcut; the settings refuse the second one.
+
+Because the modifiers must match exactly, `Shift+C` no longer enters comment mode: `Shift` is a
+modifier like any other, so the shortcut that fires with Shift held is `Shift+C`.
+
+Pins collect in the card above the composer. **Send** dispatches them with your next message; the ✕ discards them, and the page overlay updates itself.
+
+## Security notes
+
+The loopback server binds to 127.0.0.1 only, answers only for its own host names (so a name that resolves to 127.0.0.1 cannot reach it) and validates the Host header, so remote origins cannot reach it. Every private route requires an instance secret that the host keeps in the profile (`~/.dsh/profiles/<profile>/dsh-redline/instance.secret`, mode 0600) and that never reaches the page: the overlay holds no secret, no header and no secret in a URL.
+
+The page talks to the host through a limited message bridge instead. It can submit the annotations, save the drawings, read the narrow state the overlay draws (language, delivery, pending ids, settings) and report a diagnostic — every other route answers `401`. The host half calls the bridge with the secret; the page calls it from a browser request that carries this origin, and the `Origin` header cannot be forged by a script. That origin also carries the pages the plugin proxies, so the bridge is an annotation channel and never a data channel.
+
+The page no longer receives review text in its inline config and no longer keeps drawings in Web Storage; the host's secret-gated drawings store is the only repository of saved drawings. Unsent drawings are memory-only and do not survive a reload, pins stay tab-scoped, and an inline guard purges legacy review keys from Web Storage before the overlay loads.
+
+Pages running in the harness browser can submit annotations by design — that is the plugin working as intended, so treat comments arriving through Redline like any other user-authored input: a comment is the text the Redline overlay captured on the page, and the pending annotations are shown in the card above the composer before they attach to your next message. The agent ticker (tool arguments, agent text) stays in the host; the page only ever sees the narrow projection above. No cookies are forwarded through the proxy.
+
+## Configure
+
+The plugin starts a loopback server (`127.0.0.1:47477`, falling back to the next 20 ports) that serves the overlay, the screenshot attachments and the annotation intake.
+
+The four mode keys (comment, adjust, canvas, hide-pins) are the only shortcut setting: open the plugin settings and change the comment, adjust or
+canvas key — the hide-pins key is preserved on every save and can be edited directly in
+`~/.dsh/redline/settings.json`. A shortcut can carry modifiers (`Ctrl+Shift+A`), the modifiers must match exactly, and
+two modes cannot share one shortcut.
+
+The overlay theme is a setting too: dark (the default), light, or a high-contrast variant of the dark
+palette. It applies on the page immediately and survives reloads and restarts.
+
+## How it works
+
+The client face injects the overlay into every page the harness browser renders. The overlay sends the annotations through the message bridge, and the loopback server stores a pending snapshot keyed by the session you are viewing. When you send a message, the host attaches the snapshot to the agent's turn as a producer-owned context message whose `source` carries the structured pins, and the chat renders it through the conversation-node API as one Redline row — collapsible sections included — instead of the generic context disclosure.
+
+## Develop
+
+```bash
+npm run build
+npm test
+npm run strip-comments
+```
+
+No dependencies to install — the plugin is plain Node.js.
+
+`overlay.template.js` + `tencil-overlay.css` are the sources; `lib/overlay.js` is generated — never edit it directly. `npm run strip-comments` reports what the comment stripper would change in the shipped sources; add `-- --write` to apply it. License and copyright notices are preserved in the JS and CSS sources; write mode also removes the contract and safety notes described in `CONTRIBUTING.md`, so it is a deliberate edit, not a formatter. `tools/smoke.mjs` exercises the proxy, HTML/CSS rewriting, annotation intake, cropped-screenshot persistence, the context format and overlay integrity against an isolated port and a temporary home; `tools/regression.mjs` adds the host, client and package suites, and it is the one that prints a check count.
+
+## Scope
+
+One harness instance, pages rendered by its built-in browser, viewport-based crops. Remote browsers and full-page capture are out of scope for now.
+
+## Credits
+
+### Contains code from
+
+- **[tencil](https://tencil.dev/)** — the overlay design system in
+  `tencil-overlay.css` is derived from tencil's overlay sources
+  (Copyright 2026 Pixel Perfect Agency, licensed under Apache-2.0 and
+  modified: accent palette, comment removal, inspector additions).
+  Full notice: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+- **[html2canvas](https://html2canvas.hertzen.com/)** — `vendor/html2canvas.min.js`
+  bundles version 1.4.1 (Copyright 2022 Niklas von Hertzen, MIT) to render
+  screenshot crops without any install-time dependency.
+  Full notice: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+
+### Inspired by
+
+- **[dsh-web-review](https://github.com/CanglongCl/dsh-web-review)** —
+  the delivery loop (annotations attaching to the agent's next message).
+- **[dsh-annotate](https://github.com/BrambleXu/dsh-annotate)** —
+  the structured browser-facts shape and the update-check pattern.
+
+## License
+
+[MIT](LICENSE)

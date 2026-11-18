@@ -58,7 +58,9 @@ content. The file on disk stays clean Markdown. Highlight passages, move lines
 with the keyboard, paste Markdown and see it rendered at once, and copy as
 formatted text, Markdown or plain text. If you do not want the header look on
 the first row of a table, [one setting](docs/customizing.md#tables) turns it
-off.
+off. [Expandable sections](docs/writing.md#expandable-sections) fold away
+details and are saved as standard HTML `<details>`, so they open and close on
+GitHub too.
 
 <img src="docs/images/scribe-dog-light-theme.png" alt="ScribeDog main window with file tree, editor and chat" width="700">
 
@@ -69,6 +71,11 @@ off.
 Draw with the mouse, a finger or a pen, pick a line width and colour, and
 insert the sketch at the cursor. It is saved as an SVG image in your vault, so
 the note stays plain Markdown, and a double-click opens it again for editing.
+You can also draw on a screenshot or photo in your note: circle, underline,
+point things out, and change the marks again later.
+
+<img src="docs/images/scribe-dog-draw-on-image.jpg" alt="A screenshot in a ScribeDog note with red marks drawn on top of it" width="700">
+
 
 [Read more →](docs/writing.md#drawings)
 
@@ -81,6 +88,14 @@ in Trilium or Notion. Pin the notes you are working on, and unsaved edits
 survive a restart.
 
 [Read more →](docs/notes-and-vault.md)
+
+### A reference note beside the one you edit
+
+Right-click a note and choose **Open as reference**: it opens read-only to the
+left of the one you are editing, handy for grading against a template. One
+click marks what differs, and the marks follow as you type.
+
+[Read more →](docs/notes-and-vault.md#open-a-note-as-reference)
 
 ### Version history
 

@@ -11,6 +11,11 @@
 This one is invisible to anti-bots.</h3>
 </div>
 
+<p align="center">
+<a href="https://decodo.com/deals/residential-offer?utm_medium=affiliate&utm_source=Federico+Elia&promoter_id=15854270&fpr=7859773"><img alt="Decodo residential proxies, free trial (sponsored)" src="https://raw.githubusercontent.com/oss-invisible/playwright_mcp/main/assets/decodo-residential-proxies-trial.png" width="560"></a><br>
+<sub>Sponsored</sub>
+</p>
+
 ---
 
 ## Two ways to use this browser agent

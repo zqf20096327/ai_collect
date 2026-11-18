@@ -13,6 +13,7 @@ A list of awesome AI Model API providers, platforms, projects
   - [OpenAI](#openai)
   - [Stability.ai](#stabilityai)
 - [API Platform](#api-platform)
+  - [CloudGPU](#cloudgpu)
   - [Code By AI](#code-by-ai)
   - [CodeI Lab](#codeilab)
   - [Deepinfra](#deepinfra)
@@ -24,6 +25,7 @@ A list of awesome AI Model API providers, platforms, projects
   - [Teapot Router](#teapot-router)
   - [Together.ai](#togetherai)
   - [UberLLM](#uberllm)
+  - [Vectoree](#vectoree)
   - [XiuRouter](#xiurouter)
 - [Open Source Projects](#open-source-projects)
   - [Llama 2 Chat](#llama-2-chat)
@@ -90,6 +92,13 @@ AIWave is a hosted OpenAI-compatible API gateway focused on Chinese model routes
 [Home](https://aiwave.live/) |
 [Models](https://aiwave.live/models/) |
 [Pricing](https://aiwave.live/pricing)
+
+### CloudGPU
+CloudGPU provides an OpenAI-compatible model API for developers.
+
+[Home](https://cloudgpu.app/) |
+[Models](https://cloudgpu.app/v1/models) |
+[Pricing](https://cloudgpu.app/api)
 
 ### Code By AI
 Code By AI is a pay-per-token API gateway for AI coding agents: one API key and one prepaid balance for Claude, GPT/Codex and Gemini models, with OpenAI-compatible, Anthropic Messages and Gemini endpoints.
@@ -165,6 +174,13 @@ UberLLM is a prepaid API with OpenAI-compatible (Chat Completions, Responses) an
 [Home](https://uberllm.dev/) |
 [Models](https://uberllm.dev/models) |
 [Pricing](https://uberllm.dev/docs/pricing)
+
+### Vectoree
+Vectoree is a pay-as-you-go OpenAI-compatible gateway for coding agents with one project key for models from xAI, OpenAI, Google, Anthropic and DeepSeek, plus auth, Postgres and object storage, a CLI and agent skill, and a $5 welcome credit after CLI login and project link.
+
+[Home](https://vectoree.ai/) |
+[Models](https://vectoree.ai/product/model-plaza) |
+[Pricing](https://vectoree.ai/#pricing)
 
 ### XiuRouter
 XiuRouter provides one API for leading models through OpenAI, Anthropic, and Gemini protocol routes, with scoped API keys and per-request usage and cost records.

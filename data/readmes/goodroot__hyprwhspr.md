@@ -89,7 +89,7 @@ hyprwhspr setup
 curl -fsSL https://hyprwhspr.com/install.sh | bash
 ```
 
-Installs dependencies, clones to `~/.local/share/hyprwhspr/src`, and walks you through setup.
+Installs dependencies and the latest release, then walks you through setup.
 
 <details>
 <summary>Manual install</summary>
@@ -117,27 +117,29 @@ We'd appreciate [issue reports and requests](https://github.com/goodroot/hyprwhs
 
 ---
 
-**Setup then walks you through:**
+**Setup:** pick a backend, review your preferences and choose desktop integrations. Setup asks before changing your bar or desktop shortcuts. Backend and model downloads can take several minutes. Follow the final checks and any remaining steps before trying dictation.
 
-1. ✅ Configure transcription backend (Cohere Transcribe, Parakeet TDT V3, Whisper, Qwen3-ASR, REST API, or Realtime WebSocket)
-2. ✅ Download models
-3. ✅ Configure themed visualizer for maximum coolness (optional)
-4. ✅ Configure bar integration for your shell -- Waybar or Noctalia (optional)
-5. ✅ Set up systemd user services 
-6. ✅ Set up permissions
-7. ✅ Validate installation
+Want to choose everything? Answer no to recommended settings.
+
+For automatic backend selection and default settings:
+
+```bash
+hyprwhspr setup auto
+```
+
+Authentication may still ask for your password.
 
 ### First use
 
 > Ensure your microphone of choice is available in audio settings!
 
-1. **Log out and back in** (for group permissions)
+1. **Log out and back in** if setup asked you to
 2. **Press `Super+Alt+D`** to start dictation - _beep!_
 3. **Speak naturally**
 4. **Press `Super+Alt+D`** again to stop dictation - _boop!_
 5. **Bam!** Text appears in active buffer!
 
-> **What you'll see while recording:** on layer-shell compositors (Hyprland, Sway, niri, KDE) the animated mic OSD overlay -- on Noctalia / Omarchy it auto-matches your live shell theme; GNOME/Mutter and X11 use a recording-status notification. See [Themed visualizer](docs/usage/FEEDBACK.md#themed-visualizer) for details.
+> **Recording indicator:** when enabled and its dependencies are available, supported desktops show an overlay or a status notification. Noctalia / Omarchy can match the overlay to your shell theme. See [Themed visualizer](docs/usage/FEEDBACK.md#themed-visualizer) for details.
 
 Any snags, please [create an issue](https://github.com/goodroot/hyprwhspr/issues/new/choose).
 
@@ -147,10 +149,10 @@ Any snags, please [create an issue](https://github.com/goodroot/hyprwhspr/issues
 # Arch: update via your AUR helper
 yay -Syu hyprwhspr
 
-# Managed release installs
+# Installed with install.sh
 hyprwhspr update
 
-# Legacy bootstrap installs: re-run the installer
+# Old git-clone installs: re-run the installer once to move to releases
 curl -fsSL https://hyprwhspr.com/install.sh | bash
 
 # Either way, setup is idempotent if you need to re-run it

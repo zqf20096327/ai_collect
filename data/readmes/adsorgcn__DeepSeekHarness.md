@@ -1,6 +1,7 @@
 <img src="assets/social-preview.png" alt="iLang DSH 工具包：给 DeepSeek Harness 装上本地记忆和技能" width="100%">
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23998664.svg)](https://doi.org/10.5281/zenodo.23998664)
+[![Agent Ready 100/100 · 查看实测结果](docs/assets/agent-ready-100.svg)](https://isitagentready.com/dsh.ilang.guide)
 
 # iLang DSH 工具包
 
@@ -40,7 +41,7 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 
 **一键安装** · 新电脑，一句话装齐。缺什么补什么，每步问你，只走官方源。可选免费全家桶：视频下载与视频转文字、笔记、语音，一件一审批。只装你点头同意的；删掉工作区项目文件就没了，另装的工具单独卸。
 
-**技能库** · 好技能，随装随用。mem-forever、site-design-engine、deai 起步（deai：去 AI 味，像你自己写的），新技能持续进来；你刷到什么好东西，说一句「迭代进去」，它就进仓库。
+**技能库** · 好技能，随装随用。mem-forever、site-design-engine、deai、source-book 起步（deai：去 AI 味，像你自己写的；source-book：看见攻略，说一句「变工程书」，变成 AI 能照着执行的工程书），新技能持续进来；你刷到什么好东西，说一句「迭代进去」，它就进仓库。
 
 ## 市场
 
@@ -62,7 +63,7 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 
 ## 放心
 
-你的记忆，只在你的电脑上。笔记是纯文本，随时能看、能改、能删。出网的只有两件事：你向模型提问的 API 请求，和你主动配置的备份（自己的私有仓库或同步盘）。不记密码，密钥只进本机加密 vault。
+你的记忆，只在你的电脑上。笔记是纯文本，随时能看、能改、能删。出网的只有两件事：你向模型提问的 API 请求，和你主动配置的备份（自己的私有仓库或同步盘）。不记密码；钥匙在账本里，值静态编码，不是加密（见 [一键安装.md](一键安装.md)「钥匙放在账本里」）。工具包自己不设门：没有登录墙、没有许可证、不限次数、不看你在哪；模型那边说不，原话给你，下一句就是另一条路，不是一堵墙。
 
 ## 引用与致谢
 
@@ -83,3 +84,44 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 - [插件点评-ilang视角.md](插件点评-ilang视角.md) · 现在的插件缺什么
 
 基于 [iLang](https://ilang.ai) v5.0 与 [Mem-Forever](https://github.com/ilang-ai/Mem-Forever) · MIT
+
+## Agent 与 MCP 接入
+
+**Agent Ready 100/100 · Level 5 Agent-Native** — 2026-11-17 默认 All Checks 实测。[查看完整结果 ↗](https://isitagentready.com/dsh.ilang.guide)
+
+准备安装工具包时，让你的 Agent 先读官方安装说明；需要新能力时，让它查技能市场。公开只读，**无需账号、API Key 或令牌**。
+
+在支持远程 MCP 的客户端中，新增服务器并填写：
+
+| 接入项 | 设置 |
+| --- | --- |
+| 名称 | `ilang-dsh` |
+| 地址 | `https://dsh.ilang.guide/mcp` |
+| 传输方式 | Streamable HTTP |
+| 认证方式 | 无（None） |
+
+支持 `mcpServers` 格式的客户端，也可直接使用这段配置：
+
+```json
+{
+  "mcpServers": {
+    "ilang-dsh": {
+      "url": "https://dsh.ilang.guide/mcp"
+    }
+  }
+}
+```
+
+连接成功后，对 Agent 说：
+
+> 读取 iLang DSH 的 Windows 安装说明，告诉我下一步需要确认什么。
+
+将 Windows 换成 macOS 或 Linux，即可获取对应系统的指引。连接后可发现 5 个工具：产品概览、安装指引、文档检索、单篇文档读取和技能市场查询。安装由你的本地 Agent 按你的确认执行；这个公开服务不能访问本地记忆，也不会执行安装或发布。
+
+- [接入说明与配置示例](https://dsh.ilang.guide/agents/)
+- [OpenAPI](https://dsh.ilang.guide/openapi.json) · [Agent 导航](https://dsh.ilang.guide/llms.txt)
+- [Agent Skills 索引](https://dsh.ilang.guide/.well-known/agent-skills/index.json) · [访问说明](https://dsh.ilang.guide/auth.md)
+
+支持 WebMCP 的浏览器还可在首页调用「读取安装说明」和「搜索技能市场」。安装仍由本地 Agent 按用户确认执行。
+
+认证发现声明明确标为未启用；发现项通过不表示提供了登录或令牌服务。

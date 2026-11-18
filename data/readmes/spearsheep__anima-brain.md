@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://anima-lab.io"><img src="docs/assets/anima-icon.png" alt="Anima Lab" width="104"></a>
+  <a href="https://www.anima-lab.io"><img src="docs/assets/anima-icon.png" alt="Anima Lab" width="104"></a>
 </p>
 
 <h1 align="center">Anima Brain</h1>
@@ -11,6 +11,7 @@
   Python 3.11+ &nbsp; · &nbsp; Alpha 0.6.0 &nbsp; · &nbsp; MIT-licensed code
 </p>
 <p align="center">
+  <a href="#see-it-in-action">Demos</a> &nbsp; / &nbsp;
   <a href="#quickstart">Quickstart</a> &nbsp; / &nbsp;
   <a href="#python-sdk">SDK</a> &nbsp; / &nbsp;
   <a href="#connect-your-agent">Agent integrations</a> &nbsp; / &nbsp;
@@ -26,7 +27,7 @@ MCP, or connect your own frontend. Bring your own model. An optional
 The public project is **Anima Brain**. The Python distribution remains `companion-engine`,
 imports use `companion_engine`, and the CLI is `companion`, preserving existing integrations.
 
-This project adapts the memory and brain architecture behind [Anima Lab](https://anima-lab.io)
+This project adapts the memory and brain architecture behind [Anima Lab](https://www.anima-lab.io)
 into a standalone Python implementation. It carries over selected designs and logic,
 with local storage, configurable providers and developer-facing APIs. **It is a separate
 adaptation with different defaults and capability coverage, not the complete Anima app
@@ -48,6 +49,21 @@ backend. The **Python package stays headless**. The optional
 [web showcase](examples/showcase/README.md) is a separate React application in `examples/showcase/`,
 with character chat, memory editing and context inspection. Optional MCP cards expose
 memory controls and voice playback inside compatible hosts.
+
+## See it in action
+
+Three short English demos from the local showcase and Python SDK. **Click a preview to watch with sound.**
+
+| Voice messages · 6.5s | Live audio call · 5.9s | Animated video call · 6.6s |
+| --- | --- | --- |
+| [![Play the English SDK voice sample](docs/assets/demos/voice-message.jpg)](https://spearsheep.github.io/anima-brain-demos/#voice-message) | [![Play the English voice-call demo](docs/assets/demos/audio-call.jpg)](https://spearsheep.github.io/anima-brain-demos/#audio-call) | [![Play the English animated video-call demo](docs/assets/demos/video-call.jpg)](https://spearsheep.github.io/anima-brain-demos/#video-call) |
+| Character speech generated through the SDK | Spoken input → brain → character speech | S2 avatar and speech captured together over RTC |
+
+[Watch all three](https://spearsheep.github.io/anima-brain-demos/) · [Download the 4K clips](https://github.com/spearsheep/anima-brain/releases/tag/demo-media-2026-11) · [Recording details and setup](docs/demos.md)
+
+These use configured external providers. The voice-call UI was re-recorded around the
+actual call response; the video-call audio and picture come from the same RTC capture.
+The 4K presentation contains the provider's native-resolution avatar stream.
 
 ## Quickstart
 
@@ -99,9 +115,9 @@ Public multi-user hosting requires your own authentication and deployment layer.
 
 ## Inside the brain
 
-[![One turn through memory, response and emotional continuity](docs/assets/brain-flow.gif)](docs/brain-flow.md)
+[![Original evidence, semantic and episodic memory, consolidation, retrieval and emotional continuity](docs/assets/brain-flow.svg)](docs/assets/brain-flow.svg)
 
-[Static diagram](docs/assets/brain-flow.svg) · **[Explore the Brain Atlas](docs/brain-flow.md)**:
+[Open the full-size SVG](docs/assets/brain-flow.svg) · [Animated walkthrough](docs/assets/brain-flow.gif) · **[Explore the Brain Atlas](docs/brain-flow.md)**:
 semantic vs episodic memory, the cited consolidation cycle, retrieval formulas and
 emotional continuity. Four animated views follow the implemented Python paths.
 Start the showcase and open [`?view=architecture`](http://127.0.0.1:8787/?view=architecture)
@@ -109,8 +125,9 @@ to play or step through them, adjust recency/importance inputs, and explore PAD 
 decay. RRF relevance and time-aware follow-up priority are shown separately. The page
 supports reduced motion, makes no model calls and reads no private conversations.
 Use **English / 简体中文** in the atlas header to switch languages. The
-[Chinese README](README.zh-CN.md#这套大脑怎么工作) embeds its own Chinese animation and static diagram;
-both versions share the same graph layout and calculations.
+[Chinese README](README.zh-CN.md#这套大脑怎么工作) includes a localized SVG and animation.
+The README uses a larger-type vector layout for readability; the atlas shares the same node
+labels and mechanisms, with its own interactive layout.
 
 Live calls use this same path. The SDK exposes `brain.call(character_id, CallOptions(...))`
 with streaming audio, transcripts, interrupt/mute controls and saved delivery receipts.
@@ -209,12 +226,12 @@ form when needed. Neither starts a chat application.
 
 Want a ready-to-use companion instead of building an integration? Use **Anima Lab**:
 
-**[Website & web app](https://anima-lab.io) · [iPhone / iPad](https://apps.apple.com/app/id6776954266) · [Android download](https://anima-lab.io/download)**
+**[Website & web app](https://www.anima-lab.io) · [iPhone / iPad](https://apps.apple.com/app/id6776954266) · [Android download](https://www.anima-lab.io/download)**
 
 <p align="center">
-  <a href="https://anima-lab.io"><img src="docs/assets/rina.jpg" alt="Rina, an Anima Lab companion, at an aquarium" height="240"></a>
+  <a href="https://www.anima-lab.io"><img src="docs/assets/rina.jpg" alt="Rina, an Anima Lab companion, at an aquarium" height="240"></a>
   &nbsp;
-  <a href="https://anima-lab.io"><img src="docs/assets/sean.jpg" alt="Sean, an Anima Lab companion" height="240"></a>
+  <a href="https://www.anima-lab.io"><img src="docs/assets/sean.jpg" alt="Sean, an Anima Lab companion" height="240"></a>
 </p>
 
 *Rina and Sean from Anima Lab's public website. These images show the consumer product's

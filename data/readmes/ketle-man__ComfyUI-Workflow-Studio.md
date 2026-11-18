@@ -23,7 +23,7 @@ A comprehensive workflow, asset management, and generation UI plugin for [ComfyU
 - Built-in AI tools (translation and more)
 
 ![Workflow Studio](https://img.shields.io/badge/ComfyUI-Custom_Node-blue)
-![Version](https://img.shields.io/badge/version-0.9.10-green)
+![Version](https://img.shields.io/badge/version-0.10.0-green)
 
 ## Screenshots
 
@@ -440,6 +440,18 @@ An experimental batch generator: runs the workflow currently loaded in GenerateU
 </details>
 
 <details>
+<summary><h3>Game Tab (v0.10.0, experimental)</h3></summary>
+
+- **Play, then generate** — a tab for mini games that end in image generation. The games come from a separate pack, [ComfyUI-WFS-Games](https://github.com/ketle-man/ComfyUI-WFS-Games); the tab appears only when the pack is installed (Workflow Studio checks `/wfs_games/manifest` on start), so without it nothing changes
+- **Star Formation** (first game) — a 1980s-style vertical shooter (arcade / MSX2 / PC-8801 look: pixel sprites, pixel font, scanlines, chiptune music) built on Phaser 4. 5 stages, each ending with a boss (WARNING, boss music; big and tough / fast with fast shots / radial bursts / flashing straight-line ram / a giant carrier launching small fighters). Navigator Rina talks between stages in an adventure-game style window
+- **An image at every stage clear** — a card is added to the Result panel and a victory shot of Rina with that stage in the background is generated in the background while you keep playing (one at a time, in order). Five flashing enemies per stage drop hearts; catch all 5 and that stage's image becomes a private photo of Rina instead (more casual clothes each stage, up to a swimsuit — the game adds negative tags so it goes no further). Clearing all 5 stages adds the ending scene; a game over adds a defeat scene (screen darkens, her call goes unanswered)
+- **Prompts from the game** — each card lists the prompts the game returned with their kind (Style / Heroine / Scene / Stage); uncheck or edit them and Regenerate, or **Open in GenerateUI**. The game's negative tags are added to the workflow's negative prompt
+- **Settings** — the workflow used for generation (default `ws_game_sdxl_t2i.json`, an SDXL text-to-image workflow included in `workflows/` — import it and set your checkpoint; output in `output/WFS_Game`), base prompt, negative prompt, and whether to generate at each stage clear / the ending / on game over automatically; difficulty, music and sound effects. VRAM Management notices are not shown while the Game tab is open
+- **For game authors** — a game is an ES module with `mount(container, host)`; it reports results through `host.stageClear()` / `host.finish()` and never calls ComfyUI itself — Workflow Studio builds the prompt and runs the generation. See the pack's README and `PLAN_GAME_TAB.md`
+
+</details>
+
+<details>
 <summary><h3>Image Edit Tab (v0.3.65)</h3></summary>
 
 - **Layer-based image editor** — compose images with multiple layers (Image, Text, Draw, Mask types) and export the composite as PNG or a fully layered PSD
@@ -449,8 +461,4 @@ An experimental batch generator: runs the workflow currently loaded in GenerateU
 - **New button** — create a blank canvas with custom dimensions (WxH prompt); clears all existing layers and automatically adds an empty Layer 1 (v0.3.70)
 - **Tools** — Select (V), Draw (B), Text (T), Shape (S), Fill (G), Mask (🎭), Blur (≈), BG Remove (⬚), Filter (★), Inpaint (🩹); tool options bar updates per active tool
   - **Select** — click to select; drag to move; drag corner handles to resize; drag circle handle to rotate; Flip H / Flip V / Rotate angle in the options bar; double-click a text layer to re-edit its content
-  - **Draw** — freehand brush; options: color, brush size, blend mode; paints directly onto the active draw layer while all other layers remain visible; brush cursor shown as a size-accurate circle; strokes can start from outside the canvas margin and continue past the edge; **pen tablet support** (v0.6.2) — brush size and opacity respond to pen pressure (mouse behaves exactly as before); the canvas listens for Pointer Events so pen, touch, and mouse all work through the same code path; **color palette** on the second row — Color 1/Color 2, 20 basic colors, and 20 custom slots (registered and edited colors are saved in the browser); **eyedropper** button next to Color picks a color from the canvas (`Esc` cancels); shortcuts while Draw is active: `D` Draw, `E` Erase, `X` switch Color 1/2, `[` `]` brush size, `B` open or close the brush picker (`Esc` also closes it)
-  - **Text** — click to place; configure font, size, bold/italic, align, and color; placed as an exact-size text layer sized to the measured bounding box; double-click to re-edit
-  - **Shape** — drag to draw geometric shapes (Rect / Ellipse / Line / FreeLine); options: shape type, Rounded toggle (Rect/Ellipse), Fill color, Stroke color + width, Opacity; each committed shape becomes an independent draw layer; Stroke None hidden for Line/FreeLine (stroke always active)
-  - **Fill** (v0.6.2) — bucket fill; click a contiguous same-color region on the active layer to flood-fill it (scanline-based, ported from the Comic Creator plugin's Image tab); **Properties pane**: Mode (Solid / Gradient) — Solid: Color picker; Gradient: Shape (Linear / Radial), a draggable color-stop Ramp (click a stop to select it, drag to reposition, ＋/－ to add/remove stops, color swatch to edit the selected stop's color), and a Direction dial (drag to set angle/radius); both Tolerance (0–255, color-match threshold) and Opacity apply to either mode; Ramp and Direction dial are pointer-event based with pointer capture, so pen tablets work the same as mouse
-  - **Mask** — 7 sub-tools for painting masks onto a dedicated mask layer; click **Mask** on the second row of the Layers header (renamed from "M" and moved to its own row in v0.6.0) to add a mask layer (Mask tool activates automatically); clicking a mask layer in the list also switches to the Mask tool; **Tool Options bar**: sub-tool buttons (Paint / Color / Alpha / Text / Vector / Shape / SAM3), Invert checkbox, Overlay color picker (default red), Blur slider (0–50 px); the overlay is only shown for the currently active mask layer, other mask layers stay hidden until selected (v0.3.70); SAM3 requires Mask Editor One (disabled when not installed); Color / Alpha / Text / Vector / Shape work without Mask Editor One; **Properties pane — Paint**: Mode (Add / Erase), Size (1–200 px), Hardness (0–100%); brush size responds to pen pressure on a tablet (v0.6.2, same as the Draw tool); **MAS
+  - **Draw** — freehand brush; options: color, brush size, blend mode; paints directly onto the active draw layer while all other layers remain visible; brush cursor shown as a size-accurate circle; strokes can start from outside the canvas margin and continue past the edge; **pen tablet support** (v0.6.2) — brush size and opacity respond to pen pressure (mouse behaves exactly as before); the canvas listens for Pointer Events so pen, touch, and mouse all work through the same code path; **color palette** on the second row — Color 1/Color 2, 20 basic co

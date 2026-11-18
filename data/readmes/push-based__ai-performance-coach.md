@@ -11,7 +11,7 @@ ai-coach works on your own notes in an [Obsidian](https://obsidian.md) vault. It
 - **Organize.** It keeps your notes in Projects, Areas, Resources and Archive, and connects them: every task, goal and idea links to the project, area or source it belongs to.
 - **Learn.** It takes an idea from a book, a course, a paper or a talk from "I've read it" to "I can teach it", in seven steps. A demanding tutor checks your work at each step and never gives you the answer.
 - **See.** It shows your vault in the browser: the graph of your notes, your sources chapter by chapter, your plans and how far you've climbed with each idea.
-- **Plan.** With [Claude Code](https://claude.com/claude-code), it plans your year down to your day: goals, projects, tasks and daily habits.
+- **Plan.** With an AI coding agent such as Claude Code or Codex, it plans your year down to your day: goals, projects, tasks and daily habits.
 
 **📖 The full documentation is a [Docusaurus](https://docusaurus.io) site: [push-based.github.io/ai-performance-coach](https://push-based.github.io/ai-performance-coach/)**, with search.
 
@@ -78,7 +78,7 @@ An online judge (Gemini) then checks your answers for gaps. It sees only the que
 
 ## Plan: your year down to your day
 
-The [planning skills](.claude/skills/README.md) for Claude Code plan in the same vault, as [Planning and habits](docs/guide/planning.md) explains. Say "plan my week" and Claude reviews last week, rolls over what slipped, sets this week's goals under the month's, and lays the tasks out day by day.
+The [planning skills](.agents/skills/README.md) work in any AI coding agent that reads skills and plan in the same vault, as [Planning and habits](docs/guide/planning.md) explains. Say "plan my week" and the agent reviews last week, rolls over what slipped, sets this week's goals under the month's, and lays the tasks out day by day.
 
 - **Goals chain upward:** a day's work serves the week, the week the month, up to the year.
 - **Tasks** live in their project, workstream or area, with a size, so a review shows where your effort went.
@@ -87,9 +87,9 @@ The [planning skills](.claude/skills/README.md) for Claude Code plan in the same
 
 ## Safe by design
 
-- **One gatekeeper.** Only the [vault server](docs/guide/glossary.md#vault-server) reads or writes your vault. The CLI, the browser view and Claude Code all go through it.
+- **One gatekeeper.** Only the [vault server](docs/guide/glossary.md#vault-server) reads or writes your vault. The CLI, the browser view and your AI agent all go through it.
 - **Preview first.** Every change is shown before it's written, and nothing is written until you confirm. When you plan or mark a chapter in the browser, a note you changed in Obsidian in the meantime is never overwritten.
-- **Your notes stay home.** Sparring runs offline. Only questions and answers go to the judge. See [Privacy](docs/guide/privacy.md) for exactly what leaves your machine, and what Claude Code sees when you plan.
+- **Your notes stay home.** Sparring runs offline. Only questions and answers go to the judge. See [Privacy](docs/guide/privacy.md) for exactly what leaves your machine, and what your AI agent sees when you plan.
 
 ## Quick setup
 
@@ -101,7 +101,7 @@ The [planning skills](.claude/skills/README.md) for Claude Code plan in the same
 | [Obsidian](https://obsidian.md) ([download](https://obsidian.md/download)) | where you read, mark and write your notes | free                     |
 | [Ollama](https://ollama.com) ([source](https://github.com/ollama/ollama))  | runs the local model that spars with you  | free, open source        |
 | A [Gemini API key](https://aistudio.google.com/apikey) (optional)          | the online judge                          | see Google's pricing     |
-| [Claude Code](https://claude.com/claude-code) (optional)                   | the planning skills                       | a Claude plan or API key |
+| An AI coding agent (optional), such as Claude Code or Codex                | the planning skills                       | that agent's plan or key |
 
 Your vault is a folder of plain Markdown files, so it stays readable without any of these. For planning, also install the [Tasks](https://github.com/obsidian-tasks-group/obsidian-tasks) community plugin in Obsidian: tasks and habits use its syntax.
 
@@ -138,7 +138,7 @@ npm run coach -- due                             # see what to study today
 npm run coach -- view                            # open your vault in the browser
 ```
 
-[Setup](docs/guide/setup.md) explains each step and how to connect Claude Code. [Your first session](docs/guide/first-session.md) takes one book through the whole loop.
+[Setup](docs/guide/setup.md) explains each step and how to connect your AI agent. [Your first session](docs/guide/first-session.md) takes one book through the whole loop.
 
 ## Learn more
 

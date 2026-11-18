@@ -23,7 +23,7 @@
   <a href="#questions-you-might-have">FAQ</a>
 </p>
 
-**Poptin MCP is the official connection between your AI agnet and your
+**Poptin MCP is the official connection between your AI agent and your
 [Poptin](https://www.poptin.com) account, so you can create email campaigns, analyze performance, and manage your marketing using natural language.** 
 
 With Poptin MCP, you can:
@@ -85,6 +85,7 @@ complete sign-in in the browser rather than pasting credentials into chat.
 | Codex | [MCP setup or portable plugin](docs/clients.md#codex) |
 | GitHub Copilot | [MCP in VS Code](docs/clients.md#github-copilot-in-vs-code) |
 | Gemini | [Gemini CLI configuration or extension](docs/clients.md#gemini-cli) |
+| Replit | [![Add to Replit](https://img.shields.io/badge/Add_to-Replit-F26207?style=flat-square)](https://replit.com/integrations?mcp=eyJkaXNwbGF5TmFtZSI6IlBvcHRpbiIsImJhc2VVcmwiOiJodHRwczovL21jcC5wb3B0LmluL21jcCJ9) <br>[MCP setup](docs/clients.md#replit) |
 | Grok | [Custom MCP connector](docs/clients.md#grok) |
 | Other MCP clients | [Connect by URL](docs/clients.md#other-mcp-clients) |
 

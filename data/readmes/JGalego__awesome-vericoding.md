@@ -1,6 +1,6 @@
 # Awesome Vericoding [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-[![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey)](LICENSE) [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](#contributing) ![Last commit](https://img.shields.io/github/last-commit/JGalego/awesome-vericoding) ![sorry: 0](https://img.shields.io/badge/sorry-0-brightgreen) ![vibes: informally verified](https://img.shields.io/badge/vibes-informally%20verified-blueviolet) ![Q.E.D.](https://img.shields.io/badge/Q.E.D.-%E2%88%8E-black)
+[![GitHub](https://img.shields.io/badge/GitHub-JGalego%2Fawesome--vericoding-181717?logo=github)](https://github.com/JGalego/awesome-vericoding) [![License: CC0-1.0](https://img.shields.io/badge/license-CC0--1.0-lightgrey)](LICENSE) [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)](#contributing) ![Last commit](https://img.shields.io/github/last-commit/JGalego/awesome-vericoding) [![What's new](https://img.shields.io/badge/what's%20new-Atom%20feed-orange?logo=rss)](https://jgalego.github.io/awesome-vericoding/new.html) ![sorry count](https://img.shields.io/endpoint?url=https%3A%2F%2Fjgalego.github.io%2Fawesome-vericoding%2Fbadges%2Fsorry.json) ![vibes: informally verified](https://img.shields.io/badge/vibes-informally%20verified-blueviolet) ![Q.E.D.](https://img.shields.io/badge/Q.E.D.-%E2%88%8E-black)
 
 <a href="https://arxiv.org/abs/2509.22908"><img src="media/logo.svg" align="right" width="130" alt="Vericoding logo: code braces around a check mark"></a>
 
@@ -105,10 +105,20 @@ To try AI vericoding:
 
 - [Assigning Meanings to Programs](https://doi.org/10.1007/978-94-011-1793-7_4) - Floyd attaches logical assertions to flowcharts, the origin of inductive assertions and loop invariants. *Symposia in Applied Mathematics 1967*
 - [An Axiomatic Basis for Computer Programming](https://doi.org/10.1145/363235.363259) - Hoare introduces pre/postcondition triples and axiomatic proof rules for programs. *CACM 1969*
+- [Proof of Correctness of Data Representations](https://doi.org/10.1007/BF00289507) - Hoare relates an abstract specification to its concrete data through an abstraction function, the idea behind ghost state and refinement. *Acta Informatica 1972*
+- [Proving Theorems about LISP Functions](https://doi.org/10.1145/321864.321875) - Boyer and Moore's prover that invents inductions over recursive Lisp functions, the ancestor of ACL2. *JACM 1975*
 - [Guarded Commands, Nondeterminacy and Formal Derivation of Programs](https://doi.org/10.1145/360933.360975) - Dijkstra's weakest-precondition calculus for deriving a program and its proof together. *CACM 1975*
+- [An Axiomatic Proof Technique for Parallel Programs I](https://doi.org/10.1007/BF00268134) - Owicki and Gries extend Hoare logic to parallel programs by checking that each proof survives interference from the others. *Acta Informatica 1976*
+- [Edinburgh LCF: A Mechanised Logic of Computation](https://doi.org/10.1007/3-540-09724-4) - Gordon, Milner, and Wadsworth make theorems an abstract type that only inference rules can build, the small trusted kernel of HOL4 and Isabelle. *LNCS 1979*
+- [Simplification by Cooperating Decision Procedures](https://doi.org/10.1145/357073.357079) - Nelson and Oppen combine decision procedures for separate theories into one, the architecture inside every SMT solver. *TOPLAS 1979*
+- [Tentative Steps Toward a Development Method for Interfering Programs](https://doi.org/10.1145/69575.69577) - Jones's rely-guarantee reasoning: each process states the interference it tolerates and causes, so proofs of concurrent code compose. *TOPLAS 1983*
+- [An Early Program Proof by Alan Turing](https://doi.org/10.1109/MAHC.1984.10017) - Morris and Jones reprint and annotate Turing's 1949 proof of a factorial routine, the first known program proof with assertions. *IEEE Annals of the History of Computing 1984*
+- [The Calculus of Constructions](https://doi.org/10.1016/0890-5401%2888%2990005-3) - Coquand and Huet's dependent type theory, extended with inductive types into the logic of Rocq and Lean. *Information and Computation 1988*
 - [Applying 'Design by Contract'](https://doi.org/10.1109/2.161279) - Meyer makes preconditions, postconditions, and invariants part of everyday object-oriented design. *IEEE Computer 1992*
 - [Separation Logic: A Logic for Shared Mutable Data Structures](https://doi.org/10.1109/LICS.2002.1029817) - Reynolds's logic for local reasoning about heaps and pointers, the basis of VeriFast, Viper, and Iris. *LICS 2002*
 - [The Verifying Compiler: A Grand Challenge for Computing Research](https://doi.org/10.1145/602382.602403) - Hoare's call for tools that check every program against its specification, an early statement of the vericoding goal. *JACM 2003*
+- [The Spec# Programming System: An Overview](https://doi.org/10.1007/978-3-540-30569-9_3) - Barnett, Leino, and Schulte add contracts to C# and check them with the Boogie verifier, the direct ancestor of Dafny. *CASSIS 2004*
+- [Resources, Concurrency, and Local Reasoning](https://doi.org/10.1016/j.tcs.2006.12.035) - O'Hearn's concurrent separation logic, where threads own disjoint parts of the heap, the basis of Iris. *TCS 2007*
 - [QED at Large: A Survey of Engineering of Formally Verified Software](https://doi.org/10.1561/2500000045) - How large verified systems are designed, maintained, and repaired in practice. *Foundations and Trends in PL 2019*
 
 ### 📝 Essays
@@ -117,6 +127,7 @@ To try AI vericoding:
 
 - [The Humble Programmer](https://www.cs.utexas.edu/~EWD/transcriptions/EWD03xx/EWD340.html) - Dijkstra's Turing lecture, where testing "is hopelessly inadequate for showing their absence" of bugs. *Turing Award Lecture 1972*
 - [Social Processes and Proofs of Theorems and Programs](https://doi.org/10.1145/359104.359106) - The classic critique of program verification: mathematical proofs earn trust through social processes that program proofs lack. *CACM 1979*
+- [Program Verification: The Very Idea](https://doi.org/10.1145/48529.48530) - Fetzer argues that a proof about a program cannot guarantee how a physical machine runs it, setting off a long CACM controversy. *CACM 1988*
 - [How Did Software Get So Reliable Without Proof?](https://doi.org/10.1007/3-540-60973-3_77) - Hoare asks why software works as well as it does without the verification he championed. *FME 1996*
 - [Who Builds a House Without Drawing Blueprints?](https://doi.org/10.1145/2736348) - Lamport's case for writing a specification before writing code. *CACM 2015*
 - [OpenJDK's Java.utils.Collection.sort() Is Broken: The Good, the Bad and the Worst Case](https://doi.org/10.1007/978-3-319-21690-4_16) - Verifying TimSort with KeY exposed a bug in the sort used by Java, Android, and Python, and proved a fix. *CAV 2015*
@@ -128,7 +139,8 @@ To try AI vericoding:
 > *The verifier complains the moment your code and spec disagree*
 
 - [Dafny](https://dafny.org) ⭐ 🏭 - Imperative and functional language with built-in contracts, verified through Boogie and Z3 and compiled to several mainstream languages ([LPAR 2010 paper](https://doi.org/10.1007/978-3-642-17511-4_20)).
-- [F*](https://fstar-lang.org) 🏭 - Proof-oriented functional language with dependent types and SMT automation; its Low* subset compiles to C through KaRaMeL ([POPL 2016 paper](https://doi.org/10.1145/2837614.2837655)).
+- [F\*](https://fstar-lang.org) 🏭 - Proof-oriented functional language with dependent types and SMT automation; its Low\* subset compiles to C through KaRaMeL ([POPL 2016 paper](https://doi.org/10.1145/2837614.2837655)).
+- [Jasmin](https://github.com/jasmin-lang/jasmin) - Assembly-like language for high-speed cryptography with a verified compiler and proofs of safety and constant time ([CCS 2017 paper](https://doi.org/10.1145/3133956.3134078)).
 - [SPARK](https://github.com/AdaCore/spark2014) 🏭 - Formally analyzable subset of Ada whose GNATprove tool proves absence of runtime errors and functional contracts.
 - [Velvet](https://velvetprover.dev) - Dafny-style auto-active verifier embedded in Lean that mixes SMT automation with interactive and AI-assisted proofs ([introduction](https://proofsandintuitions.net/2026/01/21/multi-modal-verification-velvet/)).
 - [Why3](https://why3.org) - Platform for deductive verification of WhyML programs that sends proof obligations to many SMT solvers and proof assistants ([ESOP 2013 paper](https://doi.org/10.1007/978-3-642-37036-6_8)).
@@ -138,12 +150,18 @@ To try AI vericoding:
 > *Keep the language you ship and add the proofs*
 
 - C
+  - [AutoCorres2](https://www.isa-afp.org/entries/AutoCorres2.html) - Translates C into monadic Isabelle/HOL code that is easier to reason about, used throughout the seL4 proofs ([POPL 2014 paper](https://doi.org/10.1145/2594291.2594296)).
   - [CBMC](https://github.com/diffblue/cbmc) 🏭 - Bounded model checker for C and C++ that checks memory safety and user assertions up to a loop bound.
   - [CN](https://github.com/rems-project/cn) - Separation-logic refinement type system for verifying systems C code.
+  - [CPAchecker](https://cpachecker.sosy-lab.org) - Configurable software verifier for C that emits correctness witnesses and regularly wins SV-COMP categories ([CAV 2011 paper](https://doi.org/10.1007/978-3-642-22110-1_16)).
   - [ESBMC](https://github.com/esbmc/esbmc) - SMT-based bounded model checker for C and C++, with front ends for further languages.
   - [Frama-C](https://frama-c.com) 🏭 - Platform for analyzing C code whose WP plugin proves ACSL function contracts deductively.
+  - [RefinedC](https://plv.mpi-sws.org/refinedc/) - Automated, foundational verification of C in Rocq through refinement and ownership types ([PLDI 2021 paper](https://doi.org/10.1145/3453483.3454036)).
+  - [SeaHorn](https://github.com/seahorn/seahorn) - LLVM-based verifier that proves safety of C programs by solving constrained Horn clauses for inductive invariants ([CAV 2015 paper](https://doi.org/10.1007/978-3-319-21690-4_20)).
   - [VeriFast](https://github.com/verifast/verifast) - Separation-logic verifier for C, Rust, and Java built on fast symbolic execution ([NFM 2011 paper](https://doi.org/10.1007/978-3-642-20398-5_4)).
   - [VST](https://vst.cs.princeton.edu) - Verified Software Toolchain, a program logic for C in Rocq proved sound against CompCert's semantics ([ESOP 2011 paper](https://doi.org/10.1007/978-3-642-19718-5_1)).
+- EVM
+  - [KEVM](https://github.com/runtimeverification/evm-semantics) - Executable formal semantics of the Ethereum Virtual Machine in K, used to verify smart-contract bytecode ([CSF 2018 paper](https://doi.org/10.1109/CSF.2018.00022)).
 - Go
   - [Gobra](https://www.pm.inf.ethz.ch/research/gobra.html) - Modular verifier for Go programs built on Viper.
   - [Perennial](https://github.com/mit-pdos/perennial) - Rocq and Iris framework for verifying concurrent, crash-safe storage and distributed systems written in Go.
@@ -151,6 +169,7 @@ To try AI vericoding:
   - [Liquid Haskell](https://ucsd-progsys.github.io/liquidhaskell/) - Refinement types for Haskell, checked by an SMT solver ([ICFP 2014 paper](https://doi.org/10.1145/2628136.2628161)).
 - Java
   - [KeY](https://www.key-project.org) - Deductive verifier for Java programs annotated with JML.
+  - [LiquidJava](https://github.com/liquid-java/liquidjava) - Refinement types for Java, written as annotations and checked by an SMT solver ([ICSE 2023 paper](https://doi.org/10.1109/ICSE48619.2023.00132)).
   - [OpenJML](https://www.openjml.org) - Verification and runtime checking for Java programs specified in JML.
   - [VerCors](https://vercors.ewi.utwente.nl) - Verifier for concurrent and GPU programs written in Java, C, and OpenCL.
 - OCaml
@@ -164,6 +183,7 @@ To try AI vericoding:
   - [hax](https://hax.cryspen.com) - Extracts Rust to F*, Rocq, and other proof back ends, used for verified cryptography.
   - [Kani](https://model-checking.github.io/kani) 🏭 - Bit-precise model checker for Rust built on CBMC, often used to verify unsafe code.
   - [Prusti](https://prusti.github.io/prusti/) - Viper-based verifier that uses Rust's ownership types to keep specifications simple ([OOPSLA 2019 paper](https://doi.org/10.1145/3360573)).
+  - [RefinedRust](https://plv.mpi-sws.org/refinedrust/) - Foundational verification of safe and unsafe Rust in Rocq, with automation from refinement types ([PLDI 2024 paper](https://doi.org/10.1145/3656422)).
   - [Verus](https://github.com/verus-lang/verus) ⭐ - SMT-based verifier for Rust, including low-level systems code, built on linear ghost types ([OOPSLA 2023 paper](https://doi.org/10.1145/3586037), [SOSP 2024 paper](https://doi.org/10.1145/3694715.3695952)).
 - Scala
   - [Stainless](https://epfl-lara.github.io/stainless/) - Verification framework for a functional subset of Scala.
@@ -187,15 +207,55 @@ To try AI vericoding:
 
 - [Alt-Ergo](https://alt-ergo.ocamlpro.com) - SMT solver tuned for proof obligations from program verifiers such as Why3 and Frama-C.
 - [Bitwuzla](https://bitwuzla.github.io) - SMT solver for bit-vectors, floating point, arrays, and uninterpreted functions.
-- [Boogie](https://github.com/boogie-org/boogie) - Intermediate verification language and verifier that Dafny and other front ends compile to.
+- [Boogie](https://github.com/boogie-org/boogie) - Intermediate verification language and verifier that Dafny and other front ends compile to ([FMCO 2005 paper](https://doi.org/10.1007/11804192_17)).
 - [CoqHammer](https://github.com/lukaszcz/coqhammer) - Hammer for Rocq that combines premise selection, external provers, and proof reconstruction.
 - [cvc5](https://cvc5.github.io) - Open-source SMT solver with broad theory support and proof production ([TACAS 2022 paper](https://doi.org/10.1007/978-3-030-99524-9_24)).
+- [Gillian](https://github.com/GillianPlatform/Gillian) - Multi-language platform for separation-logic verification and symbolic execution, with front ends for C and JavaScript ([PLDI 2020 paper](https://doi.org/10.1145/3385412.3386014)).
 - [Iris](https://iris-project.org) - Higher-order concurrent separation logic framework in Rocq ([JFP 2018 paper](https://doi.org/10.1017/S0956796818000151)).
 - [lean4lean](https://github.com/digama0/lean4lean) - Independent Lean 4 kernel written in Lean, for rechecking proofs outside the main implementation.
 - [LeanHammer](https://github.com/JOSHCLUNE/LeanHammer) - Hammer for Lean that pairs learned premise selection with automated provers ([premise selection paper](https://arxiv.org/abs/2506.07477)).
 - [nanoda](https://github.com/ammkrn/nanoda_lib) - Independent Lean 4 type checker in Rust, a second opinion on any Lean proof.
 - [Viper](https://www.pm.inf.ethz.ch/research/viper.html) - Permission-based verification infrastructure behind Prusti, Nagini, and Gobra ([VMCAI 2016 paper](https://doi.org/10.1007/978-3-662-49122-5_2)).
 - [Z3](https://github.com/Z3Prover/z3) ⭐ 🏭 - SMT solver from Microsoft Research that underpins Dafny, Verus, F*, and much of industrial verification ([TACAS 2008 paper](https://doi.org/10.1007/978-3-540-78800-3_24)).
+
+**What builds on what:** an arrow points from a tool to the one it builds on or translates to. Double-edged boxes are intermediate verifiers, cylinders are solvers and model checkers, and rounded boxes are proof assistants.
+
+```mermaid
+%%{init: {"flowchart": {"nodeSpacing": 12, "rankSpacing": 60}}}%%
+flowchart LR
+    Prusti --> Viper[[Viper]]
+    Nagini --> Viper
+    Gobra --> Viper
+    Dafny --> Boogie[[Boogie]]
+    Creusot --> Why3[[Why3]]
+    Cameleer --> Why3
+    SPARK --> Why3
+    FramaC[Frama-C] --> Why3
+    Verus --> Z3[(Z3)]
+    LiquidHaskell[Liquid Haskell] --> Z3
+    Viper --> Z3
+    Boogie --> Z3
+    Why3 --> Z3
+    Why3 --> cvc5[(cvc5)]
+    Why3 --> AltErgo[(Alt-Ergo)]
+    Kani --> CBMC[(CBMC)]
+    HACL[HACL*] --> FStar([F*])
+    hax --> FStar
+    Aeneas --> FStar
+    FStar --> Z3
+    Aeneas --> HOL4([HOL4])
+    Aeneas --> Lean([Lean 4])
+    Velvet --> Lean
+    hax --> Rocq([Rocq])
+    Aeneas --> Rocq
+    RefinedRust --> Iris
+    RefinedC --> Iris
+    Iris --> Rocq
+    VST --> CompCert
+    VST --> Rocq
+    CompCert --> Rocq
+    AutoCorres2 --> Isabelle([Isabelle])
+```
 
 ### 🏰 Verified Systems
 
@@ -208,10 +268,11 @@ To try AI vericoding:
 - [Using Crash Hoare Logic for Certifying the FSCQ File System](https://doi.org/10.1145/2815400.2815402) - FSCQ, a file system proved in Rocq to recover correctly from crashes. *SOSP 2015*
 - [Verdi](https://github.com/uwplse/verdi) - Rocq framework for implementing and verifying distributed systems, including the Raft consensus protocol.
 - [CertiKOS](https://flint.cs.yale.edu/certikos/) - Architecture for building certified concurrent operating system kernels in Rocq.
-- [HACL*](https://hacl-star.github.io) 🏭 - Verified cryptographic library written in F* and compiled to C, deployed in Mozilla Firefox and the Linux kernel ([CCS 2017 paper](https://doi.org/10.1145/3133956.3134043)).
+- [HACL\*](https://hacl-star.github.io) 🏭 - Verified cryptographic library written in F\* and compiled to C, deployed in Mozilla Firefox and the Linux kernel ([CCS 2017 paper](https://doi.org/10.1145/3133956.3134043)).
 - [Project Everest](https://project-everest.github.io) - Verified components for the HTTPS ecosystem, including HACL*, EverCrypt, and the EverParse parser generator.
 - [Fiat Cryptography](https://github.com/mit-plv/fiat-crypto) 🏭 - Generates verified elliptic-curve field arithmetic from Rocq specifications; its code ships in BoringSSL ([S&P 2019 paper](https://doi.org/10.1109/SP.2019.00005)).
 - [s2n-bignum](https://github.com/awslabs/s2n-bignum) - Bignum and cryptographic assembly for x86-64 and Arm from AWS, proved correct in HOL Light.
+- [Integration Verification Across Software and Hardware for a Simple Embedded System](https://doi.org/10.1145/3453483.3454065) - Bedrock2 code, its compiler, and a RISC-V processor proved together in Rocq, end to end. *PLDI 2021*
 - [Anvil](https://github.com/anvil-verifier/anvil) - Framework for Kubernetes controllers with Verus proofs of liveness ([OSDI 2024 paper](https://www.usenix.org/conference/osdi24/presentation/sun-xudong)).
 - [Cedar](https://www.cedarpolicy.com) 🏭 - Authorization policy language whose semantics and key properties are proved in Lean and checked against the production Rust code by differential testing.
 - [SampCert](https://github.com/leanprover/SampCert) - Verified differential-privacy samplers and mechanisms in Lean, developed at AWS.
@@ -241,9 +302,10 @@ To try AI vericoding:
 - [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/) - Christiansen's introduction to Lean 4 as a programming language.
 - [Program Proofs](https://program-proofs.com) ⭐ 💰 - Leino's hands-on textbook on writing verified programs in Dafny.
 - [Programming Language Foundations in Agda](https://plfa.github.io) - Programming language theory developed with machine-checked proofs in Agda.
-- [Proof-Oriented Programming in F*](https://fstar-lang.org/tutorial/) - The official book on writing programs and proofs together in F*.
+- [Proof-Oriented Programming in F\*](https://fstar-lang.org/tutorial/) - The official book on writing programs and proofs together in F\*.
 - [Software Foundations](https://softwarefoundations.cis.upenn.edu) ⭐ - Free Rocq series from logic basics to verified functional algorithms, separation logic, and Verifiable C.
 - [The Calculus of Computation](https://link.springer.com/book/10.1007/978-3-540-74113-8) 💰 - Bradley and Manna on decision procedures and the logic behind program verifiers.
+- [The Science of Programming](https://doi.org/10.1007/978-1-4612-5983-1) 💰 - Gries on deriving a program and its loop invariants together from the specification.
 - [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) - Introduction to dependent type theory and interactive proof in Lean 4.
 - [Type-Driven Development with Idris](https://www.manning.com/books/type-driven-development-with-idris) 💰 - Brady on using dependent types to make programs correct by construction.
 
@@ -257,6 +319,7 @@ To try AI vericoding:
 - [Intro to SPARK](https://learn.adacore.com/courses/intro-to-spark/index.html) - Interactive AdaCore course on proving Ada code with SPARK.
 - [Kani Tutorial](https://model-checking.github.io/kani/kani-tutorial.html) - First steps in model-checking Rust code with Kani.
 - [Learn Lean](https://lean-lang.org/learn/) - Official hub of Lean books, courses, and interactive games.
+- [Logical Verification](https://github.com/lean-forward/logical_verification_2026) - Lean 4 course on functional programs, their semantics, and proofs about them, with the Hitchhiker's Guide to Logical Verification as its book.
 - [Oregon Programming Languages Summer School](https://www.cs.uoregon.edu/research/summerschool/) - Annual summer school whose recorded lectures often cover proof assistants and program logics.
 - [Verification Corner](https://www.youtube.com/channel/UCP2eLEql4tROYmIYm5mA27A) - Rustan Leino's video series on specifications, invariants, and Dafny.
 - [Verus Guide](https://verus-lang.github.io/verus/guide/) ⭐ - Official tutorial and reference for verifying Rust with Verus.
@@ -283,7 +346,7 @@ To try AI vericoding:
 - [Learn F* in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/fstar.md) - Refinements as preconditions and an SMT lemma whose body is the induction.
 - [Learn Flux in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/flux.md) - Predicates attached to Rust types, including the overflow check beside them.
 - [Learn Gobra in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/gobra.md) - Go comments for contracts, termination, and permission to each slice cell.
-- [Learn Gospel in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/gospel.md) - OCaml contracts in comments, including a checks clause a test can monitor.
+- [Learn Gospel in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/gospel.md) - OCaml contracts in comments, a module proved against its signature, and a checks clause that raises.
 - [Learn HOL4 in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/hol4.md) - A Holmake script: a definition used by name, then an induction.
 - [Learn Idris 2 in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/idris.md) - Totality checking, and a vector whose length is part of its type.
 - [Learn Isabelle in Y Minutes](https://github.com/JGalego/awesome-vericoding/blob/main/primers/isabelle.md) - Simplification when it is enough, and an induction when auto will not invent one.
@@ -512,16 +575,16 @@ To try AI vericoding:
 
 > *Search for these escape hatches before you trust a ✅*
 
-| Verifier | Escape hatches to search for                                               | How to audit                                                                 |
-| -------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Dafny    | `assume`, `{:axiom}`, `{:verify false}`, bodiless `{:extern}` declarations | `dafny verify --warn-contradictory-assumptions --warn-redundant-assumptions` |
-| Verus    | `assume(...)`, `#[verifier::external_body]`                                | Search for both and review every trusted function specification              |
-| Lean 4   | `sorry`, `axiom`, `native_decide`, `@[implemented_by]`, `@[extern]`        | `#print axioms theorem_name` lists every axiom a theorem depends on          |
-| Rocq     | `Admitted`, `admit`, `Axiom`, `Parameter`                                  | `Print Assumptions theorem_name`                                             |
-| Isabelle | `sorry`, `axiomatization`                                                  | `thm_oracles theorem_name` shows skipped proofs                              |
-| F*       | `admit ()`, `assume`, `--admit_smt_queries true`, `--lax`                  | Search sources and build flags                                               |
-| SPARK    | `pragma Assume`, `SPARK_Mode (Off)`, `pragma Annotate` justifications      | Review the GNATprove summary for assumed and justified checks                |
-| Kani     | `kani::assume`, function stubs, low unwinding bounds                       | Remember that the proof only covers the bounds you set                       |
+| Verifier | Escape hatches to search for                                                                 | How to audit                                                                 |
+| -------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Dafny    | `assume`, `{:axiom}`, `{:verify false}`, bodiless `{:extern}` declarations                   | `dafny verify --warn-contradictory-assumptions --warn-redundant-assumptions` |
+| Verus    | `assume(...)`, `#[verifier::external_body]`                                                  | Search for both and review every trusted function specification              |
+| Lean 4   | `sorry`, `axiom`, `native_decide`, `@[implemented_by]`, `@[extern]`                          | `#print axioms theorem_name` lists every axiom a theorem depends on          |
+| Rocq     | `Admitted`, `admit`, `Axiom`, `Parameter`                                                    | `Print Assumptions theorem_name`                                             |
+| Isabelle | `sorry`, `axiomatization`                                                                    | `thm_oracles theorem_name` shows skipped proofs                              |
+| F*       | `admit ()`, `assume`, `--admit_smt_queries true`, `--lax`                                    | Search sources and build flags                                               |
+| SPARK    | `pragma Assume`, `SPARK_Mode (Off)` or `SPARK_Mode => Off`, `pragma Annotate` justifications | Review the GNATprove summary for assumed and justified checks                |
+| Kani     | `kani::assume`, function stubs, low unwinding bounds                                         | Remember that the proof only covers the bounds you set                       |
 
 ## 📅 Milestones
 
@@ -564,6 +627,7 @@ To try AI vericoding:
 > *Where the papers on this list get argued over in person*
 
 - [AITP](https://aitp-conference.org) - Conference on artificial intelligence and theorem proving.
+- [CAV](https://i-cav.org) - Computer Aided Verification, the main conference for verification tools and algorithms.
 - [CPP](https://www.sigplan.org/Conferences/CPP/) - Certified Programs and Proofs, the SIGPLAN conference on verified software.
 - [Dafny Workshop](https://popl26.sigplan.org/home/dafny-2026) - Yearly workshop co-located with POPL on Dafny, including work on AI-assisted verification.
 - [ETAPS](https://etaps.org) - Joint conferences including TACAS, home of many verification tool papers.
@@ -599,6 +663,7 @@ To try AI vericoding:
 
 > *Neighboring lists for when this one runs out*
 
+- [Archive of Formal Proofs](https://www.isa-afp.org) - Over 900 Isabelle developments, including verified algorithms and data structures, refereed like a journal.
 - [Awesome](https://github.com/sindresorhus/awesome) - The list of awesome lists this one follows.
 - [Awesome Coq](https://github.com/rocq-community/awesome-coq) - Rocq libraries, plugins, tools, and verification projects.
 - [Awesome Formal Verification](https://github.com/ElNiak/awesome-formal-verification) - Broad list of formal verification techniques and tools.

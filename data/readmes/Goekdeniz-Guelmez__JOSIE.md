@@ -269,7 +269,7 @@ Each app is off until you turn it on in Settings → Apple tools, macOS asks you
 | **Personas** | Talk to JOSIE, JARVIS, HAL 9000, Her, Joi or a character you write, each with its own prompt, voice and orb colour. |
 | **Your iPhone, your Mac** | On iPhone and iPad, pick your Mac as the provider, at home or over Tailscale. The call runs on your Mac, you can show Josie a photo, and the phone follows the Mac's memories, Library and name. |
 | **Choose how it hears** | Ten speech recognition engines, among them Qwen3-ASR, NVIDIA Parakeet, Voxtral Realtime, Whisper, IBM Granite Speech and Apple's on-device recognizer. All on your Mac. |
-| **Full-duplex voice engines** | Talk with LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken or Haru. They run on your Mac, on Apple Silicon, and are experimental. Add your own Hugging Face fine-tune. |
+| **Full-duplex voice engines** | Talk with LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken, Haru or Sophon-Realtime. They run on your Mac, on Apple Silicon, and are experimental. Add your own Hugging Face fine-tune. |
 | **Wake words** | Answers when a sentence starts or ends with your wake word, with a follow-up window and listen-back. Mac only. |
 | **Apple Watch calls** | Start, end and mute a call from your Watch, or connect it straight to your server with the Watch's own microphone. |
 | **Your choice of model** | Use Ollama, Anthropic's Claude through the Messages API, an OpenAI-compatible service or Apple Intelligence for the language model. |
@@ -289,7 +289,7 @@ Josie is a native Mac app built with SwiftUI and MLX Swift. Everything except th
 - **Who's speaking:** WeSpeaker, ported to MLX, recognises your voice and any voices you add.
 - **Speech:** Qwen3-TTS by default, with voice cloning and voice design, or one of thirteen others, including Kokoro, Gradium Phonon and ZONOS3-Mini (chosen in Settings).
 - **The brain:** a language model in [Ollama](https://ollama.com) on your Mac (`qwen3.5:0.8b` by default). In Settings you can switch to Anthropic's Claude or any OpenAI-compatible service with your own key, or to Apple Intelligence on macOS 26.
-- **Native call engines:** instead of the stages above, a call can use an experimental full-duplex engine (LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken or Haru) that listens while it speaks. LFM3, Nemotron and Venus can hand a request to your language model, and Moshi RAG retrieves through it.
+- **Native call engines:** instead of the stages above, a call can use an experimental full-duplex engine (LFM3, Nemotron VoiceChat, Moshi, Realtime Venus, caramel-1, Awaken, Haru or Sophon-Realtime) that listens while it speaks. LFM3, Nemotron and Venus can hand a request to your language model, and Moshi RAG retrieves through it. Sophon-Realtime 4B Flash, by Adventists AI, hears your speech directly, decides itself when you have finished, and speaks its reply while it writes it, with laughter and sighs, in your selected voice; on an M4 Pro it starts speaking about half a second after you stop.
 - **Resting:** after 5 to 240 minutes without a call (15 by default), the speech models unload; the next call loads them again.
 
 After setup, everything works offline except the language model, which runs in Ollama on your Mac.

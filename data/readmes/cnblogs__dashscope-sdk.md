@@ -233,6 +233,40 @@ var client = new DashScopeClient(
 
 If you access Bailian through a proxy, set `BaseAddress`/`WebsocketBaseAddress` (or the `baseAddress` parameter) instead. An explicit base address always takes precedence over region and workspace.
 
+### Content Inspection (AI Safety Guardrail)
+
+Bailian supports the `X-DashScope-DataInspection` request header, which further inspects input and output content for violations using the AI safety guardrail. The inspection is disabled by default (the header is not sent). The guardrail service needs to be enabled on your account first, otherwise the API returns `403 Header.AccessDenied`. Not available for Qwen-Audio models.
+
+Enable it for all requests on the client:
+
+```csharp
+// Console application
+var client = new DashScopeClient("your-api-key")
+{
+    DataInspection = DataInspectionOptions.CipInputAndOutput
+};
+
+// ASP.NET Core
+builder.Services.AddDashScopeClient("your-api-key");
+builder.Services.Configure<DashScopeOptions>(o => o.DataInspection = DataInspectionOptions.CipInputAndOutput);
+```
+
+Or enable/override it on a single request:
+
+```csharp
+var completion = await client.GetTextCompletionAsync(new ModelRequest<TextGenerationInput, ITextGenerationParameters>
+{
+    Model = "qwen-plus",
+    Input = new TextGenerationInput { Messages = new List<TextChatMessage> { TextChatMessage.User("你好") } },
+    Parameters = new TextGenerationParameters { ResultFormat = "message" },
+    DataInspection = DataInspectionOptions.CipInput
+});
+```
+
+Available values are `Disabled` (default), `CipInput`, `CipOutput` and `CipInputAndOutput`. Request level configuration takes precedence over client level configuration, and setting `DataInspectionOptions.Disabled` on a request disables client level inspection for that request.
+
+Client level configuration also applies to the WebSocket API (e.g. CosyVoice), which only supports enabling inspection for both directions at once, so any enabled direction turns on the `X-DashScope-DataInspection` header for WebSocket connections. The header is not sent by default. For a single WebSocket session, pass the `dataInspection` parameter when creating the session; when it differs from the client level configuration, a temporary connection is created for that session only and disposed afterwards.
+
 ## Supported APIs
 
 - [Text Generation](#text-generation) - QWen3, DeepSeek, etc. Supports reasoning/tool calling/web search/translation scenarios
@@ -1979,7 +2013,133 @@ var url = response.Output.Choices[0].Message.Content[0].Image;
 Console.WriteLine($"Generated image url: {url}");
 ```
 
+Wan models work the same way: `wan2.6-t2i` supports synchronous calls via the same API and allows free image size as long as total pixels stay in [1280*1280, 1440*1440] and aspect ratio stays in [1:4, 4:1]. Models at `wan2.5-t2i-preview` and below only support the async task API (see Text-to-Image (Async Task)).
+```csharp
+var response = await client.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "wan2.6-t2i",
+        Input = new MultimodalInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                    new List<MultimodalMessageContent>()
+                    {
+                        MultimodalMessageContent.TextContent("一间有着精致窗户的花店，漂亮的木质门，摆放着花朵")
+                    })
+            }
+        },
+        Parameters = new MultimodalParameters()
+        {
+            N = 1,
+            Size = "1280*1280",
+            PromptExtend = true,
+            Watermark = false,
+            Seed = 233
+        }
+    });
+var url = response.Output.Choices[0].Message.Content[0].Image;
+Console.WriteLine($"Generated image url: {url}");
+```
+
+The `wan2.7-image` / `wan2.7-image-pro` models add thinking mode (`ThinkingMode`), color palette control (`ColorPalette`, ratios sum up to 100.00%), sequential image group generation (`EnableSequential`, `n` becomes the max count 1-12) and interactive editing with bounding boxes (`BboxList`, one list of `[x1, y1, x2, y2]` boxes per input image). `wan2.7-image-pro` supports 4K output for text-to-image (2K for editing and groups).
+```csharp
+var response = await client.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "wan2.7-image",
+        Input = new MultimodalInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                    new List<MultimodalMessageContent>()
+                    {
+                        MultimodalMessageContent.TextContent("一间有着精致窗户的花店，漂亮的木质门，摆放着花朵")
+                    })
+            }
+        },
+        Parameters = new MultimodalParameters()
+        {
+            Size = "1K",
+            N = 1,
+            Watermark = false,
+            ThinkingMode = true,
+            ColorPalette =
+            [
+                new MultimodalColorPalette("#C2D1E6", "50.00%"),
+                new MultimodalColorPalette("#CDD8E9", "30.00%"),
+                new MultimodalColorPalette("#B5C8DB", "20.00%")
+            ]
+        }
+    });
+var url = response.Output.Choices[0].Message.Content[0].Image;
+Console.WriteLine($"Generated image url: {url}");
+```
+
 ### Image Editing
+`wan2.6-image` supports image editing with 1~4 reference images, and interleaved text-image output when `EnableInterleave` is set to `true` (streaming only).
+```csharp
+var response = await client.GetMultimodalGenerationAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "wan2.6-image",
+        Input = new MultimodalInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                    new List<MultimodalMessageContent>()
+                    {
+                        MultimodalMessageContent.TextContent("参考图1的风格和图2的背景，生成番茄炒蛋"),
+                        MultimodalMessageContent.ImageContent("<reference-image-1-url>"),
+                        MultimodalMessageContent.ImageContent("<reference-image-2-url>")
+                    })
+            }
+        },
+        Parameters = new MultimodalParameters() { N = 1, EnableInterleave = false, Size = "1K" }
+    });
+var url = response.Output.Choices[0].Message.Content[0].Image;
+Console.WriteLine($"Generated image url: {url}");
+```
+
+The `wan2.5-i2i-preview` model edits images by instruction with up to 3 reference images, keeping subject consistency across images. It runs as an async task and reports the rewritten prompt in the result:
+```csharp
+var response = await client.CreateImageSynthesisTaskAsync(
+    new ModelRequest<ImageEditInput, IImageSynthesisParameters>()
+    {
+        Model = "wan2.5-i2i-preview",
+        Input = new ImageEditInput()
+        {
+            Prompt = "将图1中的闹钟放置到图2的餐桌的花瓶旁边位置",
+            Images = ["<reference-image-1-url>", "<reference-image-2-url>"]
+        },
+        Parameters = new ImageSynthesisParameters() { N = 1 }
+    });
+var task = await client.GetImageSynthesisTaskAsync(response.Output.TaskId);
+Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}, actual prompt: {task.Output.Results?[0].ActualPrompt}");
+```
+
+The classic `wanx2.1-imageedit` model edits images through predefined functions via an async task:
+```csharp
+var response = await client.CreateImageSynthesisTaskAsync(
+    new ModelRequest<ImageEditFunctionInput, IImageEditFunctionParameters>()
+    {
+        Model = "wanx2.1-imageedit",
+        Input = new ImageEditFunctionInput()
+        {
+            Function = "description_edit",
+            Prompt = "把她的头发修改为红色。",
+            BaseImageUrl = "<your-image-url>"
+        },
+        Parameters = new ImageEditFunctionParameters() { N = 1 }
+    });
+var task = await client.GetImageSynthesisTaskAsync(response.Output.TaskId);
+Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}");
+```
+Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization_local`, `remove_watermark`, `expand`, `super_resolution`, `colorization`, `doodle` and `control_cartoon_feature`; function-specific parameters like `Strength`, `UpscaleFactor` and the four `*Scale` properties live on `ImageEditFunctionParameters`.
+
 Upload an image and provide editing instructions using the multimodal API.
 ```csharp
 await using var image = File.OpenRead("input.jpg");
@@ -2050,9 +2210,50 @@ do
 } while (waited < timeout);
 ```
 
+`wan2.6-t2i` uses a new async protocol: create the task with `CreateImageGenerationTaskAsync` and multimodal input (same as the synchronous call), then poll with the generic `GetTaskAsync`:
+```csharp
+var response = await client.CreateImageGenerationTaskAsync(
+    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    {
+        Model = "wan2.6-t2i",
+        Input = new MultimodalInput()
+        {
+            Messages = new List<MultimodalMessage>()
+            {
+                MultimodalMessage.User(
+                    new List<MultimodalMessageContent>()
+                    {
+                        MultimodalMessageContent.TextContent("一间有着精致窗户的花店，漂亮的木质门，摆放着花朵")
+                    })
+            }
+        },
+        Parameters = new MultimodalParameters() { N = 1, Size = "1280*1280", Seed = 233 }
+    });
+var task = await client.GetTaskAsync<MultimodalTaskOutput, MultimodalTokenUsage>(response.Output.TaskId);
+var url = task.Output.Choices?[0].Message.Content[0].Image;
+Console.WriteLine($"Generated image url: {url}");
+```
+
 ### Image Translation
 
-Use `qwen-mt-image` to translate the text within an image while preserving the original layout. Use `CreateImageSynthesisTaskAsync` with an `Image2ImageSynthesisInput` to create the task, then poll `GetImage2ImageSynthesisTaskAsync` for the result.
+Translate the text within an image while preserving the original layout. With `qwen-mt-image-2.0` you can call `GetImage2ImageSynthesisAsync` to translate synchronously - the call blocks until the translated image is ready. The 2.0 model has no language restrictions (any of the 55 supported languages works for both source and target).
+
+```csharp
+var response = await client.GetImage2ImageSynthesisAsync(
+    new ModelRequest<Image2ImageSynthesisInput>()
+    {
+        Model = "qwen-mt-image-2.0",
+        Input = new Image2ImageSynthesisInput()
+        {
+            SourceLang = "zh",
+            TargetLang = "en",
+            ImageUrl = "<your-image-url>"
+        }
+    });
+Console.WriteLine($"Translated image url: {response.Output.ImageUrl}");
+```
+
+For `qwen-mt-image` (which requires the source or target language to be Chinese or English), use the async task flow: create the task with `CreateImageSynthesisTaskAsync` and an `Image2ImageSynthesisInput`, then poll `GetImage2ImageSynthesisTaskAsync` for the result.
 
 ```csharp
 var response = await client.CreateImageSynthesisTaskAsync(
@@ -2248,15 +2449,15 @@ Console.WriteLine(deletion.Deleted ? $"Deleted: {deletion.Id}" : $"Deletion fail
 
 Call the text embedding API via `GetTextEmbeddingsAsync`. Supported models are `text-embedding-v1` ~ `v4` plus the qwen3.7 series:
 
-- `qwen3.7-text-embedding` (`TextEmbeddingModel.QwenTextEmbedding`): 2560/2048/1536/1024(default)/768/512/256 dimensions, up to 128,000 tokens per text and 20 texts per request.
-- `qwen3.7-text-embedding-flash` (`TextEmbeddingModel.QwenTextEmbeddingFlash`): 1024(default)/768/512/256 dimensions.
+- `qwen3.7-text-embedding`: 2560/2048/1536/1024(default)/768/512/256 dimensions, up to 128,000 tokens per text and 20 texts per request.
+- `qwen3.7-text-embedding-flash`: 1024(default)/768/512/256 dimensions.
 
 The qwen3.7 series also returns an extra `prompt_tokens` or `input_tokens` in `usage` (same value as `total_tokens`), and flash additionally returns a `prompt_tokens_details` breakdown.
 
 ```csharp
 var text = "Sample text for embedding";
 var response = await dashScopeClient.GetTextEmbeddingsAsync(
-    TextEmbeddingModel.TextEmbeddingV4,
+    "text-embedding-v4",
     [text],
     new TextEmbeddingParameters { Dimension = 512 });
 var embedding = response.Output.Embeddings.First().Embedding;

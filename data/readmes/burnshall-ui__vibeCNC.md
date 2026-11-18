@@ -38,7 +38,7 @@
 - **Real-Time Position Display** - Live X, Z, Tool, Spindle Speed, and Feedrate overlay
 - **2D Visualization** - Interactive lathe simulation with zoom, pan, and click-to-jump
 - **Collision Detection** - Automatic chuck limit warnings with visual highlights
-- **Canned Cycles** - G71/G72 roughing, G70 finishing (drawn in cyan), G76 and G92 threading (drawn in yellow) are expanded into the moves they make and played back one at a time; G73-G75 are not drawn yet. G76 follows the control's usual depth schedule (shallower passes, a minimum cut, finishing passes at full depth) and feeds straight in rather than along the flank
+- **Canned Cycles** - G71/G72 roughing, G73 pattern repeating, G70 finishing (drawn in cyan), G76 and G92 threading (drawn in yellow), G75 grooving and G74 face grooving or peck drilling are expanded into the moves they make and played back one at a time; every cycle from G70 to G76 is drawn. G73 cuts the contour between P and Q R times, each pass a copy of it shifted along the axes: the first by the relief U/W of its first block (U a radius) plus the allowance, the last by the allowance alone, the ones between evenly spaced, each pass starting from and returning straight to the start point — that spacing is the usual reading of the cycle and is not confirmed by any source this was built from. G75 pecks in X (P, a radius) with a return after each peck (R of its first block), steps along Z (Q) and makes the last step short so the groove ends on the programmed Z; G74 is the same turned through 90 degrees, pecking along Z (Q) and stepping in X (P, a radius), and without X it drills a deep hole on the centre line; the relief at the bottom (R of the second block) is not drawn, because the sources it was built from disagree about its direction, and the width of the grooving tool is not drawn either. G76 follows the control's usual depth schedule (shallower passes, a minimum cut, finishing passes at full depth) and feeds straight in rather than along the flank. A decimal point in P or Q of G70–G76 (`P1.5` instead of `P1500`) is drawn as meant, and the linter reports it, because the control rejects it with an alarm
 
 ###  AI-Powered Assistance
 - **Dual AI Support** - Works with both Claude (cloud) and Ollama (local)
@@ -124,7 +124,10 @@ setx ANTHROPIC_API_KEY "sk-ant-..."       # Windows
 ```
 
 Then open **Settings → AI** and press **Test connection**: it asks the API whether
-the key works and the model exists, without running the model. The default model is
+the key works and the model exists, without running the model. It does not see the
+credit balance: an account without API credits passes the test and is turned away on
+the first analysis ("Your credit balance is too low"). API credits are bought in the
+Anthropic Console and are separate from a claude.ai subscription. The default model is
 `claude-sonnet-5-5`; the Claude SDK (`anthropic`) is installed with `requirements.txt`.
 
 ---
@@ -204,6 +207,31 @@ ai:
 requests to it fail. `ai.system_prompt` and `ai.generate_prompt` set what a review and
 a generation are told to do.
 
+### Measuring a model: the review eval
+
+Does a model find what the linter finds? `evals/review_eval.py` puts one known fault
+into a copy of your program: G40 taken out of the header, the G50 before G96 removed,
+no retract before M30, F0 on a G71, a decimal point in P/Q, and so on, eleven kinds
+in all. It then sends exactly what **AI ANALYZE** sends and checks whether the answer
+names the fault at the right block:
+
+```bash
+python3 -m evals.review_eval                 # lists the cases, sends nothing
+python3 -m evals.review_eval --run           # asks the model config.yaml names
+python3 -m evals.review_eval --run --model claude-haiku-5-5 --repeat 3
+python3 -m evals.review_eval --rescore _tmp/review_eval/<file>.jsonl
+```
+
+By default it reads `programs/*.nc`; pass files to use others
+(`tests/fixtures/reference.nc` adds compensation and arcs outside a cycle). The linter
+is the ground truth. A fault is used only where the linter reports it on the copy, so the eval
+measures nothing the linter cannot see. Each program is also sent once unchanged, to
+count how much a model reports on a program the linter finds clean. Every answer is
+saved to `_tmp/review_eval/`, so `--rescore` can score them again without paying for
+them twice. A failed call (no credits, wrong key) stops the run. The scoring looks for
+the block's N number or line number and a word for the fault in the same item of the
+answer. It is a heuristic, so read the saved answers before trusting a number.
+
 ### Machine Settings
 ```yaml
 machine:
@@ -273,6 +301,7 @@ vibe_cnc/
 │
 ├── vibe_cnc/
 │   ├── claude_client.py        # AI client (Claude + Ollama)
+│   ├── analysis_prompt.py      # What AI ANALYZE sends (shared with the eval)
 │   ├── gcode_highlighter.py    # Syntax highlighting + editor
 │   ├── gcode_plotter.py        # 2D visualization + live drawing
 │   ├── lint_engine.py          # Policy enforcement
@@ -284,6 +313,9 @@ vibe_cnc/
 ├── tools/
 │   ├── tools.json              # Tool database
 │   └── macros.db               # SQLite macro storage
+│
+├── evals/
+│   └── review_eval.py          # Does a model find the faults the linter knows?
 │
 └── programs/                   # Sample G-Code programs
 ```

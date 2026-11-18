@@ -6,7 +6,9 @@ Official brand assets for **Llama.app** and **llama.cpp**: the logo, the Llama t
 logo/     the icon, the lockups, the covers, app icons and social profiles as SVG, WebP and PNG, plus the logo showcase
 fonts/    Llama Sans and Llama Mono, their build scripts and the specimen
 css/      the colours, the font faces, and communications' grounds and type scale
-readme/   this README's artwork: cards built from the fonts and the colours, and the logo in use, rendered from the design system
+readme/   this README's artwork: cards built from the fonts and the colours, and the logo in use, rendered from the Storybook
+stories/  the Storybook: the brand and communications, drawn with the files above
+BRAND.md  the brand book, written for agents first
 ```
 
 Install it from GitHub and import files by path:
@@ -72,7 +74,7 @@ Every SVG also comes as a lossless WebP under [`logo/webp/`](./logo/webp) and a 
 
 ## Using the logo
 
-These images are rendered from the Logo stories in the design system's Storybook, in llama.cpp's `tools/ui` (`npm run export:brand-readme -- --out <this repo>`), so they show the real components.
+These images are rendered from the Logo stories in this repository's [Storybook](#storybook) (`npm run export:brand-readme`), so they show the real components. The splash screens come from llama.cpp's Storybook, where Llama Chat draws them.
 
 ### How the lockups are built
 
@@ -230,6 +232,25 @@ css/communications.css   the grounds and the type scale for posts, posters, boar
 Communications measure everything in `--u`, a 24th of the format's short side (45px on a 1080 × 1080 post), which the layout sets. A piece takes `.ground` and one of `.ground-light`, `.ground-dark`, `.ground-sand`, `.ground-day` or `.ground-night`, which set its background and inks (`--p-ink`, `--p-muted`, `--p-line` and the rest). Its text takes the type scale: `.t-label`, `.t-body`, `.t-lede`, `.t-headline`, `.t-display`, `.t-figure` and `.t-mono`.
 
 The llama.cpp web UI's design system builds on the same colours, with the same names, and adds what only an interface needs: status colours, translucent whites and blacks, and its type, length and radius scales.
+
+---
+
+## Storybook
+
+The brand is drawn in a Storybook with its own files and the components Llama Chat is built from ([`@ggml-org/llama-ui`](https://www.npmjs.com/package/@ggml-org/llama-ui)): the logo (its geometry, lockups, usage and every file to download), Llama Sans and Llama Mono, the colours, and how posts, posters, store screenshots, release images, link previews and swag are put together. [`BRAND.md`](./BRAND.md) is the brand book for agents, and the Storybook is the source of truth it points to.
+
+```bash
+npm ci
+npm run storybook            # on port 6006
+npm run test:ui              # every story, in a headless browser
+npm run export:brand-readme  # this README's artwork, into readme/
+npm run export:design-system # the Llama design system for Claude, into design-system-export/
+npm run export:ms-spotlight  # the Microsoft Store Spotlight and AI Hub pictures, into design-exports/ (Storybook running)
+```
+
+Where a page shows Llama Chat itself (the mood board's chat, the store screenshots' scenes), it is an image of the real app, captured in [llama.cpp's Storybook](https://github.com/ggml-org/llama.cpp/tree/master/ui/apps/chat). The reasons behind the products, Philosophy, are there too, next to the apps.
+
+Every change on master is checked, tested and built by the Storybook workflow, and the build is published to the Hugging Face Space [ggml-org/llama-brand-storybook](https://huggingface.co/spaces/ggml-org/llama-brand-storybook). The workflow needs an `HF_TOKEN` secret with write access to it.
 
 ---
 

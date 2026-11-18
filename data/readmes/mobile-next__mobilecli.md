@@ -175,6 +175,13 @@ mobilecli device reboot --device <device-id>
 # Tap at coordinates (x,y)
 mobilecli io tap --device <device-id> 100,200
 
+# Double tap at coordinates (x,y)
+mobilecli io doubletap --device <device-id> 100,200
+
+# Drag from one point or element ref to another; --hold keeps the finger still before it moves
+mobilecli io drag --device <device-id> 100,200,300,400
+mobilecli io drag --device <device-id> @e1,@e2 --hold 500 --duration 1000
+
 # Long press at coordinates (x,y) with optional duration in milliseconds
 mobilecli io longpress --device <device-id> 100,200
 mobilecli io longpress --device <device-id> 100,200 --duration 2000
@@ -252,10 +259,15 @@ VoiceOver stays on after mobilecli exits, so turn it off when done. While it is 
 ### Supported Hardware Buttons
 
 - `HOME` - Home button
-- `BACK` - Back button (Android only)
-- `POWER` - Power button
+- `POWER` - Power (side) button. `LOCK` is an alias
 - `VOLUME_UP`, `VOLUME_DOWN` - Volume up and down
+- `ENTER` - Enter key
+- `BACK` - Back button (Android only)
+- `APP_SWITCH` - Recent apps (Android only)
+- `BACKSPACE` - Delete the character before the cursor (Android only)
 - `DPAD_UP`, `DPAD_DOWN`, `DPAD_LEFT`, `DPAD_RIGHT`, `DPAD_CENTER` - D-pad controls (Android only)
+
+Names are case-insensitive. `mobilecli io button --help` prints the list for each platform, and an unknown name fails with the supported names.
 
 ### App Management 📱
 

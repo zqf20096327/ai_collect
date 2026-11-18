@@ -557,6 +557,15 @@ task but discards all new learning. [`research/SPIKING_SHIFT.md`](research/SPIKI
 slightly worse on a fixed sample-quality probe. More parameters did not buy quality at
 this budget; the next attempt needs 500M+ tokens. [`docs/SPIKING_PRODUCT.md`](docs/SPIKING_PRODUCT.md)
 
+**Generative data diversity (first generative result):** a 4.3M model trained for
+3,000 steps on 16M tokens. TinyStories-only: TinyStories **1.566** / WikiText
+**4.455** bpb. Mixed 25% WikiText (12M TinyStories + 4M WikiText): TinyStories
+**1.605** / WikiText **2.927** bpb. 50% and 75% WikiText add little WikiText
+gain at a larger TinyStories cost (50%: 1.702/2.906; 75%: 1.734/2.820). The
+21M/50M TinyStories-only models stay at WikiText 4.03, so data diversity moves
+the general-text metric where parameter scaling did not.
+[`research/SPIKING_GENERATIVE.md`](research/SPIKING_GENERATIVE.md)
+
 **Sleep-like replay:** during a TinyStories -> WikiText phase, mixing 20% old windows
 into every batch keeps old bpb at **2.079** (phase-A 2.077; naive 2.632) and retains
 **99.2%** of the new-task gain. Replay is much better than post-hoc shadow rollback
@@ -714,6 +723,36 @@ boundaries. Two seeds: phase-A old **1.000**, phase-B old/new/held
 **1.000/1.000/1.000**, permutation **1.000**, name/color 1.000 at every filler
 length. The remaining structure is a task-specific color/object factor and a
 task-specific color-copy readout, not a general language model.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Raw boundaries, no separator (positive, gate passed):** statements are
+concatenated with no separator token at all. A write candidate on the object
+token plus a context read gate gives the same result: two seeds, phase-A old
+**1.000**, phase-B old/new/held **1.000/1.000/1.000**, permutation **1.000**,
+name/color 1.000 at fillers 0/1/2. The gate is supervised with object positions,
+so this is learned write/read classification, not unsupervised segmentation.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Natural-language templates (positive, gate passed):** English-like
+`tom has a big red ball.` / `who has a big red ball? mia red.` with learned
+`.`/`?` gates. Two seeds: phase-A old **1.000**, phase-B old/new/held
+**1.000/1.000/1.000** (seed 1 held **0.9989**), permutation **1.000**, all
+filler cells above 0.95. Still a fixed 24-word template set, not free-form
+language.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Wide natural-language templates (positive, gate passed):** verbs, articles
+and adjectives vary (`tom owns the old red ball.` / `who found a big yellow
+car? sam yellow.`). Two seeds: phase-A old **1.000**, phase-B old/new/held
+**1.000/1.000/1.000**, permutation **1.000**, all 18 split/filler cells 1.000.
+Still a fixed 31-word template set, not free-form language.
+[`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
+
+**Paraphrase templates (scoped positive, 4 pairs):** names and queries move
+(`tom has a red ball.` / `the red ball belongs to tom.` / `whose red ball is
+it?`). Category states plus a template curriculum and 50% replay give two seeds
+old/new/held **1.000/1.000/1.000**, permutation **1.000**. The full 16-pair set
+is seed-sensitive and stays a negative result.
 [`research/SPIKING_BINDING_CONTINUAL.md`](research/SPIKING_BINDING_CONTINUAL.md)
 
 **Curriculum without the attention loss (negative):** a padded 1 -> 2 -> 3

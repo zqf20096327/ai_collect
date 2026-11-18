@@ -78,7 +78,31 @@ portable_agent_kit/
 │   └── social-preview.png
 ├── reforge.py                    <- Aegean Reforge CLI entry point (and `aikit.py reforge`)
 ├── reforge/                      <- host-reviewed Git history auditor & safe repair engine
+├── speedlab/                     <- Aegean SpeedLab: measure any target, keep only measured wins
+│   ├── __init__.py               <- Package doc: two instruments, one keep-or-revert rule
+│   ├── errors.py                 <- SpeedLabError: message, why, fix, exit code
+│   ├── measure.py                <- Per-test sweep, command timing, profile, keep/revert compare
+│   ├── semantics.py              <- The rule: a faster target must prove the same thing
+│   ├── state.py                  <- Resumable campaign state in <root>/.speedlab/state.json
+│   ├── parser.py                 <- `speedlab` grammar
+│   └── cli.py                    <- rank / plan / baseline / verdict / cmd / status
 ├── idea_catcher.py               <- Idea Catcher CLI entry point (and `aikit.py idea-catcher`)
+├── aegean_licensing.py           <- Aegean License CLI entry point (and `aikit.py licensing`)
+├── aegean_licensing/             <- Aegean License certificates: verification, terms, register
+│   ├── __init__.py               <- Public API: LicenseCertificate, verify_certificate
+│   ├── version.py                <- Package metadata, kept off the root to avoid an import cycle
+│   ├── cert.py                   <- Certificate model, canonical payload, digest, signature
+│   ├── verifier.py               <- Verification against the register, terms and dates
+│   ├── register.py               <- Public register of issued and revoked certificates
+│   ├── license_terms.py          <- License text registry and term digests
+│   ├── fingerprint.py            <- Rule-set fingerprint pinned into every verification
+│   ├── bounded_json.py           <- Size/depth-bounded JSON loader for untrusted input
+│   ├── bundler.py                <- Bundles documents into a verifiable package
+│   ├── metadata.py               <- Metadata normalisation rules
+│   ├── cli.py                    <- `licensing verify` grammar and dispatch
+│   ├── __main__.py               <- `python -m aegean_licensing`
+│   └── resources/                <- bundled package data, so the package is self-contained
+│       └── licenses/             <- terms.json, issued.json, the pinned agreement, vector
 ├── idea_catcher/                 <- idea register and matrix renderer
 │   ├── __init__.py
 │   ├── __main__.py
@@ -125,7 +149,8 @@ portable_agent_kit/
 │   │       └── delegation.md     <- Sub-agents, aikit delegate, headless OpenCode
 │   ├── agents/
 │   │   └── opencode_worker.md    <- OpenCode subagent spec for free models
-│   └── task_ledger.json          <- Disruption ledger for power-loss resilience (WAL)
+│   ├── task_ledger.json          <- Disruption ledger for power-loss resilience (WAL)
+│   └── tree_manifest.json        <- Recorded tracked-file list; verifies the tree without git
 ├── .opencode/
 │   └── agents/                   <- OpenCode subagent profiles (architect, coder, ...)
 ├── opencode.jsonc                <- OpenCode provider, model & permission config
@@ -138,6 +163,8 @@ portable_agent_kit/
 │   ├── update_knowledge_base.py  <- Codebase AST symbol extractor & validator
 │   ├── dogfood.py                <- Dogfood runner (sandbox jail + chaos tracks)
 │   ├── check_reachability.py     <- reachability shield (anti-dead-capability)
+│   ├── check_tree_integrity.py   <- names tracked files gone from the tree, without asking git
+│   ├── backup_repos.py           <- git bundle per repository, restorable outside the tree
 │   ├── check_test_budgets.py     <- Test tier budget gate (per-test ceilings)
 │   ├── test_digest.py            <- sha256 over every test identity (ADR-422)
 │   ├── project_registry.py       <- Project discovery, stack detection, memory
@@ -147,10 +174,12 @@ portable_agent_kit/
 │   ├── check_project_hygiene.py  <- Source, asset & artifact hygiene
 │   ├── ui_contract.py            <- Bounded UI-surface guard (opt-in .aikit/ui.json)
 │   ├── ui_proof.py               <- UI proofs: inventory diff + style drift lint (pure)
+│   ├── review_gate.py            <- Human review bound to a commit (opt-in, ADR-494)
 │   ├── aikit_cli.py              <- `aikit.py` commands
 │   ├── aikit_parser.py           <- `aikit.py` grammar, alone for --help
 │   ├── aikit_help.py             <- Generated top-level help for the --help fast path
 │   ├── subagent_delegate.py      <- Bounded OpenCode sub-agent runs
+│   ├── text_input.py             <- Bounded text file/stdin reader, one case per host encoding
 │   ├── project_publish.py        <- Uploads a project to its own GitHub repo
 │   ├── git_guard.py              <- pre-push guard: raw push is refused (ADR-341)
 │   ├── path_migration.py         <- aikit fix: home paths out of tracked state (ADR-446)
@@ -176,9 +205,23 @@ portable_agent_kit/
 ├── reports/                    <- Local-only research inbox (PRINCIPLE-016 R7; only README.md tracked)
 │   └── README.md               <- Inbox lifecycle: triage into the register, then delete
 ├── tests/
-│   ├── test_kit.py               <- Unit tier (<=50ms per test)
+│   ├── __init__.py               <- Makes `tests.*` resolve, which the kit_* slices rely on
+│   ├── test_kit.py               <- Unit tier entry point: imports every kit_* slice
+│   ├── kit_principles.py         <- Unit slice: principle sync, README gate, ADR register, wording
+│   ├── kit_guards.py             <- Unit slice: reachability, AST map, secrets, agent boundaries
+│   ├── kit_disruption.py         <- Unit slice: ledger atomicity, resume, porcelain, staging
+│   ├── kit_projects.py           <- Unit slice: registry, gates, publish, archive, license
+│   ├── kit_ui.py                 <- Unit slice: UI contract, proofs, surface guard
+│   ├── kit_evidence.py           <- Unit slice: evidence policy, proofs, delegation
+│   ├── kit_reforge.py            <- Unit slice: Reforge audit/repair, state machines, verify
+│   ├── kit_ideas.py              <- Unit slice: idea catcher, leases, blocked policy
+│   ├── kit_knowledge.py          <- Unit slice: knowledge base, secrets scan, dogfood, AST
+│   ├── kit_licensing.py          <- Unit slice: Aegean License certificate verification
+│   ├── licensing_fixtures.py     <- Shared fixtures for the licensing slice
+│   ├── kit_support.py            <- Shared fixtures for the slices (no tests of its own)
 │   ├── test_auto_register.py     <- Unit tier: idea registration from commits
 │   ├── test_bridge_contract.py   <- Cross-project bridge contract: one identity table
+│   ├── test_text_input.py        <- Unit tier: one case per host encoding (UTF-8/16, BOM)
 │   └── test_integration.py       <- Integration tier: concurrency, CLI contracts
 └── knowledge/
     ├── INDEX.md                  <- Knowledge base table of contents
@@ -322,7 +365,7 @@ The principles are strictly organized across **5 chronological execution phases*
 ### 🧭 Phase 2: Pre-Flight Orientation & Planning
 | Principle | Title | Capsule |
 |---|---|---|
-| **PRINCIPLE-005** | AI Cold-Start Readiness & Living Documentation | README <=35000 chars: prerequisites, test command, tree; user-visible changes update it same commit; `update_knowledge_base.py --check` gates it. |
+| **PRINCIPLE-005** | AI Cold-Start Readiness & Living Documentation | README <=37500 chars: prerequisites, test command, tree; user-visible changes update it same commit; `update_knowledge_base.py --check` gates it. |
 | **PRINCIPLE-006** | Incremental Progress Checkpointing & Disruption Recovery | Commit `[milestone N/M]` once Phase 4 passes under PRINCIPLE-018 R1; failing work uncommitted via `--checkpoint`; `--complete`/`--reset` before switching tasks; `--clean` stale `.tmp_*`; ledger writes name `--agent`; another agent's task needs `--take-over`. |
 | **PRINCIPLE-007** | Pre-flight Impact & Quality Checklist | Track C first plan checkpoint carries --why --benefits --risks (contract, dependency, concurrency, state) --mitigation; no TODO or stub; no change outside the plan. |
 | **PRINCIPLE-008** | Hierarchical Problem & Task Decomposition | Plan of M<=6 milestones (more: split into tasks), built bottom-up, each passing Phase 4 alone; re-plan = new `[1/M']` checkpoint; sub-agents never write the ledger. |
@@ -339,7 +382,7 @@ The principles are strictly organized across **5 chronological execution phases*
 | Principle | Title | Capsule |
 |---|---|---|
 | **PRINCIPLE-013** | Crash Resilience, State Atomicity & Power-Loss Recovery | State files: >=10MB free, temp + fsync + os.replace (5 tries) + dir fsync, .bak, advisory locking 3s/30s stale, corrupt -> quarantine/.bak/migrate. Generated: temp + fsync + replace. |
-| **PRINCIPLE-014** | Automated Test Verification & Continuous Test Coverage | 100% test pass gate; behaviour change = failing-first test; weakening a test needs user approval + ADR naming it; unit <=50ms/test, no spawns/sleeps; integ <=1000ms/test; tempdir + addCleanup; `scripts/check_reachability.py`. |
+| **PRINCIPLE-014** | Automated Test Verification & Continuous Test Coverage | 100% test pass gate; behaviour change = failing-first test; weakening a test needs user approval + ADR naming it; a speed optimisation changes no assertion's meaning and touches no production file (`speedlab verdict` refuses `[CHANGED]` and `[WIDER]`); unit <=50ms/test, no spawns/sleeps; integ <=1000ms/test; tempdir + addCleanup; `scripts/check_reachability.py`. |
 | **PRINCIPLE-015** | Universal Operational Dogfooding & Chaos Verification | Domain-specific interactive dogfooding via `scripts/dogfood.py` as a commit gate; golden path + chaos perturbation; non-interactive stdin parity; portable RAII process tree teardown; ephemeral safety jail; terse reporting (<=15 lines). |
 
 ### 🚀 Phase 5: Living Synchronization & Delivery

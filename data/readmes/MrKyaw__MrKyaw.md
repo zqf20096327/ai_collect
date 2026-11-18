@@ -69,12 +69,13 @@ Runnable projects and architecture references. Results below summarize the lates
 
 
 ## 💻 Community Contributions
-| Project | Status |
-|---|---|
-| [DeepEval](https://github.com/confident-ai/deepeval) | Three open PRs awaiting review/merge: [#3390](https://github.com/confident-ai/deepeval/pull/3390) — five LLM-free production metrics; [#3411](https://github.com/confident-ai/deepeval/pull/3411) — retrieval, streaming, security, agent and text evaluation metrics; [#3653] (https://github.com/confident-ai/deepeval/pull/3653) - Agent As A Judge; Tests and documentation included; neither PR merged yet.  |
-| [promptfoo](https://github.com/promptfoo/promptfoo) | Contribution ongoing — [fork created](https://github.com/MrKyaw/promptfoo); continuing upstream PR or commit |
-| [vLLM](https://github.com/vllm-project/vllm) | Contribution ongoing — [fork created](https://github.com/MrKyaw/vllm); continuing upstream PR or commit |
-| [REA](https://github.com/morluto/rea) | In Progress |
+
+| Project | Upstream contribution | Status |
+|---|---|---|
+| [**DeepEval**](https://github.com/confident-ai/deepeval) | [#3390](https://github.com/confident-ai/deepeval/pull/3390) — five LLM-free production metrics<br>[#3411](https://github.com/confident-ai/deepeval/pull/3411) — retrieval, streaming, security, agent & text evaluation metrics<br>[#3653](https://github.com/confident-ai/deepeval/pull/3653) — Agent-as-a-Judge | 🟡 3 open PRs · awaiting review<br>Tests + documentation included |
+| [**promptfoo**](https://github.com/promptfoo/promptfoo) | [Fork](https://github.com/MrKyaw/promptfoo) prepared · upstream PR in progress | 🟡 In progress |
+| [**vLLM**](https://github.com/vllm-project/vllm) | [Fork](https://github.com/MrKyaw/vllm) prepared · upstream PR in progress | 🟡 In progress |
+| [**REA**](https://github.com/morluto/rea) | Contribution in progress | 🟡 In progress |
 
 ---
 
@@ -123,6 +124,10 @@ Selected delivery outcomes and implementation checks. Test-gate results are iden
 - **Trustworthy Agent Factory(https://github.com/MrKyaw/trustworthy-agent-factory) -> Ongoing Paper** with India Team Member
 - **Optimum Inference Route(https://github.com/MrKyaw/opt-infer-route) -> Ongoing Paper** with Japan Team Member
 - **Smart Compute Fabric(https://github.com/MrKyaw/smart-compute-fabric) -> Ongoing Paper** 
+
+<p align="center">
+  <img src="overview.png" alt="Smart Compute Fabric — architecture overview" width="760">
+</p>
 
 **Academic Service:** Project Supervision; Research Reviewer, *Digital Health* (July 2026–present)
 

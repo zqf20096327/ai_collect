@@ -66,7 +66,7 @@ Run `nib`, then `/provider` to sign in; `/model` picks a model. Codex, Claude, O
 
 Enter sends, Shift+Enter adds a line, Esc cancels. Type `/` for commands: `/provider`, `/model`, `/effort`, `/undo`, `/tasks`, `/skills`, `/status`. `@` completes file paths.
 
-`/mcp` turns on MCP servers from config.toml.
+`/mcp` turns on MCP servers from config.toml. [Plugins](docs/plugins.md) bundle skills, commands and MCP servers: `nib plugin install <path-or-git-url>`, then `/plugins on <name>`. Installed plugins are off by default.
 
 Project conventions go in `AGENTS.md`; personal ones in `~/.nib/AGENTS.md`.
 
@@ -85,7 +85,7 @@ One block per script: what changed, what was read, what ran. Click a Run to see 
 
 ## Safety
 
-nib runs model-written code with your permissions, like you would. bash refuses obviously destructive commands; `[sandbox] mode = "workspace"` limits writes to the project, temp dirs and build caches (Landlock on Linux, sandbox-exec on macOS). Commit before you start. Sessions and tool results are logged locally in `~/.nib/sessions` (mode 0600); `NIB_RECORD=off` stops tool recording.
+nib runs model-written code with your permissions, like you would. bash refuses obviously destructive commands; `[sandbox] mode = "workspace"` limits writes to the project, temp dirs and build caches (Landlock on Linux, sandbox-exec on macOS). Commit before you start. Sessions are logged locally in `~/.nib/sessions` (mode 0600). Full tool arguments/results are not recorded by default; set `NIB_RECORD=on` to enable [offline replay](docs/replay.md).
 
 ## More
 

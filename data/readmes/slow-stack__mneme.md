@@ -13,7 +13,7 @@
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/v/@modusensus/dsh-mneme?style=flat-square&label=npm&labelColor=B03A2E&color=EFE7D8&logoColor=1C1C1C"><img src="https://img.shields.io/npm/v/@modusensus/dsh-mneme?style=flat-square&label=npm&labelColor=B03A2E&color=111111&logoColor=FFFFFF" alt="npm version"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/npm/d18m/@modusensus/dsh-mneme?style=flat-square&label=downloads&labelColor=B03A2E&color=EFE7D8&logoColor=1C1C1C"><img src="https://img.shields.io/npm/d18m/@modusensus/dsh-mneme?style=flat-square&label=downloads&labelColor=B03A2E&color=111111&logoColor=FFFFFF" alt="npm downloads"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/github/actions/workflow/status/slow-stack/mneme/ci.yml?style=flat-square&label=CI&labelColor=B03A2E&color=EFE7D8"><img src="https://img.shields.io/github/actions/workflow/status/slow-stack/mneme/ci.yml?style=flat-square&label=CI&labelColor=B03A2E&color=111111" alt="CI"></picture>
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/tests-3590%20total-EFE7D8?style=flat-square"><img src="https://img.shields.io/badge/tests-3590%20total-111111?style=flat-square" alt="tests"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/tests-3657%20total-EFE7D8?style=flat-square"><img src="https://img.shields.io/badge/tests-3657%20total-111111?style=flat-square" alt="tests"></picture>
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/license-MIT-EFE7D8?style=flat-square&label=license&labelColor=B03A2E&logoColor=1C1C1C"><img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square&label=license&labelColor=B03A2E&logoColor=FFFFFF" alt="license"></picture>
 <a href="https://github.com/awesome-dsh-plugin/awesome-dsh-plugin"><img src="https://awesome-dsh-plugin.com/badge.svg" alt="Awesome"></a>
 </p>
@@ -52,8 +52,8 @@ dsh web
 
 | 目录 | 是什么 |
 |------|--------|
-| `~/.dsh/memory` | 记忆库本体：SQLite 正本，加十份可手改的 Markdown 镜像 |
-| `~/.dsh/mneme` | 本地嵌入模型与运行时缓存，删掉会自动重下 |
+| `~/.mneme/memory` | 记忆库本体：SQLite 正本，加十份可手改的 Markdown 镜像（老 `~/.dsh/memory` 有库就继续读；两边都有库按体积判，误建的空库不会顶掉主库） |
+| `~/.mneme/{models,runtime}` | 本地嵌入模型与运行时缓存，删掉会自动重下（旧 `~/.dsh/mneme` 存在就继续用，那个「旧」的位置跟着 `DSH_HOME` 走） |
 | `~/.dsh-mneme` | CLI / MCP 的连接配置（url 与 token） |
 
 想卸掉：
@@ -62,7 +62,7 @@ dsh web
 dsh plugin --profile web remove @modusensus/dsh-mneme
 ```
 
-插件目录没了，`~/.dsh/memory` 里的记忆还在——想清干净就自己删这个目录。三个目录名字很像，别认错：[目录说明](dsh-mneme/docs/DIRECTORIES.md)。
+插件目录没了，记忆还在（默认 `~/.mneme/memory`，老用户是 `~/.dsh/memory`）——想清干净就自己把**用过的每一个**记忆库目录都删掉，包括自定义 `memoryDir` / `MNEME_MEMORY_DIR` 指到的地方。新旧两个目录可能同时存着库：解析器两个都留在盘上，只删当前选中的那个，另一个还在，以后还可能被重新选中。三个目录名字很像，别认错：[目录说明](dsh-mneme/docs/DIRECTORIES.md)。
 
 ## 你会用到的
 
@@ -93,6 +93,7 @@ dsh plugin --profile web remove @modusensus/dsh-mneme
 | **MCP** | 一个零依赖 stdio server（独立包 `mneme-memory`）；Claude Code / Cursor / Codex / OpenCode 等任何 MCP 客户端都能挂上六个记忆工具 |
 | **独立 daemon** | `dsh-mneme-serve` 让记忆库常驻：DSH 关着时，脚本、网页端、你自己的面板读写同一份记忆 |
 | **外部 API** | HTTP 接口，别的插件想把记忆写进来，走 API 就行 |
+| **Melete** | [slow-stack/melete](https://github.com/slow-stack/melete)：DeepSeek 官方 chat-demo 的 fork，接进同一个库——本地伴随服务回合前注入 `/context`、回合后蒸馏写回，聊天源码零改动 |
 | **社区适配器** | 如 [Mneme-Bridge](https://github.com/SternChiri/Mneme-Bridge)，把 DeepSeek 网页版接进同一个库 |
 
 ## 隐私承诺
@@ -167,8 +168,8 @@ Where it lands on your machine:
 
 | Path | What it is |
 |------|------------|
-| `~/.dsh/memory` | The store itself: the SQLite original plus ten hand-editable Markdown mirrors |
-| `~/.dsh/mneme` | Local embedding model and runtime cache; delete it and it refetches |
+| `~/.mneme/memory` | The store itself: the SQLite original plus ten hand-editable Markdown mirrors (an existing library under `~/.dsh/memory` keeps being used; when both exist, size decides, so a stray empty library cannot take over) |
+| `~/.mneme/{models,runtime}` | Local embedding model and runtime cache; delete it and it refetches (a legacy `~/.dsh/mneme` keeps being used, and that legacy path follows `DSH_HOME`) |
 | `~/.dsh-mneme` | CLI / MCP connection settings (url and token) |
 
 To remove it:
@@ -177,7 +178,7 @@ To remove it:
 dsh plugin --profile web remove @modusensus/dsh-mneme
 ```
 
-The plugin directory goes away, the memories in `~/.dsh/memory` stay — delete that directory yourself if you want them gone. The three names are easy to mix up: [directories](dsh-mneme/docs/DIRECTORIES.md).
+The plugin directory goes away, the memories stay (default `~/.mneme/memory`, or the legacy `~/.dsh/memory`) — check **every** memory directory you have ever used, including a custom `memoryDir` / `MNEME_MEMORY_DIR`, and delete them yourself if you want them gone. Both the new and the legacy path can hold a database at once: the resolver keeps both on disk, so deleting only the currently selected one leaves the other behind and it may be picked up again later. The three names are easy to mix up: [directories](dsh-mneme/docs/DIRECTORIES.md).
 
 ## What you get
 
@@ -208,6 +209,7 @@ One panel in the settings page: record, browse, filter, search, edit, delete —
 | **MCP** | A zero-dependency stdio server (standalone package `mneme-memory`); Claude Code / Cursor / Codex / OpenCode and any other MCP client can mount the six memory tools |
 | **Standalone daemon** | `dsh-mneme-serve` keeps the store running: with DSH closed, scripts, web bridges and your own panels read and write the same memories |
 | **External API** | An HTTP surface, so another plugin can write memories in through the API |
+| **Melete** | [slow-stack/melete](https://github.com/slow-stack/melete): a fork of DeepSeek's official chat-demo wired to the same store — a local companion service injects `/context` before each turn and distills and writes back after it; chat source stays untouched |
 | **Community adapters** | Such as [Mneme-Bridge](https://github.com/SternChiri/Mneme-Bridge), which brings the DeepSeek web chat into the same store |
 
 ## Privacy

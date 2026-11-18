@@ -111,7 +111,7 @@ CLI 内置零干扰的自动更新：最多每 24 小时向 npm registry 查询�
 
 项目身份拆成两个字段：
 
-- `slug`：ASCII kebab-case ID，用于仓库名、package 名、artifact 名和 `interface.json` 的 `name`。
+- `slug`：ASCII kebab-case ID，用于仓库名、package 名、artifact 名和 `interface.json` 的 `name`。不能用发布包保留名（`mxu`、`python`、`resource`、`maafw`、`agent` 等）；只在新创建和显式 `--slug` 时校验。
 - `displayName`：面向用户的显示名，用于 `interface.json` 的 `label`，可以是中文或其它展示文本。
 
 资源结构固定围绕 `resource/base/` 与可选的 `resource/<pack>/`；`interface.json` 的 resource 路径按 `maa-project.json` 中记录的顺序生成，后添加的资源包在 MaaFW 资源查找中有更高覆盖优先级。项目自有文件只在首次创建时写入，之后仅由显式的 `--sync`、`--add`、`--update` 改写对应文件。
@@ -183,7 +183,7 @@ requirements.txt
 
 带 GitHub add-on 的项目会包含 check、release 和 package-smoke workflows。发布打包以 Git tag 为准：源码元数据可以保持 `0.1.0`，release staging 会把 tag 版本注入包内的 `interface.json`；`package-smoke` 在 push / PR 时用与 release 相同的目标矩阵先行构建校验，打包问题不必等到打 tag 才暴露。
 
-默认 runtime profile 面向 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)：`--update maafw` 同步 MaaFramework 资产，`--update runtime:mfa` 同步 MFAAvalonia GUI runtime，生成的 `pnpm sync:runtime` 执行二者（Agent 项目还会同步 Python runtime）。默认 release artifact 覆盖 Windows、Linux、macOS 的 `x86_64` 与 `aarch64`，Windows 使用 `.zip`，Linux 和 macOS 使用 `.tar.gz`。
+默认 runtime profile 面向 [MFAAvalonia](https://github.com/MaaXYZ/MFAAvalonia)：`--update maafw` 同步 MaaFramework 资产，`--update runtime:mfa` 同步 MFAAvalonia GUI runtime，生成的 `pnpm sync:runtime` 执行二者（Agent 项目还会同步 Python runtime）。默认 release artifact 覆盖 Windows、Linux、macOS 的 `x86_64` 与 `aarch64`，Windows 使用 `.zip`，Linux 使用 `.tar.gz`；macOS 的 MFAA 包仍是 `.tar.gz`，启用 MXU 后则以签名的 `.app` 应用包打包进 `.dmg`（`tools/macos-app-bundle.mjs` 产物），Agent 项目顺带获得只读 bundle 下的 `PI_USER_DATA_DIR` 数据目录支持。
 
 带 `android` add-on 的项目额外产出 APK：外壳 [MaaFwApp](https://github.com/Aliothmoon/MaaFwApp) 以 Git submodule 接入，`Android/profile.yaml` 是手维护的打包配方，push / PR 出 debug 包，打 tag 时与桌面包一起进 Release（universal + 双 ABI 单包）。Agent 项目要求 `requirements.txt` 里有精确的 `maafw==X`，因为 Android 的 Python 绑定只随内核 release 发布。详见[命令文档](./docs/commands.md#android-写入的文件)。
 

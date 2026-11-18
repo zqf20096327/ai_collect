@@ -2,9 +2,9 @@
 
 # Woolly
 
-**Your agents share one brain.**
+**Memory that knows when it's wrong.**
 
-Every AI coding tool starts from zero. Woolly gives Claude Code, Cursor, Codex and Ollama one memory, so you explain your project once. It lives on your laptop, in files you can read.
+One local memory for Claude Code, Cursor and Codex. Every fact points at its code, and Woolly flags the ones that go stale.
 
 [![Release](https://img.shields.io/github/v/release/rjcuff/woolly?color=111111)](https://github.com/rjcuff/woolly/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-111111)](LICENSE)
@@ -18,44 +18,56 @@ Every AI coding tool starts from zero. Woolly gives Claude Code, Cursor, Codex a
 
 ## The problem
 
-You explain your stack to Cursor. Then you open Claude Code and explain it again. Then Codex. Each tool keeps its own memory, or none at all, and none of them know what you decided yesterday or what your teammate's agent learned this morning.
+You switch between Claude Code, Cursor and Codex on the same repo, and each one starts from zero. You explain the pin map again, the config value you settled on, the gotcha that cost you a day. Tools that do remember have a worse problem. They keep repeating facts the code stopped backing up weeks ago, and your agent follows them with confidence.
 
-Woolly is the memory they share. One folder on your laptop, plain Markdown, no cloud, no account.
+Woolly is project memory your coding agents can trust. It runs on your machine, and it knows when a fact goes stale. Every fact points at the file, function or lines it's about. When that code changes, Woolly marks the fact stale instead of letting your agent follow it.
+
+```
+$ woolly check
+Checked 24 facts in drone against 4e1c9a2.
+  stale  imu_read_accel returns raw counts; divide by 16384 for g
+         main/imu.c: imu_read_accel was renamed to imu_read_accel_g in 4e1c9a2
+1 fact went stale. Run woolly review to confirm, fix or retire it.
+```
 
 ## Get started
 
 ```sh
 curl -fsSL https://usewoolly.com/install.sh | sh
 woolly connect
+woolly init --hooks   # in your repo
 ```
 
-That's the whole setup. Claude Code, Claude Desktop, Cursor, VS Code, Windsurf, Codex, Gemini CLI, LM Studio and opencode now read and write the same memory. On Windows, run `irm https://usewoolly.com/install.ps1 | iex` instead.
+Claude Code, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Claude Desktop, LM Studio and opencode now share one memory for the repo, and every commit checks it against the code. On Windows, run `irm https://usewoolly.com/install.ps1 | iex` instead.
 
 Prefer an app? [Download Woolly for Mac or Windows](https://usewoolly.com/download). Also on [Homebrew and Linux](https://usewoolly.com/docs/quickstart).
 
 ## What you get
 
-**One brain, every tool.** Tell Claude Code once. Cursor, Codex and Gemini already know. [How it works](https://usewoolly.com/docs/how-it-works)
+**It knows when a fact goes stale.** On every commit and on `woolly check`, each fact is checked against the code it points at. Rename a function, delete a file or change a pin number, and the fact that relied on it is flagged with the commit that broke it. `woolly review` lets you confirm, fix or retire it. [Stale facts](https://usewoolly.com/docs/stale-facts)
 
-**Sessions that start warm.** Claude Code opens every session with your profile, the project's notes and where you left off. [Connect](https://usewoolly.com/docs/connect)
+**Every fact cites its source.** A file, function or line range, the commit it was saved at, and the session it came from.
+
+**One memory for every agent on the repo.** Claude Code, Cursor and Codex read and update the same notes, and teammates get them through git. [Project memory](https://usewoolly.com/docs/project-memory)
+
+**Sessions that start warm.** Each session opens with a short brief with the project's current facts, where you left off, and a one-line warning when something went stale. [Connect](https://usewoolly.com/docs/connect)
 
 **Decisions stick.** When a session ends, Woolly saves what you decided, why, and what you ruled out, so no agent pitches it again.
 
-**Facts stay current.** A newer fact replaces the old one. When an AI guesses something that contradicts you, your version wins and the guess is flagged for review.
+**Facts keep their history.** Nothing is deleted. A replaced or stale fact stays on disk with the date it stopped being true. When an AI contradicts something you said, your version wins.
 
-**Build agents that remember.** A memory layer API with mem0's routes: send a conversation, and a local model adds, updates or retires facts per user, keeping every old version as history. [Memory API](https://usewoolly.com/docs/memory-api)
+**It dreams.** While you're away, your local model merges duplicates, settles facts that changed, and turns past sessions into lessons. [Dreaming](https://usewoolly.com/docs/dreaming)
 
-**It dreams.** While you're away, Woolly merges duplicates, settles facts that changed, and turns your past sessions into lessons for the next one. Nothing is deleted. [Dreaming](https://usewoolly.com/docs/dreaming)
+**Fully local.** No cloud, no account, no telemetry. Ollama is optional, and stale detection never needs a model. Passwords and API keys are refused, and an AI can't plant instructions in your memory. [Security](https://usewoolly.com/docs/security)
 
-**Your local models remember too.** `woolly proxy` adds memory to Ollama, or any app that uses the OpenAI or Anthropic API. [Proxy](https://usewoolly.com/docs/proxy)
+**Memory you can read.** Every memory is a Markdown file. Open it, grep it, edit it by hand, and see which tool saved it. [The app](https://usewoolly.com/docs/review)
 
-**Memory you can read.** Every memory is a Markdown file. Open it, grep it, edit it by hand, and see which tool saved it. The Woolly app shows the same thing with search. [The app](https://usewoolly.com/docs/review)
+### Also in Woolly
 
-**Private by design.** No cloud, no account, no telemetry. Passwords and API keys are refused, and an AI can't plant instructions in your memory. [Security](https://usewoolly.com/docs/security)
-
-**Bring your history.** Drop in your ChatGPT or Claude export and keep the facts that matter. [Import](https://usewoolly.com/docs/import)
-
-**Syncs your machines.** Laptop, desktop and Raspberry Pi stay in step over your own network, encrypted. [Sync](https://usewoolly.com/docs/sync)
+- **Personal memory** that follows you across every AI app. [How it works](https://usewoolly.com/docs/how-it-works)
+- **Memory for the agents you build**, with an API shaped like mem0's and Python and JavaScript packages. [Memory API](https://usewoolly.com/docs/memory-api)
+- **Memory for Ollama** and any OpenAI or Anthropic app, with `woolly proxy`. [Proxy](https://usewoolly.com/docs/proxy)
+- **Import** your ChatGPT or Claude history, and **sync** your machines over your own network. [Import](https://usewoolly.com/docs/import) · [Sync](https://usewoolly.com/docs/sync)
 
 ## Your team's agents share one project memory
 
@@ -63,7 +75,7 @@ Prefer an app? [Download Woolly for Mac or Windows](https://usewoolly.com/downlo
 woolly init
 ```
 
-Run it in a repo and commit `.woolly/`. Every teammate's agent now reads and updates the same notes: the stack, conventions, decisions, gotchas and commands. Think of it as a CLAUDE.md that keeps itself up to date.
+Run it in a repo and commit `.woolly/`. Every teammate's agent now reads and updates the same notes on the stack, conventions, decisions, gotchas and commands. Think of it as a CLAUDE.md that keeps itself up to date and checks itself against the code.
 
 - One fact per line in `.woolly/woolly.md`, so diffs are readable and you can edit it by hand.
 - Facts about you never go in the repo.
@@ -73,13 +85,15 @@ Run it in a repo and commit `.woolly/`. Every teammate's agent now reads and upd
 
 ## Fast on a laptop
 
-On a sample of the [LOCOMO](https://github.com/snap-research/locomo) long-conversation benchmark, Woolly found the right memory for 87% of questions in a median of 23 ms, running entirely on a laptop with Ollama. [Run it yourself](https://usewoolly.com/docs/benchmark)
+On a sample of the [LOCOMO](https://github.com/snap-research/locomo) long-conversation benchmark, Woolly had the answer in its top 20 results for 83.2% of 382 questions, 95.6% for questions about dates and time, in a median of 19 ms. It runs entirely on a laptop with Ollama. [Run it yourself](https://usewoolly.com/docs/benchmark)
 
 ## Questions
 
-**Do I need Ollama?** No. Woolly works on its own. With Ollama running, it also searches by meaning, learns facts from your chats and saves decisions when a session ends.
+**Do I need Ollama?** No. Woolly works on its own, and stale detection never needs a model. With Ollama running, it also searches by meaning and picks out decisions and gotchas when a session ends.
 
-**Is this a memory API for my app?** No, on purpose. Woolly makes your own AI workflow better. There are [JavaScript](https://usewoolly.com/docs/javascript) and [Python](https://usewoolly.com/docs/python) packages for scripts and side projects (`npm install woolly-ai` or `pip install woolly-ai`), but if you're adding memory to a product with thousands of users, a hosted memory API is the better fit.
+**How is this different from other memory tools?** Most remember what a conversation said. Woolly also checks it against the code: every project fact cites its source, and when the code changes, the fact is flagged instead of trusted. It runs on your own machine with no cloud, works with every agent at once, and uses a local model only.
+
+**Is this a memory API for my app?** It has one, shaped like mem0's, with [JavaScript](https://usewoolly.com/docs/javascript) and [Python](https://usewoolly.com/docs/python) packages. But Woolly is built first for your own coding agents. If you're adding memory to a product with thousands of users, a hosted memory API is the better fit.
 
 **Does anything leave my machine?** No. There are no Woolly servers.
 

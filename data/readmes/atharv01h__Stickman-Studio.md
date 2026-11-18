@@ -52,6 +52,36 @@
 
 ---
 
+## 🔥 What's New in Stickman Studio 2.6 (Autonomous AI Director & Living Visual Intelligence)
+
+Stickman Studio 2.6 introduces an autonomous **Inbuilt AI Director**, **Continuous Character Kinematics**, **Dynamic Multi-Layout Staging**, **Topic-Specific Procedural World Generation**, and **Moving Stickman Text Boundary Protection**:
+
+- 🧠 **Autonomous Inbuilt AI Director (`InbuiltAIDirector` & `ScriptIntelligence`)**:
+  Zero Ollama or external models required! Instantly generates (<15ms) viral scripts and storyboards 100% offline. Features **Dual Scripting Modes**:
+  - *Solo Narrative*: Paced, high-hook storytelling with narrative retention anchors.
+  - *Conversational Dialogue Duel*: Alex & Maya dynamic two-person dialogue with automated speaker turn-taking and gender-distinct TTS synthesis.
+  - *Domain-Fused Compound Topics*: Deep conceptual understanding for compound subjects (e.g., "AI in Medicine", "Stoicism and Money", "Psychology of Habits").
+- 🏃 **Continuous Character Kinematics in CIS Mode**:
+  Completely eliminated static cardboard cutouts! Characters in Cinematic Illustrated Stickman mode are fully alive throughout the entire shot:
+  - *1.25 Hz Breathing Cycle*: Natural chest expansion and vertical rise-and-fall ($\pm 4.5\text{px}$).
+  - *Subtle Posture Sway*: Realistic weight shift ($\pm 0.016\text{ rad}$) and natural body angle wobble.
+  - *Narrative Emphasis Gestures*: Contextual lean-in and assertive head/torso nods timed to mid-sentence narrative beats.
+  - *Alive Fallback Loop*: Organic camera and character bobbing in native Python + FFmpeg fallback rendering.
+- 🌍 **Topic-Specific Procedural World Generation**:
+  Topic context is automatically propagated into background inference so shots never fall back to generic blank paper. Expanded [ai_background_engine.py](src/engine/ai_background_engine.py) with dedicated environments for `STOIC_PHILOSOPHY` (ancient temples & pillars), `PSYCHOLOGY_MIND` (neural colliders & quantum realms), `STARTUP_BUSINESS` (executive skylines), `SCIENCE_INNOVATION` (cleanrooms & formula boards), `CAFE_LIFESTYLE`, and `CHESS_STRATEGY`.
+- 📐 **Dynamic Multi-Layout Staging in CIS Mode**:
+  Broke rigid uniform card-and-actor staging into 6 distinct spatial choreographies:
+  - *Clean Stage*: Natural diorama without a heavy box; character freely interacts with semantic props.
+  - *Split-Screen Duel*: Side-by-side contrast duel ($cx=310$ vs $cx=780$) with central kinetic divider lines.
+  - *Floating Callout Panorama*: Lower-third badge leaving top 70% open for grand panoramic scenes.
+  - *Editorial Spread*: High-end asymmetrical layout with hero anchored on right ($cx=810$) and unboxed typography.
+  - *Big Typo Banner*: Climactic takeaway with an impact header and hero centered below.
+  - *Comic Beats*: Kinetic speech and thought bubble exchange with reacting character.
+- 🔤 **Moving Stickman Text Overflow & Missing Text Elimination**:
+  Overhauled [scene_composer.py](src/animation/scene_composer.py) and [assets.py](src/animation/assets.py). Speech bubbles, thought bubbles, headline banners, rebel badges, and concept cards now use iterative font auto-shrinking down to 9-11px, intelligent line-wrapping, and safety ellipsis truncation. Text is 100% contained within bounds with zero edge clipping.
+
+---
+
 ## 🔥 What's New in Stickman Studio 2.5 (Massive Cinematic & AI Upgrade)
 
 Stickman Studio 2.5 introduces a comprehensive, deep-level overhaul of **Cinematic Illustrated Mode** (`CISPipeline`), dramatically scaling visual resources, procedural intelligence, and performance:
@@ -140,8 +170,11 @@ Below are real-world, full-length productions created and rendered end-to-end wi
 | Feature | What It Does |
 |---|---|
 | 🔒 **100% Free & Offline** | Zero cloud APIs or recurring keys. Powered by local **Kokoro ONNX / SAPI TTS**, procedural vector engines, optional local **Ollama**, and optional local **`LCM_Dreamshaper_v7`**. |
+| 🧠 **Autonomous Inbuilt AI Director** | 100% offline neural intelligence generating viral scripts & storyboards instantaneously (<15ms) in both **Solo Narrative** and **Alex & Maya Dialogue Duel** modes with zero Ollama dependency. |
+| 🏃 **Continuous Character Kinematics** | Characters in CIS mode are continuously alive with 1.25 Hz breathing chest expansion ($\pm 4.5\text{px}$), body weight sway, and narrative emphasis gestures. |
 | 🎭 **Dual Animation Modes** | Switch seamlessly between **Mode 1: Moving Stickman** (full joint kinematics & 2.5D rooms) and **Mode 2: Cinematic Illustrated Reels** (`CISPipeline` multi-sprite & canvas reels with 45 choreographies). |
-| 🎨 **1,000+ Procedural Objects & 1,750+ Backdrops** | High-performance vector engine synthesizing bespoke props (alarm clocks, smart phones, hearts, vehicles, tools) across 15 domains + 1,750+ procedural skies and horizons with zero blanks. |
+| 🎨 **1,000+ Procedural Objects & 1,750+ Backdrops** | High-performance vector engine synthesizing bespoke props across 15 domains + 1,750+ procedural skies and horizons with topic-aware inference and zero blanks. |
+| 🔤 **Text Overflow & Missing Text Safety** | Dynamic font auto-scaling down to 9px, intelligent wrapping, and safety truncation in speech bubbles, thought clouds, headline banners, and cards. |
 | 🛡️ **Collision-Free Prop Layout & CTA Protection** | 2D spatial clearance ensures props never overlap actors or stage elements, and strictly prevents floating props from covering the interactive `BOOKMARK & FOLLOW` button. |
 | ⏱️ **Sub-Second Audio-Video Sync** | Dedicated timeline orchestrator (`TimelineManager`) locks audio and video durations to exact frame-accurate boundaries, preventing premature audio cutoffs or lingering silent frames. |
 | ✨ **Flagship `AUTO` Style Synthesizer** | Default **`AUTO • AI Script Studio (Best)`** dynamically mixes styles per beat **and** invents bespoke hybrid palettes & lighting (*Obsidian Amber Chalk*, *Velvet Violet Noir*, *Warm Kraft Editorial*, etc.). |
@@ -423,9 +456,11 @@ Stickman-Studio/
 │   │   ├── lcm_image_engine.py        # Local SimianLuo/LCM_Dreamshaper_v7 diffusion engine
 │   │   ├── llm_manager.py             # Optional local Ollama LLM integration
 │   │   ├── procedural_object_engine.py# 1,000+ vector objects across 15 domains & synthesizer
+│   │   ├── procedural_scene_engine.py # Scene 0 establishing shot & domain environment mapper
 │   │   ├── quality_control.py         # Automated QA, collision clearance & visual verification
 │   │   ├── scene_planner.py           # Natural language script decomposition
 │   │   ├── script_intelligence.py     # Genre-aware script analysis & beat breakdown
+│   │   ├── semantic_scene_brain.py    # In-process neural semantic metaphor & emotion engine
 │   │   ├── text_sanitizer.py          # Visual text sanitizer & typography protector
 │   │   └── timeline_manager.py        # Frame-accurate audio-video timeline synchronization
 │   ├── styles/                        # Mode 1 Auto synthesizer & S1-S15 style pack registry

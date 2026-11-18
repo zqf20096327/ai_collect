@@ -29,7 +29,7 @@ Install the models you need in **Settings → Speech Kit → Manage models**. Av
 | ------------------------------------- | ------------------------------------------------ |
 | English live dictation                | Moonshine, English Nemotron, or Parakeet Unified |
 | Multilingual live dictation           | Nemotron 3.5 ASR                                 |
-| File transcription or batch dictation | Whisper or Cohere Transcribe                     |
+| File transcription or batch dictation | Whisper, Cohere Transcribe, or Qwen3 ASR         |
 | Local voices                          | Pocket TTS or Supertonic 3                       |
 | Local translation                     | Firefox Translations or Tencent HY-MT 2          |
 
@@ -38,6 +38,10 @@ The setup wizard helps you install the native engine and your first speech model
 ## Dictate, transcribe, translate, listen, and refine
 
 **Dictate.** Streaming words appear and revise in place while you speak. Finished text lands as Markdown at your cursor. Batch models show results after speech is processed.
+
+Optional [desktop dictation controls](docs/guides/desktop-controls.md) let you
+start and stop from a global shortcut or native status menu while another app
+has focus. Obsidian remains the destination and must stay running.
 
 To keep microphone audio, enable **Save microphone recording** in Speech Kit settings. It is off by default and does not include system audio. When you stop dictation, Speech Kit saves the recording in Obsidian’s attachment location and adds an audio player to the note. Cancelling dictation discards the unfinished recording. Speech Kit also saves the audio if the sidecar stops the session because of an error or backlog. If the player cannot be added, Speech Kit keeps the recording and shows its link. If the recording itself cannot be completed, Speech Kit removes the incomplete file and shows a warning.
 
@@ -59,17 +63,36 @@ Speech Kit supports desktop Obsidian on macOS, Windows, and Linux. Acceleration 
 
 | Platform | Architecture                                                | Acceleration                       | System audio           |
 | -------- | ----------------------------------------------------------- | ---------------------------------- | ---------------------- |
-| macOS    | Apple silicon                                               | Metal for Whisper                  | macOS 14.2 or later    |
+| macOS    | Apple silicon                                               | Model-dependent Metal              | macOS 14.2 or later    |
 | Windows  | x86-64, ARM64 (Snapdragon 8cx or newer)                     | Optional NVIDIA CUDA (x86-64 only) | Supported              |
 | Linux    | x86-64, ARM64 glibc (ARMv8.2 or newer, e.g. Raspberry Pi 5) | Optional NVIDIA CUDA (x86-64 only) | PulseAudio or PipeWire |
 
 For Linux and CUDA requirements, see the [Linux guide](docs/guides/linux-support.md) and [CUDA guide](docs/guides/cuda-setup.md). Mobile Obsidian is not supported.
 
+### Models and acceleration
+
+These are the execution paths in the current source and sidecar build configuration. A released install exposes the models included in its installed sidecar; recent additions may await a release.
+
+| Feature and model family                     | macOS Apple silicon | Windows x86-64 | Windows ARM64 | Linux x86-64 | Linux ARM64 |
+| -------------------------------------------- | ------------------- | -------------- | ------------- | ------------ | ----------- |
+| Batch speech · Whisper                       | CPU / Metal         | CPU / CUDA*    | CPU           | CPU / CUDA*  | CPU         |
+| Batch speech · Qwen3 ASR                     | CPU / Metal         | CPU / CUDA*    | CPU           | CPU / CUDA*  | CPU         |
+| Live dictation · Moonshine (English)         | CPU                 | CPU            | CPU           | CPU          | CPU         |
+| Live dictation · Nemotron / Parakeet Unified | CPU                 | CPU            | CPU           | CPU          | CPU         |
+| Batch speech · Cohere Transcribe (English)   | CPU                 | CPU            | CPU           | CPU          | CPU         |
+| Read aloud · Pocket TTS / Supertonic 3       | CPU                 | CPU            | CPU           | CPU          | CPU         |
+| Translation · Firefox Translations           | CPU                 | CPU            | CPU           | CPU          | CPU         |
+| Translation · Tencent HY-MT 2                | CPU / Metal         | CPU / CUDA*    | CPU           | CPU / CUDA*  | CPU         |
+
+\* CUDA requires the optional NVIDIA sidecar on Windows or Linux x86-64. Installing it does not accelerate the CPU-only families. Metal/CUDA entries identify available backend paths, not certification of every model on every GPU.
+
+Qwen3 ASR offers managed 0.6B and 1.7B choices using the same batch/backend paths. Model language coverage varies. See [model and hardware support](docs/guides/model-hardware-support.md) for package boundaries, other GPUs, and validation coverage.
+
 ## Getting started
 
 1. Install **Speech Kit** from [Community Plugins](https://obsidian.md/plugins?id=local-dictation).
 2. Follow the setup wizard to install the native engine and a speech model.
-3. Select **Try dictation now**, or start from the ribbon, command palette, or a hotkey.
+3. Select **Try dictation now**, or use the ribbon, command palette, or a hotkey. To choose a status-bar control, open **Settings → Speech Kit → Advanced → Customize tools**.
 
 Dictation, local file transcription, translation, and read aloud require no account, API key, usage credits, or cloud service. Once their models are installed, they continue working offline. YouTube caption import requires a connection to YouTube.
 

@@ -8,7 +8,7 @@
 在手机上跟进、回复、审批电脑上的 Codex、Claude Code、DeepSeek、CC Desk 和 OpenCode 会话。
 
 [![Android](https://img.shields.io/badge/Android-6.0%2B-3DDC84?logo=android&logoColor=white)](#下载)
-[![Version](https://img.shields.io/badge/version-0.3.1-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.0-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-MIT-555)](LICENSE)
 
 [下载](#下载) · [三步上手](#三步上手) · [支持的 Agent](#支持的-agent) · [更新说明](CHANGELOG.md) · [反馈问题](#反馈问题)
@@ -45,6 +45,7 @@ Agent 一跑就是几十分钟，中间常常要你点一下审批、回答一�
 | --- | --- |
 | Codex 桌面端 | 查看并继续电脑上的会话；文字、图片、语音；审批、回答提问、停止；额度用完原线程换渠道 |
 | Claude Code | 打开已加载插件的会话，看输出、排队输入、审批、回答提问、中断 |
+| Claude CLI | 在网关配置里允许的目录中，查看、继续或新建电脑上的 Claude Code 会话：看输出、排队或追加、审批、回答提问、切换权限模式和模型、中断 |
 | DeepSeek Harness | 查看电脑上的会话和历史，继续原线程，回答提问 |
 | CC Desk | 查看 CC Desk 会话，发消息、审批、中断 |
 | OpenCode | 打开现有会话，看输出、回答提问 |
@@ -55,9 +56,9 @@ Agent 一跑就是几十分钟，中间常常要你点一下审批、回答一�
 
 | 文件 | 说明 |
 | --- | --- |
-| [Android APK 0.3.1（下载页）](https://zyzlz.xin/mobile-codex/releases/android/preview/index.html) | Android 6.0+，可直接覆盖安装旧版 |
-| [GitHub Release](https://github.com/luoz76070-art/MobiCodex/releases/tag/mobicodex-v0.3.1) | 同一份源码由 GitHub Actions 构建，附校验值 |
-| [版本说明](releases/android/mobicodex/0.3.1/) | 本版内容、签名说明和安装步骤 |
+| [Android APK 0.4.0（下载页）](https://zyzlz.xin/mobile-codex/releases/android/preview/index.html) | Android 6.0+，可直接覆盖安装旧版 |
+| [GitHub Release](https://github.com/luoz76070-art/MobiCodex/releases/tag/mobicodex-v0.4.0) | 同一份源码由 GitHub Actions 构建，附校验值 |
+| [版本说明](releases/android/mobicodex/0.4.0/) | 本版内容、签名说明和安装步骤 |
 
 装好以后在「设置 → 应用更新」检查更新。只改界面的更新会在后台下载，下次打开时生效，不用重装。
 
@@ -104,10 +105,11 @@ flowchart LR
 
 遇到问题请提到 [GitHub Issues](https://github.com/luoz76070-art/MobiCodex/issues)，写清手机型号、App 版本和复现步骤。
 
-0.3.1 的已知问题：
+也可以在 App 的「设置 → 反馈问题」或长按消息选「反馈这条」，反馈会存到你电脑上的网关。
 
-- 其他 Agent 挂在 Codex 下面，顶栏按钮和“切换 Agent”入口不统一（[#19](https://github.com/luoz76070-art/MobiCodex/issues/19)）。
-- CC Desk 会话切屏回来后，恢复连接较慢（[#20](https://github.com/luoz76070-art/MobiCodex/issues/20)）。
+0.4.0 的已知问题：
+
+- 「Claude CLI」的审批和提问目前只在模拟环境里验证过，真实会话里遇到问题请反馈。
 
 ## 开发与构建
 

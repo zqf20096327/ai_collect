@@ -2,9 +2,9 @@
 
 [简体中文](README.md) | [English](README.en.md) · [Release](https://github.com/yiheng8023/antigravity-chinese/releases/latest) · [CI](https://github.com/yiheng8023/antigravity-chinese/actions/workflows/ci.yml)
 
-当前源码版本 **v3.3.49**，维护目标为 **Antigravity App 2.32.1 / VS Code 扩展 1.12.0**。这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。
+当前源码版本 **v3.3.50**，维护目标为 **Antigravity App 2.32.2 / VS Code 扩展 1.12.0**。这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。
 
-本版修复桌面内置 Swarm 面板未加载汉化的问题，补齐空状态、连接提示、看板筛选、回放和复制等固定控件。独立词库按实际控件生效，保留 `Swarm`、`/swarm`、成员名称、任务、消息、原始数据和讲述者内容。安装与还原沿用桌面 ASAR 流程，不修改插件源文件。详见 [Swarm 维护记录](docs/maintenance/swarm-pane-2.32.1.md)；设置、快捷键及主界面组件清单见[上一轮补查](docs/maintenance/antigravity-2.32.1-follow-up.md)。
+本版合并 [#8](https://github.com/yiheng8023/antigravity-chinese/issues/8) 的设置页性能修复与桌面 2.32.2 维护：复用单次扫描片段内的边界判定，按时间预算分帧处理大树，突发队列合并而不漏掉尾部，保留作者内容和节点移动保护。2.32.1 的前后对照见[性能记录](docs/maintenance/settings-performance-2.32.1.md)，新版来源、安装与独立实测见[2.32.2 维护记录](docs/maintenance/antigravity-2.32.2.md)。[Swarm 独立面板汉化](docs/maintenance/swarm-pane-2.32.1.md)继续保留。
 
 VS Code 扩展更新会覆盖本地汉化。更新扩展后请重新执行 `node cli.js install:vscode`，再重新加载 VS Code 窗口。相关适配与验证见 [1.11.0 维护记录](docs/maintenance/vscode-1.11.0.md) 和 [桌面 2.29.0 维护记录](docs/maintenance/antigravity-2.29.0.md)。
 
@@ -12,7 +12,7 @@ VS Code 扩展更新会覆盖本地汉化。更新扩展后请重新执行 `node
 
 | 组件 | 实现 | 当前验证范围 |
 | --- | --- | --- |
-| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows 2.32.1 安装包、安装/重复安装/还原与实际交付脚本的 DOM 验证；逐项视觉验收范围见本次维护记录 |
+| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows 2.32.2 安装/重复安装/还原、交付脚本回归与实际界面/性能采样；范围及限制见维护记录 |
 | VS Code 扩展 | 清单、原生菜单和通知翻译、Webview 本地代理、独立备份/还原 | Windows 1.12.0 安装包验证与通知按钮回归；代理和实机检查范围见本次维护记录 |
 | 社区中文插件 | 中文交互规则与维护诊断技能 | 可选安装；不代表 Google 官方插件 |
 | 独立 IDE、其他 IDE 扩展 | 尚无专用汉化安装器 | 不声明已适配 |
@@ -59,7 +59,7 @@ node cli.js install:vscode --path "<扩展目录>"
 
 ```bash
 npm run build:dict
-# 运行全套自动化测试（聚合 12 套测试入口）
+# 运行全套自动化测试（聚合 13 套测试入口）
 npm test
 npm run audit
 npm run audit:ui -- --bundle <official-main.js>
@@ -106,10 +106,14 @@ npm run scan:drift -- "<frontend-bundle.js>" --report "<report.json>"
 诚挚感谢所有为本项目贡献代码、反馈 Bug、完善词库与文档的开发者们！
 
 - 感谢 **a705876883-arch** 提交用户内容保护修复方案，并提供误译复现与回归用例。 [PR #6](https://github.com/yiheng8023/antigravity-chinese/pull/6)
+- 感谢 **[fansID512](https://github.com/fansID512)** 提供详细环境、复现步骤和对照观察，帮助定位设置页掉帧问题。 [Issue #8](https://github.com/yiheng8023/antigravity-chinese/issues/8)
 
 <p align="center">
   <a href="https://github.com/yiheng8023/antigravity-chinese/graphs/contributors">
     <img src="https://contrib.rocks/image?repo=yiheng8023/antigravity-chinese" alt="Contributors" />
+  </a>
+  <a href="https://github.com/fansID512">
+    <img src="https://avatars.githubusercontent.com/u/103017881?v=4" width="64" height="64" alt="fansID512 - 问题复现与性能诊断" title="fansID512：问题复现与性能诊断" />
   </a>
 </p>
 

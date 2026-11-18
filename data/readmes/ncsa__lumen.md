@@ -5,6 +5,8 @@ Lumen is a self-hosted AI gateway. It provides a web chat interface and an OpenA
 **Key features:**
 - Web chat interface for AI models (OpenAI-compatible endpoints, Ollama, vLLM, etc.)
 - OpenAI-compatible API proxy — use Lumen as a drop-in endpoint from any tool or script
+- Anthropic Messages API subset (`/v1/messages`) for the Anthropic SDKs and Claude Code
+- `/connect` and `lumen.sh` generate ready-made OpenCode and GitHub Copilot CLI configs
 - Projects (machine-to-machine accounts) with their own coin pools
 - File and document uploads in chat (text, PDF, images — configurable per deployment)
 - Login via your institution's identity provider through CILogon
@@ -292,7 +294,7 @@ chat:
 
 ### Rate limiting
 
-All endpoints are rate-limited per authenticated user (API key ID for `/v1/*` routes, session user ID for `/chat/*` routes), except the read-only `GET /v1/models` and `GET /v1/models/{id}` lookups, which are not counted. The limit is a single string in flask-limiter notation (`N per second/minute/hour`):
+Requests are rate-limited per authenticated user (API key ID for `/v1/*` routes, session user ID for `/chat/*` routes). On `/v1`, chat, completions, messages and audio share one per-key budget; `count_tokens` and `acknowledge` each have their own; model listing (`GET /v1/models`, `GET /v1/models/{id}`) and `GET /v1/usage` are not counted. The limit is a single string in flask-limiter notation (`N per second/minute/hour`):
 
 ```yaml
 rate_limiting:

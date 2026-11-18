@@ -6,7 +6,7 @@
 >
 > Fresh papers land every day, grouped by topic so you can pick what matters to you and skim the rest.
 
-**6473 papers** across **138 days** · **1063** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
+**6496 papers** across **139 days** · **1069** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
 
 **Star scale:** most papers carry no star. ⭐ = clearly notable; ⭐⭐ = exceptional (rare); ⭐⭐⭐ = landmark (very rare — often zero per day).
 
@@ -41,6 +41,7 @@ Hand-picked work, including some of my own, that anchors the four topics this fe
 
 _LLMs simulating humans, personas, or societies for scientific study._
 
+- ⭐ [**Do Machines Learn Deviance From Their Peers? A Randomized Test of Differential Association With AI Agents**](https://arxiv.org/abs/2611.18098) — Uses LLM agents in multi-agent teams to simulate human social learning and deviance propagation, testing criminological theory through controlled behavioral experiment. <sub>_Murat Ozer, 2026-11-16_</sub>
 - ⭐ [**When Should Agents Remember? Falsification-Gated Self-Evolution for LLM Agents**](https://arxiv.org/abs/2611.14326) — Framework for safely integrating learned experiences into LLM agent memory via hypothesis testing, with explicit focus on reducing falsification failures and harmful updates—core alignment concern in <sub>_Runxuan Tang, 2026-11-11_</sub>
 - ⭐ [**Web World Models**](https://arxiv.org/abs/2512.23676) — Paper designs persistent world environments using web code and LLMs for agent simulation, enabling long-horizon interaction and learning in structured but open-ended settings. <sub>_Jichen Feng, 2026-11-10_</sub>
 - ⭐ [**Same Method, Different Task: What the Bitter Lesson Does Not License in Social Simulation**](https://arxiv.org/abs/2611.05717) — LLM-based social simulation study examining whether LLM populations exhibit human-like behavioral dynamics (cooperation, norm enforcement, heterogeneity) and critiquing prior work's substitution of te <sub>_Justin Downes, 2026-11-05_</sub>
@@ -145,6 +146,7 @@ _LLMs simulating humans, personas, or societies for scientific study._
 - ⭐ [**End-to-end autonomous scientific discovery on a real optical platform**](https://arxiv.org/abs/2604.27092) — LLM-based agentic system demonstrating autonomous long-horizon reasoning, planning, and experimental validation on a real physical system—a key exemplar of LLM agents in structured problem-solving env <sub>_Shuxing Yang, 2026-05-01_</sub>
 - ⭐ [**Synthetic Computers at Scale for Long-Horizon Productivity Simulation**](https://arxiv.org/abs/2604.28181) — Uses LLM agents in long-horizon simulations to generate synthetic training data for productivity scenarios, with agents acting as simulated users and collaborators. <sub>_Tao Ge, 2026-05-01_</sub>
 - ⭐ [**When Agents Evolve, Institutions Follow**](https://arxiv.org/abs/2604.27691) — Multi-agent system architecture study translating historical political institutions into LLM-based agent collectives to evaluate governance topology effects on collective performance. <sub>_Chao Fei, 2026-05-01_</sub>
+- [**From Chats to Markets: AgenticPay for LLM-Powered Negotiation in Multi-Agent Commerce**](https://arxiv.org/abs/2602.06008) — Benchmark for LLM agents in multi-agent commerce negotiation with multimodal grounding and market simulation across diverse scenarios. <sub>_Xianyang Liu, 2026-11-16_</sub>
 - [**DecArena: Evaluating Large-Scale Decentralized Multi-Agent Collaboration**](https://arxiv.org/abs/2611.15521) — Benchmark and methods for evaluating LLM-based agents in decentralized multi-agent collaboration with graph-constrained communication and distributed tool discovery. <sub>_Jiali Cheng, 2026-11-13_</sub>
 - [**Designing AI-Agents with Personalities: A Psychometric Approach**](https://arxiv.org/abs/2410.19238) — Uses LLMs to simulate humans with psychometrically validated personalities for behavioral research, validating AI-agents as proxy study participants for human behavior. <sub>_Muhua Huang, 2026-11-13_</sub>
 - [**FPSRG: Heterogeneous User Simulation First-Person Post-Training and Multidimensional Semantic Response Grids**](https://arxiv.org/abs/2611.16445) — Paper develops a method to simulate heterogeneous individuals using LLMs by post-training models to embody different personas and profiles, matching target characteristics. <sub>_Ruimin Pei, 2026-11-13_</sub>
@@ -329,6 +331,4 @@ _LLMs simulating humans, personas, or societies for scientific study._
 - [**AI Agents are Vulnerable to Radicalization**](https://arxiv.org/abs/2609.38296) — Multi-agent LLM simulation study investigating radicalization vulnerability through inter-agent persuasion and belief manipulation mechanisms. <sub>_Ozgur Can Seckin, 2026-10-01_</sub>
 - [**Absorbing State Phase Transitions in Multi-Agent Search**](https://arxiv.org/abs/2609.38327) — Theoretically models phase transitions in LLM-based multi-agent search systems and empirically evaluates communication topology effects on task-solving success. <sub>_Wenwen Zheng, 2026-10-01_</sub>
 - [**GraphMAS: A Systematic Benchmark of Multi-Agent Coordination for Graph Learning**](https://arxiv.org/abs/2609.39777) — LLM-based multi-agent system coordinating specialized reasoning agents for graph learning task through interaction and adaptive control strategies. <sub>_Jiayi Yang, 2026-10-01_</sub>
-- [**MetaPersona: Task-Grounded Synthetic Populations from Empirical Social Science**](https://arxiv.org/abs/2609.38392) — Framework for constructing empirically-grounded synthetic populations of personas seeding LLM-based social simulations to study human behavior at scale. <sub>_Jinyi Ye, 2026-10-01_</sub>
-- [**PhantomEnvironments: Training LLM Agents in Fictional Worlds**](https://arxiv.org/abs/2609.40221) — LLM agents trained via RL in multi-turn synthetic environments to perform multi-hop search tasks with transfer to real-world benchmarks; demonstrates agent behavior in simulated worlds. <sub>_Anmol Kabra, 2026-10-01_</sub>
-- [**AnthroDial: Benchmarking LLM Anthropomorphism in Autonomous Social Interaction**](https://arxiv.org/abs/2609.37853) — Develops framework for
+- [**MetaPersona: Task-Grounded Synthetic Populations from Empirical Social Science**](https://arxiv.org/abs/2609.38392) — 

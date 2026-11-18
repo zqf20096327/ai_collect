@@ -52,13 +52,13 @@ DBHub is a minimal MCP server: token-efficient, zero-dependency, and just two to
 
 ## Token Efficiency
 
-DBHub loads just 2 tools by default at **1.4k tokens** — 13-14x fewer than alternatives — keeping the context window open for your actual work.
+DBHub loads just 2 tools by default at **0.5k tokens** — 16-25x fewer than alternatives — keeping the context window open for your actual work.
 
 | MCP Server | Default Config | Default Tools |
 |------------|---------------|--------------|
-| **DBHub** | **1.4k** | 2 (`execute_sql`, `search_objects`) |
-| MCP Toolbox | 19.0k | 28 |
-| Supabase MCP | 19.3k | all |
+| **DBHub** | **0.5k** | 2 (`execute_sql`, `search_objects`) |
+| MCP Toolbox | 7.7k | 29 |
+| Supabase MCP | 11.6k | 36 |
 
 ## Use Cases
 
@@ -66,6 +66,8 @@ DBHub loads just 2 tools by default at **1.4k tokens** — 13-14x fewer than alt
 - **Non-Technical Access**: Expose curated, read-only views to non-technical staff via Claude Desktop, VS Code, Cursor, etc.
 - **Multi-Database Consolidation**: Replace separate MCP servers for each database with a single DBHub process
 - **Production Troubleshooting**: Read-only diagnostics with guardrails against runaway queries
+
+> Read-only mode is a guardrail, not a permission boundary. Always connect with a least-privilege, read-only database user. See [Read-Only Mode](https://dbhub.ai/config/read-only-mode).
 
 ## Supported Databases
 
@@ -93,11 +95,17 @@ DBHub includes a [built-in web interface](https://dbhub.ai/workbench/overview) f
 npx @bytebase/dbhub@latest --transport http --port 8080 --dsn "postgres://user:password@localhost:5432/dbname?sslmode=disable"
 ```
 
+For Claude Code, install the [plugin](https://dbhub.ai/claude-code-plugin):
+
+```
+/plugin marketplace add bytebase/dbhub
+/plugin install dbhub@dbhub
+```
+
 Also available as:
 
 - [Docker image](https://dbhub.ai/installation#docker)
 - [MCP Bundle](https://dbhub.ai/mcpb) (one-click install, read-only)
-- [Claude Code plugin](https://dbhub.ai/claude-code-plugin)
 
 See the [Installation Guide](https://dbhub.ai/installation) for all options, [Command-Line Options](https://dbhub.ai/config/command-line) for parameters, and [Multi-Database Configuration](https://dbhub.ai/config/toml) for connecting several databases at once.
 

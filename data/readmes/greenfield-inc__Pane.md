@@ -127,6 +127,7 @@ Each of these is a small thing. Together they compound fast.
 | **Pane secrets** | An agent asks you for an API key on a masked card, then runs its command with `runpane secrets exec`; the value never enters chat. Secrets are shared by every agent and synced to every machine you have saved, and Project Settings variables can point at them. | [Pane secrets](docs/PANE_SECRETS.md) |
 | **Pane on Even G2 glasses** | See every Notify card from all your computers on Even Realities G2 glasses, answer with the R1 ring or your voice, and open any Pane's live terminal to read it and dictate into it. Pair once from the Pane phone app. | [Even G2 glasses](docs/EVEN_G2_GLASSES.md) |
 | **Machine health** | Pane watches free disk, memory pressure and every process it started, on this computer and each one you linked. It removes its own leftovers by itself, asks once before archiving finished Panes or clearing agent temp files, and warns about a likely memory leak. Resources, the gauge beside the machine switcher, shows what each Pane costs and frees it in one click, and lists the other apps on the machine with a stop button for each; agents clean up with `runpane machine cleanup`. | [Machine health](docs/MACHINE_HEALTH.md) |
+| **Profiles** | A profile is one file that defines a team of agents and a fixed workflow (plan, build, review, merge). Pane draws the workflow, launches it on any CLI with each step as a terminal tab, and routes each step's reported outcome to the next one; greenfield ships as the first. | [Profiles](docs/PROFILES.md) |
 | **Loops** | Run an agent or command on a cron schedule, such as a nightly bug sweep. Each run is a new Pane in a fresh worktree, ready to review. Loops are for large recurring jobs and run at most once an hour. | [Loops](docs/LOOPS.md) |
 | **@mention Terminals** | Type `@` in any terminal to pull the last 500 lines from another pane's terminal directly into your context, no copy-paste required. Turn it off in Settings → Terminal. | <img src="images/qol-at-mention.png" alt="Cross-terminal @mention picker" width="420"> |
 | **Clipboard Shortcuts** | `Cmd+Option+[key]` on macOS (`Ctrl+Alt+[key]` on Windows and Linux) pastes any saved text snippet instantly, so your most-used prompts are one keystroke away forever. | <img src="images/qol-clipboard.png" alt="Terminal clipboard shortcuts popover" width="280"> |
@@ -138,7 +139,7 @@ Each of these is a small thing. Together they compound fast.
 | **Auto Secrets Copy** | Every pane automatically mirrors `.env` files and secrets from your root project so your worktree is runnable the moment it's created. | |
 | **Isolated Ports** | Each pane runs on its own port range automatically, so you can spin up five dev servers in parallel without a single conflict. | |
 | **Terminal Rendering Patches** | Claude Code's scroll-jump bug (long conversations snapping to top when you scroll up) is fixed here, even though it's still broken in Claude Code itself. | |
-| **Drag and Drop** | Drop any file up to 50MB into a terminal and it lands exactly where you need it. | |
+| **Drag and Drop** | Drop a file of any size into a terminal and it lands exactly where you need it, with progress while it copies. | |
 
 ---
 
@@ -254,7 +255,7 @@ A Session on this computer can run workers anywhere in your workspace. From the 
 
 “Continue this on my Windows machine with Codex.” `runpane handoff` starts the agent in a new Pane on the other machine (or a new tab in your Pane on this one), using your pushed branch and a note about the task. When the sending tab runs Claude, Codex, Cursor or OpenCode and the receiver is the same agent, it carries the agent's own session: another machine gets a copy of the session's files and resumes it, and this machine resumes a fork of it. The CLI then checks that the receiver continued the conversation, and reports `continued`, `inconclusive` (with a question to ask the receiver), or `not-continued` (the receiver is kept, never replaced). With `--note-only`, a different agent, or no session to carry, a fresh agent starts with the note instead, and the output says so. The note carries the goal, decisions, verified state, and next steps either way. Live processes stay on the original machine.
 
-To move a whole Session instead, right-click it and choose **Move to machine…**: its agent hands it off, and a Session with the same name, goal and agent appears on the other machine. With the same agent it resumes the Session's conversation when you open it; otherwise it starts by reading the note. See [Move a Session to another machine](docs/SESSIONS.md#move-a-session-to-another-machine).
+To move a whole Session instead, right-click it and choose **Move to machine…**. Pane carries every Pane with its worktree and uncommitted work, every tab and its conversation, and the Session folder to another of your machines, starts the agents there, and archives the Session here as "Moved to <machine>" (**Restore here** brings it back). **Hand off with a note…** in the same dialog keeps the agent handoff above, for a single task, another agent or a teammate's machine. See [Move a Session to another machine](docs/SESSIONS.md#move-a-session-to-another-machine).
 
 To hand off a Pane's task, run from the repository you're handing off. On the destination, clone the same GitHub repository if needed and add that checkout to Pane. Install and sign in to the receiving agent there. Keep Pane running there. Use the npm CLI. On the destination, choose a repository outside WSL; WSL receivers are not supported.
 
@@ -354,7 +355,8 @@ Pane's keys follow VS Code, and every one can be changed: press `⌘K ⌘S` (`Ct
 | Shortcut | Action |
 |----------|--------|
 | `⌘⇧P` / `Ctrl+Shift+P` | Open Search: find any Pane, Session, project or command, and see or change its key |
-| `⌘K ⌘S` / `Ctrl+K Ctrl+S` | Keyboard Shortcuts |
+| `⌘/` / `Ctrl+K Ctrl+/` | Show every key in a searchable sheet, your own keys marked (a writable file editor keeps `⌘/` for comments, and browser pages keep it; `Ctrl+/` stays with terminal programs) |
+| `⌘K ⌘S` / `Ctrl+K Ctrl+S` | Change keys (Settings → Shortcuts) |
 | `⌘0` / `Ctrl+0` | Focus the sidebar; then `↑` `↓` (or `k` `j`) move (up into the top buttons), `←` `→` collapse or expand, `Enter` opens, `Space` opens and stays, `Esc` goes back |
 | `Enter` | With a chat on screen and focus on no field or control, move into its message box |
 | `⌘⌥←→↑↓` / `Ctrl+Alt+arrows` | Move focus to the split, panel, approval column or sidebar in that direction; the focused split's active tab carries the accent underline |
@@ -365,12 +367,15 @@ Pane's keys follow VS Code, and every one can be changed: press `⌘K ⌘S` (`Ct
 | `⌘⌥B` / `Ctrl+Alt+B` | Toggle right panel |
 | `` ⌃` `` / `` Ctrl+` `` | Toggle terminal |
 | `⌘⇧[` `⌘⇧]` / `Ctrl+PgUp` `Ctrl+PgDn` | Previous / next tab in the focused split, or in a Session's approval column while it has focus (`Esc` there goes back to the chat) |
-| `⌃⇧Space` | Approvals, and back to exactly where you were (also `Esc`); change it in Settings → Notify |
+| `⌃⇧Space` | Approvals from any app, and back to exactly where you were (also `Esc`); change it in Settings → Notify |
+| `⌘⇧A` / `Ctrl+Shift+A` | Open or close Approvals while Pane is in front; in its list `↑` `↓` move, `Enter` or `→` open, `Esc` goes back, and the tab keys switch Waiting / Done today |
+| `⌘⌥A` / `Ctrl+K Ctrl+A` | From a Session chat, open its approval; again (or `Esc`) goes back with your draft kept |
+| `↑` `↓` `Space` `Tab` `⌘↩` | In an approval: move and pick within a question, pick the focused option, next question (then the reply box), send from anywhere in it |
 | `⌘⌥O` / `Ctrl+Alt+O` | Machine switcher (then `0` for All machines, `1-9` for a machine) |
 | `⌃⌘]` `⌃⌘[` / `Ctrl+Alt+Shift+]` `[` | Next / previous machine |
 | `⌃⌘0` / `Ctrl+Alt+Shift+0` | All machines ⇄ the last machine |
 | `⌘K` / `Ctrl+K` | Clear the focused terminal |
-| `⌘F` / `Ctrl+F` | Find in the focused tab (terminal, browser, file preview, Logs) |
+| `⌘F` / `Ctrl+F` | Find in the focused tab (terminal, browser, file preview, Logs, a chat's loaded conversation), an approval and its Summary, or the Approvals screen |
 | `⌘G` / `Ctrl+G` | Find next |
 | `⌘⇧G` / `Ctrl+Shift+G` | Find previous |
 | `⌘N` / `Ctrl+N` | New pane |

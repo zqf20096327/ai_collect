@@ -4,6 +4,15 @@
 
 LLM Sampling Lab is a Python project for investigating how **Temperature**, **Top-p (nucleus sampling)** and **Top-k** affect probability distributions and text generation. It combines real model experiments, an offline token-sampling simulator, and a **Streamlit dashboard** for interactive experiments and comparative benchmarking.
 
+## Continuous Integration & Release Readiness
+
+GitHub Actions now defines **Python Quality** (Linux/Windows tests and scoped
+lint/type checks), **Docker Smoke** (real HTTP readiness), **Dependency Review**
+(PR dependency security checks), and a **manual Release Candidate Build**
+(version-tag verification, tests and package artifacts — no publishing).
+See [Quality Gates and Release Readiness](docs/quality-gates.md) for local
+commands, setup notes, and current coverage limitations.
+
 ## Quick start: Docker web interface
 
 **Requirements:** Git and Docker Desktop (Windows/macOS) or Docker Engine with Docker Compose (Linux). Python and uv are **not** required on the host.
@@ -12,9 +21,16 @@ LLM Sampling Lab is a Python project for investigating how **Temperature**, **To
 git clone https://github.com/Burakkylmz/llm-sampling-lab.git
 cd llm-sampling-lab
 docker compose up --build -d
+docker compose port ui 8501
 ~~~
 
-Open **http://localhost:8501** in your browser.
+Docker automatically selects an available local-only host port. Open the URL shown by `docker compose port ui 8501` (for example, `http://127.0.0.1:49153`).
+
+On Windows PowerShell, you can instead launch the UI and print its URL in one step:
+
+~~~powershell
+.\scripts\start-ui.ps1
+~~~
 
 The UI starts without cloud API keys. To make live Groq or OpenAI requests, create your own private **.env** file:
 
@@ -35,7 +51,6 @@ Edit the file and add the keys you need:
 ~~~dotenv
 GROQ_API_KEY=
 OPENAI_API_KEY=
-STREAMLIT_PORT=8501
 ~~~
 
 After editing **.env**, recreate the UI container:
@@ -52,7 +67,7 @@ docker compose logs -f ui
 docker compose down
 ~~~
 
-The dashboard is published to **127.0.0.1** on the host by default. You can change the host port with **STREAMLIT_PORT**. Experiment reports remain in the host's **results/** directory after containers are stopped or recreated.
+The dashboard is published to **127.0.0.1** on a Docker-selected available port (not a fixed 8501/8502). Retrieve its URL after startup using `docker compose port ui 8501`. `STREAMLIT_PORT` is no longer required; the host port can change when the container is recreated. Experiment reports remain in the host's **results/** directory after containers are stopped or recreated.
 
 The original CLI continues to work:
 
@@ -180,6 +195,55 @@ docker compose run --rm sampling-lab --help
 The CLI actions for simulation, experiments, API checks, model listing, discovery, and capability display are mutually exclusive. Use **--samples** and **--seed** only with offline simulation; **--repetitions** applies to real sampling experiments, not the movie-review CLI.
 
 ---
+
+## Statistical reliability and execution environment
+
+Controlled benchmarks now include descriptive latency reliability analysis using the
+**nearest-rank** percentile method (P50, P90, P95, P99), sample standard deviation,
+coefficient of variation (CV), and latency measurement coverage. Each parameter
+group receives its own summary and warnings when latency samples are missing
+or upper-tail percentile estimates simply equal the sample maximum.
+These statistics describe a run; they do **not** establish statistically
+significant performance differences. Use comparable experiment conditions
+and adequate independent measurements before drawing conclusions.
+
+New controlled-benchmark JSON reports also contain an optional `environment`
+object with the Python version, operating system, OS release, architecture
+and execution context. In Docker, these are **container runtime details**,
+not a profile of the Windows/macOS host. Hostnames, usernames, file paths
+and environment variables/API keys are intentionally excluded. Older JSON
+reports without this field remain readable.
+
+## Bootstrap confidence and outlier diagnostics
+
+The **Controlled Benchmark** tab now shows an exploratory 95% percentile-bootstrap
+interval for **mean request latency** (1,000 resamples, a dedicated bootstrap
+seed of 42), along with **Tukey's 1.5×IQR outlier flags**. Bootstrap seeds are
+local analysis settings and are separate from generation and execution-order
+seeds. Outliers are **not removed** from latency calculations.
+
+- Fewer than **5 measured requests**: no bootstrap interval is generated.
+- Fewer than **4 measurements**: IQR outlier detection is not run.
+- Fewer than **20 observations**: the UI warns that bootstrap confidence
+  intervals may be unstable.
+- Missing latency values remain missing and are reported as coverage gaps.
+
+Performance → Benchmark Comparison can optionally show an exploratory
+bootstrap **difference of mean latencies (Experiment 2 − Experiment 1)**,
+including percentile bounds, when **exactly two** completed experiments have
+the same documented provider/model, prompt, parameter values, fixed values,
+repetition counts, seeds/order settings, warm-up, max-output-token budget and
+runtime metadata. New controlled runs record `max_output_tokens` so that
+this check is possible. Older runs without required metadata are still
+supported in the existing descriptive comparison UI, but do **not** qualify
+for bootstrap run-to-run comparisons.
+
+These intervals assume that sampled requests behave like independent
+observations. Real LLM measurements can be correlated by cache state,
+hardware contention, shared system load, request ordering and time trends.
+A compatible metadata snapshot is **not proof** that runtime conditions
+are identical. The tool does not compute p-values, claim causality, or infer
+that nonoverlapping confidence intervals prove a model is superior.
 
 ## Understanding the benchmark dashboard
 

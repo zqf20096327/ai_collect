@@ -1,272 +1,233 @@
-# agy-acp-gateway
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg" />
+    <img src="assets/banner-light.svg" alt="agy-acp-gateway" width="760" />
+  </picture>
+</p>
+
+<h3 align="center">Turn Google's official Antigravity CLI (<code>agy acp</code>) into a zero-CGO, quad-protocol AI gateway with live telemetry, self-healing WAF cleanroom, and Carbon KV cache protection.</h3>
 
 <p align="center">
-  <strong>High-Performance, Pure-Go Multi-Protocol API Gateway & Real-Time Observability Suite for Google Antigravity CLI (<code>agy acp</code>)</strong><br/>
-  <strong>基于 Google 官方 <code>agy acp</code> 的纯 Go 高性能多协议网关与实时可观测面板</strong>
+  <a href="./README.md"><strong>English</strong></a> &nbsp;·&nbsp;
+  <a href="./README_ZH.md"><strong>简体中文</strong></a> &nbsp;·&nbsp;
+  <a href="#engineering-pillars"><strong>Engineering Highlights</strong></a> &nbsp;·&nbsp;
+  <a href="#client-compatibility"><strong>Clients</strong></a> &nbsp;·&nbsp;
+  <a href="#quick-start"><strong>Quick Start</strong></a> &nbsp;·&nbsp;
+  <a href="#configuration-reference"><strong>Configuration</strong></a> &nbsp;·&nbsp;
+  <a href="#safe-upgrader"><strong>Upgrader</strong></a>
 </p>
 
 <p align="center">
-  <a href="#english">English</a> •
-  <a href="#简体中文">简体中文</a> •
-  <a href="#architecture--core-capabilities">Architecture</a> •
-  <a href="#quick-start--快速开始">Quick Start</a> •
-  <a href="#api--client-configuration--客户端接入">Client Config</a> •
-  <a href="#upstream-maintenance--safe-upgrade--上游安全升级">Safe Upgrader</a>
+  <img src="https://img.shields.io/badge/Go-1.22%2B_(CGO__ENABLED%3D0)-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go 1.22+ Zero CGO" />
+  <img src="https://img.shields.io/badge/Protocols-Anthropic_%7C_OpenAI_%7C_Responses_%7C_Gemini_v1beta-0856F5?style=flat-square" alt="Quad Protocol" />
+  <img src="https://img.shields.io/badge/Context-900K_Unlocked-0D9488?style=flat-square" alt="900K Context" />
+  <img src="https://img.shields.io/badge/Telemetry-Zero--Lock_SQLite_%2B_Prometheus-D97706?style=flat-square" alt="Zero-Lock SQLite and Prometheus" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="MIT License" /></a>
 </p>
 
 ---
 
-<a name="english"></a>
+**agy-acp-gateway** is a single-binary, pure-Go (`CGO_ENABLED=0`) multi-protocol API gateway and real-time observability suite built strictly on top of Google's official Antigravity CLI (`agy acp`, JSON-RPC 2.0 over stdio).
 
-## English
+Instead of reverse-engineering private Google OAuth/Protobuf endpoints and forging raw HTTP packets, **100% of upstream traffic runs inside the official `agy acp` binary**. TLS fingerprints, OAuth token refreshes, trajectory checkpoints, and upstream framing remain natively managed by Google's client, while `agy-acp-gateway` adds quad-protocol translation, 5-layer TPU KV cache survival, reversible semantic cleanroom sanitization, silent shadow-pool detection, and zero-downtime upgrades.
 
-`agy-acp-gateway` is a zero-CGO (`CGO_ENABLED=0`), single-binary Go gateway that turns the official Google Antigravity CLI (`agy acp`, JSON-RPC 2.0 over stdio) into standard **Anthropic Messages (`/v1/messages`)**, **OpenAI Chat Completions (`/v1/chat/completions`)**, **OpenAI Responses (`/v1/responses`)**, and **Google Gemini REST (`/v1beta/models/...`)** HTTP/SSE endpoints.
-
-Unlike naive HTTP/OAuth proxies that reverse-engineer private Google protobuf endpoints and risk immediate account suspension, `agy-acp-gateway` communicates **exclusively through the official `agy acp` process**. All TLS fingerprints, OAuth token refreshes, checkpointing, and context management remain 100% inside the official binary. This reduces protocol-level risk; it is not a guarantee against account restrictions, which still depend on the upstream terms of service and how the account is used.
-
-### Key Highlights
-
-1. **Quad-Protocol Native Compatibility**:
-   - **Anthropic `/v1/messages` & `/v1/messages/count_tokens`**: Full support for Claude Code, including streaming `thinking` + `signature` blocks, `tool_use` / `tool_result` parking & resumption, `max_tokens` truncation propagation, and prompt cache hit accounting.
-   - **OpenAI `/v1/chat/completions`**: Full support for Cursor, Cline, Continue, and standard OpenAI SDKs (`reasoning_content`, `reasoning_tokens`, `tool_calls`, `finish_reason: "length"`, streaming `include_usage`).
-   - **OpenAI `/v1/responses`**: Native Codex CLI / Responses API compatibility (streaming & non-streaming `reasoning` output items, `response.reasoning_summary_text.delta`, `reasoning_tokens`, `response.function_call_arguments.delta`, `incomplete` `max_output_tokens` handling, and `previous_response_id` stateful resumption).
-   - **Google Gemini `/v1beta/models/...`**: Native support for `@google/genai` SDK, `gemini-cli`, and upstream Gemini pass-through proxies (`:generateContent`, `:streamGenerateContent?alt=sse`, `:countTokens`, `thinkingConfig`, `MAX_TOKENS`, and `functionCall` / `functionResponse` with or without explicit call IDs).
-2. **Real-Time SQLite `gen_metadata` Accounting, Dual TPS & Quota Guardrails**:
-   - Directly decodes the `gen_metadata` and `steps` protobuf blobs from `agy`'s per-session SQLite database (`modernc.org/sqlite` read-only fast path, **0.44 ms/op**).
-   - Tracks `LastSeenGenMetaIdx` independently of `LastSeenDbStepIdx`, delivering exact per-turn input/cached/output token billing, aligned streaming TTFT, time-weighted end-to-end throughput (`tps`), and pure post-TTFT streaming decode speed (`decodeTps`, `.1.12`).
-   - Built-in quota bleed protections: caps orphan `tool_use` MCP relays (`AGY_MAX_TOOL_RELAYS=2`, `AGY_PARKED_TTL_SEC=300`) by hibernating abandoned sessions while preserving `session/resume` state for late `tool_result` recovery, and emits non-blocking `X-Agy-Cache-Warning` alerts when `>=200K` context sessions hit consecutive zero-cache steps.
-3. **Deterministic `.1.19` Endpoint Routing Telemetry & Canary Visibility**:
-   - Extracts the authoritative upstream `servedModel` (`gen_metadata` `.1.19` `modelVersion`) on every turn, exposing `X-Agy-Served-Model` response headers and surfacing canary/variant endpoints in the dashboard without disrupting warm `gemini-4-carbon` sessions, while transparently recovering `gemini-4-argon` shadow-pool (`gemini-4-argon-b`) sessions.
-4. **900K Context Unlock, Sibling Tool Batching & Cache-Preserving MCP Bridge**:
-   - Includes a deterministic binary patcher (`scripts/agy_upgrade.py`, verified through `agy 1.5.9`) that unlocks the 900K context window (`900,000` input tokens vs. the default `256,000` cap) while preserving binary section sizes.
-   - Pre-batches sibling MCP tool calls from `CortexStepPlannerResponse` (`.20.7`) into single multi-tool HTTP turns (eliminating split `0/0` relay turns), enforces a zero-trust structured `session/request_permission` gate (`allow_once`), and handles mid-session deferred MCP tool additions in-place via `[Host tool update]` + `dsh_call_tool` (persisting `InitialToolsCatalog` across gateway restarts so 400K+ implicit prefix caches stay intact).
-5. **Post-Compaction Session Continuity & Warm Hibernation (`session/resume`)**:
-   - Dual-key identity routing (`sid:` / `fp:` + tenant isolation) with full 64-bit historical message digest matching: when clients compact middle turns, the gateway seamlessly retains the canonical session and triggers a single clean context rollover.
-   - Idle workers hibernate via ACP `session/close` and wake in **~0.25s** via `session/resume` without replaying historical stdout chunks.
-6. **Dual-Port Isolation & Editorial Warm-Paper Telemetry Console**:
-   - **Port `18890` (API Gateway)**: `/v1/messages`, `/v1/chat/completions`, `/v1/responses`, `/v1/models`, `/v1beta/models/*`, `/healthz`.
-   - **Port `18891` (Dashboard & Prometheus Metrics)**: Real-time warm-paper telemetry UI (`/`, `/api/dashboard`, `/api/upgrade`, `/health`) and monotonic SQLite-backed Prometheus metrics (`/metrics`) with live worker pool cards, calibrated official `/usage` 5h/weekly pool gauges, canary/cache alerts, and one-click `agy` hot-switch approval.
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/arch-overview-dark.png" />
+    <img src="assets/arch-overview-light.png" alt="agy-acp-gateway quad-protocol architecture diagram" width="960" />
+  </picture>
+</p>
 
 ---
 
-<a name="简体中文"></a>
+<a id="engineering-pillars"></a>
 
-## 简体中文
+## Why `agy-acp-gateway`?
 
-`agy-acp-gateway` 是一个**零 CGO 依赖 (`CGO_ENABLED=0`)、单二进制**的高性能 Go 网关，将 Google 官方 Antigravity CLI (`agy acp`，基于 stdio 的 JSON-RPC 2.0 协议) 无缝转换为标准 **Anthropic Messages (`/v1/messages`)**、**OpenAI Chat Completions (`/v1/chat/completions`)**、**OpenAI Responses (`/v1/responses`)** 与 **Google Gemini REST (`/v1beta/models/...`)** 接口，并内置实时监控面板与 Prometheus 指标端点。
+Running AI coding agents (`Claude Code`, `Pi`, `Codex CLI`, `Cursor`, `Cline`, `OpenCode`, `Gemini CLI`) against `agy acp` in production exposes failure modes that thin ACP wrappers cannot survive:
 
-与市面上直接逆向 Google OAuth 内部接口裸发 HTTP/Protobuf 请求的方案不同，本网关**100% 严格通过官方 `agy acp` 进程通信**。所有 TLS 指纹、OAuth 令牌刷新、会话快照和上下文状态机完全由官方二进制托管，可降低自行实现上游协议带来的指纹差异与账号风控风险; 这只是降低风险, 不构成账号不会被限制的保证, 账号状态仍取决于上游服务条款与实际使用方式。
-
-### 核心特性
-
-1. **四协议原生兼容与外部工具闭环 (MCP Bridge)**：
-   - **Anthropic `/v1/messages` & `/v1/messages/count_tokens`**：完整支持 Claude Code（流式 `thinking` + `signature` 签名块、`tool_use` / `tool_result` 挂起与恢复、`max_tokens` 截断状态透传、缓存命中精准统计、Outbound Cleanroom 提示词脱敏）。
-   - **OpenAI `/v1/chat/completions`**：完整支持 Cursor、Cline、Continue 与标准 OpenAI SDK（`reasoning_content`、`reasoning_tokens`、`tool_calls`、`finish_reason: "length"`、流式 `include_usage`）。
-   - **OpenAI `/v1/responses`**：原生支持 Codex CLI / Responses API（流式与非流式 `reasoning` 输出项、`response.reasoning_summary_text.delta`、`reasoning_tokens`、`response.function_call_arguments.delta`、`incomplete` `max_output_tokens` 状态及 `previous_response_id` 跨轮状态恢复）。
-   - **Google Gemini `/v1beta/models/...`**：原生支持 `@google/genai` SDK、`gemini-cli` 与聚合网关 `gemini` 渠道直连（`:generateContent`、`:streamGenerateContent?alt=sse`、`:countTokens`、`thinkingConfig`、`MAX_TOKENS`，以及有/无显式 `id` 的 `functionCall` / `functionResponse` 挂起恢复）。
-   - **全量 Eager 工具注入与零信任权限门禁**：内置轻量级 MCP HTTP 桥接器，自动在 `tools/list` 注入 `_meta: {"antigravity/alwaysLoad": true}` 并对 `session/request_permission` 执行结构化工具身份精确放行（`allow_once`）。
-2. **SQLite `gen_metadata` 实时双游标计费、双口径 TPS 与额度止血守卫**：
-   - 基于纯 Go `modernc.org/sqlite` 只读快速路径（单次查询仅 **0.44 ms**，零锁竞争），直接解析 `agy` 会话库中的 `gen_metadata` 与 `steps` Protobuf 载荷。
-   - 独立维护 `LastSeenGenMetaIdx` 与 `LastSeenDbStepIdx` 双游标，精确提取每轮 `input_tokens`、`cache_read_input_tokens`、`output_tokens`、流式首字延迟（TTFT，延迟首帧 `data:` 并以 `: ping` 注释帧保活），并同时统计时间加权端到端均速（`tps`）与纯流式解码速度（`decodeTps`，`.1.12`）。
-   - **孤儿接力止血与零缓存告警**：内置挂起工具孤儿接力上限（默认 `AGY_MAX_TOOL_RELAYS=2`、`AGY_PARKED_TTL_SEC=300`），客户端中断未回传 `tool_result` 时自动休眠并保留 `session/resume` 热恢复能力；长上下文（`>=200K`）连续零缓存自动触发非阻断 `X-Agy-Cache-Warning` 告警。
-3. **`.1.19` 确定性端点路由识别、灰度透出与同批工具保缓存**：
-   - 实时解码 `gen_metadata` `.1.19`（`servedModel`）底层真实路由端点：对 `gemini-4-carbon` 等模型遇到灰度端点时保持热会话不断连并在面板清晰提示，对 `gemini-4-argon` 灰测暗池（`gemini-4-argon-b`）自动换会话自愈。
-   - **同批工具合并与跨重启保缓存**：解析 `CortexStepPlannerResponse`（`.20.7`）将同一生成的多个串行 MCP 工具调用合并为单轮并发返回（彻底消除 `0 输入 / 0 输出` 空轮）；中途动态激活延迟 MCP 工具时通过 `[Host tool update]` + `dsh_call_tool` 原地增量生效，并将 `InitialToolsCatalog` 持久化至 `gateway.db`，网关重启亦不丢失几十万 Token 前缀缓存。
-4. **900K 上下文窗口解锁、四门禁安全升级与无感热切换 (`scripts/agy-upgrade.sh` & `deploy/prod-upgrader`)**：
-   - 内置确定性二进制补丁流水线（已适配官方 `agy 1.5.9`），自动解除 `agy` 在 ACP 模式下的 256K 窗口硬编码限制，解锁 **900K (900,000 Tokens)** 上下文窗口。
-   - 提供包含 `offline`（静态与补丁门禁）、`fake_e2e`（四协议 + 工具闭环 + UI 零报错）、`contract`（23 项 ACP 协议契约零额度校验）、`live_flash`（单次低成本真实探针）的四门禁原子升级与回滚工具；容器化部署支持面板一键确认后无重启软链热切换 `agy`。
-5. **压缩后会话连续性 (Post-Compaction Continuity) 与 0.25s 极速热唤醒**：
-   - 当客户端（如 Claude Code `/compact`）压缩中间历史导致消息数组变短时，网关通过完整 64 位历史消息摘要匹配自动识别同源会话，仅执行一次平滑 Rollover 并继承累计 Token 统计。
-   - 空闲会话自动休眠释放内存，再次请求时优先通过 ACP `session/resume` 在 **0.25 秒**内热恢复，避免 `session/load` 重放数千行历史块。
+| Production Pain Point | Naive ACP / Spoofed Proxy | `agy-acp-gateway` Engineering Fix |
+| :--- | :--- | :--- |
+| **Forged OAuth protocol risk** | Reverse-engineers internal Protobuf APIs with fragile custom headers | **100% Official `agy acp` Stdio Engine**: TLS, OAuth refresh, and framing stay inside the official binary |
+| **Gemini 4 Carbon concurrent 0% cache** | Reuses static empty `sessionID` or leaks mid-turn prefix edits | **Gate 5 binary patch** stamps per-trajectory 64-bit FNV-1a `sessionID`; freezes `system`/`developer` prefix after turn 1 |
+| **120-180s prefill disconnect storms** | Fires `session/cancel` on client abort, wiping 150K+ in-flight prefill | **Prefill Soft-Detach (45s grace) + Singleflight** holds compute alive so client retries re-attach seamlessly |
+| **Mid-turn deferred tool loading resets** | Restarts ACP worker whenever `ToolSearch` adds MCP tools dynamically | **`TOOLS_UPDATED_IN_PLACE`** refreshes the MCP tool catalog inside parked turns without breaking KV prefix |
+| **Multi-tool empty `0/0` hops & loops** | Relays sequential tool calls one round-trip at a time | **`PlannerResponse` sibling batching + `AGY_MAX_TOOL_RELAYS=2`** batches parallel tools and caps orphan relays |
+| **Client harness triggers 400/429 WAF** | Crashes or destructively deletes user instructions via naive regex | **3-Stage Cleanroom + HMAC Codec + Flash Bisect** swaps tags losslessly and auto-isolates WAF triggers |
+| **Silent canary downgrades & fake TPS** | Reports 350+ tok/s bursts or misses silent Argon/Flash routing shifts | **Pure-Go `.1.19` SQLite Reader** extracts authoritative cached tokens, `servedModel`, aligned TTFT, and pure `decodeTps` |
 
 ---
 
-<a name="architecture--core-capabilities"></a>
+## Core Engineering Capabilities
 
-## Architecture / 架构概览
+### 1. 5-Layer Carbon KV Cache Defense & Disconnect Rescue
 
-```text
-  Claude Code / SDK     OpenAI Chat SDK     Codex CLI     Gemini CLI / SDK
-          │                     │                │                │
-  POST /v1/messages    /v1/chat/completions  /v1/responses  /v1beta/models/*
-          └─────────────────────┴────────────────┴────────────────┘
-                                     ▼
-                    ┌─────────────────────────────────┐
-                    │   agy-acp-gateway (Port 18890)  │
-                    │  • Auth / CORS / ToS Circuit    │
-                    │  • Outbound Prompt Cleanroom    │
-                    │  • Session Continuity & Pool    │
-                    │  • Ephemeral MCP HTTP Bridge    │
-                    │  • .1.19 Endpoint Route Telemetry│
-                    └───────────┬──────────┬──────────┘
-         JSON-RPC 2.0 (stdio)   │          │  Read-Only SQLite Fast Path
-         + Local MCP Callbacks  ▼          ▼  (gen_metadata & steps blobs)
-                    ┌─────────────────┐  ┌──────────────────────────┐
-                    │ bin/agy-acp-900k│  │ ~/.gemini/antigravity-cli│
-                    │  (Official CLI) │─▶│   conversations/*.db     │
-                    └─────────────────┘  └──────────────────────────┘
-```
+Long-context Gemini 4 Carbon prefill phases routinely take 90-180 seconds, triggering HTTP client timeouts or mid-flight disconnects that abort cold-start computation in uncoordinated wrappers.
 
-### Repository Layout / 目录结构
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/seq-prefill-dark.png" />
+    <img src="assets/seq-prefill-light.png" alt="Prefill Soft-Detach, Singleflight Rescue and Tool Parking Sequence" width="960" />
+  </picture>
+</p>
 
-```text
-agy-acp-gateway/
-├── go-gateway/                 # Pure-Go gateway source code (CGO_ENABLED=0)
-│   ├── main.go                 # Process bootstrap & graceful dual-port server orchestration
-│   ├── http_lifecycle.go       # Hardened HTTP server factory & bounded graceful drain
-│   ├── config.go               # Environment config, pure-API home & structured log rotation
-│   ├── auth.go                 # Constant-time key auth (/v1beta/ ?key= scoped) & CORS/Origin checks
-│   ├── http_handlers.go        # Multi-protocol SSE/JSON handlers (/v1/messages, /v1/chat/completions, /v1/responses)
-│   ├── gemini_v1beta.go        # Native Google Gemini REST (/v1beta/models/*) adapter & FIFO tool call rebinder
-│   ├── protocol_normalize.go   # Prompt/tool-result normalization, utility probe & session key derivation
-│   ├── gateway_pool.go         # Worker pool admission, idle/parked reaper & live telemetry collector
-│   ├── acp_engine.go           # Shared ACP stdio JSON-RPC multiplexor & turn delta channels
-│   ├── acp_capabilities.go     # Upstream ACP initialize capability negotiation parser
-│   ├── session_lifecycle.go    # Session boot, strict model/tier pin, warm hibernation & session/resume
-│   ├── session_runner.go       # Turn execution, dual-watermark gen_metadata accounting & cache attribution
-│   ├── mcp_bridge.go           # Local HTTP MCP server, PlannerResponse sibling batching & tool loop guard
-│   ├── tool_catalog.go         # In-place deferred tool delta injection & strict host tool whitelist
-│   ├── sqlite_protobuf.go      # Zero-copy protobuf decoder for SQLite steps & gen_metadata (.1.11/.1.12/.1.19)
-│   ├── models.go               # Model catalog (default Carbon), aliases, thinking tiers & calibrated pricing
-│   ├── store.go                # Persistent SQLite state DB (conversations, turns, usage_steps) & /metrics
-│   ├── outbound_cleanroom.go   # Outbound prompt cleanroom, credential redaction & ToS circuit breaker
-│   ├── agy_notice.go           # Upstream terminal agent_message_chunk notice detection
-│   ├── log_redaction.go        # Bearer, MCP tenant path & secret-field log redaction helpers
-│   ├── dashboard.go            # Snapshot-cached /api/dashboard telemetry & official /usage quota view
-│   ├── webui.go                # Embedded web dashboard asset loader (dashboard.html & lucide-icons.json)
-│   ├── upgrade.go              # Host-agent candidate status & ACP binary hot-switch coordinator
-│   ├── webui/                  # Embedded warm-paper telemetry dashboard & Lucide SVG icon set
-│   ├── *_test.go               # Unit, race, continuity, HTTP regression & telemetry test suites
-│   └── testdata/fakeacp/       # Deterministic fake ACP server for zero-quota offline/E2E testing
-├── scripts/
-│   ├── gw.sh                   # Multi-instance process supervisor (start / stop / restart / status / logs)
-│   ├── agy-upgrade.sh          # Safe upstream agy binary upgrader & rollback entrypoint
-│   ├── agy_upgrade.py          # 7-gate 900K binary patcher & 4-stage candidate validator
-│   ├── agy_acp_smoke.py        # 23-point zero-quota ACP protocol contract verifier
-│   ├── upstream_watch.py       # GitHub Release watcher (default check / --download / --prepare / --official-only)
-│   └── e2e_*.py                # Isolated E2E test suites (tool call loop, multi-model, thinking tiers)
-├── deploy/
-│   ├── Dockerfile              # Production container image definition
-│   ├── docker-compose.yml      # Docker Compose deployment stack
-│   ├── openresty-acp.conf      # Optional Nginx/OpenResty reverse-proxy snippet
-│   └── prod-upgrader/          # Optional Docker-host auto-upgrader & zero-downtime agy symlink switcher
-├── .env.example                # Environment variable template
-└── LICENSE                     # MIT License
-```
+- **Gate 5 Per-Trajectory `sessionID` (`tools/agy_extra_patch.py`, `SPEC_VERSION=2`)**: Patches `codeassistclient.(*CodeAssistClient).getStreamingTextCompletion` at the ELF machine-code level so each trajectory carries its own signed 64-bit FNV-1a `sessionID`, isolating concurrent clients on Google's implicit prefix cache index.
+- **Sticky Prefix Freeze & Compaction Continuity**: Locks the `system`/`developer` block after turn 1 so dynamic harness reminders do not bust 100K+ cached prefixes, and preserves canonical identity plus cumulative token counters across client `/compact` transcript rollovers (`agy_gateway_compaction_rollovers_total`).
+- **In-Place Tool Catalog Updates (`TOOLS_UPDATED_IN_PLACE`)**: When coding agents load deferred tools mid-session (e.g., via `ToolSearch`), the active parked bridge updates its tool declarations in-place instead of resetting the ACP worker, keeping 92%+ KV cache hits across tool expansion.
+- **Prefill Soft-Detach (`30s` / `45s`) + Singleflight**: Once a request waits past `AGY_PREFILL_CANCEL_MIN_ELAPSED_SEC=30` without output, client disconnects enter a 45-second `AGY_PREFILL_CANCEL_GRACE_SEC` lease (`PREFILL_SOFT_DETACH`) rather than calling `session/cancel`; retrying requests join the live in-flight Singleflight execution (`PREFILL_SOFT_DETACH_JOIN`).
+- **Burn Guard & Capacity Degrade Fallback**: Emits non-blocking `X-Agy-Cache-Warning` headers across all 4 protocols once `>= 80,000`-token contexts hit 3 consecutive zero-cache misses (`AGY_CACHE_WARN_MIN_TOKENS`), and automatically switches `gemini-4-carbon-high` sessions to an in-place `medium` capacity fallback after consecutive slow cold misses.
+  > **Upstream Note**: Because Gemini 4 Carbon uses backend-managed implicit prefix caching (`daily-cloudcode-pa`), occasional upstream replica switches or congestion spikes can still yield isolated zero-cache turns (`cr=0`) that recover on subsequent hits. The gateway guarantees identical `sessionID` and prefix stability on every local hop so hit rates stay in the 92%-98%+ band under sustained load.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/lifecycle-cache-dark.png" />
+    <img src="assets/lifecycle-cache-light.png" alt="Session KV Cache and 4-Gate Upgrader Lifecycle" width="960" />
+  </picture>
+</p>
+
+### 2. Dual-Channel MCP Tool Bridge & Sibling Batching
+
+- **In-Memory Parked Execution (`mcp_bridge.go`)**: Advertises host tools via `_meta["antigravity/alwaysLoad"]=true` on an ephemeral HTTP MCP bridge (`ws-bridge`), parking upstream ACP execution the instant the model emits tool calls (`MCP_TOOL_PARKED`).
+- **Sibling Tool Coalescing (`MCP_TOOL_SIBLINGS_BATCHED`)**: Inspects `CortexStepPlannerResponse` so parallel sibling calls emitted in a single reasoning step (for example multiple `Read`, `Grep`, `Edit`, or `Bash` calls) coalesce into one downstream HTTP `tool_use` turn, eliminating redundant `0/0`-token relay hops.
+- **Orphan Relay Cap & Warm Hibernation**: Bounds hung `ws_await_result` polling (`AGY_MAX_TOOL_RELAYS=2`, `AGY_PARKED_TTL_SEC=300`), closes idle workers cleanly (`ACP_HIBERNATE` -> `idle_worker_ttl`), wakes sessions rapidly via `session/resume`, and falls back to an 80K-char re-anchor when upstream state expires.
+- **Zero-Cost Keepalive Fast-Ack (`KEEPALIVE_SKIP_BUSY`)**: Short-circuits client background title/ping probes when a sticky session is actively streaming (`keepalive_fast_ack`), incurring zero upstream tokens and zero interruption.
+
+### 3. 3-Stage Semantic Cleanroom, Reversible HMAC Codec & Flash WAF Auto-Bisection
+
+- **Deterministic Semantic Alignment (`outbound_cleanroom.go`)**: Strips client telemetry headers (`x-anthropic-billing-header`) and aligns wrapper identities cleanly to `ws-bridge` semantics without mangling user project rules, custom instructions, or code paths.
+- **Session-Scoped HMAC-SHA256 Codec (`reversible_codec.go`)**: Encodes potentially flagged tool names, segment IDs, and XML tags into collision-free fixed-length tokens (`wsseg_*`, `wstag_*`) salted per session key and decodes them symmetrically across streaming deltas and tool calls.
+- **Self-Healing Flash WAF Bisection (`waf_autobisect.go`)**: Detects instant first-turn 400/429 retry loops (`WAF_FAST_CANCEL`), runs an automated binary search over system/prompt boilerplate using `gemini-3.8-flash-low` (`util:waf-bisect-*`) without altering user intent, persists isolated trigger patterns to `waf_rewrite_rules.json` (`WAF_AUTOBISECT_HEALED`), and seamlessly retries the user turn (`waf_autobisect_recovery`).
+
+### 4. Authoritative `.1.19` SQLite Telemetry, Argon Recovery & Warm-Paper Console
+
+- **Pure-Go SQLite Protobuf Reader (`sqlite_protobuf.go`)**: Queries local `agy` conversation databases (`steps` and `gen_metadata`) via `modernc.org/sqlite` using `ReadLatestStepFromSQLiteFast` (O(1) tail lookup verified 100% consistent with full protobuf dumps) and dual monotonic watermarks (`LastSeenGenMetaIdx` / `LastSeenDbStepIdx`).
+- **Aligned Streaming TTFT & Dual TPS**: Holds client TTFT calibration clean by sending W3C SSE `: ping\n\n` comments pre-`message_start` (and `event: ping` during pauses) instead of polluting visible tokens; tracks end-to-end throughput (`tps = outTokens / totalDuration`) separately from pure decode speed (`.1.12` `decodeTps`), eliminating fake 350+ tok/s SSE burst artifacts.
+- **Canary Model Detection & Argon Shadow Recovery**: Decodes `gen_metadata` `.1.19` `servedModel` on every turn; automatically detects silent Argon shadow degradations (`agy_gateway_argon_degradation_detected_total`), recycles the session cleanly in-turn, and recovers (`agy_gateway_argon_degradation_recovered_total`).
+- **Accurate Token Accounting & Multi-Client Attribution**: Counts images deterministically at `1,600` tokens each in `/v1/messages/count_tokens` (excluding bloated Base64 byte length); identifies 12+ client harnesses (`Claude Code`, `Pi`, `Codex`, `OpenClaw`, `Kilo Code`, `Roo Code`, `Cline`, `OpenCode`, `Cursor`, `Gemini CLI`, `Aider`, `Cherry Studio`, `DSH`) across headers, cleanroom-stripped prompts, and stored tool catalogs (`client_detect.go`).
+- **Editorial Warm-Paper Dashboard & Official Quota Calibration (`dashboard.go`, `webui/`)**: Runs strictly on isolated `:18891` (`AGY_DASH_PORT`), syncing live 5-hour and 7-day official quota windows via `agy -p /usage` with estimated runnable token budgets (99% steady cache vs 0% cold run), bottleneck alerts (`5h` vs `weekly`), canary/burn banners, and Prometheus `/metrics`.
+
+### 5. Quad-Protocol Native Endpoints (`:18890`) & Port Isolation (`:18891`)
+
+| Port | Purpose | Endpoints |
+| :--- | :--- | :--- |
+| **`:18890`** (`AGY_GW_PORT`) | **Inference API & Liveness** | `POST /v1/messages`, `POST /v1/messages/count_tokens`, `POST /v1/chat/completions`, `POST /v1/responses`, `GET /v1/models`, `GET /v1beta/models`, `POST /v1beta/models/{model}:generateContent`, `:streamGenerateContent`, `:countTokens`, `GET /healthz` |
+| **`:18891`** (`AGY_DASH_PORT`) | **Ops Console & Telemetry** | `GET /` (Warm-Paper Console), `GET /api/dashboard`, `GET /api/upgrade`, `POST /api/upgrade/approve`, `GET /metrics` (Prometheus), `GET /health` |
+
+### 6. Single-Channel Multimodal v2, Pipe Hardening & 3-Stage Observability
+
+- **Unified 3-Stage Multimodal Pipeline (`multimodal_normalize.go`, `image_fetcher.go`)**: Normalizes images (`PNG`/`JPEG`/`WEBP`/`GIF`, 16-byte magic-header verified) and `<= 2MB` UTF-8 text files cleanly across all 4 protocols + 2 `count_tokens` endpoints, including nested tool-result attachments (`tool_result`, `role: "tool"`, `function_call_output`, `functionResponse.parts`). Unsupported formats (`PDF`, `audio`, `video`, `SVG`, `file_id`, `gs://`, `v1beta/files/*`, or non-text system payloads) return clean `400`/`413` errors pre-stream, while lazy remote image fetching runs with a bounded `64MB/15m` LRU cache, `singleflight`, and socket-level `net.Dialer.Control` SSRF protection only on unseen deltas.
+- **Pipe Anti-Deadlock & Memory Guard (`acp_engine.go`, `main.go`)**: Gateway runs with default `GOMEMLIMIT=256MiB` (`AGY_CHILD_GOMEMLIMIT=180MiB` isolated for child `agy`), `128MB` `ReadSlice('\n')` JSON-RPC line framing, `56MB` outbound frame limit, and `-cmd.Process.Pid` `SIGKILL` process-group teardown on exit.
+- **License Error Isolation (`#3501`) & Observability**: Upstream `#3501` license errors map deterministically to `403 permission_error` / `PERMISSION_DENIED` without retry loops, model switching, or ToS circuit tripping. The console displays 3-stage latency decomposition (`Queue TTFT / Thinking / Visible Generation`), filtered `Retry xN` badges, and supports optional opt-in conversation cleanup (`AGY_CONV_KEEP_DAYS`).
 
 ---
 
-<a name="quick-start--快速开始"></a>
+<a id="client-compatibility"></a>
 
-## Quick Start / 快速开始
+## Client Compatibility Matrix
 
-### Prerequisites / 前置条件
-
-1. **Go 1.22+** (for building `go-gateway` with `CGO_ENABLED=0`).
-2. **Python 3.10+** (for running the `agy` 900K binary patcher and verification scripts).
-3. **Google Antigravity CLI (`agy`)**: Installed and logged in (`agy auth login` or existing `~/.gemini/antigravity-cli/antigravity-oauth-token`).
-
-### 1. Build the Gateway & Prepare `bin/agy-acp-900k` / 编译网关与生成 900K 补丁二进制
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/yuhxuiao/agy-acp-gateway.git
-cd agy-acp-gateway
-
-# 2. Build the pure-Go gateway binary
-mkdir -p bin backups logs runtime
-cd go-gateway
-gofmt -l . && go vet ./... && go test -race -count=1 ./...
-CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o ../bin/agy-acp-gateway .
-cd ..
-
-# 3. Prepare and validate the 900K-unlocked agy binary from your local ~/.local/bin/agy
-#    (Runs offline static checks + fake E2E + 23-point ACP contract check without consuming quota)
-scripts/agy-upgrade.sh --official ~/.local/bin/agy --contract
-# Or install directly after candidate verification:
-# scripts/agy-upgrade.sh --install --candidate runtime/upgrades/candidates/<candidate-id>
-```
-
-### 2. Configure & Start Locally / 配置与启动服务
-
-```bash
-# Copy the environment template if you want API key authentication
-cp .env.example .env
-
-# Start the gateway (18890) and dashboard (18891)
-scripts/gw.sh start
-
-# Check instance health and listening ports
-scripts/gw.sh status
-
-# Tail live gateway logs
-scripts/gw.sh logs
-```
-
-- **API Gateway Liveness**: `http://127.0.0.1:18890/healthz`
-- **Live Dashboard UI**: `http://127.0.0.1:18891/`
-- **Gateway Pool Stats**: `http://127.0.0.1:18891/health`
-- **Prometheus Metrics**: `http://127.0.0.1:18891/metrics`
-
-### 3. Docker Compose Deployment / Docker 容器化部署
-
-```bash
-# Ensure bin/agy-acp-gateway and bin/agy-acp-900k are built and present in ./bin/
-cp .env.example deploy/.env
-docker compose -f deploy/docker-compose.yml up -d --build
-
-# Check container health
-docker ps --filter name=agy-acp-gateway
-curl -fsS http://127.0.0.1:18890/healthz
-```
-
----
-
-<a name="api--client-configuration--客户端接入"></a>
-
-## API & Client Configuration / 客户端接入指南
-
-### Supported Models / 支持的模型与别名
-
-| Canonical Model ID | Supported Aliases (Examples) | Thinking Tiers | Max Context |
+| Client / SDK | Wire Protocol | Verified Capabilities | Session & Cache Behavior |
 | :--- | :--- | :--- | :--- |
-| `gemini-4-carbon` *(default)* | `carbon`, `gemini-4-carbon-*` (requires agy >= 1.5.5) | `low`, `medium`, `high` | **900,000** |
+| **Claude Code** | `POST /v1/messages` | Streaming `thinking` + `signature`, `tool_use` parking, `/compact` detection, `max_tokens` propagation | Auto-rotates Cleanroom `<user-excerpt>`; preserves canonical session & cumulative stats post-compaction |
+| **Pi Agent** | `POST /v1/messages` | Multi-turn sibling tool batching, `ToolSearch` live tool expansion, implicit thinking tiers | Protected by `TOOLS_UPDATED_IN_PLACE` + 45s Prefill Soft-Detach + Singleflight join across retries |
+| **Codex CLI** | `POST /v1/responses` | Streaming `reasoning` & `reasoning_summary_text.delta`, `function_call`, `previous_response_id` | Freezes mid-turn `developer` prefix on sticky sessions so Carbon KV prefix stays pinned |
+| **Cursor / Cline / Roo / OpenCode** | `POST /v1/chat/completions` | `reasoning_content`, `tool_calls`, `finish_reason: "length"`, `stream_options.include_usage` | Automatic HMAC reversibility for paths/tags & orphan tool relay protection (`AGY_MAX_TOOL_RELAYS=2`) |
+| **Gemini CLI / `@google/genai`** | `POST /v1beta/models/*` | `:generateContent`, `:streamGenerateContent?alt=sse`, `:countTokens`, `thinkingConfig`, `?key=` auth | Deterministic FIFO rebinder for tool calls without explicit IDs & `thoughtSignature` pass-through |
+
+---
+
+## Supported Models & Thinking Tiers
+
+`/v1/models` and `/v1beta/models` expose the 6 canonical model IDs by default (`AGY_EXPOSE_TIER_MODELS=1` exposes suffixed tier variants). Clients may append `-low`, `-medium`, `-high`, or `-xhigh`, or pass native reasoning fields (`thinking.budget_tokens`, `reasoning_effort`, `reasoning.effort`, `thinkingConfig.thinkingLevel`):
+
+| Canonical Model ID | Accepted Aliases (Examples) | Thinking Tiers | Max Context |
+| :--- | :--- | :--- | :--- |
+| `gemini-4-carbon` *(default)* | `carbon`, `gemini-4-carbon-*` | `low`, `medium`, `high` | **900,000** |
 | `gemini-4-argon` | `gemini-4-pro`, `argon`, `gemini-4-argon-*` | `low`, `medium`, `high` | **900,000** |
 | `gemini-4-hydrogen` | `hydrogen`, `gemini-4-hydrogen-*` | `low`, `medium`, `high`, `xhigh` | **900,000** |
 | `gemini-3.8-flash` | `gemini-flash`, `gemini-3.8-flash-*` | `low`, `medium`, `high` | **900,000** |
 | `claude-opus-5-5` | `agy-opus`, `claude-opus-5-*` | `low`, `medium`, `high` | **900,000** |
 | `claude-sonnet-5-5` | `agy-sonnet`, `claude-sonnet-5-*` | `low`, `medium`, `high` | **900,000** |
 
-> **Tip**: `/v1/models` and `/v1beta/models` list the 6 canonical model IDs (`AGY_EXPOSE_TIER_MODELS=1` restores `-low`/`-high`/`-xhigh` entries). Requests still accept `-low`, `-medium`, `-high`, or `-xhigh` (Hydrogen only) suffixes (e.g., `gemini-4-argon-high`, `gemini-4-hydrogen-xhigh`, `gemini-3.8-flash-low`), or standard protocol fields (`thinking.budget_tokens` in Anthropic, `reasoning_effort` in OpenAI Chat, `reasoning.effort` in OpenAI Responses, `generationConfig.thinkingConfig` with `thinkingLevel` / `thinkingBudget` and opt-in `includeThoughts: true` in Gemini `/v1beta`).
+---
 
-### 1. Claude Code (`/v1/messages`)
+<a id="quick-start"></a>
+
+## Quick Start
+
+### Prerequisites
+
+- **Go 1.22+** (builds single zero-CGO static binary via `CGO_ENABLED=0`)
+- **Python 3.10+** (runs Gate 1-5 ELF binary patcher & isolated ACP verification harness)
+- **Google Antigravity CLI (`agy`)**: Installed and authenticated locally (`agy auth login` or valid `~/.gemini/antigravity-cli/antigravity-oauth-token`)
+
+### 1. Build Gateway & Patch `bin/agy-acp-900k`
+
+```bash
+git clone https://github.com/yuhxuiao/agy-acp-gateway.git
+cd agy-acp-gateway
+mkdir -p bin backups logs runtime
+
+# Run full unit/race suite & compile single zero-CGO binary
+cd go-gateway
+gofmt -l . && go vet ./... && go test -race -count=1 ./...
+CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o ../bin/agy-acp-gateway .
+cd ..
+
+# Apply Gates 1-5 patches (900K unlock + trajectory sessionID) & verify offline ACP contracts
+scripts/agy-upgrade.sh --official ~/.local/bin/agy --contract
+scripts/agy-upgrade.sh --install --candidate runtime/upgrades/candidates/<candidate-id>
+```
+
+### 2. Configure & Launch Locally
+
+```bash
+cp .env.example .env
+# Edit .env to set AGY_API_KEYS, proxy, or cache threshold settings
+
+scripts/gw.sh start
+scripts/gw.sh status
+scripts/gw.sh logs
+```
+
+- **Gateway API**: `http://127.0.0.1:18890` (`/healthz`)
+- **Telemetry Dashboard**: `http://127.0.0.1:18891/` (`/metrics`, `/health`, `/api/dashboard`)
+
+### 3. Docker Compose Deployment
+
+```bash
+# Ensure ./bin/agy-acp-gateway and ./bin/agy-acp-900k exist
+cp .env.example deploy/.env
+docker compose -f deploy/docker-compose.yml up -d --build
+curl -fsS http://127.0.0.1:18890/healthz
+```
+
+<details>
+<summary><strong>Client Configuration &amp; Curl Examples (Claude Code, Codex, OpenAI Chat, Gemini CLI)</strong></summary>
+
+#### Claude Code (`/v1/messages`)
 
 ```bash
 export ANTHROPIC_BASE_URL="http://127.0.0.1:18890"
 export ANTHROPIC_API_KEY="sk-agy-replace-with-your-secret-key"
-export ANTHROPIC_MODEL="gemini-4-argon-high"
+export ANTHROPIC_MODEL="gemini-4-carbon-medium"
 export ANTHROPIC_SMALL_FAST_MODEL="gemini-3.8-flash-low"
-
 claude
 ```
 
-### 2. Anthropic Messages API (`curl`)
+#### Codex CLI / OpenAI Responses (`/v1/responses`)
 
 ```bash
-curl -sS http://127.0.0.1:18890/v1/messages \
+curl -sS http://127.0.0.1:18890/v1/responses \
   -H "Content-Type: application/json" \
-  -H "x-api-key: $AGY_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
+  -H "Authorization: Bearer $AGY_API_KEY" \
   -d '{
-    "model": "gemini-3.8-flash-low",
-    "max_tokens": 1024,
-    "messages": [
-      {"role": "user", "content": "Explain how ACP session/resume works in two sentences."}
-    ]
+    "model": "gemini-4-carbon",
+    "reasoning": {"effort": "medium"},
+    "input": "Summarize the benefits of pure-Go SQLite readers."
   }'
 ```
 
-### 3. OpenAI Chat Completions (`/v1/chat/completions`)
+#### OpenAI Chat Completions (`/v1/chat/completions`)
 
 ```bash
 curl -sS http://127.0.0.1:18890/v1/chat/completions \
@@ -276,26 +237,11 @@ curl -sS http://127.0.0.1:18890/v1/chat/completions \
     "model": "gemini-4-argon",
     "reasoning_effort": "high",
     "stream": true,
-    "messages": [
-      {"role": "user", "content": "Write a concurrent worker pool in Go."}
-    ]
+    "messages": [{"role": "user", "content": "Write a concurrent worker pool in Go."}]
   }'
 ```
 
-### 4. OpenAI Responses API (`/v1/responses`)
-
-```bash
-curl -sS http://127.0.0.1:18890/v1/responses \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $AGY_API_KEY" \
-  -d '{
-    "model": "gemini-3.8-flash",
-    "reasoning": {"effort": "low"},
-    "input": "Summarize the benefits of pure-Go SQLite readers."
-  }'
-```
-
-### 5. Google Gemini API & Gemini CLI (`/v1beta`)
+#### Google Gemini CLI & REST SDK (`/v1beta`)
 
 ```bash
 export GOOGLE_GEMINI_BASE_URL="http://127.0.0.1:18890"
@@ -310,59 +256,134 @@ curl -sS "http://127.0.0.1:18890/v1beta/models/gemini-4-carbon:streamGenerateCon
   }'
 ```
 
+</details>
+
 ---
 
-<a name="upstream-maintenance--safe-upgrade--上游安全升级"></a>
+<a id="configuration-reference"></a>
 
-## Upstream Maintenance & Safe Upgrade / 上游维护与安全升级
+## Configuration & Metrics Reference
 
-When Google releases a new version of `agy`, use the built-in 4-gate upgrade pipeline to patch, validate in complete isolation, and atomically switch with instant rollback support:
+<details>
+<summary><strong>Environment Variables (verified from <code>go-gateway/config.go</code> &amp; <code>.env.example</code>)</strong></summary>
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `AGY_LISTEN_HOST` | `127.0.0.1` | Bind host for gateway and dashboard HTTP servers |
+| `AGY_GW_PORT` / `AGY_DASH_PORT` | `18890` / `18891` | API port and isolated telemetry dashboard port |
+| `AGY_API_KEYS` / `AGY_API_KEYS_FILE` | *(empty)* | Comma-separated Bearer / `x-api-key` / `?key=` keys (constant-time compared) |
+| `AGY_DASH_TOKEN` / `AGY_DASH_PASS` | *(empty)* | Optional dedicated token or Basic Auth password for `:18891` |
+| `AGY_CORS_ORIGINS` | *(empty)* | Allowed CORS origins (automatically exposes `X-Agy-Cache-Warning`) |
+| `AGY_ACP_BIN` | `<root>/bin/agy-acp-900k` | Path to Gate 1-5 patched `agy` binary |
+| `AGY_UPSTREAM_PROXY` | *(empty in binary; `127.0.0.1:7890` in `.env.example`)* | HTTP/HTTPS proxy forwarded to `agy acp` subprocesses & `/usage` refresh |
+| `AGY_MAX_LIVE_WORKERS` | `8` | Max resident ACP sessions inside shared `agy acp` multiplexer |
+| `AGY_MAX_CONCURRENT_PROMPTS` | `6` | Max concurrent upstream LLM prompt executions |
+| `AGY_IDLE_WORKER_TTL_SEC` | `900` | Idle ACP session hibernation timeout (15 min) |
+| `AGY_PARKED_TTL_SEC` / `AGY_MAX_TOOL_RELAYS` | `300` / `2` | Orphan parked tool deadline & max `ws_await_result` relays before cleanup |
+| `AGY_PREFILL_CANCEL_MIN_ELAPSED_SEC` | `30` | Elapsed prefill threshold before client disconnects trigger Soft-Detach |
+| `AGY_PREFILL_CANCEL_GRACE_SEC` | `45` | Grace window holding detached prefill compute alive for Singleflight retry join |
+| `AGY_CACHE_WARN_MIN_TOKENS` / `AGY_CACHE_WARN_STREAK` | `80000` / `3` | Thresholds for emitting `X-Agy-Cache-Warning` and dashboard burn banners |
+| `AGY_WAF_AUTOBISECT` | `true` | Enable automated `gemini-3.8-flash-low` bisection on upstream 400 WAF blocks |
+| `AGY_DEFAULT_MODEL` / `AGY_EXPOSE_TIER_MODELS` | `gemini-4-carbon` / `0` | Default fallback model and `/models` tier suffix listing toggle |
+| `AGY_USE_G1_CREDITS` | `0` | Set to `1` to enable Google One AI credits fallback when regular quota depletes |
+| `AGY_MAX_IMAGES_GEMINI` / `AGY_MAX_IMAGES_CLAUDE` | `200` / `100` | Max images per prompt turn for Gemini and Claude model families |
+| `AGY_MAX_IMAGE_BYTES` / `AGY_MAX_PROMPT_IMAGE_BYTES` | `10485760` / `33554432` | Per-image (`10MB`) and per-prompt (`32MB`) decoded binary limits (`413` on overflow) |
+| `AGY_MAX_TEXT_FILE_BYTES` / `AGY_FETCH_IMAGES` | `2097152` / `true` | Max unpacked UTF-8 text attachment (`2MB`) and public HTTP(S) image fetch toggle |
+| `AGY_CONV_KEEP_DAYS` | `0` *(disabled)* | Optional 4-gate cleanup retention days for synced gateway `.pb`/`.db` bundles |
+| `AGY_ACP_RECORD` | *(empty)* | Optional `0700` directory recording redacted NDJSON ACP frames (`0600` files) |
+
+</details>
+
+<details>
+<summary><strong>Prometheus Metrics Exported at <code>:18891/metrics</code></strong></summary>
+
+- `agy_gateway_live_workers` / `agy_gateway_max_live_workers`
+- `agy_gateway_prompts_inflight` / `agy_gateway_max_concurrent_prompts`
+- `agy_gateway_parked_calls`
+- `agy_gateway_requests_total`
+- `agy_gateway_session_reuses_total`
+- `agy_gateway_compaction_rollovers_total`
+- `agy_gateway_argon_degradation_detected_total`
+- `agy_gateway_argon_degradation_recovered_total`
+- `agy_gateway_cache_burn_warnings_total`
+- `agy_gateway_orphan_relay_caps_total`
+- `agy_gateway_turns_total{model,mode,stop_reason,usage_source}`
+- `agy_gateway_tokens_total{model,kind}`
+
+</details>
+
+---
+
+<a id="safe-upgrader"></a>
+
+## Architecture & 4-Gate Upgrader
+
+<details>
+<summary><strong>Repository Layout &amp; Module Responsibilities</strong></summary>
+
+```text
+agy-acp-gateway/
+├── go-gateway/                 # Pure-Go gateway (CGO_ENABLED=0)
+│   ├── main.go                 # Dual-port bootstrap & bounded 10s graceful drain
+│   ├── http_handlers.go        # /v1/messages, /v1/chat/completions, /v1/responses + SSE ping framing
+│   ├── gemini_v1beta.go        # Native Google Gemini REST /v1beta/* adapter
+│   ├── acp_engine.go           # Shared ACP stdio JSON-RPC multiplexor & soft-detach turns
+│   ├── gateway_pool.go         # Worker admission, Singleflight deduplication & idle reaper
+│   ├── session_lifecycle.go    # Session boot, 80K cold-resume & warm session/resume
+│   ├── session_runner.go       # Dual-watermark gen_metadata accounting, burn guard & recovery
+│   ├── mcp_bridge.go           # Ephemeral MCP HTTP server, sibling batching & in-place updates
+│   ├── outbound_cleanroom.go   # 3-stage Cleanroom scrub, credential redaction & ToS fuse
+│   ├── reversible_codec.go     # Session-scoped HMAC-SHA256 deterministic tag codec
+│   ├── waf_autobisect.go       # Automated upstream 400 WAF message bisection
+│   ├── sqlite_protobuf.go      # Zero-lock protobuf reader for agy gen_metadata & steps
+│   ├── client_detect.go        # Full-path multi-client attribution detector (12+ clients)
+│   ├── models.go               # Canonical model catalog, aliases, tiers & quota pricing
+│   ├── store.go                # Persistent SQLite gateway.db & Prometheus /metrics
+│   ├── dashboard.go            # /api/dashboard telemetry & official /usage quota sync
+│   └── webui/                  # Warm-paper live console (HTML + Lucide SVG icons)
+├── deploy/prod-upgrader/       # Container-host 4-gate upgrader & symlink hot-swapper
+├── scripts/                    # E2E suites, quota calibration, gw.sh & agy_upgrade.py
+├── tools/                      # Gate 5 binary patcher (agy_extra_patch.py)
+└── third_party/                # Upstream context-unlock patcher (MIT)
+```
+
+</details>
+
+### 4-Gate Safe Upgrader & Zero-Downtime Symlink Swap
+
+When Google releases a new `agy` version, every candidate binary passes four isolated gates before touching live sessions:
 
 ```bash
-# 1. Check the latest official GitHub Release of google-antigravity/antigravity-cli
-#    (read-only, zero quota; writes runtime/upgrades/upstream-latest.json)
+# 1. Read-only check for latest upstream CLI release (zero quota)
 python3 scripts/upstream_watch.py --official-only
 
-# 2. Download the new stable release, verify its SHA-256 and build a candidate in an isolated
-#    directory (Ports 18892/18893): offline + fake E2E + ACP contract, zero prompts
-python3 scripts/upstream_watch.py --prepare
-#    Or build from a binary you already have; --live-flash adds one authorized Flash request
+# 2. Download, verify SHA-256/SHA-512, apply Gates 1-5, run offline ACP contracts + fake E2E
 scripts/agy-upgrade.sh --official ~/.local/bin/agy --contract --live-flash
 
-# 3. Atomically install a verified candidate (automatically backs up current binaries)
+# 3. Install verified candidate atomically (retains backups/) & rollback in one command if needed
 scripts/agy-upgrade.sh --install --candidate runtime/upgrades/candidates/<candidate-id>
-
-# 4. One-command rollback if ever needed
 scripts/agy-upgrade.sh --rollback backups/<backup-dir>
 ```
 
-### Running Tests / 运行测试套件
+Containerized host deployments (`deploy/prod-upgrader/`) surface verified candidates directly inside the Dashboard header: clicking upgrade swaps `data/agy/current -> <new-version>` once active turns finish, avoiding gateway container restarts during `agy` CLI updates.
 
-All unit tests, race detector suites, and multi-protocol E2E tests run against the deterministic `fakeacp` harness with **zero model quota consumption**:
+### Running Tests (Zero Quota)
 
 ```bash
-# 1. Go static analysis, race detector, and coverage suite
-cd go-gateway
-gofmt -l .
-go vet ./...
-go test -race -count=1 -cover ./...
-cd ..
-
-# 2. Upgrader isolation & manifest binding unit tests
+cd go-gateway && gofmt -l . && go vet ./... && go test -race -count=1 ./... && cd ..
 python3 -m unittest discover -s scripts -p "test_*.py" -v
+python3 -m unittest discover -s deploy/prod-upgrader -p "test_*.py" -v
 ```
 
 ---
 
-## Security & Privacy Design / 安全与隐私设计
+## Security & Privacy Boundary
 
-- **Official Transport Only**: Never makes raw HTTP calls to Google internal endpoints; all model traffic flows through `agy acp`.
-- **Outbound Prompt Cleanroom**: Automatically strips third-party client attribution headers (`x-anthropic-billing-header`, client harness boilerplate, `<system-reminder>` wrappers) before forwarding to `agy acp`, while preserving user project instructions (`CLAUDE.md`, `AGENTS.md`, workspace paths, and skills).
-- **Structured Credential Redaction**: Automatically scrubs API keys, Bearer tokens, and OAuth secrets from gateway logs and optional debug recordings (`0600` file permissions).
-- **ToS Circuit Breaker**: Immediately latches into a fail-closed state if upstream ever reports an account-level Terms of Service restriction, preventing retry storms.
+- **Official Transport Only**: Zero raw Google OAuth endpoint forging; all inference runs strictly inside official `agy acp`.
+- **Fail-Closed ToS Fuse**: Immediately suspends outgoing requests if upstream Terms-of-Service / account risk flags trigger (`AGY_TOS_TRIPPED_FILE`), preventing cascading retries.
+- **0600 Credential Redaction**: Gateway logs (`AGY_GW_LOG`) and optional ACP recordings (`AGY_ACP_RECORD`) strip API keys, Bearer tokens, and secrets under restricted `0700`/`0600` permissions.
+- **Zero-Trust Tool Permission Gating**: Verifies structured `session/request_permission` payloads before granting `allow_once`, paired with constant-time API key comparison and `/v1beta/` scoped `?key=` checks.
 
----
-
-## License / 开源协议
+## License
 
 Released under the [MIT License](LICENSE).

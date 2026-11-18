@@ -28,7 +28,7 @@ docker compose run --rm lab-runner lab07 all
 docker compose ps
 ```
 
-Open **http://localhost:8501**, click **Refresh results**, and select the **Retry simulator** tab.
+Open **http://localhost:8502**, click **Refresh results**, and select the **Retry simulator** tab (Docker default).
 
 To see the container logs or stop the dashboard:
 
@@ -37,14 +37,24 @@ docker compose logs dashboard
 docker compose stop dashboard
 ```
 
-The dashboard is deliberately bound to **127.0.0.1:8501**, not the public network. Its container runs as a non-root user, has a read-only filesystem, and mounts `./results` **read-only**. The separate `lab-runner` service can write experiment files to that directory. The dashboard receives **no Groq API key** and cannot launch provider experiments.
+The Docker dashboard is bound to **127.0.0.1:8502** by default (host port), not the public network. Its internal Streamlit port stays **8501**. Its container runs as a non-root user, has a read-only filesystem, and mounts `./results` **read-only**. The separate `lab-runner` service can write experiment files to that directory. The dashboard receives **no Groq API key** and cannot launch provider experiments.
 
-After updating the repository, rebuild the images to pick up changes:
+If port **8502** is occupied, choose a different host port without stopping other projects:
+
+```powershell
+$env:DASHBOARD_PORT = "8503"
+docker compose up -d --force-recreate dashboard
+# Open http://localhost:8503
+```
+
+This override applies to the current PowerShell session; to return to the default, run `Remove-Item Env:DASHBOARD_PORT` and recreate the dashboard container. Never edit the container's internal port or its healthcheck to change the host port.
+
+After updating the repository, rebuild the images and recreate the dashboard container to pick up changes:
 
 ```powershell
 git pull origin master
 docker compose build lab-runner dashboard
-docker compose up -d dashboard
+docker compose up -d --force-recreate dashboard
 ```
 
 ## Quick start — Python + uv
@@ -60,7 +70,7 @@ uv run --with "streamlit>=1.40,<2" streamlit run dashboard/app.py
 
 Open **http://localhost:8501** and click **Refresh results**. Keep the Streamlit terminal running while using the dashboard; stop it with **Ctrl+C**.
 
-Choose **one** launch method for the dashboard. If it is already running locally, stop that process before starting the Docker service, because both use port 8501 by default.
+The Docker dashboard defaults to host port **8502**, while local Streamlit defaults to **8501**; both can run simultaneously. If another application occupies 8502, set `DASHBOARD_PORT` as shown above.
 
 ## The 10 laboratories
 
@@ -124,6 +134,111 @@ Get-ChildItem .\results\lab07_rate_limiting -Recurse
 
 Read the [Dashboard Guide](docs/dashboard.md) for additional detail.
 
+## Reproducible benchmarks and architecture
+
+An offline, read-only benchmark reporter summarizes existing measurements
+**per lab, per run, scenario and workload**. It includes recorded
+sample counts beside each metric, request-level mean token/cost figures,
+nearest-rank p50/p95 latency and (for Lab07) synthetic retry outcomes.
+No provider calls are made by the reporter; it does not export raw prompts.
+
+Run an API-free, seeded Lab07 example from the repository root:
+
+```powershell
+uv sync --frozen --group dev
+.\examples\run_lab07_and_report.ps1
+```
+
+On Linux/macOS/WSL use `bash examples/run_lab07_and_report.sh`.
+If Windows PowerShell script execution is restricted, follow the equivalent
+individual commands in [examples/README.md](examples/README.md) instead.
+The scripts create local Markdown and JSON summaries in `results/benchmarks/`.
+
+To report a previously saved run:
+
+```powershell
+uv run python -m lab_core.benchmark_report --lab lab07 --run-id YOUR_RUN_ID --scenario transient_failures --output results/benchmarks/report.md
+```
+
+Read the [architecture guide](docs/architecture.md),
+[Benchmark Methodology](docs/benchmark-methodology.md) for the metric formulas,
+[Data Dictionary](docs/data-dictionary.md) for field definitions, units and
+raw-source mappings, [reproducible examples](examples/README.md), and
+[changelog](CHANGELOG.md).
+The changelog is currently **Unreleased**; no public version tag or
+license has been approved by upstream maintainers.
+
+## Offline validation and schema versioning
+
+Saved experiment runs can now be checked **without an API key** using a
+read-only, version-aware CLI. Newly generated Lab07 manifests declare the
+normalized metric contract **v1**; historical runs without that marker are
+still supported with explicit compatibility warnings.
+
+```powershell
+uv run python -m lab_core.experiment_validation --help
+uv run python -m lab_core.experiment_validation --experiment lab07_rate_limiting --run-id YOUR_RUN_ID --format json --output results/validation-reports/lab07.json
+```
+
+Add `--strict` to fail on warnings (including unversioned manifests).
+Validation reports never contain raw prompts or model responses. Unknown
+future versions fail closed; the validator does **not** rewrite source
+measurements or automatically repair them. For executable examples,
+allowed fields and compatibility policy, see the
+[Validation Guide](docs/experiment-validation.md),
+[Schema Evolution Guide](docs/schema-evolution.md) and
+[normalized v1 JSON Schema](schemas/normalized-measurement-v1.schema.json).
+
+## Advanced experiment comparison (PR #15)
+
+Compare two **conditions inside the same saved run and scenario**, without
+making provider API calls. Results include differences in success percentage
+points, retries/virtual wait (Lab07), and recorded tokens, estimated cost,
+mean latency and latency p50/p95 (where available). Every difference retains
+the number of observed measurements; missing data remains `N/A` rather
+than becoming zero.
+
+```powershell
+uv run python -m lab_core.experiment_comparison --lab lab07 --run-id validation-demo-01 --scenario transient_failures --baseline-condition no_backoff --candidate-condition rate_limit_aware --format md --output results/comparisons/validation-demo-01.md
+```
+
+The engine refuses ambiguous, mismatched-source/cost-basis groups and
+unvalidated input records. Cross-model comparisons require explicit
+`--allow-model-difference` acknowledgement and remain exploratory.
+These are descriptive **unpaired** differences, not controlled causal effects.
+See the [Experiment Comparison Guide](docs/experiment-comparison.md).
+
+## Advanced analytics in the Streamlit Dashboard (PR #16)
+
+The **Advanced analytics** tab uses the saved-run comparison engine
+directly. Choose exactly one lab, run, scenario and measurement context,
+then a baseline and candidate. The UI shows recorded per-metric sample
+sizes, absolute/relative changes, percentage-point success differences,
+and side-by-side charts. Export **JSON or Markdown** without writing
+anything into the underlying run directory.
+
+The tab performs **offline input validation** before displaying
+comparisons and blocks invalid runs. Comparing different model IDs
+requires an explicit, selection-specific acknowledgement.
+Missing metrics stay unavailable rather than becoming zeros.
+Lab07 displays only synthetic client, retry and virtual-wait outcomes.
+
+Run locally:
+
+```powershell
+uv run --with "streamlit>=1.40,<2" streamlit run dashboard/app.py
+```
+
+Or in Docker Desktop, open **http://localhost:8502** after:
+
+```powershell
+docker compose up -d --build dashboard
+```
+
+See the [Advanced Dashboard Guide](docs/dashboard.md#advanced-analytics-tab)
+and [Comparison Methodology](docs/experiment-comparison.md).
+No live provider credentials are needed to view saved results.
+
 ## Running live Groq experiments
 
 **Skip this section if you only want the dashboard, offline tests or Lab07.**
@@ -183,7 +298,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution standards and [SECURITY.
 
 | Problem | What to check |
 | --- | --- |
-| Port 8501 already in use | Stop the other Streamlit session or dashboard container; do not run both launch methods simultaneously. |
+| Dashboard host port 8502 already in use | Set `$env:DASHBOARD_PORT = "8503"`, then run `docker compose up -d --force-recreate dashboard` and open `http://localhost:8503`. |
 | Docker dashboard not opening | Check `docker compose ps` and `docker compose logs dashboard`; confirm Docker Desktop is running Linux containers. |
 | Lab filter lists only Lab07 | Pull the latest `master` and restart Streamlit. All ten lab names should be selectable. |
 | Lab listed but graphs are empty | The lab has no supported locally saved measurements yet; select a run with data or execute the intended lab separately. |

@@ -168,6 +168,18 @@ What it does not do: it never creates, resets or deletes the machine, one machin
 
 Existing projects keep their old acceptance card: *Get the build* appears only for a new task whose Delivery declared the build, so `why.exe` itself would need a new task to be downloadable this way. A task that declares a build and also a web app keeps *View app*.
 
+## When an update changes your saved data
+
+A release can pass every test on fresh, empty data and still break or erase the data you already have the first time you start it. So when a task changes how your app keeps its data (a database, data files, uploads or settings files), NMHP checks the update and the way back before you are asked to accept.
+
+- **The builder says so** in its hand-in and writes `UPGRADING.md` in your project, in plain words: what changes in your saved data, where your data is, what to do before you update (the backup), and what to do if something goes wrong (go back to the previous version and restore the backup).
+- **The reviewer, from the other AI company, tests it on a test copy:** the version you accepted last saves some data; the new version is started on that same data and must still show it; then the backup is restored, the previous version is started again, and the data must match what it was. The reviewer's verdict must say in one line whether saved data changed and what that test showed.
+- **Your release card shows a *Saved data* box** above the buttons, with the four parts of `UPGRADING.md` and the result: kept and restored, failed, or not tested here with the reason (for example, a service the old version needs is not available on this machine).
+- ***Accepted* stays greyed out until you tick *I have made the backup described above*,** and the app asks once more. If your app's accepted version moved on after the test ran, Accept is refused and the CTO arranges another test.
+- **A task that does not touch saved data looks the same as before:** no box and nothing extra to do.
+
+This protects the apps NMHP builds for you. It does not cover updating NMHP itself; an NMHP update never touches your projects, boards or settings.
+
 ## Upload to GitHub when you accept
 
 Each project can have its own GitHub repository (or any git server) where the approved version goes when you click *Accepted*. It is optional and off until you set it.
@@ -565,6 +577,10 @@ responsibility of KpiMinds LLC to the extent applicable law allows: the license'
 limitation-of-liability terms apply (see LICENSE, sections 7 and 8). The license covers this software,
 not the projects you build with it. [DISCLAIMER.md](DISCLAIMER.md) is an informational
 safety notice about what autonomous agents can do; it adds no conditions.
+
+## Thanks to our contributors
+
+- [@n-o-t-mugen](https://github.com/n-o-t-mugen) for per-agent colors: each role has its own color in Mission Control, adjustable in Settings (#96).
 
 ## License
 

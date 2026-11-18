@@ -101,7 +101,7 @@ demand for the new product line.
 | `POST /v1/extract` | Read a PDF page by page and return Markdown or JSON. Fields: `file`, `format`, `pages`, `method`, `model`. |
 | `POST /v1/jobs`, then `GET /v1/jobs/{id}` | The same request as a job, for a long PDF: progress per page, then the result. |
 | `GET /v1/jobs/{id}/pages/{n}.png` | A page the job read, as a PNG. |
-| `GET /v1/capabilities` | The methods a request may use and the vision models it may pick. |
+| `GET /v1/capabilities` | The methods a request may use, the vision models it may pick, the model presets, whether demo codes work and the public notice. |
 | `GET /` | The web page. |
 | `GET /health` | Returns `{"status": "ok"}`. |
 | `POST /ocr` | Deprecated alias kept for 0.0.1. Use `/v1/extract`. |
@@ -139,12 +139,35 @@ Everything is an environment variable; none is required.
 | `OCR_MAX_FILE_MB` | 50 | Largest upload; over it, 413 `file_too_large`. The web page states it. |
 | `OCR_MAX_PAGES` | 500 | Most pages in one PDF; over it, 413 `too_many_pages`. The web page states it. |
 | `OCR_PAGE_TIMEOUT_SECONDS` | 120 | Time allowed per page. |
+| `OCR_LOW_CONFIDENCE` | 0.6 | A page with no usable text layer that Tesseract failed or scored under this (over 0, at most 1) is marked `needs_vision`; the Markdown still shows its Tesseract text after the note. |
 | `OCR_JOB_TTL_SECONDS` | 3600 | How long a finished job's result is kept. The web page states it. |
 | `OCR_MAX_JOBS` | 20 | Jobs held at once. |
 | `OCR_MAX_IMAGE_MB` | 200 | Memory all held jobs may use for page images, together. Past it, a job still reads every page but renders no more images. |
 | `OCR_WEB_PAGE` | true | Serve the web page at `/`. Set `false` for an API-only deployment: `/` and its files answer 404. |
+| `DEMO_GATEWAY_URL` | empty | Internal address of the demo-code gateway (an OpenAI-compatible root ending in `/v1`). Demo codes work only while this is set; it is never returned to a caller. |
+| `PUBLIC_DEMO_NOTICE` | empty | A notice for a public demo, returned as `notice` by `GET /v1/capabilities`. |
 
 Vision setup, with vLLM, Ollama and cloud examples, is in [Vision model backend](docs/vision-backend.md).
+
+## Public demo
+
+This service can run as a public demo without spending the operator's money on anonymous visitors. Reading a PDF's text layer and scanning it with Tesseract need no model, so they are free and always on. A public demo leaves the server's own `OCR_LLM_*` vision backend off; vision is then the one method that costs money, and a visitor turns it on for one page at a time with a demo code or their own provider key.
+
+- **Free, no key or code:** `text_layer` and `tesseract` reads, through the web page, `POST /v1/extract` or a job. A page with no usable text layer is still read by Tesseract and returned, with a note when the result is doubtful.
+- **Needs a demo code or key:** a page that `auto` read with Tesseract and failed, or scored under `OCR_LOW_CONFIDENCE`, is marked `needs_vision` with the reason. On the web page, press **Read with a vision model** on that page; the key panel below the form holds the credentials. Through the API, call `POST /v1/jobs/{id}/pages/{n}/vision` for that page.
+- **Demo code:** the operator hands one out. The page sends it as `X-Demo-Code`; the service forwards it to the operator's internal demo gateway, which holds the provider key and the code's budget. Demo codes are offered only when the operator sets `DEMO_GATEWAY_URL` (`demo_available` in `/v1/capabilities`).
+- **Your own key:** choose a preset on the page and paste your key, or send `X-Model-Preset` with `X-Model-Key`. Only a preset id is accepted; a request can never name a base URL.
+- **Where the key lives:** only in your browser, in `sessionStorage` by default or `localStorage` when you tick **Remember on this device**, and only in the request headers of the vision read. The service uses it for that one request and never stores or logs it. This applies to the page route only: `POST /v1/extract` and `POST /v1/jobs` always use the operator's own `OCR_LLM_*` backend and ignore the credential headers, so whole-document vision stays an operator setting.
+
+| Preset | `X-Model-Preset` | Vision model | Notes |
+|---|---|---|---|
+| OpenAI | `openai` | `gpt-5-nano` | Model name from OpenAI's documentation; not yet checked with a real key. |
+| OpenRouter | `openrouter` | `qwen/qwen3.7-flash` | No speech model (not used here). |
+| Synthetic | `synthetic` | `syn:small:vision` | No embeddings or speech model in its public catalog (neither is used here). |
+| Alibaba (DashScope intl) | `alibaba` | `qwen-vl-plus` | No OpenAI-compatible speech model (not used here); model name from Alibaba's documentation and not yet checked with a real key. |
+| Demo code | `demo` | `demo-vision` | Only when `DEMO_GATEWAY_URL` is set; the gateway holds the provider key. |
+
+This service uses only each preset's vision model. A preset that fails a real-key check is marked as a gap in this table. The page side of the panel is in [The web page](docs/web-page.md); the headers and the route are in [the API reference](docs/api.md).
 
 ## Performance
 
@@ -183,6 +206,7 @@ The 2026-11-16 row was run this way against a local Ollama. The result file name
 - Jobs are held in the service's memory and run one at a time. Run a single uvicorn worker, as the Docker image does, and expect jobs to be lost on a restart.
 - Uploads are limited to 50 MB and 500 pages by default (`OCR_MAX_FILE_MB`, `OCR_MAX_PAGES`); a page gets 120 seconds (`OCR_PAGE_TIMEOUT_SECONDS`).
 - A finished job's result and page images are kept for 3600 seconds by default (`OCR_JOB_TTL_SECONDS`), then deleted; at most 20 jobs are held at once (`OCR_MAX_JOBS`).
+- A job drops its PDF when it ends, unless a page is marked `needs_vision` (no usable text layer, and Tesseract failed or scored under `OCR_LOW_CONFIDENCE`): then it keeps the PDF in memory until it expires, so that page can be read with a vision model (`POST /v1/jobs/{id}/pages/{n}/vision`). These PDFs take at most `OCR_MAX_FILE_MB` x `OCR_MAX_JOBS` (1000 MB by default).
 - Neither `text_layer` nor `tesseract` recovers Markdown tables (Table F1 0 in the benchmark). The vision method recovers tables (Table F1 0.682 with `qwen2.5vl:7b`) but takes about 30 seconds a page on local hardware.
 - There is no auth. Put an auth proxy in front before you expose it to a network you do not trust.
 - The web page's copy button needs `localhost` or HTTPS, as the browser allows the clipboard only there.

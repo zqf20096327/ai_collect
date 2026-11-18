@@ -207,7 +207,11 @@ Every answer carries who served it and what you paid:
 x-orrery-provider: 5Tq7…
 x-orrery-route: price
 x-orrery-cost: 0.000009
+x-orrery-billed: 0.000009
+x-orrery-listed: 0.000009
 ```
+
+`x-orrery-billed` is what the node asked and `x-orrery-listed` what the prices it listed on chain come to for the same tokens; the router pays no more than the listed figure.
 
 and the body's `usage` has the same bill: `{"prompt_tokens": 91, "completion_tokens": 102, "total_tokens": 193, "cost": 0.000018}`. Streams end with it when you set `"stream_options": {"include_usage": true}`.
 </details>
@@ -353,7 +357,7 @@ orrery provider show     --config provider.json                         # what t
 orrery provider start    --config provider.json                         # serve, check vouchers, redeem
 ```
 
-`orrery provider init` writes the wallet's address into provider.json and `register` reads it from there, so no step asks for `--wallet`. `--fund-key` sends the node's key its fee money (0.01 SOL unless you give an amount) in the transaction that lists the node, so there is one address to fund. A wallet file you already have works the same way with `--wallet <file>`. On a public cluster, `register` will not list a `publicUrl` only your own network reaches (127.0.0.1, 192.168.x, a .local name); `--private-address` lists it anyway for routers on that network.
+`orrery provider init` writes the wallet's address into provider.json and `register` reads it from there, so no step asks for `--wallet`. `--fund-key` sends the node's key its fee money (0.01 SOL unless you give an amount) in the transaction that lists the node, so there is one address to fund. A wallet file you already have works the same way with `--wallet <file>`. On a public cluster, `register` will not list a `publicUrl` only your own network reaches (127.0.0.1, 192.168.x, a .local name); `--private-address` lists it anyway for routers on that network. Where the model server says how much context it serves each model with (vLLM and SGLang report `max_model_len`), `init` lists that, and `provider check` warns when provider.json lists more: a longer request fails at the server and counts against the node.
 
 ```jsonc
 {
@@ -468,7 +472,7 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 | `orrery provider check --config provider.json` | is this node ready to earn: model server, public address, the wire key routers read there, listing, fee money, enclave, pledge |
 | `orrery enclave verify --node <listing>` | audit a private node: its claim from chain, its report from the node, every check a router runs (`--report --vcek` and `--quote` check a file) |
 | `orrery providers` | every listing, what the chain says about it and whether its model server answers |
-| `orrery channels` | your channels: deposit, what you signed, what was redeemed |
+| `orrery channels` | your channels: deposit, what you signed, what was redeemed, what is unspent (what closing gives back) |
 | `orrery close <channel> --wallet <keypair>` | start closing (the provider gets a grace period to redeem) |
 | `orrery close <channel> --wallet <keypair> --finish` | after the grace period, the rest comes back to you |
 | `orrery provider init` | find a local model server and write a starting provider.json |
@@ -627,6 +631,8 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] A node that is away for a moment: the request waits and goes round again (`--patience`, 8 seconds by default, or `x-orrery-patience: <seconds>` on one request), and a cooldown no longer refuses a model's only node (0.1.16)
 - [x] A router behind a proxy asks a node what it sees before it pays for anything, shows it on `/orrery/status`, and does not send while the node sees this computer's own public address (0.1.16)
 - [x] A node does not redeem dust: with no `redeem.minUnits` set, a channel is redeemed once five cents are waiting on it (0.1.15)
+- [x] A new node's first payout goes out at its next round, minutes after its first answer; later payouts wait for `redeem.minUnits` (0.1.20)
+- [x] Every answer carries what the node billed and what its listed prices come to; `orrery mcp` tells the agent and the router console flags any difference (0.1.20)
 - [ ] A run through Tor itself
 - [ ] $OREY bonds live on mainnet
 

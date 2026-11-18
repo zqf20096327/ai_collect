@@ -4,16 +4,22 @@
 
 ## Install
 
-Sign in at [usejunction.dev](https://usejunction.dev), copy your enroll token, then:
-
 ```bash
-curl -fsSL https://usejunction.dev/install.sh | sh -s -- --token YOUR_TOKEN
+curl -fsSL https://usejunction.dev/install.sh | bash
+```
+
+It shows an estimate of this machine's AI coding usage for the last 30 days, then opens your browser to sign in or create an account and connect the device. There is no token to copy, and nothing is uploaded until you approve the device.
+
+Windows (PowerShell):
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((Invoke-RestMethod -UseBasicParsing 'https://usejunction.dev/install.ps1')))"
 ```
 
 Works with **Claude Code**, **Codex**, and **Cursor** — plus OpenCode, Gemini, Antigravity, and Copilot.
 
 <p>
-  <a href="https://github.com/Dinuda/usejunction/actions/workflows/admin-tests.yml"><img src="https://github.com/Dinuda/usejunction/actions/workflows/admin-tests.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/use-junction/usejunction/actions/workflows/admin-tests.yml"><img src="https://github.com/use-junction/usejunction/actions/workflows/admin-tests.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Community-0F172A" alt="License"></a>
   <img src="https://img.shields.io/badge/Claude_Code-verified-059669" alt="Claude Code verified">
   <img src="https://img.shields.io/badge/Codex-verified-059669" alt="Codex verified">

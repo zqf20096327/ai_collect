@@ -209,9 +209,14 @@ on your own key - all self-hosted.
 - **Workout history on a calendar** - page through the months, see which days you
   trained, open a day's sessions, and filter by program. Days are bucketed in
   your own timezone, not the server's
-  ([example](docs/screenshots/history.png)).
+  ([example](docs/screenshots/history.png)). A session whose Finish is tapped
+  more than 30 minutes after its last set ends at that set, so its duration
+  stays real.
 - **Copy a workout as text** - one tap puts a finished session's recap on the
   clipboard, ready to paste into a chat or a training log.
+- **Share a workout as an image** - a finished session draws a 1080x1350
+  summary card in the browser (duration, volume, heart rate, best sets) and
+  opens the share sheet, or downloads the PNG. Nothing is uploaded.
 - **Auto-regulation** - stalled-lift detection and a deload recommendation from
   your stalls and readiness, with a one-tap planned deload that lightens loads
   10% until it expires.
@@ -235,11 +240,18 @@ on your own key - all self-hosted.
   a whole batch at once, and every imported run or ride shows a
   **heart-rate-over-time chart** plus its **aerobic decoupling** (how much your
   pace per heartbeat drifted over the effort) on the session detail.
+- **Heart rate on a lifting session** - attach the FIT, TCX or GPX recording
+  of a workout you already logged: its average heart rate, peak and curve are
+  stored on that session and shown on its page, with a preview before anything
+  is saved, instead of a separate cardio session. The heart rate is also split
+  over the logged sets, so each set shows its own average and peak.
 
 ### AI coach (bring your own model)
 
 - **Weekly debrief and adjustments** - evidence-based, aware of your goals,
-  fatigue signals and conditioning volume.
+  fatigue signals and conditioning volume, and of the heart rate of your cardio
+  and of sessions with an attached watch file (average and peak only, never the
+  curve), so a hard run reads differently from an easy one.
 - **Conversational coach** - streaming chat grounded in your training data,
   including mid-session with the live workout attached in one tap.
 - **Program generation** - a full program from a one-sentence goal, editable
@@ -249,7 +261,10 @@ on your own key - all self-hosted.
 - **Your provider** - Anthropic SDK, any OpenRouter model, or any
   OpenAI-compatible server such as a local Ollama, LM Studio or vLLM (the
   OpenAI-compatible provider is tested against a stubbed server so far, not a
-  live one). With no key set, the app is still a clean, fast tracker.
+  live one). Reasoning models that open their answer with a `<think>` block
+  work too. When a provider call fails, the app says why (rejected key, rate
+  limit or credits, outage, timeout) and what to check. With no key set, the
+  app is still a clean, fast tracker.
 
 ### Programs and exercises
 
@@ -261,6 +276,12 @@ on your own key - all self-hosted.
   set belongs to in its `block` column. A block is the row's
   position among the workout's copies of that lift, so reordering, removing
   or replacing one of those rows re-assigns sets logged before.
+- **Reorder a workout** - "Move up" and "Move down" in an exercise's menu
+  change the order of a workout's exercises, and the next session follows it;
+  a superset moves as one block.
+- **Cardio in a program** - a cardio exercise is prescribed by a duration and
+  an optional distance ("20 min · 5 km") instead of sets, reps and RIR, and the
+  live session starts its inputs from that target.
 - **Exercise catalog** - searchable by name, on top of your custom exercises and
   muscle-group grouping. Star your favourites: they get their own section at
   the top of the catalog and come first in the in-session pickers.
@@ -269,7 +290,8 @@ on your own key - all self-hosted.
   in one of your programs.
 - **Printable workout sheet** - print (or save as PDF) a clean A4 sheet per
   workout with empty weight / reps / RIR cells for every planned set, fill it in
-  by hand at the gym, and re-enter it later
+  by hand at the gym, and re-enter it later; a cardio exercise gets duration
+  and distance boxes with its target pre-printed
   ([example](docs/screenshots/print-sheet.png)).
 
 ### Your data, your server
@@ -284,7 +306,8 @@ on your own key - all self-hosted.
   confirmation and is rate limited per connection token, and a capability
   index tool tells a client which tools exist and whether it can write. Details in
   [docs/chatgpt-mcp.md](docs/chatgpt-mcp.md).
-- **Import and export** - bring history in from a Strong or Hevy CSV, or from
+- **Import and export** - bring history in from a Strong (warm-up, failure
+  and drop set markers kept) or Hevy CSV, or from
   GymCoach's own history CSV (a spreadsheet with the same columns works too;
   dry-run preview, duplicate-safe, cardio included), and export everything back
   to CSV or TCX anytime.
@@ -463,7 +486,14 @@ docker compose -f docker-compose.prod.yml up -d --build
 ```
 
 The image applies the Prisma migrations itself each time it starts, so there is
-no separate migration step.
+no separate migration step. Setups that migrate separately can turn that off
+with `SKIP_DB_MIGRATE=true` (see [docs/self-hosting.md](docs/self-hosting.md)).
+
+The image and both compose files carry a container healthcheck on
+`GET /api/health`, an unauthenticated endpoint that answers `200 {"status":"ok"}`
+when the database responds and `503 {"status":"unavailable"}` otherwise, with
+nothing else in the body. Point a reverse proxy or an uptime monitor at it
+([details](docs/self-hosting.md#health-endpoint-and-container-healthcheck)).
 
 ### Pulling the prebuilt image
 
@@ -550,6 +580,14 @@ than CI reaching in to a small VPS.
 - [x] Free exercise switching in a live session with a rest timer per exercise
 - [x] RPE as an alternative effort scale to RIR
 - [x] Free session without a program
+- [x] Move exercises up and down in a workout (drag-and-drop still open, #557)
+- [x] Cardio exercises prescribed by duration and distance in a program (first
+      slice of #558)
+- [x] Heart rate in the coach context, and a watch file attached to a logged
+      session
+- [x] Heart rate per set from an attached watch file
+- [x] Share a finished workout as an image
+- [x] Health endpoint and container healthcheck for self-hosters
 
 ## Contributing
 
@@ -594,14 +632,15 @@ Notable changes are tracked in the [CHANGELOG](CHANGELOG.md).
   repeated lift's sets in the in-session coach context (#488), and tests that
   pin the eval harness's test-globals screen (#504). Then a series that makes
   the eval harness's graded-declaration self-check read code rather than text
-  (#523, #533, #547, #549).
+  (#523, #533, #547, #549, #556).
 - [@f1dot4](https://github.com/f1dot4) - first contribution: updating the
   current bodyweight from an MCP client, through a user-properties tool built
   to take more properties later (#477). Then the German interface (#497),
   German exercise names (#499) and exercise ids in the coach and MCP week
   summaries (#510). Then a fix for sets shown twice after a reload mid-workout
   (#541), Podman support for the test database (#543), and free exercise
-  switching with a rest timer per exercise (#544).
+  switching with a rest timer per exercise (#544). Then an image that applies
+  its own database migrations on start (#559).
 - [@sapatmohit](https://github.com/sapatmohit) - six interface languages in
   three days: Spanish (#513), Portuguese (#516), Italian (#518), Dutch (#532),
   Polish (#535) and Turkish (#537), each with its exercise names, plus the
@@ -619,6 +658,9 @@ Notable changes are tracked in the [CHANGELOG](CHANGELOG.md).
   stopped MCP clients probing with GET from connecting at all (#314), and
   made the case for publishing the production image so self-hosters can pull
   instead of build (#310).
+- [@mattordev](https://github.com/mattordev) - asked for exercise reordering
+  in the program builder (#557) and for cardio-specific prescriptions (#558);
+  the first steps of both have shipped.
 - [@gogoku121](https://github.com/gogoku121) - proposed the browsable
   exercise library built on an MIT-licensed dataset (#308, scoped and tracked
   as #320).

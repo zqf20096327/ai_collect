@@ -88,3 +88,13 @@ Colab has wildly varying transfer speeds, because of this, the best we can offer
 ## Credits
 - Credit to [ikonikon](https://github.com/ikonikon/fast-copy) for the base multi-threading code.   
 - Thanks to [@Ostokhoon](https://www.freelancer.com/u/Ostokhoon) for ALL argument and folder hierarchy functionality.
+
+
+## Acknowledgements
+This project is tested with BrowserStack.
+<a href="https://www.bugsnag.com/"><img src="https://avatars.githubusercontent.com/u/1058895?v=4" alt="BugSnag" width="20" align="top"></a> Error monitoring is provided free by [BugSnag](https://www.bugsnag.com/) through its open source program.
+
+## Sponsors
+Application performance monitoring sponsored by [AppSignal](https://www.appsignal.com/)
+
+[![Scout APM](https://www.scoutapm.com/assets/images/logos/scout-wordmark.svg)](https://www.scoutapm.com) Application monitoring sponsored by Scout APM

@@ -25,7 +25,7 @@ Open Loops takes Tasks from your Tracker and gives each one to a coding-agent Wo
 - **It runs on your machine,** with your tools for each Slot. Nothing runs on a server of this project.
 
 > [!WARNING]
-> **Preview (v0.1).** The agents run unattended, with your logins. Use a machine or account that holds only what Open Loops needs, and read [Safety](#safety) first.
+> **Preview (v0.2).** The agents run unattended, with your logins. Use a machine or account that holds only what Open Loops needs, and read [Safety](#safety) first.
 
 ## Quick start
 
@@ -144,6 +144,7 @@ In the order you need them:
 | Know what your agent does during setup | [`SETUP.md`](SETUP.md) |
 | Write a Spec | [`core/templates/build-spec.md`](core/templates/build-spec.md), [`core/templates/exploration-spec.md`](core/templates/exploration-spec.md), [`examples/`](examples/README.md) |
 | Fix a problem | [`docs/troubleshooting.md`](docs/troubleshooting.md) |
+| Check if you can save cost (optional) | [`docs/cost-saver.md`](docs/cost-saver.md) |
 | Learn the words | [`GLOSSARY.md`](GLOSSARY.md) |
 | Know the states, Contracts and invariants | [`SPEC.md`](SPEC.md) |
 | Write a notes file for your own tool | [`adapters/README.md`](adapters/README.md) |

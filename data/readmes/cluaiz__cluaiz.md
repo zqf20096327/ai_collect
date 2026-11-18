@@ -3,7 +3,7 @@
 </p>
 
 <h3 align="center">
-A local AI engine in Rust: chat, vision, speech and embeddings on your own hardware, with the placement on GPU, RAM and CPU decided for you</h3>
+The AI engine where models, voice, vision, memory, tools, agents and workflows work as one, under your control, in everything you build.</h3>
 
 </br>
 <p align="center">
@@ -27,7 +27,8 @@ A local AI engine in Rust: chat, vision, speech and embeddings on your own hardw
 
 ## About Cluaiz
 
-Cluaiz is one engine process that runs local models and serves them to apps, scripts and agents:
+Cluaiz is one engine process that runs models on your hardware or through cloud providers, and gives apps,
+scripts and agents memory, tools and workflows on top of them:
 
 - **GGUF models** through a fork of [llama.cpp](https://github.com/ggml-org/llama.cpp) linked into the engine:
   chat, vision, audio input, embeddings.
@@ -40,18 +41,31 @@ Cluaiz is one engine process that runs local models and serves them to apps, scr
   memory-mapped model file on the disk when used (at the disk's speed; a dedicated SSD prefetch is planned).
 - **APIs** that existing clients already speak (OpenAI-compatible and Ollama-style routes), plus CEP, one
   JSON-RPC 2.0 protocol for everything engine-specific, over HTTP, MCP or a C library.
+- **Cloud providers** beside local models, through the same APIs.
+- **Memory and projects:** project rules, notes kept between conversations that become memory only when you
+  confirm them, and a view of what information reached the model.
+- **Documents and context:** text from documents and files added to a conversation.
 - **Tools for agents:** skills, plugins and MCP servers, with permission levels, approvals and an audit log.
+  WebAssembly plugins run with no file access, a memory and instruction limit, and network access only to what
+  they declare.
+- **An agent** that edits files and runs commands, each action under your approval.
+- **Workflows:** reusable flows run by the engine (schedules and triggers are in progress).
 
 On the same model file, placement and settings, Cluaiz runs at the speed of official llama.cpp's `llama-bench` on
 the GPU and on a GPU + RAM split. On the CPU alone, generation is equal, prompts were 6-26% slower on an 8-thread
 laptop, and one quantization (Q2_0) was 13-20% slower on a 1 vCPU server (see [Benchmarks](#benchmarks)).
 
 > [!TIP]
-> **A 26B model on a 4 GB laptop GPU.** Gemma 4 26B A4B (MoE, 13.3 GB file) on an RTX 3050 Laptop with 4 GB
-> VRAM: **16–18 tokens/s** with about 8 GB of free RAM, and still **7.4 tokens/s** with only about 3 GB free,
-> when more of the experts are read from the model file on the disk (measured 2026-10-12). The planner picks this placement by itself (`n_cpu_moe`); no flags
-> needed. Dense models that do not fit RAM + VRAM are refused with the reason instead of crawling from the disk.
-> [Details](test/engine_regression/RESULTS.md#gemma-4-26b-a4b-moe-1327-gb-file-4-gb-gpu).
+> **A 26B model on a 4 GB laptop GPU.** Gemma 4 26B A4B (MoE, IQ4_XS, 14.2 GB model file) on an RTX 3050
+> Laptop with 4 GB VRAM and 24 GB RAM: attention on the GPU, experts in RAM, and the experts that do not fit
+> RAM read from the memory-mapped model file on the disk when used (no SSD prefetch yet). Measured
+> 2026-11-16: **16.7 tokens/s** in a short `cluaiz bench` (128 tokens) and **11-13 tokens/s** for chat answers
+> of about 400 tokens; the first answer after loading is much slower (2.8 tokens/s) until the experts are in
+> RAM. The less free RAM, the more is read from the disk and the slower it gets. With the same placement,
+> official `llama-bench` was about 6% faster. On a first load, when other apps hold VRAM, the planner may still
+> choose CPU only (9 tokens/s) (known issue, being fixed). Dense models that do not fit RAM + VRAM are refused
+> with the reason instead of crawling from the disk.
+> [Details](test/cloud/runs/2026-11-16-run20-laptop-moe-disk/SUMMARY.md).
 
 ## Quick Start
 
@@ -202,6 +216,7 @@ Reference: [`docs/api/README.md`](docs/api/README.md) and [`docs/api/cep/README.
   ([details](docs/api/inference/chat_completions.md)).
 - **Execution policy:** `full_access` or `sandboxed` (default) per engine and per tool; actions outside the
   workspace ask for approval; destructive commands (disk wipes, `rm -rf /`) and credential paths are blocked.
+  This is an approval policy, not OS isolation: an allowed command runs with your user's access.
 - **API tokens** for every route (`cluaiz token`), and an **audit log** of every write, exec and admin call
   (parameters kept only as a hash).
 
@@ -277,7 +292,7 @@ from 0.6B to 4B, speech and embeddings ran there, with a per-second memory log
 | | split | 18 of 36 blocks on GPU | **15.9 t/s** | 14.9 t/s | +7% |
 | **Gemma 4 E4B (Q4_K_M)** | gpu | Full GPU | **32.3 t/s** | 32.0 t/s | +1% |
 | | split | 21 of 42 blocks on GPU | **14.5 t/s** | 14.6 t/s | same |
-| **Gemma 4 26B MoE (13.3 GB)** | auto (split) | Attention GPU, experts in RAM (disk via mmap) | **16.0 - 18.0 t/s** | not measured | Runs on 4 GB VRAM |
+| **Gemma 4 26B MoE (IQ4_XS, 14.2 GB)** | MoE split | Attention GPU, experts in RAM (disk via mmap) | **14.8 t/s** (2026-11-16) | 15.9 t/s | -6% ([run 20](test/cloud/runs/2026-11-16-run20-laptop-moe-disk/SUMMARY.md)) |
 
 #### Prompt processing speed (~530 tokens prompt)
 
@@ -332,8 +347,8 @@ tested first on this T4 did not, and showed llama.cpp 7–22% ahead in the cases
 | **Qwen3 4B** | 1935 vs 1978 t/s (v0.1.0: 1758 vs 1882) | **593 vs 393 t/s** | **1.5x faster** |
 | **Gemma 3 12B** | 690 vs 725 t/s (v0.1.0: 572 vs 649) | **228 vs 141 t/s** | **1.6x faster** |
 | **Mistral Small 3.2 24B** | 372 vs 385 t/s (v0.1.0: 315 vs 340) | 154 vs 153 t/s (1085 tokens) | same |
-| **Gemma 4 31B Q4** (planner split, 41/60) | — | **116 vs 117 t/s** (v0.1.0: 96 vs 117) | same |
-| **Gemma 4 31B Q8** (planner split, 23/60) | — | **50 vs 51 t/s** (v0.1.0: 45 vs 51) | same |
+| **Gemma 4 31B Q4** (planner split, 41/60) | - | **116 vs 117 t/s** (v0.1.0: 96 vs 117) | same |
+| **Gemma 4 31B Q8** (planner split, 23/60) | - | **50 vs 51 t/s** (v0.1.0: 45 vs 51) | same |
 
 CPU only, llama.cpp also without a GPU (`-dev none`): Qwen3 4B 27 vs 29, Gemma 3 12B 10 vs 10, Mistral 24B 5 vs 5,
 Gemma 4 31B 4 vs 4 t/s.
@@ -343,7 +358,7 @@ Gemma 4 31B 4 vs 4 t/s.
 | Model | What happened | Cluaiz | llama.cpp |
 | :--- | :--- | :---: | :---: |
 | **Gemma 4 31B Q4** (17.1 GB) | Planner: 41 of 60 blocks on GPU | **2.3 t/s** gen, 112 t/s prompt | 2.3 t/s gen, 112 t/s prompt |
-| **Gemma 4 31B Q8** (30.4 GB, dense) | Planner refuses: the closest split is 8 GB short of RAM, with a clear message | not loaded (by design) | — |
+| **Gemma 4 31B Q8** (30.4 GB, dense) | Planner refuses: the closest split is 8 GB short of RAM, with a clear message | not loaded (by design) | - |
 | | Forced by the user setting `n_gpu_layers 20`: weights read from the disk on every token | 0.008–0.014 t/s gen, 1.5–3.0 t/s prompt | not measured (test ended) |
 
 > [!NOTE]
@@ -420,9 +435,9 @@ flowchart TB
     CEP["cep/: Cluaiz Engine Protocol<br/>JSON-RPC 2.0 envelope, method registry,<br/>principals, approvals, tasks, discovery"]
 
     subgraph SERVICES["Request services"]
-        SEC["security/<br/>permissions, filesystem jail, audit"]
+        SEC["security/<br/>permissions, audit"]
         CTX["context/<br/>pure context planning: fit, compaction,<br/>memory cards, episodes, recall"]
-        AGT["agents/<br/>tools, skills, plugins, MCP client,<br/>tool search, sandboxed execution"]
+        AGT["agents/<br/>tools, skills, plugins, MCP client,<br/>tool search, policy-checked execution<br/>(no OS sandbox)"]
         MEDIA["engine/media<br/>bounded sources, image / audio / video<br/>decoding, resampling"]
     end
 
@@ -550,8 +565,8 @@ sequenceDiagram
 | `cluaiz-cep` | [`cep/`](cep/) | Cluaiz Engine Protocol: JSON-RPC 2.0 envelope, method registry, approvals, tasks, discovery. |
 | `cluaiz-ffi` | [`ffi/`](ffi/) | The engine as a C library: `cep_call` / `cep_free`, the same messages as `POST /v1/cep`. |
 | `cluaiz-context` | [`context/`](context/) | Pure context planning (no I/O): fitting, compaction policy, memory cards, episodes, recall. |
-| `cluaiz-agents` | [`agents/`](agents/) | Tools, skills, plugins, MCP client, tool search, sandboxed execution. |
-| `cluaiz-security` | [`security/`](security/) | Permission schema, filesystem jail, audit log. |
+| `cluaiz-agents` | [`agents/`](agents/) | Tools, skills, plugins, MCP client, tool search, policy-checked command execution (no OS sandbox). |
+| `cluaiz-security` | [`security/`](security/) | Permission schema, audit log. |
 | `cluaiz-runtime` | [`engine/runtime/`](engine/runtime/) | The single model host: load / unload, chat sessions, speech and embedding hosts, VRAM use. |
 | `cluaiz-plan` | [`engine/plan/`](engine/plan/) | Placement planner: GPU / split / MoE / CPU candidates, context size, KV type, buffers, learned margins. |
 | `cluaiz-hw` | [`engine/hardware/`](engine/hardware/) | Hardware discovery: CPU, RAM, GPU (NVML), disks; free memory measured live. |

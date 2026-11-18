@@ -5,83 +5,38 @@
     <a href="https://github.com/go-kratos/blades/blob/main/LICENSE"><img src="https://img.shields.io/github/license/go-kratos/blades" alt="License"></a>
 </p>
 
-## Blades
-Blades is a multimodal AI Agent framework for the Go language, supporting custom models, tools, memory, middleware, etc. It is suitable for multi-turn conversations, chain-of-thought reasoning, and structured output, among other use cases.
-> The name originates from: The game *God of War*, set against the backdrop of Greek mythology, tells the adventure story of Kratos transforming from a mortal into the God of War and embarking on a god-slaying rampage. The Blades are Kratos's iconic weapons.
+# Blades
 
-## Architecture Design
-Blades leverages the characteristics of the Go language to provide a flexible and efficient AI Agent solution. Its core lies in achieving a high degree of decoupling and extensibility through unified interfaces and pluggable components. The overall architecture is as follows:
-![architecture](./docs/images/architecture.png)
+[简体中文](./README_zh.md)
 
-- Go Idiomatic: Built entirely according to Go's philosophy, with a code style and user experience that feel familiar to Go developers.
-- Simple to Use: Define AI Agents through concise code declarations, enabling rapid requirement delivery and making complex logic clear, easy to manage, and maintain.
-- Middleware Ecosystem: Drawing inspiration from Kratos's middleware design philosophy, features like Observability and Guardrails can be easily integrated into AI Agents.
-- Highly Extensible: Achieves a high degree of decoupling and extensibility through unified interfaces and pluggable components, facilitating the integration of different LLM models and external tools.
+Blades is an event-driven multimodal Agent framework for Go. It provides a small public Agent interface, a provider-agnostic model protocol, tool execution, session history, prompt construction, context compaction, policy checks, lifecycle hooks, and multi-agent flow composition.
 
-## Core Concepts
-The Blades framework realizes its powerful functionality and flexibility through a series of carefully designed core components. These components work together to build the intelligent behavior of the Agent:
+The framework is designed for applications that need LLM agents as normal Go components: explicit inputs and outputs, cancellable runtime contexts, provider adapters at the edge, and extension points that stay outside the core protocol.
 
-* Agent: The core unit that executes tasks, capable of invoking models and tools.
-* Prompt: Templated text used for interacting with LLMs, supporting dynamic variable substitution and complex context construction.
-* Chain: Connects multiple Agents or other Chains to form complex workflows.
-* ModelProvider: A pluggable LLM interface, allowing you to easily switch and integrate different language model services (such as OpenAI, etc.).
-* Tool: External capabilities that an Agent can use, such as calling APIs, querying databases, accessing the file system, etc.
-* Memory: Provides short-term or long-term memory capabilities for the Agent, enabling continuous conversation with context.
-* Middleware: Similar to middleware in web frameworks, it enables cross-cutting control over the Agent.
+## Why Blades
 
-### Agent
-`Agent` is the most core interface in the Blades framework, defining the basic behavior of all executable components. Its design aims to provide a unified execution paradigm. Through the `Run` method, it achieves **decoupling, standardization, and high composability** for various functional modules within the framework. Components like `Agent`, `Chain`, and `ModelProvider` all implement this interface, thereby unifying their execution logic and allowing different components to be flexibly combined like Lego bricks to build complex AI Agents.
+- **Event-first runtime**: applications interact with Agents through `event.Input` and `event.Output`, including streaming text, tool lifecycle events, call-local assistant endings, turn endings, errors, and `Done`.
+- **Provider-neutral core**: OpenAI, Anthropic, Gemini, MCP, and observability integrations live in `contrib/`; the root module does not depend on provider SDKs.
+- **Multimodal protocol**: `content.Part` is the shared, extensible content interface used by events, model messages, and tool results.
+- **Tool-ready Agent loop**: tools are described by `tools.ToolSpec`, executed by `tools.Tool`, filtered by policy, observed by hooks, and committed back into session history.
+- **Composable agents**: use `flow/` for sequential, parallel, loop, routing, and deep agent composition, or wrap any Agent as a tool with `blades.NewAgentTool`.
 
-```go
-// Agent represents an autonomous agent that can process invocations and produce a sequence of messages.
-type Agent interface {
-    Name() string
-    Description() string
-    Run(context.Context, *Invocation) Generator[*Message, error]
-}
+## Install
+
+```sh
+go get github.com/go-kratos/blades
+go get github.com/go-kratos/blades/contrib/openai
 ```
 
-### ModelProvider
-`ModelProvider` is the core abstraction layer in the `Blades` framework for interacting with underlying large language models (LLMs). Its design goal is to achieve **decoupling and extensibility** through a unified interface, separating the framework's core logic from the implementation details of specific models (such as OpenAI, DeepSeek, Gemini, etc.). It acts as an adapter, responsible for converting the framework's internal standardized requests into the format required by the model's native API and converting the model's responses back into the framework's standard format, thus enabling developers to easily switch and integrate different LLMs.
+Each provider integration is its own Go module. Add only the contrib modules your application uses:
 
-```go
-type ModelProvider interface {
-    // Generate executes a complete generation request and returns the result all at once. Suitable for scenarios that do not require real-time feedback.
-    Generate(context.Context, *ModelRequest, ...ModelOption) (*ModelResponse, error)
-    // NewStreaming initiates a streaming request. This method immediately returns a Generator object, allowing the caller to receive the model's generated content step by step. Suitable for building real-time, typewriter-effect conversation applications.
-    NewStreaming(context.Context, *ModelRequest, ...ModelOption) (Generator[*ModelResponse])
-}
-```
-![ModelProvider](./docs/images/model.png)
-
-### Agent
-`Agent` is the core coordinator in the `Blades` framework. As the top-level `Agent`, it integrates and orchestrates components such as `ModelProvider`, `Tool`, `Memory`, and `Middleware` to understand user intent and execute complex tasks. Its design allows configuration via flexible `Option` functions, thereby driving the behavior and capabilities of intelligent applications and fulfilling core responsibilities like task orchestration, context management, and instruction following.
-
-### Flow
-`flow` is used to build complex workflows and multi-step reasoning. Its design philosophy involves orchestrating multiple `Agent` components to achieve data and control flow transfer, where the output of one `Agent` can serve as the input for the next. This mechanism enables developers to flexibly combine components to build highly customized AI workflows, realizing multi-step reasoning and complex data processing. It is key to implementing complex decision-making processes for Agents.
-
-### Tool
-`Tool` is a key component for extending AI Agent capabilities, representing external functions or services that an Agent can invoke. Its design aims to empower the Agent to interact with the real world, performing specific actions or obtaining external information. Through a clear `InputSchema`, it guides the LLM to generate correct invocation parameters, and executes the actual logic via its internal `Handle` function, thereby encapsulating various external APIs, database queries, etc., into a form that the Agent can understand and invoke.
-
-### Memory
-The `Memory` component endows AI Agents with memory capabilities, providing a universal interface for storing and retrieving conversation messages, ensuring that Agents maintain context and coherence across multiple conversation turns. Its design supports managing messages by session ID and can be configured with message count limits to balance the breadth of memory against system resource consumption. The framework provides an `InMemory` implementation and also encourages developers to extend it to persistent storage or more complex memory strategies.
-
-```go
-type Memory interface {
-    AddMemory(context.Context, *Memory) error
-    SaveSession(context.Context, blades.Session) error
-    SearchMemory(context.Context, string) ([]*Memory, error)	
-}
+```sh
+go get github.com/go-kratos/blades/contrib/anthropic
+go get github.com/go-kratos/blades/contrib/gemini
+go get github.com/go-kratos/blades/contrib/mcp
 ```
 
-### Middleware
-`Middleware` is a powerful mechanism for implementing cross-cutting concerns (such as logging, monitoring, authentication, rate limiting). Its design allows injecting additional behaviors into the execution flow of a `Runner` without modifying the `Runner`'s core logic. It operates in a function chain form resembling an "onion model," providing highly flexible flow control and feature enhancement, thereby achieving decoupling between non-core business logic and core functionality.
-
-## 💡 Quick Start
-
-### Usage Example (Chat Agent)
-
-The following is a simple chat Agent example demonstrating how to use the OpenAI `ModelProvider` to build a basic conversational application:
+## Quick Start
 
 ```go
 package main
@@ -93,79 +48,185 @@ import (
 
     "github.com/go-kratos/blades"
     "github.com/go-kratos/blades/contrib/openai"
+    "github.com/go-kratos/blades/event"
 )
 
 func main() {
-    // Configure OpenAI API key and base URL using environment variables:
-    model := openai.NewModel("gpt-5", openai.Config{
-        APIKey: os.Getenv("OPENAI_API_KEY"),
-    })
-    agent := blades.NewAgent(
-        "Blades Agent",
-        blades.WithModel(model),
-        blades.WithInstruction("You are a helpful assistant that provides detailed and accurate information."),
+    provider := openai.NewChat("gpt-5",
+        openai.WithAPIKey(os.Getenv("OPENAI_API_KEY")),
     )
-    // Create a Prompt with user message
-    input := blades.UserMessage("What is the capital of France?")
-    // Run the Agent with the Prompt
-    runner := blades.NewRunner(agent)
-    output, err := runner.Run(context.Background(), input)
+
+    agent, err := blades.NewAgent(
+        "assistant",
+        blades.WithModel(provider),
+        blades.WithInstruction("You are a concise, accurate assistant."),
+    )
     if err != nil {
         log.Fatal(err)
     }
-    // Print the agent's response
-    log.Println(output.Text())
+
+    result, err := blades.NewRunner(agent).Run(
+        context.Background(),
+        event.NewPrompt("What is the capital of France?"),
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    log.Println(result.Text())
 }
 ```
 
-### Skills
+## Agent Interface
 
-`Agent` supports skill injection via `WithSkills(...)`, and skills can be loaded from a directory or `embed.FS`.
-For the skill package format and metadata rules, see [Agent Skill specification](https://agentskills.io/specification).
+Every runtime implements the same small interface:
 
 ```go
-package main
-
-import (
-    "embed"
-
-    "github.com/go-kratos/blades"
-    "github.com/go-kratos/blades/skills"
-)
-
-//go:embed example-skill/*
-var skillFS embed.FS
-
-func createAgent(model blades.ModelProvider) (blades.Agent, error) {
-    // Directory-based loading:
-    skillsFromDir, err := skills.NewFromDir("./skills")
-    if err != nil {
-        return nil, err
-    }
-    // Embedded loading:
-    skillsFromEmbed, err := skills.NewFromEmbed(skillFS)
-    if err != nil {
-        return nil, err
-    }
-    allSkills := append(skillsFromDir, skillsFromEmbed...)
-    return blades.NewAgent(
-        "SkillsAgent",
-        blades.WithModel(model),
-        blades.WithSkills(allSkills...),
-    )
+type Agent interface {
+    Name() string
+    Description() string
+    Run(context.Context, <-chan event.Input) (<-chan event.Output, error)
 }
 ```
 
-For more examples, please refer to the [examples](./examples) directory.
+`blades.NewAgent(name, opts...)` builds the default LLM-backed Agent. If you need a custom runtime, implement `Agent` directly and it can still be used by `Runner`, `flow/`, or `blades.NewAgentTool`.
 
-## 🤝 Contribution & Community
-The project is currently in its early stages, and we are iterating continuously and rapidly. We sincerely invite all Go developers and AI enthusiasts to visit our GitHub repository and experience the joy of development that Blades brings firsthand.
+Some models return a completed assistant message containing only `content.Thinking`. Use `blades.WithThinkingAsText(true)` to expose that content as `content.Text` in `event.AssistantMessageEnd`. Mixed-content messages are not converted, and streaming deltas, turn results, and session history retain the original thinking parts.
 
-Welcome to give the project a ⭐️ Star, explore more usage examples in the `examples` directory, or directly start building your first Go LLM application!
+## Runtime Building Blocks
 
-We look forward to any feedback, suggestions, and contributions from you to jointly promote the prosperity of the Go AI ecosystem.
+| Package | Purpose |
+| --- | --- |
+| `content/` | Shared multimodal `Part` union for text, blobs, thinking, tool use, and tool results. |
+| `event/` | User-facing input and output events for prompts, steering, aborts, streaming, tools, assistant response endings, turn endings, errors, and completion. |
+| `model/` | Provider-facing requests, messages, chunks, responses, usage, options, and the `model.Provider` interface. |
+| `tools/` | Tool specs, execution interface, resolver/filter helpers, and tool context. |
+| `session/` | Append-only model message history and context helpers. |
+| `prompt/` | System prompt builders and ordered sections. |
+| `compact/` | Context compaction strategies and model-backed summarization. |
+| `policy/` | Tool invocation decisions such as allow, deny, ask, and modify. |
+| `hook/` | Lifecycle callbacks around turns, model calls, and tool calls. |
+| `flow/` | Agent composition primitives for sequential, parallel, loop, routing, and deep flows. |
+| `jsonrepair/` | Provider-neutral recovery of malformed or truncated tool-call JSON. |
+| `contrib/` | Provider and integration modules for OpenAI, Anthropic, Gemini, MCP, and OpenTelemetry. |
 
+## Providers
 
-## 📄 License
+Providers implement `model.Provider`:
 
-Blades is licensed under the MIT License. For details, please see the [LICENSE](LICENSE) file.
+```go
+type Provider interface {
+    Name() string
+    Generate(context.Context, *model.Request) (*model.Response, error)
+    Stream(context.Context, *model.Request) iter.Seq2[*model.Chunk, error]
+}
+```
+
+Provider options stay in the matching contrib module:
+
+```go
+provider := openai.NewChat("gpt-5",
+    openai.WithAPIKey(os.Getenv("OPENAI_API_KEY")),
+    openai.WithParallelToolCalls(true),
+)
+```
+
+Tool concurrency is driven by model output. If a provider returns multiple `content.ToolUse` parts in one assistant message, the Agent loop executes that tool wave concurrently. To request at most one tool call per turn, configure the provider, for example `openai.WithParallelToolCalls(false)` or `anthropic.WithParallelToolCalls(false)`.
+
+Each turn corresponds to exactly one primary `Provider.Stream` call and its optional tool wave. Every response accepted by `AfterModel` emits a mandatory `event.AssistantMessageEnd` with normalized call-local usage. `AssistantMessageEnd.Usage` and `TurnEnd.Usage` use `model.Usage` directly, including provider-specific `Raw`. With tools, the order is all `ToolEnd` events, then `AssistantMessageEnd`, then `TurnEnd`; without tools, it is `AssistantMessageEnd`, then `TurnEnd`.
+
+## Tools And Agents
+
+Tools expose a schema and a handler:
+
+```go
+type Tool interface {
+    Spec() tools.ToolSpec
+    Handle(context.Context, json.RawMessage) (*tools.Result, error)
+}
+```
+
+Attach tools to an Agent with `blades.WithTools(...)`, resolve them dynamically with `blades.WithToolsResolver(...)`, and guard them with `blades.WithPolicy(...)`. Any Agent can also become a tool:
+
+```go
+researcher, _ := blades.NewAgent("researcher", blades.WithModel(provider))
+writer, _ := blades.NewAgent(
+    "writer",
+    blades.WithModel(provider),
+    blades.WithTools(blades.NewAgentTool(researcher)),
+)
+_ = writer
+```
+
+## Skills
+
+Skills keep specialized instructions out of the always-on system prompt. The Agent receives only a compact catalog, then uses `load_skill` and `load_skill_resource` when a task actually needs the full instructions.
+
+```go
+skillList, err := skills.NewFromDir("./skills")
+if err != nil {
+    return err
+}
+agent, err := blades.NewAgent(
+    "assistant",
+    blades.WithModel(provider),
+    blades.WithSkills(skillList...),
+)
+```
+
+Each skill follows the `SKILL.md` layout and may include `references/`, `assets/`, and `scripts/`. Script files can be inspected as resources but are not executed by the built-in toolset. Tools named by `allowed-tools` stay hidden until that Skill is loaded; this controls disclosure only. Skill and business tools remain subject to `WithPolicy`, which is the authorization boundary.
+
+## Streaming
+
+Use `Runner.RunStream` when the application needs incremental output:
+
+```go
+out, err := blades.NewRunner(agent).RunStream(ctx, event.NewPrompt("Write a haiku."))
+if err != nil {
+    return err
+}
+for e := range out {
+    switch v := e.(type) {
+    case event.TextDelta:
+        fmt.Print(v.Text)
+    case event.AssistantMessageEnd:
+        log.Printf("call usage: %+v", v.Usage)
+    case event.Error:
+        return v.Err
+    }
+}
+```
+
+Use `Runner.RunLive` when the application needs to send additional input, such as steering or abort events, while the Agent is running.
+
+## Documentation
+
+- [Documentation index](./docs/INDEX.md)
+- [Event system and Agent loop](./docs/design-event-agent-loop.md)
+- [Model and Provider protocol](./docs/design-model-provider.md)
+- [Tool system](./docs/design-tool-system.md)
+- [Agent composition and orchestration](./docs/design-agent-orchestration.md)
+- [Development guide](./docs/DEVELOPMENT_GUIDE.md)
+
+## Development
+
+The root `Makefile` discovers all Go modules and runs checks per module:
+
+```sh
+make tidy
+make build
+make test
+make all
+```
+
+For targeted iteration:
+
+```sh
+go test -race ./event
+go test -race ./tests/agent
+(cd contrib/openai && go test -race ./...)
+```
+
+## License
+
+Blades is licensed under the MIT License. See [LICENSE](LICENSE).

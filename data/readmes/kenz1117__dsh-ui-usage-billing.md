@@ -63,6 +63,7 @@
 
 - **触发卡**：今日 / 本周 / 本月主数字、近 7 天趋势与当日水位；支持完整卡片、紧凑图标、完全隐藏，悬停可看速览。
 - **费用条与提醒**：常驻本轮 / 会话费用，按当前模型显示峰谷和订阅额度预警；切档与会话完成可发系统通知。
+- **快捷键**：宿主「设置 → 快捷键」可绑定「打开用量计费仪表盘」，默认 `⌘⇧U`（Windows / Linux `Ctrl+Shift+U`），可改绑或清空；侧栏隐藏后也能一键打开面板。
 
 ![侧边栏触发卡：今日消耗金额、涨跌徽章与迷你趋势](screenshots/sidebar.png)
 
@@ -118,12 +119,12 @@
 
 ## 🚀 快速开始
 
-当前维护 DSH `0.1.2-alpha.1` ~ `0.2.2-rc.3` 的一份代码。正式版与预览版共享同一兼容矩阵：正式版使用 npm `latest`，预览版使用 `alpha`。当前 `latest` 指向 `1.8.5` 正式版（上下文压缩调用计入统计 + 缓存写入按厂商费率独立计价 + 宿主 0.2.2-rc.3 零适配兼容）；`alpha` 指向 `1.8.3-alpha.6`（与正式版同内容），下一轮预览从 `1.8.3-alpha.7` 起。
+当前维护 DSH `0.1.2-alpha.1` ~ `0.2.2-rc.3` 的一份代码。正式版与预览版共享同一兼容矩阵：正式版使用 npm `latest`，预览版使用 `alpha`。当前 `latest` 指向 `1.8.8` 正式版（日志已删的存量账本行按目录键归一并按目录价补价 + 通道可见性 + 缓存写入按厂商费率独立计价 + 宿主 0.2.2-rc.3 零适配兼容）；`alpha` 指向 `1.8.3-alpha.13`（= 正式版 + 仪表盘快捷键 `⌘⇧U` 与 `/usage` 命令注册时机修正 + 汇率兜底源），下一轮预览从 `1.8.3-alpha.14` 起。
 
 `dsh plugin add` 需要显式 `--profile`，且建议钉具体版本号，避免包管理器的发布冷静期解析到其他版本。当前正式版安装命令：
 
 ```sh
-dsh plugin --profile web add npm:@kenz1117/dsh-ui-usage-billing@1.8.5
+dsh plugin --profile web add npm:@kenz1117/dsh-ui-usage-billing@1.8.8
 ```
 
 默认安装也可使用 `@latest`。可用 `dsh --version` 或 `npm ls -g @deepseek-ai/dsh` 确认宿主版本。
@@ -179,7 +180,7 @@ GitHub Pages 发布。
 
 ## 💡 计费细节
 
-单价表（`src/client/pricing.ts`）采用**原生币种**存储：国内厂商直接录入人民币价格，国外厂商录入美元价格。费用统一以人民币计算与展示——美元模型按**实时汇率**折算，国内模型全程不经过汇率换算。启动时服务端拉取实时汇率与模型价（`src/pricing-fetch.ts`）：USD→CNY 优先腾讯财经行情（免 key、国内可达），失败依次降级 open.er-api 与内置默认值；之后每 6 小时后台刷新，单价表弹窗标注「今日汇率」与实时 / 内置徽标。金额与费率表的**展示币种跟随用户所选**：切 ¥ / $ 时把每条每百万 token 单价经 `convertUnitPrice` 按实时汇率换算到目标币种再显示（汇率缺失时回退原生币种）。
+单价表（`src/client/pricing.ts`）采用**原生币种**存储：国内厂商直接录入人民币价格，国外厂商录入美元价格。费用统一以人民币计算与展示——美元模型按**实时汇率**折算，国内模型全程不经过汇率换算。启动时服务端拉取实时汇率与模型价（`src/pricing-fetch.ts`）：USD→CNY 优先腾讯财经行情（免 key、国内可达），失败依次降级 open.er-api、AllRatesToday 免 key 端点（ECB 参考汇率，[Exchange rates by AllRatesToday](https://allratestoday.com)）与内置默认值；之后每 6 小时后台刷新，单价表弹窗标注「今日汇率」与实时 / 内置徽标。金额与费率表的**展示币种跟随用户所选**：切 ¥ / $ 时把每条每百万 token 单价经 `convertUnitPrice` 按实时汇率换算到目标币种再显示（汇率缺失时回退原生币种）。
 
 ```
 cost（CNY）= (missInput × p_input + cacheWrite × p_cacheWrite + cacheHit × p_cacheHit + output × p_output) / 10⁶
@@ -281,7 +282,7 @@ pnpm run build     # tsc -b && tsdown，产出 lib/index.js 与 lib/client.js
 
 ## 📦 发布
 
-本包为独立 npm 包，只维护一份 `main` 代码。正式版使用非预发布版本号并切 `latest`，预览版使用预发布版本号并切 `alpha`；当前 `latest` 指向 `1.8.5` 正式版，`alpha` 指向 `1.8.3-alpha.6`，详见 [COMPATIBILITY.md](COMPATIBILITY.md)。
+本包为独立 npm 包，只维护一份 `main` 代码。正式版使用非预发布版本号并切 `latest`，预览版使用预发布版本号并切 `alpha`；当前 `latest` 指向 `1.8.8` 正式版，`alpha` 指向 `1.8.3-alpha.13`，详见 [COMPATIBILITY.md](COMPATIBILITY.md)。
 
 ```sh
 pnpm test && pnpm run build   # 发版前全量测试 + 构建
@@ -296,7 +297,7 @@ npm dist-tag add @kenz1117/dsh-ui-usage-billing@<版本> latest  # 正式版
 
 - **权限等级：high**：读取持久会话日志（文件）、访问多厂商官方 / 订阅 / 余额 / 定价 API（网络）、经凭据 seam 读取 `apiKeyEnv`（凭据）、写入 harness home 下的账本、快照与任务队列（持久状态）。插件自身**不含**命令执行 / Shell；仅用户显式入队时才经宿主创建会话并提交 Prompt，Agent 的工具调用仍由宿主原有权限与审批控制。
 - **更新通道：`user-reviewed`**：本插件具备文件 / 网络 / 凭据能力，DSH STORE 采用每次安装需本机人工确认的通道；安装前请复核仓库、固定 Commit、生命周期脚本与影响范围。
-- **兼容范围**：当前 `main` 的正式版与预览版共享同一兼容矩阵，适配 DSH `0.1.2-alpha.1` ~ `0.2.2-rc.3`，共 36 项逐版本声明。当前正式版为 `1.8.5`（npm `latest`，上下文压缩调用计入统计 + 缓存写入按厂商费率独立计价 + 宿主 0.2.2-rc.3 零适配兼容），预览通道为 `1.8.3-alpha.6`（npm `alpha`，与正式版同内容）。发行通道与监控机制见 [COMPATIBILITY.md](COMPATIBILITY.md)。Node.js `^22.19.0 || >=24.0.0`。
+- **兼容范围**：当前 `main` 的正式版与预览版共享同一兼容矩阵，适配 DSH `0.1.2-alpha.1` ~ `0.2.2-rc.3`，共 36 项逐版本声明。当前正式版为 `1.8.8`（npm `latest`，日志已删的存量账本行按目录键归一并按目录价补价 + 通道可见性 + 缓存写入按厂商费率独立计价 + 宿主 0.2.2-rc.3 零适配兼容），预览通道为 `1.8.3-alpha.13`（npm `alpha`，= 正式版 + 仪表盘快捷键与 `/usage` 注册修正 + 汇率兜底源）。发行通道与监控机制见 [COMPATIBILITY.md](COMPATIBILITY.md)。Node.js `^22.19.0 || >=24.0.0`。
 - **生命周期**：无 `preinstall` / `install` / `postinstall` / `prepare`（安装即用）。
 - **不冒用官方**：仅新增自有 entry id `ui-usage-billing`；对 `@deepseek-ai/dsh-*` 仅为 `peerDependencies` 依赖（不重复安装 / 不替换 / 不遮蔽官方组件），包名使用第三方命名空间 `@kenz1117/*`。
 - **打包产物**：运行文件 `lib/*` 与 `cordis.patch.yml` 已随固定 Commit 提交并声明在 `files`。

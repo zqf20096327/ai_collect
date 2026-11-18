@@ -81,7 +81,7 @@ Roomy). Command line: `posthaste --capture`, `--today`, `--inbox`,
 
 ## Build from source
 
-Prerequisites: Node 20+, Rust (stable), and the
+Prerequisites: Rust (stable), Node 20+ (only to run Vite and the Tauri CLI), and the
 [Tauri 2 system dependencies](https://v2.tauri.app/start/prerequisites/) for
 your OS. On Debian/Ubuntu:
 
@@ -90,11 +90,21 @@ sudo apt install libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev
   librsvg2-dev libxdo-dev libssl-dev libdbus-1-dev build-essential
 ```
 
+The interface is written in Rust and compiled to WebAssembly, which needs
+two more tools, once:
+
+```sh
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli --version 0.2.130 --locked
+```
+
 ```sh
 npm install
 npm run tauri dev        # develop
 npm run tauri build      # release build + installers for your OS
-npm run check            # typecheck, lint, tests, rule checks
+npm run check            # formatting and rule checks
+(cd src-tauri && cargo test --workspace)   # tests
+npm run build:ui -- --dev  # rebuild the Rust interface while developing
 ```
 
 Contributing rules live in the `AGENTS.md` files at the root and in each

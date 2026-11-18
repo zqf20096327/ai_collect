@@ -10,7 +10,7 @@
 
 <!-- live-stats:start -->
 
-⭐ **3,728** GitHub stars ([github.com/nicedreamzapp](https://github.com/nicedreamzapp)) · ⬇️ **50,990** all-time downloads ([huggingface.co/divinetribe](https://huggingface.co/divinetribe))
+⭐ **3,733** GitHub stars ([github.com/nicedreamzapp](https://github.com/nicedreamzapp)) · ⬇️ **52,748** all-time downloads ([huggingface.co/divinetribe](https://huggingface.co/divinetribe))
 
 <!-- live-stats:end -->
 
@@ -122,7 +122,7 @@
 | App | Live since | Downloads | App Store | Google Play | New on iPhone, last 7 days | App Store rating |
 |---|---|---:|---:|---:|---:|:---:|
 | **RealTime AI Cam** | Aug 2025 | **2,021** | 1,382 | 639 | 30 | ★ 5.0 (4) |
-| **RealTime Space** | Jul 2026 | **427** | 365 | 62 | 28 | ★ 5.0 (1) |
+| **RealTime Space** | Jul 2026 | **427** | 365 | 62 | 28 | ★ 3.0 (2) |
 | **Song Forge** | Jul 2026 | **422** | 209 | 213 | 5 | – |
 | **Brainforest** | Jul 2026 | **100** | 89 | 11 | 1 | ★ 5.0 (1) |
 | **Hive Strike** | Sep 2026 | **16** | 9 | 7 | 2 | – |

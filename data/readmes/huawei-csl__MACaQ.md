@@ -6,6 +6,8 @@
   <a href="https://huggingface.co/collections/huawei-csl/macaq"><img src="https://img.shields.io/badge/HF-Models-ffd21e?style=flat-square" alt="HF Models"></a>
 </p>
 
+> 📣 **News:** Our MACaQ-quantized **Qwen4-27B** models, compatible with **standard llama.cpp**, are coming soon! We'll share the download link here.
+
 **High-quality GGUF for local inference. Model-agnostic quantization beyond text.**
 
 Quantize and run text, image, video and audio models with llama.cpp, vLLM,

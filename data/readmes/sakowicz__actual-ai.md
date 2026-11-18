@@ -73,8 +73,8 @@ services:
 #      TZ: America/New_York # optional. time zone for CLASSIFICATION_SCHEDULE_CRON, UTC if not set
 #      VALUESERP_API_KEY: your_valueserp_api_key # API key for ValueSerp, required if webSearch tool is enabled
 #      OPENAI_API_KEY:  # optional. required if you want to use the OpenAI API
-#      OPENAI_MODEL:  # optional. required if you want to use a specific model, default is "gpt-5-mini"
-#      OPENAI_BASE_URL:  # optional. required if you don't want to use the OpenAI API but OpenAI compatible API, ex: "http://ollama:11424/v1
+#      OPENAI_MODEL:  # optional. required if you want to use a specific model, default is "gpt-4.1-mini"
+#      OPENAI_BASE_URL:  # optional. required if you don't want to use the OpenAI API but OpenAI compatible API, ex: "http://ollama:11434/v1"
 #      OPENROUTER_API_KEY:  # optional. required if you want to use OpenRouter
 #      OPENROUTER_MODEL:  # optional. default is "deepseek/deepseek-v3.2"
 #      OPENROUTER_BASE_URL:  # optional. default: "https://openrouter.ai/api/v1"
@@ -97,20 +97,20 @@ services:
 #      LLM_TEMPERATURE:  # optional. temperature for LLM calls, e.g. 1 for models that reject other values, or "none" to leave it out for models that reject any value (e.g. Claude Opus 5.5)
 #      ANTHROPIC_API_KEY:  # optional. required if you want to use the Anthropic API
 #      ANTHROPIC_MODEL:  # optional. required if you want to use a specific model, default is "claude-3-5-sonnet-latest"
-#      ANTHROPIC_BASE_URL:  # optional. default: "https://api.anthropic.com/v1
+#      ANTHROPIC_BASE_URL:  # optional. default: "https://api.anthropic.com/v1"
 #      GOOGLE_GENERATIVE_AI_API_KEY:  # optional. required if you want to use the Google Generative AI API
 #      GOOGLE_GENERATIVE_AI_MODEL:  # optional. required if you want to use a specific model, default is "gemini-1.5-flash"
-#      GOOGLE_GENERATIVE_AI_BASE_URL:  # optional. default: "https://generativelanguage.googleapis.com"
-#      OLLAMA_MODEL=llama3.1 optional. required if you want to use an Ollama specific model, default is "phi3.5"
-#      OLLAMA_BASE_URL=http://localhost:11434/api # optional. required for ollama provider
+#      GOOGLE_GENERATIVE_AI_BASE_URL:  # optional. default: "https://generativelanguage.googleapis.com/v1beta"
+#      OLLAMA_MODEL:  # optional. required if you want to use an Ollama specific model, default is "llama3.1"
+#      OLLAMA_BASE_URL: http://localhost:11434/api # optional. required for ollama provider
 #      GROQ_API_KEY:  # optional. required if you want to use the Groq API
-#      GROQ_MODEL:  # optional. required if you want to use a specific model, default is "mixtral-8x7b-32768"
+#      GROQ_MODEL:  # optional. required if you want to use a specific model, default is "llama-3.3-70b-versatile"
 #      GROQ_BASE_URL:  # optional. default: "https://api.groq.com/openai/v1"
 #      ACTUAL_SESSION_TOKEN:  # optional. use instead of ACTUAL_PASSWORD on OpenID servers, see "OpenID servers"
 #      ACTUAL_E2E_PASSWORD:  # optional. required if you have E2E encryption
 #      NODE_TLS_REJECT_UNAUTHORIZED: 0 # optional. required if you have trouble connecting to Actual server 
-#      NOT_GUESSED_TAG=#actual-ai-miss
-#      GUESSED_TAG=#actual-ai
+#      NOT_GUESSED_TAG: '#actual-ai-miss' # optional. keep the quotes: YAML reads an unquoted # as a comment
+#      GUESSED_TAG: '#actual-ai' # optional. keep the quotes
 ```
 
 ## OpenID servers
@@ -145,7 +145,7 @@ Available features:
 - `suggestNewCategories` - Allow suggesting new categories for transactions
 - `classifyOnStartup` - Run classification when the application starts
 - `syncAccountsBeforeClassify` - Sync accounts before running classification
-- `dryRun` - Run in dry run mode (enabled by default)
+- `dryRun` - Run in dry run mode (off unless listed)
 - `rerunMissedTransactions` - Re-process transactions previously marked as unclassified
 - `disableRateLimiter` - Disable Rate Limiter
 
@@ -215,7 +215,7 @@ loops.
             - `category` is an object with the following properties:
                 - `id`: The ID of the category.
                 - `name`: The name of the category.
-2. `amount`: The absolute value of the transaction amount.
+2. `amount`: The absolute value of the transaction amount, in Actual's integer format (cents, so 12.34 is `1234`).
 3. `type`: The type of transaction, either 'Income' or 'Outcome'.
 4. `description`: The notes or description of the transaction. This is taken from `transaction.notes`.
 5. `payee`: The name of the payee associated with the transaction. This is found by matching the payee ID in the
@@ -224,6 +224,17 @@ loops.
 7. `date`: The date of the transaction. This is taken from `transaction.date`.
 8. `cleared`: A boolean indicating if the transaction is cleared. This is taken from `transaction.cleared`.
 9. `reconciled`: A boolean indicating if the transaction is reconciled. This is taken from `transaction.reconciled`.
+10. `rules`: An array of your Actual rules that set a category.
+    - `rule` is an object with the following properties:
+        - `ruleName`: The name of the rule, or `Unnamed rule`.
+        - `categoryName`: The name of the category the rule sets.
+        - `categoryId`: The ID of that category.
+        - `conditions`: An array of the rule's conditions, each with `field`, `op`, `type` and `value`. Payee IDs in
+          `value` are replaced by payee names.
+11. `hasWebSearchTool`: A boolean that is true when the `webSearch` feature is enabled.
+
+Besides the built-in Handlebars helpers, templates can use `eq` (`{{#if (eq type "Income")}}`) and `incIndex`
+(`{{incIndex @index}}` numbers a list from 1).
 
 ## New Category Suggestions
 
@@ -263,7 +274,7 @@ The search results are included in the prompts sent to the LLM, helping it make 
 
 ## Dry Run Mode
 
-The `dryRun` feature is enabled by default. In this mode:
+The `dryRun` feature is off unless you add it to your `FEATURES` array. In this mode:
 - No transactions will be modified
 - No categories will be created
 - All proposed changes will be logged to console

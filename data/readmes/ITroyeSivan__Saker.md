@@ -1,171 +1,137 @@
-<p align="center">
-  <img src="docs/media/project-checks.png" alt="Saker 在 DeepSeek Harness Desktop 中按文档检查并记录执行证据" width="100%">
-</p>
+<h1 align="center">Saker</h1>
 
-<h1 align="center">Saker · 猎隼</h1>
-
-<p align="center"><strong>不止会聊测试，而是把每项要求推进到有出处、有动作、有结论。</strong></p>
+<p align="center"><strong>让 AI 专注分析，让安全测试少些重复工作。</strong></p>
 
 <p align="center">
-  <a href="https://github.com/ITroyeSivan/Saker/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/ITroyeSivan/Saker?label=release"></a>
-  <img alt="Desktop" src="https://img.shields.io/badge/DeepSeek%20Harness-0.2.1--rc.2-4b74d9">
-  <img alt="License" src="https://img.shields.io/badge/license-MIT-2f7d5b">
+  <a href="https://github.com/ITroyeSivan/Saker/releases/latest"><img alt="Saker v0.6.3" src="https://img.shields.io/badge/Saker-v0.6.3-4f66ee"></a>
+  <img alt="DeepSeek Harness Desktop 0.2.2-rc.1" src="https://img.shields.io/badge/DeepSeek%20Harness-0.2.2--rc.1-18243b">
+  <img alt="Windows 10 / 11" src="https://img.shields.io/badge/Windows-10%20%2F%2011-2878d7">
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-16a085"></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/ITroyeSivan/Saker/releases/latest"><strong>下载</strong></a>
-  ·
-  <a href="docs/getting-started.md">安装</a>
-  ·
-  <a href="docs/features.md">功能</a>
-  ·
-  <a href="docs/boundaries.md">边界</a>
-  ·
-  <a href="https://github.com/ITroyeSivan/Saker/issues">反馈</a>
+  <a href="https://github.com/ITroyeSivan/Saker/releases/latest">下载</a> ·
+  <a href="#为什么做-saker">设计理念</a> ·
+  <a href="#三种场景">使用场景</a> ·
+  <a href="#从想法到实际操作">功能与界面</a> ·
+  <a href="#安装与更新">安装</a> ·
+  <a href="docs/release-v0.6.3.md">更新日志</a>
 </p>
 
-Saker 是运行在 [DeepSeek Harness Desktop](https://github.com/deepseek-ai/deepseek-harness) 上的安全测试工作台。它把目标、测试要求、受管浏览器、请求回执、检查结论和导出材料放在同一个会话里，既支持按现有文档逐项检查，也支持 SRC、护网和授权研究中的具体问题。
+Saker 是 [DeepSeek Harness Desktop](https://github.com/deepseek-ai/deepseek-harness) 的安全测试插件，面向 **SRC 挖掘、授权攻防、项目案例测试和 CTF**。
 
-## 为什么是 Saker
+给出目标、材料和关注点，就可以开始工作。模型分析线索、选择工具并验证假设；你随时补充业务信息或调整方向。Saker 将浏览器、测试资料、按需协作和执行记录接在同一个聊天入口，减少切换工具、整理材料和重复说明的时间。
 
-| 常见问题 | Saker 的处理 |
-| --- | --- |
-| **文档看了，检查却散在聊天里** | Word、Excel 和文本在本地解析；要求、位置、修订和检查状态进入同一条项目运行线 |
-| **只看到“已完成”，不知道实际做了什么** | 检查绑定真实动作、观察或问题引用；失败、缺条件和复用观察分别记录 |
-| **浏览器点得到，范围和证据却说不清** | 受管 Chrome for Testing 通过 CDP 工作，请求在发出前检查目标范围；不拿 curl 猜测浏览器结果 |
-| **任务很长，恢复后容易重复或漏账** | 暂停、继续、旧队列失效、未知写入核对、历史运行和离线导出都有独立状态 |
-| **报告要重跑一遍才能生成** | 从已保存的来源快照、回执、检查项和问题生成报告，导出本身不访问目标 |
+当前版本 **0.6.3**，适配官方 Desktop **0.2.2-rc.1**。
 
-## 一条完整的测试闭环
+![Saker 聊天入口：选择场景，说明目标和关注点后开始工作](docs/media/main-session.png)
 
-```mermaid
-flowchart LR
-  A[目标与环境] --> B[测试文档与已有资料]
-  B --> C[整理检查项]
-  C --> D[受管 CfT 或可计量请求]
-  D --> E[动作回执与页面观察]
-  E --> F{当前结论}
-  F -->|问题成立| G[关联问题与复核证据]
-  F -->|缺少条件| H[记录缺口并继续其它项]
-  F -->|未发现问题| I[保留实际动作与观察]
-  G --> J[导出报告、检查表和来源清单]
-  H --> J
-  I --> J
+> 项目正在快速迭代，仅供个人学习与授权实验，暂不建议用于生产环境或正式项目交付。
+
+## 为什么做 Saker
+
+一次安全测试往往要在浏览器、请求报文、源码和工具输出之间反复切换。随着线索出现，测试人员还会更换账号、补充业务规则、调整研究方向。AI 已经能承担其中不少分析和操作，工具需要跟上这种工作方式。
+
+Saker 以 dsh 的会话、模型和工具机制为基础，围绕安全测试补充资料管理、浏览器操作、案例执行、比赛环境和结果查看。我们的设计取舍也落实在这些功能中。
+
+**测试路线跟着线索走。** 可以从网站、整批资产、请求、源码或一个 CVE、PoC 仓库开始。只有目标时先收集信息；已有账号、接口或疑点时直接验证。常规测试、Nday 发现和 0Day 挖掘用于表达关注点，具体方法和顺序由模型结合当前材料选择。
+
+**人参与关键判断。** 测试人员熟悉业务，模型适合持续分析和执行。发现异常后补一句业务背景、切换一个身份，往往就能改变下一步验证的方向。你可以选择自行推进、询问时机和汇报频率，在需要时接手浏览器；独立调查或另一角度复核再交给助手。
+
+**程序记录过程，模型集中分析。** 调用了什么工具、返回了什么、哪一步出错，由程序自动保存。模型无须为每次操作再做一次登记。执行记录与漏洞结论分开：请求成功返回说明操作确实执行过，影响是否成立仍要结合响应、身份和业务行为判断。
+
+**每次调用只带需要的内容。** 提示词示例由你选用和修改，工具按需加载，资料正文按需读取。联网研究可以直接提供公告或仓库链接；离线比赛需要参考材料时，再开启本地资料。查看和导出已有记录不调用模型。
+
+## 三种场景
+
+| 场景 | 从哪里开始 | Saker 提供什么 |
+| --- | --- | --- |
+| **自由测试** | 授权域名、资产清单、账号、报文、JS、源码、CVE 或仓库链接 | 真实浏览器、资产与工具接入、按需协作、执行记录和发现 |
+| **案例测试** | 项目环境说明、评审文档、Excel 案例或粘贴的要求 | 文档导入、逐项检查、缺少条件说明、历史与重测、结果导出 |
+| **比赛模式** | 题面、附件和实例 | 按题管理、本地执行、交互进程、候选答案、可选离线资料 |
+
+自由测试接受多个网址、通配子域、IP/CIDR 和排除项。可以先发现资产，也可以跳过信息收集，直接研究已有线索。例如：
+
+```text
+检查 example.com 授权范围内的 Web 资产，排除 pay.example.com。
+先结合已配置的 FOFA 查找后台、登录入口和遗漏资产，
+根据产品指纹与近期漏洞线索确定优先级，再验证符合条件的入口。
 ```
 
-任务状态行直接显示已完成数量、当前检查、问题数、暂停或继续、历史运行和导出入口。点击“查看检查表”即可看到原文要求、结果以及实际做了什么或缺少什么，不需要进入设置区寻找。
+```text
+阅读这个 CVE 公告和 GitHub PoC，核对我提供的资产是否符合利用条件。
+先说明你的判断，再开展验证；发现异常后保留原始请求和响应供我复核。
+```
 
-![按文档测试状态与检查表](docs/media/project-checks.png)
+```text
+按项目环境说明和 Excel 案例逐项执行，沿用我提供的账号。
+缺条件的项目注明原因，继续其他独立项，最后整理各项结果和依据。
+```
 
-## 两种工作起点
+## 从想法到实际操作
 
-### 按文档测试
+### 把需求写清楚，直接开始
 
-适合验收单、测试用例、检查清单、业务规则和已有环境说明。
+聊天框上方的“写提示词”提供可搜索的需求示例。填写目标和重点，或直接改写完整文字，再复制或插入输入框；**插入不会自动发送**。常用需求可保存为个人模板，支持收藏、导入和导出。
 
-1. 添加 `.docx`、`.xlsx` 或文本，查看解析位置和警告。
-2. 模型把来源整理成检查项，不要求固定表头。
-3. 每项通过受管浏览器或可计量请求执行，并保留对应回执和观察。
-4. 缺账号、缺对象或正文不可得时记录具体条件，其它检查继续。
-5. 结束后查看检查表、问题记录和离线交付包。
+![写提示词：选需求、改关键信息、复制或插入输入框](docs/media/prompt-editor.png)
 
-### 实战挖掘
+### 浏览器、报文和工具一起使用
 
-面向 SRC 挖掘、护网和授权研究，保留三种明确方向：
+Saker 通过独立的 **Chrome for Testing + CDP** 操作真实页面，使用当前浏览器的登录态和前端交互。“我来操作”用于本人接手页面，处理完后继续原任务。
 
-| 方向 | 适用场景 |
-| --- | --- |
-| **常规测试** | 围绕账号、对象、权限、参数和业务步骤做对照验证 |
-| **Nday 发现** | 根据产品或版本线索核对公开漏洞、适用条件与实际影响 |
-| **0Day 挖掘** | 沿页面、JS、接口或源码中的具体疑点继续验证 |
+Burp、Yakit 等 MCP 服务，本机扫描工具，以及 FOFA、Hunter、Quake 资产平台可按需配置接入。发现来自页面、接口还是源码，都能带着已有材料继续分析。dsh 原有的文件、命令和模型能力继续提供支持。
 
-可以从目标地址开始收集入口，也可以直接使用已有账号、接口、HAR、curl 或扫描结果。提示词模板用于快速组织问题；模板可搜索、编辑、复制和插入输入框，发送前始终由你确认。
+### 按项目文档逐项检查
 
-## 从资料到交付
+导入项目环境和测试要求，保留原文出处，再开始执行。支持本地 Word、Excel、文本，以及云文档导出文件或粘贴内容。
 
-| 阶段 | 你可以看到什么 |
-| --- | --- |
-| **添加资料** | 文件、请求、HAR、curl、JS 和扫描结果分别保存；查看不会自动发送给模型 |
-| **开始任务** | 目标、允许范围、排除路径、身份、速率、预算和协作方式 |
-| **执行检查** | 当前检查、真实动作、浏览器观察、HTTP 回执、失败与未知写入 |
-| **复核结论** | 正常对照、异常观察、对象归属、finding 引用和待补证据 |
-| **导出结果** | Markdown 报告、检查表、来源清单、附件和 manifest |
+检查表集中展示要求、执行情况、结论和说明。缺账号、缺数据等条件单独列出，其他独立项继续；暂停、历史和重测分别保留对应记录。需要交付时，从结果页查看完整依据并导出。
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/task-setup.png" alt="任务与预算设置"></td>
-    <td width="50%"><img src="docs/media/materials.png" alt="测试资料与来源"></td>
-  </tr>
-  <tr>
-    <td align="center"><strong>任务与预算</strong></td>
-    <td align="center"><strong>测试资料</strong></td>
-  </tr>
-</table>
+![案例测试：导入环境说明和待检查要求](docs/media/project-documents.png)
 
-## 真实浏览器，不是命令行猜测
+### 比赛围绕题目展开
 
-Saker 使用独立的 Chrome for Testing，通过 CDP 打开、观察、点击、填写、上传下载、处理弹窗和读取相关请求。浏览器路径可在 **应用设置 → 安全配置 → 工具 → Chrome for Testing** 中修改，也可由桌面启动配置指定。
+题面、附件、实例和执行记录按题保存。命令的输入、输出和进程状态分别保留，可以续读长输出，也可以向交互进程继续输入。候选答案单独管理，由用户或平台确认是否通过。
 
-需要浏览器语义的目标请求优先走受管浏览器；不使用 shell curl 代替浏览器自动添加的 Cookie、请求头、重定向、脚本执行和页面状态。确需直接请求时，走 Saker 的可计量 HTTP 入口并保留回执。
+本地资料默认关闭，离线时按需启用。题目附件始终可读，不受参考资料开关影响。支持本机执行；Docker 使用本地已有环境与镜像，不自动下载镜像。
 
-可接入 Burp、Yakit 和其他 MCP 服务。配置存在不等于服务在线，MCP 工作台会分别显示连接状态与实际工具数量。
+![比赛模式：题面、附件、本地执行与候选答案](docs/media/competition-mode.png)
 
-<p align="center">
-  <img src="docs/media/tools.png" alt="安全配置与工具路径" width="88%">
-</p>
+### 按自己的节奏协作
 
-## 结果不靠“任务结束”推断
+“设置”集中管理范围、排除项、账号、询问、汇报、助手和可选预算。你可以让主模型独立工作，也可以为调查、复核等独立任务配置助手及模型；共用本地模型服务时可控制并发。
 
-执行记录、发现的问题和测试资料各自承载不同内容：
+调整额度保留已用量。进度和错误持续可见，阅读已有记录、筛选和导出不额外发起模型总结。
 
-- **执行记录**：工具调用、模型调用、动作状态和目标回执。
-- **发现的问题**：问题说明、复现材料、复核状态和待补证据。
-- **测试资料**：原始文档、请求、响应、截图、下载和其他材料。
-- **用量明细**：工具、模型、Token、缓存读取和实际耗时；不同记账口径分开显示。
+![任务设置：询问时机、汇报方式与助手模型](docs/media/task-settings.png)
 
-“未发现问题”只针对已记录的执行范围。“需进一步确认”“缺少条件”“部分完成”和“不适用”不会被合并成完整安全结论。
+## 安装与更新
 
-![执行记录与问题详情](docs/media/findings.png)
+需要 **Windows 10/11**、官方 DeepSeek Harness Desktop，以及 **Node.js 24.9 或更高版本**。当前适配 Desktop **0.2.2-rc.1**，安装器保留对 **0.2.1-rc.5、0.2.1-rc.2、0.2.0-rc.2** 的支持。
 
-## 本次版本重点
-
-**0.4.113** 集中补齐项目结论、执行安全和交付可复核性：
-
-- 项目检查表直接出现在对话上方，支持当前与历史运行、暂停、继续和导出。
-- 完整阴性结论必须有本次有效动作或明确复用观察；问题结论必须关联已复核 finding。
-- 浏览器重定向、iframe、XHR、新窗口和排除路径在到达目标前受范围检查。
-- HTTP 断线、超时和取消统一收尾；未知写入保留状态并支持人工核对。
-- 请求、回执、浏览器详情、诊断和导出统一处理常见凭据字段。
-- 任务归档严格校验节清单、摘要、表和列；恢复后不会自动重放旧动作。
-- 浏览器动作区分元素失败、正文不可得和真实观察完成，并支持双身份 profile。
-- 文档定义支持幂等批次和依赖事实；ZIP、Office 与单次读取都有明确上限。
-
-完整变化见 [0.4.113 发布说明](docs/release-v0.4.113.md)。
-
-## 安装
-
-当前版本 **0.4.113**，适用于官方 Windows Desktop **0.2.1-rc.2**，同时兼容 **0.2.0-rc.2**。
-
-1. 安装官方 Desktop，完成初始化和模型配置，然后完全退出应用。
-2. 下载 `Saker-0.4.113-desktop.zip`，解压到长期保留的目录。
-3. 在解压目录打开 PowerShell：
+1. 安装并打开 [官方 Desktop](https://github.com/deepseek-ai/deepseek-harness/releases/tag/dsh-v0.2.2-rc.1)，完成初始化和模型配置，再完全退出应用。
+2. 从 [Releases](https://github.com/ITroyeSivan/Saker/releases/latest) 下载 `Saker-0.6.3-desktop.zip` 并解压。
+3. 在解压目录运行，替换成实际应用安装路径：
 
 ```powershell
 node scripts/install-desktop.mjs --desktop-dir "C:/path/to/DeepSeek Harness" --check
 node scripts/install-desktop.mjs --desktop-dir "C:/path/to/DeepSeek Harness"
 ```
 
-安装器通过官方桌面命令完成一次事务安装，保留用户数据、会话、插件选择和 MCP 配置，并刷新桌面的 **Saker (dsh Desktop)** 快捷方式。
+安装器先备份配置，再通过官方命令安装 **15 个插件和根包**，保留会话、账号、个人模板和 MCP 配置，并更新桌面的 **Saker (dsh Desktop)** 快捷方式。升级时移除退役插件，保留历史数据。
 
-需要 Node.js 22.19 及以上的 22.x，或 24 及以上版本。详细升级、Web profile、回退和卸载说明见 [安装指南](docs/getting-started.md)。
+**安装后保留解压目录，尤其是 `dist/desktop`。** 已安装插件会引用其中的包文件。模型、本机工具、浏览器及外部服务按自己的环境配置。
 
-## 使用边界
+| 文档 | 内容 |
+| --- | --- |
+| [安装与首次配置](docs/getting-started.md) | 安装、模型、浏览器及外部服务配置 |
+| [功能说明](docs/features.md) | 聊天入口、三种场景、记录与结果 |
+| [插件清单](docs/plugin-list.md) | 组件及其职责 |
+| [更新日志](docs/release-v0.6.3.md) | 当前版本变化 |
 
-Saker 面向个人学习、授权实验和安全研究，不建议直接用于生产环境或未经复核的正式项目交付。
+## 反馈与许可
 
-- 只对本人环境或已明确授权的目标使用。
-- 模型和工具可能误判；关键结论需要结合原始请求、身份和业务对象复核。
-- 配置、任务材料和导出包可能含 Token、Cookie、报文和源码，分享前应检查。
-- 严格 token 硬预算依赖宿主能够完整计量每次模型传输；无法可靠计量时会明确限制，不做虚假承诺。
+欢迎通过 [Issues](https://github.com/ITroyeSivan/Saker/issues) 反馈问题。描述使用场景、预期行为和实际表现，有助于定位；分享日志或截图前，请遮蔽账号、Cookie、Token 和个人信息。
 
-Saker 自有代码采用 [MIT](LICENSE)。随附资料和第三方规则使用各自许可，详见 [第三方说明](THIRD_PARTY_NOTICES.md)。
+仅在拥有或已明确授权的环境中使用。Saker 自有代码采用 [MIT](LICENSE)，第三方内容遵循各自许可证，见 [第三方说明](THIRD_PARTY_NOTICES.md)。感谢 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 提供的开源基础。

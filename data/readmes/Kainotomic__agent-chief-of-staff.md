@@ -82,13 +82,14 @@ The design below is a set of small, boring mechanisms that close each of these g
 | doc | covers |
 |---|---|
 | [docs/architecture.md](docs/architecture.md) | Roles, components, state layout, the pass procedure |
-| [docs/ledger.md](docs/ledger.md) | Row format, queues, notes, closing with proof, the checker, generated views, timestamps |
+| [docs/ledger.md](docs/ledger.md) | Row format, queues, "what's stuck", notes, closing with proof, the checker, generated views, timestamps |
 | [docs/waking.md](docs/waking.md) | The wake gate, durable timers, missed deliveries, a busy coordinator, the event feed |
 | [docs/dispatch.md](docs/dispatch.md) | Routing and placement, workspaces, the duplicate guard, briefs, the WAIT protocol, finishing and archiving |
-| [docs/guardrails.md](docs/guardrails.md) | Action tiers, the hard gate, approvals and holds, purchases, outside contact, secrets, destructive ops, infra changes, stop |
+| [docs/guardrails.md](docs/guardrails.md) | Action tiers, the hard gate, approvals and holds, approving PRs, purchases, outside contact, asking a teammate, secrets and rotation, destructive ops, infra changes, stop |
 | [docs/merge-gate.md](docs/merge-gate.md) | The merge decision, holds, deploy-on-merge repos, review bot parsing |
+| [docs/verification.md](docs/verification.md) | Cheap checks, end-to-end runs, the verify skill, test discipline, property tests, differential cutovers, latency |
 | [docs/intake-and-hygiene.md](docs/intake-and-hygiene.md) | Tracker intake, the backlog pump, stuck sweeps, drift, schedule health, doc lint, dead workers, lesson recall |
-| [docs/sessions-and-recovery.md](docs/sessions-and-recovery.md) | Lease, companions, session registry, boot brief, stop-everywhere, rollover, rollbacks |
+| [docs/sessions-and-recovery.md](docs/sessions-and-recovery.md) | Lease, companions, session registry, boot brief, stop-everywhere, placement, rollover, rollbacks |
 | [docs/adapting.md](docs/adapting.md) | Mapping each component to your tools; minimal vs full build; what to build first |
 | [docs/lessons.md](docs/lessons.md) | Pitfalls found in production, generalized |
 

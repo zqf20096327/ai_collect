@@ -32,7 +32,7 @@ notes can land in the piano track. It also writes performance MIDI. This means t
 they are not quantized to a beat. If you want something you can play from, like sheet music, I would recommend
 [Songscription](https://www.songscription.ai) or [Klangio](https://klang.io). They are both great tools.
 
-![Composite F1 on all nine benchmark sets, and each system on each set it reports](docs/figures/bench_all_sets.png)
+![Composite F1 on all nine benchmark sets, and each system on each set it reports](https://raw.githubusercontent.com/kobimusic/dettato/main/docs/figures/bench_all_sets.png)
 
 The benchmark is the eight sets from Table 2 of the MuScriptor paper, plus the Slakh2100 test set. The eight sets are Bach10,
 Dagstuhl ChoirSet, PHENICX-Anechoic, RWC Popular, RWC Classical, RWC Genre, RWC Jazz and RWC Royalty-Free. I scored them with the
@@ -46,7 +46,7 @@ rules from that paper. The composite is the mean of the note onset, note frame, 
 Mirelo A2M v1.1 Pro reports three of the sets: PHENICX-Anechoic, RWC Classical and RWC Royalty-Free. On those three, dettato
 scores 60.8. Mirelo A2M scores 56.1 (Mirelo published that number), MuScriptor scores 47.4 and YourMT3+ scores 45.7.
 
-![The three sets Mirelo A2M reports: composite and each measure for dettato, Mirelo A2M, MuScriptor and YourMT3+](docs/figures/bench_mirelo_sets.png)
+![The three sets Mirelo A2M reports: composite and each measure for dettato, Mirelo A2M, MuScriptor and YourMT3+](https://raw.githubusercontent.com/kobimusic/dettato/main/docs/figures/bench_mirelo_sets.png)
 
 On the eight MuScriptor sets alone, dettato scores 58.4. MuScriptor scores 44.6 and YourMT3+ scores 41.1, which are the numbers
 from the paper. The tables for each set are on the [dettato](https://huggingface.co/kobimusic/dettato) and
@@ -65,7 +65,7 @@ dettato song.mp3 -o out/        # -> out/song.mid + out/song.json
 
 The weights download from the Hugging Face Hub on first use ([the dettato collection](https://huggingface.co/collections/kobimusic/dettato)).
 
-![Beethoven, Symphony No. 5, i.: dettato's MIDI, one lane per instrument track plus timpani](docs/figures/example_tracks.png)
+![Beethoven, Symphony No. 5, i.: dettato's MIDI, one lane per instrument track plus timpani](https://raw.githubusercontent.com/kobimusic/dettato/main/docs/figures/example_tracks.png)
 
 ## Models
 
@@ -121,7 +121,7 @@ Set `DETTATO_WEIGHTS` to a folder holding the four model repos (`dettato/`, `det
 
 ## How it works
 
-![The pipeline: transcriber, evidence repairer, grouper and drum model](docs/figures/pipeline.png)
+![The pipeline: transcriber, evidence repairer, grouper and drum model](https://raw.githubusercontent.com/kobimusic/dettato/main/docs/figures/pipeline.png)
 
 1. **Transcriber.** A pitch-equivariant lane network reads a harmonic log-frequency spectrogram and gives onset, frame and offset
    probabilities for every key, for two voices per key, at 20 ms. The song is processed in overlapping 8 s windows, and notes come
@@ -154,7 +154,7 @@ The example recordings in the figures are in the public domain: Beethoven's Symp
 
 ## Licence
 
-Code and model weights: Apache-2.0 (see [LICENSE](LICENSE) and [NOTICE](NOTICE)). The model cards list the datasets each model was
+Code and model weights: Apache-2.0 (see [LICENSE](https://github.com/kobimusic/dettato/blob/main/LICENSE) and [NOTICE](https://github.com/kobimusic/dettato/blob/main/NOTICE)). The model cards list the datasets each model was
 trained with and their licences. Some of the grouper's and the drum model's training datasets carry non-commercial terms.
 
 ## Citation
@@ -162,7 +162,7 @@ trained with and their licences. Some of the grouper's and the drum model's trai
 ```bibtex
 @software{dettato2026,
   title  = {Dettato: multi-instrument audio-to-MIDI transcription},
-  author = {{KobiMusic}},
+  author = {Mills, Nathan},
   year   = {2026},
   url    = {https://github.com/kobimusic/dettato}
 }

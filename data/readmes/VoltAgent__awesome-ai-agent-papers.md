@@ -62,41 +62,11 @@ Hundreds of papers are published on arXiv every week, and a growing number of th
 <br>
 
 
-## AI Design + Build Ecosystem Tools
 
-
-<br/>
-
-You ship products with AI, but every launch still dies quietly because nobody posts about it. [EveryFeed](https://everyfeed.ai/) plugs your AI assistant into a social workspace that drafts, schedules, and publishes across 35+ channels — no agency, no marketing hire.
-
-<a href="https://everyfeed.ai/">
-<img src="https://cdn.voltagent.dev/awesome-repo/everyfeed-social.png" alt="everyfeed"  /><br/>
-</a>
-
-<br/>
-
-
-
-<a href="https://launchkit.getdesign.md/">
-<img src="https://cdn.voltagent.dev/awesome-repo/website-starter-kit-banner-dark-0315e5f9c1.png" alt="launchkit"  /><br/>
-</a>
-
-<br/>
-
-
-<a href="https://mobile-starterkit.getdesign.md/">
-<img src="https://cdn.voltagent.dev/awesome-repo/mobile-starter-kit-banner-light-450ba0a9b0.png" alt="mobilekit"  /><br/>
-</a>
-
-<br/>
-
-<details open id="multi-agent">
-<summary><h3 style="display:inline">Multi-Agent (56)</h3></summary>
-
-<br>
 
 | Paper | arXiv ID |
 |---|:---:|
+| **[NeuroMAS: Multi-Agent Systems as Neural Networks with Joint Reinforcement Learning](https://arxiv.org/pdf/2605.16757)** - Wires role-free LLM agents into layers like a neural network, where agents pass text messages to the next layer and each agent's own LoRA adapter is trained jointly with REINFORCE using only the final answer's reward. Larger systems are grown step by step from smaller trained ones, which worked better than training them from scratch, and it beat inference-time and trained baselines on the reasoning, knowledge, and coding benchmarks tested with small frozen backbones (0.6B to 7B). | <a href="https://arxiv.org/abs/2605.16757"><img src="https://img.shields.io/badge/arXiv-2605.16757-b31b1b.svg" alt="arXiv" /></a> |
 | **[AutoSR: Automatic Symbolic Regression by Searching Research States](https://arxiv.org/pdf/2608.16876)** - Finds equations from data by searching over research states: each state holds a candidate equation, the reason for it, computational checks, failed attempts, and an independent review, and a proposer agent and a reviewer agent work on these states inside a tree search. It recovers the exact equations for three cp3-bench problems that 12 published symbolic-regression systems did not solve, and writes an auditable report for each run. | <a href="https://arxiv.org/abs/2608.16876"><img src="https://img.shields.io/badge/arXiv-2608.16876-b31b1b.svg" alt="arXiv" /></a> |
 | **[AgonAlpha: Autonomous Alpha Discovery via Prompt Economy and Scalable Agentic Search](https://arxiv.org/pdf/2608.11250)** - A proposer agent writes each trading factor as a full research record (hypothesis, executable expression, platform results, rationale), and a separate reviewer with fresh context re-runs the evaluation and can veto made-up claims. On WorldQuant BRAIN it got 17 SPECTACULAR-grade alphas out of 60 submissions across five users and six model backends, with Sharpe up to 3.48. | <a href="https://arxiv.org/abs/2608.11250"><img src="https://img.shields.io/badge/arXiv-2608.11250-b31b1b.svg" alt="arXiv" /></a> |
 | **[Agon: An Autonomous Large-Scale Omnidisciplinary Research System Built on Prompt Economy](https://arxiv.org/pdf/2606.24177)** - Treats prompt engineering as an engineering discipline rather than an art, minimizing human time while expecting maximum output. Carries the smallest prompt footprint among cross-disciplinary autoresearch systems (18 roles, 230.6 KiB total), has run across 10+ research fields without modification, and the longest observed run went 30 days unattended. | <a href="https://arxiv.org/abs/2606.24177"><img src="https://img.shields.io/badge/arXiv-2606.24177-b31b1b.svg" alt="arXiv" /></a> |
@@ -170,6 +140,7 @@ You ship products with AI, but every launch still dies quietly because nobody po
 
 | Paper | arXiv ID |
 |---|:---:|
+| **[Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction](https://arxiv.org/pdf/2611.10439)** - Turns trajectories from many users and different agents into lessons, and tags each lesson with who it applies to (one user-agent pair, a user, an agent, or everyone) so useful lessons get shared while private user facts stay put. Comes with CrossLearnBench, which pairs coding and terminal tasks with user preferences and privacy probes. | <a href="https://arxiv.org/abs/2611.10439"><img src="https://img.shields.io/badge/arXiv-2611.10439-b31b1b.svg" alt="arXiv" /></a> |
 | **[SPARK: Adaptive Parametric Knowledge Participation for Faithful Retrieval-Augmented Generation](https://arxiv.org/pdf/2606.27786)** - Keeps the LLM frozen and trains a tiny policy (about 0.01% extra parameters) that turns each FFN sublayer's contribution up or down at every decoding step, so a RAG model leans on the retrieved text instead of conflicting knowledge stored in its weights. Across six datasets it gives more faithful answers than competitive baselines. | <a href="https://arxiv.org/abs/2606.27786"><img src="https://img.shields.io/badge/arXiv-2606.27786-b31b1b.svg" alt="arXiv" /></a> |
 | **[Corpus2Skill: Don't Retrieve, Navigate — Distilling Enterprise Knowledge into Navigable Agent Skills for QA and RAG](https://arxiv.org/pdf/2604.14572)** - Compiles a corpus offline into a hierarchical tree of Agent Skills that the LLM agent navigates at query time, replacing retrieval with skill-tree traversal. | <a href="https://arxiv.org/abs/2604.14572"><img src="https://img.shields.io/badge/arXiv-2604.14572-b31b1b.svg" alt="arXiv" /></a> |
 | **[Semantic Level of Detail for Knowledge Graphs: Discovering Abstraction Boundaries via Spectral Heat Diffusion](https://arxiv.org/pdf/2603.08965)** - Gives an agent a continuous zoom control over a knowledge graph, so it can move between broad and detailed views without hand-tuning a community-detection resolution parameter. Proves the abstraction levels stay consistent as it zooms and shows stable boundary detection on noisy graphs. | <a href="https://arxiv.org/abs/2603.08965"><img src="https://img.shields.io/badge/arXiv-2603.08965-b31b1b.svg" alt="arXiv" /></a> |
@@ -241,6 +212,7 @@ You ship products with AI, but every launch still dies quietly because nobody po
 
 | Paper | arXiv ID |
 |---|:---:|
+| **[Measuring AI Agents as Teammates with Collaborative Intelligence](https://arxiv.org/pdf/2611.02633v1)** - Evaluates AI agents as teammates across eight dimensions, scoring them on tasks they can solve alone. The benchmark has 160 public tasks and 80 held-out tasks. | <a href="https://arxiv.org/abs/2611.02633v1"><img src="https://img.shields.io/badge/arXiv-2611.02633-b31b1b.svg" alt="arXiv" /></a> |
 | **[FeatureBench: Benchmarking Agentic Coding for Complex Feature Development](https://arxiv.org/pdf/2602.10975)** - Evaluates coding agents on complex feature implementation across real repositories using executable tests. Its test-driven construction method extracts feature-level tasks that can span multiple commits and pull requests. | <a href="https://arxiv.org/abs/2602.10975"><img src="https://img.shields.io/badge/arXiv-2602.10975-b31b1b.svg" alt="arXiv" /></a> |
 | **[Super Research: Answering Highly Complex Questions with Large Language Models through Super Deep and Super Wide Research](https://arxiv.org/pdf/2603.00582v2)** - Tests research agents on 300 expert-written questions that require planning, broad evidence gathering, and in-depth investigation across sources. The public benchmark includes 3,600 reports from twelve systems for inspecting how they approach these tasks. | <a href="https://arxiv.org/abs/2603.00582v2"><img src="https://img.shields.io/badge/arXiv-2603.00582-b31b1b.svg" alt="arXiv" /></a> |
 | **[SciΠvot: Benchmarking Principal-Investigator Judgment at Pivotal Moments of Scientific AutoResearch Agents](https://arxiv.org/pdf/2610.21082)** - A benchmark of 248 research-judgment questions, taken from six months of senior researchers correcting LLM agents on 26 real projects in 6 fields. Frontier models tend to keep the agent's original plan: 4 of 5 models score below random, and the best model gets 63.5% against 73.4% for newcomer researchers. | <a href="https://arxiv.org/abs/2610.21082"><img src="https://img.shields.io/badge/arXiv-2610.21082-b31b1b.svg" alt="arXiv" /></a> |
@@ -348,6 +320,4 @@ You ship products with AI, but every launch still dies quietly because nobody po
 | **[Spotter: Let the Embodied Model Lead, and the VLM Reflect for It](https://arxiv.org/pdf/2609.36808)** - Lets a robot policy keep acting on its own while a small local model screens each action chunk in parallel; only when an error is confirmed does a VLM step in, repair it with simple motion primitives, and hand control back. With GPT as the VLM, this raises success by 5.6 and 7.5 points for two policies on the RoboCasa benchmark and from 53% to 83% on a real robot. | <a href="https://arxiv.org/abs/2609.36808"><img src="https://img.shields.io/badge/arXiv-2609.36808-b31b1b.svg" alt="arXiv" /></a> |
 | **[TabAgent: Distilling LLM Agent Components into Cheap Classifiers](https://arxiv.org/pdf/2602.16429)** - Trains a small classifier on an agent's own successful runs to make its repeated fixed-choice decisions, like which tools to shortlist or which model to route to, instead of calling an LLM each time. On AppWorld tool shortlisting it recovers almost all the tools the GPT-5.4 shortlister picked, at about 1,000x lower latency and 100,000x lower cost per decision. | <a href="https://arxiv.org/abs/2602.16429"><img src="https://img.shields.io/badge/arXiv-2602.16429-b31b1b.svg" alt="arXiv" /></a> |
 | **[Jev in the Wild: A Data-Driven Analysis of the Jev Model's Functionality, Applications and Ecosystem](https://arxiv.org/pdf/2609.30216)** - Surveys 2,170 public GitHub Jev projects to show which application domains use typed decisions and how those uses spread during the model's early growth. | <a href="https://arxiv.org/abs/2609.30216"><img src="https://img.shields.io/badge/arXiv-2609.30216-b31b1b.svg" alt="arXiv" /></a> |
-| **[Steer, Don't Solve: Training Small Critic Models for Large Code Agents](https://arxiv.org/pdf/2606.21811)** - Trains 4B and 8B critic models with SFT and DPO to identify errors in a coding agent's trajectory and give high-level guidance every few steps at inference time, without producing actions. The critics improve SWE-bench Verified resolve rates of six larger agents, by up to 16 points, and lower inference cost for some agents by finishing tasks in fewer steps. | <a href="https://arxiv.org/abs/2606.21811"><img src="https://img.shields.io/badge/arXiv-2606.21811-b31b1b.svg" alt="arXiv" /></a> |
-| **[Training Agents to Evolve with Their Harness: TaoLive Digital Avatar Agent Technical Report](https://arxiv.org/pdf/2608.15763v3)** - Trains a compact agent while varying its Skills, tool schemas, prompts, and Hooks, so it can handle later harness changes without retraining for each edit. Tests developer-reviewed updates with frozen model weights and reports a live-commerce deployment. | <a href="https://arxiv.org/abs/2608.15763"><img src="https://img.shields.io/badge/arXiv-2608.15763-b31b1b.svg" alt="arXiv" /></a> |
-| **[Graph of States: Solving Abductive Tasks with Large Language Models](https://arxiv.org/pdf/2603.21250)** - Organizes mu
+| **[Steer, Don't Solve: Training Small Critic Models for Large Code Agents](https://arxiv.org/pdf/2606.21811)** - Trains 4B and 8B critic models with SFT and DPO to identify errors in a coding agent's trajectory and give high-level guidance every few steps at inference time, without producing actions. The critics improve SWE-bench Verified resolve rates of six larger agents, by up to 16 points, and lower inference cos

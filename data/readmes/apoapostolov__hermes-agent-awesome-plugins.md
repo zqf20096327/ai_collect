@@ -10,12 +10,12 @@
 
   <h1>Hermes Agent Awesome Plugins</h1>
 
-  <p>Give Hermes Desktop useful tools for provider limits, long sessions, feeds, memory, and the Windows desktop itself. Twenty-three plugins, twenty-two of them with a public edition.</p>
+  <p>Give Hermes Desktop useful tools for provider limits, long sessions, feeds, memory, the Windows desktop itself, and the agent's own habit of doing everything in one thread. Twenty-four plugins, twenty-three of them with a public edition.</p>
 
   <p>
     <a href="#readme"><img src="https://img.shields.io/badge/Type-Plugin%20pack-555" alt="Type: Plugin pack"></a>
     <a href="./package.json"><img src="https://img.shields.io/badge/Language-JavaScript-555" alt="Language: JavaScript"></a>
-    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.18-blue" alt="Pack: 1.27.17"></a>
+    <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Pack-1.27.26-blue" alt="Pack: 1.27.26"></a>
     <a href="https://github.com/apoapostolov/hermes-agent-awesome-plugins/releases"><img src="https://img.shields.io/badge/Last%20release-2026--11--16-blue" alt="Last release: 2026-10-31"></a>
     <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT"></a>
   </p>
@@ -27,15 +27,17 @@
 </div>
 
 ## Latest plugin update
+**Delegation Nudge 1.3.0** is listed for the first time, as `hermes-delegation-nudge` in the Hermes plugin catalog, from a public edition that carries the same middleware as the personal build with nothing cut: one `llm_request` middleware, three hooks and a single read of `config.yaml`, with no app DOM, no writes and no network calls. It is the first plugin in this pack whose whole job is the agent's own habits rather than a surface. Past ten tool results in a turn with no dispatch it appends one note to the turn's user message naming the routes from your model map, with provider, model and free or cheap on each; at twenty-five results a second note names the bill in context carried. The note also asks the turn to dispatch or say in one sentence why not, which is what makes a decline readable later. Both editions gain the engraving above and a written record in the changelog.
+
+**Session Retitler 1.1.3** retitles a session after 10 titleable user messages by default, down from 20, so the name catches up with a topic change sooner. Nothing else moves: the delta trigger, the user-title wall, the digest and the `sessionretitler_title` auxiliary slot are the same as in 1.1.2, and a per-profile `interval` setting still overrides the default. Both editions ship it; update and restart the backend once for the new default to load.
+
+**Radio Plus 1.5.4** writes its station log under the active Hermes home's `plugin-data/radio-plus` directory and checks every outbound stream address and redirect with Hermes' URL-safety policy, so a profile-scoped backend cannot log to the wrong home and the probe and track-title routes cannot be used to reach a private network. Nothing in the picker changes. Reinstall or update both editions; the backend restart is still yours.
+
 **Next Steps 1.0.4** fixes two things under the chips that only showed up in a long session, and its catalog edition **hermes-next-steps 1.1.1** carries the same fixes. The renderer held one state entry for every options block it had ever drawn and one carry queue for every session, and released neither, so a window left open for hours kept the state of replies that had long since scrolled away; both maps now drop what nobody is watching once they pass 64 blocks or 16 sessions, and never a block that is mid-click or still subscribed. Separately, a reply whose options arrived pre-ticked by the decision classifier lost those ticks when the window reloaded, because the first selection was only ever applied in memory; it is written now, like a click. Nothing visible changes: the chips, the Recommended tag, the RISKY pill and the carried-forward row all behave as before. Update if you keep a session open for hours; the pack pin moves with it.
 
 **Catalog Redesign 1.0.12** turns the Capabilities page into a wide, one-row-per-item list for skills, plugins, connectors and tools. Each row carries a thumbnail, the name with its description, and one column that matters for that kind (tags or the short name). Artwork is real: a published plugin borrows the catalog's hero image, and a plugin outside the catalog uses a logo its own folder ships, so rows stop showing initials where the plugin has a face. Hover a row for a preview, click for a detail panel that slides in from the right with the hero image across its header, a 44px section rail, and the on/off switch beside Close. It adds its own route, sidebar row and palette entry and leaves the native Capabilities page alone. The online catalog now loads reliably, the default view is online, and there's an "Update all" button in the header. See [its README](personal/catalog-redesign/README.md).
 
 **Queue Container Fix 1.0.0** moves the per-message controls of a queued prompt from the end of its row to the start of its first line, where they stay on screen. Steer, edit, remove and send now sit before the text, resting at half strength and coming to full on hover or keyboard focus. The control column takes only the width of the buttons a row actually has, so a gateway-owned entry with no controls keeps its message at the left margin. Background commands, subagents and artifact rows are untouched. It ships personal-only (catalog review can't take a stylesheet over app markup). Enable it in Capabilities, Plugins, and the change lands without a restart.
-
-**Radio Plus 1.0.0** is an extended edition of the Radio plugin bundled with Hermes Desktop: keep the oscilloscope, transport, artist links and dictation-aware pause, and make the rest work for any station. The list is editable (name and stream address together), any `http` or `https` stream can be added and is checked before it is saved, the picker searches Radio Browser, its popular list, the Shoutcast directory and TuneIn, a Cyrillic query is also sent transliterated so `Хоризонт` finds `BNR Horizont`, HLS stations play through a bundled `hls.js` 1.6.15, and a station that won't play says why in the panel. A settings page adds "start the last station on launch" (off by default). Disable the bundled Radio plugin first (same status-bar slot). Enable Radio Plus in Capabilities, Plugins, toggle it off and on so the renderer loads the new module, then restart once so the dashboard mounts its routes.
-
-**Next Steps 1.0.1** makes the chips actually show up. The plugin's prompt rule (the one that asks a reply to end in chips instead of "say the word and I'll…") used to measure 2,335 characters with a decision classifier loaded, past Hermes' 2,200-character cap, so Hermes dropped the whole rule and the chips only appeared when the model chose them. The rule is terser now (1,828 characters with recommendations), `MAX_CHARS` sits at 2,100, and the section drops its optional paragraphs rather than overflowing. Tick several chips and one send delivers them together, a Recommended tag marks the options worth taking now, an amber RISKY pill flags the ones that could damage something, a dim second line explains a label that alone would misread, and carried-forward options from earlier replies ride along with an age label and a dismiss cross. Update if you installed 1.0.0; the tools were never affected.
 
 Restart Hermes Desktop after updating; the Python and desktop halves do not reload in place.
 
@@ -87,7 +89,7 @@ Agent rules for these trees live in [AGENTS.md](AGENTS.md). Catalog blockers for
 
 Each row links the personal edition you get from the pack, plus the public catalog edition where one exists.
 
-Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.20). **better-capabilities**, **prompt-enhance** and **voice-gate** live in this repo but are **not** in the pack, so install any of them separately if you want it. The pack pins the personal tree for all nineteen.
+Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.22). **better-capabilities**, **prompt-enhance** and **voice-gate** live in this repo but are **not** in the pack, so install any of them separately if you want it. The pack pins the personal tree for all nineteen.
 
 ### Status Bar
 
@@ -106,6 +108,7 @@ Nineteen plugins are pinned in `hermes-pack.yaml` (pack version 1.27.20). **bett
 | [Vercel Agent Desktop Support](personal/vercel-agent-desktop-support/README.md) · [public](public/vercel-agent-desktop-support/README.md) | Operate Windows apps through the accessibility tree: click, fill, select, toggle, scroll, key combos, windows, clipboard. Headless by default, so it never takes focus or the cursor. **Windows only.** |
 | [Memory Review](personal/memory-review/README.md) · [public](public/memory-review/README.md) | Checkbox staged memory writes. Approve or reject from a dialog. |
 | [CDP Manager](personal/cdp-manager/README.md) · [public](public/cdp-manager/README.md) | Launch, stop, and recheck local Chrome CDP ports from the status bar, with a profile per port and one port a backend supervisor keeps alive. The `cdp` tool does the same from chat and repairs a Chrome profile-picker launch. |
+| [Delegation Nudge](personal/delegation-nudge/README.md) · [public](public/hermes-delegation-nudge/README.md) | A live reminder when a turn keeps working inline: past ten tool results with no dispatch, the model gets one note naming the routes it would use, read from the configured model map with provider, model and price, and a second note at twenty-five results naming the bill. It asks the turn to dispatch or say why not, so a decline is recorded instead of silently taken. Silent in subagents, silent after a dispatch, two notes per turn at most. |
 | [Jev Routing](personal/hermes-jev-routing/README.md) · [public](public/hermes-jev-routing/README.md) | Per-turn model routing from TypeSafe Jev. The listed edition rewrites the model and the reasoning level on the request the turn is already bound to, and reports a pick on another provider rather than sending it; the personal edition moves the live session and also reads the provider catalogue, Codex quota and private pricing. |
 
 ### Capabilities and catalog
@@ -205,6 +208,7 @@ This is an independent community project. It does not change Hermes Agent core, 
 - [RSS Reader](personal/rss-reader/README.md)
 - [Session Retitler](personal/sessionretitler/README.md)
 - [Radio Plus](personal/radio-plus/README.md)
+- [Delegation Nudge](personal/delegation-nudge/README.md) · [public edition](public/hermes-delegation-nudge/README.md)
 
 ## Support
 

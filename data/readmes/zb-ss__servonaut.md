@@ -209,6 +209,7 @@ All screenshots and the launch video were recorded with `--demo` active, which r
 
 ### Convenience
 
+- **Your own colour themes** — drop a small TOML file into `~/.servonaut/themes/` and pick it in Settings → Appearance, with a live readability check; `servonaut theme` lists, exports and validates themes. → [docs](docs/themes.md)
 - **Instance caching** — stale-while-revalidate for fast startup.
 - **Auto-update** — startup check + one-click update (`servonaut --update`). Stable installations are offered stable releases only; see [Release candidates](docs/release-candidates.md).
 - **Terminal shortcut** — `servonaut --install-desktop` adds a launcher that opens the TUI in a terminal: **Servonaut (terminal)** on Linux, **Servonaut Terminal** in `~/Applications` on macOS.
@@ -329,6 +330,17 @@ The TUI opens to a unified instance list (AWS + OVH + Hetzner + custom servers i
 - Browse Files (inline) · Run Command · SSH Connect · SCP Transfer
 - View Scan Results · View Logs (`tail -f`) · AI Analysis · Monitoring (`F`)
 - Ban IP · Manage/Verify SSH Ref
+
+**SCP Transfer** copies files and folders in either direction. Use **Browse...**
+beside Source or Destination to pick a path, or type a path to rename the copy.
+Destination pickers choose folders. Browsing only fills the field; **Start
+transfer** begins the copy. Copying a folder into a destination that already
+contains its name asks for confirmation before replacing matching files.
+Links inside copied folders are followed. An existing destination file blocks
+the folder copy. If remote folder detection is unavailable, single-file copies
+still run; folder uploads ask for confirmation before copying without a check.
+Remote `~`, `$HOME` and `${HOME}` refer to the connected account's home;
+use an absolute path instead of `~user` for another account's home.
 
 The **SSH Ref** editor pairs with a Bitwarden vault — pick an SSH key from a list instead of pasting a UUID, or import keys straight from `~/.ssh` (passphrase-protected included), so a machine with no local keys can still connect. The TUI, CLI, and MCP agents all resolve the key from your vault at connect time *(Solo+)*. → [docs](docs/bitwarden-ssh.md)
 

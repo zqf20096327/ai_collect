@@ -15,7 +15,6 @@
 [![Patches](https://img.shields.io/badge/patches-82-informational)](lib/core.js)
 [![Audit](https://img.shields.io/badge/rc.3%20audit-0%20drift-brightgreen)](compat.json)
 [![M8ven Score](https://m8ven.ai/badge/mcp/qiuqianyi66/dsh-purge)](https://m8ven.ai/mcp/qiuqianyi66/dsh-purge?s=readme)
-[![M8ven Score](https://m8ven.ai/badge/mcp/qiuqianyi66-dsh-purge-zqj82m7v=cf89723ca8602daa38992979418ddb3c)](https://m8ven.ai/mcp/qiuqianyi66-dsh-purge-zqj82m7v=readme)
 
 **使用前必读：** 本项目只允许在**你自己拥有、且已获授权**的本机环境里用于安全评测。授权与版权条款见 [§1](#1-授权版权与再分发)，安全红线见 [§2](#2-安全边界红线)。不满足就别装。
 
@@ -44,7 +43,7 @@
 | 快速事实 | 值 |
 | --- | --- |
 | 项目名 / 仓库 | `dsh-purge` · [qiuqianyi66/dsh-purge](https://github.com/qiuqianyi66/dsh-purge) |
-| 当前版本 / 宿主目标 | `1.2.9` / DSH `0.2.2-rc.3`（`dshTarget` 同值） |
+| 当前版本 / 宿主目标 | `1.2.10` / DSH `0.2.2-rc.3`（`dshTarget` 同值） |
 | 许可证 / 上游版权 | Apache-2.0 · Copyright 2026 YuJunZhiXue（见 [`NOTICE`](./NOTICE)） |
 | 运行前提 | Node.js ≥ 18；DSH 桌面版或官方 `dsh web`；pnpm |
 | 安装一条命令 | `dsh plugin --profile desktop add https://codeload.github.com/qiuqianyi66/dsh-purge/tar.gz/refs/heads/main` |
@@ -131,7 +130,7 @@ dsh plugin --profile desktop add https://codeload.github.com/qiuqianyi66/dsh-pur
 
 压缩包地址必须写成 `codeload.github.com`；写成 `github.com/.../archive` 会 302 跳转，pnpm 直接报 `fetch failed`。
 
-**第 2 步 · 核对装上了没**（在 `$DSH_HOME` 下执行，期望输出 `1.2.9`）
+**第 2 步 · 核对装上了没**（在 `$DSH_HOME` 下执行，期望输出 `1.2.10`）
 
 ```sh
 node -p "require('./profiles/desktop/node_modules/dsh-purge/package.json').version"
@@ -223,12 +222,14 @@ purge_status   purge_apply   purge_revert
 
 ## 7. 兼容性与实测数据（2026-11-16）
 
-**当前版本 `1.2.9` 的靶子是 DSH `0.2.2-rc.3`**（`package.json` 的 `dshTarget` 同值）。`0.1.x`、`0.2.1-rc.x` 不在本版本目标内，需要旧版本请到 [Releases](https://github.com/qiuqianyi66/dsh-purge/releases) 取对应标签。
+**当前版本 `1.2.10` 的靶子是 DSH `0.2.2-rc.3`**（`package.json` 的 `dshTarget` 同值）。`0.1.x`、`0.2.1-rc.x` 不在本版本目标内，需要旧版本请到 [Releases](https://github.com/qiuqianyi66/dsh-purge/releases) 取对应标签。
+
+`0.2.2-rc.2` 未登记为适配目标（缺真机冒烟），但 2026-11-17 离体审计 78 条补丁 **0 条需重对齐**（`upstream-reports/0.2.2-rc.2.json`），且 rc.2 与 rc.3 的四个载体文件逐字节一致。
 
 <!-- compat:table:start -->
 | dsh 版本 | 本仓库版本 | 证据 | 说明 |
 | --- | --- | --- | --- |
-| **0.2.2-rc.3** | **1.2.9** | 契约✓ 实打✓ 冒烟✓ 真机✗ | rc.3 桌面版起把运行时打进 resources/app.asar；面板「应用」会自动解包、挪走 asar、重启。rc.2 引入 SandboxEscalationError / approvalDenial 新原文，rc.2 与 rc.3 四个载体文件逐字节一致 |
+| **0.2.2-rc.3** | **1.2.10** | 契约✓ 实打✓ 冒烟✓ 真机✗ | rc.3 桌面版起把运行时打进 resources/app.asar；面板「应用」会自动解包、挪走 asar、重启。rc.2 引入 SandboxEscalationError / approvalDenial 新原文，rc.2 与 rc.3 四个载体文件逐字节一致 |
 | **0.2.2-rc.1** | **1.1.88** | 契约✓ 实打✓ 冒烟✓ 真机✗ | 只有 rc.1 能用旧 pattern；rc.2 起（含 rc.3）需要 1.1.89 的新 pattern，装 1.1.88 会静默失配 |
 | **0.2.1-rc.x** | unknown | — | 不是本版本目标；到 [Releases](https://github.com/qiuqianyi66/dsh-purge/releases) 选对应旧标签 |
 | **0.2.0-rc.2** | **1.1.40+** | — | 旧线，见 [Releases](https://github.com/qiuqianyi66/dsh-purge/releases) |
@@ -329,13 +330,15 @@ node scripts/upstream-sync.mjs --offline     # 也可 --plan / --json
 
 ## 10. 与同类项目的位置
 
-改宿主源码的 DSH 插件本来就不多，历史上出现过的几条线（2026-11-15 复核，以各仓库自述与 `package.json` 为准）：
+改宿主源码的 DSH 插件本来就不多，历史上出现过的几条线（2026-11-17 复核，星数与发版以 GitHub API 实查为准，分析见 [`docs/plans/competitor-audit-20261117.md`](./docs/plans/competitor-audit-20261117.md)）：
 
-| 线 | 状态 |
+| 线 | 状态（2026-11-17） |
 | --- | --- |
-| 原仓库 `YuJunZhiXue/dsh-purge` | 已删除 / 转私有；最后制品只验到 `0.2.2-rc.1` |
-| 镜像 `mmparko/dsh-purge` | 冻结在 `1.1.71` / `dshTarget 0.2.0-rc.2` |
-| 本仓库 `qiuqianyi66/dsh-purge` | `1.2.9` / `0.2.2-rc.3`，带离体审计、四级证据与 `compat.json` |
+| 原仓库 `YuJunZhiXue/dsh-purge` | 404，已删除 / 转私有；最后制品只验到 `0.2.2-rc.1` |
+| 镜像 `mmparko/dsh-purge` | ★5229，10-13 后停更，冻结在 `1.1.71` / `dshTarget 0.2.0-rc.2` |
+| 镜像 `WoYun520/dsh-purge` | ★622，10-21 后停更 |
+| 社区版 `kingcharleslzy-ai/dsh-purge` | ★9408，`1.7.18`（11-16 发版），86 条补丁 / 6 个工作流 / MIT；README 自述多版本通过，`dshTarget` 仍写 `0.2.1-rc.1` |
+| 本仓库 `qiuqianyi66/dsh-purge` | ★10，`1.2.10` / `0.2.2-rc.3`，带离体审计、四级证据与 `compat.json` |
 
 **怎么自己核实一条分支「真的适配了」：** 别只看 `dshTarget` 或版本号，去它的 `lib/core.js` 里搜新版本引入的原文 —— `SandboxEscalationError`、`approvalDenial`、`this exact`。搜不到，就说明这组 pattern 没补，装上去会静默失配。
 
@@ -424,4 +427,4 @@ npm run compat:check                                                            
 
 ---
 
-**English:** dsh-purge is an Apache-2.0 red-team evaluation plugin for [DeepSeek Harness](https://www.deepseek.com/harness/). It ships 82 grouped host patches and per-model prompt presets so a host-layer policy block can be told apart from a model refusal inside your own local install. `1.2.9` targets DSH `0.2.2-rc.3`; audit with `npm run audit:next -- --version <version> --fail-on drift` before upgrading, require drift 0. Machine-readable matrix: [`compat.json`](./compat.json). Full English README: [`README.en.md`](./README.en.md). Authorized local use only.
+**English:** dsh-purge is an Apache-2.0 red-team evaluation plugin for [DeepSeek Harness](https://www.deepseek.com/harness/). It ships 82 grouped host patches and per-model prompt presets so a host-layer policy block can be told apart from a model refusal inside your own local install. `1.2.10` targets DSH `0.2.2-rc.3`; audit with `npm run audit:next -- --version <version> --fail-on drift` before upgrading, require drift 0. Machine-readable matrix: [`compat.json`](./compat.json). Full English README: [`README.en.md`](./README.en.md). Authorized local use only.

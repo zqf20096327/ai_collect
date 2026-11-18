@@ -1795,6 +1795,13 @@ skills/                Example skills
 
 ## Eval Spec Format
 
+Post-turn workspace capture defaults to `full` and remains bounded and fail-closed.
+For output/tool-only evaluations, opt in with `config.workspace_capture: none`.
+Waza rejects unsupported graders, checkpoint graders, outcome expectations, and
+selected snapshot files before actor execution. This does **not** prevent the actor
+from accessing its workspace. Use a Waza version that recognizes this setting;
+older versions may ignore unknown configuration fields.
+
 Task YAML's `inputs.environment` is accepted for compatibility but is **not
 applied** during execution. Non-empty maps emit a task-load warning and an
 unsupported `task.environment` preflight diagnostic; omitted or empty maps do
@@ -1978,9 +1985,4 @@ older executables reject it before running. Results and tasks remain `1.x`,
 so existing result readers and the dashboard keep working. Optional `skill:`
 retains existing skill/custom-agent context and discovery precedence. Without
 a target or explicit skill directories, scenarios disable ambient skill loading.
-An explicit empty task `skill_directories: []` disables discovery for that task;
-`--no-skills` overrides every task. Legacy suites keep their existing defaults.
-Scenario `2.0` bypasses result caching with an explicit notice because external
-workflow dependencies are not fully fingerprinted; legacy caching is unchanged.
-
-Remote grader refs use Go-module-style paths: `<host>/<owner>/<repo>[/path][#export]@<version>`. The remote module must provide a `waza.registry.yaml` manifest and export a grader prese
+An explicit empty task `skill_directories: 

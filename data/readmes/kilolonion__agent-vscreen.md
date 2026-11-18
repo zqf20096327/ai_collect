@@ -24,193 +24,111 @@ Any agent on the phone can use it: agents with a terminal use the `vscreen` CLI,
 <p align="center"><img src="docs/agents.png" width="860" alt="Minis, Eta, RikkaHub and Muse all driving a forum app on the background screen through vscreen"></p>
 <p align="center"><sub>One install command: four different Android agents (Minis, Eta, RikkaHub, Muse) all connect and drive the background screen.</sub></p>
 
-<p align="center"><img src="docs/app.en.png" width="760" alt="Agent-VScreen home, language, setup, agent connection, settings, app rules and diagnostics"></p>
-<p align="center"><sub>The app: language switch, first-time setup, connecting an agent (this phone / Tailscale, CLI / MCP / HTTP), settings, app rules and diagnostics.</sub></p>
+<p align="center"><img src="docs/app.en.png" width="760" alt="Agent-VScreen Home, Connect, Records and Settings screens"></p>
+<p align="center"><sub>The app: Home (standby, take over or stop, recent runs), Connect (connected agents, Tailscale remote access, tokens), Records (every task, question and plan with step thumbnails) and Settings (who can connect, how much an agent may do, app rules, floating window).</sub></p>
 
-- Version: 1.3.0 (versionCode 33) · [Download APK](https://github.com/kilolonion/agent-vscreen/releases/latest)
+- Version: 1.4.0 (versionCode 49) · [Download APK](https://github.com/kilolonion/agent-vscreen/releases/latest)
 - Package: `com.kilon.agentvscreen`
 - Android 11+ (Android 14+ recommended), arm64
 - Privileges: [Shizuku](https://shizuku.rikka.app/) only, no root
 
 ## What it does
 
-- **Drives apps in the background**: launch apps, tap, swipe, type, press keys and wait for the screen to change on the virtual display, verifying every step.
-- **Reports the screen back**: after each action it returns the current screen, visible text and tappable elements, plus a screenshot. Built-in offline OCR (PaddleOCR, on device). The app calls no LLM itself; your agent's own model decides what the screen means.
-- **Watches**: keep an eye on the background screen for a condition (say, some text appearing) and notify the agent when it is met.
-- **Floating window**:
-  - The border color shows who has the screen: rainbow while the AI works, blue when idle, green when you have taken over, red when you stopped it;
-  - Drag to move, pinch to resize, fling to throw it; drag it half off the screen or fling it sideways and it slides into the edge as a tab; tap the tab and it slides back out;
-  - Press and hold the picture for 0.5 s (a ring fills) to take over; the title, buttons and question card take their own touches and never pass them to the background screen;
-  - × closes it with one tap: while the AI is working it only hides the window and the AI keeps going; with no task it closes the background screen;
-  - While the AI acts or waits, "Stop AI" sits at the bottom centre and is the only thing that stops it; then the same place shows "Hand back", and a persistent notification stays until you release it;
-  - Full screen: the picture stays put while the keyboard, typing box and question cards float over it; answer pages (draw a box, show me) move the floating window out of the way until you answer.
-- **Leaves your agent's own access alone**: it does not take adb, touch wireless debugging or restart adbd. One-tap setup only adds this app and never changes other apps' settings.
-- **App restrictions**: block apps entirely or make them read-only for the AI. Payment, delete and similar buttons still need your confirmation.
+- **Drives apps in the background**: opens apps on the background screen, taps, swipes, types, presses keys and waits for the screen to change. Every step is checked; a step that did not work stops the run and says what the screen shows.
+- **Hands the screen to the agent**: every reply carries the screen as it is now, the words on it, the tappable elements and a screenshot. The app calls no AI model; the agent's own model decides what the screen means.
+- **Waits and watches**: after an action it can wait for words to appear or go, or for the screen to settle; after the turn it can keep watching and notify you or wake the agent when a condition shows up.
+- **Works with you**: the agent can ask you to point at something on the screen (`ask`) or to show it once and keep that as a lesson (`teach`); steps that need a password or a code move to your own screen.
+- **Floating window**: its border says who has the screen (rainbow: the AI is acting, blue: standing by, green: you took over, red: stopped). Drag to move, pinch to resize, fling to an edge to fold it into a tab; hold the picture for 0.5 s to take over; open full screen to type with your own keyboard.
+- **Leaves your tools alone**: Shizuku only; it never takes adb or touches wireless debugging, so the agent's own adb or Shizuku keeps working.
 
-## More than a background screen: the scaffold around it
+## What an agent can do with it
 
-Agent-VScreen is more than a virtual screen an agent can use: it builds a whole scaffold around the background screen so that your own agent operates it directly, sees it clearly, keeps up with time, and knows whether each step really worked.
+This list and the note agents receive come from one ability table (`Abilities.kt`) and are written by a test; don't edit them by hand.
 
-- **Time awareness**: while the agent works, the screen is looked at about 5 times a second and its text read about once a second, with timestamps. So every result's [Meanwhile] block tells what text appeared, disappeared or flashed from the last result until now (including the seconds the agent spent thinking or calling other tools), where the picture changed and for how long, with a contact sheet when it changed. Countdowns, loading, animations and pop-ups are not missed.
-- **Waiting and watching**: after any action add an `until` condition (text appears, text disappears, picture changes, picture is still, a pixel's color, a given app is in front) with a time limit; if it never comes, the result says so. `--stop` is watched for the whole stretch, `--watch` keeps looking after the steps. `--keep notify|wake` keeps watching after the turn ends and notifies the user or wakes the agent when the condition shows up. For realtime games, saved pause and resume steps make every stretch resume first and pause at the end, so the game becomes turn-based.
-- **Seeing clearly**: the accessibility tree and on-device OCR (bundled ML Kit, optionally the more accurate PP-OCRv6 small, both offline on the phone) are merged into numbered elements with coordinates, so `tap #N` and `tap <text on screen>` both work. OCR is split per character, so tabs on one line are separate targets and a part of a line can be tapped at its own center. There is also local color-spot finding (`spots`), zoom with a coordinate ruler (`zoom`), and scroll-and-collect of a whole page's text with deduplication (`collect`).
-- **Every step checked**: a step that misses (until never came, the text is not in the box, focus is not where you tapped) stops the stretch there, skips the rest and describes the screen now; a missed tap lists the closest candidates.
-- **Working with others**: sessions let several agents take turns on one screen (`BUSY` says whose it is and when it frees up); `handoff in/out` takes over an app the user has open on the main screen or hands it back; the user can take over or stop the AI at any time; per-app rules (blocked or read-only) and a confirmation stop for payment buttons (`CONFIRM_REQUIRED`). Each app can also keep notes and saved step segments (`--save` / `use`) that the next launch lists.
-- **No model inside, no fight over privileges**: the phone side calls no model; the caller's model decides what the screen means. Only Shizuku is used: no wireless debugging pairing, no adb.
+<!-- abilities:start -->
+- **the user wants anything done on the phone: open an app, look something up, read a page, fill a form, test an app…**: `vscreen launch <app>` opens it and looks, `vscreen act "<steps>"` taps, swipes, types and presses keys; every reply has a screenshot and the elements
+- **anything timed that will use the phone: the user asks for daily or at 8:00 (check-ins, periodic checks), or I set up my own timer, cron or reminder**: set both: my timer wakes me, not the phone. Book the same time with `vscreen schedule "<when>" --name <name>`; change or cancel both together
+- **something will happen later: back in stock, a price drop, a reply, a download finishing; or I want to look again in a while**: `vscreen act --stop "text:In stock" --keep notify` makes the phone keep watching and notify the user when seen (`--keep wake` wakes me; fetch with `vscreen events`)
+- **a long list or a whole page has to be read (all orders, a chat history, search results, comments)**: `vscreen collect --pages 10` pages through it and returns every item once
+- **it is unclear which thing on the screen the user means (which item, button, message), or the user should pick one**: `vscreen ask "Which one do you mean?"` lets the user tap it on the screen's picture on the phone (also `--choose`, `--text`)
+- **a flow is hard to describe, keeps failing, or the user knows better how to do it**: `vscreen teach "what to show"` asks the user to do it once on the screen; it is saved as a segment, then `act "use <name> <values>"` replays it
+- **the same app comes up again and again: a fixed way in, a popup every visit, a picture to pause first, or machine-like timing upsets it**: `vscreen note` keeps what I learned about the app, saved steps (`note save`), before/after steps and human pacing; the next launch lists them
+- **a step only the user can do (password, code, face, scanning), or the app I need is the one the user is using**: `vscreen handoff out` puts the app on the user's screen with what to do; `vscreen handoff in` takes the app from the user's screen
+- **an app has no sound, or the user wants an app muted or its sound back**: `vscreen sound` shows it, `sound mute|unmute <app>` mutes or unmutes
+- **the text is too small or an icon, or there is no text at all (games, canvas, charts), or I need to see what just happened**: `vscreen look` asks for pictures: the screen now, a region up close, or the recording; `vscreen spots` finds tappable color patches
+- **the phone cannot be reached, commands keep failing, or something odd happens**: First tell off from broken: not running, service off or hidden is the user's choice; tell the user to open it, nothing to repair. Only `vscreen status` with ready false is a fault, and `vscreen fix` repairs what it lists and gives sound back to apps left silent
+<!-- abilities:end -->
 
-## Install and set up
+## Why it works well
 
-The app UI is in Chinese for now; button names below are translated.
+- **A sense of time**: while an agent works, the screen is looked at about 5 times a second and read about once a second, with timestamps. Each reply's [Meanwhile] says what appeared, disappeared or flashed since the last reply (including while the agent was thinking), where the picture changed and for how long. Countdowns, loading and pop-ups don't slip by.
+- **Seeing clearly**: the accessibility tree and on-device OCR (PP-OCRv6, plus ML Kit) merge into one numbered list of elements with coordinates; `tap #N` and `tap <words on screen>` both work. `look` zooms into an area or plays back the recording; `collect` scrolls through a whole page and gathers every entry once.
+- **One step language**: `try`, `if`, `repeat … until`, `*` wildcards and `words@2` for the second place, shared by scripts, saved segments and lessons. Each app keeps notes and saved steps that are listed the next time it opens.
+- **Many agents, no mix-ups**: every connected agent has its own token and records; one session holds the screen at a time and others get `BUSY`; apps can be blocked or read-only, and payment steps wait for you to confirm on the phone.
+- **Any model**: nothing runs a model on the phone, so any agent and any model can use it.
+
+## Install
 
 1. Install the APK and open Agent-VScreen.
 2. Make sure Shizuku is running, then tap **Grant Shizuku**.
-3. Tap **One-tap setup** for the overlay, notifications, read-only accessibility, battery optimization and background running. On Honor, Huawei, Xiaomi, OPPO, vivo and similar phones, also open **System background management** and allow auto-start and background activity.
-4. In **Connect agent**, tap **Copy message for agent** and send it to your agent as is. It installs the `vscreen` command and saves a short guide into its own long-term memory, so new conversations know the tool is there. The home screen shows whether it remembered. Then:
+3. Tap **One-tap setup** for the overlay, notifications, read-only accessibility, battery optimization and background running. On Honor, Huawei, Xiaomi, OPPO, vivo and similar phones, also open background management and allow auto-start and background activity, or the system may freeze the app in the background.
 
-```sh
-vscreen launch Settings
-vscreen act "tap Search; type About phone; key enter until text:About phone"
-vscreen help all
-```
+The app speaks Chinese and English (System / 中文 / English in Settings), and so does everything it tells the agent.
 
-## Use with Operit
+## Connect an agent
 
-Operit is just an example here; nothing is tailored to it. Other Android agents on the same phone work with the default install from "Connect an agent" (command line, MCP or HTTP), and cloud or desktop agents connect over Tailscale (see the next section).
+On the app's **Connect** tab, tap **Connect a new agent**: give it a name, choose where it runs and how it connects, then tap **Copy message for your agent** and send it as is. The agent installs or configures the tool and saves a short note into its own long-term memory, so new conversations know the tool is there. Each connected agent gets its own token, which you can revoke on the Connect tab at any time.
 
-There are two ways; pick one:
+There are three ways to connect, the same for local and cloud agents:
 
-- **ToolPkg (recommended)**: import `agent-vscreen.toolpkg` built from [`integrations/operit`](integrations/operit/) (also in Releases), send the token to Operit's AI to save, and it works; screenshots go straight to the model. See that folder's README.
-- **Remote MCP**: Operit and Operit 2 can both connect to remote MCP servers with no plugin, as follows.
+- **Shell**: agents with a terminal install the `vscreen` command: `vscreen launch Settings`, `vscreen act "tap Search; type About phone"`.
+- **MCP**: agents that speak MCP add the address and token (transport `httpStream`).
+- **HTTP**: your own code calls the `/v2` API directly; see [API.md](API.md).
 
-1. Finish the first-time setup in Agent-VScreen and make sure the service is running.
-2. Copy the token under **Connect an agent → MCP**.
-3. Open Operit's MCP management page, tap **Import/Connect → Connect remote**, and fill in:
-   - Name (plugin ID): `vscreen`
-   - URL: `http://127.0.0.1:18765/mcp` (18765 is the default port; use yours if you changed it in the app)
-   - Connection type: `httpStream`
-   - Bearer Token: the token you just copied
-4. Save and turn its switch on. Remote plugins need no "Deploy"; once the status shows active it is ready.
-5. Try in a chat: "Use vscreen to open Settings on the virtual screen and tell me the system version."
+### Local: the agent runs on this phone
 
-You can also use **Config import**: paste the JSON below and tap **Merge config**:
+Choose **On this phone**. The service listens only on `127.0.0.1:18765`; nothing outside the phone can reach it. Terminal agents and MCP chat apps on the phone connect as above; Operit also has a ready-made ToolPkg in [integrations/operit](integrations/operit/).
 
-```json
-{
-  "mcpServers": {
-    "vscreen": {
-      "url": "http://127.0.0.1:18765/mcp",
-      "headers": { "Authorization": "Bearer <token>" }
-    }
-  }
-}
-```
+If another app (or a cloned copy of this one) holds 18765, the service moves to the next free port and the app says who holds it; local agents find the new port by themselves, no reconnecting needed.
 
-Notes:
+### Cloud: the agent runs on a computer, a server or another phone
 
-- Operit and Agent-VScreen must be on the same phone. If Operit runs on another device, replace the URL with the Tailscale address (see the next section).
-- Operit's own screen tools and vscreen can coexist. To keep it on the background screen only, add to the character prompt: "Always use the vscreen tool to operate other apps; never touch the main screen."
-- The token equals control of this phone: don't paste it into public character cards, shared configs or screenshots.
+Choose **Another device** and connect Tailscale under **Remote access** first; the message, install command and MCP config you copy then use the Tailscale address.
 
-## Connecting from other devices (optional, off by default)
+- **Built-in Tailscale (recommended)**: no Tailscale app and no system VPN slot; sign in once inside the app, and only devices on your own tailnet can reach it. A self-hosted Headscale works too: enter its address under the advanced options.
+- **Tailscale app**: if the Tailscale app is already on the phone, or the phone needs an exit node to get online. The built-in node only lets other devices in; it does not carry the phone's own traffic.
+- SSH port forwarding also works.
 
-The service only listens on `127.0.0.1:18765`. To call it from a computer or another phone, choose **Another device (Tailscale)** in step 1 of "Connect an agent", then **Built-in**: no Tailscale app needed and no system VPN slot taken; sign in to Tailscale once inside the app and only devices on your own tailnet can reach it. **Tailscale app** mode and SSH port forwarding also work.
+The token equals control of the phone. Requests from other devices are signed, so the token itself never crosses the network, and the app never offers a public link. Don't paste a token into public configs or screenshots.
 
-A self-hosted Headscale works too: enter its address under **Advanced** (for example `hs.example.com`; `https://` is added for you), then open the registration page or use a pre-auth key. Each server keeps its own login. The built-in node only carries what other devices send to Agent-VScreen, not the phone's own internet traffic, so it has no exit node. If the phone needs an exit node to get online, keep the Tailscale app on and choose **Tailscale app** mode.
-
-The Tailscale setup sits right under that choice. Once connected, the message for your agent, the install command, the MCP config and the ability note all switch to the Tailscale address.
-
-The app speaks Chinese or English (the **Language** card on the home page: System / 中文 / English), and so does everything it tells the agent.
-
-The token equals control of the phone, so the app never offers a public link.
-
-## What's new in 1.3.0
-
-**One step language for scripts, saved segments and lessons**
-
-- `*` in words is any characters: `tap *Bluetooth*` taps the item holding it, `wait text:Total*items`; `words@2` is the second place from the top, `@-1` the last. When the same words are in several places, the reply marks each with its `@N`.
-- Flow: `try <step>` or `try { … }` (not found or not as expected: skip and go on); `if text:Close { tap Close } else { back }`; `repeat 3 { scroll down }`, `repeat { scroll down } until text:End`. Braces may span lines and nest. A mistake runs nothing and says how to write it.
-- `note save <name> "steps"` stores or rewrites a segment without running it, taught ones too.
-- **Human pacing**: `act --human`, or `note human on` to keep it for an app. A random pause before each action, taps slightly off-centre inside the element with uneven holds, varied swipe and drag durations and ends, typing 1–3 characters at a time. Waits and conditions are unchanged.
-
-**You teach it, it asks you**
-
-- **Teach it by doing it**: do it once on the background screen and it is saved as a segment agents can replay. Take over the screen, tap the record key in the bottom bar, work as usual and tap Done; the review page says where each step came from, lets you untick slips and name it. A tap on words becomes `tap <words>` (found again when the layout moves); only when no words name the place is it a point. Words that appear, or the app that comes up, after a step become its `until`, so the replay waits for the same result. Typed words become a blank `{1}` that agents fill with `use <name> <values>…`; passwords are never kept. Agents can ask for a lesson with `vscreen teach "what to show"`; "Show it" on the phone starts recording right away.
-- **Show me**: `vscreen ask "Which one do you mean?"` puts the question on the phone; you tap the place on a picture of the background screen and the agent gets the point and the element there. Boxes, choices and text answers work too; with `--async` it waits until you answer.
-- **Lessons are smoother**: "Show it" takes over and records at once, "Done" also hands the screen back. A tap on a search result after typing is kept as "the N-th item holding the typed value" (`tap *{1}*@2`), so replaying with another value taps by content, not by place. A saved lesson keeps one contact sheet of its key steps (red rings mark taps); agents get it with the teach reply and again with `note show <name>`. The app's Schedules & lessons page searches lessons, deletes several at once and shows blocks indented.
-- **The floating window tells you when it has a question**: the folded tab turns into a violet question mark; expand it or go full screen and answer yes/no and choices right there.
-
-**Seeing clearly, tapping right**
-
-- **Checks judge only what came after the action**: `until text:…` counts words that appeared after the action, once the app reacted and the picture settled; when nothing changed, the reply says the app did not react.
-- **Numbers belong to one page**: on a new page an old `#N` is `STALE_ELEMENT` and never lands on the same words there.
-- **Areas that keep moving** (videos, live streams, carousels) are recognized: they no longer slow every step or list bullet comments as changes.
-- **Seeing your own taps**: the [Meanwhile] sheet has a frame before each action with where it touched circled, and spare places show what actions led to. `vscreen frames` looks back at the recording: longer, denser or a given stretch.
-- **One element per place**: OCR no longer repeats words the app's own elements carry; `collect` gathers by cards and keeps two columns apart, leaves tab bars out, and confirms the end with a second swipe elsewhere.
-- **Word taps are faster**: `tap <words>` looks in the app's own elements first and needs no full-screen OCR when they settle it.
-- **Time as it was spent**: every reply says how long the phone took and on what; the command and the liveness check go out together, and pictures are smaller.
-
-**On call, or fully out of the way**
-
-- **Schedules**: `vscreen schedule "weekdays 07:00"` books when an agent will use the phone; before each time the service is started and checked, and you are told in time if something blocks it. One-off bookings too (`today 10:30`). `ready` at the top of `status` says whether it can be used.
-- **Always on / hidden / blocked**: the switch on keeps it running; off hides it (no notification, nothing in the background) while a local agent or a booking can still wake it, and it hides again afterwards; "Block agent access" is really off.
-- **The background screen is muted**: its apps make no sound on the phone.
-- **Main-screen notes only when we disturbed it**: you switching apps on the main screen is no longer reported.
-- **Agents learn about app updates**: an agent's next use of vscreen shows what changed for it and asks it to refresh its note.
-
-**Remote access that holds**
-
-- **Built-in Tailscale**: one node at a time that lives and dies with the app's process, so a restart by the system no longer leaves the phone unreachable for minutes; the saved login is kept while the server cannot be reached ("dropped, reconnecting"), so you are not asked to log in again; "Connected" is the real link state, with the relay and how often it dropped.
-- **A token is enough over the built-in Tailscale**: no signing, and MCP clients connect remotely as they are.
-- **The CLI no longer hangs**: an unresponsive local app is woken and tried again; when the app restarts or stops answering for a minute during a command, the CLI stops and says why; a remote phone that does not answer is explained (hidden, blocked, offline, logged out). `VSCREEN_PROXY` sets a proxy.
-- The log and `status` record why the previous app process ended, and when the app went to the background, was frozen or the node stalled.
-
-**The app**
-
-- The home page holds the switch, the screen, anything waiting for you and a set of tiles (Connect, Permissions, Screen & window, Schedules & lessons, Activity log, Setup), each with its one key fact; explanations sit behind "?". The app, the floating window and full screen share one violet glass look.
-- **Check for updates**: "Check for updates" on the home list looks at the GitHub releases and shows what's new with a download link; the app also checks quietly at most once a day.
-- The Shizuku grant button always answers: already granted, Shizuku not running, refused before or no dialog shown — each is said and leads you to the right place; the grant state is read again when you come back to the app.
-
-Not verified on every phone: whether vendor background managers let exact alarms and the wake broadcast through for a frozen app; whether muting with `PLAY_AUDIO` works for every player on MagicOS.
-
-## What's new in 1.2.0
-
-This version rebuilds the command gate, the reply format, the security model and the guide for agents, and went through two real-phone regression rounds with [docs/TASKS.md](docs/TASKS.md) (Honor Magic 7, MagicOS 11). The upgrade table from 1.1 is in section 9 of [API.md](API.md).
-
-- **Structured results**: every reply carries `ok`, `code` and `next` (look at the screen / fix the command / ask the user / retry later), plus each step's status, the screen's elements and the notes. A stretch that stops at a step is a failure; no reading text to find out. The new API is `/v2`; `/v1` is unchanged and stays for one more version.
-- **One command table**: option checks, help, MCP tool schemas and the docs are generated from it. MCP has one tool per command besides `vscreen`.
-- **More precise taps**: text that appears several times is listed with coordinates instead of tapping the first; a `#number` whose element moved away is not tapped at its old place; an action that changed nothing is flagged.
-- **Shorter waits**: a page left with only a spinner or blinking cursor counts as settled. Perception is driven by new frames.
-- **One input path**: taps, swipes and keys are injected by the display service; dumpsys parsing and shell `input` are gone.
-- **A token per agent**: look-only / operate / everything, revoked separately, with separate sessions.
-- **Signed requests**: from another device the token never travels, requests cannot be replayed or altered, and replies are verified. The CLI does it by itself.
-- **The user confirms on the phone**: payment, irreversible steps, force-stop, taking an app off the main screen, and apps set to "ask every time". A flag added by the agent no longer counts. A trusted agent can be given 30 minutes without confirmations.
-- **Activity log**: who ran which command, when, with what result. Typed text is recorded as a length only.
-- **Harder to knock over**: connection cap, request size and time limits; a command stops when its caller disconnects; a resent request never runs twice; long work can run `--async` and be collected with `task`; commands queue.
-- **Events are not lost**: kept until the next fetch, re-fetchable, stored on disk; watches resume after an app restart; the event broadcast goes only to an app you name.
-- **A rewritten guide for agents**: built around one loop (look → act → check), with what to do next for each result code; `vscreen guide` is one page.
-
-- **Hands-off by default**: Permissions in the app has two levels. The default, "hands-off", asks you on the phone only for the step that actually spends money (pay, place order, transfer, top up) and for apps you set to "ask every time"; "careful" also asks for irreversible buttons such as delete, steps toward a purchase, force-stop and taking an app off the main screen. The "clear" button next to an input box is no longer treated as irreversible.
-- **A new page layout**: the home page goes Connect → Permissions → Settings → Activity log; permissions live in one place (level, app rules, tokens) and settings are grouped (floating window / background screen / reading and recording).
-- **A smoother floating window**: its picture is scaled to the size shown at 20 frames a second (30 while you control the screen) instead of the agent's full-size frames; moving the window updates its position once per display frame, so it stays under the finger; after taking over, your finger reaches the screen as it moves, so lists follow it. A landscape screen opens almost as wide as the phone, and each orientation keeps its own size.
-- **Look-only tokens can look**: their `act` (no steps or only waits) looks at the screen in use; `stop --force` and `handoff in` need the "everything" scope.
-- **Numbers never point at the wrong element**: on one screen a number names one element; after a scroll the same element keeps its number and new ones get new numbers. A number whose element left the screen gives STALE_ELEMENT instead of tapping something else.
-- **Floating window**: a landscape screen opens at about three quarters of the phone's width, and the whole window stays on screen when it appears or turns.
 ## Docs
 
-- [API.md](API.md) (Chinese): the full CLI, MCP and HTTP reference, sessions, watches, permissions and security, the floating window, remote access, known limits and upgrading from 1.1.
+- [API.md](API.md) (Chinese): the full CLI, MCP and HTTP reference, sessions, watches, permissions and security, remote access and known limits.
 - [docs/REFERENCE.md](docs/REFERENCE.md): every command option and result code (generated from the source).
 - [docs/TASKS.md](docs/TASKS.md): the fixed task set to run on a real phone before a release.
+- [docs/CHANGELOG.md](docs/CHANGELOG.md): earlier releases.
+
+## What's new in 1.4.0
+
+- **A new app**: four tabs (Now, Connect, Records, Settings), each page with one main thing; explanations moved to second-level pages. Purple glass throughout.
+- **Every agent on its own**: each connected agent gets its own token, records and saved steps; lessons are shared. One inbox on the home page collects what agents need from you, and notifications open the right page.
+- **Teaching, rebuilt**: one lesson flow from the request to the saved segment, a record button that answers the agent's request, and a review pane beside the live screen. A repeated `teach` returns the saved lesson instead of asking again. Agents tidy the page back to its starting state before they ask.
+- **Keyboard**: `key ctrl+a` / `shift+tab` / `alt+f4` combos; `type` at once or `type "…" slow` letter by letter. In full screen the keyboard button opens your own input method.
+- **App sound**: Settings › App sound lists every silenced app and gives sound back; the `sound` command does the same for agents. Muting now sets both of Android's sound records, for phones that only check one of them.
+- **`fix` repairs more**: silenced apps, a stopped foreground service, the built-in Tailscale; "fixed" is checked afterwards, not assumed.
+- **Port taken**: when another app (or a clone-space copy) holds the port, the service takes the next free one and says who holds it; local agents find it by themselves and Tailscale forwards to it.
+- **Smaller, faster reading**: PP-OCRv6 tiny detector + small recognizer (11.5 MB); `collect` skips search bars and keeps going to the real end; `repeat … until` judges the last look on what the screen shows now.
 
 ## Build from source
 
-JDK 17 and the Android SDK (compileSdk 36).
+JDK 21 and the Android SDK (compileSdk 37).
 
 ```bash
 echo "sdk.dir=/path/to/android-sdk" > local.properties
 ./gradlew :app:assembleRelease
 ```
 
-Built-in Tailscale is a small Go program (`tsbridge/`, Go 1.21+). Run `tsbridge/build.sh` once before building to produce `app/src/main/jniLibs/arm64-v8a/libtsbridge.so`; without it the APK still builds, just without built-in Tailscale.
+Built-in Tailscale is a small Go program (`tsbridge/`). Run `tsbridge/build.sh` once before building to produce `app/src/main/jniLibs/arm64-v8a/libtsbridge.so`; without it the APK still builds, just without built-in Tailscale.
 
 Release signing is optional: copy `keystore.properties.example` to `keystore.properties` and fill it in. Otherwise release builds are signed with the debug key.
 

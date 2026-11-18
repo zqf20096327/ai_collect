@@ -6,6 +6,7 @@
 ![Python](https://img.shields.io/badge/python-3.9%E2%80%933.12-blue)
 ![MediaPipe](https://img.shields.io/badge/MediaPipe-Pose%20Heavy-orange)
 ![RTMPose](https://img.shields.io/badge/RTMPose-Halpe--26-purple)
+[![Ultralytics YOLO Pose](https://img.shields.io/badge/Ultralytics-YOLO%20Pose-111F68)](https://github.com/ultralytics/ultralytics)
 
 **OpenVelo** is a studio-grade bike fit from a short phone video: no fitter, no appointment, no subscription. It tracks your joints, models every pedal stroke and reads the shape of your back, then turns it into measured angles with confidence ranges and a ranked plan of what to change: saddle, reach and bars. Everything runs privately on your own computer, with no account and no cloud service.
 
@@ -286,6 +287,40 @@ tests/                      Unit tests for the maths, scoring and reports
 
 Saved fits live in `output/sessions/` (git-ignored).
 
+## Ultralytics YOLO pose engine (optional)
+
+OpenVelo can use [Ultralytics YOLO pose](https://github.com/ultralytics/ultralytics) as an alternative engine. Install it with `pip install ultralytics`, then pick **Ultralytics YOLO** in the studio or run `python -m src.analyze_video -i your_ride.mp4 -b yolo-pose`. Thanks to the [Ultralytics](https://www.ultralytics.com) team for the open-source models.
+
+### How to use it
+
+1. Install the package in your OpenVelo environment:
+
+   ```bash
+   pip install ultralytics
+   ```
+
+2. Pick the engine, either in the studio or on the command line.
+
+   - **Studio:** run `python app.py`, then in step 3 of a new fit choose **Ultralytics YOLO** in the engine selector. It only appears once `ultralytics` is installed.
+   - **Command line:**
+
+     ```bash
+     python -m src.analyze_video -i your_ride.mp4 -b yolo-pose
+     python -m src.analyze_image -i your_photo.jpg -b yolo-pose
+     ```
+
+3. The first run downloads the default weights (`yolo11m-pose.pt`). To use another model, or your own, set it first:
+
+   ```bash
+   export OPENVELO_YOLO_MODEL=yolo11x-pose.pt   # larger and more accurate; or a path to custom weights
+   ```
+
+If `ultralytics` is not installed, OpenVelo falls back to MediaPipe automatically.
+
+It uses COCO-17 keypoints, which have no heel or toe, so the foot is estimated from the shank and ankle/foot-angle readings are approximate. Set `OPENVELO_YOLO_MODEL` to your own weights (a 26-keypoint Halpe model gives real feet).
+
+**License note:** Ultralytics is licensed separately under [AGPL-3.0](https://github.com/ultralytics/ultralytics/blob/main/LICENSE), with an [enterprise license](https://www.ultralytics.com/license) available. OpenVelo does not bundle it; it is an optional install, and you are responsible for complying with its license if you use it.
+
 ## License
 
-MIT. Created with love for the passion of triathlon by **Pruthvi**.
+MIT, see [LICENSE](LICENSE). Created with love for the passion of triathlon by **Pruthvi**.

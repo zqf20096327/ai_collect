@@ -45,7 +45,7 @@ saved 2 items · commit-derived: 1 · session-derived: 1
 
 - **Your files stay yours.** Memories are plain `.md` files you can read, edit, and version. The search index is rebuilt from them, day-file namespaces included; tag edits and working state live only in the database ([what a rebuild restores](docs/guides/reference.md#what-a-rebuild-restores)).
 - **Explicit by default.** Memory operations run on your CLI or MCP calls (`mm add`, `mem_add`, `mem_index`). Optional client hooks are separate, removable integrations, not a hidden runtime default.
-- **One store, many tools.** Claude Code, Codex CLI, OpenCode, Kimi Code, and Antigravity share one local store, and any MCP client can search it. [memtomem-stm](https://github.com/memtomem/memtomem-stm) is a separate, optional proxy that surfaces memories proactively.
+- **One store, many tools.** Claude Code, Codex CLI, OpenCode, Kimi Code, and Antigravity share one local store, and any MCP client can search it. Hermes Agent joins the same store through its [plugin and memory provider](#agent-frameworks), and LangGraph apps get the same search pipeline over a store of their own with [`langchain-memtomem`](packages/langchain-memtomem/). [memtomem-stm](https://github.com/memtomem/memtomem-stm) is a separate, optional proxy that surfaces memories proactively.
 
 ## Quick Start
 
@@ -117,7 +117,7 @@ uv add 'memtomem[all]' && uv run mm init    # all commands need `uv run` prefix
 
 **No install** (uvx on demand):
 ```bash
-claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- uvx --isolated --from "memtomem[all]==0.7.10" memtomem-server
+claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- uvx --isolated --from "memtomem[all]==0.7.11" memtomem-server
 ```
 
 </details>
@@ -127,10 +127,34 @@ claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- u
 
 - **`mm --version` shows an older version than the [latest release](https://github.com/memtomem/memtomem/releases)** right after installing: `uv` is likely serving cached PyPI metadata. Re-run with `uv tool install 'memtomem[all]' --refresh`, or clear the cache first with `uv cache clean memtomem`. To upgrade an existing uv tool install, use `mm upgrade` rather than re-running `uv tool install`; see the [CLI reference](docs/guides/reference/data-config-cli.md#cli-reference) for what it preserves and stops.
 - **`mm: command not found`**: `uv tool install` drops the shim into `~/.local/bin`, which is not on `$PATH` in fresh shells on macOS/Linux. Run `uv tool update-shell`, then open a new shell and re-run `mm --version`.
-- **Duplicate tools after upgrading the Claude plugin**: re-check `/mcp` after reloading. The plugin launches `memtomem[onnx]==0.7.10`. A manual registration whose launch differs — base-only `memtomem`, or the ONNX launch pinned to an earlier release — no longer matches for deduplication. Confirm the manual entry's name and scope, then align its launch command with the plugin or remove the redundant registration.
+- **Duplicate tools after upgrading the Claude plugin**: re-check `/mcp` after reloading. The plugin launches `memtomem[onnx]==0.7.11`. A manual registration whose launch differs — base-only `memtomem`, or the ONNX launch pinned to an earlier release — no longer matches for deduplication. Confirm the manual entry's name and scope, then align its launch command with the plugin or remove the redundant registration.
 - **Indexing vs. discovery (Claude Code)**: provider memory folders that setup auto-discovers (such as `~/.claude/projects/*/memory/`) are added to the search *index*. That is separate from the Web UI's opt-in Context Gateway scan of `~/.claude/projects/`, which discovers project *roots* for Skills, Commands, and Subagents; see [Configuration → Context Gateway](docs/guides/configuration.md#context-gateway).
 
 </details>
+
+## Works with
+
+Everything here runs on the [**memtomem**](https://pypi.org/project/memtomem/) core package: the MCP server, CLI, Web UI, hybrid search, and storage. [**memtomem-stm**](https://github.com/memtomem/memtomem-stm) is a separate, optional STM proxy that surfaces memories proactively by intercepting tool calls.
+
+### Coding agents
+
+| Package | What it adds | Session loop |
+|---------|--------------|--------------|
+| [**Claude Code plugin**](packages/memtomem-claude-plugin/) | Exact-pinned MCP server and slash-command workflows | handoff · brief · update |
+| [**Claude Code automation plugin**](packages/memtomem-claude-automation-plugin/) | Optional hooks for prompt-time search and write-time indexing | — |
+| [**Codex plugin**](plugins/memtomem/) | Exact-pinned MCP server and skills for Codex CLI | handoff · brief · update |
+| [**opencode-memtomem**](packages/opencode-memtomem/) | Exact-pinned MCP server, commands, and read skills for OpenCode | handoff · brief · update |
+| [**Kimi Code skills**](packages/memtomem-kimi-skills/) | Skill bundle for Kimi Code (not a plugin) | handoff · brief · update |
+| [**Antigravity CLI plugin**](packages/memtomem-antigravity-plugin/) | Exact-pinned MCP server and skills for `agy` — [experimental](#stability) | handoff · brief · update |
+| [**Cursor plugin**](packages/memtomem-cursor-plugin/) | Exact-pinned MCP server and skills for Cursor — [experimental](#stability) | handoff · brief · update |
+
+### Agent frameworks
+
+| Package | What it adds | Session loop |
+|---------|--------------|--------------|
+| [**langchain-memtomem**](packages/langchain-memtomem/) | A LangGraph `BaseStore`, `MemtomemPipelineStore`, whose `search(query=...)` runs memtomem's search pipeline over an index the store owns; `pip install langchain-memtomem` | — |
+| [**Hermes Agent plugin**](packages/memtomem-hermes-plugin/) | Exact-pinned MCP server and the search, recall, status, remember, index, and setup skills; listed in the Hermes plugin catalog as `memtomem` | — (needs a project root) |
+| [**Hermes memory provider**](packages/memtomem-hermes-memory/) | Memory provider that adds relevant notes to each Hermes turn, and can mirror Hermes's built-in memory into memtomem (`mirror_writes`, off by default); listed in the Hermes plugin catalog as `memtomem-memory` | — |
 
 ## What else is inside
 
@@ -139,7 +163,7 @@ claude mcp add memtomem -s user -e MEMTOMEM_EXTRA_TOOLS=mem_update_coverage -- u
 | Markdown is the source of truth; the search index is rebuilt from it (database-only state such as tag edits is not) | [Web UI](docs/guides/reference/operations.md) for search, sources, tags, timeline, and dedup (`mm web`) | Nine core MCP tools, with `mem_do` routing every other action so agents load a small tool surface |
 | Hybrid search: BM25 keyword + dense vector + RRF fusion in one query | [Namespaces](docs/guides/reference/organization-maintenance.md), auto-derived from folder names and labelled from the Web UI | [Context Gateway](docs/guides/context-gateway.md): keep Skills, Commands, and Subagents in one Store and push them to your AI runtimes |
 | Semantic chunking: heading-aware Markdown, AST-based Python, tree-sitter JS/TS, structure-aware JSON/YAML/TOML | [Maintenance](docs/guides/reference/organization-maintenance.md): near-duplicate detection, time-based decay, TTL expiration, auto-tagging | [Pinned Context](docs/guides/pinned-context.md): small user/project/agent Markdown blocks composed ahead of retrieved results |
-| Incremental indexing: chunk-level SHA-256 diff, so only changed chunks are re-embedded | [Scheduled jobs](docs/guides/reference/automation.md) for compaction, decay, dead-link cleanup, and dedup scans | LangGraph `MemtomemBaseStore`, plus the [Hybrid Store](docs/guides/langgraph-hybrid-store.md) with SQLite persistence and BM25/dense/RRF retrieval |
+| Incremental indexing: chunk-level SHA-256 diff, so only changed chunks are re-embedded | [Scheduled jobs](docs/guides/reference/automation.md) for compaction, decay, dead-link cleanup, and dedup scans | LangGraph `MemtomemBaseStore`, plus the [Hybrid Store](docs/guides/langgraph-hybrid-store.md) with SQLite persistence and BM25/dense/RRF retrieval; [`langchain-memtomem`](packages/langchain-memtomem/) runs memtomem's search pipeline as a LangGraph store |
 | | [Scriptable CLI](docs/guides/reference/data-config-cli.md#cli-reference): `--json` output on status, search, recall, and the write commands; `mm warmup` pre-loads local models | [memtomem-stm](https://github.com/memtomem/memtomem-stm): optional proxy for proactive surfacing, compression, and caching |
 
 ## Stability
@@ -155,22 +179,6 @@ These are **experimental** — their behaviour, output, or format can still chan
 - **Duplicate brief** on `mem_dedup_scan` (`MEMTOMEM_MAINTENANCE__EXPERIMENTAL_DUPLICATE_BRIEF`): the evidence lines it adds under each member of a candidate pair, and their wording.
 - **Antigravity CLI plugin** ([`packages/memtomem-antigravity-plugin/`](packages/memtomem-antigravity-plugin/)).
 - **Cursor plugin** ([`packages/memtomem-cursor-plugin/`](packages/memtomem-cursor-plugin/)).
-
-## Works with
-
-| Package | What it adds | Session loop |
-|---------|--------------|--------------|
-| [**memtomem**](https://pypi.org/project/memtomem/) | Core: MCP server, CLI, Web UI, hybrid search, storage | — |
-| [**Claude Code plugin**](packages/memtomem-claude-plugin/) | Exact-pinned MCP server and slash-command workflows | handoff · brief · update |
-| [**Claude Code automation plugin**](packages/memtomem-claude-automation-plugin/) | Optional hooks for prompt-time search and write-time indexing | — |
-| [**Codex plugin**](plugins/memtomem/) | Exact-pinned MCP server and skills for Codex CLI | handoff · brief · update |
-| [**opencode-memtomem**](packages/opencode-memtomem/) | Exact-pinned MCP server, commands, and read skills for OpenCode | handoff · brief · update |
-| [**Kimi Code skills**](packages/memtomem-kimi-skills/) | Skill bundle for Kimi Code (not a plugin) | handoff · brief · update |
-| [**Antigravity CLI plugin**](packages/memtomem-antigravity-plugin/) | Exact-pinned MCP server and skills for `agy` — [experimental](#stability) | handoff · brief · update |
-| [**Cursor plugin**](packages/memtomem-cursor-plugin/) | Exact-pinned MCP server and skills for Cursor — [experimental](#stability) | handoff · brief · update |
-| [**Hermes Agent plugin**](packages/memtomem-hermes-plugin/) | Exact-pinned MCP server and the search, recall, status, remember, index, and setup skills | — (needs a project root) |
-| [**Hermes memory provider**](packages/memtomem-hermes-memory/) | Recall-only provider that adds relevant notes to each Hermes turn | — |
-| [**memtomem-stm**](https://github.com/memtomem/memtomem-stm) | STM proxy: proactive memory surfacing via tool interception | — |
 
 ## Documentation
 

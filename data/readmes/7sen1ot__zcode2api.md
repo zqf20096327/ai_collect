@@ -44,9 +44,15 @@
 
 ## 快速开始
 
+| 使用方式 | 需要 Go？ | 说明 |
+| --- | --- | --- |
+| Releases 完整发行包 | 不需要 | 下载已编译的程序，解压即可运行 |
+| Windows / Linux / macOS 源码运行 | Go 1.26+ | Windows 启动脚本自动编译源码 |
+| Docker Compose | 不需要 | 需安装 Docker Compose，由 Docker 构建和运行 |
+
 ### 可执行文件
 
-从 [Releases](https://github.com/7sen1ot/zcode2api/releases) 下载对应系统和架构的完整压缩包，解压后在其根目录运行，无需安装 Go。
+从 [Releases](https://github.com/7sen1ot/zcode2api/releases) 下载对应平台的完整发行包（非 `Source code`），解压后在根目录运行：
 
 Windows（PowerShell）：
 
@@ -63,40 +69,44 @@ chmod +x ./zcode2api
 
 ### 源码运行
 
-需要 Git 和 Go 1.26+。
+安装 Go 1.26+，通过 Git 获取源码；也可下载 **Code → Download ZIP** 并解压：
 
 ```sh
 git clone https://github.com/7sen1ot/zcode2api.git
 cd zcode2api
-go run . --root .
 ```
 
-Windows 源码或完整发行包也可通过 `.\scripts\start.ps1` 后台启动、`.\scripts\stop.ps1` 停止；源码方式会自动编译。
+Windows 在项目根目录使用 PowerShell，自动编译并后台运行：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\start.ps1  # 启动
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\stop.ps1   # 停止
+```
+
+各平台均可用 `go run . --root .` 前台运行，按 `Ctrl+C` 停止。
 
 ### Docker Compose
 
-需要 Git 和 Docker Compose。以下构建包含自动验证所需的 Node.js 与 jsdom。
+安装 Docker Compose，获取源码后在项目根目录执行：
 
 ```sh
-git clone https://github.com/7sen1ot/zcode2api.git
-cd zcode2api
 docker compose build --build-arg CAPTCHA_RUNTIME=1
 docker compose up -d
 ```
 
-节点订阅代理需再加 `--build-arg PROXY_RUNTIME=1`，custom 工具的 grammar 校验需加 `--build-arg GRAMMAR_RUNTIME=1`；按需选择。
+构建已包含 Node.js 与 jsdom。节点订阅代理另加 `--build-arg PROXY_RUNTIME=1`，grammar 校验另加 `--build-arg GRAMMAR_RUNTIME=1`。
 
 ### 访问与配置
 
-直接运行程序且需要服务端自动验证时，安装 Node.js 18+，并在项目或解压目录安装 jsdom：
+非 Docker 运行需使用自动验证时，安装 Node.js 18+（含 npm），在项目或解压目录执行：
 
 ```sh
 npm --prefix captcha_node ci --omit=dev --ignore-scripts
 ```
 
-打开控制台 [http://127.0.0.1:6789](http://127.0.0.1:6789)，默认管理密码见 `data/admin-password.txt`。账号、设置和日志保存在 `data/`，请保留该目录。
+控制台：[http://127.0.0.1:6789](http://127.0.0.1:6789)，默认管理密码见 `data/admin-password.txt`。请保留存放账号、设置和日志的 `data/` 目录。
 
-运行参数可在 Web 中设置，或复制 `config.example.json` 为 `config.json`；Web 保存的设置优先。
+配置可在 Web 中修改，或复制 `config.example.json` 为 `config.json`；Web 设置优先。
 
 ## 接入客户端
 

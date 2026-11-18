@@ -44,15 +44,17 @@
 
 # **LLMScribe**
 
-**Turn any local code repository into clean, structured context for AI
-coding agents.**
+**The filesystem layer AI agents are missing.**
 
-One core, four surfaces — an MCP server, a CLI, a desktop GUI and a Python API. All of
-them read your project from disk, and the same input always produces the same bytes.
+An agent that wants to look at your code has one interface: the shell. `ls`, `find`,
+`grep`, `cat` — built for a human reading a terminal, not for a program building a
+model of a repository.
 
-No AI. No embeddings. No hidden ranking.
+LLMScribe gives it one structured interface instead: the same seven operations, the
+same JSON, the same bytes, on Linux, macOS and Windows.
 
-Apache-2.0, and it runs entirely on your machine — no network, no account.
+No AI. No embeddings. No hidden ranking. Apache-2.0, and it runs entirely on your
+machine — no network, no account.
 
 **Works with** Cursor, Claude Code, Claude Desktop, Codex, VS Code, Windsurf, Zed,
 Cline, Continue, JetBrains and LM Studio — any MCP client — plus `pip install` and a
@@ -65,7 +67,51 @@ standalone Windows EXE.
 
 ---
 
-## The problem
+## The problem: agents drive your OS through a human interface
+
+| What the agent needs | Linux / macOS | Windows |
+| --- | --- | --- |
+| list a directory | `ls -la` | `dir /a` |
+| find files by name | `find . -name '*.py'` | `Get-ChildItem -Recurse -Filter *.py` |
+| search inside files | `grep -rn 'auth' .` | `Select-String -Pattern auth` |
+| read a file | `cat app.py` | `type app.py` |
+| structural diff | `diff -ru old new` | `fc /r` (no recursive equivalent) |
+
+Three things go wrong every time:
+
+- **The output is for eyes, not parsers.** Columns, colour, locale-dependent sort order,
+  and warnings interleaved with results.
+- **The commands are not portable.** An agent that works on your laptop fails in CI, or
+  on a contributor's Windows machine.
+- **The agent has to interpret.** Every one of those returns text it must re-parse, and
+  re-parsing is where it drifts.
+
+### Proving it, not claiming it
+
+`scripts/cross_platform_check.py` builds a fixed fixture project, runs `map`, `overview`,
+`search`, `read`, `read_many` and `dependencies` over it, scrubs the absolute path, and
+digests each result. The [Cross-platform output](.github/workflows/cross-platform.yml)
+workflow runs that on Ubuntu, macOS and Windows and **fails the build if the digests
+differ**:
+
+```text
+llmscribe <version>
+python 3.12
+map            <sha256>
+map_depth2     <sha256>
+overview       <sha256>
+search         <sha256>
+read           <sha256>
+read_many      <sha256>
+dependencies   <sha256>
+combined       <sha256>   <- must be identical on all three
+```
+
+The fixture is written as bytes, not text, so the files themselves are byte-identical on
+every platform — `write_text` would turn `\n` into `\r\n` on Windows and the comparison
+would be meaningless.
+
+## What that costs
 
 Your agent does not have an intelligence problem. It has a **retrieval** problem — and
 no model upgrade fixes a context window filled with the wrong files.
@@ -152,14 +198,22 @@ project_map()
 **CLI**
 ```bash
 llmscribe map
+llmscribe map --depth 2          # only the first two levels, like `tree -L 2`
 llmscribe map --json
 ```
 
 **MCP**
 ```text
 project_map
+project_map(depth=2)
 ```
 </details>
+
+`--depth N` (or `max_depth=N` from Python) limits the listing to the first *N* path
+levels. A top-level file is depth 1, so `--depth 2` keeps `a/b.py` and drops
+`a/b/c.py`. It prunes the tree *and* the file list, which means `overview --depth 2`
+never reads the files it excluded — useful for fitting a large repository into a small
+context window.
 
 Output:
 ```text
@@ -235,6 +289,15 @@ llmscribe read src/auth/service.py
 read
 ```
 </details>
+
+Every read also reports `byte_size` and `line_count` for the **whole file**, not just the
+part returned — so the agent can answer "how big is this" and "how many lines" without a
+second command, and without being misled when the body was clipped. That is the
+`stat` / `wc -l` / `file` information, in the same shape on every OS.
+
+```json
+{ "file_path": "src/main.py", "byte_size": 2841, "line_count": 96, "character_count": 2841, "truncated": false }
+```
 
 ---
 
@@ -633,6 +696,10 @@ llmscribe read-many src/auth/service.py src/api/login.py
 llmscribe dependencies src/auth/service.py
 llmscribe diff
 
+# only the first two levels (like `tree -L 2`)
+llmscribe map --depth 2
+llmscribe overview --depth 3
+
 # machine-readable output
 llmscribe map --json
 llmscribe search "auth" --json
@@ -684,18 +751,38 @@ Two optional environment variables restrict which directories the MCP server may
 ## Python API
 
 ```python
-from pathlib import Path
-from llmscribe.core import project_map, search_project, read_file, read_files, analyze_dependencies, get_git_diff, LLMScribeError
+from llmscribe import Repository, LLMScribeError
 
-root = Path(".")
-print(project_map(root).tree)
-print(search_project("auth", root).to_dict())
-print(read_files(["README.md", "missing.py"], root).to_dict())   # per-file errors, never raises
-try:
-    analyze_dependencies("src/app.py", root)
-except LLMScribeError as err:      # err.code is a stable machine-readable code
-    print(err.code, err.message)
+repo = Repository(".")                  # or Repository(Path("."))
+
+print(repo.map().tree)                  # tree, no file contents
+print(repo.search("auth").match_count)
+
+match = repo.read("src/app.py")         # returns a result, never raises
+if match.ok:
+    print(match.content)
+
+batch = repo.read_many(["README.md", "missing.py"])   # per-file errors, never raises
+print(batch.success_count, batch.error_count)
+
+deps = repo.dependencies("src/app.py")  # raises LLMScribeError
+print(deps.file_dependencies.local_dependencies)
+print(deps.used_by)                     # what imports it
 ```
+
+Two error conventions, and the difference matters:
+
+- `read` and `read_many` **return** results carrying `ok` and `error_code`, so a batch
+  reports per-file failures instead of dying on the first one.
+- `dependencies` and `diff` **raise** `LLMScribeError`, whose `.code` is a stable
+  machine-readable string.
+
+Every method returns the same dataclasses the CLI and MCP server produce, and each one
+has `.to_dict()` for JSON. `llmscribe.core` still exposes the underlying functions if you
+want to call them directly.
+
+Runnable examples live in [`examples/`](examples/): chunking a repo for a RAG pipeline,
+reviewing what a change touches, and a repo summary.
 
 ## Behavior reference
 
@@ -875,6 +962,18 @@ Start with the [vision](https://github.com/AMRITO-KUNDU/llmscribe/blob/main/VISI
 
 <a href="https://github.com/AMRITO-KUNDU/llmscribe/graphs/contributors">
   <img alt="Contributors" src="https://contrib.rocks/image?repo=AMRITO-KUNDU/llmscribe"/>
+</a>
+
+---
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=amrito-kundu%2Fllmscribe&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=amrito-kundu/llmscribe&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=amrito-kundu/llmscribe&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=amrito-kundu/llmscribe&type=date&legend=top-left" />
+ </picture>
 </a>
 
 ---

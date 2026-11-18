@@ -2,6 +2,9 @@
 #+AUTHOR: John Kitchin
 #+DATE: [2026-04-03 Fri]
 
+[[https://pypi.org/project/crucible-llm/][https://img.shields.io/pypi/v/crucible-llm.svg]]
+[[https://github.com/jkitchin/crucible/actions/workflows/tests.yml][https://github.com/jkitchin/crucible/actions/workflows/tests.yml/badge.svg]]
+
 [[./crucible.png]]
 
 * Overview
@@ -29,8 +32,9 @@ Key design principles:
   grep cannot do.
 - *Hybrid search*: combines FTS5 keyword search with ollama vector embeddings
   for meaning-based retrieval, merged via reciprocal rank fusion.
-- *Interoperability*: multiple crucible instances can be peered for
-  cross-querying via SQLite's separate connection mechanism.
+- *Interoperability*: every crucible on a machine is listed in a global
+  registry, so one can search the others (=search --all=), and one
+  crucible can be merged into another (=crucible merge=).
 - *Knowledge evolution*: derivation chains track how articles are synthesized
   from other articles over time.
 
@@ -40,6 +44,7 @@ From PyPI:
 
 #+BEGIN_SRC bash
 pip install crucible-llm
+crucible --version
 #+END_SRC
 
 Or from source for development:
@@ -68,7 +73,9 @@ The =install= command does three things:
 writes the =~/.claude/CLAUDE.md= directive. There is one directive, so a new
 crucible does not take it over until you run =install= in it.
 
-To remove: =crucible uninstall=.
+Re-running =install= (or =update=) keeps a copy of a skill file you have
+edited as =SKILL.md.bak=. To remove: =crucible uninstall=, which deletes
+only the files crucible installed.
 
 ** Installing the skill with knowhow
 
@@ -101,9 +108,9 @@ A crucible project keeps everything in a =.crucible/= directory at its root:
 
 #+BEGIN_EXAMPLE
 your-project/
+  CLAUDE.md                Conventions for agents working in the project
+  .gitignore               Excludes crucible.db and sources/external/
   .crucible/
-    CLAUDE.md              Conventions for agents working in the wiki
-    .gitignore             Excludes crucible.db and sources/external/
     crucible.db            Wiki graph database (SQLite, regenerable)
     references.bib         Bibliography of ingested sources
     sources/
@@ -161,18 +168,22 @@ crucible search "catalyst" --mode fts                  # keyword only
 # Navigate
 crucible concepts                # list all topics
 crucible concept thermodynamics  # articles on a topic
-crucible backlinks wiki/concepts/activation-energy.org
-crucible related wiki/concepts/activation-energy.org
-crucible history wiki/comparisons/synthesis.org        # derivation chain
+crucible backlinks concepts/activation-energy.org   # paths: wiki-, root- or cwd-relative
+crucible related concepts/activation-energy.org
+crucible history comparisons/synthesis.org        # derivation chain
 
 # Maintain
-crucible lint                    # find problems
+crucible lint                    # find problems; exits 1 on errors (--strict: warnings too)
 crucible suggest                 # find opportunities
 crucible index                   # regenerate index
 crucible publish                 # export as HTML site
+crucible delete wiki/concepts/old.org   # remove an article or source
+crucible merge other-crucible    # fold another crucible into this one
 #+END_SRC
 
 * Documentation
+
+The documentation is published at https://kitchingroup.cheme.cmu.edu/crucible/.
 
 - [[file:docs/tutorial.org][Tutorial]]: step-by-step guide to ingesting your first source and building a wiki
 - [[file:docs/commands.org][Command Reference]]: complete documentation for every CLI command
@@ -280,12 +291,12 @@ raw observations led to which conclusions.
 In a research group, each member works on their own project but the work often
 overlaps in ways nobody tracks. With crucible, each group member maintains
 their own instance on their own project directory. The PI registers all of
-them with =crucible peer add student-name /path/to/their/crucible=, and can
-then run =crucible search "keyword" --all= to query across every group
+them with =crucible registry add student-name /path/to/their/crucible=, and
+can then run =crucible search "keyword" --all= to query across every group
 member's knowledge base simultaneously. The results show which crucible each
 hit came from, making it easy to say "talk to Alex, they have three articles
 on that catalyst." Copyrighted sources stay local to each instance (they are
-gitignored), so only the distilled wiki content is visible to peers.
+gitignored), so only the distilled wiki content is visible to others.
 
 ** Preparing for a Student Meeting
 
@@ -335,6 +346,12 @@ and queries always "add up" in the crucible.
 | comparison | wiki/comparisons/ | Cross-source analysis |
 | method | wiki/methods/ | Technique or methodology |
 
+Each article has a properties drawer on its top heading with
+=:ARTICLE_TYPE:=, =:SOURCE_KEYS:= (the cite keys of its sources),
+=:STATUS:=, =:CREATED:= and =:MODIFIED:= (updated on every substantive
+edit). The database takes an article's dates from =:CREATED:= and
+=:MODIFIED:=, so a rebuild reproduces them.
+
 ** Search Modes
 
 Crucible offers three search modes, with =auto= (hybrid when embeddings
@@ -346,19 +363,26 @@ exist, FTS otherwise) as the default:
 - *Hybrid*: combines both using Reciprocal Rank Fusion (RRF). Articles found
   by both methods rank highest. This is the default when embeddings exist.
 
-** Peer Crucibles
+** Multiple Crucibles
 
-Multiple crucible instances can be connected for cross-querying:
+Every crucible on the machine is recorded in the global registry
+(=~/.crucible/registry.json=), which =crucible init= and =crucible sync=
+keep up to date. Others can be added by hand and queried together:
 
 #+BEGIN_SRC bash
-crucible peer add lab-shared /path/to/shared/crucible
-crucible peer add student /path/to/student/crucible
+crucible registry add lab-shared /path/to/shared/crucible
+crucible registry add student /path/to/student/crucible
+crucible registry list
 crucible search "catalyst design" --all    # searches everywhere
 crucible concepts --all                    # unified concept list
 #+END_SRC
 
-Each peer retains full independence. Queries run against separate database
-connections, so there is no risk of corrupting another crucible's data.
+Each crucible retains full independence. Queries run against separate
+database connections, so there is no risk of corrupting another
+crucible's data. To combine two crucibles for good, =crucible merge=
+copies another crucible's sources, articles and bibliography into this
+one; it refuses a crucible whose sources or bibliography entries repeat a
+cite key, which =crucible lint= reports so you can fix them first.
 
 ** Knowledge Evolution
 
@@ -368,7 +392,7 @@ includes a =:DERIVED_FROM:= property listing the source articles. This
 creates a derivation chain in the database:
 
 #+BEGIN_SRC bash
-crucible history wiki/comparisons/my-synthesis.org
+crucible history comparisons/my-synthesis.org
 # Derived from:
 #   [concept] Activation Energy (wiki/concepts/activation-energy.org)
 #   [summary] Smith 2024 Results (wiki/summaries/smith2024.org)
@@ -380,9 +404,29 @@ You can also trace forward: "what has been derived from this article?"
 
 A crucible knowledge base is git-friendly. Commit =.crucible/wiki/=,
 =.crucible/references.bib=, =.crucible/sources/notebooks/=, and
-=.crucible/sources/data/=. The default =.gitignore= written by
-=crucible init= excludes =.crucible/crucible.db= (and its WAL
-sidecars) and =.crucible/sources/external/= (copyrighted material).
+=.crucible/sources/data/=. =crucible init= writes this =.gitignore= at
+the project root (if there is none):
+
+#+BEGIN_EXAMPLE
+# Crucible: external sources (copyrighted, not shareable)
+.crucible/sources/external/
+
+# Crucible: database (regenerable from wiki via auto-rebuild)
+.crucible/crucible.db
+.crucible/crucible.db-wal
+.crucible/crucible.db-shm
+.crucible/crucible.db-journal
+.crucible/.crucible.db.rebuild-*.tmp
+
+# Crucible: lock file for references.bib
+.crucible/references.bib.lock
+
+# Crucible: publish output
+.crucible/wiki/_build/
+
+# Crucible: left behind only if a merge is killed
+.crucible/.merge-staging-*/
+#+END_EXAMPLE
 
 ** Rebuild on clone
 
@@ -400,8 +444,18 @@ crucible search "some term"
 
 No =crucible init= is needed on clone. The rebuild creates the
 schema, populates articles and their cross-links from =wiki/*.org=,
-creates =sources= rows from =references.bib=, and regenerates
-=MANIFEST.md= and =index.org=.
+creates =sources= rows from the =references.bib= entries whose =file=
+field names a stored file (which =crucible ingest= writes), adds a row
+for each file in =sources/notebooks/= and =sources/data/= that no entry
+claims (a disk scan), and regenerates =MANIFEST.md= and =index.org=.
+=references.bib= may use braces or parentheses around entries and
+compact one-line entries (as doi.org returns them); =@comment=,
+=@string= and =@preamble= blocks are ignored.
+
+Because the rebuild reads only committed files, deleting a source with
+=crucible delete= also removes the =file= field from its bibliography
+entry (the entry is kept), so the source does not come back on the next
+sync.
 
 ** Embeddings are a separate step
 

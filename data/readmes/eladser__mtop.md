@@ -1,0 +1,138 @@
+![mtop - htop for your local AI](docs/img/banner.png)
+
+[![release](https://img.shields.io/github/v/release/eladser/mtop)](https://github.com/eladser/mtop/releases)
+[![winget](https://img.shields.io/winget/v/eladser.mtop)](https://winstall.app/apps/eladser.mtop)
+[![license](https://img.shields.io/github/license/eladser/mtop)](LICENSE)
+
+![demo](docs/img/demo.gif)
+
+One terminal window for whatever you're running locally (Ollama, llama.cpp, LM Studio, vLLM, llama-swap, Lemonade, SGLang). It shows the loaded models and how much VRAM they're sitting on, the GPU, and the requests going through with their tok/s, live while they stream. When a model is slow and mtop can tell why (spilled to CPU, context full, requests queueing), it says so under the models table. Hit `c` to flip the middle pane to per-model stats.
+
+It'll also kick out models that won't leave. Pick one, press `u`, gone. Ollama is supposed to unload idle models on its own and usually does, but every so often `ollama ps` shows something that expired ten minutes ago still parked on 8 gigs. mtop flags those as overdue. `-idle-unload 15m` clears them for you.
+
+## Install
+
+macOS or Linux:
+
+```
+brew install eladser/tap/mtop
+```
+
+Windows:
+
+```
+scoop bucket add eladser https://github.com/eladser/scoop-bucket
+scoop install mtop
+winget install eladser.mtop
+```
+
+Or grab a binary from [releases](https://github.com/eladser/mtop/releases), or build it with `go install github.com/eladser/mtop@latest`.
+
+Run `mtop`. It looks for the usual servers on their usual ports, no config file to write.
+
+No model server running? `mtop --demo` plays a looping 40-second scenario on simulated models, traffic and a GPU, so you can see every pane. It opens no port and touches no server.
+
+## Seeing requests
+
+Most local servers don't expose per-request numbers anywhere. The data only exists in the response stream as it streams. So mtop runs a little pass-through proxy on `127.0.0.1:4321` and reads the numbers off the wire. Point your client at it:
+
+```
+OLLAMA_HOST=127.0.0.1:4321              # ollama clients
+base_url = "http://127.0.0.1:4321/v1"   # openai-style clients
+```
+
+Your client gets the exact same bytes back. By default the proxy forwards to ollama; `-target` aims it at llama.cpp or LM Studio instead. The models and GPU panes don't need any of this.
+
+A request still streaming sits at the top of the pane with a `▶`: how long it's been going, tokens so far and the live tok/s, plus time to first token and decode time if the terminal is wide enough. For streamed OpenAI-style requests the final tok/s is decode only, so a slow prompt or a cold model load doesn't drag it down.
+
+The same port answers `/metrics` in prometheus format if you'd rather watch it from grafana.
+
+## Keys
+
+| key | does |
+|-----|------|
+| `↑`/`↓`, `k`/`j` | move the selection |
+| `u` | unload the selected model |
+| `c` | swap recent requests for per-model stats |
+| `i` | inspector: the last request's prompt, thinking (reasoning models), completion, and timing breakdown (needs `-inspect`) |
+| `q` | quit |
+
+## Comparing models
+
+`mtop compare` runs the same prompt past a few ollama models, one at a time so they're not fighting for the GPU, and prints how each did:
+
+```
+$ mtop compare "explain tcp in one sentence" qwen3:0.6b smollm2:135m
+MODEL                         TOK/S      OUT      TOTAL
+qwen3:0.6b                    798.1      175      446ms
+smollm2:135m                  795.3       29     10.72s
+```
+
+tok/s is decode speed; TOTAL is wall-clock and includes the model load on the first call. Point it at another box with `-ollama`, or compare models on an OpenAI-style server with `-openai http://127.0.0.1:8080/v1`.
+
+## Flags
+
+```
+-ollama       ollama base url, or a comma list to watch a few boxes at once
+-llamacpp     llama.cpp server url        (default http://127.0.0.1:8080, empty to skip)
+-lmstudio     lm studio url               (default http://127.0.0.1:1234, empty to skip)
+-vllm         vllm url                    (default http://127.0.0.1:8000, empty to skip)
+-llamaswap    llama-swap url, only if it's not on the -llamacpp url
+-lemonade     lemonade url                (default http://127.0.0.1:13305, empty to skip)
+-sglang       sglang url                  (default http://127.0.0.1:30000, empty to skip)
+-listen       proxy listen address        (default 127.0.0.1:4321)
+-target       proxy upstream              (defaults to the ollama url)
+-idle-unload  unload models idle this long, e.g. 15m (default off)
+-notify       desktop notification on a gpu alert, cpu offload, or context overflow
+-history      keep recent requests across restarts (~/.mtop/history.jsonl)
+-mem-alert    gpu memory percent for the alert line (default 93)
+-temp-alert   gpu temperature for the alert line (default 87)
+-inspect      capture prompt, thinking and completion text (kept in memory, never written to history)
+-no-proxy     don't run the proxy
+--demo        run on simulated models, traffic and a GPU (no server needed)
+```
+
+The TOK/S line also tracks session energy: watt-hours used and tokens per watt-hour, from whole-GPU power. It's an estimate (the whole card, not just inference), so read it as a rough efficiency number, not a meter.
+
+Every flag has an `MTOP_*` env var too, and `~/.mtop.conf` can hold them so you're not retyping a homelab box:
+
+```
+MTOP_OLLAMA=http://homelab:11434
+```
+
+## FAQ
+
+**Does the proxy add latency?**
+No. Bytes go straight through and the counters get read on the way past. Same response, same speed.
+
+**Requests pane says "none yet".**
+Your client is talking to the server directly. Send it through the proxy and they'll show up. The models and GPU panes work regardless.
+
+**What's "overdue"?**
+Ollama said it'd unload a model by a certain time and didn't. Press `u`, or set `-idle-unload` and stop thinking about it.
+
+**A model row says `cpu 38%`.**
+38% of that model didn't fit in VRAM and runs from system RAM, which is why it's slow. Free some VRAM, pick a smaller quant, or lower `num_ctx`. `cpu` in the VRAM column means it's all on CPU. Ollama and Lemonade report this; llama.cpp and LM Studio don't expose their offload split, so their rows never show it.
+
+**There's a `↳` line under the models table.**
+That's mtop's guess at why the selected model is slow: `38% of model on CPU`, `context 94% full`, `prompt cut to fit context`, `3 requests queued`. Other models with a reason get a `!`. Queueing only shows for llama.cpp, vLLM and SGLang, since ollama doesn't say how many requests it's holding. A `hw thermal slowdown` or `hw power brake` line in the GPU pane means the card is throttling itself (NVIDIA only).
+
+**A request says `ctx 97%`.**
+The prompt filled 97% of the model's context window. Ollama quietly drops the oldest part of a prompt that doesn't fit, so from 90% up the model has probably lost the start of the conversation. `ctx over, rejected` means the server refused it outright. Raise the context size or send less.
+
+**llama.cpp shows up thinner than ollama.**
+Start it with `--metrics` for running and queued requests, the share of draft tokens accepted when you run a draft model (`-md`), and kv-cache use on builds that still report it. Without that flag it only hands out the model name.
+
+**Does mtop wake a sleeping llama.cpp?**
+No. It only reads `/health`, `/props`, `/models` and `/metrics`, which the server exempts from `--sleep-idle-seconds`. Each `/metrics` scrape does reset the server's throughput gauge window, so your own Prometheus sees a shorter averaging window while mtop runs.
+
+**AMD? Intel? Mac?**
+On Linux, AMD works with `amd-smi` or `rocm-smi`. On Windows, AMD and Intel GPUs come from the system performance counters: util and memory, temp and power show `n/a`. Apple Silicon gives you the unified-memory figure on its own. GPU utilization there comes from `powermetrics`, which needs root, so run mtop with `sudo` on a Mac if you want that number too.
+
+**tok/s looks different between ollama and openai-style requests.**
+Ollama reports its own generation timings, so that number is real decode speed. OpenAI-style responses carry no timings, so mtop divides tokens by wall-clock time, which folds in prompt processing. Close, not identical.
+
+**Does it phone home?**
+Never. No accounts, no telemetry, it only talks to your own servers. The proxy also turns away cross-origin and non-loopback callers, so a browser tab can't reach through it to your ollama.
+
+[MIT](LICENSE). If it's useful to you, [ko-fi.com/eladser](https://ko-fi.com/eladser).

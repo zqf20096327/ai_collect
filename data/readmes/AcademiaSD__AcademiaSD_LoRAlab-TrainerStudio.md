@@ -8,6 +8,14 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-17**
+
+- **LTX 2.5: half the RAM and Block Swap Storage** — video previews no longer crash the training, and blocks can wait in **RAM**, on **Disk** or in **Auto (RAM + Disk)** with a **RAM Limit**, as in MiniMax-H3 ([details](docs/README_LTX25.md#block-swap-storage-ram-disk-or-auto)) [`429e04f`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/429e04f) [`d4c206a`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/d4c206a) [`dc854e9`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/dc854e9) [`c27a2a7`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c27a2a7)
+- **LTX 2.5: DoRA with any VRAM Profile**, down to 8 GB ([details](docs/README_LTX25.md#dora)) [`b158852`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b158852) [`42e9f3a`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/42e9f3a)
+- <img src="https://img.shields.io/badge/NEW%20TRAINER-ff2d55?style=for-the-badge" alt="NEW TRAINER" height="22"> **LTX 2.5: image, video, video + audio and edit (IC-LoRA) LoRAs, from 8 GB of VRAM** — images, clips and audio in one dataset, video previews with sound, and LoRAs that load in ComfyUI ([details](#ltx-25--image-video-video--audio-and-edit-loras)) [`bb8d867`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/bb8d867) [`b26c7a9`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/b26c7a9) [`79cec3d`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/79cec3d) [`c2b3589`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c2b3589) [`c5c3a07`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c5c3a07)
+- **Number fields reject meaningless values** — a negative Batch Size or a Grad Accum of 0 made the training fail at the first step. In all trainers, a value below the minimum goes up to it when you leave the field, and an empty one goes back to its initial value. The Pre-Cache and training scripts apply the same limits when they load their settings, so a hand-edited or old json gets them too, with a note in the console [`df7fc19`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/df7fc19)
+- New launcher image [`c074d6b`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c074d6b)
+
 **2026-11-16**
 
 - **LTX 2.3 trains LTX-2.3, not LTX-2.5** — the launcher card, this README and the technical notes said it also worked with LTX-2.5. Its LoRAs usually load in LTX-2.5 (same layers and LoRA key names), but it trains the 2.3 weights: LTX-2.5 retrains the transformer and uses Gemma 4 as text encoder instead of Gemma 3 [`725c0fa`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/725c0fa)
@@ -241,6 +249,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **MOSS-Image** | Image LoRAs (characters, objects, styles) on MOSS-Image Base or SFT **and edit LoRAs** (before → after, on top of armV5, armV4 or Moss-Image-Edit); supports rsLoRA, LoRA+ and LoKr | **6 GB** (512²) / 8 GB |
 | **Ideogram 4** | Image LoRAs (characters, objects, styles), with JSON captions | 12 GB (16 GB for previews with CFG) |
 | **SDXL** | Image LoRAs for SDXL Base, Pony, Illustrious, NoobAI, Juggernaut, RealVis or your own SDXL checkpoint | **4 GB** (NF4) / 12 GB (BF16) |
+| **LTX 2.5** | Image LoRAs, video LoRAs from clips, **video + audio** LoRAs and **edit IC-LoRAs** (before → after), on LTX-2.5; block swap | **8 GB** |
 | **LTX-2.3** | Character and style LoRAs for LTX-2.3, trained from images (they usually load in LTX-2.5 too) | 12 GB |
 | **MiniMax-H3** | Video LoRAs from images, clips and audio, plus training-free **RefMods** | 8 GB |
 | **MiniMax-H3 Image** *(experimental)* | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) on the 6-step distilled MiniMax-H3-Image, trained with a de-distillation adapter; 33B in NF4 with block swap | 8 GB (image LoRAs) / 10 GB (edit LoRAs), estimated from the VRAM plan with Resident Blocks on 0 |
@@ -265,6 +274,8 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 **Cola de trabajos:** con un entrenamiento en marcha, *Iniciar / Reanudar* o *Iniciar Pre-Caché* en cualquier entrenador pregunta si añadirlo a la cola, con una copia de los ajustes de ese momento. Los trabajos se ejecutan uno tras otro en la GPU. El botón **Cola** del lanzador y de cada entrenador abre la página de la cola: lo que entrena ahora (progreso, tiempo restante y curva de loss) y lo que espera, que puedes reordenar arrastrando, pausar, continuar o quitar. Pausar guarda un checkpoint y deja el trabajo pausado en la cola; continuar sigue desde ese paso. Mientras un entrenador entrena, **➕ Nuevo entrenamiento en cola** abre un borrador del mismo entrenador en otro puerto para preparar el siguiente sin tocar el que entrena (ponle otro nombre de proyecto). Si un trabajo falla, se queda en la lista en rojo diciendo por qué (no se encuentra la pre-caché o el dataset, falta VRAM…); corrígelo y pulsa **↻** para reintentarlo. **✎** en un trabajo de la cola abre su entrenador con sus ajustes para cambiarlos: el botón de empezar pasa a ser **💾 Guardar cambios en la cola**. Mientras se hace la pre-caché, *Iniciar / Reanudar* sigue disponible y manda el entrenamiento a la cola. **⏻ Pausar todo y salir**, abajo en el lanzador, pausa el entrenamiento en curso guardando su checkpoint y cierra todo desde el navegador; al volver a abrir el lanzador la cola sigue sola donde estaba, empezando por ese entrenamiento. En RunPod y otras nubes el lanzador sigue abierto, con la cola pausada.
 
 **Linux:** ya tiene soporte para Linux. Cada `.bat` tiene su `.sh` equivalente; la instalación y el uso están en [docs/Linux.md](docs/Linux.md). Gracias a **[Jonathan Hecl (@jonathanhecl)](https://github.com/jonathanhecl)** por aportarlo.
+
+**LTX 2.5:** nuevo entrenador para **LTX-2.5** de Lightricks con cuatro tipos de LoRA: de imagen (personajes, estilos), de vídeo a partir de clips (movimientos, efectos), de **vídeo + audio** (**Train Audio**) y de **edición IC-LoRA** (pares `nombre_before` / `nombre_after`, de imágenes o clips). Funciona **desde 8 GB de VRAM** con block swap; **VRAM Profile** simula tarjetas menores. Con clips, pulsa primero **Prepare clips** (24 fps y 8n+1 fotogramas sin recortar el final). Las previews de clips salen en `.mp4` con el sonido generado. Descarga `AcademiaSD/LTX25-NF4-for-LoRA-Training` (26,3 GB) la primera vez. Detalles en la sección *LTX 2.5* y en [docs/README_LTX25.md](docs/README_LTX25.md).
 
 **FLUX.1 Dev:** nuevo entrenador de LoRAs de imagen para **FLUX.1 [dev]** de Black Forest Labs (FLUX.1 [dev] Non-Commercial License). Se descarga ya en **NF4** (13,5 GB, sin token) y los dos text encoders solo se usan en el pre-caché. Detalles en la sección *FLUX.1 Dev*.
 
@@ -299,6 +310,7 @@ Each trainer downloads **only what it uses**, already quantized. The table compa
 | Trainer | Official model | LoRAlab before | **Trainer Studio now** | What changed |
 | :--- | ---: | ---: | ---: | :--- |
 | **Krea 2** | 62.0 | 43.2 | **17.0** | The BF16 transformer (26.3 GB) is no longer downloaded or used: the model is built directly from its NF4 weights. |
+| **LTX 2.5** | ~70 | — | **26.3** | New trainer: the full transformer (9.6 GB NF4 + 0.85 GB BF16), the Gemma 4 12B text encoder in NF4 (7.2 GB), connectors, VAEs and vocoder, from `AcademiaSD/LTX25-NF4-for-LoRA-Training`. The official Diffusers repo is gated; this one is not. |
 | **LTX-2.3** | 101.3 | 111.1 | **32.2** | The BF16 transformer (38.0 GB) and the FP32 Gemma 3 text encoder (48.8 GB) are replaced by NF4 versions (9.8 GB + 7.8 GB). |
 | **Qwen-Image 2.1** | ~32 (BF16) | 21.9 | **21.9 / 14.4 / 11.0** | Only the text encoder you pick is downloaded: BF16 (exact, default) / INT8 / NF4. |
 | **MiniMax-H3** | 498.5 | 41.4 | **41.4** | The 33B model ships in NF4 from the start. |
@@ -330,7 +342,7 @@ The automatic captioner adds, only the first time you use it: **nothing** for Kr
 | **Driver** | NVIDIA **580 or newer** (CUDA 13). AMD: a recent Adrenalin driver on Windows, or `amdgpu` on Linux | Latest |
 | **RAM** | 16 GB | 32 GB |
 | **Disk** | The model of each trainer you use (table above) plus your datasets and caches | SSD |
-| **Other** | Internet the first time each model is used. MiniMax-H3 and Wan 2.2 video clips need **`ffmpeg`** in the `PATH`. | |
+| **Other** | Internet the first time each model is used. MiniMax-H3, Wan 2.2 and LTX 2.5 clips and audio files need **`ffmpeg`** in the `PATH`. | |
 
 Python, Git and every library are installed by the installer. GTX 10xx and older cards are **not** supported: PyTorch for CUDA 13 starts at the RTX 20xx generation.
 
@@ -415,7 +427,7 @@ Under **LoRA Rank / Alpha**, the trainers have extra checkboxes. They change **h
 | :--- | :--- | :--- |
 | **rsLoRA** | Scales the LoRA by `alpha/√rank` instead of `alpha/rank`, so high ranks keep learning. Ticking it lowers alpha to keep the same strength. | Z-Image, FLUX.2 Klein 9B, Qwen-Image 2.1, Qwen-Image 2512, Krea 2, Anima, Ideogram 4, ERNIE-Image, MOSS-Image, SDXL, LTX-2.3, MiniMax-H3 |
 | **LoRA+** | The `B` matrix of every layer learns 16× faster than `A`: usually the same quality in fewer steps. Lower the LR if it burns early. | same as rsLoRA |
-| **DoRA** | Each layer also learns the size (magnitude) of every output row, apart from its direction, which is the usual LoRA. It often follows the dataset more closely at the same rank. Every step is slower and uses some more VRAM, because the 4-bit weight of each layer is unpacked to measure it. Works with rsLoRA and LoRA+. | Z-Image, FLUX.1 Dev, FLUX.2 Klein 9B, FLUX.3 Image Klein, Krea 2, Qwen-Image 2.1, Qwen-Image 2512, Ming-Image, MOSS-Image, Anima, Wan 2.2, ERNIE-Image, Fibo 2.0, Ideogram 4, SDXL, LTX 2.3, Boogu |
+| **DoRA** | Each layer also learns the size (magnitude) of every output row, apart from its direction, which is the usual LoRA. It often follows the dataset more closely at the same rank. Every step is slower and uses some more VRAM, because the 4-bit weight of each layer is unpacked to measure it. Works with rsLoRA and LoRA+. | Z-Image, FLUX.1 Dev, FLUX.2 Klein 9B, FLUX.3 Image Klein, Krea 2, Qwen-Image 2.1, Qwen-Image 2512, Ming-Image, MOSS-Image, Anima, Wan 2.2, ERNIE-Image, Fibo 2.0, Ideogram 4, SDXL, LTX 2.3, LTX 2.5, Boogu |
 | **NormFix** (with DoRA, on by default) | Saves the `dora_scale` with the row sizes of the original model instead of those of the 4-bit copy it trains on. ComfyUI measures them on the model it loads, and the 4-bit copy is off by more than what DoRA learns: without NormFix a DoRA can lose the likeness in ComfyUI even when the previews look right. Only the saved file changes, not the training. The sizes come from `dora_norms.safetensors` in the NF4 model folder, downloaded before training when it is missing (SDXL and Anima take them from the original weights when loading). | every DoRA trainer |
 | **LoKr** + **Factor** | Replaces LoRA with a Kronecker product (LyCORIS). Much smaller files (~3 MB instead of ~40 MB at rank 8), good for characters with small datasets, more sensitive to the LR. rsLoRA, LoRA+ and DoRA turn off. | Z-Image, FLUX.2 Klein 9B, Qwen-Image 2.1, Krea 2, Anima, ERNIE-Image, MOSS-Image |
 
@@ -718,28 +730,4 @@ The official image-edit task works at 1024: 512 and 768 are out of its distribut
 | Resolution | 768×768 |
 | Rank / Alpha | 16 / 16 |
 | Learning rate | 3e-4 |
-| Steps | 1,000 (14 images): the likeness shows from ~500, but in ComfyUI the 1,000-step LoRA looks better than the 600 and 700 ones |
-| LoRA strength in ComfyUI | 1.0 for characters (1,000 steps) · 1.0–1.5 for edit LoRAs |
-| Speed and VRAM | 512²: ~1.5 s/step, ~8 GB · 768²: ~2.6 s/step, ~10 GB · edit at 512²: ~2.3 s/step, ~8 GB · edit at 768²: ~5.7 s/step, ~11 GB |
-
-### FLUX.3 Image Klein — image and edit LoRAs
-
-- Trains on **FLUX.3 Image Klein Base** (`black-forest-labs/flux-3-image-klein-base`, the undistilled model meant for fine-tuning). The LoRA also loads on the distilled Klein.
-- The 5.5B transformer is **NF4** (3.1 GB instead of 11 GB); the Qwen3-VL-4B text encoder of the pre-cache stays in BF16 and, on small GPUs, the layers that do not fit run from RAM, as in Krea 2.
-- **Normal LoRAs** and **Edit LoRAs** with `name_before` / `name_after` pairs: the "before" goes in through FLUX.3's own reference-image stream, clean, as in the official pipeline.
-- Same recipe as the official diffusers Klein trainer: fixed timestep shift 6.93, velocity target, LoRA on attention + MLP of the image, text and single blocks (plus the reference blocks for edit LoRAs). The LoRA is exported with BFL's original layer names, which ComfyUI loads directly.
-- **Captioner** (Qwen3-VL-8B NF4, shared) in **FLUX.3's own caption formats**, adapted from BFL's prompt-upsampler instructions: *Normal* (a detailed prose caption: medium, scene, lighting, frame-relative layout, subjects), *Normal + boxes* (the caption cites each element as `<person_1>` and ends with a JSON table `[{"id", "bbox", "desc"}]`), *Edit* (a detailed instruction that closes with everything else staying identical) and *Edit + boxes* (the instruction cites `<ref_image_0>` and each item, plus `[{"id", "from", "src_bbox", "tgt_bbox", "desc"}]`, the annotation format BFL trained editing on). Boxes are `[y_min, x_min, y_max, x_max]` on a 0-1000 grid; colors go in words (FLUX.3 has no hex palette, unlike Ideogram 4). For edit pairs the captioner sees the before **and** the after and is told which region changed, computed from the pixels.
-- **Previews:** 28 steps / CFG 3.5 (there is no turbo LoRA for FLUX.3 yet).
-- Needs diffusers with FLUX.3 support: `requirements.txt` pins it, so **Update_LoRAlab-TrainerStudio** installs it.
-
-| Measured on an RTX 5080 | |
-| :--- | :--- |
-| Training | 512²: ~0.7 s/step, ~4.2 GB · 768²: ~2.1 s/step · 1024²: ~3.9 s/step, ~5.7 GB · edit at 768²: ~6 s/step (rank 16) |
-| Previews | 1024², 28 steps with CFG: ~35 s, ~3.7 GB |
-| Text encoder (pre-cache only) | ~8.3 GB in BF16; the part that does not fit in VRAM runs from RAM |
-
-### MOSS-Image — image and edit LoRAs for MOSS-Image Base and SFT
-
-- Trains on **MOSS-Image Base** (`OpenMOSS-Team/MOSS-Image-Base`, the model OpenMOSS publishes for LoRA training) or **MOSS-Image SFT** (`OpenMOSS-Team/MOSS-Image-SFT`, Base fine-tuned for quality), chosen with **Base Model**. Both share the text encoder and the VAE, so the same pre-cache works for either.
-- The 5B single-stream transformer is **NF4** (3.1 GB instead of 10.2 GB). The LoRA trains attention (q, k, v, o) and MLP of the 42 blocks and is exported with the original layer names (`diffusion_model.layers.N.proj.*`), which ComfyUI (nightly, with native MOSS-Image support) loads with the standard LoRA loader.
-- **Text encoder (pre-cache only):** Qwen3.5-9B, the same modes as Qwen-Image 2.1: **BF16 CPU Offload** (default; exact, the part that does not fit in VRAM runs from RAM), **BF16** (24+ GB), **INT8** (~7-14 % error, 14+ GB) or **NF4** (~20-30 % error, 8+ GB). Error = relative difference of the embeddings against BF16, measured. O
+| Steps | 1,000 (14 images): the likeness shows from ~500, but in ComfyUI the 1,000-step LoRA looks better than th

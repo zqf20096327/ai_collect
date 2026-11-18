@@ -101,6 +101,7 @@ Each has its own page. Chat, push notifications, secret placeholders, primary-hu
 - **Chat in the dashboard and the [iOS app](https://github.com/anurmatov/phleet-ios)**, one thread per agent: [docs/comms-deployment.md](docs/comms-deployment.md).
 - **Phone connection and push notifications** for waiting gates, failed workflows and agents that went down: [docs/phone-setup-code.md](docs/phone-setup-code.md), [docs/push-notifications.md](docs/push-notifications.md).
 - **Secret placeholders**, so a bound secret is never written into an agent container: [docs/secret-placeholders.md](docs/secret-placeholders.md). The same page covers **MCP endpoint headers**: an HTTP MCP endpoint sent headers whose values come from the agent's Env Refs, named but never typed. A bound Env Ref goes out as its placeholder and is never rendered; an unbound one is written as its `.env` value into the agent's owner-only MCP files.
+- **Credentials for Qdrant and Temporal**, for a deployment that has put an API key in front of its Qdrant or a bearer token in front of its Temporal: [docs/datastore-client-auth.md](docs/datastore-client-auth.md).
 - **Primary-human priority**, which puts your messages ahead of routine queued work: [docs/primary-human-priority.md](docs/primary-human-priority.md).
 - **Epic grants**, which let the co-CTO approve gates inside one scope you approved: [docs/epic-grants.md](docs/epic-grants.md).
 - **Human input requests**, exact questions an agent can put to you: [docs/human-input-requests.md](docs/human-input-requests.md).
@@ -130,6 +131,7 @@ Off by default. When it is on, each agent sends one row for every provider turn 
 | Services, task flow, consensus review, workflow editor | [docs/architecture.md](docs/architecture.md) |
 | Platforms and providers | [docs/platform-support.md](docs/platform-support.md) |
 | Configuration files, size warnings, agent config fields | [docs/configuration.md](docs/configuration.md) |
+| Memory search: what it finds, filters, settings | [docs/memory-search.md](docs/memory-search.md) |
 | Sign-in and devices | [docs/sign-in.md](docs/sign-in.md) |
 | Troubleshooting | [docs/troubleshooting.md](docs/troubleshooting.md) |
 | Upgrade notes for existing installations | [docs/upgrading/](docs/upgrading/README.md) |

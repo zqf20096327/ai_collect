@@ -101,7 +101,7 @@ specs, err := loader.LoadFile(ctx, "deploy.yaml")   // strict; unknown fields fa
 manager := host.New(deploy.BuiltinKinds(), host.Bindings{
     Store:          store,                          // sessions survive a restart
     RuntimeOptions: []runtime.Option{runtime.WithDrivers(myDrivers...)},
-    LoadOptions:    []runtime.LoadOption{runtime.WithResolver("secret", vault.Resolve)},
+    LoadOptions:    []config.Option{config.WithResolver("secret", vault.Resolve)},
     Harness:        "myapp@1.0.0",
 })
 defer manager.Close()
@@ -152,7 +152,7 @@ the ones above.
     │                 driver/* — shipped providers                    │
     ├─────────────────────────────────────────────────────────────────┤
     │  contracts      message · errdefs · permission · fsx            │
-    │                 skill · runtime/runctx                          │
+    │                 skill · correlation                             │
     └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -160,9 +160,10 @@ the ones above.
 reaches for `runtime`, `runtime` reaches for `tool` and `sandbox`, and nothing
 below the execution layer knows what a conversation is — `core/agent` owns runs,
 `core/runtime` owns the substrate a run is made of, and history is an argument to a
-turn rather than something a session remembers. `runtime/runctx` is drawn with the
-contracts because it imports `telemetry` alone: any layer can carry run attributes
-without reaching into the assembly. The other rule is ownership — a `Runtime`
+turn rather than something a session remembers. `correlation` is drawn with the
+contracts because it is what every layer reads to start a span: the run identity,
+plus the attribute names it renders, with no dependency on the assembly. The other
+rule is ownership — a `Runtime`
 closes what it built in reverse construction order, and a value handed in through
 an option is somebody else's to close.
 

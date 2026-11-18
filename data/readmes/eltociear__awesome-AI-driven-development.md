@@ -1,6 +1,6 @@
-[AI-Driven Development Summit is coming soon! Online streaming will also be available!](https://aid.connpass.com/event/411003/)
+<!-- [AI-Driven Development Summit is coming soon! Online streaming will also be available!](https://aid.connpass.com/event/411003/)
 
----
+--- -->
 
 
 ![Logo](/logo.png)
@@ -8,7 +8,7 @@
 
 <a href="https://github.com/sindresorhus/awesome"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome" height="18"></a>
 
-A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **603 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
+A curated list of awesome AI-Driven development tools, frameworks, and resources. Currently featuring **608 tools** to enhance your AI-powered development workflow. Inspired by [AI駆動開発(AI-Driven Development)](https://www.ai-driven.dev/).
 
 ## Contents
 
@@ -57,6 +57,7 @@ Full-featured AI-powered code editors and integrated development environments.
 - [Devin](https://devin.ai/) - An AI coding agent and software engineer that helps developers build better software faster. Parallel cloud agents for serious engineering teams.
 - [Windsurf Editor](https://windsurf.com/editor) - The first agentic IDE, and then some. The Windsurf Editor is where the work of developers and AI truly flow together, allowing for a coding experience that feels like literal magic.
 - [RapidNative](https://rapidnative.com/) - AI-native mobile app builder that turns ideas, sketches, or screenshots into working React Native and Expo apps. Generates production-ready code you can view, edit, and extend, with real-time team collaboration.
+- [Vibeminter](https://vibeminter.com/) - AI app builder that builds a native iPhone app from a chat in the browser. You can browse, search and edit the generated Swift files and download the project as a zip.
 
 ## Terminal & CLI Agents
 
@@ -251,6 +252,7 @@ Frameworks and tools for orchestrating and managing multiple AI agents in develo
 - [MulmoTerminal](https://github.com/receptron/mulmoterminal) - Browser grid of live Claude Code / Codex sessions started with one `npx` command. Each cell is a real PTY with a colour-coded status, tmux-backed persistence, and a git worktree per cell. For Claude Code, needs-you is shown separately from done, read from the CLI's own hooks.
 - [agent-manager](https://github.com/YoanWai/agent-manager) - Terminal UI that runs Claude Code, Codex, OpenCode, Gemini CLI, and other coding-agent CLIs side by side in persistent tmux sessions, with live status, diff review, and a built-in MCP server that lets one agent spawn, message, and wait on another session. Built with Go + Bubble Tea, Apache-2.0.
 - [OpenBitFun](https://github.com/GCWing/OpenBitFun) - Open-source desktop agent workspace with a Rust agent runtime. Four Agent Harness modes (Minimal, Standard, Ultimate, Creative), multi-agent sessions, remote workspaces over SSH, remote control from a phone, MCP, Skills, and Hooks. Core code is MIT.
+- [pando](https://github.com/xseman/pando) - Terminal workspace that runs Claude Code, Codex, Gemini CLI, OpenCode or any shell side by side, each session in its own Git worktree. A daemon keeps agents running when the TUI closes and resumes their conversations after a restart; diffs are reviewed and committed in the TUI, and a CLI with blocking waits lets scripts or other agents drive sessions. Built with Go + Bubble Tea, Apache-2.0.
 
 ## Code Generation & Automation
 
@@ -672,7 +674,4 @@ Frameworks, libraries, and configurations for building and enhancing AI coding a
 - [Claude Code Commands & Tasks (CCCT)](https://github.com/IgorWarzocha/CCCT) - Professional workflow system for Claude Code with universal slash commands and integrated task management.
 - [Polka Codes](https://github.com/polka-codes/polka-codes) - a powerful TypeScript-based AI coding assistant framework that helps developers write, improve, and maintain code through natural language interactions.
 - [Tsumiki](https://github.com/classmethod/tsumiki) - A framework for AI-driven development. It provides an efficient development process utilising AI, from requirements definition through to implementation.
-- [AI Governor Framework](https://github.com/Fr-e-d/AI-Governor-Framework) - The Keystone Framework for AI-Driven Code ! Turn any AI coding assistant into a disciplined, project-aware engineering partner that respects your architecture and coding standards
-- [ZCF](https://github.com/UfoMiao/zcf) - Zero-config, one-click setup for Claude Code with bilingual support, intelligent agent system and personalized AI assistant
-- [Claude Code Guardrails](https://github.com/wangbooth/Claude-Code-Guardrails) - Protective hooks for Claude Code that prevent accidental code loss through branch protection, automatic checkpointing, and safe commit squashing
-- [Deliberate Agentic Development](
+- [AI Governor Framework](h

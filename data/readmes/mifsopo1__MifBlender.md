@@ -1,0 +1,276 @@
+<!-- mcp-name: io.github.mifsopo1/mifblender -->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_hero.jpg" alt="A plated crab walker on a desert stage at sunset, built and rendered in Blender" width="100%">
+</p>
+
+<h1 align="center">MifBlender</h1>
+
+<p align="center"><b>Your AI assistant, working inside a running Blender.</b><br>
+428 typed tools for modeling, materials, UVs, rigging, animation, physics, geometry nodes and rendering.<br>
+Each one checks its parameters, does the work on Blender's main thread and reads the result back.</p>
+
+<p align="center">
+  <a href="https://pypi.org/project/mifblender-mcp/"><img alt="PyPI" src="https://img.shields.io/pypi/v/mifblender-mcp"></a>
+  <img alt="Free" src="https://img.shields.io/badge/price-free-brightgreen">
+  <img alt="Blender 3.6 to 5.2" src="https://img.shields.io/badge/Blender-3.6.23%20%C2%B7%204.2.17%20%C2%B7%204.4.0%20%C2%B7%205.0.1%20%C2%B7%205.2.1-orange">
+  <img alt="Windows" src="https://img.shields.io/badge/tested%20on-Windows-blue">
+</p>
+
+## Start in one line
+
+With [uv](https://docs.astral.sh/uv/) installed and Blender closed:
+
+```
+uvx mifblender-mcp setup
+```
+
+It finds your Blender installs and AI apps, shows what it will do and asks first. Then it installs and enables the add-on,
+and adds MifBlender to the apps you pick. Restart your AI app, open Blender, and ask:
+
+> Call bl_status, then add a rounded cube with a brushed metal material and render a preview.
+
+Free for any use, including commercial work. No account. Everything runs on your computer.
+
+## See what it can do
+
+### Smash Cut: a game's models, from a game jam
+
+[Smash Cut](https://mifshowcase.store/smashcut) is a monster game made in four days for a game jam, with Claude Code
+agents as the build team. Every monster, vehicle, building and prop in it was built in Blender through MifBlender:
+2.15 million logged calls, and no 3D, image or texture generator. Most shapes were written as Python and placed in the
+scene with `create_mesh`; MifBlender then remeshed, unwrapped, shaded, baked, rigged, keyed, rendered and exported them.
+The monsters were modelled against concept sheets made with an AI image generator, used as reference only.
+
+Each strip below shows the final render, the wireframe and the clay view.
+
+| Pangoliath | Rust Bucket | Frost Titan |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_pangoliath_roar.gif" alt="Pangoliath going from idle to a roar, rendered in Cycles"> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_rustbucket_roar.gif" alt="The Rust Bucket mech going from idle to a roar, rendered in Cycles"> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_frosttitan_roar.gif" alt="The Frost Titan going from idle to a roar, rendered in Cycles"> |
+
+The roars are one shared clip on one shared 35-bone skeleton, keyed pose by pose with `set_bone_pose` and `key_pose`,
+blended in from the idle on the NLA and rendered in Cycles with `render_animation`.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_pangoliath_strip.jpg" alt="Pangoliath in final, wireframe and clay views" width="100%">
+</p>
+
+**Pangoliath:** 248,728 triangles, 35 bones, 7 materials on one 4K baked texture set. The body is a distance-field shape,
+remeshed to quads with `remesh_mesh`. The plates, claws and their skin weights were placed in Python and built with
+`create_mesh`. The surfaces are node graphs baked to albedo, normal, ORM and emissive maps with `bake_texture_set`.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_rustbucket_strip.jpg" alt="The Rust Bucket mech in final, wireframe and clay views" width="100%">
+</p>
+
+**Rust Bucket:** 268,356 triangles, 35 bones, 13 materials on one 4K baked texture set. A scrap mech of rigid plates,
+drums and rams, each part skinned whole to its bone. The chipped paint, rust and grime are node graphs baked to texture.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_frosttitan_strip.jpg" alt="The Frost Titan in final, wireframe and clay views" width="100%">
+</p>
+
+**Frost Titan:** 244,497 triangles, 35 bones, 7 materials on one 4K baked texture set. Built the same way as Pangoliath:
+frozen fur clumps, icicles, ice armour and crystal horns placed on the body surface and built with `create_mesh`.
+
+#### Vehicles, buildings and a tree
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_tank_strip.jpg" alt="A fictional battle tank in final, wireframe and clay views" width="100%">
+</p>
+
+**A fictional tank:** 10,500 triangles, 4 materials, a turret and barrel on named sockets, a breakable version and a
+wreck. The camouflage, chipped edges, rain runs and mud are one 4K bake.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_taxi_strip.jpg" alt="A brand-free taxi in final, wireframe and clay views" width="100%">
+</p>
+
+**A brand-free taxi:** 13,900 triangles, 6 materials. A body lofted through smooth profile curves with real wheel arches,
+three baked paint variants and a burnt-out wreck.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_donutshop_strip.jpg" alt="A donut shop with a giant donut on the roof, in final, wireframe and clay views" width="100%">
+</p>
+
+**A donut shop:** 18,024 triangles in 86 breakable pieces. The 8 m sprinkled donut on the roof is its own rolling prop.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_banktower_strip.jpg" alt="A 160 m art deco bank tower in final, wireframe and clay views" width="100%">
+</p>
+
+**A bank tower:** 160 m tall, 119,044 triangles in 1,863 separate pieces so it can come down piece by piece: a stone
+podium with a colonnade, stone piers between glass bays, two setbacks and a stepped crown.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/main/assets/jam/jam_streettree_strip.jpg" alt="A London plane street tree in final, wireframe and clay views" width="100%">
+</p>
+
+**A street tree:** a London plane grown with MifBlender's own `build_tree`, 30,199 triangles with three lower LODs down to
+1,840, bark and leaf cards, and wind weights in the vertex colours. The bark is a node graph baked to maps, and the leaf
+cards are drawn from each species' leaf outline.
+
+### The crab walker
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_walk.gif" alt="The crab walker's walk cycle" width="100%">
+</p>
+
+The crab walker: 515 pieces, an interior, a rig and a walk cycle, built with these tools in a long, guided session.
+
+| The form, in clay | The topology |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_clay.jpg" alt="Clay render of the crab walker"> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_wire.jpg" alt="Wireframe close-up of a crab walker leg"> |
+
+| The cabin | Every angle |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_interior.jpg" alt="The crab walker's lit wooden cabin"> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_turntable.jpg" alt="Eight views around the crab walker"> |
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/crab_rig.jpg" alt="The crab walker's game rig in wireframe through one walk cycle" width="100%">
+</p>
+
+**What it cost: $58.35** for one long session that built the model, rig, walk, bakes, video and packaging, run by Claude Opus
+5.5 through Claude Code (prices below).
+
+| Part | Cost | Why |
+|---|---:|---|
+| Cache reads | $27.23 | 136.15M tokens. One long session rereads more each step as it grows. |
+| Cache writes | $22.62 | 4.52M tokens, all at the 5 minute rate. Saving each step, plus whole rewrites after a few waits that outlasted the 5 minute cache. |
+| Output | $8.50 | 424,813 tokens: the scripts, the tool calls and the reasoning. |
+
+### From images to a model
+
+The creature was built from one six-view character sheet in eight staged sessions, from blockout to a rigged walk. Each
+session started fresh, with only the saved file and a running journal to go on, and every round was checked against the sheet
+with `bl_compare_to_reference`.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/creature_walk.gif" alt="The creature's walk cycle from a three-quarter camera and from the side" width="100%">
+</p>
+
+The finished model: 910,104 vertices with a painted tone on each vertex, and a 77-bone rig with IK on the arms and legs. In the
+walk loop, rendered in Cycles, the planted feet slide at most 1.9 mm per frame, the last frame matches the first exactly, and the
+claws stay within 0.008 mm of the fingers.
+
+| Reference and model | The face |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/creature_pair.jpg" alt="The creature from the front, beside its reference sheet"> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/creature_head.jpg" alt="Close-up of the creature's head beside its reference"> |
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/creature_views.jpg" alt="The finished creature from eight angles" width="100%">
+</p>
+
+**What it cost: $91.72** for eight staged sessions that built the model, paint, 77-bone rig and walk, run by Claude Opus 5.5
+through Claude Code.
+
+| Part | Cost | Why |
+|---|---:|---|
+| Output | $44.30 | 2.22M tokens: the model's own writing, meaning the scripts that built each part, the tool calls and its reasoning at high effort. The biggest share, because output is the most expensive token. |
+| Cache writes | $30.98 | 3.38M tokens at the 1 hour rate ($27.04) and 0.79M at the 5 minute rate ($3.94): saving each new step so the next one can reread it cheaply. The first six stages used the 1 hour rate and turned out not to need it; the last two used the cheaper 5 minute cache. |
+| Cache reads | $16.11 | 80.57M tokens: every step rereads the whole session so far, tools, notes and render images included. Millions of tokens, but at a tenth of the input price. |
+| Uncached input | $0.32 | |
+
+**Prices:** both builds ran on Claude Opus 5.5, through Claude Code. Costs are at API list price, from Claude Code's own price
+table: input $4, output $20, cache read $0.20, cache write $5 (5 minute) or $8 (1 hour), per million tokens. On a Claude
+subscription plan, the same work uses the plan's allowance instead of extra money.
+
+**What the build taught:**
+
+- **A good score is not a good look.** The outline matched the sheet at .88 to .90 while the body still read as a balloon. Numbers
+  catch the shape, and someone still has to look at the picture.
+- **Stop when the rounds stop helping.** When the scores had been flat for half an hour, more rounds bought nothing, so the work
+  moved to the next stage.
+- **Reference views can disagree.** On a painted sheet, the 3/4 views did not match the front, side and back, so the build held to those three.
+- **Honest numbers can fall.** Real fingers scored lower than the mitts they replaced, because the mitts had covered the painting by
+  accident. Silhouette fit after the surface stage: front .85, side .89, back .84.
+- **A dense mesh needs another way to weight.** Blender's heat weighting failed on a mesh this size, so the weights were computed
+  from capsules around each bone instead.
+
+### One prompt, one model
+
+Each of these was built from the one prompt under it:
+
+| | |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/prompt_robot.jpg" alt="A boxy robot on tank treads"><br><sub>"Model a cute boxy robot with antenna, round eyes and tank treads, lit for a nice render."</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/prompt_bonsai.jpg" alt="A bonsai tree in a shallow pot"><br><sub>"Model a bonsai tree in a shallow ceramic pot with a few small rocks, lit for a nice render."</sub> |
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/prompt_lowpoly_car.jpg" alt="A low-poly cartoon car"><br><sub>"Model a low-poly cartoon car with round wheels, headlights and a little spoiler, lit for a nice render."</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/prompt_teapot.jpg" alt="A teapot and cup on a wooden tray"><br><sub>"Model a cute ceramic teapot with a cup and saucer on a small wooden tray, lit for a nice render."</sub> |
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/prompt_castle_tower.jpg" alt="A stone castle tower with a flag"><br><sub>"Model a stone castle tower with battlements, arrow slits and a flag on top, lit for a nice render."</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/prompt_chest.jpg" alt="An open treasure chest spilling gold coins"><br><sub>"Model a wooden treasure chest with iron bands, its lid open, and gold coins spilling out, lit for a nice render."</sub> |
+
+### Simulation, shading and scale
+
+Scripted scenes, each built entirely from typed calls:
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_newyork.jpg" alt="Manhattan as a scale model"><br><sub>Manhattan as a scale model</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_liquid.jpg" alt="Liquid poured over a head"><br><sub>A baked liquid sim</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_pile.jpg" alt="125 toys poured into a crate"><br><sub>125 rigid bodies</sub> |
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_robotarm.jpg" alt="A robot arm carrying a block"><br><sub>IK with a baked carry</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_facepaint.jpg" alt="27 cubies painted face by face"><br><sub>27 cubies, painted face by face</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_staircase.jpg" alt="A spiral stair"><br><sub>A spiral stair from one tread</sub> |
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_geodesic.jpg" alt="A geodesic lit from inside"><br><sub>A geodesic lit from inside</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_fur.jpg" alt="A furred sphere"><br><sub>30,000 hairs from one call</sub> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/scene_passes.jpg" alt="One render shown as beauty, normals and mist"><br><sub>Render passes</sub> |
+
+### Game props
+
+| Clean to worn, from one setting | Topology you can check |
+|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/props_wear.jpg" alt="A table, crate, chair and barrel, clean and worn"> | <img src="https://raw.githubusercontent.com/mifsopo1/MifBlender/v1.3.1/assets/props_wire.jpg" alt="Five game props in clay and wireframe"> |
+
+## What is in it
+
+| Area | Examples |
+|---|---|
+| **Modeling** | primitives, mesh editing, bevels, booleans, modular kit pieces, rocks and trees built by rule |
+| **Materials and UVs** | shader node graphs, texture sets, baking, unwrapping |
+| **Rigging and animation** | armatures, Rigify, poses, keyframes, walk cycles |
+| **Simulation** | rigid bodies, cloth, particles, geometry nodes |
+| **Rendering** | lights, cameras, Cycles and EEVEE stills and sequences, compositing |
+| **Checking** | mesh quality reports, comparing a render to a reference image, reading results back |
+
+A lean default sends only `find_tools`, `mif_call` and `run_python` up front and finds the rest on demand, so a long session
+stays small. Set `MIF_TOOL_PACKS=blender` to load all 428 tools, or name the packs you want; there are 13.
+
+## AI apps
+
+`setup` knows Claude Code, Claude Desktop, Cursor, Windsurf, VS Code and Codex. For any other MCP client, start this as a stdio
+server:
+
+```
+uvx mifblender-mcp
+```
+
+Useful setup options: `--dry-run` shows the plan and changes nothing, `--check` reports what is set up, `--upgrade` moves the
+add-on and the apps to this version together, and `--uninstall` removes them. If several Blenders are found, it asks which.
+
+## Settings
+
+Set these in the client's `env` block when you need them:
+
+| variable | default | |
+|---|---|---|
+| `MIF_BLENDER_PORT` | `8792` | the port the add-on listens on |
+| `MIF_BLENDER_TOKEN` | set by `setup` | must match the add-on's **Token** preference |
+| `MIF_TOOL_PACKS` | `lean` | `lean`, `blender`, or a list of packs |
+| `MIF_BLENDER_TIMEOUT` | `180` | seconds one call may take |
+
+## Safety
+
+- Everything stays on your computer. The add-on listens on `127.0.0.1` only, and `setup` generates a private token that links
+  it to your AI apps. Neither makes any network call of its own.
+- **`run_python` is on by default and runs any Python inside Blender.** Untick **Allow run_python** in the add-on's preferences
+  to limit the assistant to the typed tools.
+- The `bl_gen_*` tools are generative: they send a prompt to a ComfyUI you run yourself, and do nothing without one. Every other
+  tool builds from explicit parameters. Set `MIF_GENERATIVE=off`, or untick **Allow generative tools**, to switch them off.
+
+## Tested on
+
+Blender 3.6.23, 4.2.17, 4.4.0, 5.0.1 and 5.2.1, on Windows. macOS and Linux have not been tested yet; reports are welcome.
+
+## License
+
+**Free, source available.** The add-on is MIT. The server is free for any use, including commercial work, and you may share it
+unchanged through the channels its license names; you may not sell it or publish changed copies. It is not an open source
+license. See [LICENSE.txt](LICENSE.txt). Some comments cite internal documents that are not published.
+
+## MifBridge
+
+MifBlender is the Blender half of [MifBridge](https://mifshowcase.store/mifbridge), a paid product that adds Unreal Engine 5.3 to
+5.8 and the tools that move models between the two. MifBlender stands on its own and needs neither.
+
+Questions and bug reports: [open an issue](https://github.com/mifsopo1/MifBlender/issues).

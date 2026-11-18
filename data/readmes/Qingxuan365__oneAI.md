@@ -22,7 +22,7 @@ Working with several AI coding CLIs usually means a pile of terminal windows. It
 - **Multiple accounts**: run several Codex, Claude Code and Kimi Code accounts in parallel. An account is only a config directory plus environment variables, and OneAI never reads or copies your credentials.
 - **Weekly usage dashboard**: requests and tokens by CLI, account and model, with a 26-week activity heatmap, read from local session records.
 - **Session history**: browse and resume past Claude Code, Codex and Kimi Code sessions.
-- **File preview**: Ctrl + click a path in the terminal for a read-only preview with a code minimap.
+- **File preview**: Ctrl + click a path in the terminal for a read-only preview with syntax highlighting and a code minimap.
 - **Any CLI**: installed CLIs are detected from your `PATH`, and any other command can be added as a custom CLI.
 - **English and Simplified Chinese**, 20 themes (light, dark, eye-care and editor palettes), and a short first-run guide.
 

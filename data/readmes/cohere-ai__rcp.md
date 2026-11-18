@@ -9,12 +9,13 @@ document is its discrimination-weighted probability of passing the criteria. The
 [Rubric-Calibrated Preferences: Cross-Query Calibration of LLM Judgments via Item Response Theory](https://arxiv.org/abs/2609.35739),
 gives the method and its validation.
 
-## The four distributions
+## The five distributions
 
 | Distribution | What it is | README |
 |---|---|---|
 | `cohere-rcp` | The pipeline and the command line: storage, data, retrieval, judging, calibration, evaluation, runs | [packages/rcp/README.md](packages/rcp/README.md) |
 | `cohere-rcp-core` | The metric: nDCG, the gains, the scoring protocols, the public records, the IRT (item response theory) estimators (numpy + pydantic) | [packages/rcp-core/README.md](packages/rcp-core/README.md) |
+| `cohere-configkit` | The configuration and command-line library the pipeline is built on: one value rule, one canonical form, one document model, one command tree (pydantic only) | [packages/configkit/README.md](packages/configkit/README.md) |
 | `cohere-rcp-vllm` | The lean serving package: the GPU-validated serving recipes and `rcp-vllm serve <recipe-id>` | [packages/rcp-vllm/README.md](packages/rcp-vllm/README.md) |
 | `rcp-test` | The validation tooling (unpublished, [installed from a git subdirectory](packages/rcp-test/README.md)): reference cases, the conformance suite, the equivalence harness, the recorder, the verified emulators, the wave runner | [packages/rcp-test/README.md](packages/rcp-test/README.md) |
 

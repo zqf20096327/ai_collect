@@ -198,6 +198,10 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 312.0
+- **Generate Commit Message** now finds the Git Changes window in any Visual Studio language and opens it when it is closed or behind another tab.
+- The message is only reported as filled when it really landed in the commit box; otherwise it is copied to the clipboard, so it can no longer end up in the wrong text box.
+
 ### Version 311.0
 - **Send button in the toolbar**: a new option in *⚙ → Settings... → Prompt* puts the Send button back with the other toolbar buttons, as before version 227.0, instead of in the corner of the prompt box ("Button only" send mode, off by default).
 
@@ -1581,18 +1585,4 @@ Native mode now in beta phase
 
 ### Version 7.2
 - **Effort Level Selection** (Auto / Low / Medium / High / Max) in the model menu.
-- **Show Usage** and **Set Language** menu items.
-
-### Version 7.1
-- **Codex: Full Auto** toggle.
-
-### Version 7.0
-- **Codex Windows native** support (previous Codex renamed "Codex (WSL)").
-
-### Version 6.8
-- Fixed "too many arguments" error when workspace path contains spaces.
-
-### Version 6.7
-- Updated documentation.
-
-### Version 6.6 - fooberichu150 contri
+- **Show Usage** and 

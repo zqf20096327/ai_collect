@@ -35,13 +35,25 @@ dsh plugin --profile web add dsh-remote-console
 | 自己能渲染终端的新终端 | 不是。xterm 渲染、输入、窗口全部复用 DSH 自带终端 |
 | 打了 DSH 补丁才能用 | 不是。只包装公开的终端服务，DSH 升级不用重新打补丁 |
 
+### 人机同屏：同一个终端，不是两条通道
+
+多数 SSH 插件的 agent 走自己的一条 exec 通道：它跑的命令你看不见，你敲的命令它不知道。这里不是。
+
+1. 你在侧栏选主机、亲手输密码——连接属于你的会话。
+2. agent 调 `remote_run` 时，写进的就是这个终端的输入；它读到的输出，来自同一块屏幕缓冲。
+3. 你随时可以接手敲命令；agent 下一次调用读到的，是你操作之后的现场（`cwd`、环境变量都在）。
+4. 双方每条命令都进同一条审计：谁、什么时候、跑了什么、退出码多少。
+
+代价要说清楚：一次会话一个终端，不给你开第二块；终端渲染、输入、滚动全部复用 DSH 自带，插件不重写 xterm。
+
 ### 能力一览
 
 | | |
 | --- | --- |
-| agent 工具 | 16 个：终端 6 · 文件 4 · 端口转发 1 · 审计 2 · 主机列表 3 |
+| agent 工具 | 18 个：终端 6 · 文件 4 · 端口转发 1 · 审计 3 · 主机列表 3 · 健康快照 1 |
 | 文件传输 | 流式传输 + 双侧 sha256；单文件默认 256 MB，设置页可调到 2048 MB |
 | 终端 | 复用 DSH 原生终端，人机共用 PTY；退出码由 shell 钩子（OSC）回传，不靠猜提示符 |
+| 面板 | 搜索、最近连接排序、空状态引导、错误翻译；状态行（15s 自动刷新）、终端与隧道、最近活动、文件浏览与编辑（上传/下载/删除/改文本） |
 | 审计 | 跨会话 JSONL：命令、退出码、审批结果、传输路径 + sha256、转发；写入前脱敏 |
 | 依赖 | 运行时 0 依赖；不改 DSH；Node ≥ 20 |
 | 测试 | 197 个测试，含真实 sshd 的 CI；npm 发布带 provenance |
@@ -138,9 +150,11 @@ dsh --profile web --dump-config | grep -A2 dsh-remote-console
 | `remote_download(remote_path, local_path, overwrite?)` | 远端 → 本地：流式传输并校验 sha256，默认不覆盖本地文件，上限同上 |
 | `remote_read_file(path, max_bytes?)` | 读远端文本（默认 128 KB、上限 256 KB）；二进制文件拒绝显示，提示改用 `remote_download` |
 | `remote_write_file(path, content, append?)` | 写 ≤256 KB 的 UTF-8 文本；内容走 stdin，不进终端窗口 |
-| `remote_forward(action, remote_port?, ...)` | `start`/`stop`/`list` 管理端口转发：`ssh -N -L 127.0.0.1:...`，只绑回环 |
+| `remote_forward(action, kind?, ...)` | `start`/`stop`/`list` 管理端口转发：`kind=L` 本地端口转到远端，`kind=D` 本地 SOCKS5 代理，`kind=R` 远端端口转到本地；都只绑回环 |
 | `remote_screen(lines)` | 当前屏幕纯文本（剥 ANSI） |
 | `remote_log(cursor)` | 统一 JSONL 日志的增量读：人敲的命令、agent 的命令、两边输出 |
+| `remote_metrics(console_pid?)` | 只读健康快照：uptime、负载/核数、内存、根文件系统；一次 ssh 采集，不装包、不留常驻进程 |
+| `remote_audit_timeline(since?, session?, limit?)` | 把审计记录按会话聚合成时间线：起止时间、命令数/失败数、传输、转发、审批，以及最近一条命令；不还原屏幕内容 |
 | `remote_audit_read(cursor?, tool?)` | 读**跨会话保留**的审计日志：agent 执行过的命令/退出码、审批、传输、转发、连接起止（不含屏幕内容） |
 | `remote_audit_export(local_path, format?)` | 把审计日志导出成本地 `jsonl` / `csv`（0600），用于归档或核对 |
 | `remote_close()` | 断开 ssh master 并清理 socket/rendezvous 文件、停止该终端的转发 |

@@ -144,14 +144,29 @@ Then ask Claude "set up my private vault" or "store my passport privately".
 
 The same prompts work in Codex. The repo's own [`CLAUDE.md`](CLAUDE.md), [`AGENTS.md`](AGENTS.md) and [skills](.claude/skills) tell coding agents how to use it.
 
+## Build on it (for developers)
+
+If you've followed the [Terminal 3 Get Started guide](https://docs.terminal3.io/developers/adk/get-started/quickstart), this is the walkthrough's private vault with real documents.
+
+- **What it does:** a user scans a passport, ID card, payslip or bank statement on their phone; only the details they review are sealed to their vault, and an agent gets yes/no answers such as "net pay at least 3,000?" or "passport not expired?". It never sees a value.
+- **What it adds to the Get Started setup:** documents read on the device (machine-readable-zone check digits, printed-versus-machine text cross-checks, payslip and statement arithmetic), a review step, and checks re-run inside the enclave. It's a second contract, `z:<tid>:doc-intake`, in the same tenant as the walkthrough's `vault`; grant your organisation agent `evaluate` on it the same way you granted `check`.
+- **What you need:** the same Terminal 3 account (sign in to the scanner with the email you claimed your key with), a phone, and about 1,100 test credits for the vault, once.
+- **Build ideas:**
+  - lending, rental or subscription pre-checks on income and balance, without collecting payslips or statements;
+  - age or residency gating for a service an agent signs the user up to;
+  - booking flights with the scanned passport: [z-tenant-flight](https://github.com/Terminal-3/z-tenant-flight) (below);
+  - your own contract that reads the vault's `intake` map, as z-tenant-flight does for passports.
+- **Docs:** [Private Document Vault](https://docs.terminal3.io/developers/adk/use-cases/private-doc-scanner).
+
 ## Next: book a flight with your sealed passport
 
-Congratulations on sealing your passport in your vault! You can also clone a separate contract that lets
-your AI agent book flights for you without it ever seeing your passport details.
-[Learn more](https://github.com/Terminal-3/travel-booking).
+Congratulations on sealing your passport in your vault! Next, add
+[z-tenant-flight](https://github.com/Terminal-3/z-tenant-flight) to the same Terminal 3 account: a separate
+contract that lets your AI agent book flights through Duffel (test mode) without ever seeing who is flying.
+Run its setup with `--with-scanner` and it can use the passport you scanned here; or skip the scanner and
+save your own traveller record in the format its README gives.
 
-> **Note:** using it allows your passport details to be sent to the travel booking service you choose
-> (not to the AI agent).
+> **Note:** using it sends your passport details to the travel booking service (Duffel), not to the AI agent.
 
 ## FAQ
 
@@ -184,7 +199,9 @@ Scanning and reviewing works without one. But to save data to your Terminal 3 va
 
 A field is marked verified only by a deterministic check like these. The benchmark fails CI if any verified field is wrong.
 
-## Safety and security features (everything is open-sourced and verifiable, it is your responsibility to check through and ensure it is safe enough for your use)
+## Safety and security features
+
+Everything below is open source and verifiable. Check it yourself before you rely on it; see [Disclaimer](#disclaimer).
 
 | Feature | How it's enforced |
 |---|---|
@@ -239,6 +256,17 @@ pnpm build && pnpm test:e2e   # production build + privacy e2e tests
 ```
 
 Host your own copy: [deploy/README.md](deploy/README.md). How the scanner talks to T3N: [docs/integration-t3.md](docs/integration-t3.md).
+
+## Disclaimer
+
+Private Doc Scanner is open-source reference software. It is provided "as is", without warranties or conditions of any kind, as set out in sections 7 and 8 of the [Apache-2.0 licence](LICENSE).
+
+- **You are responsible for your use of it.** Before you use it with real documents or in production, review, test and, where appropriate, independently audit the code, its dependencies and your deployment to make sure they are safe and suitable for your purposes.
+- **Results can be wrong.** On-device reading and the checks it runs reduce errors; they do not remove them. Always review extracted values before you seal or rely on them.
+- **Your deployment, your obligations.** Whoever hosts or runs the scanner is responsible for its configuration, for keeping API keys and secrets safe, and for complying with the data-protection, privacy and other laws that apply to them and their users. Nothing in this repository is legal, compliance or security advice.
+- **Fork it and make it your own.** You may use, modify and redistribute the code under the licence. Changes you make, and the copies you run, are yours to maintain and secure.
+
+Terminal 3 and the contributors are not liable for any loss or damage arising from the use of this software, to the extent permitted by applicable law. Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
 
 ## Licence
 

@@ -137,7 +137,7 @@ Always install from a release asset; the `install.yaml` at the repo root is a de
 `kubectl-aibom` turns the decode/verify walkthrough below into single commands:
 
 ```bash
-kubectl krew install aibom   # or: go install github.com/GoogleCloudPlatform/k8s-aibom/cmd/kubectl-aibom@latest
+kubectl krew install aibom   # or download the attested binary from the release page
 
 kubectl aibom summary -n prod-jobs        # table: workload, category, runtime, models, confidence, Ready
 kubectl aibom find --runtime litellm -A   # where is X running? filters: --runtime --model --image --digest --signed
@@ -160,6 +160,7 @@ The image digest is printed in the release notes. Admission policies can verify 
 
 ### Other install paths
 
+- **Google Cloud Cluster Toolkit** — the `kubectl-apply` module carries an opt-in `k8s_aibom` switch (default off) that installs the CRDs chart and the controller from the published OCI charts alongside Kueue, JobSet and the other cluster add-ons, ordered behind Kueue's webhook ([cluster-toolkit#6572](https://github.com/GoogleCloudPlatform/cluster-toolkit/pull/6572), on `develop` since 2026-11-17). Namespaces are opted in afterwards as usual.
 - **NVIDIA AI Cluster Runtime (AICR)** — k8s-aibom is a qualified AICR component (adopted via [ADR-019](https://github.com/NVIDIA/aicr/blob/main/docs/design/019-k8s-aibom-runtime-inventory.md)). Since AICR v0.20.0 the stock `h100-gke-cos-inference` recipe selects it by default (decline at generation time with `aicr recipe --runtime-inventory disabled`). From AICR v1.0.0, `aicr recipe --runtime-inventory enabled` adds it to any other GKE recipe; on other services, add a `componentRef` in a custom overlay. AICR v1.2.0 pins 1.6.2 by digest and selects it by default on `h100-gke-cos-inference-dynamo` as well; NVIDIA's Technical Blog post [Validating GPU Platforms with Runtime AI Inventory](https://developer.nvidia.com/blog/validating-gpu-platforms-with-runtime-ai-inventory-via-the-nvidia-dsx-ai-factory/) walks through the qualification and what the inventory records. See AICR's component catalog for values and health-contract details.
 - **Terraform** — GitOps-style deployment: see the [Terraform Automation Guide](terraform/README.md).
 - **Amazon EKS, Azure AKS, OpenShift, on-prem** — identical install; cloud-specific notes in [Installing on EKS, AKS, and other conformant clusters](docs/install-eks-aks.md).
@@ -263,20 +264,27 @@ spec:
       gcs:
         bucket: my-aibom-archive
         pathTemplate: "aibom/{namespace}/{kind}-{name}/{timestamp}.json"
-    - name: graph-ingest
+    - name: bom-relay
       type: Webhook
       webhook:
-        endpoint: https://guac.internal.example.com/ingest
+        endpoint: https://aibom-relay.example.com/ingest
         auth:
           bearerToken:
             secretRef:
-              name: graph-ingest-creds
+              name: bom-relay-creds
               key: token
             # Optional: trust a private CA instead of system roots.
             caSecretRef:
-              name: graph-ingest-ca
+              name: bom-relay-ca
               key: ca.crt
 ```
+
+The webhook sink refuses endpoints that resolve to loopback, link-local,
+multicast or private (RFC 1918) addresses, so an in-cluster `ClusterIP`
+Service is not a valid target; put a relay on a publicly resolvable
+address in front of in-cluster consumers. The
+[Dependency-Track walkthrough](docs/integrations/dependency-track.md)
+shows one.
 
 For private-CA HTTPS endpoints, `webhook.auth.bearerToken.caSecretRef`
 references a PEM CA bundle in the controller's namespace, just like
@@ -398,7 +406,7 @@ k8s-aibom complements, rather than replaces, the broader AI supply-chain transpa
 
 - **[OWASP CycloneDX][cyclonedx]** defines the BOM schema. k8s-aibom emits CycloneDX 1.6 ML-BOM documents that validate against the official schema and use the project's ML-BOM extensions for model identity and runtime metadata.
 - **[OWASP AIBOM Project][owasp-aibom]** is standardizing AIBOM concepts at the framework level. k8s-aibom is a Kubernetes-runtime implementation of those concepts.
-- **[OpenSSF GUAC][guac]** aggregates and graphs supply-chain metadata. The webhook sink can be pointed at a GUAC blob-storage collector today; a native GUAC sink sits in the demand-gated backlog ([roadmap](docs/roadmap.md)).
+- **[OpenSSF GUAC][guac]** aggregates and graphs supply-chain metadata. GUAC ingests k8s-aibom documents as they are through its file collector ([walkthrough](docs/integrations/guac.md)); it does not take an HTTP POST, so the webhook sink cannot target it directly. A native GUAC sink sits in the demand-gated backlog ([roadmap](docs/roadmap.md)).
 - **[Sigstore][sigstore]** provides the signing and verification infrastructure behind the `verified` confidence tier (shipped in v1.5.0).
 - **Build-time AIBOM tools** (AIBoMGen, OWASP AIBOM Generator, vendor tools) describe what was built. k8s-aibom describes what is running. Both are needed for full supply-chain visibility.
 - **[Project AIBOM](https://gavinsan33.github.io/project-aibom/)** (Red Hat Research / Mass Open Cloud) records each training or inference run's hardware, software, and performance metrics in one signed place, for reproducing and comparing runs. It is the training-side record to k8s-aibom's serving-side inventory; a CycloneDX export and cross-links between the two are being worked out together (its short name is moving to `aibomrun` so both can run on one cluster).

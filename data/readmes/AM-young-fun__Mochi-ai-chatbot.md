@@ -7,7 +7,7 @@
 Companions that remember people, Q&A bots that answer from your docs, and a dashboard that controls every cent they spend.
 
 [![CI](https://github.com/AM-young-fun/Mochi-ai-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/AM-young-fun/Mochi-ai-chatbot/actions/workflows/ci.yml)
-[![Deploy on Sealos](https://sealos.io/Deploy-on-Sealos.svg)](https://sealos.io/?utm_source=flatkey&utm_medium=mochi_bot&utm_campaign=mochi&utm_content=readme_badge) [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/AM-young-fun/Mochi-ai-chatbot)
+[![Deploy on Sealos](https://sealos.io/Deploy-on-Sealos.svg)](https://sealos.io/?utm_source=flatkey&utm_medium=mochi_bot&utm_campaign=mochi&utm_content=readme_badge) [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/AM-young-fun/Mochi-ai-chatbot) [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/mochi-ai-chatbot)
 [![License: MIT](https://img.shields.io/badge/license-MIT-ff6fae.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522.13-a98bff.svg)](https://nodejs.org)
 [![Powered by Flatkey](https://img.shields.io/badge/powered%20by-flatkey-2a2233.svg)](https://flatkey.ai/?utm_source=mochi_bot&utm_medium=github&utm_campaign=mochi&utm_content=readme_badge)
@@ -145,7 +145,9 @@ Each bot connects to its own accounts. The dashboard walks you through each plat
 
 The widget takes its name, avatar, color, description and greeting from the bot's persona.
 
-Companion bots also get a character: while the chat is closed she peeks in from the edge of the page, and when it opens she jumps out and stands beside it, drawn live by the [LivLiv Player](https://github.com/livliv-dev/player) (Apache-2.0, loaded only when the chat opens; phones and browsers without WebGL2 just get the chat). Pick Mochi, none, or your own picture plus a `.livliv` file made on [livliv.ai](https://livliv.ai) under **Persona → Website character**. Add `data-character="off"` to the snippet to hide it on one site.
+By default the widget is a LivLiv character: while the chat is closed she peeks in from the edge of the page, and when it opens she jumps out and stands beside it, drawn live by the [LivLiv Player](https://github.com/livliv-dev/player) (Apache-2.0, loaded only when the chat opens; on phones the chat room fills the screen; browsers without WebGL2 just get the chat). Choose under **Persona → Widget style**: the Mochi character (default), your own LivLiv character, or the classic chat box. For your own, upload a `.livliv` file made on [livliv.ai](https://livliv.ai) (its picture becomes the peek picture) and see her move in the preview. Uploads are kept in Mochi's database, so they survive redeploys. Add `data-character="off"` to the snippet to hide it on one site.
+
+Each website visitor gets a random id, kept on your site's own domain (localStorage, plus a first-party cookie `mochi_sid_<bot>` as a backup) and created only when they send their first message. Mochi files their memory under it, so they're remembered on their next visit. When a visitor says their name ("my name is Alex", "call me Sam", "我叫小林", "私の名前はユキです", "meu nome é Ana") Mochi uses it from that reply on, and the background memory pass picks up names said other ways. If your site already knows who's logged in, pass it in: `data-visitor-name="Alex"`. Mention the cookie in your site's privacy or cookie notice.
 
 <img src="docs/widget.png" width="560" alt="Website widget" />
 
@@ -238,7 +240,7 @@ The copy only reads the source, and refuses to overwrite a target that already h
 
 > With Postgres, the Flatkey key and channel tokens are stored in the database (table `mochi_kv`), so treat its password like the keys themselves.
 
-> On a server, choosing the first admin password from another computer also needs the one-time setup code printed in the server log (`docker logs mochi`), so nobody else can claim a fresh dashboard.
+> On a server, whoever opens the dashboard first chooses the admin password, so open it right after you deploy.
 
 Upgrading from v0.1? Your existing bot, settings and memory are migrated automatically on first start.
 

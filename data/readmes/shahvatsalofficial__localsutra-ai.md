@@ -6,7 +6,9 @@
 [![npm](https://img.shields.io/npm/v/localsutra-ai)](https://www.npmjs.com/package/localsutra-ai)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 ![Dependencies: 0](https://img.shields.io/badge/runtime%20dependencies-0-brightgreen)
-![Node >=20](https://img.shields.io/badge/node-%3E%3D20-339933)
+![Node >=22](https://img.shields.io/badge/node-%3E%3D22-339933)
+
+**Website:** [shahvatsalofficial.github.io/localsutra-ai](https://shahvatsalofficial.github.io/localsutra-ai/) · **npm:** [localsutra-ai](https://www.npmjs.com/package/localsutra-ai)
 
 **LocalSutra AI** is an offline-first command-line tool that answers the questions people ask before running an LLM on their own machine: *Can my computer run this model? Why does it (not) fit? Is my Ollama or llama.cpp server really local? How fast is it on my hardware? What does the report actually prove?*
 
@@ -21,7 +23,7 @@ npx localsutra-ai doctor                       # hardware profile: OS, CPU, RAM,
 npx localsutra-ai audit --out my-audit         # independent audit -> my-audit/audit-report.html (+ .md, .json)
 ```
 
-Install globally if you prefer: `npm install -g localsutra-ai`, then use `localsutra` (alias `localsutra-ai`). Requires Node.js 20+.
+Install globally if you prefer: `npm install -g localsutra-ai`, then use `localsutra` (alias `localsutra-ai`). Requires Node.js 22+ (Node 20 reached end of life in April 2026).
 
 ## What it does
 
@@ -59,12 +61,12 @@ The formula is `weights x 1.35 + overhead + KV cache`. The 1.35 headroom and the
 
 | Evidence | Where |
 |---|---|
-| 122 automated tests, 0 failed, 0 skipped on the recorded run | [`docs/proof/test-run.tap`](docs/proof/test-run.tap) |
+| 126 automated tests, 0 failed, 0 skipped on the recorded run | [`docs/proof/test-run.tap`](docs/proof/test-run.tap) |
 | 9,500 seeded hostile inputs, 0 unexpected crashes | [`docs/proof/fuzz-results.json`](docs/proof/fuzz-results.json) |
 | A real audit report (HTML, Markdown, JSON) | [`docs/proof/audit-sample/`](docs/proof/audit-sample/) |
 | Raw CLI transcripts | [`docs/proof/`](docs/proof/) |
 | SHA-256 of every proof file | [`docs/proof/SHA256SUMS.txt`](docs/proof/SHA256SUMS.txt) |
-| CI matrix on Linux, Windows, macOS (Node 20/22/24) | [GitHub Actions](https://github.com/shahvatsalofficial/localsutra-ai/actions) |
+| CI matrix on Linux, Windows, macOS (Node 22/24) | [GitHub Actions](https://github.com/shahvatsalofficial/localsutra-ai/actions) |
 
 Reproduce everything yourself: `npm test`, `npm run proof`, `npm run audit`. The audit report lists what it did **not** test: live inference on a real model, non-NVIDIA GPUs, native IDE skill activation, external-runtime network egress, and independent third-party review.
 

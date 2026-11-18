@@ -82,6 +82,11 @@ The server speaks the OpenAI API, so any client that lets you set a base URL can
 API key is shown once. Jaull never touches your firewall: with `--lan` it prints the rule an
 administrator can run.
 
+Setup probes the selected `llama-server` itself, then checks its SHA-256 and device
+binding again before starting. A changed binary or device requires preparing the server
+again. A live process is only shown as ready when its health check succeeds.
+Generated start scripts launch directly; use `jaull serve start` to repeat these checks.
+
 ### Full setup
 
 For quality evaluation you also need Docker. `make setup` prepares everything at once:
@@ -627,10 +632,13 @@ Implemented and covered by tests:
 - [x] Frozen `llama_bench_v2` speed protocol with plan-exact applicability
 - [x] Measured Quality, Fastest and Balanced policies over the base ranking
 
+Controlled concurrent-load experiments have been run on the [RTX 2060](validation/2060-1vs2vs4-users/)
+and [Intel Arc Pro B60](docs/TFG/concurrencia-b60.md). They are experimental evidence,
+not an automated deployment verdict.
+
 Not implemented:
 
 - [x] Minimal workload / optional throughput and TTFT objective contract (no qualification)
-- [ ] Concurrent load experiments
 - [ ] Capacity curves
 - [ ] Sustainable concurrency estimation
 - [ ] Deployment qualification verdict
@@ -640,7 +648,8 @@ Not implemented:
 - [ ] Multipart GGUF and Transformers artifacts in the CLI `run` path
 - [ ] Runtime-exact placement point prediction under partial offload (the host/device
       estimate and component split already exist)
-- [ ] Physical validation of non-NVIDIA Vulkan heap/budget discovery, including Intel B60
+- [ ] General validation of non-NVIDIA Vulkan heap/budget discovery; the B60 serving
+  experiments confirm specific runtime allocations, not the general accuracy of heap budgets.
 - [ ] Remote executor
 - [ ] Shared organisational deployment workflow
 

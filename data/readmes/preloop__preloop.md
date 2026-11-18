@@ -128,13 +128,17 @@ tools:
 
 Check a sample call before saving with **Test this rule** or **Simulate** in the console. Ship it with `preloop policy apply <file>` (`validate` / `diff` / `export` also exist).
 
+The CLI resolves `${NAME}` in policy string values from your local environment,
+including during `--dry-run`. Use `--no-resolve-env` to keep references literal;
+the server preserves them and returns a warning.
+
 <p align="center">
   <a href="frontend/public/assets/screenshots/quickstart/dark/dashboard.png"><img alt="Preloop dashboard with live agent and gateway usage" src="frontend/public/assets/screenshots/quickstart/dark/dashboard-1600.webp" style="width: 100%; max-width: 1135px; border-radius: 12px;" /></a>
 </p>
 
 ## More capabilities
 
-- **Model providers:** OpenAI, Anthropic, Google, [Amazon Bedrock](docs/guide/providers/bedrock.md), [Azure OpenAI](docs/guide/providers/azure-openai.md), [Alibaba Cloud Model Studio](docs/guide/alibaba-model-studio.md), DeepSeek, Mistral, Moonshot, Z.ai, OpenRouter, any OpenAI-compatible endpoint, and [runner-proxied local models](docs/guide/runner-local-models.md). [Reviewed model pricing](docs/guide/model-price-refresh.md); unpriced models stay visibly unpriced.
+- **Model providers:** OpenAI, Anthropic, Google, [Amazon Bedrock](docs/guide/providers/bedrock.md), [Azure OpenAI](docs/guide/providers/azure-openai.md), [Alibaba Cloud Model Studio](docs/guide/alibaba-model-studio.md), DeepSeek, Mistral, Moonshot, Z.ai, [OpenRouter with provider routing](docs/guide/providers/openrouter.md), any OpenAI-compatible endpoint, and [runner-proxied local models](docs/guide/runner-local-models.md). [Reviewed model pricing](docs/guide/model-price-refresh.md); unpriced models stay visibly unpriced.
 - **Restricted CI identity:** a machine identity bound to one project and one flow for CI jobs, with an optional read-only native GitHub App clone mode and separate result publication. [Guide](docs/guide/flows/restricted-ci.md).
 - **Account kill switch:** blocks gateway and tool traffic and stops managed flow runs, with audited recovery. [Guide](docs/guide/account-kill-switch.md).
 - **Durable audit delivery:** opt-in transactional intents for approvals, policy decisions and tool outcomes, with restart replay and backlog alerts. [Operations guide](docs/operations/audit-outbox.md).

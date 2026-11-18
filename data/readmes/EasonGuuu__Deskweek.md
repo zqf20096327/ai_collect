@@ -80,7 +80,7 @@ npm start
 # 1. 打包生成绿色便携版目录 (dist/DeskWeek-win32-x64/)
 npm run package
 
-# 2. 构建 Windows 安装包 (dist/DeskWeek-v2.2.0-windows-x64-Setup.exe)
+# 2. 构建 Windows 安装包 (dist/DeskWeek-v2.2.2-windows-x64-Setup.exe)
 npm run package:installer
 ```
 

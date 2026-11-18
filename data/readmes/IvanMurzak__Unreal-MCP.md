@@ -65,13 +65,13 @@ Unreal's editor is C++, so the .NET MCP host runs next to it as a small **sideca
 
 **C++ is a first-class loop.** `source-compile` builds with Live Coding when it is active, else UnrealBuildTool, and returns every diagnostic with its file, line and severity, so the agent fixes errors without reading the build log. It says when a change needs a full build and an editor restart (new classes, changed `UCLASS` / `UPROPERTY` / `UFUNCTION` declarations). File operations stay inside `<Project>/Source/`. From a terminal, `unreal-mcp-cli compile` prints `file:line:col` diagnostics without an editor.
 
-**RQL is learned from the editor itself:** `rql-schema` lists every source, type and member, and the `unreal-rql` skill teaches the syntax with recipes (`unreal-mcp-cli setup-skills` writes it for your agent).
+**RQL is learned from the editor itself:** `rql-schema` lists every source, type and member, and the `unreal-rql` skill teaches the syntax with recipes (the editor writes it for your agent: `unreal-mcp-cli setup-skills` while the editor is open, the **Generate skill files** button, or auto-generate); `rql-schema` with `guide` (e.g. `{"guide": "landscape"}`) returns an installed extension's guide to any client.
 
 ## Requirements
 
 - **Unreal Engine 5.5 – 5.8** (the release pipeline validates each of them).
 - **A C++ project**, because the plugin ships as source and Unreal compiles its modules for your project with your platform's C++ toolchain. A Blueprint-only project becomes a C++ project in one step: in the editor, **Tools → New C++ Class…** and create any class. A new project: `unreal-mcp-cli create-project ./MyGame` scaffolds a minimal C++ one. The Fab build needs no C++ project: the Epic Games Launcher installs it precompiled.
-- **No .NET install.** The MCP host is a self-contained .NET program (`unreal-mcp-bridge`) bundled inside the plugin for your platform; the plugin starts and restarts it. (The Fab build has no executables: its **Get bridge** button opens the release page, and you extract the bridge into the plugin's bridge folder once.) Only building the bridge from source needs the .NET 9 SDK.
+- **No .NET install.** The MCP host is a self-contained .NET program (`unreal-mcp-bridge`) bundled inside the plugin for your platform; the plugin starts and restarts it. (The Fab build has no executables: its **Get bridge** button opens the release page, and you extract the bridge into the plugin's bridge folder once.) Only building the bridge from source needs the .NET 10 SDK.
 - **Node.js 22.14+**, only for `unreal-mcp-cli` (an npm package; 22.14 is its minimum Node version).
 - **Windows or macOS** (every release is tested on both). **Linux x64:** the sidecar is built and shipped, but no release test runs on Linux.
 
@@ -288,7 +288,7 @@ Extensions compile from source in your project (on the next editor open, or now 
 | Path | What it is |
 |---|---|
 | [`UnrealMCP/`](UnrealMCP/) | The Unreal plugin (C++): `UnrealMcpRuntime`, `UnrealMcpRql`, `UnrealMcpEditor` |
-| [`bridge/`](bridge/) | `unreal-mcp-bridge`, the .NET 9 sidecar |
+| [`bridge/`](bridge/) | `unreal-mcp-bridge`, the .NET 10 sidecar |
 | [`cli/`](cli/) | `unreal-mcp-cli`, the npm package |
 | [`extensions/`](extensions/) | Seven optional engine extensions with their own releases |
 | [`samples/`](samples/) | An editor extension template and a runtime (in-game) tool sample |

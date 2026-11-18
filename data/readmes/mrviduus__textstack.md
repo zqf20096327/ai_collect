@@ -12,7 +12,7 @@ Free reader for real books. Look up and explain what you don't understand, discu
 
 ## Get TextStack
 
-- **Web**: [textstack.app](https://textstack.app). Sample chapters open without signup.
+- **Web**: [textstack.app](https://textstack.app). No signup needed: you start as a guest.
 - **Android**: [Google Play](https://play.google.com/store/apps/details?id=app.textstack.mobile).
 - **Self-host**: see [Run locally](#run-locally).
 
@@ -20,7 +20,7 @@ Free reader for real books. Look up and explain what you don't understand, discu
 
 | Feature | Description |
 |---|---|
-| **Library and uploads** | Browse the catalog, or upload your own EPUB / PDF and read it after parsing. |
+| **Library and uploads** | Upload your own EPUB, MOBI, AZW3, FB2, CBZ or PDF and read it at once. |
 | **Kindle-like reader** | Themes, fonts, fullscreen, keyboard shortcuts, bookmarks, highlights, reading stats. |
 | **Explain and translate** | Select a phrase and get a short explanation or translation that takes the book's context into account. |
 | **Vocabulary review** | Words you look up are saved with their sentence and reviewed with spaced repetition. |
@@ -58,6 +58,6 @@ Bug reports, ideas and PRs are welcome. Read [CONTRIBUTING.md](.github/CONTRIBUT
 
 A commercial license is available for organizations that cannot use AGPL (proprietary forks, hosted commercial services). Contact: mrviduus@gmail.com.
 
-- Standard Ebooks corpus in seed data: CC0 / public domain
+- Typography rules ported from the [Standard Ebooks tools](https://github.com/standardebooks/tools) (GPL v3)
 - Edge TTS: used under Microsoft's Edge Read Aloud terms
 - Third-party dependencies: their respective licenses

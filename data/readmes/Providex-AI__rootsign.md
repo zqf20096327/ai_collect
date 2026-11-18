@@ -251,10 +251,13 @@ async def run_crew():
             goal="Send invoices",
             tools=rootsign.wrap_crewai_tools([send_invoice]),
         )
-        # ...run your crew as normal
+        # ...build your Task and Crew as normal, then start it with:
+        # result = await crew.kickoff_async()
 ```
 
-Tested against CrewAI `0.28`, `0.40`, and `1.x` (see [CI matrix](https://github.com/Providex-AI/rootsign/actions/workflows/ci.yml)).
+Start the crew with `await crew.kickoff_async()` inside the session: recent CrewAI 1.x releases raise `RuntimeError` if `crew.kickoff()` is called inside a running event loop. A complete crew that runs offline is in [`examples/crewai-jsonl`](examples/crewai-jsonl/).
+
+Tested against CrewAI `0.95.x`, `0.203.x`, and `1.x` (see [CI matrix](https://github.com/Providex-AI/rootsign/actions/workflows/ci.yml)).
 
 ## Quickstart — MCP proxy (any framework)
 
@@ -291,7 +294,7 @@ RootSign can also run **as an MCP server** — exposing the audit log itself as 
 from rootsign.mcp.server import create_server_app
 
 app = create_server_app()   # ASGI app; mounts the MCP server at /mcp
-# uvicorn rootsign.mcp.server:app --port 8001
+# Save as audit_server.py, then: uvicorn audit_server:app --port 8001
 ```
 
 Four read-only tools (`list_sessions`, `query_session_chain`, `verify_session_chain`, `get_approval_records`) over the existing store — no new tables.

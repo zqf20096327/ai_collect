@@ -1,8 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/hero/quiron-hero-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/brand/hero/quiron-hero-light.png">
-    <img alt="Quirón: a centaur holding up an eight-point star" src="assets/brand/hero/quiron-hero-light.png" width="720">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
+    <img src="assets/hero-light.svg" alt="Quirón, an AI humanizer that measures its own work: an AI-written draft hands over to its rewrite, and on the meter five measures of the text (long words, word length, nominalizations, lists of three, plain words) move from the AI side into the human band, 13 of 23 becoming 23 of 23." width="100%">
   </picture>
 </p>
 
@@ -11,8 +10,8 @@
 <h1 align="center">Quirón: an AI humanizer skill that measures its own work</h1>
 
 <p align="center">
-  <b>An agent skill for Claude Code, Codex and Cursor. It strips the AI slop that marks prose as machine-written,<br>
-  then checks the result against measured human writing instead of a hunch.</b>
+  <b>A skill for Claude Code, Codex and Cursor that rewrites a chatbot's draft so it reads like a person wrote it,<br>
+  then measures the result against real human writing instead of trusting a hunch.</b>
 </p>
 
 <p align="center">

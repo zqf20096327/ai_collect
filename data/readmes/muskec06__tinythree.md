@@ -117,16 +117,25 @@ Open the [playground](https://muskec06.github.io/tinythree/), pick an example an
 3. Paste the answer into the playground, or run `tinythree build`.
 4. If the compiler reports `line N: …`, send that line back to the model. Errors are short and come with a suggested fix.
 
-### 3. Command line
+### 3. One prompt to a coding agent
+
+Give an agent that can run code (Claude Code, Codex, Cursor and similar) a single line:
+
+> Use https://github.com/muskec06/tinythree to build a 3D Eiffel Tower, render it as a 10-second MP4 video, and show how many tokens tinythree saved compared to plain Three.js.
+
+The repo's [`AGENTS.md`](AGENTS.md) tells the agent the rest: learn the language, write and check the scene, render it, then write the same scene in plain Three.js and compare with `tinythree tokens`.
+
+### 4. Command line
 
 ```bash
 git clone https://github.com/muskec06/tinythree && cd tinythree && npm install
 node bin/tinythree.js build   examples/eiffel-tower.t3 -o eiffel.html   # standalone page
 node bin/tinythree.js compile examples/eiffel-tower.t3 -o eiffel.js     # ES module
 node bin/tinythree.js check   examples/*.t3                              # validate
+node bin/tinythree.js tokens  examples/eiffel-tower.t3 bench/threejs/eiffel-tower.js   # token saving
 ```
 
-### 4. From JavaScript
+### 5. From JavaScript
 
 ```js
 import * as THREE from 'three';
@@ -222,6 +231,12 @@ bench/                token benchmark, hand-written Three.js versions, chart, ca
 tools/render.py       frame-exact video and PNG renderer
 test/                 node:test suite
 ```
+
+## Blender
+
+The same `.t3` file also builds a native Blender scene: [tinythree-blender](https://github.com/muskec06/tinythree-blender)
+adds Blender-only commands (sky, terrain, scatter, modifiers, keyframes, Cycles render settings). Three.js skips those lines,
+so one file works in both.
 
 ## Roadmap
 

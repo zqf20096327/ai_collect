@@ -58,7 +58,7 @@ MorphoStain is an unsupervised, physics-guided deep learning framework designed 
 
 1. **Clone the repository:**
 
-       git clone https://github.com/yourusername/MorphoStain.git
+       git clone [https://github.com/mrsaraei/MorphoStain.git](https://github.com/mrsaraei/MorphoStain.git)
        cd MorphoStain
 
 2. **Create a Conda environment and install dependencies:**
@@ -175,25 +175,27 @@ Evaluated across ***N* = 9,908 held-out test patches** from the SEA-AD cohort (B
 - **Uncertainty Calibration:** Expected Calibration Error (**ECE**) of **0.0125**.
 
 ---
-<!--
 ## 📖 Citation
 
 If you find MorphoStain useful in your research, please cite our paper:
 
-    @article{saraei2026morphostain,
-      author  = {Saraei, Mohammadreza and Zand, Maryam and Rahmani, Saba},
-      title   = {MorphoStain: Physics-Guided Latent Diffusion and Morphological Distillation for Multiplex Stain Decomposition in Alzheimer's Neuropathology},
-      journal = {IEEE Journal of Biomedical and Health Informatics},
-      year    = {2026},
-      note    = {Submitted for publication}
-    }
+```bibtex
+@article{saraei2026morphostain,
+  author       = {Saraei, Mohammadreza and Zand, Maryam and Rahmani, Saba},
+  title        = {MorphoStain: Physics-Guided Latent Diffusion and Morphological Distillation for Multiplex Stain Decomposition in Alzheimer's Neuropathology},
+  journal      = {medRxiv},
+  year         = {2026},
+  elocation-id = {2026.11.15.26368147},
+  doi          = {10.64898/2026.11.15.26368147},
+  url          = {https://doi.org/10.64898/2026.11.15.26368147}
+}
 
 ---
--->
+
 
 ## 🙏 Acknowledgments & Data Availability
 
-Whole-slide neuropathological imaging data were provided by the **Seattle Alzheimer's Disease Brain Cell Atlas (SEA-AD)** consortium (accessible via the [SEA-AD Data Portal](https://portal.brain-map.org/explore/seattle-alzheimers-disease) and the AWS Open Data Registry at `s3://sea-ad-quantitative-neuropathology/`; Gabitto et al., 2024). External breast cancer HER2 IHC validation data were obtained from the **Breast Cancer Immunohistochemical Image Generation (BCI) Challenge** benchmark dataset (available at [bci.grand-challenge.org](http://bci.grand-challenge.org/); Liu et al., 2022).
+Whole-slide neuropathological imaging data were provided by the **Seattle Alzheimer's Disease Brain Cell Atlas (SEA-AD)** consortium (accessible via the [SEA-AD Data Portal](https://portal.brain-map.org/explore/seattle-alzheimers-disease) and the AWS Open Data Registry at `s3://sea-ad-quantitative-neuropathology/`; Gabitto et al., 2024). We obtained external breast cancer HER2 IHC validation data from the **Breast Cancer Immunohistochemical Image Generation (BCI) Challenge** benchmark dataset (available at [bci.grand-challenge.org](http://bci.grand-challenge.org/); Liu et al., 2022).
 
 ## 📝 License
 

@@ -16,7 +16,7 @@
   </p>
 
   <p>
-    <b>97.54%</b> agreement replaying <b>20,100 real tool calls</b> · <b>0</b> false negatives · <b>zero</b> runtime dependencies
+    <b>97.81%</b> agreement replaying <b>21,034 real tool calls</b> · <b>0</b> false negatives · <b>zero</b> runtime dependencies · counterfactual prevention <b>88.5% cold / 96.9% warm</b>
     <br>
     <sub><a href="#benchmarks-and-ci">measured, not asserted — how the number was produced</a></sub>
   </p>
@@ -24,7 +24,7 @@
   <p><b>English</b> | <a href="README.zh-CN.md">简体中文</a></p>
 </div>
 
-When a tool call fails and the next attempt fixes it, the plugin saves that pair as a rule. Rules that match the current work get injected into context on later runs, before the agent repeats the same mistake.
+Think of it as an **immune memory for coding agents**: when a tool call fails and the next call fixes it, the engine distills a short "watch out → do this instead" rule (after scoring and scrubbing it so path junk stays out). Next time the agent is about to make the same mistake, that warning shows up right before the tool runs.
 
 One `core/` engine: **DSH** and **ZCode** install natively (plugin bundles, checked against the real host contracts), and `immune connect` wires the same engine into **Claude Code**, **Codex CLI**, and **Google Antigravity** as plain hooks — no plugin system required.
 
@@ -313,11 +313,12 @@ To do that automatically after each turn's distillation:
 
 Every push runs the retrieval gate and unit suite on Node 22 and 24:
 
-* **Failure judging** (`scripts/eval-judge.mjs`) — replaying **20,100 real host-labeled tool calls** through the judge: **97.54% agreement**, **0 false negatives**, 495 false positives (2.46%) — every one a probe or check command where a nonzero exit was the intended *answer*, a class the host itself labels "completed". Quantified and accepted in AGENTS.md decision #25.
-* **Test suite** — `npm test` (the exact count grows with coverage; CI runs it on Node 22 and 24 and the badge links to the result). `scripts/verify-*.mjs` add 15 + 24 + 20 host-level assertions, and `verify-installed.mjs` adds 22 against your installed profile. Reproduce them locally with the commands above.
-* **Recall** — fixed zh/en matrix with 8 paraphrased positives and 6 gram-clean negatives. Current: R@1 100%, R@3 100%, FP 0%. CI fails below R@3 7/8 or above FP 1/6.
-* **Index and query speed** (`scripts/bench-scale.mjs`) — 300 rules index in 39 ms (0.13 ms/rule); 67 matches run at p50 0.44 ms, p95 0.75 ms.
-* **Hook latency** (`scripts/bench-tool-latency.mjs`) — the tool path never calls a model; distillation is paid at the turn boundary.
+* **Failure judging** (`scripts/eval-judge.mjs`) — replaying **21,034 real host-labeled tool calls** through the judge: **97.81% agreement**, **0 false negatives**, 461 false positives (2.19%) — every one a probe or check command where a nonzero exit was the intended *answer*, a class the host itself labels "completed". Quantified and accepted in AGENTS.md decision #25.
+* **Test suite** — `npm test` (**245 / 245 passed**, 0 failed/skipped; CI runs it on Node 22 and 24). `scripts/verify-*.mjs` add 15 + 24 + 20 + 10 + 34 host-contract and cross-agent assertions. Reproduce them locally with the commands above.
+* **Recall** — fixed zh/en matrix (`scripts/bench-recall.mjs`): **R@1 100%, R@3 100%, FP 0%**; 42-rule seed suite (`scripts/bench-seed-recall.mjs`): **R@1 95% (up from 69%), R@3 100%, FP 0%**.
+* **Index and query speed** (`scripts/bench-scale.mjs`) — 300 rules index in 55 ms (0.18 ms/rule); 67 matches run at p50 0.58 ms, p95 1.03 ms.
+* **Counterfactual prevention** (`scripts/bench-ablation.mjs`) — across 28,961 real multi-host tool calls, strictly causal walk-forward replay intercepts **88.5% (115/130)** of recurring repeat mistakes from zero priors (**Cold-Start**), and **96.9% (126/130)** with **94.3%** total episode coverage when pre-warmed (**Warm-Start**).
+* **Hook latency** (`scripts/bench-tool-latency.mjs`) — the tool path never calls a model (median 1.697 ms); distillation runs at the turn boundary under a `1–60 s` budget clamp.
 * **Live LLM check** (`scripts/verify-llm.mjs`) — one command against a configured endpoint, when there is one.
 
 ### Comparison
@@ -346,5 +347,35 @@ Different jobs, mostly: deja-vu indexes everything you did and searches it; this
 **What it saved.** `immune stats` multiplies suppressed repeats by two round-trips (the failing attempt and the retry that did not happen) and by the median tokens of this project's own completed requests, then prints all three inputs. It deliberately does not print dollars: pricing differs per model, some models are unpriced, and cache effects are not observable from inside the tool.
 
 **Injection and cost.** Injected text comes only from distilled fields, brackets stripped so a line cannot close the wrapper tag, capped in length and labelled advisory. The same candidate set is not re-injected within four turns, and skipped turns do not count as hits. Distillation is queued during tool use and drained at turn end under `IMMUNE_DISTILL_BUDGET_MS` (12 s default, batched four episodes per request).
+
+---
+
+## What changed in v2.0
+
+Running v1 in real production databases taught us an uncomfortable truth: blindly saving every "failed → fixed" pair fills the library with junk. On real production machines, **70.4%** of ZCode rules and **100%** of DSH rules had decayed into one-off file paths (`Write: <path>`), read-only probes, or chat fragments that leaked across unrelated repositories.
+
+So v2.0 rebuilt the internals around four plain rules: **check quality at the door, isolate by workspace, blame the right cause, and never bury a good rule.**
+
+<div align="center">
+  <img src="docs/fig-arch-v2.png" alt="v2.0 system architecture" width="720">
+  <img src="docs/fig-benchmarks-v2.png" alt="v2.0 real-data benchmarks" width="720">
+</div>
+
+- **One brain for five hosts (`core/runtime.ts`)**: DSH's Cordis adapter and ZCode's hooks now share a single deterministic state machine with a strict `1–60 s` turn-end budget clamp.
+- **Quality gate & workspace walls (`core/hygiene.ts`, `core/rubric.ts`)**: Every rule gets scored 0–100 across five dimensions, machine paths become `<repo>`/`<path>`, and repo-specific tactics lock to `proj:<slug>:<hash8>`. Junk dumps move to quarantine (`70.4% → 0.0%` garbage in ZCode live DB, avg rubric `68.9 → 94.4`; `100% → 0.0%` in DSH).
+- **Fair blame + verifiable receipts (`core/triage.ts`, `core/receipts.ts`)**: Failures after injection are sorted into five buckets (network flake, wrong-scope leak, model ignored a proven rule, stale advice, or blind spot). Ignored generic rules get escalated with `[CRITICAL · ignored N×]` instead of deleted, and every delivery writes a tamper-evident SHA-256 chain receipt.
+- **Sharper recall & counterfactual proof (`core/retrieval.ts`, `core/relevance.ts`)**: Fixed truncated long `Edit` diffs and hyphenated slugs (`old_string-not-found`), added 19 bilingual dev concept bridges, and removed BM25 short-field bias — lifting seed **R@1 from 69% to 95%** (`100%` R@3, `0%` FP). Replaying **28,961 real multi-host calls** chronologically prevents **88.5%** of repeat mistakes cold-start, and **96.9%** (`94.3%` overall) with pre-warmed disk/pack priors.
+- **Put your local machine data to work (`core/disk-ingest.ts`, `core/audit/magpie.ts`)**: `immune ingest-disk` mines repos and `SKILL.md` guides (`184` projects → `937` rules in `3 s`), while `immune models` correlates per-model rule survival with read-only Magpie gateway logs (`11,165` requests, `70` models, zero credential reads).
+
+## Setup, Zero Dependencies & Verification
+
+- **Zero runtime dependencies**: Both [package.json](package.json) and [dsh-immune-system/package.json](dsh-immune-system/package.json) have empty `dependencies`. Only **Node.js `^22.19.0 || >=24.0.0`** (`node:sqlite`, `node:zlib`) is needed.
+- **Optional environment variables**: Works out of the box with zero configuration. To hook up cloud/local LLMs, Magpie (`127.0.0.1:3425/v1`), Ollama (`127.0.0.1:11434/v1`), guard modes, or doc auto-sync, copy/check [`.env.example`](.env.example).
+- **Reproduce everything**: `npm run build && npm test` (`245/245` passing), plus `node scripts/bench-ablation.mjs` for live DB hygiene, workspace ingestion, and counterfactual replay. Full write-ups live in [docs/ARCHITECTURE-V2.md](docs/ARCHITECTURE-V2.md) and [docs/EVALUATION.md](docs/EVALUATION.md).
+
+## How AI Is Used in This Project
+
+- **AI-assisted development without regressions**: Across 180+ commits, [AGENTS.md](AGENTS.md) keeps 42 hard architectural invariants (structured exit codes over regex heuristics, no arbitrary regex deny guards, strict hook stdout schemas) enforced by automated `check-versions`, `verify-dist-integrity`, and 245 tests.
+- **Prompts inside the product ([core/prompts.ts](core/prompts.ts), [core/rewrite.ts](core/rewrite.ts))**: Strict JSON extraction with `repair actions:` edit diffs and `allowed.has(id)` batch validation (`DISTILL_PROMPT` / `BATCH_DISTILL_PROMPT`), automatic 1-shot rubric self-reflection when a first draft scores `< 68` or fails hygiene (`CRITIQUE_DISTILL_PROMPT`), and command-fact-first dump rewriting via cloud/local API or host MCP (`immune_rewrite_candidates` / `immune_rewrite_apply`).
 
 For the full list of decisions and the ones that were tried and reverted, read [AGENTS.md](AGENTS.md).

@@ -16,6 +16,30 @@ A local task assistant: the real **Claude Code, Codex, Grok, Cursor, Antigravity
 
 For each question, a lead agent picks the team from your templates (or adapts one, or designs a new one), and you confirm it. Harness Relay then runs the CLIs with your own sign-ins and tools, passes each agent the messages it hasn't seen yet, and streams everything into one chat.
 
+## Contents
+
+- [Use cases](#use-cases)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Quick start](#quick-start)
+  - [Open-source agents and model backends](#open-source-agents-and-model-backends)
+- [Desktop app](#desktop-app)
+- [Safety](#safety)
+- [Scripts](#scripts)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Use cases
+
+Five tasks to hand the team, each a real run recorded as it happened, with its chapters, on the [website](https://agentic-system-lab.github.io/harness-relay/use-cases/):
+
+- **[Fix a bug three ways, keep the best one](https://agentic-system-lab.github.io/harness-relay/use-cases/#fix-a-bug)**: in parallel mode, Claude Code, Codex and Grok each fix a failing test in a git worktree of its own; you read the diffs and apply one to your working directory.
+- **[Research a choice, with sources](https://agentic-system-lab.github.io/harness-relay/use-cases/#research)**: read-only, the agents search the web and read the docs, debate in a roundtable and pick one with the links they read; lead review marks where they disagree.
+- **[Write release notes as a relay](https://agentic-system-lab.github.io/harness-relay/use-cases/#release-notes)**: one drafts them from the commits since the last tag, the next rewrites them for users, the last checks every line against the commits, handing off with `@mentions`.
+- **[Turn a spreadsheet into answers and a chart](https://agentic-system-lab.github.io/harness-relay/use-cases/#analyze-data)**: attach a CSV export; the agents count with scripts of their own, rank what to fix first and show the chart they saved in the reply.
+- **[A morning briefing from your mail and calendar](https://agentic-system-lab.github.io/harness-relay/use-cases/#morning-briefing)**: an automation every weekday at 08:30 reads your mail and calendar with Harness Relay's own tools; the replies wait in the outbox until you press Send.
+
 ## Features
 
 - **Twelve coding agents, one task assistant**: the CLIs you already have, with their own tools, sessions and sign-ins, and the open-source ones on your API keys or your own OpenAI-compatible server; mix them in one team. ([Signing in](docs/user-guide.md#2-sign-in-to-each-agent--settings--sign-in), [model backends](docs/user-guide.md#open-source-agents-and-model-backends))
@@ -24,9 +48,10 @@ For each question, a lead agent picks the team from your templates (or adapts on
 - **Safe editing with git**: each working directory (up to eight per chat) becomes a git repository, each reply shows the files it changed with a diff, and in parallel mode every agent works in its own worktree. ([Reviewing and applying changes](docs/user-guide.md#reviewing-and-applying-changes))
 - **You stay in charge**: a permission per chat (read-only, edit, full access), approvals in the chat for anything beyond it, agents that ask you rather than guess, and messages you can send while they reply. ([Approvals](docs/user-guide.md#approvals), [chatting](docs/user-guide.md#4-chat))
 - **Everything live**: replies, reasoning, plans and tool activity stream in; Mermaid diagrams, images and the files agents make show in the chat; copy, edit, retry or branch from any reply. ([Copying, editing and retrying](docs/user-guide.md#copying-editing-and-retrying), [branching](docs/user-guide.md#branching-a-conversation))
-- **Schedules**: send the team a message at set times, such as a review of yesterday's commits every weekday at 9:00. ([Schedules](docs/user-guide.md#schedules))
+- **Harness Relay's own tools**: a browser of its own, mail and a calendar for the agents of every CLI (Grok's, Muse Code's, and the open-source agents' but OpenCode's, in full access only), through one MCP server; what reaches other people waits in an outbox until you send it. ([Harness Relay's tools](docs/user-guide.md#harness-relays-tools-browser-mail-and-calendar))
+- **Automations**: send the team a message when you run one, at set times (a review of yesterday's commits every weekday at 9:00), or when a program on this computer calls its webhook; an automation can track a goal across days until an agent says it is reached, and tries a failed run again. ([Automations](docs/user-guide.md#automations))
 - **Files, voice and sharing**: attach files and screenshots, browse the working directory, dictate with voice input that stays on your computer, and share a chat as Markdown or a link. ([Browsing files](docs/user-guide.md#browsing-files), [voice input](docs/user-guide.md#voice-input), [sharing](docs/user-guide.md#sharing-a-conversation))
-- **Organised**: groups, pinned chats at the top, search, each chat's status in the sidebar, and notifications and sound, as push notifications on a phone. ([Groups](docs/user-guide.md#groups), [pinned chats](docs/user-guide.md#pinned-conversations), [search](docs/user-guide.md#search), [notifications](docs/user-guide.md#notifications-and-sound))
+- **Organised**: groups, pinned chats at the top, search, each chat's status in the sidebar, notifications and sound, as push notifications on a phone, and a bell that keeps every notification, the same in every browser. ([Groups](docs/user-guide.md#groups), [pinned chats](docs/user-guide.md#pinned-conversations), [search](docs/user-guide.md#search), [notifications](docs/user-guide.md#notifications-and-sound), [notification inbox](docs/user-guide.md#notification-inbox))
 - **Set up once for every CLI**: a CLI not found installs from its card in one click (and removes again), a tool library of MCP servers, skills and memory, several accounts per CLI, each account's plan usage, what each CLI loads by itself, and the agents' sessions in [AgentsView](https://www.agentsview.io). ([Installing a CLI](docs/user-guide.md#installing-a-cli-from-settings), [tool library](docs/user-guide.md#tool-library-mcp-servers-skills-and-memory), [accounts](docs/user-guide.md#more-than-one-account), [plan usage](docs/user-guide.md#plan-usage), [AgentsView](docs/user-guide.md#agent-sessions-the-clis-own-folder-and-agentsview))
 - **Local-first, on your devices**: one SQLite file and a server on `127.0.0.1`; your phone through Tailscale; an optional desktop app; English and 繁體中文. ([Use it from your phone](docs/remote-access.md#1-share-the-server-with-your-tailnet), [desktop app](#desktop-app))
 
@@ -83,7 +108,7 @@ Agents can change your files and run commands, so Harness Relay keeps them withi
 | `npm start` | Serve the built UI and the API from one process on http://127.0.0.1:8787 |
 | `npm run login` | Print another one-time sign-in link, for when the one `npm start` printed is used or old |
 | `npm run dev` | For development: the API server (port 8789, auto-restart) and Vite (port 5173) |
-| `npm run typecheck`, `npm test`, `npm run build` | What CI runs for every pull request |
+| `npm run format:check`, `npm run typecheck`, `npm test`, `npm run build` | What CI runs for every pull request (`npm run format` formats the code with Prettier) |
 
 The other commands (end-to-end tests, the desktop app, the website, the demo) are in the [developer guide](docs/developer-guide.md#running), with what [CI](docs/developer-guide.md#continuous-integration) runs.
 

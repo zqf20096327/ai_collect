@@ -9,13 +9,13 @@ English | [简体中文](README.zh.md)
 
 **A personal assistant that runs entirely on your own machine — with a memory you can actually inspect.**
 The focus is planning, executing, recovering, verifying and delivering complex personal tasks; everyday conversation is supporting interaction.
-Rust owns the agent loop, memory and 36 tools; TypeScript carries the shared clients, chat gateways and isolated browser adapter. Conversations, `state.db` and API keys never leave your laptop. The dashboard speaks both English and Chinese — switch it from the sidebar.
+Rust owns the agent loop, memory and 33 tools; TypeScript carries the shared clients, chat gateways and isolated browser adapter. Conversations, `state.db` and API keys never leave your laptop. The dashboard speaks both English and Chinese — switch it from the sidebar.
 
 > Most agents keep memory in a black box. Joy writes **one append-only ledger row per turn**. Open any row and you see that turn's full entry stream: the retrieval decision, which tools ran, which model answered, and what it cost. The memory library links back to source turns via `ledger:…` chips, and the FTS5 index can be rebuilt from the ledger. Nothing is hidden, nothing is silently lost.
 
 ![Joy Web workbench](docs/assets/dashboard.jpg)
 
-The independent Mac desktop UI is under development: run `just desktop-install`, build the Rust CLI, then `just desktop-dev`; `just desktop-build` bundles the local Runtime into a Mac app. Web and desktop share settings, model/workspace/permission menus and design tokens through the transport-independent `@joy/ui` package. The rounded green Joy mark is shared by the app, Web favicon/install icons and interface; `just desktop-icons` regenerates platform icon assets from its SVG source. The composer supports server-enforced read-only, standard (confirm effects once) and full-access session modes; full access requires confirmation and preserves capability/sandbox limits. `just desktop-check` and `just smoke-desktop` validate the desktop foundation. See the [architecture and implementation specification](docs/agent-platform-architecture.md) for current status.
+The Mac app is a thin shell around the Runtime's own front end: run `just desktop-install`, build the Rust CLI, then `just desktop-dev` (it starts `joy dashboard`; `JOY_RUNTIME_URL` attaches to a running Runtime instead); `just desktop-build` bundles the Runtime into a Mac app. Browser, phone (PWA) and desktop are the same front end (`joy-ts/packages/dashboard`). The rounded green Joy mark is shared by the app, Web favicon/install icons and interface; `just desktop-icons` regenerates platform icon assets from its SVG source. The composer supports server-enforced read-only, standard (confirm effects once) and full-access session modes; full access requires confirmation and preserves capability/sandbox limits. `just desktop-check` and `just smoke-desktop` validate the desktop foundation. See the [architecture and implementation specification](docs/agent-platform-architecture.md) for current status.
 
 The Web workbench now matches the desktop while preserving attachments, conversation branches, tasks, memory ledgers, skills, MCP, schedules and remote sign-in. Build with `just dashboard-build`, then start or restart `joy dashboard`; `just smoke-web` checks authentication, configuration and session permissions with a local model fixture. Narrow screens use drawer navigation and full-screen preferences, with shared bilingual controls. The composer’s plus button adds local files or images directly; the adjacent workspace button is the only project-folder entry and saves to the current conversation. These controls preserve the message draft. If the backend is older, the permission menu explains how to restart it and offers a retry.
 
@@ -59,7 +59,7 @@ ANTHROPIC_API_KEY=sk-… JOY_HOME=/tmp/joy-demo ./target/debug/joy app-server <<
 JSONRPC
 ```
 
-The response follows a notification stream: `turnStarted → gateDecided → textDelta* → toolStarted → toolCompleted* → turnCompleted`. `turnCompleted.meta` records the gate ruling, tool timing, which model answered, and token usage — persisted with the conversation.
+The response follows a notification stream: `turnStarted → textDelta* → toolStarted → toolCompleted* → turnCompleted`. `turnCompleted.meta` records tool timing, which model answered, and token usage — persisted with the conversation.
 
 ## Why it is built this way
 
@@ -81,7 +81,7 @@ Releases ship every 1–2 weeks with real notes. If you want those without the n
 ## What Joy can do
 
 - **Converse** on the terminal, in the dashboard, or through chat gateways
-  (Telegram, Discord, WeChat, Lark — see [docs/gateways.md](docs/gateways.md))
+  (WeChat, Lark — see [docs/gateways.md](docs/gateways.md))
 - **Remember**: semantic facts (FTS5, CJK-capable), dated episodes, and
   procedural Skills — with a retrieval gate so memory is consulted only when
   relevant ([docs/architecture.md](docs/architecture.md))
@@ -90,7 +90,7 @@ Releases ship every 1–2 weeks with real notes. If you want those without the n
   time, and `ledger:…` chips back to the source turns), and the context meter (six
   sections, with a notice before the window fills). One button compacts on demand
   ([docs/operations.md](docs/operations.md))
-- **Act**: 36 built-in tools (23 always on, 13 behind switches) plus MCP servers
+- **Act**: 21 built-in tools (13 always on, 8 behind switches) plus MCP servers
   ([docs/configuration.md](docs/configuration.md))
 - **Stay cheap**: the system prompt is a stable prefix plus a per-turn tail, so the
   provider can cache it; the skill catalog is one line per skill with bodies on demand, and
@@ -100,9 +100,9 @@ Releases ship every 1–2 weeks with real notes. If you want those without the n
   connectors and **scheduled jobs** side by side — add your own, delete your own; what
   ships with the install, and the jobs a skill declares, are greyed out and read-only
   ([docs/skills.md](docs/skills.md), [docs/operations.md](docs/operations.md))
-- **Plan as a graph**: the triage front door answers small talk cheaply; the
-  gather workflow writes a morning brief
-  ([docs/architecture.md](docs/architecture.md))
+- **Morning brief as a skill**: the bundled `morning-briefing` skill scans GitHub, the web,
+  the calendar and memory, and only writes a draft
+  ([docs/operations.md](docs/operations.md))
 - **Follow the project's own rules**: `AGENTS.md` / `AGENTS.override.md` / `CLAUDE.md` are
   discovered upwards from the working directory, joined root-first into the per-turn tail
   (32KB budget, outermost dropped first) with their source paths named
@@ -122,31 +122,23 @@ Releases ship every 1–2 weeks with real notes. If you want those without the n
 
 | Tool | Purpose |
 |---|---|
-| `save_note` / `forget_note` / `search_memory` / `list_memory` / `manage_memory` | memory CRUD |
-| `create_event` / `list_events` | calendar (idempotent, ICS + optional Apple Calendar sync) |
+| `memory` | memory: `action` = save / forget / search / list / update / delete / delete_episode / create_skill (ask the user before writing a skill) |
 | `send_message` | message drafts into the outbox — never actually sends |
 | `search_web` | Parallel MCP first; bounded built-in fallback to Tavily / Brave or DDG Lite → Bing; source URLs, excerpts and deduplication |
+| `read_page` | read the full text behind a catalog line: `kind=memory` reads a memory-library page (with its `sources`), `kind=skill` reads a skill's full steps; **on by default** |
 | `read_file` | read a text file: paginated (2000 lines / 50KB, never mid-line), line numbers, a continuation protocol, and a re-read short-circuit; **on by default** |
-| `list_dir` | list a directory: directories first, files with sizes, 500-entry cap; **on by default** |
-| `glob` | find files by name pattern (`**` across directories, `*`/`?` inside one; a pattern with no `/` matches the file name at any depth), skipping `.git`, `node_modules`, `target`, `dist`, `build` and friends; **on by default** |
+| `glob` | with no `pattern` it lists a directory (directories first, files with sizes, 500 entries); with a `pattern` it find files by name pattern (`**` across directories, `*`/`?` inside one; a pattern with no `/` matches the file name at any depth), skipping `.git`, `node_modules`, `target`, `dist`, `build` and friends; **on by default** |
 | `grep` | search file contents and return `path:line: text` (plain text, optional `ignore_case` and a `glob` filter), skipping the same trees plus binaries and anything over 2 MB, capped at 200 matches; **on by default** |
 | `fetch_url` | Parallel MCP page extraction first, local HTTP fallback; 50k cap, public-target validation and untrusted-content wrapping; local redirects rechecked |
-| `create_skill` | persist an agreed workflow as procedural memory |
-| `job_output` / `job_list` / `job_kill` | read, list and stop background jobs (started with `run_command`'s `background=true`) |
+| `job` | read, list and stop background jobs (`action` = output / list / kill; jobs start with `run_command`'s `background=true`); needs `JOY_EXEC=1` |
 | `todo_write` | keep a per-session todo list, re-injected every turn (whole-table replace; one `in_progress` at a time) |
-| `current_time` | local time with weekday and timezone |
 | `write_file` / `edit` | write a text file / one exact-match replacement with a change hunk — off unless `JOY_WRITE=1`; writable boundary = the working directory **bound to the session** (or named for this turn when the session has none) + `JOY_EXEC_WRITABLE_ROOTS` |
 | `apply_patch` | apply a patch: several files and several hunks in one call, **all or nothing** (one hunk that does not fit means nothing is written); same boundary and approval as `write_file` / `edit` |
-| `define_tool` | define a new tool for itself: a JSON file (name, description, argument schema, command template) that lands in `<home>/tools/` and is in the table **from the next turn** — no restart, no rebuild. It runs through the same sandbox, allowlist and approval as `run_command`; off unless `JOY_EXEC=1` |
-| `delete_file` | delete one file (never a directory) — same boundary and approval as `write_file`; off unless `JOY_WRITE=1` |
-| `move_file` | move or rename one file, **both** ends inside the boundary, an existing destination refused — off unless `JOY_WRITE=1` |
 | `run_command` | shell commands — sandboxed, allowlisted, off unless `JOY_EXEC=1` ([SECURITY.md](SECURITY.md)) |
 | `delegate_task` | hand one self-contained job to a subagent (`tasks: [...]` fans out up to 4 independent jobs concurrently, merged in order) — off unless `JOY_DELEGATE=1`, cannot delegate again; pass `result_schema` for a structured answer (retried once, then prose) |
 | `browser_observe` / `browser_act` | Optional task browser: fresh DOM references, finite inputs, standard once-only approval and same-window human takeover. Requires installed components and a browser opened by a human for that task |
-| `read_skill` | read one skill's full body — the always-present catalog carries only its name and one line; **on by default** |
-| `read_memory_page` | read one page of the memory bundle by name, with the `sources` it was distilled from; **on by default** |
 | `find_tools` | search the deferred shelf by keyword and open what it finds for **this session** (`JOY_TOOL_POLICY=deferred`); **on by default** |
-| `schedule_job` | create or replace a scheduled job in `<home>/schedules.json` — name, five-field cron, one prompt; **on by default** |
+| `schedule_job` | create or replace a scheduled job in the state database — name, five-field cron, one prompt; **on by default** |
 | `list_schedules` | every declared job with its cron and prompt (skill-declared ones included); **on by default** |
 | `cancel_schedule` | delete a file-declared job by name — a skill's job is refused with the way out; **on by default** |
 
@@ -163,7 +155,7 @@ Tool failures return to the model as text — the loop never crashes on one.
 | [docs/architecture.md](docs/architecture.md) | principles, crate dependency graph, one turn's data flow, key mechanisms, design decisions |
 | [docs/protocol.md](docs/protocol.md) | the 65 JSON-RPC methods, notification sequence, error codes, clients |
 | [docs/configuration.md](docs/configuration.md) | every `JOY_*` variable, gateway variables, mcp.json, settings.json |
-| [docs/gateways.md](docs/gateways.md) | Telegram / Discord / WeChat / Lark setup, quirks, and security notes |
+| [docs/gateways.md](docs/gateways.md) | WeChat / Lark setup, quirks, and security notes |
 | [docs/testing.md](docs/testing.md) | the four-layer quality system and the latest test report |
 | [docs/operations.md](docs/operations.md) | running every shape, backups, troubleshooting |
 | [docs/limitations.md](docs/limitations.md) | every known boundary — deliberate or not — with the file to open next |
@@ -186,24 +178,24 @@ Tool failures return to the model as text — the loop never crashes on one.
 | P1 ✅ | state (SQLite+FTS5), app-server (JSON-RPC over stdio), `joy` CLI |
 | P2 ✅ | config / provider (12, incl. Ollama) / tools / loop / memory (gate + consolidation) |
 | P2b ✅ | provider streaming, MCP, graph + triage front door |
-| P3 ✅ | dashboard, Telegram / Discord / WeChat / Lark gateways (the latter three never connected to real platforms) |
+| P3 ✅ | dashboard, WeChat / Lark gateways (Telegram and Discord were later removed; the remaining ones never connected to real platforms) |
 | P4 ✅ | terminal REPL, turn/interrupt, config/write + model/list, full tool set, Skills, trace/usage, gather, MCP OAuth, evals + gate + judge |
 | P5 ✅ | local inference (Ollama, no key), `joy mcp serve` (memory as an MCP server), Homebrew formula + Dockerfile |
 | P6 ✅ | sandboxed execution behind `JOY_EXEC` (deny list + allowlist + seatbelt/bwrap), context compaction (rolling summaries), declarative schedules (`joy schedule`) |
-| P7 ✅ | hybrid retrieval (`JOY_EMBEDDINGS`, RRF), temporary-statement filter, skill updates (`joy skill update`) |
+| P7 ✅ | temporary-statement filter, skill updates (`joy skill update`) |
 | P8 ✅ | startup config validation, tool-argument schema checks, a stall guard, token budgets, sandboxed-and-offline execution, visible retries, output spilling, subagents, interactive approval, skill policy fields, memory kinds |
 | P9 ✅ | tool-result budgets (line-aware spilling + observed-prefill calibration), subagent report scanning and `result_schema`, MCP circuit breaking and name de-duplication, memory write de-duplication, twelve lifecycle hooks (`JOY_HOOKS`), a todo list, background jobs, and a goal loop (`/goal`) |
 | P10 ✅ | file-writing tools (`write_file`/`edit`), image input, model catalog, HTTP hooks, declarative workflows, per-session write lock, Windows boundary (Unix-only), distribution materials (npm shim / brew / release workflow) |
 | P11 ✅ | accounts & multi-device: register/login hub (PBKDF2, per-device tokens, seat cap), dashboard remote mode + login card, cross-device event sync, CORS, PWA skeleton, Tauri desktop shell |
 | P12 ✅ | long-task engine (turn-level checkpoints): working memory persisted at tool boundaries, kill -9 → startup reconcile auto-resumes (finished tools never re-run), `task_*` event pings, dashboard resume notice |
 | P13 ✅ | long tasks as entities (`agent_tasks`): the goal loop becomes their engine, one active task per session, create/pause/resume/cancel, a pause keeps the checkpoint (resume continues it), boot reconcile marks suspended, dashboard task-card switches |
-| P14 ✅ | connectors (M4): email (SMTP) and Feishu (app identity) — allowlist hard boundary, drafts by default, one approval per live send; `joy connector` for humans; read-only dashboard panel |
+| P14 ✅ | connectors (M4): Feishu (app identity; the email connector was later removed) — allowlist hard boundary, drafts by default, one approval per live send; `joy connector` for humans; read-only dashboard panel |
 | P15 ✅ | business form (M5): task API (`POST /api/run`, one turn in, one JSON answer out), inbound webhooks (`webhooks.json` + `X-Joy-Secret`, no config = no door), tier routing (a task or a caller declares `tier` and it wins even in fixed mode; the table lives in `model-routes.json` / REPL `/route`) |
 | P16 ✅ | task entities (0.14): done decided by facts — three deterministic acceptance checks before the judge, task-level budgets, runs / steps / events / artifacts, idempotency that blocks but never replays, long-task benchmarks with a recovery rate, an optional execution plan (`JOY_PLAN`) |
 | P17 ✅ | session metadata (0.15): the `sessions` table (migration 0018), `session/get` / `session/update` / `turn/list`, the working directory follows the session |
 | P18 ✅ | session gate (0.16): one turn per session at a time (`SESSION_BUSY`), `turn/steer` for a running turn, `turn/follow-up` to queue the next one (migration 0019, survives a restart), the `turnSteered` notification |
 | P19 ✅ | secrets & productization: Windows Credential Manager + the `SecretVault` seam, self-hosting security (non-loopback demands `JOY_OPS_TOKEN`), the models.dev catalog generator (`scripts/gen_catalog.py`), dashboard streams Markdown block-incrementally, a one-line session sidebar with a draggable edge and hover marquee |
-| P20 ✅ | memory & context (0.17): the append-only ledger (a digest per row, oversized payloads spooled under `ledger/`, turns rebuilt from rows), the OKF bundle in `<home>/memory` with a rebuildable FTS5 index, a background worker that consolidates and mirrors (claim-first, one flight, backoff), the dashboard's memory center (ledger / library / meter), a split system prompt with an Anthropic cache breakpoint and cached-token accounting, thin/full souls, a skill catalog with on-demand bodies (`read_skill`), deferred tool loading (`find_tools`), oldest-first result trimming, and `/compact [focus]` |
+| P20 ✅ | memory & context (0.17): the append-only ledger (a digest per row, oversized payloads spooled under `ledger/`, turns rebuilt from rows), the OKF bundle in `<home>/memory` with a rebuildable FTS5 index, a background worker that consolidates and mirrors (claim-first, one flight, backoff), the dashboard's memory center (ledger / library / meter), a split system prompt with an Anthropic cache breakpoint and cached-token accounting, thin/full souls, a skill catalog with on-demand bodies (`read_page`), deferred tool loading (`find_tools`), oldest-first result trimming, and `/compact [focus]` |
 
 </details>
 

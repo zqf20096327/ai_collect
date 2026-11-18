@@ -37,7 +37,7 @@ Built for local and small-scale use.
 
 ## Quick Start
 
-Needs Docker or Go `1.26.9` or later, and a long random `PROXY_API_KEY`.
+Needs Docker or Go `1.26.11`+ (or `1.27.4`+ on Go 1.27), and a long random `PROXY_API_KEY`.
 
 ```bash
 export PROXY_URL=http://localhost:8080
@@ -61,7 +61,7 @@ Then:
 curl -sS "${PROXY_URL}/v1/chat/completions" \
   -H "Authorization: Bearer ${PROXY_API_KEY}" \
   -H "Content-Type: application/json" \
-  -d '{"model":"gpt-6.1-sol","messages":[{"role":"user","content":"hello"}]}'
+  -d '{"model":"gpt-6.2-sol","messages":[{"role":"user","content":"hello"}]}'
 ```
 
 ## Clients
@@ -72,11 +72,11 @@ the API key. For Claude Code or another Anthropic client:
 ```bash
 export ANTHROPIC_BASE_URL=http://localhost:8080
 export ANTHROPIC_API_KEY="${PROXY_API_KEY}"
-export ANTHROPIC_MODEL=gpt-6.1-sol
+export ANTHROPIC_MODEL=gpt-6.2-sol
 ```
 
-Use a model ID from `GET /v1/models`; the default is `gpt-6.1-sol`.
-The fallback catalog also includes `gpt-6.1-terra`, `gpt-6-astra`, and `gpt-6-luna`.
+Use a model ID from `GET /v1/models`; the default is `gpt-6.2-sol`.
+The fallback catalog also includes `gpt-6.2-astra`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6-astra`, and `gpt-6-luna`.
 Available models and their limits refresh from each account's upstream catalog.
 
 Every route except `GET /health/live` needs the key, as either
@@ -102,7 +102,7 @@ Gotchas:
 - `GET /v1/responses` is a WebSocket, not SSE. First message must be `response.create`; later turns use `response.create` or `response.append`. No `[DONE]` marker.
 - `/v1/chat/completions` also accepts a Responses-shaped body when `messages` is omitted.
 - Images default to `gpt-image-2`. If the native endpoint returns `404`, `405`, or `501`, it falls back to the Responses image tool — one image, data URL.
-- Anthropic requests need `Anthropic-Version: 2023-06-01`. Sampling controls, stop sequences, `max_tokens` truncation, and thinking budgets are accepted but advisory; Codex has no equivalent.
+- Anthropic requests need `Anthropic-Version` `2023-06-01` or `2026-10-21`. Sampling controls, stop sequences, `max_tokens` truncation, and thinking budgets are accepted but advisory; Codex has no equivalent.
 - Audio input is rejected. Request bodies must be identity or zstd.
 
 Exact rules: [docs/TRANSLATION.md](docs/TRANSLATION.md),
@@ -127,8 +127,10 @@ its status is `disabled`, `expired`, or `banned`, a cooldown is active, its
 token is missing, or its quota is spent. `code_review_rate_limit` is tracked but
 does not affect routing.
 
-A failed OAuth refresh only expires an account on `invalid_grant`. Anything else
-keeps it active behind a 60-second cooldown.
+A failed OAuth refresh only expires an account when the refresh token is
+rejected: a `401` other than `invalid_client` or `unauthorized_client`,
+`invalid_grant`, `invalid_refresh_token*`, or Codex CLI's `refresh_token_*`
+codes. Anything else keeps it active behind a 60-second cooldown.
 
 Details: [docs/MULTI_ACCOUNT_ROTATION_STRATEGY.md](docs/MULTI_ACCOUNT_ROTATION_STRATEGY.md).
 
@@ -204,7 +206,7 @@ Live tests, against a proxy you already have running:
 
 ```bash
 OPENAI_API_KEY=change-me-to-a-long-random-string \
-OPENAI_MODEL=gpt-6.1-sol \
+OPENAI_MODEL=gpt-6.2-sol \
 OPENAI_BASE_URL="${PROXY_URL}/v1" \
 go test -tags=live ./test/integration -v -count=1
 ```

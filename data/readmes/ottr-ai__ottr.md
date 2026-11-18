@@ -2,7 +2,7 @@
   <img alt="Ottr banner" src=".github/assets/banner.png" width="100%"/>
 </p>
 
-<h1 align="center">Ottr – The Task Tracker for Oh My Pi</h1>
+<h1 align="center">Ottr, the task tracker for Oh My Pi</h1>
 
 <p align="center">A local kanban board that runs omp coding agents on your git projects.</p>
 
@@ -16,7 +16,7 @@
   <a href="https://github.com/ottr-ai/ottr"><img alt="Repo" src="https://img.shields.io/badge/repo-ottr--ai%2Fottr-181717?logo=github"/></a>
 </p>
 
-You type a task in plain language. Ottr gives it a git worktree, runs the agent in it, checks the result, and merges through a per-project queue. It enforces the process; your project's `AGENTS.md` enforces quality. Everything runs on your machine; the board binds `127.0.0.1` by default.
+You type a task in plain language. Ottr gives it a git worktree, runs the agent in it, checks the result, and merges through a per-project queue. Ottr enforces the process, and your project's `AGENTS.md` enforces quality. Everything runs on your machine. The board binds `127.0.0.1` by default.
 
 Ottr is mainly built with Ottr itself.
 
@@ -26,13 +26,13 @@ Ottr is mainly built with Ottr itself.
 
 ## Install
 
-Requirements: Windows 10/11 or Linux, with [Bun](https://bun.sh) ≥ 1.4.2, git, and `omp` on `PATH`; see [Requirements](docs/install.md#requirements).
+Requirements: Windows 10/11 or Linux, with [Bun](https://bun.sh) ≥ 1.4.2, git, and `omp` on `PATH`. [Requirements](docs/install.md#requirements) has the details.
 
-Every full variant — Windows PowerShell, the Alate provisioning block, the agent-db seed, and the Podman notes — is in [docs/install.md](docs/install.md).
+[docs/install.md](docs/install.md) has every full variant: Windows PowerShell, the Alate provisioning block, the agent-db seed, and the Podman notes.
 
 ### Docker Compose, latest release
 
-The compose file and the image come from the same GitHub release tag; the image is public, so the pull needs no login. Run the seed line before `up`: on a first install the snapshot does not exist, and `up` then makes Docker create a directory for the missing bind source, which the entry script refuses.
+The compose file and the image come from the same GitHub release tag. The image is public, so the pull needs no login. Run the seed line before `up`. On a first install the snapshot does not exist, so `up` makes Docker create a directory for the missing bind source, and the entry script refuses that directory.
 
 ```sh
 mkdir -p ottr && cd ottr
@@ -51,7 +51,7 @@ docker compose up -d --no-build
 
 ### From source
 
-Builds the image on your machine. Run the seed line before `up`, for the same first-install reason as above; the Alate steps are in [docs/install.md](docs/install.md#from-source-main-branch).
+This variant builds the image on your machine. Run the seed line before `up`, for the same first-install reason as above. The Alate steps are in [docs/install.md](docs/install.md#from-source-main-branch).
 
 ```sh
 git clone git@github.com:ottr-ai/ottr.git ottr
@@ -68,7 +68,7 @@ docker compose up -d
 
 ### Podman
 
-Podman runs the stack too; see the compose provider, log driver and Windows path notes under [Podman](docs/install.md#podman) in docs/install.md.
+Podman runs the stack too. The compose provider, log driver and Windows path notes are under [Podman](docs/install.md#podman) in docs/install.md.
 
 ### Bare metal
 
@@ -86,24 +86,33 @@ Open <http://127.0.0.1:4747>.
 ## Quick start
 
 1. Open the board: <http://127.0.0.1:8080> with Docker Compose, <http://127.0.0.1:4747> on bare metal.
-2. **Add project** clones any git URL (`https://…`, `git@host:…`, `ssh://host[:port]/…`) or creates a new project, sets up `.tasks/` and `.worktrees/`, and walks a setup dialog (automation, runners, project settings, rules).
-3. The dialog's last step files a rules interview card for a project without `AGENTS.md`; the card writes one with you. A dialog closed early leaves the same start on the setup checklist.
+2. **Add project** opens one wizard: Source, Automation, Runners, Project, and Rules. In Source, select **New** or **Git URL** (`https://…`, `git@host:…`, `ssh://host[:port]/…`). **Next** and **Back** retain your drafts. Before **Finish**, **Cancel**, the close button, or Escape discard those drafts without a project or clone.
+3. **Finish** creates or clones the project, prepares `.tasks/` and `.worktrees/`, and saves the settings you explicitly change. It then starts a rules interview card if needed. For a project without `AGENTS.md`, the card writes the file with you. An existing project's **Open setup** still offers **Finish later**.
 4. Type a task in plain language. The card waits in **Todo** for a free slot: 20 total runs, no per-project cap by default (`OMP_TRACKER_MAX_TOTAL`).
 5. **In progress**: Ottr creates `.worktrees/<id>` on branch `ott/<id>-<slug>` and runs `omp -p` in it. The agent finishes with the `report_outcome` tool.
 6. **Merging**: a second turn rebases, re-runs the project's checks, and integrates the work. **Done** shows the report.
 
-The full column list, research cards, backlog drafts, the second-model check and the review and release workflows: [How a task moves](docs/how-it-works.md#how-a-task-moves).
+[How a task moves](docs/how-it-works.md#how-a-task-moves) covers the full column list, research cards, backlog drafts, the second-model check, and the review and release workflows.
+
+Use **Search settings** to find a setting by label, key, or description on the current settings page.
+For example, `firecracker` finds the microVM setting.
+
+The agent overview keeps model quotas separate from external service balances and usage windows.
+External service sources are internal server configuration, not a user setting.
+The default source list is empty.
+Live activation requires a separately approved server secret source.
+See the [service quota specification](docs/specs/service-quotas.md) for the integration boundary.
 
 ## How it works
 
 | Stage | What happens |
 | --- | --- |
-| Work turn | Ottr creates `.worktrees/<id>` on branch `ott/<id>-<slug>` and runs `omp -p` in it; the agent finishes with the `report_outcome` tool. |
-| Merge turn | A second turn rebases, re-runs the project's checks, and integrates the work; one merge turn per project at a time. |
+| Work turn | Ottr creates `.worktrees/<id>` on branch `ott/<id>-<slug>` and runs `omp -p` in it. The agent finishes with the `report_outcome` tool. |
+| Merge turn | A second turn rebases, re-runs the project's checks, and integrates the work. One merge turn runs per project at a time. |
 | Review | A read-only card runs the full verification, mutation tests, a security audit and a UI/UX check, and files its findings as task cards. |
 | Release | **Create release** runs the review since the last tag, tags the reviewed commit and creates the GitHub release. |
 
-Architecture, the task life cycle and the diagrams: [docs/how-it-works.md](docs/how-it-works.md).
+[docs/how-it-works.md](docs/how-it-works.md) has the architecture, the task life cycle and the diagrams.
 
 ## Learn more
 
@@ -111,13 +120,13 @@ Architecture, the task life cycle and the diagrams: [docs/how-it-works.md](docs/
 - [Configuration](docs/configuration.md): every setting with its default, remote access, and card edit conflicts.
 - [GitHub tokens](docs/github-tokens.md): the board token, the read-only token for turns, Enterprise hosts, and the GitHub App.
 - [Development](docs/development.md): the checks, the tests, CI, UI development, and the screenshot proofs.
-- [How Ottr works](docs/how-it-works.md): how Ottr works — architecture, the path of a task, and the task life cycle, with Mermaid diagrams.
+- [How Ottr works](docs/how-it-works.md): the architecture, the path of a task, and the task life cycle, with Mermaid diagrams.
 - [docs/specs/task-lifecycle.md](docs/specs/task-lifecycle.md): current task stages, states, cancellation latch, transitions, and writer guards.
-- [docs/notifications.md](docs/notifications.md): the notification model — alert classes, per-device settings, project mutes, presence and retraction.
-- [docs/WORKERS.md](docs/WORKERS.md): the Docker Compose stack — topology, updates, env settings, fleet memory.
-- [docs/OPERATIONS.md](docs/OPERATIONS.md): run one host — what "board up" means, the board-down runbook, restore, and the incident template.
+- [docs/notifications.md](docs/notifications.md): the notification model, with alert classes, per-device settings, project mutes, presence and retraction.
+- [docs/WORKERS.md](docs/WORKERS.md): the Docker Compose stack, with its topology, updates, env settings and fleet memory.
+- [docs/OPERATIONS.md](docs/OPERATIONS.md): how to run one host, what "board up" means, the board-down runbook, restore, and the incident template.
 - [docs/ARCH-REVIEWS.md](docs/ARCH-REVIEWS.md): the **Review due** feature.
-- [docs/adr/](docs/adr/README.md): the decision log — why the system has its shape; an ADR records a decision that is hard to reverse, surprising to a new reader, and a real trade-off.
+- [docs/adr/](docs/adr/README.md): the decision log. An ADR records a decision that is hard to reverse, surprising to a new reader, and a real trade-off.
 - [SECURITY.md](SECURITY.md): how to report a vulnerability.
 
 ## Contribute

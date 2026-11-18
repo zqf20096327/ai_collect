@@ -23,7 +23,7 @@ codemem is persistent coding memory across sessions, machines, and teammates for
 - **Automatic injection for OpenCode 1 and 2** — the plugin injects context into every prompt, no manual steps; the OpenCode 2 integration is beta
 - **Claude Code plugin support** — install from the codemem marketplace source
 - **Multi-agent** — OpenCode, Claude Code, Codex, and pi share one project-scoped store
-- **Pi coding agent** — session capture, automatic recall, and 15 native memory tools including `memory_session_search`; no MCP required
+- **Pi coding agent** — session capture, automatic recall, and 15 native memory tools including `memory_session_search`, which the codemem MCP server also exposes; no MCP required for Pi
 - **Built-in viewer** — browse memories, sessions, and observer output in a local web UI
 - **Remote MCP access** — advanced single-user self-hosting can expose an OAuth-protected Streamable HTTP MCP endpoint to configured remote clients; keep the localhost viewer private ([guide](docs/remote-mcp-oauth.md))
 
@@ -278,7 +278,7 @@ codemem memory stats
 codemem diagnostics capture status
 ```
 
-The extension captures Pi activity, recalls into the latest user message of the request copy, attaches context after a successful built-in `read`, and registers 15 native `memory_*` tools by default, including `memory_session_search` over stored Pi conversation text, scoped to the current project unless explicitly overridden. MCP is not required. Observer setup can fill unset settings from Pi API-key providers only. Pi OAuth-only credentials cannot be auto-derived for the observer; configure an observer connection separately ([observer auth](docs/user-guide.md#observer-auth-configuration)).
+The extension captures Pi activity, recalls into the latest user message of the request copy, attaches context after a successful built-in `read`, and registers 15 native `memory_*` tools by default, including `memory_session_search` over stored Pi conversation text, scoped to the current project unless explicitly overridden. MCP is not required. The codemem MCP server also registers `memory_session_search` over the same stored user/assistant text for MCP-connected clients. Observer setup can fill unset settings from Pi API-key providers only. Pi OAuth-only credentials cannot be auto-derived for the observer; configure an observer connection separately ([observer auth](docs/user-guide.md#observer-auth-configuration)).
 
 Pre-install Pi session history is not imported automatically. Backfill it with
 `codemem session import`, then search stored user/assistant text with
@@ -476,6 +476,8 @@ This updates your OpenCode config to install the plugin and register the MCP ser
 
 Pi registers the same memory tools natively by default and does not need MCP. See [Pi extension](docs/plugin-reference.md#pi-extension).
 
+By default OpenCode starts one `codemem mcp` process for each project directory. OpenCode 2.2.6 and later can share one process across projects (`pool: true`) when the server runs as `codemem mcp --caller-context required` and every project loads the codemem plugin, which tells the server which project each call came from. This is opt-in: run `codemem setup --opencode-only --opencode-mcp pooled` to write the shared entry, and the same command with `--opencode-mcp stdio` (the default) to go back. See [Shared MCP server](docs/plugin-reference.md#shared-mcp-server-on-opencode-2-opt-in) for the entry and its limits.
+
 The standalone `codemem-mcp-ts` binary runs the same stdio server used by `codemem mcp`. Viewer autostart is on by default for both invocation paths; set `CODEMEM_VIEWER=0` or `CODEMEM_VIEWER_AUTO=0` to disable. MCP autostart and the `serve start`/`stop`/`restart` lifecycle identify a running viewer through `GET /api/health` (service discriminator `codemem-viewer`), with one bounded `GET /api/stats` compatibility probe when an older viewer returns `404`.
 
 For local HTTP transport testing, run `codemem mcp http`. It listens on `127.0.0.1:38889` by default and exposes Streamable HTTP at `POST /mcp`; use `--host`, `--port`, and `--db-path` to override those values. OAuth discovery metadata and Dynamic Client Registration are available at `/.well-known/oauth-authorization-server`, `/.well-known/oauth-protected-resource/mcp`, and `/register`; set `--public-url` or `CODEMEM_MCP_HTTP_PUBLIC_URL` to the externally reachable `/mcp` URL so advertised endpoints use the public origin. `/authorize` redirects through a configured upstream OIDC provider before issuing public-client authorization codes, `/token` supports PKCE S256 exchange, and `/oauth/revoke` revokes access tokens. When a public URL or OIDC configuration is present, `POST /mcp` requires a valid bearer token; local-only HTTP mode remains unauthenticated for development and still applies loopback Host/Origin checks. Non-loopback binds are rejected unless you explicitly pass `--unsafe-public` or set `CODEMEM_MCP_HTTP_UNSAFE_PUBLIC=1`.
@@ -506,6 +508,7 @@ Common overrides:
 | `CODEMEM_INJECT_TOKEN_BUDGET` | Positive approximate token cap for OpenCode's complete injected context (default `800`); unset, zero, negative, and invalid values use the default |
 | `CODEMEM_VIEWER_HOST`, `CODEMEM_VIEWER_PORT` | Host/port the plugin-managed viewer should start, probe, and restart |
 | `CODEMEM_VIEWER_AUTO` | `0` to disable auto-starting the viewer |
+| `CODEMEM_MCP_CALLER_CONTEXT` | `required` makes `codemem mcp` take each call's directory from an argument the host plugin adds, for a server shared by several project directories; calls without it fail. Default `process`. Same as `codemem mcp --caller-context`; see [plugin reference](docs/plugin-reference.md#shared-mcp-server-on-opencode-2-opt-in) |
 | `CODEMEM_OPENCODE_NATIVE_TOOLS` | Experimental: `1` to have the OpenCode plugin register the codemem memory tools itself instead of relying on the MCP server (skipped while a `codemem` MCP server is configured); see [plugin reference](docs/plugin-reference.md#built-in-memory-tools-experimental-opt-in) |
 | `CODEMEM_MCP_HTTP_HOST`, `CODEMEM_MCP_HTTP_PORT` | Host/port for `codemem mcp http` |
 | `CODEMEM_MCP_HTTP_PUBLIC_URL` | Public `/mcp` URL advertised in MCP OAuth metadata |

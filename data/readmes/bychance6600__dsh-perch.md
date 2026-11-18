@@ -5,7 +5,7 @@
 ![deps](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![node](https://img.shields.io/badge/node-%E2%89%A522-339933)
 ![dsh](https://img.shields.io/badge/DSH-plugin-6a5acd)
-![tests](https://img.shields.io/badge/tests-1542%20passing-brightgreen)
+![tests](https://img.shields.io/badge/tests-1579%20passing-brightgreen)
 
 **她住的地方，不是一个助手。**
 
@@ -22,12 +22,10 @@
 >
 > 这一版为什么长成这样——前提、记忆的两层、成长与渠道的取舍、明确不做的东西——见 [`docs/从哪来.md`](docs/从哪来.md)。
 
-## 和早期那几个项目是什么关系
+## 这一版的来路
 
-- **这一版是独立实现，不是谁的续作**：`0.1.0` 是一次重建，代码按这套前提重写，版本号也没有继承关系。
-- **早期骨架参考过几个以 MIT 发布的同人项目**：若其中仍有沿用的片段，版权归原作者、许可仍是 MIT，署名见 [`NOTICE.md`](NOTICE.md)。
-- **不宣称「下游 / 衍生 / 续作」**：谁都可以拿它当参考；但入口只留两处、材料只走「看」、没有私信 / 出门 / 导入 / 通知 / 自更新——这些取舍是这一版自己定的。
-- 旧版本（`v0.1.0`–`v0.1.11`）的 README 里写过「前身是 dsh-fish-river」，`0.2.0` 起删掉了这个说法。旧 tag 仍可查，那是历史快照，不代表现在的定位。
+- **它是自己的一套**：前提（她只能长）、记忆的两层（账是证据、记忆是重放）、入口只留两处、材料只走「看」——这些取舍都是这一版定下的。
+- **早期参考过若干以 MIT 发布的同人项目**：若仍有沿用片段，版权归原作者、许可仍是 MIT，署名见 [`NOTICE.md`](NOTICE.md)。
 
 ## 它不是什么
 
@@ -259,6 +257,7 @@ zip 不用解压；脚本用系统自带解压。二进制不进 git。
 ```
 events.jsonl          唯一可信源，只追加
 state.json            派生品，随时可由 rebuild() 重算
+cache/                设置页「状态」那几个体检值的缓存，可以删；有上限，14 天没用会自己删掉
 config.json           环境参数（不含人格）
 owner.json            主人 id、各渠道身份 id、登录 cookie，0600
 home.json             这间屋子的账：wsId / sessionId / preset / carry / wokeFor
@@ -343,7 +342,7 @@ node --test --test-isolation=none  # 沙箱 / 受限环境（跨文件会有假�
 node --test test/<file>.test.mjs   # 单文件
 ```
 
-当前基线（2026-11-16，macOS，Node 22）：正常环境 `node --test` **1544 条 / 1542 过 / 0 红 / 2 skip**；受限环境 `node --test --test-isolation=none` **1544 条 / 1538 过 / 4 红 / 2 skip**。4 条是已知环境项（跨文件隔离互相干扰；`withFileLock` 偶发），单跑对应文件会绿；2 skip 是路由缓存用例（要 `--experimental-test-module-mocks`，CI 单开 job）与身体解压用例（只在 Windows 跑）。**不许新增红。**
+当前基线（2026-11-17，macOS，Node 26）：正常环境 `node --test` **1580 条 / 1578 过 / 0 红 / 2 skip**；受限环境 `node --test --test-isolation=none` **1580 条 / 1574 过 / 4 红 / 2 skip**。4 条是已知环境项（跨文件隔离互相干扰；`withFileLock` 偶发），单跑对应文件会绿；2 skip 是路由缓存用例（要 `--experimental-test-module-mocks`，CI 单开 job）与身体解压用例（只在 Windows 跑）。**不许新增红。**
 
 零依赖是铁律：`dependencies` / `peerDependencies` / `devDependencies` 三个永远 `{}`，测试只用 `node:test`。
 

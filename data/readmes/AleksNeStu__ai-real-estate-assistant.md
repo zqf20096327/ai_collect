@@ -377,6 +377,11 @@ cd ai-real-estate-assistant
 
 # Docker, demo mode, no API keys required
 cp deploy/compose/.env.example deploy/compose/.env
+# The backend runs as uid 999 and writes its state into these directories.
+# On Linux Docker creates them as root, so they need write access for that
+# user; on macOS and Windows Docker's own permissions already allow it.
+mkdir -p deploy/compose/{chroma_db,data/audit,.preferences,.notifications,.sessions}
+chmod -R a+rwX deploy/compose/{chroma_db,data/audit,.preferences,.notifications,.sessions}
 docker compose -f deploy/compose/docker-compose.yml up --build
 # Frontend: http://localhost:3082 · API: http://localhost:8082/docs
 ```
@@ -504,8 +509,9 @@ for teams that want the managed pieces instead of running the stack.
 
 Backend: pytest with xdist and a coverage gate that can fail — 84 % for the
 unit suite, 50 % for the integration suite, and the coverage of the files a
-change touches on top of that. Frontend: Jest, with a 50 % gate over the
-library, i18n, context and hook layers. Security: Gitleaks, Semgrep, Bandit,
+change touches on top of that. Frontend: Jest, with a coverage gate over the
+whole frontend — the library layers, the components and the pages — and a
+separate floor for each of them. Security: Gitleaks, Semgrep, Bandit,
 Trivy, CodeQL. Full details in the
 [testing guide](docs/testing/TESTING_GUIDE.md).
 

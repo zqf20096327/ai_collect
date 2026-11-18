@@ -289,7 +289,7 @@ For an agent that speaks MCP over HTTP (a headless process, the Agent SDK, your 
 clawdcursor agent --compact     # HTTP MCP on 127.0.0.1:3847/mcp
 ```
 
-Every request needs the bearer token in `~/.clawdcursor/token`. The server binds to `127.0.0.1` only; to reach it from another machine, tunnel the port over SSH (`ssh -L 3847:127.0.0.1:3847 user@host`).
+Every request needs the bearer token in `~/.clawdcursor/token`. The server binds to `127.0.0.1` only; to reach it from another machine, tunnel the port over SSH (`ssh -L 3847:127.0.0.1:3847 user@host`). Use the daemon's own port on your side too: the server answers only requests addressed to `127.0.0.1:<its port>` or `localhost:<its port>`, so a tunnel from another local port gets 403.
 
 ```bash
 # List the tools. The Accept header is required by MCP's Streamable HTTP transport.
@@ -421,7 +421,7 @@ clawdcursor task "<task>"   Developer add-on: a test agent with clawdcursor as i
 clawdcursor logs            Developer add-on: the logs, readably (-f, --session, --tool, --errors, --since, --run)
 ```
 
-`--no-banner` (or `CLAWD_NO_BANNER=1`) on `mcp` and `agent` turns the on-screen pill and outline off.
+`--no-banner` (or `CLAWD_NO_BANNER=1`) on `mcp` and `agent` turns the on-screen pill and outline off. An app that hosts clawdcursor can draw the pill in its own window: [docs/pill-host.md](docs/pill-host.md).
 
 ### Testing clawdcursor on its own
 

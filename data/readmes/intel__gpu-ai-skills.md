@@ -22,6 +22,12 @@ A collection of [Agent Skills](https://www.anthropic.com/engineering/equipping-a
 
 Format follows the [Agent Skills specification](https://agentskills.io/specification).
 
+**How it works.** [Install the skills](#installing), then ask your AI assistant in plain English. The five steps below match the tables in [Skills](#skills).
+
+<p align="center">
+  <img src="assets/readme/how-it-works.svg" width="560" alt="How to use these skills: bring an Intel dGPU instance, Ubuntu and an AI assistant, then ask in five steps: get ready, check the fit, run, measure, find slowdowns.">
+</p>
+
 ## Skills
 
 
@@ -68,7 +74,7 @@ Format follows the [Agent Skills specification](https://agentskills.io/specifica
 | `torch-xpu-profile` | Profile an HF model with `torch.profiler` + Kineto. Export Chrome trace; find hot ops + idle gaps. | "Why is my Qwen2.5 generate() slow on Intel?" |
 | `vllm-xpu-profile` | Profile a running vLLM server via `/start_profile` and `/stop_profile`, or offline `vllm bench --profile`. | "Capture a vLLM-XPU profile around a real-traffic window." |
 | `xpu-profile-unitrace` | SYCL / Level Zero kernel-level profiling with `unitrace` (PTI-GPU; built from source). Per-kernel timing, oneCCL events, HW counters. | "Show me the actual SYCL kernel names taking the time." |
-| `enable-xpu-monitoring` | Deploy Prometheus + Grafana + XPU Manager monitoring with Docker Compose from [intel/xe-full-stack-monitoring](https://github.com/intel/xe-full-stack-monitoring). GPU metrics, vLLM inference metrics (ports 8000–8008 by default), system resources. | "Set up monitoring for my Intel GPU host so I can see utilization and vLLM latency." |
+| `enable-full-system-monitoring` | Deploy Prometheus + Grafana + XPU Manager monitoring with Docker Compose from [intel/full-system-monitoring](https://github.com/intel/full-system-monitoring). GPU metrics, vLLM inference metrics (ports 8000–8008 by default), system resources. | "Set up monitoring for my Intel GPU host so I can see utilization and vLLM latency." |
 
 ### Migrate — assess AI projects and port PyTorch code
 

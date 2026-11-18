@@ -9,7 +9,7 @@
   <b>Your coding agent isn't getting dumber. Your context is just full of trash.</b><br>
   When chat sessions fill up with massive lockfiles and endless build logs, your AI loses focus.<br>
   TokenSafe strips the noise with Tree-sitter AST slicing so your agent stays razor-sharp, changes only the lines you asked for, and never leaks your secrets.<br>
-  Works with <b>Cursor, Claude Code, Codex, Windsurf, Google Antigravity, Gemini CLI, and ChatGPT</b>.
+  Works with <b>Cursor, Claude Code, Codex, Windsurf, Google Antigravity, Kimi Code, and ChatGPT</b>.
 </p>
 
 <p align="center">
@@ -80,8 +80,8 @@ The installer detects which agents live on your machine, registers the TokenSafe
 | **Cline / Roo Code** | MCP registration (VS Code) |
 | **GitHub Copilot** | MCP registration |
 | **Z.ai Code** | MCP registration |
+| **Kimi Code** | Native Plugin (`kimi.plugin.json`) + MCP + `PreToolUse` / `SessionStart` hooks |
 | **ChatGPT** | Cloud connector, nothing to install |
-| **Gemini CLI** | MCP registration |
 
 Claude Desktop / Cursor MCP config:
 

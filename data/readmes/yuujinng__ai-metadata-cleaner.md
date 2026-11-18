@@ -87,7 +87,7 @@ python doc_meta_cleaner.py
 **清除属性，四步：**
 
 1. **把文件或整个文件夹直接拖进窗口**（文件夹会递归找出所有支持的文档），或点**添加文件** / **添加文件夹**；
-2. 右侧列出所有属性，疑似 AI 痕迹的行标红：**作者、生成程序、时间统计等身份类字段自动勾选**，标题/关键词等正文类字段只标红提示（需要时手动勾选）；点第一列 ☑/☐ 或双击行即可勾选/取消，勾选会应用到列表里的所有文件；
+2. 右侧显示所选文件的属性值和疑似标记。**自动勾选按每个文件分别判断**：命中的作者、生成程序、时间统计等字段会自动勾选，标题和关键词等只标红。手动点击 ☑/☐ 或双击行会对整批文件设置该字段的勾选状态；
 3. 选择保存方式：**另存副本**（原名_已清理，推荐）或**覆盖原文件**；
 4. 点**开始清理**，下方日志逐个文件报告清除了哪些字段。
 
@@ -95,7 +95,7 @@ python doc_meta_cleaner.py
 
 - 可勾选"应用到列表中的所有文件"，一次给整批文档统一改作者等；
 - 日期字段支持 `2026-10-20 10:00:05` 之类的写法，按本地时区理解、保存时自动转成文档标准 UTC 格式（Word/PDF 里显示与你输入的一致）；修订次数、总编辑时间需要整数；
-- 输入框**留空保存 = 清除该字段**；
+- 输入框**留空保存 = 清除该字段**；只有勾选「应用到列表中的所有文件」才会对整批清除；
 - 同一个字段的"修改"与"清除"勾选互斥，后设置的生效；
 - 该文件没有的字段（如类别、PDF 主题）保存后会自动新建；自定义属性只能改已有的值，不能新建；
 - 点**撤销全部修改**可取消尚未处理的修改项；
@@ -111,7 +111,7 @@ python doc_meta_cleaner.py
 python doc_meta_cli.py scan 文档.docx
 python doc_meta_cli.py scan D:\资料\
 
-# 清理：默认只清疑似 AI 痕迹，另存副本（原名_已清理）
+# 清理：默认只清界面会自动勾选的疑似属性，另存副本（原名_已清理）
 python doc_meta_cli.py clean D:\资料\
 python doc_meta_cli.py clean 文档.pdf --mode overwrite                # 覆盖原文件
 python doc_meta_cli.py clean 文档.docx --fields all                   # 清除全部属性
@@ -140,7 +140,7 @@ python doc_meta_cli.py --list-fields    # 查看全部可操作的字段
    git clone --depth 1 https://github.com/yuujinng/ai-metadata-cleaner.git /tmp/ai-metadata-cleaner
 2. 对每个生成的 .docx/.xlsx/.pptx/.pdf 文件执行（覆盖模式，直接在原文件上清理）：
    python /tmp/ai-metadata-cleaner/doc_meta_cli.py clean "文档路径" --mode overwrite
-3. 清理后逐个复查，确认没有"疑似 AI 痕迹"：
+3. 清理后逐个复查。标题、关键词等只提示的字段可能仍被标记；报告剩余提示：
    python /tmp/ai-metadata-cleaner/doc_meta_cli.py scan "文档路径"
 4. 两条命令的退出码都是 0 才算完成；非 0 时把错误信息如实告诉我，不要假装成功。
 5. 只清理文档属性（作者/程序/时间统计等），不要改动正文内容。
@@ -167,7 +167,7 @@ python doc_meta_cli.py scan 报告.docx --json
 }
 ```
 
-`clean` / `set` 的 JSON 里每个文件返回 `ok`、`changed`、`dest`（输出路径）、`removed`（清除的字段）、`edited`（修改的字段与新值）、`error`（单文件失败原因）。
+`clean` / `set` 的 JSON 里每个文件返回 `ok`、`changed`、`dest`（输出路径，无副本时为 `null`）、`removed`（清除的字段）、`edited`（修改的字段与新值）、`skipped`（未执行的字段及原因）和 `error`（单文件失败原因）。无需清理时 `ok` 为 `true`、`changed` 为 `false`；请求的变更未执行时为失败。
 
 | 退出码 | 含义 | agent 应对 |
 | :---: | --- | --- |

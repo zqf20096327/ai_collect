@@ -370,7 +370,8 @@ editing stage the change for you to commit, and the clone dialog can bring
 every submodule down with the repo. A changed submodule is tagged in Changes
 with what changed; selecting it lists the commits the submodule moved across,
 its unstaged row lists the uncommitted files inside, and **Open submodule** is
-one click away.
+one click away. A conflicted submodule resolves in the conflict editor by
+picking the commit to keep.
 
 ### Syncing and conflicts
 
@@ -558,7 +559,9 @@ in one click.
   pending-review count, then **Submit** with a verdict (Comment / Approve /
   Request changes — all three always shown, one that isn't wired up yet
   disabled and saying what it's waiting on), inserting a
-  **provider-correct suggestion** pre-filled with the selected code.
+  **provider-correct suggestion** pre-filled with the selected code. If a
+  submit fails after part of the review posted (or may have), the next
+  **Submit review** from the same dialog asks before sending it again.
 - **An unfinished GitHub review** (one you started on github.com or with
   another tool and never submitted) says so up front: a notice at the top of
   the pull request offers **Finish on GitHub**, which opens the page where the
@@ -800,7 +803,7 @@ one, usually above the archived cards directly over it too, and a drag
 dropped beside archived cards lands above them. A saved view that sorts says
 so instead, since its columns are drawn in the sort's order rather than the
 board's.
-Creating an issue puts it straight on a board too: the **New issue** dialog
+Creating an issue puts it straight on a board too: the **Create issue** dialog
 carries a **Projects** picker of its own. The board's **saved views** come
 along as lenses: pick one and GitHub filters the read for you, its sort
 orders the cards in each column (by **Title**, or by a text, number, date,
@@ -1601,11 +1604,4 @@ your daily workflow, you can support continued development:
 
 ## Privacy
 
-GitDesktop never collects your code, file contents, or repository details.
-Optional anonymous usage analytics can be turned off in Settings → General,
-and masked session replay stays off until you opt in. Full details:
-[PRIVACY.md](PRIVACY.md).
-
-## License
-
-Licensed under the [Apache License 2.0](LICENSE).
+GitDesktop never collects your code, file contents, or repository details

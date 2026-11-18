@@ -10,7 +10,7 @@ Repair the plates once. Generate alpha mattes for multiple objects – the tool 
 
 `SAM3.1` · `CoTracker3` · `MatAnyone2` · `VideoMaMa` · `BiRefNet / ViTMatte` · `Sapiens2` · `LTX 2.5 Alpha Gen` · `ComfyUI` · `Nuke / After Effects` · `Agent API + CLI` · `100% local, no cloud, no LLM required`
 
-[![Download for Windows](https://img.shields.io/badge/%E2%AC%87%20Download%20for%20Windows-installer-e8a33d?style=for-the-badge)](https://github.com/fishfinger44/MatteDesk/releases/download/v0.60/MatteDesk-0.60-setup.exe)
+[![Download for Windows](https://img.shields.io/badge/%E2%AC%87%20Download%20for%20Windows-installer-e8a33d?style=for-the-badge)](https://github.com/fishfinger44/MatteDesk/releases/download/v0.61/MatteDesk-0.61-setup.exe)
 
 Windows 10 / 11 · NVIDIA GPU (CUDA): **12 GB VRAM minimum, 24 GB recommended** (stage 7 LTX-2.5 needs 24 GB + 64 GB RAM) · the button downloads the installer – all versions: [Releases](https://github.com/fishfinger44/MatteDesk/releases/latest) – the green **Code → Download ZIP** button gives the source code only (see [INSTALL_WINDOWS.txt](INSTALL_WINDOWS.txt))
 
@@ -19,6 +19,20 @@ Windows 10 / 11 · NVIDIA GPU (CUDA): **12 GB VRAM minimum, 24 GB recommended** 
 Version: file [`VERSION`](VERSION) (also shown in the top-left corner of the UI) · history: [CHANGELOG.md](CHANGELOG.md)
 
 </div>
+
+### 🆕 New in 0.60 – Cleanup (beta): remove or replace objects in video
+
+[![MatteDesk 0.60 – Cleanup (beta) demo on YouTube](https://img.youtube.com/vi/iLeP1fBq9x8/maxresdefault.jpg)](https://youtu.be/iLeP1fBq9x8)
+
+The mask you build in Cut-out now drives video inpainting (80 s demo above):
+
+- **Pick the object** in Cut-out – SAM 3.1 gives a mask on every frame
+- **Remove or replace it** in Cleanup – describe what should be there; the assistant (✨ Improve description) suggests a better prompt
+- **Video engines:** MiniMax-H3 (whole clip, stable in time) · Wan 2.2 Fun VACE (720p, fits 12 GB cards) · LTX-2.5 (IC-LoRA in- / outpainting)
+- **Look anchors:** Qwen-Image-2.1 sets the new look, the video model carries it through the clip
+- **Only the masked area changes** – the rest stays the original plate; SeedVR2 can upscale the fill to plate resolution
+
+### Demo – cutting out (2 min)
 
 [![MatteDesk – 2-min demo on YouTube](https://img.youtube.com/vi/GX3guDhhblk/maxresdefault.jpg)](https://youtu.be/GX3guDhhblk)
 

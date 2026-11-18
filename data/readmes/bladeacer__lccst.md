@@ -337,37 +337,37 @@ variant and not the other.
 > Skill-guided implementation used **+10%** more FCT and **-5%** more ART
 > compared to plain implementation across the workspace suite.
 
-#### opencode/opencode/mimo-v2.6-flash-free: skill version v4.7.0
+#### opencode/opencode/hy4-flash-free: skill version v4.8.0
 
 | Provider | Harness | Harness Version | Model | Skill Layer | Context Tools (MCP) | Subproject | Plain Score | Skill-Guided | Test Status | FCT (Plain) | FCT (Guided) | ART (Plain) | ART (Guided) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| `opencode` | **opencode** | `v2.2.1` | `mimo-v2.6-flash-free` | `v4.7.0` | `lccst-telemetry` | **python-http-server** | 66/100 | **74/100** | PASSED | 1,593 | 1,792 | 64,999 | 143,471 |
-| `opencode` | **opencode** | `v2.2.1` | `mimo-v2.6-flash-free` | `v4.7.0` | `lccst-telemetry` | **react-timer** | 74/100 | **100/100** | PASSED | 456 | 997 | 105,102 | 375,995 |
-| `opencode` | **opencode** | `v2.2.1` | `mimo-v2.6-flash-free` | `v4.7.0` | `lccst-telemetry` | **go-login-crud** | 100/100 | **100/100** | PASSED | 2,448 | 3,062 | 248,033 | 1,158,202 |
-| **Summary** | | | | | **Workspace Totals / Avg** | **80/100** | **91/100** | **3/3 Passed** | **4,497** | **5,851** | **418,134** | **1,677,668** |
+| `opencode` | **opencode** | `v2.3.0` | `hy4-flash-free` | `v4.8.0` | `lccst-telemetry` | **python-http-server** | 83/100 | **83/100** | PASSED | 725 | 1,015 | 186,235 | 185,903 |
+| `opencode` | **opencode** | `v2.3.0` | `hy4-flash-free` | `v4.8.0` | `lccst-telemetry` | **react-timer** | 74/100 | **100/100** | PASSED | 555 | 757 | 401,659 | 326,963 |
+| `opencode` | **opencode** | `v2.3.0` | `hy4-flash-free` | `v4.8.0` | `lccst-telemetry` | **go-login-crud** | 100/100 | **100/100** | PASSED | 2,322 | 2,159 | 567,125 | 957,491 |
+| **Summary** | | | | | **Workspace Totals / Avg** | **86/100** | **94/100** | **3/3 Passed** | **3,602** | **3,931** | **1,155,019** | **1,470,357** |
 
 > **Highest ART subproject:** `go-login-crud` consumed the most guided runtime
 > tokens.
 > **Highest FCT subproject:** `go-login-crud` consumed the most guided FCT
 > tokens.
-> Skill-guided implementation used **+30%** more FCT and **+301%** more ART
+> Skill-guided implementation used **+9%** more FCT and **+27%** more ART
 > compared to plain implementation across the workspace suite.
 
 
 ### Benchmark Summary
 
-| Metric | `opencode-opencode-glm-5.3-flash-free` | `opencode-opencode-deepseek-v4.1-flash-free` | `opencode-opencode-mimo-v2.6-flash-free` |
+| Metric | `opencode-opencode-glm-5.3-flash-free` | `opencode-opencode-deepseek-v4.1-flash-free` | `opencode-opencode-hy4-flash-free` |
 | --- | --- | --- | --- |
 | Harness | opencode | opencode | opencode |
-| Harness version | v2.2.7 | v2.2.1 | v2.2.1 |
-| Plain score | 83/100 | 75/100 | 80/100 |
-| Guided score | 94/100 | 93/100 | 91/100 |
-| Plain FCT | 4,123 | 4,229 | 4,497 |
-| Guided FCT | 4,499 | 4,663 | 5,851 |
-| FCT overhead | +9% | +10% | +30% |
-| Plain ART | 852,202 | 1,221,313 | 418,134 |
-| Guided ART | 548,822 | 1,154,830 | 1,677,668 |
-| ART overhead | -36% | -5% | +301% |
+| Harness version | v2.2.7 | v2.2.1 | v2.3.0 |
+| Plain score | 83/100 | 75/100 | 86/100 |
+| Guided score | 94/100 | 93/100 | 94/100 |
+| Plain FCT | 4,123 | 4,229 | 3,602 |
+| Guided FCT | 4,499 | 4,663 | 3,931 |
+| FCT overhead | +9% | +10% | +9% |
+| Plain ART | 852,202 | 1,221,313 | 1,155,019 |
+| Guided ART | 548,822 | 1,154,830 | 1,470,357 |
+| ART overhead | -36% | -5% | +27% |
 | Tests passed | 3/3 | 3/3 | 3/3 |
 
 #### Token Efficiency
@@ -379,8 +379,8 @@ variant and not the other.
 * **`opencode-opencode-deepseek-v4.1-flash-free`** scored 93/100 (weakest:
   python-http-server at 83/100) with +10% FCT and -5% ART overhead.
 
-* **`opencode-opencode-mimo-v2.6-flash-free`** scored 91/100 (weakest:
-  python-http-server at 74/100) with +30% FCT and +301% ART overhead.
+* **`opencode-opencode-hy4-flash-free`** scored 94/100 (weakest:
+  python-http-server at 83/100) with +9% FCT and +27% ART overhead.
 
 Across all runners, `go-login-crud` remained the most resource-intensive
 subproject.
@@ -397,7 +397,7 @@ guided ART.
 | ---: | :--- | :---: | :---: | :---: | :---: | :--- |
 | 1 | `opencode-opencode-glm-5.3-flash-free` | 83/100 | 94/100 | +9% | -36% | Best overall |
 | 2 | `opencode-opencode-deepseek-v4.1-flash-free` | 75/100 | 93/100 | +10% | -5% | Strong contender |
-| 3 | `opencode-opencode-mimo-v2.6-flash-free` | 80/100 | 91/100 | +30% | +301% | Avoid using |
+| 3 | `opencode-opencode-hy4-flash-free` | 86/100 | 94/100 | +9% | +27% | Strong contender |
 
 See [`model-ranking.md`](model-ranking.md) for the full ranking of all benchmark runs.
 

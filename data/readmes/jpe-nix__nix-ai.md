@@ -1,0 +1,179 @@
+# nix-ai
+
+[![CI](https://github.com/dryvist/nix-ai/actions/workflows/ci-gate.yml/badge.svg)](https://github.com/dryvist/nix-ai/actions/workflows/ci-gate.yml)
+[![Release](https://img.shields.io/github/v/release/dryvist/nix-ai?sort=semver)](https://github.com/dryvist/nix-ai/releases)
+[![License](https://img.shields.io/github/license/dryvist/nix-ai)](LICENSE)
+[![Built with Nix](https://img.shields.io/badge/built%20with-Nix-5277C3?logo=nixos&logoColor=white)](https://nixos.org/)
+
+## Your AI coding toolkit, declared once. Reproduced everywhere
+
+Ever spent hours configuring Claude Code plugins, Gemini settings, and MCP servers
+— only to lose it all when you switch machines? **nix-ai** captures your entire AI
+setup as code using [Nix](https://nixos.org/). One command rebuilds everything,
+identically, every time.
+
+---
+
+## What it manages
+
+| Tool | What you get |
+| ---- | ------------ |
+| **Claude Code** | [Plugin ecosystem](modules/claude/plugins/README.md), hooks, agents, commands, rules |
+| **Gemini / Antigravity** | CLI + IDE settings, custom commands, permission rules |
+| **GitHub Copilot** | Configuration, permissions |
+| **OpenAI Codex** | Settings, rules, approval policy |
+| **Qwen Code & Cecli** | Settings for the Alibaba and Aider-fork CLIs |
+| **MCP Servers** | One [catalog](modules/mcp/README.md) (GitHub, Terraform, Context7, filesystem, memory, …) fanned out to every agent |
+| **AI Dev Tools** | cclint, rulesync, and more |
+| **MLX** *(macOS)* | Local Apple Silicon inference via always-loaded mlx_lm.server residents, with launchd integration |
+
+Claude Code, Codex and Antigravity CLI are always configured. The other agent CLIs
+(Copilot, OpenCode, Qwen Code, Cecli, claude-zai, claude-flow) are
+installed only when `programs.ai.untrustedClis.enable = true`. oh-my-openagent (the
+OpenCode plugin entry and the `omo-senpi` wrapper) is off by default and needs
+`programs.ai.ohMyOpenagent.disabled = false`; `omo-senpi` also needs the untrusted gate.
+
+### GSD Core skills
+
+The `gsd-core-skills` package (`packages.<system>.gsd-core-skills`) builds the
+[GSD Core](https://github.com/open-gsd/gsd-core) (`@opengsd/gsd-core`, MIT)
+skills, commands, and agents that upstream's installer generates per harness.
+It is pinned to npm version `1.19.0` (see `lib/versions.nix`) and produces two
+trees: `claude/` (a Claude Code config-dir tree) and `codex/` (a Codex home
+tree plus the global `~/.agents/skills` root Codex discovers). A later change
+enables it for Claude Code and Codex through the agent-skills deployment; it is
+not wired into any home configuration yet.
+
+## Prerequisites
+
+- [Nix](https://nixos.org/) with flakes (Determinate Nix recommended)
+- [home-manager](https://github.com/nix-community/home-manager)
+- A supported platform: `aarch64-darwin` or `x86_64-linux`
+
+## Installation
+
+Add the input to your flake:
+
+```nix
+{
+  inputs.nix-ai = {
+    url = "github:dryvist/nix-ai?ref=v<major>";
+    inputs.nixpkgs.follows = "nixpkgs";
+    inputs.home-manager.follows = "home-manager";
+  };
+}
+```
+
+Then add the module to your home-manager config:
+
+```nix
+sharedModules = [ nix-ai.homeManagerModules.default ];
+```
+
+That's it. The module evaluates with **zero extra configuration** — every AI tool,
+plugin, and permission rule comes preconfigured. (Local MLX inference stays idle
+until you point it at a model; see [Usage](#usage).)
+
+## How it works
+
+nix-ai exports [home-manager](https://github.com/nix-community/home-manager) modules
+that merge into your existing configuration:
+
+| Export | What it includes |
+| ------ | --------------- |
+| `homeManagerModules.default` | The full AI stack — every tool below |
+| `homeManagerModules.claude` | Just Claude Code |
+| `homeManagerModules.codex` | Just OpenAI Codex |
+| `homeManagerModules.mcp` | Just the MCP server catalog |
+| `homeManagerModules.maestro` | Just Maestro orchestration |
+| *(also: `agent-skills`, `antigravity-cli`, `antigravity-ide`, `cecli`, `qwen-code`)* | One module per tool |
+| `lib.ci.claudeSettingsJson` | Pure settings JSON for CI validation (no derivations) |
+| `lib.aiStackModels` | Role-name → model-ID registry, for foreign (non-module) consumers |
+
+### Self-contained design
+
+The module injects its own dependencies via `_module.args`. Your consuming flake
+only needs two `follows` lines:
+
+```nix
+inputs.nixpkgs.follows = "nixpkgs";
+inputs.home-manager.follows = "home-manager";
+```
+
+No AI-specific inputs to wire up, no extra configuration. It just works.
+
+## Usage
+
+Everything is enabled with sensible defaults. Common toggles on the default module:
+
+| Option | Type | Default | Description |
+| ------ | ---- | ------- | ----------- |
+| `programs.claude.model` | str or null | `null` | Override the default model (e.g. `"opus"`, `"sonnet"`) |
+| `programs.claude.outputStyle` | str or null | `null` | Output style (e.g. `"concise"`, `"explanatory"`); null = upstream default |
+| `programs.claude.effortLevel` | enum or null | `null` | Reasoning effort (`"low"` / `"medium"` / `"high"`); null = upstream default |
+| `programs.claude.settings.sandbox.enabled` | bool | `false` | Filesystem/network sandbox isolation |
+| `programs.claude.trustedProjectDirs` | list of str | `[]` | Directories auto-trusted for CLAUDE.md imports |
+| `services.aiStack.defaultLocalModelId` | str | `""` | Local MLX model ID; set to enable on-device inference |
+
+Claude's full option schema comes from [nix-claude-code](https://github.com/dryvist/nix-claude-code);
+the MCP catalog is documented in [`modules/mcp/README.md`](modules/mcp/README.md).
+
+Copilot CLI preferences belong in `programs.copilot-cli.settings` and render to
+`~/.copilot/settings.json`; declare changes through Home Manager. Move any
+former user preferences out of `config.json`, which Copilot CLI now reserves
+for internal state. Herdr's Copilot hooks are written separately to
+`~/.copilot/hooks/nix-ai.json`; Copilot CLI combines user hook files with hooks
+declared inline in `settings.json`. Keep secrets out of `settings`.
+
+### Orca desktop app
+
+`programs.orca.enable` (default `false`) installs [Orca](https://github.com/stablyai/orca), a desktop app that runs
+several coding agents side by side, on aarch64-darwin only. It installs the release that `modules/orca/package.nix`
+pins (v1.4.245), unchanged from its disk image, and puts the bundled `orca` CLI on `PATH`. Orca's telemetry setting is
+in its own Settings → Privacy. Orca holds no GitHub credential of its own: its GitHub features use the `gh` command's
+existing authentication, and this module configures none.
+
+### Orca server
+
+`packages.x86_64-linux.orca-server` packages the headless `orca serve` command from Orca's published server tarball.
+`nixosModules.orca-server` runs it as the `orca-server` systemd unit when `services.orca-server.enable` is `true`
+(default `false`). The unit listens on `services.orca-server.bind` (default `127.0.0.1`) at `services.orca-server.port`
+(default `6768`). Set `services.orca-server.openFirewall` to open that port in the firewall.
+
+## Testing and validation
+
+```bash
+nix flake check   # nixfmt, statix, deadnix, shellcheck, and full module evaluation
+nix fmt           # auto-fix formatting
+```
+
+## Repository structure
+
+```text
+modules/
+├── claude/         # Claude Code — plugins, hooks, agents, rules
+├── codex/          # OpenAI Codex
+├── antigravity-*/  # Gemini / Antigravity CLI + IDE
+├── cecli/          # Cecli (Aider fork)
+├── qwen-code/      # Alibaba Qwen Code
+├── mcp/            # MCP server catalog, fanned out to every agent
+├── mlx/            # MLX local inference (static mlx_lm residents, macOS)
+├── fabric/         # Fabric prompt patterns + CLI
+├── agent-skills/   # Cross-tool skill deployment
+├── token-meter.nix # splunk/token-meter usage dashboard + HTTPS gate
+└── common/         # Shared permission engine and formatters
+lib/                # Pure helpers (settings/registry generators, CI exports)
+docs/               # Architecture notes (docs/architecture) and ADRs (docs/adr)
+```
+
+## launchd/TCC
+
+Agents defined here declare their program and arguments as usual. The consuming host
+configuration renders every agent behind a distinctly named executable and checks the
+rendered plists, so Background Items never lists a shell or interpreter. The launched
+program, its arguments and its final process image are unchanged; MLX agents keep Apple's
+bash through `programs.mlx.appleInterpreter`.
+
+## License
+
+[MIT](LICENSE)

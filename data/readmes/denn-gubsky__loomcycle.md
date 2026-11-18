@@ -4,7 +4,7 @@
 
 <p align="center">
   <strong>An agent-system kernel you self-host.</strong><br/>
-  <em>~80 MB Go binary that owns the agent loop and ships with memory, documents, teams, a Decision tool, a Crypto tool whose keys the model never sees, no-trace runs, ephemeral git-source volumes, a visual canvas, bundled dev toolchain and headless Chromium. A deployment-shape snapshot that carries the whole deployment in one archive. Multi-replica HA on Postgres. Apache-2.0 — v1.139.2.</em>
+  <em>~80 MB Go binary that owns the agent loop and ships with memory, documents, teams, a Decision tool, a Crypto tool whose keys the model never sees, no-trace runs, ephemeral git-source volumes, a visual canvas, and an in-process Bashbox sandbox. A deployment-shape snapshot that carries the whole deployment in one archive. Multi-replica HA on Postgres. Apache-2.0 — v1.139.2.</em>
 </p>
 
 <p align="center">
@@ -22,17 +22,17 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.156) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.158) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
 ## What it is
 
-**An agent-system kernel you self-host.** loomcycle is one Go binary, ~80 MB. It owns the agent loop and ships with everything an agent needs to be useful at scale: agentic memory with bi-temporal validity and subject-document identity, a document store with per-piece derived search units, per-scope SQL memory, a Decision tool for typed probability outputs, a Teams primitive for multi-agent state-machine workflows, a **Crypto tool** whose keys the model never sees (loomcycle-sealed or in Vault / AWS KMS / Google Cloud KMS), **no-trace runs** that deliver what they say and store none of it, **ephemeral git-source volumes** that fetch a repo so a forge token never enters a shell, three context-retention modes with a Recall tool over evicted spans, a tool-usage harness that lets small local models call tools at measured 10/10 success, a bundled development toolchain (Python, Go, Rust, Node, git, gh, curl, jq, sqlite3) and a headless Chromium, a visual canvas (LoomBoard) for building and debugging workflows, multi-replica HA on Postgres, OpenTelemetry, and a **deployment-shape snapshot** that carries the whole deployment in one archive.
+**An agent-system kernel you self-host.** loomcycle is one Go binary, ~80 MB. It owns the agent loop and ships with everything an agent needs to be useful at scale: agentic memory with bi-temporal validity and subject-document identity, a document store with per-piece derived search units, per-scope SQL memory, a Decision tool for typed probability outputs, a Teams primitive for multi-agent state-machine workflows, a **Crypto tool** whose keys the model never sees (loomcycle-sealed or in Vault / AWS KMS / Google Cloud KMS), **no-trace runs** that deliver what they say and store none of it, **ephemeral git-source volumes** that fetch a repo so a forge token never enters a shell, three context-retention modes with a Recall tool over evicted spans, a tool-usage harness that lets small local models call tools at measured 10/10 success, an in-process **Bashbox** sandbox (with a toolbox image carrying Python, Go, Rust, Node and git, and a browser sidecar, for agents that need them), a visual canvas (LoomBoard) for building and debugging workflows, multi-replica HA on Postgres, OpenTelemetry, and a **deployment-shape snapshot** that carries the whole deployment in one archive.
 
 **Integrates however your stack already works.** Your app calls loomcycle over HTTP, gRPC, MCP, the TypeScript adapter, or the Python adapter. The agent loop, multi-provider routing, memory and document subsystems, Decision tool, Teams, MCP server identity, OpenTelemetry traces, and multi-replica coordination all live in the binary. Your application stays in whatever language you wrote it in.
 
-**What makes it different.** Most agent platforms are a library you embed, a hosted service you rent, or a gateway that does not run the loop. loomcycle is a self-hostable **agent-system kernel** that owns the loop *and* ships with the data substrate, teams primitive, decision model, Crypto tool, canvas, dev toolchain and headless browser already assembled.
+**What makes it different.** Most agent platforms are a library you embed, a hosted service you rent, or a gateway that does not run the loop. loomcycle is a self-hostable **agent-system kernel** that owns the loop *and* ships with the data substrate, teams primitive, decision model, Crypto tool, canvas and sandbox already assembled.
 
 ## Last week delivered: v1.135 → v1.142 (Nov 2–6, 2026)
 
@@ -62,7 +62,7 @@ release-by-release view see [`REVISIONS.md`](REVISIONS.md) and the
 | **Teams** | A multi-agent workflow is a state machine. A **TeamDef** carries its own **local agents, skills, channels, schedules, and webhooks** as one file, plus declared `variables` a start sets. Template-and-capture between states (`${steps.triage.answer}` interpolates a prior answer, `capture: {as: priority}` names a variable). Schedules and webhooks can start a Team directly. `TeamDef op=verify` returns `severity: refused \| unrunnable \| advisory` with JSON paths at fault, before saving. A visual **LoomBoard canvas** renders states as nodes with live run visualisation, drag-to-inject channel and variable nodes, and a Check button that calls verify without saving. |
 | **Decision tool** | A model that cannot say the wrong word. Answers typed questions with calibrated probabilities over a fixed set of options; cannot write prose, cannot invent an answer that is not in the option set. Three question types: `choice` (2–26 options), `noul` (yes/no with probability of yes), `score` (ordered levels). 1–64 questions per call. Inside a run via Context grant; outside via `POST /v1/_decide`, gRPC `Decide`, MCP `decision`, `decide()` in TS and Python. Powers the memory reranker and the cascade verifier. |
 | **Multi-agent** | Sub-agents via the `Agent` tool, `parallel_spawn` fan-out, external batch fan-out, resident/interactive sub-agents, a structured **state hand-off** from a stateful child to its parent, a state-machine **Team** orchestrator, and **poll-mode detached runs** — `Agent op=spawn` with `mode: "poll"` returns immediately with `{child_run_id, state: "running"}`; the parent collects later with `Agent op=poll`. Children survive pause, restart, replica move. `idempotency_key` for safe retries, `max_wall_seconds` for lifetime caps that apply to detached runs, `result: "object"` for structured child outcomes. |
-| **Bundled tools** | The ~80 MB binary ships with the dev tools agents need (Python, Go, Rust, Node, git, gh, curl, jq, sqlite3) and a **headless Chromium** in-process. An agent that needs to compile, run tests, scrape a page, submit a form, or take a screenshot does not need an external sidecar, a separate toolbox image, or a Playwright install. Volumes default to **ephemeral per-run** — intermediate files are cleared when the run ends; durable mounts are opt-in via the operator's `volumes:` config. |
+| **Bundled tools** | The binary carries an in-process **Bashbox** (a shell with its own coreutils, no host process) and the built-in tools; the default Docker image is distroless, with no shell, compilers or browser. An agent that must compile or run tests uses the **`loomcycle-toolbox`** image (the same binary on Debian with Python, Go, Rust, C/C++, Node, git, gh and curl; trusted single-tenant use only, [docs/TOOLBOX_IMAGE.md](docs/TOOLBOX_IMAGE.md)) or the builder sidecar for untrusted code. An agent that must browse uses the **`loomcycle-browser`** image with a PinchTab sidecar, where Chromium runs ([docs/SANDBOX.md](docs/SANDBOX.md)). Volumes default to **ephemeral per-run** — intermediate files are cleared when the run ends; durable mounts are opt-in via the operator's `volumes:` config. |
 | **Isolation** | Per-agent ro/rw filesystem **Volumes** (sandbox-by-default, ephemeral-per-run default), an in-process **Bashbox**, and a **sandboxed code-execution** sidecar for untrusted multi-tenant workloads. |
 | **Triggers** | Scheduler (no 10-minute cap, every replica can run slots, DB-claimed to avoid double-fire), inbound **Webhooks** (HMAC verify-before-parse), and **A2A** peer interop. |
 | **Multi-tenancy** | Per-principal bearer tokens bound to an authoritative `(tenant, subject, scopes)`; per-route HTTP and per-RPC gRPC gates; **Web UI sign-in** to a server-side session through a token, password (invitations, resets, TOTP), OIDC or OAuth gate, with an optional strict mode; tenant isolation across both the state and definition planes. **Access control**: ACL rule lists, nested groups and bindings with explicit deny over allow, asked at every gate and per instance, intersected with an agent's grants inside the run, and rolled out through `LOOMCYCLE_ACL` (`compat` → `shadow` → `enforce`). Per-tenant credentials **plus per-user credential self-service** (every user manages its own `scope=user` API tokens from any transport), per-scope usage/cost attribution, token budgets, data-retention + subject-erasure surfaces, and a derived **directory** (who is here, what do we hold for them). Single-tenant stays the default. |
@@ -212,15 +212,18 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.156.0) lets people download a Document as a file:
-a download menu on the document toolbar (PDF, Word, HTML, Markdown, Canvas),
-`GET /v1/_document/export/{id}`, the TS client's `exportDocument` and MCP
-`file op=render` without a run. Teams declared in the yaml are written into
-the shared tier at boot and are changed only there, and an explicit token
-pepper becomes legacy so it can be retired. Read the upgrade notes in
+The most recent line (v1.158.0) renders documents as OpenDocument and EPUB
+and can embed a document's record in the rendered file, adds concept-scheme
+headers, deeper schemes, member counts and node statistics to the ontology,
+and makes `kb/survey` link a fitting guide's matching sections and trust each
+document's stored status. Read the upgrade notes in
 [`REVISIONS.md`](REVISIONS.md).
 
-Before it, v1.155.0 rendered a Document back into a file: `File op=render`
+Before it, v1.157.0 kept a document's colour scheme out of what a model
+reads, fixed what a measurement of `kb/survey` found, and let MCP
+`file op=render` and `keep` work without a run.
+
+Before that, v1.155.0 rendered a Document back into a file: `File op=render`
 writes Markdown, HTML, Word or PDF (typeset by Typst in the conversion
 worker), with a render log per document, and added `kb/survey`.
 

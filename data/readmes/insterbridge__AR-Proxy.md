@@ -262,16 +262,19 @@ Retry decisions use both the status and the response body:
 
 | Response | Behavior |
 | --- | --- |
-| `422` or `429` with recognized rate-limit or transient-failure wording | Retry with backoff |
+| `400`, `422`, or `429` with recognized rate-limit, capacity, or transient-failure wording | Retry with backoff |
 | `502`, `503`, or `504` | Retry, unless the body identifies a deterministic invalid request |
 | Connection failure or upstream timeout, including the first attempt | Retry within the attempt and time budgets |
 | HTTP `200` SSE with an early `error` or `response.failed` frame containing recognized wording | Retry before forwarding the buffered prefix |
 | `400` identifying a backend-resource mismatch, with removable cc-switch reasoning carriers in the request | Remove those carriers and retry once |
 | Other errors | Pass through |
 
-Recognized wording includes `too_many_requests`, `rate limit`, `quota exceeded`,
-`overloaded`, `failed before output`, `experiencing high demand`, and
-`Upstream service unavailable`. The last phrase is recognized even when a bridge
+Recognized wording includes `too_many_requests`, `no_capacity`, `rate limit`,
+`quota exceeded`, `overloaded`, `failed before output`, `experiencing high
+demand`, and `Upstream service unavailable`. Providers multiplex retryable
+capacity codes onto `400` — the `no_capacity` peak-load rejection arrives that
+way — so `400` bodies are inspected by default; add other statuses with
+`--retry-status`. The last phrase is recognized even when a bridge
 wraps it in a `422` or a provider sends it in an early HTTP `200` SSE error.
 A `422` format error—or even a `429` without a recognized signal—is not retried by
 this body-matching policy. A body containing `invalid_request_error` or
@@ -391,7 +394,7 @@ All numeric values must be integers. Time values are in milliseconds.
 | `--deadline` | `300000` | Queue and retry time budget |
 | `--upstream-timeout` | `600000` | Timeout for each upstream call, including its body |
 | `--keepalive` | `10000` | Keepalive interval during streaming retries; `0` disables |
-| `--retry-status` | `422,429` | Body-matched error statuses; does not disable the separate `502/503/504` policy |
+| `--retry-status` | `400,422,429` | Body-matched error statuses; does not disable the separate `502/503/504` policy |
 | `--big-ctx-tokens` | `60000` | Gate threshold; `0` disables |
 | `--big-ctx-concurrency` | `1` | Large requests allowed at once |
 | `--mirror-log` | Unset | Additional log file; its parent directory must exist |

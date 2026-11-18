@@ -282,7 +282,7 @@ Standalone mode needs nothing but your machine. No cloud required. **Minimum:** 
 Two recommended ways to use lilbee, depending on whether you're the one driving:
 
 - **Run `lilbee`** for the full-screen terminal app. On first run you pick a chat model straight from the catalog, fit-checked against your hardware, then you index files, search, and chat without leaving the TUI. The Settings screen exposes every retrieval knob (search depth, distance threshold, reranker, chunking) so you can tune lilbee to your library shape.
-- **Connect it to your agent over MCP.** Any MCP-aware coding agent calls `lilbee_search` / `lilbee_add` and gets back cited snippets it can quote. Agents can also _fine-tune lilbee on the fly_ via `lilbee_settings_set`. Drop in the [lilbee-mcp skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) and the agent reads the full surface: every tool, every retrieval knob, and when to widen for prose vs narrow for code. See [A reference for AI agents](#a-reference-for-ai-agents).
+- **Connect it to your agent over MCP.** Any MCP-aware coding agent calls `lilbee_search` / `lilbee_add` and gets back cited snippets it can quote. Agents can also _fine-tune lilbee on the fly_ via `lilbee_settings_set`. Drop in the [lilbee-mcp skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) and the agent learns the search and citation workflow, over MCP or the `lilbee --json` CLI, with retrieval tuning in reference files it opens on demand. See the [install table](docs/usage.md#install-in-your-agent) for the one command per agent, Claude Code, opencode, pi, and Hermes included.
 
 Retrieval defaults are sane, and every setting is tunable from env vars or `config.toml`, most of them from the TUI, MCP, and the HTTP API too; the [settings reference](docs/settings.md) has a column per surface. The CLI and HTTP API cover scripting and headless runs. See the [usage guide](docs/usage.md).
 
@@ -319,7 +319,7 @@ lilbee is built for consumer hardware and for people who don't want to babysit i
 
 - **A search engine over your files**, with answers that cite the source line, not just a model to chat with.
 - **A managed fleet**, chat, embedding, vision, and reranking, spread across every GPU in the machine behind a load-balancing router, not one model loaded at a time.
-- **Everything bundled**: model manager, search engine, web crawler, MCP server for coding agents (native [opencode](https://opencode.ai) and [hermes](https://github.com/NousResearch/hermes-agent)), HTTP server, TUI, and Python, in one file.
+- **Everything bundled**: model manager, search engine, web crawler, MCP server for coding agents (native [opencode](https://opencode.ai), [hermes](https://github.com/NousResearch/hermes-agent), and [pi](https://github.com/earendil-works/pi)), HTTP server, TUI, and Python, in one file.
 
 It sits between two worlds: the desktop runners that get a model chatting on your machine ([Ollama](https://ollama.com), [LM Studio](https://lmstudio.ai)), and [vLLM](https://github.com/vllm-project/vllm), the server you stand up to push one model to a cluster of users. lilbee runs models to do retrieval over your files, and places that whole stack across the GPUs in the machine.
 
@@ -547,7 +547,7 @@ lilbee serves your coding agents two ways, both local: it runs the models they t
 
 ### Launch your coding agent on local models
 
-`lilbee launch opencode`, `lilbee launch hermes`, and `lilbee launch claude` set up lilbee's local models in your agent in one command. For opencode and hermes, lilbee registers itself as a provider and an MCP server in the agent's own config and leaves your existing setup intact; for Claude Code, lilbee serves an Anthropic-compatible API and points the session at it by env, without touching Claude Code's settings. Each launch warms a model and opens the agent pointed at it. No API keys, no provider setup, and nothing leaves your machine, except a check of any provider API key you have set. Tool-calling works across many GGUF families; [docs/agent-models.md](docs/agent-models.md) has the verified list and how the QA harness measures it.
+`lilbee launch opencode`, `lilbee launch hermes`, `lilbee launch pi`, and `lilbee launch claude` set up lilbee's local models in your agent in one command. For opencode and hermes, lilbee registers itself as a provider and an MCP server in the agent's own config and leaves your existing setup intact; for Claude Code, lilbee serves an Anthropic-compatible API and points the session at it by env, without touching Claude Code's settings. `lilbee launch pi` writes nothing into pi's config. It starts pi with lilbee's pi extension and the `lilbee-mcp` skill for that session only, and the extension registers lilbee as the provider and the MCP server from the launch environment. The launcher is tested with pi 1.5.0, and pi needs Node 22.19 or newer. Each launch warms a model and opens the agent pointed at it. No API keys, no provider setup, and nothing leaves your machine, except a check of any provider API key you have set. Tool-calling works across many GGUF families; [docs/agent-models.md](docs/agent-models.md) has the verified list and how the QA harness measures it.
 
 One model serves as many agents as you want to run. These reels show four working at once against a single local model, each in its own worktree, reading and searching this repository through lilbee.
 
@@ -575,7 +575,7 @@ https://github.com/user-attachments/assets/46ce5440-ee9d-4420-a881-031a1ccccec8
 
 And the same setup scales up: Devstral 2 123B, 70GB across two A100 80GB cards, one agent at the model's full 14 tokens a second.
 
-It tunes itself, too. Tell a small local model to widen lilbee's search when a first result comes back thin, and the second pass returns full function bodies with file:line citations; a more capable model does the same from a prompt like "improve your search results." The [lilbee-mcp skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) teaches your own model the pattern.
+It tunes itself, too. Tell a small local model to widen lilbee's search when a first result comes back thin, and the second pass returns full function bodies with file:line citations; a more capable model does the same from a prompt like "improve your search results." The [lilbee-mcp skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) teaches your own model to retry with a larger `top_k` on the call, without changing any saved setting.
 
 <!-- demo: mcp-code-self-tune | agent fine-tunes lilbee mid-conversation: outline, then widened retrieval, then source with file:line citations -->
 
@@ -583,7 +583,9 @@ https://github.com/user-attachments/assets/7bfec600-4c06-4a2f-8f77-be7e92f4f33f
 
 ### A reference for AI agents
 
-Once configured, lilbee plugs into whatever agent you use, over MCP. Feed it your project's docs, your dependency source, your API docs, your design notes; the agent stops making up function names and instead reads the actual code, cites file and line, and says it doesn't know when the answer isn't in your library. The [`lilbee-mcp` skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) is the single entry point: drop it into `.opencode/skills/` or `.claude/skills/` and it documents every tool, the workflows the agent should follow, and points to drop-in `AGENTS.md` and worker-subagent starters under [`examples/agent-integration/`](examples/agent-integration/). This works with cloud-model agents too; lilbee stays local, and only the queries and the returned chunks reach the model.
+Once configured, lilbee plugs into whatever agent you use, over MCP. Feed it your project's docs, your dependency source, your API docs, your design notes; the agent stops making up function names and instead reads the actual code, cites file and line, and says it doesn't know when the answer isn't in your library. The [`lilbee-mcp` skill](plugins/lilbee/skills/lilbee-mcp/SKILL.md) is the single entry point: it teaches the search, cite and long-operation workflow and points to drop-in `AGENTS.md` and worker-subagent starters under [`examples/agent-integration/`](examples/agent-integration/). This works with cloud-model agents too; lilbee stays local, and only the queries and the returned chunks reach the model.
+
+[Install lilbee](#install) first, then wire it into your agent with the commands in the [install table](docs/usage.md#install-in-your-agent): Claude Code, opencode, pi, and Hermes each have a command, and any other MCP-aware agent takes the plain MCP form.
 
 Your files, the search index, and the embeddings stay on your computer. The agent calls `lilbee_search` and gets back cited snippets with file and line. The agent reels above show this live: each pane reads and searches this repository through lilbee.
 

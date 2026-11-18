@@ -16,6 +16,10 @@ Weekly materials for the 14-week course **Machine Learning in Economics and Fina
 
 **Code for the theory weeks:** each notebook reproduces the simulations behind the figures and tables in that week's lecture notes and slides (simulated data, fixed random seeds, so the numbers match the course materials). The notebooks are in Turkish and run in Google Colab with no installation; locally they need `numpy`, `pandas`, `matplotlib` and `scikit-learn` (Week 6 also uses `shap`, which the notebook installs if missing).
 
+**Self-study lab:** [ML Lab](https://mehmetsongur.github.io/ml-lab/) is a no-install, in-browser companion for students who have never written code: have AI write the code, audit it and interpret the result (source and Colab notebooks: [ml-lab](https://github.com/mehmetsongur/ml-lab)).
+
+🇹🇷 *Kod yazmaya yeni başlayanlar için tarayıcıda çalışan, kurulumsuz bir öz çalışma ortamı: [ML Laboratuvarı](https://mehmetsongur.github.io/ml-lab/?lang=tr).*
+
 *Last updated: 17 November 2026*
 
 ## Theory block

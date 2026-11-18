@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3420** |
+| 📝 Total Prompts | **3427** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-16** |
+| 🔄 Last Updated | **2026-11-17** |
 
 ---
 
@@ -189,6 +189,144 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Elf Girl Cosplay Miko Video
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> A complex video prompt for Grok Imagine featuring an elf girl in Chinese fantasy miko attire, with specific timing and pose instructions based on three reference images.
+
+#### 📝 Prompt
+
+```
+A 15-second, 4-scene cinematic video featuring a silver-haired elf-eared woman appearing in @Image1, @Image2, and @Image3. Throughout all scenes, consistently maintain the character's face, silver half-up hairstyle, elf ears, white and crimson Chinese fantasy-style halter-neck outfit, and haori with long white sleeves falling off the shoulders. Background is an autumn garden with golden maple leaves and fallen leaves, white railings, and streetlights. BGM is a soft piece with warm acoustic guitar and calm acoustic piano.
+
+[0:00-0:04] Based on @Image1, move the upper body elegantly into two poses. First half: spread both arms lightly, swaying the white sleeves and tilting the head. Second half: change to a glamorous pose with the right hand placed near the chest and the left hand lightly holding the skirt.
+[0:04-0:08] Switch to a looking-back angle based on @Image2. First half: adjust the white sleeve while looking over the shoulder. Second half: turn the upper body significantly, place the left hand near the chin, and tilt the head slightly.
+[0:08-0:12] Switch to a medium shot based on @Image3. First half: stand firmly with both hands lightly crossed in front of the chest. Second half: lean the upper body slightly forward, place one hand on the cheek, and smile adorably.
+[0:12-0:15] Smoothly zoom in from @Image3 to a close-up of the face. Strike a decisive pose with fingertips near the mouth, and finally wink charmingly with one eye (right eye).
+```
+
+<img src="https://cms-assets.youmind.com/media/1794900986878_8n6rp1_HXTLj-LaUAAhCxE.jpg" width="600" alt="Elf Girl Cosplay Miko Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13963)**
+
+**Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2122547779700453578) | **Published:** Nov 17, 2026
+
+---
+### Animate reference image speaking
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt to animate a reference image (@Image1) making it alive and speaking about its purpose.
+
+#### 📝 Prompt
+
+```
+Imagine @Image1 alive and speaking about its purpose , name and where are they located right now
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122483488360144896/img/iXm9s9KjsBtlULr1.jpg" width="600" alt="Animate reference image speaking">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13961)**
+
+**Author:** [SuperGeekCRC](https://x.com/SuperGeekCRC) | **Source:** [Link](https://x.com/SuperGeekCRC/status/2122483520127791271) | **Published:** Nov 17, 2026
+
+---
+### Stained Glass Butterfly Video Prompt
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for generating a video of a butterfly with luminous stained-glass wings resting on a garden stone, featuring colorful light patterns and traditional glass art aesthetics.
+
+#### 📝 Prompt
+
+```
+A beautiful butterfly with luminous stained-glass wings resting on a sunlit garden stone, casting colorful patterns of light. Traditional stained-glass art with jewel-toned glass and intricate leaded outlines. Viewed from a slightly different angle w...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122476560259362816/img/GaSCT9gcVPjSvzgA.jpg" width="600" alt="Stained Glass Butterfly Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13958)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2122476581302174066) | **Published:** Nov 16, 2026
+
+---
+### Polar Bear and Panda Sledding
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A cinematic prompt featuring a polar bear cub and baby panda sledding down a snowy hill with symphonic music vibes.
+
+#### 📝 Prompt
+
+```
+🐻‍❄️🐧 polar bear cub and baby panda 🛷 sledding down a snowy hill ❄️ sparkling snow 🥳 joyful 🎻 symphonic ✨ realistic 8K cinematic vertical 9:16 Thank you Jason
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122449676893081601/img/7PyZMKDcYeElFglU.jpg" width="600" alt="Polar Bear and Panda Sledding">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13959)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2122449690990092770) | **Published:** Nov 16, 2026
+
+---
+### Baby Panda Space Rocket Ride
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A cinematic prompt of a baby panda riding a rocket through space with shooting stars and rock guitar vibes.
+
+#### 📝 Prompt
+
+```
+🐼🚀 baby panda 🪐 riding a rocket through space 🌠 shooting stars 💎 iridescent 😆 excited 🎸 rock guitar ✨ realistic 8K cinematic vertical 9:16
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122445806427119616/img/xvQyyZjkfLkJRI4A.jpg" width="600" alt="Baby Panda Space Rocket Ride">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13960)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2122445820595454193) | **Published:** Nov 16, 2026
+
+---
+### Professional Product Portrait Enhancement
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed prompt for improving a photo into a polished product portrait while maintaining specific elements like hand grip, trading card, case, pose, and location, with soft directional lighting.
+
+#### 📝 Prompt
+
+```
+Dramatically improve this photo into a polished, professional-quality product portrait while keeping the exact same hand, same grip, same trading card, same plastic case, same pose, and same location. Re-light the subject with flattering soft directi...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122331973108600832/img/y498O708CXJywy3Q.jpg" width="600" alt="Professional Product Portrait Enhancement">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13962)**
+
+**Author:** [lee trew](https://x.com/lstrew) | **Source:** [Link](https://x.com/lstrew/status/2122331990460698997) | **Published:** Nov 16, 2026
+
+---
+### Collage Video Generation Instruction
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> An instruction to animate only the bottom photo of a collage while keeping the top photo static.
+
+#### 📝 Prompt
+
+```
+I have a collage with two photos and I only want the bottom photo turned into a video. The top photo should stay a still image.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122288702588174336/img/iIe_bK_KN-WFMdSQ.jpg" width="600" alt="Collage Video Generation Instruction">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13957)**
+
+**Author:** [Johan](https://x.com/Johanfriesen) | **Source:** [Link](https://x.com/Johanfriesen/status/2122288719965077680) | **Published:** Nov 16, 2026
+
+---
 ### Grok Imagine Dragon Dew Prompt
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -1806,106 +1944,4 @@ the angel slowly raises her face, rain falls, smoke rises from the crater, the b
 
 ![日本語](https://img.shields.io/badge/lang-日本語-green)
 
-> A detailed video generation prompt for Grok Imagine featuring a hip-hop dance sequence. It uses three reference images to maintain character consistency (black up-hair, velvet gothic dress) and specifies four scenes with precise choreography like body waves and isolations over a 15-second duration.
-
-#### 📝 Prompt
-
-```
-🎥 Video Prompt (Grok Imagine)
-Global Conditions & BGM
-* Style/Consistency: Fully maintain facial features, hairstyle, and outfit consistency of the person in @Image1, @Image2, @Image3 (messy black up-hair, navy and wine-red velvet gothic dress).
-* Music/Atmosphere: Slow & Dark Electro Hip-Hop with heavy bass. POP-feeling rhythmic and stylish BGM. Express cool strength within stillness.
-Scene 1 (0-4s): Medium Shot
-* Base Image: @Image3
-* Action (4s / 2 steps):
-  * [0-2s]: Body wave smoothly rippling from chest to neck in sync with beat.
-  * [2-4s]: Sharp isolation of neck left/right, fixing gaze coolly straight ahead.
-Scene 2 (4-8s): Full Shot (Whole Body)
-* Base Image: @Image1
-* Action (4s / 2 steps):
-  * [4-6s]: Riding heavy beat, large slow wave undulating hips and upper body.
-  * [6-8s]: Sharp hand isolation crossing hands quickly and smoothly. Dress hem sways elegantly.
-Scene 3 (8-12s): Medium Shot
-* Base Image: @Image3
-* Action (4s / 2 steps):
-  * [8-10s]: Back wave movement linking shoulders and chest smoothly.
-  * [10-12s]: Sharp posing stopping fingertips and neck simultaneously in sync with song climax.
-Scene 4 (12-15s): Close-up (Last Scene)
-* Base Image: @Image2
-* Action (3s):
-  * [12-14s]: Close-up slowly zooming further into face. Beating rhythm with subtle isolation of head and neck.
-  * [14-15s (Last)]: Final pose facing camera, winking coolly and cutely with right eye, then freezing.
-```
-
-<img src="https://cms-assets.youmind.com/media/1793951423787_2g1t88_HWVUat6a0AAOV7P.jpg" width="600" alt="Dark Electro Hip Hop Dance Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13608)**
-
-**Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2118285947921989988) | **Published:** Nov 5, 2026
-
----
-### Optimus Prime Transformation Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt for Grok Imagine featuring Optimus Prime undergoing advanced mechanical transformations in a sci-fi setting.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a high-end cinematic Sci-Fi video of next-level Transformations featuring Optimus, portraying the robot's advanced conversion sequences in a realistic, photorealistic style.
-
-[Event Script]
-At the start, Optimus stands fully formed as a humanoid robot in a futuristic industrial hangar under dramatic volumetric lighting. The principal event unfolds as a multi-stage next-level transformation: external armor plates and limbs shift with precise mechanical articulation, internal systems glow and reconfigure, components fold and reassemble into alternate combat or vehicle configurations with ultra-detailed realistic physics of metal, hydraulics, and energy flows. Intermediate hybrid states reveal complex interlocking mechanisms before completing into a fully transformed advanced mode. At the end, Optimus locks into the final transformed configuration, stable and powerful amid residual energy effects and settling sparks.
-
-[Maintain Consistency]
-Keep Optimus as the sole central subject with consistent next-level Sci-Fi design language, photorealistic metal textures, lighting continuity, and transformation causality throughout. The visuals present photorealistic cinematic Sci-Fi realism with high-fidelity materials, subsurface lighting on energy elements, and atmospheric depth. The camera uses dynamic cinematic tracking: beginning in a heroic medium shot, circling with smooth dolly and crane movements to follow key mechanical articulations, then pushing into detailed close-ups of transforming components before pulling back to a wide establishing view of the completed form. The sound includes deep metallic grinding and hydraulic servo whirs, layered with electronic energy surges, resonant bass impacts, and a rising cinematic orchestral Sci-Fi score that builds intensity through the conversion.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118282841377345537/img/9CGR1l58Ow2LJFkx.jpg" width="600" alt="Optimus Prime Transformation Video">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13602)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118283217383874730) | **Published:** Nov 5, 2026
-
----
-### Grok Imagine Prompt: Prince transforms maid into princess
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt for Grok Imagine where a young prince extends his hand to a maid, who transforms into a princess upon taking it.
-
-#### 📝 Prompt
-
-```
-a young prince extending his hand out to the maid, and when then maid takes the hand of the prince, she turns into a princess.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118227610325192704/img/4FUI-nhMxiGsE-0-.jpg" width="600" alt="Grok Imagine Prompt: Prince transforms maid into princess">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13552)**
-
-**Author:** [Awesome God New Life Ministries](https://x.com/AwesomeGodNewL) | **Source:** [Link](https://x.com/AwesomeGodNewL/status/2118227641027416471) | **Published:** Nov 5, 2026
-
----
-### Sci-Fi Combat Armor Transformation Video
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed cinematic prompt for generating a sci-fi video showing modular combat armor transforming from inactive to battle-ready.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a fully cinematic and realistic Sci-Fi video of next-level Transformations Combat Armor. The core subject is advanced modular combat armor that undergoes a multi-stage transformation from a sleek inactive suit into fully activated battle-ready power armor, emphasizing mechanical precision, energy systems, and high-stakes readiness.
-
-[Event Script]
-At the start: A sleek, form-fitting base combat suit stands inert in a dimly lit high-tech hangar, matte black with subtle hexagonal plating and dormant blue energy lines faintly visible under cold industrial lighting.
-Principal event: Transformation sequence activates. Plates begin shifting and expanding with hydraulic precision—chest and shoulder modules unfold outward, interlocking layered armor expands across the torso and limbs, gauntlets reconfigure into heavy weapon-ready forms, helmet seals shut with a multi-segment faceplate locking into place, and glowing energy cores ignite along the spine, joints, and chest reactor. Servos lock, thrusters extend from the calves and back, and a full-body energy shield lattice briefly flares then stabilizes as the armor reaches combat configuration.
-At the end: The fully transformed combat armor stands fully activated in a dynamic ready stance—helmet glowing with HUD light, energy lines pulsing bright cyan, plating locked and battle-scarred with realistic metal textures, ready for immediate engagement.
-
-[Maintain
+> A detailed video generation prompt for Grok Imagine featuring a hip-hop dance sequence. It uses three reference images to maintain character consistency (black up-hair, velvet gothic dress) and specifies four scenes with precise choreograp

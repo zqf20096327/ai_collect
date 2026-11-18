@@ -1,6 +1,6 @@
 # dsh-qwen-paint · (绘图)千问（优化版）
 
-DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（QQ 交流群 454707710）。★ 0.33.0 起许可改为 BSL 1.1（BUSL-1.1，非 OSI 开源许可）：除托管/代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用，2030-11-15 转 Apache-2.0；0.32.1 及更早仍 MIT、不追溯。★ 1.0.0：选模型「假成功」根治（拒绝时如实回未生效 + 原因，不再无条件报已选）、优化面板与素材库白条同源修复（持久化缓存 + 占位 + 错误态）、历史筛选分页与重复请求收口、所有写参数拒绝统一 choiceResult。★ 0.35.0：口语入口别名（「风格卡」「批量出图」…）解析成真实工具、参考图色调取样写进提示词、建议时间轴 / 资源需求声明 / 数据流摘要 / 「刚才那张」产出短引用全部接进主链路。★ 0.34.0：SageAttention / Comfy-WaveSpeed 并入加速链并按真实 /object_info 探测、卡片常驻显示；GPT-SoVITS v5 / IndexTTS2 可选 TTS、拖音频零样本克隆、ACE-Step 1.5 / YuE2 音乐 BGM、手动超分、Worker 热温冷保活。0.33.0 新增媒体格式转换（图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC，生成物可指定输出格式、动图转视频、自有素材转换，Agent 可直接调用 convert_media）与加速链全景（生图/视频缓存后端 + TTS 加速 + 显存预算 + 配置裁决 + 结构化日志，只列探测到的、未实测不写倍率）、本机能力功能区内嵌进 Comfy 控制面板（展开页恒在悬浮球正上方、边框对齐 DSH 右边框、四事件点按兜底）、GIF 转换 / 运行期自诊断 / 优先级任务队列 / 单图迭代优化 / 自适应 DAG 编排 / 生成历史可删改与冷热分离等本机工具与端点；0.32.1 两轮审计加固：ASR 音频路径围栏（只认出图目录内文件）、按包名安装也能执行引导脚本、草图台四事件点按、错误响应消毒收口；视频链清单化 + 生图/TTS 契约对账（改图自动报差异）；生图/视频/混合三模式界面各不同；批量出图带幂等保护（重试不重出）；Qwen3-TTS 语音克隆与可接 ASR 自动字幕；本机实测秒数；会话级模型驻留、显存建议、参数来源表、预设绑定、加载器盘点等本机端点。文生视频 / 图生视频（Wan 2.2 / XT-5B）与图→音→视频混合、导入音频直接合进成片（音轨合成），文生图与 1–16 张参考图编辑、圈选重绘（羽化 / 边缘融合 / 外扩 / 反选 / 重绘强度可调）/ 元素移除 / 四向扩图 / 高清放大，Qwen3-TTS 语音合成（独立 generate_speech，参考音频可复刻音色），模型无关角色参考；草图台手绘参考；生成记录可检索（菜单最上面「历史」，SQLite 索引、软删除不动磁盘文件）。CPU 也能跑：自动识别 AVX2 / AVX512 / AVX512-BF16 指令集并给五档加速（含 --cpu 强制纯 CPU）、按物理核钉线程，任务结束可选自动卸载模型内存；安装入口是常驻的图形化引导面板。对外提供脱敏状态快照与端点目录供外部集成。提供可选、默认关闭的模型自动下载包：视频模型 --video-models、核显档位 --igpu-download、生图主模型 --tier，按服务器权威 size + sha256 双校验；音频权重不自动下载，缺件给明确清单。经本机 ComfyUI 调用，数据仅走 127.0.0.1 回环（联网参考图检索默认拒绝、须逐次同意），无需 API 密钥、零调用费用。Windows / Linux，NVIDIA / Intel Arc / AMD / 核显共享内存，含 8 GB 低内存档位。
+DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（QQ 交流群 454707710）。★ 0.33.0 起许可改为 BSL 1.1（BUSL-1.1，非 OSI 开源许可）：除托管/代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用，2030-11-15 转 Apache-2.0；0.32.1 及更早仍 MIT、不追溯。★ 1.1.1：TTS 首段早出声——悬浮面板两段式（首段落盘即播、剩余整段一次提交，省 N−2 次往返），默认关、非节点级流式、整段时长不变。★ 1.1.0：全面提速——内置 resvg 光栅 7.02× / 静态帧去重+VFR 合成 6.58× / 分镜缓存 34.2× / 草稿档 2.10×，TE-Speed 生图链真机 −17.3%，编码择优纠错（x264 排 AMF 前）、BGM 三缓存、Qwen3-TTS attention 可选 + 低延迟分块；未实测的一律不吹倍率。★ 1.0.0：选模型「假成功」根治（拒绝时如实回未生效 + 原因，不再无条件报已选）、优化面板与素材库白条同源修复（持久化缓存 + 占位 + 错误态）、历史筛选分页与重复请求收口、所有写参数拒绝统一 choiceResult。★ 0.35.0：口语入口别名（「风格卡」「批量出图」…）解析成真实工具、参考图色调取样写进提示词、建议时间轴 / 资源需求声明 / 数据流摘要 / 「刚才那张」产出短引用全部接进主链路。★ 0.34.0：SageAttention / Comfy-WaveSpeed 并入加速链并按真实 /object_info 探测、卡片常驻显示；GPT-SoVITS v5 / IndexTTS2 可选 TTS、拖音频零样本克隆、ACE-Step 1.5 / YuE2 音乐 BGM、手动超分、Worker 热温冷保活。0.33.0 新增媒体格式转换（图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC，生成物可指定输出格式、动图转视频、自有素材转换，Agent 可直接调用 convert_media）与加速链全景（生图/视频缓存后端 + TTS 加速 + 显存预算 + 配置裁决 + 结构化日志，只列探测到的、未实测不写倍率）、本机能力功能区内嵌进 Comfy 控制面板（展开页恒在悬浮球正上方、边框对齐 DSH 右边框、四事件点按兜底）、GIF 转换 / 运行期自诊断 / 优先级任务队列 / 单图迭代优化 / 自适应 DAG 编排 / 生成历史可删改与冷热分离等本机工具与端点；0.32.1 两轮审计加固：ASR 音频路径围栏（只认出图目录内文件）、按包名安装也能执行引导脚本、草图台四事件点按、错误响应消毒收口；视频链清单化 + 生图/TTS 契约对账（改图自动报差异）；生图/视频/混合三模式界面各不同；批量出图带幂等保护（重试不重出）；Qwen3-TTS 语音克隆与可接 ASR 自动字幕；本机实测秒数；会话级模型驻留、显存建议、参数来源表、预设绑定、加载器盘点等本机端点。文生视频 / 图生视频（Wan 2.2 / XT-5B）与图→音→视频混合、导入音频直接合进成片（音轨合成），文生图与 1–16 张参考图编辑、圈选重绘（羽化 / 边缘融合 / 外扩 / 反选 / 重绘强度可调）/ 元素移除 / 四向扩图 / 高清放大，Qwen3-TTS 语音合成（独立 generate_speech，参考音频可复刻音色），模型无关角色参考；草图台手绘参考；生成记录可检索（菜单最上面「历史」，SQLite 索引、软删除不动磁盘文件）。CPU 也能跑：自动识别 AVX2 / AVX512 / AVX512-BF16 指令集并给五档加速（含 --cpu 强制纯 CPU）、按物理核钉线程，任务结束可选自动卸载模型内存；安装入口是常驻的图形化引导面板。对外提供脱敏状态快照与端点目录供外部集成。提供可选、默认关闭的模型自动下载包：视频模型 --video-models、核显档位 --igpu-download、生图主模型 --tier，按服务器权威 size + sha256 双校验；音频权重不自动下载，缺件给明确清单。经本机 ComfyUI 调用，数据仅走 127.0.0.1 回环（联网参考图检索默认拒绝、须逐次同意），无需 API 密钥、零调用费用。Windows / Linux，NVIDIA / Intel Arc / AMD / 核显共享内存，含 8 GB 低内存档位。
 
 ## Features
 
@@ -13,7 +13,7 @@ DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（Q
 | 四向扩图 | `outpaint_image` | 上 / 下 / 左 / 右按百分比外扩 |
 | 高清放大 | `upscale_image` | 与内置放大共用同一套节点图 |
 | 角色参考（模型无关） | `draw_image` / `generate_video` | 可选 `referenceStrategy`：按后端 `/object_info` 真实能力协商，协商不到专属适配器自动回落通用兜底 |
-| 文生视频 / 图生视频 | `generate_video` | 经本机 ComfyUI 调用 Wan 2.2 / XT-5B 系列视频模型，成品落盘并显示在会话里 |
+| 文生视频 / 图生视频 | `generate_video` | 经本机 ComfyUI 调用 Wan 2.2 / XT-5B 系列视频模型，成品落盘并显示在会话里；支持首帧 I2V（`startImage`）与尾帧参考（`endImage`，仅当本机节点契约有 `end_image` 槽，0.39.0 无 → 如实报错） |
 | 语音合成（TTS） | `generate_speech`（独立） / `generate_hybrid`（三段中的一段） | 本机 `ComfyUI-Qwen-TTS` + Qwen3-TTS 权重，产出 mp3 / flac（按 ComfyUI 返回的真实扩展名）；两条路共用同一条 TTS 段，只想配音不必跑完三段，**插件不自动下载音频模型** |
 | 图→音→视频混合 | `generate_hybrid` | 一张图配一段语音再合成视频，适合做带旁白的短片 |
 | 生成历史（可搜索） | `list_generated_images` | 本机 SQLite 记录每次生成的提示词 / 参数 / 时间 / 路径，支持关键词、类型、日期筛选与分页；界面里可看大图、复制路径、从历史移除（**只划掉记录，不删磁盘文件**） |
@@ -36,7 +36,7 @@ DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（Q
 dsh plugin --profile desktop add link:<本插件目录的绝对路径>
 ```
 
-> 使用 `desktop` profile 时须**先完全退出 DSH**。本包在 npm 的包名为 `dsh-qwen-paint`（仓库当前 `1.0.0`），可直接 `dsh plugin add dsh-qwen-paint` 按包名安装；本地目录 / 本地包形式仅用于开发或试用未发布改动。完整步骤、profile 选择与排错见下文「安装」及 `INSTALL.md`。
+> 使用 `desktop` profile 时须**先完全退出 DSH**。本包在 npm 的包名为 `dsh-qwen-paint`（仓库当前 `1.1.1`），可直接 `dsh plugin add dsh-qwen-paint` 按包名安装；本地目录 / 本地包形式仅用于开发或试用未发布改动。完整步骤、profile 选择与排错见下文「安装」及 `INSTALL.md`。
 
 ## Usage
 
@@ -102,7 +102,7 @@ dsh plugin --profile desktop add link:<本插件目录的绝对路径>
 
 > **QQ 交流群**：`454707710`　｜　**反馈 / 提问 / 提需求**都走这里，issue 也欢迎：<https://github.com/yanfei0725/dsh-qwen-paint/issues>
 
-> **原作者**：@奇迹与你　｜　**优化版作者**：@yanfei0725　｜　**许可协议**：BSL 1.1（BUSL-1.1）　｜　**当前版本**：`1.0.0`　｜　仓库：<https://github.com/yanfei0725/dsh-qwen-paint>
+> **原作者**：@奇迹与你　｜　**优化版作者**：@yanfei0725　｜　**许可协议**：BSL 1.1（BUSL-1.1）　｜　**当前版本**：`1.1.1`　｜　仓库：<https://github.com/yanfei0725/dsh-qwen-paint>
 
 ---
 
@@ -189,6 +189,89 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 
 刻意**不**把 `engines` 提到 `>=22.5`：那会把一批能正常出图的用户直接挡在门外，代价只是少一个可搜索的历史库。
 
+## 1.1.1 更新说明
+
+> 从 1.1.0 到 1.1.1：这是一个**只加不改**的小版本——唯一功能变更是 TTS 首段早出声（悬浮面板两段式），默认关闭、对既有用户零行为漂移；1.1.0 及此前全部能力与加速数字继续有效，API 与工具名零变更，升级只需替换插件目录。更新说明按发布护栏要求逐节列全，便于 Agent 与用户核对。
+
+### ★ 许可证：维持 BSL 1.1（BUSL-1.1），本版不改
+- 自 **0.33.0 起**许可为 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：除托管 / 代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用；**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版没有改动许可文本，也没有新增任何限制。
+- 外部 TTS 服务的合规边界不变：**GSV.CPP**（MIT，只做适配器 + 引导、不捆绑不代下）、**AnifLive-TTS**（原创代码 PolyForm Noncommercial 1.0.0 **禁商用**，只抄公开工程思路、不复制代码与二进制，商用须作者书面授权）。
+
+### ★ 新工具与端点：本版零新增工具，给 `generate_speech` 的 `lowLatencyChunks` 换更优实现
+- `lowLatencyChunks`（默认 false）由「N 块逐段提交 + N 段拼接」改为**两段式**：首段短切先落盘并通过 `progress.ttsLive` 推给悬浮面板自动播一次，剩余整段一次提交，最后 ffmpeg concat 拼 m4a——省掉中间 N−2 次往返。诚实边界：**非节点级流式、整段总时长不变**，只是更早听到首段；块间语气可能断裂；缓存键区分 chunks/whole 防串味。
+- 首段事件存单例 TTL store，只在面板开着时播放，自动播被浏览器拦则静默不报错；回环围栏不变（只认本机 127.0.0.1）。
+
+### ★ 加速链全景：承接 1.1.0，本版不改任何倍率结论
+- 1.1.0 的插件层实测数字继续有效：内置 resvg 光栅 **7.02×**、静态帧去重 + VFR + libx264 **6.58×**、草稿档 **2.10×**、分镜缓存命中 **34.2×**；ComfyUI 生图链 TE-Speed **−17.3%** 仍为唯一稳定正收益。
+- 本版 TTS 两段式**不宣称倍率**：目标是「首段更早落盘 + 更早听到」，整段总耗时的真实 A/B 需要模型常驻、固定单档、丢弃首轮后多轮测量，当前未做，不编数字。attention 真机样本离散与回退事实见 1.1.0 章节，不重复结论。
+
+### ★ 工作流清单层：承接 1.1.0
+- `chain-manifest` 与图结构指纹基准继续生效，后者只在回归里跑、不参与运行时构图。本版不改生成链，默认路径逐字节不变。
+
+### ★ 结构化运行日志：承接 1.1.0
+- `event-log` 落盘 + 生成完成钩子不变；细分耗时 `queue` / `total` 来自 ComfyUI `/history` 真实时间戳，`load/sample/decode` 官方不提供，保持 `null`（不编数字）。
+
+### ★ UI 与交互：`UI_BUILD` 升到 `2026-11-17.2` 供刷新自证
+- 悬浮面板新增首段音频自动播放（按 `path@at` 去重、一次事件只播一次）；`generate_speech` 面板开着才听得到首段。
+- 位置口径不变：功能区仍然**内嵌**进 Comfy 控制面板（不新开浮层），展开页恒在悬浮球**正上方**、**边框对齐** DSH 右边框、小屏**不变形**，四事件点按 + `pointerdown` 兜底。真机刷新后 hover 浮标应显示 `UI 2026-11-17.2`。
+
+### ★ 媒体格式转换：承接 1.1.0
+- 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；`file` 路由补 `.m4a/.aac/.ogg/.opus` MIME 以便面板播放首段音频，转码路径不变。
+
+### ★ 联动护栏与回归
+- `test-tts-lowlatency.mjs` 扩展两段式规划、首段回调时序、`progress.ttsLive`、面板播放与 file MIME 断言，并做「改坏三处 → 精确变红 → 逐字恢复 md5 一致」反向核查；`test-ui-perf.mjs` 同步 build 断言。
+- 全量回归 **110 套，各套项全绿**；`lib/index.js` **224,521 B / 上限 262,144 B，余量 37,623 B**；体积曾因本版超 2,645 B，按纪律外置 4 个文件头注释到 `docs/tts-early-audio-design-notes.md`（逐字留锚点）后守卫恢复通过。
+
+### 文档
+- `package.json` / `meta.description` / README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.1.1，`scripts/test-release-metadata.mjs` 一处改、多处一起校验。
+- 两份 llms 以代码字体点名全部工具与端点；`TOOL_SUMMARIES` / `agent-guide` / 端点目录保持同步。
+- 当前 **136 个 `lib/*.js`** / 合计 **2,095,867 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径；Windows 工作树受 `core.autocrlf` 影响略高）。
+- 真机自证清单（如实列为未完成）：DSH 宿主启动后刷新页面 hover 自证 `UI 2026-11-17.2`、开面板跑 `lowLatencyChunks:true` 听首段是否先播、PPT 加速链档位按钮显示、`smoke.mjs --submit` 真出图、layout 中文可见性、8 GB 核显速度。
+
+## 1.1.0 更新说明
+
+> 从 1.0.0 到 1.1.0：这一版**不改三大能力的生成链契约**，专治两件事——① 1.0.0 之后积压的全部工作树改动一次性收口（补缺模块 / hyperframes §13 四项 / UI 整改 / 体积根治）；② 把「说快了却没实测」的加速说法变成可复核的真机数字与诚实边界。1.0.0 及此前全部能力继续有效，API 与工具名零变更，升级只需替换插件目录。
+
+### ★ 许可证：维持 BSL 1.1（BUSL-1.1），本版不改
+- 自 **0.33.0 起**许可为 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：除托管 / 代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用；**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版没有改动许可文本，也没有新增任何限制。
+- 外部 TTS 服务的合规边界写死在清单里：**GSV.CPP**（MIT，一键包 3.16 GB / g2pw 前端 608 MB，只做适配器 + 引导、不捆绑不代下）；**AnifLive-TTS**（原创代码 PolyForm Noncommercial 1.0.0 **禁商用**，只抄公开工程思路、不复制代码与二进制，商用须作者书面授权）。第三方截图里的 74.6 ms / 2–3× 是作者特定硬件的历史宣称，**本插件未复测、不写进结论**。
+
+### ★ 新工具与端点：承接 1.0.0，本版给已有工具补真实能力
+- 四个纯 JS 新工具（`plan_storyboard` / `render_frame` / `compose_video` / `layout_frame`）与补缺模块（队列端点、ControlNet 预处理纯逻辑、段级续跑账本、WS 渐进预览、外部工作流导入）全部接进生产链，非孤儿。
+- `generate_speech` 新增 `attention`（`auto / sage_attn / flash_attn / sdpa / eager`，默认不写 = 节点自身 auto 零漂移）与 `lowLatencyChunks`（默认 false：两段式——首段短切先落盘并推给悬浮面板自动播一次、剩余整段一次提交、ffmpeg concat 拼 m4a；**非节点级流式，整段时长不变**，首段先听而已，块间语气可能断裂，缓存键区分 chunks/whole 防串味）。首段事件走 `progress.ttsLive`（单例 TTL 有界），面板开着才播、自动播被浏览器拦则静默不报错。
+- `list_tts_backends` 与 `/api/qwen-paint/tts/backends` 新增 `external_services`：对 127.0.0.1 上的外部 TTS 服务真实探活并回传在线状态、失败原因、许可证与引导，只许回环地址、不放行任意 host。
+
+### ★ 加速链全景：从「列节点」升级到「有真机数字与诚实边界」
+- **本机实测的插件层优化**：内置 resvg 光栅 **7.02×**（600.50 ms → 85.51 ms）、静态帧去重 + VFR + libx264 **6.58×**（870.49 ms → 132.20 ms）、草稿档合成 **2.10×**、分镜缓存命中 **34.2×**、下拉增量回填 DOM 操作 −99.7%、TTS 旁白缓存命中 0.21 ms。
+- **编码择优纠错**：`ENCODE_PRIORITY` 由 NVENC→QSV→AMF→libx264 改为 **NVENC→QSV→libx264→AMF**，消除本机「AMF 可用但慢 12.9%–38.3%」的误选；这是「可用性 + 保守顺序」择优，不是速度基准择优。
+- **ComfyUI 加速节点真机对照**（官方 8 步 turbo 链，1024²，每轮换 seed 防 prompt 缓存）：baseline 9,910 ms、TE-Speed **8,197 ms（−17.3%，唯一稳定正收益）**、TE-Speed+sage 8,687 ms（−12.3%）、Speedup +1.1%、BlockCache T8 **+8.9%（更慢）**、FBCache 与该链不兼容。历史 turbo8 −86% / BlockCache +22.7% 来自不同模型 / 分辨率 / 版本，**不可比，不冒充当前值**。
+- TTS attention 真机只确认「参数可控、auto 实际选 sage_attn、flash_attn 静默回退 eager、每次切换清缓存重载模型 10–40 s」；样本离散过大，**不宣称任何 attention 更快**。
+
+### ★ 工作流清单层：承接 1.0.0
+- `chain-manifest`（运行时清单目录）与图结构指纹基准（回归期逐槽位对账）继续生效，后者只在回归里跑、不参与运行时构图。本版不改生成链，默认路径逐字节不变。
+
+### ★ 结构化运行日志：承接 1.0.0
+- `event-log` 落盘 + 生成完成钩子不变；细分耗时 `queue` / `total` 来自 ComfyUI `/history` 真实时间戳，`load/sample/decode` 官方不提供，保持 `null`（不编数字）。
+
+### ★ UI 与交互：档位可见 + 错误可诊断 + build 自证
+- 「本机能力 / 加速链」面板并入 Comfy 控制面板：SageAttention / WaveSpeed / 恢复默认三档按钮真存在；实验室独立浮层已删除，只挂 `cp-panel` 的插槽，找不到就不挂。
+- 「本机请求失败」一类笼统报错拆成「连不上本机服务：ComfyUI 可能未启动」与「本机服务返回异常（HTTP n）」两种可诊断文案；真宿主未启动导致的 404 由用户侧启动解决，插件不假装已连通。
+- 位置口径不变：功能区仍然**内嵌**进 Comfy 控制面板（不新开浮层），展开页恒在悬浮球**正上方**、**边框对齐** DSH 右边框、小屏**不变形**，四事件点按 + `pointerdown` 兜底。`UI_BUILD` 升到 `2026-11-17.2`（TTS 首段早出声）供刷新自证。
+
+### ★ 媒体格式转换：承接 1.0.0
+- 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；本版不改转码路径。新增 ffmpeg concat 用于低延迟分块的音频顺序拼接。
+
+### ★ 联动护栏与回归
+- 新增 `test-bgm-opt.mjs`（30 项，含假 ffmpeg 真链路：首次执行 / 二次跳过 / 关缓存强制重跑）、`test-tts-lowlatency.mjs`（48 项，含回环围栏反向核查）、`test-tts-workflow.mjs` attention 契约 7 条、`test-ui-perf.mjs` 3 条错误文案与 build 断言，全部登记 SUITES。
+- BGM 三块优化接进生产链：音乐计划缓存（`generate_music`）、ducking 缝合缓存（`mix_narration` / `av-stitch`，`stitchCache:false` 可关）、§7 装配计划（`/music/models`，模型 / 权重项标 blocked 不谎称）。
+- 全量回归 **110 套，各套项全绿**（断言总数刻意不写死；103 套 + 补缺批 `test-gap-fill.mjs` + 动画三件套 `test-animation-kit.mjs` + 动画四项优化 `test-anim-opt.mjs` + 渲染后端 `test-render-backends.mjs` + 版式/VFR/TTS 缓存 `test-layout-vfr-ttscache.mjs` + BGM 优化 `test-bgm-opt.mjs` + 外部 TTS 低延迟编排 `test-tts-lowlatency.mjs`）；`lib/index.js` **224,521 B / 上限 262,144 B，余量 37,623 B**；`lib/client.js` 217,489 B。
+
+### 文档
+- `package.json` / `meta.description` / README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.1.0，`scripts/test-release-metadata.mjs` 一处改、多处一起校验。
+- 两份 llms 以代码字体点名全部工具与端点；`TOOL_SUMMARIES` / `agent-guide` / 端点目录保持同步。
+- 当前 **136 个 `lib/*.js`** / 合计 **2,095,867 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径；Windows 工作树受 `core.autocrlf` 影响略高）。体积根治靠「新功能走独立模块 + 零 index 增长注册 + 纯说明性文件头注释逐字外置到 docs」，逐字可逆；内置 `assets/bin/resvg.exe`（v0.50.0，双许可证随包分发）为默认光栅后端、stdin 送 SVG 收 PNG，探测不到一律降级保留 SVG，中文渲染依赖系统字体、缺字时自检判为不安全并降级。
+- 真机自证清单（本版如实列为未完成）：DSH 宿主启动后刷新页面 hover 自证 `UI 2026-11-17.1`、layout 中文可见性、混合四段回显、TTS 后端 / 音色在混合链真生效、ASR 真转写、编辑台 picker 点按、PPT 加速链档位按钮显示、`smoke.mjs --submit` 真出图、8 GB 核显速度。
+
 ## 1.0.0 更新说明
 
 > 从 0.35.0 到 1.0.0：这一版不改生成链、不加新工具，专治「界面说生效、实际没生效」这一类**静默谎言**。0.35.0 及此前全部能力继续有效。API 与工具名零变更，升级只需替换插件目录。
@@ -222,13 +305,78 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 ### ★ 联动护栏与回归
 - 新增 `scripts/test-white-bar.mjs`（48 项）：缓存纯函数与失败冷却是**真调用**（vm 拿 client factory / 真跑 mock fetchFn），其余锁关键分支；反向核查「改坏失败时间戳 → 2 项红」「改坏 total 拆分 → 1 项红」，恢复后 md5 一致。
 - 历史分页：`store.query()` 的**筛选后**总数与 `store.stats()` 的**全量**总数拆成 `total` / `allTotal`，stats 绝不碰分页基数 —— 修掉「筛选 3 条却显示 100 条、翻页全空白」的竞态。
-- 全量回归 **103 套，各套项全绿**（断言总数刻意不写死）；`lib/index.js` **206,499 B / 上限 262,144 B，余量 55,645 B**（本版零增长压力，仍走外置注册层）；`lib/client.js` 217,246 B。
+- 全量回归 **110 套，各套项全绿**（断言总数刻意不写死；103 套 + 补缺批 `test-gap-fill.mjs` + 动画三件套 `test-animation-kit.mjs` + 动画四项优化 `test-anim-opt.mjs` + 渲染后端 `test-render-backends.mjs` + 版式/VFR/TTS 缓存 `test-layout-vfr-ttscache.mjs` + BGM 优化 `test-bgm-opt.mjs` + 外部 TTS 低延迟编排 `test-tts-lowlatency.mjs`）；`lib/index.js` **224,521 B / 上限 262,144 B，余量 37,623 B**（1.0.0 发布时 206,499 B / 余 55,645 B；本轮补缺后经 slim-comments 外置长设计说明，仍走外置注册层）；`lib/client.js` 217,489 B。
 - 全项目假绿双向扫描：99 个套件的断言函数签名 vs 调用方式全查，两个方向均无参数颠倒；工作树新增行经隐私预检零命中。
 
 ### 文档
 - `package.json` / `meta.description` / README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.0.0，`scripts/test-release-metadata.mjs` 一处改、多处一起校验。
 - 两份 llms 以代码字体点名全部工具与端点；`TOOL_SUMMARIES` / `agent-guide` / 端点目录保持同步。
-- 当前 **123 个 `lib/*.js`** / 合计 **2,001,577 B**。
+- 当前 **136 个 `lib/*.js`** / 合计 **2,095,867 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径；Windows 工作树受 `core.autocrlf` 影响略高）。新增 `lib/anim-opt.js`（动画四项纯 JS 优化：静态帧去重 / 分镜级缓存 / 草稿定稿档 / 时序校验前置，hyperframes 清单 §13 可映射项）、`lib/render-backends.js`（硬件编码择优 + resvg 光栅探测，**内置优先**、未启用绝不谎称）、`lib/anim-cache.js`（静态瓦片缓存 + 可插拔渲染后端接口）；并把 1.0.0 后新增模块的纯设计注释外置到 `docs/added-modules-design-notes.md` 与 `docs/backend-headers-design-notes.md`（逐字可逆自检），根治了 40 改动造成的 lib 合计超 2 MB 红线问题。**★ 内置 resvg 光栅后端**：`assets/bin/resvg.exe`（官方 v0.50.0 Windows x86_64，zip 权威 1,717,055 B 校验、解压 3,994,624 B，随包分发，Apache-2.0 OR MIT 双许可证在 `assets/bin/LICENSE-resvg-*.txt`）为默认光栅后端，`render_frame` 经 stdin 送 SVG/收 PNG（绕开路径编码问题），探测不到或渲染异常一律降级保留 SVG；非 Windows 平台由 `RESVG_PATH`/`PATH` 发现模式兜底。中文渲染依赖系统字体，缺字时自检会判为不安全并降级（不谎称已启用）。本轮（1.0.0 后、未发布）补缺新增 `lib/job-endpoints.js`（队列前台端点）、`lib/cnet-preprocess.js`（ControlNet 预处理纯逻辑）、`lib/resume-store.js`（视频段级续跑账本）、`lib/ws-preview.js`（WS 渐进预览）、`lib/workflow-import.js` + `lib/workflow-import-endpoints.js`（外部工作流导入）、`lib/animation-kit.js`（自研轻量动画三件套）。为腾出体积，`schema-defaults.js` 里 10 段纯设计注释外置到 `docs/schema-design-notes.md`（逐字可逆自检，`scripts/extract-design-notes.mjs`，脚本幂等可重跑），功能零改动。
+
+### 2026-11-17 补缺批次（1.0.0 后工作树，**未发布**）
+
+**本批次三件新功能（诚实边界写在代码里）**
+- `lib/layout-lite.js` + `layout_frame` 工具：声明式版式页（title / bullets / split / compare）→ 纯 JS flex 子集算绝对坐标 → SVG。**不是** CSS 或 Taffy 级引擎：单层 row/column、不做 flex-wrap/CSS 解析，文本按字符宽度估算换行（CJK 1em / 其余 0.55em），只保证不溢出；落盘走目录围栏，宿主注入光栅后端（内置 resvg）才顺带出 PNG。
+- `compose_video` 新增 `fpsMode=vfr`：走 **concat 清单**按 duration 精确控时，不把去重后的静态段补帧回恒定帧率（实测 4 帧/0.52s/2,505 B vs CFR 7 帧/0.583s/3,145 B）；无 `writeFile` 写不了清单时**如实退回 CFR** 并写进 reason，不假装是 VFR。注意它只省「补出来的重复帧」，动态段仍是一帧一图，不是内容感知抽帧。
+- `generate_speech` 旁白内容缓存：`文本 + 后端/音色 + seed + 参考音频身份` 做 sha256 指纹，命中直接复用（连 ComfyUI 探活都省），产物字节数与登记不符/元数据损坏/文件缺失一律按未命中；缓存是增强，写失败绝不影响真实合成。
+
+对照 GitHub Issues 草稿，先补上六项（M1–M5 / H3），随后把五项架构级缺口一并完成：
+- **M1 历史 LoRA 落库 + 筛选**：draw 记录 `extra` 增加实际接线的 `loras`（名+强度）/ `unet` / `cfg`（取自构建出的工作流本体，不是面板"当前选择"）；`/history` 增加 `lora` 筛选（SQLite LIKE 带 ESCAPE 防通配注入 + JSONL 降级路径同语义）。
+- **M2 参数包导出 / 一键重画**：`GET /api/qwen-paint/history/export?id=`（`draw_args` 可直接交 Agent 重放；reference/controlImage 刻意不入包）；`POST /api/qwen-paint/history/redraw`（走与 `draw_image` **同一条** `runDraw` 内部链路，与批量工具同接法）；历史面板新增「重画」「复制参数」按钮。
+- **M3 队列前台操作**：`GET|POST /api/qwen-paint/jobs`（列表/统计 + `cancel|pause|resume`），交给前台的是 `manage_jobs` 工具**同一份队列实例**；lab 队列区从只读升级为可查看/逐条取消/暂停/恢复派发。
+- **M4 ControlNet 预处理**：`POST /api/qwen-paint/cnet-preprocess`（Canny/Depth/Pose 候选节点按本机 `/object_info` 探测，0.39.0 核心只有 Canny，缺了如实 409 + 安装提示）；产物按「原图 sha256+类型+参数」缓存到 `.qwen-paint-cnet-previews/`，可直接填 `controlImage`；lab 新增区块带预览。
+- **M5 落盘目录模板**：`cfg.filePrefixTemplate` 支持 `{date}` / `{model}`（ComfyUI 前缀 `/` 即子目录）；未配置 = 行为逐字节不变；模板白名单 + 穿越/盘符拒绝。
+- **H3 视频尾帧**：`generate_video` 新增 `endImage`；双轨构图（清单 patches + 硬编码）对称接线，双轨逐字节一致测试锁定；**契约门禁**：本机 `Wan22ImageToVideoLatent` 无 `end_image` 槽（0.39.0）→ 如实报错不假装支持；README/llms 同步补写此前缺失的 `startImage` 文档。
+
+### 2026-11-17 架构级补缺批次（1.0.0 后工作树，**未发布**）
+
+前一批留下的五项架构级缺口也已全部完成：
+
+- **H1 多 ControlNet 链式叠加**：`buildWorkflow` 接 `controlStack`（最多 4 路），每路 LoadImage → ControlNetLoader → ControlNetApplyAdvanced，positive/negative 串成 condition 链；单路旧路径逐字节不变（additive 设计，不动默认夹具图指纹）。
+- **H2 参考图独立权重 + mask**：`reference-strategy.js` 的 `planReferenceControls` / `applyReferencePlan`，用 `LatentComposite.feather` 表达软权重、mask 走 `VAEEncodeForInpaint`；**不用 `SetLatentNoiseMask`**（0.18 局部重绘架构锁）；无 per-reference 时序门控节点时如实零漂移并记 notes。
+- **H4 视频段级续推**：`resume-store.js` 账本，按「index/帧数/seed/prompt/首帧」键缓存已完成段；改任一参数、产物被删、超 2 小时都整条重跑，只复用连续已完成段（不从中间续）。`generate_hybrid.resumeVideo` 默认开启。
+- **L1 WebSocket 渐进预览**：`ws-preview.js` 解析 ComfyUI `progress` + 4 字节头二进制预览帧；`GET /api/qwen-paint/preview?enable=1` 按需连本机 WS，Node 20 无全局 WebSocket 时如实 `unavailable` + reason；预览是增强层，没有帧不伪造、不拖累出图。
+- **L2 外部工作流 JSON 导入**：`workflow-import.js` + 端点，只接受 ComfyUI **API 格式**（UI 格式明确提示用 Export (API)）；校验节点/引用 → 对照本机 `/object_info` 报覆盖 → 识别可绑定槽位 → 生成 `$param./$asset.` 模板进进程内注册表（重启失效，不写包内 `workflows/` 清单，不触契约指纹）。
+- **原生 2K（无需先生成再放大）**：本就是默认路径 —— `forceOptimizedSize:false` 尊重调用方尺寸、`upscaleAfter:0` 不事后放大；`draw_image` 传 `width:2048,height:2048`（或 `megapixels:2`）直达 `EmptyLatentImage`，没有 2048 硬上限（`taskMaxCanvasEdge` 只约束局部重绘的裁剪预缩放）。刻意**不新增**冗余的 `native_resolution` 开关：它只是这两项的别名，反而会引入优先级歧义。
+
+### 2026-11-17 动画四项优化（hyperframes 清单 §13 映射，1.0.0 后工作树，**未发布**）
+
+`hyperframes-底层加速整合总清单.md` 主体针对无头 Chrome 渲染系统，**与本插件无关**（插件是纯 JS SVG 帧 + ffmpeg argv，无 Chrome/GSAP/Lottie/WebGL 对象；§0 的 BGM 模型/权重未定全线阻塞、所有加速倍数未实测不可写成承诺，§11 明确延后 7 项）。只落地其 §13 列出的 4 项纯 JS 可映射项，全部在新模块 `lib/anim-opt.js`、`animation-kit.js` 消费，**零外部依赖、零新端点、index.js 零增长**：
+- **① 静态帧去重**：`collapseRepeatedFrames` 把相邻同路径帧折叠为一帧，`buildComposeCommand` 用 `repeats` 把每帧 `-t` 延长为 `repeat/fps`、concat 帧数随之减少 —— 静态画面不再重复落盘。`compose_video` 的 `dedupe` 默认关（旧行为逐字不变）。
+- **② 分镜级缓存**：`createFrameCache` 以 `{type,hint,尺寸}` 的 sha256 为 key、sidecar JSON 持久化、FIFO 淘汰 64 条；`render_frame` 命中即逐字复用 SVG 与落盘路径，改一镜只重渲那一镜。file/path 由宿主注入，未注入则不启用（旧测试零影响）。
+- **③ 草稿/定稿档**：`ANIM_QUALITY_PRESETS`（draft 480×270/12fps、final 960×540/24fps），显式 width/height/fps 优先于档位；`render_frame`/`compose_video` 新增可选 `quality` 参数。
+- **④ 时序校验前置**：`checkTimelineAlignment` 在合成前比对字幕 cue 数 / 末端、配音时长与分镜 `from/to` 时间轴；不齐默认**只告警不拒绝**（`reason` 带 ⚠），`strictTiming:true` 才拒绝；缺数据如实跳过，不编造对齐时间戳（脚本字幕本就 `aligned:false`）。
+
+**公共底座体检**（清单 §2 的插件适用项）：DAG 调度（`dag-planner.js`/`accel-chain.js`/`run_dag`）、全局去重与容量淘汰（`idempotency.js`/`prompt-cache.js`/新分镜缓存）、显存探测与档位（`config.js` 的 VRAM 探测 + `MODEL_TIERS` + `assessLowEndReadiness`）均已存在；「零拷贝流式编码 sink」因插件无 Chrome 截图 readback 链路而不适用，如实记录、不强行造对象。
+
+### 2026-11-17 BGM 链路优化（1.0.0 后工作树，**未发布**）
+
+新增 `lib/bgm-opt.js`（设计注释逐字外置 `docs/bgm-opt-design-notes.md`），三块都是插件层可离线跑、可实测、有生产消费点的优化，非孤儿：
+- **① 音乐计划缓存**：`generate_music` 按 `model+prompt+neg+bpm+seed+时长+segment/loop/quality+探测节点集合` 的 sha256 指纹缓存参数计划，命中直接复用、省掉重复 `buildMusicPlan`；信封 JSON 带字节自校验，篡改/截断按未命中，读写失败一律降级真实规划。`deps.musicPlanCache===false` 可关（验证真链路用）。
+- **② ducking 缝合缓存**：`mix_narration`/`runAvStitch` 按 `BGM+旁白条目(路径|大小|mtime)+duck 参数+target` 指纹缓存成品，命中跳过整次 ffmpeg 混流编码；产物存在且字节一致才算命中，`stitchCache:false` 可关。真链路回归用假 ffmpeg 计数验证「首次执行 / 二次跳过 / 关缓存强制真跑」。
+- **③ hyperframes §7 装配计划**：`/api/qwen-paint/music/models` 新增 `assembly` 字段，透出缓存键七字段、已有 ducking、断点续推（只复用完整段）、embedding 缓存计划；需模型/权重的 candle FP8、预并行、Rust worker 一律标 `blocked` + 原因，**不谎称已实现或实测倍率**。
+
+> 诚实边界：音乐真生成仍依赖外部 ComfyUI 节点（本机实测 `YuE2GenerateMusic` / `SaveAudio*` 可探测）与用户自备权重，本优化不下载、不提交、不生成音频；缓存只加速插件自身的规划与 ffmpeg 缝合。为守 lib 2 MB 红线，另把 `reference-web` / `workflow-manifest` / `vectorize` / `style-library` / `vram-budget` 五个模块的文件头说明逐字外置到 `docs/bgm-opt-design-notes.md`（可逆、语义零改）。专项回归 `scripts/test-bgm-opt.mjs`（30 项）已登记 SUITES。
+
+- **外部 TTS 低延迟编排（1.0.0 后、未发布）**：按用户「抄思路不抄代码」定调，新增 `lib/tts-lowlatency.js`（纯编排：**语义分块降首音延迟** + **本机回环服务探活** + gsv/openai 两种 API 请求适配 + 诚实引导），不复制任何项目代码、不捆绑二进制/权重。`/api/qwen-paint/tts/backends` 与 `list_tts_backends` 工具新增 `external_services` 字段（真实探测 127.0.0.1 上的服务在不在）；lab「语音后端」卡可查看。两个外部服务的合规边界写死在清单里：**GSV.CPP**（真实仓库 `KakaruHayate/GSV.CPP`，MIT，一键包 3.16 GB、g2pw 前端 608 MB，只做适配器+引导、不下载不捆绑）、**AnifLive-TTS**（真实仓库 `Hiruynk/AnifLive-TTS`，原创代码 **PolyForm Noncommercial 1.0.0 禁商用**，商用要作者书面授权，本插件只给引导、不复制其代码）。截图里的 74.6 ms / 2–3× 都是作者在特定硬件的历史宣称，**本插件未复测、不写进结论**。为守 2 MB 红线，`comfy-catalog` / `cpu-endpoints` / `media-convert-tool` / `job-tool` 四个模块的纯说明头注释逐字外置到 `docs/tts-lowlatency-design-notes.md`（可逆、语义零改）。专项回归 `scripts/test-tts-lowlatency.mjs`（含回环围栏反向核查）已登记 SUITES。
+- **Qwen3-TTS 注意力后端可选 + 低延迟分块（1.0.0 后、未发布）**：真机 `/object_info` 实测 `FB_Qwen3TTSCustomVoice/VoiceClone/VoiceDesign` 都声明 `attention = auto/sage_attn/flash_attn/sdpa/eager`，但原先 `generate_speech` 写死不传。现新增 `attention` 参数（默认 `auto` 零漂移，仅显式合法枚举才写入生成节点，非法值不污染工作流），透传三条链；`sage_attn/flash_attn` 多为 N 卡优化，本插件**未实测哪个更快**，换值需自行 A/B。`lowLatencyChunks`（默认 false）：按语义切块逐段真提交 ComfyUI、逐块落盘再用 ffmpeg concat 顺序拼成一个音频；**这不是流式播放**，块间语气可能不连贯、整段总耗时可能增加，需本机 ffmpeg、缺件明确报错；缓存键区分分块/整段防串味。为守体积，另把 `tool-registry` / `blockswap` / `model-options` / `accel-profiles` 四个模块头注释逐字外置。`test-tts-workflow.mjs` 加 attention 透传/默认零漂移/非法值防污染断言（含反向核查）。
+
+**红线根治**：接手时发现 1.0.0 后的 40 个未提交改动已把 `lib/*.js` 合计推到 2,100,604 B（超 2,097,152 上限 8,452 B），数据库「105 套全绿」是改动前的假绿。把 7 个新模块 + `describe.js` 的纯设计注释外置到 `docs/added-modules-design-notes.md`（逐字可逆自检，含 GPU_PROFILES 语义注释保护——曾误外置导致 `apple` 档案损坏，已回滚重做），合计降到 2,093,241 B（护栏 LF 口径）/ 余 3,911 B。全量回归见上（106 套）。
+- **Alpha / 透明背景（诚实边界，未做）**：没有加 `alpha:true` 假开关。本机 Qwen-Image 2.1 的 latent 格式是 **64 通道**（`comfy/latent_formats.py::QwenImage21`），VAE 解码是 RGB；没有 `zz_rgba2rgb` 节点，也没有 Qwen-Image-Layered 权重。"四通道 VAE 可直接出透明底"在本链路/本机版本上不成立。要做真透明底需另装分层模型与对应节点，或走已有的 `cutout_image` 后处理（纯色底、复杂主体不可靠）——**不是原生 alpha**，不混为一谈。
+- **分块重绘 `tile_inpaint`（默认关）**：本机核心节点 `SplitImageToTileList` / `ImageMergeTileList`（正弦羽化）/ `GetImageSize` 齐备；打开 `tileInpaintEnabled` 后，裁剪图被切成 `tileInpaintSize`（默认 1024）方块、重叠 `tileInpaintOverlap`（默认 128，夹到半块以内），逐块走同一条采样链，合并后再 ColorMatch + 回贴。缺任一节点就不接；默认图逐字节不变。⚠ **块间语义连续性未真机 A/B**，多块=多份采样开销，先小图验接缝再长期开。
+- **EasyCache 步级复用（默认关）**：按本机 `comfy_extras/nodes_easycache.py` 的真实签名接入核心实验节点 `EasyCache`，参数 `easyCacheEnabled` / `easyCacheReuseThreshold` / `easyCacheStartPercent` / `easyCacheEndPercent` / `easyCacheVerbose`（默认 `false / 0.2 / 0.15 / 0.95 / false`）；面板开关 key `easycache`。节点号 42（20–22/30–41 属 ControlNet），接在模型链末端、注意力后端之前；探测不到节点或不开开关则整段删除，**默认图指纹零漂移**。⚠ 实验节点、本机未做 A/B，与 TE-Speed 互补但**不承诺倍率**，开前请单张对比画质。
+
+新增回归 `scripts/test-gap-fill.mjs`（172 项，已登记 SUITES；含原生 2K 4 项 + EasyCache 12 项 + 分块重绘 11 项）；全量 **105 套 / 各套项全绿**（断言总数刻意不写死，避免随环境漂移；含新增 `test-animation-kit.mjs`）；契约 167/0、manifest 118/0、运行时指纹 168/0；发布护栏与端点目录（`integration-state.js` 新增 `/preview`、`/workflow-import` 共 6 条新路由 + 两份 llms）同步。
+
+### 2026-11-17 自研轻量动画三件套（1.0.0 后工作树，**未发布**）
+
+评估了 manim-mcp / Remotion 等完整引擎后，按用户要求**不接整套重项目**，改为自研三个可独立编排的原子工具（`lib/animation-kit.js`，零新增重依赖）：
+
+- `plan_storyboard`：解说脚本 → 分镜 JSON（按句切分，逐镜给时长/字幕/配音词/画面类型与提示），复用 `subtitle-plan` 切句，时间戳均分未对齐语音。
+- `render_frame`：分镜 → SVG 示意图（formula/flow/chart/stick/diagram 纯 JS 生成，示意非 LaTeX 级）；`image` 镜次如实提示改用已有的 `draw_image` 出真实画面。
+- `compose_video`：帧序列 + 字幕 + 配音 → ffmpeg argv（concat + SRT 烧录 + 配音混流，H.264）；探测到 ffmpeg 才真出片，否则只回 argv 预览不谎称。
+
+与插件已有的 `subtitle-plan`（字幕）、`generate_speech`（配音）、`draw_image`（真实画面）、`convert_media`（后处理）拼成完整流水线。专项回归 `scripts/test-animation-kit.mjs`（43 项全绿，已登记 SUITES）；无 HTTP 端点（纯工具，Agent 直接调用）。依赖清单见桌面交付文档，**只出清单不安装**。
 
 ## 0.35.0 更新说明
 
@@ -1619,382 +1767,4 @@ UNETLoader → CLIPLoader → VAELoader → TextEncodeQwenImage21
 
 > ✅ **缺件会自动降级，不再"整单硬失败"**（2026-10-09 通用化改造）。  
 > 插件出图前会**先探测** ComfyUI 有哪些节点、磁盘上有哪些模型文件，据此自动选一档  
-> **可用的最快链路**：LoRA 不在 → 回退 25 步 / CFG 2.5 原生链；TE-Speed / Speedup 没装  
-> → 逐个跳过，链子自动接上。**不会再让 ComfyUI 用 `node type not found` 拒收整个任务**。  
-> 只有连千问主模型都匹配不到时，才会沿用配置里的文件名去试（那时才看得到 ComfyUI 的原始报错）。  
-> 手动退回慢档见「可调项」里的 `turbo8Enabled` / `teSpeedEnabled` / `speedupEnabled`。
->
-> 另外，**ComfyUI 装在哪、显卡是哪家、该用哪个注意力后端，都不需要你配置** —— 见下节。
-
-#### prompt 精简（2026-10-09 装上，但先把预期说清楚）
-
-默认会做一次**无损清理**：折叠多余空白/换行、合并连续重复标点、去掉末尾悬挂分隔符。  
-语义完全不变，干净 prompt 跑一遍也不变。
-
-**实测上限只有约 4.8%**，而且只对超长 prompt 才有意义（同一条栈只变 prompt）：
-
-| prompt 长度 |      耗时 |
-| --------- | ------: |
-| 38 字      | 7.821 s |
-| 329 字     | 8.088 s |
-| 1974 字    | 8.194 s |
-
-即 prompt 从 38 字加到 1974 字（52 倍）也只多花 0.373 s。  
-这也顺带证明了：**文本 token 没有被填充到固定长度**（否则长短 prompt 会一样快）。  
-交叉复测（clean / dirty 交替各 3 轮）显示差异完全淹没在噪声里 —— **不要指望靠精简 prompt 提速**。
-
-因此 `maxPromptChars`（按字数硬截断）**默认是 0 = 关闭**：它会改变出图，而换来的最多也就那 4.8%。  
-真要省时间，去调上面的加速链，别动 prompt。
-
-> **关于闭源 `nodes.pyd`**：TE-Speed 只发 Windows 编译好的 `.pyd`，没有源码。装之前做过静态审查  
-> （无网络/exec/子进程/eval/base64 调用，导入期不改任何 ComfyUI 方法；运行时只 monkey-patch  
-> `PoseBranchCache.select` 以修 CFG>1 的报错）。**介意闭源就别装它** —— 不装的话 turbo8 单跑  
-> 仍有 12.6 s（−86%），只比带 TE 慢 2.9 s。装好之后想临时停用它，见下面 `teSpeedEnabled`。
-
-#### 超分放大 VOSR2（可选，画质/预览层，**默认关**，不进时间账）
-
-VOSR2 是在出图**之后**再插一级 1.4B 单步超分（LightningDiT + 千问 2D VAE + DINOv2-L），  
-与上面四层加速链**正交、可叠加**。权重 6.97 GB 已下齐并字节校验通过，部署在  
-`ComfyUI\models\vosr2\`。
-
-
-**2026-10-09 端到端实测（默认加速链 + quad）**：
-
-| 档位    | 做法             |   实测(末轮) | vs 原生       |
-| ----- | -------------- | -------: | ----------- |
-| 1024² | 原生直出           |   7.74 s | 基准          |
-| 1024² | 512² + VOSR2×2 |  45.16 s | 慢 **5.84×** |
-| 2048² | 原生直出           |  53.27 s | 基准          |
-| 2048² | 512² + VOSR2×4 | 155.05 s | 慢 **2.91×** |
-
-**结论：超分不省时间，反而慢 2.9×–5.8×**。它的价值是「用低分辨率成图成本换更高名义分辨率 / 细节」，  
-属于画质 / 预览增强，**不计入成图时间**，因此**保持默认关、按需手动开启**。
-
-> ⚠ 打通它必须先过 `custom_nodes/zz_rgba2rgb` 这个节点：Qwen-Image VAE 解码出的是 **4 通道 RGBA**，  
-> 而 `VOSR2Upscale` 只要 3 通道 RGB，直接连会 `ValueError: expects 3-channel RGB, got 4 channels`。  
-> 该节点做 `image[..., :3]` 丢 alpha。画质级 A/B 未做（不同分辨率同 seed 构图不同，无法严格比对）。
-
-#### ROCm / 系统开关审计（2026-10-09，速览）
-
-在真实生产启动（仅 `--use-quad-cross-attention`，无 `--reserve-vram`，基线 **7.1s**）上实测：  
-`PYTORCH_HIP_ALLOC_CONF=expandable_segments`、`HIP_FORCE_DEV_KERNARG=1`、`MIOPEN_FIND_MODE=FAST`、  
-`--fast fp16_accumulation`、`--fp16-vae` 五项波动均落在轮间噪声内（−0.4%~−1.4%），**无可复现收益**；  
-`--highvram` 强压全模型进显存反而慢 **67%**，**明确禁用**。  
-`hipBLASLt` 运行时已加载（GEMM 调优天花板是开的），下一步可做带持久化缓存的正式 TunableOp 实测（~25 分钟，待确认）。  
-Windows 系统层（VBS/Defender 排除/进程优先级/Adrenalin 钩子）需你在宿主机自查——沙箱里 `reg.exe` 被禁读不到。  
-详细证据表见两份报告 §11.9 / §M。
-
-## 安装
-
-### 一键部署（推荐）：连 ComfyUI 和模型一起搞定
-
-```powershell
-node scripts/setup.mjs                 # 检测 + 缺什么补什么
-node scripts/setup.mjs --check         # 只看差什么，绝不动任何东西
-node scripts/setup.mjs --verify        # 已存在的模型也重算 SHA256（最稳）
-node scripts/setup.mjs --comfy 本机 ComfyUI     # 指定 ComfyUI 目录
-node scripts/setup.mjs --tier full|lite       # 直接指定主模型档位（见下）
-```
-
-它会：① 自动找 ComfyUI；② 把三个模型下到正确目录并**逐个 SHA256 校验**（校验不过的一律删除）；  
-③ 调 `install.mjs` 把插件挂进 DSH profile。
-
-### 主模型两个档位（小显存适配）
-
-装的时候会问一句，两个档位：
-
-| 档位 | 主模型 | 体积 | 适合 |
-|---|---|---|---|
-| **完整档**（默认） | `qwen_image_2.1_turbo_int8_convrot.safetensors`（官方 Turbo） | 6.8 GB | 显存 ≥ 8 GB，官方 8/9 步工作点 |
-| **轻量档** | `qwen-image-2.1-UC-Q4_K_M.gguf`（GGUF Q4_K_M） | 4.3 GB | 8 GB 及以下（如 RTX 5060） |
-
-CLIP 与 VAE 两档共用，**只有主模型不同**。
-
-轻量档有两件事必须知道：
-
-1. **要另装 ComfyUI-GGUF 节点**（`city96/ComfyUI-GGUF`），否则出图会被 ComfyUI 直接拒收：
-   ```
-   git clone https://github.com/city96/ComfyUI-GGUF "<你的ComfyUI>/custom_nodes/ComfyUI-GGUF"
-   ```
-2. **该 GGUF 是 Uncensored 系**的 —— 经核实，目前能在 ComfyUI-GGUF 下跑起来的
-   Qwen-Image GGUF 只有这一类。介意的话装完自行替换 `models/unet` 里的文件即可，
-   插件会自动认你换的那个。
-
-> ⚠ **重要限制（2026-10-12 排查）**：Qwen-Image **2.1** 的 GGUF 目前只有
-> `abenzerps` 一家提供，且**只在 HuggingFace**。脚本会依次试
-> `hf-mirror.com` → `huggingface.co`，但 **hf-mirror 对 LFS 大文件只返回 308
-> 跳转、等于没镜像**，所以**国内网络下很可能下不动**。
-> `city96`（ComfyUI-GGUF 作者）确实有一份在 ModelScope 上，但他转的是
-> **初代 Qwen-Image（20B，Q4_K_M 12.17 GB）**，与 2.1（7B）**不能混用**。
-> ⇒ **下不动是预期内的**：自己弄一个可用的 `.gguf` 放进 `models/unet`
-> 即可，插件会按文件名自动挑最优的那个。
-
-> ⚠ 曾经的坑：这里原先是 `unsloth/Qwen-Image-2.1-GGUF` 的 Q4_K_M，
-> 那个是 **stable-diffusion.cpp 格式**的 GGUF（元数据为空、张量名
-> `model.diffusion_model.*`），ComfyUI-GGUF 加载不了。2026-10-12 已换成
-> 实测能用的 `abenzerps` 系，并保留 ComfyUI-GGUF 的安装提示。
-
-**显存还是紧张？** 降 `megapixels`（如 0.5）立竿见影；出图目录也可以设到固态盘上（见「配置」的 `outputDir`）。
-
-### 显卡：N 卡开箱即用，A 卡走 ROCm（0.1.1 新增）
-
-脚本**先看显卡再决定怎么装**：N 卡用 ComfyUI 官方便携包；**AMD Radeon 走 ROCm 路线**  
-（AMD 官方 Windows wheels，装完还是 ComfyUI，**插件本身不用换**，模型也是同一套）；  
-Intel 核显走「共享显存」路线（见下一节），**能出图但明显偏慢**，不再劝退。
-
-### 核显 / 共享显存 / 8 GB 内存（0.2.0 新增）
-
-核显没有独立显存，是拿**系统内存**当显存用。插件对这条路径的做法：
-
-- **识别**：Intel UHD / Iris Xe 等核显会被判成 `intel_igpu`（`sharedMemory: true`），
-  不会被误当成"小显存独显"。
-- **启动参数**：自动加 `--lowvram`（权重按需换入内存），不挂任何厂商加速包 ——
-  核显上装那些包只会拖慢启动、不会变快。
-- **精度档**：共享显存**无论报多大显存都强制最轻档**（GGUF Q4），这是核显上最稳的选择。
-- **不误下 CUDA 包**：安装脚本对 Intel 分支不会去下 N 卡的便携包，默认推荐轻量档。
-- **门槛是量化的**：`check_acceleration` 会给出具体秒数目标与建议档位，
-  字段带 `unverified: true` —— 这是**默认目标值，未经真机实测校准**，真机跑一张后替换。
-
-实测口径（请按自己的机器复核，别当承诺）：
-
-| 硬件 | 能否出图 | 默认速度门槛（unverified） |
-|---|---|---|
-| 核显 + 8 GB 整机内存 | 能，但明显偏慢 | 约 360 s / 张 |
-| 核显 + 16 GB 整机内存 | 能，达到可接受区间 | 约 180 s / 张 |
-| 独显 8 GB | 能 | 约 120 s / 张 |
-| 独显 ≥ 16 GB | 能，舒适 | 约 60 s / 张 |
-
-> ⚠ 上表是**待校准的默认目标值**，不是实测结论。分辨率、步数、并发都会显著改变结果。
-> 想让 8 GB 机器更快：选轻量档（GGUF Q4）+ 降 `megapixels`（如 0.5）+ 关掉并发。
-
-AMD 用户先 `node scripts/setup.mjs --check` 看计划，确认后 `--yes` 执行。  
-⚠ 三条必读：**A 卡可能静默出错**（跑完必须人眼看图）、**别升 ROCm 10.0**  
-（HIP 7.15 会破坏权重，脚本锁 7.2.1）、模型**禁止商用**。
-
-> ★ **RX 5000 系列（RDNA1 / gfx101x）单独说一句**：这一代**不在 ROCm 官方支持矩阵内** ——
-> PyTorch 官方 ROCm 轮子没有编译 gfx101x，通常需要 `HSA_OVERRIDE_GFX_VERSION`
-> （或自行按 gfx1010 / gfx1012 重新编译 PyTorch）才能让 PyTorch 认卡。
-> 这属于**环境搭建**层面的事，插件不改也不该改（改驱动/编译轮子的风险远大于收益），
-> 只在识别到这一代时把这件事写进面板提示，免得你"装完发现认不到卡"。
-> 注意力后端上它与 RDNA2 同样走保守的 `--use-pytorch-cross-attention`
-> （ROCm 的 AOTriton 融合内核只覆盖 RDNA3 / 3.5 / 4，CK SDPA 也不覆盖 gfx101x）。
-
-#### 用户可选的核显型号（0.2.0 追加，2026-11-13）
-
-上面那条是**按内存/显存自动判档**；这里再给一条**按具体核显型号自己选**的路子。
-型号档案在 `lib/igpu-profiles.js`，安装脚本里三个开关：
-
-```bash
-node scripts/setup.mjs --list-igpu                    # 列出全部可选型号与建议（零联网 / 零下载）
-node scripts/setup.mjs --igpu amd-780m --check       # 指定型号看建议，只看不改
-node scripts/setup.mjs --igpu amd-780m --igpu-download   # 只有显式加这个开关才会下载
-```
-
-| 品牌 | 可选型号 | 建议后端 | 建议量化 | 建议边长 |
-|---|---|---|---|---|
-| AMD | Radeon **780M** / **680M** / **760M** / **660M** | DirectML | GGUF Q4（弱档建议更轻、自备） | 720（660M 建议 512） |
-| AMD | Radeon **8060S**（Ryzen AI Max+ 395） | ROCm 原生（gfx1151） | 可考虑 BF16 / FP8 | 720 |
-| Intel | **Iris Xe 96EU** / **UHD** / **Arc 140V** / **140T** / **B390** | OpenVINO | GGUF Q4（UHD 建议更轻、自备） | 720（UHD 建议 512） |
-
-优先级（按用户清单的综合体验口径，非跑分）：`Arc B390 > 780M ≈ Arc 140V > 680M ≈ Iris Xe 96EU`。
-
-> ⚠⚠ **三条必读，别把清单当承诺**
-> ① 清单里的秒数（780M 约 15 s、680M 约 120 s、Iris Xe 512² 约 12 s、Arc 140V 约 54 s 等）
-> 来自用户提供的机型清单 / 社区公开分享，测的是 **SD 1.5 / SDXL / Z-Image-Turbo 等其它模型**，
-> 与本插件的 Qwen-Image 2.1 工作流**不可直接比较**，也**不是本插件实测**；
-> 档案里每条都带 `unverified: true` / `comparable: false`，**绝不替换** `speedTargetSec`。
-> ② DirectML / OpenVINO 需要**用户自己更换 ComfyUI 的 PyTorch 后端**，插件不自动装、不自动改环境；
-> Windows ROCm 官方原生支持的核显目前只有 8060S（gfx1151）这一档。
-> ③ **自动下载默认关闭**。下了也是按服务器权威值校验：
-> `qwen-image-2.1-UC-Q4_K_M.gguf`，`4604558112 B`，
-> sha256 `e79c8a009f2ecbdb6c70fd663d9aea9ee304a0d91f347e4169a756b8ad141b41`；
-> 大小或哈希不符一律删除。`--check` 永远不下载。前置条件会如实列出：需装
-> `ComfyUI-GGUF`，且节点要认 `general.architecture=qwen_image21`
-> （本机这版 `IMG_ARCH_LIST` 只有 `qwen_image`，**严格名不匹配**，可能需要升级节点）。
-
-完整说明见 [INSTALL.md](INSTALL.md) 的「AMD Radeon 用户」一节。
-
-### 只装插件本体
-
-```powershell
-node scripts/install.mjs              # 装进 desktop profile（默认）
-node scripts/install.mjs --profile web
-node scripts/install.mjs --uninstall
-node scripts/install.mjs --dry-run
-```
-
-脚本做的事（幂等、改前备份、验证不过自动回滚）：
-
-1. **先 import 一次插件入口**，ESM 语法错或依赖解析失败会当场暴露；
-2. 备份 profile 的 `package.json` 到 `profiles\<profile>\_backup-dsh-qwen-paint-<时间戳>\`；
-3. 写 `dependencies["dsh-qwen-paint"] = "link:<本目录>"`；
-4. 把 `dsh-qwen-paint` 加进 `dsh.profile.bundles`；
-5. 建 Junction `profiles\<profile>\node_modules\dsh-qwen-paint → 本目录`；
-6. 复核三处都落了，没落就回滚。
-
-> **官方首选路径**是 DSH 自己的 Plugin Manager（`plugin_manager` 的 `install_bundle`，target = 本包绝对目录），  
-> 或等价 CLI `dsh plugin --profile desktop add link:<本目录>`（**desktop profile 必须先完全退出 DSH**）。  
-> 本脚本是兜底路径，做的是等价的两件事。
->
-> ⚠ **若官方 Plugin Manager 因网络装不上** —— 典型报错 `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`，  
-> 或访问 `registry.npmmirror.org` 超时 / 证书不被信任 —— **那不是插件的问题**，  
-> 是 pnpm 的供应链校验连不上源。直接用上面的 `scripts/install.mjs` 即可：  
-> 与官方等价，且**不依赖任何包管理器网络请求**（本插件零运行时依赖）。
-
-**装完必须彻底退出 DSH 再重新打开** —— 宿主侧工具清单只在启动时装配一次。  
-（DSH 是桌面端 Electron 应用，**没有刷新页面这回事**。）
-
-## 用法
-
-装好并重启后，在聊天框直接说：
-
-```
-画一只在雪地里的柴犬，逆光，胶片颗粒，电影感
-给我画一张 16:9 的赛博朋克雨夜街景，霓虹反射在积水上
-用同样的种子再画一遍刚才那张
-```
-
-助手会调 `draw_image`。可传的参数：
-
-| 参数           | 说明                                                         |
-| ------------ | ---------------------------------------------------------- |
-| `prompt`     | **必填**，画面描述（中文可以）。建议写完整一段：主体 + 细节 + 环境 + 光线 + 风格           |
-| `size`       | 画幅比例：`1:1`（默认）、`3:4`、`4:3`、`2:3`、`3:2`、`16:9`、`9:16`       |
-| `megapixels` | 总像素（百万），默认 `1.0`。要更清楚就调大                                   |
-| `steps`      | 采样步数。⚠ **默认被强制钉在 8 步**（turbo8 的工作点），手填别的数会被忽略 —— 详见下面「加速链」 |
-| `seed`       | 随机种子。同提示词 + 同种子 = 同一张图；不填则每次不同                             |
-| `negative`   | 负面提示词。⚠ 千问模型 `cfg=1`，**负面词基本不生效**，一般别填                     |
-| `references` | 1–16 张参考图路径（按数组顺序接 `image_1…image_16`）；1–3 张走 `TextEncodeQwenImageEditPlus`，4–16 张走 `TextEncodeQwenImage21` 的 `images.image_N`；超过 16 张直接报错 |
-| `controlImage` | ControlNet 控制图路径；官方 Turbo 图暂不接 ControlNet，会自动留在旧链路 |
-
-另有两个专用工具：
-
-| 工具 | 说明 |
-|---|---|
-| `inpaint_image` | 局部重绘：`image` + `mask` + `prompt`；裁剪回贴，9 步 |
-| `remove_image` | 元素移除：`image` + `mask`；可选 `prompt` |
-| `outpaint_image` | 四向扩图：`image` + `left/right/up/down` 百分比 |
-
-尺寸按 **32 的倍数**对齐（`r32(v)=max(32, round(v/32)*32)`），与 `app.py` 的算法一致：  
-`1:1@1MP → 992×992`；`16:9@1MP → 1344×736`；`2:3@1MP → 832×1216`。
-
-## 出图落在哪
-
-`C:\Users\<你的用户名>\Desktop\千问1生图\`（遵循工作区约定；也在会话工作区「桌面」之内，  
-所以交付卡片和行内图片都能取到这个文件）。
-
-命名：`<提示词前若干字>_Qwen2.1_<宽>x<高>_<序号>.png`，重名自动加 `-2`、`-3`。
-
-## 图片是怎么显示在聊天框里的（原理，改之前务必看）
-
-这一节是 2026-10-07 逐个查内核源码核过的，**不要凭直觉改**：
-
-| 路径                                                | 能用吗           | 原因（都有内核源码依据）                                                                                                                                                |
-| ------------------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ImageBlock`（工具结果里返 `{type:"image", attachment}`） | ✗             | 客户端 `imageCardModel()` 开头就是 `if (call?.name !== "read_image") return null` —— **只认 `read_image`**；其他工具的 image block 会被 generic 卡片用 `JSON.stringify` 当文本打印出来 |
-| `presentCall` / `presentResult`                   | ✗             | ui-tool README 原文："Host `presentCall` and `presentResult` values **never enter the Client**."                                                               |
-| `presentationMeta` 让图显示                           | ✗             | 它确实会落到 `tool/result` 的 `data.meta`，但客户端**只有** `read_image` 那张卡片读它、且只当路径标签用                                                                                  |
-| `present` 的交付卡片显示图                                | ✗             | `dsh-client-ui-deliverables` 客户端全文**没有任何 `<img>` / `loadImage`**；交付卡片只给「用默认程序打开」的入口                                                                         |
-| 助手消息直接带图片                                         | ✗             | 附件子系统文档明说："当前生产适配器声明只输出文本，因此只有用户内容携带图片"                                                                                                                     |
-| **① 正文 Markdown 图片 `![](<绝对路径>)`**                | ✓             | 官方设计：客户端 `fileMediaUrl()` 把本地绝对路径重写成 `<base>/api/file?path=…`，打到内核已认证的 `/api/file` 路由取字节，渲染成真 `<img>`。内核自带的 `FILE_REFERENCE_PROMPT` 就是这么教模型的                |
-| **② 客户端自定义 toolview**                             | ✓ **100% 确定** | `tool.call.toolview` 是 keyed 槽，文档原文"**Any name is allowed, including tools registered by your package**"；`draw_image` 这个 key 未被占用，注册它不遮蔽任何自带 UI             |
-
-**本插件两条都做，互不依赖**：
-
-- **①** host 侧用 `ctx.systemPrompt.section({ name: 'qwen-paint:inline-generated-image', order: 9100, text: … })`  
-  下一条指令，要求模型出图后在正文里内联展示（与内核 `DELIVERABLE_FILE_REFERENCES` 同一机制）。
-- **②** `lib/client.js` 注册 `tool.call.toolview` 的 `draw_image` 格子：运行中显示「正在用本机千问画图…」，  
-  完成后自己 `<img src="api/file?path=…">` 渲染，失败时显示错误原文。
-
-另外 host 侧仍会 append `deliverables/presented`（与官方 `present` 同一载荷）——  
-这不是为了显示图，而是**顺带给一个可点开/用默认程序打开的正式交付入口**，且它能让记录可回放。
-
-## 空闲自动关停（省显存）
-
-要求："不要让 comfyUI 一直跑着，只要五分钟不生图 comfyUI 后端自动关闭。"
-
-- **计时只在插件出过图之后才开始**（`lastActivityAt` 初始为 `null`）。  
-  → 所以**绝不会误关你自己打开的、正在本机 ComfyUI 里用的 ComfyUI**。
-- 到点后还要过两关才动手：**ComfyUI 仍在线**，且 **`/queue` 为空**（有任务在跑就续期，绝不打断）。
-- **只杀"监听该端口 且 命令行确实含 `comfy` 与 `main.py`"的进程**；认不出来就跳过并记日志——  
-  **绝不按端口盲杀**。
-- 关掉后计时复位；下次出图需要重新启动 ComfyUI（`draw_image` 会明确提示怎么启动）。
-
-配置：`idleShutdownMs`（默认 `300000` = 5 分钟）、`autoShutdown`（默认 `true`，设 `false` 就永不自动关）。
-
-## ComfyUI 在线状态提示（composer 下方）
-
-在 **composer 卡片下方**（`conversation.composer.dock` 槽）显示一个小指示器：
-
-| 圆点   | 含义                                  |
-| ---- | ----------------------------------- |
-| 🟢 绿 | ComfyUI 在线；若正在空闲倒计时，会写「空闲 N 分后自动关闭」 |
-| 🟡 黄 | ComfyUI 正在出图（`/queue` 非空）           |
-| ⚪ 灰  | ComfyUI 未启动 / 状态未知                  |
-
-它每 5 秒读一次 host 的**只读**端点 `GET /api/qwen-paint/status.json`  
-（回退 `/qwen-paint/status.json`）。该端点：
-
-- **只放行本机请求**（Host 与远端地址都必须是回环），其余一律 403；
-- **只回事实**（`online` / `busy` / `idleShutdownInMs` / `url`），**不含任何本地路径或密钥**；
-- 任何意外都回 200 + 可读原因，前端显示"未知"而不是报错。
-
-该槽是 list 槽、`replaceRisk: none`，插件用自己的 id（`qwen-paint-status`）注册，  
-**与自带的 `stats` pill 并存，不替换任何自带 UI**。
-
-## 故障排查
-
-| 现象                          | 原因 / 处理                                                                                                      |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| 说"画个图"，助手说没有这个工具            | 插件没生效 → 确认 profile 的 `dsh.profile.bundles` 里有 `dsh-qwen-paint`，然后**彻底退出 DSH 重开**                             |
-| 报"连不上本机 ComfyUI"            | ComfyUI 没启动。先启动本机 ComfyUI（例如双击你本机 ComfyUI 的启动入口），等引擎起来再画                                        |
-| 报"等 ComfyUI 出图超时"           | 首次出图要加载 7.26 GB UNET + 6.31 GB 文本编码器，**第一次特别慢**；本机实测 25 步 1MP 约 62–124 秒，首次更久                                |
-| 报 `ComfyUI 报错：...` + 节点校验详情 | 模型文件名对不上或节点不存在 → 对照上面「依赖」里的三个文件名，以及 ComfyUI 版本需支持 `TextEncodeQwenImage21` / `QwenImage21Cache`（本机 0.37.0 内置） |
-| 图出来了但聊天框只有文字                | 交付卡片依赖会话工作区能取到该文件；把 `outputDir` 设在会话工作区内（默认就在桌面「千问1生图」）                                                      |
-| 出图报 `value not in list` / 被直接拒收 | **选了轻量档（GGUF）但没装 ComfyUI-GGUF 节点** —— 克隆 [ComfyUI-GGUF](https://github.com/city96/ComfyUI-GGUF) 到 `custom_nodes` 后重启 ComfyUI。插件会在优化面板**置顶用橙色块提醒你** |
-| 显存不够 / 很慢                   | 三个模型共约 14 GB，8 GB 卡必然换入换出。两个办法：① **装插件时选「轻量档」**（GGUF Q4_K_M，约 4.3 GB，见上面「主模型两个档位」）；② 降低 `megapixels`（如 0.5） |
-| 优化面板里点了开关，像"没反应"          | 面板里那几个开关（A 卡专属内核 / 异步卸载 / SageAttention）是**启动参数** ⇒ **改完要重启 ComfyUI** 才生效（面板提示里写了）。另外它们是**内存态**，重载 DSH 会回到 `cordis.patch.yml` 里的值 —— 想永久生效就写进配置 |
-| macOS 上找不到 ComfyUI          | 官方对 Apple Silicon **只提供手动安装**（没有便携包）。装好后用 `node scripts/setup.mjs --comfy <你的 ComfyUI 目录>` 指定位置即可（详见 [INSTALL.md](INSTALL.md)） |
-
-## 自测
-
-```powershell
-node scripts/selftest.mjs
-```
-
-纯 Node，**不联网、不需要真 ComfyUI、不出图、不占显存**：起一个**假 ComfyUI HTTP 服务器**，  
-把插件真跑一遍（探活 → 提交 → 轮询 → 取图 → 落盘 → 交付事件），另加尺寸/文件名/workflow  
-结构/失败分支/**空闲关停边界**/**状态端点鉴权**/**客户端卡片渲染**的断言（**287 项**，以脚本实际打印为准）。
-
-## 配置
-
-改 `cordis.patch.yml` 里那一行的 `config`（这一层升级插件也不会被覆盖）：
-
-| 字段                      | 默认                               | 说明                             |
-| ----------------------- | -------------------------------- | ------------------------------ |
-| `comfyUrl`              | `http://127.0.0.1:8188`          | ComfyUI 地址。**非本机地址会被拒绝启动**（除非同时设 `allowRemoteComfy: true`） |
-| `hipfireUrl`            | `http://127.0.0.1:11580`         | hipfire serve 地址（`imageBackend: 'hipfire'` 时使用）。**独立于 `comfyUrl` 的第二个端点，同样受回环校验** |
-| `allowRemoteComfy`      | `false`                          | 是否允许 `comfyUrl` / `hipfireUrl` 指向非本机地址。默认 `false`（仅本机回环，代码层强制）。设为 `true` 后可连局域网/远程服务，请自行确认那是你信任的机器 |
-| `accelAutoInstall`      | `true`                           | 是否自动安装厂商加速包。**`true` 时会执行 `pip install` / `git clone` 并从 pip 源与 GitHub 下载（访问外部网络，但不发送提示词或图片）**。设为 `false` 完全关闭，出图不受影响 |
-| `outputDir`             | `C:\Users\<你的用户名>\Desktop\千问1生图` | 成品落盘目录                         |
-| `comfyOutputDir`        | `本机 ComfyUI 的 output 目录（自动探测）`      | 先在本地取文件，取不到才走 `/view`          |
-| `unet` / `clip` / `vae` | 三个千问文件名                          | 换模型时改这里                        |
-| `steps` / `resolution`  | `8` / `1024`                     | 默认步数（见下 `turbo8Steps`）与编码分辨率   |
-| `timeoutMs`             | `600000`                         | 单任务超时（10 分钟）                   |
-| `idleShutdownMs`        | `300000`                         | ★ 出图后多久没再出图就自动关掉 ComfyUI（5 分钟） |
-| `autoShutdown`          | `true`                           | 设 `false` 就永不自动关               |
-| `idleCheckMs`           | `30000`                          | 空闲检查间隔                         |
-| `statusCacheMs`         | `3000`                           | 状态探测缓存（客户端每 5 秒轮询一次）           |
-
-> ⚠ `unet` 除了"用哪个模型"，还**决定用哪个加载器**：文件名以 `.gguf` 结尾 →
-> 走 `UnetLoaderGGUF`（需 ComfyUI-GGUF）；否则走原生 `UNETLoader`。
-
-### 厂商专属优化（可选，默认关）★ 2026-10-11 新增
-
-与 N 卡/I 卡的「厂商专属优化」同一套思路：**只在适用的显卡上生效、默认关闭**。
-也可以在优化面板里点开关（**内存态**，重载 DSH 会回到这里的值）。
-
-| 字段 | 默认 | 适用 | 说明 |
-| --- | --- | --- | --- |
-| `amdKernel` | `false` | AMD | 换用本代的替代注意力内核：**5000 / 6000 → `--use-quad-cross-attention`**，**7000 / 9000 → `--use-ck-attention`** |
-| `amdAsyncOffload` | `false` | AMD | `--async-offload`（ComfyUI 在 **N 卡上默认开、A 卡上默认关**，这里给 
+> **可用的最快

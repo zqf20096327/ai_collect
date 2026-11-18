@@ -14,6 +14,10 @@
   <a href="https://github.com/jieapi/aicode/releases"><img src="https://img.shields.io/github/v/release/jieapi/aicode?display_name=tag&include_prereleases" alt="Latest Release" /></a>
 </p>
 
+<p align="center">
+  <a href="https://trendshift.io/repositories/193355?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-193355" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/193355" alt="jieapi%2FAiCode | Trendshift" width="250" height="55"/></a>
+</p>
+
 ## 关于开源协议的声明
 
 近期发现，某闭源商业 App 大量使用了 AiCode 的代码及静态资源，甚至保留了本项目的类名与相关标识，却未遵守本项目的开源协议。与此同时，其开发者声称从未听说过 AiCode。

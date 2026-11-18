@@ -142,6 +142,31 @@ simply takes over when there is something to align against.
 
 ---
 
+## Reroute bus
+
+Gathers several wires into one bar they run through side by side, like the lanes of a circuit
+board. The wires don't need to share a type or a source. Turn it on with **Reroute bus** in the
+Nodes section of the sidebar (or in Settings); it's off by default.
+
+- Hold **Ctrl+Alt** and drag a line across wires on empty canvas. The wires you cut join a new bus.
+- Drag a bar at the height of a wire to move just that wire. Drop it on another slot of the bar to
+  reorder the lanes, or away from the bar to take it out (it stays as a normal reroute).
+- Drag a loose reroute onto a bar to add its wire to the bus, in the slot where you drop it.
+- Cut across a bar the same way to take the nearest wire out and remove its reroute.
+- Grab a bar by its ends (above the first wire or below the last) to move the whole bus. **Delete**
+  removes it and the wires go straight again.
+- Cut wires that already run through a bus, further along, to branch off a second one.
+- One Ctrl+Z undoes any of these.
+
+A bus is built from normal reroutes, one per wire. Someone who opens your workflow without this
+extension sees a tidy column of reroute dots and everything still runs.
+
+| Setting | Range | Default | What it does |
+|---|---|---|---|
+| Bus lane gap | 6 – 40 px | 20 | Space between the wires of a new bus. At 20 or more the dots stay readable for people without the extension. Existing buses keep their spacing. |
+
+---
+
 ## Nodes
 
 | Setting | Default | What it does |
@@ -150,6 +175,22 @@ simply takes over when there is something to align against.
 
 Switching from Nodes 2.0 back to the classic renderer also trims every node back to its minimum
 height, which removes the empty band the Vue layout leaves behind.
+
+---
+
+## Workflow image
+
+Export the whole workflow as a **WebP** screenshot with the workflow embedded: drop the file onto
+any ComfyUI (no extension needed) and the graph loads. WebP is roughly half the size of the PNG
+equivalent, so it is light enough for a README or a web page.
+
+Find it in **Workflow → Workflow Image (WebP)** in the top menu, in the command palette, or by
+right-clicking the canvas. Works with the classic canvas and with Nodes 2.0, and each one is
+exported with its own look. There is also a variant without the embedded workflow. A Nodes 2.0
+export takes a few seconds, because the nodes are rendered from the page itself.
+
+The workflow survives wherever the original file is served, such as a file committed to a GitHub
+repo or attached to a release. Sites that re-compress images strip it.
 
 ---
 
@@ -172,6 +213,12 @@ The orthogonal routing engine behind PCB mode comes from
 [comfyui-cable-management](https://github.com/vtokic/comfyui-cable-management) by Vedran Aberle
 Tokić, used under the MIT licence. Go and have a look at it — it does a great deal more with the
 idea than this extension does.
+
+The workflow image export is a rework of "Workflow Image" from
+[ComfyUI-Custom-Scripts](https://github.com/pythongosssss/ComfyUI-Custom-Scripts) by pythongosssss
+(MIT). Nodes 2.0 exports are rendered with
+[html-to-image](https://github.com/bubkoo/html-to-image) by W.Y. (MIT), bundled unmodified in
+`js/vendor/`.
 
 ## License
 

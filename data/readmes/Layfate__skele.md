@@ -107,6 +107,7 @@ SHA-256 checksum next to every file, and the release notes say which builds are 
 | **Windows 10/11 (x64)** | `Skele-v<version>-windows-x86_64.exe` | Installer (recommended): per-user install, Start menu shortcut, uninstaller |
 | | `Skele-v<version>-windows-x86_64.msi` | For managed/enterprise deployment (per-machine) |
 | | `Skele-v<version>-windows-x86_64.zip` | Portable: unzip and run, data stays in the folder |
+| **Windows 11 (ARM64)** | `Skele-v<version>-windows-arm64.exe` / `.zip` | Snapdragon and other ARM PCs: installer or portable (no MSI) |
 | **macOS 11+ (Apple Silicon)** | `Skele-v<version>-macos-arm64.dmg` / `.zip` | M1 and later |
 | **macOS 11+ (Intel)** | `Skele-v<version>-macos-x86_64.dmg` / `.zip` | |
 | **macOS 11+ (either)** | `Skele-v<version>-macos-universal.dmg` | One app for Apple Silicon and Intel (larger download) |
@@ -114,6 +115,7 @@ SHA-256 checksum next to every file, and the release notes say which builds are 
 | | `Skele-v<version>-linux-x86_64.deb` | Debian, Ubuntu, Mint, Pop!_OS |
 | | `Skele-v<version>-linux-x86_64.rpm` | Fedora, RHEL, openSUSE |
 | | `Skele-v<version>-linux-x86_64.tar.gz` | Standalone binary + desktop entry |
+| **Linux (ARM64)** | `Skele-v<version>-linux-arm64.AppImage` / `.deb` / `.rpm` / `.tar.gz` | Raspberry Pi 4/5 (64-bit OS) and other ARM64 Linux |
 
 Files ending in `.app.tar.gz` and `.sig`, and `latest.json`, are used by the in-app updater.
 You don't need to download them.
@@ -170,9 +172,9 @@ distributions (Ubuntu 20.04, Debian 11, RHEL 8) aren't supported.
 
 | | x64 | ARM64 |
 |---|---|---|
-| Windows 10/11 | ✅ installer, MSI, portable | ✗ not yet |
+| Windows 10/11 | ✅ installer, MSI, portable | ✅ installer, portable (Windows 11) |
 | macOS 11+ | ✅ Intel | ✅ Apple Silicon (plus a universal DMG for both) |
-| Linux | ✅ AppImage, deb, rpm, tar.gz | ✗ not yet |
+| Linux | ✅ AppImage, deb, rpm, tar.gz | ✅ AppImage, deb, rpm, tar.gz |
 
 There's no Android or iOS build yet.
 
@@ -278,7 +280,8 @@ Zustand · Zod 4 · Tauri 2 · Vitest · Playwright.
 
 - **Code signing** is configured but needs certificates. Releases built without them are
   marked in their notes: Windows SmartScreen warns once, and macOS needs right-click → Open.
-- **Windows ARM64, Linux ARM64 and mobile** builds aren't published yet.
+- **Mobile** (Android, iOS) builds aren't available yet. Windows ARM64 has no MSI (WiX can't
+  build for ARM64); use the installer or the portable zip.
 - **Linux:** needs WebKitGTK 4.1 (see above). On some NVIDIA/Wayland setups WebKitGTK renders
   a blank window; starting Skele with `WEBKIT_DISABLE_DMABUF_RENDERER=1` fixes it.
 - **Portable mode** on macOS isn't available: the `.zip` is a normal app bundle that uses the

@@ -174,9 +174,13 @@ Progress and archived scans live under vault/.knowledge_harness_scans/; previews
 To run program tests:
 
 ```bash
-python -m pip install pytest
+python -m pip install -e . -r requirements-dev.txt
 python -m pytest -q
 ```
+
+Ordinary local runs and PR checks use the fast offline tier. Full integration tests run nightly at 02:00 Asia/Shanghai on hosted Windows/Linux runners; native Chromium checks run separately on the hosted Linux runner. The Nightly offline regressions workflow can also be started manually. Scheduling begins after the workflow reaches the default branch; GitHub may delay scheduled runs. These tests use synthetic fixtures and do not require model API keys or a personal vault. Installing CI dependencies still requires network access.
+
+For an explicit complete local run, use python -m pytest --full -q. For only native browser journeys, use python -m pytest -m browser -q with the documented browser dependencies. See [test execution tiers](docs/testing.md) for coverage inventories and selective commands.
 
 Contributions are welcome, especially new source formats, agent integrations and retention-quality improvements. Keep program-test results and model-quality scores separate, and preserve the frozen evaluation inputs.
 

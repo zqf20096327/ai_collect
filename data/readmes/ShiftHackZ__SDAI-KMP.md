@@ -3,12 +3,13 @@
 <img src="artwork/icon/sdai.png" alt="SDAI Logo" height="148" width="148">
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21442838.svg)](https://doi.org/10.5281/zenodo.21442838)
+[![Android/JVM coverage](https://codecov.io/gh/ShiftHackZ/SDAI-KMP/branch/master/graph/badge.svg)](https://app.codecov.io/gh/ShiftHackZ/SDAI-KMP)
 
 ![Google Play](https://img.shields.io/endpoint?color=blue&logo=google-play&logoColor=white&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.shifthackz.aisdv1.app%26l%3DGoogle%2520Play%26m%3D%24version)
 ![F-Droid](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ff-droid.org%2Fapi%2Fv1%2Fpackages%2Fcom.shifthackz.aisdv1.app.foss&query=%24.packages%5B0%5D.versionName&label=F-Droid&logo=fdroid&link=https%3A%2F%2Ff-droid.org%2Fpackages%2Fcom.shifthackz.aisdv1.app.foss%2F)
 [![App Store](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fitunes.apple.com%2Flookup%3Fid%3D6778314183%26country%3Dus&query=%24.results%5B0%5D.version&label=App%20Store&logo=appstore&logoColor=white&color=blue)](https://apps.apple.com/us/app/sdai-ai-image-generator/id6778314183)
 
-[Website](https://sdai.moroz.cc) | [Google Play](https://play.google.com/store/apps/details?id=com.shifthackz.aisdv1.app) | [F-Droid](https://f-droid.org/packages/com.shifthackz.aisdv1.app.foss) | [App Store](https://apps.apple.com/us/app/sdai-ai-image-generator/id6778314183) | [Nightly Build](https://github.com/ShiftHackZ/SDAI-KMP/releases/download/nightly/sdai-full-nightly.apk) | [Telegram](https://t.me/sdai_app) | [Discord](https://discord.gg/jzdR9m8Ves) | [4PDA](https://4pda.to/forum/index.php?showtopic=1082639)
+[Website](https://sdai.moroz.cc) | [Google Play](https://play.google.com/store/apps/details?id=com.shifthackz.aisdv1.app) | [F-Droid](https://f-droid.org/packages/com.shifthackz.aisdv1.app.foss) | [App Store](https://apps.apple.com/us/app/sdai-ai-image-generator/id6778314183) | [Nightly Build](https://github.com/ShiftHackZ/SDAI-KMP/releases/download/nightly/sdai-full-nightly.apk) | [Telegram](https://t.me/sdai_app) | [Discord](https://discord.gg/jzdR9m8Ves) | [LinkedIn](https://www.linkedin.com/company/sdai-app/) | [4PDA](https://4pda.to/forum/index.php?showtopic=1082639)
 
 <p>
   <a href="https://play.google.com/store/apps/details?id=com.shifthackz.aisdv1.app"><img src="docs/assets/badge-google-play.svg" alt="Get it on Google Play" height="54"></a>
@@ -31,6 +32,7 @@ Root-level Markdown documents:
 - [Nightly Android builds](NIGHTLY_BUILDS.md)
 - [Git workflow](GIT_WORKFLOW.md)
 - [Kotlin lint](KOTLIN_LINT.md)
+- [Unit tests and coverage](TESTING.md)
 - [Code of conduct](CODE_OF_CONDUCT.md)
 
 ## Why SDAI
@@ -205,6 +207,8 @@ Sessions use Android Keystore-backed storage and iOS Keychain. Sign out in provi
 ### Local Diffusion with Microsoft ONNX Runtime
 
 Use this on Android for on-device txt2img generation. Download or provide a compatible ONNX local diffusion model, select it in setup, and generate without sending prompts to a remote service.
+
+The optional NNAPI setting lets Android 8.1 and newer choose accelerator and CPU devices for the denoiser and VAE decoder. Older Android versions continue using the ONNX Runtime CPU backend. FP16 relaxation is enabled for drivers that support it, so results may differ slightly from CPU generation. Unsupported accelerator operations can use NNAPI's CPU implementation; enabling NNAPI does not guarantee that every operation is accelerated or that generation is faster. Disable it if the model runs better on the ONNX Runtime CPU backend.
 
 ### Local Diffusion with Google AI MediaPipe
 

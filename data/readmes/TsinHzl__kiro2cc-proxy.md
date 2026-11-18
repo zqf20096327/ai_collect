@@ -1,0 +1,1095 @@
+# 🌉 kiro2cc-proxy
+
+**将 Anthropic Claude API 请求转换为 Kiro API 请求的 Rust 代理服务**
+
+[![Tests](https://github.com/TsinHzl/kiro2cc-proxy/actions/workflows/test.yaml/badge.svg)](https://github.com/TsinHzl/kiro2cc-proxy/actions/workflows/test.yaml)
+[![codecov](https://codecov.io/gh/TsinHzl/kiro2cc-proxy/graph/badge.svg)](https://codecov.io/gh/TsinHzl/kiro2cc-proxy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#-license)
+
+**[🇺🇸 English](README.en.md)** | **🇨🇳 中文**
+
+![Admin 管理面板](docs/assets/admin-panel.png)
+
+> **✅ 支持模型**：Claude Sonnet 5.5 · Claude Sonnet 5 · Claude Sonnet 4.5 · Claude Sonnet 4.6 · Claude Opus 5.5 · Claude Opus 5 · Claude Opus 4.5 · Claude Opus 4.6 · Claude Opus 4.7 · Claude Opus 4.8 · Claude Haiku 5.5 · Claude Haiku 4.5 · Claude Fable 5.1 · DeepSeek 3.2 · GLM-5 · MiniMax M2.1 · MiniMax M2.5 · Qwen3-Coder-Next · Kimi K3 · Grok 4.7 · GPT-5.6 Sol · GPT-5.6 Terra · GPT-5.6 Luna
+
+### 📖 快速导航
+
+[🚀 快速开始](#-快速开始新手必读) ・ [🍎 macOS 部署](#-本地部署macos) ・ [🪟 Windows 部署](#-本地部署windows) ・ [🐧 Linux 部署](#-服务器部署linux) ・ [🔑 获取账号](#-获取-kiro-账号) ・ [⚙️ 配置详解](#️-配置详解) ・ [🤖 接入 Claude Code](#-接入-claude-code) ・ [🧬 接入 Codex CLI](#-接入-codex-cli--openai-sdk) ・ [🔌 API 端点](#-api-端点) ・ [🗺️ 模型映射](#️-模型映射) ・ [🛡️ Admin 面板](#️-admin-管理面板) ・ [❓ 常见问题](#-常见问题) ・ [⚠️ 注意事项](#️-注意事项)
+
+---
+
+## ⚠️ 免责声明
+
+本项目仅供研究使用，Use at your own risk，使用本项目所导致的任何后果由使用人承担，与本项目无关。本项目与 AWS/KIRO/Anthropic/Claude 等官方无关，不代表官方立场。
+
+---
+
+## ✨ 功能特性
+
+| 特性 | 说明 |
+|---|---|
+| **🔌 Anthropic API 兼容** | 完整支持 Anthropic Claude API 格式 |
+| **🧬 OpenAI 兼容 / Codex CLI** | 提供 `/v1/chat/completions` 与 `/v1/responses` 端点，可直接接入 Codex CLI 及任意 OpenAI SDK 客户端 |
+| **📡 流式响应** | 支持 SSE (Server-Sent Events) 流式输出 |
+| **🔍 WebSearch** | 内置 WebSearch 工具转换逻辑，即支持CC中网络搜索功能 |
+| **🔄 Token 自动刷新** | 自动管理和刷新 OAuth Token |
+| **👥 多账号支持** | 支持配置多个账号，按优先级自动故障转移 |
+| **⚖️ 负载均衡** | 支持 `priority`（按优先级）和 `balanced`（均衡分配）两种模式 |
+| **🔁 智能重试** | 单账号最多重试 3 次，单请求最多重试 9 次 |
+| **🧠 Thinking 模式** | 支持 Claude 的 extended thinking 功能 |
+| **🛠️ 工具调用** | 完整支持 function calling / tool use |
+| **🛡️ Admin 管理** | 可选的 Web 管理界面，支持账号管理、余额查询等 |
+| **🌐 账号级代理** | 支持为每个账号单独配置 HTTP/SOCKS5 代理 |
+
+---
+
+## 🚀 快速开始（新手必读）
+
+**这个项目是什么？**
+
+kiro2cc-proxy 是一个代理服务。它把标准的 Anthropic Claude API 请求转发给 Kiro（AWS 的 AI 编程工具），让你可以用 Claude Code使用Kiro账号的模型。
+
+>  一句话说明白，就是：它能把登录的Kiro账号上的模型代理到claude code上进行使用。否则的话就只能在Kiro IDE或者Kiro Cli上使用。
+
+**使用前提：**
+
+1. 拥有一个 Kiro 账号（通过 [kiro.dev](https://kiro.dev) 注册，支持 Social 登录）
+2. 从 Kiro IDE 或账号管理工具中导出账号（`refreshToken` 等信息）
+3. > ⚠️ **【重要】国内用户**：必须配置本地 HTTP/SOCKS5 代理（Clash/V2Ray 等），否则所有 Claude 模型请求均会返回 `INVALID_MODEL_ID` 错误，无法使用。
+
+**整体流程：**
+
+```
+安装依赖 → 构建项目 → 启动服务 → 填入账号 → 配置客户端
+```
+
+---
+
+## 🍎 本地部署（macOS）
+
+### 第一步：安装依赖
+
+打开终端，安装 Node.js 和 Rust：
+
+```bash
+# 安装 Homebrew（如已安装跳过）
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 安装 Node.js
+brew install node
+
+# 安装 Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# 安装完成后重新打开终端，或执行：
+source "$HOME/.cargo/env"
+```
+
+### 第二步：获取项目代码
+
+```bash
+git clone https://github.com/TsinHzl/kiro2cc-proxy.git
+cd kiro2cc-proxy
+```
+
+### （可选）安装 Shell 快捷命令
+
+运行项目自带的一键安装脚本，以后可在任意终端直接使用 `build_kiro2cc_proxy`、`build_and_run_kiro2cc_proxy` 和 `run_kiro2cc_proxy` 命令，无需切换到项目目录：
+
+```bash
+bash setup_shell_aliases.sh
+source ~/.zshrc   # zsh 用户；bash 用户执行 source ~/.bashrc
+```
+
+安装后即可使用：
+
+```bash
+build_kiro2cc_proxy         # 等同于 ./build-mac.sh
+build_and_run_kiro2cc_proxy # 等同于 ./build-and-run-mac.sh（先构建后启动）
+run_kiro2cc_proxy           # 等同于 ./run-local-service-mac.sh
+```
+
+> 脚本仅适用于 macOS，自动修改 `~/.zshrc` 和 `~/.bashrc`（如存在），可重复运行（幂等）。
+
+### 第三步：构建项目
+
+```bash
+./build-mac.sh
+```
+
+脚本会依次构建 web-ui/admin-ui 前端、web-ui/user-ui 前端，最后编译 Rust 二进制。首次构建约需 5~15 分钟。
+
+构建成功后输出：
+```
+  构建成功！
+  二进制位置: ./target/release/kiro2cc-proxy
+```
+
+> 后续除非更新了代码，否则无需重新构建。
+
+### 第四步：启动服务
+
+**方式一：双击启动（推荐）**
+
+在 Finder 中找到项目目录，双击 `run-local-service-mac.sh` 文件。
+
+**方式二：终端启动**
+
+```bash
+./run-local-service-mac.sh
+```
+
+**首次启动**会进入配置向导：
+
+```
+Admin Password（管理后台密码(http://ip:端口/admin页面)，直接回车跳过）: [默认my-admin-pass]
+端口 [默认: 5678]:
+Region [默认: us-east-1]:
+本地 HTTP 代理端口（例如: 7890 / 10089）: [填入你的代理端口]
+```
+
+- **⚠️【重要】本地 HTTP 代理端口**：也就是开魔法的端口。注意：**本地搭建的话，不配置将无法访问 Claude 模型，如Claude4.6和Claude4.7模型**
+
+- > ⚠️ **【重要】代理端口（国内用户必须配置）**
+  >
+  > 常在终端上使用的命令如：export http_proxy=http://127.0.0.1:10089; export https_proxy=http://127.0.0.1:10089;
+  >
+  > 这里的10089就是你开魔法的端口
+  >
+  > 不知道端口号请查看代理软件的设置页面
+
+- **Admin Password**：**管理面板的登录密码(http://ip:端口/admin页面)，建议设置**
+
+配置完成后自动生成 `app/config/config.json`，服务启动，浏览器自动打开管理面板。
+
+**后续启动**直接读取已有配置，无需重新填写。
+
+### 第五步：填入 Kiro 账号
+
+服务启动后，打开管理面板 `http://127.0.0.1:5678/admin`，在账号管理页面点击「KAM导入账号」。该入口兼容单账号和多账号 KAM 导出 JSON，支持粘贴 JSON 文本或拖入 `.json` 文件。点击「导入」后，账号会先以禁用状态创建并自动执行额度验活；验活成功后自动启用，验活失败时保留账号并保持禁用。
+
+也可以直接创建 `app/config/credentials.json`，格式见"获取 Kiro 账号"章节。
+
+### 停止服务
+
+在运行服务的终端窗口按 `Ctrl+C`，或直接关闭终端窗口。
+
+---
+
+## 🪟 本地部署（Windows）
+
+### 第一步：安装依赖
+
+1. 安装 [Node.js](https://nodejs.org)（LTS 版本）
+2. 安装 [Rust](https://rustup.rs)（下载并运行 `rustup-init.exe`）
+3. 安装 [Git](https://git-scm.com/download/win)
+
+安装完成后重新打开 PowerShell，确认以下命令可用：
+
+```powershell
+node -v
+cargo -v
+git -v
+```
+
+### 第二步：获取项目代码
+
+```powershell
+git clone https://github.com/TsinHzl/kiro2cc-proxy.git
+cd kiro2cc-proxy
+```
+
+### （可选）安装 PowerShell 快捷命令
+
+运行项目自带的安装脚本，以后可在任意 PowerShell 直接使用 `build_kiro2cc_proxy`、`build_and_run_kiro2cc_proxy` 和 `run_kiro2cc_proxy` 命令，无需切换到项目目录：
+
+```powershell
+.\setup_shell_aliases.ps1
+. $PROFILE
+```
+
+安装后即可使用：
+
+```powershell
+build_kiro2cc_proxy         # 等同于 .\build-windows.ps1
+build_and_run_kiro2cc_proxy # 等同于 .\build-and-run-windows.ps1（先构建后启动）
+run_kiro2cc_proxy           # 等同于 .\run-local-service-windows.ps1
+```
+
+> 脚本同时更新 Windows PowerShell 5.x 和 PowerShell 7+ 的 profile，可重复运行（幂等）。
+
+### 第三步：构建项目
+
+以管理员身份打开 PowerShell，先允许执行脚本（仅需一次）：
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+然后构建：
+
+```powershell
+.\build-windows.ps1
+```
+
+脚本会依次构建 web-ui/admin-ui 前端、web-ui/user-ui 前端，最后编译 Rust 二进制。首次构建约需 5~15 分钟。
+
+> 后续除非更新了代码，否则无需重新构建。
+
+### 第四步：启动服务
+
+```powershell
+.\run-local-service-windows.ps1
+```
+
+**首次启动**会进入配置向导：
+
+```
+Admin Password（管理后台密码(http://ip:端口/admin页面)，直接回车跳过）: [默认my-admin-pass]
+端口 [默认: 5678]:
+Region [默认: us-east-1]:
+本地 HTTP 代理端口（例如: 7890 / 10089）: [填入你的代理端口]
+```
+
+- **⚠️【重要】本地 HTTP 代理端口**：也就是开魔法的端口。注意：**本地搭建的话，不配置将无法访问 Claude 模型，如Claude4.6和Claude4.7模型**
+
+- > ⚠️ **【重要】代理端口（国内用户必须配置）**
+  >
+  > 常在终端上使用的命令如：export http_proxy=http://127.0.0.1:10089; export https_proxy=http://127.0.0.1:10089;
+  >
+  > 这里的10089就是你开魔法的端口
+  >
+  > 不知道端口号请查看代理软件的设置页面
+
+- **Admin Password**：**管理面板的登录密码(http://ip:端口/admin页面)，建议设置**
+
+配置完成后自动生成 `app/config/config.json`，服务启动，浏览器自动打开管理面板。
+
+**后续启动**直接读取已有配置，无需重新填写。
+
+### 第五步：填入 Kiro 账号
+
+服务启动后，打开管理面板 `http://127.0.0.1:5678/admin`，在账号管理页面点击「KAM导入账号」。该入口兼容单账号和多账号 KAM 导出 JSON，支持粘贴 JSON 文本或拖入 `.json` 文件。点击「导入」后，账号会先以禁用状态创建并自动执行额度验活；验活成功后自动启用，验活失败时保留账号并保持禁用。
+
+### 停止服务
+
+在运行服务的 PowerShell 窗口按 `Ctrl+C`，或直接关闭窗口。
+
+---
+
+## 🐧 服务器部署（Linux）
+
+### 方式一：Docker Compose + GHCR 预构建镜像（推荐）
+
+推荐直接使用 `ghcr.io/tsinhzl/kiro2cc-proxy` 预构建镜像部署，无需克隆仓库、安装 Rust / Node.js 或本地编译。镜像支持 `linux/amd64` 和 `linux/arm64`，Docker 会自动选择匹配的架构。
+
+**前置要求**：服务器已安装 Docker 和 Docker Compose（支持 `docker compose` 命令），并能访问 `ghcr.io`。
+
+#### 1. 创建部署目录
+
+```bash
+mkdir -p /opt/kiro2cc-proxy/data
+cd /opt/kiro2cc-proxy
+```
+
+#### 2. 创建 Compose 文件
+
+执行以下命令，在部署目录中新建 `docker-compose.yml` 并写入默认配置。此命令会覆盖同名文件；已有部署请先备份并保留自定义配置，不要直接执行。
+
+```bash
+cd /opt/kiro2cc-proxy
+cat > docker-compose.yml <<'EOF'
+services:
+  kiro2cc-proxy:
+    image: ghcr.io/tsinhzl/kiro2cc-proxy:latest
+    container_name: kiro2cc-proxy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "0.0.0.0:5678:5678"
+    volumes:
+      - ./data:/app/config
+    restart: unless-stopped
+EOF
+```
+
+镜像标签说明：
+
+| 标签 | 用途 |
+|------|------|
+| `latest` | 最近一次正式发布构建的镜像，适合跟随正式版本更新 |
+| `vX.Y.Z` | 对应已发布的版本标签；生产环境建议固定实际存在的版本，便于控制升级 |
+| `beta` | 普通主分支构建的滚动测试镜像，不推荐用于生产环境 |
+
+#### 3. 创建配置文件
+
+先将下方 `your-admin-password` 替换为自己的强密码，再执行命令创建 `data/config.json` 并写入最小配置。此命令会覆盖同名文件；已有部署请保留原文件，不要直接执行。
+
+```bash
+cd /opt/kiro2cc-proxy
+mkdir -p data
+cat > data/config.json <<'EOF'
+{
+  "host": "0.0.0.0",
+  "port": 5678,
+  "region": "us-east-1",
+  "adminPsw": "your-admin-password"
+}
+EOF
+```
+
+> ⚠️ **【重要】`port` 字段必须是整数**，不能填写 Docker 端口映射格式（如 `"0.0.0.0:5678:5678"`），否则服务启动失败。正确写法：`"port": 5678`。
+
+容器内的 `host` 必须保持 `0.0.0.0`，否则 Docker 端口映射无法访问服务。配置文件位于宿主机的 `data/` 目录，不是 `data/config/`。
+
+启动时会自动创建缺失的 `data/credentials.json`，之后可在管理面板添加账号；也可以在启动前放入已有账号文件。不要将已有账号文件覆盖为空数组。
+
+#### 4. 拉取镜像并启动
+
+```bash
+cd /opt/kiro2cc-proxy
+docker compose pull
+docker compose up -d
+
+# 查看日志
+docker compose logs -f
+
+# 停止
+docker compose down
+```
+
+服务启动后访问 `http://服务器IP:5678/admin`，使用 `adminPsw` 登录管理面板，添加 Kiro 账号并创建客户端使用的 API Key。
+
+> **网络访问**：上述端口映射监听宿主机所有 IPv4 网卡。远程访问时需按需放行防火墙和云安全组的 TCP 5678 端口，建议限制来源 IP；公网使用建议通过 HTTPS 反向代理访问。若仅供宿主机访问，可将 `ports` 改为 `"127.0.0.1:5678:5678"`，容器内的 `host` 仍保持 `0.0.0.0`。
+
+> **数据持久化**：`./data:/app/config` 保存配置、账号、API Key 和用量等数据。升级或重建容器时必须沿用原部署目录与挂载，且保持目录可写；不要删除或公开分享 `data/`。
+
+#### 更新到最新版本
+
+升级前先备份整个 `data/` 目录。使用 `latest` 标签时执行：
+
+```bash
+cd /opt/kiro2cc-proxy
+docker compose pull
+docker compose up -d
+```
+
+执行 `pull` 只下载镜像，随后 `up -d` 会在镜像变化时重建容器并保留挂载数据，无需 `git pull` 或先执行 `docker compose down`。固定版本部署需先将 `image` 的标签改为目标已发布版本，再执行上述命令。
+
+### 方式二：克隆仓库 + Docker Compose
+
+保留原有的仓库克隆部署方式，适合希望直接复用仓库配置文件的用户。此方式默认同样拉取 `ghcr.io/tsinhzl/kiro2cc-proxy:latest`，不会在本地编译镜像；无需仓库文件时，优先使用上面的推荐方式。
+
+**前置要求**：已安装 Git、Docker 和 Docker Compose，并能访问 GitHub 和 `ghcr.io`。
+
+#### 1. 克隆仓库
+
+以下命令用于首次部署，目标目录应不存在；已有仓库直接进入原目录，不要重复克隆。两种 Docker 方式任选其一，不要在同一部署目录混用初始化步骤。
+
+```bash
+git clone https://github.com/TsinHzl/kiro2cc-proxy.git /opt/kiro2cc-proxy
+cd /opt/kiro2cc-proxy
+```
+
+#### 2. 创建配置文件
+
+```bash
+mkdir -p data
+if [ ! -f data/config.json ]; then
+  cp config.example.json data/config.json
+fi
+nano data/config.json
+```
+
+将 `host` 从示例中的 `127.0.0.1` 改为 `0.0.0.0`，将 `adminPsw` 设置为自己的强密码，保留整数端口 `"port": 5678`。最小配置与上面的推荐方式相同，文件位置是 `data/config.json`，不是 `data/config/config.json`。
+
+账号文件 `data/credentials.json` 缺失时由容器自动创建，启动后可在管理面板添加账号；已有账号文件请保留，不要覆盖为空数组。
+
+#### 3. 启动和管理
+
+```bash
+docker compose pull
+docker compose up -d
+
+# 查看日志
+docker compose logs -f
+
+# 停止
+docker compose down
+```
+
+访问 `http://服务器IP:5678/admin`，使用 `adminPsw` 登录。端口访问限制、HTTPS 和 `data/` 持久化要求与上面的推荐方式相同。
+
+#### 更新仓库与镜像
+
+升级前备份整个 `data/` 目录；如有自行修改的仓库文件，先检查并处理本地改动，再更新仓库：
+
+```bash
+cd /opt/kiro2cc-proxy
+git pull
+docker compose pull
+docker compose up -d
+```
+
+仅更新镜像时可省略 `git pull`。仓库 Compose 默认使用 `latest`；若通过 `IMAGE_OWNER` / `IMAGE_TAG` 环境变量或 `.env` 覆盖默认值，请先确认实际镜像来源和标签。固定版本需先将 `IMAGE_TAG` 改为目标已发布版本，再拉取并重建容器。
+
+### 方式三：systemd 一键安装
+
+适合不想用 Docker、希望直接跑二进制的场景。
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/TsinHzl/kiro2cc-proxy.git /opt/kiro2cc-proxy-src
+cd /opt/kiro2cc-proxy-src
+
+# 2. 创建配置文件
+cp config.example.json app/config/config.json
+nano app/config/config.json   # 填入 adminPsw
+
+# 3. 一键安装（自动编译 + 注册 systemd 服务）
+sudo bash install_server.sh
+```
+
+安装完成后服务开机自启，常用命令：
+
+```bash
+systemctl status kiro2cc-proxy       # 查看状态
+systemctl restart kiro2cc-proxy      # 重启
+systemctl stop kiro2cc-proxy         # 停止
+journalctl -u kiro2cc-proxy -f       # 实时日志
+```
+
+### 方式四：手动后台运行（无 systemd）
+
+```bash
+bash start_server.sh start     # 后台启动
+bash start_server.sh status    # 查看状态
+bash start_server.sh log       # 实时日志
+bash start_server.sh stop      # 停止
+bash start_server.sh restart   # 重启
+```
+
+### 服务器代理配置
+
+国内服务器无法直接访问 Kiro API，需要在 `config.json` 中配置代理：
+
+```json
+{
+  "proxyUrl": "http://your-proxy-host:port"
+}
+```
+
+或使用境外服务器（推荐），无需代理。
+
+---
+
+## 🔑 获取 Kiro 账号
+
+### 完整流程：从 Kiro Account Manager 导出到管理面板导入
+
+**第一步：从 Kiro Account Manager 导出账号 JSON**
+
+1. 安装 Kiro IDE 或 [Kiro Account Manager（KAM）](https://github.com/chaogei/Kiro-account-manager/releases)，下载地址：[KAM Releases 页面](https://github.com/chaogei/Kiro-account-manager/releases)
+2. 使用 GitHub / Google 等 Social 账号登录
+3. 在账号管理界面找到"导出账号信息"或"Export Account"选项
+4. 导出为 JSON 文件（或复制 JSON 内容）
+
+**第二步：启动 kiro2cc-proxy 服务**
+
+按照"本地部署"或"服务器部署"章节启动服务，确保服务正常运行。
+
+**第三步：通过「KAM导入账号」功能导入（推荐）**
+
+1. 打开管理面板：`http://127.0.0.1:5678/admin`（**服务器部署则替换为对应 IP**）
+2. **输入 `config.json` 中配置的 `adminPsw`（Admin Password）登录**
+3. 进入账号管理页面
+4. 点击「KAM导入账号」；该入口同时兼容单账号和多账号 KAM 导出 JSON
+5. 将导出的 JSON 内容**直接粘贴**到输入框，或将 `.json` 文件**拖拽**到页面上
+6. 点击「导入」后，账号会先以禁用状态创建，管理面板随后自动执行额度验活
+7. 验活成功后账号自动启用；验活失败时账号会保留并保持禁用，请检查账号配置
+
+> ℹ️ **HTTP 访问管理面板导入账号**
+>
+> v2.7.3 起已内置纯 JS 降级实现，通过 `http://服务器IP:端口/admin`（非 HTTPS、非 localhost）访问管理面板也可正常导入账号，无需再配置 HTTPS 或浏览器 flags。
+>
+> 若你使用的是 v2.7.2 及更早版本，仍会因浏览器安全策略禁用 `crypto.subtle` 而报错 `Cannot read properties of undefined (reading 'digest')`，请升级到最新版本。
+
+**第四步（可选）：手动创建账号文件**
+
+也可以跳过管理面板，直接将导出的 JSON 内容保存为文件：
+- 本地部署：`app/config/credentials.json`
+- Docker 部署：`data/credentials.json`
+
+文件格式见下方说明，保存后重启服务生效。
+
+### credentials.json 格式
+
+**Social 登录（单账号）：**
+
+```json
+{
+  "refreshToken": "your-refresh-token",
+  "expiresAt": "2025-12-31T02:32:45.144Z",
+  "authMethod": "social"
+}
+```
+
+**IDC/Builder-ID 登录（单账号）：**
+
+```json
+{
+  "refreshToken": "your-refresh-token",
+  "expiresAt": "2025-12-31T02:32:45.144Z",
+  "authMethod": "idc",
+  "clientId": "your-client-id",
+  "clientSecret": "your-client-secret"
+}
+```
+
+**多账号（数组格式，支持故障转移）：**
+
+```json
+[
+  {
+    "refreshToken": "token-1",
+    "expiresAt": "2025-12-31T02:32:45.144Z",
+    "authMethod": "social",
+    "priority": 0
+  },
+  {
+    "refreshToken": "token-2",
+    "expiresAt": "2025-12-31T02:32:45.144Z",
+    "authMethod": "social",
+    "priority": 1
+  }
+]
+```
+
+`priority` 数值越小优先级越高，单账号最多重试 3 次，单请求最多重试 9 次，自动故障转移。
+
+### 多端点负载均衡（v2.8.7+）
+
+Kiro 上游的 4 个接入端点（`ide` / `runtime` / `codewhisperer` / `amazonq`）走独立的限流桶。本代理在单账号内自动轮询这些端点：429 时只封禁命中桶（30s 后自动恢复），不影响其它端点、不切换账号。
+
+默认启用全部 4 端点。账号可通过 `endpoint` 字段声明首选端点（首选在首 + 剩余端点按默认序去重追加）：
+
+```json
+{
+  "accessToken": "...",
+  "endpoint": ["runtime", "codewhisperer"]
+}
+```
+
+默认端点顺序：`ide → runtime → codewhisperer → amazonq`。
+
+**回滚指引**：若某端点异常，修改 `endpoint` 字段移除该端点，重启即可（**无需**重发版本）。
+
+---
+
+## ⚙️ 配置详解
+
+### config.json 字段说明
+
+| 字段 | 必填 | 默认值 | 说明 |
+|------|------|--------|------|
+| `host` | 否 | `127.0.0.1` | 监听地址，`0.0.0.0` 允许外网/局域网访问 |
+| `port` | 否 | `8080`（本地启动脚本默认写入 `5678`） | 监听端口；通过设置页修改后写入 `config.json`，重启后生效 |
+| `region` | 否 | `us-east-1` | AWS 区域 |
+| `authRegion` | 否 | 同 `region` | Token 刷新使用的区域 |
+| `apiRegion` | 否 | 同 `region` | API 请求使用的区域 |
+| `adminPsw` | 否 | — | Admin Password（管理面板登录密码），不填则不启用管理面板 |
+| `proxyUrl` | 否 | — | HTTP/SOCKS5 代理，如 `http://127.0.0.1:7890` |
+| `proxyUsername` | 否 | — | 代理用户名 |
+| `proxyPassword` | 否 | — | 代理密码 |
+| `tlsBackend` | 否 | `rustls` | TLS 后端：`rustls` 或 `native-tls` |
+| `loadBalancingMode` | 否 | `priority` | `priority`（按优先级）或 `balanced`（轮询） |
+| `maxRpmPerCredential` | 否 | `0` | 单个账号每分钟最大请求数；`0` 表示不限。设置页保存后立即热生效并写入 `config.json` |
+| `forwardSuggestionMode` | 否 | `false` | Suggestion Mode 输入建议请求放行开关。`false`（默认）时服务端拦截 Claude Code 每轮对话后自动发起的全量上下文预测请求并返回空响应，不产生 Token 消耗；`true` 时正常转发上游，以展示输入建议，但每轮会额外产生一次全量上下文计费请求。可用环境变量 `FORWARD_SUGGESTION_MODE` 覆盖 |
+| `clientTokenPassthrough` | 否 | `true` | 客户端 token 直通：`true`（默认）时返回给客户端的 `usage` 字段 1:1 上报真实值；`false` 时按 `0.6657` 系数缩放展示。适用于按返回用量统计上下文占用的第三方客户端。注意：`true` 时 Claude Code 的 auto-compact 在真实上下文约 164K 时触发（`false` 时约 246K），需维持既有触发时机的用户请显式设为 `false`。可用环境变量 `CLIENT_TOKEN_PASSTHROUGH` 覆盖 |
+| `promptCacheAccounting` | 否 | `false` | 按 Anthropic `cache_control` 断点规则模拟缓存记账：`true` 时 `cache_read` / `cache_creation`（含 5m/1h 拆分）按请求中的断点、20 block 回看窗口与 TTL 计算，取代"除最后一条消息外全部计为缓存读、写入恒为 0"的前缀估算；不带 `cache_control` 的请求全部计为普通输入（OpenAI 兼容端点按自动前缀缓存计算）。缓存按 API Key 隔离（类似官方的 workspace 级隔离），模型按映射后的 Kiro 模型 ID 区分；缓存表落盘到配置目录 `prompt_cache.json`，重启后恢复。**这是本地模拟：只让下游账单的拆分口径贴近官方，不反映 Kiro 侧真实缓存命中与真实成本（真实成本以 credits 为准）。**适用于下游按 usage 计费的网关。可用环境变量 `PROMPT_CACHE_ACCOUNTING` 覆盖 |
+| `promptCacheMinTokens` | 否 | `0` | 断点记账最小可缓存长度的全局覆盖（token）。`0`（默认）按模型取 Anthropic 官方值：Opus 5.5 / Opus 5 / Sonnet 5.5 / Haiku 5.5 等为 512，Opus 4.7 为 2048，Opus 4.6 / Opus 4.5 / Haiku 4.5 为 4096，其余为 1024；`> 0` 时对所有模型统一使用该值。可用环境变量 `PROMPT_CACHE_MIN_TOKENS` 覆盖 |
+| `modelsOfficialAliases` | 否 | `false` | `true` 时 `/v1/models` 为上游点号模型 ID 追加官方连字符别名（如 `claude-opus-4.6` → `claude-opus-4-6`，4.5 代际再追加带日期的 ID），供按模型列表生成映射的下游网关使用；默认关闭，避免 Claude Code 模型选择器出现重复项。可用环境变量 `MODELS_OFFICIAL_ALIASES` 覆盖 |
+| `outputTokensIncludeThinking` | 否 | `false` | `true` 时返回给客户端的 `output_tokens` 包含 thinking（与 Anthropic 官方口径一致）；`false`（默认）只计可见输出。可用环境变量 `OUTPUT_TOKENS_INCLUDE_THINKING` 覆盖 |
+| `writeChunkingMaxLines` | 否 | `300` | 分块写入约束的行数上限（见常见问题中 `Reset(StreamId(1), INTERNAL_ERROR, Remote)` 一条）：请求带 Write / Edit / MultiEdit 工具时，在系统提示末尾要求单次工具调用的参数不超过约 N 行。调大更省 credits 但更易触发上游约 240s 的流重置，`0` 表示不追加约束。可在 Admin 设置页热修改，仅影响之后的新请求。可用环境变量 `WRITE_CHUNKING_MAX_LINES` 覆盖 |
+| `thinkingAsText` | 否 | `true` | 思考内容文本化（仅 Claude Code 客户端）：`true` 时把 thinking 块改写为 markdown 引用文本、逐行流式展示（类似 Kiro CLI；终端入口 `cli` 用 ANSI 变暗斜体样式，Claude Desktop、`local-agent` 等其他入口改用无转义的 Markdown 引用块 + 斜体来近似变暗，避免出现 `[2m` / `[0m` 乱码），解决 CC 默认折叠/隐藏 thinking 导致长推理期间像卡住的问题。两种模式下客户端（Claude Code）上下文都包含思考内容，但回传上游时都会整块丢弃：关闭时丢弃原生 thinking 块，开启时丢弃「💭 Thinking」标记行、思考正文与统计行，上游上下文不含思考内容（仅当流被中断、缺少统计行时，保守降级为只剥标记行）。可用环境变量 `THINKING_AS_TEXT` 覆盖 |
+| `thinkingCollapse` | 否 | `true` | 思考结束后折叠（需同时开启 `thinkingAsText`，对 Claude Code 终端 `cli` 与 Claude Desktop 等入口生效，已验证 `cli` 与 Claude Desktop；`local-agent` 等其他入口未验证，若思考内容不可见请关闭本项）：`true` 时思考过程仍逐行实时显示，思考块结束时代理在同一 index 上补发原生 thinking 块，Claude Code 清空流式文本预览并把它落地为原生可折叠的思考消息（默认折叠，Ctrl+O 展开；展开后正文末尾带「N tokens」思考 token 数，折叠态标签由 Claude Code 写死，无法显示），滚动区不再残留整段思考文本。Claude Desktop 等入口同样折叠为原生思考块，按客户端自身方式展开。可用环境变量 `THINKING_COLLAPSE` 覆盖 |
+| `showSessionCredits` | 否 | `false` | 会话 credits 汇总行（仅 Claude Code 客户端）：`true` 时，每次对话真正结束（`end_turn`，工具调用中间步骤不显示）会在回复末尾追加一行 `▸ Credits: turn 0.86 • session 8.73 \| Time: 12s`，格式对齐 Kiro CLI。`turn` 为本轮（从你最近一次发送消息起，到 Claude Code 显示 `✻ Brewed for Ns` 为止，含工具往返、子代理请求、Stop hook 拦截后继续的部分）的 credits 之和；Stop hook 拦截收尾时，前一次回复末尾的汇总行只含当时已发生的部分，最后一行才是整轮总和，`session` 为当前会话自开启以来的累计，`Time` 为本轮耗时。上游 `meteringEvent` 只返回单次请求的用量、不带累计值，所以累计由代理逐请求累加，重启服务后清零。终端入口 `cli` 为变暗灰色，其他入口为无转义的 Markdown 斜体。该行回传上游前自动剥离，不进入上游上下文、不计入 `output_tokens`；不带工具定义的辅助请求（标题生成、压缩等）不追加；暂不支持非流式请求。可用环境变量 `SHOW_SESSION_CREDITS` 覆盖 |
+| `credentialKeepAliveHours` | 否 | `72` | 账号保活间隔（小时）。账号保活**始终开启、没有开关**：后台定期刷新长期闲置的账号（含被禁用、备用优先级的账号），让 refreshToken 保持活跃，并把轮换后的新 refreshToken 写回账号文件。账号距上次刷新超过该时间才会被保活，低于 24 按 24 处理；账号之间随机错开 30~120 秒、每小时最多处理 5 个，失败不重试，已被服务端撤销的账号会跳过。**只能缓解因闲置导致的过期，无法延长服务端的绝对会话时限（如 IAM Identity Center 的 90 天）。** 可用环境变量 `CREDENTIAL_KEEP_ALIVE_HOURS` 覆盖 |
+| `debugLogs` | 否 | `false` | DEBUG 日志开关：`true` 时控制台、日志文件（`logFile`）与 Admin「查看日志」页三处同步输出 DEBUG 级别事件，可在 Admin 设置页热切换（无需重启）并写回 config.json；关闭后停止捕获新的 DEBUG，已捕获的记录保留。注意该开关返回/保存的是开关状态而非实际生效档位：设置 `RUST_LOG` 环境变量时，其指令仍优先（开关仅在 `RUST_LOG` 基础上追加全局 `debug` 指令，target 定向指令不受影响）。日志量会显著增加，排障后建议关闭。可用环境变量 `DEBUG_LOGS` 覆盖 |
+
+> **TLS 说明**：如遇到 Token 刷新失败或请求报错，尝试将 `tlsBackend` 改为 `native-tls`。
+
+完整配置示例：
+
+```json
+{
+  "host": "0.0.0.0",
+  "port": 8080,
+  "region": "us-east-1",
+  "adminPsw": "my-admin-password",
+  "proxyUrl": "http://127.0.0.1:7890",
+  "tlsBackend": "rustls",
+  "loadBalancingMode": "priority",
+  "maxRpmPerCredential": 0,
+  "forwardSuggestionMode": false,
+  "clientTokenPassthrough": true,
+  "thinkingAsText": true,
+  "debugLogs": false
+}
+```
+
+### 设置页的运行时配置
+
+配置 `adminPsw` 后，可在 Admin 设置页直接管理以下选项；每次保存都会写回 `config.json`。
+
+| 设置 | `config.json` 字段 | 保存后的行为 |
+|------|-------------------|--------------|
+| Suggestion Mode 输入建议 | `forwardSuggestionMode` | 立即热生效 |
+| 客户端 token 直通 | `clientTokenPassthrough` | 立即热生效 |
+| 思考内容文本化展示 | `thinkingAsText` | 立即热生效，仅影响之后的新请求 |
+| 思考结束后折叠 | `thinkingCollapse` | 立即热生效，仅影响之后的新请求 |
+| 会话 Credits 汇总行 | `showSessionCredits` | 立即热生效，仅影响之后的新请求 |
+| DEBUG 日志 | `debugLogs` | 立即热生效，控制台 / 日志文件 / 日志页三处一致 |
+| 每账号 RPM 上限 | `maxRpmPerCredential` | 立即热生效，`0` 表示不限 |
+| 分块写入行数上限 | `writeChunkingMaxLines` | 立即热生效，仅影响之后的新请求，`0` 表示不追加约束 |
+| 监听端口 | `port` | 重启服务后生效，范围为 `1–65535` |
+| 上游代理地址 | `proxyUrl` | 重启服务后生效；支持 `http`、`https`、`socks5`，留空表示不使用代理 |
+
+> **客户端鉴权说明**：`config.json` 不再提供全局 API Key。客户端调用 `/v1/messages`、`/cc/v1/messages` 时，需使用 Admin 后台（`adminPsw` 登录）创建并启用的子 API Key 进行鉴权。注：若未配置 `adminPsw`，Admin 面板本身将被禁用，无法创建子 API Key，需先完成配置。
+
+### 账号级代理
+
+可以为每个账号单独配置代理，优先级高于全局代理：
+
+```json
+[
+  {
+    "refreshToken": "token-a",
+    "authMethod": "social",
+    "proxyUrl": "socks5://proxy-a.example.com:1080"
+  },
+  {
+    "refreshToken": "token-b",
+    "authMethod": "social",
+    "proxyUrl": "direct"
+  }
+]
+```
+
+`proxyUrl: "direct"` 表示该账号强制直连，不走任何代理。
+
+### Region 配置优先级
+
+**Auth Region**（Token 刷新）：`账号.authRegion` > `账号.region` > `config.authRegion` > `config.region`
+
+**API Region**（API 请求）：`账号.apiRegion` > `config.apiRegion` > `config.region`
+
+---
+
+## 🤖 接入 Claude Code
+
+### 方式一：cc-switch 一键导入（推荐）
+
+- **管理员**：Admin 面板 → API Key 管理，在目标 Key 那一行点 🤖 图标
+- **终端用户**：用 API Key 登录用户面板（`/user`），在「一键导入 cc-switch」卡片点「导入 Claude Code」
+
+### 方式二：环境变量
+
+服务启动后，在终端中设置以下环境变量即可让 Claude Code 使用本代理：
+
+```bash
+export ANTHROPIC_BASE_URL="http://127.0.0.1:5678"
+export ANTHROPIC_API_KEY="在管理面板 API Key 管理页面创建的 Key"
+```
+
+**永久生效**（加入 `~/.zshrc` 或 `~/.bashrc`）：
+
+```bash
+echo 'export ANTHROPIC_BASE_URL="http://127.0.0.1:5678"' >> ~/.zshrc
+echo 'export ANTHROPIC_API_KEY="在管理面板 API Key 管理页面创建的 Key"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### 方式三：settings.json 配置
+
+在 Claude Code 的配置文件中直接写入代理地址，无需每次设置环境变量。
+
+配置文件路径：
+- 全局配置：`~/.claude/settings.json`
+- 项目配置：`<项目根目录>/.claude/settings.json`（仅对当前项目生效）
+
+在配置文件中添加以下内容：
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:5678",
+    "ANTHROPIC_API_KEY": "在管理面板 API Key 管理页面创建的 Key"
+  }
+}
+```
+
+如果文件已有其他配置，将 `env` 字段合并进去即可：
+
+```json
+{
+  "theme": "dark",
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:5678",
+    "ANTHROPIC_API_KEY": "在管理面板 API Key 管理页面创建的 Key"
+  }
+}
+```
+
+**验证是否生效：**
+
+```bash
+curl http://127.0.0.1:5678/v1/messages \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: your-api-key" \
+  -d '{
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 100,
+    "messages": [{"role": "user", "content": "hi"}]
+  }'
+```
+
+---
+
+## 🧬 接入 Codex CLI / OpenAI SDK
+
+除 Anthropic 协议外，代理同时提供两个 OpenAI 兼容端点，因此可以直接用 Kiro 额度驱动 Codex CLI 或任意 OpenAI SDK 客户端。两个端点都是"翻译 + 转发"：请求转成 Anthropic 格式后复用 `/v1/messages` 的完整下游链路（多账号故障转移、RPM 计数、用量统计、限流处理），响应再转回 OpenAI 格式。
+
+### 接入 Codex CLI
+
+#### 方式一：cc-switch 一键导入（推荐）
+
+- **管理员**：Admin 面板 → API Key 管理，在目标 Key 那一行点 ⌨️ 图标
+- **终端用户**：用 API Key 登录用户面板（`/user`），在「一键导入 cc-switch」卡片点「导入 Codex」
+
+#### 方式二：手动编辑 config.toml
+
+编辑 `~/.codex/config.toml`（Codex CLI 与 ChatGPT.app 桌面客户端共用同一份文件）：
+
+```toml
+model = "gpt-5.6-terra"
+model_provider = "kiro"
+
+[model_providers.kiro]
+name = "kiro2cc-proxy"
+base_url = "http://127.0.0.1:5678/v1"  # 本机部署用 127.0.0.1；服务器部署请替换为你的域名或公网 IP
+wire_api = "responses"        # 推荐填 "responses"，也可填 "chat"
+env_key = "KIRO_API_KEY"
+```
+
+密钥写进 `~/.codex/.env`（Codex 底层静态链接了 Rust `dotenvy` crate，每次调用都会自动重新加载该文件，配置全部集中在 `~/.codex/` 目录内，不需要碰任何 shell 环境变量，改完立即生效也不用重启）：
+
+```bash
+echo 'KIRO_API_KEY=your-api-key' > ~/.codex/.env
+chmod 600 ~/.codex/.env
+codex
+```
+
+> **避免重复定义**：若用 `-p/--profile <name>` 建了 `~/.codex/<name>.config.toml`，profile 会层叠在 `config.toml` 之上——只有 profile 里显式写的字段才会覆盖，未写的字段从 base config 继承。若 profile 的 `model`/`model_provider` 等字段与 base config 完全一样，说明这份 profile 已经冗余（可用 `codex exec` 分别不带 `-p` 和带 `-p <name>` 各跑一次对比输出验证），直接删掉即可，没必要维护两份相同配置。
+
+> **ChatGPT.app 桌面客户端**同样读取这份 `config.toml`（顶层 `model_provider` 生效，暂无独立 profile 机制），但它是常驻进程启动时一次性加载配置，改 `config.toml` 后需要**完全重启 App** 才生效；而 `~/.codex/.env` 每次调用都重新读取，改完立即生效，不用重启。
+
+**`wire_api` 两种取值：**
+
+| 取值 | 使用的端点 | 说明 |
+|------|-----------|------|
+| `responses` | `/v1/responses` | Codex CLI 默认协议，功能最完整（含 reasoning 事件、自由文本工具） |
+| `chat` | `/v1/chat/completions` | 通用 Chat Completions 协议，兼容性最广 |
+
+两者都支持流式与工具调用往返，日常使用推荐 `responses`。
+
+### 接入 OpenAI SDK
+
+```python
+from openai import OpenAI
+
+client = OpenAI(base_url="http://127.0.0.1:5678/v1", api_key="your-api-key")
+
+resp = client.chat.completions.create(
+    model="gpt-5.6-terra",
+    messages=[{"role": "user", "content": "你好"}],
+)
+print(resp.choices[0].message.content)
+```
+
+模型名可填 `gpt-5.6-terra` / `gpt-5.6-luna` / `gpt-5.6-sol`，也可直接填 `claude-*` 系模型名（原样透传给上游）。Codex CLI 自带的 `gpt-5-codex` / `gpt-5.1-codex` 会自动映射到 `gpt-5.6-terra`，`gpt-5.1-codex-max` 映射到 `gpt-5.6-luna`。
+
+### 已知限制
+
+- **不支持 `previous_response_id`** —— 代理无状态，不保存历史响应。带该字段的请求直接返回 400 且不产生上游调用；请在 `input` 中回传完整对话历史（Codex CLI 默认即如此，无需额外配置）。
+- **`tool_choice` 仅支持 `auto`** —— 其他取值（`required` / 指定函数名）会记 WARN 后按 `auto` 处理，这是上游 Kiro API 的既有限制。
+- **`reasoning.effort` 对 `gpt-5.6-luna` 无效** —— 该模型上游恒返回 `thinking=0`。
+- **`include: ["reasoning.encrypted_content"]` 被忽略** —— 代理不产出加密 reasoning 内容。
+
+---
+
+## 🔌 API 端点
+
+### 标准端点 (/v1)
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/v1/models` | GET | 获取可用模型列表 |
+| `/v1/messages` | POST | 创建消息（对话） |
+| `/v1/messages/count_tokens` | POST | 估算 Token 数量 |
+
+### OpenAI 兼容端点 (/v1)
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/v1/chat/completions` | POST | OpenAI Chat Completions 协议，支持流式、工具调用、`reasoning_effort` |
+| `/v1/responses` | POST | OpenAI Responses 协议，Codex CLI 默认 `wire_api` |
+
+> 详见 [🧬 接入 Codex CLI / OpenAI SDK](#-接入-codex-cli--openai-sdk)。
+
+### Claude Code 兼容端点 (/cc/v1)
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/cc/v1/messages` | POST | 实时流式转发，带 300s 上游挂起保护 |
+| `/cc/v1/messages/count_tokens` | POST | 估算 Token 数量 |
+
+> `/cc/v1/messages` 与 `/v1/messages` 同为实时流式转发（上游首帧到达即转发），唯一差异是带 300 秒全局 deadline —— 上游长时间无响应时发送 `overloaded_error` 后终止，已流出的内容保持有效。两个端点均每 25 秒发送 `ping` 保活。
+
+### 客户端认证
+
+支持两种方式：
+
+```
+x-api-key: your-api-key
+```
+或
+```
+Authorization: Bearer your-api-key
+```
+
+---
+
+## 🗺️ 模型映射
+
+发送请求时可使用任意包含以下关键词的模型名，会自动映射到对应 Kiro 模型：
+
+| 请求模型名（含关键词） | 实际使用的 Kiro 模型 |
+|----------------------|-------------------|
+| `*sonnet*`（含 5.5/5-5） | `claude-sonnet-5.5` |
+| `*sonnet*`（含 4.6/4-6） | `claude-sonnet-4.6` |
+| `*sonnet*`（含 5/sonnet-5） | `claude-sonnet-5` |
+| `*sonnet*`（其他） | `claude-sonnet-4.5` |
+| `*opus*`（含 5.5/5-5） | `claude-opus-5.5` |
+| `*opus*`（含 5/opus-5） | `claude-opus-5` |
+| `*opus*`（含 4.5/4-5） | `claude-opus-4.5` |
+| `*opus*`（含 4.7/4-7） | `claude-opus-4.7` |
+| `*opus*`（含 4.8/4-8） | `claude-opus-4.8` |
+| `*opus*`（其他） | `claude-opus-4.6` |
+| `*fable*`（含 5.1/5-1） | `claude-fable-5.1` |
+| `*fable*`（其他） | `claude-fable-5` |
+| `*haiku*`（含 5.5/5-5） | `claude-haiku-5.5` |
+| `*haiku*` | `claude-haiku-4.5` |
+| `*deepseek*` | `deepseek-3.2` |
+| `*glm*` | `glm-5` |
+| `*minimax*`（含 2.5/2-5） | `minimax-m2.5` |
+| `*minimax*`（其他） | `minimax-m2.1` |
+| `*qwen*` | `qwen3-coder-next` |
+| `*kimi*` | `kimi-k3` |
+| `*grok*` | `grok-4.7` |
+| `*gpt*`（含 terra） | `gpt-5.6-terra` |
+| `*gpt*`（含 luna） | `gpt-5.6-luna` |
+| `*gpt*`（含 sol，或含 5.6/5-6 但无具体变体名，默认落到旗舰档） | `gpt-5.6-sol` |
+
+---
+
+## 🛡️ Admin 管理面板
+
+配置了 `adminPsw`（Admin Password）后，访问 `http://127.0.0.1:5678/admin` 进入管理面板。
+
+功能：
+- 查看所有账号状态（是否有效、失败次数等）
+- 添加 / 删除账号
+- 通过「KAM导入账号」导入单个或多个 KAM 账号并自动验活
+- 启用 / 禁用单个账号
+- 调整账号优先级
+- 查看各账号余额
+- 重置账号失败状态
+- 「使用文档」页面：客户端配置生成（Claude Code / Codex CLI / OpenAI SDK / CC Switch 一键导入）、接口参考与排障指南（选中 API Key 后自动填充示例）
+
+**Admin API**（需要 `x-api-key` 或 `Authorization: Bearer` 认证）：
+
+| 端点 | 方法 | 说明 |
+|------|------|------|
+| `/api/admin/credentials` | GET | 获取所有账号 |
+| `/api/admin/credentials` | POST | 添加账号 |
+| `/api/admin/credentials/:id` | DELETE | 删除账号 |
+| `/api/admin/credentials/:id/balance` | GET | 查询余额 |
+
+---
+
+## ❓ 常见问题
+
+**Q：启动后提示"已加载 0 个账号配置"**
+
+需要创建 `app/config/credentials.json`（本地）或 `data/credentials.json`（Docker），参考"获取 Kiro 账号"章节。
+
+**Q：请求返回 <code>INVALID_MODEL_ID</code>**
+
+> ⚠️ **【重要】** 国内 IP 无法直接访问 Claude 模型。必须在 `app/config/config.json` 中配置 `proxyUrl`（如 `"proxyUrl": "http://127.0.0.1:7890"`），或使用境外服务器。这是国内用户最常见的问题。
+
+**Q：使用 GPT-5.6 系列模型（sol/terra/luna）时，thinking 模式、output effort 或 max_tokens 设定似乎没有生效**
+
+GPT-5.6 系列的 Kiro 后端 schema 不支持 `additionalModelRequestFields`（涵盖 thinking / output_config effort / max_tokens 三个子字段），与 Claude 4.5 代际（Sonnet 4.5 / Opus 4.5 / Haiku 4.5）一样会被整体跳过，属已知限制，非本项目 bug。
+
+**Q：请求返回 401 Unauthorized**
+
+检查客户端使用的 API Key 是否是 Admin 后台创建且已启用的子 API Key，未启用或已删除的 Key 会被拒绝。
+
+**Q：Token 刷新失败 / 请求报错**
+
+尝试将 `config.json` 中的 `tlsBackend` 改为 `native-tls` 后重启服务。
+
+**Q：通过管理面板导入账号时报错 <code>Cannot read properties of undefined (reading 'digest')</code>**
+
+此问题已在 v2.7.3 修复：`crypto.subtle` 加密 API 只在 HTTPS 或 localhost 环境下可用，公网 IP + HTTP 访问会触发此错误，v2.7.3 起自动降级为纯 JS 实现，无需再配置 HTTPS。若仍报错，请升级到最新版本。
+
+**Q：企业版 IdC 账号请求返回 502，日志显示 <code>profileArn is required for this request</code>**
+
+企业版（Enterprise）IdC 账号调用 Q 端点强制要求 `profileArn`，但 IdC Token 刷新接口不会返回该字段，需要手动填写。管理面板「添加账号 / 编辑账号」对话框中已提供 **Profile ARN** 输入框，填入形如 `arn:aws:codewhisperer:<region>:<account-id>:profile/<profile-id>` 的值即可。`profileArn` 可从 Kiro IDE 本地缓存或 `ListAvailableProfiles` 获取，其所在 region 需与账号的 `apiRegion` 保持一致。Social 账号一般无需填写。
+
+**Q：填写了 profileArn 后，企业版 IdC 账号查询余额仍返回 <code>403 Forbidden: Invalid token</code>**
+
+此问题已修复：AWS SSO OIDC 刷新接口会同时返回 `accessToken`（SSO portal session token）和 `idToken`（JWT），Amazon Q 数据面接口（对话请求）只接受 idToken，而额度查询接口（`getUsageLimits`）需要的是原始 accessToken——此前代理内部只保存了一份 token 并复用于两处，导致二者只能满足其一。修复后代理会分别保存两个 token 并按接口用途选用，无需用户任何操作，账号下一次刷新 Token 后自动生效（`credentials.json` 会新增内部字段 `ssoAccessToken`，向后兼容旧配置文件，无需手动编辑）。若升级后仍报错，尝试在管理面板重置该账号或等待 Token 自动过期刷新。
+
+**Q：子 API Key 消费额度能按真实 Kiro credits 计量吗（而不是估算的美元）**
+
+能。创建/编辑子 API Key 时，额度单位可选「美元估算」或「真实 Credits」（limitUnit：usd/credits）。选择 credits 时，额度按 usage 记录中的真实 credits_used 累加计量（旧记录无 credits_used 字段时按 estimated_cost × k_ref 回退估算）。默认为 usd，向后兼容现有配置。
+
+**Q：长生成轮约 4 分钟（~247s）后报 `Server error mid-response`，代理日志出现 `Reset(StreamId(1), INTERNAL_ERROR, Remote)`**
+
+这是**上游（Kiro 网关）主动重置 HTTP/2 流**，不是代理超时（代理上游超时为 1000s）。代理收到 Reset 时若已有部分输出，会立即向客户端补发 `overloaded_error`（不会伪装成正常完成），客户端随后自动重试。该问题在**不经代理、直接使用 Kiro CLI 时同样复现**，可确认根因在上游一侧，与代理转发链路和客户端无关。
+
+实测定位到一个可复现的触发条件：**模型一次生成很大的工具调用参数（典型是用 `Write` 一次写入上万字的文件）**。上游不会增量流式输出工具参数，生成期间该流没有任何数据，静默约 240s 后上游以 `RST_STREAM(INTERNAL_ERROR)` 重置（实测写入约 8000 字耗时约 215s 可成功，约 20000 字约 240s 必定失败，且与 thinking adaptive 开关无关；原样重试会再次失败；HTTP/2 PING 保活无效）。纯文本流和 thinking 阶段持续输出，实测 794s 仍正常结束。
+
+代理的处理：请求带 `Write` / `Edit` / `MultiEdit` 任一工具时，会在系统提示末尾追加一条固定的分块写入约束（单次工具调用的参数不超过约 N 行，N 默认 300，由 `writeChunkingMaxLines` 配置：Write 的 `content`、Edit 的 `new_string`、一次 MultiEdit 内所有编辑的合计都按此计；更大内容先用 Write 写开头，再用多次 Edit / Bash 追加，大的 MultiEdit 拆成多次调用），让模型把大改动拆成多次调用。该约束对 Write 的实测使 4 次大文件写入请求全部在约 2 分钟内正常结束（Edit / MultiEdit 部分尚未单独实测）；不改动客户端的工具描述。
+
+**取舍（issue #46 后续反馈）**：该约束会让模型把一次大写入拆成多轮，而客户端每轮都携带 `thinking: adaptive`、每轮都会重新思考。用户在自己环境的统计显示，同类任务的 credits 约为无约束时的 3 倍（我没有复现）。因此上限做成了可配置的 `writeChunkingMaxLines`：调大更省 credits，但单次写入更容易撞到约 240s 的重置；调小更稳但更贵；设为 `0` 则完全不追加约束（需自行控制单次写入粒度）。默认值 300 是按 issue 里的实测输出速度（约 8000 汉字 ~215s 可成功、约 20000 汉字 ~240s 必失败）折算的估计，未在真实 Claude Code 上验证；如仍遇到 Reset，请调小。可在 Admin 设置页热修改（仅影响之后的新请求），也可用环境变量 `WRITE_CHUNKING_MAX_LINES` 覆盖。
+
+仍可能发生的情况：模型不遵从约束，或同一回合并行调用多个写入类工具（各自不超限、但合计生成时间过长，该场景尚未实测）时，仍可能触发同样的重置，此时可手动让模型分段写入，或在 issue 中附上日志（`stream_elapsed_secs` 字段记录流断开时已持续的时长）。注意：这是在本地环境（单账号、Opus 4.6、SOCKS5 出口）的实测结论，issue 作者环境未验证。
+
+> 说明：`agentContinuationId` 是代理从 conversationId 派生的会话稳定标识（用于 prompt cache 与账号粘性路由），并不是上游的"断点续跑"句柄，代理无法在 Reset 后自动续写剩余内容；代理到客户端方向已每 25 秒发送 `ping` 保活，而 Reset 来自上游一侧，客户端侧保活无法避免。
+
+**Q：端口被占用**
+
+`run-local-service-mac.sh` 会自动终止占用端口的进程。如仍报错，手动执行：
+
+```bash
+lsof -ti:5678 | xargs kill -9
+```
+
+**Q：Write Failed / 会话卡死**
+
+输出过长被截断导致，调低客户端的 `max_tokens` 上限。
+
+**Q：Claude Code 开启 Auto 权限模式后，Credits 消耗变多了**
+
+这是 Claude Code 客户端自身的行为，不是代理的问题。Auto 模式优先使用 Anthropic 官方服务端的分类器；连接第三方端点（包括本代理）时收不到服务端分类结果，客户端会在该会话内回退到**本地分类器**，并在每次执行敏感工具（如运行命令）前额外发起 1~2 次非流式 `/v1/messages` 请求，用来判断该操作是否放行。代理与处理普通请求一样将其转发给 Kiro 上游，因此会产生正常的 Credits 计费。
+
+这类请求的特征是 `tools` 为空、`max_tokens` 为 64 或 8192、末条 user 消息以 `<transcript>` 开头，可在 `[small-req]` 诊断日志中看到。分类器默认使用 Sonnet 档位模型，与主对话所用模型无关。
+
+代理不会拦截或伪造这些请求的结果，因为那等于替用户放行所有命令，绕过 Auto 模式的安全判断。可选的降低开销办法：
+
+- 在客户端设置环境变量 `CLAUDE_CODE_AUTO_MODE_MODEL=claude-haiku-4.5`，让分类器使用费率更低的模型。该变量只对客户端本地分类器生效。**注意：Claude Desktop 的 Code 标签页目前会忽略此变量**（见 [anthropics/claude-code#105288](https://github.com/anthropics/claude-code/issues/105288)），分类器仍会使用会话模型。
+- 在完全信任的项目中改用 `Bypass Permissions` 模式，不再触发分类请求。该模式不做任何安全检查，请自行评估风险。
+
+**Q：局域网内其他设备无法访问**
+
+将 `config.json` 中的 `host` 改为 `0.0.0.0`，确认防火墙已开放对应端口。
+
+**Q：如何更新到最新版本（Docker 部署）**
+
+使用 GHCR 镜像部署时，无需更新源码。先备份 `data/`，然后执行：
+
+```bash
+cd /opt/kiro2cc-proxy
+docker compose pull
+docker compose up -d
+```
+
+使用固定版本标签时，先将 `docker-compose.yml` 中的 `image` 标签改为目标已发布版本；保留原 `data/` 挂载。
+
+**Q：如何更新到最新版本（本地部署）**
+
+```bash
+git pull
+./build-and-run-mac.sh   # 或分开执行：./build-mac.sh && ./run-local-service-mac.sh
+```
+
+---
+
+## ⚠️ 注意事项
+
+1. `credentials.json` 包含敏感 Token，不要提交到版本控制，不要分享给他人
+2. 服务会自动刷新过期 Token，无需手动干预
+3. 多账号模式下 Token 刷新后自动回写到文件
+4. 国内用户必须配置代理才能访问 Claude 模型
+
+---
+
+## 📂 项目结构
+
+```
+kiro2cc-proxy/
+├── src/                    # Rust 源码
+├── web-ui/                 # 前端源码根目录
+│   ├── admin-ui/           # 管理面板前端
+│   └── user-ui/            # 用户面板前端
+├── app/config/             # 本地配置目录（gitignored）
+├── config.example.json     # 配置示例
+├── docker-compose.yml      # Docker 部署配置
+├── Dockerfile              # Docker 镜像构建
+├── build-mac.sh            # 一键构建脚本（macOS）
+├── build-windows.ps1       # 一键构建脚本（Windows）
+├── build-and-run-mac.sh            # 一键构建并启动脚本（macOS）
+├── build-and-run-windows.ps1       # 一键构建并启动脚本（Windows）
+├── run-local-service-mac.sh         # macOS 本地启动脚本
+├── run-local-service-windows.ps1   # Windows 本地启动脚本
+├── setup_shell_aliases.sh  # macOS Shell 快捷命令安装脚本
+├── setup_shell_aliases.ps1 # Windows PowerShell 快捷命令安装脚本
+├── install_server.sh       # Linux systemd 一键安装脚本
+└── start_server.sh         # Linux 手动后台管理脚本
+```
+
+---
+
+### 📜 License
+
+MIT
+
+### 🙏 致谢
+
+本项目基于 [kiro.rs](https://github.com/hank9999/kiro.rs) 二次开发，感谢原作者的开源贡献。
+
+感谢所有为本项目做出贡献的开发者（排名不分先后）：
+
+- [jayus71](https://github.com/jayus71) — [#53](https://github.com/TsinHzl/kiro2cc-proxy/pull/53)
+- [fhy12130-afk](https://github.com/fhy12130-afk) — [#50](https://github.com/TsinHzl/kiro2cc-proxy/pull/50)
+- [kosuke-zhang](https://github.com/kosuke-zhang) — [#28](https://github.com/TsinHzl/kiro2cc-proxy/pull/28)
+- [lqzhgood](https://github.com/lqzhgood) — [#37](https://github.com/TsinHzl/kiro2cc-proxy/pull/37), [#35](https://github.com/TsinHzl/kiro2cc-proxy/pull/35), [#33](https://github.com/TsinHzl/kiro2cc-proxy/pull/33)
+- [freefish1218](https://github.com/freefish1218) — [#62](https://github.com/TsinHzl/kiro2cc-proxy/pull/62)
+- [xhsngdsan](https://github.com/xhsngdsan)
+- [zbjincheng](https://github.com/zbjincheng) — [#41](https://github.com/TsinHzl/kiro2cc-proxy/pull/41)
+
+**致谢**——以下 Issue 直接推动了关键修复：
+
+- [NoahNyy](https://github.com/NoahNyy) — [#66](https://github.com/TsinHzl/kiro2cc-proxy/issues/66), [#58](https://github.com/TsinHzl/kiro2cc-proxy/issues/58), [#57](https://github.com/TsinHzl/kiro2cc-proxy/issues/57)
+- [jayus71](https://github.com/jayus71) — [#56](https://github.com/TsinHzl/kiro2cc-proxy/issues/56), [#52](https://github.com/TsinHzl/kiro2cc-proxy/issues/52)
+- [aidenli](https://github.com/aidenli) — [#54](https://github.com/TsinHzl/kiro2cc-proxy/issues/54)
+- [AX10MER](https://github.com/AX10MER) — [#67](https://github.com/TsinHzl/kiro2cc-proxy/issues/67), [#47](https://github.com/TsinHzl/kiro2cc-proxy/issues/47)
+- [C2Y-cyber](https://github.com/C2Y-cyber) — [#46](https://github.com/TsinHzl/kiro2cc-proxy/issues/46)
+- [XiaoZhuiWang](https://github.com/XiaoZhuiWang) — [#40](https://github.com/TsinHzl/kiro2cc-proxy/issues/40)
+- [SunNorthGod](https://github.com/SunNorthGod) — [#9](https://github.com/TsinHzl/kiro2cc-proxy/issues/9), [#8](https://github.com/TsinHzl/kiro2cc-proxy/issues/8)
+- [RecordingTheSmile](https://github.com/RecordingTheSmile) — [#44](https://github.com/TsinHzl/kiro2cc-proxy/issues/44)
+- [zbjincheng](https://github.com/zbjincheng) — [#70](https://github.com/TsinHzl/kiro2cc-proxy/issues/70), [#59](https://github.com/TsinHzl/kiro2cc-proxy/issues/59)
+
+> 感谢每一位提交 Issue、反馈建议和参与讨论的用户，是你们让这个项目不断完善。

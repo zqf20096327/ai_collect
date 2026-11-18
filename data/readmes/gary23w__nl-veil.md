@@ -8,15 +8,22 @@ the Veil (nl-veil) is an open-source desktop app for building software with AI. 
 let specialist agents share the work, and carry project memory
 into your next session. Use the built-in model, Ollama, or an OpenAI-compatible endpoint.
 
-**[Download the desktop app](https://github.com/gary23w/nl-veil/releases/tag/v1.1.31)** ·
+**[Download the desktop app](https://veil.garrettstimpson.ca/#get)** ·
 **[Get it from the Microsoft Store](https://apps.microsoft.com/detail/9MVQ78SK0CW6)** (Windows) ·
-**[Screenshot walkthrough: setup & build with Cloudflare AI](https://gary23w.github.io/nl-veil/demos/)** ·
+**[Screenshot walkthrough: setup & build with Cloudflare AI](https://veil.garrettstimpson.ca/demos/)** ·
+[Website](https://veil.garrettstimpson.ca/) ·
 [Installation and requirements](#install) · [Try your first task](#try-your-first-task)
 
 Windows · macOS · Linux · [MIT app code](#license). Local inference needs no provider account or API key;
 hosted providers have their own data handling and costs. The built-in model requires a separate
 download, and coding tools require Python on `PATH` (some checks also use Node); on a machine without it, the
 agent can install it itself through `run_shell` and pick it up with `tool_env`, no restart needed.
+
+<p align="center">
+  <img src="docs/demos/slides/build-plan.png" width="760" alt="The Veil desk: on the left, the chat lays out the plan for a support-workspace web app; on the right, the Activity panel lists its five planned steps.">
+  <br>
+  <sub>A real screenshot from the <a href="https://veil.garrettstimpson.ca/demos/">build walkthrough</a>: the desk planning a build.</sub>
+</p>
 
 ### Try your first task
 
@@ -35,11 +42,11 @@ to evaluate both the coding workflow and memory on your own code.
 Include your OS, app version, model/provider, and expected versus actual behavior. Remove private
 code and credentials from anything you share.
 
-<sub>NEURON-LOOPS · NL-VEIL — **an agentic coding desktop app that runs a whole team of AI agents on your machine, and remembers.** One binary, many minds, one shared memory. Browse the annotated source of every module at [the docs site](https://gary23w.github.io/nl-veil/).</sub>
+<sub>NEURON-LOOPS · NL-VEIL — **an agentic coding desktop app that runs a whole team of AI agents on your machine, and remembers.** One binary, many minds, one shared memory. Browse the annotated source of every module at [the docs site](https://veil.garrettstimpson.ca/).</sub>
 
 <p>
   <a href="https://github.com/gary23w/nl-veil/actions/workflows/release.yml"><img alt="build" src="https://github.com/gary23w/nl-veil/actions/workflows/release.yml/badge.svg"></a>
-  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.31-A8241B"></a>
+  <a href="https://github.com/gary23w/nl-veil/releases"><img alt="release" src="https://img.shields.io/badge/release-v1.1.33-A8241B"></a>
   <img alt="zig" src="https://img.shields.io/badge/zig-0.16-F7A41D?logo=zig&logoColor=white">
   <a href="https://huggingface.co/gary23w/the-veil-12b"><img alt="built-in model" src="https://img.shields.io/badge/built--in%20model-the--veil--12b-6E4A27?logo=huggingface&logoColor=white"></a>
   <a href="https://huggingface.co/gary23w/gary-neuron-emergent"><img alt="memory cortex" src="https://img.shields.io/badge/cortex-gary--neuron--emergent-6E4A27?logo=huggingface&logoColor=white"></a>
@@ -109,7 +116,7 @@ you connect.
 | [**Themes & plugins**](#make-it-your-own--themes--plugins) | Lua, hot-reloaded, across web + desktop + CLI ([PLUGINS.md](PLUGINS.md)) |
 | [**Scheduled tasks**](#scheduled-tasks) · [**the desktop**](#the-desktop--veil-desk) · [**the fleet hub**](#the-fleet-hub--many-swarms-one-console) | cron-ish runs that are real conversations, a native dashboard, one console over every swarm |
 
-Browse the annotated source of every module at **[the docs site](https://gary23w.github.io/nl-veil/)**
+Browse the annotated source of every module at **[the docs site](https://veil.garrettstimpson.ca/)**
 (`docs/`) — an interactive architecture map and ~100 generated source documents, in the same design
 system the desktop app compiles in.
 
@@ -118,7 +125,7 @@ system the desktop app compiles in.
 **Frontier-scale reasoning models, through your own Cloudflare account.** Cloudflare describes
 [Kimi K2.6](https://developers.cloudflare.com/workers-ai/models/kimi-k2.6/) as a frontier-scale model
 with reasoning, multi-turn tool calling and a 262K-token context window. The Veil's
-[real build walkthrough](https://gary23w.github.io/nl-veil/demos/) used this model to build and refine
+[real build walkthrough](https://veil.garrettstimpson.ca/demos/) used this model to build and refine
 a customer-support workspace.
 
 The [Workers Paid plan starts at $5 USD/month](https://developers.cloudflare.com/changelog/post/2026-07-28-models-require-workers-paid/)
@@ -396,7 +403,7 @@ so they never cross the public internet and need no API key.
 
 #### Seen working
 
-[![TATER-TOTS vs DOTS - the trailer](docs/video/tots-release.png)](https://gary23w.github.io/nl-veil/video/tots-release.mp4)
+[![TATER-TOTS vs DOTS - the trailer](docs/video/tots-release.png)](https://veil.garrettstimpson.ca/video/tots-release.mp4)
 
 The trailer (2:20, sound on) is above; the numbers below are not from a trailer. They are three runs on a real
 Cloudflare account, each a tater-tot named Gary given the one-word goal `test` at a 5-second pace - the hard
@@ -541,18 +548,12 @@ raylib is a *lazy* dependency, so `-Dapp=false` never fetches it at all.
 
 ## Install
 
-Download your platform's full application bundle from **[v1.1.31](https://github.com/gary23w/nl-veil/releases/tag/v1.1.31)**, extract it,
-and run `veil.exe` on Windows or `./start` on macOS/Linux. The bundle includes the desktop
-application and memory engine; model weights are downloaded separately in the app.
+Choose your platform on the **[download page](https://veil.garrettstimpson.ca/#get)**. It has
+the Microsoft Store link for Windows and ZIPs for Windows, both Mac architectures and Linux.
 
-| Platform | Application bundle |
-|---|---|
-| Windows x86-64 | [veil-v1.1.31-windows-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.31/veil-v1.1.31-windows-x86_64.zip) |
-| Linux x86-64 | [veil-v1.1.31-linux-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.31/veil-v1.1.31-linux-x86_64.zip) |
-| macOS Apple Silicon | [veil-v1.1.31-macos-arm64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.31/veil-v1.1.31-macos-arm64.zip) |
-| macOS Intel | [veil-v1.1.31-macos-x86_64.zip](https://github.com/gary23w/nl-veil/releases/download/v1.1.31/veil-v1.1.31-macos-x86_64.zip) |
-
-Choose the full `veil-v…` bundle, rather than GitHub's source archive or the standalone server.
+Extract the entire ZIP to a writable folder. Open `veil.exe` on Windows or run `./start` from
+the extracted folder on macOS or Linux. Keep `bin/` and `veil-install.txt` beside the executable.
+Open **Settings → Models** in the app to set up your model.
 
 <details><summary>Build from source (requires Zig 0.16+)</summary>
 
@@ -726,7 +727,7 @@ On startup the server prints one complete URL per address this machine answers o
 (`src/main.zig:861-889`, using `src/config/lan.zig`):
 
 ```
-neuron-loops 1.1.31 on http://localhost:8787
+neuron-loops 1.1.33 on http://localhost:8787
     open from another machine (phone, laptop) at:
       http://192.168.1.42:8787
 ```
@@ -985,7 +986,7 @@ veil plugins reload    # admin: pick up changes with no restart
 ## The chat brain runs in the server
 
 The agentic chat loop — planning, tool-calling, streaming, steering, and memory — runs **server-side**
-in [`src/worker/chat/engine.zig`](https://gary23w.github.io/nl-veil/#doc=worker/chat/engine). Clients
+in [`src/worker/chat/engine.zig`](https://veil.garrettstimpson.ca/#doc=worker/chat/engine). Clients
 (`veil chat`, the desk, the browser) are thin: they speak three REST calls per conversation.
 
 ```
@@ -1011,7 +1012,7 @@ veil chat — conversation cli7f3a1c
 ```
 
 What the model sees each turn is governed, not accreted: every context block (memory, tool digests,
-corrections, plugin hooks…) bids into a [prompt workspace](https://gary23w.github.io/nl-veil/#doc=worker/chat/workspace)
+corrections, plugin hooks…) bids into a [prompt workspace](https://veil.garrettstimpson.ca/#doc=worker/chat/workspace)
 with a fixed render order, per-channel byte budgets, and a **provenance receipt** on every admitted
 block — and each turn's admit/drop record lands in `workspace.jsonl`, so "why did it say that" has a
 queryable answer. Recalled memory arrives **scored** (numbers, not vibes), a fact that contradicts a
@@ -1028,19 +1029,19 @@ being asked. The summary, the facts block and the verbatim window are all sized 
 of the model that reads them and the model that writes the folds, so a 32k model keeps the history it had,
 a large model with a 128k window replays 64 KB verbatim, and a small local summarizer is never handed a
 fold it cannot hold
-([context](https://gary23w.github.io/nl-veil/#doc=worker/chat/context)).
+([context](https://veil.garrettstimpson.ca/#doc=worker/chat/context)).
 
 **Every request is unfolded from the conversation's store.** Each message of a chat lands in the
 conversation's `graph.jsonl` the moment it exists (the ask, each step and its calls, each tool result as
 the model saw it, each answer), and each tool result's payload is indexed in neuron-db as a document of its
-own. A request is then the turn's prefix, one [store](https://gary23w.github.io/nl-veil/#doc=worker/chat/store)
+own. A request is then the turn's prefix, one [store](https://veil.garrettstimpson.ca/#doc=worker/chat/store)
 net laid out over every earlier ask, answer and result from where the work stands, and the newest two rounds
 verbatim, so it stays the same size at turn 5 and at turn 5,000 and nothing older is summarized: a word a later
 step uses links it to the earlier result that holds it, and `recall_node` returns any node whole by its id.
 A message that does not parse is never stored. `NL_CONTEXT=fold` restores the fold-and-carry path below.
 
 **With `NL_CONTEXT=fold`, a long turn carries itself forward by graph, not by summary.** When a turn crosses its spend ceiling,
-[Gary's 4tope](https://gary23w.github.io/nl-veil/#doc=worker/chat/net) reads the turn's working log as a
+[Gary's 4tope](https://veil.garrettstimpson.ca/#doc=worker/chat/net) reads the turn's working log as a
 dependency graph: each result hangs off the step that asked for it, a step depends on the results it
 reused, and a later read or write of the same file supersedes the earlier one. The longest path back from
 the current step is the chain the work rests on; it is never pruned. The continuation is laid out along the
@@ -1058,7 +1059,7 @@ the next turns read what the tools showed — the rolling summary only ever saw 
 The ceiling itself is floored at a dozen of the fullest prompt the turn may send, with cached tokens
 counted at a quarter, so a wide window is no longer cut sooner than a narrow one.
 
-Inside a turn, a [recall overlay](https://gary23w.github.io/nl-veil/#doc=worker/chat/overlay) keeps a small
+Inside a turn, a [recall overlay](https://veil.garrettstimpson.ca/#doc=worker/chat/overlay) keeps a small
 working field of the conversation's memory, your durable notes and the file ledger, grows it with every
 finding the moment it exists, and settles it around what the model is doing right now before **every**
 round of the turn's tool loop (the auxiliary verdict, compaction and planning calls go without it). It
@@ -1109,7 +1110,7 @@ request before the first call, a tool the model already knows opens its own bran
 called, and a model that wanders for four rounds is handed a search of the whole map. Agent Garrett's
 catalogue, plugins and other MCP servers attach as branches of their own, and the map learns which words
 lead to which tools. Shrinking what is advertised never shrinks what is callable
-([the tool tree](https://gary23w.github.io/nl-veil/#doc=worker/chat/belt)).
+([the tool tree](https://veil.garrettstimpson.ca/#doc=worker/chat/belt)).
 
 Non-admin accounts run a **restricted subset** (workspace files, research, and the whole memory
 surface — but no shell, no browser, no MCP, no tool authoring, no casting). See
@@ -1195,7 +1196,7 @@ one at the same time. Prompting is the easy call — small outputs, no judgment,
 the one to make cheap.
 
 Full routing table, the per-call measurements behind that advice, the cost split, and the limitations are
-on the docs page: **[the model trio](https://gary23w.github.io/nl-veil/#doc=guide/models)**.
+on the docs page: **[the model trio](https://veil.garrettstimpson.ca/#doc=guide/models)**.
 
 ## Scheduled tasks
 
@@ -1440,4 +1441,6 @@ The same binary covers very different jobs — the **mode emerges from your word
 - **Build software, graded by its own tests.** The hive plans a file tree, splits the work, writes
   the project, runs the tests it wrote, and folds the results into its fitness — it keeps going
   until the deliverable actually passes. `veil cast "Build a URL shortener with a REST API and tests" --follow`
-- **Research & brief.** In `--style discourse` the minds research the live web, form and ar
+- **Research & brief.** In `--style discourse` the minds research the live web, form and argue
+  their own views, and co-write a briefing. `veil cast "Brief me on fusion power in 2026" --style discourse`
+- **Operate a live device.** Point the Veil at a device that drops telemetry on a file bus and 

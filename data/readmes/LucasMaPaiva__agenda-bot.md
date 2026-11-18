@@ -1,0 +1,381 @@
+# Bot do Telegram — Agenda Compartilhada
+
+[![CI](https://github.com/LucasMaPaiva/agenda-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasMaPaiva/agenda-bot/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.12%2B-blue)
+![LLM local](https://img.shields.io/badge/LLM-Ollama%20%7C%20Gemma%203-6a5acd)
+
+Bot que recebe mensagens em texto livre no Telegram e gerencia o Google Agenda
+compartilhado do Matheus e da Letícia, com integração opcional ao Google Tarefas
+individual de cada um e consulta e lançamento no Finanças App. A interpretação das
+mensagens usa um LLM local (Gemma 3 no Ollama) com saída em JSON validada por schema;
+o Gemini é um fallback opcional, usado só quando há chave configurada.
+
+Além de criar eventos, o bot consulta compromissos de hoje, amanhã ou da semana e
+envia lembretes no Telegram. Somente os dois usuários cadastrados podem usar o bot.
+
+Convenções da agenda:
+- Fuso horário: `America/Boa_Vista` (UTC-4)
+- Campo `description` do evento sempre com `Responsável: Matheus` / `Letícia` / `Ambos`
+- Cores por responsável: 🔵 Azul (Matheus) · 🌸 Rosa (Letícia) · 🟢 Verde (Ambos), aplicadas direto na criação do evento
+
+## Como funciona
+1. Telegram recebe a mensagem (ex: "lembrar de pagar a conta de luz sexta às 18h")
+2. Intenções simples são reconhecidas por regras, sem chamar IA (`intent_rules.py`)
+3. O resto vai para o LLM local, que devolve título, data, hora e responsável em JSON
+   seguindo um schema (`schemas.py`); se houver chave do Gemini, ele é usado como
+   fallback quando o modelo local falha
+4. O bot mostra uma prévia e só cria depois da confirmação no Telegram
+5. Em conversas e pedidos ambíguos, o código consulta a agenda e calcula conflitos
+   antes de fornecer os fatos ao modelo
+6. A cada minuto, o bot procura compromissos próximos e avisa o responsável
+
+## Decisões técnicas
+
+- **Modelo local primeiro.** O Gemma 3 (1B) roda no Ollama do próprio servidor, sem
+  porta exposta e com limite de memória. Dados pessoais e financeiros não saem do
+  servidor; o fallback para o Gemini é opcional e nunca é usado para finanças.
+- **O modelo interpreta, o código decide.** O LLM só extrai campos em JSON com schema.
+  Datas, conflitos, horários livres, recorrências e permissões são calculados em código
+  determinístico e testado. O modelo nunca grava nada: toda criação, edição ou exclusão
+  passa por uma prévia com confirmação.
+- **Fatos antes do modelo.** Para responder perguntas sobre a agenda, o código busca os
+  eventos e calcula conflitos antes e entrega esses fatos prontos ao modelo, em vez de
+  pedir que ele raciocine sobre a agenda inteira.
+- **IA só onde precisa.** Planejamento, resumos e lembretes são determinísticos e não
+  chamam LLM, o que mantém o modelo descarregado da memória na maior parte do tempo.
+- **Testes e avaliação.** 81 testes cobrem interpretação informal, filtros, intervalos,
+  recorrências, conflitos, persistência e a confirmação obrigatória antes de gravar.
+
+## Estrutura do código
+
+- `bot.py`: ponto de entrada e composição dos handlers do Telegram.
+- `agenda_bot/event_rules.py`: regras puras para interpretar, filtrar e validar eventos.
+- `agenda_bot/calendar_gateway.py`: operações de leitura e escrita no Google Calendar.
+- `agenda_bot/reminder_jobs.py`: lembretes e resumos executados em segundo plano.
+- `agenda_bot/handlers/`: fluxos de preferências e tarefas do Telegram.
+- `agenda_bot/settings.py`: carrega a configuração do ambiente.
+- `agenda_bot/schemas.py`: define os contratos JSON usados pelos modelos.
+- `agenda_bot/intent_rules.py`: reconhece intenções simples sem chamar IA.
+- `agenda_bot/planning.py`: prioriza tarefas e distribui blocos livres sem chamar IA.
+- `agenda_bot/storage.py`: concentra a persistência SQLite.
+- `agenda_bot/google_tasks.py`: encapsula a integração com o Google Tarefas.
+- `agenda_bot/finance_gateway.py`: acessa a API financeira com um token individual.
+
+As funções públicas que já existiam em `bot.py` foram mantidas como fachadas para não
+quebrar os testes, comandos e scripts atuais.
+
+## Recursos de segurança e planejamento
+
+- Criação, replicação e edição verificam sobreposições antes da confirmação.
+- `/livres amanhã 60` sugere janelas livres considerando a agenda pessoal, um
+  buffer configurável e o horário útil do dia. Também entende frases como
+  "onde cabe uma reunião de 1h amanhã?".
+- `/planejar amanhã` combina compromissos e tarefas vencidas, do dia ou sem prazo,
+  sugere blocos nos horários livres e só os adiciona à agenda após confirmação.
+  Também entende frases como "organiza meu dia amanhã".
+- Preferências permanentes ajudam a conversa local a respeitar prioridades como
+  "academia é prioridade de segunda a quinta".
+- Rotinas podem ser salvas a partir de um dia existente e aplicadas em outra data.
+- Resumos proativos opcionais enviam o plano da manhã e uma prévia da noite nos
+  horários escolhidos, sem mensagem quando não há nada relevante.
+- Lembretes são classificados sem IA: eventos normais usam a antecedência padrão,
+  compromissos que exigem preparação avisam antes e eventos com localização usam o
+  perfil de deslocamento. Cada pessoa configura seus horários separadamente. Os avisos
+  têm botões para marcar como ciente, abrir o evento ou adiar por 10 minutos.
+- A última criação, edição ou exclusão de evento pode ser revertida com `/desfazer`
+  durante 24 horas.
+- `/status` verifica Google Agenda, autorização do Google Tarefas, Ollama, memória
+  do container e o último ciclo de lembretes.
+
+O modelo local nunca altera dados diretamente. Criação, edição e cancelamento continuam
+passando pelos fluxos de confirmação. As duas últimas trocas e o contexto da consulta são
+salvos no SQLite, separados por usuário, e continuam disponíveis após reinicializações.
+O histórico expira após sete dias e referências como "esse compromisso" expiram após 24
+horas. Tudo pode ser apagado com `/limpar_conversa`.
+
+O planejamento e os resumos proativos são determinísticos: consultam Google Agenda e
+Google Tarefas, mas não chamam Gemini nem Ollama. Assim, ativar essas automações não
+mantém o modelo local carregado nem aumenta a pressão de memória na VPS.
+
+### Finanças pelo Telegram
+
+O bot reconhece frases como “comprei uma coca foi 24,50”, busca as categorias reais da
+pessoa no Finanças App e usa somente o Ollama local para extrair descrição, valor, data
+e categoria. O lançamento só é enviado à API depois da confirmação. Também responde
+“o que tenho de conta para pagar?”, “qual é meu saldo?” e “quanto está a fatura?”.
+
+Todos os endpoints usam o mesmo Bearer token individual, restrito à permissão
+`telegram:finance`. Configure no `.env`:
+
+```dotenv
+FINANCE_API_URL=https://financeiro.exemplo.com
+FINANCE_API_TOKEN_MATHEUS=token-do-matheus
+FINANCE_API_TOKEN_LETICIA=token-da-leticia
+FINANCE_API_TIMEOUT_SECONDS=10
+```
+
+Os textos e valores financeiros não usam o fallback do Gemini: a classificação de
+categoria é feita localmente e a API rejeita qualquer categoria que não pertença ao
+dono do token.
+
+Consultas como "o que tenho hoje?", "quais são meus compromissos de amanhã?" e
+"mostre minha agenda desta semana" são respondidas sem criar eventos.
+Consultas com "eu", "meu" ou "minha" mostram somente os eventos do usuário e os
+eventos de ambos. Consultas com "temos", "nossa" ou "todos" mostram a agenda conjunta.
+Também é possível limitar pelo período: "o que tenho à noite?", "minha agenda de
+manhã" ou "o que temos amanhã à tarde?". Os períodos são madrugada (00h–06h),
+manhã (06h–12h), tarde (12h–18h) e noite (18h–00h).
+Depois de uma consulta, continuações curtas preservam o contexto: "e à noite?",
+"e amanhã?" ou, quando só um evento foi mostrado, "muda esse compromisso para 20h".
+
+Pedidos como "cancelar academia de amanhã" ou `/cancelar academia amanhã` buscam
+os eventos correspondentes. Se houver mais de um, o bot pede para escolher e sempre
+exige confirmação antes de excluir. A confirmação expira após 15 minutos.
+
+Edições como "muda a academia de amanhã para 18h30" ou
+`/editar academia de amanhã para 18h30` também mostram antes/depois e exigem confirmação.
+
+Replicações como "replica academia, culto e trabalho de terça para quarta" ou
+`/replicar academia e trabalho de terça para quarta` buscam os eventos no dia de
+origem, preservam horário, duração e responsável e mostram uma prévia única. Se algum
+nome não for encontrado ou houver conflito no destino, o bot informa antes da confirmação.
+Sem uma lista de nomes, "replica minha rotina de terça para quarta" copia os eventos
+do usuário e os eventos marcados para ambos.
+
+Intervalos como "Evangelismo de 10/10 até 18/10 às 19h20" criam um evento em
+cada dia, incluindo a data inicial e a final. Por segurança, o limite padrão é de
+31 dias e pode ser alterado com `MAX_EVENT_RANGE_DAYS`.
+Recorrências como "toda segunda e quarta até dezembro" e "todo primeiro domingo
+do mês" são expandidas em eventos independentes, sempre com confirmação do lote.
+
+## Setup
+
+### 1. Bot do Telegram
+Fale com [@BotFather](https://t.me/BotFather) no Telegram → `/newbot` → guarde o token.
+
+### 2. Gemini (opcional)
+Sem chave, o bot usa só o modelo local. Para ativar o fallback, crie uma chave em
+aistudio.google.com e preencha `GEMINI_API_KEY`.
+
+O bot usa `gemini-3.6-flash` por padrão e tenta `gemini-3.5-flash` automaticamente
+se o modelo principal estiver temporariamente indisponível. Para trocar os modelos
+sem alterar o código, defina `GEMINI_MODEL` e `GEMINI_FALLBACK_MODEL` no `.env`.
+Cada tentativa tem limite padrão de 30 segundos (`GEMINI_TIMEOUT_SECONDS`) e o bot
+continua recebendo atualizações do Telegram enquanto aguarda a resposta do modelo.
+
+### 2.1. Conversa local com Ollama
+
+O Compose executa `gemma3:1b` sem publicar a porta 11434. A configuração foi reduzida
+para servidores pequenos: um modelo por vez, contexto de 1.024 tokens, 0,8 CPU, limite
+de 1.800 MB e descarga da RAM após 30 segundos sem uso. Se houver chave, o Gemini
+serve de fallback quando o modelo local estiver indisponível.
+
+Antes da primeira inicialização, crie o volume e baixe o modelo:
+
+```bash
+docker volume create agenda-ollama-data
+docker compose up -d ollama
+docker compose exec ollama ollama pull gemma3:1b
+```
+
+### 3. Google Calendar — Service Account
+1. console.cloud.google.com → criar um projeto (ou usar um existente)
+2. Ativar a **Google Calendar API** nesse projeto
+3. "Credenciais" → "Criar credenciais" → "Conta de serviço" → criar
+4. Na conta de serviço criada → "Chaves" → "Adicionar chave" → JSON → baixar e salvar como `service-account.json` nesta pasta
+5. Copiar o e-mail da conta de serviço (algo como `nome@projeto.iam.gserviceaccount.com`)
+6. No Google Agenda (calendar.google.com), compartilhar o calendário principal com esse e-mail, permissão **"Fazer alterações em eventos"** — mesmo processo já usado para compartilhar com a Letícia
+
+### 4. Configurar o projeto
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# editar .env com tokens, calendário e códigos diferentes para Matheus e Letícia
+```
+
+`DATABASE_PATH` guarda os cadastros, os lembretes avulsos pendentes e o histórico de
+lembretes de eventos enviados. Não apague esse arquivo enquanto o bot estiver em uso:
+além dos usuários autorizados, isso removeria os lembretes ainda não enviados.
+
+Lembretes avulsos também podem ser diários. Por exemplo, “me lembre todos os dias da
+Quarta Jovem” faz o bot perguntar o horário, mostrar a recorrência na confirmação e
+reagendar automaticamente o próximo aviso depois de cada envio.
+
+### 5. Google Tarefas — OAuth individual (opcional)
+
+A conta de serviço do calendário não acessa as tarefas pessoais. Cada usuário precisa
+autorizar sua própria conta uma vez:
+
+1. No Google Cloud, ative a **Google Tasks API**.
+2. Configure a tela de consentimento OAuth e adicione Matheus e Letícia como usuários
+   de teste, se o aplicativo ainda estiver em modo de teste.
+3. Crie uma credencial **OAuth Client ID → Desktop app** e baixe o JSON como
+   `client_secret_tasks.json` nesta pasta.
+4. No computador local, execute uma vez para cada conta, entrando na conta correta
+   quando o navegador abrir:
+
+```bash
+python authorize_tasks.py matheus client_secret_tasks.json
+python authorize_tasks.py leticia client_secret_tasks.json
+```
+
+Isso cria `data/tasks-matheus.json` e `data/tasks-leticia.json`. Esses arquivos contêm
+tokens privados, ficam ignorados pelo Git e devem ser copiados para `data/` no servidor.
+
+```bash
+scp data/tasks-*.json usuario@servidor:/caminho/para/agenda-bot/data/
+```
+
+Comandos disponíveis: `/tarefa comprar sabão até sexta`, `/tarefas` e, depois da
+listagem, `/concluir NÚMERO`, `/editar_tarefa NÚMERO NOVO TÍTULO` ou
+`/excluir_tarefa NÚMERO`. Edição e exclusão pedem confirmação. O Google Tarefas
+armazena a data do prazo, mas não o horário.
+
+### 6. Cadastrar os dois Telegrams
+
+Com o bot rodando, cada pessoa abre uma conversa privada com ele e usa seu código:
+
+```text
+/registrar matheus CODIGO_DO_MATHEUS
+/registrar leticia CODIGO_DA_LETICIA
+```
+
+O bot não recebe o número de telefone. O cadastro associa o identificador numérico e
+estável que o Telegram entrega ao bot quando a pessoa envia a mensagem.
+
+### 7. Testar localmente
+```bash
+python3 bot.py
+```
+Mande uma mensagem para criar um evento e teste uma consulta:
+
+```text
+Dentista amanhã às 9h, responsável Letícia
+O que tenho amanhã?
+```
+
+Também existe o comando explícito `/agenda hoje`, `/agenda amanhã` ou `/agenda semana`.
+Use `/versao` para confirmar qual versão está rodando.
+
+### Comandos de planejamento
+
+```text
+/livres amanhã 60
+/planejar amanhã
+/preferencia Academia é prioridade de segunda a quinta
+/preferencia buffer 15
+/preferencia horario 06:00 22:00
+/preferencia tarefa 30
+/preferencias
+/remover_preferencia 1
+
+/salvar_rotina quinta normal | quinta
+/rotinas
+/aplicar_rotina quinta normal | 15/10
+
+/resumo_diario 06:00 20:30
+/resumo_diario desligar
+/funcionalidades
+/lembretes
+/lembretes normal 30
+/lembretes preparo 60
+/lembretes deslocamento 45
+/lembretes desligar
+/desfazer
+/status
+```
+
+`/salvar_rotina` copia para um modelo os compromissos pessoais e de ambos que já
+existem no dia indicado. `/aplicar_rotina` mostra uma prévia, aponta conflitos e só
+cria os eventos depois da confirmação.
+
+Em `/resumo_diario 06:00 20:30`, o primeiro horário é o resumo do dia e o segundo é
+a prévia do dia seguinte. Informar somente um horário mantém apenas o resumo da manhã.
+
+Os lembretes inteligentes enviam somente um aviso por compromisso. Eventos com o campo
+de localização preenchido usam o tempo de deslocamento. Consultas, exames, reuniões,
+aulas, academia e compromissos semelhantes usam o tempo de preparação; os demais usam
+o tempo normal. Os padrões são 45, 60 e 30 minutos, respectivamente, e cada usuário
+pode escolher valores entre 5 e 180 minutos.
+
+Lembretes avulsos são separados dos eventos da agenda. Por exemplo, “me lembra amanhã
+às 12 de comprar ração, encher o pneu e apertar a corrente” cria uma única prévia com
+os itens em tópicos. O bot sempre pede confirmação antes de salvar; escolha “Ajustar”
+para corrigir horário ou itens, ou “Cancelar” para descartar. Se faltar o horário ou
+o que lembrar, o bot pergunta antes de mostrar a confirmação. Sem dia explícito, assume
+hoje e mostra isso na prévia. Após enviar, o lembrete é
+removido do SQLite.
+
+### 8. Rodar com Docker
+
+O container não expõe portas porque o bot usa polling do Telegram. A credencial da
+conta de serviço é montada somente para leitura, e o banco SQLite fica persistido em
+`./data`. O Ollama também não publica portas; somente o bot pode acessá-lo pela rede
+interna do Compose.
+
+```bash
+BUILD_COMMIT="$(git rev-parse --short HEAD)" docker compose up --build -d
+docker compose logs -f agenda-bot
+```
+
+O container usa `restart: unless-stopped`, nível de log `WARNING` e rotação limitada
+a dois arquivos comprimidos de 5 MB. Ele continua rodando após fechar o terminal e
+volta automaticamente depois de reiniciar o Docker ou o servidor. O Ollama fica
+restrito ao modelo local, tem healthcheck e continua limitado a 1.800 MB de RAM.
+
+Para aplicar uma alteração futura:
+
+```bash
+sudo env BUILD_COMMIT="$(git rev-parse --short HEAD)" \
+  docker compose up --build -d
+```
+
+Para parar:
+
+```bash
+docker compose down
+```
+
+Os modelos permanecem no volume `agenda-ollama-data`. Para remover um modelo que não
+será mais usado:
+
+```bash
+docker compose exec ollama ollama stop NOME_DO_MODELO
+docker compose exec ollama ollama rm NOME_DO_MODELO
+```
+
+### 9. Deixar rodando na VPS sem Docker (systemd)
+1. Copiar a pasta inteira pra VPS
+2. Ajustar os caminhos e o usuário em `systemd/agenda-bot.service`
+3. ```bash
+   sudo cp systemd/agenda-bot.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable --now agenda-bot
+   ```
+4. Ver logs: `journalctl -u agenda-bot -f`
+
+## Desenvolvimento e testes
+
+O projeto usa [uv](https://docs.astral.sh/uv/). Os testes cobrem interpretação informal,
+filtros pessoais, intervalos, recorrências, detecção de conflitos, horários livres,
+persistência, edição, as regras de data em código e a confirmação obrigatória antes da
+criação. O CI roda lint e testes a cada push.
+
+```bash
+uv sync
+uv run ruff check .
+uv run pytest
+```
+
+A avaliação da extração com o modelo real está em [`evals/`](evals/README.md).
+
+## Limitações conhecidas
+- Intervalos e recorrências são criados como eventos independentes, não como uma série
+  única editável em bloco no Google Agenda
+- Edição e cancelamento atuam em uma ocorrência selecionada por vez
+- Se o modelo não conseguir extrair data/hora da mensagem, o bot responde com erro em vez de pedir mais detalhes
+- Não adiciona convidados aos eventos: contas de serviço só podem preencher `attendees`
+  com delegação de domínio do Google Workspace. O calendário compartilhado continua
+  visível para Matheus e Letícia, e os lembretes de eventos "Ambos" vão para os dois.

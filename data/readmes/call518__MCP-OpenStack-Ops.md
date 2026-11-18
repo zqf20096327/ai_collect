@@ -41,14 +41,31 @@ For an AI-generated walkthrough of the code, see
 
 ![Web servers scaling out and in on CPU load](img/screenshot-heat-04-grafana-chart-eng.png)
 
-**No Heat template was written by hand: the stack was created from a
-natural-language request alone.** Using this server's tools, the MCP client
-snapshotted a web server VM into a base image, generated a self-signed
-certificate and stored it in Barbican, and created a Heat stack with an Octavia
-load balancer that terminates HTTPS and an autoscaling group driven by Aodh CPU
-alarms. Under CPU load the group grew from two to four web servers and shrank
-back to two when the load ended. The request, templates and a walkthrough of
-the chart are in the [Heat autoscaling tutorial](docs/heat-autoscaling-tutorial.md).
+**No Heat template was written by hand: the stack was created from this
+two-line natural-language request.**
+
+```text
+Use the test-rockylinux-9 VM (web server) as the source for a new base image. Create and bring up a Heat stack with a TLS-terminating load balancer and autoscaling web servers.
+- Run 2 web servers under normal conditions, with a maximum of 4. Scale out by 1 when average CPU utilization stays above 60% for 5 minutes, and scale in by 1 when it stays below 40% for 5 minutes, down to a minimum of 2. Use a 900-second cooldown and set the stack's timeout_mins to 60.
+```
+
+Using this server's tools, the MCP client snapshotted a web server VM into a
+base image, generated a self-signed certificate and stored it in Barbican, and
+created a Heat stack with an Octavia load balancer that terminates HTTPS and an
+autoscaling group driven by Aodh CPU alarms. Under CPU load the group grew from
+two to four web servers and shrank back to two when the load ended. The
+request, templates and a walkthrough of the chart are in the
+[Heat autoscaling tutorial](docs/heat-autoscaling-tutorial.md).
+
+**Then ask how it is doing, in one line**
+
+![Per-member CPU queried in natural language](img/screenshot-heat-99-claude-code-cpu-query-eng.png)
+
+A one-line request for the members' CPU over the last hour, at 1-minute
+intervals, returned per-member data from Gnocchi through this server's tools;
+the client drew the chart, summary and CSV. It shows the group mean above 60%
+for five minutes and the third member added right after. (The session was in
+Korean; the screenshot shows it translated into English.)
 
 Ask questions and give instructions in natural language, for example:
 
@@ -289,13 +306,13 @@ unit-test results behind the Status values below are recorded in
 
 | OpenStack CLI Command | MCP Tool | Status | Notes |
 |---------------------|---------|------|------|
-| `openstack server list` | `get_instance` | ✅ | Separate reader projects each returned exactly ten owned VMs; bounded lab validation only |
+| `openstack server list` | `get_instance` | ✅ | Separate reader projects each returned exactly ten owned VMs; bounded lab validation only. One call returns at most `LIST_MAX_LIMIT` items (default 100, previously a fixed 200; 2026-11-17, unit-tested only) |
 | `openstack server show` | `get_instance` | ✅ | Own fixture queries completed; foreign private ID returned no details; no 16-owned-ID batch claim. Each instance reports `boot_source` (`image` or `volume`); summary mode shows a volume-backed instance's image as unknown, and `detailed=true` resolves it from the boot volume. 2026-11-10 OpenStack 2026.1 check (3.7.6): `volume` for volume-backed servers in summary and detailed modes, `image` otherwise; detailed mode resolved the image name from the boot volume |
 | `openstack server create` | `set_instance` (action="create") | ✅ | **ENHANCED** - Bulk creation support. Boots the image on the flavor's local disk unless a volume option below is given. 2026-11-10 targeted check: a server reached ACTIVE |
 | `openstack server create --boot-from-volume <size>` | `set_instance` (action="create", `boot_from_volume`, `volume_size`) | ✅ | Root disk on a new Cinder volume created from the image; optional `volume_type` and `delete_on_termination`; bulk creation supported. 2026-11-10 targeted check: three servers created in one call reached ACTIVE, each on a bootable 10 GB volume at `/dev/vda`. 2026-11-10 OpenStack 2026.1 check (3.7.6): 1 GB root volumes with `volume_type`; the root volume was deleted with the server, and kept with `delete_on_termination=false` |
 | `openstack server create --volume` | `set_instance` (action="create", `boot_volume`) | ✅ | Boots one server from an existing available, bootable volume, without an image. 2026-11-10 OpenStack 2026.1 check (3.7.6): the server reached ACTIVE on that volume; an in-use, non-bootable or missing volume, and two server names, were refused without creating a server |
 | `openstack server start/stop/reboot` | `set_instance` | ✅ | Tool schema exposes all actions and `reboot_type`; bulk stop/start final states verified for two test VMs per project, but reboot was not retested in this round |
-| `openstack server delete` | `set_instance` (action="delete") | ✅ | Tool schema exposes delete and optional force deletion; bulk deletion with `name_contains` filtering. `force=true` uses openstacksdk `delete_server(force=True)` (previously a non-existent SDK method); 2026-11-10 targeted check: forced deletion removed the server |
+| `openstack server delete` | `set_instance` (action="delete") | ✅ | Tool schema exposes delete and optional force deletion; bulk deletion with `name_contains` filtering. Every given filter must match (`name_contains` with `status` previously selected the union), and more matches than `INSTANCE_FILTER_MAX_MATCHES` (default 100) are refused without acting on any instance (2026-11-17, unit-tested only). `force=true` uses openstacksdk `delete_server(force=True)` (previously a non-existent SDK method); 2026-11-10 targeted check: forced deletion removed the server |
 | `openstack server backup create` | `set_server_backup` | ✅ | Nova backup action with rotation; asynchronous, no custom metadata |
 | `openstack server image create` | `set_instance` (action="snapshot") | ✅ | Accepts optional `snapshot_name` and JSON `metadata`; parameter forwarding is locally tested, not live-retested in this change |
 | `openstack server shelve/unshelve` | `set_instance` | ✅ | Actions are exposed in the tool schema; instance shelving was not live-retested in this change |
@@ -350,7 +367,7 @@ unit-test results behind the Status values below are recorded in
 | `openstack network delete` | `set_networks` (action="delete") | ✅ | Both default/explicit-MTU test networks removed through actual TCP MCP, API absence confirmed |
 | `openstack network set` | `set_networks` (action="update") | ✅ | **ENHANCED** - Bulk updates |
 | `openstack subnet list` | `get_network_details` (includes subnets) | ✅ | Owned and shared external network subnets returned; three visible subnets per test reader |
-| `openstack subnet create/delete` | `set_subnets` | ✅ | Member TCP MCP subnet create read back; deletion allowed parent network removal in both projects |
+| `openstack subnet create/delete` | `set_subnets` | ⚠️ Live unverified | Create omits an unset `gateway_ip`, so Neutron assigns the first address of the CIDR (previously it sent null, which creates a subnet without a gateway), and forwards `description` (previously dropped). This 2026-11-17 change is unit-tested only. Earlier live check: member TCP MCP subnet create read back; deletion allowed parent network removal in both projects |
 | `openstack router list` | `get_routers` | ⚠️ Live unverified | Only part of composite error requests in this round; no independent reader result attribution |
 | `openstack router create/delete` | `set_routers` | ✅ | Project-owned routers; attached interfaces are not removed automatically |
 | `openstack floating ip list` | `get_floating_ips` | ✅ | Floating IP listing. A failed query returns an error instead of a placeholder address. 2026-11-10 targeted check: listed |
@@ -370,11 +387,11 @@ unit-test results behind the Status values below are recorded in
 | `openstack security group create/delete` | `set_security_groups` | ✅ | Project-owned security groups |
 | `openstack security group rule create/delete` | `set_security_group_rules` | ⚠️ Live unverified | Implemented for project-owned groups. Create requires an explicit CIDR or project-owned remote group; delete verifies the rule belongs to the selected group. Not live-tested in this change |
 | `openstack port list` | `set_network_ports` (action="list") | ⚠️ Live unverified | Implemented list action requires modification-tool registration; not exercised in this round |
-| `openstack port create/delete` | `set_network_ports` | ✅ | Port management |
+| `openstack port create/delete` | `set_network_ports` | ⚠️ Live unverified | Create omits unset `security_groups`, so Neutron applies the project's default group (previously it sent an empty list, which creates a port without any security group), and forwards `description` (previously dropped). This 2026-11-17 change is unit-tested only |
 | `openstack network qos policy list` | `get_network_qos_policies` | ⚠️ Live unverified | Implemented; test platform QoS endpoint returns HTTP 404 |
 | `openstack network qos policy create` | `set_network_qos_policies` | ⚠️ Live unverified | Implemented; test platform QoS endpoint returns HTTP 404. Policy containers only; no bandwidth rules |
 | `openstack network agent list` | `get_service_status` (includes agents) | ⚠️ Live unverified | Reader service-policy restrictions; partial data is not proof of global health. 2026-11-10 targeted check returned agents as administrator only |
-| `openstack network agent set` | `set_network_agents` | ✅ | Enable/disable cloud-wide agents; usually admin-only |
+| `openstack network agent set` | `set_network_agents` | ⚠️ Live unverified | Enable/disable cloud-wide agents; usually admin-only. The live tool check called only action="list"; enable and disable were not exercised |
 
 ### 3. 💾 **Storage (Cinder)**
 
@@ -390,6 +407,7 @@ unchanged since.
 | `openstack volume list` | `get_volume_list` | ✅ | Exactly ten owned volumes per reader; no other test project volume IDs returned. `multiattach` and `source_volid` read the SDK `is_multiattach` and `source_volume_id` fields. 2026-11-10 targeted check: listed with those fields |
 | `openstack volume show` | `get_volume_list` | ✅ | Listing-based client filtering; no dedicated get_volume_list filter argument |
 | `openstack volume create/delete` | `set_volume` | ✅ | Volume creation/deletion. 2026-11-10 targeted check: a 1 GB volume reached available and two volumes were deleted |
+| `openstack volume create --source`, `openstack volume migrate`, `openstack volume transfer request create` | — | ❌ Not implemented | `set_volume` rejects `source_volume`, `transfer_name`, `host`, `force_host_copy`, `lock_volume`, `backup_name` and `incremental` before any API call (previously ignored while the action ran). Use `set_volume_backups` for backups |
 | `openstack volume set --size` | `set_volume` (action="extend") | ✅ | Positive new_size takes precedence over size; size remains a fallback. A test volume reached the requested size and available state; API acceptance alone is not completion |
 | `openstack volume set` (other properties) | — | ❌ Not implemented | set_volume has no modify/update action; do not send this unsupported action |
 | `openstack volume type list` | `get_volume_types` | ✅ | Volume type listing. A failed query returns an error instead of a placeholder `standard` type. 2026-11-10 targeted check: listed |
@@ -405,7 +423,11 @@ unchanged since.
 | `openstack volume group list` | `get_volume_groups` | ✅ | Requires Cinder generic groups (API >= 3.13) |
 | `openstack volume group create` | `set_volume_groups` | ✅ | Create/list/show/delete; create requires group_type and volume_types |
 | `openstack volume qos list` | `get_volume_qos` | ✅ | Cinder QoS specifications; subject to cloud policy |
-| `openstack volume qos create` | `set_volume_qos` | ✅ | Create/list/show/set/delete specifications; no automatic type association |
+| `openstack volume qos show` | `get_volume_qos` (`qos_name`) | ⚠️ Live unverified | Shows one specification and its current volume type associations. Added 2026-11-17; unit tests only |
+| `openstack volume qos create` | `set_volume_qos` | ✅ | Create/list/show/set/delete specifications. Creation does not automatically associate a volume type; use the explicit `associate` action |
+| `openstack volume qos associate` | `set_volume_qos` (action="associate") | ⚠️ Live unverified | Associates a specification with a volume type by name or ID, then reads the associations back and reports `accepted` separately from `confirmed`. Added 2026-11-17; unit tests only |
+| `openstack volume qos disassociate` | `set_volume_qos` (action="disassociate") | ⚠️ Live unverified | Disassociates one volume type by name or ID and reads the associations back. Added 2026-11-17; unit tests only |
+| `openstack volume qos disassociate --all` | `set_volume_qos` (action="disassociate_all") | ⚠️ Live unverified | Disassociates every volume type and reads the associations back. Added 2026-11-17; unit tests only |
 
 ### 4. 🖼️ **Image (Glance)**
 
@@ -413,15 +435,16 @@ unchanged since.
 |---------------------|---------|------|------|
 | `openstack image list` | `get_image_detail_list` | ✅ | Image listing. A failed query returns an error instead of an empty list. 2026-11-10 targeted check: listed |
 | `openstack image show` | `get_image_detail_list` (filtering) | ✅ | Specific image query |
-| `openstack image create` | `set_image` (action="create") | ✅ | Enhanced image creation with min_disk, min_ram, properties |
-| `openstack image delete` | `set_image` (action="delete") | ✅ | Image deletion |
-| `openstack image set` | `set_image` (action="update") | ✅ | Image property modification |
+| `openstack image create` | `set_image` (action="create") | ✅ | Creates the image record with min_disk, min_ram and properties only. No image data is uploaded, so the image stays `queued` and cannot boot servers |
+| `openstack image create --file` / `--import` | — | ❌ Not implemented | No tool uploads or imports image data |
+| `openstack image delete` | `set_image` (action="delete") | ⚠️ Live unverified | Only images owned by the current project; other projects' public, shared or community images are refused (previously allowed). This 2026-11-17 change is unit-tested only |
+| `openstack image set` | `set_image` (action="update") | ⚠️ Live unverified | Only images owned by the current project (previously any visible image). This 2026-11-17 change is unit-tested only |
 | `openstack image save` | — | ❌ Not implemented | `set_image` supports create, delete, update and list only; there is no download action |
 | `openstack image add project` | `set_image_members` (action="add") | ✅ | Add a project to an image with shared visibility |
 | `openstack image member list` | `get_image_members` | ✅ | Image member listing |
 | `openstack image member create` | `set_image_members` | ✅ | Image member management |
-| `openstack image set --property` | `set_image_metadata` | ✅ | Image metadata |
-| `openstack image set --public/private` | `set_image_visibility` | ✅ | Image visibility setting |
+| `openstack image set --property` | `set_image_metadata` | ⚠️ Live unverified | `show` reads any visible image; `set` applies only to images owned by the current project (previously any visible image). This 2026-11-17 change is unit-tested only |
+| `openstack image set --public/private` | `set_image_visibility` | ⚠️ Live unverified | `show` reads any visible image; `set` applies only to images owned by the current project (previously any visible image). This 2026-11-17 change is unit-tested only |
 
 ### 5. 👥 **Identity (Keystone)**
 
@@ -433,6 +456,7 @@ unchanged since.
 | `openstack project list` | `get_project_details` (`all_projects=true`) | ✅ | Without `all_projects`, only the current project with its resource counts. With `all_projects=true` and `ALLOW_CROSS_PROJECT_READ=true`, a summary of every project Keystone policy allows. 2026-11-13 targeted check: administrator listed three projects; a `member` received an explicit Keystone policy-denial failure |
 | `openstack project show` | `get_project_details` (name param) | ✅ | Without `all_projects`, only the current project. With `all_projects=true` and a name or ID that matches one project, that project's details and resource counts, including another project's. 2026-11-13 targeted check: administrator's counts for two other projects matched direct API counts; a `member` received the Keystone policy-denial failure |
 | `openstack project create/delete` | `set_project` | ✅ | Project management |
+| `openstack project create --parent`, `openstack project set --tag` | — | ❌ Not implemented | `set_project` rejects `parent` and `tags` before any API call (previously ignored while the action ran) |
 | `openstack role list` | `get_role_assignments` | ✅ | Role listing |
 | `openstack role assignment list` | `get_role_assignments` | ✅ | A failed query returns an error instead of a placeholder assignment. 2026-11-10 targeted check: listed as administrator; reader roles were denied by Keystone policy in an earlier round |
 | `openstack role create` | `set_roles` (action="create") | ✅ | Role creation; `set_roles` also lists roles |
@@ -474,7 +498,7 @@ Octavia was not available in any live test cloud.
 
 | OpenStack CLI Command | MCP Tool | Status | Notes |
 |---------------------|---------|------|------|
-| `openstack loadbalancer list` | `get_load_balancer_list` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer listing with pagination |
+| `openstack loadbalancer list` | `get_load_balancer_list` | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer listing with pagination; one call returns at most `LIST_MAX_LIMIT` items (default 100, previously a fixed 200) |
 | `openstack loadbalancer show` | `get_load_balancer_details` | ✅ | 2026-11-12 targeted Octavia read check passed. Load balancer detailed information; pools are matched to listeners from each pool's `listeners` references |
 | `openstack loadbalancer create` | `set_load_balancer` (action="create") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer creation |
 | `openstack loadbalancer delete` | `set_load_balancer` (action="delete") | ⚠️ Live unverified | Implemented; Octavia unavailable in the test platform. Load balancer deletion |
@@ -627,7 +651,7 @@ not available in this cloud" (checked live on OpenStack 2026.1).
 
 | OpenStack CLI Command | MCP Tool | Status | Notes |
 |---------------------|---------|------|------|
-| `openstack quota show` | `get_quota` | ✅ | Quota query. The network floating IP quota reads the SDK `floating_ips` field (previously always -1). 2026-11-10 targeted check: matched the Neutron quota. Compute usage sums vCPUs and RAM from the flavor embedded in each server (Nova 2.47+, where the flavor `id` holds its name) and reports null with `unsized_instances` when a flavor cannot be sized; previously every lookup failed silently and usage was 0. 2026-11-16 targeted check: two `m1.small` servers reported 2 vCPUs and 4096 MB (previously 0 and 0) |
+| `openstack quota show` | `get_quota` | ✅ | Quota query. The network floating IP quota reads the SDK `floating_ips` field (previously always -1). 2026-11-10 targeted check: matched the Neutron quota. Compute usage sums vCPUs and RAM from the flavor embedded in each server (Nova 2.47+, where the flavor `id` holds its name) and reports null with `unsized_instances` when a flavor cannot be sized; previously every lookup failed silently and usage was 0. 2026-11-16 targeted check: two `m1.small` servers reported 2 vCPUs and 4096 MB (previously 0 and 0). Each service also reports `usage_percent`, null for unlimited, zero or missing limits and for unknown usage; a failed backup or security group rule count is null with its error instead of 0 (2026-11-17, unit-tested only) |
 | `openstack quota set` | `set_quota` (action="set") | ✅ | Routes supplied fields to Nova/Neutron/Cinder; partial failures are reported |
 | `openstack quota delete` | `set_quota` (action="delete") | ✅ | Resets all three service quotas to defaults; requires modification tools |
 | `openstack usage show` | `get_usage_statistics` | ✅ | Current-project Nova simple tenant usage; not monetary charges |

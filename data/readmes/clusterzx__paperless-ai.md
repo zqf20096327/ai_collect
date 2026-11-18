@@ -21,6 +21,21 @@ Works with **Paperless-ngx 2.x and 3.x**, OpenAI, Anthropic (Claude), **Ollama (
 
 ---
 
+## ✨ What's new in 4.2
+
+- **Calendar** – appointments, payment due dates, deadlines (cancellation, objection …) and expiry dates are found during the AI analysis – no extra AI request. A calendar page lists what is coming up, and a private **iCal link** brings the dates into Google Calendar, Apple Calendar or Outlook. Documents processed earlier can be searched on request. Off by default. → [Calendar](#calendar)
+- **Prompt library** – keep tested prompts per use case with ratings per model (1–10, note, test documents), see which model a prompt works best with and use one for processing with a single click. The playground and the prompt wizard save into it.
+- **Two-factor authentication** – optional codes from an authenticator app (Aegis, Google Authenticator, 1Password, Bitwarden …) plus ten single-use recovery codes. API keys keep working without a code.
+
+## ✨ What's new in 4.1
+
+- **OCR with PaddleOCR** – scans, photos and documents with garbled text are read locally (PP-OCRv5 via ONNX Runtime, no extra container, models ~20 MB). Runs automatically *before* the AI analysis – for documents without text, with poor text or always – or on demand. → [OCR](#ocr)
+- **OCR page** – every document with a text-quality score, filters for missing/poor text, bulk OCR, side-by-side comparison of the Paperless text and the OCR result. Afterwards the AI names and tags the documents again.
+- **Better text in Paperless too** – the OCR result can replace the document text in Paperless (improves the Paperless full-text search), with undo.
+- **GPU image** – `clusterzx/paperless-ai:latest-cuda` runs OCR on NVIDIA GPUs (CUDA 13); `latest` stays the small CPU image for amd64 and arm64. → [Image variants](#-installation)
+- **Prompt wizard** – a few questions instead of prompt engineering: your own name (never used as correspondent), output language, title style or pattern, tags, short company names, document types and own rules. Live preview and a test on real documents before saving.
+- **Privacy** – the usage telemetry of ONNX Runtime (OCR and local embeddings) is switched off.
+
 ## ✨ What's new in 4.0 – a complete rewrite
 
 Version 4 is rebuilt from scratch with a focus on reliability, speed and low resource usage.
@@ -53,6 +68,23 @@ Upgrading from 3.x is automatic: your `data/.env`, user account, processing stat
 - Parallel processing, retries with back-off, failed/skipped documents visible on the dashboard; **rate limits** of the AI provider pause the queue instead of failing documents
 - Existing correspondents are kept unless you allow the AI to overwrite them; created tags/correspondents/types are visible to all Paperless users (configurable)
 
+**OCR with PaddleOCR (optional)**
+- Reads scans and photos **locally** with PaddleOCR (PP-OCRv5) via ONNX Runtime – no extra container, no cloud service; models (~20 MB) are downloaded on first use
+- Runs **before** the AI analysis, so titles, tags and correspondents come from good text: automatically for documents *without text*, with *poor text* (heuristic text-quality score) or *always* – or only on demand
+- **OCR page** lists all documents with their text quality, finds the garbled ones and reads them in bulk; afterwards the AI names and tags them again
+- The text replaces the content in Paperless (better Paperless full-text search) **only when it reads better** than the existing text – with a side-by-side comparison and **undo**
+- Detects pages scanned sideways or upside down, 30+ Latin-script languages plus Cyrillic, Greek, Arabic, Chinese/Japanese, Korean, …
+- CPU (all platforms) or **NVIDIA GPU** with the `:latest-cuda` image
+
+**Calendar (optional)**
+- Appointments, payment due dates, deadlines and expiry/renewal dates are found during the AI analysis (no extra request) and listed on the *Calendar* page – upcoming, past and hidden ones
+- Private **iCal subscription link** for Google Calendar, Apple Calendar, Outlook or Thunderbird, with a reminder one day before payments and deadlines
+- Documents processed before the calendar was switched on can be searched later – only the dates are asked for, nothing is changed in Paperless
+
+**Prompt wizard**
+- A few questions instead of prompt engineering: your name (never used as correspondent), output language, title style or pattern, how many and what kind of tags, short company names, document types, own rules
+- Live preview of the generated prompt, test on real documents before saving – the answers are kept, so the wizard can be opened again later
+
 **Ask your archive (RAG)**
 - Hybrid search: SQLite FTS5 (BM25) + compact in-memory vector index (int8)
 - Embeddings: built-in multilingual model (offline, CPU), Ollama, OpenAI, Azure, any OpenAI-compatible API – or keyword-only
@@ -66,11 +98,13 @@ Upgrading from 3.x is automatic: your `data/.env`, user account, processing stat
 **Interactive tools**
 - **Document chat** – ask questions about a single document (long documents are handled automatically)
 - **Manual review** – let the AI suggest metadata and decide yourself what to save
-- **Prompt playground** – test prompts on real documents side by side with the current values, rate and keep prompts
+- **Prompt playground** – test prompts on real documents side by side with the current values
+- **Prompt library** – keep tested prompts per use case (invoices, contracts …) with ratings per model (1–10, note, test documents), see which model a prompt works best with, and use one for automatic processing with a single click; the playground and the prompt wizard save into it
 - **History with undo**, filters and search
 - **Dashboard** with live processing status, coverage, activity, token usage
 - **Logs & diagnostics** – live log stream, connection checks, Paperless API explorer
 - Modern interface: light/dark theme with five accent colours, **⌘K / Ctrl+K command menu** (jump to pages, open documents by number, ask a question), works on mobile
+- **Two-factor authentication** (optional, per user): codes from an authenticator app (Aegis, Google Authenticator, 1Password, Bitwarden …) plus ten single-use recovery codes – *Settings → Account*. API keys for webhooks and scripts keep working without a code
 
 | Manual review | History with undo |
 | --- | --- |
@@ -104,6 +138,24 @@ docker compose up -d
 
 Open `http://<your-server>:3000` – the setup wizard guides you through account, Paperless connection, AI provider and processing options. No restart is needed afterwards.
 
+**Image variants:**
+
+| Tag | For |
+| --- | --- |
+| `latest` (= `latest-cpu`), `4.x.y` | default – amd64 and arm64, OCR and local embeddings on the CPU |
+| `latest-cuda`, `4.x.y-cuda` | NVIDIA GPU for OCR (amd64, CUDA 13 + cuDNN 9). Needs the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) and a driver ≥ 580; falls back to the CPU when no GPU is found |
+
+```yaml
+    image: clusterzx/paperless-ai:latest-cuda
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+```
+
 **Paperless API user:** create a dedicated user in Paperless-ngx with permission to *view* and *change* documents, tags, correspondents, document types and custom fields, and use its API token (Profile → API Auth Token). Only documents this user may change are processed.
 
 ### Upgrading from 3.x
@@ -116,7 +168,7 @@ Keep your data volume and switch the image – everything else happens on the fi
    docker run --rm -v paperless-ai_data:/data -v "$PWD":/backup alpine \
      tar czf /backup/paperless-ai-3x-backup.tgz -C /data .
    ```
-2. **Update `docker-compose.yml`:** use `image: clusterzx/paperless-ai:latest` (or a fixed version such as `4.0.0`), keep the volume `…:/app/data` and the port. Remove the 3.x lines `RAG_SERVICE_URL`, `PUID` and `PGID` (no longer used) and `RAG_SERVICE_ENABLED` (it would lock the setting in the UI).
+2. **Update `docker-compose.yml`:** use `image: clusterzx/paperless-ai:latest` (or a fixed version such as `4.2.0`), keep the volume `…:/app/data` and the port. Remove the 3.x lines `RAG_SERVICE_URL`, `PUID` and `PGID` (no longer used) and `RAG_SERVICE_ENABLED` (it would lock the setting in the UI).
 3. **Start:** `docker compose pull && docker compose up -d`. The log (`docker compose logs -f paperless-ai`) shows `Migrated legacy data/.env configuration to data/config.json` and `Imported data from legacy documents.db` with the number of migrated users, documents and history entries.
 4. **Sign in** with your previous username and password and review the settings – everything is prefilled; values set by environment variables are shown locked.
 
@@ -145,6 +197,7 @@ Environment variables **override** stored settings (the UI shows them as locked)
 | --- | --- |
 | `PAPERLESS_AI_PORT` | HTTP port (default `3000`) |
 | `PAPERLESS_AI_DATA_DIR` | data directory (default `./data`, `/app/data` in Docker) |
+| `PAPERLESS_AI_RESET_2FA` | username – switches off two-factor authentication of that account at the next start (phone lost and no recovery codes left); remove it afterwards |
 | `PAPERLESS_API_URL` (or `PAPERLESS_URL`), `PAPERLESS_API_TOKEN` | Paperless-ngx URL (with or without `/api`) and token – `PAPERLESS_API_URL` wins when both are set |
 | `PAPERLESS_PUBLIC_URL` | URL for links opened in the browser (optional) |
 | `AI_PROVIDER` | `openai`, `anthropic`, `ollama`, `custom`, `azure` |
@@ -165,11 +218,40 @@ Environment variables **override** stored settings (the UI shows them as locked)
 | `CUSTOM_FIELDS` | custom fields (JSON, format of 3.x) |
 | `EXTERNAL_API_ENABLED`, `EXTERNAL_API_URL`, `EXTERNAL_API_METHOD`, `EXTERNAL_API_HEADERS`, `EXTERNAL_API_BODY`, `EXTERNAL_API_TIMEOUT`, `EXTERNAL_API_TRANSFORM` | external data |
 | `RAG_ENABLED` (or `RAG_SERVICE_ENABLED`), `RAG_EMBEDDING_PROVIDER`, `RAG_EMBEDDING_MODEL`, `RAG_QUERY_EXPANSION` | ask your archive |
+| `ACTIVATE_CALENDAR` | find appointments, due dates and deadlines for the calendar (default off) |
+| `OCR_ENABLED`, `OCR_MODE` (`manual`, `missing`, `poor`, `always`), `OCR_WRITE_BACK` | OCR on/off, when it runs automatically, replace the text in Paperless (default on) |
+| `OCR_LANGUAGE` (`latin`, `en`, `multi`, `cyrillic`, `eslav`, `greek`, `arabic`, `devanagari`, `korean`, `thai`, `tamil`, `telugu`), `OCR_QUALITY` (`fast`, `balanced`, `accurate`) | OCR model |
+| `OCR_DEVICE` (`auto`, `cpu`, `cuda`), `OCR_THREADS`, `OCR_MAX_PAGES` | OCR hardware and limits (`0` threads = automatic, `0` pages = all) |
+| `OCR_RELEASE` (`auto`, `document`, `idle`) | When the OCR models are unloaded and their memory is freed: `auto` = on the GPU after each document (before the AI analysis), on the CPU after 10 idle minutes |
 | `API_KEY`, `JWT_SECRET` | secrets (generated automatically when unset; use at least 32 random characters for `JWT_SECRET`) |
 | `LOG_LEVEL`, `LOG_FORMAT=json` | operations |
 | `TRUST_PROXY` | behind a reverse proxy: number of proxy hops (usually `1`) or the proxy addresses – needed for correct client IPs (login rate limit) and secure cookies; off by default |
 
 Empty variables (e.g. `OPENAI_API_KEY=` left in a compose file) are ignored, so they never replace what you configured in the web interface.
+
+### OCR
+
+*Settings → OCR* turns OCR on. The modes:
+
+- **No text or poor text** (recommended): before the AI analysis, documents without text or with garbled text (text-quality score below 50) are read with OCR.
+- **Only documents without text**: for archives where Paperless' own OCR is fine.
+- **Every document**: best text for every document, costs time per document.
+- **Manual**: only from the *OCR* page or the API (`POST /api/ocr/run`). The documents are analyzed by the AI afterwards.
+
+The OCR text replaces the text in Paperless only when its text-quality score is higher than that of the existing text – a clean text layer of a digital PDF or well-read print is never replaced by a weaker OCR result (e.g. of handwriting); the AI then analyses the existing text, too. On the *OCR* page you can compare both texts and save the OCR text anyway.
+
+**GPU memory:** OCR runs in a process of its own. With *Unload the OCR models* on *Automatic*, that process ends after each document read on the GPU – before the AI analysis – so a local model (Ollama, llama.cpp …) on the same GPU gets all of the memory back. Loading the models again takes a few seconds per document; if no model shares the GPU, choose *After 10 idle minutes*. On the CPU the models stay loaded for 10 minutes.
+
+On a 4-core CPU an A4 page takes about 1–2 s (*Balanced*). *Accurate* uses a larger detection model and 300 dpi – noticeably better for small print, but slow without a GPU. Models are stored in the data directory (`models/paddleocr`), so they are downloaded only once; behind a proxy or offline, set `HF_ENDPOINT` to a Hugging Face mirror or copy the folder from another installation.
+
+ONNX Runtime's own usage telemetry is switched off (`ORT_DISABLE_TELEMETRY=1`) – nothing about your documents leaves your server.
+
+### Calendar
+
+*Settings → Processing → Appointments & deadlines* turns the calendar on. From then on the AI analysis also asks for dates the recipient has to act on or attend – appointments (with time), payment due dates, deadlines (cancellation, objection, application) and expiry or renewal dates. They appear on the *Calendar* page with a link to the document; dates you hide stay hidden when the document is analysed again.
+
+- **Earlier documents:** *Search documents* asks only for the dates of documents processed before (last 3 or 12 months, 3 years or all) – one small AI request per document, titles and tags in Paperless stay untouched.
+- **Subscribe:** *Subscribe* shows a private link (`…/api/calendar/feed/<secret>.ics`). Add it in Google Calendar (*Other calendars → From URL*), Apple Calendar (*File → New Calendar Subscription*) or Outlook (*Subscribe from web*). The calendar app must be able to reach Paperless-AI at that address; anyone with the link can read the dates, so a new link can be created at any time.
 
 ### Local models (Ollama)
 

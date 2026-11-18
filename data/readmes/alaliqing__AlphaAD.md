@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--16-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1373-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--17-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1379-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1373 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1379 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 216 | 2026-11-12 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 109 | 2026-11-08 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 93 | 2026-11-10 | [View papers](#category-planning-decision-making) |
+| Perception & Sensor Fusion | 217 | 2026-11-16 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 110 | 2026-11-16 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 93 | 2026-11-15 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 60 | 2026-11-12 | [View papers](#category-control-vehicle-dynamics) |
-| Mapping & Localization | 50 | 2026-10-29 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 156 | 2026-11-12 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 201 | 2026-11-12 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 152 | 2026-11-13 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 29 | 2026-11-06 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 307 | 2026-11-12 | [View papers](#category-cross-cutting-other) |
+| Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
+| End-to-End & VLA | 157 | 2026-11-16 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 199 | 2026-11-16 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 157 | 2026-11-16 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 30 | 2026-11-15 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 308 | 2026-11-16 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,16 +45,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 101 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
-| Benchmark | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 191 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Benchmark | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
+| Simulation | 196 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
 | Synthetic Data | 33 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 108 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 84 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 115 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 129 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 85 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| World Model | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 137 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 105 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
@@ -63,7 +63,27 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 216 papers
+## Perception & Sensor Fusion · 217 papers
+
+<a id="paper-2611-21126"></a>
+
+### IGRecon4D: Dynamic-Object-Aware Feed-Forward Reconstruction of Driving Scenes ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Yifei Tong, Ziyang Huang, Yizhao Han, Xiaoxiao Long, Hao Zhu<br>
+**Published:** 2026-11-16<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.21126) | [PDF](https://arxiv.org/pdf/2611.21126.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Feed-forward 4D driving-scene reconstruction enables efficient modeling of dynamic autonomous-driving scenes, but current methods suffer from two complementary failure modes: semantic leakage of...
+
+<a id="paper-2611-20507"></a>
+
+### VoxSAOR: Semantic-Aware Occupancy Robustification via Aleatoric Uncertainty Modeling ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Mengfei Duan, Yuheng Zhang, Guoqiang Zhao, Yuanfan Zheng, Kailun Yang, et al.<br>
+**Published:** 2026-11-15<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.20507) | [PDF](https://arxiv.org/pdf/2611.20507.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Vision-based 3D occupancy prediction provides a dense semantic representation of scenes for autonomous driving and embodied perception, yet remains vulnerable to occlusion, depth ambiguity, and...
 
 <a id="paper-2611-16742"></a>
 
@@ -1637,28 +1657,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Research tags:** Benchmark · Simulation<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.05783) | [PDF](https://arxiv.org/pdf/2607.05783.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Environmental illusions (eg., shadows, reflections, and tire marks) are naturally existing yet overlooked phenomena in real-world driving environments. They can disturb visual perception, leading to...
-
-<a id="paper-2607-04732"></a>
-
-### SparseOcc++: Geometry-Aware Sparse Latent Representation for Semantic Occupancy Prediction
-
-**Authors:** Pin Tang, Zhongdao Wang, Guoqing Wang, Xiangxuan Ren, Chao Ma<br>
-**Published:** 2026-07-06<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.04732) | [PDF](https://arxiv.org/pdf/2607.04732.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Vision-based 3D semantic occupancy prediction is essential for autonomous driving, yet dense voxel representations waste computation on largely empty space, while BEV and TPV projections compromise...
-
-<a id="paper-2607-04541"></a>
-
-### CRISP: A Spatiotemporal Camera-Radar Backbone for Driving via Forecasting-Based World-Model Pretraining
-
-**Authors:** Jingyu Song, Yi Liu, Katherine A. Skinner<br>
-**Published:** 2026-07-05<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.04541) | [PDF](https://arxiv.org/pdf/2607.04541.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Camera-radar (CR) fusion is a practical sensing configuration for autonomous driving, but existing models are typically trained with task-specific supervision, limiting reusable representation...
-
-<a id="paper-2607-04098"></a>
-
-### Sparse4D-Radar: A
+**Abstract:** Environmental illusions (eg., shadows, reflections, and tire marks) are naturally existing yet overlooked phenomena in real-world driving environments. They can dis

@@ -78,6 +78,7 @@ Reusable agent-memory workflows and templates for knowledge practices agents can
 
 Memory servers exposed through the Model Context Protocol. Client support depends on the server transport and authentication method.
 
+- [adaptive-agent-memory-research](https://github.com/krapcys1-maker/adaptive-agent-memory-research) - Apache-2.0, dependency-free local stdio MCP server that keeps a project's decisions in an append-only JSONL log inside the repository, with search and character-budgeted context tools and no API key; part of an open research project on experience memory for LLM agents.
 - [Basic Memory](https://github.com/basicmachines-co/basic-memory) - Local-first, AGPL-3.0 MCP server that stores agent memory as Obsidian-compatible Markdown files, building a knowledge graph agents can read and write, plus an optional hosted version (Basic Memory Cloud).
 - [BrainTube](https://github.com/lildaddyo/braintube-mcp) - Hosted, read-write MCP memory server (Elastic License 2.0) over a personal library of YouTube transcripts, podcasts, articles, PDFs and notes, with OAuth or API-key auth over Streamable HTTP.
 - [Cairn.ink Memory](https://github.com/Cairn-ink/cairn-memory) - Apache-2.0 memory for Claude Code and Codex installed with one npx command: a local stdio MCP server that stores memories and, on supported platforms, conversation text in SQLite and keeps the source text of each memory so it can be inspected, corrected or forgotten, plus an optional hosted mode at cairn.ink.

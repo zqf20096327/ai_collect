@@ -27,15 +27,15 @@ go install github.com/tevfik/gleann/cmd/gleann@latest
 # Or One-Liner (Linux & macOS) — installs the lite build
 curl -sSfL https://raw.githubusercontent.com/tevfik/gleann/main/scripts/install.sh | sh
 
-# With bitllm.c local embeddings, FAISS and the tree-sitter code graph
+# With bitllm.c local embeddings, FAISS and the tree-sitter parsers
 curl -sSfL https://raw.githubusercontent.com/tevfik/gleann/main/scripts/install.sh | GLEANN_VARIANT=full sh
 ```
 
 | `GLEANN_VARIANT` | Includes | Platforms |
 |---|---|---|
-| `lite` (default) | pure Go; no bitllm.c, FAISS or code graph | all |
+| `lite` (default) | pure Go, with the code graph (Go calls; declarations for other languages); no bitllm.c, FAISS or tree-sitter | all |
 | `eif` | + bitllm.c local embeddings (EIF runtime) | linux-amd64, linux-arm64, darwin-arm64 |
-| `full` | + bitllm.c, FAISS, tree-sitter code graph, Kuzu | linux-amd64, linux-arm64, darwin-arm64 |
+| `full` | + bitllm.c, FAISS, tree-sitter parsers (call graph of non-Go languages) | linux-amd64, linux-arm64, darwin-arm64 |
 
 Later, update gleann and its plugins from the latest GitHub release:
 
@@ -89,7 +89,7 @@ Connect Gleann directly to **Claude Code**, **Cursor**, **Windsurf**, **Cline**,
 ---
 
 ### 🧠 2. Deep Code Intelligence & Blast Radius
-Vector search alone misses function calls, callers, and dependencies. Gleann combines vector search with an AST code graph in KùzuDB.
+Vector search alone misses function calls, callers, and dependencies. Gleann combines vector search with an AST code graph stored in the index's own SQLite database (every build, including the pure-Go one).
 - **AST Chunking**: Tree-sitter partitions functions, structs, and interfaces cleanly at syntax boundaries.
 - **Call-Graph Traversal**: Discover callers and callees with `gleann graph callers <symbol>`.
 - **Blast Radius Analysis**: Trace upstream impact before making breaking changes with `gleann graph explain <symbol>`.
@@ -154,6 +154,7 @@ Running `gleann install` auto-detects and installs configuration for:
 gleann index build my-code --docs ./src --graph   # Index source code with call graph
 gleann index build my-docs --docs ./docs          # Index technical documentation
 gleann index list                                 # List all indexes, status, and tags
+gleann index migrate my-docs                      # Convert an index built by gleann v1.9 or earlier (see docs/releases/v1.20.0.md)
 gleann index watch my-code --docs ./src --graph   # Auto-sync index on file changes
 ```
 
@@ -196,7 +197,7 @@ gleann tokens ./src            # Estimate token consumption across read modes
 - **[Cookbook & Recipes](docs/cookbook.md)** — Practical examples for real-world codebases
 - **[Architecture & Internals](docs/architecture.md)** — In-depth engine mechanics & data flow
 - **[Configuration & Models](docs/configuration.md)** — Model recommendations (Ollama, llama.cpp, Cloud)
-- **[Hierarchical GraphRAG](docs/hierarchical_graphrag.md)** — Multi-level document structure & KùzuDB
+- **[Hierarchical GraphRAG](docs/hierarchical_graphrag.md)** — Multi-level document structure & the document graph
 - **[Plugin System](docs/plugins.md)** — Custom extractors for audio, video, and documents
 - **[REST API Reference](docs/api.md)** — OpenAPI endpoints & curl examples
 - **[Troubleshooting](docs/troubleshooting.md)** — FAQ and common resolutions

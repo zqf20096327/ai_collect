@@ -28,7 +28,7 @@ and makes both answers checkable.
 | **Hands** | Isolated Docker runs under GPU / CPU / memory leases | Implemented |
 | **Evidence** | Code snapshot, logs, metrics, outputs and agent sessions for every run | Implemented |
 | **Acceptance** | Independent verification, validity kept apart from execution, paired comparison with confidence intervals | Implemented |
-| **Evolution gate** | Each change to an agent is a version with lineage, accepted only if it beats its parent on unseen tasks and does not regress in other environments | Versions and lineage implemented; the gate is in design |
+| **Evolution gate** | Each change to an agent is a version with lineage, accepted only if it beats its parent on unseen tasks and does not regress in other environments | Frozen-evidence gate, lineage, workflow helpers and review implemented; cross-environment improvement remains unproven |
 
 A change tested only where it was made has not been tested. That is why Orbit spans code, science,
 GUI, tool-use and embodied benchmarks, and more than one agent. Today it runs agents such as Codex
@@ -144,7 +144,7 @@ orbit plugin install dsh --profile headless
 orbit plugin install pi
 ```
 
-Restart the agent to load `orbit` for experiment execution and review, and `orbit-bench` for benchmark adapters, resources and validation.
+Restart the agent to load `orbit` for experiment execution/review, `orbit-bench` for benchmark integration, and `orbit-evolve` for bounded configuration improvement and no-change/notes/ACE baselines with frozen gate evidence.
 
 | Agent | Host skills | In-container execution & session capture |
 | --- | --- | --- |
@@ -283,6 +283,17 @@ Keep personal experiment notes, scores and artifacts in user-owned storage. The 
 ## 📊 Benchmarks
 
 Compare methods under the same resource rules, keeping execution, evaluation validity and cleanup separate. Only valid scores enter aggregates.
+
+New installation: open **Benchmarks → Prepare resources** to choose any supported benchmark,
+download from its official sources or reuse local files, complete any upstream access requirements,
+and register the prepared setup. Specialized native prerequisites are listed explicitly.
+See [resource preparation](docs/guides/benchmark-resources.md).
+
+```bash
+orbit bench resources
+orbit bench prepare humaneval
+orbit bench preparation <run>
+```
 
 | Integration | Use it for | Guide |
 | --- | --- | --- |
@@ -461,7 +472,7 @@ space. Folders organize runs and bench jobs without moving files: `orbit run --f
 | **Digital experiments** | Docker execution, resource scheduling, sweeps, trajectory records and local Web review are implemented; single-machine workflows are validated. |
 | **Benchmarks & multiple machines** | Benchmarks have integration-specific validation records. Multi-node validation uses two daemons on one host. |
 | **Embodied environments** | Native simulation, independent policies, evidence verification and Trial review are implemented. Physical device backends are a future direction. |
-| **Evolution gate and unified trajectories** | Configuration versions, lineage (`--parent`, `--informed-by`) and paired statistics are implemented. The gate that accepts or rejects a change, one trajectory format across agents and benchmarks, and cross-benchmark / cross-agent transfer studies are in design and not yet validated. |
+| **Evolution gate and unified trajectories** | ATIF trajectories, token accounting/export, configuration lineage, frozen-evidence gate decisions, CLI/Web review, pilot sizing, a host-driven reference evolver and no-change/notes/ACE baselines are implemented. Cross-benchmark improvement and cross-agent transfer still need prospective studies. |
 
 Orbit is in early development (0.1.1). See [project status](docs/status.md) for validation limits and near-term work, and [design](docs/design.md) for the architecture.
 

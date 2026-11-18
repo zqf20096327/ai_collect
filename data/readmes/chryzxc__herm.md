@@ -13,7 +13,7 @@
 
 Glance at the notch to see what your agents are doing and how much provider allowance remains. Send a quick message without opening the workspace, reply to a specific session when it is idle, or talk with your agent through continuous **Voice mode**. Expand into the full workspace when you want to inspect files, review changes, answer an approval, or manage your bots and tasks.
 
-Session activity remains visible in the sidebar and notch when you switch conversations, including pinned and project sessions.
+Session activity remains visible in the sidebar and notch when you switch conversations, including pinned and project sessions. Recently viewed conversations reopen instantly at your last reading position and refresh in the background.
 
 In-chat approvals, questions, and input requests keep their actions compact; errors use the same clear callout treatment.
 
@@ -23,7 +23,7 @@ While browsing chat history, prepared messages appear in order as they become re
 
 Performance captures record callback timing and workspace updates locally; optional stack samples can add overhead while recording.
 
-Unread session badges and the floating “new messages” control count AI responses only. User messages, tools, activity, system notices, errors, and empty streaming placeholders do not increase the count. Opening an unread session takes you to its first unread reply and marks the captured updates reviewed; a blue-tinted unread divider remains visible for that visit. The Bot picker counts unread sessions per Bot in a red badge, with a plus sign when the available session inventory is incomplete. Scrolling to the latest reply clears the floating count.
+Unread session badges and the floating “new messages” control count AI responses only. User messages, tools, activity, system notices, errors, and empty streaming placeholders do not increase the count. Opening an unread session takes you to its first unread reply and marks the captured updates reviewed; a blue-tinted unread divider remains visible for that visit. A session you already viewed since Herm launched reopens where you left it instead; the divider still marks the first unread reply. The Bot picker counts unread sessions per Bot in a red badge, with a plus sign when the available session inventory is incomplete. Scrolling to the latest reply clears the floating count.
 
 [![Herm driving a shared browser with a live agent cursor](docs/media/browser-demo-poster.webp)](docs/media/browser-demo.mp4)
 
@@ -514,6 +514,7 @@ choose another worktree, then **Move this chat here** to keep the conversation i
 to carry the unsent draft into a new chat. Moving waits until the current turn ends, and the chat then stays in the chosen
 worktree even if the agent works in another one. A chat that has not sent anything simply starts there. **New worktree task** creates a new worktree
 and moves the draft to a new chat there. Existing terminal shells keep their folders and running commands.
+Use **Add to project** or **Move to project** in a conversation's menu to re-home it under another project; the conversation keeps its history and the project label and lists follow at once. It is unavailable while the conversation is working or waiting on you.
 The icon has no background and highlights when the rail is open. Its floating
 cards sit over the same continuous conversation background, with the conversation's
 scrollbar at the far-right edge beyond the rail. The rail discovers PR
@@ -952,5 +953,4 @@ The session inspector's **Browser** tab is a real Chromium browser that you and 
 - **Hermes browses here.** Herm starts a background Chrome (or Brave, Edge or Chromium) and connects Hermes' browser tools to it. When Hermes uses the browser, the inspector opens on the Browser tab, the page gets an accent frame, a status pill shows its current step, and a "Herm" cursor shows where it moves, clicks and types. Its last observed position stays visible between steps and when reopening the pane; taking over, using the page, or navigating clears it.
 - **Embedded pages.** The cursor also follows observed pointer and focus events in supported embedded frames, including cross-origin frames. Page changes made without a pointer or focus event show browser activity without a fabricated cursor position. When a frame cannot be mapped, its cursor events are omitted while browsing continues.
 - **Hermes can show inspector tabs.** Hermes' `focus_pane` (files, terminal, review) and the `herm_inspector` tool from the `herm` plugin (`Sources/Herm/Resources/HermesPlugins/herm`) expand the inspector to the requested tab in that chat.
-- **Use Herm's browser** (Settings → Browser, on by default) opens pages Hermes shows (`desktop_preview`) in the Browser tab and blocks terminal `open <url>` or `open -a <browser>`, so "open the page" lands in Herm. Off, those pages open in your default browser; Hermes' browser tools still use Herm's browser.
-- **Take over and hand back.** **Take over** pauses Herm so you can handle a login or captcha yourself. **Hand back to Herm** then tells it to continue from that page. While Herm is working, your clicks and typing are ignored so they can't interfere with it. While Herm is in 
+- **Use Herm's browser** (Settings → Browser, on by default) opens pages Hermes shows

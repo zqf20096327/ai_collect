@@ -44,10 +44,10 @@ about your code costs a small fraction of the tokens it takes to read the source
 
 | Capability | What it does | Key tools |
 |---|---|---|
-| **Code intelligence** | Read the code map instead of opening files: what a file contains (`code_outline`), where a name is defined (`code_symbols`), one symbol's body or an exact line span (`code_read`), text search, literal by default (`code_grep`), search by meaning over indexed chunks (`code_search`, needs `--features code-search`), and usages (`code_refs`): call sites of a name, callers of one definition, implementors of a trait / interface / base class, importers of a module, and go-to-definition (**scope- and import-aware**, JS/TS via oxc, Python & Java via in-tree [stack-graphs](#how-it-works)). `find_files` locates or lists files, documents included. Layered over [300+ languages](#how-it-works). | `code_outline` · `code_symbols` · `code_read` · `code_grep` · `code_search` · `code_refs` · `find_files` |
+| **Code intelligence** | Read the code map instead of opening files: what a file contains (`code_outline`), where a name is defined (`code_symbols`), one symbol's body or an exact line span (`code_read`), exact text search over code and text files, literal by default (`code_grep`), search by meaning over indexed chunks (`code_search`, needs `--features code-search`), and usages (`code_refs`): call sites of a name (matched by name), callers of one definition, implementors of a trait / interface / base class, importers of a module, and go-to-definition (scope- and import-aware once a `path` pins the definition: JS/TS via oxc, Python & Java via in-tree [stack-graphs](#how-it-works)). `find_files` locates or lists files, documents included. Layered over [300+ languages](#how-it-works). | `code_outline` · `code_symbols` · `code_read` · `code_grep` · `code_search` · `code_refs` · `find_files` |
 | **Git intelligence** | Ask what changed recently, which commits touched a file, which commit mentions a phrase (full-text over messages and authors at full branch depth), when a symbol's body changed, who last touched a line or a function, and how a file differs between revisions or from the working tree, as text hunks or as symbols added and removed. | `git_log` · `git_blame` · `git_diff` |
 | **Memory & documents** | A per-repo memory agents write to and search by meaning — clones of the same repo share it, unrelated repos stay separate — plus semantic search over PDFs, Office files, HTML, email, and images (OCR included in the published binaries, no extra setup; a source build needs the `documents-ocr` Cargo feature). | `memory_save` · `memory_search` · `docs_search` |
-| **Agent comms** | Threads addressed by subject, path-glob, and members; scope discovery; inbox delivery; lifecycle status; and dry-run/apply retention cleanup. | `agents` (`register` · `list` · `thread_start` · `thread_list` · `join` · `leave` · `members` · `add_member` · `remove_member` · `archive` · `post` · `history` · `message` · `inbox` · `ack` · `wait` · `cleanup` · `status`) |
+| **Agent comms** | Threads opened by a post with a subject, open to the repository or invitation-only (`to`); a per-actor inbox whose reads mark messages read (`peek` does not); membership by principal, `as` for subagents; waits in the daemon (`wait_secs`). | `agent_post` · `agent_inbox` · `agent_threads` |
 | **Index** | Check index health and repo identity, and refresh the index after edits. Telemetry and cache maintenance are CLI commands (`basemind admin telemetry`, `basemind cache stats\|gc\|clear`). | `index_status` · `index_rescan` |
 
 <!-- markdownlint-enable MD013 -->
@@ -55,7 +55,7 @@ about your code costs a small fraction of the tokens it takes to read the source
 The code, git, memory, document and index rows are 15 tools, one per job, each with its own exact
 schema; there is no `mode` argument. They are always loaded (`_meta["anthropic/alwaysLoad"]`), so a host that defers MCP tools
 needs no tool-search round trip: call them directly. Their `tools/list` entry is about 18 KB (about
-4.5k tokens). `agents` (`comms` builds) still takes a `mode` and is not always loaded. An unknown argument is
+4.5k tokens). The three agent tools (`comms` builds) are deferred: a host finds them by tool search, and the session-start hook and the server instructions name them. An unknown argument is
 rejected with a did-you-mean suggestion, every line number is 1-based, and a failure the caller can
 fix comes back as an `isError` result that names the fix. Arguments, examples and the mapping from
 the previous `code` / `git` / `memory` / `admin` tools: the
@@ -196,25 +196,27 @@ launcher downloads the matching published basemind binary, or uses `BASEMIND_BIN
 <details>
 <summary><strong>Hermes</strong></summary>
 
-[Install the program](#install-the-program) first. Install the locally generated wheel into the
-same Python environment Hermes runs in, then enable the plugin:
+[Install the program](#install-the-program) first. Install the plugin into the same Python
+environment Hermes runs in, at the version of your `basemind` binary, then enable it:
 
 ```bash
-git clone https://github.com/Goldziher/basemind
-cd basemind
-uv build --wheel --out-dir dist/hermes plugin/.hermes/package
-python -m pip install --force-reinstall dist/hermes/basemind_hermes_plugin-0.29.3-py3-none-any.whl
+python -m pip install "basemind-hermes-plugin==$(basemind --version | awk '{print $2}')"
 hermes plugins enable basemind
 ```
 
-Restart Hermes. The plugin registers ten skills, six slash commands, scoped comms notifications,
+Restart Hermes. The plugin registers ten skills, six slash commands, comms notifications,
 and `basemind_call`, which bridges the local MCP server's tools and returns JSON text.
 The binary must be on `PATH`. Comms notifications are
 best-effort. You can also configure `mcp_servers.basemind` with `command: basemind` and
 `args: [serve]` for direct access to the tools.
 
-PyPI version 0.29.3 predates the skill-registration fix and MCP bridge. Use the source wheel above
-until a newer release includes these changes; reinstalling that published version will not add them.
+To run a binary built from a checkout, build the wheel from the same checkout, so its skills name
+the tools that binary serves:
+
+```bash
+uv build --wheel --out-dir dist/hermes plugin/.hermes/package
+python -m pip install --force-reinstall dist/hermes/basemind_hermes_plugin-*.whl
+```
 
 </details>
 
@@ -240,9 +242,8 @@ The package includes ten skills and a native extension that loads basemind conte
 and after compaction. Pi runs basemind through its shell tool using the [CLI](#3-as-a-cli).
 No MCP bridge or binary is included. Add `-l` to save the package in the current project's configuration.
 
-The next release adds these resources to the existing `basemind-opencode` npm package.
-After that release, use `pi install npm:basemind-opencode` for registry installation and
-Pi package-catalog discovery. Both installation paths carry the same extension and skills.
+The `basemind-opencode` npm package carries the same extension and skills: use
+`pi install npm:basemind-opencode` for registry installation and Pi package-catalog discovery.
 
 </details>
 
@@ -421,7 +422,7 @@ activity by type, then tokens saved, then unread messages. Adjust with
 <p align="center"><em>Searching documents by meaning, not keywords, across PDFs, Office files, HTML and email.</em></p>
 
 <p align="center"><img src="docs/demos/code-review-panel.gif" alt="Three named reviewer agents posting findings to a shared repo-scoped thread, replying to each other, and an orchestrator synthesizing a verdict over the comms CLI" width="820"></p>
-<p align="center"><em>Multi-agent code-review panel: named reviewers coordinate in a repo-scoped thread (post, reply, synthesize) — entirely over <code>basemind agents</code>.</em></p>
+<p align="center"><em>Multi-agent code-review panel: named reviewers coordinate in a repo-scoped thread (post, reply, synthesize) — entirely over <code>basemind agent</code>.</em></p>
 
 <!-- markdownlint-enable MD013 -->
 
@@ -465,8 +466,10 @@ real callers and report the remainder as complete. Filter on `resolved` when you
 The code map is **code only**. Prose, data and config files — Markdown, reStructuredText, AsciiDoc,
 vimdoc, CSV, JSON, YAML, TOML, INI, XML, `.properties`, `.env`, diffs, `.gitignore`/`.gitattributes`
 and Fluent — go to the document tier instead: they are chunked and searched as text with
-`docs_search` (gated by `[documents] include` / `exclude`), and no longer show up in `code_outline`,
-`code_symbols` and `code_grep`. `find_files` still covers them, labelled by grammar name or
+`docs_search` (gated by `[documents] include` / `exclude`), and no longer show up in `code_outline`
+and `code_symbols`. Plain text, logs, CSV, TSV, NDJSON, JSON, YAML and TOML are chunked from the
+file itself (paragraphs, records, top-level entries), so every hit cites its lines. `code_grep`
+still searches them as text, and `find_files` still covers them, labelled by grammar name or
 extension. An existing index migrates on its next scan. A build
 without the `documents` feature keeps the old behaviour, where those files are outlined as code.
 
@@ -493,7 +496,8 @@ Search and memory are powered by a vector store ([LanceDB]).
 The daemon answers the MCP handshake immediately and warms the code map into memory in the
 background, so a client never blocks waiting for a large repo to load. The `status` tool reports
 `warming` (still loading) and, once done, `warm_ms`; a first-time index build similarly reports
-`indexing` / `index_build_ms`.
+`indexing` / `index_build_ms`, and the boot-time git-history sync `history_syncing` (a `git_log` or
+`git_blame` cursor issued before it ends may be refused as stale).
 
 While the server isn't fully ready, `status` and every code-map read tool may carry a `notice`
 object — `{ state, message, retry }` — instead of (or alongside) their normal result:
@@ -518,12 +522,11 @@ workspace, never inside your repo. The
 content-addressed blob store is machine-wide too: identical file content scanned from different repos
 or worktrees is extracted and stored once.
 
-A new linked worktree's working view is seeded from a sibling checkout's index with a copy-on-write
-clone, so its first scan only touches files that differ. Only the view is cloned: the vector store is
-not, so the seeded worktree's first scan rebuilds its vector rows from the cached blobs without
-re-embedding. A sibling whose workspace lock is held (a daemon or another scan is writing it) is not a
-seed source, and neither is one too large to copy on a filesystem without reflinks; the new worktree
-then scans from scratch. Set `BASEMIND_NO_SEED=1` (any non-empty value other than `0`) to opt out.
+Every worktree of a repository shares one code index, under `cache/groups/<group>/` (ADR-0028). A view
+of a worktree keeps its rows under its own id and its file map under the workspace, so a new linked
+worktree costs its file map and the rows of its files, and its first scan re-extracts nothing whose
+content is already in the blob store. Only one process at a time holds a group's index; another
+process in a worktree of the same group answers from the blob store.
 
 Linked worktrees share one git-history index per clone. A worktree whose HEAD descends from the
 indexed head appends the new commits; one that diverges leaves the index alone and answers history
@@ -595,28 +598,31 @@ in use binds another. Plugin manifests and the CLI use the stdio transport and n
 <summary><strong>How agents coordinate</strong></summary>
 
 A single shared service in the background lets agents talk to each other — even across different
-tools and different repos on the same machine. Agents coordinate in **threads** — each addressed by
-at least two of subject / path-glob / members, discovered by scope rather than joined globally — and
-each has a personal **inbox**. Messages come in two parts: a short headline (subject and sender)
-that's cheap to skim, and the full body, fetched only when an agent wants to read it. An agent never
-sees its own posts in its inbox. Idle threads auto-archive. `wait` blocks for 30 seconds by default
-(at most 40) and ends early when the client cancels the request.
+tools and different repos on the same machine. Three deferred tools carry it (`agent_post`,
+`agent_inbox`, `agent_threads`; the CLI mirror is `basemind agent post|inbox|threads`). A post with
+a `subject` opens a **thread**: open to every agent of the repository, or invitation-only when it
+names recipients (`to`). Each agent has an **inbox**: reading returns unread messages with their
+bodies inline (a body over 4 KiB is cut, and `id` reads one whole) and marks them read; `peek`
+reads without marking, `unread: false` reads history, and `wait_secs` (at most 40) waits in the
+daemon for a peer's post. An agent never sees its own posts as unread. Identity is one id per
+checkout (`BASEMIND_AGENT_ID`, else `comms.agent_id`, else `<host>-<repo>-<6 hex>`); a subagent
+passes `as` to get its own read position. Messages are kept 30 days, at most 1,000 per thread. See
+[`docs/comms-v2.md`](docs/comms-v2.md).
 
-The client–daemon protocol is version 6 (a client and a daemon of different versions refuse each
+The client–daemon protocol is version 7 (a client and a daemon of different versions refuse each
 other at connect): the daemon serves it on an 8-worker async runtime, and
 every request carries an id, so replies are matched to
 requests and most calls have a deadline (`BASEMIND_COMMS_REQUEST_TIMEOUT_SECS`, 10 s;
-`BASEMIND_COMMS_HANDSHAKE_TIMEOUT_SECS`, 30 s). After an upgrade, run `basemind comms stop` so the
-old daemon is replaced. A `post` can carry an `idempotency_key`: a retry with the same key returns the
-original message id instead of storing a duplicate (keys are remembered for an hour, and generated when
-omitted). The stdio relay replays read-only requests and keyed posts once if the daemon restarts
-underneath it, instead of failing the call, and fails a request that outlives
-`BASEMIND_RELAY_REQUEST_TIMEOUT_SECS` (180 s). Other tool responses carry a short notice when you have
-unread messages. A detached daemon logs to a size-rotated `<comms_dir>/daemon.log`, which
-`basemind comms doctor` shows.
+`BASEMIND_COMMS_HANDSHAKE_TIMEOUT_SECS`, 30 s; a waiting read is exempt). After an upgrade, run
+`basemind comms stop` so the old daemon is replaced. The stdio relay stamps each agent request with a
+key and replays it once if the daemon restarts underneath it, instead of failing the call: a replayed
+post stores one message. The relay fails a request that outlives
+`BASEMIND_RELAY_REQUEST_TIMEOUT_SECS` (180 s). A detached daemon logs to a size-rotated
+`<comms_dir>/daemon.log`, which `basemind comms doctor` shows.
 
 The plugin makes sure agents notice messages without being asked — through the built-in instructions,
-a notice at session start and each turn, and a quiet background check every few seconds.
+a count at session start, and a list of unread messages (from, thread, size; never a body) at each
+turn. In Claude Code a hook also gives each session and subagent its own `as`.
 
 ```mermaid
 flowchart LR
@@ -755,8 +761,11 @@ when history is rewritten (filter-repo / rebase / force-push). Reproduce with
 <details>
 <summary><strong>Measuring query latency (<code>elapsed_us</code>)</strong></summary>
 
-Every latency-relevant tool — the code, git, document and memory lookups and `index_status` —
-reports its own latency as **`elapsed_us`** on its response.
+`code_outline`, `code_search`, `docs_search`, `git_blame`, the memory tools and `index_status`
+report their own latency as **`elapsed_us`** on their response. The locating tools (`code_symbols`, `code_grep`, `code_refs`,
+`find_files`, `git_log`, `git_diff`) leave it out: their answer is a short list, and a timing field
+on it would cost as much as a row. Telemetry records every call's latency, and the CLI times the
+call itself when the response has no `elapsed_us`.
 Don't wrap the CLI in `time`; ask basemind.
 
 Resolution is **microseconds** on purpose: an indexed `git_log` with `path` is ~37 µs, so
@@ -782,7 +791,7 @@ part of a `time basemind …` measurement that was never the query — and a lon
 it once at boot, not per call:
 
 ```console
-$ basemind code symbols run_workspace_grep --limit 1 --json
+$ basemind code outline src/store.rs --json
 {
   ...
   "elapsed_us": 90,        # the query
@@ -1048,14 +1057,13 @@ A cap variable must be a positive integer; anything else falls back to the defau
 | `BASEMIND_WARM_READ_STACKS` | Daemon-hosted read stacks kept warm at once; default 3. |
 | `BASEMIND_NO_AUTOSPAWN=1` | Connect to a running daemon but never start one. |
 | `BASEMIND_MAX_DAEMONS` | Ceiling on live daemons per machine before a spawn is refused; default 8. |
-| `BASEMIND_NO_SEED=1` | Do not seed a new worktree's index from a sibling checkout. |
 | `BASEMIND_BIN`, `BASEMIND_FORCE_VERSION` | Plugin launcher: run a local build / pin a release (see [Installation](#1-as-a-plugin-recommended)). |
 
 **Reload.** The daemon re-reads a workspace's `basemind.toml` on the next request after it changes
 (size or modification time) and logs `config changed`. A file that no longer parses keeps the last
 good config and logs a warning. A hosted read stack with live sessions keeps its config until they
 reconnect, and `scan_threads` is fixed for the process lifetime (the daemon logs that a restart is
-required). `admin status` reports `config_stamp` (`<bytes>B@<unix seconds>`) to spot an edit.
+required). `index_status {}` (CLI `basemind status`) reports `config_stamp` (`<bytes>B@<unix seconds>`) to spot an edit.
 
 **Reserved keys.** These parse but nothing reads them yet, and setting one to a non-default value
 logs a warning: `[watch] live_l2`, `[cache] file_map_lru`, `[mcp] transport`, `[memory] enabled` /
@@ -1098,12 +1106,13 @@ files that became eligible from the cached blobs, without re-embedding.
 ## CLI reference
 
 <details>
-<summary><strong>Full command list</strong> — code · git · memory · admin · cache · agents · workspace</summary>
+<summary><strong>Full command list</strong> — code · git · memory · admin · cache · agent · workspace</summary>
 
 Every MCP tool has a CLI command (enforced by `tests/cli_parity/`); the CLI also keeps shorthands
-and administrative commands that have no MCP tool. Add `--json` for
-machine-readable output (the same response types the MCP tools return, including `agents`). Human output prints source bodies, diffs and exports in full; only table cells are cut
-(to 200 characters, with a note on stderr), and the timing line goes to stderr. List commands take
+and administrative commands that have no MCP tool. Add `--json` for machine-readable output: the
+response types the MCP tools return. Human output prints source bodies, diffs and exports in full;
+only table cells are cut (to 200 characters, with a note on stderr), and the timing line goes to
+stderr. List commands take
 `--limit`, `--cursor` (resume from a previous `next_cursor`) and `--max-tokens`. Line and column
 arguments are 1-based.
 
@@ -1116,12 +1125,12 @@ arguments are 1-based.
 | `0` | Success. |
 | `1` | Runtime error. |
 | `2` | Usage error: bad flag or argument (including an invalid `rescan` path, or a destructive command without `--yes`). |
-| `3` | Busy: another process holds the workspace writer lock. Retry later, or use `basemind rescan`, which the daemon serves. |
+| `3` | Busy: another process holds the workspace writer lock, or the daemon a scan was forwarded to is stopping. Retry later. |
 | `4` | A required daemon is unreachable. |
 | `130` | Interrupted by Ctrl-C; completed work is committed and the index stays consistent. |
 
 With a comms daemon running, the one-shot CLI forwards memory operations, reference/caller reads,
-the grep prefilter and rescans to it (the daemon is the sole index writer) instead of failing or
+the grep prefilter, scans and rescans to it (the daemon is the sole index writer) instead of failing or
 degrading to a truncated in-memory view.
 
 **Code (`basemind code`)**
@@ -1159,7 +1168,7 @@ degrading to a truncated in-memory view.
 | `put <key> <value> [--tag]... [--individual]` | Store a note (`memory_save`). |
 | `get <key>` / `list [--prefix --tag]` / `search <query> [--tag]` | Read one note, list by key prefix, or search by meaning (`memory_search`). |
 | `delete <key>` | Remove a note (CLI only). |
-| `documents <query> [--mime-type --keywords --entity --scope]` | Search indexed PDFs / Office / HTML / images by meaning (`docs_search`). |
+| `documents <query> [--mime-type --kind --path --keywords --entity]` | Search indexed PDFs / Office / HTML / email / notebooks / Markdown / text, config and data files by meaning and by words, with citations (`docs_search`). |
 **Admin (`basemind admin`)**
 
 | Command | Purpose |
@@ -1180,25 +1189,19 @@ Index commands live at the top level: `status` (`index_status`), `rescan [paths]
 | `gc [--dry-run]` | Reap blobs no workspace on the machine references. Cross-workspace reference-counted, keeps blobs younger than 6 h (`BASEMIND_BLOB_GC_GRACE_SECS`), serialised by a machine-wide lock. `--dry-run` only counts the blobs in the store, plus the marker-less workspace dirs the daemon's sweep would reap, and deletes nothing. |
 | `clear --component <comp> [--yes]` | Clear part of the cache (`blobs`, `views`, `views:<name>`, `lance`, `git-cache`, `telemetry`, `all`; default `git-cache`). Everything but `git-cache` asks for confirmation on a terminal and needs `--yes` otherwise. `blobs` is the **machine-global** store shared by every workspace. Refuses (exit 3) while a writer holds the workspace lock, and for `blobs` while the daemon runs. |
 
-**Agents (`basemind agents`, `--features comms`)**
+**Agent (`basemind agent`, `--features comms`)**
 
-Every command takes `--as-agent <ID>` to act as a named sub-identity.
+Flags mirror the MCP fields. Every command takes `--as <name>` to act as a sub-identity of this
+checkout's principal.
 
 | Command | Purpose |
 |---|---|
-| `register [--name --description --version --skill]` / `list [--thread]` | Publish your identity card / list agents the broker knows. |
-| `thread-start [--subject --path --member]` / `thread-list [--subject-contains --include-archived]` | Start a thread (addressed by ≥2 of subject / path / members) / list threads discoverable to you. |
-| `join <thread>` / `leave <thread>` / `members <thread>` | Join a thread for future inbox messages, leave it, or list its members. |
-| `add-member <thread> <id>` / `remove-member <thread> <id>` / `archive <thread>` | Manage membership and archive a thread (creator only). |
-| `post <thread> <subject> [--body --reply-to --tag]` | Post a message to a thread. |
-| `history <thread> [--since-hours --after-seq]` / `inbox [--mark-read]` / `wait [--thread --timeout-secs]` | A thread's history / your cross-thread inbox / block until a peer posts. |
-| `message <id>` | Read one message body in full — the only body path. |
-| `ack [--message-id … \| --thread <t> --to-seq <n>]` | Clear read messages by advancing per-thread read cursors. |
-| `cleanup [--dry-run \| --apply] [retention overrides]` / `status` | Preview/apply retention / report lifecycle health. |
-
-In the MCP inbox and CLI JSON output, rows with the same `body_sha` and a nonzero `body_len` carry the same
-body. Fetch it once with `message` and reuse it across matching rows. Acknowledge each message reference
-after handling it so each thread's inbox cursor advances independently.
+| `post --body <text> (--subject <s> [--to <id>…] [--paths <p>…] \| --thread <t> \| --reply-to <id>)` | Send a message: start a thread, post into one, or reply. |
+| `inbox [--thread --id --unread <bool> --peek --announce --wait-secs --limit --cursor]` | Read unread messages (marks them read; `--peek` does not, `--unread false` reads history, `--id` one whole message). `--announce` lists front matter only and never marks read; CLI and hooks only. |
+| `threads [--query --path --thread --join --leave --invite <id>… --archive --archived --limit --cursor]` | List, describe, join, leave, invite to or archive threads. |
+| `status` | Who this checkout acts as (principal, where the id came from, host, root) and the agent store (directory, state, version, posts, live serve sessions, repository). |
+| `cleanup [--archive <thread>…]` | Operator: archive any thread whoever created it, then run one retention sweep. |
+| `hook pre-tool-use` / `hook name` | Read a hook event on stdin: the first names the caller's `as` for an agent tool call, the second the session's name. Used by the plugin hooks. |
 
 **Comms daemon (`basemind comms`, `--features comms`)**
 
@@ -1206,7 +1209,7 @@ after handling it so each thread's inbox cursor advances independently.
 |---|---|
 | `daemon` / `start` / `stop [--all]` / `status` | The broker daemon: run it, ensure it, stop it (`--all` stops every live daemon of this version's protocol generation on the machine), or inspect pid / version / uptime. |
 | `doctor [--probe --clear-fatal]` | List every live daemon of this version's protocol generation on the machine (pid / comms dir / version / uptime), pruning dead registry entries, and flag a pile-up over the ceiling (`BASEMIND_MAX_DAEMONS`, default 8). `--probe` also asks each daemon whether it can serve; `--clear-fatal` acknowledges a recorded fatal store error. |
-| `cleanup [--dry-run --older-than <days>]` | Remove the comms files of other protocol generations and of releases up to 0.33 once no daemon holds their lock and they have been idle for 30 days. |
+| `cleanup [--dry-run --older-than <days>]` | Remove the comms files of other protocol generations and of releases up to 0.33 (including a pre-generation `store.fjall`) once no daemon holds their lock and they have been idle for 30 days. |
 
 **Workspace (`basemind workspace`, `--features comms`)**
 
@@ -1218,7 +1221,7 @@ after handling it so each thread's inbox cursor advances independently.
 
 | Command | Purpose |
 |---|---|
-| `scan [--staged \| --rev <REV>] [--no-git-history] [--rebuild-git-history]` | Full scan, or index the git index / one revision. Ctrl-C stops it cleanly. |
+| `scan [--staged \| --rev <REV>] [--no-git-history] [--rebuild-git-history]` | Full scan, or index the git index / one revision. Ctrl-C stops it cleanly. With a daemon running, a working-tree scan is forwarded to it; a flag it cannot apply (`--rebuild-git-history`, `--verify-shared-base`, a `--documents-*` / `--llm-*` override) is refused with exit 2, and `--staged` / `--rev` exit 3 while the daemon holds the workspace. A scan starts no daemon. |
 | `rescan [<path>…] [--no-git-history] [--rebuild-git-history]` | Update the given paths, or with none the whole tree. Routed through the daemon when one runs. |
 | `status` | Index health for this workspace: file counts, languages, scan age. |
 | `doctor` | Check root, config, index, grammars, pre-commit hook and daemon; exits 1 on a failed check. |

@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.98.6-gold"></a>
+  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.98.8-gold"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-ISC-blue.svg"></a>
   <a href="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml"><img alt="Build" src="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg">
@@ -115,6 +115,19 @@ npm run build
 ## 🆕 最新动态
 
 > 完整变更日志见 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+### v0.98.8 · 修复日志自动上传提议从未触发（三处日志布局不匹配）
+
+- **问题定位**：官网日志包列表连续多日为空，本机在 11-11 手动上传后不再出现新包；排查发现自动提议从未执行到打包——诊断日志写在 `应用数据/logs/` 子目录，代码却在应用数据根目录找日志。
+- **三处根因**：扫描目录少了 `logs/`；轮转文件名是 `storymoss.YYYY-MM-DD`（旧规则只认 `storymoss.log` 前缀）；生产日志是 JSON（`"level":"ERROR"`，旧规则只认纯文本 ` ERROR `）。
+- **结果**：错误计数在真实环境恒为 0，自动弹窗永远不会出现；修复后本机 11-17 日志的 70 条 tracing ERROR 与 30 条工作流 ERROR 都能被识别，满足条件时启动即会询问是否上传诊断日志。
+
+### v0.98.7 · 续写训练报告驱动修复：连续承接、质检可信与风格 DNA 注入
+
+- **每章承接上一章，不再「续前前章」**：批量续写时质量门与下一章 writer 并发，上一章尚未装配进正文库；旧逻辑会从 DB 读到 n-2 章。现在在途上一章的正文与大纲显式进入下一章 writer 与章纲规划，训练 10 章连续承接同一现场/人物/未完结事件。
+- **质检不再「熔断后假装通过」**：编辑审计增加轮数与输出额度，输入内嵌时直接裁决 JSON，裁断输出可补括号解析；批量 deadline 按章数放大。报告区分真实通过、修订与质检降级，不再出现「10 章通过」与逐章 7 章 revise 的矛盾。
+- **风格 DNA 真正生效**：续写 prompt 现在注入 StyleDNA 六维指标（此前只绑定不进 prompt），文笔有可执行的句式/用词/对话约束。
+- **幻觉不再回流放大**：训练沙盒关闭生成正文的资产 ingest，指令携带原文权威人物名册；上一轮编审建议按上下文接地过滤，并把「真实后续节点」沉淀给下一轮主线对齐。
 
 ### v0.98.6 · 修复发布门禁重跑缺陷，恢复 macOS 公证与发布
 

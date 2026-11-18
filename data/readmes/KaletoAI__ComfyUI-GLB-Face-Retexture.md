@@ -1,0 +1,199 @@
+# ComfyUI-GLB-Face-Retexture
+
+Project a matching RGB face photo onto the visible face texture of an existing static GLB. **GLB Face Retexture (Preserve Geometry)** (`GLBFaceRetexture`) uses face landmarks and semantic masks to register and blend the photo, without reconstructing or deforming the mesh.
+
+![Before and after: two generated characters turning their heads](docs/before-after.gif)
+
+*Two image-to-3D meshes, each column the same unchanged geometry: the original mesh (left), the projected face photo (middle), and the projection with `light_balance`, `tone_match` and `skin_recolor` at 1 (right). Image-to-3D generators often shift the skin tone away from their input image — the lower character's mesh came out strongly red, also on the scalp and neck. `skin_recolor` corrects that on the whole mesh skin, so the face photo no longer stands out against it; on the upper character, whose generator kept the tone, it changes little. Rendered unlit (albedo only) with [`tools/before_after`](tools/before_after/).*
+
+Geometry is preserved, but the output is **not a byte-identical GLB**: original triangles are partitioned into body and face primitives and a dedicated face texture/material is added. Original vertex positions, UVs, normals, tangents and original image bytes remain unchanged.
+
+## Requirements
+
+- A modern ComfyUI with native `Load3DAdvanced`, `Preview3DAdvanced`, `SaveGLB` and `comfy_api.latest.Types.File3D`. The supplied workflow records Comfy core **0.37.0**, the version in the verified source setup. Earlier versions are not claimed compatible.
+- The ComfyUI Python interpreter must support Python 3.10 or newer and already provide ComfyUI's torch, NumPy and Pillow dependencies.
+- A separate **Python 3.12** installation, or [uv](https://docs.astral.sh/uv/getting-started/installation/) on PATH to obtain it. Network access is needed for worker dependencies and official model downloads.
+- Your own supported GLB and matching RGB photo. No source meshes, photos or sample assets are bundled.
+
+The CPU worker runs in a private `.venv` with its own MediaPipe dependencies. It does not install worker dependencies into ComfyUI, use ComfyUI's GPU environment, or silently fall back to the ComfyUI interpreter. The interactive workflow was verified on Linux with ComfyUI 0.37.0, frontend 1.53.6 and Comfy Python 3.13.14. A Windows ComfyUI GUI session has not yet been verified.
+
+Worker dependency selection uses standard pip platform markers: **Linux ARM64** (`sys_platform == "linux"` and `platform_machine == "aarch64"`) uses **MediaPipe 0.10.18**; all other platforms retain **0.10.21**. Version 0.10.21 has no Linux ARM64 wheel. The [official 0.10.18 PyPI release](https://pypi.org/project/mediapipe/0.10.18/#files) provides a CPython 3.12 `manylinux_2_17_aarch64` wheel; this does not cover musl/Alpine, 32-bit ARM, or Windows ARM64. The private worker and native workflow were also verified on **Linux ARM64 / NVIDIA GB10**, Python 3.12.3, ComfyUI 0.37.0 and frontend 1.53.6: all 14 worker tests of release 1.0.1 pass, and a real photo/GLB run preserves every original triangle and reports zero changed protected-body pixels. ComfyUI's main environment remains separate.
+
+## Install
+
+### ComfyUI Manager
+
+Use Manager's **Install via Git URL** with:
+
+```text
+https://github.com/KaletoAI/ComfyUI-GLB-Face-Retexture
+```
+
+Prepare the private worker using the installer below if Manager has not already completed that step. A manual Git clone alone does not prepare the worker.
+
+### Manual installation
+
+From your ComfyUI directory:
+
+```sh
+git clone https://github.com/KaletoAI/ComfyUI-GLB-Face-Retexture custom_nodes/ComfyUI-GLB-Face-Retexture
+cd custom_nodes/ComfyUI-GLB-Face-Retexture
+```
+
+### Prepare the CPU worker
+
+Use the **actual ComfyUI interpreter** to launch the stdlib installer. For a typical Linux ComfyUI venv, starting in the custom-node directory:
+
+```sh
+../../venv/bin/python install.py
+```
+
+If you normally launch ComfyUI with an activated environment instead:
+
+```sh
+python install.py
+```
+
+For Windows portable, starting in `ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GLB-Face-Retexture`, run in Command Prompt:
+
+```bat
+..\..\..\python_embeded\python.exe install.py
+```
+
+The three parent steps are intentional: the embedded interpreter is beside `ComfyUI`, not inside it. In PowerShell prepend `&` to that interpreter command.
+
+The installer finds an existing Python 3.12 or uses uv. To select either explicitly, append one of these options to the interpreter command above:
+
+```text
+install.py --python /path/to/python3.12
+install.py --uv /path/to/uv
+```
+
+`PYTHON312` and `UV_BIN` can also select these executables. Use an actual Python 3.12 executable for `--python`; ComfyUI itself may run another supported version. If neither prerequisite is available, the installer reports a clear error rather than changing ComfyUI's environment.
+
+The installer creates `.venv`, installs `requirements-worker.txt` there, and downloads hash-checked models into `models/`. Restart ComfyUI after installation, then hard-refresh the browser so the node and native widgets load.
+
+Re-running the installer updates an intact worker. If the existing `.venv` is unusable (wrong Python version, system site-packages enabled, deleted interpreter, or a link pointing outside the package), the installer refuses it and asks you to rebuild it with `install.py --recreate`. That option deletes only this package's `.venv` (a link is removed, never followed) and only when Python 3.12 or uv is available to rebuild it.
+
+Package mirrors and corporate certificates work through environment variables: `PIP_INDEX_URL`, `PIP_EXTRA_INDEX_URL`, `PIP_TRUSTED_HOST`, `PIP_CERT`, `UV_INDEX_URL`, `UV_DEFAULT_INDEX`, `UV_INDEX`, `UV_SYSTEM_CERTS`, `UV_CACHE_DIR`, `SSL_CERT_FILE` and related index/proxy/cache settings are passed through. pip and uv configuration files and install-target overrides such as `PIP_TARGET`, `PIP_PREFIX`, `PIP_USER` or `UV_SYSTEM_PYTHON` are ignored so nothing can be installed into ComfyUI's environment.
+
+## Use the editable workflow
+
+Open [`workflows/glb-face-retexture.json`](workflows/glb-face-retexture.json) in ComfyUI. Its seven visible nodes are fully editable; upload selectors are deliberately empty:
+
+1. **Load3DAdvanced:** upload/select your own static textured source GLB.
+2. **LoadImage:** upload/select its matching RGB face photo, exactly one image.
+3. **GLB Face Retexture:** adjust the controls below and queue the workflow.
+4. **Preview3DAdvanced:** inspect the corrected GLB in the native viewer.
+5. **PreviewImage:** inspect the reference/before/after comparison.
+6. **SaveGLB:** save the corrected model using the default `3d/GLBFaceRetexture` prefix or your own prefix.
+7. **Note:** usage reminders, not an execution dependency.
+
+| Control | Default / node range | Purpose |
+| --- | --- | --- |
+| `strength` | 1.0 / 0.01–1.0 | Photo blending strength within the selected face region. |
+| `feather` | 0.18 / 0–0.5 | Mask-edge feathering relative to landmark eye span. |
+| `render_resolution` | 768 / 256–2048, step 64 | CPU registration/render resolution; higher settings require more work. |
+| `light_balance` | 0.0 / 0–1, step 0.05 | Remove broad photo shading (side light, darker face edges) while keeping features. |
+| `tone_match` | 0.0 / 0–1, step 0.05 | Match photo skin colour and brightness to existing mesh skin. |
+| `brightness` | 1.0 / 0.5–1.5, step 0.05 | Final linear brightness scale before projection. |
+| `skin_recolor` | 0.0 / 0–1, step 0.05 | Recolour the original mesh skin toward the photo skin tone; 0 = off. |
+| `seam_blend` | on / on, off | Blend the projected face's colour into the mesh skin along the projection edge; off = 1.4.x output, byte-identical. |
+| `cover_folds` | on / on, off | Also paint eye and brow texels the front view misses: mesh paint the segmenter takes for hair, and fold undersides a few millimetres behind the surface; off = the 1.7.x face texture. |
+| `yaw` | 0 / −180–180 degrees | Source viewing yaw for face registration; not mesh deformation. |
+
+The optional photo controls run in linear light before projection: broad shading removal (delighting), then skin tone matching, then manual brightness. Light balance divides a skin-only low pass of the luminance out of the photo face and replaces it with the median skin luminance, so side light and the darker cheek sides (which read as a shadow along the projection edge) disappear while features and asymmetry stay; tone matching pulls the photo face's linear median colour toward the mesh's own face skin (the semantic face mask of the source render, hair excluded) — the skin the projection blends into. The proof records the measurements; the comparison shows the adjusted photo. Defaults preserve the previous output bytes and proof.
+
+For a generator that shifted skin toward red, enable `skin_recolor` (for example 1 with `light_balance=1` and `tone_match=1`). This corrects skin-coloured texels across the original texture — face, neck, arms and hands — toward the photo face median measured after light balance and before tone matching or brightness. Only the colour moves: the per-channel linear gain `(photo skin / mesh face skin) ** skin_recolor` (limited to 0.5–2) shifts a texel's chroma, and the texel is then rescaled to its own luminance, so bright highlights cannot clip into white blotches. Tone match then targets the recoloured mesh skin, and the projected face feathers into the recoloured atlas. Brightness still affects only the photo projection.
+
+The colour model uses confidently segmented body/face skin from the full front albedo render (skin > 0.6, hair < 0.1, visible triangles only). The model records the linear-RGB median and measures distance in log(R/G), log(B/G), and log(linear luminance), using per-coordinate 1.4826 × median absolute deviation (floors 0.06, 0.06, 0.12) to distinguish skin colours from clothing and hair despite broad shading. Deviations toward redder count a quarter and toward brighter a third (the generator's red shift and baked highlights are still skin); texel weights are 1 within 1.5 spreads and smoothly fall to 0 at 3.5, and a nonzero weight is lifted to its 1.5-texel neighbourhood blur so no speckles remain. Texels the model rejects stay byte-exact. Partially transparent texels are excluded. Colours include glTF's linear `baseColorFactor` during measurement and correction. Colour selection cannot distinguish clothing with the same colour as skin; inspect the comparison for your mesh. The proof's `skin_recolor` block records the gain, medians, model and affected texel counts. Default 0 keeps the v1.2.0 GLB, comparison and proof bytes unchanged.
+
+`seam_blend` (default on) removes the colour step where the projected face meets the original texture. Light balance and tone matching even out the face's average colour, but the edge can still show a band where the photo's local skin colour differs from the mesh skin next to it. The blend is a two-band blend in the head render: the photo keeps all its detail, and only its low frequencies (Gaussian σ = 0.1 eye spans) are pulled toward those of the owned mesh skin just outside the edge. The step is measured on the outer half of the feather, carried inward from the nearest edge point and applied as a per-channel gain in linear light (at most ×2 or ×½). The gain is full across the feather and fades to none at feather + 0.25 eye spans, so the inside of the face is unchanged; it is none within 0.03 eye spans of the photo's eyes, brows and lips and reaches the band weight at 0.15 eye spans. Where the outside is not skin (hair, background, a beard) nothing is changed. The gain applies only to texels that the projection paints anyway, so it never reaches other UV islands or empty texture. Off reproduces the 1.4.x GLB and comparison byte for byte.
+
+The proof's `seam_blend` block records the blend and two measurements, for both settings:
+
+- `render_delta_e` measures across the feather in the head render, where a viewer sees the seam. It compares the fully projected pixels within feather + 0.05 eye spans with the unprojected mesh skin within 0.05 eye spans, at edge points at least 0.15 eye spans from eyes, brows and lips. It reports CIE76 ΔE p50/p95 per edge pixel.
+- `delta_e` measures in texture space along the projection mask: the inside mean against the outside mean within ±3 texels of the same UV island, per boundary texel. `outside_features` repeats it without boundary texels within 0.15 eye spans of eyes, brows and lips. There, eye sockets that are hidden in the front view keep the mesh's dark original texels and dominate the full statistic.
+
+On two UniForge3D characters (feather 0.18, `light_balance` 1, `tone_match` 1, `brightness` 0.9, `skin_recolor` 0.5), `render_delta_e` p50/p95 fell from 9.0/13.3 to 7.0/11.4 and from 16.3/34.5 to 9.7/20.6. The original meshes' own texture already varies by p50 10.5 and 16.1 over the same distances. The ±3 texel statistic barely changes: at the outer mask boundary the projection amount is still small, and its p95 comes from hard content edges (eye sockets, a mesh beard).
+
+`cover_folds` (default on) closes two gaps around the eyes and brows that left the mesh's own paint next to the photo's brow, which reads as a torn brow:
+
+- **Mesh paint read as hair.** The selfie segmenter reads a mesh's dark painted brow block or lash flap as hair, and hair vetoes the projection. A veto blob of the source render that touches the hulls of the source's own eye and brow landmarks (within 0.05 eye spans) and stays within 0.25 eye spans of them is mesh paint and no longer vetoes. Hair over the brows (a fringe) reaches the hairline and keeps its veto.
+- **Folds.** Some meshers model the brow as a small fold over the upper lid. Its underside and the lid band behind it are hidden in the straight front view, but a viewer sees them from slightly below. Within 0.15 eye spans of the eye and brow hulls, triangles whose centre lies at most 0.05 eye spans (about 4–5 mm on an adult head) behind the visible surface join the face material whatever their facing, and their hidden texels take the photo at their own screen position. A texel the front view sees always wins over a hidden one.
+
+On the brow fold of a generated character, the unwritten texels darker than 0.6 of the skin brightness in the eye and brow band went from 813 to 9. With `cover_folds` off, the face texture and comparison are byte-identical to 1.7.0. The proof's `cover_folds` block and `source_semantics.released_feature_veto` record what was added.
+
+**Coverage mask.** Every corrected GLB carries a coverage mask of the face atlas, so downstream tools need not infer unwritten texels by comparing atlases: one byte per texel in the atlas's UV space, 255 = written by the projection, 0 = inside the face area but not written, 128 = outside the face area. The face area holds the texels whose surface point lies inside the source's face-oval landmarks and at most 0.05 eye spans behind the visible surface. The mask is an embedded greyscale PNG that no texture uses; the root `extras.glb_face_retexture` holds the node `version`, `cover_folds` and `coverage_mask` (its image index, the byte values and the texel counts). The node also returns it as `coverage_mask`, the worker CLI writes it with `--coverage-mask-png`, and the proof repeats the counts in `coverage_mask` next to `node_version`.
+
+With recolour enabled, export appends a new body atlas/material as well as the private face atlas. Original embedded image bytes and the binary prefix remain exact. `protected_body_changed_render_pixels` then compares the exported body against a render of the recoloured original atlas, so it still detects any change beyond the requested recolour. The after panel is labelled “(recoloured)”.
+
+Outputs are native **`FILE_3D`** (`corrected_glb`), **`IMAGE`** (`comparison`), **`STRING`** (`proof_metrics`), **`IMAGE`** (`projection_mask`) and **`IMAGE`** (`coverage_mask`, see above). `projection_mask` is the face atlas's per-texel blend amount in texture space, at atlas size: 255 = projected photo, 0 = original texel, values in between = feathered blend (including `strength`). Connect it to a SaveImage node to keep it; the worker CLI writes it as 8-bit greyscale PNG with `--projection-mask-png`. Without that connection nothing changes. The metrics are also shown as node text and describe geometry/texture preservation observations. They are measured on the exported GLB itself: its materials' embedded atlases are decoded and rendered again, so `protected_body_changed_render_pixels` checks the written file, not the in-memory intent. The corrected GLB can connect directly to native preview and save nodes.
+
+The photo color is matched under glTF's `baseColorFactor`, which multiplies the decoded (linear) texture. Where a factor below 1 cannot reproduce a bright photo color, the texel saturates and `factor_clipped_texture_pixels` counts it.
+
+Cancelling the prompt in ComfyUI stops the CPU worker. A worker that runs longer than 1800 seconds is stopped with an error; set the environment variable `GLB_FACE_RETEXTURE_TIMEOUT` (seconds) before starting ComfyUI to change that limit.
+
+## Locate face regions (GLB Face Regions)
+
+The second node, **GLB Face Regions (Locate Only)** (`GLBFaceRegions`; worker `--locate`), needs no photo. It finds the face in a head render of the source mesh, just like the retexture, and labels every vertex row. Nothing is projected; positions, UVs, normals, indices, vertex order, images and materials stay byte-identical, and the original binary remains an exact prefix. The output GLB adds two float vertex attributes and a root `extras.glb_face_regions` block:
+
+| `_FACE_REGION` | Region (subject's side; MediaPipe landmark 33 is the subject's right outer eye corner) | Hull dilation |
+| --- | --- | --- |
+| 0 | none | |
+| 1 / 2 | right / left eye with lid rim | 0.12 eye spans |
+| 3 / 4 | right / left brow | 0.05 |
+| 5 | lips (including the mouth opening) | 0.06 |
+| 6 | nose | 0.04 |
+
+A vertex takes the region of its render pixel when it lies at most `depth_window` eye spans (default 0.3) behind the visible surface there. Hidden vertices in eye sockets, the inside of the mouth or under lash flaps are therefore labelled; the back of the head is not. On overlap, eyes win over brows, lips and nose. `_FACE_DEPTH` gives each labelled vertex's distance behind the visible surface in eye spans (0 = on the visible skin). Generated meshes often carry inner layers several millimetres under the face; this attribute separates them from the outer skin.
+
+`extras.glb_face_regions` holds the legend, `eye_span_model_units`, `depth_window_eye_fraction` and `landmarks_model`: eye corners (33, 133, 362, 263), nose tip (1), mouth corners (61, 291), lip centres (0, 17), chin (152) and brow peaks (105, 334), each on the visible surface in scene (world) coordinates. The proof adds per-region vertex and hidden-vertex counts. The preview tints the regions on the head render and draws labelled hidden vertices as white squares. Use the labels, for example, to smooth splinters or to close hollow eye sockets before a face retexture; the node itself never moves a vertex.
+
+## Supported inputs and limits
+
+- A single mesh with one indexed triangle primitive and an opaque material using embedded PNG/JPEG or WebP textures (`EXT_texture_webp`, e.g. UniForge3D exports).
+- Each embedded image must contain exactly one frame, with positive dimensions, at most 8192 pixels per side and 67,108,864 pixels total. Animated images are refused.
+- The corrected GLB keeps the original WebP images and `EXT_texture_webp` declarations; the new face atlas (and optional recoloured body atlas) is PNG.
+- Static assets only: no rigs, skinning, morph targets or external assets. Orient the model **Y-up, +Z front**.
+- Start each edit from the original single-primitive GLB. The corrected output contains separate body/face primitives and is not supported as input for another projection pass.
+- One matching RGB reference image, not a batch. A detectable face must be visible in both the source registration view and photo.
+- Face detection runs on colour first. Only if that finds no face does it retry on a luminance copy, so small faces with saturated non-skin colours (for example cyan skin) are still found; the proof marks those attempts with a `luminance_` prefix.
+- The full source render only locates the head for a native re-render. There, a crop refinement that disagrees with the first detection (typically the chin under a full beard) keeps the first detection and is recorded as `refinement_rejected`; the photo and the head re-render used for registration still refuse an implausible refinement.
+- When a render of the source mesh reports more than one face, each candidate must be found again in its own face crop; only confirmed faces count. This drops texture lookalikes such as a chest below a small full-body head (proof attempts marked `_confirmation`); two confirmed faces are still refused. The reference photo refuses every second face.
+- The head is read from the silhouette of the full render (head, narrower neck, shoulders at least 1.6 head widths). A face found below the shoulders is discarded and a native render of head and neck is searched instead (proof: `head_window`). The native head re-render must show the same face as the locating render.
+- If no face is found at the requested `yaw`, the other three quarter turns (yaw + 180, + 90, − 90) are tried, so a mesh exported facing −Z or ±X still works; the proof records `yaw_fallback`. A mesh lying down (Z-up) is not rotated automatically; the error names the longest axis.
+- One face reported twice in the same view (noses within 0.35 eye spans) counts as one face.
+- This is planar photo projection, not 3D face reconstruction. It cannot improve silhouette, add missing geometry, or repair hidden eye anatomy. Perspective and expression differences can remain visible.
+- Registration, masking and texture projection run locally on CPU. There is no cloud generation service and no automatic model regeneration.
+
+## Models and licenses
+
+The repository code is licensed under [Apache License 2.0](LICENSE). See [NOTICE](NOTICE) for the retained AI-Hub attribution and derivation note.
+
+The installer downloads (does not bundle) official Google MediaPipe model assets:
+
+- [Face Landmarker](https://ai.google.dev/edge/mediapipe/solutions/vision/face_landmarker), `face_landmarker.task`, from the [official model source](https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task).
+- [Image Segmenter](https://ai.google.dev/edge/mediapipe/solutions/vision/image_segmenter), `selfie_multiclass.tflite`, from the [official model source](https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/1/selfie_multiclass_256x256.tflite).
+
+MediaPipe software and model assets are separate upstream works. Consult the [MediaPipe upstream license](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE) and linked model documentation for their applicable terms; this repository's license does not replace those terms. Other worker dependencies retain their own licenses. Only use source meshes/photos you have permission to process and redistribute.
+
+## Development and registry publication
+
+Tests run in the private worker environment, not the ComfyUI environment:
+
+```sh
+.venv/bin/python -m unittest discover -s tests -t .
+```
+
+On Windows:
+
+```bat
+.venv\Scripts\python.exe -m unittest discover -s tests -t .
+```
+
+GitHub CI installs the private worker on Ubuntu and Windows and runs the suite there. The suite includes synthetic photo-control tests and byte-identical default regression coverage; Windows skips the one symlink-creation test that requires additional privileges. It covers the ComfyUI bridge with stub Comfy/torch modules and a real CPU MediaPipe run on a public-domain portrait fixture (see [`tests/fixtures/README.md`](tests/fixtures/README.md)), but does not establish a verified Windows ComfyUI GUI session.
+
+The registry package is **`glb-face-retexture`** by publisher **`kaleto`**, version **1.4.4**. Every release tag (`v*`) publishes the version in `pyproject.toml` to the Comfy Registry through [`.github/workflows/publish.yml`](.github/workflows/publish.yml) (the official `Comfy-Org/publish-node-action`, pinned to a commit, authenticated by the repository secret `REGISTRY_ACCESS_TOKEN`); it can also be started by hand from the Actions tab. The GitHub URL installation above keeps working.
+
+To release: raise `version` in `pyproject.toml`, add the CHANGELOG entry, merge, and push the matching `v<version>` tag — `release.yml` creates the GitHub release and `publish.yml` the registry version.

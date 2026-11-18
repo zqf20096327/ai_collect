@@ -3,15 +3,15 @@
 ```
       .---.
      /     \
-    | () () |   G H O S T O S   v 2 . 0
-     \  -  /    The Offline Desktop AI Companion & GhostCode Studio
+    | () () |   G H O S T O S   v 2 . 1
+     \  -  /    The Hybrid Brain Desktop AI Companion & GhostCode Studio
     /`---'\
-   /       \    [ 100% Private • GhostCode Autonomous IDE • ChatGPT Studio • <35MB RAM ]
+   /       \    [ 100% Private • Local & Cloud Hybrid Brain • ChatGPT Studio • <35MB RAM ]
   (_/^\_/\_/^)
 ```
 
-# 👻 GhostOS v2.0
-### The Featherweight, Offline AI Assistant & GhostCode Autonomous Studio
+# 👻 GhostOS v2.1
+### The Featherweight Desktop AI Companion & Autonomous Studio (Hybrid Brain)
 
 <p align="center">
   <b>🌐 Language Select / Выбор языка / Тілді таңдау / 语言选择:</b><br>
@@ -23,11 +23,14 @@
   <a href="docs/README_DE.md"><b>Deutsch</b></a> •
   <a href="docs/README_FR.md"><b>Français</b></a> •
   <a href="docs/README_JA.md"><b>日本語</b></a> •
-  <a href="docs/README_PT.md"><b>Português</b></a>
+  <a href="docs/README_PT.md"><b>Português</b></a> •
+  <a href="docs/README_AR.md"><b>العربية</b></a> •
+  <a href="docs/README_HI.md"><b>हिन्दी</b></a>
 </p>
 
-[![PyPI version](https://img.shields.io/pypi/v/ghostos-ai.svg?color=blue)](https://pypi.org/project/ghostos-ai/)
-[![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Upcoming%20Launch-da552f?logo=producthunt&logoColor=white)](https://www.producthunt.com/products/ghostos?launch=ghostos)
+[![PyPI version](https://img.shields.io/pypi/v/ghostos-ai?color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/ghostos-ai/)
+[![GitHub Release](https://img.shields.io/github/v/release/GhostOS-ai/GhostOS?color=blue&label=release)](https://github.com/GhostOS-ai/GhostOS/releases/latest)
+[![Product Hunt](https://img.shields.io/badge/Product%20Hunt-Featured-da552f?logo=producthunt&logoColor=white)](https://www.producthunt.com/products/ghostos)
 [![GitHub Stars](https://badgen.net/github/stars/GhostOS-ai/GhostOS?icon=github&color=yellow)](https://github.com/GhostOS-ai/GhostOS)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Author: KIB.best](https://img.shields.io/badge/Author-KIB.best-8A2BE2.svg)](https://github.com/GhostOS-ai/GhostOS)
@@ -61,6 +64,29 @@ Running local AI today is frustrating and bloated:
 ---
 
 ### ✨ Exclusive Killer Features
+
+#### 🌟 NEW in v2.1: Hybrid Brain & Multi-Provider AI Hub
+* **Unified Model & Cloud Provider Switcher:** Seamlessly toggle between:
+  * 👻 **Ghost Built-in Engine:** 100% offline, zero config, under 35MB RAM footprint.
+  * 🦙 **Local Ollama:** Auto-detection of `qwen2.5:1.5b`, `qwen2.5-coder:7b`, `llama3.2:3b`, `deepseek-r1:1.5b`, `mistral`.
+  * ✨ **Google Gemini:** Native REST integration with `gemini-2.5-flash`, `gemini-1.5-flash`, and `gemini-1.5-pro` (generous free tier, ultra-fast responses).
+  * 🧠 **OpenAI Cloud:** Native integration with `gpt-4o`, `gpt-4o-mini`, `o1`, and `o3-mini` with encrypted local API key storage.
+  * ⚡ **DeepSeek AI:** First-class support for `deepseek-chat` (V3) and `deepseek-reasoner` (R1 Reasoning).
+  * 🟣 **Anthropic Claude:** Direct support for `claude-3-5-sonnet` and `claude-3-5-haiku`.
+  * 🖥️ **Custom / LM Studio:** Any local or remote OpenAI-compatible endpoint (`http://localhost:1234/v1`, vLLM, LocalAI).
+* **Instant Topbar `[ ⚙️ API ]` Settings Pill:** 1-click modal to configure providers, input API keys, select models, and test live connectivity with real-time health checks.
+* **ChatGPT-Style Dynamic Multi-Session History:**
+  * Persistent conversations saved automatically to `~/.ghostos/studio_sessions.json` and local cache.
+  * Sidebar lists real conversations with auto-generated titles, timestamps, active indicators, and 1-click delete/clear.
+  * Seamless switching between past chats without losing context or scroll position.
+* **Specialized AI Personas (1-Click Switcher):**
+  * 👻 **Casper:** Witty, concise, private desktop companion.
+  * 💻 **GhostCode:** Senior Software Engineer specializing in architecture, clean code, and tests.
+  * ✍️ **Ghostwriter:** Master wordsmith for documentation, emails, and copywriting.
+  * 🧠 **Deep Think:** Analytical mode with collapsible step-by-step `<think>` Chain-of-Thought traces.
+  * 🌐 **Web Live:** Real-time web-aware assistant for weather, exchange rates, and live information.
+* **Deep Reasoning Collapsible Traces:**
+  * Native rendering for `<think>...</think>` tokens (DeepSeek-R1, OpenAI reasoning) with expandable glowing frosted cards.
 
 #### 0. ⚡ GhostCode: Autonomous Coding Agent & ChatGPT Studio (v2.0)
 * **Autonomous Software Engineering Loop:** Offline alternative to Claude Code and Cursor. Formulates plans, inspects repositories, reads and edits files with **Unified Diffs**, runs safe terminal commands, and inspects Git history.
@@ -260,6 +286,39 @@ ghost exec "find all files larger than 100MB"
 # Check VRAM Juggler memory diagnostics
 ghost status
 ```
+
+---
+
+### 💻 100% Free & Local AI Coding with Ollama (Zero API Keys Needed)
+
+GhostOS transforms your Mac or PC into a fully autonomous, local AI development environment. You can generate, edit, refactor, and test production code **completely offline, free of charge, and with zero data leaving your machine**.
+
+#### 1. Instant Setup (Under 2 Minutes)
+1. **Install Ollama:**
+   - macOS: `brew install ollama` (or download from [ollama.com](https://ollama.com))
+   - Windows/Linux: download from [ollama.com](https://ollama.com)
+2. **Download an open-source coding model:**
+   ```bash
+   # 🏆 Best compact coding model in the world (Recommended for 16GB RAM Macs):
+   ollama run qwen2.5-coder:7b
+
+   # 🍃 Ultra-lightweight coding model (Recommended for 4GB–8GB RAM setups, ~1.8GB disk):
+   ollama run qwen2.5-coder:1.5b
+
+   # 🧠 Deep reasoning model with <think> reflection traces:
+   ollama run deepseek-r1:7b
+   ```
+3. **Launch GhostOS:** GhostOS automatically discovers your local Ollama instance (`http://localhost:11434`) and routes coding queries directly to the local model via Apple Silicon Metal GPU acceleration!
+
+#### 2. Practical Coding Examples in GhostOS
+
+| Development Task | What to Ask Casper / GhostCode | What GhostOS Delivers |
+| :--- | :--- | :--- |
+| **Full Project Scaffolding** | *"Create a Python FastAPI service with JWT auth and SQLite"* | Complete structure with models, endpoints, schemas, and requirements. |
+| **Bug Fixing & Optimization** | *"Analyze this function for race conditions and memory leaks"* | Pinpoints root cause and outputs clean, typed, optimized code. |
+| **Frontend UI Generation** | *"Build a responsive modern dashboard in HTML, Tailwind CSS, and vanilla JS"* | Generates ready-to-run web UI components with modern styling. |
+| **Unit Test Generation** | *"Write comprehensive pytest cases with edge case testing for this module"* | Full test coverage suite with mocks, fixtures, and assertions. |
+| **Safe Terminal Automation** | *"Find all uncompressed logs older than 7 days and zip them"* | Checks safety with Sandbox Lens and executes task in terminal. |
 
 ---
 

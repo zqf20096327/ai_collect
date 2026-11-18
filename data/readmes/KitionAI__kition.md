@@ -4,25 +4,25 @@
 
 <p align="center">
   <strong>English</strong> ·
-  <a href="README.zh-CN.md">简体中文</a> ·
-  <a href="README.ru-RU.md">Русский</a> ·
-  <a href="README.ja-JP.md">日本語</a> ·
-  <a href="README.vi-VN.md">Tiếng Việt</a> ·
-  <a href="README.fr-FR.md">Français</a> ·
-  <a href="README.de-DE.md">Deutsch</a> ·
-  <a href="README.es-ES.md">Español</a>
+  <a href="docs/readme/README.zh-CN.md">简体中文</a> ·
+  <a href="docs/readme/README.ru-RU.md">Русский</a> ·
+  <a href="docs/readme/README.ja-JP.md">日本語</a> ·
+  <a href="docs/readme/README.vi-VN.md">Tiếng Việt</a> ·
+  <a href="docs/readme/README.fr-FR.md">Français</a> ·
+  <a href="docs/readme/README.de-DE.md">Deutsch</a> ·
+  <a href="docs/readme/README.es-ES.md">Español</a>
 </p>
 
 <p align="center">
-  <strong>Documents, Tables, Boards, kits, and Agents in one desktop workspace.</strong><br />
-  Write connected knowledge, think visually, build data tools, edit sheets, slides, photos, films, and CAD drawings, and research the web.
+  <strong>Kition: the open pro suite for AI.</strong><br />
+  Notes, tables, boards and professional editors in one desktop workspace, edited by you and your agent.
 </p>
 
 <p align="center">
   <a href="https://github.com/KitionAI/kition/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/KitionAI/kition/ci.yml?branch=main&amp;style=flat-square&amp;logo=githubactions&amp;logoColor=white&amp;label=CI" alt="CI status" /></a>
   <a href="https://github.com/KitionAI/kition/releases/latest"><img src="https://img.shields.io/github/v/release/KitionAI/kition?include_prereleases&amp;sort=semver&amp;style=flat-square&amp;color=5645d4" alt="Latest release" /></a>
   <a href="https://github.com/KitionAI/kition/releases"><img src="https://img.shields.io/github/downloads/KitionAI/kition/total?style=flat-square&amp;color=5645d4&amp;label=downloads" alt="Total GitHub release downloads" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/KitionAI/kition?style=flat-square&amp;color=5645d4" alt="License: Apache 2.0" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/KitionAI/kition?style=flat-square&amp;color=5645d4" alt="License: Apache-2.0" /></a>
   <img src="https://img.shields.io/badge/status-beta-f5d75e?style=flat-square" alt="Project status: beta" />
   <img src="https://img.shields.io/badge/macOS-supported-5645d4?style=flat-square&amp;logo=apple&amp;logoColor=white" alt="macOS supported" />
   <img src="https://img.shields.io/badge/Windows-supported-5645d4?style=flat-square&amp;logo=windows11&amp;logoColor=white" alt="Windows supported" />
@@ -33,9 +33,12 @@
 
 <p align="center">
   <a href="https://kition.ai">Website</a> ·
-  <a href="https://github.com/KitionAI/kition/releases">Releases</a> ·
+  <a href="https://github.com/KitionAI/kition/releases/latest">Download</a> ·
   <a href="https://github.com/KitionAI/kition/discussions">Discussions</a> ·
-  <a href="CONTRIBUTING.md">Contributing</a> ·
+  <a href="https://discord.gg/bFSjRDjVY">Discord</a> ·
+  <a href="https://www.reddit.com/r/Kition">Reddit</a> ·
+  <a href="https://x.com/KitionAI">X</a> ·
+  <a href=".github/CONTRIBUTING.md">Contributing</a> ·
   <a href=".github/SUPPORT.md">Support</a> ·
   <a href=".github/SECURITY.md">Security</a>
 </p>
@@ -47,8 +50,9 @@
 Kition brings Markdown documents, structured table files, infinite
 Boards, a tool-using AI agent, and web research into one desktop workspace.
 Instead of making every task begin in a blank chat, Kition gives the Agent
-editable project files, typed records, and attachments to work with. This makes powerful AI operations easier to inspect, correct, and
-repeat without handing context between disconnected tools.
+editable project files, typed records, and attachments to work with. This
+makes AI work easier to inspect, correct, and repeat without handing context
+between disconnected tools.
 
 > Kition is currently in beta. Back up important workspaces and review agent
 > changes before relying on them in production workflows.
@@ -212,27 +216,34 @@ Agent edits the same files through the kit's tools, so its changes stay
 visible and reviewable. Kition's kits come in four product lines; the packages
 Kition ships are pinned in [`kits/kits.lock.json`](kits/kits.lock.json).
 
-| Product line | Kit | Edits |
-| --- | --- | --- |
-| Office | Note | Markdown notes |
-| Office | Table | Structured `.ktable` data tables |
-| Office | Board | Infinite canvas for diagrams, mind maps, and sketches |
-| Office | Doc | Word documents (`.docx`) |
-| Office | Sheet | Spreadsheets (`.xlsx`) with formulas |
-| Office | Slide | Slides, including opening `.pptx` files |
-| Office | PDF | PDF files |
-| Office | HTML (Preview) | HTML pages |
-| Design | Photo | Raster images and photo editing |
-| Design | Vector | Vector graphics |
-| Design | Layout | Page layouts such as flyers and posters |
-| Design | Design (Preview) | Interface and screen designs |
-| Media | Film | Video timelines |
-| Media | Motion | Motion graphics |
-| Engineering | CAD | CAD drawings, including DXF |
-| Engineering | Scene (Preview) | 3D scenes |
+<p align="center">
+  <a href="https://github.com/KitionAI/kition-showcase"><img src="docs/readme/kits-grid.webp" alt="Sixteen files made with Kition's kits, one per kit in the order of the table below: a release plan note, a task tracker table, a mind map board, a magazine feature document, a sign-up forecast spreadsheet with a chart, a dashboard slide, an annotated PDF report, a coffee shop landing page, a sale poster, a mountain lake illustration, a garden trifold, an analytics dashboard design, an aurora title card, a logo reveal, a lighting circuit drawing and a 3D donut." width="100%" /></a>
+</p>
 
-Preview kits are early. HTML and Design are not pinned in `kits/kits.lock.json`
-yet; they ship once their packages are published.
+Each picture is a file a kit built with its own commands and rendered with its
+own engine; more of them are in
+[Kition Showcase](https://github.com/KitionAI/kition-showcase).
+
+| Product line | Kit | Edits | Opens | Creates |
+| --- | --- | --- | --- | --- |
+| Office | [Note](https://github.com/KitionAI/kition-note) | Markdown notes, saved byte for byte | `.md` `.markdown` | `.md` |
+| Office | [Table](https://github.com/KitionAI/kition-table) | Tables, views and dashboards in one file | `.ktable` | `.ktable` |
+| Office | [Board](https://github.com/KitionAI/kition-board) | An infinite whiteboard for diagrams, mind maps and sketches | `.kboard` | `.kboard` |
+| Office | [Doc](https://github.com/KitionAI/kition-doc) | Word-processing documents (`.docx`) | `.docx` `.html` `.htm` | `.docx` |
+| Office | [Sheet](https://github.com/KitionAI/kition-sheet) | Spreadsheets (`.xlsx`) with formulas | `.xlsx` `.xlsm` `.xltx` `.xltm` `.xls` `.xlt` `.et` `.ett` `.xlsb` `.ods` `.csv` | `.xlsx` |
+| Office | [Slide](https://github.com/KitionAI/kition-slide) | Slides, including `.pptx` files | `.kslide` `.pptx` | `.kslide` |
+| Office | [PDF](https://github.com/KitionAI/kition-pdf) | Read and edit PDF files | `.pdf` | `.pdf` |
+| Office | [HTML](https://github.com/KitionAI/kition-html) (Preview) | HTML pages, with a live preview | `.html` `.htm` | `.html` |
+| Design | [Photo](https://github.com/KitionAI/kition-photo) | Layered images, including `.psd` files | `.psd` `.psb` `.kphoto` | `.psd` |
+| Design | [Vector](https://github.com/KitionAI/kition-vector) | Vector graphics | `.kvector` `.svg` `.ai` `.eps` | `.kvector` |
+| Design | [Layout](https://github.com/KitionAI/kition-layout) | Page layouts: flyers, posters and books | `.klayout` `.idml` | `.klayout` |
+| Design | [Design](https://github.com/KitionAI/kition-design) (Preview) | Interface and screen designs | `.kdesign` `.fig` `.sketch` | `.kdesign` |
+| Media | [Film](https://github.com/KitionAI/kition-film) | Video timelines | `.kfilm` | `.kfilm` |
+| Media | [Motion](https://github.com/KitionAI/kition-motion) | Motion graphics with keyframes and effects | `.kmotion` | `.kmotion` |
+| Engineering | [CAD](https://github.com/KitionAI/kition-cad) | 2D CAD drawings (`.dxf`) | `.dxf` | `.dxf` |
+| Engineering | [Scene](https://github.com/KitionAI/kition-scene) (Preview) | 3D scenes | `.kscene` | `.kscene` |
+
+Kits marked Preview are early: expect gaps. All sixteen ship with Kition.
 
 Each kit is developed in its own repository; see
 [Kits](docs/kits.md) for how kits plug into Kition.
@@ -250,40 +261,11 @@ Also included:
 Desktop builds are published through
 [GitHub Releases](https://github.com/KitionAI/kition/releases/latest).
 
-- **macOS:** download the latest `.dmg`.
-- **Windows:** download the latest installer.
+- **macOS (Apple silicon or Intel):** download the latest `.dmg`.
+- **Windows (x64):** download the latest `-setup.exe` installer.
 - **Linux (experimental):** download the latest x86_64 `.AppImage`.
 - **Previous versions:** browse the complete
   [release history](https://github.com/KitionAI/kition/releases).
-
-## Run From Source
-
-Requirements:
-
-- Node.js 22.19.0
-- pnpm 10.33.0
-- Rust (stable) and the
-  [Tauri system prerequisites](https://v2.tauri.app/start/prerequisites/)
-  for your platform
-
-```bash
-pnpm install --frozen-lockfile
-pnpm dev
-```
-
-`pnpm dev` runs `tauri dev`, which compiles the Tauri desktop shell together
-with the Rust runtime in `crates/` and starts the desktop client.
-
-For renderer, component, editor, and style work that does not require runtime
-integration:
-
-```bash
-pnpm dev:web
-```
-
-The web preview runs the renderer against a mocked runtime and is the fastest
-path for most client-side contributions. More options are documented in
-[Runtime development](docs/runtime-development.md).
 
 ## Open Source Boundary
 
@@ -304,53 +286,23 @@ Kits are developed in separate repositories. Kition ships each kit's published
 package, pinned by version and checksum in
 [`kits/kits.lock.json`](kits/kits.lock.json).
 
-## Technology
-
-| Area | Stack |
-| --- | --- |
-| Desktop | Tauri 2 (Rust) |
-| Runtime | Rust, SQLite |
-| Interface | React, TypeScript, Vite |
-| Kits | WebAssembly engines in Web Workers, editors in iframes |
-| Documents | Marked, Mermaid, KaTeX |
-| Data and state | IndexedDB, TanStack Query, Zod |
-| Testing | Vitest, Playwright |
-
 ## Contributing
 
-Issues and pull requests are welcome.
+Issues and pull requests are welcome. How to run Kition from source, the
+repository layout, and the technology it uses are in
+[CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
-1. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, scope, and required checks.
-2. Follow the [Kition Development Standard](docs/development-standard.md),
+1. Follow the [Kition Development Standard](docs/development-standard.md),
    including the recommended Orca worktree workflow.
-3. When a change crosses the renderer and the runtime, update the contract in
+2. When a change crosses the renderer and the runtime, update the contract in
    `contracts/runtime/`, the renderer mock, and the runtime together.
-4. Report security-sensitive issues through
+3. Report security-sensitive issues through
    [.github/SECURITY.md](.github/SECURITY.md), not a public issue.
 
 For product questions, account help, and private workspace concerns, see
 [.github/SUPPORT.md](.github/SUPPORT.md).
 
-## Repository Layout
-
-```text
-.
-├── .github/                 # Community health files and CI workflows
-├── contracts/runtime/       # Runtime HTTP API schemas
-├── crates/                  # Rust runtime (kition-api and its feature crates)
-├── docs/                    # Product, contributor, design, and runtime docs
-├── e2e/                     # Playwright black-box tests
-├── kits/                    # Kit pins (kits.lock.json) and kit module registry
-├── packages/                # Source packages that also run outside Kition
-├── public/                  # Static assets, onboarding files, and kit packages
-├── scripts/                 # Repository checks and inspection entry points
-├── src/                     # React application organized by feature domain
-├── src-tauri/               # Tauri desktop shell and packaging
-├── tooling/                 # Build, lint, and test configuration
-└── package.json             # Development, test, and packaging commands
-```
-
 ## License
 
-Kition, including its runtime in `crates/`, is licensed under the
-[Apache License 2.0](LICENSE).
+Kition, including its runtime in `crates/`, is licensed under Apache-2.0
+([LICENSE](LICENSE)).

@@ -166,6 +166,24 @@ which is what makes a shared endpoint safe.
 | `POST` | `/v1internal:*` | Forwarded to Google with the caller's bearer. |
 | `GET` | `/health` | Effective configuration. |
 
+Check what a running bridge is actually serving before pointing a client at it:
+
+```bash
+curl -s http://127.0.0.1:8198/health | jq
+```
+
+```json
+{
+  "ok": true,
+  "upstream": "https://api.openai.com/v1",
+  "default_model": "gpt-4o-mini",
+  "model_map": { "gemini-3-flash": "deepseek-v4-flash" }
+}
+```
+
+`upstream`, `default_model` and `model_map` are the values the process started with, so this is the
+quickest way to tell a stale deployment from a wrong one.
+
 ## How it works
 
 **Transport override.** The CLI honours `GOOGLE_GEMINI_BASE_URL`. The IDE honours the hidden

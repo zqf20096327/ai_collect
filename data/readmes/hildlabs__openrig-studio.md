@@ -19,7 +19,7 @@ Generate Roblox R15 and R6 animations with the AI you already pay for. Describe 
 
 ## Quick start
 
-You need [Node.js](https://nodejs.org) 20 or newer and at least one AI provider:
+You need [Node.js](https://nodejs.org) 22 or newer and at least one AI provider:
 
 | Provider | What you need |
 |---|---|
@@ -32,7 +32,7 @@ You need [Node.js](https://nodejs.org) 20 or newer and at least one AI provider:
 ```sh
 git clone https://github.com/hildlabs/openrig-studio.git
 cd openrig-studio
-npm install        # only needed for API keys
+npm install --omit=dev   # only needed for API keys
 npm start          # or double-click start.cmd (Windows) / run ./start.sh (macOS, Linux)
 ```
 
@@ -89,7 +89,7 @@ OpenRig Studio gives you a solid first draft, not a finished hand-keyed animatio
 - **It takes a while.** With Claude Code · Opus 5.5 · high (the default) a clip took 1 to 3.5 minutes in the benchmark, about 2 on average. Faster models and lower effort are quicker but less reliable.
 - **It uses your plan's limits.** One clip with visual review is two model calls and 6,000 to 22,000 output tokens. Free for the app, not free for your usage quota.
 - **Turning on the spot is the weak spot.** Planted feet still slide during spins and sitting down. Fast arm motions such as a cheer can snap between two keys; the checks flag these.
-- **Measured for one model so far.** The [benchmark](#benchmark) numbers are from Opus 5.5. Other models work, but nobody has measured them yet; runs for other models are very welcome.
+- **Measured for two models so far.** In the [benchmark](#benchmark) (20 cases, one run each, November 2026) Claude Code · Fable 5.2 · high made 19 of 20 clips without any finding (average score 0.05), Opus 5.5 · high 12 of 20 (0.95). Fable 5.2 took about 5 minutes per clip instead of 2 and used about 40% more tokens. Other models work, but nobody has measured them yet; runs for other models are very welcome.
 - **The checks catch technical problems,** like feet in the ground, limbs inside the body or snapping joints. Whether a motion looks good is still up to you.
 - **The Studio bridge needs Roblox Studio's built-in MCP server.** Without it, use *Export › Download .rbxmx* instead.
 - **Tested mainly on Windows.** macOS and Linux run the test suite in CI, but have seen far less real use.
@@ -114,10 +114,10 @@ Issues and pull requests are welcome. Most of the code was written with Claude C
 
 If a generated clip looks wrong, open an issue with the *Animation looks wrong* template: the prompt, the model and the exported clip make it reproducible. Before opening a pull request:
 
-- Run `npm test`. It checks the Roblox reference values and that every example clip passes the checks.
+- Run `npm install` (with the dev tools), then `npm test` and `npm run lint`. The tests check the Roblox reference values, that every example clip passes the checks, and the calls into the API SDKs.
 - If you changed the system prompt or the animation pipeline, run the benchmark before and after and mention the result (see below).
 - If you improved the example clips in the library folder *Examples*, run `npm run save-examples` to write them back to `examples/`.
-- Keep it dependency-free in `src/core/` and `web/`; the API SDKs are the only packages.
+- Keep it dependency-free in `src/core/` and `web/`; the API SDKs are the only runtime packages (ESLint is a dev tool).
 
 ### Benchmark
 
@@ -145,4 +145,4 @@ MIT, see [LICENSE](LICENSE).
 
 ## Kurz auf Deutsch
 
-OpenRig Studio erzeugt Roblox-Animationen für R15 und R6 mit den KI-Abos, die du schon hast (Claude Code, Codex CLI), mit API-Keys oder über jede OpenAI-kompatible API (DeepSeek, Qwen, Kimi, OpenRouter, Ollama …). Node.js 20+ installieren, Repo klonen, `npm start` ausführen bzw. `start.cmd` doppelklicken und <http://localhost:4330> öffnen. In den Einstellungen siehst du, welche Anbieter gefunden wurden; oben rechts schaltest du die Oberfläche auf Deutsch um. Ohne Installation ausprobieren: [Live-Demo](https://hildlabs.github.io/openrig-studio/) (Beispiel-Clips abspielen und bearbeiten, Generieren nur lokal).
+OpenRig Studio erzeugt Roblox-Animationen für R15 und R6 mit den KI-Abos, die du schon hast (Claude Code, Codex CLI), mit API-Keys oder über jede OpenAI-kompatible API (DeepSeek, Qwen, Kimi, OpenRouter, Ollama …). Node.js 22+ installieren, Repo klonen, `npm start` ausführen bzw. `start.cmd` doppelklicken und <http://localhost:4330> öffnen. In den Einstellungen siehst du, welche Anbieter gefunden wurden; oben rechts schaltest du die Oberfläche auf Deutsch um. Ohne Installation ausprobieren: [Live-Demo](https://hildlabs.github.io/openrig-studio/) (Beispiel-Clips abspielen und bearbeiten, Generieren nur lokal).

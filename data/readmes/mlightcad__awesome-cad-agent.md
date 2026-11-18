@@ -467,6 +467,21 @@ Key Features
 - Executes directly inside Blender via the BlenderMCP addon; compatible with Cursor, Claude Code, Kiro, and Codex
 - Production standards including polycount budgets, naming conventions, asset optimization, and validation checklists
 
+#### AutoCAD DWG Redraw Skills (pengxiaoan)
+
+https://github.com/pengxiaoan/autocad-dwg-redraw-skill
+
+Two Codex agent skills for AutoCAD drawing reconstruction: exact, evidence-backed DWG redraw and raster-image-to-DWG/DXF rebuild.
+
+Key Features
+
+- `autocad-dwg-redraw` for exact reconstruction from a source or intermediate DWG, including PDF-derived DWG workflows
+- `autocad-image-redraw` for photos, scans, sketches, and screenshots rebuilt as editable DWG/DXF
+- Validation of entity counts, object type distribution, dimensions, leaders, annotations, layers, blocks, and PaperSpace
+- Raster input preflight with explicit `known` / `scaled` / `inferred` / `unreadable` evidence levels
+- Dimension-driven, hybrid, visual-trace, and geometry-only redraw profiles separating visual similarity from dimensional accuracy
+- Automates AutoCAD through Windows COM; requires a local AutoCAD installation on Windows with pywin32
+
 ---
 
 ## 🧰 CAD Harness Plugins

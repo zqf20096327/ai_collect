@@ -6,7 +6,7 @@ compiled at run time with NVRTC through cudarc, and the same kernels also run on
 build step, no ggml. Experts that do not fit in VRAM run on the CPU at the same time as the GPU work, and the expert
 placement adapts to the routing it sees.
 
-Version 1.2.4. Docs: [usage and server API](docs/USAGE.md), [hosting for other people](docs/HOSTING.md),
+Version 1.2.5. Docs: [usage and server API](docs/USAGE.md), [hosting for other people](docs/HOSTING.md),
 [supported GPUs](docs/SUPPORTED_GPUS.md), [AMD notes](docs/AMD.md), [LoRA](docs/LORA.md),
 [all benchmarks](docs/BENCHMARKS.md), [benchmark history](docs/README.md).
 
@@ -78,7 +78,8 @@ On Windows, install the Visual Studio C++ Build Tools first (one dependency comp
 
 Run `rustingstrata` with no arguments (double-click `rustingstrata.exe` on Windows; release binaries are on the GitHub releases page).
 It starts a server on http://127.0.0.1:8080 and opens a chat page that downloads models from Hugging Face and switches
-between the ones in your models folder. Any app that takes an OpenAI-compatible address (Open WebUI, Jan, SillyTavern,
+between the ones in your models folder. The page can also call the tools of MCP servers
+([docs/USAGE.md](docs/USAGE.md#tools-mcp)). Any app that takes an OpenAI-compatible address (Open WebUI, Jan, SillyTavern,
 code editors) can use `http://127.0.0.1:8080/v1`.
 
 From a terminal:

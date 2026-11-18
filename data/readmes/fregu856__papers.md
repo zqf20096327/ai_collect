@@ -23,6 +23,24 @@ _In June 2023, I wrote the blog post [The How and Why of Reading 300 Papers in 5
 
 #### Papers Read in 2026:
 
+##### [26-11-17] [paper623]
+- Towards Scalable Context-Aware Single-Cell Spatial Transcriptomics Prediction from Histology Images
+ [[pdf]](https://arxiv.org/abs/2609.36429) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Towards%20Scalable%20Context-Aware%20Single-Cell%20Spatial%20Transcriptomics%20Prediction%20from%20Histology%20Images.pdf)
+- `NeurIPS 2026`
+- [Computational Pathology]
+```
+Quite interesting paper. The method is conceptually very simple and makes sense. A few somewhat odd things starting in Secton 4.2 and in the appendix though. And they solely use HEST-1k data. I was probably expecting a bit more from a NeurIPS paper, to be honest. Don't understand why they talk about SLIDE-level information in 4.2 and appendix F, the CLS token is still just tile-level, contains no slide-level info? Also, I didn't realize until appendix C that they actually fine-tune the PFM, and that they don't do this for DeepSpot2Cell. The "per-cell crop" comparison in appendix G is then also quite strange, as they don't fine-tune the PFM for that either. Should have included a version of their method where they keep the PFM frozen, really don't understand why they didn't do that.
+```
+
+##### [26-11-15] [paper622]
+- Beyond Sparse Captions: Aligning Slide-Level Text and Patch-Level Vision in Pathology
+ [[pdf]](https://arxiv.org/abs/2610.17233) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Beyond%20Sparse%20Captions%20Aligning%20Slide-Level%20Text%20and%20Patch-Level%20Vision%20in%20Pathology.pdf)
+- `NeurIPS 2026`
+- [Computational Pathology]
+```
+Interesting paper. The method is conceptually simple and makes sense, but I'm a bit confused in Section 3.3. You get K different text-conditioned slide-level feature vectors h_W_k = h_W(c_k), k = 1, ..., K, right? And, equation (5) should therefore be be sim(h_W_k, c_k) instead of sim(h_W, c_k)? Also seems a bit odd that CONCH-Z_lin beats ABMIL in Table 3, I think they should have included "mean pool of patch-level features + linear probe" as an additional baseline there. Otherwise, the results of CONCH-Z compared to CONCH and TITAN seem quite impressive.
+```
+
 ##### [26-11-15] [paper621]
 - Scaling Vision Foundation Models for Toxicologic Pathology
  [[pdf]](https://arxiv.org/abs/2610.26586) [[annotated pdf]](https://drive.google.com/file/d/1pWGWIXb2PS7kF8ZTXsVyrodCE40KvcKw/view?usp=sharing)
@@ -1044,22 +1062,4 @@ Well written and interesting paper, I quite enjoyed reading it. Everything is ex
 
 ##### [25-08-09] [paper508]
 - Large Language Models for Medical Forecasting -- Foresight 2
- [[pdf]](https://arxiv.org/abs/2412.10848) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Large%20Language%20Models%20for%20Medical%20Forecasting%20--%20Foresight%202.pdf)
-- `arxiv, 2024-12`
-- [ML for Medicine/Healthcare], [Language Models], [EHRs]
-```
-Interesting paper, overall I quite enjoyed reading this. But, I still don't understand what the input to their model is?! Is it the actual patient timeline with temporal separator tokens etc, or is it just the reconstructed clinical note at the bottom of Figure 1? Also, what loss is used in the risk forecasting fine-tuning in Section 2.4?
-```
-
-##### [25-08-08] [paper507]
-- SurvivEHR: A Competing Risks, Time-To-Event Foundation Model for Multiple Long-Term Conditions From Primary Care Electronic Health Records
- [[pdf]](https://www.medrxiv.org/content/10.1101/2025.08.04.25332916v1) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/SurvivEHR%20A%20Competing%20Risks%2C%20Time-To-Event%20Foundation%20Model%20for%20Multiple%20Long-Term%20Conditions%20From%20Primary%20Care%20Electronic%20Health%20Records.pdf)
-- `medrxiv, 2025-08`
-- [ML for Medicine/Healthcare], [EHRs] 
-```
-Interesting paper. Quite long, took me a while to get through everything, and I was pretty tired towards the end. Trained on a lot of data, primary care data, which is cool. Figure 1 is nice. Figure 4 is quite messy, difficult to interpret. I'm confused by the "Causal value prediction" paragraph in "Model architecture implementation", is this regression NLL loss added to the survival loss? What is actually the final loss that's used to train the model? Not clear to me how different their approach actually is compared to MOTOR ("Recently, this limitation has been overcome with MOTOR [45], a self-supervised, time-to-event (TTE) foundation model but this is limited to approximations of time-to-event distributions using Piecewise Exponential Artificial Neural Networks"), would have been interesting to see a direct comparison. I also don't quite understand why their model can't do zero-shot prediction?
-```
-
-##### [25-08-08] [paper506]
-- FoMoH: A Clinically Meaningful Foundation Model Evaluation for Structured Electronic Health Records
- [[pdf]](https://arxiv.org/abs/2505.16941) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented
+ [[pdf]](https://arxiv.org/abs/2412.10848) [[annotated pdf]](https://github.com/fregu856/papers/blob/master/commented_pdfs/Large%20Language%20Models%20for%20Medical%20For

@@ -3,12 +3,12 @@
 
 Official repo including a series of foundation models and applications for retinal images.<br>
 `[RETFound-MAE]`:[RETFound: a foundation model for generalizable disease detection from retinal images](https://www.nature.com/articles/s41586-023-06555-x).<br>
-`[RETFound-DINOv2]`:[Revealing the Impact of Pre-training Data on Medical Foundation Models](https://www.researchsquare.com/article/rs-6080254/v1).<br>
+`[RETFound-DINOv2]`:[Revealing the Impact of Pre-training Data on Medical Foundation Models](https://www.nature.com/articles/s41467-026-70077-z).<br>
 `[DINOv2]`:[General-purpose vision foundation models DINOv2 by Meta](https://github.com/facebookresearch/dinov2).<br>
 `[DINOv3]`:[General-purpose vision foundation models DINOv3 by Meta](https://github.com/facebookresearch/dinov3).<br>
 
 
-Please contact 	**ykzhoua@gmail.com** or **yukun.zhou.19@ucl.ac.uk** if you have questions.
+Please contact 	**ykzhoua@gmail.com** or **yukun.zhou@ucl.ac.uk** if you have questions.
 
 
 ### 📝Key features
@@ -260,13 +260,14 @@ If you find this repository useful, please consider citing this paper:
 ```
 
 ```
-@misc{zhou2025generalistversusspecialistvision,
-      title={Generalist versus Specialist Vision Foundation Models for Ocular Disease and Oculomics}, 
-      author={Yukun Zhou and Paul Nderitu and Jocelyn Hui Lin Goh and Justin Engelmann and Siegfried K. Wagner and Anran Ran and Hongyang Jiang and Lie Ju and Ke Zou and Sahana Srinivasan and Hyunmin Kim and Takahiro Ninomiya and Zheyuan Wang and Gabriel Dawei Yang and Eden Ruffell and Dominic Williamson and Rui Santos and Gabor Mark Somfai and Carol Y. Cheung and Tien Yin Wong and Daniel C. Alexander and Yih Chung Tham and Pearse A. Keane},
-      year={2025},
-      eprint={2509.03421},
-      archivePrefix={arXiv},
-      primaryClass={eess.IV},
-      url={https://arxiv.org/abs/2509.03421}, 
+@article{zhou2026understanding,
+  title={Understanding pre-training data effects in retinal foundation models using two large fundus cohorts},
+  author={Zhou, Yukun and Wang, Zheyuan and Wu, Yilan and Ong, Ariel Yuhan and Wagner, Siegfried K and Ruffell, Eden and Chia, Mark A and Guan, Zhouyu and Ju, Lie and Engelmann, Justin and others},
+  journal={Nature Communications},
+  volume={17},
+  number={1},
+  pages={3309},
+  year={2026},
+  publisher={Nature Publishing Group UK, London}
 }
 ```

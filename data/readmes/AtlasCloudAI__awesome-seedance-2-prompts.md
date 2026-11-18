@@ -84,7 +84,7 @@ Seedance 2.0 is strongest at multimodal video generation. It handles text, image
 | Total Prompts | **2706** |
 | Categories | **11** |
 | Preview Videos | **1597** |
-| Last Updated | **2026-11-16T03:03:02.252Z** |
+| Last Updated | **2026-11-17T03:03:02.632Z** |
 
 ## 🏷️ Browse by Category
 

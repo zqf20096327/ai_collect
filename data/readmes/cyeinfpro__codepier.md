@@ -1,8 +1,8 @@
 # CodePier · 码头
 
-让 ChatGPT 在你授权的电脑和服务器上读代码、改文件、跑测试，并拿到可核对的执行结果。
+通过 ChatGPT、Gemini、Antigravity、Claude 或 Grok，在已授权的电脑和服务器上读代码、改文件、跑测试，并核对执行结果。
 
-[![Version](https://img.shields.io/badge/version-1.33.19-2563eb)](RELEASE.json)
+[![Version](https://img.shields.io/badge/version-1.33.25-2563eb)](RELEASE.json)
 [![License](https://img.shields.io/badge/license-MIT-16a34a)](LICENSE)
 
 CodePier 是自托管的 MCP 服务和开发面板。**Hub** 负责接入与管理，**Agent** 在 macOS、Windows 或 Linux 上运行本机工具。你也可以在网页里继续 Pi、Codex、Claude Code 会话，管理多台电脑和服务器。
@@ -21,11 +21,12 @@ CodePier 是自托管的 MCP 服务和开发面板。**Hub** 负责接入与管�
 
 ### 1. 安装 Hub
 
-服务器需准备 Git、Bash、Python 3.9+、Docker 和支持 `up --wait` 的 Docker Compose v2。以下安装本版本 **v1.33.19**，最新正式版本见 [Releases](https://github.com/cyeinfpro/codepier/releases/latest)：
+服务器需准备 Git、Bash、Python 3.9+、Docker 和支持 `up --wait` 的 Docker Compose v2。以下命令从 [Releases](https://github.com/cyeinfpro/codepier/releases/latest) 获取最新正式版本：
 
 ```bash
-git clone --branch v1.33.19 --depth 1 https://github.com/cyeinfpro/codepier.git
-cd codepier
+release_tag=$(python3 -c 'import json, re, urllib.request; tag = json.load(urllib.request.urlopen("https://api.github.com/repos/cyeinfpro/codepier/releases/latest", timeout=20))["tag_name"]; assert re.fullmatch(r"v[0-9]+\.[0-9]+\.[0-9]+", tag); print(tag)') &&
+git clone --branch "$release_tag" --depth 1 https://github.com/cyeinfpro/codepier.git &&
+cd codepier &&
 bash install.sh
 ```
 
@@ -43,9 +44,9 @@ bash install.sh
 
 在 **项目** 中选择电脑，填写项目名称（如 `demo`）和授权目录内的实际路径。先开启读取，确认能打开一个文件；需要改代码、跑测试时，再开启写入和执行权限。
 
-### 4. 连接 ChatGPT
+### 4. 连接 MCP 客户端
 
-在 **设置 → 公开地址** 保存实际 HTTPS 基地址，再在 ChatGPT 中添加 MCP 连接：
+在 **设置 → 公开地址** 保存实际 HTTPS 基地址，再通过 ChatGPT、Gemini、Antigravity、Claude 或 Grok 的 MCP 接入入口添加：
 
 ```text
 https://你的域名/mcp
@@ -78,11 +79,11 @@ CodePier **不提供模型服务**。只使用 MCP 文件与命令工具，不�
 
 ### 最近版本变化
 
-当前源码为 **v1.33.19**：支持 Google Antigravity 和 Gemini 网页版以 OAuth 连接 CodePier。首页用量统计在首次读取和后台刷新时保持布局稳定，访问权限变化时清除旧结果。完整变更见 [CHANGELOG.md](CHANGELOG.md)，已发布安装包见 [Releases](https://github.com/cyeinfpro/codepier/releases/latest)。
+当前源码为 **v1.33.25**：增加任务前置条件预检，细化排队状态并保留有界脱敏执行日志；不自动安装依赖或改变环境隔离。完整变更见 [CHANGELOG.md](CHANGELOG.md)，已发布安装包见 [Releases](https://github.com/cyeinfpro/codepier/releases/latest)。
 
 ## 使用示例
 
-在已连接 CodePier 且具有相应权限的 ChatGPT 对话里，可以这样说：
+在已连接 CodePier 并授权项目的对话里，可以这样说：
 
 > 打开 demo 项目，先阅读 README 和项目规则，再告诉我结构与测试入口。不要修改文件。
 
@@ -129,9 +130,9 @@ CodePier **不提供模型服务**。只使用 MCP 文件与命令工具，不�
 
 ## 版本与许可
 
-当前仓库的 `RELEASE.json` 标记为 **1.33.19 / prepared / source-and-image**；可下载版本以 [Releases](https://github.com/cyeinfpro/codepier/releases/latest) 为准，`main` 可能包含尚未发布的改动。
+当前仓库的 `RELEASE.json` 标记为 **1.33.25 / prepared / source-and-image**；可下载版本以 [Releases](https://github.com/cyeinfpro/codepier/releases/latest) 为准，`main` 可能包含尚未发布的改动。
 
-- **Version:** 1.33.19
+- **Version:** 1.33.25
 - **License:** [MIT](LICENSE)
 
 第三方依赖保留各自许可证，见 `web/vendor/` 与 [MCP Apps 声明](web/mcp-apps/THIRD_PARTY_NOTICES.txt)。

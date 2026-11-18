@@ -99,6 +99,7 @@ Managed installs support Codex (OpenAI), Claude Code, OpenCode, GitHub Copilot, 
 - Verifying a code change actually rendered the expected result in Chrome
 - Patching the live page to prove a fix visually, then moving it into source and rolling the patch back
 - Running structured browser checks from any local agent or IDE, not just one AI product
+- Composing typed browser calls in an agent host's code sandbox through a [generated Code Mode adapter](https://github.com/koltyakov/browser-bridge/blob/main/docs/code-mode.md), with the Go runtime and browser access checks unchanged
 - Calling website-provided WebMCP tools when the browser supports them, with exact-action user approval and DOM verification
 
 ## Why Browser Bridge
@@ -150,6 +151,8 @@ npm install -g @browserbridge/bbx
 
 The npm package is a bootstrap and launcher with zero runtime npm dependencies. It downloads and verifies the latest stable Go executable independently of the npm package version, then registers the native host. Set `BBX_VERSION` to select a release line or exact native version. Local dependency installs do not register a browser; if install scripts were skipped, the first command downloads the executable, then run `bbx install` to register it. See the [native CLI guide](https://github.com/koltyakov/browser-bridge/blob/main/docs/native-cli.md).
 
+Release binaries automatically check for signed updates when the extension reconnects, including after an extension update. Extension `2.2.1` selects the newest `2.2.x` binary, even when that binary is `2.2.2`. This works for npm and standalone installs without overwriting running executables. Exact npm native-version pins opt out, as does `bbx config set auto-update off`. Older binaries without this support need a one-time reinstall.
+
 ## How it works
 
 - The extension is scoped to one explicitly enabled Chrome window at a time - no ambient browser access
@@ -180,7 +183,9 @@ The npm package is a bootstrap and launcher with zero runtime npm dependencies. 
 - [Agent permissions](https://github.com/koltyakov/browser-bridge/blob/main/docs/agent-permissions.md)
 - [CLI guide](https://github.com/koltyakov/browser-bridge/blob/main/docs/cli-guide.md)
 - [MCP vs CLI](https://github.com/koltyakov/browser-bridge/blob/main/docs/mcp-vs-cli.md)
+- [Code Mode adapter](https://github.com/koltyakov/browser-bridge/blob/main/docs/code-mode.md)
 - [Troubleshooting](https://github.com/koltyakov/browser-bridge/blob/main/docs/troubleshooting.md)
+- [Standalone troubleshooting skill for agents](https://raw.githubusercontent.com/koltyakov/browser-bridge/main/docs/troubleshooting-skill.md)
 - [BridgeClient API](https://github.com/koltyakov/browser-bridge/blob/main/docs/api-reference.md)
 - [WebMCP website tools](https://github.com/koltyakov/browser-bridge/blob/main/docs/webmcp.md)
 - [Development and Make tasks](https://github.com/koltyakov/browser-bridge/blob/main/docs/development.md)

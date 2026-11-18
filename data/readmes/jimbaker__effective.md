@@ -229,7 +229,7 @@ All under `src/effective/` unless noted.
 | telemetry: OTLP/JSON spans under the OpenTelemetry GenAI conventions, joined to the run by key | `telemetry.py` |
 | counterfactuals: fork a recorded run at an op, change one result, run the rest live | `fork.py`, `counterfactual.py` |
 | optimization: `improve` (reflective prompt evolution) over a Pareto frontier of cost, quality and latency | `improve.py`, `pareto.py`, and the benches in `src/agent/` |
-| the read side: a run as a graph, cards, a dashboard, a terminal viewer | `graphview.py`, `cards/`, `dashboard.py`, `runview.py`, `src/tui/` |
+| the read side: a run as a graph, cards, a dashboard, a terminal viewer | `graph/`, `cards/`, `dashboard.py`, `runview.py`, `src/tui/` |
 | interpreters for ops: OpenAI, the `claude -p` and `codex exec` CLIs, a judge service, a shell, the web | `interpreters/` |
 
 ## Not yet in the box
@@ -251,7 +251,7 @@ All under `src/effective/` unless noted.
 | `uv run python examples/smol_durable.py` | the same house agent, durable and interruptible, with a judge guarding the door ([`examples/smol_door.py`](examples/smol_door.py)) | nothing: offline without keys; `OPENAI_API_KEY` and `JEV_API_KEY` for a real model and judge |
 | `uv run python -m examples.coder <dir> "<task>"` | a small coding agent whose test suite decides when the work is done ([`src/examples/coder/README.md`](src/examples/coder/README.md)) | `OPENAI_API_KEY`, Podman |
 | `uv run python -m examples.deep_research "<question>" cell="..."` | a frontier search over web leads, stopped when two hosts agree on every cell ([`src/examples/deep_research/README.md`](src/examples/deep_research/README.md)) | `BRAVE_SEARCH_API_KEY`, `JEV_API_KEY`, the `claude` CLI |
-| `uv run python -m examples.agent_firm sla-cap` | an accounts-receivable firm: a payment short of its invoice is explained, critiqued against the contract, approved by an approver other than its proposer, and settled by saga through an ERP port ([`wiki/concepts/agent-firm.md`](wiki/concepts/agent-firm.md)) | nothing; `--odoo` settles on Odoo Community, after `just odoo-up` |
+| `uv run python -m examples.agent_firm sla-cap` | an accounts-receivable firm: a payment short of its invoice is applied, the credit the contract grants is approved by someone other than its proposer and posted through an ERP port, and what is still owed is supervised ([`wiki/concepts/agent-firm.md`](wiki/concepts/agent-firm.md)) | nothing; `--odoo` settles on Odoo Community, after `just odoo-up` |
 | `just tui-demo`, `just dashboard` | the terminal viewer and the run dashboard over a demo run | the `tui` extra for the viewer |
 
 ## The agent firm
@@ -268,51 +268,323 @@ short of its invoice is an exception, and goes through these stages:
 
 | stage | what happens |
 |---|---|
-| admit | the run's inputs are fixed in its spawn params: the case, the round of the books, the snapshot of the firm's rules |
-| observe | `reconcile` holds each case to the firm's invariants |
+| admit | the run's inputs are fixed in its spawn params: the case, how its settlement is run, the snapshot of the firm's rules |
+| apply | the payment is applied to the invoice, and what is still owed is recorded as an obligation, before any model is asked |
 | explain | a model proposes a credit through a `Gated` channel: within the shortfall, citing the case's documents |
-| engage | an outside critic reviews the proposal against the contract |
-| authorize | a `govern` policy parks the claim until an approver the host names, other than its proposer, approves it; the ruling names the digest of the terms, which carry the digest of the settlement's plan, and a changed plan is refused |
-| act | a `saga` posts the memo and applies it and the payment through an ERP port, unwinding on a rejection |
-| settle the books | `firm`, a `fixpoint`, repeats the stages over every open case until two passes agree, and reports what stays open and why |
+| engage | an outside critic reviews the proposal; what the models decide is evidence for the approver |
+| authorize | the contract computes the credit, and a `govern` policy parks it until a ruler within their mandate, other than its proposer, approves it; the ruling names the digest of the terms |
+| act | the credit memo is posted and applied through an ERP port; a posting that is undone is posted again in the next generation |
+| supervise | a collector task watches the obligation from before the credit's approval, offers it up a ladder of offices when it falls overdue, and asks a write-off of its own mandate, none while a filing's settlement is open, kept only when its memo matches what is owed; the invoice's next settlement replaces a collector that ended while the obligation is unsettled |
+| settle the books | `firm`, a `fixpoint`, repeats the settlement over every open case until two passes agree, and reports what stays open and why |
 
-`uv run python -m examples.agent_firm sla-cap` runs one case through the first six stages, and
-`--odoo` settles it on Odoo Community after `just odoo-up`; `tests/test_agent_firm_fixpoint.py`
-runs the firm over the books. The decisions are [ADR-0027](docs/adr/0027-the-firm-settles-to-a-fixpoint.md) (the fixpoint) and
-[ADR-0028](docs/adr/0028-an-approval-binds-its-effect.md) (what an approval binds); the controls and the tests that hold each one are in
+`uv run python -m examples.agent_firm sla-cap` settles one case through the first six stages and
+enqueues its collector in a temporary database the command deletes as it returns (`settle(config,
+kept_in=...)` keeps it for a worker); `--odoo`
+settles it on Odoo Community after `just odoo-up`; `tests/test_agent_firm_fixpoint.py`
+runs the firm over the books. The decisions are [ADR-0027](docs/adr/0027-how-the-firm-settles.md): the settlement, what an
+approval binds and the fixpoint; the controls and the tests that hold each one are in
 [`wiki/concepts/agent-firm.md`](wiki/concepts/agent-firm.md).
 
-The settlement is a saga. Each posting carries its undo, and a rejected step unwinds the steps that
-landed, latest first, so the memo is unapplied before it is reversed and no posted entry is
-deleted. A rejected reversal fails the run with that reversal named; the entries it did not reach
-stay posted, and the run assigns them to no one. Otherwise the run ends one of three ways: completed, compensated (and resolved again in the next round), or unlanded (a
-reminder that ran out of attempts, continued on the next pass).
+A settlement is a record of its own, so every pass reads where it stands: it ends settled, already
+granted, exhausted, denied by its mandate, stopped when the models give no usable decision, or
+contended when other runs hold the period's credits past its retries, or unposted when its invoice
+was written off first; a posting another run holds leaves it in flight. The firm converges when two
+passes agree and no open case is one a later pass can move, naming the cases that stay open as its
+dissent; it answers unconverged when its pass budget runs out first.
 
 ```mermaid
 flowchart TD
-    observe["observe: the payment is $3,000 short"] --> explain["explain: a model proposes a credit"]
-    explain --> critique["critique: the contract caps the credit at $1,000"]
-    critique --> gate{"approval: someone other than the proposer,<br/>bound to the terms and the plan"}
-    gate -- denied --> open["the case stays open"]
-    gate -- approved --> memo["post the $1,000 credit memo"]
-    memo --> pay["apply the $97,000 payment"]
-    pay --> apply["apply the memo"]
-    apply --> notify["notify the customer"]
-    notify --> remind["remind the customer of the $2,000 owed"]
-    remind --> completed(["completed"])
-    remind -- out of attempts --> unlanded(["unlanded: continued next pass"])
-    notify -- rejected --> u1["unapply the memo"]
-    u1 --> u2["unapply the payment"]
-    u2 --> u3["reverse the memo"]
-    u3 --> compensated(["compensated: resolved in the next round"])
+    apply["apply the $70,000 payment"] --> owed["record the $30,000 still owed as an obligation"]
+    owed --> collect["a collector is enqueued to supervise it;<br/>no write-off while the credit waits on its ruling"]
+    owed --> explain["explain: a model proposes a credit"]
+    explain --> critique["critique: the critic reviews it against the contract"]
+    critique --> computed["the contract computes the $12,000 credit;<br/>the models' decision is evidence"]
+    computed --> gate{"approval: a ruler within their mandate,<br/>other than the proposer"}
+    gate -- denied --> open["denied: the case stays open"]
+    gate -- approved --> memo["post and apply the $12,000 credit memo"]
+    memo --> settled(["settled: $18,000 owed"])
+    settled --> successor["a collector that ended is replaced, to supervise the $18,000"]
+    memo -- undone --> again["posted again in the next generation"]
 ```
 
-The command scripts the critic's review and the controller's approval, so it needs no keys, and it
-runs the completed path; the compensated and unlanded endings run in
-`tests/test_agent_firm_saga.py`. The $2,000 still owed stays a receivable, and the reminder asks the
-customer to pay it. The general ledger the firm settles against in testing is Odoo Community,
-digest-pinned under Podman: `just odoo-up`, then `just odoo-test` with `just pgt-up`. Without it,
-a scripted Odoo answers the same calls in memory.
+The command scripts the models and the controller's approval, so it needs no keys, and it runs
+the settled path; the other endings run in `tests/test_agent_firm_fixpoint.py` and
+`tests/test_agent_firm_resolution.py`. The $18,000 still owed stays a receivable, held by accounts
+receivable as an obligation; the command enqueues its collector, and
+`tests/test_agent_firm_assembly.py` runs one up to a write-off its mandate asks. The general ledger the firm settles against
+in testing is Odoo Community, digest-pinned under Podman: `just odoo-up`, then `just odoo-test`
+with `just pgt-up`. Without it, a scripted Odoo answers the same calls in memory.
+
+### Standing the firm up
+
+A run of the firm is stood up by a config: the case, whether the critic is engaged, the books, the
+model behind each role, who approves, the budget, and the Odoo password, which the config names by
+reference and the transport resolves at each call. `given` binds a name to a typed value,
+`both` joins parts that bind different names or agree, and `over` lays a named layer's values
+over a base that declares them; the command line's flags are one more layer, and the run admits
+the config's digest with its manifest. The whole config, `ODOO_PASSWORD` included, is in
+[`src/examples/agent_firm/__main__.py`](src/examples/agent_firm/__main__.py):
+
+<!-- source: src/examples/agent_firm/__main__.py -->
+```python
+FIRM = both(
+    given("case", "sla-cap"),
+    given("critic", True),
+    given("erp", "scripted"),
+    given("models.proposer", "scripted"),
+    given("models.critic", "scripted"),
+    given("approvers", [str(CONTROLLER)]),
+    given("budget", None, optional(FLOAT)),
+    given("odoo.password", ODOO_PASSWORD),
+)
+...
+NO_CRITIC = over(FIRM, given("critic", False), layer="no-critic")
+```
+
+`uv run python examples/configured_firm.py` runs it offline, with no keys, and prints what
+follows. First, the command and what the run did. The example fixes the run's id and abbreviates
+the approval's digest, the hash of the credit row it approves, for reading:
+
+<!-- output: examples/configured_firm.py#command -->
+```text
+$ python -m examples.agent_firm sla-cap
+asked:     1. [approve-sla-credit] approve this service credit? {'invoice': 'INV-BOB-2026-09', 'period': 'sep-2026', 'amount': '1200000', 'recipient': 'acct:bob-operating', 'revision': '1', 'decided': '1200000', 'cites': 'MSA-BOB', 'dated': '2026-09-28', 'plan': 'sha256-…', 'proposer': 'ar-clerk'}
+approved:  govern:firm,with-critic;ledger;credit:bob,api,sep-2026,rev=1 sha256-… by controller
+result:    settled credited 12000.00 owed 18000.00 held by accounts-receivable
+entry:     invoice 100000.00
+entry:     payment 70000.00
+entry:     credit-memo 12000.00
+owed:      18000.00 on INV-BOB-2026-09
+calls:     {'knowledge': 1, 'claimant': 3, 'erp': 6, 'spawn': 2, 'llm': 1, 'critic': 1, 'task-state': 1}
+```
+<!-- /output -->
+
+`over` records its layer in the history of each name it binds. Here it sets `critic` to `False`,
+so the digest, which identifies the config's values, changes too. Two parts that bind one name to
+two values are refused rather than ordered:
+
+<!-- output: examples/configured_firm.py#composition -->
+```text
+NO_CRITIC = over(FIRM, given("critic", False), layer="no-critic")
+history(NO_CRITIC, 'critic') -> ('no-critic',)
+digest(FIRM)      -> 93e9afd9be512fa9
+digest(NO_CRITIC) -> a5fb28507c69d5ae
+both(FIRM, given("critic", False)) -> Conflict: critic is True in one part and False in another
+```
+<!-- /output -->
+
+`--show` prints where each value came from and runs nothing; the password shows as its reference:
+
+<!-- output: examples/configured_firm.py#show -->
+$ python -m examples.agent_firm sla-cap --no-critic --show
+
+| name              | value                                                 | layers |
+| ----------------- | ----------------------------------------------------- | ------ |
+| `approvers`       | `["controller"]`                                      | base   |
+| `budget`          | `null`                                                | base   |
+| `case`            | `"sla-cap"`                                           | cli    |
+| `critic`          | `false`                                               | cli    |
+| `erp`             | `"scripted"`                                          | base   |
+| `models.critic`   | `"scripted"`                                          | base   |
+| `models.proposer` | `"scripted"`                                          | base   |
+| `odoo.password`   | `{"scope": "firm", "name": "odoo", "purpose": "erp"}` | base   |
+
+digest `a5fb28507c69d5ae`
+<!-- /output -->
+
+The run's tape, drawn by `effective.graph`: one node per recorded step, named by its op, with the
+ledger's rows as cylinders named by their event and its read as a rounded box. Every row belongs to
+the one settlement, `INV-BOB-2026-09` paid by `PAY-BOB-70`, which the names leave out. The dashed
+step is the one only the critic's run takes, the critic's review:
+
+<!-- output: examples/configured_firm.py#run -->
+```mermaid
+graph TD
+  n0["knowledge:main"]
+  n1[("settlement")]
+  n2(["ledger-read settlement-attempt-ended;paid:INV-BOB-2026-09"])
+  n3["tool:claimant"]
+  n4[("settlement-attempt")]
+  n5["tool:apply-cash"]
+  n6(["ledger-read obligation:INV-BOB-2026-09"])
+  n7["tool:statement"]
+  n8[("obligation:INV-BOB-2026-09")]
+  n9(["ledger-read obligation:INV-BOB-2026-09#2"])
+  n10(["ledger-read obligation:INV-BOB-2026-09"])
+  n11["tool:statement#2"]
+  n12[("dispute:INV-BOB-2026-09")]
+  n13(["ledger-read obligation:INV-BOB-2026-09#3"])
+  n14(["ledger-read obligation:INV-BOB-2026-09"])
+  n15(["ledger-read obligation-supervised:INV-BOB-2026-09"])
+  n16["tool:claimant#2"]
+  n17[("obligation-supervisor:INV-BOB-2026-09")]
+  n18["spawn:collect"]
+  n19[("obligation-supervised:INV-BOB-2026-09")]
+  n20["llm:explain"]
+  n21["llm:engage"]
+  n22[("settlement-decision")]
+  n23(["ledger-read credit:bob"])
+  n24[("claim:bob")]
+  n25(["ledger-read credit:bob"])
+  n26[("approval-asked:firm")]
+  n27[("approval-ruled:firm")]
+  n28[("credit:bob")]
+  n29(["ledger-read obligation:INV-BOB-2026-09#4"])
+  n30(["ledger-read obligation:INV-BOB-2026-09"])
+  n31(["ledger-read obligation:INV-BOB-2026-09"])
+  n32(["ledger-read obligation:INV-BOB-2026-09"])
+  n33(["ledger-read obligation:INV-BOB-2026-09"])
+  n34(["ledger-read obligation:INV-BOB-2026-09"])
+  n35(["ledger-read credit:bob"])
+  n36(["ledger-read sla-posted:bob"])
+  n37[("sla-generation:bob")]
+  n38["tool:post-credit"]
+  n39["tool:apply-credit"]
+  n40[("sla-posted:bob")]
+  n41(["ledger-read obligation:INV-BOB-2026-09#5"])
+  n42(["ledger-read obligation:INV-BOB-2026-09"])
+  n43(["ledger-read obligation:INV-BOB-2026-09"])
+  n44(["ledger-read obligation:INV-BOB-2026-09"])
+  n45(["ledger-read obligation:INV-BOB-2026-09"])
+  n46(["ledger-read obligation:INV-BOB-2026-09"])
+  n47["tool:statement#3"]
+  n48[("obligation:INV-BOB-2026-09")]
+  n49[("dispute-resolved")]
+  n50(["ledger-read notice:INV-BOB-2026-09"])
+  n51(["ledger-read notice:INV-BOB-2026-09"])
+  n52[("notice:INV-BOB-2026-09")]
+  n53(["ledger-read obligation:INV-BOB-2026-09#6"])
+  n54(["ledger-read obligation:INV-BOB-2026-09"])
+  n55(["ledger-read obligation:INV-BOB-2026-09"])
+  n56(["ledger-read obligation:INV-BOB-2026-09"])
+  n57(["ledger-read obligation:INV-BOB-2026-09"])
+  n58(["ledger-read obligation:INV-BOB-2026-09"])
+  n59(["ledger-read obligation:INV-BOB-2026-09"])
+  n60(["ledger-read obligation-supervised:INV-BOB-2026-09#2"])
+  n61(["ledger-read obligation-supervised:INV-BOB-2026-09"])
+  n62["tool:task-state"]
+  n63["tool:claimant#3"]
+  n64[("obligation-supervisor:INV-BOB-2026-09")]
+  n65["spawn:collect#2"]
+  n66[("obligation-supervised:INV-BOB-2026-09")]
+  n67[("settlement-attempt-ended")]
+  n68[("settlement-ended")]
+  n69(["ledger-read obligation:INV-BOB-2026-09#7"])
+  n70(["ledger-read obligation:INV-BOB-2026-09"])
+  n71(["ledger-read obligation:INV-BOB-2026-09"])
+  n72(["ledger-read obligation:INV-BOB-2026-09"])
+  n73(["ledger-read obligation:INV-BOB-2026-09"])
+  n74(["ledger-read obligation:INV-BOB-2026-09"])
+  n75(["ledger-read obligation:INV-BOB-2026-09"])
+  n76(["ledger-read obligation:INV-BOB-2026-09#8"])
+  n77(["ledger-read obligation:INV-BOB-2026-09"])
+  n78(["ledger-read obligation:INV-BOB-2026-09"])
+  n79(["ledger-read obligation:INV-BOB-2026-09"])
+  n80(["ledger-read obligation:INV-BOB-2026-09"])
+  n81(["ledger-read obligation:INV-BOB-2026-09"])
+  n82(["ledger-read obligation:INV-BOB-2026-09"])
+  n83(["ledger-read obligation-supervised:INV-BOB-2026-09#3"])
+  n84(["ledger-read obligation-supervised:INV-BOB-2026-09"])
+  n85(["ledger-read obligation-supervised:INV-BOB-2026-09"])
+  n0 --> n1
+  n1 --> n2
+  n2 --> n3
+  n3 --> n4
+  n4 --> n5
+  n5 --> n6
+  n6 --> n7
+  n7 --> n8
+  n8 --> n9
+  n9 --> n10
+  n10 --> n11
+  n11 --> n12
+  n12 --> n13
+  n13 --> n14
+  n14 --> n15
+  n15 --> n16
+  n16 --> n17
+  n17 --> n18
+  n18 --> n19
+  n19 --> n20
+  n20 --> n21
+  n21 --> n22
+  n22 --> n23
+  n23 --> n24
+  n24 --> n25
+  n25 --> n26
+  n26 --> n27
+  n27 --> n28
+  n28 --> n29
+  n29 --> n30
+  n30 --> n31
+  n31 --> n32
+  n32 --> n33
+  n33 --> n34
+  n34 --> n35
+  n35 --> n36
+  n36 --> n37
+  n37 --> n38
+  n38 --> n39
+  n39 --> n40
+  n40 --> n41
+  n41 --> n42
+  n42 --> n43
+  n43 --> n44
+  n44 --> n45
+  n45 --> n46
+  n46 --> n47
+  n47 --> n48
+  n48 --> n49
+  n49 --> n50
+  n50 --> n51
+  n51 --> n52
+  n52 --> n53
+  n53 --> n54
+  n54 --> n55
+  n55 --> n56
+  n56 --> n57
+  n57 --> n58
+  n58 --> n59
+  n59 --> n60
+  n60 --> n61
+  n61 --> n62
+  n62 --> n63
+  n63 --> n64
+  n64 --> n65
+  n65 --> n66
+  n66 --> n67
+  n67 --> n68
+  n68 --> n69
+  n69 --> n70
+  n70 --> n71
+  n71 --> n72
+  n72 --> n73
+  n73 --> n74
+  n74 --> n75
+  n75 --> n76
+  n76 --> n77
+  n77 --> n78
+  n78 --> n79
+  n79 --> n80
+  n80 --> n81
+  n81 --> n82
+  n82 --> n83
+  n83 --> n84
+  n84 --> n85
+  classDef critic stroke-width:3px,stroke-dasharray:4 2
+  class n21 critic
+```
+<!-- /output -->
+
+Both runs' books are the same: the critic changes what the models decide, which the approver reads
+beside the credit, and the contract fixes the credit itself.
+
+<!-- output: examples/configured_firm.py#outcome -->
+| run | credit memo | still owed |
+|---|---|---|
+| the critic | 12000.00 | 18000.00 |
+| no critic | 12000.00 | 18000.00 |
+<!-- /output -->
 
 ## Learn more
 

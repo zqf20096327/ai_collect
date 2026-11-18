@@ -3,10 +3,15 @@
     <img src="apps/web/app/opengraph-image.png" alt="Brigade: AI teammates that run your whole company" width="720" />
   </a>
 </p>
+<p align="center">
+  Brigade is an open source, self-hosted alternative to Grok Bot.
+</p>
+
+
 
 <p align="center">
   <a href="https://www.brigade.lol"><strong>Website</strong></a> &middot;
-  <a href="https://demo.brigade.lol"><strong>Live demo</strong></a> &middot;
+  <!-- <a href="https://demo.brigade.lol"><strong>Live demo</strong></a> &middot; -->
   <a href="#run-it-locally"><strong>Run it locally</strong></a> &middot;
   <a href="docs"><strong>Docs</strong></a>
 </p>
@@ -19,7 +24,7 @@
 
 <br/>
 
-<p align="center">
+<!-- <p align="center">
   <a href="https://demo.brigade.lol">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="apps/web/public/landing/demo-dark.webp" />
@@ -30,7 +35,7 @@
 
 <p align="center">
   <a href="https://demo.brigade.lol"><strong>Click around the live demo →</strong></a>
-</p>
+</p> -->
 
 <p align="center">
   <sub>If Brigade is useful to you, a ⭐ on this repo helps other founders find it.</sub>
@@ -53,6 +58,7 @@ with a new hire.
 Brigade is open source (MIT): free on your own computer (macOS or Linux), or on Brigade Cloud for a computer that
 keeps working when yours is off. Think of it as an open-source alternative to AI-employee apps like Lindy or
 Sintra, built on the official Claude Code and Codex instead of a second AI bill.
+It is also an alternative to Meta Muse, OpenAI Dots, Instinct, OpenClaw, Hermes Agent, and Claude Duet.
 
 |        | Step                 | Example                                                                                   |
 | ------ | -------------------- | ----------------------------------------------------------------------------------------- |

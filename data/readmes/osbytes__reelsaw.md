@@ -441,7 +441,8 @@ them), so a single-user box stays as it is:
   the sign-up cap and the registration limit key on the client address. With the default
   `x-forwarded-for` it is the entry `TRUSTED_PROXY_HOPS` places from the right (1 behind Caddy,
   2 behind Cloudflare and Caddy), so addresses a client prepends do not count; the other headers
-  are read only when selected.
+  are read only when selected. On Railway set `TRUSTED_PROXY_HEADER=x-real-ip`: its edge puts the
+  visitor's address there, and the server warns at boot when it is left on `x-forwarded-for`.
 
 ## Billing (enterprise edition)
 
@@ -895,6 +896,4 @@ worker heartbeat is fresh; each check has a 2 s timeout. Otherwise it answers `5
 short reason per failing check (`db`, `events`, `queue`, `workers`), and the log has the detail. The Docker
 `HEALTHCHECK` and any load balancer pointed at it restart or drain a process that is up but cannot work.
 
-**Errors and product analytics (optional).** `SENTRY_DSN` turns on Sentry: the server reports
-every `error` or `fatal` log line that carries an error, tagged with the line's ids (5xx
-responses, unexpected MCP tool errors, a job'
+**Errors and product analytics (optional).** `SENTRY_DSN` turns on 

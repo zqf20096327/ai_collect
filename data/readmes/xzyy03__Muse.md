@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/icon-v3.webp" width="112" alt="Muse" />
+  <img src="docs/icon-v4.webp" width="112" alt="Muse" />
   <h1 align="center">Muse</h1>
   <p align="center">
     基于 AiCode 的 miuix / HyperOS 风格 UI 二改版 · 上游 jieapi/aicode
@@ -20,7 +20,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="License GPL-3.0" /></a>
   <img src="https://img.shields.io/badge/Platform-Android-green.svg" alt="Android Platform" />
-  <a href="https://github.com/jieapi/aicode/releases"><img src="https://img.shields.io/github/v/release/jieapi/aicode?display_name=tag&include_prereleases" alt="Latest Release" /></a>
+  <a href="https://github.com/xzyy03/Muse/releases"><img src="https://img.shields.io/github/v/release/xzyy03/Muse?display_name=tag&include_prereleases" alt="Latest Release" /></a>
 </p>
 
 <p align="center">
@@ -66,19 +66,6 @@ Muse 是运行在 Android 上的通用 AI Coding Agent，把一套完整的 Linu
 
 界面风格参考了 [Mangi-11/Eta](https://github.com/Mangi-11/Eta) 的 miuix 设计，仅借鉴视觉参数，未复制其代码。
 
-## 赞助商
-
-| 图标 | 描述 |
-|------|------|
-| <img src="https://www.rainyun.com/favicon.ico" width="24" alt="RainYun" /> | **[雨云](https://www.rainyun.com/logins_)** — 本项目服务器赞助商，国产云服务商，主营云服务器与游戏云（Minecraft 等预装服务端一键开服），兼有裸金属物理机与对象存储，新用户优惠 |
-| <img src="https://ai.onyxaxis.org/api/site/logo" width="24" alt="Axis AI" /> | **[Axis AI](https://ai.onyxaxis.org/register?invite=FOAICODE)** — 汇聚前沿大模型能力的免费公益 AI 平台，使用邀请码 `FOAICODE` 注册可享 7 天 Go 权益 |
-
-## 广告
-
-| 图标 | 描述 |
-|------|------|
-| <img src="https://www.qiniu.com/favicon.ico" width="24" alt="Qiniu" /> | **[七牛云 AI](https://s.qiniu.com/vUryau)** — 新用户注册赠 300 万 Token（2 年有效），支持 50+ 热门大模型 |
-
 ## 功能特性
 
 ### AI Agent
@@ -120,10 +107,10 @@ Muse 是运行在 Android 上的通用 AI Coding Agent，把一套完整的 Linu
 | 项目 | 说明 |
 |------|------|
 | 系统要求 | Android 8.0+（API 26），arm64-v8a / x86_64 |
-| 下载地址 | [GitHub Releases](https://github.com/jieapi/aicode/releases/latest)：真机选 `armsolo`、模拟器选 `x86solo`、通用选 `universal` 包 |
+| 下载地址 | [GitHub Releases](https://github.com/xzyy03/Muse/releases/latest)：真机选 `armsolo`、模拟器选 `x86solo`、通用选 `universal` 包 |
 | 快速上手 | 「设置 → AI 供应商」配模型 →「容器与镜像」选本地或 SSH → 新建会话开始对话 |
-| 更新记录 | [Releases](https://github.com/jieapi/aicode/releases)（历史版本与更新说明） |
-| 使用指南 | [在线文档](https://aicode.murk.top)：快速上手、使用手册与进阶教程（与 App 内置文档同源） |
+| 更新记录 | [Releases](https://github.com/xzyy03/Muse/releases)（历史版本与更新说明） |
+| 使用指南 | [在线文档](https://xzyy03.github.io/Muse)：快速上手、使用手册与进阶教程（与 App 内置文档同源） |
 
 ## Star
 
@@ -131,20 +118,20 @@ Muse 是运行在 Android 上的通用 AI Coding Agent，把一套完整的 Linu
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=jieapi%2Faicode&type=date&legend=top-left">
+<a href="https://www.star-history.com/?repos=xzyy03%2FMuse&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=jieapi/aicode&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=jieapi/aicode&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=jieapi/aicode&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=xzyy03/Muse&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=xzyy03/Muse&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=xzyy03/Muse&type=date&legend=top-left" />
  </picture>
 </a>
 
 ## 反馈与贡献
 
-- **交流群**：加入 [AiCode QQ 交流群](https://qm.qq.com/q/ByvqODJdIs)（群号：1107110698），交流使用心得、反馈问题
-- **Bug 反馈**：到 [Issues](https://github.com/jieapi/aicode/issues) 提交，附上复现步骤、设备型号与系统版本，便于定位
-- **功能建议**：想加新功能或改进，欢迎先在 [Issues](https://github.com/jieapi/aicode/issues) 讨论
-- **贡献代码**：欢迎提交 [Pull Request](https://github.com/jieapi/aicode/pulls)
+- **交流群**：QQ 群 `1125470056`，交流使用心得、反馈问题
+- **Bug 反馈**：到 [Issues](https://github.com/xzyy03/Muse/issues) 提交，附上复现步骤、设备型号与系统版本，便于定位
+- **功能建议**：想加新功能或改进，欢迎先在 [Issues](https://github.com/xzyy03/Muse/issues) 讨论
+- **贡献代码**：欢迎提交 [Pull Request](https://github.com/xzyy03/Muse/pulls)
 
 ## 致谢
 

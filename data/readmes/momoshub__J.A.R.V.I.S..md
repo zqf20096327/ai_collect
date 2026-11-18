@@ -188,7 +188,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `quick-review <pr-url\|help\|prompt> [--policy first\|after] [what to look at]` (alias `rv`) | pal, executer, admin | quick review of a PR, **only when a person asks** (tag the bot with `review <pr-url>` or `approve <pr-url>`, or type this; never from a thread, workflow, hand-back or GitHub request - see [Asking for a review in words](#asking-for-a-review-in-words)): read it first, post a blockers-only comment on GitHub *and* back in the thread (PRs owned by an account in `REVIEW_EXTENDED_OWNERS` also get the non-blocking findings as bullets); request changes on a blocker only, other repos drop non-blocking findings (big PRs are cloned + reviewed by child agents). CI is read first: red requests changes before the review, a running CI gets a watcher (see [CI comes first](#ci-comes-first)). Runs full-access. |
 | `bomb [categories] [count] <message-link>` (alias `br`) | admin | reaction-bomb a message. Combine categories with commas and set a count: `bomb money,face,negative 9 <link>`. Up to 23; `bomb help` lists every category |
 | `brief <thread-link\|reference> <text>` (`brief help`) | admin | leave a short note FOR another thread: what you posted there, why, what you wait for. Posts nothing, starts no turn; that thread's session reads it on its next turn, whoever speaks (it is part of that turn's message, so the session keeps it for the turns after), then it is marked read for that access tier. It is background information only, never instructions. The receiver sees only an opaque reference to your thread (never a link) and answers with `brief <reference> <text>`. `tell` is for when the other side must act now |
-| `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. Needed because the Slack proxy only lets a turn write into its own channel. Owner only (anyone else is told who can), audit logged like every command, and it files a `brief` in the target thread so its session knows why; the bot must be in the channel |
+| `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. Needed because the Slack proxy only lets a turn write into its own channel. Owner only (anyone else is told who can), audit logged like every command, and it files a `brief` in the target thread so its session knows why; the footer under the message never names the requester; the bot must be in the channel |
 | `reply <message-link>` (alias `jrp`) | admin | draft and post an AI reply to a message |
 | `rm-msg <message-link>` (aliases `rmmsg`, `unsend`) | admin | delete a message the bot posted (a bot token cannot delete anyone else's) |
 | `workflow <task>` / `workflow stop [<thread-link>]` / `workflow status` (alias `wf`) | executer, admin | start a long task in this thread and keep talking to it (see [Workflows](#workflows)) |
@@ -838,13 +838,14 @@ The helper presents `JARVIS_SLACK_TICKET`, a ticket minted for that one process
 when it starts and revoked when it exits, to the bot's loopback endpoint
 (`POST /api/slack/proxy`). The bot checks the ticket, checks the method against
 an allowlist and calls Slack with the token it holds; Slack's own answer comes
-back unchanged. The ticket names no person and carries no role: it cannot run a
+back unchanged. The ticket names no person and carries no role, only whether the turn is the owner's: it cannot run a
 command or act on GitHub, and a command ticket cannot call Slack.
 
 | | methods |
 |---|---|
 | read, any channel | `conversations.history`, `conversations.replies`, `conversations.info`, `conversations.list` (public channels), `conversations.join` (public channels), `users.info` |
 | write, only the channel the turn runs in | `chat.postMessage`, `chat.update`, `reactions.add`, `files.getUploadURLExternal`, `files.completeUploadExternal` |
+| write, owner's turn, any channel | `chat.update` on a message the bot itself wrote (the bot reads it first and refuses any other author's) |
 | files | a private file is `bin/slack-file.sh`, through `POST /api/slack/file`: Slack file urls only, and the token never follows a redirect off Slack |
 
 A `chat.postMessage` or `files.completeUploadExternal` from a turn that runs in a
@@ -1337,8 +1338,4 @@ is never a blocker, but scope covers what a PR does **not fix**, never what it
 ## Explaining a review
 
 `quick-review help` describes the flow in a few lines; `quick-review prompt` prints the
-actual system prompt it runs on, which is no secret - it is in this repository.
-
-Both exist because the question used to cost a review: asked to explain itself,
-the bot ran `quick-review help`, took the word "help" as a target, and spent minutes
-r
+actual sys

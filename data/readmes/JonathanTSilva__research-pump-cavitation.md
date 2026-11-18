@@ -5,98 +5,84 @@
 </picture>
 <!-- brand:header:end -->
 
-<!-- PROJECT LOGO -->
-<h1 align="center">
-  <br>
-  <a href="https://github.com/JonathanTSilva/research-pump-cavitation"><img src="./Images/logo-cavitation.png" alt="Logo" width="200"></a>
-  <br>
-  Scientific Iniciation - Cavitation
-  <br>
-</h1>
+<!-- badges:start -->
+[![Status](https://img.shields.io/badge/status-inactive-silver?style=flat-square)](https://www.repostatus.org/#inactive)
+[![CI](https://img.shields.io/github/actions/workflow/status/JonathanTSilva/research-pump-cavitation/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/JonathanTSilva/research-pump-cavitation/actions/workflows/ci.yml)
+[![Scorecard](https://img.shields.io/ossf-scorecard/github.com/JonathanTSilva/research-pump-cavitation?style=flat-square&label=scorecard)](https://scorecard.dev/viewer/?uri=github.com/JonathanTSilva/research-pump-cavitation)
+[![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
+[![Codespaces](https://img.shields.io/badge/codespaces-open-181717?style=flat-square&logo=github)](https://codespaces.new/JonathanTSilva/research-pump-cavitation)
+<!-- badges:end -->
 
-<h4 align="center">
-  🔬 Diagnostic system for hydraulic pump failures by means of electric current analysis and machine learning tools.
-</h4>
+**Diagnose a hydraulic pump from the electric current of its motor.** Cavitation and dry running leave a signature in the current. This project captures it on an experimental bench, turns it into 18 numeric attributes and classifies it with a support vector machine: about 97% accuracy for cavitation and 99.6% to 100% for running empty, against a healthy pump.
 
-<!-- PROJECT SHIELDS -->
 <p align="center">
-  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Contributors">
-  </a>
-  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/network/members">
-    <img src="https://img.shields.io/github/forks/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Members">
-  </a>
-  <a href="https://github.com/JonathanTSilva/research-pump-cavitation">
-    <img src="https://img.shields.io/github/stars/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Stargazers">
-  </a>
-  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/issues">
-    <img src="https://img.shields.io/github/issues/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="Issues">
-  </a>
-  <a href="https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge" alt="License">
-  </a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/results/accuracy-dark.png">
+    <img src="assets/results/accuracy-light.png" alt="Bar chart of SVM accuracy by setup. Cavitation vs normal scores 97.3% on the reduced set and 94.9% on the full set with all attributes, and about 83% with only 3 or 5 attributes. Running empty vs normal scores 99.6% to 100% in every setup." width="85%">
+  </picture>
 </p>
 
-<!-- TABLE OF CONTENTS -->
-<details close="close" align="center">
-  <summary><b>Table of Contents</b></summary>
-          <a href="#about-the-project">About The Project</a> |
-          <a href="#getting-started">Getting Started</a> |
-          <a href="#quick-guide">Quick Guide</a> |
-          <a href="#contributing">Contributing</a> |
-          <a href="#license">License</a> |
-          <a href="#contact">Contact</a>
-</details>
+*Mean cross-validated accuracy of the classifier for each setup, from [`resultSVM.xlsx`](resultSVM.xlsx). Each setup was run in two batches and the bars show their mean.*
 
-## About the Project
+## What it is
 
-The condition monitoring of equipment is essential in industries, in order to prevent failures and ensure higher quality to activities, reducing the downtime and increasing plant availability. In this context, this work proposes the identification of current and voltage characteristics when operating hydraulic pumps through an experimental bench. A prototype of a hydraulic system was created for data collection, and through a developed algorithm, relevant information is extracted from the studied signals, coming from the industrial process. Machine learning tools for extracting and selecting attributes (such as standard deviation, entropy, harmonics, among others) are used to identify characteristics correlated with hydraulic pump failures. The results achieved should help industries to make better use of the data generated in the field, resulting in a longer useful life of their equipment when implementing the system.
+A scientific initiation project in electrical engineering at the Federal Institute (IFSP), Sertãozinho campus. Condition monitoring helps industry catch failures early, cutting downtime and raising plant availability. Here a prototype hydraulic system was built to collect data, and the code extracts what matters from the motor's current and tests whether a classifier can tell a healthy pump from a failing one.
 
-## Getting Started
+- **Three operating conditions.** The raw captures cover a pump running normally, with cavitation and empty (see [`Dataset/`](Dataset)).
+- **Current decoded from network packets.** The code reads the captured packets from the motor starter and the PLC and decodes the motor's maximum current from two bytes of each.
+- **18 attributes per sample.** Standard deviation, maximum, peak-to-peak, two entropy measures, kurtosis, RMS and skewness, plus the amplitudes of the first 10 harmonics from an FFT.
+- **An SVM with tuned hyperparameters.** An RBF-kernel SVM, with the box constraint and kernel scale chosen by Bayesian optimization and the result checked with 5-fold cross-validation.
 
-## Quick Guide
+The experiments also ask how few attributes are enough. With only the 3 or 5 most correlated attributes, cavitation accuracy falls by about 12 points, from 94.9% to roughly 83%, while detecting the empty condition stays at 100%.
+
+```mermaid
+flowchart LR
+  A[Captured packets] --> B[Decode motor current]
+  B --> C[Split into 60 samples]
+  C --> D[Extract 18 attributes]
+  D --> E[SVM, RBF kernel, 5-fold CV]
+  E --> F[Healthy or faulty]
+```
+
+## Quick start
+
+```sh
+git clone https://github.com/JonathanTSilva/research-pump-cavitation.git
+cd research-pump-cavitation
+```
+
+The code is a set of MATLAB scripts. It needs MATLAB with the Statistics and Machine Learning Toolbox and the Wavelet Toolbox (for `wentropy`). I could not run MATLAB while preparing this README, so the notes below come from reading the scripts. You can also open the repository in a dev container or GitHub Codespaces to lint the documentation with `pre-commit run --all-files`.
+
+## Usage
+
+Set `fileName` in `Main.m` to `normal`, `cavitation` or `empty`, then run it. It loads that capture from `Dataset/`, decodes the current, splits it into 60 samples, extracts the attributes and writes them to a CSV file. `SVM_CrossValidation.m` then trains and evaluates the classifier on the attribute tables.
+
+| File | What it does |
+|---|---|
+| `Main.m` | Runs the whole extraction pipeline for one capture |
+| `PacketRawDataConversion.m` | Turns the raw comma-separated packet text into byte arrays |
+| `GetActualCurrent.m` | Joins two packet bytes into the motor's maximum current, as a percentage of nominal |
+| `aSplitSamples.m` | Splits the current into 60 equal samples |
+| `aAttributesExtraction.m` | Computes the 18 attributes of each sample |
+| `GetHarmonics.m` | Returns the first 10 harmonic amplitudes through an FFT |
+| `aGenerateFigures.m` | Plots the signals and attributes |
+| `SVM_CrossValidation.m` | Optimizes and cross-validates the SVM |
+
+The data are the raw captures in `Dataset/` (about 59,000 to 61,000 packets each) and the attribute tables `dataCav.mat`, `dataEmp.mat` and `dataCorr.mat`. The scripts are kept as they were during the research, so two details need adjusting to run them in this layout: `Main.m` loads from `..\Dataset\`, a Windows path one level up, and `SVM_CrossValidation.m` loads `dataCav2.mat`, which is not in the repository (`dataCav.mat` is).
+
+## Docs
+
+The conventions this repository follows are in the [handbook](https://github.com/JonathanTSilva/.github/blob/main/handbook/README.md). The chart above is drawn from the results workbook by [`scripts/accuracy_chart.py`](scripts/accuracy_chart.py): run `uv run --with openpyxl --with matplotlib python scripts/accuracy_chart.py` from the repository root. The original contributing notes, in Portuguese, are in [`Docs/CONTRIBUTING.md`](Docs/CONTRIBUTING.md).
 
 ## Contributing
 
-<!-- MIT License -->
-<a href="https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE"><img alt="MIT License" width="100px" src="https://miro.medium.com/max/886/1*C87EjxGeMPrkTuVRVWVg4w.png" align="right" /></a>
+See the [contributing guide](https://github.com/JonathanTSilva/.github/blob/main/CONTRIBUTING.md). Branches are named `<type>/<issue>-<slug>`, commits and PR titles follow Conventional Commits, and PRs are squash-merged. The project is inactive, so changes are unlikely to be reviewed quickly.
 
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE) for more information.
+MIT. See [LICENSE](LICENSE).
 
-## Contact
-
-[Jonathan T. da Silva](https://www.linkedin.com/in/JonathanTSilva/) - <jonathan.t@aluno.ifsp.edu.br> <br/>
-Project Link: [JonathanTSilva/SI-Cavitation](https://github.com/JonathanTSilva/research-pump-cavitation)
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- Caso utilize as imagens em markdown, sempre seguir este padrão!-->
-<!--
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
--->
-
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-<!--
-[contributors-shield]: https://img.shields.io/github/contributors/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[contributors-url]: https://github.com/JonathanTSilva/research-pump-cavitation/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[forks-url]: https://github.com/JonathanTSilva/research-pump-cavitation/network/members
-[stars-shield]: https://img.shields.io/github/stars/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[stars-url]: https://github.com/JonathanTSilva/research-pump-cavitation
-[issues-shield]: https://img.shields.io/github/issues/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[issues-url]: https://github.com/JonathanTSilva/research-pump-cavitation/issues
-[license-shield]: https://img.shields.io/github/license/JonathanTSilva/SI-Cavitation.svg?style=for-the-badge
-[license-url]: https://github.com/JonathanTSilva/research-pump-cavitation/blob/main/LICENSE
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://www.linkedin.com/in/JonathanTSilva/
--->
-<!-- [product-screenshot]: -->
+Author: [Jonathan T. da Silva](https://www.linkedin.com/in/JonathanTSilva/).
 
 <!-- brand:footer:start -->
 <p align="right"><a href="https://www.jontobias.com"><picture>

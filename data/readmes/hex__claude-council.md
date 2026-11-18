@@ -9,6 +9,23 @@ choices.
 
 [![Tests](https://github.com/hex/claude-council/actions/workflows/tests.yml/badge.svg)](https://github.com/hex/claude-council/actions/workflows/tests.yml)
 
+## Where it runs
+
+| Where | What you get |
+| --- | --- |
+| Claude Code in a terminal | `/claude-council:ask`, every seat, and the pane beside the chat. |
+| Claude Desktop, Code tab | The same plugin and the same commands. The pane opens in Desktop's side panel. |
+| Claude Desktop, an ordinary chat | The [Desktop extension](#claude-desktop): five tools, a seat picker and an answers panel in the chat. macOS and Linux. |
+
+![Claude Desktop's Code tab: Claude's synthesis of a primary-key question on the left, the Council pane with each seat's answer on the right](assets/desktop-code-tab.png)
+
+In both, Claude can also call the council as a tool. It asks which seats and
+how verbose first, then shows a Send card, and nothing leaves your machine
+until you confirm it.
+
+claude.ai chat and Cowork run in a sandbox that can block calls to other
+providers, so the council does not work there.
+
 ## Install
 
 You need `curl` and `jq` on macOS, Linux, or Windows through Git Bash.
@@ -25,6 +42,18 @@ export OPENAI_API_KEY="..."
 # Or GEMINI_API_KEY, XAI_API_KEY, PERPLEXITY_API_KEY,
 # KIMI_API_KEY, OPENROUTER_API_KEY
 ```
+
+Or store the keys in the plugin's config. Run `/plugin configure claude-council`,
+fill in the API key rows, and choose Save configuration. Claude Code keeps them in
+its secure storage, not in a settings file. The council's mod sets each stored
+key as its variable for the whole session, so every command Claude Code starts,
+in every project, gets the stored key in place of one your shell exports.
+The OpenRouter models row takes the model ids `OPENROUTER_MODELS` takes, so
+the router's seats need no export either.
+Stored keys need Claude Code 2.1.287 or later. The desktop app's plugin
+Settings tab takes them too, for sessions on that computer. They never reach
+claude.ai chat or Cowork. [API keys](docs/REFERENCE.md#api-keys) covers where they are kept,
+when the mod does not load, and how a cleared key behaves.
 
 The `codex`, `agy` (Antigravity), `grok`, `kimi`, and `cursor-agent` CLIs use
 your existing subscriptions without an API key. Claude Code itself, the
@@ -48,6 +77,99 @@ agreement, disagreements, and recommendation. Agreement is not verification:
 the models share your description and its assumptions.
 [The synthesis names the premise that could change the answer](docs/REFERENCE.md#reading-the-synthesis).
 
+## Claude Desktop
+
+The plugin needs Claude Code. For an ordinary Claude Desktop chat there is a
+Desktop extension, `council-<version>.mcpb`, that gives Claude five tools:
+`council_ask`, `council_pick`, `council_result`, `council_status` and
+`council_settings`. It runs on macOS and Linux only, because it starts the
+council's bash scripts.
+
+1. Download `council-<version>.mcpb` from the
+   [latest release](https://github.com/hex/claude-council/releases/latest).
+   To build it yourself, run `bash extension/build.sh` in a clean checkout.
+   It needs `npm` and writes `dist/council-<version>.mcpb`.
+2. Double-click the file. Desktop warns that the extension gets access to
+   everything on your computer and is not verified by Anthropic. Both hold for
+   any extension installed from a file: its server runs as you, with your files
+   and network, and Anthropic has not reviewed it. Install only a package you
+   built or trust.
+3. In Settings, Extensions, Claude Council, Configure, paste a key for each
+   provider you want: Gemini, OpenAI, xAI, Perplexity, Kimi, OpenRouter. An
+   empty field leaves that provider's API out. Desktop stores the keys. For a
+   question, each key goes only to its own vendor's seats: the vendor's API,
+   and its CLI agent when one is installed (`codex` gets the OpenAI key, `agy`
+   the Gemini key, `grok` the xAI key, `kimi` the Kimi key). A status check is
+   different: it starts each installed CLI agent but `claude` and `opencode`
+   with every key set.
+4. In a chat, ask Claude to open the council settings. A panel in the chat
+   lists each keyed provider's models, fetched live from that provider. Pick
+   one per provider, or switch on up to 12 OpenRouter models, one seat each.
+   Every change saves at once and applies to the next question.
+5. Ask Claude to put a question to the council. Desktop asks you to approve
+   the tool call, and that approval is the only check before the question
+   leaves your machine. A panel under the tool call shows each seat's answer,
+   or its error, in a card of its own headed by the seat's name and its
+   vendor's logo, and Claude writes the synthesis below it. Desktop waits for
+   the whole run, from seconds to a few minutes.
+
+### Asking at once
+
+Name the seats or a verbosity (standard, brief or
+detailed) in your message, or say to just ask everyone, and Claude runs the
+question at once, on every default seat at standard unless you named others.
+Claude passes your question as you asked it, adding context only when it
+depends on earlier messages the council cannot see.
+
+### The picker
+
+Otherwise, as in "ask the council: which queue should we
+use?", Claude opens `council_pick`, a panel with the question, a switch per
+seat and the three verbosities. Claude then waits, in the same turn, in
+`council_result` for the picker's run.
+
+1. Press Ask. The answers appear in that panel, and the line under them says
+   "Claude is writing the synthesis".
+2. Claude writes the synthesis with no message from you. When every seat
+   fails, Claude says what failed.
+
+When no seat answers, the panel says so and Ask works again.
+
+### Changing a model in the picker
+
+On an API seat or an OpenRouter seat the
+model in grey is a button: click it to pick another model from that
+provider's live list (OpenRouter's has a filter box). The choice saves at
+once, as the settings panel's would, and applies to this question and the
+ones after it. An OpenRouter seat changes only its own model; adding or
+removing OpenRouter seats stays in the settings panel.
+
+### When Claude is no longer waiting
+
+Claude waits at most 11.5 minutes from
+when the picker opened. If it has stopped waiting by the time the answers are
+in, or you press Ask a second time in the same panel:
+
+- Desktop puts "Synthesise the council's answers (run 3f9a2c)." in the
+  message box, under a caution about malicious content, and the line under
+  the answers says to press Enter. The panel cannot send that message itself.
+- Claude then fetches that run's answers with `council_result` and writes the
+  synthesis.
+- If Desktop refuses the message, the line instead gives the words to send
+  yourself (`Ask Claude: "synthesise council run 3f9a2c"`).
+- The extension keeps the last 5 runs in which a seat answered; after that,
+  ask the council again.
+
+A question with no providers named goes to every provider with a key and to
+every CLI agent the scripts find (`codex`, `agy`, `grok`, `kimi`,
+`cursor-agent`, `ollama`) in your PATH, `~/.local/bin`, `~/bin`,
+`/opt/homebrew/bin` or `/usr/local/bin`. `claude`, `copilot` and `opencode`
+get it only when the question names them. A CLI agent answers on its own
+login, so it receives the question even when its vendor's key field is
+empty; apart from its own vendor's key it gets no key from the form. The
+[reference](docs/REFERENCE.md#claude-desktop-extension) lists the files it
+keeps and its limits.
+
 ## Features
 
 | Capability | Guide |
@@ -67,6 +189,7 @@ the models share your description and its assumptions.
 | Watch answers arrive and retry failed seats | [The pane](#the-pane) |
 | Get a note from one seat while Claude works | [Heads-up side-check](#heads-up-side-check) |
 | Have a second model review the diff before Claude stops | [Stop-gate review](docs/USAGE.md#stop-gate-review-opt-in-off-by-default) |
+| Ask the council from a Claude Desktop chat | [Claude Desktop](#claude-desktop) |
 | Call the scripts without Claude Code | [Direct script usage](docs/REFERENCE.md#direct-script-usage) |
 
 The [reference](docs/REFERENCE.md) lists every flag, variable, model default,
@@ -87,15 +210,15 @@ and the [heads-up guide](docs/USAGE.md#heads-up-side-check-opt-in-off-by-default
 
 ## The pane
 
-With `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`, the pane opens inside Claude Code,
+On Claude Code 2.1.287 or later, the pane opens inside Claude Code,
 as in the animation above. Each seat has one row with its model, a bar for
 its state, its time, and a button for what it does now: cancel, retry, open,
 or fold. When the run ends,
 the synthesis opens at the top with the answers folded below it. Reopen the
 last run with `/council-pane`. Inside tmux, the mod asks once which pane you want.
 
-Mods are early access. The [mod guide](mods/council-pane/README.md) lists
-keys, settings, and limits. It also lets Claude call the council as a tool;
+The [mod guide](mods/council-pane/README.md) lists keys, settings, limits,
+and when the mod does not load. It also lets Claude call the council as a tool;
 every call asks you first.
 
 ### What the mod runs, reads and sends
@@ -117,6 +240,9 @@ script. Your text reaches model providers only through the first two:
   refresh reaches your login (without one, your `CODEX_API_KEY` or
   `OPENAI_API_KEY` signs codex in), and none of your plugins, hooks,
   `AGENTS.md`, skills or MCP servers.
+- `bash scripts/query-council.sh --list-default-models` when Claude calls
+  the council tool, to list the seats it may offer you and to check the
+  seats it names. It reads your configuration and sends nothing.
 - `bash scripts/seat-info.sh discover`, `model <seat>` or
   `allowlisted <seat>` during `/heads-up setup` and `/heads-up on <seat>`.
   It checks which seats this machine can run and sends nothing.
@@ -134,6 +260,12 @@ It writes files in that `$TMPDIR` directory, including `model.json` and
 `.claude/council-heads-up.json` in the project, and only from
 `/heads-up setup`, `/heads-up on`, `/heads-up off` or a note's `Turn off`.
 That file is the heads-up switch. Claude Code itself does not read it.
+
+It sets environment variables in Claude Code's own process. With an API key
+or the OpenRouter models list stored in the plugin's config, it sets that
+variable, such as `OPENAI_API_KEY` or `OPENROUTER_MODELS`, when the session
+starts. Every command Claude Code starts after that gets the stored value in
+place of the one your shell exports, the same as an export would. Before a council run it sets `COUNCIL_MOD_PANE_DIR`.
 
 It touches the prompt in two places. With `wake_on_async_done` on, it
 submits `The background council job <id> has finished. Fetch it with
@@ -202,7 +334,8 @@ home, because the native CLIs find it through `USERPROFILE`.
 | Problem | Fix |
 |---|---|
 | Cloned the repo and nothing loads | Don't clone into `~/.claude/plugins/`. `pluginDirectories` is not a setting. Follow [running from a local clone](docs/REFERENCE.md#running-from-a-local-clone). |
-| No providers found | Run `/claude-council:status`. Export keys in the shell that starts Claude Code, or use `--local`. |
+| No providers found | Run `/claude-council:status`. Export keys in the shell that starts Claude Code, store them with `/plugin configure claude-council`, or use `--local`. |
+| A stored key is not used | After saving one with `claude plugin configure` in a shell, restart Claude Code. Stored keys need the council's mod, which loads on Claude Code 2.1.287 or later and not under `--safe-mode` or `disableAllHooks`. Without it, export the key in your shell. |
 | A different model answered | A header such as `grok-4.7 (grok-latest unavailable)` records a [model fallback](docs/REFERENCE.md#model-fallback). Setting that provider's `_MODEL` variable disables fallback. |
-| No pane | Use tmux or set `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` for the pane inside Claude Code. |
+| No pane | Use tmux, or update to Claude Code 2.1.287 or later for the pane inside Claude Code. The [mod guide](mods/council-pane/README.md) lists what stops it loading. |
 | Updating | Run `/plugin update claude-council`, then restart Claude Code. |

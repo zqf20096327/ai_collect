@@ -98,6 +98,7 @@ Lower-level CLI tooling that pairs with agents or runs solo.
 - [ax](https://github.com/Necmttn/ax) 🟢 — Local agent telemetry and recall.
 - [Cage](https://github.com/vitalik1921/cage) 🟢 — TypeScript contract harness that gates Claude Code or Codex on spec compatibility, invariant-linked tests, and fresh reviews.
 - [codex-profiles](https://github.com/Ducksss/codex-profiles) 🟢 — Small Bash utility for switching Codex CLI and Desktop accounts with isolated `CODEX_HOME` profiles.
+- [dev-diagnosis](https://github.com/WJDdidi-1/dev-doctor) 🟢 — Zero-dependency Node.js CLI that scores a repo 0–100 for AI-agent context hygiene and reports the token cost of files agents shouldn't read, with the .aiignore fixes to exclude them.
 - [Flisk](https://github.com/flisk-sh/flisk) 🟢 🆓 — Local environment CLI for coding agents that generates Dockerfiles, Tiltfiles, and Traefik routing from service manifests and runs stacks with Docker and Tilt.
 - [Hyperconsciousness](https://github.com/louis030195/hyperconsciousness) 🟢 🏠 - Developer-alpha Rust store for coding-agent memory with encrypted, append-only records and scoped MCP access.
 - [Kolega Code](https://github.com/kolega-ai/kolega-code) 🆓 🏠 — Source-available terminal coding agent where the model writes its own multi-agent workflows (Gigacode), provider-agnostic with MCP support.
@@ -125,6 +126,7 @@ Frameworks for running multiple agents, coordinating workflows, or building your
 - [DevIntern](https://devintern.com/) 🆓 💰 🏠 — Source-available (FSL-1.1-ALv2) self-hosted worker that picks up ready Jira, Linear, GitHub Issues, Trello, Asana, Azure DevOps or markdown tickets, runs Claude Code, Codex, Cursor or OpenCode with your own keys, and opens pull requests that take review comments as follow-up commits.
 - [FlowDeck Studio](https://flowdeck.studio/) 💰 - Native macOS workspace that runs Claude Code, Codex and Cursor sessions in parallel on iOS and macOS projects, each in its own Git worktree and simulator so agents can build, run and test the app themselves.
 - [Kodama](https://github.com/optimiware/kodama) 🟢 🏠 — API-first, multi-tenant software factory in Go (Apache-2.0) that runs sequential container pipelines and AI coding agents on rootless Podman 5 locally and Kubernetes Jobs in production with PostgreSQL RLS, NATS JetStream, REST/MCP edges, gitolite-style Git access rules, and human-in-the-loop role inbox approvals.
+- [Mel](https://www.openmel.dev) 🆓 💰 — Multi-agent, multi-model AI terminal for macOS, Windows and Linux with a VS Code extension, where a lead agent spawns worker agents in real panes under configurable approvals; free with your own API key.
 - [Superagent](https://github.com/pungme/superagent-desktop) 🟢 🏠 — MIT-licensed macOS desktop app that gives Claude Code and Codex a real browser to drive, an iOS Simulator to install and screenshot apps in, and a phone companion app for remote monitoring.
 - [LangGraph](https://github.com/langchain-ai/langgraph) 🟢 — Stateful multi-agent graphs from LangChain.
 - [CrewAI](https://github.com/crewAIInc/crewAI) 🟢 — Role-based multi-agent framework.

@@ -144,6 +144,15 @@ No global install needed — add to your MCP client config and you're ready.
 This lightweight configuration skips optional ONNX, Z3, Binaryen, Camoufox, and Playwright
 packages. Remove `npm_config_omit` when those full-profile runtimes are required.
 
+**This is a Node.js service, not a browser library.** It runs over stdio or a local
+Streamable HTTP daemon (`engines.node: ^22.22.2 || ^24.15.0 || >=26.0.0`); it is not
+intended for bundling into a web page. The published tarball is ~1.45 MB gzipped /
+~5 MB unpacked (358 files, mostly `dist/`). Bundle-size sites such as Bundlephobia
+report a much smaller tree-shaken figure (~48 KB gzip) because they analyze the
+`dist/index.mjs` entry as if it were a browser bundle — that number does not describe
+the installed CLI/server. There are no install-time lifecycle scripts and no bundled
+native binaries; native runtimes are optional and loaded on demand.
+
 ### Share one daemon across multiple agents
 
 The default stdio configuration starts one full jshook process per MCP host. To share the
@@ -175,6 +184,27 @@ before exposing the endpoint beyond localhost.
 
 Switch `MCP_TOOL_PROFILE` to `workflow` once you start chaining composite scripts, or to `full`
 when you need every tool. `coverage_report` shows the active set on demand.
+
+## Telemetry (on by default)
+
+jshookmcp ships opt-out OpenTelemetry instrumentation. With **zero configuration** it exports
+minimal tool-call and search-usage signals over OTLP/HTTP to the project maintainer's ingress
+(`https://telemetry.614447.xyz`), identified only by an anonymous, locally generated
+`install.id`. No tool arguments, response bodies, host names, user names, or IPs are collected by
+default; query text is truncated to 64 characters and credential-like keys are scrubbed.
+
+This outbound traffic happens even when you invoke no tool, so it is disclosed here rather than
+buried in a guide. To disable it entirely (zero network, zero overhead) or redirect it to your own
+backend, set these in the MCP server process environment:
+
+```bash
+JSHOOK_OBSERVABILITY_EXPORTER=none          # turn telemetry off entirely
+OTEL_EXPORTER_OTLP_ENDPOINT=<your-collector> # or ship to your own OTLP backend
+OTEL_EXPORTER_OTLP_HEADERS="authorization=Bearer <token>"
+```
+
+For the full data-minimisation table and per-signal controls (`JSHOOK_OTLP_QUERY_TEXT`,
+`JSHOOK_OTLP_TOOL_ARGS`), see the [Telemetry guide](https://vmoranv.github.io/jshookmcp/guide/telemetry.html).
 
 ---
 
@@ -220,7 +250,7 @@ For production deployments see the [Security and Production guide](https://vmora
 The built-in surface below is generated from the runtime registry and checked in CI.
 
 <!-- metadata-sync:start -->
-- Package version: `0.4.6`
+- Package version: `0.4.7`
 - Built-in tools: `736`
 - Domains: `adb-bridge`, `binary-instrument`, `browser`, `canvas`, `coordination`, `core`, `cross-domain`, `dart-inspector`, `debugger`, `encoding`, `exploit-dev`, `extension-registry`, `graphql`, `instrumentation`, `maintenance`, `memory`, `mojo-ipc`, `native-bridge`, `native-emulator`, `network`, `platform`, `process`, `protocol-analysis`, `proxy`, `session`, `sourcemap`, `streaming`, `syscall-hook`, `tasks`, `tls-inspector`, `trace`, `transform`, `v8-inspector`, `wasm`, `webgpu`, `workflow`
 - Note: this snapshot is generated from the runtime registry; do not edit the counts by hand.

@@ -45,8 +45,6 @@ The result is a local-first, single-binary Rust platform you can run, inspect, a
 
 ## Swarm mechanisms
 
-Implemented today, not roadmap promises:
-
 | Mechanism | What it does |
 | --- | --- |
 | **Pheromone trace field** | Results carry a concentration that reinforces on completion, acceptance, and peer reuse, and **evaporates with a 30-minute half-life**. Strong trails attract work; stale ones fade. |
@@ -73,7 +71,7 @@ cargo run --locked -p ant3-cli -- up
 
 Open [localhost:7333](http://127.0.0.1:7333) and sign in with the contents of `.ant3/token`. Then:
 
-1. Configure a model provider and publish a Preset in **母体 Presets**.
+1. Configure a model provider and publish a Preset in **Presets**.
 2. Publish work + acceptance criteria in **任务板** (Task Board).
 3. Watch the colony take it from there; collect results in **成果库** and handle the few things that need you in **需要你处理**.
 
@@ -161,7 +159,7 @@ use ant3::{Ant, Limits, Registry};
 let agent = Ant::new(Registry::default(), Limits::default());
 ```
 
-The [offline example](examples/quickstart.rs) runs a model → tool → model cycle and redelivers the same event to demonstrate session deduplication. Pin a Git revision for reproducible builds. API reference: `cargo doc --locked --workspace --no-deps --open`.
+The [offline example](crates/ant3-core/examples/quickstart.rs) runs a model → tool → model cycle and redelivers the same event to demonstrate session deduplication. Pin a Git revision for reproducible builds. API reference: `cargo doc --locked --workspace --no-deps --open`.
 
 ## Status & boundaries
 

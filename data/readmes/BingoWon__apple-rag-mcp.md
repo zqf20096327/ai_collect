@@ -1,16 +1,18 @@
 <div align="center">
 
-<img src="https://apple-rag.com/logo-with-text.svg" alt="Apple RAG MCP" width="400">
+<img src="https://apple-rag.com/logo.svg" alt="Apple RAG" width="64">
 
-### The Apple docs MCP your AI actually deserves.
+# Apple RAG
 
-*Apple docs. WWDC26 transcripts. RAG retrieval + [Jev](https://typesafe.ai/) relevance ranking. One clean tool.*
+### Apple developer knowledge for your AI agent.
+
+*Apple docs. WWDC26 transcripts. RAG retrieval + [Jev](https://typesafe.ai/) relevance ranking. Connect via MCP / CLI.*
 
 [Website](https://apple-rag.com) · Powered by [<img src="./public/typesafe-logo.webp" alt="" width="18" height="18"> Jev](https://typesafe.ai/)
 
 [![CI](https://github.com/BingoWon/apple-rag-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/BingoWon/apple-rag-mcp/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/bingowon/apple-rag-mcp) · **English** | [中文](./README.zh-CN.md)
 
-<a href="https://apple-rag.com"><img src="https://apple-rag.com/og-image-jev.png" alt="Apple RAG MCP — Powered by Jev" width="800"></a>
+<a href="https://apple-rag.com"><img src="https://apple-rag.com/og-image.png" alt="Apple RAG — MCP / CLI for AI agents" width="800"></a>
 
 </div>
 
@@ -20,18 +22,18 @@
 
 Hybrid retrieval combines keyword and semantic search to find Apple sources. [Jev](https://typesafe.ai/) then ranks the merged candidates for relevance to your question, bringing the best matches to your agent.
 
-**Minimal footprint. Maximum signal.** Our MCP tools are designed to be lean—no bloated responses, no wasted tokens, no noise cluttering your agent's context. Just the information that matters.
+Agents can search for relevant excerpts, read source pages when they need more context, and cite the returned URLs. Choose MCP or CLI for the current environment.
 
 ### Powered by [<img src="./public/typesafe-logo.webp" alt="" width="22" height="22"> Jev](https://typesafe.ai/)
 
 [Jev](https://typesafe.ai/), a decision model, scores candidate Apple documentation
 and video transcripts against each query's API, platform, and version requirements.
-We use its relevance scores to rank the sources returned through MCP. A backup
+We use its relevance scores to rank the sources returned through MCP or CLI. A backup
 reranker takes over if the API call fails.
 
 ---
 
-## Open Source. Ready to Use.
+## Hosted and Ready to Use
 
 The [hosted service](https://apple-rag.com/) connects your agent to an Apple knowledge base that is already collected, cleaned, and indexed.
 
@@ -39,13 +41,34 @@ The [hosted service](https://apple-rag.com/) connects your agent to an Apple kno
 - **Retrieval model calls included:** Embeddings, [Jev](https://typesafe.ai/) ranking, and the backup reranker run on our service.
 - **Ongoing upkeep:** We handle content collection, index updates, database backups, and protocol compatibility.
 
-The source is public for inspection and self-hosting. Running your own instance means operating a database, building and refreshing your corpus, and managing your model API credentials.
+The hosted service operates the database, refreshes the corpus, and manages retrieval model credentials. The CLI is distributed separately; the application repository is private.
+
+`search` retrieves the indexed Apple corpus. `fetch` reads indexed pages first,
+resolves Apple redirects, and uses official document JSON or Firecrawl when content
+is missing. Responses identify the original source and retrieval method. Public
+webpages are cached separately from the RAG corpus; arbitrary third-party pages
+never enter search automatically. See [web retrieval operations](ops/web-retrieval.md)
+for limits, setup, and log meanings.
 
 [Start free](https://apple-rag.com/). [Pro](https://apple-rag.com/#pricing) includes 50,000 tool calls/week and 50/minute for $1/week, shared by `search` and `fetch`.
 
 ---
 
 ## Start in Seconds
+
+**Agents with shell access:** use the [Apple RAG CLI](packages/cli/README.md):
+
+```sh
+npm install -g apple-rag-cli
+apple-rag auth login
+apple-rag search "SwiftUI NavigationStack" --limit 3 --json
+```
+
+The public client uses the same anonymous, free and Pro access as MCP, with shared
+account quotas. CLI 2.x opens the website for independent device authorization;
+MCP Tokens are not CLI credentials. Manage CLI devices/keys in Settings. `auth status` shows the live plan and remaining quota; `upgrade`
+links to the existing subscription page. First npm publication is owner-operated;
+see [release operations](ops/cli.md) for its status and setup.
 
 **Configure with your agent:** In the [dashboard](https://apple-rag.com/overview),
 select a token and click **Copy Install Prompt**. Paste it into your current
@@ -85,7 +108,7 @@ Saving a configuration alone does not verify a working connection.
 
 > **Note:** No MCP Token required to start! You get free queries without any authentication. Add an MCP Token later for higher usage limits.
 
-## 🌟 Why Developers Love Apple RAG MCP
+## 🌟 Built for AI agents
 
 <table>
 <tr>
@@ -97,17 +120,17 @@ Get quick responses with our optimized search infrastructure. No more hunting th
 ### 🎯 **AI-Powered Hybrid Search**
 Hybrid search combines keyword and semantic retrieval for Apple documentation and video transcripts. [Jev](https://typesafe.ai/) then ranks the combined candidates against your question, giving your agent more relevant context.
 
-### 🔒 **Always Secure**
-MCP authentication ensures trusted access for your AI agents with enterprise-grade security.
+### 🔒 **Account Access**
+Use separate MCP and CLI credentials with shared account quotas and individually revocable access.
 
 </td>
 <td width="50%">
 
-### 📝 **Code Examples**
-Get practical code examples in Swift, Objective-C, and SwiftUI alongside documentation references.
+### 📝 **Source References**
+Results include source URLs so agents can verify API details and cite their references.
 
-### 🔄 **Real-time Updates**
-Our documentation index is continuously updated for WWDC26, Xcode 27 beta, and the latest Apple developer resources.
+### 🔄 **Maintained Sources**
+Our collector checks Apple documentation and developer video transcripts on a regular schedule.
 
 ### 🆓 **Start Free**
 Try without an account: 30 tool calls/week and 3/minute. Register at [apple-rag.com](https://apple-rag.com/) for 50/week and 5/minute, shared by `search` and `fetch`.
@@ -121,17 +144,17 @@ Try without an account: 30 tool calls/week and 3/minute. Register at [apple-rag.
 - **🔍 Semantic Search** - Vector similarity with semantic understanding for intelligent retrieval
 - **🔎 Keyword Search** - Precise technical term matching for API names and specific terminology
 - **🎯 Hybrid Search** - Combines keyword and semantic retrieval
-- **📚 Complete Coverage** - iOS 27, iPadOS 27, macOS 27, watchOS 27, tvOS 27, and visionOS 27 documentation
-- **🎬 WWDC26 Videos** - Full transcripts from Apple Developer videos and WWDC26 sessions
+- **📚 Apple Developer Sources** - Search the indexed documentation corpus; coverage depends on collection and indexing.
+- **🎬 Developer Videos** - Search indexed WWDC and Apple developer video transcripts.
 - **⚡ Fast Response** - Optimized for speed across all content types
-- **🚀 High Performance** - Multi-instance cluster deployment for maximum throughput
-- **🔄 Always Current** - Synced with Apple's latest docs, WWDC26 sessions, and Xcode 27 beta references
+- **🔌 MCP / CLI** - Native MCP tools or shell commands for AI agents.
+- **🔄 Scheduled Collection** - Sources are collected and indexed regularly; updates are not guaranteed to appear immediately.
 - **🛡️ Secure & Private** - Your queries stay private
 - **🌐 MCP 2026 Native** - Stateless MCP `2026-07-28`, with legacy Streamable HTTP compatibility
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+The CLI client is distributed under the [MIT License](LICENSE). The application source repository is private.
 
 <div align="center">
 

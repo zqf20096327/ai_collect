@@ -720,6 +720,8 @@ In this repository, you will find many articles related to Software Design
 
 * [Code Smell 321 - Getter Piggybacking](/Articles/Code%20Smells/Code%20Smell%20321%20-%20Getter%20Piggybacking/readme.md)
 
+* [Code Smell 322 - Request Data in Long-Lived Variables (PHP Vulnerability)](/Articles/Code%20Smells/Code%20Smell%20322%20-%20Request%20Data%20in%20Long-Lived%20Variables%20%28PHP%20Vulnerability%29/readme.md)
+
 ### Blogging
 
 * [Content Structure: The Do's and Dont's of Content Creation](/Articles/Blogging/68%20-%20Content%20Structure%20The%20Do%27s%20and%20Dont%27s%20of%20Content%20Creation/readme.md)
@@ -805,6 +807,10 @@ In this repository, you will find many articles related to Software Design
 * [The Dirty Secret Behind Loop Engineering](/Articles/Artificial%20Intelligence/91%20-%20The%20Dirty%20Secret%20Behind%20Loop%20Engineering/readme.md)
 
 * [The Great Programmer Purge: How AI Is Taking Over the Tech Workforce](/Articles/Artificial%20Intelligence/The%20Great%20Programmer%20Purge%20How%20AI%20Is%20Taking%20Over%20the%20Tech%20Workforce/readme.md)
+
+* [The Manager Who Doesn't Use AI Has Already Lost: Hard Skills](/Articles/Artificial%20Intelligence/92%20-%20The%20Manager%20Who%20Doesn%27t%20Use%20AI%20Has%20Already%20Lost%20-%20Hard%20Skills/readme.md)
+
+* [The Manager Who Doesn't Use AI Has Already Lost: Soft Skills](/Articles/Artificial%20Intelligence/93%20-%20The%20Manager%20Who%20Doesn%27t%20Use%20AI%20Has%20Already%20Lost%20-%20Soft%20Skills/readme.md)
 
 * [Why GitHub Copilot is not a Threat to your Job](/Articles/Artificial%20Intelligence/Why%20GitHub%20Copilot%20is%20not%20a%20Threat%20to%20your%20Job/readme.md)
 
@@ -1073,4 +1079,6 @@ In this repository, you will find many articles related to Software Design
 * [AI Coding Tip 039 - Give the AI a Zeroth Law](/Articles/AI%20Coding%20Tips/AI%20Coding%20Tip%20039%20-%20Give%20the%20AI%20a%20Zeroth%20Law/readme.md)
 
 * [AI Coding Tip 040 - Make the AI Audit Your Own Contradictions](/Articles/AI%20Coding%20Tips/AI%20Coding%20Tip%20040%20-%20Make%20the%20AI%20Audit%20Your%20Own%20Contradictions/readme.md)
+
+* [AI Coding Tip 041 - Turn Every Review Finding Into a Rule](/Articles/AI%20Coding%20Tips/AI%20Coding%20Tip%20041%20-%20Turn%20Every%20Review%20Finding%20Into%20a%20Rule/readme.md)
 

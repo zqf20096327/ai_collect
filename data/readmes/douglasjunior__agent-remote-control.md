@@ -13,12 +13,15 @@
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript strict">
   <img src="https://img.shields.io/badge/built_with-NestJS-E0234E?style=flat-square&logo=nestjs&logoColor=white" alt="Built with NestJS">
   <img src="https://img.shields.io/badge/Discord-bot-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord bot">
+  <img src="https://img.shields.io/badge/remote_access-WebRTC-0F766E?style=flat-square&logo=webrtc&logoColor=white" alt="Remote access over WebRTC">
   <a href="https://github.com/douglasjunior/agent-remote-control/pulls"><img src="https://img.shields.io/badge/PRs-welcome-22C55E?style=flat-square" alt="PRs welcome"></a>
 </p>
 
 <p align="center">
   <a href="#-quick-start"><b>Quick Start</b></a> ·
   <a href="#-why-agent-remote-control">Why</a> ·
+  <a href="#-web-interface">Web</a> ·
+  <a href="#️-remote-access">Remote Access</a> ·
   <a href="#-supported-agents">Agents</a> ·
   <a href="#-meet-the-team">The Team</a> ·
   <a href="#-how-it-works">How It Works</a> ·
@@ -30,18 +33,20 @@
 
 ## 💡 Why Agent Remote Control?
 
-AI coding agents are incredible, as long as you are sitting in front of the terminal that runs them. **Agent Remote Control takes the desk out of the equation.** It plugs Claude Code, Codex, Copilot, Cursor, Antigravity and OpenCode into Discord, wraps them in a team of specialized personas and lets you drive real work on real repositories from your phone.
+AI coding agents are incredible, as long as you are sitting in front of the terminal that runs them. **Agent Remote Control takes the desk out of the equation.** It plugs Claude Code, Codex, Copilot, Cursor, Antigravity and OpenCode into a web interface you can open from any browser in the world, and into Discord, wraps them in a team of specialized personas and lets you drive real work on real repositories from your phone.
 
-- 📱 **Code from anywhere.** On the couch, on the train or in the coffee line: if you can open Discord, you can ship.
-- 👥 **A team, not a single agent.** A CEO agent talks to you, scopes the request and delegates to a Product Owner, Tech Lead, Developer, Code Reviewer and Git Ops agent, in parallel when it can.
+- 📱 **Code from anywhere.** On the couch, on the train or in the coffee line: if you can open a browser or Discord, you can ship.
+- 🛰️ **Your machine, one link away.** Turn on [remote access](#️-remote-access) and the server prints a link: open it on your phone and the browser talks to your machine over an end-to-end encrypted WebRTC channel, with no port to open and no VPN.
+- 👥 **A team, not a single agent.** A CEO agent talks to you, scopes the request and delegates to a Product Owner, Tech Lead, Developer, Code Reviewer, QA and Git Ops agent, and, only when you agree, to an IT Support agent, in parallel when it can.
 - 🔌 **Bring your own agent.** Five agent CLIs supported out of the box. Switch with `/agent`, pick the model and effort with `/model`, tune each persona separately with `/profiles`, and every agent keeps its own session.
 - 🏠 **Self-hosted, your credentials.** Repositories, SSH keys and CLI logins stay on your machine. No hosted middleman and no extra API keys: it reuses the subscriptions you already have.
-- 👀 **Watch it work, live.** Reasoning and tool calls stream into the Discord thread as they happen, with a typing indicator and rate-limit-safe updates.
+- 👀 **Watch it work, live.** Reasoning and tool calls stream into the web feed and the Discord thread as they happen.
+- 📋 **A board per mission.** Every conversation keeps a board of features and tasks, as a tree or a kanban in the web interface. The Product Owner writes the business side, the Tech Lead the technical solution, the Developer implements, Git Ops links the pull request, the Code Reviewer reviews it and QA tests it in practice, each agent reading and writing the task itself, one agent per task at a time, with the full history of every change. You can create tasks yourself too, and send simple ones straight to development.
 - 🙋 **Agents ask, you answer.** When something is ambiguous, agents ask you questions one at a time, right in the chat.
 - 🧵 **One thread, one task.** Each server thread is an isolated session; DMs keep a continuous one. Sessions survive restarts and resume where they stopped.
 - 🛑 **Steer or stop anytime.** Send a follow-up while Claude Code works to steer it, or `/cancel` to abort the turn.
 - 🌍 **Speaks your language.** Answers follow the language you write in; agents talk to each other in English.
-- 🧱 **Built to be extended.** Clean Architecture with Ports & Adapters: Discord is the first channel, ACP is the agent contract, and new channels or agents are adapters away.
+- 🧱 **Built to be extended.** Clean Architecture with Ports & Adapters: the web interface and Discord are channels, ACP is the agent contract, and new channels or agents are adapters away.
 
 ## 🚀 Quick Start
 
@@ -55,7 +60,7 @@ cp .env.example .env         # then set DISCORD_BOT_TOKEN to use the Discord bot
 pnpm dev                     # server and web interface together
 ```
 
-To use Discord, invite the bot to your server ([step by step](#step-4-invite-the-bot-to-the-server)), send it a DM or mention it in a channel, pick the agent, model and effort from the numbered menu, and watch your task run. To use the browser instead, follow [Web interface](#-web-interface).
+To use the browser, follow [Web interface](#-web-interface), and [Remote access](#️-remote-access) to reach it from another network. To use Discord, invite the bot to your server ([step by step](#step-4-invite-the-bot-to-the-server)), send it a DM or mention it in a channel, pick the agent, model and effort from the numbered menu, and watch your task run.
 
 > [!WARNING]
 > **The agents run with full autonomy on the host machine.** Claude Code runs in `bypassPermissions` mode, Copilot with `allow_all`, and Codex and Cursor without approvals or sandbox. Anyone who can message the bot can execute commands with your credentials. Keep the bot in a **private server** with people you trust, and consider running it on a dedicated machine, VM or container. The same applies to the **web access token**: whoever has it can run agents on the host, so never share it or expose the server port to untrusted networks.
@@ -68,13 +73,16 @@ A browser interface to chat with the agents without Discord. It is a separate ap
 2. **Copy the access token** from the server log (`Web interface access token: ...`), or from `DATA_DIR/web/access-token`. In Docker, run `docker logs <container>`.
 3. **Open the web app** and paste the token on first use. A `#token=<token>` fragment in the URL also works; it is stored and removed from the address bar.
 
+Conversations are listed in the left sidebar, where each one can be renamed or archived from its menu; archived ones move to a collapsed group at the end of the list and still open. The book icon in the header opens the **skills** the agents read, with the roles that read each one and its full content; a custom skill has an "Ask the CEO" button that opens a conversation asking for a change to it, and a Delete button. Each skill an agent reads or writes shows in its activity, in the web feed and in the Discord thread, and the squad panel shows the agent, model and effort of each role.
+
 | Mode | Command | URL |
 |---|---|---|
 | Development | `pnpm dev:web` | `http://localhost:5173` |
-| Production build | `pnpm build && pnpm preview:web` | `http://localhost:4173` |
-| Production | nginx serving `packages/web/dist` | your domain |
+| Production build | `pnpm build && pnpm preview:web` | `http://localhost:5173` |
+| Production (server) | `WEB_STATIC_DIR=packages/web/dist`, the server serves the build on `PORT` (the Docker image does) | `http://localhost:3000` |
+| Production (nginx) | nginx serving `packages/web/dist` | your domain |
 
-Vite (`dev` and `preview`) proxies `/ws` and `/health` to the server, using the `PORT` from the root `.env` (default `3000`), so the browser sees a single origin and the server's origin check passes. If the web app reaches the server directly instead, list its origin in `WEB_ALLOWED_ORIGINS`.
+Rsbuild (`dev` and `preview`) proxies `/ws` and `/health` to the server, using the `PORT` from the root `.env` (default `3000`), so the browser sees a single origin and the server's origin check passes. If the web app reaches the server directly instead, list its origin in `WEB_ALLOWED_ORIGINS`.
 
 **nginx example**
 
@@ -110,6 +118,44 @@ server {
 | `WEB_ENABLED` | Set to `false` to leave the web channel out of the server | `true` |
 | `WEB_ACCESS_TOKEN` | Access token; generated into `DATA_DIR/web/access-token` when empty | *(generated)* |
 | `WEB_ALLOWED_ORIGINS` | Extra browser origins (comma-separated) allowed to open the WebSocket | *(same origin only)* |
+| `WEB_STATIC_DIR` | Directory with the built web app (`packages/web/dist`); the server serves it on `PORT`, at the same origin as `/ws`. The Docker image sets it | *(not served)* |
+
+## 🛰️ Remote access
+
+Reach your server from any browser in the world, with no port to open on your router and no VPN. Remote access is **off by default**: set `REMOTE_ENABLED=true` and `REMOTE_URL`, and the server prints a link at startup:
+
+```text
+Remote access link: <REMOTE_URL>/i/<instance id>#fp=<certificate fingerprint>&token=<access token>
+```
+
+Opening it loads the web app from the signaling server, which only introduces your browser to your server. They then talk over a WebRTC data channel, directly when the networks allow it and through a TURN relay when they do not, encrypted end to end either way. The connection badge in the header shows which of the two carries it (or the WebSocket, for the local web interface).
+
+- **Keep the link private.** It carries the access token, like a `#token=` link.
+- **The link pins your server.** The page refuses any server that does not present the certificate whose fingerprint the link carries, and the instance id derives from that certificate, so not even the signaling server can stand in for yours.
+- **The token stays between the browser and your server.** Before your server spends anything on a browser, the browser proves it holds the token with a code bound to its own certificate, which the signaling server relays without learning the token. Each wrong proof makes the next ones from the same address wait longer.
+- **A strong token is required.** Remote access stays off when `WEB_ACCESS_TOKEN` holds fewer than 32 characters; leave it empty to use the generated one.
+- **The link survives restarts.** The certificate and its key live in `DATA_DIR/remote`; delete that folder for a new link.
+
+> [!IMPORTANT]
+> **Remote access trusts the operator of the signaling server.** The page that opens the link comes from `REMOTE_URL`, and whoever operates that server could serve a page that reads the access token. That is why `REMOTE_URL` has no default: point it at a server you trust, or [host your own](docs/remote-access.md).
+
+**Public signaling server.** The author of this project runs a public signaling server, with a TURN relay, that anyone may use **at their own risk**:
+
+```env
+REMOTE_URL=https://arc-p2p-server.arc.douglasjunior.work
+```
+
+It stores nothing: it has no database, it keeps the servers online and the connections being negotiated in memory only, and it never sees your conversations, which travel end to end encrypted between your browser and your server, through the relay included. Its logs record only connection events, such as instance ids and the addresses its rate limits refuse, never your access token or your messages.
+
+> [!WARNING]
+> **Disclaimer.** The public signaling server and TURN relay are provided free of charge, "as is", without warranty of any kind, express or implied, including availability, capacity, performance, security or fitness for a particular purpose. They may be changed, rate limited, suspended or shut down at any time, without notice. Using them means trusting their operator with the page that reads your access token, which controls agents that run commands on your machine. In no event shall the author be liable for any claim, damage or other liability, including unauthorized access to your machine, loss of data or interruption of service, arising from or in connection with their use. If you do not accept these terms, do not use them: [host your own](docs/remote-access.md).
+
+| Variable | Description | Default |
+|---|---|---|
+| `REMOTE_ENABLED` | Set to `true` to reach this server through the signaling server | `false` |
+| `REMOTE_URL` | HTTPS URL of the signaling server that introduces browsers to this server and serves the web app of the link; plain HTTP only for `localhost` | *(required with remote access)* |
+
+[Self-hosting the signaling server and the TURN relay](docs/remote-access.md) covers `packages/p2p-server`, coturn and their deployment with CapRover.
 
 ## 🤖 Supported Agents
 
@@ -126,32 +172,53 @@ You only need one of them. An agent is listed only when its command is on the `P
 
 ## 👥 Meet the Team
 
-Every conversation is handled by a **CEO** agent that never touches the code itself: it talks to you, decides who does what and reviews the results before answering.
+Every conversation is handled by a **CEO** agent that never touches the code itself: it talks to you, turns each request into tasks on the conversation's board (or adds it to an open one), moves each task through its statuses (backlog, ready, in progress, in review, changes requested, approved, in testing, done) and delegates it to the agent its status calls for.
 
 | Role | What it does |
 |---|---|
 | 🧭 **CEO** | Talks with you, scopes requests, delegates all hands-on work and reviews the results. |
-| 🧑‍💼 **Product Owner** | Product discovery: requirements, business rules, flows and acceptance criteria. Interviews you until no loose end is left. |
-| 🧠 **Tech Lead** | Architecture analysis, investigations, trade-offs and actionable implementation plans. |
+| 🧑‍💼 **Product Owner** | Product discovery: requirements, business rules, flows and acceptance criteria. Interviews you until no loose end is left, then writes them as a feature and its tasks on the board. |
+| 🧠 **Tech Lead** | Architecture analysis, investigations, trade-offs and the technical solution of each task, splitting large work into dependent tasks. |
 | 🛠️ **Developer** | Implementation, refactoring, bug fixing, tests and local commits, following the target project's own conventions. |
-| 🔍 **Code Reviewer** | Unbiased review in a fresh session against project conventions, security and correctness. Can publish comments on PRs. |
+| 🔍 **Code Reviewer** | Unbiased review in a fresh session of the task's pull request, or of its branch locally when there is no PR, against the task, project conventions, security and correctness. Relies on the PR pipeline instead of running the project, records its findings on the task (and publishes them on the PR when there is one) and approves or requests changes. |
+| 🧪 **QA** | Tests the reviewed work in practice: runs the app from the task's branch and exercises its acceptance criteria and test cases like a real user or client, with Playwright for web interfaces and APIs and mobile-mcp for mobile apps. Never touches the code; records a test report on the task and passes or fails it. |
+| 🖥️ **IT Support** | Sets up and fixes the machine: installs programs and SDKs, changes system settings and environment variables, starts the services an environment needs. The CEO only suggests it; it investigates first, then asks you to approve a plan in plain language and changes nothing before you do. |
 | 🔀 **Git Ops** | Clones and locates repositories, pulls, pushes, rebases, opens pull requests and sets up SSH keys. |
+
+Agents keep their prompts lean and read **skills** on demand: each one receives the catalog of the skills its role may read (a name and when to use it) and asks for the full content when a task calls for it, like QA reading how to test a web interface before testing one, or the CEO reading how to run the board. Each skill declares the roles that read it.
+
+The easiest way to add a skill is to ask the CEO: *"create a skill that teaches QA how to test Electron apps"*. It checks the existing skills, asks what it needs to know and saves the skill in the expected shape. You can also write one yourself, or replace a built-in one by its name, in `DATA_DIR/skills/<skill-name>/SKILL.md`:
+
+```markdown
+---
+description: Testing an Electron desktop app in practice with Playwright. Read before testing any Electron app.
+roles: QA, DEVELOPER
+---
+
+# Testing an Electron App
+...
+```
+
+No restart is needed: an edited skill is read fresh the next time an agent asks for it, and a new one joins the catalog of the agent's next session.
 
 ## 🧠 How It Works
 
 ```mermaid
 flowchart LR
-    U(["📱 You"]) -->|message| D["Discord Bot"]
-    D --> O["Orchestrator<br/>turns · queue<br/>sessions"]
+    U(["📱 You"]) -->|browser, local or remote| W["Web interface"]
+    U -->|message| D["Discord Bot"]
+    W --> O["Orchestrator<br/>turns · queue<br/>sessions"]
+    D --> O
     O --> CEO{{"🧭 CEO"}}
     CEO --> PO["Product Owner"]
     CEO --> TL["Tech Lead"]
     CEO --> DEV["Developer"]
     CEO --> CR["Code Reviewer"]
+    CEO --> QA["QA"]
     CEO --> GIT["Git Ops"]
-    PO & TL & DEV & CR & GIT --> CLI["Agent CLI over ACP<br/>Claude Code · Codex<br/>Copilot · Cursor<br/>Antigravity · OpenCode"]
+    PO & TL & DEV & CR & QA & GIT --> CLI["Agent CLI over ACP<br/>Claude Code · Codex<br/>Copilot · Cursor<br/>Antigravity · OpenCode"]
     CLI --> WS[("Workspace<br/>your repositories")]
-    O -.->|live activity<br/>+ final answer| D
+    O -.->|live activity<br/>+ final answer| W & D
 ```
 
 Every persona runs on the agent CLI you selected, over the [Agent Client Protocol](https://agentclientprotocol.com). The orchestrator keeps a queue per conversation, persists ACP sessions per role and project, and streams every thought and tool call back to the channel.
@@ -235,11 +302,12 @@ cp .env.example .env
 |---|---|---|---|
 | `DISCORD_BOT_TOKEN` | Bot secret token | **Bot** tab > *Token* section > **Reset Token** button | *(Required for the Discord bot)* |
 | `DISCORD_GUILD_ID` | Discord server ID | Right-click your server > **Copy Server ID** *(Developer Mode enabled)* | *(Optional)* |
-| `WORKSPACE_DIR` | Root directory where repositories are cloned. On every startup, the application regenerates the CEO's `AGENTS.md` and skills in it (`.agents/skills/`, linked at `.claude/skills`); manual edits to these files are overwritten | Local machine configuration | `./workspaces` |
-| `DATA_DIR` | Directory for persisted data (`sessions.json` with the ACP session ids of each conversation, `agent-settings.json` with the agent, model and effort of each profile, and `preferences.json` with global preferences such as the user language) | Local machine configuration | `./data` |
+| `WORKSPACE_DIR` | Root directory where repositories are cloned, one project per direct subfolder | Local machine configuration | `./workspaces` |
+| `DATA_DIR` | Directory for persisted data (`sessions.json` with the ACP session ids of each conversation, `agent-settings.json` with the agent, model and effort of each profile, `preferences.json` with global preferences such as the user language, `artifacts/` with the board of each conversation, and `skills/` with your own agent skills) | Local machine configuration | `./data` |
 | `LOG_RETENTION_DAYS` | Days the log files in `DATA_DIR/logs` (`server-YYYY-MM-DD.jsonl`, one JSON record per line with `conversationId` when there is one) are kept | `14` |
 | `SESSION_IDLE_TIMEOUT_MS` | Idle time (ms) until a conversation's agent session is closed | Local machine configuration | `1800000` (30 min) |
 | `QUESTION_TIMEOUT_MS` | Time (ms) the user has to answer an agent's question; afterwards the recommended answer is assumed and the agent is told the user was absent. `0` disables the timeout | Local machine configuration | `300000` (5 min) |
+| `ARTIFACT_MAX_DELEGATIONS` | Delegations a task of the board goes through before the next one freezes it, the guard against agents looping on a task; only you take a task out of `frozen`. `0` disables it | Local machine configuration | `25` |
 | `AGENT_AUTH_ENABLED` | Enables logging the agent CLIs in from the web interface and `/agent-auth` on Discord. The login runs the CLI on the host and hands its login link to whoever asks, so keep it disabled when you do not trust everyone who can reach the bot or the web access token | Local machine configuration | `true` |
 | `AGENT_AUTH_LOGIN_TIMEOUT_MS` | Time (ms) after which a login that was not finished in the browser is stopped | Local machine configuration | `900000` |
 | `AGENT_AUTH_STATUS_TIMEOUT_MS` | Time (ms) a login-state check may take before the agent is shown as unknown | Local machine configuration | `10000` |
@@ -255,6 +323,7 @@ cp .env.example .env
 | `STT_WHISPER_BIN` / `STT_FFMPEG_BIN` | Executables used by the `whisper-cpp` provider | Local machine configuration | `whisper-cli` / `ffmpeg` |
 | `PORT` | Port for the NestJS HTTP server | Local machine configuration | `3000` |
 | `WEB_ENABLED` / `WEB_ACCESS_TOKEN` / `WEB_ALLOWED_ORIGINS` | Web interface settings; see [Web interface](#-web-interface) | Local machine configuration | `true` / *(generated)* / *(same origin only)* |
+| `REMOTE_ENABLED` / `REMOTE_URL` | Remote access settings; see [Remote access](#️-remote-access) | Local machine configuration | `false` / *(required with remote access)* |
 
 ## 🐳 Docker
 
@@ -307,7 +376,7 @@ docker run -d --name agent-remote-control \
 
 Create `~/.claude.json` beforehand if it does not exist; otherwise Docker creates a directory with that name.
 
-**Web interface in Docker.** The image contains the server only. Publish the port (`-p 3000:3000`) and read the access token with `docker logs agent-remote-control`; the published port is protected by that token and by the origin check, but anyone who obtains the token can run agents on the container, so bind it to `127.0.0.1` (`-p 127.0.0.1:3000:3000`) unless a reverse proxy sits in front. Serve `packages/web/dist` with [nginx](#-web-interface) or run `pnpm preview:web` on the host.
+**Web interface in Docker.** The image serves the web app on the same port as the server (`WEB_STATIC_DIR=/app/packages/web/dist`). Publish the port (`-p 3000:3000`), open `http://localhost:3000` and read the access token with `docker logs agent-remote-control`; the published port is protected by that token and by the origin check, but anyone who obtains the token can run agents on the container, so bind it to `127.0.0.1` (`-p 127.0.0.1:3000:3000`) unless a reverse proxy sits in front. Set `WEB_ENABLED=false` to leave the web interface out.
 
 **Rootless Docker**
 
@@ -430,7 +499,7 @@ For the Discord bot to authenticate, listen to messages, reply in direct message
 
 ### Step 5: Talking to the Bot
 
-**Agent Remote Control** works through a Discord Bot connected to your development environment. You can talk to it in two ways:
+The Discord bot connects to your development environment. You can talk to it in two ways:
 
 - **In Private (Direct Message / DM)**:
   - After inviting the bot to your server, click the bot's profile in the member list on the right and click **Send Message** (open a private DM).
@@ -441,7 +510,7 @@ For the Discord bot to authenticate, listen to messages, reply in direct message
 - **Choosing Agent, Model and Effort**:
   - On the first message, if there is no saved configuration yet, the bot lists the numbered agents whose CLI is on the `PATH` (any of Antigravity, Claude Code, GitHub Copilot, OpenAI Codex, Cursor and OpenCode). Reply with the agent number, then with the model number and, if the model has effort levels, with the effort number. The task you sent runs right after.
   - Type `/agent` to switch agents (followed by choosing its model and effort) and `/model` to change only the model and effort of the current agent. `/agent` and `/model` apply to every profile. Each conversation keeps the session of each agent, so going back to an agent resumes the conversation it already had.
-  - Type `/profiles` to configure agent, model and effort per profile (CEO, Product Owner, Tech Lead, Developer, Code Reviewer and Git Ops): reply with one or more numbers separated by commas, choose the agent, model and effort, and repeat for other profiles; `0` exits. A profile whose saved agent is not on the `PATH` is listed with `(not installed)`; its turns fail until the agent is installed again or another one is chosen. Changes apply to the next turn or delegation without interrupting work in progress.
+  - Type `/profiles` to configure agent, model and effort per profile (CEO, Product Owner, Tech Lead, Developer, Code Reviewer, QA, Git Ops and IT Support): reply with one or more numbers separated by commas, choose the agent, model and effort, and repeat for other profiles; `0` exits. A profile whose saved agent is not on the `PATH` is listed with `(not installed)`; its turns fail until the agent is installed again or another one is chosen. Changes apply to the next turn or delegation without interrupting work in progress.
   - Type `/usage` to see the usage limits of every available agent, one section per agent.
   - Type `/shell <command>` (e.g. `/shell df -h`) to run a command directly on the host, in the workspace directory, without going through the agents. The answer is visible only to you and shows the output and exit code. The command is only available when `SHELL_COMMAND_ENABLED=true`; `/cancel` stops it.
   - Every answer ends with a footer showing the role, agent, model and effort used, for example: `🤖 CEO (claude) · 🧠 Opus 5.5 · ⚡ high`.
@@ -505,12 +574,14 @@ Create the feature/password-reset branch in the my-backend project, commit the c
 
 ## 🏗️ Architecture
 
-A NestJS application built on **Clean Architecture with Ports & Adapters** and **Use Cases**. Business rules are fully decoupled from technology details (Discord.js, the ACP SDK, the file system and command execution), and the code is structured as autonomous vertical modules in `packages/server/src/modules/`:
+A NestJS application built on **Clean Architecture with Ports & Adapters** and **Use Cases**. Business rules are fully decoupled from technology details (Discord.js, WebSocket and WebRTC, the ACP SDK, the file system and command execution), and the code is structured as autonomous vertical modules in `packages/server/src/modules/`:
 
 - **`agent`** (`packages/server/src/modules/agent`): integration layer with AI agents over ACP. Provides the `IAgentPort` port, the `AbstractAcpAdapter` base adapter, the real-time stream demultiplexer `AgentStreamDemux`, the `AcpAgentPortFactoryAdapter` factory and the concrete adapters `AntigravityAdapter` (Google Antigravity CLI through its native ACP mode `agy acp`), `ClaudeCodeAdapter` (Claude Code CLI through the official ACP adapter `@agentclientprotocol/claude-agent-acp`), `CodexAdapter` (OpenAI Codex CLI through `@agentclientprotocol/codex-acp`), `CopilotAdapter` (GitHub Copilot CLI through its native ACP mode `copilot --acp`) `CursorAdapter` (Cursor CLI through its native ACP mode) and `OpenCodeAdapter` (OpenCode CLI through its native ACP mode `opencode acp`).
 - **`orchestrator`** (`packages/server/src/modules/orchestrator`): channel-agnostic orchestration engine. Contains the `ExecuteAgentTurnUseCase` and `CancelAgentTurnUseCase` use cases, session persistence management (`ISessionStorePort`) and reactive event coordination.
-- **`agent-definitions`** (`packages/server/src/modules/agent-definitions`): registry and parameterization of agent personas (`AgentRegistryService`): **CEO**, **Product Owner**, **Tech Lead**, **Developer**, **Code Reviewer** and **Git Ops**.
+- **`agent-definitions`** (`packages/server/src/modules/agent-definitions`): registry and parameterization of agent personas (`AgentRegistryService`): **CEO**, **Product Owner**, **Tech Lead**, **Developer**, **Code Reviewer**, **QA**, **Git Ops** and **IT Support**, with the skills each one reads on demand.
 - **`workspace`** (`packages/server/src/modules/workspace`): repository and workspace management (`IGitPort`, `IWorkspacePort`, `PrepareWorkspaceUseCase`).
+- **`web`** (`packages/server/src/modules/web`): primary input adapter of the web interface. Authenticates every connection with the access token, local over WebSocket or remote over WebRTC, and serves the conversations, the board, the skills and the agent login.
+- **`remote`** (`packages/server/src/modules/remote`): remote access. Keeps the host's certificate, registers it with the signaling server and answers browsers that prove the access token with a WebRTC data channel handed to the web channel.
 - **`discord`** (`packages/server/src/modules/discord`): primary input adapter through the Discord Bot (Discord.js). Manages context threads, real-time activity streaming (thoughts and tool calls) and delivery of formatted final answers.
 
 ## 🧪 Development

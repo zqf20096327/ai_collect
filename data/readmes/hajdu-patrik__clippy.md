@@ -1,6 +1,6 @@
 <img src="clippy/web/static/brand/logo.svg" alt="Clippy" height="56">
 
-# Clippy: Local AI Clipper for TikTok, Shorts & Reels
+# Clippy: free, open-source AI clipper for TikTok, Shorts and Reels
 
 ![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?style=flat&logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/Web-FastAPI-009688?style=flat&logo=fastapi&logoColor=white)
@@ -8,16 +8,16 @@
 ![Ollama](https://img.shields.io/badge/LLM-Qwen3_14B_via_Ollama-000000?style=flat&logo=ollama&logoColor=white)
 ![FFmpeg](https://img.shields.io/badge/Video-FFmpeg_NVENC-007808?style=flat&logo=ffmpeg&logoColor=white)
 ![Captions](https://img.shields.io/badge/Captions-the_video's_own_language-9E1D3E?style=flat)
-![Platform](https://img.shields.io/badge/Platform-Windows_10%2F11-0078D6?style=flat&logo=windows&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Windows_%7C_macOS_%7C_Linux-0078D6?style=flat)
 ![License](https://img.shields.io/badge/License-MIT-yellow?style=flat)
 
-[![Clippy in one minute: paste a link, get vertical clips with captions, edit them by asking in the chat](docs/assets/demo.gif)](https://hajdu-patrik.github.io/clippy/assets/demo.mp4)
+[![Clippy in one minute: paste a link, get vertical clips with captions, edit them by asking in the chat](docs/assets/demo.gif)](https://clippyai.vercel.app/assets/demo.mp4)
 
-**[Watch the one-minute demo in 4K with sound](https://hajdu-patrik.github.io/clippy/assets/demo.mp4)**: a link goes in,
+**[Watch the one-minute demo in 4K with sound](https://clippyai.vercel.app/assets/demo.mp4)**: a link goes in,
 three captioned clips come out, then one is edited from the chat. The clips are made from a public-domain NASA video;
 the long wait is sped up and marked.
 
-**Clippy** turns a video, podcast or stream (YouTube, TikTok, Instagram, Twitch, Kick, Facebook…) into vertical **9:16 clips**: on your own machine, for
+**Clippy** turns a video, podcast or stream (YouTube, TikTok, Instagram, Twitch, Kick, Facebook…) into vertical **9:16 clips**: on your own computer, for
 free. Paste a link into a ChatGPT-style chat and it:
 
 * **picks the moments with the strongest hooks** with a local LLM (Qwen3-14B through Ollama), ranked against each other,
@@ -305,7 +305,7 @@ Conventions: [CLAUDE.md](CLAUDE.md). Release history: [CHANGELOG.md](CHANGELOG.m
 
 ## FAQ
 
-**What is Clippy?** A free, open-source AI clipper that runs on your own Windows PC: paste a video link (YouTube, TikTok, Instagram, Twitch and the other sites yt-dlp supports) or a video
+**What is Clippy?** A free, open-source AI clipper that runs on your own computer: paste a video link (YouTube, TikTok, Instagram, Twitch and the other sites yt-dlp supports) or a video
 file) into a chat and get vertical 9:16 clips for TikTok, YouTube Shorts and Instagram Reels, with the strongest hooks,
 animated captions and a call to action.
 
@@ -318,9 +318,10 @@ captions can be translated between English and Hungarian.
 **Can I edit a clip after it is made?** Yes, by asking in the chat: music, logos, texts, colours, LUTs, intro / outro,
 cutting parts out, undo. Edits re-render in seconds from a cached base.
 
-**What hardware?** Windows 10/11 and Python 3.12; an NVIDIA GPU with 12-16 GB VRAM is recommended, the CPU works too.
+**What hardware?** Windows 10/11, macOS or Linux with Python 3.12; an NVIDIA GPU with 12-16 GB VRAM is recommended, the
+CPU works too.
 
-Project page: [hajdu-patrik.github.io/clippy](https://hajdu-patrik.github.io/clippy/) · machine-readable summary:
+Project page: [clippyai.vercel.app](https://clippyai.vercel.app/) · machine-readable summary:
 [llms.txt](docs/llms.txt).
 
 ## License
