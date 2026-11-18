@@ -1128,7 +1128,7 @@
   }
  },
  "discourselab/scrapai-cli": {
-  "commit_90d": 14,
+  "commit_90d": 6,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1144,10 +1144,10 @@
    "Mako": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1317,8 +1317,8 @@
   }
  },
  "cosai-oasis/secure-ai-tooling": {
-  "commit_90d": 267,
-  "commit_7d": 9,
+  "commit_90d": 196,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1333,10 +1333,10 @@
    "Mermaid": 0,
    "CSS": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1641,13 +1641,16 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261118"
+  },
+  "commit_90d": 3,
+  "commit_7d": 0
  },
  "r-muresan/automated": {
   "rel_ver": null,

@@ -368,11 +368,11 @@
   }
  },
  "pulseaiclub/phi": {
-  "commit_90d": 905,
-  "commit_7d": 42,
-  "rel_ver": "v0.29.8",
-  "rel_pub": "2026-11-09",
-  "rel_days": 2,
+  "commit_90d": 874,
+  "commit_7d": 70,
+  "rel_ver": "v0.30.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -391,10 +391,10 @@
    "Shell": 1,
    "Go Template": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1094,7 +1094,7 @@
   }
  },
  "light-and-ray/Minimalistic-Comfy-Wrapper-WebUI": {
-  "commit_90d": 137,
+  "commit_90d": 75,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1109,10 +1109,10 @@
    "CSS": 8,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1251,12 +1251,12 @@
   }
  },
  "moonlight-lupin/agent-skills": {
-  "commit_90d": 123,
-  "commit_7d": 14,
-  "rel_ver": "v0.7.0-skill-retrieval",
-  "rel_pub": "2026-10-18",
-  "rel_days": 1,
-  "rel_n90": 5,
+  "commit_90d": 146,
+  "commit_7d": 3,
+  "rel_ver": "v0.3.0-skill-governance",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1269,20 +1269,20 @@
    "Shell": 1,
    "Jinja": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
   }
  },
  "betweentwomidnights/gary4juce": {
-  "commit_90d": 123,
+  "commit_90d": 136,
   "commit_7d": 8,
-  "rel_ver": "v5.0.1",
-  "rel_pub": "2026-10-18",
+  "rel_ver": "v5.0.5",
+  "rel_pub": "2026-11-17",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1298,10 +1298,10 @@
    "Batchfile": 0,
    "Python": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1354,7 +1354,7 @@
  "xkeyC/fl_caption": {
   "rel_ver": "v0.0.12",
   "rel_pub": "2025-03-24",
-  "rel_days": 574,
+  "rel_days": 604,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1370,9 +1370,9 @@
    "CMake": 3,
    "Kotlin": 2
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1492,8 +1492,8 @@
   }
  },
  "mindspore-ai/hyper-parallel": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v1.1.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1506,16 +1506,20 @@
    "CMake": 0,
    "C": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
    "commit": "20261021"
   },
   "commit_90d": 648,
-  "commit_7d": 61
+  "commit_7d": 61,
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "xxynet/KiraAI": {
   "rel_ver": "v3.0.2",

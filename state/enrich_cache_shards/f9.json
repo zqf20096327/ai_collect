@@ -1213,7 +1213,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.7.0",
   "rel_pub": "2022-03-23",
-  "rel_days": 1670,
+  "rel_days": 1701,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1226,18 +1226,18 @@
    "Python": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "onlyoneshakibul/magic-eraser-studio": {
-  "commit_90d": 849,
-  "commit_7d": 36,
+  "commit_90d": 564,
+  "commit_7d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1248,10 +1248,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1308,11 +1308,11 @@
   }
  },
  "VeriTeknik/pluggedin-app": {
-  "commit_90d": 130,
+  "commit_90d": 108,
   "commit_7d": 0,
   "rel_ver": "v4.1.0",
   "rel_pub": "2026-09-11",
-  "rel_days": 37,
+  "rel_days": 68,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1335,10 +1335,10 @@
    "PLpgSQL": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1403,9 +1403,9 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1425,9 +1425,9 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4616,6 +4616,30 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "Domush/antigravity-plugin-context-mode": {
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 71,
+   "HTML": 29
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

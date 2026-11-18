@@ -397,8 +397,8 @@
   }
  },
  "datawhalechina/deepagents-in-action": {
-  "commit_90d": 99,
-  "commit_7d": 1,
+  "commit_90d": 102,
+  "commit_7d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -413,10 +413,10 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1718,11 +1718,11 @@
   }
  },
  "ChanMeng666/server-google-news": {
-  "commit_90d": 4,
-  "commit_7d": 4,
+  "commit_90d": 6,
+  "commit_7d": 0,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "rel_days": 34,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1735,10 +1735,10 @@
    "TypeScript": 96,
    "Dockerfile": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1810,10 +1810,10 @@
   "lang": {
    "Dockerfile": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1824,7 +1824,7 @@
   "commit_7d": 0,
   "rel_ver": "v.0.2.1",
   "rel_pub": "2025-02-27",
-  "rel_days": 598,
+  "rel_days": 629,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1838,10 +1838,10 @@
    "Jupyter Notebook": 17,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

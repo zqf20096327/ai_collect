@@ -325,8 +325,8 @@
   }
  },
  "thinkwee/AgentsMeetRL": {
-  "commit_7d": 5,
-  "commit_90d": 19,
+  "commit_7d": 1,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -338,10 +338,10 @@
    "HTML": 77,
    "Python": 23
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -378,11 +378,11 @@
   }
  },
  "ServiceNow/BrowserGym": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 1,
+  "commit_90d": 6,
   "rel_ver": "v0.14.3",
   "rel_pub": "2026-01-20",
-  "rel_days": 295,
+  "rel_days": 302,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -397,10 +397,10 @@
    "JavaScript": 2,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1369,11 +1369,11 @@
   }
  },
  "Magic-Resume/Magic-Resume": {
-  "commit_7d": 9,
-  "commit_90d": 64,
-  "rel_ver": "v2.6.5",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_7d": 0,
+  "commit_90d": 88,
+  "rel_ver": "v3.1.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1389,10 +1389,10 @@
    "Astro": 2,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1407,18 +1407,18 @@
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 23,
+  "sec_n": 30,
   "sec_worst": "critical",
-  "sec_last": "2026-10-15",
+  "sec_last": "2026-11-13",
   "sec_ids": [
-   "GHSA-g4cw-m236-q72h(-,low)",
-   "GHSA-2jv7-p2g4-9f2h(-,medium)",
-   "GHSA-3gfg-wh5g-cf74(-,medium)",
-   "GHSA-64g9-hrwx-9g6m(-,medium)",
-   "GHSA-ffr3-5f57-gf93(-,medium)",
-   "GHSA-vhp9-2xfv-rrfv(-,high)",
-   "GHSA-5w3p-qj7g-79v5(-,high)",
-   "GHSA-qcj2-qcc2-5fg4(-,high)"
+   "GHSA-mfp5-5gv8-2ph2(-,high)",
+   "GHSA-wgqr-h4c5-gw82(-,medium)",
+   "GHSA-582m-wh92-4vhr(-,high)",
+   "GHSA-m9qr-545q-8xc6(-,high)",
+   "GHSA-rr94-3mff-76gg(-,high)",
+   "GHSA-q96h-922g-m3h3(-,medium)",
+   "GHSA-2p72-j379-vmm3(-,medium)",
+   "GHSA-5xhm-p3jx-2fmc(-,medium)"
   ],
   "contrib_n": 130,
   "lang": {
@@ -1428,11 +1428,11 @@
    "Python": 0,
    "Nix": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261116",
    "release": "20261116",
-   "security": "20261019",
+   "security": "20261118",
    "contrib": "20261019",
    "lang": "20261019"
   }

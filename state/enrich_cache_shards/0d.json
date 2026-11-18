@@ -1072,10 +1072,10 @@
  },
  "Tzohar/PassLLM": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 0,
   "rel_ver": "v1.3.1",
   "rel_pub": "2026-02-14",
-  "rel_days": 246,
+  "rel_days": 277,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1088,10 +1088,10 @@
    "Python": 97,
    "Jupyter Notebook": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

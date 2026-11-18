@@ -1111,8 +1111,8 @@
   }
  },
  "voxel51/fiftyone-plugins": {
-  "commit_7d": 2,
-  "commit_90d": 7,
+  "commit_7d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1126,10 +1126,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1221,8 +1221,8 @@
   }
  },
  "XianZS/PythonLearning": {
-  "commit_7d": 0,
-  "commit_90d": 13,
+  "commit_7d": 1,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1235,18 +1235,18 @@
    "Jupyter Notebook": 14,
    "HTML": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Omni-Scientist/Awesome-AI-Scientist": {
-  "commit_7d": 0,
-  "commit_90d": 24,
+  "commit_7d": 2,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1258,10 +1258,10 @@
    "Python": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -3972,13 +3972,16 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261107",
    "security": "20261107",
    "contrib": "20261107",
-   "lang": "20261107"
-  }
+   "lang": "20261107",
+   "commit": "20261118"
+  },
+  "commit_90d": 4,
+  "commit_7d": 0
  },
  "proteus1121/manus-ai": {
   "rel_ver": null,

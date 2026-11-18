@@ -1247,7 +1247,7 @@
   }
  },
  "aaronrussell/ollama-ex": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1259,10 +1259,10 @@
   "lang": {
    "Elixir": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1295,12 +1295,12 @@
   }
  },
  "kishormorol/cli-faq-shortcuts": {
-  "commit_90d": 22,
+  "commit_90d": 43,
   "commit_7d": 0,
-  "rel_ver": "v1.2.0",
-  "rel_pub": "2026-09-28",
+  "rel_ver": "v1.3.2",
+  "rel_pub": "2026-10-29",
   "rel_days": 20,
-  "rel_n90": 3,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1311,10 +1311,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1370,8 +1370,8 @@
   }
  },
  "dlidstrom/NeuralNetworkInAllLangs": {
-  "commit_90d": 6,
-  "commit_7d": 2,
+  "commit_90d": 12,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1386,10 +1386,10 @@
    "C#": 10,
    "C++": 9
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1447,7 +1447,7 @@
   }
  },
  "Hainrixz/claude-banana": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1459,10 +1459,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

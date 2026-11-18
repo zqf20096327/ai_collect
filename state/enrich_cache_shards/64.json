@@ -1133,12 +1133,12 @@
   }
  },
  "henrique-coder/perplexity-webui-scraper": {
-  "commit_90d": 132,
+  "commit_90d": 112,
   "commit_7d": 0,
-  "rel_ver": "v1.1.10",
-  "rel_pub": "2026-10-05",
-  "rel_days": 13,
-  "rel_n90": 8,
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-10-20",
+  "rel_days": 29,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1151,10 +1151,10 @@
    "Just": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1187,8 +1187,8 @@
   }
  },
  "taishan666/MaxKB4j": {
-  "commit_90d": 387,
-  "commit_7d": 0,
+  "commit_90d": 241,
+  "commit_7d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1203,10 +1203,10 @@
    "Shell": 2,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1235,11 +1235,11 @@
   }
  },
  "TheSecuredAnalyst/security-suite": {
-  "commit_90d": 21,
-  "commit_7d": 2,
+  "commit_90d": 11,
+  "commit_7d": 0,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "rel_days": 36,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1253,18 +1253,18 @@
    "Shell": 6,
    "PowerShell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "aliammari1/awesome-ai-tools": {
-  "commit_90d": 22,
-  "commit_7d": 1,
+  "commit_90d": 136,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1278,22 +1278,22 @@
    "CSS": 28,
    "JavaScript": 7
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "LGDiMaggio/predictive-maintenance-mcp": {
-  "commit_90d": 121,
-  "commit_7d": 19,
+  "commit_90d": 254,
+  "commit_7d": 21,
   "rel_ver": "v0.13.0",
   "rel_pub": "2026-08-14",
-  "rel_days": 65,
-  "rel_n90": 2,
+  "rel_days": 96,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1307,10 +1307,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1365,10 +1365,10 @@
   }
  },
  "Viy1204/recruiting-copilot": {
-  "rel_ver": "v0.6.6",
-  "rel_pub": "2026-10-10",
-  "rel_days": 9,
-  "rel_n90": 5,
+  "rel_ver": "v0.8.3",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1380,9 +1380,9 @@
    "JavaScript": 87,
    "Shell": 13
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4942,6 +4942,23 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "dcsnak/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

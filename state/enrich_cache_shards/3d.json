@@ -1305,11 +1305,11 @@
   }
  },
  "filedcom/opentax": {
-  "commit_7d": 54,
-  "commit_90d": 131,
-  "rel_ver": "v2.0.16",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_7d": 2,
+  "commit_90d": 172,
+  "rel_ver": "v2.7.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1323,10 +1323,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1356,10 +1356,10 @@
  },
  "ElliotXie/CASSIA": {
   "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_90d": 6,
   "rel_ver": "v1.4.0",
   "rel_pub": "2026-09-10",
-  "rel_days": 38,
+  "rel_days": 69,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1374,21 +1374,21 @@
    "HTML": 5,
    "Jupyter Notebook": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "awss1i/assay": {
-  "commit_7d": 10,
-  "commit_90d": 10,
+  "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": "v0.3.1",
   "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "rel_days": 32,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1402,10 +1402,10 @@
    "Python": 31,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

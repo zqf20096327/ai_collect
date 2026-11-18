@@ -179,11 +179,11 @@
   }
  },
  "nageoffer/ragent": {
-  "commit_7d": 19,
-  "commit_90d": 124,
+  "commit_7d": 7,
+  "commit_90d": 122,
   "rel_ver": "1.1.0",
   "rel_pub": "2026-08-11",
-  "rel_days": 92,
+  "rel_days": 99,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -199,10 +199,10 @@
    "JavaScript": 1,
    "Smalltalk": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1280,11 +1280,11 @@
   }
  },
  "brillcp/PocketDex": {
-  "commit_7d": 41,
-  "commit_90d": 41,
+  "commit_7d": 0,
+  "commit_90d": 46,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1296,10 +1296,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1333,11 +1333,11 @@
   }
  },
  "opengeos/qgis-samgeo-plugin": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 1,
+  "commit_90d": 2,
   "rel_ver": "v1.4.2",
   "rel_pub": "2026-08-22",
-  "rel_days": 57,
+  "rel_days": 88,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1350,18 +1350,18 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "janosh/blog": {
-  "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_7d": 1,
+  "commit_90d": 7,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1376,22 +1376,22 @@
    "Python": 3,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "jeecgboot/jeecg-boot-starter": {
-  "commit_7d": 6,
-  "commit_90d": 18,
-  "rel_ver": "v3.9.1",
-  "rel_pub": "2026-04-29",
-  "rel_days": 172,
-  "rel_n90": 0,
+  "commit_7d": 0,
+  "commit_90d": 13,
+  "rel_ver": "v3.9.6",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1402,10 +1402,10 @@
   "lang": {
    "Java": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1426,21 +1426,21 @@
    "Jupyter Notebook": 17,
    "HTML": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261019",
    "release": "20261019",
-   "security": "20261019",
+   "security": "20261118",
    "contrib": "20261019",
    "lang": "20261019"
   }
  },
  "talirezun/the-curator": {
-  "commit_7d": 0,
-  "commit_90d": 1268,
-  "rel_ver": "v3.82.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 11,
+  "commit_7d": 56,
+  "commit_90d": 1625,
+  "rel_ver": "v3.99.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1456,10 +1456,10 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4165,13 +4165,16 @@
    "Vue": 4,
    "Python": 2
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261025",
    "security": "20261025",
    "contrib": "20261025",
-   "lang": "20261025"
-  }
+   "lang": "20261025",
+   "commit": "20261118"
+  },
+  "commit_90d": 35,
+  "commit_7d": 8
  },
  "Pick-Your-AI/.github": {
   "rel_ver": null,

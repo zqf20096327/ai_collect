@@ -991,7 +991,7 @@
   }
  },
  "Agent-One-Lab/AgentFly": {
-  "commit_90d": 0,
+  "commit_90d": 10,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1007,17 +1007,17 @@
    "Dockerfile": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "JasonHoku/ComfyUI-Ultimate-Auto-Sampler-Config-Grid-Testing-Suite": {
-  "commit_90d": 0,
+  "commit_90d": 123,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1032,22 +1032,22 @@
    "HTML": 3,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "hanssmail/quantQ": {
-  "commit_90d": 0,
+  "commit_90d": 7,
   "commit_7d": 0,
-  "rel_ver": "v1.0",
-  "rel_pub": "2019-11-26",
-  "rel_days": 2519,
-  "rel_n90": 0,
+  "rel_ver": "v2.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1058,10 +1058,10 @@
   "lang": {
    "q": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4493,6 +4493,52 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "Nihongo-editor/crypto-accumulation-scanner": {
+  "commit_90d": 13,
+  "commit_7d": 9,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "STARDUSTLC666/dsh-ppt": {
+  "rel_ver": "v0.23.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 91,
+   "TypeScript": 9
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

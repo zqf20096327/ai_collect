@@ -1281,12 +1281,12 @@
   }
  },
  "huggingface/doc-builder": {
-  "commit_90d": 35,
-  "commit_7d": 1,
-  "rel_ver": "v0.5.0",
-  "rel_pub": "2024-03-11",
-  "rel_days": 951,
-  "rel_n90": 0,
+  "commit_90d": 82,
+  "commit_7d": 2,
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1301,10 +1301,10 @@
    "TypeScript": 2,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1337,11 +1337,11 @@
   }
  },
  "the-database/traiNNer-redux": {
-  "commit_90d": 9,
-  "commit_7d": 0,
+  "commit_90d": 42,
+  "commit_7d": 2,
   "rel_ver": "onnx-for-benchmarking",
   "rel_pub": "2026-04-08",
-  "rel_days": 193,
+  "rel_days": 224,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1355,10 +1355,10 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1392,8 +1392,8 @@
   }
  },
  "erogol/BlaGPT": {
-  "commit_90d": 44,
-  "commit_7d": 0,
+  "commit_90d": 72,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1407,22 +1407,22 @@
    "Shell": 0,
    "C++": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "wso2/agent-manager": {
-  "commit_90d": 1961,
-  "commit_7d": 148,
-  "rel_ver": "amp/v1.0.0",
-  "rel_pub": "2026-09-07",
-  "rel_days": 41,
-  "rel_n90": 8,
+  "commit_90d": 2349,
+  "commit_7d": 141,
+  "rel_ver": "amp/v2026.11.0",
+  "rel_pub": "2026-10-29",
+  "rel_days": 20,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1437,10 +1437,10 @@
    "Shell": 5,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1525,10 +1525,10 @@
   }
  },
  "stabgan/openrouter-mcp-multimodal": {
-  "rel_ver": "v5.1.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 8,
-  "rel_n90": 8,
+  "rel_ver": "v5.1.3",
+  "rel_pub": "2026-10-22",
+  "rel_days": 27,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1542,9 +1542,9 @@
    "Python": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4594,6 +4594,29 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "awelist/awesome-uav-drone-ai": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

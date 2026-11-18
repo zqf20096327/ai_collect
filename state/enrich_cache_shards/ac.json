@@ -1106,8 +1106,8 @@
   }
  },
  "MIKOTOKAWAII25/local-ai-code-assistant": {
-  "commit_7d": 39,
-  "commit_90d": 920,
+  "commit_7d": 30,
+  "commit_90d": 592,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1118,10 +1118,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1176,11 +1176,11 @@
  },
  "Hipst3rMusic/obsidian-third-mind-reader": {
   "commit_7d": 0,
-  "commit_90d": 10,
-  "rel_ver": "1.0.2",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 6,
+  "commit_90d": 4,
+  "rel_ver": "1.0.3",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1193,10 +1193,10 @@
    "CSS": 26,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1204,7 +1204,7 @@
  },
  "quarkusio/quarkus-workshop-langchain4j": {
   "commit_7d": 0,
-  "commit_90d": 103,
+  "commit_90d": 89,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1219,10 +1219,10 @@
    "CSS": 4,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1253,8 +1253,8 @@
   }
  },
  "mtrnix/metronix-memory": {
-  "commit_7d": 7,
-  "commit_90d": 258,
+  "commit_7d": 0,
+  "commit_90d": 245,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1269,10 +1269,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

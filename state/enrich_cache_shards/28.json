@@ -1121,8 +1121,8 @@
   }
  },
  "evo-design/proto-tools": {
-  "commit_7d": 11,
-  "commit_90d": 118,
+  "commit_7d": 0,
+  "commit_90d": 90,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1136,10 +1136,10 @@
    "Shell": 1,
    "TeX": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1176,11 +1176,11 @@
   }
  },
  "nixfred/infomarchy": {
-  "commit_7d": 0,
-  "commit_90d": 211,
+  "commit_7d": 4,
+  "commit_90d": 246,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-09-05",
-  "rel_days": 43,
+  "rel_days": 74,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -1196,10 +1196,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1483,12 +1483,12 @@
   }
  },
  "kividbio/kividb": {
-  "commit_7d": 506,
-  "commit_90d": 1249,
-  "rel_ver": "v1.2.0",
-  "rel_pub": "2026-11-03",
-  "rel_days": 8,
-  "rel_n90": 5,
+  "commit_7d": 663,
+  "commit_90d": 1950,
+  "rel_ver": "v1.2.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 6,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1503,10 +1503,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

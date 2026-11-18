@@ -1242,11 +1242,11 @@
   }
  },
  "SyntheticAutonomicMind/SAM": {
-  "commit_7d": 4,
-  "commit_90d": 94,
-  "rel_ver": "20261018.1-dev.1",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_7d": 0,
+  "commit_90d": 130,
+  "rel_ver": "20261108.1-dev.1",
+  "rel_pub": "2026-11-08",
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -1262,10 +1262,10 @@
    "Makefile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1273,7 +1273,7 @@
  },
  "ananthanarayanan431/Langchain-Projects-LLM": {
   "commit_7d": 0,
-  "commit_90d": 12,
+  "commit_90d": 15,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1285,10 +1285,10 @@
    "Jupyter Notebook": 99,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4426,6 +4426,29 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "sprintsynergyio/qa-core-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100,
+   "CSS": 0,
+   "JavaScript": 0,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

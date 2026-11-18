@@ -1207,12 +1207,12 @@
   }
  },
  "Arthur742Ramos/repo-bootcamp": {
-  "commit_90d": 145,
-  "commit_7d": 44,
-  "rel_ver": "v1.1.1",
-  "rel_pub": "2026-09-09",
-  "rel_days": 39,
-  "rel_n90": 2,
+  "commit_90d": 154,
+  "commit_7d": 9,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1226,10 +1226,10 @@
    "Tape": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1262,12 +1262,12 @@
   }
  },
  "Hiepler/EuConform": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "@euconform/core@1.5.0",
-  "rel_pub": "2026-04-27",
-  "rel_days": 174,
-  "rel_n90": 0,
+  "commit_90d": 70,
+  "commit_7d": 14,
+  "rel_ver": "@euconform/core@1.7.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1282,10 +1282,10 @@
    "Typst": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

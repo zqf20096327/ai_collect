@@ -24,11 +24,11 @@
   }
  },
  "bentoml/BentoML": {
-  "commit_90d": 13,
-  "commit_7d": 0,
+  "commit_90d": 14,
+  "commit_7d": 1,
   "rel_ver": "v1.4.40",
   "rel_pub": "2026-10-23",
-  "rel_days": 14,
+  "rel_days": 26,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "Starlark": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -247,12 +247,12 @@
   }
  },
  "KhazP/vibe-coding-prompt-template": {
-  "commit_90d": 31,
-  "commit_7d": 0,
-  "rel_ver": "v3.1.0",
-  "rel_pub": "2026-08-20",
-  "rel_days": 58,
-  "rel_n90": 1,
+  "commit_90d": 38,
+  "commit_7d": 7,
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -265,10 +265,10 @@
    "Python": 32,
    "JavaScript": 4
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1466,8 +1466,8 @@
   }
  },
  "femto/minion": {
-  "commit_90d": 10,
-  "commit_7d": 0,
+  "commit_90d": 11,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 1,
@@ -1482,10 +1482,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1518,11 +1518,11 @@
   }
  },
  "ultralytics/llm": {
-  "commit_90d": 9,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": "v0.2.12",
   "rel_pub": "2026-06-10",
-  "rel_days": 130,
+  "rel_days": 161,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1535,10 +1535,10 @@
    "JavaScript": 97,
    "Python": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1631,11 +1631,11 @@
   }
  },
  "llopresto87/Cypress": {
-  "commit_90d": 215,
-  "commit_7d": 2,
-  "rel_ver": "v8.2.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_90d": 390,
+  "commit_7d": 24,
+  "rel_ver": "v8.6.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1650,10 +1650,10 @@
    "HTML": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1674,9 +1674,9 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1826,8 +1826,8 @@
   }
  },
  "trefeon/pi-freeflow": {
-  "rel_ver": "v1.38.5",
-  "rel_pub": "2026-10-18",
+  "rel_ver": "v1.47.0",
+  "rel_pub": "2026-11-17",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1841,9 +1841,9 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -2161,13 +2161,16 @@
    "Python": 81,
    "HTML": 19
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261118"
+  },
+  "commit_90d": 49,
+  "commit_7d": 0
  },
  "jdaln/dgx-spark-inference-stack": {
   "rel_ver": "v1.0.0",

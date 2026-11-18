@@ -1028,10 +1028,10 @@
    "Python": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1092,12 +1092,12 @@
   }
  },
  "Chleba/ollamaMQ": {
-  "commit_7d": 1,
-  "commit_90d": 30,
+  "commit_7d": 0,
+  "commit_90d": 25,
   "rel_ver": "v0.5.0",
   "rel_pub": "2026-09-27",
-  "rel_days": 21,
-  "rel_n90": 5,
+  "rel_days": 52,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1112,10 +1112,10 @@
    "Tape": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1147,11 +1147,11 @@
   }
  },
  "AgentToolkit/altk-evolve": {
-  "commit_7d": 30,
-  "commit_90d": 79,
-  "rel_ver": "v1.7.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_7d": 1,
+  "commit_90d": 98,
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1167,22 +1167,22 @@
    "TypeScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "FluxML/Functors.jl": {
-  "commit_7d": 4,
-  "commit_90d": 12,
+  "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": "v0.5.4",
   "rel_pub": "2026-10-15",
-  "rel_days": 3,
-  "rel_n90": 3,
+  "rel_days": 34,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1193,21 +1193,21 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "cohere-ai/cohere-developer-experience": {
-  "commit_7d": 1,
-  "commit_90d": 47,
-  "rel_ver": "typescript@8.2.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
+  "commit_7d": 2,
+  "commit_90d": 50,
+  "rel_ver": "typescript@8.3.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1223,10 +1223,10 @@
    "Python": 0,
    "TypeScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1281,11 +1281,11 @@
   }
  },
  "openai/snap-o": {
-  "commit_7d": 4,
-  "commit_90d": 267,
-  "rel_ver": "14.1.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
+  "commit_7d": 11,
+  "commit_90d": 249,
+  "rel_ver": "15.0.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1301,10 +1301,10 @@
    "Python": 9,
    "Java": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1421,7 +1421,7 @@
  },
  "optimalone/build-your-own-coding-agent": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1432,10 +1432,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1480,13 +1480,16 @@
    "Python": 11,
    "Shell": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261118"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "Kovname/nano-banana-render": {
   "rel_ver": "v2.8.0",
@@ -4527,13 +4530,16 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261028",
    "security": "20261028",
    "contrib": "20261028",
-   "lang": "20261028"
-  }
+   "lang": "20261028",
+   "commit": "20261118"
+  },
+  "commit_90d": 164,
+  "commit_7d": 14
  },
  "backmeupplz/agentboard": {
   "rel_ver": "v0.1.12",
@@ -5076,6 +5082,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "GenesisAgentInfra/genesis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 46,
+   "Python": 32,
+   "TypeScript": 17,
+   "CSS": 3,
+   "JavaScript": 2
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

@@ -341,11 +341,11 @@
   }
  },
  "jegly/Box": {
-  "commit_90d": 80,
-  "commit_7d": 4,
+  "commit_90d": 90,
+  "commit_7d": 7,
   "rel_ver": "3.5.7",
   "rel_pub": "2026-11-09",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -361,10 +361,10 @@
    "JavaScript": 1,
    "CMake": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -857,12 +857,12 @@
   }
  },
  "Prescott-Data/jarviscore-framework": {
-  "commit_90d": 234,
-  "commit_7d": 6,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 12,
-  "rel_n90": 1,
+  "commit_90d": 193,
+  "commit_7d": 0,
+  "rel_ver": "v3.0.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -877,10 +877,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1141,11 +1141,11 @@
   }
  },
  "sakeven/Selected": {
-  "commit_90d": 17,
+  "commit_90d": 22,
   "commit_7d": 0,
   "rel_ver": "v0.2.8",
   "rel_pub": "2026-09-13",
-  "rel_days": 35,
+  "rel_days": 66,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1157,10 +1157,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1195,11 +1195,11 @@
   }
  },
  "moonrunnerkc/swarm-orchestrator": {
-  "commit_90d": 1274,
-  "commit_7d": 202,
-  "rel_ver": "v14.4.0",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
+  "commit_90d": 1286,
+  "commit_7d": 0,
+  "rel_ver": "v15.0.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 19,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1215,18 +1215,18 @@
    "Shell": 0,
    "Go": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "coval-ai/benchmarks": {
-  "commit_90d": 359,
-  "commit_7d": 13,
+  "commit_90d": 320,
+  "commit_7d": 50,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1240,18 +1240,18 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "songshikang0111/awesome-REA-cases": {
-  "commit_90d": 67,
-  "commit_7d": 57,
+  "commit_90d": 249,
+  "commit_7d": 44,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1262,10 +1262,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

@@ -1359,8 +1359,8 @@
   }
  },
  "InterDigitalInc/CompressAI-Vision": {
-  "commit_7d": 0,
-  "commit_90d": 13,
+  "commit_7d": 1,
+  "commit_90d": 30,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1374,10 +1374,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1463,12 +1463,12 @@
   }
  },
  "vuphongle/oss-pr-reviewer": {
-  "commit_7d": 0,
-  "commit_90d": 39,
+  "commit_7d": 4,
+  "commit_90d": 20,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-08-13",
-  "rel_days": 66,
-  "rel_n90": 4,
+  "rel_days": 97,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1480,21 +1480,21 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "HugoRCD/nuxt-ui-chat": {
-  "commit_7d": 2,
-  "commit_90d": 3,
+  "commit_7d": 1,
+  "commit_90d": 4,
   "rel_ver": "v1.0.0",
   "rel_pub": "2025-07-14",
-  "rel_days": 461,
+  "rel_days": 492,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1509,10 +1509,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1546,11 +1546,11 @@
   }
  },
  "steventsvik/Tellurion": {
-  "commit_7d": 116,
-  "commit_90d": 234,
-  "rel_ver": "extreme-1.7.2",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_7d": 7,
+  "commit_90d": 1496,
+  "rel_ver": "extreme-1.9.4",
+  "rel_pub": "2026-11-12",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1566,10 +1566,10 @@
    "C++": 3,
    "C": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1619,9 +1619,9 @@
    "JavaScript": 2,
    "HTML": 2
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1633,7 +1633,7 @@
  "NeverSight/NeverD": {
   "rel_ver": "web-product-windows-x64-2026-10-15",
   "rel_pub": "2026-10-15",
-  "rel_days": 4,
+  "rel_days": 34,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1649,9 +1649,9 @@
    "Assembly": 1,
    "CMake": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -5270,6 +5270,36 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "TsinHzl/kiro2cc-proxy": {
+  "commit_90d": 607,
+  "commit_7d": 39,
+  "rel_ver": "v3.5.8",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 6,
+  "lang": {
+   "Rust": 66,
+   "TypeScript": 26,
+   "CSS": 5,
+   "Shell": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

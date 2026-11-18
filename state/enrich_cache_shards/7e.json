@@ -416,8 +416,8 @@
   }
  },
  "xing61/zzz-api": {
-  "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_7d": 1,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -426,10 +426,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261017",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -997,12 +997,12 @@
   }
  },
  "martosaur/instructor_lite": {
-  "commit_7d": 1,
-  "commit_90d": 18,
+  "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": "v1.3.0",
   "rel_pub": "2026-07-26",
-  "rel_days": 84,
-  "rel_n90": 1,
+  "rel_days": 115,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1013,10 +1013,10 @@
   "lang": {
    "Elixir": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1045,12 +1045,12 @@
   }
  },
  "tbhb/vale-ai-tells": {
-  "commit_7d": 2,
-  "commit_90d": 116,
+  "commit_7d": 0,
+  "commit_90d": 43,
   "rel_ver": "v1.37.0",
   "rel_pub": "2026-09-15",
-  "rel_days": 33,
-  "rel_n90": 12,
+  "rel_days": 64,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1064,10 +1064,10 @@
    "JavaScript": 2,
    "Go Template": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1078,7 +1078,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.1.9",
   "rel_pub": "2026-07-19",
-  "rel_days": 91,
+  "rel_days": 122,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1094,10 +1094,10 @@
    "Makefile": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1182,8 +1182,8 @@
   }
  },
  "langchain-ai/paid-media-agent": {
-  "commit_7d": 6,
-  "commit_90d": 60,
+  "commit_7d": 8,
+  "commit_90d": 80,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1198,10 +1198,10 @@
    "Jinja": 2,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1257,10 +1257,10 @@
  "opentiny/tiny-robot": {
   "commit_7d": 2,
   "commit_90d": 52,
-  "rel_ver": "v0.5.1",
-  "rel_pub": "2026-08-10",
-  "rel_days": 70,
-  "rel_n90": 1,
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1275,19 +1275,19 @@
    "Less": 1,
    "CSS": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
   }
  },
  "shengyanlin/claude-overlay": {
-  "rel_ver": "v1.24.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 4,
+  "rel_ver": "v1.28.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1301,9 +1301,9 @@
    "Batchfile": 4,
    "PowerShell": 3
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

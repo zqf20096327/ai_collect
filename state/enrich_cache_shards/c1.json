@@ -1071,11 +1071,11 @@
   }
  },
  "KryptosAI/mcp-observatory": {
-  "commit_90d": 179,
-  "commit_7d": 0,
-  "rel_ver": "v1.49.0",
-  "rel_pub": "2026-10-01",
-  "rel_days": 17,
+  "commit_90d": 70,
+  "commit_7d": 13,
+  "rel_ver": "v1.50.1",
+  "rel_pub": "2026-10-21",
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1091,10 +1091,10 @@
    "JavaScript": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1187,8 +1187,8 @@
   }
  },
  "RioShiina47/comfy-webui": {
-  "commit_90d": 35,
-  "commit_7d": 3,
+  "commit_90d": 30,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1199,10 +1199,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1279,13 +1279,13 @@
   }
  },
  "NeuroSkill-com/skill": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v0.0.131-rc.35",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_90d": 72,
+  "commit_7d": 15,
+  "rel_ver": "v0.1.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1299,10 +1299,10 @@
    "JavaScript": 3,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1323,9 +1323,9 @@
    "TypeScript": 4,
    "Shell": 3
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

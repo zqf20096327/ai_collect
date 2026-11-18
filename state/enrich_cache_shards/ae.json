@@ -1055,11 +1055,11 @@
   }
  },
  "deepnoodle-ai/dive": {
-  "commit_7d": 8,
-  "commit_90d": 96,
-  "rel_ver": "v1.39.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_7d": 10,
+  "commit_90d": 81,
+  "rel_ver": "v1.45.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1074,10 +1074,10 @@
    "Makefile": 0,
    "Go Template": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1085,7 +1085,7 @@
  },
  "lihaiya/freeipcc": {
   "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1100,20 +1100,20 @@
    "EJS": 0,
    "SCSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "avirtual/clodex": {
-  "commit_7d": 333,
-  "commit_90d": 7381,
-  "rel_ver": "v5.131.1",
-  "rel_pub": "2026-10-17",
+  "commit_7d": 393,
+  "commit_90d": 8160,
+  "rel_ver": "v5.188.3",
+  "rel_pub": "2026-11-17",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1130,23 +1130,23 @@
    "Shell": 1,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "devsy-org/devsy": {
-  "commit_7d": 68,
-  "commit_90d": 718,
-  "rel_ver": "v1.24.0-beta.5",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_7d": 18,
+  "commit_90d": 609,
+  "rel_ver": "v1.27.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1160,22 +1160,22 @@
    "MDX": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ceilf6/FrontAgent": {
-  "commit_7d": 0,
-  "commit_90d": 180,
+  "commit_7d": 11,
+  "commit_90d": 13,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-07-30",
-  "rel_days": 80,
-  "rel_n90": 1,
+  "rel_days": 111,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1190,10 +1190,10 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1250,7 +1250,7 @@
  },
  "ddh0/easy-llama": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1262,10 +1262,10 @@
    "Python": 100,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1364,9 +1364,9 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -3111,13 +3111,16 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261023",
    "security": "20261023",
    "contrib": "20261023",
-   "lang": "20261023"
-  }
+   "lang": "20261023",
+   "commit": "20261118"
+  },
+  "commit_90d": 350,
+  "commit_7d": 5
  },
  "frankluise5220/ComfyUI-Lorahelper": {
   "rel_ver": null,

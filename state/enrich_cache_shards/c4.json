@@ -292,9 +292,9 @@
  "Nexting-ai/nexting": {
   "commit_7d": 1,
   "commit_90d": 3,
-  "rel_ver": "windows-0.5.5",
-  "rel_pub": "2026-10-30",
-  "rel_days": 12,
+  "rel_ver": "windows-0.5.5-test.19",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -310,10 +310,10 @@
    "OpenSCAD": 2,
    "Assembly": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -343,12 +343,12 @@
   }
  },
  "datawhalechina/diy-llm": {
-  "commit_7d": 12,
-  "commit_90d": 62,
+  "commit_7d": 4,
+  "commit_90d": 68,
   "rel_ver": "V0.2",
   "rel_pub": "2026-08-17",
-  "rel_days": 86,
-  "rel_n90": 1,
+  "rel_days": 93,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -361,10 +361,10 @@
    "Python": 22,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1235,7 +1235,7 @@
  },
  "Emo-gml/Awesome-Mental-Health-LLMs": {
   "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1244,22 +1244,22 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "rouges78/GameStringer": {
-  "commit_7d": 0,
-  "commit_90d": 386,
+  "commit_7d": 21,
+  "commit_90d": 146,
   "rel_ver": "v1.17.0",
   "rel_pub": "2026-08-17",
-  "rel_days": 62,
-  "rel_n90": 3,
+  "rel_days": 93,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1274,10 +1274,10 @@
    "HTML": 3,
    "Python": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1337,8 +1337,8 @@
   }
  },
  "langchain-ai/react-agent-js": {
-  "commit_7d": 5,
-  "commit_90d": 54,
+  "commit_7d": 1,
+  "commit_90d": 67,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1349,10 +1349,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1389,8 +1389,8 @@
   }
  },
  "Dicklesworthstone/model_guided_research": {
-  "commit_7d": 23,
-  "commit_90d": 270,
+  "commit_7d": 0,
+  "commit_90d": 271,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1404,20 +1404,20 @@
    "Lean": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "akhayam99/goodboy": {
-  "commit_7d": 156,
-  "commit_90d": 3942,
-  "rel_ver": "v0.27.3",
-  "rel_pub": "2026-10-18",
+  "commit_7d": 23,
+  "commit_90d": 3100,
+  "rel_ver": "v0.39.2",
+  "rel_pub": "2026-11-18",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1434,10 +1434,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1527,8 +1527,8 @@
   }
  },
  "mrpulor-gh/nuphus": {
-  "rel_ver": "v0.2.30",
-  "rel_pub": "2026-10-17",
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-11-16",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1545,9 +1545,9 @@
    "JavaScript": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1584,9 +1584,9 @@
   }
  },
  "Myriad-You/Myriad": {
-  "rel_ver": "v0.6.3",
-  "rel_pub": "2026-10-07",
-  "rel_days": 12,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1602,9 +1602,9 @@
    "JavaScript": 1,
    "Shell": 1
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

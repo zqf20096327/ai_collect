@@ -1188,12 +1188,12 @@
   }
  },
  "regolo-ai/brick-SR1": {
-  "commit_90d": 332,
-  "commit_7d": 20,
+  "commit_90d": 316,
+  "commit_7d": 37,
   "rel_ver": "v3.0.2",
   "rel_pub": "2026-09-17",
-  "rel_days": 31,
-  "rel_n90": 4,
+  "rel_days": 62,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1208,21 +1208,21 @@
    "JavaScript": 1,
    "Rust": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "hanyeol/model-compose": {
-  "commit_90d": 1167,
-  "commit_7d": 113,
+  "commit_90d": 1215,
+  "commit_7d": 34,
   "rel_ver": "v0.4.0",
   "rel_pub": "2025-09-02",
-  "rel_days": 411,
+  "rel_days": 442,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1235,10 +1235,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1346,10 +1346,10 @@
   }
  },
  "avivsinai/jenkins-cli": {
-  "rel_ver": "v0.0.39",
-  "rel_pub": "2026-10-15",
-  "rel_days": 4,
-  "rel_n90": 4,
+  "rel_ver": "v0.0.45",
+  "rel_pub": "2026-11-09",
+  "rel_days": 9,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1363,9 +1363,9 @@
    "Makefile": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1375,10 +1375,10 @@
   "commit_7d": 7
  },
  "ankimcp/anki-mcp-server-addon": {
-  "rel_ver": "v0.40.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 8,
-  "rel_n90": 11,
+  "rel_ver": "v0.41.2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -1395,9 +1395,9 @@
    "Shell": 0,
    "Nix": 0
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1449,9 +1449,9 @@
   }
  },
  "TwelveTake-Studios/reaper-mcp": {
-  "rel_ver": "v1.9.1",
-  "rel_pub": "2026-10-18",
-  "rel_days": 1,
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1466,9 +1466,9 @@
    "Nix": 0,
    "Shell": 0
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4862,6 +4862,29 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "rasterotboga-source/Gemini-Config-Checker-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 55,
+   "HTML": 33,
+   "Kotlin": 4,
+   "JavaScript": 4,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

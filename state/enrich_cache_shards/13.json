@@ -1319,13 +1319,13 @@
   }
  },
  "tridz-dev/huf": {
-  "commit_90d": 1495,
+  "commit_90d": 2729,
   "commit_7d": 0,
-  "rel_ver": "v1.0.0-beta.3",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
-  "rel_n90": 3,
-  "rel_pre": true,
+  "rel_ver": "v1.0.0-beta.6",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
+  "rel_n90": 6,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1339,21 +1339,21 @@
    "HTML": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "WecoAI/weco-cli": {
-  "commit_90d": 28,
-  "commit_7d": 4,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-08-21",
-  "rel_days": 58,
+  "commit_90d": 34,
+  "commit_7d": 0,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1366,21 +1366,21 @@
    "Python": 89,
    "HTML": 11
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "lucidrains/evolutionary-policy-optimization": {
-  "commit_90d": 8,
-  "commit_7d": 3,
+  "commit_90d": 10,
+  "commit_7d": 0,
   "rel_ver": "0.2.15",
   "rel_pub": "2025-08-03",
-  "rel_days": 441,
+  "rel_days": 472,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1392,10 +1392,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1425,9 +1425,9 @@
   }
  },
  "lightsifter/sift-light": {
-  "rel_ver": "v1.1.1-7",
-  "rel_pub": "2026-10-14",
-  "rel_days": 5,
+  "rel_ver": "v1.1.2-2",
+  "rel_pub": "2026-11-02",
+  "rel_days": 16,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1441,9 +1441,9 @@
    "TypeScript": 35,
    "Swift": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1609,9 +1609,9 @@
   }
  },
  "Soren-ABT/dsh-knowledge": {
-  "rel_ver": "v0.5.2",
-  "rel_pub": "2026-10-10",
-  "rel_days": 9,
+  "rel_ver": "v0.5.4",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1624,9 +1624,9 @@
    "TypeScript": 94,
    "JavaScript": 6
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

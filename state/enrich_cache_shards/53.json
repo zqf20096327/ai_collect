@@ -956,11 +956,11 @@
   }
  },
  "nirholas/PAI": {
-  "commit_90d": 11,
-  "commit_7d": 0,
+  "commit_90d": 29,
+  "commit_7d": 3,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-04-21",
-  "rel_days": 180,
+  "rel_days": 211,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -976,17 +976,17 @@
    "JavaScript": 11,
    "CSS": 6
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "the-teacher/active_harness": {
-  "commit_90d": 15,
+  "commit_90d": 22,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -999,10 +999,10 @@
    "Ruby": 99,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1154,8 +1154,8 @@
  "AIPMAndy/dna-memory": {
   "rel_ver": "v3.1.1",
   "rel_pub": "2026-07-22",
-  "rel_days": 89,
-  "rel_n90": 2,
+  "rel_days": 119,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1166,9 +1166,9 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4780,6 +4780,23 @@
    "security": "20261117",
    "contrib": "20261117",
    "lang": "20261117"
+  }
+ },
+ "AntikvarX/ai--manus2.0": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

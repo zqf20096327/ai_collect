@@ -821,12 +821,12 @@
   }
  },
  "llm-exe/llm-exe": {
-  "commit_7d": 126,
-  "commit_90d": 537,
+  "commit_7d": 17,
+  "commit_90d": 533,
   "rel_ver": "v3.0.7",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
-  "rel_n90": 5,
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -839,21 +839,21 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ecwilsonaz/mediasage": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 15,
+  "commit_90d": 56,
   "rel_ver": "v0.2.0",
   "rel_pub": "2026-02-20",
-  "rel_days": 240,
+  "rel_days": 271,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -869,10 +869,10 @@
    "HTML": 7,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

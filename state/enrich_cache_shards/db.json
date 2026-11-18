@@ -583,11 +583,11 @@
   }
  },
  "ranxi2001/zero2Agent": {
-  "commit_90d": 48,
+  "commit_90d": 47,
   "commit_7d": 1,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 77,
+  "rel_days": 84,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -603,10 +603,10 @@
    "CSS": 15,
    "TeX": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1211,11 +1211,11 @@
   }
  },
  "pytorch/test-infra": {
-  "commit_90d": 435,
-  "commit_7d": 38,
-  "rel_ver": "v20261016-202638",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 487,
+  "commit_7d": 46,
+  "rel_ver": "v20261112-155209",
+  "rel_pub": "2026-11-12",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1231,22 +1231,22 @@
    "Rust": 1,
    "HCL": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Socialpranker/agentburn": {
-  "commit_90d": 54,
+  "commit_90d": 44,
   "commit_7d": 1,
   "rel_ver": "v0.14.0",
   "rel_pub": "2026-09-06",
-  "rel_days": 42,
-  "rel_n90": 10,
+  "rel_days": 73,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1257,10 +1257,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1317,12 +1317,12 @@
   }
  },
  "attevon-llc/OpenTranscribe": {
-  "commit_90d": 2240,
-  "commit_7d": 2,
-  "rel_ver": "v0.5.1",
-  "rel_pub": "2026-09-20",
-  "rel_days": 29,
-  "rel_n90": 2,
+  "commit_90d": 2709,
+  "commit_7d": 0,
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1337,10 +1337,10 @@
    "Shell": 6,
    "TypeScript": 5
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4851,6 +4851,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "QwenLM/Qwen-Live-Delivery-Plugin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 67,
+   "JavaScript": 29,
+   "CSS": 2,
+   "Python": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

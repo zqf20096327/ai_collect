@@ -946,11 +946,11 @@
  },
  "zosmaai/zosma-cowork": {
   "commit_7d": 0,
-  "commit_90d": 103,
+  "commit_90d": 95,
   "rel_ver": "v0.18.0",
   "rel_pub": "2026-08-02",
-  "rel_days": 77,
-  "rel_n90": 1,
+  "rel_days": 108,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -965,10 +965,10 @@
    "MDX": 2,
    "Rust": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1004,12 +1004,12 @@
   }
  },
  "futuregene/future-os": {
-  "commit_7d": 195,
-  "commit_90d": 1244,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-09-24",
-  "rel_days": 24,
-  "rel_n90": 12,
+  "commit_7d": 56,
+  "commit_90d": 1261,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 9,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1024,22 +1024,22 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "wink-run/tokenbank": {
-  "commit_7d": 0,
-  "commit_90d": 228,
-  "rel_ver": "v0.6.0",
-  "rel_pub": "2026-09-29",
-  "rel_days": 19,
-  "rel_n90": 12,
+  "commit_7d": 20,
+  "commit_90d": 469,
+  "rel_ver": "v0.6.3",
+  "rel_pub": "2026-10-31",
+  "rel_days": 18,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1054,10 +1054,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1095,8 +1095,8 @@
   "commit_90d": 74,
   "rel_ver": "v0.6.1",
   "rel_pub": "2026-10-08",
-  "rel_days": 11,
-  "rel_n90": 2,
+  "rel_days": 41,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1111,10 +1111,10 @@
    "Jinja": 6,
    "JavaScript": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261020",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

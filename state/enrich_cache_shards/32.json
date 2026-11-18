@@ -1146,10 +1146,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1238,12 +1238,12 @@
   }
  },
  "Shaf2665/Hermes-router": {
-  "commit_7d": 0,
-  "commit_90d": 40,
-  "rel_ver": "vscode-v0.7.0",
-  "rel_pub": "2026-06-26",
-  "rel_days": 114,
-  "rel_n90": 0,
+  "commit_7d": 4,
+  "commit_90d": 56,
+  "rel_ver": "vscode-v0.9.7",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1258,10 +1258,10 @@
    "CSS": 3,
    "MDX": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1319,12 +1319,12 @@
   }
  },
  "modelscope/mcore-bridge": {
-  "commit_7d": 4,
-  "commit_90d": 53,
-  "rel_ver": "v1.6.5",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 4,
+  "commit_7d": 5,
+  "commit_90d": 64,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1335,22 +1335,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "JayFarei/opentraces": {
-  "commit_7d": 1,
-  "commit_90d": 58,
+  "commit_7d": 0,
+  "commit_90d": 27,
   "rel_ver": "v0.4.13",
   "rel_pub": "2026-07-29",
-  "rel_days": 82,
-  "rel_n90": 3,
+  "rel_days": 112,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1365,10 +1365,10 @@
    "TypeScript": 4,
    "HTML": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4658,11 +4658,11 @@
   }
  },
  "Light0305/Light-Science": {
-  "commit_90d": 5,
-  "commit_7d": 5,
+  "commit_90d": 9,
+  "commit_7d": 0,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-11-07",
-  "rel_days": 1,
+  "rel_days": 11,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -4678,10 +4678,10 @@
    "JavaScript": 3,
    "CSS": 1
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261108",
    "contrib": "20261108",
    "lang": "20261108"
@@ -4924,6 +4924,32 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "datalab-to/surya": {
+  "commit_90d": 17,
+  "commit_7d": 1,
+  "rel_ver": "v0.24.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

@@ -1150,7 +1150,7 @@
   "commit_90d": 0,
   "rel_ver": "0.3.3",
   "rel_pub": "2026-05-15",
-  "rel_days": 156,
+  "rel_days": 187,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1162,10 +1162,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1173,10 +1173,10 @@
  },
  "KOKOSde/localmod": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 3,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-01-01",
-  "rel_days": 290,
+  "rel_days": 321,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1190,10 +1190,10 @@
    "Makefile": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1323,12 +1323,12 @@
   }
  },
  "neuron-core/neuron-laravel": {
-  "commit_7d": 0,
-  "commit_90d": 3,
-  "rel_ver": "2.0.0",
-  "rel_pub": "2026-09-30",
-  "rel_days": 18,
-  "rel_n90": 1,
+  "commit_7d": 4,
+  "commit_90d": 9,
+  "rel_ver": "2.0.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1339,10 +1339,10 @@
   "lang": {
    "PHP": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1377,8 +1377,8 @@
   }
  },
  "jaimasih05-commits/swarm-foraging-qlearn": {
-  "commit_7d": 36,
-  "commit_90d": 854,
+  "commit_7d": 29,
+  "commit_90d": 564,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1389,10 +1389,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1480,12 +1480,12 @@
   }
  },
  "raullenchai/esp32-thinks": {
-  "commit_7d": 28,
-  "commit_90d": 28,
-  "rel_ver": "v0.2.1",
-  "rel_pub": "2026-10-13",
-  "rel_days": 6,
-  "rel_n90": 1,
+  "commit_7d": 0,
+  "commit_90d": 38,
+  "rel_ver": "v0.2.12",
+  "rel_pub": "2026-10-19",
+  "rel_days": 30,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1497,10 +1497,10 @@
    "Shell": 87,
    "Python": 13
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4832,5 +4832,44 @@
    "contrib": "20261115",
    "lang": "20261115"
   }
+ },
+ "zlatko-minev/notebook": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 57,
+   "JavaScript": 19,
+   "CSS": 18,
+   "HTML": 5,
+   "Shell": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "atte500/TeDDy": {
+  "rel_ver": "v0.2.2",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
+  "rel_n90": 9,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
  }
 }

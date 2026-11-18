@@ -1168,12 +1168,12 @@
   }
  },
  "innovatorved/realtime-interview-copilot": {
-  "commit_90d": 13,
+  "commit_90d": 30,
   "commit_7d": 0,
-  "rel_ver": "v0.16.1",
-  "rel_pub": "2026-09-13",
-  "rel_days": 35,
-  "rel_n90": 2,
+  "rel_ver": "v0.21.3",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1186,10 +1186,10 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1219,8 +1219,8 @@
   }
  },
  "Necolizer/awesome-rl-for-agents": {
-  "commit_90d": 14,
-  "commit_7d": 3,
+  "commit_90d": 17,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1229,10 +1229,10 @@
   "sec_ids": [],
   "contrib_n": 6,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1282,12 +1282,12 @@
   }
  },
  "yaoleifly/ai-stock-pool": {
-  "commit_90d": 132,
-  "commit_7d": 46,
+  "commit_90d": 267,
+  "commit_7d": 31,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-07-26",
-  "rel_days": 84,
-  "rel_n90": 1,
+  "rel_days": 115,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1301,10 +1301,10 @@
    "CSS": 20,
    "HTML": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1367,7 +1367,7 @@
   }
  },
  "ljleb/comfy-mecha": {
-  "commit_90d": 3,
+  "commit_90d": 0,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1380,10 +1380,10 @@
    "Python": 89,
    "JavaScript": 11
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1400,21 +1400,21 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "qualcomm/efficient-transformers": {
-  "commit_90d": 80,
+  "commit_90d": 90,
   "commit_7d": 3,
   "rel_ver": "release/v1.23.0",
   "rel_pub": "2026-09-19",
-  "rel_days": 29,
+  "rel_days": 60,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1429,10 +1429,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1440,10 +1440,10 @@
  },
  "sheshbabu/Chital": {
   "commit_90d": 8,
-  "commit_7d": 8,
+  "commit_7d": 0,
   "rel_ver": "1.9",
   "rel_pub": "2026-10-18",
-  "rel_days": 1,
+  "rel_days": 31,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -1455,10 +1455,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1479,13 +1479,16 @@
   "lang": {
    "Julia": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261118"
+  },
+  "commit_90d": 5,
+  "commit_7d": 0
  },
  "qlan3/Explorer": {
   "rel_ver": "maxmin1.0",
@@ -1587,9 +1590,9 @@
   }
  },
  "fanyuantaier/wechatbot-new": {
-  "rel_ver": "v2.2.8.4",
-  "rel_pub": "2026-10-17",
-  "rel_days": 2,
+  "rel_ver": "v2.2.8.6",
+  "rel_pub": "2026-10-31",
+  "rel_days": 18,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1603,9 +1606,9 @@
    "HTML": 44,
    "Batchfile": 0
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

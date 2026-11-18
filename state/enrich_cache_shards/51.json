@@ -168,7 +168,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.4.6",
   "rel_pub": "2025-09-18",
-  "rel_days": 419,
+  "rel_days": 426,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -181,10 +181,10 @@
    "Python": 100,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -936,11 +936,11 @@
   }
  },
  "tryingsomestuff/Minic": {
-  "commit_90d": 12,
+  "commit_90d": 20,
   "commit_7d": 0,
   "rel_ver": "3.46",
   "rel_pub": "2026-05-03",
-  "rel_days": 168,
+  "rel_days": 199,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -956,10 +956,10 @@
    "C": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -996,8 +996,8 @@
   }
  },
  "ivankadric02-alt/wyrd-ecs-core": {
-  "commit_90d": 800,
-  "commit_7d": 35,
+  "commit_90d": 542,
+  "commit_7d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1008,10 +1008,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1115,12 +1115,12 @@
   }
  },
  "linggen/linggen-memory": {
-  "commit_90d": 107,
-  "commit_7d": 0,
-  "rel_ver": "v1.9.1",
-  "rel_pub": "2026-10-05",
-  "rel_days": 13,
-  "rel_n90": 9,
+  "commit_90d": 89,
+  "commit_7d": 2,
+  "rel_ver": "v1.13.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 10,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1135,22 +1135,22 @@
    "CSS": 3,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "tue-bmd/zea": {
-  "commit_90d": 98,
-  "commit_7d": 0,
-  "rel_ver": "v0.1.8",
-  "rel_pub": "2026-10-01",
-  "rel_days": 17,
-  "rel_n90": 5,
+  "commit_90d": 103,
+  "commit_7d": 4,
+  "rel_ver": "v0.1.9",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1164,10 +1164,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1220,11 +1220,11 @@
   }
  },
  "ypollak2/llm-router": {
-  "commit_90d": 914,
-  "commit_7d": 165,
-  "rel_ver": "v15.4.0",
-  "rel_pub": "2026-09-29",
-  "rel_days": 20,
+  "commit_90d": 1180,
+  "commit_7d": 41,
+  "rel_ver": "v16.0.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1240,21 +1240,21 @@
    "TypeScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
   }
  },
  "JSv4/Docxodus": {
-  "commit_90d": 916,
-  "commit_7d": 251,
-  "rel_ver": "v14.0.0",
-  "rel_pub": "2026-10-19",
-  "rel_days": 0,
+  "commit_90d": 1424,
+  "commit_7d": 208,
+  "rel_ver": "v16.1.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1270,10 +1270,10 @@
    "Python": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

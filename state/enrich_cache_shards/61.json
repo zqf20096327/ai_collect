@@ -261,10 +261,10 @@
    "Python": 1,
    "MDX": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -302,7 +302,7 @@
  },
  "BIT-DataLab/Edit-Banana": {
   "commit_7d": 1,
-  "commit_90d": 11,
+  "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -314,10 +314,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261030",
-   "release": "20261030",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -478,10 +478,10 @@
  },
  "elixir-nx/bumblebee": {
   "commit_7d": 1,
-  "commit_90d": 13,
+  "commit_90d": 14,
   "rel_ver": "v0.8.0",
   "rel_pub": "2026-09-22",
-  "rel_days": 45,
+  "rel_days": 57,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -493,10 +493,10 @@
   "lang": {
    "Elixir": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1437,8 +1437,8 @@
   }
  },
  "wangxb96/Awesome-EdgeAI": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 24,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1447,18 +1447,18 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "nuxt-ui-templates/chat-vue": {
-  "commit_7d": 1,
-  "commit_90d": 28,
+  "commit_7d": 4,
+  "commit_90d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1472,10 +1472,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1483,10 +1483,10 @@
  },
  "day50-dev/mansnip": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 4,
   "rel_ver": "v0.6.7",
   "rel_pub": "2026-05-29",
-  "rel_days": 143,
+  "rel_days": 173,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1499,10 +1499,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

@@ -846,12 +846,12 @@
   }
  },
  "GAMS-dev/gamspy": {
-  "commit_7d": 40,
-  "commit_90d": 269,
-  "rel_ver": "v1.29.1",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "commit_7d": 33,
+  "commit_90d": 325,
+  "rel_ver": "v1.30.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 6,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -866,10 +866,10 @@
    "C": 0,
    "C++": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -898,13 +898,13 @@
   }
  },
  "off-grid-ai/OGAD": {
-  "commit_7d": 398,
-  "commit_90d": 2720,
-  "rel_ver": "v0.0.55-beta.123",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_7d": 106,
+  "commit_90d": 3418,
+  "rel_ver": "v0.0.57",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -918,10 +918,10 @@
    "Shell": 1,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -955,11 +955,11 @@
   }
  },
  "MaleleStudySpace/wx-assist": {
-  "commit_7d": 8,
-  "commit_90d": 200,
-  "rel_ver": "v1.7.0",
-  "rel_pub": "2026-10-04",
-  "rel_days": 14,
+  "commit_7d": 0,
+  "commit_90d": 139,
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 18,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -975,21 +975,21 @@
    "Batchfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Prism-Shadow/model-message-stream-protocol": {
-  "commit_7d": 2,
-  "commit_90d": 91,
-  "rel_ver": "v0.5.3",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_7d": 30,
+  "commit_90d": 162,
+  "rel_ver": "v0.5.10",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1005,10 +1005,10 @@
    "Jinja": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1035,12 +1035,12 @@
   }
  },
  "contember/okena": {
-  "commit_7d": 77,
-  "commit_90d": 509,
-  "rel_ver": "v0.34.0",
-  "rel_pub": "2026-10-09",
-  "rel_days": 10,
-  "rel_n90": 7,
+  "commit_7d": 96,
+  "commit_90d": 761,
+  "rel_ver": "v0.40.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1055,10 +1055,10 @@
    "Swift": 1,
    "Shell": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1309,13 +1309,16 @@
    "CSS": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261118"
+  },
+  "commit_90d": 527,
+  "commit_7d": 54
  },
  "aws-samples/amazon-sagemaker-edge-defect-detection-computer-vision": {
   "rel_ver": null,
@@ -4485,13 +4488,16 @@
    "CSS": 1,
    "Python": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261118"
+  },
+  "commit_90d": 343,
+  "commit_7d": 44
  },
  "ochyai/vibe-local": {
   "commit_90d": 0,
@@ -4616,6 +4622,23 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "Ernestoracua/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

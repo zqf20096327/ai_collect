@@ -277,11 +277,11 @@
   }
  },
  "ucbepic/docetl": {
-  "commit_7d": 1,
-  "commit_90d": 5,
+  "commit_7d": 6,
+  "commit_90d": 11,
   "rel_ver": "0.3.0",
   "rel_pub": "2026-06-17",
-  "rel_days": 147,
+  "rel_days": 154,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -297,10 +297,10 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -518,7 +518,7 @@
   }
  },
  "zjunlp/LightMem": {
-  "commit_7d": 2,
+  "commit_7d": 1,
   "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
@@ -534,10 +534,10 @@
    "Shell": 1,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1119,10 +1119,10 @@
   }
  },
  "virastack/start": {
-  "commit_7d": 0,
-  "commit_90d": 63,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 13,
+  "commit_90d": 107,
+  "rel_ver": "v2.2.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1133,14 +1133,18 @@
    "JavaScript": 11,
    "CSS": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-14",
+  "rel_days": 4,
+  "rel_n90": 5,
+  "rel_pre": false
  },
  "openmm/NNPOps": {
   "commit_7d": 0,

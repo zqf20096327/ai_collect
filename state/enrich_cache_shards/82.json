@@ -1392,12 +1392,12 @@
   }
  },
  "Flux159/mcp-chat": {
-  "commit_90d": 0,
+  "commit_90d": 20,
   "commit_7d": 0,
-  "rel_ver": "v0.1.6",
-  "rel_pub": "2025-12-06",
-  "rel_days": 316,
-  "rel_n90": 0,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 23,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1412,10 +1412,10 @@
    "Dockerfile": 1,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1442,8 +1442,8 @@
   }
  },
  "TirendazAcademy/Awesome-Data-Science-Resources": {
-  "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1452,18 +1452,18 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "pravin6688/churn-triad-insights": {
-  "commit_90d": 916,
-  "commit_7d": 39,
+  "commit_90d": 589,
+  "commit_7d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1474,21 +1474,21 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ollygarden/opentelemetry-agent-skills": {
-  "commit_90d": 103,
-  "commit_7d": 8,
+  "commit_90d": 73,
+  "commit_7d": 3,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-03",
-  "rel_days": 15,
+  "rel_days": 46,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1504,10 +1504,10 @@
    "TypeScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4860,10 +4860,10 @@
   }
  },
  "Neywa-Labs/mlx-audio": {
-  "commit_90d": 598,
-  "commit_7d": 81,
-  "rel_ver": "v0.6.5",
-  "rel_pub": "2026-11-09",
+  "commit_90d": 669,
+  "commit_7d": 83,
+  "rel_ver": "v0.6.6",
+  "rel_pub": "2026-11-16",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -4879,10 +4879,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261104",
    "contrib": "20261104",
    "lang": "20261104"

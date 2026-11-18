@@ -912,7 +912,7 @@
   "commit_90d": 10,
   "rel_ver": "v1.3.1",
   "rel_pub": "2026-02-03",
-  "rel_days": 257,
+  "rel_days": 288,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -925,10 +925,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1041,11 +1041,11 @@
   }
  },
  "google-deepmind/tf2jax": {
-  "commit_7d": 1,
-  "commit_90d": 15,
+  "commit_7d": 0,
+  "commit_90d": 16,
   "rel_ver": "v0.3.8",
   "rel_pub": "2025-08-21",
-  "rel_days": 423,
+  "rel_days": 454,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1059,10 +1059,10 @@
    "Shell": 1,
    "PureBasic": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1149,7 +1149,7 @@
   "commit_90d": 0,
   "rel_ver": "rocm-7.2.3",
   "rel_pub": "2026-05-05",
-  "rel_days": 166,
+  "rel_days": 197,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1165,10 +1165,10 @@
    "CMake": 0,
    "C": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1202,11 +1202,11 @@
   }
  },
  "milvus-io/milvus-docs": {
-  "commit_7d": 10,
-  "commit_90d": 121,
+  "commit_7d": 35,
+  "commit_90d": 341,
   "rel_ver": "v2.4.6-preview",
   "rel_pub": "2024-07-08",
-  "rel_days": 832,
+  "rel_days": 863,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1219,10 +1219,10 @@
    "JavaScript": 100,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

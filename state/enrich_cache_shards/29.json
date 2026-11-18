@@ -1228,12 +1228,12 @@
   }
  },
  "Sev7eEn7/dsh-sieve": {
-  "commit_90d": 19,
+  "commit_90d": 24,
   "commit_7d": 0,
-  "rel_ver": "v0.2.0",
-  "rel_pub": "2026-10-07",
-  "rel_days": 11,
-  "rel_n90": 2,
+  "rel_ver": "v0.4.1",
+  "rel_pub": "2026-11-01",
+  "rel_days": 17,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1245,10 +1245,10 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1284,12 +1284,12 @@
   }
  },
  "softwaremill/sttp-ai": {
-  "commit_90d": 124,
-  "commit_7d": 4,
-  "rel_ver": "v0.11.4",
-  "rel_pub": "2026-10-01",
-  "rel_days": 17,
-  "rel_n90": 12,
+  "commit_90d": 87,
+  "commit_7d": 5,
+  "rel_ver": "v0.12.0",
+  "rel_pub": "2026-10-19",
+  "rel_days": 30,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1303,10 +1303,10 @@
    "Python": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4540,6 +4540,47 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "sniklaus/pytorch-extension": {
+  "commit_90d": 2,
+  "commit_7d": 2,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "sniklaus/revisiting-sepconv": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

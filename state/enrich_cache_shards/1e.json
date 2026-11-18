@@ -1221,8 +1221,8 @@
   }
  },
  "NamtaoProductions/brainmade.org": {
-  "commit_90d": 46,
-  "commit_7d": 0,
+  "commit_90d": 23,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1236,10 +1236,10 @@
    "JavaScript": 14,
    "Just": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1323,10 +1323,10 @@
   }
  },
  "openai/softnet": {
-  "rel_ver": "0.24.1",
-  "rel_pub": "2026-10-09",
-  "rel_days": 10,
-  "rel_n90": 8,
+  "rel_ver": "0.26.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1337,9 +1337,9 @@
   "lang": {
    "Rust": 100
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

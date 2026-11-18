@@ -1201,12 +1201,12 @@
   }
  },
  "n1byn1kt/apitap": {
-  "commit_90d": 67,
-  "commit_7d": 8,
-  "rel_ver": "v2.3.3",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 8,
+  "commit_90d": 38,
+  "commit_7d": 0,
+  "rel_ver": "v2.3.4",
+  "rel_pub": "2026-10-21",
+  "rel_days": 28,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1221,10 +1221,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1258,11 +1258,11 @@
   }
  },
  "alexvilelabah/bah-browser": {
-  "commit_90d": 128,
-  "commit_7d": 27,
-  "rel_ver": "v1.9.2",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_90d": 135,
+  "commit_7d": 1,
+  "rel_ver": "v1.9.4",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1278,10 +1278,10 @@
    "Batchfile": 0,
    "NSIS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1314,7 +1314,7 @@
   }
  },
  "RubricLab/maige": {
-  "commit_90d": 0,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1328,21 +1328,21 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "receptron/MulmoChat": {
-  "commit_90d": 268,
-  "commit_7d": 47,
+  "commit_90d": 339,
+  "commit_7d": 10,
   "rel_ver": "0.1.1",
   "rel_pub": "2026-01-24",
-  "rel_days": 268,
+  "rel_days": 298,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1358,10 +1358,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4896,6 +4896,27 @@
    "security": "20261117",
    "contrib": "20261117",
    "lang": "20261117"
+  }
+ },
+ "Poptin-LTD/Poptin-MCP": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

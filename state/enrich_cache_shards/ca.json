@@ -1288,10 +1288,10 @@
  },
  "Onion99/KMP-MineStableDiffusion": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": "v5.6.0",
   "rel_pub": "2026-03-13",
-  "rel_days": 219,
+  "rel_days": 250,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1307,10 +1307,10 @@
    "Shell": 1,
    "Swift": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1348,7 +1348,7 @@
  },
  "Aryan-0001/Jarvis-AI": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1361,21 +1361,21 @@
    "HTML": 29,
    "Python": 27
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "OscarSouth/theHarmonicAlgorithm": {
-  "commit_7d": 3,
-  "commit_90d": 35,
+  "commit_7d": 2,
+  "commit_90d": 34,
   "rel_ver": "v3.1.0",
   "rel_pub": "2026-08-30",
-  "rel_days": 49,
+  "rel_days": 80,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -1391,22 +1391,22 @@
    "SuperCollider": 2,
    "R": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "jenkinsci/mcp-server-plugin": {
-  "commit_7d": 3,
-  "commit_90d": 35,
-  "rel_ver": "0.211.v5d12e5b_b_437e",
-  "rel_pub": "2026-09-30",
-  "rel_days": 18,
-  "rel_n90": 12,
+  "commit_7d": 1,
+  "commit_90d": 32,
+  "rel_ver": "0.228.vfa_37b_2127d97",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1417,10 +1417,10 @@
   "lang": {
    "Java": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1454,11 +1454,11 @@
   }
  },
  "chanon/comfyui-obvpm": {
-  "commit_7d": 15,
-  "commit_90d": 101,
-  "rel_ver": "v0.2.17",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_7d": 0,
+  "commit_90d": 99,
+  "rel_ver": "v0.2.18",
+  "rel_pub": "2026-10-21",
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1471,10 +1471,10 @@
    "JavaScript": 73,
    "Python": 27
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1508,7 +1508,7 @@
  },
  "migsilva89/MarkMind": {
   "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_90d": 9,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1522,10 +1522,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1625,10 +1625,10 @@
   }
  },
  "kukucaiCndy/Corum-Harness": {
-  "rel_ver": "v0.6.0",
-  "rel_pub": "2026-10-18",
-  "rel_days": 1,
-  "rel_n90": 7,
+  "rel_ver": "v0.8.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1643,9 +1643,9 @@
    "Shell": 2,
    "Python": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

@@ -1018,11 +1018,11 @@
  },
  "georg-jung/FaceAiSharp": {
   "commit_7d": 0,
-  "commit_90d": 1,
-  "rel_ver": "v0.6.35",
-  "rel_pub": "2026-05-29",
-  "rel_days": 142,
-  "rel_n90": 0,
+  "commit_90d": 11,
+  "rel_ver": "v0.6.38",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1035,18 +1035,18 @@
    "Jupyter Notebook": 2,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Sujal-142/ai-image-clean-eraser": {
-  "commit_7d": 38,
-  "commit_90d": 871,
+  "commit_7d": 30,
+  "commit_90d": 574,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1057,10 +1057,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1095,7 +1095,7 @@
  },
  "mindspore-ai/mindquantum": {
   "commit_7d": 0,
-  "commit_90d": 47,
+  "commit_90d": 44,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1110,21 +1110,21 @@
    "CMake": 6,
    "Cuda": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ParisNeo/lollms": {
-  "commit_7d": 6,
-  "commit_90d": 115,
+  "commit_7d": 22,
+  "commit_90d": 176,
   "rel_ver": "v2.3.0",
   "rel_pub": "2026-09-07",
-  "rel_days": 41,
+  "rel_days": 72,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1143,10 +1143,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

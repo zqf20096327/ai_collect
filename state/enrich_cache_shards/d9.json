@@ -118,11 +118,11 @@
   }
  },
  "elevenlabs/ui": {
-  "commit_90d": 5,
-  "commit_7d": 2,
+  "commit_90d": 6,
+  "commit_7d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2025-10-10",
-  "rel_days": 372,
+  "rel_days": 404,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -137,10 +137,10 @@
    "CSS": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1142,10 +1142,10 @@
    "C++": 1,
    "SourcePawn": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1164,18 +1164,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "aws-samples/generative-ai-on-amazon-sagemaker": {
-  "commit_90d": 105,
-  "commit_7d": 12,
+  "commit_90d": 140,
+  "commit_7d": 27,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1189,21 +1189,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "mitmath/JuliaComputation": {
-  "commit_90d": 47,
-  "commit_7d": 6,
+  "commit_90d": 73,
+  "commit_7d": 1,
   "rel_ver": "Fall2022",
   "rel_pub": "2023-09-04",
-  "rel_days": 1140,
+  "rel_days": 1171,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1217,10 +1217,10 @@
    "HTML": 32,
    "Julia": 22
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1353,10 +1353,10 @@
   }
  },
  "microsoft/AI-in-One-Dashboard": {
-  "rel_ver": "AIO-v2.0.0",
-  "rel_pub": "2026-10-06",
-  "rel_days": 13,
-  "rel_n90": 1,
+  "rel_ver": "v2.0.1-preview",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -1370,9 +1370,9 @@
    "Python": 7,
    "Bicep": 2
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

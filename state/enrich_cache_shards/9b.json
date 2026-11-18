@@ -332,11 +332,11 @@
   }
  },
  "i365dev/free4chat": {
-  "commit_7d": 1,
+  "commit_7d": 0,
   "commit_90d": 854,
   "rel_ver": "agent-v0.5.62",
   "rel_pub": "2026-10-21",
-  "rel_days": 14,
+  "rel_days": 28,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -352,10 +352,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1301,12 +1301,12 @@
   }
  },
  "zilliztech/vts": {
-  "commit_7d": 7,
-  "commit_90d": 34,
-  "rel_ver": "vector-transport-service-v1.2.2",
-  "rel_pub": "2026-01-12",
-  "rel_days": 279,
-  "rel_n90": 0,
+  "commit_7d": 0,
+  "commit_90d": 42,
+  "rel_ver": "vector-transport-service-v1.3.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 21,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1321,10 +1321,10 @@
    "Batchfile": 0,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1361,8 +1361,8 @@
   }
  },
  "surrealdb/docs.surrealdb.com": {
-  "commit_7d": 12,
-  "commit_90d": 207,
+  "commit_7d": 24,
+  "commit_90d": 261,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1377,10 +1377,10 @@
    "JavaScript": 1,
    "SCSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1388,7 +1388,7 @@
  },
  "Mobile-Artificial-Intelligence/llama_sdk": {
   "commit_7d": 7,
-  "commit_90d": 90,
+  "commit_90d": 89,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1403,18 +1403,18 @@
    "Ruby": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "diandiancha/LittleAIBox": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 4,
+  "commit_90d": 8,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1427,10 +1427,10 @@
    "CSS": 10,
    "HTML": 7
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

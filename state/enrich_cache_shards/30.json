@@ -1059,11 +1059,11 @@
   }
  },
  "Roriz/active_genie": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 12,
+  "commit_7d": 12,
   "rel_ver": "v0.30.9",
   "rel_pub": "2026-06-13",
-  "rel_days": 127,
+  "rel_days": 158,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1077,10 +1077,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1212,12 +1212,12 @@
   }
  },
  "Photoroom/datago": {
-  "commit_90d": 5,
-  "commit_7d": 1,
-  "rel_ver": "v2026.10.1",
-  "rel_pub": "2026-10-15",
+  "commit_90d": 11,
+  "commit_7d": 3,
+  "rel_ver": "v2026.11.2",
+  "rel_pub": "2026-11-15",
   "rel_days": 3,
-  "rel_n90": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1229,10 +1229,10 @@
    "Rust": 74,
    "Python": 26
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1267,12 +1267,12 @@
   }
  },
  "opentiny/webmcp-sdk": {
-  "commit_90d": 32,
+  "commit_90d": 12,
   "commit_7d": 1,
   "rel_ver": "v0.4.11",
   "rel_pub": "2026-09-15",
-  "rel_days": 33,
-  "rel_n90": 9,
+  "rel_days": 64,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1287,21 +1287,21 @@
    "CSS": 1,
    "SCSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "decisionbox-io/decisionbox-platform": {
-  "commit_90d": 56,
-  "commit_7d": 0,
-  "rel_ver": "v0.32.1",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
+  "commit_90d": 71,
+  "commit_7d": 7,
+  "rel_ver": "v0.40.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1317,21 +1317,21 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "beynar/svelte-streamdown": {
-  "commit_90d": 12,
+  "commit_90d": 25,
   "commit_7d": 0,
   "rel_ver": "4.2.0",
   "rel_pub": "2026-09-14",
-  "rel_days": 34,
+  "rel_days": 65,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -1347,10 +1347,10 @@
    "JavaScript": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1386,10 +1386,10 @@
   }
  },
  "chengzhi-c/natural-talk": {
-  "rel_ver": "v1.7.0",
-  "rel_pub": "2026-10-14",
-  "rel_days": 5,
-  "rel_n90": 2,
+  "rel_ver": "v2.1.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 10,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1400,9 +1400,9 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

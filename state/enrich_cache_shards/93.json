@@ -271,11 +271,11 @@
   }
  },
  "roryclear/clearcam": {
-  "commit_7d": 12,
-  "commit_90d": 78,
+  "commit_7d": 0,
+  "commit_90d": 76,
   "rel_ver": "0.2.8",
   "rel_pub": "2026-08-31",
-  "rel_days": 68,
+  "rel_days": 79,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -287,10 +287,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1262,10 +1262,10 @@
  },
  "ahnafnafee/local-llm-pdf-ocr": {
   "commit_7d": 0,
-  "commit_90d": 2,
+  "commit_90d": 27,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-07-16",
-  "rel_days": 94,
+  "rel_days": 125,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1281,10 +1281,10 @@
    "CSS": 3,
    "TypeScript": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1314,11 +1314,11 @@
   }
  },
  "john-rocky/coreai-kit": {
-  "commit_7d": 5,
-  "commit_90d": 321,
-  "rel_ver": "0.7.3",
-  "rel_pub": "2026-09-24",
-  "rel_days": 24,
+  "commit_7d": 6,
+  "commit_90d": 266,
+  "rel_ver": "0.8.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 4,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -1333,10 +1333,10 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1397,11 +1397,11 @@
   }
  },
  "888newstep/ai-agent-platform": {
-  "commit_7d": 0,
-  "commit_90d": 59,
+  "commit_7d": 4,
+  "commit_90d": 20,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-08-27",
-  "rel_days": 52,
+  "rel_days": 83,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1417,23 +1417,23 @@
    "Python": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "openathleteorg/openathlete": {
-  "commit_7d": 10,
-  "commit_90d": 250,
-  "rel_ver": "v1.2.0-rc.1",
-  "rel_pub": "2026-10-08",
-  "rel_days": 10,
-  "rel_n90": 3,
-  "rel_pre": true,
+  "commit_7d": 119,
+  "commit_90d": 569,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 10,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 9,
   "sec_worst": "high",
@@ -1456,10 +1456,10 @@
    "CSS": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -2014,13 +2014,16 @@
    "JavaScript": 65,
    "Shell": 35
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261118"
+  },
+  "commit_90d": 46,
+  "commit_7d": 2
  },
  "phonism/genesis": {
   "rel_ver": null,

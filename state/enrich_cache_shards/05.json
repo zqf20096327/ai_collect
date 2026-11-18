@@ -1166,11 +1166,11 @@
   }
  },
  "vercel-labs/github-tools": {
-  "commit_7d": 0,
-  "commit_90d": 99,
-  "rel_ver": "@github-tools/sdk@1.18.0",
-  "rel_pub": "2026-10-07",
-  "rel_days": 11,
+  "commit_7d": 6,
+  "commit_90d": 120,
+  "rel_ver": "@github-tools/sdk@1.23.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1186,10 +1186,10 @@
    "Python": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1234,21 +1234,21 @@
    "Dockerfile": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "bydtesla1609/intent-debugger": {
-  "commit_7d": 18,
-  "commit_90d": 153,
+  "commit_7d": 12,
+  "commit_90d": 217,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-08-24",
-  "rel_days": 55,
+  "rel_days": 86,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1260,10 +1260,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1299,11 +1299,11 @@
  },
  "lennney/agent-search-mcp": {
   "commit_7d": 0,
-  "commit_90d": 198,
+  "commit_90d": 17,
   "rel_ver": "v3.2.1",
   "rel_pub": "2026-08-11",
-  "rel_days": 68,
-  "rel_n90": 6,
+  "rel_days": 99,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1318,10 +1318,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1329,11 +1329,11 @@
  },
  "sirquy/bestie": {
   "commit_7d": 0,
-  "commit_90d": 196,
+  "commit_90d": 55,
   "rel_ver": "v0.1.76",
   "rel_pub": "2026-09-24",
-  "rel_days": 24,
-  "rel_n90": 11,
+  "rel_days": 55,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1348,21 +1348,21 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "BkashJEE/hermes-bot-forge": {
-  "commit_7d": 10,
-  "commit_90d": 77,
-  "rel_ver": "v0.22.0",
-  "rel_pub": "2026-10-18",
-  "rel_days": 1,
+  "commit_7d": 2,
+  "commit_90d": 90,
+  "rel_ver": "v0.26.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1375,10 +1375,10 @@
    "Python": 93,
    "HTML": 7
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1483,9 +1483,9 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261029",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

@@ -65,10 +65,10 @@
    "MDX": 100,
    "Python": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1031,7 +1031,7 @@
   "commit_90d": 0,
   "rel_ver": "v0.3.3",
   "rel_pub": "2025-12-26",
-  "rel_days": 296,
+  "rel_days": 327,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1043,10 +1043,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1083,12 +1083,12 @@
   }
  },
  "helixml/kodit": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "v1.3.8",
-  "rel_pub": "2026-06-23",
-  "rel_days": 117,
-  "rel_n90": 0,
+  "commit_7d": 2,
+  "commit_90d": 3,
+  "rel_ver": "v1.4.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1103,10 +1103,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4814,5 +4814,41 @@
    "contrib": "20261117",
    "lang": "20261117"
   }
+ },
+ "zxfccmm4/magpie-remote": {
+  "rel_ver": "v0.2.4",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Swift": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "byrishi/punchcutter": {
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1
  }
 }

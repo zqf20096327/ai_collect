@@ -145,10 +145,10 @@
  },
  "lucidrains/vector-quantize-pytorch": {
   "commit_7d": 3,
-  "commit_90d": 12,
+  "commit_90d": 16,
   "rel_ver": "1.27.21",
   "rel_pub": "2026-02-12",
-  "rel_days": 270,
+  "rel_days": 279,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -160,10 +160,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1200,8 +1200,8 @@
   }
  },
  "AgustiPuigserver/opus-prompt-architect": {
-  "commit_7d": 34,
-  "commit_90d": 822,
+  "commit_7d": 29,
+  "commit_90d": 556,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1212,10 +1212,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1223,11 +1223,11 @@
  },
  "dssg/mlforpublicpolicylab": {
   "commit_7d": 0,
-  "commit_90d": 91,
+  "commit_90d": 106,
   "rel_ver": "Fall2025",
   "rel_pub": "2026-08-16",
-  "rel_days": 63,
-  "rel_n90": 1,
+  "rel_days": 94,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1240,20 +1240,20 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Sparticle62ops/pssa": {
-  "commit_7d": 3,
-  "commit_90d": 235,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 5,
+  "commit_90d": 313,
+  "rel_ver": "v0.5.4",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1264,21 +1264,25 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
+  "rel_n90": 5,
+  "rel_pre": false
  },
  "elevenlabs/packages": {
-  "commit_7d": 8,
-  "commit_90d": 91,
-  "rel_ver": "@elevenlabs/types@0.25.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
+  "commit_7d": 16,
+  "commit_90d": 124,
+  "rel_ver": "@elevenlabs/types@0.30.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1294,10 +1298,10 @@
    "CSS": 0,
    "GLSL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1330,9 +1334,9 @@
  "avivsinai/langfuse-mcp": {
   "commit_7d": 0,
   "commit_90d": 26,
-  "rel_ver": "v0.13.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
+  "rel_ver": "v0.14.0",
+  "rel_pub": "2026-10-25",
+  "rel_days": 24,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -1347,10 +1351,10 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1469,9 +1473,9 @@
   }
  },
  "METR/hawk": {
-  "rel_ver": "v3.7.2",
-  "rel_pub": "2026-10-07",
-  "rel_days": 12,
+  "rel_ver": "v4.2.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1487,9 +1491,9 @@
    "Dockerfile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

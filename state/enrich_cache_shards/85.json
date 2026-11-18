@@ -1015,8 +1015,8 @@
   }
  },
  "PouriaRouzrokh/LatteReview": {
-  "commit_7d": 7,
-  "commit_90d": 25,
+  "commit_7d": 3,
+  "commit_90d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1029,10 +1029,10 @@
    "HTML": 32,
    "Python": 8
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

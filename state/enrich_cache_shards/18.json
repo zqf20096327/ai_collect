@@ -461,11 +461,11 @@
   }
  },
  "soda-inria/tabicl": {
-  "commit_90d": 14,
-  "commit_7d": 1,
+  "commit_90d": 15,
+  "commit_7d": 2,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-09-02",
-  "rel_days": 70,
+  "rel_days": 77,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -478,10 +478,10 @@
    "Python": 97,
    "Shell": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1064,11 +1064,11 @@
   }
  },
  "microsoft/agentic-applications-for-unified-data-foundation-solution-accelerator": {
-  "commit_90d": 129,
-  "commit_7d": 0,
+  "commit_90d": 57,
+  "commit_7d": 3,
   "rel_ver": "v1.25.4",
   "rel_pub": "2026-06-08",
-  "rel_days": 132,
+  "rel_days": 163,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1084,10 +1084,10 @@
    "TypeScript": 9,
    "PowerShell": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1123,7 +1123,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-05-29",
-  "rel_days": 142,
+  "rel_days": 173,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1139,10 +1139,10 @@
    "C": 6,
    "CMake": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

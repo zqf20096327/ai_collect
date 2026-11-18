@@ -1038,11 +1038,11 @@
   }
  },
  "xiaolai/claudepot-app": {
-  "commit_7d": 9,
-  "commit_90d": 439,
-  "rel_ver": "v0.6.9",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_7d": 0,
+  "commit_90d": 212,
+  "rel_ver": "v0.7.3",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1058,10 +1058,10 @@
    "CSS": 2,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1069,7 +1069,7 @@
  },
  "Robin-WZQ/Awesome-Backdoor-on-LMMs": {
   "commit_7d": 1,
-  "commit_90d": 13,
+  "commit_90d": 16,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1078,21 +1078,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "nambok/mentedb": {
-  "commit_7d": 6,
-  "commit_90d": 103,
-  "rel_ver": "mentedb-v0.37.3",
-  "rel_pub": "2026-08-04",
-  "rel_days": 75,
+  "commit_7d": 3,
+  "commit_90d": 79,
+  "rel_ver": "mentedb-v0.48.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1108,18 +1108,18 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "abnormal-codex/Ai-Pixel-Design-Archive": {
-  "commit_7d": 36,
-  "commit_90d": 812,
+  "commit_7d": 29,
+  "commit_90d": 551,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1130,21 +1130,21 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "gmickel/gno": {
-  "commit_7d": 16,
-  "commit_90d": 432,
-  "rel_ver": "v2.12.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
+  "commit_7d": 0,
+  "commit_90d": 264,
+  "rel_ver": "v2.14.0",
+  "rel_pub": "2026-10-23",
+  "rel_days": 26,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1160,10 +1160,10 @@
    "SCSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1226,9 +1226,9 @@
  "dadwritestech/LlamaForge": {
   "commit_7d": 24,
   "commit_90d": 398,
-  "rel_ver": "v0.16.4",
-  "rel_pub": "2026-10-17",
-  "rel_days": 2,
+  "rel_ver": "v0.19.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1244,10 +1244,10 @@
    "HTML": 2,
    "PowerShell": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4096,13 +4096,16 @@
    "Shell": 1,
    "CSS": 1
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261104",
    "security": "20261104",
    "contrib": "20261104",
-   "lang": "20261104"
-  }
+   "lang": "20261104",
+   "commit": "20261118"
+  },
+  "commit_90d": 136,
+  "commit_7d": 134
  },
  "hotic/acpira": {
   "rel_ver": "v2.0.7",
@@ -4501,6 +4504,23 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "zalman-ua/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

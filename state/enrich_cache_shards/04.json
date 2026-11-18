@@ -838,11 +838,11 @@
   }
  },
  "0xethanq/astra-quant-agent": {
-  "commit_7d": 0,
-  "commit_90d": 1411,
+  "commit_7d": 6,
+  "commit_90d": 1417,
   "rel_ver": "v8.6.1",
   "rel_pub": "2026-10-03",
-  "rel_days": 15,
+  "rel_days": 46,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -858,10 +858,10 @@
    "TypeScript": 4,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1386,10 +1386,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4247,13 +4247,16 @@
    "HTML": 10,
    "Makefile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261118"
+  },
+  "commit_90d": 5,
+  "commit_7d": 4
  },
  "benbuschmann/gaprunner": {
   "rel_ver": "v0.29.0",
@@ -4445,6 +4448,28 @@
    "security": "20261117",
    "contrib": "20261117",
    "lang": "20261117"
+  }
+ },
+ "Nahomi055/medical-risk-screening-bot": {
+  "commit_90d": 16,
+  "commit_7d": 9,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

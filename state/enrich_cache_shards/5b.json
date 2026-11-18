@@ -1267,11 +1267,11 @@
   }
  },
  "RapierCraftStudios/ForgeDock": {
-  "commit_90d": 1325,
-  "commit_7d": 456,
-  "rel_ver": "v1.26.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_90d": 4180,
+  "commit_7d": 669,
+  "rel_ver": "v1.61.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1286,10 +1286,10 @@
    "Makefile": 0,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1318,11 +1318,11 @@
   }
  },
  "yeasy/ai_security_guide": {
-  "commit_90d": 80,
-  "commit_7d": 2,
+  "commit_90d": 55,
+  "commit_7d": 0,
   "rel_ver": "preview-pdf",
   "rel_pub": "2026-03-29",
-  "rel_days": 203,
+  "rel_days": 234,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1334,21 +1334,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "rvandewater/YAIB": {
-  "commit_90d": 21,
-  "commit_7d": 3,
+  "commit_90d": 189,
+  "commit_7d": 0,
   "rel_ver": "v1.0.8",
   "rel_pub": "2026-06-08",
-  "rel_days": 132,
+  "rel_days": 163,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1362,22 +1362,22 @@
    "Shell": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "hyperfx-ai/marketing-skills": {
-  "commit_90d": 13,
+  "commit_90d": 14,
   "commit_7d": 1,
-  "rel_ver": "v1.2.2",
-  "rel_pub": "2026-09-22",
-  "rel_days": 26,
-  "rel_n90": 3,
+  "rel_ver": "v1.2.7",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1389,10 +1389,10 @@
    "Python": 86,
    "Shell": 14
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4722,6 +4722,28 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "FIlIP-C3/events-tracker": {
+  "commit_90d": 16,
+  "commit_7d": 9,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

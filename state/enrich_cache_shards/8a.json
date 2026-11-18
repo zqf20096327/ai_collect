@@ -907,11 +907,11 @@
   }
  },
  "bailinghub/bailinghub": {
-  "commit_7d": 12,
-  "commit_90d": 60,
-  "rel_ver": "v0.9.4",
-  "rel_pub": "2026-10-15",
-  "rel_days": 3,
+  "commit_7d": 0,
+  "commit_90d": 31,
+  "rel_ver": "v0.10.1",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -927,10 +927,10 @@
    "PHP": 3,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1011,12 +1011,12 @@
   }
  },
  "NVIDIA/ais-k8s": {
-  "commit_7d": 6,
-  "commit_90d": 180,
-  "rel_ver": "v4.1.0",
-  "rel_pub": "2026-09-15",
-  "rel_days": 33,
-  "rel_n90": 4,
+  "commit_7d": 3,
+  "commit_90d": 164,
+  "rel_ver": "v4.4.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 9,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1031,10 +1031,10 @@
    "Makefile": 1,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1116,12 +1116,12 @@
   }
  },
  "open-webui/terminals": {
-  "commit_7d": 2,
-  "commit_90d": 28,
-  "rel_ver": "v0.2.5",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "commit_7d": 4,
+  "commit_90d": 50,
+  "rel_ver": "v0.4.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1136,10 +1136,10 @@
    "Dockerfile": 0,
    "Mako": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1148,10 +1148,10 @@
  "aki65/aki65.github.io": {
   "commit_7d": 0,
   "commit_90d": 0,
-  "rel_ver": "v1.23.2",
-  "rel_pub": "2026-09-26",
-  "rel_days": 22,
-  "rel_n90": 1,
+  "rel_ver": "v1.23.11",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1163,10 +1163,10 @@
    "Python": 61,
    "HTML": 39
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1200,7 +1200,7 @@
   "commit_90d": 0,
   "rel_ver": "v3.0.1",
   "rel_pub": "2026-06-18",
-  "rel_days": 122,
+  "rel_days": 153,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1214,10 +1214,10 @@
    "JavaScript": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1235,9 +1235,9 @@
    "JavaScript": 95,
    "Shell": 5
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1247,10 +1247,10 @@
   "commit_7d": 1
  },
  "ttlequals0/Audicle": {
-  "rel_ver": "v0.60.2",
-  "rel_pub": "2026-10-10",
-  "rel_days": 9,
-  "rel_n90": 10,
+  "rel_ver": "v0.62.0",
+  "rel_pub": "2026-10-24",
+  "rel_days": 25,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1265,9 +1265,9 @@
    "CSS": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

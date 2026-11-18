@@ -207,10 +207,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -993,11 +993,11 @@
   }
  },
  "ArihantDeva/heimdall": {
-  "commit_90d": 179,
+  "commit_90d": 228,
   "commit_7d": 0,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-09-06",
-  "rel_days": 42,
+  "rel_days": 73,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1013,10 +1013,10 @@
    "TypeScript": 2,
    "Tape": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4833,6 +4833,29 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "YerbaPage/MGDebugger": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

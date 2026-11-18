@@ -82,8 +82,8 @@
   }
  },
  "tensorchord/Awesome-LLMOps": {
-  "commit_90d": 130,
-  "commit_7d": 16,
+  "commit_90d": 148,
+  "commit_7d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -95,10 +95,10 @@
    "Shell": 58,
    "Python": 42
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1174,11 +1174,11 @@
   }
  },
  "CogitatorTech/infera": {
-  "commit_90d": 2,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-07-08",
-  "rel_days": 102,
+  "rel_days": 133,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1193,10 +1193,10 @@
    "Makefile": 5,
    "Python": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1229,11 +1229,11 @@
   }
  },
  "DrVrej/VJ-Base": {
-  "commit_90d": 31,
-  "commit_7d": 3,
+  "commit_90d": 41,
+  "commit_7d": 9,
   "rel_ver": "v3.2.0",
   "rel_pub": "2026-05-15",
-  "rel_days": 156,
+  "rel_days": 187,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1245,10 +1245,10 @@
   "lang": {
    "Lua": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1341,11 +1341,11 @@
   }
  },
  "oracle/ai-optimizer": {
-  "commit_90d": 49,
-  "commit_7d": 1,
-  "rel_ver": "v2.5.0",
-  "rel_pub": "2026-09-18",
-  "rel_days": 30,
+  "commit_90d": 42,
+  "commit_7d": 2,
+  "rel_ver": "v2.5.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1361,10 +1361,10 @@
    "Java": 1,
    "Smarty": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1372,7 +1372,7 @@
  },
  "machinelearningZH/audio-transcription": {
   "commit_90d": 1,
-  "commit_7d": 0,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1386,10 +1386,10 @@
    "Shell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4152,8 +4152,8 @@
   }
  },
  "ai-boost/awesome-prompts": {
-  "commit_90d": 112,
-  "commit_7d": 10,
+  "commit_90d": 120,
+  "commit_7d": 16,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4164,22 +4164,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
   }
  },
  "KevinMusgrave/pytorch-metric-learning": {
-  "commit_90d": 214,
-  "commit_7d": 26,
-  "rel_ver": "v3.0.2",
-  "rel_pub": "2026-11-08",
-  "rel_days": 3,
-  "rel_n90": 8,
+  "commit_90d": 248,
+  "commit_7d": 34,
+  "rel_ver": "v3.0.3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4191,10 +4191,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261028",
    "contrib": "20261028",
    "lang": "20261028"
@@ -4683,6 +4683,33 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "raphaelDkhn/miroir": {
+  "rel_ver": "v0.0.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 76,
+   "Python": 21,
+   "JavaScript": 3,
+   "Shell": 0,
+   "HCL": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

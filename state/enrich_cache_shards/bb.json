@@ -618,11 +618,11 @@
    "Svelte": 3,
    "Shell": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261116",
    "release": "20261116",
-   "security": "20261017",
+   "security": "20261118",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -1099,8 +1099,8 @@
   }
  },
  "mjasnikovs/pi-task": {
-  "commit_7d": 19,
-  "commit_90d": 1366,
+  "commit_7d": 0,
+  "commit_90d": 1135,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1115,10 +1115,10 @@
    "Python": 0,
    "Rust": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1174,7 +1174,7 @@
  },
  "andresvourakis/ai-data-scientist-handbook": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1183,10 +1183,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1250,12 +1250,12 @@
   }
  },
  "weaviate/typescript-client": {
-  "commit_7d": 0,
-  "commit_90d": 28,
-  "rel_ver": "v3.15.0",
-  "rel_pub": "2026-10-07",
-  "rel_days": 12,
-  "rel_n90": 1,
+  "commit_7d": 3,
+  "commit_90d": 41,
+  "rel_ver": "v3.15.1",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1268,10 +1268,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1391,10 +1391,10 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -5412,6 +5412,62 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "awelist/awesome-prompt-engineering": {
+  "commit_90d": 5,
+  "commit_7d": 0,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "polylint/uncomment": {
+  "commit_90d": 152,
+  "commit_7d": 14,
+  "rel_ver": "v3.12.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "Rust": 90,
+   "Python": 5,
+   "JavaScript": 3,
+   "Shell": 2,
+   "Go Template": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

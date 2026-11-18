@@ -1282,8 +1282,8 @@
   }
  },
  "video-db/skills": {
-  "commit_90d": 25,
-  "commit_7d": 0,
+  "commit_90d": 29,
+  "commit_7d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1294,22 +1294,22 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "NVIDIA-NeMo/Anonymizer": {
-  "commit_90d": 44,
-  "commit_7d": 3,
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-09-18",
-  "rel_days": 30,
-  "rel_n90": 5,
+  "commit_90d": 59,
+  "commit_7d": 8,
+  "rel_ver": "v0.5.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 21,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1323,20 +1323,20 @@
    "Makefile": 0,
    "Standard ML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "circuitvalley/CHC5_Open_Camera": {
-  "commit_90d": 68,
-  "commit_7d": 6,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 70,
+  "commit_7d": 0,
+  "rel_ver": "v1.0.0-r427-imx565",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1349,14 +1349,18 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-10-20",
+  "rel_days": 29,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "Br1an67/OpenJobAutofill": {
   "commit_90d": 0,
@@ -1413,12 +1417,12 @@
   }
  },
  "lploc94/raw-cli": {
-  "commit_90d": 277,
-  "commit_7d": 58,
-  "rel_ver": "v0.1.5",
-  "rel_pub": "2026-10-13",
-  "rel_days": 5,
-  "rel_n90": 6,
+  "commit_90d": 425,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.7",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1433,22 +1437,22 @@
    "C#": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "firish/claude_code_vs": {
-  "commit_90d": 89,
+  "commit_90d": 12,
   "commit_7d": 0,
-  "rel_ver": "v1.21.0",
-  "rel_pub": "2026-09-08",
-  "rel_days": 41,
-  "rel_n90": 12,
+  "rel_ver": "v1.22.0",
+  "rel_pub": "2026-11-04",
+  "rel_days": 14,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1460,10 +1464,10 @@
    "C#": 97,
    "PowerShell": 3
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1478,9 +1482,9 @@
   "sec_ids": [],
   "contrib_n": 42,
   "lang": {},
-  "enriched_at": "20261112",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

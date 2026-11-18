@@ -1530,12 +1530,12 @@
   }
  },
  "robsonfelix/robsonfelix-hass-addons": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": "v1.2.65",
-  "rel_pub": "2026-07-09",
-  "rel_days": 101,
-  "rel_n90": 0,
+  "commit_90d": 38,
+  "commit_7d": 6,
+  "rel_ver": "v1.2.75",
+  "rel_pub": "2026-11-01",
+  "rel_days": 17,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1548,10 +1548,10 @@
    "Dockerfile": 35,
    "Shell": 22
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1587,12 +1587,12 @@
   }
  },
  "orziz/odai": {
-  "commit_90d": 153,
-  "commit_7d": 4,
+  "commit_90d": 104,
+  "commit_7d": 0,
   "rel_ver": "v1.2.1",
   "rel_pub": "2026-08-04",
-  "rel_days": 75,
-  "rel_n90": 3,
+  "rel_days": 106,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1607,22 +1607,22 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Unstructured-IO/unstructured-ingest": {
-  "commit_90d": 46,
-  "commit_7d": 2,
-  "rel_ver": "1.11.23",
-  "rel_pub": "2026-10-09",
-  "rel_days": 9,
-  "rel_n90": 12,
+  "commit_90d": 30,
+  "commit_7d": 0,
+  "rel_ver": "1.12.0",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1637,10 +1637,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1719,9 +1719,9 @@
   }
  },
  "liaisonio/liaison": {
-  "rel_ver": "v1.15.4",
-  "rel_pub": "2026-10-12",
-  "rel_days": 7,
+  "rel_ver": "v1.16.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1737,9 +1737,9 @@
    "Less": 5,
    "Rust": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

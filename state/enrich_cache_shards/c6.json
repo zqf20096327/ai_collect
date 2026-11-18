@@ -112,10 +112,10 @@
  },
  "ARM-software/ComputeLibrary": {
   "commit_90d": 10,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "v53.3.1",
   "rel_pub": "2026-09-29",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -131,10 +131,10 @@
    "CMake": 0,
    "Starlark": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1184,7 +1184,7 @@
   }
  },
  "mongodb-developer/genai-devday-notebooks": {
-  "commit_90d": 46,
+  "commit_90d": 42,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1198,10 +1198,10 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1268,9 +1268,9 @@
    "CSS": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4814,5 +4814,14 @@
    "contrib": "20261116",
    "lang": "20261116"
   }
+ },
+ "Replyze/ai-customer-support-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0
  }
 }

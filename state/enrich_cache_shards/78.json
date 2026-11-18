@@ -1545,11 +1545,11 @@
   }
  },
  "alivecontext/alive": {
-  "commit_90d": 36,
-  "commit_7d": 0,
-  "rel_ver": "v3.2.3",
-  "rel_pub": "2026-10-02",
-  "rel_days": 16,
+  "commit_90d": 31,
+  "commit_7d": 8,
+  "rel_ver": "v3.2.6",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1564,23 +1564,23 @@
    "HTML": 2,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "jklthinking/retinue": {
-  "commit_90d": 18,
+  "commit_90d": 19,
   "commit_7d": 0,
-  "rel_ver": "v0.2.0-alpha.3",
-  "rel_pub": "2026-08-13",
-  "rel_days": 66,
-  "rel_n90": 2,
-  "rel_pre": false,
+  "rel_ver": "v0.3.0a5",
+  "rel_pub": "2026-10-22",
+  "rel_days": 27,
+  "rel_n90": 1,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1594,17 +1594,17 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "kserve/website": {
-  "commit_90d": 22,
+  "commit_90d": 29,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -1620,10 +1620,10 @@
    "Python": 2,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1652,12 +1652,12 @@
   }
  },
  "OneYoungMean/KimodoUnityBridge": {
-  "commit_90d": 442,
-  "commit_7d": 17,
+  "commit_90d": 468,
+  "commit_7d": 10,
   "rel_ver": "v2.0.18",
   "rel_pub": "2026-08-07",
-  "rel_days": 72,
-  "rel_n90": 1,
+  "rel_days": 103,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1672,10 +1672,10 @@
    "Shell": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4999,6 +4999,49 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "ysunyang4/webagent": {
+  "commit_90d": 15,
+  "commit_7d": 12,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 97,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "mbelsis/Claude-Fleet": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

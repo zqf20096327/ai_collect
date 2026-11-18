@@ -1208,7 +1208,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.3.43",
   "rel_pub": "2026-05-22",
-  "rel_days": 149,
+  "rel_days": 180,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1224,10 +1224,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1256,8 +1256,8 @@
   }
  },
  "FireBird-Technologies/blog2video": {
-  "commit_90d": 557,
-  "commit_7d": 24,
+  "commit_90d": 365,
+  "commit_7d": 17,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1272,10 +1272,10 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1312,11 +1312,11 @@
   }
  },
  "georgian-io/pyoats": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 1,
   "rel_ver": "0.1.3",
   "rel_pub": "2024-03-08",
-  "rel_days": 954,
+  "rel_days": 985,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1331,10 +1331,10 @@
    "Dockerfile": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4449,6 +4449,68 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "video-db/StreamRAG": {
+  "commit_90d": 5,
+  "commit_7d": 5,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "4liyev/Gemini-Config-Checker-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 55,
+   "HTML": 33,
+   "Kotlin": 4,
+   "JavaScript": 4,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "Waykerzn/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

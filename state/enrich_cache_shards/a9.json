@@ -183,12 +183,12 @@
   }
  },
  "withcatai/node-llama-cpp": {
-  "commit_90d": 19,
-  "commit_7d": 2,
+  "commit_90d": 17,
+  "commit_7d": 0,
   "rel_ver": "v3.22.3",
   "rel_pub": "2026-11-05",
-  "rel_days": 1,
-  "rel_n90": 7,
+  "rel_days": 13,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -203,10 +203,10 @@
    "Vue": 1,
    "CMake": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1224,12 +1224,12 @@
   }
  },
  "jagreehal/ai-sdk-ollama": {
-  "commit_90d": 31,
-  "commit_7d": 5,
-  "rel_ver": "ai-sdk-ollama@4.1.0",
-  "rel_pub": "2026-07-25",
-  "rel_days": 85,
-  "rel_n90": 1,
+  "commit_90d": 28,
+  "commit_7d": 0,
+  "rel_ver": "ai-sdk-ollama@4.6.3",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1241,10 +1241,10 @@
    "TypeScript": 100,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1336,8 +1336,8 @@
   }
  },
  "aircrushin/promptMinder": {
-  "commit_90d": 48,
-  "commit_7d": 4,
+  "commit_90d": 43,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1352,10 +1352,10 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1462,11 +1462,11 @@
   }
  },
  "ai-runway/airunway": {
-  "commit_90d": 42,
-  "commit_7d": 1,
+  "commit_90d": 35,
+  "commit_7d": 0,
   "rel_ver": "v0.8.0",
   "rel_pub": "2026-09-10",
-  "rel_days": 38,
+  "rel_days": 69,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1482,10 +1482,10 @@
    "Makefile": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1591,13 +1591,16 @@
    "JavaScript": 7,
    "Shell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261020",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261118"
+  },
+  "commit_90d": 0,
+  "commit_7d": 0
  },
  "intellibar/main": {
   "rel_ver": "0.47.0",

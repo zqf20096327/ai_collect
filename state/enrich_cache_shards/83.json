@@ -295,8 +295,8 @@
   }
  },
  "Paritok-official/paritok-4b-v1": {
-  "commit_7d": 3,
-  "commit_90d": 87,
+  "commit_7d": 4,
+  "commit_90d": 48,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -310,10 +310,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261108",
-   "release": "20261108",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1139,10 +1139,10 @@
  },
  "clustervision/trinityX": {
   "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "16u1",
-  "rel_pub": "2026-07-22",
-  "rel_days": 88,
+  "commit_90d": 164,
+  "rel_ver": "16.1",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1158,10 +1158,10 @@
    "Perl": 5,
    "CSS": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1252,12 +1252,12 @@
   }
  },
  "NVIDIA-AI-Blueprints/retail-shopping-assistant": {
-  "commit_7d": 0,
-  "commit_90d": 4,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2025-09-03",
-  "rel_days": 410,
-  "rel_n90": 0,
+  "commit_7d": 3,
+  "commit_90d": 178,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1272,17 +1272,17 @@
    "CSS": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "microsoft/Microsoft-AI-Decision-Framework": {
-  "commit_7d": 1,
+  "commit_7d": 2,
   "commit_90d": 35,
   "rel_ver": null,
   "rel_none": true,
@@ -1298,10 +1298,10 @@
    "JavaScript": 7,
    "HTML": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1434,8 +1434,8 @@
  "ghorbelhamdi/buddy-android": {
   "commit_7d": 23,
   "commit_90d": 48,
-  "rel_ver": "v2.2.3",
-  "rel_pub": "2026-10-18",
+  "rel_ver": "v2.3.12",
+  "rel_pub": "2026-11-17",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1451,10 +1451,10 @@
    "C": 0,
    "Python": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

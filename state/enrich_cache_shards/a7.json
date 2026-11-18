@@ -382,11 +382,11 @@
   }
  },
  "proxysoul/Empryo": {
-  "commit_90d": 36,
-  "commit_7d": 1,
+  "commit_90d": 39,
+  "commit_7d": 6,
   "rel_ver": "v2.20.25",
   "rel_pub": "2026-07-12",
-  "rel_days": 97,
+  "rel_days": 129,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -402,10 +402,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1385,11 +1385,11 @@
   }
  },
  "cqfn/aibolit": {
-  "commit_90d": 107,
-  "commit_7d": 1,
+  "commit_90d": 69,
+  "commit_7d": 0,
   "rel_ver": "1.3.0",
   "rel_pub": "2025-05-15",
-  "rel_days": 521,
+  "rel_days": 552,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1405,10 +1405,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1490,9 +1490,9 @@
   }
  },
  "sleep2agi/agent-network": {
-  "rel_ver": "cli-v2.3.0-preview.182",
-  "rel_pub": "2026-10-19",
-  "rel_days": 0,
+  "rel_ver": "cli-v2.3.0-preview.242",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -1508,9 +1508,9 @@
    "Python": 2,
    "Shell": 1
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4797,6 +4797,35 @@
    "security": "20261117",
    "contrib": "20261117",
    "lang": "20261117"
+  }
+ },
+ "ARUNAGIRINATHAN-K/ai-agent-registry": {
+  "commit_90d": 244,
+  "commit_7d": 18,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-09-15",
+  "rel_days": 64,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 141,
+  "lang": {
+   "TypeScript": 77,
+   "JavaScript": 19,
+   "CSS": 3,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

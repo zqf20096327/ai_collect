@@ -486,11 +486,11 @@
   }
  },
  "Zyrexnn/Cybermes": {
-  "commit_90d": 224,
-  "commit_7d": 0,
-  "rel_ver": "v3.5.0",
-  "rel_pub": "2026-09-16",
-  "rel_days": 56,
+  "commit_90d": 270,
+  "commit_7d": 14,
+  "rel_ver": "v3.5.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -506,10 +506,10 @@
    "JavaScript": 2,
    "CSS": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1062,12 +1062,12 @@
   }
  },
  "huggingface/swift-jinja": {
-  "commit_90d": 10,
-  "commit_7d": 1,
-  "rel_ver": "2.5.1",
-  "rel_pub": "2026-09-14",
-  "rel_days": 34,
-  "rel_n90": 4,
+  "commit_90d": 40,
+  "commit_7d": 7,
+  "rel_ver": "3.2.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1078,10 +1078,10 @@
   "lang": {
    "Swift": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1308,11 +1308,11 @@
    "Dockerfile": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261019",
    "release": "20261019",
-   "security": "20261019",
+   "security": "20261118",
    "contrib": "20261019",
    "lang": "20261019"
   }

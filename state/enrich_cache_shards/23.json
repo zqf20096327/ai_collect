@@ -991,12 +991,12 @@
   }
  },
  "Future-House/ldp": {
-  "commit_7d": 0,
-  "commit_90d": 8,
-  "rel_ver": "v1.0.7",
-  "rel_pub": "2026-08-31",
-  "rel_days": 48,
-  "rel_n90": 2,
+  "commit_7d": 2,
+  "commit_90d": 16,
+  "rel_ver": "v1.11.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1010,10 +1010,10 @@
    "Jinja": 3,
    "TeX": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4168,6 +4168,28 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "remdek/mcp-router": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 99,
+   "Dockerfile": 1,
+   "Shell": 0,
+   "Makefile": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

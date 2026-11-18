@@ -243,7 +243,7 @@
  },
  "vectara/hallucination-leaderboard": {
   "commit_90d": 6,
-  "commit_7d": 3,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -254,10 +254,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1099,7 +1099,7 @@
   }
  },
  "google-deepmind/geeflow": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1111,21 +1111,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "edvardgrishin27/nativeprompt": {
-  "commit_90d": 57,
-  "commit_7d": 0,
-  "rel_ver": "v0.9.0",
-  "rel_pub": "2026-09-27",
-  "rel_days": 21,
+  "commit_90d": 20,
+  "commit_7d": 5,
+  "rel_ver": "v0.11.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
   "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
@@ -1138,10 +1138,10 @@
    "Python": 100,
    "Vim Snippet": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1152,7 +1152,7 @@
   "commit_7d": 0,
   "rel_ver": "v0.15.0",
   "rel_pub": "2026-03-30",
-  "rel_days": 202,
+  "rel_days": 233,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1166,21 +1166,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "NVIDIA/Ising-Decoding": {
-  "commit_90d": 6,
-  "commit_7d": 4,
+  "commit_90d": 8,
+  "commit_7d": 2,
   "rel_ver": "0.1.2",
   "rel_pub": "2026-05-22",
-  "rel_days": 149,
+  "rel_days": 180,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1195,10 +1195,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1232,12 +1232,12 @@
   }
  },
  "changkun/wallfacer": {
-  "commit_90d": 533,
-  "commit_7d": 2,
+  "commit_90d": 513,
+  "commit_7d": 0,
   "rel_ver": "v0.6.1",
   "rel_pub": "2026-09-26",
-  "rel_days": 22,
-  "rel_n90": 10,
+  "rel_days": 53,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1252,10 +1252,10 @@
    "CSS": 3,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1334,8 +1334,8 @@
   }
  },
  "christos-antono/NPCTalk": {
-  "commit_90d": 7,
-  "commit_7d": 7,
+  "commit_90d": 8,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1348,10 +1348,10 @@
    "Shell": 1,
    "Batchfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4467,6 +4467,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "awelist/awesome-ai": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-05-05",
+  "rel_days": 197,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

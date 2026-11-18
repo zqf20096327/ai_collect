@@ -179,8 +179,8 @@
   }
  },
  "lmstudio-ai/lms": {
-  "commit_90d": 19,
-  "commit_7d": 1,
+  "commit_90d": 18,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -191,10 +191,10 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -837,11 +837,11 @@
   }
  },
  "clearml/clearml-server": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": "v2.4.0",
   "rel_pub": "2026-03-08",
-  "rel_days": 224,
+  "rel_days": 255,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -856,10 +856,10 @@
    "Dockerfile": 0,
    "Jinja": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1383,11 +1383,11 @@
   }
  },
  "avabbbb/Flovart": {
-  "commit_90d": 293,
-  "commit_7d": 30,
+  "commit_90d": 574,
+  "commit_7d": 242,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "rel_days": 33,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -1403,10 +1403,10 @@
    "CSS": 2,
    "Go": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1466,11 +1466,11 @@
   }
  },
  "tiwe0/GeoChat": {
-  "commit_90d": 198,
-  "commit_7d": 2,
+  "commit_90d": 197,
+  "commit_7d": 0,
   "rel_ver": "dsh-plugin-v0.1.5",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "rel_days": 33,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1486,17 +1486,17 @@
    "CSS": 1,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "j5onrf/dots": {
-  "commit_90d": 26,
+  "commit_90d": 17,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1511,10 +1511,10 @@
    "QML": 9,
    "Python": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1625,12 +1625,12 @@
   }
  },
  "shawnxie94/lumina": {
-  "commit_90d": 39,
+  "commit_90d": 27,
   "commit_7d": 0,
-  "rel_ver": "v1.1.5-rc22",
-  "rel_pub": "2026-09-21",
-  "rel_days": 28,
-  "rel_n90": 12,
+  "rel_ver": "v1.1.5-rc24",
+  "rel_pub": "2026-10-22",
+  "rel_days": 27,
+  "rel_n90": 6,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -1645,10 +1645,10 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1736,7 +1736,7 @@
  "asaotomo/Hx0-HawkEye": {
   "rel_ver": "v1.0.7",
   "rel_pub": "2026-10-11",
-  "rel_days": 8,
+  "rel_days": 38,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1746,9 +1746,9 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261026",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4831,6 +4831,23 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "abodeahsz00az-cmd/ai--manus2.0": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

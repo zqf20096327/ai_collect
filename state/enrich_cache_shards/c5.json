@@ -1379,11 +1379,11 @@
  },
  "riffpad/riffpad": {
   "commit_7d": 0,
-  "commit_90d": 288,
+  "commit_90d": 47,
   "rel_ver": "v0.2.6",
   "rel_pub": "2026-08-14",
-  "rel_days": 65,
-  "rel_n90": 7,
+  "rel_days": 96,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1398,21 +1398,21 @@
    "JavaScript": 4,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "yeasy/llm_internals": {
-  "commit_7d": 2,
-  "commit_90d": 107,
+  "commit_7d": 1,
+  "commit_90d": 55,
   "rel_ver": "preview-pdf",
   "rel_pub": "2026-03-29",
-  "rel_days": 203,
+  "rel_days": 234,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -1424,10 +1424,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1435,11 +1435,11 @@
  },
  "realspqrk/autorename-pdf": {
   "commit_7d": 0,
-  "commit_90d": 38,
-  "rel_ver": "v3.2.0",
-  "rel_pub": "2026-09-10",
-  "rel_days": 38,
-  "rel_n90": 2,
+  "commit_90d": 87,
+  "rel_ver": "v4.0.0-beta.2",
+  "rel_pub": "2026-11-10",
+  "rel_days": 8,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1454,10 +1454,10 @@
    "PowerShell": 4,
    "JavaScript": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1487,7 +1487,7 @@
   }
  },
  "JakeNesler/OpenProphet": {
-  "commit_7d": 0,
+  "commit_7d": 5,
   "commit_90d": 35,
   "rel_ver": null,
   "rel_none": true,
@@ -1503,10 +1503,10 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1540,11 +1540,11 @@
  },
  "Nayjest/ai-microcore": {
   "commit_7d": 0,
-  "commit_90d": 48,
-  "rel_ver": "v6.8.2",
-  "rel_pub": "2026-09-24",
-  "rel_days": 24,
-  "rel_n90": 9,
+  "commit_90d": 84,
+  "rel_ver": "v6.9.1",
+  "rel_pub": "2026-11-09",
+  "rel_days": 9,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1558,22 +1558,22 @@
    "Makefile": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "drpwchen/textbook-to-note": {
-  "commit_7d": 0,
-  "commit_90d": 48,
-  "rel_ver": "v0.7.2",
-  "rel_pub": "2026-08-26",
-  "rel_days": 53,
-  "rel_n90": 12,
+  "commit_7d": 24,
+  "commit_90d": 40,
+  "rel_ver": "v0.8.3",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1585,10 +1585,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1675,10 +1675,10 @@
   "commit_7d": 0
  },
  "skoowoo/hylo": {
-  "rel_ver": "v0.1.3",
-  "rel_pub": "2026-10-16",
+  "rel_ver": "v0.1.9",
+  "rel_pub": "2026-11-15",
   "rel_days": 3,
-  "rel_n90": 4,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1693,9 +1693,9 @@
    "Rust": 5,
    "HTML": 4
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -5048,6 +5048,72 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "spiral/json-schema-generator": {
+  "commit_90d": 30,
+  "commit_7d": 24,
+  "rel_ver": "v2.1.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "PHP": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "lloweryfn-rgb/Gemini-Config-Checker-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 55,
+   "HTML": 33,
+   "Kotlin": 4,
+   "JavaScript": 4,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "Andriy-samp/ai--manus2.0": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

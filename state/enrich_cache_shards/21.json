@@ -1007,8 +1007,8 @@
   }
  },
  "madrury/py-glm": {
-  "commit_7d": 0,
-  "commit_90d": 25,
+  "commit_7d": 4,
+  "commit_90d": 91,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1019,18 +1019,18 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "closedloop-ai/claude-plugins": {
-  "commit_7d": 49,
-  "commit_90d": 113,
+  "commit_7d": 12,
+  "commit_90d": 307,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1045,10 +1045,10 @@
    "Shell": 6,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1089,21 +1089,21 @@
    "Shell": 2,
    "Python": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "gaixianggeng/mimi-remote": {
-  "commit_7d": 195,
-  "commit_90d": 1351,
-  "rel_ver": "v1.1.7",
-  "rel_pub": "2026-10-18",
-  "rel_days": 0,
+  "commit_7d": 73,
+  "commit_90d": 1320,
+  "rel_ver": "v1.1.14",
+  "rel_pub": "2026-11-14",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1119,10 +1119,10 @@
    "Shell": 4,
    "TypeScript": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

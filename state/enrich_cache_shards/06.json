@@ -165,10 +165,10 @@
    "Shell": 0,
    "PowerShell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1150,8 +1150,8 @@
   }
  },
  "PaddlePaddle/community": {
-  "commit_90d": 171,
-  "commit_7d": 8,
+  "commit_90d": 92,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1164,22 +1164,22 @@
    "Python": 2,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "georgeguimaraes/soothsayer": {
-  "commit_90d": 79,
+  "commit_90d": 84,
   "commit_7d": 0,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-09-18",
-  "rel_days": 30,
-  "rel_n90": 4,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-10-26",
+  "rel_days": 23,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1191,22 +1191,22 @@
    "Elixir": 97,
    "HTML": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ricardobalk/HackGPT": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
-  "rel_ver": "1.0.0-alpha.1",
-  "rel_pub": "2023-07-09",
-  "rel_days": 1197,
-  "rel_n90": 0,
+  "rel_ver": "1.0.0-alpha.3",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1217,10 +1217,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1247,12 +1247,12 @@
   }
  },
  "sdv-dev/DeepEcho": {
-  "commit_90d": 4,
+  "commit_90d": 11,
   "commit_7d": 1,
-  "rel_ver": "v0.8.1",
-  "rel_pub": "2026-02-12",
-  "rel_days": 248,
-  "rel_n90": 0,
+  "rel_ver": "v0.9.0",
+  "rel_pub": "2026-10-30",
+  "rel_days": 19,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1265,10 +1265,10 @@
    "Jupyter Notebook": 27,
    "Makefile": 5
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1332,7 +1332,7 @@
   }
  },
  "QuesmaOrg/BinaryAudit": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1346,10 +1346,10 @@
    "Dockerfile": 15,
    "Python": 13
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

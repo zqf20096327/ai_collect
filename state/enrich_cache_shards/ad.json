@@ -1384,11 +1384,11 @@
   }
  },
  "molmod/psiflow": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": "v4.0.0-final",
   "rel_pub": "2025-10-14",
-  "rel_days": 369,
+  "rel_days": 400,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1402,10 +1402,10 @@
    "Shell": 1,
    "Dockerfile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1439,11 +1439,11 @@
   }
  },
  "microsoft/nnscaler": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": "0.8",
   "rel_pub": "2025-08-22",
-  "rel_days": 422,
+  "rel_days": 453,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1456,10 +1456,10 @@
    "Python": 99,
    "C++": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1518,12 +1518,12 @@
   }
  },
  "PaddlePaddle/PaddleMaterials": {
-  "commit_90d": 15,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-08-19",
-  "rel_days": 60,
-  "rel_n90": 2,
+  "rel_days": 91,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1537,10 +1537,10 @@
    "Cython": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1647,11 +1647,11 @@
   }
  },
  "somastllc/somali-language-standard": {
-  "commit_90d": 62,
+  "commit_90d": 57,
   "commit_7d": 0,
   "rel_ver": "v0.3.0",
   "rel_pub": "2026-09-04",
-  "rel_days": 44,
+  "rel_days": 75,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1663,21 +1663,21 @@
   "lang": {
    "Rust": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "lucidrains/metacontroller": {
-  "commit_90d": 1,
+  "commit_90d": 5,
   "commit_7d": 0,
   "rel_ver": "0.2.5",
   "rel_pub": "2026-02-13",
-  "rel_days": 247,
+  "rel_days": 278,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1691,10 +1691,10 @@
    "Python": 44,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

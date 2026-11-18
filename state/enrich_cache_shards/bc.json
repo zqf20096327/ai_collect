@@ -1228,10 +1228,10 @@
  },
  "houtini-ai/houtini-lm": {
   "commit_7d": 0,
-  "commit_90d": 52,
+  "commit_90d": 30,
   "rel_ver": "v2.8.0",
   "rel_pub": "2026-03-18",
-  "rel_days": 214,
+  "rel_days": 245,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1244,10 +1244,10 @@
    "TypeScript": 72,
    "JavaScript": 28
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4872,6 +4872,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "bryan-pakulski/munet-releases": {
+  "rel_ver": "v0.11.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

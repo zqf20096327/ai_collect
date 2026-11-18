@@ -1402,11 +1402,11 @@
   }
  },
  "Porabuild/Poracode": {
-  "commit_90d": 1358,
-  "commit_7d": 136,
-  "rel_ver": "v2.0.0-nightly.202610171809",
-  "rel_pub": "2026-10-17",
-  "rel_days": 1,
+  "commit_90d": 1453,
+  "commit_7d": 79,
+  "rel_ver": "v2.0.0-nightly.202611172358",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -1422,10 +1422,10 @@
    "JavaScript": 3,
    "Rust": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1479,8 +1479,8 @@
   }
  },
  "QuantumNovice/awesome-civil-engineering": {
-  "commit_90d": 54,
-  "commit_7d": 11,
+  "commit_90d": 113,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1491,10 +1491,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4629,6 +4629,23 @@
    "security": "20261117",
    "contrib": "20261117",
    "lang": "20261117"
+  }
+ },
+ "Hypertrainer-The-First/ai--manus2.0": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

@@ -235,8 +235,8 @@
   }
  },
  "aimagelab/mammoth": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 4,
+  "commit_90d": 4,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -247,10 +247,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1008,7 +1008,7 @@
  },
  "boris-kz/CogAlg": {
   "commit_7d": 7,
-  "commit_90d": 67,
+  "commit_90d": 74,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1022,20 +1022,20 @@
    "Julia": 0,
    "C": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
   }
  },
  "antiv/mate": {
-  "rel_ver": "v1.5.1",
-  "rel_pub": "2026-10-17",
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-11-16",
   "rel_days": 2,
-  "rel_n90": 9,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -1052,9 +1052,9 @@
    "CSS": 1,
    "PLpgSQL": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

@@ -1137,10 +1137,10 @@
  "kaptinlin/jsonrepair": {
   "commit_90d": 3,
   "commit_7d": 0,
-  "rel_ver": "v0.4.8",
-  "rel_pub": "2026-06-17",
-  "rel_days": 123,
-  "rel_n90": 0,
+  "rel_ver": "v0.4.10",
+  "rel_pub": "2026-10-25",
+  "rel_days": 24,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1151,10 +1151,10 @@
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1308,8 +1308,8 @@
   }
  },
  "webmachinelearning/awesome-webnn": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 7,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1318,10 +1318,10 @@
   "sec_ids": [],
   "contrib_n": 4,
   "lang": {},
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4780,6 +4780,32 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "NakanoNino233/Lumi": {
+  "rel_ver": "android-v1.0.4",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 83,
+   "Kotlin": 17,
+   "PowerShell": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

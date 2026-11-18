@@ -996,11 +996,11 @@
   }
  },
  "imtt-dev/steer": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
   "rel_ver": "v0.1",
   "rel_pub": "2025-11-28",
-  "rel_days": 324,
+  "rel_days": 355,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1016,10 +1016,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1048,12 +1048,12 @@
   }
  },
  "sno-ai/llmix": {
-  "commit_90d": 20,
-  "commit_7d": 0,
+  "commit_90d": 8,
+  "commit_7d": 1,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-08-16",
-  "rel_days": 63,
-  "rel_n90": 1,
+  "rel_days": 94,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1067,10 +1067,10 @@
    "Rust": 27,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

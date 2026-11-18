@@ -1207,12 +1207,12 @@
   }
  },
  "HelgeSverre/toon-php": {
-  "commit_90d": 0,
+  "commit_90d": 18,
   "commit_7d": 0,
-  "rel_ver": "v3.2.1",
-  "rel_pub": "2026-07-08",
-  "rel_days": 102,
-  "rel_n90": 0,
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1224,10 +1224,10 @@
    "PHP": 99,
    "Just": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1238,8 +1238,8 @@
   "commit_7d": 0,
   "rel_ver": "v2.2.0",
   "rel_pub": "2026-07-28",
-  "rel_days": 82,
-  "rel_n90": 1,
+  "rel_days": 113,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1252,21 +1252,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "subev/libratory": {
-  "commit_90d": 724,
-  "commit_7d": 15,
-  "rel_ver": "v26.1014.2",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_90d": 617,
+  "commit_7d": 0,
+  "rel_ver": "v26.1106.1",
+  "rel_pub": "2026-11-06",
+  "rel_days": 12,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1282,10 +1282,10 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1322,8 +1322,8 @@
   }
  },
  "travisjneuman/.claude": {
-  "commit_90d": 67,
-  "commit_7d": 7,
+  "commit_90d": 175,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1338,10 +1338,10 @@
    "Python": 8,
    "CSS": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1350,7 +1350,7 @@
  "treesoop/hwp-mcp": {
   "rel_ver": "v0.2.1",
   "rel_pub": "2026-05-26",
-  "rel_days": 146,
+  "rel_days": 176,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1363,9 +1363,9 @@
    "TypeScript": 87,
    "JavaScript": 13
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

@@ -264,11 +264,11 @@
   }
  },
  "stanfordmlgroup/ngboost": {
-  "commit_7d": 6,
-  "commit_90d": 23,
+  "commit_7d": 5,
+  "commit_90d": 28,
   "rel_ver": "v0.6.0",
   "rel_pub": "2026-11-07",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -283,10 +283,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1208,7 +1208,7 @@
  },
  "sede-open/synthoseis": {
   "commit_7d": 0,
-  "commit_90d": 10,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1223,10 +1223,10 @@
    "Fortran": 7,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1264,7 +1264,7 @@
  },
  "tatigabru/kaggle-rsna": {
   "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1278,10 +1278,10 @@
    "Cuda": 1,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1311,7 +1311,7 @@
  },
  "Azure-Samples/JavaScript-AI-Buildathon": {
   "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1320,10 +1320,10 @@
   "sec_ids": [],
   "contrib_n": 6,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1331,7 +1331,7 @@
  },
  "tgm-team/tgm": {
   "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1343,10 +1343,10 @@
    "Python": 98,
    "Shell": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1383,12 +1383,12 @@
   }
  },
  "nidhi-singh02/agent-router": {
-  "commit_7d": 0,
-  "commit_90d": 128,
-  "rel_ver": "v0.1.0",
-  "rel_pub": "2026-09-17",
-  "rel_days": 31,
-  "rel_n90": 1,
+  "commit_7d": 5,
+  "commit_90d": 133,
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 7,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1401,10 +1401,10 @@
    "Shell": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1488,7 +1488,7 @@
   "commit_90d": 73,
   "rel_ver": "v0.1.0",
   "rel_pub": "2026-09-06",
-  "rel_days": 43,
+  "rel_days": 73,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1504,10 +1504,10 @@
    "C": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261020",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

@@ -1153,11 +1153,11 @@
  },
  "sidequery/sidemantic": {
   "commit_7d": 5,
-  "commit_90d": 416,
-  "rel_ver": "sidemantic-duckdb-v0.1.0",
-  "rel_pub": "2026-10-05",
+  "commit_90d": 591,
+  "rel_ver": "v0.13.1",
+  "rel_pub": "2026-11-05",
   "rel_days": 13,
-  "rel_n90": 3,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1172,10 +1172,10 @@
    "JavaScript": 3,
    "TypeScript": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1183,10 +1183,10 @@
  },
  "cosanlab/nltools": {
   "commit_7d": 0,
-  "commit_90d": 438,
+  "commit_90d": 426,
   "rel_ver": "v0.6.0.dev4",
   "rel_pub": "2026-09-22",
-  "rel_days": 26,
+  "rel_days": 57,
   "rel_n90": 5,
   "rel_pre": true,
   "rel_none": false,
@@ -1200,10 +1200,10 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1211,7 +1211,7 @@
  },
  "nrflynn2/ml-drug-discovery": {
   "commit_7d": 0,
-  "commit_90d": 7,
+  "commit_90d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1226,22 +1226,22 @@
    "Shell": 0,
    "TeX": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Kitware/dive": {
-  "commit_7d": 3,
-  "commit_90d": 229,
+  "commit_7d": 0,
+  "commit_90d": 164,
   "rel_ver": "v1.9.12",
   "rel_pub": "2026-08-03",
-  "rel_days": 76,
-  "rel_n90": 1,
+  "rel_days": 107,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1256,10 +1256,10 @@
    "Dockerfile": 0,
    "HCL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

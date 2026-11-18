@@ -1356,10 +1356,10 @@
  },
  "posecode-dev/posecode": {
   "commit_7d": 0,
-  "commit_90d": 48,
+  "commit_90d": 23,
   "rel_ver": "posecode-share@0.6.0",
   "rel_pub": "2026-10-04",
-  "rel_days": 14,
+  "rel_days": 45,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1375,21 +1375,21 @@
    "JavaScript": 3,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "microsoft/Agents-M365Copilot": {
-  "commit_7d": 0,
-  "commit_90d": 80,
-  "rel_ver": "microsoft_agents_m365copilot_beta-v1.0.0-preview.22",
-  "rel_pub": "2026-10-06",
-  "rel_days": 12,
+  "commit_7d": 1,
+  "commit_90d": 63,
+  "rel_ver": "Microsoft.Agents.M365Copilot.Beta-v1.0.0-preview.23",
+  "rel_pub": "2026-10-26",
+  "rel_days": 23,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -1405,10 +1405,10 @@
    "JavaScript": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5417,13 +5417,16 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261118"
+  },
+  "commit_90d": 93,
+  "commit_7d": 16
  },
  "BBQ2077/exl3-windows-gfx1201": {
   "rel_ver": "v2026.10.18.3",

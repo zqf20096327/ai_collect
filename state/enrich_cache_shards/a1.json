@@ -390,7 +390,7 @@
  },
  "Acly/comfyui-tooling-nodes": {
   "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -402,10 +402,10 @@
    "Python": 91,
    "JavaScript": 9
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1025,12 +1025,12 @@
   }
  },
  "kwhi6693-web/photo-abstract-editorial": {
-  "commit_90d": 38,
-  "commit_7d": 0,
+  "commit_90d": 16,
+  "commit_7d": 3,
   "rel_ver": "v3.0.0",
   "rel_pub": "2026-08-26",
-  "rel_days": 53,
-  "rel_n90": 4,
+  "rel_days": 84,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1041,21 +1041,21 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "SonarSource/sonarqube-agent-plugins": {
-  "commit_90d": 12,
-  "commit_7d": 3,
+  "commit_90d": 24,
+  "commit_7d": 0,
   "rel_ver": "2.0.0",
   "rel_pub": "2026-05-07",
-  "rel_days": 164,
+  "rel_days": 195,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1067,10 +1067,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1107,11 +1107,11 @@
   }
  },
  "lucidrains/alphagenome": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 3,
   "rel_ver": "0.2.8a",
   "rel_pub": "2026-02-04",
-  "rel_days": 257,
+  "rel_days": 287,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1124,18 +1124,18 @@
    "Jupyter Notebook": 70,
    "Python": 30
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
   }
  },
  "YuyaoGe/doc2harness": {
-  "commit_90d": 2,
-  "commit_7d": 1,
+  "commit_90d": 3,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1148,10 +1148,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1206,8 +1206,8 @@
   }
  },
  "testomatio/explorbot": {
-  "rel_ver": "0.5.8",
-  "rel_pub": "2026-10-14",
+  "rel_ver": "0.6.6",
+  "rel_pub": "2026-11-13",
   "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1224,9 +1224,9 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",

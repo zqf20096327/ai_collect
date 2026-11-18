@@ -1078,11 +1078,11 @@
   }
  },
  "probabl-ai/skore-skills": {
-  "commit_90d": 70,
-  "commit_7d": 8,
+  "commit_90d": 74,
+  "commit_7d": 1,
   "rel_ver": "0.8.0",
   "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "rel_days": 35,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1098,10 +1098,10 @@
    "JavaScript": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1207,12 +1207,12 @@
   }
  },
  "apphp/awesome-php-ml": {
-  "commit_90d": 5,
-  "commit_7d": 0,
-  "rel_ver": "0.8.0",
-  "rel_pub": "2026-07-05",
-  "rel_days": 105,
-  "rel_n90": 0,
+  "commit_90d": 13,
+  "commit_7d": 7,
+  "rel_ver": "0.9.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 6,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1223,10 +1223,10 @@
   "lang": {
    "PHP": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1257,11 +1257,11 @@
   }
  },
  "karimknaebel/point2vec": {
-  "commit_90d": 0,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": "paper",
   "rel_pub": "2023-04-11",
-  "rel_days": 1286,
+  "rel_days": 1317,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1274,10 +1274,10 @@
    "Python": 96,
    "Shell": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4655,13 +4655,16 @@
    "Shell": 1,
    "Go": 1
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261118"
+  },
+  "commit_90d": 90,
+  "commit_7d": 62
  },
  "StaysUp/agentbus-cockpit": {
   "rel_ver": "v0.3.0",
@@ -4973,6 +4976,29 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "KingUnlock7/Gemini-Config-Checker-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 55,
+   "HTML": 33,
+   "Kotlin": 4,
+   "JavaScript": 4,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

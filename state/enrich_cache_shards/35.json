@@ -1307,11 +1307,11 @@
   }
  },
  "luongnv89/sleek-ui": {
-  "commit_7d": 2,
+  "commit_7d": 0,
   "commit_90d": 50,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-08-23",
-  "rel_days": 56,
+  "rel_days": 87,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1327,10 +1327,10 @@
    "CSS": 2,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1414,12 +1414,12 @@
   }
  },
  "miquido/draive": {
-  "commit_7d": 0,
-  "commit_90d": 9,
+  "commit_7d": 10,
+  "commit_90d": 18,
   "rel_ver": "0.118.0",
   "rel_pub": "2026-09-16",
-  "rel_days": 32,
-  "rel_n90": 7,
+  "rel_days": 63,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1432,10 +1432,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1492,8 +1492,8 @@
   }
  },
  "opencomp-eu/ollama-ai-provider-v2": {
-  "commit_7d": 4,
-  "commit_90d": 62,
+  "commit_7d": 5,
+  "commit_90d": 48,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1505,10 +1505,10 @@
    "TypeScript": 99,
    "JavaScript": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1516,9 +1516,9 @@
  },
  "czyt1988/data-workbench": {
   "commit_7d": 0,
-  "commit_90d": 358,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 637,
+  "rel_ver": "v0.2.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1531,14 +1531,18 @@
    "JavaScript": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-07",
+  "rel_days": 11,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "LuizScarlet/StableCodec": {
   "commit_7d": 0,
@@ -5035,6 +5039,42 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "maksdergacev546-collab/GitHub-Copilot-app": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "JOINCLASS/ai-ceo-framework": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

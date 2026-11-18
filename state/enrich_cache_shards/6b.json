@@ -1086,9 +1086,9 @@
   }
  },
  "yuseferi/opencode-litellm": {
-  "rel_ver": "v1.5.0",
-  "rel_pub": "2026-10-15",
-  "rel_days": 4,
+  "rel_ver": "v1.10.0",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1100,9 +1100,9 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4326,5 +4326,32 @@
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": null
+ },
+ "Ktiseos-Nyx/Dataset-Tools": {
+  "rel_ver": "v0.96.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-11-08",
+  "sec_ids": [
+   "GHSA-hwwg-q6gw-5xqx(-,high)"
+  ],
+  "contrib_n": 4,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
  }
 }

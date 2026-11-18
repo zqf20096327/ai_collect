@@ -1073,7 +1073,7 @@
   }
  },
  "taskade/awesome-vibe-coding": {
-  "commit_90d": 15,
+  "commit_90d": 51,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1083,10 +1083,10 @@
   "sec_ids": [],
   "contrib_n": 19,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1143,12 +1143,12 @@
   }
  },
  "Dicklesworthstone/jeffreysprompts.com": {
-  "commit_90d": 14,
+  "commit_90d": 11,
   "commit_7d": 1,
   "rel_ver": "v1.0.3",
   "rel_pub": "2026-07-27",
-  "rel_days": 83,
-  "rel_n90": 1,
+  "rel_days": 114,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1163,10 +1163,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1212,10 +1212,10 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1297,12 +1297,12 @@
   }
  },
  "xlnfinance/xln": {
-  "commit_90d": 2564,
-  "commit_7d": 248,
+  "commit_90d": 1546,
+  "commit_7d": 12,
   "rel_ver": "v0.1.32",
   "rel_pub": "2026-08-23",
-  "rel_days": 56,
-  "rel_n90": 12,
+  "rel_days": 87,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1317,22 +1317,22 @@
    "Solidity": 2,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "MarcoPorcellato/matryca-plumber": {
-  "commit_90d": 337,
-  "commit_7d": 11,
-  "rel_ver": "v2.0.1-rc.3",
-  "rel_pub": "2026-08-31",
-  "rel_days": 49,
-  "rel_n90": 9,
+  "commit_90d": 113,
+  "commit_7d": 9,
+  "rel_ver": "v2.1.0-alpha.4",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 5,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -1347,10 +1347,10 @@
    "Makefile": 0,
    "CSS": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -4781,6 +4781,28 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "FinancialComputingUCL/LOBFrame": {
+  "commit_90d": 4,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "commit": "20261118",
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

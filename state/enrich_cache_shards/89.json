@@ -435,8 +435,8 @@
   }
  },
  "pytorch/cpuinfo": {
-  "commit_7d": 3,
-  "commit_90d": 8,
+  "commit_7d": 2,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -451,10 +451,10 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1228,8 +1228,8 @@
   }
  },
  "ever-works/awesome-mcp-servers": {
-  "commit_7d": 0,
-  "commit_90d": 1,
+  "commit_7d": 10,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1238,22 +1238,22 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "jszmajda/lid": {
-  "commit_7d": 5,
-  "commit_90d": 38,
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-10-11",
-  "rel_days": 7,
-  "rel_n90": 1,
+  "commit_7d": 20,
+  "commit_90d": 79,
+  "rel_ver": "v1.4.6",
+  "rel_pub": "2026-11-12",
+  "rel_days": 6,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1268,10 +1268,10 @@
    "JavaScript": 8,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1279,11 +1279,11 @@
  },
  "nihui/ncnn-android-styletransfer": {
   "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "20260527.294843d",
-  "rel_pub": "2026-05-27",
-  "rel_days": 144,
-  "rel_n90": 0,
+  "commit_90d": 8,
+  "rel_ver": "20261027.d9fec0c",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1297,10 +1297,10 @@
    "C++": 24,
    "CMake": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1387,11 +1387,11 @@
   "commit_7d": 0
  },
  "five-plus-one/AI-Marker-Suite": {
-  "rel_ver": "preview-latest",
-  "rel_pub": "2026-10-14",
-  "rel_days": 5,
-  "rel_n90": 7,
-  "rel_pre": true,
+  "rel_ver": "v1.21.27.4",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1401,9 +1401,9 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -1551,9 +1551,9 @@
   }
  },
  "SummerEngine/summer": {
-  "rel_ver": "v4.3.0",
-  "rel_pub": "2026-10-16",
-  "rel_days": 3,
+  "rel_ver": "v4.9.2",
+  "rel_pub": "2026-11-13",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1569,9 +1569,9 @@
    "Shell": 1,
    "Python": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -5315,6 +5315,27 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "PansaLegrand/dojo-video-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 78,
+   "CSS": 18,
+   "JavaScript": 4
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

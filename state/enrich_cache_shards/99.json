@@ -1442,7 +1442,7 @@
  },
  "achetronic/adk-utils-go": {
   "commit_7d": 0,
-  "commit_90d": 11,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1453,22 +1453,22 @@
   "lang": {
    "Go": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "AmineDjeghri/generative-ai-project-template": {
-  "commit_7d": 2,
-  "commit_90d": 16,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-09-28",
-  "rel_days": 20,
-  "rel_n90": 1,
+  "commit_7d": 0,
+  "commit_90d": 19,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-05",
+  "rel_days": 13,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1481,10 +1481,10 @@
    "Makefile": 22,
    "Dockerfile": 2
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1522,10 +1522,10 @@
  },
  "Jackychen-12/AI-Search": {
   "commit_7d": 7,
-  "commit_90d": 133,
+  "commit_90d": 106,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-06-02",
-  "rel_days": 138,
+  "rel_days": 169,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1540,18 +1540,18 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "auto-agent-protocol/auto-agent-protocol": {
-  "commit_7d": 2,
-  "commit_90d": 12,
+  "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1566,10 +1566,10 @@
    "JavaScript": 5,
    "Python": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1605,8 +1605,8 @@
   }
  },
  "SylphAI-Inc/adal-cli": {
-  "commit_7d": 0,
-  "commit_90d": 22,
+  "commit_7d": 2,
+  "commit_90d": 6,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1617,10 +1617,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4812,6 +4812,33 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "gordidima-rgb/deloist-agent": {
+  "rel_ver": "v0.4.4",
+  "rel_pub": "2026-11-18",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 67,
+   "JavaScript": 20,
+   "Svelte": 8,
+   "CSS": 3,
+   "HTML": 1
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

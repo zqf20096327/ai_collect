@@ -1212,11 +1212,11 @@
   }
  },
  "connormcmonigle/seer-nnue": {
-  "commit_90d": 0,
+  "commit_90d": 3,
   "commit_7d": 0,
   "rel_ver": "v2.8.0",
   "rel_pub": "2023-12-31",
-  "rel_days": 1022,
+  "rel_days": 1053,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1231,22 +1231,22 @@
    "Makefile": 0,
    "Python": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "mamawai/wtfibought": {
-  "commit_90d": 545,
-  "commit_7d": 17,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 11,
+  "commit_90d": 457,
+  "commit_7d": 44,
+  "rel_ver": "v3.1.0",
+  "rel_pub": "2026-11-07",
+  "rel_days": 11,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1261,10 +1261,10 @@
    "HTML": 1,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1325,12 +1325,12 @@
   }
  },
  "brain4j-org/brain4j": {
-  "commit_90d": 75,
-  "commit_7d": 3,
-  "rel_ver": "3.0.0-rc.2",
-  "rel_pub": "2025-12-05",
-  "rel_days": 317,
-  "rel_n90": 0,
+  "commit_90d": 88,
+  "commit_7d": 0,
+  "rel_ver": "continuous",
+  "rel_pub": "2026-10-21",
+  "rel_days": 28,
+  "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -1345,18 +1345,18 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "heavenaruba/codified-prompt-rule-engine": {
-  "commit_90d": 823,
-  "commit_7d": 35,
+  "commit_90d": 556,
+  "commit_7d": 28,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1367,21 +1367,21 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "VKirill/claude-lane-stack": {
-  "commit_90d": 189,
-  "commit_7d": 10,
-  "rel_ver": "v1.65.5",
-  "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "commit_90d": 196,
+  "commit_7d": 1,
+  "rel_ver": "v1.67.4",
+  "rel_pub": "2026-10-27",
+  "rel_days": 22,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1397,17 +1397,17 @@
    "TypeScript": 3,
    "HTML": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "wq19901103wq/wechat-mac-rpa": {
-  "commit_90d": 46,
+  "commit_90d": 59,
   "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
@@ -1420,22 +1420,22 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "ianalloway/solvent-agent": {
-  "commit_90d": 146,
-  "commit_7d": 18,
-  "rel_ver": "v0.2.2",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 4,
+  "commit_90d": 133,
+  "commit_7d": 8,
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-10-31",
+  "rel_days": 18,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1449,10 +1449,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1509,7 +1509,7 @@
  "rosenthj/Winter": {
   "rel_ver": "v5.0",
   "rel_pub": "2026-05-27",
-  "rel_days": 145,
+  "rel_days": 175,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1523,9 +1523,9 @@
    "C": 5,
    "Makefile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4922,13 +4922,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261105",
    "security": "20261105",
    "contrib": "20261105",
-   "lang": "20261105"
-  }
+   "lang": "20261105",
+   "commit": "20261118"
+  },
+  "commit_90d": 136,
+  "commit_7d": 13
  },
  "DruidCat237/kitty-open-studio": {
   "rel_ver": null,

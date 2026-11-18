@@ -1,10 +1,10 @@
 {
  "oraios/serena": {
-  "commit_7d": 2,
-  "commit_90d": 329,
+  "commit_7d": 11,
+  "commit_90d": 323,
   "rel_ver": "v2.1.0",
   "rel_pub": "2026-10-19",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "CSS": 1,
    "AL": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -246,11 +246,11 @@
   }
  },
  "capitalone/DataProfiler": {
-  "commit_7d": 0,
-  "commit_90d": 3,
+  "commit_7d": 1,
+  "commit_90d": 4,
   "rel_ver": "0.14.0",
   "rel_pub": "2026-09-10",
-  "rel_days": 37,
+  "rel_days": 69,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -266,10 +266,10 @@
    "HTML": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -547,8 +547,8 @@
   }
  },
  "rmaphoh/RETFound": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 3,
+  "commit_90d": 3,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -561,10 +561,10 @@
    "Jupyter Notebook": 10,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -737,11 +737,11 @@
   }
  },
  "martin-rizzo/ComfyUI-ZImagePowerNodes": {
-  "commit_7d": 1,
-  "commit_90d": 84,
+  "commit_7d": 3,
+  "commit_90d": 40,
   "rel_ver": "v2.1.1",
   "rel_pub": "2026-08-29",
-  "rel_days": 50,
+  "rel_days": 81,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -756,10 +756,10 @@
    "Shell": 2,
    "CSS": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1417,10 +1417,10 @@
  },
  "GuqierMcl/NexusPilot": {
   "commit_7d": 0,
-  "commit_90d": 56,
+  "commit_90d": 55,
   "rel_ver": "v0.10.3",
   "rel_pub": "2026-09-08",
-  "rel_days": 40,
+  "rel_days": 71,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1436,22 +1436,22 @@
    "Astro": 0,
    "CSS": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "microsoft/copilot-for-eclipse": {
-  "commit_7d": 7,
-  "commit_90d": 32,
+  "commit_7d": 0,
+  "commit_90d": 25,
   "rel_ver": "0.21.0",
   "rel_pub": "2026-08-07",
-  "rel_days": 72,
-  "rel_n90": 1,
+  "rel_days": 103,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1466,10 +1466,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1502,11 +1502,11 @@
   }
  },
  "insideout10/wordlift-plugin": {
-  "commit_7d": 4,
-  "commit_90d": 7,
+  "commit_7d": 0,
+  "commit_90d": 13,
   "rel_ver": "3.32.3",
   "rel_pub": "2021-08-02",
-  "rel_days": 1903,
+  "rel_days": 1934,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1522,10 +1522,10 @@
    "HTML": 6,
    "CoffeeScript": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1569,10 +1569,10 @@
    "Python": 83,
    "Makefile": 17
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1580,10 +1580,10 @@
  },
  "AbductiveLearning/ABLkit": {
   "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_90d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-05-17",
-  "rel_days": 154,
+  "rel_days": 185,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1595,10 +1595,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1606,11 +1606,11 @@
  },
  "Marker-Inc-Korea/ko-pii": {
   "commit_7d": 0,
-  "commit_90d": 10,
-  "rel_ver": "v1.16.0",
-  "rel_pub": "2026-09-09",
-  "rel_days": 40,
-  "rel_n90": 1,
+  "commit_90d": 34,
+  "rel_ver": "v1.22.17",
+  "rel_pub": "2026-11-03",
+  "rel_days": 15,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1621,10 +1621,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"
@@ -1647,10 +1647,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261118",
   "dim_ts": {
    "commit": "20261020",
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

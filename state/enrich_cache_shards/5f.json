@@ -917,11 +917,11 @@
   }
  },
  "IntptrMax/YoloSharp": {
-  "commit_90d": 3,
-  "commit_7d": 3,
+  "commit_90d": 26,
+  "commit_7d": 19,
   "rel_ver": "v1.0.8",
   "rel_pub": "2025-05-21",
-  "rel_days": 515,
+  "rel_days": 546,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -933,10 +933,10 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1267,11 +1267,11 @@
   }
  },
  "ThomasBury/arfs": {
-  "commit_90d": 72,
-  "commit_7d": 72,
+  "commit_90d": 95,
+  "commit_7d": 0,
   "rel_ver": "4.0.1",
   "rel_pub": "2026-10-16",
-  "rel_days": 2,
+  "rel_days": 33,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1283,10 +1283,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1313,12 +1313,12 @@
   }
  },
  "pmady/keda-gpu-scaler": {
-  "commit_90d": 112,
-  "commit_7d": 18,
+  "commit_90d": 87,
+  "commit_7d": 0,
   "rel_ver": "v1.0.2",
   "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 4,
+  "rel_days": 37,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1333,10 +1333,10 @@
    "Shell": 1,
    "Makefile": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1390,11 +1390,11 @@
   }
  },
  "axone-protocol/contracts": {
-  "commit_90d": 43,
-  "commit_7d": 2,
+  "commit_90d": 36,
+  "commit_7d": 0,
   "rel_ver": "axone-gov-v1.0.0",
   "rel_pub": "2026-03-17",
-  "rel_days": 215,
+  "rel_days": 246,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1409,10 +1409,10 @@
    "Prolog": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1432,18 +1432,18 @@
    "TypeScript": 78,
    "JavaScript": 22
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "kaderkck/hewn-forge": {
-  "commit_90d": 849,
-  "commit_7d": 36,
+  "commit_90d": 565,
+  "commit_7d": 29,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1454,10 +1454,10 @@
   "lang": {
    "HTML": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1546,7 +1546,7 @@
  },
  "CScorza/OSINT-IA": {
   "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1555,10 +1555,10 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5120,13 +5120,16 @@
    "NSIS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261118",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261118"
+  },
+  "commit_90d": 291,
+  "commit_7d": 167
  },
  "JhuoW/Inkstone": {
   "rel_ver": "v0.10.0",
@@ -5270,6 +5273,56 @@
    "security": "20261114",
    "contrib": "20261114",
    "lang": "20261114"
+  }
+ },
+ "Mariajsjsj/Gemini-Config-Checker-": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 55,
+   "HTML": 33,
+   "Kotlin": 4,
+   "JavaScript": 4,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
+  }
+ },
+ "Vaultite/vaultite": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
+  "rel_n90": 11,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 70,
+   "JavaScript": 27,
+   "Swift": 2,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261118",
+  "dim_ts": {
+   "release": "20261118",
+   "security": "20261118",
+   "contrib": "20261118",
+   "lang": "20261118"
   }
  }
 }

@@ -1218,8 +1218,8 @@
   }
  },
  "tyang816/Awesome-TCM-LLM": {
-  "commit_7d": 0,
-  "commit_90d": 30,
+  "commit_7d": 3,
+  "commit_90d": 34,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1230,10 +1230,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

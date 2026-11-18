@@ -1054,11 +1054,11 @@
   }
  },
  "flyteorg/flyte-sdk": {
-  "commit_90d": 261,
-  "commit_7d": 16,
-  "rel_ver": "v2.11.4",
-  "rel_pub": "2026-10-14",
-  "rel_days": 4,
+  "commit_90d": 249,
+  "commit_7d": 23,
+  "rel_ver": "v2.13.6",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1074,10 +1074,10 @@
    "Makefile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1214,12 +1214,12 @@
   }
  },
  "Avafly/PaddleOCR-ncnn-CPP": {
-  "commit_90d": 0,
+  "commit_90d": 1,
   "commit_7d": 0,
-  "rel_ver": "v0.3.0",
-  "rel_pub": "2026-06-13",
-  "rel_days": 127,
-  "rel_n90": 0,
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-07",
+  "rel_days": 11,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1231,10 +1231,10 @@
    "C++": 96,
    "CMake": 4
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1265,8 +1265,8 @@
   }
  },
  "TristanBrotherton/openclaw-voice-call-realtime": {
-  "commit_90d": 11,
-  "commit_7d": 6,
+  "commit_90d": 31,
+  "commit_7d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1278,10 +1278,10 @@
    "TypeScript": 92,
    "Python": 8
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"

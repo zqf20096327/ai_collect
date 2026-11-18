@@ -1146,11 +1146,11 @@
   }
  },
  "apache/ctakes": {
-  "commit_90d": 16,
+  "commit_90d": 2,
   "commit_7d": 0,
   "rel_ver": "ctakes-6.0.0",
   "rel_pub": "2024-09-16",
-  "rel_days": 762,
+  "rel_days": 793,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1166,10 +1166,10 @@
    "Batchfile": 0,
    "Groovy": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1281,11 +1281,11 @@
   }
  },
  "aerele/jarvis": {
-  "commit_90d": 3467,
-  "commit_7d": 213,
-  "rel_ver": "v16.5.1",
-  "rel_pub": "2026-10-10",
-  "rel_days": 8,
+  "commit_90d": 3488,
+  "commit_7d": 402,
+  "rel_ver": "v16.8.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1301,10 +1301,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1341,12 +1341,12 @@
   }
  },
  "sirsjg/flux": {
-  "commit_90d": 54,
+  "commit_90d": 34,
   "commit_7d": 0,
-  "rel_ver": "v0.6.0",
-  "rel_pub": "2026-08-27",
-  "rel_days": 52,
-  "rel_n90": 5,
+  "rel_ver": "v0.7.0",
+  "rel_pub": "2026-10-21",
+  "rel_days": 28,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1361,18 +1361,18 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "arn-c0de/Crawllama": {
-  "commit_90d": 44,
-  "commit_7d": 0,
+  "commit_90d": 62,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1387,21 +1387,21 @@
    "Batchfile": 1,
    "PowerShell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "elevenlabs/cli": {
-  "commit_90d": 27,
+  "commit_90d": 50,
   "commit_7d": 8,
-  "rel_ver": "v1.6.1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 2,
+  "rel_ver": "v1.12.2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1414,10 +1414,10 @@
    "Rust": 100,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261019",
-   "release": "20261019",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019"

@@ -790,8 +790,8 @@
   }
  },
  "VIAME/VIAME": {
-  "commit_7d": 0,
-  "commit_90d": 1146,
+  "commit_7d": 6,
+  "commit_90d": 741,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -806,10 +806,10 @@
    "Shell": 1,
    "MATLAB": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1175,10 +1175,10 @@
  },
  "ORNL/HydraGNN": {
   "commit_7d": 0,
-  "commit_90d": 49,
+  "commit_90d": 56,
   "rel_ver": "v5.0",
   "rel_pub": "2026-04-14",
-  "rel_days": 187,
+  "rel_days": 218,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1191,22 +1191,22 @@
    "Python": 90,
    "Shell": 10
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
   }
  },
  "Metabuilder-Labs/tokenjam": {
-  "commit_7d": 0,
-  "commit_90d": 936,
-  "rel_ver": "v0.7.0",
-  "rel_pub": "2026-09-26",
-  "rel_days": 22,
-  "rel_n90": 12,
+  "commit_7d": 6,
+  "commit_90d": 79,
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1221,10 +1221,10 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1258,13 +1258,13 @@
   }
  },
  "swarmauri/swarmauri-sdk": {
-  "commit_7d": 0,
-  "commit_90d": 74,
-  "rel_ver": "swarmauri_tts_playht==0.11.0.dev4",
-  "rel_pub": "2026-08-10",
-  "rel_days": 69,
+  "commit_7d": 7,
+  "commit_90d": 99,
+  "rel_ver": "swarmauri_runstore_sqlite==0.1.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 3,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1278,10 +1278,10 @@
    "Jinja": 0,
    "Rust": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261118",
+   "release": "20261118",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1365,10 +1365,10 @@
   }
  },
  "dentalpin/dentalpin": {
-  "rel_ver": "v2.8.0",
-  "rel_pub": "2026-10-07",
-  "rel_days": 12,
-  "rel_n90": 12,
+  "rel_ver": "v2.11.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1383,9 +1383,9 @@
    "HTML": 2,
    "Shell": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
    "lang": "20261019",
@@ -4997,10 +4997,10 @@
   }
  },
  "n8n-io/nod": {
-  "rel_ver": "nod-v0.6.1",
-  "rel_pub": "2026-11-10",
+  "rel_ver": "nod-v0.8.4",
+  "rel_pub": "2026-11-17",
   "rel_days": 1,
-  "rel_n90": 2,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -5015,9 +5015,9 @@
    "Shell": 0,
    "Python": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261118",
   "dim_ts": {
-   "release": "20261111",
+   "release": "20261118",
    "security": "20261111",
    "contrib": "20261111",
    "lang": "20261111",
