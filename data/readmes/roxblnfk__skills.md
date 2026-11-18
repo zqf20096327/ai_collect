@@ -1,10 +1,18 @@
-<h1 align="center">llm/skills</h1>
+<p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/roxblnfk/skills/blob/master/resources/logo-dark.svg?raw=true">
+        <img alt="llm/skills"
+             src="https://github.com/roxblnfk/skills/blob/master/resources/logo-light.svg?raw=true"
+             style="width: 6in; display: block"
+        />
+    </picture>
+</p>
 
 <p align="center">Distribute AI Skills as Composer dependencies</p>
 
 <div align="center">
 
-[![Vibe Index](https://img.shields.io/static/v1?label=Vibe+Index&message=2.7&color=1cb9a1&style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTkgNCBROSAxMyAxOCAxMyBROSAxMyA5IDIyIFE5IDEzIDAgMTMgUTkgMTMgOSA0IFoiLz48cGF0aCBkPSJNMTkgMSBRMTkgNiAyNCA2IFExOSA2IDE5IDExIFExOSA2IDE0IDYgUTE5IDYgMTkgMSBaIi8%2BPHBhdGggZD0iTTIwIDE0IFEyMCAxOCAyNCAxOCBRMjAgMTggMjAgMjIgUTIwIDE4IDE2IDE4IFEyMCAxOCAyMCAxNCBaIi8%2BPC9zdmc%2B)](https://github.com/roxblnfk/action-vibe-index)
+[![Vibe Index](https://img.shields.io/static/v1?label=Vibe+Index&message=2.9&color=1eb6a6&style=for-the-badge&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2ZmZiI%2BPHBhdGggZD0iTTkgNCBROSAxMyAxOCAxMyBROSAxMyA5IDIyIFE5IDEzIDAgMTMgUTkgMTMgOSA0IFoiLz48cGF0aCBkPSJNMTkgMSBRMTkgNiAyNCA2IFExOSA2IDE5IDExIFExOSA2IDE0IDYgUTE5IDYgMTkgMSBaIi8%2BPHBhdGggZD0iTTIwIDE0IFEyMCAxOCAyNCAxOCBRMjAgMTggMjAgMjIgUTIwIDE4IDE2IDE4IFEyMCAxOCAyMCAxNCBaIi8%2BPC9zdmc%2B)](https://github.com/roxblnfk/action-vibe-index)
 [![Support on Boosty](https://img.shields.io/static/v1?style=for-the-badge&label=&message=Sponsorship&logo=Boosty&logoColor=white&color=%23F15F2C)](https://boosty.to/roxblnfk)
 
 </div>
@@ -147,6 +155,7 @@ skills — see [Donor sources](#donor-sources).
 | `--clean`             | update | Delete installed skills before copying instead of merging into them. See [Clean install](#clean-install).                                                           |
 | `--no-clean`          | update | Merge for this run even when `skills.json` sets `"clean": true`. Wins over `--clean` when both are given.                                                         |
 | `--dry-run`           | update | Print actions; no files written.                                                                                                                                   |
+| `--local`             | add    | Write the entry to the personal, git-ignored `skills.local.json` instead of `skills.json`. See [Personal overrides](#personal-overrides-skillslocaljson).             |
 
 Short flag `-d` for `--discovery` is registered only by the standalone `bin/skills` binary;
 inside Composer it is reserved for `--working-dir`.
@@ -295,6 +304,11 @@ same trust gate as its bundled skills would:
   single fetch and a single donor; their `skills` allowlists are merged (an entry without
   an allowlist means "all skills" and wins the merge), and the donor is approved when
   **any** of the declaring packages is trusted (or named positionally).
+- **Your own project's address book is not your pull list.** `extra.skills.sources` in the
+  root `composer.json` describes your package to *its* consumers. A project's pull list is
+  `sources[]` in `skills.json` and `skills.local.json` only; the project never downloads from
+  its own `extra.skills.sources`, and the migration of inline settings into `skills.json`
+  leaves it in `composer.json`.
 - **No chaining.** The fetched archive's own `extra.skills.sources` is ignored — depth is
   exactly one. Its `extra.skills.source` (path inside the archive) works as usual.
 - The `dir` adapter is not allowed here — for in-package paths use `extra.skills.source`.
@@ -380,6 +394,54 @@ The PHP mapper is the authoritative validator at runtime; the
 editor support. A malformed `skills.json` is **fatal**; a malformed `extra.skills` block in a
 *donor* package is skipped with a `-v` warning so one bad vendor never blocks the rest.
 
+### Personal overrides (`skills.local.json`)
+
+`skills.json` is committed and shared by the team. To adjust settings for yourself alone — add a
+personal donor, mirror skills into the agent directory you use, change trust, or place skills
+differently in a monorepo — put a **`skills.local.json`** next to it and keep it out of Git
+(add it to `.gitignore`).
+
+```jsonc
+// <project-root>/skills.local.json — git-ignored
+{
+  "$schema": "https://raw.githubusercontent.com/roxblnfk/skills/master/resources/skills.schema.json",
+  "aliases": [".cursor/skills"],
+  "sources": [
+    { "from": "dir", "path": "../my-skills" },
+    { "from": "github", "package": "team/skills-pack", "skills": [] }
+  ],
+  "dependencies": { "composer": { "trusted": ["myorg/*"] } }
+}
+```
+
+The file has the same strict shape and schema as `skills.json`; its errors are prefixed
+`skills.local.json:`. The deprecated keys `remote`, `trusted`, `trusted-replace` and `local` are
+rejected here, and so is `null` for any key, since it would erase a shared value. It is layered
+over the shared configuration — `skills.json`, or the inline `extra.skills` block when there is
+no `skills.json`, or the defaults when there is neither; on its own it acts as the main file. Keys merge as follows:
+
+| Key | Rule |
+|---|---|
+| `target`, `path-from-root`, `discovery`, `auto-sync`, `clean`, `vendor-sources` | The local value wins. |
+| `aliases` | Union: shared entries first, then local ones not already listed (compared as paths, so `./.claude/skills/` matches `.claude/skills`). |
+| `sources` | Union keyed by source identity (`from`, `host`, `path` / `package` / `url`). A local entry with the identity of a shared one replaces it, so `"skills": []` disables a shared donor for you. |
+| `dependencies.<id>.enabled`, `dependencies.<id>.trusted-replace` | The local value wins. A local `dependencies.<id>` given as a bool sets `enabled` only. |
+| `dependencies.<id>.trusted` | Union. |
+
+Local settings can add to `aliases` and trust lists but not remove from them. Every sync, and
+`skills:show`, prints one line naming what the local file changed (`+N` added, `~N` replaced):
+
+```
+[local] skills.local.json: aliases +1, sources +1 ~1, dependencies.composer.trusted +1
+```
+
+`skills:show` also marks a target or alias the local file contributed with `[local]`, and labels a
+donor from a local `sources` entry `[declared in skills.local.json]`.
+
+Nothing writes merged values back: `skills:init`, `skills:add` and the config migrations touch
+`skills.json` only, and never copy local settings into it. `skills:add --local` writes the new
+entry to `skills.local.json` instead.
+
 ### `skills:init` — bootstrap and migrate
 
 ```bash
@@ -412,7 +474,9 @@ notice telling the user to move the file.
 > **1.3.0**, the first write-mode run (`skills:update`, `skills:init`, or the
 > `post-update-cmd` auto-sync hook) moves the project keys into `skills.json` automatically
 > and prints a `[migrate]` line. `skills:show` and `post-install-cmd` stay read-only and just
-> emit a one-line notice. Donor-side `extra.skills.source` is never touched.
+> emit a one-line notice. Donor-side `extra.skills.source` and `extra.skills.sources` are never
+> touched. The legacy inline `remote` pull list is validated but never fetched; the first
+> write-mode run moves it into `sources` in `skills.json`.
 
 
 ## Aliases
@@ -622,7 +686,8 @@ The command:
 | `--host=URL`  | Override the adapter's default host (GitHub Enterprise, self-hosted GitLab, private Packagist).               |
 | `--ref=REF`   | Pin a tag, branch, SHA, or Composer-style constraint (`^1.2.3`). Without this, the cascade above runs.        |
 | `--skill=NAME`| Restrict the donor to a specific skill directory. Repeatable. Names accumulate across consecutive `skills:add` calls. Without the flag, every skill the donor ships is synced. |
-| `--no-sync`   | Skip the automatic single-entry sync after writing `skills.json`.                                              |
+| `--no-sync`   | Skip the automatic single-entry sync after writing `skills.json` (or `skills.local.json` with `--local`).      |
+| `--local`     | Write the entry to `skills.local.json` instead of `skills.json`. See [Personal overrides](#personal-overrides-skillslocaljson). |
 
 Stored entries look like:
 

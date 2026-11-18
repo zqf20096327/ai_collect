@@ -60,6 +60,8 @@ python -m robin speak "Hi, I'm Robin." --model . --lora robin_character_lora.saf
 
 The app runs in your browser: speak with two takes side by side, change a voice from a description, and train a voice with live progress and a sample at every save.
 
+On an NVIDIA GPU, Robin records each planning step once as a CUDA graph and replays it, and merges a LoRA into the weights it changes instead of running it alongside every layer. Together that makes speaking with a LoRA about 4× faster. Set `ROBIN_CUDA_GRAPHS=0` or `ROBIN_MERGE_LORA=0` to turn either off.
+
 ## Train a voice
 
 Robin learns a new voice through a LoRA trained on transcribed recordings of it. Each voice is saved as one file, and you set its strength when you use it.

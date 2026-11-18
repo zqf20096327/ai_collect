@@ -128,6 +128,7 @@ Designed for **local, on-premises, and cloud deployment**, AgnosticRag-Q provide
   </tr> 
 </table>
 
+
 ## ✨ Key Highlights
 
 - **Core Multi-Modal RAG API** built with a clean, modular, and extensible architecture
@@ -137,6 +138,7 @@ Designed for **local, on-premises, and cloud deployment**, AgnosticRag-Q provide
 - **Config-Driven AgnosticRagRouter** using `router_settings.json` for routing rules, backends, prompts, retries, and thresholds
 - **AgnosticRagMCP** MCP-based enterprise integrations for Odoo, PostgreSQL, Telegram, WhatsApp, Microsoft Teams, Google Drive, and custom services
 - **Config-Driven AgnosticRagMCP** using `mcp_settings.json` for external services, tools, and database profiles
+- **AgnosticRagWorkflow (AI Workflow Automation)** with a visual node-based designer, LangGraph-based execution, configurable AI agents, reusable tools (RAG, RagSQL, HTTP, DB, MCP), conditional branching, version management, execution history, and Human-in-the-Loop (HITL) approvals with pause/resume
 - **RagSQL / Text-to-SQL** for natural-language querying of PostgreSQL databases
 - **RagSQL for Large Databases** using **Qdrant + Neo4j** to retrieve only the relevant database schema before SQL generation
 - **RagSQL Direct & Schema-RAG Modes** with **MCP or SQLAlchemy** for schema extraction and SQL execution
@@ -170,6 +172,7 @@ Designed for **local, on-premises, and cloud deployment**, AgnosticRag-Q provide
 - **Horizontally Scalable Architecture** with independent RAG backends and services
 - **Docker-Based Modular Deployment** for text, image, audio, CSV, GraphRAG, RagSQL, Router, MCP, and UI services
 - **Simple Web Chatbot** with streaming, conversation history, sources, images, suggested questions, profiles, and multilingual support
+- **Workflow Chatbot** for conversational workflow execution, interactive HITL approvals, execution status, and workflow results
 - **Simple Desktop GUI** for configuration, indexing, querying, testing, and backend/Router/RagSQL selection
 ---
 

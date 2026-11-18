@@ -25,7 +25,7 @@ Tizen platform will be added over time.
 <!-- plugins:start -->
 | Plugin | What it does | Hosts | Version | Install & docs |
 |---|---|---|---|---|
-| [`tizen-sdk-skills/`](tizen-sdk-skills/) | Automates the Tizen SDK end to end: SDK install, project creation, build, emulator and device management, app install, remote debugging (GDB / netcoredbg / CDP), certificates, dlog analysis, Playwright testing. 29 skills, 24 agents, a standalone `tizen-sdk` CLI and the Tizen AI Extension for VS Code. | Claude Code, Cline, Codex CLI, Gemini CLI, VS Code, standalone CLI | 1.9.0 | [Quick Start](tizen-sdk-skills/README.md#quick-start) · [README](tizen-sdk-skills/README.md) · [한국어](tizen-sdk-skills/README.ko.md) · [Skills reference](tizen-sdk-skills/docs/SKILLS_REFERENCE.en.md) |
+| [`tizen-sdk-skills/`](tizen-sdk-skills/) | Automates the Tizen SDK end to end: SDK install, project creation, build, emulator and device management, app install, remote debugging (GDB / netcoredbg / CDP), certificates, dlog analysis, Playwright testing. 30 skills, 24 agents, a standalone `tizen-sdk` CLI and the Tizen AI Extension for VS Code. | Claude Code, Cline, Codex CLI, Gemini CLI, VS Code, standalone CLI | 1.9.0 | [Quick Start](tizen-sdk-skills/README.md#quick-start) · [README](tizen-sdk-skills/README.md) · [한국어](tizen-sdk-skills/README.ko.md) · [Skills reference](tizen-sdk-skills/docs/SKILLS_REFERENCE.en.md) |
 | [`tizen-action-skills/`](tizen-action-skills/) | Builds Tizen Action Framework providers: picks a default Action category or authors custom `.action`/`.entity` schemas, generates `actionc`/TIDL stubs for C#, C++, JavaScript or Flutter-Tizen/Dart, registers provider metadata and verifies with `action-tool`. 1 skill. | Claude Code | 1.0.0 | [README](tizen-action-skills/README.md) · [한국어](tizen-action-skills/README.ko.md) |
 <!-- plugins:end -->
 
@@ -63,7 +63,7 @@ To hear about new versions, choose **Watch → Custom → Releases** on this rep
 | Install, debug & test (6) | `tizen-install-app`, `tizen-gdb-debug` (Native), `tizen-dotnet-debug` (.NET / netcoredbg), `tizen-webapp-debug` (Web / RWI / CDP), `tizen-playwright-test`, `tizen-dlog-analyzer` |
 | Certificates (1) | `tizen-certificate-manager` (local and Samsung online-CA profiles) |
 
-Details, trigger phrases and the 35 `tizen-sdk` CLI commands are in the plugin's
+Details, trigger phrases and the 36 `tizen-sdk` CLI commands are in the plugin's
 [README](tizen-sdk-skills/README.md) and [Skills Reference](tizen-sdk-skills/docs/SKILLS_REFERENCE.en.md).
 
 ## Featured plugin: tizen-action-skills

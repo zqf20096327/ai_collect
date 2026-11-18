@@ -9,7 +9,7 @@
 
 **按下麦克风说话，回复被念出来——你一开始说话，播报就停。**
 
-DeepSeek Harness 的 voice-first 会话闭环：语音转写回填输入框，`speak` 工具让 agent 朗读回答，回合完成/待审批/出错都有语音播报；语音引擎可全部留在本机。
+DeepSeek Harness 的 voice-first 会话闭环：语音转写回填输入框，`dsh-v0.2.2-rc.4`（2026-11-18）；`speak` 工具让 agent 朗读回答，回合完成/待审批/出错都有语音播报；语音引擎可全部留在本机。
 
 [安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -36,7 +36,7 @@ dsh plugin --profile <name> add dsh-talk
 
 ## 它是什么
 
-`dsh-talk` 给 DeepSeek Harness 补上声音的两端。输入端：输入框旁的麦克风按钮录音，浏览器 Web Speech、FunASR HTTP 服务或本地 `whisper.cpp` 把话转成文字，回填草稿或直接提交。输出端：agent 调用 `speak` 工具朗读回复，浏览器语音、`edge-tts` 或 `piper` 把文字变成声音。回合完成、待审批、出错这三类事件也能自动播报，而你一开口说话就会打断正在播放的语音——整个过程不需要云端账号，本地引擎可以全程离线。
+`dsh-v0.2.2-rc.4`（2026-11-18）；`dsh-talk` 给 DeepSeek Harness 补上声音的两端。输入端：输入框旁的麦克风按钮录音，浏览器 Web Speech、FunASR HTTP 服务或本地 `whisper.cpp` 把话转成文字，回填草稿或直接提交。输出端：agent 调用 `speak` 工具朗读回复，浏览器语音、`edge-tts` 或 `piper` 把文字变成声音。回合完成、待审批、出错这三类事件也能自动播报，而你一开口说话就会打断正在播放的语音——整个过程不需要云端账号，本地引擎可以全程离线。
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/dsh-talk-flow-v5-dark.svg">
@@ -334,7 +334,7 @@ profile patch 覆盖示例：
 
 | 方面 | 状态 |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（2026-09-24 适配：peer 第三段 + `engines.dsh` + `manifestVersion: 1`，月度 Compat workflow 已锚定该线）；门禁链于 2026-09-24 全绿（双 typecheck 尺子、86 个测试、build、self-contained、artifacts、pack）。npm 开发/测试线 `0.1.7-rc.2`，peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0`。 |
+| Harness | DeepSeek Harness `dsh-v0.2.2-rc.4`（2026-11-18 适配：peer 第三段 + `engines.dsh` + `manifestVersion: 1`，月度 Compat workflow 已锚定该线）；门禁链于 2026-11-18 全绿（双 typecheck 尺子、86 个测试、build、self-contained、artifacts、pack）。npm 开发/测试线 `0.1.7-rc.2`，peers `>=0.1.2-rc.1 <0.2.0 || >=0.1.5-alpha.1 <0.2.0 || >=0.1.6-0 <0.2.0 || >=0.1.7-0 <0.2.0 || >=0.2.2-0 <0.3.0`。 |
 | Node | `^22.19.0 \|\| >=24.9.0` |
 | 浏览器 | Web Speech + MediaRecorder（Chrome/Edge 最佳）；其余场景用宿主侧转写/TTS 引擎 |
 

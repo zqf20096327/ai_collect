@@ -1,3 +1,4 @@
+<a href="https://linux.do"><img src="https://img.shields.io/badge/LINUX%20DO-%E7%A4%BE%E5%8C%BA-FFB003?style=flat-square" alt="LINUX DO 社区" /></a>
 <div align="center">
 
 <img src="adm/assets/app_icon.png" width="130" alt="AI Dialog Manager">
@@ -18,6 +19,7 @@
 **中文** | [English](docs/README.en.md) *(coming soon)*
 
 </div>
+<img width="890" height="569" margin-left="180" alt="9fd565a7-ebcd-4429-bb04-5ee922d03000" src="https://github.com/user-attachments/assets/acfa5f4b-45e4-47f3-9536-96967f97258d" />
 
 ---
 

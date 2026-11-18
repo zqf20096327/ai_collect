@@ -219,6 +219,96 @@ await browser.close();
 | Headings | `═══ HEADING ═══` | — |
 | Separators | `────────────────` | — |
 | List items | `• Item text` | — |
+| Blocked (occluded) controls | `⟨Accept⟩`, `⟨____⟩`, or plain link text — **no ref** | not clickable right now |
+
+## Output Modes
+
+`textweb <url>` (and every MCP tool) returns **compact-hybrid** by default: a whitespace-collapsed grid followed by a compact legend of the target metadata the grid cannot show.
+
+```
+[0]Home                      [1]Pricing               [2]Sign in
+
+══ PRODUCTS ═══════  ══ COMPANY ═════════  ══ SUPPORT ════
+[3]Alpha             [4]About us           [5]Help center
+
+--- refs ---
+[0] link "Home" href="/home"
+[1] link "Pricing" href="/pricing"
+[4] link "About us" href="/about" aria-label="About the company"
+[6] input[email] placeholder="you@example.com" required
+[7] button
+```
+
+One legend line per interactive `[ref]`. Redundant attributes are dropped: a button whose text is fully visible is just `[7] button`; a link repeats its text only because it carries an `href`; a form label is omitted when it is already visible in the grid. State (`checked`, `disabled`, `required`, `value`) is always shown.
+
+| Mode | Flag | Output |
+|------|------|--------|
+| `compact-hybrid` (default) | `--output compact-hybrid` (alias `compact`) | grid + `--- refs ---` legend |
+| `grid` | `--output grid` | the bare grid (MCP: `output: "grid"` keeps the legacy response) |
+| `semantic` / `hybrid` / `json` | `--output semantic\|hybrid\|json` | structured JSON, unchanged |
+
+## Layout Options
+
+| Option | CLI | MCP | HTTP | Default |
+|--------|-----|-----|------|---------|
+| Elastic columns | `--compact-grid` / `--no-compact-grid` | `compact_grid` | `compactGrid` | `true` |
+| Collapsed gutter width | `--gutter <n>` | — | `gutterWidth` | `2` |
+| Modal isolation | `--isolate-modals` / `--no-isolate-modals` | `isolate_modals` | `isolateModals` | `true` |
+| Incremental diff | `--diff` | `diff` | `diff` | `false` |
+
+HTTP options may be top-level body fields or inside `body.options`; for `GET /snapshot` use query params (`?diff=true`). Node: `new AgentBrowser({ compactGrid, gutterWidth, isolateModals })`, or per call, `browser.snapshot({ diff: true })`.
+
+### Adaptive column compression
+
+Linear pixel→character projection wastes most of every line on margins and gutters on widescreen layouts. With `compactGrid` (default):
+
+- empty horizontal gutters wider than 2 columns collapse to `gutterWidth` (default 2); the leading margin collapses to 0;
+- the column map is **global and monotone**, so left / centre / right placement and multi-column alignment between rows are preserved;
+- a vertical gap becomes at most **one** blank row;
+- labels are **never clipped** — a label wider than its slot pushes later cells right, using the space that collapsing freed;
+- heading rules stop before the next cell on their row, so a row of headings stays aligned over its columns.
+
+`compactGrid: false` gives the strict proportional layout (linear columns, proportional blank rows).
+
+### Modal isolation
+
+An active modal — `<dialog open>`, `[aria-modal="true"]`, a positioned `[role=dialog]`, or a `position:fixed`, high-z-index container covering at least 40% of the viewport — is rendered alone inside a labelled boundary. The inert background is summarised underneath with **no refs**, so an agent cannot attempt an invalid click:
+
+```
+=== ACTIVE MODAL "Confirm delete" [refs=0-1] ===
+══ CONFIRM DELETE ══
+
+This cannot be undone.
+
+ [0 Cancel] [1 Delete]
+=== END MODAL ===
+=== BACKGROUND (inactive while modal is open; no refs) ===
+══ MAIN PAGE ════════════════════════════════════════
+Background link A
+⟨Background field⟩
+```
+
+Smaller fixed overlays (a cookie banner) are not isolated, but any control one of them is painted over loses its ref (checked with a real hit-test, restricted to fixed / sticky / top-layer blockers so clipped scroll containers are never mistaken for overlays).
+
+### Diff snapshots
+
+With `diff`, each response after the first is a unified diff against the previous snapshot of that session (2 lines of context) plus `+ref` / `-ref` / `~ref` lines for refs added, removed or changed:
+
+```
+=== DIFF vs previous snapshot: 3/27 rows changed ===
+@@ -2,5 +2,7 @@
+  [0 Add item] [1 Remove last] [2:Your name]
+ 
+-Items: 0
++Items: 1
++
++    [3]Item 1
+ 
+ Static line 01
++ref [3] link "Item 1" href="#i1"
+```
+
+It falls back to a full snapshot (labelled `[full snapshot: <reason>]`) when there is no previous snapshot, the origin or path changed, layout options or the scroll position changed, 40% or more of the rows changed, or the diff would not be smaller than the full output. In diff sessions refs are **stable** across snapshots of the same page — an element keeps its number, new elements get fresh ones, and a removed number is not recycled — so "added/removed refs" is meaningful. Without `diff`, refs are numbered in reading order exactly as before.
 
 ## How It Works
 
@@ -285,50 +375,30 @@ Useful session tools:
 - `textweb_session_list` → inspect active sessions
 - `textweb_session_close` → close one session or all
 
-## App Runtime Prototype (Manifest + LARC)
+## App Runtime Prototype
 
-This repository now includes an early scaffold for a manifest-driven user runtime shell (separate from low-level raw admin tooling):
-
-- Manifest validator: `src/app-runtime/manifest.js`
-- PAN topic contract: `src/app-runtime/topics.js`
-- Runtime shell + left nav + tabbed content: `canvas/app-runtime/app-shell.html`
-- Sample manifest: `canvas/app-runtime/sample-app.json`
-
-The runtime shell uses [LARC](https://github.com/larcjs/larc) PAN (`@larcjs/core-lite`) for in-page event communication, with a local fallback bus if the module cannot be loaded.
-
-To open the prototype:
-
-```bash
-# Start API server for integration hooks (save manifest/components)
-npm run serve
-
-# In another terminal, open the runtime shell
-open /Users/cdr/Projects/textweb/canvas/app-runtime/app-shell.html
-```
-
-Integration actions implemented on the API server:
-- `POST /integrations/sync_saved_form`
-- `POST /integrations/save_manifest`
-- `POST /integrations/upsert_nav_item`
-- `POST /integrations/runtime_state`
+The experimental manifest-driven app shell (LARC) used to live in this repo. It now lives, isolated and marked experimental, in [`packages/app-runtime-prototype/`](packages/app-runtime-prototype/). It is not part of the published `textweb` package.
 
 ## Testing
 
 ```bash
-# Run all tests (form + live + ATS e2e)
+# Everything, including live-network tests
 npm test
 
-# Form fixture tests
-npm run test:form
+# Everything that needs no network (fast)
+npm run test:offline
 
-# Live site tests — example.com, HN, Wikipedia
-npm run test:live
-
-# ATS multi-step fixture test
-npm run test:ats
+npm run test:layout   # adaptive column compression
+npm run test:legend   # compact-hybrid output + legend (CLI, MCP, HTTP)
+npm run test:modal    # modal isolation + occlusion
+npm run test:diff     # diff snapshots + stable refs
+npm run test:output   # CLI output modes and flags
+npm run test:form     # form fixture
+npm run test:ats      # ATS multi-step fixture
+npm run test:live     # example.com, HN, Wikipedia (network)
 ```
 
-Test fixtures are in `test/fixtures/` — includes a comprehensive HTML form and an ATS-style multi-step application fixture.
+Test fixtures are in `test/fixtures/`. The experimental app runtime has its own tests: `cd packages/app-runtime-prototype && npm test`.
 
 ## Design Principles
 

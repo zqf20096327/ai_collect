@@ -2,9 +2,11 @@
 
 **Context engineering** can be defined as the practice of designing systems that provide a Large Language Model (LLM) and AI agents with all the necessary information to complete a task effectively. It goes beyond prompt engineering since it focuses on building a comprehensive and structured context from various sources like instructions, external knowledge, memory, tools, and state. The central idea is that the success of a complex LLM-based system depends more on the quality and completeness of the context provided than on the specific wording of the prompt itself.
 
-Tobi Lütke, the CEO of Shopify, coined the term _context engineering_ in a [tweet](https://x.com/tobi/status/1935533422589399127) on June 19, 2025. He defined context engineering as _the art of providing all the context for the task to be plausibly solvable by the LLM_. This novel concept captures the essence of the current evolution of LLM-based systems, inspiring others (like me) to understand and define this emerging discipline. Since then, I've been working on a book entitled **Context Engineering: Build Consistent, Accurate, Predictable AI Systems**, published by Manning. Currently, the early access version of the book is available, and you can get it [here](https://hubs.la/Q04ksQ8J0). 
+Tobi Lütke, the CEO of Shopify, coined the term _context engineering_ in a [tweet](https://x.com/tobi/status/1935533422589399127) on June 19, 2025. He defined context engineering as _the art of providing all the context for the task to be plausibly solvable by the LLM_. This novel concept captures the essence of the current evolution of LLM-based systems, inspiring others (like me) to understand and define this emerging discipline. Since then, I've been working on a book entitled **Context Engineering: Build Consistent, Accurate, Predictable AI Systems**, published by Manning.
 
-[![Context Engineering](./docs/img/context-engineering-MEAP-cover.png)](https://hubs.la/Q04ksQ8J0)
+<a href="https://manning.com/books/context-engineering"><img src="./docs/img/context-engineering-cover.png" alt="Context Engineering" width="200"/></a>
+
+> **v1.0.0** — This commit is the snapshot sent to the printer for the first print edition of the book. Subsequent updates will appear on the `main` branch.
 
 This GitHub repository is intended to be a companion resource for this book and a reference for practitioners looking to understand and adopt the context engineering principles.
 
@@ -134,6 +136,17 @@ This chapter covers mathematical foundations, open research challenges, technica
 - Technology radar: [Context engineering radar](./ch12/context_engineering_radar)
 - Base knowledge: [Graphify base knowledge](./ch12/base_knowledge)
 
+## Agent skills
+
+The [skills](./skills) folder contains a collection of agent skills that apply the methods of each chapter (from Chapter 2 to Chapter 9) to your own agents. Each skill reviews one artifact you already have, such as an AGENTS.md file, a set of tool definitions, a RAG pipeline, or the context of an agent, and returns a report of findings linked to the book section that explains them. The skills follow the open [Agent Skills](https://agentskills.io/) format, so they work in Claude Code, Codex, Cursor, and other compatible agents, and the repository can be installed as a Claude Code or Codex plugin:
+
+```
+/plugin marketplace add bonigarcia/context-engineering
+/plugin install context-engineering-skills@context-engineering
+```
+
+See the [skills README](./skills/README.md) for the full list, manual installation, and the evaluation harness, or browse the [skills catalog](https://bonigarcia.dev/context-engineering/agent-skills.html).
+
 ## Online resources
 
 This repository includes interactive [web pages](https://bonigarcia.dev/context-engineering/) that complement the book and help you apply context engineering concepts in practice.
@@ -200,6 +213,21 @@ An interactive dashboard to explore and track concepts, sources, frameworks, and
 🔗 https://bonigarcia.dev/context-engineering/references.html
 
 Searchable catalog of articles, books, repositories, tutorials, and other references related to context engineering, prompting, agents, and AI engineering: context engineering, AI agents, machine learning, prompt engineering, RAG, generative AI, MCP, AI-assisted development, LLMs, memory, retrieval, multi-agent systems.
+
+---
+
+### 6. Agent Skills
+
+🔗 https://bonigarcia.dev/context-engineering/agent-skills.html
+
+Catalog of installable agent skills that apply the methods of the book to your own agents:
+
+- Browse nine skills, from Chapter 2 (instructions and skills) to Chapter 9 (governance)
+- See what each skill reviews and what it returns
+- Copy the commands to install all skills as a plugin or a single skill by hand
+- Search by name, chapter, or the kind of artifact a skill reviews
+
+The data of this page is generated from the skills in the [skills](./skills) folder.
 
 ## Contributing
 

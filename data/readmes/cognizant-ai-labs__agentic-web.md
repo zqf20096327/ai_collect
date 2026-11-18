@@ -166,7 +166,9 @@ Its agents need to be grounded in the restaurant's actual menu and cart next:
    Open http://127.0.0.1:8080/, scroll to **Ask Little Oven**, and expand
    **⚙ AI model settings**. Paste your [Otari](#mozillas-otari) API key, then select
    **Save and start**. The example uses hosted Otari and
-   `alibaba/qwen3.8-flash` by default. For another provider, select it in the panel,
+   `alibaba/qwen3.8-flash` by default. To skip the key, select
+   **Connect with OpenRouter** and approve a key on OpenRouter instead
+   ([what to know](docs/providers/providers.md#openrouter)). For another provider, select it in the panel,
    which fills in its provider URL and model, or enter both under
    **Advanced settings (optional)**. The provider must allow requests from the browser.
    The selected provider receives the chat and restaurant context; LLM calls use

@@ -11,7 +11,7 @@
 [![coverage](https://img.shields.io/codecov/c/github/LiusCraft/pi-desktop?logo=codecov&logoColor=white)](https://codecov.io/gh/LiusCraft/pi-desktop)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-lightgrey)
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
 ![electron](https://img.shields.io/badge/Electron-45-47848F?logo=electron&logoColor=white)
 ![react](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![typescript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
@@ -33,7 +33,7 @@
   <a href="#功能一览">功能一览</a> ·
   <a href="#架构">架构</a> ·
   <a href="#测试">测试</a> ·
-  <a href="#打包与发布macos--windows">打包与发布</a> ·
+  <a href="#打包与发布">打包与发布</a> ·
   <a href="#已知限制--下一步">已知限制</a>
 </p>
 
@@ -69,7 +69,12 @@
 
 ## 快速开始
 
-正常使用不用构建：macOS 上 `brew tap liuscraft/tap && brew install --cask pi-desktop`（升级 `brew upgrade --cask pi-desktop`），Windows 用 Release 里的 `Pi-Desktop-<版本>-win-x64-setup.exe`。从源码跑：
+正常使用不用构建：
+- macOS：`brew tap liuscraft/tap && brew install --cask pi-desktop`（升级用 `brew upgrade --cask pi-desktop`）。
+- Windows：[Releases](https://github.com/LiusCraft/pi-desktop/releases/latest) 下载并运行 `Pi-Desktop-<版本>-win-x64-setup.exe`。
+- Linux x86_64：从同一 Release 下载 `Pi-Desktop-<版本>-linux-x86_64.AppImage`，赋予执行权限后直接运行（见 [Linux](#linux)）。
+
+从源码跑：
 
 ```bash
 npm install
@@ -245,6 +250,10 @@ Renderer (src/renderer)            Main (src/main)                  Agent host (
 
 历史恢复沿用 pi 会话里的 `session.messages`：可恢复当前会话上下文中的附件。压缩过的会话保留一张摘要卡片，被摘要替代的消息默认收起，点击时再从会话文件读回；不提供历史分支浏览器。文件正文预览限于当前会话工作目录内、最多 1 MiB 的文本文件；历史内联工具片段不受文件后来移动或删除影响。
 
+### 会话目标 `/goal`
+
+输入 `/goal 修复失败用例，并以 npm test 通过为准` 会立即开始。单独输入 `/goal` 查看目标和状态；`/goal pause` 暂停，`/goal resume` 继续，`/goal clear` 清除。模型需要给出完成证据或说明阻碍。每次开始或恢复最多自动续跑 10 次，不改变会话权限；中断后重新打开会话不会自行续跑。
+
 ### PR 条与 CI 自动化
 
 Code 会话输入框上方的 PR 条报告当前分支的 PR：状态颜色、`+2,504 −132` 这样的改动规模、评审意见数，以及一个 CI 圆点（未开 PR 时这里显示工作区里待提交的改动）。点编号在 GitHub 打开 PR。
@@ -253,8 +262,10 @@ Code 会话输入框上方的 PR 条报告当前分支的 PR：状态颜色、`+
 
 点 **CI** 打开检查面板：逐条列出每个检查的结果（点名字直接打开那一条的日志），一行说明是全部通过、几个在跑还是几个失败，右上角通往 GitHub 的 checks 页。同一个检查重跑过几次也只列最新的一次：旧的结果不会再混进来，也不会被误判成失败。面板底部两个开关保存在会话里，重启后仍然有效：
 
+还没建 PR 时也可以说「提前开启 CI 自动修复」。AI 设置当前 Code 会话的开关，PR 出现后由同一个 watcher 接手，不会开启自动合并。AI 预开的事件按会话的常规权限执行；随时可以在 PR 条的 **CI** 面板关闭。
+
 - **Auto-fix CI & address comments**：CI 变红时自动让 agent 读失败日志、修好并推送；同一个提交只触发一次，不会循环。新评论和 `CHANGES_REQUESTED` 也会处理（同一轮的修复会顺带带上它们）。
-- **Auto-merge when ready**：GitHub 说分支可合并、检查既不红也不在跑、也没有待处理的评审意见时，自动让 agent 用 `gh pr merge --auto` 开启自动合并；每个 PR 一次。
+- **Auto-merge when ready**：GitHub 确认可合并、CI 明确通过、当前提交没有排队或运行中的工作流，也没有待处理的评审意见时，自动让 agent 用 `gh pr merge --auto` 开启自动合并；每个 PR 一次。尚未收到检查结果（包括未配置 CI）不会触发自动合并。
 
 **监听发生在 host 里，不是让 agent 去盯着。** 每个打开着的 Code 会话在 agent host 里有一个 PR watcher：`gh pr view` 每 15 秒看一次（CI 已结束就退到 60 秒，`gh` 连续失败则退避到 5 分钟），把状态推给 PR 条，并在 CI 变红、有新的评论/评审、PR 变得可合并时**自己起一个 turn**。这类 turn 的消息不是用户发的，transcript 里渲染成一张事件卡片——`CI 失败 · PR #4`、新评论原文、失败检查列表，下面实时显示「Pi 正在处理…」/「等待你的确认」；展开还能看到交给 Pi 的说明。重开会话后卡片仍在。修复的 turn 在 `push` 后就结束，不会自己去 `gh pr checks --watch` 或轮询 CI：下一次结果仍由 host 的 watcher 看准了再起新 turn。
 
@@ -375,7 +386,23 @@ npm run test:desktop # 构建后用项目自带的 Electron 运行 Playwright �
 
 </details>
 
-## 打包与发布（macOS / Windows）
+## Pi SDK 依赖更新
+
+应用的 `@earendil-works/pi-ai` 和 `@earendil-works/pi-coding-agent` 保持同一精确版本，并提交 `package-lock.json`，保证本地和 CI 使用同一套依赖。只把版本改成 `^1.x.x` 或 `latest` 不会自动更新 CI：`npm ci` 始终按 lockfile 安装。
+
+[Dependabot 配置](.github/dependabot.yml) 合入默认分支后，每个工作日检查 npm 上的 Pi 新版本，把 `@earendil-works/pi-*` 的直接依赖更新合并成一个 PR，同时更新清单和 lockfile；其他依赖不在本次版本更新范围内。无需新增 Action 或 token，PR 会触发现有 `build.yml` 的 lint、类型检查、测试与 macOS / Windows / Linux 打包检查，确认通过后手动合并，不自动发布应用。配置项见 [GitHub 文档](https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference)。
+
+也可以手动同步更新：
+
+```bash
+npm install --save-exact @earendil-works/pi-ai@latest @earendil-works/pi-coding-agent@latest
+npm run typecheck
+npm test
+```
+
+`plugin/pi-remote/package.json` 中的 Pi `peerDependencies: "*"` 保持不变：插件使用宿主提供的 SDK，不单独安装或锁定一份。
+
+## 打包与发布
 
 ### Windows
 
@@ -390,6 +417,25 @@ npm run dist:win       # NSIS 安装包 dist/Pi-Desktop-<版本>-win-x64-setup.e
 默认未签名（安装时会有 SmartScreen 提示）。要签名就设 `CSC_LINK`（pfx 路径或 base64）和 `CSC_KEY_PASSWORD`；CI 里对应仓库 secret `WIN_CERT_PFX` / `WIN_CERT_PASSWORD`。tag 推送时 `release.yml` 的 `windows` job 会把安装包挂到同名 Release。
 
 Windows 上 agent 的 `bash` 工具需要一个真的 bash：Pi Desktop 启动时会从标准 Git 安装、`where git.exe` 指向的位置、以及 PATH 里的 MSYS2 / Cygwin 中挑一个，并把它的目录放到 PATH 最前面。找不到时不会退到 `C:\Windows\System32\bash.exe`（那是 WSL 启动器，没装发行版时会直接报 `execvpe(/bin/bash) failed`）。从资源管理器 / PowerShell 直接启动也能正常工作，不需要在 Git Bash 里运行。
+
+### Linux
+
+发布格式为 **x86_64 AppImage**，不用安装 Node。下载后，在文件所在目录运行（将版本号换成实际版本）：
+
+```bash
+chmod +x Pi-Desktop-0.2.0-linux-x86_64.AppImage
+./Pi-Desktop-0.2.0-linux-x86_64.AppImage
+```
+
+如提示缺少 `libfuse.so.2`，安装发行版的 FUSE 2 兼容库（Ubuntu 22.04 为 `libfuse2`，24.04 为 `libfuse2t64`）。升级时退出旧版本，换用新的 AppImage 即可。
+
+从源码打包需在 x86_64 Linux 上使用 Node 22.19+、Python 3、make 和 C++ 编译器（`npm ci` 会编译终端依赖 `node-pty`）：
+
+```bash
+npm ci
+npm run pack:linux     # 解包版：dist/linux-unpacked/pi-desktop
+npm run dist:linux     # 发布包：dist/Pi-Desktop-<版本>-linux-x86_64.AppImage
+```
 
 ### macOS
 
@@ -435,21 +481,21 @@ make release DRY_RUN=1         # 只打印要打的 tag，不真的打、不 pus
 
 版本号以 tag 为准，CI 里写进 package.json，所以本地不 bump 也不提交。`scripts/release.mjs` 会先挡住几种常见误操作：worktree 脏、版本不比最新 tag 大（`FORCE=1` 可绕过）、tag 已在本地或 origin 存在；push 失败会把本地 tag 删掉，方便改完重试。`make release` 只打 tag + push，不 push 分支，HEAD 没推到上游时会给个 warning。
 
-推上去的 `v0.2.0` tag 触发 `.github/workflows/release.yml`：arm64 和 x64 两个 dmg 在 `macos-14` 上交叉构建（没有按架构编译的原生模块，只有 Electron 的 zip 不同），然后 `gh release create/upload` 挂到同名 Release，附 `SHA256SUMS.txt`。签名靠仓库 secret：`MAC_CERT_P12`、`MAC_CERT_PASSWORD`、`APPLE_ID`、`APPLE_PASSWORD`、`APPLE_TEAM_ID`；不填也能跑通，只是产物未签名。
+推上去的 `v0.2.0` tag 触发 `.github/workflows/release.yml`：macOS 的 arm64 / x64 dmg、Windows 的 x64 安装包和 Linux 的 x86_64 AppImage 并行构建，上传到同名 Release。`SHA256SUMS.txt` 用于校验 dmg；Linux 用户可在下载目录运行 `sha256sum -c SHA256SUMS-linux.txt` 校验 AppImage。macOS 签名靠仓库 secret：`MAC_CERT_P12`、`MAC_CERT_PASSWORD`、`APPLE_ID`、`APPLE_PASSWORD`、`APPLE_TEAM_ID`；不填也能跑通，只是产物未签名。
 
 不想走 tag 的话，本地直接 `GH_TOKEN=… make publish` 也能上传。
 
-同一个 tag 还会发两样东西，各靠一个仓库 secret（没配时该步骤报警告或失败，不影响 dmg / exe）：
+同一个 tag 还会发布 pi-remote 插件和 Homebrew cask：
 
 - **pi-remote 插件**（`plugin` job）：`npm run build:plugin` 之后 `scripts/publish-plugin.mjs` 用 tag 版本发布到 npm（`npm publish --access public --provenance`）。认证走 npm 的 **trusted publishing**：workflow 里的 `id-token: write` 换一张一次性 token，仓库里不存任何 npm 凭据（需要 npm 上一次性配好，见下）。版本已在 npm 上就跳过，重跑同一次 release 不失败；比 npm 上的 `latest` 还旧则直接报错（npm 会把 `latest` 移到最后发布的那版，力推旧 tag 会把大家的插件降级）。provenance 把 tarball 绑到这个 commit 和这次 workflow 上。
 - **Homebrew cask**（mac job 的最后一步）：`scripts/cask.mjs` 按两个 dmg 的 sha256 生成 `Casks/pi-desktop.rb`，推到 `liuscraft/homebrew-tap`。凭据是那个仓库上的一把 **deploy key**（只写那一个仓库，别的什么都碰不到），私钥存为 `HOMEBREW_TAP_KEY`；没配时只打印生成的 cask。本地可以 `make cask` 看同一份内容。
 
 两个发布目标各自的一次性配置（都在网页上，只能做一次）：
 
-- npmjs.com → `@liuscraft/pi-remote` → Settings → **Trusted Publisher** → GitHub Actions：Organization `LiusCraft`、Repository `pi-desktop`、Workflow `release.yml`，并允许直接 `npm publish`。不配的话 `plugin` job 会以 `ENEEDAUTH` 失败（dmg/exe 不受影响）。
+- npmjs.com → `@liuscraft/pi-remote` → Settings → **Trusted Publisher** → GitHub Actions：Organization `LiusCraft`、Repository `pi-desktop`、Workflow `release.yml`，并允许直接 `npm publish`。不配的话 `plugin` job 会以 `ENEEDAUTH` 失败（桌面安装包不受影响）。
 - `liuscraft/homebrew-tap` → Settings → Deploy keys：需要一把 write 权限的 key（当前这把的私钥在 `HOMEBREW_TAP_KEY` 里）；丢了就重新生成一对，把公钥加回去、私钥覆盖这个 secret。
 
-`.github/workflows/build.yml` 是 PR 上的打包冒烟测试：跑 `--dir` 打包，然后断言 `Resources/app/node_modules/@earendil-works/pi-coding-agent` 和两个扩展真的进了包。
+`.github/workflows/build.yml` 在 PR 上检查打包结果：macOS / Windows 检查解包目录；Ubuntu 22.04 构建并解开最终的 AppImage，检查应用入口、pi SDK 和 pi-remote，并用包内的 Electron 加载 `node-pty`。也可以在分支上手动运行 `release.yml`，从 workflow artifacts 下载 AppImage 试用，不会发布 Release。
 
 ### 未签名产物怎么打开
 
@@ -477,4 +523,4 @@ README 里的界面图由 `npm run build && node scripts/screenshots.mjs` 用离
 - **PR / CI 状态**依赖 `gh`（GitHub）或 `glab`（GitLab，含自建实例）CLI 已登录。按 `origin` 的域名判断用哪个；域名里没有 github/gitlab 字样的自建主机会依次尝试两者。
 - **预览**面板只允许 `localhost` 地址。
 - React 重写版已在 Windows 11 上用真实窗口跑通离线 demo（Code 修 bug + Diff 面板、Work 整理收件箱 + 权限确认），并加载了用户自己的 pi 扩展；macOS 打包版尚未在重写后重新验证。旧版的 Playwright 界面测试（`test/ui-*.js`）随旧界面一起移除，界面自动化测试待补。
-- 没有自动更新：Homebrew 装的用 `brew upgrade --cask pi-desktop` 升级，其余重新下载 dmg。要接 `electron-updater` 得再产一个 `zip` target（dmg 不能做增量更新），并加一个设置项。
+- 没有静默更新：Homebrew 安装的用 `brew upgrade --cask pi-desktop` 升级；Windows 和 macOS 可从应用内打开新版安装包，Linux 从更新提示跳到 Release 下载新版 AppImage。

@@ -2,7 +2,9 @@
   <img src="figs/openassembler_logo.png" width="820" alt="OpenAssembler">
 </p>
 
-# OpenAssembler
+<h1 align="center">
+OpenAssembler
+</h1>
 
 **Compile Python models and GPU kernels to native NVIDIA SASS and cubins.**
 
@@ -22,42 +24,25 @@ OpenAssembler targets **A100 / SM80**, with its own instruction selection, regis
 
 ## Quick start
 
-Install from a checkout using **Python 3.12 or newer**:
+Install with [Homebrew](https://brew.sh) using one command:
 
 ```sh
-git clone https://github.com/lucialuka/OpenAssembler.git
-cd OpenAssembler
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e '.[modal]'
-openassembler welcome
+brew tap lucialuka/openassembler https://github.com/lucialuka/OpenAssembler && brew install lucialuka/openassembler/openassembler
 ```
-The welcome logo appears once per user, shared across installation and later
-terminal sessions. Plain `git clone` only downloads files and cannot run the
-welcome; the setup command above displays it after installation.
 
-Use an A100 over SSH, or authenticate Modal for cloud compilation and execution:
+Homebrew installs the CLI, Python 3.12, compiler data and Modal client. The
+OpenAssembler logo appears once per user. No checkout, virtual environment or
+manual Python package installation is needed.
+
+OpenAssembler currently uses its own tap, so a fresh installation needs the
+registration included above. See the [Homebrew guide](docs/HOMEBREW.md) for
+details and local CUDA setup.
+
+Use an A100 over SSH, or authenticate Modal once for cloud compilation and execution:
 
 ```sh
 modal setup
 ```
-
-You can also install OpenAssembler through Homebrew:
-<details>
-<summary><strong>Install with Homebrew</strong></summary>
-
-```sh
-brew tap lucialuka/openassembler https://github.com/lucialuka/OpenAssembler
-brew install openassembler
-modal setup
-```
-
-The formula installs Python 3.12, the compiler/data tree, and the Modal CLI.
-It packages the `main` branch and displays the same welcome once after installation.
-See the [Homebrew guide](docs/HOMEBREW.md) for formula
-versions and CUDA setup.
-
-</details>
 
 ## Compile a repository
 

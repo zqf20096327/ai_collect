@@ -396,12 +396,25 @@ DeepSeek 这类推理模型，其「思考」由同一份系统提示词（syste
 | `0.1.6-alpha.1` / `0.1.6-alpha.2` | **兼容，已在真实内核上实测** |
 | **`0.2.0-rc.2`（Desktop 5.0.0）** | **兼容，已在真实内核上实测** |
 | **`0.2.1-rc.2`（Desktop 5.1.0）** | **兼容，已在真实内核上实测** |
+| **`0.2.1-rc.4`（Desktop 5.2.0）** | **兼容，已在真实内核上实测** |
 | `0.2.2-rc.x` | 契约未变，预期兼容（未实测）；官方已修复「全局指令被项目指令挤掉」，见开头说明 |
 
-`section({ name, order, text })` 的契约从 `0.1.1-rc.1` 一路到 `0.2.1-rc.2` **没有变化过**，所以插件的实现代码从来没有因为内核升级改过。真正需要维护的只有 `package.json` 里的两个版本声明：
+`section({ name, order, text })` 的契约从 `0.1.1-rc.1` 一路到 `0.2.1-rc.4` **没有变化过**，所以插件的实现代码从来没有因为内核升级改过。真正需要维护的只有 `package.json` 里的两个版本声明：
 
 - `peerDependencies["@deepseek-ai/dsh-system-prompt"]` → `">=0.1.6-alpha.1"`（**只写下限，不写上界**）
-- `dsh.compatibility.runtime` → `">=0.1.1-rc.1 <0.3.0-0"`
+- `dsh.compatibility.runtime` → `">=0.1.1-rc.1 <0.3.0-0"`（**只声明官方内核范围**）
+
+### 为什么不声明 `desktop`：只对内核负责
+
+Desktop 客户端是社区第三方整合（[ningbainb/deepseek-harness-desktop](https://github.com/ningbainb/deepseek-harness-desktop)），不是官方产品；市面上还有 Web UI、CLI、各种第三方前端。**插件作者不可能把每个整合包都测一遍**，也没有义务替第三方宿主的界面适配做背书。
+
+本插件真正依赖的只有官方内核契约（`@deepseek-ai/dsh-system-prompt` 的 `section({ name, order, text })`），与宿主界面无关。所以 `dsh.compatibility` **只写 `runtime`，不写 `desktop`**。
+
+由此带来的现象是**预期行为，不是故障**：
+
+> Desktop 扩展坞在安装/更新时会把状态显示为「未知」，并弹出「无法确认兼容性 —— 这个插件没有声明与当前 DeepSeek Harness Desktop 的兼容范围」。
+
+看到这个框，点「仍然安装」即可。官方文档也说明，这个声明只是**兼容性证据，不是权限授予**（[`docs/desktop-plugin-compatibility.md`](https://github.com/ningbainb/deepseek-harness-desktop/blob/main/docs/desktop-plugin-compatibility.md)）。
 
 ### ⚠️ 为什么 peer 范围千万别写 `^`
 

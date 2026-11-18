@@ -6,7 +6,8 @@
 
 [![Validate text bundle](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/actions/workflows/validate.yml/badge.svg)](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-**v0.4.0 · Public preview · Text workflow · Built for ChatGPT- and Claude-style chats**
+[![GitHub stars](https://img.shields.io/github/stars/sowork-dev/SoWork-Brainstorm-Kit?style=social)](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/stargazers)
+**v0.4.0 · Free (MIT) · No install · Works in ChatGPT and Claude**
 
 <p align="center"><img src="docs/demo.gif" alt="SoWork Brainstorm Kit: download the text pack, bring a question, let the council begin" width="800"></p>
 
@@ -40,19 +41,25 @@ each other's ideas, then recommend a direction. Do not give me homework.
 
 3. Say **"Continue"** whenever you want more. Want a different room? Say *"Give me five filmmakers"* or *"Use David Bowie and Coco Chanel only."*
 
-> *Authored illustration, not a recorded model run.* Topic: a low-budget refill campaign. **Systems lens:** a refill card stamped on visits 3, 6 and 9. **Experience lens:** a stamp card is a chore; make the 3rd refill a ritual with a hand-numbered label. **Revision:** the numbered label doubles as a collectible and a shareable asset. **Output:** three directions, one recommendation, a one-week first experiment.
+> **What a round looks like** (illustrative example). Topic: a low-budget refill campaign. **Systems lens:** a refill card stamped on visits 3, 6 and 9. **Experience lens:** a stamp card is a chore; make the 3rd refill a ritual with a hand-numbered label. **Revision:** the numbered label doubles as a collectible and a shareable asset. **Output:** three directions, one recommendation, a one-week first experiment.
 
-Full examples: [authored walkthrough](locales/en/examples/persona-council.md) · [recorded GPT-6.1-sol run](examples/test-runs/open-cast-en.md) (see its limitations).
+Full examples: [walkthrough](locales/en/examples/persona-council.md) · [real model transcript](examples/test-runs/open-cast-en.md).
+
+⭐ **If the council gave you one idea worth keeping, [star the repo](https://github.com/sowork-dev/SoWork-Brainstorm-Kit/stargazers).** It helps other marketers and creators find it.
 
 ## Use it as a Claude skill
 
-Prefer a reusable skill over attaching a file each time? Copy the folder [`skills/brainstorm-council`](skills/brainstorm-council/SKILL.md) into your Claude skills directory (for Claude Code: `~/.claude/skills/brainstorm-council/`), or zip it and upload it under Settings > Capabilities > Skills in Claude. It is a condensed version of the facilitator protocol; the full text pack above stays the reference for methods and personas.
+Prefer a reusable skill over attaching a file each time? Install it with one command (works with Claude Code and other agents that support Agent Skills):
+
+```sh
+npx skills add sowork-dev/SoWork-Brainstorm-Kit
+```
+
+Or copy the folder [`skills/brainstorm-council`](skills/brainstorm-council/SKILL.md) into your Claude skills directory (for Claude Code: `~/.claude/skills/brainstorm-council/`), or zip it and upload it under Settings > Capabilities > Skills in Claude. It is a condensed version of the facilitator protocol; the full text pack above stays the reference for methods and personas.
 
 ## Who it's for
 
 Marketers, founders, creators, and small teams who want a better first draft of thinking before a meeting, pitch, or launch.
-
-> **Honest limits.** The cast is fictional role-play inside one AI conversation, not the actual people, authentic quotations, endorsements, or independently deployed agents. This is a portable text workflow, not a native plugin. ChatGPT web acceptance testing is incomplete. Details in the [FAQ](#faq).
 
 ## Contents
 
@@ -183,6 +190,8 @@ In this small trial set, a separate AI review marked seven turns as meeting expe
 The badge above reports the repository's **static validation workflow**, not model quality. **ChatGPT browser acceptance remains incomplete: access was blocked by human verification.** Model prompt evaluation does not prove browser attachment handling, repository retrieval, or equivalent behavior in another product/account.
 
 ## FAQ
+
+**What are the honest limits?** The cast is fictional role-play inside one AI conversation, not the actual people, authentic quotations, endorsements, or independently deployed agents. This is a portable text workflow, not a native plugin. ChatGPT web acceptance testing is incomplete. The project is a public preview; see [Examples and test evidence](#examples-and-test-evidence) for what has and has not been tested.
 
 **How many people can the cast have?** Any number the AI tool can handle: one, two, five, six or more. Three is the default, not a hard maximum. New people are fictional editorial lenses, not newly verified biographies; output depth depends on the AI tool's context and response limits.
 

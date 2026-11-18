@@ -9,7 +9,7 @@ C++ on **Level Zero**. It loads GGUF files directly, serves an **OpenAI-, Anthro
 a web UI** (web search and voice conversation included), and plugs into the [Pi](https://pi.dev) coding agent with
 one command. Built and tuned on a Core Ultra 5 125H with 32 GB of RAM: no discrete GPU, no XMX matrix engines.
 
-**[Download](https://github.com/rizagp/inferzero/releases/latest)** · [Features](docs/features.md) · [Usage guide](USAGE.md) · [Install and build](docs/install.md) · [Measured results](docs/before-after.md) · [Changelog](CHANGELOG.md)
+**[Download](https://github.com/rizagp/inferzero/releases/latest)** · [Features](docs/features.md) · [Usage guide](USAGE.md) · [Install and build](docs/install.md) · [Measured results](docs/before-after.md) · [Changelog](CHANGELOG.md) · **[Contribute](CONTRIBUTING.md)**
 
 ## Why it is worth a look
 
@@ -52,16 +52,18 @@ You need:
 - an Intel Core Ultra with Arc integrated graphics;
 - 16 GB of RAM for the 4B / E4B models, 32 GB for the 12B-35B ones.
 
-Discrete Arc B-series cards (Xe2) work too, experimentally. A user runs 1-4 Arc Pro B60s, and one model can be split
-over several of them (`--gpus N`). See [Discrete GPUs](#discrete-arc-gpus-experimental).
+Discrete Arc cards work too, experimentally: the B-series (Xe2: B580, Pro B60, Pro B70) and the A-series
+(Alchemist: A770, A750, A580). A user runs 1-4 Arc Pro B60s, another two A770s, and one model can be split over
+several cards (`--gpus N`). See [Discrete GPUs](#discrete-arc-gpus-experimental).
 
 **Linux** (Ubuntu 24.04 or newer): download `inferzero-<version>-linux-x64.tar.gz` from the same release, unpack it,
 and run `./zero-launcher.sh` (a terminal menu that downloads a model and starts the headless server). It needs Intel's
-GPU runtime and nothing else (bash, curl): [docs/install.md](docs/install.md#linux).
+GPU runtime and nothing else (bash, curl): [docs/install.md](docs/install.md#linux). A `Dockerfile`, a
+`compose.yaml` (run on Unraid with an Arc B580) and a Kubernetes file (not tested yet) are in [docker/](docker).
 
 On Windows:
 
-1. Download `inferzero-<version>-win64.zip` (10 MB) from the
+1. Download `inferzero-<version>-win64.zip` (9 MB) from the
    **[latest release](https://github.com/rizagp/inferzero/releases/latest)** and unpack it anywhere.
 2. Double-click `zero-launcher.cmd` (Windows may ask once: "More info", "Run anyway").
    Packages released before the rename (up to 2026.11.10.3) are named `arcinferzero-<version>-win64.zip` and start
@@ -118,7 +120,8 @@ these rows: [docs/models.md](docs/models.md).
 | OCR | Xiaomi-OCR-0 | images, PDFs | |
 | Speech to text | Qwen3-ASR, Whisper large-v3 | audio, video | |
 
-GGUF files as they are (IQ1-IQ4, Q2_K-Q8_0, Q5_1, MXFP4, F16 / BF16 small matrices); the architectures, weight types and each
+GGUF files as they are (IQ1-IQ4, Q2_K-Q8_0, Q5_1, MXFP4; F16 / BF16 matrices taken as Q8_0 at load, but a MoE
+model's experts in quantized types only: a BF16 MoE GGUF is refused before its expert file is written); the architectures, weight types and each
 model's details: [docs/models.md](docs/models.md).
 
 ## The engine
@@ -128,28 +131,41 @@ Zero**. It streams mixture-of-experts weights from the SSD (only the experts in 
 layer's missing experts are read while the GPU computes the current one), and drafts with the MTP block, a DFlash2
 drafter or both. The automatic context gives the 35B and Flash Next 131,072 tokens, Gemma 4 26B 90K-131K. On GPUs
 without 8-lane sub-groups (Xe2 / Xe3) it builds its 8-lane kernels with 16 lanes, and where the GPU has XMX matrix
-engines the prompt GEMMs run on them after a start-up check against the DP4a kernels.
+engines the prompt GEMMs run on them after a start-up check against the DP4a kernels. A dense model that nearly
+fills a discrete card's memory keeps part of its weights in RAM, read over PCIe (`ARC_HOST_KEEP_GB` sets the room
+kept on the card): an Arc B580 12 GB runs Qwen3.8 27B that way.
 
 ## Discrete Arc GPUs (experimental)
 
-Arc B-series cards (Xe2: B580, Pro B60, Pro B70) run the same engine, with switches of their own in `zero/xe2/` that
-the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named):
-- **One Pro B60** ([issue #4](https://github.com/rizagp/inferzero/issues/4)): 4K prompt 1,522 tok/s (release
-  2026.11.14.09, which prefetches the weights by default; 1,322 before), generation 22.7-23.3 tok/s (two runs, 2026.11.14.09), 51.6 with MTP
-  (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation 82.4 tok/s, 111.9 with MTP
-  (2026.11.13.11). The switches still off by default (`ARC_X16`, `ARC_GV_IQ3S`, `ARC_H8_NORM`, H8 on MoE models,
-  `--chunk 8192`) were measured there on 2026-11-14 and none is faster: [docs/xe2-tuning.md](docs/xe2-tuning.md).
+Arc B-series cards (Xe2: B580, Pro B60, Pro B70) and A-series cards (Alchemist: A770, A750, A580) run the same
+engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never takes; Alchemist cards take the Arc
+140T's preset (H8 on the 8-lane XMX GEMM). Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named):
+- **One Pro B60** ([issue #4](https://github.com/rizagp/inferzero/issues/4)): 4K prompt 1,726 tok/s (release
+  2026.11.17.08; 1,522 on 2026.11.14.09, 1,322 before the weight prefetch), generation 22.7-23.3 tok/s (two runs,
+  2026.11.14.09), 51.6 with MTP (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation
+  82.4 tok/s, 111.9 with MTP (2026.11.13.11). What each switch measured there: [docs/xe2-tuning.md](docs/xe2-tuning.md).
 - **One Pro B70** on native Linux ([issue #27](https://github.com/rizagp/inferzero/issues/27), joshdev-de, Fedora 45):
-  4K prompt 2,694 tok/s (release 2026.11.16.01, with decoded weights kept resident), 8K 2,727 (2026.11.16.12),
-  generation 35.2 tok/s, 70.6 with MTP (2026.11.16.02). Qwen3.6 35B-A3B: 8K prompt 5,612 tok/s (the MoE register
-  file of 2026.11.16.14; 5,377 before), 4K 4,903-4,969, 16K 5,153-5,174, generation 95-98 tok/s. Flash Next, 46 % of
-  its experts in the card's 32 GB: 4K prompt 1,186, 16K 1,145, generation 7.1 tok/s. Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
+  4K prompt 2,972 tok/s (main 7368768 with `ARC_H8_NORM`, the default on discrete cards since 2026-11-18; 2,897 with the 2D GEMM and its prefetch alone), 8K 2,727
+  (2026.11.16.12), generation 35.2 tok/s, 70.6 with MTP (2026.11.16.02). Qwen3.6 35B-A3B: 8K prompt 5,647 tok/s
+  (2026.11.17.04), 4K 5,177, 16K 5,445, generation 95-98 tok/s (2026.11.16.15). Flash Next, 46 % of its experts in the
+  card's 32 GB: 4K prompt 1,414 (2026.11.17.04), 16K 1,145, generation 38.6 tok/s once the expert cache holds what
+  the text uses (6.6 from a cold cache). Another B70 under Windows ([issue #12](https://github.com/rizagp/inferzero/issues/12),
   release 2026.11.13.06, before the weight prefetch; a rerun is asked for): 2,105 tok/s, generation 32.2, 75.2 with MTP.
+- **One Arc B580 12 GB** on Linux in a PCIe 3.0 slot ([issue #37](https://github.com/rizagp/inferzero/issues/37),
+  d-dorok, commit 7703141, 4K prompts): Qwen3.5 4B 7,915 tok/s, generation 92.6; Qwen3.5 9B 5,341, 56.5; Qwen3.6
+  35B-A3B 2,469, 84.7. The 27B does not fit beside its buffers, so part of its weights stays in RAM: 1,783 tok/s and
+  3.53 tok/s generation by default (1.02 GiB in RAM, commit 438dfc4); with `ARC_HOST_KEEP_GB=0.75` (0.49 GiB in RAM)
+  1,877 and 7.08, the setting to use on that card.
+- **One Arc A770 16 GB** under Windows ([issue #35](https://github.com/rizagp/inferzero/issues/35),
+  [issue #36](https://github.com/rizagp/inferzero/issues/36)): 4K prompt 1,223 tok/s (release 2026.11.17.08 with
+  `ARC_GEMM_SPLIT=17`, the default on Alchemist since 2026.11.18.02), generation 21.6-22.7 tok/s, 30.1-31.3 with MTP, with `ARC_BATCH=64`, the default on Alchemist on Windows since 2026.11.18.08 (12.6-12.8 without).
+  Qwen3.5 4B: 4K prompt 4,821 tok/s through the preset (2026.11.18.02, the default since 2026.11.18.03), generation
+  37.8-38.2; Qwen3.5 9B: 2,969-3,017 (2026.11.17.08).
 - **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
-  357 tok/s (release 2026.11.15.11, XMX with H8 and 32x16 tiles), generation 6.1 tok/s, 14.6 with MTP (at its
-  memory's limit).
+  405 tok/s (release 2026.11.18.07, its defaults; 390 on 2026.11.17.07 with `ARC_GEMM_XW_WGX=2`, 357 on
+  2026.11.15.11), generation 6.1 tok/s, 14.6 with MTP (at its memory's limit).
 - **Arc B390** (Panther Lake's Core Ultra X7 358H, Xe3, [issue #1](https://github.com/rizagp/inferzero/issues/1)): 4K
-  prompt 583-592 tok/s with H8 on the wide-tile XMX GEMM (the default for iGPUs with 16-lane XMX since 2026.11.17.01)
+  prompt 634-637 tok/s (release 2026.11.18.06) with H8 on the wide-tile XMX GEMM (the default for iGPUs with 16-lane XMX since 2026.11.17.01)
   and 16 GB of decoded weights kept resident (the default with a 64+ GiB GPU share since 2026.11.17.02; 546-560 without)
   (258-268 on the plain XMX path before; KL 0.0018 between the two), generation 5.9 tok/s, 16.8 with MTP. Qwen3.6
   35B-A3B: 4K prompt 1,370 tok/s, generation 26 tok/s, 46 with MTP.
@@ -167,6 +183,10 @@ the iGPUs never take. Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named)
     10.3 / 18.0 / 16.6 / 17.6 tok/s on 1 / 2 / 3 / 4 cards, its 512-token prompt 171 / 227 tok/s over 3 / 4; Unsloth's
     UD-Q8_K_XL 109 / 7.6 over 3 ([docs/multi-gpu.md](docs/multi-gpu.md)). Over 4 with 32 GiB of its experts per card
     kept in RAM (the default since 2026.11.16.16): 512-token prompt 24.0 tok/s, generation 9.25 (3.55 without).
+  - 2 Arc A770s on Windows (hansong80, issue #35, release 2026.11.18.02, no peer access): the 27B's 4K prompt
+    1,126 tok/s against one card's 1,169, generation 12.2 against 12.6-12.8: the 128 sums a token waited 73.5 ms of
+    81, a host round trip each. `ARC_TP_EVSUM=1` (opt-in since 2026.11.18.05) lets the GPUs meet on events instead;
+    not measured on two cards yet.
   - A slow link sets the pace: with one card in an x4 slot at 2.4 GB/s (issue #19, the 27B UD-Q5_K_XL) the prompt over
     2 cards is half of one card's (620 against 1,223 tok/s). A layer split for such links is planned, not built.
   - Batched slots work over a split model.
@@ -195,6 +215,7 @@ its failsafes: [docs/multi-gpu.md](docs/multi-gpu.md). The plan: QUEUE.md, F31.
 | [docs/xe2-tuning.md](docs/xe2-tuning.md) | discrete Arc B-series cards: what was measured, the switches, the scripts to run |
 | [docs/qwen3-asr.md](docs/qwen3-asr.md), [docs/whisper-native.md](docs/whisper-native.md) | speech to text, transcripts and meetings |
 | [CHANGELOG.md](CHANGELOG.md), [QUEUE.md](QUEUE.md) | what changed recently; open work and decisions |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | where the speed is still missing, how to measure your card, how to send code |
 
 ## License
 

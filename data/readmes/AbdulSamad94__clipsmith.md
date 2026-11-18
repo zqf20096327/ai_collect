@@ -85,7 +85,7 @@ Then open **http://127.0.0.1:8765**, paste a YouTube link (or drop in a video fi
 
 ## Using it
 
-- **Clip settings:** pick the number of clips, the clip length and the aspect ratio (9:16, 1:1 or 16:9). Choose a caption style and framing, and switch the opening hook text and pause/"uh" removal on or off.
+- **Clip settings:** pick the number of clips, the clip length and the aspect ratio (9:16, 1:1 or 16:9). Choose a caption style (each one shows a live preview; besides the original three there are Comic, Impact, Tall and a "Build-up" style where words appear one by one as they are spoken) and framing, and switch the opening hook text and pause/"uh" removal on or off.
 - **Focus (optional):** describe what the clips should be about, or limit them to part of the video with **From** and **To** (like `12:30`).
 - **Progress:** each video shows three steps (get the video, pick the best moments, cut and caption) with what's happening right now. Finished clips appear while the rest are still rendering.
 - **Your clips:** each clip shows its rank, length, score, the hook it opens with and why it was picked. **Download** it, **Post to YouTube**, or open the **⋯** menu to copy the caption, post again or delete the clip. Fold any clip into one line with the arrow; posted clips fold by themselves. Older videos start folded too.

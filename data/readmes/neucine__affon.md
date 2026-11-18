@@ -1,0 +1,169 @@
+<p align="center">
+  <img src="assets/affon-lockup-vertical.svg" alt="affon" width="220"/>
+</p>
+
+<p align="center"><a href="README.zh-CN.md">简体中文</a></p>
+
+<p align="center">
+  <code>aff·on</code>&nbsp;&nbsp;<span style="color: #c5bc10; font-size: 15px; font-family: monospace;">/ əfˈɒn /</span>
+</p>
+
+<p align="center">
+  A TypeScript runtime for scientific computing and machine learning
+</p>
+
+---
+
+Affon is a TypeScript runtime for scientific computing and machine learning.
+
+You define a computation as a **Program**: its inputs, parameters, and operations.
+You can inspect that definition, derive a training step from it, and run it in a
+**Session** on a supported device. Affon also includes data pipelines,
+checkpoints, model packages, notebooks, and runnable examples.
+
+Affon is experimental and deliberately transparent. Its working direction is to
+make computational models explainable as semantic programs: not only numeric
+operators, but the roles of values and dimensions, mutable state,
+differentiation, transformations, and the path to backend execution. TypeScript
+is the current host interface rather than the project's central distinction.
+CPU and Metal are the primary validation targets; CUDA has less complete
+testing. Full PyTorch API compatibility and broad model-count coverage are not
+goals. See the [roadmap](docs/roadmap.md) for the research direction and its
+evidence gates.
+
+## Quick Start
+
+Install the latest release:
+
+```bash
+curl -fsSL https://affon.ai/install.sh | bash
+```
+
+This installs `affon` into `~/.affon/bin` and adds that directory to your shell
+`PATH`.
+
+The last Windows x64 release is v0.4.1. To install that version:
+
+```powershell
+irm https://downloads.affon.ai/install.ps1 | iex
+```
+
+Restart the terminal after installation so the updated user `PATH` is loaded.
+
+Get the example and run it from the repository root:
+
+```bash
+git clone https://github.com/neucine/affon.git
+cd affon
+```
+
+```bash
+affon examples/first-program.ts
+```
+
+It prints a typed input contract, the inspected optimizer transition, a
+decreasing training loss, and predictions near `[2, 4, 6]`. See the
+[one-minute walkthrough](docs/getting-started/first-program.md).
+
+The smaller example below shows model construction and inference only. Its
+weights are initialized randomly, so its output is not a trained prediction.
+
+```typescript
+import { Session, Tensor, program } from "affon:core";
+import { linear } from "affon:nn";
+
+const output = linear({ out_features: 1 });
+const model = program("regression", p => {
+  const x = p.argument("x", Tensor.f32([3, 1]));
+  return output({ x }, "output");
+});
+
+const session = new Session({ device: "cpu" });
+const state = session.initialize(model, { seed: 7 });
+const executable = session.compile(model);
+const x = session.tensor([[1], [2], [3]]);
+const prediction = executable.run({ x }, state);
+
+console.log(prediction.to_array());
+```
+
+For immediate computation, evaluated tensors can use the lazy default Session:
+
+```typescript
+import { Tensor } from "affon:core";
+import { add } from "affon:ops";
+
+const result = add(Tensor.from([1, 2, 3]), Tensor.ones([3]));
+console.log(result.to_array());
+```
+
+The default device is selected at runtime startup from `AFFON_DEVICE` (or
+Affon's normal automatic detection when it is unset). It cannot be replaced or
+changed through the canonical API.
+
+## Public Modules
+
+- `affon:core` is the declarative Program, Session, differentiation, and
+  Program-transform surface.
+- `affon:nn` contains callable factories for parameterized layers and losses.
+- `affon:ops` is the shared operation vocabulary for formal and evaluated tensors.
+- `affon:optim` contains immutable optimizer descriptors.
+- `affon:dataset` is the ingest, preprocessing, batching, text-record, and tokenizer surface.
+- `affon:checkpoint` is the training-state persistence and restore surface.
+
+Runtime/system modules such as filesystem, process, and telemetry are provided
+by the underlying runtime under `std:*` specifiers.
+
+## Features
+
+- **Declarative compute Programs** with typed tensor roles, explicit state, differentiation, optimization, and compilation
+- **CPU, Metal, and CUDA device placement** with kernel-capability-aware lowering
+- **Callable neural-network factories** for linear, embedding, and layer normalization
+- **Specialized loss callables** from `affon:nn`, combined with reusable models by `optimize(model, loss, optimizer)`
+- **Immutable optimizer descriptors** for SGD, Adam, and AdamW Program transforms
+- **Dataset pipelines** for tabular and text workflows, including token windows and tokenizer adapters
+- **Checkpoint persistence** for named Program state and application-owned bundles
+- **Runtime diagnostics** with `std:telemetry.metrics()`, traces, and memory signals
+- **First-party packages** for models, Hugging Face integration, tokenizers, and ONNX execution
+- **Runnable apps** including the decoder language-model reference workload
+
+## Stability
+
+Affon focuses on a documented scientific-computing and ML surface rather than
+general Node compatibility.
+
+- module loading supports a focused ESM-oriented subset rather than general Node compatibility
+- Program compilation lowers authored structure to a Session-bound executable
+- unsupported canonical Program lowering surfaces an explicit error; it never silently changes execution models
+- Metal acceleration is partial and operation-dependent
+- CUDA supports the documented Program path for selected `f32` and `bf16` computation, indexing, losses, and optimizer updates. Standard BF16 matrix layouts use cuBLAS; irregular layouts and several BF16 reductions still use scalar GPU kernels. Verify the exact Program and shape on the target device
+- package APIs evolve through the first-party package and app workflow
+
+Use the linked docs as the source of truth for exact supported behavior and edge
+cases.
+
+## Platform Notes
+
+- macOS uses Accelerate and includes Metal-backed paths where supported
+- Linux supports CPU execution and NVIDIA CUDA acceleration; CUDA requires a
+  working driver plus CUDA 12 NVRTC and cuBLAS runtime libraries
+- select the default backend with `AFFON_DEVICE=cpu`, `metal`, or `cuda`; select
+  a CUDA ordinal with `AFFON_CUDA_DEVICE=N` before the first CUDA allocation
+
+## Docs
+
+- Roadmap: [Legible computational Programs](docs/roadmap.md)
+- Getting started: [First Program](docs/getting-started/first-program.md), [Python to AFFON](docs/getting-started/python-to-affon.md)
+- Core numerics: [Compute Concepts](docs/core/compute.md), [Backend Support](docs/core/backend-support.md), [Error Handling](docs/core/errors.md)
+- Machine learning: [NN Concepts](docs/ml/nn/index.md), [Metrics Concepts](docs/ml/metrics.md), [Optim Concepts](docs/ml/optim.md), [Checkpoints](docs/ml/checkpoints.md), [Text Datasets](docs/ml/text-datasets.md), [ML Glossary](docs/ml/glossary.md)
+- Runtime: [Install](docs/runtime/install.md), [Configuration](docs/runtime/configuration.md), [Module Loader](docs/runtime/module-loader.md), [Memory Debugging](docs/runtime/memory-debugging.md)
+- Apps: [apps/](apps/), [Decoder LM](apps/decoder-lm/README.md)
+- Packages: [packages/](packages/), [Models](packages/@affon/models/README.md), [Hugging Face](packages/@affon/huggingface/README.md), [Tokenizers](packages/@affon/tokenizers/README.md)
+- Editor: [VS Code TypeScript Notebook](https://github.com/neucine/vscode-typescript-notebook)
+
+## License
+
+MPL-2.0
+
+Bundled datasets and tokenizer assets retain their respective third-party
+terms. See [Third-Party Notices](THIRD_PARTY_NOTICES.md).

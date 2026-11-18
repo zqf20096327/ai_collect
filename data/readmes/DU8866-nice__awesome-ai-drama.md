@@ -82,7 +82,6 @@ flowchart TB
 | [Nomi](https://github.com/aqm857886159/Nomi) | 本地优先的 AI 视频工作台，可接任意模型或本地 ComfyUI，让 Claude Code / Codex 通过 MCP 来执导，输出可编辑的时间线初剪。 | 655 | 2026-11 |
 | [Open-AI-Micro-Drama-Generator](https://github.com/Anil-matcha/Open-AI-Micro-Drama-Generator) | 多 Agent 微短剧生成器，编剧 → 分镜 → 关键帧 → 视频。 | 580 | 2026-08 |
 | [CineGen-ShortDrama](https://github.com/UllrAI/CineGen-ShortDrama) | AI 导演系统，生成漫剧、动漫、短剧、解说漫和动态漫。 | 576 | 2026-09 |
-| [KomaSlate](https://github.com/xeronsh/KomaSlate) | 本地优先、非破坏性的 AI 分镜工作台，支持重拍镜头、版本对比和 FCPXML 导出。 | 414 | 2026-11 |
 | [novelvids](https://github.com/Anning01/novelvids) | AI 漫剧与短剧创作工作台，覆盖故事创作、角色资产、分镜和出图出视频，支持本地部署。 | 374 | 2026-11 |
 | [AI-Canvas-tauri](https://github.com/Tenney95/AI-Canvas-tauri) | 免费轻量的 AI 无限画布，支持短剧剧本、角色、分镜、出图出视频和剪辑，集成 ComfyUI、Agent、MCP。 | 371 | 2026-11 |
 | [Kinema](https://github.com/chillzhuang/Kinema) | 由 Codex、Claude Code 驱动的影像智能体，管理章节与分镜规划、角色场景道具资产，直到成片。 | 245 | 2026-11 |
@@ -119,7 +118,6 @@ flowchart TB
 | [Wan2.2](https://github.com/Wan-Video/Wan2.2) | 阿里万相 Wan2.2，开源大规模视频生成模型，文生视频、图生视频都支持。 | 18.7k | 2026-09 |
 | [Wan2.1](https://github.com/Wan-Video/Wan2.1) | 万相 Wan2.1，上一代开源视频模型，社区工作流和 LoRA 资源丰富。 | 17.4k | 2026-03 |
 | [FramePack](https://github.com/lllyasviel/FramePack) 💤 | 让视频扩散在消费级显卡上也能跑长视频的框架。 | 17.4k | 2025-10 |
-| [CogVideo](https://github.com/zai-org/CogVideo) 💤 | 智谱 CogVideoX，文生视频和图生视频。 | 13.2k | 2025-11 |
 | [HunyuanVideo](https://github.com/Tencent-Hunyuan/HunyuanVideo) | 腾讯混元视频生成框架。 | 12.8k | 2026-10 |
 | [LTX-Video](https://github.com/Lightricks/LTX-Video) | LTX-Video，速度快的开源视频模型。 | 11.4k | 2026-11 |
 | [LTX-2](https://github.com/Lightricks/LTX-2) | LTX-2 音视频联合生成模型，附 LoRA 训练工具。 | 10.3k | 2026-11 |
@@ -136,14 +134,8 @@ flowchart TB
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
-| [flux](https://github.com/black-forest-labs/flux) 💤 | FLUX.1 系列模型的官方推理代码。 | 26.1k | 2025-07 |
-| [InstantID](https://github.com/instantX-research/InstantID) 💤 | 一张照片零样本保持人物身份。 | 12.0k | 2024-07 |
 | [Qwen-Image](https://github.com/QwenLM/Qwen-Image) | 通义千问图像模型，擅长复杂文字渲染和精确图像编辑，中文海报、字幕画面友好。 | 8.5k | 2026-02 |
-| [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter) 💤 | 用参考图做提示的适配器，常用于锁定角色或画风。 | 6.7k | 2024-06 |
 | [OmniGen2](https://github.com/VectorSpaceLab/OmniGen2) | 统一的多模态生成与编辑模型。 | 4.1k | 2026-03 |
-| [PuLID](https://github.com/ToTheBeginning/PuLID) 💤 | 快速的人物 ID 定制。 | 3.6k | 2025-07 |
-| [UNO](https://github.com/bytedance/UNO) 💤 | 字节 UNO，单主体和多主体定制，适合多角色同框。 | 1.4k | 2025-09 |
-| [USO](https://github.com/bytedance/USO) 💤 | 字节 USO，统一风格与主体驱动生成，可同时锁角色和画风。 | 1.2k | 2025-09 |
 
 ## 配音 / TTS / 声音克隆
 
@@ -158,7 +150,6 @@ flowchart TB
 | [CosyVoice](https://github.com/QwenAudio/CosyVoice) | 通义 CosyVoice 多语言语音生成，推理、训练、部署全套。 | 24.4k | 2026-05 |
 | [F5-TTS](https://github.com/SWivid/F5-TTS) | 基于 Flow Matching 的零样本 TTS。 | 15.6k | 2026-11 |
 | [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS) | 通义 Qwen3-TTS，支持流式合成、自由描述音色设计和声音克隆。 | 14.4k | 2026-03 |
-| [Spark-TTS](https://github.com/SparkAudio/Spark-TTS) 💤 | Spark-TTS 中英双语 TTS 与声音克隆。 | 11.0k | 2025-04 |
 | [higgs-audio](https://github.com/boson-ai/higgs-audio) | Boson AI 的文本-音频基础模型，表现力强。 | 8.4k | 2026-06 |
 | [MegaTTS3](https://github.com/bytedance/MegaTTS3) | 字节 MegaTTS 3，中英零样本语音合成。 | 6.1k | 2026-06 |
 | [MOSS-TTSD](https://github.com/OpenMOSS/MOSS-TTSD) | 多说话人长对话合成，零样本克隆，适合角色对白。 | 1.4k | 2026-09 |
@@ -170,20 +161,16 @@ flowchart TB
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
 | [LivePortrait](https://github.com/KlingAIResearch/LivePortrait) | 可灵团队的 LivePortrait，让静态人像动起来、驱动表情。 | 19.5k | 2026-06 |
-| [Wav2Lip](https://github.com/Rudrabha/Wav2Lip) 💤 | 经典的口型同步模型，生态成熟（较老，适合入门）。 | 13.3k | 2025-06 |
 | [InfiniteTalk](https://github.com/MeiGen-AI/InfiniteTalk) | 不限时长的说话视频生成，支持图生视频和视频生视频。 | 8.4k | 2026-05 |
-| [MuseTalk](https://github.com/TMElyralab/MuseTalk) 💤 | 实时高质量口型同步。 | 7.0k | 2025-09 |
-| [LatentSync](https://github.com/bytedance/LatentSync) 💤 | 字节 LatentSync，基于扩散模型的口型同步。 | 6.3k | 2025-06 |
 | [Sonic](https://github.com/jixiaozhong/Sonic) | 关注全局音频感知的人像动画。 | 3.3k | 2026-01 |
 | [MultiTalk](https://github.com/MeiGen-AI/MultiTalk) | 音频驱动的多人对话视频生成。 | 3.0k | 2026-05 |
 | [HunyuanVideo-Avatar](https://github.com/Tencent-Hunyuan/HunyuanVideo-Avatar) | 混元视频数字人，音频驱动的多角色动画。 | 2.2k | 2025-12 |
 | [fantasy-talking](https://github.com/Fantasy-AMAP/fantasy-talking) | 动作连贯的说话人像生成。 | 1.6k | 2026-01 |
-| [hallo3](https://github.com/fudan-generative-vision/hallo3) 💤 | 基于视频 DiT 的高动态人像动画。 | 1.4k | 2025-03 |
 | [echomimic_v3](https://github.com/antgroup/echomimic_v3) | 蚂蚁 EchoMimic V3，1.3B 参数的多模态人体动画。 | 1.1k | 2026-03 |
 
 ## 配乐与音效
 
-背景音乐、主题曲和拟音音效。MMAudio、HunyuanVideo-Foley、ThinkSound 可以直接根据画面生成音效。
+背景音乐、主题曲和拟音音效。MMAudio、ThinkSound 可以直接根据画面生成音效。
 
 | 项目 | 说明 | ⭐ | 最近更新 |
 |---|---|---:|---|
@@ -194,7 +181,6 @@ flowchart TB
 | [DiffRhythm](https://github.com/ASLP-lab/DiffRhythm) | 快速的端到端整首歌曲生成。 | 2.4k | 2025-11 |
 | [MMAudio](https://github.com/hkchengrex/MMAudio) | 根据视频生成匹配的音频。 | 2.3k | 2026-02 |
 | [ThinkSound](https://github.com/QwenAudio/ThinkSound) | 通义 ThinkSound，用思维链从任意模态生成音频，可给画面配音效。 | 1.4k | 2026-04 |
-| [HunyuanVideo-Foley](https://github.com/Tencent-Hunyuan/HunyuanVideo-Foley) 💤 | 混元视频拟音，给画面配高保真音效。 | 1.1k | 2025-09 |
 
 ## 剪辑、字幕与后期
 
@@ -235,7 +221,6 @@ flowchart TB
 |---|---|---:|---|
 | [ComfyUI](https://github.com/Comfy-Org/ComfyUI) | 节点式扩散模型界面与后端，本地 AIGC 的事实标准。 | 147.1k | 2026-11 |
 | [ComfyUI-WanVideoWrapper](https://github.com/kijai/ComfyUI-WanVideoWrapper) | 在 ComfyUI 里使用万相等视频模型的封装节点。 | 6.8k | 2026-11 |
-| [ComfyUI-LivePortraitKJ](https://github.com/kijai/ComfyUI-LivePortraitKJ) 💤 | LivePortrait 的 ComfyUI 节点。 | 2.2k | 2024-08 |
 | [ComfyUI-VideoHelperSuite](https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite) | 视频加载、合成、导出等常用视频节点。 | 1.9k | 2026-09 |
 | [ComfyUI-Frame-Interpolation](https://github.com/Fannovel16/ComfyUI-Frame-Interpolation) | ComfyUI 补帧节点。 | 1.1k | 2026-03 |
 | [comfyui-AICG3D](https://github.com/JGRFW/comfyui-AICG3D) 🆕 | ComfyUI 本地短剧工作台插件，支持长视频生成。 | 579 | 2026-11 |

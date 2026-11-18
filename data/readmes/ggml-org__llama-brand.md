@@ -11,18 +11,18 @@ stories/  the Storybook: the brand and communications, drawn with the files abov
 BRAND.md  the brand book, written for agents first
 ```
 
-Install it from GitHub and import files by path:
+Install it from npm and import files by path:
 
 ```bash
-npm i github:ggml-org/llama-brand
+npm i @ggml-org/llama-brand
 ```
 
 ```css
-@import 'llama-brand/css/brand.css';
+@import '@ggml-org/llama-brand/css/brand.css';
 ```
 
 ```js
-import logo from 'llama-brand/logo/svg/lockup/llama/logo-llama-light.svg';
+import logo from '@ggml-org/llama-brand/logo/svg/lockup/llama/logo-llama-light.svg';
 ```
 
 ---
@@ -260,4 +260,4 @@ The logo assets are licensed under CC BY-NC 4.0, see [`LICENSE`](./LICENSE).
 
 Distributions, packagers, and anyone referring to the project should read [`BRAND-USAGE.md`](./BRAND-USAGE.md), which grants the permissions that use needs.
 
-The CSS is under the same licence as the logo assets. The fonts are released under the SIL Open Font License 1.1, see [`fonts/OFL.txt`](./fonts/OFL.txt). The Llama icon they carry at U+E000, U+E001 and U+E002 stays under the logo licence above.
+The CSS in [`css/`](./css) is under the MIT License, see [`css/LICENSE`](./css/LICENSE), so software can ship its colours and stylesheets under its own licence. The fonts are released under the SIL Open Font License 1.1, see [`fonts/OFL.txt`](./fonts/OFL.txt). The Llama icon they carry at U+E000, U+E001 and U+E002 stays under the logo licence above.

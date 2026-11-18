@@ -1,46 +1,36 @@
 # OpenWorkMate
 
-让企业知识、业务经验和内部系统，成为员工可以用自然语言调用的工作助力。
+面向企业内部的开源 AI 工作伙伴：员工查制度、看原文引用、调用已授权的业务能力；管理员维护资料、Skill、系统连接与审计。
 
-**企业内部的 AI 工作伙伴 · 可私有部署 · MIT 开源 · Web 优先 · 保留 Electron**
-
-OpenWorkMate 面向企业内部的制度查询、工单处理、合同规则检索和业务能力治理。可以把它理解为“企业内部的 WorkBuddy”：员工描述任务，平台检索可见知识并调用经过治理的业务能力。它是独立社区项目，与腾讯 WorkBuddy 没有官方关系，也不宣称具备相同功能。
-
-这是早期可运行版本，欢迎一起维护、提出想法和分享脱敏业务场景。
-
-![员工 Web 入口](docs/images/01-web-home.png)
-
-## 能做什么
-
-| 能力 | 当前实现 |
+| 员工工作台 | 管理工作台 |
 | --- | --- |
-| 企业知识库 | PDF/DOCX/XLSX/CSV/Markdown/JSON/文本导入，异步解析、分片、索引，引用与可见范围过滤 |
-| 员工对话 | 独立 Web，Markdown 预览、依据分类、来源引用、当前页面会话切换 |
-| Skill 工厂 | manifest 校验、审核、发布、启停、角色门控、Runtime 调用与结构化输出检查 |
-| 系统接入 | OA/工单/CRM/合同/BI 演示 Adapter；真实 HTTP 路由、字段映射、业务成功判断 |
-| 风险确认 | 写操作绑定执行人、参数和连接器配置；确认令牌原子消费 |
-| 身份与审计 | JWT/OIDC、管理入口身份检查、知识可见范围和调用审计 |
-| 可选桌面端 | 基于 Electron/ClawX/OpenClaw，保留本地运行时和 Main 代理边界 |
+| ![员工端：企业问答、最近对话与文件结果](docs/images/01-web-home.png) | ![管理端：分组导航、知识上传与系统接入](docs/images/04-admin-overview.png) |
 
-默认演示模式只展示检索片段，不调用大模型；演示连接器返回 mock。接真实系统需按其接口、身份和权限契约配置，不能把示例当成已接入的生产能力。
+[看完整图文：17 张实机截图、技术架构和应用场景](docs/wechat-article.md)
 
-## 功能截图
+企业问答、通用问答和本地升级共用 `OPENAI_CHAT_MODEL`（默认 `gpt-6.2-sol`）；GPT‑6 的原生业务工具需要 Responses 写权限。缺少该权限时只回答知识问题，并明确提示未执行业务。
 
-所有截图来自本项目实际运行界面，使用独立演示数据库与示例资料。
+输入框上方可切换「企业问答 / 通用问答」。企业模式检索制度并使用已授权的业务工具；通用模式直接问模型，不带企业对话历史，需要启用真实模型。
 
-| 知识问答 | 管理总览 |
-| --- | --- |
-| ![知识问答](docs/images/02-web-knowledge-answer.png) | ![治理总览](docs/images/04-admin-overview.png) |
-| 知识资产 | Skill 审核 |
-| ![知识库](docs/images/05-knowledge-library.png) | ![Skill](docs/images/10-skill-review.png) |
-| 系统连接 | 审计留痕 |
-| ![连接器](docs/images/13-connectors.png) | ![审计](docs/images/15-audit.png) |
+[本地升级实验台](docs/local-upgrade.md)：在对话里提需求，试用独立分支，确认后手动合并。
 
-[查看更多截图与公众号介绍](docs/wechat-article.md)
+<!-- upgrade:formats -->
 
-## 使用说明
+本地员工对话可用 `/升级 新增……工具` 直接创建模型编程任务：生成独立功能源码，自动测试和预览，维护者确认后才合并。
 
-建议 Node.js 22、pnpm 10.31.0、MongoDB 7+。只体验 Web 不需要安装 Electron、启动 OpenClaw 或部署独立向量库。
+文件结果支持生成、在线预览及下载 Excel（XLSX）；编号和公式样文本按原文导出。
+
+员工端和管理后台共用配色与品牌图标。员工侧栏上方新建或切换对话，下方打开文件结果和有权访问的管理入口；手机点击左上角菜单展开。对话 Markdown 渲染器和管理子页按需加载。
+
+平台管理员可在 **管理后台 → 企业外观** 设置当前企业的名称、PNG 图标和科技配色。预览不影响线上外观，保存后员工刷新即可看到。配置来自登录身份中的租户，不跨公司复用；未登录使用默认品牌。
+
+管理导航与员工端共用浅色侧栏。点击「知识库」或「系统接入」右侧的加号，可从任意后台页面直接上传知识或新建只读连接器草稿；需要认证时，在首屏选择认证方式并填写服务端环境变量名，不要粘贴密钥。
+
+回答支持 Markdown、媒体预览、表格 CSV 和原文导出。在通用问答输入「找图：大熊猫」，会看到 Wikimedia Commons 的图片、署名和许可；输入「画：日落时的灯塔」，当前聊天模型会设计矢量插画，服务端渲染成 PNG，在对话中直接显示。它不是写实文生图服务，也不需要第二个模型密钥。其他不受信任的外链图片与视频仍按需加载。两列数值表还可以生成 SVG 柱状图。
+
+## 快速开始
+
+需要 Node.js 22、pnpm 10.31.0 和 MongoDB 7+。
 
 ```bash
 git clone https://github.com/chencheng666/openworkmate.git
@@ -48,85 +38,61 @@ cd openworkmate
 corepack enable
 pnpm install --frozen-lockfile
 cp backend/.env.example backend/.env
-cp web-app/.env.example web-app/.env
-```
-
-启动 MongoDB（二选一：已有本地 MongoDB，或 Docker）：
-
-```bash
 docker compose -f backend/docker-compose.yml up -d
-```
-
-默认 MongoDB 地址为 `mongodb://127.0.0.1:27017/workmate_agent_platform`。初始化是幂等的，只写演示租户样例；不要对生产数据直接运行。
-
-```bash
 pnpm backend:seed
-```
-
-分别在三个终端中启动：
-
-```bash
-pnpm backend:dev  # API：127.0.0.1:18790/api
-pnpm web:dev      # 员工入口：localhost:5180
-pnpm admin:dev    # 治理后台：localhost:5174
-```
-
-开发身份可直接体验管理页面。该模式只用于本机，不是生产登录方案。使用自定义 MongoDB 地址时，需要同时向 `backend:seed` 注入 `MONGODB_URI`，例如 `MONGODB_URI=mongodb://127.0.0.1:27018/workmate_agent_platform pnpm backend:seed`；后端服务会读取 `backend/.env`。
-
-### 切换真实模型
-
-在 `backend/.env` 中设置 `WEB_CHAT_DEMO_MODE=false` 并填写 `DEEPSEEK_API_KEY`，Web 对话当前使用服务端 DeepSeek/兼容接口。需要其他兼容模型时可调整 `DEEPSEEK_BASE_URL` 与 `DEEPSEEK_MODEL` 并验证 Tool 协议。将 `web-app/.env` 中 `VITE_DEMO_MODE` 改为 `false`，重启相应服务。
-
-**开发使用 GPT‑6，与运行时模型是两回事。** 本轮开源整理、去品牌化、验证与文档由维护者使用 GPT‑6 协作完成；项目保留上游与早期迭代的贡献。详见 [来源与致谢](NOTICE.md)。
-
-### 本地桌面开发
-
-```bash
-pnpm init
 pnpm dev
 ```
 
-该命令会准备桌面依赖和 OpenClaw，体积与启动时间明显高于 Web。当前公开发布的是源码与 Web 体验路径，不包含预编译桌面安装包。安装包签名、公证和自动更新属于单独发布工作。
+已有本地 MongoDB 时可跳过 Docker 步骤，通过 `backend/.env` 设置 `MONGODB_URI`。运行 `backend:seed` 会写入演示资料、Skill 和连接器，请使用专用演示数据库。
 
-## 技术架构
+- 员工对话访问 [127.0.0.1:5180](http://127.0.0.1:5180/)。
+- 管理后台访问 [127.0.0.1:5180/admin/](http://127.0.0.1:5180/admin/)。
+- 试问“园区报修超过 24 小时未响应怎么办”，查看命中的示例制度片段。
+- 管理工作台可直接打开上传知识或接入系统表单。只读 HTTP 连接器默认填写系统名称和完整查询地址，认证方式可在首屏选择，请求方法等字段在高级配置中。连接器先保存为草稿。
 
-![架构图](docs/images/architecture.png)
+演示模式使用样例数据和开发身份，适用于本地体验。要使用模型，在 `backend/.env` 设置 `WEB_CHAT_DEMO_MODE=false` 并填入 `DEEPSEEK_API_KEY`，重启即可。兼容接口可调整 `DEEPSEEK_BASE_URL` 和 `DEEPSEEK_MODEL`。界面从服务端读取演示状态。
 
-```text
-员工 Web / 治理后台 / 可选 Electron
-                ↓
-      NestJS + Fastify 企业 API
-        ↙                   ↘
-知识检索 + 引用          Skill Runtime
-     ↓                       ↓
-MongoDB + Worker       确认 + HTTP Adapter
-     ↓                       ↓
-可选 Embedding         OA / 工单 / CRM / BI
-                ↓
-       服务端模型调用与审计
-```
+## 构建与部署
 
-知识库默认采用中文 Bigram 检索；可选 Embedding 存入 MongoDB，由应用层做混合排序。目前没有专用向量数据库或面向大规模知识库的向量索引。Web 会话目前位于页面内存，不是服务端持久化会话。
+本地接 OpenAI：为项目创建只允许 Chat Completions 和 Embeddings 的 Key。在 macOS 上复制 Key 后，于项目根目录执行 `pbpaste | node scripts/configure-openai.mjs`，然后清空剪贴板并重启。其他系统可经标准输入传入，不要把密钥写在命令行参数里。脚本只新建 Git 忽略且仅当前用户可读写的 `backend/.env.openai.local`，不覆盖旧文件。外部环境变量优先于配置文件；不要同时强设演示模式。真实问答与索引会把问题及必要的知识片段发给配置的模型服务，请先用公开样例并检查服务地区、权限和预算。
 
-[详细架构与边界](docs/architecture.md) · [HTTP 接入示例](docs/connector-http-integration.md) · [未来规划](docs/roadmap.md)
-
-## 参与维护
-
-欢迎在 [Issue](https://github.com/chencheng666/openworkmate/issues) / [Discussions](https://github.com/chencheng666/openworkmate/discussions) 分享你想做的业务任务、系统接入问题、知识检索案例和产品体验。欢迎补充连接器、测试、部署教程与文档，不必等到有完整方案才参与。
-
-[贡献指南](CONTRIBUTING.md) · [安全反馈](SECURITY.md)
+配置向量模型后，前往知识库为已有资料重新建立索引。旧版没有模型标识的向量、不同模型的向量不混算。查询端嵌入不可用时退回关键词，响应的 `retrieval.degraded` 表示降级；入库失败会保留错误状态，不能把失败算成已向量化。
 
 ```bash
-pnpm test:enterprise
-pnpm web:build
-pnpm admin:build
-pnpm --dir backend typecheck
-pnpm --dir backend build
+pnpm build
+pnpm start
+```
+
+NestJS 服务默认监听 127.0.0.1:18790，同时提供员工端 `/`、管理端 `/admin/` 和 API `/api`。部署时保留 `web-app/dist`、`admin-web/dist` 和 `backend/dist` 的工作区布局。生产配置使用 HTTPS、JWT/OIDC 或可信网关、有效凭证和持久化存储。配置 `NODE_ENV=production`、`AUTH_MODE=jwt`（或 `trusted-proxy`）、`WEB_CHAT_DEMO_MODE=false`，按实际域名设置 OIDC 回调和登录后跳转地址。配置细节见 [后端文档](backend/README.md)。
+
+## 架构
+
+```text
+浏览器  / 员工对话  ·  /admin/ 管理后台
+                       ↓ 同源 /api
+            NestJS + Fastify 模块化服务
+           ↙           ↓             ↘
+    MongoDB + 解析    模型调用      HTTP 业务系统
+```
+
+知识入库、检索、Skill 执行、写入确认与审计由后端模块处理。默认中文 Bigram 检索，可选 Embedding 混合排序。会话保存在页面内存；生成的文件按当前账号保存 7 天，刷新后仍可从「文件结果」预览、下载。文件面板的 PNG 摘要卡和 MP4 简报是本地排版；通用问答的原创插画则会消耗一次聊天模型调用。
+
+macOS 可选 Tauri 2 桌面端：先启动本地后端，再运行 `pnpm desktop` 生成并启动应用。支持全局 ⌘⇧空格唤起、选择目录和防覆盖保存；没有将模型密钥打包进客户端。纯 Web 使用者不需要安装 Rust。
+
+[架构说明](docs/architecture.md) · [HTTP 接入示例](docs/connector-http-integration.md) · [迭代路线图](docs/roadmap.md)
+
+[本地验证与 Tauri 桌面端设计](docs/local-workspace.md)
+
+## 验证与贡献
+
+```bash
+pnpm test
+pnpm exec playwright install chromium
+pnpm test:e2e
+pnpm build
 pnpm check:public
 ```
 
-项目保留上游桌面测试；本轮验证了企业链路单元测试、Web E2E 和 Electron 冒烟测试。提供 [CI 模板](docs/ci/enterprise-check.yml)，覆盖企业链路和 Web/管理后台/后端构建。发布凭证未包含工作流上传权限，因此仓库尚未启用自动 Actions；维护者获得权限后可复制模板到 `.github/workflows/check.yml`。完整桌面测试是否支持其他操作系统，需要独立验证。
+[贡献指南](CONTRIBUTING.md) · [CI 模板](docs/ci/enterprise-check.yml) · [安全反馈](SECURITY.md) · [社区讨论](https://github.com/chencheng666/openworkmate/discussions)
 
-## 许可证
-
-MIT。基于 [ClawX](https://github.com/ValueCell-ai/ClawX) 企业场景扩展，保留 ValueCell Team 原始版权声明；依赖遵循各自许可证。此项目未完成生产安全审计，生产接入需要完成身份、业务权限、存储、备份和模型数据边界验证。
+[早期开源介绍与截图](https://github.com/chencheng666/openworkmate/blob/v0.1.0-alpha.1/docs/wechat-article.md)记录了首个预览版。项目使用 GPT‑6 辅助开发，保留历史来源与原版权声明。[许可与致谢](NOTICE.md)

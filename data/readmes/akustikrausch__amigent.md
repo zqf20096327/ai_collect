@@ -12,7 +12,27 @@
 
 <p align="center"><img src="https://raw.githubusercontent.com/akustikrausch/amigent/main/src/amigent/web/icon.png" width="96" alt="Amigent icon"></p>
 
-Amigent connects your PC or Mac to your real Amiga over the home network. Then you can:
+Amigent connects your PC or Mac to your real Amiga over the home network.
+
+## Set up in three steps
+
+**1. On the Amiga:** copy [`amigentd`](https://github.com/akustikrausch/amigent/blob/main/src/amigent/amiga/bin/amigentd)
+over (`amigentd.000` on a 68000) and start it with `amigentd SETUP` in a Shell.
+
+**2. On the PC or Mac:** paste this into your AI agent:
+
+    Install Amigent for me: run "pipx install amigent", then amigent-setup,
+    register the MCP server "amigent" with the command amigent-server, and
+    run amigent-viewer --install.
+
+**3. Ask for something:** "Open the remote desktop", or "Install the newest
+HippoPlayer from Aminet".
+
+The details, and the way without an AI agent, are under [Installation](#installation).
+
+## What it does
+
+Once connected, you can:
 
 - **let an AI agent do the work**, for example Claude Code or Codex: install
   software, update programs, change settings, copy files, click through
@@ -35,6 +55,27 @@ graphics-card Workbench, show up as they are. The list at the top brings any
 screen to the front, from the PC.
 
 ![SysInfo on its own chipset screen in the remote desktop, with the screen list at the top](https://raw.githubusercontent.com/akustikrausch/amigent/main/docs/screenshots/screens.png)
+
+## How it fits together
+
+```mermaid
+flowchart LR
+    subgraph PC["PC or Mac"]
+        agent["AI agent<br/>(Claude Code, Codex, ...)"] -- MCP --> server["amigent-server"]
+        you["you"] --> viewer["remote desktop<br/>amigent-viewer"]
+    end
+    subgraph Amiga["Amiga"]
+        daemon["amigentd"] --> os["screen, mouse and keys,<br/>files, Shell, ARexx"]
+        daemon --> monitor["amigent-monitor<br/>(what the agent does)"]
+    end
+    server -- "home network<br/>key, TLS" --> daemon
+    viewer -- "home network" --> daemon
+```
+
+One small program on the Amiga, `amigentd`, does what the PC asks: it sends
+the screen, moves the mouse, types, runs commands and copies files. On the PC,
+`amigent-server` gives an AI agent its tools, and the remote desktop shows the
+screen to you. Both can work at once.
 
 ## Installation
 
@@ -113,6 +154,10 @@ working as before; the new features need both.
     "Open the remote desktop."
     "Install the newest HippoPlayer from Aminet, so I can take it back if it doesn't work."
     "Build my program, run it on the Amiga and show me its debug output."
+    "The Amiga froze. What was it?"
+    "Which AHI driver is really loaded?"
+    "Find out whether my program leaks memory."
+    "Windows stutter when I drag them. Find out what holds things up."
 
 ## Made for slow machines and slow wires
 
@@ -165,6 +210,8 @@ All numbers, how they were taken and how to repeat them are in
 - **Developing for the Amiga?** The agent builds and runs your program and
   reads its kprintf and Enforcer output, and keeps a copy of a growing log on
   the PC that survives a crash.
+- **A hang, a stutter, a guru?** The agent tells what a task waits for, who
+  holds a lock, how much CPU each task takes, and what a guru code means.
 - **Running a test or a benchmark?** *Pause the picture* in the remote desktop
   (or `PAUSE` by ARexx) gives the Amiga's CPU back to it for a while; mouse,
   keys and files keep working.

@@ -73,7 +73,7 @@ xora-saas/
     |-- vite-env.d.ts
   |- .gitignore
   |- .prettierrc
-  |- bun.lockb
+  |- bun.lock
   |- eslint-plugin-react-hooks.d.ts
   |- eslint.config.js
   |- index.html
@@ -135,30 +135,30 @@ Useful resources and dependencies that are used in Xora.
 
 <!--- DEPENDENCIES_START --->
 - [@eslint/js](https://www.npmjs.com/package/@eslint/js): ^10.0.1
-- [@types/react](https://www.npmjs.com/package/@types/react): ^18.3.3
-- [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): ^19.2.3
+- [@types/react](https://www.npmjs.com/package/@types/react): ^19
+- [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): ^19
 - [@types/react-scroll](https://www.npmjs.com/package/@types/react-scroll): ^1.8.10
 - [@vitejs/plugin-react](https://www.npmjs.com/package/@vitejs/plugin-react): ^6.0.1
 - [autoprefixer](https://www.npmjs.com/package/autoprefixer): ^10.4.20
 - [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
-- [eslint](https://www.npmjs.com/package/eslint): ^10.0.0
+- [eslint](https://www.npmjs.com/package/eslint): ^10.15.0
 - [eslint-plugin-react-hooks](https://www.npmjs.com/package/eslint-plugin-react-hooks): ^7.0.0
 - [eslint-plugin-react-refresh](https://www.npmjs.com/package/eslint-plugin-react-refresh): ^0.5.0
 - [eslint-plugin-unused-imports](https://www.npmjs.com/package/eslint-plugin-unused-imports): ^4.1.4
-- [globals](https://www.npmjs.com/package/globals): ^17.0.0
+- [globals](https://www.npmjs.com/package/globals): ^17.14.0
 - [postcss](https://www.npmjs.com/package/postcss): ^8.4.47
 - [prettier](https://www.npmjs.com/package/prettier): ^3.3.3
 - [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss): ^0.8.0
-- [react](https://www.npmjs.com/package/react): ^18.3.1
+- [react](https://www.npmjs.com/package/react): ^19.3.1
 - [react-countup](https://www.npmjs.com/package/react-countup): ^6.5.3
-- [react-dom](https://www.npmjs.com/package/react-dom): ^18.3.1
+- [react-dom](https://www.npmjs.com/package/react-dom): ^19.3.1
 - [react-scroll](https://www.npmjs.com/package/react-scroll): ^1.9.0
 - [react-slidedown](https://www.npmjs.com/package/react-slidedown): ^2.4.7
-- [tailwind-merge](https://www.npmjs.com/package/tailwind-merge): ^3.0.1
+- [tailwind-merge](https://www.npmjs.com/package/tailwind-merge): ^3.7.0
 - [tailwindcss](https://www.npmjs.com/package/tailwindcss): ^3.4.12
 - [typescript](https://www.npmjs.com/package/typescript): ^7.0.2
 - [typescript-eslint](https://www.npmjs.com/package/typescript-eslint): ^8.0.1
-- [vite](https://www.npmjs.com/package/vite): ^8.0.1
+- [vite](https://www.npmjs.com/package/vite): ^8.3.8
 
 <!--- DEPENDENCIES_END --->
 

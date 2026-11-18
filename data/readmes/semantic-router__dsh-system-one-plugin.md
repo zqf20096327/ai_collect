@@ -159,7 +159,8 @@ passages of tool results it screens, the end of each turn, and what System Two h
 results it masks to System One whole, and System Two gets the conversation, as any LLM provider does, with the agent
 session's random id so that the router keeps a session on one model. System Duo logs
 requests to improve its services and train models, so read its [privacy page](https://app.vllm-sr.ai/privacy) before
-you use it with private code or data. Every reflex can be turned off, and the local trace never records keys.
+you use it with private code or data. Every reflex can be turned off, and the local trace redacts keys, tokens,
+passwords and cookies before it writes anything.
 
 **Does it run headless or in CI?** Yes: `dsh plugin --profile headless add @vllm-sr/dsh`, then
 `dsh headless "…"`. A headless run reads its key when it starts, so its first run fetches the key and the LLM answers
@@ -167,7 +168,14 @@ from the next; in CI, set `VLLM_SR_API_KEY`.
 
 **What if System One is unreachable?** Your agent carries on. A guarded call falls back to `guardOnError` (`allow` by
 default) while DeepSeek Harness's own sandbox and approvals still apply, and a tool call that finds System One
-unavailable shows one calm **Unavailable** line.
+unavailable shows one calm **Unavailable** line. When privacy cannot run, a **Privacy** card says why, and tool
+results reach System Two unmasked until System One answers again, 15 seconds later at the earliest.
+
+**How much do the reflexes read?** Shield screens every result of the tools that bring in file, shell, web or MCP
+text, of any length, all of its first 60,000 characters; System Two gets none of the rest, only a note to read it in
+parts. Guard reads a call whole, up to 24,000 characters, and asks you about a longer one. The
+[reference](https://github.com/Xunzhuo/dsh-system-one-plugin/blob/main/docs/reference.md#what-the-reflexes-read-and-how-much)
+has the lists and every limit.
 
 **Why didn't I get the newest release?** pnpm, which `dsh plugin add` uses, installs a release only once it is a day
 old. To take one sooner, name its version, as `@vllm-sr/dsh@<version>`.

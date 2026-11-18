@@ -15,6 +15,10 @@ Zoom and Discord links are on the meetup page:
 https://www.meetup.com/handsonprogrammingevents/          
 ___________________________________________________________________________________________________________
 ### ======== 2026 ========   
+    
+### Paper for November 24, 2026:     
+Exo: An Architecture for Self-Improving Systems at Runtime    
+https://arxiv.org/abs/2611.00463     
    
 ### Paper for November 17, 2026:    
 A Circuit for In-Context Learning     
@@ -2304,7 +2308,4 @@ Aurobindo Tripathy will reprise a talk he's going to give at Embedded Summit thi
 ### Mar 20, 2017 - Hacker Dojo  
 https://arxiv.org/pdf/1612.05424.pdf - Unsupervised Pixel-level domain adaptation with generative adversarial networks   
 
-## Mar 13, 2017 - Hacker Dojo  
-https://arxiv.org/pdf/1701.06547.pdf - adversarial learning for neural dialog generation  
-
-### February 27, 2017 - Hacker Dojo 
+## Mar 13, 2017 

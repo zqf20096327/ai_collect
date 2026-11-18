@@ -560,11 +560,35 @@ this budget; the next attempt needs 500M+ tokens. [`docs/SPIKING_PRODUCT.md`](do
 **Generative data diversity (first generative result):** a 4.3M model trained for
 3,000 steps on 16M tokens. TinyStories-only: TinyStories **1.566** / WikiText
 **4.455** bpb. Mixed 25% WikiText (12M TinyStories + 4M WikiText): TinyStories
-**1.605** / WikiText **2.927** bpb. 50% and 75% WikiText add little WikiText
-gain at a larger TinyStories cost (50%: 1.702/2.906; 75%: 1.734/2.820). The
-21M/50M TinyStories-only models stay at WikiText 4.03, so data diversity moves
-the general-text metric where parameter scaling did not.
+**1.605** / WikiText **2.927** bpb. Longer mixed training (10k steps, 40M
+tokens) improves both: TinyStories **1.464** / WikiText **2.794** bpb, versus
+1.302/4.003 for the TinyStories-only 10k model. 50% and 75% WikiText add little
+WikiText gain at a larger TinyStories cost (50%: 1.702/2.906; 75%:
+1.734/2.820). The 21M/50M TinyStories-only models stay at WikiText 4.03, so
+data diversity moves the general-text metric where parameter scaling did not.
+The 21M 10k mix at matched 41M tokens (batch 32) is still worse on all three
+bpb (1.669 / 3.011 / 3.384 vs 1.464 / 2.794 / 3.249); 5x parameters do not buy
+quality at this budget. The batch-16 run (20.5M tokens) is worse still
+(1.774/3.108). On a held-out
+world-facts article set, the 4.3M mix reaches **3.249** bpb versus **3.949**
+for TinyStories-only 10k, so the diversity gain transfers beyond WikiText-2.
+A TinyStories-first curriculum does not dominate: it is slightly better on
+TinyStories (1.439) but worse on WikiText (2.964) and world facts (3.374);
+pure mix remains the best general-text tradeoff. Generation samples remain
+locally repetitive and ungrammatical; 21M/50M TinyStories-only samples are more
+story-shaped but still repetitive. Tighter sampling helps the TinyStories-only
+4.3M model but hurts the mix model, so the generation gap is not just a
+temperature problem. Lower bpb is not yet a generation-quality or deployment
+win.
 [`research/SPIKING_GENERATIVE.md`](research/SPIKING_GENERATIVE.md)
+
+**Tiny Spiking Lab (product path, release blocked):** the local ingest workflow
+improves a 76-article held-out domain from **5.99 to 4.45 bpb** in 300 steps
+with 20% replay. It accepted the update on a 4096-token eval (old +2.55%), but
+the full 8192-token eval shows old **+3.29%** and unmonitored WikiText **+7.1%**;
+generation is formatting noise or corrupted text. The hard release gate is
+**BLOCKED** until generation quality and general-shard retention pass.
+[`research/SPIKING_TINY_LAB.md`](research/SPIKING_TINY_LAB.md)
 
 **Sleep-like replay:** during a TinyStories -> WikiText phase, mixing 20% old windows
 into every batch keeps old bpb at **2.079** (phase-A 2.077; naive 2.632) and retains

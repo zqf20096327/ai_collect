@@ -17,28 +17,27 @@
 
 </div>
 
-面向 ZCode 免费账号的反向代理网关，兼容 OpenAI Chat Completions、Responses 和 Anthropic Messages 协议（推荐）。
+zcode2api 是面向 ZCode 免费账号的反向代理网关，支持多账号调度和自动领卡。兼容 OpenAI Chat Completions、OpenAI Responses 和 Anthropic Messages（推荐）。
 
-针对阿里云无痕验证 SDK 的接入与风控问题，提供一次性票据隔离、按需预取与失效补充、服务端出口一致性、错误分类和冷却重试。支持多账号调度、自动领卡与官方交互验证兜底，验证结果由上游决定。
+在控制台「设置 → 请求模板」中选择 `subagent`，网关会切换到子代理系统模板，省略 ZCode 默认模板中的网络安全提示段落。开启「Web 插入内容」，填写自定义提示词并保存，即可将其注入转发请求。
 
 ## 界面预览
 
 <table>
   <tr>
-    <td width="50%" align="center"><img src="docs/仪表盘1.png" alt="仪表盘1" width="100%"><br>仪表盘1</td>
-    <td width="50%" align="center"><img src="docs/仪表盘2.png" alt="仪表盘2" width="100%"><br>仪表盘2</td>
+    <td width="50%"><img src="docs/仪表盘.png" alt="仪表盘" width="100%"></td>
+    <td width="50%"><img src="docs/设置.png" alt="设置" width="100%"></td>
   </tr>
+</table>
+
+### `subagent` 请求示例
+
+提示词调整作用于网关转发的客户端请求。内容审核、风控和账号处置由上游服务端独立执行。请遵守平台服务条款，滥用可能导致账号封禁，相关后果由使用者自行承担。
+
+<table>
   <tr>
-    <td width="50%" align="center"><img src="docs/账号管理.png" alt="账号管理" width="100%"><br>账号管理</td>
-    <td width="50%" align="center"><img src="docs/领卡中心.png" alt="领卡中心" width="100%"><br>领卡中心</td>
-  </tr>
-  <tr>
-    <td width="50%" align="center"><img src="docs/用量.png" alt="用量" width="100%"><br>用量</td>
-    <td width="50%" align="center"><img src="docs/日志.png" alt="日志" width="100%"><br>日志</td>
-  </tr>
-  <tr>
-    <td width="50%" align="center"><img src="docs/密钥.png" alt="密钥" width="100%"><br>密钥</td>
-    <td width="50%" align="center"><img src="docs/设置.png" alt="设置" width="100%"><br>设置</td>
+    <td width="50%"><img src="docs/subagent2.png" alt="客户端显示的模型回复" width="100%"></td>
+    <td width="50%"><img src="docs/subagent1.png" alt="客户端显示的安全拦截提示" width="100%"></td>
   </tr>
 </table>
 
@@ -90,19 +89,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\stop.ps1   # 停�
 安装 Docker Compose，获取源码后在项目根目录执行：
 
 ```sh
-docker compose build --build-arg CAPTCHA_RUNTIME=1
+docker compose build
 docker compose up -d
 ```
 
-构建已包含 Node.js 与 jsdom。节点订阅代理另加 `--build-arg PROXY_RUNTIME=1`，grammar 校验另加 `--build-arg GRAMMAR_RUNTIME=1`。
+需要 SDK 验证时，见 [Docker 验证运行时](docs/network.md#docker)。节点订阅代理可加 `--build-arg PROXY_RUNTIME=1`，grammar 校验可加 `--build-arg GRAMMAR_RUNTIME=1`。
 
 ### 访问与配置
-
-非 Docker 运行需使用自动验证时，安装 Node.js 18+（含 npm），在项目或解压目录执行：
-
-```sh
-npm --prefix captcha_node ci --omit=dev --ignore-scripts
-```
 
 控制台：[http://127.0.0.1:6789](http://127.0.0.1:6789)，默认管理密码见 `data/admin-password.txt`。请保留存放账号、设置和日志的 `data/` 目录。
 
@@ -130,49 +123,18 @@ curl http://127.0.0.1:6780/v1/chat/completions \
   -d '{"model":"glm-flash","messages":[{"role":"user","content":"你好"}]}'
 ```
 
-## SDK 验证
-
-### SDK 验证
-
-服务端通过 Node.js 18+ 与 jsdom 运行官方阿里云 SDK，无需 Chrome；依赖安装见[访问与配置](#访问与配置)。在「设置 → 上游安全验证」选择推理策略并保存：
-
-| 策略 | 行为 |
-| --- | --- |
-| `off`（默认） | 推理不运行验证 SDK |
-| `auto`（推荐）| 遵循上游验证场景的启用与免验证配置，明确要求验证时取票 |
-| `always` | 上游启用验证场景时，每次推理前取票 |
-
-启用推理验证后，票据失效且尚未输出时，可在原出口重新验证一次；已经输出正文、思考或工具调用时，不重放整轮请求。
-
-## 日志报错说明
-
-调用记录中的 `error_message` 是中文分类摘要，`error_code` 是具体错误码。
-
-| 错误码 / 提示 | 含义与处理方式 |
-| --- | --- |
-| `upstream_waf_blocked` | 明确的上游安全网关拦截；暂避当前出口，有可用备用节点时切换代理 |
-| `proxy_connection_failed` / `proxy_auth_failed` | 代理连接或认证失败；检查代理地址、服务状态及凭据，使用代理池时将节点短时隔离 |
-| `proxy_pool_exhausted` / `proxy_upstream_blocked` | 代理池没有可用节点，或出口仍在上游拦截冷却中；检查节点或等待冷却结束 |
-| `3012` / `upstream_risk_blocked` | 按账号风控拒绝处理；本次请求可换其他可用账号，不因此剔除代理或自动禁用账号，也不能据此判定永久封禁 |
-| `3008` / `3009` / `3010` | 上游账号并发暂忙；优先使用其他可用账号，没有可用名额时排队等待 |
-| `account_busy` | 网关等待可用账号槽位超时；检查账号数量、并发占用和排队时长 |
-| `rate_limit_error` / 请求频率受限 | 上游限流；遵守等待时间和重试窗口，不因此判定代理损坏 |
-| `authentication_error` / `insufficient_quota` | 分别表示上游账号凭据失效、账号额度不足；需要重新授权或补充可用额度，本次请求可使用其他可用账号 |
-| `coding_plan_security_verification_required`，或带明确验证提示的 `3007` | 上游要求安全验证，进入对应的 SDK 或人工验证流程；`3007` 需结合提示判断，不能一律视为验证码问题 |
-| `captcha_risk_blocked` / `F001` | SDK 风控拒绝；不据此认定账号或代理失效，也不触发代理节点切换 |
-| `F010` / `F011` | SDK 出口 / 设备访问频率受限；分别按对应作用域冷却 |
-| `captcha_expired`、`F019`、`F008`、`F018` | 验证票据失效或重复提交；需要新票据，不能复用已提交的结果 |
-| `captcha_jsdom_missing` / `captcha_runtime_error` / `captcha_timeout` | SDK 依赖缺失、运行异常或验证超时；检查 Node.js、jsdom、网络及验证配置 |
-| `first_token_timeout` / `stream_idle_timeout` / `inference_timeout` | 分别表示首个有效输出超时、流式输出空闲超时、整轮推理超时 |
-| `proxy_subscription_auth_failed` | 订阅认证失败，令牌可能错误或已失效；重新复制有效的订阅链接 |
-
 ## 详细文档
 
 | 文档 | 内容 |
 | --- | --- |
 | [配置与重试](docs/configuration.md) | 参数与环境变量、版本更新、额度刷新、定时领卡、调度和日志 |
-| [代理与安全验证](docs/network.md) | 节点选择与切换、SDK 依赖、票据管理、人工验证及错误码排查 |
+| [代理与安全验证](docs/network.md) | 节点选择与切换、[SDK 验证](docs/network.md#安全验证)、票据管理、人工验证和[日志报错](docs/network.md#故障排查) |
 | [协议兼容](docs/protocol-compatibility.md) | 工具调用、grammar 校验、系统提示词去重和指令转换限制 |
+
+## 参考来源
+
+- 前端 UI 参考 [workbuddy-manager](https://github.com/ithtelab/workbuddy-manager)。
+- 内置破甲提示词参考 [kimik3.1.md](https://github.com/togg53192-cmd/jailbreaks/blob/main/Moonshot%20AI/kimik3.1.md) 和[洺熙师傅的《巴别语》](https://mp.weixin.qq.com/s/WQohsXHbB8dUJisEpfm22g)。
 
 ## 贡献指南
 

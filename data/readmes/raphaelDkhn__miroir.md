@@ -1,101 +1,56 @@
 # Miroir 🪞
 
-**Turn a product into an agentic RL environment.**
+**Turn a product into an agentic RL environment**
 
-Miroir packages real applications into environments for training and evaluating agents.
+Miroir turns a product's Docker image into [Harbor](https://docs.harborframework.com)
+environments that grade what an agent did to the real product: the database rows it changed, the
+emails and HTTP calls the product sent, and the answer it gave. Any change outside the task's scope
+counts as `harm`, reported next to `reward`.
 
-Add a manifest and tasks to your product's Docker image. Miroir handles the rest: seeding data, resetting state between episodes, exposing APIs as tools through OpenEnv and MCP, and grading what the agent actually changed—including database rows, emails, and HTTP requests.
+Harbor already runs agents, sandboxes and jobs. Miroir adds the two pieces it lacks: a product
+image with seeded data, and a grader that reads what changed below the product's API.
 
 ## Quick start
 
-**Requirements:** Docker with buildx and [uv](https://docs.astral.sh/uv/).
-
-### 1. Build and verify
+You need Docker with buildx and [uv](https://docs.astral.sh/uv/). From a clone:
 
 ```bash
-docker buildx bake acme-crm-env
-docker run --rm --network none acme-crm-env check
+uv tool install harbor==0.26.0
+docker buildx bake
+harbor run -c fixtures/acme-crm/check.yaml --job-name quick-start
+alias miroir='docker run --rm -v "$PWD:$PWD" -w "$PWD" miroir:dev miroir'
+miroir check --tasks fixtures/acme-crm/tasks jobs/quick-start
 ```
 
-This builds Acme CRM, a sample application with Postgres, Redis, a web server, a worker, and an MCP server. The `check` command replays every task's reference run and verifies its expected outcome.
+This builds a small CRM with 7 tasks, then has Harbor run each task's reference solution, an agent
+that does nothing, and probes: wrong solutions the grader has to catch. `miroir check` should end
+with:
 
-### 2. Serve the environment
-
-```bash
-docker run --rm -d -p 127.0.0.1:8000:8000 \
-  -e MIROIR_TOKEN=secret acme-crm-env
-
-curl http://127.0.0.1:8000/health
+```text
+7 tasks, 21 trials, 7 skipped probe slots, 0 violations, 0 voids
 ```
 
-### 3. Run an episode
+The first build compiles Miroir (6 min 44 s on a 12-CPU Docker Desktop). The trials take under a
+minute.
 
-Install the Python client:
+## How it works
 
-```bash
-uv venv && source .venv/bin/activate
-uv pip install miroir
-```
+1. `miroir bake` seeds the product's data into its image during `docker build`.
+2. Each Harbor trial starts that image next to the agent's container. `miroir run` boots the
+   product and moves its dates to the trial's day. The agent uses the product's own API.
+3. When the agent stops, `miroir collect` records the rows that changed and the emails and HTTP
+   calls the product sent.
+4. `miroir grade` scores that record in Harbor's separate verifier, using the SQL checks and
+   allowed changes in the task's `task.toml`.
 
-Reset an episode, execute an action, and inspect its outcome:
+Tasks are plain Harbor task directories. `miroir check` fails when a grader rejects the reference
+solution or lets a probe through, and `miroir draft` writes a first grading spec from reference
+runs.
 
-```python
-from miroir import Session
+## More
 
-session = Session.lease(
-    ["http://127.0.0.1:8000"],
-    token="secret",
-    wait_busy=False,
-)
-
-start = session.reset("pay-invoice")
-print(start["instruction"])
-
-step = session.step(
-    "api_request",
-    {"method": "POST", "path": "/invoices/4001/pay"},
-)
-print(step["observation"]["result"]["status"])
-
-outcome = session.finish()
-print(outcome["reward"], outcome["metadata"]["checks"])
-
-session.close()
-```
-
-The episode receives a reward of `1` only if the invoice is paid.
-
-## Documentation
-
-- [Introduction](https://raphaeldkhn.github.io/miroir/)
-- [How Miroir works](https://raphaeldkhn.github.io/miroir/introduction.html#how-it-works)
-- [Build an environment](https://raphaeldkhn.github.io/miroir/make/image.html)
-- [Train and evaluate](https://raphaeldkhn.github.io/miroir/run/serve.html)
-- [Run in Harbor](https://raphaeldkhn.github.io/miroir/run/harbor.html): Claude Code, Codex and other agents on an env's tasks
-
-**[Gitea example](examples/gitea)** — Unmodified Gitea with 144 tasks across 12 task families.
-
-Build the documentation locally with `mdbook serve docs`.
-
-## Coding agents
-
-Use the [Miroir skill](skills/miroir/SKILL.md) to build environments, write tasks, debug checks, and run training with coding agents.
-
-**Claude Code**
-```bash
-/plugin install miroir --marketplace raphaelDkhn/miroir
-```
-
-**Other agents**
-```bash
-npx skills add raphaelDkhn/miroir
-```
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Report security issues privately, as
-[SECURITY.md](SECURITY.md) describes.
-
-## License
-
-[Apache-2.0](LICENSE)
+- [Docs](https://miroir.mintlify.site): wrap a product, write tasks, validate, train
+- [Gitea example](examples/gitea): stock Gitea, three seeded companies, 120 tasks
+- [Skill](skills/miroir/SKILL.md) for coding agents. In Claude Code:
+  `claude plugin marketplace add raphaelDkhn/miroir`, then `claude plugin install miroir@miroir`
+- [Contributing](CONTRIBUTING.md), [security](SECURITY.md), [Apache-2.0](LICENSE)

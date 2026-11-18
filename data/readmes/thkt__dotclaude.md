@@ -9,8 +9,8 @@ development principles, and workflow optimizations.
 
 This repository contains personal configurations for Claude AI, including:
 
-- Custom slash commands for systematic development workflows (27 skills)
-- Specialized AI agents for code review, generation, and analysis (28 agents)
+- Custom slash commands for systematic development workflows (9 skills)
+- A specialized AI agent that challenges design proposals (1 agent)
 - Core AI operation principles and development best practices
 - Six quality pipeline binaries, none of them wired
   command
@@ -26,14 +26,9 @@ This repository contains personal configurations for Claude AI, including:
 │   ├── core/             # Core AI operation principles
 │   ├── conventions/      # Documentation conventions
 │   └── development/      # Development patterns & methodologies
-├── skills/               # Skill-based knowledge modules (27 skills)
-├── agents/               # Specialized AI agents (28 agents)
-│   ├── critics/          # Finding challengers (devils-advocate)
-│   ├── enhancers/        # Code enhancers & simplifiers
-│   ├── explorers/        # Codebase exploration agents
-│   ├── generators/       # Test & snapshot generation
-│   ├── resolvers/        # Build error resolvers
-│   └── reviewers/        # Code review agents (18 reviewers)
+├── skills/               # Skill-based knowledge modules (9 skills)
+├── agents/               # Specialized AI agents (1 agent)
+│   └── critics/          # Design proposal challenger (critic-design)
 ├── docs/                  # Design docs & guides (DRs under decisions/)
 ├── hooks/                 # Pre/Post tool-use hooks
 ├── output-styles/         # Output style definitions
@@ -70,13 +65,11 @@ install specific workflow sets:
 
 - **build**: Self-contained development workflow toolkit. Installing it clones
   the whole repository once, so every skill, agent, and workflow loads under the
-  build: namespace. File an issue with /issue and hand its number to the build
-  workflow. Build creates a draft PR after Load / Revalidate / Branch / Code /
-  Cleanup / Verify / Ship.
-  Humans invoke /audit and /polish separately on the draft PR.
-  Bundles the planning skills (/think, /research, /slice, /outcome), the reviewer
-  and critic agents, the code / audit / polish / shake / assert / adrift
-  workflows, the git skills (/commit, /checkout, /pr), and /dr, /census.
+  build: namespace. Settle the requirements into an agreed Issue with /scoping,
+  then hand the Issue to /implement, which carries it through the implement
+  workflow to implementation, verification, a draft PR, and CI confirmation.
+  Bundles the critic-design agent, the implement workflow, and /sweep,
+  /outcome, /dr, /scribe.
 
 ### Option 2: Manual Installation (Full Configuration)
 
@@ -155,7 +148,7 @@ Create `~/.srt-settings.json` for custom settings:
 }
 ```
 
-The build workflow runs `gh` inside the sandbox. On macOS with the sandbox enabled, `gh`'s TLS verification requires `sandbox.enableWeakerNetworkIsolation: true` in `~/.claude/settings.json`. Without it, the build fails at the issue-fetch step.
+On macOS with the sandbox enabled, running `gh` inside the sandbox requires `sandbox.enableWeakerNetworkIsolation: true` in `~/.claude/settings.json` for its TLS verification.
 
 ### Hook Tools (Recommended)
 
@@ -182,29 +175,15 @@ See [thkt/tap](https://github.com/thkt/homebrew-tap) for details.
 
 ### External CLI Tools (Optional)
 
-Some commands use external CLI tools for data source integration. codegraph
-needs `codegraph init` per repository to create `.codegraph/` before use.
+Some commands use external CLI tools for data source integration.
 
 | Tool        | Required By                           | Purpose                                                      | Install                            |
 | ----------- | ------------------------------------- | ------------------------------------------------------------ | ---------------------------------- |
-| `gh`        | `/issue`, `/pr`, `/preview`, `/build` | GitHub API access                                            | `brew install gh && gh auth login` |
-| `scout`     | `/research`, use-cli-scout skill      | Web search, page fetch, GitHub repo exploration, Slack fetch | `brew install thkt/tap/scout`      |
-| `codegraph` | `/research`, use-cli-codegraph skill  | Symbol-level structure queries (callers, impact)             | `npm i -g @colbymchenry/codegraph` |
+| `gh`        | `/scoping`, `/implement`              | GitHub API access                                            | `brew install gh && gh auth login` |
+| `scout`     | `/scoping`, use-cli-scout skill       | Web search, page fetch, GitHub repo exploration, Slack fetch | `brew install thkt/tap/scout`      |
 
 **Slack reading**: `scout fetch <slack-url>` reads any Slack message/thread URL
 directly. No additional setup needed if scout is configured.
-
-### Autonomous Iteration
-
-`/code` can run as an autonomous multi-turn loop via the native `/goal` command
-(Claude Code 2.1.139+). No plugin install is required.
-
-```bash
-/goal all tests pass and lint is clean
-```
-
-Wrap a `/code` session in `/goal <condition>`; Claude continues until a fast
-model judges the condition met from the conversation.
 
 ## 📝 Available Commands
 
@@ -218,13 +197,13 @@ See the complete command reference:
 ### Feature Development
 
 ```txt
-/research → /think → /issue → build workflow → /audit · /polish
+/scoping → /implement
 ```
 
 ### Bug Investigation & Fix
 
 ```txt
-/research → /fix
+/scoping → /implement
 ```
 
 ## 🌏 Language Support

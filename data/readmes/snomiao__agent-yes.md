@@ -223,6 +223,7 @@ Send a message to an agent on a 5-field cron (timezone `$AY_CRON_TZ`, default As
 ay cron "*/30 9-18 * * 1-5" lane:alpha "progress report please ({now})"
 ay cron ls                        # id, cron, target, next run, last result
 ay cron rm c1
+ay schedule list --json           # read the local timetable as JSON
 ay schedules ls                   # everything: cron reminders + legacy `ay schedule` jobs
 ay schedules daemon status        # the per-machine scheduler daemon
 ```
@@ -711,3 +712,56 @@ be committed.
 ## License
 
 MIT
+
+### Claude stream sessions (preview)
+
+PTY remains the default. When Claude's own arguments request
+`--output-format stream-json`, `ay` detects the protocol, records `mode: "stream"`,
+and captures NDJSON through pipes in the TypeScript runtime. It does not add
+stream flags to a native invocation:
+
+```sh
+ay claude -p --input-format stream-json --output-format stream-json --verbose --replay-user-messages -- "task"
+```
+
+`ay --stream claude "task"` is optional shorthand that appends those native
+flags (and the stdio permission protocol). There is no config transport default.
+Output-only stream invocations are also captured; bidirectional sends require
+explicit `--input-format stream-json --replay-user-messages`.
+
+Each session writes normalized `<pid>.events.jsonl`, original `<pid>.native.jsonl`,
+and a readable `<pid>.raw.log` under the working directory's `.agent-yes/`.
+Stream capture currently requires macOS or Linux. `ay --detach claude ...` starts a
+background TypeScript wrapper and prints its registered CLI pid.
+Permission requests are recorded; use an explicit Claude permission policy for
+unattended sessions until approval commands are available.
+
+For stream sessions, `ay status` and `ay ls --watch` derive state from events.
+Permission requests and questions appear as `needs_input`; protocol errors appear
+as `stuck`. `ay ls` shows the latest reported cumulative session cost in `COST`
+(and `cost_usd` in JSON), with `-` when cost is unavailable.
+
+`ay send <pid> "message"` sends one JSON line and returns success only after
+Claude echoes that message's unique ID. Bodies are sent verbatim; sender provenance
+stays in mailbox history rather than adding reply instructions to the task. `--interrupt` sends Claude's native
+interrupt request before the new message. Receipt timeouts report an uncertain
+outcome and never retry automatically. Stream sessions require receipts, so
+`--no-wait` and terminal control codes are not supported. `ay tail`, including
+follow and `--until`, reads the transcript without terminal wrapping.
+
+A local preview executable such as `aysj` can forward arguments unchanged to a
+worktree build. It behaves exactly like `ay`, including the PTY default; its name
+does not enable stream capture.
+
+Native stream flags also work after the wrapper separator, for example
+`ay --detach claude -- -p --input-format stream-json --output-format stream-json --verbose --replay-user-messages --model haiku "task"`.
+The initial stream task is passed verbatim, without PTY init-message envelopes.
+The registry mirrors active/idle turn transitions, and event files preserve stream
+identity when an older registry writer drops the transport field.
+
+Successful CLI exit also cleans up its detached process group, including remaining
+descendants that inherited the output pipes.
+
+`ay status` uses the same normalized stream state and pending question as `ay ls`,
+including permission requests. Output-only native stream invocations forward piped
+stdin unchanged and preserve EOF; they do not convert text input into JSON messages.

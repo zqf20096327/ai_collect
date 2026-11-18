@@ -109,10 +109,10 @@ If the token expires, run `npx free-pi-cli@latest` again.
 
 Free completions return `403 ads_required` until the account reports an ad
 impression. By default the bridge reports one automatically every 10 minutes
-(`FREEPI_AUTO_AD=1`), so it works on headless hosts. This claims ads nobody saw
+(`FREEPI_AUTO_AD=on`), so it works on headless hosts. This claims ads nobody saw
 and can get the account reviewed.
 
-If you can keep a browser open, set `FREEPI_AUTO_AD=0` and open the page printed
+If you can keep a browser open, set `FREEPI_AUTO_AD=off` and open the page printed
 by `freepi-bridge ads`. Buying credits on the account also removes the requirement.
 
 Hitting `403 ads_required` while a browser is open usually means the page was not
@@ -133,9 +133,10 @@ freepi-bridge logs | grep 'ad impression'
 | `models` | list available models |
 | `usage` | today's credits, lane and token spend |
 | `reset [--yes]` | free a session slot held by a crashed client |
-| `doctor` | check token, upstream, bridge, bind |
+| `doctor` | check token, upstream, bridge, bind, update; reports autostart only when the unit is installed but not running |
 | `token`, `ads` | print the JWT in use / the ad page URL |
-| `config [--init]` | show or create `config.env` |
+| `config [--init] [--set KEY=VALUE]` | show, create, or change one setting in `config.env`; `--set` validates the value and rewrites only that line |
+| `autostart [--enable \| --disable] [--json]` | run at login and after reboot (systemd user unit, LaunchAgent, or Scheduled Task) |
 | `update [--check] [--tag TAG]` | install the latest (or a pinned) release |
 
 Exit code is `0` on success, `1` on error. Add `--json` to `status`, `models`,
@@ -152,16 +153,22 @@ after editing.
 | `FREEPI_TOKEN` | unset | account JWT |
 | `BRIDGE_API_KEY` | unset | key clients must send; also protects `/ads` |
 | `HOST`, `PORT` | `127.0.0.1`, `8787` | listen address |
-| `FREEPI_AUTO_AD` | `1` | auto-report ads, `0` to disable |
+| `FREEPI_AUTO_AD` | `on` | auto-report ads; `off` to disable |
 | `FREEPI_AD_REFRESH_SECS` | `600` | seconds between reports (min 30) |
 | `FREEPI_MAX_INFLIGHT` | `1` | completions sent upstream at once; `0` removes the gate |
 | `FREEPI_QUEUE_WAIT_SECS` | `30` | how long a second request waits for the slot before answering `429` |
-| `FREEPI_AUTO_UPDATE` | unset | `start --bg` and `restart` check at most once a day: unset prints a notice, `1` installs the release, `0` never checks. A running daemon is never checked by itself |
+| `FREEPI_AUTO_UPDATE` | `on` | `on` installs a newer release and restarts the daemon, `off` never checks, `notify` only prints. At runtime a typo falls back to `on`; `config --set` rejects typos instead. Most commands (not `--health`, `--token`, `--version`, `help`, `update`) check GitHub at most once a minute (ETag + 60 s cache); read-only commands (`status`, `models`, `usage`, `ads`, `token`, `config`, `logs`, `autostart`, `stop`, `doctor`) only notify. All three autostart backends set `FREEPI_BRIDGE_NO_AUTO_UPDATE=1` so the daemon never replaces itself mid-flight |
 | `FREEPI_BRIDGE_DIR` | `~/.freepi-bridge` | state and log directory |
+
+Every boolean setting (`FREEPI_AUTO_AD`, `FREEPI_BRIDGE_INSECURE`, `FREEPI_AUTO_UPDATE`)
+speaks the same words: `on`/`off`, plus `true`/`false`, `yes`/`no` and `1`/`0` for
+compatibility. `config --set` rejects anything else; at runtime an unrecognised
+value leaves the feature on.
 | `FREEPI_CREDENTIALS` | `~/.free-pi/agent/credentials.json` | token file the bridge reads |
 | `FREEPI_BASE_URL` | `https://api.freepi.ai` | upstream API base; point it at a mirror or a test server |
 | `FREEPI_BRIDGE_DOWNLOAD_BASE` | unset | mirror for release downloads in `update` |
-| `FREEPI_BRIDGE_INSECURE` | unset | `1` equals `--insecure`, for platforms that cannot pass flags |
+| `FREEPI_BRIDGE_INSECURE` | unset | `on` equals `--insecure` |
+| `FREEPI_BRIDGE_NO_AUTO_UPDATE` | unset | any value disables self-update entirely; set by the autostart units |
 | `TZ` | `UTC` | timezone sent with ad requests |
 
 FreePi serves one completion per account at a time. The bridge therefore holds a
@@ -192,8 +199,14 @@ because 8787 is the bridge default outside the container.
 
 ## Update and uninstall
 
+Self-update is on by default: every command checks for a newer release and
+installs it. Turn it off with `FREEPI_AUTO_UPDATE=off`, or ask for notices only
+with `notify`. Autostart units opt out so the daemon is not replaced under a
+running process.
+
 ```sh
 freepi-bridge update         # latest release; --check to only look
+freepi-bridge autostart --enable   # at login and after reboot
 ```
 
 | | Linux / macOS | Windows |
@@ -209,7 +222,7 @@ Installed with `--system` or `PREFIX`? Delete the binary from there instead.
 | --- | --- |
 | `freepi-bridge: command not found` | restart the terminal; check `~/.local/bin` is in PATH |
 | `401` | no token found: run `freepi-bridge token`, if empty see [Token](#token) |
-| `403 ads_required` | see [Ads](#ads); `FREEPI_AUTO_AD=1` clears it without a browser |
+| `403 ads_required` | see [Ads](#ads); `FREEPI_AUTO_AD=on` clears it without a browser |
 | `403` with a browser open | the page was not counted; keep `/ads` visible and check `freepi-bridge logs \| grep 'ad impression'` |
 | `409 concurrent_session` | the account already holds its four CLI session slots; the bridge calls `/session/reset` and retries once. A retry that still fails means another machine holds the slot, so run `freepi-bridge reset` once the other client is closed |
 | `409 model_at_capacity` | that model is busy upstream; wait a few minutes or pick another free model |

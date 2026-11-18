@@ -1,4 +1,4 @@
-# jt-waf-mgr v0.4.90
+# jt-waf-mgr v0.4.100
 
 **English** · [繁體中文](README_zh-TW.md) · [日本語](README_ja.md)
 
@@ -54,6 +54,31 @@ something you can read, and every change into a workflow you can trust:
 
 In every case jt-waf-mgr runs on the nginx host, beside the WAF: requests never pass through it, and if it stops,
 nginx and ModSecurity keep working with the last rules.
+
+## When it fits — and when it does not
+
+jt-waf-mgr does not sit in the request path: nginx with ModSecurity and the CRS inspects every request, exactly as
+without it, and if jt-waf-mgr stops, the WAF keeps working with the last rules. What it adds runs beside nginx on the
+same host; that is where the limits are.
+
+**A good fit**
+- One nginx host (web server, reverse proxy or both) with libmodsecurity v3, run by a small team that wants every WAF
+  change checked, approved, traced and audited (ISO/IEC 27001, Taiwan's Cyber Security Management Act).
+- Access logs up to roughly 9 million lines in the window the evidence check reads (it reads about 10,000 lines a
+  second and stops after 15 minutes). In production: a few dozen sites, about 150,000 requests a day, 7.3 million lines.
+- WAF events: the collector stores about 750 events a second on one CPU core (measured on a synthetic log), far more
+  than an ordinary site raises; repeated events of an attack flood are merged.
+
+**Not a fit (yet)**
+- **Sites spread over several nginx nodes** behind a load balancer — the usual shape of large, high-traffic sites:
+  only single-node mode for now (multi-node management is paused).
+- **Very large log volumes** (tens of millions of requests a day kept for weeks): the evidence check of a change stops
+  before it has read everything, and a person has to justify the change without it.
+- Other proxies or engines (Apache, HAProxy, Envoy, Traefik, ModSecurity v2, Coraza).
+- A fully automatic WAF: loosening a rule always needs a person.
+
+For a large site, the per-request cost of ModSecurity with the CRS (the same with or without jt-waf-mgr) is worth
+measuring on your own traffic before you rely on it; a CDN or cloud WAF is the other road.
 
 ## Features
 
@@ -115,9 +140,14 @@ nginx and ModSecurity keep working with the last rules.
   For one seen in the URL or a header it writes a virtual patch (a narrow confident block, checked like any change:
   evidence, sandbox); one for an exploited vulnerability that affects you applies at once, past the daily limit, and
   a critical alert asks a person if its checks fail. Token limits per day and month.
+- **IP reputation**: the IP lookup puts together what this site saw of an address with public lists downloaded once a day
+  (Spamhaus DROP, FireHOL level 1, abuse.ch Feodo, Emerging Threats, CINS Army, blocklist.de, Tor exit nodes; matched on
+  the host), Shodan InternetDB and your own MISP, with a verdict and its reasons. Off by default; nothing is blocked by itself.
 - **CrowdSec virtual patching rules**: the CrowdSec Hub's appsec rules (MIT) are synced daily (or uploaded offline) and
   converted into ModSecurity rules on the host, only where every condition keeps its meaning. A converted rule is proposed
-  for the sites that run the software, as an ordinary change: the sandbox replays the hub's own attack requests, each
+  for the sites that run the software, or for all sites when it is a cross-application flaw (a framework, library or
+  language such as React, Spring or PHP; related to your sites through the stack their software is built on), as an
+  ordinary change: the sandbox replays the hub's own attack requests, each
   must be refused by that rule, and recent requests of the sites must not be. Rules in use show when the hub updates or
   removes them. Threat intelligence proposes the hub's rule first for a vulnerability that affects confirmed software.
 - **Alerts to follow up**: an attack the site may have answered, users hit by a false positive, an attack in progress,
@@ -133,6 +163,12 @@ nginx and ModSecurity keep working with the last rules.
   program re-verifies the signature, unpacks it itself, switches the crs link and switches back on any failure; 3
   versions are kept to roll back. A host without the CRS can install CRS 4 the same way (its Includes go right after
   modsecurity.conf).
+- **nginx updates and nginx's own flaws** (new in 0.4.98): every 6 hours the next nginx is tried with the ModSecurity
+  module (so the WAF is never left behind by an update) and nginx.org's security advisories are compared with the
+  installed nginx and the features this configuration uses. Flaws in nginx itself (HTTP/2, HTTP/3, resolver...) happen
+  before ModSecurity sees a request, so the alert says to update; the verified update is proposed for an admin to
+  approve, and HTTP/2 or HTTP/3 can be switched off for a while (by itself for a major advisory, back on after the
+  update) with marked, exactly reversible edits.
 - **Log servers (syslog / SIEM)**: up to 8 destinations, each with its own protocol (local socket, UDP, TCP, TLS),
   record format (JSON, CEF, LEEF 2.0, GELF 1.1, key=value) and content (audit records, WAF events, alerts); its own
   queue and retries; a test send that shows exactly what went out.
@@ -172,7 +208,7 @@ nginx and ModSecurity keep working with the last rules.
 
 ```sh
 sudo mkdir -p /opt/jt-waf-mgr-install && cd /opt/jt-waf-mgr-install   # a fixed place for the releases
-V=0.4.90; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
+V=0.4.100; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
 for f in jt-waf-mgr-$V.tar.gz jt-waf-mgr-$V.tar.gz.sig release-key.pem; do sudo curl -fsSLO $B/$f; done   # the release, its signature, the public key
 openssl dgst -sha256 -verify release-key.pem -signature jt-waf-mgr-$V.tar.gz.sig jt-waf-mgr-$V.tar.gz
 sudo rm -rf current && sudo mkdir current && sudo tar xzf jt-waf-mgr-$V.tar.gz -C current --strip-components=1 && cd current
@@ -379,6 +415,7 @@ sudo jt-waf-mgr blocks remove 12 --note "false alarm" --as alice
 sudo jt-waf-mgr alerts list ; sudo jt-waf-mgr alerts handle 23 --note "checked" --as alice
 sudo jt-waf-mgr changes list --state pending_approval
 sudo jt-waf-mgr changes approve 41 --as alice            # not one's own; --totp where the web asks for a code
+sudo jt-waf-mgr changes regenerate --as alice            # rules an older version wrote: propose them written again
 sudo jt-waf-mgr settings show review.
 sudo jt-waf-mgr settings set review.keep_days=60 --as admin1
 sudo jt-waf-mgr settings export -o settings.json         # --secrets --as admin1: keys and passwords too
@@ -393,7 +430,7 @@ the file next to the current values and writes only what you tick).
 
 ```sh
 cd /opt/jt-waf-mgr-install   # the new release, unpacked into the same current
-V=0.4.90; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
+V=0.4.100; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
 for f in jt-waf-mgr-$V.tar.gz jt-waf-mgr-$V.tar.gz.sig; do sudo curl -fsSLO $B/$f; done
 sudo rm -rf current && sudo mkdir current && sudo tar xzf jt-waf-mgr-$V.tar.gz -C current --strip-components=1 && cd current
 sudo ./upgrade.sh --check     # every check, nothing changed

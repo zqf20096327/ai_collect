@@ -10,19 +10,24 @@ https://thepatch.gumroad.com/l/gary4juce
 
 **latest stable releases:**
 
-- [gary4juce v5.0.5 (windows VST3 + standalone)](https://github.com/betweentwomidnights/gary4juce/releases/tag/v5.0.5)
+- [gary4juce v5.0.6 (windows VST3 + standalone)](https://github.com/betweentwomidnights/gary4juce/releases/tag/v5.0.6)
 - [gary4juce v5.0.4-mac (macOS AU/VST3 + standalone)](https://github.com/betweentwomidnights/gary4juce/releases/tag/v5.0.4-mac)
+
+**Linux preview:**
+
+- [gary4juce v5.0.6-linux-preview.1 (x64 + ARM64 VST3 + standalone)](https://github.com/betweentwomidnights/gary4juce/releases/tag/v5.0.6-linux-preview.1)
 
 **recommended local companions:**
 
-- windows: [gary4local v0.7.3](https://github.com/betweentwomidnights/gary-localhost-installer/releases/tag/v0.7.3)
+- windows: [gary4local v0.7.4](https://github.com/betweentwomidnights/gary-localhost-installer/releases/tag/v0.7.4)
+- Linux (preview): [gary4local v0.7.4 (amd64 + arm64 .deb)](https://github.com/betweentwomidnights/gary-localhost-installer/releases/tag/v0.7.4)
 - macOS: [gary4local mac v0.4.1](https://github.com/betweentwomidnights/gary-localhost-installer-mac/releases/tag/v0.4.1)
 
 ![gary4juce demo](docs/media/gary_v3_readme_720w.gif)
 
 localhost backend source repos:
 
-- windows: [gary4local](https://github.com/betweentwomidnights/gary-localhost-installer)
+- windows and Linux: [gary4local](https://github.com/betweentwomidnights/gary-localhost-installer)
 - macOS: [gary4local mac](https://github.com/betweentwomidnights/gary-localhost-installer-mac)
 
 videos about it here when i can: https://youtube.com/@thepatch_dev
@@ -57,17 +62,22 @@ Put it on your master, press play, record some audio, and start iterating.
 
 ## latest update
 
-### v5.0.5 - 11/17
+### v5.0.6 - 11/18
 
-**keep generation details inside your audio.** in audio storage, choose a
-matching JSON file or embedded audio tags for dragged WAV and FLAC files.
-both keep the render's model, reported seed, prompt, supplied lyrics and
-request settings. embedded mode travels with the audio and creates no export
-JSON; the default remains off, and existing JSON users keep their choice.
+**stems stays with gary.** the separator attaches beside the compact editor,
+and uses the model column in wide mode until you close it. storage and error
+popups now use gary's black/red colors too.
 
-lyrics keep line breaks and Unicode, and crops retain the source render's
-details. tag visibility depends on the audio app: Windows Explorer may show
-only some fields. pair this Windows release with gary4local v0.7.3.
+embedded WAV and FLAC generation details use compact JSON, without the
+indentation that turned into big gaps in metadata viewers. FLAC's full record
+shows in Comments, and prompts, lyrics and automation curves keep their values.
+separate JSON files stay formatted for reading.
+
+Windows and Linux now share main. Linux has Ubuntu 24.04 VST3 and standalone
+builds for x64 and ARM64, with the copy fallback for DAWs that can't accept a
+plugin drag. it's still a preview, and built-in stem separation isn't available
+on Linux yet. pair either platform with
+[gary4local v0.7.4](https://github.com/betweentwomidnights/gary-localhost-installer/releases/tag/v0.7.4).
 
 older release notes now live in [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
@@ -78,7 +88,6 @@ older release notes now live in [docs/CHANGELOG.md](docs/CHANGELOG.md).
 - [x] bring local yuey to macOS (gary4local mac v0.4.0)
 - [ ] unify gary4local into one cross-platform app through the [native gary4local migration](https://github.com/betweentwomidnights/gary-localhost-installer#roadmap)
 - [x] introduce optional lightweight native stem separator
-- [ ] revisit Carey complete mode so it can do the upstream-style accompaniment workflow (if it actually works like it should...)
 
 ---
 
@@ -117,6 +126,27 @@ LMMS support is not working yet. We did an initial VST2/LV2 compatibility pass
 and documented the exact Windows alpha environment here:
 [LMMS compatibility notes](docs/lmms-compatibility.md).
 
+### linux (preview)
+
+both gary4juce and [gary4local v0.7.4](https://github.com/betweentwomidnights/gary-localhost-installer/releases/tag/v0.7.4)
+have Ubuntu 24.04 builds for x64 PCs and ARM64 systems such as DGX Spark.
+choose the architecture that matches your machine.
+
+for gary4juce, close your DAW, extract the VST3 ZIP and copy the
+`gary4juce.vst3` folder into `~/.vst3/`, then rescan. for standalone, extract
+the whole `gary4juce-standalone` folder and run `./gary4juce` inside it.
+
+for local generation, install the matching gary4local `.deb` and a Vulkan
+runtime through its UI, then download the models you want. see the
+[gary4local Linux install guide](https://github.com/betweentwomidnights/gary-localhost-installer/blob/v0.7.4/docs/linux-desktop.md).
+GPU drivers, models and backend runtimes are separate downloads.
+
+Linux remains a preview. the gary4local arm64 build has been tested end to end
+on a DGX Spark; amd64 has CI checks and still needs real desktop feedback.
+gary4juce has a **copy** button beside output for DAWs that can't accept a
+plugin drag. built-in stem separation isn't available on Linux yet. see the
+[Linux preview guide](docs/LINUX_PREVIEW.md) for dependencies and testing notes.
+
 ### macOS AU/VST3/standalone
 
 The macOS release has separate universal DMGs for AU, VST3, and the standalone
@@ -148,12 +178,12 @@ Remote base URL: `https://g4l.thecollabagepatch.com`
 
 Use the dedicated apps for localhost:
 
-- windows: [gary4local](https://github.com/betweentwomidnights/gary-localhost-installer)
+- windows and Linux: [gary4local](https://github.com/betweentwomidnights/gary-localhost-installer)
 - macOS: [gary4local mac](https://github.com/betweentwomidnights/gary-localhost-installer-mac)
 
-They manage local envs for gary, terry, jerry, carey, foundation-1, and SA3,
-and on Windows a native runtime for yuey. Model coverage varies by platform,
-but SA3 is available in both companion apps.
+They manage local runtimes for gary, terry, jerry, carey, foundation-1, SA3,
+and yuey. Model coverage varies by platform. Linux generation uses Vulkan;
+Windows supports CUDA or Vulkan. SA3 is available on all three platforms.
 
 the stem separator isn't one of these services. it runs inside the plugin.
 
@@ -169,7 +199,7 @@ SA3 can run on the remote backend:
 
 `https://g4l.thecollabagepatch.com/sa3`
 
-or the local gary4local service on Windows/macOS:
+or the local gary4local service on Windows, Linux or macOS:
 
 `http://localhost:8006`
 
@@ -331,15 +361,17 @@ the stem separator settings, which also live in the settings menu under
 runtime is small (about 19 MB on windows, 6 MB on mac). the models download
 from Hugging Face.
 
+- stems attaches to the right in compact layout. in wide layout, it uses the
+  model area until you close it, keeping the window the same width.
 - pick a model, press separate. every stem gets its own waveform you can play,
   pause and seek.
 - drag the stems you want into your DAW. only a stem you drag out is kept. the
-  rest are deleted when you close the popup.
+  rest are deleted when you close the stems panel.
 - drop a stem on the recording buffer to replace what's in it. that's how you
   pull the drums out of something you dragged in from the DAW.
 - with `mdx23c_drumsep` downloaded, a drums stem gets a `split kit` button that
   splits it into kick, snare, toms, hi-hat, ride and crash, right there in the
-  popup. pick DrumSep from the menu to split the audio itself instead, which is
+  panel. pick DrumSep from the menu to split the audio itself instead, which is
   what you want for a drum loop. a `from` menu beside it switches between the
   two.
 - it's disabled while a generation is running.
@@ -411,6 +443,10 @@ Steps:
 2. Save the project to regenerate build files.
 3. Open the generated IDE project.
 4. Build release configuration.
+
+Linux uses the shared source with a separate CMake build. See the
+[Linux preview build instructions](docs/LINUX_PREVIEW.md) for x64/ARM64 dependencies,
+builds and regression checks. Windows and macOS continue to use Projucer.
 
 Maintainers: see the [release checklist](docs/RELEASING.md) for packaging and
 verification.

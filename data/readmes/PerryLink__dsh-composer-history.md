@@ -9,7 +9,7 @@
 
 **像终端一样按 ↑ 找回历史——你打到一半的草稿一个字都不会丢。**
 
-DeepSeek Harness Web GUI 作曲器的输入历史层：边缘优先的方向键召回、浏览器本地持久化、`Ctrl+R` 反向搜索、片段与模板库，全部只落在普通草稿里。
+DeepSeek Harness Web GUI 作曲器的输入历史层：边缘优先的方向键召回、浏览器本地持久化、`dsh-v0.2.2-rc.4`（2026-11-18）；`Ctrl+R` 反向搜索、片段与模板库，全部只落在普通草稿里。
 
 [安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -402,7 +402,7 @@ profile patch 覆盖示例：
 
 | 维度 | 状态 |
 |---|---|
-| 宿主 | DeepSeek Harness `dsh-v0.2.1-rc.2`（2026-10-18 验证）：`engines.dsh >=0.2.1-0 <0.3.0`；P0 兼容路径已有回归测试。 |
+| 宿主 | DeepSeek Harness `dsh-v0.2.2-rc.4`（2026-11-18 验证）：`engines.dsh >=0.2.1-0 <0.3.0 || >=0.2.2-0 <0.3.0`；P0 兼容路径已有回归测试。 |
 | Node | `^22.19.0 \|\| >=24.9.0` |
 | 平台 | 仅 Web GUI（客户端插件；浏览器本地存储；无网络、无原生代码） |
 | 模型 | 任意（不发模型请求——纯 UI 行为） |

@@ -64,6 +64,7 @@ How the methods work: [magnetics, gravity, ERT, IP, MT and more](https://xplorah
 - [invert4geom](https://github.com/mdtanker/invert4geom) - <img src="assets/icons/python.svg" alt="Python" height="16"> 3D geometric gravity inversion, such as depth to basement. MIT.
 - [GPRPy](https://github.com/NSGeophysics/GPRPy) - <img src="assets/icons/python.svg" alt="Python" height="16"> Ground-penetrating radar processing and visualisation. MIT.
 - [hvsrpy](https://github.com/jpvantassel/hvsrpy) - <img src="assets/icons/python.svg" alt="Python" height="16"> Horizontal-to-vertical spectral ratio (HVSR) processing of passive seismic data, used for depth to bedrock under cover. GPL-3.0.
+- [Madagascar](https://github.com/ahay/src) - <img src="assets/icons/c.svg" alt="C" height="16"> <img src="assets/icons/python.svg" alt="Python" height="16"> Seismic processing, imaging and reproducible research: hundreds of programs plus Python and SCons workflows. GPL-2.0.
 
 ## Geological modelling and structural geology
 
@@ -104,6 +105,7 @@ How the methods work: [diamond and RC drilling](https://xplorahub.com/methods/di
 - [CoreSpecViewer](https://github.com/Russjas/CoreSpecViewer) - <img src="assets/icons/python.svg" alt="Python" height="16"> Desktop app for processing and viewing hyperspectral drill core scans. GPL-3.0.
 - [Baselode Viewer](https://github.com/darkmine-oss/baselode-frontend) - <img src="assets/icons/javascript.svg" alt="JavaScript" height="16"> Desktop app for Windows, macOS and Linux that shows drillholes, samples and geophysics on a map, in 3D and as strip logs, built on Baselode. GPL-3.0.
 - [Darkmine Data Skills](https://github.com/darkmine-oss/darkmine-data-skills) - <img src="assets/icons/python.svg" alt="Python" height="16"> Skills for AI agents and the command line that work on Baselode drillhole and surface-sample data. GPL-3.0.
+- [welly](https://github.com/agilescientific/welly) - <img src="assets/icons/python.svg" alt="Python" height="16"> Loads wells and wireline logs, checks log quality and prepares them for data science, from Agile Scientific. Apache-2.0.
 
 ## Geostatistics and resource estimation
 
@@ -191,6 +193,13 @@ Government geoscience portals, where most exploration data starts. For each port
 Good tools that have had no updates for 18 months or more. They may not run on current versions of their dependencies, but the code and methods are still worth reading. Each is filed under the section it came from, and moves back there when it is updated again.
 
 <details>
+<summary><b>Geophysics</b> (1)</summary>
+
+- [bruges](https://github.com/agilescientific/bruges) - <img src="assets/icons/python.svg" alt="Python" height="16"> Geophysical equations for rock physics, seismic attributes, filters and wavelets, from Agile Scientific. Apache-2.0. Last updated 2023.
+
+</details>
+
+<details>
 <summary><b>Geological modelling and structural geology</b> (1)</summary>
 
 - [GeoINR](https://github.com/MichaelHillier/GeoINR) - <img src="assets/icons/python.svg" alt="Python" height="16"> Implicit neural representations for 3D structural geological modelling, from the Geological Survey of Canada and RWTH Aachen. MIT. Last updated 2023.
@@ -198,10 +207,11 @@ Good tools that have had no updates for 18 months or more. They may not run on c
 </details>
 
 <details>
-<summary><b>Drillholes and logging</b> (2)</summary>
+<summary><b>Drillholes and logging</b> (3)</summary>
 
 - [dh2loop](https://github.com/Loop3D/dh2loop) - <img src="assets/icons/python.svg" alt="Python" height="16"> Extracts and standardises drillhole lithology for 3D modelling, from Loop3D. MIT. Last updated 2023.
 - [DrillDown](https://github.com/cardinalgeo/drilldown) - <img src="assets/icons/python.svg" alt="Python" height="16"> Interactive 3D views and analysis of drillhole and ore deposit data from a notebook. MIT. Last updated 2024.
+- [striplog](https://github.com/agilescientific/striplog) - <img src="assets/icons/python.svg" alt="Python" height="16"> Lithology and stratigraphic logs for wells or outcrop, from Agile Scientific. Apache-2.0. Last updated 2023.
 
 </details>
 

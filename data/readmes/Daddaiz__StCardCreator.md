@@ -1,5 +1,4 @@
-<p align="center"><img src="app/logo.webp" width="150" alt="ST Card Creator logo"></p>
-<p align="center"><img src="app/wordmark.webp" width="260" alt="ST Card Creator"></p>
+<p align="center"><img src="app/wordmark.webp" width="70%" alt="ST Card Creator"></p>
 
 <p align="center">Another <a href="https://docs.sillytavern.app">SillyTavern</a> cards Creator</p>
 
@@ -40,3 +39,7 @@
 | **Add / Update** a card in SillyTavern (including its linked lorebook) | ✅ | ❌ |
 | Backup of the original card before the first update | ✅ | ❌ |
 | Checkpoint download from the Images page | ✅ | ❌ (link opens the model page) |
+
+## Credits
+
+Flag images for the added chat languages: [flag-icons](https://github.com/lipis/flag-icons) (MIT).

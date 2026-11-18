@@ -58,6 +58,7 @@ Using it in CI? Jump to [GitHub Actions integration](#github-actions-integration
 | `--release-name`         | Display name for version (without `v`)                   | derived from tag                       |
 | `--release-body`         | Additional release notes body                            | `""`                                   |
 | `--language`             | Language for generated changelog prose                   | `en`                                   |
+| `--audience`             | Controls generated changelog content: `all` or `user`    | `all`                                  |
 | `--instructions`         | Additional changelog writing/grouping instructions       | unset                                  |
 | `--instructions-file`    | Path to a file with additional instructions              | unset                                  |
 | `--output`               | Delivery destination (`pull-request`, `file`, `stdout`)  | `pull-request`                         |
@@ -74,6 +75,31 @@ Using it in CI? Jump to [GitHub Actions integration](#github-actions-integration
 | `--why-label`            | Label rendered before WHY notes                          | `Why`                                  |
 
 ## Examples
+
+### Choose a Changelog audience
+
+Use `--audience` to control which categories appear in the generated changelog.
+
+```
+# Generate a user-facing changelog
+
+pnpm dlx @nyaomaru/changelog-bot \
+  --release-tag HEAD \
+  --release-name 1.2.3 \
+  --audience user \
+  --dry-run
+```
+
+The available audiences are:
+
+| Audience          | Included Categories                                                |
+| :---------------- | :----------------------------------------------------------------- |
+| **All (Default)** | All existing categories, including Docs, Test, Chore, and Reverted |
+| **User**          | Breaking Changes, Added, Fixed, and Changed                        |
+
+The `user` audience excludes maintenance-oriented entries such as documentation, tests, chores, and reverted changes. Additional release-note sections are not affected.
+
+Audience filtering does not change the output destination. Use `--output` independently to choose between a pull request, a local file, or stdout.
 
 ### Dry-run for latest release
 
@@ -95,6 +121,7 @@ confirm whether an LLM request was used or the run fell back. Add
 
 <u>Write to a local CHANGELOG.md file:
 </u>
+
 ```
 pnpm dlx @nyaomaru/changelog-bot \
   --release-tag HEAD \
@@ -272,6 +299,7 @@ Create `changelog-bot.config.json` in the directory where you run the CLI:
 {
   "provider": "gemini",
   "language": "nl",
+  "audience": "user",
   "instructionsFile": ".github/changelog-instructions.md"
 }
 ```
@@ -290,7 +318,7 @@ pnpm dlx @nyaomaru/changelog-bot --config .github/changelog-bot.json --dry-run
 
 Config files use camelCase keys matching the CLI options:
 `repoPath`, `changelogPath`, `baseBranch`, `provider`, `releaseTag`,
-`releaseName`, `releaseBody`, `language`, `instructions`,
+`releaseName`, `releaseBody`, `language`, `audience`, `instructions`,
 `instructionsFile`, `dryRun`, `dryRunJsonReport`, `failOnLlmError`,
 `requireProvider`, `noAi`, `why`, `whyEngine`, `whyMaxPrs`, `whyMaxCharsPerPr`,
 `whyConfidence`, and `whyLabel`. Unknown keys are rejected so typos fail fast.
@@ -576,6 +604,7 @@ precedence are treated as the public compatibility contract.
 | Version label           | `--release-name`                                     | `release-name`             | `release_name`             | `releaseName`, derived from release ref                     |
 | Release notes body      | `--release-body`                                     | `release-body`             | `release_body`             | `releaseBody`, default empty                                |
 | Output language         | `--language`                                         | `language`                 | `language`                 | `language`, default `en`                                    |
+| Changelog audience      | `--audience`                                         | `audience`                 | `audience`                 | `audience`, default `all`; accepts `all` or `user`          |
 | Extra instructions      | `--instructions`                                     | `instructions`             | `instructions`             | `instructions`, unset                                       |
 | Instructions file       | `--instructions-file`                                | `instructions-file`        | `instructions_file`        | `instructionsFile`, unset                                   |
 | Output destination      | `--output`                                           | `output`                   | `output`                   | `output`, default `pull-request`                            |

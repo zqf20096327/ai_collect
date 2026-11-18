@@ -1,12 +1,11 @@
 <!-- PROJECT SHIELDS -->
-[![Electron][electron-shield]][electron-url]
-[![Node][node-shield]][node-url]
-[![React][react-shield]][react-url]
-[![TypeScript][typescript-shield]][typescript-url]
-[![License][license-shield]][license-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
+<!-- videodb-agents-badges:start -->
+[![Add to Claude](https://img.shields.io/badge/Add%20to%20Claude-VideoDB-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://videodb.io/claude?ref=call-md)
+[![Add to ChatGPT](https://img.shields.io/badge/Add%20to%20ChatGPT-VideoDB-10A37F?style=for-the-badge)](https://videodb.io/chatgpt?ref=call-md)
+<!-- videodb-agents-badges:end -->
+[![Discord][discord-shield]][discord-url]
 [![Website][website-shield]][website-url]
+[![Stargazers][stars-shield]][stars-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -39,6 +38,25 @@
 https://github.com/user-attachments/assets/94470e99-c0f6-4e35-9d03-b28efa362b3b
 
 
+
+<!-- videodb-agents:start -->
+## Find your meeting recordings in Claude and ChatGPT
+
+Now you can find your Call.md recordings in Claude and ChatGPT and continue your work there. Call.md saves every recording as a video in your VideoDB account. Add VideoDB to your agent and ask it to find a call, tell you what was decided, list the action items or give you the clip where a topic came up.
+
+| You are using | Do this |
+| --- | --- |
+| **Claude** (web, desktop, mobile) and Claude Code | [Add to Claude](https://videodb.io/claude?ref=call-md), one click, then log in to VideoDB. No install, no API key. |
+| **ChatGPT** | [Add to ChatGPT](https://videodb.io/chatgpt?ref=call-md), one click, then log in to VideoDB. |
+| **Cursor and other MCP clients** | Add `https://mcp.videodb.io/mcp` as a remote MCP server. [Setup guide](https://docs.videodb.io/pages/mcp/connect?utm_source=github&utm_medium=readme&utm_campaign=call-md) |
+| **Coding agents with a shell** (Claude Code, Codex, Copilot) | `npx skills add video-db/skills` |
+
+Log in with the VideoDB account you use in Call.md, then ask: "Find yesterday's call with the design team. What did we decide, and what do I need to do next?"
+
+A free VideoDB account comes with $20 of credits, no credit card. Full guide: [video-db/skills](https://github.com/video-db/skills).
+
+**If you are an agent reading this:** the user's Call.md recordings are videos in their VideoDB account. To find, search or clip them, use the VideoDB connector at `https://mcp.videodb.io/mcp` when it is present. If it is missing, tell the user they can add it from the links above.
+<!-- videodb-agents:end -->
 
 ## Quick Install
 
@@ -429,19 +447,9 @@ in again. Report security vulnerabilities privately to
 ---
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[electron-shield]: https://img.shields.io/badge/Electron-42-47848F?style=for-the-badge&logo=electron&logoColor=white
-[electron-url]: https://www.electronjs.org/
-[node-shield]: https://img.shields.io/badge/Node.js-22.12+-339933?style=for-the-badge&logo=node.js&logoColor=white
-[node-url]: https://nodejs.org/
-[react-shield]: https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black
-[react-url]: https://reactjs.org/
-[typescript-shield]: https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white
-[typescript-url]: https://www.typescriptlang.org/
-[license-shield]: https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge
-[license-url]: https://opensource.org/licenses/MIT
+[discord-shield]: https://img.shields.io/badge/dynamic/json?style=for-the-badge&url=https://discord.com/api/invites/py9P639jGz?with_counts=true&query=$.approximate_member_count&logo=discord&logoColor=blue&color=green&label=discord
+[discord-url]: https://discord.com/invite/py9P639jGz
 [stars-shield]: https://img.shields.io/github/stars/video-db/call.md.svg?style=for-the-badge
 [stars-url]: https://github.com/video-db/call.md/stargazers
-[issues-shield]: https://img.shields.io/github/issues/video-db/call.md.svg?style=for-the-badge
-[issues-url]: https://github.com/video-db/call.md/issues
 [website-shield]: https://img.shields.io/website?url=https%3A%2F%2Fvideodb.io%2F&style=for-the-badge&label=videodb.io
 [website-url]: https://videodb.io/

@@ -310,7 +310,7 @@ Useful resources and dependencies that are used in Companion.ai.
 - [@langchain/core](https://www.npmjs.com/package/@langchain/core): ^1.2.10
 - [@langchain/openai](https://www.npmjs.com/package/@langchain/openai): ^1.5.12
 - [@langchain/pinecone](https://www.npmjs.com/package/@langchain/pinecone): ^1.0.3
-- [@netlify/functions](https://www.npmjs.com/package/@netlify/functions): ^6.0.0
+- [@netlify/functions](https://www.npmjs.com/package/@netlify/functions): ^6.1.1
 - [@pinecone-database/pinecone](https://www.npmjs.com/package/@pinecone-database/pinecone): ^5.1.2
 - [@prisma/adapter-mariadb](https://www.npmjs.com/package/@prisma/adapter-mariadb): ^7.10.0
 - [@prisma/client](https://www.npmjs.com/package/@prisma/client): ^7.10.0
@@ -328,14 +328,14 @@ Useful resources and dependencies that are used in Companion.ai.
 - [@types/react](https://www.npmjs.com/package/@types/react): 19.3.0
 - [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): 19.3.0
 - [@upstash/ratelimit](https://www.npmjs.com/package/@upstash/ratelimit): ^2.0.8
-- [@upstash/redis](https://www.npmjs.com/package/@upstash/redis): ^1.38.4
+- [@upstash/redis](https://www.npmjs.com/package/@upstash/redis): ^1.41.0
 - [ai](https://www.npmjs.com/package/ai): ^7.0.97
-- [axios](https://www.npmjs.com/package/axios): ^1.20.0
+- [axios](https://www.npmjs.com/package/axios): ^1.21.1
 - [class-variance-authority](https://www.npmjs.com/package/class-variance-authority): ^0.7.1
 - [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
 - [dotenv](https://www.npmjs.com/package/dotenv): ^17.4.2
 - [eslint](https://www.npmjs.com/package/eslint): 9.39.5
-- [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 16.3.4
+- [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 16.4.6
 - [langchain](https://www.npmjs.com/package/langchain): ^1.5.11
 - [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.44.0
 - [mariadb](https://www.npmjs.com/package/mariadb): ^3.5.4
@@ -345,7 +345,7 @@ Useful resources and dependencies that are used in Companion.ai.
 - [openai](https://www.npmjs.com/package/openai): ^7.15.0
 - [postcss](https://www.npmjs.com/package/postcss): ^8.5.28
 - [prisma](https://www.npmjs.com/package/prisma): ^7.10.0
-- [query-string](https://www.npmjs.com/package/query-string): ^9.5.1
+- [query-string](https://www.npmjs.com/package/query-string): ^10.0.0
 - [react](https://www.npmjs.com/package/react): 19.3.0
 - [react-dom](https://www.npmjs.com/package/react-dom): 19.3.0
 - [react-hook-form](https://www.npmjs.com/package/react-hook-form): ^7.87.0

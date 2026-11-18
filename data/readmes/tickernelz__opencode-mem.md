@@ -9,7 +9,7 @@
 
 ![OpenCode Memory Banner](.github/pics/banner.png)
 
-Languages: **🇬🇧** | [🇩🇪](./.github/i18n/README.de.md) | [🇨🇳](./.github/i18n/README.zh.md) | [🇸🇦](./.github/i18n/README.ar.md) | [🇹🇷](./.github/i18n/README.tr.md) | [🇳🇱](./.github/i18n/README.nl.md)
+Languages: **🇬🇧** | [🇩🇪](./.github/i18n/README.de.md) | [🇨🇳](./.github/i18n/README.zh.md) | [🇸🇦](./.github/i18n/README.ar.md) | [🇹🇷](./.github/i18n/README.tr.md) | [🇳🇱](./.github/i18n/README.nl.md) | [🇫🇷](./.github/i18n/README.fr.md)
 
 A persistent memory system for AI coding agents that enables long-term context retention across sessions using local vector database technology.
 
@@ -624,7 +624,9 @@ The plugin issues structured-output requests to opencode's session API instead o
 
 Optionally pin a model reasoning variant with `"opencodeVariant": "xhigh"` (e.g. for grok-4.7). It is applied to the plugin's internal LLM calls (auto-capture summaries, profile learning, profile cleanup), including when `opencodeModel` is `"inherit"`, so background work can use a different reasoning level than the interactive session.
 
-Slow reasoning models (or very large profile prompts) can exceed the default 90 s structured-output budget. Set `"opencodeTimeoutMs"` (milliseconds) to extend it for internal structured-output calls (auto-capture summaries, profile learning) — e.g. `"opencodeTimeoutMs": 180000` for 3 minutes. Values are clamped to 10000..600000; the default stays 90000. Numeric strings are coerced. Profile cleanup uses a separate, longer timeout.
+Slow reasoning models (or very large profile prompts) can exceed the default 90 s structured-output budget. Set `"opencodeTimeoutMs"` (milliseconds) to extend it for internal structured-output calls (auto-capture summaries, profile learning) — e.g. `"opencodeTimeoutMs": 180000` for 3 minutes. Values are clamped to 10000..600000; the default stays 90000. Numeric strings are coerced.
+
+Profile cleanup timeouts are separate: external/manual-API cleanup defaults to 60 s via `"userProfileCleanupTimeoutMs"` (same 10000..600000 clamp; e.g. `"userProfileCleanupTimeoutMs": 180000`). OpenCode-session cleanup keeps a fixed 300 s budget. The Node HTTP idle timeout is derived as `max(userProfileCleanupTimeoutMs, 300000) + 30000`, and the Web UI `/ai-cleanup` fetch allows up to 630 s so neither layer undercuts a raised external deadline.
 
 Supported providers: any provider listed by `opencode providers list` (e.g. `anthropic`, `openai`, `github-copilot`, `openrouter`, ...).
 
@@ -701,6 +703,12 @@ Manual `memoryProvider` modes:
   "memoryApiKey": "env://STANDARDCOMPUTE_API_KEY",
   ```
   When this provider is selected, auto-capture / profile prompts, model responses, and relevant conversation context are transmitted to `https://api.stdcmpt.com`.
+- `uberllm`: OpenAI-compatible Chat Completions preset for [UberLLM](https://uberllm.dev). `memoryApiUrl` and `memoryModel` are optional — they default to `https://api.uberllm.dev/v1` and `deepseek/deepseek-v4-flash`. If `memoryApiKey` is omitted, `UBERLLM_API_KEY` from the environment is used (create a key at https://uberllm.dev/signup; API docs: https://uberllm.dev/docs/quickstart). Example:
+  ```jsonc
+  "memoryProvider": "uberllm",
+  "memoryApiKey": "env://UBERLLM_API_KEY",
+  ```
+  When this provider is selected, auto-capture / profile prompts, model responses, and relevant conversation context are transmitted to `https://api.uberllm.dev`.
 
 Troubleshooting:
 
@@ -744,7 +752,7 @@ Troubleshooting:
 - If auto-capture reports that a provider is not connected, confirm the provider name with `opencode providers list` and configure that provider in opencode first.
 - If a proxy or custom provider returns plain text instead of structured/tool output, choose another model/provider or use one of the manual provider modes above.
 - For models that reject `temperature`, add `"memoryTemperature": false` when using manual API configuration.
-- For models that reject forced tool calls (`tool_choice: "required"`, e.g. some thinking modes), add `"forceToolChoice": false` when using `openai-chat` / `orcarouter` / `atlas-cloud` / `cheaper-inference` / `api-route` / `runcrate` / `cloudgpu` / `standardcompute`.
+- For models that reject forced tool calls (`tool_choice: "required"`, e.g. some thinking modes), add `"forceToolChoice": false` when using `openai-chat` / `orcarouter` / `atlas-cloud` / `cheaper-inference` / `api-route` / `runcrate` / `cloudgpu` / `standardcompute` / `uberllm`.
 - For `opencodeProvider` / `opencodeModel` (e.g. DeepSeek V4 thinking), OpenCode still sends forced `tool_choice` for structured output. opencode-mem disables thinking on the internal `opencode-mem-structured` agent (and re-applies that in `chat.params` after variant merge) so auto-capture and profile learning can complete. Your interactive chat agent is unchanged. If capture still fails with a thinking/`tool_choice` error, pick a non-thinking model for `opencodeModel` or configure a complete manual fallback (`memoryModel` + `memoryApiUrl`).
 - **`opencode-claude-auth` / Claude Code:** auto-capture uses OpenCode with your authenticated `anthropic` provider. Forced `format: json_schema` often loops with Claude-auth, so opencode-mem uses an auth-preserving **text-JSON** path for `opencodeProvider: "anthropic"` (no forced `StructuredOutput` tools; reply is parsed with Zod). A step watchdog still aborts runaway internal sessions after 2 steps. If capture still fails, configure a complete manual Anthropic API-key fallback (`memoryProvider: "anthropic"` + `memoryModel` + `memoryApiUrl` + `memoryApiKey`) — Claude Pro/Max OAuth cannot be reused outside OpenCode.
 - **Unsupported platforms:** Intel Mac (`darwin/x64`) is not supported — `@tursodatabase/database` and fixed `onnxruntime-node` releases (pinned `1.31.1`) ship no x64 native binding. Use Apple Silicon, Linux, or Windows, or a remote embedding endpoint via `embeddingApiUrl` + `embeddingApiKey`. MLX is not supported.
@@ -799,7 +807,7 @@ The [docs](https://opencode-mem.zhafron.my.id/docs/) are generated from this REA
 
 This project is actively seeking contributions to become the definitive memory plugin for AI coding agents. Whether you are fixing bugs, adding features, improving documentation, or expanding embedding model support, your contributions are critical. The codebase is well-structured and ready for enhancement. Please open issues with the Issue or Feature request templates, and fill out the pull request template when you submit a PR — we review and merge contributions quickly.
 
-**README translations:** `README.md` (English) is the source of truth. When you change its content, update the files under `.github/i18n/` (`README.de.md`, `README.zh.md`, `README.ar.md`, `README.tr.md`, and `README.nl.md`) to match.
+**README translations:** `README.md` (English) is the source of truth. When you change its content, update the files under `.github/i18n/` (`README.de.md`, `README.zh.md`, `README.ar.md`, `README.tr.md`, `README.nl.md`, and `README.fr.md`) to match.
 
 ## License & Links
 

@@ -11,7 +11,7 @@
 
 若道浏览器（Ruodao Browser）是一款**开源、跨平台、基于 Electron 与 Chromium 的 AI 桌面浏览器**，面向「边看边问」的日常浏览场景。
 
-它内置若道 AI 侧边栏：登录 ruodao.com 账号（或填入自己的 API Key）即可调用云端模型，对当前网页做总结、解释、翻译、改写与多轮问答。同时它把主流浏览器该有的能力都做到了可用水平——多标签、书签、历史、下载、无痕窗口、页内查找、缩放、主题切换，以及像 Chrome `--user-data-dir` 一样**无限多开相互隔离的浏览环境**。
+它内置若道 AI 侧边栏：登录 ruodao.com 账号（或填入自己的 API Key，支持自定义 base URL / OpenAI 兼容中转站）即可调用云端模型，对当前网页做总结、解释、翻译、改写与多轮问答。同时它把主流浏览器该有的能力都做到了可用水平——多标签、书签、历史、下载、无痕窗口、页内查找、缩放、主题切换，以及像 Chrome `--user-data-dir` 一样**无限多开相互隔离的浏览环境**。
 
 界面全部用 React 构建，浏览数据默认只保存在本机，不含任何遥测。
 
@@ -30,6 +30,7 @@
 - [快捷键](#快捷键)
 - [构建与打包](#构建与打包)
 - [测试](#测试)
+- [Agent 接入（MCP / HTTP）](#agent-接入mcp--http)
 - [技术架构](#技术架构)
 - [数据与隐私](#数据与隐私)
 - [已知限制与路线图](#已知限制与路线图)
@@ -45,6 +46,7 @@
 - 多标签浏览，支持拖拽排序、固定、静音、复制、关闭其他/右侧标签
 - 关闭标签恢复（`Ctrl+Shift+T`）、`Ctrl+Tab` 循环切换、`Ctrl+1…9` 快速跳转
 - 前进、后退、刷新、强制刷新、停止加载、主页与全屏
+- 内置**手机模式（设备模拟）**：iPhone / Pixel / Galaxy / iPad 预设、自定义尺寸、DPR、横竖屏与自适应缩放，可切换手机 UA，并可通过本机发布桥由 Agent 调用
 - 每个标签页由独立的 `WebContentsView` 承载，外壳与页面视图分离，切换不丢状态
 
 ### 智能地址栏
@@ -66,15 +68,35 @@
 - 下载记录持久化，支持清理记录
 - 下载完成提示与工具栏下载弹层
 
+### 开源社区与反馈
+
+- 内置页 `ruodao://community`，可从主菜单「开源社区与反馈」或新标签页页脚进入
+- 一键打开若道开源产品页留言区、开源社区、接入文档与 GitHub 仓库
+- 提供可复制的反馈模板，自动带上当前版本与系统
+- 只读展示若道社区最新留言；网络不可用时自动降级为产品页深链
+
 ### 若道 AI
 
-- 右侧 AI 侧边栏（`Ctrl+Shift+A`），登录 ruodao.com 账号或使用 API Key，直接调用若道云端模型
+- 右侧 AI 侧边栏（`Ctrl+Shift+A`），登录或注册 ruodao.com 账号、使用 API Key，直接调用若道云端模型
+- 模型下拉显示渠道名与售价倍率（如 `渠道I · deepseek-v4.1-flash · 0.2232x`）；支持自定义服务地址（OpenAI 兼容格式），登录后也可随时切换中转站、搜索模型 ID 添加，并一键切回官方网关
 - 自动读取模型列表、余额与 API Key；Key 失效时用账号会话自动重建并重试一次
 - **页面上下文问答**：可随时开关「阅读此页」，正文截断 12,000 字，选区截断 6,000 字
 - 流式输出、停止生成、重试、复制、清空与新建对话；保留最近 40 条消息
 - **网页划词工具条**：选中文字即浮出「询问 / 解释 / 翻译 / 改写 / 总结」
 - 地址栏以 `?` 或 `ai:` 开头直接提问；新标签页提供「问 AI」入口
 - 右键菜单提供「总结此页、翻译此页、提取页面要点」等快捷动作
+- **Ctrl+K AI 命令面板**：搜索快捷指令、浏览器命令，或直接输入问题发给 AI
+- **多标签页上下文**（最多 4 页）、页面截图附件、PDF / Word 文档解析、语音输入
+- 快捷指令：双语对照、思维导图、多页总结
+- **网页操作 Agent**：语义快照 + 稳定元素引用，确认计划后执行点击、输入、选择、滚动等动作（最多 12 步）；`browser_type` 用原生键盘输入写入富文本，含 URL/`#` 话题也不再卡在 X 的 Draft.js 解析器里
+- **AI 自动填表**：设置页维护本地资料卡，侧栏、主菜单或命令面板可一键填写表单，不覆盖已有内容、不自动提交
+- **本机 Agent 接口（MCP / HTTP）**：发布桥内置标准 MCP 工具面，外部 Agent 可语义快照、按 ref 点击/填表、读取控制台与网络、上传附件、按平台能力规划并分阶段发布；支持 Streamable HTTP 与 stdio 代理
+- **发布中心**：内置 21 个国内外内容平台适配（微信公众号、视频号、知乎、小红书、微博、头条、百家号、企鹅号、CSDN、掘金、B站专栏/视频、简书、抖音、快手、X、YouTube、Facebook、Instagram、TikTok、LinkedIn），按统一能力模型描述内容类型、字数/话题限制、媒体要求与提交方式
+  - **素材直通**：视频与图片拖入或从本机选择，由主进程按各平台上传框直接写入，不需要先传到网盘再手选；所有平台共用一份素材，按内容自动判定「视频 / 图文 / 文章」
+  - **登录态复用**：直接读取当前浏览器环境的 Cookie，逐平台标注「已登录 / 需登录」，未登录的平台一键打开登录页；多开环境各自独立，等于多账号矩阵
+  - **发布前预检**：按每个平台的标题/正文/话题上限自动裁剪，转换话题写法（`#话题#`、`#话题`、文末追加），并列出截断、话题被忽略、缺少素材等告警
+  - **一键落地**：确认后由浏览器自己填入编辑器并点击发布按钮，需要人工确认的平台自动切到对应标签页；结果与时间写入本地发布记录
+- **对话历史**：自动保存最近 30 个对话，可搜索、恢复、删除
 - 无痕窗口不保存 AI 对话；凭据只存在主进程，优先使用系统加密存储
 - 详细设计与接口约定见 [docs/ai-browser.md](docs/ai-browser.md)
 
@@ -115,6 +137,8 @@
 | ![独立多开环境](docs/screenshots/09-profile.png) | ![无痕窗口](docs/screenshots/08-private.png) |
 | **若道 AI 登录** | **AI 对话与页面上下文** |
 | ![若道 AI 登录](docs/screenshots/10-ai-panel.png) | ![AI 对话](docs/screenshots/11-ai-chat.png) |
+| **发布中心：草稿 · 素材 · 平台** | **发布前检查：按平台裁剪与告警** |
+| ![发布中心](docs/screenshots/14-publish.png) | ![发布前检查](docs/screenshots/15-publish-check.png) |
 
 > 以上截图由端到端验收脚本 `npm run smoke` 在真实 Electron 进程中自动生成，随代码同步更新。
 
@@ -244,7 +268,8 @@ npm run dev
 | 新建标签页 / 新建窗口 | `Ctrl+T` / `Ctrl+N` |
 | 关闭标签页 / 关闭窗口 | `Ctrl+W` / `Ctrl+Shift+W` |
 | 恢复关闭的标签页 | `Ctrl+Shift+T` |
-| 聚焦地址栏 | `Ctrl+L` / `Ctrl+K` / `F6` |
+| 聚焦地址栏 | `Ctrl+L` / `Ctrl+E` / `F6` |
+| AI 命令面板 | `Ctrl+K` |
 | 收藏当前页面 | `Ctrl+D` |
 | 页内查找 | `Ctrl+F` |
 | 历史记录 / 下载内容 | `Ctrl+H` / `Ctrl+J` |
@@ -254,6 +279,7 @@ npm run dev
 | 无痕窗口 | `Ctrl+Shift+N` |
 | 打印页面 | `Ctrl+P` |
 | 打开 / 关闭 AI 助手 | `Ctrl+Shift+A` |
+| 打开 / 关闭手机模式 | `Ctrl+Shift+M` |
 | 切换标签页 | `Ctrl+Tab` / `Ctrl+Shift+Tab` |
 | 前进 / 后退 | `Alt+→` / `Alt+←` |
 | 全屏 | `F11` |
@@ -274,11 +300,21 @@ npm run dist:linux   # Linux: AppImage + DEB
 
 构建产物输出到 `dist/`。应用图标由 `build/icon.png` 提供，可运行 `npm run icon` 从品牌 SVG 重新生成。
 
+### 版本升级与数据保留
+
+安装包固定使用 `appId: com.ruodao.browser`，新旧版本覆盖安装到同一目录即可原地升级。升级与卸载都不会删除用户数据：
+
+- 默认环境：Electron `userData` 目录（Windows 为 `%APPDATA%\若道浏览器`）
+- 独立环境：创建时指定的 `--user-data-dir`，默认位于「文档\若道浏览器环境」
+- 登录 Cookie、书签、历史、设置、AI 对话与发布草稿都保存在上述目录，安装目录只放程序文件
+
+升级前请退出所有若道浏览器实例（含独立环境）；覆盖安装后原快捷方式继续指向新版本，独立环境快捷方式及其数据目录不受影响。
+
 ---
 
 ## 测试
 
-端到端验收脚本会构建应用、启动真实的 Electron 进程，覆盖新标签页、地址栏导航、书签、查找、缩放、菜单、内部页面、下载、标签页与无痕窗口，并输出截图到 `docs/screenshots/`。脚本内置一个本地 mock ruodao.com，同时验证登录、自动创建 API Key、模型列表、SSE 流式回答、页面上下文开关、划词工具条与 401 自动重建重试：
+端到端验收脚本会构建应用、启动真实的 Electron 进程，覆盖新标签页、地址栏导航、书签、查找、缩放、菜单、内部页面、下载、标签页与无痕窗口，并输出截图到 `docs/screenshots/`。脚本内置一个本地 mock ruodao.com，同时验证登录、自动创建 API Key、模型列表、SSE 流式回答、页面上下文开关、划词工具条与 401 自动重建重试；还会通过通道注册文件连接 MCP，验证语义快照、按标签批量填表、原生键盘输入富文本（含 URL 与 `#话题`）、batch 连续动作与按文案点击：
 
 ```bash
 npm run smoke
@@ -295,6 +331,106 @@ npm run smoke:profiles
 ```bash
 npm run typecheck
 ```
+
+---
+
+## Agent 接入（MCP / HTTP）
+
+浏览器启动后会在本机回环地址上开一个随机端口，并把「端口 + 随机 Bearer 令牌 + 环境信息」写入通道注册文件：
+
+```text
+Windows  %APPDATA%\ruodao-browser\channels\<hash>.json
+macOS    ~/Library/Application Support/ruodao-browser/channels/<hash>.json
+Linux    ~/.config/ruodao-browser/channels/<hash>.json
+```
+
+每个独立多开环境各有一条记录，5 秒心跳更新。所有请求要求 `Authorization: Bearer <token>`，带 `Origin` 头的浏览器页面请求会被拒绝；任务在单通道内串行执行，避免多个 Agent 同时操作同一页面。
+
+### 最快捷：一键发布 CLI
+
+如果不想接 MCP、也不想写多步调用，直接用仓库自带脚本。它会自动发现正在运行的浏览器通道，一条命令完成「填写 + 可选提交」：
+
+```bash
+# 查看在线通道（多开时会列出每个环境）
+node scripts/ruodao-publish.mjs --list-channels
+
+# 只填写、不发布（默认）
+node scripts/ruodao-publish.mjs --site x --text "今天试试若道浏览器"
+
+# 多账号时指定环境，填写后直接发布
+node scripts/ruodao-publish.mjs --site x --channel "独立环境 2" --text "..." --submit
+
+# 图文 + 标签 + 从文件读取正文
+node scripts/ruodao-publish.mjs --site xiaohongshu --text-file post.md --media cover.png --tags AI,浏览器 --submit
+```
+
+平台 ID 与 `publish_sites` 返回的一致（如 `x`、`xiaohongshu`、`bilibili`、`douyin`）。默认只填写；`--submit` 等价于 `publish_submit(confirm:true)`，且任一平台填写失败时脚本会拒绝提交。未指定 `--channel` 时，脚本会自动选择唯一已登录目标平台的通道；多个通道都满足时会要求显式指定，避免发错账号。`--json` 可输出机器可读结果。
+
+X 单平台的字段规范、加权长度计重、MCP/HTTP/CLI 三种调用示例与失败处理，见 [X 发布标准与接口](docs/publish-x-api.md)，可直接复制给其他 Agent。浏览器内打开 `ruodao://agent` 即可查看同一份文档并一键复制全文、提示词、文件路径与 MCP 配置；同机 Agent 也可请求 `GET /v1/guide` 获取 Markdown 原文。
+
+### 方式一：Streamable HTTP MCP
+
+MCP 端点是 `POST http://127.0.0.1:<port>/mcp`（JSON-RPC 2.0，支持 `initialize`、`tools/list`、`tools/call`、`notifications/initialized`）。从注册文件读取 `port` 与 `token` 后，任何支持 Streamable HTTP 的客户端都可以直接连接。
+
+### 方式二：stdio 代理（Claude Desktop / Cline 等）
+
+只支持 stdio 的客户端用仓库自带代理，自动发现正在运行的通道：
+
+```json
+{
+  "mcpServers": {
+    "ruodao-browser": {
+      "command": "node",
+      "args": ["D:/ai/code/ruodao-browser/scripts/ruodao-mcp.mjs"]
+    }
+  }
+}
+```
+
+多环境时加 `"--channel", "工作"`（通道名或 ID）指定环境；`node scripts/ruodao-mcp.mjs --list` 可查看当前活跃通道。
+
+### HTTP 直调（不接 MCP 的 Agent）
+
+```bash
+curl -H "Authorization: Bearer <token>" http://127.0.0.1:<port>/v1/tools
+curl -X POST -H "Authorization: Bearer <token>" -H "Content-Type: application/json" \
+  -d '{"label":"姓名","text":"张三"}' \
+  http://127.0.0.1:<port>/v1/tools/browser_fill
+```
+
+原有 `/v1/health`、`/v1/login/status`、`/v1/open`、`/v1/publish`、`/v1/device` 保持不变。
+
+### 工具清单
+
+| 类别 | 工具 |
+| --- | --- |
+| 标签页 | `browser_list_tabs`、`browser_navigate`、`browser_open_tab`、`browser_select_tab`、`browser_close_tab` |
+| 读取 | `browser_snapshot`（语义快照 + 稳定 ref）、`browser_read_text`、`browser_read_table`、`browser_extract` |
+| 交互/填表 | `browser_click`、`browser_fill`（原生输入优先）、`browser_type`（原生键盘输入，富文本首选）、`browser_fill_form`、`browser_select_option`、`browser_check`、`browser_hover`、`browser_scroll`、`browser_press_key`、`browser_wait_for`、`browser_batch`（最多 20 步） |
+| 自动化辅助 | `browser_evaluate`、`browser_screenshot`、`browser_upload_file`、`browser_autofill_profile`、`browser_set_device` |
+| 观测 | `browser_get_logs`（页面 console）、`browser_network_requests`（状态码/资源类型） |
+| 发布 | `publish_sites`（平台能力清单）、`publish_login_status`（仅 Cookie 名称的登录态检测）、`publish_plan`（按平台规则预检）、`publish_prepare`（上传媒体并填充，不提交）、`publish_submit`（需 `confirm:true`）、`publish_fill`（兼容旧版多平台填充）、`publish_note`（小红书图文直发） |
+
+发布能力采用统一的渠道标准：每个平台声明支持的内容类型（`article / note / moment / video / image`）、标题/正文/话题上限、话题写入方式（独立输入框、正文 `#话题`、微博 `#话题#`、文末追加或忽略）、标题位置（独立字段、首行内联、Markdown 标题）、媒体要求（图片/视频是否必需、数量上限）、登录 Cookie 名称与提交方式（自动点击或人工确认）。`publish_plan` 会为每个目标平台生成最终标题/正文/话题，并返回截断、话题被忽略、缺失媒体、未登录等告警，不打开页面。
+
+推荐发布流程：
+
+1. `publish_sites` 确认平台能力，`publish_login_status` 检查登录态；
+2. `publish_plan` 预检各平台内容与媒体要求；
+3. `publish_prepare` 上传本机图片/视频并填充编辑器（不会提交）；
+4. 用户确认后调用 `publish_submit`，且必须显式传 `confirm:true`；自动提交平台会点击最终发布按钮，人工确认平台会切换到编辑页等待用户操作。
+
+元素定位优先级统一为 `ref` → `selector` → `label`：先 `browser_snapshot` 拿到 ref 最稳；没有 ref 时可用 CSS 选择器或字段标签（label、placeholder、aria-label、name）定位；点击按钮还可以直接给 `text` 按文案匹配。`browser_fill_form` 支持 `kind: text | select | check | click`，`browser_batch` 可把「快照 → 填表 → 点击 → 等待」压缩成一次调用。
+
+`browser_fill` 与发布编辑器填充默认使用**原生键盘输入**（`webContents.insertText`，等价 CDP `Input.insertText`）：长文本自动分块、写完读回校验，校验失败再回退页面写入。X、Draft.js、Lexical 等富文本编辑器对一次性 `execCommand('insertText')` 写入含 URL/`#` 的长文本会锁住解析链，用 `browser_type` 可以避免；不需要再让 Agent 用 `browser_press_key` 逐字符敲。
+
+通用办公与网页自动化流程：
+
+1. `browser_snapshot` 读取页面结构与 ref；
+2. `browser_fill_form` 按标签或 ref 填表，`browser_click` 提交；
+3. 页面没反应时用 `browser_get_logs` / `browser_network_requests` 定位原因，`browser_screenshot` 做视觉核对。
+
+单次请求体上限 256 KB，文件上传只接受本机绝对路径；不需要本机接口时可用 `RUODAO_BROWSER_BRIDGE=0` 或 `--no-agent-bridge` 关闭。
 
 ---
 
@@ -348,6 +484,7 @@ docs/            截图、设计文档与使用教程
 - 只有在你主动登录并使用若道 AI 时，浏览器才会把本次提问与所需的页面上下文发送到 ruodao.com；关闭「阅读此页」后不发送网页正文
 - ruodao.com 登录会话与 API Key 只保存在主进程，优先使用 Electron `safeStorage` 加密，退出登录即删除
 - 每个独立环境的数据分别写入各自的 `--user-data-dir` 目录，环境之间不共享登录状态与浏览记录
+- 覆盖安装或升级不会删除任何数据目录；卸载默认也保留数据，便于重装后继续使用
 - 无痕窗口使用临时会话，关闭窗口后该会话的 Cookie、缓存与记录即被清除
 - 应用本身不请求摄像头、麦克风、定位与通知权限，网站权限默认拒绝
 - 清除浏览数据可在「设置 → 隐私与数据」中执行
@@ -356,13 +493,13 @@ docs/            截图、设计文档与使用教程
 
 ## 已知限制与路线图
 
-当前版本为 `0.1.0`，仍处于早期阶段。
+当前版本为 `0.2.2`，仍处于早期阶段。
 
 **已知限制**
 
-- 若道 AI 需要 ruodao.com 账号或 API Key，模型与额度由若道开放平台管理
-- AI 当前只处理文本，暂不支持图片/PDF/附件、跨标签页批量总结与网页自动操作
-- 暂不支持浏览器扩展、账号同步、自动更新与内置广告拦截
+- 若道 AI 可使用 ruodao.com 账号、API Key，或任意 OpenAI 兼容服务地址（含自定义中转站）；官方账号的模型与额度由若道开放平台管理
+- 网页自动化需要登录、验证码以及本地图片/视频选择由用户手动完成；支付、转账、删除等高风险操作不会自动执行
+- 暂不支持浏览器扩展、账号同步与内置广告拦截；版本升级通过下载新安装包覆盖安装完成
 - 未提供代码签名与公证，正式分发前请按平台要求补充签名流程
 - 安全能力沿用 Chromium 默认站点隔离与沙箱模型，未做额外的企业级策略加固
 - 独立环境暂不提供管理器页面，删除环境需退出对应实例后手动移除目录与快捷方式
@@ -372,7 +509,7 @@ docs/            截图、设计文档与使用教程
 - [ ] 图片 / PDF / 附件理解与截图提问
 - [ ] 跨标签页批量总结与对比
 - [ ] 页面内自动操作 Agent（填表、点击、结构化提取）
-- [ ] 对话历史列表、搜索与导出
+- [ ] 对话导出
 - [ ] 独立环境管理器页面
 - [ ] 浏览器扩展支持与账号同步
 - [ ] 团队策略：模型白名单、额度上限、审计日志

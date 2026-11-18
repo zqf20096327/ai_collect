@@ -719,6 +719,37 @@ This is PDFs only, on purpose: a strikeout is a suggested edit to a
 draft, and a news article is not a draft. The pill on an ordinary page is
 the single comment button it has always been.
 
+**Three keys, and the microphone.** With a passage selected, one key
+does what the pill's button does and then turns the microphone on, so
+the note is spoken rather than typed: `C` highlights and opens a note of
+your own, `S` strikes the passage through and opens the box for why
+(PDFs only, where strikeouts exist), `A` highlights and opens a note
+already routed to all the agents. `C` and `A` work on any page a passage
+can be highlighted on — a PDF, an article, your own blog drafts. Say your
+piece, then press Enter, or the same letter again (any of the three will
+do): the words land, made terse (below), and the comment is sent — a
+note filed, a strike filed with its reason, a message to the agents
+sent. Said nothing? Then nothing is added: a strike is filed as it is,
+the red line having said its piece; a highlight that was only going to
+carry your words is let go. The mic button alone stops the microphone
+*without* sending, so you can read the words first (and swap the raw
+ones back) and then send them with Enter; Esc throws the recording away. The keys do nothing without a selection, nothing while
+you are typing in a box, and nothing with ⌘, Ctrl or Alt held. The
+microphone needs the companion to have whisper, as the mic button does.
+
+**Made terse before it lands.** A dictation of 25 words or more is
+handed to a bot (codex) before it goes into the box, to be rewritten as
+the terse comment you would have typed: every point kept — each
+correction, question, reference and number — and the thinking-aloud
+dropped. This is for the person who will read the comment, usually the
+one editing the draft. Nothing is sent on its own: the terse version sits
+in your box, and a small *as spoken* pill beside the microphone puts
+back the words exactly as you said them (and *terse* puts the bot's
+version back). A short dictation is terse already and goes straight in;
+if the bot fails or takes too long, your words go in as spoken, with a
+line saying so. The turn is silent — no message, no thread, nothing in
+the page chat — and the companion answers the one request that asked.
+
 **A discussion that ends in several changes.** Argue about a passage and
 the bots may end an answer with up to three proposals at once — three
 chips, three Strike it buttons, each one you can take or leave. Every one
@@ -1737,7 +1768,9 @@ caps above are lifted for it:
 - **Review in both directions.** The bot that summoned a builder never judges
   its report: the floor goes to the other bot, which reads `git diff`, runs
   the tests and reports in at most ten lines, then summons a fix or marks the
-  task done. One summon per bot per turn, reset every turn.
+  task done. Independent pieces are summoned together — one `summon:` line
+  each — and run as several agents at once, six at a time; after the reports
+  a bot may summon again (a fix, the next stage) without asking.
 - **Tests stay proportionate.** The room and every builder carry one rule:
   a test only for a stated contract or something just seen failing, one test
   per behaviour, no snapshot tests, and a reason for more than three.
@@ -1768,10 +1801,4 @@ pick it up.
 | `/project assign [<session-id-prefix>] <project-id>` | File a chat under a project. Filing **this** chat moves the active context with it, because being filed into a project and then left looking at another project's plan files would be nonsense. A chat remembers its own project: once filed, saving it while some other project is open never moves it. Filing **another** saved chat rewrites that chat's session JSON (and the project index) while you stay where you are; if that chat is open in another botference process, that process wins on its next save. |
 | `/project archive <id>` / `/project unarchive <id>` | Tuck a project away, or bring it back. Nothing moves on disk and nothing is deleted: only the `status` field in `projects/portfolio.json` flips to `archived`. Archived projects sort last everywhere and collapse into the closed **Archived** section at the bottom of the web sidebar; archiving the *active* project drops the room back to Inbox. |
 | `/project delete <id>` (alias `/delete-project`) | **Delete a project and every chat filed in it, for good.** A confirm names the project, how many chats go with it and the folder (`projects/<id>/`) that will be removed; nothing happens until you pick "Delete project and N chats". The folder, its `projects/portfolio.json` row, its `session-index.json` rows and each filed chat's session file are all removed. If you are in one of those chats you land in a fresh Inbox chat. Without a picker (headless), only the exact project id is accepted. In the web sidebar, "🗑 delete project…" in the project block (live or archived) sends this. Chats already archived with `/archive` are not touched. |
-| `/adopt [<id-prefix>]` | Continue a pre-existing **native Claude Code** chat inside the council. Opens a picker of recent `claude` sessions for the current folder; the adopted chat becomes the room's Claude session (full native memory), Claude writes a handoff into the shared transcript, and Codex joins from that brief. Run it from a fresh chat in the folder where the original conversation happened. Under `--claude-interactive`, the tmux pane launches as `claude --resume <that chat>` — botference becomes the steering layer over the real, attachable Claude Code session (watch it with `tmux attach -rt botference-claude-…`). |
-| `/new [title]` / `/new --project <id> [title]` / `/new --inbox [title]` | Start a fresh chat in place — the current chat is saved and stays resumable. With no flag the new chat inherits the project you are standing in. `--project <id>` files it under that project from birth (and opens that project's files), `--inbox` keeps it deliberately unfiled even while a project is open. A chat's filing is written once, here or by `/file`; later saves never re-file it based on whatever project happens to be open. |
-| `/file [<project-id>]` | File the current chat under a project, which becomes the active project (same as `/project open`, plus the filing). With no args, opens the arrow-key project picker (including "create a new project from this chat"). Alias: `/add-to-project`. |
-| `/delete [<id-prefix>]` | Delete a saved chat. With no args, opens a picker of recent chats; either way a confirm step follows. Deleting the chat you're in rolls into a fresh `/new`. The project index entry is cleaned up too. |
-| `/archive [<id-prefix>\|list]` | Archive a saved chat: its session JSON **moves** from `work/sessions/` to `archive/sessions/` (`BOTFERENCE_ARCHIVE_DIR`), so it leaves every listing while staying byte-for-byte on disk. No confirm step — it is reversible. With no args, opens a picker of recent chats; `/archive list` shows what is already archived. Archiving the chat you're in saves it first, then rolls into a fresh `/new`. |
-| `/unarchive [<id-prefix>]` | Move an archived chat back into the active listing (picker with no args). It never overwrites a live chat with the same id — if one exists, the archived copy is left untouched and nothing is lost. |
-|
+| `/adopt [<id-prefix>]` | Continue a pre-existing **nati

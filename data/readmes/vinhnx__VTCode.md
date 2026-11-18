@@ -10,6 +10,7 @@
 [![Rust](https://img.shields.io/badge/rust-1.100.0%2B-D99A4E?style=flat-square&logo=rust&logoColor=white)](https://github.com/vinhnx/vtcode)
 [![License](https://img.shields.io/badge/License-MIT_OR_Apache--2.0-BFB38F?style=flat-square)](#license)
 [![GitHub release](https://img.shields.io/github/release/vinhnx/vtcode.svg)](https://github.com/vinhnx/vtcode/releases)
+[![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/vinhnx/vtcode?utm_source=oss&utm_medium=github&utm_campaign=vinhnx%2Fvtcode&labelColor=171717&color=FF570A&label=CodeRabbit+Reviews)](https://coderabbit.ai)
 
 <!-- NB: not https://deepwiki.com/badge.svg — that route is behind a Vercel bot
   challenge, so GitHub's camo proxy gets 429 and renders the alt text instead.
@@ -35,9 +36,9 @@
 
 ## Overview
 
-VT Code is an auditable, resumable agentic coding loop for your repo — terminal TUI plus native macOS app,
+VT Code is an auditable, resumable agentic coding loop — terminal TUI plus native macOS app,
 open source under **MIT OR Apache-2.0** (see [Contributing](#contributing) and [License](#license)).
-Start with [Quick start](#quick-start); the full map lives in [Documentation](#documentation).
+Start with [Quick start](#quick-start); the full map is in [Documentation](#documentation).
 
 <!-- markdownlint-disable MD060 -- compact table; keep pipes unpadded -->
 
@@ -53,8 +54,8 @@ Start with [Quick start](#quick-start); the full map lives in [Documentation](#d
 
 ## Quick start
 
-Install on macOS, Linux, or Windows/WSL, then configure once and run. Source builds need Rust
-1.100.0+ (edition 2024); see the [installation guide](./docs/installation/README.md) for every method.
+Install on macOS, Linux, or Windows/WSL, configure once, and run. Source builds need Rust
+1.100.0+ (edition 2024); the [installation guide](./docs/installation/README.md) covers every method.
 
 ### 1. Install
 
@@ -63,7 +64,7 @@ Install on macOS, Linux, or Windows/WSL, then configure once and run. Source bui
 curl -fsSL https://raw.githubusercontent.com/vinhnx/vtcode/main/scripts/install.sh | bash
 ```
 
-Alternatives from the same guide: `brew install vinhnx/tap/vtcode`, `cargo install vtcode`, Windows
+Same-guide alternatives: `brew install vinhnx/tap/vtcode`, `cargo install vtcode`, Windows
 `irm https://raw.githubusercontent.com/vinhnx/vtcode/main/scripts/install.ps1 | iex`, or
 [Desktop app](#desktop-app). Verify with `vtcode --version`.
 
@@ -118,7 +119,9 @@ without another model call. See [interactive mode](./docs/user-guide/interactive
 ## Desktop app
 
 Native macOS app (macOS 15+) sharing the CLI runloop, providers, tool policy, sandboxing, sessions, config,
-and credentials. Configure a provider first (see [Quick start](#quick-start)).
+and credentials. Configure a provider first ([Quick start](#quick-start)). Opening a thread or page
+uses a short fade, and Back reveals the destination with ease-out. The composer stays in place when
+sending the first message. Settings → Accessibility controls Reduce Motion.
 
 ### Install (macOS 15+)
 
@@ -171,11 +174,11 @@ The index is canonical; this section keeps one link per task.
 - [Development](./docs/development/README.md), [testing](./docs/development/testing.md), and
   [evals](./docs/guides/eval.md)
 - [Architecture](./docs/architecture.md), [desktop workspace](./docs/development/desktop-workspace.md),
-  [loop engineering](./docs/project/plan-loop-engineering.md), and [protocols](./docs/protocols/open_responses.md)
+  [loop engineering](./docs/loop-engineering.md), and [protocols](./docs/protocols/open_responses.md)
 
 ## Development
 
-26-crate workspace sketch at version 0.182.7 (full list in the [architecture guide](./docs/architecture.md);
+26-crate workspace sketch at version 0.183.1 (full list in the [architecture guide](./docs/architecture.md);
 `default-members` builds only the root binary, `vtcode-core`, `vtcode-skills`, `vtcode-tui-runtime`, and
 `vtcode-ui`):
 
@@ -191,7 +194,7 @@ graph LR
     CORE --> UI["vtcode-ui"]
 ```
 
-Build with Rust 1.100.0+ (edition 2024; workspace version 0.182.7):
+Build with Rust 1.100.0+ (edition 2024; workspace version 0.183.1):
 
 ```bash
 git clone https://github.com/vinhnx/vtcode.git

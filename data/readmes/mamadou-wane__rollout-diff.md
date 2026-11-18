@@ -1,165 +1,127 @@
 # Rollout Diff
 
-Rollout Diff uses deterministic analysis to detect behavioral shifts across RL training steps. Its ranked reports connect changes in generated code and prose to supporting evidence and selected responses from your rollout dump.
+Rollout Diff finds changes in generated code and prose across RL training steps. It reads a TRL or verl dump locally, ranks events for inspection, and links each event to examples in the original data. Ordinary analysis needs no GPU, model API, or trainer installation.
 
-```mermaid
-flowchart LR
-    A["TRL / verl rollouts"] --> B["Analyze"]
-    B --> C["JSON report"]
-    C --> D["Render"]
-    D --> E["Searchable HTML report"]
-```
+## Install
 
-## Setup
+Use Python 3.11 or newer. The local investigation app and watch workflows require macOS or Linux. The wheel includes the web interface.
 
-Use Python 3.11 or newer. Pinned benchmark references use Python 3.12+.
+Install from the directory containing the wheel.
 
 ```sh
-python -m venv .venv
-.venv/bin/python -m pip install -e '.[test]'
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install ./rolloutdiff-0.1.0-py3-none-any.whl
+rollout --help
 ```
 
-With `uv`, install into the existing environment:
+The distribution and import name are `rolloutdiff`. The executable is `rollout`. For an index that carries 0.1.0, use `python -m pip install rolloutdiff==0.1.0`. From an unpacked source distribution, use `python -m pip install .`.
+
+## Analyze a dump
 
 ```sh
-uv pip install --python .venv/bin/python -e '.[test]'
+rollout analyze /path/to/completions --format trl --run experiment-1 \
+  --reward-column training_passed --output report.json
+rollout render report.json --output report.html
 ```
 
-## Usage
-
-### Local investigation
+Open `report.html` locally. The report shows how many series could be screened, which features changed, when they alerted, and which events ranked highest. If there is an event, inspect its selected responses using the same dump, run, and reward column.
 
 ```sh
-.venv/bin/rollout investigate --root /path/to/rollout-data
+rollout inspect /path/to/completions --format trl --run experiment-1 \
+  --reward-column training_passed --report report.json --event-rank 1
 ```
 
-Choose a TRL or verl dump in the browser to analyze it, inspect ranked events and responses, or compare windows. The local app supports macOS and Linux, reads only within the selected root and binds to loopback. Keep its session URL private. Saved replay and intervention evidence can be viewed without executing responses. Installed wheels include the frontend; Node is needed only to rebuild it. Use `--no-browser` to print the URL without opening it.
+Add `--with-absent` to inspect completions from the same run, step, and prompt where a binary feature is absent. This needs complete prompt groups. Reports store evidence and references. Raw response text stays in the source dump. Choose fresh output paths for reports.
 
-### Analyze and render
+| Format | Input | Required source columns |
+| --- | --- | --- |
+| `trl` | Trainer output, completions directory, or `completions_<step>.parquet` | `step`, `prompt`, `completion`, and `reward` or a named `--reward-column` |
+| `verl` | Directory or `<step>.jsonl` / `step_<step>.jsonl`, optionally gzipped | `step`, `input`, `output`, `score` |
 
-Analyze TRL completions and render the saved report as searchable HTML:
+For verl use `--format verl` and omit `--reward-column`. Each file's step must agree with its name. Interpret the reward according to the producer's scoring function.
+
+### Read the evidence
+
+At each step, analysis averages completions within each exact prompt and weights prompts equally. Estimating a standard error needs at least two sampling units. Related prompt variants can share a sampling unit through the Python API. Sequential alerts use a 15-step baseline and three consecutive qualifying observations. Event rank is a heuristic for choosing what to inspect.
+
+New analyses run sequential detection by default. Add `--retrospective` to `rollout analyze` or `rollout watch run`, or pass `retrospective=True` to `analyze_rollouts()`, to enable the experimental detector. It estimates a mean-shift boundary from the available series. Its original null-alert benchmark failed at 16/768 (2.08%) against a 0.5% ceiling.
+
+Version-3 analysis reports record the detector policy and distinguish disabled analysis from a completed scan with zero changes. They require a current reader. Historical version-1 and version-2 reports retain their recorded evidence. The bundled benchmark describes historical trials and does not calibrate a new run.
+
+The source distribution includes benchmark results, a data manifest, and offline reproduction instructions. Open `bench/README.md` inside `rolloutdiff-0.1.0.tar.gz`. To download that archive from an index, use `python -m pip download --no-deps --no-binary=rolloutdiff rolloutdiff==0.1.0`.
+
+`--sensitivity lenient` selects an experimental profile for smaller increases in retained structural binary features. Its report shows default and experimental counts for the same cohort. Retrospective detection is a separate choice. Full-run vocabulary selection limits alert dates to offline analysis.
+
+## Compare windows or trajectories
 
 ```sh
-.venv/bin/rollout analyze /path/to/completions --format trl --run experiment-1 \
-  --reward-column training_passed --output /path/to/report.json
-
-.venv/bin/rollout render /path/to/report.json --output /path/to/report.html
+rollout diff /path/to/completions --format trl --run experiment-1 \
+  --reward-column training_passed --a 80:100 --b 140:160 \
+  --output diff.json --html diff.html
 ```
 
-For verl dumps, use `--format verl` and omit `--reward-column`. Reports contain event evidence and exemplar references, with raw response text kept in the original dump. `render` accepts analysis or comparison JSON. Choose a fresh output path each time.
+Ranges are inclusive and can overlap or appear in either order. To compare whole dumps, pass two paths. Differences are B minus A, with completions pooled within each exact prompt per side. The report shows prompt overlap, uncertainty, and citations for each side. Comparison inspection verifies source and response fingerprints.
 
-Event reports include shared-prompt changes and prompt-descriptor shifts. `analyze --benchmark-results reference.json` attaches separately supplied benchmark counts and provenance; these figures do not calibrate the analyzed run.
-
-### Watch completed steps
-
-Seal each closed file against the producer's expected prompt-group counts, then watch the directory:
+For recorded conversations, use `--format openhands` for SWE-rebench, `--format swe-smith`, or `--format inspect`. Two unstepped dumps can be compared in full. SWE-smith files containing multiple models need an explicit `--model` for side A and `--other-model` for side B. OpenHands and SWE-smith accept JSON lists, JSONL, or Parquet. Inspect accepts one completed, text-only schema-v2 log per side. Rewards and scores require explicit selection. Missing steps and rewards stay unavailable.
 
 ```sh
-.venv/bin/rollout watch seal /path/to/completions/completions_1.parquet \
-  --format trl --run experiment-1 --groups /path/to/groups.json
-.venv/bin/rollout watch run /path/to/completions --format trl --run experiment-1 \
-  --start-step 1 --state /path/to/watch-state
+rollout diff a.json b.json --format inspect --run run-a --other-run run-b \
+  --tool-calls --output calls.json
+rollout inspect a.json --format inspect --run run-a --report calls.json \
+  --side a --feature tool_calls_count
 ```
 
-State contains private source copies and durable per-step reports and journals. Resume with the same command; `--once` processes one finite inventory. Missing steps wait. First-emission prefix steps remain separate from inferred onset and wall-clock delivery. Render a saved commit's `report.json`, and inspect against its `source/` directory. See `rollout watch run --help` and `rollout watch seal --help` for publication and resume requirements.
+`--tool-calls` compares recorded assistant requests by count, adjacent tool names, argument shape, path category, and command class. Citations resolve to original calls. A request's outcome needs separate evidence, and differences across models can reflect different tasks. Measuring change through agent training requires stepped data. Missing steps or rewards and tool-call comparisons use the version-2 comparison format.
 
-### Compare windows or dumps
+Inspect JSON works with the base installation. To read native `.eval` files, install the optional `inspect-ai==0.3.290` reader in a fresh environment.
 
 ```sh
-.venv/bin/rollout diff /path/to/completions --format trl --run experiment-1 \
-  --a 80:100 --b 140:160 --output /path/to/diff.json --html /path/to/diff.html
+python3 -m venv .venv-inspect
+.venv-inspect/bin/python -m pip install './rolloutdiff-0.1.0-py3-none-any.whl[inspect]'
+.venv-inspect/bin/rollout diff --help
 ```
 
-Ranges may overlap or appear in either order; each range is inclusive. Supply a second dump to compare runs. Reports show differences, uncertainty, prompt overlap and citations for each side. See `rollout diff --help` and `rollout inspect --help` for input and inspection options.
+The equivalent index requirement is `'rolloutdiff[inspect]==0.1.0'`. The adapters read recorded logs without running tools or rescoring samples.
 
-### Inspect an event
+## Python adapters and extractors
 
-Inspect the selected responses for the highest-ranked event:
-
-```sh
-.venv/bin/rollout inspect /path/to/completions --format trl --run experiment-1 \
-  --reward-column training_passed --report /path/to/report.json --event-rank 1
-```
-
-Add `--with-absent` to compare binary-feature examples with feature-absent completions from the same run, step, and prompt. Supply complete groups so reward summaries include every completion. Groups with no absent completion receive an unavailable comparison status.
-
-Inspection checks saved identities and metadata. Version-1 analysis reports have no response fingerprint; comparison reports verify source and response fingerprints.
-
-### Python API
+`load_trl` and `load_verl` return canonical rows. To adapt a different stepped table, map canonical names to the columns of your pandas DataFrame, `frame`, with `from_table`. Preserve the exact prompt and response, a nonnegative integer step, finite reward, and a unique `(run, sample_id)`. Supply stable sample IDs if rows may be reordered. Prompt identity includes chat roles and metadata.
 
 ```python
-from rolloutdiff import analyze_rollouts, load_trl
+from rolloutdiff import analyze_rollouts, extract, featurize, from_table
 
-rollouts = load_trl(
-    "/path/to/completions", run="experiment-1", reward_column="training_passed"
-)
-analysis = analyze_rollouts(rollouts)
+rows = from_table(frame, run="trial", columns={
+    "step": "iteration", "prompt": "question", "response": "answer",
+    "reward": "score", "sample_id": "completion_id",
+})
+sample = extract(rows.iloc[0].response)
+print(sample.dense["n_code_blocks"], sorted(sample.sparse))
+tables = featurize(rows)
+print(tables.catalog[["feature", "tier", "kind"]])
+analysis = analyze_rollouts(rows)
 print(analysis.event_ranking)
-print(analysis.evidence)
 ```
 
-`analysis.evidence` covers every extracted feature series plus `scalar:reward`. Use `build_report(analysis)` and `render_report(report)` to create reports in Python, or `resolve_exemplars()` to retrieve selected responses.
+`extract` reads Python syntax and prose from one response. `featurize` produces per-completion dense values, retained sparse features, and a catalog. `build_report(analysis)` and `render_report(report)` export an analysis. For unstepped inputs use `load_trajectories` or `load_inspect` and `compare_rollouts(a, b, include_tool_calls=True)`. Use `extract_tool_calls(tool_calls, response_messages)` to inspect one record's structured call features.
 
-Use `compare_rollouts(a, b)` for two dumps or `compare_rollouts(rollouts, a=(80, 100), b=(140, 160))` for two ranges. `comparison_json()` and `render_comparison_report()` produce reports. `resolve_comparison_citations()` retrieves the cited responses. Optional sampling-unit maps account for related prompts.
+## Other workflows
 
-### Aria replay
-
-Replay a selected Aria completion in disposable Docker containers. This executes generated code and requires the supported Python image installed locally, along with the pinned evaluator and task artifacts.
-
-Set `RESPONSE_SHA256` to the selected response's SHA-256 hash.
-
-```sh
-.venv/bin/rollout replay-aria /path/to/aria.parquet --run aria \
-  --sample-id step111_row233 --response-sha256 "$RESPONSE_SHA256" \
-  --artifacts /path/to/pinned-artifacts --docker-host unix:///var/run/docker.sock \
-  --allow-execution --output /path/to/replay.json
-```
-
-The JSON result includes host-side task-test comparisons and historical evaluator claims marked as untrusted.
-
-The opt-in `investigate-aria` workflow supports preparing and comparing controlled interventions against frozen Aria replay evidence. Execution requires explicit, single-use authorization. Run `rollout investigate-aria --help` for available commands.
-
-## Inputs
-
-| Loader | Accepted input |
-| :--- | :--- |
-| `load_trl` | Completions directory, trainer output directory, or `completions_<step>.parquet` |
-| `load_verl` | Rollout directory, `<step>.jsonl`, or `step_<step>.jsonl`, optionally gzipped |
-| `from_table` | DataFrame, with source-column mapping through `columns` |
-
-TRL uses `reward` by default or a specified `reward_column`. The verl adapter maps `input`, `output`, `score`, and `step`. Custom reward functions can change what `score` represents.
-
-Canonical rows contain `run`, `step`, `sample_id`, `prompt_id`, `prompt`, `response`, and `reward`. Each `(run, sample_id)` pair must be unique, with a nonnegative integer step and a finite reward. Use explicit sample IDs when reordering source rows. A `prompt_id` identifies exact prompt content within a run, including chat roles and metadata.
-
-## Reading the results
-
-`analyze` averages completions within each exact prompt at each step, then weights prompts equally. `diff` pools each prompt's completions across each selected range, then weights exact prompts equally. At least two sampling units are needed to estimate standard errors. Related prompts can share a unit through an optional sampling-unit mapping.
-
-Sequential detection uses the first 15 observed steps as its baseline and requires three consecutive qualifying observations in the same direction. Retrospective detection looks for a single mean shift across the run. See [`detect.py`](src/rolloutdiff/detect.py) and [`retrospective.py`](src/rolloutdiff/retrospective.py) for thresholds and statistical details.
-
-Event ranks provide a heuristic inspection order. Evidence for sequential alerts covers replication, persistence, reward association, and prompt mix. Check availability statuses and numerical-floor warnings when interpreting a result.
-
-Detector error rates are uncalibrated. Vocabulary selection uses the full run for analysis and the selected ranges for comparison. Public benchmark targets were chosen after inspecting the runs. Causal and mechanism claims require independent evidence.
+- **Investigate locally.** `rollout investigate --root /path/to/data` opens the loopback app. Choose a TRL or verl dump to inspect ranked events or compare windows. Keep the session URL private. `--no-browser` prints the URL. Saved replay and intervention evidence can be viewed read-only.
+- **Watch completed steps.** `rollout watch seal` checks a closed file against independently planned prompt-group counts. `rollout watch run` consumes marked files in order, waits for gaps, and resumes with the detector policy recorded in its private state. A supported legacy session continues with both detectors and needs the newer writer after it appends a step. Start a new state to change policy. `--once` processes one finite inventory. Inspect a saved commit against its own source snapshot. Event issuance is the first durable snapshot containing the event. Membership, representative, and rank can change in later snapshots. The timing check used recorded Aria steps. Full-prefix statistics are recomputed.
+- **Connect a producer.** `AsyncRolloutProducer.submit` accepts complete, planned groups into a bounded queue. A receipt's `acknowledge()` waits for durable storage. `make_trl_callback` supports TRL 1.18.0 GRPO with Transformers 4.56.2, one writer on world rank zero, and a restricted full-generation logging configuration. `VerlCompletionLogger.bind(trainer)` replaces the verl 0.9.1 training dump writer with one designated publisher. `FixedProbeHook` needs a separate run, fixed prompts, and a caller-owned sampler. See `rollout watch --help` for configuration, rank, and recovery requirements. Playback checks used authored inputs. Live trainer overhead and distributed execution remain unmeasured.
+- **Send a notification.** `rollout watch notify` sends a bounded summary of a durable snapshot to an explicitly supplied endpoint and records the attempt locally. Delivery has no automatic retry.
+- **Review Aria replay evidence.** `rollout replay-aria --help` describes replay of one selected completion. `rollout investigate-aria --help` covers controlled interventions against frozen evidence. Replay needs the supported Docker setup, pinned artifacts and explicit authorization. Interventions require single-use approval.
 
 ## Development
 
-```sh
-.venv/bin/python -m pip install -c .github/ci-constraints.txt ruff
-.venv/bin/ruff format --check src bench tests
-.venv/bin/ruff check src bench tests
-.venv/bin/python -m pytest -q -m 'not local_data'
-```
-
-Frontend checks use Node 22.23.1:
+Run the development checks from the source root in an activated Python virtual environment.
 
 ```sh
-npm ci --prefix frontend
-npm run --prefix frontend lint
-npm run --prefix frontend typecheck
-npm test --prefix frontend
-npm run --prefix frontend build
+python -m pip install -c .github/ci-constraints.txt -e '.[test]' ruff
+ruff format --check src bench tests scripts .github/*.py
+ruff check src bench tests scripts .github/*.py
+python -m pytest -q -m 'not local_data'
 ```
 
-The build updates the packaged assets in `src/rolloutdiff/_web`. Commit them with frontend changes. `npm run --prefix frontend test:e2e` exercises the installed application with Chromium and synthetic data. Install that test browser with `cd frontend && npx playwright install chromium`.
-
-See [`bench/`](bench/) for public-run and synthetic benchmarks, and [`tests/`](tests/) for local-data checks. Keep datasets and generated outputs outside the repository. Aria and TRL redistribution permissions remain unresolved.
+Frontend development uses Node 22.23.1. Run `npm ci --prefix frontend`, then `npm run --prefix frontend lint`, `npm run --prefix frontend typecheck`, `npm test --prefix frontend`, and `npm run --prefix frontend build`. The build updates the assets in the wheel. Browser tests use `npm run --prefix frontend test:e2e` with Playwright Chromium installed. Contributor instructions are in `CONTRIBUTING.md` in the source distribution.

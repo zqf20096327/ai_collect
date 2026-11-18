@@ -63,6 +63,8 @@
 
 [2026 NSDI] **FalconFS: Distributed File System for Large-Scale Deep Learning Pipeline**. [[PDF](https://www.usenix.org/system/files/nsdi26-xu.pdf)] [[Slides](https://www.usenix.org/system/files/nsdi26_slides-xu.pdf)] [[Code](https://github.com/falcon-infra/falconfs)]
 
+[2026 arXiv] **GetBatch: Distributed Multi-Object Retrieval for ML Data Loading**. [[PDF](https://arxiv.org/pdf/2602.22434) [[Code](https://github.com/NVIDIA/aistore)]
+
 ### Caching System
 
 [2020 FAST] **Quiver: An Informed Storage Cache for Deep Learning**. [[PDF](https://www.usenix.org/system/files/fast20-kumar.pdf)] [[Slides](https://www.usenix.org/sites/default/files/conference/protected-files/fast20_slides_kumar.pdf)]
@@ -252,6 +254,8 @@
 [2026 FAST] **AdaCheck: An Adaptive Checkpointing System for Efficient LLM Training with Redundancy Utilization**. [[PDF](https://www.usenix.org/system/files/fast26-liu-weijie.pdf)] [[Code](https://github.com/HPDL-Group/Merak)]
 
 [2026 NSDI] **Checkmate: Zero Performance Overhead Model Checkpointing via Network Gradient Replication**. [[PDF](https://www.usenix.org/system/files/nsdi26-bhardwaj.pdf)] [[Slides](https://www.usenix.org/system/files/nsdi26_slides-bhardwaj.pdf)] [[Code](https://github.com/hipersys-team/checkmate)]
+
+[2026 NSDI] MoEvement: **Sparse Checkpointing for Fast and Reliable MoE Training**. [[PDF](https://www.usenix.org/system/files/nsdi26-gandhi.pdf)]
 
 [2026 INFOCOM] Zoetic: **A Self-updating Checkpointing and Fast Failure Recovery System for Distributed LLM Training**. [[PDF](https://doi.org/10.1109/INFOCOM59046.2026.11571256)]
 

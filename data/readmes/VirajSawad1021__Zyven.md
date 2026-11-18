@@ -491,6 +491,35 @@ To see findings in the repository's **Security → Code scanning** tab, upload t
 On the command line, `zyven verify --sarif out.sarif ...` writes the same file, also with `--discover` (one run for
 every configured server, attached to its config file).
 
+**Run it afterwards with least privilege.** After a check in the sandbox with an allowlist, `--srt-settings FILE`
+writes a settings file for Anthropic's [sandbox-runtime](https://github.com/anthropics/sandbox-runtime) that allows only
+the hosts the server reached, no writes, and no reads of credential folders such as `~/.ssh` and `~/.aws`:
+
+```bash
+zyven verify --docker zyven-sandbox:py312 --mount ./server:/srv --allow-host api.example.com \
+  --srt-settings srt.json -- python /srv/server.py
+srt --settings srt.json python server/server.py
+```
+
+The check makes only a few calls, so a server can need more hosts or a writable folder in real use; add them to the
+file by hand.
+
+**As a pre-commit hook.** Checks every server in an MCP client config you commit (`.mcp.json`, `.cursor/mcp.json`,
+`.vscode/mcp.json`, `claude_desktop_config.json`, `.codex/config.toml`):
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/VirajSawad1021/Zyven
+    rev: main                              # pin a release tag or commit once there is one
+    hooks:
+      - id: zyven-verify
+        # args: [--docker, zyven-sandbox:py312]   # run the servers in the sandbox (needs `zyven setup` once)
+```
+
+The servers run on your machine as your client would run them, unless you add the `--docker` argument. A failing
+server stops the commit; `git commit --no-verify` skips the hook.
+
 **On the Connections page**, the same checks run every time you press **Test**:
 - **The result is shown on the card.** A server that fails, for example on tool poisoning, offers only a
   **Turn on anyway** button, which asks you to confirm.
@@ -597,26 +626,30 @@ It scans committed config, skill provenance and eval reports, and runs in CI on 
 - **[AI Usage Disclosure](AI_USAGE.md)**: Complete inventory of every file and function where open-weight model outputs are programmatically consumed and validated.
 - **[Scope & Limitations](LIMITATIONS.md)**: What multi-gate verification proves, what it does not prove, and system boundaries.
 - **[Security policy](SECURITY.md)**: How to report a vulnerability privately, what is in scope, and how releases are built and signed.
+- **[Contributing](CONTRIBUTING.md)**: How to set up, run the checks, add a catalog library or a verify check, and send a pull request.
 
 ## Status and roadmap
 
-The capability compiler, the self-extending agent and the board work end to end. Added since the competition:
-- coding agents as compile roles
-- `zyven verify` for any MCP server
+Works end to end: the capability compiler (six sandbox gates), the self-extending agent and the board.
+
+Added since the competition:
+- coding agents (Codex, Claude Code, OpenCode, Qoder CLI, Antigravity) as compile roles
+- `zyven verify` for any MCP server: tool poisoning, terminal escapes and hidden text, rug pulls with a lock file that
+  also records the server version, launch command and image, version pinning, checks across servers (tool shadowing),
+  scanning tool output, SARIF output for GitHub code scanning, a GitHub Action and a pre-commit hook
 - `zyven mcp` for Claude Code, Codex and other agents
-- install with `uvx`/`pipx`, plus `setup` and `doctor`
-- `zyven reassemble`
+- install with `uvx`/`pipx`, plus `zyven setup` and `zyven doctor`
+- `zyven reassemble`, `zyven export` and `zyven outdated`
+- a mutation test of the gates (`eval/mutation_test.py`)
 
-Open work is tracked in [issues](https://github.com/VirajSawad1021/Zyven/issues):
+Next, planned but not done:
+- a release on PyPI
+- a held-out study: compile popular libraries Zyven was not developed against and compare with a model given the
+  library and a Python interpreter
+- telling real findings apart from what a server merely can do, and measuring how precise `zyven verify` is
 
-- [#7](https://github.com/VirajSawad1021/Zyven/issues/7) Re-run every result with the final open-weight model
-  (`scripts/check_open_models.py` now enforces the policy)
-- [#8](https://github.com/VirajSawad1021/Zyven/issues/8) Learning-curve evaluation (skills learned once, reused later)
-- [#9](https://github.com/VirajSawad1021/Zyven/issues/9) Interface lint: measure the effect of the merged related-facts rule
-- [#24](https://github.com/VirajSawad1021/Zyven/issues/24) Evaluation: add a model + Python interpreter baseline
-- [#25](https://github.com/VirajSawad1021/Zyven/issues/25) Evaluation: held-out suite and run-to-run variance
-- [#26](https://github.com/VirajSawad1021/Zyven/issues/26) Catalog: real-world libraries beyond pure calculators (packaging and networkx added; more to come)
-- [#27](https://github.com/VirajSawad1021/Zyven/issues/27) Demo video: done, linked at the top of this README
+Open work is tracked in [issues](https://github.com/VirajSawad1021/Zyven/issues), and
+[CONTRIBUTING.md](CONTRIBUTING.md) explains how to help.
 
 Known gaps in the optional extras: Claude Code and the GitHub connector have not been run against the real services;
 Antigravity's headless mode does not work on the development machine; Gmail and hosted Slack sign-in were not run

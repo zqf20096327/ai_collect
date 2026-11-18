@@ -176,6 +176,38 @@ export DMLX_QWEN38_MTP_DIR=~/models/Qwen3.8-27B-MTP-4bit
 
 `--speculative-mtp 7` sets the adaptive controller’s ceiling; it does not force every round to draft seven tokens.
 
+**DFlash2 block drafter (experimental).** Instead of the sequential MTP head you can use the block-parallel [z-lab/Qwen3.8-27B-DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter (7 tokens per draft round, conditioned on backbone layers 5/19/33/47/61). Point `DMLX_QWEN38_DFLASH2_DIR` at the checkpoint before serving with `--speculative-mtp`:
+
+```bash
+huggingface-cli download z-lab/Qwen3.8-27B-DFlash2
+DMLX_QWEN38_DFLASH2_DIR=~/.cache/huggingface/hub/models--z-lab--Qwen3.8-27B-DFlash2/snapshots/<rev> \
+  ./dmlx/bin/dmlx serve --model qwen3.8-27b-4bit --speculative-mtp 7 --port 8080
+```
+
+Greedy (temperature 0) only for now; sampled drafting and vision prompts fall back or error. The drafter weights are quantized to 4-bit at load by default (`DMLX_DF2_DRAFTER_BITS=0` keeps bf16).
+
+Measured on an M4 Pro 48 GB (temp 0, 256-token generations, `scripts/realistic_h2h.py`):
+
+| scenario | decode tok/s | repeat-prompt TTFT |
+|---|---|---|
+| code generation | 33.6 | 0.15 s |
+| multi-turn | 26.3 | 0.15 s |
+| prose summary | 35.8 | 0.28 s |
+
+How it works: the backbone exposes hidden-state taps at layers 5/19/33/47/61; the drafter conditions on those (projected once per committed token into a per-layer K/V ring), drafts 7 tokens in ONE parallel pass through 5 non-causal layers with two-tap dynamic convolutions, and a rank-256/top-16 candidate selector picks the block greedily. The standard draft→verify→commit path keeps outputs lossless (greedy output is bit-identical to the MTP path). Repeat prompts restore both the backbone KV snapshot and the drafter context, so the second turn skips prefill entirely. `DMLX_DF2_PREDRAFT=1` additionally builds the next block during verify (off by default — see HANDOFF.md for the measurements).
+
+**LoRA adapters (experimental).** PEFT adapters can be merged into the quantized backbone at load time — verified with [harness-hub/Qwen3.8-27B-pi-adapted](https://huggingface.co/harness-hub/Qwen3.8-27B-pi-adapted) (r=32, 256 modules):
+
+```bash
+huggingface-cli download harness-hub/Qwen3.8-27B-pi-adapted
+DMLX_LORA_ADAPTER=~/.cache/huggingface/hub/models--harness-hub--Qwen3.8-27B-pi-adapted/snapshots/<rev> \
+  ./dmlx/bin/dmlx serve --model qwen3.8-27b-4bit --speculative-mtp 7 --port 8080
+```
+
+Each targeted linear is dequantized, merged as `W + (alpha/r)·B·A` in f32, and requantized — no runtime cost, but not bit-identical to a bf16 merge. Compatible with both MTP and DFlash2 speculative decoding.
+
+Model-card parity for pi-adapted: serve with `DMLX_CHAT_EMPTY_THINK=1` (thinking off, as trained) and drive it over `/v1/chat/completions` (pi: `"api": "openai-completions"` in `~/.pi/agent/models.json`). Tool calls parse into structured `tool_calls` (qwen3_xml format). Verified end-to-end: the pi coding agent ran a fix-the-failing-test loop (pytest → diagnose → edit → green) against this server. Note the adapter was trained on bf16 weights; merging into a 4-bit backbone preserves behavior in our checks but Terminal-Bench scores were not reproduced. temp>0 requests bypass DFlash2 (greedy-only drafter) automatically.
+
 MTP applies to streaming and non-streaming alike; benchmark measurements should still use non-streaming requests (SSE delivery adds overhead).
 
 ### Serve DeepSeek V4 Flash in native mode
@@ -243,8 +275,10 @@ DMLX_LOCAL_KEY=local dsh web   # or: dsh headless "task"
 
 `DMLX_LOCAL_KEY` is only a credential placeholder — dmlx ignores the value.
 The served model's vision tower handles image input directly (PNG/JPEG via
-stb_image, WebP/HEIC via a macOS ImageIO fallback). Codex must use
-`wire_api = "chat"` (`/v1/responses` is not implemented).
+stb_image, WebP/HEIC via a macOS ImageIO fallback). Codex uses
+`wire_api = "responses"` (newer Codex releases removed the "chat"
+wire API); /v1/responses supports function tools and ignores
+reasoning/encrypted-content fields.
 
 ### Zero-wait restarts (agent workloads)
 

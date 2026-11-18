@@ -1,3 +1,21 @@
+<div align="center">
+
+<a href="https://talosbot.ai"><img src="https://raw.githubusercontent.com/talos-hq/.github/main/profile/assets/banner-clud.jpg" alt="clud — Think. Execute. Deliver." width="100%"></a>
+
+**Claude &amp; Codex CLI with safety 3rd and God Mode always: Claude, Codex and DeepSeek on the Claude Code harness.**
+
+<a href="https://talosbot.ai"><img src="https://img.shields.io/badge/talosbot.ai-C89B63?style=for-the-badge&labelColor=0B0D10" alt="talosbot.ai"></a>
+[![CI](https://github.com/zackees/clud/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/zackees/clud/actions/workflows/ci.yml?query=branch%3Amain+event%3Apush)
+[![Auto Release](https://github.com/zackees/clud/actions/workflows/auto-release.yml/badge.svg?event=push)](https://github.com/zackees/clud/actions/workflows/auto-release.yml?query=event%3Apush)
+
+</div>
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/talos-hq/clud/main/install.sh | sh
+```
+
+<sub>Windows, version pinning and pip/uv installs: see [Installation](#installation).</sub>
+
 # clud
 
 ![hero-clud](https://github.com/user-attachments/assets/4009dfee-e703-446d-b073-80d826708a10)
@@ -35,9 +53,6 @@ clud grind
 
 Plans, writes, reviews and lands a whole issue list as merged PRs, with each
 agent role capped to its job. See [`clud grind`](#clud-grind--burn-down-issues-to-merged-prs).
-
-[![CI](https://github.com/zackees/clud/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/zackees/clud/actions/workflows/ci.yml?query=branch%3Amain+event%3Apush)
-[![Auto Release](https://github.com/zackees/clud/actions/workflows/auto-release.yml/badge.svg?event=push)](https://github.com/zackees/clud/actions/workflows/auto-release.yml?query=event%3Apush)
 
 CI builds each of the six target triples once on Linux and executes the result
 on native Linux/Windows/macOS runners — see
@@ -100,6 +115,7 @@ set `CLUD_BIN` to its absolute path if needed. Restart Hermes or use
 | `serve_stop` | Stop the gateway owned by this MCP connection. |
 | `session_start` | Submit an agent task and receive a durable session handle immediately. |
 | `session_status`, `session_result`, `session_wait`, `session_kill` | Inspect, collect, wait for, or stop an agent session. |
+| `session_wait_any` | Wait once on a whole fan-out of sessions and return as soon as **any** child seals. |
 
 For Codex, authenticate with
 `clud auth login codex --acknowledge-experimental`, or provide `OPENAI_API_KEY`
@@ -834,7 +850,14 @@ clud loop "Implement the API endpoints from the spec"
 clud loop TASK.md                                  # Read prompt from a file
 clud loop https://github.com/org/repo/issues/42    # Fetch & iterate on a GH issue
 clud loop --loop-count 10 "fix bugs"               # Custom iteration count
+clud loop --loop-count 100 --interval 5m "fix bugs" # Wait 5m between iterations
 ```
+
+`--interval` paces the loop: without it the next iteration starts the moment
+the previous one exits, and each restart re-pays the whole prompt. If the work
+is not ready yet, the agent can just end its turn — the next iteration is
+already scheduled. `--repeat` is the different thing: it sleeps *after* the
+loop completes before re-running it.
 
 ### In-chat `/loop` for Codex models
 

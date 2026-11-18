@@ -24,7 +24,7 @@
 
 **Update:** on a Linux server `sudo sara update` (backs up first, rolls back if she doesn't answer) · Docker: `sudo git pull && sudo docker compose up -d --build` · Windows and Mac apps: Settings → Privacy & system → Updates · Android: Google Play. [Upgrading](docs/INSTALL.md#upgrading).
 
-> **Status:** 3.18.2, [Several Google accounts from either mail page, approved code fixes on servers](https://github.com/farena-ai/sara/releases/tag/v3.18.2). One account list with + Add an account on both mail pages, a different Google sign-in always adds, and server installs can apply owner-approved code fixes with rollback. [See what changed](#whats-new)
+> **Status:** 3.27.0, [Renewals, purchases, Home Assistant scenes, audio briefing, scan pages, upkeep, gifts](https://github.com/farena-ai/sara/releases/tag/v3.27.0). Paperwork renewals in one list; receipts with return-by dates; Home Assistant found by itself with scenes by voice; the morning briefing as audio; scan pages with the camera; car and house upkeep; gift ideas; a subscription trimmer; a private voice journal; times agreed with friends. [See what changed](#whats-new)
 >
 > Windows installer: unsigned ([SmartScreen guidance](docs/INSTALL.md)). The macOS release process requires signed and notarized downloads; each build is qualified separately. Android: [Google Play](https://play.google.com/store/apps/details?id=com.backstagecoding.sara). iPhone: [home-screen web app](docs/PHONE.md).
 
@@ -164,20 +164,30 @@ Recent releases · 6 November 2026. [Full changelog](CHANGELOG.md) · [All downl
 
 | Release | What changed for you |
 |---|---|
+| **[3.27.0](https://github.com/farena-ai/sara/releases/tag/v3.27.0)** | **[Renewals, purchases, Home Assistant scenes, audio briefing, scan pages, upkeep, gifts](docs/RENEWALS.md)** — Renewals and paperwork; Purchases with return reminders; one-click Home Assistant and spoken scenes (locks always ask); audio briefing and a private podcast feed; Scan pages to one PDF; upkeep schedules; gifts and cards in your voice; Maybe cancel; encrypted voice journal; Find a time with a friend. |
+| **[3.26.0](https://github.com/farena-ai/sara/releases/tag/v3.26.0)** | **[Bring everything, Waiting on you, Where do you text?, cost autopilot](docs/MOVE_IN_GUIDE.md)** — Bring everything from Hermes, OpenClaw, ChatGPT and Claude in one review; one Waiting on you list (never money by swipe); Where do you text? with Send me a test; cost autopilot with Undo and savings; compare Sara with other agent CLIs you installed. |
+| **[3.25.0](https://github.com/farena-ai/sara/releases/tag/v3.25.0)** | **[Sign in with your provider, faster voice on Windows, store-ready extension](docs/SIGN_IN_SSO.md)** — Sign in with authentik, Keycloak, Pocket ID, Google, Microsoft or Okta on any server; hearing and voice stay loaded on Windows and Mac; optional live words while you talk; trip rename, Keep one of each in Library, Nasdaq stock prices; signed Windows uninstaller. |
+| **[3.24.0](https://github.com/farena-ai/sara/releases/tag/v3.24.0)** | **[Security review, backup test restores, What's new, server dashboard, faster voice](docs/SECURITY_REVIEW_U5.md)** — Security review with 7 fixes; monthly automatic test restores; What's new after each update; a Settings switch for server code changes; a server dashboard; first spoken word about 0.4 s after you stop talking on Linux servers. |
+| **[3.23.0](https://github.com/farena-ai/sara/releases/tag/v3.23.0)** | **[Talk with Sara, shared projects, marketplace, picture studio, business pack](docs/VOICE_FIRST.md)** — Talk hands-free and answer cards by voice; share notes, to-dos and files with a friend's Sara; share skills, automations and team recipes in a community; paint-to-edit, extend, upscale and short clips on your own GPU; timers, invoices emailed after you approve, a read-only client portal and bookkeeping exports. |
+| **[3.22.1](https://github.com/farena-ai/sara/releases/tag/v3.22.1)** | **[Settings and the new windows open again](docs/MONEY.md)** — Settings, Health, Family and every window after Money open again; a test now checks every window in the page is closed. |
+
+<!-- sara:recent-releases:end -->
+
+<details>
+<summary><b>Earlier 2.6x releases</b>: 3.22.0 back to 2.61.5</summary>
+
+| Release | What changed for you |
+|---|---|
+| **[3.22.0](https://github.com/farena-ai/sara/releases/tag/v3.22.0)** | **[Money, family planner, health log, study cards, browser extension](docs/MONEY.md)** — Bank exports become budgets, bills and subscriptions (never pays); plan the week's dinners into the grocery list; medicines, appointments and readings kept private; study sets with spaced review and kid coaching; ask about a page, save it or fill a form after you approve. |
+| **[3.21.0](https://github.com/farena-ai/sara/releases/tag/v3.21.0)** | **[Smarter: six languages, voices apart, Word comments, team recipes](docs/LANGUAGES_TEXT.md)** — Readers for promises, clauses and bookings in es/fr/de/pt-BR/it; OpenSky flight status (opt-in, free); local voice-print speaker separation; Word revisions in headers, footers, notes and text boxes plus comments and tracked moves; save and reuse team recipes; Ask about anything covers meetings, trips, documents, research and goals; opt-in shared fixes. |
+| **[3.20.0](https://github.com/farena-ai/sara/releases/tag/v3.20.0)** | **[The apps catch up: Dock and taskbar counts, Mac meeting recording, Android notices](docs/desktop.md)** — Unread counts on the taskbar and Dock; the Windows app counts and announces messages from every saved server; the Mac records calls and reads selected text for quick ask; Android gets one-to-one and quiet community notifications and saves files; iPhone wording, badge and tap targets fixed. |
+| **[3.19.0](https://github.com/farena-ai/sara/releases/tag/v3.19.0)** | **[Proven on real models, Try these, steadier releases](docs/TRY_THESE.md)** — A 40-task real-model run (39/40 on a local model), end-to-end checks for every mail kind and for linked servers, a Windows install/update matrix, Help → Try these with results you can send, and timing-safe tests. |
 | **[3.18.2](https://github.com/farena-ai/sara/releases/tag/v3.18.2)** | **[Several Google accounts from either mail page, approved code fixes on servers](docs/MAIL_ACCOUNTS.md)** — Add as many Google, Gmail, Outlook and other accounts as you like from either mail page; signing in to another Google address adds it; Linux server installs take approved, tested code fixes through a locked-down helper. |
 | **[3.18.1](https://github.com/farena-ai/sara/releases/tag/v3.18.1)** | **[Message notices you can't miss, one Windows install, second mailboxes kept](docs/MESSAGES.md)** — New one-to-one messages show a card in front of you (also after reopening); Windows updates land on the existing install and remove a duplicate; a second mailbox no longer replaces the first. |
 | **[3.18.0](https://github.com/farena-ai/sara/releases/tag/v3.18.0)** | **[Self-repair, friends fixing friends, quieter communities](docs/SELF_REPAIR.md)** — Self-repair from health checks and errors with automatic undo; grow new skills; tested code fixes with rollback where the install allows; ask a linked friend's Sara to fix your server with your approval; popups for messages and quiet community counts. |
 | **[3.17.0](https://github.com/farena-ai/sara/releases/tag/v3.17.0)** | **[Documents end to end, agent teams, support link, alerts where you want](docs/AGENT_TEAMS.md)** — Fill templates and draft from past documents with sources; revise with real tracked changes; get a ready-to-sign PDF; run a team of helpers on a big job; let a friend's Sara look at redacted health and logs; send alerts to the project you choose. |
 | **[3.16.0](https://github.com/farena-ai/sara/releases/tag/v3.16.0)** | **[Writing that sounds human, meetings, keeping in touch, trips](docs/WRITING_STYLE.md)** — Rewrite documents and reports in plain language; record or upload meetings for transcripts, decisions and drafted follow-ups; see who waits for your reply and what you promised; trips from booking emails with alerts and rebooking options. |
 | **[3.15.0](https://github.com/farena-ai/sara/releases/tag/v3.15.0)** | **[Choices to tap, goals, research, ask anything, private messages](docs/CHOICES.md)** — Pick-an-answer buttons in the app, Telegram and Discord; goals with milestones and nudges; research from the web and your files to Word/PDF; ask across mail, files, chats and calendars; linked-server messages and communities the agents never see. |
-
-<!-- sara:recent-releases:end -->
-
-<details>
-<summary><b>Earlier 2.6x releases</b>: 3.14.1 back to 2.61.5</summary>
-
-| Release | What changed for you |
-|---|---|
 | **[3.14.1](https://github.com/farena-ai/sara/releases/tag/v3.14.1)** | **[Saved documents count as saved](docs/DOCUMENTS.md)** — Making a document, filling a form, invoices, exports and Docs/Sheets/Excel edits now count as proof that it was saved. |
 | **[3.14.0](https://github.com/farena-ai/sara/releases/tag/v3.14.0)** | **[All your accounts together, and her own icon](docs/MAIL_ACCOUNTS.md)** — Calendars from Google, Outlook, iCloud, Fastmail and Yahoo labeled by account; the app icon, browser tab and notifications use her own picture. |
 | **[3.13.1](https://github.com/farena-ai/sara/releases/tag/v3.13.1)** | **[Her pictures with ComfyUI, sent where you choose](docs/PHOTOS.md)** — A new Send her pictures to setting: a chat just for her pictures, one of your chats, a project chat, and/or Telegram and Discord. |
@@ -437,82 +447,4 @@ A general comparison with the usual kinds of alternatives (individual products v
 
 | | Sara | Hosted AI companion apps | Coding CLIs and agents | Self-hosted chat UIs |
 |---|:-:|:-:|:-:|:-:|
-| Runs on your own computer or server | ✅ | ❌ | ✅ | ✅ |
-| Use any model, including local ones | ✅ | ❌ usually theirs | varies | ✅ |
-| Lasting personality and memory you can see and edit | ✅ | ✅ | ❌ | varies |
-| Writes, runs and tests code, asks before risky steps | ✅ | ❌ | ✅ | varies (plug-ins) |
-| Planner, reminders, documents, voice calls | ✅ | some | ❌ | some |
-| Phone apps, Telegram and Discord | ✅ | phone apps | ❌ | varies |
-| Bring your chats from other companion apps, reviewed before saving | ✅ | ❌ usually | ❌ | varies |
-| The whole app in six languages | ✅ | varies | varies | varies |
-| Safety layer that no setting can turn off | ✅ | their own policies | n/a | usually not |
-| Price | free (MIT); you pay for your models | subscription | varies | usually free |
-
-## Install
-
-**Linux server** (Debian/Ubuntu, Fedora/RHEL/Alma/Rocky, Arch, openSUSE), one command that asks a
-few plain questions (press Enter for the suggestion):
-
-```sh
-curl -fsSL https://raw.githubusercontent.com/farena-ai/sara/main/deploy/get-sara.sh | sudo bash
-# it ends with the address to open and your one-time owner token
-sudo sara status
-```
-
-**Docker:**
-
-```sh
-git clone https://github.com/farena-ai/sara && cd sara
-sudo docker compose up -d                       # or: sudo docker compose --profile ollama up -d  (with a local Ollama)
-sudo docker compose logs sara | grep -A1 'owner token'   # or: open her page and enter the setup code from this log
-```
-
-**App stores and NAS:** the image `ghcr.io/farena-ai/sara` (amd64 and ARM),
-`brew install --cask farena-ai/tap/sara`, TrueNAS, Proxmox and HACS (as a custom repository) work
-now; Unraid is approved, and winget, CasaOS/ZimaOS, Umbrel and the HACS store list are waiting for
-review
-([which is which](docs/INSTALL.md#other-ways-to-install)). A new server is set up in the browser
-with a short code from her log (one click on Umbrel), no long token to copy.
-
-**Windows and macOS:** download `Sara-Setup-<version>.exe` or `Sara-<version>.dmg` from the
-[releases page](https://github.com/farena-ai/sara/releases/latest). The first question: run Sara on
-this computer (her server and the desktop app together) or connect to a Sara somewhere else (the app
-only).
-
-**Phones:** the [Android app](https://play.google.com/store/apps/details?id=com.backstagecoding.sara) is on Google Play; pair it by scanning the QR code under
-Settings → Connections → Devices and sign-in → Add a phone or computer. On iPhone, add Sara to your home screen from Safari ([phone guide](docs/PHONE.md)).
-
-**From source** (any computer with Node 24+):
-
-```sh
-git clone https://github.com/farena-ai/sara && cd sara
-npm ci
-npm start                                       # http://127.0.0.1:7860; the token is in the output
-```
-
-Sign in with the token (or the setup code), and a setup guide asks your
-name, helps you shape your companion and connects a model. Reaching her from your phone (Tailscale,
-your own web address with HTTPS, or your home network), updates, backups and troubleshooting:
-**[docs/INSTALL.md](docs/INSTALL.md)**.
-
-### Day to day
-
-```sh
-sudo sara status       # is she running, last backup
-sudo sara update       # backs up, updates, restarts
-sudo sara backup       # back up now
-sudo sara restore FILE # restore a backup
-sudo sara access       # how you reach her (change: tailscale, local, domain, lan)
-```
-
-## Documentation
-
-| | |
-|---|---|
-| [Start here](docs/START_HERE.md) · [For coders](docs/FOR_CODERS.md) · [How do I…?](docs/HOW_DO_I.md) · [Videos](docs/VIDEOS.md) | The first ten minutes, for company or for code; every answer from the app's help boxes; the how-to videos |
-| [Today](docs/TODAY.md) · [Chat commands](docs/CHATS.md) · [Report a problem](docs/SUPPORT.md) | Your home screen; `/new`, `/status` and friends in every chat; help from inside Sara |
-| [Install](docs/INSTALL.md) | Linux, Docker, Windows, macOS, HTTPS, updates, troubleshooting |
-| [What computer do I need?](docs/REQUIREMENTS.md) · [Choosing a model](docs/CHOOSING_A_MODEL.md) · [What it costs](docs/COSTS.md) | Before you start: hardware, models with GPU sizes, running costs |
-| [Your phone](docs/PHONE.md) · [Moving to a new computer](docs/MOVING.md) | Phone setup start to finish; backup, install, restore |
-| [Security checklist](docs/SECURITY_CHECKLIST.md) · [What leaves your server](docs/PRIVACY.md) | Five minutes after installing; every outgoing connection and how to turn it off |
-| [FAQ and glossary](docs/FAQ.md) | Common questions,
+| Runs o

@@ -133,7 +133,12 @@ There is no binary to install — a release is the source folder, and "updating"
 
 | | What it is | Get it |
 |---|---|---|
-| **v477** — current | The IDE and the agents share one write path and one revision log, an IDE drill proves it, and `drill-run.mjs` runs any drill headlessly against a real model. | [Releases](https://github.com/autonomous-loop-studio/Autonomous/releases) |
+| **v482** — current | A read-only storage folder is refused at boot with the exact chown line, so it can never look like a hang again. | [Releases](https://github.com/autonomous-loop-studio/Autonomous/releases) |
+| **v481** | Shell access no longer jails an agent outside the app, so a fresh copy's drill can reach its exec step. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v481) |
+| **v480** | Start can no longer hang on its own drill archive, and a stale jail named like the sandbox lands in the sandbox. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v480) |
+| **v479** | A stale per-agent file jail is cleared instead of merely tolerated, and the IDE drill's pass files are archived like every other drill's. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v479) |
+| **v478** | The floating floor is drawn again in 3D, and a moved file jail stops failing every file tool. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v478) |
+| **v477** | The IDE and the agents share one write path and one revision log, an IDE drill proves it, and `drill-run.mjs` runs any drill headlessly against a real model. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v477) |
 | **v470** | The drill block and every Continue lead with this pass's file, so a model can't reuse the last pass's path. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v470) |
 | **v469** | Every training pass must write its own drill file, so one pass can't overwrite another's evidence. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v469) |
 | **v467** | The training report names the file each pass actually wrote, and lists every pass it counts. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v467) |
@@ -1177,27 +1182,4 @@ notch sized for a thumb. Tapping it drops the **apps menu**: 🧠 **Brain Lab**,
 🧪 **API Lab**, 🔀 the **Routing chart** and 🌐 the **built-in browser** — so a
 phone never has to hunt through the header, and the top rail keeps only what you
 reach for constantly. It closes on an outside tap, on **Esc**, or when you pick
-something. 📱
-
----
-
-## 🧠 The context assembler & native tool calling
-
-So a long job doesn't quietly fall out of the model's memory mid-task. 🧵
-
-<details>
-<summary>Budgeting, compaction, surviving plans and native schemas</summary>
-
-- 📏 **Budgeted against the model's *real* window** — replayed history is sized to
-  the model's actual context limit (not a fixed `24k` characters), and each
-  oversized tool result keeps its **head and tail** instead of being cut mid-answer.
-- 🗜️ **Live-context compaction** — old assistant / `TOOL_RESULT` exchanges are
-  compacted before **every** request, so the tool transcript can't crowd the
-  conversation out.
-- 📋 **The plan survives** — the `todo_write` list is re-injected into the system
-  prompt and refreshed after each write, so it doesn't get compacted away halfway
-  through.
-- 🔧 **Native tool calling** — where the API family supports it, tools are sent as
-  **real schemas** (OpenAI, Anthropic and Google shapes) instead of a syntax the
-  model has to imitate, with automatic fallback to the prompt protocol if a
-  
+somethin

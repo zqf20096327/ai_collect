@@ -110,7 +110,9 @@ _Scan the QR code or copy the wallet address above._
 - **RSS Feed** — `/rss.xml` with 20 recent papers (1h cache)
 
 ### Developer Tools
-- **CLI Interface** — `arxiv-cli` for AI assistants (search, trending, topics, authors)
+- **CLI Interface** — `arxiv-cli`, a terminal client for a person's own use (search,
+  trending, topics, authors). Not for AI agents or automated crawling; see
+  [AI.md](AI.md).
 - **Admin API** — Vectorize bulk operations, maintenance endpoints, enrichment triggers
 
 ### SEO & Discoverability
@@ -118,15 +120,21 @@ _Scan the QR code or copy the wallet address above._
 - **Sitemap.xml** — Auto-generated sitemap: `app/sitemap.ts` emits the static
   routes plus topic URLs (topics come from `/api/topics`), while the api-worker
   `GET /api/sitemap` emits the full paper list. Revalidates daily.
-- **Robots.txt** — Search engine crawler configuration: every user-agent group,
-  including all AI crawlers, disallows `/api/`. The JSON API is intentionally
-  off-limits to crawlers.
+- **Robots.txt** — Search engine crawler configuration (`app/robots.ts`). Every
+  user-agent group disallows `/api/`, and the generic group also closes `/search`,
+  `/diff/`, `/claim` and `/compare`. Known AI-training crawlers and SEO scrapers
+  (GPTBot, ClaudeBot, PerplexityBot, Bytespider, CCBot, SemrushBot, AhrefsBot, …)
+  are disallowed from `/` entirely, and the front and API workers also answer
+  them with `403` (see [Security](#security)). The reason is the Workers Free
+  100,000 requests/day budget, not secrecy.
 - **Structured Data** — JSON-LD schema markup for papers and authors
 - **SSR Content** — Server-side rendered pages with full content for crawlers
 - **Canonical URLs** — Proper canonical tags to prevent duplicate content
-- **AI Agent Discovery** — `/ai.txt` and `/llms.txt` routes describe the corpus for
-  LLMs and point aggregators to the RSS feed. The raw JSON API is deliberately
-  not advertised.
+- **AI Access Policy** — `/ai.txt` and `/llms.txt` state that automated AI access
+  (agents, training and RAG crawlers, scrapers, bulk clients) is not permitted,
+  including the JSON API, and point people who need the data to arXiv's own API
+  and bulk data. `robots.txt` and the worker `403`s enforce it. See
+  [AI.md](AI.md).
 
 ### Performance
 - **Two-layer caching** — The per-colo edge cache (Cache API, quota-free) sits in
@@ -148,12 +156,22 @@ _Scan the QR code or copy the wallet address above._
   approves via the native `RATE_LIMITER` binding (per-route `${namespace}:${ip}`
   key, zero KV writes; KV sliding window only as fallback). Identity comes from
   the edge-set `cf-connecting-ip`; forwarded IPs need a matching
-  `X-Internal-Auth` secret (`INTERNAL_TOKEN`). Server-rendered page views reach
-  the API through a service binding that carries no client IP, so
-  `helper/api.ts` forwards the visitor's IP with that secret and each visitor
-  gets their own bucket. **This only works once `INTERNAL_TOKEN` is set on both
-  workers**; without it, all page-view traffic shares the single `internal`
-  bucket and per-visitor limits do not apply to it.
+  `X-Internal-Auth` secret (`INTERNAL_TOKEN`). Server-rendered page views call
+  the API handlers **in-process** (see [Architecture](#architecture)), so they
+  carry no client IP of their own; `helper/api.ts` forwards the visitor's IP with
+  that secret and each visitor gets their own bucket. In-process, both sides read
+  the same `INTERNAL_TOKEN` from the front worker's env. **It must be set on the
+  front worker**, and also on the API worker for the service-binding and
+  public-URL fallbacks; without it, all page-view traffic shares the single
+  `internal` bucket and per-visitor limits do not apply to it.
+- **Bot & Quota Guards** — Known AI-training crawlers and SEO scrapers get a
+  cacheable `403` from both the front worker (`middleware.ts`) and the API worker
+  before any SSR, D1, KV or AI work runs. The front worker also limits each IP to
+  40 requests/minute, and both workers answer `429` + `Retry-After` past a
+  95,000-requests/day breaker. These are **best-effort**: the counters live in each
+  isolate's memory (not a global total), and a blocked request is still a Worker
+  invocation, so only bots obeying `robots.txt` reduce the request count.
+  Cloudflare's own 100,000/day wall remains the real limit.
 - **SQL Injection Protection** — 100% parameterized queries via D1 `.prepare().bind()`
 - **Input Sanitization** — Strict validation on all user inputs (control chars, length limits, allowlists)
 - **Timing-Safe Auth** — Admin endpoints use `crypto.timingSafeEqual` (no timing oracles)
@@ -168,7 +186,12 @@ See [SECURITY.md](SECURITY.md) for full details.
 Built on Cloudflare's edge platform for global performance:
 
 - **Frontend**: Next.js deployed as a **Cloudflare Worker** (via OpenNext + `main` + `assets` mode)
-- **API**: Cloudflare Workers
+- **API**: Cloudflare Workers. Server-rendered pages run the API worker's `fetch`
+  handler **in-process** inside the page's own invocation (`helper/api.ts`), so a
+  page view is one Workers request instead of two. The standalone `arxiv-api`
+  Worker still serves browser-side calls, and is the fallback if the in-process
+  handler cannot load (order: in-process, then the `API` service binding, then the
+  public URL).
 - **Database**: Cloudflare D1 (SQLite)
 - **Vector Search**: Cloudflare Vectorize
 - **Cache**: Cloudflare KV
@@ -178,16 +201,24 @@ Built on Cloudflare's edge platform for global performance:
 > per-request nonce injection that Pages unconditionally adds to `script-src`, which breaks the
 > app's CSP.
 
+> **Why in-process**: on the Workers Free plan every invocation counts toward the
+> 100,000 requests/day account limit, and a service-binding call is a second
+> invocation. The front worker therefore declares the same `DB`, `CACHE`,
+> `VECTORIZE`, `AI` and `RATE_LIMITER` bindings and `ALLOWED_ORIGIN` var as the API
+> worker (`wrangler.jsonc`); `tests/unit/inprocess-api.test.ts` fails if one is
+> removed. A missing `RATE_LIMITER` would silently push rate limiting onto KV
+> writes (1,000/day on free).
+
 ### System Design
 
 ```
-Browser → Next.js Worker → API Worker → KV Cache → D1 Database
-                                            ↓
-                                       Vectorize
-                                            ↑
-                                  Ingest Worker (Cron)
-                                            ↑
-                              Workers AI  /  local Ollama
+Browser (page view) → Next.js Worker ─ in-process API handlers → KV Cache → D1 Database
+Browser (client JS) → API Worker ───────────────────────────────↗     ↓
+                                                                  Vectorize
+                                                                       ↑
+                                                             Ingest Worker (Cron)
+                                                                       ↑
+                                                         Workers AI  /  local Ollama
 ```
 
 ## Data Pipeline
@@ -302,10 +333,64 @@ npm run deploy:ingest   # Ingest worker
 # Note: deploy.sh does NOT deploy ingest worker
 # Deploy ingest worker manually when needed
 
+# Known issue: wrangler 4.86 hands `wrangler deploy` off to opennextjs-cloudflare,
+# which crashes on Miniflare. Pass --x-autoconfig=false to the deploy step, e.g.
+#   npx wrangler deploy --config wrangler.jsonc --x-autoconfig=false
+#   npx wrangler deploy --config wrangler.api.toml --x-autoconfig=false
+# (the npm scripts above do not pass it yet)
+
 # IMPORTANT — when this change ships a migration, run it BEFORE the API deploy:
 npx wrangler d1 execute arxiv-explorer --remote --file=migrations/0017_topic_paper_counts.sql
 # (ADD-only migration for materialized topic counts; see CHANGELOG "Deploy checklist")
 ```
+
+#### Degraded mode when the account cap is hit (Error 1027)
+
+1027 is enforced at the edge before the Worker runs, so no server-side code can
+answer a cold request. `/sw.js` (service worker) therefore keeps a copy of
+visited pages and successful `GET /api/*` responses, and `/offline.html` (served as `/offline`, Workers Assets strips the
+`.html`) is a static asset that still loads under 1027 (same asset path as `robots.txt`).
+
+- Navigation: network first (4s timeout), then the cached page → cached `/` →
+  `/offline` (asset is `public/offline.html`).
+- `GET /api/*`: network first; on 429/network failure the cached JSON is served
+  with `X-SW-Cache: stale`, otherwise `503 {error:'compute_unavailable'}`.
+- Non-GET: passed through; a 429 becomes `503 compute_unavailable` JSON and a
+  `quota-exceeded` message to the page, which shows a dismissible banner.
+- Local data (bookmarks, history, achievements) is unaffected — it never leaves
+  the browser.
+
+Limits: a first-time visitor with no service worker and no cache still gets the
+edge error page; only repeat visitors are rescued.
+
+#### Crawler-facing text files are static assets
+
+`robots.txt`, `ai.txt` and `llms.txt` live in `public/` and are served from the
+`ASSETS` binding, not by a route handler. Verified 2026-11-18: while the account
+was over its 100,000 req/day Workers cap (Error 1027 — the site root returned
+429), all three still returned 200. Static asset serving does not spend Worker
+invocations or CPU. Keep them in `public/`; moving them back to `app/*/route.ts`
+puts every crawler fetch back on the 10 ms CPU / invocation budget.
+
+### Release workflow
+
+The footer of every page shows the deployed release (`vX.Y.Z`, linking to the
+CHANGELOG). The number comes from `package.json` and is inlined at build time by
+`next.config.ts`, so it only changes when you bump it. Every release follows the
+same order:
+
+1. **Bump the version** — `npm version <x.y.z> --no-git-tag-version`, then set the
+   same number in `catalog.json` and the `**Version:**` line of `CHANGELOG.md`.
+2. **Write the CHANGELOG entry** — a new `## [x.y.z] - YYYY-MM-DD` section at the
+   top. `npm test -- version-sync` fails if `package.json`, `catalog.json` and
+   the CHANGELOG disagree.
+3. **Deploy** — `./deploy.sh` (version-sync pre-flight, build, API worker, site
+   worker). The ingest worker is separate: `npm run deploy:ingest`.
+4. **Check** — `npm run verify:deploy` (run automatically by `./deploy.sh`): the
+   live footer must show the new version, the API worker must answer, and a
+   claim classification must succeed end to end. Add `SKIP_AI=1` to skip the AI
+   call.
+5. **`git push`** — only after the check passes.
 
 ## Project Structure
 
@@ -326,9 +411,9 @@ npx wrangler d1 execute arxiv-explorer --remote --file=migrations/0017_topic_pap
 │   ├── how-to-use/            # User guide
 │   ├── rss.xml/               # RSS feed route
 │   │   └── route.ts
-│   ├── ai.txt/                # LLM discovery route
+│   ├── ai.txt/                # Automated-access policy route (no AI access)
 │   │   └── route.ts
-│   ├── llms.txt/              # LLM discovery route
+│   ├── llms.txt/              # Automated-access policy route (no AI access)
 │   │   └── route.ts
 │   └── components/            # React components
 │       ├── SummarySection.tsx
@@ -456,7 +541,7 @@ ARXIV_FETCH_CATEGORIES = "cs.AI,cs.LG"                 # Default fetch categorie
 ARXIV_FETCH_LIMIT_PER_CATEGORY = "0"                   # Papers per category per cron (0 = process pending only)
 INGEST_MAX_CONCURRENT = "1"                            # AI processing concurrency (keep at 1 — avoids Workers AI 300 req/min burst limit)
 ARXIV_RATE_LIMIT_DELAY_MS = "3000"                     # Delay between arXiv requests
-SUMMARY_MODEL = "@cf/meta/llama-3.1-8b-instruct"       # Workers AI summary model
+SUMMARY_MODEL = "@cf/meta/llama-3.1-8b-instruct-fp8"   # Workers AI summary model (the non-fp8 id is retired)
 EMBEDDING_MODEL = "@cf/baai/bge-base-en-v1.5"          # Workers AI embedding model
 INGEST_PHASE = "hourly"                                # Phase label (informational only)
 POLITE_EMAIL = "your-email@example.com"                # Contact email for arXiv API
@@ -608,9 +693,11 @@ cd scripts
 ./test-api-deep.sh         # Deep API endpoint testing
 ```
 
-## CLI Tool for AI Assistants
+## CLI Tool
 
-A command-line interface designed for AI assistants (Claude Code, ChatGPT, etc.) to programmatically search and explore papers.
+A command-line client for the site's JSON API, for a person using their own
+terminal. It is **not** for AI agents, scheduled jobs, scraping or bulk queries:
+automated access is not permitted and is rate limited (see [AI.md](AI.md)).
 
 ### Installation
 
@@ -646,7 +733,7 @@ arxiv-cli author "Yann LeCun" 10
 
 ### Output Format
 
-Clean, structured text optimized for AI parsing:
+Plain structured text:
 
 ```
 ID: 2605.30353
@@ -725,10 +812,20 @@ This section is deliberately short — the full incident history lives in the
 [CHANGELOG post-mortem](CHANGELOG.md#unreleased--post-mortem-d1-free-tier-row-read-exhaustion-2026-09-23).
 
 **Free-tier budgets are the hard limits the system is designed around:**
-D1 allows 5,000,000 rows read/day, KV allows 1,000 writes/day. Everything
+D1 allows 5,000,000 rows read/day, KV allows 1,000 writes/day, and the Workers Free
+plan allows **100,000 requests/day per account** across every Worker. Past that last
+limit Cloudflare itself answers every request with its own `429` page (error 1027)
+before our code runs, until 00:00 UTC. Everything
 expensive is therefore *precomputed* (topic counts, aggregate counters — see
 [Database Schema](#database-schema)) or *cached* before it ever reaches a user:
 
+- **Workers requests/day** is spent in three ways, each handled differently: crawler
+  traffic (UA blocklist, `robots.txt`, and the [Turnstile gate](#bot-gate-turnstile)),
+  the double invocation of a page view plus its API call
+  (removed: the API handlers run in-process, see [Architecture](#architecture)),
+  and genuine visitors. The 95,000/day breaker in each worker is per isolate, so it
+  softens the failure but is not a hard cap. A true global cap would need a shared
+  counter, which costs extra requests or writes.
 - Read endpoints cascade through two caches before D1: the per-colo edge cache
   (`X-Edge-Cache: HIT|MISS` header on every response) and KV.
 - Rate limiting runs on the native `RATE_LIMITER` binding and costs zero KV writes.
@@ -753,6 +850,39 @@ expensive is therefore *precomputed* (topic counts, aggregate counters — see
   (`summary_ready ∈ {0, 2}`) are, by design, never cached and will `503` during
   an outage until a later ingestion run resolves them via the stale-summary
   backfill.
+
+### Bot Gate (Turnstile)
+
+Crawler traffic used to be answered with a `403` — cheap, but it does not make a
+crawler stop, and the requests still count. Anonymous clients now have to solve a
+[Turnstile](https://developers.cloudflare.com/turnstile/) widget once; the cookie it
+earns (`ts_pass`, HMAC-SHA256 over the expiry, 30 days, `HttpOnly`, `Secure`) then
+skips the gate for every later request.
+
+- **Configuration:** `TURNSTILE_SITE_KEY` is a plain var in `wrangler.jsonc`; the
+  secret is `npx wrangler secret put TURNSTILE_SECRET`. If either is empty the gate
+  is a no-op, which is also the rollback.
+- **Exempt:** `robots.txt`, `sitemap.xml`, `rss.xml`, `llms.txt`, `ai.txt`, static
+  assets, and allowlisted search-engine UAs (`SEARCH_ENGINES`) so indexing and SEO
+  keep working. The UA allowlist is spoofable by design — the alternative, checking
+  the crawler's source IP, needs reverse DNS per request.
+- **API and RSC without a cookie** get `403 {"error":"challenge_required"}` with
+  `X-Challenge: turnstile`; cookieless speculative prefetches get `204`, never a
+  challenge. The challenge page answers `403` with `Retry-After: 3600` and
+  `X-Robots-Tag: noindex`, so crawlers back off instead of indexing the widget.
+- **CSP:** the page's own `script-src` does not allow `challenges.cloudflare.com`, so
+  the challenge response carries its own CSP that does.
+- **Known limit:** this is per-request quota, not an edge block. `*.workers.dev` has
+  no zone, so there is no WAF/Bot Fight/Cache Rule to stop traffic before the worker
+  runs; a crawler that walks N URLs still costs N invocations, the first one of which
+  now requires JavaScript. Only an edge filter (custom domain + WAF) removes that cost.
+- **Verify after 00:00 UTC** (the gate cannot answer while error 1027 is in effect):
+
+```bash
+curl -sI https://arxivexplorer.arxivexplorer.workers.dev/ | head -3        # 403 + Retry-After
+curl -s https://arxivexplorer.arxivexplorer.workers.dev/ | grep -c cf-turnstile  # 1
+curl -s https://arxivexplorer.arxivexplorer.workers.dev/api/stats         # 403 challenge_required
+```
 
 **If pages load but show no papers** (an older deployment, or a page that does not
 yet render `QuotaNotice`), check the budget first — the API reports the truth:

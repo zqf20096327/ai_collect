@@ -1,19 +1,25 @@
 # BioRAG — Memoria Cognitiva Biomimética y Simbólica para Agentes de IA
 
-> **Versión Oficial:** v35.0
+> **Versión del código en esta rama:** v36.0 (cierre técnico). La integración/publicación en `master` y el tag aún están pendientes.
 > **Paradigma:** Motor Python + SQLite FTS5. **Sin embeddings densos, GPU ni llamadas a APIs externas** en el path de búsqueda.
-> **Motor:** Arquitectura modularizada (18 submódulos `core/memory/` + 15 submódulos `core/mcp_server/` + fachada delgada) + SQLite FTS5 WAL + PPMI-SVD (100 dimensiones) + espacio semántico de 13 ejes + grafo sináptico Hebbiano + SDM (2048 bits) + calibración conforme + activación ACT-R + Concept Hubs + validación simétrica fail-fast de sustantivos clave + **neurona de reordenamiento que aprende sola** (29 señales → 6 ocultas → 1 corrección, con piso en la fórmula a mano) + **neurona asociativa cerrada de fábrica** (5 agujas → fuerza 0–1: ¿dos recuerdos tienen que ver?; examinada, aún no decide en el motor) + enlaces del agente intocables.
+> **Motor:** Arquitectura modularizada (18 submódulos `core/memory/` + 15 submódulos `core/mcp_server/` + fachada delgada) + SQLite FTS5 WAL + PPMI-SVD (100 dimensiones) + espacio semántico de 13 ejes + grafo sináptico Hebbiano + SDM (2048 bits) + calibración conforme + activación ACT-R + Concept Hubs + validación simétrica fail-fast de sustantivos clave + **neurona de reordenamiento que aprende sola** (29 señales → 6 ocultas → 1 corrección, con piso en la fórmula a mano) + **neurona asociativa cerrada de fábrica** (5 agujas → fuerza 0–1: ¿dos recuerdos tienen que ver?; examinada, aún no decide en el motor) + enlaces del agente intocables + **destino canónico del córtex en `~/.biorag/`** + **instalador de configuración MCP para clientes compatibles**.
 > **Idiomas:** Español e inglés (stemming bilingüe, expansión simbólica con WordNet, Concept Hubs de 5 ángulos y Domain Dict).
 
 **BioRAG** es una memoria simbólica persistente para agentes de IA que aborda la pérdida de contexto entre sesiones mediante recuperación híbrida. “Biomimética” describe una inspiración de diseño; no significa que el motor simule literalmente un cerebro humano. Los resultados de rendimiento se limitan a los benchmarks y snapshots indicados.
 
 ---
 
-## 📊 Métricas de la suite oficial (v33.0 · 2026-10-14 · vigentes en v34.0)
+## 📊 Resultados históricos de la suite oficial (baseline v33.0 · 2026-10-14)
 
 > **v34.0:** con una DB nueva, o sin campeón, la neurona no actúa y estos números se mantienen **idénticos** (son el piso). Con el campeón ya aprendido sobre la copia del snapshot (`despertar_neurona.sh`, 500 ciclos), la misma suite da **Recall@5 100.00 % · Recall@1 94.06 % (823/875) · MRR 0.964 · FP 0/40**, sin ninguna categoría por debajo del piso. Detalle en [La Neurona de BioRAG](#-novedades-de-la-versión-v340--la-neurona-de-biorag).
 >
 > **v35.0:** la QA oficial sale **idéntica** antes y después de todos los cambios de la v35 (Recall@5 100.00 % · Recall@1 91.89 % · MRR 0.950 · FP 0/40, misma máquina y semilla). Detalle en [La Neurona Asociativa](#-novedades-de-la-versión-v350--la-neurona-asociativa-sináptica).
+>
+> **Validación de v36.0 en copias temporales:** no se usó la DB viva. El recuento de pytest procede de una corrida aislada registrada previamente; la QA oficial se repitió sobre una copia fresca del snapshot durante esta revisión.
+> - **Pruebas unitarias (registro previo):** `PYTHONHASHSEED=0 python -m pytest tests/` — 852 passed, 18 skipped (870 recopilados; 240.19 s), Python 3.11.2.
+> - **QA oficial (re-ejecución aislada):** `bash scripts/run_qa_suite.sh --qa-only`, con `BIORAG_QA_GATE=1` y `PYTHONHASHSEED` sin fijar — 921 casos (875 de recuperación, 40 negativos y 6 ambiguos fuera del denominador global). R@5 **100.00% (875/875)**, R@1 **93.03% (814/875)**, MRR **0.9566**, FP **0/40**; `[GATE] OK` (719.53 s). El artefacto de esta corrida está en `scripts/qa_metrics.json`.
+> - La copia medida no tenía un campeón de la neurona de ranking, así que esta no actuó. El archivo aislado `scripts/casos_fallidos.jsonl` contiene dos entradas de categoría `ambiguo`, aparte de las métricas globales de recuperación.
+> - El snapshot de referencia es `snapshots/qa_escape_qcr_20260811.db` (SHA-256 `104dd2902aaf24c3ce93624492ea95a719acbdcca50f4f6bc123ac8317749796`); la QA se ejecutó sobre una copia temporal. La tabla siguiente conserva métricas históricas del baseline v33.0, no resultados de v36.0. La integración y el tag de v36.0 en `master` siguen pendientes.
 >
 > **Cada base tiene su propia neurona.** La neurona aprende con los recuerdos de la base donde vive y se guarda dentro de ella. Esta tabla mide una copia del snapshot oficial, que no trae neurona entrenada: por eso muestra la fórmula a mano sola (el piso), aunque tu neurona esté trabajando en tu DB viva. La QA ahora lo dice antes de medir y nombra el parámetro para verla: `python scripts/evaluar_qa.py --con-neurona`. Detalle en [La neurona en la QA](#la-neurona-en-la-qa-cada-base-tiene-la-suya).
 
@@ -29,8 +35,8 @@ Evaluación sobre el snapshot congelado oficial canónico (**921 casos totales e
 | **MRR (Mean Reciprocal Rank)** | **0.950** | Posición recíproca promedio ponderada (0.9497 sin redondear; métrica complementaria observada). |
 | **Falsos positivos** | **0/40 (0.00%)** | Calibración conforme efectiva en los 40 controles negativos del benchmark (FP rate observada 0.00%). |
 | **Casos ambiguos (contradictorios)** | **6 casos (2 con cobertura parcial)** | Evaluados por separado del Recall global; 2 casos no cubren al menos una de las etiquetas contradictorias. |
-| **Tests unitarios** | **430/430 aprobados** (v35.0) | Cobertura completa de invariantes, validación pre-DB fail-fast, contratos MCP, normalización, catálogo, las 18 capas de protección de la neurona, el script de despertar, la neurona asociativa, los enlaces del agente intocables y el MCP sin sugerencias de enlace. |
-| **Suite Concept Hub** | **5/5 TOP-1 (100.00%)** | Precisión perfecta en los 5 casos de prueba de puentes asociativos registrados. |
+| **Pruebas unitarias de v36.0** | **852 passed · 18 skipped** | `PYTHONHASHSEED=0 python -m pytest tests/` en copia aislada (870 recopilados; 240.19 s; Python 3.11.2). Resultado registrado para el cierre. |
+| **Smoke de Concept Hub (5 paráfrasis)** | **5/5 TOP-1** | Repetido sobre una copia aislada del snapshot oficial (851 nodos activos, 6 hubs y 30 puentes); evidencia focal, no sustituto de las pruebas de escala. |
 | **Abismo léxico (EXP-Q)** | **3/3 Pool · 2/3 Top-5 · 1/3 Top-1** | 3/3 descubiertos en pool de grafo; 2/3 en Top-5 (pos #1 y #4) y 1/3 en Top-1 (pos #1). |
 | **Sinónimos · Recall@5 / Recall@1** | **100% (55/55) / 56.36%** | Cobertura total en Top-5; el 43.64% restante queda entre Top-2 y Top-5. |
 | **Por tema · Recall@5 / Recall@1** | **100% (65/65) / 63.08%** | Cobertura total en Top-5; ordenamiento Top-1 guiado por Jaccard y PPMI-SVD (MRR: 0.772). |
@@ -44,6 +50,114 @@ Evaluación sobre el snapshot congelado oficial canónico (**921 casos totales e
 > - **Recall@1 (91.77%)** y **MRR (0.9497)** son métricas complementarias observadas en el benchmark sobre este corpus congelado, no umbrales que el gate imponga ni garantías universales para cualquier consulta arbitraria.
 > - **R@5 = 100.00% (875/875):** Demuestra empíricamente que el conjunto híbrido (FTS5 BM25 + Sustantivos Clave + Grafo Sináptico Hebbiano + PPMI-SVD + Concept Hubs + Reranker Multicampo) logra **cobertura completa (875/875) dentro de la ventana Top-5 de trabajo del agente en este corpus evaluado**.
 > - **R@1 = 91.77% (803/875):** Refleja la precisión exacta del primer candidato. En tareas con solapamiento léxico directo (`literal`, `pregunta_natural`), R@1 supera el 95%–99%. En tareas donde el vocabulario difiere radicalmente (`sinonimo` 56.36%, `por_tema` 63.08%), el sistema ubica el recuerdo dentro del Top-5 pero no siempre en Top-1. R@1 representa el área de optimización continua para el desempate fino sin embeddings densos.
+
+---
+
+## 🛡️ v36.0 — Motor robusto, operación y evaluación
+
+> **Resumen del cierre y estado para integración:** [Cierre técnico de v36.0](docs/CIERRE_VERSION_36.md).
+>
+> **En una frase:** v36 reúne correcciones acotadas de escala para la búsqueda y los Concept Hubs, herramientas de evaluación y cambios operativos: destino canónico en `~/.biorag/memory_biorag.db`, configuración MCP y daemon opt-in. v35.1, v35.2 y v35.3 no fueron releases publicadas; los rótulos que aún aparezcan en algunos artefactos son referencias de trabajo. Los cambios aceptados se documentan juntos aquí bajo v36.0. Las mediciones se limitan a sus copias y benchmarks; no prometen invariancia universal ni equivalencia literal con un cerebro.
+
+| Pieza | Estado en v36.0 |
+|---|---|
+| **Recuperación a escala** | Cuatro correcciones para casos concretos de crecimiento: fallback guiado por términos desconocidos, ventanas de candidatos por parecido trigram, límite al escape de dimensiones inferidas y protección de palabras reales contra falsos matches difusos. `BIORAG_ESCALA=1` por defecto; límites y benchmark debajo. |
+| **BM25 de referencia** | Cuando las tablas FTS de referencia están disponibles, la expresión BM25 se conserva con independencia de `BIORAG_ESCALA`; ese interruptor apaga solo las ayudas de escala, no todo el ranking ni la búsqueda textual. |
+| **Concept Hubs a escala** | Motor `escala` e índice invertido por defecto; pondera la frecuencia de los puentes y compite por recuerdo. Las palabras de función aportan como máximo 1 bit, no abren candidaturas por sí solas y el ángulo `ingenuo` no penaliza. `BIORAG_HUB_ESCALA=0` es una ablación. |
+| **Diagnósticos de QA y hub** | `scripts/diagnostico_fallos.py` y `scripts/diagnostico_hub.py` copian la base de entrada a un directorio temporal; no escriben en la base fuente. Pueden generar archivos de informe, así que su salida también debe dirigirse a una ubicación elegida. |
+| **QA clásica y honesta** | La QA clásica conserva el gate; el análisis honesto separa etiquetas obsoletas/ambiguas y sus métricas suplementarias. La medición con ruido es una línea distinta y no forma parte de la QA normal registrada aquí. E2c/E2e fueron rechazadas/revertidas, no son funciones activas de v36. |
+| **Cortex desacoplado (`~/.biorag/`)** | Ruta canónica de usuario fuera del repo; el instalador intenta migrar la base legacy y, si ya existe destino, crea copias de respaldo antes de resolver el conflicto. `BIORAG_PATH` y el fallback legacy siguen aplicando. |
+| **Instalador (`install.py`)** | Automatiza la detección y escritura de configuración para clientes compatibles; el resultado depende del entorno y debe validarse en cada plataforma. |
+| **Detección de API OpenCode** | Comprueba los paquetes locales y el schema disponible; si no hay evidencia, usa el fallback definido en código. |
+| **QA de neurona de ranking** | `--con-neurona` compara el orden de la fórmula y el de la neurona; si la copia no tiene neurona, pregunta antes de entrenarla sobre esa copia. `--si` permite confirmarlo de forma no interactiva. No entrena en la base original. |
+| **Compatibilidad Python** | El paquete requiere Python `>=3.11`; CI contempla Python 3.11 y 3.12. |
+| **Transporte Antigravity** | La configuración MCP generada usa `stdio`; esta versión no instala un servicio SSE de systemd. |
+| **Control del daemon (`La Hormiguita`)** | `BIORAG_DAEMON_ENABLED=0` por defecto; el servidor MCP solo intenta iniciarlo si se habilita explícitamente. Esto controla el proceso de mantenimiento; no implica borrar asociaciones, apagar SDM ni cambiar su fallback predeterminado. |
+| **Comando de parada (`--stop`)** | Solicita `SIGTERM`, espera hasta 30 s y puede recurrir a `SIGKILL` si el proceso no termina. No es una garantía de cierre limpio en todos los casos. |
+| **Pruebas unitarias y QA** | Pytest registrado en copia aislada: 852 passed/18 skipped. QA oficial re-ejecutada en copia fresca del snapshot: 921 casos, `[GATE] OK` (R@5 100.00%, R@1 93.03%, MRR 0.9566, FP 0/40); resultados en `scripts/qa_metrics.json`. Ninguna corrida usó la DB viva; el match/tag final queda a cargo del usuario. |
+
+### Evidencia de escala en copias controladas
+
+**Buscador (`BIORAG_NEURONA=0`, `PYTHONHASHSEED=1`, QA de 921 casos).** La comparación emparejada de cada copia, antes y después de las cuatro correcciones, no encontró categorías que bajaran frente a su propio control sin arreglos. Estos son los resultados posteriores a las correcciones:
+
+| Copia | Recuerdos | R@1 | R@5 | MRR | FP |
+|---|---:|---:|---:|---:|---:|
+| S0 | 866 | 92.57% | 100.00% | 0.954 | 0/40 |
+| A640 | 1506 | 93.03% | 99.77% | 0.956 | 0/40 |
+| T1000r | 1866 | 92.80% | 99.89% | 0.955 | 0/40 |
+| T3000r | ~3866 | 92.57% | 99.54% | 0.953 | 0/40 |
+
+El relleno temático no copiaba las preguntas de la QA. El resultado no garantiza invariancia para toda memoria: siguen documentados empates en consultas de una palabra y dos fallos de ranking en T3000r donde un recuerdo que repite una palabra vence al que cubre todas las palabras de la pregunta. Ver [informe](scripts/experimentos/escala_recall_20261025/README.md), [tabla completa](scripts/experimentos/escala_recall_20261025/tabla_final.txt) y pruebas [`test_escala.py`](tests/test_escala.py) / [`test_escala_motor.py`](tests/test_escala_motor.py).
+
+**Concept Hubs (`BIORAG_NEURONA=0`, `PYTHONHASHSEED=1`, misma QA).** H-mitad y H-todos se construyeron en copias con puentes derivados heurísticamente del contenido, no de paráfrasis redactadas por un agente. La tabla recoge la configuración final, después de neutralizar el multiplicador del ángulo `ingenuo` en 1.0:
+
+| Copia | Hubs | R@1 | R@5 | MRR | Fallos | FP |
+|---|---:|---:|---:|---:|---:|---:|
+| S0 | 6 | 93.14% | 100.00% | 0.9573 | 0 | 0/40 |
+| H-mitad | 436 | 93.03% | 100.00% | 0.9569 | 0 | 0/40 |
+| H-todos | 866 | 93.83% | 100.00% | 0.9619 | 0 | 0/40 |
+
+En el diagnóstico de **hub solo** sobre 921 consultas, los errores con confianza ≥0.8 bajaron de 255 a 3 en H-todos y de 216 a 11 en H-mitad; el tiempo medido por consulta pasó de ~593 a ~8 ms y de ~284 a ~4 ms, respectivamente. Es una prueba acotada a esas copias, no una latencia de producción. Límite importante: en H-todos la categoría `sinonimo` bajó en R@1 de 65.45% a 58.18% aunque R@5 subió de 98.18% a 100%; el informe atribuye los casos perdidos a empates que antes se resolvían por orden alfabético. No se oculta esa diferencia. Ver [informe](scripts/experimentos/hub_escala_20261025/README.md) y [resultado final](scripts/experimentos/hub_escala_20261025/tabla_final.txt); las pruebas [`test_hub_escala.py`](tests/test_hub_escala.py) ejercitan competencia sintética de hasta 3.000 hubs.
+
+---
+
+### 1. Aislamiento Físico del Cortex (`~/.biorag/memory_biorag.db`)
+
+Las versiones anteriores podían resolver la base dentro del árbol del proyecto. En esta versión, el destino canónico de una instalación nueva está en `~/.biorag/memory_biorag.db`, lo que reduce la exposición accidental a operaciones sobre el repositorio; no impide que un argumento explícito o `BIORAG_PATH` seleccione otra ubicación.
+
+La implementación actual:
+* **Migración legacy:** `install.py` busca `MemoryBioRAG_Data/memory_biorag.db` e intenta `PRAGMA wal_checkpoint(TRUNCATE)`; si el checkpoint falla, emite una advertencia y continúa. Si el destino no existe, mueve la base sin crear primero una copia de respaldo. Si el destino ya existe, copia ambas bases a `~/.biorag/backups/`; luego conserva el destino cuando su tamaño no es menor, o lo reemplaza por la base legacy si esta es mayor. No combina las dos bases ni compara su contenido.
+* **Límite de la migración:** el movimiento de `.db`, `-wal` y `-shm` no constituye una transacción atómica de conjunto. No debe describirse como migración atómica ni como garantía absoluta contra pérdida de datos.
+* **Resolución de rutas (`core/paths.py`):** argumento explícito → `BIORAG_PATH` → base de usuario existente → base legacy existente → destino predeterminado de usuario.
+* **QA:** la QA oficial usa su snapshot de referencia; esta descripción no implica que se haya ejecutado el gate completo para cada árbol de trabajo.
+
+---
+
+### 2. Instalador de configuraciones MCP para clientes compatibles
+
+El instalador `python3 install.py` automatiza la detección y escritura de configuración para las plataformas que reconoce. La instalación y el handshake deben verificarse en cada entorno compatible; el código no garantiza que cualquier cliente o configuración local quede operativo sin intervención.
+* **Transporte MCP:** las entradas generadas usan `stdio` (OpenCode tiene un formato de configuración propio).
+* **OpenCode:** detecta la API de plugin a partir de paquetes locales y del schema disponible, con un fallback definido en código.
+* **Antigravity:** genera una entrada MCP `stdio`; esta versión no instala un servicio SSE ni una unidad de `systemd --user`.
+* **Hermes:** incluye un parcheador para la sección `mcp_servers.biorag` en YAML.
+* **Otros clientes:** las rutas y claves configuradas están definidas en `install.py`; la existencia de una entrada escrita no sustituye una prueba real de conexión.
+
+---
+
+### 3. Detección de API de OpenCode: Los Tres Guardias en Cascada
+
+En lugar de parsear la salida de texto de `opencode --version` (que puede cambiar de formato entre releases), el instalador inspecciona el contrato real:
+1. **Guardia 1 (Módulos instalados en disco):** Comprueba si existe `~/.config/opencode/node_modules/@opencode/plugin` (API v2) o `@opencode-ai/plugin` (API v1 legacy).
+2. **Guardia 2 (Schema formal):** Lee el atributo `$schema` de `cli.json` (ej: `https://opencode.ai/v2/cli.json` → API v2).
+3. **Guardia 3 (Fallback seguro):** Asume por defecto la versión moderna (v2) para garantizar compatibilidad hacia adelante.
+
+---
+
+### 4. Protocolo de Parada Prudente y Control de La Hormiguita
+
+* **Desactivada por defecto:** `BIORAG_DAEMON_ENABLED=0`. El servidor MCP ya no spawnea procesos de fondo a espaldas del usuario a menos que se configure explícitamente en el entorno (`BIORAG_DAEMON_ENABLED=1`).
+* **Nuevo comando CLI `--stop`:**
+  ```bash
+  python3 graph_maintenance_daemon.py --stop
+  ```
+* **Parada solicitada con límite:**
+  Si el demonio se encuentra a mitad de una transacción reflexiva o podado de sinapsis en SQLite (`self.en_ciclo = True`), la señal `SIGTERM` solicita el cierre ordenado, pero no garantiza que el ciclo termine dentro del timeout. El ciclo en curso puede concluir antes de que venza la espera; si el proceso sigue vivo a los 30 segundos, el código intenta `SIGKILL`, por lo que no se garantiza un cierre limpio en todos los casos. Durante la espera, el comando imprime avisos periódicos.
+
+---
+
+## 🧭 Recorrido de mejora y numeración vigente
+
+El README conserva más abajo el detalle histórico de cada etapa. Este resumen ubica la versión que se cierra y separa lo ya implementado de lo que sigue como plan:
+
+| Versión | Recorrido | Estado |
+|---|---|---|
+| **v34.0–v34.1** | Se incorporó la neurona que reordena resultados con un piso en la fórmula manual; después se aceleró su aprendizaje en memorias nuevas. | Implementado y descrito en la sección v34. |
+| **v35.0** | Se construyó y evaluó por separado la neurona asociativa; no se conectó al ranking. También se protegieron los enlaces hechos por el agente. | Cerrado con los límites y experimentos descritos en la sección v35. |
+| **v36.0** | Cierre técnico declarado: correcciones acotadas de escala en búsqueda y Concept Hubs, diagnósticos y QA, ruta de datos de usuario, instalador MCP, control explícito del daemon y compatibilidad Python `>=3.11`. La evidencia se separa por benchmark y se obtuvo en copias aisladas. | **Base previa a v37/v38.** E3 sigue abierta; E4 y modularización fase 2 no están verificadas. Estos pendientes no se presentan como completados. El usuario hará el match y gestionará el tag; no se hizo merge ni publicación en `master`. |
+| **v37 — plan** | Memoria episódica + recuperación por intención (el plan que antes llevaba el número v36). | Propuesta futura, no parte de v36 ni una capacidad ya implementada como episodios persistentes. BioRAG ya tiene señales y heurísticas temporales; la propuesta debe demostrar qué mejora adicional aporta y preservar el ranking en consultas sin intención temporal. |
+| **v38 — etapa posterior** | Trabajo neuronal que anteriormente se había rotulado v37. | Etapa posterior; no forma parte del cierre v36 ni se presenta aquí como implementada. |
+
+**En resumen:** la numeración vigente es **v36.0 (cierre actual) → v37 (plan episódico/intencional) → v38 (trabajo neuronal posterior)**. Los números y planes no equivalen por sí solos a una publicación ni a implementación.
 
 ---
 
@@ -1075,7 +1189,7 @@ Ya no somos esclavas de un modelo de lenguaje para buscar conocimiento; la memor
   2. `problema`: Dolor, duda, fallo o necesidad humana/técnica que resuelve.
   3. `solucion`: Técnica, mecanismo o teoría aplicada por el nodo.
   4. `situacion`: Caso de uso, rol o contexto de búsqueda práctico.
-  5. `ingenuo`: Búsqueda coloquial sin tecnicismos (estilo Google novato).
+  5. `ingenuo`: Búsqueda coloquial sin tecnicismos (estilo de búsqueda de una persona principiante).
 - **Archivo:** `core/concept_hub.py`, herramientas MCP `concept_hub_crear` y `concept_hub_agregar_bridges`.
 
 ### 2. WordNet Blindado (Bilingüe Real ES/EN)
@@ -1098,166 +1212,4 @@ Ya no somos esclavas de un modelo de lenguaje para buscar conocimiento; la memor
 
 #### El problema: stem(query) ∩ stem(gold) = ∅
 
-Cuando un agente busca `"extensión principal de VS Code para Kilo"` y el nodo se titula `kilo_vscode_extension_principal` con contenido redactado en vocabulario completamente diferente, **ningún motor léxico puede encontrarlo**:
-
-- **FTS5** (BM25): depende de que al menos un stem coincida → falla
-- **PPMI+SVD**: co-ocurrencia estadística, no puede inventar un puente donde no hay tokens compartidos → falla
-- **WordNet**: sinónimos morfológicos, pero si las palabras ni siquiera pertenecen al mismo dominio semántico → falla
-- **Domain Dict**: mismo principio que WordNet, con vocabulario del corpus → falla
-
-Esto es el **Abismo Léxico**: una barrera absoluta donde toda la maquinaria textual se detiene.
-
-#### La solución: BFS sobre el grafo sináptico Hebbiano
-
-El único mecanismo que puede cruzar el Abismo Léxico es **relacional**: si el nodo gold está **conectado por sinapsis** a nodos que sí aparecen en la búsqueda primaria, el BFS lo rescata.
-
-```
-Query: "extensión principal VS Code Kilo"
-    ↓
-FTS5 encuentra: nodo_kilo_framework (score 0.85)
-    ↓
-Sinapsis: nodo_kilo_framework → kilo_vscode_extension_principal (weight 0.72)
-    ↓
-BFS rescata: kilo_vscode_extension_principal aparece en contexto expandido
-```
-
-#### Los 3 bugs de infraestructura que impedían el rescate (v31.0)
-
-El mecanismo de BFS existía desde v20, pero **no funcionaba** por 3 bugs descubiertos en v31.0:
-
-1. **Trampa Alfabética de SQLite UNION** — El `ORDER BY weight DESC` en la query de vecinos usaba `UNION` (no `UNION ALL`), y SQLite optimizaba usando el índice del `concept` (orden alfanumérico) en lugar de respetar el `ORDER BY`. Resultado: los vecinos devueltos eran los primeros **alfabéticamente**, no los más relevantes. Un nodo como `zsh_config` (peso 0.95) perdía contra `api_design_patterns` (peso 0.10) por la letra 'a' < 'z'. Esto **silenciaba al 70%+ de los vecinos legítimos del grafo**.
-
-   **Fix:** `UNION ALL` con `ORDER BY rowid DESC` + deduplicación en memoria Python (`dict.setdefault` preservando orden de inserción).
-
-2. **MCP server descartaba contexto en página 1** — `mcp_server.py` solo incluía `contexto_expandido` en el output cuando `pagina > 1`. El agente nunca veía el rescate relacional en su primera búsqueda (que es la más importante).
-
-   **Fix:** Condición cambiada a `context_window > 0` (independiente de la página).
-
-3. **Límites de BFS insuficientes** — `BIORAG_MAX_VECINOS_POR_NODO` estaba fijo en 3, limitando artificialmente la amplitud del BFS a solo 3 vecinos por paso.
-
-   **Fix:** Default elevado a 6, configurable vía variable de entorno.
-
-#### Resultado empírico (snapshot congelado, 851 nodos activos)
-
-| Caso | Query | Gold | Sin grafo | Con grafo (depth=2) |
-|------|-------|------|:---------:|:-------------------:|
-| EXP-Q-01 | "panel visual de desarrollo para despacho de tareas" | `kilo_vscode_extension_principal` | ❌ | ✅ **pos 4** |
-| EXP-Q-02 | "comprobacion fidedigna de ficheros previo a emitir dictamenes" | `regla_verificar_codigo_real_antes_de_diagnostico` | ❌ | ✅ **pos 21** |
-| EXP-Q-03 | "resolucion de colisiones valorativas en bifurcaciones" | `ajuste_tejedora_valencia_desempate_fase1` | ❌ | ✅ **pos 19** |
-
-**Tasa de rescate: 3/3 (100%)**
-
-```bash
-# Ejecutar la suite de Abismo Léxico (Paso [4/5] del orquestador):
-BIORAG_PATH=snapshots/qa_escape_qcr_20260811.db python3 scripts/test_abismo_lexico.py
-```
-
-#### Limitaciones (honestidad epistémica)
-
-El rescate por grafo sináptico **no es una solución universal** al Abismo Léxico. Tiene limitaciones inherentes a cualquier BFS con presupuesto finito:
-
-- **Sensibilidad al tamaño del corpus**: a mayor corpus, más candidatos compiten por los slots del BFS (`BIORAG_MAX_CONTEXTOS`). Un nodo gold a profundidad 2 puede quedar fuera del corte si el corpus crece significativamente.
-- **Requiere ruta relacional**: el gold debe estar conectado por sinapsis a nodos que sí aparecen en la búsqueda primaria. Si no hay ruta en el grafo, no hay rescate posible.
-- **El Concept Hub sigue siendo necesario**: para patrones de búsqueda conocidos (queries recurrentes de usuarios), un bridge explícito es más robusto que depender de la topología del grafo.
-
-#### La estrategia completa contra el Abismo Léxico
-
-BioRAG v31.0 tiene **3 capas de defensa** contra el Abismo Léxico, cada una cubriendo un escenario diferente:
-
-| Capa | Mecanismo | Cuándo funciona | Cuándo falla |
-|------|-----------|-----------------|--------------|
-| **1. Concept Hub** | Bridges explícitos con 5 ángulos cognitivos | Patrones conocidos, vocabulario del síntoma | Queries nunca antes vistas |
-| **2. Grafo Sináptico (v31.0)** | BFS sobre sinapsis Hebbianas | Gold conectado a nodos de la búsqueda primaria | Sin ruta relacional o presupuesto BFS insuficiente |
-| **3. Razonamiento del Agente** | El agente descompone la query y reformula | Agente con buen prompt/instrucciones | Agente sin protocolo de descomposición |
-
-Ninguna capa por sí sola resuelve todos los casos. Las 3 juntas cubren un espectro amplio, pero el Abismo Léxico — por definición — siempre tendrá casos límite donde no hay suficiente señal para cruzar la barrera.
-
----
-
-### 🧩 Comparativa Fundamental: Sinónimos al Guardar vs. Concept Hub vs. Grafo Sináptico
-
-Es crucial no confundir estos tres mecanismos de recuperación semántica, ya que operan en niveles cognitivos y etapas de ejecución completamente distintas:
-
-| Dimensión | 📝 Sinónimos al Guardar (`aprender`) | 🧠 Concept Hub (Paso [3/5]) | 🕸️ Grafo Sináptico / EXP-Q (Paso [4/5]) |
-|---|---|---|---|
-| **Nivel Cognitivo** | **Léxico / Morfológico** (Palabra a Palabra) | **Semántico / Conceptual** (Modelo Mental) | **Topológico / Asociativo** (Red Hebbiana) |
-| **¿Dónde actúa?** | Expansión FTS5 / BM25 de términos directos. | **Búsqueda Primaria** (Inyección de Bridges). | **Expansión de Contexto** (BFS en el Grafo). |
-| **Entrada típica** | Palabras equivalentes: `"borrar"` $\rightarrow$ `"eliminar"`. | Frases de síntoma/metáfora: `"interfaz pierde datos al cambiar tab"`. | Query imprevista con **0 palabras compartidas**: `"resolución de colisiones valorativas"`. |
-| **¿Qué requiere?** | Vocabularios cercanos o diccionarios (WordNet). | Bridges estructurados en **5 ángulos cognitivos** guardados a priori. | **Conexiones sinápticas** activas entre nodos en el grafo de memoria. |
-| **Resultado esperado** | Match léxico directo en FTS5. | Nodo canónico promovido a **Top-1 Primario**. | Nodo rescatado en **Contexto Expandido (Pos #4-#21)**. |
-| **Metáfora** | Buscar un libro por **sinónimos de su título** (ej. *Cálculo* vs *Análisis Matemático*). | Ponerle un **cartel o alias por síntoma** en la entrada de la biblioteca (*"Para cuando la ecuación no converge"*). | Encontrar un libro intermedio y seguir las **citas y referencias cruzadas** hacia el libro deseado. |
-
-#### 1. Sinónimos al Guardar (`sinonimos` en `aprender` / WordNet / Domain Dict)
-- **Alcance:** Es puramente léxico. Si guardas un nodo sobre `optimización_bd` con el sinónimo `"tunning"`, el sistema sabrá que `"tunning"` = `optimización`.
-- **Por qué no basta:** Falla cuando el usuario no usa un sinónimo morfológico, sino una descripción abstracta o un síntoma funcional donde ninguna palabra coincide (ej: *"la aplicación tarda 10 segundos cuando entran muchos usuarios"*).
-
-#### 2. Concept Hub (Paso [3/5] de la Suite)
-- **Alcance:** Es conceptual y explícito. Cubre la brecha entre cómo un desarrollador documenta un nodo (vocabulario técnico de implementación) y cómo un usuario sufre un problema (vocabulario del síntoma, metáforas, contraste o jerga).
-- **Mecanismo:** Un Concept Hub centraliza hasta 5 puentes cognitivos por concepto. Cuando el usuario busca con cualquier metáfora o síntoma cubierto por el bridge, el sistema lo reconoce en la búsqueda primaria y lo indexa con score alto hacia el nodo canónico.
-
-#### 3. Rescate por Grafo Sináptico (Paso [4/5] - Abismo Léxico EXP-Q)
-- **Alcance:** Es relacional, asociativo e implícito. Es la red de seguridad cuando **no existe ningún Concept Hub previo** y tampoco hay sinónimos morfológicos posibles.
-- **Mecanismo:** La query encuentra un nodo intermedio (ancla) por coincidencia parcial de dominio; acto seguido, el algoritmo BFS navega a través de las sinapsis Hebbianas ($w_{ij}$) propagando activación para rescatar el nodo de destino en el contexto expandido.
-
----
-
-
-
-### ⚡ Resolución de Latencia y Optimización Matemática
-
-En revisiones intermedias, la expansión semántica generó una explosión combinatoria al concatenar términos sobre la variable `query`, provocando más de 700,000 comparaciones Levenshtein ($O(N \times M)$) y cálculos redundantes en ausencia IDF ($>4.2$ millones de iteraciones de generadores).
-
-En **v29.1** se aplicaron 4 soluciones deterministas:
-1. **Aislamiento de la Expansión:** Los términos de Concept Hub, WordNet y Domain Dict se inyectan **exclusivamente en la cláusula FTS5** (`frase`), manteniendo `query` y `tokens_query` puras con los tokens originales del usuario. Reducción de Levenshtein de 26.3s a **0.85s (-92.5% llamadas)**.
-2. **Identidad Matemática en Ausencia IDF (`core/tematica.py`):** Reemplazo del generador $O(|A \cup B|)$ por la identidad $\sum_{d \in A \cup B} (A[d] + B[d]) \equiv \sum A.values() + \sum B.values()$ con memoización de perfiles.
-3. **Precomputación Vectorial PPMI:** `vector_query()` se calcula una única vez antes del bucle de candidatos.
-4. **Filtro de Detección de Idioma:** Prevención de falsos positivos en WordNet inglés sobre tokens españoles sin tilde.
-
-### Resultados de Recuperación (Fase 2: Casos de Prueba de Concept Hubs)
-
-| Caso | Query | Nodo Esperado | SIN Hub | CON Hub (v29.1+) |
-|---|---|---|:---:|:---:|
-| 1 | "Por qué romper algo que funcionaba puede causar problemas que nadie ve venir" | `leccion_control_flujo_codigo_preexistente` | ❌ 0% | ✅ **TOP 1** |
-| 2 | "Cómo aprende un sistema a reforzar lo que funciona sin que nadie se lo enseñe" | `biorag_v20_rpe_dopamina` | ❌ 0% | ✅ **TOP 1** |
-| 3 | "Qué trabajos tuvo que hacer un ingeniero para sobrevivir antes de programar" | `historia_tasajera_fumigador_rufino` | ❌ 0% | ✅ **TOP 1** |
-| 4 | "un texto que habla sobre cómo la conciencia en las inteligencias artificiales surge de la memoria y el autoreconocimiento comparando con una película de ciencia ficción" | `dennys_morpheus_de_los_transformers` | ❌ 0% | ✅ **TOP 1** |
-| 5 | "blueprint of recollection and cognitive persistence tiers in agent systems" | `arquitectura_memoria_biorag` | ❌ 0% | ✅ **TOP 1** |
-
-**Recall@5 en Casos Puenteados: CON Hub 100% (5/5 en Top-1)**
-
-> ⚠️ **Nota de Rigor Metodológico y Alcance Científico:**
-> - **Qué demuestran estos 5 casos:** Prueban que el **mecanismo de puentes deterministas de 5 ángulos** (`sinonimo`, `problema`, `solucion`, `situacion`, `ingenuo`) funciona con precisión 100% Top-1 al salvar discontinuidades léxicas extremas cuando el puente ha sido explícitamente estructurado y registrado.
-> - **Qué NO demuestran (Límite de Generalización):** No constituyen prueba de generalización universal automática ante consultas imprevistas en "mundo abierto" donde no existe un Concept Hub registrado previamente.
-> - **Cómo se aborda el caso no puenteado en mundo abierto:** BioRAG no depende exclusivamente de hubs; cuando una consulta cae en el abismo léxico sin hub previo, la red de seguridad opera en cascada a través de:
->   1. **Expansión Sináptica BFS (Hebbiana):** rescata el nodo mediante co-activación topológica a través de conceptos vecinos (ver EXP-Q).
->   2. **Espacio Latente PPMI-SVD (100d):** detecta afinidad estadística por co-ocurrencia global.
->   3. **Razonamiento del Agente:** traducción semántica del síntoma mediante el protocolo de 3 preguntas (Acción, Dominio, Propiedad).
-
----
-
-## ⚡ v30.0: Invarianza de Escala, Normalización Intra-Query y Falsos Positivos Cero
-
-### 1. El Problema Científico del Crecimiento del Corpus ($N$)
-En sistemas de búsqueda híbrida que combinan señales léxicas (BM25) con señales densas/estructurales, el crecimiento del número de nodos $N$ incrementa logarítmicamente los valores brutos de IDF ($\log N$). La fórmula histórica de BioRAG:
-$$\text{bm25\_norm} = \frac{|v|}{|v| + 3.0}$$
-utilizaba una constante rígida de denominador ($3.0$) que saturaba cerca de $1.0$ a medida que el corpus crecía de 500 a 1,000+ nodos. Esto comprimía todos los candidatos en el techo del scoring, destruyendo la capacidad de discriminar entre coincidencias exactas y ruido de fondo, forzando recalibraciones manuales continuas.
-
-### 2. Solución: Normalización Min-Max Intra-Query con Guarda de Escala
-En **v30.0**, BioRAG adopta el principio de **Invarianza de Escala** derivado de la literatura de Information Retrieval (IR):
-- **Cálculo Dinámico por Consulta:** Para cada búsqueda individual, se identifican los valores mínimo ($\text{lo}$) y máximo ($\text{hi}$) del pool de candidatos devuelto por SQLite FTS5.
-- **Normalización Proporcional:**
-  $$\text{bm25\_norm}(d) = \left( \frac{|v(d)| - \text{lo}}{\text{hi} - \text{lo}} \right) \times \min(1.0, \text{hi})$$
-- **Guarda de Escala:** El factor $\min(1.0, \text{hi})$ asegura que consultas sin coincidencias léxicas contundentes (ej. errores tipográficos o consultas ambiguas con $\text{hi} < 1.0$) no inflen artificialmente puntuaciones irrelevantes a $1.0$, protegiendo el ranking semántico.
-
-### 3. Comparabilidad Unificada Frase / Ráfaga
-En el servidor MCP (`biorag_recordar`), cuando la confianza de la búsqueda directa es baja, se dispara el fallback de ráfaga asociativa (`buscar_por_rafaga`). Para evitar que cada función estire sus puntuaciones sobre intervalos disjuntos:
-- `buscar_por_frase` preserva la envolvente métrica en `self._last_bm25_bounds = (lo, hi, escala)`.
-- `buscar_por_rafaga` reutiliza y extiende dinámicamente dichos límites sin recortar, garantizando que el reordenamiento final por score híbrido opere sobre el mismo espacio métrico unificado.
-
-### 4. Calibración Conforme Persistente y Ruido Cero
-- **Garantía Conformal:** Umbral dinámico calculado como cuantil percentilar ($\alpha=0.10$, umbral $0.5233$ sobre 926 nodos) persistido en la tabla `calibracion_estado`.
-- **Falsos Positivos en Negativo:** **0.00% FP (0 / 40)** verificado en la suite global de 921 casos.
-- **Precisión Temática (`por_tema`):** R@1 sube a **70.77%** con un MRR de **0.797** (máximo histórico del proyecto).
-
-
-## 🧬 Canal
+Cuando un agente busca `"extensión principal de VS Code para Kilo"` y el nodo se tit

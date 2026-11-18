@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3427** |
+| 📝 Total Prompts | **3438** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-17** |
+| 🔄 Last Updated | **2026-11-18** |
 
 ---
 
@@ -189,6 +189,171 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Grok Imagine Fashion Show Scene Expansion
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine that expands a fashion show scene by adding specific celebrities and characters to an existing image base.
+
+#### 📝 Prompt
+
+```
+Using the first image as the base equality fashion adoption show scene with Charlize Theron, Michelle Obama holding baby Donald Trump Jr, Donald Trump and Melania, expand the group: accurately add Paris Hilton from the second image standing next to C...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122951565917216769/img/_vFnfIx4TCJAzp55.jpg" width="600" alt="Grok Imagine Fashion Show Scene Expansion">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13991)**
+
+**Author:** [Puchamamax](https://x.com/aaoomaxi) | **Source:** [Link](https://x.com/aaoomaxi/status/2122951597483589966) | **Published:** Nov 18, 2026
+
+---
+### Tesla Optimus Robots Times Square
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt for a video featuring Tesla Optimus army robots marching through Times Square.
+
+#### 📝 Prompt
+
+```
+Tesla Optimus army robots marching through Times Square marching in the city!
+Solution to New Yorks Police Force. 
+Anti-Terrorist Robo Force🇺🇸
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122930461525606400/img/IjNg6AnsBjdUuFoR.jpg" width="600" alt="Tesla Optimus Robots Times Square">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13992)**
+
+**Author:** [Sherry Cord](https://x.com/SherryBossMama) | **Source:** [Link](https://x.com/SherryBossMama/status/2122930521269526583) | **Published:** Nov 18, 2026
+
+---
+### Grok Imagine Prompt for Economist Cover Animation
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A user shares a prompt used with Grok Imagine to animate an image related to The Economist cover, resulting in a humorous video of flying war tanks.
+
+#### 📝 Prompt
+
+```
+Let's bring this image to life with the recent reports about the new cover of The Economist.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122874678393925632/img/nFP2ZyZHkAioAgb4.jpg" width="600" alt="Grok Imagine Prompt for Economist Cover Animation">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13995)**
+
+**Author:** [Gabriel Santini](https://x.com/GCSantiniX) | **Source:** [Link](https://x.com/GCSantiniX/status/2122876989698875451) | **Published:** Nov 18, 2026
+
+---
+### Panda and Polar Bear Celestial Music
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A prompt to create a video where a panda cub and polar bear cub play instruments surrounded by celestial spirals.
+
+#### 📝 Prompt
+
+```
+have the panda cub and an polar bear cub play their instruments and have celestial spirals. Make your own option
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122876434389827585/img/OoWVbVn958H2bfzq.jpg" width="600" alt="Panda and Polar Bear Celestial Music">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13990)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2122876464718897609) | **Published:** Nov 18, 2026
+
+---
+### Orbiting Data Center Habitats Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine featuring living habitats connected to data centers orbiting Earth.
+
+#### 📝 Prompt
+
+```
+Living habitats connected to Data centers, orbiting earth
+When Data Centers become Home, the life expectancy of one job, protect the Data,
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122861868771577856/img/EJf1SfT9YzjhEzWx.jpg" width="600" alt="Orbiting Data Center Habitats Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13993)**
+
+**Author:** [Tammy LouiseVsughan](https://x.com/TLouisevsughan) | **Source:** [Link](https://x.com/TLouisevsughan/status/2122861994206441622) | **Published:** Nov 18, 2026
+
+---
+### Grok Imagine Lounge Pants Tower Window Scene
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt for Grok Imagine describing a woman walking to a tower window with added rose bushes and rug adjustments.
+
+#### 📝 Prompt
+
+```
+She wearing lounge pants walking to her high tower window, add a rose bush by window. Make rug brighter matching roses....
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122833801365569536/img/i2W4W7Dc5aYjx_ox.jpg" width="600" alt="Grok Imagine Lounge Pants Tower Window Scene">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13994)**
+
+**Author:** [Mimi9060](https://x.com/MelodyM662010) | **Source:** [Link](https://x.com/MelodyM662010/status/2122833828658180547) | **Published:** Nov 17, 2026
+
+---
+### Cyberpunk Town and Future City Video Prompt
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> A prompt for a long-take video blending a traditional Japanese town with a futuristic cyberpunk megacity, featuring bird-like camera movement and specific traffic infrastructure details.
+
+#### 📝 Prompt
+
+```
+A world fusing a Japanese downtown area with a future city (megastructure), cyberpunk style.
+
+Transportation infrastructure is divided.
+The downtown zone has old trams with tires running on the ground/roads.
+The future city part uses tube-shaped connecting networks, inside which tireless personal cars move.
+In a corner of the downtown area, there is a single red torii gate, surrounded by lush trees.
+
+The video is a long take, uncut.
+Camera work is like a flying bird (do not show the bird itself).
+
+*Note: Personal cars flowing in the tube transport network are one per tube, same...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122815120938295296/img/udqXNLnUA6Bty2n9.jpg" width="600" alt="Cyberpunk Town and Future City Video Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13999)**
+
+**Author:** [じろじろin下関](https://x.com/ziro1005) | **Source:** [Link](https://x.com/ziro1005/status/2122815472446185554) | **Published:** Nov 17, 2026
+
+---
+### Stop Motion Panda Christmas Elf
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A detailed prompt for a stop-motion animation style scene featuring a felt-textured panda dressed as a Christmas elf.
+
+#### 📝 Prompt
+
+```
+A detailed, high-quality stop-motion animation style scene featuring a felt-textured Panda dressed as a Christmas elf. The Panda is the central subject, wearing a green felt tunic with white fur trim, a black b...
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2122774303058063360/img/5myr2nsYECOkjdcX.jpg" width="600" alt="Stop Motion Panda Christmas Elf">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13989)**
+
+**Author:** [Cathy has this](https://x.com/lighthouse42f) | **Source:** [Link](https://x.com/lighthouse42f/status/2122774319164252365) | **Published:** Nov 17, 2026
+
+---
 ### Elf Girl Cosplay Miko Video
 
 ![日本語](https://img.shields.io/badge/lang-日本語-green)
@@ -850,6 +1015,27 @@ Fictional AI-generated sci-fi characters and imaginary futuristic armor transfor
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13858)**
 
 **Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2121261462983192595) | **Published:** Nov 13, 2026
+
+---
+### Mars Birthday Cake Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A tweet describing a video scenario: Elon Musk bringing a cake on Mars via Grok Imagine. The text provides context but is more of a commentary than a strict prompt, though it describes the scene.
+
+#### 📝 Prompt
+
+```
+Happy birthday, @dvorahfr ! 🎂🚀
+
+Elon brought the cake. Grok Imagine took us to Mars.
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2121257454625251328/img/aRfWU2v01Pq1KX-o.jpg" width="600" alt="Mars Birthday Cake Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13998)**
+
+**Author:** [The SI Maximalist](https://x.com/thesimaximalist) | **Source:** [Link](https://x.com/thesimaximalist/status/2121258069321789716) | **Published:** Nov 13, 2026
 
 ---
 ### Dark Knight Transformation Prompt
@@ -1831,117 +2017,4 @@ The sound includes heavy rain on metal, the low mechanical hum of her footsteps,
 Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
 ```
 
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118657831540838400/img/mE7DDYE04fJ9p1Ox.jpg" width="600" alt="Cyberpunk Female Optimus Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13645)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118658346840416611) | **Published:** Nov 6, 2026
-
----
-### Truck Transformation Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A highly detailed prompt for generating a video where a futuristic truck transforms into a giant warrior robot, including reference asset roles and event scripts.
-
-#### 📝 Prompt
-
-```
-[Generation Goal]
-Generate a continuous video of a futuristic heavy-duty truck racing along a mountain highway, then transforming into a towering Optimus-style giant warrior. The core subject is the red-and-blue truck, and the principal event is its high-speed drive followed by a detailed mechanical transformation into the bipedal robot form.
-
-[Reference Asset Roles]
-@image1 is used for the truck's overall appearance, red cab with blue flame-like markings, blue shipping container with red graffiti, chrome exhaust stacks, headlights, wheels, and the golden-hour mountain road scene under dramatic cloudy skies; do not invent extra people or vehicles.
-@image2 is used for the final giant warrior's design: red-and-blue armored plating, chrome mechanical details, blue glowing eyes, chest windows, wheel-like feet, and overall Optimus-inspired silhouette; the mountain sunset landscape in @image2 may reinforce lighting and environment continuity.
-
-[Subjects and Relationships]
-The single truck from @image1 is the only vehicle and is the exact same entity that transforms into the single giant warrior from @image2. No additional trucks, robots, or characters appear. The road, grassy hills, distant snow-capped mountains, and dramatic cloudy sky remain consistent throughout.
-
-[Event Script]
-At the start: the red-cab truck with blue container races toward the camera along the asphalt highway, headlights on, engine roaring, wheels spinning, and wind rushing past under the golden sunset light with heavy clouds.
-Principal event: the truck continues at high speed for a short beat, then begins a precise, realistic transformation. Every wheel, panel, engine block, exhaust stack, trailer container, and mechanicals joint unfolds, rotates, and reconfigures with intricate, weighty motion. The cab rises and becomes the torso and head, the trailer sections form the limbs and armor plates, wheels become feet, and chrome components lock into place until the towering Optimus-style warrior stands fully upright on the same road.
-At the end: the giant warrior stands tall and stable on the highway facing the viewer, blue eyes glowing, red-and-blue armor complete, with the mountain landscape and sunset light still surrounding it; the original truck form no longer exists as a vehicle.
-
-[Maintain Consistency]
-Keep the exact red-and-blue color scheme, flame/graffiti markings, chrome details, and mechanical aesthetics continuous from truck to robot. Preserve the single-entity identity so the warrior is unmistakably the transformed truck. Maintain the mountain highway environment, golden-hour lighting, dramatic cloudy sky, and realistic scale of the transformation. All mechanical movements remain precise, heavy, and physically believable with no abrupt jumps or missing parts.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118521388332150784/img/F14J6-9cAMYnqKLX.jpg" width="600" alt="Truck Transformation Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13600)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118521533421457741) | **Published:** Nov 6, 2026
-
----
-### Giant Optimus Robot Landing Cinematic Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed video generation prompt for Grok Imagine featuring a massive Optimus robot descending into a futuristic city, with specific instructions on camera movement, lighting, and sound design.
-
-#### 📝 Prompt
-
-```
-A massive Optimus robot descends from the clouds into a futuristic city, landing between towering skyscrapers as powerful shockwaves ripple outward across the streets. The camera circles his enormous metallic body while his blue eyes illuminate the darkness.
-
-The visuals present a high-tech, cinematic sci-fi atmosphere with dramatic lighting cutting through night-time haze and reflective metallic surfaces.
-
-The camera uses a dynamic circling orbit around the giant robot, starting wide to capture the descent and landing impact, then sweeping closer along the body toward the glowing blue eyes.
-
-The sound includes deep booming impacts from the landing, spreading shockwave rumble, metallic resonance, and low ambient city hum under the drama.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118386448382459904/img/YBy0vRRPGCaswKYq.jpg" width="600" alt="Giant Optimus Robot Landing Cinematic Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13601)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118387174093558252) | **Published:** Nov 5, 2026
-
----
-### Grok Imagine Video 1.5 Lite Lip-Sync Test Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A test prompt for Grok Imagine Video 1.5 Lite on Higgsfield to generate a short clip of a woman speaking specific dialogue with accurate lip synchronization in a rainy setting.
-
-#### 📝 Prompt
-
-```
-A woman in a yellow raincoat at a rainy bus stop turns to the camera and says: 'Sorry I'm late, the 47 bus broke down.'
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2115096039568883712/img/3H5aVATrpuG9vAiw.jpg" width="600" alt="Grok Imagine Video 1.5 Lite Lip-Sync Test Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13603)**
-
-**Author:** [Which AI Won](https://x.com/whichaiwon) | **Source:** [Link](https://x.com/whichaiwon/status/2118342571592446154) | **Published:** Nov 5, 2026
-
----
-### Fallen Angel Cinematic Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for generating a cinematic video of a fallen angel in an ancient city crater using Grok Imagine. The scene features rising smoke, falling rain, closing light beams, and burning feathers.
-
-#### 📝 Prompt
-
-```
-female angel with white wings burned and darkened at the tips, kneeling in a smoking crater in the middle of an ancient city, looking up where a beam of light closes in the sky, fine rain, high camera angle, cinematic fantasy, vertical 4:5
-
-the angel slowly raises her face, rain falls, smoke rises from the crater, the beam of light closes, burnt feathers fly in the wind, the camera slowly descends until it reaches her
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118169027029663744/img/asNAYbWxjmoI9cAu.jpg" width="600" alt="Fallen Angel Cinematic Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13607)**
-
-**Author:** [rxufnx](https://x.com/rxufnx) | **Source:** [Link](https://x.com/rxufnx/status/2118327480918438306) | **Published:** Nov 5, 2026
-
----
-### Dark Electro Hip Hop Dance Video
-
-![日本語](https://img.shields.io/badge/lang-日本語-green)
-
-> A detailed video generation prompt for Grok Imagine featuring a hip-hop dance sequence. It uses three reference images to maintain character consistency (black up-hair, velvet gothic dress) and specifies four scenes with precise choreograp
+<img src="https://pbs.twimg.com/amplify_video_thumb/2118657831540838400/

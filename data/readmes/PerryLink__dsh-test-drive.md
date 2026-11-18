@@ -9,7 +9,7 @@
 
 **在一次性 profile 里装、启动、断言、卸载、清理——把「装一下看看能不能跑」变成可复现的流水线。**
 
-面向 DeepSeek Harness 插件的隔离式安装冒烟实测：每个目标独占一个 `mkdtemp` 根（一次性 `DSH_HOME`、一次性工作目录、重定向的 pnpm store），你真实的 `~/.dsh` 从头到尾不被读写，结果落成下游可直接消费的结构化记录。
+面向 DeepSeek Harness 插件的隔离式安装冒烟实测：每个目标独占一个 `dsh-v0.2.2-rc.4`（2026-11-18）；`mkdtemp` 根（一次性 `DSH_HOME`、一次性工作目录、重定向的 pnpm store），你真实的 `~/.dsh` 从头到尾不被读写，结果落成下游可直接消费的结构化记录。
 
 [安装](#三步上手) · [配置](#配置) · [FAQ](#faq) · [简体中文](README.md) · [English](README.en.md) · [Español](README.es.md) · [Português](README.pt.md) · [हिन्दी](README.hi.md)
 
@@ -363,7 +363,7 @@ profile patch 中的覆盖示例：
 
 | 维度 | 状态 |
 |---|---|
-| Harness | DeepSeek Harness `dsh-v0.2.1-alpha.1`（GitHub tag，2026-09-11 已核验：完整门禁链 + profile 安装冒烟）。npm 依赖线 `0.1.2-rc.1` 与 `0.1.7-rc.2`；`engines.dsh`：`>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
+| Harness | DeepSeek Harness `dsh-v0.2.2-rc.4`（GitHub tag，2026-11-18 已核验：完整门禁链 + profile 安装冒烟）。npm 依赖线 `0.1.2-rc.1` 与 `0.1.7-rc.2`；`engines.dsh`：`>=0.2.1-0 <0.3.0 \|\| >=0.2.2-0 <0.3.0` |
 | Node | `^22.19.0 \|\| >=24.9.0` |
 | 包管理器 | `pnpm@11.7.0` |
 | 平台 | Windows / macOS / Linux（纯 host 插件，无 UI 半） |

@@ -107,7 +107,7 @@ flowchart LR
 
 ## 🧊 2. The 3D Layer Stack
 
-Think of NeuroVault as six slabs. A request falls from the top slab to the bottom one, and the answer climbs back up.
+Think of NeuroVault as six slabs. A request falls from the top slab to the bottom one, and the answer climbs back up
 
 ```text
    ┌──────────────────────────────────────────────────┐

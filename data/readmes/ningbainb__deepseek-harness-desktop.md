@@ -4,19 +4,42 @@
 
 中文 | [English](README.en.md)
 
+DeepSeek Harness Desktop 是社区维护的开源 AI 桌面工作台。它基于官方 DSH Runtime 和 Web UI，提供对话、项目、插件、技能和任务自动化。
+
+[下载最新版](https://github.com/ningbainb/deepseek-harness-desktop/releases/latest) · [项目官网](https://1521003.xyz/) · [使用文档](docs/desktop.md) · [更新日志](CHANGELOG.md)
+
+![Windows 会话主界面](website/assets/desktop-5.3.0-main.webp)
+
+## 5.3.0 候选版亮点
+
+- **稳定性**。Windows 覆盖安装沿用原目录、会话和配置。
+- **UI 升级**。会话侧栏更聚焦，常用工具从拓展坞直达。创意工坊并入插件的「发现」。
+- **性能优化**。长回复减少重复布局，列表和资源按需读取，安装减少跨盘搬运。
+- **记忆**。在个人偏好中管理本地记忆，模型建议经确认后保存。
+- **内核**。随包适配官方 DSH `0.2.2-rc.5`。
+
+<table>
+  <tr><th>拓展坞</th><th>个人偏好与记忆</th></tr>
+  <tr><td><a href="website/assets/desktop-5.3.0-dock.webp"><img src="website/assets/desktop-5.3.0-dock.webp" width="440" alt="拓展坞插件入口"></a></td><td><a href="website/assets/desktop-5.3.0-memory.webp"><img src="website/assets/desktop-5.3.0-memory.webp" width="440" alt="个人偏好中的记忆设置"></a></td></tr>
+</table>
+
+截图来自 5.3.0 候选版的 Windows 隔离环境。
+
+支持 Windows 10 / 11 x64、macOS 13+ Apple Silicon arm64 Preview 和 Linux x64 Preview。安装包包含 Node.js 与 DSH。Windows 内置 Git，macOS 和 Linux 通过系统 Git 提供相关操作。应用使用独立的身份、数据目录与更新源，按 BSD-3-Clause 许可发布。
+
 > **项目由 ningbai牛逼 维护**：如果 DeepSeek Harness Desktop 对你有帮助，欢迎在[爱发电支持 ningbai牛逼](https://www.ifdian.net/a/ningbai)。你的支持将用于服务器、测试环境和后续维护。
 >
 > 扫码支持：
 >
 > <a href="https://www.ifdian.net/a/ningbai"><img src="website/assets/afdian-qr.svg" width="180" alt="爱发电赞助二维码"></a>
 
-## DeepSeek Harness Desktop 用户交流群
+## DeepSeek Harness Desktop 用户二群
 
-QQ 群：**1105158177**
+QQ 二群：**1129522514**
 
-**[点击一键加入 QQ 群](https://qm.qq.com/q/vehlNjaeye)**
+**[点击一键加入 QQ 二群](https://qm.qq.com/q/9hrcdaEYPC)**
 
-<a href="https://qm.qq.com/q/vehlNjaeye"><img src="website/assets/qq-group-1105158177.jpg" width="280" alt="DeepSeek Harness Desktop QQ 群 1105158177 加群二维码"></a>
+<a href="https://qm.qq.com/q/9hrcdaEYPC"><img src="website/assets/qq-group-1129522514.jpg" width="280" alt="DeepSeek Harness Desktop QQ 二群 1129522514 加群二维码"></a>
 
 欢迎加入社群交流：
 
@@ -31,16 +54,6 @@ QQ 群：**1105158177**
 > 群内会同步提供最新版安装包，也可以直接交流安装与使用问题。
 
 ---
-
-**DeepSeek Harness Desktop** 是社区维护的开源 AI 编程桌面客户端。
-
-DeepSeek 官方尚未正式发布独立 Desktop 产品；本项目把公开的官方 **DSH Runtime、Web UI 与官方仓库中的 Desktop 能力边界** 融合为 Windows、macOS 与 Linux 桌面应用，并在独立社区宿主中补齐插件、Skills、任务自动化、Git、远程开发和桌面体验。它不是 DeepSeek 官方客户端，也不使用或覆盖未来官方 Desktop 的应用身份、数据目录与更新源。
-
-支持 **Windows 10 / 11 x64**；同时提供 **macOS 13+ Apple Silicon arm64 Preview** 与 **Linux x64 Preview**。项目采用 **BSD-3-Clause** 许可证。
-
-安装包已包含 Node.js 与 DSH；Windows 同时内置 Git，macOS 与 Linux 的 Git 操作需要系统安装 Git。
-
-[产品介绍](https://1521003.xyz/) · [下载最新版](https://github.com/ningbainb/deepseek-harness-desktop/releases/latest) · [使用文档](docs/desktop.md) · [更新日志](CHANGELOG.md)
 
 ### 5.1.0：三端同版，完整输出与简洁设置
 
@@ -380,7 +393,7 @@ Windows 安装包已经包含 DSH、桌面插件、皮肤、pnpm、MinGit 与所
 
 提供 AppImage 与 DEB。AppImage 需要执行权限，DEB 可通过系统软件包管理器安装；需要图形会话、系统 Git 及可用沙箱，不应以关闭沙箱的方式处理启动失败。预览版手动更新，实体桌面安装与操作体验仍需用户验收。完整步骤见 [Linux x64 Preview 安装说明](docs/linux-preview.zh.md)。
 
-如果 GitHub 下载速度较慢，也可以加入页面顶部的用户交流群获取同步提供的安装包。
+如果 GitHub 下载速度较慢，也可以加入页面顶部的用户二群获取同步提供的安装包。
 
 ## 更新
 

@@ -105,19 +105,50 @@ Check with `java -version` or in JMeter's `jmeter.log`.
 ```text
 1. Download the latest JAR from Releases
 2. Drop it into JMeter's lib/ext directory
-3. Paste jmeter-ai-quickstart.properties into JMeter's bin/user.properties
-4. Uncomment one provider (Claude, OpenAI, Gemini, Ollama or Apple on-device), add its key (Ollama and Apple on-device need none), then restart JMeter
+3. Start or restart JMeter, then connect a provider as described below
 ```
 
 See [Releases](https://github.com/QAInsights/jmeter-ai/releases) for the latest JAR.
 
 ## ⚙️ Configuration
 
-**First time?** Paste [`jmeter-ai-quickstart.properties`](jmeter-ai-quickstart.properties) into JMeter's `bin/user.properties`, uncomment one provider and add its key (Ollama and Apple on-device need none):
+### Feather Wand Free
 
-You can connect a provider from the Feather Wand panel's ⋯ menu > Connect a provider and use it immediately in Chat and Agent Mode, without restarting JMeter. Smart routing and Apple on-device can also be configured in this dialog. The manual properties below remain documented. The JSR223 refactor menu picks up a new provider after a JMeter restart.
+With no other chat provider configured, **Feather Wand Free** is selected automatically:
+open Feather Wand and send a message without connecting a provider or entering a key.
+It remains in the model picker when you connect your own provider, but does not
+replace that provider as the default. You can also select it as the first option in
+**Connect a provider**, then click **Use Feather Wand Free**.
 
-An empty chat offers three contextual suggestions from the open plan, in rounded-rectangle buttons just above the message box. The first suggests creating a Thread Group, adding a request, adding a CSV data set, or reviewing an existing group. CSV data under child controllers counts when it covers every enabled sampler. If the selected group is disabled, or the plan has groups but none are enabled, suggestions are plan-wide and the first option is **Review this test plan** instead. A plan without any Thread Groups offers **Create a Thread Group**. The other options offer relevant plan review, response-check review, or workload-planning prompts. For enabled selections, they follow the containing Thread Group; selections outside a group use the first enabled group. Duplicate enabled group names are disambiguated by tree position in the draft. Suggestions refresh as the plan changes. Click any option to fill the message box, review the draft, then press Enter to send. Clicking never overwrites a draft, calls AI, or changes the plan on its own. Suggestions disappear when the conversation starts and return on New Chat. Provider setup remains the first step when no provider is connected.
+Free chat allows 10 lifetime messages per starter ID and 30 per shared IP, with
+burst limits and a service-wide paid-provider budget. After each reply the chat
+shows the remaining allowance and a **Connect a provider** action. Availability
+is not guaranteed; connect your own provider for continued use and Agent Mode.
+Free is chat-only: Agent Mode and tool calls are unavailable.
+
+Messages are sent through jmeter.ai to DeepInfra's paid NVIDIA Nemotron model.
+DeepInfra [doesn't train on or retain inference prompts](https://docs.deepinfra.com/account/data-privacy).
+Requests are processed in memory; DeepInfra logs request metadata, not content.
+**Do not include secrets**.
+The worker stores quota/usage counts, not message content. Authentication uses a
+random UUID persisted separately in `~/.jmeter-ai/starter-id`, not your telemetry
+install ID, and works even when telemetry is disabled.
+
+Set `jmeter.ai.starter.enabled=false` in JMeter's `bin/user.properties` to disable
+Free entirely. `jmeter.ai.starter.url` overrides the OpenAI-compatible base URL
+(default `https://telemetry.jmeter.ai/v1/starter`). Restart after changing properties.
+
+**Prefer your own provider?** Connect a provider in JMeter:
+
+1. Install the plugin using one of the methods above, then open Feather Wand with the toolbar wand button, **Ctrl+Shift+A** (**⌘⇧A** on macOS), or **Run → AI**.
+2. Click **Connect a provider** on the welcome screen, or **⋯ → Connect a provider…**.
+3. Pick a provider. For API-key providers, paste an **API key**; **Get a key** opens the provider's key page where available. **Ollama** and **Apple on-device** need no key; **OpenCode** is a CLI option using free models or credentials managed by its CLI, with no API-key field in Feather Wand. Apple on-device appears only on supported Macs.
+4. Click **Test connection**, then **Save and connect**. For Apple on-device, use **Use Apple on-device**.
+5. Pick a model and use Chat immediately—no restart needed. Agent Mode requires a supported provider; Ollama, AWS Bedrock, and Apple on-device are chat-only. Settings are saved to JMeter's `bin/user.properties` for you (or your configured `user.properties` path).
+
+The JSR223 refactor menu picks up a new provider after a JMeter restart. Smart routing can also be configured in this dialog.
+
+**Prefer properties?** Append [`jmeter-ai-quickstart.properties`](jmeter-ai-quickstart.properties) to JMeter's `bin/user.properties`, preserving existing settings, then uncomment one provider and add its key. Restart JMeter after manual file edits. **AWS Bedrock and corporate gateways are properties-only.** Minimal example:
 
 ```properties
 jmeter.ai.service.type=anthropic
@@ -125,6 +156,10 @@ anthropic.api.key=YOUR_ANTHROPIC_API_KEY
 ```
 
 That is all Feather Wand needs; every other setting has a default. [`jmeter-ai-sample.properties`](jmeter-ai-sample.properties) is the full reference: copy only the settings you want to change from it into `user.properties` (or `jmeter.properties`). The tables below list each setting and its default.
+
+### Chat starters
+
+An empty chat offers three contextual suggestions from the open plan, in rounded-rectangle buttons just above the message box. The first suggests creating a Thread Group, adding a request, adding a CSV data set, or reviewing an existing group. CSV data under child controllers counts when it covers every enabled sampler. If the selected group is disabled, or the plan has groups but none are enabled, suggestions are plan-wide and the first option is **Review this test plan** instead. A plan without any Thread Groups offers **Create a Thread Group**. The other options offer relevant plan review, response-check review, or workload-planning prompts. For enabled selections, they follow the containing Thread Group; selections outside a group use the first enabled group. Duplicate enabled group names are disambiguated by tree position in the draft. Suggestions refresh as the plan changes. Click any option to fill the message box, review the draft, then press Enter to send. Clicking never overwrites a draft, calls AI, or changes the plan on its own. Suggestions disappear when the conversation starts and return on New Chat. Provider setup remains the first step when no provider is connected.
 
 ### General Settings
 
@@ -576,7 +611,7 @@ As a manual alternative, set `jmeter.ai.opencode.enabled=true` and optionally `j
 
 ### OpenCode permissions
 
-Each request runs in a new empty temporary directory with `--pure` and a permission configuration that allows read-only discovery tools while denying file writes, shell, web tools, and reads outside that directory. The temporary directory is removed after the request. In Agent Mode, Feather Wand's own JMeter tools perform plan edits; OpenCode itself cannot write to the plan files.
+Each request runs in a new empty temporary working directory (and passes `--pure --dir <empty temp dir>` when OpenCode V1 is detected) with a permission configuration that allows read-only discovery tools while denying file writes, shell, web tools, and reads outside that directory. The temporary directory is removed after the request. In Agent Mode, Feather Wand's own JMeter tools perform plan edits; OpenCode itself cannot write to the plan files.
 
 ### What Feather Wand runs
 
@@ -584,7 +619,7 @@ Each request runs in a new empty temporary directory with `--pure` and a permiss
 |----------|-------------------------|----------------|
 | **ChatGPT / Codex** | `codex login status`, `codex login`, `codex logout` | `codex exec` with the prompt on UTF-8 stdin, the configured sandbox, optional `--model`, and a clean last-message output file |
 | **Claude Code** | `claude auth status --json`, `claude auth login --claudeai`, `claude auth logout` | `claude -p --output-format text` with the prompt on UTF-8 stdin and optional `--model` |
-| **OpenCode** | `opencode --version`; provider sign-in is done manually in the AI CLI terminal | `opencode run --pure --format json --dir <empty temp dir>` with the prompt on UTF-8 stdin, `OPENCODE_CONFIG_CONTENT`, and optional `-m provider/model` |
+| **OpenCode** | `opencode --version`; provider sign-in is done manually in the AI CLI terminal | `opencode run --format json` in `<empty temp dir>` (with `--pure --dir <empty temp dir>` when OpenCode V1 is detected) with the prompt on UTF-8 stdin, `OPENCODE_CONFIG_CONTENT`, and optional `-m provider/model` |
 
 Commands are launched directly with `ProcessBuilder`, never through a shell, and prompt text is never interpolated into the command line. Standard output and error are drained concurrently off the Swing event thread. Each request has a hard timeout; timeout or **Stop** terminates the CLI process and its descendants.
 
@@ -1151,38 +1186,4 @@ Pending attachments appear as **chips** above the input (name · size · mode). 
 
 | Mode | What the model receives |
 |---|---|
-| **smart** (default) | `.jtl`/`.csv` results → compact digest: sample count, error rate, avg/median/p90/p95/p99, throughput, per-label breakdown, slowest + failing samples. Log files → ERROR/WARN lines (capped), counts by logger, exceptions with stack lines, first/last lines. Other text → head + tail excerpt. |
-| **raw** | Head + tail of the file within the character budget, with an explicit truncation marker. |
-
-Attachments are inlined as text at request time, so they work on **every provider** - no vision or document-upload capability needed. Follow-up questions re-include the file automatically until the history window trims it. Each message can carry up to 3 attachments (configurable), files up to 10 MB, and only valid UTF-8 text files are accepted.
-
-```properties
-# Processing mode: smart (default) or raw
-#jmeter.ai.file.mode=smart
-# Character budget for excerpts/digests (default 50000)
-#jmeter.ai.file.max.chars=50000
-# Max attachments per message (default 3)
-#jmeter.ai.file.max.count=3
-```
-
-## 💾 Conversation Persistence & Export
-
-Every conversation is **autosaved after each turn** to `~/.jmeter-ai/sessions/` - one JSON file per conversation, including attachment contents, the model in use, and per-turn timestamps. Starting a new chat (the **+** button) archives the current session and begins a fresh one; the directory keeps the 20 most recent sessions.
-
-**Restore on startup** is opt-in: with the property below, reopening the chat panel brings back the last conversation - transcript, history (so follow-ups keep their context), attachments, and the model it used.
-
-```properties
-# Restore the last conversation when the chat panel opens (default false)
-#jmeter.ai.session.restore=true
-```
-
-> ⚠️ Sessions are stored **unencrypted**, including the full text of attached logs/results. Avoid attaching files that contain credentials or secrets.
-
-**Export for reports:** the **Export** menu in the chat header writes the current conversation as **Markdown** (paste into tickets/wikis) or a self-contained styled **HTML** page - file attachments appear by name. Perfect for attaching AI analysis to a test report.
-
-## 📊 Context & Cost Stats
-
-The input options row (the row with the paperclip) carries a live readout: `ctx 12.3k/400k · $0.04`.
-
-- **Context fill** - how much of the selected model's context window your conversation uses. When an API provider reports usage, the latest server prompt size is used; until then it falls back to an estimate over the history with attachments inlined, marked with `~`. Attachments are the usual context hogs - watch this number when you attach big logs.
-- **Session cost** - cumulative cost of API calls, priced per call at [models.dev](https://models.dev) list prices
+| **smart** (default) | `.jtl`/`.csv` results → compact digest: sample count, error rate, avg/median/p90/p95/p99, throughput, per-label breakdown, slowest + failing samples. Log files → ERROR/WARN lines (capped), counts by logger, exceptions with stack l

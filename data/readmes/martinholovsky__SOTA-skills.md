@@ -14,6 +14,9 @@
 
 **Make your AI coding assistant build and audit like your most senior engineer.**
 
+**New to this?** Read the [beginner's guide](docs/GETTING-STARTED.md) first. In about ten
+minutes it explains what the library is, what you get from it, and how to start.
+
 Your assistant is brilliant — it just doesn't know your standards, and it forgets the
 ones it does know as the task grows long. SOTA-skills fixes both, and the fix is
 **measured**: from a bare "build X" prompt, best-practice coverage climbs from **~59%
@@ -98,7 +101,7 @@ They take free-text arguments (`/sota-close focus on the migration branch`). Ful
 - [Structure](#structure) · [How it works](#how-it-works) · [Conventions](#conventions)
 - [Found a gap? Tell us](#found-a-gap-tell-us--its-the-only-signal-we-get) · [Contributing](#contributing) · [License](#license)
 
-**Deeper docs:** [Find it fast (docs index)](docs/INDEX.md) · [Does it work? (measured results)](evals/results/RESULTS.md) · [Why it works](docs/WHY-IT-WORKS.md) · [Why some lifts expire and others don't](docs/WHY-SALIENCE-LASTS.md) · [Keeping rules applied as context fills](docs/CONTEXT-MANAGEMENT.md) · [Roadmap](docs/ROADMAP.md) · **[Agent-loop evals — tools, hidden tests, no model judge (separate repo)](https://github.com/martinholovsky/sota-agent-evals)**
+**Deeper docs:** [New here? Beginner's guide](docs/GETTING-STARTED.md) · [Find it fast (docs index)](docs/INDEX.md) · [Does it work? (measured results)](evals/results/RESULTS.md) · [Why it works](docs/WHY-IT-WORKS.md) · [Why some lifts expire and others don't](docs/WHY-SALIENCE-LASTS.md) · [Keeping rules applied as context fills](docs/CONTEXT-MANAGEMENT.md) · [Roadmap](docs/ROADMAP.md) · **[Agent-loop evals — tools, hidden tests, no model judge (separate repo)](https://github.com/martinholovsky/sota-agent-evals)**
 
 ## Standards & practices baked in
 
@@ -1106,7 +1109,10 @@ anything". Three corrections, each re-checked 2026-10-02:
   [Agent SDK](https://code.claude.com/docs/en/agent-sdk/overview) exposes the same loop with
   hooks and permissions programmatically. **`scripts/verified-done-hook.py`** uses that: an
   opt-in Stop hook that refuses "done" on a changed tree until a verification command has
-  passed on exactly that tree (router principle 6, enforced). **`scripts/zsh-equals-hook.py`**, on by
+  passed on exactly that tree (router principle 6, enforced). **`scripts/completion-gate-hook.py`**,
+  also opt-in, blocks once when the final message declines a security control and gives the
+  request as the reason ("your spec didn't set a maximum, so I didn't add one"); its header
+  states what its detector catches and misses (ROADMAP 96). **`scripts/zsh-equals-hook.py`**, on by
   default in the plugin, is a PreToolUse hook that refuses a zsh command carrying an unquoted `=word`, or a `set -- $scalar` zsh will not split, before it runs
   (`sota-shell-scripting` rules/06 §1), a reflex the written rule did not stop. Since 2026-10-27 it also refuses a variable named `path` or `status`, a spaced literal expanded unquoted as arguments, `PIPESTATUS`/`BASH_REMATCH`, and a `git grep` escape the platform reads as a plain letter (rules/06 §2f); since 2026-11-15, `for x in $v` where `v` came from `$(…)` in the same command, which zsh loops over once, and an unquoted glob in a flag value (`--include=*.rs`), which zsh aborts with `no matches found`. The git hooks from
   `scripts/init-gates.sh` and CI are enforcement on every host, whatever the agent.
@@ -1219,4 +1225,4 @@ silently uninstalled until you re-run the installer.
 | **`/sota-report`** | at the **end** of a session, in your own project | Writes a gitignored field report on where the guidance failed, was absent, wrong, or right and did not fire — stamped with the version that produced it. Then writes a short generalised extract and prints a `gh issue create` line. It never posts anything. |
 | **`/sota-resume`** | at the **start** of a session, or when picking a project back up | Finds the open work: sweeps every tracker, checkbox and `TODO` marker with a **controlled** search (a clean "nothing found" is exactly the answer a skipped symlink tree, a `--replace` flag or a 30-row default page produces), classifies it — ready · needs a decision · deliberately deferred · not an item · **already done and never ticked off, or made unnecessary by a control that already covers the gap** — shows you the table, then executes what you agree to, one item at a time, against the project's own CI entry point. |
 | **`/sota-audit`** | when a piece of work is **finished**, or on arriving in a codebase you did not write | Audits the code against the library rather than for defects in general, so the dominant finding is **a rule that owns real surface area and was never applied** — and behind it, a control that is present and enforces nothing. Agrees the scope first (every candidate printed with its denominator, because the wrong scope returns *clean* rather than an error), pins every finding and dismissal to a commit, covers a diff's callers and importers, maps the trust boundaries before any severity is rated, runs the installed scanners (secrets over full history, dependencies, SAST, IaC and CI) and reports the missing ones as not reached, asks before running a codebase's own tests, build or install scripts when you did not write it (that is its code running as you), routes from the surfaces in the tree rather than from whatever happened to be loaded, prints a coverage table **per rules file** naming the ones **nobody opened**, walks each Audit checklist item by item (met · not met · not applicable, with the reason), expands each serious finding to the full evidence block with a reproduction, asks the questions that need a decision in one batch, then fixes what you agree to — verified against the finding, not just the suite. |
-| **`/sota-deep-audit`** | at a **milestone**, on **inheriting** a codebase, or before a go/no-go | The heavy pass, and the one to reach for deliberately rather than by default. It checks against the same standard as `/sota-audit` and buys five things one context cannot: **independence** (every serious finding goes to an agent that did not find it, working from the code rather than the finder's write-up), **scale** (a repo too large to hold at once is partitioned across agents, each with its own context, where `/sota-audit` partitions within one), **decisions re-measured rather than reconstructed** (where a past choice rests on a number, that number is produced again this session), **a forward look** at whether the plan is still right, and **the full threat-model reconstruction** where `/sota-audit` builds a boundary map (below). Four lenses — decisions & results · code and architecture · security posture · strategy. It
+| **`/sota-deep-audit`** | at a **milestone**, on **inheriting** a codebase, or before a go/no-go | The heavy pass, and the one to reach for deliberately rather than by default. It checks against the same standard as `/sota-audit` and buys five things one context cannot: **independence** (every serious finding goes to an agent that did not find it, working from the code rather than the finder's write-up), **scale** (a 

@@ -62,7 +62,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 - **Deletes can be undone** – deleting a project or a clip (card ⋯, the selection bars, the editor, ⌘K) stops its work and hides it. The toast always offers **Undo**, **Delete forever**, and **See deletions**. Everything restorable lives on **Deleted** (account menu) as one selectable list: each row says when it was deleted and when it is deleted forever, and a compact bar restores the selection or deletes it forever. Storage still counts until you delete it forever (MCP `list_deleted` plus `purge_project` / `purge_clip` / `purge_asset` / `purge_layer_template`; `reelsaw purge-project`, `purge-clip`, `library purge`, `templates purge`). Minutes, hourly creates and first-video-free are never refunded. Re-picking moments keeps every clip you made or edited (text, bounds, framing, style, intro/outro) and only replaces untouched AI picks, which can be restored too. The same through MCP (`delete_clip`, `delete_clips`, `delete_projects`, `restore_project`, `restore_clip`, `list_deleted`) and the CLI (`reelsaw deleted`, `restore`, `delete-clip`, `delete-clips`, `restore-clip`, `purge`, `purge-project`, `purge-clip`).
 - **Learns from your decisions** – what you accept, reject, cut, correct and edit is kept in a decision log (with the words or clip text it was about, the models that proposed it and a fingerprint of the source video) that outlives deleted projects: cuts you rejected are shown to the filler detector as examples to keep, and an export turns your decisions into eval cases (`reelsaw decisions export`, `export_decisions`, the `decisions` suite). Settings → Learning turns it off or forgets everything; deleting a project (or "Delete forever") can forget what it learned from that project, applied when it is purged, even automatically. It never leaves your instance. See [docs/specs/decision-log.md](docs/specs/decision-log.md).
 - **Command palette and bulk export** – ⌘K searches projects and clips with status, length and age, opens a row's actions (open, export, resume, retry failed clips, re-run refine, re-render, download, delete project or clip), takes pasted links (one project each, or opens the existing one) and offers retry-all shortcuts. "Export all" zips every rendered clip with platform-ready metadata: a paste-ready `.txt` (title, description, tags, caption), a `.youtube.json` (YouTube Data API v3 `videos.insert` body, private by default) and a `.tiktok.json` (Content Posting API `post_info`, `SELF_ONLY`) per clip, plus `manifest.json`, `clips.csv` (with rendered duration) and a README. Descriptions carry a timestamped link to the exact moment in the parent video.
-- **Share links** – a clip's ⋯ menu copies a link anyone can download it from without signing in (the project and selection menus do the same for the zip), for schedulers (Buffer, Metricool), Instagram's `video_url`, Zapier/Make file fields or a person. The link answers with the file itself (a plain 200, no redirect), serves the clip's latest render, lasts 90 days by default (`MEDIA_LINK_TTL_DAYS`; "Never" where `MEDIA_LINK_ALLOW_NEVER`), and can be revoked one at a time, per clip or project, or all at once under Settings → Share links. MCP `get_media_links`, `list_media_links`, `revoke_media_link`; `reelsaw media-links`. See [docs/specs/media-links.md](docs/specs/media-links.md).
+- **Share links** – a clip's ⋯ menu copies a link anyone can download it from without signing in (the project and selection menus do the same for the zip), for schedulers (Buffer, Metricool), Instagram's `video_url`, Zapier/Make file fields or a person. The link answers with the file itself (a plain 200, no redirect), serves the clip's latest render, lasts 90 days by default (`MEDIA_LINK_TTL_DAYS`; "Never" where `MEDIA_LINK_ALLOW_NEVER`), and can be revoked one at a time, per clip or project, or all at once under Settings → Share links. Deleting a project or clip stops its links (restoring it brings them back; purging it from the trash deletes them), and Clear removes revoked and expired links from the list. MCP `get_media_links`, `list_media_links`, `revoke_media_link`, `clear_media_links`; `reelsaw media-links`. See [docs/specs/media-links.md](docs/specs/media-links.md).
 - **Webhooks** – Settings → Webhooks sends signed JSON ([Standard Webhooks](https://www.standardwebhooks.com): `webhook-id`, `webhook-timestamp`, `webhook-signature`) to your URLs on `project.created`, `project.done` (every clip with share links and the zip), `project.failed`, `clip.done` and `clip.failed`, so n8n, Zapier, Make or a script can act the moment clips are ready instead of polling. Deliveries commit with the event, are retried 8 times over about 22 hours, and an endpoint that fails for 3 days is turned off with an email; each has a delivery log with the request, the answer and Resend. A project's `metadata` (create_project) comes back in every webhook for it. MCP `create_webhook` / `delete_webhook` (how a Zapier or Make app subscribes), `list_webhooks`, `update_webhook`, `rotate_webhook_secret`, `test_webhook`, `list_webhook_deliveries`, `resend_webhook_delivery`; `reelsaw webhooks`. See [docs/specs/webhooks.md](docs/specs/webhooks.md).
 - **SRT / VTT in and out** – every rendered clip's ⋯ menu offers its captions as `.srt` or `.vtt` (the same lines and times as the video, intro included, even when the style has captions off), and "Export all" adds them next to each clip as `clips/NN-title.srt` and `.vtt`; clips rendered before this feature need a re-render first. The project's ⋯ menu ("Transcript files…") downloads the transcript the same way (VTT can carry a timestamp before every word) and imports a subtitle file you already have: right after creating a project (only the video is fetched) or on a done or failed one (it cleans the transcript up and picks clips again). Imported cues become segments and their words are spread over the cue by length; the render re-aligns words to the audio. Also `GET /api/clips/:id/captions.srt|vtt`, `GET /api/projects/:id/transcript.srt|vtt` (`?words=1` for VTT word times), the MCP tools `get_clip_captions`, `get_project_transcript_file` and `import_transcript`, and `reelsaw captions`, `transcript-file` and `import-transcript`.
 
@@ -508,7 +508,7 @@ claude mcp add --transport http reelsaw https://your-host/api/mcp --header "Auth
 
 **Key permissions.** A key acts as you, with one exception: the instance-administration tools
 (`get_instance_settings`, `set_instance_settings`, `list_workers`, `get_queue`, `list_failures`,
-`get_failure`, `retry_failures`, `list_users`, `manage_users`, `check_for_update`, and instance-wide
+`get_failure`, `retry_failures`, `dismiss_failures`, `list_users`, `manage_users`, `check_for_update`, and instance-wide
 `report_issue`) need a key
 created with **Allow instance administration (admin tools over MCP)**, a checkbox admins see in
 Settings. Keys are created without it by default, and a key that lacks it is refused with "This
@@ -579,6 +579,7 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `get_media_links` | Links anyone can download without an Authorization header, for a scheduler (Buffer, Metricool), Instagram's video_url, Zapier/Make or a person. |
 | `list_media_links` | Your share links, newest first. |
 | `revoke_media_link` | Turn share links off now: one (linkId), a clip's (clipId), a project's (projectId) or all of yours (all: true). |
+| `clear_media_links` | Delete your revoked and expired share links from the list (they are deleted anyway some days after they stopped). |
 | `list_webhooks` | Your webhook endpoints. |
 | `create_webhook` | Subscribe a URL to events: project.created, project.done (with every clip, share links and the zip), project.failed, clip.done (also re-renders), clip.failed. |
 | `update_webhook` | Change a webhook's url, events or description, or turn it on or off (enabled). |
@@ -626,8 +627,9 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `list_workers` | Admins only: every Reelsaw process that has checked in (API, worker, combined app): CPU, memory, disk (free/total MB, -1 = unmeasurable; diskLeasedMB = claimed by jobs in flight), GPU, render slots, queues it listens on, and its jobs. |
 | `get_failure` | Admins only: one failed project or clip (title, owner email, stage, full recorded reason, when). |
 | `get_queue` | Admins only: waiting, running and retrying job counts per pipeline stage with when the longest wait began (oldestWaitingAt), plus the jobs currently in flight (project title, attempt, started, and a retrying job's lastError). |
-| `list_failures` | Admins only: failed projects and clips across the instance (owner email, stage, reason, when). |
+| `list_failures` | Admins only: failed projects and clips across the instance (owner email, stage, cause, reason, when); retryable = Retry can help (platform causes only). |
 | `retry_failures` | Admins only: retry matching failed projects and clips through the same lifecycle as retry_project / rerender_clip (never a raw queue poke). |
+| `dismiss_failures` | Admins only: clear failures nobody will retry (a bad link, no audio) from list_failures. |
 | `list_users` | Admins only: accounts, pending first then newest, with status, role, emailVerified, abuse flags, plan, last active and all-time usage. |
 | `manage_users` | Admins only: approve, hold, suspend, reinstate or delete many accounts, by ids or every match of filter (as list_users). |
 | `list_signup_rules` | Admins only: the sign-up rules in front of SIGNUP_MODE, oldest first (at most 500). |
@@ -670,8 +672,8 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | --- | --- |
 | `reelsaw version [--json]` | running version, latest published release, how to upgrade |
 | `reelsaw releases [--json] [--limit n]` | published versions from GitHub (reelsaw.com/releases / list_releases) |
-| `reelsaw users [--q text] [--status s] [--verified yes\|no] [--flagged yes] [--flag shared_ip\|signup_burst\|disposable_email] [--held rule] [--ip address] [--shared-ip yes\|no] [--in shared_ip\|…\|none] [--limit n] [--cursor c] [--json]` | list accounts a page at a time: role, status, email verified, sign-up date |
-| `reelsaw users --group flag\|ip [filter flags] [--limit n] [--json]` | the same list in sections, each with its count (Users page "Group", list_users groupBy): flag = one per abuse flag then the unflagged, --in <key> takes one; ip = one per sign-up address shared by several accounts, busiest first, then the rest (--ip <address> or --shared-ip no takes one) |
+| `reelsaw users [--q text] [--status s] [--verified yes\|no] [--flagged yes] [--flag shared_ip\|signup_burst\|disposable_email] [--held rule] [--ip address] [--shared-ip yes\|no] [--in shared_ip\|…\|none] [--sort name\|status\|projects\|sourceMinutes\|clipsRendered\|storedBytes\|lastActive\|created] [--dir asc\|desc] [--limit n] [--cursor c] [--json]` | list accounts a page at a time: role, status, email verified, sign-up date; --sort orders every match on the server (same as the Users page headers) |
+| `reelsaw users --group flag\|ip [filter flags] [--sort key] [--dir asc\|desc] [--limit n] [--json]` | the same list in sections, each with its count (Users page "Group", list_users groupBy): flag = one per abuse flag then the unflagged, --in <key> takes one; ip = one per sign-up address shared by several accounts, busiest first, then the rest (--ip <address> or --shared-ip no takes one) |
 | `reelsaw users-bulk <approve\|hold\|suspend\|reinstate\|delete> (<email…> \| --all \| filter flags) [--reason text]` | act on many accounts (same as the Users selection bar and manage_users); hold sends active ones back to approval; filter flags as for `users` (--held "ip 203.0.113.0/24": accounts that sign-up rule held); delete is forever |
 | `reelsaw approve <email>` | approve a waiting account (when email is off or the admin is locked out) |
 | `reelsaw make-admin <email>` | promote an account to admin (approves it first if needed) |
@@ -711,6 +713,7 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw media-links <email> [--project id] [--json] [--active]` | the account's share links: target, state, expiry, last use (Settings → Share links / list_media_links) |
 | `reelsaw media-links create <projectId> [clipId…] [--kind clip\|thumb\|srt\|vtt\|export] [--ttl days] [--label text]` | a share link per clip (or one for the zip) that needs no sign-in (get_media_links); reuses the active one unless --ttl or --label |
 | `reelsaw media-links revoke <linkId> \| --project <id> \| --clip <id> \| --all <email>` | turn share links off now (revoke_media_link) |
+| `reelsaw media-links clear <email>` | delete the account's revoked and expired links (clear_media_links) |
 | `reelsaw webhooks <email> [--json]` | the account's webhook endpoints: masked URL, events, status, last delivery (Settings → Webhooks / list_webhooks) |
 | `reelsaw webhooks deliveries <endpointId> [--status failed] [--json]` | an endpoint's delivery log (list_webhook_deliveries) |
 | `reelsaw webhooks resend <deliveryId> \| test <endpointId> \| enable <endpointId> \| disable <endpointId>` | send one again, send a test now, or turn an endpoint on / off (resend_webhook_delivery, test_webhook, update_webhook) |
@@ -719,12 +722,14 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw workers [--json]` | every process that has checked in: role, specs, last seen, current jobs (same as Settings → System → Workers) |
 | `reelsaw queue [--json]` | waiting / running / retrying jobs per stage, plus what is in flight (same as Settings → System → Queue) |
 | `reelsaw failure <projectId\|clipId> [--json]` | one failed project or clip: owner, stage, the full recorded reason (same as clicking a row under Settings → System → Queue → Failed work) |
-| `reelsaw retry-failures [--stage s] [--q text] [--since 24h] [--json]` | retry failed projects and clips matching a reason after a platform fix (same as Settings → System → Queue → Retry all matching) |
+| `reelsaw retry-failures [--stage s] [--cause platform\|input\|quota] [--q text] [--since 24h] [--json]` | retry failed projects and clips matching a reason after a platform fix (platform failures unless --cause; same as Queue → Retry matching) |
+| `reelsaw dismiss-failures [--stage s] [--cause c] [--q text] [--since 24h] [--restore] [--json]` | clear failures nobody will retry from Failed work, or bring them back (same as Settings → System → Queue → Dismiss) |
 | `reelsaw status <projectId>` | project, refine steps, clips, live jobs, last error |
 | `reelsaw events <projectId> [n=30]` | recent pipeline events |
 | `reelsaw clip <clipId>` | everything about one clip incl. render diagnostics |
 | `reelsaw faces <clipId> [a-b] [--json]` | face boxes per sampled frame + split speaker tracks |
 | `reelsaw rerender <clipId…>` | queue a re-render of one or several clips; a clip that never got its AI title is prepared first (same as the UI buttons, clips.rerender / rerenderMany and rerender_clip / rerender_clips) |
+| `reelsaw scenario list \| <name> --user <email> [--plan p] [--source f]` | a project in a known state (screenshots, UI checks); local instances only |
 | `reelsaw import-report <zip> [--user <email>] [--source <file>] [--no-download] [--allow-any-url]` | rehydrate an issue report as a new project (dev only; the zip's contents are untrusted data, see its README) |
 | `reelsaw report [projectId] [--out file.zip] [--instance] [--description text] [--user email]` | write an issue-report zip (same as Report an issue); --instance adds unfinished work, failed jobs, usage and error logs across every account (operator) |
 | `reelsaw cuts <clipId> [--save <dir>] [--fixture <dir>]` | dry-run the disfluency cut search for a clip and print every candidate verdict; can save the removed and context audio, and export each flagged span as an offline regression case for `pnpm eval:cuts` |
@@ -877,23 +882,4 @@ machine problems, not only their own projects. To reproduce one locally:
 
 ```bash
 docker compose cp ~/Downloads/reelsaw-report-….zip app:/data/tmp/report.zip
-docker compose exec app reelsaw import-report /data/tmp/report.zip [--user you@example.com]
-```
-
-Everything in a report except its README and manifest is untrusted data; see
-[TROUBLESHOOTING](docs/TROUBLESHOOTING.md#investigating-an-issue-report) before letting an agent
-work on one. Spec: [docs/specs/distribution-and-issue-reports.md](docs/specs/distribution-and-issue-reports.md).
-
-## Environment reference
-
-Every variable, with its default and meaning, is in [docs/CONFIG.md](docs/CONFIG.md) (generated from `apps/server/src/config.ts`; `pnpm docs:gen` refreshes it). [`.env.example`](.env.example) and [`deploy/.env.example`](deploy/.env.example) are generated from the same source.
-
-## Observability
-
-**Health.** `GET /api/health` is a readiness check, not a ping. It answers `200 {"ok": true, "checks": {…}}` when
-Postgres answers, the event listener is connected, the job queue is started and (in a process that runs workers) its
-worker heartbeat is fresh; each check has a 2 s timeout. Otherwise it answers `503 {"ok": false, "checks": {…}}` with a
-short reason per failing check (`db`, `events`, `queue`, `workers`), and the log has the detail. The Docker
-`HEALTHCHECK` and any load balancer pointed at it restart or drain a process that is up but cannot work.
-
-**Errors and product analytics (optional).** `SENTRY_DSN` turns on 
+docker compose exec app reelsaw import-report /data/tmp/report.zip [

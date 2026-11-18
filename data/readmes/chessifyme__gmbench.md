@@ -14,7 +14,7 @@ Each task is a chess position and a question of one of three kinds:
 | Choose a move | "What is the best move for White?" |
 | Judge a move | "Is Kg7 a good move here? Explain." |
 
-The current release (v0.1) has 62 positions: the 45 of the first release (v0), 15 of each kind, written for a club player, and 17 written for a beginner. They are middlegames and endgames, tactical and strategic, from online games and puzzles, over-the-board games and anonymised positions from real play. Each task names the reader the answer is for.
+The current release (v0.2) has 70 positions: the 45 of the first release (v0), 15 of each kind, written for a club player; 17 written for a beginner (added in v0.1); and 8 harder ones for a club player (added in v0.2). They are middlegames and endgames, tactical and strategic, from online games and puzzles, over-the-board games and anonymised positions from real play. Each task names the reader the answer is for.
 
 Each task has its own expert points: the concrete statements a good answer should make, checked and weighted 3/2/1 by expert chess players.
 
@@ -34,37 +34,44 @@ It gets the move, the evaluation, the main line and the idea behind the sacrific
 
 ## Preliminary results
 
-| Entrant | Score | Club tasks (45) | Beginner tasks (17) | Illegal moves | Time per answer | Cost per answer |
+| Entrant | Score | Club tasks (53) | Beginner tasks (17) | Illegal moves | Time per answer | Cost per answer |
 |---|---|---|---|---|---|---|
-| Claude Opus 5.5, basic chess tools | 89.9 | 88.0 | 95.0 | 1 | 28 s | $0.062 |
-| Claude Opus 5.5, engine analysis in the prompt | 89.2 | 87.5 | 94.1 | 3 | 18 s | $0.031 |
-| DeepSeek V4.1 Flash, basic chess tools | 86.9 | 84.5 | 93.4 | 10 | 32 s | $0.007 |
-| Qwen3.8 27B, basic chess tools | 76.4 | 72.1 | 88.3 | 31 | 101 s | $0.016 |
+| Claude Opus 5.5, basic chess tools | 83.1 | 81.8 | 87.7 | 1 | 27 s | $0.064 |
+| Claude Opus 5.5, engine analysis in the prompt | 81.6 | 79.5 | 88.9 | 4 | 18 s | $0.031 |
+| DeepSeek V4.1 Flash, basic chess tools | 79.2 | 76.7 | 86.3 | 8 | 34 s | $0.006 |
+| Gemini 3.8 Flash, basic chess tools | 78.5 | 74.9 | 90.7 | 7 | 38 s | $0.021 |
+| Qwen3.8 27B, basic chess tools | 66.3 | 62.2 | 80.0 | 34 | 101 s | $0.017 |
 
-- Preliminary results from development runs on the 62 v0.1 tasks; the official run will replace them.
+- Preliminary results from development runs on the 70 v0.2 tasks, one answer per task, graded with grader v1_rc43. The official run, with three answers per task, will replace them.
+- The score is the mean over the three kinds of task; the club and beginner columns take the same mean over those tasks. Illegal moves are counted over all 70 answers.
 - Time is the median per answer; cost is what the provider charged for the entrant's own model calls.
+- The answers come from runs on 13, 16 and 17 November 2026, every entrant through OpenRouter with medium reasoning effort. DeepSeek answered the 45 v0 tasks on Mistral (fp8) and the other 25 on DeepInfra (fp8), the provider its entrant now uses.
 
 ## How answers are scored
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/pipeline-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="docs/img/pipeline-light.svg">
-  <img alt="How an answer is scored. The task and the entrant's plain-text answer feed two lanes. Precision: the answer is split into claims, each claim is checked with chess tools (move legality, board geometry, material, Stockfish), and P is the share of checked claims that are true; unsettled claims don't count. Coverage: the task's expert points say what a good answer should say, weighted 3/2/1, a model decides whether the answer states each expert point, and C is the weighted share of the expert points. Score = 0.5·C + 0.5·P." src="docs/img/pipeline-light.svg" width="830">
+  <img alt="How an answer is scored. The task and the entrant's plain-text answer feed two lanes. Precision: the answer is split into claims, each claim is checked with chess tools (move legality, board geometry, material, Stockfish), and P is the share of checked claims that are true; unsettled claims don't count. Coverage: the task's expert points say what a good answer should say, weighted 3/2/1, a model decides whether the answer states each expert point, and C is the weighted share of the expert points, full at 80% of their weight. Score = 0.5·C + 0.5·P, less the illegal-move and clean-answer deductions." src="docs/img/pipeline-light.svg" width="830">
 </picture>
 
 Coverage works like rubric grading (HealthBench); precision like fact-checking each claim (FActScore, SAFE). See the [methodology](docs/methodology.md#related-work).
 
 - Each task has its **expert points**: the points a good answer should make, weighted by importance. Some start from the engine's checkable claims (best move, evaluation, lines), the rest from claims an expert chess player labelled true. The expert points were checked and weighted by three expert chess players with FIDE ratings of about 2100–2300.
 - The answer is split into short claims, such as "Black's best move is ...f5". A single judge model checks them with chess tools and the Stockfish engine, and decides which expert points the answer makes ([methodology](docs/methodology.md#grading)).
-- **Coverage:** how much of what matters the answer says. No answer is expected to make every point, so coverage is full at 60% of the expert points' weight.
+- **Coverage:** how much of what matters the answer says. No answer is expected to make every point, so coverage is full at 80% of the expert points' weight.
 - **Precision:** how much of what the answer says is true. 8 true claims out of 10 checked is 80%; an illegal move counts as false.
-- **Score:** the average of coverage and precision. The overall score is the average over the three kinds of task.
+- **Score:** the average of coverage and precision, less two deductions that code decides:
+  - **Illegal moves:** 3 points for each distinct illegal move, at most 10.
+  - **Clean answer:** a bare line of moves longer than 5 plies for a beginner or 8 for a club player costs 1 point per extra ply; an engine number such as "+1.2" in a beginner answer costs 5. At most 5 points in all.
+
+  The score never goes below 0. The overall score is the average over the three kinds of task.
 
 The [methodology](docs/methodology.md) has the details and the statistics.
 
 ## The data
 
-The data is in [`data/public/`](data/public/): 62 tasks (22 assessments, 20 move choices and 20 move judgements; 45 for club players and 17 for beginners), in YAML and JSON, under CC BY 4.0.
+The data is in [`data/public/`](data/public/): 70 tasks (22 assessments, 25 move choices and 23 move judgements; 53 for club players and 17 for beginners), in YAML and JSON, under CC BY 4.0.
 
 Browse the tasks and their expert points: https://chessifyme.github.io/gmbench/
 
@@ -73,7 +80,7 @@ Browse the tasks and their expert points: https://chessifyme.github.io/gmbench/
   the reviewers' labels and any same-idea link. Model claims set aside unreviewed over the per-task review limit are not
   published. Reviewers appear as Expert A, B and C, and every task's expert points are signed.
 - `reference/<id>.json`: the Stockfish 19 analysis the grader checks against.
-- `gmbench_v0_1.jsonl`: all of the above in one file, one task per line.
+- `gmbench_v0_2.jsonl`: all of the above in one file, one task per line.
 
 One claim from `expert_points/mc_0013.yaml`, trimmed:
 
@@ -89,7 +96,7 @@ One claim from `expert_points/mc_0013.yaml`, trimmed:
 
 ```python
 import json
-tasks = [json.loads(line) for line in open("data/public/gmbench_v0_1.jsonl", encoding="utf-8")]
+tasks = [json.loads(line) for line in open("data/public/gmbench_v0_2.jsonl", encoding="utf-8")]
 for claim in tasks[0]["expert_points"]["claims"]:
     if claim["weight"]: print(claim["weight"], claim["text"])
 ```
@@ -112,7 +119,7 @@ make site                                         # a development view in site/i
 
 The example uses `gemini_openrouter` (Gemini 4 Argon through OpenRouter).
 
-Each task is asked three times. Grading takes a few minutes and about $0.08–0.09 per answer, so a full run of one entrant (186 answers) costs an estimated $15–17 plus the entrant's own cost; the [operations guide](docs/operations.md#running-and-grading) has the breakdown and what the output shows.
+Each task is asked three times. Grading takes a few minutes and about $0.08–0.09 per answer, so a full run of one entrant (210 answers) costs an estimated $17–19 plus the entrant's own cost; the [operations guide](docs/operations.md#running-and-grading) has the breakdown and what the output shows.
 
 Every other command, setting and entrant is in [docs/operations.md](docs/operations.md).
 
@@ -157,7 +164,7 @@ Cite with [`CITATION.cff`](CITATION.cff) ("Cite this repository" on GitHub): "GM
   title        = {GMBench: a chess explanation benchmark for AI},
   author       = {{Chessify}},
   year         = {2026},
-  note         = {Dataset v0},
+  note         = {Dataset v0.2},
   url          = {https://github.com/chessifyme/gmbench},
   howpublished = {\url{https://chessify.me}}
 }

@@ -24,7 +24,8 @@
 
 | 你要什么 | 读哪个 |
 | --- | --- |
-| 选题到大纲、剧本、对白、钩子、改编、漫剧、反拆参考片 | `references/guide.md` |
+| 选题、大纲、人物、剧本、对白、钩子、节奏 | `references/story.md` |
+| 小说改编、漫剧、反拆参考片、分批验收 | `references/adapt.md` |
 | 挑毛病、打分、诊断一处 | `references/review.md` |
 | 分镜、镜头九问、承接、图片提示词 | `references/board.md` |
 | H3 提示词、模型对照、多段拼接 | `references/prompt.md` |
@@ -49,6 +50,13 @@ python3 scripts/check.py
 ```
 
 一条命令跑完自检、样例、221 招体检与文档断链，零依赖。
+
+## 用了就留一句
+
+这套包没有埋点、不采集数据。想知道它在什么场景里真的能用，靠的是使用者自愿留一句：
+
+- 点个 Star，让后来的人知道有人用过
+- 或留一条[使用回执](https://github.com/ChinaYouShen/ai-short-drama/issues/new?template=usage.yml)：一句话说你拿它做了什么，卡住的地方也写上
 
 ## 作者
 

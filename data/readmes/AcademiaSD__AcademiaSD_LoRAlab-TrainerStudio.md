@@ -8,6 +8,10 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-18**
+
+- **Up to 4 custom prompts per preview round, in every trainer** — **Custom Prompts (0-4)** next to Caption Mode: each round makes one preview per prompt, or one with a random prompt. Prompts changed while training are encoded on CPU and the trainer switches to them (LTX and MiniMax-H3 encode them in Pre-Cache only). In edit trainers with several reference images, **One image per prompt** makes each prompt edit its own image. The preview viewer shows the prompt of each preview ([details](#-custom-prompts-in-the-previews)) [`589c917`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/589c917) ([#87](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/87))
+
 **2026-11-17**
 
 - **LTX 2.5: half the RAM and Block Swap Storage** — video previews no longer crash the training, and blocks can wait in **RAM**, on **Disk** or in **Auto (RAM + Disk)** with a **RAM Limit**, as in MiniMax-H3 ([details](docs/README_LTX25.md#block-swap-storage-ram-disk-or-auto)) [`429e04f`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/429e04f) [`d4c206a`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/d4c206a) [`dc854e9`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/dc854e9) [`c27a2a7`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/c27a2a7)
@@ -293,6 +297,8 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 
 **Parecido facial:** encima de las previews, **👤 Parecido facial → Activar...** pone en cada preview (y sobre su círculo en la gráfica del entrenamiento) el % de parecido de su cara con la del dataset. En las previews de un LoRA, un 45% o más es mucho parecido (verde) y un 30-45%, parecido parcial (naranja); las fotos reales de la misma persona suelen dar más. También en las previews de vídeo, con su primer fotograma. No se descarga por defecto: los modelos de InsightFace son solo para investigación no comercial, y antes de descargarlos hay que aceptar en una ventana que se usan bajo tu responsabilidad y sin fines comerciales. Funciona en la CPU, también en RunPod. Detalles en la sección *Face likeness in the previews*.
 
+**Prompts propios en las previews:** en **2b. Training Previews**, **Custom Prompts (0-4)** pone hasta 4 prompts tuyos: cada ronda de previews hace una imagen por prompt, o una sola con uno al azar (**One random prompt per preview**). Con 0 se usan las captions del dataset (Caption Mode). Los codifica el Pre-Cache; si los cambias durante el entrenamiento y pulsas **Save JSON**, se codifican en la CPU y el trainer pasa a usarlos (en LTX y MiniMax-H3 solo los codifica el Pre-Cache). En los entrenadores de edición con varias imágenes de referencia, **One image per prompt** hace que cada prompt edite su propia imagen. Al abrir una preview se ve el prompt con el que se hizo. Detalles en la sección *Custom prompts in the previews*.
+
 **Dataset Forge:** con pocas fotos de una persona (desde 1), **🧬 Dataset Forge** en la barra del Dataset Manager crea un dataset de personaje. *Analizar* escribe los captions que falten y una ficha con los rasgos fijos (edad, pelo, ojos). El *plan* combina encuadre, ropa, lugar (mitad interiores, mitad exteriores), luz, ángulo y expresión, y se puede editar línea a línea. *Generar* usa FLUX.3 Klein (FLUX Kommunity License), con las imágenes más naturales: anatomía limpia, poses nuevas y el encuadre pedido. En calidad *Rápida* (por defecto) usa la LoRA turbo PDD de NoiseToNova: 4 u 8 pasos, unos 12 o 25 s por imagen, con más parecido pero un aspecto más maquillado; *Mejor calidad* va de 12 a 50 pasos (16, unos 85 s por imagen), más natural. También se puede elegir Fibo 2.0 (CC BY-NC, el de más parecido, unos 5 min por imagen), Qwen-Image 2.1 (licencia Qwen Research, no comercial; rápido, pero con cuerpos a veces desproporcionados), FLUX.2 Klein 9B o Qwen-Image-Edit-2511 (Apache 2.0). El plan reparte la mitad de las imágenes en primeros planos. Solo guarda las imágenes que pasan el parecido facial mínimo (60% por defecto); las demás van a `_rejected`. El resultado va a una carpeta nueva (la de origen no se toca), con un caption por imagen sin los rasgos fijos, para que el trigger aprenda la identidad. **📂 Usar en el Dataset Manager** la carga en el entrenador. Antes de generar hay que confirmar que tienes derecho o permiso para usar las imágenes de esa persona. Detalles en la sección *Dataset Forge*.
 
 **LR Scheduler:** debajo del learning rate puedes elegir cómo cambia durante el entrenamiento: `cosine` (por defecto: sube durante el warmup y baja suavemente hasta el 10%), `constant` (el mismo LR de principio a fin, como el entrenador de Civitai), `constant_with_warmup`, `linear` o `cosine_with_restarts` (repite la curva tantas veces como indique *Ciclos*). Si no lo tocas, cada entrenador funciona igual que antes. Detalles en la sección *LR scheduler*.
@@ -416,6 +422,27 @@ Queue trainings and pre-caches, from one trainer or several, and they run one af
 - **Each job runs in its own trainer,** opened without a window on a free port (5001, 5002…). What you save in that trainer applies only to that job, never to your trainer settings. If the launcher is closed while a job trains, the job shows as paused (interrupted) and can be resumed.
 - **⏻ Pause all and exit,** at the bottom of the launcher, pauses the job training (with its checkpoint), closes every trainer and job and then the launcher itself, all from the browser. Next time you open the launcher, the queue continues on its own where it was, starting with that training from its checkpoint. On RunPod and other clouds, or when used remotely, the launcher stays open so the page keeps working, with the queue paused: turn off **Pause the queue** to carry on.
 - Behind a reverse proxy or on RunPod only ports 4990 and 5000 are published: the queue works, but **Go to the training** needs the job's port to be reachable.
+
+---
+
+## 🎯 Custom prompts in the previews
+
+In **2b. Training Previews** of every trainer, **Custom Prompts (0-4)** sets how many prompts of your own the previews use.
+
+- **0** — the previews use the dataset captions, as chosen in **Caption Mode** (First, Random, Rotate 4).
+- **1 to 4** — a box appears for each prompt, and each preview round makes one image per prompt: `preview_step_N.png`, `preview_step_N_2.png`… In the gallery they show as *Step N*, *Step N · #2*… Caption Mode is not used meanwhile.
+- **One random prompt per preview** — each round makes a single image, with one of your prompts chosen at random. Previews then take as long as with one prompt.
+- The trigger word is added in front of each prompt, as in the captions. A settings file from before, with Caption Mode = Custom prompt, opens as 1 prompt.
+- **Each preview keeps its prompt.** Click a preview: under its name you see the prompt it was made with, your own or the dataset caption. It is stored inside the PNG (and in a `.txt` next to video and audio previews), so it travels with the file.
+
+**When they are encoded.** Pre-Cache encodes the prompts on the GPU with the rest of the texts. If you change them with **Save JSON**, only the prompts that changed are encoded, in one process: on the GPU when nothing is running, on the CPU while training (it does not touch the training's VRAM; about a minute). The trainer switches to each prompt when it is ready; until then the previews use the ones that are, or the dataset captions. The console lists the prompts and marks with `...` the ones not encoded yet. YuE 2 takes your prompts as lyrics: nothing is encoded, the trainer reads them directly.
+
+**LTX 2.3, LTX 2.5, MiniMax-H3 and MiniMax-H3 Image** encode them in Pre-Cache only: their text encoders (Gemma, MiniMax) are too large to load on the CPU next to a training. After changing a prompt, run Pre-Cache again (it skips the images already cached). If a training is running, the console says which prompts are not encoded and the previews go on with the others. MiniMax-H3 Image uses your prompts for image LoRAs; for edit LoRAs its previews keep using the dataset pairs.
+
+**Edit trainers.** The prompts are the instructions, applied to the preview's reference image(s) (**Edit Preview Image** or **Edit Preview Reference Images**; empty = the "before" of the first pair). Changing the images re-encodes them and every prompt, because Qwen-Image and MOSS-Image show them to the text encoder too.
+
+- In the trainers with a list of reference images (Qwen-Image 2.1, Qwen-Image 2512 / Edit 2511, FLUX.2 Klein 9B, FLUX.3 Image Klein, MOSS-Image), by default all the images are `<image1>`, `<image2>`… of the same edit, for every prompt: the output follows image 1, and image 2 only matters if the prompt names it (*put the jacket of `<image2>` on the person of `<image1>`*).
+- **One image per prompt** makes each prompt edit its own image instead: prompt 1 → image 1, prompt 2 → image 2… (with fewer images than prompts they start over). Each image is used at full preview size. Use it to see the effect on several photos in one round, ideally photos that are not in the dataset.
 
 ---
 
@@ -681,53 +708,4 @@ Copying the blocks from RAM costs little on a x16 slot (2.2 against 1.8 s/step a
 - **VAE with alpha**: the VAE is RGBA, so the images are trained **with** their alpha channel; the opaque ones enter with alpha = 1.
 - **Captioner:** the shared Qwen3-VL-8B-Instruct NF4, with **Normal** (the JSON caption) and **Edit** (one instruction per pair) modes. When the image really has an alpha channel it is told so, so it does not invent a background behind a transparent design.
 - **Previews:** 12 steps / CFG 1.0, the official pipeline's `pos + cfg·(pos−neg)`, and up to **4 reference images** for the edit preview (`<image1>`, `<image2>`, …).
-- **Live settings:** the changes saved with *Save JSON* while the training runs are applied on the next step, and the console says what changed.
-
-Measured on an RTX 5080 16 GB (rank 8, batch 1): **1024² → 12 s/step and 13.2 GB of peak VRAM**; **512² → 2.4 s/step and 7 GB of peak VRAM** (a real run of 960 steps at 512² averaged 1.3 s/step). The pre-cache proposes 768² by default.
-
-The official image-edit task works at 1024: 512 and 768 are out of its distribution, so train edit LoRAs at 1024 if your card allows it.
-
-### Anima — anime and illustration LoRAs
-
-- **Anima** is a 2B anime / illustration model by CircleStone Labs and Comfy Org, built on NVIDIA Cosmos-Predict2. The trainer uses **Anima-Base**, the version its author recommends for LoRAs, downloaded from the official diffusers repository.
-- **Model Precision:** *BF16* (full quality, ~5.6 GB of VRAM while training at 512²) or *NF4* (attention and MLP quantized when loading, ~3.1 GB at 512²: it fits **4 GB** cards). Images from the NF4 transformer look like the BF16 ones.
-- The text goes through Qwen3-0.6B and Anima's **LLM adapter** in the pre-cache. The adapter is **never trained**, as the author advises: it holds a lot of the model's knowledge and degrades easily.
-- **Captioner:** Qwen3-VL-8B NF4, shared with LTX-2.3 and Z-Image, with two styles: **natural language** or **Danbooru tags** (lowercase, spaces instead of underscores). Anima was trained on both.
-- **Previews:** 30 steps / CFG 4 with the author's recommended negative prompt, and **Preview Size** as in Z-Image.
-- The LoRA is exported with Anima's own layer names (`diffusion_model.blocks.N.self_attn.q_proj`…), which ComfyUI loads directly.
-
-| Starting point (author's recommendation) | |
-| :--- | :--- |
-| Resolution | 768×768 (Anima works from 512² to 1536²) |
-| Rank / Alpha | 32 / 32 |
-| Learning rate | 2e-5 |
-| Speed | ~0.65 s/step at 512² in BF16, ~0.8 s/step in NF4 (under 4 GB of VRAM); ~1.6 s/step at 1024² in BF16 |
-
-### FLUX.1 Dev — image LoRAs
-
-- Trains on **FLUX.1 [dev]** (11.9B) in **NF4**. The first run downloads `diffusers/FLUX.1-dev-bnb-4bit`, which is not gated and needs no token; the FLUX.1 [dev] license still applies.
-- **Pre-cache:** the same caption goes to T5-XXL (NF4, the 512-token sequence) and to CLIP-L (the pooled vector). Training does not load either of them.
-- **Train Guidance:** FLUX.1 dev takes guidance as an input. Training uses 1 by default; the setting is read when training starts.
-- **Timesteps:** the resolution-dependent shift of the official pipeline.
-- **Previews:** 28 steps / **Preview Guidance** 3.5 (the same input as ComfyUI's FluxGuidance node, with no negative pass). There is no turbo option.
-- **Captioner:** Qwen3-VL-8B NF4, shared with Z-Image and FLUX.2 Klein 9B.
-- **Defaults:** 512², 800 steps, rank / alpha 8 / 8, previews off (**Preview Every** 0).
-- **Speed and VRAM** (RTX 5080, with previews): ~1.2 s/step and ~10 GB at 512², ~2.6 s/step and ~11 GB at 768² · pre-cache ~5 GB.
-- **LoRA Targets:** *Blocks* (attention + MLP of the 19 double and 38 single blocks, default) or *All*. The LoRA is exported in diffusers format, which ComfyUI maps to FLUX.1's layers.
-- `tools/flux1/5_conversor_Flux1_NF4.py` is optional: it builds your own NF4 cache from the gated official repo (accept the license on Hugging Face first).
-
-### FLUX.2 Klein 9B — image and edit LoRAs
-
-- Trains on **FLUX.2 [klein] Base 9B** (the undistilled model, the one meant for fine-tuning). The LoRA also loads on the distilled **FLUX.2 [klein] 9B**; it is not compatible with the 4B models.
-- The 9B transformer and the Qwen3-8B text encoder of the pre-cache are **NF4**: 8.8 GB to download instead of 34.7 GB.
-- **Normal LoRAs** (characters, objects, styles) and **Edit LoRAs** with the same `name_before.png` / `name_after.png` pairs as Qwen-Image 2.1. Klein's text encoder only reads the instruction: the "before" goes to the transformer as a clean reference image, as in the official pipeline, and the loss is computed only on the "after".
-- **Captioner:** Qwen3-VL-8B NF4, shared with LTX-2.3, Z-Image and Anima, with **Normal** and **Edit** modes.
-- **Previews:** 28 steps / CFG 4, or **Turbo** with kalle07's Klein 9B turbo LoRA (4 steps / CFG 1; downloaded the first time, ~350 MB), and **Preview Size** as in Z-Image.
-- **LoRA Targets:** *Blocks* (attention + MLP of the 8 double and 24 single blocks, default) or *All*. ComfyUI loads the exported LoRA directly.
-
-| Verified starting point | |
-| :--- | :--- |
-| Resolution | 768×768 |
-| Rank / Alpha | 16 / 16 |
-| Learning rate | 3e-4 |
-| Steps | 1,000 (14 images): the likeness shows from ~500, but in ComfyUI the 1,000-step LoRA looks better than th
+- **Live settings:** the changes saved with *Save JSON* while the traini

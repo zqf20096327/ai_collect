@@ -1364,6 +1364,47 @@ Let's get started: [Why does phone audio make speech recognition worse?](https:/
 
 ---
 
+## How does DTMF keypad input work in a voice agent?
+
+In this blog, we will learn about how DTMF keypad input works in a voice agent. We will also see what DTMF is, why every key is made of two tones, how those tones travel and get detected, how the agent collects the digits and passes them to the LLM, how it keeps sensitive digits private, and how the agent presses keys by itself.
+
+We will cover the following:
+
+- What is DTMF?
+- Why does a voice agent need keypad input?
+- The keypad grid: two tones for every key
+- How DTMF travels over a phone call
+- How a voice agent detects the tones
+- Collecting the digits: terminator key and timeout
+- How the digits reach the LLM
+- Keeping sensitive digits away from the LLM
+- When the voice agent presses the keys
+
+Let's get started: [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)
+
+---
+
+## How does voicemail and answering machine detection work?
+
+In this blog, we will learn about how voicemail and answering machine detection works. We will also see why a calling system needs it, how a person and a machine sound different in the first few seconds, how simple timing rules catch many machines, how the beep is found, how AI models and transcripts make the decision more accurate, and where the detection works well and where it fails.
+
+We will cover the following:
+
+- What is Answering Machine Detection?
+- Why do we need Answering Machine Detection?
+- How a person and a machine sound different
+- Approach 1: Timing rules on speech and silence
+- Finding the beep
+- Approach 2: An AI model that listens to the audio
+- Approach 3: Reading the words
+- Speed vs accuracy
+- Where it fails
+- How a voice agent uses it end to end
+
+Let's get started: [How does voicemail and answering machine detection work?](https://outcomeschool.com/blog/answering-machine-detection)
+
+---
+
 ## More blogs and videos coming soon!
 
 ### License

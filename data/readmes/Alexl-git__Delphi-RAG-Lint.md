@@ -1,5 +1,7 @@
 # drag-lint
 
+> **As of 2026-11-16 this GitHub page is no longer kept up to date, except for Releases, bug reports (Issues), pull requests and the Discussions forum. Current documentation, instructions and articles are at [www.delphi-rag-lint.com](https://www.delphi-rag-lint.com).**
+
 [![Release](https://img.shields.io/github/v/release/Alexl-git/Delphi-RAG-Lint?include_prereleases)](https://github.com/Alexl-git/Delphi-RAG-Lint/releases)
 [![License](https://img.shields.io/github/license/Alexl-git/Delphi-RAG-Lint)](LICENSE)
 [![Website](https://img.shields.io/static/v1?label=website&message=delphi-rag-lint.com&color=blue)](https://www.delphi-rag-lint.com)
@@ -15,12 +17,12 @@
 > [Issue](https://github.com/Alexl-git/Delphi-RAG-Lint/issues) with ideas, bugs,
 > or "I wish it could...". Not yet recommended for unattended/production use.
 
-A symbol-aware retrieval + lint + refactoring + IDE-integration tool for Delphi.
+A Delphi code index + linter + refactorer (current release 1.51.0-alpha: 423 lint rules, 341 on by default, 125 auto-fixable) that AI assistants and the IDE query instead of grepping.
 Pure Object Pascal at runtime -- no Python, Node, or Rust. No cloud AI.
 
 **Use it as:** CLI tool &middot; LSP server (Zed / VS Code) &middot; MCP server (Claude / Cursor) &middot; RAD Studio 13 plugin.
 
-**Driving it from an AI agent? See [docs/AI-USAGE.md](docs/AI-USAGE.md)** -- copy-paste instructions so your AI uses drag-lint over CLI or MCP (and reads ~10-60x fewer tokens than opening whole units).
+**Driving it from an AI agent? See [docs/AI-USAGE.md](docs/AI-USAGE.md)** -- copy-paste instructions so your AI uses drag-lint over CLI or MCP (resolved callers and impact, instead of grepping and opening whole units).
 
 > **What it does today, and what is coming -- the feature list.**
 > A single readable document covering every capability by area (indexing, search,
@@ -292,8 +294,8 @@ the three must agree (see the DOCS-IN-SYNC rule in `CLAUDE.md`).
 * `lint <file>` is a strict **subset** of `lint-all`: project-wide rules
   (unused-public-symbol, unused-unit-in-uses, the uses-edge and duplicate-global
   rules) can only fire in `lint-all`. Never report "clean" from a per-file run.
-* `context` wants the **fully qualified** name - `Unit.TType.Member`. It is about
-  60x leaner than reading the source files; add `--full-surface` only when the
+* `context` wants the **fully qualified** name - `Unit.TType.Member`. It returns the
+  relevant slice instead of whole source files; add `--full-surface` only when the
   task is about a form's components, DFM or event wiring.
 * A `note: N of M indexed file(s) changed since this index was built` line means
   **reindex first**. The answer may be stale.
@@ -488,7 +490,12 @@ Since 1.49 (hub-SCC P3) a free routine of the hub that a spoke still calls goes 
 ancestor's public member (`frmMain.Invalidate`) is on the surface. P6 prep: the dry run is the normal playbook with R3
 (and the `--hub` block) in place of Part A for a hub-shaped group, and `cycles --causes --format json --hub-surface`
 gives R3's `fix` object (`part: r3`) for such a group without running the planner. A bare use, a write to the global or to a designer field, another var-parameter use or
-an ancestor's member refuses that spoke only. OFF by default; the dry run writes nothing, `--apply`
+an ancestor's member refuses that spoke only. Since 1.51 (P6, after the recipe was applied to a 78-unit
+application that then built with 0 errors and had no cycle left) `cycles --plan` asks R3 first WITHOUT the switch:
+a group R3 predicts to break gets R3 in place of Part A / Part B, every other group its plan as before;
+`--no-hub-surface` gives the planner's own plan for every group. `--hub-surface` by name is still what
+`--apply` and the `--causes --format json` fix object need (`--fix` cannot run R3 yet), and it also shows R3 for
+a group it cannot break and a note for each group it refuses. The dry run writes nothing, `--apply`
 writes one group and runs no compile gate yet: build the project after it.
 
 Each cycle lists its `A uses B [interface|implementation]` edges, marks the
@@ -876,15 +883,15 @@ be written and writes nothing. This verb replaces `Register-DragLintProtocol.ps1
 <!-- dl:registry:begin feature-summary -->
 | Group | Features | Wiki |
 |---|---:|---|
-| [Indexing](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#indexing) | 11 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#indexing) |
+| [Indexing](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#indexing) | 14 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#indexing) |
 | [Search and navigation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#search-and-navigation) | 37 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#search-and-navigation) |
-| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 46 (+ 317 rules, 110 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
+| [Linting](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#linting) | 64 (+ 423 rules, 125 fixable) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#linting) |
 | [Documentation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#documentation) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#documentation) |
 | [Refactoring and code generation](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#refactoring-and-code-generation) | 21 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#refactoring-and-code-generation) |
 | [Component conversion](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#component-conversion) | 25 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#component-conversion) |
-| [Graphs and reports](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#graphs-and-reports) | 24 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#graphs-and-reports) |
+| [Graphs and reports](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#graphs-and-reports) | 25 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#graphs-and-reports) |
 | [Diagrams and charts](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#diagrams-and-charts) | 6 (+ 27 questions) | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#diagrams-and-charts) |
-| [Compiler integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#compiler-integration) | 12 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#compiler-integration) |
+| [Compiler integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#compiler-integration) | 13 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#compiler-integration) |
 | [Database and Firebird](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#database-and-firebird) | 2 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#database-and-firebird) |
 | [Editor integration](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#editor-integration) | 28 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#editor-integration) |
 | [Maintenance and diagnostics](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Features#maintenance-and-diagnostics) | 23 | [Quick Help](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Quick-Help#maintenance-and-diagnostics) |
@@ -992,14 +999,14 @@ https://github.com/Alexl-git/Delphi-RAG-Lint/wiki and carry no `.md` suffix.)
 
 | Command | What it does | Notable flags |
 |---|---|---|
-| `index <path>` | Index a folder tree (a Library-type scan); every index run ends with the `prop-types` stage, which stores the declared type of each bare re-published property (`published property Text;`) from its declaring ancestor; `--target-compiler <ver|auto>` names the Delphi the preprocessor describes (VER<N>0 / CompilerVersion / RTLVersion; default: the `--project` .dproj's ProjectVersion -- for `index --all` each section's own .dproj, also in `--jobs` children -- then the installed RAD Studio, then 37), and the library path, platform list, IDE Environment Variables and `$(BDS)` come from that Delphi's BDS key, so units only its Search Path names join the closure (key not installed: 37.0 and a one-line note; `--json` on `index --project` ends with `library_path`, see [the wiki page](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/target-bds-library-path)) | `--db`, `--watch [--interval N]`, `--library-db <lib.sqlite>` (cross-DB resolution; also binds a value receiver typed by name, e.g. `S.Read` with `S: TStream`; a manifest section may opt in with `"libraryResolve": true`, default false), `--wait-library <min>` / `--require-library` (a manifest section that opts in with `libraryResolve` probes its platform library BEFORE the walk and prints `library: <path> (<platform>) READY|NOT READY -- <why>`; not ready = continue and say the run is pending, wait up to <min> minutes, or exit 2), `--resolve-only`, `--dir <path>` (same as the positional path), `--use-ignore` (the default; kept so old scripts parse). **Exit 1 when any file failed to store** (an `ERROR` line on stderr names it; the file keeps its old rows) and, for `index --all`, when any section failed |
+| `index <path>` | Index a folder tree (a Library-type scan); every index run ends with the `prop-types` stage, which stores the declared type of each bare re-published property (`published property Text;`) from its declaring ancestor; `--target-compiler <ver|auto>` names the Delphi the preprocessor describes (VER<N>0 / CompilerVersion / RTLVersion; default: the `--project` .dproj's ProjectVersion -- for `index --all` each section's own .dproj, also in `--jobs` children -- then the installed RAD Studio, then 37), and the library path, platform list, IDE Environment Variables and `$(BDS)` come from that Delphi's BDS key, so units only its Search Path names join the closure (key not installed: 37.0 and a one-line note; `--json` on `index --project` ends with `library_path`, see [the wiki page](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/target-bds-library-path)) | `--db`, `--watch [--interval N]`, `--library-db <lib.sqlite>` (cross-DB resolution; also binds a value receiver typed by name, e.g. `S.Read` with `S: TStream`; a manifest section may opt in with `"libraryResolve": true`, default false), `--wait-library <min>` / `--require-library` (a manifest section that opts in with `libraryResolve` probes its platform library BEFORE the walk and prints `library: <path> (<platform>) READY|NOT READY -- <why>`; not ready = continue and say the run is pending, wait up to <min> minutes, or exit 2), `index --project` refuses (exit 2) a .dproj that lies under a library-section root and a library database (`library-*.sqlite`, or one a library section names) as its `--db`, naming the path and the fix, `--resolve-only`, `--dir <path>` (same as the positional path), `--use-ignore` (the default; kept so old scripts parse). **Exit 1 when any file failed to store** (an `ERROR` line on stderr names it; the file keeps its old rows) and, for `index --all`, when any section failed |
 | `index <path> --resolve-only` | Re-derive call edges, ancestry, helper targets and purity verdicts from the parses the index ALREADY holds, skipping the walk entirely. The cheap remedy when `resolver_fingerprint` reports stale edges: no stored parse became wrong, so re-parsing buys nothing. It writes edges INSIDE that one index only -- no cross-store edge is ever a `call_edges` row; a library-bound call is recorded by qualified NAME on `refs.external_target`, and only when a library store is open for the run (`--library-db`, or the section's manifest key `libraryResolve`, default off). `refs.receiver_type_text` records the receiver's declared type either way. **The walk is skipped, so nothing checks that the sources still match:** a file edited since its parse is withheld, and with the whole-DB clear it ends with NO call edges or member accesses until a plain `index` re-parses it (YADF, 3 edited files: 1810 -> 760 edges; the plain run restores them). A plain `index` after a resolver change re-derives every edge too and has no such gap; prefer it unless the walk itself is the cost. **It walks nothing, so it never marks a re-parse finished:** after a fingerprint change or a killed `--rebuild`, `indexer_fingerprint` and `rebuild_in_progress` stay as they are, and the run names the file count a plain `index` still owes (it re-parses those, good parses kept). A run killed in its calls pass, every file already current, IS promoted | `--db` |
 | `index ... --stall-exit-min <min>` | A long stage prints `NO PROGRESS` after 15 minutes with a standing counter and `LOW MEMORY` under 512 MB free; both only print. With this flag, a counter that stands still for `<min>` minutes (a quarter of that when RAM is critical) ends the run with exit 8 (exit 9 when RAM is critical) and a `STALLED` line; a moving counter is never stopped, however slow. The open transaction rolls back. Set it above the longest counter-less step (use 60 on a library index). |
 | `index --project <file.dproj>` | Index one project's **compile closure** -- members, transitively used project-local units, sibling `.dfm`, `{$I}` includes. A second `index` on a database another run is writing exits 2 at once (`<db>.indexing.lock`; `--dry-run` writes nothing and takes no lock). The scope is printed capped at 20 paths plus the count; `--dry-run` lists every one and indexes nothing | `--dry-run`, `--watch`, `--build-config <name>` (parse the project against this build config instead of its ACTIVE one: the `.dproj` `Config` marker, else the `delphilsp.json` defines); accepts a `.dproj`, `.dpr` or `.dpk`; a positional project file beats the `project` key of `.drag-lint.json`, an explicit `--project` beats both |
 | `index --scan-libraries-win` / `--scan-libraries-all` | Index the IDE's registered Library + Browsing paths (Win32+Win64, or every platform incl. Posix/iOS/Android/OSX) | `--dry-run` |
 | `index --all` | Index every section of the named-DB manifest (`drag-lint.json`) | `--only <Sec1,Sec2>`, `--platform win32\|win64`, `--jobs <n>`, `--dry-run [--json]`, `--build-config <name>` (project sections only) |
 | any `index` run | Mode is chosen per run, independent of scan type | `--recompile` (default, incremental) / `--rebuild` (from scratch), `--force-reparse` (re-parse every walked file even when path+mtime+sha are unchanged -- needed once per DB after an engine upgrade that extracts something new), `--no-prune` (dry look), `--prune` |
-| any `index` run (walk scoping) | Decide which files the walk admits before anything is parsed | `--exclude <glob>` / `--exclude-under <dir>` / `--include-only <glob>` (all repeatable), `--max-file-kb N` (skip any file larger than N KB), `--no-use-ignore` (opt out of the `.gitignore` / `.hgignore` pattern files, honoured by default; a folder holding a `.scanignore` marker file is always pruned), `--deep` (also record usage refs; `--shallow` is the default) |
+| any `index` run (walk scoping) | Decide which files the walk admits before anything is parsed | `--exclude <glob>` / `--exclude-under <dir>` / `--include-only <glob>` (all repeatable), `--max-file-kb N` (skip any file larger than N KB), `--no-use-ignore` (opt out of the `.gitignore` / `.hgignore` pattern files, honoured by default; a folder holding a `.scanignore` marker file is always pruned), `--deep` (also record usage refs; `--shallow` is the default). Under `--project`, `--exclude-under` never drops a compile-closure unit: a project's members are its listed units plus every non-library unit reached through `uses`, so a closure unit under the root is kept and named in a NOTE. |
 | any project `index` run (rule cache) | Warm the `lint <file>` rule cache after a project index | `--rule-cache-warm wait` (default: warmed in the run -- it recomputes the whole-project rules, minutes on a large project) / `background` (a DETACHED process warms it and the run returns at once; it keeps the index open until it ends, so not for a script that deletes the index right after) / `off`; also each section of `index --all` (`--jobs N` children included); `DRAGLINT_RULE_CACHE_WARM=<mode>` sets the default; `warm-rule-cache --db <project.sqlite> [--library-db <lib.sqlite>]` warms it by hand (`--detached` is the form an index run starts, output to NUL). Until a warm finishes, the next `lint <file>` fills the cache itself |
 | [`migrate-dbs`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/migrate-dbs) | Move project indexes into each project's `_D-RAG` folder | `--apply` |
 | `register-project` | Add a NEW project to the manifest so `index --all` and the IDE can index it | `<file.dproj>`, `--name <Section>`, `--apply`, `--json` |
@@ -1052,14 +1059,14 @@ Win64 build.
 | `impact --qname <q>` | Blast radius: callers/units affected by a change, per depth level; an interface method also lists its implementors (`implementors`, `via_dispatch` in JSON). `--all-projects` asks every manifest database instead of one (project DBs answer callers and implementors, the library declarations), with a line for each section that could not answer; a project the manifest does not name is not seen | `--depth N`, `--all-projects`, `--platform`, `--config` |
 | `surface --qname <q>` | Public interface (declaration lines) of a class/record | `--include-impl`, `--all-visibility` |
 | `slice --qname <q>` | Minimal self-contained call-slice reachable from a symbol | |
-| [`context`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/context) `--task "verb qname"` | Compact context bundle for AI prompts -- doc + surface + body + callers, ~10-60x leaner than the source | `--max-callers N`, `--context N`, `--no-docs`, `--max-body-tokens N` (whole-type body cap, default 20000; 0 = every body; a capped type's surface drops the docs of the omitted members) |
+| [`context`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/context) `--task "verb qname"` | Compact context bundle for AI prompts -- doc + surface + body + resolved callers in one answer, instead of opening each unit | `--max-callers N`, `--context N`, `--no-docs`, `--max-body-tokens N` (whole-type body cap, default 20000; 0 = every body; a capped type's surface drops the docs of the omitted members) |
 | [`bench-context`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/bench-context) | Benchmark context-bundle throughput | `--n N` |
 | `wiring --qname <IIntf\|TForm>` | Spring4D DI edges (impl + lifetime + resolve-sites) and DFM event handlers | `--coverage` (unresolved DI registrations) |
 
 #### Lint
 
-**317 rules across 18 categories -- 223 built-in + 94 external `.scm`, 263
-enabled by default, 110 with an auto-fix.**
+**423 rules across 18 categories -- 310 built-in + 113 external `.scm`, 341
+enabled by default, 125 with an auto-fix.**
 
 | Command | What it does | Notable flags |
 |---|---|---|
@@ -1107,9 +1114,13 @@ written, and one that would not apply drops the whole group. `lint --fix --json`
 marks such a finding `"declined": true` with a `"decline_reason"` (and `applied:
 false`); text output ends `, N declined (...)`.
 
-`lint` / `lint-all` / `lint-project` / `check-ast` `--fix --apply --compile-gate --project <X.dproj>
-[--platform <p>] [--rsvars <path>] [--build-timeout <s>]` (opt-in, 1.47) builds the project after the
-write and rolls every edited file back when the build fails: the whole run is all or nothing.
+`lint` / `lint-all` / `lint-project` / `check-ast` `--fix --apply --project <X.dproj>
+[--platform <p>] [--rsvars <path>] [--build-timeout <s>]` writes through the compile gate (1.47 opt-in with
+`--compile-gate`; the default with an existing `.dproj` since 1.51, `--no-compile-gate` opts out, naming renames
+stay gated): build 1 before the write keeps every message and any error stops the run, nothing written; build 2
+after the write rolls every edited file back on an error, so the run is all or nothing. stderr gives the error,
+warning and hint counts of both builds, every error line, and the warnings / hints build 2 added
+(`compile gate: new: ...`).
 
 #### Docs
 
@@ -1123,13 +1134,4 @@ write and rolls every edited file back when the build fails: the whole run is al
 | `document ... --no-seealso` / `--since` | `<seealso cref>` links to related symbols (callees + siblings) are emitted **by default** in every document mode; `--no-seealso` turns them off (`--seealso` is still accepted and does nothing -- it was the opt-in before it became the default). `--since [--base-dir <repoRoot>]` adds a git-derived `<since>` date and degrades silently when git is absent | works on `--qname` / `--unit` / `--project` / `document-all` |
 | `document ... --migrate-pure` | Regenerate stored legacy `<para>Pure</para>` facts (purity v1). **Without it** a block whose ONLY difference from a fresh render is that line is left byte-identical and `doc-drift` agrees -- the purity migration is one deliberate run, not churn on every `document` | works on `--qname` / `--unit` / `--project` / `document-all` |
 | `document` on a shared unit -- **project tags** | On a block reconciled across projects (a `dl:shared` unit, or one holding facts this index cannot see) inbound entries (`Called from:`, `Used by:`, `Used in:`, `Used in units:`, `Covered by:`) carry the projects that rendered them: `Called from: [DataCopy,DataCopyTests]uX.Foo (uX.pas)`. The tag is the project's name, recorded in the index (the `--db` base name for indexes built before 1.18.0; none with several `--db`). A run adds or removes only ITS tag; an entry goes when its set empties; untagged legacy entries keep the old rules (kept while this index cannot see their unit). Lists on such a block are never windowed `(+N more)` -- except `Covered by:`, capped at 5 by its producer (a capped line is not merged). A private unit never gets a tag. Grammar: `[Tag1,Tag2]entry` -- the tag set sits directly before the entry, tags de-duplicated case-insensitively, sorted, comma-joined with no blank (a comma inside `[...]` never separates entries). A `[YADFSetup]` prefix in a doc comment is this grammar, not leaked text: `doc-forget --list-tags` counts the tags, `--project <Tag>` removes one | automatic |
-| `doc-forget --scope <file\|dir>` | Reap project tags from inbound doc facts, text-only (no index needed -- for a project that was retired or renamed) | `--project <Tag>` (remove), `--rename <Tag>=<New>`, `--untagged` (drop untagged entries in tagged blocks), `--list-tags`, `--apply`, `--no-backup` |
-| [`doc-drift`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/doc-drift) `--qname <X>` | Deterministic doc-vs-code drift findings for one symbol | `--json` |
-| `generate-docs --qname <q>` | Generate an XML doc-comment stub | `--format xmldoc\|pasdoc` |
-| `generate-test --qname <q>` | Generate a DUnitX/DUnit test-method stub | `--framework dunitx\|dunit` |
-
-#### Refactor
-
-| Command | What it does | Notable flags |
-|---|---|---|
-| `rename --kind symbol --name <q> --to <new> --db <db>` | Cross-unit rename (declaration + every reference). Refuses (exit 2, naming the file) when the old name is used in an indexed `.inc` include: refs inside `{$I}` text are not indexed until extractor 1.22. Renaming an event handler also rewrites its `OnClick = Name` binding in the form's text `.dfm`; a binary `.dfm` that holds the name refuses (exit 2, naming the `.dfm`). `--json` reports each edit at the identifier it replaces **`--apply` is proved and gated (1.44.1):** every identifier token of the old name is decided as an edit, another symbol's (binding, or the receiver's static type via `ref_types` + `ref_receivers`), or a named refusal (exit 2, nothing written); every token of the new name is checked for capture, because a rename that compiles can still bind differently. A method renames with its overloads, overrides and implementers. `--plan [--json]` reports it all, exit 0. A write needs `--project <X.dproj>` (or a DB at `<folder>\_D-RAG\<base>.sqlite`, whose project it is) and passes the comp
+| `doc-forget --scope <file\|dir>` | Reap project tags from 

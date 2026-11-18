@@ -141,7 +141,7 @@ The same question, the same kind of answer; the profile decides how it is read.
 
 | when | question | choices |
 |---|---|---|
-| the user pauses | `turn` | finished / continuing · how long to wait · reply / just a sound · which pace |
+| the user pauses | `turn` | finished / continuing · which pace |
 | the user talks on | `listen` | something they are waiting for is due · a spot that fits a sound · quiet · an answer is due (Jev picks the moment, the language model the words) |
 | both talk at once | `floor` | carry on · yield · finish the sentence · take the floor back · react at once · short aside |
 | the agent leads | `cut_in` | cut in · let them finish |
@@ -591,6 +591,22 @@ responder sees is windowed, so a very long call keeps its early turns only throu
 language model you plug in.
 
 **What does it cost?** On our measurements, a minute of call audio is a few cents, most of it the language model.
+
+## Citing
+
+If Jev-Interaction helps your research, please cite it. GitHub's **Cite this repository** button reads
+[CITATION.cff](CITATION.cff); the BibTeX is:
+
+```bibtex
+@software{jev_interaction,
+  author  = {Yang, Hengjie and Wu, Zipeng},
+  title   = {Jev-Interaction: full-duplex voice turn-taking as plain-language decisions},
+  year    = {2026},
+  version = {0.2.0},
+  url     = {https://github.com/native-bond-lab/Jev-Interaction},
+  license = {Apache-2.0}
+}
+```
 
 ## Acknowledgements
 

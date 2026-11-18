@@ -75,7 +75,7 @@ pi install npm:@edgehero/pi-dispatch-admin
 
 ```bash
 mkdir my-dispatch && cd my-dispatch
-npx --yes --ignore-scripts @edgehero/pi-dispatch@5.4.0 up --console
+npx --yes --ignore-scripts @edgehero/pi-dispatch@5.4.1 up --console
 ```
 
 It checks the folder first, then lists what it will do and asks before it starts anything. It installs into that folder and
@@ -85,7 +85,7 @@ opens your browser on the checklist, already signed in.
 
 ```bash
 mkdir my-dispatch && cd my-dispatch && npm init -y
-npm install --save-exact @edgehero/pi-dispatch@5.4.0 @edgehero/pi-dispatch-admin@5.4.0 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
+npm install --save-exact @edgehero/pi-dispatch@5.4.1 @edgehero/pi-dispatch-admin@5.4.1 @earendil-works/pi-coding-agent@1.5.2 --omit=dev --omit=optional --ignore-scripts --no-audit --no-fund
 ./node_modules/.bin/pi-dispatch up --console
 ```
 
@@ -986,7 +986,7 @@ These forges have one auth source each, a token you create, so setting theirs to
 **Watching and steering:** [steering](docs/steering.md), [chat](docs/chat.md), [sessions](docs/sessions.md),
 [durable runs](docs/durable-runs.md), [approval gates](docs/approval-gates.md), [answer rules](docs/answer-rules.md),
 [Zero touch](docs/zero-touch.md), [watch](docs/watch.md), [watch decisions](docs/watch-decisions.md),
-[reasons](docs/reasons.md), [job limits](docs/job-limits.md).
+[reasons](docs/reasons.md), [job limits](docs/job-limits.md), [artifacts](docs/artifacts.md).
 
 **Triggers and flows:** [triggers](docs/triggers.md), [workflows](docs/workflows.md), [wait for](docs/wait-for.md),
 [pause windows](docs/pause-windows.md), [replicas](docs/replicas.md), [canary](docs/canary.md),

@@ -1,9 +1,18 @@
-# **Help:**
-I shared my data and model to my university google drive. After I graduated I lost access to the account and the data I shared. If anyone still have access to the data downlaoded using the scripts
-1. https://github.com/anton-jeran/FAST-RIR/blob/main/download_data.sh
-2. https://github.com/anton-jeran/FAST-RIR/blob/main/download_generate.sh
+# Artifact downloads
+The original university Google Drive files are no longer available. The download
+scripts now use the permanent recovery archive in
+[Zenodo record 24352172](https://zenodo.org/records/24352172) and verify every
+download before installing it:
 
-Please share with me. I will update the Readme and the above script.
+1. [`FAST-RIR-data.zip`](https://zenodo.org/records/24352172/files/FAST-RIR-data.zip?download=1)
+   contains the 75,000-RIR training dataset.
+2. [`FAST-RIR-checkpoint.zip`](https://zenodo.org/records/24352172/files/FAST-RIR-checkpoint.zip?download=1)
+   contains the recovered `netG_epoch_242.pth` generator checkpoint.
+
+Recovery provenance: the dataset was recovered from the
+[egrinstein/fast-rir](https://www.kaggle.com/datasets/egrinstein/fast-rir)
+mirror, and the checkpoint was recovered from
+[mehmetpekmezci/gtu-rir](https://github.com/mehmetpekmezci/gtu-rir).
 
 # FAST-RIR: FAST NEURAL DIFFUSE ROOM IMPULSE RESPONSE GENERATOR (ICASSP 2022)
 This is the official implementation of our neural-network-based  fast  diffuse  room  impulse  response  generator ([**FAST-RIR**](https://arxiv.org/pdf/2110.04057.pdf))  for  generating  room impulse responses (RIRs) for a given rectangular acoustic environment. Our model is inspired by [**StackGAN**](https://github.com/hanzhanggit/StackGAN-Pytorch) architecture. The audio examples and spectrograms of the generated RIRs are available [here](https://anton-jeran.github.io/FRIR/).
@@ -17,22 +26,21 @@ This is the official implementation of our neural-network-based  fast  diffuse  
 
 ## Requirements
 
+Create a Python environment and install the inference dependencies:
+
 ```
-Python3.6
-Pytorch
-python-dateutil
-easydict
-pandas
-torchfile
-gdown
-librosa
-soundfile
-acoustics
-wavefile
-wavfile
-pyyaml==5.4.1
-pickle
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
 ```
+
+For model training and data augmentation, install the additional dependencies:
+
+```
+python3 -m pip install -r requirements-train.txt
+```
+
+The artifact download scripts require `curl` and `unzip`.
 
 
 ## Embedding
@@ -59,7 +67,7 @@ Embedding = ([LP_X,LP_Y,LP_Z,SP_X,SP_Y,SP_Z,RD_X,RD_Y,RD_Z,(T60+CRR)] /5) - 1
 Download the trained model using this command
 
 ```
-source download_generate.sh
+./download_generate.sh
 ```
 
 Create normalized embeddings list in pickle format. You can run following command to generate an example embedding list
@@ -72,6 +80,8 @@ Run the following command inside **code_new** to generate RIRs corresponding to 
 ```
 python3 main.py --cfg cfg/RIR_eval.yml --gpu 0
 ```
+
+Use `--gpu -1` to run inference on CPU.
 
 ## Range
 
@@ -90,7 +100,7 @@ Reverberation time --> 0.2s to 0.7s
 Run the following command to download the training dataset we created using a [**Diffuse Acoustic Simulator**](https://github.com/GAMMA-UMD/pygsound). You also can train the model using your dataset.
 
 ```
-source download_data.sh
+./download_data.sh
 ```
 
 Run the following command to train the model. You can pass what GPUs to be used for training as an input argument. In this example, I am using 2 GPUs.

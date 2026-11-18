@@ -17,7 +17,7 @@
 | 📚 **术语** | 同一个对象和动作固定一种叫法，产品名和功能名遵循项目术语表。 |
 | 🎯 **指代** | 说清对象、条件和动作，避免读者猜“他们”“它”指什么。 |
 | 🛡️ **原意** | 保留事实、数字、否定词、权限和真实不确定性。 |
-| 🖥️ **界面文案** | 按钮写明动作，提示和报错说清发生了什么、下一步能做什么；称读者为“你”。 |
+| 🖥️ **界面文案** | 按钮写明动作，提示和报错说清发生了什么、下一步能做什么；称读者为“你”；说明句分三档处理：留在界面上、收进提示、删掉。 |
 | 📋 **任务回执** | 按“做完了／需要你／知会”区分结果、用户动作和必要信息。 |
 
 ## 介绍视频
@@ -168,7 +168,7 @@ npx skills add \
 
 可用 `--agent codex`、`--agent claude-code` 或 `--agent hermes-agent` 指定 Agent，`--global` 安装到个人技能目录。其他选项见[安装器文档](https://github.com/vercel-labs/skills#available-options)。
 
-手动安装时，从 [GitHub Releases](https://github.com/daimonia-ai/STC-Simplified-Technical-Chinese/releases/latest) 下载 `stc-skill-0.4.1.zip`，将包里的 `stc/` 放到 Agent 的技能目录。默认规则的配置方法见 [Onboarding for Agents](ONBOARDING.md)。
+手动安装时，从 [GitHub Releases](https://github.com/daimonia-ai/STC-Simplified-Technical-Chinese/releases/latest) 下载 `stc-skill-0.6.0.zip`，将包里的 `stc/` 放到 Agent 的技能目录。默认规则的配置方法见 [Onboarding for Agents](ONBOARDING.md)。
 
 ### 检查文件
 
@@ -213,6 +213,14 @@ npx --yes @daimonia/stc@latest update
 ```text
 请运行 stc update 更新 STC，最后核对实际使用的版本。
 ```
+
+### 更新提醒
+
+`stc check` 发现有新版本时，会在报告开头提示新旧版本号、发布说明链接和更新命令。是否更新由你决定，命令不会自己更新。Agent 会把提示转告给你，你同意前不会运行更新命令。
+
+提示来自缓存。缓存超过 24 小时，命令在后台向 npm 查一次，不等结果，不拖慢检查。第一次检查没有提示，后台查完后的检查才有。设置环境变量 `STC_UPDATE_CHECK=0` 可以关闭。细节见[命令行文档](tools/README.md#更新提醒)。
+
+加入这个功能之前的版本没有提示，需要先按上面的方法更新一次。
 
 ### 单独 skill 安装
 
@@ -284,7 +292,7 @@ STC 给中文补上这一套，从一开始就按 AI agent 能直接使用来设
 |---|---|---|
 | for chat | agent 在对话里回复人 | 可以用“我”“你”；第一句回答问题 |
 | for document | 给人读的文字：报告、方案、手册、代码注释、提交说明 | 主语写名称；面向客户的方案文案按 W2 写人称 |
-| for web dev | 网页和应用界面上给用户看的文字 | “你”指读者，“我”“我们”指产品方（W2）；同一处界面统一称呼读者（W10）；按钮以动词开头 |
+| for web dev | 网页和应用界面上给用户看的文字 | “你”指读者，“我”“我们”指产品方（W2）；同一处界面统一称呼读者（W10）；按钮以动词开头；说明句分三档处理（W9） |
 | for instruction writing | 写给 agent 执行的规则：系统提示词、AGENTS.md、skill | 要求的强度只用“必须、不得、宜、不宜、可、不必、能、不能” |
 
 ## 词表怎么定

@@ -1,0 +1,325 @@
+<p align="center">
+  <img src="docs/images/logo.svg" width="56" height="56" alt="elevate logo">
+</p>
+
+<h1 align="center">elevate</h1>
+
+<p align="center">
+  <b>New techniques ship every week. elevate tells you which ones would actually make <i>your</i> repos better, proves the rules it follows, and opens the draft PR.</b>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Bakar404/elevate/actions/workflows/ci.yml"><img src="https://github.com/Bakar404/elevate/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://bakar404.github.io/elevate/"><img src="https://github.com/Bakar404/elevate/actions/workflows/pages.yml/badge.svg" alt="Website"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Bakar404/elevate" alt="MIT License"></a>
+  <a href="https://github.com/Bakar404/elevate/stargazers"><img src="https://img.shields.io/github/stars/Bakar404/elevate?style=flat" alt="Stars"></a>
+  <img src="https://img.shields.io/badge/runs%20on-GitHub%20Copilot-8957e5?logo=githubcopilot&logoColor=white" alt="Runs on GitHub Copilot">
+  <img src="https://img.shields.io/badge/built-proof--first-2ea043" alt="Built proof-first">
+  <a href=".github/CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-blue" alt="PRs welcome"></a>
+</p>
+
+<p align="center">
+  <a href="https://bakar404.github.io/elevate/">Website</a> ·
+  <a href="https://bakar404.github.io/elevate/#demo">Demo</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#how-it-works">How it works</a> ·
+  <a href="#built-proof-first">Proof</a> ·
+  <a href="#built-with">Built with</a>
+</p>
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/home-light.png">
+  <img src="docs/images/home-dark.png" alt="elevate home: a live map of watched repos, the techniques flowing into them, and the recommendation inbox">
+</picture>
+
+## What it does
+
+Proof-driven development, speculative decoding, weight-space editing, whatever lands next. elevate watches the sources you choose for you: news, research papers, AI lab blogs, or any feed you plug in. When something new would make one of your GitHub repos better, it raises a recommendation. It raises one only after checking two things:
+
+1. **Is the new thing actually legit?** It checks source credibility, independent corroboration, community signal, public code, and gets a skeptical model review.
+2. **Is the change sound for this repo, and will it make a measurable difference?** It checks fit with the repo, risk, and a concrete way to measure the impact.
+
+You approve, and elevate sends a swarm of agents that plan, implement, test and review the change, then open a **draft** PR.
+
+It recommends what's new, not upkeep: AI models and methods, agent patterns, recent research. Patch releases, deprecations and database tips stay on the Radar instead. Like or dislike any recommendation and elevate learns what you want, with a contextual bandit from the research literature (see [How elevate learns what you like](#how-elevate-learns-what-you-like)).
+
+Then elevate follows the PR. Every couple of minutes it reads the PR's checks and whether GitHub can merge it, and the swarm page says what the PR is waiting on and what to do next. Once at least one check passed, none failed or is still running, and there are no conflicts, you click **Merge**. Or turn on "Auto-merge verified PRs" in Settings and elevate squash-merges it on its own and deletes the branch. It never merges a PR its checks didn't verify, and merges or closes made on GitHub show up in elevate too.
+
+By default the PR is yours: when the Copilot coding agent finishes, elevate squashes its work into one commit under your account, opens the draft PR as you and closes Copilot's PR. Turn off "Publish swarm PRs as me" in Settings to keep Copilot's PR as it is.
+
+Repo profiles stay current: every few minutes elevate checks each watched repo, and when the default branch has a new commit it re-profiles the repo at that commit and re-matches it against known techniques.
+
+Pip, a small lookout, floats in the bottom-right corner (in the top bar on phones). It dozes when nothing is waiting, perks up when a recommendation is ready and gets busy while a swarm runs. It also acts out what happens live: it waves hello, looks around, cheers a swarm's win and flinches at a failure. Click it for a one-line status, or hide it from its bubble or ⌘K.
+
+It works on your phone too: below 768px the sidebar becomes a bottom tab bar, chat history opens in a drawer, and every page fits the screen with no sideways scrolling.
+
+The model runtime is the [GitHub Copilot SDK](https://github.com/github/copilot-sdk), so it runs on your Copilot subscription. You can bring your own key for Anthropic, OpenAI or Azure models. Swarms can run on:
+
+- the Copilot coding agent
+- Claude (GitHub Action)
+- Codex cloud
+- local `copilot` / `claude` / `codex` CLIs in git worktrees
+
+<table>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/images/recommendation-light.png">
+        <img src="docs/images/recommendation-dark.png" alt="A recommendation with evidence from both gates">
+      </picture>
+      <p align="center"><sub><b>Recommendation.</b> Evidence for both gates, the expected impact, and how it will be measured.</sub></p>
+    </td>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/images/swarm-light.png">
+        <img src="docs/images/swarm-dark.png" alt="A swarm running plan, implement, test and review">
+      </picture>
+      <p align="center"><sub><b>Swarm.</b> Live task graph, budget and audit trail, ending in a draft PR.</sub></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/images/radar-light.png">
+        <img src="docs/images/radar-dark.png" alt="The Radar of incoming techniques">
+      </picture>
+      <p align="center"><sub><b>Radar.</b> Every technique seen, with its gate verdict and the repos it matched.</sub></p>
+    </td>
+    <td width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/images/chat-light.png">
+        <img src="docs/images/chat-dark.png" alt="Chat with the model picker open">
+      </picture>
+      <p align="center"><sub><b>Chat.</b> Ask about your repos and the radar. Pick the model for each conversation.</sub></p>
+    </td>
+  </tr>
+</table>
+
+<sub>Screenshots use the built-in demo repos (<code>demo/ledger-api</code>, <code>demo/llm-router</code>, <code>demo/edge-firmware</code>). The app has a dark theme and a light theme. It follows your system setting until you pick one with the sun/moon button or ⌘K.</sub>
+
+## Quick start
+
+```sh
+pnpm install
+cp .env.example .env            # optional; everything has a default
+pnpm dev                        # http://localhost:3100
+```
+
+- **Everyday use:** `pnpm build && pnpm start` serves a production build on the same port. `pnpm dev` is for working on elevate itself: it compiles each page on first visit and shows Next.js's dev badge and error overlay. Rebuild after pulling changes; database migrations apply when the server starts.
+- **Real mode:**
+  - Sign in to GitHub with `gh auth login`, or paste a token in Settings. The model runs through your Copilot login.
+  - Signed in to more than one GitHub account? Set `GITHUB_USER`, or press **Pin to …** in Settings → GitHub. GitHub calls and Copilot usage then stay on that account, even after `gh auth switch`.
+  - Turn on **Watch** for your repos, and **Swarms** for the ones elevate may write to. A repo with Watch off is listed only on the Repos page and costs no model calls; its recommendations come back when you turn it on again.
+- **Offline demo:** `ELEVATE_DEMO=1 pnpm dev` uses sample repos and sources, a deterministic model and simulated swarms. It doesn't touch GitHub.
+- **Docker:** `docker compose up -d --build` runs Postgres, the web app and a separate worker at http://localhost:3100. They restart on their own (`restart: unless-stopped`), so with Docker Desktop set to start at sign-in, elevate is back after every reboot. `docker compose stop` turns it off.
+- **Check the model runtime:** `pnpm smoke:copilot` makes one structured call through Copilot, or through your BYOK provider.
+- **Pages reload over and over under `pnpm dev`?** Turbopack's dev cache is stale. Stop the server, delete `apps/web/.next/dev`, and start it again.
+- **Live map not moving?** Your system asks apps to reduce motion (Remote Desktop sessions often do), and elevate follows it. The map says so: click **Animate anyway**, or pick **On** in Settings → Motion. Either way it's remembered in that browser.
+- **An item says "retrying" or "failed"?** The model couldn't classify it. The usual cause is the model provider's content filter blocking the answer about that item; elevate splits the batch until only the item that tripped the filter fails, so the rest of its batch is still classified. Less often the model answers in prose instead of JSON. The row says why. The next sweeps try again, up to 3 times; after that it says "failed" until you press **Sweep now** on the Radar, which retries every failed item. Your sources are fine: a source that can't be fetched shows its error on the Radar's source list instead.
+- **Inbox empty?** The line under the stats on the home page shows what elevate did in the last 24 hours: fetches, new items and techniques, how many were reviewed and passed Gate 1, and how many changes were checked and recommended. If things are being reviewed but few pass, the Radar lists each technique's verdict and reasons. Every sweep also queues reviews that went missing, so nothing new stays unexamined.
+
+## How it works
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/pipeline-light.svg">
+  <img src="docs/images/pipeline-dark.svg" alt="Sources and your repos feed triage and profiles; a matcher pairs techniques with repos; Gate 1 checks legitimacy and Gate 2 checks soundness; passing recommendations reach the inbox; when you approve, a swarm opens a draft PR">
+</picture>
+
+Sources come in two kinds:
+
+- **Feeds** are the same for everyone. They start with the HN front page, AI lab blogs and arXiv listings, and any other source can be added as a connector.
+- **Searches for your repos** query HN, arXiv and GitHub with terms taken from each watched repo's profile: its stack and domains, such as `pgvector` or `speculative decoding`.
+  - Every repo gets at least one query before shared terms fill the budget (`ELEVATE_FOCUS_QUERIES`, default 8).
+  - Anything found that way is matched to those repos first.
+
+Techniques that fail a gate are kept, but hidden, along with the reasons they failed.
+
+### News that fits your setup
+
+elevate only raises what you can act on. It works out what you have from your connection, and Settings → **What you can use** lets you switch products on or off yourself.
+
+| You connect | You hear about |
+|---|---|
+| GitHub Copilot | Copilot itself, and the model vendors on your plan's live model list |
+| Anthropic key | Claude models and Claude Code |
+| OpenAI key | GPT models and Codex |
+| Azure OpenAI | GPT models |
+
+Anything else is set aside before it costs a gate review, and listed with the reason under Radar → **Not for your setup**:
+
+- **Not connected.** The technique needs a product you don't have, such as Codex news for a Claude-only setup. Product feeds (Claude Code, Codex and Copilot CLI releases, OpenAI News) aren't even fetched.
+- **Outdated.** It is about a model version that has been replaced. What counts as current comes from your plan's model list and from the versions seen in incoming news, not from a list in the code, so it keeps up on its own.
+- **Not on your plan.** With Copilot, it names a model your plan doesn't list.
+- **Too old.** Feeds return their whole archive, so items published more than `ELEVATE_MAX_ITEM_AGE_DAYS` (default 60) ago are skipped.
+
+Switching a product on later sends what was held for it through the gates. Sources can be switched off, and your own RSS or Atom feeds added, from Radar → **Manage sources**.
+
+An approved recommendation becomes a task graph:
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/swarm-light.svg">
+  <img src="docs/images/swarm-dark.svg" alt="Planner fans out to implementers, then tester, reviewer and publisher, which opens a draft PR">
+</picture>
+
+See [docs/architecture.md](docs/architecture.md) for the packages, jobs and data model, and [docs/design.md](docs/design.md) for the UI.
+
+## How elevate learns what you like
+
+elevate recommends cutting-edge work: new AI models and methods, agent patterns, recent research. Triage asks the model whether each technique is cutting-edge. A deterministic check (`looksRoutine` in `packages/engine/src/frontier.ts`) catches upkeep the model lets through: patch and security releases, CVEs, deprecations, version bumps, and database or pinning chores that aren't about AI. Routine upkeep is still listed under Radar → **Routine upkeep**. It skips Gate 1 and never becomes a recommendation, unless you turn off **Cutting-edge only** in Settings → Recommendations.
+
+Every recommendation has 👍 and 👎 buttons.
+
+- **Ordering:** Ready for review is ordered by how likely you are to like each idea.
+- **Filtered out:** an idea you dislike moves there, and so do kinds of idea you keep passing on, each with the reason.
+- **Taking a vote back:** click the vote again, or **Undo** in its toast.
+- **What it learned:** Settings → Recommendations shows it (for example "moves up: agents, retrieval & RAG; moves down: databases"), and can forget it all.
+
+The ranking is a contextual bandit (`packages/engine/src/learner.ts`). It models P(like) with Bayesian logistic regression and ranks with Bayes-UCB:
+
+| | |
+|---|---|
+| **Context** | Each recommendation as sparse, named features: cutting-edge or routine, category, topics (agents, retrieval & RAG, inference & serving, …), where it was found (HN, arXiv, blogs, GitHub), the repo, effort and risk, both gate scores, how well it fits the repo, and a 16-dimensional random projection of the technique's embedding, so similar ideas share what was learned. |
+| **Reward** | 👍 is 1 and 👎 is 0, at weight 1. Approving (and whatever follows: a swarm, a PR, a merge) is 1 and rejecting is 0, at weight ½, because a good idea can be rejected for a busy repo. |
+| **Model** | P(like \| x) = σ(wᵀx), with a Gaussian prior w ~ N(m₀, λ⁻¹I), λ = 1. The prior mean leans toward cutting-edge ideas with good gate scores, so the order makes sense before your first vote. It is fit to the MAP by Newton's method (IRLS) on every vote at once, so the order you voted in doesn't matter. The Laplace approximation N(ŵ, H⁻¹) at the mode says how sure it is about each recommendation. |
+| **Ranking** | Bayes-UCB: open recommendations are sorted by the 1 − 1/t quantile of P(like), σ(μ + z·s) with z = Φ⁻¹(1 − 1/t) and t = rewards so far + 2. Ideas it is unsure about rank high enough to be seen and learned from. The "N% your kind" badge is the posterior mean of P(like), from MacKay's probit approximation. |
+| **Holding back** | Only after at least 3 dislikes' worth of negative evidence, and only when even an optimistic estimate (the 80th percentile) says you'd like it less than 30% of the time. One vote only reorders. With nothing liked, about four dislikes of one kind hold back the next idea like them. A like always brings an idea back. |
+| **Explanations** | The features whose weights moved furthest from the prior, in words. Features every vote shared are skipped: if you've only voted on one repo, the repo explains nothing. |
+
+Only the votes are stored. The model is refit from all of them whenever they change.
+
+**References.** The method is standard, and elevate implements it in one TypeScript file of about 450 lines, with no new dependencies.
+
+- [**david-cortes/contextualbandits**](https://github.com/david-cortes/contextualbandits) (BSD-2-Clause), whose `LogisticUCB` is the same construction: L2-regularized logistic regression with the upper bound σ(wᵀx + Φ⁻¹(p)·√(xᵀ(XᵀWX + λI)⁻¹x)). elevate uses its defaults: λ = 1, and p = 80% for holding ideas back. It differs in three ways:
+  - one model is shared by every recommendation, instead of one per arm, because each recommendation is a new arm;
+  - the prior mean isn't zero;
+  - ranking uses Bayes-UCB's growing quantile instead of a fixed percentile.
+- D. Cortes, [Adapting multi-armed bandits policies to contextual bandits scenarios](https://arxiv.org/abs/1811.04383), 2018. This is the paper the package asks to be cited for its methods.
+- O. Chapelle and L. Li, [An Empirical Evaluation of Thompson Sampling](https://papers.nips.cc/paper_files/paper/2011/hash/e53a0a2978c28872a4505bdb51db06dc-Abstract.html), NeurIPS 2011. Its Algorithm 3 is regularized logistic regression with a Laplace approximation of the posterior. elevate refits all votes as one batch and keeps the full covariance instead of its diagonal.
+- E. Kaufmann, O. Cappé and A. Garivier, [On Bayesian Upper Confidence Bounds for Bandit Problems](https://proceedings.mlr.press/v22/kaufmann12.html), AISTATS 2012. This is Bayes-UCB; elevate uses c = 0, as the paper recommends.
+- L. Li, W. Chu, J. Langford and R. E. Schapire, [A Contextual-Bandit Approach to Personalized News Article Recommendation](https://arxiv.org/abs/1003.0146), WWW 2010. LinUCB treats recommendation as a contextual bandit over feature vectors. elevate swaps its linear model for a logistic one, because a vote is binary.
+- C. M. Bishop, *Pattern Recognition and Machine Learning*, 2006, §4.4–4.5: the Laplace approximation, and the predictive distribution of Bayesian logistic regression. The probit approximation is from D. J. C. MacKay, [The Evidence Framework Applied to Classification Networks](https://doi.org/10.1162/neco.1992.4.5.720), Neural Computation, 1992.
+
+`packages/engine/test/learner.test.ts` checks the fit against scikit-learn's `LogisticRegression(C=1)` with sample weights, and the posterior against (XᵀWX + λI)⁻¹, to 7 digits. `learner_golden.py` regenerates those values.
+
+## Models
+
+Settings has two model pickers: one for the background agents (triage, the gates, swarm planning) and a default for chat. Each conversation can also choose its own model in the chat composer. Conversations can be deleted from the chat list.
+
+The model list comes live from your Copilot account, so it shows exactly what your plan allows; models your plan disables are greyed out. With a BYOK provider, you type the model id.
+
+## Built proof-first
+
+The rules that stand between a headline and a branch on your repo are **proved**, not just tested:
+
+- the Gate 1 and Gate 2 decisions
+- the recommendation lifecycle: no swarm without both gates and your approval
+- the write guard: only opted-in repos, drafts only, within budget, and a merge only with your consent and only once the PR's checks verify it
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/proof-light.svg">
+  <img src="docs/images/proof-dark.svg" alt="Intent, Verus spec and proof, mutation check, differential test against WASM, receipt">
+</picture>
+
+They follow the [PDD Kit](https://www.microsoft.com/en-us/research/blog/formally-verifying-agent-written-full-stack-web-apps-with-pdd-kit/) method:
+
+1. **Intent:** [`proof/intent.md`](proof/intent.md) states 30 requirements in plain words.
+2. **Spec and proof:** [`proof/verified/src/lib.rs`](proof/verified/src/lib.rs) states each requirement in Verus and proves it for every input.
+3. **Mutation check:** one bug is planted per clause, and Verus must reject each one.
+4. **Differential test:** the TypeScript the app runs (`packages/policy`) is compared with the proved code, built to WASM, over every input class. A **negative control** shows the test can fail.
+5. **Receipt:** [`proof/RECEIPT.md`](proof/RECEIPT.md), which is also shown on the Settings page.
+
+A proof can't cover the quality of the model's judgments, so the gate eval set measures that. `pnpm eval:gates` runs the reference reviews, and `pnpm eval:gates --live` asks your model for the Gate 1 reviews. The cases are in [`fixtures/gate-eval.json`](fixtures/gate-eval.json).
+
+<picture>
+  <source media="(prefers-color-scheme: light)" srcset="docs/images/evals-light.svg">
+  <img src="docs/images/evals-dark.svg" alt="Last live run: Gate 1 precision 1.00, recall 1.00, 0 of 10 hype cases passed, Gate 2 7 of 7 correct">
+</picture>
+
+Last live run, on the Copilot default model:
+
+- **Gate 1** had a precision of 1.00 and a recall of 1.00, and passed 0 of the 10 hype cases. Its passes included three preprints one to three days old, judged from their abstracts as the app shows them.
+- **Gate 2** judged 7 of 7 cases correctly. It is scored on the reference reviews, because `--live` replaces only the Gate 1 reviews.
+- 1 of 21 reviews contradicted itself and was asked again. See `consistentReview` in [docs/architecture.md](docs/architecture.md).
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Web app with the embedded worker on :3100, in development mode |
+| `pnpm build` / `pnpm start` | Build the web app, then serve that build with the embedded worker on :3100 |
+| `pnpm worker` | Standalone worker (set `ELEVATE_EMBEDDED_WORKER=0` on the web app and use Postgres) |
+| `pnpm test` | Unit and integration tests (vitest) |
+| `pnpm test:e2e` | Playwright end-to-end run against the demo |
+| `pnpm typecheck` | Type-check every package |
+| `pnpm eval:gates [--live]` | Gate precision and recall on the eval set, plus a threshold sweep |
+| `pnpm smoke:copilot` | One live call through the Copilot SDK or BYOK provider |
+| `pnpm proof` | Re-run the proof, mutation check, WASM build, differential test and negative control, then rewrite the receipt (needs Verus) |
+| `node scripts/diagrams.mjs` | Regenerate the README and website diagrams in both themes |
+| `pnpm --filter @elevate/web exec node ../../scripts/phone-shots.mjs` | Regenerate the website's phone screenshots from a running demo |
+
+## Storage
+
+Local mode uses embedded PGlite (Postgres in WASM) with pgvector, stored in `.data/`. To use a real Postgres instead, set `DATABASE_URL`; `docker compose up db` starts one.
+
+Every table has a `tenant_id`, so the data model is ready for multi-tenant SaaS. Tokens and API keys are encrypted at rest with AES-GCM. The key comes from `ELEVATE_SECRET`, or from `.data/secret.key`.
+
+In Docker, put `GITHUB_TOKEN` (and any BYOK key) in `.env`, because a container has no `gh` login to fall back on. If registry.npmjs.org is blocked on your network, point the image build at a mirror: `NPM_REGISTRY=https://your-mirror/npm/ docker compose build`.
+
+## Safety rails
+
+- Nothing is written to GitHub until you approve, and only to repos you opted in.
+- Pull requests open as drafts. elevate never pushes to a default branch or force-pushes.
+- elevate merges a swarm's PR only when you click Merge or turned on auto-merge, and only once at least one check passed, none failed or is still running, and GitHub can merge it. The squash is pinned to the commit it checked, so a later push can't slip in.
+- Every swarm has a budget for tasks, minutes and agent turns. Swarms still running when the worker restarts are resumed, not re-planned.
+- elevate closes a PR only when you click Close, or to replace the coding agent's own PR after republishing it as you while that swarm is running.
+- Every write is checked by the proved guard and recorded in the audit log.
+
+## Built with
+
+**Design.** The interface borrows patterns and components from these libraries and showcases:
+
+| | |
+|---|---|
+| [Aceternity UI](https://ui.aceternity.com/) | Spotlight cards and hero background effects |
+| [21st.dev](https://21st.dev/) | Community React components used as reference for the inbox and cards |
+| [shadcn/ui](https://ui.shadcn.com/) | Component structure, tokens and the overall look |
+| [Base UI](https://base-ui.com/) | Unstyled, accessible primitives under the components |
+| [Sonner](https://sonner.emilkowal.ski/) | Toasts, themed to match light and dark |
+| [cmdk](https://github.com/dip/cmdk) | The ⌘K command palette |
+| [NumberFlow](https://number-flow.barvian.me/) | Animated scores, counters and budgets |
+| [emilkowalski/skills](https://github.com/emilkowalski/skills) | Motion and interaction guidelines |
+| [Beautiful UI](https://www.beautifului.dev/) | Layout and typography reference |
+| [RareUI](https://rareui.in/) | Animated accents reference |
+| [CUI](https://yappologistic.github.io/CUI/) | Inspiration for the dithered background and the website layout |
+
+**Stack.**
+
+- **Framework:** [Next.js](https://nextjs.org/), [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
+- **UI:** [Tailwind CSS v4](https://tailwindcss.com/), [Motion](https://motion.dev/), [Lucide](https://lucide.dev/) icons, [react-markdown](https://github.com/remarkjs/react-markdown)
+- **Agents:** [GitHub Copilot SDK](https://github.com/github/copilot-sdk)
+- **Data:**
+  - [Drizzle ORM](https://orm.drizzle.team/)
+  - [PGlite](https://pglite.dev/) and [pgvector](https://github.com/pgvector/pgvector)
+  - a Postgres job queue built in (`FOR UPDATE SKIP LOCKED`)
+  - [Octokit](https://github.com/octokit/rest.js) for GitHub
+- **Proof:**
+  - [Verus](https://github.com/verus-lang/verus)
+  - the [PDD Kit](https://www.microsoft.com/en-us/research/blog/formally-verifying-agent-written-full-stack-web-apps-with-pdd-kit/) method
+- **Tests:** [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/)
+
+## Contributing
+
+New source connectors, executors and gate eval cases are the most useful contributions. See [CONTRIBUTING.md](.github/CONTRIBUTING.md). Ask questions and share ideas in [Discussions](https://github.com/Bakar404/elevate/discussions), and [suggest a source](https://github.com/Bakar404/elevate/issues/new?template=new_source.yml) you think elevate should watch.
+
+If elevate is useful to you, a ⭐ helps other people find it.
+
+<a href="https://star-history.com/#Bakar404/elevate&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Bakar404/elevate&type=Date&theme=dark">
+    <img src="https://api.star-history.com/svg?repos=Bakar404/elevate&type=Date" alt="Star history chart" width="600">
+  </picture>
+</a>
+
+## License
+
+[MIT](LICENSE)

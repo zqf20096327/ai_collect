@@ -1145,6 +1145,31 @@ Click the Karaoke button in the Studio transport bar (enabled once separation is
 
 After lyric sync, **⬇ LRC** (line and word timing), **⬇ SRT** and **⬇ VTT** (YouTube-ready captions, no overlaps, 42-character lines) and **📋 Copy timed lyrics** export the aligned lyrics. Section markers are left out. If a song has no timings yet, the button runs Whisper first.
 
+### Fixing what the words say
+
+Whisper is a speech model reading a sung, separated vocal, so it mishears — "sanctuary"
+comes back as "a stage to worry". Re-sync does not fix that: it re-runs the model, which
+mishears differently rather than less. Two things do.
+
+- **One wrong word — click it.** Pause, click the word on screen, type the right one,
+  press Enter. The timing is kept, because that is the part Whisper got right and the
+  part that is laborious to recreate; only the text changes. Clear the box and press
+  Enter to delete a word instead — a mishearing is rarely one-for-one, and one sung word
+  coming back as three leaves extras behind. Esc cancels. Edits save against the
+  separation, so they survive a reload and flow into the SRT, LRC, VTT and any video
+  recorded afterwards.
+- **All of them — paste the lyrics (📝 Lyrics).** With lyrics attached, transcription
+  stops using Whisper's words: it LCS-aligns them against the lyrics and emits the *lyric*
+  words carrying Whisper's timings, and reports what percentage matched. A mishearing
+  cannot reach the screen, because the misheard word was never a candidate. Songs
+  generated here already carry their lyrics; songs **uploaded** to Studio do not, which is
+  why an imported track shows Whisper's guesses until you paste them in.
+
+Re-sync remains the right tool for its own problem: a stretch of song with no words at
+all. Each press moves one model up — tiny, base, small, medium — and the button says
+which size ran and which is next. Bigger is not reliably better: on one song `base`
+produced 487 words against `small`'s 427.
+
 ### Lyric video export (built-in recorder)
 
 Record the Karaoke playback as a video file directly from the browser — no external screen recorder required.
@@ -1299,27 +1324,4 @@ The drum sequencer and the piano roll share one transport grid: start one while 
 
 #### Notation (live sheet music)
 
-Below the voice controls in Roll mode, a **Notation** panel renders the piano roll as a real **grand staff** — a readable score that updates as you place notes:
-
-- **Treble staff** for C4–B4 over a **bass staff** for C3–B3, with **middle C on its own ledger line** between them — every note sits on its true line or space
-- **Real durations** drawn from the held-note lengths above: filled vs. hollow noteheads, stems, augmentation dots
-- **Contour-slanted beams** group eighths/sixteenths within a beat (single beam = 8ths, double = 16ths); the beam tilts up for a rising run and down for a falling one, and an isolated short note keeps a flag
-- A **♩ = tempo** marking, **4/4** time signature, and treble/bass clefs
-- A **playback cursor** sweeps across the staff in time with ▶ Play
-
-#### Microphone
-
-Click the 🎤 button to request microphone access. The browser prompts for permission once. When enabled:
-
-- Voice feeds into whichever loop slot is currently recording alongside the drums and keyboard
-- A dynamics compressor (threshold −22 dB, ratio 6:1) sits between the mic and the capture chain to prevent clipping from loud input
-- A level meter bar shows real-time input amplitude
-- Click 🎤 again to release the microphone
-
-#### Autotune
-
-A stylized hard-tune effect for the mic, running in its own AudioWorklet (autocorrelation pitch detection → snap to the nearest note in the chosen scale → granular pitch shift):
-
-- **🎚 Autotune** toggles it (transparent until enabled)
-- **Key** + **Scale** (Major / Minor / Chromatic) define which notes the pitch snaps to
-- **Retune** sets the snap speed — fast for the robotic effect, slower for a natural g
+Below the voice controls in Roll mode, a **Notatio

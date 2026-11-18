@@ -18,7 +18,7 @@ unit, the smartest investment this side of the Alpha Quadrant!
 Why hire when you can own? The Exocomp isn't just a tool... it's so much more!
 
 - Supervised task queue functionality
-- Multiple agent roles as `architect`, `coder`, `exploiter`, `planner`, `researcher`, `reverser`, `summarizer`, `tester`, `threathunter`, `webscanner`
+- Multiple agent roles as `architect`, `coder`, `exploiter`, `planner`, `reproducer`, `reverser`, `summarizer`, `tester`, `threathunter`, `webresearcher`, `webscanner`
 - Precision repairs of broken code with unit tests
 - Cross-agent communication via `changelog`, `bugs` and `requirements` tools
 - Self-replicating short lived agents in malicious environments
@@ -43,7 +43,7 @@ Exocomp uses multiple [Agent Roles](./source/agents/Roles.go):
 | [planner](./source/agents/planner.yaml)       | long      | `deepseek-v4-pro:cloud`             | writes with humans and plans project phases      |
 | [architect](./source/agents/architect.yaml)   | short     | `huihui_ai/Qwen3.8-abliterated:27b` | defines software specifications                  |
 | [coder](./source/agents/coder.yaml)           | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements specifications into code              |
-| [researcher](./source/agents/researcher.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | reads git repositories, wikis, websites and docs |
+| [webresearcher](./source/agents/webresearcher.yaml) | short | `huihui_ai/Qwen3.8-abliterated:27b` | summarizes public writeups, docs and advisories |
 | [summarizer](./source/agents/summarizer.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | reads long texts and summarizes them             |
 | [tester](./source/agents/tester.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements unit tests, writes bug reports        |
 
@@ -52,6 +52,7 @@ Exocomp uses multiple [Agent Roles](./source/agents/Roles.go):
 | Role                                              | Lifecycle | Default Model                       | Description                                   |
 |:--------------------------------------------------|:---------:|:-----------------------------------:|:----------------------------------------------|
 | [exploiter](./source/agents/exploiter.yaml)       | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements exploits in CGo                    |
+| [reproducer](./source/agents/reproducer.yaml)     | short     | `huihui_ai/Qwen3.8-abliterated:27b` | implements findings into Go unit tests        |
 | [reverser](./source/agents/reverser.yaml)         | short     | `huihui_ai/Qwen3.8-abliterated:27b` | translates binaries or code into Go/CGo code  |
 | [threathunter](./source/agents/threathunter.yaml) | short     | `huihui_ai/Qwen3.8-abliterated:27b` | discovers vulnerabilities in infrastructure   |
 | [webscanner](./source/agents/webscanner.yaml)     | short     | `huihui_ai/Qwen3.8-abliterated:27b` | discovers vulnerabilities in web applications |
@@ -71,21 +72,21 @@ to beat the context length and agent memory limitations of locally run models.
 
 Check the unit tests on whether the Tools can be relied on or not.
 
-| Tool                                           | Unit Tests?                                | Description                                        | Agent Roles                                             |
-|:-----------------------------------------------|:------------------------------------------:|:---------------------------------------------------|:-------------------------------------------------------:|
-| [Agents](./source/tools/Agents.go)             | [Yes](./source/tools/Agents_test.go) [1]   | manages contractor lifecycle and profile switch    | all roles                                               |
-| [Bugs](./source/tools/Bugs.go)                 | [Yes](./source/tools/Bugs_test.go)         | manages documentation of discovered bugs           | `planner`, `architect`, `coder`, `tester`               |
-| [Changelog](./source/tools/Changelog.go)       | [Yes](./source/tools/Changelog_test.go)    | manages documentation of development changelog     | `coder`, `tester`, `exploiter`, `reverser`              |
-| [Containers](./source/tools/Containers.go)     | [Yes](./source/tools/Containers_test.go)   | manages podman containers                          | `exploiter`, `reverser`, `threathunter`                 |
-| Exploits                                       |                                            | manages PoCs for CVEs from local dataset           | `exploiter`, `reverser`                                 |
-| [Files](./source/tools/Files.go)               | [Yes](./source/tools/Files_test.go)        | interacts with files and folders                   | all roles                                               |
-| [Humans](./source/tools/Humans.go)             | [Yes](./source/tools/Humans_test.go)       | asks the human clarifying questions                | `planner`                                               |
-| Findings                                       |                                            | reports findings of vulnerabilities and weaknesses | `exploiter`, `threathunter`                             |
-| [Programs](./source/tools/Programs.go)         | [Yes](./source/tools/Programs_test.go)     | interacts with installed programs                  | all roles                                               |
-| [Requirements](./source/tools/Requirements.go) | [Yes](./source/tools/Requirements_test.go) | manages specifications of implementations          | `planner`, `architect`, `coder`, `tester`               |
-| [Skills](./source/tools/Skills.go)             | [Yes](./source/tools/Skills_test.go)       | loads and Unloads Agent Skills [2]                 | `planner`                                               |
-| Vulnerabilities                                |                                            | manages vulnerabilities from local dataset         | `exploiter`, `threathunter`, `webscanner`               |
-| [Websites](./source/tools/Websites.go)         | [Yes](./source/tools/Websites_test.go)     | fetches websites in Reader Mode                    | `researcher`, `exploiter`, `threathunter`, `webscanner` |
+| Tool                                           | Unit Tests?                                | Description                                         | Agent Roles                                                        |
+|:-----------------------------------------------|:------------------------------------------:|:----------------------------------------------------|:------------------------------------------------------------------:|
+| [Agents](./source/tools/Agents.go)             | [Yes](./source/tools/Agents_test.go) [1]   | manages contractor lifecycle and profile switch     | all roles                                                          |
+| [Assets](./source/tools/Assets.go)             | [Yes](./source/tools/Assets_test.go)       | stores and imports recon assets                     | `exploiter`, `planner`, `reproducer`, `reverser`, `threathunter`, `webscanner` |
+| [Bugs](./source/tools/Bugs.go)                 | [Yes](./source/tools/Bugs_test.go)         | manages documentation of discovered bugs            | `planner`, `architect`, `coder`, `tester`                          |
+| [Changelog](./source/tools/Changelog.go)       | [Yes](./source/tools/Changelog_test.go)    | manages documentation of development changelog      | `coder`, `tester`, `exploiter`, `reverser`                         |
+| [Containers](./source/tools/Containers.go)     | [Yes](./source/tools/Containers_test.go)   | manages podman containers                           | `exploiter`, `reproducer`, `reverser`, `threathunter`              |
+| [Files](./source/tools/Files.go)               | [Yes](./source/tools/Files_test.go)        | interacts with files and folders                    | all roles                                                          |
+| [Humans](./source/tools/Humans.go)             | [Yes](./source/tools/Humans_test.go)       | asks questions and requests temporary capabilities  | all roles                                                          |
+| [Findings](./source/tools/Findings.go)         | [Yes](./source/tools/Findings_test.go)     | stores findings, imports scanner results and evidence | `exploiter`, `planner`, `reproducer`, `threathunter`, `webscanner` |
+| [Programs](./source/tools/Programs.go)         | [Yes](./source/tools/Programs_test.go)     | interacts with installed programs                   | all roles                                                          |
+| [Requirements](./source/tools/Requirements.go) | [Yes](./source/tools/Requirements_test.go) | manages specifications of implementations           | `planner`, `architect`, `coder`, `tester`                          |
+| [Shell](./source/tools/Shell.go)               | [Yes](./source/tools/Shell_test.go)        | manages interactive PTY sessions inside the sandbox | `exploiter`, `reverser`, `threathunter`, `webscanner`              |
+| [Skills](./source/tools/Skills.go)             | [Yes](./source/tools/Skills_test.go)       | loads and Unloads Agent Skills [2]                  | `planner`                                                          |
+| [Websites](./source/tools/Websites.go)         | [Yes](./source/tools/Websites_test.go)     | fetches websites in Reader Mode                     | `exploiter`, `threathunter`, `webresearcher`, `webscanner`         |
 
 - [1] Requires `llama.cpp` with `huihui_ai/Qwen3.8-abliterated:27b` at `Q4_K_M` quantization and 32GB VRAM GPU with `vulkan` support.
 - [2] Implements `SKILL.md` support, in compliance with [agentskills.io/specification](https://agentskills.io/specification).
@@ -97,10 +98,10 @@ The `exocomp` project comes in several variants. All programs support `CGO_ENABL
 so they can be used without any dynamically linked dependencies.
 
 - [agimus](./source/cmds/agimus/main.go) which is used for testing `assistant` sandboxes.
-- [exocomp](./source/cmds/exocomp/main.go) which supports the `agent`, `config` and `terminal` UIs.
-- [exocomp-agent](./source/cmds/exocomp-agent/main.go) which supports only the `agent` and `terminal` UI.
+- [exocomp](./source/cmds/exocomp/main.go) which supports the `config` and `terminal` UIs.
+- [exocomp-agent](./source/cmds/exocomp-agent/main.go) which is the JSONL child-process entry point hired through `agents.Hire`.
 - [exocomp-sandbox](./source/cmds/exocomp-sandbox/main.go) which applies landlock (Linux) or seatbelt (macOS) confinement before executing agent programs.
-- [exocomp-web](./source/cmds/exocomp-web/main.go) which supports the `agent`, `config` and `web` UIs.
+- [exocomp-web](./source/cmds/exocomp-web/main.go) which supports the `config` and `web` UIs.
 - [exocomp-installer](./installer/cmds/exocomp-installer/main.go) that bundles all exocomp builds and required agent programs.
 
 Sandboxed program execution requires Linux with landlock, or macOS with
@@ -131,9 +132,12 @@ cd /path/to/exocomp;
 # Build only the WASM Web App
 make webapp;
 
-# Start Exocomp Web UI
+# Build the JSONL child-process binary used by agents.Hire
 cd ./source;
-go run cmds/exocomp-web/main.go web;
+go build -o /tmp/exocomp-agent ./cmds/exocomp-agent;
+
+# Start Exocomp Web UI
+EXOCOMP_AGENT=/tmp/exocomp-agent go run ./cmds/exocomp-web/main.go web;
 ```
 
 ### Configuring

@@ -5,6 +5,7 @@
 [![Tool definitions < 5k tokens](https://img.shields.io/badge/tool_definitions-%3C5k_tokens-brightgreen)](#why-an-mcp-server-and-not-a-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Node >= 20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
+[![mcp.market](https://mcp.market/badge/silbercue-public-browser.svg)](https://mcp.market/server/silbercue-public-browser)
 
 Lets Claude Code, Cursor and any MCP client drive Chrome. In a blind benchmark on a 30-test page, five runs each, Public Browser 3.0 passed 30/30 in every run and used a median of **3.0M session tokens where agent-browser 0.38.1 used 4.5M — a third fewer tokens, a third less cost, a quarter fewer tool calls and 48% faster** (261 s against 386 s) ([Benchmarks](#benchmarks), including where it loses). Measured 2026-09-23/24 with Claude Code 2.1.281, driver Claude Opus 5 and Chrome 153; agent-browser ran through its CLI with its official skill file, and the test page is our own. Direct CDP, a11y-tree refs, several steps per call with `run_plan` — 2,700+ TypeScript tests, 280+ Python tests.
 

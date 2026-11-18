@@ -11,6 +11,7 @@ and evidence-chain reporting.
 [![CI](https://img.shields.io/github/actions/workflow/status/shihao101/jiutouniao/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/shihao101/jiutouniao/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/shihao101/jiutouniao?style=flat-square)](https://github.com/shihao101/jiutouniao/releases)
 [![License](https://img.shields.io/github/license/shihao101/jiutouniao?style=flat-square)](LICENSE)
+**当前版本 v5.7.4** · [完整更新记录](CHANGELOG.md)
 ![Go](https://img.shields.io/badge/Go-1.23%2B-00ADD8?style=flat-square&logo=go)
 ![Vue](https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vue)
 
@@ -30,7 +31,7 @@ and evidence-chain reporting.
 ## ✨ 核心特性
 
 - **全流程编排**：s1 资产 → s2 侦察 → s3 威胁建模 → s4 漏洞发现 →（专项 A/B1/B2）→ s5 利用 → s6 后渗透（可选）→ s7 收尾 → s8 报告，阶段间自动回环直到拿下业务影响证明——八个阶段专家头 + 三个专项头 + 一个主控真头
-- **109 个中文攻击剧本**：`skills/` 技能库按需 `load_skill` 注入，覆盖 Web/内网/AD/APP/小程序/云/LLM 目标
+- **126 个中文攻击剧本**：`skills/` 技能库按需 `load_skill` 注入，覆盖 Web/内网/AD/APP/小程序/云/LLM 目标
 - **确定性质量门**：结论-证据硬校验、覆盖对账、孤儿探测归账——零 LLM 成本的引擎级反幻觉
 - **防幻觉产出链**：每阶段强制实体文件交付，下一阶段以文件为事实来源承接
 - **多模型接入**：OpenAI / Anthropic 双协议，任何兼容端点可用（官方 / 中转站 / Ollama / vLLM）；Web 设置页多模型注册表 + 连通性实测 + 按项目选模型；无 Key Mock 演示模式

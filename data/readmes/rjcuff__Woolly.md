@@ -46,17 +46,21 @@ Prefer an app? [Download Woolly for Mac or Windows](https://usewoolly.com/downlo
 
 **It knows when a fact goes stale.** On every commit and on `woolly check`, each fact is checked against the code it points at. Rename a function, delete a file or change a pin number, and the fact that relied on it is flagged with the commit that broke it. `woolly review` lets you confirm, fix or retire it. [Stale facts](https://usewoolly.com/docs/stale-facts)
 
+**`woolly why` explains any line.** Point it at a file, a line or a function and it shows the decisions and gotchas behind it, what was rejected, and whether the code still backs each one up. Agents ask it too before changing code. [Why is this code like this](https://usewoolly.com/docs/why)
+
+**Pull requests say what they break.** A GitHub Action comments when a change makes a project fact stale, so the whole team sees it before it merges. [Pull request checks](https://usewoolly.com/docs/pull-requests)
+
 **Every fact cites its source.** A file, function or line range, the commit it was saved at, and the session it came from.
 
 **One memory for every agent on the repo.** Claude Code, Cursor and Codex read and update the same notes, and teammates get them through git. [Project memory](https://usewoolly.com/docs/project-memory)
 
-**Sessions that start warm.** Each session opens with a short brief with the project's current facts, where you left off, and a one-line warning when something went stale. [Connect](https://usewoolly.com/docs/connect)
+**Sessions that start warm.** Each session opens with a short brief with the project's current facts, where you left off, and which facts were kept out because the code changed. `woolly caught` counts every one, with a badge for your README. [Connect](https://usewoolly.com/docs/connect)
 
 **Decisions stick.** When a session ends, Woolly saves what you decided, why, and what you ruled out, so no agent pitches it again.
 
 **Facts keep their history.** Nothing is deleted. A replaced or stale fact stays on disk with the date it stopped being true. When an AI contradicts something you said, your version wins.
 
-**It dreams.** While you're away, your local model merges duplicates, settles facts that changed, and turns past sessions into lessons. [Dreaming](https://usewoolly.com/docs/dreaming)
+**It dreams.** While you're away, your local model merges duplicates, settles facts that changed, and turns past sessions into lessons. The next session starts with what it did, and `woolly recap` shows it too. [Dreaming](https://usewoolly.com/docs/dreaming)
 
 **Fully local.** No cloud, no account, no telemetry. Ollama is optional, and stale detection never needs a model. Passwords and API keys are refused, and an AI can't plant instructions in your memory. [Security](https://usewoolly.com/docs/security)
 
@@ -75,7 +79,7 @@ Prefer an app? [Download Woolly for Mac or Windows](https://usewoolly.com/downlo
 woolly init
 ```
 
-Run it in a repo and commit `.woolly/`. Every teammate's agent now reads and updates the same notes on the stack, conventions, decisions, gotchas and commands. Think of it as a CLAUDE.md that keeps itself up to date and checks itself against the code.
+Run it in a repo and commit `.woolly/`. The first time, it brings in what your CLAUDE.md, AGENTS.md and Cursor rules already say, and points those facts at the code. Every teammate's agent now reads and updates the same notes on the stack, conventions, decisions, gotchas and commands. Think of it as a CLAUDE.md that keeps itself up to date and checks itself against the code.
 
 - One fact per line in `.woolly/woolly.md`, so diffs are readable and you can edit it by hand.
 - Facts about you never go in the repo.

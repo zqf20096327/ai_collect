@@ -12,7 +12,8 @@
 
 > 🌐 **Interactive Live Simulator & Documentation:** [domush.github.io/antigravity-plugin-context-mode](https://domush.github.io/antigravity-plugin-context-mode/)
 
-<img width="846" height="503" alt="image" src="https://github.com/user-attachments/assets/2b89e947-4b53-42a6-a0ad-ea744de96c41" />
+<img width="715" height="632" alt="image" src="https://github.com/user-attachments/assets/952b84a0-3e71-4bd6-99ae-e604532c1c7f" />
+
 ---
 
 ## Quick Install (10 Seconds)

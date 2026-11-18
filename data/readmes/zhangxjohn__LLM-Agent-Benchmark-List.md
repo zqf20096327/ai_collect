@@ -82,6 +82,7 @@ In the swiftly evolving landscape of artificial intelligence, Large Language Mod
 ----------------------------
 
 #### Agent
+- [2026/11] **Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction (CrossLearnBench).** *Yunzhe Wang et al. arXiv.* [[paper](https://arxiv.org/abs/2611.10439)]
 - [2026/11] **Measuring AI Agents as Teammates with Collaborative Intelligence.** *Sean Wu et al. arXiv.* [[paper](https://arxiv.org/abs/2611.02633)] [[project page](https://github.com/zou-group/collaborative-intelligence)] [[website](https://zou-group.github.io/collaborative-intelligence/)]
 - [2026/10] **TeamGym: A Gym for Team Decision-Making by AI Agents with Distributed Information.** *Chanwoo Park et al. arXiv.* [[paper](https://arxiv.org/abs/2610.37571)]
 - [2026/05] **TeamBench: Evaluating Agent Coordination under Enforced Role Separation.** *Yubin Kim et al. arXiv.* [[paper](https://arxiv.org/abs/2605.07073)] [[project page](https://github.com/ybkim95/TeamBench)] [[website](https://teambench.github.io)]
@@ -94,6 +95,7 @@ In the swiftly evolving landscape of artificial intelligence, Large Language Mod
 - [2026/06] **PerspectiveGap: A Benchmark for Multi-Agent Orchestration Prompting.** *Youran Sun (Tsinghua) et al. arXiv.* [[paper](https://arxiv.org/abs/2606.08878)] [[project page](https://github.com/WhymustIhaveaname/PerspectiveGap)] [[dataset](https://huggingface.co/datasets/sun1245/PerspectiveGap)]
 - [2026/04] **Mind the Gap Between Spatial Reasoning and Acting! Step-by-Step Evaluation of Agents With Spatial-Gym.** *Lars Benedikt Kaesberg (University of Göttingen) et al. arXiv.* [[paper](https://arxiv.org/abs/2604.09338)] [[project page](https://github.com/lkaesberg/Spatial-Gym)]
 - [2026/04] **ClawBench: Can AI Agents Complete Everyday Online Tasks?** *Ziru Yun (University of Alberta) et al. arXiv.* [[paper](https://arxiv.org/abs/2604.08523)] [[project page](https://github.com/reacher-z/ClawBench)] [[website](https://claw-bench.com)] [[dataset](https://huggingface.co/datasets/NAIL-Group/ClawBench)]
+- [2025/12] **A Benchmark for Evaluating Outcome-Driven Constraint Violations in Autonomous AI Agents (ODCV-Bench).** *Miles Q. Li (McGill University) et al. arXiv.* [[paper](https://arxiv.org/abs/2512.20798)] [[project page](https://github.com/McGill-DMaS/ODCV-Bench)]
 - [2025/08] **OdysseyBench: Evaluating LLM Agents on Long-Horizon Complex Office Application Workflows** *Weixuan Wang (University of Edinburgh, Microsoft) et al. arXiv.* [[paper](https://arxiv.org/abs/2508.09124)]
 - [2025/02] **WFGY 3.0 · Singularity Demo (BlackHole-131): Text only long horizon tension crash test for LLM agents over 131 S class problems.** *PSBigBig (independent).* [[project page](https://github.com/onestardao/WFGY)]
 - [2024/02] **Agent-Pro: Learning to Evolve via Policy-Level Reflection and Optimization** *Wenqi Zhang (Zhejiang University) et al. arXiv.* [[paper](https://arxiv.org/abs/2402.17574)] [[project page](https://github.com/zwq2018/Agent-Pro)]

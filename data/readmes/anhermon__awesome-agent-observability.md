@@ -31,7 +31,7 @@ Find what you are evaluating or observing; the entries named are in the sections
 | You want to                                                | Start with                                                                       |
 | ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Trace an LLM or agent app you build                        | OpenLLMetry or OpenInference into Langfuse, Phoenix, or a trace backend          |
-| See what a coding agent did and what it cost               | Claude Code monitoring, AI Observer, ccusage, ctxlens                            |
+| See what a coding agent did and what it cost               | Claude Code monitoring, AI Observer, ccusage                                     |
 | Score outputs with an LLM judge                            | DeepEval, Promptfoo, OpenEvals, Inspect                                          |
 | Score outputs deterministically                            | Inspect, Promptfoo, OpenEvals, SWE-bench, Harbor                                 |
 | Check an agent's tool-call path                            | AgentEvals, DeepEval                                                             |
@@ -123,8 +123,8 @@ Telemetry, usage, and cost analysis for CLI coding agents such as Claude Code, C
 - [AI Observer](https://github.com/tobilg/ai-observer) - Single-binary OTLP receiver with a DuckDB store and web dashboard for Claude Code, Codex CLI, Gemini CLI, Copilot, and OpenCode telemetry, which can also import past session files and price their token use; MIT.
 - [AgentsView](https://github.com/kenn-io/agentsview) - Local-first session search, analytics, and token-use statistics for the Claude Code, Codex, and other coding-agent session archives on your machine; it analyses the agents you use, not apps you build.
 - [ccusage](https://github.com/ccusage/ccusage) - CLI that reads the local session logs of Claude Code, Codex, OpenCode, and other coding-agent CLIs and reports token use and estimated cost by day, week, month, or session, and for Claude Code by 5-hour billing block; MIT.
-- [ctxlens](https://github.com/AgentPostmortem/Ctxlens) - Parses Claude Code, Codex, and generic OpenAI-chat session transcripts and reports per-turn context composition, a waste ratio from duplicate content, oversized tool results, stale outputs, and oversized tool definitions, and recommendations, with a CI flag that fails when waste exceeds a threshold; MIT.
 - [Verovo](https://github.com/roy-tong/Verovo) - Local CLI, formerly AgentMeasure, whose `check` command reads Codex and Claude Code session logs and reports duplicate records, retry chains, and repeated tool failures, marking what the logs cannot decide as UNPROVABLE; most of its other commands audit AI vendor bills against usage records; MIT.
+- [ranwhat](https://github.com/MatijaMiki/ranwhat) - CLI that reads the session history that Claude Code and 29 other coding agents keep on your machine and reports, after the fact, the risky actions they ran (credential file reads, destructive Git commands and deletes, package publishing) and the secrets left in the transcripts; MIT, with an optional paid hosted plan for syncing findings across machines.
 
 ## Evaluation and testing
 

@@ -47,6 +47,8 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
   with one sign-in. A connector set up once is offered to the agents you run, and can be turned off
   per task.
 - **Built-in browser.** A Chromium panel the agents can drive through browser tools while you watch.
+- **iOS simulators.** A Simulator tab in the side panel shows a simulator of your own Xcode live and takes
+  your clicks, trackpad and keys, without opening Simulator.app (see [Simulators](docs/SIMULATOR.md)).
 - **Personal agents.** Chat with your existing ChatGPT dots alongside coding tasks, with saved drafts
   and native file previews. The account stays with its Codex runtime; no browser needs to stay open
   (see [Personal agents](docs/PERSONAL_AGENTS.md) for current limits).
@@ -182,9 +184,8 @@ Three helpers in the app bundle do work outside the main process:
   videos; WebM video (VP9, AV1) plays. The Intel version uses CEF's own Chromium build, which leaves
   those codecs out; the Apple silicon version has them.
 - Connectors, browser tools and session tools reach Codex, Claude Code and the agents that use ACP
-  (OpenCode, Antigravity CLI 1.4.11 or later, Kimi Code, Grok Build, Hermes). Cursor Agent, Pi,
-  Muse Code and earlier Antigravity CLI versions have no way to add an MCP server to one session,
-  so their tasks run without them.
+  (OpenCode, Antigravity CLI, Kimi Code, Grok Build, Hermes). Cursor Agent, Pi and Muse Code have
+  no way to add an MCP server to one session, so their tasks run without them.
 - Scheduled tasks run only while Yardlet is open. A run missed while it was closed runs once when it
   opens again, within 7 days. A one-time continuation waits for a busy task to become available,
   for up to 24 hours after its scheduled time. Repeating and manual runs skip busy tasks.
@@ -286,6 +287,12 @@ idle, streaming, a long Codex history, a long sidebar, browser tabs) in a QA cop
 test suite's benchmarks, compared with the previous run on the same Mac. See
 [docs/PERFORMANCE_BENCH.md](docs/PERFORMANCE_BENCH.md).
 
+`./scripts/simulator-qa/run-check.sh` checks the simulator host (the helper that shows and drives iOS
+simulators) against a simulator it makes for the run, boots without a window and deletes afterwards, also
+when the check fails. It needs Xcode with an iOS simulator runtime and leaves other simulators alone.
+`./scripts/simulator-qa/run-panel-check.sh` checks the Simulator tab the same way in a QA copy of the app
+launched in the background ([docs/SIMULATOR.md](docs/SIMULATOR.md), "Checking it").
+
 Bundles include the in-window browser (Chromium Embedded Framework in a separate browser host
 process). The script uses the CEF distribution pinned for the bundle's architecture in
 `~/Library/Caches/Yardlet/CEF/`, verifies its hash, and stops with the download command when it is
@@ -358,6 +365,15 @@ YARDLET_SIGNING_IDENTITY="Developer ID Application: <name> (<team>)" ./scripts/b
   property list's launch constraint (`SpawnConstraint`), whose team `sign-app.sh` fills in, lets
   launchd start no other executable as root. A build signed ad hoc has no team, so it carries no
   property list and offers no helper.
+- The simulator host (`Contents/Helpers/Yardlet Simulator Host.app`) has no entitlement and the app no
+  `disable-library-validation`: it opens Xcode's SimulatorKit and CoreSimulator at run time, which Apple
+  signed. Yardlet starts it responsible for itself in macOS's privacy system, so it holds none of the
+  permissions the person gave Yardlet; a helper inside Desktop, Documents or Downloads (a development
+  build there) starts from a copy in the temporary folder, so macOS asks for no folder access. The
+  helper never calls `AXIsProcessTrusted`, which would list it under Accessibility in Privacy & Security.
+  It runs in a sandbox that `sandbox-exec` applies as it starts (`SimulatorHostSandbox`): it reads only its
+  own bundle, the Xcode, CoreSimulator and the simulator runtimes, writes only Metal's shader cache, reaches
+  only Yardlet's surface port beyond Apple's base profile, and has no network.
 - A Developer ID identity signs with a secure timestamp (Apple's timestamp server); other identities,
   such as Apple Development for local checks, sign without one unless `YARDLET_SIGNING_TIMESTAMP=1`.
   Only a Developer ID build can be notarized.

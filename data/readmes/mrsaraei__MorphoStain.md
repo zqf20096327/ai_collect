@@ -8,7 +8,7 @@
 
 https://github.com/user-attachments/assets/413a3bd9-4f64-4955-af1e-22ba5e63453c
 
-MorphoStain is an unsupervised, physics-guided deep learning framework designed to resolve the mathematically ill-posed problem of unmixing co-localized biomarkers that share identical chromogenic spectra—specifically dual-DAB staining of Amyloid-β (6E10) plaques and phosphorylated Tau (AT8) tangles in Alzheimer's disease whole-slide images (WSIs).
+MorphoStain is an unsupervised, physics-guided deep learning framework that resolves the mathematically ill-posed problem of unmixing co-localized biomarkers with identical chromogenic spectra—specifically dual-DAB staining of Amyloid-β (6E10) plaques and phosphorylated Tau (AT8) tangles in Alzheimer's disease whole-slide images (WSIs).
 
 ---
 
@@ -58,7 +58,7 @@ MorphoStain is an unsupervised, physics-guided deep learning framework designed 
 
 1. **Clone the repository:**
 
-       git clone [https://github.com/mrsaraei/MorphoStain.git](https://github.com/mrsaraei/MorphoStain.git)
+       git clone https://github.com/mrsaraei/MorphoStain.git
        cd MorphoStain
 
 2. **Create a Conda environment and install dependencies:**
@@ -175,6 +175,11 @@ Evaluated across ***N* = 9,908 held-out test patches** from the SEA-AD cohort (B
 - **Uncertainty Calibration:** Expected Calibration Error (**ECE**) of **0.0125**.
 
 ---
+## 🙏 Acknowledgments & Data Availability
+
+Whole-slide neuropathological imaging data were provided by the **Seattle Alzheimer's Disease Brain Cell Atlas (SEA-AD)** consortium (accessible via the [SEA-AD Data Portal](https://portal.brain-map.org/explore/seattle-alzheimers-disease) and the AWS Open Data Registry at `s3://sea-ad-quantitative-neuropathology/`; Gabitto et al., 2024). We obtained external breast cancer HER2 IHC validation data from the **Breast Cancer Immunohistochemical Image Generation (BCI) Challenge** benchmark dataset (available at [bci.grand-challenge.org](http://bci.grand-challenge.org/); Liu et al., 2022).
+
+---
 ## 📖 Citation
 
 If you find MorphoStain useful in your research, please cite our paper:
@@ -189,14 +194,3 @@ If you find MorphoStain useful in your research, please cite our paper:
   doi          = {10.64898/2026.11.15.26368147},
   url          = {https://doi.org/10.64898/2026.11.15.26368147}
 }
-
----
-
-
-## 🙏 Acknowledgments & Data Availability
-
-Whole-slide neuropathological imaging data were provided by the **Seattle Alzheimer's Disease Brain Cell Atlas (SEA-AD)** consortium (accessible via the [SEA-AD Data Portal](https://portal.brain-map.org/explore/seattle-alzheimers-disease) and the AWS Open Data Registry at `s3://sea-ad-quantitative-neuropathology/`; Gabitto et al., 2024). We obtained external breast cancer HER2 IHC validation data from the **Breast Cancer Immunohistochemical Image Generation (BCI) Challenge** benchmark dataset (available at [bci.grand-challenge.org](http://bci.grand-challenge.org/); Liu et al., 2022).
-
-## 📝 License
-
-This project is licensed under the MIT License — see the `LICENSE` file for details.

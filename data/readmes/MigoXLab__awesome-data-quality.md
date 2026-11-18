@@ -68,6 +68,7 @@ This section covers data quality for traditional structured and unstructured dat
 - [Bruin](https://github.com/bruin-data/bruin) - A data pipeline framework with column-level and custom SQL quality checks that run as part of each pipeline, across BigQuery, Snowflake, Postgres, Redshift, DuckDB and others. (2023)
 - [china-usci](https://github.com/zbl1998-sdjn/china-usci) - An offline JavaScript library and CLI for 18-character Chinese USCI format and check-digit checks, with a [browser demo](https://currawongweb.com/verify/china-usci-checker/). Passing does not prove accurate transcription, registration, creditworthiness, or payment safety.
 - [DataOps TestGen](https://github.com/DataKitchen/dataops-testgen) - An open-source data quality tool that profiles database tables and files, generates data quality tests from the profiling results, and monitors freshness, volume, and schema, with a web UI. (2024)
+- [tracemodel](https://github.com/datayoga-io/tracemodel) - A Python library that runs declared checks on financial figures, such as totals that must equal the sum of their parts within a tolerance, and shows the source of each cell a failed check read. (2026)
 
 ### Data Readiness Assessment
 
@@ -173,6 +174,7 @@ This section covers data quality for multimodal data, including image-text pairs
 
 - [CLIP-Benchmark](https://github.com/LAION-AI/CLIP-Benchmark) - A benchmark for evaluating CLIP models. (2021)
 - [img2dataset](https://github.com/rom1504/img2dataset) - A tool for efficiently downloading and processing image-text datasets. (2021)
+- [leCop](https://github.com/michele-xilo/leCop) - A fast Rust CLI that checks LeRobot robot-learning datasets (state, action and video) for broken episodes, timestamp drift, wrong stats and video/metadata mismatches, without decoding video. (2026)
 
 ## Tabular Data
 

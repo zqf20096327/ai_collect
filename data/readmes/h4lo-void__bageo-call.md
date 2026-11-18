@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>English</strong> · <a href="README.zh-TW.md">繁體中文</a> · <a href="README.zh-CN.md">简体中文</a>
+  <strong>English</strong> · <a href="README.zh-TW.md">繁體中文</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.ko.md">한국어</a> · <a href="README.es.md">Español</a> · <a href="README.fr.md">Français</a> · <a href="README.de.md">Deutsch</a> · <a href="README.pt.md">Português</a>
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@
     <td width="25%" align="center" valign="top">
       <img src="docs/images/icons/languages.svg" width="56" height="56" alt=""><br>
       <strong>Speaks nine languages</strong><br>
-      English, Chinese, Japanese, Korean, Spanish, French, German and Portuguese. It switches when the caller does.
+      English, Traditional and Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese. It switches when the caller does.
     </td>
   </tr>
 </table>
@@ -151,7 +151,7 @@ Book a table, move an appointment, ask a shop about stock or opening hours. When
   <img src="docs/images/languages.en.svg" width="900" alt="Bageo speaks nine languages: English, Traditional Chinese, Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese. Each one answers with its own hello.">
 </p>
 
-The AI's voice, the built-in prompts, the web console, the phone app and the notifications all come in nine languages. On a dual-SIM phone each SIM opens calls in its own language, a caller from abroad hears their country's language, and when a caller switches language mid-call, the AI follows. Transcripts keep the original words, each line with a translation into your notification language. [More about languages and dual SIM](docs/en/FEATURES.md#nine-languages-dual-sim-translated-transcripts)
+The AI's voice, the built-in prompts (a short, general baseline you can customize for your own situation and style), the web console, the phone app and the notifications all come in nine languages. On a dual-SIM phone each SIM opens calls in its own language, a caller from abroad hears their country's language, and when a caller switches language mid-call, the AI follows. Transcripts keep the original words, each line with a translation into your notification language. [More about languages and dual SIM](docs/en/FEATURES.md#nine-languages-dual-sim-translated-transcripts)
 
 ## How it works
 
@@ -220,10 +220,10 @@ Every feature in detail: [Features](docs/en/FEATURES.md).
 
 ## Quick start
 
-1. **Download** the package for your system from [Releases](https://github.com/h4lo-void/bageo-call/releases) and unpack it.
-2. **Start it.** Windows: double-click `start.cmd`. macOS: double-click `start.command`. Linux: `./start.sh`. The console opens at <http://localhost:8787/>.
+1. **Download** the file for your system from [Releases](https://github.com/h4lo-void/bageo-call/releases): `bageo-call-<version>-windows-x64-setup.exe` for Windows, `bageo-call-<version>-macos-arm64.dmg` (Apple chip) or `bageo-call-<version>-macos-x64.dmg` (Intel) for macOS, `bageo-call-<version>-linux-x64.tar.gz` for Linux.
+2. **Install and start it.** Windows: double-click the `setup.exe` and click the **Bageo** shortcut on the desktop. macOS: open the `.dmg`, drag Bageo into Applications and click it. Linux: unpack and run `./start.sh`. The console opens at <http://localhost:8787/>.
 3. **Fill in the basics** under **Settings**: your Gemini API key, your name and the language. Press ▶ to hear the voices and pick one.
-4. **Prepare the phone** once: install `pixelcallai_uplink-<version>.zip` as a module in Magisk or KernelSU, reboot, open the **Bageo** app, work through its checklist and plug the phone in.
+4. **Prepare the phone** once: install `bageo-phone-module-<version>.zip` as a module in Magisk or KernelSU, reboot, open the **Bageo** app, work through its checklist and plug the phone in.
 5. **Call it** from another phone: one ring, and the AI answers.
 
 Stuck? Every step in detail: [Getting started](docs/en/GETTING_STARTED.md) · [Phone setup](docs/en/PHONE.md).
@@ -288,9 +288,9 @@ want a ceiling.
 
 It depends on where you and the other side are. Call recording, AI disclosure
 and automated outgoing calls all have their own rules. The *AI assistant*
-style says it is an AI in its first sentence; *As me* says so when sincerely
-asked. Read [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md) before
-you switch it on.
+style says it is an AI in its first sentence; *As me* speaks as you without
+saying it is an AI. Read [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md)
+before you switch it on.
 
 </details>
 
@@ -309,8 +309,8 @@ voice stack is not part of the supported setup ([Roadmap](docs/en/ROADMAP.md)).
 - **Laws differ.** Recording calls, and letting an AI talk to people without
   telling them, is restricted in many places. The *AI assistant* answer style
   says it is an AI up front; errands made as **Your assistant** introduce the
-  AI as your assistant; every call admits to being an AI when sincerely asked. Find
-  out what applies where you and the other side are.
+  AI as your assistant; *As me* and **You in person** speak as you without
+  disclosing. Find out what applies where you and the other side are.
 - **The AI makes no commitments.** It never agrees to payments, deposits,
   contracts, passwords or codes, and appointments wait for your decision. It
   is still an AI: read the summaries and results.
@@ -325,3 +325,5 @@ voice stack is not part of the supported setup ([Roadmap](docs/en/ROADMAP.md)).
 - **Obtain a Commercial License:** Operators, enterprises, SaaS/call-center providers, or hardware vendors who wish to deploy, embed, or host Bageo without `AGPL-3.0-only` source-code disclosure can obtain a separate written proprietary license — see [**Commercial License Terms**](COMMERCIAL_LICENSE.md).
 
 **Disclaimer & local law:** Bageo is self-hosted software provided "AS IS" without warranty; the author operates no service and receives no user data. Whoever deploys it is responsible for complying with local laws on call recording, AI disclosure, and automated dialing, and for hardware rooting and carrier/API charges. Read [**LEGAL.md**](LEGAL.md), [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md), and the [v1.0 AI-assisted internal review note](AUDIT_REPORT.md) (`gemini-4-carbon`, not a third-party audit) before use. Third-party notices (including OpenCC `Apache-2.0` dictionaries) are in [NOTICE.md](NOTICE.md). Not affiliated with Google LLC; Pixel, Android, and Gemini are trademarks of Google LLC.
+
+<!-- SPDX-FileCopyrightText: h4lo-void <https://github.com/h4lo-void/bageo-call> -->

@@ -292,6 +292,7 @@ Client level configuration also applies to the WebSocket API (e.g. CosyVoice), w
   - [GUI](#gui)
   - [Audio Understanding](#audio-understanding)
 - [Text-to-Speech](#text-to-speech) - CosyVoice, Sambert, etc. For TTS applications
+- [Real-Time Speech Recognition](#real-time-speech-recognition) - Paraformer. For streaming ASR applications
 - [Image Generation](#image-generation) - qwen-image-2.0-pro, wanx2.1, etc. For text-to-image, image editing, portrait style transfer and image translation
 - [Application Call](#application-call)
 - [Batch](#batch)
@@ -1981,6 +1982,40 @@ await foreach (var b in tts.GetAudioAsync())
 }
 Console.WriteLine($"Audio saved to {file.FullName}");
 ```
+## Real-Time Speech Recognition
+Create a real-time speech recognition session using `dashScopeClient.CreateSpeechRecognitionSocketSessionAsync()`.
+
+Audio is sent to the server as binary websocket frames, and recognition results are continuously returned via `GetMessagesAsync()`. Results with `SentenceEnd` set to `false` are intermediate results of the sentence, and the one with `true` is the final result.
+
+Note: Use the using statement to automatically dispose the session, or manually call Dispose() to release resources. Avoid reusing sessions.
+
+```csharp
+using var asr = await dashScopeClient.CreateSpeechRecognitionSocketSessionAsync("paraformer-realtime-v2");
+var taskId = await asr.RunTaskAsync(
+    new SpeechRecognitionParameters
+    {
+        Format = "wav",
+        SampleRate = 16000,
+        LanguageHints = ["zh"],
+        MaxSentenceSilence = 800
+    });
+await using var audio = File.OpenRead("speech.wav");
+await asr.SendAudioAsync(audio); // or send chunks yourself via SendAudioAsync(ReadOnlyMemory<byte>)
+await asr.FinishTaskAsync(taskId);
+
+var duration = 0;
+await foreach (var message in asr.GetMessagesAsync())
+{
+    var sentence = message.Payload.Output?.Sentence;
+    if (sentence?.SentenceEnd == true)
+    {
+        Console.WriteLine($"Recognized: {sentence.Text}");
+        duration = Math.Max(duration, message.Payload.Usage?.Duration ?? 0);
+    }
+}
+
+Console.WriteLine($"Billed duration: {duration}s");
+```
 ## Image Generation
 ### Text-to-Image
 Use `GetMultimodalGenerationAsync` with model `qwen-image-2.0-pro` to generate images synchronously.
@@ -2106,39 +2141,39 @@ Console.WriteLine($"Generated image url: {url}");
 
 The `wan2.5-i2i-preview` model edits images by instruction with up to 3 reference images, keeping subject consistency across images. It runs as an async task and reports the rewritten prompt in the result:
 ```csharp
-var response = await client.CreateImageSynthesisTaskAsync(
-    new ModelRequest<ImageEditInput, IImageSynthesisParameters>()
+var response = await client.CreateImage2ImageSynthesisTaskAsync(
+    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
     {
         Model = "wan2.5-i2i-preview",
-        Input = new ImageEditInput()
+        Input = new Image2ImageSynthesisInput()
         {
             Prompt = "将图1中的闹钟放置到图2的餐桌的花瓶旁边位置",
             Images = ["<reference-image-1-url>", "<reference-image-2-url>"]
         },
-        Parameters = new ImageSynthesisParameters() { N = 1 }
+        Parameters = new Image2ImageSynthesisParameters() { N = 1 }
     });
-var task = await client.GetImageSynthesisTaskAsync(response.Output.TaskId);
+var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
 Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}, actual prompt: {task.Output.Results?[0].ActualPrompt}");
 ```
 
-The classic `wanx2.1-imageedit` model edits images through predefined functions via an async task:
+The classic `wanx2.1-imageedit` model edits images through predefined functions via an async task, using the same input type with a `Function`:
 ```csharp
-var response = await client.CreateImageSynthesisTaskAsync(
-    new ModelRequest<ImageEditFunctionInput, IImageEditFunctionParameters>()
+var response = await client.CreateImage2ImageSynthesisTaskAsync(
+    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
     {
         Model = "wanx2.1-imageedit",
-        Input = new ImageEditFunctionInput()
+        Input = new Image2ImageSynthesisInput()
         {
             Function = "description_edit",
             Prompt = "把她的头发修改为红色。",
             BaseImageUrl = "<your-image-url>"
         },
-        Parameters = new ImageEditFunctionParameters() { N = 1 }
+        Parameters = new Image2ImageSynthesisParameters() { N = 1 }
     });
-var task = await client.GetImageSynthesisTaskAsync(response.Output.TaskId);
+var task = await client.GetImage2ImageSynthesisTaskAsync(response.Output.TaskId);
 Console.WriteLine($"Edited image url: {task.Output.Results?[0].Url}");
 ```
-Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization_local`, `remove_watermark`, `expand`, `super_resolution`, `colorization`, `doodle` and `control_cartoon_feature`; function-specific parameters like `Strength`, `UpscaleFactor` and the four `*Scale` properties live on `ImageEditFunctionParameters`.
+Available functions include `description_edit`, `description_edit_with_mask` (requires `MaskImageUrl`), `stylization_all`, `stylization_local`, `remove_watermark`, `expand`, `super_resolution`, `colorization`, `doodle` and `control_cartoon_feature`; function-specific parameters like `Strength`, `UpscaleFactor` and the four `*Scale` properties live on `Image2ImageSynthesisParameters`.
 
 Upload an image and provide editing instructions using the multimodal API.
 ```csharp
@@ -2210,13 +2245,13 @@ do
 } while (waited < timeout);
 ```
 
-`wan2.6-t2i` uses a new async protocol: create the task with `CreateImageGenerationTaskAsync` and multimodal input (same as the synchronous call), then poll with the generic `GetTaskAsync`:
+`wan2.6-t2i` uses a new async protocol: create the task with `CreateImageGenerationTaskAsync`, filling the multimodal `Messages` on `ImageGenerationInput` (the legacy wanx style repaint models use `ImageUrl` + `StyleIndex` on the same type instead), then poll with `GetImageGenerationTaskAsync`:
 ```csharp
 var response = await client.CreateImageGenerationTaskAsync(
-    new ModelRequest<MultimodalInput, IMultimodalParameters>()
+    new ModelRequest<ImageGenerationInput, IMultimodalParameters>()
     {
         Model = "wan2.6-t2i",
-        Input = new MultimodalInput()
+        Input = new ImageGenerationInput()
         {
             Messages = new List<MultimodalMessage>()
             {
@@ -2229,7 +2264,7 @@ var response = await client.CreateImageGenerationTaskAsync(
         },
         Parameters = new MultimodalParameters() { N = 1, Size = "1280*1280", Seed = 233 }
     });
-var task = await client.GetTaskAsync<MultimodalTaskOutput, MultimodalTokenUsage>(response.Output.TaskId);
+var task = await client.GetImageGenerationTaskAsync(response.Output.TaskId);
 var url = task.Output.Choices?[0].Message.Content[0].Image;
 Console.WriteLine($"Generated image url: {url}");
 ```
@@ -2253,11 +2288,11 @@ var response = await client.GetImage2ImageSynthesisAsync(
 Console.WriteLine($"Translated image url: {response.Output.ImageUrl}");
 ```
 
-For `qwen-mt-image` (which requires the source or target language to be Chinese or English), use the async task flow: create the task with `CreateImageSynthesisTaskAsync` and an `Image2ImageSynthesisInput`, then poll `GetImage2ImageSynthesisTaskAsync` for the result.
+For `qwen-mt-image` (which requires the source or target language to be Chinese or English), use the async task flow: create the task with `CreateImage2ImageSynthesisTaskAsync` and an `Image2ImageSynthesisInput`, then poll `GetImage2ImageSynthesisTaskAsync` for the result.
 
 ```csharp
-var response = await client.CreateImageSynthesisTaskAsync(
-    new ModelRequest<Image2ImageSynthesisInput>()
+var response = await client.CreateImage2ImageSynthesisTaskAsync(
+    new ModelRequest<Image2ImageSynthesisInput, IImage2ImageSynthesisParameters>()
     {
         Model = "qwen-mt-image",
         Input = new Image2ImageSynthesisInput()
@@ -2309,6 +2344,75 @@ Use `CreateImageGenerationTaskAsync` and `GetImageGenerationTaskAsync`
 
 #### Background Generation
 Use `CreateBackgroundGenerationTaskAsync` and `GetBackgroundGenerationTaskAsync`
+
+## Video Generation
+Video generation and editing are async tasks: create the task with `CreateVideoSynthesisTaskAsync` and poll `GetVideoSynthesisTaskAsync`. The endpoint is shared by the HappyHorse, wan2.7, wan3.0, legacy wan2.1-2.6 and wanx2.1-vace models — one input type covers them all, the supported members depend on the model. Text-to-video (HappyHorse / wan2.7 / wan3.0):
+```csharp
+var response = await client.CreateVideoSynthesisTaskAsync(
+    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
+    {
+        Model = "wan2.7-t2v",
+        Input = new VideoSynthesisInput() { Prompt = "一只猫在草地上奔跑", NegativePrompt = "低分辨率" },
+        Parameters = new VideoSynthesisParameters() { Resolution = "720P", Ratio = "16:9", Duration = 5, Seed = 42 }
+    });
+var task = await client.GetVideoSynthesisTaskAsync(response.Output.TaskId);
+Console.WriteLine($"Video url: {task.Output.VideoUrl}, billed duration: {task.Usage?.Duration}");
+```
+Media-driven generation passes `Media` items: first frame or first and last frames (image-to-video), reference images and videos (reference-to-video, optionally with a per-item `reference_voice` audio), a driving audio or a first clip (wan2.7 image-to-video), and a source `video` plus reference images (video editing). wan3.0 additionally accepts reference audio, files and web links, and can disable the audio track with `Audio = false`:
+```csharp
+var response = await client.CreateVideoSynthesisTaskAsync(
+    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
+    {
+        Model = "wan2.7-i2v-2026-04-25",
+        Input = new VideoSynthesisInput()
+        {
+            Prompt = "让画面动起来",
+            Media =
+            [
+                new VideoSynthesisMedia("first_frame", "<first-frame-image-url>"),
+                new VideoSynthesisMedia("last_frame", "<last-frame-image-url>")
+            ]
+        },
+        Parameters = new VideoSynthesisParameters() { Resolution = "720P", Duration = 5 }
+    });
+```
+Legacy wan2.1-2.6 models use the same input type, filling `ImgUrl` (first-frame image-to-video) or `ReferenceUrls` (wan2.6 reference-to-video) plus the `Size` ("1280*720") and `ShotType` parameters:
+```csharp
+var response = await client.CreateVideoSynthesisTaskAsync(
+    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
+    {
+        Model = "wan2.6-i2v-flash",
+        Input = new VideoSynthesisInput() { Prompt = "让画面动起来", ImgUrl = "<first-frame-image-url>" },
+        Parameters = new VideoSynthesisParameters() { Resolution = "720P", Duration = 5, Audio = false }
+    });
+```
+wanx2.1-vace-plus also uses the same types, with a `Function` (image reference, video repainting, video editing, video extension and outpainting) selecting its input fields (reference images, video, frames/clips, masks) and parameters (control condition, strength, masks, expand and scale options).
+
+The video-style-transform model (video style transform) fills only `VideoUrl`, its parameters carry `Style` (0 Japanese comic to 7 Chinese ink wash), `VideoFps` (15-25), `AnimateEmotion` (facial expression optimization), `MinLen` (720 or 540, affects billing) and `UseSR` (free super-resolution; with 540 it upscales to 1080P while billing at 540P), and the result video is in `Output.OutputVideoUrl` with the billed short edge in `Usage.SR`.
+
+Wan2.2 keyframe image-to-video (first and last frames) and the animate models (wan2.2-animate-move image-to-motion, wan2.2-animate-mix subject replacement) live on a separate endpoint and share `Image2VideoSynthesisInput` / `IImage2VideoSynthesisParameters`, call them with `CreateImage2VideoSynthesisTaskAsync`:
+```csharp
+var response = await client.CreateImage2VideoSynthesisTaskAsync(
+    new ModelRequest<Image2VideoSynthesisInput, IImage2VideoSynthesisParameters>()
+    {
+        Model = "wan2.2-kf2v-flash",
+        Input = new Image2VideoSynthesisInput()
+        {
+            Prompt = "镜头从平视逐渐上升",
+            FirstFrameUrl = "<first-frame-image-url>",
+            LastFrameUrl = "<last-frame-image-url>"
+        },
+        Parameters = new Image2VideoSynthesisParameters() { Resolution = "480P" }
+    });
+```
+The animate models fill `ImageUrl`/`VideoUrl` and a required `Mode` ("wan-std"/"wan-pro") instead, and take the watermark on the input rather than the parameters. The wan2.2-s2v digital human model fills `ImageUrl` plus an `AudioUrl` and generates a talking/performing video. The videoretalk lip sync model fills `VideoUrl` plus an `AudioUrl`, optionally `RefImageUrl` to pick the face when the video contains multiple faces, and takes `VideoExtension` (whether to extend the video to the audio length with a reverse-forward replay) and `QueryFaceThreshold` (face matching strictness, 120-200, requires `RefImageUrl`) on the parameters. Poll the task with `GetImage2VideoSynthesisTaskAsync`; kf2v and videoretalk tasks expose the video in `Output.VideoUrl`, animate and s2v tasks in `Output.Results.VideoUrl`.
+
+Check whether an image is suitable for digital human generation with the synchronous `GetFaceDetectAsync` (model wan2.2-s2v-detect):
+```csharp
+var response = await client.GetFaceDetectAsync(
+    new ModelRequest<FaceDetectInput>() { Model = "wan2.2-s2v-detect", Input = new FaceDetectInput() { ImageUrl = "<person-image-url>" } });
+Console.WriteLine($"Check passed: {response.Output.CheckPass}, humanoid detected: {response.Output.Humanoid}");
+```
 
 ## Application Call
 ```csharp

@@ -1,4 +1,4 @@
-<img src="assets/social-preview.png" alt="iLang DSH 工具包：给 DeepSeek Harness 装上本地记忆和技能" width="100%">
+<img src="docs/assets/social-preview-20261118.jpg" alt="iLang DSH 工具包：让你的 AI，接着把事做完" width="100%">
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23998664.svg)](https://doi.org/10.5281/zenodo.23998664)
 [![Agent Ready 100/100 · 查看实测结果](docs/assets/agent-ready-100.svg)](https://isitagentready.com/dsh.ilang.guide)
@@ -45,7 +45,7 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 
 ## 市场
 
-门是 iLang：清单过官方校验器 strict 0 错 0 警告。过了门、owner 说收的技能和工程书原样内置在工具包里，装了工具包就有，不用挑；货架在 https://dsh.ilang.guide/market/ 。第一本内置工程书：说一句「AI全球自媒体」。在别处看见不错的技能或插件，告诉你的 DSH，它帮你写一版更好的。想上货架先跑 tools/market_admit.py 自检再提申请，收录顺序就是显示顺序。
+门是 iLang：清单过官方校验器 strict 0 错 0 警告。过了门、owner 说收的技能和工程书原样内置在工具包里，装了工具包就有，不用挑；货架在 https://dsh.ilang.guide/market/ 。第一本内置工程书：说一句「AI全球自媒体」。第二本：说一句「出片」，一句话或一张图，交给你的 Grok Bot 出图出视频，每一件成品都带着请求和判决。第三本：说一句「云端分身」，工作区进私有仓库，分身交给你的 Grok Bot，出门用手机说「出文」「出片」「发到 YouTube」。在别处看见不错的技能或插件，告诉你的 DSH，它帮你写一版更好的。想上货架先跑 tools/market_admit.py 自检再提申请，收录顺序就是显示顺序。
 
 ## 以后每个新窗口
 
@@ -87,7 +87,7 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 
 ## Agent 与 MCP 接入
 
-**Agent Ready 100/100 · Level 5 Agent-Native** — 2026-11-17 默认 All Checks 实测。[查看完整结果 ↗](https://isitagentready.com/dsh.ilang.guide)
+**Agent Ready 100/100 · Level 5 Agent-Native** — 2026-11-18 默认 All Checks 实测。[查看完整结果 ↗](https://isitagentready.com/dsh.ilang.guide)
 
 准备安装工具包时，让你的 Agent 先读官方安装说明；需要新能力时，让它查技能市场。公开只读，**无需账号、API Key 或令牌**。
 
@@ -121,6 +121,8 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 - [接入说明与配置示例](https://dsh.ilang.guide/agents/)
 - [OpenAPI](https://dsh.ilang.guide/openapi.json) · [Agent 导航](https://dsh.ilang.guide/llms.txt)
 - [Agent Skills 索引](https://dsh.ilang.guide/.well-known/agent-skills/index.json) · [访问说明](https://dsh.ilang.guide/auth.md)
+
+MCP 现可读取「变工程书」「出片」「云端分身」及其随包执行正文，共 20 项固定公开资源、5 个只读工具。它返回使用资料，制作、同步和发布仍由你的 Agent 按实际配置与授权执行。
 
 支持 WebMCP 的浏览器还可在首页调用「读取安装说明」和「搜索技能市场」。安装仍由本地 Agent 按用户确认执行。
 

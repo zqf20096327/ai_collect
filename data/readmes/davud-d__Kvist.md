@@ -97,6 +97,10 @@ the other interfaces are downloaded by hand from the release above.
 curl -fsSL https://github.com/davud-d/Kvist/releases/download/latest-binary-build/install.sh | bash
 ```
 
+The same command works in Termux on an aarch64 Android phone: `install.sh` picks the
+Termux build (`kvist-termux-arm64`), because the Linux arm64 one needs glibc and Android has bionic.
+Install `curl` first (`pkg install curl`).
+
 ```powershell
 irm https://github.com/davud-d/Kvist/releases/download/latest-binary-build/install.ps1 | iex
 ```
@@ -164,8 +168,11 @@ plan. It reads the project without changing anything, proposes a short plan and
 edits files only after you accept it. Small edits skip this.
 
 Each step the model sends a short batch of actions: read, search, write, run a
-command, search the web. They run in order and stop at the first failure. The
-agent finishes when the model says the work is done. It is told to verify the
+command, search the web. They run in order and a failed one does not cancel the
+rest. With native tool calls the model can also give each call a `stage`: the
+calls of one stage are independent and run side by side where they can, and the
+next stage starts when the previous one is done (edit and read, then build, then
+check, in one response). The agent finishes when the model says the work is done. It is told to verify the
 result and to say what it could not finish or check.
 
 `Esc` pauses a run and keeps its state. `Ctrl+C` stops it and cleans up. The

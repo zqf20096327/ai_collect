@@ -80,27 +80,46 @@ Once installed globally, the skill is permanently active across **all projects a
 
 ---
 
-## 🔄 How It Works: 3-Phase Progressive Disclosure
+## 🔄 How It Works: Step-by-Step Interactive & Tracked Workflow
+
+When you ask your agent:
+> 💬 **"Audit this project using the skill"**
+
+The agent guides you through a transparent 6-step lifecycle, proactively asking clarifying questions, showing a live checklist of what is done vs. remaining, and executing all scanners autonomously:
 
 ```mermaid
 flowchart TD
-    A["Target Codebase / Repository"] --> B["Phase 1: Project Scoping Gate"]
-    B -->|Auto-detect manifests| C["Confirm Tech Stack & Target URL"]
-    C --> D["Phase 2: Targeted Module Routing"]
-    D --> E["Load Relevant Reference Modules"]
-    D --> F["Run scripts/setup_tools.py (Auto-install missing CLIs)"]
-    D --> G["Run scripts/loophole_scanner.py (Static Loophole Analysis)"]
-    D --> H["Run scripts/zap_web_scan.py (DAST Baseline / API Scan)"]
-    E & F & G & H --> I["Trace Source-to-Sink Dataflows & Attack Chains"]
-    I --> J["Phase 3: Compact Output & Remediation Register"]
+    S1["Step 1: Manifest Auto-Detection & Scope Questions"] --> S2["Step 2: Tool Preflight & Automated Setup"]
+    S2 --> S3["Step 3: Secret Detection & Static Loophole Scan"]
+    S3 --> S4["Step 4: Dependency & Supply Chain (SCA) Analysis"]
+    S4 --> S5["Step 5: Dynamic Web / API DAST Probes (ZAP)"]
+    S5 --> S6["Step 6: Deep Code Review & Final Remediation Register"]
 ```
 
-1. **Phase 1: Project Scoping Gate:**
-   Inspects root manifests (`package.json`, `requirements.txt`, `pubspec.yaml`, `Dockerfile`, etc.) to detect frameworks, databases, auth systems, and cloud providers. Confirms the scope in one structured interaction before any deep scan begins.
-2. **Phase 2: Targeted Module Loading & Loophole Analysis:**
-   Loads only the matching reference files from `references/`. The agent checks prerequisites, installs missing security tools, runs static checks, and executes ZAP web/API scans against local or staging endpoints.
-3. **Phase 3: Compact Output & Remediation Register:**
-   Produces an actionable finding register prioritized by severity (`Critical` → `High` → `Medium` → `Low`), complete with file locations, evidence, verified attack chains, and tailored remediation snippets.
+### Live Progress Tracker (Displayed by the Agent Every Step)
+```markdown
+### 🛡️ Security Audit Roadmap & Progress Tracker
+- [x] Step 1: Stack Auto-Detection & Scope Confirmation (DONE)
+- [x] Step 2: Tool Preflight & Automated Setup (DONE)
+- [x] Step 3: Secret Detection & Static Loophole Scan (DONE)
+- [/] Step 4: Dependency & Supply Chain (SCA) Analysis (IN PROGRESS)
+- [ ] Step 5: Active DAST / Web & API Probing (PENDING PERMISSION)
+- [ ] Step 6: Deep Code Review & Final Remediation Register (UPCOMING)
+```
+
+1. **Step 1: Stack Auto-Detection & Scope Questions:**
+   Inspects manifests (`package.json`, `requirements.txt`, `go.mod`, `pom.xml`, `Dockerfile`, etc.), confirms the architecture, and asks 1–3 quick questions (e.g. is there a running dev URL? Are active attack probes authorized?).
+2. **Step 2: Tool Preflight & Automated Setup:**
+   Runs `setup_tools.py --check` and automatically installs any missing scanners (`pip-audit`, `osv-scanner`, `gitleaks`, `trufflehog`, `semgrep`).
+3. **Step 3: Secret Detection & Static Loophole Scan:**
+   Runs `loophole_scanner.py` and static rule engines to catch leaked API keys, ReDoS regexes, and dangerous injection sinks.
+4. **Step 4: Dependency & Supply Chain (SCA) Analysis (Two-Tier Engine):**
+   - **Tier 1 (Instant & Zero-Noise - Recommended):** Runs `osv-scanner`, `trivy`, `npm audit`, `pip-audit`, `govulncheck`, `composer audit` to scan lockfiles against Google OSV and GitHub advisories in seconds with zero setup.
+   - **Tier 2 (Deep Enterprise NVD/CPE Scan):** Runs **OWASP Dependency-Check** (`dependency-check` CLI or Docker) for deep bytecode, archive (`.jar`, `.war`), .NET assembly (`.dll`), and NIST NVD mapping. Automatically leverages `NVD_API_KEY` when configured.
+5. **Step 5: Web & API Dynamic Analysis (DAST):**
+   Launches OWASP ZAP autonomously (`zap_web_scan.py`) against confirmed local/staging URLs or API schemas (OpenAPI/GraphQL).
+6. **Step 6: Deep Code Review & Remediation Register:**
+   Traces source-to-sink dataflows, constructs compound attack chains, and outputs a prioritized finding register with verified remediation code.
 
 ---
 

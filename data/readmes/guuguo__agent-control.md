@@ -16,7 +16,7 @@
 </p>
 
 > **Supported Agents**: OpenAI Codex (multi-account quota separation) · Anthropic Claude Code · Google Antigravity · Grok  
-> **Platforms**: macOS (with native `Agent Control.app` wrapper) · Linux · Windows (PowerShell)  
+> **Platforms**: macOS (native `Agent Control.app`) · Linux (GTK/WebKitGTK desktop) · Windows (PowerShell)<br>
 > **Architecture**: Read-only upstream indexing · Local HTTP/SSE server (`127.0.0.1:43310`) · Zero external database dependency  
 > **Remote Access**: `$0` Cloudflare Quick Tunnel (default) · `$0` Tailscale Funnel · `$0` Named Tunnel · Self-hosted Docker / Sealos Relay
 
@@ -87,6 +87,8 @@ Requires **Node.js 22+** and **Git** (the installer prompts you if either is mis
 ```bash
 curl -fsSL https://hub.guuguo.top/install/agent-control.sh | bash
 ```
+
+Linux supports a native GTK/WebKitGTK window and a systemd user service. See the [Linux guide](docs/linux.md) for desktop dependencies, headless servers, SSH access, containers and WSL.
 
 **Windows (PowerShell):**
 ```powershell

@@ -19,7 +19,7 @@ No account, no cloud, no credits, no watermark.<br>
 
 <p align="center">
   <a href="https://github.com/utkualsir/sharkyclips/actions/workflows/ci.yml"><img src="https://github.com/utkualsir/sharkyclips/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/utkualsir/sharkyclips/releases/latest"><img src="https://img.shields.io/badge/version-1.2.50-1F6FE5" alt="Version 1.2.50"></a>
+  <a href="https://github.com/utkualsir/sharkyclips/releases/latest"><img src="https://img.shields.io/badge/version-1.2.52-1F6FE5" alt="Version 1.2.52"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0E1A33" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/Windows%20%7C%20macOS-0E1A33?logo=windows&logoColor=white" alt="Windows and macOS">
   <img src="https://img.shields.io/badge/runs-100%25%20locally-2ea043" alt="Runs 100% locally">
@@ -179,8 +179,9 @@ it stopped. Details: **[docs/how-it-works.md](docs/how-it-works.md)**.
 - **Subtitle files and editor timelines.** SRT/VTT in all 7 languages (translated locally when
   needed), FCPXML for DaVinci Resolve / Final Cut Pro and XML for Premiere Pro with the cut, captions
   and markers for the detected moments.
-- **Direct YouTube upload** (optional) through the free official API: one click on **Connect with
-  Google** (or your own Google project under Advanced):
+- **Direct YouTube upload** (optional) through the free official API, with **your own free Google
+  project** (a guided setup in Settings → YouTube takes about 5 minutes, once; see
+  [docs/youtube-own-project.md](docs/youtube-own-project.md)). SharkyClips ships no Google client:
   title, description and hashtags from the publish package, privacy, scheduling, thumbnail, a daily
   quota counter, and views that flow back into the calibration by themselves.
 - **Clips by themselves after a stream.** Switch it on and SharkyClips watches the folder OBS records
@@ -362,7 +363,7 @@ local video file. The chat replay is fetched automatically for Twitch, Kick and 
 can import a chat log.
 
 **Does it post to YouTube, Instagram and TikTok for me?**
-Only if you want it to. Connect your accounts once (Settings → Accounts: YouTube with one click,
+Only if you want it to. Connect your accounts once (Settings → Accounts: YouTube with your own Google project,
 Instagram and TikTok through your own free developer app, with a step-by-step guide) and press
 Publish on a clip: it goes to every platform you switched on, now or at a planned time. Nothing
 is ever posted on its own unless you turn on Autopilot. For X you download the clip and post it

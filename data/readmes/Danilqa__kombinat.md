@@ -13,7 +13,7 @@ One routine is one markdown file, so anyone on the team can write one. Merge it 
 - **Merging is the deploy.** A routine goes through review like code and is live within 5 minutes.
 - **Your setup, as is.** Agents run with your logins, skills, MCP servers, browser control and `CLAUDE.md`.
 - **No API bill.** Claude Code and Codex use the subscription you already pay for.
-- **Every run on record.** Full transcripts in the browser, in the terminal and on your phone.
+- **Every run on record.** Full transcripts in the browser, in the terminal and on your phone, with a chat to continue any run.
 - **It stops when it should.** Timeouts, an optional budget cap and no overlapping runs.
 - **It starts on events too.** Linear, GitHub or any other app starts a routine with a webhook.
 - **Small.** One command, two dependencies, no cloud and no database.
@@ -75,6 +75,7 @@ The daemon serves a dashboard at http://localhost:7433.
 - **Routines.**
 - **Calendar.**
 - **Runs.**
+- **Inbox.**
 - **Daemon status.**
 - **Search.**
 
@@ -109,7 +110,7 @@ tailscale serve --bg 7433
 
 The dashboard is then at `https://mac-mini.<your-tailnet>.ts.net`, and `npx kombinat tui --url https://mac-mini.<your-tailnet>.ts.net` shows it in the terminal. Serve needs HTTPS certificates in your tailnet, the command asks to turn them on. They put the machine name in public certificate logs. It stays on after a reboot, `tailscale serve --https=443 off` turns it off. If the Mac has no `tailscale` command, see [Using the Tailscale CLI](https://tailscale.com/kb/1080/cli).
 
-Everyone who can reach the Mac in your tailnet can then read transcripts and start routines. To limit that, allow only some people to reach port 443 of the Mac in your [Tailscale access rules](https://tailscale.com/kb/1018/acls).
+Everyone who can reach the Mac in your tailnet can then read transcripts, start routines, message their agents and run any prompt they write with a routine's agent, folder and permissions. To limit that, allow only some people to reach port 443 of the Mac in your [Tailscale access rules](https://tailscale.com/kb/1018/acls).
 
 ## 📚 Example routines
 
@@ -130,12 +131,12 @@ One row per file in [`example/routines/`](example/routines/). Put the same `rout
 - Each routine is a markdown file. The frontmatter sets the schedule and settings, the body is the prompt.
 - A small daemon checks every 30 seconds which routines are due and starts their agent. It also serves a dashboard at http://localhost:7433.
 - launchd on macOS or systemd on Linux keeps the daemon running and starts it again after a reboot. Runs only happen while the computer is awake and you are logged in. On Linux, [lingering](docs/linux.md#lingering) lets them run while you are logged out.
-- Logs and run history are stored in `~/.kombinat/`.
+- Logs and run history are stored in `~/.kombinat/`. Runs are kept forever by default. The settings menu of the Runs page, or `s` in the terminal dashboard, deletes runs older than a week, a month or 3 months, always keeping the last run of each routine.
 - Claude and Codex use your subscription login. API key variables are removed from their environment.
 
 ## 🔒 Security
 
-- The dashboard listens on localhost only and has no login, so other users of the machine can reach it. Web pages from other sites cannot start runs through it. To open it from another machine, use SSH or Tailscale Serve and limit who can reach it, see [Remote access](#-remote-access).
+- The dashboard listens on localhost only and has no login, so other users of the machine can reach it. Whoever reaches it can message the agent of a finished run or run a routine with any prompt they write, and the agent then works with the routine's folder and permissions. Web pages from other sites cannot start runs or send messages through it. To open it from another machine, use SSH or Tailscale Serve and limit who can reach it, see [Remote access](#-remote-access).
 - Each routine sets its own permission mode, see [Agents](#agents). By default Claude Code is denied anything that needs approval, and Codex writes only in its workspace. `bypassPermissions` and `danger-full-access` let the agent do anything your user can.
 - A routine that reads outside text, such as issues, support chats or a webhook body, can be steered by that text. Give it the narrowest permissions, let it open pull requests but not merge them, and check webhook requests with a [`webhookGate`](docs/webhook.md#gate).
 - The daemon runs `git pull` every 5 minutes and installs dependencies when the lockfile changes, so protect `main` with review.
@@ -196,7 +197,7 @@ timeoutMinutes: 55
 - `enabled: false` keeps the file but stops the schedule.
 - `webhook: true` lets other apps start the routine with a request, see [docs/webhook.md](docs/webhook.md).
 
-Changes apply on the next check, no restart needed. Write the prompt so the agent never has to ask a question: nobody will answer.
+Changes apply on the next check, no restart needed. Write the prompt so the agent never has to ask a question: nobody will answer. When there is nothing to do, have it start its answer with "No" or "Nothing", such as "No open incidents.", so the dashboard's Inbox files the run under Nothing to report.
 
 ### Agents
 
@@ -225,13 +226,15 @@ A setting the agent does not support fails validation.
 
 ## 🪝 Webhooks
 
-A routine with `webhook: true` also runs when another app, such as Linear or GitHub, sends it a request. The request body goes into the prompt, an optional `webhookGate` command checks and filters requests, and requests that arrive while the routine runs wait in a queue. See [docs/webhook.md](docs/webhook.md).
+A routine with `webhook: true` also runs when another app, such as Linear or GitHub, sends it a request. The request body goes into the prompt, an optional `webhookGate` command checks and filters requests, and requests that arrive while the routine runs wait in a queue. The gate can also tie requests to a conversation, so that follow-ups, such as messages to a Linear agent, continue the run that the first request started. See [docs/webhook.md](docs/webhook.md).
 
 ## 🔄 Updating
 
 The daemon runs `git pull` in the folder every 5 minutes, so merged changes go live on their own. It only pulls when the checkout is on `main` with no local changes.
 
 To update Kombinat, bump `kombinat` in `package.json`, for example with a Renovate or Dependabot PR. When the lockfile changes, the daemon installs dependencies with pnpm, npm or Yarn and restarts. Running routines are not interrupted.
+
+When a new version is out, the dashboard shows it in a card in the bottom left corner, with its changelog and the command that updates, and the terminal dashboard says so in its bottom bar. Closing the card skips that version until a newer one comes out.
 
 Up to 0.2.2, Kombinat was published as `@danilqa/kombinat`. To move to `kombinat`, replace the dependency in `package.json`, install it and run `pnpm kombinat install` again. Until then the launchd job of the daemon points into the old package folder, which the install removes, so the daemon does not pick up the new version or start again after a reboot.
 

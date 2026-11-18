@@ -8,7 +8,7 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-v1.0.0 alpha-green?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/version-v1.0.1 alpha-green?style=flat-square" alt="Version" />
 </p>
 
 <p align="center">
@@ -27,18 +27,17 @@ npx webkineforge list
 npx webkineforge add default-site
 ```
 
-# ☀️ Is It Right for You?
+## ☀️ Is it right for you?
+| Your Needs | Recommendation | Runtime Overhead | Skills Required | AI Collaboration | Template Access |
+|---|---|---|---|---|---|
+| Interactive animations, clean static HTML templates | **WebKineForge** | Zero-framework runtime | HTML / JS / CSS (optional: Tailwind) | Built-in Agent, simple and secure | Build and generate / One-click `npx` to pull |
+| Content-focused with minimal interaction | **[Astro](https://astro.build)** | No JS by default (Islands on demand) | Astro component syntax + basic front-end knowledge | Relies on its own conventions; no dedicated index | Official themes / Starlight |
+| Full-stack applications, real-time data | **[Next.js](https://nextjs.org)** / **[Nuxt](https://nuxt.com)** | React/Vue runtime | Full suite of frameworks | Mature ecosystem but no unified structural conventions | Extensive template marketplace |
+| Visual website building for designers | **[Framer](https://framer.com)** / **[Webflow](https://webflow.com)** | Platform-hosted | Virtually no coding required | Built-in AI | Platform template library |
+| Minimalist websites | **[11ty](https://www.11ty.dev)** / Hand-coded | None | Almost none | Entirely based on manual conventions | None |
 
-
-| Your Need | Recommended Tool | Core Feature | Runtime | Interaction Model | Deployment / Integration |
-|-----------|------------------|--------------|------------|-------------------|--------------------------|
-| Static HTML temmplate, 3D, free interaction of single-page or multi-page | **WebKineForge** | No framework overhead, AI-Agent, static HTML | vanilla only | Auto-mount, direct DOM manipulation | Static hosting; drop into Next, WordPress, etc. |
-| Content-first sites, pages with component-island interactions | **[Astro](https://astro.build)** | HTML-first Islands, zero JS by default | Islands (on demand) | Component islands, cross-island store | Static, Node, or Vercel / Netlify / Cloudflare |
-| Full-stack web apps, SaaS、dashboards, real-time, software | **[Next.js](https://nextjs.org)** / **[Nuxt](https://nuxt.com)** | Full-stack React/Vue, SSR/SSG/ISR | React/Vue bundle | SPA / Hybrid | Static export, self-hosted, or Vercel / Nitro |
-| Visual drag-and-drop, no-code publishing | **[Framer](https://framer.com)** / **[Webflow](https://webflow.com)** | Visual canvas, low-code | Platform-hosted | Visual + code | Built-in platform features |
-| Simple blogs, docs, minimal demos | **[11ty](https://www.11ty.dev)** / Vanilla | Lightweight SSG, zero config | Minimal / none | Manual | Same as WebKineForge |
-
-
+## ⚠️ When Not to Choose Me
+WebKineForge focuses on the frontend, leaving backend, authentication, and databases to your main system. Its HTML output can be easily integrated into any stack, including Next.js, WordPress, PHP, and Java.
 
 
 
@@ -52,8 +51,7 @@ The system uses a multi-site structure where **each Site works as an independent
 - **Create freely**: Each Site has its own pages, components, styles, and templates.
 - **Reuse on demand**: Share components and static assets across Sites.
 
-![code cards](./docs/images/code-cards.svg)
-
+![code cards](./docs/images/webkineforge_3_cards_carousel.gif)
 
 
 ## Terminology

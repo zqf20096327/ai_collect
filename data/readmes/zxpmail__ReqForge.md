@@ -75,6 +75,13 @@ flowchart LR
 
 ## What's New
 
+### v1.52.0 — 2026-11-18 — Non-Negotiable Layer: SoT registry + acceptance-readonly (pilot)
+
+- **Non-Negotiable Layer (pilot)**: a human-owned layer force-loaded at every `forge-loop` start, model read-only — independent of any Spec revision and of Loop iterations. Two of four planned entries shipped: SoT registry and test-intent independence.
+- **SoT Gate**: `memory/sot-registry.md` registers the authoritative implementation (`canonical`), semantic contract (`contract`) and fingerprint (`signal`) per business concept. `pnpm forge-sot-check` enforces entry shape / canonical existence / 180-day staleness / duplicate-implementation scan; human-approved exceptions live in `.forge/sot-exceptions.json` (require `approvedBy`). dev-builder queries it before writing any new function — reuse, or write down "why the existing implementation doesn't satisfy".
+- **Acceptance-Readonly Gate**: paths in `.forge/acceptance-readonly.json` are human-owned contract/acceptance assertions — the model implements to satisfy them and never edits them. Enforced by `forge-verify acceptance-readonly` + the forge-loop non-negotiable check (blocks Phase completion); the config file itself is self-protected (human edits activate on commit).
+- **Fixed**: `forge-verify skill-quality` invoked `validate-skill.mjs` without its required target → always FAIL.
+
 ### v1.51.0 — 2026-07-18 — agents-cli flywheel: skill-eval compare/analyze + shortcuts
 
 - **Quality Flywheel**: `pnpm skill-eval compare|analyze` (+ `--judge`); each run appends `run-history.json`. Inspired by [google/agents-cli](https://github.com/google/agents-cli).
@@ -1159,9 +1166,4 @@ External harnesses reviewed for positioning (not dependencies):
 | [Google design.md](https://github.com/google-labs-code/design.md) | DESIGN.md token format + designmd CLI | [design-md-comparison.md](core/docs/design-md-comparison.md) — Brief→mockup→DESIGN.md freeze in design-maker |
 | [OpenHuman](https://github.com/tinyhumansai/openhuman) | Personal AI runtime, Memory Tree, integrations | [openhuman-comparison.md](core/docs/openhuman-comparison.md) — optional memory backends, context rules |
 | [RTK](https://github.com/rtk-ai/rtk) | Shell output compression (PreToolUse bash proxy) | [rtk-comparison.md](core/docs/rtk-comparison.md) — optional layer 5 partner; tee-style verify evidence |
-| [nanochat](https://github.com/karpathy/nanochat) | End-to-end LLM training harness (speedrun, leaderboard) | [nanochat-comparison.md](core/docs/nanochat-comparison.md) — golden path / fast-loop discipline (methodology only) |
-| [autoresearch](https://github.com/karpathy/autoresearch) | Autonomous LLM training experiments (scoped edit, val_bpb) | [autoresearch-comparison.md](core/docs/autoresearch-comparison.md) — Primary metric + Spec/Plan lock + Task micro-cycle |
-| [llm-council](https://github.com/karpathy/llm-council) | Multi-LLM peer review + Chairman synthesis | [llm-council-comparison.md](core/docs/llm-council-comparison.md) — code-review council + spec Step 7 |
-| [jobs](https://github.com/karpathy/jobs) | BLS occupation data + LLM rubric scoring (not task queues) | [jobs-comparison.md](core/docs/jobs-comparison.md) — risk_rank + PROJECT-HEALTH + Spec LLM-judge |
-| [LLM Wiki gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) | Persistent wiki: raw/schema + ingest/query/lint | [llm-wiki-comparison.md](core/docs/llm-wiki-comparison.md) — memory/ + ADR filing discipline |
-| [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | **4 principles**: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven (154k ★) | [karpathy-skills-comparison.md](core/docs/karpathy-skills-comparison.md) — be
+| [nanochat](https://github.c

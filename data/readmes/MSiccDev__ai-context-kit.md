@@ -167,8 +167,8 @@ Note: Interaction Mode is optional in the abstract session model, but project `A
 State behavior rules:
 - State persists across turns until explicitly changed or reset.
 - No silent transitions: project, role, phase, style, tone, and interaction mode must not change implicitly.
-- State can be changed with natural language or namespaced commands (for example `/namespace.mode`, `/namespace.phase`, `/namespace.style`, `/namespace.tone`, `/namespace.interact`).
-- `/namespace.context` shows current active state; `/namespace.reset` resets session state.
+- State can be changed with natural language or the user-invoked `ack-session` skill (`ack-session mode <role>`, `phase`, `style`, `tone`, `interact`).
+- `ack-session context` shows current active state; `ack-session reset` returns to the project defaults.
 
 **Purpose:** Keeps behavior consistent, transparent, and aligned as work moves between planning, implementation, debugging, and review.
 
@@ -205,9 +205,20 @@ Operational workflow authority is skill-first:
 - `skills/ack-validate-skill/`
 - `skills/ack-create-checkpoint/`
 - `skills/ack-restore-checkpoint/`
+- `skills/ack-session/` (session state control)
+- `skills/ack-guide/` (which skill to run next; phase boundaries)
+- `skills/ack-interview/` and `skills/ack-interview-with-context/` (settle decisions and terms)
+- `skills/ack-tdd/` (test-driven implementation at agreed seams)
 - `skills/ack-loop-01-readiness/` to `skills/ack-loop-05-commit/` (the implementation loop)
 
 ### Invoking Skills
+
+Each skill declares who may start it in `metadata.invocation`:
+
+- **`user`** (create, validate, governance and loop skills): only you start it. These skills also carry `disable-model-invocation: true`, so Claude Code never loads them on its own; `/name` still runs them.
+- **`model`** (`ack-create-checkpoint`, `ack-restore-checkpoint`): the assistant may start it, for example to propose a checkpoint at session end.
+
+`disable-model-invocation` is a Claude Code extension outside the Agent Skills spec. Uploading a skill to claude.ai or the Skills API fails on unknown keys, so delete that one line from a user-invoked skill before uploading it. Pasting a skill into a chat or adding it as project knowledge works unchanged.
 
 Skills are invoked by loading the skill's `SKILL.md` content into your AI session. The method varies by platform:
 
@@ -272,7 +283,7 @@ If paths must change, update the specification and README first, then adjust ski
 
 - Load your user context artifact as the base context
 - Add the relevant project `AGENTS.md` context on top
-- Use your project's namespaced commands (for example `/ack.context`) to inspect or adjust active session state
+- Use `ack-session` (for example `ack-session context`) to inspect or adjust active session state, and `ack-guide` to find the right skill for the next step
 
 ---
 
@@ -357,6 +368,11 @@ Skills are namespaced to the plugin name. Inside a session:
 | `ack-drift-control` | Check and enforce consistency across spec, templates, and docs |
 | `ack-create-checkpoint` | Capture session state as a checkpoint artifact (spec section 4.4) |
 | `ack-restore-checkpoint` | Restore session state from a checkpoint artifact (spec section 4.4) |
+| `ack-session` | Show or change session state, or reset it to the project defaults |
+| `ack-guide` | Recommend the next skill for a goal, and choose what to do at a phase boundary |
+| `ack-interview-with-context` | Settle a change's decisions and terms before proposing it; record ADRs that pass the three-part test |
+| `ack-interview` | (model-invoked) Settle open decisions in rounds, with a recommended answer per question |
+| `ack-tdd` | (model-invoked) Test-driven implementation: seams agreed first, red before green, one slice per cycle |
 | `ack-loop-01-readiness` | Loop step 01: confirm the OpenSpec change is apply-ready and pick the next task group |
 | `ack-loop-02-implement` | Loop step 02: implement the approved task group task by task on a feature branch |
 | `ack-loop-03-review` | Loop step 03: two-axis self-review (Spec, Standards); STATUS: PASS or BLOCKED |
@@ -391,7 +407,7 @@ $ack-validate-agents-md
 $ack-drift-control
 ```
 
-`ack-drift-control` is a governance action: invoke it explicitly. No per-skill sidecar blocks implicit invocation, so Codex may also select it on its own.
+Invoke user-invoked skills (every skill except the two checkpoint skills) explicitly. Codex reads invocation policy from a per-skill `agents/openai.yaml` sidecar, which this repository does not ship yet: the 2.0 installer will generate it from `metadata.invocation`. Until then, Codex may select any skill on its own.
 
 ### Installing the plugin instead of using repo-local discovery
 
@@ -416,8 +432,8 @@ To make these skills available when working in a different project without insta
 You can modify session state dynamically using:
 
 - **Natural language:** "Switch to Developer Mode" or "Move to Implementation Phase"
-- **Commands:** `/namespace.context`, `/namespace.mode`, `/namespace.phase`, `/namespace.style`, `/namespace.tone`, `/namespace.interact`, `/namespace.reset`
-- **Command namespace:** Projects define a namespace prefix to avoid collisions (preferred pattern: `/namespace.command`; AI Context Kit uses `/ack.*`)
+- **Session skill:** `ack-session context`, `mode`, `phase`, `style`, `tone`, `interact`, `reset` (spec section 8.2). It is user-invoked, so the assistant cannot change state on its own. The former `/ack.*` and `/<tag>.*` commands are retired
+- **Phase boundaries:** `ack-guide` walks continue, clear, handoff, subagent and compact, in that order (spec section 4.5.4)
 - **Project defaults:** Each project can define typical starting configurations
 
 ### Design Principles
@@ -625,5 +641,7 @@ This instruction-based system evolved from the challenge of maintaining consiste
 What makes this approach powerful is the shift from treating every AI interaction as isolated to creating **persistent, layered instruction sets** that transform how AI assistants understand and support your work.
 
 This represents lessons learned from extensive work with hosted and local LLM providers and real-world development workflows across multiple projects and domains.
+
+**Third-party work:** some skills adapt ideas from other MIT-licensed projects. [mattpocock/skills](https://github.com/mattpocock/skills) by Matt Pocock: the router and phase-boundary tree in `ack-guide`, the interview method in `ack-interview` and `ack-interview-with-context`, and the test-driven cycle in `ack-tdd`. Each adapted skill credits its source in `metadata.credits`, and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) holds the full license texts and the list of adapted skills.
 
 ---

@@ -13,10 +13,10 @@ This is an implementation that actually works, containing a hackable script so y
 [![Ralph Wiggum Loop](https://github.com/user-attachments/assets/be94b8ba-b073-489d-b07e-d11db975a907)](https://www.youtube.com/watch?v=3TL8Ez66I3o)
 
 - [Getting Started](#getting-started)
-  - [(Optional) Set up code base](#optional-set-up-code-base)
+  - [(Optional) Set up your app](#optional-set-up-your-app)
   - [1️⃣ Step 1: Install Ralph](#1️⃣-step-1-install-ralph)
   - [2️⃣ Step 2: Create a PRD + task list](#2️⃣-step-2-create-a-prd--task-list)
-  - [3️⃣ Step 3: Set up the agent inside Docker Sandboxes](#3️⃣-step-3-set-up-the-agent-inside-docker-sandboxes)
+  - [3️⃣ Step 3: Set up Docker Sandboxes](#3️⃣-step-3-set-up-docker-sandboxes)
   - [4️⃣ Step 4: Run Ralph](#4️⃣-step-4-run-ralph)
 - [Running the Ralph Loop with custom options](#running-the-ralph-loop-with-custom-options)
   - [(Optional) Adjusting to your language/framework](#optional-adjusting-to-your-languageframework)
@@ -47,121 +47,132 @@ This is an implementation that actually works, containing a hackable script so y
 
 ## Getting Started
 
-### (Optional) Set up code base
+### (Optional) Set up your app
 
-I recommend using a CLI to bootstrap your project with the necessary tools and dependencies, e.g.:
+Starting fresh? Scaffold an app first, so Ralph has a working app, linter and tests to build on. Run this from your project folder:
 
 ```bash
-# for a Tanstack app:
-npx @tanstack/cli create lib --add-ons eslint,form,tanstack-query,nitro --no-git
+# TanStack Start (React, Biome, TanStack Form + Query, Nitro)
+npx @tanstack/cli@latest create lib --framework React --toolchain biome --deployment nitro --add-ons form,tanstack-query --no-examples --no-git --no-intent --non-interactive
+cd lib && npx biome check --write && cd ..
 
-# or for a Next.js app
-npx create-next-app@latest my-app --typescript --tailwind --eslint --app
+# or Next.js
+npx create-next-app@latest lib --typescript --tailwind --eslint --app
 ```
 
-> If you must start from a blank slate, which is not recommended, see [Starting from scratch](#starting-from-scratch). You can also go for a more barebone start by running `npx create-vite@latest src --template react-ts`
+This creates the app in a `lib` subfolder. Stay in the project folder for the next steps.
+
+> [!TIP]
+> Prefer a minimal start? Try `npx create-vite@latest src --template react-ts`, or see [Starting from scratch](#starting-from-scratch).
 
 ### 1️⃣ Step 1: Install Ralph
 
-Run this in your project's directory to install Ralph.
+Run this in your project folder (the parent of your app folder):
 
 ```bash
 npx @pageai/ralph-loop
 ```
 
-> Docs: [ralphloop.sh](https://ralphloop.sh)
+It asks a few quick questions: where your code lives, your dev server URL and which agent you use.
 
 ### 2️⃣ Step 2: Create a PRD + task list
 
-Use the `prd-creator` skill to generate a PRD from your requirements.<br/>
-Open up Claude Code or Cursor etc., **switch to plan mode**, and prompt it with **your requirements**. Like so:
+Describe what you want to build, and the `prd-creator` skill turns it into a plan (PRD) and a task list. Do this in your usual agent (Claude Code, Cursor…), not in Ralph. Open the agent in your project, **switch to plan mode** and paste a prompt like this:
 
 ```
-Use the prd-creator skill to help me create a PRD and task list for the below requirements.
+Use the prd-creator skill to help me create a PRD and task list for the requirements below.
 
 An app is already set up with React, Tailwind CSS and TypeScript.
 
 Requirements:
-
-- A SaaS product that helps users manage their finances.
-- Target audience: Small business owners and freelancers.
-- Core features:
-  - Track income and expenses.
-  - Create and send invoices.
-  - Track payments and receipts.
-  - Generate reports and insights.
-  - Connect to bank accounts and credit cards.
-  - Connect to accounting software.
-  - Connect to payment processors.
-- Use the shadcn/ui library for components.
-- Integrate with Stripe for payments.
-- Use Supabase for database.
-- You can find env variables in the .env.example file: SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, STRIPE_SECRET_KEY, etc. are available in the runtime.
-
-// etc.
+- A finance app for freelancers: track income and expenses, send invoices, see reports.
+- Use shadcn/ui for components, Stripe for payments and Supabase for the database.
+- Env variables (SUPABASE_URL, STRIPE_SECRET_KEY, etc.) are in .env.example.
 ```
-
-> Check out [the video](https://www.youtube.com/watch?v=3TL8Ez66I3o&t=403s) for a more realistic example on how to write requirements.
 
 <details>
-<summary><strong>✨ Pro tips</strong></summary>
+<summary><strong>✨ Tips for writing requirements</strong></summary>
 
-- mention libraries and frameworks you want to use
-- mention env variables, e.g. for DB, 3rd party API keys, etc. Store them in `.env` and add it to **.gitignore**
-- describe user flows and journeys
-- add relevant docs and UI references if applicable inside `/docs` and mention them in the requirements
-- be as descriptive as possible
-- *it's fine to write in your own language*
+- Mention the libraries and frameworks you want to use.
+- Mention env variables (DB, API keys…). Keep them in `.env`, and make sure `.env` is in `.gitignore`.
+- Describe user flows and journeys.
+- Put relevant docs and UI references in `/docs` and mention them in the requirements.
+- Be as descriptive as possible.
+- It's fine to write in your own language.
+
+For a realistic example, watch [the video](https://www.youtube.com/watch?v=3TL8Ez66I3o&t=403s).
 
 </details>
-<br/>
 
-Then, follow the Skill's instructions and verify the PRD and then tasks.<br/>
-**It is highly recommended that you review individual task requirements before starting the loop. Review EACH TASK INDIVIDUALLY.**
+Then answer the skill's questions. It checks with you before each step.
 
-### 3️⃣ Step 3: Set up the agent inside Docker Sandboxes
+> [!IMPORTANT]
+> Read through each task before you start the loop. A few minutes here saves hours later.
 
-Install and sign in to Docker Sandboxes first. See Docker's [AI overview](https://docs.docker.com/ai-overview/) and [Docker Sandboxes docs](https://docs.docker.com/ai/sandboxes/) for the official setup flow.
+<details>
+<summary><strong>What the skill walks you through</strong></summary>
 
-Authenticate your chosen Docker Sandboxes agent before running Ralph. Claude is the default:
+1. **Requirement summary**: confirm the scope before going into detail
+2. **Prerequisites**: confirm the keys, accounts, test users and database the app needs (listed in `.agent/prd/PREREQUISITES.md`)
+3. **PRD**: a short summary, then the full PRD with user flows and diagrams
+4. **Task outline**: choose priorities, scope (MVP / MVP+ / full) and what to defer, then confirm before task files are written
 
-```bash
-./ralph.sh --login
-```
+Each task is one small feature that works end to end, with its own tests. Anything you defer goes to the Backlog.
 
-Ralph prints all supported login commands, then opens the selected agent inside the correctly named sandbox. To log in to a different supported agent, pass `--agent`:
+</details>
 
-```bash
-./ralph.sh --login --agent codex
-```
+### 3️⃣ Step 3: Set up Docker Sandboxes
 
-Follow the instructions to log in to that agent. Ralph names sandboxes as `ralph-<agent>-<current-dir>-<hash8>`, for example `ralph-claude-my-app-a1b2c3d4`. To print the exact sandbox name without starting the loop, run:
+Ralph runs your agent in a Docker sandbox, so it can work unattended without touching the rest of your machine.
 
-```bash
-./ralph.sh --print-name
-./ralph.sh --print-name --agent cursor
-```
-
-Once the sandbox exists (after the first `--login` or after Ralph runs at least once), publish your dev server port to the host with `./ralph.sh --ports`. The port is captured from the dev-server URL you set during install and stored in `RALPH_DEFAULT_PORTS` in `ralph.sh`:
+**1. Install `sbx` and sign in to Docker** (one time)
 
 ```bash
-./ralph.sh --ports
-./ralph.sh --ports --agent codex
+# macOS
+brew trust docker/tap && brew install docker/tap/sbx
+
+# Linux (Ubuntu)
+curl -fsSL https://get.docker.com | sudo REPO_ONLY=1 sh && sudo apt install docker-sbx
+
+# Windows (PowerShell)
+winget install -h Docker.sbx
+
+# then sign in to Docker
+sbx login
 ```
 
-👉 Answer "Yes" to `Bypass Permissions mode`, that's the exact reason why you are using the Docker sandbox.
+> [!TIP]
+> Requirements and other install options: [Install Docker Sandboxes](https://docs.docker.com/ai/sandboxes/install).
 
-> **Alternative: API keys** — you can configure API keys for supported agents instead of interactive login, but this is usually more expensive and not recommended. See Docker's [supported agents docs](https://docs.docker.com/ai/sandboxes/agents/) for per-agent setup details.
+**2. Sign in to your agent** (one time per project)
 
-> If you want to use a different agentic CLI, see [Running with a different agentic CLI](#running-with-a-different-agentic-cli).
+```bash
+./ralph.sh --login                 # Claude Code (default)
+./ralph.sh --login --agent codex   # or another agent
+```
+
+This opens the agent in its sandbox. Sign in when it asks, then exit. In Claude Code, run `/login` if it doesn't prompt you, and choose **Yes** for *Bypass Permissions mode* (it's safe because it runs inside the sandbox).
+
+<details>
+<summary><strong>More: viewing the app, sandbox names, API keys</strong></summary>
+
+- **See the app in your browser**: after the first run, run `./ralph.sh --ports`. It uses the dev server port you chose during install (change it with `RALPH_DEFAULT_PORTS` in `ralph.sh`).
+- **Sandbox names**: each project and agent gets its own sandbox, named `ralph-<agent>-<current-dir>-<hash8>`. Print it with `./ralph.sh --print-name`.
+- **API keys**: you can give agents API keys instead of signing in, but it's usually more expensive. See Docker's [supported agents docs](https://docs.docker.com/ai/sandboxes/agents/).
+- **Other agents**: see [Running with a different agentic CLI](#running-with-a-different-agentic-cli).
+
+</details>
 
 ### 4️⃣ Step 4: Run Ralph
 
 ```bash
-./ralph.sh -n 50 # Run Ralph Loop with 50 iterations
+./ralph.sh -n 50   # work through tasks, up to 50 rounds
 ```
 
-> ✍️ Note: the first iteration will be spent on ensuring the named sandbox environment is set up correctly. Expect 5 minutes to complete.
+Each round, Ralph picks one task, builds it, tests it and commits it. You can leave it running.
+
+> [!NOTE]
+> The first round sets up the sandbox, so it takes about 5 minutes.
 
 ## Running the Ralph Loop with custom options
 
@@ -225,11 +236,15 @@ If you'd like to use a different language, testing framework etc. please adjust 
 ## How It Works
 
 Each iteration, Ralph will:
-1. Find the highest-priority incomplete task from `.agent/tasks.json`
-2. Work through the task steps defined in `.agent/tasks/TASK-{ID}.json`
-3. Run tests, linting, and type checking
-4. Complete task, take screenshot, update task status and commit changes
-5. Repeat until all tasks pass or max iterations reached
+1. Pick the first incomplete task in `.agent/tasks.json` whose dependencies pass (array order = priority)
+2. Check the prerequisites the task needs in `.agent/prd/PREREQUISITES.md`
+3. Work through the task steps defined in `.agent/tasks/TASK-{ID}.json`
+4. Smoke test every task: UI changes with [agent-browser](https://github.com/vercel-labs/agent-browser) (falling back to the Playwright MCP, then a throwaway Playwright script), with a clean console and a screenshot; CLIs and APIs by running or curling them. UI tasks also get a happy-path Playwright e2e spec
+5. Run tests, linting, and type checking
+6. Update task status, log progress and commit changes
+7. Repeat until all tasks pass or max iterations reached
+
+If the app can't be smoke tested for environmental reasons (no smoke option can open it, or the dev server or port is unreachable because of missing system deps, a port conflict or the sandbox network), Ralph outputs `BLOCKED` and doesn't mark the task done. A dev server that fails on a code error, or an app that loads but is broken, is a bug that Ralph fixes.
 
 ## How Is This Different from Other Ralphs?
 
@@ -278,7 +293,7 @@ The `ralph.sh` script is designed to be hackable.
 It is configured to use Claude Code in Docker Sandboxes by default, and you can select another supported agent with `--agent`.
 Each run uses a deterministic sandbox name in the form `ralph-<agent>-<current-dir>-<hash8>`, so different agents get separate sandboxes for the same project. On exit or double Ctrl+C, Ralph stops only the named sandbox for the current invocation.
 
-> NB: skills are supported by all major agentic AI CLIs via symlinks.
+> NB: skills and `AGENTS.md` work across all major agentic AI CLIs (Claude Code, Codex, Cursor, Gemini CLI, OpenCode, Copilot, Amp, etc.) via two symlinked skills dirs.
 
 ### Promise Tags
 
@@ -301,13 +316,15 @@ Ralph uses semantic tags to communicate status:
 ```
 .agent/
 ├── PROMPT.md           # Prompt sent to Agent each iteration
-├── tasks.json          # Task lookup table (required)
+├── STRUCTURE.md        # Directory map, one line per entry (seeded on install, never overwritten)
+├── tasks.json          # Task lookup table (required; seeded on install, never overwritten)
 ├── tasks/              # Individual task specs (TASK-{ID}.json)
 ├── prd/
 │   ├── PRD.md          # Product requirements document
+│   ├── PREREQUISITES.md # Approved prerequisite ledger (keys, accounts, test users, infra)
 │   └── SUMMARY.md      # Short project overview sent to Agent each iteration
 ├── logs/
-│   └── LOG.md          # Progress log (auto-created)
+│   └── LOG.md          # Progress log (seeded on install, never overwritten)
 ├── history/            # Iteration output logs
 └── skills/             # Shared skills (source of truth)
 ```
@@ -328,21 +345,28 @@ I would like to expand the PRD. Use the prd-creator skill to create these tasks:
 etc.
 ```
 
-It's fine to add multiple tasks at once.
+It's fine to add multiple tasks at once. The skill shows an outline of the new tasks for you to steer and confirm before writing them.
+
+To pick up something you deferred earlier, ask the skill to promote it from the PRD's Backlog:
+
+```
+Use the prd-creator skill to promote "CSV export" from the Backlog into tasks.
+```
 
 ## Skills
 
-Skills are reusable agent capabilities that provide specialized knowledge and workflows. The canonical source is `.agent/skills/`, which is symlinked to multiple agent tool directories for compatibility.
+Skills are reusable agent capabilities that provide specialized knowledge and workflows. The canonical source is `.agent/skills/`, which is symlinked into the two directories agents actually scan.
 
 ### Available Skills
 
 | Skill                         | Description                                             |
 | ----------------------------- | ------------------------------------------------------- |
-| `agent-browser`               | Browser automation for web apps and desktop apps        |
+| `agent-browser`               | Browser automation; Ralph's default smoke-test tool (screenshots, console checks) |
 | `component-refactoring`       | Patterns for splitting and refactoring React components |
 | `e2e-tester`                  | End-to-end testing workflows                            |
 | `frontend-code-review`        | Code quality and performance review guidelines          |
 | `frontend-testing`            | Unit and integration testing patterns                   |
+| `grill-me`                    | Stress-test a plan or design through relentless questioning |
 | `mysql`                       | MySQL/InnoDB schema, indexing, query tuning, and ops    |
 | `postgres`                    | PostgreSQL best practices and query optimization        |
 | `prd-creator`                 | Create PRDs and task breakdowns for Ralph               |
@@ -354,10 +378,10 @@ Skills are reusable agent capabilities that provide specialized knowledge and wo
 
 ### Skills Directory Structure
 
-Skills are symlinked from `.agent/skills/` to multiple locations for cross-tool compatibility:
+Skills are symlinked from `.agent/skills/` into the two directories agents scan:
 
 ```
- # Source of truth
+# Source of truth
 .agent/skills/
     ├── component-refactoring/
     ├── e2e-tester/
@@ -365,11 +389,15 @@ Skills are symlinked from `.agent/skills/` to multiple locations for cross-tool 
     ├── ...
 
 # Symlinks -> .agent/skills/*
-.agents/skills/*
-.claude/skills/*
-.codex/skills/*
-.cursor/skills/*
+.agents/skills/*   # Codex, Cursor, Gemini CLI, OpenCode, Copilot, Amp, Windsurf, Droid
+.claude/skills/*   # Claude Code (also read by Cursor, OpenCode, Copilot, Cline)
 ```
+
+Project instructions live in `AGENTS.md`, which every supported agent reads natively except two:
+- **Claude Code** reads `CLAUDE.md`, which imports `@AGENTS.md`.
+- **Gemini CLI** reads `GEMINI.md` by default, so the installer adds `AGENTS.md` to `context.fileName` in `.gemini/settings.json`.
+
+To add your own skill, create `.agent/skills/<name>/SKILL.md` and symlink it into both dirs (or re-run the installer).
 
 ## Reference
 
@@ -546,7 +574,7 @@ cd /path/to/your/project # this is the same path as the path in the root machine
 claude # or codex, copilot, cursor, gemini, opencode
 ```
 
-Re-running `./ralph.sh`, `./ralph.sh --login`, or `./ralph.sh --ports` is safe at any point — Ralph probes `sbx ls` and emits `sbx run --name ... <agent> .` only when the sandbox doesn't exist yet, and `sbx run <sandbox-name>` to reattach afterwards. The first form is create-only and would otherwise error with `--name can only be used when creating a new sandbox`. See [RALPH.md](RALPH.md#create-vs-attach-lifecycle) for the full lifecycle.
+Re-running `./ralph.sh`, `./ralph.sh --login`, or `./ralph.sh --ports` is safe at any point — Ralph probes `sbx ls` and emits `sbx run --name ... <agent> .` only when the sandbox doesn't exist yet, and `sbx run <sandbox-name>` to reattach afterwards. The first form is create-only and would otherwise error with `--name can only be used when creating a new sandbox`. See the [sandbox debugging guide](https://ralphloop.sh/blog/debug-inside-an-agent-sandbox/#reattach-a-stopped-sandbox-with-sbx-run) for the full lifecycle.
 
 ### Allowing network access
 

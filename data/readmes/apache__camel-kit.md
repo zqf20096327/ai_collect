@@ -44,8 +44,8 @@ modules use `org.apache.camel`.
 
 ## Building from source
 
-Use Java 17 or later and the checked-in Maven wrapper. Run these commands from
-the repository root:
+Kit, its Camel JBang plugin, and Knowledge require Java 21 or later. Use the checked-in Maven wrapper
+and run these commands from the repository root:
 
 ```bash
 git clone https://github.com/apache/camel-kit.git

@@ -60,8 +60,15 @@ Apps are typed and versioned, so they keep working as they grow:
 - A change to an entity can start another pipeline: a job reaching *interview*, a price falling, a bill arriving.
 - Forms take files and images, and pipelines can keep them too: an email's attachment, a download or a photo sent to
   the bot is kept on an entity and read back.
+- Types point at each other: an entry's project and path are picked from lists (only the paths of that project), a
+  project's page lists its entries grouped by path, each group with its own Add buttons, and deleting a project in use
+  asks first.
+- Forms show a field only when it applies (a repository's name only when the destination is a repository), with help
+  under it.
+- A field can hold a secret, encrypted like a credential and shown nowhere, or point at one of your credentials; a
+  pipeline only carries it sealed, and it is opened only as a request sends it to an allowed host.
 
-Ready-made Apps install from **Apps → Examples**: Releases to read (the starter: it needs nothing set up), Job Search, Bills, Prices, Releases, Tables, Trips, Clients, Apartments, Orders, Subscriptions, Car, Server ops (your monitors, checked every five minutes, and incidents), Tasks, Memos and Papers (receipts and warranties, read from their photo or PDF).
+Ready-made Apps install from **Apps → Examples**: Releases to read (the starter: it needs nothing set up), Job Search, Bills, Prices, Releases, Tables, Trips, Clients, Apartments, Orders, Subscriptions, Car, Server ops (your monitors, checked every five minutes, and incidents), Tasks, Memos, Papers (receipts and warranties, read from their photo or PDF) and Lockbox (your GitHub variables and secrets, kept encrypted and synced when you press Sync).
 
 Each App's page maps how it connects: what starts its pipelines, which types they write and read, and the pages that
 show them. The Trips App:
@@ -112,9 +119,12 @@ also read its past email, after showing what that would cost. The guide: [docs/t
 - **Your own systems.** Read JSON APIs with a key, change things at an API after you approve the request, react to
   webhooks signed GitHub-style, and watch a PostgreSQL database read-only. For example, Storm can alert you when a
   table grows faster than usual, or propose a GitHub issue when one of its own pipelines fails.
+- **Secrets you hand out.** Keep values like a deployment's secrets encrypted in an App and send them to an API that
+  needs them, sealed to the receiver's public key when it asks for that (as GitHub does): no step and no LLM sees them
+  on the way.
 
 Each one is a pipeline you can read: [docs/capabilities.md](docs/capabilities.md#5-putting-it-together) lists them
-with their steps, and [pipelines/](pipelines) has them ready to paste.
+with their steps, and [examples/](examples/) has them ready to paste.
 
 ## How it works
 
@@ -131,7 +141,8 @@ with their steps, and [pipelines/](pipelines) has them ready to paste.
    captioned `/paper`), when an App's data changes, or when you press a button.
 4. **It proposes, you act.** Every side effect (an email, a form submission, an upload, a calendar invite, an API
    call) waits behind a gate that shows exactly what will go out. Edit it if needed, then press **Act** in the app or
-   on Telegram.
+   on Telegram. A list's proposals are one decision: approve them all, or untick the ones you don't want. A pipeline
+   you start yourself, with a button, can act without asking again, when you switch that on for it.
 5. **It learns.** Your edits and rejections become examples for future drafts, and a nightly reflection suggests rules
    and pipeline changes for you to accept or reject.
 
@@ -318,7 +329,7 @@ the ports and folders themselves.
 | [docs/self-hosting.md](docs/self-hosting.md) | Install, HTTPS, webhooks and Telegram, updates, backups |
 | [docs/telegram.md](docs/telegram.md) | What the bot does |
 | [docs/google-setup.md](docs/google-setup.md) | Connecting Google: Calendar, and Drive for topics |
-| [pipelines/](pipelines) | Example pipelines and Apps |
+| [examples/](examples/) | Example pipelines and Apps |
 
 Comments and commits cite milestone ids such as `M12-T5`: they come from the project's development plan and mark
 when and why something was added.

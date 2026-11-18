@@ -183,13 +183,13 @@ No experience needed. If you can download a game mod, you can do this.
 
 **What you need:** a Windows computer with an NVIDIA graphics card (the stronger, the faster), plenty of free disk space (one model is often 10 to 30 GB), and internet for the first start.
 
-1. **Get Node.js.** Go to [nodejs.org](https://nodejs.org), press the big **LTS** button, open the file and click **Next** until it says **Finish**. Node.js is the engine that runs CreativeField.
-2. **Get ComfyUI.** Go to the [ComfyUI download page](https://github.com/comfyanonymous/ComfyUI#installing), take the **Windows portable** version, unzip it, and double-click `run_nvidia_gpu.bat` once. When a browser page with boxes and lines opens, ComfyUI works. Leave that black window open.
-3. **Get CreativeField.** On this page, press the green **Code** button at the top, then **Download ZIP**. Right-click the ZIP, choose **Extract All**, and put the folder somewhere easy, like your Desktop.
-4. **Start it.** Open the folder and double-click **`Start CreativeField.bat`**. The first time it installs itself, which takes a few minutes. Then your browser opens CreativeField. Keep the black window open while you work; close it when you are done.
-5. **Make something.** Click **All tools**, pick a tile like **Make a picture**, type what you want to see, and press **Generate**. The first time a tool runs, open **Models** to see which model it needs and download it there.
+1. **Get ComfyUI.** Go to the [ComfyUI download page](https://github.com/comfyanonymous/ComfyUI#installing), take the **Windows portable** version, unzip it, and double-click `run_nvidia_gpu.bat` once. When a browser page with boxes and lines opens, ComfyUI works. Leave that black window open.
+2. **Get CreativeField.** On this page, press the green **Code** button at the top, then **Download ZIP**. Right-click the ZIP, choose **Extract All**, and put the folder somewhere easy, like your Desktop.
+3. **Start it.** Open the folder and double-click **`Start CreativeField.bat`**. The first time it installs what it needs by itself, Node.js included, which takes a few minutes. Your browser then opens CreativeField and finds your ComfyUI: click **Use this ComfyUI** (or **Start ComfyUI** if it is installed but not running). Keep the black window open while you work.
+4. **Add the models.** Open a tool. If its model is not on your computer yet, the bar at the top says so with an **Install** button and the size (often 10 to 30 GB). Press it: CreativeField downloads the files from the official sources into your ComfyUI, checks each one, and adds missing ComfyUI extensions. You can stop and continue later; it picks up where it stopped. A few files have no public download; Models shows those.
+5. **Make something.** Click **All tools**, pick a tile like **Make a picture**, type what you want to see, and press **Generate**.
 
-**Stuck?** Close both black windows and start again from step 4. Still stuck? [Open an issue](https://github.com/rhymeas/Creativefield/issues) and tell us what the black window says.
+**Stuck?** Close both black windows and start again from step 3. Still stuck? [Open an issue](https://github.com/rhymeas/Creativefield/issues) and tell us what the black window says.
 
 **No graphics card?** Use the [online version](https://www.creativefield.app/) instead. It runs on your own Comfy account.
 

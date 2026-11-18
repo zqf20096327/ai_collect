@@ -1,14 +1,14 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="TokenSafe Logo" width="88" height="88" />
+  <img src="https://www.tokensafe.dev/ts-logo-transp-big.png" alt="TokenSafe Logo" width="88" height="88" />
 </p>
 
 <h1 align="center">TokenSafe</h1>
 <!-- mcp-name: dev.tokensafe/tokensafe -->
 
 <p align="center">
-  <b>Your coding agent isn't getting dumber. Your context is just full of trash.</b><br>
-  When chat sessions fill up with massive lockfiles and endless build logs, your AI loses focus.<br>
-  TokenSafe strips the noise with Tree-sitter AST slicing so your agent stays razor-sharp, changes only the lines you asked for, and never leaks your secrets.<br>
+  <b>Your AI agent is smart enough to code all day. Now it actually can.</b><br>
+  Stop letting bloated file reads, noisy test dumps, and broken prompt caches drain your limits by lunch.<br>
+  TokenSafe runs locally, filtering context down to what the model actually touches while keeping secrets out of git.<br>
   Works with <b>Cursor, Claude Code, Codex, Windsurf, Google Antigravity, Kimi Code, and ChatGPT</b>.
 </p>
 

@@ -1286,6 +1286,7 @@ always go to Evil modes if you need to with ~C-z~).
 | agent-shell-show-usage-at-turn-end             | Whether to display usage information when agent turn ends.                      |
 | agent-shell-show-welcome-message               | Non-nil to show welcome message.                                                |
 | agent-shell-status-kind-label-function         | Function to render status and kind labels.                                      |
+| agent-shell-system-prompt                      | Instructions appended to the agent’s default system prompt.                     |
 | agent-shell-text-file-capabilities             | Whether agents are initialized with read/write text file capabilities.          |
 | agent-shell-thought-process-expand-by-default  | Whether thought process sections should be expanded by default.                 |
 | agent-shell-thought-process-icon               | Icon displayed during the AI’s thought process.                                 |
@@ -1434,7 +1435,7 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-reset-logs                                  | Reset all log buffers.                                                        |
 |                                                       | agent-shell-restart                                     | Clear conversation by restarting the agent shell in the same project.         |
 |                                                       | agent-shell-resume-session                              | Resume an existing agent session by SESSION-ID.                               |
-|                                                       | agent-shell-run-all-tests                               | Run all agent-shell tests in batch mode.                                      |
+|                                                       | agent-shell-run-all-tests                               | Run all agent-shell tests in a fresh batch Emacs, as CI does.                 |
 |                                                       | agent-shell-save-traffic                                | Save agent shell traffic to a .traffic file and reveal it in `dired'.         |
 | M-r                                                   | agent-shell-search-history                              | Search previous input history.                                                |
 |                                                       | agent-shell-send-clipboard-image                        | Paste clipboard image and insert it into `agent-shell'.                       |
@@ -1495,5 +1496,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-refresh                            | Refresh viewport buffer content with current item from shell.                 |
 |                                                       | agent-shell-viewport-reply                              | Reply as a follow-up and compose another prompt/query.                        |
 |                                                       | agent-shell-viewport-reply-1                            | Reply with "1" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-2                            | Reply with "2" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply
+|                                                       | agent-shell-viewport-reply-2                            | Reply with "2" and send immedia

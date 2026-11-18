@@ -33,6 +33,8 @@
 
 **Flexible GraphRAG** is an open source AI context platform supporting a document processing pipeline (Docling, LlamaParse, or LiteParse), knowledge graph auto-building, ontologies, schemas, many LLM providers, GraphRAG and RAG, hybrid semantic search (fulltext, vector, property graph, RDF/SPARQL), AI query, and AI chat. The backend is **Python** with **LlamaIndex** and **LangChain** as peer frameworks. **LlamaIndex** is the default for each pipeline stage; **LangChain** can be selected per stage in environment configuration. The API is a REST **FastAPI** service. **Angular**, **React**, and **Vue** TypeScript frontends and an **MCP** server are included. The stack supports 14 data sources (10 with incremental auto-sync), 15 property graph databases, 4 RDF triple stores (Apache Jena Fuseki, Ontotext GraphDB, Oxigraph, Amazon Neptune RDF), 10 vector databases, OpenSearch / Elasticsearch / BM25 search, Alfresco, and Nuxeo. Databases and dashboards can be enabled with the provided Docker Compose layout. Optionally, the ingest pipeline, hybrid search, and AI query can run through customizable **Langflow** visual flows (12 custom Langflow components). As a further option, ingest can run on a **CocoIndex** (Rust engine) pipeline that reuses the same sources, targets, parsers and KG extractors, adding step-level memoization and automatic delete reconciliation. And optionally, **[Hyland OpenArch](https://github.com/Hyland/OpenArch)**, an AI-ready content repository for documents with their extracted text and vector embeddings, can be the search + vector store and the store for data sources and document state.  
 
+**New 11/16/26 — v0.11.0 release:** an early version of a **Desktop App** (Tauri/Rust) around the React, Vue or Angular UI with the 5 Flexible GraphRAG tabs, that adds browsing, ingesting, searching and graph viewing (5th tab) of **local files and folders (can auto-sync)** along with all the other data sources ([desktop app](flexible-graphrag-ui/desktop/README.md)); in the desktop and web UIs, **Browse...** shows a file/folder browser in the **Alfresco, Nuxeo, CMIS, SharePoint, OneDrive, Box, S3, Azure Blob, GCS, Google Drive** data source forms; an optional lighter Docker-free config (e.g. for the desktop app): **SQLite** as the auto-sync incremental update state store (`INCREMENTAL_STATE_STORE=sqlite`) along with embedded stores such as LanceDB, BM25, LadybugDB; **Federated Flexible GraphRAG Backends**: search and AI query/chat that fuse results e.g. from a personal backend, plus a team one, plus a company one (`REMOTE_FG_BACKENDS`).
+
 **New 11/10/26 — v0.10.0 release:** a **Graph tab** in the React, Vue and Angular UIs showing the entities and relationships extracted from an ingest, search results, or AI answer sources, and from a document or folder in KG Spaces. Also an Ollama fix that keeps models on the GPU (new `OLLAMA_CONTEXT_WINDOW`, default 8192) (see [Ollama configuration](docs/LLM/OLLAMA-CONFIGURATION.md)).
 
 **New 11/3/26 — v0.9.1 release:** **OpenArch in the Flexible GraphRAG Docker Compose stack** (`docker/includes/openarch.yaml`, not just in KG Spaces Deployment); **faster KG extraction** by raising `KG_EXTRACTION_WORKERS` (default 4; 8-16 with cloud LLMs); **security fixes** (see [SECURITY.md](SECURITY.md) for reporting and the deployment model): REST / MCP filesystem ingest only reads paths under `uploads/`, `SOURCE_PATHS` or the new `INGEST_ALLOWED_PATHS`; query injection fixed in the Memgraph, Apache AGE, ArcadeDB, Ladybug, Gremlin / Cosmos DB and NebulaGraph adapters and the RDF converter; and graph Q&A now runs only read queries, so a question can't get the LLM to change or delete graph data. Also preparatory work for **Python 3.15** and free-threaded 3.15t (see [Python 3.15](docs/ADVANCED/PYTHON-3.15.md)).
@@ -1526,70 +1528,42 @@ See [docs/DEVELOPER/OBSERVABILITY/OBSERVABILITY.md](docs/DEVELOPER/OBSERVABILITY
 
 ## Project Structure
 
-- `/flexible-graphrag`: Python FastAPI backend
-  - `main.py`: FastAPI REST API server
-  - `backend.py`: Shared business logic used by both API and MCP
-  - `config.py`: Configurable settings for data sources, databases, and LLM providers
-  - `doc_refs.py`: Source documents of results and answers — names and open links (ACA, Web UI, URLs)
-  - `factories.py`: Factory classes for LLM and database creation
-  - `flow_service.py`: Langflow flow-mode REST client (`ENABLE_LANGFLOW_FLOWS`)
-  - `graph_flags.py`: Which graphs an ingest builds — property graph and RDF graph, each on / off
-  - `hybrid_system.py`: Main hybrid search and ingestion system
-  - `incremental_system.py`: Incremental auto-sync startup and wiring
-  - `job_retention.py`: Jobs list retention (finished jobs kept 60 min / 200 jobs, per owner)
-  - `nltk_compat.py`: `NLTK_DATA` default — a plain copy of LlamaIndex's NLTK data (nltk 3.10.4+ vs uv hardlinks)
-  - `permission_filter.py`: Query-time permission filtering by each source's sign-in
-  - `post_ingestion_state.py`: Post-ingestion document state tracking
-  - `query_engine.py`: Query engine with result deduplication and re-scoring
-  - `retriever_setup.py`: Retriever assembly — vector, search, OpenArch, graph, RDF, synonym expansion
-  - `schema_manager.py`: Database schema management
-  - `scope_filter.py`: Scoped Ask — limits retrieval to one document or folder
-  - `ssl_compat.py`: SSL context patch (backend and Langflow components)
-  - `adapters/`: Framework-neutral ABCs and factories for all subsystems
-    - `adapters/graph/`: Property graph and RDF store adapter ABCs
-    - `adapters/llm/`: LLM and embedding adapter ABCs (`BothLLMAdapter`, `BothEmbeddingAdapter`)
-    - `adapters/process/`: Chunker and KG extractor ABCs and `build_*` factories
-    - `adapters/search/`: Search store adapter ABC
-    - `adapters/vector/`: Vector store adapter ABC
-  - `cocoindex_integration/`: Optional CocoIndex pipeline backend — mixes CocoIndex source/target connectors, functions, and splitters with Flexible GraphRAG sources, targets, and functions (document processor + LlamaIndex/LangChain chunker-splitters); can also be run standalone outside of the FastAPI server
-    - `bridge.py`: FastAPI ↔ CocoIndex bridge; `ingest_source()` for all 13 UI datasources
-    - `retriever_bridge.py`: read-only vector/graph retrievers when `*_BACKEND=cocoindex`
-    - `surreal_chain.py`: CocoIndex SurrealDB QA chain (flat CocoIndex schema)
-    - `functions/`: `@coco.fn` building blocks — doc parsing, chunking, embedding, KG extraction (all memoized)
-    - `connectors/flexible/`: lazy `FlexibleMapView(LiveMapView)` for 9 detector-backed sources; `FlexibleDataSource` for non-file sources
-    - `connectors/cocoindex/`: native CocoIndex connectors (Qdrant, Neo4j, LanceDB, Postgres, S3, GCS, Google Drive)
-    - `pipeline/`: `app.py` entry point, `flexible_app.py`, `run.py`, `bootstrap.py`, `state.py`, `providers.py`, `selectors.py`
-  - `incremental_updates/`: Auto-sync engine — detectors, orchestrator, state manager for real-time/near-real-time source sync
-  - `ingest/`: Modular ingestion steps — `ingest_from_files`, `ingest_from_text`, `ingest_from_source`, `run_chunk_pipeline`, `update_pg_graph`, `update_rdf_graph`, `update_vector`, `update_search`, `update_openarch`
-  - `langflow_components/`: 12 custom Langflow components (Python) in `flexible_graphrag/` + shared run-cache helper `_fg_shared.py`; `flow_service.py` (backend) drives them over the Langflow REST API
-  - `langchain/`: LangChain peer framework — graph, vector, search, chunking, KG extraction, retrieval
-    - `langchain/graph/pg_store_adapters/`: 15 property graph store adapters (one file per store)
-    - `langchain/graph/rdf_store_adapters/`: 4 RDF/SPARQL store adapters (Fuseki, GraphDB, Oxigraph, Neptune)
-    - `langchain/graph/retrievers/`: `li_`/`lc_` two-layer retriever classes — text-to-query, neighborhood, vector, logging, synonym
-    - `langchain/llm/`: LangChain LLM + embedding factories for all 13 providers
-    - `langchain/process/`: `LangChainChunkerAdapter` (6 splitter types), `LangChainKGExtractorAdapter`
-    - `langchain/search/adapters/`: BM25, Elasticsearch, OpenSearch search adapters
-    - `langchain/vector/adapters/`: 10 vector store adapters
-  - `llamaindex/`: LlamaIndex peer framework — graph, vector, search, chunking, KG extraction
-    - `llamaindex/graph/adapters/`: LlamaIndex property graph store adapters (Neo4j, ArcadeDB, FalkorDB, Memgraph, Nebula, Neptune, etc.)
-    - `llamaindex/llm/`: LlamaIndex LLM + embedding factories for all 13 providers
-    - `llamaindex/process/`: `LlamaIndexChunkerAdapter`, `LlamaIndexKGExtractorAdapter`
-    - `llamaindex/search/adapters/`: Elasticsearch, OpenSearch search adapters
-    - `llamaindex/vector/adapters/`: Qdrant, Elasticsearch, OpenSearch, pgvector, Chroma, and others
-  - `observability/`: OpenTelemetry instrumentation, Prometheus metrics, tracing setup
-  - `openarch/`: Hyland OpenArch support (uses `python-openarch-api`)
-    - `integration.py`: sets up OpenArch as the search + vector store (`ENABLE_OPENARCH`)
-    - `writer.py`: writes each document with its extracted text and its chunks' embeddings
-    - `vector_store.py`: LlamaIndex vector store over OpenArch's chunk index (vector, keyword, hybrid queries)
-    - `registry.py`: auto-sync state store in OpenArch trees (`INCREMENTAL_STATE_STORE=openarch`)
-    - `scope.py`: per-folder / per-document scope rules
-    - `source_system.py`: source systems and document paths in the OpenArch tree
-    - `client.py`: OpenArch client setup
-  - `process/`: Core document processing — `document_processor.py` (Docling/LlamaParse/LiteParse), `kg_extractor.py`, `node_pipeline.py`
-  - `rdf/`: RDF/ontology support — ontology manager, KG-to-RDF converter, SPARQL tools, bundled schemas (`rdf/schemas/`)
-    - `rdf/store/`: RDF store adapters — Fuseki, GraphDB, Oxigraph, store factory
-  - `sources/`: Data source connectors — filesystem, CMIS/Alfresco, Azure Blob, S3, GCS, OneDrive, SharePoint, Google Drive, Box, web, Wikipedia, YouTube, etc.
-  - `stores/`: Index managers — `index_manager.py`, `rdf_manager.py`
-  - `pyproject.toml`: Modern Python package definition (PEP 517/518)
-  - `uv.toml`: UV package manager configuration
-  - `start.py`: Startup script (`flexible-graphrag` cons
+- `/flexible-graphrag`: Python FastAPI backend (`pyproject.toml`; `start.py` is the `flexible-graphrag` command)
+  - Top-level modules: `main.py` (REST API), `backend.py` (shared by the API and MCP), `config.py` (settings),
+    `hybrid_system.py` (ingest + hybrid search), `retriever_setup.py` and `query_engine.py` (retrieval and answers),
+    `incremental_system.py` (auto-sync startup), `remote_backends.py` (federated backends), `api_security.py`
+    (API token, desktop app ingest folders), `permission_filter.py` and `scope_filter.py` (per-user and scoped
+    search), `graph_view.py` (Graph tab), `flow_service.py` (Langflow flow mode), and smaller helpers
+  - `adapters/`: framework-neutral interfaces and factories (graph, RDF, vector, search, LLM, chunking, KG extraction)
+  - `llamaindex/`, `langchain/`: the two peer frameworks' implementations: property graph, RDF, vector and search
+    store adapters, LLM and embedding providers, chunkers, KG extractors, retrievers
+  - `sources/`: data source connectors; `browse/`: the **Browse...** source browsers (`POST /api/browse`)
+  - `ingest/`, `process/`, `stores/`: ingest steps, document parsing (Docling / LlamaParse / LiteParse) and KG
+    extraction, index managers
+  - `incremental_updates/`: auto-sync engine (change detectors, orchestrator, state stores: PostgreSQL, OpenArch, SQLite)
+  - `rdf/`: ontologies, KG-to-RDF conversion, SPARQL, RDF stores
+  - `openarch/`: Hyland OpenArch as the search + vector store and as the auto-sync state store
+  - `cocoindex_integration/`: optional CocoIndex pipeline backend (`PIPELINE_BACKEND=cocoindex`)
+  - `langflow_components/`: the 12 custom Langflow components
+  - `observability/`: OpenTelemetry tracing and Prometheus metrics
+- `/flows`: Langflow flow JSONs the app uploads in flow mode
+- `/flexible-graphrag-mcp`: standalone MCP server (`main.py`; calls the REST API, 3 dependencies)
+- `/flexible-graphrag-ui`: frontends
+  - `frontend-react/`, `frontend-vue/`, `frontend-angular/`: the 5-tab UIs (Vite, Vite, Angular CLI)
+  - `frontend-angular/projects/flexible-graphrag-angular-lib/`: the shared Angular UI library, on npm as
+    `@flexible-graphrag/angular-ui` (used by this app, KG Spaces ACA and KG Spaces for Nuxeo)
+  - `graph-view/`: the Graph tab's graph viewer, on npm as `@flexible-graphrag/graph-view` (used by all three UIs)
+  - `desktop/`: the Tauri desktop app around the React, Vue or Angular UI (see its `README.md`)
+- `/docker`: Docker Compose stack (`docker-compose.yaml` with modular `includes/`, nginx config)
+- `/docs`: documentation site ([Zensical](https://zensical.org/), nav in `zensical.toml`)
+- `/schemas`: ontology and schema examples (`.env` paths use `../schemas/...`)
+- `/sample-docs`: sample documents to ingest
+- `/scripts`: `cleanup.py` (clears the configured stores), `rdf_cleanup.py`, OpenSearch pipeline setup, `incremental/`
+  (sync-now and refresh-interval scripts)
+- `/tests`: pytest unit tests; `integration/` (tests against running databases and sources, `run_matrix.py`) and
+  `integration/autosync/` (auto-sync harness, `run_autosync.py`)
+- `/examples`: standalone examples: observability, RDF / ontology, CocoIndex (meeting notes on any graph store)
+
+## License
+
+This project is licensed under the terms of the Apache License 2.0. See the [LICENSE](LICENSE) file for details.

@@ -56,6 +56,14 @@ OpenMotion is a **full-stack agentic video** studio and an **open-source alterna
 
 ### Install in your agent
 
+Install the main Skill with the [Skills CLI](https://github.com/vercel-labs/skills):
+
+```sh
+npx skills add nexu-io/openmotion --skill openmotion
+```
+
+Then ask your agent: **Use OpenMotion to install and connect the local Studio and MCP, then help me make a video.** The Skill completes the source setup below when needed and reuses an existing workspace. Installing the Skill alone copies instructions; it does not yet install Studio or connect MCP.
+
 Copy this instruction into your local agent to set up OpenMotion from source:
 
 ```text
@@ -509,19 +517,20 @@ To start from a video instead, supply your reference and use the [recreation bri
 
 ##### Skills, MCP and CLI
 
-The plugin and MCP server are named `openmotion`; Tools, Skills and resources use `openmotion_*`, `openmotion-*` and `openmotion://`. Old Tool/resource names remain compatibility aliases; retired Skill entries are removed. Use `openmotion-*` Skill names and refresh host discovery after upgrading. See [naming and installation compatibility](docs/npm-installation.md#public-names-and-compatibility).
+The main Skill, plugin and MCP server are named `openmotion`; Tools, specialist Skills and resources use `openmotion_*`, `openmotion-*` and `openmotion://`. Old Tool/resource names remain compatibility aliases; retired Skill entries are removed. Use `openmotion` or `openmotion-*` Skill names and refresh host discovery after upgrading. See [naming and installation compatibility](docs/npm-installation.md#public-names-and-compatibility).
 
-From the checkout, discover and install the five core workflows with the [Skills CLI](https://github.com/vercel-labs/skills):
+Discover the main Skill and optional specialist workflows from GitHub with the [Skills CLI](https://github.com/vercel-labs/skills):
 
 ```sh
-npx skills add ./skills --list
-npx skills add ./skills --skill openmotion-director openmotion-production openmotion-template-to-video openmotion-recreate openmotion-video-to-template
+npx skills add nexu-io/openmotion --list
+npx skills add nexu-io/openmotion --skill openmotion-director openmotion-production openmotion-template-to-video openmotion-recreate openmotion-video-to-template
 ```
 
 This copies instructions; it does not install the runtime or register MCP. Keep the shared documentation available and connect the app separately, or use the integrated local installer above.
 
 | Skill | Use it for |
 | --- | --- |
+| [openmotion](https://github.com/nexu-io/openmotion/blob/main/skills/openmotion/SKILL.md) | Setup, first use and selecting the right video workflow |
 | [openmotion-recreate](skills/openmotion-recreate/SKILL.md) | Reconstructing a reference video and comparing the result |
 | [openmotion-template-to-video](skills/openmotion-template-to-video/SKILL.md) | Adapting an existing editable template |
 | [openmotion-director](skills/openmotion-director/SKILL.md) | Original films, narrative, movement, sound and creative review |

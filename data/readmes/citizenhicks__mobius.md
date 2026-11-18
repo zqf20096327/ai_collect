@@ -15,6 +15,7 @@
 </p>
 
 <p align="center">
+  <a href="#benchmark">Benchmark</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#embed-the-framework">Embed</a> ·
   <a href="#work-on-this-repository">Contribute</a> ·
@@ -33,16 +34,13 @@
 
 The iPhone and iPad app connects to the same gateway and is maintained separately.
 
-This checkout prepares **0.17.10** for all four packages. It requires protocol **103**
-clients and gateway configuration version **30**. Protocol 102 clients, including the
-0.17.8 macOS app and 0.17.9 CLI, cannot connect;
-update clients before upgrading a gateway. Gateways already on 0.17.2
-can upgrade in place. Existing 0.16.x gateways require an offline configuration
-conversion that preserves usage history in `usage.json`. See the
-[0.17.10 upgrade notes](.github/release-notes/mobius-gateway-v0.17.10.md)
-for client compatibility and rollout details, and the
-[0.17.7 notes](https://github.com/citizenhicks/mobius/releases/tag/mobius-gateway-v0.17.7)
-for older configuration conversions.
+## Benchmark
+
+<p align="center"><img src="assets/benchmark-peak-ram.gif" width="600" alt="Grain bar chart of peak sampled RAM: Codex median 1.95 GiB and largest 7.22 GiB; möbius median 0.26 GiB and largest 1.07 GiB."></p>
+
+On 20 Terminal-Bench 4.0 tasks with GPT-6 Luna, möbius 0.17.11 and Codex CLI 0.169.0 each passed 3. möbius used
+48.9% fewer tokens and had a lower peak RAM sample on all 20 tasks, and took 17.9% more agent time in total.
+Read the [full write-up](https://thinkingsand.dev/research/mobius-harness-token-efficiency/).
 
 ## Quick start
 

@@ -2,7 +2,7 @@
 
 <img src="docs/assets/wordmark.svg#gh-light-mode-only" width="220" height="69" alt="Papilot"><img src="docs/assets/wordmark-dark.svg#gh-dark-mode-only" width="220" height="69" alt="Papilot"><br>**Next-Generation AI LaTeX Editor**
 
-# Don't read or write `.tex`<br>Just work on the <img src="docs/assets/pdf.svg" width="34" height="41" align="absmiddle" alt="PDF">
+<h2>Don't read or write <code>.tex</code><br>Just work on the <img src="docs/assets/pdf.svg" width="22" height="31" align="absmiddle" alt="PDF"></h2>
 
 A **new paradigm** for responsible writing and typesetting with AI.
 
@@ -82,7 +82,7 @@ Mark a sentence, an equation or a figure, and write a note.<br>
       <source media="(prefers-color-scheme: dark) and (max-width: 600px)" srcset="docs/assets/readme-agents/compact-dark.svg">
       <source media="(prefers-color-scheme: dark)" srcset="docs/assets/readme-agents/desktop-dark.svg">
       <source media="(max-width: 600px)" srcset="docs/assets/readme-agents/compact.svg">
-      <img src="docs/assets/readme-agents/desktop.svg" alt="Papilot Writer, Pi, Codex, Claude, Cursor, Copilot, Grok, Antigravity, Kimi, GLM, DeepSeek, Qwen, OpenCode" width="816">
+      <img src="docs/assets/readme-agents/desktop.svg" alt="Papilot Writer, Pi, Codex, Claude, Cursor, Copilot, Grok, Antigravity, Kimi, GLM, DeepSeek, Qwen, OpenCode, Qoder, CodeBuddy, WorkBuddy" width="816">
     </picture>
   </a>
 </p>
@@ -132,15 +132,15 @@ Want a sample first? Run `papilot demo`. Details are in the [guide](docs/guide.m
 <p>
   <a href="https://github.com/PapilotAI/papilot/graphs/contributors">
     <picture>
-      <source media="(max-width: 600px)" srcset="docs/assets/readme-contributors/compact.svg">
-      <img src="docs/assets/readme-contributors/desktop.svg" alt="Papilot's contributors">
+      <source media="(max-width: 600px)" srcset="https://papilot.ai/readme-contributors/compact.svg">
+      <img src="https://papilot.ai/readme-contributors/desktop.svg" alt="Papilot's contributors">
     </picture>
   </a>
 </p>
 
 ## Star History
 
-<a href="https://www.star-history.com/?repos=papilotai%2Fpapilot&type=date&logscale=&legend=bottom-right">
+<a href="https://www.star-history.com/?repos=papilotai%2Fpapilot&type=date&legend=bottom-right">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=papilotai/papilot&type=date&theme=dark&legend=bottom-right" />
    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=papilotai/papilot&type=date&legend=bottom-right" />

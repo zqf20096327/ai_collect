@@ -31,9 +31,9 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 
 | | |
 | --- | --- |
-| 🧭 **Bar** | Configurable widgets (left / center / right), any screen edge, Hug / Float / Islands / M3 styles, hover popups for media, resources, weather, battery and updates, a live audio spectrum |
+| 🧭 **Bar** | Configurable widgets (left / center / right), any screen edge, Hug / Float / Islands / M3 styles, hover popups for media, resources, weather, battery and updates, a live audio spectrum, a Dynamic Island (the clock: a capsule of its own, black in a dark theme, that grows out of the bar into a card with the notification's text and buttons on hover, or the player after a tap in the music state) |
 | 🚀 **App launcher** | Apps and settings, plus prefixes: `=` calculator (a plain "12*(3+4)" or "10+5=" is answered too, without the prefix), `>` run a command, `<` keybinds, `:` emoji, `;` clipboard (images with a preview), `/` settings, `~` files in your home folder (needs `fd`); open windows are listed under a plain search, Enter focuses one |
-| ✨ **AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats. Works with Claude (through the `claude` CLI) and other AI services: [OpenRouter](https://openrouter.ai) (the free models included), OpenAI, Gemini, Groq, DeepSeek, Mistral, a local Ollama, or any OpenAI-compatible server |
+| ✨ **AI** | Quick palette (<kbd>Super</kbd>+<kbd>Y</kbd>) and a full chat in the left sidebar: streamed answers, code blocks with copy buttons, model picker, token / cost usage, saved chats. Works with Claude (through the `claude` CLI) and other AI services: [OpenRouter](https://openrouter.ai) (the free models included), OpenAI, Gemini, Groq, DeepSeek, Mistral, local models through [Ollama](https://ollama.com) (listed with their size, downloaded and removed right in the chat's model list; the first one pulled is picked), or any OpenAI-compatible server |
 | 🪟 **Overlays** | Workspace overview with a tile and icon per window (drag windows between workspaces), session screen, polkit dialog, region screenshot / OCR / recording (with system sound or the microphone), optional dock, rounded screen corners |
 | ⬅️ **Left sidebar** | Greeting, now playing with synced lyrics (and the cover blurred behind it, `appearance.coverBackdrop`, off in Settings → Interface), weather, AI chat, translator, clipboard history with image thumbnails |
 | 🎯 **Focus Mode** | Sessions with a minimal bar, Pomodoro cycles, blocked apps and sites, profiles, statistics and achievements |
@@ -97,6 +97,7 @@ Arch Linux + Hyprland **0.56+** (the integration file uses the Lua config).
 | `ffmpeg`, `qt6-multimedia-ffmpeg` | live (video) wallpapers: playing them and taking a frame for the palette and thumbnails |
 | `hyprlock` | lock screen (hi-shell's Lock runs it) |
 | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (optional) | the AI chat with Claude (`claude` must be on `PATH` and signed in); the other AI services need only their API key |
+| `ollama` (optional) | local AI models in the chat (`systemctl enable --now ollama`); it can be on another machine too (Settings → General → Ollama server address) |
 
 ```sh
 paru -S quickshell-git matugen python ttf-material-symbols-variable-git
@@ -246,7 +247,7 @@ Stops the shell, removes the line from your Hyprland config and the link. Packag
 | click the system icons | Right sidebar (scroll there to change the volume) |
 | right click the empty part of the bar | Bar settings |
 | right click a notification | Dismiss it (a popup or one in the notification center; swiping it sideways works too) |
-| right click the desktop | Edit desktop widgets (the toolbar can be dragged by its title out of the way): drag them (edges and centers snap to other widgets and the screen, with guide lines), resize them (corner = size, right edge = width), drag the wallpaper frame (it snaps to the screen edges, center and the widgets; its corner resizes it, double click = normal size), toggle them in the toolbar; Esc or Done to finish |
+| right click the desktop | Edit desktop widgets (the toolbar can be dragged by its title out of the way and resized by its right edge, bottom edge or corner): drag them (edges and centers snap to other widgets and the screen, with guide lines), resize them (corner = size, right edge = width), drag the wallpaper frame (it snaps to the screen edges, center and the widgets; its corner resizes it, double click = normal size), toggle them in the toolbar; Esc or Done to finish |
 | hover a bar widget | Details popup (media controls, resources, weather forecast, battery, updates) |
 | click the weather in the bar | Weather details: the current conditions, the next 24 hours and the 7 days (refresh button inside); `qs -c hi-shell ipc call weatherDetails toggle` |
 | scroll | Every slider (volume, brightness, mic, app volumes, track position, settings); on the bar: system icons = volume, battery = brightness, media = player volume, keyboard layout = switch, workspaces = previous / next; the calendar scrolls through months |

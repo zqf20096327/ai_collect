@@ -4,7 +4,7 @@
 
 装好后，你的 Antigravity 会多出下面 **6 样实用功能**：
 
-1. **📱 手机/电脑远程控制（三码合一）**：在手机或另一台电脑上扫码就能聊、传图、批命令，还能看到几台设备连着你。
+1. **📱 手机/电脑远程控制（四通道融合配对）**：在手机或另一台电脑上扫码就能聊、传图、批命令，支持 `局域网` / `Tailscale` / `Bonjour` / `Cloudflare 隧道`（免登录 4G/5G 外网直连或自有固定域名）启停门禁，还能看到几台设备连着你。
 2. **🇨🇳 全中文界面 + 思考过程自动中译**：装好即变中文，英文思考与会话标题本地自动翻译，可在 `⚙️` 里免重启秒切中英。
 3. **📊 上下文与额度看板**：右上角直接看这次对话用了多少上下文，以及 Gemini / Claude 5 小时与每周额度还剩多少。
 4. **🔄 自动检测更新 & 一键升级**：有新版时右上角 `⚙️` 会亮小红点，点一下 **「立即更新」**，免重启立刻生效。
@@ -92,11 +92,11 @@ ag-context-meter status
 
 | 你在界面上看到的 | 点它有什么用 |
 | :--- | :--- |
-| **右上角 `📱远程`**（有时带数字 `· 1`） | 弹出配对二维码和链接，手机扫码或电脑打开就能远程对话、传图、审批；旁边的数字表示当前连着几台设备 |
-| **右上角 `⚙️`**（有新版本时带小红点） | 换主题配色、切换中英文、配置终端 CLI、管理套餐订阅，以及在有新版本时一键升级 |
-| **右上角 `>_ CLI`** | 一键在你常用的 Mac 终端里打开 `agy` 命令行会话 |
+| **右上角 `📱远程`**（有时带数字 `· 1`） | 弹出四通道配对二维码与复选控制（`局域网` / `Tailscale` / `Bonjour` / `Cloudflare 隧道`），支持外网直连、停用通道后端拦截及查看在线关联设备 |
+| **右上角 `⚙️`**（有新版本时带小红点） | 换主题配色、切换中英文、配置终端 CLI（含多路复用器目标主机）、管理套餐订阅，以及在有新版本时一键升级 |
+| **右上角 `>_ CLI`** | 一键在你常用的 Mac 终端里打开 `agy` 命令行会话（支持 Rex / WezTerm / tmux 指定主机名） |
 | **右上角圆环 + `G4` / `C`** | 圆环看这次对话用了多少上下文及 Token 账单图表；`G4` / `C` 看 Gemini 与 Claude 的 5 小时和每周配额 |
-| **输入框上方小按钮 & 底部细条** | 上方按钮快速发 `/compact`、`/plan`、导出对话或开关自动确认；底部细条看生成速度和缓存命中率 |
+| **输入框上方小按钮 & 底部细条** | 上方按钮快速发 `/compact`、`/plan`、导出对话或开关自动确认；底部细条用双比例图标实时看上下文占用率、生成速度与缓存命中率 |
 | **输入框右侧导航条 & 右侧 `✏️ 编辑`** | 右侧细条一键跳到顶部/上一轮/下一轮/底部；预览文件时点 **`✏️ 编辑`** 就地修改，按 `⌘S` 直接保存 |
 
 > 💡 **快速切换对话快捷键**：按 **`⌘1`～`⌘9`** 快速切换左侧前 9 个对话（按住 **`⌘`** 键自动浮现序号角标），按 **`⌘⇧[`** / **`⌘⇧]`**（或 **`⌃Tab`**）切换上/下一个对话。
@@ -105,19 +105,22 @@ ag-context-meter status
 
 ## 三、核心功能怎么用？
 
-### 1. 📱 手机 / 电脑远程控制 &「三码合一」怎么用？
+### 1. 📱 手机 / 电脑远程控制（四通道启停门禁 + Cloudflare 公网隧道）
 
-> **一句话**：一个二维码里同时装了 **3 条连接路线**，哪条能通自动走哪条，不用你来回换码。
+> **一句话**：一个二维码里同时装了 **多条连接路线**，弹窗支持按行复选启停通道并直连 **Cloudflare 隧道**（4G/5G 免装 Tailscale 也能扫码秒进），哪条能通自动走哪条，客户端也可手动直选入口。
 
 1. 在电脑右上角点 **`📱远程`**，弹出配对二维码。
 2. 手机用系统相机扫码并在 Safari 打开。
 3. 点 Safari 底部 **「分享」→「添加到主屏幕」**——以后从手机桌面图标点开，就是全屏独立体验，支持在对话区向右轻滑切换会话、`+` 号选图或拍照压缩发送。
 
-**为什么叫「三码合一」？**
-二维码里同时写入了电脑的三种地址（在弹窗里点任意一行也可以手动切换优先入口）：
-- **同一 Wi-Fi**：手机和电脑连同一个路由器时用它，速度最快。
-- **Tailscale（异地 / 4G / 5G）**：出门在外不在同一 Wi-Fi 时自动接管（电脑和手机登录同一 Tailscale 账号即可，可用时默认优先作为主入口）。
-- **Bonjour（局域网域名）**：家里路由器重新分配 IP 也不用重扫码，通过 `电脑名.local` 自动找到电脑。
+**4 条连接路线与安全门禁**：
+- **整行复选启停 & 后端 `403` 拦截**：点击通道行即可启用/停用对应路线；未勾选的方式不仅从二维码移除，服务端也会直接拒绝该通道来源的调用（返回 `403`）。
+- **局域网（Wi-Fi）**：手机和电脑连同一个路由器时速度最快。
+- **Tailscale（私网跨网）**：电脑和手机登录同一 Tailscale 账号即可跨网互通。
+- **Bonjour（`*.local` 域名）**：路由器重新分配内网 IP 时仍可通过 `电脑名.local` 找到电脑。
+- **Cloudflare 隧道（公网 HTTPS）**：勾选开启后支持两种模式（均启用 `--edge-ip-version 4 --protocol http2` 提升稳定性，并内置 3s 快速故障切换）：
+  - **免登录临时隧道（默认）**：无需 Cloudflare 账号，自动通过本机 `cloudflared` 在约 3～8 秒内分配 `https://*.trycloudflare.com` 公网入口；开启或从固定域名切换时按钮显示旋转状态与实时提示，并自动屏蔽切换期间的旧固定域名。
+  - **自有域名固定隧道**：点行尾 **`固定域名 ▾`**（内置 **`获取 Token ↗`** 一键跳转 Cloudflare Zero Trust 控制台），填入你在 Cloudflare 托管并在 Tunnel **Public Hostname** 绑定到 `http://127.0.0.1:18765` 的自有域名（请勿填写 `*.cloudflareaccess.com` 登录门户，系统会自动拦截并提示），再粘贴保留完整 Base64（`+ / =`）的 `eyJ...`（校验 `{ a, t, s }` / JWT 结构）或完整 `cloudflared service install <token>` 命令即可固定访问。
 
 **查看连了多少设备 & 一键踢出旧设备**：
 - 右上角按钮会实时显示已配对数量（例如 **`📱远程 · 1`**），点开弹窗就能看到 **`已关联 N 台设备（M 台在线）`** 和具体设备（如 `iPhone`、`iPad`、`Mac`）。
@@ -145,17 +148,19 @@ ag-context-meter status
 ### 4. 📊 看懂上下文与配额看板
 
 - **右上角圆环**：代表当前这次对话已经用了多少上下文容量；点开可以查看今日 / 本月 / 本年 Token 用量、52 周使用热力图以及按 API 价格估算的参考费用。
-- **`G4` / `C` 胶囊**：代表 Gemini 4 与 Claude/GPT 套餐剩余额度；点开能看 **5 小时窗口** 和 **每周总限额** 双进度条以及准确重置时间。
-- **输入框底部细条**：实时显示当前模型窗口上限（如 `1M` / `512k` / `128k`）、每秒生成速度（`tok/s`）与缓存命中率。
+- **`G4` / `C` 胶囊**：代表 Gemini 4 与 Claude/GPT 套餐剩余额度；点开能看 **5 小时窗口** 和 **每周总限额** 双进度条以及准确重置时间。卡片右上角的 **「最紧 XX%」** 取 `min(5 小时剩余%, 每周剩余%)`，即决定当前模型池何时触发限流的短板剩余比例。
+- **输入框底部细条**：采用占用率 + 缓存命中率双比例 SVG 图标，实时显示当前模型窗口上限（如 `1M` / `512k` / `128k`）、上下文占用率、每秒生成速度（`tok/s`）与缓存命中率。
+- **统一设置与订阅面板**：`⚙️` 面板内置主题配色、中英文秒切、`>_ CLI` 终端多路复用配置及账号套餐订阅信息表单（所有输入框与下拉框已统一为 `28px` 高度对齐）。
 
 > **小抄**：**上下文** = AI 这一轮会话里还能“记住”的文字长度；**Token** = AI 计费与计量单位，大约对应一小段字词；**配额** = 你的账号在当前时间窗口内还能用多少额度。
 
 ### 5. ⚡ 顺手小工具 & 🛡️ 危险命令红框拦截
 
+- **适配 Antigravity `2.32.x` / `2.33.0` 与防抖浮窗**：完整兼容新版桌面端对话侧栏（`conversation-row-sidebar`）、输入框栏（`.surface-composer`）与回复节点结构（`agent-response`），并在后台健康巡检期间保持已展开浮窗稳定不误关。
 - **快捷键极速切换对话**：按 **`⌘1`～`⌘9`** 直接切换到左侧列表第 1～9 个对话（按住 **`⌘`** 键不松时，左侧前 9 个对话右侧会自动浮现序号提示；已避开 `⌘⇧3/4/5` 系统截图键）；按 **`⌘⇧[`** / **`⌘⇧]`**（或 **`⌃Tab`** / **`⌃⇧Tab`**）可循环切换到上一个 / 下一个对话。
 - **右侧预览直接改文件**：查看右侧 `.md` 方案或代码时，顶栏点 **`✏️ 编辑`** 即可原地修改，按 **`⌘S`** 直接保存回本地硬盘，点 **`↩️ 完成`** 退出并刷新预览。
 - **`Tab` 补全下一步建议**：AI 回复完、输入框空着时，会自动推荐 2～4 句下一步可以怎么接；按 **`Tab` 或 `→`** 直接填入，**`↓`/`↑`** 切换，**`Esc`** 隐藏。
-- **一键开本地终端 (`>_ CLI`)**：自动探测 Terminal、iTerm2、Ghostty、Warp、Kitty、WezTerm、cmux 等终端拉起 CLI。*（提示：设置里的 `--dangerously-skip-permissions` 免审核开关打开后命令行执行不再逐条询问，日常建议保持关闭，仅在测试或隔离目录使用。）*
+- **一键开本地终端 (`>_ CLI`)**：自动探测 Terminal、iTerm2、Ghostty、Warp、Kitty、WezTerm、cmux 等终端并支持指定 Rex / WezTerm / tmux 多路复用器目标主机 (`muxHost`) 拉起 CLI。*（提示：设置里的 `--dangerously-skip-permissions` 免审核开关打开后命令行执行不再逐条询问，日常建议保持关闭，仅在测试或隔离目录使用。）*
 - **高危命令红框强拦截**：AI 准备执行 `rm -rf`、`git reset --hard`、`git clean -f`、`git push`、`sudo`、`kill -9`、`DROP/DELETE`、`op item` 等危险操作时，确认卡片会亮起醒目红框和警示条；就算你打开了右上角「自动确认」，高危步骤也会强制停下等你亲手决定。
 
 ---
@@ -169,7 +174,7 @@ ag-context-meter status
 | 命令 | 作用 |
 | :--- | :--- |
 | `ag-context-meter status` | 查看各模块是否已生效、随客户端自启状态，以及 `app.asar` 是否未被本套件修改 |
-| `ag-context-meter remote` | 在终端打印「三码合一」链接、已关联设备统计与二维码（支持 `--reset-token` / `--json`） |
+| `ag-context-meter remote` | 在终端打印四通道配对链接、Cloudflare 隧道状态、已关联设备统计与二维码（支持 `--tunnel on|off` / `--reset-token` / `--json`） |
 | `ag-context-meter update` | 从 GitHub 拉取最新版本并自动热刷新运行中的 Antigravity 窗口 |
 | `ag-context-meter live` | 立即把增强功能挂载到当前打开的 Antigravity 窗口 |
 | `ag-context-meter stop` | **本次暂时关闭**：停止后台桥接并恢复纯英文原版界面（下次启动软件会自动恢复加载） |
@@ -206,7 +211,8 @@ rm -rf ~/Library/Application\ Support/AntigravityContextMeter
 | :--- | :--- |
 | **装完右上角没出现 `📱远程` 和 `⚙️`** | 1. 终端跑一次 `ag-context-meter status`；<br>2. 如果提示未连接，完全退出 Antigravity（`⌘Q`），用这条命令带调试端口重开：`open -a Antigravity --args --remote-debugging-port=9222`；<br>3. 再跑一次 `ag-context-meter live`。 |
 | **终端提示 `ag-context-meter: command not found`** | 说明 `~/.local/bin` 还没加进终端 `PATH`，运行：<br>`echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc` |
-| **手机扫码打不开页面** | 1. 看手机和电脑是不是在**同一个 Wi-Fi**（如果走 Tailscale，确认手机也已登录同一个账号）；<br>2. 在电脑上打开弹出浮窗切换另一种通道试试，或检查系统防火墙是否放行 `18765` 端口。 |
+| **手机扫码打不开页面** | 1. 打开电脑右上角 **`📱远程`**，确认当前使用的连接通道处于勾选启用状态（未勾选的通道会被后端拒绝并返回 `403`）；<br>2. 看手机和电脑是否在**同一个 Wi-Fi**（走 Tailscale 则确认同账号已连接），不在同网段时可勾选开启 **Cloudflare 隧道** 后扫码；<br>3. 若本地连接仍受阻，检查系统防火墙是否放行 `18765` 端口或切换通道直选入口。 |
+| **固定域名扫码停在 `/#/NoAuth` 或报错** | `*.cloudflareaccess.com` 是 Cloudflare Zero Trust 登录门户，不是隧道转发域名。若无自有域名请点 **「改用免登录临时隧道」**（等待 3～8 秒分配 `*.trycloudflare.com`）；若有托管在 Cloudflare 的自有域名，请在 Zero Trust → Networks → Tunnels → 对应隧道 → **Public Hostname** 新增子域名指向 `http://127.0.0.1:18765` 后再填入该子域名。 |
 | **点「立即更新」提示失败** | 确认你是用 `git clone` 安装的（zip 下载不支持自动拉取），并且自己没有改过仓库目录里的代码。 |
 | **想临时变回全英文原版界面** | 点右上角 **`⚙️`** 把语言切回 `English`，或在终端运行 `ag-context-meter stop`。 |
 
@@ -217,13 +223,13 @@ rm -rf ~/Library/Application\ Support/AntigravityContextMeter
 ### 为什么这套方案比较安全？
 
 1. **绝不修改官方软件**：不解包、不改写 `Antigravity.app` 内的 `app.asar`，保留苹果原装签名。
-2. **远程控制仅限私网 + 口令访问**：服务端只允许内网或 Tailscale 私网访问，每次请求与配对链接都带有 48 位随机口令，可随时一键重置作废。
+2. **远程控制默认私网隔离 + 四通道门禁与口令保护**：默认仅允许局域网 / Tailscale / Bonjour 私网访问；公网 **Cloudflare 隧道（HTTPS）** 仅在用户主动勾选后启用；所有未勾选通道都会在后端被直接拒绝（`403`）。每次请求与配对链接均校验 48 位随机口令（支持一键「重置密钥」），固定隧道 Token 仅写入权限为 `0600` 的本机 `remote-config.json`（接口绝不回显明文，亦支持通过 `TUNNEL_TOKEN` 环境变量传入）。
 3. **翻译与设置保存在本地**：翻译缓存与配置仅存于本机 `~/Library/Application Support/AntigravityContextMeter/`；文件编辑器通过黑名单禁止访问常见系统目录与密钥目录（重要项目仍建议搭配 Git 使用）。
 
 <details>
 <summary>🔧 展开查看：进阶与安全实现细节（监听端口、响应头、Windows/Linux 用法与上游同步）</summary>
 
-- **远程服务监听与安全响应头**：默认启用 IPv4/IPv6 双栈 `[::]:18765` 监听并强制校验来访 IP 与 `Origin` 为本机回环或 RFC1918/CGNAT 私网地址；页面下发 `Content-Security-Policy` 与 `X-Content-Type-Options: nosniff`，设备标识可结合 `X-AG-Device-Hint` 区分桌面端 UA 的现代 `iPad`。
+- **远程服务监听与安全响应头**：默认启用 IPv4/IPv6 双栈 `[::]:18765` 监听并按四通道（`lan` / `tailscale` / `bonjour` / `tunnel`）识别请求来源与强制门禁拦截（未启用通道返回 `403`）；私网入口严格校验本机回环或 RFC1918/CGNAT 来源并核验 `Origin`；页面下发 `Content-Security-Policy` 与 `X-Content-Type-Options: nosniff`，设备标识可结合 `X-AG-Device-Hint` 区分桌面端 UA 的现代 `iPad`。
 - **更新实现细节**：右上角 `⚙️` 一键更新与 `ag-context-meter update` 仅在安装目录具备 `.git` 且工作区无未提交修改时，通过 `git pull --ff-only` 更新后热重载目标窗口；文件行内编辑通过前缀黑名单阻止读写 `/System`、`/usr`、`/etc`、`Antigravity.app` 及 `.ssh` / `.gnupg` / `1Password` 等凭据路径。
 - **Windows / Linux 手动使用**：`setup-macos-cdp.sh` 与 `~/Library/LaunchAgents/` 后台自启为 macOS 专属；Windows / Linux 用户安装 Node.js 22.4+ 并让 Antigravity 以远程调试端口启动后，进入仓库目录手动运行 `node cli.js live` 也可加载核心面板增强逻辑（`node cli.js status` 查看状态）。
 - **检查 6 个上游参考仓库**：可运行 `ag-context-meter upstreams` 与本地基线 [`upstreams.json`](upstreams.json) 比对。如想让 AI Agent 帮你安全合入参考项目更新，可对 Agent 说：
@@ -241,7 +247,7 @@ rm -rf ~/Library/Application\ Support/AntigravityContextMeter
 | **[elviscjn-cjn/antigravity-context-viewer](https://github.com/elviscjn-cjn/antigravity-context-viewer)** | [@elviscjn-cjn](https://github.com/elviscjn-cjn)、[@Jia131313](https://github.com/Jia131313)、[@Azreal2021](https://github.com/Azreal2021)、[@MoiraToki](https://github.com/MoiraToki)、[@nocoo](https://github.com/nocoo) | 基础框架、顶部上下文圆环看板 (`v0.8.6`)、Token 分类统计与 52 周热力图、API 费用估算、5h+Weekly 双窗口配额与 `0%` 修复 |
 | **[akelabs/antigravity-pulse](https://github.com/akelabs/antigravity-pulse)** | [@akelabs](https://github.com/akelabs) | 输入框底部能量条 (`v1.3.2`)：输出速率、缓存命中与 5 小时窗口倒计时 |
 | **[n2ns/antigravity-panel](https://github.com/n2ns/antigravity-panel)** | [@n2ns](https://github.com/n2ns) | 模型额度监控 (`v2.8.5`)、Auto-Accept 安全自动确认与 Brain 缓存体积监控思路 |
-| **[yiheng8023/antigravity-chinese](https://github.com/yiheng8023/antigravity-chinese)** | [@yiheng8023](https://github.com/yiheng8023) | 适配 Antigravity `2.32.1` (`v3.3.49`) 的中文界面精确词条与安全动态正则规则 |
+| **[yiheng8023/antigravity-chinese](https://github.com/yiheng8023/antigravity-chinese)** | [@yiheng8023](https://github.com/yiheng8023) | 适配 Antigravity `2.32+ / 2.33.0` (`v3.3.52`) 的中文界面精确词条与安全动态正则规则 |
 | **[wycocoyu/agy-context-dashboard](https://github.com/wycocoyu/agy-context-dashboard)** | [@wycocoyu](https://github.com/wycocoyu) | 轻量状态栏排布与指标展示思路 (`v0.8.16`，已整合去重) |
 | **[oil-oil/agy-fast-io](https://github.com/oil-oil/agy-fast-io)** | [@oil-oil](https://github.com/oil-oil) | 桌面端 Fast IO 提速规则 (`v0.2.1`)：免审白名单命令、同轮并读与回合压缩规范 |
 

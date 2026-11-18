@@ -1,13 +1,9 @@
 # ZIL Lean
 
-This is a DSL that works as a relational inference engine, and formal verification layer embedded in [Lean 4](https://lean-lang.org/)
+This is a DSL that leverages formal verification in [Lean 4](https://lean-lang.org/)
 
-ZIL provides a framework for modeling how concepts interact and depends and relate to each other, this can cover from distributed systems, cloud infrastructure topologies, cascading failure modes to architectural contracts. By using zil we get a machine-checked Datalog inference engine in Lean 4, ZIL computes transitive closures, evaluates stratified negation, and proves structural invariants across complex software codebases.
-
-simplest way to use it is to ref its repo url to your AI agent and link it to a TLA+ spec via SANY to produce zil code from the TLA+ spec, this allows to leverage lean4 
-power to cover TLA+ spec state-space without relaying on TLC scanning, this alone can avoid waiting tlc from 10-20 minutes to seconds while you get even better coverage.
-
-Community contributions are welcome to provide exact quantifications for similar scenarios.
+ZIL provides a framework for modeling how concepts relate to each other, it can be used to describe distributed systems, cloud infrastructure topologies, cascading failure modes or architectural contracts. 
+The simplest way to use it is to reference its repository URL in your AI agent and link it to a TLA+ specification via SANY to generate ZIL code from the TLA+ spec. This allows you to leverage the power of Lean 4 to cover the TLA+ specification's state space without relying on TLC scanning. This alone can reduce wait times from minutes to seconds on some scenarios.
 
 ---
 
@@ -16,6 +12,33 @@ Community contributions are welcome to provide exact quantifications for similar
 While based on Google's [Zanzibar](https://storage.googleapis.com/gweb-research2023-media/pubtools/5068.pdf) that popularize relational assertions for user access control (ReBAC/RBAC), **ZIL is meant for systems engineering, infrastructure reliability, and formal verification.**
 
 This was initially used for the [Entropic-physlib](https://github.com/jagg-ix/entropic-physlib) project to link theorems as a single coherent framework
+
+---
+
+## Core Concepts: Relational Tuples & Rules 
+
+System state in ZIL is declared as a set of strongly typed **relation tuples**, similar to  Google Zanzibar core lang :
+```text
+<entity>#<relationship>@<target> [optional_attributes].
+```
+A simple example for some software infrastructure and its relation to physical locations
+
+```zc
+// Multi-region interconnect
+location:dc_west#connected_to@location:dc_east [link="mpls", bandwidth_gbps=100].
+
+// Infrastructure deployment
+service:payment_api#deployed_on@location:dc_west.
+service:payment_api#depends_on@service:postgres_cluster.
+
+// Cascading failure rule with stratified negation
+RULE cascadingDegradation:
+IF ?service#depends_on@?dep AND NOT ?dep#status@value:healthy
+THEN ?service#status@value:degraded.
+```
+
+---
+
 
 ## Quick Start
 
@@ -35,32 +58,7 @@ lake build
 lake build zil
 ```
 
----
 
-## Core Concepts: Relational Tuples & Rules 
-
-System state in ZIL is declared as a set of strongly typed **relation tuples**, Google Zanzibar core lang shines here:
-```text
-<entity>#<relationship>@<target> [optional_attributes].
-```
-
-Zil describes concepts, can be physical or virtual nodes, networks, cloud resources, microservices, or state machines. Inference rules (Datalog Horn clauses) derive new relationships and system states:
-
-```zc
-// Multi-region interconnect
-location:dc_west#connected_to@location:dc_east [link="mpls", bandwidth_gbps=100].
-
-// Infrastructure deployment
-service:payment_api#deployed_on@location:dc_west.
-service:payment_api#depends_on@service:postgres_cluster.
-
-// Cascading failure rule with stratified negation
-RULE cascadingDegradation:
-IF ?service#depends_on@?dep AND NOT ?dep#status@value:healthy
-THEN ?service#status@value:degraded.
-```
-
----
 
 ## Capabilities & Hands-On Examples
 

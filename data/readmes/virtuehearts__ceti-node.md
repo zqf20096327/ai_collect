@@ -67,7 +67,7 @@ That's it — no installs to babysit, no accounts to create.
 
 1. Install the newest Python from
    [python.org](https://www.python.org/downloads/).
-2. Download [`laptop-uncensored-node-0.0.1-beta4.zip`](https://drive.google.com/uc?id=1iuYwK6cH3cUQM65Sj5T0JiD-2-qt14TL&export=download) (47 MB) and unzip it.
+2. Download [`laptop-uncensored-node-0.0.1-beta8.zip`](https://drive.google.com/uc?id=1gSRIN2C0zer02RWfi1e7cdzX-x6GDLnr&export=download) (47 MB) and unzip it.
 3. Run `autorun.bat` (Windows) or `autorun.sh` (Linux). It checks
    the setup, downloads the models, starts the servers, and opens
    the web UI.
@@ -201,18 +201,82 @@ what you want to serve, and we'll get you listed and set up.
 Anyone who wants to join the project gets a **free darknet.ca
 Gmail account** — same address to ask.
 
+Money, hardware, compute credits, and time are all welcome —
+the full list, what each one buys, and the hardware wishlist are
+at **https://ceti.darknet.ca/donate.html**. GitHub Sponsors is
+opening soon (onboarding in progress — see the donate page);
+until the Sponsor button is live, email admin@darknet.ca.
+
 ## Status
 
-- **Version:** 0.0.1-beta4. (Beta4 follows beta3 the same morning,
-  2026-11-15: the all-layers-reason redesign below.)
-- **Tests:** 619 checks green at this build (unit 331: Hub 124,
-  Brain 6, CETI 33, SSH terminal 37, Research 42, Sessions 5,
+- **Version:** 0.0.1-beta8. (Beta8 follows beta7 the next day,
+  2026-11-18: the SSH terminal post-Enter fix below.)
+- **Tests:** 622 checks green at this build (unit 334: Hub 124,
+  Brain 6, CETI 33, SSH terminal 38, Research 42, Sessions 5,
   Local models 8, Code agent 9, Workspace 6, TTS bundle 11,
   Toggle reasoning 6, Llama install 14, Llama gate 9,
-  TTS control 20; script suites 288:
+  TTS control 22; script suites 288:
   nodeapi 101, community 16, image 13, node_client 12,
   text_handler 8, transfer 13, transfers/serving 14, tunnel 19,
   two_nodes 36, edge_cases 35, presence 21).
+- **New in 0.0.1-beta8:** **SSH terminal no longer wraps the
+  "Ask" input after Enter.** The HF chat TUI connected and
+  painted fine, but after pressing Enter its "Ask" input went
+  vertical (one char per line) in the Hub's SSH pane, while
+  the same connection in a plain Windows terminal worked.
+  Windows OpenSSH reads the remote PTY size from the console,
+  and with no console it negotiates 0x0; the TUI re-reads the
+  0x0 size when it redraws the input after Enter. The pipe
+  session now guarantees a console with a sane screen buffer
+  before spawning ssh: when the Hub has no console it
+  allocates one, hides it at once, and sizes it to the pane;
+  when its console buffer is broken it repairs it. A sane
+  console is left alone. Any failure falls back to the old
+  behaviour. This is Windows-only code and is a no-op
+  elsewhere.
+- **New in 0.0.1-beta7:** **TTS START works from any extract
+  path — for real this time.** Beta5 and beta6 launched the
+  bridge with `cmd /c call <absolute path>`, but on the laptop
+  beta6 still showed the same `'s' / 'bat' / 'RT' / 'tTTS' is
+  not recognized` and `... was unexpected at this time.` — the
+  `call` form was never run on real Windows, only inspected as
+  a string, and cmd still chews a quoted path with parens. The
+  launch now passes only the script's basename to cmd
+  (`cmd /c call start_tts.bat`); the Hub and autorun already
+  run it with the working directory set to the script's folder,
+  so it resolves there and the extract path never reaches the
+  cmd command line at all. The basename has no spaces, no
+  parens, no quotes — nothing for cmd to misparse. Same fix in
+  both places (`hub/servers.py`, `autorun.py`), so the
+  boot-time auto-start and the START button both work, and TTS
+  comes up with no setup. The `.bat` itself is unchanged and
+  still works by double-click.
+- **New in 0.0.1-beta6:** **Windows CI check.** The laptop is
+  the only Windows machine in this project, so Windows-only
+  breakage surfaced only when Jero ran a release there (beta4's
+  TTS START bug). `.github/workflows/windows.yml` now runs the
+  Windows-specific checks on a GitHub-hosted Windows runner on
+  every push: the TTS control tests, the ConPTY self-test (echo
+  mode is the gate), the full unit suite (informational), and the
+  ssh / ssh-pipe self-tests (diagnostic — they run the real ssh
+  argv and report bytes/alive/exit code, separating "ConPTY is
+  broken" from "ssh itself failed"). A new Windows-only test
+  runs the real `start_tts.bat` through `cmd /c call` from a
+  path with a space and `(1)`, using a stub venv so the batch
+  stops at its smoke check — no torch install, no model
+  download. The workflow file ships in this zip, so the repo can
+  be updated from the zip and the check runs on the next push.
+- **New in 0.0.1-beta5:** **TTS START works from any extract
+  path.** Beta4's START button (and the boot-time start) launched
+  the bridge with bare `cmd /c <path>`, which breaks when the
+  folder has a space or a parenthesis — a duplicate download lands
+  as `...beta4 (1)` — cmd strips the quotes and re-splits the
+  path, so the System log filled with `'s' / 'bat' / 'RT' /
+  'tTTS' is not recognized` and `... was unexpected at this
+  time.` The launch now goes through `cmd /c call <script>`,
+  which takes the quoted path as one file. Same fix in both
+  places (`hub/servers.py`, `autorun.py`). Nothing else changed
+  from beta4.
 - **New in 0.0.1-beta4:** **All layers reason — the local model
   constructs every answer.** No layer returns its hit directly
   any more. Every tier outputs what it found — math result

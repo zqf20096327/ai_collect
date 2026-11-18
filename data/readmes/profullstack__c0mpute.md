@@ -106,7 +106,7 @@ c0mpute worker start --gpu
 
 # submit jobs
 c0mpute transcode submit https://example.com/input.mp4 --preset video-1080p --max-price 1.25
-c0mpute infernet chat --model qwen2.5:7b "hello"
+c0mpute infernet chat --model eriktonon/qwen3.8-uncensored:9b "hello"
 c0mpute crawl fetch https://example.com/ --max-price 0.01   # scrape a page from a worker's IP
 
 # free local CPU speech models + P2P speech worker roles
@@ -152,6 +152,38 @@ c0mpute git --help                   # full guide: URLs, push to deploy, gateway
 ```
 
 Guide: [docs/git-hosting.md](docs/git-hosting.md).
+
+### LLM inference (automatic)
+
+Every capable worker answers `infernet.inference` (chat) with no setup. If an
+Ollama (or another OpenAI-compatible runtime) already answers on
+`127.0.0.1:11434`, or `C0MPUTE_INFERENCE_URL` points at one, the worker serves
+its models. Otherwise it provisions a house runtime in the background:
+
+- **GPU nodes** (any NVIDIA card, or a discrete AMD card with at least 4 GiB of
+  dedicated VRAM; integrated APUs do not count) get the official Ollama Linux
+  release (pinned, SHA-256 checked, CUDA and ROCm runtimes bundled, no sudo)
+  under the data dir, run `ollama serve` on `127.0.0.1:11434`, and pull one
+  model sized to the card: 8 GiB+ gets the house default
+  `eriktonon/qwen3.8-uncensored:9b`, 6 GiB+ gets `qwen3:4b`, smaller cards
+  `qwen2.5:1.5b`. Ollama keeps it loaded (`OLLAMA_KEEP_ALIVE=-1`). If that fails it retries after 6 hours and the CPU runtime
+  runs meanwhile.
+- **CPU nodes** get a pinned llama.cpp `llama-server` with one GGUF sized to
+  RAM (the 9B house default on 16 GiB+, Qwen2.5 1.5B on 8 GiB+, else 0.5B) on
+  `127.0.0.1:11439`, at low priority so songs and images keep the box.
+
+`c0mpute status` says which applies and why. Opt out with
+`C0MPUTE_INFERENCE_AUTO=0` or `[inference] auto_install = false`.
+
+A node answers as many chats at once as its runtime really runs in parallel,
+and bids only while one of those slots is free: llama-server's `total_slots`,
+an Ollama's `OLLAMA_NUM_PARALLEL` (read from the local `ollama serve` or its
+runner; Ollama's default is 1), or 1 when that cannot be told. The house GPU
+Ollama runs 2 (4 on 20 GiB+ cards) with flash attention and a q8_0 KV cache,
+and caps a model's context at 32768 tokens (16384 under 10 GiB). CPU-only boxes
+answer one at a time. The worker logs `inference: concurrent answers` with the
+count and where it came from, and re-reads it every minute. Override with
+`C0MPUTE_INFERENCE_CONCURRENCY=N` or `[inference] max_concurrent = N`.
 
 ### CPU speech inference
 

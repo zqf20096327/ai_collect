@@ -38,7 +38,7 @@ Compose and build AI systems from reusable components. Combine models, framework
 ---
 ## 😊 Community
 
-Join us on our <a href="https://discord.com/invite/uJftCqCt"> Discord Server </a> to chat live with our engineers. We would love feedback and active discussions which can help shape where Sinapsis goes.
+Join us on our <a href="https://discord.gg/uuBqQqu2vS"> Discord Server </a> to chat live with our engineers. We would love feedback and active discussions which can help shape where Sinapsis goes.
 
 ---
 
@@ -88,15 +88,15 @@ templates:
 ### 4. Run your Agent
 
 ```bash
-uv run sinx run agent_config.yml
+uv run sinx jobs run agent_config.yml
 ```
 
 ### 5. Explore available Templates
 
 ```bash
-uv run sinx templates show-all
-uv run sinx templates docstring TemplateName
-uv run sinx templates example-config TemplateName
+uv run sinx jobs  templates show-all
+uv run sinx jobs  templates docstring TemplateName
+uv run sinx jobs  templates example-config TemplateName
 ```
 
 The same Agent model is accessible through Python, the CLI, Sinapsis UI, VS Code, and the API.

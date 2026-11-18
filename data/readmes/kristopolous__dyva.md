@@ -13,7 +13,8 @@
 https://github.com/user-attachments/assets/9417c9fc-2e13-4844-9b17-5fc4cdbefcee
 
 
-**Dyva** is a dynamic proxy that routes to  [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Fooocus](https://github.com/lllyasviel/Fooocus), [Strata](https://github.com/Niko1221/Strata), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [Gradio](https://gradio.app/), [Chatterbox](https://github.com/resemble-ai/chatterbox) and [ComfyUI](https://comfy.org) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling, and honeypot detection. 
+**Dyva** is a dynamic proxy that routes to 
+[Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [Axon](https://github.com/HaseebKhalid1507/axon), [ExLlamaV3](https://github.com/turboderp-org/exllamav3), [oMLX](https://github.com/jundot/omlx), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Strata](https://github.com/Niko1221/Strata), [Fooocus](https://github.com/lllyasviel/Fooocus), [ComfyUI](https://comfy.org), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [FishAudio](https://github.com/fishaudio), [Chatterbox](https://github.com/resemble-ai/chatterbox), and [Gradio](https://gradio.app/) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [Hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling and compression, and honeypot detection. 
 
 Capable of text generation, embeddings, systemone (JEV) decision models, vision, tool calling, image generation and editing, video generation, TTS, and music generation in a unified interface with state of the art, real-time tunable router providing sub 1s latency. 
 
@@ -31,7 +32,7 @@ uvx dyva
 curl -fsSL https://9ol.es/dyvash | bash
 ```
 
-It installs to `~/free-ollama`; start it again anytime with `~/free-ollama/start.sh` (any dyva flags pass straight through). macOS note: the built-in `python3` is 3.9, which is too old install a newer one first with `brew install python`, pyenv, or from [python.org](https://www.python.org/downloads/).
+It installs to `~/dyva`; start it again anytime with `~/dyva/start.sh` (any dyva flags pass straight through). macOS note: the built-in `python3` is 3.9, which is too old install a newer one first with `brew install python`, pyenv, or from [python.org](https://www.python.org/downloads/).
 
 Along with being so ollama-compatible the ollama client doesn't know the difference, dyva has a feature-rich front-end with chat that includes image generation, web search, sub-agents, documents, host drilldown and exploration, video generation, tts, stats, geomaps, and even graphically tweaking the routing algorithm.
 
@@ -55,7 +56,7 @@ The details:
 * By size like `qwen >10gb`
 * By release date like `qwen>2026`.
 
-They can be stacked so `qwen>2026>5gb` means the newer large qwens. [You can also slice by many other fields](https://github.com/kristopolous/free-ollama/tree/main/dyva#model-names-are-routing-patterns).
+They can be stacked so `qwen>2026>5gb` means the newer large qwens. [You can also slice by many other fields](https://github.com/kristopolous/dyva/tree/main/dyva#model-names-are-routing-patterns).
 
 ## Finding new hosts
 You can multi-source host lists or bring your own. There's a separate survey tool called [graflex](graflex).

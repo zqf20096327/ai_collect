@@ -174,6 +174,7 @@ In this step, we will learn that there is no single best model. The right choice
 In this step, we will learn the fastest and cheapest way to improve results for a customer: giving the model better instructions and better context. In most FDE engagements, this is where the first big win comes from.
 
 - [How does Prompt Engineering work?](https://outcomeschool.com/blog/prompt-engineering)
+- [How does In-Context Learning work?](https://outcomeschool.com/blog/in-context-learning)
 - [How does Chain-of-Thought (CoT) Prompting work?](https://outcomeschool.com/blog/how-does-chain-of-thought-prompting-work)
 - [How does Prompt Chaining work?](https://outcomeschool.com/blog/how-does-prompt-chaining-work)
 - [How does Tree of Thoughts work?](https://outcomeschool.com/blog/how-does-tree-of-thoughts-work)
@@ -339,6 +340,8 @@ In this step, we will see everything come together in one of the most requested 
 - [How does a voice agent hide the delay of a slow tool call?](https://outcomeschool.com/blog/slow-tool-calls-in-voice-agents)
 - [How does a voice AI agent answer a phone call?](https://outcomeschool.com/blog/phone-calls-in-voice-agents)
 - [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
+- [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)
+- [How does voicemail and answering machine detection work?](https://outcomeschool.com/blog/answering-machine-detection)
 
 ### Step 14: Prepare for Forward Deployed Engineer Interviews
 

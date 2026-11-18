@@ -3,6 +3,11 @@
 Codjiva is a desktop app that looks like a code editor but shows a **picture of the code** in place of its text.
 You open a folder, pick a file, and an AI agent you already use reads the code and draws how it works.
 
+[![A film made by Codjiva. An order moves through the machines of a Go order handler, and a caption explains each step.](docs/images/film.gif)](https://aayushch.github.io/codjiva/#demo)
+
+*A film Codjiva made from [one Go file](fixtures/go-orders/internal/orders/handler.go). This recording is
+silent. [The project's web page](https://aayushch.github.io/codjiva/#demo) plays the same film with sound.*
+
 - **Visualise** makes a still, interactive blueprint of one file or one folder. You can pan and zoom, click a
   part to see what it does and where it is in the code, and switch layers on and off.
 - **Animate** makes a short narrated film that follows one piece of work through a file and the files around it.
@@ -101,9 +106,13 @@ agent run.
   `.gitignore`.
 - The agent is told to write only into the folder of the version it is making. Claude Code is held to that by
   its own permission rules. Other agents cannot be confined that tightly; Settings says what each one can do.
-- After every agent run, Codjiva compares the whole project with a snapshot taken before the run. If any file
-  outside `.codjiva/` changed, the result is discarded and you are shown the files, with a button that restores
-  the ones git tracks.
+- After every agent run, Codjiva compares the whole project with a snapshot taken before the run. If a file
+  outside `.codjiva/` changed, the job panel lists it, with a button that restores the files git tracks to
+  their last commit. Codjiva cannot tell whether the agent or you changed a file, so the job is not stopped,
+  and a visual or film made from a changed file is marked stale. A job that changes an already saved version
+  is stopped and its result is discarded.
+- Several jobs can run at the same time. Only a second job for the same visual, film or pipeline has to wait
+  until the first has ended.
 - Artifacts are shown in a sandboxed frame that can run scripts and nothing else, with a policy that blocks
   every network request. An artifact cannot reach the app, your files or the internet.
 
@@ -203,6 +212,12 @@ a Svelte file may be wider than 80 columns; `scripts/line-width.mjs` lists the c
 | `landing/` | The project's web page. `scripts/landing.sh` builds its live examples, and a workflow publishes it to GitHub Pages. |
 
 More: [adding or changing an agent](docs/AGENTS.md).
+
+## Contributing
+
+Read the [contributing guide](.github/CONTRIBUTING.md) before you open an issue or a pull request. Everyone who
+takes part is expected to follow the [code of conduct](.github/CODE_OF_CONDUCT.md). To report a security
+problem, follow the [security policy](.github/SECURITY.md) and do not open a public issue.
 
 ## Licence
 

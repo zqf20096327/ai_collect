@@ -236,7 +236,7 @@ bun run build:app:win   # Windows .msi installer
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). One thing catches people out:
 
-- **Every PR targets `main`** (hotfixes for a shipped version excepted; see CONTRIBUTING.md) and is merged with a merge commit titled with the PR title, so write that title as a Conventional Commit (`fix(scope): …`). Releases are tags on `main`.
+- **Every PR targets `dev`**, although GitHub offers `main`, the default branch (hotfixes for a shipped version excepted; see CONTRIBUTING.md). It is merged with a merge commit titled with the PR title, so write that title as a Conventional Commit (`fix(scope): …`). Releases are tags on `main`.
 
 [docs/architecture.md](docs/architecture.md) covers how Atlas is built. [SECURITY.md](.github/SECURITY.md) covers reporting vulnerabilities.
 

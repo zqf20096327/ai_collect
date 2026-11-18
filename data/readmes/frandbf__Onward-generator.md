@@ -150,6 +150,7 @@ A new map gets the base pipeline: OSM, the height sources that cover its centre,
 | `--core-target-triangles N` | Budget core: the core half-side is solved for N core triangles instead of a fixed radius ([ADR-017](docs/decisions/ADR-017-playable-core.md) amendment) |
 | `map.json` `"mid_ring_m": W` | 10 to 1000 m of intermediate HLOD ring around the core (plan D3) |
 | `map.json` `"facades": {"mode": "trim" \| "legacy", "style": "<name>" \| "auto", "weathering": "clean" \| "worn" \| "heavy"}` | Force a facade style, the old per-material facades, or aged walls |
+| `map.json` `"parapet_m": H` | 0.5 to 1.5 m: every roof parapet at this height instead of the templates' 0.7 m, to see more of the street from a roof (0.5 for that); its ladders follow. Rerun from `detail` |
 | `map.json` `"triangle_limit": N` | 100 000 to 300 000 (default 300 000): what props and library trees fill up to and what the package is checked against; 250 000 for the Onward Workshop ([ADR-005](docs/decisions/ADR-005-quest-performance.md) amendment) |
 | `map.json` `"user_decals": false` | Leaves your own wall decals (*Your own wall decals* above) off this map, as a Workshop map must |
 | `map.json` `"project_decals": false` | Leaves the project's wall decals (`assets/decals/`) off this map |
@@ -157,6 +158,8 @@ A new map gets the base pipeline: OSM, the height sources that cover its centre,
 | `map.json` `"overhead_lines": true \| false` | Poles, wires and service drops along the streets; absent, an `east_african`, `arid` or `latin_american` map gets them and the others do not; rerun from `overgrow` ([ADR-045](docs/decisions/ADR-045-overhead-lines.md), proposed) |
 | `map.json` `"street_mood": "lived" \| "emptied"` | A street in daily use (no growth or wrecks, intact props, street furniture, café terraces under parasols before the bars of pedestrian streets, awnings over the shop windows, no war wear on the walls) or one emptied days ago; absent is `abandoned`, unless the street profile offers a mood from the brief; rerun from `signs` ([ADR-044](docs/decisions/ADR-044-street-moods.md), proposed) |
 | `map.json` `"soundscape"` | `auto` (default: war sounds on a heavily damaged map, the style's birds and wind and a generator by a pole otherwise), `default`, `regional`, `war` or `battle`: the game's own ambience clips; rerun from `export` ([ADR-046](docs/decisions/ADR-046-soundscape.md), proposed) |
+| `map.json` `"fire": true` | Small flames and embers at the foot of each smoke column; needs `smoke`; rerun from `export` ([ADR-043](docs/decisions/ADR-043-smoke-columns.md) amendment) |
+| `map.json` `"pack_particles": false` | Keep the smoke and flames drawn by code even when `asset-store particles` imported your own particle pack (by default its flipbooks are used); rerun from `export` ([ADR-043](docs/decisions/ADR-043-smoke-columns.md) amendment of 18 November 2026) |
 | `map.json` `"smoke": N` | 0 to 5 smoke columns over wrecks of the core; rerun from `export` ([ADR-043](docs/decisions/ADR-043-smoke-columns.md), proposed) |
 
 **Data sources:** `--source nl.ahn` and `--source de.nrw_ndom` are opt-in LiDAR heights, used only inside their coverage. `onward-generator source list` shows every source; `--no-source <id>` turns one off.

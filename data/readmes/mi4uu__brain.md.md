@@ -25,13 +25,17 @@
 | | |
 |---|---|
 | **Obsidian-compatible markdown** | Wikilinks, embeds, callouts, math, mermaid, tasks, frontmatter, aliases. Open your existing Obsidian vault and it just works. |
+| **Graph view** | Interactive map of your notes and wikilinks: hover to light up neighbours, click to open, drag, zoom, filter by folder or tag, plus a local graph of the current note. Smooth on thousands of notes. |
 | **Live editor + preview** | CodeMirror 6 with cursor-anchored scroll sync, autosave, instant tooltips, command palette, quick switcher. |
 | **Semantic search built in** | Per-vault embedded vector store (pure JS, no external DB). Notes are chunked, embedded and indexed on every save. |
 | **Pluggable embedders** | Default: `bge-small-en-v1.5` running locally via **bundled WASM ONNX**, works in the prebuilt single binary, zero native deps. Or point at **Ollama**, **LM Studio**, or **OpenAI**: anything with `/v1/embeddings`. |
-| **MCP server (streamable HTTP)** | 17 tools and 2 resources mounted on the same port. Claude Desktop, Claude Code, Cursor and any MCP-compliant agent can read, search, query and write your notes. |
+| **MCP server (streamable HTTP)** | 18 tools and 2 resources mounted on the same port. Claude Desktop, Claude Code, Cursor and any MCP-compliant agent can read, search, query and write your notes. |
+| **MCP Apps note view** | In hosts that support MCP Apps (tested with OpenClaw), `read_note` opens an interactive view of the note: clickable wikilinks, Back, backlinks, light and dark. Other clients get the same text as before. |
 | **Per-folder agent permissions** | Right-click a folder → set `{read, write}` for the MCP surface. Keep `Journal/Private/` out of agent reach without locking down the vault. |
 | **Optional password auth** | argon2id, bearer tokens, 24-hour TTL, gates both HTTP API and MCP. Off by default, on with one click. |
-| **Git autocommit with a full audit trail** | Every save lands in git, attributed to whoever (or whichever agent) made it. Full history, diff, restore, manual checkpoints. The vault is a real git repo on disk. |
+| **Git autocommit with a full audit trail** | Every save lands in git, attributed to whoever (or whichever agent) made it. Full history with author filter, diff, restore, manual checkpoints. The vault is a real git repo on disk. |
+| **Agents that don't overwrite each other** | `write_note` takes the revision an agent read; if another agent changed the note meanwhile, nothing is written and the agent is told to re-read and merge. |
+| **A tidy tree** | Hide agent scratch files and templates from the tree and search, sort each folder its own way, daily notes grouped by year and month, a homepage note. |
 | **No vendor lock-in** | Your vault is a folder of `.md` files. Open it in VSCode, Obsidian, `cat`, anything. brain.md is just one more way to view and query it. |
 | **Zero API keys required** | Out of the box it runs fully offline. Cloud embedders are an opt-in, not a default. |
 
@@ -72,7 +76,7 @@ files you can open in any editor at any time.
 | License                                 | Proprietary             | AGPL-3.0        | Proprietary        | **AGPL-3.0**           |
 | Local-first vault on disk               | ✓                       | ✓               | ✗ (cloud)          | **✓**                  |
 | Plain `.md` files (no proprietary db)   | ✓                       | ✓ (block model) | ✗                  | **✓**                  |
-| Built-in MCP server                     | ✗ (3rd-party plugin)    | ✗               | ✗                  | **✓ (17 tools)**       |
+| Built-in MCP server                     | ✗ (3rd-party plugin)    | ✗               | ✗                  | **✓ (18 tools)**       |
 | Vector RAG built-in                     | ✗ (paid plugin)         | ✗               | ✓ (cloud only)     | **✓ (embedded, local)** |
 | Per-folder agent permissions            | n/a                     | n/a             | n/a                | **✓**                  |
 | Single binary, no Electron              | ✗ (Electron)            | ✗ (Electron)    | n/a                | **✓ (`bun --compile`)** |
@@ -94,9 +98,12 @@ Model Context Protocol.
   - [Markdown that actually does things](#markdown-that-actually-does-things)
   - [Command palette + quick switcher](#command-palette--quick-switcher)
   - [Tasks across the vault](#tasks-across-the-vault)
+  - [Graph view](#graph-view)
+  - [Keeping the vault tidy](#keeping-the-vault-tidy)
 - [AI for agents](#ai-for-agents)
   - [Semantic search (RAG)](#semantic-search-rag)
   - [MCP server](#mcp-server)
+  - [MCP Apps: notes as an interactive view](#mcp-apps-notes-as-an-interactive-view)
   - [Per-folder permissions](#per-folder-permissions)
   - [Optional password auth](#optional-password-auth)
   - [Login with Google, GitHub, Keycloak or Authentik](#login-with-google-github-keycloak-or-authentik)
@@ -316,12 +323,62 @@ source line.
 
 ![Tasks view](docs/img/tasks-view.png)
 
+### Graph view
+
+Your notes as a map: every note is a dot, every wikilink a line, coloured
+by top-level folder. Open it from the graph button in the toolbar.
+
+![Graph view: hover a note to light up its links](docs/img/graph-hover.gif)
+
+- **Hover** a note to light up its links and neighbours; **click** to open it.
+- **Drag** notes around, **pan** by dragging the background, **zoom** with
+  the wheel or a pinch. Works with touch on a phone.
+- **Filter** by folder, tag or name, and hide notes without links.
+- **Local graph** in the sidebar: the current note and its neighbours,
+  one or two hops out, with a jump to the full graph.
+- Light and dark follow the app theme.
+- Folder permissions apply: a note in a folder you can't read is not in
+  the graph, and neither are links to it.
+
+It stays smooth on big vaults. On a generated 3,000-note vault
+(`bun scripts/gen-demo-vault.ts <dir> 3000`) the layout settles in under
+2 seconds and dragging runs at about 90 fps on a laptop.
+
+![A generated 3,000-note vault in the graph view](docs/img/graph-3000.png)
+
+### Keeping the vault tidy
+
+Agents leave working files behind (inboxes, phone logs, templates). Keep
+them out of the way without moving them:
+
+- **Hidden notes.** Settings, Vault: one glob per line (`Journal/telefon.md`,
+  `**/_*`, `Archive/**`), or right-click a note or folder, **Hide**. A note
+  can also hide itself with `hidden: true` in its frontmatter, or stay in
+  the tree but out of search with `search: false`. Hidden notes leave the
+  tree, search, the graph and semantic search; the eye in the sidebar
+  header shows them again, dimmed. Agents still read and write them by
+  path.
+- **Sort per folder.** Right-click a folder: name A to Z or Z to A, recently
+  changed first or oldest first. Stored in the vault, so it travels with it.
+- **Daily notes by year and month.** Notes named `YYYY-MM-DD` in the daily
+  notes folder show up grouped by year and month, newest first. The files
+  stay where they are.
+- **Homepage.** Right-click a note, **Set as homepage** (or Settings,
+  Vault). It opens whenever the app starts without a note in the URL.
+- **Bookmarks** follow their note when it is renamed and go away when it
+  is deleted; one left pointing nowhere is struck through, with an ×.
+- **Links to missing notes** ask before creating anything, so a typo in a
+  `[[link]]` doesn't leave an empty file behind.
+
+![Daily notes grouped by year and month, hidden notes shown dimmed](docs/img/tree-journal-hidden.png)
+
 ### Auto versioning & history
 
 Every save is auto-committed to git in the background (debounced,
 ~15 s). Open any note's **History** panel to see every prior
-revision, side-by-side unified diffs, and a one-click **Restore
-this version**. Filter by the current note or by the whole vault.
+revision, who made it (a person or which agent), side-by-side unified
+diffs, and a one-click **Restore this version**. Filter by the current
+note or by the whole vault, and by author.
 No "save as", no daily snapshots cron: the vault is a real git
 repo on disk, so `git log`, `git blame`, `git diff` all work from
 the terminal too.
@@ -391,9 +448,16 @@ and upserts the vectors into a per-vault embedded store at
 `<VAULT>/.brain/vectors.json` (pure JS, brute-force cosine, well
 under 10ms for typical vaults).
 
+The store follows the disk. Notes deleted, moved or edited outside
+brain.md (`mv`, `git pull`, a sync tool, another agent) are picked up at
+startup and by a sync every 60 seconds. A search hit whose note no
+longer exists is dropped and its vectors deleted on the spot, so a
+deleted note never comes back through semantic search.
+
 | Provider                | Model                                       | dim   | Local? | API key |
 |-------------------------|---------------------------------------------|------:|:------:|:-------:|
 | Local *(default)*       | `bge-small-en-v1.5` (WASM)                  |   384 |   ✓    |   no    |
+| llama-server *(best)*   | `embeddinggemma-300m` (GGUF Q8)             |   768 |   ✓    | optional |
 | Ollama                  | e.g. `nomic-embed-text`                     |   768 |   ✓    |   no    |
 | LM Studio               | any served GGUF embedder                    | varies|   ✓    |   no    |
 | OpenRouter *(free tier)*| `nvidia/llama-nemotron-embed-vl-1b-v2:free` |  2048 |   no    |   yes     |
@@ -407,6 +471,59 @@ under 10ms for typical vaults).
 > after that, on macOS / Linux / Windows alike. Want to keep your
 > existing Ollama or hosted endpoint? Switch to *OpenAI-compatible*
 > in the same panel.
+
+#### Best quality: EmbeddingGemma on your own llama-server
+
+The default bge-small model is English-only and small. On a real
+Polish/English vault (52 queries, see [eval/retrieval](eval/retrieval/))
+it found the right note in the top results far less often than a
+multilingual model:
+
+| Embedder | nDCG@10 | Cross-language queries |
+|---|---:|---:|
+| bge-small (default, WASM) | 0.61 | 0.42 |
+| EmbeddingGemma-300M Q8 via llama-server | **0.89** | **1.00** |
+
+EmbeddingGemma-300M needs about 550 MB of RAM and answers a query in
+about 40 ms on a 4-core laptop CPU, so a spare box on your network is
+enough. On the box that will embed:
+
+```sh
+# llama.cpp release build, then the model (Q8, 334 MB)
+curl -LO https://huggingface.co/ggml-org/embeddinggemma-300M-GGUF/resolve/main/embeddinggemma-300M-Q8_0.gguf
+openssl rand -hex 32 > embed-key && chmod 600 embed-key
+llama-server -m embeddinggemma-300M-Q8_0.gguf --embedding \
+  --host <address brain.md can reach> --port 8091 \
+  --api-key-file embed-key -c 4096 -ub 2048 --parallel 2
+```
+
+Then in **Settings → AI / RAG**: Provider *OpenAI-compatible*, Base URL
+`http://<that address>:8091/v1`, Model `embeddinggemma-300m`, DIM `768`,
+and the key. brain.md knows the model's prompts (`task: search result |
+query: …` for searches, the note title plus the text for notes) and uses
+them on its own. To keep the key out of the settings file, set
+`BRAINMD_EMBED_API_KEY` in brain.md's environment (for example a
+systemd `EnvironmentFile` with mode 600); it wins over the saved key.
+
+EmbeddingGemma is under the [Gemma terms of use](https://ai.google.dev/gemma/terms).
+If you want a licence-clean alternative, `bge-m3` (MIT, `ggml-org/bge-m3-Q8_0-GGUF`,
+DIM `1024`) scored the same on dense search but is about twice as slow on CPU.
+
+**What leaves the machine.** With any HTTP embedder, the text of every
+note brain.md indexes is sent to that server: on every save, and for
+the whole vault on a reindex. Searches send the query text. Notes
+matching **Never send to the embedder** in the same panel (globs, one
+per line, default `**/secrets/**`) are never sent; they stay out of
+semantic search but keyword search still finds them, and their old
+vectors are removed on the next reindex.
+
+**When the embedder is away.** If it is down, asleep or slow (no answer
+within 4 seconds), `similar_notes`, `context_for_query` and the search
+API answer with keyword search instead, each hit marked
+`"source": "keyword"`, and the Related panel stays empty. Notes saved
+meanwhile are embedded once it is back. Changing the model, the
+endpoint or the prompt templates rebuilds the index in the background;
+until it is done, the same keyword fallback answers.
 
 #### OpenRouter: free embeddings, zero local deps
 
@@ -479,17 +596,18 @@ per tool call. Claude Desktop and LM Studio both do this.
 
 ![MCP Server page in brain.md](docs/img/mcp-server-page.png)
 
-Tools (17):
+Tools (18):
 
 | Tool                  | Folder perm | What it does                                                       |
 |-----------------------|-------------|--------------------------------------------------------------------|
-| `search_notes`        | none        | Full-text vault search                                             |
-| `similar_notes`       | none        | Semantic RAG (top-k chunks)                                        |
+| `search_notes`        | `read`      | Full-text vault search                                             |
+| `similar_notes`       | `read`      | Semantic RAG (top-k chunks)                                        |
 | `read_note`           | `read`      | Note body + mtime                                                  |
 | `list_notes`          | `read`      | Filtered vault tree                                                |
 | `get_backlinks`       | `read`      | Inbound wikilinks                                                  |
-| `list_tags`           | none        | Tag → count map                                                    |
-| `get_tasks`           | none        | Aggregate tasks (filter: open/done/all)                            |
+| `graph_view`          | `read`      | Graph of notes and links (whole vault, a folder, or around a note) |
+| `list_tags`           | `read`      | Tag → count map                                                    |
+| `get_tasks`           | `read`      | Aggregate tasks (filter: open/done/all)                            |
 | `write_note`          | `write`     | Create or overwrite a note                                         |
 | `append_note`         | `write`     | Append a paragraph (blank-line separator)                          |
 | `find_related`        | `read`      | Notes semantically close to a given path (excludes self)           |
@@ -500,6 +618,13 @@ Tools (17):
 | `weekly_digest`       | `read`      | Topic clusters across notes modified in a recent window (e.g. 7d)  |
 | `compare_notes`       | `read`      | Cosine sim + unified diff + shared headings between two notes      |
 | `current_datetime`    | none        | Server date, time and timezone, so agents never guess "now"        |
+
+Every tool carries MCP annotations. All of them are `readOnlyHint: true`
+except `write_note` (overwrites: `destructiveHint`; not idempotent, a
+repeat still bumps mtime) and `append_note` (adds: neither destructive
+nor idempotent). Hosts with an approval mode based on annotations can run
+reads without a prompt and still ask before writes. Annotations are hints
+for the host; folder permissions are what brain.md enforces.
 
 Resources (2):
 
@@ -554,6 +679,57 @@ Drop that into `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 Full reference: [docs/mcp.md](docs/mcp.md).
 
+### MCP Apps: notes as an interactive view
+
+In hosts that support the [MCP Apps](https://modelcontextprotocol.io/extensions/apps)
+extension, `read_note` renders the note inside the chat instead of a
+block of JSON. Wikilinks open the target note in place, Back returns,
+backlinks are listed under the note, and the view follows the host's
+light or dark theme.
+
+![MCP Apps note view: open a wikilink, then Back](docs/img/mcp-apps-note.gif)
+
+![The note view in dark and light](docs/img/mcp-apps-note.png)
+
+- **Hosts:** tested with OpenClaw (Control UI) and the official
+  ext-apps `basic-host`. Other hosts that implement MCP Apps (Claude,
+  VS Code GitHub Copilot, Goose, MCPJam) use the same protocol.
+- **Nothing to configure in brain.md.** The view ships inside the binary
+  as `ui://brainmd/note.html` (one self-contained HTML file, no network
+  access). Clients without MCP Apps keep getting exactly the same text
+  result.
+- **One call per note.** `read_note` carries the backlinks and resolved
+  wikilinks in its result `_meta`, filtered by the caller's folder
+  permissions, so the view needs no extra tool calls. Hosts that ask you
+  to approve every call from a view prompt once per note.
+- **Read-only.** `write_note` and `append_note` are marked model-only
+  (`visibility: ["model"]`), so a spec-following host won't let the view
+  call them.
+- Images and other media show a placeholder in the view. Maths uses
+  system fonts.
+
+**Graph view in chat.** `graph_view` (whole vault, one folder, or the
+notes around one note) shows the same interactive graph as the web app.
+Click a note to centre the graph on it, Back to step out, and "Open in
+chat" asks the agent to open that note. The model itself gets a short
+summary: counts and the most linked notes.
+
+![The graph_view tool in an MCP Apps host](docs/img/mcp-apps-graph.png)
+
+**OpenClaw:**
+
+```bash
+openclaw config set mcp.apps.enabled true --strict-json   # then restart the Gateway
+openclaw mcp add brainmd --url https://your-brain.example.com/mcp --transport streamable-http
+openclaw mcp configure brainmd --approval auto             # reads run without prompts, writes still ask
+openclaw mcp doctor brainmd --probe
+```
+
+Then ask the agent to read a note, e.g. "open my Welcome note from
+brainmd". If the host mounts the view but never forwards the tool result
+(seen with OpenClaw's Code Mode), the view loads the note itself after a
+few seconds.
+
 ### Per-folder permissions
 
 Right-click any folder → **MCP permissions…** to set explicit
@@ -571,7 +747,8 @@ Default: no auth. Set a password in **Settings → Security** to switch
 on bearer-token authentication for *both* the HTTP API and the MCP
 endpoints. Password is hashed with **argon2id** (Bun's built-in
 `Bun.password`, no native crypto build needed); tokens live in memory
-with a 24-hour TTL.
+with a 24-hour TTL. Log out from the toolbar or from **Settings →
+Security**, which also shows who is signed in.
 
 ![Settings, Security](docs/img/settings-security.png)
 
@@ -790,6 +967,14 @@ Changed-by: notes/log.md ci-bot
 An API key or OAuth client also gets `Agent:` and `On-Behalf-Of:`
 trailers on its own commits, so `git log` tells you which credential
 acted and for which subject, without a separate audit log to check.
+
+Several agents sharing one key can each send an `X-Brainmd-Agent:
+<name>` header; their commits are then authored `<key>/<name>` (for
+example `openclaw/sekretarz`) and kept apart in History. A web edit is
+attributed to the signed-in person: the Google or GitHub account, or
+`BRAINMD_OWNER_NAME` / `BRAINMD_OWNER_EMAIL` for a password login. See
+[docs/mcp.md](docs/mcp.md) for the header and for `base_revision`, which
+keeps agents from overwriting each other's edits.
 History, diff and restore in the **History** panel read straight off
 this git log, so the attribution you see there is the same one
 `git blame` would give you from the terminal.

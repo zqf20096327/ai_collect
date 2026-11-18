@@ -8,12 +8,13 @@ The agent flow system for token maxxing.
 
 ### Humanize Desktop
 
-Humanize Desktop puts `hmz web` in a window of its own, and installs `hmz` itself. Download it
-from the [latest release](https://github.com/humanfia/humanize/releases/latest):
-`humanize-<version>-macos-universal.dmg` on macOS, or
-`humanize-<version>-windows-x64-setup.exe` on Windows, where `hmz` runs in WSL 2
-(`wsl --install`). [Installation](https://docs.humanfia.ai/humanize/user/installation#desktop)
-says how to open it the first time.
+Humanize Desktop is the page of `hmz web` in a window of its own. Download it from the
+[latest release](https://github.com/humanfia/humanize/releases/latest):
+`humanize-<version>-macos-universal.dmg` on macOS, where you install Humanize CLI as below
+too, or `humanize-<version>-windows-x64-setup.exe` on Windows, where the app installs `hmz`
+itself, in WSL 2 (`wsl --install`).
+[Installation](https://humanfia.ai/humanize/user/installation#desktop) says how to open it the
+first time.
 
 ### Humanize CLI
 
@@ -61,14 +62,23 @@ Or say one thing to an agent from your shell:
 hmz chat -a claude/claude-opus-5:high "What does this repository do?"
 ```
 
-Or run a flow from your shell, under a budget:
+Humanize ships no flow: install one from the official
+[flowverse](https://github.com/humanfia/flowverse) in `/flow`, under **Flowverses**, or write
+your own. Then run it from your shell, under a budget:
 
 ```sh
 hmz exec -f ralph_loop -a agent=claude/claude-opus-5:high -p budget.cost=5 "Make the tests pass"
 ```
 
+Or name a release by its repository, with nothing installed:
+
+```sh
+hmz exec -f git+https://github.com/humanfia/ralph-loop-flow@v0.1.0#ralph_loop \
+    -a agent=claude/claude-opus-5:high -p budget.cost=5 "Make the tests pass"
+```
+
 Agents run with approvals bypassed, so start in a scratch repository. The
-[documentation](https://docs.humanfia.ai/humanize/) walks through a first run.
+[documentation](https://humanfia.ai/humanize/) walks through a first run.
 
 ## Contributing
 

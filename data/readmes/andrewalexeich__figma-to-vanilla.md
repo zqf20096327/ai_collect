@@ -99,11 +99,21 @@ The project is intended for several audiences:
     </td>
     <td width="33.33%" valign="top">
       <strong>🔍 Visual Verification</strong><br>
-      <p>Compare the implementation with the original Figma design and refine visual discrepancies.</p>
+      <p>Compare browser renders with Figma exports using pixel-level image comparison and visual metrics when the required tools are available, then refine visual discrepancies.</p>
     </td>
     <td width="33.33%" valign="top">
       <strong>🚀 Production Preparation</strong><br>
       <p>Prepare production files, minify CSS and JavaScript, convert raster images to WebP, and organize the website for deployment.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="33.33%" valign="top">
+      <strong>🛠️ Environment Preflight</strong><br>
+      <p>Detect available tools and identify missing dependencies before implementation.</p>
+    </td>
+    <td width="33.33%" valign="top">
+      <strong>🔄 Upstream Synchronization</strong><br>
+      <p>Check for upstream Skill updates and manage local changes and contribution workflows.</p>
     </td>
   </tr>
 </table>
@@ -157,22 +167,28 @@ figma-to-vanilla/
 │   └── skills/
 │       └── figma-to-vanilla/
 │           ├── SKILL.md
-│           └── references/
-│               ├── animations.md
-│               ├── assets.md
-│               ├── css-conventions.md
-│               ├── design-system.md
-│               ├── figma-components.md
-│               ├── figma-layout.md
-│               ├── fluid-responsive.md
-│               ├── mcp-rules.md
-│               ├── production-git.md
-│               ├── structure.md
-│               └── verification.md
+│           ├── references/
+│           │   ├── animations.md
+│           │   ├── assets.md
+│           │   ├── css-conventions.md
+│           │   ├── design-system.md
+│           │   ├── figma-components.md
+│           │   ├── figma-layout.md
+│           │   ├── fluid-responsive.md
+│           │   ├── mcp-rules.md
+│           │   ├── preflight.md
+│           │   ├── production-git.md
+│           │   ├── structure.md
+│           │   ├── sync-and-contribute.md
+│           │   └── verification.md
+│           └── scripts/
+│               ├── preflight.mjs
+│               ├── preflight.py
+│               └── preflight.sh
 │
 ├── .claude/
 │   └── skills/
-│       └── figma-to-vanilla  # Same skill, provided separately for Claude Code
+│       └── figma-to-vanilla/ # Same skill, provided separately for Claude Code
 │
 ├── .github/
 │   └── workflows/
@@ -200,7 +216,9 @@ project/
 ├── build/
 │   ├── index.html
 │   ├── styles/
-│   │   └── styles.min.css
+│   │   ├── global.min.css
+│   │   ├── components.min.css
+│   │   └── page.min.css
 │   ├── scripts/
 │   │   └── scripts.min.js
 │   ├── fonts/
@@ -210,7 +228,9 @@ project/
 └── src/
     ├── index.html
     ├── styles/
-    │   └── styles.css
+    │   ├── global.css
+    │   ├── components.css
+    │   └── page.css
     ├── scripts/
     │   └── scripts.js
     ├── fonts/
@@ -227,9 +247,16 @@ project/
 │   ├── about.html
 │   ├── contacts.html
 │   ├── styles/
-│   │   └── styles.min.css
+│   │   ├── global.min.css
+│   │   ├── components.min.css
+│   │   ├── page-index.min.css
+│   │   ├── page-about.min.css
+│   │   └── page-contacts.min.css
 │   ├── scripts/
-│   │   └── scripts.min.js
+│   │   ├── global.min.js
+│   │   ├── page-index.min.js
+│   │   ├── page-about.min.js
+│   │   └── page-contacts.min.js
 │   ├── fonts/
 │   └── images/
 │       └── favicons/
@@ -240,9 +267,16 @@ project/
     │   ├── about.html
     │   └── contacts.html
     ├── styles/
-    │   └── styles.css
+    │   ├── global.css
+    │   ├── components.css
+    │   ├── page-index.css
+    │   ├── page-about.css
+    │   └── page-contacts.css
     ├── scripts/
-    │   └── scripts.js
+    │   ├── global.js
+    │   ├── page-index.js
+    │   ├── page-about.js
+    │   └── page-contacts.js
     ├── fonts/
     └── images/
         └── favicons/
@@ -278,11 +312,33 @@ The MCP configuration uses [figma-console-mcp](https://github.com/southleft/figm
 | `figma-components.md` | Figma Components, Component Sets, and Variants |
 | `figma-layout.md` | Figma layout analysis and implementation |
 | `assets.md` | Fonts, images, and SVG assets |
-| `animations.md` | Animations and interactive states |
-| `verification.md` | Visual verification and Live Server |
+| `animations.md` | Animation analysis, timing, and interactive states |
+| `verification.md` | Live Server setup and iterative visual verification |
+| `preflight.md` | Development environment checks and required tool setup |
 | `production-git.md` | Minification, WebP, production, Git, and GitHub |
+| `sync-and-contribute.md` | Upstream synchronization and contribution workflow |
 
 This separation keeps the main skill concise while allowing detailed technical instructions to be loaded when needed.
+
+### Bundled Scripts
+
+The skill includes three alternative implementations of the same environment preflight check:
+
+| Script | Runtime | Purpose |
+|:---|:---|:---|
+| `preflight.sh` | POSIX shell | Primary runner for Linux, macOS, Git Bash, and WSL. |
+| `preflight.py` | Python 3 | Alternative for environments without a compatible shell. |
+| `preflight.mjs` | Node.js | Alternative for environments where neither a compatible shell nor Python is available. |
+
+All three scripts check the availability of tools used throughout the skill's workflow, including dependencies for visual verification, image processing, local website preview, CSS and JavaScript minification, and Git/GitHub operations.
+
+The scripts provide human-readable output by default and support `--json` for machine-readable results.
+
+All three implementations generate a shared `config.env` file in the skill directory. It stores detected executable paths and environment information for subsequent workflow steps.
+
+The scripts do not install dependencies automatically. Missing tools are reported with installation guidance so the AI agent can explain their purpose and ask for the user's approval before installing anything.
+
+Only one script needs to be executed. The recommended selection order is `preflight.sh`, then `preflight.py`, and finally `preflight.mjs`, depending on which runtime is available.
 
 ## Supported AI Agents
 
@@ -395,6 +451,8 @@ flowchart TD
 ```
 
 Visual verification is an iterative part of the process. If discrepancies are found, the relevant implementation is reviewed and corrected before proceeding.
+
+Before implementation, the skill checks the local copy against the upstream repository to identify outdated instructions. On the first task in a new environment, it also checks the available toolchain and identifies missing dependencies. No tools are installed without the user's approval.
 
 ## Development Principles
 

@@ -103,7 +103,7 @@ Add this package to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/huggingface/AnyLanguageModel", from: "1.3.0")
+    .package(url: "https://github.com/huggingface/AnyLanguageModel", from: "1.4.0")
 ]
 ```
 
@@ -134,7 +134,7 @@ To enable specific traits, specify them in your package's dependencies:
 dependencies: [
     .package(
         url: "https://github.com/huggingface/AnyLanguageModel.git",
-        from: "1.3.0",
+        from: "1.4.0",
         traits: ["CoreML", "MLX"] // Enable CoreML and MLX support
     )
 ]
@@ -151,12 +151,12 @@ dependencies: [
 > dependencies: [
 >     .package(
 >         url: "https://github.com/huggingface/AnyLanguageModel.git",
->         from: "1.3.0",
+>         from: "1.4.0",
 >         traits: ["CoreML", "MLX", "Llama"]
 >     ),
 >     .package(url: "https://github.com/huggingface/swift-transformers", from: "1.0.0"),           // CoreML
 >     .package(url: "https://github.com/ml-explore/mlx-swift-lm", .upToNextMinor(from: "3.32.3")), // MLX
->     .package(url: "https://github.com/mattt/llama.swift", .upToNextMajor(from: "2.10549.0")),    // Llama
+>     .package(url: "https://github.com/mattt/llama.swift", .upToNextMajor(from: "3.0.0")),        // Llama
 > ]
 > ```
 >
@@ -1437,7 +1437,7 @@ Enable the trait in Package.swift:
 ```swift
 .package(
     url: "https://github.com/huggingface/AnyLanguageModel.git",
-    from: "1.3.0",
+    from: "1.4.0",
     traits: ["CoreML"]
 )
 ```
@@ -1534,7 +1534,7 @@ Enable the trait in Package.swift:
 ```swift
 .package(
     url: "https://github.com/huggingface/AnyLanguageModel.git",
-    from: "1.3.0",
+    from: "1.4.0",
     traits: ["MLX"]
 )
 ```
@@ -1553,12 +1553,39 @@ let response = try await session.respond {
 }
 ```
 
+To load a model from the Hugging Face Hub,
+pass a model ID in the form that llama.cpp's `-hf` option takes.
+The files download on first use into the shared Hugging Face cache,
+so a model downloaded by llama.cpp or the `hf` command is reused.
+When the Hub can't be reached,
+the model loads from the cached snapshot that the branch's ref points to, if there is one:
+
+```swift
+// Selects Q4_K_M, else Q8_0, else the first GGUF file,
+// and the matching multimodal projector (mmproj) file, if any
+let model = LlamaLanguageModel(modelId: "ggml-org/gemma-3-4b-it-GGUF")
+
+// Selects a quantization, a projector, or a file explicitly
+let q8 = LlamaLanguageModel(modelId: "ggml-org/gemma-3-4b-it-GGUF:Q8_0", mmproj: .disabled)
+let f16 = LlamaLanguageModel(
+    modelId: "ggml-org/gemma-3-4b-it-GGUF",
+    file: "gemma-3-4b-it-f16.gguf",
+    mmproj: .file("mmproj-model-f16.gguf")
+)
+```
+
+`localModelPath` is the path of the model file.
+For a model made from a path, it is that path.
+For a model from the Hub, it is the file's path in the cache,
+or `nil` until the files are resolved on the first request or `prewarm`.
+It replaces `modelPath`, which is deprecated.
+
 Enable the trait in Package.swift:
 
 ```swift
 .package(
     url: "https://github.com/huggingface/AnyLanguageModel.git",
-    from: "1.3.0",
+    from: "1.4.0",
     traits: ["Llama"]
 )
 ```
@@ -1589,6 +1616,76 @@ let response = try await session.respond(
     options: options
 )
 ```
+
+llama.cpp's Metal backend stops a process with an assertion
+if the process exits while a model has layers on the GPU,
+and a generation that is still running at exit can crash on the GPU or the CPU.
+So `LlamaLanguageModel` registers an exit handler when a load ends.
+The handler stops new loads and generations,
+waits up to three seconds for running work to stop at its next token,
+and then frees every loaded model, projector, and cached context.
+After the handler starts,
+requests throw `LanguageModelSession.GenerationError.assetsUnavailable`.
+
+The handler is best effort.
+The process can still stop with the assertion in these cases:
+
+- It exits during the first load,
+  because the handler is registered when a load ends.
+- It exits from inside a load, a generation, or the release of a model,
+  for example from a llama.cpp callback.
+  That work can't end while the handler waits,
+  so the handler returns at once and frees nothing.
+  An exit from a llama.cpp callback on a thread
+  that llama.cpp or another library owns
+  isn't recognized as inside that work,
+  so the handler waits the full three seconds and then frees nothing.
+- Work is still running after three seconds.
+  The handler then frees nothing.
+- It exits without running exit handlers,
+  for example with `_exit` or after a crash.
+
+If freeing the models takes more than ten seconds,
+for example because another library's log callback blocks,
+the handler aborts the process, so that the exit can't hang.
+A crash report for this abort shows
+`LlamaLifecycle.abortAfterExitCleanupTimeout()` in its backtrace,
+which first tries to write one line to standard error,
+but aborts whether or not the line can be written.
+If the cleanup ends just after the limit,
+the cleanup's own thread can abort first,
+without the line,
+and the backtrace shows `LlamaLifecycle.abortAfterLateExitCleanup()`.
+
+No method unloads a model that something still references.
+To be certain that no model is loaded when the process exits,
+wait until every `respond` call returns and every response stream ends,
+start no new requests,
+and then release every reference to the `LlamaLanguageModel`,
+including the sessions that use it.
+The model frees its weights when the last reference is released.
+A response stream's generation can keep its model for a short time
+after the stream ends,
+until the generation stops at its next token.
+A `prewarm` keeps its model until its download and load end,
+and you can't wait for it directly.
+A request that you await after a `prewarm` waits for that load,
+but the `prewarm` can keep the model for a short time after the request returns.
+
+To be certain that the assertion can't happen,
+set the environment variable `GGML_METAL_NO_RESIDENCY` to any value
+before the first model loads.
+llama.cpp's Metal backend then doesn't use residency sets,
+so a process exits normally even with a model loaded on the GPU.
+Set it in the process's environment,
+or call `setenv("GGML_METAL_NO_RESIDENCY", "1", 1)` before the first request or `prewarm`,
+because `LlamaLanguageModel` starts the llama.cpp backend at the first load.
+If another library in the process uses llama.cpp,
+set it before that library starts llama.cpp with `llama_backend_init`.
+The cost is that residency sets keep a model's GPU memory wired between requests;
+without them, the system can reclaim that memory while the GPU is idle,
+and the next request waits for it again.
+This package doesn't set the variable.
 
 <a id="litert-lm-checkout-fails-with-a-git-lfs-smudge-error"></a>
 
@@ -1771,6 +1868,63 @@ options[custom: OpenResponsesLanguageModel.self] = .init(
 )
 ```
 
+### llama-server
+
+[llama-server](https://github.com/ggml-org/llama.cpp/tree/master/tools/server),
+the HTTP server in llama.cpp,
+serves Chat Completions and Responses at `/v1/`
+and Anthropic's Messages API at `/v1/messages`.
+Use `OpenAILanguageModel`, `OpenResponsesLanguageModel`,
+or `AnthropicLanguageModel` with an empty key:
+
+```swift
+// llama-server -hf ggml-org/Qwen3-4B-GGUF:Q4_K_M --port 8080
+let model = OpenAILanguageModel(
+    baseURL: URL(string: "http://127.0.0.1:8080/v1/")!,
+    apiKey: "",
+    model: "qwen3",
+    apiVariant: .chatCompletions
+)
+
+// AnthropicLanguageModel adds `v1/messages` to the server's root URL.
+let messagesModel = AnthropicLanguageModel(
+    baseURL: URL(string: "http://127.0.0.1:8080/")!,
+    apiKey: "",
+    model: "qwen3"
+)
+```
+
+Text, streaming, instructions, multi-turn sessions,
+structured output, tool calling, reasoning, and image input
+work with llama.cpp v1.0.0 (build b12359).
+These limits apply:
+
+- A server with one model ignores the request's `model`,
+  so an unknown name is not an error.
+- Image input needs a vision model with its projector,
+  such as `-hf ggml-org/gemma-3-4b-it-GGUF:Q4_K_M`.
+  Without one, the server answers HTTP 500.
+- With tools and a `@Generable` response type in one request,
+  the Chat Completions and Responses endpoints constrain the output to the schema,
+  so the model can't call the tools.
+- The Messages endpoint ignores `output_config.format`,
+  so its structured output relies on the schema in the prompt.
+  It also ignores `"thinking": {"type": "disabled"}`.
+- Stop sequences also match the model's reasoning,
+  which can end a response before it has any text.
+  Turn reasoning off for the request,
+  for example with `reasoningEffort: .none` on Chat Completions.
+- The Responses backends don't record the model's reasoning in the transcript;
+  Chat Completions and Messages do.
+- A streamed Chat Completions response reports usage only when you ask for it:
+
+  ```swift
+  var options = GenerationOptions()
+  options[custom: OpenAILanguageModel.self] = .init(
+      extraBody: ["stream_options": ["include_usage": true]]
+  )
+  ```
+
 ### Anthropic
 
 Uses the [Messages API](https://docs.claude.com/en/api/messages) with Claude models:
@@ -1917,15 +2071,16 @@ swift test
 
 Tests for different language model backends have varying requirements:
 
-| Backend        | Traits   | Environment Variables                               |
-| -------------- | -------- | --------------------------------------------------- |
-| CoreML         | `CoreML` | `HF_TOKEN`                                          |
-| MLX            | `MLX`    | `HF_TOKEN`                                          |
-| Llama          | `Llama`  | `LLAMA_MODEL_PATH`                                  |
-| Anthropic      | —        | `ANTHROPIC_API_KEY`                                 |
-| OpenAI         | —        | `OPENAI_API_KEY`                                    |
-| Open Responses | —        | `OPEN_RESPONSES_API_KEY`, `OPEN_RESPONSES_BASE_URL` |
-| Ollama         | —        | —                                                   |
+| Backend        | Traits   | Environment Variables                                   |
+| -------------- | -------- | ------------------------------------------------------- |
+| CoreML         | `CoreML` | `HF_TOKEN`                                              |
+| MLX            | `MLX`    | `HF_TOKEN`                                              |
+| Llama          | `Llama`  | `LLAMA_MODEL_PATH`                                      |
+| Anthropic      | —        | `ANTHROPIC_API_KEY`                                     |
+| OpenAI         | —        | `OPENAI_API_KEY`                                        |
+| Open Responses | —        | `OPEN_RESPONSES_API_KEY`, `OPEN_RESPONSES_BASE_URL`     |
+| Ollama         | —        | —                                                       |
+| llama-server   | —        | `LLAMA_SERVER_BASE_URL`, `LLAMA_SERVER_VISION_BASE_URL` |
 
 Example setup for running multiple tests at once:
 

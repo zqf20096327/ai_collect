@@ -23,7 +23,7 @@ A comprehensive workflow, asset management, and generation UI plugin for [ComfyU
 - Built-in AI tools (translation and more)
 
 ![Workflow Studio](https://img.shields.io/badge/ComfyUI-Custom_Node-blue)
-![Version](https://img.shields.io/badge/version-0.10.0-green)
+![Version](https://img.shields.io/badge/version-0.10.2-green)
 
 ## Screenshots
 
@@ -440,14 +440,17 @@ An experimental batch generator: runs the workflow currently loaded in GenerateU
 </details>
 
 <details>
-<summary><h3>Game Tab (v0.10.0, experimental)</h3></summary>
+<summary><h3>Game Tab (v0.10.0 – v0.10.2, experimental)</h3></summary>
 
 - **Play, then generate** — a tab for mini games that end in image generation. The games come from a separate pack, [ComfyUI-WFS-Games](https://github.com/ketle-man/ComfyUI-WFS-Games); the tab appears only when the pack is installed (Workflow Studio checks `/wfs_games/manifest` on start), so without it nothing changes
 - **Star Formation** (first game) — a 1980s-style vertical shooter (arcade / MSX2 / PC-8801 look: pixel sprites, pixel font, scanlines, chiptune music) built on Phaser 4. 5 stages, each ending with a boss (WARNING, boss music; big and tough / fast with fast shots / radial bursts / flashing straight-line ram / a giant carrier launching small fighters). Navigator Rina talks between stages in an adventure-game style window
+- **Turbo Heart** (second game, pack v0.2.0) — a 1980s-style behind-the-car racer with a pseudo-3D road and city-pop style chiptune music. 5 races (seaside highway, autumn mountain pass, desert canyon, neon city at night, tropical coast at dawn); 8 cars, start last, top 3 to advance. Nitro, speed lines, overtakes, tire squeal; obstacles (cardboard boxes, an oil slick, sometimes a person crossing — hitting them ends the game). Mechanic Misaki talks between races, and the images work the same way as in Star Formation
+- **Prompt Typer** (third game, pack v0.3.0) — a 1980s-style typing game whose typing becomes the image prompt, typos included. 10 stages of 20 words, longer every 2 stages; 85% correct clears a stage, an image is generated after every stage either way, and you can retry. English, Japanese and Chinese (Japanese / Chinese through your IME). No music
+- **Sky Heart** (fourth game, pack v0.3.0) — a 1980s-style into-the-screen flying shooter with a pseudo-3D ground. Hikari flies a jet pack through 5 stages with bosses; an altimeter, hearts in the air and near the ground, ground missile launchers, and power-ups (1UP, a 3-hit barrier, support mechs that fire with you). The images work the same way as in Star Formation
 - **An image at every stage clear** — a card is added to the Result panel and a victory shot of Rina with that stage in the background is generated in the background while you keep playing (one at a time, in order). Five flashing enemies per stage drop hearts; catch all 5 and that stage's image becomes a private photo of Rina instead (more casual clothes each stage, up to a swimsuit — the game adds negative tags so it goes no further). Clearing all 5 stages adds the ending scene; a game over adds a defeat scene (screen darkens, her call goes unanswered)
 - **Prompts from the game** — each card lists the prompts the game returned with their kind (Style / Heroine / Scene / Stage); uncheck or edit them and Regenerate, or **Open in GenerateUI**. The game's negative tags are added to the workflow's negative prompt
-- **Settings** — the workflow used for generation (default `ws_game_sdxl_t2i.json`, an SDXL text-to-image workflow included in `workflows/` — import it and set your checkpoint; output in `output/WFS_Game`), base prompt, negative prompt, and whether to generate at each stage clear / the ending / on game over automatically; difficulty, music and sound effects. VRAM Management notices are not shown while the Game tab is open
-- **For game authors** — a game is an ES module with `mount(container, host)`; it reports results through `host.stageClear()` / `host.finish()` and never calls ComfyUI itself — Workflow Studio builds the prompt and runs the generation. See the pack's README and `PLAN_GAME_TAB.md`
+- **Settings** (the Settings tab of the right pane since v0.10.2; the left pane lists the games only) — the workflow used for generation (default `ws_game_sdxl_t2i.json`, an SDXL text-to-image workflow included in `workflows/` — import it and set your checkpoint; output in `output/WFS_Game`), base prompt, negative prompt, and whether to generate at each stage clear / the ending / on game over automatically; difficulty, music and sound effects. VRAM Management notices are not shown while the Game tab is open
+- **For game authors** — a game is an ES module with `mount(container, host)`; it reports results through `host.stageClear()` / `host.finish()` and never calls ComfyUI itself — Workflow Studio builds the prompt and runs the generation. See the [pack's README](https://github.com/ketle-man/ComfyUI-WFS-Games)
 
 </details>
 
@@ -456,9 +459,4 @@ An experimental batch generator: runs the workflow currently loaded in GenerateU
 
 - **Layer-based image editor** — compose images with multiple layers (Image, Text, Draw, Mask types) and export the composite as PNG or a fully layered PSD
 - **Loading images** — drag & drop onto the canvas, **File Open** button (renamed from Upload in v0.6.0), or send from the Gallery tab via the **Image Edit** toolbar button; first image becomes Layer 1 (auto-locked), subsequent images are added as new layers scaled to fit the canvas
-- **Open PSD button** (v0.6.0, next to File Open) — loads a layered PSD file from disk and decomposes it into individual layers, restoring each layer's position, size, visibility, opacity, and blend mode; groups and non-raster layers (adjustment layers, etc.) are flattened into their rendered appearance
-- **Close button** (v0.6.0, next to Open PSD) — closes the current document after a confirmation prompt, discarding all layers and unsaved edits and returning to the empty placeholder view
-- **New button** — create a blank canvas with custom dimensions (WxH prompt); clears all existing layers and automatically adds an empty Layer 1 (v0.3.70)
-- **Tools** — Select (V), Draw (B), Text (T), Shape (S), Fill (G), Mask (🎭), Blur (≈), BG Remove (⬚), Filter (★), Inpaint (🩹); tool options bar updates per active tool
-  - **Select** — click to select; drag to move; drag corner handles to resize; drag circle handle to rotate; Flip H / Flip V / Rotate angle in the options bar; double-click a text layer to re-edit its content
-  - **Draw** — freehand brush; options: color, brush size, blend mode; paints directly onto the active draw layer while all other layers remain visible; brush cursor shown as a size-accurate circle; strokes can start from outside the canvas margin and continue past the edge; **pen tablet support** (v0.6.2) — brush size and opacity respond to pen pressure (mouse behaves exactly as before); the canvas listens for Pointer Events so pen, touch, and mouse all work through the same code path; **color palette** on the second row — Color 1/Color 2, 20 basic co
+- **Open PSD button** (v0.6.0, next to File Open) — loads a layered PSD file from disk and decomposes it into individual layers, restoring each layer's position, size, visibility, opacity, and blend mode; groups and no

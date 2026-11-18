@@ -24,7 +24,7 @@ Working with several AI coding CLIs usually means a pile of terminal windows. It
 - **Session history**: browse and resume past Claude Code, Codex and Kimi Code sessions.
 - **File preview**: Ctrl + click a path in the terminal for a read-only preview with syntax highlighting and a code minimap.
 - **Any CLI**: installed CLIs are detected from your `PATH`, and any other command can be added as a custom CLI.
-- **English and Simplified Chinese**, 20 themes (light, dark, eye-care and editor palettes), and a short first-run guide.
+- **English and Simplified Chinese**, 24 themes (light, dark, eye-care and editor palettes), and a short first-run guide.
 
 See [docs/features.md](docs/features.md) for the detailed behavior of every feature.
 
@@ -75,6 +75,7 @@ npm run build:win -- --config.directories.output=release/ui-polish
 
 ```bash
 npm run check:ui     # UI regression check in a hidden Electron window (themes, layout, keyboard, terminal, settings, onboarding)
+npm run check:main   # main-process and shared logic unit tests (PTY, TOML, music, summaries, file preview)
 npm run check:i18n   # every UI string has an English translation
 ```
 
@@ -90,12 +91,13 @@ OneAI runs locally. It has no telemetry or analytics and no update checker. It r
 
 ## Contributing
 
-Issues and pull requests are welcome. Project conventions, directory layout and checks are described in [AGENTS.md](AGENTS.md) (written in Chinese). In short: commit messages are written in English, every user-facing string goes through `t()` with an entry in `src/shared/en.ts`, and `npm run check:ui` and `npm run check:i18n` should pass.
+Issues and pull requests are welcome. Project conventions, directory layout and checks are described in [AGENTS.md](AGENTS.md) (written in Chinese). In short: commit messages are written in English, every user-facing string goes through `t()` with an entry in `src/shared/en.ts`, and `npm run check:ui`, `npm run check:main` and `npm run check:i18n` should pass.
 
 ## Contributors
 
 - [Claude](https://claude.com/claude-code) (Anthropic) -- AI pair programmer; much of the code, tests and documentation was written with Claude Code.
 - [Codex](https://openai.com/codex) (OpenAI) -- AI pair programmer; also used to write and review code and documentation.
+- [Gemini](https://gemini.google.com) (Google) -- AI pair programmer; also used via Antigravity to build, optimize and verify features and documentation.
 
 ## License
 

@@ -15,7 +15,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-blue" alt="MIT licence"></a>
   <a href="docs/install.md#platforms"><img src="https://img.shields.io/badge/linux-x86__64%20%7C%20arm64-lightgrey" alt="Linux x86_64 and arm64"></a>
   <img src="https://img.shields.io/badge/after%20install-no%20network-brightgreen" alt="no network after installing">
-  <a href="https://huggingface.co/aaronthomas123/lxask"><img src="https://img.shields.io/badge/%F0%9F%A4%97-model%20on%20Hugging%20Face-yellow" alt="model on Hugging Face"></a>
+  <a href="https://huggingface.co/arxhr007/lxask"><img src="https://img.shields.io/badge/%F0%9F%A4%97-model%20on%20Hugging%20Face-yellow" alt="model on Hugging Face"></a>
 </p>
 
 <p align="center">
@@ -29,7 +29,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/demo.gif" width="760" alt="lxask answering a request with a restriction, asking back on a vague one, and filling the prompt with Ctrl+G">
+  <img src="docs/assets/demo.gif" width="760" alt="lxask answering everyday requests, keeping a restriction, and asking back on a vague one">
 </p>
 
 ```
@@ -93,7 +93,7 @@ and [every measurement](docs/accuracy.md).
 
 Qwen2.5-Coder-1.5B fine-tuned on tldr-pages, NL2Bash and questions and answers written by
 language models (every command validated), then reinforcement learning on commands run in a
-sandbox. Every round: [docs/results.md](docs/results.md); the data: [docs/development.md](docs/development.md#training-data).
+sandbox. The data: [docs/development.md](docs/development.md#training-data).
 
 ## Why lxask
 
@@ -128,8 +128,8 @@ you state, and asks back when a request is too vague to answer.
 
 ## More
 
-- The model files are on Hugging Face: [aaronthomas123/lxask](https://huggingface.co/aaronthomas123/lxask) (the 986 MB chat model, the
-  37 MB restriction adapter, checksums and a model card). The installer downloads them for you;
+- The model files are on Hugging Face: [arxhr007/lxask](https://huggingface.co/arxhr007/lxask) (the 986 MB chat model, the
+  37 MB adapters, checksums and a model card). The installer downloads them for you;
   you only need that page to run the model in your own llama.cpp setup.
 - Kept loaded between questions (the installer asks; on by default), answers take about
   2 s instead of about 7; it frees its memory after 30 idle minutes. `serve = off` in
@@ -148,7 +148,6 @@ you state, and asks back when a request is too vague to answer.
 | [Architecture](docs/architecture.md) | diagrams of the components and the build |
 | [Accuracy and limits](docs/accuracy.md) | every measurement, where it goes wrong, speed |
 | [Development](docs/development.md) | building, training data, measuring |
-| [Results](docs/results.md) | every version and training round |
 
 Found a wrong answer or a bug? [CONTRIBUTING.md](CONTRIBUTING.md) ·
 Security: [SECURITY.md](SECURITY.md)

@@ -1,4 +1,4 @@
-<h1 align="center">🧠 NeuroSploit v4.4.2</h1>
+<h1 align="center">🧠 NeuroSploit v4.4.3</h1>
 
 <p align="center">
   <a href="https://github.com/JoasASantos/NeuroSploit/stargazers"><img src="https://img.shields.io/github/stars/JoasASantos/NeuroSploit?style=for-the-badge&logo=github&color=8b5cf6" alt="Stars"></a>
@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Version-4.4.2-blue?style=flat-square">
+  <img src="https://img.shields.io/badge/Version-4.4.3-blue?style=flat-square">
   <img src="https://img.shields.io/badge/Harness-Rust%20%7C%20tokio-e6b673?style=flat-square">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square">
   <img src="https://img.shields.io/badge/MD%20Agents-486-red?style=flat-square">
@@ -110,6 +110,22 @@ No subscription? Use an **API key** for any provider instead — see [TUTORIAL.m
 | **Mobile / Binary** | `neurosploit mobile <app.apk\|.ipa\|bin>` | RE a local artifact (Ghidra / MobSF / Frida) |
 | **Container** | `neurosploit container <image:tag>` | OCI image scan + SBOM (trivy/grype/syft) |
 | **Mission Control** | `neurosploit tui <url>` | live TUI panels + a composer you type in mid-run |
+
+## Add-ons: Toolbox, MCP tool servers, C2 & WebShells
+
+- **Toolbox (225 tools, opt-in).** Run the right pentest tool instead of only
+  curl/scripts: nmap, rustscan, httpx, nuclei, ffuf, netexec, impacket,
+  bloodhound, trivy, apktool, ghidra and more. `neurosploit tools list` /
+  `run nmap --target 10.0.0.5`; `--tools` gives agents the doctrine and
+  `--agent-tools` lets API models request cataloged tools in a bounded loop.
+- **MCP tool servers.** Curated nmap / Kali / Playwright / Burp / REA templates:
+  `neurosploit tools mcp add nmap`, then run with `--mcp`.
+- **C2 & WebShell management (authorized internal engagements only).** Disabled
+  by default; enabling requires an authorization reference. Listeners, sessions,
+  tasks, payloads, persistence/lateral opt-ins, WebShell exec/file ops, and an
+  append-only audit trail under `.neurosploit/c2/`.
+
+See [`docs/TOOLBOX.md`](docs/TOOLBOX.md) for guardrails and the full surface.
 
 ## What makes it different
 

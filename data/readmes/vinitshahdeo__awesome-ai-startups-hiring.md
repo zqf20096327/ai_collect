@@ -1,12 +1,12 @@
 <img width="1536" height="1024" alt="Awesome AI Startup Hiring in 2026" src="https://github.com/user-attachments/assets/6010546a-3d22-40e2-b1cc-094e3901e7e6" />
 
 
-# 300+ Top AI Startups Hiring Software Engineers in 2026
+# 340+ Top AI Startups Hiring Software Engineers in 2026
 
 [![Awesome](https://awesome.re/badge.svg)](https://github.com/sindresorhus/awesome#readme) [![Sponsor Vinit Shahdeo](https://img.shields.io/badge/sponsor-vinitshahdeo-30363D?style=flat&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/vinitshahdeo) ![GitHub Repo stars](https://img.shields.io/github/stars/vinitshahdeo/awesome-ai-startups-hiring?style=social)
 
 
-A curated list of 300+ AI-first startups across agent infrastructure, LLM inference, AI dev tools, data & retrieval infra, AI security, voice, and AI-fintech — with category and latest funding. **Curated for software engineers job-hunting in the AI era.** Find well-funded AI companies to apply to. Just know that [FAANG isn't the only game](https://leetcode.com/discuss/post/8457111/beyond-faang-160-well-funded-ai-startups-7b4p) in town anymore. ⚡
+A curated list of 340+ AI-first startups across agent infrastructure, LLM inference, AI dev tools, data & retrieval infra, AI security, voice, and AI-fintech — with category and latest funding. **Curated for software engineers job-hunting in the AI era.** Find well-funded AI companies to apply to. Just know that [FAANG isn't the only game](https://leetcode.com/discuss/post/8457111/beyond-faang-160-well-funded-ai-startups-7b4p) in town anymore. ⚡
 
 
 > [!WARNING]
@@ -335,10 +335,46 @@ A curated list of 300+ AI-first startups across agent infrastructure, LLM infere
 | 303 | [AheadComputing](https://www.linkedin.com/company/aheadcomputing/) | Hardware / high-performance CPU cores (Portland / Austin) | $50M–$100M round · Oct/Nov 2026 |
 | 304 | [Mecka](https://www.linkedin.com/company/mecka-ai/) | AI data / movement data for robotics training (Toronto / NYC / SF / Remote) | $50M–$100M round · Oct/Nov 2026 |
 | 305 | [Spiko](https://www.linkedin.com/company/spiko-tech/) | Fintech / money market cash investing (Paris / London) | $50M–$100M round · Oct/Nov 2026 |
+| 306 | [Tenstorrent](https://www.linkedin.com/company/tenstorrent-inc./) | AI infrastructure / AI chips & RISC-V compute | $1.5B Series E · Oct/Nov 2026 |
+| 307 | [TypeSafe AI](https://www.linkedin.com/company/typesafe-ai/) | AI startup | $870M Series A · Oct/Nov 2026 |
+| 308 | [Fractile](https://www.linkedin.com/company/fractile/) | AI infrastructure / AI inference chips | $720M Series C · Oct/Nov 2026 |
+| 309 | [ASI (Airspace Intelligence)](https://www.linkedin.com/company/airspace-intelligence/) | Applied AI / aviation & defense airspace operations | $325M Series C · Oct/Nov 2026 |
+| 310 | [Path Robotics](https://www.linkedin.com/company/path-robotics/) | Robotics / AI-powered welding | $300M Series E · Oct/Nov 2026 |
+| 311 | [Q-CTRL](https://www.linkedin.com/company/q-ctrl/) | Quantum infrastructure software | $290M Series C · Oct/Nov 2026 |
+| 312 | [Vinci](https://www.linkedin.com/company/vinciphysics/) | Applied AI / physics simulation for engineering | $250M Series B · Oct/Nov 2026 |
+| 313 | [Nominal](https://www.linkedin.com/company/nominal-inc/) | Hardware test & evaluation data platform | $240M Series C · Oct/Nov 2026 |
+| 314 | [PathosAI](https://www.linkedin.com/company/pathosai/) | Health AI / AI-driven oncology drug development | $237M Series E · Oct/Nov 2026 |
+| 315 | [Warp Sciences](https://www.linkedin.com/company/warp-sciences/) | AI startup | $215M Series A · Oct/Nov 2026 |
+| 316 | [Arena](https://www.linkedin.com/company/arenaim/) | AI startup | $200M Series B · Oct/Nov 2026 |
+| 317 | [doubleAI](https://www.linkedin.com/company/doubleai/) | AI startup | $200M Series A · Oct/Nov 2026 |
+| 318 | [Salience Labs](https://www.linkedin.com/company/salience-labs/) | AI infrastructure / photonic AI chips | $125M Series B · Oct/Nov 2026 |
+| 319 | [Town](https://www.linkedin.com/company/town-com/) | AI startup | $108M Series B · Oct/Nov 2026 |
+| 320 | [Suki](https://www.linkedin.com/company/sukihq/) | Health AI / AI assistant for clinicians | $90M Series E · Oct/Nov 2026 |
+| 321 | [Trajectory](https://www.linkedin.com/company/trajectory-ai/) | AI startup | $45M Series A · Oct/Nov 2026 |
+| 322 | [Orakl Oncology](https://www.linkedin.com/company/orakloncology/) | Health AI / AI oncology drug discovery | $34M Series A · Oct/Nov 2026 |
+| 323 | [Zus Health](https://www.linkedin.com/company/zus-health/) | Health AI / healthcare data platform | $33M Series B · Oct/Nov 2026 |
+| 324 | [Vera Health](https://www.linkedin.com/company/vera-health-ai/) | Health AI / clinical decision support | $28.5M Series A · Oct/Nov 2026 |
+| 325 | [PsiThera](https://www.linkedin.com/company/psithera/) | Health AI / AI drug discovery | $25M financing · Oct/Nov 2026 |
+| 326 | [Biomatter](https://www.linkedin.com/company/biomatter/) | AI biotech / AI protein & enzyme design | $18M Series A · Oct/Nov 2026 |
+| 327 | [Netic](https://www.linkedin.com/company/netic-ai/) | AI that automates customer comms for service businesses (San Francisco) | NA |
+| 328 | [Avoca](https://www.linkedin.com/company/avoca-ai/) | AI front office handling calls and texts (New York) | NA |
+| 329 | [Valerie Health](https://www.linkedin.com/company/valerie-health/) | AI patient communications (San Francisco) | NA |
+| 330 | [Hi Marley](https://www.linkedin.com/company/himarley/) | AI texting platform for insurers (Boston) | NA |
+| 331 | [EliseAI](https://www.linkedin.com/company/eliseai/) | AI messaging and leasing automation for housing and healthcare (New York) | NA |
+| 332 | [Netomi](https://www.linkedin.com/company/netomi/) | AI customer service agents (San Mateo) | NA |
+| 333 | [Omilia](https://www.linkedin.com/company/omilia-ltd/) | Conversational AI for customer service (Larnaca, Cyprus) | NA |
+| 334 | [Wati](https://www.linkedin.com/company/watiglobal/) | WhatsApp-first AI customer engagement (Hong Kong) | NA |
+| 335 | [Hyro](https://www.linkedin.com/company/hyroai/) | AI agents for patient communications (New York) | NA |
+| 336 | [Front](https://www.linkedin.com/company/fronthq/) | AI-assisted shared inbox and customer ops (San Francisco) | NA |
+| 337 | [Pylon](https://www.linkedin.com/company/usepylon/) | Agentic B2B support across Slack and chat (San Francisco) | NA |
+| 338 | [Podium](https://www.linkedin.com/company/podium/) | AI lead and messaging platform for local businesses (Lehi) | NA |
+| 339 | [Symphony](https://www.linkedin.com/company/symphonycomm/) | Secure messaging for financial institutions (Palo Alto) | NA |
+| 340 | [Iterable](https://www.linkedin.com/company/iterable/) | AI customer engagement and cross-channel messaging (San Francisco) | NA |
+| 341 | [Genesys](https://www.linkedin.com/company/genesys/) | AI experience orchestration for contact centers (Menlo Park) | NA |
 
 ## 🌍 Remote-Friendly AI Companies
 
-32 remote-friendly AI companies actively hiring, ranked by percentage headcount growth over the past 90 days.
+89 remote-friendly companies actively hiring. Rows 1–32 are AI companies ranked by percentage headcount growth over the past 90 days; rows 33–89 are companies hiring for 100% remote roles (company links go to their careers pages).
 
 | # | Company | What They Do | HQ | LinkedIn |
 |---:|---|---|---|---|
@@ -374,6 +410,114 @@ A curated list of 300+ AI-first startups across agent infrastructure, LLM infere
 | 30 | [Hex](https://hex.tech) | AI data analytics workspace | San Francisco | [hex-technologies](https://www.linkedin.com/company/hex-technologies/) |
 | 31 | [Labelbox](https://labelbox.com) | AI training data | San Francisco | [labelbox](https://www.linkedin.com/company/labelbox/) |
 | 32 | [Vercel](https://vercel.com) | AI cloud, maker of v0 | San Francisco | [vercel](https://www.linkedin.com/company/vercel/) |
+| 33 | [Symetra](https://lnkd.in/gaWBUP47) | Insurance and retirement financial services · 100% remote | Bellevue | — |
+| 34 | [Docker](https://lnkd.in/gygvhBQp) | Container platform for developers · 100% remote | Palo Alto | — |
+| 35 | [Cengage Group](https://lnkd.in/g_m83JcC) | Education technology and publishing · 100% remote | Boston | — |
+| 36 | [Zapier](https://zapier.com/jobs) | AI workflow automation · 100% remote | San Francisco | — |
+| 37 | [Upstart](https://lnkd.in/g3FJaefU) | AI lending marketplace · 100% remote | San Mateo | — |
+| 38 | [Hims & Hers](https://lnkd.in/gcESwW7W) | Telehealth and wellness platform · 100% remote | San Francisco | — |
+| 39 | [UserGems](https://lnkd.in/g_Dy5Kqi) | AI pipeline generation for sales teams · 100% remote | San Francisco | — |
+| 40 | [Abnormal AI](https://lnkd.in/g-zZsUVM) | AI-native email security · 100% remote | Las Vegas | — |
+| 41 | [Affirm](https://lnkd.in/gzJ8_enz) | Buy now, pay later payments · 100% remote | San Francisco | — |
+| 42 | [Customer.io](https://lnkd.in/gDhXTqNd) | Customer messaging and engagement · 100% remote | Portland | — |
+| 43 | [Remote](https://lnkd.in/g4Y5EgfT) | Global HR, payroll and employer of record · 100% remote | San Francisco | — |
+| 44 | [Kit](https://kit.com/careers) | Email marketing for creators · 100% remote | Boise | — |
+| 45 | [Deel](https://lnkd.in/g9AR3qYF) | Global payroll and HR platform · 100% remote | San Francisco | — |
+| 46 | [Very Good Security (VGS)](https://lnkd.in/g7mQJead) | Payment data security and tokenization · 100% remote | San Francisco | — |
+| 47 | [VAST Data](https://lnkd.in/gKuW_p3D) | AI data platform and storage · 100% remote | New York | — |
+| 48 | [Sorcero](https://lnkd.in/g_aq3apY) | AI analytics for life sciences · 100% remote | Washington, DC | — |
+| 49 | [McGraw Hill](https://lnkd.in/gBHSN2bm) | Education technology and learning content · 100% remote | New York | — |
+| 50 | [Linear](https://linear.app/careers) | Product development and issue tracking · 100% remote | San Francisco | — |
+| 51 | [Grafana Labs](https://lnkd.in/gss5Evd5) | Open-source observability platform · 100% remote | New York | — |
+| 52 | [Upwork](https://lnkd.in/gskG4asN) | Freelance talent marketplace · 100% remote | San Francisco | — |
+| 53 | [Docusign](https://lnkd.in/gxiQGC4p) | AI-powered agreement management · 100% remote | San Francisco | — |
+| 54 | [PostHog](https://lnkd.in/gmRX-aQM) | Open-source product analytics · 100% remote | San Francisco | — |
+| 55 | [Intrado](https://lnkd.in/gi9udQr6) | Emergency and safety communications · 100% remote | Omaha | — |
+| 56 | [GitBook](https://lnkd.in/gTkz_Fm8) | AI-native documentation platform · 100% remote | San Francisco | — |
+| 57 | [Workiva](https://lnkd.in/g58AH6bH) | Financial reporting and compliance platform · 100% remote | Ames | — |
+| 58 | [MissionWired](https://lnkd.in/gETNBWqN) | Digital fundraising for nonprofits and campaigns · 100% remote | Washington, DC | — |
+| 59 | [Help Scout](https://lnkd.in/g2XXms4D) | Customer support software · 100% remote | Boston | — |
+| 60 | [Close](https://close.com/careers) | CRM for small sales teams · 100% remote | Remote | — |
+| 61 | [Brave Software](https://brave.com/careers/) | Privacy-focused browser and search · 100% remote | San Francisco | — |
+| 62 | [Toptal](https://lnkd.in/gvRGqhH8) | Freelance talent network · 100% remote | Remote | — |
+| 63 | [1Password](https://lnkd.in/gcBHrDaZ) | Password and identity security · 100% remote | Toronto | — |
+| 64 | [Canonical](https://lnkd.in/ghwD2hRC) | Ubuntu and open-source infrastructure · 100% remote | London | — |
+| 65 | [Toggl](https://toggl.com/jobs) | Time tracking and productivity tools · 100% remote | Tallinn | — |
+| 66 | [GitLab](https://lnkd.in/g7C7CGEW) | AI-powered DevSecOps platform · 100% remote | San Francisco | — |
+| 67 | [DigitalOcean](https://lnkd.in/grRrK2t5) | Cloud and GPU infrastructure for developers · 100% remote | New York | — |
+| 68 | [Atlassian](https://lnkd.in/gP4BWUsm) | Team collaboration and developer tools · 100% remote | Sydney | — |
+| 69 | [Bitwarden](https://lnkd.in/gy3q6mJ9) | Open-source password management · 100% remote | Santa Barbara | — |
+| 70 | [Shopify](https://lnkd.in/gvWcCdn6) | Commerce platform · 100% remote | Ottawa | — |
+| 71 | [Appcues](https://lnkd.in/giPGtr_c) | Product adoption and onboarding · 100% remote | Boston | — |
+| 72 | [Arkency](https://lnkd.in/guZpujwH) | Ruby on Rails consultancy · 100% remote | Wrocław | — |
+| 73 | [Automattic](https://lnkd.in/gdrRQg9z) | WordPress.com, WooCommerce and Tumblr · 100% remote | San Francisco | — |
+| 74 | [Awesome Motive](https://lnkd.in/g6vAvK6f) | WordPress plugins and tools · 100% remote | West Palm Beach | — |
+| 75 | [Buffer](https://buffer.com/journey) | Social media management · 100% remote | San Francisco | — |
+| 76 | [Constructor](https://lnkd.in/gAjZw-st) | AI-powered ecommerce search · 100% remote | San Francisco | — |
+| 77 | [Trail of Bits](https://lnkd.in/gahUrRzc) | Security research and engineering · 100% remote | New York | — |
+| 78 | [MailerLite](https://lnkd.in/g_p_ppvc) | Email marketing platform · 100% remote | Vilnius | — |
+| 79 | [DuckDuckGo](https://lnkd.in/gUjT2cmw) | Privacy-focused search and browser · 100% remote | Paoli | — |
+| 80 | [RevenueCat](https://lnkd.in/gWsj-WM6) | In-app subscription infrastructure · 100% remote | San Francisco | — |
+| 81 | [Akamai Technologies](https://lnkd.in/gY5wwa2Z) | Cloud, CDN and security · 100% remote | Cambridge | — |
+| 82 | [Cloudbeds](https://lnkd.in/g_UMEURe) | Hospitality management platform · 100% remote | San Diego | — |
+| 83 | [SafetyWing](https://lnkd.in/geWZagtG) | Insurance for remote workers and nomads · 100% remote | San Francisco | — |
+| 84 | [ClickHouse](https://lnkd.in/gXSHByzX) | Real-time analytics database · 100% remote | San Francisco | — |
+| 85 | [Circle](https://lnkd.in/gSkrAZCD) | Community platform for creators and brands · 100% remote | Remote | — |
+| 86 | [BairesDev](https://lnkd.in/gDngnknV) | Software development outsourcing · 100% remote | San Francisco | — |
+| 87 | [Xapo Bank](https://lnkd.in/gzYAJ3z9) | Digital bank with bitcoin services · 100% remote | Gibraltar | — |
+| 88 | [Deltek](https://lnkd.in/gDZqnmvK) | Project-based business software · 100% remote | Herndon | — |
+| 89 | [Coinbase](https://lnkd.in/gFRV6R_h) | Crypto exchange and onchain platform · 100% remote | Remote | — |
+
+
+## 📧 HR & Careers Emails
+
+40 startups you can reach out to directly by email. Send a short, tailored note with your resume and the role you're interested in.
+
+> [!NOTE]
+> Some of these are general contact, support, or sales inboxes rather than dedicated HR addresses. Verify on the company's website before sending, and don't spam.
+
+| # | Company | Email |
+|---:|---|---|
+| 1 | Adloggs | [hr@adloggs.com](mailto:hr@adloggs.com) |
+| 2 | Adzzat Labs | [contact@adzzat.com](mailto:contact@adzzat.com) |
+| 3 | AetherLabs | [careers@aetherlabs.in](mailto:careers@aetherlabs.in) |
+| 4 | Agal Apps | [hr@agalapps.com](mailto:hr@agalapps.com) |
+| 5 | AppsInAI | [hr@appsin.ai](mailto:hr@appsin.ai) |
+| 6 | Aranidhi | [hr@aranidhi.com](mailto:hr@aranidhi.com) |
+| 7 | Arnisys Tech | [hr@arnisystech.com](mailto:hr@arnisystech.com) |
+| 8 | ArthOne | [careers@arthone.com](mailto:careers@arthone.com) |
+| 9 | AstroGaon | [careers@astrogaon.com](mailto:careers@astrogaon.com) |
+| 10 | Avesha | [jobs@aveshasystems.com](mailto:jobs@aveshasystems.com) |
+| 11 | Brixi AI | [careers@brixi.ai](mailto:careers@brixi.ai) |
+| 12 | Clinxt | [support@clinxt.in](mailto:support@clinxt.in) |
+| 13 | Cognira AI | [sales@cogniraai.com](mailto:sales@cogniraai.com) |
+| 14 | Dhruvanta Systems | [careers@dhruvantasystems.com](mailto:careers@dhruvantasystems.com) |
+| 15 | Dmeals | [careers@dmeals.in](mailto:careers@dmeals.in) |
+| 16 | Dynnova | [careers@dynnova.io](mailto:careers@dynnova.io) |
+| 17 | Empathy Technologies | [careers@empathytechnologies.in](mailto:careers@empathytechnologies.in) |
+| 18 | Envisstack | [careers@envisstack.com](mailto:careers@envisstack.com) |
+| 19 | FileDiffs | [career@filediffs.com](mailto:career@filediffs.com) |
+| 20 | Humyn Labs | [hr@humynlabs.ai](mailto:hr@humynlabs.ai) |
+| 21 | HungryMinds | [careers@hungryminds.info](mailto:careers@hungryminds.info) |
+| 22 | IndiVillage | [careers@indivillage.com](mailto:careers@indivillage.com) |
+| 23 | JalsaX AI | [info@jalsax.com](mailto:info@jalsax.com) |
+| 24 | KovaiSoft | [info@kovaisoft.in](mailto:info@kovaisoft.in) |
+| 25 | [Live2.ai](https://live2.ai) | [careers@live2.ai](mailto:careers@live2.ai) |
+| 26 | LivingAI Solutions | [careers@livingai.in](mailto:careers@livingai.in) |
+| 27 | MeraEV | [careers@meraev.com](mailto:careers@meraev.com) |
+| 28 | MNB Research | [contact@mnbresearch.com](mailto:contact@mnbresearch.com) |
+| 29 | MNRATHI | [careers@mnrathi.com](mailto:careers@mnrathi.com) |
+| 30 | MOP Careers | [careers@mopcareers.in](mailto:careers@mopcareers.in) |
+| 31 | MeeruAI | [careers@meeru.ai](mailto:careers@meeru.ai) |
+| 32 | Outmarket AI | [careers@outmarket.ai](mailto:careers@outmarket.ai) |
+| 33 | PplAct | [careers@pplact.com](mailto:careers@pplact.com) |
+| 34 | PTAS AI | [connect@ptasai.com](mailto:connect@ptasai.com) |
+| 35 | Salesgear | [jobs@salesgear.io](mailto:jobs@salesgear.io) |
+| 36 | Startup IT Solution | [careers@startupitsolution.in](mailto:careers@startupitsolution.in) |
+| 37 | Startupbricks | [careers@startupbricks.in](mailto:careers@startupbricks.in) |
+| 38 | Truffl Innovations | [careers@trufflinnovations.in](mailto:careers@trufflinnovations.in) |
+| 39 | WallzaOS | [hiring@wallzaos.app](mailto:hiring@wallzaos.app) |
+| 40 | Zeqo | [hello@zeqo.in](mailto:hello@zeqo.in) |
 
 
 ## 💼 Handpicked Resources for Startup Jobs

@@ -26,7 +26,7 @@
 
 ---
 
-**Humanizer ID** adalah buku aturan yang dibaca agen AI setiap sesi penyuntingan naskah Indonesia. Ia membersihkan kalke terjemahan mesin, nominalisasi bertumpuk, verba ringan, fragmentasi kalimat, dan pola khas keluaran LLM — lalu berhenti di situ: pembersih pola, bukan penentu gaya. 670 kaidah preskriptif bersumber dokumen resmi lengkap nomor halaman. Satu induk + lima sub-kaidah dimuat sesuai kebutuhan naskah, plus mesin audit deterministik ber-CLI. Integritas ilmiah mengikat: nol fabrikasi data, dan ini **bukan** alat bypass detektor AI.
+**Humanizer ID** adalah buku aturan yang dibaca agen AI setiap sesi penyuntingan naskah Indonesia. Ia membersihkan kalke terjemahan mesin, nominalisasi bertumpuk, verba ringan, fragmentasi kalimat, dan pola khas keluaran LLM — lalu berhenti di situ: pembersih pola, bukan penentu gaya. 740 kaidah preskriptif bersumber dokumen resmi lengkap nomor halaman. Satu induk + sembilan sub-kaidah (lima strata + empat domain) dimuat sesuai kebutuhan naskah, plus mesin audit deterministik ber-CLI. Integritas ilmiah mengikat: nol fabrikasi data, dan ini **bukan** alat bypass detektor AI.
 
 ## Sebelum & Sesudah
 
@@ -58,11 +58,15 @@ Sejak v2.1.0 panduan editorial dipecah agar hemat konteks agen: induk dimuat dul
 | Skill | Cakupan | Muat untuk |
 |-------|---------|------------|
 | **`SKILL.md`** (induk) | Aturan integritas ilmiah, pengecualian dokumen, 4 mode eksekusi, eliminasi penyakit AI leksikal, tabel rute, Delivery Gate | Semua naskah. Selalu dimuat |
-| [skills/humanizer-id-sintaksis](skills/humanizer-id-sintaksis/SKILL.md) | 21 blok: kesejajaran, korelatif, kalimat efektif, morfofonemik verba | Naskah berkalimat cacat |
+| [skills/humanizer-id-sintaksis](skills/humanizer-id-sintaksis/SKILL.md) | 24 blok: kesejajaran, korelatif, kalimat efektif, kalimat partisipial, morfofonemik verba | Naskah berkalimat cacat |
 | [skills/humanizer-id-wacana-retorika](skills/humanizer-id-wacana-retorika/SKILL.md) | 18 blok: kohesi paragraf, sitasi terajut, hedging epistemik | Naskah alur lemah |
-| [skills/humanizer-id-ejaan-morfologi](skills/humanizer-id-ejaan-morfologi/SKILL.md) | 17 blok: EYD V, PUEBI, peluluhan fonem, gabungan kata | Naskah ejaan/imbuhan |
-| [skills/humanizer-id-diksi-istilah](skills/humanizer-id-diksi-istilah/SKILL.md) | 13 blok: pilihan kata, peristilahan PUPI, padanan lintas bidang | Naskah istilah teknis |
+| [skills/humanizer-id-ejaan-morfologi](skills/humanizer-id-ejaan-morfologi/SKILL.md) | 22 blok: EYD V lengkap, PUEBI, peluluhan fonem, gabungan kata, unsur serapan | Naskah ejaan/imbuhan |
+| [skills/humanizer-id-diksi-istilah](skills/humanizer-id-diksi-istilah/SKILL.md) | 14 blok: pilihan kata, peristilahan PUPI, padanan lintas bidang | Naskah istilah teknis |
 | [skills/humanizer-id-naskah-resmi](skills/humanizer-id-naskah-resmi/SKILL.md) | 6 blok: bahasa pewara, surat dinas, metadata jurnal | Naskah resmi/dinas |
+| [skills/humanizer-id-skripsi-kampus](skills/humanizer-id-skripsi-kampus/SKILL.md) | 3 blok: peta 18 preset kampus, kesalahan empiris skripsi, Simpulan vs Saran | Skripsi/tesis/proposal |
+| [skills/humanizer-id-bisnis-korporat](skills/humanizer-id-bisnis-korporat/SKILL.md) | 4 blok: prinsip KISS, surat 5W1H, siaran pers piramida terbalik, jargon bisnis | Memo/proposal/bisnis |
+| [skills/humanizer-id-jurnalistik-media](skills/humanizer-id-jurnalistik-media/SKILL.md) | 4 blok: 7 sifat pers, ekonomi kata Tempo, batas <=20 kata/kalimat, artikel opini | Berita/opini/rilis |
+| [skills/humanizer-id-hukum-regulasi](skills/humanizer-id-hukum-regulasi/SKILL.md) | 3 blok: zona terlarang kontrak/pasal, anti-multimakna, klaim produk realistis | Hukum/regulasi/klaim |
 | [jurnal/](jurnal/SKILL.md) | Modul jurnal bereputasi: IMRaD, checklist 28 poin, template abstrak/cover letter | Naskah Scopus/SINTA |
 
 Arsip provenance sesi bedah tersimpan di [references/log-integrasi-kaidah.md](references/log-integrasi-kaidah.md) (bukan aturan operasional). Setiap entri kaidah berformat **Pola → Perbaikan → Sebab** dengan sitasi halaman sumber.
@@ -180,7 +184,8 @@ Seluruh kaidah **bukan karangan bebas** — setiap aturan ditelusuri dari dokume
 |--------|-----------|
 | *Cerdas Cergas Berbahasa dan Bersastra Indonesia* Kelas XI & XII (Kemendikbudristek, 2024) | Ragam ilmiah denotatif-objektif, kalimat efektif, kaidah surat resmi (hlm. 210-215, 29-34) |
 | *Bahasa Indonesia untuk Perguruan Tinggi* (Suyatno dkk., UIN Jakarta, 2017) | Enam syarat keefektifan kalimat akademik (hlm. 100-107) |
-| *Tata Bahasa Baku Bahasa Indonesia* Edisi IV (Alwi dkk.) | Kesejajaran predikat, korelatif, pronomina, pelesapan konstituen |
+| *Tata Bahasa Baku Bahasa Indonesia* Edisi IV (Alwi dkk., 2017) | Kesejajaran predikat, korelatif, pronomina/tanya, `para`, `Tetapi` awal kalimat, diatesis (`TBB-001..036`) |
+| Baharman (UNM) & Jurnal Empiris Skripsi/BIPA (Khair 2018; UNNES 2021; UMK 2018) | Adaptasi serapan, urutan padanan Indonesia-asing, salah eja skripsi, preposisi `di`/`ke`, fragmen sintaksis |
 | EYD Edisi V (SK No. 0424/I/BS.00.01/2022) & PUEBI | Peluluhan KTSP, bentuk terikat, gabungan kata |
 | *Tata Istilah* (Pusat Bahasa 1978; Qodratillah 2019) | Paradigma imbuhan peristilahan, PUPI, padanan lintas bidang |
 | *Bentuk dan Pilihan Kata* (Mustakim 2014, 2019) | Anti-pleonasme, diksi preskriptif, pembedaan dll./dsb./dst. |
@@ -192,8 +197,8 @@ Seluruh kaidah **bukan karangan bebas** — setiap aturan ditelusuri dari dokume
 
 Dataset terbuka di [data/](data/):
 
-- [data/kalke-indonesia.json](data/kalke-indonesia.json) - 670 entri leksikon kalke, verba ringan, pola antisipatif AI, kaidah morfologi EYD V.
-- [data/glosarium-lintas-bidang.json](data/glosarium-lintas-bidang.json) - 137 padanan istilah baku (Teknologi 59, Bisnis 44, Linguistik 17, Hukum 10, Jurnalistik 7).
+- [data/kalke-indonesia.json](data/kalke-indonesia.json) - 740 entri leksikon kalke, verba ringan, pola antisipatif AI, kaidah morfologi EYD V.
+- [data/glosarium-lintas-bidang.json](data/glosarium-lintas-bidang.json) - 180 padanan istilah baku (Teknologi 68, Bisnis 60, Linguistik 27, Jurnalistik 15, Hukum 10).
 - [data/pedoman-kampus.json](data/pedoman-kampus.json) - preset 16 perguruan tinggi + jurnal dikbud.
 
 ## Preset Kampus

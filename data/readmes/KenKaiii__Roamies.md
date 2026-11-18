@@ -46,12 +46,16 @@ voice, keeps track of what you said you'd do and nudges you when it's due.
 | ---------------- | ------------------------------------------------------- |
 | **JARVIS**       | **A glowing sphere of light that ripples as it speaks** |
 | Roamie           | The original: a tiny glowing pixel creature             |
+| GlayOS           | A pixel robot head with one glowing eye                 |
+| Ultren           | A pixel chrome robot with glowing eyes                  |
 | Anime Girl       | A pixel anime girl                                      |
 | Sarah            | A pixel woman                                           |
 | Adrian           | A pixel man                                             |
 | Rita X           | A pixel secretary in cat-eye glasses                    |
 
 <sub>Each one has its own name, voice and animations, in three sizes: Default, Small, or Cursor, a pixel pointer that rides along with your mouse.</sub>
+
+<sub>Some looks are fan tributes to characters from films and games. Roamies is a free project, not affiliated with or endorsed by Marvel, Disney or Valve, and all trademarks belong to their owners. If you hold the rights to one and want it removed, email [ken@kenkais.com](mailto:ken@kenkais.com).</sub>
 
 ## JARVIS shows you how
 
@@ -83,6 +87,9 @@ quizzes you answer with a click.
 - **Out of the way:** no Dock or taskbar button, a shortcut shows or hides it (see the table), Esc stops a reply.
 - **Updates itself:** updates are signature-checked before they install, then it restarts itself. The Windows installer isn't code-signed yet, so SmartScreen warns the first time. On Linux only the AppImage updates itself.
 - **Quick setup:** permissions, sign-in and a short chat so it gets to know you.
+- **Scheduled jobs:** ask for work at set times ("every weekday at 8, sum up the tech news") and a background agent does it then; see them on the panel's Abilities page, under Routines.
+- **Skills:** install any skill by asking, with a GitHub repo or folder link, a skills.sh page or just its name (it asks first). Or say "remember how to do this" and it keeps the how-to; after a long task that worked it can learn one itself (Learn skills on the General page). They're on the Abilities page, under Skills.
+- **Connections:** ask it to connect an app or service ("connect my Linear") and it finds the official MCP server, asks you first, and takes any key in the chat input. Manage them on the Abilities page, under Connections.
 
 |                        | macOS                      | Windows                     | Linux (beta)                       |
 | ---------------------- | -------------------------- | --------------------------- | ---------------------------------- |
@@ -254,21 +261,23 @@ about the screen, go to the AI provider you pick. [PRIVACY.md](PRIVACY.md) lists
 
 1. Turn off **Open at login** (panel > Behavior), then quit Roamies from the menu bar.
 2. Drag Roamies from Applications to the Trash.
-3. Delete `~/.gg/sidekick` and `~/.gg/sidekick.json`. Keep `~/.gg/auth.json` if you use GG Coder.
+3. Delete the `~/Roamies` folder (your settings, memory, chats, skills and what agents made), and `~/.gg/sidekick`
+   and `~/.gg/sidekick.json` if they're there from an older version. Keep `~/.gg/auth.json` if you use GG Coder.
 4. Open Keychain Access, search for "Roamies" and delete the Fish Audio and Gemini voice keys.
 
 **Windows:**
 
 1. Turn off **Open at login** (panel > Behavior), then uninstall Roamies from Settings > Apps.
-2. Delete `%USERPROFILE%\.gg\sidekick` and `%USERPROFILE%\.gg\sidekick.json`. Keep `auth.json` if you use GG Coder.
+2. Delete the `%USERPROFILE%\Roamies` folder, and `%USERPROFILE%\.gg\sidekick` and `%USERPROFILE%\.gg\sidekick.json` if
+   they're there from an older version. Keep `auth.json` if you use GG Coder.
 3. Delete the voice model folder, `%LOCALAPPDATA%\Roamies\models`.
 
 **Linux:**
 
 1. Turn off **Open at login** (panel > Behavior), then quit Roamies from its tray menu (or the panel's About page).
 2. Remove the package (`sudo apt remove roamies` or `sudo dnf remove roamies`), or delete the AppImage.
-3. Delete `~/.gg/sidekick` (the voice model is in `~/.gg/sidekick/models`) and `~/.gg/sidekick.json`. Keep
-   `~/.gg/auth.json` if you use GG Coder.
+3. Delete the `~/Roamies` folder (the voice model is in `~/Roamies/Data/models`), and `~/.gg/sidekick` and
+   `~/.gg/sidekick.json` if they're there from an older version. Keep `~/.gg/auth.json` if you use GG Coder.
 4. Delete the Fish Audio key: `secret-tool clear service com.kenkai.roamies account fish-audio`.
 
 ## Build with the framework

@@ -63,7 +63,7 @@ AnyModelBot 是跑在 Windows / macOS / Linux 上的 AI 机器人团队。每个
 
 装好即可用：后台任务、定时规则和待你确认的事项都已内置。
 
-**0.1.40：** 新增 20 个现成任务，可先试跑再打开；文件预览支持代码着色、JSON 折叠、CSV 表格、图片缩放和文件变化刷新；增加年度及提前提醒。 [更新日志](./CHANGELOG.md#0140---2026-11-15)
+**0.1.42：** 应用内可以直接反馈问题和建议：登录 Modelflare 后会成为你的工单，客服回复发到邮箱；从报错打开会自动带上那条报错。 [更新日志](./CHANGELOG.md#0142---2026-11-18)
 
 📥 [下载](#-下载与运行) · 🌠 [截图](#-截图) · 🌟 [核心功能](#-核心功能) · 🆚 [对比](#-对比-grok-bot--openai-dots--claude-duet) · 🔐 [工作原理与隐私](#-工作原理与隐私)
 
@@ -408,6 +408,7 @@ Modelflare 会保留请求日志；保留什么、保留多久，见它的[信�
 
 - **提问与想法：** [GitHub Discussions](https://github.com/modelflare-ai/AnyModelBot/discussions)
 - **Bug 与功能建议：** [GitHub Issues](https://github.com/modelflare-ai/AnyModelBot/issues)
+- **应用内反馈：** 账户菜单 → 意见和反馈（登录 Modelflare 后直接成为你的工单）
 - **实时交流：** [QQ 群 1132903119](https://qm.qq.com/q/yHN9KrvlGa) · [Telegram](https://t.me/+Tx6Payfzxqk2ZGVl) · [Discord](https://discord.gg/umBN6wX3zJ)
 - **邮件联系：** [support@anymodel.bot](mailto:support@anymodel.bot)
 - **Modelflare 动态：** [X 上的 @modelflare_dev](https://x.com/modelflare_dev)

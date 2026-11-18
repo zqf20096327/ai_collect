@@ -343,6 +343,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
 
 - What is computer vision, and why is it important?
 - What is image segmentation, and what are its applications?
+    - Answer: [How does Semantic Segmentation work?](https://outcomeschool.com/blog/semantic-segmentation)
 - What is object detection, and how does it differ from image classification?
     - Answer: [How does Object Detection work?](https://outcomeschool.com/blog/object-detection)
 - What are the steps to build an image recognition system?
@@ -382,6 +383,7 @@ For all AI Engineering Interview – Questions and Answers: Refer to [AI Enginee
     - Answer: [How does Pretraining work?](https://outcomeschool.com/blog/llm-pretraining)
 - What are some challenges in training LLMs?
 - What is zero-shot learning in the context of LLMs?
+    - Answer: [How does In-Context Learning work?](https://outcomeschool.com/blog/in-context-learning)
 - How do you handle bias and fairness in LLMs?
 - What are some real-world applications of LLMs in business and tech?
 - How does the Transformer architecture improve LLM performance over RNNs?

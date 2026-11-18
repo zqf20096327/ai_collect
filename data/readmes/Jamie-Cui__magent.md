@@ -207,6 +207,12 @@ From a source buffer, use agent-shell's native ~M-x agent-shell-send-region~ or
 ~M-x agent-shell-send-dwim~ commands.  In a Magent shell, use
 ~M-x agent-shell-interrupt~ (normally ~C-c C-c~) to interrupt a request.
 
+Magent accepts inline image prompts from any ACP frontend that advertises image
+input.  PNG, JPEG, WebP, and GIF payloads up to ~magent-inline-image-max-bytes~
+are stored in the session's private media directory and sent to gptel as media
+parts for models that support media; other models still receive a text
+attachment marker.  Images survive ~session/load~ and session forks.
+
 TRAMP projects use the same entry point.  Visit a remote file or Dired
 directory, then run ~M-x magent-start~.  Magent keeps its control plane on the
 local Emacs host: agent-shell/ACP, gptel, sessions, Actions, child-agent
@@ -244,6 +250,7 @@ Customize with ~M-x customize-group RET magent RET~. Key settings:
 | ~magent-audit~                                 | ~buffer~                              | Audit destination: live buffer, nil to disable, or a JSONL file path                            |
 | ~magent-agent-directory~                       | ~".magent/agent"~                   | Relative path to custom agent dir                                                              |
 | ~magent-session-directory~                     | =~/.emacs.d/magent/sessions/=         | Base directory for global sessions and per-project session subdirectories                      |
+| ~magent-inline-image-max-bytes~                | 20 MiB                              | Maximum decoded bytes accepted in one inline prompt image                                      |
 | ~magent-grep-program~                          | ~"rg"~                              | Preferred ripgrep executable; falls back to Git on the same project host                       |
 | ~magent-grep-max-matches~                      | ~100~                                 | Max matches from grep searches                                                                 |
 | ~magent-glob-max-results~                      | ~500~                                 | Maximum paths returned by one glob                                                             |
@@ -488,11 +495,36 @@ The YAML frontmatter supports:
 - ~effort~: Override reasoning effort: ~auto~, ~minimal~, ~low~, ~medium~, ~high~, or ~xhigh~
 - ~thinking~: Override thinking mode: ~auto~, ~enabled~, or ~disabled~. Explicit
   ~disabled~ suppresses reasoning effort for the request.
-- ~model~: Override the default model for this agent.  Child agents prefer this
-  explicit route over the frozen route inherited from their parent.
+- ~executor~: ~magent~ (default) or ~codex~. Codex profiles use ~mode: subagent~.
+- ~backend~: Optional registered gptel backend name for the Magent executor.
+- ~model~: Model ID for the selected executor. Magent children prefer an
+  explicit backend/model route over the route of their parent. A child on a
+  different route uses its own sampling options and target model defaults.
 - ~permissions~: Mapping of permission groups to ~allow~, ~deny~, ~ask~, or nested file-pattern rules
 
 Unknown frontmatter fields and non-canonical permission keys are rejected.
+
+** Codex Child Agents
+
+Install [[https://github.com/Jamie-Cui/codex-acp.el][codex-acp.el]], authenticate
+the Codex CLI, and set ~magent-codex-enabled~ to ~t~ before initializing Magent.
+In a Magent project conversation, ask the primary agent to delegate work to
+~codex~. The built-in profile uses the Codex default model. To select a model
+per project, add ~.magent/agent/codex.md~:
+
+#+begin_src markdown
+---
+description: Implement and test agreed changes with Codex
+mode: subagent
+executor: codex
+model: "your-codex-model-id"
+---
+#+end_src
+
+Set the ID to a model available to your Codex account, or omit the field for
+the Codex default. Ask the primary agent to use ~send_agent_message~ for
+follow-ups on the existing job. Permissions requested by Codex workspace
+tools appear in the original Magent conversation.
 
 * Available Tools
 

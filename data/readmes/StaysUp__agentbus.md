@@ -114,8 +114,9 @@ Settings apply to every session, from the next turn. Change them on the cockpit'
 through the API (`/api/v0/settings/permissions` and `/api/v0/settings/instructions`; the keys and
 their defaults are in `/docs`, under Settings).
 
-- **Workspace:** each session works in its own copy of your folder. Shared folders (such as
-  `node_modules`) are used read-only instead of copied; read folders may be read as well.
+- **Workspace:** each session works in its own copy of your folder, cloned copy-on-write where the
+  disk supports it, so a big `node_modules` costs nothing to copy and a turn may write its own; read
+  folders may be read as well.
 - **Config:** files from your home copied into each session's own home at each turn: your
   settings, skills, MCP servers and logins. **Use my config** fills the list. Sign-ins are never
   copied.
@@ -163,6 +164,9 @@ The running service describes its own API, without the token or the internet:
 
 Running agents on more than one machine is in [docs/RUNNER_PROTOCOL.md](docs/RUNNER_PROTOCOL.md). Third-party
 code in the binary is listed in [THIRD_PARTY.md](THIRD_PARTY.md).
+
+To contribute, see [CONTRIBUTING.md](CONTRIBUTING.md), the [ROADMAP.md](ROADMAP.md), and
+[SECURITY.md](SECURITY.md) for reporting a vulnerability.
 
 ## License
 

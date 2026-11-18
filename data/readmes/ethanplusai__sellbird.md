@@ -15,6 +15,7 @@ It runs on your own machine, and by default nothing goes out until you approve i
 </p>
 
 <p align="center">
+  <a href="https://x.com/sellbirdagent"><img alt="Follow @sellbirdagent on X" src="https://img.shields.io/badge/follow-%40sellbirdagent-000000?logo=x&logoColor=white"></a>
   <a href="https://github.com/ethanplusai/sellbird/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/ethanplusai/sellbird?style=flat&logo=github&label=stars&color=244b62&cacheSeconds=3600"></a>
   <a href="https://github.com/ethanplusai/sellbird/actions/workflows/tests.yml"><img alt="Tests" src="https://github.com/ethanplusai/sellbird/actions/workflows/tests.yml/badge.svg"></a>
   <a href="LICENSE"><img alt="License: AGPL-3.0" src="https://img.shields.io/badge/license-AGPL--3.0-244b62"></a>
@@ -23,7 +24,13 @@ It runs on your own machine, and by default nothing goes out until you approve i
   <a href="https://sellbird.ai/harvey/"><img alt="Formerly Harvey" src="https://img.shields.io/badge/formerly-Harvey-8aa0ad"></a>
 </p>
 
+<p align="center">
+  <a href="https://trendshift.io/repositories/303676?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-303676" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/303676" alt="ethanplusai%2Fsellbird | Trendshift" width="250" height="55"/></a>
+</p>
+
 > **[Harvey is now Sellbird.](https://sellbird.ai/harvey/)** Same project, same history, new name. Already running Harvey? Your setup carries over: see [Upgrading from Harvey](#upgrading-from-harvey).
+
+**New releases, features and the roadmap go out first on X: [follow @sellbirdagent](https://x.com/sellbirdagent).**
 
 **Prefer not to run it yourself? [sellbird.ai](https://sellbird.ai) is the hosted version, with sending domains, inboxes and warmup set up for you. It's in early access.**
 
@@ -182,7 +189,7 @@ database, the logs and the dashboard token.
 
 Pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: it covers keeping real contact data out of the repo, test email, and signing off your commits. Found a security problem? Follow [SECURITY.md](SECURITY.md) instead of opening an issue.
 
-See [CHANGELOG.md](CHANGELOG.md) for what changed in each release.
+See [CHANGELOG.md](CHANGELOG.md) for what changed in each release, and [follow @sellbirdagent on X](https://x.com/sellbirdagent) to hear about new ones first.
 
 ## License
 

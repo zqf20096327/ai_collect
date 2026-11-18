@@ -1,0 +1,451 @@
+<!-- README landing-page structure rationale: docs/plans/2026-08-22-readme-still-useful.md (adds model-forward + benefit rungs; prior: docs/plans/2026-06-28-readme-progressive-disclosure.md, docs/plans/2026-05-14-readme-landing-rewrite.md) -->
+
+<p align="center">
+  <img src="assets/combined.gif" alt="Before vs After — The 7 Laws of AI Agent Discipline" width="700" />
+</p>
+
+<h1 align="center">Claude Code that gets sharper every session</h1>
+
+<p align="center">
+  <b>Remembers what it already solved. Grounds every edit in facts. Verifies before "done". Carries every lesson into the next session.</b>
+</p>
+
+<p align="center">
+  <i>The 7 Laws of AI Agent Discipline — runtime hooks, instinct memory, and skills that compound what it learns.</i>
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/continuous-improvement"><img src="https://img.shields.io/npm/v/continuous-improvement" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/continuous-improvement"><img src="https://img.shields.io/npm/dm/continuous-improvement" alt="npm downloads"></a>
+  <a href="https://docs.anthropic.com/en/docs/claude-code"><img src="https://img.shields.io/badge/Claude%20Code-skill-blueviolet" alt="Claude Code"></a>
+  <a href="https://github.com/marketplace/actions/ai-agent-discipline-linter"><img src="https://img.shields.io/badge/GitHub%20Action-marketplace-blue" alt="GitHub Action"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="license"></a>
+</p>
+
+<p align="center">
+  <b>New here?</b> → <a href="QUICKSTART.md">QUICKSTART.md</a> (2 minutes) · <a href="https://continuous-improvement.dev">continuous-improvement.dev</a> · Latest: <a href="CHANGELOG.md">v3.23.0</a> (2026-08-15)
+</p>
+
+## Quick start
+
+Inside Claude Code — two commands, no npm install, no bash (the hooks run with the `node` on your PATH, 18+):
+
+```bash
+/plugin marketplace add naimkatiman/continuous-improvement
+/plugin install continuous-improvement@continuous-improvement
+```
+
+**If you don't know which to pick, use Beginner.** That is the install above — enough for most users. Want the MCP server, observation hooks, and instinct packs too? See [Expert install](#install) below.
+
+Verify it is live: run `/discipline` in Claude Code and you should see the 7 Laws card. (Commands load on session start — if it is not recognized, restart Claude Code once.)
+
+> **What this is *not*:** a prompt template, a `CLAUDE.md`, or a vibes-based reminder. It is a runtime hook (`hooks/gateguard.mjs`) plus a bundled skill set that makes the agent ground every change in real facts — it physically blocks `Edit` / `Write` / destructive `Bash` until the investigation is done, so edits land on understanding instead of guesses.
+
+---
+
+## What this does
+
+Claude Code is powerful but leaves intelligence on the table: it edits before reading, guesses instead of checking, stacks five concerns into one commit, and says "done" without running tests. Continuous Improvement adds three layers that make it sharper:
+
+1. **Before an edit** — [`gateguard`](skills/gateguard.md) ships as a `PreToolUse` hook (`hooks/gateguard.mjs`) that physically blocks `Edit` / `Write` / `MultiEdit` and destructive `Bash` until the agent presents a fact-list investigation.
+2. **During work** — bundled skills enforce planning, one-thing-at-a-time execution, TDD ([`tdd-workflow`](skills/tdd-workflow.md)), and a six-phase verification ladder ([`verification-loop`](skills/verification-loop.md)) before "done".
+3. **After work** — `/seven-laws` reflection plus the Mulahazah instinct engine capture lessons, and the opt-in [`recall-briefing`](hooks/recall-briefing.mjs) hook resurfaces the most relevant past fix on the next related prompt, so the same mistake does not repeat next session.
+
+---
+
+## As models get better
+
+Yes. This is still worth installing. Smarter models write more plausible code, faster. They still skip the helper that already exists in *your* repo, say "done" without the test output, and forget last Tuesday's correction. Those are harness problems, not IQ problems.
+
+| Merges into the model over time | Does not merge — this is the product |
+|---|---|
+| Planning etiquette, "remember to verify" reminders, routing flavor | The runtime gate (`hooks/gateguard.mjs`) that physically blocks an unresearched `Edit` |
+| Generic coding taste | *This repo's* past fixes, refusals, and instincts |
+| Sounding sure | Proof: the command you ran, the SHA that deployed, the test that failed then passed |
+
+The standing stance is [`model-forward`](skills/model-forward.md): go with the model, retire scaffolding when the native harness covers it, keep the two invariants — goal-driven execution, and research / verify / learn guardrails. Skills are disposable. The gate and the memory are not.
+
+---
+
+## How you actually benefit
+
+Three rungs. Most people stop at 1, never run `/seven-laws`, and conclude "it didn't learn." Capture is silent. Instincts form when you close the loop.
+
+| Rung | What you do | What you get | When |
+|---|---|---|---|
+| **1. Same session** | Beginner install (Quick start above). Give the agent a real task. Do not prefix every prompt — `hooks/gateguard.mjs` fires on `Edit` / `Write` / destructive `Bash`. | Reckless edits get blocked. Fake "done" has nowhere to hide once [`verification-loop`](skills/verification-loop.md) / [`tdd-workflow`](skills/tdd-workflow.md) run. | First hour. No memory required. |
+| **2. Close the loop** | After a non-trivial session: `/seven-laws`. When a bug feels familiar: `/recall <the error>`. One defect, one PR: `/ship`. Long task: `/planning-with-files` (writes `task_plan.md`). | Observations become instincts. Yesterday's correction survives into today. | After the first real task, then at session end. |
+| **3. Memory that fires without asking** | Expert install (`npx`, below). Optional: `CLAUDE_RECALL_BRIEFING=1`. After ~20 observations: `/harvest` and `/distill`. | Starter instincts, MCP tools (`ci_plan_init` / `ci_recall` / distill), a briefing of the last relevant fix on the next related prompt. | When you want compounding, not just a seatbelt. |
+
+`/learn-eval`, `/harvest`, and `/distill` return empty on day 1 if observation history is missing. That is not a broken command — it is rung 3 without rung 2. Check `/dashboard`: a zero `Total` under Observations means capture is not wired; a high Total and zero instincts means you have not run `/seven-laws` yet.
+
+---
+
+## See it in action
+
+<p align="center">
+  <img src="assets/gateguard-demo.png" alt="gateguard blocks an unresearched Edit until the investigation is on the table" width="820" />
+</p>
+
+The image is rendered from [`demo/gateguard-demo.html`](demo/gateguard-demo.html), faithful to what the hook prints. The literal output of `hooks/gateguard.mjs` on a `Write` payload with no research on the table (v3.23.0, paths shortened):
+
+```json
+{
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "permissionDecision": "deny",
+    "permissionDecisionReason": "Before creating src/lib/retry-helper.mts, present these facts:\n\n  1. List ALL files that import/require this file (use Grep)\n  2. List the public functions/classes affected by this change\n  3. If this file reads/writes data files, show field names, structure, and date format\n  4. Quote the user's current instruction verbatim\n\nThen clear the gate and retry the same call. ..."
+  }
+}
+```
+
+One denied call, a printed reason, a retry. Reproduce it yourself: `printf '{"tool_name":"Write","tool_input":{"file_path":"x.mts"}}' | node hooks/gateguard.mjs`.
+
+Without Continuous Improvement, "fix the login redirect bug" looks like this:
+
+> Claude edits `Login.tsx`, `LoginForm.tsx`, `useAuth.ts`, `authRouter.ts`, `redirects.ts`, and `useNavigate.ts` — six files, no plan, no investigation. Says "done". The redirect still loops. You roll back six files.
+
+With Continuous Improvement, the same prompt is forced through the gate:
+
+> `gateguard` blocks the first `Edit` until Claude presents a fact list. Claude reads `useAuth.ts`, finds the existing `redirectAfterLogin` helper, traces *why* the redirect loops (a stale `from` query param), and edits one line in one file. `verification-loop` runs the tests. The reply names the file, the line, the cause.
+
+Same agent. Same model. Different intelligence.
+
+---
+
+## The 7 Laws
+
+| # | Law | What it gives the agent |
+|---|-----|----------------------|
+| 1 | **Research Before Executing** | builds on what already exists instead of reinventing it |
+| 2 | **Plan Is Sacred** | lands effort on the goal with success defined up front |
+| 3 | **One Thing at a Time** | ships each change on a known-good base |
+| 4 | **Verify Before Reporting** | backs every "done" with evidence you can trust |
+| 5 | **Reflect After Sessions** | turns each session into a captured lesson |
+| 6 | **Iterate One Change** | keeps debugging isolated and the signal clean |
+| 7 | **Learn From Every Session** | compounds knowledge so next week's agent is sharper |
+
+```
+Research -> Plan -> Execute (one thing) -> Verify -> Reflect -> Learn -> Iterate
+```
+
+<p align="center">
+  <img src="assets/diagram-7-laws-loop.jpg" alt="The 7 Laws of AI Agent Discipline — circular workflow loop" width="820" />
+</p>
+
+Full spec, reflection-block format, and anti-examples: [SKILL.md](SKILL.md). Full Law-to-tool alignment matrix: [CONTRIBUTING.md § Law Coverage Matrix](CONTRIBUTING.md#law-coverage-matrix).
+
+**Why these seven.** Every red flag in the table is a wish standing in for a check: "this should work" hopes the test passes, "I'll remember" hopes memory survives the session. The Laws are one old sentence turned into checks an agent can run on itself: the wise one takes account of himself and works for what comes after; the weak one follows his impulse and merely wishes (Jami` at-Tirmidhi 2459). You do not need the theology to use the test: before you say done, did you check, or did you hope? Sourcing, both gradings, and the mapping to each Law: [docs/philosophy.md](docs/philosophy.md).
+
+**What a gate can and cannot do.** `hooks/gateguard.mjs` can force the *form* of research; it cannot force honesty. It stays honor-system once the agent says the facts are on the table, which is why the account is settled by outcomes instead of by the agent's word: a correction cuts an instinct's confidence, a drifted session cannot quietly say done, and "verified" means the command output is in the reply.
+
+---
+
+## Install
+
+**Beginner (recommended)** is the two-command [Quick start](#quick-start) above — the 7 Laws skill, the hooks that enforce it, and the slash commands. Nothing else to install.
+
+<details>
+<summary><b>Optional companion — the <code>/superpowers</code> dispatcher (recommended)</b></summary>
+
+The `/superpowers` dispatcher routes per-task to specialist skills (`writing-plans`, `test-driven-development`, `using-git-worktrees`, `dispatching-parallel-agents`, `finishing-a-development-branch`, etc.) shipped by Obra's `superpowers` plugin, which is vendored into this same marketplace as a pinned-SHA snapshot. Install it with one extra line:
+
+```bash
+/plugin install superpowers@continuous-improvement
+```
+
+Without the companion the dispatcher still works — every routing target has a concrete inline fallback — but specialist quality is fallback-quality, not dedicated-skill-quality.
+
+**Second-stage verify (proves the runtime gate is firing — i.e. `hooks/gateguard.mjs` is invoked — not just docs claiming it).** Ask Claude to write a throwaway file with no research first:
+
+```
+Edit a new file scratch.txt and put the word "hello" in it. Don't research anything first.
+```
+
+You should see Claude **blocked** by the bundled `gateguard` PreToolUse hook (`hooks/gateguard.mjs`) with a fact-list reason. That block is the proof the hook is wired and enforcing. If Claude writes the file with no pause, the hook did not load — see Troubleshooting below. (To also verify observation hooks, run `/dashboard` and confirm a non-zero `Total` under `Observations`.)
+
+</details>
+
+<details>
+<summary><b>How enforcement works (two layers: runtime hooks + model-side skills)</b></summary>
+
+The 7 Laws are enforced at **two layers**:
+
+- **Runtime layer (hooks).** `gateguard` ships as a PreToolUse hook (`hooks/gateguard.mjs`) that physically blocks Edit / Write / MultiEdit / destructive Bash on the first mutation per file until the agent presents the facts named in [skills/gateguard.md § Gate Types](skills/gateguard.md). Destructive Bash (`rm -rf`, `git push --force`, `--force-with-lease`, `DROP DATABASE`, Windows `Remove-Item -Recurse`, etc.) is gated on every call, not just first. Read-only and exploratory tools (Read, Grep, Glob, routine Bash like `git status`) bypass the gate. Per-session state at `~/.claude/instincts/<project-hash>/gateguard-session.json` caps cumulative clearances at 1000 distinct files per session by default (`GATEGUARD_MAX_CLEARED_FILES` overrides it) to bound stuck-loop damage. A second runtime hook, `goal-drift-stop` (`hooks/goal-drift-stop.mjs`), fires on `Stop`: it scores each turn against the stated `## Goal` and, on a substantive wrap-up that has drifted off-goal, warns by default (or re-prompts under `CLAUDE_GOAL_DRIFT_GATE=block`) — so a drifted session can't quietly declare "done". Fail-open.
+- **Model layer (skills).** Once the runtime gate clears for a file, the rest of the discipline (`tdd-workflow`, `verification-loop`, `proceed-with-the-recommendation`, etc.) runs model-side — the agent reads each skill and applies it. `observe.sh` / `observe.mjs` records every tool call into the Mulahazah feed for instinct extraction; that surface is observational, not enforcement.
+
+V1 honest limitations: the runtime gate is honor-system once the agent flips `_gateguard_facts_presented: true` (the hook can't verify the investigation actually happened); the state file is deletable and parallel hook invocations can race. Documented in `src/hooks/gateguard.mts` and `src/lib/gateguard-state.mts` headers.
+
+</details>
+
+<details>
+<summary><b>Expert install — MCP server, observation hooks, and instinct packs</b></summary>
+
+Pick this if you want the MCP tools (19 of them, including `ci_plan_init` / `ci_plan_status` for `task_plan.md`-style planning), the session hooks that feed Mulahazah, and starter packs.
+
+Precondition: Node 18 / 20 / 22. Observation and session hooks execute Node directly, so Git Bash and `jq` are not required. Re-run the installer once after upgrading to migrate installer-owned `observe.sh` and `session.sh` rows to the Node entrypoints.
+
+```bash
+npx continuous-improvement install --mode expert
+npx continuous-improvement install --pack react   # optional: react | python | go | meta
+# --pack seeds 5–10 starter instincts so suggestions appear in week 1 instead of week 4.
+```
+
+Verify: run `/dashboard` in Claude Code — you should see instinct health and observation count.
+Update later with `/plugin marketplace update continuous-improvement` or by re-running the npx command. When you run the npx installer, it makes one throttled, fail-open read of the public npm registry and prints a one-line notice if a newer version is published (no telemetry — nothing about you is sent). Silence it with `CLAUDE_CI_UPDATE_CHECK=off`.
+
+</details>
+
+<details>
+<summary><b>Troubleshooting install</b></summary>
+
+Three failures account for most install problems. Try them in order:
+
+| Symptom | Real cause | Fix |
+|---|---|---|
+| `/discipline` says "command not recognized" right after `/plugin install` | Slash commands load on session start; the marketplace did pick the plugin up | Quit and reopen Claude Code, then run `/discipline` again |
+| Hooks report Bash path errors after upgrading | Stale installer-owned `observe.sh` or `session.sh` rows remain in `settings.json` | Re-run `npx continuous-improvement install --mode expert`; the installer migrates those rows to Node and preserves foreign hooks |
+| `/plugin marketplace add ...` returned nothing visible | Marketplace add was silent; the plugin is not yet selected | Run `/plugin install continuous-improvement@continuous-improvement` to select and activate it |
+
+If none of those apply, paste the output of `npx continuous-improvement install` into a GitHub issue — that surface logs every step.
+
+</details>
+
+<details>
+<summary><b>Operator modes (env vars that change hook behavior)</b></summary>
+
+The framework has documented operator-level modes that change hook behavior without rebuilding the plugin. These are first-class — set them once in your shell rc and they persist across sessions.
+
+| Env var | Effect | How to set |
+|---|---|---|
+| `CLAUDE_THREE_SECTION_CLOSE_DISABLED=1` | `three-section-close.mjs` short-circuits before any enforcement or telemetry. Use when end-of-turn reflection should run as internal thinking rather than visible "What has been done / What is next / Recommendation" sections. Public default unchanged — the rule still fires for everyone else. | bash/zsh: `export CLAUDE_THREE_SECTION_CLOSE_DISABLED=1` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CLAUDE_THREE_SECTION_CLOSE_DISABLED=1` (session) or `[Environment]::SetEnvironmentVariable('CLAUDE_THREE_SECTION_CLOSE_DISABLED','1','User')` (persistent). |
+| `CLAUDE_GOAL_DRIFT_GATE` | `goal-drift-stop.mjs` (a `Stop` hook) scores each turn's activity against the `## Goal` in `task_plan.md` and acts on drift. `warn` (default) prints a one-line stderr notice and never blocks; `block` re-prompts a substantive wrap-up that has drifted off-goal so the goal gates the close; `off` disables it. Reads the same observation feed as Mulahazah; fails open on any error. | bash/zsh: `export CLAUDE_GOAL_DRIFT_GATE=block` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CLAUDE_GOAL_DRIFT_GATE='block'` (session) or `[Environment]::SetEnvironmentVariable('CLAUDE_GOAL_DRIFT_GATE','block','User')` (persistent). |
+| `CLAUDE_TYPECHECK_GATE` | `hooks/typecheck-stop.mjs` (a `Stop` hook) runs the project typecheck (the `typecheck` npm script, else a local `tsc --noEmit`) on changed TS files at turn end and feeds a failure back to the model. `off` (default) is a no-op — the global advisory `typecheck-changed.sh` stays the default layer; `warn` prints a one-line stderr notice; `block` re-prompts with the tsc output so a headless/autonomous `-p` loop fixes its own type errors before ending the turn. Skips non-TS repos and turns where no TS file changed; fails open on any error or timeout. | bash/zsh: `export CLAUDE_TYPECHECK_GATE=block` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CLAUDE_TYPECHECK_GATE='block'` (session) or `[Environment]::SetEnvironmentVariable('CLAUDE_TYPECHECK_GATE','block','User')` (persistent). |
+| `CLAUDE_RECALL_BRIEFING=1` | `hooks/recall-briefing.mjs` (a UserPromptSubmit hook) makes episodic memory proactive: on the first substantive prompt of a session it searches this project's past observations (BM25) and injects a one-time `<system-reminder>` with the most relevant prior activity, so the agent reuses a past fix instead of re-deriving it. Opt-in and default off; it is an amplifier, never a gate — it cannot block a prompt and fails open. The `ci_recall` MCP tool stays available for explicit, deeper searches. | bash/zsh: `export CLAUDE_RECALL_BRIEFING=1` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CLAUDE_RECALL_BRIEFING=1` (session) or `[Environment]::SetEnvironmentVariable('CLAUDE_RECALL_BRIEFING','1','User')` (persistent). |
+| `CLAUDE_WORKFLOW_DISTILL_NUDGE=on` | `hooks/workflow-distill.mjs` (a `Stop` hook) closes the orchestration-to-memory loop: when a native Workflow run's output then passed a verify in the same session, it prints a one-line stderr nudge to run the `ci_distill_from_workflow` MCP tool, so an expensive multi-agent run leaves a durable Mulahazah draft instinct instead of evaporating. `on` enables it; default (unset or any other value) is off. Opt-in amplifier, never a gate — it cannot block the Stop, dedupes per run, and fails open. | bash/zsh: `export CLAUDE_WORKFLOW_DISTILL_NUDGE=on` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CLAUDE_WORKFLOW_DISTILL_NUDGE='on'` (session) or `[Environment]::SetEnvironmentVariable('CLAUDE_WORKFLOW_DISTILL_NUDGE','on','User')` (persistent). |
+| `CI_GATEGUARD_EXCLUDE` | Comma-separated path fragments that `hooks/gateguard.mjs` skips for Edit / Write / MultiEdit (case-insensitive substring match on the forward-slash path). Meant for a prose wiki or a generated scratch dir. The hook prints one stderr line naming the fragment whenever an exclusion fires, and a catch-all fragment such as `/` or `.` matches every path and is reported as the file gate being off. Destructive Bash is never excluded. Unset (default) changes nothing. | bash/zsh: `export CI_GATEGUARD_EXCLUDE=docs/wiki,scratch/`. PowerShell: `$env:CI_GATEGUARD_EXCLUDE='docs/wiki,scratch/'` (session). |
+| `CI_GATEGUARD_TARGET_LOCK=block` | `hooks/gateguard.mjs` refuses any Edit / Write / MultiEdit whose absolute target canonicalizes outside the session project root, before the fact gate and independent of clearance, so a wrong-repo or wrong-worktree write is denied even with perfect facts. Off by default. | bash/zsh: `export CI_GATEGUARD_TARGET_LOCK=block`. PowerShell: `$env:CI_GATEGUARD_TARGET_LOCK='block'` (session). |
+| `CI_CONFIG_GUARD` | `hooks/config-guard.mjs` (a PreToolUse hook on Bash / Edit / Write / MultiEdit / NotebookEdit) watches the files that wire the guardrails: `.claude/settings*.json`, `.mcp.json`, `hooks.json`, `.claude/hooks/`, `.claude/plugins/`, `.claude-plugin/`, and the `claude plugin\|mcp\|config` CLI forms that edit them. `warn` (default) prints one stderr line and never blocks; `block` denies the call with the reason and the bypass; `off` disables it. Reads never trigger it. One-call bypass: `CI_CONFIG_GUARD_ALLOW=true`. Fails open. | bash/zsh: `export CI_CONFIG_GUARD=block` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CI_CONFIG_GUARD='block'` (session) or `[Environment]::SetEnvironmentVariable('CI_CONFIG_GUARD','block','User')` (persistent). |
+| `CI_ROUTE_PROMPT_DISABLE=1` | `hooks/route-prompt.mjs` (a UserPromptSubmit hook) emits no skill suggestion and writes no telemetry. Use it in a project that routes plan, test or review prompts to its own skills, so the generic hints do not compete with them. Set it per project in that project's `.claude/settings.json` `env` block. `true` also works; unset or any other value changes nothing. | Per project: `"env": { "CI_ROUTE_PROMPT_DISABLE": "1" }` in `.claude/settings.json`. bash/zsh: `export CI_ROUTE_PROMPT_DISABLE=1`. PowerShell: `$env:CI_ROUTE_PROMPT_DISABLE=1` (session). |
+| `CLAUDE_QUERY_COST_NUDGE=on` | `hooks/query-cost-nudge.mjs` (a `Stop` hook) guards against surprise DB bills: when the working tree has changed DB/query files (`.sql`, `.prisma`, `migrations/`, `/db/`, `schema.*`, `drizzle`) at turn end, it injects a once-per-session `additionalContext` reminder to run a D1-aware cost audit — dispatch the `database-reviewer` agent or check EXPLAIN QUERY PLAN, index coverage, N+1, and D1 `rows_read` billing before finishing. `on` enables it; default (unset) is off. Opt-in amplifier, never a gate; dedupes per session and fails open. | bash/zsh: `export CLAUDE_QUERY_COST_NUDGE=on` in `~/.bashrc` / `~/.zshrc`. PowerShell: `$env:CLAUDE_QUERY_COST_NUDGE='on'` (session) or `[Environment]::SetEnvironmentVariable('CLAUDE_QUERY_COST_NUDGE','on','User')` (persistent). |
+
+</details>
+
+<details>
+<summary><b>Works with other agents (Gemini, Codex, Cursor, Windsurf, Zed, Aider, Copilot)</b></summary>
+
+Claude Code gets the full install (hooks, MCP server, instinct learning). Every other agent platform can still run the 7 Laws as a rules file — one flag writes the skill text into the file that platform reads, at your project root:
+
+```bash
+npx continuous-improvement install --target gemini,codex
+```
+
+| Target | File written |
+|---|---|
+| `gemini` | `GEMINI.md` (Gemini CLI context file) |
+| `codex` | `AGENTS.md` (agents.md standard — also read by opencode, Jules, Cursor ≥0.50) |
+| `cursor` | `.cursor/rules/continuous-improvement.mdc` (`alwaysApply: true`) |
+| `windsurf` | `.windsurf/rules/continuous-improvement.md` |
+| `zed` | `.rules` |
+| `aider` | `CONVENTIONS.md` + a minimal `.aider.conf.yml` if none exists |
+| `copilot` | `.github/copilot-instructions.md` |
+
+Shared files (`GEMINI.md`, `AGENTS.md`, `.rules`, `CONVENTIONS.md`, `copilot-instructions.md`) are merged through a managed marker block — your existing content is preserved and reinstalls are idempotent. Targets can be combined freely (`--target claude,gemini,codex` runs the full Claude Code install plus the rules files).
+
+</details>
+
+---
+
+## Who this is for
+
+Use this if you:
+
+- ship from real repositories with real consequences
+- have been bitten by an agent that edits before understanding
+- want tests, builds, or healthchecks to pass before "done"
+- want the work to outlive the session: lessons from yesterday survive into today, and today's fix survives into the next engineer's week
+
+Skip it if you:
+
+- only do one-off prompts (no edits, no commits)
+- dislike *any* friction before agent edits
+- want a prompt template, not a runtime gate (`hooks/gateguard.mjs`)
+
+Claude Code gets the full install (hooks, MCP, instincts). Other agents can still load the 7 Laws as a rules file — see [Works with other agents](#install).
+
+---
+
+## What leaves your machine
+
+Nothing. Observations (`observations.jsonl`) and instincts live under `~/.claude/instincts/` and are never uploaded. The npx installer makes one throttled, fail-open read of the public npm registry to print a newer-version notice; `CLAUDE_CI_UPDATE_CHECK=off` silences it. No telemetry. Raw observation rows can contain command heads and file paths, so review them before you share an export — see [SECURITY.md](SECURITY.md).
+
+---
+
+## The problem this solves
+
+<details>
+<summary><b>Five failure modes every agentic-coding user hits — and which Law catches each</b></summary>
+
+You have used Claude Code (or any agentic coding tool) long enough to recognize the failure pattern. Matt Pocock's [Skills For Real Engineers](https://github.com/mattpocock/skills) names four root failure modes that account for nearly every "the agent didn't help" complaint; the 7 Laws of AI Agent Discipline catch those four at the tool-call boundary plus a fifth that only shows up across sessions.
+
+| # | Failure mode | What you see | Which Law fires | What enforces it |
+|---|---|---|---|---|
+| 1 | **Misalignment** | The agent doesn't do what you want — invents requirements, reinvents helpers that already exist, or builds the wrong thing before anyone challenged the idea | Law 1 (Research) | [`roast`](skills/roast.md), [`grill-me`](skills/grill-me.md), [`grill-with-docs`](skills/grill-with-docs.md), [`gateguard`](skills/gateguard.md), [`workspace-surface-audit`](skills/workspace-surface-audit.md) |
+| 2 | **No shared language** | The agent uses 20 words where 1 would do; jargon decoded fresh every session; variable names drift from domain terms | Law 2 (Plan), Law 7 (Learn) | [`grill-with-docs`](skills/grill-with-docs.md) (writes & maintains `CONTEXT.md`), [`token-budget-advisor`](skills/token-budget-advisor.md), [`strategic-compact`](skills/strategic-compact.md) |
+| 3 | **No feedback loop** | The code doesn't work — agent claims "done" without running build, tests, or healthcheck | Law 4 (Verify) | [`tdd-workflow`](skills/tdd-workflow.md), [`verification-loop`](skills/verification-loop.md), [`deploy-receipt`](skills/deploy-receipt.md) |
+| 4 | **Design rot** | Ball-of-mud accelerates — agent bundles three concerns into one PR, stacks untested changes, ignores prior architectural decisions | Law 2 (Plan), Law 3 (One Thing) | [`superpowers:writing-plans`](https://github.com/obra/superpowers/blob/main/skills/writing-plans/SKILL.md), [`gateguard`](skills/gateguard.md), [`worktree-safety`](skills/worktree-safety.md), [`wild-risa-balance`](skills/wild-risa-balance.md) |
+| 5 | **Forgotten lessons** | Next session starts from zero — prior corrections, decisions, instincts are lost; the same mistake repeats next week | Law 5 (Reflect), Law 7 (Learn) | [`handoff`](skills/handoff.md), Mulahazah instinct engine |
+
+Three of those alignment + reflection skills (`grill-me`, `grill-with-docs`, `handoff`) are MIT-licensed ports from mattpocock/skills; the rest are continuous-improvement-native. Every failure mode has at least one runtime hook or model-side skill that catches it before it lands in the diff.
+
+</details>
+
+---
+
+## Mulahazah: auto-leveling learning
+
+<details>
+<summary><b>How instincts form, level up, and decay — you configure nothing</b></summary>
+
+Hooks capture every tool call silently. When you run `/seven-laws` (or `/harvest`, `/distill`) after ~20 observations, Claude analyzes patterns and creates **instincts** with confidence scores: silent below 0.5, suggested at 0.5–0.69, auto-applied at 0.7+. What runs in code today: `ci_reinforce` adds 0.15 on an accepted suggestion and cuts 0.1 on a correction, and `/harvest` weights recurring friction by recency. The confirm, decay, and cross-project promotion rules in [SKILL.md](SKILL.md) are instructions the model applies during analysis, not a background process. Nothing forms until you close the loop.
+
+<p align="center">
+  <img src="assets/diagram-mulahazah-learning.jpg" alt="Mulahazah pipeline" width="820" />
+</p>
+
+</details>
+
+---
+
+## Slash commands
+
+<details>
+<summary><b>All 29 commands (marketplace bundle)</b></summary>
+
+`/seven-laws` is the canonical reflect-and-learn command. `/continuous-improvement` is kept as an alias for backward compatibility — both run the same workflow.
+
+```
+/seven-laws                       Reflect, analyze, show status (canonical)
+/continuous-improvement           Alias for /seven-laws (kept for backward compat)
+/proceed-with-the-recommendation  Walk any agent's recommendation list top-to-bottom
+/superpowers                      Law activator — route the task to the right specialist
+/workspace-surface-audit          Audit repo + MCP + env, recommend high-value skills
+/roast                            5-persona adversarial council — GO / RESHAPE / KILL on an idea
+/grill-me                         Interview-mode alignment (one question at a time)
+/grill-with-docs                  Grill-me with persistent outcomes — updates CONTEXT.md + ADRs inline
+/intent-driven-development        Scope an ambiguous change into verifiable acceptance criteria
+/planning-with-files              Create task_plan.md, findings.md, progress.md
+/goal-check                       Score recent activity against the task_plan.md goal (drift detector)
+/reconcile                        Establish git ground truth before any mutation; verify a push landed
+/audit                            Audit recent commits for real defects, confirm each before fixing
+/ship                             Single-defect fast path — reconcile, TDD fix, verify, one PR
+/production-readiness-review      Parallel readiness gate — severity-ranked punch-list (reports only)
+/simplicity-review                Judge the current diff for over-engineering (GO / TRIM, reports only)
+/handoff                          End-of-session compaction into mktemp brief for the next agent
+/recall                           BM25 search over past observations — "have I hit this before?"
+/discipline                       Quick reference card of the 7 Laws
+/model-forward                    Restate the model-forward stance — go with the model, not against it
+/verify-install                   One-shot post-install check — commands, gateguard, observe
+/dashboard                        Visual instinct health dashboard
+/companion-preference             Inspect companion-preference hook telemetry
+/ralph                            Autonomous PRD story-by-story loop
+/learn-eval                       Capture session patterns into new skills (needs observation history)
+/harvest                          Extract reusable patterns from session friction (needs observation history)
+/distill                          Distill repeated successful sequences into draft instincts (needs observation history)
+/release-train                    Coordinate a multi-PR release sequence
+/swarm                            Fan-out coordination across parallel sub-agents
+```
+
+All 29 legacy commands ship in the marketplace bundle. The marketplace Beginner install gets all of them, with one caveat: `/learn-eval`, `/harvest`, and `/distill` only produce useful output once Mulahazah has accumulated observation history (~20 observations), so running them on day 1 returns an empty result, not a broken command. `/swarm` and `/release-train` are orchestration commands aimed at larger multi-agent or multi-PR work. The npm installer writes its curated command set and installs the native `ship` skill at `~/.claude/skills/ship/SKILL.md`; that user-invocable skill supplies `/ship` without creating a duplicate personal command. Expert npm mode additionally exposes the planning workflow through the MCP tools `ci_plan_init` (initialize `task_plan.md`, `findings.md`, `progress.md` in the project root) and `ci_plan_status` (summarize their current contents).
+
+</details>
+
+---
+
+## Skills
+
+The plugin ships **28 skills** — 1 core + 1 featured + 7 tier-1 + 16 tier-2 + 3 always-bundled. Beginner install gets tier-1, featured, and the always-bundled companion; Expert adds tier-2, the MCP server, and observation hooks. The tier-1 `ship` skill is the single source for the `/ship` workflow and the npm installer makes it global across Claude Code projects. Full catalog with per-skill descriptions, Law tagging, and drop-in single-file install: [docs/skills.md](docs/skills.md). Adding a 29th skill: [CONTRIBUTING.md § Evolution — adding a new skill](CONTRIBUTING.md#evolution--adding-a-new-skill).
+
+---
+
+## GitHub Action: Transcript Linter
+
+Lint agent behavior in CI. Detects skipped laws.
+
+```yaml
+- uses: naimkatiman/continuous-improvement@v3
+  with:
+    transcript-path: agent-log.jsonl
+    strict: true
+```
+
+Catches writes without prior research (Law 1), too many edits without verification (Law 3), code changes without tests/builds (Law 4), too many files at once (Law 6). Run locally with `node bin/lint-transcript.mjs <file>`. The `@v3` floating-tag retarget policy lives in [CONTRIBUTING.md § Release](CONTRIBUTING.md#release).
+
+---
+
+## Portfolio spine
+
+Two standalone commands turn a multi-repo portfolio into scored, auditable evidence. Both are offline: they read local files only, no network.
+
+**`ci-audit-actions`** — static GitHub Actions security scan. Flags missing/over-broad `permissions:`, unpinned actions, missing job timeouts, missing concurrency, untrusted event text interpolated into `run:`, and dangerous triggers combined with secrets. Writes a markdown report; `--strict` exits 1 on high-severity findings.
+
+```bash
+npx -p continuous-improvement ci-audit-actions --repo . --out reports/actions-security.md --strict
+```
+
+**`ci-portfolio-health`** — scores every repo in a `portfolio/repos.json` registry 0-100 from local proof signals (CI presence, release receipts, experiment records, commit freshness, high-severity audit findings) and writes a worst-first table with a named next action per repo.
+
+```bash
+npx -p continuous-improvement ci-portfolio-health --config portfolio/repos.json --out reports/portfolio-health.md
+```
+
+Proof-format templates ship in [templates/](templates/): `release_receipt_template.md`, `experiment_template.md`, `actions_security_checklist.md`, and `portfolio_event.schema.json`.
+
+---
+
+## More
+
+- [QUICKSTART.md](QUICKSTART.md) — 2-minute setup
+- [SKILL.md](SKILL.md) — full 7 Laws spec
+- [skills/model-forward.md](skills/model-forward.md) — what stays valuable as models improve
+- [docs/skills.md](docs/skills.md) — full 28-skill catalog
+- [examples/](examples/) — bug fix, feature build, refactor walkthroughs
+- [templates/insights-claude-md.md](templates/insights-claude-md.md) — paste-in CLAUDE.md blocks for verification discipline, environment notes, think-before-acting, and git/deploy workflow (sourced from the 28-day usage report)
+- [CONTRIBUTING.md](CONTRIBUTING.md) — architecture, repo internals, adding a new skill
+- [docs/philosophy.md](docs/philosophy.md) — the one sentence the product is built on, with sources and the mapping to each Law
+- [CHANGELOG.md](CHANGELOG.md) — what changed in each release
+- [SECURITY.md](SECURITY.md)
+- Found a bug? [Open an issue](https://github.com/naimkatiman/continuous-improvement/issues) with the one-line output of `/verify-install`
+
+<details>
+<summary><b>Uninstall · the brand stack · in the wild</b></summary>
+
+### Uninstall
+
+```bash
+npx continuous-improvement install --uninstall
+```
+
+Removes skill, hooks, commands, MCP server. Learned instincts in `~/.claude/instincts/` are preserved — delete manually for a clean slate.
+
+### The brand stack
+
+One product, three names. Use the one that fits the audience:
+
+| Layer | Name | When you say it |
+|-------|------|-----------------|
+| **Brand** | The 7 Laws of AI Agent Discipline | Tweets, talks, docs, "what is this" |
+| **Engine** | Mulahazah | Arabic for observation. The engine watches every tool call; the confidence ledger keeps the account (suggest at 0.5, apply at 0.7, corrections cut). Taking account of yourself is *muhasabah*, the reason the engine exists: [docs/philosophy.md](docs/philosophy.md) |
+| **Package** | `continuous-improvement` | `npm install`, `/plugin install`, `settings.json` |
+
+Every skill description leads with `Enforces Law N (...)` so the discipline tag shows up the moment the skill is loaded; the lint `verify:skill-law-tag` blocks any skill that drops the tag.
+
+### In the wild
+
+Workflows from this repo, applied to real open-source contributions:
+
+**pm-skills (product-on-purpose, Apache 2.0)** — [F-07 discover-market-sizing](https://github.com/product-on-purpose/pm-skills/pull/141), a new domain skill in the Discover phase covering TAM/SAM/SOM market sizing for the [pm-skills](https://github.com/product-on-purpose/pm-skills) library. Authored end-to-end with `/superpowers` and `/proceed-with-the-recommendation`: surface audit before any code, brainstorm gate with WILD/RISA framing, branch isolation off the upstream fork, single-skill PR scope per the upstream maintainer's curated-contributions model, count cascade across 23 docs files, and 9 local validators green before push.
+
+</details>
+
+MIT.

@@ -8,8 +8,10 @@
 ![llm-api-benchmark: compare latency, throughput, reliability and cost of OpenAI-compatible LLM APIs](assets/banner.svg)
 
 `llm-bench` measures what your application would experience when it calls an LLM API. It reports
-time to first token, end-to-end latency, output tokens per second, error rates by type, and cost
-from the prices you supply. Each workload is reported separately, with sample sizes, from a fixed
+time to first token, end-to-end latency, output tokens per second, error rates by type, cost
+from the prices you supply, and whether tool (function) calls come back well formed. A
+conformance suite checks which OpenAI parameters and behaviors an endpoint supports, and which it
+accepts but silently ignores. Each workload is reported separately, with sample sizes, from a fixed
 and versioned set of prompts. Runs are bounded before they start: a request cap, an optional USD
 budget, a dry run, and confirmation for larger runs.
 
@@ -22,6 +24,8 @@ not a load generator.
 - [Quickstart](#quickstart)
 - [Example configuration](#example-configuration)
 - [Sample output](#sample-output)
+- [Test tool calling](#test-tool-calling)
+- [OpenAI-compatible API test suite](#openai-compatible-api-test-suite)
 - [Supported providers](#supported-providers)
 - [Metrics](#metrics)
 - [Methodology](#methodology)
@@ -50,12 +54,20 @@ not a load generator.
   failures. Nothing is retried, because each attempt is one sample.
 - **Cost from your prices.** Enter per-token prices with their source and date. The tool ships no
   prices.
-- **A versioned dataset.** `core-v1` has eight workloads, from one-word answers to 700-word
-  tutorials. Each run records the dataset's version and SHA-256. You can add your own datasets.
+- **Versioned datasets.** `core-v1` has eight workloads, from one-word answers to 700-word
+  tutorials, and `tools-v1` four tool-calling workloads. Each run records the dataset's version
+  and SHA-256. You can add your own datasets.
 - **Optional deterministic checks.** Does the JSON parse, does the code compile, is the number on
   the last line correct. They are mechanical checks, not a quality score.
+- **Tool calling.** `tools-v1` has four workloads: picking the right function or none, filling
+  typed arguments, several calls in one reply, and following `tool_choice`. Checks cover the
+  function chosen, the expected argument values and JSON Schema validity. Agreement across
+  repetitions is reported too. Streamed calls are rebuilt from their fragments.
 - **Reports.** A terminal table, JSON, CSV (per request and per group), Markdown, and a
   self-contained HTML page with local SVG charts that loads nothing from the network.
+- **Conformance suite.** `llm-bench conformance` runs 22 tests (21 small requests) for model
+  listing, streaming, usage, parameter handling, tool calls and error bodies. It reports PASS,
+  WARN or FAIL per test, as a terminal table, JSON, Markdown and JUnit XML.
 - **Comparisons.** `llm-bench compare` gives the difference of medians with a 95% bootstrap
   interval, and says "no clear difference" when the interval includes zero.
 - **Credentials stay out.** Keys are read only from environment variables, and terminal output,
@@ -180,6 +192,71 @@ sim-variable  synthetic-variable    55  52        5.5%  http_503 x3        0    
 endpoints ([compare.txt](examples/synthetic-demo/compare.txt)) reports "no clear difference"
 wherever the bootstrap interval includes zero.
 
+## Test tool calling
+
+Does an endpoint pass `tools` through, return calls in the standard shape, fill the arguments your
+schema asks for, and respect `tool_choice`? The `tools-v1` dataset asks small, harmless questions
+with tools attached. The tools are never executed; only the calls are checked.
+
+```bash
+llm-bench run --config synthetic-tools.yaml --yes          # offline, simulated
+llm-bench run --config my-endpoint.yaml --dataset tools-v1 --dry-run
+```
+
+| Workload | What it asks | Checks |
+|---|---|---|
+| `tool-select` | Pick one of four functions, or answer without a tool | `tool_call` (name and arguments), `no_tool_call`, `tool_args_valid`, `tool_call_count` |
+| `tool-args` | Dates, times, integers in a range, enums and lists | expected values, schema validity |
+| `tool-parallel` | Two or three calls in one reply | `tool_call_count` with `min`, each expected call |
+| `tool-choice` | A named function, `"required"`, `"none"` | the forced call, or no call |
+
+The report adds a table per tool workload:
+
+```text
+Provider      Mode    Called a tool       Same calls  tool_args_valid  tool_call
+------------  ------  -------------  ---------------  ---------------  ---------
+sim-steady    stream          77.8%  44% (3 prompts)              4/9        0/9
+```
+
+That example comes from the simulator, which does not read prompts, so its argument checks fail
+by design. Use your own tools in a dataset file (see [docs/configuration.md](docs/configuration.md#tool-workloads))
+to test the calls your application makes. These checks show whether calls are well formed and as
+expected on small tasks; they are not an agent benchmark.
+
+## OpenAI-compatible API test suite
+
+"OpenAI-compatible" usually means "some of it". `llm-bench conformance` finds out which parts. Its
+most useful finding is a parameter that is accepted and then ignored: a `max_tokens`, `stop`,
+`n`, `response_format` or `logprobs` that returns HTTP 200 without taking effect.
+
+```bash
+llm-bench conformance -c synthetic-conformance.yaml       # offline: a reference endpoint and a quirky one
+llm-bench conformance -c my-endpoint.yaml --formats json,md,junit
+```
+
+```text
+Test                                reference  quirky
+----------------------------------  ---------  ------
+stream.usage                        PASS       FAIL
+params.max_tokens                   PASS       FAIL
+params.n                            PASS       FAIL
+params.response_format.json_object  PASS       WARN
+params.response_format.json_schema  PASS       FAIL
+errors.invalid_key                  PASS       WARN
+errors.unknown_model                PASS       FAIL
+```
+
+That excerpt is the in-process reference endpoint, once as documented and once with quirks
+switched on. It is synthetic data, not any provider's results.
+
+- **What WARN and FAIL mean.** An explicit 400 for an unsupported parameter is a WARN; silently
+  ignoring it is a FAIL.
+- **CI.** The exit code is 1 on any FAIL, so the suite works as a gate for your own server or
+  gateway.
+
+[docs/conformance.md](docs/conformance.md) lists every test, what passes, and how to read the
+results.
+
 ## Supported providers
 
 | Preset | What it is | How it was checked |
@@ -206,8 +283,11 @@ different wire format.
 | **Error rate** | Failed / sent, by type. Skipped requests are listed with the reason. |
 | **Cost** | From the provider's token counts and your prices. Shown only when both are known. |
 | **Checks** | Share of replies that pass the prompt's deterministic checks. |
+| **Called a tool** | Tool workloads: share of successful replies with at least one tool call. |
+| **Same calls** | Tool workloads: for each prompt, the share of repetitions that make the most common set of calls (same functions, same parsed arguments), averaged over prompts. |
 
-APIs stream text chunks, not individual tokens, so TTFT is "first chunk with text". Token counts
+APIs stream chunks, not individual tokens, so TTFT is "first chunk with output". A tool-call
+fragment counts as output and as the start of the answer. Token counts
 come from the provider's `usage`; when it is missing they are estimated at 4 characters per token
 and marked `~`.
 
@@ -260,7 +340,8 @@ The most used keys are below. The complete reference is
 
 | Command | What it does |
 |---|---|
-| `llm-bench run -c FILE` | Run a benchmark. Options: `--dry-run`, `--yes`, `--out-dir`, `--formats`, `--providers`, `--workloads`, `--modes`, `--repetitions`, `--warmup`, `--concurrency`, `--max-requests`, `--budget`, `--stop-at-budget`, `--quiet`. |
+| `llm-bench conformance -c FILE` | Run the OpenAI compatibility tests against each endpoint. Options: `--list`, `--only`, `--skip`, `--providers`, `--dry-run`, `--yes`, `--formats json,md,junit`, `--fail-on fail\|warn\|never`. |
+| `llm-bench run -c FILE` | Run a benchmark. Options: `--dry-run`, `--yes`, `--out-dir`, `--formats`, `--dataset`, `--providers`, `--workloads`, `--modes`, `--repetitions`, `--warmup`, `--concurrency`, `--max-requests`, `--budget`, `--stop-at-budget`, `--quiet`. |
 | `llm-bench providers` | List presets, how each was checked, and their notes. |
 | `llm-bench datasets [NAME] [--prompts]` | List datasets, or show workloads, prompts and checks. |
 | `llm-bench models --preset P` / `--base-url URL --api-key-env VAR` | List model ids (one `GET /models`). |

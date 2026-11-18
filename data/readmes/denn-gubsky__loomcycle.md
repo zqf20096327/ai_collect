@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.158) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.161) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -212,16 +212,14 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.158.0) renders documents as OpenDocument and EPUB
-and can embed a document's record in the rendered file, adds concept-scheme
-headers, deeper schemes, member counts and node statistics to the ontology,
-and makes `kb/survey` link a fitting guide's matching sections and trust each
-document's stored status. Read the upgrade notes in
-[`REVISIONS.md`](REVISIONS.md).
+The most recent line (v1.161.0) reads books: `File op=extract` takes EPUB,
+FB2, RTF and a DjVu book's text layer, and returns a book's own metadata. An
+agent can name its own OCR model, and an ontology entry is retired instead of
+deleted. Read the upgrade notes in [`REVISIONS.md`](REVISIONS.md).
 
-Before it, v1.157.0 kept a document's colour scheme out of what a model
-reads, fixed what a measurement of `kb/survey` found, and let MCP
-`file op=render` and `keep` work without a run.
+Before it, v1.160.0 drew Mermaid diagrams as pictures in rendered files,
+extracted a sample of a file (chosen PDF pages, a character limit), and
+planned an ontology change before it is made.
 
 Before that, v1.155.0 rendered a Document back into a file: `File op=render`
 writes Markdown, HTML, Word or PDF (typeset by Typst in the conversion

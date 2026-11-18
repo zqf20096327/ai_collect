@@ -25,6 +25,8 @@
 
 ---
 
+> 用 agent 生成文档后，可以手动使用本工具清理属性，也可以让 agent 在交付前调用本工具自动完成。下文提供[一句话提示与可写入 `AGENTS.md` 的长期规则](#agent-workflow)。
+
 ## ✨ 特性
 
 - 🤖 **AI 痕迹自动识别** — `ChatGPT`、`Claude`、`python-docx`、`openpyxl`、`Skia/PDF` 等生成来源自动标红；作者/生成程序/时间统计类字段默认勾选，标题等正文类字段只提示不自动删（防误删）
@@ -129,24 +131,53 @@ python doc_meta_cli.py --list-fields    # 查看全部可操作的字段
 
 退出码：**0** 全部成功；**1** 有文件处理失败（被占用 / 加密 / 字段不存在 / 值非法，明细见 ⚠ 行或 JSON 的 `errors`）；**2** 命令用法错误。
 
+<a id="agent-workflow"></a>
+
 ## 🤖 与 AI Agent 配合使用
 
-如果你平时用 AI agent（Claude Code / Codex CLI / ZCode 等）生成 Word / Excel / PPT / PDF 文档，最顺滑的用法是把属性清理设为 agent 的**固定收尾步骤**：文档生成完成后由 agent 自动调用命令行清理，不需要再手动拖进界面。把下面这段连同你的生成需求一起粘给 agent 即可：
+Agent 生成的文档，可能在作者、生成程序等属性中留下 AI 工具或脚本库的信息。本工具用于检查和清理这些属性：你可以在文件生成后用图形界面处理，也可以让 agent 在交付前调用命令行，自动完成清理与复查。
+
+临时处理时，可以直接在生成需求里加一句“交付前清理文档属性并复查”，由 agent 调用本工具或自行实现。希望每次都复用本工具的处理规则，则可以把调用步骤写进 `AGENTS.md`，作为文档交付前的固定步骤。
+
+### 临时使用：在需求里加一句话
 
 ```text
-【交付前清理文档属性 —— 必须执行】
-你生成的 Word/Excel/PPT/PDF 文档在交付给我之前，必须完成以下收尾步骤，不可跳过：
-1. 如果本机还没有清理工具，先克隆到临时目录（Windows 下可用 %TEMP% 代替 /tmp）：
-   git clone --depth 1 https://github.com/yuujinng/ai-metadata-cleaner.git /tmp/ai-metadata-cleaner
-2. 对每个生成的 .docx/.xlsx/.pptx/.pdf 文件执行（覆盖模式，直接在原文件上清理）：
-   python /tmp/ai-metadata-cleaner/doc_meta_cli.py clean "文档路径" --mode overwrite
-3. 清理后逐个复查。标题、关键词等只提示的字段可能仍被标记；报告剩余提示：
-   python /tmp/ai-metadata-cleaner/doc_meta_cli.py scan "文档路径"
-4. 两条命令的退出码都是 0 才算完成；非 0 时把错误信息如实告诉我，不要假装成功。
-5. 只清理文档属性（作者/程序/时间统计等），不要改动正文内容。
+生成文档后、交付给我之前，请清理文档属性中暴露生成来源的信息并复查，保留正文和我指定保留的属性，报告实际处理结果与剩余提示。可以调用 ai-metadata-cleaner，也可以自行实现。
 ```
 
-**程序化接口**（给需要自己解析结果的 agent/脚本）：三个子命令都支持 `--json`，stdout 输出单个 JSON 文档，中文值以 `\uXXXX` 转义保证任何终端编码下都是合法 JSON：
+### 长期使用：写入 AGENTS.md
+
+如果希望 agent 每次生成文档后自动调用本工具，可以把规则写入它会读取的指令文件，无需每次重复提醒。
+
+以 Codex 为例：**只对某个项目生效**，把下面的规则追加到该项目根目录的 `AGENTS.md`；**希望各项目默认使用**，追加到 Codex 的全局 `AGENTS.md`（默认 `~/.codex/AGENTS.md`，Windows 通常为 `C:/Users/你的用户名/.codex/AGENTS.md`）。保留已有规则，不要整份覆盖。其他 agent 请使用其实际支持的规则文件，不能假定都读取 `AGENTS.md`。添加后开启新会话，让 agent 概述已加载的清理规则，确认生效。位置与加载方式参见 [Codex 官方说明](https://learn.chatgpt.com/docs/agent-configuration/agents-md)。
+
+**一次准备：** 安装 Python 3.11+，把本仓库放到一个长期保留的位置，再安装依赖。下面以 Windows PowerShell 为例，`D:/tools/ai-metadata-cleaner` 是示例位置，可换成自己的路径；已下载源码则直接使用已有目录，无需再次克隆。
+
+```powershell
+git clone --depth 1 https://github.com/yuujinng/ai-metadata-cleaner.git "D:/tools/ai-metadata-cleaner"
+python -m pip install -r "D:/tools/ai-metadata-cleaner/requirements.txt"
+```
+
+macOS/Linux 也可使用相同命令，将路径换成实际目录。**下面规则中的工具路径也要同步替换为真实绝对路径**；若 Python 使用 `python3` 等命令启动，也要一并替换。长期规则应指向持久目录，避免临时目录被清理后失效。
+
+**可复制到指令文件的规则：**
+
+```markdown
+## 文档交付前的属性清理
+
+- 对本次任务生成、准备交付且属于工具支持格式的 Word / Excel / PPT / PDF，在最后一次编辑或导出后执行属性清理与复查；之后如再次编辑或导出，需要重新执行。
+- 工具入口为 `D:/tools/ai-metadata-cleaner/doc_meta_cli.py`。仅处理本次生成的交付文件，逐个传入文件路径，不递归清理整个项目或改写用户提供的源文件。
+- 只处理文档属性，不改动正文、公式、样式、图片或页面内容。默认使用 `--fields auto`，不要自行扩大为 `--fields all`。若用户要求保留作者等可能被清理的属性，先扫描并改用 `--fields` 明确指定其余待清理字段；没有待清理字段时说明无需变更。
+- 对每个交付文件执行以下命令，将“交付文件的绝对路径”替换为真实路径：
+  1. `python "D:/tools/ai-metadata-cleaner/doc_meta_cli.py" clean "交付文件的绝对路径" --mode overwrite --fields auto --json`
+  2. `python "D:/tools/ai-metadata-cleaner/doc_meta_cli.py" scan "交付文件的绝对路径" --json`
+- 检查每条命令的退出码和 JSON 结果。退出码 0 表示命令成功，不代表没有剩余提示；继续阅读清理结果中的 removed、edited、skipped，以及复查结果中的 suspects。标题、关键词等只提示的字段可以保留并如实报告，不为消除提示而扩大删除范围。
+- 交付时简要报告处理文件、清理结果及剩余提示。工具缺失、命令失败或无法复查时，说明具体原因与未完成项，不声称清理成功。清理元数据不能证明文件未使用 AI，也不保证通过任何 AI 检测。
+```
+
+### 程序化接口与结果判断
+
+三个子命令都支持 `--json`，stdout 输出单个 JSON 文档，中文值以 `\uXXXX` 转义保证任何终端编码下都是合法 JSON：
 
 ```bash
 python doc_meta_cli.py scan 报告.docx --json
@@ -171,7 +202,7 @@ python doc_meta_cli.py scan 报告.docx --json
 
 | 退出码 | 含义 | agent 应对 |
 | :---: | --- | --- |
-| 0 | 全部成功 | 继续交付 |
+| 0 | 命令全部执行成功，不代表没有剩余提示 | 检查处理结果与复查的 `suspects`，报告后交付 |
 | 1 | 有文件处理失败（被占用 / 加密 / 字段不存在 / 值非法），`errors` 与 `files[].error` 有明细 | 读明细，处理后重试 |
 | 2 | 命令本身写错（参数缺失、赋值格式不对） | 修正命令，不要原样重试 |
 

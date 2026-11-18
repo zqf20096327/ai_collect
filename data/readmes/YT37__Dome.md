@@ -131,6 +131,14 @@ the "Show the work" view read them from there.
 ring-analyst, place-analyst and brief-writer sub-agents; reaches Building A, High 59): https://smith.langchain.com/public/ccdd3df0-49d8-4328-8a80-38f9b21f29d8/r/01a1df42-57b6-70a8-844c-21601db2bdde
 An earlier trace on the stub data tools: https://smith.langchain.com/public/e1136b0e-1f00-4dbb-8d0b-a3cf1d447ec6/r
 
+## Run the demo offline
+
+After the hackathon the data accesses (Matterport, Vexcel, CoStar kit, Gemini, LangSmith) go away.
+`scripts/run_demo.sh` runs the full demo from a private bundle with no network and no keys: the same
+real results, every "Show the work" step, and a "Re-run the room match live" button that recomputes
+the match on 6 bundled scans. `--imageless` tells the same story without licensed imagery. The bundle
+holds licensed data, so it is not in this repository; see [docs/OFFLINE_DEMO.md](docs/OFFLINE_DEMO.md).
+
 ## Linker on its own
 
 Scored against the hidden answer key:

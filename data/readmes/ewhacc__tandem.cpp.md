@@ -2,7 +2,7 @@
 
 tandem.cpp is a patch set for [llama.cpp](https://github.com/ggml-org/llama.cpp). It makes MoE models that don't fit in VRAM run faster in llama.cpp. It keeps the most-used experts on the GPU and lets the CPU help with the rest, for any MoE model llama.cpp supports. Single-user decode is the target.
 
-It is an independent project, not affiliated with ggml-org. Base: llama.cpp `f5222f25c` (2026-10-28, see `BASE_COMMIT`). Version **v0.3.0** (2026-11-16).
+It is an independent project, not affiliated with ggml-org. Base: llama.cpp `f5222f25c` (2026-10-28, see `BASE_COMMIT`). Version **v0.4.0** (2026-11-18).
 
 Decode tok/s, one user, GSM8K questions. Each row is one model on one PC. Two numbers are greedy / the model's recommended sampling, one number is greedy.
 
@@ -17,13 +17,41 @@ Decode tok/s, one user, GSM8K questions. Each row is one model on one PC. Two nu
 
 The 32 GB row is a cold start from a DRAM-less PCIe 4.0 SSD; at 64 GB DeepSeek-V4.1 is about twice the RAM and is read from a PCIe 4.0 SSD.
 
-We tuned for Qwen3.8 only, but other MoE models that do not fit in VRAM gain too: typically 1.4–2.1× (gpt-oss-120b, GLM-4.5-Air, Qwen3.6-35B-A3B, DeepSeek-V4.1), less when the model nearly fits. Prompts are also 4–13× faster than llama.cpp's on a 16 GB card with the experts in RAM or on the SSD ([v0.3.0](#whats-new-in-v030-2026-11-16)).
+We tuned for Qwen3.8 only, but other MoE models that do not fit in VRAM gain too: typically 1.4–2.1× (gpt-oss-120b, GLM-4.5-Air, Qwen3.6-35B-A3B, DeepSeek-V4.1), less when the model nearly fits. Prompts are also 4–13× faster than llama.cpp's on a 16 GB card with the experts in RAM or on the SSD ([v0.3.0](#earlier-v030-2026-11-16), [v0.4.0](#whats-new-in-v040-2026-11-18)).
 
 [Strata](https://github.com/Niko1221/Strata) is a dedicated MoE offload engine for a few models. Its default skips low-ranked experts (`STRATA_ROUTE_TAIL_SKIP`), which is faster but approximate (127.1 tok/s in the RTX 4090 Qwen3.8 row); the tables show its exact mode (`STRATA_ROUTE_TAIL_SKIP=0`, every routed expert computed, as llama.cpp and tandem.cpp do). Full tables per machine are [below](#results).
 
 For a big card serving many concurrent streams, use [Tandem-vLLM](https://github.com/ewhacc/tandem) instead; tandem.cpp is for one user on a 16–32 GB card with the experts in RAM.
 
-## What's new in v0.3.0 (2026-11-16)
+## What's new in v0.4.0 (2026-11-18)
+
+- **Long prompts faster again: layer streaming.** A prompt batch of more than 1024 tokens uses every expert of every layer,
+  so tandem.cpp now copies the whole next layer into VRAM while the current layer computes (the experts in the VRAM cache
+  from there, the rest from RAM, in one batched copy per layer), instead of copying each layer's experts after its router has
+  run. The copies hide behind the compute. Time to first token (prompt tok/s), the same prompts as in v0.3.0:
+
+  | Prompt | v0.3.0 | **v0.4.0** | Strata / Maya |
+  |---|---|---|---|
+  | Qwen3.8 IQ3_S + MTP, 15.8k tokens, RTX 5070 Ti 16 GB + 64 GB | 15.1 s (1,047) | **9.3–10.2 s (1,550–1,700)** | Strata 11.7 s (1,354) |
+  | Qwen3.8 IQ3_S + MTP, 15.8k tokens, RTX 5090 + 128 GB | 7.4 s (2,140) | **4.4 s (3,590)** | Strata 2.2 s (7,200) |
+  | DeepSeek-V4.1 Maya-XS, 15.7k tokens, RTX 5090 + 128 GB | 16.5 s (953) | **8.6 s (1,830)** | Maya 9.5 s (1,656) |
+  | DeepSeek-V4.1 Maya-XS, 5.6k tokens, RTX 5090 + 128 GB | 6.5 s (856) | **4.4 s (1,270)** | Maya 7.8 s (713) |
+
+  It needs every expert outside VRAM in pinned RAM (the model fits in RAM, or the RAM store holds the rest) and one GPU;
+  a model read from the SSD (DeepSeek-V4.1 IQ2_XS on 64 or 128 GB) keeps the v0.3.0 path, which is faster there. The two
+  layer-sized staging buffers are borrowed from the expert cache during the prompt, like the larger batch buffers. Decode is
+  unchanged (RTX 5070 Ti, four interleaved cells each: Qwen3.8 72.6 / 73.4 vs 73.5 / 73.6 tok/s with 512-token prompt batches,
+  DeepSeek-V4.1 12.3 / 12.2 vs 12.6 / 12.5). Exact. `LLAMA_MOE_STREAM=0` turns it off.
+- **8192-token prompt batches for models with large layers**, chosen automatically: with one GPU and more than 2 GiB of experts
+  per layer (DeepSeek-V4.1), a long prompt is limited by the PCIe link, and twice the batch copies each layer half as often
+  (Maya-XS above: 11.5 → 8.6 s). Qwen3.8's 1 GiB layers keep 4096. `LLAMA_MOE_UBATCH=N` sets it.
+- **Warm start** (documented now, works with the faster prompts): `LLAMA_MOE_HOT_SAVE=hot.txt` writes the experts a session
+  used when the server exits, and `LLAMA_MOE_HOT_LIST=hot.txt` puts them in VRAM at the next start, so the first request
+  does not start from an empty cache.
+- Fixed in the VRAM borrowing: a cache split into several groups (Qwen3.8 has 7) could lend too little for 8192-token batches
+  and ran out of memory; it now lends from as many groups as needed.
+
+## Earlier: v0.3.0 (2026-11-16)
 
 - **Prompts 2–6× faster.** With an expert cache, prompts now run in 4096-token batches instead of 512. Each batch has to
   bring every expert it uses into VRAM, so a 16k-token prompt used to load the experts 31 times; now 4 times. The larger
@@ -213,6 +241,7 @@ llama-server -m model.gguf -ngl 99 -cmoe --moe-cache-mib auto -lm none -np 1 -c 
 
 - `-cmoe` keeps every expert in host RAM. `--moe-cache-mib auto` gives the GPU memory left after the model, the KV cache and the compute buffers to the expert cache, minus `--moe-cache-margin-mib` (default 512 MiB; a draft model's GPU size is added automatically). A fixed size in MiB also works.
 - `-lm none` reads the weights into RAM instead of mmapping the file.
+- Warm start: `LLAMA_MOE_HOT_SAVE=hot.txt` saves the experts a session used when the server exits; `LLAMA_MOE_HOT_LIST=hot.txt` loads them into VRAM at the next start (both can point to the same file).
 - `-np 1 -c 16384`: one conversation with a 16k-token context. Without them llama-server opens 4 slots that share a small context, too short for a thinking model. `-c` is the total context; the KV cache comes out of the GPU memory the expert cache would get, so set it to what you need (on Qwen3.8, about 0.7 GiB per extra 16k tokens).
 - The startup line `failed to fit params ... n_gpu_layers already set by user to 99, abort` is expected: `-ngl 99` turns llama.cpp's automatic placement off, and the expert cache does the placement instead.
 - **Less RAM than the model** (e.g. Qwen3.8 IQ3_S, 78 GiB, on a 64 GB PC): leave out `-lm none`. The file stays mapped; the experts are copied once into pinned memory when the RAM holds them plus 10 GiB, and the rest is read from the file.
@@ -265,7 +294,9 @@ The server applies these when the variable is unset (logged at startup); `VAR=0`
 | `LLAMA_MOE_ARENA_EXCL` | `1` | store mode: an expert is in VRAM or in the block, not both; the VRAM victim is copied back to RAM |
 | `LLAMA_MOE_ARENA_ASYNC` | `1` | store mode: decode reads from the SSD overlap the compute |
 | `LLAMA_MOE_PIN_EXPS` | auto | mmap mode: copy the mapped experts to pinned memory when the RAM holds them + 10 GiB |
-| `LLAMA_MOE_UBATCH` | `4096` | with an expert cache and `-b`/`-ub` left at their defaults, prompts run in batches of this many tokens (`0`: `-ub`, 512). Draft contexts keep 512 |
+| `LLAMA_MOE_UBATCH` | `4096` (`8192` with layers over 2 GiB) | with an expert cache and `-b`/`-ub` left at their defaults, prompts run in batches of this many tokens (`0`: `-ub`, 512). Draft contexts keep 512 |
+| `LLAMA_MOE_STREAM` | `1` | prompt batches over 1024 tokens copy the next layer's experts into VRAM while the current layer computes (one GPU, experts in pinned RAM) |
+| `LLAMA_MOE_OVERLAP` | `1` | where streaming does not fit, a prompt batch's expert copies overlap the compute of the previous expert range (experts in pinned RAM) |
 | `LLAMA_MOE_FLEX` | `1` | one GPU with CUDA VMM: the larger prompt buffers borrow expert-cache VRAM while a prompt runs (`0`: the cache is sized for them) |
 | `LLAMA_MOE_ARENA_FILL_PART` | `1` | store mode: fill the RAM store even when it is up to 3% short (the rest stays on the SSD) |
 | `LLAMA_MOE_GATHER` | `0` | `1`: a prompt batch's expert copies in one GPU kernel (slower than the copy engines on the GPUs we tried) |
@@ -319,11 +350,11 @@ prompts at 5.6k and 15.7k tokens (the same text for both):
 |---|---|---|---|---|
 | Maya, no drafting (as tandem.cpp) | 39.0 / 39.6 | 16, 15 of 16 | 7.8 / 9.5 s | 26–43 |
 | Maya with its DSpark drafter (its default here) | 54.9 | 15 of 16 | 7.9 / 9.7 s | 28–38 |
-| **tandem.cpp v0.3.0** | **60.3 / 59.4** | 15, 15 of 16 | **6.5** / 16.5 s | **63–68** |
+| tandem.cpp v0.3.0 | 60.3 / 59.4 | 15, 15 of 16 | 6.5 / 16.5 s | 63–68 |
+| **tandem.cpp v0.4.0** | **60.0 / 60.9** | 15, 15 of 16 | **4.4 / 8.6 s** | **59–64** |
 
 Maya's own installer and settings (reasoning effort high), DSpark off for the first row. The whole model fits in this PC's
-VRAM + RAM, so neither engine reads the SSD after loading. Maya is still faster on the 15.7k-token prompt; overlapping the
-expert uploads with the compute is next. To run it: download `peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF` (folder
+VRAM + RAM, so neither engine reads the SSD after loading. To run it: download `peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF` (folder
 `Maya-XS/`, MIT), then
 
 ```
@@ -434,6 +465,7 @@ With the defaults off the patch computes exactly what llama.cpp does; the defaul
 - Greedy output is not repeatable run to run with an expert cache: which experts are cached, and which misses the CPU computes, depends on timing, and the CPU and GPU round differently. Accuracy is unchanged. A fixed share (e.g. `LLAMA_MOE_CPU=0.2`) makes it repeatable.
 - Built for one user at a time. Concurrent requests work (tested at 2 and 4, accuracy unchanged) but gain less, and with a small cache several requests together can be slower in total than one.
 - Multi-GPU: only `-sm layer` (the default) works with the cache; checked for correctness on 2 GPUs, not tuned for speed.
+- Layer streaming for long prompts needs one GPU, CUDA's virtual memory management, and every expert outside VRAM in pinned RAM; with CUDA older than 12.8 its copies go one by one, which is slower (it still works).
 - Linux only. Tuned and tested on NVIDIA (CUDA). AMD (ROCm) works and gets the shared kernel work, but it has had less tuning and was tested on one RX 7900 XTX ([above](#amd-gpus-rocm)); it does not borrow cache VRAM for prompts (no VMM in ROCm builds), so its cache is a little smaller.
 - Qwen3.8 GGUFs converted with a current llama.cpp may be a little slower than the ISTA files we measured (one fusion does not apply to their layout).
 - Known issues, to be fixed:

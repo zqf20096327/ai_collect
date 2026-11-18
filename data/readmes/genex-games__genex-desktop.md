@@ -7,14 +7,14 @@
     </picture>
   </a>
 </p>
-<p align="center">Desktop app for game dev with AI: make games in Unreal Engine, Unity, Godot or the browser.<br>The agent sets up the engine, builds your game and play-tests it by itself.</p>
+<p align="center">Open-source desktop app for AI-native game dev.<br>Agents set up the engine, build your game and play-test it by themselves.</p>
 <p align="center">
   <a href="https://github.com/genex-games/genex-desktop/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/genex-games/genex-desktop?style=flat-square" /></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/genex-games/genex-desktop?style=flat-square" /></a>
   <a href="https://github.com/genex-games/genex-desktop/actions/workflows/check.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/genex-games/genex-desktop/check.yml?branch=dev&style=flat-square&label=build" /></a>
 </p>
 
-<p align="center"><img src=".github/banner.png" alt="Genex: a game built in chat, with its assets beside it" width="100%"></p>
+<p align="center"><img src=".github/banner.png" alt="Genex, a desktop app for game dev with AI: Unreal Engine, Unity, Godot, Roblox and Three.js, with built-in game dev tools" width="100%"></p>
 
 ---
 
@@ -31,14 +31,13 @@ Genex is early: expect rough edges, and tell us about them in
 
 ### What it does
 
-→ Use your Claude Code or ChatGPT subscription\
-→ Or run local models\
-→ Multi-agent game dev: mix Opus and GPT models across the main agent, workers and reviewers\
-→ Make 3D assets locally with the Blender plugin\
-→ Meshy, Tripo, ElevenLabs and more through the Genex tools router\
-→ Export anywhere, or publish to the web\
-→ Build in Unreal Engine, Unity, Godot or Roblox Studio: the agent sets up the engine and play-tests the game\
-→ Native C++ games soon
+→ Build in Unreal Engine, Unity, Godot, Roblox Studio or Three.js\
+→ Any AI: Claude Code, Codex (ChatGPT), Antigravity, Cursor, Grok, OpenCode and OpenRouter\
+→ Or local models: Ollama, LM Studio, llama.cpp\
+→ Multi-agent: mix models across the main agent, workers and reviewers\
+→ Built-in game dev tools: Blender, Tripo, Meshy, Uthana, ElevenLabs, fal\
+→ Server-authoritative multiplayer in one prompt\
+→ Publish to Web, Mac, Windows and Linux
 
 > [!TIP]
 > Have a tool your games need? [Build a plugin](#build-a-plugin) and put it in the Genex

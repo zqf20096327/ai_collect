@@ -42,6 +42,10 @@ https://github.com/user-attachments/assets/5bf9bea8-e5ac-4632-a292-a80a45831dff
 
 ## News
 
+- **[2026-11]** v7.25.0: `autoloop_rebind_role` changes one role's engine, model or effort in a running autoloop
+  run, without restarting it.
+- **[2026-11]** v7.24.0: the `opencode` engine runs OpenCode 2 as well as OpenCode 1.x, and GPT-6.2 Astra and Sol
+  are registered.
 - **[2026-11]** v7.23.0: Antigravity sessions follow agy 1.5.9: every permission mode is passed explicitly, and
   Gemini 4 models are registered, with `agy-pro` on Gemini 4 Argon.
 - **[2026-11]** v7.22.0: Claude sessions can run under several Claude accounts and move to the next one when
@@ -119,7 +123,7 @@ including running commands as the server's user, so keep it private; see
 - 🧪 **Acceptance contracts and evidence bundles** ([guide](./skills/references/verification.md))
 - 🔁 **Workflows, resume and the goal node** ([guide](./skills/references/workflow.md))
 - 🖥️ **Every CLI command** ([guide](./skills/references/cli.md))
-- 🧰 **All 79 tools** ([guide](./skills/references/tools.md))
+- 🧰 **All 80 tools** ([guide](./skills/references/tools.md))
 
 ## Ways to run
 
@@ -130,7 +134,7 @@ including running commands as the server's user, so keep it private; see
 | **ACP agent**                  | Zed, JetBrains, Neovim, Emacs, the VS Code ACP extension, dsh                             | `clawo acp`, then [`acp.md`](./skills/references/acp.md)                          |
 | **OpenAI-compatible endpoint** | Any OpenAI SDK client or webchat, without changing call sites                             | `POST /v1/chat/completions` ([`openai-compat.md`](./skills/references/openai-compat.md)) |
 | **TypeScript SDK**             | Embedding the runtime in your own service                                                 | `import { SessionManager } from '@enderfga/claw-orchestrator'` (below)            |
-| **OpenClaw plugin**            | Every OpenClaw agent gets all 79 tools                                                    | `curl -fsSL https://raw.githubusercontent.com/Enderfga/claw-orchestrator/main/install.sh \| bash` |
+| **OpenClaw plugin**            | Every OpenClaw agent gets all 80 tools                                                    | `curl -fsSL https://raw.githubusercontent.com/Enderfga/claw-orchestrator/main/install.sh \| bash` |
 
 ```ts
 import { SessionManager } from '@enderfga/claw-orchestrator';
@@ -148,11 +152,11 @@ engine, so one dropdown switches between Claude, Codex, Antigravity and Grok mod
 
 | Engine      | CLI        | Tested version                  |
 | ----------- | ---------- | ------------------------------- |
-| Claude Code | `claude`   | 2.1.325                         |
-| Codex       | `codex`    | 0.169.0                         |
-| Antigravity | `agy`      | 1.5.9                           |
-| Grok Build  | `grok`     | 1.0.77                          |
-| OpenCode    | `opencode` | 1.19.5                          |
+| Claude Code | `claude`   | 2.1.327                         |
+| Codex       | `codex`    | 0.169.1                         |
+| Antigravity | `agy`      | 1.5.10                          |
+| Grok Build  | `grok`     | 1.0.88                          |
+| OpenCode    | `opencode` | 1.19.6, 2.3.2                   |
 | ACP agent   | any        | Kimi Code 2.3.1, dsh 0.2.1-rc.2 |
 | Custom CLI  | any        | —                               |
 

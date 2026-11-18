@@ -10,7 +10,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-green.svg)](https://www.python.org/)
-![Tests](https://img.shields.io/badge/Tests-926%20collected-blue)()
+![Tests](https://img.shields.io/badge/Tests-952%20collected-blue)()
 [![Real-data CI](https://img.shields.io/badge/Real_data_CI-see%20results%2F-lightgrey)](results/)
 [![Model Card](https://img.shields.io/badge/Model_Card-MODEL.md-blue)](MODEL.md)
 [![Docs](https://img.shields.io/badge/Docs-rollroyces.github.io-blue)](https://rollroyces.github.io/deepcatch/)
@@ -68,7 +68,7 @@ Three real GUI demos recorded with browser automation — every frame is a real 
 
 ### 2. Notebook analysis with inline plots (~24s)
 
-The new `notebooks/deepcatch_quickstart.ipynb` runs against the installed `deepcatch.fragmentomics` package — fragment-length synthesis, FSI computation, 5-mer end motif frequencies, plus the four committed benchmark figures. Recorded live in JupyterLab on `127.0.0.1:8889`.
+The new `notebooks/deepcatch_quickstart.ipynb` runs against the repository's own `src/fragmentomics` package (it puts `../src` on the path itself) — fragment-length synthesis, FSI computation, 5-mer end motif frequencies, plus the four committed benchmark figures. A test executes the notebook's cells, so it cannot quietly stop working. Recorded live in JupyterLab on `127.0.0.1:8889`.
 
 [![Watch the Jupyter notebook walkthrough (~24s)](docs/demo/notebook_demo_thumb.png)](docs/demo/notebook_demo.webm)
 
@@ -211,7 +211,10 @@ pip install "torch>=2.0.0" torch-geometric pysam
 the pipeline runs from the repository):
 ```bash
 docker build -t deepcatch:latest .
-docker run --rm -v $(pwd)/results:/app/results deepcatch:latest
+# Mount a directory of your own: the suite writes into /app/results, and
+# mounting the repository's results/ would replace the published artifacts.
+mkdir -p /tmp/deepcatch-docker-results
+docker run --rm -v /tmp/deepcatch-docker-results:/app/results deepcatch:latest
 ```
 
 **Importing the library:** the installed distribution is `deepcatch`, and
@@ -399,7 +402,7 @@ env -u PYTHONPATH ./.venv/bin/python scripts/foundation_real_smoke.py \
 | `test/test_public_tree_has_no_personal_contact.py` | 3 | ✅ all passing |
 | `src/foundation/test_integration.py` | 43 | ✅ all passing |
 | Full `src/` discovery | 228 collected | ✅ 217 run, 11 deselected (slow) |
-| **Combined fast-path gate** | **741 collected** | **709 passed + 19 skipped + 13 deselected** |
+| **Combined fast-path gate** | **767 collected** | **735 passed + 19 skipped + 13 deselected** |
 
 The 13 deselected tests are the slow real-data foundation smoke and per-study harmonization checks. Eleven of them live in `src/foundation/test_integration.py` and run in the deep-learning job of `validate.yml`, which does not deselect them. The other two — `test/test_cross_study_per_cancer_integration.py` and `test/test_load5_with_motifs.py` — need the companion repository's extracted feature cache, which CI does not have; they are deselected here and run only where that cache is present.
 
@@ -449,7 +452,7 @@ deepcatch/
 │   ├── py/                       # Python validation modules (11)
 │   ├── tcga/                     # TCGA data loaders + validators
 │   └── *.py                      # Bioinformatics-grade modules
-├── test/                         # 48 test files (698 fast-path tests)
+├── test/                         # 56 test files (724 fast-path tests)
 ├── results/                      # Cached JSON + 4 figures + ablation artifacts
 ├── paper/                        # LaTeX manuscript + REPRODUCE.sh
 ├── docs/                         # 30+ docs + 4 figures + 3 demo WebM/MP4/GIF (real browser_exec recordings) + terminal asciicasts

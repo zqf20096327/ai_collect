@@ -14,7 +14,7 @@ SDK for frontier embedded agents, in Rust. One runtime for the Codex and Claude 
 - **Code Mode.** The model writes one program that calls every tool, and only its result enters the context.
 - **Hands.** No sandbox per session. A turn reaches a laptop, a server, or a browser tab only for the calls that need one.
 - **Subagents.** A cell spawns children, each a durable session of its own.
-- **Any payer.** A ChatGPT or Claude subscription, an API key, or Machine Payments from a Tempo Wallet.
+- **Any payer.** A ChatGPT or Claude subscription, an API key, or Machine Payments from a Tempo account you sign in to with Tempo ID.
 
 ## The CLI
 

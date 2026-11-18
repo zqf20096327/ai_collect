@@ -1,7 +1,11 @@
 # hermes-purge
 
-> **本项目的思想来自 dsh-purge —— 那套「不跟模型讲道理，直接改宿主」的思路。**
-> hermes-purge 是同一套思路在 [Hermes Agent](https://github.com/NousResearch/hermes-agent) 上的移植与重写。
+> **我们借鉴了 [dsh-purge](https://github.com/YuJunZhiXue/dsh-purge) 的一个判断：「不跟模型讲道理，直接改宿主」。**
+> 这句话点醒了方向。但**代码不是它的**：引擎、补丁清单、验证方式、CLI 都是为
+> [Hermes Agent](https://github.com/NousResearch/hermes-agent) 独立写的 —— 它跑在 DSH 的插件体系上，
+> 我们改的是 Python 宿主的源码；两者没有一行共享代码，也没有沿用它的插件形态。
+>
+> 借鉴的是**判断**，不是实现。参见「与 dsh-purge 的关系」一节。
 
 对 Hermes Agent 做三层清洗：**提示词人格 / config 审批策略 / 代码层审批门与黑名单**。
 附一个破甲执行器和一个效力边界探针。
@@ -250,6 +254,32 @@ opener 拼接去重、路径解析、补丁清单完整性。
 
 ---
 
+## 与 dsh-purge 的关系
+
+**借鉴了三件事**（判断层面）：
+
+1. 「不跟模型讲道理，直接改宿主」—— 它把这个判断讲透了，我们照着这个判断往下走
+2. 分层清洗的切法：提示词 / 配置 / 代码，三层各有各的失效方式
+3. 「先量边界再谈效果」—— 先跑数据知道哪些能做、哪些恒定做不到，再谈优化
+
+**没搬的东西**（实现层面）：
+
+| | dsh-purge | 本项目 |
+|---|---|---|
+| 宿主 | DSH（Node / cordis 插件） | Hermes Agent（Python 源码 + 运行时） |
+| 落地形态 | 插件写 profile + `cordis.patch.yml` + shim 注入 | 直改 Python 源码 + `config.yaml` / `.env` / `SOUL.md` |
+| 补丁清单 | 88 条 patch（按位置组织） | 31 条补丁（按行为组织，逐条有锚点与说明） |
+| 验证 | 重启后目视 | `--verify` 用宿主自己的 python 跑运行时断言 |
+| 回滚 | 备份覆盖 + 摘 shim 行 | `.bak` 逐个还原 + `--uninstall` |
+| 观测 | 无 | `probe.js` / `rescore.js` 量化「单发 p vs 重试环收敛」 |
+
+一句话：**同一个判断，不同的宿主，各自重写的实现。** 它的插件形态、shim 实现、补丁清单、
+CLI 与本仓库没有一行共享代码 —— 反过来，本项目在 Hermes 上踩到的坑（模块拆分导致锚点漂移、
+Windows CRLF、import 期冻结的值）它也管不到。
+
+> 2.0 的能力层（AST / shim / 文本 / 配置四层落地 + 事务回滚 + 三级验证）在 `v2-capability`
+> 开发分支上，测试通过后再合进来；main 这条线目前是 1.x 的文本补丁层。
+
 ## 31 条补丁明细
 
 ### 代码层（25 条）
@@ -454,8 +484,9 @@ hermes-purge/
 
 ## 致谢
 
-**思想来源：dsh-purge。** 「不跟模型讲道理，直接改宿主」这个方向、
-三层清洗的分层方式、以及「先量边界再谈效果」的方法论，都来自 dsh-purge。
+**借鉴自 dsh-purge 的三件事**（判断层面，不是代码层面）：那个方向、那套分层切法、
+那套「先量边界再谈效果」的方法论。本项目的补丁锚点、验证脚本与 CLI 都是按 Hermes Agent
+的 Python 宿主独立写的。
 
 **宿主：[Hermes Agent](https://github.com/NousResearch/hermes-agent)**，由 Nous Research
 以 MIT 许可发布。本仓库不包含它的任何源码，只在运行时改写调用方机器上的副本。

@@ -5,14 +5,14 @@
 [![License: MIT](https://img.shields.io/github/license/RobbsLuo/Coding2API)](LICENSE)
 [![Image](https://img.shields.io/badge/image-ghcr.io%2Frobbsluo%2Fcoding2api-blue)](https://github.com/RobbsLuo/Coding2API/pkgs/container/coding2api)
 
-十路渠道——**CodeBuddy**（国内 + 国际，两个独立渠道）、**TRAE SOLO**、**OpenCode Zen**、**Kilo**、**Qoder**、**CodeArts**、**OfficeAce**、**小浣熊**、**灵犀**——封装成 OpenAI 兼容 API：公共凭证池、统一模型名与调度、按人用量统计。
+十路渠道——**CodeBuddy**（国内 + 国际，两个独立渠道）、**TRAE SOLO**、**OpenCode Zen**、**Kilo**、**Qoder**、**CodeArts**、**OfficeAce**、**小浣熊**、**灵犀**，外加可选的**通用 OpenAI 兼容上游**——封装成 OpenAI 兼容 API：公共凭证池、统一模型名与调度、按人用量统计。
 
 > [!WARNING]
 > 逆向接口，仅供学习研究，未做安全审计；公网部署需反向代理 + 鉴权 + IP 白名单。
 
 ## 特性
 
-- **OpenAI 兼容出口**：`/v1/chat/completions`（流式 / 非流式）、`/v1/responses`（Codex CLI）、`/v1/messages`（Claude Code）、`/v1/models`（含单模型查询）、`/v1/user/balance`。
+- **OpenAI 兼容出口**：`/v1/chat/completions`（流式 / 非流式）、`/v1/responses`（Codex CLI）、`/v1/messages`（Claude Code）、`/v1beta/models/{m}:generateContent`（Gemini SDK）、`/v1/models`（含单模型查询）、`/v1/user/balance`。
 - **统一调度**：扁平名按健康度选号；`模型@渠道` 强制。优先级：免费渠道 → 在途最少 → 到期额度 → 健康度 + 分级冷却 → 余额多者。管理员可给凭证设**权重**（`-1000..1000`）：只在同一健康档内重排（正数优先、负数当备用），不会把冷却/耗尽的号顶上来。目录里的 x0 会被最近 24h 的实测扣费校准（上游改计费不改目录时不至于永远占住免费档）。模型级限流只避让该模型；多轮对话粘同一凭证，出错才轮换。
 - **到期额度优先**：主窗口（默认 36h）先烧将过期额度；打平再比 7 天窗口。单位统一积分。
 - **模型列表按凭证加载**：只列有可用凭证的渠道 → 无幽灵模型。
@@ -125,6 +125,7 @@ echo "$PASSWORD" | python3 scripts/create_user.py alice --role admin --password-
 - 只收本进程 `logging`；不读文件、不 tail。多进程各看各的。
 - **脱敏是硬前提**：每行发出前过白名单。命中 `token` / `secret` / `authorization` / `cookie` / `password` / `api_key`、`sk-…` 形状或 `Bearer <值>` → 整行丢弃。
 - 缓冲 `LOG_BUFFER_LINES`（默认 500，可热更），环形覆盖最旧。`0` 关整页（两端点 404）。
+- **落库** `LOG_PERSIST_LINES`（默认 2000，可热更）：同一批行再写一份到 SQLite `log_events` 环形表，**重启后仍能回看**，并支持按 `request_id` 回溯（`GET /api/logs?request_id=…`、`?since=<epoch>`、`?level=ERROR`）。`0` = 只留内存环。容量按「最近 N 行」裁剪，不按时间。写库失败不上抛（日志处理器不能炸业务），只告警一次。
 - 单行上限 4000 字符；每行带 `seq`、时间、级别、logger、`request_id`。**点行尾的 `#前8位`** 即按该 request_id 过滤，收起一次请求的全部日志（executor 每次换号 / 冷却 / 降级都带同一个 ID）；也可以直接把响应头 `X-Request-ID` 粘进关键字框。stdout / journald / launchd 文件同样带 `[request_id]`（后台任务为 `-`）。订阅者上限 4，超限 429 + `Retry-After`。
 
 ## 使用
@@ -154,7 +155,7 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 每个模型三个字段：
 
 1. **原代号**（`raw_id`）：渠道真发的 key，永不改动。各渠道不同（Qoder `kmodel_latest` = TRAE `kimi-k3-1`），可带命名空间前缀（Kilo `kilo-auto/free`）。
-2. **归一键**：剥免费档标记（`-free` / `free` 路径段）与命名空间前缀 → slug 化，如 `kilo-auto`。模型列表按它判同模型、合并。
+2. **归一键**：剥免费档标记（`-free` / `free` 路径段）与命名空间前缀（含小浣熊的 `sn-`）→ slug 化，如 `kilo-auto`。模型列表按它判同模型、合并。
 3. **展示名**（`name`）：清洗后可读文本，如 `LongCat 2.5 Preview`。上游给就用，否则从原代号派生；品牌写法从官方（`DeepSeek` / `MiMo` / `GLM` / `GPT`）。
 
 `GET /v1/models` 的 `id` 全是归一键；转发自动换回原代号，`by_provider.{渠道}.raw_id` 可见。**三种写法都能直接请求**。同渠道内归一键重复 → 退回原代号。
@@ -163,7 +164,7 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 
 **自定义别名**（`MODEL_ALIASES`，可热更）：`对外名=模型@渠道;对外名2=模型`，`@渠道` 可省。列表与请求解析共用一份；条目带 `custom_alias: true`。撞名 / 目标不存在 / 渠道不持有 → 该段 ERROR 跳过。无别名链。
 
-**单模型查询**（`GET /v1/models/{id}`）：三种写法 + 自定义别名都认；大小写不敏感；带命名空间的原代号也能查。找不到 / 不在 Key 白名单 → 404（`code=model_not_found`），不泄露池内容。
+**单模型查询**（`GET /v1/models/{id}`）：三种写法 + 自定义别名都认；大小写不敏感；带命名空间的原代号也能查。找不到 / 不在 Key 白名单 → 404（`code=model_not_found`），不泄露池内容。两个 models 路由都接受 `x-api-key` 与 `Authorization: Bearer`（Anthropic SDK 列模型走前者）。
 
 **`n` 只接受 1**：出口结构只产生一个候选，`n != 1` → 400。
 
@@ -181,9 +182,22 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 
 默认关是刻意的：实测慢上下文首字 40–71s。要用在管理台按部署打开（推荐 60 / 300）。
 
+### 首帧延迟发头（请求级错误返回真 400）
+
+流式出口不再立刻发 200 头，而是先等上游第一帧（宽限 5s，`api/streaming.STREAM_START_GRACE_SECONDS`）：
+
+- 首帧就是**请求级错误**（内容风控 11128、上下文超限 11115、坏图 11135、工具 schema 拒收 11129、模型不属于该上游 4001 等）→ 直接回 **400 JSON**（`invalid_request`），不再以 `200 + data:{"error"}` 收尾。此前 SDK 会把这类拒绝当成成功响应继续重试。
+- 宽限内没有帧 → 照旧发 200 继续流；**不取消在途取帧任务**，慢首字请求不受影响。
+- 已出帧后的错误维持原语义（200 + 错误帧），半截输出不可回滚。
+- 其余终态（全池耗尽等）仍是 200 错误帧，`Retry-After` 语义不变。
+
 ### Playground 高级参数
 
 可选 `temperature` / `max_tokens` / `reasoning_effort`，**留空即不发该键**。前端校验边界同后端（`temperature` ≤ 1000、`max_tokens` ≤ 4,000,000）。`reasoning_effort` 仅推理模型出现，默认「不发送」。
+
+### Playground 图片输入
+
+提示词框支持**粘贴图片**或点「图片」选择文件（单张 ≤ 4MB、最多 4 张）。有附件时 `messages[0].content` 发成 OpenAI 多模态块数组（`text` + `image_url` 的 data URL）；无附件时仍是纯字符串，请求体逐字节不变。模型不支持图片时由上游拒绝（CodeArts 归 `model_capability`，不罚号）。
 
 ## 渠道
 
@@ -215,7 +229,7 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 
 **保活帧与排队**：上游在流中发 `body:"null"` 的保活帧（外层 200）→ 跳过、不打断输出；「排队中」包成 403 且排队标记藏在**序列化字符串**里 → 归 QUEUE 等上游点名的秒数后在原号重开，不硬禁用凭证。「每日计费次数用尽」（403 `code 110`，`Billing daily count exceeded`）→ 归额度类，冷却到次日 04:00，同样不硬禁用（HTTP 与流内信封同一判据）。
 
-**报文形状**：带 `tool_calls` 的 assistant `content: null` 归一为空串；`role:"developer"` 归一为 `system`（上游不认这个变体，实测 400 `unknown variant 'developer'`，同分钟 codearts 亦拒）。两者都是出站副本上的无损改写。
+**报文形状**：带 `tool_calls` 的 assistant `content: null` 归一为空串；`role:"developer"` 归一为 `system`（各上游都不认这个变体，失败形态各异：qoder 400 `unknown variant 'developer'`、codearts 流内 `001001044`、codebuddy 11128 风控、trae 静默空流）。归一实现在 `provider.base.normalize_developer_role`，八条渠道共用；两个改写都只在出站副本上做。
 
 ### CodeArts（`codearts`）
 
@@ -270,7 +284,7 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 
 ### 小浣熊（`raccoon`）
 
-[商汤小浣熊](https://xiaohuanxiong.com)，需真实账号（网页端登录即可）。**没有登录按钮**：凭据是网页会话 JWT，只能手工导入——浏览器 DevTools → Application → Cookies → 复制 `xhx_token` 的值，在「JSON 导入」里粘 `{"access_token":"<值>"}`（也接受裸 JWT、整段 cookie，或直接在 Network 里对该站点请求「Copy as cURL」整段贴入）。约 30 天到期，到期重新取一次。
+[商汤小浣熊](https://xiaohuanxiong.com)，需真实账号（网页端登录即可）。**没有登录按钮**：凭据是网页会话 JWT，只能手工导入——浏览器 DevTools → Application → Cookies → 复制 `xhx_token` 的值，在「JSON 导入」里粘 `{"access_token":"<值>"}`（也接受裸 JWT、整段 cookie，或直接在 Network 里对该站点请求「Copy as cURL」整段贴入）。约 30 天到期，到期重新取一次。**重取后直接再导入即可**：同 `uid`（JWT `sub`）会就地更新既有行（凭证内容、到期时间，并解除「需重新登录」硬禁用），不会多出重复凭证——重复行会让同一账号被当成两个号并发，既翻倍统计积分又绕过节流器按账号算的并发上限。
 
 **协议**：标准 OpenAI 兼容（`/api/web/llm/v2/chat/completions`），无签名、无设备指纹。`tool_calls` 流式/非流式、`role=tool` 回传、`include_usage` 全部实测通过；411K token 输入 14.2 秒返回。
 
@@ -280,9 +294,13 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 
 **额度明细**：上游把积分分成四个池（每日 / 奖励 / 月度 / 充值），各自可查；**套餐明细按发放流水逐笔展开**（`type=income` 的 `daily_grant` / `reward_grant`），每笔带真实到期（每日积分 7 天有效）。上游不提供逐笔剩余，只有池的总可用量，故每日积分的消耗按「到期早的先消耗」分摊到各笔（各笔剩余之和 = 池值，这是推断）；奖励积分实测「每日额度用光后才扣」，直接按发放额列。流水拿不到时才退回四个池。到期阶梯（`expiry_ladder`）与明细同源（每笔的 `total - used`），组头「1.5 天 / 7 天窗口内到期」按它汇总，因而与明细、额度合计口径一致；同时参与「快过期先用」的选号排序。
 
-**每日签到**：上游没有「点击领取」的签到接口——每日 300 积分由服务端 **00:00 自动发放**；当天登录过才延期到 7 天，没登录则当日 24:00 清零。设备心跳只刷新 `last_seen_at`，**不算登录**（实测连续几天只发心跳，积分仍在 24:00 清零）→ 活跃上报改为「页面访问 `GET /api/web/auth/v1/user_info` + 心跳」，签到本身也先访问一次。账单同步有几分钟延迟：11-06~11-08 的 `daily_grant` 直到 11-09 01:11 才出现。故「签到」= 访问 → 摸余额 → 读流水核对，**只认流水、不看 HTTP 200**；今天没有新发放但仍有**未过期** `daily_grant` 也算已签，凌晨 00:00~01:30 之间只封账到 01:30，没积分则重试也推到 01:30（不再 00:02 起每 10 分钟空锤）。流水用上游的 `type=income` 过滤（只留发放）——`type=all` 里消费流水会把每日发放挤出条数窗口，活跃账号会被误判「未发放」。**重新登录（换新 token）会立刻补发当天这笔**（几秒内落账、`grant_at` 回填 00:00）；只拿旧 token 访问页面 / 心跳不触发，缺当日发放的号需人工重登后重新导入。
+**每日签到**：上游没有「点击领取」的签到接口——每日 300 积分在**当天第一次网页登录**时补发一笔 `daily_grant`，当天没登录就没有这一笔（**不是**「00:00 自动发放、登录只是延期」；该旧结论已于 2026-11-18 真号复测推翻）。证据：三张号的 `daily_grant.created_at` 与上游 `sessions[].login_at` 秒级对齐；只拿旧 token 打 `user_info` / `balance` / `tasks` / `model_catalog` / `refresh` / 免费模型 chat 共 67 秒几十次请求，流水零变化；当天无登录的号连续两天一条 `daily_grant` 都没有。故「签到」= 页面访问 → 摸余额 → 读流水核对，**只认流水、不看 HTTP 200**；**今天没有 `daily_grant` 就是失败**（账户里昨天没花完的积分不算今天签到），凌晨 00:00~01:30 之间把重试推到 01:30 等账单同步。流水用上游的 `type=income` 过滤（只留发放）——`type=all` 里消费流水会把每日发放挤出条数窗口。
 
-**活跃上报**：`POST /api/web/auth/v1/devices_current_heartbeat`（网页端真实设备心跳），补 `x-client-*` 头族即 200、幂等，`last_login_at` 随之刷新。默认关闭，与 CodeBuddy 共用 `ACTIVITY_REPORT_ENABLED` / `ACTIVITY_REPORT_HOUR`。设备 id 由 uid 稳定派生（随机值会被上游当成新设备）。
+**会话需重登**：`GET /api/web/auth/v1/user_info` 的 `trusted_device` 会直说会话状态——`trusted=false` / `device_bind_state=suspicious` / `needs_relogin=true` / `reason=device_session_mismatch`。进入该状态后设备心跳恒回 `400 200811 device_bind_required`，当天也不会有 `daily_grant`，且**没有自愈通道**（`devices_current_bind` 对 `device_session_mismatch` 同样 400；`refresh` 只是原样换回同一张 token，sid 不变）。签到与活跃上报都会读这个信号，直接把「需在网页端重新登录后重新导入凭据」写进结果，不再只回一句「心跳失败（HTTP 400）」。**重新登录会立刻补发当天这笔**（几秒内落账、`grant_at` 回填 00:00）。
+
+**按需登录（可选，默认关）**：靠上面那条「只有新登录才补发」，服务可以自己完成登录——**凭证行「更多操作 → 账号密码」**就地填写手机号与密码（也可在导入 JSON 里带上 `phone`/`password`，`phone_number` 同样接受；已保存时菜单显示「（已保存）」），然后打开 `RACCOON_AUTO_LOGIN`，签到发现「今天没发」就会调用 `POST /api/web/auth/v1/login_with_password` 换一份新会话，落库后立刻重核一次，当天 300 分当轮到账。口径全部实测：请求里的 `phone`/`password` 是 **AES-CFB（key `senseraccoon2023`、16 字节随机 IV 前置、Base64）**，密码下限 8 位；该接口**不需要验证码**（阿里云验证码只挂在短信表单上）。限制与代价：每天每凭证最多一次（密码错了再试只会累积风控）；上游明确拒绝（`200004 phone_or_password_verify_error`）会把凭证标成「需重新登录」并停手；`password_status=unset` 的账号填了也登不进（只能短信/扫码）；脚本化登录的 ToS 灰度比贴 cookie 更重，故默认关闭、按需再开。接口 `PUT /api/credentials/{id}/login-secret`（两个都留空 = 清除）；密码加密落库、**不回显**，导出凭证也不含密码。登录成功后还会立刻调 `devices_current_bind` 把**新会话**绑到派生设备上（浏览器同款流程）：不绑的会话 `trusted=false`、心跳恒 400、当天延期也不成立；绑定失败不判登录失败（token 已可用），只记在结果里。`derive_device_id` 同时收紧到 ≤64 字符——上游 `devices_current_bind` 对超长值回 `500 value too long for character varying(64)`，旧实现 73 字符正好越界。
+
+**活跃上报**：`POST /api/web/auth/v1/devices_current_heartbeat`（网页端真实设备心跳），补 `x-client-*` 头族即 200、幂等，`last_login_at` 随之刷新。默认关闭，与 CodeBuddy 共用 `ACTIVITY_REPORT_ENABLED` / `ACTIVITY_REPORT_HOUR`。设备 id 由 uid 稳定派生（随机值会被上游当成新设备；**必须 ≤64 字符**，上游绑定接口对超长值回 500）。
 
 **并发上限约 5**（第 6 个回 `429 user_model_rate_limited`）→ `RACCOON_MAX_CONCURRENCY` 默认 2，独立节流器。该 429 实为账号×模型的频率窗口（实测恢复中位数 25min），冷却按 `CONCURRENCY` 首枪 60s、同链翻倍、封顶 30min。
 
@@ -305,6 +323,25 @@ curl http://127.0.0.1:8000/v1/chat/completions \
 **错误分类**：401 → 凭证失效（重贴 Cookie）；402 / 额度文案 → 额度耗尽；403 → 瞬时；404 → 请求无效；429 → 点名模型；审核拦截（`AuditFailed`）换号无用；run 过期 → 重建一次。
 
 **ToS 灰区**：复用桌面 / 网页登录态并伪装桌面客户端（`X-Client-Type: lingxi_claw` + `x-kso-app-name/app-version/device-id` 固定可复现值），见 `provider/tos.py`。
+
+### 通用上游（`generic`，可选）
+
+接**标准 OpenAI 兼容端点**：Command Code、Kimi Code、MiniMax、智谱免费档、自建 vLLM / LiteLLM 等。与十路渠道不同，这里没有逆向、没有私有协议——端点由部署者自己填，凭证是本部署持有的真实 API key。
+
+```bash
+# .env
+GENERIC_API_ENDPOINT=https://api.example.com/v1
+GENERIC_MODELS=gpt-6.2,kimi-k3.1-pro     # 可选：上游没有 /models 时的静态表
+GENERIC_CHAT_MIN_INTERVAL=0               # 可选：压低 RPM，默认不节流
+```
+
+- **留空 = 不启用**：`GENERIC_API_ENDPOINT` 为空的部署里没有这条渠道，`/v1/models`、凭证页、ToS 提示都不出现它。
+- **凭证**：`{"api_key": "sk-…"}`（也接受裸 key / `token` / `accessToken`），进加密凭证池，可多把轮换。
+- **端点校验**：`GENERIC_ALLOWED_ENDPOINTS` 非空时只放行名单内的地址；留空时放行任意 `http(s)`（接内网自建就是它的用途），但仍拒绝 `file://` 之类非 HTTP scheme——凭证是真 key，发错地方等于泄密。
+- **错误分类与 Zen / Kilo 相反**：那两家无凭证，401 只是「这个模型要付费 key」→ 跳过渠道；这里是 **401/403 = key 废了 → 硬禁用**（否则坏 key 会一直参与轮换、每次白撞一次）。402 → 余额不足，429 → 限流，5xx → 其它。
+- **能力**：聊天（流式 / 非流式）、模型列表。没有签到 / 成长 / 活跃上报 / token 刷新 / 额度查询（标准端点不提供），对应任务自动跳过。
+- **限制**：一个部署只配一条（渠道 id 固定 `generic`）。要多接几家，请拆成多个部署。
+
 
 ### CodeBuddy 国际（`codebuddy_intl`）
 
@@ -352,6 +389,14 @@ codex -c "model_providers.coding2api={ name='coding2api', base_url='http://127.0
 
 只放行 OpenAI 三种形状；畸形 / 未知 → 400：`{"type":"text"}`、`{"type":"json_object"}`、`{"type":"json_schema","json_schema":{name, schema, description?, strict?}}`（内部未知字段丢弃）。Responses `text.format` 与 chat 入站共用这段校验。
 
+### chat 入站 `messages[].role` 白名单
+
+只放行 `system` / `user` / `assistant` / `tool` / `developer`，其余（空串、拼错、大小写不符）**入口就地 400**：`messages[i].role must be one of ...`。
+
+理由：这类角色打到上游必被拒（CodeArts `001001044 Message role cannot empty`、qoder `unknown variant`），且每次请求要在若干个号上各撞一次才失败，最后还落一条 `invalid_request` 明细。入口拦下后不发上游、不冷却凭证、不记失败。`developer` 属协议合法值（新一代客户端默认写法），放行后由各渠道出站归一为 `system`（见 `provider.base.normalize_developer_role`）。
+
+非字符串 `role`（`null` / 数字）保留原报错 `role must be a string`——「类型错」与「取值不合法」是两个不同缺陷，文案要分开。
+
 ### Anthropic Messages API（Claude Code）
 
 ```bash
@@ -360,13 +405,26 @@ export ANTHROPIC_AUTH_TOKEN=sk-你的key     # 或 ANTHROPIC_API_KEY（走 x-api
 claude
 ```
 
-- **鉴权**：`x-api-key` 与 `Authorization: Bearer` 都接受。
+- **鉴权**：`x-api-key` 与 `Authorization: Bearer` 都接受。`/v1/models` 与单模型查询同样认两者（Anthropic SDK `client.models.list()` 固定带 `x-api-key`）。
 - **流式**：`message_start` → `content_block_*` → `message_delta` → `message_stop`；无 `[DONE]`。thinking 块在 `content_block_stop` 前补 `signature_delta`。
 - **缓存命中**：出口 usage 拆两笔——`input_tokens` 只计未命中，命中另记 `cache_read_input_tokens`。
 - **`count_tokens`**：本地估算，不转发上游。
 - **图片**：`image` 块归一为 chat `image_url`；`tool_result.content` 内图片同样保留。
 - **不支持**：`document` 块、`source.type=file`、Anthropic 服务端工具 → 400。
 - **`cache_control` 透传**（默认开）：落点同 Anthropic——`system`、消息内容块、`tool_result` 顶层、`tool_calls` 顶层、`tools` 顶层。只校验结构，不解释取值。实测 codebuddy / codebuddy_intl / trae / qoder / codearts / kilo 6 家接受；zen、小浣熊、灵犀未验证，OfficeAce 未单测。脚本 `scripts/probe_cache_control.py`。
+
+### Gemini（google-genai / REST）
+
+```bash
+export GEMINI_API_KEY=sk-你的key
+export GOOGLE_GENAI_BASE_URL=http://127.0.0.1:8000   # SDK 会自拼 /v1beta
+```
+
+- **入口**：`POST /v1beta/models/{model}:generateContent`、`:streamGenerateContent`（`?alt=sse`）、`:countTokens`；`GET /v1beta/models`（SDK 启动时会调）。
+- **鉴权**：`x-goog-api-key` → `?key=` → `Authorization: Bearer`，三种都认。
+- **入站映射**：`contents[].parts` 的 `text` / `inlineData`（image_url）/ `functionCall` / `functionResponse`；`systemInstruction`、`generationConfig`（temperature / topP / maxOutputTokens / stopSequences / 采样惩罚 / `responseMimeType` / `responseSchema`）、`tools[].functionDeclarations`、`toolConfig.functionCallingConfig`。
+- **出站**：`candidates[].content.parts`（text / thought / functionCall）+ `finishReason` + `usageMetadata`；流式每帧一个完整 `GenerateContentResponse`，终止帧带 `finishReason`（无 `[DONE]`）。
+- **不支持 → 400**：服务端工具（`googleSearch` / `codeExecution` / `retrieval`）、`candidateCount != 1`、`responseMimeType` 既非 `text/plain` 也非 `application/json`。`thinkingConfig` / `topK` 丢弃（chat 无等价语义，不冒充支持）。
 
 ### CC Switch 一键导入
 
@@ -587,7 +645,7 @@ tabs 切四维（渠道 / 模型 / 用户 / 凭证），共用一表（渠道 / 
 
 **延迟两类口径**：只统计成功请求。平均 = `latency_sum ÷ 成功数`（小时汇总）；分位从逐请求明细算（仅 90 天）。`ttfb_ms` = `NULL` 的两列各自独立排名。无样本 → `—`。
 
-**失败归因**（`GET /api/stats/errors`，operator+）：按 `(渠道, 模型, 错误类型)` 聚合窗口内 `ok=0`，返回失败次数 / **未救回数** / 最近失败时刻（降序，`limit` ≤ 5000）。**落行口径**：硬失败（`credential_unavailable` / `account_restricted` / `invalid_request` / `model_capability`）**每次尝试各一行**；限流 / 额度 / 超时 / 上下文超限等其余分类**每次请求只落收尾一行**（类型取最后一次错误的真实归因）——否则一次请求三行会把 `usage_hourly.requests` 与 Key 日请求额度一起刷高。同用户同 `request_id` 另有成功行 = 已救回；`未救回 = 失败数 − 救回数`（同一请求多次失败算多次，≠ 受损请求数）。几处特殊判据：凭证 401 落 `credential_unavailable`，**但额度耗尽证据成立时**（officeace 积分耗尽同一条 `401 APIG.1009`）改判 `CREDIT`——冷却到次日 04:00、不硬禁用；本地额度为正 / 未探测时先现场复探再判，仍为正或复探失败才保持 DEAD。风控限制（11140）落 `account_restricted`：2h 账号级冷却、当前请求不再换号，同渠道第二个凭证也中招才整渠道退避 24h。11102 / 11158 落 `model_not_found`（写 (账号, 模型) 负缓存，不冷却账号）；11115 落 `context_overflow`、001001020 落 `model_capability`，两者都不惩罚凭证；一次凭证都没选中时明细落**候选渠道**而不是 `-`。完整分类与冷却时长见 TECHNICAL.md §3.2。点行钻取 +「只看失败」（`GET /api/stats/events?ok=0`）；仅 admin / operator。`/metrics` 的 `upstream_errors_total` 取进程内计数，不合并。
+**失败归因**（`GET /api/stats/errors`，operator+）：按 `(渠道, 模型, 错误类型)` 聚合窗口内 `ok=0`，返回失败次数 / **未救回数** / 最近失败时刻（降序，`limit` ≤ 5000）。**落行口径**：硬失败（`credential_unavailable` / `account_restricted` / `invalid_request` / `model_capability`）**每次尝试各一行**；限流 / 额度 / 超时 / 上下文超限等其余分类**每次请求只落收尾一行**（类型取最后一次错误的真实归因）——否则一次请求三行会把 `usage_hourly.requests` 与 Key 日请求额度一起刷高。同用户同 `request_id` 另有成功行 = 已救回；`未救回 = 失败数 − 救回数`（同一请求多次失败算多次，≠ 受损请求数）。几处特殊判据：凭证 401 落 `credential_unavailable`，**但额度耗尽证据成立时**（officeace 积分耗尽同一条 `401 APIG.1009`）改判 `CREDIT`——冷却到次日 04:00、不硬禁用；本地额度为正 / 未探测时先现场复探再判，仍为正或复探失败才保持 DEAD。风控限制（11140）落 `account_restricted`：2h 账号级冷却、当前请求不再换号，同渠道第二个凭证也中招才整渠道退避 24h。11102 / 11158 落 `model_not_found`（写 (账号, 模型) 负缓存，不冷却账号）；11115 落 `context_overflow`、001001020 落 `model_capability`，两者都不惩罚凭证；`001001044`（消息角色不合法，OpenAI `developer` 角色触发）落 `invalid_request`——codearts 出站已把 `developer` 归一为 `system`，兜底分类只防其它形态；一次凭证都没选中时明细落**候选渠道**而不是 `-`。完整分类与冷却时长见 TECHNICAL.md §3.2。点行钻取 +「只看失败」（`GET /api/stats/events?ok=0`）；仅 admin / operator。`/metrics` 的 `upstream_errors_total` 取进程内计数，不合并。
 
 **点行钻取**：点分组表任一行 → 明细按该行过滤（渠道 / 模型 / 凭证；用户维度走作用域参数），条件可叠加。`GET /api/stats/events` 接受 `provider` / `model` / `credential_id`（AND）+ `ok=0`。
 
@@ -716,6 +774,7 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 | `CHECKIN_JITTER_MINUTES` | `0` | 签到抖动（分钟），时点前随机提前。可热更 |
 | `CHECKIN_SKIP_PROVIDERS` | `""` | 跳过签到的渠道（逗号分隔，如 `raccoon`）：只停签到，聊天不受影响。可热更 |
 | `LOG_BUFFER_LINES` | `500` | 服务端日志页缓冲行数；`0` 关该页。可热更 |
+| `LOG_PERSIST_LINES` | `2000` | 日志落库行数（`log_events` 环形表）；`0` = 不落库。可热更 |
 | `ALERT_ENABLED` | `true` | 运维告警开关 |
 | `ALERT_WEBHOOK_URL` | 空 | 通用 Webhook，逗号分隔（≤16，仅 http(s)，拒内网 / 回环防 SSRF），带 `X-Coding2API-Signature` |
 | `ALERT_FEISHU_WEBHOOK_URL` | 空 | 飞书群机器人地址；按 `msg_type=text` 发送，URL 校验同通用 Webhook |
@@ -780,6 +839,11 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 | `OFFICEACE_API_ENDPOINT` | `https://agentarts.cn-southwest-2.myhuaweicloud.com` | OfficeAce 控制面 |
 | `OFFICEACE_ALLOWED_ENDPOINTS` | `https://agentarts.cn-southwest-2.myhuaweicloud.com` | 只需控制面（模型网关由上游下发） |
 | `OFFICEACE_CHAT_MIN_INTERVAL` | `0` | OfficeAce 聊天最小间隔；可热更 |
+| `GENERIC_API_ENDPOINT` | `""` | 通用 OpenAI 兼容上游；留空 = 不启用该渠道 |
+| `GENERIC_ALLOWED_ENDPOINTS` | `""` | 通用上游白名单；留空 = 放行任意 http(s) |
+| `GENERIC_MODELS` | `""` | 上游无 `/models` 时的静态模型表（逗号分隔） |
+| `GENERIC_USER_AGENT` | `""` | 覆盖出站 UA；空 = 不发自定义 UA |
+| `GENERIC_CHAT_MIN_INTERVAL` | `0` | 通用上游聊天最小间隔；可热更 |
 | `PROVIDER_PROXIES` | `""` | 按渠道出站代理；启动期项 |
 | `CREDENTIAL_PROXY_POOL` | `""` | 出口 IP 粘性：全局代理池（分号分隔），按凭证 id 稳定哈希分配；启动期项 |
 | `CODEBUDDY_CHAT_MIN_INTERVAL` | `5` | CB 聊天节流（按凭证分桶）；可热更 |
@@ -790,6 +854,7 @@ python3 scripts/restore_db.py data/backups/coding2api-20261014-030000.sqlite3 --
 | `RACCOON_ALLOWED_ENDPOINTS` | `https://xiaohuanxiong.com` | 小浣熊白名单 |
 | `RACCOON_CHAT_MIN_INTERVAL` | `0` | 小浣熊聊天最小间隔；可热更 |
 | `RACCOON_MAX_CONCURRENCY` | `2` | 小浣熊每账号在途并发上限；`0` 关闭；可热更 |
+| `RACCOON_AUTO_LOGIN` | `false` | 小浣熊按需登录：当天没拿到每日积分时用凭证里的 `phone`/`password` 登录一次换新会话；每天每凭证最多一次，密码被拒即标「需重登」停手。**可热更**；开启等于把账号密码纳入 `APP_SECRET` 信任面 |
 | `LINGXI_API_ENDPOINT` | `https://lingxi.wps.cn` | 灵犀上游地址 |
 | `LINGXI_ALLOWED_ENDPOINTS` | `https://lingxi.wps.cn,https://lingxi.kdocs.cn` | 灵犀白名单（对话面按两域顺序回落） |
 | `LINGXI_CHAT_MIN_INTERVAL` | `0` | 灵犀聊天最小间隔；可热更 |

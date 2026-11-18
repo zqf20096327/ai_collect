@@ -22,6 +22,8 @@ Jev returns typed answers — **Choice**, **Score**, **Noul** — with probabili
 - [Leaderboard — every listed project by stars & weekly change](#leaderboard)
 - [Lint your questions](#lint-your-questions)
 - [Ask the same question on every engine](#ask-the-same-question-on-every-engine)
+- [Benchmarks & datasets](#benchmarks--datasets)
+- [which-jev — pick an engine by scenario](#which-jev--pick-an-engine-by-scenario)
 - [Using this with the skills](#using-this-with-the-skills)
 - [Ecosystem notes](#ecosystem-notes)
 - [Official resources](#official-resources)
@@ -31,20 +33,20 @@ Jev returns typed answers — **Choice**, **Score**, **Noul** — with probabili
 ## Leaderboard
 
 <!-- leaderboard:start -->
-Top 10 of the 62 GitHub projects this list references, by stars — the full ranking plus the weekly-change table live in [LEADERBOARD.md](LEADERBOARD.md).
+Top 10 of the 68 GitHub projects this list references, by stars — the full ranking plus the weekly-change table live in [LEADERBOARD.md](LEADERBOARD.md).
 
 | # | Project | Stars | Δ 7d |
 |---|---|---:|---:|
-| 1 | [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | 122,932 | +939 |
-| 2 | [virattt/ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) | 64,728 | +97 |
-| 3 | [HKUDS/Vibe-Trading](https://github.com/HKUDS/Vibe-Trading) | 38,428 | +392 |
-| 4 | [vllm-project/semantic-router](https://github.com/vllm-project/semantic-router) | 6,493 | +41 |
-| 5 | [typesafe-ai/skills](https://github.com/typesafe-ai/skills) | 2,905 | +13 |
-| 6 | [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | 2,605 | +35 |
-| 7 | [StartLuxLabs/Startlux-Decision](https://github.com/StartLuxLabs/Startlux-Decision) | 1,766 | +39 |
-| 8 | [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 1,078 | +11 |
-| 9 | [mode-io/vllm-jev](https://github.com/mode-io/vllm-jev) | 954 | 0 |
-| 10 | [Liuziyu77/Valen](https://github.com/Liuziyu77/Valen) | 922 | +13 |
+| 1 | [TauricResearch/TradingAgents](https://github.com/TauricResearch/TradingAgents) | 123,062 | +826 |
+| 2 | [virattt/ai-hedge-fund](https://github.com/virattt/ai-hedge-fund) | 64,744 | +96 |
+| 3 | [HKUDS/Vibe-Trading](https://github.com/HKUDS/Vibe-Trading) | 38,485 | +382 |
+| 4 | [vllm-project/semantic-router](https://github.com/vllm-project/semantic-router) | 6,503 | +45 |
+| 5 | [typesafe-ai/skills](https://github.com/typesafe-ai/skills) | 2,906 | +12 |
+| 6 | [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | 2,611 | +31 |
+| 7 | [StartLuxLabs/Startlux-Decision](https://github.com/StartLuxLabs/Startlux-Decision) | 1,771 | +34 |
+| 8 | [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 1,081 | +10 |
+| 9 | [mode-io/vllm-jev](https://github.com/mode-io/vllm-jev) | 955 | +1 |
+| 10 | [Liuziyu77/Valen](https://github.com/Liuziyu77/Valen) | 926 | +13 |
 <!-- leaderboard:end -->
 
 ## What is Jev?
@@ -269,6 +271,58 @@ The wire format is converging (see the ecosystem notes below): one question set,
 
 Portability notes: engines differ in **option caps** (26 letters per single pass is the common A–Z bound; beyond it engines knock out in groups or reject), **none-of-the-above handling** (opt-in extra option vs hidden check), **thinking modes** (Jev none; StartLux AutoThink optional; SGLang refuses inside reasoning blocks), and **calibration drift** — thresholds fitted on one engine do not transfer; re-fit per engine (the [Calibration & eval](categories/calibration-and-eval.md) category). Coming as their request formats land in docs: [d3](https://huggingface.co/vllm-sr) (vLLM Semantic Router), [pplx-decider](https://huggingface.co/perplexity-ai) (Perplexity).
 
+## Benchmarks & datasets
+
+The patterns above tell you *how to ask*; these tell you *which engine to ask*. No engine wins every scenario — size, latency and calibration trade differently per task, and most published numbers come from the vendors themselves. The map:
+
+| Benchmark | What it measures | Lang | Calibration | Latency / cost | Independent |
+|---|---|---|---|---|---|
+| [Jev Decision Index](https://huggingface.co/spaces/multimodalart/jev-decision-index) | general ranking — 30+ open-weight models × 35+ benchmarks, 132k frozen items; Full score mixes public benches with private same-skill tests and new-domain tasks | en | per-bench scores | — | community |
+| [Artificial Analysis Decision Index v2](https://artificialanalysis.ai/decision-models/jev-1-14) | hosted + open models on six document-decision benchmarks (resumes, receipts…); the score rewards correctness **and** calibrated confidence | en | ✓ (inside score) | ✓ | yes (proprietary) |
+| [JevBench](https://github.com/fstandhartinger/jevbench) | typed-decision accuracy, calibration, latency and cost in one run; 12 slices | en | ✓ | ✓ | yes |
+| [JevalKit](https://github.com/Valen-Team/JevalKit) | text / image / video decision benchmarks, one runner, public leaderboard | en | per-bench | — | community |
+| [HarnessJevBench](https://github.com/agentscope-ai/HarnessJevBench) | harness duties — tool execution, resource scheduling, context management, permission boundaries, recovery; also reports TV distribution distance | en | TV distance | — | vendor (AgentScope) |
+| [DataJevBench](https://github.com/datajuicer/DataJevBench) | data workflows — admission, processing choice, quality, readiness, disclosure; 500 tasks | zh+en | ECE + Brier | — | vendor (Data-Juicer) |
+| [RLCDAlignBench](https://github.com/sumleo/RLCDAlignBench) | alignment-failure detection — median AUROC 0.886 zero-shot across 44 benchmarks | en | AUROC | — | academic |
+| [jev-rag-zh-benchmark](https://github.com/vicfei/jev-rag-zh-benchmark) | Chinese RAG reranking — nDCG@5 with paired confidence intervals vs hosted Jev & BM25, pinned engine versions | zh | paired CI | — | ours |
+
+Note the disagreement: hosted Jev tops some community rankings yet scores **below median (66)** on [AA v2](https://artificialanalysis.ai/decision-models/jev-1-14) — aggregate indices answer "which model is smartest", not "which model fits *your* scenario.
+
+Training data — link-only, and every test suite stays held-out:
+
+- [THX-01](https://huggingface.co/doofz/THX-01) ships weights, training data and scripts (2.1M decisions, 8 post-training stages)
+- [RLCDAlignBench](https://github.com/sumleo/RLCDAlignBench) — code + judgment data
+- [t2reranking-4level-judgments](https://huggingface.co/datasets/cnfeichen/t2reranking-4level-judgments) — 4-level teacher judgments on T2Reranking (ours)
+- [JevAny](https://github.com/SimpleJev/JevAny) trains its five checkpoints on 2.18M labeled decisions (release status in repo)
+
+**Discipline:** never let training-data listings touch test suites — contamination is what kills independence, and the Decision Index hides its Full-score tests for exactly this reason.
+
+## which-jev — pick an engine by scenario
+
+No universal decision model exists: engines are sized for speed, and size bounds generality — so selection is per scenario, per budget. These cards collect the evidence; one card per scenario, updated as numbers land.
+
+### Card 1 — Tool approval & admission control
+
+**The decisions.** Before a tool call executes: read-only or destructive? does it delete or overwrite user data? leak credentials? widen permissions? — the four-question rubric that [Piccolo in QwenPaw](https://github.com/agentscope-ai/Piccolo) productized and that plugin gates ([dsh-permission-rules](https://github.com/PerryLink/dsh-permission-rules), [jev-permission-gate](https://github.com/madisonrickert/jev-permission-gate)) implement.
+
+**What the scenario demands**
+- **Latency** — the gate runs on *every* tool call; budget tens of milliseconds, not seconds.
+- **Cost** — per-call × high frequency; a $42/1M-input gate on a chatty agent compounds.
+- **Calibration over accuracy** — thresholds route to auto-approve / flag / human; probability quality *is* the product.
+- **Asymmetric failure** — blocking a legit call costs a retry, passing a destructive one costs the workspace: tune toward false-block (the [injection-screening gate](categories/guardrails-and-verification.md#injection-screening-gate) rule).
+
+**Evidence so far**
+
+| Engine | Signal | Source |
+|---|---|---|
+| Piccolo-27B | 84.41% on HarnessJevBench Hard (harness duties incl. permission boundaries); GGUF, runs local via QwenPaw | [launch evals](https://github.com/agentscope-ai/Piccolo) |
+| Clef-flash | ~38.8 ms median answer | [launch notes](https://blog.cloudflare.com/clef-decision-models) |
+| THX-01 (322M) | ~10 ms one forward pass; edge-deployable | [model card](https://huggingface.co/doofz/THX-01) |
+| Jev (hosted) | 92 ms/task; AA v2 score 66 — mid-pack | [Artificial Analysis](https://artificialanalysis.ai/decision-models/jev-1-14) |
+| Laya (421M) | 33 ms p50; weak zero-shot — tune on the task first | [benchmarks](https://flowtivity.ai/blog/laya-open-source-jev-alternative) |
+
+**The open slot** — no independent cross-engine comparison exists for *this* scenario yet: HarnessJevBench is vendor-run and the aggregate indices don't slice it. [which-jev](https://github.com/vicfei/which-jev) is the scenario-leaderboard effort to fill it (suite #1 = tool approval; suite #0 = [jev-rag-zh-benchmark](https://github.com/vicfei/jev-rag-zh-benchmark)).
+
 ## Using this with the skills
 
 The pattern library is the drafting layer of a small toolbox — the community skills cover the neighboring steps:
@@ -295,15 +349,15 @@ The pattern library is the drafting layer of a small toolbox — the community s
 <!-- related-lists:start -->
 | List | Focus | Stars |
 |---|---|---:|
-| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,605 |
-| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 1,078 |
-| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 763 |
-| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 733 |
-| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 718 |
-| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 618 |
+| [yibie/awesome-jev](https://github.com/yibie/awesome-jev) | General list, highest-frequency updates | 2,611 |
+| [heyjunpenn/awesome-jev](https://github.com/heyjunpenn/awesome-jev) | 900+ project catalog with companion site | 1,081 |
+| [v-modal/awesome-jev-tools](https://github.com/v-modal/awesome-jev-tools) | Tools list with inclusion criteria | 764 |
+| [logicrw/awesome-jev-projects](https://github.com/logicrw/awesome-jev-projects) | Ecosystem radar web app, auto GitHub sync | 736 |
+| [AnotiaWang/awesome-decision-models](https://github.com/AnotiaWang/awesome-decision-models) | Classic minimal list (renamed from awesome-jev), open replicas & benchmarks | 719 |
+| [AbdelStark/awesome-typesafe-jev](https://github.com/AbdelStark/awesome-typesafe-jev) | Field guide with platform routing & evals | 619 |
 | [kydlikebtc/awesome-jev](https://github.com/kydlikebtc/awesome-jev) | Machine-readable catalog by decision pattern | 603 |
-| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 599 |
-| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 495 |
+| [cobanov/awesome-jev](https://github.com/cobanov/awesome-jev) | Curated list with dated review notes | 600 |
+| [walidboulanouar/awesome-jev-use-cases](https://github.com/walidboulanouar/awesome-jev-use-cases) | Demos ranked by social metrics, limits & cost | 496 |
 | [yzfly/awesome-jev-zh](https://github.com/yzfly/awesome-jev-zh) | Chinese-language curated list with an independent, skeptical voice | 96 |
 | [Anil-matcha/awesome-jev-by-typesafe](https://github.com/Anil-matcha/awesome-jev-by-typesafe) | Use cases, starter code, design rules | 5 |
 <!-- related-lists:end -->
@@ -321,5 +375,5 @@ Found a pattern that works, or an anti-pattern that bit you? PRs and issues welc
 **Disclaimer:** this is an independent community resource. It is not affiliated with or endorsed by TypeSafe AI. Facts (pricing, limits, behavior) are cited from public sources and can change — always verify against the [official docs](https://docs.typesafe.ai/).
 
 <!-- last-checked:start -->
-*Last checked: 2026-11-17*
+*Last checked: 2026-11-18*
 <!-- last-checked:end -->

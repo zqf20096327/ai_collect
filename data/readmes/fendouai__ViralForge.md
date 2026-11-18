@@ -41,6 +41,50 @@ documentation and agent surfaces are English-first.
 
 ## Watch the demos
 
+### Live-action reference → replica
+
+Preserve the shot structure while replacing the person, product and setting. Both clips are about 10 seconds, 16:9, 720p.
+
+<table>
+  <tr><th>Original · brown tote · bedroom</th><th>Replica · grey-green tote · café</th></tr>
+  <tr>
+    <td><video src="https://github.com/user-attachments/assets/20650bdf-e3ca-40d9-ab2d-6431bab14ba0" controls muted playsinline preload="metadata" aria-label="original"></video></td>
+    <td><video src="https://github.com/user-attachments/assets/437d7d8a-c1b8-4f66-b602-f0cf1b6a15c6" controls muted playsinline preload="metadata" aria-label="replaced"></video></td>
+  </tr>
+</table>
+
+Created manually with Jimeng Seedance 2.0 mini; the replica uses the original as a video reference. These clips illustrate the intended workflow, not an automated ViralForge model integration. Exact shot timing has not yet been verified.
+
+[Demo details](./artifacts/viralforge-demo/README.md)
+
+
+### Three scene remixes: campus · tennis · beach
+
+Same shot structure, new person, product and setting. Each pair contains two ~10-second clips. Press play to watch directly in this README.
+
+<table>
+  <tr><th>Scene</th><th>Original</th><th>Replica</th></tr>
+  <tr>
+    <td>Campus: navy canvas → burgundy leather</td>
+    <td><video src="https://github.com/user-attachments/assets/835c2082-8611-4e8a-a9ff-6aac6ad63f55" controls muted playsinline preload="metadata" aria-label="campus-original"></video></td>
+    <td><video src="https://github.com/user-attachments/assets/27f67fd0-f56f-41dc-9cf3-79cd9269350c" controls muted playsinline preload="metadata" aria-label="campus-replaced"></video></td>
+  </tr>
+  <tr>
+    <td>Tennis: blue court / beige tote → clay / green tote</td>
+    <td><video src="https://github.com/user-attachments/assets/6892c59e-eb04-4b83-9a66-b9f42387101c" controls muted playsinline preload="metadata" aria-label="tennis-original"></video></td>
+    <td><video src="https://github.com/user-attachments/assets/ca53d14b-3ad0-4630-b5ad-12a4848a061d" controls muted playsinline preload="metadata" aria-label="tennis-replaced"></video></td>
+  </tr>
+  <tr>
+    <td>Beach: daylight / cream tote → sunset / blue tote</td>
+    <td><video src="https://github.com/user-attachments/assets/2c491698-b9b2-48a6-ae3c-665a1f7bae39" controls muted playsinline preload="metadata" aria-label="beach-original"></video></td>
+    <td><video src="https://github.com/user-attachments/assets/1665998d-218b-49c4-bf61-08f9101fec12" controls muted playsinline preload="metadata" aria-label="beach-replaced"></video></td>
+  </tr>
+</table>
+
+Characters are fictional adult university students. Each replica was manually generated in Jimeng using its paired original as a video reference; this demonstrates the intended effect, not an automated ViralForge model call.
+
+[Production notes](./artifacts/viralforge-demo/scenes.md)
+
 Three 13–15s English cuts. Click a poster to play the MP4 in your browser — no sign-in, no
 platform footage.
 
@@ -555,3 +599,5 @@ can be reviewed separately.
 ---
 
 <p align="center"><em>Clone the structure. Not the footage.</em></p>
+
+<!-- GitHub-hosted demo videos are embedded above. -->

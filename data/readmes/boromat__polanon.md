@@ -10,8 +10,7 @@
 your network, send only tokens to the model, and put the originals back into its answer, even
 while it streams. Pure Python: the standard library is the whole core.
 
-Featured in [unknowNews](https://mrugalski.pl/nl/wu/ojVtmS0K0CI892763N1hEauM1A), Jakub
-Mrugalski's weekly newsletter for people in IT, on 13 November 2026.
+[Written about us](https://github.com/boromat/polanon#written-about)
 
 <p align="center"><a href="https://boromat.pl/en/demo/"><img src="https://raw.githubusercontent.com/boromat/polanon/main/docs/try-demo.svg" alt="Try polanon in your browser"></a></p>
 
@@ -139,7 +138,14 @@ polanon --version  # print the installed version
 polanon "Jan Kowalski, PESEL 50810112354"
 polanon --file umowa.txt --ner --mapping mapping.json > masked.txt
 cat umowa.txt | polanon --ner > masked.txt 2> mapping.json
+polanon --restore --mapping mapping.json --file answer.txt  # the model's answer, restored
+polanon --json "Jan Kowalski, PESEL 50810112354"  # {"text": "...", "mapping": {...}}
 ```
+
+`--restore` puts the originals back into masked text, such as the model's answer, with the mapping
+`--mapping` wrote, a person named in another case included; a token the mapping does not hold
+stays as it is. `--json` writes one JSON object to stdout instead, for a script: the text, and the
+mapping unless `--mapping` takes it.
 
 A non-zero exit status means something went wrong and stderr says what. `--file` reads the file's
 bytes itself and tells UTF-8, UTF-16 (what Windows PowerShell 5.1 writes with `>`) and cp1250
@@ -429,6 +435,10 @@ with `Pipeline.stream()`, feed it the chunks instead: `stream.feed(chunk.content
 are sensitive, such as client names, go in at run time, `{"mask": {"known": clients}}`, so they
 never end up in a saved pipeline.
 
+**The detectors.** Both maskers use the rules alone unless given `with_ner=True`, and then
+`spacy_model`, `mode` and `ml_filter` work as they do in `default_guards`:
+`PolanonDocumentMasker(store=mappings, with_ner=True, mode="paranoid")`.
+
 **Saving a pipeline.** The key is a Haystack `Secret`, and a saved pipeline holds the name of its
 variable only. A mapping store is saved through its own `to_dict`, which should say where it
 connects and never what it holds; `InMemoryMappingStore` has none, so a pipeline with it is built
@@ -439,6 +449,10 @@ in code. Haystack 3 loads classes from its own modules only, so allow this one a
 component receives, and the masker receives the originals. A run that fails keeps its inputs in
 the error's snapshot, written to disk with `HAYSTACK_PIPELINE_SNAPSHOT_SAVE_ENABLED`. Both are off
 by default.
+
+**Haystack's own telemetry is on by default.** Haystack reports how its pipelines are used to its
+own servers unless `HAYSTACK_TELEMETRY_ENABLED=False` is set; polanon sends nothing. Where nothing
+but the masked calls should leave the machine, set it.
 
 ## A gateway for any OpenAI-compatible tool
 
@@ -517,6 +531,10 @@ What it does with a call:
   per line, leave readable the names the model has to see as they are, such as the assistant's
   own and the company it speaks for; a person named so stays readable too. Everything else in
   the prompt is masked as before.
+- `--pii-map` lets a client that keeps its own records, an audit or a store of mappings, ask for
+  the call's mapping: with `"return_pii_map": true` in the request, the answer carries
+  `"return_pii_map": {"<OSOBA_1>": "Jan Kowalski"}`, and a stream carries it in its last event.
+  The provider never sees the field. Without the switch such a request is refused.
 - It keeps nothing on disk. A tool sends the whole conversation with every call, and each call is
   masked and restored on its own. With `POLANON_KEY` set to 64 hexadecimal characters, a person
   keeps one token in every call and in every grammatical case.
@@ -599,8 +617,9 @@ a token with a name that reads alike. A one-word name found in all lowercase kee
 own too, for the reason below.
 
 **Every occurrence of a masked value is masked**, also where no detector would recognise it on its
-own: as written, in capitals, across a line break, with a zero-width character in it, with its
-groups spaced differently, and around whatever a detector found inside it. Two exceptions keep ordinary words readable. A capitalised
+own: as written, in capitals, across a line break, with a zero-width character in it, with
+Cyrillic or Greek letters that look Latin in it, with its groups spaced differently, and around
+whatever a detector found inside it. Two exceptions keep ordinary words readable. A capitalised
 one-word name is not matched in all lowercase, because Zima, Kot and Wilk are surnames and "zima"
 is winter; identifiers such as a VIN or an e-mail address are matched in any case. A number shorter
 than six digits, such as a PIN, is not matched inside a longer number, a date, a time or an
@@ -671,8 +690,9 @@ regression that weighs the span, its words and the words around it, their vector
 rules found there, fitted on public Polish data. It masks the same values whole on every
 benchmark and leaves about a quarter fewer spans that hide nothing: on a part of OpenPII held out
 until it was done, 400 instead of 539. It adds about half a millisecond to a text the model takes
-twelve to read, and it learns nothing from the texts it masks: it ships as fixed weights. It is
-on by default; the
+twelve to read, and it learns nothing from the texts it masks: it ships as fixed weights. Its
+weights read the vectors of `pl_core_news_md`, so with another spaCy model the hand-written
+filters decide alone. It is on by default; the
 [benchmark notes](https://github.com/boromat/polanon/blob/main/benchmarks/README.md#the-ml-filter)
 tell how it was fitted and measured, and this leaves the decision to the hand-written filters:
 
@@ -812,6 +832,14 @@ model, then put them back into the answer. It adds a guard of its own for what t
 knows, such as a LinkedIn link with the name in it, as
 [Adding a detector](https://github.com/boromat/polanon#adding-a-detector) describes. polanon stays optional there: the app installs it on request, talks to it through a
 small JSON-lines bridge, and sends nothing at all while masking is on but polanon is not working.
+
+## Written about
+
+- [unknowNews](https://news.mrugalski.pl/post/833420581541117952/13-listopada-2026), Jakub Mrugalski's newsletter, 13 November 2026: "polanon -
+  zamaskuj polskie dane osobowe przed wysłaniem ich do LLM-a".
+- [blog.prokulski.science](https://blog.prokulski.science/2026/11/16/pamiec-agentow-ai-polskie-pesel-e-w-promptach-i-wykresy-gestosci-w-power-bi/),
+  Łukasz Prokulski's weekly review, 16 November 2026: how polanon masks PESEL, NIP and IBAN
+  reversibly, names in every case, before a text reaches a language model.
 
 ## Contributing
 

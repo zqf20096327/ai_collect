@@ -16,6 +16,16 @@
 
 <br>
 
+## 中转站推荐
+
+以下中转站支持 Folkbench 的持续运营。
+
+<table>
+<tr><td width="180"><a href="https://folkbench.com/go/modelflare?source=readme"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/modelflare-dark.png"><img src="docs/images/sponsors/modelflare-light.png" alt="Modelflare" width="160"></picture></a></td><td><a href="https://folkbench.com/go/modelflare?source=readme">Modelflare</a><br>Modelflare站点是由美国 Havenbyte LLC 运营，支持 GPT、Claude、Gemini、Grok 等主流模型和常用兼容协议，同时也支持 40 多种图片及视频模型。API Key 可以配置有序回退，一把 API Key 可以调用多个模型，Key 还可以设置备用分组，并且从请求日志里能看到状态、延迟、Token 和实际费用。<br><br>缓存补偿是这个站的另一个亮点：部分 OpenAI 价格优先、稳定和高级分组分别提供每日 65%、75%、85% 的缓存命中率保障，对于符合条件的api请求如果未达到缓存命中率，平台会给予对应补充。<br><br>站点目前也有首次充值解锁特惠分组的活动，单笔充值 US$20 后可解锁 0.015 倍率 GPT 特惠分组，解锁后 GPT-5.6-Sol 的价格大约是 ¥0.51（输入）/ ¥3.01（输出）/每百万 Token，并且没有使用上限限制。单笔充值 US$50 后可解锁 0.03 倍率 Claude 特惠分组。</td></tr>
+<tr><td width="180"><a href="https://folkbench.com/go/ikuncode?source=readme"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/ikuncode-dark.png"><img src="docs/images/sponsors/ikuncode-light.png" alt="IKunCode" width="160"></picture></a></td><td><a href="https://folkbench.com/go/ikuncode?source=readme">IKunCode</a><br>IKunCode对于各个编程工具接入的支持比较好，Claude Code、Codex 和 Gemini CLI 都有单独支持，售后以及咨询渠道渠道做得比较全，官网公开了客服邮箱、QQ 群和 Telegram，人工客服服务贴心，很适合新手上路。</td></tr>
+<tr><td width="180"><a href="https://folkbench.com/go/fluxlane?source=readme"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/fluxlane-dark.png"><img src="docs/images/sponsors/fluxlane-light.png" alt="智流 FluxLane" width="160"></picture></a></td><td><a href="https://folkbench.com/go/fluxlane?source=readme">智流 FluxLane</a><br>智流 FluxLane 是一个面向开发者与团队的 AI API 网关：提供满血且稳定的全球模型，支持 GPT、Claude、Gemini、Deepseek、GLM 等主流模型和全球主流模型厂商协议，平台提供策略路由与多线路容灾，方便国内团队长期接入与成本核算。面向国内企业/高校采购，可签订合同、对公转账，并提供发票、采购单等材料（具体以商务确认为准），公开模型能力检测报告，倍率低至0.1倍率，新人注册可领 2 美元体验额度。</td></tr>
+</table>
+
 ## AI API 中转站推荐与选站指南
 
 > 排序遵循 Folkbench 站点规则，包含合作等级和运营加权；部分数据为展示样例。
@@ -48,6 +58,7 @@ Folkbench 帮你挑线路、配好客户端，不是自建代理教程。
 - **Claude Code 中转站：** 先看 [Claude 中转站测评](https://folkbench.com/claude-zhongzhuanzhan-ceping?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=tool-claude-ceping)，对比可用率、首字延迟和会话成本。
 - **Codex 中转站：** 先看 [GPT / Codex 中转站测评](https://folkbench.com/gpt-codex-zhongzhuanzhan-ceping?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=tool-codex-ceping)。
 - **一键切换配置：** 选好线路后，用 [Folkbench Switch](https://folkbench.com/switch?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=tool-switch) 在 Claude Code、Codex 和 Gemini CLI 之间切换中转站配置。
+- **中转站横向对比：** 想把几家中转站放在一起看，用 [Folkbench 中转站对比](https://folkbench.com/stations/compare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=tool-compare) 并排比较。排序按站点规则展示，包含合作档位和运营加权；部分数据为展示样本。
 
 ### 中转站排行榜
 
@@ -58,57 +69,59 @@ Folkbench 帮你挑线路、配好客户端，不是自建代理教程。
 ## 今日公开快照
 
 <!-- FOLKBENCH-BOARD:START -->
-> 归档日期：2026-11-17 · 发布：2026-11-17 20:30:50（北京时间）· 快照：`public-dc1f4dff1dff69c086e10163e8480059cac6fc2ffda3912f902f0558c339b64b`
+> 归档日期：2026-11-18 · 发布：2026-11-18 20:30:02（北京时间）· 快照：`public-e942fede9ed7f3bee7216d3109affcb011b9a2033e1941ca4a574e909afcfe5a`
 > 排序沿用主站规则，包含合作档位与运营加分；部分数据为展示样本。本页提供公开快照，不是原始运行记录；部分数据为展示样本。
 
 | 模型 | # | 中转站 | 综合 | 可用率 | 稳定性 | 输入 / 输出价 | 样本 |
 | :-- | :-: | :-- | --: | --: | --: | :-- | --: |
-| Claude Fable 5.1 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-r1) | 100.0% | 98.6% | 95.8% | ¥1.99 / 1M / ¥9.96 / 1M | 145 |
-| Claude Fable 5.1 | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-r2) | 98.1% | 100.0% | 88.6% | — / — | 47 |
-| Claude Fable 5.1 | 3 | [Cloudbridge](https://folkbench.com/services/cloudbridge?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-r3) | 82.9% | 97.9% | 74.2% | — / — | 48 |
+| Claude Fable 5.1 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-r1) | 100.0% | 98.5% | 96.2% | ¥1.99 / 1M / ¥9.96 / 1M | 197 |
+| Claude Fable 5.1 | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-r2) | 98.2% | 100.0% | 84.8% | — / — | 48 |
+| Claude Fable 5.1 | 3 | [Zashmodel](https://folkbench.com/services/merchant-5cf7678f-611?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-r3) | 87.9% | 60.4% | 52.4% | ¥2.00 / 1M / ¥10.00 / 1M | 48 |
 | | | [完整 Claude Fable 5.1 榜单 →](https://folkbench.com/rankings/claude-fable-5-1?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-fable-5-1-more) | | | | | |
-| Claude Haiku 5.5 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-haiku-5-5-r1) | 100.0% | 98.3% | 94.8% | — / — | 120 |
+| Claude Haiku 5.5 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-haiku-5-5-r1) | 100.0% | 97.9% | 95.2% | — / — | 189 |
 | | | [完整 Claude Haiku 5.5 榜单 →](https://folkbench.com/rankings/claude-haiku-5-5?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-haiku-5-5-more) | | | | | |
-| Claude Opus 5.5 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-r1) | 100.0% | 98.6% | 95.8% | ¥0.80 / 1M / ¥3.98 / 1M | 141 |
-| Claude Opus 5.5 | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-r2) | 98.1% | 95.8% | 80.2% | — / — | 48 |
-| Claude Opus 5.5 | 3 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-r3) | 94.6% | 87.5% | 65.7% | ¥4.00 / 1M / ¥20.00 / 1M | 48 |
+| Claude Opus 5.5 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-r1) | 100.0% | 98.3% | 96.0% | ¥0.80 / 1M / ¥3.98 / 1M | 179 |
+| Claude Opus 5.5 | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-r2) | 98.2% | 100.0% | 84.8% | — / — | 48 |
+| Claude Opus 5.5 | 3 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-r3) | 95.0% | 93.6% | 81.8% | ¥4.00 / 1M / ¥20.00 / 1M | 47 |
 | | | [完整 Claude Opus 5.5 榜单 →](https://folkbench.com/rankings/claude-opus-5-5?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-claude-opus-5-5-more) | | | | | |
-| DeepSeek V4.1 Flash | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-r1) | 100.0% | 98.0% | 95.7% | ¥1.20 / 1M / ¥4.80 / 1M | 199 |
-| DeepSeek V4.1 Flash | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-r2) | 98.1% | 41.7% | 46.8% | — / — | 48 |
-| DeepSeek V4.1 Flash | 3 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-r3) | 94.6% | 95.8% | 82.2% | — / — | 48 |
+| DeepSeek V4.1 Flash | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-r1) | 100.0% | 98.9% | 96.6% | ¥1.20 / 1M / ¥4.80 / 1M | 189 |
+| DeepSeek V4.1 Flash | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-r2) | 98.2% | 70.8% | 64.5% | — / — | 48 |
+| DeepSeek V4.1 Flash | 3 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-r3) | 95.0% | 95.8% | 80.5% | — / — | 48 |
 | | | [完整 DeepSeek V4.1 Flash 榜单 →](https://folkbench.com/rankings/deepseek-v4-1-flash?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-deepseek-v4-1-flash-more) | | | | | |
-| GPT 6.1 Sol | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-1-sol-r1) | 100.0% | 98.9% | 96.0% | ¥0.20 / 1M / ¥1.00 / 1M | 178 |
-| GPT 6.1 Sol | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-1-sol-r2) | 77.5% | 95.8% | 65.5% | — / — | 48 |
+| GPT 6.1 Sol | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-1-sol-r1) | 100.0% | 98.0% | 94.8% | ¥0.20 / 1M / ¥1.00 / 1M | 151 |
+| GPT 6.1 Sol | 2 | [Zashmodel](https://folkbench.com/services/merchant-5cf7678f-611?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-1-sol-r2) | 87.9% | 85.4% | 68.6% | — / — | 48 |
+| GPT 6.1 Sol | 3 | [Sidrune AI](https://folkbench.com/services/merchant-955eb49b-34a?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-1-sol-r3) | 87.5% | 100.0% | — | ¥0.20 / 1M / ¥1.00 / 1M | 8 |
 | | | [完整 GPT 6.1 Sol 榜单 →](https://folkbench.com/rankings/gpt-6-1-sol?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-1-sol-more) | | | | | |
-| GPT 6 Astra | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-r1) | 100.0% | 97.0% | 94.4% | ¥1.00 / 1M / ¥4.98 / 1M | 167 |
-| GPT 6 Astra | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-r2) | 98.1% | 93.8% | 66.9% | — / — | 48 |
-| GPT 6 Astra | 3 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-r3) | 94.6% | 95.8% | 77.6% | ¥7.00 / 1M / ¥35.00 / 1M | 48 |
+| GPT 6 Astra | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-r1) | 100.0% | 98.8% | 96.2% | ¥1.00 / 1M / ¥4.98 / 1M | 165 |
+| GPT 6 Astra | 2 | [智流 FluxLane](https://folkbench.com/services/fluxlane?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-r2) | 98.2% | 97.9% | 78.1% | — / — | 48 |
+| GPT 6 Astra | 3 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-r3) | 95.0% | 100.0% | 89.5% | ¥7.00 / 1M / ¥35.00 / 1M | 48 |
 | | | [完整 GPT 6 Astra 榜单 →](https://folkbench.com/rankings/gpt-6-astra?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-astra-more) | | | | | |
-| GPT 6 Sol | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-sol-r1) | 100.0% | 98.5% | 96.1% | ¥0.20 / 1M / ¥1.00 / 1M | 198 |
+| GPT 6 Sol | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-sol-r1) | 100.0% | 97.3% | 94.5% | ¥0.20 / 1M / ¥1.00 / 1M | 151 |
+| GPT 6 Sol | 2 | [Zashmodel](https://folkbench.com/services/merchant-5cf7678f-611?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-sol-r2) | 87.9% | 81.3% | 67.9% | — / — | 48 |
 | | | [完整 GPT 6 Sol 榜单 →](https://folkbench.com/rankings/gpt-6-sol?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-gpt-6-sol-more) | | | | | |
-| Grok 4.7 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-r1) | 100.0% | 98.3% | 95.7% | ¥1.46 / 1M / ¥4.38 / 1M | 177 |
-| Grok 4.7 | 2 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-r2) | 94.6% | 97.9% | 77.1% | ¥0.60 / 1M / ¥1.80 / 1M | 48 |
-| Grok 4.7 | 3 | [Cloudbridge](https://folkbench.com/services/cloudbridge?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-r3) | 82.9% | 97.9% | 71.7% | — / — | 48 |
+| Grok 4.7 | 1 | [Modelflare](https://folkbench.com/services/modelflare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-r1) | 100.0% | 98.1% | 95.4% | ¥1.46 / 1M / ¥4.38 / 1M | 161 |
+| Grok 4.7 | 2 | [IKunCode](https://folkbench.com/services/ikuncode?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-r2) | 95.0% | 95.8% | 74.8% | ¥0.60 / 1M / ¥1.80 / 1M | 48 |
+| Grok 4.7 | 3 | [Cloudbridge](https://folkbench.com/services/cloudbridge?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-r3) | 84.3% | 100.0% | 76.5% | — / — | 48 |
 | | | [完整 Grok 4.7 榜单 →](https://folkbench.com/rankings/grok-4-7?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-grok-4-7-more) | | | | | |
 
 <details open><summary>各模型的来源窗口与版本</summary>
 
 | 模型 | 来源窗口 | 方法版本 | 来源快照 | 发布时间（北京时间） |
 | :-- | :-- | :-- | :-- | :-- |
-| claude-fable-5-1 | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-31f3b6be-1794917074960 | 2026-11-17 20:04:34 |
-| claude-haiku-5-5 | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-b861b8c7-1794917075789 | 2026-11-17 20:04:35 |
-| claude-opus-5-5 | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-733dd258-1794917076630 | 2026-11-17 20:04:36 |
-| deepseek-v4-1-flash | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-f6b1c884-1794917077430 | 2026-11-17 20:04:37 |
-| gpt-6-1-sol | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-8faa70f6-1794917079748 | 2026-11-17 20:04:39 |
-| gpt-6-astra | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-dd1af2f6-1794917078210 | 2026-11-17 20:04:38 |
-| gpt-6-sol | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-980b0531-1794917078988 | 2026-11-17 20:04:38 |
-| grok-4-7 | 2026-11-16 20:30:00/2026-11-17 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-71c5b8d1-1794917080499 | 2026-11-17 20:04:40 |
+| claude-fable-5-1 | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-e67d27c0-1795003456484 | 2026-11-18 20:04:16 |
+| claude-haiku-5-5 | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-5cd1bd85-1795003457370 | 2026-11-18 20:04:17 |
+| claude-opus-5-5 | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-91275204-1795003458281 | 2026-11-18 20:04:18 |
+| deepseek-v4-1-flash | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-ccec9913-1795003459174 | 2026-11-18 20:04:19 |
+| gpt-6-1-sol | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-f277d57b-1795003461810 | 2026-11-18 20:04:21 |
+| gpt-6-astra | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-db0487f5-1795003460061 | 2026-11-18 20:04:20 |
+| gpt-6-sol | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-b6dd0ba8-1795003460950 | 2026-11-18 20:04:20 |
+| grok-4-7 | 2026-11-17 20:30:00/2026-11-18 20:30:00（北京时间） | folkbench-connectivity-v1 | rel-b8af104f-1795003462667 | 2026-11-18 20:04:22 |
 
 </details>
 
-**探针汇总：快照收录 114 条探针结果，覆盖 12 家站点。** 汇总一致率：7236/8034（90.1%）。[查看公开结果 →](https://folkbench.com/arena?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-integrity)
+**探针汇总：快照收录 117 条探针结果，覆盖 12 家站点。** 汇总一致率：7276/8137（89.4%）。[查看公开结果 →](https://folkbench.com/arena?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-integrity)
 
-[下载对应日期的公开快照](https://github.com/Folkbench/folkbench-data/tree/main/daily/2026/11/17) · [方法说明](https://folkbench.com/methodology?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-method) · [提交纠错](https://folkbench.com/corrections?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-corrections)
+[下载对应日期的公开快照](https://github.com/Folkbench/folkbench-data/tree/main/daily/2026/11/18) · [方法说明](https://folkbench.com/methodology?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-method) · [提交纠错](https://folkbench.com/corrections?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=daily-board-corrections)
 <!-- FOLKBENCH-BOARD:END -->
 
 ---
@@ -213,16 +226,6 @@ Switch 在本地管理工具配置。公开目录、模型查询和服务商请�
 - **阅读与投稿**：[Folkbench 博客](https://folkbench.com/blog?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=entry-blog-15)，包含评测方法、模型资料和读者投稿，现有内容覆盖 12 种语言。
 - **了解客户端**：[Switch 开发说明](apps/switch/README.md)。
 
-## 商业合作
-
-以下中转站支持 Folkbench 的持续运营。榜单排序沿用主站现行规则，包含合作档位和运营加分。
-
-<table>
-<tr><td width="180"><a href="https://folkbench.com/services/modelflare?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=main-repo&amp;utm_content=entry-services-modelflare-16"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/modelflare-dark.png"><img src="docs/images/sponsors/modelflare-light.png" alt="Modelflare" width="160"></picture></a></td><td><a href="https://folkbench.com/services/modelflare?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=main-repo&amp;utm_content=entry-services-modelflare-17">Modelflare</a><br>提供多模型 API 接入服务。</td></tr>
-<tr><td width="180"><a href="https://folkbench.com/services/ikuncode?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=main-repo&amp;utm_content=entry-services-ikuncode-18"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/ikuncode-dark.png"><img src="docs/images/sponsors/ikuncode-light.png" alt="IKunCode" width="160"></picture></a></td><td><a href="https://folkbench.com/services/ikuncode?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=main-repo&amp;utm_content=entry-services-ikuncode-19">IKunCode</a><br>提供编程工具相关的模型 API 接入服务。</td></tr>
-<tr><td width="180"><a href="https://folkbench.com/services/fluxlane?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=main-repo&amp;utm_content=entry-services-fluxlane-20"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/sponsors/fluxlane-dark.png"><img src="docs/images/sponsors/fluxlane-light.png" alt="智流 FluxLane" width="160"></picture></a></td><td><a href="https://folkbench.com/services/fluxlane?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=main-repo&amp;utm_content=entry-services-fluxlane-21">智流 FluxLane</a><br>提供 AI API 网关与多线路接入服务。</td></tr>
-</table>
-
 ## 引用与徽章
 
 每日归档见 [Folkbench Data](https://github.com/Folkbench/folkbench-data)，引用时请注明 Folkbench、归档日期和快照版本。数据许可见该仓库；公开快照不包含原始运行记录，不承诺可以复算。
@@ -235,6 +238,7 @@ Switch 在本地管理工具配置。公开目录、模型查询和服务商请�
 - [中转站实时检测（用自己的 Key）](https://folkbench.com/evaluations/api-quality?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=links-check)
 - [Claude 中转站测评](https://folkbench.com/claude-zhongzhuanzhan-ceping?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=links-claude-ceping)
 - [GPT / Codex 中转站测评](https://folkbench.com/gpt-codex-zhongzhuanzhan-ceping?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=links-codex-ceping)
+- [中转站对比](https://folkbench.com/stations/compare?utm_source=github&utm_medium=readme&utm_campaign=main-repo&utm_content=links-compare)
 - 公开快照子站（只读 [folkbench-data](https://github.com/Folkbench/folkbench-data) 归档；排序按站点规则，含合作档位与运营加权，部分数据为展示样本）：
   - [AI 中转站排行](https://folkbench.github.io/relay-rank/)：按模型的每日公开快照与历史名次
   - [中转站检测周报](https://folkbench.github.io/integrity-weekly/)：模型身份探针的每周汇总

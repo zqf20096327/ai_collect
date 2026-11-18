@@ -26,6 +26,7 @@
 | **Late October – November** | Gen3 [quantum comm ops](#gen3-quantum-comm-ops): 400 agent briefings sent in one IBM job billed at 5 seconds, 400 of 400 intact, repeated on three message sets (*measured on IBM hardware*). | Hundreds of agents can be coordinated cheaply through IBM hardware, every message checked. No quantum advantage: the saving is IBM's billing for batched circuits. |
 | **November 2026** | Training our own small models on results the software verified (Experiments K–O, then Model-1). | A 2-billion-parameter model trained on 138 replies from a 9-billion-parameter model went from 5 to 62 correct on 108 new fixture tasks, above the larger model's 39.8 % (*measured on fixtures*); it learned the answer format, not a new skill. **Model-1** (9 billion parameters, small adapter, CPU cluster): November 11, **91 %** on 400 held-out synthetic cases against **49 %** untrained (the always-HIT score), every reply stopped cleanly; November 12, a second adapter on the same base drove every stage of a whole 400-pin synthetic mission (selection was the verifier's, solved on CPU), **1,995 of 1,995** proposals valid, **172 of 178** findings at 3 false alarms against the scripted rule's 156, preregistered **BEATS THE RULE** (*measured on fixtures*). One seed each, synthetic code, Phase A's few-shot and random-adapter controls not run; a fixture shortcut found afterwards means the gain over the rule is not yet shown to be tracing skill. [Details](#gen3-adaptive-training). |
 | **Mid-November 2026** | The [self-improvement loop](#self-improvement-loop), Gen3 → Gen4 (design): meant to turn Model 1's failures into proven, replayable steps, then train them in. | First test (PL1, *measured on fixtures*): on Model 1's own stuck points, only the teacher's hint cleared the noise floor over a placebo; Nano's lockpick did no better than a random hint; where the evidence was already on screen, every hint verified 0 or 1 of 50. Our reading: the bottleneck is the decision. Next: train the decision (D1, preregistered, not yet run). No self-improvement shown yet. |
+| **November 9–17** | [Search order](#search-order): 17 small steps on the older Gen2 swarm's search, then one replay in Gen3. | Organise search by mechanism, not by position in a list: in recorded Gen3 outcomes the mechanism predicts 111 of 125 checks (not blind). Trying every technique once, then focusing, reached all 200 scripted test targets, against 68 % with no sweep; the swarm now also explores 90 % of the time (*measured on fixtures*; on a draft, not main). A replay of recorded Gen3 missions favoured the rule over Gen3's current one, on one mission (P18). |
 
 **Not there yet.**
 - **No bounty has paid.** The October reports were closed as informational: no impact shown inside each program's rules. Next: a written authorization boundary per program and a stricter evidence check before anything is submitted.
@@ -62,6 +63,40 @@ Predator's research engine, **Crucible**, works like a lockpick: hold verified e
 **Ordinary computer search stays in charge; quantum experiments must earn a role with evidence.** The [tests described here](docs/research/search-scaling.md) have not shown a quantum advantage.
 
 Predator picks from a menu of next moves that help, block or conflict with each other. A **QUBO** is the scorecard for those yes/no choices; **energy** is the score, lower is better. The score ranks candidates; only checks against the real software decide. Every run records which solver it used, including any quantum simulation or hardware.
+
+<a id="search-order"></a>
+
+**Search order: by mechanism, not by position (November 9–17).** Seventeen small, preregistered steps on the older Gen2 swarm taught one lesson: organise a search by mechanism (the kind of attack), not by where a candidate sits in a list. Recorded Gen3 outcomes point this way (not blind), the Nano lockpick's scripted result agrees, and the scripted steps measure what searching by mechanism is worth.
+
+<p align="center">
+  <a href="docs/research/search-order.md"><img src="docs/assets/search-order.svg" width="960" alt="Search by mechanism, not by position. Panel 1, recorded Gen3 outcomes, not blind: 125 recorded checks over 17 anonymised mechanisms; the mechanism alone predicts 111 of 125; one mechanism hit 17 of 18, another 0 of 45; the best 3 mechanisms hold 65 percent of the hits on 34 percent of the checks. Panel 2, scripted test targets, development round: targets reached of 200: every technique once, then focus, 200; no sweep 142; narrowing by position at 1, 2 and 3 levels 124, 111 and 107. On 200 fresh targets: 200 of 200 against 136 with no sweep, 5.4 times the hits. Panel 3, scripted: mechanisms found per target peak at 90 percent exploring (0.646) and fall to 0.371 with all digging; on fresh targets 0.660 against 0.600 for all exploring and 0.392 for all digging; worst loss 0.012 as the share of working variants moved. One IBM hardware run on ibm_marrakesh, where the hardware only carried the probes: narrowing found 1.7 to 3.4 times random order's good candidates per billed second, 27.0 billed seconds. A replay of recorded Gen3 missions (P18): 12 of 12 mechanisms against 11 for Gen3's current next-test rule on one mission; the win rests on one mechanism. Gen2 work: scripted targets, no real target, nothing replayed or trained into Model 1."></a>
+</p>
+
+- **What decides success.** In one Gen3 mission's recorded outcomes, the mechanism alone predicts 111 of 125 checks, and the best 3 of 17 mechanisms hold 65 % of the hits (*recorded data, not blind*).
+- **Try every technique once, then focus.** On 200 scripted test targets the swarm reached all 200, against 68 % with no sweep, with 5.4 times the hits, at the old 15 % explore rate. Narrowing by position in the list reached fewer targets than no sweep (*measured on fixtures*).
+- **Explore 90 %, dig 10 %.** That mix found the most distinct mechanisms per target; digging more finds more hits, but mostly repeats. It held when the test's key assumption changed (*measured on fixtures*).
+- **Once on IBM hardware.** On ibm_marrakesh, narrowing found 1.7 to 3.4 times as many good candidates per billed second as random order, using 27.0 of the experiment's 120 allowed seconds (*measured on IBM hardware*, one run, no repeat). The hardware only carried the probes, with no quantum computation in the search, and the smaller size passed by one billed second per job.
+- **Where it stands.** These are now the swarm's defaults, on a draft, not main; settings switch them back (the list order and the sweep together). It is Gen2 work: no real target, nothing replayed or trained into Model 1.
+- **Then in Gen3, as a replay (P18).** Replayed on recorded Gen3 missions at no cost, the rule reached all 12 mechanisms that hit on the one mission large enough to count, against 11 for Gen3's current next-test rule. The win rests on one mechanism that missed first and hit later, which the current rule drops after one miss. It passed its preregistered ship rule but is not wired into Gen3 yet: Gen3's step works in cycles, so that form must be built and replayed first.
+
+<details>
+<summary><strong>The eighteen steps in short, what is still open, and the pins</strong></summary>
+
+| Steps | What was tried | What happened |
+| :--- | :--- | :--- |
+| P1, P12 | The swarm's original sweep order (the owner's earlier method, kept private) | It did not home in on the good areas. Inside the swarm loop it moved on only when time ran out, and in 9 of 200 sessions it sent 3 of 5 agents past the end of the list |
+| P2–P5 | A new order, narrowing, on test fields where good items sit together | 4.5 to 20 times as many good items as random order |
+| P6, P9 | Narrowing as a hint inside a solver (P6), or as the solver (P9) | No net gain as a hint; as a solver it solved 4 to 5 times as many tasks as the unaligned order, but only 0.48 and 0.24 of them against a 0.50 line (NOT MET twice) |
+| P7 | Narrowing once on IBM hardware | 1.7 to 3.4 times the good candidates per billed second; 27.0 billed seconds, the only spend; the hardware only carried the probes |
+| P13, P14 | The swarm's real list, and recorded Gen3 outcomes | Success follows the mechanism; the list spreads each mechanism's variants evenly, so position carries little |
+| P15–P17 | Every technique once (P15), then 90 % explore (P16, P17) | All 200 test targets and 5.4 times the hits at the old explore rate; 90/10 then found the most mechanisms and held when the key assumption changed |
+| P18 | The rule against Gen3's current next-test rule, replayed on recorded missions | 12 of 12 mechanisms against 11 on the one counted mission; the win rests on one mechanism; not wired into Gen3 yet |
+
+**Still open.** A smaller swarm defect wastes 2.7 % of turns at the old explore rate (about 0.3 % at 90 %) when a focus zone is tiny. The live hardware repeat (P8) was never run. The Gen3 probe-mission driver (P11) has nothing calling it yet, and neither does the P18 rule until its cycle form is built and replayed. **Kept private for the loop:** a held-out set of 17 recorded mechanisms, to score a future Model 1 choice of which mechanism to test next, and 879 narrowing steps logged on the scripted test fields, which could become replayable steps in Atlas.
+
+Pins: the first seventeen reports at private commit [`a66d8f22…`](https://github.com/AetherAI3/AETHER-PREDATOR-M/tree/a66d8f223892bdd17f3debb46083486c863828b0/bench/qcomms/r_gen2_field) and the P18 result at [`1c3d9b21…`](https://github.com/AetherAI3/AETHER-PREDATOR-M/blob/1c3d9b2150265d64bdd8fb3e76c6fdc463850e32/bench/qcomms/r_gen2_field/REPORT_P18.md), on draft [PR #489](https://github.com/AetherAI3/AETHER-PREDATOR-M/pull/489) (into a feature branch, not main). [Guide](docs/research/search-order.md) · [data](docs/research/search-order.json).
+
+</details>
 
 [See the joint5 charts and measured limits →](#joint5-compiler-the-ibm-fez-hardware-result)
 
@@ -470,11 +505,13 @@ Another lab may reach Gen4 first; that is why the map is drawn now. Model labs n
 - *What it does.* It writes the point where Model 1 got stuck as a handful of choices: here, which tool calls the pin should hold. Each choice gets one number, the energy: a guess at how close it is, made without seeing the answer.
 - *Why "adaptive".* After every try it narrows where to look next, from a one-word answer: miss, colder, warmer or hit. Its first version is called the lockpick.
 - *Where it stands.* With a scripted reader in Model 1's place, on 260 test stuck points, the lockpick reached a verified claim in about 2 tries, where random search needed about 23 (a miss counted as 32). Adding every possible call at once, the brute-force way, also took about 2. With Model 1 reading its hint (PL1, below), it did no better than a random hint: 15 against 11 to 19. Its score is hand-written for this one lane.
+- *Why features, not position.* Recorded Gen3 outcomes follow the attack mechanism, not where a candidate sits in a list ([search order](#search-order)). That agrees with how the tokenizer works: it describes a stuck point by its features.
 
 **2. Brute-force engine: tries candidates, does not think.**
 - *What it does.* It runs the search Nano wrote, one candidate at a time. A plain evaluator replays the candidate's tool calls into the pin, and a blind score answers miss, colder or warmer. No model sits inside it. For a hit, a scripted reader makes a claim from the candidate and the verifier must confirm it. It stops at a hit or after 32 tries.
 - *The same idea, exact, in other code.* When a problem is small, brute force checks every option. The 400-pin mission's selection step (R1) cut the pins into blocks of 16, checked all 65,536 keep-or-park combinations of each block, then checked the winner a second way. All on an ordinary CPU.
 - *Where quantum could fit.* A quantum sampler could become one more source of candidates (the quantum oracle). It is not in this loop, and nothing here is a quantum result.
+- *A rule worth reusing.* Check every option once, then mostly explore with a little digging: in the Gen2 swarm, 90/10 found the most, and more digging mostly re-found the same hits ([search order](#search-order)). A first replay against Gen3's current next-test rule favoured it on one recorded mission (P18); it is not wired into Gen3 yet.
 
 **3. AQRC, the Adaptive Quantum Reconstruction Compiler (ATLAS): rebuilds a trained network's checked steps as small parts that run on their own.**
 - *What it does.* It watches a trained network work and finds the steps inside it. It keeps only steps that pass three checks: they come back when the network is trained again, they do the same job, and breaking them breaks the output. Each kept step is rebuilt as a small part, kept only if it behaves like the original.
@@ -807,96 +844,4 @@ Built and reviewed offline on November 3, before anything paid ran (0 new IBM se
 <details>
 <summary><strong>Still open, in order, and what this section does not show</strong></summary>
 
-**Still open, in order:** a model-lane cycle that reaches a patch the judge can score (the round-4 repair in the [status table](#status-november-8-2026) is next, and a promoted patch is the entry condition for the deep-cell lane); the bus's hand-off cost gate at 100 or more hand-offs (80 today), then its two owner-gated stages (a model line, and switching it on after the shared-IR fence lifts); the 400-agent rung with the communication lane on hardware (about 9 IBM jobs, *modelled*); the narrow-then-deepen comparison at matched budget (above the $5 it ran under); the "width" lever (*built* behind a flag, *not yet run*: needs a simulator sampling change and a rebuilt host); the stronger encoder *inside* a live compounding loop; gating or replacing the cheap first-tier worker above about 20 evidence rows; then the ibm_kingston repeat after a fresh calibration, packing beyond three circuits, real key management, production dispatch. **Superposition multiplexing** (several messages in one circuit) ran on hardware but did not beat ordinary packing for *carrying* messages; whether it helps *choose* between disagreeing agents is untested against a plain vote on hardware (on a simulator a quantum-style selector only matched the weighted vote).
-
-**What this section does not show.** Scripted agents and one synthetic message generator on the hardware missions; two devices, one day each. The agent lanes, the compounding mission's attack and model lanes, and every training round are measured on fixtures, not real software. No model has been improved. The bus has not carried a live mission. The joint5 pilot is separate, below.
-
-</details>
-
-**[Plain-English guide, hardware missions and open questions →](docs/research/quantum-comm-ops.md)** · [Public aggregate data and source pins](docs/research/quantum-comm-ops.json)
-
-<a id="joint5-compiler-the-ibm-fez-hardware-result"></a>
-
-## joint5 compiler and the IBM Fez result
-
-**joint5 is another way to build a quantum circuit: on the IBM Fez pilot it used 28.5% fewer two-qubit gates, though not at every size in simulation; answer quality is measured separately.** AQRC translates the QUBO scorecard into instructions a simulator or device can run; joint5 is an alternative compilation path.
-
-### The IBM Fez hardware pilot
-
-One six-variable fixture, its vulnerable and fixed poles, four circuits, 1,024 shots per circuit, one hardware job (3 seconds of billed QPU time):
-
-| Measurement | Ordinary → joint5 | Change |
-| :--- | :--- | :--- |
-| Native two-qubit gates, each pole | **144 → 103** | **28.5% fewer** |
-| Distance from ideal output, vulnerable pole | **0.3952 → 0.3165** | **19.9% lower** |
-| Distance from ideal output, fixed pole | **0.4039 → 0.3080** | **23.7% lower** |
-
-Lower total-variation distance means closer agreement with the ideal output distribution. **Expected energy worsened on both poles.** One acquisition, no independent confirmation; improved minimization and quantum advantage remain unestablished.
-
-[Measurements and uncertainty →](docs/research/ibm-fez-pilot.md) · [Full-precision data →](docs/research/ibm-pilot.json)
-
-<details>
-<summary><strong>How the search and compiler scale (measured on a simulator)</strong></summary>
-
-### How the search and compiler scale
-
-An **October 20, 2026 synthetic sweep** asked two questions: how close do sampled answers get to the best score, and does joint5 save hardware instructions as choices grow? Simulator and compilation tests, separate from the IBM Fez acquisition.
-
-<p align="center">
-  <a href="docs/research/search-scaling.md"><img src="docs/assets/search-scaling-2026-10-20.svg" width="960" alt="Two selected-size comparisons from the October 20 synthetic tests: untuned quantum-style search misses the best score by a larger margin at larger sizes; joint5 uses about 13% fewer routed two-qubit instructions at 12 choices and 7% fewer at 16, but about 4% more at 32 and 14% more at 40."></a><br>
-  <sub>Answer quality and circuit size are different measurements. Selected sizes shown; full tables, methods, and limits are linked below.</sub>
-</p>
-
-The proposed upgrade: **compare both circuit layouts, keep the smaller one, use a suitable local simulator for quantum experiments.** Ordinary computer search keeps choosing the next move until another method earns that role in a fair comparison. Design recommendations; the sweep does not establish that they have shipped.
-
-[Scaling tests: plain-English guide and full tables →](docs/research/search-scaling.md) · [Chart data →](docs/research/search-scaling.json)
-
-</details>
-
-<a id="gen3-oss"></a>
-<a id="what-the-public-research-found"></a>
-<a id="banked-scientific-results"></a>
-
-## Gen3 OSS: banked scientific results
-
-**Two open-source test cases, published with their data and limits.** CharLS and QPACK carry deliberately introduced faults, so the loop can be scored against a known answer. "Banked" means the result and its evidence are kept and checkable.
-
-<table>
-  <tr>
-    <th width="50%">CharLS Q3 repair</th>
-    <th width="50%">QPACK feedback study</th>
-  </tr>
-  <tr>
-    <td width="50%" valign="top"><a href="docs/research/charls-q3.md"><img src="docs/assets/readme-start-q3.svg" width="100%" alt="CharLS Q3: 24 of 24 protected tests passed, eight new passes, and no earlier passes lost."></a></td>
-    <td width="50%" valign="top"><a href="docs/research/gen3-qpack-experiment1.md"><img src="docs/assets/card-qpack.svg" width="100%" alt="QPACK: five of eight controlled faults found with feedback, versus two of eight without feedback."></a></td>
-  </tr>
-</table>
-
-| Study | Recorded result | What it shows |
-| :--- | :--- | :--- |
-| **[CharLS Q3 repair](docs/research/charls-q3.md)** | **16/24 → 24/24** protected passes; eight gained, all earlier passes kept | The ratchet at work: a dependent repair at depth 3 closed the obligation left by depth 2, on real C++ source, without dropping an earlier pass. |
-| **[QPACK feedback study](docs/research/gen3-qpack-experiment1.md)** | **5/8** controlled faults found with feedback, **2/8** without | A second pass informed by the first pass's native checks found more in this exploratory campaign. The adaptive classical comparison was incomplete, so the quantum selector's own contribution was not isolated. |
-
-Both studies used deliberately introduced faults. No newly discovered CVE finding has been published. Discovery, matched comparisons and quantum advantage remain research objectives.
-
-## Ways to work with Aether
-
-**Commission a focused repository mission, qualify a repeatable security profile, or scope an authorized live assessment.**
-
-<table>
-  <tr>
-    <td width="50%" valign="top"><a href="https://aethersystems.net/strikes/"><img src="docs/assets/card-strikes.svg" width="100%" alt="Predator Strikes: a focused CVE fix, discovery task, or repository repair."></a></td>
-    <td width="50%" valign="top"><a href="https://aethersystems.net/actions/design-partner"><img src="docs/assets/card-ci.svg" width="100%" alt="Predator CI: qualify a scoped profile and check one exact repository commit."></a></td>
-  </tr>
-</table>
-
-| Path | Best fit | Start here |
-| :--- | :--- | :--- |
-| **Predator Strikes** | A known CVE fix, focused discovery, or chain analysis for one agreed repository surface | [Discuss a Strike →](https://aethersystems.net/strikes/) |
-| **Predator CI** | Repeatable checks against a qualified repository profile and exact commit; private preview | [Qualify a profile →](https://aethersystems.net/actions/design-partner) |
-| **Predator Red Team** | An authorized assessment of a live environment, with reviewed findings and remediation | [Scope an assessment →](https://aethersystems.net/defense-stack) |
-
-<a id="join-the-early-gen3-and-predator-ci-conversation"></a>
-<a id="live-predator-red-team"></a>
-
-Agree the surface, acceptance checks and handoff before work begins; live assessments also need approved targets, methods, timing, contacts and stop cond
+**Still open, in order:** a model-lane cycle that reaches a patch the judge can score (the round-4 repair in the [status table](#status-november-8-2026) is next, and a promoted patch is the entry condition for the deep-cell lane); the bus's hand-off cost gate at 100 or more hand-offs (80 today), then its two owner-gated stages (a model line, and switching it on after the shared-IR fence lifts); the 400-agent rung with the communication lane on hardware (about 9 IBM jobs, *modelled*); the narrow-th

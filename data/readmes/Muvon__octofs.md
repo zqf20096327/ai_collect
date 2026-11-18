@@ -29,8 +29,8 @@ Octofs is a single binary that gives an AI assistant two things over MCP: tools 
 
 With these tools an assistant can work in a project without the user pasting files: it reads and searches the tree, edits files in ways that fail loudly instead of landing on the wrong line, and runs commands. The same file tools work on a remote host when a path is an `ssh://` URL.
 
-- `view` reads a file (whole, a line range, or several ranges), lists a directory (gitignore-aware, with glob patterns), searches content (literal or regex, with context lines) and returns images up to 5 MB. For clients that report a context epoch, re-viewing a whole file returns only the hunks changed since.
-- `text_editor` creates files, replaces exact text, deletes a file and undoes the last edits (up to 10 levels per file, kept in memory).
+- `view` reads a file (whole, a line range, or several ranges) or several files in one call, lists a directory (gitignore-aware, with glob patterns), searches content (literal or regex, with context lines) and returns images up to 5 MB. For clients that report a context epoch, re-viewing a whole file returns only the hunks changed since.
+- `text_edit` creates files, replaces exact text, deletes a file and undoes the last edits (up to 10 levels per file, kept in memory).
 - `batch_edit` applies up to 50 insert and replace operations to one file atomically. Targets are line ids of the form `N:hh` (position plus a two-character content hash); a stale id fails with the current content and where it moved. An operation can copy lines from another file, or from the same file, instead of taking new text.
 - `shell` runs a command on the local machine. A command still running after about 10 seconds continues in the background and a completion notification arrives when it exits. By default, standalone `cat`, `grep`, `find`, `ls` and similar reads are rejected with a pointer to `view`.
 - Transport is STDIO or Streamable HTTP. A non-loopback HTTP bind requires a bearer token.
@@ -328,7 +328,7 @@ view path="ssh://deploy@example.com/etc/nginx/nginx.conf"
 - **RSA keys are not supported** — the Rust `rsa` crate has an unfixed timing side-channel (Marvin attack, [RUSTSEC-2023-0071](https://rustsec.org/advisories/RUSTSEC-2023-0071)), so octofs is built without RSA entirely. Use an ed25519 key instead (`ssh-keygen -t ed25519`); ecdsa also works. RSA-only setups fail with a clear error naming the key.
 - **Host keys** — verified against `~/.ssh/known_hosts` with the OpenSSH `accept-new` policy: unknown hosts are recorded on first use, a changed key fails closed.
 - **`--ssh-timeout SECS`** — connection timeout (default 30). Connections are pooled per host, kept alive with transport keepalives, and reconnected automatically if they drop.
-- **`shell` stays local** — commands always run on the machine where Octofs runs; only file tools (`view`, `text_editor`, `batch_edit`, and `symbol` with `definition`/`references`) reach remote hosts. The graph relations of `symbol` are local only.
+- **`shell` stays local** — commands always run on the machine where Octofs runs; only file tools (`view`, `text_edit`, `batch_edit`, and `symbol` with `definition`/`references`) reach remote hosts. The graph relations of `symbol` are local only.
 
 ---
 
@@ -336,7 +336,7 @@ view path="ssh://deploy@example.com/etc/nginx/nginx.conf"
 
 ### `view` — Read files, list directories, search content
 
-**File reading:** (`path` is a single path; `start`/`end` are line numbers or line ids)
+**File reading:** (`path` is one path, or several joined with `|`; `start`/`end` are line numbers or line ids)
 ```json
 {"path": "src/main.rs"}                          // whole file
 {"path": "src/main.rs", "start": 10, "end": 20}  // lines 10–20
@@ -345,10 +345,14 @@ view path="ssh://deploy@example.com/etc/nginx/nginx.conf"
 {"path": "src/main.rs", "start": -20}            // last 20 lines
 {"path": "src/main.rs", "start": "12:a3", "end": "20:f1"}  // line ids from prior output
 {"path": "src/main.rs", "ranges": [{"start": 10, "end": 20}, {"start": 80, "end": 95}]}  // several spans in one read
+{"path": "src/a.rs|src/b.rs"}                    // several files in one call
+{"path": "src/a.rs", "ranges": [{"start": 10, "end": 20}, {"path": "src/b.rs", "start": 80}]}  // spans of several files
 ```
 
-`ranges` reads several spans of one file in one call. Each span takes the same values
-as `start`/`end`, and both are required. Spans are sorted, overlapping or adjacent ones
+`ranges` reads several spans in one call. Each span takes the same values as
+`start`/`end`: a span without `start` begins at line 1, and one without `end` runs to
+the last line. A span may name its own `path` to read from another file; without one
+it reads the call's `path`. Spans of one file are sorted, overlapping or adjacent ones
 are merged, and each gap shows as `[... N lines omitted]`. `ranges` cannot be combined
 with `start`/`end` or `content`.
 
@@ -356,7 +360,14 @@ Output renders every line as `N:hh|content` — the `N:hh` prefix is the line id
 that `batch_edit` takes as targets. Files with the extension `.spill`
 (saved tool output) are shown as stored, without added ids.
 
-To read several files, make multiple `view` calls — they run in parallel.
+To read several files in one call, join their paths with `|` (up to 32) or name the
+file on each `ranges` span. Each file comes back as its own section, headed by its path.
+The other parameters of the call (`start`/`end`, `flags`, `full`) apply to every path
+of a `|` list, and a directory in the list is listed. A path that cannot be read is
+reported in its section and the others are still returned; the call fails only when
+none can be read. An image in the list is named and has to be viewed in a call of its
+own. A read that would take the result past the size limit of one tool result is named
+instead of returned.
 
 Reuse content and line ids already returned. Read a complete relevant function or block
 in one call, combining adjacent windows. If its location is unknown, use `content` with
@@ -500,7 +511,7 @@ by name and imports, not types. Limits, the in-memory index and one worked examp
 
 ---
 
-### `text_editor` — Create, edit, replace text
+### `text_edit` — Create, edit, replace text
 
 **Create file:**
 ```json
@@ -555,13 +566,18 @@ line ids. CRLF files are matched in LF space and keep their line endings on writ
 {"command": "undo_edit", "path": "src/main.rs"}
 ```
 
-**Check after the edit:** `text_editor` and `batch_edit` accept an optional `check`, a shell command (for example the test that covers the change) that runs after the edit is written and whose output follows the edit result. It needs the `shell` tool: a client that filters `shell` out of a session's tools sets `experimental.session.shell` to `false` in its client capabilities, and octofs then hides `check` from the edit tools and rejects it before writing anything. A missing field or any other value keeps `check` available.
+**Check after the edit:** `text_edit` and `batch_edit` accept an optional `check`, a shell command (for example the test that covers the change) that runs after the edit is written and whose output follows the edit result. It needs the `shell` tool: a client that filters `shell` out of a session's tools sets `experimental.session.shell` to `false` in its client capabilities, and octofs then hides `check` from the edit tools and rejects it before writing anything. A missing field or any other value keeps `check` available.
 
 ---
 
 ### `batch_edit` — Atomic multi-operation edits
 
 Perform multiple insert/replace operations on a single file atomically.
+
+Give only the new lines. If the first or last line of a replacement repeats the line just
+before or after its range, that line is dropped, the edit is applied and a note in the result
+says so. A lone closing bracket (`}`, `]`, `)`) or a blank line is kept, since those repeat
+legitimately. Content that is nothing but the repeat fails the call.
 
 Each operation has a `start`. For `replace` it's the first line of the range as a
 line id copied from `view` output (add `end` for a range; omit it for a single
@@ -666,7 +682,7 @@ octofs/
 │   │   ├── request_ctx.rs       # Per-request hint queue + stale-file stamps
 │   │   └── fs/                  # Filesystem tool implementations
 │   │       ├── mod.rs           # Re-exports
-│   │       ├── core.rs          # view, text_editor, batch_edit
+│   │       ├── core.rs          # view, text_edit, batch_edit
 │   │       ├── file_ops.rs      # view_file_spec, create_file_spec
 │   │       ├── text_editing.rs  # str_replace, batch_edit, undo, per-file locking
 │   │       ├── directory.rs     # Directory listing + content search

@@ -52,7 +52,42 @@ Jev 1.14 is the default; a configured model override stays in force. [Configurat
 
 The band above the prompt shows the tier, activity, model, and reason for each turn. `/router` opens a pane to pin a tier, edit the model and effort of each tier, and tune the policy. See the [user guide](docs/user-guide.md#read-the-status-band).
 
-The router needs Claude Code 2.1.289 or newer. Savings are not measured. The pane's Usage tab estimates what routing cost against no routing (your own model on the main thread, Claude Code's pick for each subagent) for the same tokens at configured list prices, for this session, today, 7 or 30 days, this month or all; it is not a bill and does not judge answer quality. See the [evaluation](docs/evaluation.md).
+In the desktop app, VS Code and mobile, the band is one fixed row with nothing revealed on hover: a tier meter icon, the route, activity and reason on the left; the readings, a **Pin to a tier** dropdown and **Router** on the right. The pane has a header, five tabs (Now, Routes, Policy, Classifier, Usage), one warnings slot and a save bar. Colours follow the app's theme. These surfaces cannot open the plugin settings dialog, so **Set up** shows a card with the command that saves the classifier's key from a terminal.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/desktop-band-routed-dark.png">
+  <img src="docs/images/desktop-band-routed-light.png" alt="The desktop band in one row: a tier meter, Opus 5.5 xhigh, the code activity and the reason &quot;clearly stronger&quot; on the left; context and cache readings, the Pin to a tier dropdown and the Router button on the right." width="900">
+</picture>
+
+*Rendered from the real component tree with a browser's layout and approximate theme colours; not a screenshot of the Claude app.*
+
+<table>
+<tr>
+<td width="50%">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/desktop-pane-now-dark.png">
+  <img src="docs/images/desktop-pane-now-light.png" alt="The Now tab of the pane: the next turn route with a pin button per tier, plan usage bars, context and cache, and this session's cost against no routing with a strip of replies by tier.">
+</picture>
+
+</td>
+<td width="50%">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/desktop-pane-routes-dark.png">
+  <img src="docs/images/desktop-pane-routes-light.png" alt="The Routes tab: a grid of tiers by activities with the models they run, an editor card for code at High, and an Unsaved changes table with Discard and Save.">
+</picture>
+
+</td>
+</tr>
+</table>
+
+
+In the terminal, the picture above shows the band, whose controls appear on its own row on hover; the colours follow your Claude Code theme. The pane's warnings share one slot under the tab row, and a pending pin shows on its pin button (press it again to unpin).
+
+On every surface, a row under the band lists running subagents (press one to open its transcript; **Back** returns), `/router` completes its words as you type where the prompt box offers completions, and a quiet route line after a turn says which model ran and why (`/router line off|moves|all`; by default only when the route moved). A session that starts with routing unavailable shows one toast with the reason, at most once a day.
+
+The router needs Claude Code 2.1.321 or newer. Savings are not measured. The pane's Usage tab estimates what routing cost against no routing (your own model on the main thread, Claude Code's pick for each subagent) for the same tokens at configured list prices, for this session, today, 7 or 30 days, this month or all; it is not a bill and does not judge answer quality. See the [evaluation](docs/evaluation.md).
 
 ## How it works
 
@@ -121,7 +156,7 @@ For mixed Anthropic and DeepSeek sessions, use the explicit [model-proxy profile
 
 ## Install
 
-You need Claude Code 2.1.289 or newer and credentials for one [supported classifier](#supported-classifiers).
+You need Claude Code 2.1.321 or newer and credentials for one [supported classifier](#supported-classifiers).
 
 ```sh
 claude plugin marketplace add alexei-led/claude-router
@@ -153,6 +188,10 @@ npm run setup
 npm run check && npm run typecheck && npm test && npm run validate && npm run test:plugin
 ```
 
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md): set-up and commands, the layer rules, test conventions and the pull request checklist. Coding agents start with [AGENTS.md](AGENTS.md). Run `npm run setup` once, then `npm run check && npm run typecheck && npm test && npm run test:plugin` before you push.
+
 ## Documentation
 
 - [User guide](docs/user-guide.md): install, use the controls, read the panel, and troubleshoot.
@@ -163,4 +202,5 @@ npm run check && npm run typecheck && npm test && npm run validate && npm run te
 - [Routing modes](docs/routing-modes.md): `cost`, `balanced` and `quality`, where the mode comes from, and every decision per mode.
 - [Native router details](docs/native-router.md): panel semantics, tuning, and accepted limits.
 - [Evaluation](docs/evaluation.md): limits, text-free trace export and replay, and the paired benchmark proposal.
+- [Contributing](CONTRIBUTING.md): set up, commands, architecture rules, tests, and pull requests.
 - [Changelog](CHANGELOG.md): user-visible changes by version.

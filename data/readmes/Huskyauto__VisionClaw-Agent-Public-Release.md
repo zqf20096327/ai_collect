@@ -1,6 +1,38 @@
 # VisionClaw Agent
 
-## Latest source update — R137.3+sec (November 14, 2026)
+## Latest source update — R137.3+sec2 (November 17, 2026)
+
+- **Cross-application review:** source and page inventories include public
+  landing pages, authenticated dashboards, shared navigation and backend
+  services. Risk-based deep inspection and bounded regressions are not
+  whole-platform security certification or live-service acceptance.
+- **Review repairs:** the optional legacy MCP endpoint rechecks current account
+  activity even for cached or compatibility-owner keys; authorization-store
+  failure does not reuse an old grant. Remote logout failures no longer retain
+  local identity and private query data. Skills navigation and private-mode
+  public contact/purchase guidance were corrected without widening access.
+- **Owner-only deployment option:** private-owner access preparation preserves
+  informational pages and explicitly authenticated callbacks without deleting
+  tenant records or claiming completed multi-tenant/RLS verification.
+  [Operating boundaries](docs/security/owner-only-access.md).
+- **Optional local maintenance:** bounded development-only runbook work can use
+  independent local devices, with daytime controls, strict source checks and
+  budgeted recovery. Local-model quality remains task-dependent; measured
+  production savings and reliable unattended throughput are not claimed.
+  [Scope and evidence](docs/parallel-local-maintenance.md).
+- **Agent-ready website package:** deterministic public-facts discovery and
+  structured-data exports with explicit before/after verification; incomplete
+  fetches remain unknown. No automatic installation or customer delivery.
+  [Contract and limits](docs/agent-ready-package.md).
+- **Snapshot policy:** eligible new files, changed folders and deletions are
+  synchronized from source. Credentials, private operational records, ignored
+  runtime state, customer uploads and proprietary surfaces remain excluded.
+
+Source publication is distinct from application deployment; this update does
+not publish the app or change production settings.
+See the [review findings, coverage and evidence](docs/app-review-2026-11-17.md).
+
+## Previous source update — November 14, 2026
 
 This snapshot includes the latest eligible files and folders from the private
 source, with private records, credentials, uploads and proprietary surfaces
@@ -88,8 +120,8 @@ excluded by the existing export policy.
   See the [November source reconciliation](docs/platform-update-2026-11-04.md).
 
 **428 registered tools · 386 publicly documented tools · 18 personas · 68 platform
-skills · 147 active capabilities · 201 declared / 282 live development tables ·
-904 platform indexes · 99 curated models · 41 governance rules.**
+skills · 148 active capabilities · 202 declared / 283 live development tables ·
+905 platform indexes · 100 curated models · 41 governance rules.**
 These are dated development measurements, not production telemetry.
 
 Recent source additions include an eight-document **AI Stack Decision Review**
@@ -160,7 +192,7 @@ Instead of a single chatbot, you get a full agent workforce. Give it a task. The
 
 **Earlier source update — R137+sec (October 19, 2026): Business pilots, company report packages and evidence-first operations.** Owner-only health/re-scan, release, governance and cost/routing pilots; read-only website readiness; sourced company reports with required audio; private alert logs; receipt-backed delivery checks, outcome-first briefings and video packaging. Private report packages are excluded from generic tenant file access. [Feature/access matrix](docs/platform-update-2026-10-19.md). Forks need their own credentials, entitlements and configuration. Focused live pilot verification is not universal certification; GitHub synchronization is not website publication.
 
-Roughly 320k lines of TypeScript across 1,100+ files. 40+ pages. **428 total registered tools · 386 public documented tools · 68 total skills · 147 active capabilities · 18 personas · 201 declared / 282 live development tables · 41 governance rules · 904 platform indexes · 99 curated AI models · 6 AI providers · 6 deployment targets.** These are a November 14 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
+The November 17 application inventory covers 1,634 source modules in `client/src`, `server` and `shared`, including 115 page components and one page-data module. Not every component is a standalone route. **428 total registered tools · 386 public documented tools · 68 total skills · 148 active capabilities · 18 personas · 202 declared / 283 live development tables · 41 governance rules · 905 platform indexes · 100 curated AI models · 6 AI providers · 6 deployment targets.** These are a November 17 **development evidence snapshot**, not live production telemetry. The public tool index deliberately excludes trusted-persona-only tools. Current release facts: [`docs/release-facts.json`](docs/release-facts.json). Browsable indexes: [`docs/tools.md`](docs/tools.md) · [`docs/personas.md`](docs/personas.md).
 
 ### October 9–14 source updates
 
@@ -418,26 +450,26 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
 
 ---
 
-## Platform at a Glance — October 19 Development Evidence
+## Platform at a Glance — November 17 Development Evidence
 
-> This is the dated development snapshot, not live production telemetry. Counts agree with [docs/release-facts.json](docs/release-facts.json) and [docs/CURRENT_PLATFORM_TOTALS.md](docs/CURRENT_PLATFORM_TOTALS.md); documentation was reconciled October 19.
+> This is the dated development snapshot, not live production telemetry. Evidence date: November 17. Counts agree with [docs/release-facts.json](docs/release-facts.json) and [docs/CURRENT_PLATFORM_TOTALS.md](docs/CURRENT_PLATFORM_TOTALS.md).
 
 | Metric | Count |
 |--------|-------|
 | AI Agents (Personas) | 18 |
 | Tools (total registered) | 428 |
 | Tools (public documented) | 386 |
-| AI Models in Core Registry | 99 curated |
+| AI Models in Core Registry | 100 curated |
 | Daily Catalog Discovery | 1000+ models scanned on OpenRouter |
 | AI Providers | 6 (OpenAI, Anthropic, Google, xAI, OpenRouter, Perplexity) |
 | Governance Rules | 41 |
 | Corporate Operation Scaffolds | 75 |
 | Corporate Departments | 12 |
 | Skills | 68 total (63 DB-seeded skills + 5 platform agent skills) |
-| Frontend Pages | 40+ |
+| Frontend Page Components | 115 (plus one page-data module; not all standalone routes) |
 | API Endpoints | 300+ |
-| Database Tables | 201 declared / 282 live development |
-| Platform Indexes | 904 (628 non-PK) |
+| Database Tables | 202 declared / 283 live development |
+| Platform Indexes | 905 (628 non-PK) |
 
 ---
 
@@ -471,7 +503,7 @@ Real screenshots from the live instance at [agenticcorporation.net](https://agen
         ┌────────────┐   ┌────────────┐   ┌────────────┐
         │ PostgreSQL │   │ Google     │   │ 6 AI       │
         │ + pgvector │   │ Drive      │   │ providers  │
-        │ D201/L282  │   │ storage    │   │ 99 curated │
+        │ D202/L283  │   │ storage    │   │100 curated │
         └────────────┘   └────────────┘   └────────────┘
 ```
 
@@ -517,7 +549,7 @@ Every agent has a defined role, personality, skill set, and operating rules. The
 
 ### AI & Intelligence
 
-- **93 Curated AI Models in the Development Registry** with configured routing across supported providers. Bring your own provider credentials — availability and billing are governed by provider and account terms, not a promise of universally free inference.
+- **100 Curated AI Models in the Development Registry** with configured routing across supported providers. Bring your own provider credentials — availability and billing are governed by provider and account terms, not a promise of universally free inference.
 - **Adaptive Model Discovery (R73)** — a daily background task scans OpenRouter's full catalog of 1000+ models, tier-classifies each by completion price (reasoning / powerful / balanced / fast), probes the Replit gateway for new releases, and emails the owner a ranked digest of new models worth adding to the registry. Hard caps prevent inbox spam (10 alerts/run max), lifetime dedupe prevents re-alerts, and silent days mean nothing changed.
 - **Streaming Responses** via Server-Sent Events (SSE) — real-time token-by-token output
 - **Thinking Mode** — explainable reasoning with decision traces for complex problems
@@ -929,5 +961,4 @@ Brief one-liners. Full play-by-play in [REVISIONS.md](REVISIONS.md).
 | **R125+137.59 → +137.64+sec** | 2026-07-22 | **The platform starts learning from its own tool choices and opens an agent-to-agent front door** — all five Kimi-K3 review recommendations land (condition-based wakes, episode playbooks, outcome-learned persona routing, inbound A2A task acceptance via JSON-RPC 2.0, an Autonomy Scoreboard), a record-only tool mis-pick telemetry ledger goes live, the TOOL RECALL doctrine makes every persona re-scan its full inventory before saying "I can't", a production maintenance-cron incident is fixed at the root, and two 72h security review rounds close four MEDIUM tenant-isolation findings. |
 | **R125+137.51 → +137.58** | 2026-07-21 | **The platform starts auditing its own model reality — every hardcoded model id verified weekly against LIVE provider lists (Pass 16) and every pricing map against live OpenRouter rates (Pass 17); a CRITICAL tar CVE patched; a 72h review lands two remediation batches; every autonomous loop gets a mechanically-proven L0–L3 readiness grade.** **R125+137.51:** Loop Doctor L0–L3 rubric — per-loop grades with mechanically-proven kill-switch/attempt-cap/run-log evidence (declared-but-absent token = ERROR); fleet L3=3, L2=6. **R125+137.52:** wiring-audit health pass closes 9 orphan tables (introspect script's hardcoded list predated the research/sandbox/social tables). **R125+137.53:** CI-failure backlog triage — 48 digest items → 4 root causes, all fixed, incl. a CRITICAL tar CVE (GHSA-vmf3-w455-68vh) patched via surgical lockfile bump (0 critical vulns); silent-failure HIGH budget locked DOWN 53→52. **R125+137.54:** 72h remediation batch 1 — sandbox tool handlers admin-tenant-gated, Zod/tenant validation on sandbox PATCH + insights-apply + agentic sweep, seed heartbeat DELETE sentinel-restricted, portfolio script onto the mandatory delivery pipeline. **R125+137.55:** self-healing scorer model — pinned id verified against live /v1/models, LOUD fallback to the newest live Sonnet on retirement. **R125+137.56:** model-currency audit (weekly Pass 16) — first run caught 4 retired dated Anthropic ids still serving as the DEFAULT fallback across ~20 active files, all swept to live aliases. **R125+137.57:** model-pricing audit (weekly Pass 17) — all 3 pricing maps verified against live OpenRouter rates; first run reconciled 28 stale prices. **R125+137.58:** 72h remediation batch 2 — ~20 research-engine sites gain explicit tenant filters, 5 research routes Zod-validated, gmail refresh log redacted to an allowlist, skill-seeker fails closed on missing tenant, tables count resynced to the live 216. Gates: tsc 0, seamtests 69/69, suite 147/147, cost 49/49, preflight CLEAN, architect PASS. |
 | **R125+137.45 → +137.50** | 2026-07-20 | **The platform starts working ahead of you — Proactive Commitment Drafting turns approaching deadlines into ready-to-approve HITL draft cards (structurally send-incapable); a CRITICAL credential-file leak in the uploads sync is closed with a boot-time dotfile purge; all 10 maintenance crons are prebundled so production can never lose them; a 10-file god-file cleanup locks its ceilings DOWN; and an IdeaBrowser MASTER sweep simulates the best of the 256-idea scored archive (winner: AI-Native Readiness Audit, ~$38.9k probability-weighted expected profit).** 72h retrospective (3 architect passes over 80 files / 223 commits) closed 1 MEDIUM (per-tenant boot-backfill skip check) + 3 LOW. Gates: tsc 0, suite 147/147, seamtests 69/69, wiring CLEAN, preflight CLEAN. |
-| **R125+137.41 → +137.44** | 2026-07-19 | **The Simulation Sandbox becomes actionable — jury-vetted promotion of sandbox findings into a reviewed Improvement list (never auto-apply), TTL retention, and honest INCONCLUSIVE verdicts — plus a weekly IdeaBrowser money-scenario pipeline and a review/sync round with permanent race-regression pins.** **R125+137.41 (72h review, 2 HIGH + 1 MEDIUM):** an `INCONCLUSIVE` verdict added to BOTH sandbox report unions — a run with zero replays, zero graded results, or more errors than successes can never collapse to a reassuring NO_CHANGE (CRITICAL/DRIFT still win); grading failures emit `[sandbox-grade]` telemetry, failed-status UPDATE catches log loud, and a read-time `stale` marker (running >30 min) surfaces on the sandbox routes + an ecosystem-health `staleRunningCount`. **R125+137.42:** the IdeaBrowser weekly money-scenario pipeline — a Monday cron ingests 7 days of captured business ideas, scores them, runs per-idea scenario simulations producing `successProbabilityPct` + probability-weighted `expectedProfitUsd`, ranks the top 5, and delivers the report through the delivery pipeline + owner email (safe `--test` mode with zero side effects; live run verified). **R125+137.43:** a new `sandbox_promote` tool (trusted-personas-only, sensitive/HIGH fail-closed policy; tools 398 → 399) routes sandbox findings through the 3-frontier-model jury into a durable `sandbox_improvements` table — a `jury_pending` row is INSERTed BEFORE triage so a jury failure leaves an auditable record; ACCEPT/FIX → approved, REJECT → rejected, anything else escalates; nothing ever auto-applies. Plus admin GET/PATCH routes, an Improvement list card on `/admin/sandbox`, and weekly TTL retention (improvements survive run deletion via `ON DELETE SET NULL`). **R125+137.44:** permanent promote-race regression pins in the canonical suite (concurrent promotes of the same run can never double-insert or double-triage), the stale-string preflight gains a `scripts/` surface rule (stale counts in operator scripts now trip CI), and every marketing/dashboard/README surface resynced. Gates: tsc 0, seamtests 69/69, suite 146/146, wiring audit CLEAN, preflight CLEAN, architect PASS. |
-| **R125+137.30 → +137.40** | 2026-07-19 | **The Simulation Sandbox contract completes S1–S5 — the platform can replay its own past safety decisions and model choices offline, under a hard per-run spend cap, and report what WOULD have changed.** `sandbox_run`/`sandbox_report` registered as a born-migrated domain (fail-closed tool policies, trusted-personas-only; tools 396 → 398), sandbox tables extracted to `shared/models/sandbox.ts` (tables 213 → 215), a `/admin/sandbox` admin UI over admin-gated launch routes (5s-wait/202-detach with race-safe timer cleanup), Sandbox probe #16 on the ecosystem-health dashboard, and the model-swap helper's cap clamped to the shared `MAX_PER_RUN_CAP_USD = 5` (architect-caught drift from 50). E2E smoke replayed 5/5 live safety decisions with verdict NO_CHANGE. Also in the window: a metered escalation valve for the self-repair loop (exactly ONE frontier diagnostic turn on a prior-collapse stall — judgment only, fail-OPEN, never on the final attempt), two standing-registry model registrations (`meta/muse-spark-1.1` paid + `nvidia/nemotron-3-ultra-550b:free` — neither touches the jury pools or the frontier reserve), the weekly video recap made s
+| **R125+137.41 → +137.44** | 2026-07-19 | **The Simulation Sandbox becomes actionable — jury-vetted promotion of sandbox findings into a reviewed Improvement list (never auto-apply), TTL retention, and honest INCONCLUSIVE verdicts — plus a weekly IdeaBrowser money-scenario pipeline and a review/sync round with permanent race-regression pins.** **R125+137.41 (72h review, 2 HIGH + 1 MEDIUM):** an `INCONCLUSIVE` verdict added to BOTH sandbox report unions — a run with zero replays, zero graded results, or more errors than successes can never collapse to a reassuring NO_CHANGE (CRITICAL/DRIFT still win); grading failures emit `[sandbox-grade]` telemetry, failed-status UPDATE catches log loud, and a read-time `stale` marker (running >30 min) surfaces on the sandbox routes + an ecosystem-health `staleRunningCount`. **R125+137.42:** the IdeaBrowser weekly money-scenario pipeline — a Monday cron ingests 7 days of captured business ideas, scores them, runs per-idea scenario simulations producing `successProbabilityPct` + probability-weighted `expectedProfitUsd`, ranks the top 5, and delivers the report thr

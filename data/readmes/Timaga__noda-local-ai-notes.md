@@ -10,7 +10,7 @@
 
 <p align="center">Windows x64 · local inference · Markdown files · noncommercial source license</p>
 
-<p align="center"><strong><a href="https://github.com/Timaga/noda-local-ai-notes/releases">Download Windows Setup (x64)</a></strong> · <a href="docs/releases/1.0.2.md">1.0.2 release notes</a> · <a href="docs/USER_GUIDE.md">User guide</a> · <a href="#build-from-source">Build from source</a></p>
+<p align="center"><strong><a href="https://github.com/Timaga/noda-local-ai-notes/releases">Download Windows Setup (x64)</a></strong> · <a href="docs/releases/1.0.3.md">1.0.3 release notes</a> · <a href="docs/USER_GUIDE.md">User guide</a> · <a href="#build-from-source">Build from source</a></p>
 
 ![Noda library with projects, a note list and an editable Markdown note](docs/assets/screenshots/library.png)
 
@@ -43,7 +43,7 @@ Screenshots use synthetic demo notes in an isolated application profile. The dis
 
 ## Install on Windows
 
-**[Windows x64 Setup, releases and checksums](https://github.com/Timaga/noda-local-ai-notes/releases)** · [Noda 1.0.2 release notes](docs/releases/1.0.2.md)
+**[Windows x64 Setup, releases and checksums](https://github.com/Timaga/noda-local-ai-notes/releases)** · [Noda 1.0.3 release notes](docs/releases/1.0.3.md)
 
 1. Download the current version's `Noda-Setup-<version>-x64.exe` and run it.
 2. Follow the installation steps, then open **Noda** from the Start menu.
@@ -83,7 +83,7 @@ The supplied note-processing profiles support **Russian and English**. Changing 
 
 ## Project status
 
-Current source version: **1.0.2**. The supported workflow uses ready-made local models for note processing, indexing and chat. Fine-tuning is disabled. Source and native checks cover isolated workflows, renderer trust boundaries and installer lifecycle scenarios. Exact-binary clean-machine validation and broader model evaluation remain documented limitations.
+Current source version: **1.0.3**. The queue retries against a fresh snapshot when another note changes during processing, while preserving the exact source and existing attempt limit. The supported workflow uses ready-made local models for note processing, indexing and chat. Fine-tuning is disabled. Exact-binary clean-machine validation and broader model evaluation remain documented limitations.
 
 See the [compliance and publication status](docs/COMPLIANCE.md) for the reviewed licenses, privacy scope and open release findings.
 

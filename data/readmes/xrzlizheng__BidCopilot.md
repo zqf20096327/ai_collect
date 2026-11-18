@@ -4,6 +4,11 @@
 
 > English one-liner: BidCopilot is a self-hosted, AI-assisted bid decision & delivery platform for tender teams — opportunity monitoring, tender parsing, proposal generation, compliance pre-check, contract review, export and post-bid review, multi-tenant by design. Docs are in Chinese; an English README may follow.
 
+<p align="center">
+  <a href="#支持项目"><img src="docs/images/wechat-sponsor-qr.png" width="150" alt="微信付款码（请作者喝咖啡）" /></a>
+  <br/><sub><b>支持与联系</b>：微信付款码见左图（或页尾「支持项目」）· 反馈与交流请提 <a href="https://github.com/xrzlizheng/BidCopilot/issues">GitHub Issue</a> · 私事联系看仓库 Owner 的 GitHub 主页邮箱 · 安全漏洞请走 <a href="https://docs.github.com/zh/code-security/security-advisories/guidance-on-reporting-and-reviewing/privately-reporting-a-security-vulnerability">私密漏洞报告</a>，勿开公开 Issue</sub>
+</p>
+
 ## 文档体系（docs/product/）
 
 | 文档 | 读者 |
@@ -15,18 +20,34 @@
 | [数据库参考](docs/product/2026-10-24-bidcopilot-database-reference.md) | DBA/接手开发 |
 | [开发交接手册](docs/product/2026-10-24-bidcopilot-dev-handbook.md) | 接手开发/测试 |
 | [详细设计文档](docs/product/2026-10-24-bidcopilot-detailed-design.md) | 核心开发 |
+| [竞品调研与升级建议](docs/product/2026-10-31-competitive-research.md) | 产品/战略 |
+| [企业数据 MCP 接入说明](docs/product/2026-10-31-keeprisk-mcp-integration.md) | 集成/运维/产品 |
+
+产品内使用帮助：登录后从侧边栏「帮助 → 使用帮助」进入，或直接访问 `/help`；内容按当前页面与后端校验维护。
 
 ## 功能矩阵
 
 | 模块 | 能力 | 状态 |
 |---|---|---|
-| 商机发现 | KeepRisk 机会同步/详情、订阅定时同步、消息中心、启发式匹配度排序、采购人竞争情报（既有供应商识别） | ✅ |
-| 企业资产 | 企业/人员/资质库、知识库（多格式/加权召回）、AI 模型租户级配置 | ✅ |
+| 商机发现 | KeepRisk 机会同步/详情、订阅定时同步、消息中心、采购人竞争情报（既有供应商识别）；自动匹配：匹配结果持久化、企业资质自检与缺口清单、阈值甄别（推荐/复核/跳过）、高匹配幂等自动立项、订阅同步后自动触发 | ✅ |
+| 企业资产 | 企业/人员/资质库、知识库（多格式/加权召回）、AI 模型租户级配置；企业详情含「工商自检」 | ✅ |
+| 套餐与用量 | 平台按租户配置项目/席位/AI 篇数/字数上限与有效期；达到上限返回 429；默认不限，价格由商务配置 | ✅ |
+| 交标回执 | 人工记录递交时间/平台/回执号，冻结当时交标自查快照；不自动确认平台已递交 | ✅ |
+| 知识库冷启动 | 多份历史标书批量入库（案例+历史标书标签）并自动切片，供生成召回；不自动生成模板 | ✅ |
+| 交付品牌 | 导出 docx/xlsx/PDF 内嵌**投标企业自身名称**（取项目关联企业 `Company.name`，无企业时回退 BidCopilot）；暗标导出自动剔除品牌；项目「交付摘要」可打印/另存 PDF | ✅ |
+| 文件体检 | 招标文件买方侧确定性规则体检（指定品牌/地域/注册资本/主观评分等 10 类）；跨投标人雷同自查（4-gram Jaccard + 共同片段）；只做合规提示 | ✅ |
+| 企业情报 | 采购人/投标主体/合同相对方的工商、信用、股权关联与尽调；批量核验（≤100 家）、企业对比（2–5 家）、风险监控订阅（被执行/失信/处罚/经营异常变化通知）；按次计费，缓存命中不计费 | ✅ |
 | 投标项目 | 招标解析（docx/pdf/txt/md + 扫描件 OCR 双供应商）、约束集、评分矩阵、Bid-No-Bid | ✅ |
 | 生成 | 章节生成、事实核查、审批、docx/暗标导出（暗标元数据自检+闸门拦截） | ✅ |
-| 合规 | 24 条确定性预检 + 租户策略、逐条响应/偏离表（确认人流）、标书查重（跨章节+跨知识库） | ✅ |
+| 合规 | 29 条确定性预检 + 租户策略、逐条响应/偏离表（确认人流）、标书查重（跨章节+跨知识库） | ✅ |
 | 评标 | AI 评标模拟、findings 报告（PDF/Excel） | ✅ |
+| 使用帮助 | 产品内 `/help`：9 步主线、21 个模块章节、状态速查、FAQ、权限与边界说明；侧边栏按角色显示入口 | ✅ |
+| 报价策略 | 成本拆解（人力/其他直接/间接/税）、历史价格带 P25/P50/P75、赢率—毛利权衡、报价敏感性（±3/5/8%）、三档建议价（按历史价格带锚定，成本底线与预算钳制，成本加成价作对照）、LLM 策略叙述（未配置则降级模板） | ✅ |
+| 报价成本参数 | 租户级成本参数配置卡（直接成本率/间接费率/税率、人力岗位日单价、三档目标净利率）+ `GET/PUT /api/v1/system/pricing-settings`；配置后三档建议价对新租户可达 | ✅ |
+| 报价单 | 按策略档位价或显式总价生成不可变快照（明细行编辑、合计必须等于总额、供应商/有效期/备注、人民币大写）、`POST /api/v1/projects/{id}/pricing/quote`、`GET .../quote/latest`、导出正式报价单 DOCX | ✅ |
+| 审计链修复 | `python -m app.cli repair-audit-chain [--tenant-id <uuid>] [--dry-run]`：历史清理删行导致断链时受控重算 prev_hash/hash（事件内容不动），修复事件 `audit.chain.repair` 留痕并自检 verify | ✅ |
 | 合同审查 | 条款切分、10+ 风险规则、三方一致性对照（招标文件↔投标承诺↔合同）、LLM 深审、履约节点提醒、补充协议对照、租户自定义规则 | ✅ |
+| 合同管理 | 合同主数据台账、从投标承诺起草（每条带来源，标注需法务复核）、审批状态机与留痕、履约台账（开票/收款/保证金/质保金，金额 Decimal）、变更与续签留痕、到期提醒、台账 xlsx 导出（含合计与公式注入防护） | ✅ |
 | 复盘 | 中标/失标记录、赢率分析 | ✅ |
 | 运营 | 成本对账、审计哈希链、多租户隔离、RBAC、用户管理 | ✅ |
 | 平台 | 长文档异步解析、文档版本链（Work 身份）、制度口径问答、定时调度器 | ✅ |
@@ -44,9 +65,72 @@ flowchart LR
     end
     browser["Next.js 工作台"] --> nginx
     app -. KeepRisk 付费网关 .-> keeprisk["KeepRisk 标讯"]
+    app -. 企业数据 MCP .-> krmcp["KeepRisk 企业数据 MCP<br/>工商 / 股权 / 尽调"]
     app -. OpenAI 兼容 .-> llm["LLM / Judge"]
     app -. OCR 双供应商 .-> ocr["MiniMax 云端<br/>MinerU 4 本地(ONNX/CPU·GPU 自适应)"]
 ```
+
+## 验收快照（2026-10-31 企业数据 MCP）
+
+- 后端全量 `pytest tests\unit tests\integration -q` → **782 passed / 2 skipped**；`scripts/e2e_release_check.py` → **14 PASS / 0 FAIL**；`scripts/e2e_functional_sweep.py` → **42 PASS / 0 FAIL**；`scripts/e2e_module_sweep.py` → 86 PASS / 1 FAIL（唯一失败为演示库历史数据被删导致审计链缺口，链算法本身经单测双向验证）。
+- 镜像 `bidcopilot:single 705f1eb5a2a2` 重建运行；`/healthz` 200。
+- 真实 HTTP：`resolve` / `profile` / `relations` / `batch` / `compare` 均 `ok`；批量核验一次网关调用、企业对比两家 12 次调用/12 计费单位；缓存命中 `billing_units=0`。
+- 浏览器验收：资产页「工商自检」、商机详情「采购人企业情报」、项目页「投标主体核验/企业对比」、合同详情「合同相对方尽调」均渲染；`red/unknown` 风险原样展示并提示人工尽调，不用绿色摘要掩盖。
+- 单一投标主体：产品面向企业投标部门，**不提供多客户/代理机构模式**；租户内隔离用部门（`org_units`）+ 角色 + 资源 ACL + 字段策略。多客户能力已于迁移 `0068_retire_client_scope` 整体下线。
+- 监控订阅：watchlist 周期检查被执行/失信/处罚/经营异常；首次建基线，风险变化写站内通知；无记录显示 unknown，不冒充安全。
+- 套餐额度：平台页配置项目/席位/AI 篇数/AI 字数上限；超限返回 429；默认不限，避免未定价前硬编码。
+- 交标回执：项目详情记录递交时间/平台/回执号，并冻结当时交标自查快照；只做人工留痕，不代表平台已受理。
+- 知识库冷启动：知识库页批量导入历史标书（案例+历史标书标签），自动切片供生成召回；模板仍需人工整理。
+- 交付品牌：导出件内嵌投标企业自身名称（`Company.name`），不做弱化工具品牌的白标；项目「交付摘要」可打印/另存 PDF，包含交标自查与回执摘要。
+- 文件体检：`/file-check` 招标文件买方侧体检（10 类确定性规则）与跨投标人雷同自查（相似度+共同片段）；只做提示，不提供规避检测。
+
+## 验收快照（2026-10-30 产品内使用帮助）
+
+- 单容器镜像 `bidcopilot:single 40f39e51ebfe` 重建并部署，`bidcopilot-app` 运行中；`/healthz=200`、`/help=200`。
+- 浏览器验收（管理员与 `bid_engineer`）：`/help` 标题、20 个章节、40 个目录锚点全部命中；普通角色仍可见帮助入口，`用户管理/权限治理/平台租户` 不显示。
+- 自动化：容器 `frontend` 构建阶段 `pnpm exec vitest run 'src/app/(app)/help/page.test.tsx'` → **1 passed**；`tsc --noEmit`、`next lint`、`next build` 通过。
+- 全量前端测试 27/30；3 个失败集中在既有 `pricing-strategy-panel` 与 `contract-lifecycle-panel` 测试，与帮助页无关。
+- 已知缺口：移动端目录未单独做视觉验收；无权限角色直接访问 `/users`、`/access` 的路由外壳仍渲染（后端 403、无数据泄露，属既有纵深防御缺口）。
+
+## 验收快照（2026-10-29 新能力补齐）
+
+本轮补齐三项能力并通过真实部署验收：**自动匹配投标机会**（原仅列表页排序）、**智能计算报价策略**（原完全缺失）、**合同管理**（原仅合同审查）。
+
+### 自动化测试（真实 PostgreSQL）
+
+```powershell
+# 本机安全策略禁止项目内 venv trampoline spawn 解释器（os error 5），统一用封装脚本
+scripts\py.cmd -m pytest tests\unit -q          # 792 passed, 2 skipped（2026-11-17）
+# 集成测试需真实 PG/Redis（容器映射 25432/6390）：先在容器内建 bidcopilot_test 库并 alembic upgrade head
+$env:DATABASE_URL="postgresql+asyncpg://bidcopilot:bidcopilot@localhost:25432/bidcopilot_test"
+$env:REDIS_URL="redis://127.0.0.1:6390/0"
+scripts\py.cmd -m pytest tests\integration -q   # 194 passed（2026-11-17）
+scripts\py.cmd scripts\smoke_demo.py --base-url http://127.0.0.1:18080 --password '<演示口令>'   # SMOKE OK
+scripts\py.cmd scripts\check_architecture.py    # architecture ok: 239 files
+```
+
+单容器镜像 `bidcopilot:single` 重建后，运行库 `alembic_version = 0054_contract_lifecycle`，业务表 66 张（新增 `price_strategies`、`opportunity_matches`、`contract_records`、`contract_approvals`、`contract_ledger_entries`、`contract_changes`、`contract_draft_clauses`）。
+### 业务实测（真实 HTTP，脚本见 `scripts/biz_test_*.py`）
+
+| 场景 | 结果 |
+|---|---|
+| 报价策略·租户未配置 | 显式 `insufficient_data` + 逐条 `missing` 原因，不编造样本 |
+| 报价策略·配置后 | 成本对账 `612000+180000+576000+288000=1656000`；价格带 P25/P50/P75；三档锚定 P75/P50/P25 = 4,758,000 / 4,628,000 / 4,459,000；敏感性 7 行；叙述 `source=llm` |
+| 自动匹配·批量 | `scanned/matched/recommend/review/skip` 计数正确，`errors=0` |
+| 自动匹配·推荐→自动立项 | 正文解析资质 → `qualified=true` → `recommend` → 自动建项目（active），重复调用走 `existing` 分支不重复建 |
+| 合同管理 | 建记录 → 起草 9 条（带 `source_json`）→ 提交 → 审批 active → 台账 `0.1+0.2=0.30` 精度正确 → 续签留痕 → xlsx 6.4KB → 非法跳转 409 |
+| 租户隔离 | 越租户/不存在资源一律 404 |
+| 页面可达 | `/login` `/contracts` `/projects` `/opportunities` 均 200 |
+### 本轮修复的缺陷
+
+1. `GET /projects/{id}/pricing/price-band` 返回 HTTP 500：`pricing/service.py` 调用了未定义的 `build_price_band_payload`（应为已导入的 `price_band_payload`）。集成测试本就覆盖该接口，但此前从未执行。
+2. `tests/integration/test_pricing_api.py` 成本断言写成 38000，正确值为 33000（24000 人力 + 6000 间接 + 3000 税费），已改正并把算式写入断言注释。
+3. 三档建议价原为纯成本加成，会给出远低于市场中枢的价格（实测 1.07M vs 市场 P50 4.63M）。已改为按历史价格带锚定，并以成本底线/预算钳制，同时保留成本加成价作对照。
+
+### 已知限制
+
+- 前端 `vitest` 在本机因 `esbuild` 启动 panic 无法执行（对既有测试同样失败，属环境问题）；前端以 `pnpm typecheck` + `pnpm build` 为准。
+- 报价策略在租户未配置 `pricing_cost_model` / `pricing_target_margins`、或同类历史样本 <5 条时，会如实返回 `insufficient_data`，需先完成租户校准。
 
 ## 验收快照（2026-10-24）
 ### 单容器全链路实测（2026-10-24，`bash scripts/run_local_site.sh` → `http://127.0.0.1:18080`）
@@ -133,6 +217,15 @@ pnpm typecheck && pnpm lint     # tsc --noEmit 无输出；next lint 0 warnings/
 </details>
 
 
+### 2026-10-25 分支 A 增强实测
+
+- 能力：合规响应跨版本携带/最新版本口径、资产计算与展示脱敏分离、知识 ACL 相似度、文档类型（招标/澄清/补遗/最终标书）+ 显式 apply、报价/保证金/投标有效期/工作量成本确定性检查、交标就绪清单（IT/政采/工程模板）、截止提醒、五维决策卡与 legacy run、项目证据包、policy_sources 自动 factcheck、决策/提醒参数设置、采购人关注与可解释商机排序、投标承诺→合同对照、答辩/PPT 提纲、有限自我检查。
+- 后端：`APP_ENV=test ... pytest -q` → **322 passed / 2 skipped**（Linux 容器 + 真实 PostgreSQL）。
+- 前端：`pnpm typecheck`、`pnpm test` → **12 passed / 4 files**；`pnpm build` 成功。
+- 架构：`python ../scripts/check_architecture.py` → `architecture ok: 174 files`。
+- 单容器：镜像 `bidcopilot:single` `eaadcf273995`，容器 `bidcopilot-app` 健康，运行库 head `0049_bid_commitments`（59 张业务表），`scripts/smoke_demo.py` **SMOKE OK**。
+- 浏览器：CDP 登录 demo，项目页渲染「交标自查 / 投标决策卡 / 合同履约衔接 / 答辩提纲 / 有限自我检查」；机会中心渲染「仅看关注采购人 / 覆盖诊断」；设置页渲染「决策与提醒参数 / 人天单价」。
+
 ## 快速启动
 
 前置：Python 3.12（uv 可自动安装）、Node 22+、pnpm 11、PostgreSQL 16。
@@ -142,10 +235,12 @@ pnpm typecheck && pnpm lint     # tsc --noEmit 无输出；next lint 0 warnings/
 在 `backend/.env` 配置 OpenAI 兼容网关后（`LLM_BASE_URL/LLM_API_KEY/LLM_MODEL`，可选 `JUDGE_*`）：
 
 ```bash
-bash scripts/run_local_site.sh
+BIDCOPILOT_DEMO_PASSWORD='<本地演示口令>' bash scripts/run_local_site.sh
 ```
 
-脚本会拉起单个容器 `bidcopilot-app`（应用 + PostgreSQL + Redis + MinIO + nginx），打开 `http://127.0.0.1:18080/login`。本地测试与将来部署使用**同一个容器、同一个镜像、同一个容器名**，端口差异只在 compose 的端口映射。测试直连容器暴露的 `127.0.0.1:55432`。
+脚本会拉起单个容器 `bidcopilot-app`（应用 + PostgreSQL + Redis + MinIO + nginx），打开 `http://127.0.0.1:18080/login`。本地测试与将来部署使用**同一个容器、同一个镜像、同一个容器名**，端口差异只在 compose 的端口映射。测试直连容器暴露的 `127.0.0.1:25432`（PostgreSQL）与 `127.0.0.1:6390`（Redis）；`55432` 落在 Windows Hyper-V 保留端口段、`6380` 曾被 Docker 端口分配器泄漏占用，故改用上述端口（compose 内有注释说明）。
+
+本地冒烟默认灌入演示租户（账号 `demo@example.com`，口令取上面的 `BIDCOPILOT_DEMO_PASSWORD`）。仓库不内置默认演示口令：缺口令时脚本会直接报错退出，容器 `entrypoint.sh` 同样拒绝启动。不需要演示数据时用 `BIDCOPILOT_SEED_DEMO=0 bash scripts/run_local_site.sh`。
 
 ### 库级开发（非站点运行）
 
@@ -169,7 +264,7 @@ pnpm install
 BACKEND_URL=http://127.0.0.1:8000 pnpm dev
 ```
 
-打开 `http://localhost:3000/login`，用平台管理员登录后创建客户租户与企业管理员；客户管理员登录后可同步机会、查看详情、维护资产。
+打开 `http://localhost:3000/login`，用平台管理员登录后创建租户与企业管理员；企业管理员登录后可同步机会、查看详情、维护资产。
 
 可选：播种可重复执行的演示租户（企业资产、2 个项目、约束集/评分项/章节、复盘结果）：
 
@@ -180,9 +275,10 @@ uv run python -m app.cli seed-demo --slug demo --email demo@example.com
 
 登录后可在“投标项目”查看中标/失标与赢率，在“数据运营”查看调用台账。若邮箱已属于其他租户，更换 `--email` 即可。
 
-部署后可用冒烟脚本验证登录、审批、合规、导出与指标：
+部署后可用冒烟脚本验证登录、审批、合规、导出与指标（演示口令经 `BIDCOPILOT_DEMO_PASSWORD` 环境变量或 `--password` 传入，不再内置默认值）：
 
 ```bash
+export BIDCOPILOT_DEMO_PASSWORD='<本地演示口令>'
 cd backend
 uv run python ../scripts/smoke_demo.py --base-url http://127.0.0.1:8000
 # 真实生成 + judge 评标（会产生模型调用费用）
@@ -199,15 +295,16 @@ bash scripts/verify_restore.sh
 ## 验收命令
 
 ```bash
-# 后端单元
+# 后端单元（Windows 宿主同上方说明：基础 Python + PYTHONPATH）
 cd backend
-uv run pytest tests/unit -q
+PYTHONPATH=".venv/Lib/site-packages" <基础Python解释器绝对路径> -m pytest tests/unit -q
 
-# 后端集成（需要真实 PostgreSQL）
-export DATABASE_URL='postgresql+asyncpg://bidcopilot:bidcopilot@localhost:5432/bidcopilot_test'
+# 后端集成（需要真实 PostgreSQL；Windows 宿主用基础 Python 跑，backend/.venv 的 uv trampoline 启动器已损坏）
+export DATABASE_URL='postgresql+asyncpg://bidcopilot:bidcopilot@localhost:25432/bidcopilot_test'
+export REDIS_URL='redis://127.0.0.1:6390/0'
 export JWT_SECRET_KEY='test-secret-key-at-least-32-characters-long'
-uv run alembic upgrade head
-uv run pytest -m integration -q
+PYTHONPATH=".venv/Lib/site-packages" <基础Python解释器绝对路径> -m alembic upgrade head
+PYTHONPATH=".venv/Lib/site-packages" <基础Python解释器绝对路径> -m pytest -m integration -q
 
 # 真实 KeepRisk 冒烟（会产生计费调用）
 GATEWAY_LIVE=1 ENABLE_MOCK_MODE=false \
@@ -220,12 +317,10 @@ uv run pytest tests/unit/test_gold_corpus.py -q
 # 客户语料：目录含 labels.json 与标书文件，格式见 scripts/eval_parser.py 的 docstring
 uv run python ../scripts/eval_parser.py --corpus <客户语料目录> --min-f1 0.8
 
-# 前端
-cd ../frontend
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
+# 前端（宿主 esbuild 被系统策略拒绝，Vitest 必须在前端构建阶段镜像内跑）
+docker build -f deploy/allin1/Dockerfile --target frontend -t bidcopilot-frontend-test:local .
+docker run --rm bidcopilot-frontend-test:local sh -lc 'cd /app && pnpm test'
+# 宿主可跑类型检查：cd frontend && pnpm exec tsc --noEmit
 
 # 架构与许可证
 cd ..
@@ -256,7 +351,8 @@ python scripts/check_secrets.py
 
 ```bash
 cp deploy/.env.example deploy/.env   # 填入 JWT/KeepRisk/LLM/MinIO 凭据
-bash scripts/run_local_site.sh       # 唯一启动入口；http://127.0.0.1:18080
+# 本地冒烟需显式提供演示口令（不内置默认值；生产形态 BIDCOPILOT_SEED_DEMO=0 可不设）
+BIDCOPILOT_DEMO_PASSWORD='<本地演示口令>' bash scripts/run_local_site.sh   # 唯一启动入口；http://127.0.0.1:18080
 ```
 
 容器 `bidcopilot-app` 内含应用、PostgreSQL、Redis、MinIO 与 nginx，暴露
@@ -276,8 +372,9 @@ BIDCOPILOT_WEB_PORT=18081 docker compose -f deploy/external/docker-compose.yml u
 应用容器不启动镜像内置服务（`BIDCOPILOT_EXTERNAL_SERVICES=true`），经环境变量连接
 独立的 PostgreSQL / Redis / MinIO；把 compose 中的三个数据服务换成托管实例，即为
 SaaS 的数据层用法。外置形态默认不灌演示种子数据（避免生产环境留下默认演示账号），
-确需演示数据时设 `BIDCOPILOT_SEED_DEMO=1`。口令用 `BIDCOPILOT_DB_PASSWORD` 等环境
-变量覆盖，不要提交明文。
+确需演示数据时设 `BIDCOPILOT_SEED_DEMO=1` 并显式提供 `BIDCOPILOT_DEMO_PASSWORD`
+（缺失时容器拒绝启动，不再内置默认口令）。数据库 / MinIO 口令用
+`BIDCOPILOT_DB_PASSWORD` / `BIDCOPILOT_MINIO_PASSWORD` 等环境变量覆盖，不要提交明文。
 
 ### Helm（客户 K8s）
 
@@ -331,6 +428,14 @@ bash scripts/verify_offline_bundle.sh <bundle-dir>
   <img src="docs/images/wechat-friend-qr.png" width="240" alt="微信好友码：AI仙人掌#李正" />
 </p>
 
+## 企业数据 MCP（工商 / 股权 / 尽调）
+
+- 用途：采购人、投标主体/联合体/分包、合同相对方的工商、信用、股权关联与尽调；入口按对象放置（资产=工商自检，商机=采购人，项目=投标主体，合同=相对方）。
+- 开关与凭据：`KEEPRISK_MCP_ENABLED`、`KEEPRISK_MCP_URL`、`KEEPRISK_MCP_TOKEN`（只放环境变量/Secret，不入库）；未配置时接口返回 `unavailable`，不伪造数据。
+- 计费：批量核验 1 次/批；企业对比约 10 次/家；尽调按 section 计费；缓存命中 `billing_units=0`；成本写 `cost_ledger`，查询写审计链。
+- 接口：`/api/v1/company-intel/{resolve,profile,credit,relations,due-diligence,batch,compare}`；详见接入说明。
+- 合规边界：只输出“关联关系/风险提示 + 依据”，不做串标定性、不提供规避建议；`red/unknown` 原样展示并提示人工尽调。
+
 ## 安全
 
 - 不提交 `.env`、AppCode、API Key；凭据通过环境变量或密钥管理注入。
@@ -346,7 +451,7 @@ bash scripts/verify_offline_bundle.sh <bundle-dir>
 
 ## 政策对齐
 
-对标发改法规〔2026〕195 号《关于加快招标投标领域人工智能推广应用的实施意见》（八部门，2026-02）：本项目覆盖「招标文件检测」场景（解析+约束集+24 条合规预检），AI 评标模拟提供投标侧预演；私有化单容器、审计哈希链与人工确认流响应「规范部署实施」导向。围串标痕迹方向的供应商侧能力（暗标元数据自检、标书查重）已内建。
+对标发改法规〔2026〕195 号《关于加快招标投标领域人工智能推广应用的实施意见》（八部门，2026-02）：本项目覆盖「招标文件检测」场景（解析+约束集+29 条合规预检），AI 评标模拟提供投标侧预演；私有化单容器、审计哈希链与人工确认流响应「规范部署实施」导向。围串标痕迹方向的供应商侧能力（暗标元数据自检、标书查重）已内建。
 
 ## 鸣谢
 
@@ -365,6 +470,16 @@ bash scripts/verify_offline_bundle.sh <bundle-dir>
 ### 依赖署名
 
 - **MinerU**（文档解析 OCR，MinerU Open Source License = Apache-2.0 + 附加条款）：依其附加条款第 2 条，基于 MinerU 向第三方提供在线服务须在界面或公开文档中显著标注——本仓库及基于本项目的 SaaS 服务在此声明使用 MinerU。附加条款第 1 条的单独商业许可门槛（MAU 超 1 亿或月收入超 2000 万美元，合并口径）与本项目规模无关。
+
+## 验收快照（2026-11-17 报价单闭环与文档一致性修正）
+
+本轮在运行站点（`http://127.0.0.1:18080`，镜像 `bidcopilot:single` = `97c5be469472`，迁移 head `0077_price_quotes`，业务表 79 张）完成交付与验收：
+
+- **报价单闭环**：成本参数配置卡 → 报价策略三档（均衡 75,675.68 元）→ 档位价/显式总价生成报价单 → 明细行编辑与合计校验（不符即阻断）→ 导出正式报价单 DOCX（含人民币大写）；不可变快照 + 审计留痕，跨租户 404。
+- **配置能力**：`GET/PUT /api/v1/system/pricing-settings`（三率、人力岗位日单价、三档目标净利率），权限 `tenant:read` / `tenant:settings:manage`。
+- **审计链修复**：`repair-audit-chain` CLI（`--dry-run` 优先）；演示租户历史断链（seq 3374 起重算 1156 行）修复后 `/audit/verify` = `valid: true`，修复事件 `audit.chain.repair` 上链留痕。
+- **测试**：后端 `986 passed / 2 skipped`（单元+集成，`localhost:25432/bidcopilot_test` + Redis `6390`）；前端 `20 文件 / 69 用例`（`docker build --target frontend` 镜像内）；`tsc --noEmit` 0；`smoke_demo.py` 对最终镜像 **SMOKE OK**；浏览器真实登录态走通「配置卡→策略→报价→明细校验→导出」全链路。
+- **文档一致性**：README/product-guide/api-reference/database-reference/detailed-design/dev-handbook/ops-runbook/delivery-report 增补、architecture 模型与 evidence 锚点刷新、`help-content.ts` 七处口径修正（详见 `docs/aegis/acceptance/2026-11-17/README.md`，本地留存）。
 
 ## 支持项目
 

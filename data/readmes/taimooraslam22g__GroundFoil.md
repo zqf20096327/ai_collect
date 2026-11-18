@@ -8,7 +8,7 @@
 Simulations of Airfoil Flows"** (*AIAA Journal*, 2020), which we first
 reproduced on current software: OpenFOAM v2606, gmsh 4 and Docker on Windows
 (about 3% test error, as in the paper). The ground-effect simulations are
-checked against high-resolution LES (skin friction within 6–7%), wind-tunnel
+checked against high-resolution LES (skin friction within 7–8%), wind-tunnel
 tests of an F1 wing (downforce gain near the ground within 4%) and finer meshes
 (0.04–3%).
 Trained on 3,096 of these simulations, the U-Net predicts the flow around 30
@@ -19,6 +19,9 @@ distance to the wing's surface as an extra input (9.9% with neither). On two
 wings it has never seen, it predicts the downforce at every ride height
 within 4% (the NACA 4412) and within 1.1% (the Tyrrell 026, the F1 wing of
 the wind-tunnel tests), and puts its peak at the same ride height as the CFD.
+For the downforce alone, smaller models that skip the flow do two to three
+times better, and one that predicts the pressure along the wing's surface
+also gives the drag, the moment and where the flow separates.
 
 - Thuerey et al.'s paper: https://arxiv.org/abs/1810.08217
 - Their code: https://github.com/thunil/Deep-Flow-Prediction (Apache-2.0)
@@ -27,7 +30,7 @@ Words used here are explained in the [glossary](docs/glossary.md).
 
 ## Workflow
 
-The study in thirteen steps, each with its own page:
+The study in fifteen steps, each with its own page:
 
 1. **[Reproduction](docs/01-reproduction.md):** we first ran the original
    free-air study on current software, to start from a working pipeline and a
@@ -38,7 +41,7 @@ The study in thirteen steps, each with its own page:
    high-resolution LES) and a faster solver setting.
 3. **[Mesh study](docs/03-mesh-study.md):** three rounds, ending with a mesh on
    which the downforce is converged (GCI 0.04%) and skin friction matches the
-   LES within 6–7%, and with a convergence test that every run must pass.
+   LES within 7–8%, and with a convergence test that every run must pass.
 4. **[Wind-tunnel validation](docs/04-wind-tunnel.md):** the Tyrrell 026 F1
    front wing at nine ride heights. The downforce it gains near the ground
    matches the tunnel within 4%.
@@ -70,11 +73,22 @@ The study in thirteen steps, each with its own page:
     Tyrrell 026 the downforce is within 1.1% at every ride height. A
     distance computed from the mask does not help: the gain comes from the
     shape finer than the grid.
+14. **[The downforce alone](docs/14-downforce-model.md):** a small network
+    that predicts only the downforce, from the shape, the ride height, the
+    angle and the speed, does better than the U-Net: 1.6% against 3.9% on the
+    test airfoils (1.5% against 4.3% compared with OpenFOAM's force). On the
+    F1 wing the two tie (1.2%). The U-Net's strength is the flow itself.
+15. **[The pressure along the wing](docs/15-surface-model.md):** a small
+    network that predicts the pressure and the friction along the wing's
+    surface gets the downforce as close as step 14's (1.3%), and also the
+    drag (2–3% on the two wings), the moment and where the flow separates.
+    On the F1 wing its suction peak is too low, as the U-Net's was.
 
 **Next:** four more batches of 1000 runs (about 6,200 training samples),
-then the final U-Net with the distance input, the learning curve and both
-sweeps again; figures of predicted and simulated flow fields. All commands
-are in [How to run it](docs/howto.md).
+then the final versions of the three models with all the data, the learning
+curves (with a Gaussian process for the downforce) and both sweeps again;
+figures of predicted and simulated flow fields. All commands are in
+[How to run it](docs/howto.md).
 
 ## What the network learns
 
@@ -90,13 +104,15 @@ the simulated pressure and velocity.*
 | | Result | Details |
 |---|---|---|
 | Reproduction, free air | 2.96% test error with the paper's training length (paper: 2.6%); pressure and velocity errors as in the paper's best model | [Step 1](docs/01-reproduction.md) |
-| CFD against high-resolution LES | NACA 4412 in free air: skin friction within 6–7% on average; surface pressure also close (mean \|ΔCp\| 0.009–0.014) | [Step 3](docs/03-mesh-study.md) |
+| CFD against high-resolution LES | NACA 4412 in free air, with the settings of the dataset: skin friction within 7.6% (suction side) and 7.3% (pressure side) on average; surface pressure also close (mean \|ΔCp\| 0.009–0.014) | [Step 3](docs/03-mesh-study.md) |
 | CFD against the wind tunnel | Tyrrell 026 F1 wing: the downforce gained near the ground within 4% | [Step 4](docs/04-wind-tunnel.md) |
 | Mesh study | numerical uncertainty of the downforce 0.04–3%, largest closest to the ground | [Steps 3 and 4](docs/03-mesh-study.md) |
 | Airfoil shapes | 1,462 of the 1,497 UIUC files smoothed: pressure wiggles above 0.1 in 453 files before, in none after | [Step 5](docs/05-airfoil-shapes.md) |
 | Where steady RANS converges | Cl becomes steady in 86% of the dataset's runs; close to the ground the flow separates, and part of the range has no steady solution | [Step 6](docs/06-parameter-scan.md) |
 | U-Net in ground effect | 0.9% error on 30 unseen airfoils with 3,096 training samples and the distance input (1.4% without it; the free-air model as it is: 20%) | [Steps 8, 10 and 13](docs/13-distance-input.md) |
 | Downforce from the U-Net | 3.9% error with a loss weighted next to the wing and the distance input (6.2% with the weighting alone; plain loss: 9.9%) | [Steps 9, 10 and 13](docs/13-distance-input.md) |
+| Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.6% error on the 30 test airfoils (1.5% against OpenFOAM's force, where the U-Net is 4.3%); 0.13 ms per prediction | [Step 14](docs/14-downforce-model.md) |
+| Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.3%, drag 8.7% on the test airfoils (2–3% on the two wings), moment 2.5%, the separated part of the surface within 0.3% of it on average | [Step 15](docs/15-surface-model.md) |
 | Unseen wing: NACA 4412 | at 11 ride heights: downforce within 5% (within 4% with the distance input), peak at the same height as the CFD | [Steps 11 and 13](docs/11-naca4412-sweep.md) |
 | Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 1.1% with the distance input (10–19% low without it); the suction peak still too weak | [Steps 12 and 13](docs/13-distance-input.md) |
 
@@ -126,7 +142,7 @@ checks, the dataset and the training) is in [How to run it](docs/howto.md).
 
 ```
 README.md                   this page: summary, the steps, results, quick start
-docs/                       one page per step (01-reproduction.md to 13-distance-input.md), howto.md, glossary.md, references.md
+docs/                       one page per step (01-reproduction.md to 15-surface-model.md), howto.md, glossary.md, references.md
 Dockerfile                  OpenFOAM v2606 + gmsh + Python environment
 patches/openfoam-v2606.patch  fixes to the original code for OpenFOAM v2606
 scripts/view_sample.py      plots all six channels of a training sample
@@ -157,6 +173,7 @@ ground_effect/clip_test.sh        what the nuTilda clipping changes, and whether
 ground_effect/clip_test_report.py tables and figure of that test
 ground_effect/clip_cells.py       finds the cells where OpenFOAM clipped nuTilda in a finished run
 ground_effect/dataset.sh          makes the dataset with several runs at a time (inside the container)
+ground_effect/make_dataset_zip.py zips the samples for a Kaggle dataset, after checking them against the lists of runs
 ground_effect/unet.py             the U-Net of the original code (copied from DfpNet.py, unchanged)
 ground_effect/unet_data.py        loads and normalises the ground-effect samples (optionally with the signed distance); the original error measure and the downforce from the pressure
 ground_effect/train_unet.py       trains one U-Net (from random weights or from the free-air model) and tests it
@@ -165,6 +182,14 @@ ground_effect/loss_study.py       compares training losses and inputs for the do
 ground_effect/sweep_naca4412.sh   ride-height sweep of the NACA 4412: 12 heights and free air (inside the container)
 ground_effect/sweep_tyrrell026.sh ride-height sweep of the Tyrrell 026 at the tunnel's heights and 10 m/s (inside the container)
 ground_effect/sweep_report.py     table and figure of a sweep, with the U-Net's predictions
+ground_effect/baseline_cl.py      comparison model: a small network that predicts only the downforce, from the shape, ride height, angle and speed
+ground_effect/predict.py          the trained models for any airfoil, ride height, angle and speed, without a simulation: the U-Net's flow, the downforce network's Cl, the surface model's pressure, friction and forces
+ground_effect/field_figure.py     simulated and predicted flow fields side by side, with their difference
+ground_effect/downforce_report.py figure and table of the U-Net against the comparison model (step 14)
+ground_effect/cl_learning_curve.py  downforce error against the amount of data: small network, Gaussian process and U-Net
+ground_effect/surface_data.py     the pressure and friction along the wing at fixed points, on the mesh's own faces; Cl, Cd, Cm from them
+ground_effect/surface_model.py    a small network for the pressure and the friction along the wing (step 15)
+ground_effect/surface_report.py   pressure and friction along the wing: CFD against the surface model
 results/                    figures and reproduction results
 Deep-Flow-Prediction/       the original code, which you clone here (see Quick start); not part of this repo
 ```

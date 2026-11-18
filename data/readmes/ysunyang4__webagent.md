@@ -1,127 +1,60 @@
-# WebAgent (Web AI MCP Bridge)
+# WebAgent — Browser Extension for Web AI + Local MCP
 
-**当前版本：1.3.3**
+**WebAgent connects compatible web AI chat pages to local MCP tools through [Nexus](https://github.com/ysunyang4/Nexus).** It adds an on-page control panel and forwards supported tool-call blocks to a locally running Nexus service. Tool results can then be inserted back into the chat.
 
-WebAgent 是一个专为网页端大模型（DeepSeek、Gemini、智谱 BigModel/清言/Z.ai、Google AI Studio、ChatGPT、Kimi、通义千问、豆包、Duck.ai、Dola 等）打造的浏览器扩展，提供原生浮动交互面板与本地 MCP 工具调度桥接。
+**Current extension version: 1.3.3** · [简体中文](README.zh-CN.md) · [Installation guide](USAGE.md) · [Changelog](CHANGELOG.md)
 
-本项目由 [LINUX DO](https://linux.do) 社区认可。
+> WebAgent is a browser extension, **not a standalone MCP server**. Install and run Nexus first. WebAgent uses your existing web AI session; a separate model API key is not required. The AI website may still require its normal account or subscription.
 
-## 🆕 1.3.3 更新说明（当前版本）
+## Supported web AI interfaces
 
-- 版本号升级为 **1.3.3**。
-- 已加入 **Google AI Studio**（`aistudio.google.com`，含 `prompts/new_chat` 新对话页）网页端适配：专属主题、输入框、Run/Stop 按钮识别与模型回复代码块解析。
-- 已加入 **Z.ai**（`zchat.z.ai`、`chat.z.ai`）网页端适配：专属主题、输入框、发送/停止按钮识别与回复解析。
+WebAgent currently includes adapters for ChatGPT, Gemini, DeepSeek, Google AI Studio, Kimi, Qwen, Doubao, Duck.ai, Dola, Z.ai and several Zhipu chat interfaces. Compatibility is dependent on those websites' changing interfaces and may require updates.
 
-## 🆕 1.3.2 更新说明
+## What it does
 
-- 新增 **智谱开放平台体验中心（`bigmodel.cn` GLM-5.3）、智谱清言（`chatglm.cn`）与 Z.ai（`z.ai/chat`）** 网页端深度适配及专属主题。
-- 新增 **Google AI Studio（`aistudio.google.com`）** 原生适配，覆盖 Chat Prompt 与 Freeform 运行、中断与代码块解析。
-- 版本规范化进入 **1.3.2**，全套测试扩充至 **140 项** 并保持 100% 通过。
+- **Local tool bridge:** forwards model-proposed MCP calls to a locally configured Nexus endpoint.
+- **User-controlled execution:** provides settings for execution and tool-result feedback. Check the active settings before use.
+- **Floating panel:** manage workspace, connection options and common tool actions from the chat page.
+- **Result feedback:** puts tool results into the AI chat flow, subject to the website's normal send behavior.
+- **Local permissions:** the underlying Nexus project configuration governs allowed file and command operations.
+- **Error handling:** includes detection and safety pauses for repeated or failed tool calls.
 
-## 1.3.12 更新说明
+## Quick start
 
-- 新增独立的 **熔断保护** 开关，浏览器扩展弹窗和页面面板均可设置，默认开启，保存用户选择。
-- 连续工具调用默认上限由 **4 轮提高到 20 轮**；成功和失败都按实际调用计数，拒绝或取消不计数。
-- 关闭熔断后，不再按轮次、重复结果或连续失败暂停；不会自动开启执行/发送，也不会绕过 Nexus 项目权限。
-- 重复保护同时核对工具、参数和返回结果，返回结果在变化的轮询/滚动不再仅因参数相同而暂停。
-- 连续失败 5 次时真正暂停调度，并保留第 5 次错误反馈；新任务或用户切换熔断开关开始新的预算。
-- 本版新增 18 项熔断回归测试，总计 **136 项测试**；升级后需保存草稿、重新加载扩展并刷新 AI 网页。
+1. Download and run [Nexus](https://github.com/ysunyang4/Nexus), authorize a local project, and note its actual project ID and permitted paths.
+2. Download this repository. In Chrome, Edge, or another compatible Chromium browser, open `chrome://extensions/` (Edge: `edge://extensions/`).
+3. Enable **Developer mode**, choose **Load unpacked**, and select the folder that contains `manifest.json`.
+4. Open a supported web AI chat page and look for the floating WebAgent control panel.
+5. Open WebAgent settings, check the local Nexus service address (typically `http://127.0.0.1:18080`), configure your workspace, and verify the connection.
+6. Review the tool-execution options, then insert the collaboration prompt into your chat manually. Start with a read-only project-information request.
 
-## 1.3.11 更新说明
+See [USAGE.md](USAGE.md) for details. After replacing extension files, reload the extension and refresh each open AI chat tab. Save unfinished drafts first.
 
-本次更新新增 **Gemini 网页端适配**，并修复工具结果不自动发送、长代码 MCP 调用无法识别和项目权限提示不准确的问题。
+## How the components fit together
 
-- **Gemini 可用**：适配 `gemini.google.com` 的多行输入、发送按钮、最新回复“重做”和新会话首条回复。
-- **开关由用户选择**：自动执行工具、自动发送工具结果独立设置，首次配置均默认关闭，更新保留已有选择。
-- **结果直填发送栏**：使用轻量角落确认，保留已有草稿；不再弹出大段结果窗口。
-- **长代码完整解析**：支持完整长 JSON，定向修复字符串转义问题；格式错误或截断的调用不会执行。
-- **扩展内管理权限**：查询并区分文件权限与命令权限，由用户在扩展弹窗确认修改，AI 不能自行提升权限。
-- **Windows/Linux 测试**：1.3.11 包含 118 项测试，CI 覆盖 Node 22/24，并修复 Windows CRLF 换行兼容问题。
-
-首次使用请看 **[详细使用指南](USAGE.md)**；版本变更见 **[更新日志](CHANGELOG.md)**。
-
-> 更新扩展后，请先保存草稿，再重新加载扩展并刷新 AI 网页。只替换文件或只刷新扩展不会更新已经打开的网页脚本。
-
-## 📦 安装使用指南
-
-1. 下载或克隆本项目到本地；
-2. 在 Chromium 内核浏览器（Chrome、Edge、Brave 等）中打开扩展程序管理页面：`chrome://extensions/`（Edge 为 `edge://extensions/`）；
-3. 开启右上角「开发者模式」；
-4. 点击左上角「加载已解压的扩展程序」，选择本项目文件夹；
-5. 打开任意支持的网页大模型对话页面（如智谱、AI Studio、DeepSeek、Gemini 等），页面顶部即可看到 WebAgent 浮动控制卡片；
-6. 在扩展弹窗填写本机 Nexus MCP 地址、已注册的项目 ID 和工作目录，然后检测连接。项目 ID 与工作目录默认留空，不预设任何用户项目。
-7. 更新扩展后需要重新加载扩展并刷新 AI 网页；先保存未提交草稿。
-
-## 🌟 核心特性
-
-- **多模型原生适配**：DeepSeek、Gemini、智谱 (BigModel / 清言 / Z.ai)、Google AI Studio、ChatGPT、Kimi、通义千问 (Qwen)、豆包 (Doubao)、Duck.ai、Dola 等。
-- **本地 MCP 桥接**：支持标准 MCP 工具调用（文件读写、命令行运行、网页快照等）。
-- **极简交互设计**：自适应明暗主题、可自由拖拽位置与收起抽屉。
-- **用户可控自动化**：自动执行工具与自动发送结果是独立开关，记住用户选择；结果直接追加到发送栏，不覆盖已有草稿。
-- **可靠长代码调用**：保留完整文件内容，定向修复 JSON 字符串中的未转义控制字符；截断调用明确提示未执行，不猜补源码。
-- **本地权限设置**：项目文件与命令权限仅可从扩展弹窗确认修改，网页消息不能提升权限。
-- **隐私边界**：MCP 请求仅连接获准的本地 loopback 地址，不包含第三方遥测。工具结果回填到第三方 AI 网页后，网页可以读取它；请勿读取或回填凭证、密钥等敏感内容。
-
-## 🔧 配置与行为（1.3.2）
-
-默认服务基址为 `http://127.0.0.1:8787`，请求使用 `/mcp`；也支持配置允许的本机 18080 / 21888 端口。先运行 Nexus 并注册项目，在弹窗填写实际项目 ID，再检测连接。网页端账号由用户自行登录，不需要 DeepSeek / Gemini API Key；Gemini 指 `gemini.google.com`，不包括 Google AI Studio。
-
-### 自动执行与自动发送
-
-| 自动执行 | 自动发送 | 行为 |
-| --- | --- | --- |
-| 关闭 | 关闭 | 逐次轻量角落确认，结果直填，手动发送 |
-| 开启 | 关闭 | 自动调用已提议工具，结果直填，手动发送 |
-| 关闭 | 开启 | 逐次确认工具，结果随后自动发送 |
-| 开启 | 开启 | 自动调用工具并自动发送工具反馈 |
-
-- 两个开关在未配置时均默认关闭；已保存的选择不会因为更新被重置。页面设置面板与扩展弹窗都能修改并持久保存。
-- 原草稿保留并追加工具结果。**开启自动发送后，原草稿也会一起发送**；首次开启会提示这一点。
-- 延迟期间关闭开关、修改草稿、手动提交或导航会取消待发送结果。按钮未就绪时有限等待；不使用 Enter 兜底，不重复发送不确定是否已提交的消息。
-- 自动发送只处理工具反馈，不替用户自动发送协作协议。自动限流重试、自动切新会话及自动补发续写不启用。
-- **熔断保护**默认开启，连续工具调用默认上限为 **20 轮**；关闭后取消轮次、重复结果和连续失败这三类自动暂停。关闭时会提示持续调用的费用/副作用风险，不改变其他开关或项目权限。
-- 只有真正的用户新任务或用户切换熔断开关会重置计数，草稿回填和自动反馈不会重置；关闭不重放之前被拦截的调用，重新开启从新预算计数。
-- 自动执行不会赋予 Nexus 项目权限，Nexus 自身的校验与审批策略保持生效。用户应先理解命令可能产生的副作用。
-
-### 项目权限与令牌
-
-扩展弹窗可查询实时 `accessMode`（文件读写）和 `executionMode`（命令执行），不能从命令关闭推断文件只读。权限修改需要独立的 **Nexus 管理令牌**，在本机扩展密码框填写或导入本机令牌文件；它不是 Bridge Token，也不是网页 AI API Key。
-
-- 仅扩展自己的 action popup 可调用管理端点；普通网页、内容脚本消息及扩展普通标签页无权修改权限。
-- 管理令牌保存在扩展私有存储，不进入网页配置、协作提示词或剪贴板。Bridge Token 仅用于配置的 MCP 源，不发送给其他本地服务。
-- 文件改成只读会关闭命令；开启项目命令会要求可读写。每次更改需用户确认，并在更改后读取真实状态。
-- “项目代码执行”不是操作系统级沙箱，命令仍可能影响项目外资源；不要将这个开关视为 OS 隔离。
-
-### 提示词与 Gemini
-
-点击“复制增强协作协议”（或页面面板填入协议），自行发送给 AI。协议约束每次只输出一个 `nexus` 代码块、一个完整 JSON 对象，工具名与参数类型遵守真实 schema。长源码必须完整，字符串里的换行、引号和反斜杠按 JSON 规则转义；不接受半截调用、源码省略号或 JSON 注释。
-
-Gemini 适配支持 Quill 多行输入的逻辑段落回读、最新回复的“重做”，以及新建会话分配 ID 时保留待响应状态。首次回复迁移须与实际提交的第一条用户消息匹配；刷新、切换历史、上一/下一版本不会重放旧工具调用。
-
-扩展弹窗显示页面版本、MCP 连接与最近解析/自动发送状态。输入框重建、草稿变化、AI 仍在生成或发送按钮未就绪会显示具体原因，不收集草稿正文或令牌。
-
-## 🧪 测试
-
-当前包含 136 项测试；CI 在 Windows/Linux × Node 22/24 上运行。
-
-需要 Node.js 22+，无第三方测试依赖：
-
-```sh
-npm test
+```text
+ChatGPT / Gemini / DeepSeek / other web AI chat
+                  |
+                  | WebAgent browser extension
+                  v
+        Local Nexus MCP service
+                  |
+                  v
+   Authorized workspace, Git, terminal and other tools
 ```
 
-测试覆盖 MCP initialize/session/SSE/分页/超时、只允许本地端点、权限来源校验与令牌隔离、独立自动化开关、草稿保留与取消、防历史重放、新会话路由迁移和超长 JSON。普通测试完全使用本地 fixtures/mock，不连接真实账号或执行用户工具。
+## Security and privacy
 
-真实 Gemini 对话已另外验证项目查询和长文件创建的“模型输出 → MCP 执行 → 反馈自动发送 → 模型确认”闭环；46,299 字符、48,919 UTF-8 字节的文件与模型 `content` 逐字符一致。个人对话链接、截图、项目配置与实测文件不随代码发布。
+- Tool calls can modify local data. Confirm the authorized workspace and the active permissions in Nexus before executing commands.
+- Tool results inserted into a third-party AI webpage **can be read by that website**. Do not send secrets, tokens, passwords, or private files through model feedback.
+- Do not treat project-level permissions as an operating-system security boundary. Review high-impact commands, and keep backups.
+- WebAgent's local connection configuration does not mean AI messages remain private or offline.
+- This repository's documentation is not a security guarantee or a substitute for testing your own configuration.
 
-## 📄 开源许可证
+## License and contributions
 
-本项目的原创源代码依据 **[GNU General Public License v3.0 only（GPL-3.0-only）](LICENSE)** 发布。
+WebAgent is released under [GPL-3.0-only](LICENSE). Personal and commercial use are permitted under the license terms. Contributions, issue reports, compatibility fixes, and clear reproduction steps are welcome.
 
-- 允许个人和企业使用、学习、修改及商业使用，也允许在遵守 GPL-3.0 条件的前提下分发原版或修改版。
-- 分发受 GPL 约束的程序时，应按许可证要求保留版权及许可声明，并提供对应源代码；修改版的分发还须遵守相应的 GPL 要求。
-- 仅在自己设备上使用或私下修改，通常不需要对公众发布修改后的源码。
-- 欢迎通过 Issue 和 Pull Request 参与协作。贡献者通常保留其原创贡献的版权，并按照适用许可证授权贡献。
-- 第三方代码、字体、图标或其他素材（如有）仍受各自合法许可证约束，不因本项目添加 GPL 而自动变成 GPL 作品。
+Nexus is a separate project licensed under [AGPL-3.0-only](https://github.com/ysunyang4/Nexus/blob/main/LICENSE).
 
-**注意：** GPL-3.0 允许符合许可条件的商业使用；它不是“禁止商用”许可证。
+Community: [LINUX DO](https://linux.do). For the original Chinese documentation, see [README.zh-CN.md](README.zh-CN.md).

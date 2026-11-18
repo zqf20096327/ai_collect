@@ -29,6 +29,7 @@ NEXT: stone build
 $ stone build
 Size: 120.0 x 120.0 x 3.0 mm
 PASS watertight: closed surface
+PASS slicer: no non-manifold edges or zero-area faces
 PASS bodies: 1 bodies (max 1)
 PASS first_layer: 6344.7 mm2 on the bed (need 200.0 mm2)
 PASS min_wall: thinnest wall 1.98 mm (need 0.8 mm)
@@ -40,7 +41,9 @@ NEXT: none, the part is ready
 
 That is shortened: each command prints a few more lines, and the build prints every check.
 
-The build runs OpenSCAD with the Manifold backend and then checks the mesh: watertight, one piece, flat on the bed, a real first layer, walls thick enough to print, no overhang past 45 degrees and the size the recipe promised. When a check fails, stone names the one setting to change and prints the command that changes it.
+The build runs OpenSCAD with the Manifold backend and then checks the STL it ships, read the way a slicer reads it: watertight, no non-manifold edges or zero-area faces (the mesh is rebuilt through manifold3d at float32 first), one piece, flat on the bed, a real first layer, walls thick enough to print, no overhang past 45 degrees and the size the recipe promised. When a check fails, stone names the one setting to change and prints the command that changes it.
+
+Every passing build also writes `build/views.png`: the part from eight sides, from straight above and from straight below. Look at every panel, because a phone holder or a bracket that is right from the front and wrong on one side still fails.
 
 ## Tiers
 
@@ -62,9 +65,58 @@ stone new "A keychain of my dog" --image dog.png
 
 stone traces the outline for keychains, cookie cutters and signs, and makes a height map for lithophanes and reliefs. The model never has to look at the picture to use it.
 
+If the photo has a ruler, a bank card or a US quarter next to the thing, `stone measure photo.jpg` works out its real size in millimeters and the recipe takes that size, and the traced outline leaves the ruler out.
+
+## Figures
+
+```
+stone new 'A mini figure of Jensen Huang, 90 mm tall, with "JENSEN" on the base'
+```
+
+I wanted the small model to make something cooler than a bin, so smoothstone can now make a mini figure of a person, a pet or a thing. When there is no photo, stone build tells the model to run `stone find "Jensen Huang"`, which downloads free licensed photos from Wikimedia Commons and writes who took each one and its license to credits.txt. You can give it your own photo with `stone image` instead. Then three small models run one at a time on the Mac: LFM3-VL-2B writes one sentence about how the person looks, FLUX.2 klein 4B turns the photo and that sentence into a clean render of a figure, and Hunyuan3D-2mini lifts the render into a mesh. stone closes the mesh, stands it on a plinth with the name on the front and runs the same print checks as every other part.
+
+| Step | Model | Peak memory | Time on my Mac |
+| --- | --- | --- | --- |
+| drive stone | LFM3-1.7B, 4 bit, on the CPU | 1.2 GB | |
+| describe | LFM3-VL-2B, 4 bit | 3.0 GB | under a minute |
+| style | FLUX.2 klein 4B, 4 bit | 7.8 GB | about 2 minutes |
+| lift | Hunyuan3D-2mini | 9.0 GB | about 4 minutes |
+
+The sentence from the vision model matters more than I expected, as without it the render got the hair color and the glasses wrong on every try. Run `tools/figure/setup.sh` once on an Apple silicon Mac with 16 GB of memory. Hunyuan3D-2mini is under the Tencent Hunyuan Community License, which does not cover the EU, the UK or South Korea, so read it before you use the meshes there. Photos keep their own licenses, so credit them from credits.txt when you post a print.
+
+## Colors
+
+A figure printed in one color looks unfinished, so after a passing build of a figure `stone colors` splits it into regions by the colors of its style picture, lists them with a part name each (base, shoes, pants, jacket or top, hands, face, hair, glasses, other, in the words of the request) and draws them numbered in `build/regions.png`. Then one line gives each part a filament, by name or number (`jacket=black rest=white`), and stone writes a 3MF next to the STL with every triangle painted. Orca, Bambu Studio and Creality Print open it with the paint, and PrusaSlicer reads Bambu paint too. stone cuts each color edge as a smooth curve through the triangles, then reads the file back before it says so: watertight, clean for a slicer, the same volume as the STL. The color_edges check compares each edge's length with the same edge smoothed over 2 mm and fails one that is over 8% longer, because that edge zigzags; then no file is written. A color edge within 3 mm of the hem, the neck or a wrist moves onto that line of the shape, and where the sculpt has a groove there (a collar, a cuff) the edge follows the groove instead of a flat cut, on the side a viewer sees least (measured by ray casting from 48 directions). The ledges check then fails any edge with up-facing faces of the wrong color seen beside it, like a white strip along the top of a collar. Edges in a groove are exempt from the wobble limit, since a sculpted collar is not straight. `build/boundaries.png` shows every color edge close up from eight sides, and the collar from level and from 30 degrees up. Put your printer's filament slots in `stone.toml` as `[filaments]` with `1 = "white"`, `2 = "black"` and so on, in the job folder or once in `~/.config/smoothstone/stone.toml`. When a figure's request names colors, the build's NEXT line is `stone colors` and its suggestion follows those colors; any other part prints in one color, and the build names the filament to load.
+
+```
+$ stone colors
+Color regions of figure.stl, largest first:
+1  white   48% of surface  base
+2  skin    17% of surface  face
+3  white   14% of surface  hair
+4  black   13% of surface  jacket
+5  black   5% of surface  pants
+6  black   2% of surface  glasses
+7  skin    1% of surface  hands
+8  skin    1% of surface  hands
+Filaments: 1 red, 2 white, 3 blue, 4 black (stone.toml [filaments])
+Give each part or region a color, by name or filament number (like jacket=black); rest= colors the others.
+NEXT: stone colors jacket=black pants=black glasses=black rest=white
+$ stone colors jacket=black rest=white
+filament 2 white: 87% of surface; filament 4 black: 13%
+Checked: the 3MF reads back watertight and clean for a slicer, 122138 faces, volume as the STL.
+PASS color_edges: every color boundary is a smooth curve (worst 1.027, max 1.08; wobble 0.01 mm, max 0.15; 3 edges run in a sculpted groove, which the wobble limit does not apply to)
+PASS ledges: no up-facing face of the wrong color is seen next to a part's edge; edges in the groove: neck up, wrist left down, wrist right down
+Warning: the colors alternate on 50 layers: about 52 filament changes and 34 g purge.
+3MF: stone-job/figure.3mf (Orca, Bambu Studio, Creality Print and PrusaSlicer open it with the paint)
+Views: stone-job/build/views.png (look at every panel before you call it done)
+In the slicer: filament 2 must be white, filament 4 must be black.
+NEXT: none, the part is ready
+```
+
 ## Recipes
 
-fan_guard, panel, cable_comb, vase, planter, gridfinity_bin, phone_stand, hook, spur_gear, box, keychain, cookie_cutter, sign, lithophane and relief. Every recipe prints without supports and every default and example is built and checked in CI.
+fan_guard, panel, cable_comb, vase, planter, gridfinity_bin, phone_stand, hook, spur_gear, box, keychain, cookie_cutter, sign, lithophane, relief and figure. Every recipe prints without supports and every default and example is built and checked in CI.
 
 ## Install
 

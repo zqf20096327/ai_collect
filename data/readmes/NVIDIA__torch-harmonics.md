@@ -108,6 +108,8 @@ For a CPU-only build, install the `torch-harmonics` package from [PyPI](#pypi).
 
 > **Tip:** Run `nvidia-smi` to check your driver's CUDA version.
 
+> **Note:** `torch.compile` of the vector SHTs (`RealVectorSHT`, `InverseRealVectorSHT`) can give wrong results in float32 on PyTorch before 2.13. With PyTorch 2.12 (NGC 26.04) on H100, the compiled `InverseRealVectorSHT` was off by up to 1e7 ULPs and differed between runs; it is exact with PyTorch 2.13 (NGC 26.06) on the same GPU. Eager mode is not affected. If you compile models that contain vector SHTs, use PyTorch 2.13 or newer.
+
 **Older PyTorch or CUDA** (PyTorch before 2.9, CUDA before 12.6) have no prebuilt wheels. Use the [Docker container](#building-from-source), which brings a matching PyTorch and CUDA, or build torch-harmonics from source against your installed PyTorch, adding `--no-deps` so that pip does not replace it with a newer one (`pip install --no-build-isolation --no-deps .`). These combinations are not tested.
 
 ### PyPI
@@ -268,7 +270,7 @@ coordinates:
 - **Legendre-Gauss**: rings at the roots of the Legendre polynomial in $\cos\theta$, excluding the poles. Gaussian quadrature is exact up to the highest polynomial degree for a given number of rings, so this grid supports the highest SHT bandlimit per ring.
 - **Lobatto**: Gauss-Lobatto nodes, i.e. Legendre-Gauss-like rings that include both poles.
 - **Trapezoidal**: rings equally spaced in $\cos\theta$ with the trapezoidal rule, which places them densely near the equator and sparsely near the poles. Its quadrature converges only algebraically, so it is suited for quadrature and localized operators but not for an SHT at a high bandlimit.
-- **HEALPix** [8]: `12 * nside**2` pixels of equal area on `4 * nside - 1` rings of constant latitude. The rings have different lengths, so a field is stored as a flat tensor of shape `(..., npix)` in RING order. HEALPix supports the scalar and vector SHTs, spectral convolutions, resampling, random fields, attention, DISCO convolutions and quadrature. Its SHT synthesis is exact, while its analysis is approximate: about 1e-2 relative error at the default `lmax = 2 * nside`, or about 1e-6 with `RealSHT(grid, iter=3)`. Of the distributed layers, the SHTs, `DistributedSpectralConvS2`, `DistributedResampleS2`, `DistributedNeighborhoodAttentionS2`, the distributed DISCO convolutions and `DistributedQuadratureS2` accept HEALPix, decomposed along latitude only (see below).
+- **HEALPix** [8]: `12 * nside**2` pixels of equal area on `4 * nside - 1` rings of constant latitude. The rings have different lengths, so a field is stored as a flat tensor of shape `(..., npix)` in RING order. Every layer accepts HEALPix. Its SHT synthesis is exact, while its analysis is approximate: about 1e-2 relative error at the default `lmax = 2 * nside`, or about 1e-6 with `RealSHT(grid, iter=3)`. The distributed layers accept it too, decomposed along latitude only (see below).
 
 | grid type          | class                                      | field shape    | accepted by                                              |
 | ------------------ | ------------------------------------------ | -------------- | -------------------------------------------------------- |
@@ -277,7 +279,7 @@ coordinates:
 | `"legendre-gauss"` | `th.LegendreGaussGrid(nlat=..., nlon=...)` | `(nlat, nlon)` | every layer                                              |
 | `"lobatto"`        | `th.LobattoGrid(nlat=..., nlon=...)`       | `(nlat, nlon)` | every layer                                              |
 | `"trapezoidal"`    | `th.TrapezoidalGrid(nlat=..., nlon=...)`   | `(nlat, nlon)` | every layer                                              |
-| `"healpix"`        | `th.HealpixGrid(nside=...)`                | `(npix,)`      | `RealSHT`, `InverseRealSHT`, `RealVectorSHT`, `InverseRealVectorSHT`, `SpectralConvS2`, `ResampleS2`, `AttentionS2`, `NeighborhoodAttentionS2`, `DiscreteContinuousConvS2`, `DiscreteContinuousConvTransposeS2`, `QuadratureS2`, `GaussianRandomFieldS2`; distributed: the four SHTs, `DistributedSpectralConvS2`, `DistributedResampleS2`, `DistributedNeighborhoodAttentionS2`, `DistributedDiscreteContinuousConvS2`, `DistributedDiscreteContinuousConvTransposeS2` and `DistributedQuadratureS2`, polar ranks only |
+| `"healpix"`        | `th.HealpixGrid(nside=...)`                | `(npix,)`      | every layer; distributed: polar splits only              |
 
 Equiangular and Fejér-1 grids use native quadrature at the default SHT
 truncation. Explicitly higher `lmax` bounds can use folded scalar and vector
@@ -331,12 +333,7 @@ band of rings with about the same number of pixels, which in RING order is a
 contiguous slice of the flat pixel axis, so a local field is `(..., npix_local)`.
 The rings differ in length, so there is no global `nlon` to split, and a process
 grid with more than one azimuth rank is rejected with a `NotImplementedError` at
-construction. Of the distributed layers, `DistributedRealSHT`,
-`DistributedInverseRealSHT`, `DistributedRealVectorSHT`,
-`DistributedInverseRealVectorSHT`, `DistributedSpectralConvS2`,
-`DistributedResampleS2`, `DistributedNeighborhoodAttentionS2`,
-`DistributedDiscreteContinuousConvS2`, `DistributedDiscreteContinuousConvTransposeS2`
-and `DistributedQuadratureS2` accept HEALPix. See [Grids](https://nvidia.github.io/torch-harmonics/api/utilities.html#grids)
+construction. Every distributed layer accepts HEALPix on such a polar split. See [Grids](https://nvidia.github.io/torch-harmonics/api/utilities.html#grids)
 for the full descriptor API, and the [grid descriptors notebook](./notebooks/grid_descriptors.ipynb) for a walkthrough.
 
 ### Distributed and further reading

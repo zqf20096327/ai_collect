@@ -43,7 +43,7 @@ Requires **Python 3.10+**, Git, and an Anthropic Messages or OpenAI-compatible C
     ```
 
     Open [http://localhost:7070](http://localhost:7070).
-    Log in before accessing the dashboard. Existing vaults require local password initialization with `python -m selfos auth reset`; an empty installation can set its password on the login page. See [authentication](docs/authentication.md).
+    Set your first password on the login page, even if your vault already contains knowledge, then log in to access the dashboard. If previously configured credentials are missing or damaged, use `python -m selfos auth reset` locally to recover access. See [authentication](docs/authentication.md).
     Select **Settings > Model and network** to choose the interface, Base URL, model, API key and proxy. Use **Save and test connection** before importing. See [model settings](docs/model-settings.md).
 
     The interface defaults to English. Choose **Settings > Language** for Simplified Chinese.

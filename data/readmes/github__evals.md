@@ -124,8 +124,8 @@ configure project eval folders and test suites.
 
 | Dependency | Minimum | Used for |
 | --- | --- | --- |
-| Node.js | 24.0.0 (CLI Plugin) / 22.14.0 (VS Code) | Local plugin and runner execution |
-| `@microsoft/vally-cli` | 0.19.0 | Eval validation and execution |
+| Node.js | 24.0.0 (CLI Plugin) / 22.15.0 (VS Code) | Local plugin and runner execution |
+| `@microsoft/vally-cli` | 0.21.0 | Eval validation and execution |
 | GitHub Copilot CLI | 1.0.85 | Native custom-agent and MCP execution |
 | Git | 2.28.0 | Native run isolation |
 

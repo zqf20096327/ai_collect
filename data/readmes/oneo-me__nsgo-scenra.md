@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <img src="cmd/scenra/assets/Preview.png" alt="Scenra">
+  <img src="website/src/assets/screens/en/app-light.png" alt="Scenra">
 </p>
 
 ## The name
@@ -43,6 +43,20 @@ Scenra is a coined word: *scene*, the screens an app is made of, joined by *-ra*
 - Pictures a design shows live in the folder's `assets/`, where the assistant copies the ones you give it, and images name them with `src="assets/…"`.
 - Designs are plain-text `.scenra` files you can read, diff and edit by hand.
 - Runs on macOS, Windows and Linux, in English and Simplified Chinese.
+
+## Install
+
+Download the macOS, Windows or Linux installer from the [latest release](https://github.com/oneo-me/nsgo-scenra/releases/latest), or install from a terminal:
+
+```sh
+curl -fsSL https://github.com/oneo-me/nsgo-scenra/releases/latest/download/install.sh | sh    # macOS and Linux
+```
+
+```powershell
+irm https://github.com/oneo-me/nsgo-scenra/releases/latest/download/install.ps1 | iex         # Windows
+```
+
+Scenra checks for updates daily and from **Check for Updates…** in its menu; on Linux it updates the Debian package.
 
 ## Run
 

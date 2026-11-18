@@ -7,6 +7,16 @@ Generate comprehensive research reports on any topic using AI-powered web search
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.0+-FF4B4B.svg)](https://streamlit.io)
 
+## Why this and not GPT-Researcher or ChatGPT Deep Research?
+
+Those optimise for a readable report; this one optimises for a **defensible** one, and
+measures the difference. It scores its own citations against a fixed 40-query gold set,
+publishes the command that reproduces every number in this README, and prints the
+coverage alongside the score — so a measurement over 4 recorded queries is labelled 10%,
+not passed off as the whole benchmark. The visible consequence is the boring one that
+matters: abstention is graded, contradictions are surfaced instead of averaged, and a
+citation that does not establish its claim costs the run a point.
+
 ## Problem
 
 Researching a topic thoroughly is time-consuming. You need to find sources, evaluate credibility, synthesize information, and format citations—all before you even start writing.
@@ -21,7 +31,26 @@ This tool automates the research workflow:
 4. **Synthesize** — LLM drafts structured reports in your chosen style; only failed sections are retried, not the whole report
 5. **Export** — Download as PDF, Word, Markdown, or BibTeX
 
-**[Live Demo →](https://deep-research-ai-agent.streamlit.app/)**
+**Live demo:** the hosted app at [deep-research-ai-agent.streamlit.app](https://deep-research-ai-agent.streamlit.app/)
+is currently behind a Streamlit Community Cloud sign-in wall, so it is not usable as a demo for
+visitors. Two ways that do work, both free:
+
+```bash
+python stream_cli.py "impact of sugar on metabolic health" --deep --out report.md   # real run, your keys
+python stream_cli.py --mock                                                         # offline demo, no keys at all
+```
+
+The first is the whole product in one command: it searches, drafts section by section with a live
+verdict per section, and writes a Markdown report to `report.md`. The second stubs the model so you
+can see the streaming and verification protocol before spending a credit.
+
+**Cost cap (opt-in):** set `MAX_RUN_COST_USD=0.50` (any non-negative number) and every live entry
+point — the web app, the CLI, and the MCP server — refuses to start when the pre-run worst-case
+estimate exceeds the cap, before a single API call is made (CLI exit code 2). Unset, nothing
+changes; `--mock` is never gated. A malformed value fails closed rather than silently uncapping.
+
+*(A recorded 60-second GIF embedded here would convert more visitors than either URL, and cannot
+rot. Tracked in [ROADMAP.md](ROADMAP.md), P1.)*
 
 ## Output Quality Guarantees
 
@@ -34,6 +63,33 @@ Every generated report includes:
 
 Both passes degrade gracefully: if no judge model is configured, deterministic heuristics
 take over so generation never blocks.
+
+## Evaluation
+
+The verification pass tells you whether a report passed the agent's own check. `eval/`
+tells you whether the agent is actually getting better: it runs a fixed 40-query gold set
+through the pipeline and reports citation accuracy, grounding, abstention, and cost.
+
+```bash
+python -m eval validate                 # check the gold set
+python -m eval run --mode replay        # deterministic run over committed fixtures
+python -m eval report --results results/smoke.json --out results/smoke.md
+```
+
+Every `[n]` citation is scored through three cumulative tiers — the link resolves, the
+page is on-topic, the page actually establishes the claim — so a failure is diagnosable
+rather than just a low number. The gold set is stratified into verifiable facts,
+synthesis, contested topics, and *unanswerable* queries, because an agent that invents an
+answer to an unknowable question should score worse than one that abstains.
+
+The harness is standard library only, needs no API keys, and is covered by its own
+offline tests. It also provides `compare` for ablation runs (one variable at a time) and
+`calibrate` for measuring LLM-judge agreement (Cohen's κ) against hand labels. Every pull
+request replays the gold set against `main` and posts the delta table as a comment, so "this
+change did not regress citation accuracy" is something you can read in the PR rather than take
+on trust — and the comment says which rows replay cannot measure, and when a change to the scored
+subset makes a delta meaningless. See [eval/README.md](eval/README.md) for the metric definitions
+and methodology.
 
 ## Architecture
 
@@ -94,8 +150,8 @@ flowchart LR
 
 ```bash
 # Clone
-git clone https://github.com/saksham-jain177/AI-Agent-based-Deep-Research.git
-cd AI-Agent-based-Deep-Research
+git clone https://github.com/saksham-jain177/agentic-deep-research.git
+cd agentic-deep-research
 
 # Install
 pip install -r requirements.txt
@@ -106,6 +162,15 @@ cp .env.example .env
 
 # Run
 streamlit run app.py
+
+# Or one command, to a file
+python stream_cli.py "your research query" --deep --out report.md
+
+# Or see it work with no keys and no spend
+python stream_cli.py --mock
+
+# Or expose it to an AI agent over MCP (Claude Desktop, Cursor, ...)
+python mcp_server.py
 ```
 
 **Required API Keys:**
@@ -124,6 +189,32 @@ LLM_MAX_OUTPUT_TOKENS=4000     # Per-call LLM output token cap (default 4000)
 TOKEN_BUDGET_PER_REPORT=12000  # Total prompt-token budget; low-confidence evidence is trimmed to fit
 OPENROUTER_FALLBACK_MODELS=    # Comma-separated fallback model chain for rate limits / empty responses
 ```
+
+### Run it from an AI agent (MCP)
+
+`mcp_server.py` speaks the [Model Context Protocol](https://modelcontextprotocol.io) over stdio, so any MCP client — Claude Desktop, Cursor, your own agent — can run a research job as a tool call and read the full report back. It wraps the same streaming pipeline the CLI and the web app use; nothing about those entry points changes, and it adds zero dependencies (the JSON-RPC 2.0 stdio transport is implemented in the file itself).
+
+Register it with your client:
+
+```json
+{
+  "mcpServers": {
+    "agentic-deep-research": {
+      "command": "python",
+      "args": ["/path/to/agentic-deep-research/mcp_server.py"]
+    }
+  }
+}
+```
+
+Two tools are exposed:
+
+| Tool | What it does |
+| --- | --- |
+| `deep_research(query, deep, target_word_count, mock, out)` | Runs the pipeline and returns the full Markdown report — per-section verification verdicts, conflicting-evidence table, reference list. `mock: true` runs the stubbed offline pipeline (no keys, no spend) so an agent can smoke-test the integration before spending quota. The live path is gated by the same `MAX_RUN_COST_USD` cost cap as the web app. `out` saves the report into `results/` for later retrieval. |
+| `read_report(path)` | Reads a saved Markdown report from `results/`. Sandboxed to that directory — no traversal, `.md` only. |
+
+Protocol discipline is pinned by tests: tool execution runs with stdout redirected to stderr, so pipeline chatter can never corrupt the JSON-RPC frame stream, and a failing tool call returns a structured `isError` result instead of killing the server.
 
 ## Configuration
 
@@ -164,7 +255,16 @@ This tool is **not**:
 
 ## Testing
 
-The test suite (232 offline tests — all LLM and Tavily calls are mocked; the full suite runs without API keys) covers evidence extraction, citation validation, section-level draft retry, reranking, prompt-injection sanitization, log redaction, token budgets, output-token caps, model fallback, and timeouts.
+The test suite (346 offline tests — all LLM and Tavily calls are mocked; the full suite runs without API keys) covers evidence extraction, citation validation and bibliography numbering, section-level draft retry, reranking, prompt-injection sanitization, log redaction, token budgets, output-token caps, model fallback, timeouts, and the evaluation harness — including the PR CI job that replays the gold set and posts the delta table.
+
+The injection defence is tested end to end rather than at the regex level:
+`tests/test_poisoned_page.py` feeds a poisoned page (real prose plus instruction-shaped text) through
+fetch → evidence → draft → judge with a stub model that **obeys** the payload, and asserts what comes
+out the other side. Two results worth stating plainly: a citation number the page invents (`[7]`
+against a three-source table) is dropped and never reaches the bibliography, but the same page ranked
+**first** by the real cross-encoder acquires a legitimate `[1]` and nothing in the drafting path
+objects — position in a reference list is not a trust signal. That second finding is documented as a
+limitation in [SECURITY.md](SECURITY.md), not quietly dropped.
 
 ```bash
 pytest tests/ -v
@@ -183,7 +283,9 @@ pytest tests/ -v
 ├── log_redaction.py      # API key redaction from logs and session state
 ├── cost_estimator.py     # Token/cost estimation with uncertainty
 ├── citation_formatter.py # APA/MLA/IEEE/BibTeX generation with citation grounding
-└── tests/                # Pytest suite: 180 tests, all offline (LLM/Tavily mocked)
+├── eval/                 # Benchmark harness: gold set, three-tier citation scoring, metrics
+├── scripts/              # CI helpers, incl. the replay-eval PR comment
+└── tests/                # Pytest suite: 346 tests, all offline (LLM/Tavily mocked)
 ```
 
 ## Contributing
@@ -193,7 +295,11 @@ pytest tests/ -v
 3. Run tests (`pytest tests/ -v`)
 4. Submit a pull request
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines,
+[ROADMAP.md](ROADMAP.md) for what is planned and why,
+[CHANGELOG.md](CHANGELOG.md) for what shipped, and
+[SECURITY.md](SECURITY.md) for the threat model — including which of the protections here
+are heuristics rather than guarantees.
 
 ## License
 
@@ -201,4 +307,4 @@ MIT License — use freely for personal or commercial projects.
 
 ---
 
-**Questions?** [Open an issue](https://github.com/saksham-jain177/AI-Agent-based-Deep-Research/issues) or [start a discussion](https://github.com/saksham-jain177/AI-Agent-based-Deep-Research/discussions).
+**Questions?** [Open an issue](https://github.com/saksham-jain177/agentic-deep-research/issues).

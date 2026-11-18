@@ -74,12 +74,12 @@
   <table>
     <tr>
       <td width="20%" align="center">
-        <h3>🟢 Portable CLI · Lightweight</h3>
-        <p>CLI single binary · zero runtime deps · <strong>~5MB</strong><br>Copy to USB and run — drop existing SDKs in to manage</p>
+        <h3>🟢 Portable CLI · Lightweight binary</h3>
+        <p>CLI single binary · zero runtime deps · <strong>~4MB</strong><br>Copy to USB and run — drop existing SDKs in to manage</p>
       </td>
       <td width="20%" align="center">
         <h3>🖥️ Native GUI</h3>
-        <p>Built on GPUI · cross-platform desktop app<br>Visual SDK management · same Rust core as the CLI</p>
+        <p>Built on GPUI · ultra-lightweight cross-platform desktop app<br>Visual SDK management · same Rust core as the CLI</p>
       </td>
       <td width="20%" align="center">
         <h3>⚡ Multi-scope version switching</h3>
@@ -143,7 +143,7 @@ what python do I have      → sdkm list
 | **Three switching scopes** | ✅ global (symlink + system PATH) / project (`.sdkm.toml` + hook) / temp (`use --shell`) — **zero runtime overhead for SDKs** | ✅ global / project (`.mise.toml`) / shell, but default shims layer [docs](https://mise.jdx.dev/installing-mise.html#installation) | ⚠️ `sdk use` is shell-only; `sdk default` for persist; no project pin [usage](https://sdkman.io/usage#sdk-use-command) | ⚠️ `.nvmrc` / `.python-version` project + shell; global via default — inconsistent mechanisms |
 | **Path transparency (which/IDE)** | ✅ `which java` points to the real SDK path | ⚠️ with shims `which node` hits the shim; officially admits it "breaks `which`" — `mise which` shows the real path, [design notes](https://mise.jdx.dev/how-i-use-mise.html#shims-vs-path) | ✅ transparent | ✅ transparent (inside the shell) |
 | **Fuzzy version match** | ✅ `21` → latest 21.x, with candidate suggestions | ✅ fuzzy versions (e.g. `node = "26"`) and closest match | ❌ no prefix fuzzy; exact versions only | ⚠️ partial prefix support, varies by tool |
-| **Single-file portability** | ✅ single binary, only **5MB** + config dir — runs from a USB stick or any path | ⚠️ **100MB+**, needs a shims dir (`~/.local/share/mise/shims` or `%LOCALAPPDATA%\mise\shims`), [install docs](https://mise.jdx.dev/installing-mise.html#installation) | ❌ scripts + fixed install path | ❌ scripts + shell hooks, shell-dependent |
+| **Single-file portability** | ✅ single binary, only **4MB** + config dir — runs from a USB stick or any path | ⚠️ **100MB+**, needs a shims dir (`~/.local/share/mise/shims` or `%LOCALAPPDATA%\mise\shims`), [install docs](https://mise.jdx.dev/installing-mise.html#installation) | ❌ scripts + fixed install path | ❌ scripts + shell hooks, shell-dependent |
 | **Rollback-safe operations** | ✅ snapshot auto-recovery (project feature) | ⚠️ rely on external means (e.g. back up config yourself) | ❌ no auto-rollback | ❌ no auto-rollback |
 | **Language / memory safety** | ⚡ Rust ownership + compile-time checks | ⚡ Rust ownership + compile-time checks | 🐌 Bash / shell scripts | 🐌 Shell / bash scripts |
 | **AI agent / automation friendly** | ✅ clear exit codes; child processes inherit the new env after switching; predictable behavior | ⚠️ must understand shims / PATH mode differences; non-interactive shells need shims or `mise exec`, [usage notes](https://mise.jdx.dev/how-i-use-mise.html#shims-vs-path) | ⚠️ shell function, doesn't cross processes | ⚠️ switch is current-shell only, invisible cross-process; extra scripting needed |
@@ -200,8 +200,10 @@ Don't want to memorize commands? sdkm also ships a simple, easy-to-use GUI, buil
 
 ```bash
 # Install from remote (fuzzy match, auto-switch)
-sdkm install java 21              # '21' → latest 21.x
+sdkm install java 21              # '21' → latest 21.x (Eclipse Temurin)
+sdkm install java zulu@17         # another JDK vendor: 'zulu@17' == '17-zulu'
 sdkm install node 20.11.0
+sdkm install tomcat 11            # Apache Tomcat (full archive history)
 
 # Or hand existing SDKs to sdkmate (no re-download)
 # Drop them under <sdkm-dir>/store/java/21/ — sdkm discovers them automatically
@@ -269,10 +271,11 @@ eval "$(sdkm use --shell java 21)"       # Temporary: this terminal only (highes
 
 | SDK | Status | Source |
 |:---|:---:|:---|
-| ☕ **Java (JDK)** | ✅ Supported | Adoptium Eclipse Temurin |
+| ☕ **Java (JDK)** | ✅ Supported | Eclipse Temurin (default) · Azul Zulu · Amazon Corretto · BellSoft Liberica |
 | 🟢 **Node.js** | ✅ Supported | nodejs.org |
 | 🐍 **Python** | ✅ Supported | astral-sh python-build-standalone |
 | 🧶 **Maven** | ✅ Supported | Apache Maven (dlcdn) |
+| 🐈 **Tomcat** | ✅ Supported | Apache Tomcat (archive, dlcdn fallback) |
 | 🔵 **Go** | ✅ Supported | go.dev |
 | 🚀 **uv / bun / claude-code / cmake / fzf / ripgrep / ... 40+ more** | ✅ Supported | GitHub Releases |
 | ⚙️ **Custom SDK** | ✅ Infinitely extensible | User-configured (any URL) |
@@ -327,30 +330,9 @@ cargo clippy --all-targets --all-features              # Lint code
 
 ## 🤝 Contributing
 
-Contributions of any kind are welcome — bug reports, feature ideas, or code. Thank you for helping make sdkm better! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for the complete workflow and engineering constraints before opening a PR.
+Contributions of any kind are welcome — bug reports, feature ideas, or code. Thank you for helping make sdkm better!
 
-### 📋 PR checklist
-
-1. Fork the repo and create a branch: `git checkout -b feature/your-feature-name`
-2. Write code and make sure all tests pass: `cargo test`
-3. Keep the code style consistent (required before committing):
-   ```bash
-   cargo fmt                                  # Format code
-   cargo clippy --all-targets --all-features  # Lint code, zero warnings
-   ```
-4. Commit with a clear message: `git commit -m "feat(cli): add xxx"`
-5. Push and open a Pull Request: `git push origin feature/your-feature-name`
-
-### 📖 Conventions
-
-| Type | Convention | Example |
-|:---|:---|:---|
-| Commit message | `type(scope): description` (scope optional) | `feat(cli): add switch command` |
-| Types | feat / fix / perf / refactor / docs / test / ci / chore | — |
-| Scopes | code modules only: cli / core / util / gui | `fix(core): ...` |
-| Branch naming | `feature/xxx` / `fix/xxx` / `docs/xxx` | `feature/add-install-command` |
-
----
+Before opening a PR, please read [CONTRIBUTING.md](./CONTRIBUTING.md): the full workflow, [commit conventions](./CONTRIBUTING.md#提交规范), and [engineering constraints](./CONTRIBUTING.md#工程约束) live there and are not duplicated here.
 
 ## 📄 License
 

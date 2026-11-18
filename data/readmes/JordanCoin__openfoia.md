@@ -26,6 +26,16 @@ If you use [Claude Code](https://claude.ai/code), install the OpenFOIA plugin. Y
 
 The plugin ships a skill that teaches Claude how to run FOIA investigations, plus slash commands for the core loop: `/foia-search`, `/foia-investigate`, `/foia-graph`, `/foia-install`. The last one bootstraps the CLI on your machine.
 
+### With any MCP client (Claude Desktop, Claude Code, others)
+
+`openfoia mcp serve` runs OpenFOIA as a local MCP server over stdin/stdout (no network port). After `openfoia install-extras mcp`:
+
+```json
+{ "mcpServers": { "openfoia": { "command": "openfoia", "args": ["mcp", "serve"] } } }
+```
+
+or `claude mcp add openfoia -- openfoia mcp serve`. Agents get `openfoia_search` (the `openfoia search` code path: off unless you add `--allow-network`, and every search needs a confirmed second call after the warning) and read-only local tools over your cases, stored documents, entities and requests. No tool deletes, purges, sends requests or messages, or changes config. Whatever a tool returns goes to the client's model provider. Setup and details: [GUIDE.md, AI agents over MCP](docs/GUIDE.md#ai-agents-over-mcp).
+
 ### Shell install (no Claude Code needed)
 
 ```bash
@@ -71,8 +81,8 @@ openfoia request mark REQ-2026-001 denied              # starts the appeal clock
 | **Data interchange** | Import/export FollowTheMoney format (Aleph, OpenAleph, OpenSanctions) |
 | **Encrypted storage** | SQLCipher AES-256. Decoy profile mode |
 | **Forensic purge** | 3-pass overwrite, shell history scrub, free space fill |
-| **Portable mode** | `openfoia portable` keeps everything on the USB, nothing on the host |
-| **Metadata stripping** | Strips EXIF, PDF author, DOCX revision history on file and web-UI ingest. Email attachments and archived web pages are stored as received; see [THREAT_MODEL.md](docs/THREAT_MODEL.md) |
+| **Portable mode** | `openfoia portable` keeps data, config and library caches on the USB; nothing is created in the host's home directory |
+| **Metadata stripping** | Strips image EXIF, PDF author and XMP, and DOCX author, company and revision data from the stored copy on `docs ingest` and web-UI upload; with [mat2](https://github.com/jvoisin/mat2) installed (preinstalled on Tails) also OpenDocument, XLSX, PPTX, EPUB, audio and video. Every file is reported as stripped or not; a format nothing here can clean is flagged, never shown as done. Email attachments and archived web pages are stored as received; see [THREAT_MODEL.md](docs/THREAT_MODEL.md) |
 
 ### PDF Extraction Engine
 
@@ -105,11 +115,27 @@ are kept as a single page (`docs show` flags this when the source page count is 
 (some SQLCipher builds), `docs grep` does a plain substring search instead and
 prints a notice.
 
+Optional and experimental: `docs grep --semantic "payments to the mayor's
+brother"` ranks pages by meaning, so a page that says "funds transferred to a
+sibling of the city executive" can still turn up. It needs
+`openfoia install-extras semantic` and a one-time model download
+(`openfoia docs embed-model`, ~31 MB, asks first); after that it is offline.
+It finds leads, not proof of absence: on our test set it surfaced 3 of 10
+reworded passages in the top 10. See
+[the guide](docs/GUIDE.md#searching-by-meaning-optional-experimental) and
+[the measurements](docs/benchmarks/semantic-search.md).
+
 Entity extraction picks the best backend it finds. On a local model the LLM
 validation step can take minutes per document. To skip it, force a local
 backend with `openfoia analyze extract <id> --tier gliner` (or `spacy`,
 `regex`), or set `OPENFOIA_AI_PROVIDER=none`, which wins over any API key
 or Ollama URL in the config file or environment.
+
+Each extraction is stored as a run (backend, model, time, entity count).
+`--force` adds a run instead of overwriting the last one; graphs, crossref and
+exports use the newest run per document. `openfoia analyze runs <id>` lists
+them, `analyze extract <id> --prefer-run <run>` picks another, and
+`analyze runs <id> --prune` deletes the rest.
 
 ## Which law applies
 
@@ -139,6 +165,7 @@ that disclosure.
 | [DocumentCloud](https://www.documentcloud.org/) | Public documents with pre-extracted text | Public API |
 | [CIA FOIA Reading Room](https://www.cia.gov/readingroom/) | Declassified CIA records (CREST, MORI); `records fetch <CREST or MORI> --source cia` downloads and ingests the PDF | Public site; a bot filter can block scripted access, reported as "blocked" |
 | [National Archives Catalog](https://catalog.archives.gov/) | Accessioned federal records: descriptions, OCR text where NARA has it, and the scans themselves. `records fetch <NAID> --source nara --objects` downloads every page image or PDF of a record and OCRs it locally; `records search --source nara --ancestor <NAID> --all` lists every file unit in a series | Free key by email (`OPENFOIA_NARA_API_KEY`), 10,000 queries a month, counted locally |
+| [CourtListener](https://www.courtlistener.com/) | Federal court dockets, filings and parties from the RECAP archive of PACER, and case law. `records fetch <docket id> --source courtlistener` stores the docket sheet (entries, parties, attorneys); `rd:<id>` a filing's text, or its PDF when CourtListener has no text; `op:<id>` an opinion | Free personal token (`OPENFOIA_COURTLISTENER_API_KEY`), environment variable only. 5 requests a minute, 50 an hour, 125 a day, counted locally. CourtListener logs searches against your account unless query logging is off in your profile; not used over Tor |
 | [OpenCorporates](https://opencorporates.com/) | Global company registrations, ownership, directors, and filings | Free basic search |
 | [SEC EDGAR](https://www.sec.gov/edgar/) | US public-company filings | No API key |
 | [USAspending](https://www.usaspending.gov/) | Federal contracts, grants, loans, and other awards | No API key |
@@ -146,8 +173,32 @@ that disclosure.
 | [GovInfo](https://www.govinfo.gov/) | Congressional, court, regulatory, and other US government documents | Free API key; demo key available |
 | [OpenFEC](https://api.open.fec.gov/developers/) | Federal campaign-finance contributions and committees | Free API key; demo key available |
 | [Regulations.gov](https://www.regulations.gov/) | Federal rulemaking documents and public comments | Free API key; demo key available |
+| [Federal Register](https://www.federalregister.gov/) | Federal rules, proposed rules, notices and presidential documents, filterable by agency, type, publication date and docket, with comment deadlines. `records fetch <document number> --source federalregister` downloads the PDF from GovInfo and ingests it | No API key |
 | [OpenSanctions](https://opensanctions.org/) | Sanctions lists and politically exposed persons | Cross-reference source. API needs a key (`OPENFOIA_OPENSANCTIONS_API_KEY`; free for journalists). Offline: download `targets.simple.csv` (449 MB) from the [default dataset](https://www.opensanctions.org/datasets/default/) and pass `--opensanctions-data <dir>` with `--sources opensanctions-local`, nothing leaves the machine. Data license [CC BY-NC 4.0](https://www.opensanctions.org/licensing/): free for journalists and non-commercial use |
 | [ICIJ Offshore Leaks](https://offshoreleaks.icij.org/) | Panama, Pandora, and Paradise Papers | Cross-reference source; local CSV download |
+
+### Search every source at once
+
+`openfoia search` sends one query to every `records search` source (or the
+ones named with `--source`) and reports each one as ok, no results, error
+(with the reason) or skipped (with the reason). It names the sources and the
+route (Tor or direct) and asks before anything is sent; `--yes` skips the
+question.
+
+```bash
+openfoia search "Acme Corp"
+openfoia search "Acme Corp" --source sec --source opencorporates --limit 5
+openfoia search "Acme Corp" --egress tor --json --yes > hits.json
+```
+
+Every result carries `source`, `title`, `url`, `snippet`, `retrieved_at` (UTC)
+and `egress` (`tor` or `direct`). `--egress tor` stops with an error when Tor
+is not running instead of going direct; without `--egress` the configured
+route (`network.tor`) is used. Over Tor, MuckRock and NARA are skipped because
+they only work with your personal key, which would identify you. `--since
+YYYY-MM-DD` drops results dated earlier after they arrive; the sources still
+get the same query. The agent interface has the same search as the
+`search_records` tool, and MCP clients as `openfoia_search`.
 
 ## Documentation
 
@@ -161,11 +212,11 @@ that disclosure.
 
 ## Privacy
 
-Everything runs on `127.0.0.1`. Token-authenticated. Encrypted at rest (optional). Forensically purgeable. Works offline. Open source.
+Everything runs on `127.0.0.1`. Token-authenticated: `openfoia serve` opens the browser with a login link that works once and expires after 60 seconds (press Enter in its terminal for a fresh one), and the session token never appears in a URL. Encrypted at rest (optional). Forensically purgeable. Works offline. Open source.
 
 **For sensitive investigations:** `openfoia serve --tor`
 
-**Portable mode:** `openfoia portable` keeps data on the USB; nothing touches the host.
+**Portable mode:** `openfoia portable` keeps data, config and caches on the USB and creates nothing in the host's home directory (the OS can still log activity; see [USB Install](docs/USB.md)).
 
 **When you're done:** `openfoia purge --secure --yes`
 

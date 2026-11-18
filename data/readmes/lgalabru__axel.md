@@ -113,6 +113,12 @@ or with Homebrew:
 brew install scarce/taps/axel
 ```
 
+or with Nix:
+
+```sh
+nix run github:scarce/axel
+```
+
 Then run `axel` in a Rex terminal. The first run checks your machine and helps you create
 your first agent. Every commit on `main` that passes CI is a release, so run the script
 again or `brew upgrade` to update.

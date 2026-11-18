@@ -48,7 +48,8 @@ https://github.com/user-attachments/assets/185b2c39-8f55-4f26-a74c-2ac459ad38f5
 
 - **[Installation Guide](docs/getting-started/installation.md)** - Get started with MikroTik MCP
 - **[API Coverage](docs/api-coverage.md)** - Implemented and planned RouterOS features
-- **[Testing Guide](docs/getting-started/testing.md)** - Run integration tests
+- **[Testing Guide](docs/getting-started/testing.md)** - Run unit and integration tests
+- **[Claude Code Integration](docs/integrations/claude-code.md)** - Configure for Claude Code
 - **[Claude Desktop Integration](docs/integrations/claude-desktop.md)** - Configure for Claude Desktop
 - **[MCP Inspector](docs/integrations/inspector.md)** - Interactive testing tool
 - **[Contributing Guide](CONTRIBUTING.md)** - Help improve MikroTik MCP
@@ -66,7 +67,8 @@ review and idea.
      lilianmoraru and Kn-ut99 for pull requests (#187, #188) that are still open,
      so the contributors API does not return them either. mkranjcic is here for
      the pull requests #206 to #221, also still open. tdabasinskas is here for
-     pull request #225, also still open. -->
+     pull request #225, since merged, and WatchDogsDev for pull request #239,
+     still open. -->
 <p>
 <a href="https://github.com/jeff-nasseri" title="jeff-nasseri"><img src="https://avatars.githubusercontent.com/u/57312476?s=72" width="72" height="72" alt="jeff-nasseri" /></a>
 <a href="https://github.com/goto1134" title="goto1134"><img src="https://avatars.githubusercontent.com/u/9569795?s=72" width="72" height="72" alt="goto1134" /></a>
@@ -86,6 +88,7 @@ review and idea.
 <a href="https://github.com/siderakis" title="siderakis"><img src="https://avatars.githubusercontent.com/u/1545690?s=72" width="72" height="72" alt="siderakis" /></a>
 <a href="https://github.com/mkranjcic" title="mkranjcic"><img src="https://avatars.githubusercontent.com/u/9868887?s=72" width="72" height="72" alt="mkranjcic" /></a>
 <a href="https://github.com/tdabasinskas" title="tdabasinskas"><img src="https://avatars.githubusercontent.com/u/7723360?s=72" width="72" height="72" alt="tdabasinskas" /></a>
+<a href="https://github.com/WatchDogsDev" title="WatchDogsDev"><img src="https://avatars.githubusercontent.com/u/29868640?s=72" width="72" height="72" alt="WatchDogsDev" /></a>
 </p>
 
 Contributions of every kind are welcome: code, bug reports, documentation and
@@ -109,8 +112,3 @@ including walkthroughs of new features and pull requests, live on Bisque:
 [bisque.today/p/wiresage/mikrotik-mcp](https://bisque.today/p/wiresage/mikrotik-mcp).
 
 <a href="https://bisque.today/p/wiresage/mikrotik-mcp"><img src="https://bisque.cloud/poster/AlY6OT2Cd1YpfqlZ5jsfdWcae933/landing-demo/og-slide.png" alt="Watch the MikroTik MCP presentations on Bisque" width="600" /></a>
-
-> [!NOTE]
-> The Presentations section was added on 3 November 2026, after release
-> `v0.26.2`. Releases up to `v0.26.2` don't have it, and it ships with the
-> next release.

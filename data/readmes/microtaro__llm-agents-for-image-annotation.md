@@ -11,8 +11,9 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/github/license/microtaro/llm-agents-for-image-annotation?color=3730a3" alt="License: Apache-2.0"></a>
   <a href="https://github.com/microtaro/llm-agents-for-image-annotation/releases/latest"><img src="https://img.shields.io/github/v/release/microtaro/llm-agents-for-image-annotation?label=release&color=3730a3" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-3730a3" alt="Windows and Linux"><br>
   <img src="https://img.shields.io/badge/runs%20on-Claude%20Code%20%7C%20Codex%20CLI-3730a3" alt="Runs on Claude Code or Codex CLI">
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux-3730a3" alt="Windows and Linux">
+  <img src="https://img.shields.io/badge/plan-Claude%20or%20ChatGPT%20subscription-3730a3" alt="Uses your Claude or ChatGPT subscription">
   <img src="https://img.shields.io/badge/UI-English%20%7C%20%E6%97%A5%E6%9C%AC%E8%AA%9E-3730a3" alt="English and Japanese">
 </p>
 
@@ -21,6 +22,8 @@
   <a href="#the-whole-flow">Demo</a> ·
   <a href="#what-it-does">What it does</a> ·
   <a href="#sample-data">Sample data</a> ·
+  <a href="docs/models.md">Choosing a model</a> ·
+  <a href="CHANGELOG.md">Changelog</a> ·
   <a href="README.ja.md">日本語</a>
 </p>
 
@@ -180,6 +183,8 @@ curl -fsSL https://claude.ai/install.sh | bash
 
 **Codex:** follow [its install guide](https://developers.openai.com/codex/cli), then run `codex` once and sign in. The app starts with Claude Opus 5.5, so choose a GPT model in its settings (top right of the screen).
 
+**Which model:** for close outlines, GPT-6.2 Sol (Codex) did best in our test, and cost the least. GPT-6.2 Astra outlines closely too. Claude Opus 5.5 is fast, but its outlines are rough unless the plan asks it to zoom in on each object. See [Choosing a model](docs/models.md).
+
 ### 2. Get the app and start it
 
 You need [Git](https://git-scm.com/). Get the app:
@@ -203,9 +208,10 @@ Open a sample dataset and tell the agent what you want: ask it to annotate the r
 ### Good to know
 
 - **Language:** the screen opens in your browser's language. Switch between English and Japanese in the settings at the top right. The agents answer in the language you write in.
+- **Models:** Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5 (Haiku is not offered for the agents). GPT: the models your Codex CLI offers that read images, so a new one appears without updating the app. A model the app has no price for still runs, but its cost shows as unknown and a run's cost limit does not stop it. The [changelog](CHANGELOG.md) says when prices are added. For which model to pick, see [Choosing a model](docs/models.md).
 - **Port:** 3900, or the next free one. The number is in `agent_app/server.port`.
 - **Log:** `agent_app/server.log`. Please include the end of it when you report a problem.
-- **New versions:** earlier data is not carried over. To keep a dataset, use **Write out** in the library first. Then run `git pull`, delete `agent_app/agent.db` and `agent_app/agent-files/`, and start again with `start.cmd` or `sh start.sh`. The library starts again with the sample datasets.
+- **New versions:** see the [changelog](CHANGELOG.md). Run `git pull` in the folder, then start with `start.cmd` or `sh start.sh`, not the shortcut: they install what the new version needs. Your datasets and results stay. If a version changes how they are kept, the changelog says so.
 - **Moved the folder:** delete `agent_app/.venv`, then start with `start.cmd` or `sh start.sh` once. On Windows, this makes the shortcut again.
 - **To remove the app,** quit it and delete the folder.
 

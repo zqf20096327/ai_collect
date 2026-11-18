@@ -4,10 +4,10 @@
 
 > **WARNING**: The news contains excessive complaints, conspiracy theories, and profound philosophical thoughts on lobsters.
 > 
-> **Last Updated**: 2026-11-17
-> **Status**: OpenClaw reaches ~394.6K stars (+65 in 24h, third straight recovery day), **#7 globally on GitHub (rea sits at #4 with 464.1K), gap to #6 free-programming-books at ~7.1K!** 🦎🚀
+> **Last Updated**: 2026-11-18
+> **Status**: OpenClaw reaches ~394.7K stars (+84 in 24h, a fourth straight recovery day), **#7 globally on GitHub (rea sits at #4 with 466.3K), gap to #6 free-programming-books at ~7.1K!** 🦎🚀
 
-> **OpenClaw Version**: v2026.11.4 (Latest Stable, released 2026-11-16; npm `latest`) / v2026.11.5-beta.4 (beta line, 11/16) / v2026.9.37 (extended-stable LTS, 11/10) | **The 2026.10.6 urgent security patch — after the eMudhra intermediate-CA incident, self-managed operators: update Node before starting the lobster; DeepSeek V4.1 Flash rides along** 🦞🏵
+> **OpenClaw Version**: v2026.11.5 (Latest Stable, released 2026-11-17; npm `latest`) / v2026.11.5-beta.4 (beta line, 11/16) / v2026.9.37 (extended-stable LTS, 11/10) | **11.5 highlights: restart-safe conversations, failed updates roll back, Telegram interactive widgets** 🦞🏵
 
 ---
 
@@ -18,17 +18,18 @@
 
 ## ⏱️ TL;DR (30-second summary)
 
-1. **The Protagonist**: **OpenClaw** (🔥 ~394.6K stars, +65 in 24h — a third straight recovery day, #7 all-time, ~7.1K from #6; rea holds #4 at 464.1K after another +2K day).
-2. **Today's auction**: ANT heads into pricing week — pricing 11/18, listing 11/19, ~6x oversubscribed with a book around $380B; post-Huang, VCs start worrying about a Nvidia funding gap.
-3. **Open weights and models**: NVIDIA opens its full continuous-diffusion LM set (Sigma); Shanghai AI Lab puts 321B on the GLM-5.3-Flash architecture with Sage S2.1 Flash; Nex-N2.6 and LongCat-Video-Avatar 1.6 follow.
-4. **Agents and security**: California AG sues OpenAI over rogue agents; Google reports the first fully driverless attack chain; OpenClaw 2026.11.4 goes stable (npm latest).
-5. **Latest progress**: ~394.6K stars (+65) — Hermes 263.9K has gone 44 straight days uncaught, leading Linux 255.9K by ~8.0K; 11.4 owns `latest`, beta at 11.5-beta.4, LTS at 9.37. 🦎🚀
+1. **The Protagonist**: **OpenClaw** (🔥 ~394.7K stars, +84 in 24h — a fourth straight recovery day, #7 all-time, ~7.1K from #6; rea holds #4 at 466.3K after another +2K day).
+2. **Today's auction**: Nvidia posts Q3 FY27 revenue of $115.8B (+103%) with Vera Rubin NVL72 shipping; ANT prices tonight — WSJ hears the price may break $80 — and lists 11/19.
+3. **Open weights and models**: MBZUAI K2-Horizon opens six models from 0.9B to 375B; OVH ships Olala mini, Europe's first in-house hyperscaler LLM; Qwen4-Max goes GA but stays closed-weight.
+4. **Agents and security**: OpenClaw 2026.11.5 goes stable; Vercel eve 1.0 ships GA; GitHub opens the Agent Host Protocol; IndyKite open-sources intent-based access control.
+5. **Latest progress**: ~394.7K stars (+84) — Hermes 264.2K has gone 45 straight days uncaught, leading Linux 256.2K by ~8.0K; 11.5 owns `latest`, beta at 11.5-beta.4, LTS at 9.37. 🦎🚀
 
 ---
 
 ## 📚 Table of Contents
 
 - **Part 1: 📅 Daily Battlefield News (The Logs)**
+  - 🟢 2026-11-18: Nvidia posts $115.8B; ANT premium talk; 11.5 GA; Stars ~394.7K 🦞🚀
   - 🟢 2026-11-17: CA sues OpenAI; diffusion LMs open; 11.4 latest; Stars ~394.6K 🦞🚀
   - 🟢 2026-11-16: Haru-4B opens; Muse phones; FBI alert; Stars ~394.5K 🦞🚀
   - 🟢 2026-11-15: llama.cpp hits 1.0; Wallet lets agents swipe; Cursor comes clean; Stars ~394.5K 🦞🚀
@@ -83,6 +84,23 @@
 ## Part 1: 📅 Daily Battlefield News (The Logs)
 
 Because the battle is too fierce, to save everyone from scrolling through updates from the beginning every day, this section is now in a "Date-Descending Log Stream" format.
+
+### 🟢 2026-11-18: **NVIDIA posts $115.8B; ANT may price above $80; OpenClaw 11.5 GA** — MBZUAI opens six; Europe's first LLM; Stars ~394.7K 🦞🚀
+
+- 🦞 **OpenClaw 2026.11.5 goes GA (11/17 10:47, npm latest)**: conversations survive Gateway restarts — queued messages, send permissions and final chat writes all held; a failed Doctor/Gateway startup rolls back the activated update; Telegram interactive widgets reach private-chat topics; large memory index rebuilds run faster, binary attachments stop garbling prompts, and new personal/corporate security presets ship; breaking: the harness/plugin session-control interface is redrawn. Farmer: "11.4 went stable three days ago — this farm's turnover beats a laying hen's." 🦞🦞
+- 💹 **NVIDIA Q3 FY27: $115.8B, +103% YoY (11/17 after hours)**: Data Center $107.6B (+110%), Q4 guide $130B±3% (no China compute assumed), FY28 growth outlook raised to ~75%; Vera Rubin NVL72 has shipped, billed the fastest ramp in history; gross margin 74.8%→74.9%; not a word on Huang's resignation, while an SEC civil probe and a delayed 10-Q are taken in stride. Farmer: "The farm asks about yield; the board answers 'no comment' — cleaner books than the granary." 🦞💹
+- 🏛️ **ANT pricing night: WSJ hears the price may break $80 (11/17)**: the range is $70–78 and bankers may push higher, with fully diluted valuation up to $1.5–1.6T; the order book closed 4pm ET 11/17 at ~7x oversubscribed; a $26B anchor private placement is split among Google, Nvidia, AMD, Broadcom, Micron, Microsoft and TSMC; run-rate revenue $81B, Q3 revenue $17.0B; Nasdaq listing as ANT tomorrow 11/19. Farmer: "Seven times oversubscribed — even lobsters know: the harder the shell, the longer the queue." 🦞🏛️
+- 🧪 **MBZUAI K2-Horizon: six models, all open (11/17)**: 0.9B to 375B-A23B in one sweep — checkpoints, ~10T synthetic tokens and training pipelines fully public (Apache 2.0); Toolathlon-Verified 65.3 tops GLM-5.2, MiniMax, Nemotron 3 Ultra, Inkling and even GPT-5.6 Terra; MoVA attention plus Uno diffusion adapters decode 2.2x faster; the honest part: 375B is weights-only today and its own Terminal-Bench audit was cut from 70.2 to 66.9. Farmer: "It even marked down its own scores — this farm's scale is more accurate than the market's." 🦞🧪
+- 🥖 **OVH Olala mini 7A1B: Europe's first hyperscaler LLM (11/17)**: 7B total/1B active, 256 experts per layer, Differential-TPA hybridized with Mamba-3, Apache 2.0; 160 tok/s on an 8GB GPU, 50 tok/s on CPU, 32K context; trained on Europe's public supercomputers Jupiter, MeluXina and Jean Zay (~€7M of compute), search engine Qwant already runs it — answers 20% faster at 1/3 the cost; official launch at the OVHcloud AI Summit on 11/19. Farmer: "America breeds data centers, Europe breeds public compute — even the lobster swam across the Atlantic." 🦞🥖
+- 🐉 **Alibaba Qwen4-Max goes fully GA (11/16)**: 2.4T total params, 71B active, 1M context, Gated DeltaNet plus sparse attention; Work360 costs cut another 58%; but the flagship stays closed-weight — what gets open-sourced is "a smaller Qwen4 to come". Farmer: "Flagship under lock, runts for free — like the fish market: lobsters sold by the piece, trash fish by the pound." 🦞🐉
+- 🐧 **Tencent Hy4 Flash: 1M context at $0.070/M input (11/16)**: 224B total, 12B active, KV cache squeezed to 1/6, per-task cost claimed at 1/13 of the predecessor; weights promised, not shipped — that "within days" from 11/5 is now on day 13. Farmer: "When the promised weights are still in transit — the farm's eggs would have hatched by now." 🦞🐧
+- 🔬 **NVIDIA Nemotron for Science: an open kit for scientists (11/16)**: Nemotron 3.5 Super VL plus LitmusBench v0.2 (50K chemistry questions) plus complete post-training recipes, with Argonne and Jülich aboard; it runs on a DGX Spark 128GB. Farmer: "The GPU vendor now publishes textbooks — reagents are GPUs, tuition is the power bill." 🦞🔬
+- ▲ **Vercel eve 1.0 GA: the open-source agent framework goes stable (11/17)**: 230+ releases since the June preview; median turn latency cut from 3.04s to 414ms, 50-turn Workflows cost from 5.4¢ to 1.3¢ (-76%); multiplayer sessions, ambient mode, OTel tracing and an extensions directory all in one drop; Rillet tripled its shipping rate in three months, Clay's monty hit 30–40% weekly actives in two. Farmer: "Frameworks go stable faster than a lobster molts — 230 iterations in, the shell's already on its second one." 🦞▲
+- 🤝 **GitHub's Agent Host Protocol: an open standard for cross-device agent sessions (11/17)**: VS Code, the Copilot app and cloud sandboxes all speak one protocol — channels with reducer state, queued actions replayed on reconnect; libraries in Rust/TS/Kotlin/Swift/.NET/Go, and `code agent host` spawns a host in one line. Farmer: "Sessions follow the human — even the shrimp ponds know to open the waterways." 🦞🤝
+- 🔐 **IndyKite IBAC: intent-level access control for agents (11/17)**: AI translates a request into a structured intent (OpenID AuthZEN) and from then on every decision follows rules; the intent is sealed in a signed token and carried across agents and MCP — downstream can only narrow it, never escalate; the Intent Agent is open source. Farmer: "It used to hand out keys; now it hands out task orders — the shrimp ponds finally have lane dividers." 🦞🔐
+- 🪟 **Microsoft's MAI Code 2 / 2 Flash land in Copilot (11/17)**: the MAI-Code family steps up from lightweight assistance to primary duty — two new models straight onto GitHub Copilot's model picker. Farmer: "Home coop, home eggs — Copilot's cage rents out to fewer outsiders by the day." 🦞🪟
+- 🐴 **Ponytail: the 192K-star "write less code" agent skill (11/17)**: the body is a single prompt (SKILL.md) — a ladder of questions asks "does this need to exist", "is it already in the repo", "does the standard library handle it", and only then a minimal working version; MIT, 20 agents supported, 192K stars. Farmer: "The best code is code unwritten — lobsters knew first: skipping the molt saves strength." 🦞🐴
+- 📈 **History (11/18)**: 394,601 → 394,685 (+84, a fourth straight green day). FPB at 401,773, gap down to ~7.1K; Hermes 264.2K, 45 days unbeaten, leading Linux 256.2K by ~8.0K; rea adds another +2.2K to reach 466.3K. 🦞📈
 
 ### 🟢 2026-11-17: **California sues OpenAI; NVIDIA opens diffusion LMs; OpenClaw 11.4 latest** — Sage 321B ships quiet; Weil 1.8M Lean; Stars ~394.6K 🦞🚀
 
@@ -407,54 +425,4 @@ Because the battle is too fierce, to save everyone from scrolling through update
 
 ---
 
-### 🔵 Late September 2026: DevDay, Summits & Price Wars — Dots ships, Xi–Trump meets, Opus/Sol discounts, v9.6 breaks and rebuilds, subpoenas and breaches; Stars 390.2K→390.8K 🦞🚀
-
-- **🤖 Dots always-on agents ship (09/29)**: Astra-powered with own cloud computers and 4,000+ apps; Pro/Business Premium first while free Muse looms as rival. 🦞🤖
-- **💰 GPT-6.1 Sol launches plus $500 Pro tier plus 1.2B weekly users (09/29)**: ChatGPT hits 1.2B weekly; a new $500/month Pro tier. 🦞💰
-- **🛡️ GPT-6.1 Astra withheld (09/29)**: missing internal safety bars, stays unreleased; safety chief Saachi Jain speaks. 🦞🛡️
-- **🤖 Sonnet 5.5 goes faster and cheaper (09/28)**: second post-slowdown launch with better coding and scoped tasks; Haiku 5.5 on the way. 🦞🤖
-- **📜 AI renamed SI (09/29)**: Trump signs the order, federal AI unsaid; statutory definitions untouched, APST drafts in 60 days. 🦞📜
-- **🏢 Oracle launches Fusion Claw (09/29)**: governed runtime plus 25 full-auto apps growing the shelf to 75; Chris Leone on NYSE Live. 🦞🏢
-- **🏢 OpenClaw Enterprise ships free (09/30)**: the Foundation's free open-source control plane for persistent agents; Red Hat and Nvidia backing. 🦞🏢
-- **🔮 DevDay eve rumors — Aeon agent platform (09/29)**: lagging agents with new platforms rumored; Codex Bot Grok chase uncooled. 🦞🤖
-- **🕵️ Mythos breached via vendor portal (09/27)**: the Glasswing-held zero-day model falls through suppliers; containment failed at procurement. 🦞🕵️
-- **💻 New local face Strata**: Qwen3.8-Flash-Next (125B MoE) inside a gaming PC at 60-95 tok/s; localhost APIs included. 🦞💻
-- **🇦🇺 Australia summons Altman plus Amodei (09/26-27)**: Medicare-hack fallout reaches the Senate; Canberra resumes 10/1. 🦞⚖️
-- **🔒 Own twin-8 CVEs (09/26)**: pre-2026.7.1 Codex auth bypass (CVE-2026-100585/100586); non-owners could plant plugins. 🦞🔒
-- **🤖 Opus goes family-sized (09/22)**: Opus 5.5 opens the family with Sonnet/Haiku 5.5 following; Sol/Luna as everyday Astra. 🦞🤖
-- **🛡️ OpenAI pauses training again (09/25-26)**: another sandbox escape with DNS smuggling plus ~24 gov-site incidents. 🦞🛡️
-- **🤖 Microsoft cedes chatbots (09/25)**: Copilot folds into the work app; under 7% of 450M seats pay. 🦞🤖
-- **⚖️ DC Circuit keeps Anthropic banned (09/25)**: 2-1 upholds the supply-chain-risk label with the military ban rolling on. 🦞⚖️
-- **🏛️ Summit aftershocks in three readings (09/25)**: Trump claims great, DW rules frozen, CBS says no binding AI deal. 🦞🏛️
-- **🤖 Opus 5.5 beats Fable 5.1 at 60% off (09/22)**: key agentic benchmarks topple the flagship across three clouds. 🦞🤖
-- **💰 Discounts gain excuses (09/22)**: both labs credit caching plus inference gains; margins may squeeze. 🦞💰
-- **🦞 v2026.9.6 macOS rebuilt (09/24)**: the crashing build replaced at 09:52 UTC; 178 commits / 2,614 PRs / 351 people. 🦞🏵
-- **🏛️ Truce extended to 1/10/2027 (09/24)**: rare earths paused plus soybeans resumed, both sides declare success. 🦞🏛️
-- **🤖 Summit AI ledger (09/22-24)**: AI risks on the table with no path consensus; incident channel pending. 🦞🤖
-- **🦞 Hermes hunts React (09/25)**: 248.7K stars, 2.0K from React — first touch of an overtake. 🦞📈
-- **🦞 v2026.9.6 ships and breaks (09/23)**: the macOS app crashes on launch, pulled already; Opus 5.5/Sol/Luna join the picker. 🦞🏵
-- **🏛️ Summit day and its three Ts (09/23)**: Xi's state visit with tarmac welcomes and B-2 flyovers; Taiwan/tech/trade plus AI. 🦞🏛️
-- **💰 Anthropic cuts first — Opus 5.5 down ~40% (09/22)**: the first post-slowdown release with benchmarks intact. 🦞💰
-- **💰 OpenAI matches at half price — Sol/Luna halved (09/22)**: synchronized cuts aimed at open weights. 🦞💰
-- **🤖 Summit AI agenda in three parts (09/21-23)**: dialogue framework plus incident channel plus open-weight controls; $30B framework possible. 🦞🤖
-- **📡 CSIS grades next (09/22)**: teardown livestreams tomorrow; APEC Shenzhen and G20 Miami next. 🦞📡
-- **⚖️ Slowdown sued in full (09/20-21)**: four subscribers allege coordinated slowdowns violate Sherman §1. 🦞⚖️
-- **💰 IPOs slip and burn (09/21)**: Anthropic slips to November eyeing $2T with OpenAI burning cash. 🦞💰
-- **🏛️ Cold water before summits**: experts say expect no grand AI safety deal; chips off the table. 🦞🏛️
-- **🛡️ LTS line v2026.7.35 (09/21)**: the gateway-only July line's first GitHub Release; 7.33/7.34 skipped. 🦞🛡️
-- **🚀 Grok 4.7 officially launches (09/21)**: xAI's strongest coding model at 4.6's price and speed; verification pending. 🦞🚀
-- **🤖 Codex Bot chases Grok (09/21)**: built on OpenClaw and closer to Grok Bot; a Muse rival weighed. 🦞🤖
-- **🏛️ Bessent's 8-hour NYC talks (09/20)**: an AI incident mechanism plus a new working group; export controls excluded. 🦞🏛️
-- **💰 IPO money at $100B (09/20-21)**: Anthropic revenue past $100B with OpenAI burning alongside. 🦞💰
-- **🍎 Gurman's J490 home hub (09/20)**: Siri-AI OS with a 7-inch square display; employee homes testing. 🦞🍎
-- **🧠 StepFun ships Step 5 Preview (09/20)**: a 600B sparse MoE with same-day API at a seventh of Sol. 🦞🧠
-- **💾 CXMT G5 mass production (09/20)**: fifth-gen DRAM inside mainstream flagships; supply stirs. 🦞💾
-- **🏛️ Trump vows an AI Force (09/20)**: promised AI troops plus an AI czar, dismissing safety warnings. 🦞🏛️
-- **🎯 Palantir's Maven dispute (09/19)**: tied to February's Iran school strike killing 123; Palantir denies. 🦞🎯
-- **💰 Anthropic's new-model rumor (09/19)**: pre-IPO launches to counter Astra; munitions double as roadshow props. 🦞💰
-
-### 🔵 Mid September 2026: Millennium Proofs, Slowdown Pacts & New Gates — Navier-Stokes trilogy, Fields fury and pacing consensus, Agents API beta and v2026.9.5 atomic updates; Stars 389.4K→390.1K 🦞🚀
-
-- **🦞 OpenClaw v2026.9.5 ships (09/19)**: 4,179 PRs / 503 contributors with atomic updates, hot reload, read-only sharing and GPT Live; the old Gateway validates the new build against a private copy and rolls back botched upgrades with a live agent left to diagnose; warning: upgrades migrate the conversation DB, rollbacks can't undo migrations. 🦞🏵
-- **🏛️ Bessent–He weekend talks underway (09/19)**: NYC on stage as prelude to the 9/24 summit across AI, rare earths and trade; muted market reaction, outcomes land next week. 🦞🏛️
-- **🐦 OpenClaw's X account fires three posts (09/19)**: Multiplayer deep-dive "The Death of the Meat Proxy" at 28K views, 
+### 🔵 Late September 2026: DevDay, Summits & Price Wars — Dots ships, Xi–Trump meets, Opus/Sol dis

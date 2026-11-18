@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img width="300" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.0.2/media/showcase.gif" alt="Chat list, photo viewer, reactions, swipe-to-reply, emoji keyboard, photo attachments, a voice note, a streamed AI reply and swipe-to-archive" />
+  <img width="300" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.1.0/media/showcase.gif" alt="Chat list, photo viewer, reactions, swipe-to-reply, emoji keyboard, photo attachments, a voice note, a streamed AI reply and swipe-to-archive" />
 </p>
 
 <p align="center">
@@ -33,16 +33,18 @@
 </p>
 
 <p align="center">
-  <strong><a href="https://kesha-antonov.github.io/react-native-chat/">📖 Documentation</a></strong> &nbsp;·&nbsp;
-  <a href="https://kesha-antonov.github.io/react-native-chat/installation">Installation</a> &nbsp;·&nbsp;
-  <a href="https://kesha-antonov.github.io/react-native-chat/usage">Usage</a> &nbsp;·&nbsp;
-  <a href="https://kesha-antonov.github.io/react-native-chat/props">Props</a> &nbsp;·&nbsp;
-  <a href="https://kesha-antonov.github.io/react-native-chat/guides">Guides</a>
+  <strong><a href="https://kesha-antonov.com/react-native-chat">📖 Documentation</a></strong> &nbsp;·&nbsp;
+  <a href="https://kesha-antonov.com/react-native-chat/installation">Installation</a> &nbsp;·&nbsp;
+  <a href="https://kesha-antonov.com/react-native-chat/usage">Usage</a> &nbsp;·&nbsp;
+  <a href="https://kesha-antonov.com/react-native-chat/props">Props</a> &nbsp;·&nbsp;
+  <a href="https://kesha-antonov.com/react-native-chat/guides">Guides</a>
 </p>
 
+<!-- author:start -->
 <p align="center">
-  <sub>Built and maintained by <a href="https://kesha-antonov.com">Kesha Antonov</a>, React Native lead engineer. More libraries, apps and case studies on <a href="https://kesha-antonov.com">kesha-antonov.com</a>.</sub>
+  <sub>Built and maintained by <a href="https://kesha-antonov.com">Kesha Antonov</a>, React Native lead engineer, <a href="https://kesha-antonov.com/react-native-developer">available for hire</a>. More libraries, apps and case studies on <a href="https://kesha-antonov.com">kesha-antonov.com</a>.</sub>
 </p>
+<!-- author:end -->
 
 <p align="center">
   <sub>Using it in production? A ⭐ helps other developers find the library.</sub>
@@ -58,41 +60,6 @@
   <br />
   <a href="https://getstream.io/chat/sdk/react-native/?utm_source=github&utm_medium=sponsor&utm_campaign=keshaantonov&utm_term=react-native-chat"><strong>Stream</strong></a> - React Native Chat SDK
 </p>
-
-<hr />
-
-<table align="center">
-<tr>
-<td align="center" valign="top" width="190">
-  <a href="https://getcryptoc.app/"><img src="https://getcryptoc.app/img/icon.png?v=3" width="76" height="76" alt="cryptoc app icon" /></a>
-  <br /><br />
-  <img src="https://getcryptoc.app/img/qr-get.png?v=2" width="124" height="124" alt="QR code that installs cryptoc" />
-  <br />
-  <sub>Scan to install</sub>
-  <br /><br />
-  <!-- App Store button hidden for now
-  <a href="https://apps.apple.com/app/cryptoc/id1333169178"><img height="40" src="https://getcryptoc.app/img/appstore.svg?v=2" alt="Download on the App Store" /></a>
-  <br />
-  -->
-  <a href="https://play.google.com/store/apps/details?id=co.ssoul.CryptoC"><img height="59" src="https://getcryptoc.app/img/googleplay.png?v=2" alt="Get it on Google Play" /></a>
-</td>
-<td valign="top">
-
-### Support my work
-
-**[cryptoc](https://cryptoc-app.web.app/)** - my crypto portfolio app. Your coins on the home screen, lock screen and watch face. iPhone, iPad, Mac, Apple Watch, Android, Android tablet and Wear OS.
-
-- Portfolio with average buy price and 24h / 180-day / all-time P&L
-- Widgets in three sizes, refreshed in the background - most days you never open the app
-- Price alerts on 5,000+ coins, delivered while the app is closed
-- **No account, no email, no exchange API keys, no ads.** Your holdings never reach a server - they sync through your own iCloud or Google Drive
-- Free for 3 holdings, and that is not a trial timer
-
-<sub>Downloading it is what pays for the time that goes into these libraries.</sub>
-
-</td>
-</tr>
-</table>
 
 <hr />
 <!-- cryptoc-promo:end -->
@@ -134,8 +101,8 @@ That is the whole setup - everything below is optional.
 <!-- chat-showcase:start -->
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.0.2/media/features-light.gif" />
-    <img width="760" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.0.2/media/features-dark.gif" alt="A chat with an assistant, opened on a big waving emoji and quick replies: a long press adds a heart reaction, a swipe quotes the message in the composer, the reply is sent and its ticks turn to read, the assistant's answer streams in word by word with a link preview, a held mic sends a voice note, a round video note is filmed and sent, a photo is picked from the attachment sheet, then the same chat switches to the dark theme. Beside it, the features list and the other built-in features" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.1.0/media/features-light.gif" />
+    <img width="760" src="https://raw.githubusercontent.com/kesha-antonov/react-native-chat/v7.1.0/media/features-dark.gif" alt="A chat with an assistant, opened on a big waving emoji and quick replies: a long press adds a heart reaction, a swipe quotes the message in the composer, the reply is sent and its ticks turn to read, the assistant's answer streams in word by word with a link preview, a held mic sends a voice note, a round video note is filmed and sent, a photo is picked from the attachment sheet, then the same chat switches to the dark theme. Beside it, the features list and the other built-in features" />
   </picture>
 </p>
 <!-- chat-showcase:end -->
@@ -648,19 +615,19 @@ Every group below is collapsed - open the one you need.
 
 ### Keyboard & Layout
 
-- **`bottomInset`** _(Number)_ - The composer's space for the home indicator; measured by default. Pass it when the host already knows it, e.g. a chat inside a sliding panel whose own inset arrives late. It is still given up while the keyboard or the emoji panel covers it
+- **`bottomInset`** _(Number)_ - The composer's space for the home indicator; measured by default. Pass it when the host already knows it, e.g. a chat inside a sliding panel whose own inset arrives late. The keyboard covers it as the composer rides up; it is given up while the emoji panel is open
 - **`keyboardProviderProps`** _(Object)_ - Props to be passed to the [`KeyboardProvider`](https://kirillzyusko.github.io/react-native-keyboard-controller/docs/api/keyboard-provider) for keyboard handling. No defaults are applied - in particular Chat does **not** set `statusBarTranslucent` / `navigationBarTranslucent`, because on Android those change the *activity window* and the change outlives the chat screen ([#2755](https://github.com/FaridSafi/react-native-gifted-chat/issues/2755)). `react-native-keyboard-controller` turns them on by itself when the app is genuinely edge-to-edge, so there is nothing to set in a normal app.
 
   Only used when Chat mounts the provider itself. If your app already mounts a `KeyboardProvider` (the setup `react-native-keyboard-controller` recommends - once, at the root), Chat detects it and reuses it instead of nesting a second one, and this prop is ignored. Configure the provider where you mount it.
 - **`enableKeyboardProvider`** _(Bool)_ - Render the built-in `KeyboardProvider`; default is `true`. You do **not** need to turn this off just because your app mounts its own provider - that case is detected and reused. Set it to `false` only to opt out completely, e.g. when the provider's edge-to-edge behavior causes layout shift or a header jump on Android/Expo.
 - **`enableGestureHandlerRootView`** _(Bool)_ - Render the `GestureHandlerRootView` Chat mounts around itself; default is `true`. Unlike `KeyboardProvider`, an existing one can't be auto-detected - `react-native-gesture-handler` doesn't expose that publicly - so set this to `false` yourself if your app (or a library it uses, e.g. a bottom sheet) already mounts one at the root. Nesting a second one changes the native view hierarchy around the composer, which has been observed to make a rare Fabric/Yoga layout assertion on iOS more likely, especially when Chat is mounted and unmounted while the keyboard is open ([#17](https://github.com/kesha-antonov/react-native-chat/issues/17)).
-- **`keyboardAvoidingViewProps`** _(Object)_ - Props to be passed to the [`KeyboardAvoidingView`](https://kirillzyusko.github.io/react-native-keyboard-controller/docs/api/components/keyboard-avoiding-view). See **keyboardVerticalOffset** below for proper keyboard handling.
+- **`keyboardAvoidingViewProps`** _(Object)_ - **Deprecated.** Chat no longer wraps itself in a `KeyboardAvoidingView`: the composer rides up with the keyboard and the message list lifts its own content in step with it ([`KeyboardChatScrollView`](https://kirillzyusko.github.io/react-native-keyboard-controller/docs/api/components/keyboard-chat-scroll-view)), so nothing is laid out again while the keyboard moves. Only `keyboardVerticalOffset` is still read, as where the chat starts on screen (see below); the other props are ignored.
 - **`isAlignedTop`** _(`boolean | 'auto'`)_ - Where the bubbles sit **while the whole conversation fits on screen**; once it is taller than the list this has no effect. `false` (default) keeps the usual bottom-anchored chat, `true` pins the messages to the top, and `'auto'` pins them to the top while the keyboard is closed and re-anchors them to the bottom while it is open - so a short conversation starts under the header and moves above the keyboard when the composer is focused ([#2736](https://github.com/FaridSafi/react-native-gifted-chat/issues/2736)). Works with either `isInverted` setting.
 - **`isInverted`** _(Bool)_ - Reverses display order of `messages`; default is `true`
 
 #### Understanding `keyboardVerticalOffset`
 
-[`keyboardVerticalOffset`](https://kirillzyusko.github.io/react-native-keyboard-controller/docs/api/components/keyboard-avoiding-view#keyboardverticaloffset) tells the KeyboardAvoidingView how far down the screen its container starts. That distance depends on the navigation header and on anything else you render above the chat.
+`keyboardVerticalOffset` tells Chat how far down the screen its container starts. Together with the chat's height it gives the space under the chat (a tab bar, say), which the keyboard does not have to cover, and so how far the composer rides up. That distance depends on the navigation header and on anything else you render above the chat.
 
 **You do not normally need to set it.** Chat measures its own position on screen and uses that, so the input toolbar sits on the keyboard whether the chat is full-screen or under a navigation header. The measurement comes from the `SafeAreaProvider` frame and updates on rotation and layout changes.
 
@@ -1466,4 +1433,30 @@ Token groups: `colors`, `radii`, `spacing`, `typography`, `avatar`, `sendButton`
 - **`textScale`** - the text size the user picked, a multiplier of every `typography` size (1 by default): messages, times, names, day and service pills, quotes and the composer grow together, e.g. `theme={{ textScale: 1.2 }}`.
 - **`chatList.headerSubtitle` / `chatList.headerSubtitleActive`** - `ChatHeader`'s status line, grey and in the accent color.
 
-A few behaviours follow from the tokens: setting `colors.outgoingBubble` turns the gradient off, setting `colors.senderName` empties `nameColors`, and setting `avatar.palette` without `paletteEnd` draws flat avatars - so an app that picks its own colors keeps seeing them. Bubbles in a run (same sender, at most five minutes apart, `utils.isSameGroup`) share one tail and one name, 2pt apart (`spacing.withinGroup`), with 6pt between runs (
+A few behaviours follow from the tokens: setting `colors.outgoingBubble` turns the gradient off, setting `colors.senderName` empties `nameColors`, and setting `avatar.palette` without `paletteEnd` draws flat avatars - so an app that picks its own colors keeps seeing them. Bubbles in a run (same sender, at most five minutes apart, `utils.isSameGroup`) share one tail and one name, 2pt apart (`spacing.withinGroup`), with 6pt between runs (`spacing.betweenGroups`).
+
+Build your own theme-aware components with the exported hooks:
+
+```tsx
+import { useTheme, useThemedStyles } from '@kesha-antonov/react-native-chat'
+import { StyleSheet } from 'react-native'
+
+const MyBadge = () => {
+  const theme = useTheme()
+  const styles = useThemedStyles(t => StyleSheet.create({
+    badge: { backgroundColor: t.colors.accent, borderRadius: t.radii.bubble },
+  }))
+  return <View style={styles.badge} />
+}
+```
+
+Also exported: `chatAppearances` (every built-in appearance), `defaultLightTheme` / `defaultDarkTheme` (the `'plain'` pair), `mergeTheme`, `ChatWallpaper`, and the `ChatTheme` / `PartialChatTheme` / `ChatAppearance` / `ChatAppearanceName` types.
+
+The built-in panels have their own token groups: `emojiKeyboard`, `contextMenu`, `attachments` and `chatList`. The full set of tokens is the `ChatTheme` type; every appearance's values are in `chatAppearances`. `colors.onAccent` colors the icons and text on an accent fill (the send button, badges, checks); a link whose color matches its text is underlined.
+
+</details>
+
+### Localization (i18n)
+
+<details>
+<summary><strong>Built-in translations and label overrides</strong></summary

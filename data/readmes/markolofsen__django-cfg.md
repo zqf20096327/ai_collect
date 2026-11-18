@@ -6,7 +6,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/django-cfg.svg?style=flat-square&logo=pypi)](https://pypi.org/project/django-cfg/)
 [![Python](https://img.shields.io/badge/python-3.12+-blue.svg?style=flat-square&logo=python)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/django-5.2+-green.svg?style=flat-square&logo=django)](https://www.djangoproject.com/)
+[![Django](https://img.shields.io/badge/django-5.2%20%7C%206.0%20%7C%206.1-green.svg?style=flat-square&logo=django)](https://www.djangoproject.com/)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square)](LICENSE)
 [![Downloads](https://img.shields.io/pypi/dm/django-cfg.svg?style=flat-square)](https://pypi.org/project/django-cfg/)
 
@@ -60,7 +60,7 @@ poetry run python manage.py runserver
 ```
 
 **What you get instantly:**
-- 🎨 Django Admin (Unfold) → `http://127.0.0.1:8000/admin/`
+- 🎨 Django Admin (stock admin, django-cfg theme) → `http://127.0.0.1:8000/admin/`
 - 📡 Real-time WebSockets → Live updates
 - 🔌 Auto-generated API clients → TypeScript / Python / Go
 - 🐳 Docker Ready → Production configs
@@ -153,7 +153,7 @@ User auth • Support tickets • Newsletter • CRM • AI agents • Knowledge
 ## What's Included
 
 **Backend:**
-- Django 5.2+ with type-safe config
+- Django 5.2 LTS, 6.0 and 6.1 with type-safe config
 - PostgreSQL, Redis, Centrifugo
 - gRPC server with streaming
 - 8 production-ready apps
@@ -162,7 +162,7 @@ User auth • Support tickets • Newsletter • CRM • AI agents • Knowledge
 - REST API with auto TypeScript generation
 
 **Admin:**
-- Django Unfold for CRUD
+- Stock Django admin with the django-cfg theme (`cfg-theme.css`) and `PydanticAdmin`
 - JWT authentication
 - Dark theme by default
 - Constance-backed dynamic settings

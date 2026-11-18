@@ -8,6 +8,7 @@
   <p>
     <a href="README_EN.md">English</a> ·
     <a href="#-快速开始">快速开始</a> ·
+    <a href="https://akxan.github.io/ppt-agent-skill/">在线画廊</a> ·
     <a href="#-26-风格预览画廊">风格画廊</a> ·
     <a href="#-工作流">工作流</a> ·
     <a href="#-架构">架构</a>
@@ -32,7 +33,7 @@
     <img src="https://img.shields.io/github/last-commit/Akxan/ppt-agent-skill?style=flat-square&color=blue&logo=git&logoColor=white" alt="Last commit" />
     <img src="https://img.shields.io/github/repo-size/Akxan/ppt-agent-skill?style=flat-square&color=orange" alt="Repo size" />
     <img src="https://img.shields.io/github/languages/top/Akxan/ppt-agent-skill?style=flat-square&color=8b5cf6" alt="Top language" />
-    <img src="https://img.shields.io/badge/python-≥3.8-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
+    <img src="https://img.shields.io/badge/python-≥3.9-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
     <img src="https://img.shields.io/badge/node-≥18-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node" />
     <img src="https://img.shields.io/badge/PPTX-editable-D24726?style=flat-square&logo=microsoftpowerpoint&logoColor=white" alt="PPTX" />
     <img src="https://img.shields.io/badge/Claude%20Code-skill-D97757?style=flat-square" alt="Claude Code Skill" />
@@ -55,7 +56,7 @@
 
 ## 💡 这是什么？
 
-一个 **Claude Code Skill**，模拟万元/页 PPT 设计公司的完整工作流，把一句话变成专业级演示文稿（HTML + 可编辑矢量 PPTX）。
+一个 **Claude Code Skill**，模拟万元/页 PPT 设计公司的完整工作流，把一句话变成专业级演示文稿（HTML 预览 + 带切换动画的可编辑 PPTX）。
 
 不是"给个大纲套模板"，而是**先调研后生成 / 内容驱动版式 / 全局风格一致 / 真实数据填充**的完整管线。
 
@@ -68,18 +69,30 @@
 | **6 步 Pipeline** | 需求调研 → 资料搜集 → 大纲策划 → 策划稿 → HTML 设计稿 → 后处理（SVG + PPTX）|
 | **26 种世界级风格** | 5 板块覆盖：暗色专业 7 / 浅色高级 8 / 活力鲜明 4 / 东方文化 3 / 自然复古 4 |
 | **18 种数据可视化** | 基础 8 + 进阶 6（雷达/时间线/漏斗/仪表盘）+ ECharts 级 4（世界地图/关系网络/桑基/热力日历）|
-| **Bento Grid 布局** | 7 种卡片式灵活布局，内容驱动版式 |
+| **Bento Grid 布局** | 7 种基础布局 + 3 种扩展版式，内容驱动版式 |
 | **世界级排版** | 7 级字号阶梯 · 字距铁律 · tabular-nums · OpenType 特性 · serif italic 混排 · 字体栈三层降级 |
 | **智能配图** | AI 生成配图 + 5 种视觉融入技法（渐隐融合/色调蒙版/氛围底图等）|
 | **失败模式目录** | 8 种 failure modes（underfill / decorative_substitution 等）+ 修复顺序铁律 |
 | **跨页叙事** | 密度交替节奏 / 章节色彩递进 / 封面-结尾呼应 / 渐进揭示 |
-| **风格预览画廊** | `gallery.py` 一键生成 26 风格卡片墙索引页 |
-| **Smoke 测试** | `smoke_test.py` 校验风格 JSON / pipeline 兼容 / 排版铁律 / 端到端管线 |
-| **PPTX 兼容** | HTML → SVG → PPTX 管线，PPT 365 中右键"转换为形状"全部可编辑 |
+| **风格预览画廊** | `gallery.py` 一键生成 26 风格卡片墙索引页，[在线查看](https://akxan.github.io/ppt-agent-skill/) |
+| **可编辑 PPTX** | 文字是文本框、图形是原生形状、卡片是组合；径向背景、光晕等复杂效果自动转成图层保真 |
+| **切换与动画** | 默认页间淡入；可选卡片逐张入场（点击或自动），在 PowerPoint 中实测可用，浏览器预览页也能播放同样的动效 |
+| **严格模式** | 可选：`validate.py` 在每步后校验大纲、策划稿、风格、设计稿与截图 |
+| **Smoke 测试** | `smoke_test.py` 覆盖风格、mock、图表、校验器、文档引用与真实导出 |
 
 ## 🚀 快速开始
 
-**作为 Claude Code Skill 调用**（推荐）：
+**安装**：把仓库克隆到 Claude Code 的 skills 目录，然后新开一个会话。
+
+```bash
+# 个人级：所有项目可用
+git clone --depth 1 https://github.com/Akxan/ppt-agent-skill ~/.claude/skills/ppt-agent-skill
+
+# 或项目级：只在当前项目可用（在项目根目录执行）
+git clone --depth 1 https://github.com/Akxan/ppt-agent-skill .claude/skills/ppt-agent-skill
+```
+
+**使用**：装好后直接说需求，Skill 会自动触发：
 
 ```
 你：帮我做一个关于 X 的 PPT
@@ -102,18 +115,18 @@ Agent 提问调研需求（等你回复 7 题）
 | 带要求 | `做 15 页暗黑科技风的 AI 安全汇报材料` |
 | 隐式触发 | `我要给老板汇报 Y` / `做个培训课件` / `做路演 deck` |
 
-**环境依赖**：
+**环境依赖**（只有导出 SVG / PPTX 时需要；缺少时仍会交付 HTML 预览）：
 
 ```bash
-# Python 依赖
+# Python >= 3.9
 pip install python-pptx lxml Pillow
 
-# Node.js >= 18，puppeteer 在首次 html2svg.py 运行时自动安装
+# Node.js >= 18；puppeteer 在首次运行 html2svg.py 时自动安装（会下载 Chrome，约 600 MB）
 ```
 
 ## 🎨 26 风格预览画廊
 
-5 个板块，覆盖所有典型商业场景。每个 mock 都是真实 1280×720 设计稿：
+5 个板块，覆盖所有典型商业场景。每个 mock 都是真实 1280×720 设计稿，可以在[在线画廊](https://akxan.github.io/ppt-agent-skill/)里逐个点开看：
 
 ### 暗色专业（7 风格 · `references/styles/dark.md`）
 
@@ -198,7 +211,7 @@ pip install python-pptx lxml Pillow
 | **进阶** | 6 | 雷达图 · 时间线 · 漏斗图 · 仪表盘 · 多组对比柱 · 简单地理 | [`charts/advanced.md`](references/charts/advanced.md) |
 | **ECharts 级** | 4 | 世界地图 choropleth · 关系网络 · 桑基图 · 热力日历 | [`charts/complex.md`](references/charts/complex.md) |
 
-全部纯 HTML/CSS/SVG 实现，**无 JS 运行时**（保证 svg2pptx 管线兼容）。所有图表自动适配 26 风格的 CSS 变量。
+全部纯 HTML/CSS/SVG 实现，**无 JS 运行时**，进 PPTX 后图形与数字仍可编辑。所有图表通过标准 CSS 变量自动适配 26 风格。
 
 ## 🔧 工作流
 
@@ -226,7 +239,7 @@ pip install python-pptx lxml Pillow
 
 - **TIER 1 · 入口** — 用户一句话 prompt 触发 [SKILL.md](SKILL.md)（Agent 入口主流程指令）；引用 `references/` 下的所有规则文件
 - **TIER 2 · 6 步 Pipeline** — 每步独立 STEP，前后用 JSON 合同传递；每步可见使用的 reference 文件
-- **TIER 3 · 输出** — 4 种最终产物：翻页 HTML / 矢量 SVG / 可编辑 PPTX / 风格预览画廊
+- **TIER 3 · 输出** — 翻页 HTML / 矢量 SVG / 可编辑 PPTX（含切换与动画）/ 风格预览画廊
 
 **Reference Library**（注入到各步）：
 
@@ -242,58 +255,50 @@ pip install python-pptx lxml Pillow
 
 ```
 ppt-agent-skill/
+├── .github/workflows/pages.yml   # 把风格画廊自动发布到 GitHub Pages
 ├── SKILL.md                      # 主工作流指令（Agent 入口）
 ├── README.md / README_EN.md      # 本文件 / English
-├── assets/                       # 视觉资产
-│   ├── logo.svg                  # Logo
-│   ├── banner.svg                # README 横幅
-│   ├── hero-all.png              # 26 风格全景拼图
-│   └── hero-<category>.png       # 5 板块单独拼图
-├── references/                   # Skill 引用文档
-│   ├── prompts.md                # 5 套 Prompt 模板（调研/大纲/策划/设计/备注）
-│   ├── typography.md             # 世界级排版铁律 14 条
-│   ├── bento-grid.md             # 7 种布局规格 + 卡片类型
-│   ├── pipeline-compat.md        # HTML→SVG→PPTX 管线兼容规则
+├── ATTRIBUTIONS.md               # 借鉴来源与致谢
+├── assets/                       # README 用图：logo、架构图、风格拼图
+├── references/                   # Skill 引用文档（索引见 references/README.md）
+│   ├── prompts.md                # 5 套 Prompt 模板
+│   ├── bento-grid.md             # 画布、7 种布局、6 种基础卡片
+│   ├── typography.md             # 排版铁律 14 条
+│   ├── pipeline-compat.md        # 哪些 CSS 保持矢量 / 转图层 / 会丢
+│   ├── strict-mode.md            # 可选的脚本校验与图审清单
 │   ├── method.md                 # 核心方法论
-│   ├── style-system.md           # 引导文件（兼容旧引用）
-│   ├── styles/                   # 26 风格按 5 板块分目录
-│   │   ├── index.md              # 索引 + 决策矩阵 + JSON Schema
-│   │   ├── dark.md               # 7 暗色专业
-│   │   ├── light.md              # 8 浅色高级
-│   │   ├── vibrant.md            # 4 活力鲜明
-│   │   ├── cultural.md           # 3 东方文化
-│   │   └── natural.md            # 4 自然/复古
-│   ├── charts/                   # 18 种图表
-│   │   ├── index.md              # 决策矩阵
-│   │   ├── basic.md              # 8 种基础
-│   │   ├── advanced.md           # 6 种进阶
-│   │   └── complex.md            # 4 种 ECharts 级
-│   └── principles/
-│       └── failure-modes.md      # 8 种 failure modes + 修复顺序
-├── scripts/                      # 后处理 + 工具
+│   ├── styles/                   # 26 风格：index.md + 5 个板块文件
+│   ├── charts/                   # 18 图表：index.md + basic / advanced / complex
+│   ├── layouts/                  # 10 种版式
+│   ├── blocks/                   # 7 种组件原型 + card-styles
+│   ├── page-templates/           # cover / toc / section / end
+│   ├── principles/               # 6 条设计原则 + failure-modes
+│   └── design-runtime/           # CSS 技法库、数据类型映射
+├── scripts/                      # 脚本（索引见 scripts/README.md）
 │   ├── html_packager.py          # 多页 HTML → 翻页预览
-│   ├── html2svg.py               # HTML → SVG（dom-to-svg, 文字可编辑）
-│   ├── svg2pptx.py               # SVG → PPTX（OOXML 原生）
-│   ├── gallery.py                # 生成 26 风格预览画廊 + 截图
-│   ├── build_hero.py             # 生成 README hero 拼图
-│   └── smoke_test.py             # 端到端测试 + pipeline-compat 扫描
-├── ppt-output/
-│   └── style-gallery/            # 26 个 1280×720 mock + 26 PNG + index.html
-├── docs/superpowers/specs/       # 设计文档归档
-└── tests/smoke-results/          # 测试报告归档
+│   ├── html2svg.py               # HTML → SVG（文字可编辑，复杂效果转图层）
+│   ├── svg2pptx.py               # SVG → PPTX（原生形状、切换、入场动画）
+│   ├── pptx_motion.py            # 切换与动画的 OOXML 构造
+│   ├── html2png.py / png2pptx.py # 像素级保真版 PPTX
+│   ├── contracts.py              # 数据合同的单一真源
+│   ├── validate.py               # 严格模式校验
+│   ├── resource_loader.py        # 按策划稿字段取参考资源
+│   ├── smoke_test.py             # 冒烟测试
+│   └── gallery.py / build_hero.py# 风格画廊与 README 拼图
+└── ppt-output/style-gallery/     # 26 个 1280×720 mock + 截图 + index.html
 ```
 
 ## 🧪 质量保证
 
 ```bash
-# 风格 JSON 校验 + pipeline-compat 扫描 + 排版自检（26 风格）
-python3 scripts/smoke_test.py --phase 1
-# → 52 pass / 0 fail / 0 warn
+# 快速套件：26 风格定义 / mock 合规 / 18 图表模板 / 校验器 / 资源路由 / 文档引用完整性
+python3 scripts/smoke_test.py
 
-# 端到端管线（HTML→SVG→PPTX，3 风格代表性测试）
-python3 scripts/smoke_test.py --phase 5
-# → 6 pass / 0 fail（preview.html + svg/*.svg + presentation.pptx 三种产物全部生成）
+# 追加真实导出：HTML → SVG → PPTX，并断言背景、卡片成组、页间切换、入场动画都已写入
+python3 scripts/smoke_test.py --export
 ```
+
+导出质量用真实 PowerPoint 渲染对照浏览器截图验证过 26 个风格。生成 deck 时还可以启用[严格模式](references/strict-mode.md)，在每一步后用 `scripts/validate.py` 校验产物。
 
 ## 🌟 世界级标杆参照系
 
@@ -314,12 +319,6 @@ python3 scripts/smoke_test.py --phase 5
 | 时尚奢华 | Tom Ford | Didot italic + 黑金 + 居中对称 + 0.65em 字距 |
 | 友好编辑器 | [Notion](https://notion.so) | Lyon Display + 米白 + emoji 系统 |
 
-## 📄 设计文档
-
-完整的世界级重做设计文档：[`docs/superpowers/specs/2026-05-10-world-class-redesign-design.md`](docs/superpowers/specs/2026-05-10-world-class-redesign-design.md)
-
-包含：目标与动机 / 26 风格列表 / JSON Schema 升级 / 字体栈策略 / 排版铁律 / 图表系统设计 / 风格预览画廊 / 文件组织架构 / 向后兼容保证 / 5 阶段实施路线 / 成功标准 / 决策日志。
-
 ## ⭐ Star History
 
 <div align="center">
@@ -337,7 +336,7 @@ python3 scripts/smoke_test.py --phase 5
 
 欢迎提 Issue / PR：
 - **新增风格**：在对应 `references/styles/<category>.md` 追加 JSON 定义 + 在 `ppt-output/style-gallery/<id>.html` 写 1280×720 mock
-- **新增图表**：在 `references/charts/<level>.md` 追加 HTML 模板
+- **新增图表**：在 `references/charts/<level>.md` 追加 HTML 模板，并在 `scripts/contracts.py` 的 `CHARTS` 登记
 - **改进文档**：欢迎 typo 修复、用法说明补充
 
 提交前跑一下 `python3 scripts/smoke_test.py` 确保通过。

@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://discord.gg/K9TjZNwC4"><img height="28" alt="Join our Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&amp;logoColor=white&amp;style=for-the-badge"></a>
+  <a href="https://discord.gg/bmgnw6pdZ7"><img height="28" alt="Join our Discord" src="https://img.shields.io/badge/Discord-5865F2?logo=discord&amp;logoColor=white&amp;style=for-the-badge"></a>
   <a href="https://x.com/HeyLingerAI"><img height="28" alt="Follow on X" src="https://img.shields.io/badge/@HeyLingerAI-000000?logo=x&logoColor=white&amp;style=for-the-badge"></a>
   <a href="https://www.youtube.com/@HeyLingerAI"><img height="28" alt="YouTube" src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white&amp;style=for-the-badge"></a>
   <a href="https://www.reddit.com/user/HeyLinger/"><img height="28" alt="Reddit" src="https://img.shields.io/badge/Reddit-FF4500?logo=reddit&logoColor=white&amp;style=for-the-badge"></a>
@@ -77,7 +77,7 @@ One command detects your hardware, recommends the best model, installs it and ch
     <th align="center" width="1200">SimplexAI</th>
     <th align="left" width="2700">Compares with</th>
   </tr>
-  <tr><td>Mac 16 GB</td><td>Spark-X2.6-4B Q4_K_M†</td><td align="center">37.6 short (37.4–37.8); 13.3 after a 126K prompt (13.30–13.31)</td><td align="center">Not ranked</td><td>—</td></tr>
+  <tr><td>Mac 16 GB</td><td>Spark-X2.6-4B Q4_K_M</td><td align="center">32.99–37.24 for the slower of two concurrent sessions with short prompts; 24.61–26.23 after one 56,978-token prompt</td><td align="center">Not ranked</td><td>—</td></tr>
   <tr><td>Mac 24 GB</td><td>Qwen3.8-27B UD-IQ3_S</td><td align="center">46.06 single session (median of 3); 48.43 for 2 sessions together</td><td align="center">51.9</td><td>≈ Claude Opus 4.5</td></tr>
   <tr><td>Mac 32 GB</td><td>Qwen3.8-27B UD-Q4_K_M</td><td align="center">45.44 single session (median of 3)</td><td align="center">54.0</td><td>≈ Claude Sonnet 4.6</td></tr>
   <tr><td>Linux NVIDIA 8 GB + 32 GB</td><td>Qwen3.6-35B-A3B UD-Q3_K_M</td><td align="center">121–146 short; 88–103 after a 62K prompt</td><td align="center">35.4</td><td>≈ Gemini 2.5 Pro</td></tr>
@@ -194,18 +194,22 @@ to serve other computers on your network and to turn on voice.
 #### Local models
 
 The Compose containers run only the Linger server; models and agents run on the
-computer you connect. On that macOS (Apple silicon) or Linux computer, run the
-guided installer:
+computer you connect. Run the guided installer on that computer:
 
 ```bash
+# macOS (Apple silicon) or Linux
 ./scripts/install/install.sh
 ```
 
+```powershell
+# Windows (x64, ordinary non-elevated PowerShell)
+powershell -ExecutionPolicy Bypass -File .\scripts\install\install.ps1
+```
+
 It checks your hardware, installs and verifies a local model after your
-approval, and connects `linger-computer` to your Linger server. Run
-`./scripts/install/install.sh --help` for day-2 commands (`--status`, `--up`,
-`--remove`), or see [Bring your own runtime](docs/local-inference.md) for other
-model setups.
+approval, and connects `linger-computer` to your Linger server. Pass `--help`
+for day-2 commands (`--status`, `--up`, `--remove`), or see
+[Bring your own runtime](docs/local-inference.md) for other model setups.
 
 If Compose ports are busy, the installer offers to select free ports. It saves
 LiveKit's port mappings and matching RTC startup arguments in

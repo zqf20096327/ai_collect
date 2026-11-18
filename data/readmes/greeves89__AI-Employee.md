@@ -23,14 +23,14 @@
 ---
 
 <div align="center">
-  <img src="docs/assets/dashboard.png" alt="AI-Employee dashboard" width="100%" />
-  <p><em>Dashboard — agent status, system health and the task queue at a glance</em></p>
+  <img src="docs/assets/dashboard.png" alt="AI-Employee start page: give an agent a task in one sentence, see what is running, waiting for review or failed" width="100%" />
+  <p><em>Start — give an agent a task in one sentence and see what is running, waiting for you or done</em></p>
 </div>
 
 <div align="center">
-  <img src="docs/assets/chat.png" alt="An agent builds a Windows program and delivers the .exe in the chat" width="49%" />
-  <img src="docs/assets/templates.png" alt="Template picker with the Fullstack Developer template" width="49%" />
-  <p><em>Left: an agent builds a Windows program and hands over the .exe &nbsp;·&nbsp; Right: 34 templates to start from</em></p>
+  <img src="docs/assets/chat.png" alt="Chat with a marketing agent: three Instagram ideas based on the company knowledge, with its schedule on the right" width="49%" />
+  <img src="docs/assets/templates.png" alt="Template picker with search and categories" width="49%" />
+  <p><em>Left: a marketing agent answers from the company knowledge &nbsp;·&nbsp; Right: 34 templates to start from, searchable by area</em></p>
 </div>
 
 ---
@@ -61,21 +61,24 @@ How AI-Employee compares to the platforms it is usually evaluated against:
 | Feature | AI-Employee | OpenClaw | CrewAI | Lindy | Langdock | OpenAI Responses API / Agents SDK |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
 | Self-hosted | Yes | Yes | Yes (BYO) | No | Enterprise only (5,000+ seats) | No |
-| Multi-agent (isolated containers) | Yes | Partial (isolated workspaces) | No | No | No | No |
-| Multi-user with per-user data separation | Yes | No | No | Yes | Yes | Yes |
-| Local semantic memory (no OpenAI) | Yes (bge-m3) | Partial | BYO | No | No | No |
+| Multi-agent (isolated containers) | Yes | Partial (opt-in sandbox per agent) | No | No | No | Partial (Sandbox Agents, BYO backend) |
+| Multi-user with per-user data separation | Yes | Partial (one agent per person) | Partial (commercial platform) | Yes | Yes | Yes |
+| Local semantic memory (no OpenAI) | Yes (bge-m3) | Yes (opt-in) | BYO | No | No | No |
 | Autonomy levels / permission tiers | Yes | Partial | Yes (RBAC) | Yes | Partial (action permissions) | Yes (Enterprise) |
-| Human-in-the-loop approvals | Yes | Partial (exec approvals) | Yes | Partial | Yes (workflows) | Yes (Agents SDK) |
-| Governance audit trail | Yes | Yes | Yes | Yes (Business+) | Partial (add-on) | Yes (Enterprise) |
+| Human-in-the-loop approvals | Yes | Partial (exec approvals) | Yes | Yes | Yes (workflows) | Yes (Agents SDK) |
+| Governance audit trail | Yes | Yes | Yes | Yes (Enterprise) | Partial (add-on) | Yes (Enterprise) |
+| Credentials hidden from agents (inserted at the exit) | Yes | No | No | n/a (SaaS) | n/a (SaaS) | Partial (hosted shell only) |
+| Admins see usage figures, not users' content | Yes | n/a (no roles) | Partial (usage role) | Partial (private DMs) | Partial | BYO |
 | Meeting rooms (multi-agent chat) | Yes | No | Partial | No | No | No |
 | Persistent agent teams + lead routing | Yes | No | Partial | No | No | No |
-| DSGVO-compliant by default | Yes* | Partial | BYO | Partial (GDPR claimed, US company) | Yes (EU cloud) | Partial (EU region on approval) |
-| Telegram + voice (STT/TTS + realtime) | Yes | Yes | BYO | No | No (Slack/Teams, dictation) | No |
+| Project board with Git (issues, PRs, CI) | Yes | No | No | No | No | No |
+| DSGVO-compliant by default | Yes* | Partial | BYO | Partial (GDPR verified · no EU residency documented) | Yes (EU cloud) | Partial (EU region on approval) |
+| Telegram + voice (STT/TTS + realtime) | Yes | Yes | BYO | Partial (phone calls, no Telegram) | No (Slack/Teams, dictation) | Partial (realtime voice, no Telegram) |
 | Agents deploy and operate Docker apps | Yes | Partial (shell) | No | No | No | No |
-| 34 pre-built agent templates | Yes | Marketplace | Yes (Marketplace) | Yes | Yes | Yes |
-| LLM-agnostic (Claude / GPT-5.x / Gemini / Bedrock / Azure / local) | Yes | Yes | Yes | Partial (GPT/Claude, no BYO) | Yes (BYOK) | No |
+| 34 pre-built agent templates | Yes | Marketplace | Yes (Marketplace) | Partial (role presets) | Yes | Yes |
+| LLM-agnostic (Claude / GPT-5.x / Gemini / Bedrock / Azure / local) | Yes | Yes | Yes | Partial (Anthropic/OpenAI/Gemini, no BYO key) | Yes (BYOK) | Partial (SDK: other providers; API: OpenAI only) |
 
-\* Model inference through a cloud API leaves your infrastructure. Use local models or an EU-hosted deployment for full data locality. Competitor data was last reviewed in October 2026.
+\* Model inference through a cloud API leaves your infrastructure. Use local models or an EU-hosted deployment for full data locality. Competitor data was last reviewed in November 2026, against vendor documentation and pricing pages.
 
 </details>
 
@@ -110,7 +113,7 @@ git pull
 ./scripts/setup.sh
 ```
 
-Database migrations run on start. Data lives in named Docker volumes and survives updates. After an update, agents show an **update** badge until their container is recreated on the new image.
+Database migrations run on start. Data lives in named Docker volumes and survives updates. After an update, running agents are recreated on the new image when they are idle — never during a task, a meeting or shortly after a conversation. Administrators can switch this off under *Admin → Operations*.
 
 ## Features
 
@@ -122,6 +125,7 @@ Database migrations run on start. Data lives in named Docker volumes and survive
 - **Live steering** — send a correction while the agent is working; the current turn is interrupted and resumes with your message folded in.
 - **Parallel sessions** — an agent works on several conversations and tasks at once, with a visible queue when it is busy.
 - **Builds software, including Windows programs** — agents from the *Fullstack Developer* template write, test and ship code, and cross-compile real Windows `.exe` files (Go, Rust, .NET, C/C++) from their Linux container.
+- **One specialist, many users** — an administrator sets up an agent once and shares it with users or roles. Each user gets their own instance with separate memory, chats and files.
 - **Apps** — agents write, deploy and operate their own Docker Compose apps. Owners share an app with a named user, all signed-in users, or through an expiring public link.
 
 ### Working with agents
@@ -132,6 +136,15 @@ Database migrations run on start. Data lives in named Docker volumes and survive
 - **Visual workflow builder** — a drag-and-drop canvas for multi-step agent workflows with task, condition and wait blocks, started by hand or by cron.
 - **Proactive agents** — agents with areas of responsibility plan their day, pick up outstanding work and report in, within configured working hours.
 - **Realtime voice** — a live conversation with an agent (Amazon Nova Sonic or Azure OpenAI Realtime) that can search files, write notes, manage apps and drive tasks.
+
+### Projects
+
+- **Project board** — a project bundles agents for one goal: inbox, triage, in progress, review and done. Only people approve work; agents pick up ready cards on a cadence (off, every 30 minutes, hourly).
+- **Git projects** — GitHub, GitLab and Forgejo/Gitea: open issues and pull requests land on the board, CI status is shown on the card, and agents claim work in the repository with a visible badge and a push lock.
+- **Done only with proof** — a result has to state what was checked; a blind reviewer agent can check finished cards before a person signs them off.
+- **Project knowledge** — upload files to a project (text becomes searchable) and attach Second Brains read-only.
+- **Finances** — costs per month, project and agent, split into tasks and chat, with a monthly budget per project.
+- **Secretary and "Today"** — up to four agents look after mailbox and calendar (Microsoft 365): triage, draft replies, deadlines as reminders, a daily briefing. Drafts are sent only after you approve them.
 
 ### Collaboration between agents
 
@@ -148,25 +161,41 @@ Database migrations run on start. Data lives in named Docker volumes and survive
 
 ### Governance and control
 
-- **Autonomy matrix** — every capability is set to **Allow / Ask / Deny**, with L1–L4 presets as a starting point. *Ask* raises an approval request; *Deny* is never executed.
-- **Approvals** — in the web UI, by Telegram button or by push notification. Uncertain decisions and failed tasks arrive in the same inbox.
+- **Autonomy matrix** — every capability is set to **Allow / Ask / Deny**, with three presets as a starting point (*watch only*, *ask first*, *act alone*). *Ask* raises an approval request; *Deny* is never executed.
+- **Approvals bound to one action** — an approval covers exactly the action it was asked for. If execution breaks off midway, the approval is marked *outcome unclear* and is not repeated without a person deciding. Approvals arrive in the web UI, by Telegram button or by push notification.
 - **Roles and groups** — bundle models, secrets, mounts, templates and limits into roles and assign users to them.
 - **Per-user data separation** — users work with their own agents, tasks, schedules, knowledge and memories. Agents of one user share a knowledge base; agents of different users do not.
+- **Administrators see figures, not content** — for other users' agents, administrators see counts, status and costs, but not chats, task results, files, memory or live output.
 - **Audit log and decision trace** — every governance event is recorded, and each task has a replayable timeline of thought, tool call and result.
 - **DLP egress filter** — outgoing agent text is scanned for credentials and personal data; each data class can be allowed, logged, masked or blocked.
 - **Budgets** — monthly cost caps per agent with a model downgrade or a stop when the cap is reached.
 - **Golden tests as an update gate** — versioned task sets per role; a regression against the baseline blocks an agent update.
-- **Self-healing** — failed tasks are classified and retried with a changing strategy; permanent errors go to a human with the full history.
+- **Self-healing** — failed tasks are classified and retried with a changing strategy; permanent errors go to a human with the full history. A run that was interrupted (restart, crash) is never retried automatically, because it may already have acted outside.
+- **Results are not lost** — a task taken from the queue cannot vanish: results are stored durably by the agent, processed exactly once by the orchestrator, and the follow-up (notifications, escalation, callbacks) resumes after a crash.
+- **Quota brake** — when a subscription quota is exhausted, an agent's schedules pause until it resets and catch up once, instead of failing every run.
+
+### Security
+
+- **Credentials only at the network exit** — an egress proxy inserts API keys, Git tokens, MCP credentials and the Claude/Codex sign-in only when a request leaves the platform. Agents and their tools see placeholders. Allowed destinations can be enforced per agent.
+- **Network guard** — agent containers are cut off from the company network, router and host; their HTTPS traffic goes through the egress proxy.
+- **Docker guard** — the orchestrator reaches Docker only through a guard that checks every container setting against a policy. Agents run without sudo by default.
+- **Checked tool calls** — a pre-tool hook in Claude Code and Codex checks every step on the server and fails closed. Mail, Teams and ticket actions are checked on the server, not in the agent.
+- **PII masking** — optional per agent: names, addresses and other personal data are replaced by placeholders before text reaches the model, and restored in the answer.
+- **Signed images** — release images are signed and verified with cosign on update; third-party images are pinned by digest.
+- **Production profile** — `BETRIEBSPROFIL=produktion` refuses to start agents unless the required protections (egress proxy, network guard, Docker guard, checked tool calls) are active. New installations get it from `setup.sh`.
+- **Security status** — a traffic light for administrators under *Admin → Operations* that lists what is missing.
 
 ### Integrations
 
-- **Microsoft 365** — mail, calendar, Teams, Planner, To-Do and OneDrive through a built-in MCP server. Each user connects their own account; a platform-wide read-only switch is available.
+- **Microsoft 365** — mail, calendar, Teams, Planner, To-Do and OneDrive through a built-in MCP server. Each user connects their own account; a platform-wide read-only switch is available. An agent can also get its own licensed account (own mailbox, own sender) and be woken by new mail.
+- **Teams meetings** — an agent takes the minutes of a Teams meeting and, as a preview, joins it as a participant that listens and answers when addressed. Guests from outside keep the agent out.
 - **Channels** — Telegram (one bot per agent, with voice), Microsoft Teams, Slack and WhatsApp. An agent can join a Teams meeting and speak.
-- **MCP servers** — connect any third-party MCP server, with custom auth headers or OAuth.
+- **MCP servers** — connect any third-party MCP server, with custom auth headers or OAuth. The platform's own MCP endpoints accept sign-in through your identity provider (OAuth 2.1).
 - **Skills** — reusable capability modules with attached files, a marketplace and your own skill sources.
 - **Browser automation** — agents drive a headless browser, in all three runtimes.
 - **Computer Bridge** — a tray app for macOS and Windows that lets an agent work on your desktop, with granular permissions and folder restrictions.
   It can also watch along (opt-in "Mitsehen"): local rules and, with "Mitdenken", screenshots let the agent offer help in an overlay at the top of the screen — nothing runs before you click Yes, and Stop locks the agent out of your machine.
+  The agent can operate interface elements directly (Windows UI Automation, macOS accessibility), and a folder on your computer can be mirrored as a Second Brain.
 - **Single sign-on** — Microsoft Entra, Google, OIDC and SAML 2.0 with group mapping.
 - **Two-factor sign-in** — authenticator app (TOTP) with recovery codes for password accounts; administrators can enforce it.
 - **Ticket systems** — Matrix42 and a generic REST profile.
@@ -175,6 +204,7 @@ Database migrations run on start. Data lives in named Docker volumes and survive
 
 - **Idle lifecycle** — agents stop when idle and wake on login, chat or a scheduled task; individual agents can be kept always on.
 - **Health and self-test** — checks for Redis, Postgres, Docker, the embedding service and every agent, plus an administrator overview of what needs attention.
+- **Costs per model** — enter a price per model on an AI account; costs are calculated from tokens when the runtime does not report an amount, so budgets apply to every model.
 - **Monitoring** — Prometheus metrics and Grafana dashboards (`docker-compose.monitoring.yml`).
 - **Backups** — `backup.sh` saves the database, agent workspaces, sessions and the encryption key; `restore.sh` verifies checksums and runs a self-test; `update.sh` backs up before every update. Backup status, retention periods and the usage ping are managed in the admin console.
 - **Reverse proxy** — Caddy and Traefik configurations with TLS.
@@ -197,14 +227,21 @@ Reverse proxy  Caddy / Traefik / nginx, TLS
                     |
 Orchestrator   FastAPI · SQLAlchemy async · Docker SDK · WebSocket
                agent manager · task router · scheduler and workflows ·
-               autonomy matrix and approvals · channel gateway · MCP routes · audit log
+               autonomy matrix and approvals · channel gateway · MCP routes · audit log ·
+               security status
                     |
       +-------------+--------------+----------------------+
       |             |              |                      |
     Redis      PostgreSQL 16    Embedding service    Agent containers
     queues,    pgvector         bge-m3, local        one per agent:
     live       state, memory,                        Claude Code · Codex CLI · Custom LLM
-    events     knowledge                             workspace · skills · MCP tools
+    events     knowledge                             workspace · skills · MCP tools ·
+                                                         checked tool calls
+                    |                                     |
+Docker guard   orchestrator -> Docker only through policy checks
+Egress proxy   agents -> internet only through the proxy; keys and tokens inserted
+               at the exit, agents see placeholders · network guard blocks company
+               network, router and host
 
 Your model access: Anthropic · OpenAI · Azure · AWS Bedrock · Google Vertex · local models
 ```
@@ -326,7 +363,7 @@ A license is issued **per installation** and includes a package of agents. Every
 | **Commercial use** | No | Yes | Yes | Yes | Yes |
 | **Platform** | Full platform | Full platform | Full platform | Full platform | Full platform |
 | **Single sign-on** | — | — | — | Microsoft Entra, Google, OIDC | plus SAML |
-| **Deployment** | Single host | Single host | Single host | Single host | High-availability setup, multiple tenants |
+| **Deployment** | Single host | Single host | Single host | Single host | High-availability setup (one company, many users and agents) |
 | **Support** | Community (GitHub) | E-mail | E-mail | Priority e-mail | Named contact, agreed response times |
 
 </details>

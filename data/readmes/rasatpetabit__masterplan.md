@@ -2,7 +2,7 @@
 
 > A Claude Code & Codex CLI plugin for durable multi-hour engineering work — brainstorm → plan → execute → finish on top of `obra/superpowers` skills.
 
-Current release: **v10.2.3** · **License:** MIT · **Works with:** Claude Code, Codex CLI · See [CHANGELOG.md](./CHANGELOG.md)
+Current release: **v10.2.4** · **License:** MIT · **Works with:** Claude Code, Codex CLI · See [CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
@@ -141,6 +141,12 @@ Codex hosts the orchestrator under `/masterplan:masterplan`. See [Codex hosting]
 ---
 
 ## Verbs
+
+Controller CLI operations are separate from the reserved entry verbs below.
+For approved mid-wave file-scope amendments, `mp amend-plan` / `mp amend-tasks`
+audit and widen the active allow-set together. `mp reauthorize-scope --state=PATH
+--wave=N --reason=TEXT` repairs an auditable stale scope without resetting work;
+see [controller verb details](docs/verbs.md) and [scope internals](docs/internals/task-verification.md#amended-scope-and-controller-re-authorization).
 
 All verbs route through the single `/masterplan <verb>` command. v8 ships no per-verb skills.
 

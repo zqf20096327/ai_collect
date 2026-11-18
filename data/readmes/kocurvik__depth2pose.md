@@ -36,6 +36,16 @@ There are two ways to use this repository:
 - **[Evaluating your MDE on D2P](#evaluating-your-mde-on-d2p)**: a single script, `eval_my_mde.py`, that runs on one machine with a GPU. It downloads the D2P dataset, runs your MDE, estimates the relative poses and adds your results to the results table. This is the recommended way to evaluate a new MDE.
 - **[Running the full benchmark](#running-the-full-benchmark)**: the complete pipeline used for the paper (pair extraction, matching, depth inference and pose estimation for all MDEs and datasets), designed for SLURM clusters.
 
+If you find this work useful please consider citing:
+```
+@inproceedings{kocur2026depth2pose,
+  title={Depth2Pose: A Pose-Based Benchmark for Monocular Depth Estimation without Ground-Truth Depth},
+  author={Kocur, Viktor and Aung, Sithu and Flood, Gabrielle and Ding, Yaqing and Bujnak, Lukas and Sattler, Torsten and Kukelova, Zuzana},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2026}
+}
+```
+
 # Evaluating your MDE on D2P
 
 ## Installation
@@ -60,7 +70,7 @@ Implement the `MyMDE` class at the top of `eval_my_mde.py`:
 | `name` | Name of your MDE in the results table, e.g. `MyMDE` or `MyMDE-vitl` for a specific variant. When run with `--use_gt_K`, `Calib` is added (`MyMDECalib-vitl`). |
 | `infer(image, K=None, size=None)` | Predicts depth for the image at path `image`. `K` is the ground-truth 3x3 intrinsic matrix (in pixels), passed only with `--use_gt_K`. Returns a dict with `depth` (HxW depth map at the full image resolution, metric or up to scale), `runtime` (inference time in nanoseconds) and optionally `K` (3x3 intrinsics predicted by the MDE, in pixels). |
 
-Complete examples are in [`example_scripts/`](example_scripts): [`eval_moge_v2.py`](example_scripts/eval_moge_v2.py) for MoGe-2 and [`eval_moge_v3.py`](example_scripts/eval_moge_v3.py) for MoGe-3. They can be run in the same way as `eval_my_mde.py`.
+Complete examples are in [`example_scripts/`](example_scripts): [`eval_moge_v2.py`](example_scripts/eval_moge_v2.py) for MoGe-2, [`eval_moge_v3.py`](example_scripts/eval_moge_v3.py) for MoGe-3 and [`eval_surge.py`](example_scripts/eval_surge.py) for [SurGe](https://github.com/karimknaebel/surge). They can be run in the same way as `eval_my_mde.py`.
 
 ## Running the evaluation
 
@@ -95,7 +105,7 @@ Depth maps and pose results are stored per scene in `--data_path`. If the script
 
 ## Submitting your results
 
-The results are appended to `csv_results/d2p_<matches>_slim_pose_results.csv` (per scene) and `csv_results/per_group_d2p_<matches>_slim_pose_results.csv` (mean over the statues and vegetation scenes), which contain the results of all MDEs evaluated in the paper. To add your MDE to the results table, open a pull request with the updated CSV files and a link to your MDE.
+The results are appended to `csv_results/d2p_<matches>_slim_pose_results.csv` (per scene) and `csv_results/per_group_d2p_<matches>_slim_pose_results.csv` (mean over the statues and vegetation scenes), which contain the results of all MDEs evaluated in the paper. To add your MDE to the results table, open a pull request with the updated CSV files and a link to your MDE. See [#2](https://github.com/kocurvik/depth2pose/pull/2) (SurGe) for an example of such a pull request.
 
 If an MDE with the same name already is in the table, the script stops before running anything. Choose a different name, use `--overwrite` to replace its results (e.g. after fixing a bug in your MDE), or use `--out_dir` to write the results elsewhere.
 

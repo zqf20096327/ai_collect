@@ -3,6 +3,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/brianirish/laravel-mcp-companion)](https://github.com/brianirish/laravel-mcp-companion/releases)
 [![Python Version](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/github/license/brianirish/laravel-mcp-companion)](https://github.com/brianirish/laravel-mcp-companion/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/laravel-mcp-companion)](https://pypi.org/project/laravel-mcp-companion/)
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/brianirish/laravel-mcp-companion/pkgs/container/laravel-mcp-companion)
 [![GitHub Stars](https://img.shields.io/github/stars/brianirish/laravel-mcp-companion?style=social)](https://github.com/brianirish/laravel-mcp-companion)
 
@@ -51,19 +52,47 @@ The catalog is revised by hand. Ask your assistant how current its documentation
 
 ## Installation
 
-The server runs as a Docker image, so [Docker](https://docs.docker.com/get-docker/) has to be
-installed and running. It is also in the
+Run it with [`uvx`](https://docs.astral.sh/uv/) or with
+[Docker](https://docs.docker.com/get-docker/), whichever you already have. Both carry the
+documentation with them. The server is on [PyPI](https://pypi.org/project/laravel-mcp-companion/)
+and in the
 [official MCP Registry](https://registry.modelcontextprotocol.io/?search=laravel-mcp-companion)
 as `io.github.brianirish/laravel-mcp-companion`.
+
+**Cursor and VS Code** add it from a link, using `uvx`. Each shows the configuration before
+it installs anything.
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/link/mcp/install?name=laravel-mcp-companion&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJsYXJhdmVsLW1jcC1jb21wYW5pb24iXX0=)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=for-the-badge)](https://vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522laravel-mcp-companion%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522laravel-mcp-companion%2522%255D%257D)
+[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24BFA5?style=for-the-badge)](https://vscode.dev/redirect?url=vscode-insiders%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522laravel-mcp-companion%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522laravel-mcp-companion%2522%255D%257D)
 
 **Claude Code:**
 
 ```bash
+# with uv
+claude mcp add laravel-mcp-companion -- uvx laravel-mcp-companion
+
+# with Docker
 claude mcp add laravel-mcp-companion -- docker run --rm -i ghcr.io/brianirish/laravel-mcp-companion:latest
 ```
 
-**Claude Desktop, and most other MCP clients:** add this to the client's MCP configuration
-(Settings → Developer → Edit Config in Claude Desktop), then restart it:
+**Claude Desktop, and most other MCP clients:** add one of these to the client's MCP
+configuration (Settings → Developer → Edit Config in Claude Desktop), then restart it.
+
+With uv:
+
+```json
+{
+  "mcpServers": {
+    "laravel-mcp-companion": {
+      "command": "uvx",
+      "args": ["laravel-mcp-companion"]
+    }
+  }
+}
+```
+
+With Docker:
 
 ```json
 {
@@ -76,18 +105,13 @@ claude mcp add laravel-mcp-companion -- docker run --rm -i ghcr.io/brianirish/la
 }
 ```
 
-**Without Docker:** the project is also a Python package (3.12 or newer) with the documentation
-bundled. It is not on PyPI yet, so install it from the repository with
-[`uvx`](https://docs.astral.sh/uv/) or `pip`:
-
-```bash
-uvx --from git+https://github.com/brianirish/laravel-mcp-companion laravel-mcp-companion
-```
+`pip install laravel-mcp-companion` works too, on Python 3.12 or newer, and installs a
+`laravel-mcp-companion` command.
 
 Then ask your assistant *"how current are your Laravel docs?"*. It should answer with a date and a
 list of sources.
 
-## Features (v0.15.0)
+## Features (v1.0.0-rc1)
 
 Twelve tools. [API.md](API.md) documents every argument and result field.
 
@@ -124,15 +148,23 @@ find and run the rest. That keeps tool descriptions out of the model's context.
 
 ## Keeping the documentation current
 
-The project refetches every source each night and publishes a new image. To get it:
+The project refetches every source each night.
 
-```bash
-docker pull ghcr.io/brianirish/laravel-mcp-companion:latest
-```
+- **Docker:** each night's documentation is published as a new image. Pull it:
 
-Or ask your assistant to update its Laravel docs, and it will fetch them itself.
-[OPERATIONS.md](OPERATIONS.md#keeping-the-documentation-current) covers image tags, keeping
-fetched documentation in a Docker volume, and where a `pip` or `uvx` install stores it.
+  ```bash
+  docker pull ghcr.io/brianirish/laravel-mcp-companion:latest
+  ```
+
+- **`uvx` or `pip`:** the package carries the documentation as it was on its release date, and
+  the nightly documentation is not published to PyPI. Ask your assistant to update its Laravel
+  docs and the server fetches them from their sources. The update is kept in a directory of your
+  own, so it outlasts an upgrade.
+
+Asking the assistant works with Docker too, but a container started with `--rm` loses the update
+when it stops. [OPERATIONS.md](OPERATIONS.md#keeping-the-documentation-current) covers image
+tags, keeping fetched documentation in a Docker volume, and where a `pip` or `uvx` install
+stores it.
 
 ## More
 

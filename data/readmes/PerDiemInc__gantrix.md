@@ -21,10 +21,10 @@ It retries and replans until the goal is met or a budget runs out.
 
 ### See it
 
-<p align="center"><img src="site/assets/screenshots/projects.webp" alt="The Projects page: four project cards with progress bars, agent avatars and a Now line; one card is highlighted because an agent is waiting for the user" width="900"></p>
+<p align="center"><img src="site/assets/screenshots/projects.webp" alt="The Projects page with Projects, Jobs and Running agents tabs, New Project and New Job buttons and project cards with progress bars and agent avatars" width="900"></p>
 
 <details>
-<summary><b>More screenshots</b>: a project page, the task board with sub-agents, New project, offloading, Agents</summary>
+<summary><b>More screenshots</b>: a project page, the task board with sub-agents, New project, offloading, New Job, Agents</summary>
 
 **A project, its team and its questions.** Name, description and OKR goal, budgets you can extend, Stop and Cancel, and a question an agent asked you with options to pick.
 
@@ -42,13 +42,17 @@ It retries and replans until the goal is met or a budget runs out.
 
 <img src="site/assets/screenshots/offload.webp" alt="The Models section of the New project form: Run the work on set to ChatGPT, with cpo, designer and engineer each showing ChatGPT for this project, then a 3 hour time limit" width="800">
 
+<img src="site/assets/screenshots/new-job.webp" alt="The New Job form: a name, description and goal, then ordered steps that each pick an agent, with a schedule" width="800">
+
+**Save a repeatable job.** Ordered steps, each done by one agent, run on demand or on a cron schedule.
+
 **Each agent on its own model.** Local Ollama by default; switch any agent to Claude Code, OpenAI, Anthropic or your own server.
 
-<img src="site/assets/screenshots/agents.webp" alt="The Agents page: agent cards showing Runs on the default model with a Change button, and the Add agent form with Runs on and Model pickers" width="800">
+<img src="site/assets/screenshots/agents.webp" alt="The Agents page: agent cards with Runs on, a time limit and Slack chat set up per agent, and the Add agent form" width="800">
 
 </details>
 
-The screenshots come from a demo with a made-up bakery.
+Most screenshots come from a demo with a made-up bakery; Projects, New Job and Agents are from a local instance.
 
 **Site:** https://perdieminc.github.io/gantrix/ has an overview and the same getting-started steps.
 Compare: [Gantrix vs CrewAI](https://perdieminc.github.io/gantrix/vs/crewai/) ·
@@ -514,7 +518,8 @@ Example: a *Daily pull request scan* with steps `Fetch open PRs` (agent with the
 
 ## Talk to an agent in Slack
 
-An agent can answer people in Slack, using its own model and system prompt. It's off by
+Give an agent a Slack connection and it is a live teammate: always online, answering DMs and
+mentions as itself. It can answer people in Slack, using its own model and system prompt. It's off by
 default and **requires Slack bot credentials**:
 
 1. Create the Slack app from [`docs/slack-app-manifest.yml`](docs/slack-app-manifest.yml) (it
@@ -542,6 +547,43 @@ agent only talks; to make it do work with its tools, start a project or a job.
   history, and its workspace folder. Sites it deployed stay. The dashboard asks first; the CLI
   needs `--yes`.
 
+### Build a site, deploy it to AWS, and don't stop until it is live
+
+Four settings make a project able to finish a real deployment on its own. In the dashboard
+they are under **Deploy and finish** in the New project form and on the Agents page.
+
+| Setting | Dashboard | CLI | What it does |
+|---|---|---|---|
+| Variables for shell commands | A text box, one `NAME=value` per line | `--env AWS_PROFILE=deploy` (repeat) | Agents' shell commands get them, so `aws` and `terraform` can sign in |
+| Time limit per task | Agents page, per agent | `agents add --timeout 30` | A task that runs longer is stopped and tried again, so one hung command can't hold the plan. Shell commands may run this long instead of 2 minutes |
+| Keep going | A checkbox, and a switch on the project | `--keep-going` | No time, token or replan limit: the project ends when the goal is met or you press Stop |
+| Done only when the site is live | A checkbox | `--live-check` | Gantrix fetches the deployed public URL itself before it accepts the goal |
+
+```bash
+npm run gantrix -- team add          # also moves the team to the newest skills
+npm run gantrix -- run "Build a one-page site for Crumb & Co and deploy it to AWS with S3 and CloudFront" \
+  --agents engineer,devops,aws-engineer \
+  --env AWS_PROFILE=gantrix-deploy --env AWS_REGION=us-east-1 \
+  --keep-going --live-check
+```
+
+- **Variables.** A value is used as typed; `NAME=env:OTHER` reads `OTHER` from the worker's
+  `.env` instead, so a secret needn't be saved. Values live in your local Postgres and the API
+  only ever returns the names. Shell runs with `HOME` set to the project folder, so with
+  `AWS_PROFILE` set Gantrix also points `AWS_CONFIG_FILE` and `AWS_SHARED_CREDENTIALS_FILE` at
+  your real `~/.aws`. A profile that signs in with SSO needs `HOME=/Users/you` as well.
+- **Use a narrow profile.** Agents can run anything that profile allows. Give it only S3,
+  CloudFront and ACM for a static site, and set a billing alarm: keep going has no cost limit
+  of its own.
+- **Time limits.** Set 30 minutes or so on `aws-engineer`: a first CloudFront distribution takes
+  longer than the 2 minutes a shell command gets by default.
+- **The live check.** Agents check a deployed URL with the `verify_url` tool (public addresses
+  only). Before the goal is judged, Gantrix fetches those URLs again; if none answers with a
+  2xx status the goal is not met and the project replans.
+- **Where it still waits for you.** The AWS and GCP skills ask before `terraform apply`, and a
+  project waits for your answer however long it takes. A project also still ends as `failed`
+  if the planner can't produce a valid plan in three tries or the model server stays down.
+
 ### What's running right now
 
 The dashboard's **Live** page lists every agent working at this moment: its task and project,
@@ -564,10 +606,13 @@ channel). It works both ways:
 - **Commands** (mention the app): `status`, `add designer`, `remove cto`, `stop`, `resume`,
   `extend 60m`, `rename Crumb site`, `help`. A mention outside a thread lists running projects.
 
-Anyone in the channel can ask questions. Only the people in `SLACK_ALLOWED_USERS` can steer,
-answer, change the team, stop or rename, because agents act on what they say. Others get
-answers from the project's overview (tasks, who is on them, status and time); step results and
-tool details (commands, file contents) stay out of their answers.
+Only users in `SLACK_ALLOWED_USERS` can interact with the app. Other users are ignored,
+including status and questions. Set this to your verified Slack member ID for personal use.
+Send a goal by direct message or mention the app in the configured channel to start a project.
+All progress stays in that message's thread; reply there to continue. New Slack projects ask
+before risky tools. Enable `message.im` and `im:history` for DMs (included in the manifest).
+The existing planner selects agents and skills; their configured model connections still apply,
+so select local Ollama models for the planner and every agent before claiming local-only runs.
 
 **Set it up (about 5 minutes):**
 

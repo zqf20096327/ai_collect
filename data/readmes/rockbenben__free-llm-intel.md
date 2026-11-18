@@ -189,7 +189,7 @@ python -m unittest discover
 <!-- LLM-INTEL:BEGIN  本章节由 crawler_llm_intel.py 自动生成，请勿手工修改 -->
 
 > 实时追踪国内外大语言模型（LLM）厂商官方公开的**免费 API 额度**、**永久免费模型**与**限时活动调用**情报。
-> 本区块由 `crawler_llm_intel.py` 在**每次运行时**实时巡检官方页面生成（非人工编辑、非服务端持续监控），最近一次巡检：**2026-11-17 12:49:03**；本地手动运行与 GitHub Actions 定时刷新的方法见文首「快速开始 / 更新机制」。
+> 本区块由 `crawler_llm_intel.py` 在**每次运行时**实时巡检官方页面生成（非人工编辑、非服务端持续监控），最近一次巡检：**2026-11-18 11:59:56**；本地手动运行与 GitHub Actions 定时刷新的方法见文首「快速开始 / 更新机制」。
 >
 > 💡 **核心特性**：覆盖 **88 家厂商**（深度抓取 **162 个情报页 + 45 个动态页**）；海外一手情报自动汉化（品牌与型号名保留原文）；自动过滤页面抓取状态噪点，直接展示具体额度（Tokens/代金券/免费层）、可用模型、有效期与限制条件。
 > 📡 **博客动态订阅**：各厂商官方技术博客与更新日志单独维护至 [`llm-news-feeds.md`](llm-news-feeds.md)（共 34 个厂商），可导入 [`llm-news-feeds.opml`](llm-news-feeds.opml) 至 RSS 阅读器跟踪官方动态。
@@ -446,7 +446,7 @@ python -m unittest discover
 | **前置条件 / 限制** | 注册并完成实名认证（无需企业审核） |
 | **免费层限制 / 注意事项** | • U Plan 领取或订阅成功后，需通过「控制台 > 订阅管理 > U Plan」获取套餐专属 API Key（随套餐自动分配，每账户唯一一把）<br>• 套餐专属 Key 用于套餐额度，与按量计费 API Key 不可互换，且仅在套餐有效期内可用 |
 | **邀请 / 特惠活动** | 页面顶部横幅标注：U Plan 正式上线，Free 档免费领，套餐升级限时 5 折，低至 29.5 元/月；U2-Flash、U2-Med 超耐用，ASR、TTS、OCR 模型权益免费送。 |
-| **实时巡检证据** | • U Plan 正式上线！Free 档免费领，套餐升级限时5折，低至29.5元/月！ U2-Flash、U2-Med 超耐用，ASR、TTS、OCR 模型权益免费送！ |
+| **实时巡检证据** | • U Plan 正式上线！Free 档免费领，套餐升级限时5折，低至29.5元/月！U2-Flash、U2-Med 超耐用，ASR、TTS、OCR 模型权益免费送！ |
 | **官方直达** | [快速入门（新人礼包说明）](https://maas.unisound.com/docs/guide/quickstart) ｜ [平台文档总览](https://maas.unisound.com/docs/guide/overview) ｜ [Token Hub 主页](https://maas.unisound.com/) |
 | **特别说明** | 开放平台已统一为 maas.unisound.com（Token Hub）。 |
 
@@ -610,7 +610,7 @@ python -m unittest discover
 | **额度有效期** | 免费测试请求为注册后一次性体验；额度政策以官方定价页为准 |
 | **前置条件 / 限制** | 注册 OpenAI 账号并绑定海外付款方式；按组织层级划分 RPM / TPM 配额 |
 | **邀请 / 特惠活动** | Batch 批量推理约 5 折；提示缓存输入约 1–2.5 折；网页端 ChatGPT 提供免费版（可用模型以官方说明为准）。 |
-| **实时巡检证据** | • 免费套餐不提供图像生成功能。 When you use Codex with an<br>• ChatGPT Enterprise 目前不提供推荐。<br>• GPT-6.1 从您的订阅中提取的 Sol 使用量没有长上下文附加费 |
+| **实时巡检证据** | • 免费套餐不提供图像生成功能。 When you use Codex with an<br>• ChatGPT Enterprise 目前不提供推荐。<br>• 减少令牌和请求可以降低成本并缩短响应时间。对于可以等待的工作负载，您还可以使用 Batch API 降低成本，折扣后台完成... |
 | **官方直达** | [官方主页](https://openai.com/) ｜ [API 定价](https://developers.openai.com/api/docs/pricing) ｜ [模型列表](https://developers.openai.com/api/docs/models) ｜ [快速开始](https://developers.openai.com/api/docs/quickstart) |
 | **特别说明** | 旧“$5 测试积分”说法在现行官方文档中已不再出现；“数据共享折扣”亦未见公开表述。 |
 
@@ -625,7 +625,7 @@ python -m unittest discover
 | **前置条件 / 限制** | 仅需 Google 账号即可生成 API Key，免绑信用卡；免费层数据可能用于产品改进 |
 | **免费层限制 / 注意事项** | • **不是所有模型都有免费层**：Flash 级部分模型 / Gemma 4 / Embedding 系列可用，但官方不再逐一公示；`Gemini 4 Argon`、`Gemini 3.1 Pro Preview`、`Gemini Omni Flash` (`gemini-omni-1.2-flash`)、Nano Banana 图像系列**无免费层**，调错模型会直接付费或报错<br>• **隐私代价**：免费层输入/输出数据可能被用于改进 Google 产品；敏感数据不要走免费层<br>• 免费层限速官方已不再公开固定数值，以 AI Studio 内 Rate Limit 页为准；RPD 按太平洋时间午夜重置<br>• $300 Google Cloud 试用金**不能**用于 Gemini API / AI Studio（2026 年 3 月起）；付费层需关联结算账户并预付最低 $5 |
 | **邀请 / 特惠活动** | 付费层预付 $5 起；与 Google Gemini Enterprise Agent Platform（原 Vertex AI）深度集成。 |
-| **实时巡检证据** | • 2. Find the Free Tier project you want to upgrade to the Paid Tier, and click<br>• | **免费** | [活跃项目](https://aistudio.google.com/docs/api-key#google-cloud-projects) 或免费试用；一些项目需要验证…<br>• {% support %}*{% /sup %} 折扣和型号供应情况可能会发生变化。 |
+| **实时巡检证据** | • 2. 找到您想要升级到付费套餐的免费套餐项目，然后单击<br>• | **免费** | [活跃项目](https://aistudio.google.com/docs/api-key#google-cloud-projects) 或免费试用；一些项目需要验证…<br>• {% support %}*{% /sup %} 折扣和型号供应情况可能会发生变化。 |
 | **官方直达** | [API Key 申请直达 (AI Studio)](https://aistudio.google.com/apikey) ｜ [OpenAI 兼容端点快速入门](https://aistudio.google.com/docs/openai) ｜ [AI Studio 官网](https://ai.google.dev/) ｜ [API 定价文档](https://aistudio.google.com/docs/pricing) ｜ [计费与免费层说明](https://aistudio.google.com/docs/billing) ｜ [速率限制说明](https://aistudio.google.com/docs/rate-limits) |
 | **特别说明** | 注意：**2026 年 3 月起，$300 Google Cloud 试用金不能用于支付 Gemini API / AI Studio 费用**（官方 billing 文档原文）；旧“Gemini 1.5 Flash/Pro、Gemma 2、15 RPM/1500 RPD”等型号与数字均已换代或下架。 |
 
@@ -1080,4 +1080,4 @@ python -m unittest discover
 
 ## Part 3：云原生算力与 Serverless 部署平台（免费体验与算力额度）
 
-> 以下平台提供**每月循环赠送的 GPU 免费算
+> 以下平台提供**每月循环赠送的 GPU 免费算力**、**大额公有云试用抵扣金**或**

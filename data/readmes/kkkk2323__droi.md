@@ -6,7 +6,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Go](https://img.shields.io/badge/Go-1.27-00ADD8?logo=go)](https://go.dev/)
-[![MyGo](https://img.shields.io/badge/MyGo-0.7.3-6E56CF)](https://mygo.egoist.dev)
+[![MyGo](https://img.shields.io/badge/MyGo-0.10.0-6E56CF)](https://mygo.egoist.dev)
 [![Expo](https://img.shields.io/badge/Expo-SDK%2057-000020?logo=expo)](https://expo.dev/)
 [![Release](https://img.shields.io/github/v/release/kkkk2323/droi)](https://github.com/kkkk2323/droi/releases/latest)
 
@@ -103,6 +103,7 @@ Run all commands from the repository root:
 | `pnpm test` | Run TypeScript unit tests (vitest) |
 | `pnpm test:e2e:phone` | Run Playwright E2E suite for the Phone App against the Fake Daemon |
 | `pnpm install:phone` | Build a signed Release of the Phone App and install it on a connected iPhone |
+| `pnpm install:phone:mygo` | Build the MyGo Phone App example and install it instead ([ADR 0041](./docs/adr/0041-the-phone-app-stays-on-expo-and-the-mygo-one-is-an-example.md)) |
 | `FACTORY_API_KEY=... go test ./apps/native/pkg/host ./apps/native/pkg/gateway -run Live -v` | Run live integration tests against a real Daemon |
 
 ## Project Structure
@@ -115,6 +116,7 @@ apps/
 │   ├── pkg/gateway/         # Remote Access Gateway and Pairing Token verification
 │   ├── pkg/droiapp/         # App-as-a-library entrypoint (ADR 0029)
 │   ├── pkg/extension/       # Extension seams (Overlay, Pages, SettingsTabs, ToolViews)
+│   ├── phone/               # Example: the same window on an iPhone through MyGo (ADR 0041)
 │   └── pkg/...              # Public UI and protocol packages (sessionview, settingsview, kit, theme)
 └── mobile/                  # iPhone Phone App (Expo SDK 57, React Native)
 packages/

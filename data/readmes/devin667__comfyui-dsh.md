@@ -1,9 +1,9 @@
 # comfyui-dsh — 本地生图，ComfyUI + DeepSeek Harness
 
 [![DSH target](https://img.shields.io/badge/DeepSeek%20Harness-0.2.2--rc.3-4f46e5)](docs/COMPATIBILITY.md)
-[![version](https://img.shields.io/badge/version-1.3.1-16a34a)](https://github.com/devin667/comfyui-dsh/releases/tag/v1.3.1)
+[![version](https://img.shields.io/badge/version-1.4.1-16a34a)](https://github.com/devin667/comfyui-dsh/releases/tag/v1.4.1)
 [![checkpoints](https://img.shields.io/badge/checkpoints-4-0ea5e9)](docs/MODELS.md)
-[![workflows](https://img.shields.io/badge/workflows-13-8b5cf6)](dsh/workflows)
+[![workflows](https://img.shields.io/badge/workflows-15-8b5cf6)](dsh/workflows)
 [![license](https://img.shields.io/badge/license-MIT-a3a3a3)](LICENSE)
 [![platform](https://img.shields.io/badge/platform-Windows%20%2F%20RTX%2050-f97316)](docs/COMPATIBILITY.md)
 
@@ -183,29 +183,39 @@ powershell -ExecutionPolicy Bypass -File .\dsh\install-plugin.ps1
 改的是 profile 的 `cordis.patch.yml`，该文件被 HMR 监听，**改完十几秒自动生效，不用重启 DSH**。
 细节见 [plugin/README.md](plugin/README.md)。
 
-### 胶囊选什么，就一定出什么
+### 选错工作流不会白跑
 
-`dsh-image-gen` 原版有个隐蔽行为：输入栏胶囊里选的工作流只是**默认值**，
-Agent 一旦在工具调用里传了 `workflow: "..."` 就会被覆盖，于是"我选了 A、出来的是 B"。
-卡片上又只写 `API workflow`，事后无法对账。
+`dsh-image-gen` 原版有个硬行为：工具调用里传了 `workflow: "..."` 就用它，
+形状不对（文生图撞上带 `{{image}}` 的、改图撞上不带 `{{image}}` 的）直接抛错，
+这几十秒就白跑了。卡片上又只写 `API workflow`，事后无法对账。
 
-`scripts/patch-dsh-image-gen.py` 改掉这三件事（幂等，`--revert` 可还原）：
+`scripts/patch-dsh-image-gen.py` 改掉这几件事（幂等，`--revert` 可还原）：
 
 | 改动 | 效果 |
 |---|---|
-| 胶囊优先 | 胶囊里的选择不再被调用参数覆盖；真被忽略时结果里带一句提示 |
-| 模式校验 | 胶囊选了 `-Edit` 却调 `generate_image`（或反过来）、参考图张数不符，直接抛中文错误并指出「最接近的是「X」」 |
+| 自动选对工作流 | 传的不合适就按「显式请求 → 同底模兄弟 → 同族兄弟 → 胶囊 → 其余」换成能干的，结果里带一句中文 notice 说明换成了哪条、为什么；一条能干的都没有才报错 |
 | 底模上卡 | 从工作流 JSON 里读 `CheckpointLoaderSimple.ckpt_name` / `UnetLoaderGGUF.unet_name`，卡片标题旁显示真实底模 |
+| 尺寸上卡 | 卡片显示生成图的**真实像素**，不再对非 `import` 来源留空 |
+
+改图工作流现在也都吃尺寸：每条 `-Edit` / `-Rework` 在 `LoadImage` 与 `VAEEncode` 之间
+插了一个 `ImageScale`（`lanczos` + `crop: center`），`edit_image` 传 `size` / `aspect_ratio`
+会真的生效；比例与原图不同时按目标比例裁边，想保原构图就不传。
+
+举例：`generate_image` 传了 `workflow: "RealVisXL-V5-Edit"`，自动改用 `RealVisXL-V5`，
+notice 写「请求的「RealVisXL-V5-Edit」有 1 个 `{{image}}` 输入（文生图要求 0 个），做不了这次调用，已自动改用「RealVisXL-V5」。」
+反过来 `edit_image` 传 `workflow: "RealVisXL-V5"` 会落到 `RealVisXL-V5-Edit` ——
+**同底模优先**，不会跳到 FLUX 或 Juggernaut 去。
 
 ```powershell
 python .\scripts\patch-dsh-image-gen.py --check   # 先看会改哪几处
 python .\scripts\patch-dsh-image-gen.py           # 打补丁
+python .\scripts\test-dsh-image-gen-pin.py        # 15 条断言，不碰 DSH 运行时
 ```
 
 **改完必须重载插件**（`plugin_manager` 里关掉 `dsh-image-gen` 再打开），光改文件不生效 ——
 文本层面已经换掉了，运行时还是旧代码，报错还是旧的英文串。
 
-不想要这个行为就设 `comfyuiPinActiveWorkflow: false`，回到"调用参数优先"的原版逻辑。
+**插件升级会静默覆盖补丁**（`node_modules` 被重装），升级后发现行为回退就重跑一次。
 
 ### 事后对账：这张图到底是谁画的
 
@@ -333,7 +343,7 @@ scripts/
   fetch_parts.sh          断点续传下载器（校验 206 + 字节数 + 魔数）
   bench_final.py          测速脚本
   which_workflow.py       读 PNG 里嵌的工作流，反查这张图是哪条工作流哪个底模出的
-  patch-dsh-image-gen.py  让 dsh-image-gen 严格按胶囊选的工作流出图（幂等，可 --revert）
+  patch-dsh-image-gen.py  选错工作流时自动改道 + 底模上卡（幂等，可 --revert）
   test-dsh-image-gen-pin.py  上面那个补丁的单元测试（14 条断言，不需要 DSH 运行时）
   pack-release.ps1        git archive 打包发行版
   make-release.py         建 GitHub release 并上传 zip + SHA256SUMS
@@ -403,6 +413,8 @@ hf-mirror 被限流时会把报错页当正文写进文件，大小完全吻合�
 | v1.2.2（2026-11-17） | 同上（默认不开浏览器，`-open` 才开） | 同上 | 同上 |
 | **v1.3.0（2026-11-17）** | 同上（新增 IPAdapter FaceID 保脸换装 + 2 条工作流） | 同上 | 同上 |
 | **v1.3.1（2026-11-18）** | 同上（胶囊优先补丁、底模上卡、13 条工作流、对账脚本） | 同上 | 同上 |
+| **v1.4.0（2026-11-19）** | 同上（选错工作流自动改道、FaceID 权重修正、Rework 工作流、Undress 提示词去冲突） | 同上 | 同上 |
+| **v1.4.1（2026-11-19）** | 同上（五条改图工作流补上 `size` / `aspect_ratio` 支持，15 条全部吃尺寸） | 同上 | 同上 |
 
 逐条变更见 **[CHANGELOG.md](CHANGELOG.md)**。
 

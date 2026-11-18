@@ -167,6 +167,8 @@ Activity rows in the side notch and top island have no background fill at rest, 
 
 Conversation approvals, clarification choices, and secret/login requests share a compact neutral card with explicit status, labeled inputs, and grouped actions that stack in narrow panes. Multi-select answers show their selected state; submitting keeps an in-place progress indicator and disables duplicate responses.
 
+The latest conversation approval stays visible as resolved after it is answered in the conversation or notch. This presentation is kept in memory for the current Herm process, not reconstructed after restart.
+
 Choose **Quick message** in either Tasks view to start a new session without opening the workspace. Hover a session row to reveal **Reply** and compose directly beneath it; its reserved slot keeps the title stable. Reply stays visible while composing or navigating with the keyboard, and the reveal respects Reduce Motion. Replies stay tied to that session, and neither action changes the workspace’s selected chat. The compact composer keeps its own draft, preserves workspace attachments, and stays open while typing; **Close** or Escape leaves it. Failed sends keep the text for retry. Kanban rows show the assigned bot’s stored avatar or its existing fallback identity.
 
 Choose a finished session row to peek at its **Latest completed reply** inside the notch. Copy an excerpt, open or reveal generated files, reply to that session, or open it in the workspace. Reading leaves the selected workspace chat alone. A deliberate selection marks the matching completion reviewed after its content loads; hovering does not. New results offer **Update** while the displayed excerpt remains stable.
@@ -457,8 +459,9 @@ Workspace pages share Calendar’s top titlebar treatment, with sidebar toggles 
 beside the traffic lights. Chat uses three full-height panes: the session list,
 conversation, and inspector. The session title uses the available header space,
 with actions inside the conversation pane; the inspector's tabs extend to the top of its own pane.
-The session sidebar places **New chat** above Pinned. Navigation distinguishes Chats (speech bubbles), Integrations (puzzle piece), and
-Artifacts (stacked files), while keeping the Bots ghost icon. Chats shows a small
+The Bots and Sessions switch responds across each tab, not just its label.
+The session sidebar places **New chat** above Pinned. Navigation distinguishes Chats (speech bubbles), Integrations (puzzle piece),
+Artifacts (stacked files), and Bots (a robot). Chats shows a small
 spinner for running sessions and a count of completed chats with unread updates
 for the selected bot. Both appear together when work is running and results await
 review; opening a completed chat clears its unread badge. Use **Mark all as read**
@@ -466,8 +469,13 @@ beside refresh in the **Recents** header to clear unread updates across the sele
 bot’s loaded Recents, including conversations under Show more. Badge calculations are
 cached independently of transcript updates; status polling pauses while the
 workspace is hidden or Hermes is disconnected.
-The sidebar stacks Pinned, Recents, and Projects for the selected
-bot under its bot header. Each section header stays at the top of the scrolling
+The sidebar stacks Pinned, Recents, Projects, and Automations for the selected
+bot under its bot header. In the bot picker, drag a profile's handle to reorder it,
+or focus the handle and use the arrow keys. The order is saved locally across restarts without changing the
+selected profile or its conversations. Choose **All profiles** at the top of the
+bot picker to merge every bot's pinned and recent conversations into one list; each
+row then shows a pill with its bot's avatar and name, and opening it switches to
+that bot. Each section header stays at the top of the scrolling
 list until the next section replaces it; rows remain lazily rendered.
 Background polls and runtime notifications refresh the latest history page,
 reusing older loaded sessions for up to a minute. Explicit refreshes and profile
@@ -654,7 +662,7 @@ The composer’s **@** picker shows each bot’s actual name, with its descripti
 - **Removable context tray** keeps attached PRs, browser pages, files, and conversation excerpts beside the draft. Inspect or remove a chip before sending; attaching context preserves your text.
 - **Steering during a turn**: guidance you type while Herm is working is added to the running turn at the next tool boundary.
 - **Queued messages**: when the current conversation has queued messages, every subsequent send joins the end of that queue, including plain text during a running turn. New submissions also wait behind a redirect still awaiting Hermes' reply. During a turn, text and attachments queue together. Submitting clears the composer immediately while preserving images, PDFs, context, and reply quotes with the message.
-- **Attachments**: files, pasted images, prompt snippets, several images at once, or a single PDF up to 25 MB. PDFs are sent as original files for the agent to read, without requiring `pdftoppm`; sent images show previews and documents show file-type labels. Drop Markdown, text, source, and other files into the composer as removable attachments (up to 8 MB each); uploads require Hermes protected file attachment support. **Files** and **Images** open a native attachment picker; **Folder** opens a directory picker and inserts its path into the draft.
+- **Attachments**: files, pasted images, prompt snippets, several images or PDFs at once (up to 25 MB per PDF). PDFs are sent as original files for the agent to read, without requiring `pdftoppm`; sent images show previews and documents show file-type labels. Drop Markdown, text, source, and other files into the composer as removable attachments (up to 8 MB each); uploads require Hermes protected file attachment support. **Files** and **Images** open a native attachment picker; **Folder** opens a directory picker and inserts its path into the draft.
 - **Video replies** play inline with native playback, seeking, volume, and fullscreen controls. Playback starts when you press Play and stops when the attachment leaves the view. Open and Download remain available; formats or codecs macOS cannot play show an unavailable message.
 - **Model picker** grouped by provider, with search. **Edit available models… → Unselect All** hides every model except the active one; selections are saved locally.
 - Confirmed model switches appear inline in chat with the model, provider, and time. Notices come from Hermes session history and return when you reopen the chat.
@@ -950,7 +958,4 @@ The session inspector's **Browser** tab is a real Chromium browser that you and 
 ![The Herm browser tab with the agent cursor on a page](docs/media/workspace-browser.webp)
 
 - **Attach browser context.** Click **Attach Page** in the browser toolbar to add the page title, URL, shared Chromium tab ID, and selected text to the session composer. Review or remove the context chip, then type and send your request in chat. Attaching never sends a message or replaces your draft; reattaching the same page refreshes its context. This is a snapshot, so attach again after navigating.
-- **Hermes browses here.** Herm starts a background Chrome (or Brave, Edge or Chromium) and connects Hermes' browser tools to it. When Hermes uses the browser, the inspector opens on the Browser tab, the page gets an accent frame, a status pill shows its current step, and a "Herm" cursor shows where it moves, clicks and types. Its last observed position stays visible between steps and when reopening the pane; taking over, using the page, or navigating clears it.
-- **Embedded pages.** The cursor also follows observed pointer and focus events in supported embedded frames, including cross-origin frames. Page changes made without a pointer or focus event show browser activity without a fabricated cursor position. When a frame cannot be mapped, its cursor events are omitted while browsing continues.
-- **Hermes can show inspector tabs.** Hermes' `focus_pane` (files, terminal, review) and the `herm_inspector` tool from the `herm` plugin (`Sources/Herm/Resources/HermesPlugins/herm`) expand the inspector to the requested tab in that chat.
-- **Use Herm's browser** (Settings → Browser, on by default) opens pages Hermes shows
+- **Hermes browses here.** Herm starts a background Chrome (or Brave, Edge or Chromium) and connects Hermes' browser tools to it. When Hermes uses the browser, the inspector opens on the Browser tab, the page gets an accent frame, a status pill shows its current step, and a "Herm" cursor shows where it moves, clicks and types. Its last observed position stays visible between steps and when reopening the pane; taking over, usi

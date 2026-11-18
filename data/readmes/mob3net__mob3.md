@@ -114,6 +114,18 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   launch): extracts the main article into a narrow, chrome-free text column,
   stays enabled across navigation, and restores the normal page and scroll
   position when toggled off.
+- Built-in text-only PDF viewer: a PDF response is extracted page by page into
+  one continuous document with column alignment, a centered reading column and
+  a `Page n` caption above an underscore rule after each page; every page is
+  padded to the same height so it scrolls like a book, and two-column pages are
+  read column by column. PDF headings keep their
+  spacing, and runs clearly larger than the body text use the same 32px
+  headline path (two rows, scaled glyphs in kitty) as HTML headings. Find, selection, `-dump` and `-png` work as on any
+  page. The footer
+  shows `Page n/N` with a clickable `(d -> Download name)` hint, and `d` opens
+  the same curl popup. `-png` exports one page (`-pdf-page=N` or `all` for the
+  whole document). Figures, images and annotations are not rendered; `-no-pdf`
+  restores the download prompt.
 - Dark mode (`D`, the footer `Dark:on`/`Dark:off` label, or `-dark` at launch):
   asks sites for their dark styles with `prefers-color-scheme: dark`. Pages that
   already render a dark background keep their own palette; otherwise
@@ -167,14 +179,18 @@ text-focused pages and gets rough on modern JavaScript-heavy apps.
   `position:sticky`, `z-index`, CSS variables, animations, transitions,
   generated content and background images are unsupported or
   approximated as block flow.
-- SVG support is partial: text inside SVG, `<use>/<symbol>`, filters, masks and
-  CSS-in-SVG may be missing. Animated WebP is not supported.
+- SVG support is partial: paths, shapes, gradients, transforms, `clipPath`,
+  `fill-rule` and `<use>` of paths/groups work, but text inside SVG,
+  `<use>` resolving to `<symbol>` sprites, filters, masks, CSS-in-SVG and
+  animation are not rendered. Animated WebP is not supported.
 - Oversized images are capped at 40% of the viewport width and 16 rows,
   preserving their aspect ratio. Images with a definite CSS box (both width and
   height) use `object-fit`/`object-position` and fill or crop into that box
   instead of hitting those caps.
-- No tabs or automatic downloads; download links and non-HTML responses open a
-  popup with a copyable `curl` command instead, and multipart/file uploads are
+- No tabs or automatic downloads; a download link opens a popup with a
+  copyable `curl` command without fetching it, except a `.pdf` download, which
+  opens in the text viewer (`-no-pdf` restores the popup for PDFs), and
+  multipart/file uploads are
   not implemented (clicking a file input shows an unsupported notice). Selected
   page text copies with
   `y` through OSC 52 (terminal support required), and the URL can be selected

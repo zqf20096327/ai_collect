@@ -2,7 +2,7 @@
 
 **Orcah Studio** (formerly **Edit Mind**) is a self-hosted video knowledge base. It indexes your videos — including transcription, frame analysis, and multi-model embedding — then lets you search videos or individual scenes with natural language.
 
-> **Development Status:** Edit Mind is currently in **active development** and **not yet production-ready**. Expect incomplete features and occasional bugs. We welcome contributors to help us reach **v1.0**!
+> **Development Status:** Orcah Studio is currently in **active development** and **not yet production-ready**. Expect incomplete features and occasional bugs. We welcome contributors to help us reach **v1.0**!
 
 ---
 
@@ -59,11 +59,6 @@
 
 The self-hosted Orcah Studio edition uses Docker Compose to run everything in containers.
 
-## Setup Video
-
-[![Orcah Studio self-hosted setup guide](https://img.youtube.com/vi/WVNuP8ic3uY/maxresdefault.jpg)](https://www.youtube.com/watch?v=WVNuP8ic3uY)<br>
-*Click to watch a walkthrough of the self-hosted setup guide.*
-
 ### Prerequisites
 
 *   [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
@@ -74,7 +69,7 @@ The self-hosted Orcah Studio edition uses Docker Compose to run everything in co
 With Docker Desktop open, paste this command into Terminal (macOS/Linux) or Git Bash/WSL (Windows):
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/IliasHad/edit-mind/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/IliasHad/orcah-studio/main/install.sh)
 ```
 
 The installer asks where your videos are stored and whether to use local Ollama, Gemini, or skip AI setup for now. It creates the required configuration, then starts Orcah Studio. Your library remains on your computer; the installer only gives Docker access to the folder you choose.
@@ -83,8 +78,8 @@ Prefer to configure every setting by hand? Follow the manual setup steps below.
 
 ### 1. Project Setup
 ```bash
-mkdir edit-mind
-cd edit-mind
+mkdir orcah-studio
+cd orcah-studio
 ```
 
 ### 2. Configure Docker File Sharing
@@ -111,15 +106,15 @@ The self-hosted edition uses a **two-file environment configuration**:
 Copy the example file and customize it:
 
 ```bash
-curl -L https://raw.githubusercontent.com/IliasHad/edit-mind/refs/heads/main/.env.example -o .env
-curl -L https://raw.githubusercontent.com/IliasHad/edit-mind/refs/heads/main/.env.system.example -o .env.system
-curl -L https://raw.githubusercontent.com/IliasHad/edit-mind/refs/heads/main/docker-compose.yml -o docker-compose.yml
+curl -L https://raw.githubusercontent.com/IliasHad/orcah-studio/refs/heads/main/.env.example -o .env
+curl -L https://raw.githubusercontent.com/IliasHad/orcah-studio/refs/heads/main/.env.system.example -o .env.system
+curl -L https://raw.githubusercontent.com/IliasHad/orcah-studio/refs/heads/main/docker-compose.yml -o docker-compose.yml
  ```
 
 If you have NVIDIA GPU, use `docker-compose.cuda.yml` file instead
 
 ```bash
-curl -L https://raw.githubusercontent.com/IliasHad/edit-mind/refs/heads/main/docker-compose.cuda.yml -o docker-compose.yml
+curl -L https://raw.githubusercontent.com/IliasHad/orcah-studio/refs/heads/main/docker-compose.cuda.yml -o docker-compose.yml
  ```
 
 **Edit the `.env` file and configure these critical settings:**
@@ -211,8 +206,8 @@ Follow the steps below if you want to extend the app functionality or fix bugs.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/iliashad/edit-mind
-cd edit-mind
+git clone https://github.com/IliasHad/orcah-studio
+cd orcah-studio
 ```
 
 ### 2. Setup dev environment

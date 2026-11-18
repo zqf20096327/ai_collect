@@ -43,7 +43,7 @@ neurobrix run --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --prompt "Write a Pytho
 
 | Hardware | Status |
 |---|---|
-| NVIDIA GPUs on Linux and Windows | Released; both engines. Our own test machines are V100s. |
+| NVIDIA GPUs on Linux and Windows | Released. Linux: both engines. Windows: the PyTorch engine; `--triton` is refused by name (PyPI publishes no triton for Windows). Our own test machines are V100s. |
 | Mac GPUs (Metal) | Released; both engines (`python -m nbxtensor install-metal`). |
 | CPU (x86-64) | Released (PyTorch engine). |
 | Other GPUs | Experimental, not yet validated on hardware by our lab; reports welcome: [open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
@@ -100,7 +100,7 @@ ready-made containers from the hub.
 ## Install and first run
 
 NeuroBrix needs Python 3.10 or newer. The current release is
-**0.6.16** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.16)).
+**0.6.17** ([release notes](https://github.com/NeuroBrix/neurobrix/releases/tag/v0.6.17)).
 
 It has two engines. The **Triton engine** (`--triton`) runs on
 [nbxtensor](https://github.com/NeuroBrix/nbxtensor) and Triton and needs no PyTorch. The
@@ -163,6 +163,21 @@ The PyTorch engine also runs on the Apple GPU, through MPS: `pip install torch "
 pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install "neurobrix[pytorch]"
 ```
+
+**On the CPU of a machine that has an NVIDIA GPU.** Hide the GPU from NeuroBrix with `CUDA_VISIBLE_DEVICES=-1`:
+the machine is then detected without a GPU and every model is planned on its CPU (the PyTorch engine, with any
+PyTorch build). The variable must be set in the shell that starts `neurobrix run` or `neurobrix serve`.
+
+```bash
+CUDA_VISIBLE_DEVICES=-1 neurobrix serve --model TinyLlama/TinyLlama-1.1B-Chat-v1.0    # Linux, macOS
+```
+
+```bat
+set CUDA_VISIBLE_DEVICES=-1
+neurobrix serve --model TinyLlama/TinyLlama-1.1B-Chat-v1.0
+```
+
+In PowerShell: `$env:CUDA_VISIBLE_DEVICES = "-1"`, then the same command. Windows reads the variable from 0.6.17.
 
 `neurobrix doctor` checks that the `neurobrix` command is on your PATH, whether the Triton
 engine can run (nbxtensor, Triton and a GPU runtime), which PyTorch build is installed if any,
@@ -285,7 +300,7 @@ in the OpenAI error object, never ignored. Every endpoint, parameter and setting
 | Intel GPUs | **Experimental, not yet validated on hardware by the NeuroBrix lab — reports welcome.** An Intel GPU whose Level Zero runtime is installed (Arc, Core Ultra, and Gen12: Tiger, Alder, Raptor Lake) is tried by the Triton engine, with Intel's Triton build (`neurobrix doctor` gives the install commands). If the driver says the chip cannot do what was asked (a kernel it will not build, an unsupported feature), the run says which call failed and why, runs again without that chip (on the CPU when it was the only device), and remembers it until the driver or nbxtensor changes; any other error is the run's own, named. Please tell us what happened: [Intel GPU report](https://github.com/NeuroBrix/neurobrix/issues/new?template=intel_gpu_report.yml). |
 | AMD GPUs | A target, not yet validated on a card: the Triton engine reaches them through nbxtensor's HIP driver, with the vendor's runtime and its Triton build (`neurobrix doctor` gives the vendor's install commands). Tried it on your card? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
 | Integrated GPUs | In 0.6.3. An integrated GPU is described in the machine's profile as one memory pool with the host and named with its platform. Apple Silicon is driven (Metal); an Intel integrated GPU with its Level Zero runtime is tried (experimental, the row above); AMD integrated GPUs and Intel chips older than Gen12 are not driven — they are named, with the reason, and the model runs on the CPU with every core of the machine's profile. |
-| Windows | In 0.6.1. Both engines; the Triton engine needs the NVIDIA, AMD or Intel driver and the Triton build for your GPU (`neurobrix doctor` names what is missing). Found a bug on Windows? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
+| Windows | In 0.6.1. The PyTorch engine: `--compiled` (the default where PyTorch is installed) and `--sequential`. PyPI publishes no triton for Windows: neurobrix asks for triton only on Linux x86_64 and aarch64, and `--triton` (or `--triton-sequential`) is refused by name: the error says PyPI publishes no triton for the platform and gives the PyTorch engine's install. Found a bug on Windows? [Open an issue](https://github.com/NeuroBrix/neurobrix/issues). |
 
 Several GPUs in one machine are used automatically when a model does not fit on one. The first launch names each GPU
 from what the operating system ships (the PCI bus on Linux, Win32_VideoController on Windows), with its platform and
@@ -296,6 +311,12 @@ component with the memory it measured and goes on, once, keeping the components 
 
 - On an Intel Mac the integrated GPU is named from system_profiler without its platform; it is not driven, and the
   engine runs on the CPU.
+- `pip install "neurobrix[pytorch]"` asks for torch 2.12.0 or newer on Linux and Windows: there the default engine on
+  an NVIDIA or AMD GPU calls PyTorch's allocator setter (first in torch 2.10.0) and its pinned host-cache release
+  (first in torch 2.12.0), and refuses an older torch by name before any weight loads. On macOS it asks for torch 2.1.0
+  or newer, as 0.6.16 did: a Mac reaches neither call (the Apple GPU runs through MPS, an Intel Mac on its CPU), and
+  PyPI's newest torch for an Intel Mac is 2.2.2, for an Apple-silicon Mac on macOS 11 to 13 2.11.0; pip installs the newest one your
+  Mac has.
 - Constrained decoding needs the grammar engine, the `nbxgrammar` package, which `pip install neurobrix` installs on
   Linux x86_64 and aarch64, macOS arm64 and x86_64 and Windows x86_64; on any other platform no wheel of it exists and a
   constrained request is refused by name (`501 constrained_decoding_not_installed`). It enforces a subset of JSON Schema (a

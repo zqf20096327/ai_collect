@@ -81,6 +81,10 @@ model = remove(peft_model)  # base weights were never modified
 
 `apply` also finds layers named differently, as in text-only and multimodal loads of one checkpoint: see [How-to: apply across model classes](https://astro-weights.dev/docs/how-to/apply-across-model-classes/).
 
+## Agent over MCP (0.2)
+
+The agent loop is new in 0.2 (`pip install "astro-weights[mcp,hf]"`). `astro-weights mcp RUN_DIR` serves the agent tools over stdio MCP, with a budget and an OS sandbox, to Claude Code or any MCP client (the Codex setup is documented but not tested). `astro-weights run CONFIG` runs a whole edit session with a built-in editor: scripted, a local model or Claude on your own key. Start with [Tutorial: first agent run](https://astro-weights.dev/docs/tutorials/first-agent-run/).
+
 ## Development
 
 ```bash

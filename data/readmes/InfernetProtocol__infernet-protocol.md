@@ -337,6 +337,9 @@ Every provider node pulls and serves Infernet's **house models** by default: the
 
 - On start and every 6 hours the daemon fetches the list (HTTPS, infernetprotocol.com / c0mpute.com only) and pulls each model that fits, one at a time (a pull waits up to 10 minutes for a running job to finish): RAM >= `min_ram_gb`, at least 10% of the disk left free afterwards (10-50 GB), and under the operator's disk cap if set.
 - Each pull is checked against the listed digest and size; a mismatch is deleted. Models that leave the list are removed. A model you pulled yourself is never removed; only models the daemon pulled (`~/.config/infernet/house-models-state.json`) are.
+- Ollama models run at no more than 32K context (`INFERNET_OLLAMA_MAX_CTX`, `0` = off), and the installer gives `ollama.service` `OLLAMA_FLASH_ATTENTION=1` + `OLLAMA_KV_CACHE_TYPE=q8_0` unless you set them (`INFERNET_SKIP_OLLAMA_ENV=1` skips it).
+- One queue for chat: a job a busy node turns away (busy, failed or timed out before its first token) goes back into the queue, at the back, and is dispatched again like a new job to the first capable node with a free slot (c0mpute worker or Infernet provider daemon, CPU included, the fastest when several are free; never a different model). Streams carry `status` events. Each requeue is a real wait: up to 90 s (`INFERNET_REQUEUE_WAIT_MS`) at the back of the queue, dispatched as soon as a node or worker has a free slot; a try counts only when its window ends with no taker. A model no node serves fails at once; after 3 such tries (`INFERNET_MAX_REQUEUES`) or `INFERNET_C0MPUTE_WAIT_MS` (9 min) the job ends with "Network is busy. Run a node or wait."
+- Jobs run in parallel when there is capacity: CPU-only nodes take one at a time, GPU nodes as many as Ollama has parallel slots (`OLLAMA_NUM_PARALLEL`, which the installer sets from VRAM: 2 from 10 GB, 3 from 20 GB, 4 from 40 GB). Override with `INFERNET_MAX_CONCURRENT_JOBS`.
 - `infernet status` and `infernet house-models` show what is pulled and the disk it uses; `infernet house-models list` shows the list and what fits here.
 - **Opt out:** `infernet house-models off` (or `--no-house-models` on install/setup/start, or `INFERNET_HOUSE_MODELS=0`). Uncensored ones only: `infernet house-models uncensored off` (`--no-uncensored-models`, `INFERNET_UNCENSORED_MODELS=0`). Disk cap: `infernet house-models cap 20` (`INFERNET_HOUSE_MODELS_MAX_GB`).
 - **Add a model:** a PR adding `{name, source, digest, size_bytes, min_ram_gb, min_disk_gb, uncensored, license, description, added}` to that file. `digest` is the sha256 of the registry manifest (what `/api/tags` reports after a pull); `size_bytes` is all layers plus config. Details: [/docs/house-models](https://infernetprotocol.com/docs/house-models).
@@ -496,7 +499,7 @@ GET   /api/aggregators
 GET   /api/clients
 GET   /api/models
 POST  /api/chat                            Chat playground — picks P2P provider OR NIM fallback, returns streamUrl
-GET   /api/chat/stream/[jobId]             SSE: tokens streamed live (job|meta|token|done|error)
+GET   /api/chat/stream/[jobId]             SSE: tokens streamed live (job|meta|status|token|done|error)
 GET   /api/payments/methods                CoinPay coins + PayPal on offer
 POST  /api/payments/invoice                CoinPay checkout for a job
 POST  /api/payments/webhook                CoinPayPortal webhook sink (HMAC-verified)

@@ -118,15 +118,15 @@ gives the same kind of clips: the count, the lengths and the CTA come from the t
 
 | Button | Clips | Framing and sound | Picks |
 | --- | --- | --- | --- |
-| 🎙️ Podcast | 6 × 30-60 s | follows the speaker, speech tuned, dead air out | standalone opinions, surprising facts, stories with a payoff, banter, confessions |
-| 🎮 Gameplay & stream | 5 × 20-45 s | facecam on top, game below (blurred full frame without a facecam), natural sound, quiet parts kept | clutch plays, wins, fails, twists, loud reactions, jokes with chat; peaks found by sound, picture and the stream chat, even without speech |
+| 🎙️ Podcast | 6 × 30-90 s | follows the speaker, speech tuned, dead air out | standalone opinions, surprising facts, stories with a payoff, banter, confessions |
+| 🎮 Gameplay & stream | 5 × 20-75 s | facecam on top, game below (blurred full frame without a facecam), natural sound, quiet parts kept | clutch plays, wins, fails, twists, loud reactions, jokes with chat; peaks found by sound, picture and the stream chat, even without speech |
 | 📣 Video & promo | 4 × 15-30 s | follows the speaker, speech tuned, opening text and a CTA | the main benefit, a demo, a strong claim or number, a testimonial (hook → proof → CTA) |
 | ⚡ Quick shorts | 3 × 10-25 s | automatic, dead air out | jokes, punchlines, surprising lines and reactions |
 
 **Post text.** Every clip comes with a ready-to-paste post (*Copy text* on the card, and the `.txt` file next to
 the video): a one-line teaser ending with an emoji, the comment question, the link of the original video, your own
 profiles (YouTube as a follow line, Instagram, TikTok) and hashtags; the curiosity title for YouTube Shorts is listed
-under it. Set your profile links once under *Settings* (the gear in the sidebar), one per line, e.g.
+under it. Set your profile links once under *Settings, General* (the gear in the sidebar), one per line, e.g.
 `TikTok: https://www.tiktok.com/@you`; they stay on your computer in `data/web/settings.json`, and changing them
 rewrites every clip's post text.
 
@@ -167,26 +167,29 @@ re-render). Older versions stay playable.
 
 ## Posting
 
-A finished clip goes straight to your own YouTube, Instagram and TikTok with the **Post** button on its card, or from
-the chat (*"posztold ki a 2. klipet YouTube-ra"*). It goes up with its post text and, on YouTube, its title; the card
-then links each post. You make a free developer app per platform once and sign in on the platform's own page: the
-tokens stay in `data/web/accounts.json` on this computer. TikTok sends the clip to your drafts (or posts it as private
-until it reviews your app); YouTube may keep uploads of a new API project private until its audit. Setup, step by
-step: **[docs/publishing.md](docs/publishing.md)**.
+A finished clip goes straight to your own YouTube, Instagram, Facebook Page, TikTok and X with the **Post** button on
+its card, or from the chat (*"posztold ki a 2. klipet YouTube-ra"*). It goes up with its post text and, on YouTube, its
+title; the card then links each post. You make a free developer app per platform once and sign in on the platform's own
+page: the tokens stay in `data/web/accounts.json` on this computer. *Settings, Accounts* shows all seven platforms as
+cards. **Twitch and Kick** can be connected, but neither offers apps any way to upload a video, so Clippy does not post
+there (and uses no unofficial way). TikTok sends the clip to your drafts (or posts it as private until it reviews your
+app); YouTube may keep uploads of a new API project private until its audit; X's API is paid per use. Setup, step by
+step, with what each platform allows: **[docs/publishing.md](docs/publishing.md)**.
 
 ## Voice input and notifications
 
 The microphone button next to Send turns your speech into the message (a small Whisper model on the CPU, so it never
-waits for a running job). *Settings, Notifications* lets the browser tell you when a job is done, also when the
+waits for a running job). *Settings, General* lets the browser tell you when a job is done, also when the
 window is in the background. Both need a secure page: they work on the computer that runs Clippy
 (http://127.0.0.1); a phone over the local network cannot use the microphone or notifications without HTTPS.
 
 ## Style kit, covers and A/B titles
 
-*Settings, Style kit* saves your look once: caption font, highlight colour and capitals, a logo (with its corner)
-and an outro. Every new clip gets the caption look at once, and the logo and outro as its next version (with a
-change card and undo). Every clip also gets a cover with its title written on it (*Cover* on the card) and a second
-cover with a B title (*Cover B*); the Post dialog lets you post the A or the B title to YouTube. Hungarian titles,
+*Settings, Style* saves your look once: caption font, highlight colour and capitals, and if you want a logo (with
+its corner), a short intro and an outro; none of them is required. Every new clip gets the caption look at once, and
+the logo, intro and outro as its next version (with a change card and undo). Every clip also gets a cover with its
+title written on it (*Cover* on the card) and a second cover with a B title (*Cover B*); the Post dialog lets you
+post the A or the B title to YouTube. Hungarian titles,
 teasers and questions get a native editor's proofreading pass and Hungarian quotation marks.
 
 Streams (Twitch and Kick VODs, YouTube streams that were live) use the stream layout by default: the facecam on top,
@@ -194,7 +197,7 @@ the game below, or the blurred full frame when there is no facecam.
 
 ## Watching channels and planned posts
 
-Give Clippy a YouTube channel, a Twitch channel or a playlist under *Settings, Watched channels*, or say it in the
+Give Clippy a YouTube channel, a Twitch channel or a playlist under *Settings, Automation*, or say it in the
 chat (*"figyeld ezt a gaming csatornát: https://www.twitch.tv/…"*). It looks for new videos every 15 minutes to once
 a day; each new video becomes its own chat that makes clips with the kind you chose (podcast, gameplay & stream, video
 & promo, quick shorts). Videos already on the channel are left alone; tick *Clip the newest video now too* for one
@@ -209,12 +212,13 @@ as `twitch.tv/name`, `kick.com/name` or `@name`. Kick's stream list is read with
 yt-dlp cannot.
 
 **Daily picks.** Say *"minden nap 3 GTA VI klipet"* or *"every day 3 GTA VI clips"* (or start it under *Settings,
-Daily picks*): every morning at 09:00 Clippy takes the most watched clips of the last day in that game's Twitch and
+Automation*): every morning at 09:00 Clippy takes the most watched clips of the last day in that game's Twitch and
 Kick category, which are the streamers' biggest live reactions, keeps one per streamer in the audience's language,
 and makes a vertical clip of each in its own chat, with the stream layout and a post text that credits the streamer.
 Each pick comes with a time to post it for a US audience (New York 19:00, 15:00 and 12:00 by default, the most
-watched moment first), shown in your own time too; *Settings, Daily picks* lists today's picks with their times and
-a *Copy text* button. GTA VI, GTA V, Minecraft, Fortnite, Valorant, Counter-Strike, League of Legends and Warzone are
+watched moment first), shown in your own time too; *Settings, Automation* lists today's picks with their times and
+a *Copy text* button. Tick YouTube under *Post each clip at its time* and every pick also goes out by itself:
+YouTube gets it as soon as it is made and publishes it at its time. GTA VI, GTA V, Minecraft, Fortnite, Valorant, Counter-Strike, League of Legends and Warzone are
 known by name (`clippy/categories.py`).
 
 Posts can wait for their time: choose *At a set time* in the Post dialog, and the card shows the planned post with a
@@ -223,7 +227,7 @@ Posts can wait for their time: choose *At a set time* in the Post dialog, and th
 you set both, and it uses your own connected accounts (YouTube public, TikTok drafts).
 
 **Learning from the results.** The numbers of every post (views, likes, comments, shares, how much people watch)
-come back onto its card, and *Settings, What works* shows which openings, lengths, kinds of moment and posting times
+come back onto its card, and *Settings, Results* shows which openings, lengths, kinds of moment and posting times
 do better than your usual. The clear patterns steer the picker for the next videos.
 
 ## Configuration
@@ -245,6 +249,9 @@ do better than your usual. The clear patterns steer the picker for the next vide
 | `CLIPPY_COOKIES_FILE` | - | a `cookies.txt` (Netscape format) exported from any signed-in browser with an extension; Clippy only reads it, each download uses a private copy. Keep it in `data/` (ignored), it is as good as your login |
 | `CLIPPY_YOUTUBE_CLIENT_ID`, `CLIPPY_YOUTUBE_CLIENT_SECRET` | - | your Google "Desktop app" OAuth client, for posting to YouTube ([docs/publishing.md](docs/publishing.md)) |
 | `CLIPPY_TIKTOK_CLIENT_KEY`, `CLIPPY_TIKTOK_CLIENT_SECRET` | - | your TikTok developer app, for posting to TikTok |
+| `CLIPPY_FACEBOOK_APP_ID`, `CLIPPY_FACEBOOK_APP_SECRET` | - | your Meta app, for posting Reels to a Facebook Page (optional `CLIPPY_FACEBOOK_PAGE_ID`, `CLIPPY_FACEBOOK_CONFIG_ID`) |
+| `CLIPPY_X_CLIENT_ID` | - | your X developer app's client id, for posting to X (optional `CLIPPY_X_CLIENT_SECRET` for a confidential app) |
+| `CLIPPY_TWITCH_CLIENT_ID`, `CLIPPY_TWITCH_CLIENT_SECRET`, `CLIPPY_KICK_CLIENT_ID`, `CLIPPY_KICK_CLIENT_SECRET` | - | your Twitch / Kick developer apps, only to connect the account (neither platform lets apps upload videos) |
 | `CLIPPY_WORKERS`, `CLIPPY_RENDER_SLOTS` | `3`, `3` | jobs of different chats at once, clips rendered at once (the GPU always runs one heavy model at a time) |
 
 **Where files go.** Finished clips: `<CLIPPY_LIBRARY>\<video title>\` (mp4 + cover jpg + post text), never removed
@@ -254,7 +261,7 @@ chat (removed with the chat, together with any cache no other chat uses), comman
 ## Guides
 
 * **[docs/cli.md](docs/cli.md)**: every command and `clippy clip` option, with examples.
-* **[docs/publishing.md](docs/publishing.md)**: connecting YouTube, Instagram and TikTok to post clips from the app.
+* **[docs/publishing.md](docs/publishing.md)**: connecting YouTube, Instagram, Facebook, TikTok, X, Twitch and Kick (posting on the first five).
 * **[docs/playbook.md](docs/playbook.md)**: what works on TikTok, Shorts and Reels (hooks, length, captions, CTA,
   posting, rights) and where Clippy applies it.
 * **[docs/quality.md](docs/quality.md)**: what each stage does for the picture, the sound and the captions, and how hooks are scored.

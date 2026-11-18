@@ -2,7 +2,7 @@
 
 ### The right reasoning effort for every turn in <img src="assets/claude-inline.svg" height="30" alt=""> Claude Code, set for you.
 
-Effort Pilot switches the reasoning effort for every turn, automatically: plans get `high`, building gets `medium`, questions and trivial tasks — a git commit, a push, a rename — get `low`. Deep thinking goes where it counts, and a quick question no longer waits on it. Want another model or level? Just say it, typed or dictated: "plan this on Fable 5.2 at high, then build on Opus at medium".
+Effort Pilot switches the reasoning effort for every turn, automatically: plans get `high`, building gets `medium`, questions and trivial tasks get `low`, and an order that can't be taken back — a push, a merge, a deploy — gets `high`. Deep thinking goes where it counts, and a quick question no longer waits on it. Want another model or level? Just say it, typed or dictated: "plan this on Fable 5.2 at high, then build on Opus at medium".
 
 [![version](https://img.shields.io/github/v/release/vadympetryshyn/effort-pilot?label=version&color=d97757)](https://github.com/vadympetryshyn/effort-pilot/releases)
 [![CI](https://github.com/vadympetryshyn/effort-pilot/actions/workflows/ci.yml/badge.svg)](https://github.com/vadympetryshyn/effort-pilot/actions/workflows/ci.yml)
@@ -10,13 +10,13 @@ Effort Pilot switches the reasoning effort for every turn, automatically: plans 
 [![stars](https://img.shields.io/github/stars/vadympetryshyn/effort-pilot?style=flat&color=d97757)](https://github.com/vadympetryshyn/effort-pilot/stargazers)
 [![last commit](https://img.shields.io/github/last-commit/vadympetryshyn/effort-pilot)](https://github.com/vadympetryshyn/effort-pilot/commits/main)
 
-<img src="assets/hero-5.svg" alt="Effort Pilot switching effort: high to plan and to investigate, medium to build, low to commit and push" width="820">
+<img src="assets/hero-6.svg" alt="Effort Pilot switching effort: high to plan and to investigate, medium to build, low for a question about the work" width="820">
 
 ## What you get
 
 Compared with leaving effort on `high` all the time, on the author's own turns:
 
-<img src="assets/why-4.svg" alt="Effort Pilot vs. always-on high: quick questions answered up to twice as fast, up to 10% fewer tokens, effort set every turn without /effort" width="820">
+<img src="assets/why-5.svg" alt="Effort Pilot vs. always-on high: quick questions answered up to twice as fast, up to 10% fewer tokens, effort set every turn without /effort" width="820">
 
 - **Quick answers, up to twice as fast.** A question or a chat turn runs at `low`: its median model time is about half that at `high` (−50%, 90% range −13% … −69%).
 - **Plans lose nothing.** Plans and plan mode run at `high`, the same depth as always-on `high`; set `planEffort` to `xhigh` or `max` for more.
@@ -67,7 +67,9 @@ Before each turn a small, fast model (Haiku, ≈ $0.0004 a turn) reads your mess
 | ask a hard question, investigate a bug | analyze | `high` |
 | ask to build or fix something | implement / fix | `medium` (`high` when hard) |
 | approve a plan | implement | `medium` — the thinking went into the plan |
-| ask a quick question, commit, push, run a command, a tiny edit | chat / trivial | `low` |
+| ask to commit, run a command or the tests | implement | `medium` |
+| ask to push, merge, deploy or delete | implement | `high` — it can't be taken back |
+| ask a quick question, or a question about the work | chat / trivial | `low` |
 
 A band above the prompt shows the effort now, how it got there and why. Follow-ups that push the work on keep its effort (a word to go on, like "done" or "continue", too), and a side question doesn't drag it down; a plain question about the work (what was found, where it stands) runs at `low` — the answer is already there. A skill or prompt command you type (`/create-plan …`) is read like any message, and with nothing after it by what the command says it does; built-in commands (`/clear`, `/model`) are left alone. Asked for a plan and its build in one message ("plan it, then implement")? Once the agent loads a skill that carries the plan out, the build goes at the build effort, as an approved plan does.
 
@@ -75,7 +77,7 @@ A band above the prompt shows the effort now, how it got there and why. Follow-u
 
 - 🗣️ **Just say it.** "do this on max", "medium is enough", "plan it, then build on high" — in any language, typed or dictated. `ultrathink` runs that work at `xhigh`, as Claude Code does (with `CLAUDE_CODE_DISABLE_ULTRATHINK` set, the word asks for nothing). "back to auto" hands it back. Name a model the same way: "switch me to Sonnet at medium", "back to Opus", "plan it on Fable, then build on Sonnet at high". It holds for the rest of the session, until you name another, pick one with `/model`, or turn the pilot off; subagents keep their own model. On a model Effort Pilot does not manage (Sonnet, Haiku by default) the effort you named with it holds too. Talking about a model (for a subagent, a tool, in code, comparing them) switches nothing. Each switch costs one request that re-reads the conversation without the prompt cache.
 - 🛤️ **A pipeline in one sentence.** Name a model and an effort for each stage of a long task, and the agent moves through them on its own: "plan on Fable at high, build on Opus at medium, test on Haiku at low: add pagination to the users endpoint". Planning runs on Fable at `high`; once the plan is approved (or you say "go"), the build runs on Opus at `medium`; and when the agent reaches testing, checking or review, it hands that to a subagent on Haiku at `low` instead of switching itself. A subagent starts with a small, fresh context, so the test stage costs no extra request without the prompt cache (a switch of the main loop's model costs one). Any stage may name Opus, Sonnet, Haiku or Fable; on a model Effort Pilot does not manage (Sonnet, Haiku by default) the effort you named for that stage holds, and with none named your own effort goes. Leave a stage out and it runs as it would anyway; "and test it on Haiku" said later adds the test stage to the work under way. The band and the status line show the stage held (`test: haiku·low`).
-- 🧭 **Plan mode** runs at `high`; the approved plan is built at `medium`. Want plans on another model? Set `planModeModel` (say `fable`): plan mode runs on it, and the approved plan is built on your session's model again (a model you name in words wins over the setting). Turn on `planModelForPlans` and a plan you ask for outside plan mode ("plan the export", `/create-plan …`) goes on it too: questions and pushback on the plan stay there, and once you say build it, your requests go back on the session's model at the build effort. Each switch costs one request that re-reads the conversation without the prompt cache.
+- 🧭 **Plan mode** runs at `high`; the approved plan is built at `medium`. Want plans on another model? Set `planModeModel` (say `fable`): plan mode runs on it, and the approved plan is built on your session's model again (a model you name in words wins over the setting). If the session itself is on that model (your `/model` choice), the build stays on it, and a toast says so once. Turn on `planModelForPlans` and a plan you ask for outside plan mode ("plan the export", `/create-plan …`) goes on it too: questions and pushback on the plan stay there, and once you say build it, your requests go back on the session's model at the build effort. Each switch costs one request that re-reads the conversation without the prompt cache.
 - 🤖 **Subagents** get their own effort, on the session's model or another one (never below the build effort, `medium` by default). An effort the Agent call names, or `CLAUDE_CODE_SUBAGENT_EFFORT`, is left alone. Your own and plugin agents keep their own effort unless you list them (below). Each subagent's effort is shown: in its description, or in one transcript line at its first request.
 - 🔔 **Background results** and messages from other sessions are read too: one the agent only relays or hands to the next agent goes at the build effort (at `high` while a plan or an analysis is under way); one that reports a failure, a background command's output, or a step in hard work keeps the effort of the work it serves.
 - ✋ **You stay in charge.** `/effort <level>` pins it; `/effort-pilot on` resumes.

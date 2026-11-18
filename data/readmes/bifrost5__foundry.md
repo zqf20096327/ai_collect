@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Status](https://img.shields.io/badge/Status-Beta-orange?style=for-the-badge)](https://github.com/auto-layer/supervisor) 
+[![Status](https://img.shields.io/badge/Status-Beta-orange?style=for-the-badge)](https://github.com/bifrost5/foundry) 
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT) 
 [![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](https://github.com/ai-supervisor-foundry/foundry/actions)
 
@@ -29,8 +29,8 @@ Get Foundry running with zero manual configuration. The setup wizard handles inf
 
 ```bash
 # 1. Clone and Install
-git clone https://github.com/auto-layer/supervisor.git
-cd supervisor
+git clone https://github.com/bifrost5/foundry.git
+cd foundry
 npm install
 
 # 2. Run the Magic Button

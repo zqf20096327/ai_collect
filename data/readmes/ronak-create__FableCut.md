@@ -289,9 +289,10 @@ big operation (cutting silences, snapping to the beat, reframing), and every
 
 **Text**
 
-- **Title styles** — one-tap cohesive looks (Impact, Elegant, Kinetic cut, Neon,
-  Handwritten, Luxury, and more); new titles vary the font, placement and animation
-  automatically instead of defaulting to one flat style
+- **Title styles** — twenty one-tap cohesive looks (Impact, Elegant, Kinetic cut, Neon,
+  Luxury, Comic, Typewriter, Sticker, Cinematic, and more); new titles vary the font,
+  placement and animation automatically instead of defaulting to one flat style. The
+  font picker groups about sixty Google fonts by look, and any other loads by name
 - Kinetic captions: typewriter, word-pop, word-slide, karaoke, **letter-pop**,
   **wave**, **bounce**, **shake**, **clip-reveal**, **zoom-in**, **font-cut**
   (rhythmic typeface cuts), **rise-mask**
@@ -394,7 +395,7 @@ cd FableCut
 node server.js        # → http://localhost:7777
 ```
 
-Requirements: **Node 18+** and a Chromium-based browser. **ffmpeg on PATH** is
+Requirements: **Node 22+** and a Chromium-based browser. **ffmpeg on PATH** is
 optional but recommended (fast export + upload remuxing). AI background
 removal fetches its model from a CDN on first use.
 
@@ -417,7 +418,7 @@ you choose. Leave it unset and everything stays in the repo, exactly as before.
 
 That registers the MCP server for you and adds three skills — `edit-video`,
 `remake-reel` and `motion-graphics`. Your timeline and footage live in the plugin's own data
-directory, so an update never touches them. Node 18+ and (optionally) ffmpeg
+directory, so an update never touches them. Node 22+ and (optionally) ffmpeg
 still need to be on your machine.
 
 ## Driving it with an AI agent
@@ -479,11 +480,11 @@ Three equivalent control surfaces:
 
    The server is intentionally client-neutral. It speaks MCP over stdio and
    does not require Claude-specific environment variables. With a clone, keep
-   the path absolute. Node 18 or newer either way.
+   the path absolute. Node 22 or newer either way.
 
    Tools: `fablecut_status` (auto-starts the editor), `fablecut_docs`,
    `fablecut_get_project`, `fablecut_set_project`, `fablecut_patch_project`,
-   `fablecut_import_media`, `fablecut_analyze_reference`, `fablecut_frame`,
+   `fablecut_import_media`, `fablecut_files`, `fablecut_analyze_reference`, `fablecut_frame`,
    `fablecut_encode_profiles`, `fablecut_normalize_audio`, `fablecut_auto_duck`,
    `fablecut_denoise`, `fablecut_silence`, `fablecut_beats`, `fablecut_reframe`, `fablecut_highlights`, `fablecut_transcribe`, `fablecut_captions`, `fablecut_export`, `fablecut_scopes`, `fablecut_track`.
 

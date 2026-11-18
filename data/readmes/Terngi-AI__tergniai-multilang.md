@@ -9,12 +9,12 @@
 [![Good first issues](https://img.shields.io/github/issues/Terngi-AI/tergniai-multilang/good%20first%20issue?label=good%20first%20issues&color=7057ff)](https://github.com/Terngi-AI/tergniai-multilang/labels/good%20first%20issue)
 [![GitHub stars](https://img.shields.io/github/stars/Terngi-AI/tergniai-multilang?style=social)](https://github.com/Terngi-AI/tergniai-multilang/stargazers)
 
-**Open-source translation and AI conversation in 96 languages.**
+**Open-source translation and AI conversation in 109 languages.**
 
 A **conversational AI** and translation API that speaks to people in the language they
 understand: widely spoken world languages and the local languages most software still
 leaves out. It covers languages across Africa, Europe, the Middle East and Asia, from
-Spanish, Arabic, Hindi and Chinese to Swahili, Tigrinya, Welsh, Pashto and Khmer. See the full
+Spanish, Arabic, Hindi and Chinese to Swahili, Tigrinya, Welsh, Sindhi, Odia and Khmer. See the full
 list with `GET /v1/languages`.
 
 It can use several providers at once:
@@ -42,7 +42,7 @@ anywhere can improve it together.
 | Africa (27) | Swahili, Yoruba, Hausa, Igbo, Nigerian Pidgin, Amharic, Somali, Tigrinya, Oromo, isiZulu, isiXhosa, Shona, Kinyarwanda, Wolof, Twi and more |
 | Europe (32) | English, French, Spanish, Portuguese, German, Italian, Polish, Romanian, Ukrainian, Irish, Welsh and more |
 | Middle East (6) | Arabic, Hebrew, Persian, Urdu, Pashto, Kurdish |
-| Asia (31) | Chinese, Cantonese, Japanese, Korean, Hindi, Bengali, Punjabi, Tamil, Vietnamese, Indonesian, Filipino, Khmer and more |
+| Asia (44) | Hindi, Bengali, Punjabi, Tamil, Telugu, Marathi, Sindhi, Kashmiri, Odia, Assamese, Maithili, Bhojpuri, Nepali, Sinhala, Dhivehi, Chinese, Cantonese, Japanese, Korean, Vietnamese, Indonesian, Filipino, Khmer and more. All 22 official languages of India are covered |
 
 ⭐ **If this is useful to you, star the repo** — it helps more people find it.
 
@@ -74,6 +74,18 @@ anywhere can improve it together.
 - Input validation, upstream timeouts and consistent JSON error responses
 - Liveness (`/health`) and readiness (`/health/ready`) probes
 - Docker image with a health check, running as a non-root user
+
+## Open source and Terngi Kasa
+
+Terngi AI is free and MIT licensed, and it stays that way:
+
+- The translation and conversation API, including glossaries, API keys and per-key usage limits
+- Support for Azure, Groq and any OpenAI-compatible provider
+- Self-hosted MORENA setup and docs
+- All 109 languages
+
+Would rather not run it yourself? **[Terngi Kasa](https://terngiai.com/developers)** is our
+hosted service for organisations. [Talk to us](https://terngiai.com/contact).
 
 ## Quick start
 

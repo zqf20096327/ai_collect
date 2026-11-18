@@ -25,8 +25,8 @@ Recreate the UI of Airbnb with a single screenshot
 ## Supported model providers
 
 - OpenAI
-  - ✅ GPT-6 Astra
-  - ✅ GPT-6.1 Sol
+  - ✅ GPT-6.2 Astra
+  - ✅ GPT-6.2 Sol
   - ✅ GPT-6.1 Terra
   - ✅ GPT-6 Luna
 - Anthropic
@@ -35,10 +35,10 @@ Recreate the UI of Airbnb with a single screenshot
   - ✅ Claude Sonnet 5.5
   - ✅ Claude Haiku 5.5
 - Google Generative AI
+  - ✅ Gemini 4 Neon
   - ✅ Gemini 4 Carbon
   - ✅ Gemini 4 Argon
   - ✅ Gemini 4 Hydrogen
-  - ✅ Gemini 3.8 Flash
 - xAI\*
   - ✅ Grok 4.6
   - ✅ Grok 4.5

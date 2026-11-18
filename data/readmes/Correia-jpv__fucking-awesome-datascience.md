@@ -859,7 +859,6 @@ This section includes some additional reading material, channels to watch, and t
 - [NYC Taxi Visualization Blog](https://chriswhong.github.io/nyctaxi/)
 - [Data-Mania](https://www.data-mania.com/)
 - [Data-Magnum](https://data-magnum.com/)
-- [datascopeanalytics](https://datascopeanalytics.com/blog/)
 - [Digital transformation](https://www.tarrysingh.com/)
 - [datascientistjourney](https://datascientistjourney.wordpress.com/category/data-science/)
 - [Data Mania Blog](https://www.data-mania.com/blog/) - [The File Drawer](https://chris-said.io/) - Chris Said's science blog
@@ -1027,4 +1026,5 @@ Below are some Social Media links. Connect with other data scientists!
 | [John Myles White](https://x.com/johnmyleswhite)  | Scientist at Facebook and Julia developer. Author of Machine Learning for Hackers and Bandit Algorithms for Website Optimization. Tweets reflect my views only. |
 | [Juan Miguel Lavista](https://x.com/BDataScientist) | Principal Data Scientist @ Microsoft Data Science Team |
 | [Julia Evans](https://x.com/b0rk) | Hacker - Pandas - Data Analyze |
-| [Kenneth Cukier](https://x.com/kncukier) | The Economist's Data Editor and co-author of Big Data (https://www.big-data-book.com/
+| [Kenneth Cukier](https://x.com/kncukier) | The Economist's Data Editor and co-author of Big Data (https://www.big-data-book.com/). |
+| Kevin Davenport | Organizer of https://www.meetup.com/

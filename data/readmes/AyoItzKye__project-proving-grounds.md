@@ -19,7 +19,7 @@ Everything about where the mod stands is in five places:
 
 | | |
 |---|---|
-| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 17, 2026**. Download it from the Releases page. <!-- release --> |
+| **[Release](https://github.com/AyoItzKye/project-proving-grounds/releases/latest)** | Version **0.2.3**, last updated **November 18, 2026**. Download it from the Releases page. <!-- release --> |
 | **[Updates](docs/UPDATES.md)** | What was added and fixed in each version, newest first. |
 | **[Known bugs](docs/KNOWN_BUGS.md)** | Everything known to be broken, by game, and every bug reported on GitHub with its status. |
 | **[Bot status sheet (PDF)](docs/BOT_STATUS.pdf)** | An honest rating of every game, mode and vehicle, from green (good to go) to red (not working yet). |
@@ -28,6 +28,51 @@ Everything about where the mod stands is in five places:
 [![How the bots play each game: summary](docs/bot_status.png)](docs/BOT_STATUS.pdf)
 
 Found a bug that isn't on the Known bugs page? **[Report it here](https://github.com/AyoItzKye/project-proving-grounds/issues/new?template=bug_report.yml)** (how: [Report a problem](#report-a-problem)). The launcher tells you when a new version is out.
+
+## Important: how many bots can my PC run?
+
+**More bots than your PC can think for do not crash the game. They get less smooth.**
+
+- Each bot is a small player your PC has to think for, 30 times a second: what it sees, where it walks, where it aims.
+- The thinking happens on the processor (CPU), on one core. A fast single core matters most. More cores do not add bots.
+- When there are more bots than that core can think for in time, every bot thinks later. You see slower reactions,
+  jerkier aim and movement, and plans that lag behind the match. The bots are not made dumber on purpose. Their
+  thinking just arrives late.
+- Big open maps are much heavier than small ones. Now and then a bot searches a large map for a route or a good spot,
+  and all the bots wait for that one search.
+
+**Find your own number:** open the launcher and look at **Your PC** in the First-time setup box. Once setup is
+done the box is all about your PC: its specs (read on your PC, sent nowhere), and for each map size (small to very large)
+the most bots to use before they get sluggish. That is not a crash limit: with more bots the match keeps running, the
+bots just think less often, react late and move in jerks. The numbers come from a two-second speed test and the maps
+measured on your PC. It warns you when your saved match has more bots than that. While a match runs it says whether
+the bots are at full speed. **Run the test again** repeats the test. The BOTS panel in the game also shows the count
+for each game.
+
+What we measured on the test PC (an 8-core desktop CPU from 2024, one of the fastest single cores you can buy). The
+numbers are how much of each thinking step the bots used, measured without the game running. In a real match add
+about a quarter. 100% or more means the bots fall behind.
+
+| Bots | Easy | Normal | Heroic | Legendary | How it feels |
+|---|---|---|---|---|---|
+| 4 | 10% | 11% | 10% | 9 to 15% | Smooth |
+| 8 | 20% | 25% | 24% | 21 to 22% | Smooth |
+| 12 | 28 to 31% | 45% | 32% | 31 to 39% | Smooth |
+| 16 (a full lobby) | 40 to 65% | 52 to 68% | 41 to 48% | 43 to 57% | Smooth on small and medium maps. On the largest maps the bots often freeze for a moment, a tenth of a second to nearly a second |
+
+A PC whose single core is half as fast uses twice these numbers: it runs smoothly up to about 11 bots, and the bots get sluggish from 14.
+
+**If the bots feel choppy:**
+
+1. Use fewer bots. This helps the most.
+2. Pick a smaller map. A full lobby on the largest maps is the heaviest thing you can ask for.
+3. Close other heavy programs, above all ones that keep the processor busy.
+4. On a laptop, plug it in, then press **Run the test again**.
+5. Have 16 GB of memory for the largest maps. The bots can use up to 4 GB there.
+
+**What does not help:** a lower difficulty. Easy bots cost the PC as much thinking as Legendary ones.
+
+The measurements behind this are in [docs/BOT_PERFORMANCE.md](docs/BOT_PERFORMANCE.md).
 
 ## Install
 
@@ -331,7 +376,8 @@ form asks for the game, mode, map and difficulty and has a box to drop the zippe
 | Graphics | MCC's own minimum (DirectX 11, feature level 11.1) | MCC's recommended or better |
 | Storage | about 2.5 GB beside MCC | the same on an SSD |
 
-The bots think on one CPU core, so a fast single core matters most; fewer bots need less.
+The bots think on one CPU core, so a fast single core matters most; fewer bots need less. See
+[How many bots can my PC run?](#important-how-many-bots-can-my-pc-run) and **Your PC** in the launcher's First-time setup box.
 
 ## Troubleshooting
 
@@ -340,7 +386,7 @@ The bots think on one CPU core, so a fast single core matters most; fewer bots n
 | No BOTS tile in the lobby | MCC was started with anti-cheat on: quit it and press Play again, choosing anti-cheat off. Or MCC updated since this version of the mod: check Releases for a newer one. |
 | The launcher says Windows Security removed inject.exe | The exclusion is missing. Restore inject.exe from Windows Security > Protection history, then run the installer again with the exclusion ticked, or add the install folder's native\bin yourself (Windows Security > Virus & threat protection > Manage settings > Exclusions). |
 | Bots do not join | The brain's log is logs\brain.txt in the install folder (Open the install folder in the launcher). |
-| The game stutters with many bots | Use fewer bots; see the requirements. |
+| The game stutters with many bots, or the bots react late and move in jerks | Use fewer bots or a smaller map: see [How many bots can my PC run?](#important-how-many-bots-can-my-pc-run). |
 | Another mod (ReShade, an ASI loader ...) | The launcher lists files from other mods that can clash and offers to start without them for one session. |
 | The launcher says the game is not found, or uses the wrong copy of MCC | In the launcher, **Game folder > Choose folder ...** and pick your MCC folder (the one with `MCC`, `halo1`, `halo3` ... in it), or paste its path and press **Use**. The choice is kept through updates and Repair; **Use automatic** goes back to the copy Steam has installed. Run **Repair** after switching to another copy. |
 

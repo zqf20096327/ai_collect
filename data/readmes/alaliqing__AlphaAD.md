@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--17-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1379-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--18-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1383-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1379 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1383 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 217 | 2026-11-16 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 110 | 2026-11-16 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 93 | 2026-11-15 | [View papers](#category-planning-decision-making) |
-| Control & Vehicle Dynamics | 60 | 2026-11-12 | [View papers](#category-control-vehicle-dynamics) |
+| Perception & Sensor Fusion | 216 | 2026-11-16 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 113 | 2026-11-17 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 94 | 2026-11-16 | [View papers](#category-planning-decision-making) |
+| Control & Vehicle Dynamics | 60 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 157 | 2026-11-16 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 199 | 2026-11-16 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 157 | 2026-11-16 | [View papers](#category-systems-deployment-connectivity) |
+| End-to-End & VLA | 157 | 2026-11-17 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 200 | 2026-11-16 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 156 | 2026-11-16 | [View papers](#category-systems-deployment-connectivity) |
 | Human Factors & Policy | 30 | 2026-11-15 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 308 | 2026-11-16 | [View papers](#category-cross-cutting-other) |
+| Cross-cutting / Other | 309 | 2026-11-16 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,25 +45,25 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 103 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
 | Simulation | 196 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 33 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| Synthetic Data | 32 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Cooperative / V2X | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 85 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 116 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 137 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| World Model | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 141 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 98 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 105 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 106 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 217 papers
+## Perception & Sensor Fusion · 216 papers
 
 <a id="paper-2611-21126"></a>
 
@@ -98,7 +98,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-14003"></a>
 
-### Spatio-Temporal Calibration of a Vehicle-Mounted Microphone Array for Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+### Spatio-Temporal Calibration of a Vehicle-Mounted Microphone Array for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Marvin Seegert, Richard Taupitz, Korbinian Moller, Johannes Betz<br>
 **Published:** 2026-11-10<br>
@@ -439,7 +439,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-25448"></a>
 
-### UBD-Bench: Benchmarking and Analyzing Unimodal Branch Degradation in Multimodal Perception for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### UBD-Bench: Benchmarking and Analyzing Unimodal Branch Degradation in Multimodal Perception for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Ang Liu, Xiang Gu, Ruikai Li, Qiyue Wang, Yizhe Fan, et al.<br>
 **Published:** 2026-10-18<br>
@@ -1169,7 +1169,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-18715"></a>
 
-### The Impact of CutMix on Reliability and Robustness in Semantic Segmentation ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### The Impact of CutMix on Reliability and Robustness in Semantic Segmentation
 
 **Authors:** Steven Landgraf, Markus Ulrich<br>
 **Published:** 2026-08-19<br>
@@ -1657,4 +1657,6 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Research tags:** Benchmark · Simulation<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.05783) | [PDF](https://arxiv.org/pdf/2607.05783.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** Environmental illusions (eg., shadows, reflections, and tire marks) are naturally existing yet overlooked phenomena in real-world driving environments. They can dis
+**Abstract:** Environmental illusions (eg., shadows, reflections, and tire marks) are naturally existing yet overlooked phenomena in real-world driving environments. They can disturb visual perception, leading to...
+
+<a id

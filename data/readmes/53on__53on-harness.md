@@ -59,6 +59,9 @@ It is one AI with one memory, whether it works inside 53ON or outside it.
 - Messages from your phone, if you turn them on: to 53ON's chat or to your Claude Code chat.
 - Scheduled prompts and work in the background.
 - A panel to audit everything the AI asks of your PC.
+- Each chat with its own AI: one on a local model, another on Claude or Gemini.
+- Works without internet: 53ON keeps a copy of its pages on your PC, so the chat with a model at home keeps going when the connection drops.
+- Light or dark: one switch in Options for the whole Harness.
 
 It installs per user, without administrator rights, and updates itself. Windows Settings > Apps removes it.
 

@@ -4,11 +4,15 @@
 
 在 Antigravity 输入框底栏显示上下文占用、多模型配额、缓存状态和生成速度，悬停胶囊即可查看面板详情，点击胶囊即可固定面板。
 
-[B 站宣传片](https://www.bilibili.com/video/BV1zCsj65Ebc/)展示的是 [v1.0.0](https://github.com/Lumidarin/agy-capsule/releases/tag/v1.0.0)。当前版本是 **v1.1.0**。想保留 1.0 的简约底栏，可以在侧栏[设置](#设置)关掉生成速度、最近请求、本轮统计和请求失败胶囊；如果只想看关键数字，还可以关掉上下文明细。
-
 <p align="center">
   <img src="assets/readme/hero.gif" width="100%" alt="依次悬停上下文、配额和请求失败胶囊（无鼠标），弹出对应面板" />
 </p>
+
+宣传片（v1.1，也可以在 [B 站](https://www.bilibili.com/video/BV1ggsy6rEQM/) 观看）：
+
+https://github.com/user-attachments/assets/9f5bf1c6-1284-4e17-a380-defdee83f60c
+
+想保留 1.0 的简约底栏，可以在侧栏[设置](#设置)关掉生成速度、最近请求、本轮统计和请求失败胶囊；如果只想看关键数字，还可以关掉上下文明细。
 
 ## 上下文
 
@@ -80,6 +84,26 @@
 
 更新后插件会自动重启并重连侧栏，无需手动操作；从不支持自动重载的旧版首次更新时，需手动重启插件一次。
 
+### Windows：Antigravity 换了安装位置怎么办？
+
+换位置后先打开一次 Antigravity，再双击 `update.bat`，让插件记住新的启动路径；不用另装 Node。如果插件仍然启动失败，完全退出 Antigravity，再打开一次。
+
+### 底栏胶囊不显示
+
+底栏胶囊通过 Antigravity 的调试端口挂到输入框下方。新版 Antigravity 默认不再打开这个端口，这时侧栏统计照常，但胶囊不出现，侧栏顶部会显示「底栏胶囊未启用」。打开方法：
+
+- **Windows 安装时设置**：`install.bat` / `update.bat` 装完后，如果 Antigravity 快捷方式还没带参数，会询问是否加上，直接回车即可。
+- **Windows 一键设置**：跳过了询问，或之后参数丢了，可在仓库目录运行下面的命令。它会给桌面、开始菜单和任务栏上的 Antigravity 快捷方式加上 `--remote-debugging-port=0`；加 `-Undo` 可撤销。
+
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File scripts\enable-cdp.ps1
+  ```
+- **手动**：在快捷方式「属性 → 目标」末尾加上 ` --remote-debugging-port=0`。macOS 可用 `open -a Antigravity --args --remote-debugging-port=0` 启动。
+
+改完后要**完全退出** Antigravity 再从快捷方式打开。以下启动方式不经过快捷方式，不会带上参数：点 `antigravity://` 链接或在资源管理器里「用 Antigravity 打开」时恰好没有窗口在运行；Antigravity 自动更新后自行重启；更新安装器重建了快捷方式（需要再运行一次脚本）。
+
+这个端口只监听本机。打开后，本机其他程序也能通过它控制 Antigravity 窗口；旧版 Antigravity 本来就默认打开它。
+
 ## 数据口径
 
 - **生成速度** = 总输出 ÷（TTFT + 流式耗时），包含等待首 token 的时间。
@@ -112,6 +136,10 @@ node --test "test/*.test.mjs"
 ```
 
 浏览器回归是可选的。装好 Playwright 和 Chromium 后，可单独运行 `node test/browser-regressions.mjs`。
+
+## 贡献
+
+欢迎提 Issue 和 PR，详见[贡献指南](./CONTRIBUTING.md#中文)。
 
 ## 声明
 

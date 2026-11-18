@@ -731,8 +731,11 @@ Enter to skip; you can add it later from the web UI).
   default**, shown once the broker offers it; add it later with *Reconnect*) —
   then Google asks you to confirm each one. With *Read Gmail* an agent can
   `gmail search` (Gmail's own search syntax, 50 results at most) and
-  `gmail read` a message or a thread as plain text; it cannot change or delete
-  mail, nor download attachments. Email is **untrusted content**: the skill
+  `gmail read` a message or a thread as plain text, `gmail attachment` to save
+  one attachment into its working directory (25 MB at most; logged), reply to
+  everyone on a message (`--reply-all`: the original's sender and recipients
+  minus your own addresses) and `gmail forward` a message with its attachments
+  (an email like any other: the Mail setting and its card apply). Email is **untrusted content**: the skill
   hands it to the agent inside a fence saying it is data, never instructions,
   and replying still goes through the Mail setting. Every search (its query)
   and every message opened (its id and subject, never its content) is written
@@ -755,16 +758,64 @@ Enter to skip; you can add it later from the web UI).
   and `drive rename` a file. Those three ask first under *Drive edits* on ANY
   file, the cockpit's own included; the card shows the file, where it is now
   and exactly what will happen, and approving does nothing if the file was
-  renamed or moved in the meantime. It can also **edit the content** of a Slides deck, a Doc or a Sheet
+  renamed or moved in the meantime. `drive copy` duplicates a file — a Doc,
+  Sheet or deck keeps its whole look — beside the original at once, or into
+  another folder after a *Drive edits* card; the copy never carries the
+  original's sharing, and when nobody else can see it, it is the cockpit's own
+  file from then on (edited without asking: copy a document, then translate the
+  copy); a copy in a shared folder stays under *Drive edits*. `drive upload`
+  puts a local file from the agent's working directory into the Drive (50 MB;
+  `--convert doc|sheet|slides` imports it as a Google file) and `drive mkdir`
+  creates a folder: at the top of the Drive or in a folder only the person can
+  see, at once and as the cockpit's own; into a folder others can see, a
+  *Drive edits* card — an upload then waits, private, at the top of the Drive,
+  openable from the card, until it is approved into the folder (Discard bins
+  it). `drive untrash` restores a binned file (*Drive edits*, like a delete).
+  `drive comments` and `drive access` list a file's comments and who can reach
+  it (logged, untrusted); `drive reply` answers or resolves a comment, which
+  everyone who sees the comments reads — a *Drive edits* card with the comment
+  and the exact reply. Changing who has access stays impossible. For any other
+  READ, `get --url` is a generic, read-only passthrough: one GET on Gmail
+  (`gmail_read`), Calendar, Drive, Docs, Sheets or Slides API URLs the account's
+  areas cover — never a redirect, a binary or a body, 2 MB at most, every URL
+  logged and the answer fenced as untrusted (labels, attendee responses,
+  revisions, formulas, speaker notes…). It can also **edit the content** of a Slides deck, a Doc or a Sheet
   (`slides edit`, `doc edit`, `sheet edit`): one batch of up to 50 checked
-  operations — replace or insert text, add / delete / reorder slides, style
-  text and headings, tables, images from a public `https` address, cell
-  values and formulas, tabs, rows, columns, formats — applied all together or
-  not at all. On a file the cockpit created it is applied at once; on any other
+  operations — replace or insert text, add / duplicate / delete / reorder
+  slides (on a deck's own custom layouts too: `slides read` lists them), style
+  text and headings (fonts, sizes, colours, links, numbered and bulleted lists,
+  alignment), tables (a Doc's existing cells and rows too), page breaks,
+  speaker notes, shapes and text boxes moved or resized, images from a public
+  `https` address (replaced in place, or swapped in for a template's
+  placeholder shape), cell values and formulas, tabs (a duplicated tab keeps
+  its formats and formulas), rows, columns, formats, sorting, filters, frozen
+  rows, column widths, borders, merged cells, find-and-replace, copy/paste,
+  simple conditional formatting and dropdown lists — applied all together or
+  not at all. An agent can also read a Sheet's formulas (`sheet read
+  --formulas`) and look at a slide it changed: `slides thumbnail` saves a PNG
+  of it in the agent's working directory. On a file the cockpit created it is applied at once; on any other
   file it asks under *Drive edits*, with a card listing every operation on its
   own line, text and values included. If the file changes before you approve,
   nothing is applied and the card asks again. No new Google permission is
   needed. Sharing and permanent deletion are never available.
+  Two more chips, both **unticked by default** and shown once the broker offers
+  them: **Triage Gmail** (`gmail.modify`, which includes reading) lets an agent
+  `gmail archive`, `mark` read/unread, `star`, `label` (existing labels only —
+  `gmail labels` lists them) and `trash` your own mail — done at once, no card,
+  since it changes how YOUR mail is filed and nothing anyone else sees, but
+  every action is logged by message id; nothing deletes mail for good, reports
+  spam or touches filters and forwarding. **Others' free/busy**
+  (`calendar.events.freebusy`) lets `calendar free --with <email>` see when
+  other people are busy (times only, never what) to find a slot; without it
+  `calendar free` still finds YOUR free slots, from your own events. On the
+  calendar side an agent can also add a **Google Meet** link (`--meet`), create
+  a **repeating** event (`--repeat`, a checked subset of RRULE) and change or
+  delete one occurrence or (`--series`) the whole series — the card says which —,
+  see each guest's **answer** in `calendar list`, **answer an invitation**
+  (`calendar respond`, an Events card naming the organizer Google tells), and
+  add or remove guests on an update (`--add-attendee` / `--remove-attendee`;
+  replacing the whole list needs `--replace-attendees`, and guests kept keep
+  their answers).
   The account row
   shows the areas Google actually granted, the same *Shared with* / *Profiles*
   chips as LinkedIn, and **its own settings** instead of one posting policy:
@@ -775,7 +826,8 @@ Enter to skip; you can add it later from the web UI).
   confirmation that says what it means. The agent uses the seeded
   `shadok-google` skill (`google.mjs accounts`, `calendar list|create|update|delete`,
   `drive list|search|read|download|delete|move|rename`, `doc create|read|append|edit`, `sheet create|read|append|update|edit`, `slides create|read|edit`,
-  `gmail search|read|draft|send` — content on stdin, never argv) and never sees the token.
+  `gmail search|read|attachment|draft|send|forward|labels|archive|mark|star|label|trash`,
+  `calendar respond|free` — content on stdin, never argv) and never sees the token.
   What it may do falls in four classes: **reads** and **writes in your own
   files and drafts** (a Gmail draft, a Doc, a Sheet) are done at once;
   **sending mail** follows the Mail setting and **calendar changes** the Events
@@ -1468,57 +1520,4 @@ machine, which silently shifts every daily prompt on a server running in UTC.
 | `SHADOK_GUI_PASSWORD` | require a password for the GUI — overrides a password saved by `--password` |
 | `SHADOK_ORIGINS` | extra browser origins allowed, comma-separated (reverse proxy); their hosts also pass the Host check |
 | `SHADOK_ALLOWED_HOSTS` | host names the cockpit answers besides its own (DNS-rebinding guard); with a password, setting it makes the check strict. `*` disables it |
-| `SHADOK_TMUX=0` | force the node-pty transport instead of tmux |
-| `SHADOK_IDLE_MIN` | minutes with no client before a session is reclaimed (60) |
-| `SHADOK_AUTO_RELOAD=0` | don't apply a pending "reload to apply" by itself — leave it to the ↻ click |
-| `SHADOK_AUTO_RELOAD_IDLE_SEC` | how long an agent must be quiet before that automatic reload (120) |
-| `SHADOK_CLAUDE_AUTO_INSTALL=0` | don't install a failed Claude Code self-update by itself — leave it to the ⚠ button |
-| `SHADOK_SUBMIT_RECOVERY=0` | don't restart an agent whose terminal stopped taking input — report the failed message as an error instead |
-| `SHADOK_PERMISSION_MODE` | mode new agents start in (default `acceptEdits`) |
-| `SHADOK_AUTOUPDATE=0` | don't apply a newer release by itself (**ON by default** under the supervisor, i.e. `npx shadok-ai`; a server run directly never self-updates, since nothing would respawn it). `0`/`false` turns it off, `1`/`true` forces it on; the GUI setting wins over either once used |
-| `SHADOK_PILOT_PROMPT=0` | don't inject the cockpit system prompt |
-| `SHADOK_GREETING=0` | the lead agent starts silent — no first-message greeting |
-| `SHADOK_LEDGER=0` | turn OFF the shared-ledger reflex — a per-instance state table siblings read/write so they stop re-surfacing resolved work, plus a `⟦ledger⟧` delta pushed ahead of each message (**ON by default**; `SHADOK_LEDGER=0` or the GUI/config setting turns it off) |
-| `SHADOK_SEED_SKILLS=0` | don't rewrite the machine-wide skill scripts at boot — for a build run side by side with another instance, so it doesn't hand that instance's agents scripts newer than the server they call |
-| `SHADOK_RESUME_SUMMARY=1` | don't auto-answer the resume-from-summary prompt |
-| `SHADOK_SSH_IDENTITY=0` · `SHADOK_FORCE_SSH_IDENTITY=1` | disable / force the Docker SSH identity |
-| `TELEGRAM_BOT_TOKEN` · `TELEGRAM_ALLOWED_CHATS` | override the stored config |
-| `CLAUDE_CODE_OAUTH_TOKEN` | only for the usage gauges; `claude` itself uses the keychain |
-
----
-
-> **Hacking on shadok-ai?** Read [`CLAUDE.md`](CLAUDE.md) (map, build/run,
-> invariants) and [`docs/architecture.md`](docs/architecture.md) first.
-
-### Keeping the docs honest
-
-Three documents, three jobs — and **they ship with the change that makes them
-wrong**, not in a catch-up pass afterwards:
-
-| Document | Holds | Update it when |
-|---|---|---|
-| `README.md` | what shadok-ai does and how to drive it | a user-visible feature, flag, command, endpoint or protocol message changes |
-| `CLAUDE.md` | the file→responsibility map, the build/run recipe, the invariants | you add a module, or you lose an afternoon to something the next person would lose it to as well |
-| `docs/architecture.md` | how a subsystem actually works and why it was built that way | you add or reshape a subsystem, or you make a design trade-off worth remembering |
-| `docs/superpowers/specs/` | one design per feature, dated | before building anything non-trivial |
-| `docs/deploying-an-instance.md` | the order of operations to put ONE instance online on its own machine | a deployment step changes: the image, the volume list, the proxy requirements, the upgrade path |
-
-This is not bookkeeping. A doc that lags is worse than no doc: it is confidently
-wrong, and it is read as current. `docs/architecture.md` once went **48 commits**
-without an update, and by then it was missing entire subsystems while its line
-references pointed at code that had moved hundreds of lines — a reader in that
-window gets misled, not merely under-informed.
-
-Two habits that keep it cheap:
-
-- **Cite symbols, not just line numbers.** `finishTurn` survives a refactor;
-  `server.ts:781` does not. Where a line number helps, say which commit it was
-  read at.
-- **Write the *why*, not the *what*.** The what is in the diff. What the diff
-  cannot say is which alternative you rejected and what it cost you to find out —
-  that is the whole value of `architecture.md`, and the reason the invariants
-  list reads like a scar tissue map.
-
-## How it works
-
-Drive
+| `SHADOK_

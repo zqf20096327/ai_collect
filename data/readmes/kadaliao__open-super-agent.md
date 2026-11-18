@@ -17,15 +17,13 @@
 
 <sub>功能一览（无声，已加速）：链接卡片 · 讨论串 · 后台任务 · Bot 的电脑 · 先问再做 · 群聊 · Bot 私信 · 画图 · 定时任务 · 应用 · 技能 · 记忆 · 费用 · <a href="docs/images/promo.mp4">看完整宣传片（2 分钟，有配音）</a></sub>
 
-<sub>录于 2026-11-08（v0.7.0）。之后加的主要有：资料库变成大家一起写的文档（评论叫醒 Bot、版本历史、数据库和看板，Claude Code、Codex 也能写，能从 Notion 导入）、事件、观测页、生成视频、搜 X / Reddit / 小红书的帖子、把任务派到你的 Mac。<a href="#看看长什么样">新截图在下面</a>。最新版本见 <a href="https://github.com/kadaliao/open-super-agent/releases/latest">发布页</a>，每一版的变化见 <a href="CHANGELOG.md">更新日志</a>。</sub>
+<sub>录于 2026-11-08（v0.7.0）。之后加的主要有：事件、观测页、生成视频、搜 X / Reddit / 小红书的帖子、把任务派到你的 Mac。<a href="#看看长什么样">新截图在下面</a>。最新版本见 <a href="https://github.com/kadaliao/open-super-agent/releases/latest">发布页</a>，每一版的变化见 <a href="CHANGELOG.md">更新日志</a>。</sub>
 
 </div>
 
 ## 亮点
 
 - **会聊天，也会派活**：每个 Bot 有自己的人设、记忆和对话。耗时的活交给后台任务，你接着聊，每一步做了什么都看得到；几个 Bot 能拉群，一个查完资料，自动交给另一个写总结。
-- **大家一起写的资料库**：Bot 做好的计划、报告存成页面，打开就能像 Notion 那样直接改。几个 Bot 能在同一页上按段接着写，每段标着是谁写的；
-  在某一段上写评论，写这段的 Bot 就去改、在评论里回你；每一版都能看、能回退。还能建数据库当任务看板，Claude Code、Codex 经 MCP 也能读写，Notion 里的能导进来。
 - **一台能看、能接手的电脑**：Bot 在电脑上查资料、填表、下载文件，你能实时看屏幕；遇到验证码、登录这类步骤，它请你来做。几个任务同时做，各开一个浏览器窗口，不用排队。
   电脑可以是 Bot 自己的，也可以就是你的 Mac：给了权限，它能用鼠标键盘操作微信、访达、备忘录这些 App，你一动鼠标它就停下。
 - **查得到最新的**：搜网页、读网页能换着用几家（DeepSeek、Exa、Tavily……），一家不行换下一家；还能搜 X、Reddit、小红书上的帖子，带点赞和评论数。
@@ -48,12 +46,8 @@
 <td width="50%"><img src="docs/images/task-steps.webp" alt="Radar 的后台任务做完，右栏列着每一步：搜网页、搜 Reddit、搜小红书、搜 X、读网页，各用了几秒"><br><sub><b>后台任务</b>：查“双链笔记”最近两周的讨论，右栏是每一步（搜网页、搜 X / Reddit / 小红书、读网页）</sub></td>
 </tr>
 <tr>
-<td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/doc-comments-dark.webp"><img src="docs/images/doc-comments.webp" alt="资料库页面《潮汐笔记 2.0 发布计划》：每段左边一条颜色标着作者，右边评论面板里你让 Quill 把 X 的帖子改短，Quill 改完在评论里回复"></picture><br><sub><b>一起写的页面</b>：每段左边的颜色是作者；在段上评论，写它的 Bot 改完回你</sub></td>
-<td><img src="docs/images/doc-history.webp" alt="页面的历史：选中 Claude Code 改的版本 5，和现在比，改过的段标出删掉和加上的字，每段能单独恢复"><br><sub><b>版本历史</b>：Nova、Radar、Quill 和 Claude Code 各改了哪一版，和现在比差在哪，能只恢复一段</sub></td>
-</tr>
-<tr>
-<td><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/db-board-dark.webp"><img src="docs/images/db-board.webp" alt="数据库《发布任务》的看板视图：待办、进行中、已完成三列，卡片上有编号、负责人、截止日期、优先级"></picture><br><sub><b>数据库看板</b>：Nova 按发布计划建的任务库，负责人里有你也有 Bot</sub></td>
-<td><img src="docs/images/applet.webp" alt="对话里的小应用“发布倒计时”：离上线还有 3 天 15 小时，下面是还没完成的任务，能勾选"><br><sub><b>小应用</b>：一句话让 Nova 做的发布倒计时，读的是看板里的任务</sub></td>
+<td width="50%"><img src="docs/images/applet.webp" alt="对话里的小应用“发布倒计时”：离上线还有 3 天 15 小时，下面是还没完成的任务，能勾选"><br><sub><b>小应用</b>：一句话让 Nova 做的发布倒计时</sub></td>
+<td width="50%"><img src="docs/images/events.webp" alt="右栏“事件”：“Obsidian 新版本发布”（订阅源，每 3 小时看一次）和“flomo 定价页变化”（网页变了，每 12 小时看一次），各有测试、现在看一次、暂停、编辑、记录"><br><sub><b>事件</b>：一句话让 Radar 盯着新版本发布和定价页变化</sub></td>
 </tr>
 <tr>
 <td><img src="docs/images/observe.webp" alt="观测页：今天的费用、token、任务数、多久开始回复，按小时的费用走势，各个 Bot 的花费"><br><sub><b>观测</b>：花了多少、做得快不快、哪里出了错，能按 Bot 看</sub></td>
@@ -61,7 +55,7 @@
 </tr>
 </table>
 
-<sub>截图录于 2026-11-16（v0.24.0 的网页界面），用的是演示数据：一个独立开发者准备发布“潮汐笔记 2.0”，三个 Bot 和页面里的内容都是真模型（DeepSeek）跑出来的。GitHub 用夜间模式时，页面和看板两张显示夜间界面。</sub>
+<sub>截图录于 2026-11-16（v0.24.0 的网页界面），用的是演示数据：一个独立开发者准备发布“潮汐笔记 2.0”，三个 Bot 和页面里的内容都是真模型（DeepSeek）跑出来的。</sub>
 
 ## 在哪用
 
@@ -146,7 +140,7 @@ docker build --build-arg APT_MIRROR=mirrors.ustc.edu.cn -t osa-computer:2 osa/co
 |---|---|
 | [功能一览](docs/features.md) | 全部功能，按主题分组 |
 | [用 Docker Compose 部署](docs/docker.md) | 一条命令跑起来、自动 HTTPS、数据和备份、国内网络 |
-| [配置](docs/configuration.md) | 模型服务和各项工作用的模型、画图和生成视频、搜索和读网页、限额与单价、电脑、应用、确认规则与保险库、资料库（数据库、外部 Agent、从 Notion 导入）、定时任务、推送、远程访问 |
+| [配置](docs/configuration.md) | 模型服务和各项工作用的模型、画图和生成视频、搜索和读网页、限额与单价、电脑、应用、确认规则与保险库、定时任务、推送、远程访问 |
 | [事件](docs/events.md) | 某件事发生时让 Bot 处理：webhook、GitHub、订阅源、网页变化、邮件、日程、天气、地震、价格、公网 IP……；地址和安全、写一个新来源 |
 | [桌面 App](docs/desktop.md) | 在这台电脑上运行或连接服务器、把服务器上的任务派到这台 Mac、系统通知、菜单栏、自动更新 |
 | [iPhone App（内测）](docs/mobile.md) | 扫码连接、推送怎么送到手机、推送中转看得到什么、开发 |

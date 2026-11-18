@@ -91,6 +91,12 @@ GPT-6 Astra is intentionally not the OpenAI smart default: GPT-5.6 Sol remains t
 
 **OpenAI-compatible escape hatch** (vLLM / OpenRouter / internal gateways): set both `OPENAI_COMPATIBLE_API_KEY` and `OPENAI_COMPATIBLE_BASE_URL`, then address models as `custom:<your-model-id>`.
 
+**Corporate / local proxy**: export `HTTPS_PROXY` (and optionally `HTTP_PROXY`, `ALL_PROXY`, `NO_PROXY`) in the terminal that launches `xc` — no `NODE_USE_ENV_PROXY`, no config file. Loopback endpoints (`localhost`, `127.0.0.1`, `::1`) always bypass the proxy unless `NO_PROXY` says otherwise.
+
+```bash
+export HTTPS_PROXY=http://127.0.0.1:7897
+```
+
 <details>
 <summary><b>Shell configuration examples</b> (click to expand)</summary>
 
@@ -228,7 +234,7 @@ xc -m sonnet "Refactor the formatDate function" # Specify a model
 ```text
 xc [options] [prompt]
 
---model, -m <id>      Model to use (e.g. sonnet, deepseek, openai:gpt-5.6-sol)
+--model, -m <id>      Model to use (e.g. sonnet, deepseek, openai:gpt-6.2-sol)
 --trust, -t           Trust mode: skip ordinary tool confirmations, including peer-triggered work
 --print, -p           Non-interactive mode: print result and exit
 --plan                Start in plan mode (read-only; user approves before edits)

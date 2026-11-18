@@ -206,6 +206,70 @@ nanopi --fork <id>
 | `-C`, `--no-context-files` | false | Disable AGENTS.md / CLAUDE.md discovery |
 | `--system-prompt <text\|path>` | — | Replace the built-in system prompt |
 | `--append-system-prompt <text\|path>` | — | Append to the system prompt (repeatable) |
+| `--profile <name>` | active profile | Use a config profile for this run only (see [Profiles](#profiles)) |
+
+## Profiles
+
+A profile is a complete, independent global config in its own folder, so you
+can keep e.g. a work gateway, a personal key and a local model side by side and
+switch between them without restarting. Everything that belongs to a profile
+(its key file, an unfinished wizard draft) lives in that folder.
+
+```text
+~/.nanopi/config.toml                 the "default" profile (the usual config file)
+~/.nanopi/api_key                     default's key file, as `nanopi init` writes it
+~/.nanopi/profiles/work/config.toml   profile "work"
+~/.nanopi/profiles/work/api_key       work's key file (mode 600; folder is mode 700)
+~/.nanopi/profiles/local/config.toml  profile "local"
+~/.nanopi/active_profile              the profile chosen with /profile use (absent = default)
+```
+
+Profiles written as flat files by an earlier build (`profiles/<name>.toml`) are
+moved into their folder (`profiles/<name>/config.toml`) on the next start.
+
+Nothing changes if you never create a profile: `default` *is*
+`~/.nanopi/config.toml`, and there is no `profiles/` directory or
+`active_profile` file until you make one.
+
+In the TUI:
+
+| Command | Effect |
+|---|---|
+| `/profile` or `/profile list` | List profiles; `*` marks the active one |
+| `/profile create <name>` | Set up a new profile with the setup wizard (below) |
+| `/profile create <name> --copy` | New profile as a copy of the active one's `config.toml`, to edit by hand |
+| `/profile use <name>` (alias `switch`) | Switch now **and** remember it for the next start |
+
+`/profile create <name>` asks the same questions as the first-run wizard, right
+in the TUI: provider (OpenAI, DeepSeek, Anthropic, Gemini via gateway, Ollama
+or custom), model, and API key (skipped for localhost; shown masked in the
+scrollback). It then sends one tiny test request, and only when that succeeds
+writes `profiles/<name>/config.toml` and `profiles/<name>/api_key`. On a failed
+test you can retry, edit the answers, or abort. Esc or Ctrl-C cancels; answers
+already tested are kept as a draft in the folder and offered as defaults next
+time. The same wizard runs outside the TUI with `nanopi --profile <name> init`,
+which also creates the profile if it does not exist yet.
+
+`/profile use` checks the target first (it must parse and resolve a model and
+an API key) and changes nothing if it does not. Then it swaps the model,
+`base_url`, API key, `api_kind` and `provider` on the live session — the
+conversation continues — and reloads hooks, skills and extensions from the new
+profile. Agents started afterwards use the new profile too. The footer shows
+`profile:<name>` whenever the active profile is not `default`. `[agent]` limits
+and `[experimental] orchestrator` take effect at the next start (use
+`/orchestrator` to flip that one now).
+
+Which profile is used, highest priority first: `--profile <name>` (this run
+only, never saved) → `NANOPI_PROFILE` → `~/.nanopi/active_profile` → `default`.
+An unknown `--profile` is an error (except with `init`, which creates it); a
+saved profile whose config was deleted falls back to `default` with a warning.
+
+Only the global config is per-profile. The project's `./.nanopi/config.toml`
+is still merged on top of whichever profile is active, and `settings.toml`,
+sessions, skills, trust decisions and `mcp.json` are shared. At startup CLI
+flags and `OPENAI_*` env vars still override the profile, as they always have;
+on a `/profile use` the profile wins and those env vars only fill keys the
+profile leaves out. Names may use `A-Z a-z 0-9 - _` (up to 64 characters).
 
 ## Model catalogue (`~/.nanopi/models.json`)
 
@@ -313,6 +377,35 @@ gets no badge. Caps for the spawned children live under `[agent]` (see
 `config.toml.example`). This is TUI-only: `nanopi -p` ignores the setting
 entirely and always keeps its full tool set, so scripted runs are never
 silently restricted.
+
+## sudo
+
+nanopi never runs a session as root. If your account has **passwordless**
+sudo (checked at startup with `sudo -n true`), the model may prefix the
+individual commands that need root with `sudo -n` — never `sudo su`, `sudo -i`
+or a root shell. By default every such command is shown in the TUI and runs
+only after you press <kbd>y</kbd>; <kbd>n</kbd>, <kbd>Esc</kbd> or
+<kbd>Enter</kbd> refuse it, and the model is told not to retry.
+
+```toml
+[sudo]
+mode = "ask"     # "ask" (default) | "auto" (no confirmation) | "never"
+agents = false   # let dispatched agents use sudo (they cannot ask)
+```
+
+- **Print mode** (`nanopi -p`) cannot ask, so `"ask"` refuses there; `"auto"`
+  allows.
+- **Agents** never ask; they may use sudo only with `agents = true`.
+- **Password sudo** is not supported yet: the command is refused and the model
+  gives you the command to run yourself.
+- **Running as root**, nothing is gated — sudo adds nothing.
+- A project's `.nanopi/config.toml` can only make this **stricter**, never
+  looser, so a cloned repository cannot turn on unattended root.
+
+Spotting sudo inside a shell command is heuristic (it catches `a && sudo b`,
+`env X=1 sudo …`, `xargs sudo`, `bash -c "sudo …"`, but not a script that runs
+sudo internally). It guards against accidents; your sudoers policy is the real
+boundary.
 
 ## MCP servers
 

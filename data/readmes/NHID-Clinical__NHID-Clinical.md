@@ -1,5 +1,9 @@
 # NHID-Clinical
 
+**What it is:** an independent research project and open reference implementation for AI agents that call healthcare payers. It checks whether a calling agent says it is an AI before it asks for a patient's data.\
+**What it is not:** not a standard, not certified, and not deployed or adopted by any payer or provider. Mapped to NIST AI RMF and ISO/IEC 42001, not certified against them.\
+**Stage: Research.** A Tier 0 shadow pilot is available. All figures are self-measured; none has been independently validated.
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/brand/logo-lockup-dark.svg">
@@ -14,7 +18,7 @@
 
 <p align="center">
   <a href="https://github.com/NHID-Clinical/NHID-Clinical/actions"><img alt="CI" src="https://github.com/NHID-Clinical/NHID-Clinical/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-2561%20passing-brightgreen?style=flat-square">
+  <img alt="Python Tests" src="https://img.shields.io/badge/python%20tests-2625%20passing-brightgreen?style=flat-square">
   <img alt="Version" src="https://img.shields.io/badge/version-v1.3-0b6ebc?style=flat-square">
   <img alt="Code license" src="https://img.shields.io/badge/code-Apache--2.0-lightgrey?style=flat-square">
   <img alt="Spec license" src="https://img.shields.io/badge/spec%20%26%20docs-CC%20BY%204.0-lightgrey?style=flat-square">
@@ -26,10 +30,6 @@
   <a href="https://nhid-clinical.org"><img alt="Website" src="https://img.shields.io/badge/Website-0d2846?style=for-the-badge"></a>&nbsp;
   <a href="https://nhid-clinical.org/specification.html"><img alt="Specification" src="https://img.shields.io/badge/Specification-0d2846?style=for-the-badge"></a>&nbsp;
   <a href="https://nhid-clinical.org/shadow-evaluation-guide.html"><img alt="Shadow evaluation" src="https://img.shields.io/badge/Shadow%20evaluation-14778f?style=for-the-badge"></a>
-</p>
-
-<p align="center">
-  <sub>Stage: Research &mdash; an independent research project and open reference implementation; a Tier 0 shadow pilot is available. Not a standard, a certification or a product. Mapped, not certified. NIST-2025-0035-0026 is a public comment, not an endorsement.</sub>
 </p>
 
 ---
@@ -107,7 +107,7 @@ python -m uvicorn app:app --port 8000 &    # the integration tests need it
 python -m pytest tests/ -q
 ```
 
-Expected: **2561 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted adapter route, synthetic payload, no key:
+Expected: **2625 passing**, 0 skipped. Without the API the server-dependent integration tests skip themselves; CI starts it and requires zero skips. One request to the hosted demo endpoint, no key. It is a research demo running on AWS, not a service: send synthetic data only, never real patient data. It is rate-limited and may change or be taken down without notice.
 
 ```bash
 curl -s -X POST https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod/v1/adapters/vapi/check \
@@ -177,7 +177,9 @@ A dated architecture review from July 2026 is preserved in [docs/review-2026-07-
 <details>
 <summary><b>Hosted API endpoints</b></summary>
 
-Base URL `https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod`. Synthetic data only, never PHI.
+A hosted demo endpoint on AWS, not a service. Synthetic data only, never PHI. It is rate-limited and may change or be taken down without notice.
+
+Base URL `https://gfvq4swdtf.execute-api.us-east-1.amazonaws.com/prod`.
 
 | Endpoint | Auth | Purpose |
 | :--- | :--- | :--- |
@@ -226,7 +228,7 @@ Guides: [5-minute quickstart](docs/5-minute-quickstart.md) · [v2 integration gu
 | `src/` | Packaged modules: the conformance engine, agent identity and the trust anchor (`agent_identity.py`, `trust_anchor.py`, `udap_agent_extension.py`, `udap_jws.py`), the audit store, the CLI, and the [specification reading aid](docs/spec-rag.md) (`nhid_spec_rag.py`, a retrieval index over `docs/`; it returns quotations, never a control decision). |
 | `adapters/` | Vendor call-payload adapters (VAPI, Twilio, Vonage, Retell, Amazon Connect). |
 | `middleware/` | TypeScript middleware and its test suite. |
-| `tests/` | The Python conformance and invariant tests (2561 passing, all phases: foundations, adversarial, synthetic, hardening). |
+| `tests/` | The Python conformance and invariant tests (2625 passing, all phases: foundations, adversarial, synthetic, hardening). |
 | `eval/` | The reading aid's question set, scorer and tests, deliberately outside `tests/`, which is the conformance suite the published count describes. |
 | `scripts/` | CI guards (`validate_ci.py`, `check_baseline.py`, `check_number_drift.py`, `check_control_set.py`) and the generators that write engine output into the pages. |
 | `schema/` | Event and audit-trace schemas. |
@@ -270,6 +272,8 @@ Code contributions: [CONTRIBUTING](.github/CONTRIBUTING.md) · [Discussions](htt
 **Brianna Baynard**, Independent AI Governance Researcher · IAPP AIGP · CompTIA SecAI+ · CSA TAISE · ISC² CC · B.S. Cybersecurity, WGU (in progress). Background in healthcare payer operations, identity-verification workflows and regulated-data environments; NHID-Clinical grew out of the impersonation-latency problem seen firsthand on live eligibility, claims and prior-authorization lines. Maintained as an open reference implementation for technical review; criticism is welcome.
 
 [LinkedIn](https://www.linkedin.com/in/brianna-baynard) · [X @baynardmalone](https://x.com/baynardmalone) · [X @NHIDClinical](https://x.com/NHIDClinical) · [NIST public comment](https://www.regulations.gov/comment/NIST-2025-0035-0026)
+
+**Correction (November 2026):** the NIST public comment NIST-2025-0035-0026 (January 2026) calls NHID-Clinical "an open-source governance standard". That was wrong. NHID-Clinical is an independent research project and open framework, not a standard. The comment is a public record and cannot be edited.
 
 <br clear="left"/>
 

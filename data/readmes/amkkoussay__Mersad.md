@@ -54,9 +54,11 @@ they can read and write: Claude, ChatGPT, or any MCP client.
 - **Decisions as first-class units** — every decision is stored with its
   reasons, evidence, rejected alternatives, effects and outcomes, and can
   be traced with a single `why` query.
-- **Cross-agent conflict queue** — when one agent overwrites another's
-  fact, the latest value wins for queries but a conflict is opened for the
-  owner's ruling. Nothing is silently lost.
+- **Cross-agent conflict queue** — when one agent challenges another's
+  fact, the standing value stays current and the challenger waits as a
+  pending candidate until the owner's ruling decides which value stands.
+  Nothing is silently lost, and a machine's version never wins by
+  arriving later.
 - **Live graph viewer** — open the local page and watch the memory as a
   living network (entities, decisions, values, edges) while agents write;
   click any node to read its story.
@@ -132,7 +134,7 @@ several independent agents write to.
 
 ```mermaid
 flowchart LR
-    A["AI agents<br/>Claude · ChatGPT · any MCP client"] -->|"remember_fact · record_decision"| S["MIRSAD MCP server<br/>12 tools"]
+    A["AI agents<br/>Claude · ChatGPT · any MCP client"] -->|"remember_fact · record_decision"| S["MIRSAD MCP server<br/>13 tools"]
     S --> F[("Bi-temporal facts<br/>invalidated, never deleted")]
     S --> D[("Decision units<br/>reason · evidence · rejected alternatives · outcome")]
     S --> E[("Episodes<br/>raw provenance")]
@@ -156,7 +158,7 @@ MIRSAD_DB=~/mirsad.db .venv/bin/python -m mirsad.mcp_server
 .venv/bin/python -m mirsad.cli --db ~/mirsad.db export
 ```
 
-الأدوات الاثنتا عشرة عبر MCP: `remember_fact`، `current_fact`، `timeline`، `record_decision`، `record_outcome`، `add_alias`، `why`، `recall`، `open_conflicts`، `resolve_conflict`، `memory_stats`، `version_info`.
+الأدوات الثلاث عشرة عبر MCP: `remember_fact`، `current_fact`، `timeline`، `subject_brief`، `record_decision`، `record_outcome`، `add_alias`، `why`، `recall`، `open_conflicts`، `resolve_conflict`، `memory_stats`، `version_info`.
 
 ## خريطة الذاكرة الحية (النسخة المحلية)
 
@@ -171,9 +173,11 @@ MIRSAD_DB=~/mirsad.db .venv/bin/python -m mirsad.mcp_server
 ## الاختبارات (قابلة للفشل فعليًا)
 
 ```bash
-.venv/bin/python demo.py       # 23 فحصًا على المحرّك: قرارات، زمن، تعارض بين وكيلين، أسماء بديلة، استبدال
+.venv/bin/python demo.py       # 24 فحصًا على المحرّك: قرارات، زمن، تعارض بين وكيلين، أسماء بديلة، استبدال
 .venv/bin/python test_mcp.py   # خادم حقيقي + عميل MCP رسمي: كتابة من وكيل وقراءة من آخر
 .venv/bin/python test_graph.py # 13 فحصًا على خريطة الذاكرة الحية: عقد وروابط وقصص وعدّاد تغييرات
+.venv/bin/python test_core_fixes.py # 36 فحصًا لمعاني 0.3.0: المتحدّي المنتظِر، فهرسة الحلقات، subject_brief، الكتابة الذرّية
+# وحزم أخرى: test_hardening.py (التصليب)، test_recall_like.py + test_recall_echo.py (حدود البحث)، test_annotations.py (تعليقات الأدوات)
 ```
 
 ## توصيل التطبيقات — الحقيقة كما تحققنا منها (نوفمبر 2026)

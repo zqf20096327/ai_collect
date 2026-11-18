@@ -78,6 +78,15 @@ The skill's autonomy is bounded by a safety gate that outranks it: no elevation,
 - A provider chain of at least two models
 
 ## Repository layout
+.....
+.
+.
+
+.
+.
+.
+.
+.
 
 ```
 automat-opencode/

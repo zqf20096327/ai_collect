@@ -147,6 +147,7 @@ model picker keep working while generation is served by your upstream.
 | `CLOUD_SERVER_KEY` | *empty* | Upstream key for the IDE route, whose caller presents a Google OAuth bearer instead of an upstream key. |
 | `DEFAULT_MODEL` | *empty* | Upstream model for any Gemini model ID not present in `MODEL_MAP`. |
 | `MODEL_MAP` | *empty* | `gemini-3.1-pro-preview=glm-5.3,gemini-3-flash=deepseek-v4-flash` |
+| `MAX_REQUEST_MB` | `64` | Largest request body accepted, in MiB. Attachments arrive base64-encoded, so the default is generous; a body over it is answered `413`. |
 | `MAX_OUTPUT_TOKENS` | `100000` | Clamp for `maxOutputTokens`. Antigravity requests 65535, which passes through at this default. `0` disables it. |
 | `CLOUD_CODE_PASSTHROUGH_BASE` | `https://cloudcode-pa.googleapis.com` | Google host for non-generation Cloud Code RPCs. |
 | `DEBUG` | *empty* | Any value dumps the last request bodies to `/tmp`. |

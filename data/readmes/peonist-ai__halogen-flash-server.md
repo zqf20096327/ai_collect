@@ -13,25 +13,25 @@ general-purpose runtime, no portability layer, no fallback path. That is why it
 can do things a general engine cannot, and why it runs on exactly one piece of
 silicon.
 
-| 0.20.6, the default configuration | halogen-flash |
+| 0.20.7, the default configuration | halogen-flash |
 |---|---|
-| decode | **93 tok/s** writing code · **67** prose |
-| prefill: 8,192 / 32,768 / 131,072-token prompt | **1,961 / 1,870 / 1,793 tok/s** |
-| an agent turn, 30,000 to 96,000 tokens of context | **2.6 s** (first token in **1.2 s**) |
+| decode | **100 tok/s** writing code · **70** prose |
+| prefill: 8,192 / 32,768 / 131,072-token prompt | **1,983 / 1,876 / 1,796 tok/s** |
+| an agent turn, 30,000 to 96,000 tokens of context | **2.1 s** (first token in **1.2 s**) |
 | the first turn of a 34,000-token agent prompt, cold | **19 s** |
-| decode: editing code / an agent's tool call / six other languages | **116 / 80 / 63 tok/s** |
+| decode: editing code / an agent's tool call / six other languages | **121 / 88 / 67 tok/s** |
 
 **What each row is.** The agent turns are three sessions of a coding agent
 fixing a bug in a Python repository: each turn sends the whole conversation
 back with the model's last tool call and a tool result of 800 to 3,000
 tokens appended, and the time runs from the request to the last byte of the
-answer, on the client's clock (the median over the three sessions, about 105
+answer, on the client's clock (the median over the three sessions, about 85
 tokens of answer each). Decode is measured on the kind of text each row names.
 Prefill is the image's own `sweep`, on a
 synthetic prompt; real text through the chat template runs slower, which is
 why the cold first turn takes 19 s for 34,000 tokens.
 
-All of it is the published 0.20.6 image at its defaults (the v2 checkpoint,
+All of it is the published 0.20.7 image at its defaults (the v2 checkpoint,
 the prompt cache on, greedy, thinking off) on an AMD Ryzen AI Max+ 395 with
 128 GB, at about 85 W of sustained package power. [Measured](docs/performance.md#measured) has
 every number for both checkpoints. The prefill rows, and a decode mean over
@@ -54,7 +54,7 @@ a quality trade. Since 0.6.0 there are two draft sources, the model's own
 draft head and the request's own text (prompt lookup), and the guarantee
 covers both.
 
-0.20.6: faster generation from a new draft head (most of all in agent and tool-calling sessions), images read about four times faster, slightly faster prompt reading on ht43, a third LFM3-1.7B format on the NPU, an opt-in concurrency mode for servers that run many requests at once, and fixes for shared long prompts and busy multi-agent sessions. The checkpoints are 0.20.5's
+0.20.7: the concurrency mode is now the default: several requests at once get up to about 30% more total throughput than the previous default mode, a single request decodes as fast as before or faster on both checkpoints, and a temperature-0 reply no longer depends on how many other requests are running; plus a faster draft head. The checkpoints are 0.20.5's
 ([CHANGELOG](CHANGELOG.md)).
 
 Since 0.7.0 the engine also opens a **llama.cpp GGUF** of this model directly:
@@ -102,7 +102,7 @@ podman run --rm -p 8731:8731 \
   --ipc=host --ulimit memlock=-1:-1 \
   -e HALOGEN_DOWNLOAD=peonist-ai/halogen-qwen3.8-flash-next \
   -v ~/halogen-models:/models \
-  ghcr.io/peonist-ai/halogen-flash-server:0.20.6
+  ghcr.io/peonist-ai/halogen-flash-server:0.20.7
 ```
 
 The weights come from

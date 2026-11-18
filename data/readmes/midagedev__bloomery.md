@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/midagedev/bloomery/releases/tag/v0.3.14">0.3.14 release notes</a> ·
+  <a href="https://github.com/midagedev/bloomery/releases/tag/v0.3.15">0.3.15 release notes</a> ·
   <a href="docs/models.md">Models</a> ·
   <a href="docs/serving.md">Serving</a> ·
   <a href="docs/agents.md">Agents</a> ·
@@ -120,19 +120,22 @@ docker run --gpus all -p 8080:8080 -v bloomery-cache:/root/.cache/bloomery \
   ghcr.io/midagedev/bloomery --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 
 # or the plain tarball
-tar -xzf bloomery-0.3.14-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.14-linux-x86_64-cuda-sm86
+tar -xzf bloomery-0.3.15-linux-x86_64-cuda-sm86.tar.gz && cd bloomery-0.3.15-linux-x86_64-cuda-sm86
 bin/bloomery-serve --hf unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:Q4_K_M
 ```
 
 The tarballs are on the [releases page](https://github.com/midagedev/bloomery/releases)
-([0.3.14](https://github.com/midagedev/bloomery/releases/tag/v0.3.14)).
+([0.3.15](https://github.com/midagedev/bloomery/releases/tag/v0.3.15)).
 
 From 0.3.11 the release carries an archive for the RTX 50 series (`linux-x86_64-cuda-sm120a`, compute capability 12.0:
 the RTX 5090 and the RTX PRO Blackwell cards), built for the Blackwell FP4 and FP8 tensor cores. The installer takes it
 when every GPU the machine lists is compute capability 12.0, and the `linux-x86_64-cuda-sm86` archive on any other
-machine, or from a release without the new one. Docker and Homebrew stay on the sm_86 archive. No maintainer machine
-has a 12.0 card, so this archive is checked by compiling it and by the users who run it; to take the sm_86 archive on
-such a card, download it by name from the releases page.
+machine, or from a release without the new one. Docker and Homebrew stay on the sm_86 archive. That build has no native
+FP4 products, so an RTX 5090 runs it as an Ampere card, and the model pick (`--model NAME`) then ranks GGUF files
+before FP4 folders. On a 12.0 card take the sm_120a archive: the installer does, or download
+`bloomery-<version>-linux-x86_64-cuda-sm120a.tar.gz` from the releases page. The maintainer's workstation is one
+RTX 5090 (compute capability 12.0). To take the sm_86 archive on such a card, download it by name from the releases
+page.
 
 ### Windows (WSL2)
 
@@ -148,7 +151,7 @@ The Mac needs macOS 26.2 or newer; the binaries are signed and notarized. The se
 brew install midagedev/tap/bloomery
 bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 
-# or the same installer as on Linux (bloomery-0.3.14-macos-arm64-metal.tar.gz on the releases page)
+# or the same installer as on Linux (bloomery-0.3.15-macos-arm64-metal.tar.gz on the releases page)
 curl -fsSL https://raw.githubusercontent.com/midagedev/bloomery/main/tools/release/install.sh | sh
 ~/.local/bin/bloomery-serve-metal -m PATH/Qwen3.6-35B-A3B-Q4_K_M.gguf
 ```
@@ -239,37 +242,42 @@ What each platform needs is under [Install](#install), and what each model needs
 
 | What runs | Run here | Run by users |
 |---|---|---|
-| NVIDIA cards | RTX 3090, RTX A6000, RTX 3060 (WSL2) | RTX 5090 ([#2](https://github.com/midagedev/bloomery/issues/2)), DGX Spark (GB10: [`docs/dgx-spark.md`](docs/dgx-spark.md)), one model across several Sparks |
+| NVIDIA cards | RTX 5090 (the RTX 3090 and RTX A6000 ran here through 0.3.14: [`docs/numbers.md`](docs/numbers.md)), RTX 3060 (WSL2) | RTX 5090 ([#2](https://github.com/midagedev/bloomery/issues/2)), DGX Spark (GB10: [`docs/dgx-spark.md`](docs/dgx-spark.md)), one model across several Sparks |
 | Apple Silicon | M1 Pro, M4 Pro 48 GB | M3 Ultra, M5 Ultra ([#593](https://github.com/midagedev/bloomery/issues/593)) |
 
 Ada cards (sm_89) have no report yet, and AMD GPUs are not supported yet. On an M5 the device picks the neural
 accelerators for the prompt's GEMMs. What each part of the machine costs in a decode step:
 [`docs/HARDWARE.md`](docs/HARDWARE.md).
 
-## Status (0.3.14)
+## Status (0.3.15)
 
-Four common machines, one table each, tok/s. Every other record (two cards, older releases, other cards and Macs, the
-reference engines) is in [`docs/numbers.md`](docs/numbers.md), with its machine and conditions. Each table names the
-release or commit it was measured on; 0.3.14's own rows, K-EXAONE-2.0's among them, are in its
-[release notes](https://github.com/midagedev/bloomery/releases/tag/v0.3.14).
+Four common machines, one table each, tok/s. Every other record (two cards, the RTX 3090 and RTX A6000 that left our
+workstation, older releases, other cards and Macs, the reference engines) is in [`docs/numbers.md`](docs/numbers.md),
+with its machine and conditions. Each table names the release or commit it was measured on; 0.3.15's own rows are in its
+[release notes](https://github.com/midagedev/bloomery/releases/tag/v0.3.15).
 
-**One RTX 3090 24 GB**, on our workstation (32-core AVX2 host, 256 GB of RAM, the 3090 at its 250 W cap): the tagged
-0.3.10 tree at the serving defaults (`--place` unset, every lever unset, speculative drafts on where a model has one, no
-`--parallel`, `--ctx-size 4300`). Means of two rounds; four for DeepSeek-V4.1-Flash and Qwen3.8-Flash-Next.
+**One RTX 5090 32 GB**, on our workstation (32-core AVX2 host, 256 GB of RAM, the card at its 600 W limit): the tagged
+0.3.15 binary at the serving defaults (`--place` unset, every lever unset, speculative drafts on where a model has one,
+no `--parallel`, no `--ctx-size`: the unset rule picks the context). Means of two rounds. "Where it runs" is what each
+file's `--plan` prints on this card.
 
 | Model | Where it runs | Prompt, 512 tokens | Prompt, 4,096 tokens | Decode at depth 512 | Decode at depth 4,096 |
 |---|---|---|---|---|---|
-| MiniMax-M3.1-Flash `UD-Q2_K_XL` | card + CPU | 105.16 | 97.56 | 23.41 | 20.40 |
-| Flint 40B-A2.5B `UD-Q4_K_XL` | card + CPU | 879.20 | 750.19 | 87.86 | 85.84 |
-| Nanbeige4.3-33B `Q4_K_M` | the whole model on the card | 745.46 | 693.76 | 24.22 | 23.23 |
-| DeepSeek-V4.1-Flash `Q3_K_M` | card + CPU | 167.41 | 300.46 | 34.73 ¹ | 34.94 |
-| GLM-5.3-Flash `UD-Q4_K_XL` | card + CPU | 178.99 | 204.47 | 30.06 | 26.18 |
-| Qwen3.8-Flash-Next `UD-Q4_K_XL` | card + CPU | 736.66 | 1,662.72 ² | 83.36 | 74.34 |
-| Qwen3.6-35B-A3B `Q4_K_M` | the whole model on the card | 5,123.05 | 6,652.24 | 188.31 | 180.68 |
+| DeepSeek-V4.1-Flash `bq3km` with its r8 sidecar | card + CPU | 245.87 | 402.19 | 30.24 | 30.06 |
+| Qwen3.8-Flash-Next `UD-Q4_K_XL` | card + CPU | 791.62 ¹ | 1,281.84 | 117.34 ² | 110.06 ² |
+| Hy4-flash `Q4_K_M` | card + CPU | 31.75 ³ | 31.48 ³ | 31.71 | 31.78 |
+| GLM-5.3-Flash `UD-Q4_K_XL` | card + CPU | 194.44 | 210.03 | 30.09 | 26.17 |
+| Nemotron 3.5 Bolt 74B-A9B `24GB` | the whole model on the card | 4,971.72 | 7,166.02 | 182.41 | 180.44 |
 
-¹ rounds from 31.90 to 40.67.
+¹ rounds 699.14 and 884.09.
 
-² the first round after a load read 1,440.33, the next three 1,735 to 1,739.
+² with the file's MTP draft, which `bloomery-serve` turns on by default (`BLOOMERY_DRAFT=off` serves without it).
+
+³ Hy4-flash's prompt pass computes the host's share of its routed experts on the CPU, so its prompt runs at about its
+decode rate; at the unset context (1,048,576 positions) the plan holds 2,004 of its 20,992 routed experts on the card.
+
+The Hy4-flash and GLM-5.3-Flash cells were re-run in the same sitting (`sitting.sh --resume --only`) after their first rows
+read cold (major faults after another model's load evicted their files from the page cache).
 
 The DGX Spark and RTX 5090 tables were measured by [@juliankang4](https://github.com/juliankang4) at main
 `e7180ea9`, on the same four models with the MTP draft on: NVIDIA's FP4-Local and NVFP4 folders as downloaded (their
@@ -347,8 +355,12 @@ release's check:
 Output is checked layer by layer against ik_llama.cpp (V4.1: PPL 2.2401 against 2.2378, same top token 97.46 %), and
 every gate is shown to fail on its defect before the fix lands ([how](docs/performance.md#how-it-is-verified)).
 
-## Known limits (0.3.14)
+## Known limits (0.3.15)
 
+- Hy4-flash's prompt pass computes the host's share of its routed experts on the CPU, so its prompt runs at about its
+  decode rate on a card + CPU plan.
+- Hy4-flash turns thinking off on `reasoning_effort: "none"`; `chat_template_kwargs: {"enable_thinking": false}` is not
+  read for it (its template has no such switch).
 - DeepSeek V4.1 on two cards (`--place bp`) is not faster than one card (`--place a`). Unset `--place` picks `a`.
 - The `nemotron`, `raon1`, `solar2` and `musespark` seats serve one slot; `--parallel` above 1 is refused by name.
   The `nemotron`, `raon1` and `solar2` seats keep no saved prompt states.

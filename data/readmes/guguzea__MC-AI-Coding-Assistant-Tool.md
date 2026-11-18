@@ -381,7 +381,8 @@ MC_skill/
 | ----------------------- | -------------------------------------- | --------------------------------- |
 | `MC_SKILL_DATA`         | 数据目录根路径（指向 `data/`，不含版本子目录）            | `<仓库根>/data`                |
 | `MC_SKILL_COMMUNITY`    | 社区知识库根路径（默认仓库根 `community_knowledge/`） | `<仓库根>/community_knowledge` |
-| `MC_SKILL_ALLOW_WRITE`  | `1` 时允许 `port_project` 写盘              | `1`                               |
+| `MC_SKILL_ALLOW_WRITE`  | `1` 时允许 `port_project` / `mc_skill_update` 等写盘              | `1`                               |
+| `MC_SKILL_AUTO_MODE`    | `1` 时开启**工程沙箱内全自动模式**（默认关闭）：放开 `MC_SKILL_PROJECT_ROOT` 内写盘确认 / Gradle / 自主决策与工作流停顿；`MC_SKILL_PLAYTEST_ROOT` 仍须单独显式设置（设了则免确认并放开根内 `eula.txt` 与 `kill`/`tnt`/`fill`）；`mc_skill_update`、MDK SHA256 校验、禁写本仓、正式 `.minecraft` 与上传发布仍严格保持禁止/需确认 | `1` |
 | `MC_SKILL_PROJECT_ROOT` | 写盘允许的项目根（绝对路径）                         | `<你的模组工程绝对路径>`                  |
 | `MC_SKILL_STRICT`       | `1` 时数据无效则 MCP 启动失败                    | `1`                               |
 | `MC_SKILL_DEBUG_PATHS`  | `1` 打印路径解析过程（诊断“找不到 data/”时先开它）        | `1`                               |
@@ -414,7 +415,7 @@ MC_skill/
 | `NODE_OPTIONS`          | Node 22.5–22.12 / 23.0–23.3 需含 `--experimental-sqlite` | 未设（22.13+ / 23.4+ 无需）      |
 | `MCP_TIMEOUT_MS`        | **测试/CI 侧**超时毫秒数（`test-mcp.mjs` / `release-smoke.mjs` / 四支 CI 工作流读它；**MCP 服务进程本身不读**） | `60000`            |
 
-> 上表已列**用户可配置面**。服务端源码按大小写敏感去重共读 **37** 个环境变量名；差出来的几个是同一开关的大小写别名与进程细节（`HTTP_PROXY` / `http_proxy`、`ComSpec` / `COMSPEC`），不需要单独配置。要拿全量清单，扫 `mcp-server/src/**` 的 `process.env.*` 即可。
+> 上表已列**用户可配置面**。服务端源码按大小写敏感去重共读 **38** 个环境变量名；差出来的几个是同一开关的大小写别名与进程细节（`HTTP_PROXY` / `http_proxy`、`ComSpec` / `COMSPEC`），不需要单独配置。要拿全量清单，扫 `mcp-server/src/**` 的 `process.env.*` 即可。
 
 
 
@@ -1123,4 +1124,4 @@ jar 未缓存时返回 `CACHE_MISS` 引导（先调 `get_minecraft_source`），
 | `localize_mod` | 汉化：自有模组 `diff` / `draft_zh`，或第三方 jar `extract` / `pack_draft`。无机器翻译，未填项标 `needsTranslation`；无 `en_us` 时可回退其它语言作源。 |
 | `generate_playtest_driver` | 游玩自测骨架（**必填** `platform` / `version`）：`driverMode` 默认 `external_bridge`（桥动作序列 + 后置条件 + 证据约定）；`in_jvm_player_agent` 在 **`PLAYTEST_VERIFIED_TIER` 列出的档**（唯一真源；正文不数档，档位列表以生成器现读为准）出**真执行器**（意图菜单 + 邮箱消费 + 类型化后置条件 + 逐意图预算），表外档只出契约 + 结构壳。不装桥、不跑游戏。 |
 | `generate_paper_plugin` | 生成 Paper 插件工程骨架 —— **服务端面，独立于模组面**（载体 `gradlew runServer` 而非 `runClient`；API 是 Bukkit/Paper 抽象层而非 `net.minecraft.*`；生命周期 `plugin.yml`+`onEnable` 而非 `@Mod`+事件总线；逐档 javap 改写表对本面**零适用**）。**只吐文本**、默认 dry-run，落盘由 `write=true` 控制 —— **不写仓库、不建平台树、不进任何模组面 scaffold 门**。**边界**：`paperApiVersion` 不给 ⇒ 生成一个会在依赖解析期**显式报错**的占位符（不静默取 `latest`）；`plugin.yml` 的 `api-version` 默认 `TODO-未核实`（写错会导致加载期拒绝）；**不产出二进制**（gradle wrapper jar 须自备）；证据等级 = **结构壳**，未构建未运行。**非法输入**：`pluginName` 不是合法 Java 标识符、`packageName` 不是合法 Java 包名 ⇒ 直接拒。 |
-| `generate_playtest_server_driver` | 生成**服务端面**（Paper/Bukkit）游玩自测驱动（**必填** `evidenceDir`）—— **用法（最小闭环 / plan verb / 证据契约 / 判据范式 / 无人值守配方 / 起实例必备配置 / BOM 坑）见 `AGENTS.md` 的「服务端面的自动测试 loop 怎么用」**。⚠ 另注：与客户端 driver **证据契约逐字复用**（`state.json` / `exit-code.txt` **仅 0\|1** / `qa.log` / `rounds.jsonl` / `plan.txt` 同名同目录 ⇒ 判读侧 `inspect_playtest_evidence` 与 `inspect_playtest_multi` **零改动**）；**执行面另造**：服务端没有客户端 ⇒ `move`/`goto`/`break`/`gui`/`jump`/`look`/`shot`/`scan` 等玩家级原语**一概不生成**。注入点是**新造**的：`JavaPlugin#onEnable` + `Bukkit.getScheduler().runTaskTimer`（同步调度、主线程）。只吐文本、默认 dry-run。**步骤面**：只支持 `wait` / `mark` / `stop` / `touch` / `waitfile` / `cmd` / `assert`（assert 仅 `player_count` / `world_count` / `marker`）；**客户端专属步骤或未知 kind 一律判红，不静默跳过**。每个 Bukkit API 名都对着本仓签名语料核过（含 `dispatchCommand` **throws CommandException** 已捕获）。**不声称**进 `PLAYTEST_VERIFIED_TIER` —— 那条目带 `mappings`，服务端无 mappings。证据等级
+| `generate_playtest_server_driver` | 生成**服务端面**（Paper/Bukkit）游玩自测驱动（**必填** `evidenceDir`）—— **用法（最小闭环 / plan verb / 证据契约 / 判据范式 / 无人值守配方 / 起实例必备配置 / BOM 坑）见 `AGENTS.md` 的「服务端面的自动测试 loop 怎么用」**。⚠ 另注：与客户端 driver **证据契约逐字复用**（`state.json` / `exit-code.txt` **仅 0\|1** / `qa.log` / `rounds.jsonl` / `plan.txt` 同名同目录 ⇒ 判读侧 `inspect_playtest_evidence` 与 `inspect_playtest_multi` **零改动**）；**执行面另造**：服务端没有客户端 ⇒ `move`/`goto`/`break`/`gui`/`jump`/`look`/`shot`/`scan` 等玩家级原语**一概不生成**。注入点是**新造**的：`JavaPlugin#onEnable` + `Bukkit.getScheduler().runTaskTimer`（同步调度、主线程）。只吐文本、默认 dry-run。**步骤面**：只支持 `wait` / `m

@@ -1,6 +1,6 @@
 # mt_llm
 
-*Marcel Timm, RhinoDevel, 2025*
+*Marcel Timm, RhinoDevel, 2026*
 
 **mt_llm** is a C++ library for Linux and Windows that offers a pure C interface
 to the awesome large-language model inference engine called
@@ -207,6 +207,10 @@ int main(void)
     p.min_p = 0.05;
     p.temp = 0.8;
     p.grammar[0] = '\0';
+    p.penalty_last_n = 0;
+    p.penalty_repeat = 1.0f;
+    p.penalty_freq = 0.0f;
+    p.penalty_present = 0.0f;
     
     p.cpu_moe = 0;
     p.n_cpu_moe = 0;

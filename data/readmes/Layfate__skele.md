@@ -237,7 +237,7 @@ npm run desktop:build    # desktop installers for this system → src-tauri/targ
 ```
 
 Local desktop builds have no update source and aren't signed. Release builds are made by
-GitHub Actions (see [docs/RELEASING.md](docs/RELEASING.md)).
+the [GitHub Actions release workflow](.github/workflows/release.yml).
 
 ### Scripts
 

@@ -1,25 +1,31 @@
 # Vigilo
 
-**AI-powered penetration-testing pipeline.** Specialized agents run a full vulnerability
-assessment of a web application — from reconnaissance through exploitation to automated
+**AI-powered penetration-testing pipeline.** Agents run a full vulnerability assessment of a
+web application — from surveying the source through proving each finding to automated
 remediation — and produce an evidence-backed report plus fix branches for every confirmed
 finding.
 
 Vigilo was built by **CERT-EU** so security teams can run repeatable, agent-driven pentests
 against their own code and services. It ships two ways to run:
 
-- **Web platform (recommended)** — a multi-user API + web UI. Sign in, attach a repository
-  (upload or GitLab), pick what to run, execute asynchronously, and browse findings, reports
-  and dashboards. This is the way most people should use Vigilo.
-- **Command-line** — run the full pentest pipeline directly against a repository (and an optional
-  live URL) with `make`; no web platform required. Also offers a grey-box (no-source) mode.
+- **Web platform** — a multi-user API + web UI for white-box scans. Sign in, attach a
+  repository (upload or GitLab), pick what to run, execute asynchronously, and browse findings,
+  reports and dashboards.
+- **Command-line grey-box** — test a running application without its source code, with `make`;
+  no web platform required.
 
-The pipeline combines Temporal-orchestrated agents with an agentic coding CLI (Claude Code,
-OpenAI Codex, or OpenCode), Playwright browser testing, and source-code analysis. Each agent
-focuses on a specific vulnerability class, agents share findings with each other, and an
-adversarial critic re-checks every finding before it reaches the report.
+The pipeline combines orchestrated agents with an agentic coding CLI (Claude Code,
+OpenAI Codex, or OpenCode), Playwright browser testing, and source-code analysis.
 
 > **Licence:** [EUPL-1.2](#licence) · Copyright © 2026 European Union. See [`LICENSE`](LICENSE).
+
+> [!WARNING]
+> **Experimental software.** Vigilo is in alpha: it works end to end, but interfaces, defaults and
+> outputs may change between versions, and its findings should always be reviewed by a person.
+> It runs AI agents against code and applications you point it at — use it only on systems you
+> are authorised to test, ideally with dedicated test accounts. Read [`SECURITY.md`](SECURITY.md)
+> for the security model and its current limits. There is plenty of room for improvement; see
+> [Next steps](#next-steps--contributions-welcome).
 
 ![Vigilo security dashboard](docs/images/dashboard.png)
 
@@ -29,30 +35,19 @@ adversarial critic re-checks every finding before it reaches the report.
 
 ## Table of contents
 
-**Understand it**
-
 - [What Vigilo does](#what-vigilo-does)
-- [Two ways to test: white-box and grey-box](#two-ways-to-test-white-box-and-grey-box) — [White-box](#white-box--source-code-review) · [Grey-box](#grey-box--penetration-testing) · [Which one do I want?](#which-one-do-i-want)
-- [Architecture](#architecture)
-
-**Install and run it**
-
-- [Getting started (web platform)](#getting-started-web-platform) — [Prerequisites](#prerequisites) · [1. Clone and configure](#1-clone-and-configure) · [2. Start the full stack](#2-start-the-full-stack) · [3. Database migrations](#3-database-migrations) · [4. Sign in and run a scan](#4-sign-in-and-run-a-scan)
-- [Deployment options](#deployment-options) — [Let's Encrypt (default)](#option-1--traefik--lets-encrypt-default) · [Your own ACME CA](#option-2--traefik--your-own-acme-ca) · [No Traefik / plain HTTP](#option-3--no-traefik-your-own-reverse-proxy-or-plain-http)
-- [Run it directly (standalone pipeline)](#run-it-directly-standalone-pipeline) — [1. Configure](#1-configure) · [2. Point it at a target and scan](#2-point-it-at-a-target-and-scan) · [3. Output](#3-output)
-- [Docker Compose files, explained](#docker-compose-files-explained)
-
-**Configure it**
-
+- [White-box and grey-box](#two-ways-to-test-white-box-and-grey-box) — [Which one do I want?](#which-one-do-i-want)
+- [How the pipeline works](#how-the-pipeline-works) — [White-box](#white-box-pipeline) · [Findings ledger](#how-agents-coordinate-the-findings-ledger) · [Grey-box](#grey-box-pipeline) · [Output](#output)
+- [Getting started (web platform)](#getting-started-web-platform)
+- [Deployment options](#deployment-options)
+- [Grey-box from the command line](#grey-box-from-the-command-line)
 - [Pipeline modes](#pipeline-modes)
-- [Authentication & access model](#authentication--access-model)
-- [Configuration reference](#configuration-reference) — [Required](#required-platform) · [First admin](#first-admin-bootstrap-first-boot-only) · [Model backend](#model-backend-worker) · [Email](#email-notifications) · [GitLab](#gitlab-integration-optional)
-
-**Go deeper**
-
-- [How the pipeline works](#how-the-pipeline-works) — [White-box pipeline](#white-box-pipeline) · [Grey-box pipeline](#grey-box-pipeline) · [Output](#output)
-- [API reference](#api-reference)
+- [Model backend](#model-backend)
+- [Access, credentials and GitLab push-back](#access-credentials-and-gitlab-push-back)
+- [Configuration reference](#configuration-reference)
+- [Security](#security)
 - [Development](#development)
+- [Next steps — contributions welcome](#next-steps--contributions-welcome)
 - [Licence](#licence)
 
 ---
@@ -61,58 +56,50 @@ adversarial critic re-checks every finding before it reaches the report.
 
 You point Vigilo at a web application (and, in white-box mode, its source code). It then:
 
-1. **Recons** the target — maps the source, dependencies, and the live app.
-2. **Finds** vulnerabilities with parallel agents, each specialised in one class (injection,
-   XSS, auth, SSRF, authorization, GraphQL, WebSocket, cryptography, and supply-chain/SCA).
-3. **Exploits** the findings to prove they are real, with captured evidence and screenshots.
-4. **Critiques** every finding adversarially — de-inflating overclaimed severities, collapsing
+1. **Surveys** the target — maps the source, dependencies, and the live app.
+2. **Plans** — turns the survey into a prioritised list of *leads*: places where a
+   vulnerability might be.
+3. **Investigates** the leads with parallel agents, which record confirmed findings in a shared ledger.
+4. **Proves** the findings — parallel agents try to exploit each one, with captured evidence and
+   screenshots, and record multi-step attack chains.
+5. **Reviews** every finding adversarially — de-inflating overclaimed severities, collapsing
    duplicates, and moving low-value items to a hardening appendix. Nothing is silently dropped.
-5. **Remediates** — generates a fix branch and patch per confirmed finding, and can push them
-   upstream and open one merge request each.
-6. **Reports** — an executive summary with evidence, grouped findings, and (grey-box) blue-team
+6. **Remediates** — generates a fix branch and patch per confirmed finding, verifies each fix,
+   and can push them upstream and open one merge request per fix branch.
+7. **Reports** — an executive summary with evidence, grouped findings, and (grey-box) blue-team
    detection hints.
+
+In white-box mode these steps are run by a team of agents that never talk to each other directly:
+they coordinate through a shared **findings ledger**, so many investigators and provers can work in
+parallel without duplicating work. [How the pipeline works](#how-the-pipeline-works) explains the
+engine, the ledger and the grey-box loop, with diagrams.
 
 ---
 
 ## Two ways to test: white-box and grey-box
 
-Vigilo can test an application in two different ways. The difference is simply **how much you
-give it**: with or without the source code. Everything else — the agents, the exploitation, the
-adversarial critique, the report — follows from that choice.
+The difference is simply **how much you give it**: with or without the source code. Everything
+else — the agents, the exploitation, the adversarial critique, the report — follows from that.
 
 ![The two Vigilo paths: white-box source code review and grey-box penetration testing](docs/images/modes-overview.png)
 
-*The two paths. **White-box** gets the source code *and* the running app, and returns a report plus working patches. **Grey-box** only gets the running app, and returns a report plus detection hints for your blue team.*
+*The two paths. **White-box** gets the source code *and* the running app, and returns a report plus working patches. **Grey-box** only gets the running app (plus credentials), and returns a report plus detection hints for your blue team.*
 
-### White-box — source code review
+**White-box — source code review.** You give it a Git repository and (optionally, but strongly
+recommended) a URL where the same application is running. Use it on **your own software**.
+Vigilo reads the source to find where the bugs are, tries to trigger them against the live app to
+prove they are real, and writes the fix: one branch and one patch per confirmed finding,
+optionally pushed upstream as merge requests. *You get:* a report with evidence, plus fix
+branches.
 
-**You give it:** a Git repository, and (optionally, but strongly recommended) a URL where that
-same application is running.
-
-This is the mode to use on **your own software** — code your team wrote or maintains, and can fix.
-Vigilo reads the source to find where the bugs actually are, then tries to trigger them against
-the live app to prove they are real rather than theoretical. Because it has the code, it can go
-one step further and write the fix: one branch and one patch per confirmed finding, optionally
-pushed upstream as merge requests.
-
-**You get back:** a report with evidence, plus fix branches you can review and merge.
-
-### Grey-box — penetration testing
-
-**You give it:** a URL, and optionally credentials to log in with. **No source code.**
-
-This is the mode to use on **software you cannot see inside** — a third-party product, a vendor
-SaaS, a black-box service, or simply an app whose code you don't have. Vigilo behaves like an
-external attacker who has been handed a login: it explores the application, records everything it
-learns in a knowledge graph, and lets a scheduler decide what to probe next based on that graph.
-It cannot propose code patches, because it has never seen the code — so instead it hands your
-defenders what they need to *catch* the attack: WAF rules, log signatures and SIEM queries for
-every confirmed finding.
-
-("Grey-box" rather than "black-box" because you normally do give it valid credentials — testing
-only the logged-out surface of an application misses most of it.)
-
-**You get back:** a report with evidence, plus detection-engineering hints for your blue team.
+**Grey-box — penetration testing.** You give it a URL and, optionally, credentials. **No source
+code.** Use it on **software you cannot see inside** — a vendor product, a SaaS, a black-box
+service. Vigilo behaves like an external attacker who has been handed a login: it explores the
+application, records what it learns in a knowledge graph, and lets a scheduler decide what to
+probe next. It cannot propose patches, so it hands your defenders WAF rules, log signatures and
+SIEM queries for every confirmed finding. (It is "grey-box" rather than "black-box" because you
+normally give it valid credentials; testing only the logged-out surface misses most of an app.)
+*You get:* a report with evidence, plus detection hints for your blue team.
 
 ### Which one do I want?
 
@@ -124,72 +111,146 @@ only the logged-out surface of an application misses most of it.)
 | We have a running app but no code access | **Grey-box** | Exactly what it's built for. |
 | We want to know what our SOC would actually see | **Grey-box** | Only grey-box produces detection hints. |
 
-Both modes run from the command line. The **web platform currently runs white-box**; grey-box is
-CLI-only for now. Details of what each pipeline does internally are in
-[How the pipeline works](#how-the-pipeline-works).
+White-box runs on the [web platform](#getting-started-web-platform); grey-box runs
+[from the command line](#grey-box-from-the-command-line).
 
 ---
 
-## Architecture
+## How the pipeline works
 
-The web platform is a set of containers that talk over a private Docker network. A job created
-in the UI/API starts a real Temporal workflow; a worker runs the pipeline against the repo on a
-shared volume and writes the report and logs back.
+### White-box pipeline
 
-| Component | What it is | Role |
-|-----------|-----------|------|
-| **UI** | React + Vite + TypeScript SPA (nginx) | The web app. Talks only to the API. |
-| **API** | FastAPI (`src/webapi/`) | Auth, repositories, jobs, runs, reports, dashboards, scheduling, email. Starts pipeline runs. |
-| **Worker** | Python Temporal worker (built from the root `Dockerfile`) | Executes the pentest pipeline (the same code the CLI runs). |
-| **Temporal** | Temporal server (`start-dev`) | Orchestrates the long-running pipeline workflow and its activities. |
-| **Postgres** | PostgreSQL 16 | The platform's system of record (users, repos, jobs, runs, metrics). |
-| **MailHog** | Mail catcher | Dev SMTP sink for invitation + report emails. Internal-only; swap for a real relay in production. |
-| **Traefik** | TLS reverse proxy | The **only** service with published ports (`80` → redirects to `443`, `443`). Terminates TLS (certificates from Let's Encrypt, or any ACME CA you point it at) and routes the public hostname to the UI. Optional — see [Deployment options](#deployment-options). |
+![White-box at a glance: survey, plan, investigate, prove, review, patch, report](docs/images/whitebox-flow.png)
 
-```mermaid
-flowchart LR
-    B["Browser"]
-    subgraph Docker["Docker network (vigilo_net)"]
-        TR["Traefik<br/>:80 → :443 (TLS)"]
-        UI["UI · nginx<br/>(serves SPA, proxies /api)"]
-        API["API · FastAPI"]
-        PG[("Postgres")]
-        MH["MailHog"]
-        TMP["Temporal"]
-        WK["Worker<br/>(pipeline)"]
-    end
-    TGT["Target app + LLM backend"]
+*White-box at a glance: survey the code and the live app → plan leads → investigate them in parallel → prove each finding → adversarial review → patch → report. Purple stages depend on the preset.*
 
-    B -->|"HTTPS"| TR
-    TR -->|"Host rule"| UI
-    UI -->|"/api (internal)"| API
-    API --> PG
-    API --> MH
-    API -->|"start run"| TMP
-    WK -->|"serve task queue"| TMP
-    WK -->|"scan"| TGT
-    style API fill:#e8f4fd,stroke:#4a9eda,color:#333
-    style WK fill:#f0f0f0,stroke:#999,color:#333
+The orchestrator runs the stages below. Each stage is one agent or a batch of parallel agents,
+and everything they learn goes into the findings ledger (next section):
+
+```
+Preflight      — validate target, credentials, environment
+Survey         — surveyor: source, architecture and live-app map
+                 (full preset: supply-chain and integrity agents then start in the
+                 background and are collected before Review)
+Plan           — planner records leads, each with a priority
+Investigate    — investigator-1..N in parallel, each with its own LEADS: slice
+Prove          — prover-1..M in parallel, each with its own FINDINGS: slice
+Review         — reviewer: findings index, adversarial critique, recall-floor audit
+Remediation    — PatchWorkflow child workflow (vuln_patch and full)
+Report         — reporter: executive summary with evidence + screenshots
 ```
 
-**Exposure:** only Traefik publishes host ports (`80`/`443`). The UI is the sole public
-router (`https://$VIGILO_HOSTNAME`); the API, Postgres, Temporal and MailHog have **no
-published port and no router** — they are reachable only on the internal `vigilo_net`
-network. The browser never talks to the API directly: the UI's nginx proxies `/api` to it
-internally. HTTP is redirected to HTTPS, and HSTS + anti-clickjacking/sniffing headers are
-applied by Traefik. If you replace Traefik with your own reverse proxy, the internal layout
-is unchanged — only the front door moves. See [Deployment options](#deployment-options).
+![White-box in detail: planner, investigators and provers read and write the findings ledger; the reviewer, PatchWorkflow and reporter work from it](docs/images/whitebox-detail.png)
+
+*The same engine in detail. Agents never talk to each other directly: the **findings ledger** sits at the centre. The planner writes leads, each investigator reads its slice of them and writes findings, each prover reads unproven findings and writes verdicts and chains, and the reviewer works from an index built from the ledger. `PatchWorkflow` and the reporter come after the review.*
+
+- **Parallel by batches.** Open leads are split into batches of three (priority order), each to
+  its own investigator, at most eight at once; one follow-up round covers leads still open.
+  Unproven findings are batched the same way for the provers. One failing agent does not stop the
+  others; a stage fails only when every agent in it fails. Leads still open at the end are listed
+  in the report's Coverage section. The batching settings (`leads_per_investigator` = 3,
+  `findings_per_prover` = 3, `investigation_followup_rounds` = 1, `max_concurrent_pipelines` = 8)
+  are optional tuning fields when creating a job in the UI, or `pipeline_overrides` in the jobs
+  API (`POST /jobs`, `PATCH /jobs/{id}`). Unset fields use these defaults, except
+  `max_concurrent_pipelines`, which starts from the admin default; the workflow clamps every value
+  to a safe range.
+- **Code-only confirmation.** With no live target, provers build a minimal source-level harness
+  that drives the vulnerable code path with the witness payload, yielding a real verdict
+  (`confirmed` / `refuted` / `not_testable`). A harness proves the sink, not reachability — the
+  reviewer still gates that.
+- **Adversarial review is the single source of truth.** The reviewer re-checks every finding
+  against the code and deployment context, de-inflates severities, collapses duplicates via
+  `group_id`, assigns reachability, and marks low-value items `include_in_report=false` so they
+  move to a hardening appendix. Its `findings_critique.json` is authoritative, and a deterministic
+  `audit_critique` guard enforces a recall floor: a critical/high, externally-reachable finding
+  can never be hidden.
+- **Remediation, honestly reported.** `PatchWorkflow` rebuilds git from the upstream remote, runs
+  the remediation agent, exports a `.patch` per fix, re-runs each finding's harness against its fix
+  branch, and — when configured — pushes and opens merge requests (see
+  [GitLab push-back](#gitlab-push-back)). `remediation_manifest.json` records each branch's real
+  push/diff/verify state. The report shows each fix as **Delivered** (pushed), **Patch available**
+  (local `.patch`) or **Unpatched**, and badges it **verified** only when the confirmation harness
+  no longer reproduces the flaw on the patched branch. `PatchWorkflow` can also be started on its
+  own against an existing run to regenerate patches without re-scanning.
+- **Scan settings reach every agent.** The description, focus and avoid rules set per repository
+  are merged into every agent's prompt.
+
+#### How agents coordinate: the findings ledger
+
+White-box agents do not hand-write result files. They call the `vigilo-record` command, which
+validates each record and appends it to `deliverables/ledger/` (JSON Lines, append-only, written
+under a lock so parallel agents never corrupt each other; IDs such as `L-001`, `VG-001` and
+`CH-01` are assigned there). Records flow in one direction:
+
+| Record | Written by | Meaning |
+|--------|-----------|---------|
+| **lead** (`L-…`) | planner, and investigators who spot more | A place a vulnerability might be, with a priority. Closed with a `lead-done` record (`finding`, `clean`, `inconclusive` or `out-of-scope`). |
+| **finding** (`VG-…`) | investigators | A suspected vulnerability with its category, severity and trace. |
+| **verdict** | provers | The outcome of trying to exploit a finding: `exploited`, `confirmed`, `blocked`, `not_testable`, `unreachable`, `refuted` or `false_positive`, with evidence. |
+| **chain** (`CH-…`) | provers | A multi-step attack that combines several findings. |
+
+Four rules keep many agents working at once without stepping on each other:
+
+- **Disjoint assignments.** The workflow reads the ledger and hands each agent an explicit list
+  (`LEADS: L-001,L-004` or `FINDINGS: VG-002,VG-007`); an agent works only on its own items.
+- **Read before write.** Agents read the ledger with `vigilo-record show …` (open leads, unproven
+  findings, a single finding, a summary) rather than relying on what they remember.
+- **Duplicate checks.** The ledger rejects a finding that matches an existing one (same file,
+  nearby line, same category) unless it is linked to that finding or explicitly marked
+  `distinct_from` it. The reviewer collapses any duplicates that remain.
+- **Precise rejections.** An invalid record stores nothing and comes back with a list of exactly
+  what to fix, so the agent corrects itself and resends. A later record with the same ID
+  supersedes an earlier one.
+
+### Grey-box pipeline
+
+A parallel pipeline for testing without source access. It uses a SurrealDB knowledge graph as the
+single source of truth, a deterministic Python scheduler (no LLM in the dispatch loop), and
+dynamically spawned specialists. Every confirmed finding ships with detection-engineering hints
+(WAF rules, log signatures, SIEM queries) for blue-team handoff.
+
+![Grey-box: a discovery agent and managed scans write into a knowledge graph, which a scheduler reads to spawn parallel exploitation agents](docs/images/greybox-detail.png)
+
+*Grey-box has no phase list to follow. **Discovery** (a crawling agent plus managed tool scans — Nuclei, feroxbuster) writes what it finds into the knowledge graph; the **scheduler** reads that graph and hands out work orders; the agents it spawns write their results straight back into the graph. The loop keeps going as long as the graph keeps changing.*
+
+**The scheduler is plain Python, not an LLM.** It re-reads the graph on every tick, fires a fixed
+set of rules against it, and emits *verbs* — concrete work orders that become agents:
+
+![The grey-box scheduler loop: read the knowledge graph, fire rules, emit verbs, spawn parallel agents, with halt conditions](docs/images/greybox-scheduler.png)
+
+*Rules cover open leads with medium-or-better signal, findings that could be chained, parameters nobody has probed yet, and access control across identities. The loop halts on coverage complete, budget exhausted, diminishing returns (20 ticks without progress), or a waiting timeout (10 ticks spent only waiting for running agents) — then writes the report. When the budget runs low, the scheduler stops dispatching the costliest verbs first. Keeping dispatch deterministic means a run is auditable: you can always ask why a given agent was spawned.*
+
+Everything the run learns lives in the graph, and you can open it and look:
+
+![Knowledge graph view: one identity node linked by can_access edges to many endpoint nodes](docs/images/greybox-graph-access.png)
+
+*The access matrix as stored: one identity, and every endpoint it was proven to reach. Comparing these across identities is what surfaces broken access control.*
+
+![Knowledge graph zoom: a lead node linked to a test attempt, a parameter and an endpoint](docs/images/greybox-graph-lead.png)
+
+*Zoomed in on a single lead: which endpoint it came from, which parameter it concerns, and every attempt made against it. Nothing is retried blindly, and nothing is lost between agents.*
+
+### Output
+
+Each white-box scan writes results into the target repo under `.vigilo/<session-id>/` (or the
+run's configured output path): `workflow.log`, `session.json` (cost/tokens/duration), per-agent
+logs, and a `deliverables/` directory containing the structured JSON sidecars
+(`findings_index.json`, `findings_critique.json`, `remediation_manifest.json`), the ledger
+(`ledger/*.jsonl`), per-finding evidence files, the provers' confirmation harnesses
+(`harnesses/`), `comprehensive_security_assessment_report.md`, patches, and screenshots. For
+grey-box output, see [above](#4-output).
+
+![A finished run in the web UI: Trace Rail, evidence log and the rendered report](docs/images/run-in-progress.png)
+
+*A finished white-box run (`full` preset) in the web UI: the **Trace Rail** on the left, the evidence/log pane, and below them the rendered security assessment report with download buttons for the report and the patches (`.zip`).*
 
 ---
 
 ## Getting started (web platform)
 
-### Prerequisites
-
-- **Docker** with the Compose plugin (`docker compose`).
-- **One LLM backend credential** for the worker to actually run scans — an Anthropic API key
-  (or AWS Bedrock / Azure Foundry), or an OpenAI/Codex key, or a LiteLLM gateway. Without this
-  the platform boots but runs cannot execute. See [Configuration reference](#configuration-reference).
+**Prerequisites:** Docker with the Compose plugin (`docker compose`), and **one LLM backend
+credential** — an Anthropic API key (or AWS Bedrock / Azure Foundry), an OpenAI/Codex key, or a
+LiteLLM gateway. Without it the platform boots but runs cannot execute.
 
 ### 1. Clone and configure
 
@@ -223,19 +284,15 @@ ACME_EMAIL=you@your-domain.example
 ```
 
 `VIGILO_HOSTNAME` must resolve to this host in DNS, and the certificate authority must be
-able to reach it on port 80 to complete the ACME HTTP-01 challenge.
-
-No public hostname? Certificates from an internal CA? Already running your own reverse
-proxy? Traefik is optional — see [Deployment options](#deployment-options).
-
-Generate the Fernet key (no dependencies required):
+able to reach it on port 80 to complete the ACME HTTP-01 challenge. Generate the Fernet key
+(no dependencies required):
 
 ```bash
 python3 -c "import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())"
 ```
 
-`env.sample` documents every backend (Anthropic / Bedrock / Foundry / Codex / OpenCode),
-corporate-proxy settings, GitLab integration, grey-box knobs, and SMTP.
+`env.sample` documents every backend, corporate-proxy settings, GitLab integration, grey-box
+knobs, and SMTP.
 
 ### 2. Start the full stack
 
@@ -243,41 +300,30 @@ corporate-proxy settings, GitLab integration, grey-box knobs, and SMTP.
 docker compose --env-file .env -f deploy/docker-compose.full.yml up --build -d
 ```
 
-This builds and starts Traefik, Postgres, MailHog, Temporal, the API, the UI, and the worker.
+This builds and starts Traefik, Postgres, MailHog, the workflow orchestrator, the API, the UI, and the worker.
 Traefik requests a TLS certificate on first boot and serves the UI at
-**`https://$VIGILO_HOSTNAME`** (HTTP is redirected to HTTPS). Only ports 80/443 are published;
-everything else is internal.
+**`https://$VIGILO_HOSTNAME`** (HTTP is redirected to HTTPS). Only ports 80/443 are published.
+Database migrations run automatically on boot (`VIGILO_RUN_MIGRATIONS_ON_START=true`, the
+default); to run them by hand:
+`docker compose -f deploy/docker-compose.full.yml exec api python -m scripts.run_migrations upgrade`.
 
-> **No hostname or certificate yet?** Run the same stack over plain HTTP instead — add
-> `-f deploy/docker-compose.plain.yml` to the command above and open
-> `http://localhost:8080`. See [Deployment options](#deployment-options).
+> **No hostname or certificate yet?** Add `-f deploy/docker-compose.plain.yml` to the command
+> above and open `http://localhost:8080`. See [Deployment options](#deployment-options).
 
-> **Working on Vigilo itself?** You don't need this stack at all — run the API and UI
-> directly with the fake engine, which needs no Docker or Temporal. See
-> [Development](#development).
+> **Working on Vigilo itself?** You don't need this stack — see [Development](#development).
 
-### 3. Database migrations
-
-**No manual step needed.** The API runs Alembic (`alembic upgrade head`) automatically on boot
-(`VIGILO_RUN_MIGRATIONS_ON_START=true`, the default), so a fresh or existing database is brought
-up to the current schema. To run migrations manually (e.g. in CI):
-
-```bash
-docker compose -f deploy/docker-compose.full.yml exec api python -m scripts.run_migrations upgrade
-```
-
-### 4. Sign in and run a scan
+### 3. Sign in and run a scan
 
 1. Open the UI at **`https://$VIGILO_HOSTNAME`** and sign in as the first admin.
 2. **Repositories** → attach a source (upload a `.zip`/`.tar.gz` or folder, or connect a GitLab repo).
 3. **Jobs** → create a job (repository + [pipeline mode](#pipeline-modes) + optional target URL),
    then **Run** it.
-4. Watch progress on the **Run detail** page (phase spine + live log). When it finishes, open the
+4. Watch progress on the **Run detail** page (Trace Rail + live log). When it finishes, open the
    report; opt in to "email me the report" to receive it (in dev, MailHog catches it — it's
    internal-only, so port-forward to read it, or point SMTP at a real relay in production).
 
 To stop everything: `docker compose -f deploy/docker-compose.full.yml down` (add `-v` to also
-wipe the Postgres/Temporal/job volumes).
+wipe the database, orchestrator and job volumes).
 
 ![Repository detail with the file explorer](docs/images/repo-detail.png)
 
@@ -287,11 +333,9 @@ wipe the Postgres/Temporal/job volumes).
 
 ## Deployment options
 
-By default Vigilo puts **Traefik** in front of the stack and gets a TLS certificate from
-**Let's Encrypt**. That fits a server with a public DNS name, but it is not the only way to
-run it. All the options below use the same `deploy/docker-compose.full.yml` — there is one
-source of truth, and you change behaviour with environment variables or a small override
-file, never by editing the compose file.
+By default Traefik sits in front of the stack and gets a TLS certificate from Let's Encrypt.
+All options use the same `deploy/docker-compose.full.yml`; you change behaviour with
+environment variables or a small override file, never by editing the compose file.
 
 | Your situation | What to do |
 |----------------|------------|
@@ -300,44 +344,8 @@ file, never by editing the compose file.
 | You already run a reverse proxy or load balancer | Skip Traefik, publish the UI on a local port, terminate TLS in your proxy. |
 | Trying Vigilo out, no hostname or certificate | Skip Traefik and use plain HTTP. |
 
-### Option 1 — Traefik + Let's Encrypt (default)
-
-```bash
-docker compose --env-file .env -f deploy/docker-compose.full.yml up --build -d
-```
-
-Set two things in `.env`:
-
-```bash
-VIGILO_HOSTNAME=vigilo.example.com     # the public name of this host
-ACME_EMAIL=you@your-domain.example     # a real address; Let's Encrypt rejects @example.com
-```
-
-Two things must be true before the first start, or certificate issuance fails:
-
-- `VIGILO_HOSTNAME` resolves to this host.
-- Let's Encrypt can reach this host on **port 80** — that is where the ACME HTTP-01
-  challenge is answered. Open it in your firewall.
-
-Certificates are stored in the `acme_data` Docker volume, so they are reused across
-restarts and renewed automatically. Deleting that volume forces a fresh issuance.
-
-### Option 2 — Traefik + your own ACME CA
-
-If your organisation issues certificates from an internal ACME server, point Vigilo at it:
-
-```bash
-ACME_CASERVER=https://acme.your-internal-ca.example/acme/directory
-```
-
-Everything else is identical to option 1: the CA still has to reach this host on port 80
-for the HTTP-01 challenge. Browsers on your network must already trust that CA's root
-certificate — Vigilo does not distribute it.
-
-### Option 3 — No Traefik (your own reverse proxy, or plain HTTP)
-
-Layer the `plain` override on top of the full stack. It stops Traefik from starting and
-publishes the UI's own nginx on a host port instead:
+For the last two, layer the `plain` override. It stops Traefik and publishes the UI on
+`http://localhost:8080` (change with `VIGILO_HTTP_PORT`):
 
 ```bash
 docker compose --env-file .env \
@@ -346,47 +354,27 @@ docker compose --env-file .env \
   up --build -d
 ```
 
-The UI is then at **`http://localhost:8080`**. Change the port with `VIGILO_HTTP_PORT`.
-Nothing else changes: that nginx serves the web app and proxies `/api` to the API over the
-internal network, exactly as it does behind Traefik.
+Behind your own proxy, also set `VIGILO_HTTP_PORT=127.0.0.1:8080` (keeps the unencrypted port
+off the network) and `VIGILO_UI_BASE_URL=https://vigilo.example.com` (the public URL, used in
+email links), and configure the HTTP→HTTPS redirect and security headers there — Traefik
+applies them only in the default setup. Without TLS, logins and reports travel in clear text:
+fine on `localhost`, never on an untrusted network.
 
-**If you have your own reverse proxy** (nginx, HAProxy, Apache, a cloud load balancer),
-point it at that port and terminate TLS there. Two extra steps:
+In every option the API, Postgres, the orchestrator and MailHog have no published port; the browser
+reaches the API only through the UI's internal `/api` proxy. Don't run two copies of the
+platform on one host: both would join the fixed `vigilo_net` network and service names would
+resolve to either stack at random.
 
-```bash
-VIGILO_HTTP_PORT=127.0.0.1:8080                # only reachable from this machine
-VIGILO_UI_BASE_URL=https://vigilo.example.com  # the public URL, used in email links
-```
-
-Binding to `127.0.0.1` keeps the unencrypted port off the network when your proxy runs on
-the same host. `VIGILO_UI_BASE_URL` matters because invitation and report emails would
-otherwise link to the wrong address.
-
-One thing you take over: the HTTP→HTTPS redirect and the security headers (HSTS,
-`X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`) are applied by
-Traefik in options 1 and 2. Without Traefik, configure them in your own proxy.
-
-Already have certificate **files** rather than an ACME CA? Use this option and load them
-into your own proxy — the bundled Traefik only knows how to fetch certificates over ACME.
-
-> **Security note.** Without TLS, logins and reports travel in clear text. Plain HTTP is
-> fine on `localhost` for a trial, and fine behind a proxy that terminates TLS. Do not
-> publish port 8080 to an untrusted network.
-
-### What is exposed, in every option
-
-Only the front door changes. The API, Postgres, Temporal and MailHog never get a published
-port or a public route in any of these setups — the browser always reaches the API through
-the UI's internal `/api` proxy.
+Details — architecture diagram, per-option setup, ACME, and an explanation of every compose
+file — are in [`docs/deployment.md`](docs/deployment.md).
 
 ---
 
-## Run it directly (standalone pipeline)
+## Grey-box from the command line
 
-Vigilo is autonomous pentesting you can run straight from the command line: point it at a code
-repository (optionally with a live URL), and it runs the full recon → vulnerability analysis →
-exploitation → adversarial critique → remediation → report pipeline in Docker and writes an
-evidence-backed report you can read locally. All you need is Docker and one model backend.
+A grey-box scan tests a running application from the outside, with no source code. It runs in
+Docker on your machine, driven by `make`, and writes an evidence-backed report to disk. All you
+need is Docker and one model backend.
 
 ### 1. Configure
 
@@ -394,179 +382,93 @@ evidence-backed report you can read locally. All you need is Docker and one mode
 cp env.sample .env
 ```
 
-Set **one** model backend in `.env`:
+Set **one** model backend in `.env`, and build the matching image in step 3:
 
-- **Anthropic (Claude)** — `ANTHROPIC_API_KEY=...` (or AWS Bedrock / Azure Foundry variables)
-- **OpenAI-compatible (Codex)** — `VIGILO_EXECUTOR=codex`, `CODEX_BASE_URL=...`, `CODEX_API_KEY=...`
-- **Local / self-hosted (OpenCode + LiteLLM)** — `VIGILO_EXECUTOR=opencode`, `LITELLM_BASE_URL=...`, `OPENCODE_*_MODEL=...`
+- **Anthropic (Claude)** — `ANTHROPIC_API_KEY=...` (or the Azure Foundry variables)
+- **OpenAI-compatible (Codex)** — `CODEX_BASE_URL=...`, `CODEX_API_KEY=...`
+- **Local / self-hosted (OpenCode + LiteLLM)** — `LITELLM_BASE_URL=...`, `LITELLM_API_KEY=...`, `OPENCODE_*_MODEL=...`
 
-`env.sample` documents every backend and the optional GitLab push settings. Behind a corporate
-proxy, set `HTTP_PROXY`/`HTTPS_PROXY` and keep `temporal` in `NO_PROXY`.
+`env.sample` documents every backend. Behind a corporate proxy, set `HTTP_PROXY`/`HTTPS_PROXY`.
 
 > **Model endpoint on an internal/corporate TLS certificate?** The image ships the stock public
 > CA bundle, so the container will not trust your endpoint even when your host does — and the
-> failure reads like a network or streaming problem rather than a certificate one, e.g.
+> failure reads like a network problem, e.g.
 > `stream disconnected before completion: error sending request for url (...)`. Check it with:
 >
 > ```bash
-> docker run --rm --entrypoint sh vigilo-worker:latest \
+> docker compose -f docker-compose.greybox.yml run --rm --no-deps --entrypoint sh worker \
 >   -c 'curl -sv https://your-endpoint/v1/models 2>&1 | grep -i "verify result"'
 > ```
 >
 > `unable to get local issuer certificate` confirms it. You then need your CA chain inside the
 > container's trust store — bind-mount the chain into the image and install it there.
 
-### 2. Point it at a target and scan
+### 2. Describe the identities
+
+Copy `configs/greybox-creds-example.yaml` to `configs/creds.yaml` and list the accounts Vigilo
+may use: form logins (with optional TOTP), pre-authenticated session cookies for SSO/2FA, and an
+anonymous identity. Testing with several identities at different privilege levels is what
+surfaces broken access control.
+
+Optionally, copy `configs/greybox-config-example.yaml` to `configs/scan.yaml` to set a
+description of the target, in/out-of-scope rules, and which managed scans to run.
+Both files must live under `configs/`: it is the only directory mounted into the container.
+
+### 3. Build and scan
 
 ```bash
-make build DIR=/path/to/repo             # load the target repository into the scanner image
-make scan                                # white-box, code-only analysis
-make scan URL=https://target.example     # also exercise the running app (recon + exploitation)
-make scan URL=https://target.example PUSH=1   # additionally push fix branches + open MRs (needs GITLAB_TOKEN)
+make build-greybox                                          # once, and after updating Vigilo
+make greybox URL=https://target.example CREDS=configs/creds.yaml
+make greybox URL=https://target.example CREDS=configs/creds.yaml CONFIG=configs/scan.yaml
 ```
 
-For targets that need authentication or scoping, add a per-scan config (`configs/*.yaml` — login
-flow or session-cookie reuse for 2FA/SSO, in/out-of-scope rules, tuning); see
-`configs/example-config.yaml`.
-
-Useful targets (`make help` lists all):
+Other targets (`make help` lists all):
 
 | Target | Purpose |
 |--------|---------|
-| `make build DIR=…` | Load the target repository into the scanner image. |
-| `make scan [URL=…] [PUSH=1]` | Run the full pipeline (code-only if no `URL`). |
-| `make resume W=<workspace> [URL=…]` | Resume a scan; already-completed phases are skipped. |
-| `make greybox URL=… CREDS=configs/creds.yaml` | Grey-box scan — live app only, no source code. |
-| `make stop` / `make clean` | Stop containers / remove outputs + volumes. |
+| `make build-greybox-codex` / `make build-greybox-opencode` | Build the worker image for the Codex or OpenCode executor (then use `greybox-codex` / `greybox-opencode`). |
+| `make greybox-logs [W=.vigilo/<session-id>]` | Follow a scan's log — the latest scan by default, or the one you name (session IDs are printed at startup; or `ls .vigilo`). |
+| `make greybox-ui` | Start SurrealDB and Surrealist and print the connection details for browsing the knowledge graph at http://localhost:8800. |
+| `make greybox-stop` / `make greybox-clean` | Stop the containers / also wipe the orchestrator and SurrealDB state. |
 
-### 3. Output
+### 4. Output
 
-Results are written into the target repo under `.vigilo/<session-id>/`:
+Results are written to `.vigilo/<session-id>/` in your Vigilo checkout:
 
 ```
 .vigilo/<session-id>/
-├── workflow.log                                     # human-readable run log
-├── session.json                                     # cost / tokens / duration
-├── agents/                                           # per-agent logs
+├── workflow.log                          # human-readable run log
+├── session.json                          # cost / tokens / duration
 └── deliverables/
-    ├── comprehensive_security_assessment_report.md   # the final report
-    ├── findings_index.json / findings_critique.json  # structured findings
-    ├── patches/                                       # a fix patch per confirmed finding
-    └── screenshots/                                   # captured evidence
+    ├── greybox_assessment_report.md      # the report, ending with a detection-engineering
+    │                                     # appendix (WAF rules, SIEM queries, log signatures)
+    └── graph_export.yaml                 # export of the knowledge graph
 ```
 
-A live workflow view is available at **http://localhost:8233** while a scan is running.
-
----
-
-## Docker Compose files, explained
-
-Vigilo has **two independent ways to run**, and each has its own compose files. Neither is
-deprecated — pick the one that matches how you want to work, and use exactly one of them at a
-time.
-
-### The platform (`deploy/`) — API + web UI, multi-user
-
-| File | For | When to use |
-|------|-----|-------------|
-| `deploy/docker-compose.full.yml` | **Full platform** — Traefik (TLS) + Postgres + API + UI + MailHog + Temporal + Worker | **The normal way to run Vigilo.** Serves the UI at `https://$VIGILO_HOSTNAME`; only Traefik publishes ports (80/443), everything else is internal. |
-| `deploy/docker-compose.plain.yml` | *Override* for the full platform | Layer it on to run **without Traefik and without TLS**, publishing the UI on a host port. See [Deployment options](#deployment-options). |
-| `deploy/docker-compose.api.yml` | **API only** (Postgres + API, no UI) | Headless / external API consumers, or when you only need the API surface. |
-
-### The command-line pipeline (repo root) — single-user, no web UI
-
-These came first and are still fully supported. They run the same pentest pipeline as the
-platform's worker, just driven by `make` instead of the API — no database, no accounts, no UI.
-Use them when you want a one-off scan on your own machine and a report on disk.
-
-| File | For | When to use |
-|------|-----|-------------|
-| `docker-compose.yml` (root) | **White-box CLI** worker + Temporal | Used by `make build` / `make scan` (see [Run it directly](#run-it-directly-standalone-pipeline)). |
-| `docker-compose.greybox.yml` | **Grey-box CLI** — Temporal + SurrealDB + Surrealist + worker | Grey-box (no-source) scans via `make greybox`. |
-| `docker-compose.opencode.yml` | *Override* for grey-box | Layer onto `docker-compose.greybox.yml` to use the OpenCode executor. |
-| `docker-compose.codex.yml` | *Override* for grey-box | Layer onto `docker-compose.greybox.yml` to use the OpenAI Codex executor. |
-
-The three override files (`plain`, `opencode`, `codex`) are never used alone — they are layered
-onto a base file with a second `-f`, e.g.
-`docker compose -f docker-compose.greybox.yml -f docker-compose.codex.yml build worker`. The
-`make` targets wire this up for you.
-
-> **Don't run two copies of the platform on one host.** `deploy/docker-compose.full.yml`
-> attaches to a fixed Docker network called `vigilo_net`, so a second copy started under a
-> different Compose project name joins the *same* network. Service names like `api` and
-> `postgres` then resolve to either stack at random, which produces baffling intermittent
-> failures. (The CLI stacks use a separate network, `vigilo-net`, and don't collide with the
-> platform.)
+A live view of the running workflow is available at **http://localhost:8233** while a scan is running.
 
 ---
 
 ## Pipeline modes
 
-Every job picks one **stage preset**. Exploitation is always welded to vulnerability analysis
-(there is no "find but don't exploit" mode), and the adversarial findings critique always runs —
-neither can be disabled.
+Every job picks one **stage preset**. Proving is always part of vulnerability analysis (there is
+no "find but don't exploit" mode), and the adversarial review always runs. Multi-step attack
+chains are found by the provers in every preset.
 
 | Preset | Runs | Use when |
 |--------|------|----------|
-| **`vuln`** | Vulnerability analysis + exploitation + critique | You want findings only — the fastest, cheapest scan. |
-| **`vuln_patch`** | `vuln` **+ remediation** (fix branches, patches, optional MRs) | You want findings *and* proposed fixes. |
-| **`full`** | `vuln_patch` **+ SCA + integrity analysis + cross-type chain exploitation** | A complete assessment, including supply-chain and chained exploits. |
+| **`vuln`** | Survey → plan → investigate → prove → review → report | You want findings only — the fastest, cheapest scan. |
+| **`vuln_patch`** | `vuln` **+ remediation** (a `PatchWorkflow`: fix branches, patches, verification, optional MRs) | You want findings *and* proposed fixes. |
+| **`full`** | `vuln_patch` **+ supply-chain (SCA) and integrity analysis**, started in the background after the survey and collected before the review | A complete assessment, including dependency and integrity findings. |
 
-Independently of the preset, you choose the **analysis mode** and the **LLM backend**:
-
-- **White-box** (source + live app) vs **grey-box** (live app only). The platform runs white-box;
-  grey-box is available from the CLI.
-- **Executor / backend** — `claude` (Claude Code), `codex` (OpenAI Codex), or `opencode` (local
-  models via LiteLLM). One `VIGILO_EXECUTOR` variable selects it; the white-box image bundles both
-  the `claude` and `codex` CLIs, so switching needs no rebuild. See
-  [Configuration reference](#configuration-reference).
+Independently of the preset, you choose the analysis mode (white-box on the platform, grey-box
+from the command line) and the model backend, below.
 
 ---
 
-## Authentication & access model
+## Model backend
 
-- **Login** is email + password (JWT bearer tokens, via `fastapi-users`). There is **no public
-  self-signup** — access is invitation-based.
-- **First admin** is bootstrapped from `VIGILO_FIRST_ADMIN_EMAIL` / `_PASSWORD` on first boot.
-- **Roles:** `admin` and `user`. Admins manage users, invitations, and global config (models,
-  executor, concurrency, SMTP). Users create repositories, jobs, and runs.
-- **Invitations:** an admin invites by email; the invitee receives an accept link (emailed when
-  SMTP is configured, otherwise the link is returned to the admin) and sets their own password.
-- **Passwords:** users can change their own password (which invalidates their other sessions);
-  admins can trigger a reset; a public forgot/reset-password flow issues a one-time token.
-- **Per-user credentials** (GitLab tokens, session cookies) are stored **encrypted** (Fernet) and
-  are never returned by the API.
-- **Repository privacy:** a repository can be marked `is_private`. Private repos — and all their
-  jobs, runs, reports, and metrics — are visible only to the owner, explicitly granted users, and
-  admins. Non-private repos are visible to the whole team. Owners/admins grant or revoke access by
-  email or user id.
-
----
-
-## Configuration reference
-
-All platform settings are environment variables read by `src/webapi/settings.py`. `env.sample` is
-a copy-paste starting point; **[`deploy/config-reference.md`](deploy/config-reference.md) is the
-exhaustive reference.** The most important ones:
-
-### Required (platform)
-
-| Variable | Meaning |
-|----------|---------|
-| `VIGILO_JWT_SECRET` | JWT signing secret (≥ 32 random bytes). |
-| `VIGILO_FERNET_KEY` | base64 Fernet key encrypting stored credential secrets. |
-| `VIGILO_DATABASE_URL` | `postgresql+asyncpg://…` — **Postgres is the only supported runtime datastore** (SQLite is used only by the test suite). Set automatically in the full compose. |
-| `POSTGRES_PASSWORD` | Password for the bundled Postgres (used to build `VIGILO_DATABASE_URL` in compose). |
-
-### First-admin bootstrap (first boot only)
-
-| Variable | Meaning |
-|----------|---------|
-| `VIGILO_FIRST_ADMIN_EMAIL` / `VIGILO_FIRST_ADMIN_PASSWORD` | Creates the initial admin if no user with that email exists. |
-
-### Model backend (worker)
-
-Pick one backend; `VIGILO_EXECUTOR` (or auto-detection from which credentials you set) chooses it.
+`VIGILO_EXECUTOR` (or auto-detection from which credentials you set) picks the backend:
 
 | `VIGILO_EXECUTOR` | Backend | Works with |
 |-------------------|---------|------------|
@@ -576,161 +478,97 @@ Pick one backend; `VIGILO_EXECUTOR` (or auto-detection from which credentials yo
 
 Key credentials: `ANTHROPIC_API_KEY` (Claude); `CODEX_BASE_URL` + `CODEX_API_KEY` (Codex);
 `LITELLM_BASE_URL` + `LITELLM_API_KEY` + `OPENCODE_*_MODEL` (OpenCode). Behind a corporate proxy,
-set `HTTP_PROXY`/`HTTPS_PROXY` and keep `temporal` in `NO_PROXY`. Full per-backend examples
-(Bedrock, Foundry, internal CA certs, pricing tables) are in `env.sample` and
-[`deploy/config-reference.md`](deploy/config-reference.md).
+set `HTTP_PROXY`/`HTTPS_PROXY` and keep the internal service names in `NO_PROXY` (see `env.sample`). The white-box image bundles
+both the `claude` and `codex` CLIs, so switching needs no rebuild.
 
-### Email (notifications)
+**Admin → Models & executor.** Admins choose the executor and the model names for the small,
+medium and large tiers. Changes apply to the next run — no restart needed — and repositories can
+override them in their settings. On first boot these are seeded from the deployment's own
+settings (`VIGILO_EXECUTOR` and that executor's model variables, e.g. `CODEX_LARGE_MODEL`).
+Credentials and endpoints always come from the worker's environment (`.env`), not from this page;
+**Check credentials** reports which executors have their variables set, without showing values or
+contacting any endpoint. Model names must be ones your endpoint serves — behind a gateway, "403
+team not allowed to access model" means the name isn't permitted for your key.
 
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `VIGILO_SMTP_HOST` | `mailhog` (in full compose) | SMTP server. Unset → notifications are silently disabled. |
-| `VIGILO_SMTP_PORT` | `1025` (MailHog) / `25` | SMTP port. |
-| `VIGILO_SMTP_FROM` | `vigilo@example.com` | Sender address. |
-| `VIGILO_SMTP_USER` / `_PASSWORD` / `_STARTTLS` | unset / unset / `false` | Set for authenticated SMTP against a real relay (typically port 587). |
-| `VIGILO_UI_BASE_URL` | `https://$VIGILO_HOSTNAME` | Public UI URL used in invite + report email links. |
-
-### GitLab integration (optional)
-
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `GITLAB_URL` | `https://gitlab.example.com` | GitLab base URL for push/MR (CLI) and clone. |
-| `GITLAB_TOKEN` | — | Deployment-wide token enabling `PUSH=1` + MR creation (CLI). |
-
-> In the platform, GitLab repos are attached with a per-user, encrypted token entered in the UI;
-> `push_patches` (opt-in, per repo) pushes fix branches + opens MRs back to origin.
+**When an agent fails.** Credential and permission errors, unknown models and safety refusals
+fail the run immediately, with a message naming the agent, executor and model. Transient errors
+(rate limits, 5xx, timeouts) are retried up to 6 times with a 20 s – 2 min backoff, and the run
+page shows a *retrying* banner. Rate-limited subscription plans can opt in to the
+`subscription` retry preset (hours-long backoff).
 
 ---
 
-## How the pipeline works
+## Access, credentials and GitLab push-back
 
-![A run in progress — the Trace Rail and live logs](docs/images/run-in-progress.png)
+- **Login** is email + password (JWT). There is **no public self-signup**: an admin invites users
+  by email, and the first admin is bootstrapped from `VIGILO_FIRST_ADMIN_EMAIL` /
+  `VIGILO_FIRST_ADMIN_PASSWORD` on first boot. Roles are `admin` (users, invitations, global
+  config) and `user` (repositories, jobs, runs).
+- **Per-user credentials** (GitLab tokens, session cookies) are stored **encrypted** (Fernet) and
+  are never returned by the API.
+- **Repository privacy:** a repository can be marked `is_private`. Private repos — and all their
+  jobs, runs, reports, and metrics — are visible only to the owner, explicitly granted users, and
+  admins. Non-private repos are visible to the whole team.
 
-*A run in progress: the **Trace Rail** shows the active pipeline step while the evidence/log pane streams live.*
+### Logged-in testing with a session cookie
 
-### White-box pipeline
+Create a credential of kind `cookie_header` (`POST /credentials`), then select it on the job
+(**Jobs → Logged-in testing**; the job needs a target URL). The agents that test the live app
+(surveyor, investigators, provers — not the planner) get the cookie in their prompt, so SSO- and
+2FA-protected apps can be tested. The cookie is stored encrypted, delivered to the worker just in
+time, and masked (`***`) in saved prompts, agent logs, `events.jsonl` and `workflow.log`. Agents
+can still copy it into files they write, so use a low-privilege test session. Runs started by
+other users or by schedules use the job owner's cookie; deleting the credential clears it from
+its jobs.
 
-![White-box: recon, then analysis and exploitation, then AutoFix producing a report and a pull request](docs/images/whitebox-flow.png)
+### GitLab push-back
 
-*White-box at a glance: recon the source and the live app → find and exploit → generate and critique patches → report and (optionally) a pull request.*
+Configured **per repository** in the UI: attach a repository from GitLab with a credential (a
+write-scoped token), and turn on **push patches**. After the remediation agent has written the
+fix branches and Vigilo has verified them, Vigilo pushes each `fix/*` branch to the remote
+recorded in the repository settings and opens one merge request per fix branch, targeting the
+project's default branch. A branch may cover several findings; its MR describes each one.
 
-A Temporal workflow orchestrates specialised agents across the full pentest lifecycle:
-
-```
-Phase 1: Preflight       — validate target, credentials, environment
-Phase 2: Pre-Recon       — deep source code + architecture analysis
-Phase 2b: SCA            — supply-chain analysis (dependencies, lockfiles)
-Phase 3: Recon           — live app reconnaissance with Playwright
-Phase 4: Vuln Analysis   — parallel agents, each a different vulnerability scope
-Phase 5: Exploitation    — parallel agents prove findings with evidence
-Phase 5b: Chain Exploit  — cross-type vulnerability chaining
-Phase 5c: Critique       — adversarial review of every finding
-Phase 6: Remediation     — automated patches on per-vulnerability fix branches
-Phase 6a-c: Push & MR    — export patches, push upstream, create merge requests
-Phase 7: Report          — executive summary with evidence + screenshots
-```
-
-![White-box in detail: recon and SCA feed parallel vuln-discovery agents that exploit and chain findings over a shared context, then adversarial review, patch generation and pull request](docs/images/whitebox-detail.png)
-
-*The same pipeline in detail. Vuln discovery runs as parallel agents over a **shared context**, and a stuck exploit agent can loop back once to request more information. Everything then passes through **adversarial review** before any patch is written. (`SCA` — supply-chain analysis — runs in the `full` preset.)*
-
-- **Inter-agent collaboration.** A shared knowledge base (`shared_context.json`) accumulates
-  discoveries; a unified index (`findings_index.json`) gives exploit agents cross-type awareness.
-  A stuck exploit agent can request more information from its vuln agent (max one feedback loop).
-- **Code-only confirmation.** With no live target, exploit agents build a minimal source-level
-  harness that drives the vulnerable code path with the witness payload, yielding a real
-  `confirmed` / `refuted` / `not_testable` verdict instead of a blanket "unreachable" (a harness
-  proves the sink, not reachability — the critic still gates that).
-- **Adversarial critique = single source of truth.** A critic re-checks every finding against the
-  code and deployment context (auth model, network exposure, admin-only surfaces), de-inflates
-  severities, collapses duplicates via `group_id`, assigns reachability, and marks low-value items
-  `include_in_report=false` so they move to a hardening appendix — never silently dropped. Its
-  `findings_critique.json` is authoritative, and a deterministic `audit_critique` guard enforces a
-  recall floor (a critical/high, externally-reachable finding can never be hidden).
-- **End-to-end remediation, honestly reported.** A `remediation_manifest.json` records each fix
-  branch's real push/diff/verify state; the report presents fixes in three states — **Delivered**
-  (pushed), **Patch available** (local `.patch`, not pushed), or **Unpatched** — and badges a fix
-  **verified** only when `verify_patches` re-ran the finding's harness against the patched branch
-  and the exploit no longer reproduces.
-
-### Grey-box pipeline
-
-A parallel pipeline for testing without source access. It uses a SurrealDB knowledge graph as the
-single source of truth, a deterministic Python scheduler (no LLM in the dispatch loop), and
-dynamically spawned specialists. Every confirmed finding ships with detection-engineering hints
-(WAF rules, log signatures, SIEM queries) for blue-team handoff.
-
-![Grey-box: a discovery agent and managed scans write into a knowledge graph, which a scheduler reads to spawn parallel exploitation agents](docs/images/greybox-detail.png)
-
-*Grey-box has no phase list to follow. **Discovery** (a crawling agent plus managed tool scans — Nuclei, feroxbuster) writes what it finds into the knowledge graph; the **scheduler** reads that graph and hands out work orders; the agents it spawns write their results straight back into the graph. The loop keeps going as long as the graph keeps changing.*
-
-**The scheduler is plain Python, not an LLM.** It re-reads the graph on every tick, fires a fixed
-set of rules against it, and emits *verbs* — concrete work orders that become agents:
-
-![The grey-box scheduler loop: read the knowledge graph, fire rules, emit verbs, spawn parallel agents, with halt conditions](docs/images/greybox-scheduler.png)
-
-*Rules cover open leads with medium-or-better signal, parameters nobody has probed yet, and ambiguous access control across identities. The loop halts on coverage complete, budget exhausted, diminishing returns, or timeout — then writes the report. Keeping dispatch deterministic means a run is auditable: you can always ask why a given agent was spawned.*
-
-Everything the run learns lives in the graph, and you can open it and look:
-
-![Knowledge graph view: one identity node linked by can_access edges to many endpoint nodes](docs/images/greybox-graph-access.png)
-
-*The access matrix as stored: one identity, and every endpoint it was proven to reach. Comparing these across identities is what surfaces broken access control.*
-
-![Knowledge graph zoom: a lead node linked to a test attempt, a parameter and an endpoint](docs/images/greybox-graph-lead.png)
-
-*Zoomed in on a single lead: which endpoint it came from, which parameter it concerns, and every attempt made against it. Nothing is retried blindly, and nothing is lost between agents.*
-
-### Output
-
-Each scan writes results into the target repo under `.vigilo/<session-id>/`: `workflow.log`,
-`session.json` (cost/tokens/duration), per-agent logs, and a `deliverables/` directory containing
-the structured JSON sidecars, `comprehensive_security_assessment_report.md`, patches, and
-screenshots.
-
-![A completed report](docs/images/report.png)
-
-*A completed run: the full Trace Rail, captured evidence, and the rendered security assessment report (also downloadable as Markdown).*
+The agent never holds the token, and it is never written to disk, the workflow input or the logs:
+the API keeps it encrypted in a per-run record, and the worker fetches it over an internal-only
+listener just for the clone and the push, handing it to git via `GIT_ASKPASS`. The record is
+deleted when the run ends, is cancelled or fails to start. Repository URLs must not contain
+`user:password@`. Delivery is safe to retry, uploaded sources have no remote (nothing is pushed),
+and a failed push or MR never fails the run — the report marks each fix **Delivered** (pushed) or
+**Patch available** (local only). Optional worker variables: `GITLAB_URL` (only when the MR API
+base can't be derived from the remote) and `GIT_PUSH_USER` (default `oauth2`).
 
 ---
 
-## API reference
+## Configuration reference
 
-The platform is API-first (`src/webapi/`); the UI consumes only this API. The API serves
-interactive OpenAPI docs at `/docs` (internal in the full stack; on the local fake-engine dev
-server it's `http://localhost:8080/docs`). Selected endpoints:
+All platform settings are environment variables read by `src/webapi/settings.py`; `env.sample` is
+a copy-paste starting point and **[`deploy/config-reference.md`](deploy/config-reference.md) is
+the exhaustive reference** (backends, SMTP, GitLab, proxies, pricing). The essentials:
 
-**Auth / users / credentials / admin**
-- `GET /health`, `GET /version`
-- `POST /auth/jwt/login` (form: `username`, `password`) → `{access_token}`; `POST /auth/jwt/logout`
-- `POST /auth/forgot-password`, `POST /auth/reset-password`, `POST /auth/accept-invite`
-- `GET /users/me`, `POST /users/me/change-password`
-- Admin: `POST /users`, `GET /users`, `PATCH /users/{id}`, `DELETE /users/{id}`, `POST /users/{id}/reset-password`
-- Credentials (owner-private, secrets never returned): `POST`/`GET`/`DELETE /credentials`
-- Admin config: `GET /admin/config`, `PUT /admin/config`
-- Invitations: `POST`/`GET /invitations`, `DELETE /invitations/{id}`
+| Variable | Meaning |
+|----------|---------|
+| `VIGILO_JWT_SECRET` | JWT signing secret (≥ 32 random bytes). Required. |
+| `VIGILO_FERNET_KEY` | base64 Fernet key encrypting stored credential secrets. Required. |
+| `VIGILO_DATABASE_URL` | `postgresql+asyncpg://…` — Postgres is the only supported runtime datastore (SQLite is used only by the test suite). Set automatically in the full compose. |
+| `POSTGRES_PASSWORD` | Password for the bundled Postgres. Required. |
+| `VIGILO_FIRST_ADMIN_EMAIL` / `_PASSWORD` | Creates the initial admin on first boot if no user with that email exists. |
+| `VIGILO_SMTP_HOST` / `_PORT` / `_FROM` | SMTP for invitation and report emails (`mailhog` in the full compose; unset disables email). For a real relay also set `VIGILO_SMTP_USER`, `_PASSWORD`, `_STARTTLS`. |
+| `VIGILO_UI_BASE_URL` | Public UI URL used in email links (default `https://$VIGILO_HOSTNAME`). |
 
-**Repositories / jobs / runs**
-- Repositories: `POST`/`GET /repositories`, `GET`/`PATCH`/`DELETE /repositories/{id}`,
-  `POST /repositories/{id}/upload`, `POST /repositories/{id}/webhook`,
-  `GET`/`POST`/`DELETE /repositories/{id}/access`
-- Jobs: `POST`/`GET /jobs`, `GET`/`PATCH`/`DELETE /jobs/{id}`, `POST /jobs/{id}/run`
-- Runs: `GET /runs`, `GET`/`DELETE /runs/{id}`, `POST /runs/{id}/cancel`
-- Logs: `GET /runs/{id}/logs?offset=` (paged), `GET /runs/{id}/logs/stream` (SSE)
-- Reports & artifacts: `GET /runs/{id}/report`, `GET /runs/{id}/artifacts[/{kind}]`
+---
 
-**Scheduling & webhooks**
-- Schedules: `POST`/`GET /schedules`, `PATCH`/`DELETE /schedules/{id}` (`once` / `recurring` / `gitlab_mr`)
-- `POST /webhooks/gitlab` (unauthenticated, `X-Gitlab-Token` verified) — MR events trigger matching schedules.
+## Security
 
-**Dashboards & metrics**
-- `GET /dashboard/metrics`, `GET /runs/{id}/metrics`, `GET /repositories/{id}/metrics/timeline`
+Vigilo runs AI agents against code and applications you point it at. Read
+[`SECURITY.md`](SECURITY.md) for the security model, its current limits, and how to report a
+vulnerability. Use it only on systems you are authorised to test.
 
 ---
 
 ## Development
 
-To work on Vigilo itself you don't need Docker, Temporal or Postgres. The API can run
+To work on Vigilo itself you don't need Docker, the orchestrator or Postgres. The API can run
 in-process against SQLite with a **fake execution engine**, which lets you create
 repositories and jobs, start runs and tail logs without launching a real scan.
 
@@ -738,10 +576,10 @@ repositories and jobs, start runs and tail logs without launching a real scan.
 python -m venv .venv-webapi && source .venv-webapi/bin/activate
 pip install -e ".[webapi,webapi-test]"
 
-export VIGILO_JWT_SECRET=dev-secret-please-change-me-32b
+export VIGILO_JWT_SECRET=$(openssl rand -hex 32)
 export VIGILO_FERNET_KEY=$(python -c "import base64,os;print(base64.urlsafe_b64encode(os.urandom(32)).decode())")
 export VIGILO_FIRST_ADMIN_EMAIL=admin@example.com
-export VIGILO_FIRST_ADMIN_PASSWORD=change-me-now
+export VIGILO_FIRST_ADMIN_PASSWORD=$(openssl rand -base64 18)   # note it down
 export VIGILO_EXECUTION_ENGINE=fake
 
 python -m src.webapi.main          # http://localhost:8080/docs
@@ -756,18 +594,49 @@ cd web && npm install && npm run dev      # http://localhost:5173
 Tests and the frontend build gate:
 
 ```bash
-pytest tests/webapi -q     # backend — in-memory SQLite, no external services
-cd web && npm run build    # typecheck (tsc --noEmit) + production build
+uv run --frozen --all-extras --with pytest --with pytest-asyncio pytest tests   # backend — in-memory SQLite, no external services
+cd web && npm run build                                                         # typecheck (tsc --noEmit) + production build
 ```
 
-Schema changes go through **Alembic** (`src/webapi/alembic/versions/`), never `create_all`.
-The API applies `alembic upgrade head` on boot; run it by hand with
-`python -m scripts.run_migrations upgrade`.
+Variables from a local `.env` can leak into the tests (for example `VIGILO_EXECUTOR`). If a test
+behaves differently on your machine than in CI, run it with them unset, e.g.
+`env -u VIGILO_EXECUTOR uv run --frozen --all-extras --with pytest --with pytest-asyncio pytest tests`.
+To run only the white-box engine tests, point `pytest` at `tests/test_whitebox_engine.py`,
+`tests/test_whitebox_prompts.py` and `tests/test_ledger.py`.
 
-Two things that trip people up: don't run the API with `uvicorn --reload` against SQLite
-(the reloader's second process contends on the file), and the SPA talks to the API only
-through the typed client in `web/src/api/client.ts`. See [`web/README.md`](web/README.md)
-for the UI's screens and design language.
+More:
+
+- Schema changes go through **Alembic** (`src/webapi/alembic/versions/`), never `create_all`.
+  The API applies `alembic upgrade head` on boot; run it by hand with
+  `python -m scripts.run_migrations upgrade`.
+- Don't run the API with `uvicorn --reload` against SQLite (the reloader's second process
+  contends on the file). The SPA talks to the API only through the typed client in
+  `web/src/api/client.ts`; see [`web/README.md`](web/README.md) for the UI.
+- The API is documented in [`docs/api.md`](docs/api.md) and, interactively, at `/docs`.
+- The diagrams in `docs/images/` are drawn with Manim; sources and the re-render command are in
+  [`docs/diagrams/`](docs/diagrams/README.md).
+
+---
+
+## Next steps — contributions welcome
+
+Vigilo is experimental, and these are the areas we would most like to improve. Ideas, issues and
+pull requests are welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+- **Sandbox each scan.** Run every scan in its own isolated container, with no route to the
+  platform's internal services, so that a malicious repository cannot affect other scans. The
+  design is ready: [`docs/design/agent-sandbox.md`](docs/design/agent-sandbox.md).
+- **Push fixes from the API.** Move fix-branch push and merge-request creation entirely into the
+  API, so the GitLab token never reaches the worker.
+- **Grey-box on the platform.** Grey-box scans currently run only from the command line.
+- **Enforce the grey-box cost ceiling.** `GREYBOX_PER_SCAN_COST_CEILING` reaches the worker but
+  is not enforced yet: a scan can spend past it. Until then, watch the cost of long grey-box scans.
+- **More forges.** Patch push-back and merge requests support GitLab only today (GitHub, Gitea…).
+- **Credential management in the UI.** Session-cookie credentials are created through the API
+  (`POST /credentials`); a UI screen would make logged-in testing easier.
+- **Resume interrupted scans** instead of starting over.
+- **Evaluation.** A benchmark of intentionally vulnerable apps to measure findings, false
+  positives and cost across models and versions.
 
 ---
 

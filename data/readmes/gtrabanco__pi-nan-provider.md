@@ -1,7 +1,7 @@
 # @gtrabanco/𝜋-nan-provider
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.5.6-blue)](https://github.com/gtrabanco/pi-nan-provider/releases)
+[![Version](https://img.shields.io/badge/version-1.5.9-blue)](https://github.com/gtrabanco/pi-nan-provider/releases)
 [![Built with NaN](https://nan.builders/badge/built-with-nan-compact.svg)](https://cloud.nan.builders/r/7GK06FX8)
 
 [NaN Builders](https://cloud.nan.builders/r/7GK06FX8) model provider + a native MCP server for [pi](https://github.com/earendil-works/pi). 
@@ -22,12 +22,12 @@ Registers the `nan` provider via `pi.registerProvider()` using NaN's OpenAI-comp
 | **Context-overflow rescue** | NaN's generic `400 Invalid request` is reclassified as an overflow when the request is estimated over the model's window ([#3](https://github.com/gtrabanco/pi-nan-provider/issues/3)), and a cold-cache `524` over `NAN_COLD_CACHE_CEILING_TOKENS` too ([#18](https://github.com/gtrabanco/pi-nan-provider/issues/18)) — pi compacts and retries instead of wedging. |
 | **Truncated-stream retry** | `supportsFinishReason: true` turns an SSE stream closed before `finish_reason` into a retryable error instead of a silent stall ([#2](https://github.com/gtrabanco/pi-nan-provider/issues/2)). |
 | **Streaming token usage** | `stream_options.include_usage` is on by default, so pi reports real input/output/reasoning/cache counts ([#4](https://github.com/gtrabanco/pi-nan-provider/issues/4), [#7](https://github.com/gtrabanco/pi-nan-provider/issues/7)). |
-| **Reasoning controls** | Per-model `reasoningEffortValues` + `thinkingLevelMap` ([#16](https://github.com/gtrabanco/pi-nan-provider/issues/16)), the reasoning-only stream guard ([#21](https://github.com/gtrabanco/pi-nan-provider/issues/21)) and the `max_completion_tokens` interim bound for `qwen3.8-flash` ([#34](https://github.com/gtrabanco/pi-nan-provider/issues/34)). |
+| **Reasoning controls** | Per-model `reasoningEffortValues` + `thinkingLevelMap` ([#16](https://github.com/gtrabanco/pi-nan-provider/issues/16)), the reasoning-only stream guard ([#21](https://github.com/gtrabanco/pi-nan-provider/issues/21)), and the per-model max-token field (`qwen3.8-max` keeps `max_completion_tokens`; `qwen3.8-flash` returned to `max_tokens` after NaN's gateway fix, [#34](https://github.com/gtrabanco/pi-nan-provider/issues/34) → [#36](https://github.com/gtrabanco/pi-nan-provider/issues/36)). |
 | **Attribution header** | `X-Pi-Provider: gtrabanco/pi-nan-provider@<version>` on every request, stripped when pi's install telemetry is disabled. |
 | **Native image models** | `flux-2-klein` and `qwen-image-2.1` registered as pi `type: "image"` models, reachable from codemode and extensions. |
 | **Native MCP media bridge** | The `nan-media` server (10 tools) registered through `pi.registerMcpServer()`, managed with `/nan-mcp`. |
 | **Credits reporting** | `/nan-usage` shows credits balance with a progress bar, per-model breakdown (input / cached / output in M, credits consumed), and billing period — all from `GET /v1/usage` ([#37](https://github.com/gtrabanco/pi-nan-provider/issues/37)). |
-| **Cache-anomaly evidence** | `cf-ray` capture on the repeated `id` + `created` gateway signature ([#17](https://github.com/gtrabanco/pi-nan-provider/issues/17)) plus the deterministic `/nan-debug` collector ([#35](https://github.com/gtrabanco/pi-nan-provider/issues/35)). |
+| **Cache-anomaly evidence** | `cf-ray` capture on the repeated `id` + `created` gateway signature ([#17](https://github.com/gtrabanco/pi-nan-provider/issues/17)) plus the deterministic `/nan-debug` collector ([#35](https://github.com/gtrabanco/pi-nan-provider/issues/35)) with per-error evidence, every response's `cf-ray` joined into `turns.jsonl` (S11), and flexible `--interval` windows ([#44](https://github.com/gtrabanco/pi-nan-provider/issues/44)). |
 | **pi integration** | Model refresh driven by pi's Models runtime, per-model `models.json` overrides, and the extension changelog (`pi.changelogPath`) that pi shows after an update. |
 
 Commands:
@@ -36,7 +36,7 @@ Commands:
 | :--- | :--- |
 | `/nan-mcp` | Manage the media MCP bridge (`status` / `enable` / `disable`) |
 | `/nan-usage [1-90]` | Credits balance with usage bar, per-model breakdown (in / cached / out in M · credits cr), and all-time totals |
-| `/nan-debug [topic] [--window N] [--out path] [--emit]` | Redacted, reproducible evidence package for NaN |
+| `/nan-debug [topic] [--window N] [--interval FLEX] [--out path] [--emit]` | Redacted, reproducible evidence package for NaN |
 
 ---
 
@@ -84,7 +84,7 @@ NaN answers HTTP 400 `Invalid request. Check your request parameters.` for any b
 - an assistant `content` array carrying a tool call is moved into the top-level `tool_calls` field (NaN's `ContentPart` accepts only `text` and `image_url`);
 - `reasoning_details` is stripped, and unknown content parts (e.g. `thinking`) are folded into a `text` part so reasoning is not silently lost;
 - fields NaN's schema does not list are removed: `store` always, an empty `tools` array always, and `stream_options` unless the model's `compat.supportsUsageInStreaming` says the gateway reports it;
-- `max_completion_tokens` is renamed to `max_tokens` (the documented field) unless the model's `compat.maxTokensField` opts out ([#34](https://github.com/gtrabanco/pi-nan-provider/issues/34), `qwen3.8-flash`).
+- `max_completion_tokens` is renamed to `max_tokens` (the documented field) unless the model's `compat.maxTokensField` opts out ([#34](https://github.com/gtrabanco/pi-nan-provider/issues/34); `qwen3.8-max` is the only catalog model that opts out after the [#36](https://github.com/gtrabanco/pi-nan-provider/issues/36) revert).
 
 A caller-supplied `onPayload` hook is preserved and chained after sanitization.
 
@@ -385,9 +385,12 @@ Failures stay actionable: `401` → run `/login nan` or fix `NAN_API_KEY`, `404`
 
 ## 🧾 Cache anomaly evidence: `/nan-debug`
 
-NaN's gateway response cache can replay the same completion `id` and `created`
-timestamp for back-to-back requests (the issue #17 signature). NaN asked for the
-`model` and the `cf-ray` of a couple of calls when it recurs; pi transcripts do
+NaN disabled the proxy response cache on 2026-11-17 (support confirmation): two
+identical requests now return two real completions, each with its own usage. The
+old cache could replay the same completion `id` and `created` timestamp for
+back-to-back requests (the issue #17 signature). The capture stays as a relapse
+tripwire; NaN asked for the `model` and the `cf-ray` of a couple of calls when it
+recurs, and pi transcripts do
 not keep response headers, so the provider captures them itself.
 
 When two streams for the same model return the same `id` + `created`, one JSON
@@ -397,6 +400,12 @@ SHA-256 of the request payload. It is **local-only**: no prompt or response
 content, no credentials, no paths, no upload. A write failure never breaks a
 stream.
 
+Independently of any anomaly, every response's `cf-ray` is kept in
+`<agentDir>/nan-response-rays.jsonl` — `response_id`, `cf_ray`, `model`,
+`observed_at`, newest 50,000 lines, local-only (issue #35 S11) — and the
+report joins it into `turns.jsonl` as `cf_ray`, so support gets the rays of
+any pair of calls without waiting for a recurrence.
+
 `/nan-debug` turns that file plus your session transcripts into a redacted,
 reproducible evidence package for NaN:
 
@@ -405,11 +414,20 @@ reproducible evidence package for NaN:
 /nan-debug cache --window 2         # topic label + a 2-day window
 /nan-debug --window 2 --emit        # also writes <agentDir>/nan-debug-report.zip
 /nan-debug cache --out ~/evidence --emit
+/nan-debug --interval 5min          # relative spans: 5min, 2h, 3d, 1mes
+/nan-debug --interval "2026-11-10 - 2026-11-11 17:30"  # ranges, open ends, single points too
 ```
 
 - `--window N` (1–90 days) also fetches `GET /v1/usage` for the same period with
   your stored key and writes `usage_window.json`; without the flag nothing is
   fetched. That live call counts against your quota's request rate.
+- `--interval <desc>` replaces `--window` (using both is an error) and accepts
+  relative spans (`5min`, `2h`, `3d`, `1mes`), date/time ranges
+  (`2026-11-10 - 2026-11-11 17:30`, `10:30 - 11:00`, cross-midnight
+  `23:00 - 01:00`), open ends (`2026-11-10 -`, `- 2026-11-10`), year-months
+  (`2026-11 - 2026-12`) and single points (`2026-11-10`,
+  `2026-11-10T10:00:00Z`). The span is capped at 90 days and parsing is fully
+  deterministic — no LLM calls. The topic, when you use one, goes before the flag.
 - The zip is written **only** with `--emit`; the default run writes the local
   report and prints a preview.
 - `--out <path>` writes the report anywhere you name it (and, with `--emit`,
@@ -417,12 +435,20 @@ reproducible evidence package for NaN:
   above write where they say. A flag token is never accepted as the path.
 - The report contains `README.md`, `anonymized_usage.jsonl` (per date/session/
   model totals, stop-reason counts, cache-hit rate), `turns.jsonl` (per-turn
-  usage, stop reason, error class, response id), `anomalies.jsonl` (`cf-ray`
-  pair) and `metadata.json` (package/pi-ai/pi versions, catalog provenance).
-- Session and worktree labels are MD5-truncated to 12 chars; `errorMessage` is
-  reduced to `overflow | rate_limited | invalid_request | transport | other`;
-  prompt/response content and credentials are never collected. Identical inputs
-  produce byte-identical zip bytes.
+  usage, stop reason, error class, response id, `cf_ray`), `errors.jsonl` (one row per
+  errored turn: class, 200-char message fragment, MD5 hash of the full message,
+  input/output tokens, response id), `anomalies.jsonl` (`cf-ray` pair),
+  `sessions/` (the raw session JSONL files filtered to the window) and
+  `metadata.json` (package/pi-ai/pi versions, catalog provenance,
+  `error_summary`).
+- Session and worktree labels are MD5-truncated to 12 chars (including the
+  `cwd` header inside `sessions/`); `errorMessage` is reduced to `overflow |
+  rate_limited | invalid_request | transport | other`, and `errors.jsonl` keeps
+  at most 200 characters of the raw message plus an MD5 hash. Credentials are
+  never collected anywhere; prompt/response content is never collected in the
+  root files — `sessions/` is the exception, raw transcripts included on
+  request ([#44](https://github.com/gtrabanco/pi-nan-provider/issues/44)), with
+  only `cwd` hashed. Identical inputs produce byte-identical zip bytes.
 
 ## 📊 Models
 
@@ -451,7 +477,7 @@ Chat models:
 >
 > The **larger models** — `kimi-k3.1-pro`, `qwen3.8-max`, `qwen4-max`, `deepseek-v4-pro`, `hy4`, `hy4-flash` — are the ones NaN bills as "larger model" (they use credits faster). The four that entered the catalog on 2026-11-10 were carrying a flat 32,768 max output and no reasoning mapping because the docs did not document them yet; since 2026-11-17 each one declares its own "Max answer" and its documented reasoning behaviour. `qwen4-max` and `hy4-flash` are new ids the catalog did not have (models.dev provider `nan` lists neither; the live `/models` and the docs do). Maximum output is a ceiling, not a request: pi-ai clamps the outgoing budget to the room left in the context window (`clampMaxTokensToContext`), so a 1M-token ceiling on `kimi-k3.1-pro` never turns into an over-context `max_tokens`.
 >
-> `qwen3.8-max` sends `max_completion_tokens` instead of `max_tokens`, and `qwen3.8-flash` does the same: on those two the docs state that `max_tokens` bounds only the visible answer while the reasoning bills on top of it, so the client budget must cap the total (issue #34).
+> `qwen3.8-max` sends `max_completion_tokens` instead of `max_tokens`: its docs state that `max_tokens` bounds only the visible answer while the reasoning bills on top of it, so the client budget must cap the total (2026-11-17 docs). `qwen3.8-flash` used the same interim field after NaN confirmed the behaviour on 2026-11-11 ([#34](https://github.com/gtrabanco/pi-nan-provider/issues/34)); NaN support reported the gateway fix deployed and validated on 2026-11-17, so [#36](https://github.com/gtrabanco/pi-nan-provider/issues/36) removed that override and it sends the classic `max_tokens` again (the docs page still carries the old sentence; the support-confirmed gateway behaviour wins).
 >
 > Every catalog model reports **cost 0**: NaN bills a credit pool (1 credit ≈ 0.026 €), not per-token USD, so pi's cost estimate has nothing to report. models.dev provider `nan` started publishing a derived USD conversion on 2026-11-17; the catalog does not adopt it, because pi would show that estimate as real money. Use `/nan-usage` for the real consumption.
 >
@@ -485,7 +511,7 @@ NaN's `reasoning_effort` parameter controls how much the model thinks before ans
 | `glm5.3`, `glm5.3-flash` | `minimal` · `low` · `medium` · `high` · `xhigh` · `max` | GLM cannot stop reasoning: the docs apply `none` as `minimal`, its shortest reasoning (a few tokens), so `thinking: "off"` sends `minimal` via the catalog's `thinkingLevelMap`. Higher values reason longer before answering. `glm5.3-flash` was measured at ~38 reasoning tokens for `minimal` (issue #16, 2026-09-27); `none` does not suppress it |
 | `qwen3.6`, `gemma4` | `none` · `minimal` · `low` · `medium` · `high` · `xhigh` · `max` | `none`/`minimal` skip reasoning entirely; the others cap the reasoning phase at 2K / 8K / 16K / 32K tokens. `thinking: "off"` sends `reasoning_effort: "none"` automatically via the catalog's `thinkingLevelMap` — the NaN docs state that with no parameter these models reason by default (16,384-token budget), so off must be explicit |
 | `deepseek-v4-flash` | `none` · `minimal` · `low` · `medium` · `high` · `xhigh` · `max` | `none` disables reasoning (0 reasoning tokens, a full answer); every other value only steers it — measured 57 reasoning tokens for `low`, 63 for omitting the parameter, 109 for `minimal` (issue #16, re-probed live 2026-10-14). `thinking: "off"` sends `reasoning_effort: "none"` via the catalog's `thinkingLevelMap` — without it the model runs away to `finish_reason: "length"` with no answer |
-| `qwen3.8-flash` | `none` · `minimal` · `low` · `medium` · `high` · `xhigh` · `max` | Reasoning is on by default (`none` turns it off, the rest steer its depth). `thinking: "off"` sends `reasoning_effort: "none"`; its budget is capped with `max_completion_tokens` (issue #34), and a hard reasoning cap is available through `thinking_budget` |
+| `qwen3.8-flash` | `none` · `minimal` · `low` · `medium` · `high` · `xhigh` · `max` | Reasoning is on by default (`none` turns it off, the rest steer its depth). `thinking: "off"` sends `reasoning_effort: "none"`; its budget is capped with `max_tokens`, which NaN's gateway now honours (issue #36), and a hard reasoning cap is available through `thinking_budget` |
 | `qwen4-max` | `none` · `minimal` · `low` · `medium` · `high` · `xhigh` · `max` | `none` turns reasoning off, `minimal` to `max` steer it, and `max_tokens` bounds reasoning **plus** answer. The docs advise setting a budget: an open-ended answer can run for many minutes |
 | `mimo-v2.6-flash` | `none` · `low` · `medium` · `high` · `max` | `none` turns reasoning off (`minimal` is applied as `low`, `xhigh` as `max`, so those two are not declared separately); reasoning counts inside `max_tokens`. Measured live 2026-10-14: `none` gives 0 reasoning tokens with a full answer |
 | `qwen3.8-max` | `none` | `none` turns reasoning off. `max_tokens` bounds only the visible answer, so the catalog sends `max_completion_tokens` to cap the total. A reasoning budget (`thinking_budget`) is not honoured on this model |
@@ -496,7 +522,7 @@ NaN's `reasoning_effort` parameter controls how much the model thinks before ans
 > [!NOTE]
 > **`xhigh` and `max` are opt-in in pi.** pi-ai only offers a model those two levels when its `thinkingLevelMap` declares them (`getSupportedThinkingLevels`; a request for either one is otherwise silently clamped to `high`). The catalog therefore carries identity entries (`xhigh: "xhigh"`, `max: "max"`) on every model whose docs declare a ladder up to `max` — the seven chat models plus `mimo-v2.6-flash`, where the gateway applies `xhigh` as `max`. `hy4`, `hy4-flash` and `qwen3.8-max` document only their off switch, and `kimi-k3.1-pro`/`deepseek-v4-pro` sit outside the contract, so those five stay at `off`…`high`.
 > [!NOTE]  
-> `maxTokens` does NOT bound the reasoning phase on `deepseek-v4-flash`, `glm5.3`, `glm5.3-flash`, `qwen3.8-flash`, `mimo-v2.6-flash`, `qwen3.8-max` or `kimi-k3.1-pro`. The reasoning phase runs to completion (or is cut at NaN's reasoning-only stream limit: 45,000 reasoning characters, or 420 s without visible output) regardless of the budget — measured: `max_tokens=512` on deepseek-v4-flash still consumed 13,376 completion tokens, all reasoning (26x the ceiling). This is gateway behavior confirmed by issue #16 (measured 2026-09-27) and by NaN for `qwen3.8-flash` (issue #34, 2026-11-11 — the excess also bills against the quota). The 2026-11-17 docs add the models where the budget **does** bound the total, reasoning plus answer: `qwen4-max` (up to 131,000), `hy4-flash` and `hy4` (up to 64,000), and `mimo-v2.6-flash`. As an interim bound for `qwen3.8-flash` **and `qwen3.8-max`** the catalog sends `max_completion_tokens` instead, which NaN confirmed IS respected; it survives because those models' compat opts out of the schema sanitizer's rename to `max_tokens` (the published OpenAPI schema still documents only `max_tokens`). Remove those overrides once NaN ships their gateway fix — `test/issue-34-max-completion-tokens.test.ts` is the tripwire. Reasoning alone can still consume the whole budget and end the turn with empty content; that closure carries NaN's `reasoning_only_stream` marker and pi-ai retries the turn (issue #21).
+> `maxTokens` can stop before the visible answer on some models. The measured case is `deepseek-v4-flash`: `max_tokens=512` still consumed 13,376 completion tokens, all reasoning (26x the ceiling, issue #16, 2026-09-27). `qwen3.8-max` documents the same shape — `max_tokens` bounds only the visible answer — so its catalog entry sends `max_completion_tokens` to cap the total (2026-11-17 docs). `qwen3.8-flash` was the #34 case (NaN confirmed the same behaviour on 2026-11-11); NaN support reported the gateway fix deployed and validated on 2026-11-17, so package 1.5.7 removed the interim override and it sends the classic `max_tokens` again (issue #36). Per the 2026-11-17 docs, `max_tokens` does bound reasoning plus answer on `qwen4-max` (up to 131,000), `hy4`/`hy4-flash` (up to 64,000) and `mimo-v2.6-flash`. Reasoning alone can still consume the whole budget and end the turn with empty content; that closure carries NaN's `reasoning_only_stream` marker and pi-ai retries the turn (issue #21).
 
 
 ---

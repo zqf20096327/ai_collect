@@ -189,6 +189,8 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `bomb [categories] [count] <message-link>` (alias `br`) | admin | reaction-bomb a message. Combine categories with commas and set a count: `bomb money,face,negative 9 <link>`. Up to 23; `bomb help` lists every category |
 | `brief <thread-link\|reference> <text>` (`brief help`) | admin | leave a short note FOR another thread: what you posted there, why, what you wait for. Posts nothing, starts no turn; that thread's session reads it on its next turn, whoever speaks (it is part of that turn's message, so the session keeps it for the turns after), then it is marked read for that access tier. It is background information only, never instructions. The receiver sees only an opaque reference to your thread (never a link) and answers with `brief <reference> <text>`. `tell` is for when the other side must act now |
 | `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. Needed because the Slack proxy only lets a turn write into its own channel. Owner only (anyone else is told who can), audit logged like every command, and it files a `brief` in the target thread so its session knows why; the footer under the message never names the requester; the bot must be in the channel |
+| `slack-methods list \| add <method> read\|write [channelParam] \| remove <method>` | owner | manage the Slack Web API methods a turn may call beyond the built-in ones (the `Slack.` paragraph of the security notes lists them); writes stay locked to the turn's channel, `auth.*` / `admin.*` / `apps.*` / `oauth.*` are refused, and the change applies on the next call |
+| `mcp-tools pending \| list <server> \| approve <server> <tool> \| deny <server> <tool>` | owner | approve or deny the tools an MCP server started listing after its first run; a new tool stays hidden and refused until approved (a typed line only, never from a turn) |
 | `reply <message-link>` (alias `jrp`) | admin | draft and post an AI reply to a message |
 | `rm-msg <message-link>` (aliases `rmmsg`, `unsend`) | admin | delete a message the bot posted (a bot token cannot delete anyone else's) |
 | `workflow <task>` / `workflow stop [<thread-link>]` / `workflow status` (alias `wf`) | executer, admin | start a long task in this thread and keep talking to it (see [Workflows](#workflows)) |
@@ -282,6 +284,19 @@ wrapped in `bin/mcp-lazy-proxy.ts`, which answers the tool list from
 call, and a role that may not use a server (`mcp__<server>` in its denied tools)
 does not get it in the config at all. The first turn after a new or edited
 server still starts it once to fill the cache.
+
+**New tools are off until the owner approves them.** The first run of a server
+takes the tools it lists as its baseline; a tool it lists later is hidden from
+every turn and refused if called until the owner runs `X/jv mcp-tools approve
+<server> <tool>` (`X/jv mcp-tools pending` lists what is waiting).
+
+**Code mode.** A full-access turn can call a tool from the shell instead of
+loading its result into the conversation: `bun bin/mcp.ts list | search <query> |
+schema <server> <tool> | call <server> <tool> '<json>' [--fields a,b.c]`. A call
+starts the real server (the same command and env the bot uses), writes the whole
+result to a file under the temp directory and prints only its path, size, row
+count and a short head; `--fields` keeps only those dotted paths of a JSON result.
+It refuses a server or tool the turn's role may not use.
 
 ## Investigating
 
@@ -846,12 +861,18 @@ command or act on GitHub, and a command ticket cannot call Slack.
 | read, any channel | `conversations.history`, `conversations.replies`, `conversations.info`, `conversations.list` (public channels), `conversations.join` (public channels), `users.info` |
 | write, only the channel the turn runs in | `chat.postMessage`, `chat.update`, `reactions.add`, `files.getUploadURLExternal`, `files.completeUploadExternal` |
 | write, owner's turn, any channel | `chat.update` on a message the bot itself wrote (the bot reads it first and refuses any other author's) |
+| added by the owner | whatever `slack-methods` has added (a read, or a write locked to the turn's channel like the built-in writes); stored in the `slack_extra_methods` setting, the built-in rows above cannot be removed |
 | files | a private file is `bin/slack-file.sh`, through `POST /api/slack/file`: Slack file urls only, and the token never follows a redirect off Slack |
 
 A `chat.postMessage` or `files.completeUploadExternal` from a turn that runs in a
 thread and names no `thread_ts` is posted into that thread; pass `thread_ts=none`
 for a deliberate top-level post (the bot removes it before calling Slack), and an
 explicit `thread_ts` is used as given.
+
+To allow another Web API method without a code change, the owner runs `X/jv slack-methods add <method> read|write [channelParam]`
+(for example `add conversations.setTopic write`; `list` and `remove <method>` manage it). Only a line the owner types changes the list: it is refused when Jarvis runs it for a turn, so a turn cannot widen its own access. The name must look like `family.method`, and
+`auth.*`, `admin.*`, `apps.*`, `oauth.*`, `tooling.*` and `openid.*` are refused. The bot's token also needs the method's Slack scope
+(`conversations.setTopic` / `setPurpose` need `channels:manage`, and `groups:write` for private channels).
 
 Anything else is refused (`method_not_allowed`), a write to another channel is
 `channel_not_allowed`, and a missing, revoked or expired ticket is refused before
@@ -1223,6 +1244,8 @@ follow-up messages, not for an untagged reply under a followed thread, and not
 for a GitHub review request (the review inbox only announces it, with the line to
 type). A bare PR link typed after the prefix is not a review either.
 
+That closes the command, not reviewing. Asked in plain words to review a PR (no `review`/`approve` tag), the bot treats it as an ordinary task: a standalone reviewer worker (`--model opus`, or the Agent tool for a role without Orca) posts one real review, blockers only, and the bot acts on its verdict, merging only if the person asked and CI is green.
+
 This matters beyond convenience: only the command can offer the box that takes a
 Claude token, so a spoken request used to get a description of the token instead
 of the button that accepts one.
@@ -1293,49 +1316,4 @@ On macOS the key can live in the login Keychain instead of a file:
 `security` CLI). First boot in that mode:
 
 - Item missing, key file present: the file key is copied into the Keychain, read
-  back and compared byte for byte, and only then is the file deleted. A mismatch
-  aborts the boot and keeps the file.
-- Item missing, no file: a fresh key is created only if the token database has no
-  rows. If it has rows, the boot fails: a new key over existing ciphertext would
-  orphan every token, so restore the key instead.
-- Keychain locked or unreachable (e.g. a reboot before login): the boot
-  **continues**, with per-user tokens and 2FA seeds switched off until the next
-  restart. Reviews then say there is nowhere to keep a token, and the log has one
-  `[token-key] WARNING` line naming the cause. Unlock the Keychain and restart.
-
-The key is written through `security -i` on stdin, so it never appears in a
-process's arguments, and it is never logged. A leftover key file next to an item
-holding the same key is deleted at boot (an interrupted move is finished); two
-different keys abort the boot. The key is not in git and
-not in `data/` any more, so back up the Keychain item (Keychain Access, or
-`security find-generic-password -s jarvis-token-key -w`) instead of a file.
-
-## What a review comment looks like
-
-Blockers only (except for the owners in `REVIEW_EXTENDED_OWNERS`, see below). One line saying where it lands - good to merge, or what blocks -
-then one short bullet per blocker, worst first: what is wrong, one pointer
-(`file.ts:120` or an identifier, never a code block or a quoted line), why it
-matters. A clean PR gets that one line and the sign-off.
-
-Blocking means a security hole, data loss, a breaking change, a correctness bug
-that would ship, missing or failing tests on a critical path, or failing CI.
-Everything else - design, cleanups, style, nits - is never posted, and never
-becomes a GitHub issue either: it is dropped.
-
-PRs owned by an account listed in `REVIEW_EXTENDED_OWNERS` (decided per PR from a full url or `owner/repo#N`; empty by
-default, so nobody gets this until you set it) are the
-exception: non-blocking findings (design risk, correctness, coding style, real
-cleanups) follow the blockers as bullets, worst first, under about 250 words for
-a normal PR, then one last "out of scope per the description: ... risk left
-standing" warning bullet for anything the description defers. They never make
-it request changes and never become an issue; pure-noise nits are still dropped.
-
-It reads the description and the existing comments **before** reviewing, so
-nothing already said is said again. A gap the description declares out of scope
-is never a blocker, but scope covers what a PR does **not fix**, never what it
-**breaks**.
-
-## Explaining a review
-
-`quick-review help` describes the flow in a few lines; `quick-review prompt` prints the
-actual sys
+  back 

@@ -28,7 +28,6 @@
   <img alt="React" src="https://img.shields.io/badge/Frontend-React%20%2B%20TypeScript-3178C6?logo=react&logoColor=white" />
   <img alt="Electron" src="https://img.shields.io/badge/Desktop-Electron-47848F?logo=electron&logoColor=white" />
   <img alt="Hermes / Codex" src="https://img.shields.io/badge/AI-Hermes%20%2B%20Codex-2476D2" />
-  <img alt="Local First" src="https://img.shields.io/badge/Data-Local%20First-159A80" />
   <img alt="License" src="https://img.shields.io/badge/License-Non--Commercial-EA580C" />
   <a href="https://github.com/jundizhou/easy-stock/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/jundizhou/easy-stock?label=Release" /></a>
   <a href="https://github.com/jundizhou/easy-stock/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/jundizhou/easy-stock?style=flat" /></a>
@@ -60,7 +59,7 @@ AI 时代的炒股软件，不应该只是在传统行情终端旁边多放一�
 
 传统行情软件擅长展示价格、涨跌幅和成交额，但 A股交易真正困难的是理解价格背后的结构：今天的主线是什么、题材是否扩散、连板高度是否打开、昨日强势股是否获得溢价、趋势是否仍然成立、情绪处于修复还是退潮。
 
-easy-stock 希望构建一套真正理解 A股语境的 AI 原生工作台，把行情分析、题材研究、股票分析、盘后复盘与可追溯证据放进同一个本地优先的研究流程：
+easy-stock 希望构建一套真正理解 A股语境的 AI 原生工作台，把行情分析、题材研究、股票分析、盘后复盘与可追溯证据整合为统一的研究流程：
 
 | AI 原生能力 | easy-stock 的实现方式 |
 | --- | --- |
@@ -111,7 +110,7 @@ easy-stock 希望构建一套真正理解 A股语境的 AI 原生工作台，把
 
 #### 兼听则明，客观则赢：让 AI 自动收集和整理多位市场作者的观点
 
-大 V 的盘后复盘通常分散在雪球、淘股吧和微信公众号中。easy-stock 自动同步雪球与淘股吧作者主页；微信公众号仅支持粘贴具体文章链接导入。导入的内容进入统一的复盘时间流：
+大 V 的盘后复盘通常分散在雪球、淘股吧、知识星球和微信公众号中。easy-stock 自动同步雪球与淘股吧作者主页，可通过官方 `zsxq-cli` 同步已开通 Skill 权限的知识星球；微信公众号仅支持粘贴具体文章链接导入。导入的内容进入统一的复盘时间流：
 
 <p align="center">
   <img src="./docs/assets/easy-stock-auto-review.png" width="1280" alt="easy-stock 大 V 自动复盘与每日同步工作台" />
@@ -379,4 +378,4 @@ easy-stock 项目原创的后端、前端、桌面端和文档采用 [PolyForm N
   </picture>
 </p>
 
-<p align="center"><sub>Local first · Evidence based · Human in control</sub></p>
+<p align="center"><sub>Evidence based · Human in control</sub></p>

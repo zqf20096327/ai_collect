@@ -10,29 +10,19 @@ Your final saved PNG/JPEG/MP4 → Mark Saved File with Ariadne
 
 The adapter uses the existing **Ariadne Mark 0.7.3a4** SDK in an isolated process. It does not install another Torch, replace ComfyUI's dependencies, change watermark algorithms, download models at execution time, or upload media to an Ariadne service.
 
+## Installation status
+
+**18 November 2026.** Comfy Registry lists version **0.1.0** of **ariadne-mark-nodes** as **Flagged** after automated security checks. There is no active version available for standard installation through ComfyUI Manager. The exact Registry package passed our 16 November Linux server qualification before the current flag. [Comfy Registry](https://registry.comfy.org/nodes/ariadne-mark-nodes) · [Test results](https://ariadnemark.xyz/assets/comfyui/qualification.json)
+
+**Try the browser demo now.** Open the signed PNG and click **Check file** to see its watermark ID and C2PA result. The example uses a development signature. [Try the signed PNG in Verifier](https://ariadnemark.xyz/verify/?sample=full-image)
+
+For an existing installation, follow the [ComfyUI setup guide](https://ariadnemark.xyz/guides/comfyui-watermarking/) to connect your SDK kit. The tested environment is **ComfyUI 0.45.0 on Linux x86-64 with CPU marking**. The adapter uses Comfy's native V3 extension API and the Docker runner requests `linux/amd64`.
+
 ![Image export completed in ComfyUI](assets/comfy-export-completed.png)
-
-## Install
-
-Follow the [step-by-step ComfyUI watermarking and C2PA setup guide](https://ariadnemark.xyz/ariadne/guides/comfyui-watermarking/) for installation, SDK-kit configuration, image/video nodes and verification.
-
-Published as **`ariadne-mark-nodes` v0.1.0** in the [Comfy Registry](https://registry.comfy.org/nodes/ariadne-mark-nodes), by **@ariadne-mark**. The exact Registry package was installed and exercised on the qualification server.
-
-With the official Python Comfy CLI, the tested direct Registry installation is:
-
-```sh
-comfy --workspace /absolute/path/to/ComfyUI --skip-prompt --no-enable-telemetry node registry-install ariadne-mark-nodes --version 0.1.0
-```
-
-This installs the nodes. Configure your separate Ariadne SDK kit below, then restart ComfyUI. In ComfyUI-Manager, use the Registry package ID `ariadne-mark-nodes`; catalogue refresh and your Manager version affect when new entries appear.
-
-For a manual GitHub installation, clone this repository into `ComfyUI/custom_nodes/ComfyUI-Ariadne-Mark`. Install `requirements.txt` using your Comfy environment, then restart ComfyUI. This supplies the nodes; provision the SDK kit below separately.
-
-Qualified on **ComfyUI 0.45.0 on Linux x86-64 CPU** with the exact SDK image documented in [the server qualification](qualification/README.md). The Docker runner always requests `linux/amd64`; Windows/macOS host operation is not qualified by this release. The native Comfy V3 extension API is required.
 
 ## Connect your SDK kit once
 
-1. Follow the [SDK deployment-kit setup](https://ariadnemark.xyz/ariadne/docs/deployment-kit/). Build/download the exact qualified artifacts and initialize a kit with your public publisher/system information. Provision models explicitly. Keep the kit outside Comfy input, output, temp and web directories.
+1. Follow the [SDK deployment-kit setup](https://ariadnemark.xyz/docs/deployment-kit/). Build/download the exact qualified artifacts and initialize a kit with your public publisher/system information. Provision models explicitly. Keep the kit outside Comfy input, output, temp and web directories.
 2. Copy `ariadne-comfy.example.json` to a private location, fill in the absolute kit path and immutable local Docker image ID, and set `ARIADNE_COMFY_CONFIG=/absolute/path/ariadne-comfy.local.json` in the environment that launches ComfyUI.
 3. Restart ComfyUI and add a node from **Ariadne Mark**. No credentials or runner commands are stored in the workflow.
 
@@ -77,7 +67,7 @@ Generated inputs and successful intermediate media are removed; the kit registry
 
 ## Verify an output
 
-Download the exact PNG/MP4 from the node, then use the [Ariadne verifier](https://ariadnemark.xyz/ariadne/docs/verifier-registry/) or a standard C2PA reader. An image preview is not the signed artifact. [Inspect evidence and measured mode trade-offs](https://ariadnemark.xyz/ariadne/evidence/robustness/).
+Download the exact PNG/MP4 from the node, then use the [Ariadne verifier](https://ariadnemark.xyz/docs/verifier-registry/) or a standard C2PA reader. An image preview is not the signed artifact. [Inspect evidence and measured mode trade-offs](https://ariadnemark.xyz/evidence/robustness/).
 
 ## Examples, catalogue and contributing
 

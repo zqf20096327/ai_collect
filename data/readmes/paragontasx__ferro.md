@@ -46,9 +46,10 @@ Models are plain GGUFs (`--model kind` is auto-detected); get e.g. d1 from
 
 ### Contents
 
-[What's new](#whats-new-2026-10-22-tag-validated-2026-10-22-2) ·
+[What's new](#whats-new-2026-11-18-arrow-lake-h-igpu) ·
 [Results](#results-intel-n100-same-model-files--inputs-as-llamacpp-interleaved-runs) ·
 [d1 decision model](#using-d1-omni-decision-model) ·
+[d1-2B decision model](#using-liquidai-d1-2b-lfm3-d1-decision-model) ·
 [EmbeddingGemma-2 multimodal](#using-embeddinggemma-2-multimodal-text--image--audio--video---one-768-d-embedding) ·
 [LFM2.5 chat](#using-lfm25-language-models-chat--completions) ·
 [HTTP server](#serving-over-http-ferro-embed-serve) ·
@@ -58,6 +59,36 @@ Models are plain GGUFs (`--model kind` is auto-detected); get e.g. d1 from
 [CPU path](#cpu-path) ·
 [Code layout](#layout) ·
 [Env knobs](#env-knobs)
+
+## What's new (2026-11-18, Arrow Lake-H iGPU)
+
+- **LFM3-1.7B on the iGPU** (arch `lfm3`): new fused kernel set (7-tap short conv, per-layer rope,
+  hd-128 attention, speculative-decode windows over KV-cache hybrids). Decode 14.5 tok/s; speculative
+  decoding 16.9 / 30.0 / 46.0 tok/s at draft lengths 17 / 68 / 138; prefill 446 / 369 / 279 tok/s at
+  180 / 690 / 1390 tokens; serve aggregate 14.8 / 28.2 / 47.0 / 50.1 tok/s at concurrency 1 / 2 / 4 / 8.
+  Temperature-0 output is byte-identical to the CPU oracle on a 96-token test; llama.cpp parity via
+  `scripts/lm_parity.py`.
+- **LiquidAI d1-2B (arch `lfm3`, `lfm3.decision.type = lfm3-d1`) is a first-class decision model**:
+  stateless whole-prompt forward, the same `/v1/systemone` protocol, `decide` + `serve --d1`, CPU and
+  iGPU paths. The lfm3vl vision tower (`--mmproj`) is wired into the decision prompt (images -> patch
+  tokens; audio not yet). Answers match llama.cpp: worst probability gap 0.006 (text) / 0.038 (vision).
+- **d1-2B runs entirely on the iGPU** — vision tower and decision forward, with dense GEMM-tiled attention (bidirectional on d1's
+  6 global layers, causal + window on its 5 SWA layers; conv runs from zero state) and **packed prompts**:
+  every question of every request in a worker pass shares one forward of up to 4096 rows (segments stay
+  independent). Text card (3 q / 254 tok): **373 ms vs 2912 ms CPU = 7.8x**; long state (2 q / 1500 tok)
+  **2.05 s vs 22.6 s = 11x**; an image request **1.87 s vs 10.66 s = 5.7x** (the lfm3vl vision tower
+  runs on the iGPU too: 0.33 s vs 1.6 s); 16 tickets / 48 questions **3.68 s (790 tok/s)**. Serving: 0.28 s per 3-question
+  ticket, 12.7 questions/s at concurrency 16. GPU logits match the CPU f32 path (TV <= 0.21, argmax
+  identical); packing is bit-identical to one prompt per forward.
+- **Fixed: dense attention query tiling** (`op_dense_attention_h`): segments whose length was not a
+  multiple of 64 attended with the wrong query rows after the first 64-row tile. This hit EmbeddingGemma-2
+  single texts >= 96 tokens (cosine vs CPU 0.94 -> 0.9999) and the gemma4 vision encoder.
+- Tokenizer honors `tokenizer.ggml.add_bos_token` from the GGUF metadata (LFM3: false — its chat
+  template carries the BOS instead); `q6_K` block support.
+- New probe tools: `scripts/calib_probe.py` (token / BOS / state-leak calibration probes vs
+  llama-server), `scripts/ocl_bw.py` (OpenCL device bandwidth probe).
+
+Per-model numbers and the full run history: `bench/RESULTS.md`.
 
 ## What's new (2026-10-22, tag `validated-2026-10-22-2`)
 
@@ -151,6 +182,46 @@ non-flash outputs differ by about the same, worst token 0.97) and >= 0.9996 (aud
 
 Tested with the Q8_0 GGUF; the loader also accepts F16/BF16/F32 tensors (quantized to Q8 at load for the
 int8 path), but that is untested.
+
+## Using LiquidAI d1-2B (lfm3-d1 decision model)
+
+Request format = the same `/v1/systemone` schema as d1-omni (Decision Index): `decide --model
+models/d1-2B-Q8_0.gguf --request req.json` or `serve --d1 models/d1-2B-Q8_0.gguf --port 8097`. d1-2B
+is stateless: every question is an independent whole-prompt forward (the prompt is the whole world —
+no conv state, no KV cache), which maps directly onto ferro's iGPU prefill path: d1's 6 global
+attention layers read all prompt rows (bidirectional), its 5 sliding-window layers keep causal +
+window, and the 7-tap short conv runs from zero state.
+
+**Images:** pass `files` / `images` data URLs (as with d1-omni) and the mmproj
+`models/mmproj-d1-2B-Q8_0.gguf` (found next to the model). The lfm3vl vision tower patches the image
+(a 640x480 photo -> 1200 patches -> 300 tokens after the 2x2 merge) and feeds the decision prompt. Both
+the vision tower (resident Q8 weights, +212 MB) and the decision forward run on the iGPU
+(`FERRO_MM_GPU=0` keeps the tower on the CPU).
+
+All questions of all requests in a batch (or a server worker pass) are **packed** into as few iGPU
+forwards as fit 4096 rows; attention runs per prompt (dense GEMM-tiled QK^T / softmax / PV), everything
+else over all packed rows.
+
+Numbers (Core Ultra 5 235HX iGPU vs the CPU path, both at 14 threads; details in `bench/RESULTS.md`):
+
+| request | iGPU | CPU | |
+|---|---|---|---|
+| text card, 3 q / 254 tok | **373 ms** | 2912 ms | 7.8x |
+| long state, 2 q / 1500 tok | **2.05 s** | 22.6 s | 11x |
+| 640x480 image, 3 q / 1160 tok | **1.87 s** | 10.66 s | 5.7x (vision tower 0.33 s) |
+| 16 tickets, 48 q / 2903 tok | **3.68 s** (790 tok/s) | | |
+
+`serve --d1`: 0.28 s per 3-question ticket alone; 12.7 questions/s with 16 concurrent tickets.
+Parity: answers match llama.cpp on text and vision requests (worst probability gap 0.006 text / 0.038
+vision), and iGPU answers match the CPU f32 path (TV <= 0.21, argmax identical). Env knobs:
+`FERRO_D1_GPU=0` (force the CPU forward), `FERRO_D1_TMAX=N` (device rows per forward, default 4096 —
+longer prompts fall back to CPU), `FERRO_D1_PACK=N` (max prompts per packed forward, default 64; 1 = one
+per forward), `FERRO_D1_DENSE=0|1|2|3` (dense attention on none / global / SWA / both layer kinds;
+0 = the older per-tile kernel), `FERRO_D1_PROF=1` (per-op-class timing), `FERRO_D1_DBG=1` /
+`FERRO_D1_LDBG=1` (GPU-vs-CPU logit diff / per-block checkpoint dumps — they run the CPU forward too, so
+never time with them on).
+
+Tested with the Q8_0 GGUF + Q8_0 mmproj; audio is not wired for d1-2B yet.
 
 ## Using EmbeddingGemma-2 multimodal (text + image + audio + video -> one 768-d embedding)
 EmbeddingGemma-2 is natively multimodal: the text model is `embeddinggemma-2-*.gguf`, the vision (gemma4v ViT) and audio
@@ -475,16 +546,18 @@ d1: faster than llama.cpp CPU (1.5×), but ~7× slower than the iGPU — use the
 - `src/gpu_cl.{h,cpp}` — dlopen'd OpenCL backend: DP4A GEMM + all fused layer kernels (both models)
 - `src/model_eg2.cpp` — EmbeddingGemma-2 forward (`layers_gpu` on-device loop; CPU loop; hetero split)
 - `src/model_lfm2.cpp` — LFM2 decision model: loader, CPU forward, on-device forward (`forward_gpu`)
-- `src/model_lfm2_lm.*` — LFM2/LFM2.5 generative engine (causal CPU reference + iGPU prefill/decode, device KV/conv slots) · `src/chat_template.*` · `src/sampler.*` · `src/lm_cli.*` (`generate`) · `src/server.*` (HTTP)
+- `src/model_lfm2_lm.*` — LFM2/LFM2.5/LFM3 generative engine (causal CPU reference + iGPU prefill/decode, device KV/conv slots; LFM3's `lfm3-d1` gate lives in `src/model_lfm3_d1.*`) · `src/chat_template.*` · `src/sampler.*` · `src/lm_cli.*` (`generate`) · `src/server.*` (HTTP)
+- `src/model_lfm3_d1.*` — LFM3-d1 (d1-2B) decision engine: stateless CPU forward + packed iGPU forward (`score_batch`; dense per-prompt attention, zero-state conv) · `src/decision_lfm3.*` — decision prompt rendering + answers for d1-2B
 - `src/decision.cpp` — systemone protocol: request parsing, prompt template + token budgets, answers
 - `src/tokenizer_bpe.cpp` — byte-level BPE (LFM2/llama3 pre-tokenizer); `third_party/llama_unicode/`
   (vendored from llama.cpp, MIT) · `src/json.cpp` — order-preserving JSON incl. jinja `tojson`
 - `src/kernels*.{h,cpp}` — CPU kernels (AVX2/FMA + scalar refs) · `src/gguf.*` · `src/tokenizer.*`
 - `bench/ferro_ref.cpp`, `bench/ferro_ref_vk.cpp` — llama.cpp embedding harnesses (CPU / Vulkan)
 - `scripts/final_h2h.sh` (embeddings) · `scripts/d1_bench.py` (d1) — interleaved scoreboards
-- `src/media*.{h,cpp}` (stb_image / miniaudio decode) · `src/mm_preproc.*` (tiling, Pillow resize, log-mel; ported from mtmd) · `src/mm_encoder.*` (SigLIP + FastConformer)
+- `src/media*.{h,cpp}` (stb_image / miniaudio decode) · `src/mm_preproc.*` (tiling, Pillow resize, log-mel; ported from mtmd) · `src/mm_encoder.*` (SigLIP + FastConformer + the lfm3vl vision tower for d1-2B)
 - `src/mm_gemma4*.{h,cpp}` · `src/mm_clin.h` · `src/embed_mm.*` — EmbeddingGemma-2 vision (gemma4v) / audio (gemma4a) encoders and the multimodal sequence builder; `bench/mm/{mel_ref,ggml_ops_ref}.cpp` + `pin_*.py` — upstream oracles and per-op layout checks; `scripts/eg2_parity_mm.py`
 - `scripts/d1_parity.py` — d1 answers vs llama-server + batched==alone contract · `scripts/d1_parity_mm.py` — media · `bench/d1/` requests
+- `scripts/calib_probe.py` (token / BOS / state-leak probes vs llama-server) · `scripts/calib_prefix.py` · `scripts/ocl_bw.py` (OpenCL device bandwidth probe)
 - iGPU R&D, kernel shootouts and findings: `/opt/data/ferro-gpu/`
 
 ## Env knobs
@@ -493,4 +566,10 @@ d1: faster than llama.cpp CPU (1.5×), but ~7× slower than the iGPU — use the
 paths, for A/B) · `FERRO_DECISION_BATCH=N` (tokens per d1 forward, default 4096) ·
 `FERRO_MM_GPU=0` / `FERRO_MM_DENSE=0` (media encoder fallbacks) · `FERRO_DECISION_DUMP=1` (rendered d1 prompts + token ids) · `FERRO_DEBUG_LAYERS=1` · `FERRO_TIME=1` ·
 `FERRO_MM_AUDIO_GPU=0` (audio GEMMs on CPU) · `FERRO_MM_AUDIO_DEV=0` (audio blocks back to host-driven GEMMs) · `FERRO_GPU_DENSE_TEXT=0` / `FERRO_GPU_DENSE_MIN=N` (dense long-sequence text attention) · `FERRO_G4_SYNC=1` / `FERRO_G4_DUMP=dir` / `G4A_TIME=1` / `EMB_TIME=1` (multimodal debugging) ·
-`FERRO_LM_*` (see the LM section) · `FERRO_ROW_POLICY=0` (old decode/prefill GEMM mix) · `FERRO_KV=f32|int8` · `FERRO_MEM_LIMIT_MB=N` (override the detected container limit; tests) · `FERRO_LM_WINBENCH=1` (with `FERRO_LM_SELFCHECK=1`: cost of a speculative window by row count) · `FERRO_LOW_MEM=1` · `FERRO_DBGDIR=/path` (CPU stage dumps for golden diffing) · `FERRO_POOL_SPIN_US=N` (CPU pool: how long a worker spins after a task before it parks on a futex, default 200 µs; 0 = park at once) · `FERRO_LM_ATTN_SPLIT=0` (LM decode attention: the per-head kernels instead of split-K)
+`FERRO_LM_*` (see the LM section) · `FERRO_ROW_POLICY=0` (old decode/prefill GEMM mix) · `FERRO_KV=f32|int8` · `FERRO_MEM_LIMIT_MB=N` (override the detected container limit; tests) · `FERRO_LM_WINBENCH=1` (with `FERRO_LM_SELFCHECK=1`: cost of a speculative window by row count) · `FERRO_LOW_MEM=1` · `FERRO_DBGDIR=/path` (CPU stage dumps for golden diffing) · `FERRO_POOL_SPIN_US=N` (CPU pool: how long a worker spins after a task before it parks on a futex, default 200 µs; 0 = park at once) · `FERRO_LM_ATTN_SPLIT=0` (LM decode attention: the per-head kernels instead of split-K) ·
+`FERRO_D1_GPU=0` (force the d1-2B CPU decision forward) · `FERRO_D1_TMAX=N` (d1 device Tmax, default
+4096; longer prompts fall back to CPU) · `FERRO_D1_PACK=N` (d1-2B prompts per packed forward, default 64) ·
+`FERRO_D1_DENSE=0|1|2|3` (d1-2B dense attention: none / global / SWA / both) · `FERRO_D1_PROF=1` (d1-2B
+per-op-class timing) · `FERRO_V3_GDUMP=dir` (lfm3vl iGPU tower stage dumps, same names as the CPU path's
+`FERRO_V3_DUMP` + `FERRO_V3_DEBUG`) · `FERRO_D1_DBG=1` / `FERRO_D1_LDBG=1` (d1 GPU-vs-CPU parity hooks: logit diff /
+per-block checkpoint dumps; not for timing)

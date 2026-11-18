@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  The agent core of NSGo apps: run coding agents (pi, Codex, Claude Code, CodeBuddy Code) and show their work on phones and desktops, in one process or as a server and its clients.
+  The agent core of NSGo apps: run coding agents (pi, Codex, Claude Code, Cursor, OpenCode, Grok Build, Antigravity, Kiro, Muse Code, fx, CodeBuddy Code) and show their work on phones and desktops, in one process or as a server and its clients.
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@ Agio runs the agent CLIs on the login shell's `PATH` with your own sign-ins. It 
 ## Install the library
 
 ```sh
-go get github.com/oneo-me/nsgo-agio@v0.1.0
+go get github.com/oneo-me/nsgo-agio@v0.2.0
 ```
 
 It needs Go 1.27 and the agent CLIs you want on the login shell's `PATH`; it runs them with your own sign-ins.

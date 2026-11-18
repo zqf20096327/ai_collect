@@ -11,6 +11,15 @@
 
 Azure FinOps Agent is an open-source AI agent for Azure. Ask it in plain words how to govern your AI agents, how to budget and cap AI spend, or what an Azure setup will cost. It answers from current Microsoft documentation and live Azure prices, and shows every call behind the answer. Connect your Azure tenant and it works with your own costs, budgets and resources: it finds savings, scores your FinOps maturity and drafts the fix, using only your own permissions. It never deletes Azure resources.
 
+<p>
+  <b>Integrated with</b>&nbsp;&nbsp;
+  <img src="src/frontend/public/product-icons/azure.svg" alt="" width="24" height="24" align="middle"> Azure&nbsp;&nbsp;
+  <img src="src/frontend/public/product-icons/foundry.svg" alt="" width="24" height="24" align="middle"> Microsoft Foundry&nbsp;&nbsp;
+  <img src="src/frontend/public/product-icons/copilot.svg" alt="" width="24" height="24" align="middle"> Microsoft 365 Copilot&nbsp;&nbsp;
+  <img src="src/frontend/public/product-icons/agent-365.svg" alt="" width="24" height="24" align="middle"> Microsoft Agent 365&nbsp;&nbsp;
+  <img src="src/frontend/public/product-icons/github.svg" alt="" width="24" height="24" align="middle"> GitHub
+</p>
+
 **[Try it now](https://azure-finops-agent.com)** · [Deploy to your Azure](#deploy-to-your-azure-subscription) · [Slides](https://azure-finops-agent.com/slides)
 
 <img src="src/frontend/public/og-image.png" alt="Azure FinOps Agent: plain answers on AI governance, AI costs and your Azure spend" width="100%">
@@ -18,7 +27,7 @@ Azure FinOps Agent is an open-source AI agent for Azure. Ask it in plain words h
 ## See it in action
 
 <p align="center">
-  <img src="docs/assets/readme/start-page.png" alt="Start page: questions on governing AI agents, controlling AI spending and comparing Azure prices, ready to click" width="74%">
+  <img src="docs/assets/readme/start-page.png" alt="Start page: the products it covers (Azure, Microsoft Foundry, Microsoft 365 Copilot, Microsoft Agent 365 and GitHub) and questions on governing AI agents, controlling AI spending and comparing Azure prices, ready to click" width="74%">
   <img src="docs/assets/readme/mobile-start.png" alt="The same start page on a phone" width="23%">
 </p>
 
@@ -51,7 +60,7 @@ The panel on the right lists every call behind an answer, so you can check where
 
 ### Without signing in
 
-The start page offers the questions customers ask most:
+The start page offers the questions customers ask most. Each card shows the products it covers, and the line under the title lists them all:
 
 | Govern AI agents                   | Control AI spending               | Compare Azure prices               |
 | ---------------------------------- | --------------------------------- | ---------------------------------- |
@@ -65,13 +74,15 @@ You can also ask your own question about Azure prices or service health, or uplo
 
 ### After you connect Azure
 
-The start page's third section becomes **Optimize my Azure costs** and starts with *Where can I save money?* and a *FinOps assessment report*.
+The start page's third section becomes **Optimize my Azure costs** and starts with *Where can I save money?* and a *FinOps assessment report*, and **Control AI spending** starts with four Microsoft 365 Copilot cost questions marked Preview: *Who uses Copilot most, and for what?*, *Copilot services & agents*, *What did my Copilot work cost?* and *Copilot user and VM spend*. Above them, a new **See all my costs** section puts every product's spend side by side in one answer, counting Copilot once: *What did everything cost last week?*, *What will this month cost in total?*, *Daily cost of everything this week* and *Where is my AI money going?*.
 
 - **Spend:** costs by service, subscription, resource group, tag and region, with forecasts and budgets.
 - **Savings:** Azure Advisor, reservations and savings plans, and idle or orphaned resources.
 - **Maturity:** a Crawl, Walk and Run FinOps score, with the evidence behind each rating, and a FinOps Foundation assessment report of your subscriptions.
-- **More data, with your consent:** Microsoft 365 licenses and Copilot usage (Microsoft Graph), Log Analytics and Application Insights queries, and cost exports in Azure Storage. Each needs its own consent.
-- **Scheduled jobs:** rerun a check on a schedule, such as a daily cost digest, a budget guard or an anomaly watch.
+- **Microsoft 365 Copilot spend (preview):** from Microsoft Graph's new Copilot cost management API, Copilot Credits per user, service and security group, each user's balance under the spending policy that governs it, a user's sessions, the tenant's credit balance, the spending policies and users' credit requests, shown as the Microsoft 365 admin center's Policies, Users & groups and Services & agents views with its names and columns. Their money comes from your Azure costs, where pay-as-you-go Copilot use is billed as Microsoft Copilot Studio, priced at the published rate per credit until it is billed. Changing a limit or deciding credit requests needs a second consent, and you approve each change.
+- **GitHub:** GitHub Copilot plans, prices and budgets from GitHub's documentation, and GitHub charges that an Azure subscription pays for in your Azure costs.
+- **More data, with your consent:** Microsoft 365 licenses and Copilot usage (Microsoft Graph), Microsoft 365 Copilot cost management, Log Analytics and Application Insights queries, and cost exports in Azure Storage. Each needs its own consent.
+- **Scheduled jobs:** rerun a check on a schedule, such as a daily cost digest, a budget guard, an anomaly watch or a Copilot credit watch.
 - **Deliverables:** charts, Excel and CSV reports, HTML presentations, and Azure CLI, PowerShell, Bicep or ARM scripts for you to review.
 - **Approved changes:** for a change such as a tag or a budget, you see the exact request and approve it before it runs.
 
@@ -114,7 +125,7 @@ flowchart LR
     API --> Agent[Microsoft Agent Framework]
     API --> Jobs[Job scheduler]
     Jobs --> Agent
-    Agent --> Model[Foundry project Responses API]
+    Agent --> Model[Foundry Responses API]
     Agent --> Tools[Host tools]
     Tools --> ARM[ARM and Cost Management]
     Tools --> Graph[Microsoft Graph]
@@ -123,7 +134,7 @@ flowchart LR
     Entra[Microsoft Entra ID] --> API
 ```
 
-The app runs as one Linux container on Azure App Service. The Azure Developer CLI provisions Azure Container Registry, a Microsoft Foundry account and project, monitoring, managed identities, role assignments, App Service and, optionally, the Entra app registration for sign-in.
+The app runs as one Linux container on Azure App Service. The Azure Developer CLI provisions Azure Container Registry, a Microsoft Foundry account with the model deployment, monitoring, managed identities, role assignments, App Service and, optionally, the Entra app registration for sign-in. The agent calls the Foundry account's own Responses API, so no Foundry project is needed.
 
 The agent can use only its registered tools, plus the model's hosted web search for recent public information (on by default). Search queries leave the Azure data boundary; set `AZURE_OPENAI_WEB_SEARCH=false` before `azd up` to turn it off. There is no shell, file system or code execution. Run one active instance, because session and throttling coordination is process-local.
 
@@ -159,22 +170,21 @@ azd down --purge
 
 - [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - [Node.js 22+](https://nodejs.org/)
-- Azure CLI signed in to the tenant that hosts your Microsoft Foundry project
+- Azure CLI signed in to the tenant that hosts your Microsoft Foundry account
 
-Your Azure CLI identity also needs **Foundry User** (formerly Azure AI User) on the Foundry account that hosts the project. **Cognitive Services OpenAI User** covers only the account's OpenAI endpoints, not the project Responses endpoint, and management roles such as Owner don't include model-inference permissions. This is separate from signing in to your Azure tenant in the browser; see [local model authorization](CONTRIBUTING.md#local-model-authorization).
+Your Azure CLI identity also needs **Foundry User** (formerly Azure AI User) on the Foundry account. Management roles such as Owner don't include model-inference permissions. This is separate from signing in to your Azure tenant in the browser; see [local model authorization](CONTRIBUTING.md#local-model-authorization).
 
 ### Configure
 
 ```powershell
 cd src\backend
-dotnet user-secrets set "AzureOpenAI:Endpoint" "https://<account>.services.ai.azure.com/api/projects/<project>"
+dotnet user-secrets set "AzureOpenAI:Endpoint" "https://<account>.services.ai.azure.com"
 dotnet user-secrets set "AzureOpenAI:DeploymentName" "<your-deployment>"
 ```
 
 Optional settings:
 
 - `AzureOpenAI:TenantId` when the model is in a different tenant from the Azure CLI default
-- `AzureOpenAI:ProjectName` if `AzureOpenAI:Endpoint` is the account endpoint rather than the project endpoint
 - `Microsoft:ClientId`, `Microsoft:ClientSecret` and `Microsoft:TenantId` to enable Azure sign-in locally
 - `ApplicationInsights:ConnectionString` for telemetry
 

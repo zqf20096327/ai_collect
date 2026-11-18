@@ -90,7 +90,7 @@ routes messages to the agent, and serves a WebChat UI at
 `http://127.0.0.1:18790`; log in with `wirken webchat open --browser`:
 
 ```
-  wirken v3.4.0
+  wirken v3.4.1
   ──────
 
   Provider: ollama/llama3.2
@@ -307,6 +307,9 @@ independent crate (`crates/adapter-<channel>/`) implementing the same IPC
 contract: connect to the gateway UDS, perform the Ed25519 handshake, convert
 platform messages to and from Cap'n Proto frames. Telegram is the simplest;
 Teams shows the HTTP webhook variant.
+
+People who found, reported, proposed or designed something Wirken shipped are
+named in [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md).
 
 ## The name
 

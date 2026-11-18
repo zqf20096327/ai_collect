@@ -13,7 +13,7 @@
 
 <p align="center"><a href="https://agent-adapter.veloceai.in/assets/video/agent-adapter-reel.mp4"><img src="docs/assets/video/agent-adapter-reel-play.jpg" alt="Watch Agent Adapter in 29 seconds" width="270"></a><br><sub>Watch it in 29 seconds · <a href="https://agent-adapter.veloceai.in/reel/">share it</a></sub></p>
 
-<p align="center">Version 1.1.1 · Python 3.11+ · Apache-2.0 · 21 frameworks and engines · Coverage gate 90%</p>
+<p align="center">Version 1.2.0 · Python 3.11+ · Apache-2.0 · 21 frameworks and engines · Coverage gate 90%</p>
 
 <p align="center"><a href="https://www.producthunt.com/posts/agent-adapter?utm_source=badge-featured&utm_medium=badge&utm_campaign=agent-adapter" target="_blank"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1310997&theme=dark"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1310997&theme=light" alt="Agent Adapter on Product Hunt" width="250" height="54"></picture></a></p>
 
@@ -249,7 +249,7 @@ install: the [run viewer demo](https://agent-adapter.veloceai.in/assets/demo/sam
 | Tools | `@registry.tool`, `registry.wrap()`; shaping (`fixed=`, `hide=`, `rename=`); portable-schema check; typed errors under `AdapterError` |
 | Schemas | OpenAI (Chat, Responses, strict), Gemini and Anthropic renderers; strict-mode `null` means "use the default" |
 | Execution | `run`, `run_many`, `run_plan` waves, `parallel`, `as_completed`; retry, timeout, hooks, run guards |
-| Multi-agent | agents as tools (`agent_tool`, `LoopAgent`) and handoffs (`handoff`, `HandoffModel`) in one run, with a depth guard |
+| Multi-agent | agents as tools (`agent_tool`, `LoopAgent`) and handoffs (`handoff`, `HandoffModel`) in one run, with a depth guard; next release: a shared board for parallel and sequential agents with a Parallel view ([Board](docs/how-to/shared-board.md)), and documents in Markdown, HTML, XML or text filled from many model calls with an editor, a verifier and inline citations ([Templates](docs/how-to/template-documents.md)) |
 | Guardrails | `PIIGuard` (emails, phones, cards, IBANs, secrets; no model), `CallableGuard`, Presidio, NeMo; block, redact or approve |
 | Policy file | access, approvals, guards, budgets and limits per tool, team and environment in one YAML, TOML or JSON file; `agent-adapter policy check` ([Policy file](docs/concepts/policy.md)) |
 | Audit log | a signed, hash-chained log of approvals, guard blocks, budget stops and memory erases; `agent-adapter audit verify` and export to CSV ([Audit log](docs/concepts/audit.md)) |
@@ -266,6 +266,7 @@ install: the [run viewer demo](https://agent-adapter.veloceai.in/assets/demo/sam
 | Evals | `run_eval` on any agent with graders (exact, regex, JSON schema, tools, cost, latency, LLM judge); JUnit, Markdown and JSON reports; `agent-adapter eval`; a pytest plugin; an Evals tab in the viewer |
 | Evals from production and cost advisor | recorded runs become eval cases ([Evals from production](docs/how-to/evals-from-production.md)); a cheaper model per flow node or stage that keeps the score ([Cut model costs per step](docs/how-to/cut-model-costs.md)) |
 | Optimiser | offline Propose → Probe → Compose loop over your eval cases that writes a reviewable diff |
+| Voice, video, robots (next release) | VoxCat (`VoiceSession`): its own end of turn and early replies with any STT and TTS ([Benchmark](docs/how-to/voxcat-benchmark.md)); calls with no media server (mic, WebSocket, browser WebRTC, Twilio, Telnyx, Plivo, Vonage), tools that finish once when the caller cuts in, spoken approvals, LiveKit and Pipecat connectors ([Voice](docs/how-to/voice-pipeline.md)); a `look` tool for a camera or screen ([Video](docs/how-to/voice-video.md)); `RobotGate` limits and an emergency stop, tested in MuJoCo and ROS 2 simulation ([Robots](docs/how-to/robot-safety.md)) |
 
 The full list, with a guide for each feature: [Features](docs/features.md). Next: the [Roadmap](docs/roadmap.md).
 

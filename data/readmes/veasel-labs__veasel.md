@@ -86,6 +86,16 @@ Headless turn with the same local server and approval rules:
 veasel run --prompt "Explain the request flow in this repository" --workspace . --json
 ```
 
+### API authentication
+
+Every API route except the liveness probe `GET /v1/health` requires
+`Authorization: Bearer <token>`. The backend creates a 256-bit token in
+`$VEASEL_DATA_DIR/api-token` (default `~/.local/share/veasel/api-token`, mode
+0600) on first start; the CLI, TUI and Desktop find it there. External
+clients can read that file or the `VEASEL_API_TOKEN` override. Rotate with
+`veasel token rotate`. Design and limits (a same-user process can read the
+token file): [docs/security/backend-caller-auth.md](docs/security/backend-caller-auth.md).
+
 ## Current status
 
 The working vertical slice includes:
@@ -112,12 +122,11 @@ Honesty bounds that stay in the product voice:
 - Approved shell defaults to fail-closed OS sandboxing: Bubblewrap on Linux
   (`shell.sandbox.bubblewrap`), Seatbelt on macOS (`shell.sandbox.seatbelt`),
   or AppContainer + Job Object on Windows (`shell.sandbox.windows`). Missing
-  backends refuse execution by default; `VEASEL_SHELL_SANDBOX=auto` explicitly
-  permits an unsandboxed fallback and `off` disables wrapping. Windows grants
+  backends refuse execution in every `VEASEL_SHELL_SANDBOX` mode; only the
+  explicit `VEASEL_SHELL_ALLOW_UNSANDBOXED` opt-in (see docs/SHELL_COMMANDS.md) runs unsandboxed. Windows grants
   workspace ACL to the AppContainer SID and denies network by default; it is
   not Codex-level WFP/LPAC. Trusted MCP stdio also defaults to fail-closed
-  sandboxing (`VEASEL_MCP_STDIO_SANDBOX=require`); `auto` explicitly permits
-  unsandboxed fallback and `off` disables wrapping. Capabilities are shown only
+  sandboxing (`VEASEL_MCP_STDIO_SANDBOX=require`); unsandboxed execution needs the explicit `VEASEL_SHELL_ALLOW_UNSANDBOXED` opt-in (see docs/SHELL_COMMANDS.md). Capabilities are shown only
   when the platform wrap will run; inspect effects before approval
 - Autonomous Linux shell is Bubblewrap fail-closed best-effort containment,
   not a Codex-level sandbox
@@ -137,9 +146,17 @@ Responses / local-server presets). See the
 as independent protocol implementations.
 
 `/connect` is the happy path for credentials and model selection; `/models`
-adds endpoint and budget controls (Ctrl+U / Ctrl+O). Keys are stored locally
-in plaintext under `$VEASEL_DATA_DIR/model-settings.json` (owner-only on
-POSIX). Saved profile keys win over environment variables for the same
+adds endpoint and budget controls (Ctrl+U / Ctrl+O). Keys are stored in the
+OS keychain (Linux Secret Service via `secret-tool`, macOS Keychain, Windows
+Credential Manager); `model-settings.json` keeps only a reference. If the
+keychain is unavailable or locked Veasel fails closed with an actionable error
+instead of writing plaintext. Headless servers can opt in with
+`VEASEL_SECRET_STORE=file` (keys stay in the owner-only file, plaintext at
+rest). On Linux install `libsecret-tools` (`secret-tool`) and run a Secret Service
+provider (GNOME Keyring, KeePassXC); on a headless host without one, saving a
+key is refused with an error that names `VEASEL_SECRET_STORE=file`. Existing plaintext keys migrate automatically on first start; unsetting
+`VEASEL_SECRET_STORE=file` later is the rollback (keys are copied back and the
+keychain entries removed). See `docs/security/threat-model.md`. Saved profile keys win over environment variables for the same
 provider; env remains an optional alternative. `VEASEL_API_URL` is accepted
 only for unauthenticated loopback HTTP. The API rejects non-loopback `Host`
 values and non-loopback browser `Origin` headers; settings views expose

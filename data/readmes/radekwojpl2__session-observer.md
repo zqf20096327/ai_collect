@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/brand/cover.png" alt="Session Observer: a live dashboard of every prompt, tool call, subagent and token in a Claude Code session" width="860"></p>
+
 # Session Observer — a Claude Code plugin
 
 [![CI](https://github.com/radekwojpl2/session-observer/actions/workflows/ci.yml/badge.svg)](https://github.com/radekwojpl2/session-observer/actions/workflows/ci.yml)
@@ -136,6 +138,10 @@ Using `--plugin-dir`? Run `git pull` in the clone and restart Claude Code. The d
 keeps running in the background across restarts, so stop it too (commands under
 [Uninstall](#uninstall)); the next session starts the new one. If the page says it could not
 load its files, this is why.
+
+To check which version is running, look next to the title in the dashboard header: it shows the
+running server's version (also in `/api/health`). If it is older than the one you installed, the old
+server is still running; stop it as above.
 
 ### Uninstall
 

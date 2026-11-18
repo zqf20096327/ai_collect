@@ -52,7 +52,7 @@ flowchart TB
 
 | 依赖 | 用途 | 备注 |
 |---|---|---|
-| **DeepSeek Harness** | 运行宿主 | 配置卡片需 **DSH ≥ 0.2.0-rc.2**；更早版本安静降级为"无卡片"，其余功能不受影响 |
+| **DeepSeek Harness** | 运行宿主 | 插件本体需 **DSH ≥ 0.2.2-rc.1**（`engines.dsh` + 装载期 `assertWhenCapable` 双重把关）。更早宿主会**整插件拒绝装载**（三个工具与 vendored 技能都不可用），因为 `when` 会被静默忽略、范围隔离失效；仍在使用 0.2.1 的用户请停留在 `v6.9.0-r2`（该版是本仓库最后一个不依赖步骤级 `when` 的发布） |
 | **Node.js ≥ 22.12** | 插件与工具运行时 | 纯内置模块，无 npm 依赖；22.12 是装载链路的下限（`require(esm)`） |
 | **python3 ≥ 3.10** | 上游脚本套件与完整性门 | 建议 `python3-venv` 可用（venv 模式依赖其 ensurepip） |
 | **pip3** | 安装上游 Python 依赖 | venv 模式下改用 `<venv>/bin/pip3`，不受 PEP 668 拦截 |
@@ -118,18 +118,18 @@ GUI 侧边栏 **插件页 → 已安装 → `dsh-ppt-master-wrapper`** → 包�
 
 ### 工具可见范围（全局 / 指定工作区）
 
-3 个 `ppt_master_*` 工具默认注册为**全局工具**。工作区很多且多数与 PPT 无关时，可把它们从无关工作区的工具表里**真正移除**（宿主装配层 `tools.restrict`，不是前端过滤）：
+3 个 `ppt_master_*` 工具默认注册为**全局工具**。工作区很多且多数与 PPT 无关时，可把它们从无关工作区的工具表里**真正移除**——走宿主的**步骤级可见性**（`tools.register(def, { when })`），不是前端过滤：每个模型步骤宿主都会调 `tools.resolve()` 逐工具判定，为真才出现在本步工具表。
 
 | 键 | 取值 | 默认 |
 |---|---|---|
 | `scope.mode` | `global`（所有工作区可见） / `selected`（仅名单内可见） | `global` |
 | `scope.workspaceIds` | 工作区 id 字符串数组 | `[]` |
 
-`selected` 下：会话按「工作区 `sessionIds` 成员 → 会话 `cwd` 规范路径」两级判定归属，命中且 id 在名单里才可见——**不属于任何工作区的会话也看不到**。降级口径（明示收窄意图，答不出来时不静默放宽）：缺判定服务时按最严口径拒绝并 `console.warn`；注册表瞬时读失败维持上一轮判定；宿主缺 `tools.restrict` 时退化为仅执行层拒绝。配置走卡片的模式单选 + 工作区勾选列表（清单来自宿主 `workspaces` 服务），保存即生效。
+`selected` 下：会话按「工作区 `sessionIds` 成员 → 会话 `cwd` 规范路径」两级判定归属，命中且 id 在名单里才可见——**不属于任何工作区的会话也看不到**。失败口径（明示收窄意图，答不出来时不静默放宽）：注册表未就绪或读取失败、无 `cwd`、路径未命中、名单为空、判定尚未完成 ⇒ 本步一律不可见（fail-closed），注册表未就绪只 `console.warn` 一次；配置保存后下一步生效。
 
-宿主下限：`scope.mode=selected` 除配置卡片外，还依赖宿主注入 `agents` / `workspaceRegistry` 服务与 `tools.restrict` / `tools.guard` 能力；缺任一时按上述降级口径拒绝或降级（不静默放宽），不影响 `global` 模式与其余功能。
+宿主下限：`scope` 依赖步骤级 `when`（`tools.register(def, { when })` + `tools.resolve`），即 **DSH ≥ 0.2.2-rc.1**；更早的宿主没有该能力（0.2.1 会静默忽略 `when`），本版本 `engines.dsh` 声明下限并在装载期 fail-loud，不会出现"配了 selected 却全可见"的静默失效。
 
-已知限制：只收窄**工具**不收窄技能条目；判定基于会话创建时的 `cwd`；已删除工作区的 id 被忽略；释放限制层时宿主抛错则该层可能残留（重启可清）；市场截图 `assets/screenshot-1-config-card.png` 待重制（卡片新增了可见范围节）。
+已知限制：只收窄**工具**不收窄技能条目；判定使用会话的 `cwd`（宿主在创建时写入，之后一般不变）；符号链接的 `cwd` 首步可能不可见，异步规范化后下一步恢复；隐藏工具的调用会以宿主 `UNKNOWN_TOOL` 失败（不再有自定义拒绝文案）；已删除工作区的 id 被忽略；市场截图 `assets/screenshot-1-config-card.png` 待重制（卡片新增了可见范围节）。
 
 ### profile patch（等价通道）
 
@@ -158,9 +158,9 @@ GUI 侧边栏 **插件页 → 已安装 → `dsh-ppt-master-wrapper`** → 包�
 - 只改 `lib/client.js`——**不需要**（宿主 stat 轮询热更新，约 500ms）；
 - 改 `package.json` 的 `dsh.client` / `exports["./client"]` 声明面、或手工编辑 profile patch——**需要**。
 
-**卡片没出现 / 不可用**，按序排查：① 刚改过 `package.json` 声明面？→ 重启 DSH（最常见）；② 宿主「插件」页是否提供 `plugins.bundle.config` 槽位；③ 卡片显示「配置通道未接入」＝宿主缺 `configForms` 服务（可选拼装，功能面不受影响）；④ 老宿主不认 `dsh.client` → 安静降级，插件功能不受影响，配置走 profile patch 或升级宿主。
+**卡片没出现 / 不可用**，按序排查：① 刚改过 `package.json` 声明面？→ 重启 DSH（最常见）；② 宿主「插件」页是否提供 `plugins.bundle.config` 槽位；③ 卡片显示「配置通道未接入」＝宿主缺 `configForms` 服务（可选拼装，功能面不受影响）；④ 宿主低于 0.2.2-rc.1 → 整插件不装载（不是只丢卡片），升级宿主；仅缺 `dsh.client` 声明面时才是"无卡片、其余照常"。
 
-**其他**：插件装载失败并连带技能面消失，通常是 `@deepseek-ai/schemastery` 受控解析失败——确认宿主 profile 的 `node_modules` 内有该包，且 `DSH_NODE_MODULES` / `DSH_PROFILE_DIR` / `DSH_HOME` 指向它（详见 [AGENTS.md](AGENTS.md) §3）。**入口技能缺失**：宿主拒绝不带 `resourceBase` 的合成候选时仅入口技能缺席，vendor 技能与工具不受影响。
+**其他**：插件装载失败并连带技能面消失，通常是 `@deepseek-ai/schemastery` 解析失败——装好的插件靠**裸导入**从 profile 的 `node_modules` 取它（与官方插件同一条路径），故先确认 profile 里确实提升了该包；`DSH_NODE_MODULES` / `DSH_PROFILE_DIR` / `DSH_HOME` 只是 `link:` 开发形态的兜底，宿主进程里通常为空，不要指望它们（详见 [AGENTS.md](AGENTS.md) §3）。**入口技能缺失**：宿主拒绝不带 `resourceBase` 的合成候选时仅入口技能缺席，vendor 技能与工具不受影响。
 
 ## 同步上游更新
 
@@ -195,7 +195,7 @@ dsh-ppt-master-wrapper/
 ├── lib/                              # 客户端半边 / 工具 / venv / skill provider / scope
 ├── skills/ppt-master/                # ★ 上游 vendor 树（逐字节，零改写）
 ├── scripts/                          # sync-upstream / verify-plugin / check-dsh-compat
-├── tests/                            # node:test 全套（732 用例）
+├── tests/                            # node:test 全套（702 用例）
 ├── docs/superpowers/                 # 设计与计划文档（开发史）
 ├── .github/                          # CI 与 issue/PR 模板
 └── README / AGENTS.md / CONTRIBUTING.md / NOTICE / LICENSE
@@ -209,11 +209,11 @@ dsh-ppt-master-wrapper/
 
 ```bash
 node scripts/check-dsh-compat.mjs     # 契约检查：spec §7.7 六项（+⑦）设计成立性前置
-node --test tests/*.test.mjs          # 全套测试（本机真实 SDK 环境 732/732）
+node --test tests/*.test.mjs          # 全套测试（本机真实 SDK 环境 702/702；若存在 `~/.ppt-master/.env`，仅 `envFileExists` 1 例变红）
 node scripts/verify-plugin.mjs --upstream .upstream/refs/tags/<ref>@<sha>   # 完整性校验（需缓存目录）
 ```
 
-无宿主 SDK 的机器（含 CI）：`node tests/helpers/stub-sdk.mjs .ci-stub` 建默认 stub 树，以 `DSH_NODE_MODULES=$PWD/.ci-stub/node_modules` 跑前两条（预期 732/730/2 skip，skip 为显式声明）；机制与红灯形态见 [AGENTS.md](AGENTS.md) §4，CI 见 `.github/workflows/ci.yml`。
+无宿主 SDK 的机器（含 CI）：`node tests/helpers/stub-sdk.mjs .ci-stub` 建默认 stub 树，以 `DSH_NODE_MODULES=$PWD/.ci-stub/node_modules` 跑前两条（预期 702/700/2 skip，skip 为显式声明）；机制与红灯形态见 [AGENTS.md](AGENTS.md) §4，CI 见 `.github/workflows/ci.yml`。
 
 ## 版本历史
 
@@ -236,6 +236,8 @@ node scripts/verify-plugin.mjs --upstream .upstream/refs/tags/<ref>@<sha>   # �
 | `v6.8.0-r4` | 环境声明与仓库约定修订：`engines.node` 由 `>=20.0.0` 校正为 `>=22.12.0`（装载链路需 `require(esm)`）；CI 兼容 job 改为 `node22-compat` 并钉死该下限；release 说明格式约定为「严谨总结 + 每 PR 一行 + 中英双语」。无运行时行为变更 |
 | `v6.9.0` | 上游同步：vendor v6.9.0（逐字节）。Image→PPTX 新增 OCR 文本证据——`image_ocr.py scan` 把归一化页图 OCR 成可复核文本块（行框、估算字号、取样墨色），文字层成为「去文字底板」之上的原生文本，`merge-base` 会回读底板、发现文本框内残留文字时以 exit 3 报出；新增 `image_layers.py`（`check` 校验图层与页面配准、`diff-matte` 由页面自身像素导出图层、`mono-matte` 从色板切单色图形）与 `image_normalization.py`；profile 不再绑定单一宿主，任意带参考图路径的视觉宿主均可（文本去除默认 `-b openai`、注册图层默认 `-b gemini`）。`image_gen.py` 支持 `--gif-frames` 生成动态 GIF 与 `gpt-image-2.6` 系列，每张图按其文件名格式只写一次（`.jpg` 保留 Gemini 原始 JPEG 字节，不再 PNG 往返留孤儿）；旁白新增 `--provider openai`（`gpt-realtime-2.1-mini` 走 Realtime WebSocket，替代 2027-01-06 退役的 `tts-1`／`gpt-4o-mini-tts`）。覆盖写入修复：导出 `-o` 指向源 PPTX、`source_to_md` 输出指向输入（含硬链接别名）均在写盘前拒绝；模板重装改写 `Installed-from` 行而非叠加。依赖清单 19 条逐字不变（venv 无需重建），另清理 6.8.0 误入 vendor 的 `__pycache__` |
 | `v6.9.0-r1` | npm 渠道与发布可追溯性。`package.json` 增 `publishConfig`（钉死 `registry.npmjs.org`——本机默认 registry 是镜像站，镜像不能发布）；双语 README 安装段把 npm 提为方式一，并补 semver 提示（`6.9.0-r1` 属**预发布**，`^6.9.0` 不含它，锁定修订版须写全版本号）；维护者手册新增 npm 发布流程。发布改由 `.github/workflows/publish.yml` 在 CI 侧执行 `npm stage publish`——维护机出口上行被限到 ~23 KB/s，17.7 MB 的 tarball 传不完（三次实测均中途 ECONNRESET），runner 上行正常；维护者带 2FA `npm stage approve` 完成发布。该 workflow 现按必填 `version` 输入检出 `refs/tags/v<version>` 并断言 `package.json.version` 与之一致：旧版从触发那一刻的 main 取码，正是这一点让已发布的 6.9.0 与 tag `v6.9.0` 不是同一棵树；同时对 `npm stage publish` 启用 `--provenance`（`id-token: write`），由 npm 签发把包绑定到 commit 与 workflow 的签名证明。无运行时行为变更 |
+| `v6.9.0-r2` | 装载期解析回到正路（**运行时行为有变**）：宿主进程里 `DSH_HOME` / `DSH_PROFILE` / `DSH_PROFILE_DIR` **恒为空**——它们只由 `dsh-shell-env` 在每次 shell 调用时现造，`dsh-app-boot` 的 `.env` 分层又把 `DSH_*` 前缀列为 bootstrap-only 直接拒绝；原实现只认这三个环境变量，故 Desktop 直启、或从普通终端启动 `dsh` 时装载即抛「定位链四级均未命中」，整个插件不启用（即 `1 entry did not activate` 那一行）。现改为**先裸导入** `@deepseek-ai/schemastery`（装好的插件由 Node 从 profile 的 `node_modules` 解析，与官方插件同一条路径），未命中才落回 env 定位链——那条链现在只服务 `link:` 的符号链接开发形态 |
+| `v6.9.0-r3` | 工具可见范围改用宿主**步骤级 `when`**（**运行时行为有变；引擎下限抬到 DSH ≥ 0.2.2-rc.1**）：删除 per-agent `tools.restrict` 装配层、根 ctx `tools.guard` 兜底、`agent/created` 订阅、注入看门狗与复检定时器（净删约 2100 行）；三个工具改为 `tools.register(def, { when })`，由宿主每步 `tools.resolve` 逐个 `await`。判定同步、永不抛；`global` 不读注册表；`selected` 全程 fail-closed。两级判定：`resolveNow`（会话成员 + 字符串路径）同步回答本步，未命中且有 `cwd` 时排一次异步精化（`judgeAgent` + `resolveByPath`，单飞 + 2s 节流 + 代际）。缓存按 **agent 对象**（WeakMap）而非 id：正缓存绑定 `cwd`、命中依据（`member`/`path`）与注册表指纹，`no-match` 负缓存与注册表指纹绑定（清单变了才重排）。**行为差异**：隐藏工具被调用由自定义中文解释变为宿主 `UNKNOWN_TOOL`；0.2.1 及更早**整插件拒绝装载**（`engines.dsh` + 装载期 `assertWhenCapable` 双重把关），仍用 0.2.1 的用户请停留在 `v6.9.0-r1`。测试 734 → 702（旧机制用例随代码删除，补 when 语义与缓存失效用例） |
 
 > 版本规则：`base` 镜像上游 release，包装层修订追加 `-rN`。逐项明细见 [AGENTS.md](AGENTS.md) §5。
 

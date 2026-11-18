@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.98.8-gold"></a>
+  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.0-gold"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-ISC-blue.svg"></a>
   <a href="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml"><img alt="Build" src="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg">
@@ -115,6 +115,18 @@ npm run build
 ## 🆕 最新动态
 
 > 完整变更日志见 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+### v0.99.0 · 续写训练「跨章复制/原地踏步」根修
+
+- **问题**：10 章训练报告中第 14–17、20 章整段复制上一章，剧情原地踏步，文风漂移并自创「引魂蛆/骨刺」等玄幻设定。
+- **根因**：并行批量中修订轮熔断后，兜底取稿按「黑板任意最新稿」取到了下一章；第 n 章被装配成第 n+1 章正文，相邻章因此字节相同（13/14、16/17、19/20），draft 11/15/18 从未落库。报告里的承接断裂大多是这条错位链，不是模型幻觉。
+- **结果**：兜底取稿与修订兜底都只接受本章草稿；训练新增 5 条写作红线（设定/语体/推进/承接/设定白名单）、资产重建逐章梗概首尾兜底、跨章复制判「不可用」、质量门逐章单一归类；正文首行章名统一裁掉。
+
+### v0.98.9 · 修复任务进度与执行日志显示不一致
+
+- **问题**：任务详情头部进度已到 40%，展开的「执行日志」最新一条仍停在「进度 5%」；续写训练页的「最新日志」同样不刷新。
+- **根因**：任务列表每 5 秒轮询，日志查询却只在任务完成/失败/取消时刷新；运行中的 `task-progress` 事件没有前端消费者，日志面板一直停留在展开时刻。
+- **结果**：每个进度事件同时刷新任务列表与对应日志，日志随 5% → 20% → 30% → 40% 等阶段实时推进，并与头部进度、更新时间一致。
 
 ### v0.98.8 · 修复日志自动上传提议从未触发（三处日志布局不匹配）
 

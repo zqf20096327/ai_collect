@@ -59,6 +59,7 @@ That same 80-file project that wouldn't fit? Now you can ask: *"Explain the enti
 ### Command Rewriting (`skim init`)
 - PreToolUse hook rewrites `ls`, `grep`, `gh`, `cargo test`, `vitest`, `git diff` into skim equivalents
 - File reads (`cat`, `head`, `tail` on code files) are rewritten into direct skim reads (e.g. `cat file.ts` → `skim file.ts --mode=pseudo`); output is a structured view, not raw bytes — skim emits a one-line stderr notice whenever the served view differs from raw file contents. `head -20 file.ts` becomes `skim file.ts --mode=full --max-lines 20` (verbatim lines; when the file is longer, one slot goes to the elision marker, so the bound is N lines *total* — with one documented exception at `N=1`, which emits 1 content line plus the marker), and `tail -5 file.ts` likewise with `--last-lines 5`; bare `head`/`tail` default to 10 lines
+- Hook file rewrites select explicit modes or line limits. The [default character bound](#default-single-input-limit) does not apply.
 - Two-layer rule system with declarative prefix-swap and custom argument handlers
 - One command installs the hook for automatic, invisible context savings
 - Round-trip safe: commands with newlines, heredocs, or command substitution are never rewritten, and neither is a command whose target binary skim cannot resolve on `PATH` (a shell function or alias is invisible to a `PATH` probe by construction, so the real command runs untouched); piped commands are refused too, with one exception — `<cmd> | cat` (bare `cat`, sole consumer, no redirects) rewrites its source, because bare `cat` renders a stream for a reader rather than consuming its bytes
@@ -160,9 +161,9 @@ Its notes do not change files or the exit code. Fix broken markers by hand befor
 
 ### Code Search (`skim search`)
 - **Scan engine** — `skim search NAME` reads the files at query time. There is no index, no build step, no cache and no git hook. Each query lists or counts every matching line. Every bound is a named constant, and each bound that fires prints a marker with exact counts. `skim search` records no analytics row.
-- **Labelled view** — a bare identifier (`skim search launchWorker`) gives the definition first, with its line range. Each call follows, with the function that holds it. Imports, strings, comments, text and partial matches are counted by role (`--all` lists them, `--full` prints the text of long sections). When a name has two or more definitions, each definition is listed and a note gives the count. Calls are not split by definition. Roles come from syntax, not from types.
-- **Word view** — a quoted argument with several words (`skim search "temporal staleness check"`) lists the files that hold all the words first, ranked by file kind (source, test, docs, changelog, generated) and then by count. It lists 10 files by default (`--limit N` lists more). If fewer than 3 files hold all the words, files with fewer words follow.
-- **Flags in the rg style** — `-i`, `-S` (smart case), `-w`, `-F`, `-E` (regex), `-g GLOB` and `-t TYPE` (repeat them; a leading `!` leaves files out), `-l` (paths), `-c` (counts per file), `-C N` (context lines), plus `--all`, `--full`, `--json`, `--limit N`, `--offset N` and `--root DIR`. Short boolean flags can join (`-iwF`). The pattern is a literal and is case sensitive by default. The flag set is closed: an unknown flag exits 2, and `skim search` starts no other program. `-l` and `-c` print in path order.
+- **Labelled view** — a bare identifier (`skim search launchWorker`) gives the definition first, with its line range. Each call follows, with the function that holds it. Imports, strings, comments, text and partial matches are counted by role (`--all` lists them, `--full` prints the text of long sections). When a name has two or more definitions, a call line can show `(def N)`. N is the definition's name line. Every call match on that line must fit the one definition of the name in its own file. A plain call needs a free function and no import of that name. A `self`, `this` or `Self` call needs a method. This rule covers Rust, TypeScript, JavaScript, Python and Go only. Other calls stay not split. If any call line is assigned, the clash note counts assigned and other call lines, not individual calls. With none assigned, the note gives the definition count and states that no calls are split. Roles come from syntax, not from types.
+- **Word view** — a quoted argument with several words (`skim search "temporal staleness check"`) lists the files that hold all the words first. Rank order is file kind (source, test, docs, changelog, generated), then a file name that holds a query word, then count. The name test ignores case and matches whole tokens in the file stem or definition name. It lists 10 files by default (`--limit N` lists more). If fewer than 3 files hold all the words, files with fewer words follow. The `called:` block also lists, by name, callable definitions that the listed source files call when the definition name holds a query word. Each definition appears once, with its source range and first caller. Definitions in listed files are skipped. The block uses only files already parsed; it does not resolve imports or calls. Bounds give exact counts and a remedy.
+- **Flags in the rg style** — `-i`, `-S` (smart case), `-w`, `-F`, `-E` (regex), `-g GLOB` and `-t TYPE` (repeat them; a leading `!` leaves files out), `-l` (paths), `-c` (counts per file), `-C N` (context lines), plus `--all`, `--full`, `--json`, `--limit N`, `--offset N` and `--root DIR`. Short boolean flags can join (`-iwF`). The pattern is a literal and is case sensitive by default. The flag set is closed: an unknown flag exits 2, and `skim search` starts no other program. `-l` and `-c` print in path order. `-C`, `--all` and `--full` apply to the labelled view only: the word view exits 2 with them.
 - **Universe** — every tracked text file, plus the untracked files that the ignore files allow. There is no language list and no file cap. A file that is binary, not UTF-8, above 5 MiB, unreadable, missing, a link, or outside the root is not read. It is counted with its reason in the last line of the output (`total: …; N files searched, M left out`).
 - **Limit while a query runs** — a query checks each folder before it reads the files in it. A folder that another process replaces with a link while a query runs can make the query read outside the root. `rg` and `grep` have the same limit. Do not change the work tree while a query runs.
 - **Hidden and secret-bearing files** — tracked hidden files and tracked files that may hold secrets (`.env`, key files) are searched and listed like other tracked files. Use `-g '!NAME'` to leave one out. A later release can change this default to leave such files out; the rule sits in one function (`sensitive_admission`) and one constant (`SENSITIVE_PATH_POLICY`) in `crates/rskim/src/cmd/search/universe.rs`. Untracked hidden files are not searched.
@@ -170,6 +171,35 @@ Its notes do not change files or the exit code. Fix broken markers by hand befor
 - **Output and exit codes** — `--json` prints one compact object on one line (an error is `{"error":"…"}`). `--limit N` and `--offset N` page the files in rank order. Exit codes: `0` a line matched, `1` no match, `2` an error (an unknown or removed flag, a bad value, an invalid regex, a bad `--root`, a git index or repository state that cannot be read), and `141` on unix when the reader of stdout stops.
 - **Old search data** — skim 2.x built an index and installed git hooks. `skim init` and `skim init --uninstall` remove the old hook block and keep every other line of the hook files. `skim init` needs an installed agent and changes nothing without one; `skim init --uninstall` removes the block with no agent, but it removes skim completely. A hook that cannot be read gets its own note and the other hooks are still cleaned. `skim --clear-cache` removes the old index data under the cache folder, including the journal and temp files that a crash left, and prints a note with the count of every entry it leaves in place. It does not enter a folder that another user owns. `skim doctor` reports both as advisory lines, and says so when it cannot read a hook or the old index folder. A query never deletes a file.
 - **Removed flags** — each exits 2 with a message that names the replacement, and prints nothing on stdout. `--ast`: use ast-grep. `--hot`, `--cold`, `--risky` and `--blast-radius`: use `skim heatmap`. `--phrase` and `--near`: use `-F 'exact words'` or `-E`. `--lang`: use `-t TYPE`. `-j`: use `--json`. `--weights`, `--build`, `--rebuild`, `--update`, `--stats`, `--install-hooks` and `--remove-hooks` have no replacement, because there is no index.
+
+#### Agent trial
+
+This trial compares `skim search` with three code search tools for agents. Each run gives one question to an LLM sub-agent (Claude Sonnet), with one search tool and a file read tool. Each task ran 3 times for each tool: 4 lookup tasks, 8 multi-site tasks, 2 same-name tasks and 2 pattern tasks, on one Rust repository and two TypeScript repositories. A scorer compares each answer with a hand-checked answer key, and the pattern class is for information only. The trial ran from 2026-11-14 to 2026-11-17. The re-check ran only the skim arm again, on the lookup and same-name classes, with the search changes of this release, on 2026-11-18, with the same prompts, repository versions and scorer.
+
+Median calls counts the search calls in the wrapper log of each run; file reads are not in that log. Median tokens is the size of the last model turn above the fixed prompt, so it is a lower bound of the real cost. The prompt showed the subcommand word, so some skim calls typed it twice; each such call exits 2 and the agent calls again. These calls are in the skim counts: lookup 14 of 35 calls (trial) and 7 of 23 (re-check), same name 4 of 11 (trial) and 4 of 10 (re-check). Without them, the skim median calls is 1.0 in lookup and in same name, in both runs.
+
+| Class | Run | Tool (version) | Right | Median calls | Median tokens (lower bound) |
+|---|---|---|---:|---:|---:|
+| Lookup | re-check | skim (this release) | 10/12 | 2.0 | 3,768 |
+| Lookup | trial | skim 3.0.0 pre-release | 9/12 | 2.0 | 3,548 |
+| Lookup | trial | ast-grep 0.51.2 | 10/12 | 3.0 | 8,447 |
+| Lookup | trial | Semble 0.7.3 | 6/12 | 1.0 | 3,634 |
+| Lookup | trial | Serena 2.1.0 | 9/12 | 1.5 | 5,724 |
+| Multi-site | trial | skim 3.0.0 pre-release | 24/24 | 1.0 | 2,596 |
+| Multi-site | trial | ast-grep 0.51.2 | 19/24 | 2.5 | 7,018 |
+| Multi-site | trial | Semble 0.7.3 | 7/24 | 4.0 | 22,218 |
+| Multi-site | trial | Serena 2.1.0 | 18/24 | 1.5 | 5,240 |
+| Same name | re-check | skim (this release) | 6/6 | 2.0 | 3,504 |
+| Same name | trial | skim 3.0.0 pre-release | 6/6 | 2.0 | 3,176 |
+| Same name | trial | ast-grep 0.51.2 | 5/6 | 2.5 | 12,886 |
+| Same name | trial | Semble 0.7.3 | 1/6 | 4.5 | 29,623 |
+| Same name | trial | Serena 2.1.0 | 6/6 | 1.0 | 3,948 |
+| Pattern (info) | trial | skim 3.0.0 pre-release | 6/6 | 3.0 | 7,342 |
+| Pattern (info) | trial | ast-grep 0.51.2 | 6/6 | 3.0 | 7,168 |
+| Pattern (info) | trial | Semble 0.7.3 | 3/6 | 7.5 | 96,104 |
+| Pattern (info) | trial | Serena 2.1.0 | 6/6 | 1.5 | 8,536 |
+
+skim loses in these cells: lookup right answers in the trial (9 against 10 for ast-grep), median calls in lookup (against Semble and Serena), in same name and in pattern (against Serena), lookup tokens in the re-check (against Semble), and pattern tokens (against ast-grep).
 
 ### LLM Proxy (`skim proxy`)
 - Resident loopback HTTP/1.1 reverse proxy that sits between your agent and the LLM API
@@ -267,7 +297,7 @@ skim README.md --mode structure
 # Pipe to other tools
 skim src/app.ts | bat -l typescript
 
-# Read from stdin (--language recommended; shebang auto-detected, else lossless passthrough)
+# Read from stdin (--language recommended; shebang auto-detected, else raw text within the default bound)
 cat app.ts | skim - --language=typescript
 
 # Override language detection for unusual file extensions
@@ -298,13 +328,13 @@ skim - --language typescript   # Stdin (recommended; shebang auto-detected)
 ```
 
 **Common options:**
-- `-m, --mode` - Transformation mode: `structure` (default), `signatures`, `types`, `full`, `minimal`, `pseudo`
-- `-l, --language` - Override auto-detection (recommended for stdin; else shebang is tried, then lossless passthrough)
+- `-m, --mode` - Transformation mode: `structure` (default starting mode), `signatures`, `types`, `full`, `minimal`, `pseudo`
+- `-l, --language` - Override auto-detection (recommended for stdin; else skim tries a shebang, then raw text within the default bound)
 - `-j, --jobs` - Parallel processing threads (default: CPU cores)
 - `-n, --line-numbers` - Annotate output with original source line numbers (prefix `{line}\t{content}`)
 - `--max-lines N` - Emit at most N lines total; when content is elided, one slot goes to the elision marker. One documented exception at `N=1`: 1 content line **plus** the marker (2 lines), because spending the only slot on the marker returns a view containing no code, and dropping the marker to fit is silent loss
 - `--last-lines N` - Emit at most N lines from the tail; when content is elided, one slot goes to the elision marker. The same `N=1` exception applies — the carve-out is a property of the bound, not of the direction
-- `--tokens N` - Fit output within N tokens by escalating through modes, then line-truncating with a marker
+- `--tokens N` - One budget covers the whole output of a run, including headers, line numbers and markers
 - `--symbol NAME` - Print the raw source lines of one named declaration of one file. `Type::name` or `Type.name` selects a declaration inside one container. If two or more declarations have the name, skim prints all of them, each after a header line. One stderr notice line states how many lines are not shown. `--max-lines`, `--last-lines` and `--line-numbers` apply to the selected lines. Exit code 1: no declaration has the name. Exit code 2: the command is not a symbol read (stdin, two or more files, a glob, a directory, an empty name, `--tokens`, or a `--mode` other than `full`). Exit code 3: Markdown, JSON, YAML, TOML, or a file with no detected language. Known limits: raw source only. Functions in C and C++ files are not found, because their name is inside the declarator. Attributes, doc comments and decorators above a declaration are not in the printed range. The structure mode still parses `.tsx` files with the TypeScript grammar. See the [usage guide](docs/usage.md#symbol-read)
 - `--passthrough` - Bypass compression and exec the real tool with raw argv (equivalent to `SKIM_PASSTHROUGH=1`). **Not universal:** `env`/`printenv` keep credential redaction regardless of passthrough state, and the multi-level dispatchers (`cargo`, `dotnet`, `go`, `swift`) still serve the compressed summary whenever stdin is not a TTY — which is every agent harness, CI job, and pipeline. Run the tool directly when you need raw bytes from a build tool
 - `--debug` - Enable raw-fallback diagnostic banners on stderr (loss-bearing elision markers are always emitted regardless)
@@ -313,6 +343,68 @@ skim - --language typescript   # Stdin (recommended; shebang auto-detected)
 - `--disable-analytics` - Disable analytics recording
 
 📖 **[Full Usage Guide →](docs/usage.md)**
+
+### Default single-input limit
+
+With no `--mode`, `--max-lines`, `--last-lines`, `--tokens` or `--symbol`, `skim FILE` and `skim -` start with structure.
+Stdout plus its view notice stays strictly below **29,000 characters** (Unicode scalar values, not bytes).
+The count includes source line numbers and the elision marker.
+The bound applies to every output destination: terminals, pipes and file redirects.
+Skim tries **structure → signatures → types** and serves the first non-empty view that fits.
+JSON, YAML and TOML keep their structure view instead of this step-down.
+
+If no view fits, skim cuts the last non-empty view on whole lines.
+Over-limit raw text also gets whole-line cuts.
+The last stdout line counts hidden lines; one stderr notice names the served mode, the limit and any cut.
+The marker counts hidden source lines with a complete source map, or hidden view lines without one.
+A warm cache read keeps the cold read's output and notice.
+
+Use `--symbol NAME` for one declaration in a file.
+Use `--max-lines N` for a line limit on files or stdin.
+Use a typed `--mode`, such as `--mode structure`, to keep that mode without the character bound.
+Use `SKIM_PASSTHROUGH=1` for raw file or stdin output.
+Limits in other agents are not known.
+Optional `--show-stats` and `SKIM_DEBUG` lines are outside the count.
+
+### Default multi-file limit
+
+The same limit covers a directory, a glob or an explicit list of files as one run.
+A directory or glob with one match, or a list that resolves to one path, still uses the run limit.
+The limit counts all stdout and the view notice. This includes headers, line numbers and markers.
+File errors, warnings, the `Processed` summary, `--show-stats` and `SKIM_DEBUG` do not count.
+
+Skim first tries structure, then signatures, then types for the run.
+If no view fits, skim cuts whole lines and can omit trailing files in path order.
+Each cut marker counts hidden view lines. The last stdout line counts omitted files, even with `--no-header`.
+One stderr notice describes any change to the default view.
+
+Use `--tokens N`, a typed `--mode`, or fewer files for more content.
+Use `SKIM_PASSTHROUGH=1` or `--passthrough` for raw output.
+Typed modes, `--max-lines`, `--last-lines`, `--tokens` and `--symbol` do not use the default character limit.
+`--max-lines` and `--last-lines` apply per file. Hook file rewrites select a mode or a line limit.
+
+### Whole-run token budget
+
+With `--tokens N`, one budget covers the whole output of a run, not each file.
+This applies to an explicit list of files, a glob and a directory.
+The budget counts stdout, including headers, source line numbers and markers, but not stderr.
+
+```bash
+skim src/ --tokens 1000
+skim 'src/**/*.ts' --tokens 1000
+skim first.ts second.ts --tokens 1000
+```
+
+The mode order is **full → minimal → pseudo → structure → signatures → types**.
+Skim starts at `--mode` if set, else structure.
+If the run is too large, skim tries smaller views, then cuts whole lines with exact counts.
+It can omit trailing files and count them on the last stdout line.
+A changed run gets one stderr notice.
+
+For a tiny multi-file budget, only the omitted-files line prints.
+That line can exceed N; this is the minimum output floor.
+Use a larger `--tokens` value or fewer files for more content.
+`SKIM_PASSTHROUGH=1` gives the full output for an explicit list of files, a glob or a directory.
 
 ## Transformation Modes
 
@@ -332,7 +424,7 @@ Skim offers six modes with different levels of aggressiveness:
 ‡ **Measured basis: 60.3%.** Structure mode's only measured figure is the 60.3% in the reduction table at the top of this README and in the Real-World Token Reduction table under Performance — both on the same production TypeScript codebase. The range on this row is stated wide enough to contain it. No CI gate defends the range either way: the only reduction ratio any test asserts is `> 0.30`, on the JSON and YAML structure-mode fixtures.
 
 ```bash
-skim file.ts --mode structure   # Default
+skim file.ts --mode structure   # Explicit structure; no default character bound
 skim file.ts --mode pseudo      # Pseudocode (preserves return types, parameter types for TS/Rust; strips decorators)
 skim file.ts --mode signatures  # More aggressive
 skim file.ts --mode types       # Most aggressive

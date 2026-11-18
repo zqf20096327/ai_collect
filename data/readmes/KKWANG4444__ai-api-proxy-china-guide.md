@@ -15,6 +15,16 @@ AI快站提供 500+ 语言、生图、视频、向量和检索模型，国外模
 
 <p align="center"><img src="assets/social-preview.png" width="100%" alt="国内大模型 API 接入指南：OpenAI SDK、Cursor、Claude Code、Codex 与 Dify"></p>
 
+## GPT-6.2 Astra / Sol 已上架（2026-11-18）
+
+![Model catalog update: 2026-11-18](https://img.shields.io/badge/model_catalog-2026--11--18-blue)
+
+AI快站已上架 `gpt-6.2-astra`、`gpt-6.2-sol`。[上架公告](https://www.aifast.hk/api/announcements)与[公开目录](https://www.aifast.hk/api/pricing)均已核对：两款模型标记 `available=true`，列出 `openai`、`openai-response` 端点类型。Base URL：`https://www.aifast.hk/v1`。
+
+[OpenAI 发布说明](https://openai.com/index/introducing-gpt-6-2-astra-sol/)将 Astra 定位于复杂推理、编码与专业工作，Sol 面向日常编码和智能体任务。厂商能力与网关接入需分开验收；本次记录上架与目录信息，未执行付费推理或稳定性测试。
+
+[查看当前模型与分组](https://www.aifast.hk/pricing?utm_source=github&utm_medium=repository&utm_campaign=gpt-6-2-launch&utm_content=ai-api-proxy-china-guide) · [接入步骤](https://kkwang4444.github.io/api-status/guide/) · [目录证据](https://kkwang4444.github.io/api-status/data/gpt-6-2.json)
+
 ## Gemini 4 Hydrogen / Carbon 接入更新（2026-11-17）
 
 HK [上架公告](https://www.aifast.hk/api/announcements)已发布 `gemini-4-hydrogen`（11 月 13 日）和 `gemini-4-carbon`（11 月 11 日）。2026-11-17 [公开目录](https://www.aifast.hk/api/pricing)均标记 `available=true`，声明 `gemini`、`openai` 端点类型；OpenAI-compatible Base URL 保持 `https://www.aifast.hk/v1`。
@@ -31,7 +41,7 @@ AI快站已上架 `gemini-4-carbon`。HK [公开目录](https://www.aifast.hk/ap
 
 [当前价格](https://www.aifast.hk/pricing?utm_source=github&utm_medium=repository&utm_campaign=gemini-4-carbon&utm_content=guide-readme-carbon-pricing) · [注册并创建 Key](https://www.aifast.hk/register?channel=c_zfxp7cp4&utm_source=github&utm_medium=repository&utm_campaign=gemini-4-carbon&utm_content=guide-readme-carbon-register) · [检测现有接口](https://docs.aifast.hk/model-check/?utm_source=github&utm_medium=repository&utm_campaign=gemini-4-carbon&utm_content=guide-readme-carbon-check)
 
-[![Gemini 4 Argon update](https://img.shields.io/badge/Gemini_4_Argon-2026--10--15-blue)](https://github.com/KKWANG4444/ai-api-proxy-china-guide/blob/main/gemini-4-argon-guide.md)
+[![Gemini 4 Argon catalog check](https://img.shields.io/badge/Gemini_4_Argon-2026--11--19-blue)](https://github.com/KKWANG4444/ai-api-proxy-china-guide/blob/main/gemini-4-argon-guide.md)
 
 ## Claude Fable 5.2 API 国内接入（2026-11-10）
 
@@ -41,9 +51,9 @@ HK 公开目录已列出 `claude-fable-5-2`，声明支持 Anthropic Messages �
 
 ## Gemini 4 Argon API update (2026-10-15)
 
-AIFast announced Gemini 4 Argon (`gemini-4-argon`) on 2026-10-14. The public catalog lists Gemini and OpenAI endpoint types. Use `https://www.aifast.hk/v1` for OpenAI-compatible clients; verify a small text request before testing streaming or tool calls. Catalog availability is not a measured uptime or compatibility guarantee.
+本节首次发布于 2026-10-15。最近一次核对 HK 公开模型目录（2026-11-19）：`gemini-4-argon` 标注了 `gemini` 和 `openai` 两类端点。OpenAI 兼容客户端使用 `https://www.aifast.hk/v1`。目录可见不代表你的 Key 有权限，也不是流式输出、工具调用或可用率的实测。
 
-[Integration guide and context limits](https://github.com/KKWANG4444/ai-api-proxy-china-guide/blob/main/gemini-4-argon-guide.md) · [Launch announcement](https://www.aifast.hk/api/status) · [Current catalog](https://www.aifast.hk/api/pricing) · [Check your endpoint](https://docs.aifast.hk/model-check/)
+[Argon 接入与上下文说明](https://github.com/KKWANG4444/ai-api-proxy-china-guide/blob/main/gemini-4-argon-guide.md) · [HK 公开模型目录](https://www.aifast.hk/api/pricing) · [模型检测工具](https://docs.aifast.hk/model-check/)
 
 ## 先在线检测你正在使用的接口
 

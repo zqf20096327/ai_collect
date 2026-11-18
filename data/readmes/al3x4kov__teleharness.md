@@ -28,7 +28,7 @@ to another when a subscription hits its usage limit.
 [Contributing](CONTRIBUTING.md) •
 [Русский](README.ru.md)
 
-<img src="docs/screenshots/demo.gif" alt="Teleharness 1.21 on a phone: waiting for approval, Allow, context and subscription, Codex, handoff, phone pairing QR" width="300">
+<img src="docs/screenshots/demo.gif" alt="Teleharness on a phone: Claude Code, Codex and opencode in one app; approve an agent from anywhere; hand a chat to another CLI on a usage limit or automatically; durable Temporal pipelines with Claude, your approval and Codex" width="320">
 
 </div>
 
@@ -55,6 +55,27 @@ Codex — in any direction.
 </p>
 
 Details, limits and FAQ: [docs/cross-cli-handoff.md](docs/cross-cli-handoff.md).
+
+## Pipelines that survive restarts (Temporal)
+
+Turn a routine into a pipe: Claude reviews the diff, you approve it from your phone, Codex writes the release notes and
+the file lands in the run folder. Each step runs on your CLI subscription as a turn of your own chat, so you can open
+its conversation later. Runs keep going while the portal is closed or the server restarts.
+
+<p align="center">
+  <img src="docs/screenshots/temporal.gif" alt="A waiting run: Claude's review next to Approve; after approval Codex writes release notes and notes.md opens" width="300">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/phone-light-temporal-runs.png" alt="Runs: a block of runs waiting for your decision, statuses without extra taps" width="200">
+  <img src="docs/screenshots/phone-light-temporal-editor.png" alt="Pipe editor: a Codex step with {{input.branch}} and {{steps.review}}" width="200">
+  <img src="docs/screenshots/phone-light-temporal-result.png" alt="Run result: the final answer and the run files" width="200">
+  <img src="docs/screenshots/phone-light-temporal-condition.png" alt="A condition that was false: the next step is skipped" width="200">
+</p>
+
+Steps: *Model* (Claude or Codex), *Human decision*, *Timer*, *Join*, *Condition*, *Artifact*; run inputs as
+`{{input.name}}`, earlier answers as `{{steps.id}}`; schedules with a preview of the next runs. Optional, Linux and
+macOS — see [docs/temporal.md](docs/temporal.md). Try it without any setup in `npm run demo`.
 
 ## Why Teleharness
 
@@ -87,7 +108,7 @@ No engines, no API keys — the UI on synthetic chats:
 git clone https://github.com/al3x4kov/teleharness.git
 cd teleharness
 npm ci
-npm run demo     # → http://127.0.0.1:4171/zai/
+npm run demo     # → http://127.0.0.1:4171/teleharness/
 ```
 
 ## A quick tour
@@ -143,13 +164,14 @@ All screenshots are taken from `npm run demo` — what you see is what you get.
 
 | | | |
 |---|---|---|
-| 💬 | **Three engines, one UI** | opencode (any provider), Claude Code and Codex CLI side by side; a chat stays bound to its engine, model and agent. Codex is admin-only for now, on every OS — it needs its own sandbox before other users get it.<br><img src="docs/screenshots/phone-light-picker-codex-detail.png" alt="Model picker with opencode, Claude and Codex engine groups" width="180"> <img src="docs/screenshots/phone-light-codex.png" alt="Codex chat: file edits, 212 passing tests, Ask mode and subscription" width="180"> |
+| 💬 | **Three engines, one UI** | opencode (any provider), Claude Code and Codex CLI side by side; a chat stays bound to its engine, model and agent. Codex chats are admin-only for now, on every OS — Codex needs its own sandbox before other users get it (in Temporal pipelines every user can use Codex, text-only).<br><img src="docs/screenshots/phone-light-picker-codex-detail.png" alt="Model picker with opencode, Claude and Codex engine groups" width="180"> <img src="docs/screenshots/phone-light-codex.png" alt="Codex chat: file edits, 212 passing tests, Ask mode and subscription" width="180"> |
 | 🛡️ | **Permission mode per chat** | *Ask* — the agent asks before file edits and commands, you approve or deny in the chat (Claude through a permission bridge, Codex natively); *Edits without asking*; *No questions* (admin only).<br><img src="docs/screenshots/phone-light-ask.png" alt="In-chat permission request for a migration command with Allow and Deny" width="180"> <img src="docs/screenshots/phone-light-permission-modes.png" alt="Permission modes: Ask, Edits without asking, No questions" width="180"> |
 | ⏸️ | **Waiting for you** | A chat list filter with a count of chats where an agent waits for your decision, plus a push notification when it starts waiting.<br><img src="docs/screenshots/phone-light-waiting.png" alt="Waiting for you filter enabled with one chat needing approval" width="180"> |
 | 📈 | **Context and cost** | A meter above the composer: how full the model's context window is (with a warning past 80 %) and what the chat has cost — or that it runs on a subscription.<br><img src="docs/screenshots/phone-light-context.png" alt="Answer footer: subscription and Context 41 percent" width="180"> <img src="docs/screenshots/phone-light-context-warning.png" alt="Context warning at 86 percent, almost full" width="180"> |
 | 🧠 | **Agent steps** | Live turn progress: reasoning, tool calls with output, subagent cards with their own steps, background tasks. Undo a turn and its file edits. |
 | 🧾 | **Turn changes and Git** | An answer that edited files gets a *Changes · N files* row: open it for a per-file diff — what this turn changed, or the file now against the last commit (one column on a phone, two panes on a desktop). The Git screen of the chat folder shows the branch, ahead/behind and changed files: tick the files to commit, let the chat's own model suggest the message in a separate short request (it never lands in the chat history), commit, and push — push is for the admin only. Other users work with git in their own folders, without push or branch switching. Settings → Git holds the commit author, the message language and the default selection. |
 | 🌙 | **Background subagents keep working** | Claude Code answers right away while subagents it started in the background keep running after the answer. A band above the composer shows who is still working; a new message waits in the queue, and Claude picks up their results and answers again when they finish. |
+| 🔁 | **Temporal pipelines** *(optional)* | Multi-step scenarios that survive restarts: Claude or Codex steps that work in the pipe's own folder (files included), your decision between steps, timers, conditions, saved artifacts, run inputs passed as `{{input.name}}` and earlier answers as `{{steps.id}}`. Runs show their status without extra taps, a *Waiting for you* block and a badge in the menu, a result block with the final answer, the run's files and each step's conversation; pause, cancel, terminate with a reason; schedules with a preview of the next runs. Runs on your CLI subscriptions, never a paid API. Linux and macOS; off by default — see [docs/temporal.md](docs/temporal.md).<br><img src="docs/screenshots/phone-light-temporal-runs.png" alt="Temporal runs with a waiting decision" width="180"> |
 | 🔀 | **Relay between engines** | Hit a usage limit mid-task? Continue the same chat on another engine or model: same folder, one feed, and the new engine gets the turns it missed. Optionally automatic, with your own order of backup models. |
 | 📊 | **Subscriptions** | Usage and remaining quota per connected provider, where the provider reports it through an official API. |
 | 📡 | **Reliable streaming** | One SSE hub for every engine with replay, stall detection and loop protection — survives flaky mobile networks. |
@@ -157,7 +179,7 @@ All screenshots are taken from `npm run demo` — what you see is what you get.
 | 🗂️ | **Obsidian as active cache** | Vault snapshot in context, turn digests and a per-chat journal written back, an isolated zone per user. |
 | 🎙️ | **Voice** | Local speech-to-text and text-to-speech (Python worker, CPU only) and a hands-free voice mode. |
 | 🔔 | **Push notifications** | Get notified when a long turn is done or an agent needs your decision (Web Push, VAPID). |
-| 📲 | **Phone pairing by QR** | Settings → Connect a phone shows a one-time QR code (valid 10 minutes); scan it and the phone is signed in to your account — no token typing. Needs `ZAI_PUBLIC_URL`.<br><img src="docs/screenshots/phone-light-pair.png" alt="Connect a phone: QR code, expiry, one-time link and Copy" width="180"> |
+| 📲 | **Phone pairing by QR** | Settings → Connect a phone shows a one-time QR code (valid 10 minutes); scan it and the phone is signed in to your account — no token typing. Needs `TELEHARNESS_PUBLIC_URL`.<br><img src="docs/screenshots/phone-light-pair.png" alt="Connect a phone: QR code, expiry, one-time link and Copy" width="180"> |
 | 👥 | **Multi-user** | Admin and users with own folders, system prompts, MCP sets, upload and voice quotas, rate limits. |
 | 📱 | **Mobile-first** | Built for iOS Safari: keyboard-aware layout, safe areas, light and dark themes, English and Russian UI. |
 | 🪶 | **Zero runtime dependencies** | The backend is plain Node.js stdlib. |
@@ -179,7 +201,7 @@ You need at least one engine.
 ### One command
 
 ```bash
-npx github:al3x4kov/teleharness            # → http://127.0.0.1:4180/zai/
+npx github:al3x4kov/teleharness            # → http://127.0.0.1:4180/teleharness/
 ```
 
 It checks Node, keeps its data in `~/.teleharness`, builds the UI on the first run, tells you which engines it
@@ -202,8 +224,8 @@ cp .env.example .env               # every value is optional
 opencode auth login                # add the providers you want
 claude setup-token                 # Claude engine: put the token into .env as CLAUDE_CODE_OAUTH_TOKEN
 
-./ops/opencode/serve-v2.sh &       # opencode 2.x on 127.0.0.1:4196, password in ~/.zai/oc2-password
-./ops/web-v2.sh                    # → http://127.0.0.1:4170/zai/
+./ops/opencode/serve-v2.sh &       # opencode 2.x on 127.0.0.1:4196, password in ~/.teleharness/oc2-password
+./ops/web-v2.sh                    # → http://127.0.0.1:4170/teleharness/
 ```
 </details>
 
@@ -224,37 +246,41 @@ claude setup-token
 $env:OPENCODE_SERVER_PASSWORD = [guid]::NewGuid().ToString('N')
 Start-Process opencode -ArgumentList 'serve','--hostname','127.0.0.1','--port','4196'
 
-$env:ZAI_OC_API = 'v2'; $env:ZAI_UPSTREAM = 'http://127.0.0.1:4196'; $env:ZAI_OC_PASSWORD = $env:OPENCODE_SERVER_PASSWORD
-node server.js                     # → http://127.0.0.1:4170/zai/
+$env:TELEHARNESS_OC_API = 'v2'; $env:TELEHARNESS_UPSTREAM = 'http://127.0.0.1:4196'; $env:TELEHARNESS_OC_PASSWORD = $env:OPENCODE_SERVER_PASSWORD
+node server.js                     # → http://127.0.0.1:4170/teleharness/
 ```
 </details>
 
 Step-by-step for a Mac, including launchd services and phone access: [`docs/macos.md`](docs/macos.md).
 
 On first start the portal creates an admin and writes the login token to `data/admin-token.txt`
-(or uses `ZAI_ADMIN_TOKEN`). To reach it from your phone, put it behind TLS — the bundled edge server
+(or uses `TELEHARNESS_ADMIN_TOKEN`). To reach it from your phone, put it behind TLS — the bundled edge server
 (`ops/portal-server.js`) or any reverse proxy (Caddy, nginx, Tailscale Serve).
 
 > [!NOTE]
-> `zai` is the project's original codename. It stays in the URL path (`/zai/`), environment variables
-> (`ZAI_*`) and storage keys so existing installs keep working.
+> The portal is served under `/teleharness/`; every setting is a `TELEHARNESS_*` environment variable
+> (see [`.env.example`](.env.example)).
 
 ### Platform support
 
 | | macOS | Linux | Windows |
 |---|:---:|:---:|:---:|
 | Portal, opencode and Claude engines, files, push | ✅ | ✅ | ✅ |
-| Codex engine | admin only | admin only | admin only |
+| Codex engine (chats) | admin only | admin only | admin only |
+| Temporal pipelines (optional) | ✅ | ✅ | — |
+| Codex in Temporal pipelines | ✅ (text-only for regular users) | ✅ (text-only for regular users) | — |
 | Obsidian cache, voice | ✅ | ✅ | ✅ |
-| Shell commands for non-admin users | — | — | ✅ (AppContainer sandbox) |
+| Shell commands for non-admin users | — | ✅ with the optional per-user runner¹ | ✅ (AppContainer sandbox) |
 
-On macOS and Linux shell access for regular users is refused (fail-closed); admins are not affected.
+On macOS (and on Linux without the runner) shell access for regular users is refused (fail-closed); admins are not
+affected. ¹ On Linux, users' shell commands can run through a per-user runner (`/usr/local/libexec/teleharness-tenant-run`,
+see `ops/sandbox/linux`); without it they stay refused.
 User isolation is moving to one container per user with the full agent runtime — the same on every host OS —
 so the Windows sandbox is intentionally not ported to other systems.
 
 ## Architecture
 
-<p align="center"><img src="docs/architecture-components.png" alt="Teleharness components: client, portal, harness of two CLIs, Obsidian, voice, sandbox, model providers" width="900"></p>
+<p align="center"><img src="docs/architecture-components.png" alt="Teleharness components: client, portal, harness of three CLIs, Obsidian, voice, sandbox, Temporal pipelines, model providers" width="900"></p>
 
 - **Portal** (`server.js`) — API, auth and users, the event hub, chat-to-engine binding, the handoff between
   engines. One adapter per engine: a client for `opencode serve` (1.x and 2.x) and a runner that starts
@@ -266,7 +292,11 @@ so the Windows sandbox is intentionally not ported to other systems.
 - **Obsidian** — long-term memory for agents, one zone per user; also holds the per-chat journal an engine
   reads after a handoff.
 - **Voice** — a separate local Python process (Piper TTS, GigaAM STT).
-- **Sandbox** — Windows AppContainer for other users' commands.
+- **Sandbox** — other users' shell commands: an optional per-user runner on Linux, AppContainer on Windows,
+  refused on macOS.
+- **Temporal pipelines** (optional, Linux and macOS) — a Temporal server, a Python worker and PostgreSQL
+  (history, exactly-once ledger, concurrency slots). A model step is a turn of a portal chat in the pipe's
+  folder, reached through a private socket. See [`docs/temporal.md`](docs/temporal.md).
 
 More: [`docs/architecture.md`](docs/architecture.md) (in Russian), requirements in [`openspec/specs/`](openspec/specs/).
 
@@ -278,19 +308,19 @@ Everything is configured with environment variables; the schema with types, defa
 | Variable | Default | |
 |---|---|---|
 | `PORT` | `4170` | portal port |
-| `ZAI_UPSTREAM` | `http://127.0.0.1:4096` | `opencode serve` address (the default is the opencode 1.x legacy port; with 2.x use `:4196`) |
-| `ZAI_OC_API` | `v1` | `v2` for opencode 2.x (`ops/web-v2.sh` sets it) |
-| `ZAI_OC_PASSWORD` | — | HTTP Basic password of `opencode serve` 2.x |
+| `TELEHARNESS_UPSTREAM` | `http://127.0.0.1:4096` | `opencode serve` address (the default is the opencode 1.x legacy port; with 2.x use `:4196`) |
+| `TELEHARNESS_OC_API` | `v1` | `v2` for opencode 2.x (`ops/web-v2.sh` sets it) |
+| `TELEHARNESS_OC_PASSWORD` | — | HTTP Basic password of `opencode serve` 2.x |
 | `CLAUDE_CODE_OAUTH_TOKEN` | — | Claude subscription token (`claude setup-token`) |
-| `ZAI_ADMIN_TOKEN` | generated | admin login token |
-| `ZAI_PUBLIC_URL` | — | public https address of the portal root (`https://host/zai/`) for the phone pairing QR code; empty — no QR |
-| `ZAI_CODEX` | on | `off` hides the Codex engine even when `codex` is installed and signed in |
-| `ZAI_CODEX_BIN` | `codex` from npm global or `PATH` | path to the codex binary or its `bin/codex.js` |
-| `ZAI_DATA_DIR` | `./data` | users, sessions, logs |
-| `ZAI_FILE_ROOTS` | home folder | folders available in the file browser |
-| `ZAI_KB_ROOT` | `off` | Obsidian vault folder for agents, e.g. `~/Obsidian/agents` |
-| `ZAI_TENANT_HOME` | `~/.zai-tenants` | users' folders |
-| `ZAI_VOICE_PYTHON`, `ZAI_VOICE_MODELS` | `~/.zai/voice/…` | local voice worker |
+| `TELEHARNESS_ADMIN_TOKEN` | generated | admin login token |
+| `TELEHARNESS_PUBLIC_URL` | — | public https address of the portal root (`https://host/teleharness/`) for the phone pairing QR code; empty — no QR |
+| `TELEHARNESS_CODEX` | on | `off` hides the Codex engine even when `codex` is installed and signed in |
+| `TELEHARNESS_CODEX_BIN` | `codex` from npm global or `PATH` | path to the codex binary or its `bin/codex.js` |
+| `TELEHARNESS_DATA_DIR` | `./data` | users, sessions, logs |
+| `TELEHARNESS_FILE_ROOTS` | home folder | folders available in the file browser |
+| `TELEHARNESS_KB_ROOT` | `off` | Obsidian vault folder for agents, e.g. `~/Obsidian/agents` |
+| `TELEHARNESS_TENANT_HOME` | `~/.teleharness-tenants` | users' folders |
+| `TELEHARNESS_VOICE_PYTHON`, `TELEHARNESS_VOICE_MODELS` | `~/.teleharness/voice/…` | local voice worker |
 
 ### Agent configs
 

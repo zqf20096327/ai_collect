@@ -13,6 +13,7 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-6366F1?style=flat-square"></a>
   <a href="#-all-15-skills"><img alt="15 skills" src="https://img.shields.io/badge/skills-15-22D3EE?style=flat-square"></a>
   <a href="https://agentskills.io"><img alt="Agent Skills open standard" src="https://img.shields.io/badge/Agent%20Skills-open%20standard-34D399?style=flat-square"></a>
+  <a href="https://www.npmjs.com/package/senior-skills"><img alt="npm" src="https://img.shields.io/npm/v/senior-skills?style=flat-square&color=CB3837&label=npx%20senior-skills"></a>
   <a href="#-quick-start"><img alt="Claude Code plugin" src="https://img.shields.io/badge/Claude%20Code-plugin-D97757?style=flat-square"></a>
   <a href="https://github.com/milad-raeisi/senior-skills/actions/workflows/validate.yml"><img alt="validate" src="https://img.shields.io/github/actions/workflow/status/milad-raeisi/senior-skills/validate.yml?branch=main&style=flat-square&label=validate"></a>
   <a href="https://github.com/milad-raeisi/senior-skills/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/milad-raeisi/senior-skills?style=flat-square&color=FBBF24"></a>
@@ -48,31 +49,128 @@ The model isn't the bottleneck. **The instructions are.** senior-skills replaces
 
 ## ⚡ Quick start
 
-**Claude Code**, via the plugin marketplace:
+<p align="center">
+  <img src="assets/quickstart.svg" alt="Step 1, install: npx senior-skills. Step 2, update: npx senior-skills@latest update." width="100%">
+</p>
+
+> [!TIP]
+> **Install** with one command. No clone, no fork, no account.
+>
+> ```bash
+> npx senior-skills
+> ```
+>
+> It finds the coding agents on your machine (Claude Code, Codex, Cursor, Gemini CLI, Copilot, OpenCode, Windsurf) and gives each one all 15 skills. Then restart your agent.
+
+> [!IMPORTANT]
+> **Update** whenever you like. New skills and improvements arrive with one command:
+>
+> ```bash
+> npx senior-skills@latest update
+> ```
+>
+> Keep the `@latest`: it makes `npx` fetch the newest release instead of reusing a copy it cached earlier.
+
+<details>
+<summary><b>👋 New to the terminal? A step-by-step guide (about 2 minutes)</b></summary>
+
+<br>
+
+**1. Open a terminal.** On macOS, open **Terminal** (press <kbd>⌘</kbd> + <kbd>Space</kbd> and type "Terminal"). On Windows, open **PowerShell**. On Linux, open your usual terminal.
+
+**2. Check that Node.js is installed.** Type this and press <kbd>Enter</kbd>:
+
+```bash
+node --version
+```
+
+You should see `v20` or higher, for example `v22.11.0`. If you see `command not found` or a lower number, install the **LTS** version from [nodejs.org](https://nodejs.org), then close and reopen the terminal. `npx` comes with Node.js, so there's nothing else to install.
+
+**3. Install the skills.**
+
+```bash
+npx senior-skills
+```
+
+The first time, npm may ask `Ok to proceed? (y)`. Press <kbd>Enter</kbd>. You'll see one line for each agent it found:
+
+```text
+senior-skills 1.2.0: installing 15 skill(s)
+
+  ✓ Claude Code     ~/.claude/skills  (15 added)
+  ✓ Cursor          ~/.cursor/skills  (15 added)
+```
+
+**4. Restart your agent.** Close and reopen Claude Code, Cursor, or whichever agent you use, so it loads the new skills.
+
+**5. Try it.** Open a project and ask your agent something like *"Find the bugs that matter in this project"* or *"Audit this repo's CI"*. You don't need to name a skill; the right one loads by itself.
+
+**6. Stay up to date.** Every now and then, run `npx senior-skills@latest update`.
+
+</details>
+
+<details>
+<summary><b>🧭 All commands and options</b></summary>
+
+<br>
+
+| You want to | Run |
+|---|---|
+| Install for every agent on this machine | `npx senior-skills` |
+| Update to the newest release | `npx senior-skills@latest update` |
+| Install for one agent only | `npx senior-skills --agent claude`<br><sub>also `codex`, `cursor`, `gemini`, `copilot`, `opencode`, `windsurf`, or `all`</sub> |
+| Install into a project, shared with your team through git | `npx senior-skills --dir ./.agents/skills` |
+| Install only some skills | `npx senior-skills --only bug-triage,ci-auditor` |
+| See which skills are included | `npx senior-skills list` |
+| See every option | `npx senior-skills --help` |
+
+</details>
+
+<details>
+<summary><b>🛡️ Is it safe? What it does to your files</b></summary>
+
+<br>
+
+- It only writes the 15 senior-skills folders into your agents' skills folders, such as `~/.claude/skills`. Your other skills are never modified.
+- `install` never overwrites: if a skill is already there, it is kept.
+- `update` replaces only copies that came from senior-skills. If you edited one yourself, your version is saved to `~/.senior-skills/backups/<time>/` first.
+- A different skill that happens to have the same name is left alone unless you add `--force`.
+- It has no dependencies, collects no data, and makes no network calls of its own; npm only downloads the package. The whole installer is one readable file: [`bin/senior-skills.mjs`](bin/senior-skills.mjs).
+
+</details>
+
+<details>
+<summary><b>🧰 Troubleshooting</b></summary>
+
+<br>
+
+| You see | What to do |
+|---|---|
+| `command not found: npx` or `node` | Install Node.js 20 or newer from [nodejs.org](https://nodejs.org), then open a new terminal. |
+| `could not determine executable to run` | An old copy is installed in the folder you're in, or in a folder above it. Run `npx senior-skills@latest`, which always uses the published version. |
+| The skills don't show up in your agent | Restart the agent, then check that the folder the installer printed exists. |
+| `Some installed skills differ from this version and were kept` | You already had an older or edited copy. Run `npx senior-skills@latest update`. |
+| Something else | [Open an issue](https://github.com/milad-raeisi/senior-skills/issues/new/choose) with the command you ran and what you saw. |
+
+</details>
+
+**Prefer a Claude Code plugin?** Install from the marketplace and get updates through `/plugin`:
 
 ```text
 /plugin marketplace add milad-raeisi/senior-skills
 /plugin install senior-skills@senior-skills
 ```
 
-**Any agent** (Codex, Cursor, Gemini CLI, Copilot, OpenCode, Windsurf, and many more) via the open [`skills`](https://github.com/vercel-labs/skills) CLI:
+<details>
+<summary><b>More ways to install</b>: the open skills CLI, Gemini CLI extension, install script, no-install prompts</summary>
+
+<br>
+
+**The open [`skills`](https://github.com/vercel-labs/skills) CLI**, which supports many more agents:
 
 ```bash
 npx skills add milad-raeisi/senior-skills
 ```
-
-**Install script**, which copies or symlinks the skills into your agent's skills folder:
-
-```bash
-git clone https://github.com/milad-raeisi/senior-skills && cd senior-skills
-./scripts/install.sh --agent claude          # codex | cursor | gemini | copilot | opencode | windsurf | all
-./scripts/install.sh --dir ./.agents/skills  # or any folder, e.g. project-level skills
-```
-
-<details>
-<summary><b>More ways to install</b>: Gemini CLI extension, curl one-liner, selected skills only, no-install prompts</summary>
-
-<br>
 
 **Gemini CLI extension** (loads the senior-engineer principles into every session):
 
@@ -80,21 +178,14 @@ git clone https://github.com/milad-raeisi/senior-skills && cd senior-skills
 gemini extensions install https://github.com/milad-raeisi/senior-skills
 ```
 
-**One-liner** (clones to a temp folder, installs, cleans up):
+**Install script**, for a local clone (add `--link` to symlink, so `git pull` keeps you updated):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/milad-raeisi/senior-skills/main/scripts/install.sh | bash -s -- --agent all
+git clone https://github.com/milad-raeisi/senior-skills && cd senior-skills
+./scripts/install.sh --agent claude          # codex | cursor | gemini | copilot | opencode | windsurf | all
 ```
 
-**Only some skills:**
-
-```bash
-./scripts/install.sh --only bug-triage,ci-auditor,finish-the-job
-```
-
-**Stay in sync with `git pull`:** add `--link` to symlink instead of copy.
-
-Existing skills with the same name are never overwritten silently: they're skipped, or with `--force` moved to `<name>.bak-<timestamp>`.
+Or without Node.js: `curl -fsSL https://raw.githubusercontent.com/milad-raeisi/senior-skills/main/scripts/install.sh | bash -s -- --agent all`
 
 **No agent at all?** Paste the prompts from [`prompts/the-senior-five.md`](prompts/the-senior-five.md) into any chat.
 
@@ -248,8 +339,9 @@ senior-skills/
 │   ├── finish-the-job/
 │   ├── ci-auditor/                 # + scripts/ci_audit.py
 │   └── ...                         # 9 core craft skills
+├── bin/senior-skills.mjs           # the `npx senior-skills` installer (no dependencies)
 ├── prompts/the-senior-five.md      # copy-paste versions for any chat
-├── scripts/install.sh              # multi-agent installer
+├── scripts/install.sh              # the same installer in bash, for clones and curl
 ├── scripts/validate_skills.py      # frontmatter, links, manifests, routing
 ├── tests/                          # unit tests for ci_audit.py
 ├── .claude-plugin/                 # Claude Code plugin + marketplace
@@ -257,7 +349,7 @@ senior-skills/
 └── gemini-extension.json           # Gemini CLI extension
 ```
 
-Every change is checked in CI: skill frontmatter and links, manifest versions, routing coverage, unit tests, `shellcheck`, and an install smoke test.
+Every change is checked in CI: skill frontmatter and links, manifest versions, routing coverage, unit tests on Python 3.9 to 3.14, `shellcheck`, the npm package contents, and real `npx` and shell install runs.
 
 ---
 
@@ -306,7 +398,7 @@ Every change is checked in CI: skill frontmatter and links, manifest versions, r
 Skill ideas, real-world failure reports, and ports to more agents are all welcome. The bar: **each skill must encode a judgment call that measurably changes what an agent does.** Read [CONTRIBUTING.md](CONTRIBUTING.md), open a [skill request](https://github.com/milad-raeisi/senior-skills/issues/new?template=skill-request.yml), or send a PR.
 
 ```bash
-python3 scripts/validate_skills.py && python3 -m unittest discover -s tests
+python3 scripts/validate_skills.py && python3 -m unittest discover -s tests && node --test tests/cli.test.mjs
 ```
 
 ## 🙏 Standing on the shoulders of giants

@@ -24,6 +24,12 @@
   </tr>
 </table>
 
+<p align="center">
+  <img src="assets/demo.svg" width="760" alt="A claude-jr session in a terminal. Asked to fix failing tests, it runs them, edits one line, runs them again and reports; then /stats shows it holding 1.6 MB of memory.">
+  <br>
+  <sub>A real session with Claude Opus 5.5, in real time (<a href="scripts/demo.py">how it was recorded</a>). <code>/stats</code> at the end: 1.6 MB of memory, 0.03 s of CPU.</sub>
+</p>
+
 ---
 
 claude-jr (Claude Junior) is a small, fast alternative to Claude Code, written
@@ -48,6 +54,22 @@ then, inside WSL. Then run
 another provider's model (`claudejr -m ollama/qwen3`). `claudejr --update` gets
 the newest release.
 
+Or through a package manager:
+
+```sh
+# Homebrew
+brew tap iwhitebird/claude-jr https://github.com/IWhitebird/claude-jr
+brew install iwhitebird/claude-jr/claude-jr
+
+# Cargo: download the release, or build it yourself
+cargo binstall --git https://github.com/IWhitebird/claude-jr claude-jr
+cargo install --git https://github.com/IWhitebird/claude-jr
+```
+
+From 0.3.0 there is a Docker image too, 3.5 MB in all:
+`docker run --rm -it -e ANTHROPIC_API_KEY -v "$PWD:/work" ghcr.io/iwhitebird/claude-jr`
+([more](docs/GUIDE.md#docker)).
+
 ## Why
 
 - **Tiny.** One static 2 MB file. No Node, no Python, nothing to install first.
@@ -57,7 +79,7 @@ the newest release.
 - **Made for many.** Background tasks, each in its own worktree and branch, with a shared budget and a log of every step. Workers run on Haiku unless you say otherwise, at well under a cent for a small task. `claudejr fleet` runs a list of them; `claudejr install claude-code` lets Claude Code (or Cursor, or Codex) start and collect them.
 - **Any model.** Claude by default; OpenAI, Gemini, Groq, OpenRouter, Ollama and other local servers with `-m provider/model`, at the same memory and CPU. Claude through Amazon Bedrock or Google Vertex AI with `-m bedrock/...` and `-m vertex/...` (in the next release; not yet tested against the real services).
 - **Complete.** Subagents, skills, MCP, images, web search, rewind, a sandbox and five permission modes.
-- **Tested.** 402 tests with 97% line coverage, plus random-input, resize and chaos runs against the real app in a terminal.
+- **Tested.** 404 tests with 97% line coverage, plus random-input, resize and chaos runs against the real app in a terminal.
 
 ## Benchmarks
 
@@ -137,7 +159,7 @@ that didn't go our way: [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 
 - [Guide](docs/GUIDE.md): commands, keys, modes, tools, skills, MCP, the sandbox, other models, tasks and fleets, working for another agent, config.
 - [Benchmarks](docs/BENCHMARKS.md): every number and how to reproduce it.
-- [Architecture](docs/ARCHITECTURE.md): how it is built, and where everything is.
+- [How it works](docs/ARCHITECTURE.md), and for working on the code, [where everything is](docs/FILES.md).
 - [Website](https://claudejr.iwhitebird.com)
 
 MIT licence.

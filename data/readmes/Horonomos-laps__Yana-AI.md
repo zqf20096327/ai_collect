@@ -59,7 +59,7 @@
     <td align="center" width="20%"><h3>66</h3><sub>tool-call hooks<br>Pre, Post and Stop</sub></td>
     <td align="center" width="20%"><h3>290</h3><sub>core files<br>pinned by SHA-256</sub></td>
     <td align="center" width="20%"><h3>100 agents</h3><sub>specialist personas</sub></td>
-    <td align="center" width="20%"><h3>2,035 skills</h3><sub>working knowledge,<br>no permissions</sub></td>
+    <td align="center" width="20%"><h3>2,036 skills</h3><sub>working knowledge,<br>no permissions</sub></td>
   </tr>
 </table>
 
@@ -143,7 +143,7 @@ The apps never call a model provider themselves. Studio sends every request thro
 | **[Governance](core)** | Capability manifests, human approval, hash-chained audit log, core-lock integrity. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
 | **[Giám Thị](#under-the-hood)** | Watcher outside any AI session that halts every later tool call when it finds drift. | ![Live, opt-in](https://img.shields.io/badge/live-opt--in-2e8b75) |
 | **[Harness adapters](adapters)** | Claude Code, Codex, Cursor and Antigravity. Enforcement strength differs per host. | ![Live, varies by host](https://img.shields.io/badge/live-varies_by_host-2e8b75) |
-| **[Knowledge layer](core/skills)** | 100 agents, 2,035 skills, commands and rules that teach agents how to work. They grant no permissions. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
+| **[Knowledge layer](core/skills)** | 100 agents, 2,036 skills, commands and rules that teach agents how to work. They grant no permissions. | ![Live](https://img.shields.io/badge/-live-2e8b75) |
 | **[Yana OS](src/os)** | Local management plane: agent identity, autonomy levels, quotas, health, quarantine. | ![In development](https://img.shields.io/badge/-in_development-d97706) |
 | **[Yana Wheelbot](https://github.com/yanacuti1121/yana-wheelbot)** | Robotics platform on ESP32-S3, in its own repository. | ![Experimental](https://img.shields.io/badge/-experimental-dc2626) |
 
@@ -157,7 +157,7 @@ core/
 ├── hooks/    # 66 PreToolUse / PostToolUse / Stop hooks
 ├── rules/    # 71 rules, most are guidance the agent applies; hooks enforce a subset
 ├── agents/   # 100 specialist agents
-├── skills/   # 2,035 skills
+├── skills/   # 2,036 skills
 ├── commands/ # 170 Claude Code slash commands
 └── config/
     └── core-lock.json    # SHA-256 manifest — 290 core files pinned

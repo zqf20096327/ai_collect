@@ -139,6 +139,7 @@
 
 ## Multi-Agent Frameworks & Benchmarks
 
+- **[SWE-CoWork: Benchmarking Coding Agents as Digital Employees in Organizations](https://arxiv.org/abs/2611.20218)**
 - **[MALLM: Multi-Agent Large Language Models Framework](https://arxiv.org/abs/2509.11656)**
 - **[AgentGym: Evolving Large Language Model-based Agents across Diverse Environments](https://huggingface.co/papers/2406.04151)**
 - **[Very Large-Scale Multi-Agent Simulation in AgentScope](https://arxiv.org/abs/2407.17789)**
@@ -160,6 +161,7 @@
 - **[Measuring AI Agents as Teammates with Collaborative Intelligence](https://arxiv.org/abs/2611.02633)** [GitHub](https://github.com/zou-group/collaborative-intelligence)
 - **[MAServeBench: Benchmarking Multi-Agent LLM Serving Systems with Hierarchical Collaboration Workloads](https://arxiv.org/abs/2610.40293)** [GitHub](https://github.com/ShengxuanQiu/MAServeBench)
 - **[Toward the Era of Agentic Embodied Intelligence](https://arxiv.org/abs/2611.09124)**
+- **[MIRIX-2.0: Multi-Agent Memory System](https://arxiv.org/abs/2611.12068)** [GitHub](https://github.com/Mirix-AI/MIRIX)
 
 ## Application-Specific Multi-Agent Systems
 
@@ -259,6 +261,7 @@
 
 ## Evaluation & Model Improvement
 
+- **[More Agents, More Samples, or More Thinking? Untangling Coordination, Ensembling, and Test-Time Compute in Multi-Agent LLMs](https://arxiv.org/abs/2611.17610)**
 - **[Wisdom of the Silicon Crowd: LLM Ensemble Prediction Capabilities Match Human Crowd Accuracy](https://arxiv.org/abs/2402.19379)**
 - **[Chatbot Arena: An Open Platform for Evaluating LLMs by Human Preference](https://arxiv.org/abs/2403.04132)**
 - **[Are More LLM Calls All You Need? Towards Scaling Laws of Compound Inference Systems](https://arxiv.org/pdf/2403.02419.pdf)**
@@ -376,6 +379,7 @@
 
 - **[The Alignment Waltz: Jointly Training Agents to Collaborate for Safety](https://arxiv.org/abs/2510.08240)**
 - **[MACPO: Weak-to-Strong Alignment via Multi-Agent Contrastive Preference Optimization](https://api.semanticscholar.org/CorpusId:273233831)**
+- **[Aligning AI Teams](https://arxiv.org/abs/2611.17820)** [GitHub](https://github.com/safety-research/aligning-ai-teams)
 
 ## Reinforcement Learning
 
@@ -406,6 +410,7 @@
 
 ## Finance
 
+- **[Inside the Trading Loop: Markets, Models, and Moves with LLM Agents](https://arxiv.org/abs/2611.11657)**
 - **[TwinMarket: A Scalable Behavioral and Social Simulation for Financial Markets](https://arxiv.org/abs/2502.01506)**
 - **[HedgeAgents: A Balanced-aware Multi-agent Financial Trading System](https://arxiv.org/abs/2502.13165)**
 

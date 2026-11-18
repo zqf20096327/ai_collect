@@ -1,57 +1,41 @@
 # BanglaNLP Hub
 
-A community-maintained catalog of Bangla (Bengali) NLP resources — papers, datasets, models, tools, and benchmarks.
+A community-maintained catalog of Bangla / Bengali NLP papers, datasets, models,
+tools, and benchmarks.
 
-[![Live site](https://img.shields.io/badge/live-eliteresearchlab.github.io%2FBanglaNLP--Hub-2563eb)](https://eliteresearchlab.github.io/BanglaNLP-Hub/)
-[![CI](https://github.com/eliteresearchlab/BanglaNLP-Hub/actions/workflows/ci.yml/badge.svg)](https://github.com/eliteresearchlab/BanglaNLP-Hub/actions/workflows/ci.yml)
-[![Deploy](https://github.com/eliteresearchlab/BanglaNLP-Hub/actions/workflows/deploy.yml/badge.svg)](https://github.com/eliteresearchlab/BanglaNLP-Hub/actions/workflows/deploy.yml)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-22c55e)](./CONTRIBUTING.md)
-[![License: MIT](https://img.shields.io/badge/license-MIT-black)](#license)
-[![HF Dataset](https://img.shields.io/badge/%F0%9F%A4%97%20dataset-bangla--nlp--catalog-FFD21E)](https://huggingface.co/datasets/kishormorol/bangla-nlp-catalog)
+[Browse the catalog](https://eliteresearchlab.github.io/BanglaNLP-Hub/) · [Hugging Face dataset](https://huggingface.co/datasets/kishormorol/bangla-nlp-catalog) · [DOI](https://doi.org/10.5281/zenodo.22798635)
 
-[![Tasks](https://img.shields.io/badge/tasks-26-64748b)](./data/tasks.yaml)
-[![Datasets](https://img.shields.io/badge/datasets-67-7c3aed)](./data/datasets)
-[![Papers](https://img.shields.io/badge/papers-814-2563eb)](./data/papers)
-[![Models](https://img.shields.io/badge/models-22-0891b2)](./data/models.yaml)
-[![Tools](https://img.shields.io/badge/tools-9-db2777)](./data/tools.yaml)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22798635-1682D4?style=flat)](https://doi.org/10.5281/zenodo.22798635)
+## Overview
 
-**Live:** https://eliteresearchlab.github.io/BanglaNLP-Hub/
-![BanglaNLP Hub home page: search across 712 papers, 63 datasets, 20 models and 9 tools, browsable by task](docs/screenshot.jpg)
+BanglaNLP Hub helps researchers, students, and developers find resources for working
+with Bangla. Search the catalog or browse by task to find papers, datasets, models,
+and tools. Each entry links to its original source, making it easier to check the
+details and choose what to use.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dark.webp">
+  <img src="docs/screenshots/light.webp" alt="The BanglaNLP Hub home page, with Bangladesh river artwork behind a bilingual heading and the catalog search">
+</picture>
 
-> Keywords: Bangla NLP · Bengali NLP · Bangla datasets · Bengali datasets · Bangla language models · Bengali benchmarks · low-resource / Indic NLP resources.
+## Run locally
 
-Static site built with Astro and TypeScript. No client-side framework: the only JavaScript shipped is a handful of small vanilla islands (catalog search, theme toggle, mobile nav menu, task tabs, table sorting, BibTeX copy).
+Requires Node.js 22.23.4 or newer. Built with Astro, TypeScript, and vanilla JavaScript.
 
-## Catalog
+```sh
+npm install
+npm run dev
+```
 
-Everything the site renders comes from YAML under [`/data`](./data). Nothing is hardcoded in the pages.
+The development server runs at `localhost:4321`.
 
-The catalog currently holds **814 papers**, **67 datasets**, **22 models**, and **9 tools** across **26 tasks** — the paper count roughly tripled in July 2026 through hand-verified sweeps of the ACL Anthology, arXiv, and OpenAlex journal articles, and the taxonomy doubled in September 2026 to cover work the original 13 tasks had no home for (see [`TODO-data.md`](./TODO-data.md)).
-
-| | Count |
+| Command | Action |
 | --- | --- |
-| Tasks | 26 |
-| Datasets | 67 |
-| Papers | 814 |
-| Models | 22 |
-| Tools | 9 |
+| `npm run build` | Build to `dist/` |
+| `npm run preview` | Preview the production build |
+| `npm run validate` | Validate catalog data |
+| `npm run check-links` | Check published resource links |
 
-```
-data/
-  tasks.yaml              task ids, English + Bangla names, descriptions
-  datasets/<task>.yaml    one file per task
-  papers/<task>.yaml
-  models.yaml              one record per model artifact, with one or more tasks
-  leaderboards/<task>.yaml
-  tools.yaml
-  contributors.yaml         resource submitters and their catalog entries
-  home-contributors.yaml    community and code credits shown on Home
-  venues.yaml             venue -> badge tone
-```
-
-### Shareable filters
+## Shareable filters
 
 Copy the address bar URL to share a filtered catalog view. Datasets accepts `q`,
 `task`, `license`, and `year`; Papers accepts `q`, `task`, `venue`, and `year`.
@@ -103,55 +87,19 @@ does not verify the dataset's other metadata.
 
 A September 2026 audit replaced BHS's unsupported 30,000 count with 3,418 labelled statements in v1.0 and checked SentNoB, FLORES-200, TyDi QA, and WikiANN against pinned releases. BHS retains MIT from the original repository license, with that attribution in its description. WikiANN records both original release clauses as `ODC-By; research use only` while retaining its balanced split details. Pinned evidence and version scope are recorded in `TODO-data.md`. These labels report the sources without deciding their legal effect.
 
-## Commands
+## Contribute
 
-| Command | Action |
-| --- | --- |
-| `npm install` | Install dependencies |
-| `npm run dev` | Dev server on `localhost:4321` |
-| `npm run build` | Build to `./dist/` |
-| `npm run preview` | Preview the production build |
-| `npm run validate` | Validate `/data` against the Zod schemas |
-| `npm run check-links` | Check every published `link:` URL in `/data` |
+Entries live in YAML under [`data/`](./data). To suggest a resource,
+[open an issue with its link](https://github.com/eliteresearchlab/BanglaNLP-Hub/issues/new?template=submit-resource.yml)
+or follow [CONTRIBUTING.md](./CONTRIBUTING.md) and submit a PR.
 
-`npm run validate` fails on missing or malformed fields, bad URLs, `verified` dates older than 12 months, duplicate ids or links, and leaderboards referencing an unknown dataset or paper id. It runs in CI on every pull request and gates deployment.
+**Only add information you can source.** Leave unknown fields out. Never invent
+scores, counts, or BibTeX. Run `npm run validate` before submitting.
 
-## Status
-
-The site is complete: Home, Tasks and per-task detail, Datasets, Papers, Tools, Contribute, and About, plus the data layer, schemas, validator, CI, GitHub Pages deployment, and a nightly link check.
-
-**What is left is data, not code** — and that is exactly where help is most useful.
-
-## Contributing
-
-Contributions are genuinely welcome, and you do not need to know Astro or TypeScript to make one. Every entry on the site is a few lines of YAML under [`/data`](./data).
-
-**The fastest way in:** open a [Submit a resource](https://github.com/eliteresearchlab/BanglaNLP-Hub/issues/new?template=submit-resource.yml) issue with a link. That is enough — someone else can turn it into an entry.
-
-**If you would rather open a PR directly**, [`CONTRIBUTING.md`](./CONTRIBUTING.md) has the field format for each entry type and a worked example. Edit or add one YAML file and open the PR; CI runs `npm run validate` and must pass before merge.
-
-Everyone who has contributed a resource is credited in [`CONTRIBUTORS.md`](./CONTRIBUTORS.md).
-
-### Where help is most needed
-
-These are concrete, self-contained, and each one is genuinely useful on its own — full detail in [`TODO-data.md`](./TODO-data.md):
-
-- **Reviewing paper tasks.** Most of the 814 papers were bulk-imported (ACL Anthology, arXiv, and hand-verified OpenAlex journal articles); their metadata is authoritative but each one's *task* was assigned by a title heuristic. Spotting a paper filed under the wrong task and moving it is a quick, high-value fix.
-- **Leaderboard rows.** Nine of the eleven benchmarks ship empty. Each needs scores with a citation to the paper they came from. Keep the dataset version, test split, and evaluation conditions explicit.
-* **BibTeX.** 1 dataset has no citation entry, `snltr`. Establish the resource association before copying a canonical export under the policy above. Do not invent a citation.
-- **Unverified dataset sizes.** About a dozen datasets are hosted where no count is published (Kaggle, openslr.org, nltr.org). If you know the paper, you can settle these.
-- **Missing resources.** New papers, datasets, models, and tools — especially anything published recently, and anything from researchers outside the usual venues.
-
-### The one rule
-
-**Never add a value you cannot source.** No invented scores, citation counts, or BibTeX. If a field is unknown, leave it out — the UI already hides the affected element, and an empty state is correct output rather than a gap to fill.
-
-This is not pedantry. A meaningful fraction of the catalog's original prototype data turned out to be fabricated — a model that did not exist, a duplicate under an invented title, a paper with no publication — and all of it looked perfectly plausible. Everything here is checkable, which is the only reason it is worth using.
-
-## Design reference
-
-The visual design originated as a Claude Design prototype. `design-reference/data.js` holds the original catalog data the YAML was migrated from; it is kept for provenance and is not used at build time.
+See [TODO-data.md](./TODO-data.md) for open data work and
+[CONTRIBUTORS.md](./CONTRIBUTORS.md) for resource contributors.
 
 ## License
 
-Site code is MIT. Catalog entries link to third-party resources that carry their own licenses — see each entry's `license` field.
+Site code is [MIT](./LICENSE). Linked resources have their own licenses.
+Third-party notices and font licenses are retained in [`docs/`](./docs).

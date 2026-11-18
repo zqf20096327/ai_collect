@@ -94,11 +94,11 @@
 
 ## 近期更新 · Releases
 
+**[v1.42.0](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.42.0) · 自有兼容服务与硅基流动接入(发布准备)**
+在原AI接入页配置自己的Chat Completions服务,地址、认证和密钥一起保存,文字主备与截图型号独立选择;同时包含硅基流动平台。历史AI结果保留发送时来源,升级只增加来源元数据,原有模型和账目保持原样。见 [PRD](prd/v1.42.md)、[技术设计](tech-design/v1.42.md)与[验收记录](docs/beta-review-v1.42.md)。
+
 **[v1.40.1](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.40.1) · 补齐新目标 AI 洞察**
 新退休目标恢复清晰的AI洞察入口、月报与偏离预警,解读同步引用月结余达成时间及来源。生成失败保留旧报告,窄屏阅读无遮挡;无新增数据库迁移。见 [补丁PRD](prd/v1.40.1.md)与[验收及发布记录](docs/beta-review-v1.40.1.md)。
-
-**[v1.40.0](https://github.com/LuoDi-Nate/financial-management/releases/tag/v1.40.0) · 目标多指标与按月结余的达成时间**
-保留资金进度,增加按当前月结余估算的达成月份与剩余时长,支持家庭自动来源和本目标手填。仪表盘预计月份位于进度轴右下角,小i说明门槛组成、资金进度和达成月份的计算依据;独立保存估算不冲掉主计划草稿。见 [PRD](prd/v1.40.md)、[技术设计](tech-design/v1.40.md)与[验收及发布记录](docs/beta-review-v1.40.md)。
 
 > 完整发布记录与截图见 [Releases](https://github.com/LuoDi-Nate/financial-management/releases)(本段每版只留 2–4 行,细节不搬过来)。
 
@@ -133,7 +133,7 @@
 | 前端 | Thymeleaf + HTMX 1.9 + Chart.js 4 + ECharts(无 SPA、无构建管线) |
 | 认证 | Spring Security + bcrypt + Session Cookie |
 | 部署 | **Docker compose 一键(v0.7,推荐)** · 或 Linux systemd + nginx 反代 :80 → :20000 · macOS launchd(可选)直连 :20000 |
-| 测试 | JUnit 5 · **1501 单元** / 42 条浏览器主线(真浏览器 + 真 DB,真实模型流程默认跳过)/ **1115 黑盒回归**护栏(含 v1.39 的53项及v1.40的24项只读静态守护) —— 每条护栏守的是哪个坑,见 [QA case 库](docs/qa-cases.md) |
+| 测试 | JUnit 5 · **1634 单元** / 44 条浏览器主线(真浏览器 + 真 DB,真实模型流程默认跳过)/ **1154 黑盒回归**护栏(含v1.39的53项、v1.40的24项、v1.41的29项及v1.42的10项只读静态守护) —— 每条护栏守的是哪个坑,见 [QA case 库](docs/qa-cases.md) |
 
 ## 快速开始(自托管部署)
 
@@ -341,7 +341,7 @@ mvn spring-boot:run
 测试:
 
 ```bash
-mvn test                       # JUnit 单元测试(1501)
+mvn test                       # JUnit 单元测试(1634)
 bash scripts/qa-run.sh         # 黑盒 endpoint + 模板渲染(见 README 上方测试行的黑盒回归数)
 bash scripts/qa-run.sh --static-v139 # v1.39 只读守护,不写数据库、不调模型
 node scripts/e2e/run.cjs       # 真 e2e:Playwright 开浏览器按用户路径点(失败自动截图)
@@ -349,6 +349,9 @@ bash scripts/regression-data.sh # 数据层/口径回归(原 e2e.sh · curl 端�
 ```
 
 ## 文档
+
+- beta待验收:[v1.42 自有兼容服务](prd/v1.42.md) · [交互预览](preview/v1.42/custom-llm.html) · [技术设计](tech-design/v1.42.md) · [验收记录](docs/beta-review-v1.42.md)。同页原子服务配置、明确免认证与内网许可、文字/视觉/本地工具及来源留存;当前beta1.42.0包含#42,尚未发布。
+- 依赖待验收:[v1.41 硅基流动 AI 接入](prd/v1.41.md) · [交互预览](preview/v1.41/ai-access.html) · [技术设计](tech-design/v1.41.md) · [验收记录](docs/beta-review-v1.41.md)。四平台共同配置交互,文字/图片/本地工具SSE接入,旧配置与百炼轮询保留;由v1.42开发分支承接,尚未合并master或发布。
 
 - 已发布补丁:[v1.40.1 新目标 AI 洞察修复](prd/v1.40.1.md),[技术方案附录](tech-design/v1.40.md)。
 
@@ -386,6 +389,8 @@ bash scripts/regression-data.sh # 数据层/口径回归(原 e2e.sh · curl 端�
 
 | 版本 | 文档 |
 |---|---|
+| `v1.42` | [PRD](prd/v1.42.md)· [技术设计](tech-design/v1.42.md)· [交互预览](preview/v1.42/custom-llm.html)· [beta验收记录](docs/beta-review-v1.42.md) |
+| `v1.41` | [PRD](prd/v1.41.md)· [技术设计](tech-design/v1.41.md)· [交互预览](preview/v1.41/ai-access.html)· [验收记录](docs/beta-review-v1.41.md) |
 | `v1.40` | [PRD](prd/v1.40.md)(已发布v1.40.0)· [技术设计](tech-design/v1.40.md)· [交互预览](preview/v1.40/goals.html)· [验收及发布记录](docs/beta-review-v1.40.md) |
 | `v1.39` | [PRD](prd/v1.39.md)(已发布v1.39.0)· [技术设计](tech-design/v1.39.md) · [预览](preview/v1.39/retirement-setup.html) · [原节目与算法调研](docs/research/retirement-xiaolin-2026-11.md) |
 | `v1.38` | [PRD](prd/v1.38.md)(随v1.39.0一并交付)· [技术设计](tech-design/v1.38.md) · [预览 · 贷款固定还款](preview/v1.38/loan-repay.html) · [预览 · 测试环境不调大模型](preview/v1.38/ai-stub.html) |
@@ -491,7 +496,7 @@ financial-management/
 
 ## 配置项
 
-> 想接 **AI(Qwen/DeepSeek)/ 阿里云短信** 等外部服务?一站式步骤见 **[配置与接入指南](docs/configuration.md)**(全部可选,核心功能零配置即用)。下面是系统级 env 与管理页参数的分工说明。
+> 想接 **AI(百炼/DeepSeek官方/方舟/硅基流动/自有兼容服务)/ 阿里云短信** 等外部服务?一站式步骤见 **[配置与接入指南](docs/configuration.md)**(全部可选,核心功能零配置即用)。下面是系统级 env 与管理页参数的分工说明。
 
 **v0.4.18 起 · 运营参数沉淀到管理页 · 实时生效不重启**(详 [`prd/v0.4.md`](prd/v0.4.md) §22)。读取链:**DB 优先 → env(@Value)→ 代码常量**。
 
@@ -513,9 +518,12 @@ financial-management/
 
 | 配置 | 入口 | env 兜底 |
 |---|---|---|
-| **LLM Qwen API key** | `/admin/integrations` ① 段(私密 · 留空保原值) | `FINANCE_LLM_QWEN_API_KEY` 仍可用作 fallback |
-| **LLM DeepSeek API key** | 同上 | `FINANCE_LLM_DEEPSEEK_API_KEY` |
-| **LLM max_tokens / timeout** | `/admin/integrations` | — |
+| **LLM 百炼 API key** | `/admin/ai-access#llm`(私密 · 独立保存 · 留空保原值) | `FINANCE_LLM_QWEN_API_KEY` |
+| **LLM DeepSeek官方 API key** | 同上 | `FINANCE_LLM_DEEPSEEK_API_KEY` |
+| **LLM 方舟 API key** | 同上 | `FINANCE_LLM_ARK_API_KEY` |
+| **LLM 硅基流动 API key** | 同上 | `FINANCE_LLM_SILICONFLOW_API_KEY` |
+| **自有兼容服务** | AI接入页一次保存地址、认证、Key与内网许可,模型单独选择 | 可选整体预置`FINANCE_LLM_CUSTOM_SERVICE_JSON`;DB整份配置优先,不拆键回退 |
+| **LLM 型号 / temperature / max_tokens / timeout** | `/admin/ai-access#llm` · 与密钥分开保存 | — |
 | **股票自动拉取开关** | `/admin/integrations` ② 段 · checkbox | `FINANCE_STOCK_FETCH_ENABLED=true/false` |
 | **行情 4 市场 cron**(美 06:05 / A 16:10 / 港 16:30 / 加密 06:15) | `/admin/integrations` ② 段 · 各自 cron 表达式 · 改即 cancel 旧 future + 重排 | 代码默认 |
 | **FX 拉取 cron**(月初 02:30) | `/admin/integrations` ③ 段 | 代码默认 |

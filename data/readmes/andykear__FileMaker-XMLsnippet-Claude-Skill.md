@@ -13,7 +13,7 @@ Developed by Andrew Kear of [Clockwork Creative Technology](https://www.clockwor
 
 FileMaker's Script Workspace accepts pasted scripts in a specific XML format. Claris has never published a specification for it. Get the XML wrong and FileMaker accepts it silently, dropping data without any error message.
 
-This specification documents what the paste handler actually accepts: all 222 step IDs in the FileMaker 2026 palette, canonical XML skeletons for every step, the element ordering constraints that cause silent drops when violated, and the calculation slot binding rules that cause multi-slot steps to misbind.
+This specification documents what the paste handler actually accepts: every script step id documented through FileMaker 26.1, with 26.1-only steps and options tagged `[26.1+]`, canonical XML skeletons for every step, the element ordering constraints that cause silent drops when violated, and the calculation slot binding rules that cause multi-slot steps to misbind.
 
 ---
 
@@ -70,6 +70,8 @@ references/
 1. Download the zip from the [Releases](../../releases) page
 2. Extract to get `SKILL.md` and the `references/` folder
 3. Upload to your Claude organisation's skills library, preserving the folder structure
+
+Upgrading from v2.0: replace all files. No new files this release.
 
 Upgrading from v1.12: replace all files. No new files this release, all changes are within the existing file set.
 
@@ -139,6 +141,7 @@ Found something that doesn't round-trip? A production export that contradicts th
 
 | Version | Notes |
 |---------|-------|
+| 2.1 | **FileMaker 26.1 support — 26.1-only steps and options tagged `[26.1+]`.** Corrects Go to Related Record's `<Option>`/`<Restore>` meanings and Set Variable by Name's element order. |
 | 2.0 | **Complete step coverage of the FileMaker 2026 26.02 — 222 of 222 ids.**  |
 | 1.14 | Minor corrections from a full bit flag decode of the script step format. |
 | 1.13 | Continued FM 26 verification. Configured forms added for five steps previously documented only as unconfigured placeholders: Add Account, Open File, Perform Script on Server with Callback, Fine-Tune Model, Save a Copy as XML (destination path). One structural correction: Configure Machine Learning Model's ConfigureCoreML value. New elements confirmed on DisableStepCollapsed's one exception, Comment, three AI-section steps, and Sort Records. Resolved the long-standing Create PDF/Save Records as PDF bare-Calculation question (mirrors Title). New structural rule: Commit/Revert Transaction cannot nest inside If/Else. Thanks to Darrin Southern of CadenceUX for sharing a number of excellent additions in this point release. |

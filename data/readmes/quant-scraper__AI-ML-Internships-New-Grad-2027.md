@@ -4,21 +4,21 @@ Every open internship and graduate role at 31 AI labs and AI & machine learning 
 
 From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you can filter these by city, firm and focus, and see experienced roles too. Also: [2027 Quant Internships & Graduate Roles](https://github.com/quant-scraper/Quant-Student-Roles) · [2027 Big Tech Internships & Graduate Roles](https://github.com/quant-scraper/Big-Tech-Student-Roles).
 
-**36** internships · **28** graduate roles · updated 2026-11-17 14:28 UTC
+**31** internships · **28** graduate roles · updated 2026-11-18 23:24 UTC
 
 ## Where the roles are
 
 | | Americas | Europe, Middle East & Africa | Asia Pacific | All |
 |---|---:|---:|---:|---:|
-| Research | [19](https://quant-scraper.com/ai?for=students&discipline=research&region=AMER) | [5](https://quant-scraper.com/ai?for=students&discipline=research&region=EMEA) | — | [22](https://quant-scraper.com/ai?for=students&discipline=research) |
+| Research | [14](https://quant-scraper.com/ai?for=students&discipline=research&region=AMER) | [4](https://quant-scraper.com/ai?for=students&discipline=research&region=EMEA) | — | [17](https://quant-scraper.com/ai?for=students&discipline=research) |
 | Engineering & technology | [28](https://quant-scraper.com/ai?for=students&discipline=technology&region=AMER) | [10](https://quant-scraper.com/ai?for=students&discipline=technology&region=EMEA) | [4](https://quant-scraper.com/ai?for=students&discipline=technology&region=APAC) | [42](https://quant-scraper.com/ai?for=students&discipline=technology) |
 
 <sub>A role open in several regions counts once in each.</sub>
 
 ## Contents
 
-- [Internships](#internships) (36)
-  - [Research](#research--internships) (21)
+- [Internships](#internships) (31)
+  - [Research](#research--internships) (16)
   - [Engineering & technology](#engineering--technology--internships) (15)
 - [Graduate roles](#graduate-roles) (28)
   - [Research](#research--graduate-roles) (1)
@@ -31,11 +31,6 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 | Company | Role | Location | Focus | Salary | Posted |
 |---|---|---|---|---|---|
 | **[Mistral AI](https://quant-scraper.com/companies/mistral)** | [AI Scientist - (Internship, Masters or Phd)](https://jobs.ashbyhq.com/mistral.ai/f7245b49-92a0-4111-bba1-343183de7d97) | Paris, Zurich +2 | AI / ML | — | Nov 6 |
-| **[Together AI](https://quant-scraper.com/companies/together)** | [Systems Research Engineer Intern - GPU Programming (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5238460007) | San Francisco | Inference & performance | USD 121k–146k | Nov 3 |
-| ↳ | [Research Intern, Model Shaping (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5238466007) | San Francisco, Amsterdam | Post-training & RL | USD 121k–146k | Nov 2 |
-| ↳ | [Research Intern, Inference (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5238462007) | San Francisco | Inference & performance | USD 121k–146k | Nov 2 |
-| ↳ | [Research Intern, Frontier Speculative Decoding (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5267198007) | San Francisco | Inference & performance | USD 121k–146k | Nov 2 |
-| ↳ | [Research Intern, Frontier Agents (Summer 2027)](https://job-boards.greenhouse.io/togetherai/jobs/5238468007) | San Francisco | Agents | USD 121k–146k | Nov 2 |
 | **[Sierra](https://quant-scraper.com/companies/sierra)** | [Research Intern](https://jobs.ashbyhq.com/Sierra/ef896ee9-e903-4a1f-84c2-537373cb9081) | San Francisco | AI / ML | — | Oct 31 |
 | **[Meta Superintelligence Labs](https://quant-scraper.com/companies/msl)** | [Research Scientist Intern, MSL - Agentic Post-Training (PhD)](https://www.metacareers.com/jobs/1155292783739299/) | Menlo Park | Post-training & RL | USD 92k–152k | Oct 30 |
 | ↳ | [Research Scientist Intern, MSL Agents (PhD)](https://www.metacareers.com/jobs/1136354555738164/) | Menlo Park | Agents | USD 92k–152k | Oct 22 |

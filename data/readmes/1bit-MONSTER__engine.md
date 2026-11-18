@@ -17,7 +17,7 @@ limitations under the License.
 # 1bit engine: local LLM inference on AMD Strix Halo (Ryzen AI MAX+ 395)
 
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
-[![Lemonade pin: last bump](https://img.shields.io/github/last-commit/1bit-MONSTER/engine?path=third_party%2Flemonade&label=Lemonade%20pin&color=f5c518)](https://github.com/1bit-MONSTER/engine/tree/main/third_party/lemonade)
+[![Lemonade pin: last bump](https://img.shields.io/github/last-commit/1bit-MONSTER/engine?path=third_party%2Flemonade&label=Lemonade%20pin&color=f5c518)](https://github.com/1bit-MONSTER/engine/commits/main/third_party/lemonade)
 [![Releases](https://img.shields.io/badge/releases-GitHub-24292f)](https://github.com/1bit-MONSTER/engine/releases)
 [![Documentation: 1bit.gg](https://img.shields.io/badge/docs-1bit.gg-1779e1)](https://1bit.gg/)
 [![Discord](https://img.shields.io/badge/chat-Discord-5865F2)](https://discord.gg/fa5m4Vawpa)
@@ -81,6 +81,7 @@ One binary to rule them all. The 1bit engine is model agnostic: any Hugging Face
 | 2026-10-30 | The HRX pin carries the DeepSeek-V4.1 port; ONNX Runtime runs in-process with our own execution provider on the NPU; the NPU and the GPU are measured running at the same time ([#672](https://github.com/1bit-MONSTER/engine/pull/672), [#647](https://github.com/1bit-MONSTER/engine/pull/647), [docs/hybrid.md](docs/hybrid.md)) |
 | 2026-11-01 | **v2026.44 is a draft**: candidate 19 is gated in software (1959/1959 kernel ops, NPU 82.03 tok/s, `VMTEST` pass through install and installed-disk boot, `VMTEST-RELEASE` 10 pass / 9 skip / 0 fail) but has **not** been booted or installed on hardware; candidate 20 takes the full gate, hardware boot and install included, before it is published ([docs/releases.md](docs/releases.md)) |
 | 2026-11-02 | **1bit OS becomes a Puppy Linux appliance**: `ResolutePup64` (woof-CE, Ubuntu 26.04 base) with our MOK-signed kernel, Lemonade and the engine embedded, headless by default with a `desktop` boot entry, `apt` and a persistent `1BIT-DATA`; it boots on the board with Secure Boot on ([docs/os-v3.md](docs/os-v3.md), [os/README.md](os/README.md)) |
+| 2026-11-14 | The Bosgame BeyondMax's rear USB-A and Type-C ports work under Linux: a plug test on every external port passed once the keep-awake rule holds the xHCI controllers awake (USB4 devices still untested). The MTP drafter no longer crashes on a model's first request, and the HIP kernel and HRX pins moved forward through the hardware gate ([docs/axb35-usb-ports.md](docs/axb35-usb-ports.md), [#2431](https://github.com/1bit-MONSTER/engine/pull/2431), [#2453](https://github.com/1bit-MONSTER/engine/pull/2453), [#2461](https://github.com/1bit-MONSTER/engine/pull/2461)) |
 
 The release goes out when every item on the release checklist is done ([docs/releases.md](docs/releases.md)); the weekly Lemonade pin moves with Lemonade's releases.
 
@@ -91,6 +92,7 @@ The release goes out when every item on the release checklist is done ([docs/rel
 - [docs/architecture.md](docs/architecture.md): how the engine is built, what runs where, the hardware gate, the kernel, the direction.
 - [docs/serve.md](docs/serve.md): `1bit serve` and its options.
 - [docs/zero-copy.md](docs/zero-copy.md): the copies left on the serving paths, what each one costs per token, and why it stays.
+- [docs/lora.md](docs/lora.md): adapters (LoRA), changing a live adapter's factors in place, and the two traps around them.
 - [Measured results](https://github.com/1bit-MONSTER/engine/wiki): every number with how it was taken.
 - [Site repository](https://github.com/1bit-MONSTER/site): builds 1bit.gg from this repository.
 

@@ -2,17 +2,17 @@
 
 [![CI](https://github.com/BeforeLanding/mini-DSH/actions/workflows/ci.yml/badge.svg)](https://github.com/BeforeLanding/mini-DSH/actions/workflows/ci.yml)
 
-mini-DSH 是一个在本地代码仓库中运行的命令行编程 agent（智能体）。它用 TypeScript 编写，构建于 [Cordis](https://github.com/cordiverse/cordis) 插件系统之上，内置 DeepSeek 模型适配器。
+mini-DSH 是一个在本地代码仓库中运行的cli coding agent。它用 TypeScript 编写，构建于 [Cordis](https://github.com/cordiverse/cordis) 插件系统之上，内置 DeepSeek 模型适配器。
 
 会话保存为追加式的 JSONL 事件日志。进程崩溃或预算耗尽后，可以从日志重建状态，在原任务上继续；结果未知的工具调用不会被自动重跑。
 
-文档：[使用指南](docs/USAGE.md) · [架构](docs/ARCHITECTURE.md) · [文档索引](docs/README.md)
+https://github.com/user-attachments/assets/e5494d83-0e59-4e75-a67f-4be3f7e8c2be
 
-![预算停止后在同一任务续跑，没有工具被执行两次](docs/images/demo-resume.gif)
+文档：[使用指南](docs/USAGE.md) · [架构](docs/ARCHITECTURE.md) · [文档索引](docs/README.md)
 
 ## 项目状态
 
-mini-DSH 是个人项目，不是 DeepSeek 官方项目，也不依赖 `@deepseek-ai/dsh`。它仍在迭代，配置项和命令可能变化。当前版本为 [v0.3.0](https://github.com/BeforeLanding/mini-DSH/releases/tag/v0.3.0)，尚未发布到 npm。
+mini-DSH 仍在迭代，配置项和命令可能变化。当前版本为 [v0.3.0](https://github.com/BeforeLanding/mini-DSH/releases/tag/v0.3.0)，尚未发布到 npm。
 
 路径与命令闸门是应用层策略，不是操作系统隔离。在重要的仓库上运行之前，请先阅读[已知边界](#已知边界)。
 
@@ -64,13 +64,15 @@ pnpm start
 
 ## 评测
 
-评测使用 90 道 SWE-bench Verified 题，这些题都没有参与调参。三组配置使用同一模型 `deepseek/deepseek-flash`、同一命令环境和同一 token 上限：mini-SWE-agent 2.4.6 解决 57 题，不开长任务组件的 mini-DSH 解决 61 题，打开组件后解决 74 题。
+评测使用 90 道 SWE-bench Verified 题，三组配置使用同一模型 `deepseek/deepseek-flash`、同一命令环境和同一 token 上限：mini-SWE-agent 2.4.6 解决 57 题，不开长任务组件的 mini-DSH 解决 61 题，打开组件后解决 74 题。
 
 打开组件后，成本约为 mini-SWE-agent 的 2.6 倍。没有做逐项消融，差距不能归到某一个组件上。这些组件在 main 上默认关闭，开关见[使用指南](docs/USAGE.md#长单任务的可选组件)；设置、配对检验与限制见 [SWE-bench 结果](docs/SWE-BENCH-RESULTS.md)。
 
 多 agent 编排的第一批真实模型运行中，两类配置的夹具与提示缓存设置不一致，结果不能说明编排优于单 agent，见[编排结果](docs/superagent/RESULTS-20261108.md)。
 
 ## 架构
+
+![mini-DSH 架构：入口与装配、Agent Loop、上下文管理、模型与工具、事件日志及其派生的恢复、检查与交付证据](docs/images/architecture.png)
 
 CLI、模型适配器、工具和 MCP 都以 Cordis 插件的形式注册服务。生产入口、离线演示和评测共用 [`createHarness`](src/app/create-harness.ts) 完成装配。
 
@@ -112,10 +114,6 @@ pnpm test    # 核心与 Cordis 集成测试，不需要模型 API key
 CI 覆盖 Ubuntu / Windows 与 Node.js 22 / 24，另有 Linux bubblewrap 隔离测试和仓库外安装检查。开发记录见[文档索引](docs/README.md)与 [PROGRESS](PROGRESS.md)。
 
 面向 agent：请遵循 [AGENTS.md](AGENTS.md)。
-
-## 来源
-
-本项目起源于教程[从零手写 mini-dsh](https://github.com/huangjunsen0406/mini-dsh/blob/main/LEARNING.zh-CN.md)，沿用到提交 `c5fc9c4`：当时约 1,250 行 JavaScript，包含最小的 agent loop、DeepSeek 适配器和文件/Bash 工具。从 `43e3829` 起为独立扩展：迁移到 strict TypeScript，加入事件持久化与恢复、上下文与预算、带版本的检查记录、只读检查、多 agent 编排和评测入口。`src/` 目前约 1.08 万行。
 
 ## 许可证
 

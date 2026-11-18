@@ -40,21 +40,25 @@ replays (its kernels descend from [FIDESlib32bits](https://github.com/gladia-res
 our 32-bit GPU port of [FIDESlib](https://github.com/CAPS-UMU/FIDESlib)).
 
 <p align="center">
-  <a href="assets/paper-tables-overview-light.png#gh-light-mode-only"><img src="assets/paper-tables-overview-light.png#gh-light-mode-only" alt="Perseus, encrypted, end to end on one RTX PRO 6000 with 128-bit security, and the peak GPU memory of each run (Llama-3-8B streams its weights from host memory, GPT-2 small keeps its weights on the GPU). Llama-3-8B prefill of a 128-token prompt 53.6 s (85.1 GiB), decode of one token at a 512-token context 6.86 s (52.4 GiB when decoding 16 tokens). GPT-2 small prefill 6.04 s (59.3 GiB), decode 1.70 s per token at a 512-token context (63.1 GiB when decoding 16 tokens). ViT-B/16 17.7 s per image (68.1 GiB). BERT-base 7.36 s for 128 tokens (57.9 GiB). SANA-Sprint 0.6B, with its Gemma-2-2B text encoder, 269 s for one 768 × 768 image from a text prompt (78.0 GiB)." width="707"></a>
-  <a href="assets/paper-tables-overview-dark.png#gh-dark-mode-only"><img src="assets/paper-tables-overview-dark.png#gh-dark-mode-only" alt="Perseus, encrypted, end to end on one RTX PRO 6000 with 128-bit security, and the peak GPU memory of each run (Llama-3-8B streams its weights from host memory, GPT-2 small keeps its weights on the GPU). Llama-3-8B prefill of a 128-token prompt 53.6 s (85.1 GiB), decode of one token at a 512-token context 6.86 s (52.4 GiB when decoding 16 tokens). GPT-2 small prefill 6.04 s (59.3 GiB), decode 1.70 s per token at a 512-token context (63.1 GiB when decoding 16 tokens). ViT-B/16 17.7 s per image (68.1 GiB). BERT-base 7.36 s for 128 tokens (57.9 GiB). SANA-Sprint 0.6B, with its Gemma-2-2B text encoder, 269 s for one 768 × 768 image from a text prompt (78.0 GiB)." width="707"></a>
+  <a href="assets/paper-tables-overview-light.png#gh-light-mode-only"><img src="assets/paper-tables-overview-light.png#gh-light-mode-only" alt="Perseus, encrypted, end to end on one RTX PRO 6000 with 128-bit security, and the peak GPU memory of each run (Llama-3-8B streams its weights from host memory, GPT-2 small keeps its weights on the GPU). Llama-3-8B prefill of a 128-token prompt 53.6 s (85.1 GiB), decode of one token at a 512-token context 6.86 s (52.4 GiB when decoding 16 tokens). GPT-2 small prefill 6.04 s (59.3 GiB), decode 1.70 s per token at a 512-token context (63.1 GiB when decoding 16 tokens). ViT-B/16 17.7 s per image (68.1 GiB). BERT-base 7.36 s for 128 tokens (57.9 GiB). ResNet-20 0.321 s per CIFAR-10 image (35.5 GiB). SANA-Sprint 0.6B, with its Gemma-2-2B text encoder, 269 s for one 768 × 768 image from a text prompt (78.0 GiB)." width="707"></a>
+  <a href="assets/paper-tables-overview-dark.png#gh-dark-mode-only"><img src="assets/paper-tables-overview-dark.png#gh-dark-mode-only" alt="Perseus, encrypted, end to end on one RTX PRO 6000 with 128-bit security, and the peak GPU memory of each run (Llama-3-8B streams its weights from host memory, GPT-2 small keeps its weights on the GPU). Llama-3-8B prefill of a 128-token prompt 53.6 s (85.1 GiB), decode of one token at a 512-token context 6.86 s (52.4 GiB when decoding 16 tokens). GPT-2 small prefill 6.04 s (59.3 GiB), decode 1.70 s per token at a 512-token context (63.1 GiB when decoding 16 tokens). ViT-B/16 17.7 s per image (68.1 GiB). BERT-base 7.36 s for 128 tokens (57.9 GiB). ResNet-20 0.321 s per CIFAR-10 image (35.5 GiB). SANA-Sprint 0.6B, with its Gemma-2-2B text encoder, 269 s for one 768 × 768 image from a text prompt (78.0 GiB)." width="707"></a>
 </p>
 
 ## What's inside
 
-- **Python models, compiled.** GPT-2, Llama-3, BERT, ViT and SANA-Sprint (with its Gemma-2 text encoder)
-  are Python programs on `perseus.impl` (`python/perseus/examples/`), with readable packings, nonlinearities
-  and layers. Each block is recorded once on a CPU twin, compiled with its plan into a program, and replayed
-  by the runtime with no Python on the critical path, from one device arena sized at setup.
+- **Python models, compiled.** GPT-2, Llama-3, BERT, ViT, ResNet-20 on CIFAR-10 and SANA-Sprint (with its
+  Gemma-2 text encoder) are Python programs on `perseus.impl` (`python/perseus/examples/`), with readable
+  packings, nonlinearities and layers. Each block is recorded once on a CPU twin, compiled with its plan into
+  a program, and replayed by the runtime with no Python on the critical path, from one device arena sized at
+  setup.
 - **In-kernel key regeneration.** Half of every key-switching key is regenerated on the GPU from a
   ChaCha12 seed instead of being stored.
 - **Complex Cachemir packing.** Two real vectors per ciphertext, in the complex slots of CKKS.
 - **Packing- and magnitude-aware bootstrap placement.** GPT-2 runs 416 bootstraps per token,
   against 584–894 for DaCapo, Orion and Fhelipe.
+- **CKKS -> TFHE -> CKKS lookup tables.** `perseus.impl.tfhe.tfhe_lut` evaluates a sign or any lookup table on
+  chosen slots by programmable bootstrapping (crates `pc-tfhe`, `pc-gpu` `tfhe`), as one planned refresh: exact
+  decisions where a polynomial needs high degree (ReLU's sign, argmax, thresholds).
 
 ## Results
 
@@ -73,6 +77,9 @@ ours where the code is released.
   <br>
   <a href="assets/paper-tables-bert-light.png#gh-light-mode-only"><img src="assets/paper-tables-bert-light.png#gh-light-mode-only" alt="Encrypted BERT inference of one sentence, seconds per sentence. THOR, BERT-base, 128 tokens, 602.0 on A100; POLARIS, BERT-Mini, 83.0 on A100; Cerium, BERT-base, 128 tokens, 43.6 (replicated on RTX PRO 6000); Perseus, BERT-base, 128 tokens, 7.36 on RTX PRO 6000, open source." width="707"></a>
   <a href="assets/paper-tables-bert-dark.png#gh-dark-mode-only"><img src="assets/paper-tables-bert-dark.png#gh-dark-mode-only" alt="Encrypted BERT inference of one sentence, seconds per sentence. THOR, BERT-base, 128 tokens, 602.0 on A100; POLARIS, BERT-Mini, 83.0 on A100; Cerium, BERT-base, 128 tokens, 43.6 (replicated on RTX PRO 6000); Perseus, BERT-base, 128 tokens, 7.36 on RTX PRO 6000, open source." width="707"></a>
+  <br>
+  <a href="assets/paper-tables-resnet-light.png#gh-light-mode-only"><img src="assets/paper-tables-resnet-light.png#gh-light-mode-only" alt="Encrypted ResNet-20 inference of one 32 × 32 CIFAR-10 image, seconds, and top-1 on the CIFAR-10 test set. Orion 618.2 on one CPU thread, open source; Cheddar 0.72 on RTX 5090, 91.95%, library released, ResNet-20 not; Cerium 0.456 on B200 (0.620 on H100, from the paper), 91.4%; Perseus 0.321 on RTX PRO 6000, 92.5% on the first 1,000 test images (the same as its float64 model), open source." width="707"></a>
+  <a href="assets/paper-tables-resnet-dark.png#gh-dark-mode-only"><img src="assets/paper-tables-resnet-dark.png#gh-dark-mode-only" alt="Encrypted ResNet-20 inference of one 32 × 32 CIFAR-10 image, seconds, and top-1 on the CIFAR-10 test set. Orion 618.2 on one CPU thread, open source; Cheddar 0.72 on RTX 5090, 91.95%, library released, ResNet-20 not; Cerium 0.456 on B200 (0.620 on H100, from the paper), 91.4%; Perseus 0.321 on RTX PRO 6000, 92.5% on the first 1,000 test images (the same as its float64 model), open source." width="707"></a>
   <br>
   <a href="assets/paper-tables-sana-light.png#gh-light-mode-only"><img src="assets/paper-tables-sana-light.png#gh-light-mode-only" alt="Encrypted generation of one image from a text prompt, seconds. Perseus, SANA-Sprint 0.6B with its Gemma-2-2B text encoder, 768 × 768, 2 steps, 269 on RTX PRO 6000, encrypted end to end, open source." width="707"></a>
   <a href="assets/paper-tables-sana-dark.png#gh-dark-mode-only"><img src="assets/paper-tables-sana-dark.png#gh-dark-mode-only" alt="Encrypted generation of one image from a text prompt, seconds. Perseus, SANA-Sprint 0.6B with its Gemma-2-2B text encoder, 768 × 768, 2 steps, 269 on RTX PRO 6000, encrypted end to end, open source." width="707"></a>
@@ -109,6 +116,7 @@ GPU=0 bash scripts/repro/gpt2_decode_ctx.sh                     # GPT-2, decode 
 GPU=0 bash scripts/repro/gpt2_prefill128.sh                     # GPT-2, 128-token prefill to the first token
 GPU=0 bash scripts/repro/bert_base.sh                           # BERT-base, 128 tokens (SST-2)
 GPU=0 bash scripts/repro/vit_base.sh                            # ViT-B/16, four EuroSAT images
+GPU=0 bash scripts/repro/resnet20.sh                            # ResNet-20, 64 CIFAR-10 images
 ```
 
 Llama-3-8B needs access to `meta-llama/Llama-3.1-8B`; Llama, BERT and ViT were measured on a 96 GB
@@ -131,7 +139,7 @@ GPU.
   - `plan/` the planner, which reads a recorded forward pass, simulates how levels are spent,
     places the bootstraps and picks each one's type. It also holds our ports of the DaCapo,
     Orion and Fhelipe planners.
-  - `examples/{gpt2,llama,bert,vit}/` the four models on `perseus.impl`, with their runners
+  - `examples/{gpt2,llama,bert,vit,resnet,sana}/` the models on `perseus.impl`, with their runners
     and planning scripts (`make_plan.sh`); `defaults.py` the plan each runs by default.
   - `calibrate/`, `export.py`, `hub.py` the fitting of the polynomial approximations, the export
     of HuggingFace weights, the model download.
@@ -178,6 +186,12 @@ y = fhe.rotate_and_sum(fhe.square(fhe.encrypt(x, 0)), 1, 16)   # sum of squares 
 print(np.real(fhe.decrypt_slots_complex(y)[0]), np.sum(x ** 2))
 sess.close()
 ```
+
+Branching on encrypted values goes through `perseus.impl.tfhe`: register a table (`register_sign`, `register_lut`)
+and the slots it reads (`register_slots`, with the copies a packing replicates), call `tfhe_lut(ops, x, table,
+slots)` in a stage, and give the planned session `tfhe=<values per pass>` (`setup_session` registers the tables).
+`python -m perseus.examples.resnet.run --plan bootstrap_placements/resnet20_tfhe_argmax --tfhe --tfhe-argmax` runs
+ResNet-20 with its ReLU signs and an encrypted argmax head that way.
 
 A new model subclasses `perseus.impl.driver.ImplModel` and lists its stages, the masks each
 step needs and its weights; `python/perseus/impl/__init__.py` describes the modules. The client

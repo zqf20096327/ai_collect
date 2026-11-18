@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.34-green.svg" alt="Version 1.4.34" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.36-green.svg" alt="Version 1.4.36" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -45,7 +45,7 @@ https://github.com/user-attachments/assets/84012a4d-4ca1-475e-b82d-1db45634a5e3
 <details open>
 <summary>Already run Claude Code? Install the plugin</summary>
 
-With Claude Code 2.1.325+ and Bun 1.4+ installed:
+With Claude Code 2.1.327+ and Bun 1.4+ installed:
 
 ```bash
 claude plugin install hermitd --marketplace gtapps/hermitd --scope local
@@ -65,7 +65,18 @@ curl -fsSL https://gtapps.github.io/hermitd/install.sh | bash
 
 </details>
 
-Both options set up the agent in this folder. Hatch guides you through the agent’s purpose and preferences, then shows how to start it. Choose Quick for defaults you can adjust later.
+<details>
+<summary>Prefer a coding assistant? Send it a prompt</summary>
+
+Open Claude Code, Codex or another coding assistant anywhere on the machine and send:
+
+```text
+Set up a hermitd agent by following the Set up and Keep it running sections of https://github.com/gtapps/hermitd#quick-start. First ask me which folder the agent should live in. Install or update what's missing, then hand me each Claude Code command I have to type myself, starting with hatch in that folder. Stop and tell me when something needs my login or approval.
+```
+
+</details>
+
+Each option sets up the agent in the folder you pick. Hatch guides you through the agent’s purpose and preferences, then shows how to start it. Choose Quick for defaults you can adjust later.
 
 ## Keep it running
 
@@ -73,13 +84,13 @@ After setup, follow the printed next steps to start your agent.
 
 ### On your machine
 
-Run in a persistent tmux session:
+To start without a chat channel, run:
 
 ```bash
 hermitd start
 ```
 
-Requires tmux. The watchdog recovers failed sessions while your machine stays on. Claude Code's `/sandbox` is recommended for unattended use. To connect a chat, run `/hermitd:channel-setup` as directed by the setup handoff.
+Requires tmux. The watchdog recovers failed sessions while your machine stays on. Claude Code's `/sandbox` is recommended for unattended use. If you selected a chat channel at hatch, type `/hermitd:channel-setup start` to configure the credential, start the agent, and pair. To add a channel to a running agent, type `/hermitd:channel-setup`.
 
 [Host setup and operations](plugins/hermitd/docs/always-on-ops.md)
 
@@ -292,6 +303,7 @@ Optional plugins that add domain tools and workflows to your agent.
 - [homeassistant-hermit](plugins/hermitd-homeassistant/README.md): Home Assistant tools, automation workflows, and safety checks.
 - [fitness-hermit](plugins/hermitd-fitness/README.md): Strava integration, activity analysis, and training routines.
 - [hermitd-feed](plugins/hermitd-feed/README.md): Source curation, recurring briefs, and weekly synthesis.
+- [hermitd-connector](plugins/hermitd-connector/README.md): People you pair talk to the agent from their own Claude app, typed or by voice.
 - [hermitd-laravel-forge](plugins/hermitd-laravel-forge/README.md): Laravel Forge deployments, logs, and server management.
 - [hermitd-scribe](plugins/hermitd-scribe/README.md): GitHub issues and comments from proposals through a dedicated bot identity.
 
@@ -311,7 +323,9 @@ You can run separate agents for different responsibilities, each with its own wo
 
 Run `hermitd update` from the project folder, or `hermitd update <name>` from anywhere. Docker updates refresh the host core first, then the container. The update waits for a quiet moment, applies migrations, then restarts the agent once and resumes the conversation. External updates finish with a `hermitd doctor --fix` pass and record its result in update history. Run `hermitd doctor [--fix]` to list health findings and their commands, or apply safe repairs and re-check; queued upgrades remain pending until the agent applies them.
 
-`hermitd list` shows registered and discovered agents on this host, including stopped and missing projects. `hermitd status [name]` shows transport, execution and its age, open and waiting tasks, and the task in progress, including one a worker or helper runs. Both support `--json`. Listing never removes entries; `hermitd prune` removes missing projects.
+Without a host terminal, type `/hermitd:hermit-update`, `/hermitd:hermit-restart` or `/hermitd:doctor-fix` into a host agent's session from the Claude app (or a terminal). These management commands run only when typed: chat cannot start them, and the agent never starts them on its own. A Docker agent takes the restart; its update and repair stay on the host.
+
+`hermitd list` shows registered and discovered agents on this host, including stopped and missing projects. `hermitd status [name]` shows transport, execution and its age, open and waiting tasks, and the task in progress, including one a worker or helper runs. Both support `--json`. Listing never removes entries; `hermitd prune [name]` removes missing projects, or the named one, with their host stores (approved Docker copies, which include a copy of `.env`, and credential proxy data), keeping them while a container of the project still runs.
 
 Use `hermitd start|stop|restart|attach [name]` for lifecycle commands, `hermitd pause [name] on|off|snooze <duration>|status`, `hermitd watchdog [name] run|install|uninstall`, or `hermitd run [name] <script> [args]` for maintenance. Names match the project folder or agent name; with no name, the nearest project above the current folder is used.
 

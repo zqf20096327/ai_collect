@@ -14,7 +14,7 @@
 npx agent-personalizer
 ```
 
-![A 14-second tour: answer a few questions once, one profile and rule source becomes each AI's own file, the drift check keeps them in sync, and the closing card shows the install command.](https://raw.githubusercontent.com/aunysillyme/agent-personalizer/main/docs/trailer.gif)
+![Earlier product tour showing one profile and rule source rendered into each AI's own file, kept in sync by the drift check.](https://raw.githubusercontent.com/aunysillyme/agent-personalizer/main/docs/trailer.gif)
 
 ## What it sets up
 
@@ -25,8 +25,8 @@ npx agent-personalizer
 | Local session digest | With your yes, recent typed messages your AI uses to ask up to five evidence-backed questions. |
 | `AGENT_ONBOARDING.md` | Your AI's reading order, writing policy, off-limits topics and approval steps. |
 | `CLAUDE.md` | Your profile and selected rules in Claude Code's project instruction file. |
-| `AGENTS.md` | Your profile and selected rules in the project file used by Codex and Cursor. |
-| `GEMINI.md` | Your profile and selected rules in Gemini CLI's instruction file. |
+| `AGENTS.md` | Your profile and selected rules in the project file used by Codex, Cursor and Hermes Agent. |
+| `GEMINI.md` | Your profile and selected rules in Gemini CLI and Google Antigravity's instruction file. |
 | ChatGPT paste files | `chatgpt-box1.txt` for your profile and `chatgpt-box2.txt` for response instructions, plus a preview with counts. |
 | `system-prompt.md` | Shareable universal rules for another chat app, bot or API. |
 | Notes folder, level 2 | A folder index, weekly session template, decisions log and inbox for local or fallback notes tools. |
@@ -41,7 +41,7 @@ npx agent-personalizer
 
 Start your AI in the installed project folder. Ask it which instruction file loaded and what your writing policy is. Confirm those answers against AGENT_ONBOARDING.md before the first write.
 
-If you accepted session reading, Claude Code's `/personalize`, or the procedure in Codex and Gemini CLI's home files, asks up to five questions with a count and a short quote. Yes records a confirmed entry; no records a declined entry that is never asked again. Every approved entry reaches your selected personal AI files. As you work, a second correction of the same thing prompts one "Make it a rule?" question.
+If you accepted session reading, `/personalize` in Claude Code and Gemini CLI, or the procedure in Codex's home file, asks up to five questions with a count and a short quote. Yes records a confirmed entry; no records a declined entry that is never asked again. Every approved entry reaches your selected personal AI files. As you work, a second correction of the same thing prompts one "Make it a rule?" question.
 
 For ChatGPT, open Settings → Personalization and enable customization. Copy the exported profile (`chatgpt-box1.txt`) and response instructions (`chatgpt-box2.txt`) into the fields your current interface provides, checking its displayed limits. Re-paste after updates; the [paste guide](docs/paste-guide.md) covers each app.
 
@@ -56,8 +56,10 @@ File generation, re-runs and uninstall run in CI on Linux, macOS and Windows; yo
 | [model-orchestrator](https://github.com/aunysillyme/model-orchestrator) | Model router for AI coding agents: routes routine work to cheaper models with routing rules, 8 subagents, hooks and a CLI runner |
 | [repo-build-skill](https://github.com/aunysillyme/repo-build-skill) | Skill pack that teaches your AI to build, release and launch a GitHub repo: stack pick, README, AGENTS.md, llms.txt, repo SEO and AEO, trusted publishing. |
 | [website-build-skill](https://github.com/aunysillyme/website-build-skill) | A skill pack that turns your AI into an expert website builder: current research, design, code, accessibility, speed, SEO and security, alone or as a team. |
-| [lean-browser-use](https://github.com/aunysillyme/lean-browser-use) | Cut browser use cost by about 25% in Claude Code: fresh runner subagent, bulk reads, three guards and a token meter. One npx command |
+| [lean-browser-use](https://github.com/aunysillyme/lean-browser-use) | Cut Claude Code browser use cost 3% to 25% (about 14% in 2 runs): fresh runner subagent, bulk reads, 3 guards and a token meter. One npx command. |
 | [lean-computer-use](https://github.com/aunysillyme/lean-computer-use) | Background Mac computer control for AI agents: desk tools, a fresh runner subagent, retry guards and a transcript token meter, installed with one command |
+| [decompose](https://github.com/aunysillyme-dev/aunx-decompose) | Task planner and wave checker for AI coding agents: splits prompts into checkable units and parallel waves, rejecting cycles and overlapping writes |
+| [aunx-skills](https://github.com/aunysillyme-dev/aunx-skills) | Ten standalone agent skills for Claude Code, Codex, Cursor and Gemini CLI: full output keeper, number guard, docs fetch ladder, rename sweep and more |
 <!-- set:end -->
 
 ## Choose your setup
@@ -82,19 +84,19 @@ For every project, install one global level-1 profile:
 npx agent-personalizer --global --ai claude,agents,gemini,hermes --yes
 ```
 
-The source lives in `~/.agent-personalizer/`; marked blocks go to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, `~/.gemini/GEMINI.md` and `~/.hermes/SOUL.md` for the selected targets. User text outside the blocks stays byte for byte. For Hermes in a project, use `--ai agents` for `AGENTS.md`. `--global` supports these four targets and level 1; it excludes `--dir`. Re-run with `--global`, learn across all projects with `learn --global`, and remove owned global content with `--global --uninstall`. See [global installation](docs/install.md#every-project-with-one-profile).
+The source lives in `~/.agent-personalizer/`; marked blocks go to `~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md` (or `$CODEX_HOME/AGENTS.md`), `~/.gemini/GEMINI.md` and `~/.hermes/SOUL.md` for the selected targets. User text outside the blocks stays byte for byte. For Hermes in a project, use `--ai agents` for `AGENTS.md`. `--global` supports these four targets and level 1; it excludes `--dir`. Re-run with `--global`, learn across all projects with `learn --global`, and remove owned global content with `--global --uninstall`. See [global installation](docs/install.md#every-project-with-one-profile).
 
 Levels 1 and 2 carry the Core 5: read the profile first, evidence before assertion, output style, act or ask, and ask before it repeats. Level 3 retains all eleven, with each target's existing surface and signature selection.
 
-Node 22 or 24 (active LTS) is recommended; 18 or later runs. Published on npm with provenance. [Installation](docs/install.md) covers scripted answers, every flag, notes tools and manual copying.
+Node 24 or 26 (active LTS) is recommended; 22 or later runs. Published on npm with provenance. [Installation](docs/install.md) covers scripted answers, every flag, notes tools and manual copying.
 
-The tool runs locally after `npx` fetches the package. The installer and renderer make no network calls and send no telemetry. Project writes stay inside the folder you name; global writes use the profile and selected home paths above. Edited source files are preserved and named.
+The tool runs locally after `npx` fetches the package. The installer and renderer make no network calls and send no telemetry. Project writes stay inside the folder you name, except inside a Git work tree where install updates the enclosing repository's Git `info/exclude` (and `hooks/pre-commit` only when you pass `--precommit` at level 3; see [preflight and writes](docs/guarantees.md#preflight-and-writes)). Global writes (`--global`) use only `~/.agent-personalizer/` and the selected AI home paths above. Edited source files are preserved and named.
 
 ## Privacy
 
 With your yes, learning reads up to 20 recent sessions kept by your selected Claude Code, Codex or Gemini CLI apps, plus Codex memory notes. It keeps typed messages, drops AI replies and tool output, and saves one local `.agent-personalizer/digest.md` ignored by git. The terminal lists files and counts, never message text. Your AI reads the digest, so its contents go to that provider again, like anything you paste in.
 
-Reuse only history you are allowed to share. Past sessions can include other people's details; put their names or other private terms in `check/forbidden.local.txt` before accepting. Check your agreement for work or client accounts. `npx agent-personalizer learn --forget` deletes the digest, and uninstall removes unchanged recorded digest files; both leave your AI apps' history alone. agent-personalizer is not affiliated with Anthropic, OpenAI or Google, and their saved formats can change. See [learning and privacy](docs/learning.md).
+Reuse only history you are allowed to share. Past sessions can include other people's details; put their names or other private terms in `check/forbidden.local.txt` before accepting. Check your agreement for work or client accounts. `npx agent-personalizer learn --forget` deletes the digest, and uninstall removes unchanged recorded digest files; both leave your AI apps' history alone. agent-personalizer is not affiliated with Anthropic, OpenAI, Google, Anysphere or Nous Research, and their saved formats can change. See [learning and privacy](docs/learning.md).
 
 ## Keep it in sync
 
@@ -121,7 +123,7 @@ node render/render.cjs --dir . --check
 
 ## Put the contract in context
 
-At level 3, [register the Claude Code hook](hooks/README.md) to inject the onboarding restrictions and `inject: true` rules at session start. For another AI, generate a prompt to paste into its first message:
+At level 3, [register the Claude Code or Gemini CLI hook](hooks/README.md) to inject the onboarding restrictions and `inject: true` rules at session start. For another AI, generate a prompt to paste into its first message:
 
 ```bash
 node render/render.cjs --dir . --contract > contract.txt
@@ -148,7 +150,7 @@ Select your notes tool through saved onboarding answers or an answers file:
 npx agent-personalizer --dir . --answers my-answers.json
 ```
 
-[Companion setup](docs/companions.md) explains notes connectors and how to turn onboarding answers into tool permissions and approval steps.
+[Companion setup](docs/companions.md) explains notes connectors and how to apply onboarding answers to operations routed through a configured companion.
 
 | Tool | What it gives you |
 |---|---|
@@ -157,7 +159,7 @@ npx agent-personalizer --dir . --answers my-answers.json
 
 ## Common questions
 
-### How do I share custom instructions across Claude Code, Codex, Cursor and ChatGPT?
+### How do I share custom instructions across Claude Code, Codex, Cursor, Gemini CLI, Hermes Agent and ChatGPT?
 
 Run `npx agent-personalizer` and select the AIs you use. One profile and rule source produce the instructions each target can carry; ChatGPT gets its profile and selected session rules as paste files.
 
@@ -213,7 +215,7 @@ Contributions are welcome: a new AI target, a notes tool, an example user, or a 
 
 Pull requests are accepted under the [contributor license agreement](CLA.md); the checkbox in the pull request template records your agreement.
 
-The harness (`test/run.sh: 101 checks`) tests exact exit codes and adversarial fixtures. The real forbidden-list check stays local and prints a skip when the private list is absent.
+The harness (`test/run.sh: 103 checks`) tests exact exit codes and adversarial fixtures. The real forbidden-list check stays local and prints a skip when the private list is absent.
 
 ## License
 

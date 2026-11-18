@@ -357,7 +357,7 @@ orrery provider show     --config provider.json                         # what t
 orrery provider start    --config provider.json                         # serve, check vouchers, redeem
 ```
 
-`orrery provider init` writes the wallet's address into provider.json and `register` reads it from there, so no step asks for `--wallet`. `--fund-key` sends the node's key its fee money (0.01 SOL unless you give an amount) in the transaction that lists the node, so there is one address to fund. A wallet file you already have works the same way with `--wallet <file>`. On a public cluster, `register` will not list a `publicUrl` only your own network reaches (127.0.0.1, 192.168.x, a .local name); `--private-address` lists it anyway for routers on that network. Where the model server says how much context it serves each model with (vLLM and SGLang report `max_model_len`), `init` lists that, and `provider check` warns when provider.json lists more: a longer request fails at the server and counts against the node.
+`orrery provider init` writes the wallet's address into provider.json and `register` reads it from there, so no step asks for `--wallet`. `--fund-key` sends the node's key its fee money (0.01 SOL unless you give an amount) in the transaction that lists the node, so there is one address to fund. A wallet file you already have works the same way with `--wallet <file>`. On a public cluster, `register` will not list a `publicUrl` only your own network reaches (127.0.0.1, 192.168.x, a .local name); `--private-address` lists it anyway for routers on that network. Where the model server says how much context it serves each model with (vLLM and SGLang report `max_model_len`), `init` lists that, and `provider check` warns when provider.json lists more: a longer request fails at the server and counts against the node. Ollama does not say, and reads only as much of a prompt as its own context setting allows, so on Ollama `init` lists 4,096 tokens and says how to raise it (`OLLAMA_CONTEXT_LENGTH`).
 
 ```jsonc
 {
@@ -471,7 +471,7 @@ The program has **not been audited yet**. Read [SECURITY.md](SECURITY.md) for wh
 | `orrery provider price --config provider.json [--beat 5] [--floor in/out] [--write]` | undercut the cheapest other listing of each model by a margin, never below your floor |
 | `orrery provider check --config provider.json` | is this node ready to earn: model server, public address, the wire key routers read there, listing, fee money, enclave, pledge |
 | `orrery enclave verify --node <listing>` | audit a private node: its claim from chain, its report from the node, every check a router runs (`--report --vcek` and `--quote` check a file) |
-| `orrery providers` | every listing, what the chain says about it and whether its model server answers |
+| `orrery providers` | every listing, what the chain says about it, whether its model server answers, and what your own router saw of it |
 | `orrery channels` | your channels: deposit, what you signed, what was redeemed, what is unspent (what closing gives back) |
 | `orrery close <channel> --wallet <keypair>` | start closing (the provider gets a grace period to redeem) |
 | `orrery close <channel> --wallet <keypair> --finish` | after the grace period, the rest comes back to you |
@@ -633,6 +633,9 @@ OpenAI Chat Completions (`/v1/chat/completions`, streaming or not), the OpenAI R
 - [x] A node does not redeem dust: with no `redeem.minUnits` set, a channel is redeemed once five cents are waiting on it (0.1.15)
 - [x] A new node's first payout goes out at its next round, minutes after its first answer; later payouts wait for `redeem.minUnits` (0.1.20)
 - [x] Every answer carries what the node billed and what its listed prices come to; `orrery mcp` tells the agent and the router console flags any difference (0.1.20)
+- [x] A node lists the context its model server serves, and a router sends a long prompt only to a node that lists enough; longer than every node lists gets `context_length_exceeded` (0.1.21)
+- [x] A router keeps its own record of each node across restarts, and `orrery providers` shows it beside what the chain says (0.1.21)
+- [x] A request no node answered is kept and shown as paid nothing in `orrery spend`, `orrery doctor`, the router console and the MCP `status` tool (0.1.21)
 - [ ] A run through Tor itself
 - [ ] $OREY bonds live on mainnet
 

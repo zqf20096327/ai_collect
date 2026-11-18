@@ -99,6 +99,14 @@ Every scenario, the method and the raw data: [Apache Camel vs Cameleer](https://
 and the full report, [docs/BENCHMARKS.md](docs/BENCHMARKS.md). Run it yourself with
 [`scripts/cloud-bench`](scripts/cloud-bench/) for about a dollar of cloud time.
 
+The table above is Cameleer against Apache Camel (0.4.0). The same setup also compares Cameleer with its
+own previous release: 0.7.0 against 0.6.1 (gRPC and HTTP/2 on simoom) gave 29% less CPU per gRPC call and a
+35% lower p99 at the same throughput, no change for plain HTTP, MCP and the JSON REST route (a 5% difference
+there is within the noise of the setup) and HTTP/2 at about half the request rate of HTTP/1.1 for small calls. A
+later change (gRPC calls on a pool of threads, not released yet) raised gRPC to 4.65x the 0.7.0 rate at about four
+times less CPU per call, and cost memory (49 against 14 MB at 64 concurrent calls); see
+[the section in BENCHMARKS.md](docs/BENCHMARKS.md#grpc-and-http2-on-simoom-070-2026-11-18).
+
 **How, without changing what Camel means:**
 - **Nothing but the Rust standard library and our own std-only crates.** TLS, SSH, AMQP, MQTT, the
   Kafka protocol, the PostgreSQL, Redis, MongoDB and Cassandra wire protocols, XML and JSON are all

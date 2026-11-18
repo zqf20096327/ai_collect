@@ -23,7 +23,7 @@ Your agent traverses it over MCP and answers from real structure, with file and 
 [![Forum](https://img.shields.io/badge/Forum-falkordb-blue)](https://github.com/orgs/FalkorDB/discussions)
 
 <sub>WORKS WITH</sub><br>
-**Claude Code** &nbsp;·&nbsp; **Cursor** &nbsp;·&nbsp; **Copilot** &nbsp;·&nbsp; **Codex** &nbsp;·&nbsp; **Gemini** &nbsp;·&nbsp; **Windsurf** &nbsp;·&nbsp; **VS Code** &nbsp;·&nbsp; **Aider** &nbsp;·&nbsp; any agent that reads AGENTS.md
+**Claude Code** &nbsp;·&nbsp; **Codex** &nbsp;·&nbsp; **Cursor** &nbsp;·&nbsp; **Windsurf** &nbsp;·&nbsp; **GitHub Copilot** &nbsp;·&nbsp; **VS Code Copilot Chat** &nbsp;·&nbsp; **Gemini CLI** &nbsp;·&nbsp; **Antigravity** &nbsp;·&nbsp; **Aider** &nbsp;·&nbsp; any agent that reads AGENTS.md or connects over MCP
 
 </div>
 
@@ -37,7 +37,7 @@ Claude Code on Django, hard structural questions (transitive closure and impact)
 |---|---|---|---|
 | **Accuracy** (key facts covered) | 22% | 92% | **4x** |
 | **Run time** per task | 208s | 70s | **-66%** |
-| **Cost** per task | $0.48 | $0.38 | **-21%** |
+| **Cost** per task | $0.72 | $0.38 | **-47%** |
 | **Tokens** per task | 466k | 355k | **-24%** |
 
 The agent stops reading its way through the tree. It asks the graph who calls a function, what a change reaches, or how a request gets from a button to a table, and gets an answer it can cite.
@@ -81,7 +81,7 @@ Find a path between any two symbols and the viewer shows every hop, with the edg
 
 The codegraph persists at `<path>/.auryn/graph.db`, so re-running reuses it.
 
-> **Requirements:** Python ≥ 3.12. `falkordb-auryn` includes every language plugin out of the box. The in-process database is fetched automatically on first `auryn quickstart` on macOS and Linux (recent glibc). On native Windows or older-glibc Linux, point at a remote FalkorDB with `auryn install --backend remote`. Add live-DB drivers with `"falkordb-auryn[all]"`. For an isolated tool install, include the DB up front: `uv tool install "falkordb-auryn[embedded]"`. From a clone: `uv sync`, then `uv run auryn quickstart`.
+> **Requirements:** Python ≥ 3.12. `falkordb-auryn` includes every plugin out of the box; for a custom install, see [Choose your plugins](#choose-your-plugins). The in-process database is fetched automatically on first `auryn quickstart` on macOS and Linux (recent glibc). On native Windows or older-glibc Linux, point at a remote FalkorDB with `auryn install --backend remote`. Add live-DB drivers with `"falkordb-auryn[all]"`. For an isolated tool install, include the DB up front: `uv tool install "falkordb-auryn[embedded]"`. From a clone: `uv sync`, then `uv run auryn quickstart`.
 
 ## Connect your agent
 
@@ -120,7 +120,7 @@ No raw Cypher, no file dumps, no guessing. One hop, id-backed. Each repo gets it
 | `auryn_status` | read | Is there a graph yet, and what's in it? **Called first.** |
 | `index_repository` / `ingest_repository` | **write** | Build or update the graph for a local dir or git repo. |
 | `locate` | read | Find symbols by name. The entry point: other tools take the `id` it returns. |
-| `search_code` | read | Semantic (vector) search by meaning when you don't know the name. Run `auryn embed` first. |
+| `search_code` | read | Semantic (vector) search by meaning when you don't know the name. On by default — the vector index builds automatically in the background. |
 | `get_context` | read | One node's properties, source, and 1-hop neighbours. |
 | `who_calls` / `callees` | read | Inbound callers / outbound callees within N hops. |
 | `find_path` | read | Shortest path between two nodes: does X reach Y, and how. |
@@ -159,7 +159,7 @@ Blast radius: the two callers on the left. Closure: everything it reaches on the
 - **Stored in a graph database.** The graph lives in [FalkorDB](https://www.falkordb.com/) and stays loaded, so caller and impact lookups are a query, not a file scan.
 - **Incremental resync.** On a commit or branch switch, Auryn re-parses only the changed files and the code they affect. On Django that is about 150x faster than a full re-ingest. See [ADR 0002](docs/adr/0002-incremental-resync.md).
 - **Two levels of analysis.** Every language gets a fast structural pass. Python (Jedi) and C# (Roslyn) also get a deep semantic pass, inline or in the background, so calls land on the code that actually runs.
-- **Search plus structure.** Semantic search finds the code. The graph returns what that code calls, imports and depends on.
+- **Search plus structure.** Semantic search is on by default — embeddings build in the background after each ingest, off the critical path, so the graph is queryable immediately while the vector index fills in. Semantic search finds the code; the graph returns what that code calls, imports and depends on.
 - **Cross-repo references.** When code points at a symbol in another repository, Auryn records it and links it once that repo is ingested. See [ADR 0004](docs/adr/0004-cross-repo-symbol-resolution.md).
 - **One vocabulary for every language.** Every ingestor writes the same node and edge types, so a single query follows a request from a TypeScript button, through a C# API, to the PL/SQL procedure and table it writes.
 
@@ -170,28 +170,41 @@ Blast radius: the two callers on the left. Closure: everything it reaches on the
 
 ## What it can read
 
-Sixteen languages plus live SQL and Oracle schemas, all **auto-detected** by `auryn ingest` in a single pass. Live databases are read with `auryn run <name>`. `pip install falkordb-auryn` includes every language. For a lean, single-language install, use `pip install auryn-python` (each plugin pulls `auryn-core`).
+Sixteen languages plus live SQL and Oracle schemas, all **auto-detected** by `auryn ingest` in a single pass. Live databases are read with `auryn run <name>`. With a custom install (see [Choose your plugins](#choose-your-plugins)), only the installed plugins run. A missing plugin for one of the 15 programming languages is installed the first time its files are found (unless `AURYN_AUTO_INSTALL=0`). The others are never installed automatically: name them on the core, e.g. `auryn-core[oracle]` for PL/SQL files (`.pks`, `.pkb`, `.sql`, …), `auryn-core[sql]` for live SQL databases, and `auryn-core[http,orm,grpc,events]` for the cross-language links.
 
 <details>
 <summary><b>All sources and engines</b></summary>
 
 <br>
 
-| Source | Extra | Engine |
+| Source | Plugin | Engine |
 |---|---|---|
-| Python | `[python]` | tree-sitter → Jedi (deep) |
-| TypeScript / JavaScript | `[typescript]` | tree-sitter |
-| C# | `[csharp]` | Roslyn (deep), tree-sitter fallback |
-| Java · C · C++ · CUDA | `[java]` `[c]` `[cpp]` `[cuda]` | tree-sitter |
-| Go · Rust · PHP · Julia | `[go]` `[rust]` `[php]` `[julia]` | tree-sitter |
-| Ruby · Kotlin · Swift · Bash | `[ruby]` `[kotlin]` `[swift]` `[bash]` | tree-sitter |
-| PL/SQL files | `[oracle]` | vendored ANTLR |
-| Oracle (live DB) | `[oracle-live]` | oracledb + ANTLR |
-| SQL schema (live DB) | `[sql]` `[sql-all]` | SQLAlchemy, any dialect |
+| Python | `python` | tree-sitter → Jedi (deep) |
+| TypeScript / JavaScript | `typescript` | tree-sitter |
+| C# | `csharp` | Roslyn (deep), tree-sitter fallback |
+| Java · C · C++ · CUDA | `java` `c` `cpp` `cuda` | tree-sitter |
+| Go · Rust · PHP · Julia | `go` `rust` `php` `julia` | tree-sitter |
+| Ruby · Kotlin · Swift · Bash | `ruby` `kotlin` `swift` `bash` | tree-sitter |
+| PL/SQL files | `oracle` | vendored ANTLR |
+| Oracle (live DB) | `oracle-live` | oracledb + ANTLR |
+| SQL schema (live DB) | `sql` `sql-all` | SQLAlchemy, any dialect |
+| Cross-language links | `http` `orm` `grpc` `events` | HTTP call → endpoint, ORM model → table, gRPC call → handler, publisher → subscriber |
 
 The deep C# engine needs the [.NET SDK](https://dotnet.microsoft.com/) on `PATH`. Without it, C# falls back to tree-sitter automatically.
 
 </details>
+
+### Choose your plugins
+
+`pip install falkordb-auryn` installs every plugin above. For a custom install, name the plugins on the core instead:
+
+```bash
+pip install falkordb-auryn                    # everything
+pip install "auryn-core[python,http]"         # core + only the plugins you name
+pip install auryn-core my-auryn-plugin        # core + your own plugin
+```
+
+Optional extras on either package: `[embedded]` (the in-process FalkorDB), `[oracle-live]` and `[sql-all]` (live-DB drivers); `[all]` adds both drivers (`auryn-core[all]` also adds every plugin, the same as `falkordb-auryn[all]`).
 
 ## CLI
 

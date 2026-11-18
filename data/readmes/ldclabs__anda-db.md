@@ -27,21 +27,23 @@ after a release, so pin each crate by reading its own `Cargo.toml`:
 
 | Package                                                                  | Version |
 | ------------------------------------------------------------------------ | ------- |
-| `anda_cognitive_nexus`, `anda_kip`, `@ldclabs/kip-do` (npm)              | 0.14.5  |
-| `anda_db`                                                                | 0.14.2  |
-| `anda_db_btree`, `anda_db_tfs`                                           | 0.14.1  |
-| other Rust crates, the Python binding                                    | 0.14.0  |
+| `anda_cognitive_nexus`, `anda_kip`, `@ldclabs/kip-do` (npm)                 | 0.14.6  |
+| `anda_db`                                                                | 0.14.3  |
+| `anda_db_btree`, `anda_db_tfs`                                             | 0.14.2  |
+| `anda_db_hnsw`, `anda_db_shard_proxy`, `anda_kip_wasm`                      | 0.14.1  |
+| `anda_cognitive_nexus_server`, `anda_db_server`, `anda_cognitive_nexus_py` | 0.14.1  |
+| other Rust crates                                                        | 0.14.0  |
 | `cf-tokenizer` (standalone service, own versioning)                      | 1.0.0   |
 
 - Rust 1.95 or newer is required (edition 2024).
-- The KIP protocol version is `2.0`, following KIP `c4f3c17`, with the
+- The workspace tracks KIP `f63848e` for protocol version `2.0`, with the
   bundled `kip://profiles/cognitive-memory@2.0.0` draft Schema Package. KIP
   protocol versions are independent of package versions.
 - Upgrading from 0.13 is breaking for KIP clients and for Spaces activated
   under the earlier CognitiveMemory draft. The first open of a Nexus store by
   0.14.1 or newer upgrades its collection schemas; do not reopen it with
-  0.14.0 afterwards. The first open by 0.14.5 replaces the bundled package
-  revisions 0.14.0–0.14.4 installed; do not reopen it with 0.14.4 or earlier.
+  0.14.0 afterwards. The first open by 0.14.5 or newer replaces the bundled
+  package revisions 0.14.0–0.14.4 installed. Reopen the store with 0.14.5 or newer.
 
 Read the [changelog](CHANGELOG.md) before upgrading. KIP 1.x stores migrate
 through the [v1 migration guide](docs/kip-v1-migration.md).
@@ -147,7 +149,7 @@ abstraction, [`anda_object_store`](rs/anda_object_store) adds:
 | [`rs/anda_kip_wasm`](rs/anda_kip_wasm)                           | WASM build of the Rust parser, the test oracle for `kip-do`; own workspace | not published |
 | [`rs/cf-tokenizer`](rs/cf-tokenizer)                             | Stateless Jieba tokenizer service for Cloudflare Containers; own workspace | Docker     |
 | [`ts/kip-do`](ts/kip-do)                                         | Independent TypeScript KIP engine on Cloudflare Durable Objects         | npm          |
-| [`py/anda_cognitive_nexus_py`](py/anda_cognitive_nexus_py)       | Python binding for the Rust Nexus; not a default workspace member       | source       |
+| [`py/anda_cognitive_nexus_py`](py/anda_cognitive_nexus_py)       | Python binding for the Rust Nexus (planned retirement)                 | source       |
 | [`fixtures/kip-conformance-2.0`](fixtures/kip-conformance-2.0)   | Vendored KIP engine suite that both engines run                         | —            |
 | [`skills/anda-db`](skills/anda-db)                               | Agent-facing usage guide and API references                             | —            |
 | [`docs`](docs)                                                   | Technical, maintenance and benchmark documents                          | —            |
@@ -381,10 +383,10 @@ not include `rs/anda_kip_wasm`, `rs/cf-tokenizer` (separate workspaces),
 | Formatting and Clippy (rewrites files)       | `make lint`                                                        |
 | Formatting check only                        | `cargo fmt --all -- --check`                                       |
 
-`make test-all` adds format-compatibility checks and KIP fuzzing (nightly and
-`cargo-fuzz`); `make test-full` also runs the TypeScript checks. The Python
-binding is tested with `make test-py` after enabling its workspace member; see
-its [README](py/anda_cognitive_nexus_py/README.md).
+The workspace tests include the format-compatibility fixtures. `make test-all`
+adds KIP fuzzing (nightly and `cargo-fuzz`). `make test-full` also runs the
+TypeScript checks. To run `make test-py`, enable the optional Python workspace
+member as described in its [README](py/anda_cognitive_nexus_py/README.md).
 
 Changes to KIP command strings in Rust sources or tests, to the error
 registry or to the conformance fixtures feed generated TypeScript files: run

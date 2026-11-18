@@ -8,7 +8,7 @@
 在手机上跟进、回复、审批电脑上的 Codex、Claude Code、DeepSeek、CC Desk 和 OpenCode 会话。
 
 [![Android](https://img.shields.io/badge/Android-6.0%2B-3DDC84?logo=android&logoColor=white)](#下载)
-[![Version](https://img.shields.io/badge/version-0.4.0-blue)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.4.4-blue)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-MIT-555)](LICENSE)
 
 [下载](#下载) · [三步上手](#三步上手) · [支持的 Agent](#支持的-agent) · [更新说明](CHANGELOG.md) · [反馈问题](#反馈问题)
@@ -33,6 +33,7 @@ Agent 一跑就是几十分钟，中间常常要你点一下审批、回答一�
 - **不用同一个 Wi-Fi**：电脑网关主动连接你自己的 HTTPS Broker，手机在哪都能连，消息不经过第三方服务。
 
 <p align="center">
+  <img src="docs/images/screens/session-list.jpg" width="240" alt="会话列表：按项目分组，标题一行、时间和“电脑上开着”在第二行" />
   <img src="docs/images/screens/work-items.jpg" width="240" alt="事项：进行中、待验证、已完成" />
   <img src="docs/images/screens/codex-session-dark.jpg" width="240" alt="深色模式下的 Codex 会话" />
 </p>
@@ -56,9 +57,9 @@ Agent 一跑就是几十分钟，中间常常要你点一下审批、回答一�
 
 | 文件 | 说明 |
 | --- | --- |
-| [Android APK 0.4.0（下载页）](https://zyzlz.xin/mobile-codex/releases/android/preview/index.html) | Android 6.0+，可直接覆盖安装旧版 |
-| [GitHub Release](https://github.com/luoz76070-art/MobiCodex/releases/tag/mobicodex-v0.4.0) | 同一份源码由 GitHub Actions 构建，附校验值 |
-| [版本说明](releases/android/mobicodex/0.4.0/) | 本版内容、签名说明和安装步骤 |
+| [Android APK 0.4.4（下载页）](https://zyzlz.xin/mobile-codex/releases/android/preview/index.html) | Android 6.0+，可直接覆盖安装旧版 |
+| [GitHub Release](https://github.com/luoz76070-art/MobiCodex/releases/tag/mobicodex-v0.4.4) | 同一份源码由 GitHub Actions 构建，附校验值 |
+| [版本说明](releases/android/mobicodex/0.4.4/) | 本版内容、签名说明和安装步骤 |
 
 装好以后在「设置 → 应用更新」检查更新。只改界面的更新会在后台下载，下次打开时生效，不用重装。
 
@@ -107,18 +108,15 @@ flowchart LR
 
 也可以在 App 的「设置 → 反馈问题」或长按消息选「反馈这条」，反馈会存到你电脑上的网关。
 
-0.4.0 的已知问题：
-
-- 「Claude CLI」的审批和提问目前只在模拟环境里验证过，真实会话里遇到问题请反馈。
-
 ## 开发与构建
 
 | 目录 | 职责 |
 | --- | --- |
 | `apps/mobile` | MobiCodex Android App：React 页面 + Capacitor 原生壳（录音、更新、凭据、系统栏与取色） |
-| `apps/relay` | Fastify API、Codex Desktop IPC、Broker 与 Tunnel |
+| `apps/relay` | Fastify：电脑网关、各 Agent 适配器、Codex Desktop IPC、Broker 与 Tunnel |
 | `plugins` | 电脑网关及其他 Agent 的接入包 |
-| `apps/kelivo`、`integrations/kelivo`、`releases/android/kelivo-preview` | 已停止的 Kelivo 整合版（0.1.x）源码、构建契约与历史发布 |
+| `integrations/cc-desk` | CC Desk 的补丁副本与本机控制 |
+| `docs` | 文档，入口是 [docs/project-index.md](docs/project-index.md)，目录结构见 [docs/project-layout.md](docs/project-layout.md) |
 
 Node.js 22+、pnpm 10.20.0；Android 构建需要 Android SDK 35 与 JDK 21+（lint 用 JDK 17）。
 
@@ -136,4 +134,4 @@ gradle --project-dir apps/mobile/android :app:assembleRelease
 
 MobiCodex App 与电脑网关源自 Codex To Phone，按 [MIT 许可](LICENSE) 发行。App 内置 `@material/material-color-utilities` 的一小部分（Apache-2.0，见 `apps/mobile/src/vendor/material-color-utilities`），用于和系统动态取色保持一致。各依赖沿用其原许可。
 
-0.1.x 整合版的 AI 部分来自 [Chevey339/Kelivo](https://github.com/Chevey339/kelivo)（固定 v1.3.4 / `4a7da9b6`），按随附 [GNU AGPL v3](apps/kelivo/LICENSE) 发行；这些历史版本的源码归档、来源与修改清单见 [integrations/kelivo](integrations/kelivo/README.md)。感谢 Kelivo 及其贡献者。
+0.1.x 整合版的 AI 部分来自 [Chevey339/Kelivo](https://github.com/Chevey339/kelivo)（固定 v1.3.4 / `4a7da9b6`），按随附 [GNU AGPL v3](https://github.com/luoz76070-art/MobiCodex/blob/archive/pre-cleanup-2026-11/apps/kelivo/LICENSE) 发行；这些历史版本的源码、来源与修改清单保存在归档 tag [`archive/pre-cleanup-2026-11`](https://github.com/luoz76070-art/MobiCodex/tree/archive/pre-cleanup-2026-11/integrations/kelivo)，各版本的 GitHub Release 也附有对应源码包。感谢 Kelivo 及其贡献者。

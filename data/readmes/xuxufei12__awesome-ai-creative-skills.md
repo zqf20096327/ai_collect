@@ -13,9 +13,82 @@ Explore ways to create imaginative images, videos, motion graphics and 3D scenes
 
 **See the effect, then find the method.** GIFs play inline. Open any preview or its Skill / Prompt link to see how it is made.
 
-[Films made with code: from a sample to its scene](#code-video-lab) · [November II: moon phases, crayon diagrams and sticker grids](#november-picks-2) · [November picks: paper films, candid photos and reaction GIFs](#november-picks) · [Animated previews](#animated) · [Creative images & design](#images) · [Art animation & styles](#animation) · [3D worlds & product visuals](#worlds) · [Ads & commercial films](#ads) · [Cinematic & story films](#films)
+[Turn a song into a story-driven music video](#music-mv-lab) · [Knowledge and lives told through motion](#knowledge-and-biography) · [Explain a concept, play with a page](#knowledge-and-play) · [Films made with code: from a sample to its scene](#code-video-lab) · [November II: moon phases, crayon diagrams and sticker grids](#november-picks-2) · [November picks: paper films, candid photos and reaction GIFs](#november-picks) · [Animated previews](#animated) · [Creative images & design](#images) · [Art animation & styles](#animation) · [3D worlds & product visuals](#worlds) · [Ads & commercial films](#ads) · [Cinematic & story films](#films)
 
-[Browse all 2,087 visual previews →](gallery/README.md) · [Find tools](#find-tools) · [Make a style your own](#custom-styles)
+[Browse all 2,109 visual previews →](gallery/README.md) · [Find tools](#find-tools) · [Make a style your own](#custom-styles)
+
+<a id="music-mv-lab"></a>
+
+## Turn a song into a story-driven music video
+
+[Explore all 14 additions by use case →](docs/new-2026-11-18-music-mv.md)
+
+<table>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/qspang--music-mv.md"><img src="https://raw.githubusercontent.com/qspang/music-mv/2af452d65ded9da86de3ad765d4d9a99b9deac8c/examples/pixel-v2/cover-landscape.png" width="300" alt="A full-song pixel story" loading="lazy"></a><br><a href="projects/qspang--music-mv.md"><b>A full-song pixel story</b></a><br><sub><a href="projects/qspang--music-mv.md">Skill pack</a> · <a href="https://raw.githubusercontent.com/qspang/music-mv/2af452d65ded9da86de3ad765d4d9a99b9deac8c/examples/pixel-v2/music-video.mp4">▶ Film</a> · <a href="projects/qspang--music-mv.md">How to make it</a></sub><br><sub><a href="https://github.com/qspang/music-mv/blob/2af452d65ded9da86de3ad765d4d9a99b9deac8c/README.md">qspang/music-mv</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/am-will--music-video-reimagined.md"><img src="https://raw.githubusercontent.com/am-will/music-video-reimagined/7d6b7b22caf08c6e330e1abb869953d8e4f2cc1a/docs/horse-dance.gif" width="300" alt="Beat-locked painted horse dance" loading="lazy"></a><br><a href="projects/am-will--music-video-reimagined.md"><b>Beat-locked painted horse dance</b></a><br><sub><a href="skills/5e8069257511d6c5.md">Skill</a> · <a href="https://raw.githubusercontent.com/am-will/music-video-reimagined/7d6b7b22caf08c6e330e1abb869953d8e4f2cc1a/docs/horse-dance.gif">GIF</a> · <a href="projects/am-will--music-video-reimagined.md">How to make it</a></sub><br><sub><a href="https://github.com/am-will/music-video-reimagined/blob/7d6b7b22caf08c6e330e1abb869953d8e4f2cc1a/README.md">am-will/music-video-reimagined</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/boom-vitt--bbn-video-studio.md"><img src="https://raw.githubusercontent.com/Boom-Vitt/bbn-video-studio/f54a5d6ab94defa2b238e0931cf7986b67f3b7b1/plugins/bbn-video-studio/skills/music-video/examples/noted/cover.jpg" width="300" alt="A 3D kinetic-typography MV" loading="lazy"></a><br><a href="projects/boom-vitt--bbn-video-studio.md"><b>A 3D kinetic-typography MV</b></a><br><sub><a href="skills/57f5133533ecd5b6.md">Skill</a> · <a href="projects/boom-vitt--bbn-video-studio.md">How to make it</a></sub><br><sub><a href="https://github.com/Boom-Vitt/bbn-video-studio/blob/f54a5d6ab94defa2b238e0931cf7986b67f3b7b1/README.md">Boom-Vitt/bbn-video-studio</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/leeween--pixel-song-mv.md"><img src="https://raw.githubusercontent.com/leeween/pixel-song-mv/fd447feaa8c8941c938b0b62b07b7dd9c766ecff/docs/minimal-preview.png" width="300" alt="Turn a song into an RPG adventure" loading="lazy"></a><br><a href="projects/leeween--pixel-song-mv.md"><b>Turn a song into an RPG adventure</b></a><br><sub><a href="skills/3f7a5b0627d64090.md">Skill</a> · <a href="projects/leeween--pixel-song-mv.md">How to make it</a></sub><br><sub><a href="https://github.com/leeween/pixel-song-mv/blob/fd447feaa8c8941c938b0b62b07b7dd9c766ecff/README.md">leeween/pixel-song-mv</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/obie--slopcore.md"><img src="https://raw.githubusercontent.com/obie/slopcore/2d026ecd999b0543ada360dd006faa6cb8cc4d15/skills/music-video/examples/queso/stills/frame-0.0.jpg" width="300" alt="AI performers and coded graphics" loading="lazy"></a><br><a href="projects/obie--slopcore.md"><b>AI performers and coded graphics</b></a><br><sub><a href="skills/11d900566d671f33.md">Skill</a> · <a href="https://www.youtube.com/watch?v=RoLiSWH3dqc">▶ Film</a> · <a href="projects/obie--slopcore.md">How to make it</a></sub><br><sub><a href="https://github.com/obie/slopcore/blob/2d026ecd999b0543ada360dd006faa6cb8cc4d15/README.md">obie/slopcore</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/kreycin--ton-sea.md"><img src="https://raw.githubusercontent.com/Kreycin/ton-sea/9543e948e30e9a3ca5cc5df18573f2f16909591e/docs/img/shots.jpg" width="300" alt="Acting reference: Ton and the Sea" loading="lazy"></a><br><a href="projects/kreycin--ton-sea.md"><b>Acting reference: Ton and the Sea</b></a><br><sub><a href="skills/ada871324c09636a.md">Skill</a> · <a href="projects/kreycin--ton-sea.md">How to make it</a></sub><br><sub><a href="https://github.com/Kreycin/ton-sea/blob/9543e948e30e9a3ca5cc5df18573f2f16909591e/README.md">Kreycin/ton-sea</a></sub></td>
+</tr>
+</table>
+
+[Keep exploring visually →](gallery/README.md)
+
+<a id="knowledge-and-biography"></a>
+
+## Knowledge and lives told through motion
+
+[Explore all 12 additions by use case →](docs/new-2026-11-18-knowledge-biography.md)
+
+<table>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/andyhuo520--vibe-knowledge.md"><img src="https://raw.githubusercontent.com/andyhuo520/vibe-knowledge/c3a13a85f7cc560e5d396f063baecea4b2748e1e/docs/posters/ep01-shangyang.jpg" width="300" alt="Would you move Shang Yang’s log?" loading="lazy"></a><br><a href="projects/andyhuo520--vibe-knowledge.md"><b>Would you move Shang Yang’s log?</b></a><br><sub><a href="skills/572b94ce66f6c0e0.md">Skill</a> · <a href="https://github.com/andyhuo520/vibe-knowledge/releases/download/v1.0.0/ep01-shangyang.mp4">▶ Film</a> · <a href="projects/andyhuo520--vibe-knowledge.md">How to make it</a></sub><br><sub><a href="https://github.com/andyhuo520/vibe-knowledge/blob/c3a13a85f7cc560e5d396f063baecea4b2748e1e/README.md">andyhuo520/vibe-knowledge</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/wchhywizd--vibe-knowledge-interactive.md"><img src="https://raw.githubusercontent.com/wchhywizd/vibe-knowledge-interactive/240ec579c7b86d110ee7b6ad4bfc35193b0de52a/assets/hook-birthday.gif" width="300" alt="Guess before the birthday reveal" loading="lazy"></a><br><a href="projects/wchhywizd--vibe-knowledge-interactive.md"><b>Guess before the birthday reveal</b></a><br><sub><a href="skills/26b0183dc1744676.md">Skill</a> · <a href="https://raw.githubusercontent.com/wchhywizd/vibe-knowledge-interactive/240ec579c7b86d110ee7b6ad4bfc35193b0de52a/samples/%E8%AF%95%E7%89%87C-v2-%E5%90%8C%E4%B8%80%E5%A4%A9%E7%94%9F%E6%97%A5.mp4">▶ Film</a> · <a href="projects/wchhywizd--vibe-knowledge-interactive.md">How to make it</a></sub><br><sub><a href="https://github.com/wchhywizd/vibe-knowledge-interactive/blob/240ec579c7b86d110ee7b6ad4bfc35193b0de52a/README.md">wchhywizd/vibe-knowledge-interactive</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/aliangsss--aliang-knowledge-video.md"><img src="https://raw.githubusercontent.com/aliangSSS/aliang-knowledge-video/1687e5e87539b98a25289d76e1f935ea48787929/docs/images/02-case-wall.jpg" width="300" alt="Investigating Murphy’s law" loading="lazy"></a><br><a href="projects/aliangsss--aliang-knowledge-video.md"><b>Investigating Murphy’s law</b></a><br><sub><a href="skills/03f8500000acf000.md">Skill</a> · <a href="projects/aliangsss--aliang-knowledge-video.md">How to make it</a></sub><br><sub><a href="https://github.com/aliangSSS/aliang-knowledge-video/blob/1687e5e87539b98a25289d76e1f935ea48787929/README.md">aliangSSS/aliang-knowledge-video</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/gui-lin--vibe-knowledge-studio.md"><img src="https://raw.githubusercontent.com/gui-lin/vibe-knowledge-studio/326691a863fd4eddbd487ae8e6786bf1d87d5e03/docs/demo-sheet.jpg" width="300" alt="Watch probability take shape" loading="lazy"></a><br><a href="projects/gui-lin--vibe-knowledge-studio.md"><b>Watch probability take shape</b></a><br><sub><a href="skills/2d1feb612f950602.md">Skill</a> · <a href="projects/gui-lin--vibe-knowledge-studio.md">How to make it</a></sub><br><sub><a href="https://github.com/gui-lin/vibe-knowledge-studio/blob/326691a863fd4eddbd487ae8e6786bf1d87d5e03/README.md">gui-lin/vibe-knowledge-studio</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/nailcore--create-chinese-ink-video.md"><img src="https://raw.githubusercontent.com/Nailcore/create-chinese-ink-video/e2318a55343f91247037f23aba4534cd14d435b4/examples/musk-fluid-ink/demo.gif" width="300" alt="A flowing-ink portrait reveal" loading="lazy"></a><br><a href="projects/nailcore--create-chinese-ink-video.md"><b>A flowing-ink portrait reveal</b></a><br><sub><a href="skills/22da64673847e4ed.md">Skill</a> · <a href="https://raw.githubusercontent.com/Nailcore/create-chinese-ink-video/e2318a55343f91247037f23aba4534cd14d435b4/examples/musk-fluid-ink/musk-fluid-ink-v11.mp4">▶ Film</a> · <a href="projects/nailcore--create-chinese-ink-video.md">How to make it</a></sub><br><sub><a href="https://github.com/Nailcore/create-chinese-ink-video/blob/e2318a55343f91247037f23aba4534cd14d435b4/README.md">Nailcore/create-chinese-ink-video</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/bangbuilds--code-poem-film.md"><img src="https://raw.githubusercontent.com/bangbuilds/code-poem-film/8530dafb2786cdd724451f5503934507624b18c1/examples/chibi/cover.jpg" width="300" alt="Animate a chapter from Su Shi’s poem" loading="lazy"></a><br><a href="projects/bangbuilds--code-poem-film.md"><b>Animate a chapter from Su Shi’s poem</b></a><br><sub><a href="skills/a493671b951221d4.md">Skill</a> · <a href="projects/bangbuilds--code-poem-film.md">How to make it</a></sub><br><sub><a href="https://github.com/bangbuilds/code-poem-film/blob/8530dafb2786cdd724451f5503934507624b18c1/README.md">bangbuilds/code-poem-film</a></sub></td>
+</tr>
+</table>
+
+[Keep exploring visually →](gallery/README.md)
+
+<a id="knowledge-and-play"></a>
+
+## Explain a concept, play with a page
+
+[Explore all 14 additions by use case →](docs/new-2026-11-18-knowledge-html.md)
+
+<table>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/yt-smart--vibe-knowledge-video.md"><img src="https://raw.githubusercontent.com/YT-smart/vibe-knowledge-video/6dddf51ad112f5533f4d474c6641a6cdeca36689/demos/claude.gif" width="300" alt="Galton-board luck explainer" loading="lazy"></a><br><a href="projects/yt-smart--vibe-knowledge-video.md"><b>Galton-board luck explainer</b></a><br><sub><a href="skills/e5ea1b0ae74c7020.md">Skill</a> · <a href="https://raw.githubusercontent.com/YT-smart/vibe-knowledge-video/6dddf51ad112f5533f4d474c6641a6cdeca36689/demos/claude.gif">GIF</a> · <a href="projects/yt-smart--vibe-knowledge-video.md">How to make it</a></sub><br><sub><a href="https://github.com/YT-smart/vibe-knowledge-video/blob/6dddf51ad112f5533f4d474c6641a6cdeca36689/README.md">YT-smart/vibe-knowledge-video</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/steseven--vibe-make.md"><img src="https://raw.githubusercontent.com/steseven/vibe-make/cea769d015ba31a46c85ec8237454b4465e78386/examples/%E5%8F%A4%E4%BA%BA%E5%88%B7%E7%89%99/%E6%88%90%E7%89%87%E6%8B%BC%E6%9D%BF_1.jpg" width="300" alt="How people brushed teeth in the past" loading="lazy"></a><br><a href="projects/steseven--vibe-make.md"><b>How people brushed teeth in the past</b></a><br><sub><a href="skills/cb86d81387640163.md">Skill</a> · <a href="projects/steseven--vibe-make.md">How to make it</a></sub><br><sub><a href="https://github.com/steseven/vibe-make/blob/cea769d015ba31a46c85ec8237454b4465e78386/README.md">steseven/vibe-make</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/thiernoyunus--stick-reel.md"><img src="https://raw.githubusercontent.com/thiernoyunus/stick-reel/1fff5db51376e4415aab7505c5cf60c9612e3a0d/examples/adraka-yudrika/output/cover.png" width="300" alt="Purposeful stick-figure explainers" loading="lazy"></a><br><a href="projects/thiernoyunus--stick-reel.md"><b>Purposeful stick-figure explainers</b></a><br><sub><a href="skills/c12fbba6da0d967d.md">Skill</a> · <a href="projects/thiernoyunus--stick-reel.md">How to make it</a></sub><br><sub><a href="https://github.com/thiernoyunus/stick-reel/blob/1fff5db51376e4415aab7505c5cf60c9612e3a0d/README.md">thiernoyunus/stick-reel</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/mantou2046--onepager-explainer.md"><img src="https://raw.githubusercontent.com/mantou2046/onepager-explainer/948e1560c5a4279ee0ac5492b4e198aa6cda27e8/docs/assets/lora.png" width="300" alt="Explore LoRA with a slider" loading="lazy"></a><br><a href="projects/mantou2046--onepager-explainer.md"><b>Explore LoRA with a slider</b></a><br><sub><a href="skills/c873e0151c6ef290.md">Skill</a> · <a href="projects/mantou2046--onepager-explainer.md">How to make it</a></sub><br><sub><a href="https://github.com/mantou2046/onepager-explainer/blob/948e1560c5a4279ee0ac5492b4e198aa6cda27e8/README.md">mantou2046/onepager-explainer</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/d-sup--sim-diorama-skill.md"><img src="https://raw.githubusercontent.com/D-Sup/sim-diorama-skill/aa6413bf78d6ca6e49e523dc65ebc1ffe9c37278/media/marina-gp.gif" width="300" alt="Tiny worlds with simulated rules" loading="lazy"></a><br><a href="projects/d-sup--sim-diorama-skill.md"><b>Tiny worlds with simulated rules</b></a><br><sub><a href="skills/0c6873c7877069c3.md">Skill</a> · <a href="https://raw.githubusercontent.com/D-Sup/sim-diorama-skill/aa6413bf78d6ca6e49e523dc65ebc1ffe9c37278/media/marina-gp.gif">GIF</a> · <a href="projects/d-sup--sim-diorama-skill.md">How to make it</a></sub><br><sub><a href="https://github.com/D-Sup/sim-diorama-skill/blob/aa6413bf78d6ca6e49e523dc65ebc1ffe9c37278/README.md">D-Sup/sim-diorama-skill</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/airsuphq--machine-skill.md"><img src="https://raw.githubusercontent.com/AirsupHQ/machine-skill/e0bd066ac5beaf48512935de2fc0f0e55636853a/.github/assets/turbofan.jpg" width="300" alt="Explore a turbofan in the browser" loading="lazy"></a><br><a href="projects/airsuphq--machine-skill.md"><b>Explore a turbofan in the browser</b></a><br><sub><a href="skills/1f71d2c90c9b1c0c.md">Skill</a> · <a href="projects/airsuphq--machine-skill.md">How to make it</a></sub><br><sub><a href="https://github.com/AirsupHQ/machine-skill/blob/e0bd066ac5beaf48512935de2fc0f0e55636853a/README.md">AirsupHQ/machine-skill</a></sub></td>
+</tr>
+<tr>
+<td width="50%" valign="top" align="center"><a href="projects/asashades--asa-slides.md"><img src="https://raw.githubusercontent.com/asashades/asa-slides/f153f6b54286af87e58119066b22dc943ac6d281/docs/media/explainers/e01-take-it-apart-3d.gif" width="300" alt="Step through a 3D explanation" loading="lazy"></a><br><a href="projects/asashades--asa-slides.md"><b>Step through a 3D explanation</b></a><br><sub><a href="skills/f4389b704306b898.md">Skill</a> · <a href="https://asashades.github.io/asa-slides/galeri-explainer.html">Try it</a> · <a href="projects/asashades--asa-slides.md">How to make it</a></sub><br><sub><a href="https://github.com/asashades/asa-slides/blob/f153f6b54286af87e58119066b22dc943ac6d281/README.md">asashades/asa-slides</a></sub></td>
+<td width="50%" valign="top" align="center"><a href="projects/k-sandhu--visual-explainer-skills.md"><img src="https://raw.githubusercontent.com/k-sandhu/visual-explainer-skills/807d99e619233f37a6e1519ddb88a2c77f33bcb6/examples/27-adaptive-knowledge-rollouts/explainer.gif" width="300" alt="Predict, reveal and explore" loading="lazy"></a><br><a href="projects/k-sandhu--visual-explainer-skills.md"><b>Predict, reveal and explore</b></a><br><sub><a href="skills/b69d7441a1d8d051.md">Skill</a> · <a href="https://raw.githubusercontent.com/k-sandhu/visual-explainer-skills/807d99e619233f37a6e1519ddb88a2c77f33bcb6/examples/27-adaptive-knowledge-rollouts/explainer.gif">GIF</a> · <a href="projects/k-sandhu--visual-explainer-skills.md">How to make it</a></sub><br><sub><a href="https://github.com/k-sandhu/visual-explainer-skills/blob/807d99e619233f37a6e1519ddb88a2c77f33bcb6/README.md">k-sandhu/visual-explainer-skills</a></sub></td>
+</tr>
+</table>
+
+[Keep exploring visually →](gallery/README.md)
 
 <a id="code-video-lab"></a>
 
@@ -286,12 +359,12 @@ The creator’s example keeps the Swiss grid, beat and typography, turning flat 
 
 ## Found an effect you like? Start creating
 
-**In the collection** · **478** projects · **806** Skills · **1856** prompt / style texts · **2204** cases
+**In the collection** · **518** projects · **847** Skills · **1875** prompt / style texts · **2204** cases
 
 | Entry | Contents |
 |---|---|
 | [Visual catalogue](gallery/README.md) | Browse more image, video and tool previews |
-| [Complete catalogue](catalog/README.md) | 15 creative categories |
+| [Complete catalogue](catalog/README.md) | 17 creative categories |
 | [Prompt text](catalog/prompts/README.md) | Copyable text, sources and corresponding effects |
 | [Skill text](catalog/skills/README.md) | Individual Skill pages and upstream dependencies |
 | [Cases & effects](catalog/cases/README.md) | Posters, videos and prompt availability |
@@ -323,9 +396,9 @@ The creator’s example keeps the Swiss grid, beat and typography, turning flat 
 
 | Category | Projects |
 |---|---:|
-| [Education & hand-drawn explainers](catalog/education.md) | 62 |
+| [Education & hand-drawn explainers](catalog/education.md) | 74 |
 | [Editing, captions & avatars](catalog/editing.md) | 94 |
-| [Storytelling, animation & music videos](catalog/storytelling.md) | 30 |
+| [Storytelling, animation & music videos](catalog/storytelling.md) | 44 |
 | [Video frameworks & code rendering](catalog/video-frameworks.md) | 88 |
 | [Ads & product demos](catalog/product-videos.md) | 69 |
 | [SVG & motion graphics](catalog/motion-graphics.md) | 30 |
@@ -338,6 +411,8 @@ The creator’s example keeps the Swiss grid, beat and typography, turning flat 
 | [Game assets & pixel art](catalog/game-assets.md) | 11 |
 | [Gaussian splatting & simulation](catalog/simulation.md) | 2 |
 | [Reaction GIFs & sticker packs](catalog/stickers.md) | 8 |
+| [Interactive HTML & explorable explanations](catalog/interactive-html.md) | 8 |
+| [Biography & historical storytelling](catalog/biography-history.md) | 6 |
 
 ## How to use
 

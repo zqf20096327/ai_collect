@@ -3,6 +3,10 @@ A python based system for generating closed-form solutions to the manipulator in
 behavior trees for action selection. 
 Solutions are symbolic where possible, and otherwise symbolic plus numerical, and are output as LaTex, Python, and C++.
 
+# New: User Manual (written with Claude help)  18-Nov-26
+
+[User Manual 7-Nov-26](IKdocs/USER_MANUAL.pdf)
+
 # Announcing IKBT 3.0  Released 31-Oct-2026
 
 Developed as "IKBT2" (the release candidate below), released as 3.0 because tags v2.0-v2.3 were used in 2021.
@@ -174,6 +178,7 @@ Generated code initializes the new constants.   Try >python3 fkOnly \<RobotName\
 # Details    
 
 ### Documenation:  
+   * [ User Manual: using the generated code and reports ](IKdocs/USER_MANUAL.pdf)
    * [ Theory of Operation ](https://www.jair.org/index.php/jair/article/view/11592)
    * [ Major Classes ](IKdocs/classes.md)
    * [ Solution Set Generation Strategy Doc ](IKdocs/solExamp.pdf) (updated June 2024)

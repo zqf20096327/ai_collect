@@ -8,6 +8,18 @@ A standalone, visual LoRA loader node for ComfyUI — organize LoRAs into groups
 
 Only notable changes are listed here; minor visual or text tweaks are omitted.
 
+### 1.0.7
+
+- Added ComfyUI Desktop compatibility by replacing native prompt/confirm/alert dialogs with in-page dialogs across presets, folders, weights, and metadata actions
+
+### 1.0.5
+
+- Added author recommended weights: row badges, metadata refresh statistics, and one-click apply
+- Recommended weights are detected and saved from every metadata crawl path; newly added LoRAs inherit saved values
+- The LoRA info dialog shows recommended weight; LORA string imports sync trigger words and recommended weights
+- The metadata manager only lists LoRAs whose Civitai info has a recommendation but local info does not; items without one are skipped
+- Added a layout option to hide the recommended-weight column
+
 ### 1.0.4
 
 - Added preset and favorites export/import in Settings
@@ -36,7 +48,7 @@ Only notable changes are listed here; minor visual or text tweaks are omitted.
 
 ## Credits
 
-This plugin is based on and modified from [ComfyUI-ZML-Image](https://github.com/zml-w/ComfyUI-ZML-Image) by original author [**zml-w**](https://github.com/zml-w), and [ComfyUI-Magic-Assistant](https://github.com/shigjfg/ComfyUI-Magic-Assistant) by original author [**shigjfg**](https://github.com/shigjfg). Special thanks to both original authors for the work this plugin is built on. Thanks also to group friend **you** for contributing fixes, new features, and improvement suggestions.
+This plugin is developed on top of [ComfyUI-ZML-Image](https://github.com/zml-w/ComfyUI-ZML-Image) (author: [**zml-w**](https://github.com/zml-w)) and [ComfyUI-Magic-Assistant](https://github.com/shigjfg/ComfyUI-Magic-Assistant) (author: [**shigjfg**](https://github.com/shigjfg)), and references [ComfyUI-Lora-Manager](https://github.com/willmiao/ComfyUI-Lora-Manager) (author: [**willmiao**](https://github.com/willmiao)). Thanks to all the original authors, and to group friend **you** for contributing bug fixes, new features, and improvement suggestions.
 
 ## Features
 

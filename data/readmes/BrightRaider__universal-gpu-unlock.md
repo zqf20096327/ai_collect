@@ -4,7 +4,7 @@
 ### High-Performance Tensor Core Rate-Limiter Bypass for NVIDIA GPUs
 
 [![GitHub Release](https://img.shields.io/github/v/release/BrightRaider/universal-gpu-unlock?color=blue&logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases/latest)
-[![Release Version](https://img.shields.io/badge/Release-v1.8.24%20(Latest)-blue?logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases/tag/v1.8.24)
+[![Release Version](https://img.shields.io/badge/Release-v1.8.26%20(Latest)-blue?logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases/tag/v1.8.26)
 [![Downloads](https://img.shields.io/github/downloads/BrightRaider/universal-gpu-unlock/total?color=green&logo=github)](https://github.com/BrightRaider/universal-gpu-unlock/releases)
 [![Stars](https://img.shields.io/github/stars/BrightRaider/universal-gpu-unlock?style=social)](https://github.com/BrightRaider/universal-gpu-unlock)
 [![Safety](https://img.shields.io/badge/Safety-RAM--Only-success.svg)](#-safety--anti-cheat)
@@ -27,29 +27,32 @@
 
 ## ⚡ 60-Second Quick Start
 
-> [!IMPORTANT]
-> **BIOS Prerequisites:**
-> 1. **CSM (Compatibility Support Module):** Must be set to **Disabled** (pure UEFI mode) in your BIOS. Modern GeForce RTX 30 & 40 GPUs require native UEFI to avoid legacy VGA conflicts (Code 43).
-> 2. **Resizable BAR (ReBAR):** Ensure **Above 4G Decoding** and **ReBAR Support** are set to **Enabled** in your BIOS. This eliminates the legacy 256 MB PCIe VRAM bottleneck and provides an extra **+10% to +15%** throughput boost for AI inference and gaming.
-
-1. **Download:** Get the latest release package: **[Universal_GPU_Unlock_v1.8.24.zip](https://github.com/BrightRaider/universal-gpu-unlock/releases/latest)**.
-2. **Provision:** Extract the ZIP, insert a USB flash drive (FAT32), and run **`Setup.bat`** (formats & copies all required UEFI files automatically).
-3. **Boot & Unlock:** Restart your PC, open your motherboard boot menu (`F8` / `F11` / `F12`), and boot from the USB drive:
-   - **`[U]` Standard Unlock:** RAM-only, temporary unlock (reverts cleanly on complete power off).
-   - **`[I]` Install to NVRAM:** Registers the UEFI DXE driver into motherboard NVRAM and internal ESP for automatic, stickless boot on every cold start.
+1. **Download:** Get the latest release package: **[Universal_GPU_Unlock_v1.8.26.zip](https://github.com/BrightRaider/universal-gpu-unlock/releases/latest)**.
+2. **Provision:** Extract the ZIP, insert a USB flash drive (FAT32), and run **`Setup.bat`** (formats & copies all required UEFI files and certificates automatically).
+3. **Boot & Unlock:** Restart your PC, open your motherboard boot menu (**F11** on MSI/ASRock, **F12** on Gigabyte, **F8** on ASUS), and boot from the USB drive (`UEFI: USB...`). Select your mode:
+   - **`[U]` Standard Unlock:** RAM-only, temporary unlock (reverts cleanly to factory stock on complete power off).
+   - **`[I]` Install to NVRAM:** Registers the UEFI DXE driver into motherboard NVRAM and internal ESP for automatic, stickless boot on every cold start (unplug the USB drive permanently).
+   - **`[P]` S3 Persistence:** Experimental sleep-aware unlock mode.
+   - **`[R]` Remove DXE Driver:** Cleanly uninstalls and deregisters the driver from UEFI NVRAM & internal ESP.
+   - **`[S]` Stock Windows:** Skips unlock, runs hardware diagnostics, logs to USB, and boots normal Windows.
    - *(Tip: The boot menu features a 30-second countdown. Press `[Space]` at any time to pause and read in peace).*
-4. **Verify:** In Windows, run **`Check-GPU-Unlock.bat`** to verify your unlocked Tensor Core throughput (>200 TFLOPS on RTX 4090):
-   - Confirms pure **UEFI mode**, **Resizable BAR aperture (Full VRAM)**, and **PCIe Link Speed/Width (Gen4 x16)**.
-   - Automatically copies your verified result badge to the clipboard for sharing in GitHub issues or Discord!
-   - *(Prefer a GUI? Double-click `Launch-Dashboard.bat` for a sleek dark-themed 1-click benchmark dashboard).*
-5. **Instant Daily Resume & Idle Guard (Optional):** Run **`Setup-FastResume.bat`** to enable full Windows Hibernation and create a desktop **Fast-Unlock-Sleep** shortcut. It also includes the **Idle Relock Guard** (disables aggressive PCIe ASPM and Runtime D3cold power-gating), ensuring that laptops (Optimus) and secondary headless compute GPUs never lose their unlocked state during idle timeouts or display standby. Waking up takes ~3 seconds with full unlocked TFLOPS ready immediately!
+4. **Verify:** In Windows, run **`Check-GPU-Unlock.bat`** (or `Launch-Dashboard.bat`) to verify your unlocked Tensor Core throughput (>200 TFLOPS on RTX 4090):
+   - *(RTX 20 / Turing / CMP users: Run `Toggle-Turing-GSP.bat` once as Administrator to bind NVIDIA drivers to GSP firmware mode).*
+   - *(Optional: Run `Setup-FastResume.bat` to enable ~3s instant wake from hibernation with Idle Relock Guard).*
 
-> [!TIP]
-> **Maximizing Real-World AI Throughput (cuBLASLt Heuristics):**  
-> NVIDIA's official `cuBLASLt` library selects matrix multiplication algorithms based on factory heuristic models calibrated for rate-limited consumer cards. To ensure your AI applications pick the true maximum-throughput kernel tiles for your unlocked GPU:
-> * **In PyTorch / Python Scripts:** Add `torch.backends.cudnn.benchmark = True` before your compute loop.
-> * **In ComfyUI / Stable Diffusion:** Launch with benchmark/autotune enabled.
-> * **Result:** Yields an additional **+15% to +35%** real-world matrix throughput across dense GEMM, SDXL, and LLM prefill workloads!
+---
+
+## 🔒 Secure Boot Configuration
+
+The EFI binaries are Authenticode-signed. If your system has UEFI Secure Boot enabled:
+1. During boot, enter BIOS Setup (**Del** or **F2** key).
+2. Navigate to **Security ➔ Secure Boot ➔ Key Management** (or *Custom Key Management*).
+3. Select **Append Key** / **Enroll Signature** under the **Authorized Signatures (db)** menu.
+4. Browse to your USB drive and choose **`AdaUnlock_SecureBoot.cer`**.
+5. Save changes and reboot (**F10**).  
+*(Secure Boot remains 100% active and protected against malware while allowing the unlock binary to run. Alternatively, you can temporarily set Secure Boot to Disabled).*
+
+> **BIOS Note:** Ensure **CSM is set to Disabled** (pure UEFI mode) to prevent legacy VGA conflicts (Code 43), and enable **Above 4G Decoding** & **Resizable BAR** for maximum memory throughput.
 
 ---
 
@@ -59,7 +62,7 @@
 | :--- | :--- | :--- | :--- |
 | **RTX 40 Series** | **Ada Lovelace** | RTX 4090, RTX 4090D, RTX 4080, RTX 4080 SUPER, RTX 4070 Ti SUPER | `0x2684`, `0x2685`, `0x2702`, `0x2703`, `0x2704`, `0x2705` |
 | **RTX 30 Series** | **Ampere** | RTX 3090, RTX 3090 Ti, RTX 3080 Ti, RTX 3080 (10/12GB), RTX 3070 Ti, RTX 3070, RTX 3060 Ti, RTX 3060, CMP 90HX | `0x2204`, `0x2208`, `0x2206`, `0x220a`, `0x2216`, `0x2207`, `0x2482`, `0x2484`, `0x2487`, `0x2488`, `0x2489`, `0x2503`, `0x2504`, `0x2507`, `0x2508`, `0x2520`, `0x2560` |
-| **RTX 20 Series** | **Turing** (TU102, in testing: [#15](https://github.com/BrightRaider/universal-gpu-unlock/issues/15)) | RTX 2080 Ti, TITAN RTX, RTX 2080 / SUPER, RTX 2070 / SUPER, RTX 2060 / SUPER, CMP 50HX, Quadro RTX | `0x1E04`, `0x1E07`, `0x1E02`, `0x1E81`, `0x1E82`, `0x1E87`, `0x1E84`, `0x1F02`, `0x1F07`, `0x1F06`, `0x1F47`, `0x1F03`, `0x1F08`, `0x1F12`, `0x1E09`, `0x1EB0`, `0x1EB1`, `0x1E30`, `0x1E35` |
+| **RTX 20 Series** | **Turing** (TU102 / TU104 / TU106, in testing: [#15](https://github.com/BrightRaider/universal-gpu-unlock/issues/15), [#18](https://github.com/BrightRaider/universal-gpu-unlock/issues/18)) | RTX 2080 Ti, TITAN RTX, RTX 2080 / SUPER, RTX 2070 / SUPER, RTX 2060 / SUPER, CMP 50HX, CMP 40HX, Quadro RTX | `0x1E04`, `0x1E07`, `0x1E02`, `0x1E81`, `0x1E82`, `0x1E87`, `0x1E84`, `0x1E89`, `0x1F02`, `0x1F07`, `0x1F06`, `0x1F0B`, `0x1F47`, `0x1F03`, `0x1F08`, `0x1F12`, `0x1E09`, `0x1EB0`, `0x1EB1`, `0x1E30`, `0x1E35` |
 
 - **Any Vendor:** Compatible with Founders Edition, ASUS, MSI, Gigabyte, ZOTAC, PNY, Palit, Gainward, etc.
 - **Any Platform:** Intel (Z690, Z790, Z890, B760, Z390) and AMD (AM4/AM5, X570, B550, B650, X670E, X870E).
@@ -109,6 +112,13 @@ The unlock removes artificial firmware restrictions on the **Tensor Cores (GEMM 
 | **FP32 CUDA Shaders** | 51.3 TFLOPS | **48.7 TFLOPS** | ✅ **Stock Parity** | Standard raster rendering remains at factory stock |
 | **VRAM Copy Bandwidth** | 733.4 GB/s | **707.2 GB/s** | ✅ **Stock Parity** | Physical GDDR6X bus operation unchanged |
 
+> [!TIP]
+> **Maximizing Real-World AI Throughput (cuBLASLt Heuristics):**  
+> NVIDIA's official `cuBLASLt` library selects matrix multiplication algorithms based on factory heuristic models calibrated for rate-limited consumer cards. To ensure your AI applications pick the true maximum-throughput kernel tiles for your unlocked GPU:
+> * **PyTorch / Python Scripts:** Add `torch.backends.cudnn.benchmark = True` before your compute loop.
+> * **ComfyUI / Stable Diffusion:** Launch with benchmark/autotune enabled.
+> * **Result:** Yields an additional **+15% to +35%** real-world matrix throughput across dense GEMM, SDXL, and LLM prefill workloads!
+
 ---
 
 ## 🛡️ Safety & Anti-Cheat
@@ -116,6 +126,7 @@ The unlock removes artificial firmware restrictions on the **Tensor Cores (GEMM 
 - **Volatile (RAM-only):** The unlock lives in GPU registers and is gone after a full power-off. Without the `[I]` driver installed, the next boot is stock. On the test bench, the card always booted stock again after a power-off.
 - **Official NVIDIA Drivers:** Runs seamlessly with standard, unmodified NVIDIA Game Ready and Studio drivers (`nvlddmkm.sys`).
 - **Anti-Cheat:** No driver patches, kernel hooks or runtime memory injection. With the image or certificate enrolled in `db`, `UEFISecureBootEnabled` stays `1`. Individual anti-cheat engines (Riot Vanguard, Easy Anti-Cheat, BattlEye, Ricochet) were not tested systematically.
+- **Fast Resume & Idle Relock Guard:** Includes **`Setup-FastResume.bat`** to enable Windows Hibernation and create a desktop **Fast-Unlock-Sleep** shortcut (~3s wake-up without USB reboot). It also includes the **Idle Relock Guard** (disables aggressive PCIe ASPM and Runtime D3cold power-gating), ensuring that laptops (Optimus) and secondary headless compute GPUs never drop their unlocked state during idle timeouts or display standby.
 - **S3 Sleep Protection:** Includes **`Toggle-Sleep-Button.bat`** in the root directory to hide the "Sleep" button from the Windows Start menu, preventing accidental loss of volatile RAM state.
 - **44-Cycle Testbench:** 44 supervised runs on my primary RTX 4090 platform. The last 18 (RUN0027 – RUN0044) all passed. The earlier runs were prototyping.
 - **Operational Deep-Dive:** Read the comprehensive telemetry and persistence whitepaper:  

@@ -4,8 +4,8 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue?style=flat"></a>
-  <a href="rtl/CHANGELOG.md"><img alt="Core: 1.2.0" src="https://img.shields.io/badge/core-1.2.0-green?style=flat"></a>
-  <a href="CHANGELOG.md"><img alt="Basis: 1.5.0" src="https://img.shields.io/badge/basis-1.5.0-green?style=flat"></a>
+  <a href="rtl/CHANGELOG.md"><img alt="Core: 1.2.1" src="https://img.shields.io/badge/core-1.2.1-green?style=flat"></a>
+  <a href="CHANGELOG.md"><img alt="Basis: 1.6.0" src="https://img.shields.io/badge/basis-1.6.0-green?style=flat"></a>
   <a href="docs/platform-u200.md"><img alt="Platform: AMD Alveo U200" src="https://img.shields.io/badge/platform-AMD%20Alveo%20U200-lightgrey?style=flat"></a>
 </p>
 
@@ -18,6 +18,24 @@ A full-stack, open-source NPU for LLM inference.
 - Software: llama.cpp and PyTorch backends, the Tesseract Pivot graph scheduler, bit-exact simulator, verification tools.
 
 Runs GGUF models as shipped through llama.cpp with `-ngl`. Implemented on an AMD Alveo U200 FPGA. The U200 card holds 32 GiB of DDR4, four channels of 8 GiB. The design supports up to 16 GiB per channel.
+
+## Try it without a card
+
+The whole stack runs on the simulator, so trying it needs no FPGA. On Linux (x86-64) with git, CMake, a C++
+compiler, Python 3 and curl:
+
+```sh
+git clone --recurse-submodules https://github.com/jwkim04/tesseract-npu.git tesseract && cd tesseract
+./quickstart.sh          # builds, checks, downloads Qwen2.5 0.5B Q8_0 (0.7 GB), runs it and profiles one token
+./quickstart.sh chat     # chat with the model on the simulated NPU
+```
+
+The first command builds the firmware and the host stack, boots the firmware on the simulated core, and runs the
+model through llama.cpp with every layer on the device. It then writes `build/dev/quickstart/report.html`, the
+profile of one decode token: a timeline per unit, the records by layer and the device counters. The simulator
+computes the same bits as the hardware, and it is the reference that the RTL, the firmware and the host stack are
+checked against. Its cycle counts come from a cycle model of the core. `build/dev/bin/tsr-top` in a second
+terminal shows the simulated device while the chat runs.
 
 ## Demo
 
@@ -37,31 +55,38 @@ simulator, the records by layer, and the device counters ([profiling](docs/prof-
 
 ## Latest releases
 
-**Tesseract Basis 1.5.0** (2026-11-17), the firmware SDK and the host side
+**Tesseract Basis 1.6.0** (2026-11-18), the firmware SDK and the host side
 
-- Support for the QACT scale pipeline of Tesseract Core 1.2.0, which the core reports as `CAPS` bit `QACT_PIPE`. Every
-  kind keeps its numerics revision, so no output changes, and Basis 1.5.0 also runs on Core 1.1.0 and 1.0.0.
-- The simulator has the cycle model of the pipeline. `TSR_SIM_CARD=k4qpipe` with `TSR_SIM_GDN=1` configures it like the
-  release image, and `TSR_SIM_QACT_PIPE` sets the bit alone.
-- Tesseract Pivot reads the bit and charges QACT at the cost of the pipeline when it orders a graph.
-- `tsr-selftest` and the llama.cpp device list name the bit, and trace replay ignores it when it matches a trace to a
-  device.
+- `./quickstart.sh` takes a fresh clone to a model that generates text on the simulated NPU, with no card. It builds
+  the stack, checks it with `tsr-selftest`, downloads Qwen2.5 0.5B Q8_0 with a checksum, runs it and profiles one
+  decode token. `./quickstart.sh chat` is a chat on the simulator ([Try it without a card](#try-it-without-a-card)).
+- On a desktop with 16 logical CPUs and 8 build jobs, the first run after a fresh clone took 121 s, the 0.7 GB
+  model download included, and the build took 83 s of it. A second run took 5 s.
+- The profile report takes a simulator run alone: `sw/tools/prof/prof_report.py report --sim DIR --out OUT` gives the
+  timeline, the records and the counters of the simulated device without a card run to compare with.
+- The firmware, the kinds and the backend are those of Basis 1.5.0 apart from the version number. Every kind keeps its
+  numerics revision, and the decode token that `quickstart.sh` profiles takes the same device cycles on the simulator
+  with both versions. Basis 1.6.0 runs on Core 1.2.1, 1.2.0, 1.1.0 and 1.0.0.
 
-**Tesseract Core 1.2.0** (2026-11-17), the RTL and the Alveo U200 image
+**Tesseract Core 1.2.1** (2026-11-18), the RTL and the Alveo U200 image
 
-- The QACT scale pipeline. QACT, the unit that quantizes the activations, computes the scales of its 32-element blocks in a
-  pipeline. A quantization takes about 2 cycles per block, where the two serial dividers took 16. No result bit changes.
-- Decode is 1.01 to 1.04 times as fast as on Core 1.1.0 and prefill 1.01 to 1.03 times, for the seven models of the table
-  below. Gemma 4 E2B decodes at 24.42 tok/s, from 23.55, and Gemma 4 26B-A4B at 14.83, from 14.48.
-- QACT is busy for 71 thousand cycles of a Gemma 4 E2B decode token, from 413 thousand.
-- The pipeline adds 442 LUT, 525 FF, 10 DSP and one RAMB18 to the QACT unit, and the image keeps the 200 MHz core clock.
-- `CAPS` bit `QACT_PIPE` reports the feature. The image needs Basis 1.2.0 or later, as Core 1.1.0 does.
+- A patch release for the wiring of the image. It computes the same results as Core 1.2.0 at the same speed: on the seven
+  models of the table below the prefill and decode rates are 0.999 to 1.001 times those on Core 1.2.0, and the chat text
+  is identical.
+- The kernel has 402,384 LUT, from 406,288, and 510,465 FF, from 518,825.
+- The design uses 15,679 SLLs, the connections between the three dies of the FPGA, from 16,482.
+- What changed are structures at the crossings between the dies and on nets with a wide fanout. The read response of the
+  DMA on two memory channels is one register stage without a skid entry. The command link of the vector unit is a delay
+  line without a ready path. The first broadcast stage of the MVM unit has two copies. The trace writer's write mux sits
+  behind the DMA's pipeline stages.
+- `CAPS` is unchanged, so Basis 1.5.0 runs on the image as it is. The image needs Basis 1.2.0 or later, as Core 1.2.0 does.
 
 All changes are in [CHANGELOG.md](CHANGELOG.md) (Basis) and [rtl/CHANGELOG.md](rtl/CHANGELOG.md) (Core).
 
 ## Performance
 
-Decode and prefill rates on one Alveo U200 card with the Tesseract Core 1.2.0 image, batch 1, in full mode. Prefill is 512 tokens at `-ub 512`
+Decode and prefill rates on one Alveo U200 card, batch 1, in full mode, measured with the Tesseract Core 1.2.0
+image. The Core 1.2.1 image runs at 0.999 to 1.001 times these rates. Prefill is 512 tokens at `-ub 512`
 and decode is 64 tokens, both from `llama-bench`. The last column is the decode rate per watt of card
 board power.
 
@@ -180,6 +205,9 @@ right: how firmly each spin sits in the field of all the others.
 
 ## Quick start
 
+`./quickstart.sh` ([Try it without a card](#try-it-without-a-card)) does a shorter form of the steps below (the
+compiler alone, the targets it needs) and downloads the model. By hand:
+
 ```sh
 git clone --recurse-submodules https://github.com/jwkim04/tesseract-npu.git tesseract && cd tesseract
 third_party/apply-patches.sh                 # hooks ggml-tesseract into the pinned llama.cpp
@@ -187,7 +215,7 @@ sw/ctrl/tools/install-toolchain.sh           # RISC-V toolchain for the firmware
 cmake -S . -B build/dev -DCMAKE_BUILD_TYPE=Release
 cmake --build build/dev -j4
 build/dev/bin/tsr-selftest --device sim      # boots the firmware on the simulator and checks it
-# put a GGUF in models/, then run it on the simulator:
+# put a GGUF in models/ (quickstart.sh downloads qwen2.5-0.5b-instruct-q8_0.gguf), then run it on the simulator:
 LLAMA_ATTN_ROT_DISABLE=1 build/dev/bin/llama-completion -m models/qwen2.5-0.5b-instruct-q8_0.gguf \
     -ngl 99 -fa on -ctk q8_0 -ctv q8_0 -no-cnv -p "The capital of France is" -n 16
 ```

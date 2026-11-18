@@ -29,25 +29,6 @@ Look at Live Demo! [https://yanivzalach.github.io/IceGraph/](https://yanivzalach
 > **Recommended**: In production, use a user with read-only permissions for the Spark Connect server, for extra peace of mind.
 
 
-## Mock Data Example Using Docker
-
-Clone the repo, and in it, go to:
-```
-cd docker_demo
-```
-
-Run the docker compose:
-```
-docker compose up -d
-```
-
-Go to `http://localhost:5050` and explore table `default.events` and table `default.logging`.
-
-To rebuild only the IceGraph image after local code changes (without restarting Spark or other services):
-```bash
-docker compose up -d --build icegraph
-```
-
 ## Quick Start Using Docker
 
 The easiest way to run IceGraph is via [DockerHub](https://hub.docker.com/r/yanivzalach/icegraph)
@@ -91,6 +72,21 @@ Prometheus metrics are served at `/metrics`. Disable with `METRICS_ENABLED=false
 - `icegraph_operation_duration_seconds`: operation durations.
 - `icegraph_graph_computations_total`: graphs computed.
 - `icegraph_cache_reads_total`: server cache hits.
+- `icegraph_assistant_questions_total`: questions submitted to the AI assistant.
+
+### AI Assistant
+
+IceGraph can show an **Ask AI** button on the snapshot selection page and the table pages that answers questions about the table. It is off by default and turns on when both `AI_API_BASE_URL` and `AI_MODEL` are set. Any OpenAI-compatible chat completions API works (OpenAI, Azure OpenAI, vLLM, Ollama, LiteLLM, and others). The API URL, key, and model stay on the server and are never sent to the browser.
+
+The `AI_*` settings, their defaults, and their descriptions are in the [`Env` class](backend/env.py). How the assistant works is described in [`docs/ai-assistant.md`](docs/ai-assistant.md).
+
+```bash
+docker run -e SPARK_REMOTE=sc://<spark-connect-ip>:15002 \
+  -e AI_API_BASE_URL=https://api.openai.com/v1 -e AI_MODEL=<model> -e AI_API_KEY=<key> \
+  -p 5050:5050 yanivzalach/icegraph:latest
+```
+
+The user chooses which parts of the table metadata loaded in the browser are sent with each question. That context can include file paths, table properties, and column lower and upper bounds, which are real data values, so point IceGraph only at a model you are allowed to send them to. IceGraph has no authentication: anyone who can reach it can use the configured model, within the `AI_MAX_CONCURRENT_REQUESTS` and `AI_MAX_CONTEXT_CHARACTERS` limits.
 
 ## Start Using Source Code (Contributor to IceGraph)
 

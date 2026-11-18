@@ -1,7 +1,7 @@
 # Photoshoot
 
 [![Latest release](https://img.shields.io/github/v/release/ralksta/ComfyUI-Photoshoot?label=release)](https://github.com/ralksta/ComfyUI-Photoshoot/releases)
-[![Changelog](https://img.shields.io/badge/changelog-v2.6.0-blue)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-v2.9.0-blue)](CHANGELOG.md)
 [![Prompt Guide](https://img.shields.io/badge/how_to-prompt_guide-success)](docs/GUIDE.md)
 [![Reference Posters](https://img.shields.io/badge/reference_posters-14_sheets-orange)](docs/POSTERS.md)
 [![Feature ideas](https://img.shields.io/badge/feature_ideas-tell_us-blueviolet)](https://github.com/ralksta/ComfyUI-Photoshoot/discussions/9)
@@ -9,14 +9,14 @@
 ![Photoshoot — one person, a whole series, ComfyUI](docs/banner.png)
 
 > [!IMPORTANT]
-> **Top 5 Changes in Release 2.6.0:**
-> 1. **Costume changes in one series:** the new *Wardrobe* node holds a shoot's outfits as tabs — the Series changes through them while the person stays the same, each outfit shot wide to close, with a mannequin preview and its colour marked in the contact sheet.
-> 2. **See it before you pick it:** long lists are searchable, and clothes, shoes and hats show a picture on a neutral mannequin — shoes from the side so the heel shows; favourites and your last picks sit on top.
-> 3. **Add your own entries:** a hat, a cut, a light setup — one line of JSON each. Or let any chat LLM write the file: open `/krea2/custom/llm_prompt` on your ComfyUI and say what you want.
-> 4. **More to wear:** tops & blouses, bikinis, sixteen hats, ruffled skirts and seven bangs cuts — every wording render-tested against the bare word, with new reference posters.
-> 5. **Portraits stay portraits:** close framings leave out everything below the chest, so a pencil skirt no longer pulls a headshot to full length.
+> **Top 5 Changes in Release 2.9.0:**
+> 1. **Photoshoot Studio sidebar, All-in-One workflow (`photoshoot-studio.json`) & Lightbox:** every node has a compact view (**⊟**/**⊞**); the *Studio* sidebar edits Person, Wardrobe, Look, Pose, Shoot and Director in one column starting on *Person* (plus pinned widgets of any node and single-node canvas shooting), and the *Lightbox* opens the contact sheet large with side-by-side compare, starring (**♥**), rejecting (**✕**) and *Next round from selects*.
+> 2. **Inline custom presets, floating 2-column dropdowns & Studio pack manager:** unified styled dropdowns open as floating popovers with two-column image previews and `+ Custom entry …` at the bottom to add hairstyles, clothing, props, poses, lights and looks live without restarting ComfyUI; *Studio → Your setup* adds a `.json` pack loader and copy-paste LLM prompt generator.
+> 3. **Draft mode, Finish favourites & live queue control:** switch *Draft* on in the Series to skip the refinement pass while exploring; star your keepers and click *Finish favourites* to re-render those exact photos — same framing, pose, outfit and noise seed — at full resolution, or stop/shoot single frames live.
+> 4. **Director, Shoot files & Location set builder:** save and share a whole shoot as one JSON file, let *Director* plan a shoot from a sentence or reference photo, and rotate multiple sets and indoor/outdoor lighting via *Photoshoot – Location* and the Series **Set** / **Light** axes.
+> 5. **Selfie mode, camera angles, handheld props & Qwen-Image-2.1 reference shoots:** added *Perspective* (selfie angles and classic camera angles), series **Gaze** modes, handheld props, the 1-click **Anchor set** recipe, and `photoshoot-reference-qwen21.json` with *Photoshoot – Save Dataset*.
 >
-> **New here?** The example workflow now reads left to right in seven steps — models, who, look, the shoot, prompt, render, output — each with a short note on what it does. The [**Quickstart**](docs/quickstart.md) gets you from install to your first series in six steps.
+> **New here?** Pick [`example_workflows/photoshoot-studio.json`](example_workflows/photoshoot-studio.json) for a compact single-node Studio workflow, or [`example_workflows/photoshoot-series.json`](example_workflows/photoshoot-series.json) for all builders side by side. The [**Quickstart**](docs/quickstart.md) gets you from install to your first series in six steps.
 >
 > [**Read full changelog →**](CHANGELOG.md)
 
@@ -33,27 +33,30 @@
 > words differently. The one node that touches pixels is *Photoshoot – Monochrome*.
 
 Photoshoot is a set of ComfyUI nodes in two halves. The **Person Builder** describes
-someone across 37 fields — body, face, hair, make-up — and saves them under a
+someone across 38 fields — body, face, hair, make-up — and saves them under a
 name; the **Wardrobe** dresses her, one outfit per tab. The **Photoshoot** turns
 that person into a whole series: every
 photo a different framing, pose, placement, expression and aspect ratio, while
 the person stays the same. Set the count, press the button, and the node queues
 all 40 runs itself.
 
-![The example workflow: the Wardrobe with three outfits and the Person
-under Who, scene, light and style under Look, and the Series node with the
-contact sheet of a rendered Joy series](docs/workflow.jpg)
+![Photoshoot Studio sidebar on the left, the compact All-in-One workflow in
+the center, and the Lightbox contact sheet with a rendered 8-photo Joy series
+in three outfits at the bottom](docs/workflow.jpg)
 
-*The example workflow (`example_workflows/photoshoot-series.json`): dress and
-build the person on the left, set scene, light and style in the middle, and the
-Series node on the right plans, queues and shows the whole shoot - here eight
-photos in three outfits.*
+*The All-in-One Studio workflow (`example_workflows/photoshoot-studio.json`):
+the **Photoshoot Studio** sidebar on the left edits Person, Wardrobe, Look,
+Pose, Shoot and Director in one column; the compact Series node on the canvas
+plans and queues the shoot; and the **Lightbox** at the bottom reviews takes,
+favourites and round selection (or pick
+[`photoshoot-series.json`](example_workflows/photoshoot-series.json) for all
+builders side by side).*
 
 
 
 ## Building a person
 
-37 fields in five collapsible sections. You pick labels; the node writes English. Related fields
+38 fields in five collapsible sections. You pick labels; the node writes English. Related fields
 share a row — hair and its colour, eye shape and eye colour, lips and finish —
 because they are merged into one phrase and you need to see both while setting
 either. A long list opens under its row instead of as a dropdown: type to
@@ -122,13 +125,16 @@ Builder's `wardrobe` input. The person wears the open tab; in a series she
 changes through all of them (see the *Outfit* axis). *Render preview* shows an
 outfit on its own, on a faceless mannequin or as a flat lay.
 
-<img src="docs/wardrobe.png" alt="The Wardrobe node: outfit tabs, the name,
-a rendered mannequin preview, and the Clothing section open with colour buttons"
-width="520">
+<img src="docs/wardrobe.png" alt="Photoshoot Studio's Person tab: the collapsed
+Person builder above and the Wardrobe with three outfits, a rendered mannequin
+preview, and the Clothing section with colour buttons"
+width="430">
 
-*A Wardrobe with three outfits as tabs, the open one's mannequin preview, and
-its Clothing section with the colour buttons. The composed English sentence
-sits at the bottom and updates as you click.*
+*Person and Wardrobe together in **Photoshoot Studio** (`Person` tab): three
+outfits as tabs, the open one's mannequin preview, and its Clothing section
+with colour buttons. The composed English sentences sit directly below each
+builder and update as you click — or pop either out onto the canvas with one
+click.*
 
 <details>
 <summary><b>View Visual Footwear & Shoe Matrix (72 Models Poster)</b></summary>
@@ -222,17 +228,20 @@ sits at the bottom and updates as you click.*
 
 ## The photoshoot
 
-Seven axes. Each can be switched off — then it holds still — or restricted to a
+Ten axes. Each can be switched off — then it holds still — or restricted to a
 family: *only standing poses*, *only calm moods*, *only close-ups*.
 
 | Axis | What varies |
 |---|---|
 | **Camera** | 7 framings, extreme close-up through wide shot |
-| **Pose** | 18 postures in 4 families, plus placement in the room, orientation, arms, legs, tension — placement is coupled to the framing and tension to the posture, so no photo asks for a figure that is leaning against a wall and curled up at once |
-| **Expression** | 90 moods in 9 families, plus eyes, gaze, mouth, brows, head tilt |
+| **Perspective** | off by default; on, the camera angle after the framing — so far four render-tested selfies (from above, eye level, lying down, mirror), each with a hand free for the phone and a phone's 9:16 or 4:5 |
+| **Pose** | 24 postures in 4 families, plus placement in the room, orientation, arms, legs, tension — placement is coupled to the framing and tension to the posture, so no photo asks for a figure that is leaning against a wall and curled up at once |
+| **Expression** | 94 moods in 9 families, plus eyes, gaze, mouth, brows, head tilt |
 | **Focus** | 12 focal points, face to feet — coupled to the framing, since a wide shot does not focus on the lips |
 | **Format** | 9 aspect ratios at a constant pixel count, coupled to the framing so a full-body shot never lands in 16:9 landscape — plus the size, from 1024 to 2560 px |
 | **Outfit** | costume changes from the person's Wardrobe, in blocks or mixed — in blocks, each outfit is shot wide to close |
+| **Set** | set changes from a **Location** node — *loft → street → café* — in blocks or mixed; close framings get only what is behind the head |
+| **Light** | off by default; on, one of the 30 lighting setups per set, over the series as a time of day (morning → night), or mixed — outdoor light only on outdoor sets |
 | **Noise** | a fresh seed per photo, or one seed for the whole series to keep the setting recognisable |
 
 <img src="docs/photoshoot.png" alt="The Photoshoot node: count and start number,
@@ -243,17 +252,58 @@ width="400" align="right">
 *Lookbook*, *Headshots*, *Shoes* and a seven-photo *Test sheet* with every
 framing exactly once. Under Camera, *wide → close* turns the series into a shoot that opens wide and
 ends in the detail; under Expression, a **mood arc** (*Joy*, *Dominance*,
-*Drama*) lets the mood develop from photo to photo instead of jumping — *Joy* shows without a LoRA, the darker two want a character LoRA ([why](#what-a-series-looks-like)). *+ Save* keeps your own settings next to them — the exact
+*Drama*) lets the mood develop from photo to photo instead of jumping — *Joy* shows without a LoRA, the darker two want a character LoRA ([why](#what-a-series-looks-like)) — and **gaze** decides whether the eyes meet the camera: *mixed*, *at the camera*, *mostly camera* or *away*. *+ Save* keeps your own settings next to them — the exact
 series, start number included, to load again later.
 
 The node ends in a **contact sheet**: every photo as a frame in its real aspect
-ratio, filled with the picture once it is rendered. Click a frame for its
-framing, pose, focus and mood, mark it as a **favourite**, or mark it for a
+ratio, filled with the picture once it is rendered, 24 to a page. Click a
+frame for its framing, pose, focus, mood and the exact **prompt** it got (with
+a copy button), mark it as a **favourite**, or mark it for a
 **re-shoot** — the same plan with new noise, as many takes as you like, while
 the rest of the series stays as it is. With *takes per photo* every shot is
 rendered two to four times from the start, and you pick the take per photo.
 The sheet remembers its pictures in the workflow, so it survives a restart of
-ComfyUI.
+ComfyUI. Every panel edit is one step for Ctrl+Z.
+
+**Lightbox.** For a closer look, *⤢ Lightbox* (or a double-click on a frame)
+opens the sheet big in ComfyUI's bottom panel: one photo at full size, filters by
+favourite, reject, draft and framing, a side-by-side compare, and the keys
+← → F X C to go through a round quickly — the same favourites, takes and
+re-shoots as the node, which follows every change.
+[Details](docs/nodes.md#lightbox)
+
+**Studio sidebar.** *Studio* in ComfyUI's left icon bar puts the whole shoot
+into one column: Person, Look, Pose, Shoot and Director as tabs, each the
+node's own panel on the same state, the lighting setups and postures as
+picture tiles. *Your setup* holds any widget of your graph you pin there with
+a right-click — a LoRA loader's file and strength, say.
+[Details](docs/nodes.md#studio-sidebar)
+
+**Compact nodes.** ⊟ in a panel's brand strip makes it short: the Series
+keeps *Start shooting*, *Draft*, one line of what its axes do and a strip of
+its photos (a click opens the Lightbox there), the Person her summary and
+*Inspire Me*, the builders one line per field; a click on a summary opens it
+in the Studio sidebar. New nodes and the example workflows start compact,
+older workflows open as they were; nothing of it reaches the prompt.
+[Details](docs/nodes.md#compact-view)
+
+Then the photographer's loop: shoot, select, reshoot. Star the photos that
+work (and, if you like, mark the ones that do not with *✕ Reject*), press
+**Next round →**, and the next series starts right after this one, drawing
+only from the framings, pose and mood families, focus areas and outfits of
+your selects. *Round 2 · based on 3 selects* says where you are, and *← back
+to round 1* brings the previous round back with its favourites and takes.
+
+**Shoot files and the Director.** The row *Shoot:* under the recipes keeps the
+whole shoot — person, outfits, light, look, series, scene and prompt template —
+as one JSON file: save it under a name, download it to share, open one someone
+sent you. A preview shows what goes into which node before anything changes,
+and *Undo* takes it back. *Director …* turns one sentence into a whole shoot
+through any chat LLM: copy the prompt it builds, paste it into ChatGPT, Claude,
+Gemini or a local model, paste the answer back. The LLM only picks from the
+built-in, render-tested lists — it never writes prompt text — and a second mode
+reverse-engineers a reference photo in a vision chat the same way.
+[Details](docs/nodes.md#shoot-files) · [example file](docs/shoot_example.json)
 
 Two things make this a series rather than 40 random images.
 
@@ -330,13 +380,13 @@ nose, eye shape and lipstick are left out, photo 8 carries all of them.
 
 ```text
 Wardrobe ──► Person Builder ──person_data──► Photoshoot ──┬── person   ─┐
- outfits     37 fields, saved once          the series  ├── pose      │
+ outfits     38 fields, saved once          the series  ├── pose      │
                                                         ├── expression├──► Build Prompt ──► your sampler
                                                         ├── camera    │
 Scene / Style ──────────────────────────────────────────┴── width/height/seed
 ```
 
-1. **Build a person.** 37 fields in five sections, and a Wardrobe with her
+1. **Build a person.** 38 fields in five sections, and a Wardrobe with her
    outfits on its `wardrobe` input. Save under a name and reuse across
    sessions — the point is that the same person comes back.
 2. **Send them to a photoshoot.** Set the count, restrict the axes you care
@@ -350,6 +400,11 @@ Scene / Style ──────────────────────
    order if you have none.
 
 Pose and expression also work as standalone nodes when you do not want a series.
+
+For set changes, a **Location** node goes into the Series' `location_data`
+input; wire the Series' `scene` (and, with the light axis on, `lighting`)
+outputs into Build Prompt in place of the fixed scene and the Lighting node.
+[Details](docs/nodes.md#sets-and-light)
 
 ### Already have your character?
 
@@ -372,7 +427,9 @@ nodes supply everything else. Put the trigger word in the `{extra}` placeholder
 if you need it first in the prompt.
 
 Two things help there. Describing the face on top of a reference or a LoRA
-gives the model two sources for one thing, so leave those fields empty. And a
+gives the model two sources for one thing, so leave those fields empty — or
+set *LoRA trigger* or *Reference* on the Person node, which leaves them out
+for you ([reference mode](#consistency-from-an-anchor-set-to-a-character-lora)). And a
 reference photo shows no body below the shoulders, so the body section is worth
 filling in even when the face comes from elsewhere — otherwise every image
 invents a different build.
@@ -415,33 +472,95 @@ carries the loader, wired between the `UNETLoader` and both samplers and shipped
 the model flows through it instead of around it. You do not need one, though.
 The noise seed alone holds a person still.
 
-[`example_workflows/photoshoot-anchor-set.json`](example_workflows/photoshoot-anchor-set.json)
-is all of that already set up: same graph as the series workflow, but with the
-noise axis off and a seed in place, the ratio fixed, the mood held to one
-family and the count at six. Load it, press **Start shooting**, and you have
-your anchor set — without having to know about the trap above first. Images go
-to `photoshoot/anchor` so they do not mix with a series.
+Or simply open the **Anchor set** recipe in `photoshoot-studio.json` or `photoshoot-series.json`:
+one click sets the count to six, locks the noise seed and aspect ratio (`2:3`), narrows the mood to *Calm*, and covers every framing once — press **Start shooting** and pick your anchors from `photoshoot/s0001`.
 
-## Example workflow
+### Consistency: from an anchor set to a character LoRA
 
-[`example_workflows/photoshoot-series.json`](example_workflows/photoshoot-series.json)
-is the whole thing wired up — drag it onto the ComfyUI canvas, or open it from
-ComfyUI's template browser under *ComfyUI-Photoshoot*, where both workflows
-show a thumbnail.
+Text and one seed hold a person for a handful of images. For a whole series
+in any framing, or a person you can come back to next month, the kit has a
+route in four steps, each one optional:
+
+1. **Anchor set.** The workflow above gives you six images of one person.
+   Pick two: a tight head-and-shoulders crop and a full-body shot.
+2. **Reference series with Qwen-Image-2.1.**
+   [`example_workflows/photoshoot-reference-qwen21.json`](example_workflows/photoshoot-reference-qwen21.json)
+   feeds both anchors into [Qwen-Image-2.1](https://huggingface.co/Comfy-Org/Qwen-Image-2.1),
+   which generates and edits in one model, takes up to ten reference images
+   and runs in ComfyUI core, no custom nodes. The Person node is in
+   **reference mode**: its *Reference* field says `1, 2`, so the person block
+   reads "the same woman as in `<image1>` and `<image2>`" and leaves face, hair
+   and make-up to the pictures, while age, body and the Wardrobe's outfits stay
+   in words — a face crop shows nothing below the shoulders. The Series varies
+   everything else, as always. The photo takes the size and ratio of image 1,
+   so crop it to 2:3; the ratio axis is off for that reason. The example is
+   sized for 24 GB of VRAM (the bf16 model, the int8 text encoder); on 16 GB
+   pick the int8 model.
+3. **Dataset.** Switch on the *Save Dataset* node (Ctrl+B) in the same
+   workflow: every photo also lands in `output/photoshoot/dataset/<name>/` as
+   `NNNN.png` with its caption in `NNNN.txt`. The caption is the trigger plus
+   what varies — framing, pose, expression, outfit — and never the face,
+   because whatever a caption describes, the LoRA learns as separate from the
+   trigger. Put the trigger your LoRA will have into the node, delete the pairs
+   you do not like, and train on the folder with any LoRA trainer.
+4. **Character LoRA.** Load it in the Krea workflow (the anchor-set workflow
+   already has the slot) and type its trigger into *LoRA trigger* on the
+   Person node: the person block shrinks to age, body and outfit, and the
+   series runs at full speed with no reference images at all.
+
+**Licence.** Qwen-Image-2.1 is released under the Qwen Research License,
+which does **not** allow commercial use — that covers the images of step 2 and
+a LoRA trained on them. For commercial work the alternative is Krea 2 with the
+Krea 2 Identity Edit LoRA through
+[comfyui-krea2edit](https://github.com/lbouaraba/comfyui-krea2edit): it held
+the identity in every run and followed pose, expression, clothing and setting,
+provided the anchor is a tight crop ([measured](docs/measurements.md)). It
+needs a custom node pack, so no workflow for it ships here; wire the Series'
+`pose`, `ausdruck` and `kamera` into its prompt and leave the Person node out
+or in reference mode.
+
+The reference wording, the output size and Qwen-Image-2.1's settings are not
+render-tested yet — the workflow's structure is checked against ComfyUI, the
+pictures are not. Treat it as the first draft it is.
+
+## Example workflows
+
+[`example_workflows/photoshoot-studio.json`](example_workflows/photoshoot-studio.json) (11 nodes, All-in-One sidebar workflow) and [`example_workflows/photoshoot-series.json`](example_workflows/photoshoot-series.json) (21 nodes, all builders wired on the canvas) are ready to run — drag one onto the ComfyUI canvas, or open them from ComfyUI's template browser under *ComfyUI-Photoshoot*, where all workflows show a thumbnail.
 
 It contains the Person Builder with a Wardrobe, the Photoshoot, the Lighting
-and Style nodes, a scene field, and a two-pass sampler: 8 steps at full denoise, a 1.5× latent upscale, then 4 steps
-at denoise 0.44. Keeping the upscale but dropping the refinement is the one
+and Style nodes, a scene field, and one **Render (2 passes)** node. That node
+is a subgraph (double-click it to see the inside): 8 steps at full denoise, a
+1.5× latent upscale, then 4 steps at denoise 0.44. On the canvas it shows only
+what the series feeds it — model, prompt, size, seed — and the **refine**
+switch, which the series drives (*Draft*, see below). Keeping the upscale but dropping the refinement is the one
 combination to avoid — that takes 11.4 s instead of 24.8 s and comes out
 unusably soft, because latent upscaling invents no detail, it only pulls things
 apart. Dropping *both* is a different thing — see "Draft before you shoot"
 below.
 
 `width` and `height` come from the Photoshoot node, so the aspect ratio follows
-the framing. `bildseed` feeds both samplers, which is what makes a run
-reproducible. Between VAE Decode and Save Image sits **Photoshoot – Monochrome**,
+the framing. `bildseed` feeds both samplers inside the render node, which is
+what makes a run reproducible. Between VAE Decode and Save Image sits **Photoshoot – Monochrome**,
 shipped bypassed: with a black and white look in the style, select it and press
 `Ctrl+B`, and the last trace of colour goes too.
+
+**Adding a LoRA.** The *Models* group carries a `LoraLoaderModelOnly` between
+the Krea 2 model and the render node, shipped **bypassed**, so the workflow runs
+as it is:
+
+1. Pick your file in the loader and set the strength (1.0 to start; style
+   LoRAs often sit better at 0.5–0.8).
+2. Select the loader and press `Ctrl+B` — the model now flows through it.
+3. Put the trigger word where it belongs: a **character** LoRA's trigger into
+   *LoRA trigger* on the Person node (face, hair and make-up then come from the
+   LoRA), a **style or detail** LoRA's trigger into the prompt template, e.g.
+   `myStyle, {style}, …`.
+
+More than one LoRA is a chain: copy the loader and wire *Krea 2 model → LoRA 1
+→ LoRA 2 → Render*, or use a multi-LoRA loader from another pack. The series,
+the contact sheet and everything else in the kit work the same with none or
+five: they only write the prompt, the model is yours. `Ctrl+B` on a loader is
+also the quickest before/after comparison.
 
 ### Draft before you shoot
 
@@ -450,12 +569,12 @@ is the person right, the scene, the style, the axes you restricted? Rendering
 those at full quality is a waste, because you are going to change something and
 shoot them again.
 
-**Select `LatentUpscaleBy` and the second `KSampler`, press `Ctrl+B`.** That is
-bypass, not mute: both nodes take a LATENT and hand back a LATENT, so the latent
-passes straight through them and the decode reads the first sampler instead of
-the second. Measured here against local Krea 2 weights, that is **10.2 s per
-image instead of 21.5 s**, at the base resolution rather than 1.5×. Sharp, just
-smaller. Press `Ctrl+B` again and you are back at full quality with every
+**Tick *Draft* under *Start shooting*.** The series then sends `refine` off to
+the render node, where a switch hands the first pass straight to the decode, and
+the upscale and the second sampler never run (it is a lazy switch, so they are
+not computed and thrown away). Measured here against local Krea 2 weights, that
+is **10.2 s per image instead of 21.5 s**, at the base resolution rather than
+1.5×. Sharp, just smaller. Untick it and you are back at full quality with every
 setting untouched — which is the point of doing it this way rather than in a
 second file: the person, the scene and the axis restrictions live in the nodes,
 and moving them across workflows is work.
@@ -465,12 +584,18 @@ runs 1 to 6 in the draft are runs 1 to 6 in the finished series. You are
 previewing the real thing, not a stand-in. Six calibration images cost 61 s
 instead of 129 s, and you rarely go round only once.
 
-If you would rather keep the drafts out of the finished set, change the
-`SaveImage` prefix while the two nodes are bypassed.
-
 Drafting a whole series works too, and there it depends on how many you keep,
-since everything renders twice: forty full runs cost 860 s, forty drafts plus
-*k* re-renders cost 408 + 21.5·*k*, even at **k ≈ 21**.
+since the keepers render twice: forty full runs cost 860 s, forty drafts plus
+*k* re-renders cost 408 + 21.5·*k*, even at **k ≈ 21**. Star the keepers in the
+contact sheet and press **Finish favourites**: it queues just those photos, at
+the take you picked, with the second pass — same seed, same composition, full
+resolution. The contact sheet marks drafts with a dashed frame and swaps in the
+finished picture once it is there.
+
+The files say which photo they are: the Series node's `filename` output goes
+into Save Image, so a draft lands as `photoshoot/s0001/07_t1_draft_00001_.png`
+and the finished photo next to it as `photoshoot/s0001/07_t1_00001_.png`
+(`s0001` is the series' start number, `07` the photo, `t1` the take).
 
 The three loaders name the files [Comfy-Org publishes for Krea
 2](https://huggingface.co/Comfy-Org/Krea-2) — `krea2_turbo_fp8_scaled`,
@@ -489,7 +614,10 @@ a Cache-Control header, so without a fresh `?v=` in the import a browser can sit
 on the old interface for a day or more.
 
 The workflow is generated by `tools/baue_workflow.py`, which checks every node
-type, input name, output index and required input against a running ComfyUI. It
+type, input name, output index and required input against the node signatures:
+the kit's own from its classes, ComfyUI's from a checked-in snapshot of
+`/object_info` (`tools/object_info.core.json`), so no running ComfyUI is needed
+and the smoke test can hold the shipped files to what the generator builds. It
 was verified by actually executing it, not just by loading it.
 
 ## Which models does this work with?
@@ -553,14 +681,16 @@ Settings → Comfy → Locale. The prompt is identical either way — see
 
 | Node | What it does |
 |---|---|
-| **Photoshoot – Person** | 37 fields in five sections; wears the open tab of a wired Wardrobe; outputs the person as text and as JSON |
-| **Photoshoot – Series** | the series: seven axes, queues the runs itself, contact sheet with favourites and re-shoots |
+| **Photoshoot – Person** | 38 fields in five sections; wears the open tab of a wired Wardrobe; outputs the person as text and as JSON |
+| **Photoshoot – Series** | the series: ten axes, queues the runs itself, contact sheet with favourites and re-shoots |
 | **Photoshoot – Pose** | posture, placement, orientation, arms, legs, tension |
-| **Photoshoot – Expression** | 90 moods in nine families, plus eyes, gaze, mouth, brows, head |
+| **Photoshoot – Expression** | 94 moods in nine families, plus eyes, gaze, mouth, brows, head |
 | **Photoshoot – Lighting** | 30 studio, daylight and creative lighting setups, plus direction and atmosphere |
 | **Photoshoot – Style** | the look: ten black and white and seven colour looks, each measured to differ, plus genre, lens, finish |
+| **Photoshoot – Location** | the set: place (studio, urban, nature, interior), time of day, weather, season — sets as tabs, into the Series; the lists fill as their wordings pass the render test |
 | **Photoshoot – Wardrobe** | the outfits of a shoot as tabs, into the Person node; the Series changes through them |
 | **Photoshoot – Monochrome** | makes the image truly black and white, between VAE Decode and Save Image |
+| **Photoshoot – Save Dataset** | each photo with its training caption, `NNNN.png` + `NNNN.txt`, for a character LoRA |
 | **Photoshoot – Build Prompt** | drops the parts into your prompt text |
 | **Save / Load** | persons, scenes, styles and prompts under `ComfyUI/user/krea2_*` |
 | **Photoshoot – Pick Blocks** | four dropdowns, four outputs in one node |
@@ -587,6 +717,11 @@ to 12, and just as reproducible.
 again?** No: click it in the contact sheet, *↻ Re-shoot*, and *Re-shoot 1
 photo*. It keeps its framing, pose and expression and gets new noise; the
 contact sheet shows the new take.
+
+**I like three photos of the series. How do I get more like them?** Star them
+(♥ Favourite) and press *Next round →* under the contact sheet. The new round
+starts at the next free photo number and keeps only their framings, pose and
+mood families, focus areas and outfits; everything else still varies.
 
 **How do I get black and white?** Wire a **Photoshoot – Style** node into the
 `style` input of Build Prompt and pick a look from the *black & white* family,
@@ -645,7 +780,7 @@ Details in [the node reference](docs/nodes.md#custom-entries).
 
 The stores live under `ComfyUI/user/krea2_*` and are **not** part of this
 repository — that is where personal content ends up, your own entries in
-`krea2_presets` included. If you want them backed up, copy those folders
+`krea2_presets` and your saved shoots in `krea2_shoots` included. If you want them backed up, copy those folders
 deliberately.
 
 ## Scope

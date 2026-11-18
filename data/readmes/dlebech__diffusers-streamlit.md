@@ -69,11 +69,50 @@ uv export --no-hashes --no-dev --emit-index-url --format requirements-txt -o req
 
 The first time it runs, it will download the model from Hugging Face automatically.
 
-Images are automatically saved in an `outputs/` folder, each with a `.txt` file next to it that records the settings used: prompt, negative prompt, pipeline (txt2img/img2img/inpaint), model, steps, guidance scale, output size, strength (img2img/inpaint) and whether CPU offload was on.
+Images are automatically saved in an `outputs/` folder, each with a `.txt` file next to it that records the settings used: prompt, negative prompt, mode (txt2img/img2img/inpaint), model, steps, guidance scale, output size, strength (img2img/inpaint), seed and whether CPU offload was on.
+
+Each tab has an optional seed input. Leave it empty for a random seed; the seed used is shown under the image. The same seed with the same settings gives the same image.
 
 ### Out of memory errors
 
-Out of memory errors occur frequently in my setup (8GB GPU), even though I've tried to limit the usage of cache and clean up the CUDA. They are quickly fixed with a clear cache and rerun in Streamlit, conveniently accessible on the C and R keys.
+Out of memory errors occur frequently in my setup (8GB GPU), even though I've tried to limit the usage of cache and clean up the CUDA. They are quickly fixed with the "Unload model" button in the sidebar, which frees the GPU memory (the model is loaded again on the next generate). Streamlit's "Clear cache" no longer unloads the model, so use that button instead.
+
+## MCP server
+
+`mcp_server.py` is a [Model Context Protocol](https://modelcontextprotocol.io) server, so AI agents (Claude Code and others) can generate and edit images with the same models, settings and CPU offload tuning as the app. It is a long-running streamable HTTP server, so the model stays loaded across sessions:
+
+```
+uv run python mcp_server.py
+```
+
+It listens on `http://127.0.0.1:8765/mcp`. Use `--port` to change the port, and `--preload <slug>` to load a model at startup instead of on the first call. To add it to Claude Code:
+
+```
+claude mcp add --transport http diffusers http://127.0.0.1:8765/mcp
+```
+
+Models are named by slug: `z-image-turbo` (default), `flux2-klein-4b`, `sdxl`, `sdxl-turbo` and `sdxl-refiner`. Tools:
+
+- `list_models`: every model with its slug, name, Hugging Face repo, the tools (and modes) it supports, default steps/guidance/size and its hint.
+- `generate_image(prompt, model, width, height, steps, guidance_scale, negative_prompt, seed)`: text to image (z-image-turbo, flux2-klein-4b, sdxl, sdxl-turbo).
+- `edit_image(image_path, prompt, model, strength, steps, guidance_scale, negative_prompt, seed)`: image to image (z-image-turbo, flux2-klein-4b, sdxl-refiner). Input images are local file paths.
+- `inpaint(image_path, mask_path, prompt, model, strength, steps, guidance_scale, negative_prompt, seed)`: inpainting (z-image-turbo, flux2-klein-4b, sdxl). White in the mask means repaint, as in the app's canvas.
+
+The server accepts sizes from 64 to 2048 pixels per side (the app's sliders stop at 1600). For edit_image and inpaint that applies to the input image's size, except for sdxl inpaint, which always outputs 1024px and only needs 64 or more. Anything you leave out uses the model's defaults, as in the app. Every result is saved in `outputs/` with its `.txt` settings file, like in the app. The tool returns the absolute path of the PNG, the settings used (including the seed, the size and any settings the model ignored) and a small thumbnail (256px on the long side), not the full image. Without a seed, a random one is used; it is returned, so a result can be reproduced by passing it back. Bad input (unknown model, a model that doesn't support the tool, missing image, invalid or too small/large size, out of memory) comes back as a tool error.
+
+Notes:
+- It only listens on localhost and has no authentication.
+- One image is generated at a time; other calls wait their turn. Progress is reported per step.
+- The first call with a model loads it, which is slow. Only one model is kept in memory, so switching models reloads.
+- Don't run the app and the server at the same time on a 16GB GPU, they would both want the memory.
+
+## Tests
+
+```
+uv run pytest
+```
+
+The tests use a fake pipeline, so they need no GPU and download no models.
 
 ## Why
 

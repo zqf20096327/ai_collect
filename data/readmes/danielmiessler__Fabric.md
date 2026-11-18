@@ -352,7 +352,7 @@ Fabric supports a wide range of AI providers:
 - OpenAI Codex (ChatGPT/Codex subscription OAuth via private backend)
 - Anthropic (Claude)
 - Claude Code (Claude subscription via the local `claude` CLI)
-- Google Gemini
+- Google Gemini (API key, or Google OAuth through Vertex AI: see [Gemini OAuth](./docs/Gemini-OAuth.md))
 - Ollama (local models)
 - Azure OpenAI
 - Amazon Bedrock
@@ -941,6 +941,12 @@ Now let's look at some things you can do with Fabric.
 
     ```bash
     fabric -u https://github.com/danielmiessler/fabric/ -p analyze_claims
+    ```
+
+6. Compress long input before you run a pattern, to use fewer tokens. See [Input Compression](./docs/Input-Compression.md).
+
+    ```bash
+    cat long_document.txt | compress "main ideas and claims" | fabric --pattern summarize
     ```
 
 ## Just use the Patterns
