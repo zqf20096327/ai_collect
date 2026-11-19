@@ -4,8 +4,8 @@
 
 [![Forge Neo](https://img.shields.io/badge/Forge-Neo-blue)](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo)
 [![Default index](https://img.shields.io/badge/Forge_Neo-default_index-success)](https://github.com/Haoming02/sd-webui-forge-classic/commit/e67193d9)
-[![Entries](https://img.shields.io/badge/Entries-419-brightgreen)](index.json)
-[![Forge Neo tagged](https://img.shields.io/badge/Forge_Neo_tagged-100-informational)](index.json)
+[![Entries](https://img.shields.io/badge/Entries-428-brightgreen)](index.json)
+[![Forge Neo tagged](https://img.shields.io/badge/Forge_Neo_tagged-110-informational)](index.json)
 
 > **The default extension index of [Stable Diffusion WebUI Forge - Neo](https://github.com/Haoming02/sd-webui-forge-classic/tree/neo)**
 
@@ -78,6 +78,8 @@ Made an extension that runs on Forge Neo, or found one missing? [Open an issue](
 | [Yapping](https://github.com/Haoming02/sd-webui-yapping) | Haoming02 |
 | [Prompt Vault](https://github.com/sca-285/sd-webui-prompt-vault) | sca-285 |
 | [Prompt Effect Forge Neo](https://github.com/ukr8b3g-cmyk/Prompt-Effect-Forge-Neo) | ukr8b3g-cmyk |
+| [TagComplete Neo Multi-CSV](https://github.com/ukr8b3g-cmyk/TagComplete-Neo-Multi-CSV) | ukr8b3g-cmyk |
+| [Background Prompter](https://github.com/ukr8b3g-cmyk/Background-Prompter) | ukr8b3g-cmyk |
 | [Mistral Prompt](https://github.com/abzaloff/mistral_prompt_extension) | abzaloff |
 | [Small Translate](https://github.com/abzaloff/small-translate) | abzaloff |
 | [Tagger Prompt](https://github.com/abzaloff/tagger_prompt) | abzaloff |
@@ -165,6 +167,7 @@ Made an extension that runs on Forge Neo, or found one missing? [Open an issue](
 | --- | --- |
 | [State Manager Neo](https://github.com/eduardoabreu81/sd-webui-state-manager-neo) | eduardoabreu81 |
 | [Model Profiles](https://github.com/eduardoabreu81/sd-model-profiles-neo) | eduardoabreu81 |
+| [Resolution Plus](https://github.com/eduardoabreu81/sd-resolution-plus-neo) | eduardoabreu81 |
 | [Split Extra Networks](https://github.com/BulbulLeung/forge-split-extra-networks) | BulbulLeung |
 | [Generation Layout](https://github.com/BulbulLeung/sd-generation-layout) | BulbulLeung |
 | [Folder Switcher](https://github.com/diamfang/sd-webui-folder-switcher) | diamfang |
@@ -179,6 +182,12 @@ Made an extension that runs on Forge Neo, or found one missing? [Open an issue](
 | [Florence-2 (Neo)](https://github.com/AMGarkin/sd-webui-florence-2-neo) | AMGarkin |
 | [Aspect Ratio Helper (Neo)](https://github.com/abzaloff/forge-neo-aspect-ratio-helper) | abzaloff |
 | [VRAM/RAM Cleaner](https://github.com/abzaloff/forge-neo-vram-ram-cleaner) | abzaloff |
+| [Forge System Monitor](https://github.com/ukr8b3g-cmyk/Forge-System-Monitor) | ukr8b3g-cmyk |
+| [Master Presets](https://github.com/txt2bear/master-presets-forge-neo) | txt2bear |
+| [Forge Neo Resolution Presets](https://github.com/ukr8b3g-cmyk/Forge-Neo-Resolution-Presets) | ukr8b3g-cmyk |
+| [Style Order Manager](https://github.com/ukr8b3g-cmyk/Style-Order-Manager) | ukr8b3g-cmyk |
+| [Forge Neo Auto VRAM Purge](https://github.com/ukr8b3g-cmyk/sd-webui-forge-neo-auto-vram-purge) | ukr8b3g-cmyk |
+| [Speech Bubble Comic Editor](https://github.com/ukr8b3g-cmyk/Speech-Bubble-Comic-Editor-for-Forge-Neo) | ukr8b3g-cmyk |
 
 ### Model engines (models not native to Forge Neo yet)
 
@@ -193,7 +202,7 @@ Made an extension that runs on Forge Neo, or found one missing? [Open an issue](
 
 ### Also tagged 🟢 (already in the classic index)
 
-[LoRA Block Weight](https://github.com/hako-mikan/sd-webui-lora-block-weight), [NegPiP](https://github.com/hako-mikan/sd-webui-negpip), [Regional Prompter](https://github.com/hako-mikan/sd-webui-regional-prompter), [SuperMerger](https://github.com/hako-mikan/sd-webui-supermerger), [LoRA Control](https://github.com/cheald/sd-webui-loractl), [Detail Daemon](https://github.com/muerrilla/sd-webui-detail-daemon), [SD Hub](https://github.com/gutris1/sd-hub), [CivBrowser](https://github.com/SignalFlagZ/sd-webui-civbrowser), [Prompt Format](https://github.com/Haoming02/sd-webui-prompt-format), [Vectorscope CC](https://github.com/Haoming02/sd-webui-vectorscope-cc), [img2img-hires-fix](https://github.com/Amadeus-AI/img2img-hires-fix), [PNGINFO Beautify](https://github.com/bluelovers/sd-webui-pnginfo-beautify) and [Test my prompt!](https://github.com/Extraltodeus/test_my_prompt)
+[LoRA Block Weight](https://github.com/hako-mikan/sd-webui-lora-block-weight), [NegPiP](https://github.com/hako-mikan/sd-webui-negpip), [Regional Prompter](https://github.com/hako-mikan/sd-webui-regional-prompter), [SuperMerger](https://github.com/hako-mikan/sd-webui-supermerger), [LoRA Control](https://github.com/cheald/sd-webui-loractl), [Detail Daemon](https://github.com/muerrilla/sd-webui-detail-daemon), [SD Hub](https://github.com/gutris1/sd-hub), [CivBrowser](https://github.com/SignalFlagZ/sd-webui-civbrowser), [Prompt Format](https://github.com/Haoming02/sd-webui-prompt-format), [Vectorscope CC](https://github.com/Haoming02/sd-webui-vectorscope-cc), [img2img-hires-fix](https://github.com/Amadeus-AI/img2img-hires-fix), [PNGINFO Beautify](https://github.com/bluelovers/sd-webui-pnginfo-beautify), [Ultimate SD Upscale](https://github.com/Coyote-A/ultimate-upscale-for-automatic1111) and [Test my prompt!](https://github.com/Extraltodeus/test_my_prompt)
 
 ## Updates
 

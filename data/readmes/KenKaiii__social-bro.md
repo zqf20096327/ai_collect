@@ -4,8 +4,7 @@ Search YouTube, TikTok & Instagram from one place. Find content, grab transcript
 
 > [!TIP]
 > **Want to build your own apps with AI?**
-> - **Free community:** setup guides, a 7-day build challenge and 20+ projects: [skool.com/raid](https://www.skool.com/raid)
-> - **Raid+:** make money with AI, a sellable app in 30 days, live every Thursday: [skool.com/kenkai](https://www.skool.com/kenkai)
+> - **Raid+:** land your first paying client in 90 days or your money back, plus private tools you won't find anywhere else: [skool.com/kenkai](https://www.skool.com/kenkai)
 > - **Want it built for you?** [work.kenkais.com](https://work.kenkais.com/)
 
 ## What It Does
@@ -52,9 +51,9 @@ Next.js 16 • React 19 • PostgreSQL • Prisma • TailwindCSS • NextAuth
 
 ## Author
 
-Built by [Ken](https://github.com/KenKaiii) — subscribe to [YouTube](https://youtube.com/@kenkaidoesai) and join the [free Skool community](https://www.skool.com/raid) for a 7-day build challenge and 20+ step-by-step projects.
+Built by [Ken](https://github.com/KenKaiii) — subscribe to [YouTube](https://youtube.com/@kenkaidoesai).
 
-Want to make money with AI? [Raid+](https://www.skool.com/kenkai) gets you a sellable app in 30 days, live every Thursday. Want it built for you? [work.kenkais.com](https://work.kenkais.com/).
+Want to make money with AI? [Raid+](https://www.skool.com/kenkai): land your first paying client in 90 days or your money back, plus private tools you won't find anywhere else. Want it built for you? [work.kenkais.com](https://work.kenkais.com/).
 
 ## License
 

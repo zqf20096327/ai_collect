@@ -29,7 +29,7 @@ https://deprecations.info/v1/feed.json
 We check these pages daily:
 - [OpenAI Deprecations](https://platform.openai.com/docs/deprecations)
 - [Anthropic Model Deprecations](https://docs.anthropic.com/en/docs/about-claude/model-deprecations)
-- [Google AI/Gemini Deprecations](https://ai.google.dev/gemini-api/docs/deprecations)
+- [Google AI/Gemini Deprecations](https://aistudio.google.com/docs/deprecations)
 - [Google Vertex AI Deprecations](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/deprecations/partner-models)
 - [AWS Bedrock Model Lifecycle](https://docs.aws.amazon.com/bedrock/latest/userguide/model-lifecycle.html)
 - [Cohere Deprecations](https://docs.cohere.com/docs/deprecations)
@@ -79,6 +79,19 @@ Use [Blogtrottr](https://blogtrottr.com) or [FeedRabbit](https://feedrabbit.com)
 ## Build Your Own Automations
 Want to do more than just read notifications? Here are some examples to get you
 started with automated workflows.
+
+### Scan Your Codebase
+
+Find out *which* models need action before they
+disappear with [llm-sunset](https://github.com/Ashveil1/llm-sunset), a
+zero-dependency CLI and GitHub Action built on this feed:
+
+```bash
+pipx run llm-sunset
+```
+
+Will scan your repo for model IDs and print the shutdown date, the days left and
+the recommended replacement. Can fail CI when a model retires within `N` days.
 
 ### Create GitHub Issue on Deprecation
 Automatically create a GitHub issue when a model you use is being deprecated.

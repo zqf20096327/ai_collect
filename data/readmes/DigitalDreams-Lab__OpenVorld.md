@@ -54,9 +54,9 @@ Open HTML reports, images, Markdown, tables, and other supported files directly 
 
 ## Bring your own brain. Keep your own files.
 
-Use installed agent tools such as **Claude Code** or **Codex**, or connect an **OpenAI-compatible API** such as OpenRouter, OpenAI, Ollama, or LM Studio. Each crew member can use a different provider. A member with no brain uses a short scripted reply, so you can explore before connecting a model.
+Use installed agent tools such as **Claude Code** or **Codex**, or connect an **OpenAI-compatible API** such as OpenRouter, OpenAI, Ollama, or LM Studio. Using another agent? Press **Copy integration prompt** and paste it into your agent: it adds itself. Each crew member can use a different provider. A member with no brain uses a short scripted reply, so you can explore before connecting a model.
 
-Your vorld has one shared project folder and private workbenches for each member. Each member also has a private house and vault for credentials and saved sign-ins. Browser work uses a separate member profile and requires Chrome or Edge.
+Your vorld has one shared project folder and private workbenches for each member. Each member also has a private house and vault for credentials and saved sign-ins, and a memory that carries what matters from one chat to the next. Browser work uses a separate member profile and requires Chrome or Edge.
 
 Worlds and history live locally as YAML, JSON, and JSONL. There is no OpenVorld account or hosted backend. Connected model providers and websites receive the requests you choose to send them.
 

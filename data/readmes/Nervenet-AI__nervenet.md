@@ -36,6 +36,7 @@ Nervenet brings tools, files and subagents together to code, research and turn y
 | **Messaging channels** | Message your agent from WhatsApp or Telegram and approve steps from your phone. |
 | **Connectors, skills & memory** | Extend what Nervenet can reach, teach it repeatable workflows, and let it remember context. |
 | **Your keys stay yours** | Bring your own API keys and choose where your work runs. |
+| **Token Saver** | Optional: long tool results reach the model in a compact form that leaves nothing out, so the same work uses fewer tokens. |
 
 ## How it works
 

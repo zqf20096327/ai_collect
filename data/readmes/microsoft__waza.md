@@ -1086,7 +1086,7 @@ waza replay ./snapshots/a.json --bisect ./snapshots/b.json --json
 | `--mode <mode>` | Replay mode: `model-replay` (default, offline consistency check) or `live` (unsupported; exits `2`) |
 | `--bisect <file>` | Path to second snapshot to bisect against the primary |
 | `--json` | Emit machine-readable JSON instead of human summary |
-| `--strict` | Re-check final status and grader outcome consistency (default true) |
+| `--strict` | Re-check final status against explicitly recorded grader and checkpoint outcomes (default true) |
 
 Exit codes: `0` match, `1` divergence, `2` snapshot load/parse/I/O, JSON output, unsupported live mode, or unknown mode error.
 
@@ -1626,6 +1626,18 @@ task/conversation/tool/output evidence in a fresh isolated session, without acto
 continuation or live workspace access. Add `files: [report.json]` inside that
 object for explicit selected-file evidence. Required evidence fails closed;
 checkpoint, pairwise, and continued-session evidence judging are unsupported.
+Pairwise prompt graders require an in-process `waza run --baseline` comparison;
+saved-result `waza grade` rejects them rather than substituting independent grading.
+All selected task IDs must be unique for pairwise comparisons. Only the final
+baseline attempt supplies evidence; an execution failure cannot reuse earlier output.
+Because the baseline pass cannot apply relative graders, pairwise judgments decide
+baseline impact and the exit code: each judged task contributes its preference
+`(skill_wins - baseline_wins) / judgments`, other tasks their pass-rate delta, and
+the run exits `1` unless the mean is positive. Each task records the counts in
+`skill_impact.pairwise_summary`.
+Every judge pass must return a valid verdict, pairwise grader names must be
+unique on the task, and position-inconsistent comparisons are excluded from
+ties and the preference denominator.
 With fix #898 (not in published v0.41.0),
 `evidence_context.non_secret_literals` can preserve declared exact whole-token
 Git SHAs, synthetic contacts and tracker identifiers in evaluator-controlled
@@ -1976,16 +1988,4 @@ older executables reject it before running. Results and tasks remain `1.x`,
 so existing result readers and the dashboard keep working. Optional `skill:`
 retains existing skill/custom-agent context and discovery precedence. Without
 a target, enabled eval skill directories or explicit task skill directories,
-scenarios disable ambient skill loading. Named disabled entries filter eval
-directories; explicit task directories retain their existing opt-in precedence.
-An explicit empty task `skill_directories: []` disables discovery for that task;
-`--no-skills` overrides every task. Legacy suites keep their existing defaults.
-Legacy JSON-schema authoring requires `skill` when `scenario` is absent.
-The historical native loader/model validation used by `waza run` is not full
-JSON-schema validation: legacy default/`1.0`-`1.4` data can still load without
-a target and retain existing discovery behavior. That compatibility is not
-a recommended authoring workflow; use a named legacy target or scenario `2.0`.
-Schema `skill` uses a length-only constraint, so whitespace passes that check
-but is not a meaningful target. JSON-RPC `eval.validate` reports schema errors;
-separate preflight checks are not a universal runtime target-enforcement gate.
-Scenario `2.0` requires a nonbl
+scenarios disable ambient skill loading. Named disabled entries f

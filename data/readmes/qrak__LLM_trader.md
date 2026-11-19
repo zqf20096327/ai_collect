@@ -1,7 +1,7 @@
 # Semantic Signal — an LLM trading agent that reads charts and keeps memory of its closed trades
 
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=white)](https://www.python.org)
-[![Tests](https://img.shields.io/badge/tests-2%2C804-brightgreen)](tests)
+[![Tests](https://img.shields.io/badge/tests-2%2C912-brightgreen)](tests)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE.md)
 [![tests](https://github.com/qrak/LLM_trader/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/qrak/LLM_trader/actions/workflows/tests.yml)
 [![CodeQL](https://github.com/qrak/LLM_trader/actions/workflows/codeql.yml/badge.svg?branch=master)](https://github.com/qrak/LLM_trader/actions/workflows/codeql.yml)
@@ -41,8 +41,8 @@ sets the candle. The public deployment runs BTC/USDC on 4h.
 | metric | bot | buy & hold |
 |---|---|---|
 | Return | **+0.50%** (+$50.50) | **-20.20%** |
-| Closed trades | 20 (17 counted, 2 excluded for fill divergence) | — |
-| Win rate | 40.0% (8W / 9L) | — |
+| Closed trades | 20 (17 counted, 3 flat) + 2 excluded for fill divergence | — |
+| Win rate | 40.0% (8W / 9L, 3 flat) | — |
 | Profit factor | 1.93 | — |
 | Sharpe / Sortino | 0.28 / 0.66 | — |
 | Max drawdown | -0.25% | — |
@@ -65,7 +65,7 @@ Method, per-trade table and the reproduction command:
 
 ## What this is not
 
-- **Not profitable.** Fourteen counted trades are not a track record, and the paper book records zero fees.
+- **Not profitable.** Seventeen counted trades are not a track record, and the paper book records zero fees.
 - **Not live trading.** The executor runs against an exchange testnet; no real funds are involved anywhere.
 - **Not a black box.** The prompt, the retrieved memories and the verdict behind every decision are on the dashboard.
 
@@ -98,10 +98,10 @@ secret, validates config changes with the loader, and needs a restart to apply. 
 | Claim checks | Model-reported trend strength is compared with the computed ADX and overwritten when it disagrees. Pattern quality is scored deterministically. The EV rule in the prompt is computed from the bot's own closed trades. |
 | Risk pipeline | Guard chain (symbol and position cap), a risk-reward gate (`min_rr_entry` is 0.0, so it is inert until a floor is configured or learned), and SL/TP sized from ATR. With the executor live, the stop is checked against the real market; the exchange leg is a backstop. |
 | News and fundamentals | RSS feeds with full-article enrichment, CoinGecko, DeFiLlama and Alternative.me, relevance-scored locally and capped by the prompt budget. |
-| Providers | `provider = all` builds a fallback chain (text: Google → DeepSeek → OpenCode Go → LM Studio → OpenRouter → BlockRun; charts skip LM Studio). A failed provider hands the cycle to the next one. This deployment runs `provider = opencode` (`deepseek-v4.1-flash` on the OpenCode Go endpoint). |
+| Providers | `provider = all` builds a fallback chain (text: Google → DeepSeek → OpenCode Go → Command Code → LM Studio → OpenRouter → BlockRun; charts skip LM Studio). A failed provider hands the cycle to the next one. This deployment runs `provider = commandcode` (`deepseek/deepseek-v4.1-flash` on the Command Code Provider API). |
 | Settings desk | `http://localhost:8000/admin/` edits `config.ini` and `keys.env` from a form, shows the docs, and never returns a stored secret. Loopback only; config changes are validated with the loader and every save needs a restart. |
 | MCP server | A read-only MCP server over the ledger: `recent` rows and `stats` counts per action, both opened with `mode=ro` and `PRAGMA query_only`, no write or order tool by design. It is an optional dependency and the bot never imports it. Details: [docs/MCP.md](docs/MCP.md). |
-| Tests | 2,804 collected, all runnable. They cover malformed model output, async races, rate-limit backoff, the feedback loop and spot/futures wiring, using temporary SQLite and ChromaDB. |
+| Tests | 2,912 collected, all runnable. They cover malformed model output, async races, rate-limit backoff, the feedback loop and spot/futures wiring, using temporary SQLite and ChromaDB. |
 
 Long version, with the file that implements each of them: [docs/FEATURES.md](docs/FEATURES.md).
 
@@ -140,7 +140,7 @@ flowchart TB
 ## Testing
 
 ```bash
-python -m pytest tests -q              # 2,804 tests, ~132 s
+python -m pytest tests -q              # 2,912 tests, ~126 s
 ruff check src scripts start.py        # clean
 pyright src start.py                   # 0 errors
 python scripts/check_dead_symbols.py   # 0 dead, 0 test-only

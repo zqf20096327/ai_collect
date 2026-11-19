@@ -30,7 +30,7 @@ Pi WeChat Session Hub 是一个 Pi 扩展, 用微信管理本机多个 Pi 会话
 
 - 微信远程下发任务, 由本机 Pi 执行, 结果回到微信
 - 会话常驻: Pi TUI 全部关闭后仍可在微信继续对话
-- 前后台自动交接: TUI 打开即接管, TUI 关闭即交回后台, 始终只有一个 writer
+- 前后台与多 runtime 接入: Pi 自己管理会话分支; Hub 只选择微信消息的目标 Pi runtime
 - 多项目多会话: 每个项目可开多个会话, 稳定数字索引 + 会话名即可切换
 - 恢复上下文: `/last` 只读回顾最近一轮对话, 不调模型不耗 token
 - 严格安全边界: 授权根目录白名单, 未知命令 fail-closed, 审计不记录正文与凭证
@@ -57,7 +57,7 @@ CI 在 `ubuntu-latest` 上跑 Pi 三版本兼容矩阵, 在 `windows-latest` 上
 - **可见 UI 模式会被阻塞**: 微信端 `/new --mode ui`、`/resume` 到 UI 会话、`/wx autostart on` 都会返回明确原因并拒绝执行, 不会静默降级或产生半启动状态
 - `/wx status` 与微信端 `/status` 会单独显示 `可见 UI 模式: 不可用 (原因)`, 便于提前判断
 
-阻塞点位于 UI worker 启动前的平台与 `wt.exe` 能力校验, 因此不会留下孤儿窗口或双 writer. 失败结果不缓存, 安装 Windows Terminal 后无需重启 daemon 即可重试.
+阻塞点位于 UI worker 启动前的平台与 `wt.exe` 能力校验, 因此不会留下孤儿窗口或未完成的 UI worker. 失败结果不缓存, 安装 Windows Terminal 后无需重启 daemon 即可重试.
 
 ## 安装
 
@@ -138,23 +138,22 @@ Node.js 需满足 `package.json` 中的最低版本. 首次使用顺序:
 ## 架构与会话行为
 
 ```text
-任意 Pi TUI
-  /wx start|status|stop|restart
-          │ 本机 HMAC IPC
-          ▼
-独立 Hub daemon
-  ├─ 微信 iLink 长轮询、鉴权、route、持久队列
-  └─ 每个会话唯一 writer
-       ├─ Pi TUI 正在打开该会话: 消息进入前台并回显
-       └─ 没有活跃 TUI owner: Pi RPC 后台处理
+Pi TUI A ─┐
+Pi TUI B ─┼─ Pi 原生 session JSONL 树 (Pi 管理会话分支)
+Pi RPC  ──┘
+       ▲
+       │ UI IPC / RPC
+Hub daemon / Gateway <── iLink ── 微信
+       └─ route(sessionId, instanceId) -> 一个选定 runtime
 ```
 
 - `/wx start` 启动共享 daemon, 不绑定当前 Pi session. 关闭所有 Pi TUI 后, daemon 仍可通过微信收发消息.
-- 每条微信 route 指向同一 Pi session. 在 Pi TUI 中 `/resume` 恢复 Hub 管理的会话时, 扩展通过 IPC 将 owner 从后台 RPC 安全切换到前台 TUI; 同一会话的微信消息和回复会在该 TUI 中显示. TUI 关闭后, route 返回后台 RPC.
+- 每条微信 route 指向一个 Pi session 和一个具体 runtime, 不向打开同一 session 的所有 Pi 进程广播. 本机 TUI 接入目标 session 后, route 可切到该 TUI; TUI 关闭后, route 优先交给同 session 的其他已接入 runtime, 否则交给后台 RPC worker.
+- Pi 原生 `/resume`、`/tree`、`/fork`、`/clone` 不由 Hub 拦截. `/tree` 留在同一个 session, 微信 route 不变; `/fork` 和 `/clone` 会创建新 session, 若操作来自当前 route 所连接的 TUI, route 随该 TUI 转到新 session.
 - 新建微信会话默认在后台, 不自动打开 Windows Terminal tab. route、session JSONL 和稳定会话索引保留.
-- 同一 session 同一时刻只允许一个 runtime writer. Pi TUI session 的 cwd 位于 `allowedProjectRoots` 内时会自动登记并纳入 Hub; 授权根外的会话仍可在本机使用, 但不接入微信管理.
+- Pi 自己管理同一 session 的多个运行时和分支; Hub 不阻止 Pi 本机切换或分支. session cwd 位于 `allowedProjectRoots` 内时会自动登记并纳入 Hub; 授权根外的会话仍可在本机使用, 但不接入微信管理.
 - 当前 Pi TUI 已成功接入 Hub 时, footer 的扩展状态行会在 MCP 状态后显示 `🟢 微信: 已接入`; Gateway 重启或连接恢复期间显示 `🟡 微信: 连接中`, 确认未接入时显示 `⚪ 未接入`.
-- Gateway 进程在线不代表当前 TUI 已接入. `/wx status` 会单独展示当前终端的接入状态、实例 ID、上次接入时间、重连失败次数和断开原因, 便于区分是全局服务问题还是本终端连接问题. 会话切换导致 owner 释放后, bridge 会自动重建 registration 并恢复接入, 不需要重启 TUI.
+- Gateway 进程在线不代表当前 TUI 已接入. `/wx status` 会单独展示当前终端的接入状态、实例 ID、上次接入时间、重连失败次数和断开原因. Pi 本机切换会话后, bridge 会自动重新登记并恢复接入, 不需要重启 TUI.
 
 ## 本机命令
 
@@ -190,6 +189,7 @@ Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使�
 /last [会话索引|名称]
 /stop [会话索引|名称]
 /retry <message-id> --confirm
+/renew
 /watch [--all]
 /status
 /projects
@@ -204,6 +204,7 @@ Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使�
 | `/last` | **否** | 只读回顾目标会话最近一轮对话 |
 | `/stop` | 是 | 停止目标会话的 Pi worker |
 | `/retry` | 是 | 重新执行指定消息, 可能产生副作用 |
+| `/renew` | **否** | 续命通知通道并补发积压通知, 不触发会话与模型 |
 | `/watch` | 否 | 默认总览「打开着」的会话; `--all` 查看全部历史会话 |
 | `/status` | 否 | 展示 Hub、当前会话与 UI 模式可用性 |
 | `/projects` | 否 | 列出已登记项目 |
@@ -216,6 +217,40 @@ Windows 自动启动默认关闭; 开启后在当前用户登录 Windows 时使�
 之所以按「是否还有 worker 实例」而非「会话状态」筛选, 是因为大量历史会话长期处于空闲状态, 若按状态展示会让总览被上百个早已关闭的会话淹没. 失败类型直接从 Pi transcript 的 `stopReason` 与 `errorMessage` 读取, 可识别周/5 小时/月额度、TPM 限流、网络错误、鉴权错误与上游合规拦截; 如果上游错误提供重置时间, 会原样显示.
 
 只有真正需要用户处理的失败才算异常: 用户主动中断(`aborted`)归为「已中断」, 默认与空闲会话一起收起; 超过 24 小时的失败视为历史记录, 不再占据异常列表. 这样早已结束的会话不会永久显示为错误. 当前 worker 的 `running` 状态可直接读取, 但 Hub 没有独立的 turn 定时心跳, 因此不臆测“卡住”状态. `/status` 额外输出 `可见 UI 模式`; 平台不支持或缺少 `wt.exe` 时显示 `不可用` 及具体原因.
+
+## 通知入口: 从其他程序推送微信通知
+
+其他 Pi 会话、脚本、CI 或任意程序可以把通知直接发到你的微信, **不经过会话队列、不触发模型、不耗 token**。
+
+**Pi 会话内 (推荐)**: 安装本包后, 每个会话自动获得 `wx_notify` 工具, agent 识别到"微信通知我"等意图时会直接调用, 无需任何配置:
+
+```text
+你: "构建完微信通知我"
+agent: (调用 wx_notify 工具) → 你的微信收到通知
+```
+
+**任意程序/脚本**: 用零依赖 CLI:
+
+```bash
+node "<包目录>/scripts/wx-notify.mjs" "构建完成" "beacon 项目编译通过, 耗时 2 分钟"
+node "<包目录>/scripts/wx-notify.mjs" "CI 失败" "main 分支测试挂了" --source github-actions
+```
+
+成功时退出码 0; Hub 未启动、通道过期或被限流时返回非 0 并说明原因。
+
+工作原理:
+
+- CLI 通过本机 named pipe (Windows) / unix socket 连接 Hub daemon, 用 `notify-shared.key` 的 HMAC proof 鉴权, 不监听 TCP。
+- Hub 复用你最近一条微信消息携带的 `context_token` 直接发送。
+- 每条通知末尾都带「请勿直接回复」提示; 通知与会话完全隔离。
+
+**24 小时窗口限制 (微信平台规则)**: 你超过 24 小时没和 Bot 聊过天, Bot 就无法主动发消息。Hub 的应对:
+
+1. 距过期不足 4 小时时, Bot 会主动提醒你回复 `/renew` 续命 (每个周期最多一次)。
+2. 过期后的通知默认**积压**在本地 (`notification.overflowPolicy: "queue"`), 你续命后自动补发; 超过 10 条合并为摘要, 单轮最多补 10 条, 避免触发微信风控。
+3. 改为 `"drop"` 则过期通知直接拒绝, CLI 返回明确错误, 由调用方自行处理。
+
+`/renew` 在微信端零副作用: 不进队列、不触发 Pi turn、不耗 token, 只续命并补发积压。
 
 ## 在微信端找回上下文
 
@@ -319,7 +354,7 @@ AI：
 
 无论走哪条路径, `/last` 都不改变 route 绑定、不写入 transcript、不调用模型、不产生 durable queue 项, 因此无副作用且无额外 token 消耗. 尾部首行可能是半行, 总是丢弃以避免解析到截断的 JSON. 看完后可直接发送新指令, 或用 `/resume <索引>` 切换过去继续工作.
 
-Pi TUI 的内置 `/resume` 仍使用 Pi 自己的会话选择器. 如果目标是 Hub 会话, extension 会安全完成前后台 owner 交接. 未登记 session 不再因缺少 Hub 记录而阻止 Pi 原生恢复; 恢复后仅当 cwd 位于授权根内才自动接入 Hub.
+Pi TUI 的内置 `/resume` 始终由 Pi 自己处理, Hub extension 不再注册取消切换的钩子. 若恢复的 session 位于授权根内, bridge 会在切换后登记该 Pi runtime, 并按 route 规则连接微信; 未登记或授权范围外的 session 仍可由 Pi 本机恢复, 只是不会接入 Hub.
 
 ## 配置
 
@@ -339,9 +374,14 @@ Pi TUI 的内置 `/resume` 仍使用 Pi 自己的会话选择器. 如果目标�
   "projects": {},
   "wechat": {
     "authorizedUserId": ""
+  },
+  "notification": {
+    "overflowPolicy": "queue"
   }
 }
 ```
+
+`notification.overflowPolicy` 控制通知通道 token 过期后的处理策略: `queue` 为积压待续命后补发 (默认), `drop` 为直接拒绝并返回错误。详见「通知入口」章节。
 
 缺省字段会使用安全默认值. 历史配置中的 `defaultMode` 字段为兼容旧配置保留, 不决定微信端 `/new` 的运行模式; `/new` 默认创建后台会话, 也可通过 `--mode ui` 显式创建可见 UI 会话. `wechat.credentialFile` 固定指向 manager 数据目录中的 `credentials.json`; reader 拒绝目录外路径、符号链接、未知 schema 或授权用户不匹配. QR 凭证只在文件不存在时 create-only 写入, 不读取或覆盖其他应用数据.
 
@@ -353,6 +393,7 @@ Windows 首次创建空 manager 目录时会关闭继承 ACL, 仅授权当前用
 - Gateway 通过 `manager.lock` 保证单实例. control IPC 使用当前 lease token 完成 HMAC challenge, UI attach 使用 manager 目录 ACL 保护的稳定随机 key; 在线状态由活跃 IPC 校验, 不依赖过期 `gateway.json`.
 - route 绑定、会话索引和 worker owner 持久保存; session 恢复前重新验证项目路径是否仍位于 `allowedProjectRoots`.
 - 审计事件不记录消息正文、模型输出或凭证. 队列只在未完成期间保存原消息及 `replyContext`; 完成后压缩移除 payload, 并保留最近 1000 个 messageId 的 SHA-256 摘要用于去重.
+- 通知入口使用 manager 目录 ACL 保护的 `notify-shared.key` HMAC 鉴权, 不监听 TCP; 通知积压仅存内存, 不落盘; 详见 ADR 0002.
 - iLink `sendtyping` 仅提供 best-effort "正在输入"提示. Pi turn settled 后 Hub 发送一条完整最终回复, 不做 token 级微信流式回传.
 - 关闭服务后不会自动登录或生成 QR. 自动启动仅由 `autoStartOnWindowsLogon` 和当前用户登录启动项控制.
 - 可见 UI 模式在执行前校验平台和 `wt.exe`, 校验不通过即阻塞, 不产生半启动进程.

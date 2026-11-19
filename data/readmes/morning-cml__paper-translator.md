@@ -15,6 +15,8 @@
 
 ## 下载使用（普通用户）
 
+本机从源码打包后，可直接双击 `dist/windows/论文翻译工具.exe`。单文件版可以单独复制，使用说明与校验清单见[成品目录](dist/README.md)。
+
 支持 **Windows** 与 **macOS**，都分「完整版 full」「精简版 lite」两档：
 
 | | 完整版 full | 精简版 lite |
@@ -37,13 +39,13 @@
 ### macOS（Apple 芯片）
 
 到 [**Releases**](https://github.com/morning-cml/paper-translator/releases/latest)
-下载文件名带 **`-mac-arm64`** 的 zip，解压出「论文翻译工具」文件夹，里面是
-`论文翻译工具.app` 与说明文档。与 Windows 版**同源构建、同一次 CI 同步发布**，
+下载文件名带 **`-mac-arm64`** 的 zip，解压后打开其中的
+`论文翻译工具.app`。应用与说明文档同目录，与 Windows 版**同源构建、同一次 CI 同步发布**，
 **不需要装 Python**。
 
 > **⚠️ 第一次打开一定会被系统拦下，这是正常的**——本工具没有购买苹果的开发者
 > 认证（每年几百块），不是软件有问题。按
-> [《Mac 使用说明》](程序/docs/Mac使用说明.md) 放行**一次**即可（约 2 分钟），
+> [《Mac 使用说明》](app/docs/Mac使用说明.md) 放行**一次**即可（约 2 分钟），
 > 之后就能像普通软件一样直接双击。
 >
 > 你会看到「**无法验证开发者**」或「**已损坏，无法打开**」两种提示之一，说明里
@@ -100,10 +102,10 @@
 
 ```bash
 git clone https://github.com/morning-cml/paper-translator.git
-cd paper-translator/程序
+cd paper-translator/app
 py -m pip install -r requirements.txt
 py webui.py                                # 启动（原生应用窗口）
-py -m pytest -q                            # 测试套件（381 项）
+py -m pytest tests -q                      # 回归测试
 py translate_cli.py "论文.pdf" --mock      # 离线跑通版式，不花 token
 ```
 
@@ -112,10 +114,20 @@ py translate_cli.py "论文.pdf" --mock      # 离线跑通版式，不花 token
 ```bash
 py build.py --profile full --zip           # 完整版
 py build.py --profile lite --zip           # 精简版
+py build.py --onefile                      # Windows 单文件完整版，放到 dist/windows
 py build.py --list                         # 查看已构建版本
 ```
 
-**架构与模块说明 → [`程序/README.md`](程序/README.md)**
+**架构与模块说明 → [`app/README.md`](app/README.md)**
+
+### 本地工作区
+
+`dist/` 存放可直接运行的程序，`app/` 存放源码、开发文档和构建工具，`documents/` 存放本地资料及翻译结果。
+
+源码工作区的论文放进 `documents/originals/`。默认输出会写到 `documents/translations/`，并保留相同的子目录结构。工作区外的文件默认仍在原文件同目录生成译文，也可在界面或 CLI 指定输出位置。见[本地文档说明](documents/README.md)。
+
+源码版与工作区内的单文件 EXE 共用 `app/data/` 中的配置、缓存和可选版面模型。用户文档、本地数据和生成物由 Git 忽略。
+从旧目录结构更新时，Git 不会移动本地文件。旧位置的配置和缓存仍可读取，文档可移入 `documents/`。
 
 ---
 
@@ -123,13 +135,13 @@ py build.py --list                         # 查看已构建版本
 
 | 文档 | 读者 | 内容 |
 |---|---|---|
-| [`程序/README.md`](程序/README.md) | 开发者 | 架构、模块表、打包、测试、工程约定 |
-| [`程序/docs/项目总览.md`](程序/docs/项目总览.md) | 全体 | 现状快照 + 遗留问题 + 未来任务排序 |
-| [`程序/docs/Mac使用说明.md`](程序/docs/Mac使用说明.md) | Mac 用户 | 在 Mac 上第一次打开 `.app` 的放行步骤 |
+| [`app/README.md`](app/README.md) | 开发者 | 架构、模块表、打包、测试、工程约定 |
+| [`app/docs/项目总览.md`](app/docs/项目总览.md) | 全体 | 早期项目快照与文档索引 |
+| [`app/docs/Mac使用说明.md`](app/docs/Mac使用说明.md) | Mac 用户 | 在 Mac 上第一次打开 `.app` 的放行步骤 |
 | [`CHANGELOG.md`](CHANGELOG.md) | 全体 | 每个版本相比上一版新增了什么 |
-| [`程序/docs/后续规划.md`](程序/docs/后续规划.md) | 决策者 | 六大主题逐项标价值/工作量/风险 |
-| [`程序/docs/交接说明_HANDOFF.md`](程序/docs/交接说明_HANDOFF.md) | 维护者 | 完整开发史与踩坑记录 |
-| [`程序/docs/第三方许可.md`](程序/docs/第三方许可.md) | 合规 | 依赖许可清单 |
+| [`app/docs/后续规划.md`](app/docs/后续规划.md) | 决策者 | 六大主题逐项标价值/工作量/风险 |
+| [`app/docs/交接说明_HANDOFF.md`](app/docs/交接说明_HANDOFF.md) | 维护者 | 完整开发史与踩坑记录 |
+| [`app/docs/第三方许可.md`](app/docs/第三方许可.md) | 合规 | 依赖许可清单 |
 
 ---
 
@@ -140,7 +152,7 @@ py build.py --list                         # 查看已构建版本
 
 之所以是 AGPL 而非更宽松的许可：核心依赖 PyMuPDF 与 DocLayout-YOLO 本身即
 AGPL，必须兼容。依赖清单与各自许可见
-[`程序/docs/第三方许可.md`](程序/docs/第三方许可.md)，第三方声明见
+[`app/docs/第三方许可.md`](app/docs/第三方许可.md)，第三方声明见
 [`NOTICE.md`](NOTICE.md)。
 
 ---

@@ -170,6 +170,8 @@ A local model works too: choose **Local / OpenAI server** and give the address o
 - In Settings → Text, set **Longest reply, in tokens** to about 3000 and **Recent Messages** to 40. The server keeps room in its context for the longest reply, so a high limit leaves less for the story.
 - Leave the server's memory settings at their defaults first. On an RTX 3080, Ollama's `q8_0` KV cache made Gemma 4 12B about ten times slower.
 
+A command works too, such as a provider's own command-line tool: in **Settings → Text**, choose **Command** as the **Text provider** and type it, such as `claude -p --output-format text`. As it runs a program on your computer, only Settings opened on that computer (at `127.0.0.1` or `localhost`) can set or change it. NovelForge sends it the prompt on its input and reads the reply from its output. Hosted APIs remain the recommended path: with a command, the provider's terms and content rules apply, a subscription's limits can stop play mid-story, each call starts the program again, and Usage counts calls only. The Reader's Guide → Choosing your AI says more.
+
 ### Images: your own ComfyUI
 
 Use **Local (ComfyUI)** if you have a GPU for it. NovelForge draws a lot: the Cover, a portrait for each person, a Scene Image whenever the scene changes, pictures on request, and every redraw. On a paid image API each one costs money, and on your own ComfyUI they are free. Choose FLUX.2 or Qwen Image 2.1 in Simple Mode to keep faces the same from picture to picture, as SD 1.5 and SDXL can't use portraits.

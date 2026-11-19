@@ -18,7 +18,7 @@ For research planning, start with the [20-work comparison and evidence ledger](d
 - [Start Here](#start-here)
 - [Scope](#scope)
 - [Imaging Domains](#imaging-domains)
-  - [Radiology Agents (58)](#radiology-agents-58)
+  - [Radiology Agents (59)](#radiology-agents-59)
   - [Pathology Agents (Whole-Slide Imaging · Digital Pathology) (43)](#pathology-agents-whole-slide-imaging--digital-pathology-43)
   - [Ultrasound Agents (Echocardiography · Robotic Ultrasound) (30)](#ultrasound-agents-echocardiography--robotic-ultrasound-30)
   - [Endoscopy and Surgical Imaging Agents (29)](#endoscopy-and-surgical-imaging-agents-29)
@@ -27,17 +27,17 @@ For research planning, start with the [20-work comparison and evidence ledger](d
   - [3D CT / MRI / Volumetric Imaging Agents (43)](#3d-ct--mri--volumetric-imaging-agents-43)
   - [Segmentation and Annotation Agents (24)](#segmentation-and-annotation-agents-24)
   - [Report Generation Agents (26)](#report-generation-agents-26)
-  - [Medical Vision-Language Model (VLM) Agents (43)](#medical-vision-language-model-vlm-agents-43)
+  - [Medical Vision-Language Model (VLM) Agents (45)](#medical-vision-language-model-vlm-agents-45)
 - [Tool-Using and Multi-Agent Frameworks](#tool-using-and-multi-agent-frameworks)
   - [Clinical Reasoning Agents (79)](#clinical-reasoning-agents-79)
   - [Workflow and Simulation Agents (64)](#workflow-and-simulation-agents-64)
-  - [Agent Skills and Tool Learning (14)](#agent-skills-and-tool-learning-14)
+  - [Agent Skills and Tool Learning (15)](#agent-skills-and-tool-learning-15)
 - [Benchmarks and Evaluation](#benchmarks-and-evaluation)
   - [Benchmark Overview](#benchmark-overview)
-  - [Benchmark Papers (60)](#benchmark-papers-60)
-  - [Safety, Robustness, and Fairness (45)](#safety-robustness-and-fairness-45)
+  - [Benchmark Papers (61)](#benchmark-papers-61)
+  - [Safety, Robustness, and Fairness (46)](#safety-robustness-and-fairness-46)
 - [Toolboxes](#toolboxes)
-- [Surveys and Position Papers (28)](#surveys-and-position-papers-28)
+- [Surveys and Position Papers (29)](#surveys-and-position-papers-29)
 - [Related Awesome Lists](#related-awesome-lists)
 - [Classification Guide](docs/taxonomy.md)
 
@@ -49,10 +49,10 @@ Classify each work along four independent axes: **where it is used**, **what it 
 
 | Browse by | Categories | Entry points |
 |---|---|---|
-| **Application and input** | Radiology, pathology, ultrasound, endoscopy/surgery, ophthalmology; CT/MRI/PET volumes; multimodal inputs | [Imaging domains](#imaging-domains) · [3D imaging](#3d-ct--mri--volumetric-imaging-agents-43) · [Medical VLMs](#medical-vision-language-model-vlm-agents-43) |
+| **Application and input** | Radiology, pathology, ultrasound, endoscopy/surgery, ophthalmology; CT/MRI/PET volumes; multimodal inputs | [Imaging domains](#imaging-domains) · [3D imaging](#3d-ct--mri--volumetric-imaging-agents-43) · [Medical VLMs](#medical-vision-language-model-vlm-agents-45) |
 | **Clinical task** | Acquisition and navigation; diagnosis and reasoning; segmentation and annotation; reporting; treatment planning; workflow and simulation | [Segmentation](#segmentation-and-annotation-agents-24) · [Reporting](#report-generation-agents-26) · [Reasoning](#clinical-reasoning-agents-79) · [Workflows](#workflow-and-simulation-agents-64) |
-| **Agent mechanism** | Tool use, retrieval, multi-agent collaboration, reinforcement learning, human feedback, memory and self-improvement | [Frameworks](#tool-using-and-multi-agent-frameworks) · [Skills](#agent-skills-and-tool-learning-14) · [Mechanism index](docs/themes.md#agent-mechanisms) |
-| **Evaluation and resources** | Task/process evaluation; reliability, safety, fairness and privacy; benchmarks, datasets, tools, foundation models and surveys | [Benchmarks](#benchmarks-and-evaluation) · [Trustworthiness index](docs/themes.md#trustworthiness) · [Datasets](docs/datasets.md) · [Foundation models](docs/foundation-models.md) · [Surveys](#surveys-and-position-papers-28) |
+| **Agent mechanism** | Tool use, retrieval, multi-agent collaboration, reinforcement learning, human feedback, memory and self-improvement | [Frameworks](#tool-using-and-multi-agent-frameworks) · [Skills](#agent-skills-and-tool-learning-15) · [Mechanism index](docs/themes.md#agent-mechanisms) |
+| **Evaluation and resources** | Task/process evaluation; reliability, safety, fairness and privacy; benchmarks, datasets, tools, foundation models and surveys | [Benchmarks](#benchmarks-and-evaluation) · [Trustworthiness index](docs/themes.md#trustworthiness) · [Datasets](docs/datasets.md) · [Foundation models](docs/foundation-models.md) · [Surveys](#surveys-and-position-papers-29) |
 
 The main list gives each paper a primary home; the [themes index](docs/themes.md) provides overlapping views. Section counts describe entries in that section, not disjoint totals across the taxonomy. See the [classification guide](docs/taxonomy.md) for definitions, examples, and contribution rules.
 
@@ -85,10 +85,11 @@ Selected systems, surveys, and benchmarks across imaging domains.
 
 Browse by clinical specialty or imaging environment. Tasks and agent mechanisms can overlap across these domains.
 
-### Radiology Agents (58)
+### Radiology Agents (59)
 
 Agents for chest X-ray, CT, MRI, DICOM workflows, radiotherapy planning, and radiology decision support.
 
+- [TRACER: A Multimodal Multi-agent Workflow for Transparent Chest X-ray Assistance](https://doi.org/10.1007/s10278-026-02469-y) - Combines structured findings, Grad-CAM cues, report generation, and execution traces for CXR consultation and prior-report comparison; evaluates 2,000 frontal CXRs and 60 non-radiologist participants, with patient and clinician usefulness left for future evaluation (Journal of Imaging Informatics in Medicine, 2026).
 - [MammoSeek: A Mammography Agent with selective zooming for grounded reports](https://arxiv.org/abs/2611.07188) - Forms a per-breast impression, then decides which detector candidates to inspect at full resolution before assigning a BI-RADS category and writing a localized, lexicon-structured report; reaches exam-level AUCs of 0.824 on EMBED and 0.818 on VinDr-Mammo, with selective zooming outperforming no zooming and forced zooming. (arXiv, 2026).
 - [CAG-WM: A Synthetic-Data-Driven Coronary World Model for Autonomous Guidewire Navigation](https://papers.miccai.org/miccai-2026/0138-Paper4072.html) - A world model trained on 100 synthetic angiography–3D coronary cases in a SOFA simulator learns vessel–guidewire dynamics and plans through internal multi-step rollouts for autonomous percutaneous coronary guidewire navigation; it exceeds 80% success on 20 multi-center clinical cases with the shortest total navigation time (about 2 minutes) (MICCAI 2026, 2026; [Code](https://github.com/CaoYue2004/CAG-WM)).
 - [SeedPro: Place Brachytherapy Seeds Like Expert Clinicians via Hierarchical Reinforcement Agents](https://papers.miccai.org/miccai-2026/0930-Paper3635.html) - Hierarchical reinforcement-learning agents generate fine-grained preoperative brachytherapy seed-placement plans that favor fewer needle punctures; on internal and external datasets they reduce organ-at-risk exposure by 12–20% and puncture count by 25% relative to prior planners (MICCAI 2026, 2026; [Code](https://github.com/Haitao-Lee/SeedPro)).
@@ -352,6 +353,4 @@ Agents that plan, prompt, refine, or evaluate segmentation and annotation workfl
 - [Learning to Reason Over Physician Corrections: An Interactive Agentic Framework for 3D Tumor Segmentation](https://papers.miccai.org/miccai-2026-sat/CLiMeM_013.html) - LORE trains an agent on a frozen 3D SAM backbone to reason over correction histories and anticipate subsequent physician edits using a spatial grounding reward, evaluated on six CT and FDG-PET tumor benchmarks (MICCAI 2026 CLiMeM workshop, 2026).
 - [A Label-Efficient On-Device QC Agent for MRI Segmentation under Domain Shift](https://papers.miccai.org/miccai-2026-sat/MedAgent_023.html) - An on-device agent routes risky brain-tumor MRI slices for review and recalibrates from streamed feedback while keeping the segmenter frozen; feedback is simulated from ground-truth Dice, and improved discrimination yields only small gains at a fixed review budget (MICCAI 2026 MedAgent workshop, 2026).
 - [A Guideline-Aware AI Agent for Zero-Shot Target Volume Auto-Delineation](https://papers.miccai.org/miccai-2026/0009-Paper5049.html) - OncoAgent converts textual radiotherapy guidelines into 3D target contours without target-volume annotations and adapts to alternative esophageal guidelines without retraining (MICCAI 2026, 2026; [Code](https://github.com/Oncosoft-Research/OncoAgent)).
-- [Source-Free Domain Adaptation for Medical Image Segmentation via LLM-Agent Collaboration](https://papers.miccai.org/miccai-2026/0975-Paper4948.html) - RaMA uses a multimodal LLM to check semantic errors and guide a committee of SAM models toward consensus pseudo-labels for source-free cardiac MRI segmentation adaptation (MICCAI 2026, 2026; [Code](https://github.com/TianyuZhang-hdu/RaMA)).
-- [TSegAgent: Zero-Shot Tooth Segmentation via Geometry-Aware Vision-Language Agents](https://papers.miccai.org/miccai-2026/1094-Paper0737.html) - A vision-language agent uses multi-view observations and dental-arch geometry to guide zero-shot tooth instance segmentation and identification in 3D intraoral scans (MICCAI 2026, 2026; [Code](https://github.com/znshje/TSegAgent)).
-- [Hu
+- [Source-Free Domain Adaptation for Medical Image Segmentation via LLM-Agent Collaboration](https://papers.miccai.org/miccai-2026/0975-Paper4948.html) - RaMA uses a multimodal LLM to check semantic errors and guide a committee of SAM models toward consensus pseudo-labels for source-free cardiac MRI segmentation adaptation (MICC

@@ -168,10 +168,10 @@ Nexus/
 
 | Requirement | Version | Notes |
 |:---|:---|:---|
-| Node.js | 18+ | |
-| pnpm | any | `npm i -g pnpm` |
-| Python | 3.8+ | For Build123d server-side compilation |
-| build123d | latest | `pip3 install build123d` |
+| Node.js | 20.19.4+ | Use a supported Node.js LTS release |
+| pnpm | 10+ | Use the committed pnpm lockfile |
+| Python | 3.10+ | For Build123d server-side compilation |
+| build123d | 0.10.0 | Install into the project virtual environment |
 
 ### Setup
 
@@ -180,24 +180,32 @@ Nexus/
 git clone https://github.com/caid-technologies/Nexus.git Nexus
 cd Nexus
 
-#2. Setup up python virtual environment
+# 2. Set up the Python virtual environment
 python -m venv .venv
 source ./.venv/bin/activate
 
 # 3. Install Python CAD engine
-pip3 install build123d
+python -m pip install build123d==0.10.0
 
 # 4. Install JS dependencies
-pnpm install
+pnpm install --frozen-lockfile
 
 # 5. Configure environment
 cp .env.example .env.local
-# Edit .env.local — add your API keys (see below)
+# Edit .env.local: add your own provider credentials and set PYTHON_PATH
+# to the Python executable in your virtual environment.
 
 # 6. Run
 pnpm dev
 # Open http://localhost:3000
 ```
+
+### Verify a checkout
+
+- `pnpm typecheck` runs the TypeScript compiler; `pnpm build` runs the production build.
+- With the local server and `PYTHON_PATH` configured, `pnpm smoke` verifies Nexus branding and compiles a fixed Build123d model to STL without provider credentials. For a non-default port, run `PORT=3001 pnpm smoke`.
+- Configure NVIDIA NIM and a supported code-generation provider to test a real prompt or image. Without keys, verify only the local app and compiler.
+- The compiler executes Build123d Python. Run it locally with trusted inputs; do not expose it to untrusted users without isolation.
 
 ## Performance & Cost
 

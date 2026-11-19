@@ -26,7 +26,7 @@ npx ai-devkit@latest init
 
 `setup` installs built-in skills globally, session hooks, and the memory MCP wiring for detected agents.
 
-The `kiro`, `copilot`, `devin`, and `muse` targets detect `~/.kiro`, `~/.copilot`, `~/.config/devin`, and `~/.config/muse`, respectively. Copilot skills use the `github` environment and `~/.copilot/skills`; Devin and Muse use `~/.config/devin/skills` and `~/.config/muse/skills`. Kiro has no skill environment or root defined, so its target only detects the marker and reports the memory MCP skip. All four skip memory MCP wiring until a global config writer is verified.
+The `kiro`, `copilot`, `devin`, and `muse` targets detect `~/.kiro`, `~/.copilot`, `~/.config/devin`, and `~/.config/muse`, respectively. Copilot skills use the `github` environment and `~/.copilot/skills`; Devin and Muse use `~/.config/devin/skills` and `~/.config/muse/skills`. Kiro, Copilot, Devin, and Muse do not get memory MCP wiring yet.
 
 `init` writes project-local config. Your project gets:
 
@@ -75,7 +75,7 @@ npx ai-devkit@latest init
 
 Run `setup` once per machine, then `init` per project. Pick your agents, install the control-plane pieces you need, and give every tool the same operating model. Re-run `init` whenever your agent list or workflow changes.
 
-Multi-agent orchestration (lead plus workers): **[docs guide](https://ai-devkit.com/docs/17-multi-agent-orchestration/)**.
+Multi-agent orchestration (lead plus workers): **[docs guide](https://ai-devkit.com/docs/17-multi-agent-orchestration/)**. Cross-vendor recipe (any lead, any worker): **[cross-vendor recipe](https://ai-devkit.com/docs/20-cross-vendor-agent-recipe/)**.
 
 Here's what lands in your repo:
 
@@ -218,7 +218,7 @@ One `.ai-devkit.json` configures all of them. Add a new agent to your team witho
 | [opencode](https://opencode.ai/) | yes | yes (`opencode`) |
 | [Pi](https://pi.dev) | yes | yes (`pi`) |
 | [GitHub Copilot](https://github.com/features/copilot) | yes | yes (`copilot`) |
-| [Kiro CLI](https://kiro.dev/cli/) | yes | yes (`kiro`) |
+| [Kiro CLI](https://kiro.dev/cli/) | — | yes (`kiro`) |
 | [Devin](https://devin.ai/) | yes | yes (`devin`) |
 | [Muse Code](https://dev.meta.ai/products/muse-code/) | yes | yes (`muse`) |
 | [Antigravity CLI](https://antigravity.google/) | yes | yes (`antigravity_cli`) |
@@ -256,7 +256,7 @@ Those files are static instructions the agent re-reads. AI DevKit gives agents a
 
 - Full guides, workflow patterns, skill authoring → **[ai-devkit.com/docs](https://ai-devkit.com/docs/)**
 - Release notes → **[CHANGELOG.md](./CHANGELOG.md)**
-- Contributing → open an issue or PR on **[GitHub](https://github.com/Codeaholicguy/ai-devkit)**
+- Contributing → **[CONTRIBUTING.md](./CONTRIBUTING.md)** (issues and PRs on [GitHub](https://github.com/Codeaholicguy/ai-devkit))
 
 ```bash
 git clone https://github.com/Codeaholicguy/ai-devkit.git

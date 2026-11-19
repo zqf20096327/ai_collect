@@ -481,7 +481,15 @@ breaks something different at each depth. Early, word forms, the kind of documen
 ("rome", "The mitochondria is not the powerhouse of the cell", object relatives at chance). In the middle, facts and the use
 of context ("the capital of the south is the city of Marseille", comprehension lost on every kind of sentence). Late, the
 pieces that finish a word ("I am Q, a large language model"), with comprehension kept; removing the late bright sector
-instead leaves "the, the, the". The dark sector likely holds what conditions the next token without naming it
+instead leaves "the, the, the". Swapping a sector between two prompts shows where their difference lives: which country,
+the answer's language, the next word piece, and even whether the reply is a story or small talk move with the bright
+sector from L4-L12, and the dark part of the difference, most of its energy, changes nothing. In between, the country
+needs the R-lens's top directions and more of the difference besides, and thinking mode at L12 sits in a few directions
+neither lens weights. Ranked by gain without a cut (its loudest direction, the residual's massive-activation offset,
+left out), the R-lens puts what prompts differ in well above chance at every layer: the early dark sector is the lens's
+middle ranks. The readouts span the residual unevenly: early, the R-lens barely reads about half of it (the S-lens's
+footprints span nearly all of it there), and nothing two prompts differ in sits in that half. So the dark sector likely holds what prompts share rather
+than what they differ in
 ([§21](docs/findings.md#21-the-dark-sector-what-the-r-lens-barely-reads)).
 
 ### Limits

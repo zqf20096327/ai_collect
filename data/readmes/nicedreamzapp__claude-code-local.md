@@ -18,10 +18,12 @@ Mac and Linux. Windows is [one PowerShell line](#-on-linux-or-a-windows-pc). On 
 
 <!-- live-stats:start -->
 
-⭐ **3,737** GitHub stars ([github.com/nicedreamzapp](https://github.com/nicedreamzapp)) · ⬇️ **54,421** all-time downloads ([huggingface.co/divinetribe](https://huggingface.co/divinetribe))<br>
-Models on Hugging Face: [18 MLX builds at huggingface.co/divinetribe](https://huggingface.co/divinetribe) (⬇️ **48,695** all-time downloads) · this repo ⭐ **3,521** stars
+⭐ **3,740** GitHub stars ([github.com/nicedreamzapp](https://github.com/nicedreamzapp)) · ⬇️ **55,694** all-time downloads ([huggingface.co/divinetribe](https://huggingface.co/divinetribe))<br>
+Models on Hugging Face: [18 MLX builds at huggingface.co/divinetribe](https://huggingface.co/divinetribe) (⬇️ **49,724** all-time downloads) · this repo ⭐ **3,524** stars
 
 <!-- live-stats:end -->
+
+**Using it at work or school? [Add yourself to the list](ADOPTERS.md).**
 
 🆕 **Qwen 4 watch:** Alibaba says Qwen 4 is coming. The day the weights land we test it inside Claude Code and add it here, with real speed and scores. ⭐ Star or watch the repo to catch it. [The plan](#-qwen-4-in-claude-code-local)
 

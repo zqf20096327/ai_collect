@@ -31,10 +31,10 @@ The project's short name is **`magoneai`**. The others each have a reason:
 ## What is here
 
 - **`magone-mcp-core`** (`src/magone_mcp_core/`) - a thin layer over the SDK. It adds the handful of things a connector catalogue needs and the SDK has no opinion about, and gets out of the way otherwise.
-- **`connectors/`** - one package per connector: 25 connectors, 269 tools. [`docs/TOOLS.md`](docs/TOOLS.md) lists every tool, generated from the code.
+- **`connectors/`** - one package per connector: 27 connectors, 283 tools. [`docs/TOOLS.md`](docs/TOOLS.md) lists every tool, generated from the code.
 - **`scripts/`** - the gates CI runs on every pull request, each of which you can run locally.
 
-`connectors/publication.json` records which connectors are ready to publish (18) and which are not yet (7), with the reason for each.
+`connectors/publication.json` records which connectors are ready to publish (18) and which are not yet (8), with the reason for each.
 
 > **`twitter_intel` uses an unofficial provider.** It calls [twitterapi.io](https://twitterapi.io), a third-party service, not the official X API. Neither the connector nor the provider is affiliated with or endorsed by X Corp. It is blocked from publication; if you run it yourself, you are responsible for complying with the terms of X and of twitterapi.io.
 

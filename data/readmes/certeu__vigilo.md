@@ -17,7 +17,7 @@ against their own code and services. It ships two ways to run:
 The pipeline combines orchestrated agents with an agentic coding CLI (Claude Code,
 OpenAI Codex, or OpenCode), Playwright browser testing, and source-code analysis.
 
-> **Licence:** [EUPL-1.2](#licence) · Copyright © 2026 European Union. See [`LICENSE`](LICENSE).
+> **Licence:** [EUPL-1.2](#licence) · Copyright © 2026 European Union. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
 
 > [!WARNING]
 > **Experimental software.** Vigilo is in alpha: it works end to end, but interfaces, defaults and
@@ -650,4 +650,7 @@ Copyright © 2026 European Union
 Licensed under the EUPL-1.2. See the LICENSE file for licensing information.
 ```
 
-Third-party components retain their own licences.
+Third-party components retain their own licences. The [`NOTICE`](NOTICE) file lists Vigilo's
+direct dependencies — the Python packages in `pyproject.toml` (core and optional extras) and the
+runtime packages of the web UI — with their licence, a link to their source code, and their
+copyright and licence notices.

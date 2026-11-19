@@ -4,6 +4,29 @@ The official skill collection for [skills-hub.ai](https://skills-hub.ai) -- a ma
 
 430 production-tested skills organized into 15 categories covering the complete software development lifecycle, 40 industry verticals and social-impact sectors, plus gaming and mobile app development. All skills ship as v2.0.0+ with built-in self-healing validation and self-evolution telemetry.
 
+<!-- BEGIN GENERATED: skills-hub-index (scripts/gen-index.mjs, do not edit by hand) -->
+## Browse on skills-hub.ai
+
+Browse all 554 skills from this repo on [skills-hub.ai](https://skills-hub.ai/u/skills-hub). Each skill page shows ratings and reviews, install counts, a one-command install, and related skills. Every category index below lists its skills with a direct link to each page.
+
+- [analysis](analysis/README.md): 233 skills, 233 with a skills-hub.ai page
+- [build](build/README.md): 41 skills, 41 with a skills-hub.ai page
+- [combo](combo/README.md): 39 skills, 39 with a skills-hub.ai page
+- [deploy](deploy/README.md): 18 skills, 18 with a skills-hub.ai page
+- [docs](docs/README.md): 16 skills, 16 with a skills-hub.ai page
+- [education](education/README.md): 9 skills, 9 with a skills-hub.ai page
+- [integration](integration/README.md): 27 skills, 27 with a skills-hub.ai page
+- [meta](meta/README.md): 20 skills, 20 with a skills-hub.ai page
+- [ops](ops/README.md): 4 skills, 4 with a skills-hub.ai page
+- [productivity](productivity/README.md): 30 skills, 30 with a skills-hub.ai page
+- [qa](qa/README.md): 18 skills, 18 with a skills-hub.ai page
+- [review](review/README.md): 33 skills, 33 with a skills-hub.ai page
+- [security](security/README.md): 14 skills, 14 with a skills-hub.ai page
+- [spec](spec/README.md): 4 skills, 4 with a skills-hub.ai page
+- [test](test/README.md): 16 skills, 16 with a skills-hub.ai page
+- [ux](ux/README.md): 32 skills, 32 with a skills-hub.ai page
+<!-- END GENERATED: skills-hub-index -->
+
 ## Directory Structure
 
 ```
@@ -460,10 +483,4 @@ Duplicated names: `backend-spec` (analysis, docs), `design-to-code` (ux, combo).
 | Skill                                        | Version | Description                                                                                                                                                                            |
 | -------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [ci-health](productivity/ci-health/)         | 1.0.0   | Monitor and maintain CI runner health — check disk space, clear stale caches (Flutter, Gradle, npm, Docker), prune old worktrees, and report status. Prevents cache corruption...      |
-| [daily-standup](productivity/daily-standup/) | 1       | >-                                                                                                                                                                                     |
-| [devcontainer](productivity/devcontainer/)   | 2.0.0   | Generate a dev container for my project — auto-detect language, framework, and services like PostgreSQL or Redis, create devcontainer.json with VS Code extensions, port...            |
-| [dx](productivity/dx/)                       | 2.0.0   | Audit developer experience and generate a DX health score. Evaluates devcontainer, git hooks, linting, build caching, environment setup, and release pipeline. Use when you want to... |
-| [env-setup](productivity/env-setup/)         | 2.0.0   | Bootstrap a project from zero to working dev environment. Detects runtime versions, installs dependencies, creates .env from templates, starts Docker services, runs database...       |
-| [git-hooks](productivity/git-hooks/)         | 2.0.0   | Set up pre-commit hooks for linting, formatting, and type-checking with commit message enforcement using conventional commits. Auto-detects stack and configures husky, lefthook,...   |
-| [linter](productivity/linter/)               | 2.0.0   | Configure linting, formatting, and editor integration for any stack. Sets up ESLint 9 or Biome for JS/TS, Ruff for Python, golangci-lint for Go, Clippy for Rust, RuboCop for Ruby,... |
-| [monorepo](productivity/monorepo/)           | 2.0.0   | Set up or migrate to a monorepo with Turborepo, Nx, or pnpm workspaces. Scaffolds apps and packages directory structure, configures task pipeline with depende
+| [daily-standup](productivity/daily-standup/) | 1       | >-                                                                               

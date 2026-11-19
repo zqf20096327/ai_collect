@@ -1,8 +1,12 @@
-# MCP_CREO_MechDog 0.27.0
+# MCP_CREO_MechDog 0.31.1
 
-![version](https://img.shields.io/badge/version-0.27.0-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
+![version](https://img.shields.io/badge/version-0.31.1-blue) ![license](https://img.shields.io/badge/license-MIT-green) ![platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey) ![python](https://img.shields.io/badge/python-3.12%2B-blue) ![Creo](https://img.shields.io/badge/Creo-9%20%2F%2010%20%2F%2012-orange) ![MCP](https://img.shields.io/badge/MCP-stdio-purple)
 
-当前正式版 **0.27.0**（MINOR——STL 逐面导出与参数域细化，`bulb_bulged` 最大抽样偏差 0.0899mm（BUG-130）；作业取消、停滞看门狗与新装配收尾出口，公开工具 108→109（BUG-131）；圆柱面拆半的 `coaxial:"any"` 与报错分型（BUG-132）；区域切除派生草图适配层（FEAT-069）；放样准入使用同 worker 实测身份（BUG-122）；G2 曲率连续圆角实机与 `curvature_continuous`（DEV-090）；首壁宽度映射文档（BUG-129）；`export_artifacts` 诊断归档（BUG-020，已归档）。本版为部分交付：旧 14m STL 精度、装配与 Creo 9/10、挂死根因、原生选区与 Creo 10/Arm7 未验） · [版本说明](docs/RELEASE_NOTES_0.27.0.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
+当前正式版 **0.31.1**（PATCH——工程规则：本机实机操作改为**常设授权**，不再逐次确认；可直接新建 Toolkit 连接、启动/重启 Creo 与 nmsd、结束卡死或异常的 Creo/worker 进程、确认后清理残留 `toolkit.lock` 与保护状态、编译执行器、建模、GUI 操作与几何/保存重载验收。数据边界不变：不删除或改写用户模型、历史证据与已发布产物；Toolkit 单通道、busy 拒绝、revision 保护与保存重载核验不变） · [版本说明](docs/RELEASE_NOTES_0.31.1.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
+
+0.31.0（MINOR——[BUG-120](docs/work-items/BUG-120.md) 导线预检与建面回执：`resident_panel` 的 `sections`/`guides` 必须在 Python 准入阶段写成 `{label, open_confirmed:true}`，裸标签在建作业前被拒绝；原生新增 `panel_fit.h`，开面板前输出 21 对截面×导线诊断（实际 feature/curve ID、参数、位置、间隙 mm/native、原始码、端点闭合与穿过顺序），采样失败记 `unverified`、不写零；成功回执按“作业前后唯一新增面组 + 其 owner feature”关联，保存重载后用 `quilt_record`/`surface_group_receipt` 读取面积、开闭与边界，`geometry_check.verified` 由证据决定。未验：任务 5 接缝 G1 仍 6.28°（另行排期）、WorkBuddy 黑盒） · [版本说明](docs/RELEASE_NOTES_0.31.0.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
+
+0.30.0（MINOR——装配位姿与约束契约补齐：[BUG-133](docs/work-items/BUG-133.md) 让显式 `rotation_tolerance` 在 Python 与原生使用同一有效值，上限收紧到 `1e-3`（默认 `1e-6` 不变）；[FEAT-012](docs/work-items/FEAT-012.md) 新增 `rotation_convention="column"`，原生只转置一次、两层都按规范行矩阵准入；[DEV-092](docs/work-items/DEV-092.md) 明确约束整组替换边界并新增 `failed_constraint_index`/`constraint_stage`/`constraint_reason` 诊断。未验：Creo 实机放置与保存重载、WorkBuddy 黑盒） · [版本说明](docs/RELEASE_NOTES_0.30.0.md) · [Releases](https://github.com/wudahua/MCP_CREO_MechDog/releases)
 
 > 让 AI 客户端通过 MCP，直接在 Creo Parametric 里创建**原生可编辑的参数化特征**——不是导出网格，也不是脚本模拟。
 
@@ -90,6 +94,7 @@ Creo 软件、SDK、模板与许可需自行取得；MIT 只覆盖本项目原�
 | 钣金 | `creo_new_sheetmetal`、`creo_sheetmetal_wall`、`creo_sheetmetal_planar_wall`、`creo_resize_sheetmetal_planar_wall`、`creo_sheetmetal_flange`、`creo_sheetmetal_base_flange` |
 | 装配 | `creo_new_assembly`、`creo_assemble_component`、`creo_list_components`、`creo_recolor_assembly` |
 | 放样与翼型 | `creo_new_loft_part`、`creo_loft`、`creo_new_airfoil_blade` |
+| 曲面与实体化 | `creo_surface_loft`（含 `creation_route="resident_panel"`）、`creo_surface_fill`、`creo_quilt_merge`、`creo_mirror`、`creo_solidify` |
 | 参数化修改 | `creo_set_dimensions`、`creo_set_parameters`、`creo_set_relations`、`creo_set_sketch_dimensions` |
 | 查询与导出 | `creo_inspect_model`、`creo_save_model`、`creo_export_model`、`creo_get_job` |
 

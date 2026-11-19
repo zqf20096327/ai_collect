@@ -165,6 +165,10 @@ console, a first project and your agents — the same wizard as below.
 in its own window, started and signed in for you, with a tray menu of your projects and a
 notification when a run ends (RFC 0261; local mode). Run **EKOS Setup** once first. On Linux it needs
 WebKitGTK 4.1 and an AppIndicator library, which the `.deb` and `.rpm` recommend.
+EKOS Setup itself opens in the app's window (in the browser where the app cannot run), and with the
+app nothing opens a browser or a terminal window: there is no separate "EKOS Console" shortcut.
+The console itself (in the app and in a browser) has a sidebar of grouped pages and a command
+palette, **Ctrl/⌘ K**, to go to a page, switch project, find an object or open a command's form.
 
 The Linux packages need glibc 2.34 or newer (Ubuntu 22.04, Debian 12, RHEL 9); on older systems
 use the command-only `musl` archive below. Nothing is started as root, and no service is installed:
@@ -210,6 +214,8 @@ login. It shows the exact list of steps before doing anything. Afterwards:
 
 ```bash
 ekos console open | status | stop | start | restart | logs
+ekos console stop            # refuses while runs are in progress and names them;
+                              # --wait waits for them, --force ends them (RFC 0261)
 ekos setup                  # change any of it later
 ekos uninstall              # the program, login entry, PATH line, agent entries; keeps projects
 ekos uninstall --ui         # the same on a page in the browser: what goes, your projects, confirm
@@ -323,7 +329,7 @@ step only applies if you clicked the link in a browser.
 #### Windows
 
 ```powershell
-$Version = "v1.6.0"
+$Version = "v1.6.1"
 $Asset   = "ekos-$($Version -replace '^v','')-x86_64-pc-windows-msvc.zip"
 $Base    = "https://github.com/alexeyban/EKOS/releases/download/$Version"
 
@@ -1578,10 +1584,4 @@ enabled = false` restores the old behaviour.
 
 **Broken references across systems (RFC 0233).** Every name a routine, a view, a Kettle step, SQL
 built in a Java method or a dbt `source()` points at is resolved against every compiled relation —
-DDL, live catalog, application model — by the same rule lineage links by. A name that resolves to
-nothing is an `UnresolvedReference`, one that resolves to several an `AmbiguousReference`: with the
-file and line it came from, the closest names, the evidence, a confidence, and a fingerprint that
-survives recompiles and edits above it. Relations a routine creates at run time (`CREATE TEMP TABLE`,
-`EXECUTE 'CREATE VIEW …'`), table functions and system catalogs are not findings; a name in a schema
-EKOS compiled nothing from is a coverage gap (info), not an error.
-
+DDL, live cata

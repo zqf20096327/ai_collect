@@ -15,7 +15,7 @@ zero-dependency Rust binary, on a 320×170 handheld.**
 <img src="https://img.shields.io/badge/binary-1.0%20MB-2ea043?style=flat-square" alt="1 MB binary">
 <img src="https://img.shields.io/badge/panel-320%C3%97170%20%C2%B7%2053%C3%9712%20cells-22d3ee?style=flat-square" alt="320x170 panel, 53x12 cells">
 <img src="https://img.shields.io/badge/UI%20languages-6-8b5cf6?style=flat-square" alt="6 UI languages">
-<img src="https://img.shields.io/badge/tests-100%20passing-2ea043?style=flat-square" alt="100 unit tests">
+<img src="https://img.shields.io/badge/tests-108%20passing-2ea043?style=flat-square" alt="108 unit tests">
 <a href="https://github.com/MarsTechHAN/deepseek-harness-tui-cardputer/actions/workflows/ci.yml"><img src="https://github.com/MarsTechHAN/deepseek-harness-tui-cardputer/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
 <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square" alt="PRs welcome"></a>
 
@@ -255,6 +255,19 @@ refused.
   text stream in — only the next report replaces it — so the screen never shows
   a frozen or stale stage. It joins the transcript when the turn ends; reports
   over 50 display cells are rejected so the row can never wrap.
+- **Self-update** — on startup dst checks GitHub releases in the background
+  (channel `nightly` by default, `stable` for `vX.Y.Z` releases; configured as
+  `update.channel` in `~/.dst/config.yml`) and asks `[Y]es/[N]o` when a newer
+  build exists. `/update` checks and installs on demand; `/update
+  stable|nightly` switches the channel. The download is SHA-256 verified, the
+  binary is replaced atomically in place, and dst re-execs itself so the new
+  build is running immediately.
+- **Multiple instances** — one dst per terminal, but several may run side by
+  side (the panel tty, an SSH shell, a tmux window each own their own pty). A
+  second instance on the *same* terminal is refused, since two readers of one
+  `/dev/tty` would fight for keys. Instances share `~/.dst` (sessions, usage,
+  checkpoints, goal); session filenames carry a millisecond suffix so two
+  instances cannot overwrite each other.
 - **Paging** — `PgUp`/`PgDn` page the transcript and list menus by a screenful,
   with the scroll clamped at the buffer edges; `Up`/`Down` recall input history
   on an empty prompt.
@@ -280,9 +293,12 @@ refused.
   `/clear`, `/new`, `/compact`, `/resume`, `/rewind`, `/extensions`, `/help`,
   `/apps`) are refused with "press Esc first" instead of being queued or sent
   as chat. `Shift+Enter` steers chat text at the next step; `Esc` stops the
-  whole turn at once and text already typed becomes the next message; `Tab`
-  during a turn interrupts, starts recording immediately and sends the
-  transcript (`auto_send_voice` on) or leaves it in the prompt (off).
+  whole turn at once and text already typed becomes the next message. `Tab`
+  is push-to-talk with two modes: an empty prompt sends the take hands-free on
+  release (`auto_send_voice`), while text already in the prompt turns it into a
+  voice input method that inserts the transcript at the cursor without sending
+  or overwriting anything — Enter sends the combined prompt. During a turn
+  `Tab` interrupts first; the take then follows the same rule.
 - **Animated splash** — a deterministic whale breach, frame-scheduled rather
   than constant-rate; typing pauses it, the first message ends it, `/clear`
   brings it back.
@@ -323,8 +339,10 @@ package becomes runnable by adding a manifest.
 
 ### Voice
 
-Push-to-talk (`Tab`) records with `arecord`, posts to `/v1/tools/asr` and
-auto-sends the transcript; TTS (`/v1/tools/tts`) plays through `aplay`.
+Push-to-talk (`Tab`) records with `arecord` and posts to `/v1/tools/asr`; with
+an empty prompt the transcript is sent hands-free on release, while text already
+in the prompt makes it a dictation that is inserted at the cursor (nothing is
+sent or overwritten until Enter). TTS (`/v1/tools/tts`) plays through `aplay`.
 Resampling and WAV framing are done in Rust. Speech tools exist only on
 DeepSeek's official API — on a third-party endpoint they are removed from the
 registry and the model is told so.
@@ -429,7 +447,7 @@ has the model refine the skill afterwards).
 
 ```sh
 dst                      # interactive TUI
-dst --version                           # build identity (e.g. dst 0.1.0 (aarch64, release))
+dst --version                           # build identity (e.g. dst 0.2.0 (aarch64, release))
 dst --once "summarise this repo"        # one turn, prints events
 dst --tools                             # effective tool set + capability decision
 dst --hwinfo-scan                       # run the hardware scan, print the skill summary
@@ -462,6 +480,7 @@ Commands run locally and are never sent to the model.
 | `/rewind` | pick one of your earlier messages: the transcript rewinds to before it and the message is put back in the prompt |
 | `/btw <question>` | ask a one-off, read-only subagent a side question; its answer opens as a panel and the conversation is untouched |
 | `/rename <title>` | name the current session |
+| `/update [nightly\|stable]` | check the update channel, switch it, and install a newer build (asks first) |
 | `/clear` | start a new conversation: reset the history, context ring and session, restart the splash |
 | `/new` | same as `/clear` (an explicit "new conversation") |
 | `/quit` | exit |
@@ -576,7 +595,7 @@ cargo build                       # host binary
 
 cd tools/sim
 python3 run_demo.py               # splash → thinking → tool call → reply + contact sheet
-python3 run_scenarios.py          # 101 feature scenarios, asserts on screens *and* request logs
+python3 run_scenarios.py          # 105 feature scenarios, asserts on screens *and* request logs
 python3 run_live.py               # optional: visual pass against a real endpoint
 python3 check_memory.py           # samples RSS over 20 turns
 ```
@@ -588,7 +607,7 @@ artifacts, sessions across a restart, onboarding, sandbox modes, jobs, watchers,
 searchable resume, push-to-talk with mocked speech, the nine-step WeChat login
 chain, provider failures and recovery, CJK input and the creator-mode scenarios.
 
-Unit tests (host, no network): `cargo test` — 100 tests over the harness, tool
+Unit tests (host, no network): `cargo test` — 108 tests over the harness, tool
 pipeline, compaction budgets, goal state machine, context formatting, config
 round-trip, skill packages, runnable apps, the hardware-info scan/renderer,
 image attachment/base64 handling and the i18n catalogue.

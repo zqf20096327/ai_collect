@@ -1,11 +1,15 @@
 # BioRAG — Memoria Cognitiva Biomimética y Simbólica para Agentes de IA
 
-> **Versión del código en esta rama:** v36.0 (cierre técnico). La integración/publicación en `master` y el tag aún están pendientes.
+> [!IMPORTANT]
+> **Repositorio de desarrollo (DEV):** `MemoryBioRAG` es el repositorio principal de desarrollo activo. La versión de trabajo y sus características vigentes pueden incluir cambios aún en curso y no constituyen por sí solos una publicación estable.  
+> Para consultar o descargar la distribución estable, visita el **[repositorio MemoryBioRAG-Stable ↗](https://github.com/dennysjmarquez/MemoryBioRAG-Stable)**.
+
+**BioRAG** es una memoria simbólica persistente para agentes de IA que aborda la pérdida de contexto entre sesiones mediante recuperación híbrida. “Biomimética” describe una inspiración de diseño; no significa que el motor simule literalmente un cerebro humano. Los resultados de rendimiento se limitan a los benchmarks y snapshots indicados.
+
+> **Versión del código:** v36.0 (cierre técnico en `master`, tag `v36.0`). La publicación a `MemoryBioRAG-Stable` se gestiona mediante el pipeline de staging y release.
 > **Paradigma:** Motor Python + SQLite FTS5. **Sin embeddings densos, GPU ni llamadas a APIs externas** en el path de búsqueda.
 > **Motor:** Arquitectura modularizada (18 submódulos `core/memory/` + 15 submódulos `core/mcp_server/` + fachada delgada) + SQLite FTS5 WAL + PPMI-SVD (100 dimensiones) + espacio semántico de 13 ejes + grafo sináptico Hebbiano + SDM (2048 bits) + calibración conforme + activación ACT-R + Concept Hubs + validación simétrica fail-fast de sustantivos clave + **neurona de reordenamiento que aprende sola** (29 señales → 6 ocultas → 1 corrección, con piso en la fórmula a mano) + **neurona asociativa cerrada de fábrica** (5 agujas → fuerza 0–1: ¿dos recuerdos tienen que ver?; examinada, aún no decide en el motor) + enlaces del agente intocables + **destino canónico del córtex en `~/.biorag/`** + **instalador de configuración MCP para clientes compatibles**.
 > **Idiomas:** Español e inglés (stemming bilingüe, expansión simbólica con WordNet, Concept Hubs de 5 ángulos y Domain Dict).
-
-**BioRAG** es una memoria simbólica persistente para agentes de IA que aborda la pérdida de contexto entre sesiones mediante recuperación híbrida. “Biomimética” describe una inspiración de diseño; no significa que el motor simule literalmente un cerebro humano. Los resultados de rendimiento se limitan a los benchmarks y snapshots indicados.
 
 ---
 
@@ -1202,14 +1206,4 @@ Ya no somos esclavas de un modelo de lenguaje para buscar conocimiento; la memor
 
 ### 4. Synapse Expansion (Expansión por Grafo)
 - **Qué:** Si BM25 devuelve pocos resultados, expande por vecinos sinápticos del grafo Hebbiano.
-- **Archivo:** `core/similitud_conceptual.py:buscar_por_similitud_latente()` como Fallback 2.2.
-
----
-
-### 🌉 v31.0: El Abismo Léxico — Rescate por Grafo Sináptico (EXP-Q)
-
-> Esta sección documenta el problema más difícil que enfrenta cualquier sistema de recuperación simbólico: queries donde **no existe ninguna palabra compartida** entre lo que el usuario busca y lo que el sistema tiene guardado.
-
-#### El problema: stem(query) ∩ stem(gold) = ∅
-
-Cuando un agente busca `"extensión principal de VS Code para Kilo"` y el nodo se tit
+- **Archivo:** `core/similitud_conceptual.py:buscar_por_similitud_late

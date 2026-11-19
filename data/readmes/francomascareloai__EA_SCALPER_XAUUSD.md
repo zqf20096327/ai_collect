@@ -1,88 +1,93 @@
-# EA_SCALPER_XAUUSD — XAUUSD (Gold) Trading Research, in the open
+# EA_SCALPER_XAUUSD — Algorithmic trading research lab
 
-> **Status: work in progress.** This is an active research-and-engineering project, not a finished product. The robot is **not** "done" — we are still building, fixing, and validating in the open. If you're here for a plug-and-play money machine, this isn't it (and you should be suspicious of anyone selling you one).
+> **PT-BR:** laboratório pessoal de engenharia de software para sistemas financeiros, mantido por Franco Mascarelo Ortiz desde agosto de 2025. Este repositório é o snapshot público (MQL5). O núcleo em Python (NautilusTrader) é privado. É pesquisa: só backtest, nunca operou dinheiro real, sem sinais e sem promessa de lucro.
 
-This repository is the public **MQL5 snapshot** of a larger XAUUSD automated-trading project. It's kept public for **study, analysis, and engineering collaboration**.
+A personal engineering lab for financial software, built and maintained by one person since August 2025.
+This repository is the **public MQL5 snapshot**. The Python/NautilusTrader core is private.
 
-## Why this project exists
-
-Before writing a line of strategy code, we analyzed **5,000+ trading bots** floating around forums, marketplaces and Telegram groups — to map what's real engineering versus what's repackaged hype. Most were the same recycled martingale/grid with a new skin. This project is the attempt to do the opposite, in the open: show the actual code, the actual decisions, and the actual unfinished parts.
-
-So the honest pitch is: **no scams, no signals, no "guaranteed" returns — just the engineering, visible and in progress.**
-
-## What this is
-
-- A public MQL5 snapshot (larger than the minimal CORE demo) you can read and learn from.
-- A reference codebase to discuss architecture, study prop-firm constraints (Apex / FTMO style), and contribute improvements in **docs / infra / quality**.
-- A "building in public" log of a real, messy, still-evolving system.
-
-## What this is NOT
-
-- ❌ Not a promise of profitability — there are no live performance claims here.
-- ❌ Not financial advice.
-- ❌ Not a finished or production-ready robot.
-- ❌ Not allowed for live/funded trading or broker-connected paper/demo execution (see `TRADING_RESTRICTIONS.md`).
-
-## The bigger picture (open-core split)
-
-- **Public minimal CORE (study/demo only):** [`aurum-core`](https://github.com/francomascareloai/aurum-core)
-  - Minimal, auditable demo EA + educational indicators.
-- **This repo:** the broader MQL5 snapshot for study and collaboration.
-- **Private work-in-progress system:** the Python/NautilusTrader stack where the active development happens (not public yet).
-
-The private side is where we're currently working on the hard parts:
-
-- Strategy layer (multiple variants, routing/selection) — *in progress*
-- Execution layer (adapters, cost/latency/slippage modeling) — *in progress*
-- Risk & compliance (drawdown tracking, safety gates, time windows) — *in progress*
-- Backtesting & optimization (walk-forward, Monte Carlo, stress tests) — *in progress*
-- Observability and runbooks — *in progress*
-
-None of the proprietary rules, parameters, or "go-live" wiring are included in this public snapshot — partly because they're proprietary, and partly because **they're not finished and we won't pretend otherwise.**
-
-## Tech stack
-
-- **MQL5** — MetaTrader 5 Expert Advisors and indicators (this snapshot).
-- **Python + NautilusTrader** — event-driven backtesting/execution (private side).
-- **SMC concepts, ML regime detection, ONNX inference** — explored and being validated, not all wired end-to-end yet.
-
-## Contributing (limited PR scope)
-
-This repository accepts PRs with a **limited scope**:
-
-- ✅ Accepted: docs, CI/build, tooling, refactors for clarity, and non-edge bugfixes.
-- ❌ Not accepted: strategy changes, entry/exit rules, or anything that bypasses `TRADING_RESTRICTIONS.md`.
-
-A lightweight CLA is required before merging contributions (see `CONTRIBUTING.md`).
-
-## For serious engineers — let's build together
-
-If you're a serious, dedicated engineer (quant, Python/Nautilus, MQL5, ML, infra) and you genuinely want to help move this project forward, there's an open door. This isn't a "leave a drive-by PR" ask — it's an invitation to real collaboration.
-
-The deal is simple and two-way:
-
-- You contribute real engineering to the project.
-- In return, I help you back — mentorship, deep technical Q&A, and working through hard problems together.
-
-If that's you, reach out on Telegram (**@francomascareloai**) with a bit about your background and what you'd like to work on. Strong contributors can earn access to deeper parts of the project beyond this public snapshot.
-
-What I'm *not* looking for: signal-seekers, copy-paste contributors, or anyone trying to extract the edge. This is for people who like the engineering.
-
-## Support development (optional)
-
-If the project is useful to you and you want to support the engineering work:
-
-- GitHub Sponsors: https://github.com/sponsors/francomascareloai
-- Telegram (engineering Q&A): @francomascareloai
-
-Support is for educational content and engineering Q&A — **not signals, not performance claims.**
-
-## Contact
-
-- Telegram: @francomascareloai
+**Status:** research only. Backtest only. It has never traded real money.
+No signals, no profit claims, no trading advice. Just the engineering.
 
 ---
 
-## Disclaimer
+## Why this exists
 
-This project is shared for educational purposes only. Trading involves substantial risk of loss and is not suitable for all investors. Past results — simulated or real — do not guarantee future performance.
+I started out buying trading robots. I stopped when I realized that, even if one worked, I would depend on an outside developer and would not be able to explain why it stopped working.
+
+So I built my own lab: a place to test ideas about markets with the same discipline that financial systems need. The most useful result so far is not a strategy. It is the engineering, and the list of ideas the tests ruled out.
+
+## What the lab does
+
+- **Event-by-event backtesting** on NautilusTrader (Python 3.14), with deterministic replay checked by SHA-256 traces.
+- **Platform integration** with MetaTrader 5 (MQL5) and NinjaTrader 8 (C# AddOn). MQL5 logic is checked against a Python reference implementation.
+- **Statistical validation:** walk-forward analysis, block-bootstrap Monte Carlo, Probabilistic and Deflated Sharpe Ratio, PBO (CSCV), placebo / sign-flip tests. Failure criteria are written before the test runs.
+- **Fail-closed by design:** unknown input resolves to the most restrictive choice; missing data is reported as "unavailable", never silently treated as zero.
+- **Test discipline:** mutation testing, property-based tests (Hypothesis), and differential tests whose references are written from the specification, not from the implementation.
+- **Realistic execution modeling:** slippage only adverse, queue-aware fills, no fill assumed at probability 1.
+
+## How it is built
+
+I coordinate several AI coding agents in parallel. Each lead works in its own git worktree with its own plan, and I integrate the work into a central branch.
+
+- Whoever writes the code does not approve it. Critical changes need two independent reviewers who **run** the code, not only read it.
+- "Done" is only valid with the reviewer's verdict file cited. Anything that did not pass stays marked as partial.
+- Claims are checked against the command that produced them before commit.
+
+Architecture, acceptance criteria and decisions are mine.
+
+## Scale (private repository, measured November 2026)
+
+| Measure | Value |
+|---|---|
+| Commits | 5,400+ |
+| Python, production and tests | 1M+ lines |
+| Automated test functions | 30,000+ (static count of `def test_`) |
+| Age | ~15 months (since August 2025) |
+
+These numbers describe effort, not quality or profitability.
+
+## Architecture (simplified)
+
+```mermaid
+flowchart LR
+    subgraph Data["Data"]
+        MT5["MetaTrader 5<br/>(MQL5)"] --> Bus["Versioned events<br/>(JSONL)"]
+        NT8["NinjaTrader 8<br/>AddOn (C#)"] --> Bus
+        Bus --> Replay["Recorder + replay"]
+    end
+    subgraph Core["Core (private)"]
+        Replay --> Engine["Backtest engine<br/>(NautilusTrader)"]
+        Engine --> Risk["Risk layer<br/>(fail-closed)"]
+    end
+    subgraph Validation["Validation"]
+        Engine --> Stats["Walk-forward · Monte Carlo<br/>DSR/PSR · PBO · placebo"]
+        Engine --> Det["Determinism gate<br/>(SHA-256 traces)"]
+    end
+```
+
+## What the data ruled out
+
+In June 2026 the strategy research program was closed without a proven edge: the pre-registered strategy families were rejected by their own tests. No configuration has shown a statistically valid, cost-adjusted advantage.
+
+That is why this is presented as an engineering lab, not as a product.
+
+## What is public and what is not
+
+| Public (this repo) | Private |
+|---|---|
+| MQL5 Expert Advisors and indicators | Python/NautilusTrader core |
+| Docs, CI and tooling | Strategy rules and parameters |
+| | Risk configuration and live wiring |
+
+## What this is not
+
+- Not a trading signal, course or service.
+- Not financial advice.
+- Not production-ready.
+- Not allowed for live, funded or broker-connected use. See [TRADING_RESTRICTIONS.md](TRADING_RESTRICTIONS.md).
+
+## Author
+
+Franco Mascarelo Ortiz — Computer Engineering student (Uniftec, Brazil), studying COBOL and mainframe (Enterprise COBOL, JCL, z/OS, DB2).
+
+LinkedIn: [linkedin.com/in/francomascarelo-mainframe](https://www.linkedin.com/in/francomascarelo-mainframe)

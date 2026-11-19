@@ -20,6 +20,7 @@ The CLI still runs puts only. The call book and position manager are Web-only.
 - Screens two buckets: `conservative` (~0.10Δ) and `standard` (~0.20Δ). `0.2Δ` is the default anchor, not a hard wall. On calls, conservative is further OTM (higher strike)
 - Compares ATM IV with 20/60/120-day realized vol (not a stored IV percentile), 1-sigma expected move vs strike distance, and a 0–100 contract score
 - VIX + SPY/QQQ regime is a **reduce** signal (prefer conservative). It never hard-SKIPs on its own
+- The ticker's own trend (spot vs SMA20/50) and a **historical breach rate** (share of same-length windows over ~8 months that moved past the strike, compared with delta) are reduce signals too: a downtrend on the put desk, an uptrend on the call desk, or a standard-bucket breach rate ≥ 1.5× delta prefers conservative
 - Earnings or FOMC in the holding window → **hard SKIP** (you may not keep selling at a smaller Delta)
 - CPI / NFP / PCE are soft tags for the desk
 - The LLM searches fixed queries for off-calendar gaps (export controls, capex, lawsuits, …)
@@ -49,7 +50,7 @@ First visit picks Chinese for a mainland China IP and English otherwise. The in-
 ## Install
 
 ```bash
-git clone https://github.com/lds051332/OptionTradingAgent.git
+git clone https://github.com/lds051332/Option-Trading-Agent.git OptionTradingAgent
 cd OptionTradingAgent
 python -m venv .venv
 ```
@@ -145,7 +146,7 @@ cd web && npm install && npm run dev
 ## Web (cloud Linux)
 
 ```bash
-git clone https://github.com/lds051332/OptionTradingAgent.git
+git clone https://github.com/lds051332/Option-Trading-Agent.git OptionTradingAgent
 cd OptionTradingAgent
 cp .env.example .env
 # edit .env: DEEPSEEK_API_KEY

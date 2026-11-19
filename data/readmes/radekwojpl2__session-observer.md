@@ -272,11 +272,24 @@ word. Thinking is often stored empty, in which case there is nothing to show.
 | `OBSERVER_MAX_EVENTS` | `5000` | events kept in memory per session |
 | `OBSERVER_AUTOSTART` | `1` | set `0` to stop SessionStart from launching the server |
 | `OBSERVER_HOST` | `127.0.0.1` | bind address — keep it local |
+| `OBSERVER_ALLOWED_HOSTS` | — | extra host names the dashboard answers to, comma-separated (loopback names always work) |
+| `OBSERVER_TOKEN` | — | lets other machines in when `OBSERVER_HOST` isn't loopback; without it they are refused |
 | `OBSERVER_CONTEXT_FIELD` | `100000` | max chars per text in the Context view |
 
-## Privacy
+## Privacy and security
 
-The log holds your prompts, commands and tool outputs in plain text. Use **Clear log** in
+The dashboard has no login. It answers only requests whose `Host` is a loopback name (or one you allow)
+on its own port, which blocks DNS-rebinding pages, and refuses requests from other sites' pages
+(foreign `Origin`), so a web page can't read your sessions or clear the log. Pages are served with a
+strict Content-Security-Policy and can't be framed.
+
+Requests from other machines (possible only when `OBSERVER_HOST` is not loopback) are refused unless
+`OBSERVER_TOKEN` is set. With it, open `http://<host>:<port>/?token=<token>` once (the token becomes an
+HttpOnly cookie) or send `Authorization: Bearer <token>`. Add the name you use to `OBSERVER_ALLOWED_HOSTS`.
+It is plain HTTP, so use a trusted network.
+
+The log holds your prompts, commands and tool outputs in plain text, readable by your user only
+(`0600` on macOS and Linux). Use **Clear log** in
 the dashboard or delete `~/.claude/session-observer/events.jsonl`.
 
 ## Development

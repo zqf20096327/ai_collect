@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--18-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1383-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--19-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1397-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1383 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1397 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 216 | 2026-11-16 | [View papers](#category-perception-sensor-fusion) |
-| Prediction & World Models | 113 | 2026-11-17 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 94 | 2026-11-16 | [View papers](#category-planning-decision-making) |
+| Perception & Sensor Fusion | 218 | 2026-11-18 | [View papers](#category-perception-sensor-fusion) |
+| Prediction & World Models | 114 | 2026-11-18 | [View papers](#category-prediction-world-models) |
+| Planning & Decision-Making | 96 | 2026-11-18 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 60 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 157 | 2026-11-17 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 200 | 2026-11-16 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 156 | 2026-11-16 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 30 | 2026-11-15 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 309 | 2026-11-16 | [View papers](#category-cross-cutting-other) |
+| End-to-End & VLA | 161 | 2026-11-18 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 201 | 2026-11-18 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 157 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 31 | 2026-11-18 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 311 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -51,19 +51,30 @@ Each paper has one primary topic and may carry several method or resource tags. 
 | Synthetic Data | 32 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
 | Cooperative / V2X | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
 | VLA | 85 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
-| World Model | 118 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
-| Reinforcement Learning | 141 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
+| World Model | 121 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
+| Reinforcement Learning | 142 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
 | Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
-| Explainability | 106 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
+| Explainability | 105 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
 
 ---
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 216 papers
+## Perception & Sensor Fusion · 218 papers
+
+<a id="paper-2611-24327"></a>
+
+### Pixel2Perspective: A Benchmark for Multi-Modal and Multi-View Generalization in Vision-Language Models ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Aditya Gandhamal, Aniruddh Sikdar, Arya Kishor, Suresh Sundaram<br>
+**Published:** 2026-11-18<br>
+**Research tags:** Dataset · Benchmark<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.24327) | [PDF](https://arxiv.org/pdf/2611.24327.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Embodied AI systems, such as drones and autonomous vehicles, improve navigation by enhancing perception in environments containing unseen objects. While Visual Language Models (VLMs) offer strong...
 
 <a id="paper-2611-21126"></a>
 
@@ -84,6 +95,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Links:** [arXiv abstract](https://arxiv.org/abs/2611.20507) | [PDF](https://arxiv.org/pdf/2611.20507.pdf) | [↑ BackToTop](#browse-by-topic)
 
 **Abstract:** Vision-based 3D occupancy prediction provides a dense semantic representation of scenes for autonomous driving and embodied perception, yet remains vulnerable to occlusion, depth ambiguity, and...
+
+<a id="paper-2611-19839"></a>
+
+### Passable for Whom? Few-Shot Learning for Personal Calibration of Sidewalk Accessibility Perception for Human-Centered Autonomous Driving ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Wesley Maia, Angel Martinez-Sanchez, Maitrayee Keskar, Ross Greer<br>
+**Published:** 2026-11-15<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.19839) | [PDF](https://arxiv.org/pdf/2611.19839.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Whether a sidewalk is passable depends on who is trying to pass: people who use the same mobility aid disagree about the same image, so one label per scene, or per aid, is wrong for many of them. We...
 
 <a id="paper-2611-16742"></a>
 
@@ -418,7 +439,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-26816"></a>
 
-### Real-Time Radar Semantic and Panoptic Scene Understanding ![Recent](https://img.shields.io/badge/Recent-orange)
+### Real-Time Radar Semantic and Panoptic Scene Understanding ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Santosh Parit, Julia Hindel, Rohit Mohan, Georgi Pramatarov, Paul Newman, et al.<br>
 **Published:** 2026-10-19<br>
@@ -429,7 +450,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-26090"></a>
 
-### RGB--Event Object Detection Across Operating Frequencies via Reliability-Supervised Routing and Asymmetric-Resolution Fusion ![Recent](https://img.shields.io/badge/Recent-orange)
+### RGB--Event Object Detection Across Operating Frequencies via Reliability-Supervised Routing and Asymmetric-Resolution Fusion ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Peijun Shi, Jiannan Zhao, Xiujin Zhu, Zhenguo Lao, Chee-Onn Chow, et al.<br>
 **Published:** 2026-10-19<br>
@@ -1635,28 +1656,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 **Published:** 2026-07-08<br>
 **Links:** [arXiv abstract](https://arxiv.org/abs/2607.09787) | [PDF](https://arxiv.org/pdf/2607.09787.pdf) | [↑ BackToTop](#browse-by-topic)
 
-**Abstract:** LiDAR semantic segmentation is a key perception task in autonomous driving, where false predictions can affect downstream planning and safety-critical decision-making. Although adversarial attacks,...
-
-<a id="paper-2607-06516"></a>
-
-### Point as Skeleton: Accumulated Point Cloud Enhanced Autoregressive Generation for Closed-Loop Autonomous Driving Simulation
-
-**Authors:** Songbur Wong, Xiaosong Jia, Junqi You, Bo Zhang, Pei Xu, et al.<br>
-**Published:** 2026-07-07<br>
-**Research tags:** Simulation<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.06516) | [PDF](https://arxiv.org/pdf/2607.06516.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Evaluating end-to-end autonomous driving (E2E-AD) remains challenging, as existing driving simulation methods often trade off closed-loop interactivity (e.g., CARLA) and real-world visual fidelity...
-
-<a id="paper-2607-05783"></a>
-
-### Benchmarking the Robustness of Autonomous Driving to Environmental Illusions: A Lane Perception Perspective
-
-**Authors:** Tianyuan Zhang, Xianglong Liu, Aishan Liu, Lu Wang, Yitong Zhang, et al.<br>
-**Published:** 2026-07-06<br>
-**Research tags:** Benchmark · Simulation<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.05783) | [PDF](https://arxiv.org/pdf/2607.05783.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** Environmental illusions (eg., shadows, reflections, and tire marks) are naturally existing yet overlooked phenomena in real-world driving environments. They can disturb visual perception, leading to...
-
-<a id
+**Abstract:** LiDAR semantic segmentation is a key perception task in autonomous driving, where false predictions can affect downstream planning and safety-critical decisio

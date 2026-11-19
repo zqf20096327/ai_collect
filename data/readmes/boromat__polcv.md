@@ -129,7 +129,7 @@ Kopia zapasowa = skopiowanie folderu `data`.
 
 - **„Brak klucza OpenRouter”** - wklej klucz w Ustawieniach.
 - **„Brak środków na koncie OpenRouter”** - doładuj konto na openrouter.ai.
-- **Link z ogłoszeniem się nie pobiera** - kliknij „Link nie działa? Wklej treść ogłoszenia”, zaznacz całą stronę ogłoszenia (Ctrl+A), skopiuj i wklej. Program pobiera ogłoszenie jako `PolCV/<wersja>` (nie udaje przeglądarki), a gdy strona blokuje takie pobieranie, nie próbuje tego obejść, tylko prosi o wklejenie treści.
+- **Link z ogłoszeniem się nie pobiera** - kliknij „Link nie działa? Wklej treść ogłoszenia”, zaznacz całą stronę ogłoszenia (Ctrl+A), skopiuj i wklej. Program pobiera ogłoszenie jako `PolCV/<wersja>` (nie udaje przeglądarki), a gdy strona blokuje takie pobieranie, nie próbuje tego obejść, tylko prosi o wklejenie treści. Linków i przekierowań do tego komputera albo sieci lokalnej nie pobiera.
 - **„Z tego pliku nie da się odczytać tekstu”** - Twoje CV jest skanem/obrazkiem. Zapisz je ponownie jako PDF z Worda albo Google Docs.
 - **Okno `start.bat` zamyka się od razu** - uruchom je ponownie i przeczytaj komunikat; zwykle brakuje Node.js.
 - **Port 3000 zajęty** - zamknij inne okno PolCV albo ustaw inny port: w `start.bat` przed `call npm start` dopisz `set PORT=3001`.
@@ -151,7 +151,7 @@ Na 18 fikcyjnych parach profil + ogłoszenie z [`evals/`](evals/README.md) (11.1
 - Serwer nasłuchuje tylko na `127.0.0.1`. API odpowiada tylko pod `localhost`, `127.0.0.1` i `[::1]`, a zapytania zmieniające dane wysłane z innych stron dostają odmowę (program sprawdza nagłówki Host i Origin). Obca strona otwarta w tej samej przeglądarce nie odczyta więc Twojego profilu i niczego nie uruchomi.
 - Klucz OpenRouter leży zwykłym tekstem w `data/settings.json`, razem z własnymi kluczami profili (`profile.json` ich nie zawiera, a przeglądarka dostaje je tylko zamaskowane). Zmienna środowiskowa `OPENROUTER_API_KEY` ma pierwszeństwo i nie jest zapisywana na dysku.
 - Ustawienia mogą uruchomić programy na Twoim komputerze: `git pull --ff-only`, `npm install` i `npm run build` przy aktualizacji PolCV oraz `pip install` przy instalacji polanonu i modelu spaCy. Przed uruchomieniem program pokazuje dokładne komendy i czeka na Twoje potwierdzenie, a serwer uruchamia tylko komendy, które zostały potwierdzone.
-- Żeby udostępnić PolCV w sieci domowej, ustaw `CV_HOST=0.0.0.0` (wtedy każdy w tej sieci widzi Twoje dane); API odpowiada wtedy także pod adresami IP i nazwą tego komputera. Jeśli otwierasz PolCV pod inną nazwą, dopisz ją po przecinku w `CV_ALLOWED_HOSTS`, np. `CV_ALLOWED_HOSTS=polcv.lan`.
+- Żeby udostępnić PolCV w sieci domowej, ustaw `CV_HOST=0.0.0.0`. Program nie ma logowania, więc każdy w tej sieci może wtedy korzystać z niego tak jak Ty: widzieć i zmieniać Twoje dane, wydawać Twój kredyt OpenRouter i uruchamiać komendy aktualizacji i instalacji. API odpowiada wtedy także pod adresami IP i nazwą tego komputera. Jeśli otwierasz PolCV pod inną nazwą, dopisz ją po przecinku w `CV_ALLOWED_HOSTS`, np. `CV_ALLOWED_HOSTS=polcv.lan`.
 
 ## Zastrzeżenia
 

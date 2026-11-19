@@ -19,6 +19,10 @@ Built on [Quickshell](https://quickshell.org). Colors from your wallpaper, anima
 
 [Install](#installation) · [Screenshots](#screenshots) · [Shortcuts](#usage) · [Configuration](#configuration) · [Troubleshooting](#troubleshooting) · [Community](#community)
 
+
+> [!NOTE]
+> **hi-shell is taking a break.** Version 2.3.0 is the final release for now: there will be no updates until spring 2027. Everything keeps working as it is. The shell says so once in a window after the update (or right after the welcome on a fresh install). See you in the spring!
+
 <br>
 
 <img src="docs/keynote.webp" alt="hi-shell keynote: the show that opens the first run (rendered with tools/render_keynote.sh)" width="100%">
@@ -109,6 +113,23 @@ npm install -g @anthropic-ai/claude-code   # then run `claude` once to sign in
 ### Quick install
 
 ```sh
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/imu-useful/hi-shell/main/setup.sh)"
+```
+
+That line works in bash, zsh and fish (fish has no `<(...)`, so the usual `bash <(curl ...)` fails there).
+It opens the **installer window**: switch the parts you want on or off (packages, the Hyprland hook, the terminal configs,
+optional apps, starting the shell), pick where updates come from and press **Install**. The window asks for your sudo
+password once, only when a part installs packages (it checks it right away and doesn't keep it), then installs
+everything by itself and shows each step; **Details** has the full log (also saved to `~/.cache/hi-shell/install.log`).
+`hi installer` opens it again later, to add a part or repair the install.
+
+The window is GTK 4 + libadwaita: when `python-gobject`, `gtk4` or `libadwaita` is missing, `setup.sh` installs them
+with pacman first (asking for sudo in the terminal). Without a graphical session (a TTY, ssh), or with `setup.sh --text`,
+the text installer below runs instead. The window runs that same `install.sh` with `--yes` and the parts you picked.
+
+#### Text installer
+
+```sh
 git clone https://github.com/imu-useful/hi-shell.git ~/hi-shell
 ~/hi-shell/install.sh
 ```
@@ -118,8 +139,6 @@ or without cloning first (the repo goes to `~/.local/share/hi-shell/repo`):
 ```sh
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/imu-useful/hi-shell/main/install.sh)"
 ```
-
-That line works in bash, zsh and fish (fish has no `<(...)`, so the usual `bash <(curl ...)` fails there).
 
 The installer first shows what it can install (packages, the Hyprland hook, the fish / kitty / fastfetch / btop / Dolphin configs, optional apps, starting the shell):
 type the numbers to switch parts on or off, Enter to continue. Then it asks before every action ("Should I ...?"):
@@ -330,7 +349,7 @@ Sections:
 - `bar`: `position` (top, bottom, left, right), `style` (hug, float, islands, m3), height, margin, and the widget
   lists `left` / `center` / `right`. Widgets: `launcher`, `workspaces`, `activeWindow`, `media`, `resources`, `clock`,
   `weather`, `tray`, `systemIcons`, `notifications`, `utilButtons`, `networkSpeed`, `battery`, `updates`, `keyboardLayout`, `power`,
-  `visualizer` (needs `cava`), `divider`. Edit the widgets right on the bar: Settings › Bar › Edit on the bar, or `hi bar edit` (drag a widget to move it, off the bar to remove it; a panel adds the rest; `hi bar done` or Done leaves it). Settings › Bar has a picker for the bar to edit (main, a screen, an extra bar) and for widget copies. `bar.monitors` (screen name from `hyprctl monitors` → overrides of `enabled`, `position`, `style`, `height`, `margin`, `left`, `center`, `right` for the main bar on that screen; `hi bar monitor <screen> <key> <json>`), `bar.extra` (more bars, each `{ id, monitors, position, style, height, margin, left, center, right }`; `hi bar add <id> [position] [widgets…]`, `hi bar rm <id>`; put `clock`, the island, in one bar only), `bar.instances` (copies of a widget with options of their own: write `resources#disks` in a list and set `{ "resources#disks": { "shown": ["disk"] } }`; works for `resources`, `utilButtons`, `workspaces`, `media` and the new `zoneClock`, e.g. `{ "zoneClock#tokyo": { "zone": "Asia/Tokyo", "label": "TYO" } }`; `hi bar instance <type#name> <json>`). Popups, the OSD and the sidebars still follow the main bar's position. Your own widgets: a command with no QML (`hi script <name> '<command>'`, the `script` widget) or a QML file in `~/.config/hi-shell/widgets/` (`hi widgets new <name>`), see [docs/WIDGETS.md](docs/WIDGETS.md). Per-widget options: `bar.workspaces`, `bar.clock`, `bar.media`,
+  `visualizer` (needs `cava`), `divider`, `timer` (the running timer), `todo` (open tasks), `screenTime`, `brightness` (scroll to change), `temperature`, `uptime`. Edit the widgets right on the bar: Settings › Bar › Edit on the bar, or `hi bar edit` (drag a widget to move it, off the bar to remove it; a panel adds the rest; `hi bar done` or Done leaves it). Settings › Bar has a picker for the bar to edit (main, a screen, an extra bar) and for widget copies. `bar.monitors` (screen name from `hyprctl monitors` → overrides of `enabled`, `position`, `style`, `height`, `margin`, `left`, `center`, `right` for the main bar on that screen; `hi bar monitor <screen> <key> <json>`), `bar.extra` (more bars, each `{ id, monitors, position, style, height, margin, left, center, right }`; `hi bar add <id> [position] [widgets…]`, `hi bar rm <id>`; put `clock`, the island, in one bar only), `bar.instances` (copies of a widget with options of their own: write `resources#disks` in a list and set `{ "resources#disks": { "shown": ["disk"] } }`; works for `resources`, `utilButtons`, `workspaces`, `media` and the new `zoneClock`, e.g. `{ "zoneClock#tokyo": { "zone": "Asia/Tokyo", "label": "TYO" } }`; `hi bar instance <type#name> <json>`). Popups, the OSD and the sidebars still follow the main bar's position. Your own widgets: a command with no QML (`hi script <name> '<command>'`, the `script` widget) or a QML file in `~/.config/hi-shell/widgets/` (`hi widgets new <name>`), see [docs/WIDGETS.md](docs/WIDGETS.md). Per-widget options: `bar.workspaces`, `bar.clock`, `bar.media`,
   `bar.resources`, `bar.utilButtons`, `bar.updates`; `bar.media.spinArt` spins the cover art like a record while playing (on by default)
 - `launcher`: `prefixes` (the prefix characters that are on, in the order of the chips: `=` `>` `<` `:` `;` `/` `~`) and `sources` (what a plain search looks through, in the order of the results: `math`, `focus`, `windows`, `settings`, `apps`, `emoji`); Settings › Sidebars & launcher
 - `sidebar`: `sections` (what the right sidebar shows and in what order: `quickToggles`, `quickSliders`, `tabs`), `tabs` (`notifications`, `calendar`, `todo`, `timers`, in order; Settings › Sidebars & launcher), `quickToggles.style` (android, classic), `quickToggles.perPage` (tiles per page, 6 by default, 0 = one page), `quickToggles.slide` (animate page changes) and `quickToggles.shown` (order; also editable with the ✎ button
@@ -630,6 +649,7 @@ translations/        interface translations (ru.json)
 hypr/hi-shell.lua    a stub for configs that still load the old single file (it loads the folder below)
 hypr/hi-shell/       Hyprland autostart, keybinds, Super tap, window and layer rules, Wait Mode submap (installed to ~/.config/hypr/hi-shell)
 run.sh               start the shell (Vulkan rendering when available)
+setup.sh             open the installer window (installer/: GTK 4 + libadwaita, runs install.sh with your picks)
 install.sh           install packages, link the repo, hook into Hyprland, offer the configs in dots/
 dots/                terminal configs (fish, kitty, fastfetch, btop)
 update.sh            pull and restart

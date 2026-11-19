@@ -133,6 +133,8 @@ Frontends and SDK:
 
 The default configuration and built-in resources live in [`agent_runtime/defaults/`](agent_runtime/defaults). See [`agent_runtime/README.md`](agent_runtime/README.md) for how assembly works.
 
+`default_permission_preset` in `agent_config.json` sets initial permissions for new sessions: `ask_for_approval`, `workspace_access`, or `full_access`. It ships as `ask_for_approval`, falls back to it when the field is absent, and can also be changed under Settings → Agent → 默认权限 in the GUI. Changes apply to new sessions; existing sessions retain their saved permissions.
+
 ## Development and testing
 
 Python tests use a mock provider and need no real API key:
@@ -140,11 +142,13 @@ Python tests use a mock provider and need no real API key:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[gui,test]"
+rustup toolchain install stable
+cargo build --release --manifest-path nosis-sandbox/Cargo.toml
+python -m pip install -e ".[server,test]"
 python -m pytest --durations=20
 ```
 
-On Windows, activate the environment with `.venv\Scripts\Activate.ps1`.
+On Windows, activate the environment with `.venv\Scripts\Activate.ps1`. Installing from a source checkout requires the Rust stable toolchain; release wheels contain the matching `nosis-sandbox` executable for Windows, macOS, or Linux.
 
 Pytest distributes test classes across four isolated worker processes. Use `-n 0` for a serial run or `-n 2` on smaller machines. The full suite includes package installation and real local MCP/sandbox processes; `--ignore=tests/test_bridge_client.py` omits the package installation check during iteration. The standalone plugin testkit has its own command in [docs/plugin-interop.md](docs/plugin-interop.md).
 
@@ -159,6 +163,12 @@ npm test
 ```
 
 The Linux sandbox integration tests require a working bubblewrap and user namespaces; when the runtime conditions are not met, the tests explicitly skip.
+
+Run the native helper and sandbox permission tests with `cargo test --manifest-path nosis-sandbox/Cargo.toml`. Platform wheels are built in the `build-platform-wheels` workflow.
+
+The wheel matrix covers Windows x64, macOS 11+ on Apple Silicon, and Linux with glibc 2.28+ on x86-64 and aarch64. Each `py3-none-<platform>` wheel supports Python 3.11+ and includes the native helper and the built TUI, GUI, and IM assets. The workflow installs each wheel and executes its helper to check the package and protocol.
+
+The internal helper protocol starts with a JSON `protocol_version` greeting, followed by one newline-terminated JSON request and one JSON result carrying the same version. Python validates the greeting before sending a command; the helper validates the request version before decoding execution fields or initializing the sandbox. Keep `HELPER_PROTOCOL_VERSION` in `agent_core/execution/process.py`, `PROTOCOL_VERSION` in `nosis-sandbox/src/main.rs` and the request in `tests/smoke_wheel.py` aligned, and increment them together when changing the contract. After the request, stdin is a cancellation channel: a byte or EOF cancels the command. Keep it open until execution finishes.
 
 On Windows the shell tool uses PowerShell 7, so PowerShell 7 has to be installed separately.
 

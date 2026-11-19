@@ -17,7 +17,7 @@
 </div>
 
 > [!TIP]
-> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 436 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
+> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 443 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
 >
 > [AstroAI Today](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/today.html) collects new arXiv papers on machine learning in astronomy every day. A language model (DeepSeek V4.1 Flash) screens them and writes a one-line TL;DR for each paper and a TL;DR for each week and month. These papers are not reviewed; the curated list below is.
 >
@@ -288,6 +288,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [The Role of Galactic Shear in Regulating Local Star Formation Efficiency: A Combined MaNGA DynPop and ALMaQUEST Study](https://arxiv.org/abs/2611.22300 "Random forest regression on spatially resolved MaNGA and ALMaQUEST measurements ranks galactic shear as the strongest dynamical correlate of lower local star-formation efficiency, with modest predictive power.") | arXiv 2026 | - | - |
 | 2026.11 | [Unsupervised learning reveals a small number of galaxy formation pathways in IllustrisTNG](https://arxiv.org/abs/2611.17559 "Uses UMAP and k-means on star-formation histories of roughly 10,000 IllustrisTNG galaxies to identify six groups with distinct assembly histories.") | arXiv 2026 | - | - |
 | 2026.11 | [MAHA-z: A Mahalanobis distance kNN estimator for photometric redshifts](https://arxiv.org/abs/2611.14582 "A k-nearest-neighbour estimator with a Mahalanobis metric learned from the reference-sample covariance returns photometric-redshift point estimates and kernel-density posteriors, validated on Euclid Flagship 2, Legacy-KiDZ, VIPERS and DES Y3.") | arXiv 2026 | - | - |
 | 2026.11 | [Euclid Data Release 1 (DR1): Photometric-redshift pipeline overview and validation](https://arxiv.org/abs/2611.15987 "The Euclid DR1 photometric-redshift pipeline combines Phosphoros template fitting, NNPZ nearest-neighbour estimates and probabilistic random forest classification, with performance measured against weighted spectroscopic samples.") | arXiv 2026 | - | - |
@@ -355,6 +356,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [Spectro-Spatial Survey Fusion](https://arxiv.org/abs/2611.21798 "Adaptive spatial Gaussians and a jointly learned spectral dictionary fit 400 SDSS exposures and 800 fibre spectra in COSMOS and predict withheld observations.") | arXiv 2026 | [Code](https://github.com/GeorgeVassilakis/survey-fusion-paper-code) | - |
 | 2026.07 | **E-BGS** [From DESI to Euclid: A Generative Bridge to Improve Measurements of Galaxy Structure](https://arxiv.org/abs/2607.06891 "Image-to-image Schrödinger bridge translates DESI Legacy Survey images of Bright Galaxy Survey targets into Euclid VIS-like images, recovering structure down to 0.37 arcsec and reducing the bias of structural measurements such as the Petrosian radius.") | **ApJL 2026** | [Code](https://github.com/Rh-YE/EBGS) | [Journal](https://doi.org/10.3847/2041-8213/ae9cbf) |
 | 2026.05 | [FluxFlow: Conservative Flow-Matching for Astronomical Image Super-Resolution](https://arxiv.org/abs/2605.03749 "Pixel-space flow matching for super-resolution that weights training by observational uncertainty and source regions, with a training-free Wiener-regularised correction against spurious sources; introduces 19,500 co-registered DESI to HST image pairs.") | **NeurIPS 2026** | [Code](https://github.com/I2WM/FluxFlow) | - |
 | 2026.04 | [Diffusion-based Galaxy Simulations for the Roman High Latitude Survey](https://arxiv.org/abs/2604.22917 "DDPM trained on JWST JADES imaging to generate Roman-like multi-band galaxy stamps for weak lensing.") | arXiv 2026 | - | - |
@@ -475,7 +477,5 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
-| 2026.11 | **Cosmo-PINN** [Testing General Relativity by Reconstructing Dark Energy and the Growth Index with Physics-Informed Neural Networks](https://arxiv.org/abs/2611.19117 "Cosmo-PINN reconstructs the dark-energy equation of state and the growth index from DESI DR2 BAO, cosmic chronometers, SNe Ia and redshift-space distortions, and compares growth predicted by general relativity with growth from the reconstructed index on a shared background.") | arXiv 2026 | - | - |
-| 2026.11 | [Cubic Galileon Gravity on Nonlinear Scales with Hi-COLA for LSST Year 1](https://arxiv.org/abs/2611.18211 "Trains a Gaussian-process emulator on Hi-COLA simulations for the nonlinear Cubic Galileon matter power-spectrum boost and validates it with LSST Y1 mock analyses.") | arXiv 2026 | [Code](https://github.com/LSSTDESC/CubicGalileonEmu) [Forecast Code](https://github.com/CarolaZano/CubicGalileon_Forecasts) | - |
-| 2026.11 | [Precise Deep-Learning Reconstruction of Galaxy Cluster Mass Maps and Substructures from Optical Observations](https://arxiv.org/abs/2611.18487 "U-Nets trained on mock optical images of hydrodynamical-simulation clusters reconstruct total mass maps and subhalo mass functions, and maps for HST CLASH clusters agree with independent lensing measurements.") | arXiv 2026 | [Code](https://github.com/atulit19/U-Net-Mass-Maps-HST-CLASH) | - |
-| 2026.11 | [ViViViT: a Video-to-Video Vision Transformer for Cosmological Ligh
+| 2026.11 | [Effects of QCD Equation of State on Cosmological Parameters and Stochastic Gravitational-Waves Spectrum](https://arxiv.org/abs/2611.22719 "Gaussian process regression generates 1,000 thermodynamically consistent HotQCD-based equations of state to propagate QCD and electroweak effects into early-Universe expansion and stochastic gravitational-wave spectra.") | arXiv 2026 | - | - |
+| 2026.11 | **Cosmo-PINN** [Testing General Relativity by Reconstructing Dark Energy and the Growth Index with Physics-Informed Neural Networks](https://arxiv.org/abs/2611.19117 "Cosmo-PINN reconstructs the dark-energy equation of state and the growth index from DESI DR2 BAO, cosmic chronometers, SNe Ia and redsh

@@ -25,10 +25,10 @@ Use [Atlas Cloud](https://www.atlascloud.ai?utm_source=github&utm_campaign=atlas
 - 🎬 **Video** (250) — Seedance 2.5 Flash · Seedance 2.5 · Bach 1.0 Pro · MiniMax H3 Max · MiniMax H3 Fast · Gemini Omni 1.1 Flash
 - 🎨 **Image** (160) — MiniMax H3-Image Highspeed · MiniMax H3-Image · GPT Image 2.6 Sunburst · GPT Image 2.6 Flare
 - 🧊 **3D** (14) — Seed3D 2.0 · Tripo H3.1 · Hunyuan 3D Rapid · Hunyuan 3D Pro
-- 💬 **LLM** (88) — Hy4 · Gemini 4 Hydrogen · Gemini 4 Carbon · DeepSeek V4.1 Flash 1017
+- 💬 **LLM** (92) — Hy4 · Gemini 4 Hydrogen · Gemini 4 Carbon · DeepSeek V4.1 Flash 1017
 - 🔊 **Audio (TTS · Music · ASR)** (22) — Seed Audio 1.0 · MiniMax Speech 2.6 Turbo · MiniMax Speech 2.6 HD · xAI TTS v1
 
-- 📚 **Explore more** — [all 568 live models »](https://www.atlascloud.ai/models?utm_source=github&utm_campaign=atlas-cloud-skills)
+- 📚 **Explore more** — [all 572 live models »](https://www.atlascloud.ai/models?utm_source=github&utm_campaign=atlas-cloud-skills)
 <!-- ATLAS-MODELS:END -->
 
 ## Contents
@@ -62,7 +62,7 @@ Don't start from a blank prompt — start from a workflow. Three to try first:
 Quickly integrate Atlas Cloud API into your projects. This skill provides:
 
 - Complete API reference for image generation, video generation, LLM chat, media upload, and quick generation
-- All 9 MCP tools documented: `atlas_list_models`, `atlas_search_docs`, `atlas_get_model_info`, `atlas_generate_image`, `atlas_generate_video`, `atlas_quick_generate`, `atlas_chat`, `atlas_get_prediction`, `atlas_upload_media`
+- Every Atlas MCP tool documented, with which clients get which: model discovery (`atlas_list_models`, including ready-made Workflows, and `atlas_get_model_info`), help-doc search (`atlas_search_docs`), generation with a quote before every charge (`atlas_generate_image`, `atlas_generate_video`, `atlas_generate_audio`, `atlas_transcribe_audio`, `atlas_quick_generate`, `atlas_chat`), results and history (`atlas_get_prediction`, `atlas_list_predictions`), the Asset Library (`atlas_search_assets`, `atlas_use_assets`), uploads (`atlas_get_upload_url` on the hosted server, `atlas_upload_media` locally, plus the upload card and chat-attachment import in apps that support them), `atlas_cancel_quote`, and balance and usage
 - Ready-to-use code templates in Python, Node.js/TypeScript, and cURL
 - Popular model IDs with pricing info
 - OpenAI SDK compatibility guide for LLM models

@@ -4,13 +4,13 @@
 
 **Pull out the entities you define, using a plain-English rulebook, on your own CPU.**
 
-A 0.8B model that extracts and labels exact spans using your plain-English rulebook. Created by [Jungroo AI Labs][jungroo].
+A 0.8B model that extracts and labels exact spans using your plain-English rulebook. It is non-generative: it marks spans in your text and never writes new text. The name is ReDefine + NER: you redefine what counts as an entity by editing a rulebook, not by retraining. Created by [Jungroo AI Labs][jungroo].
 
 <sub>On CrossNER AI it scores 68.1 F1 on a CPU server, about 5 F1 behind Claude Haiku 5.5 (73.1) and 4.3 behind Gemini 3.1 Pro (72.4), given the same rulebook. [How it compares, including where it loses](#against-frontier-models)</sub>
 
 [![CI][ci-badge]][ci]
 
-[Quickstart](#quickstart) · [Label mode](#label-mode) · [See a rule at work](#see-a-rule-at-work) · [Benchmarks](#benchmarks) · [HTTP server](#http-server) · [Limitations](#limitations) · [Weights][weights] · [Demo][demo]
+[Quickstart](#quickstart) · [Label mode](#label-mode) · [See a rule at work](#see-a-rule-at-work) · [Benchmarks](#benchmarks) · [HTTP server](#http-server) · [Limitations](#limitations) · [Weights][weights] · [Demo][demo] · [PII demo][pii-demo]
 
 </div>
 
@@ -84,11 +84,11 @@ Need it on your own data? We write and test rulebooks with you and run ReDefiNER
 | Size | 0.8B parameters; one 0.77 GB int8 file |
 | Hardware | CPU, with about 2–2.6 GB of memory at peak, or an NVIDIA GPU; works offline once downloaded |
 | Speed | With the rulebook loaded: 0.4–0.7 s per sentence on a 4-core CPU or an Apple M2 (extract mode), 0.05 s per text on an NVIDIA A10 or RTX A5000 ([details](#speed)) |
-| Limits | English only; spans up to 16 tokens; rulebooks tested up to about 10,000 tokens; in long texts, each part is read on its own, so labels can differ across a document |
+| Limits | English only; spans up to 16 tokens by default, more with `max_span_tokens` (64 for PII); rulebooks tested up to about 10,000 tokens; in long texts, each part is read on its own, so labels can differ across a document |
 | Interfaces | Python (`Tagger.extract`, `Tagger.label`) and a local HTTP server (`redefiner serve`) |
 | Benchmarks | Against five frontier models and against published research models: [results](#benchmarks) |
 | Licence | Apache-2.0: free to use, change and share, including in commercial products |
-| Release | Weights 1.0 (October 2026), package 1.0.8 ([changes][changelog]) |
+| Release | Weights 1.0 (October 2026), package 1.0.9 ([changes][changelog]) |
 | Made by | [Jungroo AI Labs][jungroo]; authors Cibe Hariharan K and Sethuraman T A |
 
 ## Quickstart
@@ -645,6 +645,31 @@ inference, like ReDefiNER, but scores each word on its own, so multi-word names 
 Accuracy on the benchmark's own cases. Rows not marked "our run" are from the S1MB leaderboard. The d1 decision models got S1MB's records as they are, through their
 `system_one` interface. Settings, prompts and every other caveat are on the [benchmark page][benchmark-page].
 
+### Masking personal data: PIIMB and RedactionBench
+
+With a PII rulebook and no training on any personal-data dataset, character-level masking F2 on the four English
+tasks of the PII Masking Benchmark (full test splits):
+
+| Setup | Privy | Gretel | AI4Privacy EN | Nemotron-PII | Mean | Place among 37 |
+|---|---:|---:|---:|---:|---:|---:|
+| ReDefiNER, `redefiner-pii` default rulebook | 73.4 | 94.1 | 96.4 | 84.8 | **87.2** | 8th |
+| ReDefiNER, a rulebook written for each dataset | 80.5 | 94.5 | 97.1 | 86.0 | 89.5 | 6th |
+| Fastino gliner2-privacy-filter-PII-multi | 64.6 | 93.6 | 91.4 | 85.4 | 83.7 | |
+| OpenAI Privacy Filter | 53.6 | 86.9 | 84.3 | 60.7 | 71.4 | |
+
+"Place among 37" orders the 36 models with published PIIMB results, plus the row, by the mean of these four tasks
+(PIIMB's leaderboard averages six; we ran the English four). Five of the seven models above the default row declare
+training on PIIMB source datasets. On RedactionBench, which counts dates, places and organisations mostly as
+over-masking, the narrower `identifiers.txt` rulebook scores 0.520 (11th of 45) and the default 0.393. Both
+rulebooks, the method and a rerun script: [benchmarks/pii][pii-benchmarks].
+
+To mask by a written policy rather than fixed categories (for example "keep our support agents' names, mask
+customers'"), see [PolicyMask][policymask], our open benchmark of 10 plain-English redaction policies on synthetic texts. Of the
+six systems tested, ReDefiNER scored highest on every policy that depends on whose data it is.
+
+Choosing an open model? See the comparison pages [ReDefiNER vs GLiNER][compare-gliner],
+[GLiNER alternatives][gliner-alternatives] and [guideline-following NER: ReDefiNER vs GoLLIE][compare-gollie].
+
 ## Rulebooks
 
 A rulebook has an optional `[RULES]` section with rules for every type, then one `[TYPE]` section per type: a one-line
@@ -713,7 +738,7 @@ What works, from the benchmarks (see [How to write rules that work][writing-rule
   changed silently:
   - it doesn't start and end on token boundaries ("would be snapped"), such as "Ada Lo", which ends inside the token
     "Lov", or a span with a space at either end;
-  - it is longer than 16 tokens;
+  - it is longer than the span limit (16 tokens by default; see [Longer spans](#longer-spans));
   - its offsets are invalid.
 - `snap=True` labels a span that isn't on token boundaries instead: it trims spaces from both ends, widens the span to
   whole tokens and returns the new offsets with `"snapped": True`. Tokens are not words, so a snapped span can still
@@ -730,6 +755,47 @@ sentence ends where possible:
 
 Each window is read on its own, so the same name can get different labels in different parts of a long document.
 If consistency matters, label each distinct string once with `label` and apply the result everywhere.
+
+## Longer spans
+
+Digits are one token each, so a spaced card number ("4556 7375 8689 9855") is 19 tokens, longer than the trained limit
+of 16, and the model cannot return it. Raise the limit when you load the model:
+
+```python
+tagger = Tagger.from_pretrained("jungroo-ai/redefiner-0.8b", max_span_tokens=64)
+```
+
+Spans longer than 16 tokens reuse the trained width-16 setting; no weights change, and spans of up to 16 tokens score
+exactly as before. On the release's own reproduce sets (CrossNER AI extract, Few-NERD label) limits of 32, 48 and 64
+gave the same predictions as 16. On Gretel PII dev documents, 48 raised recall from 96.6% to 97.4% over 32, mostly
+long IPv6 addresses and API keys, and 64 gave the same results as 48; 64 is the setting of `jungroo-ai/redefiner-pii`.
+
+## Redact files
+
+<p align="center"><a href="https://huggingface.co/jungroo-ai/redefiner-pii/resolve/main/docs/assets/video/redefiner-pii.mp4"><img src="https://raw.githubusercontent.com/jungroo-ai/redefiner/main/docs/assets/video/redefiner-pii-thumb.png" width="780" alt="Play the 30-second PII redaction video"></a></p>
+<p align="center"><sub>30 seconds, with a voiceover: a clinic note masked with the PII rulebook, then by the clinic's own policy. Every mask in it is real output from this model. <a href="https://huggingface.co/spaces/jungroo-ai/redefiner-redact">Try it in your browser</a>.</sub></p>
+
+```bash
+redefiner redact notes.txt                       # the PII rulebook of jungroo-ai/redefiner-pii
+redefiner redact notes.txt --rules policy.txt    # your own rulebook
+```
+
+For each file it writes `notes.redacted.txt`, with every span replaced by its type in brackets (`[EMAIL]`), and
+`notes.audit.json`, with each masked span's text, type, confidence and offsets in the original. Text files only
+(UTF-8). `--min-confidence` masks only spans at or above a confidence; choose it on a few dozen of your own texts.
+`--none-bias` sets how readily borderline spans are masked (higher masks more; the default is the model page's setting).
+The model can miss personal data: check the output, and don't use it as the only safeguard.
+
+[`jungroo-ai/redefiner-pii`][redefiner-pii] is a pointer, not a second model: its page holds two PII rulebooks and settings, and the weights
+come from `jungroo-ai/redefiner-0.8b`. Loading it in Python gives a Tagger whose default rulebook is that PII rulebook:
+
+```python
+tagger = Tagger.from_pretrained("jungroo-ai/redefiner-pii")
+tagger.extract("Call Rosa Diaz on +44 20 7946 0321.")   # no rulebook needed
+```
+
+Results, both PII rulebooks, redaction by a written policy and the limits, on one page: [PII redaction with
+ReDefiNER][pii-guide].
 
 ## Speed
 
@@ -815,8 +881,10 @@ if it has to be reachable from other machines.
 - **Types that depend on context need structure.** Precedence rules and numbered rules with worked examples help (see [Structure for hard rules][writing-rules-hard-rules]); rules that need counting or judging what didn't happen are still mostly ignored.
 - **Names-only rulebooks are weaker** than descriptive ones; always write a one-line description per type.
 - **Abstaining is weak.** When a type's condition isn't clearly met, the model tends to label anyway.
-- **Spans up to 16 tokens.** Long texts are split into parts that are each read on their own, so the same name can get
-  different labels in different parts of a document.
+- **Spans up to 16 tokens by default.** The model was trained on spans of up to 16 tokens. Longer limits reuse that
+  training (see [Longer spans](#longer-spans)); very long strings such as full URLs with query strings can still be
+  missed. Long texts are split into parts that are each read on their own, so the same name can get different labels
+  in different parts of a document.
 - English only; tested on English benchmarks only.
 
 ## Training data
@@ -845,7 +913,7 @@ types, document fields, search-query slots, and research on rule-following extra
 |---|---|
 | Backbone | [Qwen3.5-0.8B][qwen-backbone]: 24 layers (18 linear-attention, 6 full-attention), hidden size 1,024. LoRA of rank 32 on the attention and MLP projections, merged into the weights |
 | Rulebook encoding | The rulebook runs once through the backbone, with a marker after each type's section. Its states are cached, so each new text costs only the text |
-| Span head | Scores every span of up to 16 tokens from its start and end states and a width embedding |
+| Span head | Scores every span of up to 16 tokens by default (longer with `max_span_tokens`) from its start and end states and a width embedding |
 | Label head | Matches each span against the marker vectors of the rulebook's types, plus a learned "none" |
 | Weights | int8 weight-only, with one fp32 scale per output channel; fp32 compute |
 | Rulebook length | Works with rulebooks of up to about 10,000 tokens, the longest in our internal tests; the public benchmark rulebooks go up to about 2,000. Longer rulebooks fit in Qwen3.5's 262,144-token context but are untested. The rulebook is encoded in 1,024-token chunks, so memory does not grow with the square of its length; a long one takes longer to encode the first time and uses more memory |
@@ -907,9 +975,17 @@ Created by [Jungroo AI Labs][jungroo]. For help putting it to work on your own d
 [ci-badge]: https://github.com/jungroo-ai/redefiner/actions/workflows/ci.yml/badge.svg
 [weights]: https://huggingface.co/jungroo-ai/redefiner-0.8b
 [demo]: https://huggingface.co/spaces/jungroo-ai/redefiner-demo
+[pii-demo]: https://huggingface.co/spaces/jungroo-ai/redefiner-redact
 [ci]: https://github.com/jungroo-ai/redefiner/actions/workflows/ci.yml
 [jungroo-redefiner]: https://jungroo.com/redefiner/
+[compare-gliner]: https://jungroo.com/redefiner/vs-gliner
+[gliner-alternatives]: https://jungroo.com/redefiner/gliner-alternatives
+[compare-gollie]: https://jungroo.com/redefiner/guideline-following-ner
+[pii-guide]: https://jungroo.com/redefiner/pii-redaction
 [changelog]: https://github.com/jungroo-ai/redefiner/blob/main/CHANGELOG.md
+[redefiner-pii]: https://huggingface.co/jungroo-ai/redefiner-pii
+[pii-benchmarks]: https://github.com/jungroo-ai/redefiner/blob/main/benchmarks/pii/README.md
+[policymask]: https://huggingface.co/datasets/jungroo-ai/PolicyMask
 [pytorch-install]: https://pytorch.org/get-started/locally/
 [templates]: https://github.com/jungroo-ai/redefiner/tree/main/docs/templates
 [writing-rules]: https://github.com/jungroo-ai/redefiner/blob/main/docs/writing-rules.md

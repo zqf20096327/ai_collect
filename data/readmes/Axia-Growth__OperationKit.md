@@ -98,6 +98,7 @@ list and keep both locks:
 | Writing agent files | [docs/agents/agent-file-format.md](./docs/agents/agent-file-format.md) |
 | Agent / HTTP / MCP API reference | [docs/api/README.md](./docs/api/README.md) |
 | Model choice and portability | [docs/product/08-model-portability.md](./docs/product/08-model-portability.md) |
+| Engineers: how the code is laid out (start here) | [docs/architecture/OVERVIEW.md](./docs/architecture/OVERVIEW.md) |
 | Engineers: architecture and threat model | [docs/architecture/README.md](./docs/architecture/README.md) · [SECURITY.md](./SECURITY.md) |
 
 ## Status
@@ -117,4 +118,5 @@ Copyright 2026 Axia Growth LLC and contributors.
 ## Contributing
 
 Contributions are welcome. A signed Contributor License Agreement is required before a pull request
-can be merged; see [CONTRIBUTING.md](./CONTRIBUTING.md).
+can be merged; see [CONTRIBUTING.md](./CONTRIBUTING.md) for local setup, the checks CI runs and the
+test rules, and the [architecture overview](./docs/architecture/OVERVIEW.md) for a map of the code.

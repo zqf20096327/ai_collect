@@ -53,7 +53,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 - **Research-backed clip selection** – map → pool → rank: the transcript is chunked at long pauses with 20% overlap (no "lost in the middle" on long videos), every standalone moment is collected per chunk in parallel, candidates are snapped/deduped, then scored on a rubric (hook / value / flow / shareability, plus relevance with a focus) as the median of k samples, and the top 10 get K sliding pairwise head-to-head passes (PRP-Sliding-K; `ANALYZE_PAIRWISE_PASSES`, default 3 so the top 3 you see first are placed reliably) with positions swapped to cancel judge bias. Cost: at most Σ(n−1−p) pairs × 2 calls, i.e. 48 calls for the top 10 with 3 passes (18 with 1); pairs met twice are judged once. No target count: in auto mode weak picks are dropped by a gate relative to the run, not a fixed number, because pointwise scores do not transfer between judge models: a clip is dropped below max(`ANALYZE_MIN_SCORE_FLOOR` = 25, median − `ANALYZE_SCORE_MAD_K` = 1 × MAD) of the pooled rubric totals, and the best clip is always kept (`ANALYZE_SCORE_RULE=absolute` restores the old fixed 45). The threshold and its median/MAD are in the project's `candidates` artifact. Candidates whose scoring failed are never compared with rubric totals; they only fill in when fewer than 3 scored clips survive. Optional "at most N" cap, and "Find clips about …" keeps only on-topic moments. Click a clip's score for the breakdown. `ANALYZE_JUDGE_MODEL` lets a different model score and compare (less self-preference than judging its own hooks). `ANALYZE_CONCURRENCY`, `ANALYZE_SCORE_SAMPLES`, `ANALYZE_PAIRWISE` tune cost (auto: 1 call at a time, 1 sample, no pairwise for a self-hosted judge; 4 / 3 / on for cloud).
 - **Clean transcripts** – names are fixed from vocabulary hints and a constrained LLM correction, and fillers, repetitions and false starts are cut with jump cuts. Every cut is located by forced alignment and checked by listening to the seam, so karaoke highlights land on the syllable. Each fix shows inline in the transcript with accept/reject, and long pauses can be shortened (details below).
 - **Smart 9:16 reframing** – UltraFace (1.2 MB ONNX, CPU, ~7 ms/frame via `onnxruntime-node`) samples each clip at 4 fps and picks a layout per segment (clips are split at scene cuts and face-presence changes, so a picture-in-picture intro can be "fit" and the talking head after it "face"; shot cuts are detected on every clip, and a multi-camera edit that alternates a close-up with a wide shot every second or two changes layout at each cut): **face** (crop follows the speaker with "heavy tripod" smoothing: dead zone, capped pan speed, instant snap at scene cuts), **split** (two speakers stacked), **stack** (slides/screen on top, the webcam tile below — the picture-in-picture box of a Zoom, Teams, Meet or OBS recording, not a face-sized crop that reaches into the slides), or **fit** (whole frame over a blurred background when there is no face, e.g. graphics and b-roll, or when three or more people share the frame). With two people in a wide shot the crop follows whoever is talking (mouth motion correlated with the audio envelope, minimum 2.5 s per shot), falling back to a split when detection isn't confident. Override per project, per clip or per section, including a hand-set crop. Reference for every layout, its triggers, caveats and fixtures: [docs/LAYOUTS.md](docs/LAYOUTS.md).
-- **Captions** – AI-picked key words per clip coloured and enlarged (editable in the editor), readability limits (≈2 short lines, comma/sentence breaks, a line stays up long enough to read: at least 0.7 s, 0.3 s per word and 20 characters per second), ASS karaoke word highlight (any colour), boxed, or outlined; size, words on screen (1 = one word at a time), uppercase; hook overlay with its own duration. Caption and hook positions are free x/y set by dragging on a live 9:16 preview that uses the renderer's crop math and font metrics, with a platform safe-zone overlay. In split and stack sections that last 2.5 s or more, captions sit on the line between the two panes instead of on the lower speaker (a switch turns it off). Project-wide defaults, per-clip overrides. Burned in with ffmpeg + libass.
+- **Captions** – AI-picked key words per clip coloured and enlarged (editable in the editor), readability limits (≈2 short lines, comma/sentence breaks, a line stays up long enough to read: at least 0.7 s, 0.3 s per word and 20 characters per second), ASS karaoke word highlight (any colour), boxed, or outlined; font (the nine in the image or any `.ttf` / `.otf` / `.woff` / `.woff2` an admin uploads under Settings → System → Captions, `add_font`, `reelsaw fonts add`), size, words on screen (1 = one word at a time), uppercase; hook overlay with its own duration. Caption and hook positions are free x/y set by dragging on a live 9:16 preview that uses the renderer's crop math and font metrics, with a platform safe-zone overlay. In split and stack sections that last 2.5 s or more, captions sit on the line between the two panes instead of on the lower speaker (a switch turns it off). Project-wide defaults, per-clip overrides. Burned in with ffmpeg + libass.
 
 **Editing**
 
@@ -70,7 +70,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 
 - **Library** – intros and outros, logos, stickers, b-roll, music and sound effects (PNG, JPG, GIF, WebP, SVG, video, audio). Drop many files at once (duplicates are detected), search your items plus a bundled catalog and, with an admin key, Pexels, Pixabay, Freesound, Iconify, Giphy and Klipy. Each clip is rendered as intro + clip + outro in a single encode, fitted to vertical over a blurred background.
 - **Per project and per clip** – a project follows the default intro/outro, uses none or a specific item; each clip can follow the project, use none or pick its own. An unusable asset is skipped with a plain-language event instead of failing the clip.
-- **Layers** – one timeline lane for image/video overlays, text and sound (`update_clip { layers }`, `reelsaw clip-layers`): position, size, opacity, fade in / out, fonts shipped in the image, several music tracks with fade, loop and sidechain ducking under speech. Right-click a layer on the 9:16 preview to edit, centre, reorder, copy or remove; double-click text to retype it. ⌘C / ⌘V copy and paste layers.
+- **Layers** – one timeline lane for image/video overlays, text and sound (`update_clip { layers }`, `reelsaw clip-layers`): position, size, opacity, fade in / out, any of the instance's fonts (shipped in the image or uploaded by an admin), several music tracks with fade, loop and sidechain ducking under speech. Right-click a layer on the 9:16 preview to edit, centre, reorder, copy or remove; double-click text to retype it. ⌘C / ⌘V copy and paste layers.
 - **Fades and transitions** – fade the clip in from black and out to black (picture and sound), and join the intro and outro with a cut, a dip to black or a crossfade; previewed live in the editor's Style tab, per clip or for every clip, and in Project defaults. Over MCP and the CLI they are style fields (`fadeIn`, `fadeOut`, `bumperTransition`, `bumperTransitionSec` on `update_clip { style }`, `update_project_style`, `reelsaw update-style --set`); a picture or text layer takes `fade`. See [docs/specs/transitions.md](docs/specs/transitions.md).
 - **Layer templates** – save a look once (a logo pop in the first seconds, a follow card at the end, a watermark or a music bed, plus an intro and outro) with timing from the start, the end, the whole clip or a share of its length, then apply it to selected clips or set it on a project so every new clip gets it (`list_layer_templates`, `apply_layer_template`, `reelsaw templates`).
 
@@ -461,6 +461,9 @@ ships in the same image, and runs only with `REELSAW_EE=true` plus `STRIPE_SECRE
 - Settings → Plan and billing shows the plan, the period's usage and the plan grid; Checkout and the
   Billing Portal are Stripe's pages. `get_billing`, `billing_checkout_url` and `billing_portal_url` do the same over MCP;
   `reelsaw billing <email>` shows the row, Stripe's view and the last webhook events.
+- A cancellation keeps the plan until the subscription ends (at the period end, or on the date set in Stripe), then
+  the account is on Free; nothing is deleted. The Billing page, `get_billing` and a mail say ahead of time which Free
+  limits the account would be over (storage, projects, this month's minutes), and a second mail says when it ends.
 - A failed payment keeps the plan for `BILLING_GRACE_DAYS` (7), then the account is on Free.
   Admins can grant a plan without Stripe (Users → Limits → Plan, or `reelsaw billing set-plan`).
   A lapse or downgrade does not re-watermark clips already rendered; only new renders get the watermark.
@@ -508,7 +511,7 @@ claude mcp add --transport http reelsaw https://your-host/api/mcp --header "Auth
 
 **Key permissions.** A key acts as you, with one exception: the instance-administration tools
 (`get_instance_settings`, `set_instance_settings`, `list_workers`, `get_queue`, `list_failures`,
-`get_failure`, `retry_failures`, `dismiss_failures`, `list_users`, `manage_users`, `check_for_update`, and instance-wide
+`get_failure`, `retry_failures`, `dismiss_failures`, `list_users`, `manage_users`, `set_user_queue_priority`, `check_for_update`, and instance-wide
 `report_issue`) need a key
 created with **Allow instance administration (admin tools over MCP)**, a checkbox admins see in
 Settings. Keys are created without it by default, and a key that lacks it is refused with "This
@@ -615,7 +618,7 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `delete_projects` | Delete several of your projects in one step (the Projects page selection bar's Delete); work in progress stops. |
 | `purge_project` | Permanently remove a deleted project and its files so the storage is freed (find it with list_deleted or list_projects deleted: true). |
 | `restore_project` | Bring back a deleted project with its clips and files (find it with list_deleted or list_projects deleted: true); restoring a project that is not deleted changes nothing. |
-| `restore_clip` | Bring back a deleted clip or one a re-analyze replaced (list_deleted or get_project → replacedClips); it goes to the end of the project's clips. |
+| `restore_clip` | Bring back a deleted clip or one a re-analyze replaced (list_deleted or get_project → replacedClips); it keeps its number unless a live clip took it meanwhile, else it goes to the end of the project's clips. |
 | `list_deleted` | Restorable deletes (the Deleted page): one newest-first list of projects, clips of live projects, library items and templates. |
 | `purge_clip` | Permanently remove a deleted clip of a live project and its rendered file so the storage is freed (find it with list_deleted). |
 | `purge_asset` | Permanently remove an already-deleted library upload and its files so the storage is freed (find it with list_deleted). |
@@ -626,18 +629,22 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `test_model` | Admins only: check that a model id works on this instance with one real call (same as Test under Settings → Models). |
 | `list_workers` | Admins only: every Reelsaw process that has checked in (API, worker, combined app): CPU, memory, disk (free/total MB, -1 = unmeasurable; diskLeasedMB = claimed by jobs in flight), GPU, render slots, queues it listens on, and its jobs. |
 | `get_failure` | Admins only: one failed project or clip (title, owner email, stage, full recorded reason, when). |
-| `get_queue` | Admins only: waiting, running and retrying job counts per pipeline stage with when the longest wait began (oldestWaitingAt), plus the jobs currently in flight (project title, attempt, started, and a retrying job's lastError). |
+| `get_queue` | Admins only: how much work is queued and how fast it is picked up. |
 | `list_failures` | Admins only: failed projects and clips across the instance (owner email, stage, cause, reason, when); retryable = Retry can help (platform causes only). |
 | `retry_failures` | Admins only: retry matching failed projects and clips through the same lifecycle as retry_project / rerender_clip (never a raw queue poke). |
 | `dismiss_failures` | Admins only: clear failures nobody will retry (a bad link, no audio) from list_failures. |
 | `list_users` | Admins only: accounts, pending first then newest, with status, role, emailVerified, abuse flags, plan, last active and all-time usage. |
 | `manage_users` | Admins only: approve, hold, suspend, reinstate or delete many accounts, by ids or every match of filter (as list_users). |
+| `set_user_queue_priority` | Admins only: move one account's jobs ahead of (or behind) others. |
 | `list_signup_rules` | Admins only: the sign-up rules in front of SIGNUP_MODE, oldest first (at most 500). |
 | `manage_signup_rules` | Admins only: add and remove sign-up rules in one call (ids from list_signup_rules). |
+| `list_fonts` | The fonts captions, hooks and text layers can use: built in, or uploaded by an admin. |
+| `add_font` | Admins only: turn an upload (POST /api/upload with the file; .ttf, .otf, .woff, .woff2, up to 30 MB) into a font every account can pick. |
+| `remove_fonts` | Admins only: remove uploaded fonts for good (ids from list_fonts; built-in fonts cannot be removed). |
 | `set_instance_settings` | Admins only: change instance settings without a restart; every process applies them within seconds and the change is audited. |
 | `get_email_preferences` | Which optional emails you get, by topic. |
 | `set_email_preferences` | Turn topics of optional email on or off; omitted topics stay as they are. |
-| `get_billing` | Hosted instances: your plan and subscription, the billing period, the limits in force with where each comes from (instance, plan, an admin's override), what you have used this period, whether renders carry a watermark, and the plans on offer. |
+| `get_billing` | Hosted instances: your plan, subscription and billing period, the limits in force and where each comes from, this period's usage, the watermark, the plans on offer, and with a cancellation scheduled what Free will be once the plan ends: its limits, where you would be over them and what that refuses. |
 | `billing_checkout_url` | Hosted instances: a Stripe Checkout URL for a plan (or, when the account already pays, the Billing Portal page that confirms the plan change). |
 | `list_transcript_flags` | The fixes Reelsaw made or suggests in a project's transcript: misheard names, fillers and repetitions to cut, and your own cuts and corrections. |
 | `review_transcript_flags` | Accept or reject suggested transcript fixes (ids from list_transcript_flags), optionally with your own replacement text for an accepted name fix. |
@@ -646,7 +653,7 @@ schema say what it returns, whether it runs in the background and which neighbou
 | `get_project_defaults` | The settings every new project starts with (Settings, Project defaults): language, vocabulary, instructions, focus, clip lengths, pauses, caption look and refine steps. |
 | `set_project_defaults` | Replace the settings every new project starts with; existing projects keep theirs. |
 | `set_project_source_text` | Hide or keep text burned into the source video (captions, logos) for the whole project: hide covers it, keep leaves it, always shows it. |
-| `update_project_style` | Change the caption/hook look and fades for the whole project (colors, size, position, words per line, fadeIn/fadeOut, intro/outro bumperTransition). |
+| `update_project_style` | Change the caption/hook look and fades for the whole project (font from list_fonts, colors, size, position, words per line, fadeIn/fadeOut, intro/outro bumperTransition). |
 | `list_decisions` | Your decision log: what you accepted, rejected, cut, corrected, edited, deleted or restored, newest first, kept after a project is deleted so Reelsaw learns from it. |
 | `export_decisions` | A page of your decision log in export form, oldest first, for evals. |
 | `forget_decisions` | Delete entries from your decision log so Reelsaw stops learning from them: one project's (projectId, live or already deleted forever) or, without projectId, all of them. |
@@ -720,7 +727,7 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw machine [--json]` | this box: cpus, memory, disk, GPU, ffmpeg encoder in use and why, where each on-device model runs (same as Settings → System → Overview) |
 | `reelsaw ytdlp-proxies [--json]` | yt-dlp egress pool: operator priority vs circuit (reliability), never URLs |
 | `reelsaw workers [--json]` | every process that has checked in: role, specs, last seen, current jobs (same as Settings → System → Workers) |
-| `reelsaw queue [--json]` | waiting / running / retrying jobs per stage, plus what is in flight (same as Settings → System → Queue) |
+| `reelsaw queue [--json]` | waiting / running / retrying jobs per stage with pickup times (median and 95th percentile wait, last hour), queued work by account with its queue priority, plus what is in flight in pickup order (same as Settings → System → Queue) |
 | `reelsaw failure <projectId\|clipId> [--json]` | one failed project or clip: owner, stage, the full recorded reason (same as clicking a row under Settings → System → Queue → Failed work) |
 | `reelsaw retry-failures [--stage s] [--cause platform\|input\|quota] [--q text] [--since 24h] [--json]` | retry failed projects and clips matching a reason after a platform fix (platform failures unless --cause; same as Queue → Retry matching) |
 | `reelsaw dismiss-failures [--stage s] [--cause c] [--q text] [--since 24h] [--restore] [--json]` | clear failures nobody will retry from Failed work, or bring them back (same as Settings → System → Queue → Dismiss) |
@@ -752,10 +759,11 @@ Run as `docker compose exec app reelsaw <command>` (from source: `pnpm --filter 
 | `reelsaw templates list \| show <id> \| save <projectId> <clipId> <name…> \| rename <id> <name…> \| set <id> [--layers '<json array>'] [--intro keep\|none\|<id>] [--outro …] [--intro-sec n] [--outro-sec n] \| delete <id> \| restore <id> \| purge <id> \| apply <templateId> <projectId> [clipId…] [--add] [--rerender]` | layer templates: layers whose timing fits any clip length (head / tail / fill / relative), plus an optional intro / outro (`keep` = clips keep their own); `save` builds one from a clip's layers, intro and outro, `apply` writes them onto the clips of a project (all of them without clip ids; --add keeps the clip's own layers, default replaces; the intro / outro it sets replaces the clip's either way); --rerender re-renders the finished ones. Same procedures as the Templates page and the MCP tools |
 | `reelsaw overlays <projectId> [--store]` | scan the source for burned-in captions / watermarks; --store saves them (renders then hide them) |
 | `reelsaw usage [--days 30]` | per account: projects, source minutes, clips, model calls / tokens / reported cost, minutes transcribed, stored bytes (same numbers as Users → Usage) |
-| `reelsaw limits <email> [--watermark always\|never\|follow]` | an account's quotas: instance value, plan, override, in force, in use now; --watermark sets the per-user override (same as Users → Limits) |
+| `reelsaw limits <email> [--watermark always\|never\|follow] [--priority N\|follow]` | an account's quotas: instance value, plan, override, in force, in use now; --watermark sets the per-user override (same as Users → Limits); --priority sets the account's queue priority (-20..20, follow = the plan) |
 | `reelsaw email-prefs <email> [--<topic> on\|off]` | an account's optional mail by topic (ready: the note when projects finish; same as their Settings → Account and the email's unsubscribe link) |
 | `reelsaw abuse [--run]` | accounts the hourly abuse pass flagged (shared sign-up address, bursts, temporary domains); --run recomputes the flags now |
 | `reelsaw signup-rules [list \| add <ip\|email\|domain\|flag> <pattern> <hold\|block\|allow> [--note text] \| rm <id…> \| test <email> [--ip addr]]` | sign-up rules in front of SIGNUP_MODE (same as Settings → Sign-up rules and list_signup_rules / manage_signup_rules); hold = needs approval without saying why; rm takes ids or their first 8 characters |
+| `reelsaw fonts [list \| add <file> \| rm <family\|id…>]` | fonts for captions, hooks and text layers (same as Settings → System → Captions and list_fonts / add_font / remove_fonts); add reads a .ttf, .otf, .woff or .woff2 inside the container (docker compose cp it in first) |
 | `reelsaw billing <email> \| sync [<email>] \| set-plan <email> <plan\|none>` | hosted (REELSAW_EE): an account's plan, subscription, Stripe's view and its last webhook events; `sync` re-reads Stripe for one account or every subscription (the daily reconcile, by hand); `set-plan` grants a plan without Stripe (none removes it) |
 | `reelsaw settings [KEY=value…] [--clear KEY…]` | instance settings in force (sign-up mode, quotas, retention, …): .env default, admin override, effective; KEY=value changes one without a restart, --clear KEY goes back to .env (same as Settings → System and set_instance_settings) |
 | `reelsaw mcp` | the MCP server over stdio for clients that launch a command: same tools as /api/mcp, forwarded to REELSAW_URL with REELSAW_API_KEY (needs no database; see src/mcp-stdio.ts) |
@@ -769,15 +777,17 @@ Where a value comes from, from the weakest source to the strongest (a later link
 | --- | --- |
 | Models (language, transcription, alignment) | `.env` (`AI_MODEL`, `TRANSCRIPTION_MODEL`, `TRANSCRIPT_ALIGN_MODEL`) then the admin's runtime override (Settings → System → Models, stored in `instance_settings`). A stage already running keeps the model it started with. |
 | Provider keys and URLs | `.env` then the encrypted keys admins enter in Settings. |
-| Instance settings (sign-up mode, email verification, captcha, legal links, quotas, upload limits, refine-stage gates, retention, stall watchdog, ready-email delay, update check, health details) | `.env` then the admin's runtime override (Settings → System, `reelsaw settings`, `set_instance_settings`; stored in `instance_settings`, applied by every process within seconds). An override whose precondition goes away (email verification without an email driver) is ignored and shown as such. |
+| Instance settings (sign-up mode, email verification, captcha, legal links, quotas, upload limits, caption font, refine-stage gates, retention, stall watchdog, ready-email delay, update check, health details) | `.env` then the admin's runtime override (Settings → System, `reelsaw settings`, `set_instance_settings`; stored in `instance_settings`, applied by every process within seconds). An override whose precondition goes away (email verification without an email driver) is ignored and shown as such. |
 | Refine gates (`TRANSCRIPT_CORRECTION`, `DISFLUENCY_REMOVAL`, `DISFLUENCY_LLM`, `REFINE_SCENES` = the on-screen text scan; shot cuts are always detected) | `.env` then the instance setting (Settings → System → Pipeline). `TRANSCRIPT_CORRECTION` and `REFINE_SCENES` default **on**, the disfluency gates **off**. That value is a **ceiling**: when off, every project skips the step. When on, each project's `refineEntities` / `refineDisfluency` / `disfluencyLlm` / `refineScenes` (and the user's Project defaults) decides: name fixes and the text scan run unless turned off, filler removal only when turned on. |
 | Other stage knobs (`TRANSCRIPT_BIAS`, `VAD`, `ALIGNER`, `FACE_DETECTION`, `TEXT_DETECTION`, concurrency) | `.env` only. No UI or per-project override exists. |
 | A project's settings | built-in defaults, then the user's **Project defaults**, then what the create form or agent sent. The result is frozen into `projects.settings`; later changes (`updateStyle`, re-analyze with new settings) patch that row. |
 | A clip's style (captions, hook, fades, intro/outro join) | the project's style, then the clip's own override (`clips.style`). `updateStyle` clears clip overrides unless told to keep them. |
+| Caption font | `.env` `CAPTION_FONT`, then the instance setting (Settings → System → Captions), then the user's **Project defaults**, then the project's style `font`, then the clip's. A text layer's own font wins for that layer. A font that is not available (an uploaded one removed) falls back down this chain to DejaVu Sans at render time. The watermark always uses the instance font. |
 | Layer template | the user's **Project defaults** `layerTemplateId`, then the project's setting (frozen into `projects.settings` at creation), then each clip the project creates from then on gets the template's layers and the intro / outro it sets (as the clip's own choice). Existing clips never change with the setting; `apply_layer_template` / the selection bar's Template… / `reelsaw templates apply` do those. |
 | Framing | `auto` (face detection decides), then the project's `reframe` with its `reframeAdjust` (a nudge, subject or crop; `apply_framing` sets both from one clip), then the clip's `layoutOverride`, then a section of the clip (`layoutSections[i]`, mode and adjustment). |
 | Quotas | `.env` `MAX_*` (0 = unlimited), then the instance setting an admin saved under Settings → System → Limits, then what the account's plan grants (hosted, `REELSAW_EE`), then a per-user limit set on the Users page. The Users page says which applies. |
 | Watermark | An admin's per-user choice (Users → Limits), else the plan (a paid plan removes it), else `WATERMARK_NON_ADMINS` for everyone who is not an admin. |
+| Queue priority | An admin's per-user value (Users → Limits, `reelsaw limits <email> --priority N`, `set_user_queue_priority`; -20 to 20, negative holds an account back), else the plan (hosted: Starter +2, Creator +3, Pro +5), else 0. Each point moves the account's jobs ahead by one job of backlog in the fair share; read when a job is queued, so jobs already waiting keep their place. |
 | Share links | `.env` `MEDIA_LINK_TTL_DAYS` (default 90) and `MEDIA_LINK_ALLOW_NEVER` (default true; hosted sets false), then the instance setting (Settings → System → Limits). A link may ask for less, never more. `MEDIA_LINKS_REDIRECT` (`.env` only, S3) answers with a redirect to a presigned URL instead of the file. |
 | Webhooks | `MAX_WEBHOOKS_PER_USER` follows the quota chain (default 10). `ALLOW_PRIVATE_WEBHOOK_URLS` (default false: public https only) and `WEBHOOK_DELIVERY_RETENTION_DAYS` (default 14) are instance settings; `WEBHOOK_CONCURRENCY` is `.env` only. |
 | Learning (the decision log) | On for every account; the user's Settings → Learning switch (or `set_learning`) turns recording off. `DECISION_RETENTION_DAYS` (instance setting, default 0 = keep) prunes old decisions; a purge keeps a project's decisions unless the user ticked "Also forget what Reelsaw learned from it" when deleting it (honoured by every purge, the retention sweep included) or in the Delete forever dialog. |
@@ -787,7 +797,7 @@ Two things to know:
 - **An env / instance refine gate wins.** `DISFLUENCY_REMOVAL=false` (or the matching Pipeline setting) skips filler removal for everyone even when a project asks for it; the new-project form disables that toggle and says so. `TRANSCRIPT_BIAS=false` still silently ignores vocabulary hints (`.env` only). If a project setting seems to do nothing, check the gate first ([TROUBLESHOOTING](docs/TROUBLESHOOTING.md), "A project or clip setting has no effect").
 - **Existing projects keep their frozen settings.** Changing your Project defaults affects new projects only.
 
-Code: `apps/server/src/pipeline/settings.ts` (project), `resolveStyle` in `packages/shared/src/index.ts` (style), `apps/server/src/pipeline/render.ts` (framing), `apps/server/src/ai/models.ts` (models), `apps/server/src/quota.ts` (quotas).
+Code: `apps/server/src/pipeline/settings.ts` (project), `resolveStyle` in `packages/shared/src/index.ts` (style), `apps/server/src/pipeline/render.ts` (framing), `apps/server/src/fonts.ts` (fonts), `apps/server/src/ai/models.ts` (models), `apps/server/src/quota.ts` (quotas).
 
 ## Architecture
 
@@ -840,46 +850,4 @@ cp .env.example .env   # set DATABASE_URL=postgres://reelsaw:reelsaw@localhost:5
 pnpm dev               # server on :3000 (tsx watch), web on :5173 (vite, proxies /api and /media)
 ```
 
-Requires ffmpeg, ffprobe and yt-dlp on your PATH for local dev. Schema changes: edit `apps/server/src/db/schema.ts`, then `pnpm db:generate`; migrations run automatically on boot.
-
-Most tests run against the local stack (they create and delete their own users and data); CI runs only the ones that need no stack, so run the ones you touched against yours:
-
-```bash
-pnpm --filter @reelsaw/server test
-```
-
-## Releases and distribution
-
-Every image is built by the release workflow with an SBOM and SLSA provenance attached, and a
-GitHub artifact attestation for its digest. Verify what you are about to run:
-
-```bash
-gh attestation verify oci://ghcr.io/osbytes/reelsaw:latest --owner osbytes
-docker buildx imagetools inspect ghcr.io/osbytes/reelsaw:latest --format '{{ json .SBOM }}' | head -c 400
-```
-
-Users install from a published image. The runtime image contains only
-the minified server bundle (`apps/server/scripts/bundle.mjs`), the web build and production
-dependencies, which `scripts/check-image.sh <image>` verifies.
-
-- Tag `vX.Y.Z` → `.github/workflows/release.yml` builds amd64 + arm64, checks the image, pushes
-  to GHCR (and Docker Hub when `vars.DOCKERHUB_IMAGE` + `DOCKERHUB_USERNAME`/`DOCKERHUB_TOKEN` are
-  set) and attaches `reelsaw-X.Y.Z.zip` (the [`deploy/`](deploy/) folder, image pinned) to the
-  release.
-- Before tagging: build locally, run `scripts/check-image.sh reelsaw:latest`, and boot `deploy/`
-  in a scratch directory with only a `.env` (see the spec's verification section).
-- Versions and changelogs come from [changesets](https://github.com/changesets/changesets):
-  every PR adds one (`pnpm changeset`), a "Release" PR bumps the version, merging it pushes the
-  tag. Full flow, versioning policy, pre-releases and hotfixes: [docs/RELEASING.md](docs/RELEASING.md).
-
-## Issue reports
-
-**Report an issue** (project ⋯ menu, a failed clip, the account menu) downloads a zip with the
-project's data, pipeline decisions (`stage_artifacts`), logs, system info and recent errors, and the
-user's description. Secrets never go in. Admins can tick **Instance-wide diagnostics** to include
-unfinished work, failed jobs, usage and error logs across every account — for queue, disk or
-machine problems, not only their own projects. To reproduce one locally:
-
-```bash
-docker compose cp ~/Downloads/reelsaw-report-….zip app:/data/tmp/report.zip
-docker compose exec app reelsaw import-report /data/tmp/report.zip [
+Requires ffmpeg, ffprobe and yt-dlp on your PATH for

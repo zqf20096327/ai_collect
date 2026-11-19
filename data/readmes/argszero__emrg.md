@@ -20,6 +20,13 @@
   <b>🇬🇧 English</b> | <a href="README.cn.md">🇨🇳 中文</a>
 </p>
 
+<p align="center">
+  <a href="https://app.args.fun/emrg"><b>Website</b></a> ·
+  <a href="https://app.args.fun/emrg/loop">How a rant ships</a> ·
+  <a href="https://app.args.fun/emrg/tools">Tools</a> ·
+  <a href="https://app.args.fun/emrg/compare">Compare</a>
+</p>
+
 ---
 
 **What if your coding assistant got better every time you used it?**
@@ -158,7 +165,7 @@ In the TUI: `Esc` interrupts streaming, `Ctrl+C` / `exit` quits (config is share
 | `/rewind` | Rewind conversation to a history point |
 | `/trigger` | Trigger an evolution task — interactive picker (manage tasks in GUI Settings → Scheduled tasks) |
 | `/task-session` | Open a scheduled task's own session — interactive picker |
-| `/skills` | List loaded skills; `/skills available\|install\|update` |
+| `/skills` | List loaded skills; `/skills available\|install\|update` — [how to write one](docs/skills.md) |
 | `/version` | Show EMRG version and instance info |
 | `Esc` | Interrupt a running response mid-stream |
 | `Ctrl+C` / `exit` | Quit |

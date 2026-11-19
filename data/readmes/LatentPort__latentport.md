@@ -119,6 +119,7 @@ profiles support retained-token replay with BF16, NF4 and GGUF. Cache-only repla
 | `Qwen/Qwen3.8-Flash-Next` | [LPCompact-Qwen3.8-Flash-Next](https://huggingface.co/latentport/LPCompact-Qwen3.8-Flash-Next) | [`latentport/LPCombine-Qwen3.8-Flash-Next`](https://huggingface.co/latentport/LPCombine-Qwen3.8-Flash-Next) | BF16 |
 | `google/gemma-4-31B-it` | [LPCompact-Gemma-4-31B-it](https://huggingface.co/latentport/LPCompact-Gemma-4-31B-it) | [`latentport/LPCombine-Gemma-4-31B-it`](https://huggingface.co/latentport/LPCombine-Gemma-4-31B-it) | BF16 |
 | `Qwen/Qwen3-14B` | [LPCompact-Qwen3-14B](https://huggingface.co/latentport/LPCompact-Qwen3-14B) | [`latentport/LPCombine-Qwen3-14B`](https://huggingface.co/latentport/LPCombine-Qwen3-14B) | BF16 |
+| `Qwen/Qwen3.6-35B-A3B` | [LPCompact-Qwen3.6-35B-A3B](https://huggingface.co/latentport/LPCompact-Qwen3.6-35B-A3B) (BF16, NF4, GGUF) | — | — |
 
 For a standalone GGUF model, pass the file as `model_path`. For split
 checkpoints, keep the shards together and pass the first file. Runtime
@@ -137,6 +138,8 @@ Published measurements describe specific checkpoints, hardware and workloads.
   [Compaction results](docs/lpcompact-qwen35-validation.json) · [Backend validation](docs/compaction-validation.json)
 
 ## Demos and documentation
+
+- Serve supported LPCompact text models with the [vLLM integration](integrations/vllm/README.md).
 
 - Chat through a supported bridge with the [chat example](examples/chat.py).
 - Query two saved snapshots with the [combination example](examples/combine.py).

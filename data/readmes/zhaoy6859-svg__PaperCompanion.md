@@ -10,7 +10,7 @@
 
 ## Windows 桌面预览版
 
-**[下载 Windows 版 2.4.3](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.4.3-windows-beta.1)** · Windows 10/11 x64 · **已在实机演示通过**
+**[下载 Windows 版 2.5.1](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.5.1-windows-beta.1)** · Windows 10/11 x64 · **已在实机演示通过**
 
 - `.exe` 安装程序；`.zip` 解压后运行 `PaperCompanion.exe`
 - 同一只伴侣：PDF 阅读、熟悉度、右侧问答、长对话记忆、多语言精翻、LaTeX 学习报告
@@ -18,14 +18,15 @@
 - 自带 Tectonic 排版引擎与中文字体；首次生成 PDF 需联网下载 TeX 排版资源
 - 阅读区与对话区之间可拖动调宽，宽度自动记住
 - 修复 `\top` 等常见公式命令导致的「不支持的 LaTeX 命令」；回答结构对齐网页版助手
-- 安装包未签名：SmartScreen 提示时选「更多信息 → 仍要运行」，可用 [SHA256SUMS.txt](https://github.com/zhaoy6859-svg/PaperCompanion/releases/download/v2.4.3-windows-beta.1/SHA256SUMS.txt) 校验
+- API Key 按服务地址隔离；支持只读工具 `get_paper_page`；429/5xx 未输出正文前有限重试并遵守 `Retry-After`，401 不重试，断流保留已生成内容
+- 安装包未签名：SmartScreen 提示时选「更多信息 → 仍要运行」，可用 [SHA256SUMS.txt](https://github.com/zhaoy6859-svg/PaperCompanion/releases/download/v2.5.1-windows-beta.1/SHA256SUMS.txt) 校验
 - 每服务独立 Key、跨平台数据迁移尚未移植；细节见 [desktop/README.md](desktop/README.md)
 
 ## ⬇️ macOS 下载安装
 
-**[下载 论文伴侣 2.3.1（macOS 13+）](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.3.1)** · DMG 5.9 MB
+**[下载 论文伴侣 2.3.2（macOS 13+）](https://github.com/zhaoy6859-svg/PaperCompanion/releases/tag/v2.3.2)** · DMG 5.9 MB
 
-1. 打开上面的 Release 页面，下载 `PaperCompanion-2.3.1.dmg`
+1. 打开上面的 Release 页面，下载 `PaperCompanion-2.3.2.dmg`
 2. 把「论文伴侣」拖进「应用程序」
 3. 首次打开若被 Gatekeeper 拦下：右键 →「打开」，或执行
    `xattr -dr com.apple.quarantine "/Applications/论文伴侣.app"`
@@ -33,6 +34,7 @@
 > 只阅读和问答不需要额外依赖；要让「译文 / 学习报告」排版跑通，需要本机安装 MacTeX 或 TeX Live（`xelatex`）。
 
 2.3.1：伴侣回答改为网页版结构（结论 → 原文引用 → 逐符号解释 → 类比/边界，数学强制 LaTeX）；阅读区与对话区可拖动调宽并记住宽度。
+2.3.2：API Key 按服务地址绑定，切换 Base URL 不会复用旧服务的 Key（[测试](https://github.com/zhaoy6859-svg/PaperCompanion/blob/main/tests/KeyIsolationTests.swift)）。
 
 觉得有用的话，点右上角 ⭐ **Star** 支持一下，也欢迎邮件交流：**zhaoy6859@gmail.com**
 
@@ -138,6 +140,14 @@ swiftc -parse-as-library -framework AppKit -framework WebKit tests/RichTranscrip
 ## 学习：这个 App 是怎么搭出来的
 
 从窗口、PDF、流式请求、Markdown/KaTeX 渲染、LaTeX 排版到打包与 CI 的完整拆解，包含 8 个里程碑和 5 个练手改动：[docs/BUILDING.md](docs/BUILDING.md)
+
+## 可靠性与工具调用（Windows 桌面版）
+
+- **Key 按地址绑定**：切换 Base URL 不会复用旧服务的 Key；新地址没有 Key 时直接提示，localhost / Ollama 例外。两个本地模拟服务的端到端验证见 [keys.spec.cjs](https://github.com/zhaoy6859-svg/PaperCompanion/blob/main/desktop/test/keys.spec.cjs)。
+- **只读工具 `get_paper_page`**：模型决定是否调用，App 校验页码（整数、1..N）、读取当前论文该页正文并回传，模型再据此回答。测试覆盖正常调用、越界、参数分片和取消：[tool.test.cjs](https://github.com/zhaoy6859-svg/PaperCompanion/blob/main/desktop/test/tool.test.cjs)。
+- **失败恢复**：429/5xx/网络错误在尚未输出正文时最多重试 3 次，遵守 `Retry-After` 并做指数退避；401/403 不重试；已经显示正文的断流不自动重放，保留现场并提供「重新生成」。测试见 [reliability.test.cjs](https://github.com/zhaoy6859-svg/PaperCompanion/blob/main/desktop/test/reliability.test.cjs) 与 [desktop.spec.cjs](https://github.com/zhaoy6859-svg/PaperCompanion/blob/main/desktop/test/desktop.spec.cjs)。
+
+以上行为在 Windows/Electron 桌面版实现并随 CI 跑。macOS 原生版已完成 Key 按地址绑定（[KeyIsolationTests.swift](https://github.com/zhaoy6859-svg/PaperCompanion/blob/main/tests/KeyIsolationTests.swift)）；工具调用与重试的移植在计划中。
 
 ## 交流
 

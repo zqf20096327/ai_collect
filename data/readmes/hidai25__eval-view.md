@@ -2,7 +2,7 @@
 <!-- keywords: AI agent testing, regression detection, golden baselines -->
 
 <p align="center">
-  <img src="assets/logo.png" alt="EvalView" width="350">
+  <img src="https://raw.githubusercontent.com/hidai25/eval-view/v0.9.0/assets/logo.png" alt="EvalView" width="350">
   <br>
   <strong>Snapshot testing for AI agents.</strong><br>
   Record what your agent does today. Get told when it silently changes.
@@ -24,17 +24,16 @@ Your agent returns `200` and looks fine. But a model update, a provider change, 
 
 **EvalView snapshots your agent's behavior — the tools it calls, in what order, with what output — and tells you the moment that behavior changes.** Like Jest snapshots, but for tool-calling, multi-turn agents.
 
-[![demo.gif](assets/demo.gif)](https://github.com/user-attachments/assets/96d8b5f7-3561-44a1-86a4-270fb0d1d8a6)
+[![EvalView terminal demo showing an agent regression check](https://raw.githubusercontent.com/hidai25/eval-view/v0.9.0/assets/demo.gif)](https://github.com/user-attachments/assets/96d8b5f7-3561-44a1-86a4-270fb0d1d8a6)
 
 <sub>↑ 30-second live demo — no API key needed</sub>
 
 ## Quick Start
 
 > **OpenAI adapter migration:** OpenAI shut down the Assistants API on **August 26, 2026**.
-> The latest published EvalView release, **0.8.1**, still uses that API; the Responses API
-> migration is currently **unreleased source**. If you use `openai-assistants`, follow the
-> [migration guide](docs/OPENAI_MIGRATION.md) before running your tests. An `assistant_id`
-> alone cannot preserve your agent's configuration. Other adapters are unaffected.
+> EvalView 0.9.0 uses the Responses API. If you use `openai-assistants`, migrate your
+> model, instructions and tools or configure a dashboard Prompt before running checks.
+> [OpenAI migration guide](docs/OPENAI_MIGRATION.md)
 
 ```bash
 pip install evalview
@@ -63,6 +62,10 @@ No agent yet? See it work in 30 seconds:
 ```bash
 evalview demo
 ```
+
+### Usage analytics
+
+The installed CLI sends anonymous usage events to PostHog when you run a tracked command. Events use a random installation ID and include the EvalView version, command, runtime, CI environment, and aggregate outcomes. Prompts, tool arguments, outputs, paths, and repository names stay out of these events. Set `EVALVIEW_TELEMETRY_DISABLED=1` before first use or run `evalview telemetry off` to opt out.
 
 ## Why snapshot testing (and not assertions)?
 
@@ -117,7 +120,7 @@ jobs:
     permissions: { pull-requests: write }
     steps:
       - uses: actions/checkout@v4
-      - uses: hidai25/eval-view@v0.8.1
+      - uses: hidai25/eval-view@v0.9.0
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
 ```

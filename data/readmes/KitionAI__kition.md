@@ -21,7 +21,7 @@
 <p align="center">
   <a href="https://github.com/KitionAI/kition/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/KitionAI/kition/ci.yml?branch=main&amp;style=flat-square&amp;logo=githubactions&amp;logoColor=white&amp;label=CI" alt="CI status" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/KitionAI/kition?style=flat-square&amp;color=5645d4" alt="License: Apache-2.0" /></a>
-  <img src="https://img.shields.io/badge/version-0.1.0-5645d4?style=flat-square" alt="Version 0.1.0" />
+  <img src="https://img.shields.io/badge/version-0.1.1-5645d4?style=flat-square" alt="Version 0.1.1" />
   <img src="https://img.shields.io/badge/status-beta-f5d75e?style=flat-square" alt="Project status: beta" />
   <img src="https://img.shields.io/badge/macOS-supported-5645d4?style=flat-square&amp;logo=apple&amp;logoColor=white" alt="macOS supported" />
   <img src="https://img.shields.io/badge/Windows-supported-5645d4?style=flat-square&amp;logo=windows11&amp;logoColor=white" alt="Windows supported" />
@@ -31,7 +31,6 @@
 <p align="center">
   <a href="https://kition.ai">Website</a> ·
   <a href="https://developer.kition.ai">Developers</a> ·
-  <a href="https://github.com/KitionAI/kition/discussions">Discussions</a> ·
   <a href="https://discord.gg/bFSjRDjVY">Discord</a> ·
   <a href="https://www.reddit.com/r/Kition">Reddit</a> ·
   <a href="https://x.com/KitionAI">X</a> ·
@@ -54,7 +53,7 @@ The agent does not paste text back at you. It reads the file through the kit, ch
 kit's commands, previews the result, and runs the kit's checks. You see every change, and you can
 let it work in a draft that you review before anything changes.
 
-> Kition 0.1.0 is in beta. Keep backups of important workspaces.
+> Kition 0.1.1 is in beta. Keep backups of important workspaces.
 
 ## What you can do
 
@@ -74,7 +73,7 @@ let it work in a draft that you review before anything changes.
 
 A kit is the editor for one kind of file. Its engine is written in Rust, compiled to WebAssembly
 and run in a Web Worker; the kit draws its own editor inside Kition. The agent drives the same
-engine through the kit's tools, over the [Kit Harness Protocol](https://github.com/kitharness/khp).
+engine through the kit's tools, over the [Kit Harness Protocol](https://github.com/kitharness/kitharness).
 Every kit is open source in its own repository, and the packages Kition ships are pinned in
 [`kits/kits.lock.json`](kits/kits.lock.json).
 
@@ -102,9 +101,26 @@ Kits marked Preview are early: expect gaps. To embed a kit in your own app or gi
 agent, see the [Kition SDK](https://github.com/KitionAI/kition-sdk) and
 [developer.kition.ai](https://developer.kition.ai).
 
+### Give the kits to your agent
+
+Claude Code, Codex, Cursor and any other MCP client can use the kits without the app, through
+`kition`, the SDK's command line. Nothing is compiled:
+
+```sh
+npm install -g @kition/cli        # Node.js 20 or later; gives the kition command
+kition agent add claude           # or codex, cursor: registers kition's MCP server
+```
+
+Each kit downloads the first time the agent opens one of its files; `kition kit install <kit>`
+installs one ahead of time. Without installing:
+`claude mcp add kition -- npx -y @kition/cli mcp --workspace "$PWD"`. Without Node.js:
+`curl -fsSL https://github.com/KitionAI/kition-sdk/releases/latest/download/install.sh | sh`
+(Windows: `irm https://github.com/KitionAI/kition-sdk/releases/latest/download/install.ps1 | iex`).
+More in the SDK's [`kition` guide](https://github.com/KitionAI/kition-sdk/blob/main/docs/sdk/cli.md).
+
 ## Install
 
-Desktop builds of Kition 0.1.0 for macOS, Windows and Linux will be published on
+Desktop builds of Kition 0.1.1 for macOS, Windows and Linux will be published on
 [GitHub Releases](https://github.com/KitionAI/kition/releases). Until then, Kition runs from
 source: see [CONTRIBUTING.md](.github/CONTRIBUTING.md#run-from-source).
 

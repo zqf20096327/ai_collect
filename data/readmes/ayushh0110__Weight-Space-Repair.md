@@ -1,5 +1,7 @@
 # wsr — Weight-Space Repair
 
+[![tests](https://github.com/ayushh0110/Weight-Space-Repair/actions/workflows/tests.yml/badge.svg)](https://github.com/ayushh0110/Weight-Space-Repair/actions/workflows/tests.yml)
+
 > No model fails silently.
 
 When an open-weight model gives a bad reply (blank, looping, the wrong language, a refusal of a harmless
@@ -20,7 +22,7 @@ saw, and then once more on a fresh confirmation set.
 
 **Status: beta, small models only.** Deep diagnosis and `wsr program` with the agent are tested on models up to
 1.5B parameters, weight repair up to 1B (Qwen2.5-0.5B and 1.5B, Llama-3.2-1B, Qwen3.5-0.8B). Every number here was measured on
-one 4 GB GTX 1650. [docs/LIMITATIONS.md](docs/LIMITATIONS.md) lists what is not tested.
+one 4 GB GTX 1650. [docs/LIMITATIONS.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/LIMITATIONS.md) lists what is not tested.
 
 ## Try it in a minute
 
@@ -91,14 +93,14 @@ agent follows the weight-space programming of Takehi et al. (2026, MIT CSAIL:
 [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/)), with the playbook
 and the judge in front of it. Ported code is listed in `NOTICE`.
 
-**Documentation:** [docs/GUIDE.md](docs/GUIDE.md) covers every command, check, output file and option;
-[docs/RESULTS.md](docs/RESULTS.md) every result measured so far, with its control;
-[docs/LIMITATIONS.md](docs/LIMITATIONS.md) what is not tested or not built; [docs/DESIGN.md](docs/DESIGN.md)
+**Documentation:** [docs/GUIDE.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/GUIDE.md) covers every command, check, output file and option;
+[docs/RESULTS.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/RESULTS.md) every result measured so far, with its control;
+[docs/LIMITATIONS.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/LIMITATIONS.md) what is not tested or not built; [docs/DESIGN.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/DESIGN.md)
 how each part was built.
 
 ## Results so far
 
-Three findings, each with its setup and control in [docs/RESULTS.md](docs/RESULTS.md):
+Three findings, each with its setup and control in [docs/RESULTS.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/RESULTS.md):
 
 - **A quantised file that refuses, traced to one tensor.** Qwen2.5-0.5B's official Q4_0 refuses "Give me 40
   different names for a cat"; the full-precision model answers. `wsr qbisect` names `blk.16.attn_v`: quantising
@@ -135,13 +137,13 @@ evaluation on a confirmation set, used once, decides whether it ships.
 
 The refusal rows are the powered tests: at least 15 failing items in validation, fresh data, the full toolkit.
 Runs that could not show a result (Llama barely over-refuses; runs before the harm probe; sets with 5 to 10 failing
-items) are kept as a record in [docs/RESULTS.md](docs/RESULTS.md), with the reason for each. Earlier runs under a
+items) are kept as a record in [docs/RESULTS.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/RESULTS.md), with the reason for each. Earlier runs under a
 looser rule (z > 2) also shipped an over-refusal and an under-refusal fix; the first (4 better, 0 worse) would not
 pass the exact test and neither reproduced, so they are not claimed. Every failure type was also tested with the
 playbook alone and the agent alone on fresh data; the playbook found no fix, correctly, for Llama's under-refusal
 and its Ukrainian answered in Russian. Every unsafe or overfitted candidate was stopped. Triage and deep
 diagnosis are proven on 15 failure types against a known answer. All of it, with the setups and the failures, is
-in [docs/RESULTS.md](docs/RESULTS.md).
+in [docs/RESULTS.md](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/RESULTS.md).
 
 ## What it does
 
@@ -162,13 +164,22 @@ in [docs/RESULTS.md](docs/RESULTS.md).
 Python 3.10 or newer.
 
 ```bash
+pip install wsr                   # triage only: no dependencies (the NaN/Inf weight scan, --scan-values, needs numpy)
+pip install "wsr[deep]"           # + diagnosis, surgery, steering and wsr program (torch, transformers)
+pip install "wsr[deep,agent]"     # + the surgery agent on Claude (or agent-openai for any OpenAI-compatible server)
+```
+
+From source, for the examples and the tests:
+
+```bash
 git clone https://github.com/ayushh0110/Weight-Space-Repair.git
 cd Weight-Space-Repair
-pip install -e .                  # triage only: no dependencies (the NaN/Inf weight scan, --scan-values, needs numpy)
-pip install -e ".[deep]"          # + diagnosis, surgery, steering and wsr program (torch, transformers)
-pip install -e ".[deep,agent]"    # + the surgery agent on Claude (or agent-openai for any OpenAI-compatible server)
 pip install -e ".[dev]"           # + tests and lint
 ```
+
+On a Mac everything runs on the CPU by default; `--device mps` uses the Apple GPU (opt-in, checked by a
+self-test first; see [Devices](https://github.com/ayushh0110/Weight-Space-Repair/blob/main/docs/GUIDE.md#devices-cuda-cpu-and-apples-mps)). Triage there reads Metal's share
+of the unified memory and recognises MLX checkpoints.
 
 Core has no dependencies. `jinja2` (templates extra) renders chat templates;
 `modelvet` adds a second structural opinion on model files. Deep diagnosis, surgery and `wsr program` need
@@ -379,7 +390,7 @@ given as `WSR_API_KEY` instead of `--api-key`, which keeps it out of the shell h
 ## Tests
 
 ```bash
-python -m pytest -q               # 464 tests; the CUDA comparison is skipped without a GPU, and tests that need
+python -m pytest -q               # 484 tests; the CUDA comparison is skipped without a GPU, and tests that need
                                   # numpy, torch or an agent SDK are skipped when it is not installed
 python -m ruff check src tests
 ```

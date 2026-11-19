@@ -12,7 +12,7 @@
 <p align="center">
   <a href="https://www.agenturm.dev/#demo"><strong>Explore the workflow →</strong></a> &nbsp;·&nbsp;
   <a href="docs/usage.md">Documentation</a> &nbsp;·&nbsp;
-  <a href="https://github.com/abhishekash/agenturm/releases/tag/v0.2.7">What’s new in 0.2.7</a>
+  <a href="https://github.com/abhishekash/agenturm/releases/tag/v0.2.8">What’s new in 0.2.8</a>
 </p>
 
 <p align="center">
@@ -47,7 +47,7 @@ Agenturm reads supported local agent records and configured OpenTelemetry signal
 
 Reply to agents and approve their requests in their own terminals. Agenturm monitors their work; it does not launch or control them. Request capture and terminal routing depend on the runtime and environment, so an unavailable route is not a successful return.
 
-**In 0.2.7:** Read recorded messages as formatted Markdown, with indented sections, aligned metadata, and tables that adapt to the reading pane. Inspectors and detail dialogs rewrap when resized; JSON, code, original capture, and copy/export keep their evidence intact. [What’s new](docs/releases/0.2.7.md).
+**In 0.2.8:** Follow agents in a simpler workspace with compact navigation and fewer repeated summaries. Inspect recorded interruption reasons and keep the header stable while switching views. Detailed evidence remains in Details and Activity. [What’s new](docs/releases/0.2.8.md).
 
 ## See it in action
 
@@ -78,7 +78,7 @@ Keep your coding agents open. In another terminal, run:
 uvx agenturm
 ```
 
-Agenturm starts or attaches to its local receiver. Recent supported **Codex, Claude Code, OpenCode, and Pi** records are discovered locally; those agents do not need a restart. No Agenturm account, subscription, or provider API key is needed for local monitoring.
+Agenturm starts or attaches to its local receiver. Recent supported **Codex, Claude Code, OpenCode, Pi, and Kiro** records are discovered locally; those agents do not need a restart. No Agenturm account, subscription, or provider API key is needed for local monitoring.
 
 1. In **Agents**, select a session with `↑` / `↓`. Expand a recorded delegation with `→`.
 2. Press `w` to open **Workflow** and inspect recorded requests. Select one to see its owner, reason and whether it remains pending or its observation is stale.
@@ -155,12 +155,12 @@ The export creates `.md` and `.html` files and refuses to overwrite existing des
 
 | Source | How it connects | What to expect |
 | --- | --- | --- |
-| Codex, Claude Code, OpenCode, Pi | Automatic discovery of supported local records | Recent sessions and recorded activity; available signals depend on runtime and record format |
+| Codex, Claude Code, OpenCode, Pi, Kiro | Automatic discovery of supported local records | Recent sessions and recorded activity; available signals depend on runtime and record format |
 | Pydantic AI, Google ADK, Gemini CLI, and other supported OTLP producers | Configure OpenTelemetry export to the local receiver | Emitted traces, logs, metrics, and correlation identifiers |
 | Supported Python SDKs | Explicit automatic-capture launcher or documented integration | Captures supported SDK calls; existing processes may need a restart through the launcher |
 | Your own Python or JavaScript agent | Instrument with the clients or OTLP | Only the evidence and identifiers your producer emits |
 
-Exact delegation is supported for documented Codex, Claude Code, and OpenCode shapes. Automatic Pi subagent linking is not independently verified. A nested telemetry span alone is not treated as an agent. See the [integration guide](docs/frameworks.md), [Python capture](docs/python.md), [JavaScript client](docs/javascript.md), and [receiver configuration](docs/receiver.md).
+Exact delegation is supported for documented Codex, Claude Code, OpenCode, and Kiro shapes. Automatic Pi subagent linking is not independently verified. A nested telemetry span alone is not treated as an agent. See the [integration guide](docs/frameworks.md), [Python capture](docs/python.md), [JavaScript client](docs/javascript.md), and [receiver configuration](docs/receiver.md).
 
 ## Local storage, explicit sharing
 
@@ -191,7 +191,7 @@ Choose **Current (Alpine Ember), Bright, Dark, or Solarized** through `Ctrl+P �
 
 ## Status and contributing
 
-Agenturm is open source under the [MIT license](LICENSE). Version **0.2.7** includes the agent hierarchy, navigable attention list, readable evidence panels, request-focused Workflow, completion review, and saved-task continuity workflows. Signal coverage depends on the source. See the [current quality report](docs/validation/quality-completion.html) for measured performance, stability and remaining acceptance limits.
+Agenturm is open source under the [MIT license](LICENSE). Version **0.2.8** includes the agent hierarchy, navigable attention list, readable evidence panels, request-focused Workflow, completion review, and saved-task continuity workflows. Signal coverage depends on the source. See the [current quality report](docs/validation/quality-completion.html) for measured performance, stability and remaining acceptance limits.
 
 ```sh
 git clone https://github.com/abhishekash/agenturm.git

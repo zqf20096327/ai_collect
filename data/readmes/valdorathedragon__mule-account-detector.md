@@ -49,7 +49,7 @@ flowchart LR
 2. **IsolationForest Anomaly Scorer (`src/ml_engine.py`)**: Evaluates transaction values, pass-through ratios, and threshold structuring velocity; transforms raw outlier decision scores into an interpretable `0–100` `Risk_Score` (`data/scored_bank_data.csv`). *(Note: precision `0.8867` / recall `0.1285` measure scenario-calibrated benchmark alignment rather than label-blind generalization because INR PAN/RTGS band mapping uses `Is Laundering` labels.)*
 3. **Graph Topology Engine (`src/graph_engine.py`)**: Extracts the 2-hop ego transaction neighborhood around suspect bank accounts, calculating `degree_asymmetry` to distinguish Fan-In Aggregators, Fan-Out Distributors, and Pass-Through Relays.
 4. **FIU-IND Regulatory SAR Generator (`src/sar_generator.py`)**: Synthesizes formal, evidence-grounded two-paragraph Suspicious Activity Reports for Subject Bank Accounts (deriving account class from `SAV_`/`CUR_`/`CORP_` IDs) under **PMLA 2002** and **RBI KYC Master Directions** via Gemini 3.8 Flash, backed by an offline tier-calibrated deterministic fallback.
-5. **FINSIGHT Investigator Workbench (`ui/app.py`)**: Presents executive KPI metrics, interactive PyVis network graphs, anomaly driver pills, dynamically selected demo presets, scored transaction ledgers, and one-click `SAR_<account_id>.txt` exports.
+5. **FINSIGHT Investigator Workbench (`ui/app.py`)**: Delivers a 5-module workbench (**Executive Triage**, **Account Forensics**, **2-Hop Topology**, **FIU-IND STR/SAR**, **Settings**) in the 6-color FINSIGHT Dark/Light theme (`#0A1931`, `#0047AB`, `#4F46E5`, `#6D28D9`, `#98E6C3`, `#FFFFFF`), featuring a lightweight top-25 HTML alert ledger with an optional 100-row interactive spreadsheet toggle, dynamic preset synchronization, interactive Plotly **Fund-Flow Sankey** and **INR Structuring & Velocity Timeline** charts (`₹50,000` PAN / `₹2,00,000` RTGS markers), Hierarchical `L→R` vs. Force-Directed 2-hop PyVis topology graphs, GPU ambient/reactive UI motion controls, and one-click `FIU_IND_STR_<account_id>.txt` / `.md` dossier exports.
 
 ---
 
@@ -88,6 +88,16 @@ python src/ml_engine.py
 streamlit run ui/app.py
 ```
 
+#### 5. *(Optional)* Run Local Gzip Proxy & Share via Cloudflare Tunnel
+
+```bash
+# Start the zero-install ASGI Gzip + font-display: swap proxy on port 8080
+python deploy/gzip_proxy.py
+
+# Or use Caddy / Nginx with deploy/Caddyfile or deploy/nginx.conf, then expose port 8080 via Cloudflare Tunnel:
+cloudflared tunnel --url http://127.0.0.1:8080
+```
+
 *(Optional)* Add a `.env` file in the project root with your Gemini API key, or supply an in-memory session key inside the sidebar override input:
 ```bash
 GEMINI_API_KEY=your_gemini_api_key_here
@@ -112,27 +122,32 @@ The workbench dynamically populates sidebar presets directly from `data/scored_b
 ```
 .
 ├── .streamlit/
-│   └── config.toml                  # Dark fintech UI theme configuration
+│   └── config.toml                  # 6-color theme, WebSocket compression & telemetry opt-out
 ├── assets/
-│   └── finsight_logo.jpeg           # FINSIGHT brand header and sidebar artwork
+│   └── finsight_logo.jpeg           # Optimized 440px FINSIGHT brand artwork
 ├── data/
 │   ├── raw/HI-Small_Trans.csv       # IBM AML transactional benchmark source
 │   ├── bank_mule_features.csv       # Multi-hop Indian bank account feature dataset (15,000 rows)
 │   ├── scored_bank_data.csv         # IsolationForest inference output with Risk Scores
 │   └── network.html                 # Static 2-hop PyVis subgraph export
+├── deploy/
+│   ├── Caddyfile                    # Caddy zstd/br/gzip reverse proxy config (:8080 -> :8501)
+│   ├── gzip_proxy.py                # Zero-install Starlette/Uvicorn Gzip + font-display: swap proxy
+│   └── nginx.conf                   # Nginx gzip/WebSocket reverse proxy config (:8080 -> :8501)
 ├── docs/
-│   ├── CHANGELOG.md                 # Exhaustive development history (Phases 1–6)
+│   ├── CHANGELOG.md                 # Exhaustive Phase 1–6 development history
 │   └── FINSIGHT_v1_Changelog.pdf    # Executive changelog and architecture PDF report
 ├── models/
 │   ├── iso_forest.joblib            # Serialized Scikit-Learn IsolationForest model
 │   └── generations/                 # Immutable generation snapshots with SHA-256 validation
 ├── src/
 │   ├── data_pipeline.py             # IBM AML ingestion, Indian account mapping & feature engineering
-│   ├── ml_engine.py                 # IsolationForest scoring & analyze_account() API
-│   ├── graph_engine.py              # NetworkX 2-hop graph extraction & PyVis rendering
+│   ├── ml_engine.py                 # Lazy-loaded IsolationForest scoring & analyze_account() API
+│   ├── graph_engine.py              # NetworkX 2-hop graph extraction, Sankey/timeline data & PyVis rendering
 │   └── sar_generator.py             # Gemini 3.8 Flash FIU-IND compliance report generator
 ├── ui/
-│   └── app.py                       # Single-page FINSIGHT Streamlit investigator cockpit
+│   └── app.py                       # 5-module Dark/Light FINSIGHT Streamlit workbench
+├── CHANGELOG.md                     # Keep-a-Changelog release notes
 ├── requirements.txt                 # Pinned project dependencies
 └── README.md                        # Project documentation
 ```
@@ -146,7 +161,7 @@ All source modules (`src/`, `ui/`) have been audited and hardened:
 - **Semgrep**: Scanned with `auto` security rules across `src/` and `ui/` — zero findings.
 - **Snyk Code & SCA**: Validated Python code and dependency graph — zero vulnerabilities.
 - **CWE-668 / CWE-79 Mitigations**: Session-isolated API key overrides (no process-wide `os.environ` pollution) and HTML-escaped node tooltips in PyVis graphs.
-- **Release & Architecture Changelog**: Full phase-by-phase build history and technical specifications are available in [docs/FINSIGHT_v1_Changelog.pdf](docs/FINSIGHT_v1_Changelog.pdf) and [docs/CHANGELOG.md](docs/CHANGELOG.md).
+- **Release & Architecture Changelog**: Full release notes are tracked in [CHANGELOG.md](CHANGELOG.md), with phase-by-phase build history in [docs/FINSIGHT_v1_Changelog.pdf](docs/FINSIGHT_v1_Changelog.pdf) and [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ---
 

@@ -2346,7 +2346,7 @@ Use `CreateImageGenerationTaskAsync` and `GetImageGenerationTaskAsync`
 Use `CreateBackgroundGenerationTaskAsync` and `GetBackgroundGenerationTaskAsync`
 
 ## Video Generation
-Video generation and editing are async tasks: create the task with `CreateVideoSynthesisTaskAsync` and poll `GetVideoSynthesisTaskAsync`. The endpoint is shared by the HappyHorse, wan2.7, wan3.0, legacy wan2.1-2.6 and wanx2.1-vace models — one input type covers them all, the supported members depend on the model. Text-to-video (HappyHorse / wan2.7 / wan3.0):
+Video generation and editing are async tasks: create the task with `CreateVideoSynthesisTaskAsync` and poll `GetVideoSynthesisTaskAsync`. The endpoint is shared by the HappyHorse, wan2.7, wan3.0, legacy wan2.1-2.6, wanx2.1-vace, PixVerse, Kling, Vidu and MiniMax models — one input type covers them all, the supported members depend on the model. Text-to-video (HappyHorse / wan2.7 / wan3.0):
 ```csharp
 var response = await client.CreateVideoSynthesisTaskAsync(
     new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
@@ -2389,6 +2389,49 @@ var response = await client.CreateVideoSynthesisTaskAsync(
 wanx2.1-vace-plus also uses the same types, with a `Function` (image reference, video repainting, video editing, video extension and outpainting) selecting its input fields (reference images, video, frames/clips, masks) and parameters (control condition, strength, masks, expand and scale options).
 
 The video-style-transform model (video style transform) fills only `VideoUrl`, its parameters carry `Style` (0 Japanese comic to 7 Chinese ink wash), `VideoFps` (15-25), `AnimateEmotion` (facial expression optimization), `MinLen` (720 or 540, affects billing) and `UseSR` (free super-resolution; with 540 it upscales to 1080P while billing at 540P), and the result video is in `Output.OutputVideoUrl` with the billed short edge in `Usage.SR`.
+
+The PixVerse models (Beijing region only, activate the PixVerse service in the Bailian console first) cover text-to-video (`pixverse-*-t2v`), image-to-video by first frame (`pixverse-*-it2v`) or keyframes (`pixverse-*-kf2v`), reference-to-video (`pixverse-*-r2v` and `pixverse-v6-r2v-omni`), lipsync (`pixverse-lipsync`), motion control (`pixverse-motioncontrol`) and upscaling (`pixverse-upscale`). The t2v/r2v models (except omni) set `Size` + `Duration`, the others set `Resolution` (+ `AspectRatio` for omni) instead; `Audio` generates matching sound effects (billed, defaults to false), `ShotType` (multi-shot) is supported by the v6 t2v/it2v models, and omni requires `Duration = 0` when a reference video is provided (the output follows the longest input video). Reference media are `image_url` / `video_url` media items, optionally named with `RefName` and referenced in the prompt as `@ref_name` (the server rewrites the references to `@1`, `@2`, ... in `Output.OrigPrompt`). The lipsync model takes a `video_url` plus either an `audio_url` media item or TTS via `lip_sync_tts_speaker_id` (voice `Id`, `auto` or a voice id) and `lip_sync_tts_content` (text `Content`) media items, without a prompt; motioncontrol takes an `image_url` character and a `video_url` motion clip; upscale takes a single `video_url` and always outputs 4K. PixVerse models report `Usage.SR` as a string ("720"/"4K", empty when not applicable). Reference-to-video with images, video and `@ref_name` references:
+```csharp
+var response = await client.CreateVideoSynthesisTaskAsync(
+    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
+    {
+        Model = "pixverse/pixverse-v6-r2v-omni",
+        Input = new VideoSynthesisInput()
+        {
+            Prompt = "@男人 在@咖啡厅 中弹吉他 参考@参考视频",
+            Media =
+            [
+                new VideoSynthesisMedia("video_url", "https://example.com/motion.mp4", RefName: "参考视频"),
+                new VideoSynthesisMedia("image_url", "https://example.com/man.jpg", RefName: "男人"),
+                new VideoSynthesisMedia("image_url", "https://example.com/cafe.png", RefName: "咖啡厅")
+            ]
+        },
+        Parameters = new VideoSynthesisParameters() { Resolution = "720P", AspectRatio = "16:9", Duration = 0 }
+    });
+```
+
+The Kling models (`kling/kling-v3-turbo`, `kling/kling-v3` and `kling/kling-v3-omni`-video-generation) cover text-to-video, image-to-video (first frame or first+last frames), reference-to-video and video editing (omni only). Kling uses `AspectRatio` (16:9 / 9:16 / 1:1, required for text-to-video) plus a `Mode` parameter (std 720P, pro 1080P or 4k) instead of resolution tiers; media items use the types first_frame / last_frame / refer (reference image) / feature (reference video) / base (video to edit, the output keeps its duration) with `KeepOriginalSound` ("yes"/"no") on video items, and the omni prompt references media items in array order as `&lt;&lt;&lt;image_1&gt;&gt;&gt;` / `&lt;&lt;&lt;video_1&gt;&gt;&gt;` / `&lt;&lt;&lt;element_1&gt;&gt;&gt;` (subjects come from the Kling subject list and are passed via `ElementList`). Multi-shot is enabled with `MultiShot` plus an input-level `ShotType` (intelligence for AI storyboarding, or customize with per-shot `MultiPrompt` segments); watermark=true additionally returns `Output.WatermarkVideoUrl`. Reference-to-video with a feature video and a refer image:
+```csharp
+var response = await client.CreateVideoSynthesisTaskAsync(
+    new ModelRequest<VideoSynthesisInput, IVideoSynthesisParameters>()
+    {
+        Model = "kling/kling-v3-omni-video-generation",
+        Input = new VideoSynthesisInput()
+        {
+            Prompt = "参考<<<video_1>>>中人物的动作，让<<<image_1>>>中的角色在街头随音乐起舞",
+            Media =
+            [
+                new VideoSynthesisMedia("feature", "https://example.com/motion.mp4", KeepOriginalSound: "no"),
+                new VideoSynthesisMedia("refer", "https://example.com/man.jpg")
+            ]
+        },
+        Parameters = new VideoSynthesisParameters() { Mode = "std", AspectRatio = "16:9", Duration = 5 }
+    });
+```
+
+The Vidu models (`vidu/viduq2*` / `viduq3*` with the `_text2video` / `_img2video` / `_start-end2video` / `_reference2video` suffix selecting the calling mode) use plain `image` / `video` media items (ordered first/last frame for keyframe-to-video) and the existing resolution / duration / audio (q3 models) / watermark / seed parameters; `viduq2-pro_reference2video` also accepts reference videos and `Duration = 0` (auto-planned duration, up to 10 seconds).
+
+The MiniMax model (`MiniMax/MiniMax-H3`) supports text-to-video, image-to-video (first / last / both frames) and multimodal reference-to-video (`image_url` / `feature` video / `driving_audio` media items, not combinable with frame images). It uses `Resolution` (768P or 2K), `Ratio` (adaptive by default, text-to-video requires a concrete ratio) and reports the extra usage fields `ImageCount`, `InputSeconds`, `OutputSeconds` and `TotalSeconds`.
 
 Wan2.2 keyframe image-to-video (first and last frames) and the animate models (wan2.2-animate-move image-to-motion, wan2.2-animate-mix subject replacement) live on a separate endpoint and share `Image2VideoSynthesisInput` / `IImage2VideoSynthesisParameters`, call them with `CreateImage2VideoSynthesisTaskAsync`:
 ```csharp

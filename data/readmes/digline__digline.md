@@ -174,6 +174,10 @@ over it, each with exit `0`.
 When your judge is a real model, add a provider plugin:
 `uv add digline-anthropic` (or `pip install digline-anthropic`), likewise
 `digline-openai` and `digline-bedrock`.
+A digline installed with `uv tool install digline` runs from an environment
+of its own and does not see a plugin added to the project: add the plugin to
+the tool, `uv tool install digline --with digline-bedrock` and likewise for the
+others, or run the project's own `.venv/bin/digline`.
 
 ```console suite=support
 $ digline run --suite suite.py
@@ -423,7 +427,7 @@ actually arrives with. Every one runs with no API key, carries its committed
 
 ## Status
 
-`1.3.0`. The offline cycle — write the suite, run, compare, promote,
+`1.4.0`. The offline cycle — write the suite, run, compare, promote,
 report, and commit what a person decided — is complete, covered by tests, and
 used daily on a real project, and
 since 0.5.0 the suite may be written as data as well as in Python. From 1.0.0 a

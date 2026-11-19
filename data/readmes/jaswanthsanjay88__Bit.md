@@ -26,7 +26,7 @@ The application is built on top of the [llama.kt SDK](#the-llamakt-sdk), a modul
 </p>
 
 <p align="center">
-  <a href="https://discord.gg/v75PxaJDy" target="_blank"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord" height="42"/></a>
+  <a href="https://discord.gg/33PQH9RJpB" target="_blank"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord" height="42"/></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://www.buymeacoffee.com/jaswanthsanjay" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 42px !important;width: 152px !important;" ></a>
 </p>

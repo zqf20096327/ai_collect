@@ -18,6 +18,7 @@ Contributions welcome. Please keep entries factual and free of marketing languag
 
 ## Managed memory APIs and services
 
+- [Axonio](https://axonio.xyz/) - Apache-2.0-licensed memory engine for AI agents with vector and graph retrieval and Git-style memory branching, self-hosted or as a hosted service with an MCP gateway.
 - [Belcore](https://belcore.xyz) - Hosted memory and context API for LLM applications that retains conversation context across calls to reduce repeated input tokens, accessed with an API key.
 - [GoodMem](https://goodmem.ai) - Memory layer for agentic AI with owners, roles, scoped API keys and retrieval logging, multi-modal hybrid search with reranking, available as a managed cloud or self-hosted, with SDKs in Python, TypeScript, Java, .NET and Go.
 - [Honcho](https://github.com/plastic-labs/honcho) - Open-source (AGPL-3.0) memory server that stores messages between peers (users and agents) and reasons over them in the background to build a representation of each peer, plus a managed cloud, with SDKs in Python and TypeScript.
@@ -132,6 +133,7 @@ Common suites used to evaluate agent memory.
 - [Mem0: Building Production-Ready AI Agents with Scalable Long-Term Memory](https://arxiv.org/abs/2504.19413) - Memory architecture that extracts, consolidates, and retrieves salient information from ongoing conversations, with a graph-based variant, evaluated on LoCoMo (2025).
 - [MemGPT: Towards LLMs as Operating Systems](https://arxiv.org/abs/2310.08560) - Virtual context management (the origin of Letta).
 - [MemoryBank: Enhancing LLMs with Long-Term Memory](https://arxiv.org/abs/2305.10250) - Long-term memory via an Ebbinghaus-inspired forgetting curve and event summarization (2023).
+- [SciΠvot: Benchmarking Principal-Investigator Judgment at Pivotal Moments of Scientific AutoResearch Agents](https://arxiv.org/abs/2610.21082) - Benchmark of 248 research decisions from agent-run science projects that tests how access to the project record changes an agent's judgment; at medium reasoning effort, every tested model scores lower with the record than without it (2026).
 - [Semantic Level of Detail for Knowledge Graphs: Discovering Abstraction Boundaries via Spectral Heat Diffusion](https://arxiv.org/abs/2603.08965) - Introduces SLoD, a continuous zoom operator built from heat-kernel diffusion on a graph Laplacian induced by a Poincaré-ball (hyperbolic) embedding (Mnemoverse).
 - [Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction](https://arxiv.org/abs/2611.10439) - Introduces MixUA, which distills trajectories from many users and agents into lessons scoped to a user-agent pair, user, agent, or global level based on who benefits and what may be disclosed, evaluated on the CrossLearnBench benchmark (2026).
 - [Zep: A Temporal Knowledge Graph Architecture for Agent Memory](https://arxiv.org/abs/2501.13956) - Describes the Graphiti temporal knowledge-graph engine for agent memory, with retrieval-benchmark evaluation (2025).

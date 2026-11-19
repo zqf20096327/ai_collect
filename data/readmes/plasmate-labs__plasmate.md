@@ -217,7 +217,7 @@ cookie operations, and validation-only replay. Query `tools/list` instead of
 depending on a hard-coded count; the authoritative registration is
 [`src/mcp/server.rs`](./src/mcp/server.rs).
 
-**Tip:** use `selector="main"` (or `main_content`/`main_contents`/`main-content`/`main-contents`/`main content`/`main contents`/`main_region`/`main_regions`/`main-region`/`main-regions`/`main region`/`main regions`) to strip nav/footer, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
+**Tip:** use `selector="main"` (or `main_content`/`main_contents`/`main-content`/`main-contents`/`main content`/`main contents`/`main_region`/`main_regions`/`main-region`/`main-regions`/`main region`/`main regions`) to strip nav/footer, `selector="article"` (or `article_region`/`article-region`/`article region`) to isolate content, `selector="sidebar"` (or `aside`/`asides`/`sidebars`) to isolate complementary content, or `selector="interactive"`
 to return only actionable elements, `selector="h1"` through `selector="h6"`
 (or `heading1` through `heading6`) to isolate a heading level, or an action selector such as `selector="click"`
 (the equivalent `selector="action:click"` also works), `selector="type"`,
@@ -226,9 +226,12 @@ to return only actionable elements, `selector="h1"` through `selector="h6"`
 `selector="action:reset"`, including `action : reset` and `action = reset`)
 to build a compact
 action menu before the LLM sees the content. The MCP tool-name aliases
-`selector="type_text"` and `selector="select_option"` (including their
-`action:type_text` and `action:select_option` forms) are also accepted for
-typing and selection targets.
+`selector="type_text"`/`selector="type-text"`,
+`selector="clear_text"`/`selector="clear-text"`, and
+`selector="select_option"`/`selector="select-option"` (including their
+`action:type_text`/`action:type-text`, `action:clear_text`/`action:clear-text`,
+and `action:select_option`/`action:select-option` forms) are also accepted
+for typing, clearing, and selection targets.
 Use `selector="landmark"` (or `selector="landmarks"`) first when you need a
 compact inventory of the page's compiled regions before choosing a narrower
 region selector; the inventory keeps region metadata and removes their
@@ -249,6 +252,9 @@ hooks. The explicit
 `description:<text>` / `description=<text>`, `aria-description`, and
 `accessible-description` aliases also match compiled description metadata;
 whitespace is normalized so labels split across lines still match.
+Use `selector="accesskey"` or `selector="[accesskey]"` to discover elements
+with keyboard shortcuts, or `selector="accesskey:<value>"` /
+`selector="accesskey=<value>"` to match one exact access-key value.
 Element selectors also accept common HTML tag aliases: `a`/`area`/`areas`/`anchor`/`anchors`/`hyperlink`/`hyperlinks`/`link`/`links`,
 `p`/`s`/`ins`/`del`/`mark`/`paragraph`, and `ul`, `ol`, `dl`, or `menu`/`list`/`lists` (plus the explicit
 `unordered_list`, `ordered_list`, and `definition_list` forms). Definition-list

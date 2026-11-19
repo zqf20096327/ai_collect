@@ -5,25 +5,47 @@ One port, many models: A tiny, stateless HTTP router for OpenAI-compatible LLM i
 LLMhop reads the `model` field of an incoming request and reverse-proxies it to the matching backend.
 It is built for single-model servers like [vLLM](https://github.com/vllm-project/vllm) and [SGLang](https://github.com/sgl-project/sglang), but works with any OpenAI-compatible backend, self-hosted or remote.
 
-- Pure Go, no third-party packages, no CGO, stateless and safe behind any load balancer.
-- Body and path routing, a models API served from the config, health and readiness endpoints, graceful draining.
+- Pure Go, no CGO, stateless and safe behind any load balancer.
+- Body and path routing with aliases and wildcards, a models API served from the config, health and readiness endpoints, graceful draining and reloading.
+- Balancing over several servers or data-parallel ranks with stateless prefix-cache affinity, failover, queueing and timeouts.
 - Ships as a static binary, a Docker image and a hardened NixOS module running llama.cpp, SGLang or vLLM behind llmhop, SMG, Bifrost or no gateway.
 
 ## How it works
 
 LLMhop looks up the request's `model` in its config and forwards the request verbatim.
-Unknown models return `404`, invalid JSON or a missing `model` return `400`.
-`GET /v1/models` and `GET /v1/models/{model}` are answered from the config and never proxied.
+The `model` is read from a JSON body or a `multipart/form-data` one, as `/v1/audio/transcriptions` sends.
+Unknown models return `404`, an invalid body or a missing `model` return `400`.
+`GET /v1/models` and `GET /v1/models/{model}` are answered from the config and never proxied, with every model's `metadata` as further members, such as `max_model_len`, or replacing `created`, which is `0`, and `owned_by`, which is `llmhop`.
 Model names may contain `/`, as in Hugging Face names such as `org/name`.
+A model's `aliases` are further names routed to it and listed beside it, as vLLM serves LoRA adapters.
+A name ending in `*`, such as `openai/*`, is a wildcard routing every name it prefixes, the longest one winning over shorter ones but never over an exact name, and is not listed.
 
 A request under `/route/{model}/` is routed by path instead, with the prefix stripped and the body left unparsed, so `POST /route/production/detect` reaches `production` as `POST /detect`.
-The longest configured model name that prefixes the path wins, and a `/` in a model name may be written raw or as `%2F`.
+The longest configured model name or alias that prefixes the path wins, wildcards do not apply, and a `/` in a model name may be written raw or as `%2F`.
 A model marked `"unlisted": true` is routed but left out of the models API, which suits services such as a watermark detector.
 
-`GET /health` returns `{ "status": "ok", "models": 3 }` with the number of listed models.
-`GET /readiness` probes the `healthPath` of every model that sets one and answers `200` only if all respond `2xx`, else `503`.
-Both never require a token.
-LLMhop sends `READY=1` to systemd once its listeners are bound, and drains in-flight requests on `SIGTERM` or `SIGINT`.
+Every other request gets an `X-Request-Id`, unless it carries one, which reaches the backend and the response, and is logged once answered with its model, server, status, size, duration and the name of its auth token.
+`GET /health` returns `{ "status": "ok", "models": 3 }` with the number of listed models and aliases.
+`GET /readiness` probes the `healthPath` on every URL of every model that sets one and answers `200` only if every such model has a URL responding `2xx`, else `503`, so a restarting replica keeps llmhop ready.
+Both never require a token and are not logged.
+LLMhop sends `READY=1` to systemd once its listeners are bound, reloads its config on `SIGHUP`, keeping the current one if the new one fails, and drains in-flight requests on `SIGTERM` or `SIGINT`.
+A reload applies everything but `listen`, while requests in flight finish on the config they started with.
+
+### Balancing and affinity
+
+A model's `urls` are servers of the same model, such as replicas on several GPUs or hosts.
+A request without an affinity key goes to the server with the fewest requests in flight.
+A request with a key always goes to the first server in the [rendezvous hashing](https://en.wikipedia.org/wiki/Rendezvous_hashing) order of its key, so the turns of a conversation reuse the prefix cache of one server and a chain of stored responses of the Responses API that keeps its key stays with the server storing it.
+Every llmhop instance computes the same order without sharing any state, so affinity holds behind any load balancer.
+The key comes from the first of the `affinity` sources a request carries, which clients set to name their conversation, by default:
+
+1. `header:X-Session-Id`, a header, where Open WebUI's `X-OpenWebUI-Chat-Id` also fits,
+2. `prompt_cache_key`, the body's member meant for this by OpenAI.
+
+`"affinity": []` disables affinity.
+
+`dataParallelSize`, at most 256, hashes keyed requests over the ranks of every URL and pins them through vLLM's `X-data-parallel-rank` header, which llmhop never takes from a client, so affinity also works across the data-parallel ranks of one vLLM server, which balances keyless requests itself.
+A server refusing a connection is avoided for `failoverSeconds`, by default 5, and a request with a body routed by its `model` moves on to the next server.
 
 ### Errors
 
@@ -31,14 +53,15 @@ Every error is JSON in the shape of OpenAI, as in `{"error": {"message": "...", 
 
 | Status | Meaning                                                           |
 | ------ | ----------------------------------------------------------------- |
-| `400`  | invalid JSON, a missing `model` or an unreadable body             |
-| `401`  | missing or invalid bearer token, with `WWW-Authenticate: Bearer`  |
-| `404`  | unknown model                                                     |
-| `408`  | the body did not arrive within a minute                           |
-| `413`  | the body exceeds `maxBodyBytes`                                   |
-| `429`  | the model reached `maxConcurrentRequests`, with `Retry-After: 1`  |
-| `502`  | the backend is unreachable                                        |
-| `503`  | the `maxBufferedBytes` budget is exhausted, with `Retry-After: 1` |
+| `400`  | an invalid body, a missing `model` or an unreadable body           |
+| `401`  | missing or invalid bearer token, with `WWW-Authenticate: Bearer`   |
+| `404`  | unknown model                                                      |
+| `408`  | the body did not arrive within a minute                            |
+| `413`  | the body exceeds `maxBodyBytes`                                    |
+| `429`  | the model reached `maxConcurrentRequests`, with `Retry-After: 1`   |
+| `502`  | the backend is unreachable                                         |
+| `503`  | the `maxBufferedBytes` budget is exhausted, with `Retry-After: 1`  |
+| `504`  | the backend exceeded `responseTimeoutSeconds`                      |
 
 ## Configuration
 
@@ -47,15 +70,22 @@ Every error is JSON in the shape of OpenAI, as in `{"error": {"message": "...", 
   "listen": ["127.0.0.1:8080", "unix:///run/llmhop/http.sock"],
   "authTokens": { "client": "${cred:llmhop.client-token}" },
   "models": {
-    "llama-3-8b": { "url": "http://localhost:30000", "healthPath": "/health" },
-    "meta-llama/Llama-3.1-8B": { "url": "http://localhost:30001" },
-    "qwen3-8b": {
-      "url": "unix:///run/llmhop/vllm-qwen3-8b/http.sock",
-      "maxConcurrentRequests": 16
+    "llama-3-8b": { "urls": ["http://localhost:30000"], "healthPath": "/health" },
+    "meta-llama/Llama-3.1-8B": {
+      "urls": ["http://localhost:30001", "http://gpu-2:30001"],
+      "metadata": { "max_model_len": 131072 }
     },
-    "openai-gpt-4o": {
-      "url": "https://api.openai.com",
-      "headers": { "Authorization": "Bearer ${cred:openai-key}" }
+    "qwen3-8b": {
+      "urls": ["unix:///run/llmhop/vllm-qwen3-8b/http.sock"],
+      "aliases": ["qwen3-8b-sql"],
+      "dataParallelSize": 4,
+      "maxConcurrentRequests": 64,
+      "queueTimeoutSeconds": 30
+    },
+    "openai/*": {
+      "urls": ["https://api.openai.com"],
+      "headers": { "Authorization": "Bearer ${cred:openai-key}" },
+      "responseTimeoutSeconds": 120
     }
   }
 }
@@ -64,8 +94,8 @@ Every error is JSON in the shape of OpenAI, as in `{"error": {"message": "...", 
 `listen` holds `host:port` addresses, with `[::1]:8080` for IPv6 and `:8080` for every interface, or `unix:///<socket path>`.
 It has no default, and `serve` uses the sockets of systemd socket activation when present, else `listen`.
 Setting both or neither is an error, and `check` does not require `listen`.
-A `url` is an absolute `http(s)` URL or `unix:///<socket path>`.
-With `authTokens`, a map of names to tokens, set, every route but `/health` and `/readiness` requires a matching bearer token, which is stripped before forwarding.
+Each of `urls` is an absolute `http(s)` URL or `unix:///<socket path>`.
+With `authTokens`, a map of names to tokens, set, every route but `/health` and `/readiness` requires a matching bearer token, which is stripped before forwarding, while the backend learns the token's name from `X-Llmhop-Client`.
 `authTokenCredentials`, a systemd credential glob with a single trailing `*` as in `ImportCredential=`, adds every matching credential as a token named by the part the `*` matched, read at startup, and keeps tokens required while none matches.
 A model's `headers` are applied last, so a configured `Authorization` replaces the client's.
 Unknown keys are rejected, and `llmhop check config.json` validates a config without binding a port or expanding secrets.
@@ -83,7 +113,9 @@ Token values in `authTokens` and strings in `models.*.headers` are expanded at s
 
 - `maxBodyBytes` (100 MiB): larger bodies get `413`.
 - `maxBufferedBytes` (1 GiB): bytes of body-routed requests buffered at once, further ones get `503` with `Retry-After: 1`. A body is buffered until the backend starts its response, and must arrive within a minute, or the request gets `408`.
-- `models.*.maxConcurrentRequests` (unlimited): proxied requests per model, further ones get `429` with `Retry-After: 1`.
+- `models.*.maxConcurrentRequests` (unlimited): proxied requests per model over all its URLs, further ones get `429` with `Retry-After: 1`.
+- `models.*.queueTimeoutSeconds` (`0`): how long a request waits in line for a free slot before its `429`, holding its buffered body meanwhile.
+- `models.*.responseTimeoutSeconds` (unlimited): how long a backend may take from receiving the whole request until its response headers, after which the request gets `504`. A streamed response may take longer after that.
 
 `0` disables a limit.
 
@@ -136,12 +168,14 @@ SMG and Bifrost listen on `127.0.0.1:8080` by default, configured through `host`
 
 - **llmhop** runs as the `llmhop` user with one socket-activated `llmhop-<name>.socket` per entry of `listen`, as in `listen.caddy.socketGroup = "caddy"` for a unix socket, or as a container receiving the same sockets, which loads an image archive of the same build, unless `container.image` names a registry reference such as `ghcr.io/mirkolenz/llmhop:latest`.
   The `default` listener serves `127.0.0.1:8080` and `environment` and `environmentFile` are forwarded to the service.
-  Its generated config is validated at build time with `llmhop check`.
+  Its generated config is validated at build time with `llmhop check`, routes every LoRA adapter as an alias and pins requests to the ranks of a vLLM model with `dataParallelSize`, see [balancing](#balancing-and-affinity).
+  Natively, a changed config reloads the gateway in place, without dropping a request.
   Reference secrets in `settings` as `${cred:name}` and grant them through `credentials`.
   `settings.authTokenCredentials = "llmhop.token.*"` imports the tokens of `/etc/credstore/llmhop.token.<client>`, or encrypted ones of `/etc/credstore.encrypted`, so clients come and go without a rebuild by adding or deleting their file.
-  Natively, `systemctl reload llmhop` then re-imports the credentials and swaps the tokens without a restart, while a container needs `systemctl restart llmhop`, whose sockets hold new connections meanwhile.
-- **SMG** reads its workers from a generated discovery file. `settings` takes its CLI flags, where `${cred:name}` resolves to a file path, as in `settings.api-key-file = "\${cred:smg.api-key}"`, which requires an SMG build newer than v1.13.0. The native `package` is a [`mkUvEnv`](#native-vllm-and-sglang-from-prebuilt-wheels) environment.
-- **Bifrost** gets every model as a key of its `vllm` provider, or `sgl` for SGLang. `settings` is its `config.json`, with secrets as `env.NAME` references loaded from `environmentFile`. The native `package` comes from Bifrost's own flake.
+  Natively, `systemctl reload llmhop` then re-imports the credentials and reloads the config without a restart, while a container needs `systemctl restart llmhop`, whose sockets hold new connections meanwhile.
+  `llmhopctl`, installed unless `ctl.enable` is false, does both as root with `llmhopctl token list`, `create <client>`, `rotate <client>` and `revoke <client>`, printing new tokens, and keeps a rotated token in the store holding it.
+- **SMG** reads its workers from a generated discovery file, which lists no LoRA adapters. `settings` takes its CLI flags, where `${cred:name}` resolves to a file path, as in `settings.api-key-file = "\${cred:smg.api-key}"`, which requires an SMG build newer than v1.13.0. The native `package` is a [`mkUvEnv`](#native-vllm-and-sglang-from-prebuilt-wheels) environment.
+- **Bifrost** gets every model and LoRA adapter as a key of its `vllm` provider, or `sgl` for SGLang. `settings` is its `config.json`, with secrets as `env.NAME` references loaded from `environmentFile`. The native `package` comes from Bifrost's own flake.
 
 Without a gateway, each model serves clients on its own socket or `port`, and `socketClients` lists the users, such as a reverse proxy, that may connect to every model socket.
 
@@ -175,6 +209,19 @@ services.llmhop = {
   };
 };
 ```
+
+A vLLM model serves `loras`, LoRA adapters by the name clients request them under, which its fetcher downloads like `model`:
+
+```nix
+services.llmhop.vllm.models."qwen3-8b" = {
+  model = "Qwen/Qwen3-8B";
+  loras."qwen3-8b-sql" = "org/qwen3-8b-sql-lora";
+  settings.max-lora-rank = 64;
+};
+```
+
+Several GPUs serve one model faster as data-parallel ranks of one server, set by `dataParallelSize = 2` on a vLLM or SGLang model, than as separate models, since the server balances requests by its own load and cache state.
+vLLM then runs several API frontends by default, each storing the responses of the Responses API on its own, so stored responses need `settings.api-server-count = 1`.
 
 Each model runs as the unit `<engine>-<name>`.
 Native workers are hardened services running as the backend's `user`, which defaults to the engine name, while container workers run rootful, with `user` defaulting to `root`, through [quadlet-nix](https://github.com/mirkolenz/quadlet-nix) with the backend's `container.image`, managed with `quadletctl`.
@@ -221,7 +268,7 @@ Tagged container images are labeled `AutoUpdate=registry` for `virtualisation.qu
 
 #### Settings rendering
 
-`settings`, over the backend's `modelSettings`, becomes the server's CLI flags, while the listener and the served name always win.
+`settings`, over the backend's `modelSettings`, becomes the server's CLI flags beside those llmhop derives from the other options, such as the listener, the served name, `revision`, `loras` and `dataParallelSize`, which `settings` must not set.
 Strings and paths are passed verbatim and everything else as JSON, so attribute sets work for options like `--speculative-config`.
 
 - `true` becomes `--<key>`, while `null` and empty lists are dropped.

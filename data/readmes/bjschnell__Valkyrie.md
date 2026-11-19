@@ -149,11 +149,15 @@ Run `valk`, press `n` for a shell, and start `claude` or `codex`. Start a few
 more. `Alt-n` takes you to whichever one needs you. To add your phone, run
 `valk setup web` and scan the code.
 
+New to it? `valk tutor` (or `?` on the home screen) starts an agent that
+teaches Valkyrie one hands-on lesson at a time.
+
 ## Docs
 
 [Install](docs/install.md) · [Using Valkyrie](docs/usage.md) ·
 [Keys](docs/keys.md) · [Settings](docs/settings.md) ·
 [Phone app](docs/phone.md) · [Project decisions](docs/decisions.md) ·
+[Repository wiki](docs/wiki.md) ·
 [Policies](docs/policies.md) · [Supervisor](docs/supervisor.md) ·
 [Backlog](docs/backlog.md) · [Contributing](docs/contributing.md)
 

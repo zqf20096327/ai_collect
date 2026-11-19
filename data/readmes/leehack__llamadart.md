@@ -12,7 +12,7 @@ experimental. Native targets need no network once the model is on the device.
 - Streaming chat and text generation, with structured JSON output and cancellable task handles.
 - Tool calling driven by the model's chat template.
 - Embeddings, reranking, and image and audio input with multimodal models.
-- Speech to text (including incremental live PCM streaming on native `llama.cpp` via `LlamaCppLiveAsrAdapter` for Voxtral Realtime and LFM3-Audio, and on native LiteRT-LM), text to speech (Qwen3-TTS; LFM3-Audio, Soprano, Chatterbox and Pocket TTS on native; experimental PCM streaming for Qwen3-TTS, LFM3-Audio and Pocket TTS), and decision models with cooperative task cancellation.
+- Speech to text (including incremental live PCM streaming on native `llama.cpp` via `LlamaCppLiveAsrAdapter` for Voxtral Realtime and LFM3-Audio, opt-in bounded windowed live PCM via `Qwen3WindowedAsrAdapter` for Qwen3-ASR, and on native LiteRT-LM), text to speech (Qwen3-TTS; LFM3-Audio, Soprano, Chatterbox and Pocket TTS on native; experimental PCM streaming for Qwen3-TTS, LFM3-Audio and Pocket TTS), and decision models with cooperative task cancellation.
 - Image generation from text prompts on native platforms (Preview).
 - Runtime LoRA adapters for llama.cpp, observability hooks and typed capability checks.
 
@@ -35,7 +35,7 @@ LFM2 replies cut off at a reported length limit expose raw `partialToolCalls` di
 
 ```yaml
 dependencies:
-  llamadart: ^0.20.0
+  llamadart: ^0.20.2
 ```
 
 ```bash
@@ -56,10 +56,10 @@ companion shares its core's `MAJOR.MINOR` and constrains `llamadart` to it.
 
 ```yaml
 dependencies:
-  llamadart: ^0.20.0
-  llamadart_llama_cpp_flutter: ^0.20.0 # GGUF / llama.cpp
-  llamadart_litert_lm_flutter: ^0.20.0 # Apple .litertlm / LiteRT-LM targets
-  llamadart_stable_diffusion_flutter: ^0.20.0 # Apple image generation, opt-in
+  llamadart: ^0.20.2
+  llamadart_llama_cpp_flutter: ^0.20.2 # GGUF / llama.cpp
+  llamadart_litert_lm_flutter: ^0.20.2 # Apple .litertlm / LiteRT-LM targets
+  llamadart_stable_diffusion_flutter: ^0.20.2 # Apple image generation, opt-in
 ```
 
 Pairing rules, the SwiftPM bootstrap and the privacy manifest are in
@@ -141,11 +141,11 @@ WebGPU in the browser. Android Vulkan is experimental and opt-in.
 
 A llama.cpp runtime older than ggml `0.28.0` (llamadart-native `v0.8.0`)
 limits native Qwen3.5 on Android Vulkan to ordinary text on some GPUs; the
-bundled runtime does not. See [Android Vulkan](website/docs/platforms/known-platform-issues.md#android).
+bundled runtime does not. See [Android Vulkan](https://llamadart.leehack.com/docs/platforms/known-platform-issues#android).
 
 LiteRT-LM can also use GPU and, on compatible Android deployments, NPU.
 Android 12+ apps targeting API 31+ must request the optional vendor OpenCL
-library in their manifest; see [Android LiteRT-LM setup](website/docs/getting-started/installation.md#android-litert-lm-setup).
+library in their manifest; see [Android LiteRT-LM setup](https://llamadart.leehack.com/docs/getting-started/installation#android-litert-lm-setup).
 The opt-in llama.cpp `opencl` module on Android needs the same declaration;
 without it the module cannot load, `ComputeDevice.auto` runs elsewhere and
 `ComputeDevice.gpu` with `GpuBackend.opencl` throws. ggml-opencl admits only
@@ -173,7 +173,7 @@ Current default runtime pins:
 
 | Runtime | Pin |
 | --- | --- |
-| Native llama.cpp / GGUF | `leehack/llamadart-native@v1.0.0-1` |
+| Native llama.cpp / GGUF | `leehack/llamadart-native@v1.0.0-3` |
 | Native LiteRT-LM / `.litertlm` | `leehack/litert-lm-native@v0.19.1-5` |
 | Web llama.cpp / GGUF | `leehack/llama-web-bridge-assets@v0.1.86` |
 | Web LiteRT-LM / `.litertlm` | `@litert-lm/core@0.19.0` |
@@ -202,7 +202,7 @@ complete runtime. The full override rules are in [Native runtime configuration](
 Await engine disposal before host shutdown. Forced worker cleanup during
 native creation uses owner API v1 in the pinned `v1.0.0` runtime. Raw
 allocation-to-registration gaps remain; see the
-[shutdown contract](doc/llama_cpp_exit_teardown.md#creation-time-owner-preparation).
+[shutdown contract](https://github.com/leehack/llamadart/blob/main/doc/llama_cpp_exit_teardown.md#creation-time-owner-preparation).
 
 ## Guides
 

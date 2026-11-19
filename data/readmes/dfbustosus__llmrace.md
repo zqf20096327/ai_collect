@@ -35,7 +35,7 @@ Every LLM provider claims to be "fast". **TTFB, streaming throughput and p95 tai
 
 ![llmrace demo](docs/demo.gif)
 
-*A multi-model race — classic `gpt-4o-mini` vs the reasoning `gpt-5-nano` (🧠 hidden-reasoning tokens) against local Ollama and the instant mock lane — finishing in the ranked table, the `--winner` podium and a Welch significance verdict (in this recording: p = 0.85, honestly "could be noise"), then live model discovery (`--models`) and `--doctor` diagnostics. Reproducible via [`docs/demo.tape`](docs/demo.tape) ([vhs](https://github.com/charmbracelet/vhs); needs `OPENAI_API_KEY` in the environment).*
+*A multi-model race — classic `gpt-4o-mini` vs local Ollama and the instant mock lane — with the `--winner` podium and Welch significance verdict, then `--recommend` (provider recommendation with value-for-money from accumulated history) and `--doctor` diagnostics. Reproducible via [`docs/demo.tape`](docs/demo.tape) ([vhs](https://github.com/charmbracelet/vhs); needs `OPENAI_API_KEY` in the environment).*
 
 ## Why
 
@@ -182,6 +182,9 @@ llmrace --endpoint http://localhost:8000/v1/chat/completions \
 # Markdown to stdout (pipe into CI step summaries), JSON alongside
 llmrace openai groq -n 5 --out - --json > "$GITHUB_STEP_SUMMARY"
 
+# Benchmark suite: multiple races, one combined report
+llmrace --suite examples/llmrace.suite.toml
+
 # Custom prompt (inline or from a file), JSON + CSV output for CI
 llmrace openai groq -p "Explain transformer attention in 3 sentences." -n 5 --json --csv
 llmrace openai groq --prompt-file prompts/attention.txt
@@ -313,6 +316,20 @@ Then analyze drift — TTFB/throughput changes versus the rolling median, with m
 ```bash
 llmrace --trend              # last 30 days, all providers
 llmrace --trend --days 7 groq
+llmrace --recommend           # which provider should I use?
+llmrace --recommend --json    # structured output for CI
+```
+
+**Continuous monitoring with alerts:**
+
+```bash
+# watch every 15 min, alert after 2 consecutive degraded rounds,
+# page Slack/Discord when providers degrade
+llmrace openai groq --watch --every 900 --alert-rounds 2 \
+  --alert-webhook https://hooks.slack.com/services/... --record
+
+# desktop notification when the race completes (macOS/Linux/Windows)
+llmrace openai groq --notify-desktop
 ```
 
 ## Using llmrace as a CI quality gate
@@ -359,13 +376,23 @@ PRs with results from other regions are welcome — record with `--json` and ext
 | | llmrace | provider CLIs | load testers (k6/vegeta) | router dashboards |
 |---|---|---|---|---|
 | Multi-provider streaming race | ✅ 18 + any OpenAI-compatible | one at a time | ✝ hand-written scripts | ❌ passive |
-| TTFB / tokens/s / p95 / t-CI | ✅ built-in | varies | ✝ you build it | ✅ but only routed traffic |
+| Statistical significance (Welch p-values) | ✅ built-in | ❌ | ❌ | ❌ |
+| Provider recommendation from history | ✅ `--recommend` | ❌ | ❌ | ❌ |
+| Value-for-money (tok/s per $/M) | ✅ built-in | ❌ | ❌ | ❌ |
+| Benchmark suites (multi-race batteries) | ✅ `--suite` | ❌ | ✝ heavy scripting | ❌ |
+| Alert webhooks (Slack/Discord) | ✅ `--alert-webhook` | ❌ | ✝ custom | ❌ |
+| Desktop notifications | ✅ `--notify-desktop` | ❌ | ❌ | ❌ |
+| TTFB / tokens/s / p95 / t-CI / ITL | ✅ built-in | varies | ✝ you build it | ✅ but only routed traffic |
+| Reasoning-model honesty (🧠 split) | ✅ built-in | ❌ | ❌ | ❌ |
 | Live terminal race view | ✅ | ❌ | ❌ | ❌ |
-| CI regression gate (`--baseline`) | ✅ | ❌ | ✝ heavy scripting | ❌ |
+| CI regression gate with significance | ✅ `--require-significance` | ❌ | ✝ heavy scripting | ❌ |
+| Saturation curves (`--ramp`) | ✅ built-in | ❌ | ✝ complex | ❌ |
 | Longitudinal trends + model-swap detection | ✅ | ❌ | ❌ | partial |
 | Cost per run from real token usage | ✅ | ❌ | ❌ | partial |
+| Cross-region probe merging | ✅ `--merge` | ❌ | ❌ | ❌ |
 | Single static binary, no config file | ✅ | ❌ | ❌ | ❌ |
-| Fuzzed, bounded parser + typed errors | ✅ | — | — | — |
+| 100% safe Rust, fuzzed parsers | ✅ | — | — | — |
+| Docker (2.9 MB scratch) + GitHub Action | ✅ | ❌ | partial | ❌ |
 
 ✝ possible with effort — llmrace exists so you don't spend that effort.
 Missing a capability you need? [Open an issue](https://github.com/dfbustosus/llmrace/issues/new/choose).

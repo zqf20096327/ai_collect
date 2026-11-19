@@ -7,7 +7,7 @@
 
 [![Validate](https://img.shields.io/github/actions/workflow/status/lenamonj/jeffy-loop/validate.yml?style=for-the-badge&label=validate&logo=githubactions&logoColor=white)](https://github.com/lenamonj/jeffy-loop/actions/workflows/validate.yml)
 [![Behavioural checks](https://img.shields.io/badge/dynamic/regex?url=https%3A%2F%2Fraw.githubusercontent.com%2Flenamonj%2Fjeffy-loop%2Fmain%2FREADME.md&search=count%3Achecks%20--%3E%5C*%5C*(%5Cd%2B)%20behavioural%20checks&replace=%241%2B%20per%20host&label=behavioural%20checks&style=for-the-badge&color=22C55E)](scripts/validate.sh)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://claude.com/claude-code)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-Harness-D97757?style=for-the-badge&logo=claude&logoColor=white)](https://claude.com/claude-code)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Mac%20%7C%20Linux-0EA5E9?style=for-the-badge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](LICENSE)
 
@@ -21,7 +21,7 @@ The model writes the patch. The harness around it decides whether that patch can
 
 The harness is deliberately hard to fool. If a fix breaks your tests, the loop is told to revert it. The loop is told never to push, and the hook never pushes; keep push off its allowlist. A standard run counts as complete only when a fresh audit is clean, your tests pass again, and an adversarial review by a second AI agent with no part in the run signs off. The goal is fixes that survive scrutiny.
 
-There is a real-world test for that. Anthropic fixed a security issue this loop found in claude-code-action, and closed the report as Resolved after we retested the fix. Maintainers with no stake in this project have merged <!-- count:merged -->79<!-- /count --> of its pull requests, each filed from a local clone, into projects run by NVIDIA, Arm, Meta, Tesla, Google, Apple, Microsoft, Netflix, Apache, Palo Alto Networks, Oracle, IBM, HashiCorp, Cisco, Uber, Square, Cloudflare, Dropbox, Tencent, and more. [See them all.](#independent-validation---the-receipts)
+There is a real-world test for that. Anthropic fixed a security issue this loop found in claude-code-action, and closed the report as Resolved after we retested the fix. AWS fixed two panics on malformed input that this loop found in smithy-go and reported privately to AWS Security. Maintainers with no stake in this project have merged <!-- count:merged -->79<!-- /count --> of its pull requests, each filed from a local clone, into projects run by NVIDIA, Arm, Meta, Tesla, Google, Apple, Microsoft, Netflix, Apache, Palo Alto Networks, Oracle, IBM, HashiCorp, Cisco, Uber, Square, Cloudflare, Dropbox, Tencent, and more. [See them all.](#independent-validation---the-receipts)
 
 **Sending a fix upstream?** If you use Jeffy Loop to open pull requests on repositories you do not own, we strongly recommend running [housebroken](https://github.com/lenamonj/housebroken) (`pip install housebroken-cli`) alongside it. Jeffy proves the fix; housebroken gets it through the maintainer's door. It reads the project's AI policy first, checks that the finding is not already fixed or ruled intended, holds the pull request to one finding and the smallest diff, has a second model attack it, and refuses to file until every gate has passed. Every pull request this project has filed since housebroken shipped went through it.
 
@@ -146,6 +146,8 @@ Each rule is enforced by the iteration prompt, the state files or the Stop hook,
 
 Jeffy runs almost the whole RSI cycle on its own engine. Pointed at its own repository under the same rules as any outside project, it finds a defect, writes the fix, proves it with a behavioural check that fails if the defect returns, and has a second agent try to reject the work; the engine that comes out audits the next round. From 1.29.0 it also names every refusal and run ending and keeps a fire log, so it can count which of its own rules do work. One step is left out on purpose: a human in the loop makes every final decision on what ships. The model itself never changes. [What RSI means here, and where it stops.](docs/recursive-self-improvement.md)
 
+The improvement runs on a schedule, inside limits fixed in code. Every Monday a sandboxed review session reads the week's record of what went wrong in Jeffy and in [Housebroken](https://github.com/lenamonj/housebroken), traces each serious miss to the step where the work left its plan, and ends with a ranked list of what the next version should carry. Once a month a second session reviews the procedure itself and may rewrite that procedure's working sections; its ground rules and guardrails it can only propose. Beyond that it writes its review files, its incident analyses and a list of register events that code checks before loading. It cannot push, post, release or edit code, and code checks what it wrote before any of it is recorded. The procedure requires each new rule to come from a failure the record shows, and a person rules on every change to either tool. [How the scheduled review works, and the hole an independent read found in its sandbox before it ever ran.](docs/recursive-self-improvement.md#the-review-runs-on-a-schedule)
+
 ### <img src="media/seal-mark.png" width="30" alt="" align="absmiddle"> Trust model
 
 | Question | Answer |
@@ -175,6 +177,10 @@ Each finding below was accepted by the project's own people: merged upstream by 
   <tr>
     <td><img src="https://github.com/anthropics.png" width="20" height="20" alt="" align="absmiddle"> Anthropic</td>
     <td><a href="https://github.com/anthropics/claude-code-action">claude-code-action</a> - security report resolved in 90 days<br>A security issue reported privately through their program was scored by their own security team and fixed. They asked us to retest, we confirmed the fix holds, and they closed the report as Resolved. The report is confidential, so its details are not published here</td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/aws.png" width="20" height="20" alt="" align="absmiddle"> AWS</td>
+    <td><a href="https://github.com/aws/smithy-go/pull/713">smithy-go #713</a> - event stream decoder, security report with the fix released in 11 days<br>A header whose value type byte was outside 0 to 9 hit a <code>panic</code> in the decoder, so one malformed frame from the wire panicked the client instead of returning a decode error<br><br><a href="https://github.com/aws/smithy-go/pull/713">smithy-go #713</a> - CBOR deserializer, security report with the fix released in 11 days<br>A 64-bit length from the wire was cast to <code>int</code> before use, so a length above <code>MaxInt64</code> turned negative: string and blob reads passed their bounds check and panicked, and skip, which had no check, left the offset negative so the next read panicked<br><br>Both were reported privately to AWS Security with reproductions and patches. AWS wrote its own fix for both and released it in smithy-go v1.28.2</td>
   </tr>
   <tr>
     <td><img src="https://github.com/NVIDIA.png" width="20" height="20" alt="" align="absmiddle"> NVIDIA</td>
@@ -316,6 +322,8 @@ Each finding below was reproduced upstream, and the project shipped its own fix 
 | [Usage](docs/usage.md) | Flags, rounds and budgets, [High hunt](docs/usage.md#high-hunt), scoped mode, cancelling, [upgrading](docs/usage.md#already-installed-upgrade), uninstalling, and what to know before a first run |
 | [How it works](docs/how-it-works.md) | The run lifecycle, what the engine enforces, the full rule set, what a converged stop looks like, and how the loop improves itself |
 | [Recursive self-improvement](docs/recursive-self-improvement.md) | What RSI means in Jeffy: the cycle it runs on its own engine, the step a human in the loop keeps, the guardrails, and what it is not |
+| [Recursive self-learning](docs/recursive-self-improvement.md#recursive-self-learning) | A mistake is allowed once: the standard both tools are held to after a miss, the records it runs on with an example from each, and how each record feeds the next |
+| [The scheduled review](docs/recursive-self-improvement.md#the-review-runs-on-a-schedule) | The weekly and monthly reviews that apply that standard: what the unattended session may read, write and run, what code checks after it, and the two times the sandbox was seen red before its first run |
 | [Headless runs](docs/headless.md) | Running budgeted rounds unattended from bash or PowerShell |
 | [The receipts](evals/README.md) | Every open-source target with its outcome, the merged patches, the greenfield builds |
 | [Contributing](CONTRIBUTING.md) | The validator and the review bar |

@@ -6,6 +6,30 @@ A lint tool that uses [Jev](https://typesafe.ai/) -- a fast classifier that
 answers a natural-language question with a calibrated probability instead of
 writing text -- to decide what a parser cannot.
 
+## Try it on tracked files
+
+To run your first lint check, you need Node.js 24+, a Git working tree, and **either `OPENROUTER_API_KEY` or `TYPESAFE_API_KEY`**. Choose one of the following commands.
+
+**Free trial with OpenRouter.** The free Decider model requires an OpenRouter account and API key. [Get an OpenRouter key](https://openrouter.ai/keys).
+
+```sh
+export OPENROUTER_API_KEY='<your-openrouter-key>'
+npx -y jev-lint --model openrouter:perplexity/pplx-decider-v1.3:free
+```
+
+**TypeSafe Jev.** We recommend Jev for regular use and CI because the shipped thresholds are calibrated on it. If both keys are exported, unset `OPENROUTER_API_KEY` to connect to TypeSafe directly. [Get a TypeSafe key](https://console.typesafe.ai/keys).
+
+```sh
+export TYPESAFE_API_KEY='<your-typesafe-key>'
+npx -y jev-lint
+```
+
+With no API key, run `npx -y jev-lint --dry-run` to preview the files and candidate rules offline.
+
+Without a config, the CLI asks once, selects starter rules from up to 64 tracked filenames (8 KiB of paths), prints the proposed YAML, then lints up to three files (16 KiB each, 32 KiB total). The OpenRouter trial uses the free Decider for both selection and lint. Saving the YAML is optional. An existing config uses its own files and rules.
+
+## Example finding
+
 This function is wrong, and nothing in your toolchain will say so:
 
 ```ts
@@ -45,7 +69,7 @@ it, nothing is reported. Six findings over two files, for a tenth of a cent;
 
 ## What it catches
 
-Fifty distinct rule IDs ship, most of them asked in several languages -- 103
+Sixty-eight distinct rule IDs ship, most of them asked in several languages -- 121
 rules in all. Roughly:
 
 - **A name against the thing it names.** A function, method, binding, type,
@@ -92,7 +116,7 @@ Keep your existing tools for those.
 
 ## Install
 
-Nothing to install to try it; Node 24+ and `npx` are enough. For a project:
+For a project dependency:
 
 ```bash
 npm install --save-dev jev-lint
@@ -100,7 +124,7 @@ npx jev-lint init                      # writes .jev-lint.yaml
 npx jev-lint check src --dry-run       # what it would ask, and the price. No request.
 ```
 
-The key is read from the environment only — `TYPESAFE_API_KEY`, or
+The key is read from the environment only — `OPENROUTER_API_KEY`, `TYPESAFE_API_KEY`, or
 `TYPESAFEAI_API_KEY` — and never from the config file, which belongs in
 version control and a key does not. Everything that does not ask the model
 works without one: `--dry-run` prices a run, `jev-lint rules` lists what
@@ -118,6 +142,32 @@ Jev is the recommended model for normal linting. The shipped rules and cutoffs
 are calibrated for Jev, and it performed best at those cutoffs in the
 [81-suite fixture comparison](docs/clef-evaluation.md#live-results-2026-10-02).
 
+When the CLI detects `OPENROUTER_API_KEY`, it asks before sending data to OpenRouter for
+`typesafe/jev-1.14`, even if a TypeSafe key is also present. Enter cancels the run.
+For CI, set `model: openrouter:typesafe/jev-1.14` in `.jev-lint.yaml`, pass
+`--model openrouter:typesafe/jev-1.14`, or set `JEV_LINT_MODEL=openrouter:typesafe/jev-1.14`.
+For default Jev, `apiKeyEnv: OPENROUTER_API_KEY` in the config also selects OpenRouter.
+Without an explicit selection, a noninteractive run exits 2. Unset the OpenRouter key to use TypeSafe directly.
+
+Experimental OpenRouter decision models are selectable with
+`--model openrouter:<id>` and `OPENROUTER_API_KEY`. Supported IDs are
+`liquid/d1.2-ultra`, `liquid/d1.2`, `baseten/mammoth-1`, and
+`perplexity/pplx-decider-v1.3:free`. In the
+[November comparison](docs/model-comparison-2026-11.md), Perplexity's free model
+matched Jev's aggregate results on 146 naming cases, but selected too many
+starter rules. The free trial therefore offers the model a shortlist of core rules. Other OpenRouter checking models use Jev for starter selection.
+
+```bash
+export OPENROUTER_API_KEY='<your-api-key>'
+npx jev-lint run typescript/fn-name-promises src \
+  --model openrouter:perplexity/pplx-decider-v1.3:free
+```
+
+These are opt-in experiments with existing cutoffs, not replacements validated
+across the catalog. Live OpenRouter cost comes from billed `usage.cost`;
+free requests are paced at 3.2-second intervals and remain subject to daily limits.
+Native models get separate verdict-cache files; use `--cache none` for fresh comparisons.
+
 Cloudflare Clef and Clef-flash are optional experimental models for comparison
 from a repository checkout. `just clef-plan` previews the requests and cost;
 `just clef-eval` runs the comparison with Cloudflare credentials. See the
@@ -128,6 +178,7 @@ the limits of fitting new cutoffs on the same fixtures.
 
 | | |
 | --- | --- |
+| `jev-lint` / `jev-lint auto src` | confirm, then use existing settings or select starter rules and check; `--yes` skips the startup prompt |
 | `jev-lint check src` | judge whole files |
 | `jev-lint review --base main` | only the lines a diff touched — where findings concentrate, at a fraction of the cost |
 | `jev-lint commits --base main` | each commit's message against its diff, and each change against the `AGENTS.md` the repository wrote for itself |
@@ -185,7 +236,7 @@ covers the exit code that will stop you committing while offline.
 
 ## What ships
 
-103 rules under `rules/<language>/<id>/`, and the files you point it at decide
+121 rules under `rules/<language>/<id>/`, and the files you point it at decide
 which run. Nothing to select.
 
 | point it at | what runs |
@@ -197,12 +248,15 @@ which run. Nothing to select.
 | `.vibe` | `vibe/` — 2, with the [vibe-lang parser](docs/reference.md#vibe-lang) |
 | `.sh` `.bash` `.zsh` | `shell/` — 8: what a script does to the machine that its reader cannot see |
 | `.md` `.mdx` | `markdown/` — 13: 11 writing rules and 2 agent-instruction rules |
-| `package.json`, sqlc `.sql` | `json/` — 1, `text/` — 1 |
-| commits | `git/` — 2 |
+| `package.json` | `json/` — 1 |
+| sqlc queries and prepared architecture evidence | `text/` — 17 total, including 16 [design advisories](docs/advisories.md) |
+| commits | `git/` — 4 including 2 metric advisories |
+
+Public API review uses three units: an exported name, the signatures at one entry point, and one documented workflow across import paths. [Rule selection and layout example](docs/advisories.md#public-api-review).
 
 `typescript` and `rust` are first tier: every rule under them carries
 fixtures, expectations and an accepted baseline. The rest are calibrated to
-the same bar and not yet promised. [RULES.md](RULES.md) lists all 103 with
+the same bar and not yet promised. [RULES.md](RULES.md) lists all 121 with
 their question, cutoff and score on their own fixtures.
 
 Your own rule can target any language ast-grep parses — Java, Kotlin, Swift,

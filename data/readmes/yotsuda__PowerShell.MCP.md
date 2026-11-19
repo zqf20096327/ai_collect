@@ -69,6 +69,27 @@ $sb = [System.Text.StringBuilder]::new(256); $len = 256
 
 PowerShell.MCP complements your existing MCP setup by providing a flexible, general-purpose foundation.
 
+## Defend with AI: network security audits
+
+Attacks that use AI to find and work through weak spots are now reported week after week, and they are not aimed only at large companies. An attacker needs one opening; a defender has to close all of them — the careful, repetitive checking that usually gets postponed. Put the same kind of help on the defending side.
+
+**[powershell-mcp-security](https://github.com/yotsuda/powershell-mcp-security)** is a Claude Code plugin that has the AI audit and harden a Windows, Linux or macOS machine through PowerShell.MCP — this one, or a server or VM reached through [remote control](#remote-console-another-machine) — with you watching every command:
+
+- **Read-only first**: the settings that are actually in effect, not only config files, checked against what the network sees from outside.
+- **Fixes only with your approval**, in an order that cannot lock you out, verified from outside and again after a reboot, where settings quietly revert.
+- **No keys or passwords for the AI**: a person at that machine starts remote control, and `sudo` passwords are typed at its console.
+
+Its helper module **[NetworkSecurityAudit](https://www.powershellgallery.com/packages/NetworkSecurityAudit)** holds the checks that are easy to get wrong by hand: TCP probes that tell closed from filtered (`Test-NsaTcpPort`), listening ports with their process and service (`Get-NsaListeningPort`), Windows firewall rules open to any address (`Find-NsaPermissiveFirewallRule`), effective Linux `sysctl` values and SSH logins. It only reads, and works on its own too (`Install-Module NetworkSecurityAudit`); the AI asks before installing it on a machine it audits.
+
+```text
+/plugin marketplace add yotsuda/powershell-mcp-plugins
+/plugin install powershell-mcp-security@powershell-mcp
+```
+
+Then ask: *"Audit the network security of this server. Read-only first, and check what is visible from outside."* A walkthrough, in Japanese: [リモート PC のセキュリティ監査と対策を、AI に任せる方法](https://qiita.com/ytsuda/items/4c0dddb76bd462f987df).
+
+**Help collect what defenders know.** The repository is meant to gather network-audit know-how in one place: checks that catch real misconfigurations, fixes that cannot lock anyone out, settings that are silently overridden. When an audit shows the skill was wrong or missing something, the AI offers to draft an issue for it — you review the text, with real addresses and names left out, before anything is posted. Pull requests for a new check or another OS are welcome as well ([CONTRIBUTING](https://github.com/yotsuda/powershell-mcp-security/blob/main/CONTRIBUTING.md)).
+
 ## What Makes It Powerful
 
 **🖥️ Multi-Client Architecture**
@@ -277,7 +298,7 @@ chmod +x "$(Get-MCPProxyPath)"   # Linux / macOS only: the new proxy needs the e
 Register-PwshToClaudeCode        # Claude Code
 Register-PwshToClaudeDesktop     # Claude Desktop
 ```
-Both replace the existing `pwsh` entry and keep the arguments and environment variables already set on it, such as `--no-profile`. **For other MCP clients:** replace the path in your configuration with the output of `Get-MCPProxyPath -Escape`.
+Both replace the existing `pwsh` entry and keep the arguments and environment variables already set on it, such as `--no-profile`; `-NoProfile` and `-ConsoleLaunch` change those two flags. **For other MCP clients:** replace the path in your configuration with the output of `Get-MCPProxyPath -Escape`.
 
 #### 3. Close the old consoles and restart your MCP client
 Close the PowerShell.MCP console windows (titled like `#12345 Taxi`) — each keeps running the version it was started with — then quit and restart your MCP client.
@@ -296,14 +317,14 @@ Uninstall-PSResource PowerShell.MCP -Version <old version>
 
 By default, every console the proxy launches loads your PowerShell `$PROFILE` (prompt, aliases, PSReadLine, theme) — these are real interactive shells, not just automation targets. Pass `--no-profile` to start them with `-NoProfile` instead, for faster startup and a clean, deterministic environment.
 
-**Claude Code:**
+**Claude Code / Claude Desktop:**
 ```powershell
-claude mcp remove pwsh -s user   # if pwsh is already registered: 'claude mcp add' refuses an existing name
-claude mcp add pwsh -s user -- "$(Get-MCPProxyPath)" --no-profile
+Register-PwshToClaudeCode -NoProfile      # Claude Code
+Register-PwshToClaudeDesktop -NoProfile   # Claude Desktop
 ```
-From then on `Register-PwshToClaudeCode` keeps the flag, including when you re-register after an update.
+From then on both keep the flag, including when you re-register after an update without it. `-NoProfile:$false` removes it.
 
-**Claude Desktop / other MCP clients:** add an `args` array with `--no-profile` to the `pwsh` entry in your config (`Register-PwshToClaudeDesktop` keeps it when it re-registers):
+**Other MCP clients:** add an `args` array with `--no-profile` to the `pwsh` entry in your config:
 
 ```json
 "mcpServers": {
@@ -322,13 +343,13 @@ A console the proxy opens should not take the keyboard focus from what you are t
 
 | Value | Window | Focus |
 |---|---|---|
-| `auto` (default) | When Windows Terminal is your default terminal (the default on Windows 11), a new Windows Terminal window opened through `wt.exe` without activating it; otherwise a console window as before | Kept while another application is in front. When a Windows Terminal window is in front — for example when your AI client runs in Windows Terminal — the new window still takes it. |
+| `auto` (default) | When Windows Terminal is your default terminal (the default on Windows 11), a new Windows Terminal window opened through `wt.exe` without activating it; otherwise a console window as before | Kept while another application is in front, on many systems but not all: on some (reported on Windows 11 build 26200 with Windows Terminal 1.24 and 1.25) Windows Terminal activates the new window anyway. When a Windows Terminal window is in front — for example when your AI client runs in Windows Terminal — the new window always takes it. If either bothers you, use `minimized`. |
 | `minimized` | A minimized classic console window (conhost), not a Windows Terminal window: no tabs, no Windows Terminal settings | Never taken, whatever is in front. Click the console on the taskbar to watch it. |
 | `handoff` | Exactly as before 1.17.0: Windows decides, usually a Windows Terminal window | Taken when the window opens |
 
 `minimized` may also suit agents working on another virtual desktop: Windows Terminal runs all its windows in one process, and users have seen a new window bring the others to the desktop they were on; separate conhost windows do not share a process.
 
-Add it the same way as `--no-profile`, for example `claude mcp add pwsh -s user -- "$(Get-MCPProxyPath)" --console-launch minimized`, or `"args": ["--console-launch", "minimized"]` in other clients. It has no effect on macOS and Linux.
+Set it with `Register-PwshToClaudeCode -ConsoleLaunch Minimized` or `Register-PwshToClaudeDesktop -ConsoleLaunch Minimized`; both keep it on later re-registrations, and `-ConsoleLaunch Auto` removes it. In other clients, add `"args": ["--console-launch", "minimized"]` to the `pwsh` entry. It has no effect on macOS and Linux.
 
 ### Idle consoles close themselves
 
@@ -374,7 +395,7 @@ The consoles the AI starts are not elevated. For admin work, open PowerShell 7 *
 
 The AI can also drive a console on **another machine** — a test VM, a build box, a colleague's PC with that colleague watching (they run `Enable-MCPRemoteControl` and read you the code, below). If that console is elevated, so is the AI, which makes it a practical tool for **defensive work**: auditing a server, reading its event logs, checking what it exposes, hardening it, with the person responsible watching every command.
 
-*"Audit this VM's security, read-only"* — against a lab VM in Azure, reached through a port its owner had opened to one address, one session went from the Security log (2,015 failed RDP logons in three hours, no account lockout configured) to the local accounts and password policy, the listening ports checked against what is reachable from outside, SQL Server's version and login mode, Defender, TLS settings and persistence points, and ended with a report the team that owns the VM template could act on, in about ten minutes. That kind of review is usually postponed; attackers' tooling is already automated, and the gap is on the defenders' side.
+*"Audit this VM's security, read-only"* — against a lab VM in Azure, reached through a port its owner had opened to one address, one session went from the Security log (2,015 failed RDP logons in three hours, no account lockout configured) to the local accounts and password policy, the listening ports checked against what is reachable from outside, SQL Server's version and login mode, Defender, TLS settings and persistence points, and ended with a report the team that owns the VM template could act on, in about ten minutes. That kind of review is usually postponed; attackers' tooling is already automated, and the gap is on the defenders' side. For a guided audit with fixes that cannot lock you out, see [Defend with AI](#defend-with-ai-network-security-audits).
 
 On the remote machine, install PowerShell 7.4+ (`winget install Microsoft.PowerShell` on Windows; [other platforms](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)), then in PowerShell 7:
 
@@ -398,7 +419,7 @@ If PowerShell 7 and PowerShell.MCP cannot be installed there the usual way — a
 - Security: TLS with a certificate made for the session and a handshake bound to that certificate and to the code. The code is short-lived on purpose: anyone who reaches the port can try codes offline. Meant for a LAN or VPN — do not expose the port to the Internet. What an attacker on the network can and cannot do: [SECURITY.md](SECURITY.md#remote-control).
 - Both machines must run the same PowerShell.MCP version. If they differ — and neither may be the latest — run `Update-Module PowerShell.MCP` on both, or on the older one with `-RequiredVersion <the newer one's version>`. If `Update-Module` refuses (a module not installed with `Install-Module`, such as one the one-line bootstrap installed), use `Install-Module PowerShell.MCP -RequiredVersion <that version> -Force`. After updating your own machine, restart the MCP client.
 
-**Granted, not taken.** Remote control starts only when a person at that machine runs `Enable-MCPRemoteControl` or pastes the line and answers Yes. It refuses to start where nobody could answer (a service, a script without a console, `-NonInteractive`), shows `[AI from <host>]` on every prompt and `Administrator:` in the title of an elevated window, and ends with `Disable-MCPRemoteControl` or by itself once no AI has been connected for 10 minutes (what the AI changed meanwhile stays, as with any admin work). Intrusion tooling is built to be the opposite: hidden and persistent. Like any tool, it cannot stop code already running on a machine from starting it out of sight — but it gives such code nothing it did not have, and [SECURITY.md](SECURITY.md#remote-control) lists how to spot it. **Paste a line only if you asked an AI for it yourself**: "paste this into PowerShell" is also how lures begin, and the console's question names the machine it will connect to. To help on a colleague's PC, use the listening mode, so no line is handed over.
+**Granted, not taken.** Remote control starts only when a person at that machine runs `Enable-MCPRemoteControl` or pastes the line and answers Yes. It refuses to start where nobody could answer (a service or scheduled task, a script without a console, `-NonInteractive`; the prompt of your own SSH login counts as a console, for machines with no desktop), shows `[AI from <host>]` on every prompt and `Administrator:` in the title of an elevated window, and ends with `Disable-MCPRemoteControl` or by itself once no AI has been connected for 10 minutes (what the AI changed meanwhile stays, as with any admin work). Intrusion tooling is built to be the opposite: hidden and persistent. Like any tool, it cannot stop code already running on a machine from starting it out of sight — but it gives such code nothing it did not have, and [SECURITY.md](SECURITY.md#remote-control) lists how to spot it. **Paste a line only if you asked an AI for it yourself**: "paste this into PowerShell" is also how lures begin, and the console's question names the machine it will connect to. To help on a colleague's PC, use the listening mode, so no line is handed over.
 
 **Data on the remote machine can be written by an attacker.** Event logs, user names in failed-logon records, file contents, web pages: when the AI reads them, it reads text that someone else chose, possibly crafted to look like instructions — with whatever rights that console has, and with the AI's access to *your* machine as well. The server tells the AI to treat it as data and to connect only to hosts and codes you typed. Pair only with machines you trust that far; for audits and incident response, ask for **read-only** work first and have the AI confirm before any change; to keep a record, run `Start-Transcript` in the remote console before pairing (see [Auditing an AI Session](SECURITY.md#auditing-an-ai-session)).
 

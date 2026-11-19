@@ -36,18 +36,19 @@ An open-source ebook reader for Android, and a client for [calibre-web](https://
 - Local shelves and a library that follows you: calibre-web, Komga, BookOrbit, liseur-sync or any OPDS catalog, with reading position synced to the sentence.
 - A reading companion that indexes characters, places and groups on your phone, with no server needed.
 - Highlights, notes, bookmarks, dictionary, translation and read aloud with device voices or your own speech server.
+- A vocabulary builder: keep words from the dictionary with the passage they came from, review them with spaced repetition, and export them to Anki.
 - Light, Sepia, Dark, OLED Black and low-light themes, open typefaces and per-book layout.
 - Free software: no ads, no account, no trackers in the F-Droid and GitHub builds.
 
 <table>
   <tr>
     <td width="33%"><img src="docs/screenshots/30-home-dark.png" alt="Home: the book you are reading, your shelves and a quote from your reading"></td>
-    <td width="33%"><img src="docs/screenshots/10-library-dark.png" alt="Library: covers standing on shelves, one shelf per series"></td>
+    <td width="33%"><img src="docs/screenshots/01-library.png" alt="Library: books in the default cover grid"></td>
     <td width="33%"><img src="docs/screenshots/32-reading-light.png" alt="Reading, light theme"></td>
   </tr>
   <tr>
     <td align="center"><sub>Home: pick up where you left off.</sub></td>
-    <td align="center"><sub>Library: your shelf, by what you are reading.</sub></td>
+    <td align="center"><sub>Library: your books, in the default grid.</sub></td>
     <td align="center"><sub>Distraction-free page, in light or dark.</sub></td>
   </tr>
   <tr>
@@ -83,6 +84,26 @@ card over the page rather than sending you to the back of the book. A
 selected passage can be translated by Android's own translator on the
 phone, or by a server you add, and from there the page itself can be
 translated sentence by sentence as you read.
+
+Tap **Save to vocabulary** in the dictionary to keep the word, its definition,
+and the passage where you found it. Open **Vocabulary Builder** from the
+library menu to review words offline, or from a book’s **Notes** to see its
+words and return to their passages. Switch between **Review**, **Words** and
+**Stats** to study, manage saved words and track reviews, recall rate and
+your day streak. Review cards include notes and the original passage, with
+**See in book** to return to it and a speaker for device pronunciation when
+available. Reveal the answer, then choose Again, Hard, Good or Easy from the
+bottom tiles, or swipe left for Again and right for Good. The progress ring
+tracks this session; Undo restores the last rating. Home's **Words to review**
+card also supports swiping. Hold a review or Home vocabulary card to copy,
+share, edit or remove the word, or return to its book. **Edit card** opens a
+full-screen editor for the meaning and an optional personal note, with a
+confirmation before discarding changes. Hold revealed text to select and copy it.
+The vocabulary menu on **Words** can export a JSON
+backup or an Anki-compatible CSV. Lookups are saved automatically by default;
+turn this off in Vocabulary settings, which also offer daily limits and
+reminders. Home shows the next word due, so you can check its meaning and
+start a review from there.
 
 The reading companion answers questions about characters and events using
 the passages before the selected text. Character profiles show their source

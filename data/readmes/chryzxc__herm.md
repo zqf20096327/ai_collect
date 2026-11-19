@@ -256,7 +256,7 @@ coordinates on Retina and standard-resolution screens.
 
 A typical workflow: start a long task in chat, collapse the workspace, and keep working. When the notch turns amber, hover over it to see which session needs approval, click that session, approve, and collapse again. When the task finishes, the notch tells you.
 
-Choose **Dots**, **Vertical line**, **Ring**, **Icons** (a status icon, with an unread mark for finished replies), or **Count** (the number of working sessions) in **Settings → Appearance → Notch**. The same page switches the notch between a screen **Side** and a **Top island** around the camera. Count is the default. The selection applies immediately and is saved across launches. The vertical line sweeps while work runs; the ring rotates. All notch animations respect **Reduce Motion**.
+Choose **Dots**, **Vertical line**, **Ring**, **Icons** (a status icon, with an unread mark for finished replies), **Count** (the number of working sessions), or **Bots** (the face of the Bot that is working, blocked, or finished, with a badge counting finished results) in **Settings → Appearance → Notch**, or from the gear menu's **Notch** submenu. Both switch the notch between a screen **Side** and a **Top island** around the camera. Count is the default. The selection applies immediately and is saved across launches. The vertical line sweeps while work runs; the ring rotates. All notch animations respect **Reduce Motion**. If you hide the notch, switching from the window back to the floating panel shows it again, since the panel opens from the notch.
 
 ## Features
 
@@ -472,15 +472,20 @@ workspace is hidden or Hermes is disconnected.
 The sidebar stacks Pinned, Recents, Projects, and Automations for the selected
 bot under its bot header. In the bot picker, drag a profile's handle to reorder it,
 or focus the handle and use the arrow keys. The order is saved locally across restarts without changing the
-selected profile or its conversations. Choose **All profiles** at the top of the
+selected profile or its conversations. Choose **All** at the top of the
 bot picker to merge every bot's pinned and recent conversations into one list; each
 row then shows a pill with its bot's avatar and name, and opening it switches to
 that bot. Each section header stays at the top of the scrolling
 list until the next section replaces it; rows remain lazily rendered.
 Background polls and runtime notifications refresh the latest history page,
-reusing older loaded sessions for up to a minute. Explicit refreshes and profile
-changes reconcile the full saved history immediately.
-One Hermes request loads recent chats for all bots.
+reusing older loaded sessions for up to a minute. Explicit refreshes reconcile
+the full saved history immediately.
+One Hermes request loads recent chats for all bots. Switching to a bot shows its
+conversations at once: the list Herm last showed for that bot, or on a first visit
+its rows from that all-bot request. Hermes is then re-read quietly in the
+background. Returning to a bot reopens the chat it was left on, at the same
+reading position when that transcript is still cached. Retained lists stay keyed
+to their own profile and are cleared when the Hermes sign-in changes.
 Startup restoration shares the sidebar's session load, so reopening the latest
 conversation preserves the complete recent list without a manual refresh.
 
@@ -492,6 +497,7 @@ The session rail shows beside the transcript and composer by default; use the
 stacked-cards **Hide session rail** button beside Conversation actions to hide it. The rail and its toggle hide
 when the conversation column is narrower than 800pt, including when opening or resizing
 the third panel leaves too little space. Widening the column restores the chosen visibility.
+Both density settings reserve the rail's full width so it does not cover chat content.
 The card is titled **Session overview** when no repository is selected.
 Its sections summarize pending questions and approvals, the session task plan,
 delegated subagents, workspace checkpoints (with diff and a confirmed restore),
@@ -957,5 +963,4 @@ The session inspector's **Browser** tab is a real Chromium browser that you and 
 
 ![The Herm browser tab with the agent cursor on a page](docs/media/workspace-browser.webp)
 
-- **Attach browser context.** Click **Attach Page** in the browser toolbar to add the page title, URL, shared Chromium tab ID, and selected text to the session composer. Review or remove the context chip, then type and send your request in chat. Attaching never sends a message or replaces your draft; reattaching the same page refreshes its context. This is a snapshot, so attach again after navigating.
-- **Hermes browses here.** Herm starts a background Chrome (or Brave, Edge or Chromium) and connects Hermes' browser tools to it. When Hermes uses the browser, the inspector opens on the Browser tab, the page gets an accent frame, a status pill shows its current step, and a "Herm" cursor shows where it moves, clicks and types. Its last observed position stays visible between steps and when reopening the pane; taking over, usi
+- **Attach browser context.** Click **Attach Page** in the browser toolbar to add the page 

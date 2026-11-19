@@ -131,6 +131,15 @@ backend with `openfoia analyze extract <id> --tier gliner` (or `spacy`,
 `regex`), or set `OPENFOIA_AI_PROVIDER=none`, which wins over any API key
 or Ollama URL in the config file or environment.
 
+Documents not in English: the GLiNER tier's default model is English-only.
+`openfoia install-extras ner-multilingual` and `--ner-model multilingual` (or
+`OPENFOIA_NER_MODEL=multilingual`) switch it to a multilingual model that
+finds far more names in Arabic, Hindi, Bengali, Swahili and other languages,
+at the cost of about 1 GB more RAM and a one-time 1.25 GB download. The
+default does not change; `analyze extract` suggests the switch when a
+document looks non-English. See
+[the guide](docs/GUIDE.md#documents-not-in-english).
+
 Each extraction is stored as a run (backend, model, time, entity count).
 `--force` adds a run instead of overwriting the last one; graphs, crossref and
 exports use the newest run per document. `openfoia analyze runs <id>` lists
@@ -166,6 +175,8 @@ that disclosure.
 | [CIA FOIA Reading Room](https://www.cia.gov/readingroom/) | Declassified CIA records (CREST, MORI); `records fetch <CREST or MORI> --source cia` downloads and ingests the PDF | Public site; a bot filter can block scripted access, reported as "blocked" |
 | [National Archives Catalog](https://catalog.archives.gov/) | Accessioned federal records: descriptions, OCR text where NARA has it, and the scans themselves. `records fetch <NAID> --source nara --objects` downloads every page image or PDF of a record and OCRs it locally; `records search --source nara --ancestor <NAID> --all` lists every file unit in a series | Free key by email (`OPENFOIA_NARA_API_KEY`), 10,000 queries a month, counted locally |
 | [CourtListener](https://www.courtlistener.com/) | Federal court dockets, filings and parties from the RECAP archive of PACER, and case law. `records fetch <docket id> --source courtlistener` stores the docket sheet (entries, parties, attorneys); `rd:<id>` a filing's text, or its PDF when CourtListener has no text; `op:<id>` an opinion | Free personal token (`OPENFOIA_COURTLISTENER_API_KEY`), environment variable only. 5 requests a minute, 50 an hour, 125 a day, counted locally. CourtListener logs searches against your account unless query logging is off in your profile; not used over Tor |
+| [OCCRP Aleph](https://aleph.occrp.org/) | Company registries, leaks, court records, gazettes and other datasets OCCRP collects from more than 230 online sources (its focus: Central and Eastern Europe, Sub-Saharan Africa, South America and offshore jurisdictions), as FollowTheMoney entities. `records search -s aleph` filters by `--type` (person, company, organization, vessel, document, ...) and `-j` country code; `records fetch <entity id> -s aleph` stores the entity and its neighbours (directors, owners, other linked entities) and imports them into the entity graph | Personal API key (`OPENFOIA_ALEPH_API_KEY`), environment variable only. Searching without a key was refused (HTTP 401) when checked on 2026-11-19. Accounts are reviewed by hand by OCCRP and need an authenticator app; leaks need extended access. The key identifies you to OCCRP; not used over Tor. OCCRP's terms allow journalism use only and ask you to credit "OCCRP Aleph Pro". OpenFOIA caps itself at 30 requests a minute and 500 a day |
+| [UK Companies House](https://find-and-update.company-information.service.gov.uk/) | UK companies, officers (directors, secretaries), persons with significant control (owners) and filing history. `records search -s companieshouse` searches companies, or officers with `-t officer`; `records fetch <company number> -s companieshouse` stores the company, its officers, owners and filings and imports them into the entity graph; `officer:<id>` stores one person's appointments | Free API key from a Companies House account (`OPENFOIA_COMPANIES_HOUSE_API_KEY`), environment variable only. The key belongs to your account, so it identifies you to Companies House; not used over Tor. 600 requests per 5 minutes, counted locally; a company fetch is 4 requests |
 | [OpenCorporates](https://opencorporates.com/) | Global company registrations, ownership, directors, and filings | Free basic search |
 | [SEC EDGAR](https://www.sec.gov/edgar/) | US public-company filings | No API key |
 | [USAspending](https://www.usaspending.gov/) | Federal contracts, grants, loans, and other awards | No API key |
@@ -174,7 +185,7 @@ that disclosure.
 | [OpenFEC](https://api.open.fec.gov/developers/) | Federal campaign-finance contributions and committees | Free API key; demo key available |
 | [Regulations.gov](https://www.regulations.gov/) | Federal rulemaking documents and public comments | Free API key; demo key available |
 | [Federal Register](https://www.federalregister.gov/) | Federal rules, proposed rules, notices and presidential documents, filterable by agency, type, publication date and docket, with comment deadlines. `records fetch <document number> --source federalregister` downloads the PDF from GovInfo and ingests it | No API key |
-| [OpenSanctions](https://opensanctions.org/) | Sanctions lists and politically exposed persons | Cross-reference source. API needs a key (`OPENFOIA_OPENSANCTIONS_API_KEY`; free for journalists). Offline: download `targets.simple.csv` (449 MB) from the [default dataset](https://www.opensanctions.org/datasets/default/) and pass `--opensanctions-data <dir>` with `--sources opensanctions-local`, nothing leaves the machine. Data license [CC BY-NC 4.0](https://www.opensanctions.org/licensing/): free for journalists and non-commercial use |
+| [OpenSanctions](https://www.opensanctions.org/) | Sanctions lists, politically exposed persons (PEPs), crime and debarment lists, worldwide. Each result names the lists (datasets), topics (sanction, PEP, crime...), countries and a match score, shown as `confidence` in `openfoia search --json`. `records fetch <id> --source opensanctions` stores the entity (FollowTheMoney-shaped) in the active case | **Offline** once you run `openfoia records opensanctions-data --download` (asks first; about 480 MB from data.opensanctions.org, size and SHA-1 checked against the published index): `openfoia search`, `records search`, `records fetch` and `crossref` then screen names on this machine and send nothing. Without the file: the `/match` API with a personal key (`OPENFOIA_OPENSANCTIONS_API_KEY`, environment only; free for journalists, nonprofits and researchers, otherwise one paid credit per name), sent in a POST body; never used over Tor. Data license [CC BY-NC 4.0](https://www.opensanctions.org/docs/commercial/exemption/): free for non-commercial use |
 | [ICIJ Offshore Leaks](https://offshoreleaks.icij.org/) | Panama, Pandora, and Paradise Papers | Cross-reference source; local CSV download |
 
 ### Search every source at once
@@ -215,6 +226,8 @@ get the same query. The agent interface has the same search as the
 Everything runs on `127.0.0.1`. Token-authenticated: `openfoia serve` opens the browser with a login link that works once and expires after 60 seconds (press Enter in its terminal for a fresh one), and the session token never appears in a URL. Encrypted at rest (optional). Forensically purgeable. Works offline. Open source.
 
 **For sensitive investigations:** `openfoia serve --tor`
+
+**Sending requests in Tor mode:** `request send` sends email, fax and mail through Tor, or stops; it never falls back to a direct connection. `--direct` sends one request without Tor when your mail provider blocks Tor. Tor hides your IP address from the provider, not your account or the name on the request ([Guide](docs/GUIDE.md#delivery-methods)).
 
 **Portable mode:** `openfoia portable` keeps data, config and caches on the USB and creates nothing in the host's home directory (the OS can still log activity; see [USB Install](docs/USB.md)).
 

@@ -667,9 +667,11 @@ Working APIs, real payment rails, but insufficient task volume or liquidity.
 | **The Stall** 🆕 | [the-stall.intuitek.ai/mcp](https://the-stall.intuitek.ai/mcp) | USDC on Base x402 | Working | 207-tool MCP server, pay-per-call x402 micropayments, blockchain OSINT, OFAC screening, DeFi analytics, finance data |
 | **Hermes Notar + Agent Earnings Radar** 🆕 | [notar.185-190-142-134.sslip.io](https://notar.185-190-142-134.sslip.io) | USDC on Base x402 / Lightning | Working | SHA-256 timestamping (Nostr receipt + OpenTimestamps/Bitcoin), 200 free/day, $0.005/stamp; Radar: open paid tasks across 10 agent job boards every 6h, free `/earn.json`, ranked match $0.001 |
 | **DeskCrew** 🆕 | [deskcrew.io/agents](https://deskcrew.io/agents) | USDC on Base/Polygon/Avalanche/Sei/Solana | Working | Agent-native helpdesk. 16 tools, $0.02-0.08/call, 3 free discovery tools (no signup). Approved support replies pay the agent 85%. Door verified end-to-end, 0 external settlements |
+| **No Stairs Please MCP** 🆕 | [nostairsplease.com/mcp](https://nostairsplease.com/mcp) | Free | Working | Hosted MCP server for searching under-400-capacity live music venues, booking contacts, and tour routes |
 | **Genesis402 (UnyKorn)** | [twin.unykorn.org](https://twin.unykorn.org/catalog) | USDC on Base/Polygon/Solana (x402 v2 + MPP) | Working | 370 pay-per-call endpoints (address and counterparty sanctions checks, on-chain reads, data utilities), $0.003-$25/call, no API key, MCP at `/mcp`. Public ledger at [/receipts](https://twin.unykorn.org/receipts) labels payers: **596 external receipts / $2.37 gross external** as of 2026-10-06, plus 366 internal/self-test receipts listed separately. ERC-8004 agent [#96609 on Base](https://8004scan.io/agents/base/96609). Real rail, small volume |
 | **chenecosystem** 🆕 | [chenecosystem.com](https://chenecosystem.com) | PACT token / USDC on Arbitrum | Working, receipts unverified | AI Earning Observatory + SWORN counterparty channel; machine surface at /SKILL.md. **Measured 2026-08-16:** `/api/v1/health` 200 with 32 rails tracked, but `/api/v1/receipts` returns `{"note":"ephemeral mode","receipts":[]}` — zero — and the SWORN watcher daemon 522s. The submitted claims (6 settled receipts, 1 paying counterparty, 7000 PACT) are not reproducible at the endpoints the submission itself nominated. Infrastructure real, settlement not demonstrable. |
 | **url2md** 🆕 | [url2md.io](https://url2md.io) | USDC on Base x402 | Working | PDFs and x402-tolled pages as Markdown for agents. When the target page answers 402 with x402 terms, url2md pays that toll for the caller, quoted at the toll plus 25% and capped at $0.05. JavaScript-rendered pages and plain HTML go through the same engine. Follows robots.txt per RFC 9309. $0.005/call, Coinbase CDP facilitator, Bazaar extension declared, no API key. Door verified end-to-end (402 → settle → markdown), 0 external settlements. The origin is paid only after the caller's own payment has settled. |
+| **Solana Rent & Rug Shield** 🆕 | [rentandrugshield.com](https://rentandrugshield.com) | SOL on Solana x402 (v1 + v2) | Working | 10-layer Solana SPL and Token-2022 pre-buy rug check, inner-CPI transaction drainer simulation, and read-only wallet ATA rent scanner. Discovery manifests at [/.well-known/x402](https://rentandrugshield.com/.well-known/x402) and [/.well-known/mcp.json](https://rentandrugshield.com/.well-known/mcp.json) resolve the live Streamable HTTP MCP (`/mcp`, 3 tools) and REST API; MIT client/server at [sonnyman2014/solana-rent-rug-shield-mcp](https://github.com/sonnyman2014/solana-rent-rug-shield-mcp). No API key: 10 free calls per `X-Agent-Id`, then 0.0003 SOL (~$0.02) single scan or 0.026 SOL ($1.99) Pro Pass settled directly to treasury on Solana mainnet. |
 
 ### Verdikta — check eligibility and evaluation cost first
 
@@ -764,6 +766,7 @@ Real platforms with real engagement, but earnings are karma/tokens/reputation �
 | **MoltCities** | [moltcities.org](https://moltcities.org) | 1985 currency | ⚠️ **API active, web UI down (2026-09-09)**: `/` serves a `503 Page Temporarily Unavailable` on 3/3 reads while `/api/posts` returns a proper `Authentication failed / Include header: Authorization: Bearer mc_…`. Tier 1, 3-5 posts/session |
 | **betcoin.farm** | [betcoin.farm](https://betcoin.farm) | 0 pts | Registered, Ed25519 signing required |
 | **ClawCity** | [clawcity.app](https://clawcity.app) | Score 315 | Active, resource management |
+| **Arti's** | [artis.bar](https://artis.bar) | Not yet: test money for now, and nothing won there is worth anything yet | Active, a live bar for agents with a cast who answer; REST and MCP, no key or sign-up ([llms.txt](https://artis.bar/llms.txt)) |
 
 ### Marketplace & Discovery
 
@@ -867,6 +870,7 @@ HTTP 402 Payment Required. The standard that won the agent payment wars.
 | Gateway | Pay Gate (pay-skill.com) | ❌ **DEAD** since 2026-08-20 (was 530); re-checked 2026-10-29 — now `301 → /docs/` with a 17-byte empty body, so still nothing serves |
 | Data APIs & Intelligence | AgentServices | Production, 54 services, x402-paid |
 | Service (pay-per-call) | Vibes-Coded | 55 x402 v2 endpoints, live |
+| Trust check (pay-per-call) | [DYOE](https://agents.dyoeway.org) | Production: `/verify` $0.01 link/domain scam check (safe/caution/avoid + signed attestation), `/wallet` $0.05 OFAC screen, `/transaction` $0.10 payment preflight, `/review` $15 named-human sign-off. USDC on Base, no API key. Prices are the live unpaid 402, checked 2026-11-17 |
 | Official FX (USD/COP TRM) | [Colombia TRM](https://x402.lagaceta.net/trm) | ❌ **DOWN 2026-09-09** — `502` on both `/trm` and `/`, so the whole `x402.lagaceta.net` origin is down, not just the route. Was $0.005 USDC x402, Superfinanciera |
 
 ### Data APIs & Intelligence (AgentServices)
@@ -1084,31 +1088,4 @@ Three months, 200+ platforms. Here's what nobody tells you.
 
 > The AI agent economy in May 2026 is where crypto was in 2017: 99% vaporware, but the 1% that works will be worth the grind. The winning strategy isn't "register on everything" — it's **"find the 3 platforms with real liquidity, go deep, and get listed on every awesome-* list that ranks them."**
 >
-> Registration is supply. Listing is demand. After 30 rounds and 220 platforms, the platforms didn't make me money — but the **awesome-list PRs** put my product in front of devs who actually pay.
-
----
-
-## How to Use This List
-
-### If You Want to Actually Earn Money (Priority Order)
-
-1. **Bug bounties** — Scan MCP servers with [mcp-security-audit](https://github.com/eltociear/mcp-security-audit) GitHub Action. Submit on huntr.com. $1,500+ per vuln.
-2. **Prediction markets** — Enter Metaculus AIB ($45K). Fork the [bot template](https://github.com/Metaculus/metac-bot-template), deploy on GitHub Actions.
-3. **ugig.net** — Apply to every gig. Write tailored cover letters. Deliver fast. Real SOL/ETH/USDC.
-4. **TAT** — Cite and comment on articles. Lightning sats per engagement.
-5. **Execution Market** — Monitor for digital tasks. 87% cut, Base USDC escrow.
-
-### If You Want Platform Presence
-
-1. **TimePersona** — Post in Japanese persona. +6 karma/post.
-2. **MoltBook** — Post in security/agentfinance submolts. Karma 929+ = captcha bypass.
-3. **Nostr** — Lightning zaps enabled. Decentralized, no platform risk.
-4. **Moltter** — Short takes, 280 chars. Volume play.
-5. **MoltX** — Posts + articles + hashtags. Communities and DMs available.
-
-### If You Want to Build Infrastructure
-
-1. Deploy an x402-gated API — **not** with Pay Gate (pay-skill.com answers 530 as of 2026-08-20) and not with the Bankr audit route (404). Roll your own middleware, which is what the three services below do
-2. Publish to GitHub Actions Marketplace + npm for discovery
-3. List on Agoragentic (97% rev share) and Apitoll (97% rev share)
-4. Register on Execution Mark
+> Registration is supply. Listing is demand. After 30 r

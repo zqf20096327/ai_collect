@@ -182,6 +182,7 @@
   - Answer: [How does Model Quantization work?](https://outcomeschool.com/blog/how-does-model-quantization-work)
 - Compare tensor, pipeline, data, sequence and expert parallelism. When do you combine them?
   - Asked at: [Google DeepMind](#google-deepmind-and-google-ai), [Meta](#meta-superintelligence-labs-fair-llama), [Amazon](#amazon-aws), [NVIDIA](#nvidia)
+  - Answer: [How does distributed training work?](https://outcomeschool.com/blog/distributed-training)
 - Estimate the GPU memory needed to serve a 70B model: weights, KV cache, activations, fragmentation.
   - Asked at: [NVIDIA](#nvidia)
   - Answer: [What is KV Cache in LLMs?](https://outcomeschool.com/blog/kv-cache-in-llms) and [Paged Attention in LLMs](https://outcomeschool.com/blog/paged-attention-in-llms) and [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory)
@@ -1133,7 +1134,7 @@
 - What is Attention in machine learning models? What happens in a neural network if you remove all the hidden layers?
   - Answer: [Math behind Attention - Q, K, and V](https://outcomeschool.com/blog/math-behind-attention-qkv)
 - Discuss precision, recall and F1: when would you prioritise one over the others?
-  - Answer: [Precision vs Recall](https://outcomeschool.com/blog/precision-vs-recall)
+  - Answer: [Precision vs Recall](https://outcomeschool.com/blog/precision-vs-recall) and [How does a confusion matrix work?](https://outcomeschool.com/blog/confusion-matrix)
 - How do you handle data imbalance, collinearity, feature selection and regularization?
   - Answer: [Feature Engineering in Machine Learning](https://outcomeschool.com/blog/feature-engineering) and [Regularization in Machine Learning: L1 vs L2](https://outcomeschool.com/blog/regularization-in-machine-learning)
 - Explain how you would design and evaluate an A/B test. What is a p-value and how do you interpret it here?
@@ -1292,8 +1293,4 @@
 
 #### Multimodal, Speech and Voice AI
 
-- How would you fuse camera, radar and IMU inputs into a single perception stack, and where would you fuse them?
-
-#### Behavioral and Culture
-
-- Tell me about the most technically demanding thing you have shipped, and wha
+- How would you fuse camera, 

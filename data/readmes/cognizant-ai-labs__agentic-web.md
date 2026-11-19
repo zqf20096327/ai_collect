@@ -217,10 +217,13 @@ For a site agentified with the skill, follow
 [`references/linking.md`](skills/agentify-website/references/linking.md). The build
 writes the `bridge/` page that other agent sites load before they run your network, and
 `scripts/check_partner.mjs` checks a partner before you add it.
+Three sites in the town of Marrow Point call each other:
+[`examples/guesthouse_agentified/`](examples/guesthouse_agentified/),
 [`examples/harbor_tours_agentified/`](examples/harbor_tours_agentified/) (made from
 [`examples/harbor_tours/`](examples/harbor_tours/)) and
-[`examples/guesthouse_agentified/`](examples/guesthouse_agentified/) call each other.
-Their READMEs show how to serve both on two host names.
+[`examples/marrow_point_pizza_agentified/`](examples/marrow_point_pizza_agentified/)
+(made from [`examples/marrow_point_pizza/`](examples/marrow_point_pizza/)). Their READMEs
+show how to serve all three on three host names.
 
 
 ## Infrastructure

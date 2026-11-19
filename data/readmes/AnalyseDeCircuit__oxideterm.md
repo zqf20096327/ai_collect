@@ -20,7 +20,8 @@ No account. No subscription. No telemetry. No Electron.
 [**Documentation**](https://oxideterm.app) ·
 [**Changelog**](.github/release-notes/stable-changelog.md) ·
 [**Report an issue**](https://github.com/AnalyseDeCircuit/oxideterm/issues) ·
-[**WeChat community**](https://github.com/AnalyseDeCircuit/oxideterm/issues/752)
+[**WeChat community**](https://github.com/AnalyseDeCircuit/oxideterm/issues/752) ·
+[**LINUX DO community**](https://linux.do/)
 
 [English](README.md) | [简体中文](docs/readme/README.zh-Hans.md) | [繁體中文](docs/readme/README.zh-Hant.md) | [日本語](docs/readme/README.ja.md) | [한국어](docs/readme/README.ko.md) | [Français](docs/readme/README.fr.md) | [Deutsch](docs/readme/README.de.md) | [Español](docs/readme/README.es.md) | [Italiano](docs/readme/README.it.md) | [Português](docs/readme/README.pt-BR.md) | [Tiếng Việt](docs/readme/README.vi.md)
 
@@ -153,7 +154,7 @@ Items marked *(plugin)* are installed from the Plugin Marketplace inside the app
 - Search with regular expressions, case matching and multi-line queries, kept separately in every pane
 - Shell integration for Bash, Zsh, Fish, Nushell and PowerShell that tracks working directories, exit codes and command marks, and installs on remote servers from the app
 - Command folding that collapses finished output and keeps its exit status
-- Command bar with multi-line input, history, path suggestions, completions and Quick Commands
+- Bottom command bar with multi-line input, history, built-in and custom command completions, and Quick Commands
 - Fuzzy history suggestions, plus optional per-connection history that survives restarts
 - Free Type Mode for editing the current command with the mouse
 - Edit multi-line pastes before they're sent, with undo and code-fence removal
@@ -463,6 +464,12 @@ OxideTerm is built on these open source projects:
 - [Tokio](https://tokio.rs): async runtime
 - [Wasmtime](https://wasmtime.dev/): runs WASM plugins
 - [tree-sitter](https://tree-sitter.github.io/): syntax highlighting in the editor
+
+---
+
+## Links
+
+- [LINUX DO](https://linux.do/)
 
 ---
 

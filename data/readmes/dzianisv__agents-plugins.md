@@ -60,6 +60,74 @@ Install shape for both runtimes:
 | **auto-limit-resume** (`opencode-auto-limit-nudge.ts`) | yes | no | When a run dies on a usage/rate limit, switches to a configured fallback model (free-tier limits) or retries with backoff, then re-prompts the session so the task continues. Pending work is persisted and restored after a plugin reload; never cancels on a started run. | `./install.sh` |
 | **worktree** (`worktree.ts`) | yes | no | Git worktree status tool: dirty state, branch, active sessions. | `./install.sh` |
 
+## OpenCode plugin flow
+
+Each flow shows the OpenCode triggers, the plugin's work, and its local storage.
+Paths are defaults; some can be changed through configuration.
+
+### gh-guard
+
+```mermaid
+flowchart LR
+  OC("OpenCode")
+  GH("gh-guard<br/>Review commands<br/>Record pushes<br/>Check GitHub CI")
+  JG("gh-guard<br/>judge model")
+  API("GitHub API")
+  GS[("~/.agents/plugins/gh-guard<br/>model, rules<br/>~/.agents/state/gh-guard<br/>review log, state, budget")]
+  ENV[("~/.env")]
+  STACK[("Git directory<br/>gh-stack")]
+  NOTIFY[("~/.agents/state/notify<br/>deduplication markers")]
+  OC <-->|"Before shell; after push;<br/>execution ends; CI feedback"| GH
+  GH -->|"Review command"| JG
+  GH -->|"Read CI and PR context"| API
+  GH -.->|"Read or create config;<br/>write reviews and state"| GS
+  ENV -.->|"Read judge environment"| GH
+  STACK -.->|"Read stack metadata<br/>when present"| GH
+  GH -.->|"Read and write<br/>notification markers"| NOTIFY
+```
+
+### agents-md-guard
+
+```mermaid
+flowchart LR
+  OC("OpenCode")
+  AG("agents-md-guard<br/>Review commands<br/>Audit the latest turn<br/>Deliver findings")
+  JA("agents-md-guard<br/>judge model")
+  AS[("~/.cache/supervisor<br/>audits.jsonl<br/>inject and delivered state")]
+  CMD[("~/.agents/plugins/<br/>agents-md-guard/commands")]
+  RULES[("~/.agents/AGENTS.md<br/>~/.agents/MEMORY.md<br/>project AGENTS.md and MEMORY.md<br/>project .agents/ equivalents")]
+  DRAFT[("PR body file<br/>from shell command")]
+  NOTIFY[("~/.agents/state/notify<br/>deduplication markers")]
+  OC <-->|"Before configured shell;<br/>execution ends; audit feedback"| AG
+  AG -->|"Audit turn or<br/>review command"| JA
+  AG -.->|"Read and write audit<br/>and delivery state"| AS
+  AG -.->|"Read or create"| CMD
+  RULES -.->|"Read rules"| AG
+  DRAFT -.->|"Read when supplied"| AG
+  AG -.->|"Read and write<br/>notification markers"| NOTIFY
+```
+
+### session-autoreflect
+
+```mermaid
+flowchart LR
+  OC("OpenCode")
+  SA("session-autoreflect<br/>Track working time<br/>Attach reflection prompt")
+  SS[("~/.cache/session-autoreflect<br/>events.jsonl")]
+  SC[("~/.config/opencode<br/>session-autoreflect.json")]
+  OC <-->|"Execution and context;<br/>reflection prompt after 30 min busy"| SA
+  SA -.->|"Record armed<br/>and inject events"| SS
+  SC -.->|"Read configuration"| SA
+```
+
+The guards can send commands, rules, PR context, and conversation content to
+the configured model. `gh-guard` may read `~/.env` for its judge subprocess.
+`agents-md-guard` selects its model from `SUPERVISOR_MODEL` or its built-in
+default, not from `~/.agents/plugins/agents-md-guard/model`; `SUPERVISOR_RULES`
+can replace its default rules and memory inputs.
+`session-autoreflect` writes only its event log directly. Its prompt may lead
+the agent to change other files, including memory or skills.
+
 ## Plugin map
 
 When the plugins run:

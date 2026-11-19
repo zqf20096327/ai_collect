@@ -63,7 +63,7 @@ _Vision-language-action models and generalist robot policies._ [Browse with the 
 - ⭐ **[EagleVLA: Towards Onboard Real-Time Robot Control via Foresight-Aligned Asynchronous Inference](https://arxiv.org/abs/2607.12659)** (2026) — EagleVLA: asynchronous VLA inference for low-power onboard chips such as Jetson Orin, tackling perception-execution misalignment and slow reaction; a CoRL 2026 Spotlight, formerly titled Jetson-PI. · [code](https://github.com/PKU-SEC-Lab/EagleVLA)
 - ⭐ **[Envisioning Agentic Robotics: A New Era of Robotic Systems](https://arxiv.org/abs/2611.18359)** (2026) — Position paper on agentic robotics: Embodied System 2, a frontier model plus an embodied harness, as the decision core; proposes an evaluation framework and a roadmap to sustained autonomy. · [project](https://grid-robotics-official.github.io/agentic-robotics-roadmap)
 
-**[All 289 entries →](lists/vla.md)**
+**[All 296 entries →](lists/vla.md)**
 
 <a id="manipulation"></a>
 ### Manipulation & Dexterous Hands
@@ -83,7 +83,7 @@ _Imitation learning, diffusion policies, grasping, bimanual and dexterous manipu
 - ⭐ **[Play2Perfect: What Matters in Dexterous Play Pretraining for Precise Assembly?](https://arxiv.org/abs/2606.26428)** (2026) — CoRL 2026 Oral. Asks what dexterous play pretraining actually needs before precise assembly, a contact-rich, sparse-reward task that is hard for both imitation and direct RL. · [code](https://github.com/kushal2000/play2perfect) · [project](https://play2perfect.github.io)
 - ⭐ **[World In-Context Learning for Agentic Robot Manipulation](https://arxiv.org/abs/2611.12885)** (2026) — RoboScript: a frozen model rehearses a task in sim from one demo and writes feedback into a task memory, not weights. 83.4% on all 50 RoboTwin 2.0 tasks, 20+ points over the best trained policy; real dual-arm too. · [code](https://github.com/ArcheOne-AI/RoboScript) · [project](https://archeone-ai.github.io/RoboScript/)
 
-**[All 193 entries →](lists/manipulation.md)**
+**[All 194 entries →](lists/manipulation.md)**
 
 <a id="tactile"></a>
 ### Tactile & Visuotactile Sensing
@@ -93,6 +93,7 @@ _Tactile sensors, touch representations and contact-rich control._ [Browse with 
 - ⭐⭐⭐ **[DIGIT: A Novel Design for a Low-Cost Compact High-Resolution Tactile Sensor with Application to In-Hand Manipulation](https://arxiv.org/abs/2005.14679)** (2020) — An inexpensive, compact GelSight-style fingertip sensor that made vision-based touch widely accessible. · [code](https://github.com/facebookresearch/digit-interface)
 - ⭐ **[Learning Heterogeneous Tactile Representation for General Dexterous Manipulation](https://arxiv.org/abs/2611.12806)** (2026) — LingBot-Touch learns one representation across piezoresistive, magnetic and visuotactile sensors. Its tactile tokens plug into diffusion policies and VLAs (π0.5, LingBot-VLA); gains in sim and on real robots. · [code](https://github.com/Robbyant/lingbot-touch) · [project](https://technology.robbyant.com/lingbot-touch)
 - ⭐ **[Visible Touch: Rendering Contact for Visuomotor Policies](https://arxiv.org/abs/2609.14156)** (2026) — CoRL 2026 Spotlight. Brings contact into image-conditioned policies by rendering it, targeting the gap left by approaches that need tactile hardware, separate tactile encoders or non-image backbones. · [code](https://github.com/qaz1678249/visibletouch) · [project](https://visibletouch.github.io/)
+- **[LuxTac: A Flexible, Scalable, and Open-Source Optical Taxel Array with Distributed Three-Axis Force Sensing for Tactile Robot Learning](https://arxiv.org/abs/2611.23575)** (2026) — Open-source 3.5 mm optical taxel array with per-taxel three-axis force: gel cartridges encode shear in light color, no cameras or magnets. Normal sensing is linear to 5.8 N; its pressure improves ACT peg-in-hole. · [project](https://luxtac.github.io)
 - **[TaF-Foundation: Wrench-Grounded Cross-Sensor Tactile Representations](https://arxiv.org/abs/2611.20718)** (2026) — Grounds tactile representations in 6-D wrenches, giving sensors a physical reference; a shared encoder trains on 100M+ tactile-wrench observations. Reports 17.1% lower force RMSE and +13.11 pts cross-sensor R@1. · [project](https://mrjiangjm.github.io/TaF-Foundation/)
 - **[WiTac: Wrist-Informed Tactile Representations for Contact-Rich Manipulation](https://arxiv.org/abs/2611.21057)** (2026) — Pretrained encoder fusing tactile signals with hand motion and wrist views, trained on about 300 hours of SharpaDex. Conditioning GR00T N1.7 and π0.5 raises success by +28.8%/+15.0% over vision-only policies. · [project](https://wrist-informed-tactile-representations.github.io/)
 - **[PCTac: Mechanochromic Photonic-Crystal Tactile Sensor for Dexterous Manipulation](https://arxiv.org/abs/2611.12383)** (2026) — Open-source fingertip whose photonic-crystal skin changes colour under load, so hue reads stress directly. As Diffusion Policy input: 75.6% success over 90 real rollouts vs 63.3% (Wedge RGB) and 32.2% (vision only). · [project](https://bey0ndt1me.github.io/PCTac-page/)
@@ -101,9 +102,8 @@ _Tactile sensors, touch representations and contact-rich control._ [Browse with 
 - **[Blind Dexterous Grasping via Real2Sim2Real Tactile Policy Learning](https://arxiv.org/abs/2606.11767)** (2026) — Tactile-only blind grasping on a LEAP Hand: calibrate a digital twin to reproduce real touch signals, pretrain a layout-aware tactile encoder, and distill object-specific RL experts into a diffusion policy.
 - **[Equivariant Visual-Tactile Diffusion Policy for Contact-Rich Manipulation](https://arxiv.org/abs/2610.03333)** (2026) — VISTA: equivariant visuotactile diffusion policy that fuses touch into spherical visual tokens and rotates them with the gripper pose, for more data-efficient contact-rich imitation. · [code](https://github.com/Kenn3o3/Vista) · [project](https://vista-paper.github.io/)
 - **[FM-VLA: Force-based Memory for Vision-Language-Action Models in Contact-Rich Manipulation](https://arxiv.org/abs/2607.18231)** (2026) — Gives a VLA memory through compact force-history tokens from a pretrained VAE, for tasks like pressing a button a set number of times. Reports over 80% success on three memory-dependent tasks. · [project](https://qft-333.github.io/FM-VLA-Page/)
-- **[FTP-1: A Generalist Foundation Tactile Policy Across Tactile Sensors for Contact-Rich Manipulation](https://arxiv.org/abs/2606.13102)** (2026) — Tactile policy pretrained on ~3,000 hours from 26 sources and 21 sensors, mapping image, array and state signals into shared tokens. Reports +17.2% on seen setups and +31% on two unseen sensor setups. · [code](https://github.com/michaelyuancb/ftp1-policy) · [project](https://ftp1-policy.github.io)
 
-**[All 82 entries →](lists/tactile.md)**
+**[All 83 entries →](lists/tactile.md)**
 
 <a id="locomotion"></a>
 ### Locomotion & Humanoids
@@ -143,7 +143,7 @@ _Learned dynamics, video world models, world action models (WAM) and model-based
 - ⭐ **[GigaWorld-Policy: An Efficient Action-Centered World--Action Model](https://arxiv.org/abs/2603.17240)** (2026) — An action-centered WAM that predicts actions from the observation and makes video generation optional, so motion accuracy depends less on forecast quality and inference is cheaper. · [code](https://github.com/open-gigaai/giga-world-policy) · [project](https://gigaai-research.github.io/GigaWorld-Policy/)
 - ⭐ **[GreenWAM: A World Foundation Model for Robotics](https://arxiv.org/abs/2610.18774)** (2026) — One world model that is also the policy, across 20 robot families mapped to a shared joint-space action format; reports strong WorldArena, RoboTwin 2.0 and LIBERO-plus results and a one-step distilled humanoid policy. · [code](https://github.com/greenvla/GreenWAM) · [project](https://greenvla.github.io/GreenWAM)
 
-**[All 146 entries →](lists/world-models.md)**
+**[All 150 entries →](lists/world-models.md)**
 
 <a id="navigation"></a>
 ### Navigation & Embodied Agents
@@ -183,7 +183,7 @@ _Visual / LiDAR SLAM and odometry, 3D reconstruction, object pose, depth and ope
 - ⭐ **[BundleSDF: Neural 6-DoF Tracking and 3D Reconstruction of Unknown Objects](https://arxiv.org/abs/2303.14158)** (2023) — Tracks the 6-DoF pose of a never-seen object in RGB-D video while building its neural 3D model online, with no CAD model needed; useful for manipulating novel objects. · [code](https://github.com/NVlabs/BundleSDF)
 - ⭐ **[CoTracker: It is Better to Track Together](https://arxiv.org/abs/2307.07635)** (2023) — Transformer that tracks many video points jointly rather than one at a time, staying robust through occlusions; widely used to extract motion tracks from human or robot videos for policy learning. · [code](https://github.com/facebookresearch/co-tracker)
 
-**[All 57 entries →](lists/perception.md)**
+**[All 58 entries →](lists/perception.md)**
 
 <a id="control"></a>
 ### Planning, Control & Safety
@@ -203,7 +203,7 @@ _Motion planning, trajectory optimization, MPC, safety filters and safe learning
 - ⭐ **[MoveIt 2](https://moveit.ai/)** (2019) — The ROS 2 manipulation framework - motion planning, inverse kinematics, collision checking and real-time servoing for robot arms. · [code](https://github.com/moveit/moveit2)
 - ⭐ **[Pinocchio](https://github.com/stack-of-tasks/pinocchio)** (2019) — Fast C++/Python rigid-body dynamics library with analytical derivatives; a common backbone for kinematics, optimal control (e.g. Crocoddyl) and legged/humanoid control stacks.
 
-**[All 61 entries →](lists/control.md)**
+**[All 62 entries →](lists/control.md)**
 
 <a id="learning"></a>
 ### Robot Learning: RL & Imitation
@@ -223,7 +223,7 @@ _Reinforcement learning, imitation learning and policy post-training methods for
 - ⭐ **[What Matters in Learning from Offline Human Demonstrations for Robot Manipulation](https://arxiv.org/abs/2108.03298)** (2021) — robomimic — a controlled study of imitation and offline RL on human-collected manipulation demos (demo quality, observation choices, history-aware BC), released with the framework and datasets. · [code](https://github.com/ARISE-Initiative/robomimic)
 - ⭐ **[Addressing Function Approximation Error in Actor-Critic Methods](https://arxiv.org/abs/1802.09477)** (2018) — TD3 — fixes DDPG's value overestimation with twin critics, delayed policy updates and target smoothing; still a standard continuous-control baseline. · [code](https://github.com/sfujim/TD3)
 
-**[All 146 entries →](lists/learning.md)**
+**[All 147 entries →](lists/learning.md)**
 
 <a id="sim"></a>
 ### Sim-to-Real & Simulators
@@ -263,7 +263,7 @@ _Large robot datasets, egocentric data and evaluation suites._ [Browse with the 
 - ⭐ **[Meta-World: A Benchmark and Evaluation for Multi-Task and Meta Reinforcement Learning](https://arxiv.org/abs/1910.10897)** (2019) — 50 Sawyer manipulation tasks for multi-task and meta-RL evaluation. · [code](https://github.com/Farama-Foundation/Metaworld)
 - ⭐ **[RLBench: The Robot Learning Benchmark & Learning Environment](https://arxiv.org/abs/1909.12271)** (2019) — 100 hand-designed manipulation tasks with demos; a staple for 3D policy methods like PerAct. · [code](https://github.com/stepjam/RLBench)
 
-**[All 111 entries →](lists/datasets.md)**
+**[All 112 entries →](lists/datasets.md)**
 
 <a id="hardware"></a>
 ### Hardware & Open-Source Robots
@@ -278,12 +278,12 @@ _Low-cost arms, hands, grippers and data-collection rigs you can build._ [Browse
 - ⭐ **[Open-TeleVision: Teleoperation with Immersive Active Visual Feedback](https://arxiv.org/abs/2407.01512)** (2024) — VR teleoperation with an actively steered stereo camera, used to collect humanoid manipulation data. · [code](https://github.com/OpenTeleVision/TeleVision)
 - ⭐ **[SO-ARM100 / SO-101](https://github.com/TheRobotStudio/SO-ARM100)** (2024) — An open 3D-printed 6-DoF arm (leader + follower) costing roughly $100–200 per arm; the default LeRobot starter kit.
 - ⭐ **[An Open Torque-Controlled Modular Robot Architecture for Legged Locomotion Research](https://arxiv.org/abs/1910.00093)** (2019) — The open-source Solo quadruped and its modular torque-controlled actuators, built from off-the-shelf and 3D-printed parts so labs can reproduce a dynamic legged robot. · [code](https://github.com/open-dynamic-robot-initiative/open_robot_actuator_hardware)
+- **[QDD-MM: A Simple and Compact Open-Source Muscle Module with Quasi-Direct-Drive Motor for Tendon-driven Robots](https://arxiv.org/abs/2611.24279)** (2026) — Open-source quasi-direct-drive muscle module for tendon-driven robots: compact, backdrivable, no force sensor, flexible wire routing. Built one-joint robots and a musculoskeletal humanoid; design files open. · [project](https://haraduka.github.io/qddmm/)
 - **[ARTS: An Open-Source, Reproducible Three-Arm Platform for Autonomy Research in Minimally Invasive Surgery](https://arxiv.org/abs/2611.15135)** (2026) — Open surgical-autonomy platform from purchasable parts (~USD 137k): two UR5e with da Vinci instruments, a UR5 endoscope arm, console and hardware stop, pinned ROS 2 stack. Repeatability comparable to a dVRK Classic arm. · [code](https://github.com/MRE-Lab-UMD/arts)
 - **[Low-Cost Mobile Bimanual Manipulation for Long-Horizon Toilet Cleaning](https://arxiv.org/abs/2611.15381)** (2026) — Two SO-101 arms on a TurtleBot 4 with a LeRobot-ROS 2 stack; 250 demos of toilet cleaning compare π0, π0.5, SmolVLA and GR00T on the same robot. π0 is best (60% strict, 90% with light help). · [project](https://so101-turtlebot4.github.io/mobile-bimanual-cleaning/)
 - **[RUMI: A Robotiq-Matched Universal Manipulation Interface for Robot Learning with Augmented Reality and Haptic Feedback](https://arxiv.org/abs/2611.15802)** (2026) — A UMI-style handheld gripper matched to the Robotiq 2F-85's mechanics, with swappable fingertip sensors, live AR feasibility feedback in a VR headset and haptics. AR cut joint-limit violations from 16/50 to 3/50.
-- **[Belt-Finger: An Affordable Soft Belt-Driven Gripper for Dexterous In-Hand Manipulation](https://arxiv.org/abs/2606.20193)** (2026) — A cheap drop-in finger module for parallel grippers: two soft belts keep normal open/close and add in-hand translation, pitch and roll; used with MPC, a light 10-DoF teleop interface and learned policies.
 
-**[All 54 entries →](lists/hardware.md)**
+**[All 55 entries →](lists/hardware.md)**
 
 <!-- radar:end -->
 

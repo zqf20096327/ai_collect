@@ -1,6 +1,6 @@
 # ComfyUI-Sonder-Editor
 
-**Version 0.8.4** — see the [CHANGELOG](CHANGELOG.md) for release notes.
+**Version 0.9.0** — see the [CHANGELOG](CHANGELOG.md) for release notes.
 
 Sonder Editor is a timeline-based video editing studio for ComfyUI, built for
 iterative long-form video.
@@ -195,7 +195,7 @@ version and opening instructions, is on
 
 Sonder generates nothing itself, so what a project can do depends on the model
 and workflow wired underneath it. **Model templates** carry each model's legal
-frame counts, FPS and resolution rules, so the timeline snaps to what your
+frame counts, FPS, resolution rules and audio grid, so the timeline snaps to what your
 graph can actually render.
 
 Built in: **No Model Template** (no constraints), **LTX 2.3 / 2.5**, **MiniMax H3**,
@@ -224,6 +224,7 @@ adapters, grouped under the `Sonder`, `Sonder/IO`, `Sonder/Logic`, and
 | **Sonder Reference Prompt Bridge** | Outputs the selected lanes' prompt text: `reference_prompt`, `reference_names`, and `p01`–`p16`. |
 | **Sonder Masks Bridge** | Outputs the generation window's picture and sound masks, each set to **Edit** or **Freeze**; see [Masking an audio-video latent](docs/generating.md#masking-an-audio-video-latent). An optional spatial mask limits the video edit to a moving region; see [Edit a moving region](docs/generating.md#edit-a-moving-region). |
 | **Sonder Prompt Relay Bridge** | Exports the generation window's prompt lanes as ComfyUI-PromptRelay payload strings (no model patching). |
+| **Sonder Template Helper** | Shows the **Audio grid** (sample rate and block) to enter in a model template, read from a model's audio VAE; see [Model templates](docs/generating.md#model-templates). |
 
 ### Save & preview — `Sonder/IO`
 
@@ -250,7 +251,7 @@ adapters, grouped under the `Sonder`, `Sonder/IO`, `Sonder/Logic`, and
 | **Sonder Control Relay** | Shows the workflow settings you choose in the editor's **Controls** tab; see [Controls](docs/controls.md). |
 
 > **Sonder Switch**, **Sonder Cluster**, **Sonder Gate**, **Sonder Reference Selector**, the three
-> **Sonder Reference Bridges**, **Sonder Control Relay**, and
+> **Sonder Reference Bridges**, **Sonder Control Relay**, **Sonder Template Helper**, and
 > **Sonder Metadata Collector Nodes 2.0** use ComfyUI's
 > newer V3 node API and load only on recent ComfyUI builds. On older builds
 > the rest of the pack loads, with **Sonder Metadata Collector** under its
@@ -258,7 +259,7 @@ adapters, grouped under the `Sonder`, `Sonder/IO`, `Sonder/Logic`, and
 
 ## Requirements
 
-- **ComfyUI** — 0.8.4 was validated on ComfyUI **0.44.0** with frontend
+- **ComfyUI** — 0.9.0 was validated on ComfyUI **0.45.0** with frontend
   **1.58.5**. That is what this release was tested against, not a minimum;
   other versions are expected to work. The V3 nodes listed under Nodes load
   only on builds that provide `comfy_api`. A View pane's **Run** needs ComfyUI

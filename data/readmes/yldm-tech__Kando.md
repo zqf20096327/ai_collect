@@ -3,7 +3,7 @@
 [![CI](https://github.com/yldm-tech/Kando/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/yldm-tech/Kando/actions/workflows/ci.yml)
 [![Release](https://github.com/yldm-tech/Kando/actions/workflows/release.yml/badge.svg)](https://github.com/yldm-tech/Kando/actions/workflows/release.yml)
 [![Latest release](https://img.shields.io/github/v/release/yldm-tech/Kando?include_prereleases&sort=semver)](https://github.com/yldm-tech/Kando/releases)
-[![License](https://img.shields.io/github/license/yldm-tech/Kando)](LICENSE)
+[![License](https://img.shields.io/badge/license-FSL--1.1--ALv2-blue)](LICENSE.md)
 [![Go](https://img.shields.io/github/go-mod/go-version/yldm-tech/Kando?filename=apps%2Fkando%2Fgo.mod)](go.work)
 [![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#install)
 [![GitHub stars](https://img.shields.io/github/stars/yldm-tech/Kando)](https://github.com/yldm-tech/Kando/stargazers)
@@ -47,7 +47,7 @@ The interface is in English, Simplified Chinese, Traditional Chinese, Japanese a
 Builds for macOS (Apple silicon and Intel), Windows (x86-64 and ARM64) and Linux (x86-64 and ARM64) are on [GitHub Releases](https://github.com/yldm-tech/Kando/releases). Pick the file for your system, where `<version>` is the release's version, such as `0.5.0`:
 
 - macOS: `kando-<version>-macos-arm64.dmg` for Apple silicon, `kando-<version>-macos-x64.dmg` for Intel. Open the disk image and drag Kando to Applications.
-- Windows: `kando-<version>-windows-x64-setup.exe` for most PCs, `kando-<version>-windows-arm64-setup.exe` for a Windows on Arm PC. Run the installer. It is not signed yet, so SmartScreen may warn before it runs: choose More info, then Run anyway.
+- Windows: `kando-<version>-windows-x64-setup.exe` for most PCs, `kando-<version>-windows-arm64-setup.exe` for a Windows on Arm PC. Run the installer. It is signed, but while its certificate is new to SmartScreen, SmartScreen may warn before it runs: choose More info, then Run anyway.
 - Debian, Ubuntu and their derivatives: `kando-<version>-linux-x64.deb` for x86-64, `kando-<version>-linux-arm64.deb` for ARM64. Install it with `sudo apt install ./kando-<version>-linux-<arch>.deb` in the folder you downloaded it to.
 - Arch Linux and its derivatives: `kando-<version>-linux-<arch>.pkg.tar.gz`, installed with `sudo pacman -U ./kando-<version>-linux-<arch>.pkg.tar.gz`.
 - Other Linux distributions: `kando-<version>-linux-<arch>.AppImage` runs without installing: make it executable with `chmod +x` and open it. It takes GTK 4 from the system.
@@ -145,6 +145,8 @@ To get the `kando` command:
 | `kando subscriptions [list \| add <link> \| check <id>]` | Lists the library's subscriptions to channels, Bilibili spaces and collections, and playlists, with how many new videos wait in the window; `add` subscribes to one, the videos it holds now left out, and `check` looks for new videos now, as Check Now does. A subscription that adds by itself queues at most 3 new videos a check; the rest wait on its page. |
 | `kando sites [query] [--limit N]` | Searches the websites Kando downloads from, by name, domain or a video link. |
 | `kando open [film-id] [--at T]` | Brings Kando to the front, showing a film, or the library without an id. `--at` plays the film from that time of its subtitles, such as a line `kando search` found. A film still being processed plays once its video is on disk, as its card's Watch does; one that cannot be watched yet shows the library instead, with a note. While a dialog is open in the window, it fails and changes nothing. |
+| `kando plugin (validate <file-or-folder> \| list \| install <file>) [--json]` | Works without the app. `validate` checks a plugin pack, a `.zip` file or a folder, against the pack format and prints its id, kind, version, name and content hash, or why it is refused; for a script plugin it also verifies its signature against Kando's official key and prints where it comes from and who signed it (a plugin packed in developer mode is verified only in the app, which keeps the developer key). `list` lists the packs in the `plugins` folder beside `settings.json`, whether each is on, and the folders there that are not valid packs. `install` checks a pack file the same way and hands it to Kando, which shows what it is and installs it only once you confirm, the next time it starts or comes to the front. Packs are also installed from Settings › Plugins. |
+| `kando plugin index <folder> --base <url> [--out <file>] [--json]` | Works without the app; for whoever publishes Kando's plugin directory. Checks every pack file in the folder (`.zip`, `.kandopack`, `.kandoplugin`) the way Kando installs it, verifies script plugins against Kando's official key, and writes the directory's index listing each with its size, SHA-256 and its address under `--base` (https only), signed with the index key whose secret is read from the `KANDO_PLUGINS_INDEX_KEY` environment variable, never from a flag or a file. One pack that does not pass stops it, naming the file. Kando shows the signed directory in Settings › Plugins › Browse Plugins. |
 | `kando mcp` | Serves MCP on standard input and output (see below). |
 | `kando version` | Prints the version. |
 | `kando help [command]` | Lists the commands, or shows one command's usage and its flags. |
@@ -313,4 +315,4 @@ The [CI](https://github.com/yldm-tech/Kando/actions/workflows/ci.yml) workflow b
 
 ## License
 
-[MIT](LICENSE)
+[FSL-1.1-ALv2](LICENSE.md): free to use, change and run for any purpose except a competing product; each version becomes Apache 2.0 two years after its release.

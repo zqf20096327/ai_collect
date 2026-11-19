@@ -58,6 +58,8 @@ For Ctrl+G, add one line to `~/.bashrc` (or `zsh` in `~/.zshrc`):
 eval "$(lxask --shell-init bash)"
 ```
 
+For fish, add `lxask --shell-init fish | source` to `~/.config/fish/config.fish` instead.
+
 Linux on x86_64 (ARM64 builds too) with glibc 2.28+: Debian, Ubuntu, Fedora, Arch,
 openSUSE and most others. More in [docs/install.md](docs/install.md), including how to
 check the installer against the release checksums first.
@@ -137,6 +139,8 @@ you state, and asks back when a request is too vague to answer.
 - `lxask --bad "what was wrong"` saves a wrong answer on your machine; `lxask --share`
   turns it into a GitHub issue you can submit. Nothing is sent otherwise.
 - `lxask --command-only "..."` prints just the command, for scripts.
+- `lxask --explain "tar -xzvf logs.tar.gz"` explains a command you already have, part by
+  part, from the man pages and tldr, and checks it; no model is loaded, so it is instant.
 
 | docs | |
 |---|---|

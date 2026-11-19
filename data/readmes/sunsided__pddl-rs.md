@@ -49,6 +49,25 @@ position of every atom, list and comment, and
 [`pddl::parsers::check`](https://docs.rs/pddl/latest/pddl/parsers/fn.check.html)
 reports every error in a file rather than only the first.
 
+## Compile-time Checked PDDL
+
+The `macros` feature checks PDDL while your crate compiles and turns syntax
+errors into compile errors. It needs Rust 1.88.
+
+```toml
+[dependencies]
+pddl = { version = "*", features = ["macros"] }
+```
+
+```rust ignore
+static DOMAIN: LazyLock<Domain> = pddl::domain_file!("blocks-domain.pddl");
+```
+
+The macros come from [`pddl-macros`](pddl-macros); see its
+[README](pddl-macros/README.md) for all of them. The types and the parser
+live in `pddl-core`, which `pddl` re-exports, so that `pddl-macros` can use the
+parser without a dependency cycle. Depend on `pddl`, not on `pddl-core`.
+
 ## Usage Example
 
 See [`tests/briefcase_world.rs`](tests/briefcase_world.rs) for the full example.
@@ -126,6 +145,30 @@ fn main() {
     assert_eq!(problem1.goals().len(), 1);
 }
 ```
+
+### Grounding to SAS+
+
+The `sas-plus` feature grounds a domain and problem into a
+[`sas-plus`](https://crates.io/crates/sas-plus) task in Fast Downward's
+`output.sas` format, without leaving Rust:
+
+```toml
+[dependencies]
+pddl = { version = "*", features = ["sas-plus"] }
+```
+
+```rust ignore
+let file = pddl::sas_plus::ground(&domain, &problem)?;
+print!("{file}");             // output.sas, ready for Fast Downward's search
+let task = file.to_task();    // a plain sas_plus::Task for heuristics
+```
+
+Every reachable fluent atom becomes a binary variable. Fast Downward's
+translator instead merges mutually exclusive atoms into multi-valued variables.
+The grounder supports STRIPS with typing, negative preconditions, equality,
+universal and existential preconditions, conditional effects and action costs.
+It rejects other constructs with an error instead of dropping them. See the
+[`sas_plus` module docs](https://docs.rs/pddl/latest/pddl/sas_plus/index.html).
 
 ### Caveat Emptor
 

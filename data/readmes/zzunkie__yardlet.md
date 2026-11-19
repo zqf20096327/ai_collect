@@ -47,8 +47,9 @@ several agents and accounts every day, and it is shared for anyone who doesn't h
   with one sign-in. A connector set up once is offered to the agents you run, and can be turned off
   per task.
 - **Built-in browser.** A Chromium panel the agents can drive through browser tools while you watch.
-- **iOS simulators.** A Simulator tab in the side panel shows a simulator of your own Xcode live and takes
-  your clicks, trackpad and keys, without opening Simulator.app (see [Simulators](docs/SIMULATOR.md)).
+- **iOS simulators, Android emulators and Android devices.** A Simulator tab in the side panel shows a simulator
+  of your own Xcode, an emulator of your own Android SDK or a phone its adb reaches live and takes your clicks,
+  trackpad and keys, without opening Simulator.app or an emulator window (see [Simulators](docs/SIMULATOR.md)).
 - **Personal agents.** Chat with your existing ChatGPT dots alongside coding tasks, with saved drafts
   and native file previews. The account stays with its Codex runtime; no browser needs to stay open
   (see [Personal agents](docs/PERSONAL_AGENTS.md) for current limits).
@@ -291,7 +292,15 @@ test suite's benchmarks, compared with the previous run on the same Mac. See
 simulators) against a simulator it makes for the run, boots without a window and deletes afterwards, also
 when the check fails. It needs Xcode with an iOS simulator runtime and leaves other simulators alone.
 `./scripts/simulator-qa/run-panel-check.sh` checks the Simulator tab the same way in a QA copy of the app
-launched in the background ([docs/SIMULATOR.md](docs/SIMULATOR.md), "Checking it").
+launched in the background, and calls the agents' simulator tools through that copy's `yardlet-mcp`
+([docs/SIMULATOR.md](docs/SIMULATOR.md), "Checking it").
+`./scripts/simulator-qa/run-android-check.sh` and `./scripts/simulator-qa/run-android-panel-check.sh` check the
+Android screen and the Simulator tab with an Android emulator, with an AVD they make in a folder of their own and
+delete afterwards (the panel check also connects it over `adb connect`, as a device on the network); they need the
+Android SDK with an installed system image and leave other emulators, devices and the adb server alone.
+`./scripts/simulator-qa/run-android-install-check.sh` installs the Android SDK for real through the tab into a temporary
+home and removes it again (about 2.3 GB), and `./scripts/simulator-qa/run-android-device-check.sh <serial>` checks the
+tab with a real phone on USB that is awake and unlocked, opening only Settings on it.
 
 Bundles include the in-window browser (Chromium Embedded Framework in a separate browser host
 process). The script uses the CEF distribution pinned for the bundle's architecture in
@@ -299,6 +308,10 @@ process). The script uses the CEF distribution pinned for the bundle's architect
 missing; `YARDLET_DOWNLOAD_CEF=1` downloads it instead. A debug bundle can be built without it with
 `YARDLET_WITHOUT_CEF=1`; `swift build`, `swift run`, and `swift test` never need CEF and fall back to
 the WebKit preview. See [docs/BROWSER_HOST.md](docs/BROWSER_HOST.md).
+
+Bundles also carry the scrcpy server that shows Android emulators' screens: the script downloads the pinned
+release into `~/Library/Caches/Yardlet/scrcpy/` the first time and checks its SHA-256 on every build
+([docs/SIMULATOR.md](docs/SIMULATOR.md), "The screen").
 
 The bundle is built for the Mac that builds it. `YARDLET_ARCHS=x86_64` builds it for Intel Macs, with
 the Intel CEF build. `YARDLET_ARCHS="arm64 x86_64"` builds a universal bundle, each executable joined

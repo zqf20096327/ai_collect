@@ -31,29 +31,46 @@ speed-up ever changes the answer.
 
 ## Status: 0.1.0 Beta 1
 
-Kinetic is two days old in public and it is a beta. Thank you to everyone who ran it and
-told us what broke. This is what we know about and are working on for Beta 2:
+Kinetic is a week old in public and it is a beta. Thank you to everyone who ran it, told
+us what broke and sent pull requests.
 
-- **The edit numbers on this page are for a repeated edit.** The benchmark took the best of
-  three runs of the same prompt, and later runs reuse the earlier answer. On a first run the
-  gain over llama.cpp is smaller: up to 2.5x on edits and up to 1.4x on plain generation on
-  our machine. Beta 2 reports both cases separately and this page gets the new numbers.
-- **One report of the exactness check failing** on an RTX 4060 with Qwen3.5-4B. We have not
-  reproduced it yet and treat it as the top priority.
-- **Unsloth UD quants on the GPU** (IQ4_XS, IQ3_XXS, IQ2_XS, IQ2_XXS) run on the CPU only
-  today ([#1](https://github.com/Veloresearch/kinetic/issues/1)). CUDA support is written and in review.
-- **Tool calls with thinking on** can come back inside the reasoning
-  ([#5](https://github.com/Veloresearch/kinetic/issues/5)). Until the fix, send
-  `"chat_template_kwargs": {"enable_thinking": false}`.
-- **macOS on Apple Silicon** is on main, from a community pull request
-  ([#4](https://github.com/Veloresearch/kinetic/pull/4)), and ships with Beta 2. Until then,
-  build it from source.
-- **AMD on Vulkan:** older integrated GPUs with 64-wide subgroups are refused
-  ([#2](https://github.com/Veloresearch/kinetic/issues/2)), and we have a crash report on
-  the RX 9070 under Linux.
+### Now, in 0.1.0 Beta 1
 
-Found something else? [Open an issue](https://github.com/Veloresearch/kinetic/issues/new).
-We read all of them.
+- A model split between the GPU and the CPU can give a different answer on the second and
+  later requests, and `kinetic bench` then says "not identical".
+- The edit numbers on this page are for a repeated edit. On a first run the gain over
+  llama.cpp is up to 2.5x on edits and up to 1.4x on plain generation on our machine.
+- With thinking on, tool calls can end up inside the reasoning
+  ([#5](https://github.com/Veloresearch/kinetic/issues/5)); send
+  `"chat_template_kwargs": {"enable_thinking": false}` until Beta 2.
+- Unsloth UD quants (IQ4_XS, IQ3_XXS, IQ2_XS, IQ2_XXS) run on the CPU only
+  ([#1](https://github.com/Veloresearch/kinetic/issues/1)).
+- Speculative decoding can be slower than plain decoding on a model split between the GPU
+  and the CPU.
+- Windows and Linux on x86-64 only, NVIDIA GPUs from Turing (RTX 20) on, one GPU per model.
+- `-hf` is refused with a hint to use `kinetic pull`.
+- A crash report on the AMD RX 9070 under Linux, and older AMD integrated GPUs with 64-wide
+  subgroups (Vega, GCN) run on the CPU.
+
+### Coming in Beta 2
+
+- The same answer on every request when a model is split between the GPU and the CPU; this
+  fits the one report of the exactness check failing on an RTX 4060.
+- Benchmark numbers for a first edit and a repeated edit, reported separately.
+- Tool calls with thinking on come back as tool calls.
+- Unsloth UD quants on NVIDIA GPUs.
+- Speculative decoding that is never slower than plain decoding on split models.
+- macOS on Apple Silicon, on the CPU and on the GPU through Metal.
+- Older NVIDIA GPUs (Pascal, Volta), and several GPUs for one model with `--gpus`.
+- Faster follow-ups in a conversation.
+- `-hf`, as llama.cpp takes it.
+- RAM and VRAM per model in Python ([#24](https://github.com/Veloresearch/kinetic/issues/24)).
+- `docker stop` ends the server at once, and the CUDA image builds for chosen GPUs and with
+  Podman.
+- Clearer messages for GPUs Vulkan refuses and for weight types a GPU cannot run.
+
+Questions and ideas go to [Discussions](https://github.com/Veloresearch/kinetic/discussions),
+bugs to [issues](https://github.com/Veloresearch/kinetic/issues/new). We read all of them.
 
 <a name="install"></a>
 
@@ -831,8 +848,9 @@ see [SECURITY.md](SECURITY.md).
 ## License
 
 Kinetic is licensed under the [Apache License 2.0](LICENSE). Third-party
-material is listed in [NOTICE](NOTICE). "Kinetic" and its logo are
-trademarks of Velocity; see [TRADEMARKS.md](TRADEMARKS.md).
+material is listed in [NOTICE](NOTICE). "Kinetic", its logo and "RAD-1"
+are trademarks of Velocity, and a fork that keeps Kinetic's technologies
+says they come from Kinetic; see [TRADEMARKS.md](TRADEMARKS.md).
 
 <br>
 

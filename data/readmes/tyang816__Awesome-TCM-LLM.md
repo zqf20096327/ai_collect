@@ -4,7 +4,7 @@
 
 ![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-green)  [![Awesome](https://awesome.re/badge.svg)](https://awesome.re) ![Stars](https://img.shields.io/github/stars/tyang816/Awesome-TCM-LLM?color=yellow)  ![Forks](https://img.shields.io/github/forks/tyang816/Awesome-TCM-LLM?color=blue&label=Fork) [![中文门户](https://img.shields.io/badge/中医资源-门户-blue)](https://tyang816.github.io/zh/projects/tcm/) [![Project](https://img.shields.io/badge/Project-tyang816.github.io-informational)](https://tyang816.github.io/projects/tcm/)
 
-开源中医模型、数据、论文、专利精选，也带一点相关中文医疗。现在大概有 92 条新闻、117 个模型、90 篇综述、73 件专利、205 个数据集、467 篇方法论文，以及 452 位中医药人工智能导师。[欢迎补条目](CONTRIBUTING.md)。
+开源中医模型、数据、论文、专利精选，也带一点相关中文医疗。现在大概有 96 条新闻、117 个模型、91 篇综述、73 件专利、206 个数据集、475 篇方法论文，以及 452 位中医药人工智能导师。[欢迎补条目](CONTRIBUTING.md)。
 
 [项目页](https://tyang816.github.io/projects/tcm/) · [中文项目页](https://tyang816.github.io/zh/projects/tcm/) · [Wiki](wiki/Home.md) · [主页](https://tyang816.github.io/zh/)
 
@@ -1923,10 +1923,10 @@
 ## 新闻
 
 <details>
-<summary>92 条，最近有：云南省人民政府办公厅印发《云南省中医药振 · 岐元 · 李强签署国务院令公布《中医药传统知识保护</summary>
+<summary>96 条，最近有：云南省人民政府办公厅印发《云南省中医药振 · 岐元 · 李强签署国务院令公布《中医药传统知识保护</summary>
 
 <details>
-<summary>2026 · 57</summary>
+<summary>2026 · 61</summary>
 
 - [2026.11.11] 云南省人民政府办公厅印发《云南省中医药振兴发展“十五五”规划》（云政办发〔2026〕46号，成文2026年11月5日，云南省人民政府门户网站2026年11月11日公布）。规划提出到2030年中医药振兴发展取得新成效，实现人人享有中医药服务；部署建强服务体系、全生命周期服务供给、中西医协同、人才队伍、传承创新、产业和健康服务、文化繁荣、开放发展，以及加速中医药数智化赋能与标准化建设。数智化部分明确推进各级中医医疗机构规范接入省级全民健康信息平台，促进中医药高质量数据集建设和数据安全合规流通利用；探索“中医药+人工智能”，推动中医智能辅助诊疗等技术应用，加快智慧中医医院、中医互联网医院建设，并支持引进针灸、推拿机器人、智能煎制装备等数智化装备。规划还专节部署提升藏、傣、彝等少数民族医药服务能力。本次打开了云南省人民政府门户网站官方全文页。这是省级规划部署，不是已经上线的模型发布。 [[云南省人民政府](https://www.yn.gov.cn/zwgk/zcwj/yzfb/202611/t20261111_4383311.html)]
 - [2026.11.09] 中新网11月9日报道，第九届进博会上，上海市第七人民医院完成进博会首秀，中医药人工智能中心主任赵铎路演**岐元**中医垂类大模型，现场还有AI面诊智能体与中医教学机器人「小柒」。岐元已于2026年7月发布，本报道写的是进博会展示与对口支援医院应用，不是首次发布。 [[链接](https://www.chinanews.com.cn/jk/2026/11-09/10729099.shtml)]

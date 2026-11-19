@@ -52,11 +52,13 @@
 
 ## 此外
 
-卷宗与成品（PPT、Excel、PDF 做好就地预览）、答复里可交互的图表、差遣帮手分头做事、一答之内动过的文件可整个退回、预设与分组、MCP 与 Skill、跨对话的记忆。指令分三档权限，另有一层沙箱，规则拿不准的一步可交审查模型照你的原话再判。接口认硅基流动、OpenAI 兼容、Anthropic 与 ChatGPT 订阅；言没有自己的服务器，数据只落在本机，只需 Node.js 22，不装依赖。界面可切中英。
+卷宗与成品（PPT、Excel、PDF 做好就地预览）、答复里可交互的图表、差遣帮手分头做事、一答之内动过的文件可整个退回、预设与分组、MCP 与 Skill、跨对话的记忆。指令分三档权限，另有一层沙箱，规则拿不准的一步可交审查模型照你的原话再判。接口认硅基流动、OpenAI 兼容、Anthropic 与 ChatGPT 订阅；言没有自己的服务器；对话和配置保存在本机，发给模型或外部工具的内容由相应服务处理。源码只需 Node.js 22 或更高版本，不装运行时依赖。界面可切中英。
 
 ## 开始
 
 **Windows**：到 [Releases](https://github.com/Master-Norna/yan/releases/latest) 下载 `yan-<版本>-win-x64.zip`，解开后双击 `言.exe`。头一回若提示「已保护你的电脑」，点「更多信息 → 仍要运行」（`言.exe` 未签名）。
+
+**macOS（Apple 芯片）**：到 [Releases](https://github.com/Master-Norna/yan/releases/latest) 下载 `yan-<版本>-mac-arm64.zip`，解压后双击「言」文件夹里的 `start.command`。包里自带 Node；若首次打开被系统拦下，见[启动与运行](docs/start.md#macos-便携包)。
 
 **从源码**：装好 Node.js 22 或更高版本，双击 `start.cmd`（macOS 用 `start.command`），或运行：
 

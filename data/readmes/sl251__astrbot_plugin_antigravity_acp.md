@@ -7,11 +7,11 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20macOS%20%7C%20Windows%20%7C%20Docker-blue)
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![AstrBot](https://img.shields.io/badge/AstrBot-%3E%3D4.29.4%2C%3C4.30-orange)
-![Status](https://img.shields.io/badge/Status-v0.7.3-brightgreen)
+![Status](https://img.shields.io/badge/Status-v0.7.4-brightgreen)
 
 通过 Google 官方 `agy` 客户端内置的 ACP（Agent Client Protocol）协议，把 Antigravity 模型安全、稳定地接入 AstrBot，作为日常对话主力。
 
-> 💡 **版本速递（v0.7.3，2026-11-18）**：修复 Python 3.12+ 工具桥关闭死锁与群聊/连发并发打断活跃工具轮的问题；补全 `Optional[list]` 等复杂工具数组参数兼容；无损剥离 PNG 辅助元数据块以兼容主流系统截图，并支持 8 位索引色 PNG；新增 CLI 探测缓存加速与发布归档瘦身。详细改动见 [CHANGELOG.md](CHANGELOG.md)。
+> 💡 **版本速递（v0.7.4，2026-11-19）**：修复 #24——会话重建时历史图片不再被重复提取为当前轮附件；仅当前最新用户消息的图片作为附件发送，历史图保留哈希占位（重建后需重看旧图请重发）。详细改动见 [CHANGELOG.md](CHANGELOG.md)。
 
 ---
 
@@ -113,6 +113,7 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 
 *(完整历史见 [`CHANGELOG.md`](./CHANGELOG.md))*
 
+- **v0.7.4**：修复会话重建时历史窗口图片被重复提取为当前轮附件（#24）——仅当前最新用户消息的图片随请求附带，历史图在转录中保留哈希占位；跨轮重发同图不被误去重，预算裁剪不丢当前轮图片；**仍会预检历史图片（旧图源失效或累计预算可能报错）**；新增 8 项单元回归与 3 项会话级集成测试（[#25](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/25)）。
 - **v0.7.3**：修复 Python 3.12+ 工具桥关闭死锁与同会话并发请求误杀活跃工具轮；补全 `anyOf`/联合类型数组 schema 适配；无损剥离 PNG 压缩辅助块并支持 8 位索引色；CLI 探测缓存、长历史二分裁剪与 ZIP 归档瘦身（[#22](https://github.com/sl251/astrbot_plugin_antigravity_acp/pull/22)）。
 - **v0.7.2**：定点兼容 AstrBot 4.29.4 Safe Mode 第 4 条规则触发的上游伪 429（`style/role-play` 等义改写，fail-open，不改冷却语义）。
 - **v0.7.1**：429 结构化标签过滤扩展至 AstrBot 4.30 已知声明，新增内容相关 429 候选遥测（`content_429_candidate`，不改冷却语义）；WebUI 监控三层重构与纯 SVG 可视化。
@@ -123,7 +124,7 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 
 # 🤖 给 Agent 看的上下文
 
-先读 [AGENTS.md](AGENTS.md)。当前发布基线为 **v0.7.3**；仅支持 AstrBot **`>=4.29.4,<4.30`**、Python **3.11+**。本节只保留当前有效契约，历史实现和既有验收见 [CHANGELOG](CHANGELOG.md)。
+先读 [AGENTS.md](AGENTS.md)。当前发布基线为 **v0.7.4**；仅支持 AstrBot **`>=4.29.4,<4.30`**、Python **3.11+**。本节只保留当前有效契约，历史实现和既有验收见 [CHANGELOG](CHANGELOG.md)。
 
 | 当前契约 | 详细说明与证据入口 |
 | --- | --- |
@@ -133,7 +134,9 @@ git clone --branch main https://github.com/sl251/astrbot_plugin_antigravity_acp.
 | 默认严格会话复用；活跃工具轮等待回填期间同会话并发新请求按 `queue_timeout` 排队隔离；已输出正文/思考或交接工具后失败禁止重试/fallback | [会话与防重放](docs/architecture.md#会话历史与防重放) |
 | system 仅过滤已知宿主能力声明并定点兼容改写已知 Safe Mode 单句；4.30 文案处理不是 4.30 宿主兼容证明；`content_429_candidate` 是候选遥测，不是上游根因 | [过滤与 429 边界](docs/architecture.md#system-过滤与-429-的证据边界)，[#14 / #19 排障](docs/troubleshooting.md#rate_limit--quota-与-14) |
 | 检测/保存不等于真实生成；用量缺失保留未知；监控只读现有脱敏快照，不发模型请求 | [排障 SOP](docs/troubleshooting.md)，[实机验收分层](docs/testing.md#实机验收) |
-| 工具/图片默认关闭，要求插件与宿主双开关；PNG 校验 CRC 后剥离压缩辅助块并支持 8 位索引色；不支持音频、视频、PDF 或图片生成 | [关键配置](docs/architecture.md#关键配置)、[配置 schema](_conf_schema.json) |
+| 工具/图片默认关闭，要求插件与宿主双开关；PNG 校验 CRC 后剥离压缩辅助块并支持 8 位索引色；不支持音频、视频、PDF 或图片生成；会话重建时仅附带当前最新用户消息中的图片，历史图保留哈希占位 | [关键配置](docs/architecture.md#关键配置)、[配置 schema](_conf_schema.json) |
+
+当前宿主定点兼容与退役条件见 [兼容补丁登记](docs/compatibility.md)，过期施工书与剩余事项见 [计划状态索引](docs/plan-status.md)。
 
 开发时按 [测试与交付规范](docs/testing.md) 记录通过/失败/跳过、环境与实机边界。定位错误直接用 [故障 → 源码 → 测试索引](docs/architecture.md#故障定位索引)，无需先读旧施工书。
 

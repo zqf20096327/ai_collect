@@ -39,16 +39,18 @@
 
 - **人机同屏**：agent 的命令在你的终端里执行，看得见、能接手；退出码由远端 shell 的 `PROMPT_COMMAND` 钩子回报，不靠猜提示符。
 - **全程可追溯**：跨会话审计记命令、退出码、审批、传输 sha256、端口转发；按会话聚合成时间线，一眼看清「这段时间在这台机器上做了什么」。不含屏幕内容，命令写入前脱敏。
-- **面板能干活**：主机列表带搜索、最近连接、分组置顶、跳板链路；状态行显示终端/隧道/24h 命令；文件区可浏览、编辑、上传、下载、删除。
+- **面板能干活**：置顶、已连接和最近使用的主机优先呈现，其余分组折叠；每行直接「连接 / 文件」，更多操作收进菜单。独立「远程文件」页带主机状态、路径面包屑和原生风格文件树，上传跟随当前目录，也支持文本编辑、下载与删除。
 - **一次认证，处处复用**：文件传输与三向端口转发（`-L` 本地转到远端 / `-D` 本地 SOCKS5 / `-R` 远端转到本地）都走已认证的 ControlMaster socket，不弹第二次密码；终端一结束立即失效。
 - **危险操作有人把关**：`rm -rf`、`mkfs`、`git push --force` 等命中时弹审批，说清「为什么危险」；一次授权只对本次命令有效，无审批服务时直接拒绝。凭据不落盘、不进日志。
 - **一次会话一个终端**：终端按会话归属校验，别的会话读不到你的屏幕、不能在你的终端里执行。
 
-https://raw.githubusercontent.com/cccodder/dsh-remote-console/main/docs/images/panel-highlights.mp4
-
-*24 秒看面板：跳板异常红字与置顶 → 分组排序 → SSH 配置导入预览 → 文件编辑保存 → 状态行自动刷新。素材来自真实登录会话的验收录屏，已打码。*
-
 ![侧栏「SSH 远程」面板](https://raw.githubusercontent.com/cccodder/dsh-remote-console/main/docs/images/ssh-panel.png)
+
+![独立远程文件树](https://raw.githubusercontent.com/cccodder/dsh-remote-console/main/docs/images/remote-files-tree.png)
+
+https://raw.githubusercontent.com/cccodder/dsh-remote-console/main/docs/images/remote-files-demo.mp4
+
+*50 秒看远程文件：逐层展开目录、独立编辑保存、多终端切换与上传；来自真实登录会话的验收录屏，已打码。*
 
 ## 30 秒上手
 

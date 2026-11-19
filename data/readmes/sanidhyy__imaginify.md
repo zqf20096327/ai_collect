@@ -87,8 +87,8 @@ imaginify/
   |- middleware.ts
   |- netlify.toml
   |- next.config.mjs
-  |- package-lock.json
   |- package.json
+  |- pnpm-lock.yaml
   |- postcss.config.js
   |- tailwind.config.ts
   |- tsconfig.json
@@ -195,8 +195,8 @@ NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 - Replace `http://localhost:3000` with your actual server URL.
 - Copy the updated URL (`NEXT_PUBLIC_SERVER_URL`) into your `.env.local` file.
 
-12. Install Project Dependencies using `npm install --legacy-peer-deps` or `yarn install --legacy-peer-deps`.
-13. Now app is fully configured 👍 and you can start using this app using either one of `npm run dev` or `yarn dev`.
+12. Install Project Dependencies using `npm install --legacy-peer-deps` or `pnpm install --legacy-peer-deps`.
+13. Now app is fully configured 👍 and you can start using this app using either one of `npm run dev` or `pnpm dev`.
 
 **NOTE:** Please make sure to keep your API keys and configuration values secure and do not expose them publicly.
 
@@ -243,6 +243,7 @@ Useful resources and dependencies that are used in Imaginify.
 - [@radix-ui/react-toast](https://www.npmjs.com/package/@radix-ui/react-toast): ^1.1.5
 - [@stripe/stripe-js](https://www.npmjs.com/package/@stripe/stripe-js): ^3.0.10
 - [@types/node](https://www.npmjs.com/package/@types/node): ^20
+- [@types/qs](https://www.npmjs.com/package/@types/qs): ^6.15.1
 - [@types/react](https://www.npmjs.com/package/@types/react): ^18
 - [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): ^18
 - [autoprefixer](https://www.npmjs.com/package/autoprefixer): ^10.0.1
@@ -252,7 +253,7 @@ Useful resources and dependencies that are used in Imaginify.
 - [eslint](https://www.npmjs.com/package/eslint): ^8
 - [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 14.1.3
 - [lucide-react](https://www.npmjs.com/package/lucide-react): ^0.357.0
-- [mongodb](https://www.npmjs.com/package/mongodb): ^6.5.0
+- [mongodb](https://www.npmjs.com/package/mongodb): ^7.9.0
 - [mongoose](https://www.npmjs.com/package/mongoose): ^8.2.1
 - [next](https://www.npmjs.com/package/next): 14.2.21
 - [next-cloudinary](https://www.npmjs.com/package/next-cloudinary): ^6.3.0
@@ -261,8 +262,8 @@ Useful resources and dependencies that are used in Imaginify.
 - [react](https://www.npmjs.com/package/react): ^18
 - [react-dom](https://www.npmjs.com/package/react-dom): ^18
 - [react-hook-form](https://www.npmjs.com/package/react-hook-form): ^7.51.0
-- [stripe](https://www.npmjs.com/package/stripe): ^14.21.0
-- [svix](https://www.npmjs.com/package/svix): ^1.21.0
+- [stripe](https://www.npmjs.com/package/stripe): ^23.1.0
+- [svix](https://www.npmjs.com/package/svix): ^2.10.0
 - [tailwind-merge](https://www.npmjs.com/package/tailwind-merge): ^2.2.1
 - [tailwindcss](https://www.npmjs.com/package/tailwindcss): ^3.3.0
 - [tailwindcss-animate](https://www.npmjs.com/package/tailwindcss-animate): ^1.0.7

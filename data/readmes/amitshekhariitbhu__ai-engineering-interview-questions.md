@@ -282,7 +282,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What is Contextual Retrieval, and how does it improve RAG?
   - Answer: [How does Contextual Retrieval work?](https://outcomeschool.com/blog/how-does-contextual-retrieval-work)
 - What are embedding models, and how do they convert text to vectors?
-  - Answer: [What are Embeddings?](https://outcomeschool.com/blog/what-are-embeddings)
+  - Answer: [What are Embeddings?](https://outcomeschool.com/blog/what-are-embeddings) and [How does an embedding model work?](https://outcomeschool.com/blog/embedding-model)
 - How do you choose an embedding model for your RAG system?
 - Explain Agentic RAG.
   - Answer: [Agentic RAG](https://outcomeschool.com/blog/agentic-rag)
@@ -501,7 +501,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - What are embeddings in the context of AI engineering?
   - Answer: [Embeddings in Machine Learning](https://www.youtube.com/watch?v=LedXW6xl21s)
 - How do embedding models convert text to vectors?
-  - Answer: [What are Embeddings?](https://outcomeschool.com/blog/what-are-embeddings)
+  - Answer: [What are Embeddings?](https://outcomeschool.com/blog/what-are-embeddings) and [How does an embedding model work?](https://outcomeschool.com/blog/embedding-model)
 - What is Contrastive Learning, and how is it used to train embedding models?
   - Answer: [What is Contrastive Learning?](https://outcomeschool.com/blog/contrastive-learning)
 - What is the difference between sparse and dense embeddings?
@@ -884,8 +884,10 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How does an LLM use GPU memory?](https://outcomeschool.com/blog/llm-gpu-memory)
 - Do the roofline math: how many tokens/sec can one H100 produce for a 70B model at batch size 1?
 - What is model parallelism vs data parallelism in distributed training?
+  - Answer: [How does distributed training work?](https://outcomeschool.com/blog/distributed-training)
 - What is tensor parallelism, and how does it help serve large models?
 - What is pipeline parallelism?
+  - Answer: [How does distributed training work?](https://outcomeschool.com/blog/distributed-training)
 - How does continuous batching improve LLM inference throughput?
   - Answer: [Continuous Batching in LLMs](https://outcomeschool.com/blog/continuous-batching-in-llms)
 - What is speculative decoding, and how does it speed up inference?

@@ -35,7 +35,7 @@ one model, authentication, and entity classes generated from the server's model.
 - [Layout](#layout)
 - [Why these libraries](#why-these-libraries)
   - [Angular as of version 22](#angular-as-of-version-22)
-  - [Validation comes from the model](#validation-comes-from-the-model)
+  - [Validation comes from the server](#validation-comes-from-the-server)
 - [Using a different database](#using-a-different-database)
 - [Configuration](#configuration)
 - [Known gaps](#known-gaps)
@@ -46,8 +46,8 @@ one model, authentication, and entity classes generated from the server's model.
 > generator, and the matching Breeze .NET server 8 from
 > [breeze-server-v3](https://github.com/Breeze/breeze-server-v3).  The app shows those features in
 > use: generated entity classes (see [Entity classes are generated](#entity-classes-are-generated)),
-> typed queries and `createEntity` calls, and validation driven by the Breeze model (see
-> [Validation comes from the model](#validation-comes-from-the-model)).
+> typed queries and `createEntity` calls, and validation driven by the server's model (see
+> [Validation comes from the server](#validation-comes-from-the-server)).
 
 It goes beyond the original in two ways.  It is **multi-tenant**: each user belongs to a company,
 and every query and save is confined to that company's data (see
@@ -131,7 +131,13 @@ The look - cards with layered shadows on a soft gradient, in one blue - comes fr
 
 ## Running it
 
-Two terminals. Server first, because the client fetches its Breeze metadata from it.
+TempHire's validation uses a preview of
+[IdeaBlade Validation](https://github.com/Breeze/ideablade-validation), which isn't published yet.
+Its packages are in `packages/`, and `dotnet` and `npm install` take them from there (see
+[Validation](#validation-comes-from-the-server)), so there is nothing extra to install.
+
+Then two terminals. Server first, because the client fetches its Breeze and validation metadata
+from it.
 
 **1. Server** (`http://localhost:5000`)
 
@@ -593,21 +599,23 @@ TempHire.Angular/
 │   │   ├── SampleData/            # ← DomainServices/SampleData/, plus generated people
 │   │   ├── DatabaseSetup.cs       # migrates and seeds on startup
 │   │   └── TempHireDbContext.cs   # the staffing data, tenant filters
-│   └── TempHire.Server/
-│       ├── Controllers/
-│       │   ├── BreezeController.cs   # metadata, queries, SaveChanges, lookups, search
-│       │   ├── AccountController.cs  # me: who the token belongs to
-│       │   ├── AuthorizationController.cs  # OAuth: authorize, token, logout
-│       │   ├── ClientRegistrationController.cs  # OAuth: MCP clients register
-│       │   ├── SignInController.cs   # the sign-in page
-│       │   └── AgentController.cs    # Quinn: info / chat
-│       ├── Agent/                 # Quinn: persona, chat client factory, agent
-│       ├── Mcp/                   # MCP server tools (StaffingTools)
-│       ├── Persistence/
-│       │   └── TempHirePersistenceManager.cs   # ← DomainModel/SaveInterceptor.cs
-│       ├── Auth/                  # OAuth settings and clients, token claims, audience check, current tenant
-│       ├── Views/                 # the sign-in and consent pages
-│       └── Program.cs
+│   ├── TempHire.Server/
+│   │   ├── Controllers/
+│   │   │   ├── BreezeController.cs   # metadata, queries, SaveChanges, lookups, search
+│   │   │   ├── AccountController.cs  # me: who the token belongs to
+│   │   │   ├── AuthorizationController.cs  # OAuth: authorize, token, logout
+│   │   │   ├── ClientRegistrationController.cs  # OAuth: MCP clients register
+│   │   │   ├── SignInController.cs   # the sign-in page
+│   │   │   └── AgentController.cs    # Quinn: info / chat
+│   │   ├── Agent/                 # Quinn: persona, chat client factory, agent
+│   │   ├── Mcp/                   # MCP server tools (StaffingTools)
+│   │   ├── Persistence/
+│   │   │   ├── TempHirePersistenceManager.cs   # ← DomainModel/SaveInterceptor.cs
+│   │   │   └── SaveValidationStore.cs   # what the save-time rules read from the database
+│   │   ├── Auth/                  # OAuth settings and clients, token claims, audience check, current tenant
+│   │   ├── Views/                 # the sign-in and consent pages
+│   │   └── Program.cs
+│   └── TempHire.Server.Tests/     # saves, concurrency and save-time rules (dotnet test)
 └── client/
     ├── metadata.json              # Breeze metadata exported from the server (npm run model:metadata)
     └── src/app/
@@ -694,39 +702,147 @@ The client is meant to show current Angular, not just to run on it:
   any HTTPS deployment are; serving the app over plain HTTP from another host would need a
   fallback.
 
-### Validation comes from the model
+### Validation comes from the server
 
-The validation rules are written once, on the server's entities - `[Required]`, `[StringLength]` -
-and reach the client in the Breeze metadata as validators.  Breeze runs them as properties change,
-when an entity is attached, and before a save.  The forms add no rules of their own; they show
-Breeze's verdict:
+> **Preview.**  Validation uses a preview of IdeaBlade Validation (`0.1.0-preview.3`), which
+> isn't published to NuGet or npm yet: the builds are in `packages/`, where `nuget.config` and
+> `client/package.json` find them (`packages/README.md` explains how to update them).  The
+> framework's API may still change before its first release, and so may its name - the
+> `IdeaBlade.Validation` / `@ideablade/validation` packages and their namespaces and imports.
 
-- **Entity editors** (`[(ngModel)]` on Breeze entities) carry the `BreezeFieldDirective`
-  (`core/validation`), which registers the entity's errors for that property as an Angular
-  validator - so the control and its form are invalid when Breeze says so - and exposes them as
-  signals for Optimus UI's `[invalid]` input and the field's tooltip.  It follows the entity's
-  `validationErrorsChanged` event, so errors found on save, or on a new, empty entity, highlight
-  their fields without the user touching them.
+The validation rules are written once, on the server, in two places:
+
+- **the entities' data annotations** - `[Required]`, `[StringLength]` - which reach the client in
+  the Breeze metadata as validators;
+- **the validation metadata**, `TempHire.Server/Validation/validation.metadata.json`, for the rules
+  annotations cannot express: an address is a U.S. address, with a state and a ZIP code; a phone
+  number has a 3-digit area code and a 7-digit number (a dash or a dot may follow the first 3
+  digits); a rate is a valid amount and not negative; dates are valid dates; and a staffing resource
+  has at least one address and one phone number, and it is at least 18 years old when hired.
+  These use
+  [IdeaBlade.Validation / `@ideablade/validation`](https://github.com/Breeze/ideablade-validation),
+  which reads the same metadata on both sides.
+
+Both reach the framework the same way.  The metadata's global `breeze` validator brings in the
+annotations: on the client it runs Breeze's validators, which Breeze builds from them; on the server
+it runs the annotations themselves (`AddDataAnnotations("breeze")` in `Program.cs`).  So every rule,
+annotation or not, surfaces as the same kind of `ValidationError`, on both sides.
+
+At sign-in, `EntityManagerProvider` loads the validation metadata (`api/validation/Metadata`) next to
+the Breeze metadata and installs it into Breeze (`installBreezeValidators`).  From then on Breeze
+runs all the rules as properties change, when an entity is attached, and before every save, so a
+save that breaks a rule never leaves the client.  The server checks the same metadata again when it
+saves (`TempHirePersistenceManager`), against the database as it will be after the save
+(`SaveValidationStore`).  Its messages name properties as the payload does (`'StateId' is
+required`, `The City field is required.`).
+
+The forms add no rules of their own; they show the verdict:
+
+- **Entity editors** use the library's template-driven-forms directives
+  (`ValidationFormsDirectives`).  Each card or row names its entity once, with `ngForm
+  [validationModel]`; a field's property is its `name`, and the model type comes from the entity
+  (`breezeModelType`).  A field runs its property's rules - Breeze's own included, through
+  `breeze` - on the value being typed, and its control is invalid when one fails.
+  `FieldErrorsDirective` (`core/validation`) shows the messages as the field's tooltip.
 
   ```html
-  <input pInputText [(ngModel)]="address.city"
-         [breezeField]="address" breezeProperty="city" #cityField="breezeField"
-         [invalid]="cityField.invalid()" />
+  <div ngForm [validationModel]="address">
+    <input pInputText name="city" [(ngModel)]="address.city" #city="ngModel" [invalid]="city.invalid" />
+  </div>
   ```
 
-- **The name editor**, a Signal Form over names for a `StaffingResource` that does not exist yet,
-  applies `StaffingResource`'s Breeze validators to its fields with `validateWithBreeze`
-  (`core/validation`).  Signal Forms then hand the result to Optimus UI themselves.
-- **Login** keeps Signal Forms' `required`: credentials are not an entity, so there is no Breeze
-  model to validate them against.
+  Errors the *server* reports for a failed save are shown in the save's error message, not on
+  fields; the client checks the same rules first, so they are rare.
 
-Breeze names a property in its messages by its `displayName` - `'%displayName%' is required` - and
-the Breeze .NET server does not send display names.  So once the metadata has loaded,
-`setDisplayNames` (`core/model-display-names.ts`) gives every property one: derived from the
-property name (`positionTitle` is "Position title", `stateId` is "State"), or taken from a short
-table of overrides that match the labels on screen (`number` is "Phone number").  The table is
-keyed by the generated classes, so a misspelt or removed property is a compile error.  Messages
-then read `'First name' is required`, in the entity editors and in the name editor alike.
+- **A form validates the whole entity** whenever a field changes, so a rule about two fields shows
+  on both: "at least 18 years old when hired" names both dates (`propertyNames` in the
+  metadata), and changing either one re-checks the other.  The summary card shows its message once,
+  under the dates.
+- **The route has its own validation service** (`provideValidationScope` in
+  `ResourceMgtComponent`), whose entity store is the unit of work being shown.  Its forms see that
+  unit of work's entities in `store(type)`, and re-validate whenever an entity in it changes, in
+  another section or in code.
+- **The service also validates that unit of work continuously** (`validateEntityStore()`): every
+  live entity against every rule, sync and async, the metadata's and Breeze's, again whenever an
+  entity changes.  Save reacts to that one result: it stays disabled while any rule is broken, and
+  while async rules have yet to answer.
+- **Rules about a whole entity**, such as "at least one address", have no field.  Validating the
+  whole unit of work keeps them current - deleting a resource's last address breaks the resource's
+  rule without changing the resource - and the address and phone lists show them from the same
+  result.  A new resource starts without an address or a
+  phone number, and the last one of each can be deleted, so the rule is the user's to satisfy.
+- **The name editor**, a Signal Form over names for a `StaffingResource`, validates a
+  `ResourceName` view model with `validateWithMetadata`.  Its properties inherit the
+  `StaffingResource` properties' Breeze rules with `from` (`core/validation/client-validation-metadata.ts`,
+  through `breezeRuleSource`), so nothing is restated.  Signal Forms then hand the result to Optimus
+  UI themselves.
+- **Login** keeps Signal Forms' `required`: credentials are not an entity, so there is no model to
+  validate them against.
+
+**Display names live in one place.**  Breeze names a property in its messages by its `displayName` -
+`'%displayName%' is required` - and the Breeze .NET server does not send display names; the
+validation metadata has none either.  So once the metadata has loaded, `setDisplayNames`
+(`core/model-display-names.ts`) gives every Breeze property one: derived from the property name
+(`positionTitle` is "Position title", `stateId` is "State"), or taken from a short table of overrides
+that match the labels on screen (`number` is "Phone number").  The table is keyed by the generated
+classes, so a misspelt or removed property is a compile error.  `displayNameMetadata` then hands
+Breeze's display names to the validation metadata, so its messages use them too: `'State' is required`
+reads like `'City' is required`, in the entity editors and in the name editor alike.
+
+#### On the server: validating the database as it will be after the save
+
+A Breeze save bundle holds only what the client changed: the entities it added, modified or
+deleted.  A resource's other addresses, its phone numbers, and the resource itself aren't in it
+unless they changed too.  But a rule about related entities needs them.  "A staffing resource has
+at least one address" reads the resource's addresses (`store('Address')` in the metadata), and a
+save that deletes an address has to be checked against the addresses that remain.
+
+So before it validates, the server loads what the rules read (`SaveValidationStore`, used by
+`TempHirePersistenceManager`):
+
+- **the staffing resources concerned**: the ones in the save, and the ones whose addresses, phone
+  numbers, rates, skills or work experience the save adds, changes, deletes or moves to another
+  resource;
+- **their stored children**, of every child type, so that `store('Address')` sees all of a
+  resource's addresses, not just the ones in the save;
+- **with the save applied on top**: deleted rows are taken out, added and changed ones put in.
+
+The rules then run against **the database as it will be after the save**, not as the client saw it
+when it loaded the data.  That difference matters: another user may have changed or deleted records
+in the meantime.  Say a resource has two addresses, and two users each delete a different one.  On
+each user's screen one address remains, so both saves are valid on the client.  The first save
+goes through.  The second save deletes an address that nobody else touched, so the concurrency
+check below has nothing to catch.  But checked against the database, the resource would be left
+with no address, and the server refuses the save.  Data integrity holds even when no single save
+was wrong on its own (`ARuleBrokenByTwoUsersTogetherIsCaught` in `TempHire.Server.Tests`).
+
+**This isn't something the validation framework does for you.**  It knows the rules, but not the
+model.  To IdeaBlade Validation, `store('Address')` is a name to look up.  Which addresses belong to
+which resource, which entities a save can affect, and how to load them from the database are
+knowledge of TempHire's model, so `SaveValidationStore` is TempHire's own code.  An AI coding
+assistant such as Claude can write and maintain it: it reads the rules in
+`validation.metadata.json`, sees which entities they read (`store(type)`), and works out from the
+model how to load them.  That's how this one was written.  It loads a resource and all of its
+children generically, so a new rule about a resource and its children needs no change.  A rule that
+reads beyond that, such as one comparing a resource with other resources, does.  When the rules
+change, ask the assistant to check that the store still loads everything they read.
+
+#### Concurrency
+
+Every entity the client can save (`AuditEntityBase`) has a `RowVersion`, an EF Core concurrency
+token, as DevForce's `ConcurrencyStrategy.AutoIncrement` was in the original.  A save only updates
+or deletes a row while it still has the version the client loaded.  If another user saved or deleted
+it in the meantime, the whole save fails with a concurrency conflict (409) and nothing is written.
+The client tells the user so, in plain words, rather than showing the database's message: someone
+else changed this data, so click Refresh to load the latest, then make the changes again and save
+(`CONCURRENCY_CONFLICT` in `error-handler.service.ts`).  The lookups (states, address, phone number
+and rate types) have no version: they are read-only, and the server refuses any save that includes
+one.
+
+A concurrency check covers the rows in the save, and validation covers the rules that read rows
+outside it, as in the example above.  Neither serializes two saves that run at exactly the same
+moment: both read the database before either writes.  Closing that gap would take a database
+constraint, or a serializable transaction around validating and writing.
 
 ---
 
@@ -774,8 +890,9 @@ provider, delete them and add a new initial migration (see [The database schema]
   **When you upgrade to a release with the fix**, `breeze-fetch.spec.ts` fails its "without the
   workaround" test; that is the signal to delete `breeze-fetch.ts` and its spec, and to pass
   `httpClientFetch(inject(HttpClient))` to `configureBreeze` directly.
-- **No automated tests beyond a shell smoke test and the workaround above.** The original had none
-  either. `ng test` runs Vitest; the server has no test project.
+- **Few automated tests.** The original had none. `ng test` runs the client's (Vitest), and
+  `dotnet test` the server's (`TempHire.Server.Tests`): saves, concurrency, and the rules checked on
+  save, against an in-memory SQLite database.
 - **Migrations run on startup**, and a database without migration history is dropped; see
   [The database schema](#the-database-schema).
 - **An access token is valid until it expires**, up to 30 minutes, even after signing out: the API

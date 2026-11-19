@@ -42,7 +42,7 @@
 <div align="center">
   <strong>⭐ If you find this catalog helpful, please consider giving it a star! ⭐</strong>
   <br><br>
-  <i>Last updated: November 17, 2026 | Next goal: 500 stars 🎯</i>
+  <i>Last updated: November 19, 2026 | Next goal: 500 stars 🎯</i>
   <br><br>
   <i>🤖 Thanks to Claude Sonnet 4 for write .sh files! </i>
 </div>
@@ -109,7 +109,7 @@ Welcome to the most comprehensive AI tools catalog! This repository contains **5
 ### 📊 Quick Stats
 - **Total Tools**: 500+
 - **Categories**: 40+
-- **Last Updated**: November 17, 2026
+- **Last Updated**: November 19, 2026
 - **Contributors**: Open for PRs!
 - **Next Goal**: ⭐️ 500 stars
 
@@ -347,6 +347,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[ChatGPT](https://chat.openai.com)** 🔄 - Versatile AI writing assistant
 - **[Dearovo](https://www.dearovo.com/)** 🔄 - AI relationship message writer with context, tone, and length controls.
 - **[Humanize-Text](https://github.com/lynote-ai/humanize-text)** 🆓 - Open-source multi-stage text rewriting toolkit
+- **[HumanPen](https://humanpen.net/)** 💰 - AI humanizer: rewrites AI-generated text to lower detector scores; translates documents
 - **[Notion AI](https://notion.so/ai)** 💰 - Integrated writing tools in Notion
 - **[Grammarly](https://grammarly.com)** 🔄 - Grammar, style, and tone suggestions
 - **[Merlin AI](https://merlin.foyer.work)** 🔄 - Browser extension for AI writing
@@ -474,6 +475,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Vectoree](https://vectoree.ai)** 💰 - Hosted backend for coding agents with one OpenAI-compatible project key, auth, Postgres and storage
 - **[Agentik](https://www.agentik.cc)** 💰 - One MCP connection to 3,500+ paid tools for AI agents, price shown before each call
 - **[SightRadar Face Recognition API MCP](https://sightradar.com/mcp)** 💰 - Face recognition API and MCP server: index photos, find a person from one selfie, compare faces
+- **[CallForMe](https://callforme.tel)** 💰 - MCP server and API that lets AI agents phone businesses, wait on hold and return a transcript
 
 ## Low Code - no code Tools
 - Magicform
@@ -511,6 +513,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Riffusion](https://riffusion.com)** 🆓 - AI music generation from text
 - **[AIVA](https://aiva.ai)** 🔄 - AI music composition
 - **[MuseGen](https://musegen.org)** 🆕 - AI music creation platform and audio edit tools
+- **[BeatMusic](https://beatmusic.ai)** 🔄 - AI music generator that turns a text idea or lyrics into full songs with vocals
 
 #### 🔧 Audio Enhancement
 - **[Adobe Podcast](https://podcast.adobe.com)** 🆓 - AI audio enhancement
@@ -558,6 +561,8 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[pitchboom.io](https://pitchboom.io)** 🆕🔄 - Turns a product URL or brief into motion-design video ads
 - **[Twistavo](https://twistavo.com)** 💰 - AI character swap: replace a person in a video from 1 to 4 photos
 - **[HoneyVid](https://honeyvid.ai)** 🆕💰 - Put anyone from one photo into a viral video, or generate with Kling, Veo and Seedance
+- **[Angry Dance](https://angrydance.com)** 🆕💰 - Turn one photo into 9:16 AI pet dance, meme, and two-step scene clips without watermarks
+- **[BeatMV](https://beatmv.ai)** 🔄 - AI music video generator that turns any song into a beat-synced music video
 
 #### 🆕 Emerging Platforms
 - **[Haiper AI](https://haiper.ai)** 🆕🔄 - Fast video generation
@@ -761,6 +766,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Duolingo Max](https://duolingo.com)** 💰 - AI-powered language learning
 - **[Speak](https://speak.com)** 🔄 - AI conversation practice
 - **[Langotalk](https://langotalk.org)** 🔄 - AI language exchange
+- **[Kahoyo](https://kahoyo.com)** 🔄 - IELTS Speaking mock exam with an AI examiner that speaks; Part 1 free
 - **[TutorAI](https://tutorai.me)** 🆓 - Learn anything with AI
 - **[Slate](https://slateup.ai)** 🔄 - Interactive AI classroom that generates courses with slides, narration and AI classmates
 - **[StoryRoute](https://storyroute.netlify.app)** 🆓 - Turns any topic or document into a branching, story-driven learning path
@@ -806,6 +812,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[PixPurge](https://pixpurge.com)** 🔄 - AI text remover for images: erase text, watermarks, and date stamps automatically.
 - **[Klaruvo](https://www.powersoftware.app/en-US/product/detail/klaruvo)** 🔄 - Local offline AI image editor: watermark & object removal, cutout, upscaling
 - **[RoomLab.app](https://roomlab.app)** 🔄 - Virtual staging, decluttering and restyling for room and property photos
+- **[October](https://www.october-ai.com)** 🔄 - iPhone app: a guided walk through a home becomes listing photos and a walkthrough video
 
   
 ## Chrome AI Extensions
@@ -854,6 +861,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - **[Tableau Ask Data](https://tableau.com)** 💰 - Natural language data queries
 - **[Microsoft Copilot for Excel](https://microsoft.com)** 💰 - AI-powered spreadsheet analysis
 - **[Equibles](https://equibles.com)** 🔄 - MCP server with cited US stock data from SEC filings for ChatGPT and Claude
+- **[CorpusIQ](https://corpusiq.io)** 🔄 - MCP server that lets Claude, ChatGPT and Cursor answer from 40+ business tools like Stripe
 - **[DisconfirmAI](https://disconfirmai.com/en)** 🔄 - Investment research platform that surfaces evidence that could overturn your thesis
 - **[Fair Value Calculator](https://www.fairvalue-calculator.com/)** 🔄 - Fair value for 40,000+ stocks from 26 valuation models, AI chat and hosted MCP
 

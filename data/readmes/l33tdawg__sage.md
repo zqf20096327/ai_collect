@@ -100,7 +100,7 @@ docker run -d --name sage \
   ghcr.io/l33tdawg/sage:latest
 ```
 
-Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.8`.
+Pin a specific version with `ghcr.io/l33tdawg/sage:11.25.9`.
 
 The SAGE server stays in that container. To give a local MCP client a stdio
 bridge, start a second process **inside the same running container**:
@@ -317,7 +317,28 @@ uses re-enrollment; historical memory authorship is preserved.
 ---
 
 <details>
-<summary>Recent release notes (v11.25.8 and earlier)</summary>
+<summary>Recent release notes (v11.25.9 and earlier)</summary>
+
+## What's New in v11.25.9
+
+**Idle nodes now stop doing unnecessary migration and voter work.** The app-v25
+legacy-memory adoption worker parks after a stable scan reaches either terminal
+complete or recovery state, instead of rescanning and republishing the same
+result every 30 seconds. The memory auto-voter now keyset-pages proposed
+memories in `(created_at, memory_id)` order, uses a matching SQLite index, and
+keeps a larger page cache. On the measured 609-row idle backlog, this removes
+the continuous two-second disk-read churn and cuts simulated tick CPU from
+41.3 ms to 2.8 ms.
+
+The release also picks up pgx 5.13.0, including fixes for malformed-row panics
+and unsafe retries; libp2p 0.52.0; current x/crypto, x/text and x/tools modules;
+Playwright 1.65.1; and the refreshed pinned rust-cache action.
+
+The second observation in #559—proposed rows that never drain—remains separate.
+This release changes scan efficiency, not the reason those rows may remain
+proposed. No consensus version change, app-version change, chain reset, or data
+migration. `latest` and automatic upgrade voting remain app29; app30 remains
+explicit. Container: `ghcr.io/l33tdawg/sage:11.25.9`. SDK 11.25.9.
 
 ## What's New in v11.25.8
 
@@ -981,6 +1002,4 @@ Container: `ghcr.io/l33tdawg/sage:11.19.22`. SDK 11.19.22.
 
 ## What's New in v11.19.21
 
-**A co-commit can no longer re-commit bytes the quorum already rejected.** A co-commit commits on block inclusion and never runs the voter, so the content-hash dedup that keeps a rejected memory's exact bytes out was skipped on that one write path: a jointly-signed envelope could re-admit content that had been deprecated, under a fresh memory id, while the same bytes submitted through `POST /v1/memory/submit` were refused as a duplicate. `POST /v1/cocommit/submit` now consults the same lookup before it broadcasts and refuses a tombstoned hash with `409 Tombstoned content`; the envelope's own `SharedID` is excluded so an idempotent re-send still works. It is a submission-boundary check rather than a consensus rule — the consensus path deliberately reads no off-chain state — so a node that broadcasts a co-commit transaction directly, bypassing its own REST surface, is not covered by it.
-
-**The MCP client stopped keeping its own duplicate rule.** `sage_remember`, `sage_observe` and `sage_reflect` used to drop a write when more than 60% of its significant words appeared inside one of the first 50 committed memories in the domain — silently, order-dependently, and only on MCP, so 
+**

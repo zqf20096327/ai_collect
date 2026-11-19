@@ -178,6 +178,17 @@ from readanydoc.integrations.llamaindex import ReadAnyDocReader    # pip install
 
 One Markdown document per page with its page number. [Guide](https://arpitpatel25.github.io/ReadAnyDoc/docs/guides/integrations/).
 
+### Test it against what you use now
+
+```bash
+readanydoc bench list                                                      # invoices, receipts, filings, contracts, resumes...
+readanydoc bench run invoices --systems readanydoc,plain:claude-haiku-5-5,reducto --limit 10
+readanydoc bench mine ./my_docs --schema schema.json --answers ./answer_keys   # your own documents
+```
+
+Your own keys, a cost estimate before anything runs, scoring by code against answer keys, and an HTML report with
+every system's citations on the page. [Guide](https://arpitpatel25.github.io/ReadAnyDoc/docs/guides/testing/).
+
 ## How it works
 
 Each page goes through a fixed sequence of stages (`readanydoc/pipeline/`): intake (file type, pages), triage
@@ -200,8 +211,9 @@ independent evidence. Design decisions and their reasons: [docs/decisions.md](ht
 | | |
 |---|---|
 | [BENCHMARKS.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/BENCHMARKS.md) | full results against Reducto, cost, method, caveats; per-document scores in [results/](https://github.com/arpitpatel25/ReadAnyDoc/tree/main/results/) |
-| [docs/story.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/docs/story.md) | why this exists, the bet behind it, what we learned |
-| [docs/research/journey.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/docs/research/journey.md) | the full research record: every stage, every experiment, what was kept and dropped and why |
+| [docs/story.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/docs/story.md) | the whole story: the idea, how we measured, the parser, the extractor, two stages or one, what we learned |
+| [docs/research/journey.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/docs/research/journey.md) | the parser research record: every stage, every experiment, what was kept and dropped and why |
+| [docs/research/extraction.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/docs/research/extraction.md) | the extraction research record: structured output, caching, page parts, citations, one stage |
 | [docs/decisions.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/docs/decisions.md) | every design decision with its reason |
 | [Documentation](https://arpitpatel25.github.io/ReadAnyDoc/docs/) | guides, API reference, configuration, migrating from Reducto |
 | [examples/](https://github.com/arpitpatel25/ReadAnyDoc/tree/main/examples/) | runnable scripts |

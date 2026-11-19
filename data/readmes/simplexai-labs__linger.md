@@ -160,6 +160,18 @@ setup screen sets up a Linger server on this computer too.
 There is no package for Intel Macs; use Docker Compose there. Check each
 download against `SHA256SUMS.txt` from the same release.
 
+**On macOS, the package is not yet signed, so macOS blocks the first launch.
+After dragging Linger to Applications, run this in Terminal, then open Linger:**
+
+```bash
+xattr -dr com.apple.quarantine /Applications/Linger.app
+```
+
+If Terminal prints `Operation not permitted`, turn on **Terminal** in **System
+Settings › Privacy & Security › App Management**, reopen Terminal and run it
+again. [Start Linger on macOS](docs/macos.md) shows how to allow the launch
+without Terminal.
+
 See [Install the desktop app](https://docs.heylinger.com/install/desktop-app)
 for the Windows and Linux steps and for help when setup fails.
 

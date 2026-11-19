@@ -93,19 +93,20 @@ Linux: the build stops at the GTK and WebKit libraries (`glib-sys`) on a machine
 
 ### Pick an engine
 
-The engine is who answers. Open **Keys** at the bottom left and do one of two things: press **Sign in with Claude** (it uses the Claude Code on this computer; no key), or **paste a key**. APERIT tells from the key whose it is (Claude, OpenAI, Gemini, OpenRouter, Groq, xAI) and picks the model. A local model, another address, or an agent of your own are under **More options**.
+The engine is who answers. Open **Settings** at the bottom left and do one of two things: press **Sign in with Claude** (it uses the Claude Code on this computer; no key), or **paste a key**. APERIT tells from the key whose it is (Claude, OpenAI, Gemini, OpenRouter, Groq, xAI) and picks the model. You can also just ask ("switch to Korean", "use Sonnet"); a change of engine or permission opens the window for you to save, and a key pasted into the conversation goes into the window instead of to the model. Everything is on one screen: on the left the ways in (also a local model or another address, a server over SSH, an agent of your own), in the middle what the chosen way needs, on the right what you have spent.
 
 | Engine | You need | What you get |
 |---|---|---|
 | Demo | nothing | Prepared scenes. Start with no key |
-| Claude API | a [Claude API key](https://console.anthropic.com/settings/keys); usage is billed to your account | Everything APERIT does. Enter the key under **Keys**, or set `ANTHROPIC_API_KEY`, or put it in `key.txt` next to the program |
+| Claude API | a [Claude API key](https://console.anthropic.com/settings/keys); usage is billed to your account | Everything APERIT does. Paste the key under **Settings** (it is kept encrypted inside the app), or set `ANTHROPIC_API_KEY` |
 | Claude Code | [Claude Code](https://claude.com/claude-code) installed and logged in; no API key | Everything, through your Claude Code: its login, `CLAUDE.md`, skills, hooks, MCP servers and permissions apply |
+| Claude Code on a server | a server you reach with SSH (a key or a password), with Claude Code installed and logged in there | The same, with the server's files and commands; APERIT's memory and tools stay on your computer ([how](docs/DRIVING.md#a-server-claude-code-over-ssh)) |
 | Another model | an OpenAI-compatible endpoint: OpenAI, a local model behind Ollama or LM Studio, OpenRouter | APERIT's own loop with that model. Web search is with Claude only |
 | Your own agent | an agent that speaks MCP or AG-UI | The board as your agent's screen. APERIT runs no model |
 
 **Claude Code as the engine.** APERIT hands each turn to it instead of calling the API. Files, commands and the web go through Claude Code's tools. APERIT's own tools (route maps, memory notes, reading the board, workers) are offered to it through a small local MCP server inside APERIT, and workers and memory keeping also run through Claude Code. A turn costs more tokens than with the API key, because Claude Code brings its own instructions. By default it does only what your Claude Code settings allow; the same window lets you allow file edits, or everything. Extra options for Claude Code, such as `--model sonnet`, go in `claude-args.txt` in the program folder.
 
-**Optional second key.** A [TypeSafe AI](https://typesafe.ai) Jev key (**Keys**, or `TYPESAFE_API_KEY`). Jev is a small, fast model that only makes decisions. With it, APERIT picks the topic before answering, puts important cards first, tidies overlapping topics, and recalls only the past conversations that matter. Without it, APERIT works the same.
+**Optional second key.** A [TypeSafe AI](https://typesafe.ai) Jev key (**Settings**, or `TYPESAFE_API_KEY`). Jev is a small, fast model that only makes decisions. With it, APERIT picks the topic before answering, puts important cards first, tidies overlapping topics, and recalls only the past conversations that matter. Without it, APERIT works the same.
 
 Keys, the board and the memory vault live in the program's own folder. Move the folder and everything moves with it.
 
@@ -115,11 +116,11 @@ APERIT draws whatever writes [PATET](https://github.com/fidenit/patet). Your age
 
 **An agent that speaks MCP** (Claude Code, Cursor, one of your own):
 
-1. In APERIT: **Keys** → **More options** → **Your own agent** → **Save**.
-2. **Keys** again → **Copy the Claude Code command**, and run it in a terminal (other clients: **Copy the config (JSON)**).
+1. In APERIT: **Settings** → **Your own agent** → **Save**.
+2. **Settings** again → **Copy the Claude Code command**, and run it in a terminal (other clients: **Copy the config (JSON)**).
 3. Ask your agent to answer on the board. It has four tools: `guide`, `board_read`, `screen`, `events`.
 
-**An agent built with an AG-UI framework** (LangGraph, CrewAI, Pydantic AI, ...): give APERIT the agent's address under **Keys** → **More options** → **Your own agent** → **AG-UI**.
+**An agent built with an AG-UI framework** (LangGraph, CrewAI, Pydantic AI, ...): give APERIT the agent's address under **Settings** → **Your own agent** → **AG-UI address**.
 
 **A script:** start APERIT with `APERIT_PROTOCOL_PORT=7878` and write lines to that port.
 
@@ -137,7 +138,7 @@ How each of these works, with the settings: [docs/DRIVING.md](docs/DRIVING.md). 
 
 ## Know before you run
 
-- **APERIT is the interface; the engine decides what happens on your computer.** What may be done without asking is set per engine, under **Keys**:
+- **APERIT is the interface; the engine decides what happens on your computer.** What may be done without asking is set per engine, under **Settings**:
 
   | Engine | Commands and file changes |
   |---|---|
@@ -146,7 +147,7 @@ How each of these works, with the settings: [docs/DRIVING.md](docs/DRIVING.md). 
   | Your own agent | Whatever your agent does. APERIT only draws its board |
 
   Reading files and searching the web are not asked about.
-- **It costs money as you use it.** By default it uses the most capable Claude model. A turn sends about as much as a Claude Code turn does; what was measured is in [docs/COSTS.md](docs/COSTS.md).
+- **It costs money as you use it.** By default it uses the most capable Claude model (Opus 5.5); **Settings** offers Sonnet and Haiku too, each with what a turn roughly costs. A turn sends about as much as a Claude Code turn does; what was measured is in [docs/COSTS.md](docs/COSTS.md). **Settings** shows what your Claude API key has spent today and this month, and takes a daily limit: at the limit, no new work starts that day.
 - **It is early.** One person uses it daily. English and Korean, switched in the corner; cards and answers follow the language you choose. See [what changed](CHANGELOG.md) and [what is next](docs/NEXT.md) (Korean).
 - **Other models and agents are new.** The Claude engines are the ones used every day. The others were checked with real runs (Claude Code connected over MCP as an outside agent; a real server behind the OpenAI-compatible engine; an agent built with Pydantic AI over AG-UI) but are not in daily use, and no model that is not Claude was tried: recognising a key and picking a model for OpenAI, Gemini and the others is untested against those services.
 - Distances and times on route cards are read from Kakao Map, so routes work in South Korea.

@@ -66,7 +66,7 @@ Your DataFrame needs three columns: `unique_id`, `ds`, and `y`. For best results
 
 ## Highlights
 
-- 📐 **Conformal prediction intervals.** Use `ConformalIntervals` to calibrate any model's `level` / `quantiles` from point-forecast errors, with optional finite-sample correction; see the [guide](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/conformal-prediction.md) and [example notebook](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/examples/conformal-prediction.ipynb).
+- 📐 **Conformal prediction intervals.** Use `ConformalIntervals` to calibrate any model's `level` / `quantiles` from point-forecast errors, with optional finite-sample correction or online `PID` calibration under distribution shift; see the [guide](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/conformal-prediction.md) and [example notebook](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/examples/conformal-prediction.ipynb).
 - 📈 **Exogenous variables (covariates).** Pass known-future features with **`X_df`** on `forecast()` (and exog columns in `df` for `cross_validation()`). Native support on Chronos-2, TimesFM-3, TimeGPT, T0, TimeH2O, TiRex-2, and Timestral; see [Exogenous variables](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/exogenous-variables.md) and the [example notebook](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/examples/exogenous-variables.ipynb).
 - 💸 **Full GIFT-Eval replication for $37.** 16 models, 97 dataset configurations each, in about 34 GPU-hours, every model with an official submission within 2% of its leaderboard MASE/CRPS. TimesFM 3 is the most accurate, for under $8. Read the [writeup](https://github.com/TimeCopilot/foundationforecast/blob/main/experiments/gift-eval/README.md).
 - 🎯 **Benchmark replication in CI.** Wrappers are regression-tested against official leaderboard submissions: [`experiments/gift-eval`](https://github.com/TimeCopilot/foundationforecast/tree/main/experiments/gift-eval) (GIFT-Eval MASE/CRPS on Modal GPU) and [`experiments/fev-bench`](https://github.com/TimeCopilot/foundationforecast/tree/main/experiments/fev-bench) (fev-bench `test_error` on known-dynamic tasks). [CI](https://github.com/TimeCopilot/foundationforecast/actions/workflows/ci.yaml) re-runs these checks on every change.
@@ -157,10 +157,11 @@ Some models require specific Python versions (e.g. FlowState 3.11-3.13, TabPFN &
 
 ## News
 
-Recent additions and checkpoints (newest first). See the [changelog](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.21.md) for full release notes.
+Recent additions and checkpoints (newest first). See the [changelog](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.22.md) for full release notes.
 
 | When | What | Checkpoint / detail |
 |------|------|---------------------|
+| Nov 2026 | **Conformal PID** | `ConformalIntervals(method=PID())` — online interval calibration that tracks the error quantile under distribution shift; works on every model ([v0.1.22](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.22.md)) |
 | Nov 2026 | [**CIProto**](https://huggingface.co/ContinuousIntelligence/ci-proto) | `ContinuousIntelligence/ci-proto` — ~167M zero-shot forecaster; 16k context, 9 native quantiles (0.1–0.9), native `X_df`; install with `foundationforecast[ci-proto]` ([v0.1.21](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.21.md)) |
 | Nov 2026 | [**Kumo-Forecast**](https://huggingface.co/nvidia/Kumo-Forecast) | `nvidia/Kumo-Forecast` — NVIDIA's ~340M zero-shot forecaster; point forecasts only (use `prediction_intervals=ConformalIntervals(...)` for intervals); 512-step context, 72-step native horizon with autoregressive rollout; requires `timecopilot-kumo-forecast>=0.1.0` ([v0.1.20](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.20.md)) |
 | Nov 2026 | **Prophet adapter** | `FoundationProphet(model=...)` — swap any foundation model into an existing Prophet pipeline (`fit`, `predict`, `plot`, diagnostics); install with `foundationforecast[prophet]` ([v0.1.19](https://github.com/TimeCopilot/foundationforecast/blob/main/docs/changelogs/v0.1.19.md)) |

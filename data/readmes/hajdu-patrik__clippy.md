@@ -69,6 +69,7 @@ Open a new terminal, then:
 | `clippy down` | stop it completely (running renders too) and free the GPU; `--all` stops Ollama as well |
 | `clippy status` | is it running, what is it doing, how much VRAM the model holds |
 | `clippy clip <link>` | make clips from the command line (`clippy clip -h` lists every option) |
+| `clippy llm [mode]` | show or change the AI (`ollama`, `openrouter`, `claude`, `codex`, `none`); `--model`, `--test` |
 | `clippy restart --lan` · `clippy pair` | use it from a phone or tablet on the same Wi-Fi (see below) |
 | `clippy restart` · `open` · `logs` · `install` | the rest; bare `clippy` shows the banner and the full list |
 
@@ -222,7 +223,12 @@ YouTube gets it as soon as it is made and publishes it at its time. GTA VI, GTA 
 known by name (`clippy/categories.py`).
 
 Posts can wait for their time: choose *At a set time* in the Post dialog, and the card shows the planned post with a
-*cancel* link. A watched channel can also post its new clips by itself: give it the platforms and the daily times
+*cancel* link. The **Scheduler** (in the sidebar) lists everything that waits, day by day, with each clip's cover, chat,
+platforms and time, and schedules a clip from one place: pick the chat and clip, the platforms, a date and time (or your
+saved posting times, *Settings, General*, and the next free one). YouTube keeps its time itself, so that video goes out
+even while this computer is off; the other platforms wait in Clippy's plan, which has to be running, and can be moved
+or removed in the Scheduler. A YouTube video's time is changed or removed in YouTube Studio (Clippy's YouTube access can
+upload but not edit), and the Scheduler links there. A watched channel can also post its new clips by itself: give it the platforms and the daily times
 (*18:00, 21:00*) and each new clip takes the next free time, one clip per time across all channels. That is off until
 you set both, and it uses your own connected accounts (YouTube public, TikTok drafts).
 
@@ -230,13 +236,34 @@ you set both, and it uses your own connected accounts (YouTube public, TikTok dr
 come back onto its card, and *Settings, Results* shows which openings, lengths, kinds of moment and posting times
 do better than your usual. The clear patterns steer the picker for the next videos.
 
+## Choosing the AI
+
+The AI picks the moments and writes the titles and texts. You choose it the first time you start (the web app asks
+once, `clippy install` asks too) and can change it any time in *Settings, AI* or with `clippy llm <mode>`; the next
+request uses it, no restart needed.
+
+| Mode | What it uses |
+| --- | --- |
+| `ollama` (default) | a model on your own computer, free and private ([docs/local-llm.md](docs/local-llm.md)) |
+| `openrouter` | [OpenRouter](https://openrouter.ai) with your own API key; model ids ending in `:free` cost nothing |
+| `claude` | your Claude subscription, through the Claude Code app (`claude` signed in once; no API key) |
+| `codex` | your ChatGPT subscription, through the Codex app (`codex login` once; no API key) |
+| `none` | no AI: simple automatic picking, and the chat cannot answer |
+
+*Settings, AI* shows whether the chosen tool is installed and signed in and has a *Test* button that asks the AI one
+tiny question. The choice, the model of each mode and an OpenRouter key are kept in `data/web/llm.json` (never in the
+repository); a key is never shown again, and the AI can only be changed on the computer that runs Clippy. The two
+subscription modes run the tools without tools or file access of their own and without an API key; their use counts
+against your subscription's limits.
+
 ## Configuration
 
-`.env` (copied from [.env.example](.env.example)) and environment variables:
+`.env` (copied from [.env.example](.env.example)) and environment variables. The AI chosen in Settings or with
+`clippy llm` wins over the `CLIPPY_LLM_*` variables, which stay as the defaults before anyone chose:
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `CLIPPY_LLM_BACKEND` | `ollama` | `ollama` (local), `openai` (any OpenAI-compatible API: Groq, Gemini, OpenRouter) or `none` (heuristic) |
+| `CLIPPY_LLM_BACKEND` | `ollama` | `ollama` (local), `openrouter`, `claude`, `codex`, `openai` (any OpenAI-compatible API: Groq, Gemini) or `none` (heuristic) |
 | `CLIPPY_LLM_MODEL` | `clippy-qwen3:14b-q6k` | the model name for that backend |
 | `CLIPPY_LLM_BASE_URL`, `CLIPPY_LLM_API_KEY` | - | for hosted backends |
 | `CLIPPY_LLM_THINK` | `1` | reasoning mode when picking clips (better choices, slower) |

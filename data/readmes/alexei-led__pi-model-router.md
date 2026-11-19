@@ -13,7 +13,7 @@ Optional advice uses any text-capable classifier registered in Pi. The router us
 ## Why use it?
 
 - **Fewer manual changes.** One profile can combine fast, low-cost routes with stronger models.
-- **Control over cost and quality.** You choose the models, effort levels, fallback order, and baseline. You can pin a route at any time.
+- **Control over cost and quality.** You choose the models, effort levels, [fallback order](docs/user-guide.md#configure-fallbacks), and baseline. You can pin a route at any time.
 - **Routing modes.** `cost`, `balanced` or `quality` chooses a preferred model/effort pair, per profile, project or session. OpenAI defaults use Luna, Terra and Sol; custom routes keep deterministic transforms. [Choose a mode](docs/routing-modes.md).
 - **Built-in activity routes.** Recognized OpenAI and Claude profiles get defaults for code, debug, explore, plan, review, ops and docs. Tune one cell or opt out. [Defaults and tuning](docs/activity-routing.md).
 - **Adaptive tool loops.** Periodic background reviews assess current work without delaying generation. Eligible recommendations can change tier, activity and effort between requests, with explicit switch-cost controls.
@@ -51,6 +51,10 @@ Configure classifier credentials in Pi and approve its exact `provider/model` re
 The [reference config](model-router.example.json) selects pinned Jev 1.14 but leaves advice disabled until you opt in.
 Missing catalog entries need a Pi provider extension; the [optional catalog example](docs/classifier-advisor.md#1-register-missing-classifier-entries) requires Pi 1.3+.
 The router uses one selected classifier, not voting or classifier failover.
+
+## Adjust one turn
+
+Start your prompt with `morethink` or `lessthink` to move one supported effort level, `highthink` or `lowthink` to move one eligible tier, or `maxthink` or `nothink` to use the highest or lowest eligible tier. The active mode and activity still choose the route. [Prompt controls and limits →](docs/user-guide.md#adjust-one-turn-with-a-prompt-keyword)
 
 ## Inspect routing in Pi
 

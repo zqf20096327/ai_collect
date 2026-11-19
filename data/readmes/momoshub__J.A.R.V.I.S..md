@@ -185,7 +185,7 @@ Every command is gated by its own `command:<name>` grant, and its sub-actions by
 | `token [remove\|who]` (alias `claude-token`) | pal, executer, admin | add, replace or forget your own Claude Code token (used only by `quick-review`) - see [Your own Claude token](#your-own-claude-token) |
 | `session [reset\|on\|off]` (alias `sess`) | pal, executer, admin (on/off: `runs:stop-any`) | the CLI session this thread is talking to - see [One session per thread](#one-session-per-thread) |
 | `ticket <what is wrong>` (aliases `bug`, `raise`) | pal, executer, admin | raise a properly written, correctly routed ticket - see [Raising a ticket](#raising-a-ticket) |
-| `quick-review <pr-url\|help\|prompt> [--policy first\|after] [what to look at]` (alias `rv`) | pal, executer, admin | quick review of a PR, **only when a person asks** (tag the bot with `review <pr-url>` or `approve <pr-url>`, or type this; never from a thread, workflow, hand-back or GitHub request - see [Asking for a review in words](#asking-for-a-review-in-words)): read it first, post a blockers-only comment on GitHub *and* back in the thread (PRs owned by an account in `REVIEW_EXTENDED_OWNERS` also get the non-blocking findings as bullets); request changes on a blocker only, other repos drop non-blocking findings (big PRs are cloned + reviewed by child agents). CI is read first: red requests changes before the review, a running CI gets a watcher (see [CI comes first](#ci-comes-first)). Runs full-access. |
+| `quick-review <pr-url\|help\|prompt> [--policy first\|after] [what to look at]` (alias `rv`) | pal, executer, admin | quick review of a PR, **when a person asks** (tag the bot with `review <pr-url>` or `approve <pr-url>`, or type this; or a review requested on GitHub starts the same one - never from a thread, workflow or hand-back - see [Asking for a review in words](#asking-for-a-review-in-words) and [Reviews that start by themselves](#reviews-that-start-by-themselves)): read it first, post a blockers-only comment on GitHub *and* back in the thread (PRs owned by an account in `REVIEW_EXTENDED_OWNERS` also get the non-blocking findings as bullets); request changes on a blocker only, other repos drop non-blocking findings (big PRs are cloned + reviewed by child agents). CI is read first: red requests changes before the review, a running CI gets a watcher (see [CI comes first](#ci-comes-first)). Runs full-access. |
 | `bomb [categories] [count] <message-link>` (alias `br`) | admin | reaction-bomb a message. Combine categories with commas and set a count: `bomb money,face,negative 9 <link>`. Up to 23; `bomb help` lists every category |
 | `brief <thread-link\|reference> <text>` (`brief help`) | admin | leave a short note FOR another thread: what you posted there, why, what you wait for. Posts nothing, starts no turn; that thread's session reads it on its next turn, whoever speaks (it is part of that turn's message, so the session keeps it for the turns after), then it is marked read for that access tier. It is background information only, never instructions. The receiver sees only an opaque reference to your thread (never a link) and answers with `brief <reference> <text>`. `tell` is for when the other side must act now |
 | `post <#channel \| channel id \| thread-link> <text>` | owner | post a NEW message somewhere the turn is not running: a channel's top level (`#name`, `<#C123>` or its id) or into a linked thread. Needed because the Slack proxy only lets a turn write into its own channel. Owner only (anyone else is told who can), audit logged like every command, and it files a `brief` in the target thread so its session knows why; the footer under the message never names the requester; the bot must be in the channel |
@@ -899,7 +899,9 @@ that is going the wrong way instead of waiting it out.
 Send anything while a turn is running and the thread says nothing: the message
 queues silently and runs when its turn comes. There is no "still working on ...
 yours is next" notice. To end the running turn, press Slack's own stop button on
-the session, or use `//bot stop`.
+the session, or use `//bot stop`. Both follow one rule: your own turn, or an admin
+or the owner for someone else's. Anyone else's press is ignored (they get a
+private notice) and the turn keeps going.
 
 `//bot stop` ends the turn from a thread without needing a new message: a turn
 going wrong while you have nothing to add.
@@ -1085,6 +1087,16 @@ inbox does (`review-inbox link <github-login>`, else exactly one display-name
 match), so their role applies and the turn runs on the bot's credential. Someone it cannot
 place gets one comment explaining how to link, and nothing runs.
 
+**A mention that asks for a review on a PR, the label on a PR, or a review
+requested from the app is not that kind of call**: it starts a review, see
+[Reviews that start by themselves](#reviews-that-start-by-themselves). (GitHub
+does not let a PR request a review from an App's bot - the reviewers API refuses
+it - so in practice the mention and the label are the two ways in; if a
+`pull_request.review_requested` event with the app as the reviewer does arrive it
+is handled the same.) Subscribe the app to `pull_request`, `issue_comment`,
+`pull_request_review` and `pull_request_review_comment` events, with pull
+requests and issues read & write and contents read.
+
 The turn posts its answer back on the issue/PR, as the app, through
 `bin/github-app-comment.sh <owner/repo> <number> <body-file>` -> loopback
 `/api/github-app/comment`. The request carries the turn's ticket, and the bot
@@ -1220,9 +1232,42 @@ both work, as do `/github/setup` and `/setup`. Deliveries are verified with
 and only acted on for repositories owned by `GITHUB_APP_ALLOWED_OWNERS`.
 Bots, the app itself included, never trigger it.
 
+## Reviews that start by themselves
+
+A review requested on GitHub runs without anyone typing the command, as the same
+`quick-review` (review policy, CI gate, blockers-only, approve only when nothing
+blocks and CI is green). Who the comments are written as depends on who was asked:
+
+| asked | how it arrives | comments and change requests | approval |
+|---|---|---|---|
+| the GitHub App | a mention of it asking for a review on a PR (`@<slug> please review` - the text next to the mention has to open with review / re-review / approve, so "address the review comments" stays an ordinary call), the trigger label on a PR, or a review requested from the app's bot | the app | the host's GitHub account |
+| the host's own GitHub account | a review requested from it (found by the review inbox poll) | that account | that account |
+
+The approval is never the app's, and a review asked of the app is always
+approved only after the review (never up front), and not at all while the app's own
+change request stands. The model's `gh` writes as the app through a token minted
+for that one repository, limited to what a review needs and revoked when it ends.
+
+- **One thread per PR**, in the review inbox channel (`review-inbox channel
+  #channel`): the first event opens it, every later one - another request, a
+  comment, a change request, an approval - goes into it, and the review runs in it.
+- **Whose token**: the requester's own Claude token, for a GitHub login linked to
+  them with `review-inbox link <login>` (a name match tags them in the thread but
+  never bills them). If that person has no token, or the login is not linked, nothing runs: the thread asks the owner, with
+  Approve / Reject buttons. Only the owner's press counts. Approve runs it on the
+  owner's token (the bot's own credential if the owner has none); Reject leaves a
+  short note and nothing runs.
+- **Once per head**: one review per PR head commit per identity. A redelivery, a
+  second poll or a re-request on the same head never runs twice, and a new push is
+  reviewed only when it is requested again.
+- `review-inbox auto on|off` (setting `review_auto`, default on) switches it: off,
+  a request to the host's account is only announced, as before.
+
 ## Asking for a review in words
 
-A quick review runs only when a person asks for it directly, in one of two ways:
+A quick review runs when a person asks for it directly, in one of two ways (a
+review requested on GitHub also starts one, see
+[Reviews that start by themselves](#reviews-that-start-by-themselves)):
 
 - tag the bot with `@bot review <pr-url>` or `@bot approve <pr-url>` - both
   mean the same `quick-review` (there is no approval without a review, and the
@@ -1241,8 +1286,9 @@ brain (`jarvis-run.sh` refuses `quick-review`, and the prompt says so), not for 
 `tell`, a watch hand-back, a worker's question or a drift nudge, not for a
 workflow step or a thread with a workflow running, not for a batch of buffered
 follow-up messages, not for an untagged reply under a followed thread, and not
-for a GitHub review request (the review inbox only announces it, with the line to
-type). A bare PR link typed after the prefix is not a review either.
+for a push (a new head is reviewed only when it is requested again). A GitHub
+review request is its own door, below. A bare PR link typed after the prefix is
+not a review either.
 
 That closes the command, not reviewing. Asked in plain words to review a PR (no `review`/`approve` tag), the bot treats it as an ordinary task: a standalone reviewer worker (`--model opus`, or the Agent tool for a role without Orca) posts one real review, blockers only, and the bot acts on its verdict, merging only if the person asked and CI is green.
 
@@ -1250,70 +1296,4 @@ This matters beyond convenience: only the command can offer the box that takes a
 Claude token, so a spoken request used to get a description of the token instead
 of the button that accepts one.
 
-Flags carry through (`@bot review <url> --policy after`); the rest of the
-sentence does not. "can you please" is not guidance, and guessing which half of
-a sentence was meant as an instruction is worse than not trying - typed with the
-prefix, the free text is the steering note.
-
-## Your own Claude token
-
-`quick-review` runs the Claude Code CLI, and the CLI bills whoever's token it is
-holding. Running every review on the bot's credential puts the whole team's
-usage on one account, so a review runs on **the caller's own token** instead,
-and refuses to start without one.
-
-Mint one with the Claude Code CLI:
-
-```
-claude setup-token
-```
-
-It opens a browser, logs you in, and prints a token starting with
-`sk-ant-oat01-`. Paste it into the box the bot opens - the button on its "I need
-your token" message, or `/<slash> token` any time. **Never type a token as a
-Slack message**: the bot only ever accepts one through a modal, whose input is
-not a message, is not in anyone's history or search, and never reaches the bot's
-own conversation memory. A token pasted into a channel should be treated as
-burned and rotated.
-
-Submitting a token also resumes whatever it interrupted - the button carries the
-command, so the review you asked for runs the moment the token lands.
-
-**You are asked once.** The full walkthrough goes out one time per person; a
-later review with still no token gets a single line pointing back at the box
-rather than the whole thing again. Adding (or removing) a token resets that, so
-someone who clears theirs gets a proper ask next time.
-
-There is **no fallback to the bot's own credential** for a review. No token, no
-review - and when a caller's token is in play it *replaces* the bot's in the
-child process rather than being added alongside it, so the bot's token is not in
-that environment at all, including for anything the run spawns in turn.
-
-A token on file runs **`quick-review` and nothing else**. Chat, chat commands and
-workflow sessions always run on the bot's own credential, even for someone who has
-a token stored, so a revoked or expired token can never break an ordinary turn.
-
-If a review hits an authentication failure on your token, the bot does not post
-the CLI's error. It says in one line that your Claude token no longer works and
-offers the same button as the first ask; pasting a new token replaces the old one.
-The stored token is not deleted automatically.
-
-```
-/<slash> token           add or replace yours (opens the box)
-/<slash> token remove    forget it; your next review will ask again
-/<slash> token who       admins: who has given me one (never the token itself)
-```
-
-Tokens live in their own database (`TOKEN_DATABASE_PATH`, default
-`data/tokens.db`), encrypted with AES-256-GCM under a key in `TOKEN_KEY_PATH`
-(default `data/tokens.key`). Keep the database outside the checkout like the main
-one; **the key is gitignored**, so a backup of it is ciphertext and a copy taken
-from anywhere but the host opens nothing.
-
-On macOS the key can live in the login Keychain instead of a file:
-`TOKEN_KEY_SOURCE=keychain` (service `TOKEN_KEY_KEYCHAIN_SERVICE`, default
-`jarvis-token-key`, account = the login user; read and written with the
-`security` CLI). First boot in that mode:
-
-- Item missing, key file present: the file key is copied into the Keychain, read
-  back 
+Flags carry 

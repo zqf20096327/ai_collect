@@ -5,7 +5,7 @@
 **An OpenAI-compatible HTTP API for a FreePi account.**<br>
 A single Rust binary, no runtime and no extra services.
 
-![version](https://img.shields.io/badge/version-0.2.2-blue)
+![version](https://img.shields.io/badge/version-0.2.3-blue)
 ![msrv](https://img.shields.io/badge/msrv-1.89%2B-orange)
 ![license](https://img.shields.io/badge/license-GPL--3.0--only-blue)
 
@@ -225,7 +225,7 @@ Installed with `--system` or `PREFIX`? Delete the binary from there instead.
 | `403 ads_required` | see [Ads](#ads); `FREEPI_AUTO_AD=on` clears it without a browser |
 | `403` with a browser open | the page was not counted; keep `/ads` visible and check `freepi-bridge logs \| grep 'ad impression'` |
 | `409 concurrent_session` | the account already holds its four CLI session slots; the bridge calls `/session/reset` and retries once. A retry that still fails means another machine holds the slot, so run `freepi-bridge reset` once the other client is closed |
-| `409 model_at_capacity` | that model is busy upstream; wait a few minutes or pick another free model |
+| `409 model_at_capacity` | that model is busy upstream. The bridge reports an ad, retries it once, then retries on the server's `default_model` and renames the reply back to the model you asked for, so the call still succeeds |
 | `429 concurrent` | the account serves one request at a time and the bridge waited `FREEPI_QUEUE_WAIT_SECS` without getting the slot; another client keeps holding it, so raise the wait or give the second agent its own account |
 | `429 hourly_ceiling` | hourly cap reached, wait for the reset. Ads cannot be skipped, and the cap is per account |
 | `429 premium_allowance` | premium quota spent; switch to a model that reports `"free": true` in `freepi-bridge models --json`, since an id ending in `-flash` does not make a model free |
@@ -233,8 +233,13 @@ Installed with `--system` or `PREFIX`? Delete the binary from there instead.
 
 ## Endpoints
 
-`GET /v1/models` · `POST /v1/chat/completions` (SSE streaming) · `GET /ads` ·
-`GET /health`
+`GET /v1/models` · `POST /v1/chat/completions` (SSE streaming) · `POST /tools/vision` ·
+`GET /ads` · `GET /health`
+
+`POST /tools/vision` answers free-pi-cli's `look_at_image` body
+(`{image_b64, media_type, question}`) by sending the image to the chat model
+itself (`FREEPI_VISION_MODEL`, default `deepseek-v4.1-flash`) instead of the
+paid vision provider, and returns `{"text": …}`.
 
 ## Development
 

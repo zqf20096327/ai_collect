@@ -162,11 +162,15 @@ Extensions restoring runtime credentials follow the same upgrade order: preserve
 
 Legacy scheduled tasks can recover their inference account from the verified pre-migration snapshot before scheduled dispatch, after community or enterprise credentials have been restored. Recovery preserves task IDs, schedules, delivery settings and model inheritance, and requires the original account. Synchronizing unchanged credentials retains existing authorizations. Missing, ambiguous or changed accounts are reported instead of silently selecting another account. When a remote model disappears, tasks can use configured fallback models within the original provider and account; explicit model locks and disabled fallback remain in force. See [scheduled-task migration and validation limits](harness/reference/cron-inference-upgrade.md).
 
+When upgrading on Windows, ClawX recognizes scheduled scripts in the active cron store that start a background worker and return. ClawX runs the original command and waits for its Windows Job to finish. A custom timeout such as 600 seconds still applies to the worker. An old startup-only timeout becomes one hour when the full worker budget is unknown.
+
 Gateway startup also works when no scheduled-task migration evidence is needed. Optional unset launch values are omitted before creating the process, preventing the upgrade-time `Invalid value for env` failure. See the [diagnosis and validation](harness/reference/gateway-undefined-launch-env-20261111.md).
 
 During app quit, session writes and queued starts are cancelled. ACP and the managed Gateway stop before extensions remove their temporary runtime credentials; encrypted login state remains available for the next launch. All shutdown work shares the existing timeout.
 
 The official Discord, Feishu and WhatsApp dependencies match `2026.10.10`. WeCom moves to `2026.10.30` for the current configuration API; DingTalk stays at `0.8.26` and Weixin at `2.4.10`. Existing Feishu migration behavior remains unchanged.
+
+When the Gateway queues an outgoing attachment, it checks the account, channel and agent defaults in that order and uses the first configured size limit. If none is set, it allows 20 MiB for WeCom and DingTalk, 30 MiB for Feishu and 100 MiB for Weixin. Upgrades apply these defaults automatically. The connector still enforces its own upload limits for each file type.
 
 Two channel plugins change providers with OpenClaw 2026.10.5, and ClawX migrates both before the first Gateway start. QQ Bot moves from `@openclaw/qqbot` to Tencent QQBot 2.0 (`@tencent-connect/openclaw-qqbot`, plugin id `openclaw-qqbot`). Its default account moves to the top level of `channels.qqbot`. Open DM access stays open, using the approval marker `openclaw:approval-disabled`. QQ Bot configs with approval, secret-file or group command policies are left for OpenClaw Doctor. Feishu moves from `@larksuite/openclaw-lark` to the official `@openclaw/feishu`, with the same app credentials. The official plugin provides 14 Feishu tools instead of 39: calendar, task, user OAuth, sheet and search tools are no longer available.
 

@@ -1,0 +1,214 @@
+<p align="center">
+  <img src="frontend/public/kaspi-full.svg" alt="Kaspi.kz" width="280" />
+</p>
+
+<h1 align="center">Kaspi Analytics Platform</h1>
+
+<p align="center">
+  <b>Полнофункциональная аналитическая платформа для анализа 210 000+ товаров маркетплейса Kaspi.kz</b>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-19.2-61DAFB?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi" alt="FastAPI" />
+  <img src="https://img.shields.io/badge/Python-3.10-3776AB?logo=python" alt="Python" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-4.0-06B6D4?logo=tailwindcss" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikit-learn" alt="sklearn" />
+</p>
+
+---
+
+## 🎬 Демо
+
+<p align="center">
+  <img src="image.png" alt="Kaspi Analytics Platform" width="100%" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/MakazhanAlpamys/Kaspi-Analytics-Platform/raw/main/demo.mp4">📥 Скачать видео-демо (demo.mp4)</a>
+</p>
+
+---
+
+## 📋 О проекте
+
+**Kaspi Analytics Platform** — это веб-приложение для глубокого анализа товаров маркетплейса Kaspi.kz. Платформа включает **14 интерактивных страниц**, **18 API-эндпоинтов**, **ML-модель прогнозирования продаж** и поддержку **тёмной/светлой темы**.
+
+### Ключевые возможности
+
+- 📊 **Дашборд** — KPI-метрики, ABC-анализ, топ категорий и брендов
+- 📦 **Каталог товаров** — поиск, фильтрация, сортировка, экспорт в CSV/XLSX
+- 📈 **Аналитика категорий** — выручка, цены, рейтинги, scatter-графики
+- 🏆 **Аналитика брендов** — сравнение брендов, радар-графики
+- 🎯 **Поиск ниш** — обнаружение рыночных ниш с низкой конкуренцией
+- ⚔️ **Анализ конкуренции** — монополии, распределение продавцов
+- 🕐 **Временной анализ** — динамика добавления товаров, слабые товары
+- 🔗 **Корреляционная матрица** — тепловая карта зависимостей между метриками
+- 🔀 **Сравнение товаров** — сравнение до 5 товаров side-by-side
+- 🤖 **ML Прогнозы** — предсказание продаж на основе GradientBoosting (R² = 0.68)
+- 🧮 **Ценовой калькулятор** — поиск ценовых ниш и gap-анализ
+- 📊 **ABC / Парето** — правило 80/20, классификация товаров A/B/C
+- 💡 **Что продавать?** — ML-рекомендации лучших категорий для входа на рынок
+
+---
+
+## 🏗️ Архитектура
+
+```
+kaspi/
+├── backend/
+│   ├── main.py              # FastAPI сервер (18 эндпоинтов)
+│   ├── train_model.py       # Обучение ML-модели
+│   ├── model.joblib          # Обученная модель GradientBoosting
+│   ├── encoders.joblib       # LabelEncoder для категорий и брендов
+│   ├── kaspi.csv             # Датасет (210 000 товаров)
+│   └── requirements.txt     # Python-зависимости
+│
+├── frontend/
+│   ├── src/app/
+│   │   ├── page.tsx          # Главный дашборд
+│   │   ├── products/         # Каталог товаров
+│   │   ├── categories/       # Аналитика категорий
+│   │   ├── brands/           # Аналитика брендов
+│   │   ├── niches/           # Поиск ниш
+│   │   ├── competition/      # Анализ конкуренции
+│   │   ├── time/             # Временной анализ
+│   │   ├── correlation/      # Корреляционная матрица
+│   │   ├── compare/          # Сравнение товаров
+│   │   ├── predict/          # ML Прогнозы
+│   │   ├── calculator/       # Ценовой калькулятор
+│   │   ├── pareto/           # ABC / Парето анализ
+│   │   ├── recommender/      # Что продавать?
+│   │   ├── product/[code]/   # Страница товара
+│   │   ├── components/       # Sidebar, ThemeProvider
+│   │   └── lib/              # API-клиент, утилиты
+│   └── public/               # Статические ресурсы
+│
+├── demo.mp4                  # Видео-демо
+├── image.png                 # Скриншот платформы
+└── README.md
+```
+
+---
+
+## 🛠️ Технологии
+
+| Слой | Технологии |
+|------|-----------|
+| **Frontend** | Next.js 16.1.6, React 19, TypeScript, Tailwind CSS 4, Recharts |
+| **Backend** | FastAPI, Pandas, NumPy |
+| **ML** | Scikit-learn (GradientBoostingRegressor), Joblib |
+| **Иконки** | Lucide React |
+| **Экспорт** | CSV, XLSX (openpyxl) |
+
+---
+
+## 🚀 Установка и запуск
+
+### Требования
+
+- Python 3.10+
+- Node.js 18+
+
+### 1. Клонирование
+
+```bash
+git clone https://github.com/MakazhanAlpamys/Kaspi-Analytics-Platform.git
+cd Kaspi-Analytics-Platform
+```
+
+### 2. Backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+python train_model.py      # Обучение ML-модели (один раз)
+python main.py              # Запуск API на http://localhost:8000
+```
+
+### 3. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev                 # Запуск на http://localhost:3000
+```
+
+---
+
+## 📡 API-эндпоинты
+
+| Метод | Путь | Описание |
+|-------|------|----------|
+| `GET` | `/api/dashboard` | KPI, ABC, топ категорий и брендов |
+| `GET` | `/api/products` | Каталог товаров с фильтрами и пагинацией |
+| `GET` | `/api/filters` | Списки категорий и брендов для фильтров |
+| `GET` | `/api/categories/{name}` | Детальная аналитика категории |
+| `GET` | `/api/brands/{name}` | Детальная аналитика бренда |
+| `GET` | `/api/brands/compare` | Сравнение до 5 брендов |
+| `GET` | `/api/product/{code}` | Карточка товара + похожие |
+| `GET` | `/api/products/compare` | Сравнение до 5 товаров |
+| `POST` | `/api/predict` | ML-прогноз продаж |
+| `GET` | `/api/niches` | Поиск рыночных ниш |
+| `GET` | `/api/competition` | Анализ конкуренции |
+| `GET` | `/api/time-analysis` | Временной анализ |
+| `GET` | `/api/correlation` | Корреляционная матрица |
+| `GET` | `/api/search` | Глобальный поиск (Ctrl+K) |
+| `GET` | `/api/export/products` | Экспорт в CSV/XLSX |
+| `GET` | `/api/price-calculator` | Ценовой gap-анализ |
+| `GET` | `/api/abc-pareto` | ABC/Парето анализ |
+| `GET` | `/api/recommender` | Рекомендации категорий |
+
+---
+
+## 🤖 ML-модель
+
+- **Алгоритм:** GradientBoostingRegressor
+- **Признаки:** категория, бренд, цена, кол-во продавцов
+- **Целевая переменная:** log(sale_qty + 1)
+- **Метрика:** R² = 0.68
+- **Объём выборки:** ~210 000 товаров
+
+---
+
+## 🎨 Дизайн
+
+- **Цветовая схема:** Kaspi Red `#F14635`, Dark `#1D1D1F`
+- **Тёмная тема** по умолчанию с возможностью переключения
+- **Адаптивный дизайн** для десктопа
+- **Анимации** появления элементов (fade-in, stagger)
+- **Глобальный поиск** по Ctrl+K
+
+---
+
+## 📊 Датасет
+
+| Поле | Описание |
+|------|----------|
+| `product_code` | Уникальный код товара |
+| `product_name` | Название товара |
+| `category_name` | Категория |
+| `_category_name` | Родительская категория |
+| `brand_name` | Бренд |
+| `sale_price` | Цена продажи (₸) |
+| `sale_qty` | Количество продаж |
+| `sale_amount` | Выручка (₸) |
+| `product_rate` | Рейтинг (0-5) |
+| `review_qty` | Количество отзывов |
+| `merchant_count` | Количество продавцов |
+| `amount_abc` | ABC-класс (1=A, 2=B, 3=C) |
+| `created_dt` | Дата добавления |
+| `last_sale_date` | Дата последней продажи |
+
+---
+
+## 👤 Автор
+
+**Makazhan Alpamys** — [GitHub](https://github.com/MakazhanAlpamys)
+
+---
+
+<p align="center">
+  <sub>Сделано с ❤️ для аналитики Kaspi.kz</sub>
+</p>

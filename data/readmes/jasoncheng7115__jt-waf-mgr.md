@@ -1,4 +1,4 @@
-# jt-waf-mgr v0.4.100
+# jt-waf-mgr v0.5.13
 
 **English** · [繁體中文](README_zh-TW.md) · [日本語](README_ja.md)
 
@@ -136,10 +136,17 @@ measuring on your own traffic before you rely on it; a CDN or cloud WAF is the o
   allow-list, and "exploited" counts only when it read the CISA catalog itself in that run, or -- with the KEV catalog
   switched on (downloaded daily, about 1.5 MB) -- when the catalog lists it. A product can be confirmed
   by name alone; an exploited vulnerability that affects (or, without a version, may affect) you raises a critical
-  alert.
-  For one seen in the URL or a header it writes a virtual patch (a narrow confident block, checked like any change:
-  evidence, sandbox); one for an exploited vulnerability that affects you applies at once, past the daily limit, and
-  a critical alert asks a person if its checks fail. Token limits per day and month.
+  alert. A Debian package installed here is checked against its own change log and, optionally, the Debian security
+  tracker (fixed in the installed version, not affected, or another program's CVE: set aside; fixed in a newer
+  package: update it).
+  For one seen in the URL, a header or a parameter's name (in the query string, a form or an upload) it writes one
+  virtual patch per vulnerability for every site it reaches (a narrow confident block, checked like any change: the
+  evidence where the access logs can show it, always the sandbox) and applies it without a person once the checks
+  pass, within the daily limit; one for an exploited vulnerability that affects you goes past the limit, and a critical
+  alert asks a person if its checks fail. The program searches every product, and the languages and frameworks it is
+  built on (a PHP flaw reaches every PHP application), itself each run; an announced security release raises an alert,
+  and the search runs again once it is out. A person can also hand it a page or a text (a news article, a vendor
+  advisory) to read now. Token limits per day and month; a run ends within 45 minutes.
 - **IP reputation**: the IP lookup puts together what this site saw of an address with public lists downloaded once a day
   (Spamhaus DROP, FireHOL level 1, abuse.ch Feodo, Emerging Threats, CINS Army, blocklist.de, Tor exit nodes; matched on
   the host), Shodan InternetDB and your own MISP, with a verdict and its reasons. Off by default; nothing is blocked by itself.
@@ -168,7 +175,11 @@ measuring on your own traffic before you rely on it; a CDN or cloud WAF is the o
   installed nginx and the features this configuration uses. Flaws in nginx itself (HTTP/2, HTTP/3, resolver...) happen
   before ModSecurity sees a request, so the alert says to update; the verified update is proposed for an admin to
   approve, and HTTP/2 or HTTP/3 can be switched off for a while (by itself for a major advisory, back on after the
-  update) with marked, exactly reversible edits.
+  update) with marked, exactly reversible edits. Since 0.5.1 the way back is shown before approving: the previous
+  package and module are kept, "roll back to the previous nginx" and "use another module" are changes like any other
+  (also from the command line when nginx and so the page are down), a backup of the configuration and module can be
+  downloaded first, and nginx security updates can be applied without approval if an administrator switches that on
+  (off by default). See [when nginx does not come back](docs/RECOVERY.md).
 - **Log servers (syslog / SIEM)**: up to 8 destinations, each with its own protocol (local socket, UDP, TCP, TLS),
   record format (JSON, CEF, LEEF 2.0, GELF 1.1, key=value) and content (audit records, WAF events, alerts); its own
   queue and retries; a test send that shows exactly what went out.
@@ -208,7 +219,7 @@ measuring on your own traffic before you rely on it; a CDN or cloud WAF is the o
 
 ```sh
 sudo mkdir -p /opt/jt-waf-mgr-install && cd /opt/jt-waf-mgr-install   # a fixed place for the releases
-V=0.4.100; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
+V=0.5.13; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
 for f in jt-waf-mgr-$V.tar.gz jt-waf-mgr-$V.tar.gz.sig release-key.pem; do sudo curl -fsSLO $B/$f; done   # the release, its signature, the public key
 openssl dgst -sha256 -verify release-key.pem -signature jt-waf-mgr-$V.tar.gz.sig jt-waf-mgr-$V.tar.gz
 sudo rm -rf current && sudo mkdir current && sudo tar xzf jt-waf-mgr-$V.tar.gz -C current --strip-components=1 && cd current
@@ -265,9 +276,12 @@ settings (GeoIP, LLM, analysis, notifications, request volume, networks, policy)
 
 ### Let jt-waf-mgr change rules
 
-jt-waf-mgr writes only ModSecurity files and never writes nginx configuration. It reads nginx's configuration (to
-find the sites and ModSecurity's main file), runs `nginx -t` and reloads nginx. The management vhost and
-`modsecurity on;` in nginx are your own one-time edits. The one exception is optional: the temporary IP block list, a file of `deny` lines that you include once yourself.
+jt-waf-mgr writes ModSecurity files; it reads nginx's configuration (to find the sites and ModSecurity's main file),
+runs `nginx -t` and reloads nginx. The management vhost and `modsecurity on;` in nginx are your own one-time edits.
+It changes nginx itself only through approved changes made by its root program, each with `nginx -t`, health checks and
+the way back: the optional temporary IP block list (a file of `deny` lines you include once yourself), one marked
+include line per site (WAF on or off, the block page), HTTP/2 or HTTP/3 switched off for a while when nginx itself has a
+flaw (marked lines, put back exactly), and the nginx package with its ModSecurity module (update, rollback).
 
 To let jt-waf-mgr change rules: arm the apply program (`sudo ./install.sh --enable-apply`), set the health check URLs,
 and adopt the existing rule files under Rules → Managed rules (an admin approves the adoption like any change).
@@ -430,7 +444,7 @@ the file next to the current values and writes only what you tick).
 
 ```sh
 cd /opt/jt-waf-mgr-install   # the new release, unpacked into the same current
-V=0.4.100; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
+V=0.5.13; B=https://github.com/jasoncheng7115/jt-waf-mgr/releases/download/v$V
 for f in jt-waf-mgr-$V.tar.gz jt-waf-mgr-$V.tar.gz.sig; do sudo curl -fsSLO $B/$f; done
 sudo rm -rf current && sudo mkdir current && sudo tar xzf jt-waf-mgr-$V.tar.gz -C current --strip-components=1 && cd current
 sudo ./upgrade.sh --check     # every check, nothing changed

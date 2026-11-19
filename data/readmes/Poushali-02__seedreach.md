@@ -10,7 +10,7 @@ personalised cold email to your **Gmail Drafts**. You review it and press Send. 
 
 [Watch the full 80-second demo with sound (MP4)](https://github.com/Poushali-02/seedreach/releases/download/v0.1.0/seedreach-demo.mp4)
 
-> **Status:** early (v0.3). Built for my own internship search and maintained in my spare time.
+> **Status:** early (v0.8). Built for my own internship search and maintained in my spare time.
 > Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 A CLI that finds early-stage startups, reads their website with an LLM, finds a founder's email, and
@@ -146,11 +146,67 @@ python main.py add-target --csv companies.csv   # reads a url or website column 
 # One specific startup, start to finish
 python main.py target https://example-startup.com
 
-# Totals, recent companies, recent runs (tokens, cost, time) and the event log
+# Totals, the tracker, recent companies, recent runs (tokens, cost, time) and the event log
 python main.py status
+
+# The tracker: check now which drafts you sent and which got a reply or bounced (every real `run` does this too)
+python main.py track
+python main.py mark example-startup.com interview   # stages the mailbox can't see: interview, offer, closed
+python main.py export --csv tracker.csv              # every draft and its stage, for a spreadsheet
+python main.py followups --dry-run                   # preview the follow-ups due (every real `run` drafts them too)
 ```
 
 Then open Gmail > Drafts, review each draft, and send the ones you like yourself.
+
+### Track what happens after the draft
+
+After every real `run`, and whenever you run `python main.py track`, seedreach looks at your mailbox for
+each company it drafted to and records where it stands:
+
+| Stage | How it's known |
+|---|---|
+| (drafted) | The draft is still in Gmail > Drafts |
+| `sent` | The draft left Drafts, and Sent has a message to that address since the draft was made |
+| `replied` | Someone at the company answered: a "Re:" message from their domain after you sent yours. Auto-replies and product newsletters don't count |
+| `bounced` | Gmail's delivery-failure notice names that address |
+| `draft gone` | The draft left Drafts, but no sent copy was found (you deleted it, or seedreach can't read mail) |
+| `interview`, `offer`, `closed` | You set these yourself with `mark`; the tracker never changes them |
+
+- **Reading mail is optional.** Gmail deletes a draft once it's sent, so "the draft is gone" needs only the
+  draft permission seedreach already has. Seeing Sent, replies and bounces needs Gmail's read-only
+  permission. The tracker uses it **only if your saved Gmail token already has it** (turning on
+  `JOB_ALERTS=1` once gives it), so it never asks you to sign in again. It reads message dates only, never
+  the text of your emails.
+- `mark` takes any of the stages above, for example to record a reply that came from a different address.
+- `status` shows how many companies are at each stage, plus the ones that replied or moved on.
+- `export --csv` writes every draft with its stage and dates. The file holds email addresses, so keep it
+  out of git.
+- `TRACK_MAILBOX=0` turns the tracker off.
+
+### Follow-ups
+
+A week after you send an email with no reply, seedreach drafts one short follow-up in the **same Gmail
+conversation**, so the founder sees it under your first email:
+
+```text
+Re: Remote Backend/AI engineering internship - Acme
+
+Hi Ada,
+
+Following up on my email from 14 November, in case it got buried. <your ask from profile.json>
+
+Resume: https://...
+
+Thanks,
+Your Name
+```
+
+- **Only for the tracker's `sent` stage**: a reply, a bounce, or a stage you set with `mark` (interview,
+  closed...) means no follow-up. So it needs the tracker's read access.
+- **Once per company**, oldest first, at most `FOLLOW_UPS_PER_RUN` (5) per run, after `FOLLOW_UP_AFTER_DAYS`
+  (7) days. `FOLLOW_UP_AFTER_DAYS=0` turns follow-ups off.
+- It's a draft like everything else: read it, edit it, and send it yourself, or delete it.
+- `python main.py followups --dry-run` shows what would be drafted; `followups` drafts them now.
 
 ## How it works
 
@@ -247,7 +303,8 @@ Then open Gmail > Drafts, review each draft, and send the ones you like yourself
     for the sender keeps them where you can see them.
 - **Dedupe**: one row per registrable domain, plus a unique index on drafted emails. Drafted and skipped
   companies are never processed again (use `target <url> --force` to retry a skipped one). LLM or Gmail
-  outages are not recorded as skips, so those companies are retried next time.
+  outages, and any unexpected error in one company, are not recorded as skips, so those companies are
+  retried next time; the run carries on with the next company.
 
 ## How well it works
 
@@ -349,9 +406,10 @@ internships with apply links, founders to reach on LinkedIn (when only a generic
 found) and drafts to review. It has company names and links only, never email addresses. Nothing to report
 means no comment.
 
-For a one-line summary on Telegram or Discord as well ("3 new drafts: HillStar, Alter · 2 skipped"), add
-the secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`, and/or `DISCORD_WEBHOOK_URL`. It lists company
-names and counts only, never founder addresses or draft text. It's sent after real runs, not dry runs.
+For a one-line summary on Telegram or Discord as well ("3 new drafts: HillStar, Alter · 2 skipped · 4 new
+from job alerts"), add the secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`, and/or `DISCORD_WEBHOOK_URL`.
+It lists company names and counts only, including the count of new job-alert openings when there are any;
+it never includes email addresses, apply links or draft text. It's sent after real runs, not dry runs.
 
 - **Telegram**: message [@BotFather](https://t.me/BotFather), send `/newbot` and follow the prompts; it
   replies with the bot token. Send any message to your new bot, then open

@@ -198,6 +198,17 @@ A huge thank you to every developer who took the time to improve this extension 
 
 ## Version History
 
+### Version 315.0
+- Background agents no longer flood the chat with their own steps and reports, which could bury a question or plan card so it looked like no Approve button had appeared.
+
+### Version 314.0
+- Approving a plan now really carries it out in Accept edits, as the permission selector shows, instead of asking before every edit.
+- Once the approved plan is carried out, the chat goes back to Plan mode, so your next request is planned again (#210).
+
+### Version 313.0
+
+- The Claude Code usage ring now shows the current session limit.
+
 ### Version 312.0
 - **Generate Commit Message** now finds the Git Changes window in any Visual Studio language and opens it when it is closed or behind another tab.
 - The message is only reported as filled when it really landed in the commit box; otherwise it is copied to the clipboard, so it can no longer end up in the wrong text box.
@@ -1567,22 +1578,4 @@ Native mode now in beta phase
 - Adjusted Windows Terminal initial zoom.
 
 ### Version 7.7
-- **Windows Terminal support** with seamless embedding, auto-detection, and install link.
-
-### Version 7.6
-- Fixed Show Usage menu navigation.
-
-### Version 7.5 - adrian-schmidt contribution
-- Set Working Directory dialog now follows VS theme.
-
-### Version 7.4
-- Prompt history now saves and restores file attachments.
-
-### Version 7.3
-- Special character rendering fixed (UTF-8 + Cascadia Mono).
-- Diff viewer falls back to VS bundled git when `git` isn't on PATH.
-- Clipboard contention retry logic.
-
-### Version 7.2
-- **Effort Level Selection** (Auto / Low / Medium / High / Max) in the model menu.
-- **Show Usage** and 
+- **Windows Terminal support** with seamless embedding, auto-detection, and

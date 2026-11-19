@@ -21,8 +21,6 @@
 
 ---
 
-CA : BkpaxHhE6snExazrPkVAjxDyZa8Nq3oDEzm5GQm2pump
-
 ### Table of Contents
 
 -   [Why Lumen?](#why-lumen)

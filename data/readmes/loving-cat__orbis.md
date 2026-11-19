@@ -1,8 +1,8 @@
-# pi-bot
+# Orbis
 
-手机和电脑上的 **pi agent 团队**。你发一句话，总经理拆活、部门老大接单、成员各自干活，结果回到你手上。
+手机和电脑上的 **Orbis（多智能体团队与全能主控基座）**。你发一句话，主控拆活、部门老大接单、成员各自干活，结果回到你手上。
 
-不是套壳聊天——底下是真正的 pi agent：能读写文件、跑命令、开子进程、调 MCP，产出直接落盘并作为附件发回来。
+不是套壳聊天——底层基于 `@earendil-works/pi-coding-agent` 引擎：能读写文件、跑命令、开子进程、调 MCP，产出直接落盘并作为附件发回来。
 
 ```
 ┌────────────────── 客户端（Flutter，一套代码两端）──────────────────┐
@@ -11,9 +11,9 @@
 └───────────────────────────────┬──────────────────────────────────┘
                                 │ WSS + JSON（配对码换 token）
 ┌───────────────────────────────▼──────────────────────────────────┐
-│  pi-bot server（Node 22+，纯 ESM，无构建）                         │
+│  Orbis server（orbis-agent · Node 22+，纯 ESM，无构建）           │
 │                                                                  │
-│   总经理(main bot) ──► 部门(群) ──► 部门老大(lead) ──► 成员(member) │
+│   主控(Orbis / main) ──► 部门(群) ──► 部门老大(lead) ──► 成员     │
 │        │                  │              │              │        │
 │        └── 下达任务 ──────┘              └── @同事派活 ──┘        │
 │                                                                  │
@@ -26,8 +26,8 @@
 
 | 平台 | 文件 |
 |---|---|
-| **Windows** | [Windows 免安装包](https://github.com/loving-cat/pi-bot/releases/latest)（`pi-bot-windows-*.zip`）— 解压双击 `pi_bot.exe`，免安装；从源码打包见 [Windows 构建说明](docs/WINDOWS.md) |
-| **Android** | [Android APK](https://github.com/loving-cat/pi-bot/releases/latest)（`pi-bot-android-*.apk`）— 手机浏览器直接下载安装 |
+| **Windows** | [Windows 免安装包](https://github.com/loving-cat/orbis/releases/latest)（`orbis-windows-*.zip`）— 解压双击运行；从源码打包见 [Windows 构建说明](docs/WINDOWS.md) |
+| **Android** | [Android APK](https://github.com/loving-cat/orbis/releases/latest)（`orbis-android-*.apk`）— 手机浏览器直接下载安装 |
 | **macOS** | 从源码运行 `./scripts/pack-macos.sh` 生成 App 与 DMG，见 [macOS 构建说明](docs/MACOS.md) |
 
 **包里不含任何地址和密钥**——服务端地址、配对码、模型 baseUrl/API key 全部由你自己填（见下面「快速开始」）。
@@ -36,7 +36,7 @@
 
 | 角色 | 是什么 | 干什么 |
 |---|---|---|
-| **总经理**（`role: main`） | 主控 bot，唯一和你直接对话 | 听懂需求 → 决定交给哪个部门/谁 → 盯结果 → 给你交代。**只有只读文件工具**，负责指挥不负责动手 |
+| **总经理**（`role: main`） | 主控 bot，唯一与你全局对齐的总管家 | 听懂需求 → 直接亲手解决或拆活交给部门 → 盯结果 → 给你交代；支持 J.A.R.V.I.S. 宿主直管与系统配置管理（详见 [docs/SPEC-JARVIS-V1.md](docs/SPEC-JARVIS-V1.md)） |
 | **部门**（群） | 一群专才 | 有独立的 `leadBotId`（部门老大） |
 | **部门老大** | 部门负责人 | 你在部门里发指令时**由它先接**：拆活 → `@同事` 派下去 → 汇总结果 |
 | **成员** | 部门员工 | 只做被派到的事，能 `@同事` 协作，做完直接给结果 |
@@ -94,7 +94,7 @@ node src/index.js
 
 ```
   ┌─ 手机连接 ────────────────────────────────────┐
-  │  在 pi-bot App 的配对页填下面这两项             │
+  │  在 Orbis App 的配对页填下面这两项             │
   └───────────────────────────────────────────────┘
   有效地址   http://192.168.1.100:8787
              http://192.168.1.100:8787      (以太网)
@@ -107,7 +107,7 @@ node src/index.js
 
 ### 2. 电脑端（宿主）
 
-Windows 解压后打开 `pi_bot.exe`；macOS 打包后打开 `dist/pi-bot.app`。
+Windows 解压后打开 `orbis.exe`；macOS 打包后打开 `dist/Orbis.app`。
 目标机器需安装 Node 22+。桌面端就是宿主，启动时会自动把服务端跑起来：
 
 1. 先探本机 `127.0.0.1:8787`，已有服务端就直接连（不会重复启动）；
@@ -128,7 +128,7 @@ flutter config --enable-macos-desktop
 ./scripts/pack-macos.sh
 ```
 
-产物为 `dist/pi-bot.app` 和 `dist/pi-bot-<服务端版本>.dmg`；服务端和生产依赖在 App 内，
+产物为 `dist/Orbis.app` 和 `dist/orbis-<服务端版本>.dmg`；服务端和生产依赖在 App 内，
 Node 仍由目标机器提供。已有 Release App 时，`./scripts/pack-macos.sh --no-build` 可跳过
 Xcode 检查与 Flutter 构建，仅重新组装安装包。当前使用 ad-hoc 签名，未做 Developer ID
 公证；`--clear-quarantine` 为可选参数，默认关闭。完整步骤与待验项目见 [docs/MACOS.md](docs/MACOS.md)。
@@ -137,9 +137,9 @@ Xcode 检查与 Flutter 构建，仅重新组装安装包。当前使用 ad-hoc 
 
 | 平台 | 数据目录 |
 |---|---|
-| Windows | `%LOCALAPPDATA%\pi-bot\data` |
-| macOS | `~/Library/Application Support/pi-bot/data` |
-| Linux | `$XDG_DATA_HOME/pi-bot/data`（默认 `~/.local/share/pi-bot/data`） |
+| Windows | `%LOCALAPPDATA%\orbis\data`（老用户仍在 `\pi-bot\data`，自动沿用） |
+| macOS | `~/Library/Application Support/orbis/data` |
+| Linux | `$XDG_DATA_HOME/orbis/data`（默认 `~/.local/share/orbis/data`） |
 
 里面有 `rooms/`（会话消息）、`sessions/`（agent 会话）、`uploads/`（附件）、
 `workspace/`（bot 的工作目录）、`state.json`、`secret.key`（加密密钥）。备份就备份这一个目录。
@@ -174,13 +174,38 @@ Xcode 检查与 Flutter 构建，仅重新组装安装包。当前使用 ad-hoc 
 > 它会照 App 的方式新建一个模型组、造个临时 bot 真跑一句话，然后自己清理干净。
 > 模型菜单"绿不绿"证明不了能不能真跑——这个脚本才是真的发一句话。
 
+## 作为 Agent 基座（SDK 调用）
+
+像使用 `@earendil-works/pi-coding-agent` 一样，外部程序可以直接嵌入隔离的多智能体运行时，或通过 HTTP/WS 控制已运行的常驻服务端：
+
+```js
+import { createOrbisRuntime } from 'orbis-agent/sdk';
+
+const rt = await createOrbisRuntime({
+  dataDir: './.orbis-state',
+  workspace: process.cwd(),
+});
+const res = await rt.askMain('检查这个目录的项目结构并给出改进建议');
+console.log(res.replyText);
+await rt.dispose();
+```
+
+完整文档与远程 `createOrbisClient` 用法见 [SDK 与单骨架说明](docs/SDK.md)（同时保留 `createPiBotRuntime` / `createPiBotClient` 与 `PI_BOT_*` 环境变量兼容）。
+
 ## 目录
 
 ```
 server/
   src/
     index.js          启动 + 终端打印地址与配对码
-    pi-runner.js      ★ 核心：会话管理、单轮运行、部门轮次引擎（并发/打断/心跳）
+    pi-runner.js      ★ 核心外观：会话池/模型与熔断/生命周期管理（向 runner/* 委派）
+    runner/           运行时模块化子层
+      turn-executor.js       单轮会话执行主干（流式事件/恢复/产物）
+      group-orchestrator.js  部门轮次引擎（并发派发/打断/收尾/游标）
+      duplex-lane.js         全双工旁路 Talk 与发信分流
+      task-bridge.js         请求信封/受管报告门控/看门狗升级
+      memory-compactor.js    主动压缩阈值校准与记忆摘要
+      runner-utils.js        无状态基础常量与助手
     tools.js          工具集（通用 + 总经理专属）
     store.js          状态与持久化（bot/部门/消息/游标/轮次预算）
     mentions.js       ★ @提及解析（调度信号）
@@ -288,7 +313,7 @@ flutter analyze
 （`/api/files/:id?token=…`）为了给 `<img>` 直接用，token 在 query 里 —— 局域网自用可以接受，
 但如果你把服务端暴露到公网，请换成反向代理注入鉴权，别让 token 进访问日志。
 
-见 `server/.env.example`。常用：
+见 `server/.env.example`。核心服务端变量均已支持 **`ORBIS_*`（优先）并向后兼容 `PI_BOT_*`**。常用：
 
 | 变量 | 默认 | 说明 |
 |---|---|---|

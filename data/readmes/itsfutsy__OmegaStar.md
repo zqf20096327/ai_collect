@@ -220,3 +220,5 @@ Copyright (C) 2026 Abram Industries Pty Ltd
 
 OmegaStar is licensed under the [GNU Affero General Public License v3.0](LICENSE). Commercial licences
 without the AGPL's terms are available from Abram Industries ([abramindustries.com](https://abramindustries.com)).
+
+[![As seen on Open Source Alternatives](https://www.opensourcealternatives.to/badge-osa.svg)](https://www.opensourcealternatives.to)

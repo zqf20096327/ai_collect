@@ -1,720 +1,383 @@
+<p align="center">
+  <img src="docs/assets/banner.svg" alt="LeakLens: a lens inspecting a data, split and code pipeline and flagging a leak" width="100%">
+</p>
+
 # LeakLens
 
 [العربية](docs/README.ar.md) | [日本語](docs/README.ja.md)
 
 [![CI](https://github.com/eyadstein/leaklens/actions/workflows/ci.yml/badge.svg)](https://github.com/eyadstein/leaklens/actions/workflows/ci.yml)
-[![Leakage trust](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/eyadstein/leaklens/main/badge.json)](#trust-score-badge)
+[![Leakage trust](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/eyadstein/leaklens/main/badge.json)](#findings-and-evidence)
 [![PyPI](https://img.shields.io/pypi/v/leaklens-ml)](https://pypi.org/project/leaklens-ml/) [![Python](https://img.shields.io/pypi/pyversions/leaklens-ml)](https://pypi.org/project/leaklens-ml/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Catch data leakage before it fools you.** Most "99% accuracy" models are leaking. LeakLens audits both your **data** and your **code**, then proves what survives by training three model families on a leak-free pipeline.
+**Find data leakage before it inflates your metrics.** LeakLens audits the three places leakage hides — datasets, train/test splits and the code that builds the model — with optional engines for SQL, images, text, deep learning and pipeline metadata. It then reports what is left after the leak is removed. Detection is deterministic, local and CPU-first: the scanner parses code without executing it, and no dataset row leaves your machine.
 
-**[Website and interactive demo](https://eyadstein.github.io/leaklens/)** · **[Documentation](https://eyadstein.github.io/leaklens/docs.html)**
+[Documentation](https://eyadstein.github.io/leaklens/docs.html) · [Website and demo](https://eyadstein.github.io/leaklens/) · [Changelog](CHANGELOG.md) · [Issues](https://github.com/eyadstein/leaklens/issues)
 
-## What it catches
+## Contents
 
-| Where | Leak |
-|---|---|
-| Data | Target leakage (a single feature that almost perfectly predicts the label), high-cardinality categorical target leakage, ID-like columns, train/test row overlap, feature-vector overlap with conflicting labels, case/whitespace near-duplicates, temporal leakage, entity/group overlap (`--group COL`), target-, split- and group-associated missingness (`missingness_*`, `--test`/`--group`), near-duplicate images across split folders (`leaklens images`), declared train/val/test split overlap in COCO, YOLO and VOC image datasets (`leaklens splits`) |
-| Code (`.py`, `.ipynb`) | Scaler/encoder/imputer fitted before the split, SMOTE before the split, target/frequency encoding built from all rows, feature selection (SelectKBest, RFE, SelectFromModel) before the split, transformers fitted on test/validation data or on the full dataset after the split, chained calls like `StandardScaler().fit_transform(X)`, preprocessing or resampling done before `cross_val_score` / `GridSearchCV` (`preprocess_outside_cv`), hyperparameter tuning on the test set (`tuning_on_test_data`), tuning before the split or on the full frame (`tuning_before_split`, `tuning_on_full_data`), cross-validation on test rows (`cv_on_test_data`), repeated test-set scoring, group CV without `groups=`, shuffled splits of time-sorted data, and notebooks run out of order |
+- [Why leakage matters](#why-leakage-matters)
+- [Quick start](#quick-start)
+- [See it catch a leak](#see-it-catch-a-leak)
+- [What it detects](#what-it-detects)
+- [Architecture](#architecture)
+- [Audit lifecycle](#audit-lifecycle)
+- [Findings and evidence](#findings-and-evidence)
+- [Installation](#installation)
+- [Command line](#command-line)
+- [GitHub Action](#github-action)
+- [Python API](#python-api)
+- [Configuration and policy](#configuration-and-policy)
+- [Built-in vs optional](#built-in-vs-optional)
+- [Reports and outputs](#reports-and-outputs)
+- [Benchmarks](#benchmarks)
+- [Limitations](#limitations)
+- [Security and privacy](#security-and-privacy)
+- [Contributing](#contributing)
+- [Documentation and roadmap](#documentation-and-roadmap)
+- [License](#license)
 
-Confidence is explicit in each finding's wording: a confirmed rule (for example a search fitted on `X_test`) is reported as a high-severity leak, while a suspicious but legitimate-possible pattern (for example frequency encoding before the split) is low/medium and says what was observed. Every finding has a fix hint under `--explain`.
+## Why leakage matters
 
+Leakage is information available during training that will not exist at prediction time. It makes cross-validation look excellent and production look broken. The usual shapes are familiar:
 
-Every audit returns a 0-100 trust score. The CLI exits with code 1 on a high-severity leak, so it gates CI.
+- the label, or a value derived from it, is present as a feature;
+- a scaler, encoder, imputer, resampler or feature selector is fitted before the split;
+- the same rows, entities or time periods appear in both train and test.
 
-## Demo
-
-```
-$ leaklens demo.csv --target is_fraud --arena
-LeakLens trust score: 50/100
-[HIGH] target_leakage :: chargeback_flag :: alone predicts target (roc_auc=1.000)
-[MEDIUM] id_like :: txn_id :: 100.0% unique values; likely an identifier
-
-Arena ranked by pr_auc (auto-dropped: chargeback_flag, txn_id)
-model roc_auc pr_auc best_f1
-neural_net 0.8374 0.4219 0.4353
-linear 0.8410 0.4215 0.4304
-tree_ensemble 0.8242 0.3562 0.4103
-```
-
-A leaked column makes accuracy look perfect. LeakLens drops it and shows the honest numbers.
-
-The [website](https://eyadstein.github.io/leaklens/) is a static GitHub Pages build served from `docs/`, with no bundler and no external dependencies. Its [demo](https://eyadstein.github.io/leaklens/demo.html) replays real scanner output for the checked-in examples, and is explicitly labelled **prerecorded**: GitHub Pages cannot run Python. The [live scan page](https://eyadstein.github.io/leaklens/live.html) connects to a real, separately deployed `leaklens.public_api` backend and has no simulated fallback: without a configured backend it says **No backend connected** and links to the prerecorded demo. No public backend is deployed by this repository; see [docs/LIVE_SCANNING.md](docs/LIVE_SCANNING.md) for the free Render deployment, limits, cold starts and the security model.
-
-Regenerate the fixtures and validate every link, asset and accessibility landmark with:
-
-```sh
-python scripts/build_site.py
-node --test tests/site/demo-engine.test.mjs tests/site/live-engine.test.mjs
-node scripts/check_site_layout.mjs   # local headless Chrome/Edge check
-```
-
-## Python version
-
-- **Required:** Python >=3.10 (`requires-python` in `pyproject.toml`)
-- **CI-tested:** 3.10, 3.11, 3.12, 3.14 (`.github/workflows/ci.yml` matrix) — **locally verified** on 3.10, 3.11, 3.12, and 3.14 (full test suite; see [docs/REALWORLD.md](docs/REALWORLD.md) for the real-world eval and [CONTRIBUTING.md](CONTRIBUTING.md) for local checks)
-- 3.13 was **not** in the CI matrix at the time of this release and is **not** claimed as verified
-
-> The `leaklens` command is provided by the PyPI package `leaklens-ml`.
-
-## Install
-
-Base package (no optional dependencies) — works on Windows, Linux and macOS:
-
-```sh
-python -m pip install --upgrade leaklens-ml
-leaklens --version
-leaklens doctor
-```
-
-On Windows, use `py -3 -m pip ...` if `python` is not on your PATH. On Linux and macOS, the same commands work with `python3`/`pip3` if your distribution does not alias `python`. If pip reports `externally-managed-environment` (PEP 668, common with Homebrew or distro Python), create a virtual environment first: `python3 -m venv .venv`, then `. .venv/bin/activate` (Windows: `.venv\Scripts\Activate.ps1`).
-
-Windows quick-start (PowerShell, creates `.venv`, installs, verifies, prints usage — no admin needed):
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\install.ps1
-# Optional extras:
-powershell -ExecutionPolicy Bypass -File scripts\install.ps1 -Extras "arena,parquet"
-```
-
-Linux/macOS development checkout:
-
-```sh
-git clone https://github.com/eyadstein/leaklens.git
-cd leaklens
-python -m venv .venv
-. .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
-pip install -e ".[dev,app]"
-```
-
-Verify outside the repo (clean environment):
-
-```sh
-leaklens doctor
-leaklens --version
-```
-
-CSV and JSON input, dataset audit, code scanning, `splits`, and `--explain` / `--intelligence` / `--ai` / `--sarif` / `--html` / `--badge` / `--manifest` / `verify` / `doctor` work with the base install.
-
-### `leaklens doctor`
-
-`leaklens doctor` checks the install without network access and without reading secrets: Python is >=3.10, the LeakLens version and install location, the `leaklens` entry point, core dependencies (pandas, numpy, scikit-learn), which optional extras are importable, and whether `.leaklens.toml` (validated against the configuration schema) or `pyproject.toml` (whichever it finds first) is valid TOML. Pass `leaklens doctor --config PATH` to validate a specific configuration file.
-
-```sh
-leaklens doctor             # human-readable report; exit 1 on a failed check
-leaklens doctor --json      # the same report as JSON
-leaklens doctor --help      # usage
-```
-
-Optional extras that are missing are listed but do not fail the check; a missing core dependency, Python <3.10, or invalid config returns exit code 1.
-
-### Optional extras
-
-Every optional extra declared in `pyproject.toml`:
-
-| Extra | Purpose | Install command |
-|---|---|---|
-| `arena` | Model arena with MLflow tracking (`--arena`) | `pip install "leaklens-ml[arena]"` |
-| `parquet` | Read `.parquet` with `pyarrow` | `pip install "leaklens-ml[parquet]"` |
-| `feather` | Read `.feather` with `pyarrow` | `pip install "leaklens-ml[feather]"` |
-| `excel` | Read `.xlsx` with `openpyxl` | `pip install "leaklens-ml[excel]"` |
-| `images` | Near-duplicate image check (`leaklens images`) with Pillow | `pip install "leaklens-ml[images]"` |
-| `app` | FastAPI service + Streamlit UI | `pip install "leaklens-ml[app]"` |
-| `api` | Hardened public live-scan API (FastAPI + uvicorn, no Streamlit) | `pip install "leaklens-ml[api]"` |
-| `sql` | Optional SQL lineage analysis (`--sql`) with SQLGlot | `pip install "leaklens-ml[sql]"` |
-| `yaml` | YAML pipeline and training configs (DVC, Lightning/Keras shapes) | `pip install "leaklens-ml[yaml]"` |
-| `taintwatch` | Optional TaintWatch guard for `--llm` | `pip install "leaklens-ml[taintwatch]"` |
-| `dev` | Test, lint (ruff), bandit, pip-audit, pip-licenses and the other developer tools | `pip install "leaklens-ml[dev]"` |
-
-Development checkout:
-
-```sh
-git clone https://github.com/eyadstein/leaklens.git
-cd leaklens
-python -m venv .venv
-. .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
-pip install -e ".[dev,app]"
-```
+A leak does not announce itself. It looks like a strong score, a clean notebook and a model that quietly fails after deployment. LeakLens reports the observation and the evidence behind it, with a severity and a stable identity, so a team can review the finding instead of trusting an aggregate number.
 
 ## Quick start
 
+Install the CLI (Python 3.10 or newer, no optional extras required), then scan a codebase or notebook folder:
+
 ```sh
-leaklens train.csv --target label --test test.csv --time date
-leaklens --scan notebooks/ --explain   # prints a suggested fix under each finding
-leaklens --scan . --sarif leaklens.sarif   # for GitHub code scanning
-leaklens train.csv --target label --test test.csv --group patient_id
-leaklens train.parquet --target label --fail-under 80   # Parquet input (pip install "leaklens-ml[parquet]"); CI gate on trust score
-leaklens train.json --target label   # JSON input, no extra needed
-leaklens train.xlsx --target label   # Excel input (pip install "leaklens-ml[excel]")
-leaklens train.feather --target label   # Feather input (pip install "leaklens-ml[feather]")
-leaklens images data/train data/test   # near-duplicate images across splits (pip install "leaklens-ml[images]")
-leaklens splits data/coco              # declared COCO/YOLO/VOC split disjointness (base install)
-leaklens train.csv --target label --test test.csv --drift   # opt-in, diagnostic-only drift
-leaklens --scan query.sql --target label --sql-dialect postgres   # needs [sql]
-leaklens dl .   # deep-learning code, configs and model artifacts (offline)
-python examples/make_demo.py
-leaklens demo.csv --target is_fraud --arena
-mlflow ui --backend-store-uri sqlite:///mlflow.db
+python -m pip install --upgrade leaklens-ml
+leaklens --scan .
 ```
 
-New to data leakage? Start with the [walkthrough notebook](examples/leak_walkthrough.ipynb): three planted leaks, an inflated score, and how LeakLens finds and fixes them.
-
-## Supported CLI commands
-
-### `leaklens` (dataset audit)
-
-Audit a dataset (and optionally a held-out test split) for leakage.
+Audit a dataset, optionally against a held-out split and a time column:
 
 ```sh
-leaklens train.csv --target label            # single-file audit
-leaklens train.csv --test test.csv --target label
+leaklens train.csv --target label
 leaklens train.csv --test test.csv --target label --time date
-leaklens train.csv --target label --test test.csv --group patient_id
-leaklens train.csv --target label --json     # JSON output
-leaklens train.csv --target label --threshold 0.95
-leaklens train.csv --target label --fail-under 80   # exit 1 if trust score < 80
-leaklens train.csv --target label --arena    # needs [arena]
-leaklens train.csv --target label --html report.html
-leaklens train.csv --target label --intelligence   # deterministic confidence + evidence clusters
-leaklens train.csv --target label --intelligence --graph-out evidence.mmd
-leaklens --scan src/ --graph-out evidence.json      # graph export implies intelligence
-leaklens --scan src/ --graph-snapshot graph-baseline.json   # save a comparable snapshot
-leaklens --scan src/ --graph-baseline graph-baseline.json   # new/unchanged/changed/resolved
-leaklens train.csv --target label --ai             # experimental, offline AI hypotheses
 ```
 
-| Flag | Meaning |
-|---|---|
-| `train` | Path to the training dataset (positional) |
-| `--target` | Label column in the training data |
-| `--test` | Held-out split to compare against |
-| `--time` | Timestamp column for the temporal check |
-| `--group` | Entity column (patient, customer...) for group leakage |
-| `--threshold` | Single-feature score that counts as leakage (default 0.95) |
-| `--arena` | Compare 3 model families, tracked in MLflow (needs `arena` extra) |
-| `--out` | Output dir for the arena winner (default `models`) |
-| `--tracking-uri` | MLflow tracking URI (default `sqlite:///mlflow.db`) |
-| `--json` | Emit JSON |
-| `--explain` | Print a suggested fix under each finding |
-| `--intelligence` | Deterministic confidence, evidence clusters, root-cause and remediation analysis |
-| `--graph-out` | Write the evidence graph to a file (implies `--intelligence`); Mermaid, DOT or JSON by extension |
-| `--graph-format` | Override the graph format inferred from `--graph-out` (`mermaid`, `dot`, `json`) |
-| `--graph-snapshot` | Write a validated evidence-graph snapshot for future comparisons (implies `--intelligence`) |
-| `--graph-baseline` | Compare the current graph with a saved snapshot and report new/changed/resolved evidence |
-| `--update-graph-snapshot` | Explicitly replace an existing `--graph-snapshot` file |
-| `--fail-on-graph-new` | Opt in to exit 1 when the graph comparison finds new evidence |
-| `--llm` / `--llm-provider` | Optional LLM explanations (see next section) |
-| `--ai` | Add experimental, evidence-bound AI hypotheses (offline, opt-in) |
-| `--ai-llm` | Rephrase the AI plan with the configured LLM; deterministic fallback |
-| `--drift` | Opt-in train/test distribution-drift diagnostics (needs `--test`; diagnostic-only) |
-| `--monitoring-report` | Read a caller-supplied drift/skew JSON report (repeatable; diagnostic-only) |
-| `--sarif` | Write SARIF 2.1.0 for GitHub code scanning |
-| `--html` | Write a shareable single-file HTML report |
-| `--badge` | Write a shields.io endpoint JSON with the trust score |
-| `--manifest` | Write an unsigned, offline-verifiable audit manifest (`leaklens verify`) |
-| `--fail-under` | Exit with code 1 if trust score is below N |
-| `--version` | Print version and exit |
+A clean run prints `LeakLens trust score: 100/100` and exits `0`. A high-severity finding, a score below `--fail-under`, or a new finding under the opt-in `--fail-on-new` exits `1`; invalid arguments or configuration exit `2`. A `--scan` path that does not exist is invalid input, so it exits `2` instead of reporting a clean scan. That single contract makes the same command usable locally and in CI.
 
-Unknown or extensionless input falls back to CSV. Optional formats (Parquet/Feather/Excel) raise an `ImportError` naming the extra that provides them.
+## See it catch a leak
 
-With `--test`, LeakLens runs three bounded duplicate checks in order and reports at most one: exact row overlap (all shared columns, including the label), identical feature vectors with a different label (label excluded), then normalised near-duplicates (text lower-cased/stripped, numbers rounded to 4 decimals). The checks sample at most 50,000 rows for feature overlap and 20,000 for near-duplicates, so large files stay fast. They are heuristics: they report the observed counts and whether labels conflict, and in low-cardinality tabular data an identical feature vector can occur naturally, so treat a medium finding as a prompt to inspect rather than proof of leakage.
-
-JSON findings also carry an additive `evidence` list (bounded, privacy-safe provenance for the highest-value detectors) and a stable `fingerprint`. SARIF writes the same evidence under `properties.leaklens.evidence` and the fingerprint under `partialFingerprints["leaklensFinding/v1"]`, so tracked findings keep their identity when only line numbers or messages change. Moving a file, changing the detector kind, changing the affected feature or changing a detector-supplied stable key changes the fingerprint. See [`docs/DETECTORS.md`](docs/DETECTORS.md) for the full detector contract. Existing fields, severities and the trust score are unchanged.
-
-Every `--json` report carries `$schema`, and `leaklens schema` prints the JSON Schema (2020-12) that describes it, so a report can be validated before it is read and a stored report says which contract it was written against. Top-level sections stay additive; a finding's own keys are closed. See [`docs/REPORT_SCHEMA.md`](docs/REPORT_SCHEMA.md).
-
-`--intelligence` additionally builds a deterministic evidence graph: existing findings are grouped by an inspectable anchor (feature, split or file), detector evidence is preserved and linked, and each cluster gets its own corroboration-aware confidence plus any measured impact from `--test`. The graph adds no findings and never changes the trust score or exit code. `--graph-out evidence.mmd|.dot|.json` exports the same graph for review; see [`docs/INTELLIGENCE.md`](docs/INTELLIGENCE.md) for traversal APIs, export formats, and the API opt-in (`intelligence=true` / `include_intelligence=true`).
-
-`--graph-snapshot baseline.json` saves a versioned snapshot of the current graph, and `--graph-baseline baseline.json` compares a later scan against it. Evidence is matched by stable fingerprint, so reordering or rebuilt ids do not create false changes. The comparison reports `new`, `unchanged`, `changed`, `resolved` and `uncertain`; missing evidence is only `resolved` when both scans are complete and use the same analysis context. Snapshots are validated and written atomically, and are never overwritten without `--update-graph-snapshot`. Graph comparison is opt-in, does not change findings/scores/exit codes, and `--fail-on-graph-new` is the only new (opt-in) gate. JSON gains `graph_baseline`; SARIF gains compact per-result and run-level graph metadata; HTML gains a comparison section. A comparison describes evidence movement, not proof of leakage or remediation.
-
-### `leaklens --scan PATH...`
-
-Statically scan `.py` / `.ipynb` files or folders for pipeline leaks (fit before split, fit on test data, tuning on test data, target/frequency encoding before the split, feature selection, group CV without `groups=`, shuffled time-series splits, and out-of-order notebook execution). Scanned code is **never executed**.
+The repository generates `demo.csv`, a synthetic fraud dataset with one planted leak:
 
 ```sh
+git clone https://github.com/eyadstein/leaklens.git
+cd leaklens
+python -m pip install leaklens-ml
+python examples/make_demo.py
+leaklens demo.csv --target is_fraud
+```
+
+```text
+LeakLens trust score: 50/100
+[HIGH] target_leakage :: chargeback_flag :: alone predicts target (roc_auc=1.000)
+[MEDIUM] id_like :: txn_id :: 100.0% unique values; one value per row
+1 high, 1 medium
+```
+
+`chargeback_flag` is the label copied into a feature, so accuracy looks perfect until the column is removed. `demo.csv` is generated and not committed; the [walkthrough notebook](examples/leak_walkthrough.ipynb) plants three leaks and fixes them step by step, and [examples/advanced_leaks.py](examples/advanced_leaks.py) covers tuning, target encoding, feature selection, grouped CV and temporal ordering.
+
+## What it detects
+
+| Surface | Checks |
+|---|---|
+| Datasets (CSV, JSON) | single-feature target leakage, high-cardinality categorical target leakage, identifier-like columns, group/entity risk (`--group`) |
+| Splits (`--test`) | exact row overlap, identical feature vectors with conflicting labels, case/whitespace near-duplicates, temporal overlap, entity overlap |
+| Missingness | missing values associated with the target, the split or the group, when the association is strong enough to carry information ([details](docs/MISSINGNESS.md)) |
+| Code (`.py`, `.ipynb`) | preprocessing, SMOTE, target/frequency encoding and feature selection before the split; fit on test data; tuning on test data or before the split; CV on test rows or without `groups=`; shuffled time-series splits; out-of-order notebook cells; future-looking target shifts and rolling windows |
+| Images (optional) | near-duplicate images across train/test folders, exact and perceptual clusters |
+| Declared image splits | COCO, YOLO and VOC split declarations compared for overlap (`leaklens splits`) |
+| SQL (optional) | target used as a feature through confirmed lineage, future window frames, queries with no split predicate |
+| Text (optional) | train/eval duplicates, evaluation contamination, RAG index wiring, caller-supplied embedding similarity |
+| Deep learning (optional) | split overlap, training-protocol mismatches, unsafe checkpoint formats, missing seeds |
+| Pipeline metadata (optional) | DVC and serialized pipeline lineage, parameter drift, missing digests, unpinned dependencies |
+
+Findings state what was observed, not what must be true: a confirmed rule (a search fitted on `X_test`) is high severity, while a suspicious but legitimate-possible pattern (frequency encoding before the split) is low or medium and says why it was flagged. Every kind, its severity and its scored status are listed in [docs/DETECTORS.md](docs/DETECTORS.md).
+
+## Architecture
+
+LeakLens is a set of surface-scoped engines around one finding model. Intake normalizes an input, one engine audits that surface, and the resulting finding carries its own evidence and identity. Reports, policy and entry points consume the same assembled result. Nothing in the base install contacts a network or executes scanned code.
+
+```mermaid
+flowchart TB
+  subgraph Inputs
+    D["Datasets<br/>CSV, JSON, Parquet, Feather, Excel"]
+    C["Code<br/>.py and .ipynb"]
+    Q["SQL files"]
+    M["Image folders and split manifests"]
+    X["Text corpora"]
+    P["Pipeline metadata<br/>DVC, DAGs, dependency files"]
+  end
+
+  subgraph Intake
+    R["readers.py<br/>format dispatch"]
+    A["source.py<br/>AST parsing"]
+    G["paths.py + availability.py<br/>containment and extra checks"]
+  end
+
+  subgraph Engines
+    L["leakage.py + missingness.py"]
+    S["scanner.py + cvcheck.py + flow.py"]
+    SQL["sqlscan.py"]
+    IMG["images.py + image_splits.py"]
+    TXT["analysis/text"]
+    DL["analysis/dl + analysis/artifacts"]
+    PIPE["pipeline.py + drift.py"]
+  end
+
+  subgraph Core
+    F["Finding<br/>severity, kind, evidence"]
+    H["fingerprint.py"]
+    POL["policy.py + assemble.py<br/>baselines and suppressions"]
+  end
+
+  subgraph Interfaces
+    CLI["CLI and GitHub Action"]
+    API["FastAPI and workspace"]
+    REP["JSON, SARIF, HTML, badge, manifest"]
+  end
+
+  D --> R
+  C --> A
+  Q --> SQL
+  M --> IMG
+  X --> TXT
+  P --> PIPE
+  R --> L
+  A --> S
+  G -.-> R
+  G -.-> A
+  L --> F
+  S --> F
+  SQL --> F
+  IMG --> F
+  TXT --> F
+  DL --> F
+  PIPE --> F
+  F --> H
+  H --> POL
+  POL --> CLI
+  POL --> API
+  POL --> REP
+  POL -. opt-in .-> I["intelligence/"]
+  I -. adds no findings .-> REP
+```
+
+**How to read it.** Intake is deliberately thin: `readers.py` maps a suffix to a pandas reader, `source.py` parses Python and notebook source with `ast`, `paths.py` refuses unsafe paths, and `availability.py` turns a missing optional dependency into a clear error instead of an import at startup. Each engine emits `Finding` objects only for its own surface. The core adds evidence, a fingerprint and policy; `assemble.py` builds the payload every interface serializes. `intelligence/` is opt-in analysis on top of existing findings — it never invents a detector result.
+
+## Audit lifecycle
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant U as User or CI
+  participant CLI as leaklens CLI
+  participant IO as Readers and parsers
+  participant EN as Engines
+  participant PL as Policy
+  participant OUT as Reports
+  U->>CLI: leaklens train.csv --target label --test test.csv
+  CLI->>IO: load and validate the input
+  IO-->>CLI: tables, AST or parsed metadata
+  CLI->>EN: run surface-scoped checks
+  EN-->>CLI: findings, evidence and skips
+  CLI->>PL: apply baseline and suppressions
+  PL-->>CLI: active findings and trust score
+  CLI->>OUT: write JSON, SARIF, HTML or manifest
+  CLI-->>U: exit 0, 1 or 2
+```
+
+The lifecycle is intentionally boring: nothing is trained, no notebook is run and no database is opened. Optional engines are inserted at the same engine step, and diagnostic engines are marked so policy and the exit gate ignore them unless you explicitly opt in with `--fail-on-findings` (text and deep learning) or `--fail-on-graph-new` (graph comparison).
+
+## Findings and evidence
+
+LeakLens starts at 100 and deducts points for each active finding, floored at 0:
+
+| Severity | Penalty |
+|---|---:|
+| high | 35 |
+| medium | 15 |
+| low | 5 |
+
+```mermaid
+flowchart LR
+  D["Detector observation"] --> F["Finding<br/>severity, kind, column, detail"]
+  F --> E["Evidence<br/>source, location, observed, expected"]
+  F --> P["Fingerprint<br/>stable identity"]
+  P --> B["Baseline or suppression"]
+  F --> I["Confidence, impact and clusters<br/>--intelligence"]
+  F --> G["Evidence graph<br/>snapshots and comparisons"]
+```
+
+Evidence is bounded provenance, not a data dump: entries record a source, a location, what was observed and what was expected, when the detector can supply them. The fingerprint survives line moves and message edits, so baselines and suppressions keep their identity; changing the detector, the affected feature or a detector-supplied stable key changes it. A suppression accepts exactly one fingerprint, requires a reason, and labels a finding without changing its severity or evidence. Suppressed findings stop counting toward the score and the default gate. Baselines label later runs `new`, `unchanged`, `changed` or `resolved` and are never overwritten implicitly.
+
+JSON reports carry `$schema`; `leaklens schema` prints the contract. Details: [docs/REPORT_SCHEMA.md](docs/REPORT_SCHEMA.md), [docs/BASELINES.md](docs/BASELINES.md) and [docs/DETECTORS.md](docs/DETECTORS.md).
+
+## Installation
+
+The PyPI package is `leaklens-ml`; the installed command is `leaklens`. The floor is Python 3.10 (`requires-python`), and CI runs 3.10, 3.11, 3.12 and 3.14 on Linux. Python 3.13 is outside the matrix and is not claimed as verified. The package is pure Python and installs on Windows, Linux and macOS. On Windows use `py -3 -m pip ...` if `python` is not on PATH; if pip reports `externally-managed-environment`, create a virtual environment first.
+
+Optional extras:
+
+| Extra | Adds |
+|---|---|
+| `arena` | model arena: drops flagged columns, trains three model families in leak-safe pipelines, tracked in MLflow (`--arena`) |
+| `parquet`, `feather` | `.parquet` and `.feather` input through `pyarrow` |
+| `excel` | `.xlsx` input through `openpyxl` |
+| `images` | near-duplicate image check (`leaklens images`) through Pillow |
+| `app` | FastAPI service and Streamlit UI |
+| `api` | hardened public live-scan API (no Streamlit) |
+| `sql` | SQL lineage analysis through SQLGlot |
+| `yaml` | YAML pipeline and training configs |
+| `taintwatch` | optional information-flow guard for `--llm` |
+
+```sh
+python -m pip install "leaklens-ml[parquet,images]"
+```
+
+`leaklens doctor` checks the interpreter, install location, entry point, core dependencies, extras and configuration validity without network access; pass `--json` for machine-readable output. An unsupported dataset suffix falls back to CSV. An optional format or engine that is not installed raises an `ImportError` naming the extra that provides it.
+
+## Command line
+
+| Command | Purpose |
+|---|---|
+| `leaklens FILE --target COL` | audit a dataset (CSV/JSON built in) |
+| `leaklens --scan PATH...` | statically scan `.py`/`.ipynb` files or folders |
+| `leaklens splits DATASET` | audit declared COCO, YOLO or VOC split files |
+| `leaklens images TRAIN TEST` | find near-duplicate images across splits |
+| `leaklens text TRAIN TEST` | compare text corpora for contamination |
+| `leaklens dl DIR` | audit deep-learning code, configs and artifacts |
+| `leaklens workspace [DIR]` | serve the local interactive workspace |
+| `leaklens verify MANIFEST` | verify an audit manifest offline |
+| `leaklens init` | write a starter `.leaklens.toml` and print the pre-commit snippet |
+| `leaklens doctor`, `leaklens schema` | check the install, print the report JSON Schema |
+
+```sh
+leaklens train.csv --target label --test test.csv --json
 leaklens --scan notebooks/ --explain
-leaklens --scan leaklens
-leaklens --scan . --sarif leaklens.sarif || true
-leaklens --scan src tests --llm
-leaklens --scan notebooks/ --ai          # experimental AI hypotheses (offline)
-leaklens --scan warehouse/sql --sql --target label --sql-dialect bigquery   # needs [sql]
+leaklens --scan . --sarif leaklens.sarif
+leaklens --scan . --intelligence --graph-out evidence.mmd
 ```
 
-SQL: an explicit `.sql` file is analyzed when named on the command line; folders include `.sql` only with `--sql`. Dialects are explicit (`ansi`, `postgres`, `bigquery`, `snowflake`) and there is no silent fallback. See [SQL lineage analysis](#sql-lineage-analysis-optional).
+`leaklens --help` lists every flag and default; [docs/CONFIGURATION.md](docs/CONFIGURATION.md) lists the same options as configuration keys.
 
-A deliberately leaky demo covering tuning, target encoding, feature selection, group CV, and time ordering is in [`examples/advanced_leaks.py`](examples/advanced_leaks.py); run `leaklens --scan examples/advanced_leaks.py --explain` to see each finding and its fix.
+## GitHub Action
 
-Exit code is 1 when a high-severity finding is present, so it gates CI.
+The Action installs the CLI and runs `leaklens --scan` on a file or folder. It does not run a dataset audit; use a `run:` step for that.
 
-### `leaklens images TRAIN_DIR TEST_DIR`
+| Input | Required | Default | Purpose |
+|---|---|---|---|
+| `path` | optional | `.` | file or folder to scan |
+| `fail-under` | optional | unset | minimum trust score (0-100); when set, the step also fails on a score below it |
 
-Find near-duplicate images across train/test folders (64-bit dHash, `--max-distance` default 6). Needs the `images` extra. Decoding is bounded per file and per audit; refused files are reported by reason, separately from `unreadable` (see [IMAGE_DECODE_BUDGETS.md](docs/IMAGE_DECODE_BUDGETS.md)). A refused image is not compared, so an all-refused run can still score 100/100.
-
-Every run also groups images: byte-identical files form exact groups (SHA-256 of the file bytes, so a re-encode is never "exact"), and perceptual near-duplicates form connected-component clusters. The two identities are reported separately and never merged: exact groups use SHA-256 only, perceptual clusters use the 64-bit dHash at the `--max-distance` threshold. Clusters are not cliques — a member is not necessarily within the threshold of every other member — and a cluster is evidence for review, not proof of leakage. The supported transformation envelope, the known blind spots (colour-only differences, crops beyond 5%, letterboxing) and the calibration are in [VISION_AUDIT.md](docs/VISION_AUDIT.md) and [VISION_BENCHMARK.md](docs/VISION_BENCHMARK.md). The calibration is synthetic and does not claim validation on real-world photos or colour-aware hashing.
-
-```sh
-leaklens images data/train data/test
-leaklens images data/train data/test --max-distance 10 --samples 5 --json
+```yaml
+name: leakage
+on: [push, pull_request]
+jobs:
+  leaklens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: eyadstein/leaklens@v0.13.0
+        with:
+          path: .
 ```
 
-### `leaklens splits DATASET`
+The step fails when the scan exits `1`: a high-severity finding, or a trust score below `fail-under` when that input is set. Diagnostic findings never fail the step. Release `v0.13.0` predates the `fail-under` input, so a workflow that sets it must use a ref that contains it:
 
-Check that a dataset's **declared** image partitions are disjoint. This command reads the split declarations a COCO, YOLO or VOC dataset already ships, resolves each declared image safely inside the dataset root, and compares the files by SHA-256. It is read-only, decodes no image and needs no optional extra.
-
-| Format | Declaration read |
-|---|---|
-| COCO | `annotations/*.json` with an `images` list; the partition comes from the first `train`/`val`/`validation`/`test` token in the annotation file name |
-| YOLO | `train`/`val`/`test` keys in `data.yaml` or `dataset.yaml` (a directory, a file, a list, or a `.txt` list) |
-| VOC | `ImageSets/Main/{train,val,test}.txt`; `trainval.txt` is a union, not a partition |
-
-```sh
-leaklens splits data/coco                 # auto-detect the layout
-leaklens splits data/yolo --format yolo
-leaklens splits data/voc --format voc --json
+```yaml
+      - uses: eyadstein/leaklens@main
+        with:
+          path: .
+          fail-under: 80
 ```
 
-The audit distinguishes five outcomes: a **cross-split exact duplicate** (one digest in two partitions, `high` `image_split_overlap` finding), a **within-split duplicate** (reported as a group, no finding), a **conflicting declaration** (one path declared in two partitions, `high` finding), an **unresolved membership** (missing, outside the root, ambiguous or unsupported, counted by reason) and a **parse limitation** (reported, never guessed). Path traversal, foreign drives, UNC anchors and symlinks that escape the root are refused before a file is opened; manifests and lists are size-capped, YAML is parsed with `safe_load`, and remote declarations are reported but never fetched. Exit codes are `0` (clean), `1` (at least one finding) and `2` (no audit could run).
+Pin a tag or a full commit SHA for reproducible CI. `@main` tracks the default branch and therefore unreleased changes.
 
-Exact identity here is SHA-256 over file bytes, not perceptual similarity: a PNG and a JPEG of the same picture are not an exact duplicate, and the command makes no claim that different digests are different photographs. A cross-split duplicate or a reused path is an **integrity concern** worth investigating — for example a leaky split, a copied file or a mislabelled manifest — not automatic proof that a model leaked. The full contract, bounds and known limitations are in [VISION_AUDIT.md](docs/VISION_AUDIT.md#declared-split-disjointness-m3).
+## Python API
 
-### `leaklens verify MANIFEST`
+The library exposes the same engines the CLI uses:
 
-`--manifest audit.json` writes a deterministic, **unsigned** digest manifest of
-an audit: declared input digests, result-affecting options, the detector
-catalogue, findings, policy outcome, trust score and gate decision.
-`leaklens verify audit.json` recomputes it offline with the standard library and
-reports a changed score, changed evidence, changed detector version, or a
-missing/modified input. It proves content integrity, not who wrote the manifest.
-See [`docs/AUDIT_MANIFEST.md`](docs/AUDIT_MANIFEST.md).
+```python
+import pandas as pd
 
-```sh
-leaklens data.csv --target is_fraud --manifest audit.json
-leaklens verify audit.json
+from leaklens.audit import audit
+from leaklens.leakage import scan, score
+from leaklens.scanner import scan_path
+
+findings = scan(pd.read_csv("train.csv"), target="label")
+print(score(findings), [(f.severity, f.kind, f.column) for f in findings])
+
+for finding in scan_path("src"):
+    print(finding.kind, finding.column, finding.detail)
+
+print(audit(pd.read_csv("train.csv"), "label")["cardinality"])
 ```
 
-### `leaklens init`
+`leaklens.audit.audit(df, target)` returns a dataset profile: rows, columns, duplicate rows, cardinality, null rates and the target distribution. The JSON report schema, not Python signatures, is the stable contract for downstream integrations.
 
-Write a commented starter `.leaklens.toml`:
+## Configuration and policy
 
-```sh
-leaklens init
-leaklens init mydir --force   # overwrite an existing .leaklens.toml
-```
-
-It prints the pre-commit hook snippet (below).
-
-### `leaklens workspace [DIR]`
-
-Serve a local, read-only page for scanning a project or auditing a dataset with
-visible progress and navigable results (findings grouped by evidence cluster,
-source preview, HTML report). Needs the `app` extra.
-
-```sh
-leaklens workspace                 # root: current folder, http://127.0.0.1:8765/
-leaklens workspace notebooks/ --port 9000 --no-open
-```
-
-Source scans cover the same files as `--scan DIR`. Dataset audits pick a file,
-inspect its columns, then run the same engine as `leaklens FILE --target COL`
-(target, threshold, optional held-out file, time and group columns). Both reuse
-the CLI's baseline and suppression policy: choose a baseline in the page or set
-`[baseline].path` in `.leaklens.toml`, and the UI shows `new`, `unchanged`,
-`changed` and `suppressed` findings, suppression reasons and resolved entries.
-Both scan types also have an evidence-graph view: inspect the engine's evidence
-nodes and recorded relationships, filter and search them, and jump between a
-finding and its evidence. The view is bounded and read-only; it never rebuilds
-the graph or invents relationships.
-Scans and audits stream live progress over server-sent events with automatic
-fallback to polling. The history view lists retained in-memory sessions (lost on
-restart, last 20 of each kind) and can reopen results, reports and graphs.
-Compatible previous/current sessions can be compared using stable fingerprints:
-added, unchanged, changed and no-longer-present findings are shown with policy
-status and suppression preserved, while partial or cancelled scans report
-inconclusive instead of resolved.
-The workspace never writes a baseline. Nothing else is written to disk, no code
-is executed, and one activity runs at a time. See
-[docs/WORKSPACE.md](docs/WORKSPACE.md).
-
-## Missingness audit
-
-Missing values are not automatically a leak, so the audit only reports patterns where *why* a value is missing can carry information that is unavailable at prediction time:
-
-- `missingness_target_signal` (medium): missingness is associated with the target (a point-biserial correlation for numeric targets, or a missing-rate difference between target classes with `z >= 3`).
-- `missingness_split_shift` (medium): missingness differs substantially between the train and test splits, including a feature populated in one split and absent from the other.
-- `missingness_group_signal` (low): missingness differs across `--group` entities.
-
-Every check needs a minimum number of rows, missing values and present values, plus a minimum effect size. Insufficient samples, constant columns, entirely missing columns and missing split metadata are reported as skips rather than findings. Evidence contains only aggregate rates and counts, never raw rows or group identifiers. Statistics are deterministic, use pandas/numpy only (no SciPy), and are linear-time per column. Findings are a reason to investigate, not proof of leakage; severity never exceeds `medium`, the data and splits are never modified, and the default exit behavior is unchanged. See [`docs/MISSINGNESS_BENCHMARK.md`](docs/MISSINGNESS_BENCHMARK.md) for the labeled regression benchmark and its limits.
-
-## SQL lineage analysis (optional)
-
-With the optional `sql` extra (`pip install "leaklens-ml[sql]"`), LeakLens parses `.sql` files with SQLGlot and resolves column lineage through CTEs, derived tables, joins, unions and aggregate aliases. It never executes SQL, opens a database connection or reads credentials.
-
-- `sql_target_as_feature` (high): a non-bare projection whose expression references the target **and** whose confirmed lineage includes the target column.
-- `sql_future_window` (medium): a window frame ends with `FOLLOWING`, so it can read rows that are not available at prediction time.
-- `sql_split_predicate_missing` (low): a configured `split_column` exists on a referenced table and no split predicate filters the query.
-- `sql_unresolved_column` (low, diagnostic): lineage was ambiguous or unavailable (`SELECT *` without a schema, an unqualified column over several tables, a non-SELECT statement).
-- `parse_error` (low): the declared dialect cannot parse the input.
-
-Bare target projections, renames (`label AS outcome`) and target filters (`WHERE label = 1`) are deliberately clean. Unresolved lineage never produces a target finding; it produces the low diagnostic instead, so the analysis fails safe. Dialects are explicit (`ansi`, `postgres`, `bigquery`, `snowflake`) with no silent fallback. Source locations are `path:line`; fingerprints use structural keys, so moving a query keeps its baseline identity. Without the `sql` extra, SQL scanning raises an actionable error naming the install command.
-
-```sh
-leaklens --scan query.sql --target label --sql-dialect postgres
-leaklens --scan warehouse/sql --sql --target label --sql-dialect bigquery
-```
-
-Full rules, the feasibility gate and limitations: [`docs/SQL_LINEAGE.md`](docs/SQL_LINEAGE.md). Measured synthetic corpus: [`docs/SQL_BENCHMARK.md`](docs/SQL_BENCHMARK.md).
-
-## Distribution drift (opt-in)
-
-`--drift` compares the training frame with `--test` and reports columns whose distribution changed. It is **off by default**, **low severity**, marked `diagnostic: true`, and **ignored by the trust score and the default exit code**. It never modifies data or splits and needs no SciPy.
-
-| Signal | Method |
-|---|---|
-| Numeric columns | Two-sample Kolmogorov-Smirnov statistic |
-| Categorical columns | Total-variation distance over the top-k categories |
-| Every column | Absolute missingness-rate difference |
-
-Defaults: at least 200 rows per split, a 0.20 effect floor, at most 50 columns and 20 top categories, with deterministic evenly spaced subsampling above 100,000 rows. Constant, fully missing, unsupported and target columns are skipped; no test frame gives `skipped`, a small sample gives `insufficient_data`. Evidence contains only aggregate statistics (`ks=0.62`, `tvd=0.55`, `missingness=0.41`), never raw values or categories. Drift is a reason to investigate, not proof of leakage.
-
-```sh
-leaklens train.csv --target label --test test.csv --drift
-leaklens train.csv --target label --test test.csv --drift --json
-```
-
-Details and interpretation: [`docs/DRIFT.md`](docs/DRIFT.md); measured controls: [`docs/DRIFT_BENCHMARK.md`](docs/DRIFT_BENCHMARK.md).
-
-## Investigation plans and monitoring intake (opt-in)
-
-`--intelligence` also emits a deterministic `investigation` block: an ordered
-list of `inspect_evidence`, `suggested_test`, `missing_evidence` and
-`narration_slot` steps. Every step cites evidence ids that already exist in the
-payload and finding ids that already exist in the scan, so an ungrounded step
-cannot be serialized. A `suggested_test` step names a registered detector kind
-and the question it answers; unknown kinds are omitted, never invented. The plan
-builds without `leaklens.ai`; with the AI layer absent, `narration` is
-`"unavailable"` and the rest of the plan is unchanged.
-
-When a check is skipped, the payload gains one `missing_evidence` collection
-listing each engine skip, split limitation and omitted test with its own reason
-and count. It never changes the score or the exit gate, and the key is absent
-when nothing was skipped.
-
-`--monitoring-report PATH` (repeatable) reads a caller-supplied JSON drift or
-skew report and turns each breached metric into a `low`, `diagnostic` finding.
-The intake is read-only and size-capped; missing, malformed, oversized or
-out-of-root reports become counted skips instead of tracebacks, and the
-findings never change the trust score or the exit gate.
-
-```sh
-leaklens --scan src --intelligence --json
-leaklens train.csv --target label --monitoring-report reports/drift.json
-```
-
-Schema, id contract and limits: [`docs/INVESTIGATION.md`](docs/INVESTIGATION.md).
-
-## Governance pack (opt-in)
-
-`--governance` adds one provenance-labelled `governance` pack to the payload.
-Every field is labelled `asserted` (supplied by the caller, not verified),
-`measured` (computed by this audit) or `unknown` (not supplied, so `null` with a
-source that says why); the unknowns are listed explicitly. `--governance-out
-PATH` renders the same payload as `.json`, `.md` or `.markdown` inside the
-working directory, atomically and path-contained. The pack never adds, raises
-or rescales a finding and never changes the trust score or the exit gate, and
-it never claims compliance or certification.
-
-```sh
-leaklens train.csv --target label --governance --json
-leaklens train.csv --target label --governance-out governance.md
-```
-
-Vocabulary, every field and the non-claims: [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md).
-
-## Pipeline and MLOps intelligence (opt-in)
-
-`--pipeline` reads the metadata a training pipeline leaves in the repository (DVC stages and locks, serialized DAG JSON, notebook cell order, dependency declarations) and asks whether the evaluation is circular. It is **off by default**, **read-only**, and needs no orchestrator: nothing is executed and no service is contacted. `pip install "leaklens-ml[yaml]"` adds `safe_load`-only YAML parsing for DVC files; without it, directory audits skip DVC metadata and naming a DVC file raises an actionable `PipelineUnavailable`.
-
-| Kind | Severity | Signal |
-|---|---|---|
-| `pipeline_split_overlap` | high | train and eval read the same data artifact, or eval reads a data artifact train produced |
-| `pipeline_unresolved_lineage` | low | a declared dependency has no producing stage and no file |
-| `pipeline_param_drift` | low | `dvc.lock` and the current parameter file disagree |
-| `pipeline_missing_digest` | low | a locked output has no content digest |
-| `pipeline_unpinned_dependency` | low | a requirements entry has no exact pin |
-| `no_random_state` | low | a training stage declares model parameters but no seed |
-
-Every pipeline finding is `diagnostic: true` and `scored: false`: it never changes the trust score, the exit code or an existing finding. Only a confirmed lineage path reaches `high`. Edge and stage output is deterministic and sorted.
-
-```sh
-leaklens --scan . --pipeline
-leaklens --scan pipelines/dvc.yaml --pipeline --json
-```
-
-Rules, formats and limits: [`docs/PIPELINE.md`](docs/PIPELINE.md); measured controls: [`docs/PIPELINE_BENCHMARK.md`](docs/PIPELINE_BENCHMARK.md).
-
-## Text and LLM intelligence (opt-in)
-
-`leaklens text TRAIN TEST` compares declared text corpora for evaluation contamination. It is deterministic, offline and CPU-only for exact/near duplicates, hash-only contamination and static RAG wiring; embedding similarity is optional and consumes caller-supplied vectors only.
-
-| Kind | Severity | Signal |
-|---|---|---|
-| `text_exact_duplicate` | high | a test document's normalised text also appears in train |
-| `text_near_duplicate` | medium | a test document's shingle sketch matches a train document above the threshold |
-| `text_eval_contamination` | high | a train digest matches a user-supplied eval fingerprint |
-| `rag_index_leakage` | high | an index loads a literal root that contains the declared eval path |
-| `text_embedding_similarity` | medium | caller-supplied eval vectors are cosine-similar to train vectors |
-
-Evidence carries counts, 16-hex digests, relative paths and call names, never document text. Every text finding is `diagnostic: true` and `scored: false`; the subcommand exits `0` unless you pass `--fail-on-findings`. LeakLens never loads an embedding model, downloads an eval corpus or executes scanned code.
-
-```sh
-leaklens text train.jsonl eval.jsonl --json
-leaklens text train.parquet eval.parquet --field instruction
-leaklens text train.jsonl eval.jsonl --eval-fingerprints eval.fp
-leaklens text train.jsonl eval.jsonl --rag . --eval-path data/eval
-```
-
-Formats, parameters, normalisation and limits: [`docs/TEXT.md`](docs/TEXT.md); measured controls: [`docs/TEXT_BENCHMARK.md`](docs/TEXT_BENCHMARK.md).
-
-## Deep-learning and artifact auditing (opt-in)
-
-`leaklens dl DIR` statically audits deep-learning training code, framework configs, requirement declarations and model artifacts. It parses Python with `ast`, never imports torch/TensorFlow/Keras/ONNX, never unpickles a checkpoint, never extracts an archive and never executes the scanned project.
-
-| Kind | Severity | Signal |
-|---|---|---|
-| `dl_split_overlap` | high | train and eval bind the same dataset, overlap literal `Subset` indices, or evaluation data is built with a random augmentation |
-| `dl_training_protocol_mismatch` | medium | early-stopping patience ≥ `max_epochs`, optimizer `lr <= 0`, or a non-positive scheduler horizon |
-| `artifact_unsafe_format` | high | a pickle-based checkpoint or archive was refused before deserialization |
-| `no_random_state` | low | training is configured without a recorded seed, or mixed precision / distributed training has no determinism flag |
-| `pipeline_unpinned_dependency` | low | a `requirements*.txt` entry has no exact version pin |
-
-The last two kinds are the Phase 14 reproducibility family, reused unchanged. Every finding is `diagnostic: true` and `scored: false`; the subcommand exits `0` unless you pass `--fail-on-findings`. Safetensors headers, ONNX graph metadata and JSON are parsed within byte/depth caps; pickle and `.pt`/`.pth`/`.bin`/`.ckpt`/`.joblib` files produce a finding without being loaded. YAML configs need the existing `[yaml]` extra.
-
-```sh
-leaklens dl .
-leaklens dl . --json
-leaklens dl . --fail-on-findings
-```
-
-Formats, checks and limits: [`docs/DL_AUDIT.md`](docs/DL_AUDIT.md); measured controls: [`docs/DL_BENCHMARK.md`](docs/DL_BENCHMARK.md).
-
-## Configuration (`.leaklens.toml`)
-
-`leaklens init` writes a commented starter `.leaklens.toml` (one top-level key per CLI flag, plus `[baseline]`, `[[suppressions]]`, `[missingness]`, `[sql]` and `[drift]`) and prints the pre-commit snippet. Add `--force` to overwrite an existing file.
-
-The CLI reads `./.leaklens.toml` automatically when it exists (or the file passed with `--config`). Precedence is deterministic: built-in defaults, then the configuration file, then explicit CLI flags. Unknown keys, wrong types, unsafe output paths and invalid suppression rules fail closed with exit code 2 and the file location in the message; none of them silently change a scan. Output paths (`sarif`, `html`, `badge`, `[baseline].path`) must stay inside the configuration directory. The file cannot execute code, load plugins or access the network.
+`leaklens init` writes a commented `.leaklens.toml`. LeakLens reads `./.leaklens.toml` automatically, or the file passed with `--config`. Precedence is defaults, then config, then explicit CLI flags. Unknown keys, wrong types and unsafe output paths exit `2` instead of silently changing a scan.
 
 ```toml
 target = "label"
-test = "test.csv"          # resolved relative to this file
-scan = ["notebooks", "src"]
 fail_under = 80
 
 [baseline]
 path = "leaklens-baseline.json"
-fail_on_new = true         # opt-in CI failure for new findings
+fail_on_new = true
 
 [[suppressions]]
 fingerprint = "64-lowercase-hex-characters"
 reason = "accepted: the column is recorded before prediction"
-expires = "2027-01-01"
-
-[missingness]
-enabled = true
-min_rows = 200
-
-[sql]
-enabled = false            # --sql: also scan .sql files (needs the sql extra)
-dialect = "ansi"           # ansi, postgres, bigquery, snowflake
-split_column = "split"     # optional: flag queries without a split predicate
-
-[sql.schema.orders]        # optional column types for lineage resolution
-id = "INT"
-amount = "DOUBLE"
-label = "INT"
-split = "TEXT"
-
-[drift]
-enabled = false            # --drift: opt-in train/test drift diagnostics
-min_rows = 200
-min_effect = 0.20
 ```
 
-Full schema, defaults and error behavior: [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md). Baseline and suppression workflow: [`docs/BASELINES.md`](docs/BASELINES.md).
+Optional engine sections (`[missingness]`, `[sql]`, `[drift]`, `[graph]`) tune thresholds and outputs. Output paths must stay inside the config directory. Details: [docs/CONFIGURATION.md](docs/CONFIGURATION.md) and [docs/BASELINES.md](docs/BASELINES.md).
 
-## Baselines and suppressions
+## Built-in vs optional
 
-A **baseline** records the stable fingerprints of findings you have already reviewed. Later runs report each finding as `new`, `unchanged`, `changed` (same identity, different severity) or `resolved` (recorded but no longer present), so CI only needs to look at what moved.
+The base install covers CSV/JSON datasets, code scanning, split checks and missingness. Everything else is opt-in and never required for the basic workflow.
 
-```sh
-leaklens train.csv --target label --write-baseline --baseline leaklens-baseline.json
-leaklens train.csv --target label --baseline leaklens-baseline.json --fail-on-new
-leaklens train.csv --target label --baseline leaklens-baseline.json --update-baseline
-```
+| Capability | Entry point | Needs | Gate behavior |
+|---|---|---|---|
+| Dataset audit, code scan, split checks, missingness, declared-split audit | `leaklens`, `--scan`, `--test`, `--group`, `leaklens splits` | base install | exit 1 on a high-severity finding |
+| Drift, pipeline metadata, text, deep learning, AI hypotheses | `--drift`, `--pipeline`, `leaklens text`, `leaklens dl`, `--ai` | base (`[yaml]` for DVC/YAML) | diagnostic: score and exit unchanged (`--fail-on-findings` for text and deep learning) |
+| Image near-duplicates | `leaklens images` | `[images]` | exit 1 on a high-severity finding |
+| SQL lineage | `--sql` | `[sql]` | exit 1 on a high-severity finding |
+| Model arena | `--arena` | `[arena]` | writes `models/best.joblib` |
+| API, UI, workspace | `uvicorn`, `streamlit`, `leaklens workspace` | `[app]` | not a scan gate |
+| Public live-scan API | `uvicorn leaklens.public_api:app` | `[api]` | not a scan gate |
+| LLM explanations | `--llm` | local Ollama by default | never changes findings, score or exit |
 
-A baseline is never overwritten implicitly: a second `--write-baseline` exits 2 and `--update-baseline` is the explicit replace. The file is written atomically and contains only fingerprints and finding metadata (no rows, feature values or source). A baseline written with a different fingerprint schema is refused rather than compared.
+If an optional dependency is missing, the command raises an `ImportError` that names the extra, and `leaklens doctor` lists which extras are importable. The base install remains fully usable. Scanning is offline and CPU-first by default; only an explicitly configured remote `--llm` provider, an install command or an MLflow run you start uses the network.
 
-A **suppression** accepts one exact fingerprint with a required reason and an optional ISO expiration date. There are no wildcards, so a rule cannot hide future unrelated findings. Suppressed findings stay in JSON/SARIF/HTML with `status: "suppressed"` and their original severity and evidence; they stop counting toward the trust score and the default exit gate. Expired rules and rules that match nothing are reported as diagnostics and are never applied. Malformed rules abort the run (exit 2).
+## Reports and outputs
 
-A **resolved** finding is the opposite of suppression: the baseline recorded it but the current scan no longer produces it. Resolved findings are listed separately (`resolved` in JSON) and are not suppressions.
+| Flag | Output |
+|---|---|
+| `--json` | machine-readable report on stdout |
+| `--sarif FILE` | SARIF 2.1.0 with evidence and fingerprints |
+| `--html FILE` | single self-contained report with a severity legend |
+| `--badge FILE` | shields.io endpoint JSON with the trust score |
+| `--manifest FILE` | unsigned, offline-verifiable audit manifest (`leaklens verify`) |
+| `--intelligence` | deterministic confidence, evidence clusters and root-cause analysis |
+| `--graph-out FILE` | evidence graph as Mermaid (`.mmd`), DOT (`.dot`) or JSON |
+| `--graph-snapshot` / `--graph-baseline` | save and compare evidence across scans |
 
-The default exit behavior is unchanged: exit 1 for a high-severity active finding or a trust score below `--fail-under`. Only `--fail-on-new` (or `[baseline].fail_on_new`) adds a new CI failure mode, and it is opt-in.
+The evidence graph groups existing findings by an inspectable anchor and links detector evidence; it adds no findings and never changes the score or exit code. Comparisons report `new`, `unchanged`, `changed`, `resolved` and `uncertain`. See [docs/INTELLIGENCE.md](docs/INTELLIGENCE.md) and [docs/AUDIT_MANIFEST.md](docs/AUDIT_MANIFEST.md).
 
-
-## Optional LLM explanations
-
-LLM explanations are disabled unless you pass `--llm`. LeakLens sends the selected findings' severity, kind, file name and line, and diagnostic detail; details can include short code expressions from scanned files. It does not send complete source files, notebooks, or dataset rows. The default provider is local Ollama. If you choose `--llm-provider openai-compatible` or configure a remote base URL, these finding details are sent to that host. Provider URLs must use HTTP or HTTPS, redirects are refused, and an API key is not sent over plain HTTP except to `localhost` or `127.0.0.1`. Explanations are limited to the 10 highest-severity findings by default; use `--llm-max-findings N` to change that limit.
-
-```sh
-ollama pull qwen2.5:7b
-leaklens --scan notebooks/ --llm
-```
-
-To use an OpenAI-compatible API, configure its endpoint and key. The request leaves your machine:
-
-```sh
-export LEAKLENS_LLM_BASE_URL=https://api.example.com/v1
-export LEAKLENS_LLM_API_KEY=...
-export LEAKLENS_LLM_MODEL=your-model
-leaklens --scan notebooks/ --llm --llm-provider openai-compatible
-```
-
-You can also pass `--llm-base-url` and `--llm-model` on the command line. The API key is read only from `LEAKLENS_LLM_API_KEY`.
-
-### Custom prompt templates
-
-By default, LeakLens uses the prompt template stored in `leaklens/prompts/explain.txt`. You can override it with a custom template file using `--llm-prompt-template` or the `LEAKLENS_LLM_PROMPT_TEMPLATE` environment variable:
-
-```sh
-leaklens --scan notebooks/ --llm --llm-prompt-template my_template.txt
-```
-
-Templates support the placeholders `{severity}`, `{kind}`, `{location}`, `{location_label}`, and `{detail}`. LeakLens will also automatically load a project-level template from `.leaklens/prompt.txt` if present; that file must be a real file inside the working directory. Missing, unreadable, empty or oversized templates (over 64 KiB) stop the run with an error instead of falling back to the default.
-
-## Experimental AI intelligence
-
-LeakLens has an **optional, offline, experimental AI layer** that adds evidence-bound hypotheses and a root-cause remediation plan on top of the deterministic detectors. It is off by default and available in the base install: no GPU, network, paid service or credentials are required for the core layer.
-
-```sh
-leaklens --scan notebooks/ --ai          # hypotheses for code
-leaklens train.csv --target label --ai   # hypotheses for dataset metadata
-leaklens --scan src --ai-llm             # optional LLM rephrasing, with fallback
-```
-
-It combines deterministic semantic rules (pipeline order, future information, target-proxy names, identifier names, shared keys) with a small in-memory CPU model trained on grouped, labelled code patterns. Every hypothesis carries inspectable evidence and a limitation; nothing is executed.
-
-**Deterministic findings remain authoritative.** AI proposals are marked experimental, capped at medium severity, and never change a finding, its severity, the trust score or the exit code. Dataset analysis receives column metadata only — never rows or values. Code and column names are treated as untrusted: instruction-like text is reported as an `info` notice, not followed.
-
-`--ai` adds an `ai` object to `--json`, an *AI intelligence (experimental)* section to `--html`, and is also exposed by the Python API (`leaklens.ai`) and the public live-scan API (`include_ai=true`). The website's live page has an explicit opt-in checkbox and renders AI output separately.
-
-Measured precision, recall, F1, false-positive rate, false positives, misses and limitations are in [docs/AI_BENCHMARK.md](docs/AI_BENCHMARK.md) and explained in [docs/AI_INTELLIGENCE.md](docs/AI_INTELLIGENCE.md). The independent check is [docs/AI_REALWORLD.md](docs/AI_REALWORLD.md): 48 reviewed units from 12 public repositories, measured at accuracy 0.833, precision 0.767, recall 0.958, F1 0.852 and FPR 0.292, with every mistake listed. That is the Phase 6 record at threshold 0.50; the shipped `leaklens-ai-p7` model has **no second independent holdout**. No H2 corpus exists (0 of the required 48 units), so [docs/AI_REALWORLD_H2.md](docs/AI_REALWORLD_H2.md) publishes the shortfall instead of a number. Those are real measurements, **not** a production-accuracy claim, and they are lower than the authored locked test. They are not claimed as an improvement over the deterministic scanner. `--ai-llm` sends only sanitized group metadata to the configured LLM provider, never raw code or dataset rows, and falls back to the deterministic plan if the provider fails or the reply is unsafe.
-
-## Model arena
-
-Auto-drops leaking and ID columns, then trains linear, gradient-boosted tree and neural-net models inside leak-safe pipelines (imputation, scaling and encoding are fitted on training data only). Runs are tracked in local MLflow (SQLite) and the winner is saved to `models/best.joblib`. Add `--time COL` for a temporal split.
-
-## API and UI
-
-```sh
-uvicorn leaklens.api:app --port 8000 # docs at /docs
-streamlit run leaklens/ui.py
-```
-
-Endpoints: `GET /health`, `POST /audit`, `POST /scan`, `POST /predict`.
-
-> `POST /predict` never accepts a model path from the request. The server loads one operator-chosen artifact at startup: `LEAKLENS_MODEL_PATH` (default `models/best.joblib`). Any other `model_path` in the body is rejected with 422 before the filesystem is touched. `joblib` uses pickle, which can execute arbitrary code while loading; only point the server at a model you built or otherwise trust, and do not expose the API to untrusted users or networks. See [SECURITY.md](SECURITY.md).
-
-To serve a different artifact, pick it on the server instead of in the request:
-
-```sh
-LEAKLENS_MODEL_PATH=models/churn-v2.joblib uvicorn leaklens.api:app --port 8000
-curl -s localhost:8000/predict -H 'content-type: application/json' \
-  -d '{"rows": [{"tenure": 12, "plan": "pro"}]}'
-```
-
-The response reports the model family (`"model"`) and task, never the filesystem path.
-
-
-### Upload and archive limits
-
-The API and the Streamlit CSV uploaders are meant for local or trusted use and enforce the same dataset limits:
-
-- **8 MiB** maximum per uploaded file, and **50,000 rows** maximum.
-- ZIP/gzip containers (including `.xlsx`, which is a ZIP archive) are inspected before parsing: total decompressed size must stay at or below **256 MiB**, ZIP entries with absolute or traversal paths are rejected, and nested gzip is limited to 5 layers.
-- `POST /scan` rejects source text larger than 8 MiB.
-
-The CLI reads files from disk, so it has no 8 MiB/50k-row upload cap, but the same 256 MiB decompressed-container check applies. Compressed files are not an additional input format: LeakLens does not decompress arbitrary `.zip`/`.gz` files into a dataset. The container checks protect the formats it does read (for example `.xlsx`).
-
-### Public live-scan API (untrusted uploads)
-
-The static website’s live page talks to a separate, hardened app built for untrusted uploads. It has no `/predict`, no model loading and no persistent storage:
-
-```sh
-pip install "leaklens-ml[api]"
-uvicorn leaklens.public_api:app --host 127.0.0.1 --port 8000
-python scripts/smoke_public_api.py          # real HTTP smoke test
-```
-
-`GET /health`, `GET /capabilities`, `POST /inspect`, `POST /audit` and `POST /scan` are the complete surface. Defaults are 4 MiB per file, 5,000 rows, 200 columns, 750k cells, one concurrent scan, a 30-second scan budget, 20 POSTs per client per minute, and CSV/JSON only; every limit is configurable by environment variable. Requests are content-sniffed (not trusted by filename or MIME type), parsed in memory, bounded before detection and never written to disk. `POST /audit` and `POST /scan` accept `include_ai=true` for the optional experimental AI layer; the response adds an `ai` object and leaves the deterministic score and findings unchanged. They also accept `include_intelligence=true` for the deterministic evidence graph; the response adds an `intelligence` object (evidence, clusters, links) and the HTML report gains its cluster and link tables, while the default payload, score, findings and exit behavior stay unchanged.
-
-This repository **does not deploy a public backend**. The GitHub Pages live page therefore starts disconnected. A free Render web service is documented in [docs/LIVE_SCANNING.md](docs/LIVE_SCANNING.md) together with verified limits (512 MB, 0.1 CPU, spins down after 15 minutes, ~1 minute cold start, ephemeral disk) and `render.yaml` + `Dockerfile.api`. Hugging Face Docker Spaces, Fly.io and Koyeb were checked and are not free for this use case.
-
-## Docker
-
-> Docker build/run below is **documented but not verified executed** in this environment (Docker Engine was unavailable on the development machine). Commands are verified against the actual `Dockerfile` and `docker-compose.yml` in the repo root; run them where the daemon is healthy.
-
-The image is `python:3.11-slim`, installs `.[arena,app]`, exposes 8000/8501, and defaults to `uvicorn leaklens.api:app --host 0.0.0.0 --port 8000`.
-
-Build and run (Compose):
-
-```sh
-docker compose up --build
-```
-
-- API: http://localhost:8000/docs
-- UI: http://localhost:8501
-- `./models` is mounted into both containers at `/app/models`
-
-Build and run (plain Docker, API only):
-
-```sh
-docker build -t leaklens .
-docker run --rm -p 8000:8000 -v ./models:/app/models leaklens
-```
-
-To run the UI container alone, override the API default command:
-
-```sh
-docker run --rm -p 8501:8501 leaklens streamlit run /app/leaklens/ui.py --server.port=8501 --server.address=0.0.0.0
-```
-
-For the hardened public app, build the smaller, non-root `Dockerfile.api` instead:
-
-```sh
-docker build -f Dockerfile.api -t leaklens-api .
-docker run --rm -p 8000:8000 leaklens-api
-```
-
-## GitHub Action
-
-```yaml
-- uses: actions/checkout@v7
-- uses: eyadstein/leaklens@main
-  with:
-    path: notebooks
-    fail-under: 80
-```
-
-## HTML report
-
-```sh
-leaklens demo.csv --target is_fraud --arena --html report.html
-```
-
-A single self-contained file with the trust score, findings and arena table. Easy to attach to a PR or share with your team.
-The findings section includes a color-coded severity legend explaining high, medium and low leakage risks, even when no findings are present.
-
-## GitHub code scanning
+For GitHub code scanning:
 
 ```yaml
 permissions:
@@ -729,123 +392,81 @@ steps:
       sarif_file: leaklens.sarif
 ```
 
-Findings then appear in the repository's Security tab and as PR annotations.
+To publish a trust badge, run `leaklens --scan . --badge badge.json`, commit the file, and point a shields.io endpoint badge at its raw URL, as at the top of this file. The checked-in [badge.json](badge.json) records the repository's own self-scan.
 
-## SBOM and security automation
+## Benchmarks
 
-The release workflow builds the wheel and sdist, installs the wheel, and writes a CycloneDX 1.5 SBOM to `sbom/sbom.json` with `scripts/generate_sbom.py`. The SBOM is kept outside `dist/` so it cannot be picked up by the PyPI publisher. Both the Python packages and the SBOM are uploaded as workflow artifacts; the wheel and sdist are then published to PyPI.
+- The code scanner is checked against 117 hand-written regression cases (63 leaky, 54 clean) with 0 false positives and 0 false negatives: `python -m leaklens.bench`, results in [docs/BENCHMARK.md](docs/BENCHMARK.md).
+- The same run also scores 32 advanced detection cases that exist on `main` but are not part of a published release yet; the latest published release is 0.13.0.
+- Dataset detectors have 12 synthetic cases (`python -m leaklens.bench_data`, [docs/DATA_BENCHMARK.md](docs/DATA_BENCHMARK.md)); missingness, drift, pipeline, text, deep learning, vision, SQL and AI each have their own labeled benchmark under `docs/`.
+- A static sample of 1,725 public notebooks that split their data found that 38% fit a preprocessing step before the split or on test data ([docs/STUDY.md](docs/STUDY.md)).
+- The real-world corpus holds 60 public notebooks, but only 8 have reviewed labels; on those 8 the scanner scores precision/recall/F1 1.00 ([docs/REALWORLD.md](docs/REALWORLD.md)). That is a smoke check on a tiny, non-random sample, not a population accuracy estimate.
+- The independent AI check measures accuracy 0.833, precision 0.767, recall 0.958 and FPR 0.292 on 48 reviewed units, with every mistake listed ([docs/AI_REALWORLD.md](docs/AI_REALWORLD.md)); the shipped model has no second independent holdout, and the missing H2 corpus is published as a shortfall rather than a number ([docs/AI_REALWORLD_H2.md](docs/AI_REALWORLD_H2.md)).
+
+All benchmarks are hand-written regression guards shaped around supported rules. They are not real-world accuracy claims, and no benchmark number here is a production guarantee. Scanner runtime measurements and the source-cache decision are in [docs/PERFORMANCE.md](docs/PERFORMANCE.md).
+
+## Limitations
+
+- Detection is heuristic and static. LeakLens does not execute scanned code, run notebooks, connect to a database or perform complete interprocedural dataflow analysis; obfuscated or dynamically constructed patterns can be missed.
+- A finding is evidence to inspect, not proof of leakage. An identical feature vector or a group overlap can occur naturally; read the detail and the suggested test before acting.
+- Every kind is scoped to the surface that emits it: a code rule does not audit a CSV, and a dataset detector does not read your notebook. Supported formats differ per command.
+- Feature-overlap and near-duplicate checks sample at most 50,000 and 20,000 rows, so very large files are bounded rather than exhaustive.
+- Diagnostic engines (drift, pipeline, text, deep learning, AI, monitoring intake) never change the trust score or exit code, and AI hypotheses are capped at medium severity and remain experimental.
+- Missingness findings cap at medium severity and never modify data or splits.
+- Image hashing has documented blind spots (colour-only differences, crops beyond 5%, letterboxing), and declared-split checks compare file bytes only, not perceptual similarity.
+- Python 3.13 is outside the CI matrix and is not claimed as verified.
+
+## Security and privacy
+
+- Scanning is local and offline by default. Dataset contents stay on your machine; nothing is uploaded and no service is contacted.
+- The code scanner, deep-learning audit and pipeline audit parse files without executing them. They never import torch/TensorFlow, never unpickle a checkpoint and never extract an archive.
+- `--llm` is opt-in. It sends finding metadata only, and a remote OpenAI-compatible provider receives that metadata only after you configure it. Provider URLs must use HTTP(S), redirects are refused, and API keys are not sent over plain HTTP to non-local hosts.
+- `POST /predict` trusts an operator-chosen pickle; treat the FastAPI app as local and trusted. The public API is the hardened surface for untrusted uploads.
+- Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md). CI runs bandit, pip-audit, pip-licenses and CodeQL; the release workflow publishes a CycloneDX SBOM outside `dist/` (`python scripts/generate_sbom.py` writes `sbom/sbom.json`).
+
+## Contributing
 
 ```sh
-python scripts/generate_sbom.py              # dist/sbom.json
-python scripts/generate_sbom.py out/sbom.json
+git clone https://github.com/eyadstein/leaklens.git
+cd leaklens
+python -m venv .venv
+. .venv/bin/activate   # Windows: .venv\Scripts\Activate.ps1
+pip install -e ".[dev,app]"
 ```
 
-The generator reads runtime dependencies and optional extras from `pyproject.toml`, records installed versions when available, and excludes the `dev` extra. It needs Python 3.10+ (with `tomli` on 3.10) and does not require `cyclonedx-py`.
+Every pull request must pass the checks CI runs; the short version:
 
-CI runs `bandit`, `pip-audit`, and `pip-licenses` on every push and pull request. The separate CodeQL workflow runs `security-extended` Python analysis and uploads results to GitHub code scanning.
+```sh
+pytest -q
+ruff check leaklens tests scripts
+ruff format --check leaklens tests scripts
+leaklens --scan leaklens
+python -m leaklens.bench
+python -m leaklens.bench_data
+```
 
-## Pre-commit hook
+Add a test for every new detector or fix, and keep a new detector in `leaklens/leakage.py` (data) or `leaklens/scanner.py` (code). See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Issues labeled **good first issue** are the easiest way in, and the [contributors graph](https://github.com/eyadstein/leaklens/graphs/contributors) records everyone who has contributed.
+
+Pre-commit hook:
 
 ```yaml
 repos:
   - repo: https://github.com/eyadstein/leaklens
-    rev: main
+    rev: v0.13.0
     hooks:
       - id: leaklens
 ```
 
-Blocks a commit when a notebook or script fits a transformer before the split.
+`leaklens init` prints this snippet. `rev` pins the latest published release, so the hook is reproducible; move it to a newer tag deliberately when you upgrade.
 
-`leaklens init` writes a commented starter `.leaklens.toml` (one key per CLI flag) and prints this snippet. Add `--force` to overwrite an existing file.
+## Documentation and roadmap
 
-## Trust score badge
+The published release is **0.13.0**. Changes merged on `main` but not yet released are listed under "Unreleased" in [CHANGELOG.md](CHANGELOG.md). Release history lives there, not in this file.
 
-```sh
-leaklens --scan . --badge badge.json
-```
+Implemented: dataset, split and code detectors; missingness; model arena; API and workspace; HTML, SARIF, JSON and badge reports; baselines and suppressions; the evidence graph and investigation plans; group leakage; image clustering and declared-split audits; and the opt-in SQL, text, deep-learning, drift, pipeline and AI engines.
 
-Commit `badge.json`, then point a shields.io endpoint badge at its raw URL (as at the top of this file).
+Planned work and open design questions are tracked in [ROADMAP.md](ROADMAP.md), the longer-term [AI/ML expansion roadmap](docs/AI_ML_EXPANSION_ROADMAP.md) and [Issues](https://github.com/eyadstein/leaklens/issues). Proposed items there are not commitments. The full documentation index is the [docs site](https://eyadstein.github.io/leaklens/docs.html).
 
-## Architecture
+## License
 
-```mermaid
-flowchart LR
-  A[Datasets, notebooks, SQL, images] --> B[Data audit + leakage detectors]
-  A --> C[Static code scanner]
-  A --> V[Vision: image groups + declared splits]
-  B --> D[Trust score]
-  C --> D
-  V --> D
-  B --> E[Model arena + MLflow]
-  E --> F[best.joblib]
-  F --> G[FastAPI /predict]
-  D --> H[CLI / Streamlit / GitHub Action]
-```
-
-The long-term design (multi-modal engines, shared evidence core, phase plan) is documented
-separately and is **not implemented**: [FUTURE_VISION.md](docs/FUTURE_VISION.md),
-[FUTURE_ARCHITECTURE.md](docs/FUTURE_ARCHITECTURE.md),
-[AI_ML_EXPANSION_ROADMAP.md](docs/AI_ML_EXPANSION_ROADMAP.md),
-[ARCHITECTURE_DECISIONS.md](docs/ARCHITECTURE_DECISIONS.md), with supporting research in
-[AI_ML_ECOSYSTEM_RESEARCH.md](docs/AI_ML_ECOSYSTEM_RESEARCH.md),
-[ARTIFACT_SECURITY_STRATEGY.md](docs/ARTIFACT_SECURITY_STRATEGY.md) and
-[WORKSPACE_DESIGN_VISION.md](docs/WORKSPACE_DESIGN_VISION.md).
-
-## How the Trust Score Is Calculated
-
-LeakLens starts with a trust score of 100 and deducts points for each finding based on its severity.
-
-| Severity | Penalty |
-|---|---:|
-| High | 35 points |
-| Medium | 15 points |
-| Low | 5 points |
-
-The final score is calculated by subtracting the total penalties from 100. The score cannot fall below 0.
-
-**Example:** If a dataset has one high-severity finding, one medium-severity finding, and one low-severity finding, the total penalty is 35 + 15 + 5 = 55. The final trust score is 100 - 55 = **45/100**.
-
-## Roadmap
-
-Full plan with phases and exit criteria: [ROADMAP.md](ROADMAP.md). Open tasks are in [Issues](https://github.com/eyadstein/leaklens/issues).
-
-- [x] Core detectors, static scanner, model arena, API, UI
-- [x] Docker, GitHub Action, badge, CI
-- [x] Group/entity leakage detector
-- [x] Exact duplicate groups and perceptual image clusters (Phase 17 M2, synthetic calibration)
-- [x] Declared-split disjointness for COCO, YOLO and VOC image datasets (Phase 17 M3, exact SHA-256 only)
-- [x] PyPI packaging + release workflow (PyPI name `leaklens-ml`, command stays `leaklens`; create a GitHub release to publish)
-
-## Leakage study
-
-In a non-random sample of 1,725 public notebooks that split their data, **38%** fit a preprocessing step before the split or on test data (static heuristic, not a verdict on any notebook). Details and caveats: [docs/STUDY.md](docs/STUDY.md). Reproduce it with `python scripts/study.py` (needs the `gh` CLI).
-
-## Validated on real notebooks
-
-Five public notebooks were read by hand against the scanner output. Details, counts and limits are in [docs/VALIDATION.md](docs/VALIDATION.md). The sample is tiny, so treat it as a sanity check.
-
-## Real-world notebook validation (60 notebooks, 8 reviewed labels)
-
-The corpus under `realworld/` holds 60 public notebooks (see [realworld/README.md](realworld/README.md)). Only **8** have definitive reviewed labels — 5 `confirmed_leakage` and 3 `legitimate` — so only those contribute to precision, recall and F1. The other 52 (2 `potential_leakage` + 50 `uncertain`) stay visible but are excluded from scoring. Result: precision/recall/F1 1.00 on the reviewed 8. That is a smoke check on a tiny, non-random sample, **not** a population accuracy estimate. Full methodology: [docs/REALWORLD.md](docs/REALWORLD.md).
-
-## Accuracy and security
-
-The code scanner is checked against a labeled synthetic regression benchmark on every CI run (`python -m leaklens.bench`, results in [docs/BENCHMARK.md](docs/BENCHMARK.md)). Dataset detectors have a separate synthetic benchmark with per-case runtime (`python -m leaklens.bench_data`, results in [docs/DATA_BENCHMARK.md](docs/DATA_BENCHMARK.md)). Both are hand-written and shaped around supported rules — treat them as regression guards, not real-world accuracy claims. The real-world corpus is kept separate from those synthetic benchmarks (different directory, different scoring). Scanner runtime measurements, the bounded source cache and the measured decision against parallel scanning are in [docs/PERFORMANCE.md](docs/PERFORMANCE.md). Report vulnerabilities as described in [SECURITY.md](SECURITY.md).
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Starter tasks are labeled good first issue.
-
-Every PR must pass:
-
-```sh
-python -m pytest -q
-leaklens --scan leaklens
-python -m leaklens.bench
-```
-
-## Contributors
-
-Thanks to @jay23606 (Parquet input), @slopggobblercobbler81 (`--fail-under`), @tyza66 (Excel, JSON and Feather input), @rahul05ranjan (`random_state` reproducibility check), @have-you-tried-restarting (severity summary), @Rashmi-R444 (trust score docs), @Thecoolss (benchmark snippets), @ElDShell (Arabic README), @Aaqibhafeezkhan (colored severity labels and `CITATION.cff`), @Cami0111 (leak walkthrough notebook) and @rahul-jain-dev (`--version`), @Vamsi-2581 (Add opt-in LLM explanations for findings).
-
-MIT licensed.
+MIT licensed; see [LICENSE](LICENSE). Citation metadata is in [CITATION.cff](CITATION.cff).

@@ -2,7 +2,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License" /></a>
   <a href="https://code.claude.com/docs/en/plugins"><img src="https://img.shields.io/badge/Claude%20Code-plugin-orange.svg" alt="Claude Code Plugin" /></a>
-  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.36-green.svg" alt="Version 1.4.36" /></a>
+  <a href="plugins/hermitd/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.4.38-green.svg" alt="Version 1.4.38" /></a>
   <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/gtapps/hermitd/_gh_traffic_stats/.github/badges/clones.json" alt="Downloads" />
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome" />
   <a href="https://discord.gg/54sJqAxhUh"><img src="https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white" alt="Join" /></a>
@@ -303,7 +303,7 @@ Optional plugins that add domain tools and workflows to your agent.
 - [homeassistant-hermit](plugins/hermitd-homeassistant/README.md): Home Assistant tools, automation workflows, and safety checks.
 - [fitness-hermit](plugins/hermitd-fitness/README.md): Strava integration, activity analysis, and training routines.
 - [hermitd-feed](plugins/hermitd-feed/README.md): Source curation, recurring briefs, and weekly synthesis.
-- [hermitd-connector](plugins/hermitd-connector/README.md): People you pair talk to the agent from their own Claude app, typed or by voice.
+- [hermitd-connector](plugins/hermitd-connector/README.md): People you pair talk to the agent from their own Claude, ChatGPT, Grok or Gemini app, typed or by voice.
 - [hermitd-laravel-forge](plugins/hermitd-laravel-forge/README.md): Laravel Forge deployments, logs, and server management.
 - [hermitd-scribe](plugins/hermitd-scribe/README.md): GitHub issues and comments from proposals through a dedicated bot identity.
 
@@ -321,7 +321,7 @@ You can run separate agents for different responsibilities, each with its own wo
 
 ## Upgrading
 
-Run `hermitd update` from the project folder, or `hermitd update <name>` from anywhere. Docker updates refresh the host core first, then the container. The update waits for a quiet moment, applies migrations, then restarts the agent once and resumes the conversation. External updates finish with a `hermitd doctor --fix` pass and record its result in update history. Run `hermitd doctor [--fix]` to list health findings and their commands, or apply safe repairs and re-check; queued upgrades remain pending until the agent applies them.
+Run `hermitd update` from the project folder, or `hermitd update <name>` from anywhere. Docker updates refresh the host core first, then the container. The update applies migrations, then restarts the agent once and resumes the conversation. External updates finish with a `hermitd doctor --fix` pass and record its result in update history. Run `hermitd doctor [--fix]` to list health findings and their commands, or apply safe repairs and re-check; queued upgrades remain pending until the agent applies them.
 
 Without a host terminal, type `/hermitd:hermit-update`, `/hermitd:hermit-restart` or `/hermitd:doctor-fix` into a host agent's session from the Claude app (or a terminal). These management commands run only when typed: chat cannot start them, and the agent never starts them on its own. A Docker agent takes the restart; its update and repair stay on the host.
 

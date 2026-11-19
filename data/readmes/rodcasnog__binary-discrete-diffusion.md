@@ -48,11 +48,15 @@ uv run python -m binary_diffusion.eval.nelbo checkpoint_dir=outputs/sudoku-bsym/
     out=outputs/sudoku-bsym/nelbo
 ```
 
-## Pretrained text models
+## Pretrained models
 
-The twelve text models (Text8, TinyStories and OpenWebText, four kernels each) are run directories in [rodcasnog/binary-discrete-diffusion](https://huggingface.co/rodcasnog/binary-discrete-diffusion). Text8 models read the tokenizer that `prep_text8.py` writes, TinyStories samples take their lengths from `data/tinystories`, and NELBO and MAUVE read the corpus.
+The paper's models are run directories in [rodcasnog/binary-discrete-diffusion](https://huggingface.co/rodcasnog/binary-discrete-diffusion): the logic models (Sudoku, Boxoban and graph coloring, four kernels, five seeds each) in `<task>/<kernel>/seed<s>`, which also hold the final training state to resume from, and the twelve text models (Text8, TinyStories and OpenWebText, four kernels each) in `<corpus>/<kernel>`. Text8 models read the tokenizer that `prep_text8.py` writes, TinyStories samples take their lengths from `data/tinystories`, and NELBO and MAUVE read the corpus.
 
 ```bash
+uv run hf download rodcasnog/binary-discrete-diffusion --include "sudoku/binary_symmetric/seed0/*" --local-dir outputs/hf
+uv run python -m binary_diffusion.eval.solve checkpoint_dir=outputs/hf/sudoku/binary_symmetric/seed0/checkpoints_ema/1000000 \
+    sampler.nfe=256 out=outputs/sudoku-bsym/solve
+
 uv run hf download rodcasnog/binary-discrete-diffusion --include "text8/binary_symmetric/*" --local-dir outputs/hf
 # Text samples (samples.json) with the paper's selected sampler for this model, then their generative
 # perplexity, unigram entropy and MAUVE.

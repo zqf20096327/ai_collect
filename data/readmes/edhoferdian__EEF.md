@@ -1,6 +1,6 @@
 # Ekosistem Edho Ferdian (EEF)
 
-A native Claude Code skill ecosystem — 38 skills covering engineering
+A native Claude Code skill ecosystem — 40 skills covering engineering
 (backend, frontend, API design, data layer, security, performance, testing),
 operations (deployment, containers, networking, git/release), and
 cross-cutting practices (code review, spec mining, marketing, research,
@@ -21,7 +21,7 @@ Four ways to get these skills, pick whichever fits:
 ### Option A — npm (works for every harness this repo supports, no git needed)
 
 ```bash
-npx eef-install                            # Claude Code, all 38 skills
+npx eef-install                            # Claude Code, all 40 skills
 npx eef-install code-review-edho-ferdian    # Claude Code, specific skills only
 npx eef-install --target cursor             # Cursor, into ./.cursor/rules/
 npx eef-install --target windsurf           # Windsurf + Devin
@@ -43,8 +43,12 @@ npx eef-install --help
 `--target claude-hooks` installs the ready-made hooks — `fs-guard`
 (`PreToolUse`, blocks recursive searches from `/`, `~` or a drive root and
 asks before destructive commands), `telemetry` (`PostToolUse` on `Agent`,
-logs each subagent run locally for re-tiering) and `statusline` (plan quota,
-context and subagent count, set only when no `statusLine` exists);
+logs each subagent run locally for re-tiering), `skill-router`
+(`UserPromptSubmit`, names the installed EEF skill a prompt matches — e.g.
+"rapikan tampilan" → the design skills — so it gets loaded instead of
+skipped), `skill-telemetry` (`PostToolUse` on `Skill`, logs skill loads;
+`eef-install stats --skills` lists skills that never fire) and `statusline`
+(plan quota, context and subagent count, set only when no `statusLine` exists);
 `--only <name>` picks one. It adds a registration to
 `settings.json` and leaves every other key alone: a hook already registered
 (even by hand) is never added twice, an unparsable file is refused rather
@@ -79,7 +83,7 @@ or tokens, so they are left out unless you pass `--include-legacy`.
 The package bundles the actual skill content (see
 [`package.json`](package.json)'s `files` list) — no separate git clone, no
 network access after the initial `npx` download. Source:
-[`bin/eef.js`](bin/eef.js), zero runtime dependencies.
+[`cli/eef.js`](cli/eef.js), zero runtime dependencies.
 
 ### Option B — Manual `.skill` upload
 
@@ -96,7 +100,7 @@ Clone this repo, then run the installer for your platform:
 # macOS / Linux / Git Bash
 git clone https://github.com/edhoferdian/EEF.git
 cd EEF
-./install.sh                 # installs all 38 skills
+./install.sh                 # installs all 40 skills
 ./install.sh code-review-edho-ferdian dev-kickoff-edho-ferdian   # only specific ones
 ./install.sh --list          # see all installable skill names
 ```
@@ -105,7 +109,7 @@ cd EEF
 # Windows PowerShell
 git clone https://github.com/edhoferdian/EEF.git
 cd EEF
-.\install.ps1                                    # installs all 38 skills
+.\install.ps1                                    # installs all 40 skills
 .\install.ps1 -Only code-review-edho-ferdian,dev-kickoff-edho-ferdian
 .\install.ps1 -ListOnly
 ```
@@ -122,6 +126,57 @@ than `~/.claude/skills`.
 
 This tracks the repo directly — updates land when the plugin/marketplace
 `version` fields are bumped in [`.claude-plugin/`](.claude-plugin/).
+
+The plugin is the whole Claude Code setup in one install:
+
+- **all skills**, namespaced `ekosistem-edho-ferdian:<skill>`;
+- **the isolation agents** (critics, evaluators, workers — the `inti`
+  roster; wrapper agents stay out because every agent description costs
+  context each session);
+- **hooks** from [`hooks/hooks.json`](hooks/hooks.json): the always-on
+  rules (a plugin can't ship `CLAUDE.md`, so a `SessionStart` hook loads
+  `rules/*.md`), `skill-router`, `skill-guard`, `fs-guard` and the local
+  telemetry.
+
+The plugin and `eef-install` work side by side: when the plugin is
+installed, `eef-install --target claude|claude-agents|claude-rules` steps
+aside (installing them again would list every skill twice), `claude-hooks`
+installs only the status line, and `doctor` reports those parts as
+"provided by the EEF plugin". Everything else — other harnesses,
+Antigravity, `doctor`, `stats` — keeps working. `--force` installs anyway,
+and `doctor` then warns about the duplicates. The hooks themselves stay
+quiet in the plugin when the same hook is registered by `eef-install`.
+
+**Not sure which skill?** Start with `ask-eef` (`/ekosistem-edho-ferdian:ask-eef`
+in the plugin). It reads the request and the project, picks one skill or a
+sequence, and hands over. The `skill-router` hook suggests it on its own
+for task-like prompts that match no specific skill. The status line is not part of the
+plugin (a plugin can't set it); add it with
+`npx eef-install --target claude-hooks --only statusline`.
+
+**claude.ai, the Claude desktop app and Cowork.** Open
+[Customize → Plugins](https://claude.ai/customize/plugins) → **Add → Add
+marketplace**, enter `edhoferdian/EEF`, then add
+`ekosistem-edho-ferdian`. The plugin is saved to your account: its skills
+work in chat, its skills, agents and hooks in Cowork, and it syncs into
+Claude Code as `ekosistem-edho-ferdian@synced` — so on a machine that gets
+it this way, don't also run `/plugin install` there. (The npm CLI lives in
+`cli/`, not `bin/`: claude.ai and Cowork refuse plugins with a top-level
+`bin/` directory.)
+
+**Antigravity** reads the same `SKILL.md` format and picks skills by
+description. It also runs hooks, with its own protocol; an adapter runs
+EEF's always-on rules, skill router, skill-guard and fs-guard there:
+
+```bash
+npx eef-install --target antigravity --global         # skills → ~/.gemini/config/skills
+npx eef-install --target antigravity-hooks --global   # hooks  → ~/.gemini/config/hooks.json (key "eef-edho-ferdian")
+```
+
+Drop `--global` to install into the current workspace (`.agents/`).
+Check loaded hooks with `/hooks` in `agy`; a workspace must be trusted for
+its hooks to run, and some IDE builds have been reported not to fire hooks
+that the CLI runs.
 
 > **Note:** this GitHub repo is public, and `eef-install` is published on
 > npm — all four install options above work for anyone, no special access
@@ -587,7 +642,7 @@ skills/              source of truth — 38 skill folders
 rules/               always-on baseline rules for Claude Code (claude-rules target)
 agents/, workflows/  canonical sub-agent + multi-agent-workflow definitions (experimental)
 dist/                packaged .skill archives (Option B), one per skill; also dist/agents/opencode/
-bin/eef.js           npm CLI entry point (Option A)
+cli/eef.js           npm CLI entry point (Option A)
 scripts/             packaging + validation + cross-harness export scripts
 install.sh           installer (macOS/Linux/Git Bash, Option C)
 install.ps1          installer (Windows PowerShell, Option C)
@@ -620,7 +675,7 @@ need to do one by hand:
 1. Bump `version` in `package.json` (SemVer — MINOR for a new skill/feature,
    PATCH for a fix, per this ecosystem's own bump rules).
 2. `python scripts/sync_metadata.py` — rewrites the skill/agent count
-   wherever it's quoted in `package.json`, `bin/eef.js`, and both
+   wherever it's quoted in `package.json`, `cli/eef.js`, and both
    `.claude-plugin/*.json` manifests, so a version bump can't leave one of
    them stale (a real bug found and fixed 2026-09-16).
 3. Commit on a branch (`release/vX.Y.Z`), open a PR to `main`, let CI go

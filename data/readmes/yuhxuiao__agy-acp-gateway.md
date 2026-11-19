@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Go-1.22%2B_(CGO__ENABLED%3D0)-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go 1.22+ Zero CGO" />
+  <img src="https://img.shields.io/badge/Go-1.26%2B_(CGO__ENABLED%3D0)-00ADD8?style=flat-square&logo=go&logoColor=white" alt="Go 1.26+ Zero CGO" />
   <img src="https://img.shields.io/badge/Protocols-Anthropic_%7C_OpenAI_%7C_Responses_%7C_Gemini_v1beta-0856F5?style=flat-square" alt="Quad Protocol" />
   <img src="https://img.shields.io/badge/Context-900K_Unlocked-0D9488?style=flat-square" alt="900K Context" />
   <img src="https://img.shields.io/badge/Telemetry-Zero--Lock_SQLite_%2B_Prometheus-D97706?style=flat-square" alt="Zero-Lock SQLite and Prometheus" />
@@ -142,11 +142,12 @@ Long-context Gemini 4 Carbon prefill phases routinely take 90-180 seconds, trigg
 
 ## Supported Models & Thinking Tiers
 
-`/v1/models` (with `context_window`, `max_input_tokens`, and `max_tokens: 65536`) and `/v1beta/models` (`inputTokenLimit` & `outputTokenLimit: 65536`) expose the 6 canonical model IDs by default (`AGY_EXPOSE_TIER_MODELS=1` exposes suffixed tier variants). Clients may append `-minimal`, `-low`, `-medium`, `-high`, `-xhigh`, `-max`, or `-ultra` (`-minimal` maps to `low`; `-xhigh`/`-max`/`-ultra` map to `xhigh` on `gemini-4-hydrogen` and clamp to `high` on other models), or pass native reasoning fields (`output_config.effort`, `thinking.budget_tokens`, `reasoning_effort`, `reasoning.effort`, `thinkingConfig.thinkingLevel` / `thinkingBudget`):
+`/v1/models` (with `context_window`, `max_input_tokens`, and `max_tokens: 65536`) and `/v1beta/models` (`inputTokenLimit` & `outputTokenLimit: 65536`) expose the 7 canonical model IDs by default (`AGY_EXPOSE_TIER_MODELS=1` exposes suffixed tier variants). Clients may append `-minimal`, `-low`, `-medium`, `-high`, `-xhigh`, `-max`, or `-ultra` (`-minimal` maps to `low`; `-xhigh`/`-max`/`-ultra` map to `xhigh` on `gemini-4-neon` and `gemini-4-hydrogen` and clamp to `high` on other models), or pass native reasoning fields (`output_config.effort`, `thinking.budget_tokens`, `reasoning_effort`, `reasoning.effort`, `thinkingConfig.thinkingLevel` / `thinkingBudget`):
 
 | Canonical Model ID | Accepted Aliases (Examples) | Thinking Tiers | Max Context (Unlocked) |
 | :--- | :--- | :--- | :--- |
 | `gemini-4-carbon` *(default)* | `carbon`, `gemini-4-carbon-*` | `low`, `medium`, `high` | **900K+** (`1,048,576` API) |
+| `gemini-4-neon` | `neon`, `gemini-4-neon-*` | `low`, `medium`, `high`, `xhigh` | **900K+** (`1,048,576` API) |
 | `gemini-4-argon` | `gemini-4-pro`, `argon`, `gemini-4-argon-*` | `low`, `medium`, `high` | **900K+** (`1,048,576` API) |
 | `gemini-4-hydrogen` | `hydrogen`, `gemini-4-hydrogen-*` | `low`, `medium`, `high`, `xhigh` | **900K+** (`1,048,576` API) |
 | `gemini-3.8-flash` | `gemini-flash`, `gemini-3.8-flash-*` | `low`, `medium`, `high` | **900K+** (`1,048,576` API) |
@@ -161,7 +162,7 @@ Long-context Gemini 4 Carbon prefill phases routinely take 90-180 seconds, trigg
 
 ### Prerequisites
 
-- **Go 1.22+** (builds single zero-CGO static binary via `CGO_ENABLED=0`)
+- **Go 1.26+** (builds single zero-CGO static binary via `CGO_ENABLED=0`)
 - **Python 3.10+** (runs Gate 1-5 multi-arch ELF/Mach-O binary patcher on `linux_amd64` / `linux_arm64` / `darwin_arm64` & isolated ACP verification harness)
 - **Google Antigravity CLI (`agy`)**: Installed and authenticated locally (`agy auth login` or valid `~/.gemini/antigravity-cli/antigravity-oauth-token`)
 
@@ -272,7 +273,7 @@ curl -sS "http://127.0.0.1:18890/v1beta/models/gemini-4-carbon:streamGenerateCon
 ## Configuration & Metrics Reference
 
 <details>
-<summary><strong>Environment Variables (verified from <code>go-gateway/config.go</code> &amp; <code>.env.example</code>)</strong></summary>
+<summary><strong>Environment Variables (verified from <code>go-gateway/internal/config/snapshot.go</code>, <code>go-gateway/config.go</code> &amp; <code>.env.example</code>)</strong></summary>
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
@@ -282,8 +283,8 @@ curl -sS "http://127.0.0.1:18890/v1beta/models/gemini-4-carbon:streamGenerateCon
 | `AGY_CORS_ORIGINS` | *(empty)* | Allowed CORS origins (exposes `X-Agy-Served-Model` & `X-Agy-Cache-Warning`) |
 | `AGY_ACP_BIN` | `<root>/bin/agy-acp-900k` | Path to Gate 1-5 patched `agy` binary (`linux_amd64`, `linux_arm64`, `darwin_arm64`) |
 | `AGY_UPSTREAM_PROXY` | *(empty in binary; `127.0.0.1:7890` in `.env.example`)* | HTTP/HTTPS proxy forwarded to `agy acp` subprocesses & `/usage` refresh |
-| `AGY_MAX_LIVE_WORKERS` | `8` | Max resident ACP sessions inside shared `agy acp` multiplexer |
-| `AGY_MAX_CONCURRENT_PROMPTS` | `6` | Max concurrent upstream LLM prompt executions |
+| `AGY_MAX_LIVE_WORKERS` / `AGY_MAX_CONCURRENT_PROMPTS` | `8` / `6` | Max resident ACP sessions and concurrent upstream LLM prompt executions |
+| `AGY_MAX_PROBE_WORKERS` | `1` | Dedicated non-preemptive slot budget for background WAF bisection and `util:` probes |
 | `AGY_IDLE_WORKER_TTL_SEC` | `1200` | Idle ACP session hibernation timeout (20 min, aligned with `agy` 270s stateless keepalive) |
 | `AGY_PARKED_TTL_SEC` / `AGY_MAX_TOOL_RELAYS` | `300` / `4` | Orphan parked tool deadline & max `ws_await_result` relays before cleanup |
 | `AGY_PREFILL_CANCEL_MIN_ELAPSED_SEC` | `30` | Elapsed prefill threshold before client disconnects trigger Soft-Detach |
@@ -309,7 +310,7 @@ curl -sS "http://127.0.0.1:18890/v1beta/models/gemini-4-carbon:streamGenerateCon
 - `agy_gateway_prompts_inflight` / `agy_gateway_max_concurrent_prompts`
 - `agy_gateway_parked_calls`
 - `agy_gateway_requests_total`
-- `agy_gateway_engine_exits_total` / `agy_gateway_worker_cap_rejections_total`
+- `agy_gateway_engine_exits_total` / `agy_gateway_worker_cap_rejections_total` / `agy_gateway_probe_slot_rejections_total`
 - `agy_gateway_soft_detach_total{outcome}`
 - `agy_gateway_session_reuses_total` / `agy_gateway_compaction_rollovers_total`
 - `agy_gateway_argon_degradation_detected_total` / `agy_gateway_argon_degradation_recovered_total`
@@ -331,28 +332,44 @@ curl -sS "http://127.0.0.1:18890/v1beta/models/gemini-4-carbon:streamGenerateCon
 
 ```text
 agy-acp-gateway/
+├── .github/workflows/          # Multi-arch Go test & GitHub Release automation
 ├── go-gateway/                 # Pure-Go gateway (CGO_ENABLED=0)
 │   ├── main.go                 # Dual-port bootstrap & bounded 10s graceful drain
 │   ├── http_handlers.go        # /v1/messages, /v1/chat/completions, /v1/responses + SSE ping framing
+│   ├── http_lifecycle.go       # Startup dependency wiring & graceful shutdown controller
 │   ├── gemini_v1beta.go        # Native Google Gemini REST /v1beta/* adapter
 │   ├── protocol_normalize.go   # Structured Output, Retry-After, 64-bit JSON & error classification
 │   ├── multimodal_normalize.go # 3-stage multimodal validator, sentinel & historical image cache
 │   ├── acp_engine.go           # Shared ACP stdio JSON-RPC multiplexor & soft-detach turns
+│   ├── acp_capabilities.go     # ACP agent capability & permission negotiation helpers
+│   ├── agy_notice.go           # Upstream notice classification (#3501 / enterprise / ToS / capacity)
 │   ├── gateway_pool.go         # Worker admission, Singleflight deduplication & idle reaper
-│   ├── session_lifecycle.go    # Session boot, 80K cold-resume & warm session/resume
+│   ├── session_fsm.go          # Root-package wrapper over explicit SessionPhase FSM
+│   ├── session_lifecycle.go    # Session boot, parked-tier sync, cold-resume & warm session/resume
 │   ├── session_runner.go       # Dual-watermark gen_metadata accounting, burn guard & recovery
+│   ├── tool_catalog.go         # Canonical tool digesting & incremental catalog deltas
 │   ├── mcp_bridge.go           # Ephemeral MCP HTTP server, sibling batching & cache-preserving tool_choice
 │   ├── outbound_cleanroom.go   # 3-stage Cleanroom scrub, credential redaction & ToS fuse
 │   ├── reversible_codec.go     # Session-scoped HMAC-SHA256 deterministic tag & tool schema codec
 │   ├── waf_autobisect.go       # Automated upstream 400 WAF message bisection
 │   ├── sqlite_protobuf.go      # Zero-lock protobuf reader for agy gen_metadata & steps
 │   ├── client_detect.go        # Full-path multi-client attribution detector (12+ clients)
-│   ├── models.go               # Canonical model catalog, aliases, effort tiers & quota pricing
-│   ├── store.go                # Persistent SQLite gateway.db & Prometheus /metrics
+│   ├── models.go               # Root facade over canonical model catalog & quota weights
+│   ├── store.go                # Persistent SQLite gateway.db (WAL R/W split + conversation_hot) & /metrics
 │   ├── dashboard.go            # /api/dashboard telemetry & official /usage quota sync
+│   ├── upgrade.go              # Idempotent upgrade status, approval verification & state gauges
+│   ├── internal/               # Acyclic layered subpackages (DI boundaries verified by AST DAG tests)
+│   │   ├── config/             # Immutable startup Snapshot, env helpers & URL/key redaction
+│   │   ├── cleanroom/          # Stem-gated 3-stage Cleanroom, HMAC reversible codec, ToS & WAF rules
+│   │   ├── protocol/           # 7-model catalog, unified SSEStreamSession, client detect & tool digests
+│   │   ├── acp/                # ACP Engine interface, capabilities & upstream notice definitions
+│   │   ├── store/              # SessionStore interface & zero-lock SQLite/protobuf WAL reader
+│   │   ├── session/            # Pure SessionPhase FSM, miss classifier & weighted worker LRU
+│   │   └── dashboard/          # Embedded web console state & upgrade metadata helpers
+│   ├── testdata/fakeacp/       # Offline synthetic ACP 1.5.10/1.5.11 + SQLite gen_metadata harness
 │   └── webui/                  # Warm-paper live console (HTML + Lucide SVG icons)
 ├── deploy/prod-upgrader/       # Container-host 4-gate upgrader & symlink hot-swapper
-├── scripts/                    # E2E suites, quota calibration, gw.sh & multi-arch upstream_watch.py
+├── scripts/                    # E2E suites (incl. cache resilience), quota calibration, gw.sh & upstream_watch.py
 ├── tools/                      # Multi-arch Gate 5 binary patcher (agy_extra_patch.py)
 └── third_party/                # Upstream context-unlock patcher (MIT)
 ```
@@ -380,9 +397,9 @@ Containerized host deployments (`deploy/prod-upgrader/`) surface verified candid
 ### Running Tests (Zero Quota)
 
 ```bash
-cd go-gateway && gofmt -l . && go vet ./... && go test -race -count=1 ./... && cd ..
+cd go-gateway && gofmt -l . && go vet ./... ./testdata/fakeacp/... && go test -race -count=1 ./... ./testdata/fakeacp/... && cd ..
 python3 -W error -m unittest discover -s scripts -p "test_*.py" -v
-python3 -m unittest discover -s deploy/prod-upgrader -p "test_*.py" -v
+python3 -W error -m unittest discover -s deploy/prod-upgrader -p "test_*.py" -v
 ```
 
 ---
@@ -400,10 +417,13 @@ python3 -m unittest discover -s deploy/prod-upgrader -p "test_*.py" -v
 
 ## Release History
 
-- **2026-11-18 (`Cache Preservation v2, Multi-Round Hardening, Desktop Telemetry & Multi-Arch Parity`)**:
-  - **Cache Preservation v2 Engine**: Froze `InitialSystemText`, `InitialAppendPrompt`, and `InitialToolsCatalog` across process restarts and `session/resume` (`preloadMCPServers` / `SetTurnOverlay`) for zero-byte prefix drift; enabled headerless `fp:` continuation across dynamic system edits via `(agentScope, cwd, historyFingerprint)` and `acp_<32hex>` parked call IDs; narrowed background utility heuristic misclassification; upgraded `PrefillSoftDetach` to context-aware tiers (`>=120K`, `>=48K`, default) with `120s` passive `end_turn` claim holding and in-flight singleflight coalescing; tuned `AGY_IDLE_WORKER_TTL_SEC=1200`, `AGY_MAX_TOOL_RELAYS=4`, and `55s` relay keepalive; stripped sliding `cache_control` / `<system-reminder>` wrappers before rollover comparisons; preserved warm `SessionID` / `MessageCount` on transient `429`/`503`/`529` and capacity fallback (`medium` tier on the same model).
-  - **Read-Only Desktop App Telemetry (`AGY_APP`)**: Added lock-free, pure `os.Stat` / `os.ReadFile` B-tree and WAL ingestion (`AGY_APP_CONV_DIR`, isolated when unset or disabled) with `parent_references` (`fork_step_idx`) deduplication so zero `-shm`/`-wal` side effects touch Desktop conversations, paired with live `AGY App` dashboard badges and tab counts.
-  - **Engine, Quad-Protocol & Ops Hardening**: Decoupled ACP control writes (`replyCh`) and lock-free lossless streaming delivery (`guardDeltaCallback`, `32MiB` queue); hardened multimodal v2 canonical sentinel (`trustedCanonical`), `parked_mcp_resume` user text/image forwarding, MCP `tools/list` HMAC schema encoding, idempotent upgrade approvals, `64`-bit `UseNumber()` JSON fidelity, multi-arch ELF/Mach-O Gate 5 patching (`linux_amd64`, `linux_arm64`, `darwin_arm64`), cross-platform `gw.sh` (Linux/macOS), dynamic container host upgrader paths, and `fakeacp 1.5.10` SQLite telemetry harness.
+- **2026-11-19 (`456x Hot-Path Latency & 95% WAL Optimization, Gemini 4 Neon & Parked Thinking-Tier Sync`)**:
+  - **Hot-Path Precomputation & SQLite WAL Split**: Eliminated per-turn full-history regex rescanning in `SeedFromConversationOnce` via precomputed cached cleanroom digests, added O(1) keyword stem prefiltering in `internal/cleanroom`, moved `formatParkedToolResultText` and `SystemPromptDelta` out of `s.mu`, lazy-evaluated cancellation history fingerprints, and introduced the `conversation_hot` side table plus WAL mtime/size short-circuiting in `SyncUsageStepsFromDir` (cutting composite warm-path latency ~456x and SQLite WAL write volume by ~95% in benchmarks).
+  - **`gemini-4-neon` (`xhigh`) & Parked Thinking-Tier Consistency**: Added canonical `gemini-4-neon` (`low`/`medium`/`high`/`xhigh`, enums `1532..1535`, `2.0x` LRU weight) alongside Desktop `gemini-4-hydrogen` enums; added `PendingThoughtLevel` and authoritative `TurnUsage.ActualTier` decoding from SQLite `steps` so in-flight parked sessions prevent double-step tier jumps and surface upcoming tier switches accurately on the dashboard.
+- **2026-11-18 (`agy 1.5.11+ Parity, Acyclic internal/* Refactor, Cache Resilience & Preservation v2`)**:
+  - **Architecture Refactor & `agy 1.5.11`+ Support**: Split core packages into an acyclic 7-subpackage `go-gateway/internal/` DAG (`config`, `cleanroom`, `protocol`, `acp`, `store`, `session`, `dashboard`) guarded by AST topology tests and dependency-injection interfaces; added immutable startup `config.Snapshot`, explicit `SessionPhase` finite-state machine, SQLite WAL read/write pool separation with bounded async snapshots, `AGY_MAX_PROBE_WORKERS` probe budget isolation, unified `protocol.SSEStreamSession` streaming, updated `scripts/agy_notice_templates.json` for `agy 1.5.11`, and `.github/workflows/release.yml` for multi-arch binary releases.
+  - **Cache Resilience & In-Place Contention Guards**: Unified cache-miss classification (`classifyCacheMissSpec`) with nonzero `cachedReadTokens` cursor tracking; preserved `parked_mcp_resume` sessions on client aborts; added orphan relay streak circuit-breaker, active `promptGen` epoch isolation, all-tier Carbon capacity fallback & `4x` LRU weighting, transient `-32603` in-session backoff retries, `computeFirstUserFingerprint` stripping bounds, and a 12-scenario `scripts/e2e_cache_resilience.py` suite.
+  - **Cache Preservation v2 & Desktop Telemetry**: Froze `InitialSystemText`, `InitialAppendPrompt`, and `InitialToolsCatalog` across process restarts and `session/resume`; matched headerless `fp:` continuations across system drift via `(agentScope, cwd, historyFingerprint)` and `acp_<32hex>` parked IDs; added context-aware `PrefillSoftDetach` (`>=120K`, `>=48K`, default), `120s` passive `end_turn` claim holding, and read-only `AGY_APP` B-tree/WAL telemetry (`fork_step_idx` deduplication) plus multi-arch ELF/Mach-O Gate 5 and Linux/macOS `gw.sh` parity.
 - **2026-11-17 (`agy 1.5.10, Multimodal v2 Pipeline, Anti-Deadlock Pipe, #3501 403 & 3-Stage Observability`)**:
   - **Upstream `agy 1.5.10` & Anti-Deadlock Base**: Raised gateway `GOMEMLIMIT` to `256MiB`, replaced `bufio.Scanner` with `ReadSlice('\n')` (`128MB` line cap), enforced process-group reap on exit and `56MB` outbound frame guard, and added strict model pinning checks.
   - **3-Stage Multimodal v2 Pipeline & `#3501` 403**: Unified image/text normalization and `count_tokens` across all four protocols, fixed `tool_result` image drops, added lazy unseen-delta HTTP image fetching with `64MB/15m` LRU cache, `16`-byte magic sniffing, kernel-level `net.Dialer.Control` SSRF blocking, and non-tripping `403 permission_error` handling for `#3501` / `GEMINI_ENTERPRISE_LICENSE_NOT_VALID`.

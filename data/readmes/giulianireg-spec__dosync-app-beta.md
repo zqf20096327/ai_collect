@@ -31,6 +31,12 @@ on the TV"*. **Your phone is the hub**: no extra device to buy, no account of ou
 If you later install DoSync from Google Play, uninstall the GitHub one first: they
 are signed differently and don't update each other.
 
+## DoSync hub (optional)
+
+If you want your home to keep responding when you leave with your phone, install a **DoSync hub**
+on a Raspberry Pi or an old computer: one command, it runs the same engine as the app, and the app
+reaches it from outside through an encrypted relay. See [the hub guide](hub/README.md).
+
 ## What it does
 
 - **Finds** what's on your Wi-Fi and Bluetooth and adds it with one tap.
@@ -99,6 +105,12 @@ no hace falta comprar otro aparato ni crear una cuenta nuestra.
 
 Si después instalas DoSync desde Google Play, desinstala antes la de GitHub: están
 firmadas distinto y no se actualizan una a la otra.
+
+## Hub DoSync (opcional)
+
+Si quieres que tu casa siga respondiendo cuando sales con el teléfono, instala un **hub DoSync**
+en una Raspberry Pi o una computadora vieja: un solo comando, corre el mismo motor que la app y
+la app lo alcanza desde afuera por un relevo cifrado. Ver [la guía del hub](hub/LEEME.md).
 
 ## Qué hace
 

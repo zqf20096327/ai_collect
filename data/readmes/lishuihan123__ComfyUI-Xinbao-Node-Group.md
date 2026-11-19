@@ -46,7 +46,7 @@
 - 所有加载项使用统一样式：上方选择模型，下方滑条和数值框调节强度；点击「增加／减少」管理加载项。每项均可按模型名称或文件夹关键词搜索，已有首项输入连线继续保留。
 - 强度范围 `0–2`、默认 `1`、步进 `0.1`；仅输入、输出模型。
 - 点击「点击查看更多分享」可访问心宝的哔哩哔哩主页。
-- LoRA 加载支持 Windows x64、CPython 3.10–3.14（标准版），自动适配新旧 ComfyUI 加载接口。
+- LoRA 加载支持 Windows x64、CPython 3.10–3.14（标准版），自动适配新旧 ComfyUI 加载接口；兼容整合包、便携版和虚拟环境。
 
 ### 心宝❤透视调节
 
@@ -133,7 +133,7 @@ cd ComfyUI\custom_nodes
 git clone https://github.com/lishuihan123/ComfyUI-Xinbao-Node-Group.git
 ```
 
-安装依赖后重启 ComfyUI 并刷新浏览器，即可在 `心宝♥节点组` 分类中找到以上功能：
+LoRA 加载所需运行组件已随包提供；其他功能仍需安装下方依赖。完成后重启 ComfyUI 并刷新浏览器，即可在 `心宝♥节点组` 分类中找到以上功能：
 
 ```powershell
 pip install -r requirements.txt

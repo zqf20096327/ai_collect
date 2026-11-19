@@ -4,9 +4,7 @@
 
 [![Site](https://img.shields.io/badge/site-goodcase.ai-orange)](https://goodcase.ai/?utm_source=goodcase-repo&utm_medium=github&utm_campaign=readme-zh&utm_content=badge)
 
-**爆款 AI 提示语，我们挑出来换个模型重跑，结果好坏都公开，例证跑得稳的 skill 标成稳定复现。**
-
-重跑过的，结果摆给你看。
+**[goodcase.ai](https://goodcase.ai/?utm_source=goodcase-repo&utm_medium=github&utm_campaign=readme-zh&utm_content=tagline) 是 AI提示语案例合集，这是它的开源仓。**
 
 ```bash
 npx skills add LearnPrompt/goodcase --skill goodcase

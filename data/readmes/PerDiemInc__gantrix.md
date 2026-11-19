@@ -244,7 +244,7 @@ npm run gantrix -- logs last compare_facts  # one step; add --full for system pr
 1. **Plan.** The planner sees the goal and every agent's description and tools. Its plan is
    checked for unknown agents, missing dependencies and cycles; problems go back to it (3 tries).
 2. **Schedule.** Every step whose dependencies are done starts, within each agent's
-   `--max-concurrency` and the worker's model slots (`GANTRIX_LLM_CONCURRENCY`).
+   `--max-concurrency` and the worker's model slots (**Settings → Task defaults**).
 3. **Run.** The agent works with its skills' tools in the task's folder
    (`~/.gantrix/workspaces/<task>`), up to 25 model turns.
 4. **Judge.** A judge model checks the reply and the files the step wrote against the step's
@@ -308,6 +308,59 @@ Examples are in [`examples/skills`](examples/skills): `workspace-files`, `shell-
 Installing a skill copies it to `~/.gantrix/skills/<name>/<version>` and records a checksum, so
 editing your original folder doesn't change what runs. To update a skill, bump its `version`
 and install it again.
+
+### Find and install a skill from the web
+
+On **Skills → Install a skill**, there are two ways to find one online, and both end at the same
+review.
+
+**Search online** looks in several places at once, and you choose which:
+
+| Source | What it searches | Needs |
+|---|---|---|
+| **skills.sh** | The [skills.sh](https://skills.sh) directory, ranked by installs | nothing |
+| **Featured collections** | The skills in Anthropic's [`anthropics/skills`](https://github.com/anthropics/skills) and in this project's [`examples/skills`](examples/skills), listed from the repositories themselves | nothing |
+| **GitHub repositories** | Repositories tagged `agent-skills` or `claude-skills`, or mentioning `SKILL.md` in their readme, by stars | nothing |
+| **Inside GitHub repos** | `SKILL.md` files on GitHub whose text matches | a GitHub connection: GitHub only allows code search with a token |
+
+With nothing typed, it shows the featured collections. A source that can't answer (a rate limit,
+no token, skills.sh down) says so and the others still do. If you have a **GitHub connection**
+(Connections), its token is used for GitHub's search and lookups: a much higher rate limit, and
+it enables the code search. It is sent only to `api.github.com`, never to skills.sh or to the
+file downloads. skills.sh's search is an unofficial, undocumented endpoint, so it may change;
+some of its results come from other registries and can't be installed from GitHub, which it says.
+
+**From a link** takes a paste instead:
+
+- a GitHub **repository** (it lists the skills inside, and you pick one),
+- a **folder** in one: `https://github.com/owner/repo/tree/main/skills/my-skill`,
+- a skill's **`SKILL.md`** on GitHub, or a direct `https://…/SKILL.md` link,
+- a **skills.sh page**: `https://skills.sh/anthropics/skills/frontend-design`. The link names the
+  skill but not its folder, so Gantrix finds the folder with that name in the repository (and
+  asks you to pick if there are several).
+
+Gantrix downloads it to a holding area and **shows you what it would install before anything is
+installed**: the description, where it is from, every file, the instructions the agent will
+follow, and in plain words what it can do on your machine: run shell commands, start programs
+(the exact command, for example `npx -y some-mcp`), run tools without asking, and any bundled
+scripts. You tick *I have read what this skill can do* and press Install. What you installed is
+exactly what you were shown: the files are checksummed, and the install is refused if they
+changed. Nothing is run when a skill is installed; it can only do things once an agent that has
+it runs a step.
+
+```bash
+npm run gantrix -- skills search "frontend design"       # every source; --sources skills-sh,github
+npm run gantrix -- skills add https://skills.sh/anthropics/skills/frontend-design
+# shows the same review, then asks "Install it? [y/N]"  (--yes skips the question)
+```
+
+Skills from GitHub are **pinned to the commit you reviewed** and recorded with their source, so
+the Skills page says where each one came from. A skill is code an agent can run, so only install
+ones you trust. The limits keep it small and plain: GitHub or a direct `SKILL.md` link over
+https (never a private or local address), text files only, at most 100 files, 512 KB each and
+2 MB in all, and no symlinks or submodules. A private repository can't be installed this way;
+download it and install the folder. GitHub allows 60 anonymous lookups an hour, so a busy hour
+may need a wait.
 
 ## Example: build me a website
 
@@ -520,21 +573,63 @@ Example: a *Daily pull request scan* with steps `Fetch open PRs` (agent with the
 
 Give an agent a Slack connection and it is a live teammate: always online, answering DMs and
 mentions as itself. It can answer people in Slack, using its own model and system prompt. It's off by
-default and **requires Slack bot credentials**:
+default and **requires Slack bot credentials**.
+
+### The easy way: the Connect Slack guide
+
+In the dashboard open **Connections → Connect Slack** (or `#/connect/slack`). It is about five
+minutes, in six steps, and each step says exactly where to click in Slack:
+
+<p align="center"><img src="site/assets/screenshots/slack-connect-1.webp" alt="The Connect Slack page: step 1, Open Slack with the manifest filled in, and step 2, install the app and paste the bot token" width="800"></p>
+
+1. **Create the app.** One button opens Slack's *create app* page with Gantrix's manifest
+   already filled in (name, bot user, permissions, Socket Mode). Or copy the manifest and paste it
+   at [api.slack.com/apps](https://api.slack.com/apps) → *Create New App → From a manifest*.
+2. **Install it, copy the bot token.** *Install App → Install to Workspace → Allow*, then
+   *OAuth & Permissions → Bot User OAuth Token*. It starts with `xoxb-`.
+3. **Make the app-level token.** *Basic Information → App-Level Tokens → Generate Token and
+   Scopes*, name it, add the scope `connections:write`. It starts with `xapp-`.
+4. **Add your member ID.** In Slack: your profile → *⋮ More → Copy member ID* (like
+   `U01ABCDE2F`). Only the people listed can talk to your agents.
+5. **Save and test.** Gantrix checks each field as you paste (it tells you if you pasted the
+   wrong kind of token), then connects to Slack and reports who the bot is, which workspace it
+   is in, and whether Socket Mode works. Slack's errors come back with the fix.
+6. **Choose the agents.** The project manager (`cpo`) is suggested first.
+
+<p align="center"><img src="site/assets/screenshots/slack-connect-2.webp" alt="Steps 3 and 4 of the Connect Slack page with the app-level token and a member ID filled in and checked" width="800"></p>
+
+The same walkthrough, with the Slack links, is on the site:
+[Connect Gantrix to Slack](https://perdieminc.github.io/gantrix/connect-slack/). Slack's own docs:
+[app manifests](https://docs.slack.dev/app-manifests/configuring-apps-with-app-manifests/),
+[Socket Mode](https://docs.slack.dev/apis/events-api/using-socket-mode),
+[finding a member ID](https://slack.com/help/articles/360003827751-Create-a-link-to-a-members-profile).
+
+### By hand
 
 1. Create the Slack app from [`docs/slack-app-manifest.yml`](docs/slack-app-manifest.yml) (it
    includes DMs and Socket Mode).
 2. On **Connections → Add connection → Slack**, save the app's **bot token** (`xoxb-…`), its
    **app-level token** (`xapp-…`, so Gantrix can hear messages) and the **allowed Slack user
    IDs**. Only those people can talk to the agents. **Test** checks all three.
-3. On **Agents**, press **Set up** next to *Slack* on an agent and pick that connection. (CLI:
-   `gantrix agents add writer --slack team-slack`.) Saving is refused until the connection has
-   a bot token, an app-level token and at least one allowed user.
+3. On **Agents**, press **Set up** next to *Slack* on an agent and pick that connection (or pick
+   it in the **Talk to it in Slack** menu when you add the agent). Saving is refused until the
+   connection has a bot token, an app-level token and at least one allowed user.
+
+Both tokens are secrets: Gantrix keeps them in your local database and never returns them, and a
+value written as `env:NAME` is read from the worker's environment instead.
 
 Then DM the bot, or mention it in a channel it's in: `@Gantrix writer: summarize what we
 shipped`. If several agents share one connection, start with the agent's name; with one, no
 name is needed. Replies stay in the thread, and the thread is the conversation. In chat an
 agent only talks; to make it do work with its tools, start a project or a job.
+
+**Ask it for its status.** On every message the agent is given its own current work, fresh from
+the database: its tasks in running projects (and how long each has run, and on which attempt),
+what is waiting for a person (a question to answer, a tool to approve), and what it finished or
+failed in the last 24 hours. Ask `@Gantrix writer: what's your status?` (or "what are you
+working on?", "anything blocked?") and it summarizes that in its own voice. It sees only its own
+tasks, never invents any, and if its model is down a status question is still answered, as a
+plain list of the same facts.
 
 ## Managing projects
 
@@ -584,6 +679,25 @@ npm run gantrix -- run "Build a one-page site for Crumb & Co and deploy it to AW
   project waits for your answer however long it takes. A project also still ends as `failed`
   if the planner can't produce a valid plan in three tries or the model server stays down.
 
+### Start anything from one button
+
+The **New** button in the top bar opens a menu: **Project**, **Job** or **Agent**. Each opens its
+form on its own page (`#/new/project`, `#/new/job`, `#/new/agent`), and a switch at the top moves
+between them. The Projects, Jobs and Agents pages are lists.
+
+Wherever you pick a model, it is a dropdown of what the chosen place offers (for Ollama, the
+models you have pulled). A model that isn't in the list stays selectable, and **Other…** lets you
+type a name; **Back to the list** undoes it. Press **refresh** after pulling a model.
+
+### Talk to the project owner
+
+Open a project and switch its chat panel from **Team** to **Owner** to ask where the project
+stands: what is done, what is blocked, what happens next. The owner is the project's `cpo` (or
+`pm`) agent when the team has one, otherwise a generic "Project owner". It answers from the
+project's live state each time, on the default model, and remembers the conversation. It never
+changes anything: to steer the team, use **Team**, or Stop and Add time. `GET` and `POST
+/api/tasks/:id/discussion` are the same conversation over the API.
+
 ### What's running right now
 
 The dashboard's **Live** page lists every agent working at this moment: its task and project,
@@ -606,7 +720,7 @@ channel). It works both ways:
 - **Commands** (mention the app): `status`, `add designer`, `remove cto`, `stop`, `resume`,
   `extend 60m`, `rename Crumb site`, `help`. A mention outside a thread lists running projects.
 
-Only users in `SLACK_ALLOWED_USERS` can interact with the app. Other users are ignored,
+Only the people listed under **Settings → Slack** can interact with the app. Other users are ignored,
 including status and questions. Set this to your verified Slack member ID for personal use.
 Send a goal by direct message or mention the app in the configured channel to start a project.
 All progress stays in that message's thread; reply there to continue. New Slack projects ask
@@ -618,18 +732,22 @@ so select local Ollama models for the planner and every agent before claiming lo
 
 1. Go to <https://api.slack.com/apps>, choose **Create New App → From a manifest**, pick your
    workspace and paste [`docs/slack-app-manifest.yml`](docs/slack-app-manifest.yml).
-2. **Install to Workspace**, then copy the **Bot User OAuth Token** (`xoxb-…`) into
-   `SLACK_BOT_TOKEN`.
+2. **Install to Workspace**, then copy the **Bot User OAuth Token** (`xoxb-…`).
 3. Under **Basic Information → App-Level Tokens**, generate a token with the
-   `connections:write` scope and put it (`xapp-…`) in `SLACK_APP_TOKEN`. Skip this step if you
-   only want updates, not replies.
+   `connections:write` scope and copy it (`xapp-…`). Skip this step if you only want updates,
+   not replies.
 4. In Slack, invite the app to a channel (`/invite @Gantrix`). Copy the channel ID from the
-   channel's details (it starts with `C`) into `SLACK_CHANNEL_ID`.
-5. Put your member ID (your profile → ⋮ → **Copy member ID**) in `SLACK_ALLOWED_USERS`.
-6. Restart the API. It logs `Slack: posting to C…, listening for replies`.
+   channel's details (it starts with `C`).
+5. Copy your member ID (your profile → ⋮ → **Copy member ID**).
+6. Open **Settings → Slack for projects** in the dashboard and paste the two tokens, the channel
+   ID and your member ID, then **Save** and **Test**. There is nothing to restart: the Slack
+   bridge starts, or restarts on new tokens, within a moment. (The
+   [Connect Slack guide](#talk-to-an-agent-in-slack) shows where each token is, with the same
+   steps and links.)
 
-Gantrix uses Socket Mode, so it needs no public URL and works on your laptop. Tokens stay in
-`.env`; the dashboard only learns whether Slack is set up.
+Gantrix uses Socket Mode, so it needs no public URL and works on your laptop. The tokens are
+saved in your local database and never shown again: the page only says whether they are set, and
+lets you replace or remove them.
 
 ## Approvals and safety
 
@@ -640,8 +758,9 @@ Gantrix uses Socket Mode, so it needs no public URL and works on your laptop. To
   `gantrix run --ask "…"`. Then shell, publishing, web, MCP and email calls wait for you, and
   only that step pauses. Decide with Approve/Deny on the project or Approvals page, in
   `gantrix tail <task>`, or with `gantrix approve <id>` / `gantrix deny <id>`.
-- To make every new project ask first, set `GANTRIX_APPROVE_ALL=false`. A skill's
-  `auto-approve` list can never waive `shell` or `deploy_site`.
+- To make every new project ask first, turn on **Ask me before risky tools** under
+  **Settings → Task defaults**. A skill's `auto-approve` list can never waive `shell` or
+  `deploy_site`.
 - **Local only.** The API (port 4700) and the preview server (4702) listen on `127.0.0.1` and
   answer only to `localhost`, `127.0.0.1` or `[::1]` as the address. A web page that points its
   own domain at your machine (DNS rebinding) gets turned away. If you set `GANTRIX_HOST` to
@@ -652,7 +771,8 @@ Gantrix uses Socket Mode, so it needs no public URL and works on your laptop. To
   target doesn't exist yet.
 - Image and video jobs give up after 15 minutes (images) or 60 minutes (video), or as soon as
   ComfyUI loses the job.
-- **Isolated steps (optional).** Set `GANTRIX_ISOLATED_STEPS=true` and each new project gives
+- **Isolated steps (optional).** Turn on **A separate folder for each task** under **Settings →
+  Task defaults** and each new project gives
   every step its own folder at `steps/<step-id>/`, so agents can't overwrite each other's
   files. A step gets copies of everything it builds on (its dependencies and theirs) in
   `inputs/<step-id>/`, the project's own files in `inputs/project/`, and a delegated step a
@@ -692,9 +812,26 @@ Run it as `npm run gantrix -- <command>`. `<task>` is `last`, a full ID, or the 
 
 ## Models
 
-`GANTRIX_DEFAULT_MODEL` (default `qwen3:8b`) plans and judges, and runs agents that don't set
-their own model. An agent's `--model` can be any Ollama model, or `openai/<model>` with a base
-URL for any OpenAI-compatible server (vLLM, llama.cpp, LM Studio).
+The **default model** plans projects, judges every task, and runs agents that don't set their
+own model. It is a setting, not an environment variable: choose it on the **Agents** page
+(**Default model**, the same dropdowns as everywhere), or with the CLI:
+
+```bash
+npm run gantrix -- default-model                                 # show it
+npm run gantrix -- default-model llama3.1:8b                     # a model on the local Ollama
+npm run gantrix -- default-model gpt-5-mini --connection openai  # on a saved connection
+npm run gantrix -- default-model --reset                         # the built-in qwen3:8b
+```
+
+It is saved in the database, so the API and the worker always agree and a change applies to the
+next task with no restart. Until you choose one it is the built-in `qwen3:8b` on the local
+Ollama. It can be a model on Ollama, OpenAI or Anthropic (it must plan and judge, so not Claude
+Code, Codex or a custom HTTP server), and its connection can't be deleted while it is the default.
+`GANTRIX_DEFAULT_MODEL` and `GANTRIX_DEFAULT_CONNECTION` are not read any more: if they are still
+in your `.env`, the API and worker warn at start; choose the model once and delete the lines.
+
+An agent's own model can be any Ollama model, or `openai/<model>` with a base URL for any
+OpenAI-compatible server (vLLM, llama.cpp, LM Studio).
 
 Small models tend to plan steps one after another and sometimes reject good work. A larger model
 plans more parallel steps and judges more accurately.
@@ -720,7 +857,7 @@ npm run gantrix -- agents add writer -s workspace-files -c claude -m claude-sonn
 
 | Provider | Default URL | Works with |
 |---|---|---|
-| `ollama` | `OLLAMA_BASE_URL` | Ollama, local or behind a proxy |
+| `ollama` | the address in **Settings → Ollama** | Ollama, local or behind a proxy |
 | `openai` | `https://api.openai.com/v1` | OpenAI, and OpenAI-compatible servers: vLLM, llama.cpp, LM Studio, LiteLLM, OpenRouter |
 | `anthropic` | `https://api.anthropic.com` | Anthropic, and Anthropic-compatible gateways |
 | `claude-code` | `claude` on your PATH | Your local Claude Code, run as `claude -p` (agents only) |
@@ -837,7 +974,7 @@ npm run gantrix -- agents add coder -d "Writes and edits code" -c claude-local -
 - Each run is started without MCP servers and without a saved session. It doesn't get the
   API keys or Gantrix secrets in its environment, so it always uses your Claude login.
 - The planner and judge still need an Ollama, OpenAI or Anthropic model, so Claude Code can't be
-  `GANTRIX_DEFAULT_CONNECTION`.
+  the default model's connection.
 - The step's tokens come from Claude Code's own report (new tokens only), and its usage counts
   against your Claude plan.
 
@@ -848,34 +985,43 @@ npm run gantrix -- agents add coder -d "Writes and edits code" -c claude-local -
 - `Authorization: Bearer …` and `x-api-key` go to each SDK's key setting. Without either, the
   SDKs read `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` themselves.
 
-**Using a connection for everything.** To have the planner and judge use a connection too, set
-`GANTRIX_DEFAULT_CONNECTION=<name>` and `GANTRIX_DEFAULT_MODEL=<that server's model>`.
+**Using a connection for everything.** To have the planner and judge use a connection too, choose
+it as the **Default model** on the Agents page (or `gantrix default-model <model> --connection
+<name>`).
 
 A connection whose URL isn't on this machine or your network is marked **cloud**. Prompts and
 task content then go to that service, and its prices apply.
 
 ## Configuration
 
-All settings are environment variables in `.env`; see [`.env.example`](.env.example).
+Most settings are chosen in the dashboard and saved in the database, so they apply at once with
+nothing to restart. The **Settings** page has:
+
+| Setting | Built-in | Meaning |
+|---|---|---|
+| **Ollama** address | `http://127.0.0.1:11434` | Where Gantrix looks for Ollama. **Find Ollama** tries the usual addresses (and `OLLAMA_HOST`) and fills it in; **Check** tests it. Both start Ollama if it is on this machine and not running |
+| **Task defaults** | 60 min, 200,000 tokens, 5 replans, 3 attempts, 2 model calls at once | What a new project starts with. Also: whether new projects **ask before risky tools** (off by default), and **a separate folder for each task** (off) |
+| **Slack for projects** | off | Bot token, app-level token, channel, who may steer, and the dashboard address used in Slack links. Tokens are never shown again |
+
+The **default model** is on the Agents page. Each project can still override its own limits and
+approval switch when you create it.
+
+What stays in `.env` is only what is needed before the database is reachable, plus the secret that
+protects the API; see [`.env.example`](.env.example):
 
 | Variable | Default | Meaning |
 |---|---|---|
 | `DATABASE_URL`, `REDIS_URL` | Compose ports | Postgres and Valkey |
 | `GANTRIX_TOKEN` | set by `npm run setup` | API token, at least 32 characters |
 | `GANTRIX_HOST`, `GANTRIX_PORT` | `127.0.0.1`, `4700` | API address |
-| `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Default model server |
-| `GANTRIX_DEFAULT_MODEL` | `qwen3:8b` | Planner, judge and default agent model |
-| `GANTRIX_DEFAULT_CONNECTION` | unset (Ollama) | A saved connection for the planner, judge and agents without their own |
-| `GANTRIX_LLM_CONCURRENCY` | `2` | Model calls at once per worker |
 | `GANTRIX_WORKSPACES_DIR`, `GANTRIX_SKILLS_DIR` | `~/.gantrix/…` | Where task files and skills live |
-| `GANTRIX_MAX_STEP_ATTEMPTS`, `_MAX_REPLANS`, `_MAX_TOKENS`, `_MAX_MINUTES` | 3, 5, 200000, 60 | Default budgets per task |
 | `GANTRIX_SITES_DIR`, `GANTRIX_PREVIEW_PORT` | `~/.gantrix/sites`, `4702` | Where deploy_site publishes, and the preview server's port |
-| `GANTRIX_APPROVE_ALL` | `true` | Tool calls run without asking; `false` makes every new project ask first |
-| `GANTRIX_ISOLATED_STEPS` | `false` | Each step of a new project works in its own folder with copies of its inputs |
-| `SLACK_BOT_TOKEN`, `SLACK_CHANNEL_ID` | unset | Projects with Slack on post progress to a thread in this channel |
-| `SLACK_APP_TOKEN` | unset | Socket Mode: replies and mentions in Slack reach the project |
-| `SLACK_ALLOWED_USERS` | empty | Slack member ids who may steer, answer, change the team, stop or rename |
-| `GANTRIX_DASHBOARD_URL` | `http://127.0.0.1:4701` | Where links in Slack messages point |
+
+**Moved from `.env`.** `GANTRIX_DEFAULT_MODEL`, `GANTRIX_DEFAULT_CONNECTION`, `OLLAMA_BASE_URL`,
+`GANTRIX_LLM_CONCURRENCY`, `GANTRIX_MAX_*`, `GANTRIX_APPROVE_ALL`, `GANTRIX_ISOLATED_STEPS`,
+`SLACK_*` and `GANTRIX_DASHBOARD_URL` are not read any more. If any is still in your `.env`, the
+API and worker print a warning at start naming the page to set it on (never the value of a token):
+set it once there, then delete the line.
 
 ## Development
 
@@ -887,6 +1033,26 @@ npm run test:e2e      # the real engine against Docker, with a fake model (no GP
 
 The end-to-end tests use their own database (`gantrix_test`) and Valkey DB 2, so they don't
 touch your data.
+
+### Database migrations
+
+Until the first release the schema has **one baseline migration**,
+`apps/server/drizzle/0000_init.sql`. To change the schema, edit `apps/server/src/db/schema.ts` and
+regenerate that one file:
+
+```bash
+rm -rf apps/server/drizzle
+npm run db:generate -w @gantrix/server -- --name init
+```
+
+then recreate your dev database (`docker compose down -v && npm run infra:up && npm run db:migrate`).
+From the first release on, schema changes become new numbered migration files instead
+(`npm run db:generate`), because deployed databases can't be recreated.
+
+A dev database that was migrated before the history was squashed into the baseline has the old
+migrations on record, so `npm run db:migrate` would try to create tables that already exist. If it
+has all the current tables, `npm run db:rebaseline` records the baseline as applied (it reports
+first, and changes nothing without `--yes`; no data is touched). Otherwise recreate it as above.
 
 Layout: `apps/server` (API, engine, worker), `apps/cli`, `apps/web` (dashboard),
 `packages/shared` (types used by all three), `packages/media-mcp` (image and video server),

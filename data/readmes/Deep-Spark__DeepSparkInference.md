@@ -46,6 +46,7 @@
 | DeepSeek-OCR                  | `vLLM`       | [✅](models/multimodal/vision_language_model/deepseek-ocr/vllm)     | 5.0.0     |
 | ERNIE-4.5-21B-A3B             | `FastDeploy` | [✅](models/nlp/llm/ernie-4.5-21b-a3b/fastdeploy/)                  | 4.3.0     |
 | ERNIE-4.5-300B-A47B           | `FastDeploy` | [✅](models/nlp/llm/ernie-4.5-300b-a47b/fastdeploy/)                | 4.3.0     |
+| Hy3-W4A8                     | `vLLM`       | [✅](models/nlp/llm/hy3-w4a8/vllm)                                 | 5.0.0     |
 | ERNIE-4.5-VL-28B-A3B-Thinking | `Transformers` | [✅](models/multimodal/vision_language_model/ernie-4.5-vl-28b-a3b-thinking/transformers/) | 4.4.0     |
 | GLM-4V                        | `vLLM`       | [✅](models/multimodal/vision_language_model/glm-4v/vllm/)          | 4.3.0     |
 | InternLM3                     | `LMDeploy`   | [✅](models/nlp/llm/internlm3/lmdeploy/)                            | 4.3.0     |
@@ -88,6 +89,7 @@
 | Qwen3-TTS-12Hz-1.7B-Base      | `Qwen-TTS`   | [✅](models/speech/speech_synthesis/qwen3-tts-12hz-1.7b/qwen-tts)   | 4.4.0     |
 | Qwen3.5-27B                   | `vLLM`       | [✅](models/nlp/llm/qwen3.5-27b/vllm)                               | 5.0.0     |
 | Qwen3.6-27B                   | `vLLM`       | [✅](models/nlp/llm/qwen3.6-27b/vllm)                              | 5.0.0     |
+| Xing4.0-29B-A4B               | `vLLM`       | [✅](models/nlp/llm/xing4.0-29b-a4b/vllm)                          | 5.0.0     |
 | DeepSeek-V3.1                 | `vLLM`       | [✅](models/nlp/llm/deepseek-v3.1/vllm)                            | 4.4.0     |
 | StableLM2-1.6B                | `vLLM`       | [✅](models/nlp/llm/stablelm/vllm)                                  | 4.3.0     |
 | Step3                         | `vLLM`       | [✅](models/multimodal/vision_language_model/step3/vllm)            | 4.4.0     |
@@ -307,6 +309,7 @@
 |---------------|-------|---------------------------------------|---------------------------------------|-----------|
 | CRNN          | FP16  |                                         | [✅](models/cv/ocr/crnn/ixrt)      |  4.4.0     |
 | DBNet         | FP16  |                                        |  [✅](models/cv/ocr/dbnet/ixrt)     |  4.4.0     |
+| PP-OCRv5_server_det | FP16  |                                        |  [✅](models/cv/ocr/pp-ocrv5_server_det/ixrt) |  5.0.0     |
 | Kie_layoutXLM | FP16  | [✅](models/cv/ocr/kie_layoutxlm/igie) |                                     |  4.3.0     |
 | SVTR          | FP16  | [✅](models/cv/ocr/svtr/igie)          |                                     |  4.3.0     |
 
@@ -364,6 +367,7 @@
 | Pixtral             |   vLLM   | [✅](models/multimodal/vision_language_model/pixtral/vllm)             | 4.3.0     |
 | Qwen-Image          |   ComfyUI  | [✅](models/multimodal/vision_language_model/qwen-image/comfyui)     | 4.4.0     |
 | Qwen-Image-2.1      | Diffusers  | [✅](models/multimodal/diffusion_model/qwen-image-2.1/diffusers)     | 5.0.0     |
+| Qwen-Image-2.1-Turbo | Diffusers  | [✅](models/multimodal/diffusion_model/qwen-image-2.1-turbo/diffusers) | 5.0.0     |
 | Stable Diffusion 1.5 | Diffusers   | [✅](models/multimodal/diffusion_model/stable-diffusion-1.5/diffusers)  | 4.3.0     |
 | Stable Diffusion 2.1 | ixRT   | [✅](models/multimodal/diffusion_model/stable-diffusion-2.1/ixrt)  | 4.4.0     |
 | Stable Diffusion 3 |   Diffusers   | [✅](models/multimodal/diffusion_model/stable-diffusion-3/diffusers)    | 5.0.0  |

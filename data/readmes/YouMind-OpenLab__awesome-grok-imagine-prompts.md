@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3438** |
+| 📝 Total Prompts | **3440** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-18** |
+| 🔄 Last Updated | **2026-11-19** |
 
 ---
 
@@ -189,6 +189,64 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
+### Sorceress with Silver Wings Prompt
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> A prompt for generating a female sorceress with long black hair, silver wings, and a gradient dress, used with Grok Imagine after initial image generation by ChatGPT.
+
+#### 📝 Prompt
+
+```
+A female sorceress with long flowing black hair and shining silver wings, wearing a dress with a three-color gradient of mediumpurple, mediumslateblue, and slateblue. A round green glowing energy floats in one hand. Aspect ratio 9:16. Please do not include any text. 🪽🟢
+```
+
+<img src="https://cms-assets.youmind.com/media/1795073931938_ifxvjy_HXd8Fr9bsAAGfP3.jpg" width="600" alt="Sorceress with Silver Wings Prompt">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14033)**
+
+**Author:** [華月光](https://x.com/hanagekkou) | **Source:** [Link](https://x.com/hanagekkou/status/2123303256768352580) | **Published:** Nov 19, 2026
+
+---
+### Cinematic Afternoon Scene with Cat and Dove
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> A detailed video prompt for Grok Imagine generating a 12-second cinematic scene of a woman relaxing on a wooden chair with a sleeping kitten and a white dove, featuring specific camera movements and consistency instructions.
+
+#### 📝 Prompt
+
+```
+A 12-second cinematic live-action video. A peaceful afternoon moment of a woman sitting cross-legged on a wooden chair by a window with sunlight filtering through trees. Throughout the video, maintain complete visual and positional consistency of the woman's features, her black hair tied up with a white ribbon, light blue sheer shirt, white easy pants, a white dove on her left shoulder, and a white kitten sleeping on her lap.
+
+[0s-4s: Scene 1 (Medium Shot @Image1)]
+Start based on @Image1. The woman remains in a cross-legged position on the chair,
+1. Slowly brings a mug held in both hands to her mouth, takes a sip of warm drink, and sighs in relief.
+2. Then looks down at the white kitten curled up sleeping on her lap, gazing at it affectionately and smiling gently.
+The white dove on her left shoulder tilts its head slightly, and the lace curtains sway faintly in the breeze.
+
+[4s-8s: Scene 2 (Close-up @Image2)]
+The camera smoothly zooms in, switching to a bust shot from @Image2. She maintains her cross-legged posture,
+1. Squints her eyes and takes a deep breath as if checking the steam and aroma rising from the mug.
+2. Then slowly turns her head towards the white dove on her left shoulder, smiling as if speaking to it gently.
+The greenery outside the window blurs softly, and gentle natural afternoon light illuminates her profile and hair.
+
+[8s-12s: Scene 3 (Medium Shot @Image3)]
+The camera smoothly pulls back again, returning to a medium shot from @Image3. Still cross-legged,
+1. She holds the mug with both hands against her chest, returns her gaze to the front camera, tilts her head softly, and strikes a pose.
+2. At the very end (11s-12s), she winks her right eye playfully and cutely, keeping the smile until fade out.
+
+[Visual Style & Audio]
+Natural movement that feels like slow motion, where time passes slowly and smoothly. Soft texture with a film-like quality and warm natural light. BGM is a calm and comfortable instrumental piece played by acoustic guitar and soft piano, perfect for a leisurely afternoon tea time.
+```
+
+<img src="https://cms-assets.youmind.com/media/1795073925607_dw83yc_HXZzsQiboAAJLbC.jpg" width="600" alt="Cinematic Afternoon Scene with Cat and Dove">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14032)**
+
+**Author:** [はる](https://x.com/HaluAIArt) | **Source:** [Link](https://x.com/HaluAIArt/status/2123257455878754415) | **Published:** Nov 19, 2026
+
+---
 ### Grok Imagine Fashion Show Scene Expansion
 
 ![English](https://img.shields.io/badge/lang-English-blue)
@@ -1961,60 +2019,4 @@ the camera zooms slowly into the window of the moving car, showing a man looking
 SpaceX – Beyond Earth
 A visionary montage of SpaceX technologies and human explorers working beyond Earth, from orbital outposts and deep-space craft to the first permanent footholds among the stars.
 The visuals present a cinematic, high-tech documentary style: sleek metallic hardware, Earthrise and starfields, clean white and black SpaceX design language, soft volumetric light, and a sense of quiet determination and awe.
-The camera moves with sweeping orbital tracking shots, slow dolly pushes across habitats and vehicles, and gentle aerial perspectives that emphasize scale and progress.
-The sound includes a calm, inspiring narration speaking the lines “Humanity isn't just reaching for the stars anymore. We're building the technology to live among them,” layered over deep ambient engine hums, soft thruster bursts, and a subtle, uplifting orchestral score.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118871611386515456/img/Tfb-eyjZPPKC0JK4.jpg" width="600" alt="SpaceX Beyond Earth Documentary Style Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13675)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118871728680272112) | **Published:** Nov 7, 2026
-
----
-### Optimus Prime Rising from Ocean
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A detailed video generation prompt for Grok Imagine describing Optimus Prime emerging from a stormy ocean. Includes specific instructions on motion, environment, and consistency.
-
-#### 📝 Prompt
-
-```
-Generate a continuous video of an enormous metallic silhouette rising from a deep ocean during a violent thunderstorm: water cascades from Optimus Prime's armor as he fully emerges and stands above the waves.
-
-At the start: only the dark ocean surface and heavy storm are visible, with rain and lightning flashing across a black, churning sea. Principal event: an enormous metallic silhouette breaks the surface, rising steadily; water cascades in heavy sheets from every joint and plate of Optimus Prime's armor. He continues climbing until his full upper body and then his complete towering form stand clear above the waves. At the end: Optimus Prime stands fully emerged and upright above the storm-tossed ocean, armor still streaming with water under the lightning-lit sky.
-
-Keep Optimus Prime's identity, metallic armored form, and single continuous rising motion stable; maintain the deep-ocean setting, violent thunderstorm, cascading water, and dark storm atmosphere throughout.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118761821905584128/img/JMEVDEMR_5inYpJO.jpg" width="600" alt="Optimus Prime Rising from Ocean">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13674)**
-
-**Author:** [Ai Mini Thoughts Creator](https://x.com/Aiminithoughts) | **Source:** [Link](https://x.com/Aiminithoughts/status/2118762128475635964) | **Published:** Nov 6, 2026
-
----
-### Cyberpunk Female Optimus Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A prompt for generating a cinematic cyberpunk video of a female Optimus Prime walking through a rain-soaked metropolis using Grok Imagine.
-
-#### 📝 Prompt
-
-```
-Female Optimus walks slowly through a rain-soaked futuristic metropolis. Neon reflections move across her armor as hundreds of robotic vehicles stop and watch their leader.
-
-The visuals present a cinematic, high-contrast cyberpunk style with wet asphalt, glowing neon signs, and continuous rain streaks.
-
-The camera uses a low-angle tracking shot that slowly follows her from behind, then pans and rises to a medium wide shot revealing the stopped robotic vehicles lining the streets.
-
-The sound includes heavy rain on metal, the low mechanical hum of her footsteps, distant traffic fading into silence, and a deep resonant ambient score.
-
-Disclaimer: This video is an AI-generated fictional sci-fi concept created for entertainment purposes only.
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118657831540838400/
+The camera moves with sweeping orbital tracking shots

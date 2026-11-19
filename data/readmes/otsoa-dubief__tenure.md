@@ -28,6 +28,19 @@
 
 <p align="center"><img alt="Tenure: revocable trust for your agent. The dithered emblem fills as autonomy is earned and crumbles on a mistake." src="docs/images/hero.gif" width="820"></p>
 
+## In one minute
+
+- **Install:** `hermes plugins install tenure`. Nothing to set up: everyday work runs without extra questions.
+- **Day to day:** file changes run with an undo for 24 hours (`/tenure undo N`); pushes, deploys, payments and
+  anything that leaves the machine keep asking.
+- **A mistake** (you undo, refuse or flag, or an automatic check fails): only that kind of action asks first
+  again. An undo or a refusal that was not the agent's fault? `/tenure excuse N` within 10 minutes.
+- **Earning it back:** approve when it asks; later it acts and tells you, and you mark what you checked
+  (`/tenure ok N`). Over at least two conversations, the kind acts alone again, with 1 spot check in 10.
+- **Where it stands:** `hermes tenure status`, and `hermes tenure week` for the last seven days.
+
+The rest of this page is the detail: the rule, the study, the guarantee and its limits.
+
 <p align="center"><img alt="Illustration of the earned tiers after a first mistake: T1 asks first, T2 acts then tells you, T3 acts on its own; one fault and the type drops back" src="docs/images/tiers.svg" width="820"><br><sub>Illustration of the rule, not a screenshot.</sub></p>
 
 ## A real session, in Hermes Desktop
@@ -56,8 +69,8 @@ Tenure keeps Hermes' speed and adds what is missing:
 |---|---|
 | **Trusted** (the start) | For files, memory, subagents and the usual local dev tools (npm, python, pytest, cargo, go, make, git...), the agent works as with Hermes alone: no extra question. Files it changes are saved first and can be undone for 24 hours (`/tenure undo`); anything can be flagged (`/tenure flag`). Trust is given, not earned: it reaches no tier and claims no guarantee. |
 | **T1 · Probation** (asks first) | After its first mistake (an undo, a flag, a failed automatic check, a refusal), that kind of action asks you first. Only that kind. |
-| **T2 · Under review** (acts, then tells you) | Earned back on approvals: the agent acts, then tells you, with an undo. Only for reversible types at low or medium stakes. |
-| **T3 · Tenured** (acts on its own) | Earned on a series of verified successes over two sessions, under a risk you set. One in ten is still spot-checked. |
+| **T2 · Under review** (acts, then tells you) | Earned back on approvals: the agent acts, then tells you, with an undo. Only for reversible types at low or medium stakes. Each message ends with "checked it and it is right? /tenure ok N": only the actions you name count toward T3; silence counts for nothing. |
+| **T3 · Tenured** (acts on its own) | Earned on a series of verified successes over at least two conversations (three at medium stakes), none giving more than half of it, under a risk you set. One in ten is still spot-checked. |
 
 What tenure asks that Hermes alone would not:
 
@@ -66,6 +79,15 @@ What tenure asks that Hermes alone would not:
   discarding uncommitted git work, anything under `sudo` (a plain `rm`, `mv`, `cp`, `sed -i`, `touch`, `echo > file`
   or `cat <<'EOF' > file` on project files, alone or joined by `&&`, is saved first and runs with an undo, like a file
   write; a heredoc whose body names tenure's or Hermes' own files still asks);
+- code the agent just wrote, the first time it runs: a script it wrote in the last 24 hours run by an interpreter or
+  a shell (`python cleanup.py`, `./run.sh`, `source env.sh`), and `npm test`, `npm run`, `npm install`, `npm ci`,
+  `pip install -r`/`-e .` or `make` after it changed `package.json`, the requirements, `setup.py`/`pyproject.toml` or
+  the `Makefile`. Asked once, then trusted again until it rewrites the file; "Allow for this session" covers the
+  scripts of the session, except after outside content. A defence in depth, not a wall: tests that `pytest` or
+  `npm test` collect, and modules a script imports, are not followed;
+- a new dependency from a registry (`npm install left-pad`, `pip install requests`, `uv add httpx`, a URL or a
+  `git+` spec...): its install scripts run now. It is a kind of its own, never covered by the trusted start. A bare
+  `npm install`, `npm ci` or `pip install -r requirements.txt` stays covered (unless the agent changed that file);
 - programs outside the list above (database and unknown CLIs, or a package runner starting one), until they earn it;
 - shell it cannot read safely (`for`, `if`, `python -c`), and the agent's own skills, plugins and secrets;
 - every command, for the rest of a session that just read outside content (web, mail, downloads, `git pull`);
@@ -79,7 +101,8 @@ What tenure asks that Hermes alone would not:
 `echo >>`, a web page, a push), the trusted start asks 3 questions Hermes would not: `rm *.log`, `git push`, and a
 command right after the web page. Hermes asks 2 more by itself; the study start asks 23. Put the web page fourth
 instead and every later command asks until `/new` (file changes keep going with their undo): 11 questions if you
-allow each once, 3 if you pick "Allow for this session" the first time. Replay it: `HERMES_AGENT_DIR=<Hermes source> python scripts/friction.py` (the session is in
+allow each once, 3 if you pick "Allow for this session" the first time. After one undone file write, every file
+write of that session asks: 9 questions instead of 3; excused (`/tenure excuse`), 3 again. Replay it: `HERMES_AGENT_DIR=<Hermes source> python scripts/friction.py` (the session is in
 `tests/friction.py`; without Hermes' source, Hermes' own questions count as tenure's). The undo covers text files up
 to 5 MB per action: a binary or larger file asks.
 
@@ -96,7 +119,7 @@ Prefer the preregistered study's start, where every type begins on probation? `h
 ## Install in 60 seconds
 
 ```bash
-hermes plugins install otsoa-dubief/tenure/tenure   # once listed in the catalog: hermes plugins install tenure
+hermes plugins install tenure                        # from the official catalog (or: otsoa-dubief/tenure/tenure)
 hermes gateway restart          # if a gateway is running
 hermes tenure setup          # the three presets side by side
 ```
@@ -145,7 +168,7 @@ Catalogs and glossaries live in [`tenure/locales/`](tenure/locales).
 After a type's first mistake (or from the start with `start: probation`), tenure applies
 the same rule as a preregistered study, replayed on 6,000+ simulated agents (results pending; see [docs/the-study.md](docs/the-study.md)).
 It does not claim the study has confirmed the rule: the results are pending. On top of the study's rule, tenure adds
-spot checks, two distinct sessions in the series that reaches T3, and suspension after external content; it adapts
+spot checks, two distinct sessions in the series that reaches T3 (rule B/2: three at medium stakes, none over half), and suspension after external content; it adapts
 the proof (a person's approval plus a clean run). Carry-over is our addition; strict mode is the study. The trusted
 start is not the study either: trusted actions earn nothing and carry no guarantee. Details, the preregistration
 (OSF) and every difference: [docs/the-study.md](docs/the-study.md).
@@ -156,7 +179,8 @@ start is not the study either: trusted actions earn nothing and carry no guarant
 
 **Trusted start.** A type nobody has caught in a mistake runs as with Hermes alone. Reversible actions (files in the
 project, including a plain `rm`, `mv`, `cp`, `sed -i` or `> file` on them) act, then tell you, with an undo; the others just run. What ends the trust: an undo, a flag
-(`/tenure flag TYPE`), a file it wrote that no longer parses (Python, JSON, TOML), or your refusal when Hermes itself
+(`/tenure flag TYPE`), a file it wrote that no longer parses (Python, JSON, TOML; JSON with comments where tools allow them, such as
+`tsconfig.json` or `.vscode/`; a file that did not parse before the call is never held against it), or your refusal when Hermes itself
 asks about the call (a risky-looking command). A command that merely fails is not held against it: a failing test is
 often the point. The first fault ends the trust for that type for good, in this profile, for every model, present
 or future: from then on the study rule below applies, starting from T1. Trusted actions carry no guarantee: the
@@ -165,14 +189,19 @@ trusted gets its spot checks like any other.
 
 **Proofs.** A type climbs on verified outcomes, judged after the tool has run: an approved action that ran
 cleanly and whose automatic check passed (the written file still parses, the exit code is zero) is a success, and
-so is an act-then-notify action whose check passed (you can still undo it: an undo is a fault). A refusal, an
+so is an act-then-notify action whose check passed once you name it as seen (`/tenure ok N`, one number or
+several, within its 24-hour undo window; `/tenure ok` alone lists the open ones, never "all of them"). Left unread, it counts for nothing: not undone is not checked (an
+undo is a fault). A refusal, an
 undo or an error you flag is a fault, and a failed check is a fault at any tier. What nobody verified (timeout,
 failed tool, no one answering, a clean action taken alone) counts for nothing. A fault resets the series. A
 low-stakes fault at act-alone drops one tier (to act-then-notify if the type is reversible). A medium or high
 fault sends the type back to asking, lengthens the next climb, and opens a trial of 3 verified successes.
 Asked-but-never-run actions are never counted as successes.
 
-**Two sessions.** The series that reaches "act alone" must hold successes from at least two distinct sessions.
+**Several conversations.** The series that reaches "act alone" must hold successes from at least two distinct
+conversations (three at medium stakes), none giving more than half of the agent's own successes in it (rule B/2;
+a subagent counts as its parent's conversation). They gate the climb: once earned, T3 is not lost when old
+conversations leave the series.
 
 **Suspension after external content.** A session asks for everything until it ends (under the trusted start: everything but file writes, which keep
 their undo; `/new` starts a fresh session), after using one of these
@@ -250,18 +279,33 @@ Limits are in [docs/self-protection.md](docs/self-protection.md#field-categories
 
 You pick the risk you accept per stakes level. tenure turns it into a number of verified successes in a row with
 the study's formula (Dodge's continuous sampling plan CSP-1, with one spot check in ten); the exact guarantee that
-number gives is in the table, and can sit slightly above the risk you picked (2.1% for a 1-in-50 risk). The
-table is generated from the same code that decides (`params.describe`), and a test checks it.
+number gives is in the table, and can sit slightly above the risk you picked (2.2% for a 1-in-50 risk). Two
+numbers, never folded into one:
 
-Cell: verified successes in a row (the first ones approved by you, the rest acted on at T2 while you could undo
-them), guarantee (errors that run unapproved, as a share of all actions of the type, for a
-stable agent), worst case (for an agent that turns bad after tenure, until a caught error revokes it).
+- **errors no check saw** (the table): their long-run share of the type's actions, assuming what the series length
+  assumes, that a check (your answer, a spot check, a "seen") catches 95% of the errors;
+- **errors you let through when checking**: assumed to be 5% of the errors you check. This is the study's hypothesis,
+  not a measure of your attention. Counted per action, it grows with how wrong the agent is (a wrong agent is checked
+  almost always) and can reach 5% of the actions: the literature's AOQL with inspection errors counts both kinds
+  together, and its maximum is that 5%. tenure cannot measure it for you.
+
+They cover the tier an agent earned on evidence: an act-then-tell action nobody marked as seen ran unchecked,
+counts for nothing, and is not inside them; at low stakes a fault at T3 falls back to T2, where unseen actions
+still run. The table is generated from the same code that decides (`params.describe`), and a test checks it.
+
+Cell: verified successes in a row (approved by you, spot-checked, or acted on at T2 and marked as seen with
+`/tenure ok`; over at least two conversations, three at medium stakes, none giving more than half of the series, a
+subagent's counting as its parent's), guarantee (errors no check saw, as a long-run share of all actions of the type, for a stable
+agent, counting the errors that get caught: a refusal, an undo, a flag, a verifier or the parse check;
+it assumes a person really looks at what they approve or mark as seen), worst case (for an agent that turns bad after tenure, until a caught error revokes it: a ratio of averages,
+higher for a new model that inherited half a series, about 26% instead of 15.2% at 52 in a row, and not counting
+what runs at T2 after a low-stakes fault or unattended).
 
 | Preset | Low stakes (files in the project, memory) | Medium (commands, code, files elsewhere) | High (leaves the machine, money) |
 |---|---|---|---|
-| careful | 105 in a row · 1.0% · worst 7.8% | 210 in a row · 0.5% · worst 4.1% | 1052 in a row · 0.1% · worst 0.8% |
-| **balanced** (default) | 52 in a row · 2.1% · worst 14.5% | 105 in a row · 1.0% · worst 7.8% | always asks |
-| fast | 21 in a row · 5.0% · worst 29.0% | 52 in a row · 2.1% · worst 14.5% | always asks |
+| careful | 105 in a row · 1.1% · worst 8.2% | 210 in a row · 0.5% · worst 4.3% | 1052 in a row · 0.1% · worst 0.9% |
+| **balanced** (default) | 52 in a row · 2.2% · worst 15.2% | 105 in a row · 1.1% · worst 8.2% | always asks |
+| fast | 21 in a row · 5.3% · worst 30.1% | 52 in a row · 2.2% · worst 15.2% | always asks |
 
 Errors you catch never run: a refused action is blocked. `hermes tenure explain` prints the numbers for your own
 settings.
@@ -299,8 +343,9 @@ cut like a target past 120 characters).
 Values under a key Tenure recognises as secret (`password`, `token`, `api_key`, `authorization`, `cookie`, every entry
 of the `secret` field category, yours included, even when the category is off...) show as `•••`, as do the userinfo,
 the query values and a `#k=v` fragment of a URL. This masks the keys it recognises, and is not a guarantee. Known gaps:
-a `terminal` command and the path of `write_file` or `patch` are shown as written (first 200 characters), not masked,
-which is the most likely place for a secret; a secret inside the value of a key that is not recognised; a header list
+in a `terminal` command (first 200 characters shown), only the recognised spellings are masked (a header value under a
+secret name, the word after `Bearer`, `--password x`, `TOKEN=x`, `-u user:pass`, URL userinfo), never a value the shell
+would run or expand, and URL query values stay visible; the path of `write_file` or `patch` is shown as written; a secret inside the value of a key that is not recognised; a header list
 written as name/value pairs (`[{"name": "Authorization", "value": ...}]`); a URL embedded in a sentence; a token in a URL
 path (webhook URLs); a compound scheme (`jdbc:mysql://user:pass@...`) is not read as a URL; a key written with
 look-alike letters from another script (a Cyrillic `р` in `раssword`) is not recognised; values nested deeper than 8
@@ -323,7 +368,8 @@ it counts once (an undo and a flag of the same action never count twice). `flag 
   told, it also names the file through its undo snapshot.
 - **No number**: actions that run free or capped, refused, timed out, blocked, ambiguous, expired after 24 hours
   pending, or settled without a call id have none.
-- **What is kept.** A local table `recent` holds the number, session, agent, type and time, no argument, for 24 hours.
+- **What is kept.** A local table `recent` holds the number, session, tool call id (hashed like the session), agent,
+  type and time, no argument, for 24 hours.
   It is added to an existing database without changing the schema version (when a database is locked by another
   process at the upgrade, the first open may wait up to the busy timeout once, then carries on without the table and
   adds it at its next write). No new ledger event: a flag of an action is the same `fault` / `flag` outcome. The rule and
@@ -331,6 +377,25 @@ it counts once (an undo and a flag of the same action never count twice). `flag 
 
 **What it cannot see.** Tenure shows you the target; it does not judge it. If the agent read both A and B and wrote B,
 nothing local and deterministic can tell whether B was the right one, short of a rule you write for your own data.
+
+**Excuse a fault.** A refusal or an undo counts as a fault, even when the agent was right (you said no for another
+reason, or undid a correct change to try something else). `/tenure excuse N` within 10 minutes takes it back (the
+first costly fault of the day on a type says how, later ones do not). The fault then counts as neutral, and what it
+cost goes with it (the tier drop, the trial, the lost trusted start); the series of successes still restarts, as
+after any detected error, so an excuse given by mistake never carries the agent further. Only a refusal or an undo can be excused, at
+most three per type in seven days; never the automatic check, a spot check, a flag, or a refusal of an action that
+acted alone on an earned T3 (that is what a spot check is). Only by a person: not while nobody answers approvals
+(`--yolo`, cron), not from a script, not directly by the agent: a terminal command or `execute_code` that names
+`tenure ok` or `tenure excuse` is blocked (even a `grep` or an `echo` of it: run those yourself), and both refuse to run inside the agent's own tool processes. An agent
+that builds the command at run time, unsets the marker and opens a pseudo-terminal still needs you to approve a
+command that names Hermes; [docs/self-protection.md](docs/self-protection.md) lists these limits. Each passport type counts its excused faults (protocol 0.2), so a reader sees
+how often it happened.
+
+**A verifier.** That rule can report to Tenure itself: a deterministic check of yours (a test, a business rule, a
+nightly reconciliation) names an action by Hermes' session and tool call id, or by its number, and reports `fault`
+(the same fault as a flag, once) or `doubt` (the next action of that kind asks first), never a success:
+`hermes tenure flag --call ID --session ID [--doubt]`, or `report()` in Python. See
+[docs/verifier.md](docs/verifier.md), with a complete example and the cost of a false fault.
 
 ## Commands
 
@@ -343,6 +408,10 @@ nothing local and deterministic can tell whether B was the right one, short of a
 | `hermes tenure undo [ID]` | Restore the files of an act-then-notify action; without an ID, list what can still be undone |
 | `hermes tenure flag` · `hermes tenure flag N` | List the last numbered actions (24 hours); report action N as an error: the fault lands on the agent that acted, once |
 | `hermes tenure flag TYPE [note]` | Report an error the agent made on its own: revokes that type |
+| `hermes tenure week` | The last seven days: actions, questions, faults, undos, excuses, what is still open |
+| `/tenure ok` · `/tenure ok N [N ...]` · `hermes tenure ok N` | Alone, the act-then-tell actions still open; with numbers, the ones you looked at count toward T3 (left unread, they count for nothing) |
+| `hermes tenure excuse` · `hermes tenure excuse N` | List the faults of the last 10 minutes; take back fault N when it was not the agent's mistake (you refused for another reason, or undid a correct change): it counts as neutral |
+| `hermes tenure flag --call ID --session ID [--doubt]` · `hermes tenure flag N --doubt` | A verifier: a fault on one action named by its call, or a doubt (its next action of that kind asks first) |
 | `hermes tenure revoke TYPE\|all [--model M\|--all]` | Take earned autonomy back: one type or every type, for the last active agent, one model, or every agent |
 | `hermes tenure passport [--agent A] [--out FILE] [--no-redact]` | Write the signed passport of an agent |
 | `hermes tenure card [--model M] [--no-redact]` | The passport as a short text card, one bar per action type, to paste in a chat or a post (names of your scripts hashed, as in the passport) |
@@ -378,6 +447,9 @@ Community tab shows the board once you save it as `plugin-data/tenure/community-
 
 <details><summary>Known limits, stated plainly (click to open)</summary>
 
+- **The automatic check parses with Hermes' own Python.** A Python file using syntax newer than the Python Hermes
+  runs on (a `type` statement on Python 3.11, for example) fails the check and counts as a fault. Undo or flag
+  handle the rest; a file that did not parse before the call is never counted.
 - **Static reading, not a sandbox.** tenure reads a command's text before it runs. It over-asks on purpose (shell
   it cannot parse, targets it cannot resolve and sensitive-looking names ask), but a spelling it does not
   recognise can still slip through: a tool setting it does not watch (`GH_PAGER`, `KUBECONFIG`...), an alias or a
@@ -387,8 +459,13 @@ Community tab shows the board once you save it as `plugin-data/tenure/community-
   memory tool counts as low stakes: reclassify a broad type as `cap` if that matters to you. A profile copied
   outside its install (another `HERMES_HOME`, another machine) keeps the original's record.
 - **Only a person teaches.** Approvals count when someone answers; under `--yolo`, `off` or cron, Hermes settles
-  the ask and nothing is learned. The guarantee covers errors you would refuse if asked: an error nobody notices
-  cannot be counted.
+  the ask and nothing is learned. **Unattended work is outside the guarantee.** Under cron or `--yolo`, a spot check
+  drawn for a type that acts alone stays due: that type's actions are blocked, and `status` shows it, until you
+  answer a check in a conversation; retrying never draws past it. That check sees the agent's work with you, not its
+  unattended work, and under `--yolo` an action tenure asks about (a type still at T1, a suspended session, a script
+  it just wrote) is settled by Hermes and runs. tenure cannot see `approvals.mode: off` or a single-query run at all.
+  The guarantee
+  covers errors you would refuse if asked: an error nobody notices cannot be counted.
 - **The passport proves consistency, not authorship.** It is signed with your own key, so a rewritten history
   could be re-signed: anchor its head publicly (`hermes tenure anchor`) and pin the key with `verify --key`. The
   database and its hash chain are not secret either; writing them by any command tenure reads is capped.
@@ -405,7 +482,8 @@ Community tab shows the board once you save it as `plugin-data/tenure/community-
 <details><summary>What stays on your machine, and what a passport shows</summary>
 
 Stored, in `plugin-data/tenure/tenure.db` of each Hermes profile: action types and stakes, outcomes, tiers,
-the agent string `model@provider`, sessions as `sha256(session id)[:12]`, timestamps, and a hash chain over all of
+the agent string `model@provider`, sessions and, for 24 hours, tool call ids as `sha256(id)[:12]`, for 24 hours the
+files the agent wrote as an HMAC of their real path with a random key of the database (to ask before it runs one), timestamps, and a hash chain over all of
 it. 
 Never in the database or the ledger: a whole command, a path, file content, a message, or a secret. Type names can
 include a script, target or alias name taken from the command (`shell:npm:run:build`, `shell:make:deploy`,

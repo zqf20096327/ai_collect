@@ -170,7 +170,7 @@ npx elflodge batches submit postings.jsonl --id postings \
 
 The first title said II; the responsibilities said senior.
 
-`npx elflodge <command> --help` lists a command's flags, and the hub's reference at `/docs` every field of the API.
+`npx elflodge <command> --help` lists a command's flags. The hub's OpenAPI document at `/spec.json` describes each public call and its parameters.
 
 ## Stop watching your agents
 
@@ -180,7 +180,9 @@ Two postings you can watch. Five hundred you count. With five hundred, this happ
 2. After the Canary, if more than 10% of the jobs that have ended since it began failed, the Batch pauses. This is the failure breaker. It judges from the first jobs to end, so a run of early failures pauses a large Batch quickly.
 3. `batches resume --id postings` carries on where it stopped; `batches pause`, `cancel` and `get` work the same way, as do single jobs, and ended jobs can be deleted.
 
-The hub records every job's events (what the agent did), activity, usage in tokens and cost, and output. A Batch counts its jobs by status, and jobs can be listed by status, label, Batch and custom ID:
+The hub records every job's events (what the agent did), activity, usage in tokens and cost, and output. Owners and admins can read `GET /usage` for job ends, tokens and cost over a window and on every UTC day in it, including empty days. With `groupBy`, the same read ranks groups over the whole window and adds up the rest as `other`. Each end counts on the day the hub recorded it, including a resumed job's next end and ends of deleted jobs.
+
+A Batch counts its jobs by status, and jobs can be listed by status, label, Batch and custom ID:
 
 ```sh
 npx elflodge batches get --id postings | jq -c .jobCounts   # {"queued":0,"running":0,...,"succeeded":2,...}
@@ -194,11 +196,11 @@ Jobs can be added continuously (`add-jobs`, `jobs submit`) and read continuously
 
 Underneath, it is a plain job queue whose worker happens to think: an HTTP API on Postgres (Node or Docker, or Cloudflare Workers with Postgres through Hyperdrive), and Runners that connect out to it. The repository is `elflodge/elflodge`: TypeScript on Effect, oRPC, Hono and Zod, with Pi and sandbox-runtime inside. The CLI, the npm package `elflodge`, only calls the hub's HTTP API.
 
-So can anything else. Your hub serves an OpenAPI 3.2 document at `/spec.json` and a browsable reference at `/docs`:
+So can anything else. Your hub serves an OpenAPI 3.2 document at `/spec.json`.
 
 ```sh
 eval "$(npx elflodge stack env)"   # exports ELFLODGE_URL and ELFLODGE_API_KEY
-curl -sS -H "x-api-key: $ELFLODGE_API_KEY" "$ELFLODGE_URL/spec.json" | jq '.paths | keys'
+curl -sS "$ELFLODGE_URL/spec.json" | jq '.paths | keys'
 curl -sS -H "x-api-key: $ELFLODGE_API_KEY" "$ELFLODGE_URL/jobs?status=succeeded"
 ```
 

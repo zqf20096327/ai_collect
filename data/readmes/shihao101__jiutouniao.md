@@ -11,7 +11,7 @@ and evidence-chain reporting.
 [![CI](https://img.shields.io/github/actions/workflow/status/shihao101/jiutouniao/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/shihao101/jiutouniao/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/shihao101/jiutouniao?style=flat-square)](https://github.com/shihao101/jiutouniao/releases)
 [![License](https://img.shields.io/github/license/shihao101/jiutouniao?style=flat-square)](LICENSE)
-**当前版本 v5.7.4** · [完整更新记录](CHANGELOG.md)
+**当前版本 v5.9.0** · [完整更新记录](CHANGELOG.md)
 ![Go](https://img.shields.io/badge/Go-1.23%2B-00ADD8?style=flat-square&logo=go)
 ![Vue](https://img.shields.io/badge/Vue-3-42B883?style=flat-square&logo=vue)
 

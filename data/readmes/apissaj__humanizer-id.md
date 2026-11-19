@@ -26,7 +26,7 @@
 
 ---
 
-**Humanizer ID** adalah buku aturan yang dibaca agen AI setiap sesi penyuntingan naskah Indonesia. Ia membersihkan kalke terjemahan mesin, nominalisasi bertumpuk, verba ringan, fragmentasi kalimat, dan pola khas keluaran LLM — lalu berhenti di situ: pembersih pola, bukan penentu gaya. 740 kaidah preskriptif bersumber dokumen resmi lengkap nomor halaman. Satu induk + sembilan sub-kaidah (lima strata + empat domain) dimuat sesuai kebutuhan naskah, plus mesin audit deterministik ber-CLI. Integritas ilmiah mengikat: nol fabrikasi data, dan ini **bukan** alat bypass detektor AI.
+**Humanizer ID** adalah buku aturan yang dibaca agen AI setiap sesi penyuntingan naskah Indonesia. Ia membersihkan kalke terjemahan mesin, nominalisasi bertumpuk, verba ringan, fragmentasi kalimat, dan pola khas keluaran LLM — lalu berhenti di situ: pembersih pola, bukan penentu gaya. 790 kaidah preskriptif bersumber dokumen resmi lengkap nomor halaman. Satu induk + empat belas sub-kaidah (lima strata + sembilan domain) dimuat sesuai kebutuhan naskah, plus mesin audit deterministik ber-CLI. Integritas ilmiah mengikat: nol fabrikasi data, dan ini **bukan** alat bypass detektor AI.
 
 ## Sebelum & Sesudah
 
@@ -59,7 +59,7 @@ Sejak v2.1.0 panduan editorial dipecah agar hemat konteks agen: induk dimuat dul
 |-------|---------|------------|
 | **`SKILL.md`** (induk) | Aturan integritas ilmiah, pengecualian dokumen, 4 mode eksekusi, eliminasi penyakit AI leksikal, tabel rute, Delivery Gate | Semua naskah. Selalu dimuat |
 | [skills/humanizer-id-sintaksis](skills/humanizer-id-sintaksis/SKILL.md) | 24 blok: kesejajaran, korelatif, kalimat efektif, kalimat partisipial, morfofonemik verba | Naskah berkalimat cacat |
-| [skills/humanizer-id-wacana-retorika](skills/humanizer-id-wacana-retorika/SKILL.md) | 18 blok: kohesi paragraf, sitasi terajut, hedging epistemik | Naskah alur lemah |
+| [skills/humanizer-id-wacana-retorika](skills/humanizer-id-wacana-retorika/SKILL.md) | 19 blok: kohesi paragraf, sitasi terajut, hedging epistemik, tanda tulisan AI (`WP:AISIGNS`) | Naskah alur lemah |
 | [skills/humanizer-id-ejaan-morfologi](skills/humanizer-id-ejaan-morfologi/SKILL.md) | 22 blok: EYD V lengkap, PUEBI, peluluhan fonem, gabungan kata, unsur serapan | Naskah ejaan/imbuhan |
 | [skills/humanizer-id-diksi-istilah](skills/humanizer-id-diksi-istilah/SKILL.md) | 14 blok: pilihan kata, peristilahan PUPI, padanan lintas bidang | Naskah istilah teknis |
 | [skills/humanizer-id-naskah-resmi](skills/humanizer-id-naskah-resmi/SKILL.md) | 6 blok: bahasa pewara, surat dinas, metadata jurnal | Naskah resmi/dinas |
@@ -67,6 +67,11 @@ Sejak v2.1.0 panduan editorial dipecah agar hemat konteks agen: induk dimuat dul
 | [skills/humanizer-id-bisnis-korporat](skills/humanizer-id-bisnis-korporat/SKILL.md) | 4 blok: prinsip KISS, surat 5W1H, siaran pers piramida terbalik, jargon bisnis | Memo/proposal/bisnis |
 | [skills/humanizer-id-jurnalistik-media](skills/humanizer-id-jurnalistik-media/SKILL.md) | 4 blok: 7 sifat pers, ekonomi kata Tempo, batas <=20 kata/kalimat, artikel opini | Berita/opini/rilis |
 | [skills/humanizer-id-hukum-regulasi](skills/humanizer-id-hukum-regulasi/SKILL.md) | 3 blok: zona terlarang kontrak/pasal, anti-multimakna, klaim produk realistis | Hukum/regulasi/klaim |
+| [skills/humanizer-id-surat-dinas](skills/humanizer-id-surat-dinas/SKILL.md) | 3 blok: TND 2025, alamat `Yth.`, pasif diri, penutup resmi, `NIP`/`a.n.`, frasa pewara | Surat dinas/protokol |
+| [skills/humanizer-id-teknis-it](skills/humanizer-id-teknis-it/SKILL.md) | 4 blok: zona kode & satuan EYD V, 68 istilah PASTI TI, safeguard serapan, prosedur | Dokumentasi/paper TI |
+| [skills/humanizer-id-terjemahan-lokalisasi](skills/humanizer-id-terjemahan-lokalisasi/SKILL.md) | 4 blok: eliminasi kalke `KLK-*`, urutan padanan PUPI, lokalisasi UI/UX & safeguard | Terjemahan/lokalisasi |
+| [skills/humanizer-id-pendidikan-ajar](skills/humanizer-id-pendidikan-ajar/SKILL.md) | 4 blok: instruksi modul/LKPD, ejaan soal & satuan, KTI/PTK guru, penjenjangan BIPA | Bahan ajar/modul/BIPA |
+| [skills/humanizer-id-esai-konten-digital](skills/humanizer-id-esai-konten-digital/SKILL.md) | 4 blok: anti-klise blog/LinkedIn AI, suara penulis & ritme, salindia & copy web | Esai/blog/presentasi |
 | [jurnal/](jurnal/SKILL.md) | Modul jurnal bereputasi: IMRaD, checklist 28 poin, template abstrak/cover letter | Naskah Scopus/SINTA |
 
 Arsip provenance sesi bedah tersimpan di [references/log-integrasi-kaidah.md](references/log-integrasi-kaidah.md) (bukan aturan operasional). Setiap entri kaidah berformat **Pola → Perbaikan → Sebab** dengan sitasi halaman sumber.
@@ -174,7 +179,16 @@ Tanpa dependensi eksternal (100% pustaka standar Python):
 python scripts/audit.py --demo
 python scripts/audit.py path/ke/naskah.md
 python scripts/audit.py naskah.md --preset akademik
+
+# Mode Hemat Token (untuk agen AI & pratinjau cepat)
+python scripts/audit.py naskah.md --compact --only high,medium --top 15
+python scripts/audit.py naskah.md --extract
+python scripts/audit.py naskah.md --fix --diff
 ```
+
+**Mode Hemat Token (`Patch-Only` sebagai default di `SKILL.md` & `PROMPT.md`):**
+- Secara default, agen AI mengeluarkan hanya kalimat/klausa yang berubah, poin konfirmasi (jika ada), dan 1 baris `GATE: PASS [...]` tanpa mengulang paragraf yang sudah bersih.
+- Minta `Clean-Only` (naskah bersih saja) atau `Lengkap` (naskah + tabel diff beranotasi + gate 6 butir) jika membutuhkan keluaran penuh.
 
 ## Sumber Resmi
 
@@ -197,9 +211,9 @@ Seluruh kaidah **bukan karangan bebas** — setiap aturan ditelusuri dari dokume
 
 Dataset terbuka di [data/](data/):
 
-- [data/kalke-indonesia.json](data/kalke-indonesia.json) - 740 entri leksikon kalke, verba ringan, pola antisipatif AI, kaidah morfologi EYD V.
-- [data/glosarium-lintas-bidang.json](data/glosarium-lintas-bidang.json) - 180 padanan istilah baku (Teknologi 68, Bisnis 60, Linguistik 27, Jurnalistik 15, Hukum 10).
-- [data/pedoman-kampus.json](data/pedoman-kampus.json) - preset 16 perguruan tinggi + jurnal dikbud.
+- [data/kalke-indonesia.json](data/kalke-indonesia.json) - 790 entri leksikon kalke, verba ringan, pola antisipatif & *WP:AISIGNS*, kaidah morfologi EYD V.
+- [data/glosarium-lintas-bidang.json](data/glosarium-lintas-bidang.json) - 214 padanan istilah baku (Teknologi 71, Bisnis 67, Linguistik 27, Jurnalistik 28, Hukum 21).
+- [data/pedoman-kampus.json](data/pedoman-kampus.json) - 18 preset (16 perguruan tinggi + 2 jurnal nasional).
 
 ## Preset Kampus
 
@@ -259,7 +273,7 @@ Bukan. Humanizer ID membersihkan pola tulisan AI agar terbaca manusiawi dan prof
 Ya. CLI auditor 100% pustaka standar Python tanpa dependensi; seluruh kaidah tersimpan lokal di data/ dan references/.
 
 **Apa bedanya dengan alat penyunting naskah AI generik?**
-Humanizer ID khusus bahasa Indonesia: 670 kaidah preskriptif bersumber dokumen resmi dengan nomor halaman, bukan penyaring gaya generik.
+Humanizer ID khusus bahasa Indonesia: 790 kaidah preskriptif bersumber dokumen resmi dengan nomor halaman, bukan penyaring gaya generik.
 
 **Apa itu sub-kaidah (skill)?**
 Folder berisi SKILL.md yang memperdalam satu ranah (ejaan, sintaksis, diksi, wacana, naskah resmi). Sub-kaidah merujuk kaidah induk lewat ID (mis. TBB-021) dan tidak pernah menduplikasinya - menambah satu tak mengubah induk.

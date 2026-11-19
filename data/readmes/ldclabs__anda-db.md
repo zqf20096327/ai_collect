@@ -22,15 +22,15 @@ Durable Objects.
 
 ## Current release
 
-The Rust crates form the **0.14** release family. Patch versions diverge
-after a release, so pin each crate by reading its own `Cargo.toml`:
+Rust crates are independently versioned. See each crate's `Cargo.toml` for its version.
 
 | Package                                                                  | Version |
 | ------------------------------------------------------------------------ | ------- |
-| `anda_cognitive_nexus`, `anda_kip`, `@ldclabs/kip-do` (npm)                 | 0.14.6  |
+| `anda_cognitive_nexus`, `anda_kip`                                       | 0.15.0  |
+| `@ldclabs/kip-do` (npm)                                                  | 0.14.6  |
 | `anda_db`                                                                | 0.14.3  |
 | `anda_db_btree`, `anda_db_tfs`                                             | 0.14.2  |
-| `anda_db_hnsw`, `anda_db_shard_proxy`, `anda_kip_wasm`                      | 0.14.1  |
+| `anda_db_hnsw`, `anda_db_shard_proxy`, `anda_kip_wasm`, `anda_object_store` | 0.14.1  |
 | `anda_cognitive_nexus_server`, `anda_db_server`, `anda_cognitive_nexus_py` | 0.14.1  |
 | other Rust crates                                                        | 0.14.0  |
 | `cf-tokenizer` (standalone service, own versioning)                      | 1.0.0   |

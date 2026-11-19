@@ -22,11 +22,12 @@ made with it, shot by shot.
 - **Edit as in any editor.** Trim, split, move, change speed, add transitions,
   flip between takes, file clips in bins, bring in your own footage and
   pictures, and export one video.
-- **Add music and narration.** Lay sound files under the cut on lanes of their
-  own, trim them and set their volume. The export mixes them in.
+- **Add music and narration.** Lay sound files under the cut, trim them,
+  fade their ends and draw volume curves under dialogue. The export mixes them in.
 - **Set how loud each clip is.** A clip on the timeline has its own volume,
   from silent to twice as loud, and the export applies it. The viewer has a
   volume of its own beside the play controls, which changes only what you hear.
+- **Make a game sprite (experimental).** In an independent shot, open **Sprite Draft**, choose a facing and camera, and select a jog, a planted idle, the shot prompt or an imported motion guide. Select your character in Cast. Sprite Draft prefers installed HyperFlow H3 Flash, then H3 Turbo. Render a draft and inspect the 64-pixel cells. Auto cutout uses BiRefNet when installed in ComfyUI’s `background_removal` model folder and otherwise uses the background key. In **Sprite loop → Export size**, choose **64**, **128** or **256 px** per cell and download the illustrated or indexed PNG. Set **Frame rate** to **24 fps** for the frames between the sampled poses. The export uses the saved take and its original crop. The editor reuses both PNGs on subsequent downloads. **Finish draft** refines the selected motion with the same loop and pivot.
 - **Try fast, finish large.** Drafts are small and quick. Finals are refined at
   up to 1920 pixels, with a realism LoRA for natural skin.
 - **Pick the model, per project or per clip.** HyperFlow H3 Flash, MiniMax H3,
@@ -52,7 +53,11 @@ made with it, shot by shot.
   and an agent skill teaches the whole workflow.
 - **RefMods, if you use them.** With the ComfyUI-MiniMaxH3Mod pack installed, a
   cast member can carry a RefMod, and the editor can make one from the member's
-  pictures. This is the one optional extra that needs another custom node pack.
+  pictures.
+- **Experimental VOSR2 upscaling.** Install the optional ComfyUI-VOSR2 pack,
+  then select VOSR2 under **Upscale 2x** on a final take or imported footage.
+  The editor keeps the original sound and saves the result as another take.
+  See [upscalers](docs/models.md#upscalers) for setup and model downloads.
 
 Everything else needs no other custom node pack.
 
@@ -142,7 +147,9 @@ Other H3 checkpoints work as well; see [models and quality](docs/models.md).
 ### 3. Make your first video
 
 1. Open **H3 Editor** from the ComfyUI sidebar. It starts you on a first project.
-2. In the **Project** tab on the right, choose the format: 16:9, 9:16 or 1:1.
+2. In the **Project** tab on the right, choose an aspect ratio or enter your own.
+   **Draft size** and **Final size** each offer **Your own size**, where you can set
+   width and height directly or calculate them from a longest side or megapixel target.
 3. Press **New clip**, write what happens in **What happens**, and press
    **Render draft**. The viewer shows the clip taking shape.
 4. When the draft lands, press Space to play it. Not right? Change the text and
@@ -163,15 +170,26 @@ selects nothing.
 **Clips and takes.** Every render of a clip is a take with its own seed and the
 prompt that made it. Run the pointer across a take's picture to look through
 it, flip between takes with `[` and `]`, keep a seed to render variations of
-one result, or restore a take's prompt and style markers. To cut between takes,
+one result, or restore a take's prompt, style markers and mid-frame guides. To cut between takes,
 expand the clip in **Clips** and drag individual takes onto the picture track.
 Click a take in that list, or choose **Add as clip** in the inspector, to append
 it to the cut. Each placement creates an independent clip using the existing
 render, so choosing a different take on the original clip leaves the cut intact.
+In **Takes → Manage takes**, select the versions to remove. You can clear every
+render from a generated shot and render it again with the same prompt and edits.
+Removing the active take selects the newest one left. Media files, independently
+placed takes and earlier revisions stay available.
 Rendered clips stay on disk: moving,
 trimming or splitting them never renders anything again. **Render all drafts**
 renders every clip that has no take yet, the ones that share a model one after
 another.
+
+**Mid-frame guides (experimental).** Select a generated shot and open **Shot → Mid-frame guides**.
+Move the playhead inside the shot and choose **Upload image** or **Use playhead frame**.
+You can also enter the destination source frame explicitly, including before the first render.
+The list shows each picture and its zero-based frame. Change the frame or remove the picture
+before generating another draft or final. All placements of the shot share its guides.
+Check the motion approaching and leaving each guide. Some checkpoints can pause or jump near it.
 
 **Cast and voices.** **Add** in the Cast panel adds a reference picture or a
 voice. Choose who is in each clip, and write @Name in **What happens** to place
@@ -206,10 +224,38 @@ track, so a long talking performance can be built from short shots.
 **Your own footage.** **Import** brings in a video or a picture, fitted to the
 project's format. You can trim it, and extend or bridge from it like a render.
 
+**Edit with prompt.** Choose this in **Generate**, the clip's context menu, or
+**Takes** on imported footage or a generated clip. It uses the marked In/Out
+range or the clip's current trim (2–15 seconds). Describe the change and
+optionally supply a replacement first frame. The result appears under **Takes**
+as a full-length alternate with the original sound and the picture outside the
+edit range intact.
+
+**Motion transfer (experimental).** Choose **Motion transfer** on an imported
+or generated take. Mark 2–15 seconds with one visible performer and choose a
+full-body character image. Adjust **Motion strength** to change how closely the
+render follows the tracked pose. Use **Scene direction** to describe the framing
+and background. The model regenerates the scene, so background details,
+hands, and foot contact can drift. The result is a new take with source audio.
+This mode uses the standard MiniMax H3 checkpoint (with Turbo when installed)
+and requires the native SDPose, RT-DETR, and H3 Fun ControlNet Union models.
+See the [ComfyUI pose-control workflow](https://github.com/Comfy-Org/workflow_templates/blob/main/templates/video_minimax_h3_fun_controlnet_union.json)
+for the model files and their installation folders.
+
+**Compare takes.** In **Takes**, click **Compare takes**, Ctrl-click or
+Command-click a second take, or drag it into the viewer. Play or step
+through both versions together and drag the divider to reveal either
+side. Audio plays from take A. **Done** closes the comparison.
+
 **Music and narration.** **Add sound** on the timeline lays a sound file under
 the cut at the playhead, on a lane of its own. Drag it to move it, up or down to
 change its lane, and drag its ends to trim it; its volume is in the panel on
-the right. The export mixes it under the clips' own sound.
+the right. In **Volume curve**, set the fade lengths in frames. Move the
+playhead and press **Add point at playhead**, then drag the point on the waveform
+or type its level in the panel. For example, add four points at 100%, 25%, 25%
+and 100% to lower the music under a line of dialogue and bring it back up.
+Points follow their source audio when you trim or move the sound. The export
+mixes it under the clips' own sound.
 
 **Notes on frames.** Stop on a frame and press **N**, or **Note** under the
 viewer. Pin a spot, drag a box or draw on the picture, and write what should
@@ -241,6 +287,16 @@ repeating. **In** and **Out** mark the range to repeat; Out includes the frame o
 screen. Clear the marks to repeat the whole cut. Clip previews have their own
 range and can loop too. The **Sound** menu above the timeline switches all sound
 lanes between Waveform and Spectrogram.
+
+**Crop and reframe.** Select a placement on the picture track, open its **Timeline**
+tab and choose **Crop and reframe**. Drag the box around the subject and use its
+corner or **Zoom** to resize it. **Apply crop** affects this placement in the
+viewer and export. **Reset framing** restores the full source at the cut's aspect ratio.
+
+**Export a range.** Mark **In** and **Out** on the timeline and click **Export**.
+The dialog selects **Marked range** and shows its duration. You can also choose
+**Whole timeline**. The exported range includes the displayed Out frame, picture
+transitions, rendered VFX and the mixed soundtrack.
 
 **Reusable looks.** The **Style library** in the Project tab includes eight
 built-in looks. **Save look** keeps your own style for every project on this
@@ -317,6 +373,20 @@ Press ? in the editor for this list.
 | Finals come out at 768x1344 or 1344x768 | Add the latent upscaler. The Model hint says so too |
 | The live preview is a still | Add `taeh3.safetensors` |
 | ComfyUI runs out of memory | Pick a smaller **Final size** in the Project tab, try one of HyperFlow's GGUF files, which come in smaller sizes, use [a smaller text encoder](docs/models.md#a-smaller-text-encoder), or render the finals on a Colab GPU with `colab/h3_editor.ipynb`. So far the editor has been tested on one 96 GB GPU only |
+
+## Sprites workspace
+
+Choose **Sprites** beside **Video** to review a character's animations. Add a reference sheet or use an existing cast member. Choose the camera, four or eight directions, and a motion. Click a direction to compare its takes in sync. Focus the game preview and move with WASD, the arrow keys, or by holding a point on the ground.
+
+Choose **Add animation…** to name a loop and describe the movement once for this character. Select a direction and click **New draft**. Each direction uses the shared motion prompt, character references and selected camera. **Edit prompt…** changes the description for subsequent drafts. Existing takes retain their original prompt. The atlas lists each named animation by direction, such as `Wing stretch_NE`.
+
+**New draft** queues one seed for the selected direction. Click a take to use it for that slot. **Preview mirrored** reflects the opposite direction. Click **Use mirrored** to keep it. **Edit take** opens the source shot in Video, and **Open in Sprites** returns from its Sprite Draft controls. **Finish this take** refines the selected draft.
+
+**Export atlas** packs available loops for that character and camera into a ZIP containing a PNG and an Animwright-format JSON file. Each loop records its frame rectangles, ground anchor, frame rate, source take, seed and mirror choice. Export size, output style and frame rate apply to the whole atlas. **Original per loop** keeps each motion’s timing. Choose **24 fps** to include intermediate frames from the saved takes at the same playback speed. A seven-pose run becomes 14 frames, and a two-second idle becomes 48 frames.
+
+### Test an atlas without installing H3 Editor
+
+Open [the sprite test room](editor/sprite-test.html) in a browser from a checkout or downloaded copy of this repository. Its built-in calibration marker moves in eight directions. Choose **Open PNG and JSON** to test your own exported atlas, or extract an H3 sprite ZIP and open its included `preview.html`. The room runs offline without a game, GPU, model weights or server. Switch between checkerboard, light and dark grounds to inspect the cutout, and turn on the pivot to check ground contact at native size.
 
 ## Develop
 

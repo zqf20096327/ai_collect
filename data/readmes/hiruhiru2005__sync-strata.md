@@ -56,7 +56,7 @@ Setup checks your GPU and downloads only the matching engine (Windows and Linux)
 2. Run `./setup.sh` in a terminal. Like on Windows, it installs only what is missing.
 3. Open **Sync-Strata** from the application menu (an icon is also placed on the desktop). The app goes into `~/.local/share/SyncStrata`, and settings and chats into `~/.config/SyncStrata`.
 
-Options (install location, model folder, repair): [docs/INSTALL.md](docs/INSTALL.md).
+Options (install location, model folder, repair): [docs/INSTALL.md](docs/INSTALL.md). Moving the app or the models after installing: [docs/STORAGE.md](docs/STORAGE.md).
 
 ## Use
 
@@ -154,7 +154,8 @@ Quality (distance from the original model) is on each model page. Sync-XS qualit
 - Images are read on the CPU and take a dozen seconds or so each (every release includes image reading).
 - Apps that use a lot of GPU or memory bandwidth slow it down a lot (CPU contention is handled automatically). `sync doctor` shows which apps are using them.
 - Running on the GPU that also drives your display leaves less VRAM.
-- On Radeon (the HIP engine), a test on an unsupported integrated Radeon (Ryzen 7000 series) showed that GPU work can run out of order and corrupt replies (for example, all zeros). Until this is fixed, Sync-Strata turns on a setting that waits for each GPU step to finish (`AMD_SERIALIZE_KERNEL=2`) on Radeon by default; reading prompts can be a little slower. Whether this happens on discrete Radeon cards and Strix Halo is not checked.
+- On Radeon (the HIP engine), a test on an unsupported integrated Radeon (Ryzen 7000 series) on Linux showed that GPU work can run out of order and corrupt replies (for example, all zeros). Until this is fixed, Sync-Strata turns on a setting that waits for each GPU step to finish (`AMD_SERIALIZE_KERNEL=2`) on Radeon on Linux by default; reading prompts can be a little slower. Whether this happens on discrete Radeon cards and Strix Halo is not checked.
+- On Radeon on Windows, users' RX 9070 XT and RX 9060 XT showed that the setting above stops at the first message, and that the RX 9000 series cannot start because GPU virtual memory (VMM) fails. From 0.1.2, Radeon on Windows uses `AMD_SERIALIZE_KERNEL=0`, `STRATA_HIP_VMM=0` and `STRATA_QL_DMA_GPUFLAG=0` by default (the author has no Radeon running Windows and has not tested this).
 - Do not use `STRATA_HIP_PROMPT_F16=1`, which the engine suggests on Radeon: with the Sync models it corrupts replies.
 - Part of the calibration text was made from the author's own chat logs (see below).
 

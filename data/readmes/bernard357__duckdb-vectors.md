@@ -44,6 +44,7 @@ Measured on a MacBook Pro M1 (2021): ~26 ms p50 retrieval over a 1,000-chunk ind
 - __Select skills exposed to your agents__ — The toolbox of your agent is growing exponentially. You create a tool for selecting appropriate skills instead of exposing all of them. In addition, each tool comes with attributes that should be considered during the search.
   [Add a registry of hundreds of skills selected by semantic search](https://bernard357.github.io/duckdb-vectors/setup-skills-search-procedure).
 
+- __Bring your Word and PowerPoint files along__ — Your documents are `.docx`, `.odt`, `.pptx` or `.odp` files, not Markdown. The `transcode-to-markdown` skill converts them with markitdown, run on demand with `uvx`, so that they can be indexed and searched. [Transcode office documents to Markdown](https://bernard357.github.io/duckdb-vectors/transcode-to-markdown-procedure).
 - __Chat with your LLM-wiki__ — You have setup an agentic knowledge base that is managed and enhanced incrementally. It consists of a growing set of Markdown pages, that deserves careful chunking and embedding for response relevance. You want a simple complementary toolchain for chatting with your Wiki. [Leverage an LLM-managed wiki into an agent](https://bernard357.github.io/duckdb-vectors/setup-llm-wiki-to-rag-procedure).
 
 - __Plug a knowledge base into your editor__ — You work in an MCP-capable editor such as Kilo Code or Kiro and want the assistant to search your own documents as you go, without sending anything to a cloud retrieval service. `duckdb-vectors mcp` is a local MCP server over stdio, so the editor spawns it and gains `search` and `report` tools over your indexed folder. In Kiro, one user-level entry plus a global skill share the same knowledge base across every Kiro IDE and Kiro CLI workspace. [Wire a knowledge base into Kilo Code](https://bernard357.github.io/duckdb-vectors/setup-kilo-code-knowledge-base-procedure) or [share one across Kiro](https://bernard357.github.io/duckdb-vectors/setup-kiro-knowledge-base-procedure).
@@ -62,6 +63,7 @@ Indexing a set of Markdown pages directly from the command-line. This produces a
 $ duckdb-vectors index ./docs            # index a folder of markdown and PDF
 $ duckdb-vectors report                  # report on database content
 $ duckdb-vectors search "my question"    # hybrid search
+$ duckdb-vectors tags --tag-field "product: $.product" --queries q.txt   # which tags help
 $ duckdb-vectors mcp                      # serve retrieval as an MCP stdio server
 $ duckdb-vectors --version                # print the tag-derived package version
 ```
@@ -81,7 +83,7 @@ for hit in store.query("how does an embedded database work?", top_k=3):
     print(hit.score, hit.chunk.chunk_id, hit.chunk.text)
 ```
 
-Next steps: follow a step-by-step procedure under [Documentation](#documentation) to build a RAG answering machine, chat with an LLM-wiki, add a semantic skills registry, wire a knowledge base into Kilo Code, or share one across every Kiro workspace, or copy a runnable example from [`examples/`](https://github.com/bernard357/duckdb-vectors/tree/main/examples).
+Next steps: follow a step-by-step procedure under [Documentation](#documentation) to build a RAG answering machine, chat with an LLM-wiki, add a semantic skills registry, wire a knowledge base into Kilo Code, or share one across every Kiro workspace, or copy a runnable example from [`fixtures/`](https://github.com/bernard357/duckdb-vectors/tree/main/examples).
 
 ## Customization
 
@@ -93,6 +95,7 @@ The default configuration of `duckdb-vectors` makes it workable out of the box. 
 
 - Frontmatter headers of Markdown pages are injected as JSON objects. Each attribute can be considered in SELECT statements in addition to semantic search. Metadata is returned along with each chunk.
 
+- Embed chunks together with tags projected out of the frontmatter of their document, so that a chunk keeps the context chunking removes, with no language model involved at index time. The `tags` verb reports which tags help and which only add noise. See the [tagged retrieval workbook](https://bernard357.github.io/duckdb-vectors/tagged-retrieval-workbook), and the [build procedure](https://bernard357.github.io/duckdb-vectors/build-knowledge-base-procedure) for the whole path.
 - Choose your embedding model by string. The default is a compact 256-dimension multilingual model; step up the `fastembed:` dimension ladder (384 / 768 / 1024) for more relevance, load any Hugging Face ONNX repo with `hf:<repo-id>`, or embed in the cloud with `bedrock:titan`. See [Embedding backends](#embedding-backends) below.
 
 - Implement your own chunking class, that is fully adapted to your knowledge base. We have focused on Markdown and PDF files. You may have other kinds of documents to ingest.
@@ -113,6 +116,9 @@ Settings resolve with the precedence: explicit argument >
 | Database path | `db_path` | `DUCKDB_VECTORS_DB_PATH` | `vectors.duckdb` |
 | Embedding backend | `backend` | `DUCKDB_VECTORS_BACKEND` | `fastembed:minishlab/potion-multilingual-128M` |
 | Lock wait (seconds) | `lock_timeout` | `DUCKDB_VECTORS_LOCK_TIMEOUT` | `10` |
+| Tags to embed with each chunk | `tag_fields` | `DUCKDB_VECTORS_TAG_FIELDS` | none (off) |
+| Match tags in keyword search | `tag_bm25` | `DUCKDB_VECTORS_TAG_BM25` | `false` |
+| Results returned per search | `top_k` | `DUCKDB_VECTORS_TOP_K` | `20` |
 
 ## Embedding backends
 
@@ -164,6 +170,12 @@ that format.
 | MarkdownChunker | `text/markdown` (`.md`, `.markdown`) | heading-scoped sections with word-window splitting |
 | PdfChunker | `application/pdf` (`.pdf`) | per-page text with a local OCR fallback for scanned pages |
 | CompositeChunker | dispatches by MIME type | default; indexes a mixed-type folder in one pass |
+
+A Markdown page's front matter is copied into the metadata of each of its chunks.
+Under the reserved `sections` key, a page can also give metadata to one section
+only, keyed by its `section_path`; the chunker merges it into that section's
+chunks. The [tagging procedure](https://bernard357.github.io/duckdb-vectors/tag-knowledge-base-procedure)
+uses it to store a context per section, written offline by a language model.
 
 ## Metadata-aware search (injectable ranking SQL)
 
@@ -227,13 +239,13 @@ Because we are frugal.
 
 - We won't embrace a fat framework, but limit our code base and dependencies to the strict minimum. We just want to install and import a dedicated PyPI package that does one thing well.
 
-- We won't delegate via the network a search across some thousands of items. A local function call is by far the fastest path to relevant answers. DuckDB is a perfect fit for such in-process use case. See [`examples/skill_registry.py`](https://github.com/bernard357/duckdb-vectors/blob/main/examples/skill_registry.py).
+- We won't delegate via the network a search across some thousands of items. A local function call is by far the fastest path to relevant answers. DuckDB is a perfect fit for such in-process use case. See [`src/skill-registry/skill_registry.py`](https://github.com/bernard357/duckdb-vectors/blob/main/src/skill-registry/skill_registry.py).
 
 - We won't use stemming search at all. Semantic search for sentences and exact matches for keywords cover our needs.
 
 - We won't externalize a read-only vector database or knowledge store for some thousands of items. This should be baked into the file system of the agent itself. DuckDB just needs a single database file, this is just what we need.
 
-- We won't introduce separate baking for the code and for data, since modern agents rely on Docker images anyway. See [`examples/Dockerfile`](https://github.com/bernard357/duckdb-vectors/blob/main/examples/Dockerfile).
+- We won't introduce separate baking for the code and for data, since modern agents rely on Docker images anyway. See [`fixtures/docker-template/Dockerfile`](https://github.com/bernard357/duckdb-vectors/blob/main/fixtures/docker-template/Dockerfile).
 
 - We won't invest on non-differentiating features. Trusted harnessing will come from [boring technologies](https://mcfunley.com/choose-boring-technology).
 

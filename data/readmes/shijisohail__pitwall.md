@@ -20,10 +20,10 @@
 
 ---
 
-> ### 🎉 Pitwall v1.5.0 is out
-> **[⬇️ Download Pitwall-1.5.0.dmg](https://github.com/shijisohail/pitwall/releases/download/v1.5.0/Pitwall-1.5.0.dmg)** · [Release notes](https://github.com/shijisohail/pitwall/releases/tag/v1.5.0) · [Changelog](CHANGELOG.md)
+> ### 🎉 Pitwall v1.6.0 is out
+> **[⬇️ Download Pitwall-1.6.0.dmg](https://github.com/shijisohail/pitwall/releases/download/v1.6.0/Pitwall-1.6.0.dmg)** · [Release notes](https://github.com/shijisohail/pitwall/releases/tag/v1.6.0) · [Changelog](CHANGELOG.md)
 >
-> New: an opt-in **Claude in Chrome** setting (Settings → Browser). 1.4.0 added a **glass look** with a Glassiness slider, an optional **full screen that puts the tabs around the camera notch**, a sound when a session finishes, and popups that scroll instead of pushing the prompt off the window. 1.3.2 added an **agents working** badge and draggable tabs. 1.3.1 named chats after the first reply and added Pin to Top. 1.3.0 added `/btw` side questions that work while Claude is busy, a **Tasks** bar for its background commands, live `!` shell output, a **built-in file viewer**, and replies you can select across paragraphs and copy. 1.2.2 added typing anywhere in a chat and highlighted prompt keywords.
+> New: **notifications** when a session needs you or finishes while you're elsewhere, **git worktree sessions**, a **Workflows** panel, a **Today** strip on Pit Wall, and live glow on working cards. 1.5.0 added an opt-in **Claude in Chrome** setting (Settings → Browser). 1.4.0 added a **glass look** with a Glassiness slider, an optional **full screen that puts the tabs around the camera notch**, a sound when a session finishes, and popups that scroll instead of pushing the prompt off the window. 1.3.2 added an **agents working** badge and draggable tabs. 1.3.1 named chats after the first reply and added Pin to Top. 1.3.0 added `/btw` side questions that work while Claude is busy, a **Tasks** bar for its background commands, live `!` shell output, a **built-in file viewer**, and replies you can select across paragraphs and copy. 1.2.2 added typing anywhere in a chat and highlighted prompt keywords.
 >
 > The first builds are *ad-hoc signed, not notarized*, so macOS asks you to approve them once. See [Install](#install) (it takes ten seconds).
 
@@ -102,7 +102,7 @@ Model, effort and permission mode change mid-session. Fork a session, rename it,
 </tr>
 </table>
 
-**While Claude works**, ask a quick side question with `/btw` (answered on the side, without interrupting it), watch and stop its background commands in the **Tasks** bar (<kbd>⌘B</kbd> moves a running command to the background), and run `!` shell commands with live output and a Stop button. **Built-in viewer:** click any file name in a reply to read it in Pitwall: Markdown rendered, code with line numbers, JSON pretty-printed, images, PDFs, and Office files, audio and video through Quick Look. <kbd>⇧⌘O</kbd> views any file.
+**Parallel work:** start a session in its own **git worktree** so it can't collide with another session in the same project, watch **dynamic workflows** (phases and agents) in their own panel, and stop any subagent from the Agent view. **While Claude works**, ask a quick side question with `/btw` (answered on the side, without interrupting it), watch and stop its background commands in the **Tasks** bar (<kbd>⌘B</kbd> moves a running command to the background), and run `!` shell commands with live output and a Stop button. **Built-in viewer:** click any file name in a reply to read it in Pitwall: Markdown rendered, code with line numbers, JSON pretty-printed, images, PDFs, and Office files, audio and video through Quick Look. <kbd>⇧⌘O</kbd> views any file.
 
 Plus: a 5-hour and 7-day **usage meter**, ⌘K **search across every session and prompt**, **Settings** (⌘,), a quit-confirmation if sessions are still working, folders opened from the Dock, VoiceOver labels and Reduce Motion support.
 
@@ -135,7 +135,7 @@ Plus: a 5-hour and 7-day **usage meter**, ⌘K **search across every session and
    - run `xattr -dr com.apple.quarantine /Applications/Pitwall.app` in Terminal.
 4. Click **Choose Folder…** and pick a project.
 
-> Only approve builds you trust. Compare the `.dmg`'s SHA-256 with the `.sha256` file on the release (`shasum -a 256 -c Pitwall-1.5.0.dmg.sha256`), or build it yourself from source below. A copy you build on your own Mac never shows the warning.
+> Only approve builds you trust. Compare the `.dmg`'s SHA-256 with the `.sha256` file on the release (`shasum -a 256 -c Pitwall-1.6.0.dmg.sha256`), or build it yourself from source below. A copy you build on your own Mac never shows the warning.
 
 ### Folder permission pop-ups
 

@@ -24,7 +24,7 @@
 
 **Update:** on a Linux server `sudo sara update` (backs up first, rolls back if she doesn't answer) · Docker: `sudo git pull && sudo docker compose up -d --build` · Windows and Mac apps: Settings → Privacy & system → Updates · Android: Google Play. [Upgrading](docs/INSTALL.md#upgrading).
 
-> **Status:** 3.27.0, [Renewals, purchases, Home Assistant scenes, audio briefing, scan pages, upkeep, gifts](https://github.com/farena-ai/sara/releases/tag/v3.27.0). Paperwork renewals in one list; receipts with return-by dates; Home Assistant found by itself with scenes by voice; the morning briefing as audio; scan pages with the camera; car and house upkeep; gift ideas; a subscription trimmer; a private voice journal; times agreed with friends. [See what changed](#whats-new)
+> **Status:** 3.35.0, [Language practice, health coach, family screen, local-only proven, carry backups, kid mode, why](https://github.com/farena-ai/sara/releases/tag/v3.35.0). Practice a language out loud with words checked as you speak; a private weekly health coach that never gives medical advice; a family screen for a kitchen tablet; local-only mode with a test that proves nothing leaves; backups you carry on a USB drive with a printed recovery sheet; kid mode by age band with a parent dashboard; Why did you do this? on every action; and a second security review. Completes ROADMAP_W. [See what changed](#whats-new)
 >
 > Windows installer: unsigned ([SmartScreen guidance](docs/INSTALL.md)). The macOS release process requires signed and notarized downloads; each build is qualified separately. Android: [Google Play](https://play.google.com/store/apps/details?id=com.backstagecoding.sara). iPhone: [home-screen web app](docs/PHONE.md).
 
@@ -164,20 +164,29 @@ Recent releases · 6 November 2026. [Full changelog](CHANGELOG.md) · [All downl
 
 | Release | What changed for you |
 |---|---|
-| **[3.27.0](https://github.com/farena-ai/sara/releases/tag/v3.27.0)** | **[Renewals, purchases, Home Assistant scenes, audio briefing, scan pages, upkeep, gifts](docs/RENEWALS.md)** — Renewals and paperwork; Purchases with return reminders; one-click Home Assistant and spoken scenes (locks always ask); audio briefing and a private podcast feed; Scan pages to one PDF; upkeep schedules; gifts and cards in your voice; Maybe cancel; encrypted voice journal; Find a time with a friend. |
-| **[3.26.0](https://github.com/farena-ai/sara/releases/tag/v3.26.0)** | **[Bring everything, Waiting on you, Where do you text?, cost autopilot](docs/MOVE_IN_GUIDE.md)** — Bring everything from Hermes, OpenClaw, ChatGPT and Claude in one review; one Waiting on you list (never money by swipe); Where do you text? with Send me a test; cost autopilot with Undo and savings; compare Sara with other agent CLIs you installed. |
-| **[3.25.0](https://github.com/farena-ai/sara/releases/tag/v3.25.0)** | **[Sign in with your provider, faster voice on Windows, store-ready extension](docs/SIGN_IN_SSO.md)** — Sign in with authentik, Keycloak, Pocket ID, Google, Microsoft or Okta on any server; hearing and voice stay loaded on Windows and Mac; optional live words while you talk; trip rename, Keep one of each in Library, Nasdaq stock prices; signed Windows uninstaller. |
-| **[3.24.0](https://github.com/farena-ai/sara/releases/tag/v3.24.0)** | **[Security review, backup test restores, What's new, server dashboard, faster voice](docs/SECURITY_REVIEW_U5.md)** — Security review with 7 fixes; monthly automatic test restores; What's new after each update; a Settings switch for server code changes; a server dashboard; first spoken word about 0.4 s after you stop talking on Linux servers. |
-| **[3.23.0](https://github.com/farena-ai/sara/releases/tag/v3.23.0)** | **[Talk with Sara, shared projects, marketplace, picture studio, business pack](docs/VOICE_FIRST.md)** — Talk hands-free and answer cards by voice; share notes, to-dos and files with a friend's Sara; share skills, automations and team recipes in a community; paint-to-edit, extend, upscale and short clips on your own GPU; timers, invoices emailed after you approve, a read-only client portal and bookkeeping exports. |
+| **[3.35.0](https://github.com/farena-ai/sara/releases/tag/v3.35.0)** | **[Language practice, health coach, family screen, local-only proven, carry backups, kid mode, why](docs/LANGUAGE_PRACTICE.md)** — Learn a language (cards, listening, say it back, practice talking, all local); Your week health card with small goals; Family screen with chores, meals, shopping and kid-safe Talk; Local-only mode with allowances and a proof test; carry backups, send to a linked Sara, restore on a new computer; kid age bands, time requests and dashboard; why on every timeline row; 6 security fixes. |
+| **[3.34.0](https://github.com/farena-ai/sara/releases/tag/v3.34.0)** | **[Public records report, Handle it, memory lane, MCP both ways, team workspace](docs/RECORDS.md)** — Public records report (free sources only, no paid brokers, grows its list of places); Handle it on renewals, returns, bills and forms (never pays); memory lane stories (local models only); MCP catalog and scoped keys; team roles, inbox and approvals; help search in six languages; recommended models; add-on kit; agent goals and caps; receptionist v2. |
+| **[3.33.0](https://github.com/farena-ai/sara/releases/tag/v3.33.0)** | **[One personality, weekly check-in, easier installs, first ten minutes, host a friend](docs/HOSTING_FRIENDS.md)** — How Sara comes across with a live preview; weekly check-in with one-tap Accept and Undo; installer preflight with fix-it cards on Linux, Pi, Docker and Windows; first ten minutes with hardware-based model picks and quick wins; Host a Sara for a friend with their own models, keys and spending limit. |
+| **[3.32.0](https://github.com/farena-ai/sara/releases/tag/v3.32.0)** | **[What Sara knows, polite nudges, continue on another device, Mac parity](docs/WHAT_SARA_KNOWS.md)** — What Sara knows (search, Why, That's wrong, Forget with Undo, merge duplicates); nudge budget with an evening roundup and Fewer like this; Continue where you left off and Continue on my phone; Mac Always allow, screen helper and Turn off in the menu bar; renewals from chat; light share pages. |
+| **[3.31.0](https://github.com/farena-ai/sara/releases/tag/v3.31.0)** | **[She knows the time, Always allow, six languages everywhere](docs/ALWAYS_ALLOW.md)** — Time awareness with automatic correction of wrong "yesterday" phrases; Always allow everything (1 hour, 1 day or until off, password to turn on, timeline keeps every step); live words in es/fr/de/pt/it (optional download); untranslated messages fixed; the email bridge never answers twice. |
 | **[3.22.1](https://github.com/farena-ai/sara/releases/tag/v3.22.1)** | **[Settings and the new windows open again](docs/MONEY.md)** — Settings, Health, Family and every window after Money open again; a test now checks every window in the page is closed. |
 
 <!-- sara:recent-releases:end -->
 
 <details>
-<summary><b>Earlier 2.6x releases</b>: 3.22.0 back to 2.61.5</summary>
+<summary><b>Earlier 2.6x releases</b>: 3.30.1 back to 2.61.5</summary>
 
 | Release | What changed for you |
 |---|---|
+| **[3.30.1](https://github.com/farena-ai/sara/releases/tag/v3.30.1)** | **[She knows what she did, second opinion from chat, sharper memory](docs/design/FIXRECEIPTS.md)** — The claim checker knows every tool that changes something (a test checks all of them); "get a second opinion" in chat offers the panel and waits for your tap; memories and learned skills need real topic words in six languages; quiet changes like a posted checklist are on the timeline. |
+| **[3.30.0](https://github.com/farena-ai/sara/releases/tag/v3.30.0)** | **[Offline answers on the phone, teach by showing, Wear OS, live views, second opinion](docs/LIVE_VIEWS.md)** — Answers while offline (Android, downloaded on request); Watch me do this in the browser extension (passwords never recorded); Wear OS tile with Talk; live checklists, tables and charts in chat; Second opinion with cost first and differences highlighted. Completes ROADMAP_V. |
+| **[3.29.0](https://github.com/farena-ai/sara/releases/tag/v3.29.0)** | **[Photo search, interpreter, health imports, captions, action timeline, privacy ledger, legacy access](docs/TIMELINE.md)** — Photo folder search by place, text and people (nothing leaves); two-language interpreter; health trends from watch and phone exports; meeting captions with a translated line; screen companion; Action timeline with Revert; What left this server; legacy and emergency access; caregiver check-ins and Simple home; accessibility mode. |
+| **[3.28.0](https://github.com/farena-ai/sara/releases/tag/v3.28.0)** | **[My apps, automation replay, workforce report, Fix this issue, website receptionist](docs/MY_APPS.md)** — My apps (sandboxed, never your sign-in, share links); automation steps editor and Run again; workforce report and Hire from the marketplace (paused); Fix this issue with a PR card; website receptionist that answers from documents you pick and books only with your OK. |
+| **[3.27.0](https://github.com/farena-ai/sara/releases/tag/v3.27.0)** | **[Renewals, purchases, Home Assistant scenes, audio briefing, scan pages, upkeep, gifts](docs/RENEWALS.md)** — Renewals and paperwork; Purchases with return reminders; one-click Home Assistant and spoken scenes (locks always ask); audio briefing and a private podcast feed; Scan pages to one PDF; upkeep schedules; gifts and cards in your voice; Maybe cancel; encrypted voice journal; Find a time with a friend. |
+| **[3.26.0](https://github.com/farena-ai/sara/releases/tag/v3.26.0)** | **[Bring everything, Waiting on you, Where do you text?, cost autopilot](docs/MOVE_IN_GUIDE.md)** — Bring everything from Hermes, OpenClaw, ChatGPT and Claude in one review; one Waiting on you list (never money by swipe); Where do you text? with Send me a test; cost autopilot with Undo and savings; compare Sara with other agent CLIs you installed. |
+| **[3.25.0](https://github.com/farena-ai/sara/releases/tag/v3.25.0)** | **[Sign in with your provider, faster voice on Windows, store-ready extension](docs/SIGN_IN_SSO.md)** — Sign in with authentik, Keycloak, Pocket ID, Google, Microsoft or Okta on any server; hearing and voice stay loaded on Windows and Mac; optional live words while you talk; trip rename, Keep one of each in Library, Nasdaq stock prices; signed Windows uninstaller. |
+| **[3.24.0](https://github.com/farena-ai/sara/releases/tag/v3.24.0)** | **[Security review, backup test restores, What's new, server dashboard, faster voice](docs/SECURITY_REVIEW_U5.md)** — Security review with 7 fixes; monthly automatic test restores; What's new after each update; a Settings switch for server code changes; a server dashboard; first spoken word about 0.4 s after you stop talking on Linux servers. |
+| **[3.23.0](https://github.com/farena-ai/sara/releases/tag/v3.23.0)** | **[Talk with Sara, shared projects, marketplace, picture studio, business pack](docs/VOICE_FIRST.md)** — Talk hands-free and answer cards by voice; share notes, to-dos and files with a friend's Sara; share skills, automations and team recipes in a community; paint-to-edit, extend, upscale and short clips on your own GPU; timers, invoices emailed after you approve, a read-only client portal and bookkeeping exports. |
 | **[3.22.0](https://github.com/farena-ai/sara/releases/tag/v3.22.0)** | **[Money, family planner, health log, study cards, browser extension](docs/MONEY.md)** — Bank exports become budgets, bills and subscriptions (never pays); plan the week's dinners into the grocery list; medicines, appointments and readings kept private; study sets with spaced review and kid coaching; ask about a page, save it or fill a form after you approve. |
 | **[3.21.0](https://github.com/farena-ai/sara/releases/tag/v3.21.0)** | **[Smarter: six languages, voices apart, Word comments, team recipes](docs/LANGUAGES_TEXT.md)** — Readers for promises, clauses and bookings in es/fr/de/pt-BR/it; OpenSky flight status (opt-in, free); local voice-print speaker separation; Word revisions in headers, footers, notes and text boxes plus comments and tracked moves; save and reuse team recipes; Ask about anything covers meetings, trips, documents, research and goals; opt-in shared fixes. |
 | **[3.20.0](https://github.com/farena-ai/sara/releases/tag/v3.20.0)** | **[The apps catch up: Dock and taskbar counts, Mac meeting recording, Android notices](docs/desktop.md)** — Unread counts on the taskbar and Dock; the Windows app counts and announces messages from every saved server; the Mac records calls and reads selected text for quick ask; Android gets one-to-one and quiet community notifications and saves files; iPhone wording, badge and tap targets fixed. |
@@ -390,61 +399,4 @@ Small and readable: TypeScript that Node runs directly, no build step, zero runt
 
 <img src="docs/architecture.svg" alt="Architecture: apps and bridges talk to one Sara server; each turn passes the always-on safety layer, gathers memory and library context, calls the chosen model provider and runs tools in a sandboxed workspace; data stays in one folder on your server" width="860">
 
-More in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
-
-### Tested, with published results
-
-Everything below was run for real; the scripts are in the repository, so you can re-run them on
-your own models. Dates, setup and the result files: **[docs/RESULTS.md](docs/RESULTS.md)**.
-
-| Benchmark | Model | Score | Date |
-|---|---|---|---|
-| [HumanEval](https://github.com/openai/human-eval), through her agent loop (164 problems, hidden tests) | qwen3.8 27B, local | **158/164** (pass@1 96.3%) | 2026-10-27 |
-| HumanEval, same model with no tools (baseline) | qwen3.8 27B, local | **161/164** (pass@1 98.2%) | 2026-10-27 |
-| Repository tasks: 14 original multi-file bug fixes, features and refactors (hidden tests), through her agent loop | qwen3.8 27B, local | **11/14** (both runs) | 2026-10-28 |
-| Repository tasks, same model with every file in one prompt and no tools (baseline) | qwen3.8 27B, local | **12/14** (both runs) | 2026-10-28 |
-| Real-size projects: 3 original projects of 22–36 files (hidden tests), through her agent loop | qwen3.8 27B, local | **2/3**, then **3/3** | 2026-10-28 |
-| Real-size projects, same model with every file in one prompt and no tools (baseline) | qwen3.8 27B, local | **3/3** (both runs) | 2026-10-28 |
-| Claim check in 6 languages (240 held-out replies): patterns only → with a local judge | qwen3.5 9B, local, as judge | caught **38% → 88%**, precision 92% → 95% | 2026-10-28 |
-| Memory across sessions (recall, no inventing, forgetting) | qwen3.8 27B, local | **11/12** checks | 2026-10-27 |
-| Library: answers from documents and says where | qwen3.8 27B, local | **8/8** in both runs | 2026-10-27 |
-| Code map: questions about her own code | qwen3.8 27B, local | **8/8** | 2026-10-27 |
-
-The honest reading: her agent loop doesn't add points on either coding benchmark yet. The plain
-model already aces the short HumanEval problems, and the 14 repository tasks are small enough (5 to
-7 files) to paste whole into one prompt (so are the three real-size projects, at under 1,100 lines); the misses in both modes were rules written only in a
-README or SPEC that no test checked. What she adds today is the way of working (she runs the tests,
-asks before risky steps, shows what ran), not a higher score on these sets. Details, per-task
-results and how to re-run: [docs/RESULTS.md](docs/RESULTS.md).
-
-<details>
-<summary><b>Release validation</b>: 2.69.0, 2.67.0 and 2.65.0</summary>
-
-2.69.0 source qualification: typecheck and **3033 automated tests**; Windows **3017 passed / 0 failed / 16 skipped**, Linux **3018 passed / 0 failed / 15 skipped**, plus thirteen isolated desktop/mobile browser journeys. Actual Windows and signed/notarized Mac packages passed their recovery/regression profiles and the add-ons checks; both container architectures passed health checks; Windows is unsigned. These checks use synthetic data and scripted models. Physical Intel/Rosetta, screen-reader/device acceptance, natural tone with real models and production disaster recovery remain separate checks.
-
-2.67.0 qualification (November 5, 2026): typecheck and 2632 automated tests; Windows **2616 passed / 0 failed / 16 skipped**, Linux **2617 passed / 0 failed / 15 skipped**. Actual Windows, Mac and both container architectures passed encrypted recovery, 12 approval-revalidation cases and 286 E2 regressions each, with matching payload hashes. The universal Mac package is signed and notarized; Windows is unsigned. These use synthetic data and scripted models. Physical Intel/Rosetta, screen-reader/device acceptance, real-model tone and production disaster recovery remain separate checks.
-
-Earlier release evidence — Validation for **2.65.0**: the typecheck and 2,153 automated tests, with a scripted fake model (no provider calls), recorded **2,137 pass / 0 fail / 16 skip on Windows** and **2,138 pass / 0 fail / 15 skip on Linux**. These are engineering checks, not a guarantee for every model or installation.
-
-</details>
-
-### Contributing
-
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the
-[good first issues](docs/GOOD_FIRST_ISSUES.md); please follow the
-[code of conduct](CODE_OF_CONDUCT.md) and report security problems privately as described in
-[SECURITY.md](SECURITY.md).
-
-```sh
-npm ci
-npm run dev        # http://127.0.0.1:7860, restarts on save
-npm run check      # typecheck + all tests
-```
-
-## How Sara compares
-
-A general comparison with the usual kinds of alternatives (individual products vary):
-
-| | Sara | Hosted AI companion apps | Coding CLIs and agents | Self-hosted chat UIs |
-|---|:-:|:-:|:-:|:-:|
-| Runs o
+M

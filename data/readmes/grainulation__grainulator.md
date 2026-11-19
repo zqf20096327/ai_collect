@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://grainulator.dev"><img src="public/glitchy.png" alt="Glitchy — the Grainulator mascot" width="200"></a>
+  <a href="https://grainulator.dev"><img src="docs/mascot.png" alt="Glitchy — the Grainulator mascot" width="200"></a>
 </p>
 
 <h1 align="center">Grainulator</h1>
@@ -49,12 +49,25 @@ Grainulator works with Claude Code and Codex through plugins. It also provides a
 
 ## Quick start
 
-Requires **Node.js 24+**. Node 25 is the development default.
-
-**Upgrading from 1.x?** Follow the [migration checklist](docs/UPGRADING.md) to update the plugin and keep your existing research data.
+Install the CLI and matching native runtime through the shared Homebrew tap:
 
 ```sh
-git clone --branch v2.3.0 https://github.com/grainulation/grainulator.git
+brew tap grainulation/homebrew https://github.com/grainulation/homebrew
+brew install grainulation/homebrew/grainulator
+grainulator doctor
+grainulator demo
+```
+
+Homebrew provides Node 24 and the matching native assets. The offline demo needs no credentials. For agent integration, follow [agent setup](docs/AGENT-SETUP.md).
+
+### From source
+
+Requires **Node.js 24 or later**; Node 24 and 26 LTS are the tested release lines. Node 24 is the development default.
+
+**Upgrading from an earlier version?** Follow the [migration checklist](docs/UPGRADING.md) to update the plugin and keep your existing research data.
+
+```sh
+git clone --branch v3.0.1 https://github.com/grainulation/grainulator.git
 cd grainulator
 npm ci --ignore-scripts
 node bin/grainulator.js doctor
@@ -62,16 +75,22 @@ node bin/grainulator.js doctor
 
 To use Grainulator inside your agent, follow the **[Claude Code or Codex setup guide](docs/AGENT-SETUP.md)**.
 
-The local research playground remains available through `node bin/grainulator.js preview`. It runs models using a provider account you configure locally.
+Start a portable research session without making provider calls:
 
-> **Distribution:** v2.3.0 is a [GitHub release](https://github.com/grainulation/grainulator/releases/tag/v2.3.0), not an npm registry release. For a separate local installation, follow the [archive installation guide](docs/INSTALLATION.md).
+```sh
+grainulator research --question "What evidence answers this question?" --dir ./research-session --prepare-only
+```
+
+See [CLI research](docs/RESEARCH.md) for provider configuration and checkpoint continuation.
+
+> **Grainulator 3:** one CLI/plugin with a unified configuration and separately verified native runtime assets. Follow [installation](docs/INSTALLATION.md), [upgrading](docs/UPGRADING.md), [configuration](docs/CONFIGURATION.md) and [data retention](docs/UNINSTALL.md). The [shared Homebrew tap](https://github.com/grainulation/homebrew#available-formulae) lists available stable formulas.
 
 ### Other agents: connect through MCP
 
 Add an MCP server that runs this command, with your project's absolute path:
 
 ```sh
-npx -y github:grainulation/grainulator#v2.3.0 mcp --dir /absolute/path/to/project
+node /absolute/path/to/grainulator/bin/grainulator.js mcp --dir /absolute/path/to/project
 ```
 
 Antigravity installs the full plugin. See the [agent setup guide](docs/AGENT-SETUP.md) for Antigravity, Cursor and other MCP agents.
@@ -94,6 +113,11 @@ which routes below this machine can run, and ask me before starting any model-ba
 | **4. Semantic & adversarial evals** | Runs `evals/rejected-claims` (offline) or `scripts/evaluate-semantic.mjs` (model-backed) | Route 1 (+ API credentials for live model matrix) | Offline $0 · live matrix requires explicit budget |
 
 ## Put it to work
+
+For necessary-premise links, current source checks, recorded verification runs,
+audit findings and missing acceptance criteria, see
+[evidence maintenance](docs/EVIDENCE-MAINTENANCE.md). Start with
+`node bin/grainulator.js maintain --help`; all operations use an explicit sprint.
 
 With Grainulator connected, give your agent the outcome you need:
 
@@ -133,7 +157,7 @@ The equivalent MCP tool is **`add_claim`** on the **`grainulator`** server. See 
 | Guide | Start here for… |
 | --- | --- |
 | [Installation](docs/INSTALLATION.md) | Tagged source, isolated archives, and verified build identity. |
-| [Upgrading from 1.x](docs/UPGRADING.md) | Host updates, renamed tools, existing data, and retired setup instructions. |
+| [Upgrading](docs/UPGRADING.md) | Host updates, renamed tools, existing data, and retired setup instructions. |
 | [Agent setup](docs/AGENT-SETUP.md) | Use Grainulator with Claude Code, Codex, or another agent. |
 | [Research sessions](docs/RESEARCH.md) | Models, feature controls, credentials, export, and resume. |
 | [Tools](docs/TOOLS.md) | The canonical CLI and MCP interface. |
@@ -144,7 +168,7 @@ The equivalent MCP tool is **`add_claim`** on the **`grainulator`** server. See 
 
 ## Verification and limits
 
-CI checks Node 24 and 25, isolated package installation, plugin contracts, Rust runtime conformance, lint, and the static playground in a browser. Native host and live-provider acceptance have separate [verification guides](docs/READINESS.md).
+CI checks Node 24 and 26, isolated package installation, plugin contracts, Rust runtime conformance, lint, and credential-free CLI/MCP research and export workflows. Native host and live-provider acceptance have separate [verification guides](docs/READINESS.md).
 
 The compiler checks the structure and support recorded in the ledger; it does not establish that a source is true. Evaluations do not establish a general accuracy or efficiency gain, and per-pass limits are not a whole-session spending cap. Keep those distinctions when interpreting results.
 

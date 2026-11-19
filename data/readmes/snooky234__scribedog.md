@@ -83,7 +83,8 @@ point things out, and change the marks again later.
 
 Open any folder and every `.md` file appears in a tree. Link notes by dragging
 them in, by typing `[[`, or through the link dialog. A details panel shows the
-outline, links and backlinks. Folders can have a note of their own, like a node
+outline, links and backlinks, and the [placemarks](docs/writing.md#placemarks)
+you left in a note to find your way back. Folders can have a note of their own, like a node
 in Trilium or Notion. Pin the notes you are working on, and unsaved edits
 survive a restart.
 
@@ -323,6 +324,11 @@ repository by GitHub Actions.
 2. Click **Run anyway**.
 
    <img src="docs/images/smartscreen02.png" alt="SmartScreen warning, click Run anyway" width="400">
+
+If **Run anyway** is missing because a company policy blocks the program,
+ScribeDog can still run on that PC as a local web app in the browser, without
+an installer, Docker or administrator rights:
+[On one Windows PC, without Docker](server/docs/windows-without-docker.md).
 
 </details>
 

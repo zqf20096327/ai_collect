@@ -236,16 +236,19 @@ relabelled as measurements.
 - **Native Qwen MTP:** emit a capability report and an explicit unsupported
   record when the installed stack cannot produce trustworthy native-MTP
   evidence.
-- **Server-side metrics (vLLM, SGLang, llama.cpp, TGI):** snapshot a Prometheus
-  `/metrics` endpoint before and after a run and diff the two. Server numbers
-  such as queue time and server TTFT are only reported when the window
-  provably contains exactly the requests you sent. Otherwise the window is
-  marked `contaminated`, `incomplete`, `counter_reset`, or `unverifiable`.
-- **Trace replay (Mooncake, BurstGPT, AIPerf `single_turn` and `multi_turn`):**
-  check a published arrival trace, plan its schedule offline, and replay it
-  against an OpenAI-compatible endpoint at the recorded arrival times. Synthetic
-  prompts keep Mooncake's prefix sharing. A malformed trace is refused, not
-  repaired.
+- **Server-side metrics (vLLM, SGLang, llama.cpp, TGI, TensorRT-LLM):**
+  snapshot a Prometheus endpoint before and after a run and diff the two.
+  Server numbers such as queue time, server TTFT and cached prompt tokens by
+  cache tier are only reported when the window provably contains exactly the
+  requests you sent. Otherwise the window is marked `contaminated`,
+  `incomplete`, `counter_reset`, `stats_not_enabled`, or `unverifiable`. KV
+  cache usage is recorded as a point sample at each scrape.
+- **Trace replay (Mooncake, BurstGPT, AIPerf `single_turn` and `multi_turn`,
+  Weka agentic sessions, OpenTelemetry GenAI spans):** check a published
+  arrival trace, plan its schedule offline, and replay it against an
+  OpenAI-compatible endpoint at the recorded arrival times. Synthetic prompts
+  keep Mooncake's and Weka's prefix sharing. `export otlp` output replays
+  directly. A malformed trace is refused, not repaired.
 
 ### Export to observability tools
 
@@ -291,7 +294,13 @@ uv run llmtracefx-optimizer import aiperf profile_export_aiperf.json --output ru
 records the source tool, its version if the file has one, and the sha256 of the
 source file. Statistics the tool computed, such as `p99_ttft_ms`, are labelled
 `imported_derived`, and counts it reported are labelled `imported_reported`.
-They are not LLMTraceFX measurements. Missing fields are omitted and listed,
+They are not LLMTraceFX measurements. When `vllm bench serve` wrote
+`spec_decode_*` keys, they go to a separate `speculative` section with their
+units (`acceptance_rate` stays a percent, per-position rates are fractions of
+drafts). vLLM scraped those from the server's counters, so they cover every
+request the server handled during the run, and `gate` does not compare them.
+Without the keys the section says `not_reported`. See
+[`vllm/benchmarks/serve.py`](https://github.com/vllm-project/vllm/blob/1ae1b64807ff6be2a0d3f942dbad0a59a663a02a/vllm/benchmarks/serve.py#L1136-L1181). Missing fields are omitted and listed,
 never guessed. Malformed files, unsupported AIPerf schemas, cancelled or
 incomplete runs, runs mixing models or phases, and multi-document
 `--append-result` files are refused with exit code 2. Without `--output` the
@@ -832,6 +841,80 @@ counter, so its windows are `unverifiable` unless you pass
 `server-metrics snapshot` before and after, then `server-metrics diff
 --expected-requests N`. It exits 2 when the window cannot be attributed.
 
+The evidence also has a `speculative` block built from the server's
+speculative decoding counters (vLLM `vllm:spec_decode_*`, SGLang
+`sglang:spec_verify_calls_total`, llama.cpp `llamacpp:spec_decode_*`,
+TensorRT-LLM `trtllm_spec_decode_num_{draft,accepted}_tokens_total`). Its
+`status` is `measured`, `no_drafts` (the counters exist but did not move),
+`not_exported`, `withheld` (the window is not attributable) or `unsupported`
+(the runtime profile names no such counters). Only `measured` carries values:
+
+| Field | Provenance | How |
+| --- | --- | --- |
+| `counters.verify_steps`, `.draft_tokens`, `.accepted_tokens`, `.emitted_tokens` | `measured_native` | counter delta over the window |
+| `acceptance_rate` | `derived` | accepted draft tokens / proposed draft tokens |
+| `acceptance_length` | `derived` | 1 + accepted / verification steps, or emitted tokens / verification steps when the server counts no accepted tokens |
+| `per_position_acceptance_rate` | `derived` | accepted at each draft position / verification steps (vLLM, llama.cpp) |
+
+Each derived value states its `source` and `basis`, and anything the server's
+counters cannot give is listed under `not_derived`. SGLang counts verification
+calls but not accepted drafts, so only its acceptance length is derived, and
+its `sglang:spec_accept_*` series are last-value gauges that are never
+differenced (they are listed under `ignored_gauges`). TensorRT-LLM counts
+proposed and accepted drafts but not verification steps, so only its
+acceptance rate is derived. It logs them from iteration stats, so they need
+`enable_iter_perf_stats: true`. Sources:
+[vLLM counters](https://github.com/vllm-project/vllm/blob/1ae1b64807ff6be2a0d3f942dbad0a59a663a02a/vllm/v1/spec_decode/metrics.py#L195-L292),
+[SGLang gauges and counters](https://github.com/sgl-project/sglang/blob/b6d4389a77970e31817536c3e182256fae6a6f73/python/sglang/srt/observability/metrics_collector.py#L548-L583),
+[llama.cpp counters](https://github.com/ggml-org/llama.cpp/blob/ebc9fb933e774bb4ac0ba497a67948e16b7e5656/tools/server/server-task.cpp#L1568-L1660),
+[TensorRT-LLM counters](https://github.com/NVIDIA/TensorRT-LLM/blob/e6ecd280fd1f77cad6496f81a7194afe29f8d5e8/tensorrt_llm/metrics/collector.py#L550-L567).
+
+`doctor speculative` reads `server_metrics_evidence.json` next to each
+speculative record. When every speculative run has `measured` acceptance, the
+server's view can overrule the latency comparison: a run whose server ran no
+verification step makes the result `inconclusive`, zero accepted drafts is a
+`regression`, and a speed-up larger than the acceptance length is
+`inconclusive`. Otherwise the latency verdict stands. The report's `basis` is
+`server_acceptance` or `client_latency`, and `acceptance` holds the pooled
+counters.
+
+Cache counters are split where the engine splits them. `cached_prompt_tokens_by_tier`
+carries a `breakdown` by vLLM `source`, SGLang `cache_source`, or TensorRT-LLM
+`cache_tier`. vLLM also reports prompt tokens by `source`, external prefix
+cache hits, and KV offload load and store bytes and time. Offload falls back
+to the deprecated `kv_offload_total_*` counters, split by `transfer_type`,
+when the new ones are absent. SGLang HiCache
+host and storage counters are repeated on every tensor and pipeline parallel
+rank, so they are read from the lowest rank (`delta_one_rank`) with
+`ranks_agree` recorded, and host hits count the `kv` pool only. llama.cpp
+`prompt_tokens_total` excludes cached tokens, so `prompt_tokens` adds
+`prompt_tokens_cached_total`. Builds without that counter report
+`computed_prompt_tokens` instead. KV usage gauges (vLLM `kv_cache_usage_perc`,
+SGLang `token_usage` and `kv_*_tokens`, TensorRT-LLM KV utilization) are never
+diffed. They appear under `kv_usage` as before and after samples for every
+window, attributed or not.
+
+`trtllm-serve` serves Prometheus text on `/prometheus/metrics`, not
+`/metrics`, and only when the `--config` YAML sets `return_perf_metrics:
+true`. Set `enable_iter_perf_stats: true` too for the running and waiting
+gauges. Without the request counter the window is `stats_not_enabled`, and
+without the gauges it is `unverifiable` unless you pass
+`--server-metrics-assume-isolated`. Both are listed under
+`attribution.missing_stats`.
+
+#### Server numbers in the response
+
+vLLM (`--enable-per-request-metrics`), SGLang and TensorRT-LLM can return
+their own queue time, TTFT and speculative decoding counts inside each
+response. `collect-api`, `sweep-api` and `replay run` record them as
+`provider_reported` under `server_reported` and in `server_*` row fields,
+next to the client's timing and never in place of it. SGLang needs
+`--sglang-return-details` and TensorRT-LLM needs `--trtllm-return-metrics`;
+both change the request, so both are part of the config hash. A server that
+sends nothing leaves nothing. See
+[Per-request server numbers](docs/load-sweeps.md#per-request-server-numbers)
+for the field mapping and the pinned upstream sources.
+
 #### Viewing a run as a trace
 
 ```bash
@@ -874,7 +957,7 @@ skipped. Every value that is left out is listed as `Not exported: ...`.
 ### Trace replay
 
 `replay` sends a published arrival trace to an OpenAI-compatible endpoint at
-the times the trace records. Four formats are read, each named with
+the times the trace records. Six formats are read, each named with
 `--format` and never guessed from the file:
 
 - `mooncake`: Mooncake JSONL with `timestamp` (ms), `input_length`,
@@ -894,6 +977,27 @@ the times the trace records. Four formats are read, each named with
   Select with `--max-sessions`; `--max-requests` is refused because it would
   cut a session. Mooncake has no multi-turn format, so its conversation trace
   is read with `mooncake`.
+- `weka`: Weka's Claude Code session traces
+  ([spec](https://github.com/callanjfox/agentic-coding-analysis/blob/15e88f72f902c7852c330caf2cc11722e5dbc1aa/docs/TRACE_FORMAT.md)),
+  one conversation per line with its `block_size` and a `requests` list of
+  `t` (s), `in`, `out`, `hash_ids` and `api_time`. A conversation is a session.
+  Its `hash_ids` name blocks within that conversation only, so the same id on
+  two lines is two different texts. Every conversation in these traces starts
+  near `t` 0, so pick a few with `--max-sessions`. Subagent entries, a
+  `hash_id_scope` other than `local`, and a `block_size` that differs between
+  lines are refused; `--block-size` is refused because the file declares it.
+- `otel-genai`: OTLP/JSON trace exports, one `TracesData` per line, read with
+  the GenAI semantic conventions
+  ([pinned](https://github.com/open-telemetry/semantic-conventions-genai/tree/76e0c19e7fe11dc693fe258642363a438af4d3aa)).
+  Each `chat`, `text_completion` or `generate_content` span is one request,
+  with `gen_ai.usage.input_tokens` and `gen_ai.usage.output_tokens` as its
+  lengths and its start time as its arrival. Spans of one `traceId` form a
+  session. Agent, tool and embedding spans are skipped and counted, and a span
+  with token usage but no `gen_ai.operation.name` is refused as ambiguous.
+  Deprecated `gen_ai.usage.prompt_tokens` and `completion_tokens` are used
+  only when the current name is absent. Failed spans (status `ERROR` or an
+  `error.type`) are refused unless `--exclude-failed` drops and counts them.
+  Prompt and message attributes are never read.
 
 ```bash
 # No network: check the file, then write the schedule.
@@ -910,7 +1014,8 @@ uv run llmtracefx-optimizer replay run trace.jsonl --format mooncake \
   --server-metrics-url http://127.0.0.1:8000/metrics
 ```
 
-Mooncake and BurstGPT give lengths, not text, so prompts are synthetic. One
+Mooncake, BurstGPT, Weka and OTel give lengths, not text, so prompts are
+synthetic. One
 word stands in for one token, so the planned prompt length is labelled
 `estimated` and the provider's `prompt_tokens` is recorded next to it. Every
 Mooncake hash block becomes the same text wherever it appears, so requests
@@ -918,6 +1023,35 @@ that share leading `hash_ids` share a byte-identical prefix. Prompt text
 comes from a salt that is random per run unless `--prompt-salt` is given, so
 a replay never hits cache entries left by an earlier one. Prompt text is never
 written to disk; only its sha256 is.
+
+In `weka` and `otel-genai` traces a session's first request is sent at its
+recorded start. Each later request waits until the previous one completes,
+then for the idle gap the trace recorded between the previous request's end
+(`t` plus `api_time`, or the span's end) and its own start. When the trace has
+no end for the previous request, or it overlapped this one, the request waits
+for the previous one and its own recorded start instead. AIPerf's Weka reader
+sends such a request at once; waiting for the recorded start keeps the trace's
+spacing. `validate` counts how many requests used each rule. Neither format
+resends earlier turns: each request is one prompt of its recorded input
+length. Weka prompts are built from hash blocks like Mooncake's, so requests
+in a conversation share their recorded prefix; leftover tokens past the last
+hashed block are text unique to that request. OTel spans carry no block ids,
+so their prompts share nothing. Concurrent spans of one trace, such as
+parallel subagent calls, are sent one after another.
+
+`export otlp` writes one line per run, so exported runs replay as they are.
+Each run becomes a session of one request:
+
+```bash
+uv run llmtracefx-optimizer export otlp --record run1/record.json \
+  --api-evidence run1/api_evidence.json --output run1.otlp.json
+cat run1.otlp.json run2.otlp.json > runs.jsonl
+uv run llmtracefx-optimizer replay plan runs.jsonl --format otel-genai \
+  --output-dir replay-plan
+```
+
+Raw session ids, `traceId`s and conversation ids are never written; sessions
+are numbered by first arrival.
 
 `--tokenizer` makes synthetic lengths exact. It takes a Hugging Face repo id
 (`--tokenizer-revision` pins a branch, tag or commit), a `tokenizer.json`

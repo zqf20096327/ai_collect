@@ -29,7 +29,7 @@
 
 <p align="center">
   <sub>Runs on arm64 Android phones, Android 7.0+ (minSdk 24). The APK is about 700 MB; leave room for it plus the tools first launch extracts.<br>
-  What's new: <a href="https://github.com/RYOITABASHI/Shelly/releases/tag/v8.2.0">v8.2.0 release notes</a> — agent roles, parallel Codex + Claude Code steps, MONITOR.</sub>
+  What's new: <a href="https://github.com/RYOITABASHI/Shelly/releases/tag/v8.4.1">v8.4.1 release notes</a> — the connected-automation flow diagram joins this README; no functional changes since v8.4.0.</sub>
 </p>
 
 <p align="center">
@@ -71,6 +71,14 @@
   <a href="#status"><b>Status</b></a> &nbsp;&middot;&nbsp;
   <a href="#contributing"><b>Contributing</b></a> &nbsp;&middot;&nbsp;
   <a href="#support"><b>Support</b></a>
+</p>
+
+<p align="center">
+  <img src="docs/images/shelly-flow.png" alt="How the pieces connect: you ask from your phone; Muse coordinates; Claude Code develops, Codex works and reviews; Shelly runs code and commands on the phone itself — with preapproval armed, taps are skipped only for run_command and write_file, safety-gate denials still apply, and STOP-ALL turns both preapproval switches off; screen work is delegated to ClosePaw (a separate app); scheduled agents run unattended — all on AI subscriptions and free tiers, no paid APIs" width="900">
+</p>
+
+<p align="center">
+  <sub>One phone. Connected AI. Automated action — with Shelly as the execution hub. How external agents connect: <a href="#external-agents-over-mcp">External agents over MCP</a>.</sub>
 </p>
 
 
@@ -447,7 +455,7 @@ No Termux install. No proot. No ttyd. No remote bridge. No cloud runner.
 | **Voice input** | Speak your commands or AI prompts. With a Groq key, Groq Whisper handles transcription; without one, Shelly falls back to Android's on-device speech recognizer (keyless, API 31+; force it in Settings → Voice Input to keep audio off the network). VoiceChain then routes the text through the same input router the keyboard uses. |
 | **Realtime voice (Gemini Live)** | An opt-in full-duplex voice mode — talk and get spoken replies back with server-side interruption handling, instead of the turn-based record → transcribe → send loop. Separate toggle from ordinary voice input (Settings → Realtime Voice, off by default); note that unlike text, audio through the Gemini Live API is billed per-token even on a free-tier key. |
 | **A2A server (Agent2Agent)** | An opt-in local HTTP server (Settings → A2A Server, off by default) exposing a standard [A2A protocol](https://a2a-protocol.org/) Agent Card and a `list_agents` skill, so another A2A-aware agent/tool on your network can see what Shelly has registered. Read-only today; no exec or write skills are exposed. |
-| **MCP server** | An opt-in local [Model Context Protocol](https://modelcontextprotocol.io/) server (Settings → MCP Server, off by default, bearer-token authenticated). Read-only tools — `device_status`, `list_agents`, `list_repos`, `git_status`, `read_agent_audit`, `read_article_history`, `list_drafts`, `read_draft`, plus `read_terminal_output`, `read_logs` and `get_settings` behind their own switches — let any MCP client look into what's running on the phone. Typed operations `run_agent` / `get_run_result` (Settings → Agents → "MCP: Allow typed operations (run agents)") start registered agents under Shelly's consent rules. `run_command` and `write_file` stay disabled unless you turn on "MCP: Allow exec/write", and even then every call waits for an approval tap on the phone. It speaks both the older spec revisions (session handshake) and the stateless 2026-07-28 revision. Details: [External agents over MCP](#external-agents-over-mcp). |
+| **MCP server** | An opt-in local [Model Context Protocol](https://modelcontextprotocol.io/) server (Settings → MCP Server, off by default, bearer-token authenticated). Read-only tools — `device_status`, `list_agents`, `list_repos`, `git_status`, `read_agent_audit`, `read_article_history`, `list_drafts`, `read_draft`, plus `read_terminal_output`, `read_logs` and `get_settings` behind their own switches — let any MCP client look into what's running on the phone. Typed operations `run_agent` / `get_run_result` (Settings → Agents → "MCP: Allow typed operations (run agents)") start registered agents under Shelly's consent rules. `run_command` and `write_file` stay disabled unless you turn on "MCP: Allow exec/write", and even then every call waits for an approval tap on the phone, unless you arm one of the two owner-only approval switches in Settings (see [External agents over MCP](#external-agents-over-mcp)). It speaks both the older spec revisions (session handshake) and the stateless 2026-07-28 revision. Details: [External agents over MCP](#external-agents-over-mcp). |
 | **Agent safety rules (beta, off by default)** | POLICY-001: tell Shelly rules in plain language ("always ask before anything involving money", "X posts stop at a draft") — echoed back and stored only after you confirm, listable and revocable the same way. Runs not started by you (schedule, widget, notification, boot) are limited to read / draft / notify, and after repeated clean approvals of one action class Shelly can offer to stop asking for it (never for payments, posting, network sends or high-risk commands). Off by default (Settings → Agent Safety Rules (beta)). |
 | **Persistent run notification** | A scheduled or manually-triggered agent now posts a sticky "▶ running" notification for the duration of its run, not just a result notification afterward, so an in-progress run is visible from the notification shade instead of only showing up once it finishes. |
 
@@ -494,9 +502,9 @@ Shelly is a local-first execution and consent layer on the phone. Any MCP client
 | Typed operations | `run_agent`, `get_run_result` | "MCP: Allow typed operations (run agents)" |
 | Raw | `run_command`, `write_file` | "MCP: Allow exec/write (dangerous)" |
 
-`run_agent` starts one run of a registered agent and returns a run handle at once; `get_run_result` polls for its state and output. The raw tools are different in kind: every `run_command` / `write_file` call needs an approval tap on the phone, and they can never be pre-approved.
+`run_agent` starts one run of a registered agent and returns a run handle at once; `get_run_result` polls for its state and output. The raw tools are different in kind: every `run_command` / `write_file` call needs an approval tap on the phone, and they can never be pre-approved by rule (always-allow). The one exception is the two owner-armed switches described below.
 
-**Consent ladder.** When no rule matches, a `run_agent` call is decided on the phone: in the foreground it shows an approval dialog, and a call that arrives while Shelly is in the background is refused instead. Choosing **Always allow** in the dialog creates an always-allow rule, keyed per client token × operation × target (for example: this token may run this agent).
+**Consent ladder.** When no rule matches and the request still needs a manual decision, a `run_agent` call is decided on the phone: in the foreground it shows an approval dialog, and a call that arrives while Shelly is in the background is refused instead. With **Skip all approvals** on, an eligible `run_agent` call is instead answered automatically once, without a rule. Choosing **Always allow** in the dialog creates an always-allow rule, keyed per client token × operation × target (for example: this token may run this agent).
 
 - Rules are listed in Settings → **MCP: always allowed**, where each one can be revoked (or all at once). A rule cannot be added from Settings.
 - Regenerating the MCP token purges every rule.
@@ -505,6 +513,13 @@ Shelly is a local-first execution and consent layer on the phone. Any MCP client
 - When a rule matches, the run executes headlessly in the background, including the agent's declared actions, with no per-run dialog. The actions still pass their own runtime gates (safety-policy deny / draft-only / ask rules, CRITICAL commands, output roots), and screen-dependent actions keep their existing restrictions. *Verified on device (Galaxy Z Fold6, N=1).*
 
 Contract and limits: [docs/mcp-agent-action-consent.md](docs/mcp-agent-action-consent.md). How to turn each piece off: [docs/revoke-access.md](docs/revoke-access.md).
+
+**Owner-armed approval switches.** Two Settings switches let you take the approval tap out of the loop. They can be armed only from the Settings screen — never remotely and never from chat — and their state is stored natively with Keystore HMAC protection.
+
+- **MCP: Run without approval** — `run_command` / `write_file` execute without the approval popup. Shelly runs them itself (native path), including while Shelly is in the background or the screen is locked.
+- **Skip all approvals (dangerous)** — answers agent and MCP approval prompts with Allow without showing them: CLI-step prompts on runs you start from the app, per-run actions (draft save, notify, webhook, API call, social post, CLI command, app intent), `@agent` registration confirmations, and MCP `run_command` / `write_file` / `run_agent`. Turning it on also turns on **MCP: Run without approval**. CLI-step and per-run action auto-approvals leave a log line and an "all approvals skipped" line in the agent's chat; one-time MCP `run_agent` approvals are recorded in the log only; native `run_command` / `write_file` calls are recorded as audit events. Both switches, the background/locked-screen native execution, a gate denial under the switches, and the STOP-ALL clearing were verified on device (Galaxy Z Fold6, N=1).
+
+Still refused or still asked under both switches: anything the safety gate denies (CRITICAL commands, changes to agent definitions or the policy file, your own deny / draft-only rules); commands that read secrets or point at Shelly's own settings or keys; agents created or changed over MCP; agents that read web pages, URLs, notifications, the screen or DMs (prompt-injection); approvals inside unattended runs (notification-triggered, scheduled, and similar) — those are never auto-approved; `shelly agent add` requests; ClosePaw, DM and browser actions; and stale requests. STOP-ALL turns both switches OFF, and releasing STOP-ALL does not re-arm them — re-arming is a Settings action. Regenerating the MCP token also turns them off. Ingress taint is unchanged on the native path: the same gate code decides, and MCP-origin restrictions downstream still apply. Raw tools never get always-allow rules.
 
 **Ingress taint.** Runs that arrive over MCP are marked as external-origin. A marked run is restricted: its writes, declared actions and external sends are refused unless a matching rule carries the authorization, and a marked run never receives unattended blanket approval. **STOP-ALL overrides every preapproval mechanism** — rules, the ClosePaw switch and draft preapproval below.
 
@@ -604,6 +619,7 @@ Full verification log with dates, devices, and evidence for every area: **[docs/
 | Area | State |
 |---|---|
 | MCP agent action consent | ✅ A matching always-allow rule carries the action authorization: rule-matched agent runs execute headlessly in the background, including their declared actions (each still subject to its runtime gates). New consent binds the agent and verified safety policy; legacy rules stay dialog-only. Verified on device (Galaxy Z Fold6, N=1). [Contract and limits](docs/mcp-agent-action-consent.md). |
+| MCP approval switches — owner-armed (Settings only), headless raw exec incl. locked screen | ✅ `run_command` / `write_file` run without the popup, executed natively, including in the background and on a locked screen; the safety gate still denies under the switches; STOP-ALL turns both switches OFF. Verified on device (Galaxy Z Fold6, N=1), 2026-11-19. |
 | Core terminal — native PTY, multi-pane layout, AI Edit golden path, FileTree/git, Command Palette | ✅ shipping, broadly on-device verified |
 | Background/autonomous agents — `@agent` registration → unattended AlarmManager fire → notify | ✅ wired; unattended firing confirmed end-to-end on one real device (Z Fold6, N=1) |
 | Sub-agent fan-out (`parallelGroup`) — isolated branch context, concurrent unattended dispatch | ✅ on-device verified 2026-08-17 via a real 3-branch concurrent AlarmManager fire |
@@ -872,48 +888,4 @@ The question isn't whether unattended, on-device AI will happen. It's whether th
 
 **RYO ITABASHI** — Creative Director at [Rebuild Factoryz](https://rebuildfactoryz.com/). Branding and design are my profession. Code is not. See [The Story](#the-story) above for how that actually works and why it doesn't lower the bar for what ships.
 
-The keyboard in the screenshots is **Nacre** — a split-layout Android IME I built (also through AI) to solve the input problem on mobile. Shelly handles the interface. Nacre handles the input. Together, they make serious development on a phone practical.
-
-**Both were designed, tested and shipped from a Galaxy Z Fold6. The AI agents that wrote the code ran on the phone and on a Windows PC.**
-
-Case study, talk topics and project inquiries: [ryoitabashi.github.io](https://ryoitabashi.github.io/)
-
----
-
-## Support
-
-Shelly is a solo, self-funded project. If it saves you a Termux setup or makes phone development viable for you, a coffee goes a long way. (A Z Fold8 also works — purely for testing purposes, obviously.)
-
-<p align="center">
-  <a href="https://buymeacoffee.com/ryo1221"><img alt="Buy Me a Coffee" src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black"></a>
-</p>
-
-You can also support the project by:
-
-- ⭐ Starring this repo
-- 🐛 [Reporting bugs](https://github.com/RYOITABASHI/Shelly/issues)
-- 🔧 Sending a PR — see [Contributing](#contributing)
-- 💬 Sharing what you built with Shelly
-- 👍 Liking or reviewing Shelly on [AlternativeTo](https://alternativeto.net/software/shelly-terminal/about/)
-
-<p align="center">
-  <a href="https://alternativeto.net/software/shelly-terminal/about/?utm_source=badge&utm_medium=referral"><img alt="Shelly Terminal | AlternativeTo" src="https://alternativeto.net/static/badges/badge-compact-color.svg" width="171" height="55"></a>
-</p>
-
-
-GitHub Sponsors is also enabled via the "Sponsor" button at the top of this repo.
-
----
-
-## Known Limitations
-
-Shelly is pre-release Android software. Here's what we know isn't perfect yet.
-
-- **Verified on one device so far** — everything marked verified was checked on a real Galaxy Z Fold6 (N=1). If you run Shelly on another phone, a [device report](https://github.com/RYOITABASHI/Shelly/issues/new?template=device-report.yml) (run `shelly doctor --report` and paste it) tells us what works and what breaks there. See [docs/device-testing.md](docs/device-testing.md).
-
-- **No offline mode by default** — Cloud AI features require an internet connection. Local LLM via `@local` works offline with the bundled catalog and llama.cpp / llama-server controls; Qwen3.5-0.8B Q4_K_M ships as the actual default, Qwen3.5-2B Q4_K_M is the recommended step-up for on-demand use, Qwen3 1.7B is a middle option, and 4B/9B models are reserved for short quality checks.
-- **Additional tools beyond the bundle** — Shelly ships with bash, Node.js, Python 3, git, curl, ssh, sqlite3, tmux, vim, less, jq, make, and the GNU coreutils set. Notable tools **not** bundled include `busybox`, `watch` (procps-ng), `htop`, and most network daemons. If you need `watch`, use the workaround `while true; do clear; <cmd>; sleep 1; done` (tracked as bug #34) or install Termux alongside Shelly; for anything else, open a PR adding the binary to `modules/terminal-emulator/android/src/main/jniLibs/`.
-- **`busybox` is not bundled** — `busybox httpd`, `busybox nc`, and other applets return `command not found`. Use the standalone equivalents where available (`curl`, `nc` from the bundle, `python3 -m http.server`), or bundle `busybox-static` yourself. Tracked as bug #35.
-- **`@team` routes to multiple APIs simultaneously** — this consumes credits on every provider at once, with no confirmation step before it runs. Use it deliberately.
-- **Multi-hunk Accept against a partially-edited file** — per-hunk Accept uses fuzzy re-anchoring so successive hunks land, but if the AI's diff references context that has already been edited to something else, the hunk will be rejected with a toast asking you to regenerate.
-- **Terminal font mismatch** — 
+The keyboard in the screen

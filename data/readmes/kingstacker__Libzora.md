@@ -29,7 +29,7 @@ The preview is captured from the macOS app and shows six public-domain books fro
 - **PDF reading** — First-page library covers, continuous scrolling, single-page and two-page reading, fit-width/page controls, sharp zoom and 90° rotation. Supports selectable text, six underline/highlight styles, editable comments, and page annotations at arbitrary PDF positions through the page-note icon or right-click. Pages appear before full-book text indexing finishes; only visible regions are rendered at the screen's pixel density. Search, bookmarks and reading position use the same local reading data as EPUB. Scanned pages support viewing and page notes; OCR is not included.
 - **AI assistant** — Ask questions about the current book, summarize chapters, explain selections, and choose from discovered models through DeepSeek, OpenAI, or compatible endpoints. Requests use relevant local excerpts only.
 - **Kindle** — Detect USB/WPD/MTP devices, transfer books, manage fonts and dictionaries, and import `My Clippings.txt`.
-- **Tools and sync** — Calibre conversion, encrypted local backups, protected credentials, and cross-device sync with your own S3 / WebDAV.
+- **Tools and sync** — Calibre conversion, encrypted local backups, protected credentials, and cross-device sync with your own S3 / WebDAV or iCloud on iPhone, iPad, and macOS.
 
 ## Download
 
@@ -41,11 +41,13 @@ Calibre is required separately for format conversion. Official GitHub releases p
 
 The **Settings → Diagnostics** page checks the data directory, PDF parser, WebView, Calibre, TTS, and Kindle services, and is the first place to look for cross-platform issues. The library trash can restore a deleted book or a single format, and permanently purge items after confirmation; trash contents are included in local backups.
 
-## Sync with your own S3 / WebDAV
+## Cross-device sync
 
-Configure your own S3 or WebDAV storage to sync books, reading progress, bookmarks, and annotations across devices.
+Sync books, reading progress, bookmarks, and annotations with your own S3 / WebDAV storage, or use iCloud on iPhone, iPad, and macOS.
 
 Choose **S3** or **WebDAV** in **Settings → Data & sync → Cloud sync**, enter your own connection details, and select **Save settings**. Books and snapshots transfer directly between the client and your storage. Both providers retain their own addresses and credentials. Manual, startup, exit, and scheduled sync use the saved selection.
+
+On iPhone, iPad, or Mac, choose **iCloud** to use iCloud Drive without entering a server address or password. Enable iCloud Drive on each device and use the same Apple Account, data region, path prefix, and encryption key. Updates may take a little while to reach your other devices.
 
 For WebDAV, enter the URL of an existing directory, such as `https://dav.example.com/dav/`, and credentials if required. Some services require an app password. Libzora creates a sync subdirectory named `libzora` by default; change it in Advanced options. The connection test verifies read/write access and removes its test file. The server must support standard PROPFIND, MKCOL, GET, PUT, MOVE, and DELETE operations. Completed uploads are published with MOVE so interrupted transfers do not replace existing snapshots.
 

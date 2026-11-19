@@ -86,7 +86,7 @@
 |---|---|---|
 | 三栏外壳 | 启动 | 左栏 200 导航 + 中栏 480 起页面 + 右栏 280 聊天，窗口内容 960×600 |
 | 右栏对话 | 在输入盒发送消息 | 拉起 `dsh --profile ondra` 子进程，JSON-RPC over stdio，默认路由到本机网关 |
-| 插件扩展页 | 打开「插件」 | 合并随包清单 18 条与装配层 75 条，可开关（改 YAML 注释，下次连内核生效） |
+| 插件扩展页 | 打开「插件」 | 合并随包清单 18 条与装配层 78 条，可开关（改 YAML 注释，下次连内核生效） |
 | 记忆星图 | 打开「记忆」 | 读 `~/.ondra/user/ondra.db` 的 `memory_fact` / `memory_link`，按 id 哈希确定性排布 |
 | 历史对话 | 打开「历史」 | 读内核会话库，标题取第一句用户消息，按最后活动倒序 |
 | 备份与时间线 | 打开「备份」 | 内容寻址快照；时间线整窗接管，滚轮/↑↓ 穿梭、`⏎` 恢复、`esc` 退出 |
@@ -94,38 +94,75 @@
 | 状态面板 | 打开「状态」 | 三条体征、情绪两轴、三份日志、网关探活、内核装配体检 |
 | 本地部署 | 设置「模型基座」 | 找 `llama-server`、下 GGUF、起停进程、轮询 `/v1/models` 判定就绪 |
 | 网页浏览 | 白名单内打开请求 | 系统 WKWebView 平台视图，左栏无入口 |
+| 设置真写内核 | 拨任一设置开关 | 变化项写进 `~/.ondra/dsh/settings.json`（`{user:{段:{kebab 字段}}}`），启动时全量对齐一次 |
+| 系统侧开关 | 开机自启 / 阻止睡眠 / 通知 | 分别动 launchd 登录项、`caffeinate` 进程、`osascript display notification` |
+| 繁忙时发送 | 生成中再发一句 | 「排队」攒到本轮结束依次发（带「N 句排队中」提示），「插话」停掉当前轮立刻发 |
+| 回车发送 | 输入框回车 | 开：回车即发、⇧⌥ 换行；关：回车换行、⌘ 回车发送 |
 
 ---
 
-## 四、核心特性
+## 四、插件清单（两套侧，各自真实现）
 
-### 4.1 插件即一切
+### 4.0.1 界面侧（Flutter，`lib/plugins/`）
+
+| 插件 | 功能 | 状态 |
+|---|---|---|
+| ondra-ui | 三栏外壳、注册表、引导挂载点 | ✓ |
+| ondra-onboarding | 首次启动引导（一屏，prefs 判据） | ✓ |
+| ondra-status | 状态面板：真读 ondra.db / 日志 / 端口探活 | ✓ |
+| ondra-memory | 记忆星图：真读 memory_fact / memory_link | ✓ |
+| ondra-history | 历史对话 + 会话行点开只读详情 | ✓ |
+| ondra-plugins | 插件管理：清单 18 项 + 装配层，开关真改 YAML | ✓ |
+| ondra-backup | 备份还原：真文件 + 时间线 + 平台守卫 | ✓ |
+| ondra-transfer | 导入导出：真文件 + sqlite，导出回读校验 | ✓ |
+| ondra-guide | 使用教程（5 条问答） | ✓ |
+| ondra-logs | 三类日志：真读 transport/ondra-code/window.log，档位接线 | ✓ |
+| ondra-chat | 右栏聊天：附件真发内核、新建真换会话、离线常驻提示 + 重连 | ✓ |
+| ondra-settings | 5 类设置：模型基座落盘 models.json、密钥真写钥匙串、人设记住选择 | ✓ |
+| ondra-model | 模型基座投影：UI id → 内核路由翻译（kernelRouteOf） | ✓ |
+| ondra-store / runtime | TS 内核实现（src/），无 Dart UI | ✓ |
+| ondra-beichen-api / browser / voice / channel / emotion / relationship / font / locale | 内核侧 TS 实现（src/），浏览器白名单已落盘 | ✓ |
+
+**设置的落点**：真生效的位置是 `~/.ondra/dsh/profiles/ondra/cordis.patch.yml`
+里各条目的 `config` 块（内核装配时传给 `apply(ctx, config)`）。设置页改动
+写这里，下一次内核启动生效；`settings.json` 是历史形状，内核不读它。
+
+### 4.0.2 内核侧（TS，运行在 `plugin-profile/` 的 77 个 @ondra 包）
+
+旧版 78 包按「是否共用一份状态」合并成 14 个新版（memory/emotion/persona/
+relationship/channel/voice/model/store/runtime 等）；运行清单见
+`lib/plugins/LAYOUT.md`。chat 链路上游 `deepseek-official` 与 `magpie`
+两条路由由装配层声明，无路由的提供商在「设为默认」时被拦截并说明。
+
+## 五、核心特性
+
+### 5.1 插件即一切
 
 界面不实现任何业务能力。`ondra-core/` 随包默认且不可关闭，`ondra-extensions/` 可开关，`ondra-custom/` 由用户自装；框架 `cordis/` 是宿主，不属于插件。
 
-### 4.2 情绪是状态量，不是形容词
+### 5.2 情绪是状态量，不是形容词
 
 情绪带惯性：上一轮的状态会影响这一轮，而不是每轮重新描述一次。界面上两条轴显示的是落定后的值，零数据时显示「还没有第一次落定」。
 
-### 4.3 记忆是链路，不是向量库
+### 5.3 记忆是链路，不是向量库
 
 记忆从采集、提炼、判重、衰减、召回到注入是一条完整链路，每一环都是独立插件，可以单独替换或关闭。
 
-### 4.4 上下文有预算
+### 5.4 上下文有预算
 
 冻结前缀 + 增量注入 + 预算装箱：每轮重拼 system prompt 会让成本成倍上升，冻结前缀是成本敏感部分的解法。
 
-### 4.5 备份内容寻址
+### 5.5 备份内容寻址
 
 `~/.ondra/backups` 下只有对象库与快照清单；相同内容只存一次，本机实测 32 个文件 / 437 KB，第二份快照新增 0 字节。
 
-### 4.6 启动时序自愈
+### 5.6 启动时序自愈
 
 内核三十多个插件按「取不到依赖就转不可用」写，而 loader 是并发 apply。新增 `ondra-boot-settle` 在依赖真正就绪后重启抢跑的插件，本机实测启动降级条目 **55 → 0**。
 
 ---
 
-## 五、设计细节与工程取舍
+## 六、设计细节与工程取舍
 
 完整推演见 [docs/design-notes.md](docs/design-notes.md)，此处只留关键决定。
 
@@ -141,7 +178,7 @@
 
 ---
 
-## 六、技术栈与依赖清单
+## 七、技术栈与依赖清单
 
 | 层 | 技术 | 版本约束 |
 |---|---|---|
@@ -157,9 +194,9 @@
 
 ---
 
-## 七、安装与部署
+## 八、安装与部署
 
-### 7.1 环境要求
+### 8.1 环境要求
 
 | 项 | 要求 | 用途 |
 |---|---|---|
@@ -168,7 +205,7 @@
 | Node.js | 18+ | 安装 dsh 内核与插件 |
 | llama.cpp | 可选，`brew install llama.cpp` | 本地模型部署 |
 
-### 7.2 安装与运行
+### 8.2 安装与运行
 
 ```sh
 git clone https://github.com/ntars/Ondra.git
@@ -176,24 +213,78 @@ cd Ondra && flutter pub get
 flutter run -d macos
 ```
 
-### 7.3 直接下载
+### 8.3 直接下载
 
 三端安装包在 [Releases](https://github.com/ntars/Ondra/releases) 里，附 `SHA256SUMS.txt`：
 
 | 平台 | 文件 | 说明 |
 |---|---|---|
-| macOS（通用二进制） | `Ondra-2.0.0-alpha-macos-universal.dmg` | Intel 与 Apple Silicon 同一个包 |
-| Windows（x64） | `Ondra-2.0.0-alpha-windows-x64.zip` | 解压后运行 `ondra.exe`，必须整目录解压 |
-| Android | `Ondra-2.0.0-alpha-android-arm64.apk` | 常规手机；`-universal.apk` 含 32 位与模拟器 |
+| macOS（通用二进制） | `Ondra-3.0.0-alpha-macos-universal.dmg` | Intel 与 Apple Silicon 同一个包 |
+| Windows（x64） | `Ondra-3.0.0-alpha-windows-x64.zip` | 解压后运行 `ondra.exe`，必须整目录解压 |
+| Android | `Ondra-3.0.0-alpha-android-arm64.apk` | 常规手机；`-universal.apk` 含 32 位与模拟器 |
 
 校验：`shasum -a 256 -c SHA256SUMS.txt`。三个包都没有正式签名，首次打开按发行版说明处理系统拦截。
 
-### 7.4 构建与分发
+### 8.4 构建与分发
+
+**先装配运行时，再打包。** 应用自带 Node 与内核，这两步不能省——只跑
+`flutter build` 出来的包里没有任何运行时，装到别人机器上会连不上内核。
+
+装配脚本是 `tool/assemble_runtime.mjs`（node 实现，macOS / Windows / Linux 同一份）。
+`tool/assemble_runtime.sh` 只是转发。**必须在目标平台上跑**：node 二进制与
+原生模块（node-pty / koffi）都是平台相关的，不能交叉产出。
 
 ```sh
-# macOS：本机可出通用二进制（x86_64 + arm64），无需分架构
-flutter build macos --release
-# → build/macos/Build/Products/Release/空谷 Ondra.app
+# 1. 装配随包运行时 → runtime/<平台>-<架构>/
+#    从本机已装的 node 与 @deepseek-ai/dsh 拷一份裁剪过的闭包，
+#    连同 profile 种子，用真实握手自检。
+node tool/assemble_runtime.mjs
+# 产物内容约 180MB（node 108 + dsh 67 + profile 4.3；小文件多，磁盘占用约 198MB）
+# Windows 另加 sqlite3.exe 4MB
+
+# 2. macOS：构建 + 塞进 .app + 重签
+tool/bundle_macos.sh
+# → build/macos/Build/Products/Release/空谷 Ondra.app（约 245MB）
+#   加 --sign "Developer ID Application: 你的名字 (TEAMID)" 可出可分发签名
+```
+
+#### 装配的输入是仓库里的 `plugin-profile/`
+
+内核的插件树（77 个 `@ondra/cordis-plugin-*`）原本只存在于
+`~/.ondra/dsh/profiles/ondra`，而那条目录是靠「在本机跑过一次应用、且
+`~/Downloads/plugins` 里有插件源码」才有的。拿它当装配输入，等于让出包依赖
+本机的偶然状态：CI runner 上永远没有，不同机器打出的包内容也各不相同。
+
+所以装配默认读仓库内的 `plugin-profile/`。它是一份**构建输入快照**
+（`package.json` + `cordis.patch.yml` + 77 个包编译产物，4.3MB / 596 个文件），
+由 `tool/sync_plugin_profile.mjs` 从真实 profile 固化：
+
+```sh
+# 插件改了之后（先重新装进 ~/.ondra/dsh/profiles/ondra，再同步）
+node tool/sync_plugin_profile.mjs
+git diff --stat plugin-profile      # 先看包数量与装配结构的变化合理不合理
+```
+
+装配时会比对「快照」与「本机 profile」：不一致就警告并打出差异，但**打的是快照**
+（这样本地与 CI 的包始终对应同一份提交）。要临时用本机那份：
+`ONDRA_PROFILE_SRC=~/.ondra/dsh/profiles/ondra node tool/assemble_runtime.mjs`。
+
+Windows 的运行时由 CMake 在 `flutter build windows --release` 期间拷进
+`build\windows\x64\runner\Release\runtime\windows-x64\`（见
+`windows/CMakeLists.txt`）。**缺了它构建会直接失败**，不是警告：Windows 上
+不存在可退回的系统 dsh，少了这一份，装出来的应用双击后连不上内核。
+确实只需要界面时，设环境变量 `ONDRA_ALLOW_NO_RUNTIME=1` 跳过（`flutter build`
+不转发自定义 `-D` 给 CMake，所以走环境变量）。Windows 没有系统
+`sqlite3`，装配脚本会从 sqlite.org 取官方 `sqlite3.exe`（SHA3-256 校验）；
+内网环境可用 `ONDRA_SQLITE3_BIN` 指向本机副本，或 `ONDRA_SKIP_SQLITE=1` 跳过。
+
+`runtime/` 不进版本库（见 `.gitignore`）：它是二进制，而且必须与本机内核
+同版本，提交进去会让「打进包的内核」和「测试过的内核」悄悄分叉。
+`plugin-profile/` 相反，**必须提交**——它是文本与小型编译产物，正是为了让
+装配在任何机器上可重现。
+
+```sh
+# macOS：出 zip 与 dmg
 ditto -c -k --norsrc --noextattr --keepParent "空谷 Ondra.app" Ondra-macos.zip
 hdiutil create -volname "空谷 Ondra" -srcfolder "空谷 Ondra.app" -ov -format UDZO Ondra-macos.dmg
 
@@ -210,13 +301,24 @@ flutter build web --release     # → build/web
 **Windows 只能在 Windows 上构建**（MSVC 没有交叉编译），走 `.github/workflows/release.yml`：
 Actions → Release build → Run workflow，结束后在 Artifacts 取 `ondra-windows`。
 
+Windows 的构建前置比 macOS 多一步，而且**不能省**：`flutter build windows` 之前
+必须先 `node tool\assemble_runtime.mjs`，否则 CMake 会因为找不到
+`runtime\windows-x64\node.exe` 直接失败。
+
+⚠️ 而这一条在干净的 CI runner 上跑不通：装配脚本的 profile 种子取自
+`%USERPROFILE%\.ondra\dsh\profiles\ondra`，那是**应用跑过一次之后**才有的东西
+（插件包由安装器下发）。所以要么让 Windows 发布包在「跑过一次应用的机器」上出，
+要么把 `runtime\windows-x64\` 作为构建缓存（`actions/cache`）在 job 之间传递。
+两者都还没接进 workflow——现在的 `release.yml` 里没有这两步，打出来的 Windows
+包不含运行时。
+
 四条硬约束：关闭 App Sandbox（要拉起本机子进程）、不引入原生插件、GUI 应用自行探测 `dsh` 路径、数据目录独立（`DSH_HOME=~/.ondra/dsh`）。
 
-### 7.5 升级与卸载
+### 8.5 升级与卸载
 
 升级：替换 `.app`，数据目录不动。卸载：删除应用与 `~/.ondra/`（含会话、记忆、备份、日志），删除后不可恢复，操作前建议先用备份页导出一份。
 
-### 7.6 容器化
+### 8.6 容器化
 
 桌面应用不做容器化；Web 构建产物为静态文件，可部署到任意静态托管，但无法连本机内核。
 
@@ -369,7 +471,7 @@ Ondra/
 - 新增：`ondra-boot-settle` 启动时序补丁，启动降级条目 55 → 0。
 - 新增：内容寻址备份与时间线界面，第二份快照新增 0 字节。
 - 新增：记忆导入导出（Markdown / JSON），真写库并双重去重。
-- 新增：插件扩展页，合并随包 18 条与装配层 75 条。
+- 新增：插件扩展页，合并随包 18 条与装配层 78 条。
 - 测试：`flutter test` 96 项通过。
 
 ---

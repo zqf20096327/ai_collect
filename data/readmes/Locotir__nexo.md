@@ -54,7 +54,7 @@ irm https://raw.githubusercontent.com/Locotir/nexo/main/install.ps1 | iex
 On macOS the file is signed ad hoc and fetched with `curl`, so Gatekeeper stays quiet. If you download it in a browser instead, clear the quarantine mark first:
 `xattr -d com.apple.quarantine ./nexo-macos-aarch64 && chmod +x ./nexo-macos-aarch64` (use `nexo-macos-x86_64` on an Intel Mac).
 From source on any system: `cargo install --locked --git https://github.com/Locotir/nexo nexo-cli`.
-CI runs both installers on Linux x64 and ARM and Windows x64 and ARM; the macOS (arm64 and Intel) installer jobs are new and have not run yet.
+CI runs both installers on Linux, Windows and macOS, each on x64 and ARM, and all of them pass.
 
 nexo checks for a newer release in the background; `nexo update` installs it. Turn the check off with
 `[ui] update_check = false` or `NEXO_NO_UPDATE_CHECK=1`.
@@ -182,12 +182,13 @@ nexo re run ./app         # debug it, step by step
 
 Changes only with your OK, and only on your own programs. Other agents can use the same kit with `nexo re --mcp`.
 Every command: [`docs/re.md`](docs/re.md).
+Websites: [`docs/api.md`](docs/api.md) turns a HAR capture into a map of a site's API that you or an agent can call, watch and check.
 
 ## Providers
 
 Bring your own key. Built in: Anthropic, OpenAI, Google Gemini, DeepSeek, xAI, Groq, Mistral, OpenRouter, Together,
-Fireworks, Cerebras, Moonshot, Qwen, Zhipu, MiniMax, and local servers (Ollama, LM Studio, vLLM, llama.cpp). Over 200 more
-come from [models.dev](https://models.dev), and any OpenAI- or Anthropic-compatible endpoint works. `nexo auth login copilot`,
+Fireworks, Cerebras, Moonshot, Qwen, Zhipu, MiniMax, and local servers (Ollama, LM Studio, vLLM, llama.cpp). A built-in directory of 218 providers (a snapshot of [models.dev](https://models.dev))
+works offline with only the key set, and any OpenAI- or Anthropic-compatible endpoint works. `nexo auth login copilot`,
 `codex` or `xai` sign in with a subscription; check the vendor's terms first. Data goes only to the provider you pick and to
 tools the agent uses; sessions in `~/.nexo/sessions/` hold what passed through, so treat them like credentials.
 

@@ -1,6 +1,6 @@
 # Astronomical
 
-<a href="https://github.com/aosama/astronomical/releases/download/v0.2.118/Astronomical-0.2.118-macOS-arm64.dmg"><img src="site/assets/download-for-mac.svg" alt="Download for Mac" width="170" height="34" style="vertical-align:middle"></a> <a href="https://discord.gg/E8a5qmhRhr"><img src="site/assets/discord.svg" alt="Discord" width="162" height="34" style="vertical-align:middle"></a>
+<a href="https://github.com/aosama/astronomical/releases/download/v0.2.119/Astronomical-0.2.119-macOS-arm64.dmg"><img src="site/assets/download-for-mac.svg" alt="Download for Mac" width="170" height="34" style="vertical-align:middle"></a> <a href="https://discord.gg/E8a5qmhRhr"><img src="site/assets/discord.svg" alt="Discord" width="162" height="34" style="vertical-align:middle"></a>
 
 **Run large AI models privately on your Mac, including models bigger than the memory you can spare.**
 
@@ -35,6 +35,8 @@ First, add the `astronomical` command to Terminal: click the menu-bar item, clic
     astronomical launch claude
     astronomical launch codex
     astronomical launch opencode
+
+To keep your models in OpenCode's model picker every day, install the plugin: `opencode plugin add opencode-astronomical` ([details](integrations/opencode/README.md)).
 
 For any other tool, point it at `http://127.0.0.1:6732/`. The [local API page](https://getastronomical.com/local-api.html) has the settings for each client.
 

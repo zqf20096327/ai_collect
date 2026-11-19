@@ -64,12 +64,12 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Classification & Routing](categories/classification-routing.md) — 79 entries
 - [Adaptive & Realtime UI](categories/adaptive-realtime-ui.md) — 13 entries
 - [Verification & Guardrails](categories/verification-guardrails.md) — 67 entries
-- [Scoring & Ranking](categories/scoring-ranking.md) — 44 entries
+- [Scoring & Ranking](categories/scoring-ranking.md) — 45 entries
 - [Agent Decisions](categories/agent-decisions.md) — 70 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 53 entries
-- [Calibration & Research](categories/calibration-research.md) — 61 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 135 entries
+- [Calibration & Research](categories/calibration-research.md) — 62 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 137 entries
 - [Game & Simulation](categories/game-simulation.md) — 30 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 11 entries
@@ -338,9 +338,10 @@ Source file: [`categories/scoring-ranking.md`](categories/scoring-ranking.md)
 - [dsh-jev-plugin](https://github.com/luobosibing2/dsh-jev-plugin) ![agent: DeepSeek Harness](https://img.shields.io/badge/agent-DeepSeek%20Harness-2D5BD7?style=flat-square) ![type: plugin](https://img.shields.io/badge/type-plugin-4B5563?style=flat-square) ![stars](https://img.shields.io/github/stars/luobosibing2/dsh-jev-plugin?style=flat-square&label=%E2%98%85) - Coding agents: asks Jev a `Noul` for each skill summary or original glob path, orders candidates by the returned relevance probability, and supplies the selected skills or ranked paths to DeepSeek Harness, with all features disabled by default.
 - [JevRanker](https://github.com/hgqimo/JevRanker) ![stars](https://img.shields.io/github/stars/hgqimo/JevRanker?style=flat-square&label=%E2%98%85) - Retrieval and RAG: an open-source port of Jev's typed-decision format ([NanoJev](https://github.com/TianyuCodings/NanoJev)'s Qwen3-0.6B, trained on T2Ranking, no hosted API call) that replaces the LLM comparator inside two published search rerankers, BlitzRank's tournament graph and Reranker-Guided Search, where each match is one `Choice` scored over k candidate paths in a single forward pass with zero decoded tokens, reaching 0.6309 nDCG@10 on T2Ranking dev against 0.2162 for the same 0.6B decoding a RankGPT listwise prompt, at 34 ms instead of 752 ms per match and 8.6-9.4x lower per-query latency inside RGS.
 - [Jev vs embeddings for page selection](https://sayora.ai/many-hands/jev-vs-embeddings/) - Production replacement: across 168 caller questions on four small-business websites Jev put the right page first 88% of the time against 70% for production embeddings, and handed the model the wrong page a tenth as often.
+- [OpenJev playground](https://github.com/SiliconLabAI/OpenJev) ![stars](https://img.shields.io/github/stars/SiliconLabAI/OpenJev?style=flat-square&label=%E2%98%85) - Playground: state plus typed questions across three backends, including a parallel mode that makes one tiny probability call per option and softmaxes the results.
 
 ### Agent Decisions
 
 Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 
-- [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.shields.io/github/stars/harshithsunku/learn-jev-end-to-end?style=flat-square&label=%E2%98%85) - Developer education: a 12-notebook Python course whose hand-rolled agent loop asks Jev a `Choice` (allow / ask / block) with `Noul` irreversibility and exfiltration checks before every tool call, sends ask verdicts to a human and fails
+- [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.s

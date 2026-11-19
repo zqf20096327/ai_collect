@@ -6,7 +6,7 @@
 >
 > Fresh papers land every day, grouped by topic so you can pick what matters to you and skim the rest.
 
-**6556 papers** across **140 days** · **1079** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
+**6591 papers** across **141 days** · **1086** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
 
 **Star scale:** most papers carry no star. ⭐ = clearly notable; ⭐⭐ = exceptional (rare); ⭐⭐⭐ = landmark (very rare — often zero per day).
 
@@ -41,6 +41,7 @@ Hand-picked work, including some of my own, that anchors the four topics this fe
 
 _LLMs simulating humans, personas, or societies for scientific study._
 
+- ⭐ [**SimAI: Mechanistic User Simulation through Psychological Network Models**](https://arxiv.org/abs/2611.21808) — LLM-based user simulator representing humans (therapy patients) for behavioral study and clinical training purposes. <sub>_Cheng Li, 2026-11-18_</sub>
 - ⭐ [**Do Machines Learn Deviance From Their Peers? A Randomized Test of Differential Association With AI Agents**](https://arxiv.org/abs/2611.18098) — Uses LLM agents in multi-agent teams to simulate human social learning and deviance propagation, testing criminological theory through controlled behavioral experiment. <sub>_Murat Ozer, 2026-11-16_</sub>
 - ⭐ [**When Should Agents Remember? Falsification-Gated Self-Evolution for LLM Agents**](https://arxiv.org/abs/2611.14326) — Framework for safely integrating learned experiences into LLM agent memory via hypothesis testing, with explicit focus on reducing falsification failures and harmful updates—core alignment concern in <sub>_Runxuan Tang, 2026-11-11_</sub>
 - ⭐ [**Web World Models**](https://arxiv.org/abs/2512.23676) — Paper designs persistent world environments using web code and LLMs for agent simulation, enabling long-horizon interaction and learning in structured but open-ended settings. <sub>_Jichen Feng, 2026-11-10_</sub>
@@ -329,5 +330,4 @@ _LLMs simulating humans, personas, or societies for scientific study._
 - [**VIRENA: Virtual Arena for Research, Education, and Democratic Innovation**](https://arxiv.org/abs/2602.12207) — Platform enabling controlled behavioral experiments where LLM agents with personas interact with humans in realistic social media simulations for studying deliberation and human-AI dynamics. <sub>_Emma Hoes, 2026-10-06_</sub>
 - [**Who Keeps the Gains from Personal AI Assistants? Seller Adaptation and the Unassisted in a Language-Model Market Simulation**](https://arxiv.org/abs/2610.05823) — LLM-based agents simulate consumers, sellers, and assistants in an economic market to study emergent behavior and wealth distribution effects. <sub>_Haonan Huang, 2026-10-06_</sub>
 - [**CUEing User Simulators: Calibrated User Embeddings for Multi-Turn Benchmarking**](https://arxiv.org/abs/2610.02460) — Uses LLMs to simulate human users for multi-turn interactive benchmarking of AI agents, calibrating simulators to match real-user behavior and failure patterns. <sub>_Anjali Kantharuban, 2026-10-05_</sub>
-- [**EpiWorld: Grounding LLM Policy Agents in Epidemiological World Models**](https://arxiv.org/abs/2610.02744) — LLM agent grounded in epidemiological world model reasoning about intervention policies through simulation and counterfactual rollouts. <sub>_Zeeshan Memon, 2026-10-05_</sub>
-- [**Grounding Large Language Models in DSGE Simulators for Policy Generation and Fore
+- [**EpiWorld: Grounding LLM Policy Agents in Epidemiological World Models**](https://arxiv.org/abs/2610.0

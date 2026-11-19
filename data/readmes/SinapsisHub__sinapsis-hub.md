@@ -52,7 +52,7 @@ Sinapsis requires Python 3.10 or later. We recommend [`uv`](https://docs.astral.
 uv venv --python 3.13
 source .venv/bin/activate
 
-uv pip install sinapsis 
+uv pip install sinapsis-cli
 ```
 
 ### 2. Install the capabilities you need

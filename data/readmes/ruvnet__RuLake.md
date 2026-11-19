@@ -1,6 +1,11 @@
 # ruLake — A Memory Lake for Agentic AI
 
-<a href="https://ruvnet.github.io/RuLake/"><img src="assets/console-hero.png" alt="ruLake Console — live demo at ruvnet.github.io/RuLake/" width="100%" /></a>
+<a href="https://ruvnet.github.io/RuLake/lakes/">
+  <picture>
+    <source media="(prefers-reduced-motion: no-preference)" srcset="assets/lake-snapshot-flow.svg" />
+    <img src="assets/lake-snapshot-flow-still.svg" alt="Export Parquet or JSON from your lake, prepare a ruvec1 snapshot, then search locally. Open the data source guides." width="100%" />
+  </picture>
+</a>
 
 > **[Try the live Console →](https://ruvnet.github.io/RuLake/)** — boots in DEMO, auto-probes the hosted MCP at [`rulake-mcp.ruv.io`](https://rulake-mcp.ruv.io/), flips to `● LIVE` when the wire's up. Eight tools served, zero install.
 
@@ -14,9 +19,18 @@
 [![rvdna-mcp](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ruvnet/RuLake/main/badges/rvdna-mcp.json)](https://rvdna-mcp.ruv.io/)
 [![ruqu-mcp](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/ruvnet/RuLake/main/badges/ruqu-mcp.json)](https://ruqu-mcp.ruv.io/)
 
+<details>
+<summary>Preview the RuLake console</summary>
+
+<a href="https://ruvnet.github.io/RuLake/"><img src="assets/console-hero.png" alt="ruLake Console — live demo at ruvnet.github.io/RuLake/" width="100%" /></a>
+
+</details>
+
 ### Self-learning memory for your AI agents — without standing up a vector database.
 
-ruLake gives your AI agents **memory that gets faster the more it's used.** Point it at the storage you already have (S3, BigQuery, Snowflake, Parquet, files), and every agent — on every host — shares the same fast, trustworthy recall. It **learns what gets asked** (so the next ask returns in about a millisecond), **pins each answer to a cryptographic receipt** (so two agents on two machines see the byte-identical result), and **refuses to guess** when the underlying data has changed (an honest "I don't know" beats a confident lie). Roughly **1 ms per lookup** at 100,000 things to remember, **32× less RAM** than the raw embeddings, **zero per-query cost**.
+ruLake caches vector snapshots and attaches a witness to each generation. The stock MCP server serves in-memory collections and local `ruvec1` files. Export embeddings from BigQuery, Snowflake, Athena on S3, Delta Lake, Iceberg or Microsoft Fabric and prepare them locally. Rust applications can also register Parquet on Google Cloud Storage through the GCS adapter. Cached searches run on the host. Warehouse exports, storage and transfer have their usual provider costs.
+
+[**Try a sample search or import your lake →**](https://ruvnet.github.io/RuLake/lakes/) · [BigQuery export recipe](https://ruvnet.github.io/RuLake/lakes/#bigquery) · [Measured cache performance](BENCHMARK.md)
 
 > Created by [rUv](https://ruv.io). Part of the [RuVector](https://github.com/ruvnet/ruvector) ecosystem alongside [`ruvector-rabitq`](https://github.com/ruvnet/ruvector/tree/main/crates/ruvector-rabitq) (1-bit compression kernel) and RVF (durable segment format). Powered by [Cognitum](https://cognitum.one).
 
@@ -43,6 +57,17 @@ npm   install rulake-wasm             # Browsers, Cloudflare Workers, Deno, Bun
 ```
 
 `rulake-stack` is the killer-path install. To use the namespaced form `/rulake-core:*`, `/rulake-witness:*`, or `/rulake-kernels:*`, install those plugins separately (`/plugin install <name>@rulake-marketplace`).
+
+### Console startup
+
+<a href="https://github.com/ruvnet/RuLake/pull/25">
+  <picture>
+    <source media="(prefers-reduced-motion: no-preference)" srcset="assets/console-startup.svg" />
+    <img src="assets/console-startup-still.svg" alt="Median cold startup fell from 1.63 s to 0.42 s. Initial JavaScript requests fell from 17 to 3." width="100%" />
+  </picture>
+</a>
+
+Measured across five cold loads per build in Chrome on ruOS with 80 ms simulated latency and 10 Mbps throughput. [Benchmark details](https://github.com/ruvnet/RuLake/pull/25)
 
 ### Claude Code integration — at a glance
 

@@ -21,15 +21,16 @@ There are no new installers or GitHub Release assets for this tag.
 | Area | Implemented capabilities | Important boundary |
 | --- | --- | --- |
 | Economy and construction | Read colonies, generate legal construction candidates, plan buildings/districts/zones and reserve spending | Execution is limited to reviewed actions and supported game builds |
-| Research | Separate research agent, current tasks and alternatives, prepare/execute workflow and evidence tracking | Native legality tests do not prove actual technology selection |
+| Research within Economy | Economy owns technology choices, current tasks and alternatives, prepare/execute workflow and evidence tracking | Native legality tests do not prove actual technology selection |
 | Fleets and expansion | Fleet permissions, movement/combat planning, repair/upgrade, civilian automation, colonization, starbases, ship designs and reinforcement workflows | Coverage varies by backend and exact build; captured commands are not automatically enabled tools |
 | Long-term coordination | Private application histories, persistent plan books, local fact checks, bounded replanning and deterministic save continuations | Side effects are serialized; ordered sequences do not promise rollback |
-| Player interaction | Web console and optional Qt overlay with application-specific conversations | Native in-game chat is a separate, build-specific research prototype |
+| Player interaction | Bridge: the official Electron frontend and integrated overlay, with application-specific conversations | Native in-game chat is a separate, build-specific research prototype |
 | Native execution research | Typed action modules, game-thread command construction, native `IsValid`, session submission and postcondition interfaces | Current 4.5.2 native actions remain gated pending execution evidence |
 | SDK and performance research | Linux symbol/serializer recovery, Windows matching, candidate planning, batch legality probes, long-running Observe capture and CPU flame graphs | Discovery, offline construction, legality and execution are separate evidence levels |
 
-Economy, research and fleet agents have separate tools, histories and model
-bindings. They share observations and execution safeguards, not unrestricted
+Economy and fleet agents have separate tools, histories and model
+bindings. Research uses Economy's model, history and plan; there is no independent
+research decision department. They share observations and execution safeguards, not unrestricted
 authority over one another. `etc` stages unclassified capabilities; it is not
 an autonomous catch-all agent.
 
@@ -102,17 +103,17 @@ git clone https://github.com/V2t-Nostalgia/OGAS.git
 cd OGAS
 python -m venv .venv
 # Activate .venv for your shell, then:
-python -m pip install -e .
-python -m apps.control_center.web_console --help
+python -m pip install -e ".[harness]"
 python scripts/validation/run_tests.py --quiet
 ```
 
-Start with [Development](docs/DEVELOPMENT.md), then the
-[control console](apps/control_center/README.md) and
-[host bridge](apps/host_bridge/README.md). Linux packet support requires system
-dependencies; read the deployment notes before installation. The optional
-overlay uses `python -m pip install -e ".[overlay]"` and
-`python -m apps.game_overlay.main --preview`.
+Start with [Bridge desktop](apps/desktop/README.md), the official player frontend,
+and [Development](docs/DEVELOPMENT.md). The old Electron renderer is retired.
+The [control console](apps/control_center/README.md), Qt overlay and
+[host bridge](apps/host_bridge/README.md) remain legacy/operator utilities, not
+alternative official player frontends. Their independent deployment tools are
+not part of the Bridge baseline. Linux packet support requires system
+dependencies; read the deployment notes before installation.
 
 Do not load a native probe just to explore the source. Exact game version,
 platform, verification level and a separately authorized disposable session

@@ -68,7 +68,7 @@ pip install mapcv
 
 Requires Python 3.10 or newer. One pre-built wheel per platform (Linux x86-64 and aarch64 with glibc or musl, macOS, Windows) covers every supported Python version; other platforms build from source and need a Rust toolchain.
 
-Optional extras: `mapcv[zarr]` (Sentinel-2 EOPF Zarr, Python 3.10–3.13), `mapcv[gee]` (Google Earth Engine), `mapcv[parquet]` (GeoParquet labels), `mapcv[export]` (Hugging Face Parquet) and `mapcv[mcp]` (the MCP server for AI agents). XYZ tiles, GeoTIFF/COG and STAC need none of them.
+Optional extras: `mapcv[zarr]` (Sentinel-2 EOPF Zarr, Python 3.10–3.13), `mapcv[gee]` (Google Earth Engine), `mapcv[parquet]` (GeoParquet labels), `mapcv[export]` (every export format: Hugging Face Parquet, Zarr) and `mapcv[mcp]` (the MCP server for AI agents). XYZ tiles, GeoTIFF/COG and STAC need none of them.
 
 ## Quick start
 
@@ -132,6 +132,12 @@ Full documentation including configuration reference, CLI reference, and API ref
 ## Contributing
 
 Contributions are welcome. Please review the [Contributing Guide](https://github.com/tahamukhtar20/mapcv/blob/main/CONTRIBUTING.md) and [Code of Conduct](https://github.com/tahamukhtar20/mapcv/blob/main/CODE_OF_CONDUCT.md) before opening a pull request.
+
+## Getting help
+
+- **Questions and ideas:** ask in [GitHub Discussions](https://github.com/tahamukhtar20/mapcv/discussions).
+- **Bugs and feature requests:** open an [issue](https://github.com/tahamukhtar20/mapcv/issues/new/choose) and fill in the template; it asks for the version, your config and the command you ran.
+- **Security problems:** report them privately as described in [SECURITY.md](https://github.com/tahamukhtar20/mapcv/blob/main/SECURITY.md), not in a public issue.
 
 ## Citation
 

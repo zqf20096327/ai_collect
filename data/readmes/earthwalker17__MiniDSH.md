@@ -35,14 +35,14 @@ Requirements:
 ```sh
 npm install -g minidsh            # or run it without installing: npx minidsh …
 
-minidsh chat --cwd path/to/repo   # interactive terminal (--cwd defaults to the current directory)
+minidsh chat --cwd path/to/repo   # full-screen terminal (--cwd defaults to the current directory; a pipe or --plain: line mode)
 minidsh web  --cwd path/to/repo   # the same runtime in a browser; open the one URL it prints
 minidsh run "fix the failing test in src/slug.test.mjs" --approve
                                   # --approve answers every approval yes (chat, serve and web then never ask);
                                   # without it a headless run refuses anything that needs one (on Windows: add
                                   # --accept none, which runs shell commands unconfined but keeps file edits fenced)
 minidsh run "review this module for unchecked inputs" --provider anthropic --model claude-sonnet-5
-minidsh run "summarize this repository" --json     # one JSON line per session event on stdout
+minidsh run "summarize this repository" --json     # one JSON line per event; exit 0 iff it completed, 2 on a bad flag
 
 minidsh sessions list                     # what is stored, by name
 minidsh sessions show <id> --audit        # what this session was allowed to do, and what each call did
@@ -56,7 +56,7 @@ minidsh skills                            # the skills a session here is offered
 minidsh --help
 ```
 
-In the terminal: `y`/`N` answers an approval, and `a` — when it is offered — allows that exact call for the rest of this run of the session (a resume or a fork asks again; `/grants` lists what you have allowed, `/revoke <id>` takes one back); `/sandbox <read-only|workspace-write|danger-full-access>`, `/ask <ask|never>`, `/accept <full|none>` and `/preset <name>` switch authority; `/model [<provider>/]<model> [effort]` switches the model; `/compact` shrinks context; `/history` pages back; `/sessions` lists recent sessions; `/cancel` stops the running turn; `/exit` quits. Typing while a turn is running steers it.
+In the terminal: Enter sends (mid-turn, it steers); Ctrl+J, Ctrl+Enter on Windows or `\` then Enter is a new line; `/` opens the command palette, `/help` lists every key; Esc stops a turn; Ctrl+O opens what a finished turn folded. An approval takes the composer's place: `y`, `n`, or `a` when offered, which allows that exact call until the session ends or its authority changes (`/grants`, `/revoke <id>`); it arms once read to its end with the keyboard quiet, so typing never answers it. `/sandbox`, `/ask`, `/accept` and `/preset` switch authority, `/model` the model; `/resume`, `/new` and `/fork` switch sessions in place.
 
 Everything MiniDSH keeps lives under `~/.minidsh` (override with `MINIDSH_HOME`): `sessions/` (one JSONL log per session), `spill/` (oversized tool output, swept after 30 days), `attachments/` (images, never swept), `composition.json`, `settings.json`, `credentials.json`, `skills/` (your own skills), and an optional `AGENTS.md` that every session reads. Nothing in the harness deletes a log.
 
@@ -84,7 +84,9 @@ From a checkout: `pnpm install`, then `pnpm minidsh …` (TypeScript runs native
 
 **Composition from disk.** The default composition is a list of forty-one plugin entries (*rows*); `~/.minidsh/composition.json` and `--patch` files override it. A row can be disabled, reconfigured or replaced by module specifier; `minidsh config` flags any authority-sensitive row a file changed.
 
-**One runtime, three ways in.** The headless CLI, the terminal and the web UI are clients of one runtime speaking one newline-delimited JSON-RPC protocol (`minidsh serve` exposes it on stdio for your own client). Several clients can watch one session, and a browser tab closing ends nothing but an approval only that tab could have answered, which is refused on the record.
+**One runtime, three ways in.** The headless CLI, the terminal and the web UI are clients of one runtime speaking one newline-delimited JSON-RPC protocol (`minidsh serve` exposes it on stdio for your own client). Several clients can watch one session, and a browser tab closing ends nothing but an approval only that tab could have answered, which is refused on the record. The web UI draws each tool call as a card its tool describes, asks each approval in a card naming exactly what would run, and from the page switches model, effort and permissions, revokes a grant, stops a job or opens a subagent.
+
+![The web UI asking for an approval](https://raw.githubusercontent.com/earthwalker17/MiniDSH/main/docs/images/web-ui.png)
 
 ## Status and limitations
 
@@ -96,7 +98,7 @@ From a checkout: `pnpm install`, then `pnpm minidsh …` (TypeScript runs native
 - Only delegations run in parallel; every other tool call runs alone, in order. Parallel children share the workspace: give them separate files. A child is foreground: a message to the parent waits until its slowest child is done, and stopping the parent's turn stops all of them. A background job's process can outlive a MiniDSH process that is killed (on macOS, and unconfined on Linux): the resume reports it lost and does not stop it. On Windows a job runs only in a session that accepts an unconfined shell (`--accept none`); there, whatever a job or a shell command starts ends with it, a program started through WMI or the Task Scheduler excepted.
 - Nothing confines the network: web search is consent per query, and there is no `web_fetch`. The browser is fenced from the internet, not from localhost: it reaches every local service, from any sandbox mode and a delegated child. No session deletion, search or rename; composition changes need a restart. Loading a plugin from an installed `minidsh` is unproven (BLUEPRINT §3).
 
-What comes next: the product surfaces — fork and resume on the wire, a better terminal and browser, and a Desktop launcher ([BLUEPRINT §2](docs/BLUEPRINT.md)).
+What comes next: an installable desktop app over the same runtime and web UI, then the V2 release candidate ([BLUEPRINT §2](docs/BLUEPRINT.md)).
 
 ## The question it investigates
 
@@ -177,7 +179,7 @@ DSH is a large, fast-moving system (363 packages by its [module graph](https://g
 - **Parallel only where it is joined:** a step's delegations run at once but the parent waits for them, with no background, continuable children or agent teams (DSH: every child an async activation); a background job belongs to its session, is closed `lost` if the process dies, and wakes it a bounded number of times (DSH: a lost job stays open, wakes unbounded).
 - **One protocol over three transports** (stdio, in-process, WebSocket), not several composition profiles.
 - **Two confinement backends, not four:** no Landlock (a native launcher) and no Windows backend (DSH's reports only partial enforcement).
-- **A terminal client ships** (DSH removed its TUI in a note of 2026-08-04).
+- **A full-screen terminal ships** (DSH has none in its repository).
 - **History recall appears only when needed:** `history_read` is hidden until the first compaction; DSH's `session-query` tools are opt-in for the schemas they add to every request.
 
 ### Where it diverges

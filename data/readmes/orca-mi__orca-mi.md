@@ -12,6 +12,10 @@ PET · SPECT · CT · MR &nbsp;—&nbsp; viewing, fusion, 3D, AI segmentation, q
 
 [![Download for Windows](https://img.shields.io/badge/Download-Windows-1f6feb?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/orca-mi/orca-mi/releases/latest/download/ORCA-MI-setup.exe)
 &nbsp;
+[![Download for Ubuntu](https://img.shields.io/badge/Download-Ubuntu%20(test)-e95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://github.com/orca-mi/orca-mi/releases/download/v0.1.3/ORCA-MI-0.1.3-ubuntu.tar.gz)
+&nbsp;
+[![Open in the browser](https://img.shields.io/badge/Open-Web%20viewer-2ea44f?style=for-the-badge&logo=webassembly&logoColor=white)](https://orca-mi.github.io/orca-mi-web-limited/)
+&nbsp;
 [![Website](https://img.shields.io/badge/Website-orca--mi.github.io-24292f?style=for-the-badge&logo=googlechrome&logoColor=white)](https://orca-mi.github.io/)
 &nbsp;
 [![Video tutorials](https://img.shields.io/badge/Tutorials-YouTube-c4302b?style=for-the-badge&logo=youtube&logoColor=white)](https://www.youtube.com/@ORCA-MI)
@@ -52,6 +56,17 @@ Both contain the same program, always the latest version ([all versions](https:/
 Settings, models and AI environments are kept in your user profile, so switching between the two, or updating, keeps
 everything. **Updating:** ORCA-MI tells you when a new version is out (if you allow notifications) and installs it
 for you, or run the new installer over the old one (no need to uninstall). Also on [orca-mi.github.io](https://orca-mi.github.io).
+
+**Linux (Ubuntu), test version:** [**ORCA-MI-0.1.3-ubuntu.tar.gz**](https://github.com/orca-mi/orca-mi/releases/download/v0.1.3/ORCA-MI-0.1.3-ubuntu.tar.gz). ORCA-MI is made for Windows; the
+Linux version (still 0.1.3, from the [v0.1.3 release](https://github.com/orca-mi/orca-mi/releases/tag/v0.1.3)) is the same program, updated less often, without session recording, the system monitor and automatic
+updates. Ubuntu 20.04 or newer (or another Linux with glibc 2.30+), 64-bit: unpack it and start `./orca-mi`
+(`tar -xzf ORCA-MI-0.1.3-ubuntu.tar.gz`, `cd ORCA-MI-0.1.3-ubuntu`, `./orca-mi`); the included README-LINUX.txt
+lists what to install if it does not start. The trial and the free licence work as on Windows (a licence is made for
+one computer, so a Linux PC needs its own).
+
+**ORCA-MI Web, in the browser:** [**https://orca-mi.github.io/orca-mi-web-limited/**](https://orca-mi.github.io/orca-mi-web-limited/). Nothing to install (Chrome, Edge or Firefox):
+a limited version with the viewer (DICOM, NIfTI, PET/CT fusion, 3D MIP, save as NIfTI) and the NEMA IEC phantom
+analysis. Your images are opened inside the browser and never uploaded.
 
 **Requirements:** Windows 10 or 11, 64-bit. A GPU is used for the 3D view; the AI features run on an NVIDIA GPU
 when one is available, otherwise on the CPU.
@@ -177,7 +192,7 @@ e-mail. Details: [Licence and trial](docs/USER_GUIDE.md#-licence-and-trial).
 If you use ORCA-MI in a publication, please cite it ([CITATION.cff](CITATION.cff); GitHub's *Cite this repository*
 button gives APA and BibTeX):
 
-> Salimi, Y. (2026). *ORCA-MI: Open Radiology & Computational Analysis – Molecular Imaging* (Version 0.1.2)
+> Salimi, Y. (2026). *ORCA-MI: Open Radiology & Computational Analysis – Molecular Imaging* (Version 0.1.4)
 > [Computer software]. https://github.com/orca-mi/orca-mi
 
 ---

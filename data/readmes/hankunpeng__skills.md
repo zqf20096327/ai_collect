@@ -22,11 +22,11 @@ This repository contains the following skills:
   npx skills add hankunpeng/skills --skill twitter
   ```
 
-### 3. Conventional Commits (`conventional-commits`)
+### 3. Conventional Commits (`cc`)
 * **Description**: Enforce, validate, lint, and manage Conventional Commits across git repositories. Generates semantic changelogs and installs git hooks.
 * **Installation**:
   ```bash
-  npx skills add hankunpeng/skills --skill conventional-commits
+  npx skills add hankunpeng/skills --skill cc
   ```
 
 ### 4. Antigravity CLI Statusline (`antigravity-cli-statusline`)
@@ -50,11 +50,11 @@ This repository contains the following skills:
   npx skills add hankunpeng/skills --skill llama-parse
   ```
 
-### 7. Semantic Version Recommender (`semver-recommender`)
+### 7. Semantic Version Recommender (`svr`)
 * **Description**: Intelligently analyze code changes, API contract diffs, and commit history to recommend the next Semantic Version (SemVer MAJOR, MINOR, or PATCH) with concrete rationales and breaking change detection.
 * **Installation**:
   ```bash
-  npx skills add hankunpeng/skills --skill semver-recommender
+  npx skills add hankunpeng/skills --skill svr
   ```
 
 ### 8. Explain Like I'm 5 (`eli5`)
@@ -85,11 +85,11 @@ This repository contains the following skills:
   npx skills add hankunpeng/skills --skill url-to-obsidian
   ```
 
-### 12. Smart Commit And Push (`cap`)
+### 12. Conventional Commit and Push (`ccp`)
 * **Description**: Context-aware Commit And Push workflow. Automatically stages specified or recently modified target files along with their referenced companion assets (e.g., blog post images in `assets/img/posts/<slug>/`), validates the commit message against Conventional Commits, commits, and pushes to remote while isolating unrelated changes.
 * **Installation**:
   ```bash
-  npx skills add hankunpeng/skills --skill cap
+  npx skills add hankunpeng/skills --skill ccp
   ```
 
 ### 13. Explain Like I'm 5 in Chinese (`eli5c`)
@@ -98,6 +98,30 @@ This repository contains the following skills:
   ```bash
   npx skills add hankunpeng/skills --skill eli5c
   ```
+
+### 14. GitHub Flavored Markdown (`gfm`)
+
+Write a document in GitHub Flavored Markdown with `$gfm Write a document about…`.
+
+```bash
+npx skills add hankunpeng/skills --skill gfm
+```
+
+### 15. Obsidian Flavored Markdown (`ofm`)
+
+Use `$ofm` to select Obsidian Flavored Markdown, then say what to do. For example, `$ofm Summarize the discussion above` replies in chat, and `$ofm Save the discussion above as meeting-notes.md` writes a file.
+
+```bash
+npx skills add hankunpeng/skills --skill ofm
+```
+
+### 16. Codex Session Cleanup (`csc`)
+
+Run `$csc` to preview the active sessions in the current working directory’s `/resume` list. Use `$csc Delete the other active sessions in this directory and keep this session` to permanently delete the other sessions. Requires Python 3.8 or later and a local Codex CLI with `thread/delete` support.
+
+```bash
+npx skills add hankunpeng/skills --skill csc
+```
 
 
 ---

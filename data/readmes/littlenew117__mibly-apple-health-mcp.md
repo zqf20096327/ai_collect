@@ -79,7 +79,7 @@ Connect an MCP client over HTTP to `http://<ip>:7345/mcp` with the header `Autho
 
 If you regenerate the token in the app, restart with the new `MIBLY_TOKEN`. The old encrypted store can't be decrypted with the new key, so the receiver starts empty.
 
-Code map: `src/index.ts` (routes) · `src/auth.ts` (token check) · `src/config.ts` (`~/.mibly/config.json`) · `src/ingest.ts` (validation) · `src/store.ts` (encryption, retention, queries) · `src/mcp.ts` (the two tools). Run the tests with `npm test`.
+Code map: `src/index.ts` (routes) · `src/auth.ts` (token check) · `src/config.ts` (`~/.mibly/config.json`) · `src/ingest.ts` (validation) · `src/store.ts` (encryption, retention, queries) · `src/mcp.ts` (the three tools — `send_sketch` always rejects here, see `sketch.ts`; it's only a placeholder for Agent tool-call symmetry with Mibly Pro's cloud-only Watch sketch feature). Run the tests with `npm test`.
 
 ## Start automatically on boot
 

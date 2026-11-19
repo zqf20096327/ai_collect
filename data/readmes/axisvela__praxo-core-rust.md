@@ -9,9 +9,9 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This crate is its nat
 | Package | `praxo-core` |
 | Registry | [crates.io](https://crates.io/crates/praxo-core/0.9.2) |
 | Install | `cargo add praxo-core@0.9.2` |
-| Source version | `0.9.2` |
+| Source version | `0.10.0` |
 | Published version | `0.9.2` |
-| Source tag | `rust/v0.9.2` |
+| Source tag | `rust/v0.10.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
 | Documentation | https://axisvela.github.io/praxo-core/languages/rust/ |
@@ -64,8 +64,8 @@ See the [full Rust README](language/rust/README.md) for complete installation, b
 | Capability | Status | Detail |
 | --- | --- | --- |
 | OpenAI-compatible model | native | `openai_compat::OpenAICompatible` behind optional `http-ureq`; `parse_stream` always available |
-| Anthropic model | native (transport seam) | `adapters::anthropic`; caller supplies transport |
-| Gemini model | native (transport seam) | `adapters::gemini`; caller supplies transport |
+| Anthropic model | native (transport seam) | `adapters::anthropic`; caller supplies transport; `StreamingModel` via `send_stream` |
+| Gemini model | native (transport seam) | `adapters::gemini`; caller supplies transport; `StreamingModel` via `send_stream` |
 | MCP client | native | `mcp::McpClient`; stdio, plus `McpClient::connect_http` over a caller-supplied `McpHttpTransport` seam for Streamable HTTP 2025-03-26 |
 | Harmovela sink | native | `harmovela::Sink` |
 | OpenTelemetry sink | native (transport seam) | `adapters::otel::Sink`; caller supplies OTLP/HTTP transport |

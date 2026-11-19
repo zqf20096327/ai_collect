@@ -42,6 +42,15 @@ Claude Code, Cursor, Codex, Gemini CLI, VS Code, Windsurf, Claude Desktop, LM St
 
 Prefer an app? [Download Woolly for Mac or Windows](https://usewoolly.com/download). Also on [Homebrew and Linux](https://usewoolly.com/docs/quickstart).
 
+## Check the notes your agents already read
+
+```sh
+cd your-repo
+woolly check
+```
+
+No setup. Woolly reads CLAUDE.md, AGENTS.md, Cursor rules, Copilot instructions, Claude Code's auto memory, Codex memories and claude-mem, and flags every line that names a function, file or script the code no longer has, with the commit that changed it. `woolly check --fix` rewrites renamed names and moved paths for you. [Check your agent files](https://usewoolly.com/docs/memory-files)
+
 ## What you get
 
 **It knows when a fact goes stale.** On every commit and on `woolly check`, each fact is checked against the code it points at. Rename a function, delete a file or change a pin number, and the fact that relied on it is flagged with the commit that broke it. `woolly review` lets you confirm, fix or retire it. [Stale facts](https://usewoolly.com/docs/stale-facts)

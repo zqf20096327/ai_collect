@@ -4,15 +4,13 @@
 >
 > 👈 **返回主站对应模块**：[Vibe Coding 作品展](https://soycodetrail.top/vibe-coding)  ·  🏠 全站：[https://soycodetrail.top](https://soycodetrail.top)
 >
-> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-18 22:16:17 UTC
+> 🤖 本仓库内容由脚本自动同步自主站，**与网站保持实时同步**（source 数据变更 → GitHub Actions 推送即更新）。最近同步：2026-11-19 21:54:22 UTC
 
 ## 📚 系列展示站（更多精选内容，互相导流）
 
 - [DeepSeek Harness 插件库](https://github.com/soycodetrail/deepseek-harness-plugins) · [主站模块 ↗](https://soycodetrail.top/dsh-plugins) · [在线浏览 ↗](https://soycodetrail.github.io/deepseek-harness-plugins/)
-- [AI 技能工坊](https://github.com/soycodetrail/ai-skills-workshop) · [主站模块 ↗](https://soycodetrail.top/skills) · [在线浏览 ↗](https://soycodetrail.github.io/ai-skills-workshop/)
-- [开源书籍宝库](https://github.com/soycodetrail/ai-books-treasury) · [主站模块 ↗](https://soycodetrail.top/books) · [在线浏览 ↗](https://soycodetrail.github.io/ai-books-treasury/)
 
-## 📑 内容导航（783 个条目 / 15 个分类）
+## 📑 内容导航（790 个条目 / 15 个分类）
 
 - [📁 Web 应用](#cat-web-应用)
 - [📁 AI 工具](#cat-ai-工具)
@@ -98,6 +96,8 @@
   标签：YC 投资 / PH #2 376票 / 全栈 App / 一键发布
 - [Hotelist - Pieter Levels 用 AI 重做酒店评分](https://hotelist.com) — vibe coding 标杆人物 Pieter Levels（@levelsio）出品：用 AI 抓取真实旅客评价与实拍照片，重新给全球酒店打分，对抗 Airbnb 的 4.5-5.0 评分通胀与付费排名；覆盖 250+ 国家、数百连锁品牌，纯 AI 聚合、无人能买榜。  
   标签：Pieter Levels / AI 评分 / 酒店搜索 / 去通胀
+- [Floot - 在 Claude 与 ChatGPT 里对话式建站](https://floot.com) — Y Combinator 孵化的对话式全栈建站平台：把 Floot 作为 connector 接入 Claude、ChatGPT、Cursor，一句话描述即自动生成带数据库、登录、邮件、Stripe 支付与 SEO 的真实应用，一键发布到 Web 与应用商店，无需 git、终端或构建额度。2026-11-04 上线即登 Product Hunt 当日榜 #2（324 票、88 评论，Garry Tan 精选）。  
+  标签：PH 日榜#2 / 324 票 / YC 孵化 / 对话式建站 / Vibe Coding
 
 <a id="cat-ai-工具" name="cat-ai-工具"></a>
 
@@ -367,6 +367,8 @@
   标签：19.7万 Star / Anthropic 官方 / Agent Skills / 开放标准 / 周榜前三
 - [Obscura - 专为 AI Agent 打造的开源无头浏览器](https://github.com/h4ckf0r0day/obscura) — h4ckf0r0day 开源的 AI 无头浏览器，专为 Agent 自动化与网页抓取设计：把页面渲染成对模型友好的紧凑结构，让 Claude Code、Cursor 等编码 Agent 高效读取与操作网页。GitHub 3.6 万★（API 实测 36,378★），2026-11 单周涨星 5,000+ 登上 GitHub Trending，是 Agent 基础设施赛道的现象级新秀。  
   标签：3.6万 Star / 周涨5000+ / 无头浏览器 / Agent 基建 / 开源
+- [Google Skills - 谷歌官方 Agent Skills 标准库](https://github.com/google/skills) — Google 官方为 Claude Code、Cursor、Codex 等 40+ 编码 Agent 打造的 Agent Skills 集合，覆盖 Google 搜索、地图、Gemini、Workspace 等产品能力，一行 npx skills add 即可安装。GitHub 24,451★（REST API 2026-11-20 实测），是继 Anthropic Skills 之后又一官方技能标准，把大厂工具链直接装进你的 Agent。  
+  标签：2.4万 Star / Google 官方 / Agent Skills / 编码 Agent / 开源
 
 <a id="cat-agent" name="cat-agent"></a>
 
@@ -785,6 +787,8 @@
   标签：5.3万 Star / 阿里开源 / 代码审查 / 行级评论 / Trending 热门
 - [CNVS - 用语音指挥一整支 AI 编码 Agent 军团](https://cnvs.dev) — 独立开发者 Max Blade 用 Claude Code + Codex 打造的 macOS 无限画布应用：把 Claude Code、Codex、Cursor 各自放进项目专属画布，配终端和实时浏览器，用语音统一指挥多个 Agent 协同干活。自 2026-06 上线以来 Stripe 已验证累计销售额 49,986 美元（TrustMRR 2026-10），作者靠直播「用 CNVS 造 CNVS」在 X 涨粉 2.48 万，是设计循环（design loop）vibe coding 的标杆案例。  
   标签：$49986 销售额 / Stripe 已验证 / 语音指挥 Agent / 无限画布 / Swift
+- [Disc Image Studio - 把图片刻进光盘的人眼可见图案](https://github.com/JiaFeiMiao-K-Cat/DiscImageStudio) — 用 C#/.NET 10 手写的多平台光盘盘面图像生成与刻录工具：导入任意图片即可算出符合 CD、DVD、单层蓝光物理层约束的数据，刻录后盘面呈现肉眼可见图案；支持图层排版、影调抖动、三阶段实盘标定与 ISO/WAV+CUE 导出。GitHub 10,323★（API 实测），GPL-3.0，把冷门硬件玩法做成完整工程。  
+  标签：1万 Star / 开源工具 / 光盘刻录 / 图像处理 / GPL-3.0
 
 <a id="cat-游戏" name="cat-游戏"></a>
 
@@ -1135,14 +1139,4 @@
   标签：绘画 / AIGC / 分级练习
 - [StudentOS](https://student-os.net) — 面向学生的 AI 学习平台，整合笔记、测验与学习计划管理功能。  
   标签：笔记 / 测验 / 学习计划
-- [GradLoom](https://gradloom.app) — 帮助学生与应届生规划职业方向的平台，可按国家查询职业路径与薪资。  
-  标签：职业规划 / 数据查询 / 学生工具
-- [Language Practice Tutor](https://website0anaya0a.lovable.app) — 任意语言对话陪练示例应用，提供语法纠正与词汇学习的交互式 AI 老师。  
-  标签：语言学习 / 对话陪练 / LLM
-- [vibe-vibe 开源教程](https://github.com/datawhalechina/vibe-vibe) — Datawhale 推出的系统化 Vibe Coding 中文开源教程，讲解从写代码到对话式创作的路径。  
-  标签：教程 / 开源 / 中文
-- [ai-guide 零基础教程](https://github.com/liyupi/ai-guide) — 程序员鱼皮的 AI 资源大全与 Vibe Coding 零基础实战教程，半年收获上万 Star。  
-  标签：教程 / 资源合集 / 开源
-- [aicodeguide](https://github.com/automata/aicodeguide) — 整理 AI 编程入门方法与实践经验的开源指南仓库，常被牛客等社区推荐。  
-  标签：指南 / 开源 / AI 编程
-- [OpenEar](https://github.com/ShacharHarshuv/open-ear) —
+- [GradLoom](https://

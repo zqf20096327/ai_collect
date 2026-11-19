@@ -2,7 +2,7 @@
 
 A Rust CLI for native coding-agent hooks and installation diagnostics.
 
-Upgrading Claude Code from v1? Preview `vibeguard-runtime install claude --migrate-v1-hooks --dry-run`, then repeat without `--dry-run`. This backs up settings, removes recognized old hook calls (including duplicates), and installs v2 hooks while preserving unrelated integrations. Other v1 remnants still require the legacy inventory. See [installation details](docs/runtime-contract.md#installation).
+Upgrading Claude Code from v1? For release v2.3.0, follow [the legacy inventory and cleanup steps](#breaking-v2-changes). Builds from the current source also support `vibeguard-runtime install claude --migrate-v1-hooks --dry-run`. After reviewing the preview, run it without `--dry-run` to back up settings and update recognized hooks. See [installation details](docs/runtime-contract.md#installation).
 
 [Website](https://majiayu000.github.io/vibeguard/) · [中文](docs/README_CN.md) · [Runtime contract](docs/runtime-contract.md) · [Contributing](CONTRIBUTING.md)
 
@@ -130,7 +130,7 @@ Nothing is added to your repositories. To turn it off in one, such as someone el
 git -C /absolute/path/to/repository config vibeguard.sizeLimit false
 ```
 
-It compares staged content with `HEAD`, so no list of known large files is needed. It is separate from `install git`, so it brings no push rules. How it installs depends on the global `core.hooksPath`:
+It compares staged content with `HEAD`, so no list of known large files is needed. It is separate from `install git`, so it brings no push rules. How it installs depends on the `core.hooksPath` of your global or system Git configuration, files they include counted:
 
 - **Not set:** Git is pointed at `~/.vibeguard/git-hooks`, whose hooks also run each repository's own hooks, so those keep working. Uninstall unsets it again.
 - **Set by another tool:** a marked block goes at the top of that tool's pre-commit script, and uninstall restores its exact text. If that tool rewrites the script, `status git-size` shows the block is gone; run install again. A hook that isn't a shell script is left alone and install fails with a message.
@@ -141,6 +141,7 @@ Known gaps:
 
 - `git commit --no-verify` skips the commit hook. Rebases and fast-forward merges don't run it.
 - A repository that sets its own `core.hooksPath`, as Husky does, doesn't run it.
+- When VibeGuard owns the shared `core.hooksPath`, tools such as Git LFS and pre-commit can refuse to install hooks for a new repository. Before pushing LFS files, run `git -c core.hooksPath=.git/hooks lfs install --local` from a standard clone with a `.git` directory. This installs the LFS hooks where VibeGuard looks for repository hooks. Avoid `git lfs update --force`, which can replace the shared hook.
 - The Bash notice reads the whole repository, so it can also report another session's uncommitted growth. It misses a directory held in a shell variable.
 - Grok and DSH receive no notice, and Codex `apply_patch` is seen only at commit.
 
@@ -154,7 +155,7 @@ Upgrading from 2.1: run `install claude` again to add the edit check. Files that
 | Bash results | Records only the latest reported outcome, optional exit code, timestamp, cwd, and tool-use ID. No raw command or output. |
 | Git pre-push | Rejects remote ref deletion and existing tag replacement. Branches require direct commit targets and fast-forward updates; other existing refs require commit ancestry after peeling tags. Missing required objects are an explicit error. See the [runtime contract](docs/runtime-contract.md). |
 | Write/Edit/MultiEdit PreToolUse (Claude Code) | Refuses an edit that would leave a source file above 800 lines and longer than before. Edits whose result cannot be predicted (missing file, unmatched text) are left to the host tool. |
-| Write PreToolUse, opt-in (Claude Code) | With `VIBEGUARD_TEMP_PAGES=deny` in the hook's environment, refuses a `Write` of an `.html` or `.htm` file under a temporary directory, where the system deletes it later. Off by default. Pages written through Bash are not seen. |
+| Write PreToolUse, opt-in (Claude Code, builds from current source) | With `VIBEGUARD_TEMP_PAGES=deny` in the hook's environment, refuses a `Write` of an `.html` or `.htm` file under a temporary directory. Off by default. Release v2.3.0 does not recognize this setting. Pages written through Bash are not seen. |
 | Bash PostToolUse (Claude Code, Codex) and PostToolUseFailure (Claude Code) | Tells the Agent which source files grew past 800 lines, once per file and line count. It never changes a decision. |
 | Git pre-commit (`install git-size`) | Refuses a commit that leaves a source file above 800 lines and longer than before. See [the 800-line limit](#the-800-line-limit). |
 

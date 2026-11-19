@@ -279,8 +279,30 @@ A profile uses `~/.alran-<profile>`; `ALRAN_DATA_DIR` or `ALRAN_DATA_DIR` can se
 | **Search and work with media** | Use built-in search, `alran-tools` media tools, MCP, and managed connectors, subject to account access and service credits. |
 | **Keep work moving** | Resume sessions, plan tasks, use subagents, and extend the agent from the Plugin Store, local plugins, the Skill Library and built-in skills. |
 | **Connect your workflow** | Run scripted tasks with the headless CLI, or connect compatible editors and clients through ACP. |
+| **Repair red CI** | Install the [CI Fixer](docs/ci-fixer.md): `alran ci init` wires a GitHub Action that reproduces the failure, fixes it headlessly, verifies green and commits only then — guarded against forks, protected paths and test-weakening diffs. |
 
 Account features, updates, feedback, and diagnostics are also included. Managed tools require network access and the relevant authorization. See [capabilities and service boundaries](docs/tui-capabilities.md) for details.
+
+### CI Fixer
+
+The CI Fixer turns a red GitHub pipeline into a verified fix without weakening
+the suite. Set it up once per repository:
+
+```sh
+alran ci init      # or /ci in the TUI for the wizard
+alran ci doctor    # check gh login, secret, permissions, fork state
+alran ci fix --dry-run   # rehearse locally; never commits
+```
+
+It writes `.alran/ci.yml` and `.github/workflows/alran-ci-fix.yml`, monitors
+the workflows you pick, and on a red run reproduces the failure, runs a
+headless Alran Code session with a restricted toolset (no web search or fetch),
+and commits only when the same command passes again — with a diff guard that
+rejects skipped tests, weakened assertions, lowered thresholds and edits to
+protected paths. Pull requests get a summary comment; main-branch fixes open a
+PR by default. The model is any OpenAI-compatible endpoint; the API key lives
+only in the `ALRAN_API_KEY` GitHub secret. Modes, limits, the security model
+and the re-trigger trade-off are documented in [CI Fixer](docs/ci-fixer.md).
 
 
 ## Build from source

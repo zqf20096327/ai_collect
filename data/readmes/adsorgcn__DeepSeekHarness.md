@@ -19,13 +19,15 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 
 ## 那句话
 
-新开一个任务，一定先选「创造模式」（装插件的工具只有它有，装不上东西时它能自己修），再把下面这句原样贴给它：
+新开一个任务，一定先选「创造模式」（装插件的工具只有它有，装不上东西时它能自己修），再把下面这一句原样贴给它：
 
-> 帮我把 https://github.com/adsorgcn/DeepSeekHarness 里的 iLang DSH 工具包安装到本地：先确认你现在是创造模式（手里有装插件的工具），不是就先别动手，让我新开一个任务、模式选「创造模式」再贴一遍；然后按我的系统下载并运行仓库里的 bootstrap.ps1（Windows）或 bootstrap.sh（macOS、Linux），打不开 GitHub 就从 https://gitee.com/monetize/DeepSeekHarness 取同名文件；它默认只检测，缺什么软件列给我，逐个征得我同意后再从官方源安装；装完再把官方插件 dsh-plugin-chuhai 装上（问我一次）；哪一步装不上或卡住，你自己想办法修好、装好再往下走，被权限拦了就向我申请一次放行；最后告诉我以后每个新窗口怎么一句话回到这里，还有「自媒体出海」这句话怎么用。
+> 帮我装 iLang DSH 工具包，照 https://ilang.cn/guide/dsh/install.md 做。
+
+这一句的全文在 https://ilang.cn/guide/dsh/install.md ，是写给它看的；国际兜底 https://dsh.ilang.guide/install.md 是同一份。你只管贴这一句。
 
 剩下它全包：装环境先问你再动手，放好全套，问几个问题认识你。Windows 走 bootstrap.ps1，macOS 与 Linux 走 bootstrap.sh，由 DSH 按系统选；软件只从官方源装；默认本机模式，什么都不上传。
 
-连不上 GitHub：自动走国内镜像 gitee.com/monetize/DeepSeekHarness，iLang 官方资料自动走 ilang.cn。
+国内先走镜像 gitee.com/monetize/DeepSeekHarness（和 GitHub 同源，排在 GitHub 前面；GitCode 也有一份 gitcode.com/monetize/DeepSeekHarness，腾讯 CNB 也有一份 cnb.cool/ilang/DeepSeekHarness，GitHub 每次推送和发版都自动同步到这三处），iLang 官方资料走 ilang.cn；那一句的全文国内也有一份，一字不差：https://ilang.cn/guide/dsh/install.md 。
 
 在 DeepSeek Harness 0.2.2-rc.1 上验证（DSH 还是 Developer Preview，官方说可能有破坏性变更；装不上先看这一行）。
 
@@ -45,7 +47,7 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 
 ## 市场
 
-门是 iLang：清单过官方校验器 strict 0 错 0 警告。过了门、owner 说收的技能和工程书原样内置在工具包里，装了工具包就有，不用挑；货架在 https://dsh.ilang.guide/market/ 。第一本内置工程书：说一句「AI全球自媒体」。第二本：说一句「出片」，一句话或一张图，交给你的 Grok Bot 出图出视频，每一件成品都带着请求和判决。第三本：说一句「云端分身」，工作区进私有仓库，分身交给你的 Grok Bot，出门用手机说「出文」「出片」「发到 YouTube」。在别处看见不错的技能或插件，告诉你的 DSH，它帮你写一版更好的。想上货架先跑 tools/market_admit.py 自检再提申请，收录顺序就是显示顺序。
+门是 iLang：清单过官方校验器 strict 0 错 0 警告。过了门、owner 说收的技能和工程书原样内置在工具包里，装了工具包就有，不用挑；货架在 https://dsh.ilang.guide/market/ 。第一本内置工程书：说一句「AI全球自媒体」。第二本：说一句「出片」，一句话或一张图，交给你的 Grok Bot 出图出视频，每一件成品都带着请求和判决。第三本：说一句「云端分身」，工作区进私有仓库，分身交给你的 Grok Bot，出门用手机说「出文」「出片」「发到 YouTube」；勾一下，它每天到点自己出文、自己盯公众号反馈。第四本：说一句「一稿多发」，一篇稿照每个平台的卡改成该平台的版本，你点头进队列，到点由手发出去，发错的原样记一行。第五本：「爆文公式」，专家写完稿之后自动过的一道节奏自查，209 条爆文标题和 15 篇正文量出来的，也可以说一句单独量一篇。在别处看见不错的技能或插件，告诉你的 DSH，它帮你写一版更好的。想上货架先跑 tools/market_admit.py 自检再提申请，收录顺序就是显示顺序。
 
 ## 以后每个新窗口
 
@@ -64,6 +66,8 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 ## 放心
 
 你的记忆，只在你的电脑上。笔记是纯文本，随时能看、能改、能删。出网的只有两件事：你向模型提问的 API 请求，和你主动配置的备份（自己的私有仓库或同步盘）。不记密码；钥匙在账本里，值静态编码，不是加密（见 [一键安装.md](一键安装.md)「钥匙放在账本里」）。工具包自己不设门：没有登录墙、没有许可证、不限次数、不看你在哪；模型那边说不，原话给你，下一句就是另一条路，不是一堵墙。
+
+每一笔改动都留了底：从 v1.1.53 起，本仓库每个提交的末尾都带一条链（标签 ai.ilang.chain 之后五行）——一行写 owner 的原话和这次改了什么，一个 JUDGE 块写怎么判的；CI 从 git log 读回来过正典的两个校验器，缺链或链不合法就不放行。读法：`git log -1 --format=%B`，或 `python -X utf8 tools/code_chain.py show HEAD`。规范在正典 [products/code-chain](https://github.com/ilang-ai/ilang-spec/tree/main/products/code-chain)。
 
 ## 引用与致谢
 
@@ -122,7 +126,7 @@ iLang 开发、面向 DeepSeek Harness 用户的开源工具包，提供本地�
 - [OpenAPI](https://dsh.ilang.guide/openapi.json) · [Agent 导航](https://dsh.ilang.guide/llms.txt)
 - [Agent Skills 索引](https://dsh.ilang.guide/.well-known/agent-skills/index.json) · [访问说明](https://dsh.ilang.guide/auth.md)
 
-MCP 现可读取「变工程书」「出片」「云端分身」及其随包执行正文，共 20 项固定公开资源、5 个只读工具。它返回使用资料，制作、同步和发布仍由你的 Agent 按实际配置与授权执行。
+MCP 现可读取「变工程书」「出片」「云端分身」「一稿多发」「爆文公式」「SEM 与付费投流」及其随包执行正文，共 24 项固定公开资源、5 个只读工具。它返回使用资料，制作、同步和发布仍由你的 Agent 按实际配置与授权执行。
 
 支持 WebMCP 的浏览器还可在首页调用「读取安装说明」和「搜索技能市场」。安装仍由本地 Agent 按用户确认执行。
 

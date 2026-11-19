@@ -1,0 +1,689 @@
+# Logsift
+
+[![Latest release](https://img.shields.io/github/v/release/bdarwin/logsift)](https://github.com/bdarwin/logsift/releases/latest)
+[![Build](https://github.com/bdarwin/logsift/actions/workflows/snapshot.yml/badge.svg)](https://github.com/bdarwin/logsift/actions/workflows/snapshot.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
+
+**Find out what your app did, from its logs to its threads.** Logsift opens gigabytes of logs instantly, tails them live and points out errors, bursts and restarts. Follow one request through every log, even inside zips; see exceptions grouped by cause; chart how long things take. Then go deeper: it explains Java and Python thread dumps, and attaches to running JVMs to profile them and look at their heap, on your computer or on a server. Windows, macOS and Linux.
+
+**Ask AI about it.** GitHub Copilot or Claude Code answers in Logsift's window, reading your logs, thread dumps, GC logs and crash dumps with Logsift's own tools: *why did checkout fail at 10:42?* It cites lines you can click, asks before it reads anything you haven't opened, and shows what each answer cost. Or ask from your coding agent (Copilot, Claude Code or any agent that supports MCP), and Logsift does the reading on your computer, with secrets masked.
+
+![Logsift with four filters combined as (A OR B) AND NOT C, the timeline on top and the highlight bar on the right](docs/screenshots/filters.png)
+
+![The assistant beside a log: the question, the lines Logsift read for it, and the answer with links to them](docs/screenshots/assistant.png)
+
+**[User guide](https://bdarwin.github.io/logsift/guide/)**: what each view shows, what its colours and numbers mean, and what to do about them (also **Help → Documentation** in the app).
+
+## Features
+
+- **Huge files, instantly.** A 1 GB log shows its first lines in 0.12 s and is fully indexed in 0.26 s. Scrolling and jumping to any line stay smooth at any size.
+- **Live tail.** Follow a growing log, including through rotation and truncation. You choose whether changes load automatically or only when you click Reload.
+- **Find All.** Run several searches at once (text, whole word, regex, any case), each in its own color, and search within the results.
+- **Filters.** Show, hide or mark lines and combine filters with AND, OR and NOT. Filter by log level and time range, keep stack traces with their line, and add context lines.
+- **Timeline and highlight bar.** See error bursts at a glance and drag over a time range to zoom in.
+- **Columns.** Time, level, thread, logger and message are parsed automatically. JSON logs and CSV files work too, with a pretty-printed details view.
+- **Your own log formats.** Drop a log file and Logsift works out its layout, or paste your log4j, logback, java.util.logging or Python logging setup (even a whole `logback.xml` or `log4j2.xml`: each layout in it becomes a format). A live preview shows how lines split into columns.
+- **Exceptions by root cause.** Java stack traces, .NET exceptions (with their inner ones) and Python tracebacks grouped by what went wrong and where in your own code: "60 × NullPointerException at PriceCalculator.discount", with the stack, what wrapped it, and each time it happened.
+- **Metrics from the messages and columns.** How long things that start and end took ("Started job sync-7" … "Finished job sync-7"), the ones that never ended, the numbers messages report (`placed in 345 ms`, `queue size=42`) and columns of numbers (`duration_ms` in a CSV) as charts over time, with the slowest lines a click away.
+- **Follow a request.** Right-click a line with a trace or request ID (or select any text) → **Follow**: the request's lines in order, across threads, open logs or a whole folder (zips too), with the time between them and the longest wait marked.
+- **Tree of loggers.** Loggers (or threads, components, hosts) as a package tree beside the log, with line counts. Uncheck a branch to hide its lines, double-click one to see only it.
+- **Zips, .gz files and the web.** Drop a `.zip` and it opens as a tab with its folders and files (zips inside it too); open any of them as a log, with everything a log has, merge them by time, or search them all. A `.gz` opens directly. Open logs from web addresses, or download several and search them together.
+- **Folder search.** Search a whole folder in parallel, including inside `.gz` and `.zip` files, and zips inside zips.
+- **Remote logs over SSH/SFTP.** Browse the server, pick a file, and it stays up to date as the remote log grows.
+- **Analyze.** See the top messages by count, compare a bad run with a good one, and merge several logs by time.
+- **Query with SQL.** A Query tab asks a log or a CSV anything SQL can (errors per minute, the slowest requests, percentiles, joins with another file) in milliseconds over millions of lines, read-only; double-click a result to see its line. Coding agents can ask it too.
+- **Pivot tables and charts.** Group a CSV file's rows, sum, count or average its values, split them across columns and chart them, as in a spreadsheet; double-click a cell to see its rows.
+- **Compare CSV files by key.** Two exports of the same table, in any row order: pick the key columns (one is suggested), choosing the files in a browser on each side, inside zips too, and see what was added, removed and changed, value by value (old → new), with changes per column, numbers within a tolerance, and an export of the differences. A million rows compare in seconds.
+- **Compare text and folders, merge with git.** Two folders (or zips) file by file; two text files or logs side by side, with the changed words marked and times, numbers or IDs masked so two runs line up; a three-way merge for conflicts; Logsift can be git's difftool and mergetool.
+- **Java threads (and Python's).** Open thread dumps (jstack, jcmd, or `kill -3` output inside a log; `py-spy dump` and `faulthandler` for Python), or attach to a running JVM on your computer, on a server over SSH, or through its JMX port. Logsift points out deadlocks, threads queueing for a lock, stuck and busy threads and full thread pools, and shows each thread over time.
+- **Safe around production.** Every action that reaches a running JVM says what it costs the service before it runs (a stop, a full GC, CPU, disk, network), and Logsift never removes files on a server. See [What Logsift does to a running service](#what-logsift-does-to-a-running-service).
+- **A log knows its JVM.** Open a log and Logsift names the JVM writing it, with its threads, profile and heap a click away. Right-click a line to see its thread's stack; from a thread, show only its lines.
+- **Heap dumps, explained.** Open a `.hprof` file and Logsift says what fills the memory in plain sentences ("one HashMap in static SessionCache.CACHE holds 1.2 GB: mostly 20,000 sessions"), and for any object, the chain of references that keeps it alive. Dumps of tens of GB open with the app's usual 2 GB of memory: a 12 GB dump with 223 million objects in about 2½ minutes.
+- **GC logs, explained.** Open a Java GC log (Java 8 to 25; G1, Parallel, Serial, CMS, ZGC, Shenandoah) and Logsift says how much of the time the program stood still, what the longest pauses were and why, whether the memory left after GC keeps growing, and what went wrong (full collections, evacuation failures, allocation stalls, System.gc() calls), each with what to try; with charts of the heap, pauses, allocation and time in GC.
+- **Crash dumps, explained.** Open a Windows dump (`.dmp`, `.mdmp`, full or mini, of any program) or a Java `hs_err_pid` file, and Logsift says what happened in plain words ("Access violation: reading address 0x18, a null pointer, in OrdersService!Order::total"), the code to blame, what to try, and every thread's stack, with threads that share a stack together. Stacks are rebuilt from the dump itself, with names from your PDB files and, if you let it, Windows' own from Microsoft. For a JVM crash it explains how it happened (native library, JNI, Unsafe, the garbage collector, the JIT compiler, out of memory) and which other threads and libraries may have caused it.
+- **Ask the assistant about your logs (beta).** A chat with GitHub Copilot or Claude Code, in its own tab, beside the log or in a window of its own (Ctrl+I): it reads the open logs and your services' logs with Logsift's tools, knows where they are and what time it is (*what went wrong in login this morning?*), cites lines you click to see, draws GC charts, and asks before taking a thread dump or reading a file you haven't opened. Each answer shows its model and cost; every chat is kept and searchable. Rate answers 👍/👎, and **View → Assistant Audit** shows which questions went wrong or cost the most, and why. Settings → Assistant shows what it's told. See the [Assistant](https://bdarwin.github.io/logsift/guide/assistant.html).
+- **Ask from your coding agent.** GitHub Copilot, Claude Code and other agents that support MCP (or skills, where MCP is blocked) can call Logsift: ask in the chat why a log is full of timeouts, and Logsift reads it on your computer and answers with the findings and line numbers; crash dumps too. Read-only, with secrets masked. See [Coding agents](#coding-agents-github-copilot-claude-code-and-others).
+- **Profiling and memory.** Flame graphs of a JVM's CPU, wall-clock time, allocations, live objects (memory leaks), locks, native memory and native leaks, calls of a method and slow calls, or hardware events, with async-profiler or the JVM's own Flight Recorder. Compare runs, see who calls a method, and find which classes fill the heap and keep growing.
+- **Also:** bookmarks, alerts on new matching lines, export, sessions and recent files, many text encodings (UTF-8, UTF-16, Windows code pages, Shift_JIS, GB18030 and more), and light and dark mode.
+
+## Download
+
+Get the latest version from the **[Releases page](https://github.com/bdarwin/logsift/releases/latest)**:
+
+| System | File |
+|---|---|
+| Windows (x64, ARM64) | `Logsift-<version>-windows-x64.msi` / `-windows-arm64.msi`: installer, no admin rights needed. Or the `.zip`: unzip, run `Logsift\Logsift.exe` |
+| macOS (Apple Silicon, Intel) | `Logsift-<version>-macos-arm64.dmg` / `-macos-x64.dmg` |
+| Debian / Ubuntu | `Logsift-<version>-linux-x64.deb` |
+| Other Linux (x64, ARM64) | `Logsift-<version>-linux-x64.tar.gz` / `-linux-arm64.tar.gz`: unpack, run `Logsift/bin/Logsift` |
+| Any OS with Java 21+ | `Logsift-<version>-any-java21.zip`: run `bin/logsift` |
+
+The native downloads include their own Java runtime, so nothing else needs to be installed. They are not code-signed yet:
+- **macOS:** if it says the app is damaged or can't be opened, run `xattr -dr com.apple.quarantine /Applications/Logsift.app`.
+- **Windows:** if SmartScreen warns, choose **More info → Run anyway**.
+
+Builds of the latest code are on the [snapshot release](https://github.com/bdarwin/logsift/releases/tag/snapshot). What changed in each version is in the [CHANGELOG](CHANGELOG.md).
+
+## Opening logs
+
+- **Files:** File → Open, or drag files onto the window. On Windows, right-click files or a folder → **Logsift** → **Analyze** (a GC log straight to the GC view, a thread dump to Threads, a heap or crash dump to theirs), **Open**, **Compare** (two selected) or **Search** (a folder); Logsift is also in the **Open with** list of `.log`, `.txt` and `.out` files, without taking over what double-click does. On macOS, use Open With or drop files on the Dock icon. If Logsift is already running, files open in the same window.
+- **Folders:** File → Open Folder… (or drop a folder on the window) shows a folder's files in a tab, as a tree with sizes, like a zip's: filter them by name, open files as logs, **Merge by Time**, and **Find in all files** (Ctrl+F in that tab) searches the folder. **Refresh** lists the files again; a very big folder shows its first 20,000 files.
+- **Zip and .gz files:** a `.zip` (File → Open, drag and drop, Recent files) opens as a tab showing its folders and files as a tree, also the files of zips inside it, with their sizes and a filter. Double-click a file (or select several and press **Open**) to open it as a log; **Merge by Time** merges the selected logs; **Find in all files** (Ctrl+F in the zip's tab) searches every file in it, whatever it is called. A zip with one file opens that file right away, and a `.gz` file opens directly. A file from a zip is named by its place in it (`bundle.zip/logs/app.log`) and behaves like any log: its bookmarks, filters and format are remembered, and it is in Recent files and the last session. It is unpacked to a temporary copy once, when first opened.
+- **Web addresses:** File → Open URL… (Ctrl+Shift+U) takes one or more `http`/`https` addresses, one per line, with an optional user and password or token (sent as a Bearer token). One address opens in a tab; several are downloaded into one temporary folder and searched together. A `.zip` or `.gz` download is unpacked as above. The file is a copy: it doesn't follow the server's file as it grows. Certificates count as trusted when Java or this computer trusts them (Windows' and macOS's own stores, where a company proxy's certificate usually is); when neither does, Logsift asks whether to open it anyway without checking, once or always for that server.
+- **WSL (Windows):** File → Open from WSL… opens your Linux home folder. Windows reaches WSL files directly (`\\wsl.localhost\Ubuntu\…`), so they open and follow like any other file, without SSH.
+- **Command line:** `logsift app.log other.log`. `logsift --version` prints the version.
+- **Another program's output, live:** pipe it in with `-`:
+
+  ```bash
+  kubectl logs -f my-pod | logsift -
+  docker logs -f my-app 2>&1 | logsift -
+  journalctl -f | logsift -
+  ```
+
+  The output is saved to `~/.logsift/stdin/` as it arrives and followed like a growing log. Captures older than a week are removed. On macOS the command is `/Applications/Logsift.app/Contents/MacOS/Logsift`, and on Linux `/opt/logsift/bin/Logsift` (`.deb`) or `Logsift/bin/Logsift` (`.tar.gz`); add an alias for convenience.
+
+## Help, updates and privacy
+
+- **Help → Documentation** opens the [user guide](https://bdarwin.github.io/logsift/guide/) (its pages are in [docs/guide](docs/guide/index.md)). The GC tab's **What do these mean?** opens its [GC page](https://bdarwin.github.io/logsift/guide/gc.html).
+- **Help → Keyboard Shortcuts** (Ctrl+/ or ⌘/) lists every shortcut. **Help → Report a Bug** opens a GitHub issue with your version and system filled in.
+- **Updates:** once a day Logsift asks GitHub for the latest release, and a button appears in the status bar when a newer version is out: **Update and Restart** downloads it, checks it against the release's checksums and installs it. **Settings → General → Update to** chooses releases or snapshot builds. That request carries nothing about you or your logs; turn it off with **Help → Check for Updates Automatically**.
+- **Errors:** if something unexpected happens, a window shows the details with **Copy Details** and **Report on GitHub** (for the first error of a session; later ones count in the status bar, *⚠ 2 errors*, and Help → Show Errors… lists them). Errors are also written to `~/.logsift/errors.log` (Help → Open Error Log).
+- Logsift never sends your logs anywhere by itself. Its only other network connections are to servers you choose: SSH servers, JMX ports, and web addresses you open. When you ask the assistant, what Logsift's tools read for your question goes to the AI provider you chose (GitHub for Copilot, Anthropic for Claude Code), under your agreement with them, with secrets masked; nothing goes until you ask. If you connect a [coding agent](#coding-agents-github-copilot-claude-code-and-others), what Logsift answers it goes on to the agent's AI provider: the agent sends it, not Logsift.
+
+## Screenshots
+
+| | |
+|---|---|
+| ![The start page: Open Log, Open Folder, Open Remote, Attach to a JVM, Open Thread Dump, Open Profile, and recent files](docs/screenshots/start-page.png) **Start page**: the ways to begin, and recent files | ![The find bar at the top of a log: matches lit up, 1 of 31](docs/screenshots/find-bar.png) **Find** (Ctrl+F): matches light up as you type |
+| ![A search turned into a filter, shown as a chip above the log with the chosen levels](docs/screenshots/filter-chips.png) **Filters** as chips above the log: click one to turn it off | ![Several Find All searches in one window, one nested inside another](docs/screenshots/find-all.png) **Several searches at once**, with a search inside another's results |
+| ![A selected time range on the timeline, with errors filtered and their stack traces kept](docs/screenshots/timeline.png) **Timeline**: select a time range, keep stack traces | ![Parsed columns with top messages below](docs/screenshots/columns-and-messages.png) **Columns** and **top messages** |
+| ![Folder search across .log, .gz and .zip files](docs/screenshots/folder-search.png) **Folder search**, including inside .gz and .zip | ![JSON log shown as columns, with a pretty-printed details panel](docs/screenshots/json.png) **JSON logs** with a details panel |
+| ![Comparing a bad run with a good one: new, more frequent and missing messages](docs/screenshots/compare.png) **Compare** a bad run with a good one | ![A CSV file from inside a zip, shown as columns, with its hosts in the tree](docs/screenshots/csv.png) **CSV files** as columns, here from a zip inside a zip |
+| ![The files of a zip, also of a zip inside it, to open or search](docs/screenshots/zip.png) **Zips** open as a tab: open files as logs, merge or search them | ![One request followed through a folder of logs and a zip, in order by time](docs/screenshots/request.png) **Follow a request** through a folder of logs |
+| ![Exceptions grouped by root cause with the stack and links to the source](docs/screenshots/exceptions.png) **Exceptions** by root cause | ![Order times charted over time, with a spike](docs/screenshots/metrics.png) **Metrics** from the messages |
+| ![Insights with a known problem and what to try](docs/screenshots/insights.png) **Insights** with known problems | ![Thread dumps explained: deadlocks, a lock queue, a busy thread, and a thread's stack with the threads waiting for its lock](docs/screenshots/threads.png) **Thread dumps**, explained |
+| ![A flame graph of a JVM's CPU use, with the methods that use the most](docs/screenshots/flame-graph.png) **Profiling** with a flame graph | ![A heap dump explained: one HashMap in a static field holds 85% of the heap, with the chain of references that keeps it alive](docs/screenshots/heap-dump.png) **Heap dumps** explained, and why an object is alive |
+| ![Wasted memory in a heap dump: 20,001 copies of the string ACTIVE and 20,000 empty ArrayLists, each with the field that holds them](docs/screenshots/heap-waste.png) **Wasted memory**: copies of strings, empty collections | ![A log with a bar naming the JVM that writes it, with Threads, Profile and Heap buttons](docs/screenshots/log-jvm.png) **A log knows its JVM** |
+| ![A GC log explained: the share of time stopped, the longest pause, full collections and allocation, each with what to try](docs/screenshots/gc-log.png) **GC logs** explained | ![The heap before and after each collection over time, with the heap size](docs/screenshots/gc-heap.png) **GC charts**: heap, pauses, allocation, time in GC |
+| ![Two heap dumps compared: a HashMap in a static field grew by 11.8 MB, from 5,000 to 20,000 entries](docs/screenshots/heap-compare.png) **Two heap dumps compared**: what grew, and where | ![The heap as a map: a class holds a HashMap, which holds 20,000 sessions](docs/screenshots/heap-map.png) **The heap as a map**: boxes as big as what they hold |
+| ![Dark mode](docs/screenshots/dark-mode.png) **Dark mode** | |
+
+## Run from source
+
+```bash
+./gradlew run --args="/path/to/app.log"     # or open files via File → Open / drag and drop
+./gradlew installDist                       # launcher in build/install/logsift/bin/logsift
+```
+
+Make a test log:
+
+```bash
+./gradlew genLog -Pout=/tmp/sample.log -PsizeMb=500             # 500 MB realistic log
+./gradlew genLog -Pout=/tmp/live.log -PsizeMb=5 -Pfollow=2000   # keeps appending 2000 lines/s
+```
+
+## Using it
+
+| Action | Shortcut (macOS uses ⌘ in place of Ctrl) |
+|---|---|
+| Open files (or drag files onto the window) | Ctrl+O |
+| Find in this log (matches light up as you type) | Ctrl+F, or **Find** in the log's bar; the selected text becomes the search |
+| Next / previous match | Enter / Shift+Enter in the find bar, F3 / Shift+F3 anywhere (also ⌘G / ⇧⌘G on macOS) |
+| Match case / whole word / regex | `Aa` `W` `.*` buttons inside the find box |
+| Find All (every match listed below the log) | Ctrl+Enter in the find bar, or **Find All** |
+| Turn the search into a filter | **Filter ▾** in the find bar: show only, hide or color its lines |
+| Close the find bar | Esc |
+| Close results | Shift+Esc |
+| Jump from a result to the line | click it, or move with the arrow keys in the results |
+| Wrap long lines | Alt+Z (⌥Z on macOS), or the Wrap button (works in the Columns view too) |
+| Next / previous error | F8 / Shift+F8 |
+| Follow the current line's request (or the selected text) | Ctrl+Shift+R |
+| Bookmark the current line | Ctrl+F2 (⌘F2 on macOS) |
+| Next / previous bookmark | F2 / Shift+F2 |
+| Search in a folder | Ctrl+Shift+F (⇧⌘F on macOS) |
+| Merge logs by time | Ctrl+Shift+M |
+| Open a remote log (SFTP) | Ctrl+Shift+O |
+| Compare logs by message | Ctrl+Shift+D |
+| Next / previous difference in a comparison | F7 / Shift+F7 |
+| Columns view | Ctrl+Shift+K |
+| Export lines shown by filters | Ctrl+Shift+E |
+| Go to line | Ctrl+L |
+| Go to time | Ctrl+Shift+L |
+| Matching lines only / all lines | Ctrl+Shift+H (⇧⌘H on macOS) |
+| Fold / open the bottom panel | Ctrl+J, the ▾ button, or double-click a tab |
+| Follow the end of the file (tail -f) | Ctrl+T, **Follow** in the log's bar, or End |
+| Load changes to the file | F5 or the log's **Reload** (it lights up when the file changed); **Reload ▾ → Reload Automatically** loads them as they happen |
+| Select text | drag; double-click = word, triple-click or click the line number = whole line; Shift+click extends |
+| Copy | Ctrl+C (with nothing selected, copies the current line) · Select all: Ctrl+A |
+| Font size | Ctrl+= / Ctrl+- |
+| Dark mode | View → Toggle Dark Mode |
+| Tree of loggers | Ctrl+Shift+B |
+| Settings | Ctrl+, (⌘, on macOS) |
+
+## Folder search
+
+**File → Search in Folder…** (Ctrl+Shift+F, ⇧⌘F on macOS), or **Find in all files** in a folder's tab, opens a search tab:
+
+- Pick a folder, file name patterns (`*.log;*.txt`), and whether to include subfolders and archives.
+- Rotated logs count as the log they came from: `*.log` also finds `app.log.1`, `app.log.2026-10-21`, `app.log.2.gz`, and `.log` files inside any `.zip`, also inside zips and `.gz` files within a zip (up to 5 levels deep).
+- All files are searched in parallel with the same fast search as Find All. Binary files are skipped. Results are grouped by file and appear while the search runs.
+- Double-click a line to open the file at that line, with Find All already run there. Files from `.gz` or `.zip` are unpacked to a temporary file first. Double-click a file name to fold it. Above the results, **Filter results by file name** shows only the files whose name or path has some text, and **Expand All** / **Collapse All** open or fold every file.
+
+## Timeline
+
+When a log has timestamps, a timeline above it shows how much was logged over time, with **errors in red and warnings in amber**, so incidents stand out at a glance. The box shows which part of the file you are looking at.
+
+- **Click** the timeline to jump to that time. **Go → Go to Time…** (Ctrl+Shift+L) takes `10:05`, `10:05:30.250` or `2026-10-21 10:05`.
+- **Drag** across it to show only that time range. The range works with the filters: drag over an incident, add an ERROR filter, and you see just the errors of the incident. Click ✕ on the range to show all times again.
+- The status bar shows the time of the current line.
+- Recognized formats: `2026-10-21 10:02:13`, ISO with `T`, `2026/10/21`, `21-10-2026`, `21.10.2026`, `21-Oct-2026`, syslog `Oct 21 10:02:13`, Apache `[21/Oct/2026:10:02:13 +0000]`, timestamps inside JSON lines, time only, and epoch seconds or milliseconds. Times are shown as written in the log (time zones are not converted).
+
+## Bookmarks
+
+**Ctrl+F2** (⌘F2 on macOS) bookmarks the current line (or right-click → *Bookmark This Line*); **F2 / Shift+F2** jump to the next / previous bookmark. Bookmarks show as blue dots by the line number and on the highlight bar. The **Bookmarks** tab lists them with their time and text; type a note in the Note column, double-click to go there, Delete to remove. Bookmarks are remembered per file, and dropped if the file was truncated (the lines would have moved).
+
+## Text encodings
+
+Logsift detects how a log's text is encoded: UTF-8 (with or without a byte order mark), **UTF-16** (as written by some Windows tools; with or without a byte order mark), and **Windows-1252** (Western European, used by older Windows programs). The status bar shows the encoding; **View → Encoding** reopens the log in another one (Latin-1, Cyrillic, Shift_JIS, GB18030 and more). UTF-16 logs are read through a UTF-8 copy that is kept up to date, so following a growing UTF-16 log works too. Folder search detects the encoding of each file.
+
+## Recent files and sessions
+
+**File → Open Recent** lists the last 15 files. When Logsift starts without a file to open, it reopens the logs that were open last time (**File → Reopen Last Session** does it any time). Every file remembers its filters, formula, level chips, *Matching only* and position, so reopening a log puts you back where you were; if the file got smaller in the meantime (truncated or rotated), it starts fresh.
+
+## Export
+
+**File → Export** saves lines to a new file: the **lines shown by filters** (Ctrl+Shift+E), the **Find results**, the **selected lines**, or **everything in the view**. The original bytes are copied (line endings and encoding unchanged), in runs of consecutive lines, so even large exports take seconds.
+
+## Columns and levels
+
+The **Columns** button (or View → Columns, Ctrl+Shift+K) shows lines as columns: **Time, Level, Thread, Logger, Message**, with the level colored and stack traces under the message. Logsift recognizes common layouts by itself: logback and log4j patterns, Spring Boot's default layout (with its process id), Python logging, .NET's Serilog, NLog, log4net and ASP.NET Core console layouts (with their own level words, `[ERR]` or `fail:`), syslog (host, process, pid), web server access logs (client, user, request, status, size), "time level message", and merged logs (a Source column). Drag a header edge to resize a column.
+
+- **Count values:** right-click a column header (Thread, Logger, Host, Status…) → *Count Values* lists every value with its number of lines. Double-click one to show only its lines, or *Hide* it.
+- **Hide columns:** right-click a column header → *Hide … Column*, or tick columns on and off in the same menu. The header shows **N columns hidden**; click it to see which, and **Show All Columns** brings them back. Hidden columns are remembered for each format.
+- **Select text** in cells and messages as in the plain view: drag, double-click a word, Shift+click to extend.
+- **Level chips** in the Filters bar (**E W I D T**) show only some levels, together with your other filters: turn off I, D and T to see just errors and warnings, stack traces included.
+
+## Log formats
+
+When Logsift doesn't know a log's layout, the Columns view says so and offers **Define Its Format…**. Formats are also under **View → Log Format → New Format from This Log** and in **Settings → Log Formats**. There are three ways to make one:
+
+1. **Drop a log file** (or open one). Logsift guesses the layout from its lines (time, level, `[thread]`, logger, separators like `-` `:` `|`) and how its times are written, for example `dd.MM.yy HH:mm:ss.SSS`.
+2. **Paste how your program logs:** a log4j, Log4j 2 or logback pattern such as `%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n`, a whole `logback.xml`, `log4j2.xml` or `log4j.properties`, a `log4j2.properties`, `.yaml` or `.json`, Spring Boot's layout, a Log4j 1.x XML config, a java.util.logging `logging.properties` (`SimpleFormatter.format`), or Python logging: a format such as `%(asctime)s %(levelname)s %(name)s: %(message)s`, a `logging.conf` or dictConfig (with `datefmt`), or `basicConfig(…)` in code. Dropping the config file works too. Properties the pattern uses (`${LOG_PATTERN}`, `${sys:PID}`, `${env:X:-default}`) are filled in from the same file. When the config has several appenders or formatters with different layouts, each becomes a format, named after its appender, and each log uses the one its lines fit.
+3. **Write the pattern** yourself: `{time} {level} [{thread}] {logger} - {message}`. Columns go in braces and everything else is matched as written. `{time}` takes a timestamp and `{level}` a level word (also `E`, `ERR`, `warning`…). `{*}` skips a part, and other columns take everything up to the next character. A regex with named groups like `(?<level>…)` works too.
+
+A preview shows sample lines split into columns, with the times as they are read. Lines that don't fit continue the entry above (stack traces). A format is used when most of a log's lines fit it, or always for the file names you give (`app*.log; *.trace`). The log's bar shows the format each log is read with (**Format: …▾**, on the right). If Logsift picked the wrong one, click it (or use **View → Log Format**) to choose another for that file, which is remembered, or to show it as plain text. Levels in your format's level column drive the colors, the error marks and the **E W I D T** chips. Formats are saved in `~/.logsift/formats.properties`, so you can copy them to another computer.
+
+## Insights
+
+The **Insights** tab (next to Filters) tells you at a glance what is going on in the log. It fills in by itself once a file is read (for files up to 2 GB; bigger ones when you open the tab), and its title shows how many problems it found, so you can see them without clicking.
+
+- A summary: the time the log covers, how many lines, errors and warnings.
+- **Error bursts:** times when errors came much faster than usual, such as *10:42:00 – 10:44:58: 90 errors, 45× the usual rate*. **Show these minutes** shows just that time.
+- **New errors:** errors that only began partway through, with when they started (and stopped), then the most frequent errors.
+- **Silences:** stretches with no lines at all, when the program was stuck, stopped or not running.
+- **Restarts:** the program started more than once.
+- **Noise:** one message that fills a big part of the log; **Hide** it to see the rest.
+- **Known problems:** about 30 problems that look the same in every log, each with **What to Try**: a database connection pool that ran out, a full thread pool, the JVM out of heap, Metaspace or threads, long GC pauses, a crash, too many open files, a full disk, a port in use, an untrusted certificate, DNS failures, timeouts, database deadlocks and lock waits, Kafka consumers thrown out of their group, rate limits, a container killed for memory; and in Python, gunicorn workers killed for taking too long, asyncio errors nobody handled, Celery retries and lost workers, MemoryError and RecursionError.
+- **Exceptions** (their most frequent root causes, see below), **things that never ended**, and **measurements that spiked** (see Metrics).
+
+Each finding has buttons to **Go to** its line, **Find all** of that message, **Show only** it or **Hide** it. **Refresh** looks again after the log grew.
+
+## Exceptions
+
+The **Exceptions** tab groups the log's exceptions by their **root cause** (the innermost `Caused by:` in Java, the first exception of a chained Python traceback) and **where it was thrown in your own code**. Frames of the JDK, Python and well-known frameworks and libraries (Spring, Hibernate, Netty, connection pools, `site-packages`…) are skipped when deciding where. So 60 `NullPointerException`s thrown in `PriceCalculator.discount` are one row, however they were wrapped and whatever their messages said, and the same exception thrown somewhere else is another.
+
+- Each row: how many times, the exception and its message, where, and the first and last time. Wrappers are named after it (*in NestedServletException, IllegalStateException*).
+- The right side shows the root cause's stack with your own frames as links and runs of framework frames folded, then what caught and wrapped it. **◀ ▶** step through every time it happened, and the log goes there.
+- **Open the source:** click one of your frames (or right-click a stack line in the log → **Open … in Editor**) and the file opens at that line. Logsift finds it in your **source folders** (Settings → Source Code; it asks for one the first time): Java and Kotlin files by package (`com/acme/shop/PriceCalculator.java`, inner classes too), Python files by the most folders in common with the path on the server (`/app/orders/payment.py` → `orders/payment.py`). Build output, dependencies and virtual environments are skipped. It opens in IntelliJ IDEA or PyCharm when installed, else Visual Studio Code, or the editor you choose there, or your own command (`{file}` and `{line}` are filled in).
+- It fills in with Insights, which names the two most frequent root causes; **Show in Exceptions** goes to one. Java (`at …`, `Caused by:`, `... 5 more`, `Suppressed:`) and Python (`Traceback (most recent call last):`, chained with "During handling of the above exception…") stacks are read.
+
+## Metrics
+
+The **Metrics** tab shows what the log measures, without any setup:
+
+- **Things that start and end:** message kinds that open and close something (*Started job sync-7* … *Finished job sync-7*, *Processing request r-12* … *Completed request r-12*, *Begin import* … *Import complete*) are found by their words. Their lines are matched by the value they share (the job, the request), or else by thread. For each: how many, the median, 95th percentile and longest time, and the ones that **never ended**, which are often what hung.
+- **Numbers in messages:** a number with a unit after it (`ms`, `s`, `MB`, `%`, `rows`) or a word like *took*, *size*, *latency* or *queue* before it is a measurement: *order … placed in **#** ms*, *queue size=**#***. Order numbers and IDs are not. Durations are in milliseconds and sizes in bytes, whatever unit each line used (`1.5s`, `300ms`).
+- **Columns:** in a CSV file, a JSON log or a layout with columns, a column of numbers is a measurement (`duration_ms`, `bytes`, the access log's `size`; units from the value or the name), and a column with a few values (`status`, `host`) gives how many rows have each value per minute (or per second, per hour, as fits the log).
+- Select one for a **chart over time**: every value as a dot (orange when far above the median), the 95th percentile as a line, and things that never ended as red marks along the top. Hover for a value, click a dot to go to its line. Beside it, the lines that never ended and the slowest or largest ones.
+- **Insights** reports what never ended (*1 job started and never ended*) and when a measurement was far above usual (*High: order … placed in # ms, 10:15:00 – 10:16:59 · median 4.1 s then, usually 125 ms*), with **Show these minutes** and **Show in Metrics**. For files over 512 MB this is worked out when the Metrics tab is opened.
+
+## Following a request
+
+Right-click a line → **Follow traceId 4bf92f…** (or press **Ctrl+Shift+R**), and the **Request** tab shows every line of that request in order: when it happened, the time since the line before (**After**), its thread, level and message. The top line sums it up: *6 lines · 2 threads · 10:02:19.097 → 10:02:27.337 (8.24 s) · 1 error · longest wait 8.20 s*, and the longest wait is marked, which is usually where the time went. Click a line to go there.
+
+- **IDs it recognizes:** `traceId=…`, `request_id: …`, `X-Request-Id`, `"correlationId":"…"` and any other `…Id` / `…_id` key, the `[app,traceId,spanId]` and `[traceId-spanId]` that tracing libraries add, a W3C `traceparent`, and UUIDs. Process and thread ids (`pid`, `tid`) and span ids are left out. With several IDs on a line, traces come first, then requests. To follow anything else (an order number, a user), select it first.
+- **Lines of its threads in between:** logs often name the ID on only some lines of a request. This adds the lines its threads wrote between its first and last line, until the thread names another request's ID (then it has moved on). These lines are dimmed.
+- **Across files:** **In: This log / All open logs / Folder** picks where to look. With a folder (the log's own, or any folder or `.zip` you choose), every file in it is searched, also inside zips, zips in zips and `.gz` files unless **Inside zips and .gz** is off. Lines from all files are put in one order by time, with a **File** column; double-click a line of another file to open it there. Merged logs work too.
+- **Find All** and **Show Only These Lines** run the same search in the log.
+
+## Tree of loggers
+
+Logs with a logger column (or class, component, thread, host…) get a tree on the left: `com.acme.db.Pool` sits under **com.acme › db**, with line counts. Uncheck a branch to hide its lines and their stack traces. Double-click a name, or right-click → *Show Only*, to see just that one; **Show all** brings everything back. The list at the top picks the column. Counts keep up while the log grows, and what you hid is remembered for the file. Close the tree with ✕, and bring it back with the **Tree** button or **View → Tree of Loggers** (Ctrl+Shift+B).
+
+## What Logsift does to a running service
+
+Reading logs changes nothing. Reaching a running JVM can: some actions stop it for a moment, some cost CPU, memory, disk or network on its server. This is what each one does, from lightest to heaviest. Logsift says the same where you start each action.
+
+| Action | What the JVM or its server feels | How much |
+|---|---|---|
+| **Opening a log** (on this computer or over SSH) | Logsift looks for the JVM that writes it: `ps`, and which processes have the file open (for a remote log, over its own SSH login). | A few small commands, once. |
+| **Following a remote log** (Open Remote) | A check for new lines every second, and reading what was added. **Whole file** reads all of it first. | Light; a whole multi-GB file is a big read. |
+| **Attach / Connect** | Attaching to a JVM on this computer starts its management agent (it stays until the JVM ends). Every connection takes a first thread dump. | One short stop. |
+| **Thread dump** (Take Dump, Record…) | The JVM stops while the stacks are written, and while it walks the heap to see who holds which lock. **Record** repeats it. | Usually milliseconds; longer with thousands of threads or a big heap. |
+| **Heap histogram** (Take Histogram) | **Only live objects** (the default) runs a **full garbage collection** first. Off, the JVM still stands still while it counts the heap. | Seconds for a big heap with a full GC; less without. |
+| **Profile, Flight Recorder** | Recording with the "profile" settings; the first recording starts Flight Recorder in that JVM. The recording ends by itself after the run, even if Logsift is gone. | About 2–3% CPU while it runs. |
+| **Profile, async-profiler** | async-profiler is loaded into the JVM for the first run and **stays loaded until the JVM ends** (Java 21 and later print a warning about it in the JVM's output). CPU, allocations, wall clock, hardware events: light. Locks: light to moderate. **Native memory** and **Everything at once** record every `malloc`: noticeable on busy native code. **Calls of a method** instruments the method: every call costs a little, and the JVM recompiles some code; only one class can be named (a `*` only in the method name). | From about 1% to noticeable, by mode. |
+| **Save Heap Dump** | A **full garbage collection, then the JVM stops** while every object is written. The file, about as big as the heap in use, is written **on the JVM's machine** (in `/tmp` over SSH, in the JVM's temporary folder over a JMX port) and copied here. Logsift checks the room first (the heap in use against the free space there) and refuses a folder that is too small, or a `/tmp` in memory, asking for another folder on that machine. | Seconds to minutes of stop; disk the size of the heap; that much network. |
+| **A heap dump from a log** (the OutOfMemoryError line, for a remote log) | The dump is read from the server's disk and sent over the network at full speed. Logsift asks first. | The dump's size, once. |
+| **Open Heap Dump on a Server** | Logsift's heap reader runs there at low priority (`nice`, `ionice`): 2 GB of memory plus the disk cache for its index, disk up to the dump's size for the index, some minutes of a CPU core, one read of the dump. It keeps running until you close the tab, or 30 minutes after the last connection. Logsift says what it takes before it starts. | Heavy for a production machine: copy the dump elsewhere first. |
+| **Copy to Another Machine** | The dump is read once on the first server at low CPU and disk priority; the network between the servers isn't limited. | The dump's size over the network. |
+
+**For JVMs of other users** Logsift uses `sudo` on the server (you can turn that off). **On a production JVM**, prefer thread dumps, Flight Recorder and live-objects-off histograms; save a heap dump or profile native memory at a quiet time.
+
+**Logsift never removes files on a server.** What it writes there stays, and Logsift says where:
+
+- heap dumps it had the JVM write (`/tmp/logsift-*.hprof` over SSH, `logsift-heap-*.hprof` in the JVM's temporary folder over a JMX port), readable only by your login user;
+- Flight Recorder and async-profiler recordings it fetched (`/tmp/logsift-*.jfr`), also only for your login user;
+- async-profiler itself (`/tmp/logsift-<user>-async-profiler-*`), and the heap reader (`~/.logsift/heap`);
+- copies made by Copy to Another Machine, and what a stopped copy wrote so far (`NAME.part`); Logsift refuses a name that is already taken rather than overwrite it.
+
+The only files that go are the heap reader's index, made of temporary files that vanish when the reader ends.
+
+## Thread dumps and running JVMs
+
+**JVM → Open Thread Dump…** reads `jstack` and `jcmd Thread.print` output, the plain and JSON files of `jcmd Thread.dump_to_file` (with virtual threads), and dumps saved by Logsift. A log with `kill -3` dumps in it (a console log, `catalina.out`, even `docker logs --timestamps` output) shows a bar offering **Analyze Threads**; **JVM → Analyze Thread Dumps in This Log** does the same for any open log. Several dumps in one file, taken some seconds apart, are read as a series.
+
+**Python thread dumps** open the same way: `py-spy dump` output (thread names, idle or active, holding the GIL; the arguments and locals under a frame are skipped) and `faulthandler` dumps (`faulthandler.dump_traceback()`, `faulthandler.register(signal.SIGUSR1)`, or what Python writes when it crashes), also in the middle of a log. Idle threads show as waiting and active ones as runnable, so grouping by pool, the stack view, several dumps over time and stuck threads work for them too.
+
+The **Threads** tab starts with what stands out, worst first. Each finding has a **Show threads** button:
+
+- **Deadlocks:** threads that wait for each other's locks (monitors and `ReentrantLock`s), as a chain.
+- **Lock queues:** several threads waiting for one lock, who holds it and what that thread is doing.
+- **Stuck threads:** in the same place in every dump (needs two or more dumps).
+- **Busy threads:** the share of a CPU core each one used between dumps.
+- **Full pools:** every thread of a pool (`http-nio-8080-exec-∗`) busy, so new work waits.
+- **Growing thread count** across the dumps.
+
+Below that:
+
+- **Threads:** the threads of one dump, grouped by pool or by identical stack, filtered by state or by text in their names and stacks. Click one to see its stack: its own code in full color and the JDK's dimmed. It also shows the lock it waits for and who holds it, and the threads waiting for the locks it holds, each a link to that thread.
+- **Timeline:** one row per thread and one cell per dump, colored by state. A stuck thread shows as one solid bar.
+- **Compare:** which threads are new, gone, or doing something else between two dumps.
+
+**JVM → Attach to a Running JVM…** (Ctrl+Shift+J) lists the Java programs running as you on this computer, or on a server over SSH (with the same login as remote logs). Pick one and its Threads tab can **Take Dump** or **Record…** several dumps some seconds apart. A dump pauses the JVM for a moment (usually milliseconds), and Logsift only reads: it changes nothing in the JVM.
+
+- **On this computer** Logsift attaches the way the JDK's own tools do. If that isn't possible, it uses `jcmd` from a JDK folder you give.
+- **On a server** it uses `jcmd`: from the JDK folder you give, the PATH, or the JDK the program itself runs on. Servers with only a Java runtime and no JDK tools work too: Logsift copies async-profiler to the server's `/tmp` and uses that. JVMs running as another user (`tomcat`, `app`) are reached with `sudo`. Logsift asks for the sudo password if it needs one and keeps it only while it runs. JVMs in containers are listed too.
+- **Through a JMX port** (a JVM started with `-Dcom.sun.management.jmxremote.port=9010`), from anywhere, with no SSH: give the host and port, and the user and password if the port has them. Over JMX, Logsift takes thread dumps and heap histograms, and profiles with Flight Recorder, the recording sent back over the same port. **Save Heap Dump…** works too: the JVM writes the dump on its own machine (it can't come back over JMX), in its temporary folder; Logsift then offers to copy it here over SSH (asking how to sign in to that machine) and opens it. The dump stays on that machine (Logsift doesn't remove files there): remove it when you are done. Without SSH, Logsift says where it is. A Windows server needs its OpenSSH Server turned on for the copy. For a JVM on this computer, the dump goes straight to the file you chose. async-profiler needs SSH or this computer.
+
+### A log and its JVM
+
+A log tab shows which JVM writes the log, in a bar above it, with **Threads**, **Profile** and **Heap** buttons. Logsift finds it by itself:
+
+- **On this computer**, and on the server of a log opened over SSH: the JVM that has the log open (Linux and macOS; on Windows, by the process id the log names), the one it was linked to before, or the one the log names.
+- **A log on a shared drive, or copied from a server:** Logsift reads what the log says about itself (Spring Boot's startup line names the program, its host and its process id) and which server the drive is on, and offers **Find Its JVM…** with those filled in.
+- **Any log:** **JVM → Link This Log to a JVM…** picks the JVM by hand: on this computer, over SSH, or through a JMX port.
+
+The link is remembered for the log and for the other logs in its folder, by program (`orders.jar`, `com.acme.App`), not by process id, so it finds the JVM again after a restart or a new version of the jar. The bar's menu links another JVM, or forgets the link.
+
+Thread names connect the two:
+
+- **Right-click a line → Show Thread in Threads** shows that thread's stack in a dump of the JVM, taking one if needed. A name the log cut short (Spring Boot keeps the last 15 characters, `nio-8080-exec-1`) still finds `http-nio-8080-exec-1`.
+- **Lines in Log** in the Threads tab (or right-click a thread) shows only the lines that thread wrote. This works for dumps found in a log too.
+
+**Save…** writes the dumps as a text file that opens again here, or in any other tool.
+
+## Profiling
+
+**Profile…** in the Threads tab of a running JVM shows where it spends its time, memory or lock waits. Choose what to measure, for how long, and **Start Profiling**. The JVM keeps running as usual.
+
+| Measure | Shows |
+|---|---|
+| **CPU** | where the threads use the CPU |
+| **Wall clock** | where they spend their time, running or waiting |
+| **Allocations** | where memory is allocated, and for which classes |
+| **Live objects (memory leaks)** | objects allocated during the run and still alive at its end: what makes the heap grow |
+| **Locks** | where threads wait to get locks |
+| **Native memory** / **Native memory leaks** | native allocations (malloc, direct buffers), or only those never freed |
+| **Native locks** | waits for native (pthread) locks |
+| **Calls of a method** | every call of a method you name (`com.acme.Api.handle`, `java.io.FileInputStream.read*`), and where it comes from |
+| **Slow calls of a method** | calls slower than a time you give, with their total time |
+| **Hardware event** (Linux) | cache misses, page faults, context switches, CPU cycles… |
+| **Everything at once** | CPU, wall clock, allocations, live objects, locks and native memory from one run |
+
+**Per thread** gives each thread its own flame graph.
+
+The result is a **flame graph**: the outermost calls on top, what they call below, each as wide as its share. Green is Java code (paler for the JDK's own), yellow native code, orange the kernel, and teal the class an allocation was for. To look closer:
+
+- **Click** a frame to zoom into it.
+- **Right-click** a frame for **Callers of** it (who calls it, all the way up), **Only Stacks Through** it or **Hide Stacks Through** it.
+- **Callers** turns the whole graph upside down: where the time is first, then who called it.
+- **highlight methods** colors the frames that match the text and shows their share.
+- **Most of it on their own** lists the methods with the most; click one to highlight it.
+
+Every run stays in the tab. **Compare with** an earlier run colors each frame by how its share changed: red grew, blue shrank. The method list then gets a **Change** column.
+
+Two engines:
+
+- **async-profiler** (built in, for JVMs on Linux and macOS) offers every mode above, and also sees native code and the kernel. On Linux, CPU profiling uses perf events when the kernel allows them, and a timer otherwise (Logsift says so).
+- **Flight Recorder**, built into the JVM, works on any JVM with JFR, Windows included. It measures CPU, wall clock, allocations and locks, all from one recording.
+
+**Save…** writes collapsed stacks. They open again with **JVM → Open Profile…**, along with `.jfr` recordings (each kind of event in them becomes a view).
+
+## The heap
+
+**Heap…** in the Threads tab of a running JVM shows what fills its heap, by class: how many objects, their size, and their share.
+
+- **Take Histogram** now, and again a little later. The **Size change** and **Objects change** columns show what grew; the classes that keep growing are where memory leaks.
+- **Only live objects** runs a full garbage collection first, so only objects still in use are counted. That pauses the JVM, longer for big heaps. Turn it off to count without the pause, garbage included. Compare histograms of the same kind.
+- **Save Heap Dump…** writes every object to a `.hprof` file and opens it (see below). It pauses the JVM while it is written, and the file is about as big as the heap. From a server, it is copied over SSH.
+
+## Heap dumps
+
+Open a `.hprof` file (**File → Open**, **JVM → Open Heap Dump…**, **Open Heap Dump…** on the start page, or drop it on the window). Logsift reads every object, works out which object holds which, and starts with what matters:
+
+- **What fills the heap:** each object that holds 10% of the heap or more, in a sentence: what it is, where it is kept, how much it holds, and what is in it. *"One HashMap (20,000 entries) in static LeakApp.CACHE holds 13.6 MB (85% of the heap). Mostly 20,000 × LeakApp.Session, 616 bytes each with what they hold."* When a lot of memory is spent for nothing, that is a finding too. Below: what the memory is made of, by class.
+- **Why is it alive?** For any object: the shortest chain of references from a GC root to it, with field names (`class LeakApp` → `static CACHE` → `HashMap` → `table` → `[1440]` → `value` → `Session`). A GC root is a loaded class's static fields, a local variable in a running thread (named, with its method), a running thread, native code, or a lock in use. To free the object, one link in that chain has to go.
+- **Biggest objects:** each object with what it holds (what would be freed with it), biggest first; open one to see what is inside.
+- **Map:** the heap as boxes, each as big as what it holds, with what it holds inside it, three levels deep. It looks through a collection's own parts (its table and entries) to what is kept in it, and puts many objects of one class in one box (*20,000 × LeakApp.Session, 13.9 MB*), so the shape of the memory shows at a glance. Click a box to see why it is alive; double-click to go into it; the path at the top (or Backspace) goes back out.
+- **Classes:** every class, with how many objects, their size, and what they hold. Select one to see why its biggest object is alive.
+- **Wasted memory:** memory spent for nothing, and the field it sits in. **Copies of the same strings**: each text kept in many String objects, how many copies, the bytes they waste, and where they are kept (*"ACTIVE": 20,001 copies, 469 KB, in LeakApp.Session.status*). **Empty and mostly empty collections**: the JDK's lists, maps, sets and queues with nothing in them, or with less than a quarter of their slots used, grouped by the field that holds them (*Empty ArrayList: 20,000 in LeakApp.Session.tags, 1.53 MB*). Select a row to see why one of them is alive. It is worked out in the background once the dump is open; for the 1.6 GB dump below, in about 3 seconds.
+
+**Compare with Another Dump…** (or **JVM → Compare Two Heap Dumps…**) takes an earlier dump of the same program and says what grew, and where: *"HashMap in static LeakApp.CACHE grew by 11.8 MB (3.92 MB → 15.7 MB). 5,000 entries → 20,000 entries. Mostly 20,000 × LeakApp.Session."* Objects move between dumps, so places are matched by the chain of fields from a GC root that keeps them, not by address; when a place grows mostly because of a place inside it, the inner one is shown. **Classes** lists every class with its objects before and after. The dumps are put in order by when they were taken.
+
+**On a server:** **JVM → Open Heap Dump on a Server…** reads a dump where it is, over SSH, on a Linux or macOS server (not Windows yet), so a 40 GB dump doesn't have to come to your computer. Logsift first looks at the server (the dump's size, a Java 8 or later there, free disk and memory) and says what reading it takes before anything starts: up to the dump's size in disk for the index, 2 GB of memory, a CPU core for some minutes, and one read of the dump. Its reader is copied to `~/.logsift/heap` there and runs at low priority (`nice`, `ionice`); the app asks it questions through an SSH tunnel to a port only reachable on that machine, with a secret token. It keeps going if the connection drops (opening the dump again reconnects), and ends when you close the tab or after 30 minutes with no one connected. Its index is made of temporary files that go when the reader ends; nothing else is removed there. On a production machine, **Copy to Another Machine…** copies the dump to a folder on another server and reads it there: that server fetches it itself when it can sign in to the first with its own key and already knows its host key (Logsift adds nothing to its `known_hosts`), else (if you agree) it goes through your computer; either way the first machine reads it once at low priority.
+
+![Reading a heap dump on a server: what it takes there, asked before it starts](docs/screenshots/heap-on-a-server-question.png)
+
+**Threads (N)** at the top opens the dump's threads in the Threads view: names, states and stacks at the moment of the dump (a heap dump doesn't record which locks they hold).
+
+**From a log:** when a JVM started with `-XX:+HeapDumpOnOutOfMemoryError` runs out of memory, it prints `Dumping heap to java_pid4242.hprof ...`. Right-click the `OutOfMemoryError` line (or that one) and choose **Open the Heap Dump**, or click **Open Heap Dump** on the known problem in Insights: Logsift finds where the log says the dump went (as written, or next to the log) and opens it; for a log read over SSH, it is copied from the server first.
+
+Weak, soft and phantom references don't keep anything alive here (as in the JVM when memory runs low): what only they reach is shown apart, since it isn't a leak. Sizes are the JVM's own (12-byte headers, 4-byte references with compressed pointers, objects aligned to 8 bytes); the tests check them against the JVM's class histogram.
+
+**Big dumps:** when a dump is too big to index in memory, the index goes to files on disk (in Logsift's folder, removed when the tab closes). A 1.6 GB dump with 41 million objects opens in about 20 seconds with 2 GB of memory; the index on disk is a few times the size of the dump.
+
+## GC logs
+
+Open a Java GC log like any log: Logsift sees it is one and offers **Analyze GC** in a bar above it (also **JVM → Analyze GC in This Log**, or **JVM → Open GC Log…** to open and explain one in one go). GC lines inside other output (a console log with `-Xlog:gc`) count too.
+
+Logsift reads the logs of Java 9 and later (`-Xlog:gc*`, with any decorations: uptime, time, both) and the older ones of Java 8 (`-XX:+PrintGCDetails`, with or without `-XX:+PrintGCDateStamps`), for every collector: G1, Parallel, Serial, CMS, ZGC (also generational) and Shenandoah. For the most to go on, log with `-Xlog:gc*,safepoint:file=gc.log:time,uptime,level,tags` (Java 9 and later) or `-XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCApplicationStoppedTime -Xloggc:gc.log` (Java 8).
+
+The tab starts with the numbers that matter (the share of the time stopped for GC, the longest pause, 99% of pauses under, full collections, allocation per second, the most left after GC), then says what it found, worst first, each with what to try and **Show in Log**:
+
+- **Time stopped:** *"GC stopped the program 12% of the time. 4,102 pauses, 3.6 min in all over 30 min. At its worst, 1 min from 10:32, it was 35%."*
+- **The longest pause**, what it was and why, and how many took 200 ms or more.
+- **Full collections**, by cause; for a collector that works alongside the program (G1, CMS, ZGC, Shenandoah) that means it couldn't keep up.
+- **Memory left after GC keeps growing:** the least heap left after a collection, stretch by stretch; when it trends up, the program keeps more and more (a leak, or a cache with no limit). Or the heap stays nearly full after GC.
+- **What went wrong:** G1 running out of room to copy objects (to-space exhausted, evacuation failure), promotion failed and concurrent mode failure (CMS), allocation stalls (ZGC, Shenandoah), Shenandoah falling back to stopping the program.
+- **Causes worth knowing:** System.gc() calls, metaspace filling, large (humongous) arrays.
+- **The machine, not GC:** pauses that took longer on the clock than the GC threads worked (a busy machine, swapping, a throttled container), and pauses spent in the kernel.
+- **Safepoints:** threads that took long to stop, and time stopped for other reasons than GC.
+- **Allocation:** how fast the program allocates.
+
+Then: **Heap** (in use before and after each collection, with the heap size and full collections marked), **Pauses** (each pause by kind over time, on a log scale, and how many took how long), **Allocation & GC Time** (allocated per second and the share of time stopped, per stretch of time), **By Kind** (pauses by kind and cause: how many, in all, average, longest) and **All Collections** (every collection, pause and stall, sortable). Drag across a chart to zoom in on that time (all charts follow), double-click to see it all; click a point or double-click a row to see its line in the log.
+
+## Coding agents (GitHub Copilot, Claude Code and others)
+
+Ask your coding agent about your logs and it asks Logsift: *"why is orders.log full of timeouts?"*, *"what is stuck in this thread dump?"*, *"is this service's GC healthy?"*. Logsift reads the files on your computer, fast on gigabytes, and answers the agent with short summaries and line numbers, never whole files; the agent can then search and read the lines around what it found. It works with GitHub Copilot in VS Code, Visual Studio and JetBrains IDEs, Copilot CLI, and any other agent that supports MCP (the Model Context Protocol).
+
+**Set it up:** **Settings → Agents** shows the exact setup for your agent, with the path of `logsift-mcp` on this computer filled in: copy it into the agent's MCP settings. For VS Code, add to `.vscode/mcp.json` (or your own `mcp.json`: Command Palette → *MCP: Open User Configuration*):
+
+```json
+{
+  "servers": {
+    "logsift": {
+      "type": "stdio",
+      "command": "/Applications/Logsift.app/Contents/MacOS/logsift-mcp"
+    }
+  }
+}
+```
+
+Then choose **Agent** mode in Copilot Chat. `logsift-mcp` comes with Logsift: next to `Logsift.exe` on Windows, in `Logsift.app/Contents/MacOS` on macOS, in `bin/` on Linux and in the zip. Other agents: add a local (stdio) MCP server that runs `logsift-mcp`.
+
+**What the agent can ask:** open a log (also `.gz`, or a file in a zip) and get its format and time range; **insights** (what happened, most important first); **exceptions** by root cause; **search** (text or regex, by line range) and **read lines**; the most frequent **messages**; **durations and numbers**; **search a folder** (zips too); explain a **GC log**; explain **thread dumps**. Slow work (a first look at a multi-GB log) goes on in the background, and the agent is told to ask again.
+
+**What it can't do:** change or delete anything, run commands, or connect to servers by itself. A thread dump, heap histogram or heap dump of a running JVM happens only as you allow in Settings → Agents (asked by default; a heap dump every time). When the agent's app can't ask you, Logsift's window does. It reads only under your home folder (or the folders you list in Settings → Agents), and never files that hold keys or passwords (`~/.ssh`, `~/.aws`, `*.pem`, key stores…), even through a link.
+
+**Privacy:** whatever Logsift answers goes to the agent's AI provider, under your agreement with them. Logsift masks secrets in its answers (passwords, tokens, API keys, private keys, card numbers) as `‹masked:token›`, and says how many it masked; in Settings → Agents you can also mask email addresses, IP addresses and your own patterns (customer numbers, host names). Each call is recorded in `~/.logsift/agent.log`: when, which agent, which tool, how long the answer was and whether it worked, never the answer itself (**What Agents Asked…** opens it). Text from logs is passed on as data: Logsift tells the agent never to follow instructions found in a log.
+
+From a terminal: `logsift-mcp --help`. `--root FOLDER` (repeatable) limits reading to those folders; `--mask-emails`, `--mask-ips` and `--mask REGEX` mask more; `--no-mask` masks nothing.
+
+*GitHub Copilot is a trademark of GitHub, Inc. Claude and Claude Code are trademarks of Anthropic, PBC. Logsift is not affiliated with or endorsed by GitHub or Anthropic.*
+
+## Settings
+
+**Settings** (Ctrl+, or Logsift → Settings on macOS) has the font and its size, tab width, line stripes, the timeline, dark mode, the encoding for text that isn't UTF-8 (for example Shift_JIS or GB18030), how often files are checked for changes, whether the last session reopens at start, update checks, your log formats, and what coding agents get (**Agents**).
+
+## CSV files
+
+A `.csv` or `.tsv` file is read as a table: its header row names the columns and each row is split into them, by comma, semicolon, tab or `|` (whichever the file uses), with quoted fields (`"a, b"`, `""` for a quote) handled. Columns named like a time, level, thread, logger or message (`timestamp`, `severity`, `msg`, …) are used as such: the timeline uses the time column, and levels color the rows. Other columns keep their names and appear in the tree beside the log, where unchecking a value hides its rows. Files with other names are read as CSV when they clearly are one (a header of names, then rows with the same number of fields), or choose **CSV** in **Format: …▾** in the log's bar. A quoted field over several lines is shown as continuing its row. In the Columns view the header row isn't repeated as a row: its names are the column titles (line numbers stay those of the file). The **Profile** tab shows what each column holds (numbers, times, categories, IDs, text) with a chart per column; click a bar to filter. Right-click a value for **Show Only Rows Where Host = web-1** (a filter on that column), and the Metrics tab charts the columns of numbers and how many rows each host or status has over time.
+
+## JSON logs
+
+Logs with one JSON object per line are recognized. With **Columns** on, the usual fields become columns (`@timestamp`/`ts`/`time` → Time, `level`/`severity` → Level, `thread`, `logger`, `message`/`msg`) and the rest are shown together in a Fields column. The timeline uses ISO times or epoch milliseconds in the JSON. The **Details** tab (next to Filters) shows the current entry in full (a line with its stack trace), or just the text you selected (several lines, or part of one). Its **Text | JSON** switch pretty-prints the JSON in it with colors, also JSON in the middle of a message, and opens up JSON written inside strings. A JSON line or selection is shown pretty-printed by itself; click **Text** to see it as written.
+
+## Remote logs (SSH / SFTP)
+
+**File → Open Remote (SFTP)…** (Ctrl+Shift+O): enter the host, user, and a password or private key (`~/.ssh/id_ed25519` or `id_rsa` is suggested), then **Connect**. Pick the log in the file browser: type a folder in the address bar (`/var/log`, `~/logs`, or a name relative to the folder shown) and press Enter, or double-click folders (`..` goes up, Backspace too); double-click a file or press **Open**. Load the whole file or just the last N MB. LogSift keeps a local copy up to date while the remote log grows (new bytes are fetched every second), starts over when it is truncated or rotated, and reconnects by itself if the connection drops (the status bar says so). Host keys are checked against `~/.ssh/known_hosts`; for a new server you are asked first. It remembers the server, user, key and last folder per server, never passwords. Every feature works on remote logs.
+
+## Merge logs by time
+
+**File → Merge Files by Time…** (Ctrl+Shift+M) merges several logs (say, the same app on two nodes, or an app log and its server log) into one view in timestamp order. Each line starts with a label like `<node2-app>` and a colored stripe, so you can see where it came from; right-click → **Show Only Lines from <node2-app>** filters to one source. Stack traces stay with their log line. The merged view is an ordinary log, so filters, the timeline, messages and search all work on it, and it keeps updating while the source logs grow. CSV files merge into one CSV instead: one header with all their columns (matched by name), a **Source** column, rows in time order (or one file after the other when a file has no times).
+
+## Top messages
+
+The **Messages** tab (next to Filters) groups the log's lines into kinds of messages and counts them, most frequent first. Variable parts (numbers, IDs, hosts, durations, user names) are shown as ∗, so `ERROR [worker-7] Database connection lost after 26579 ms` and `ERROR [worker-2] Database connection lost after 812 ms` count as one message. Stack traces count with their log line.
+
+- Use it to answer "what is actually going wrong?" in seconds: pick **Errors** in the level list.
+- **Double-click** a message to find all its lines (and jump to the first one).
+- **Right-click → Hide these lines** to remove noisy messages, or **Show only these lines**. Select several messages to hide them all at once.
+- **Lines shown by filters** counts only the lines your filters and time range show.
+- It is fast: 1.56 million entries are grouped in about 0.25 s.
+
+## Compare two CSV files
+
+**File → Compare Files…** (or **Compare Files…** on the start page, **Compare** on a folder's tab with two files selected, or the compare button in a CSV tab's bar) opens a Compare tab with a file browser on each side, where zips and zips inside zips open like folders. CSV and TSV files are compared as tables. Rows are matched by a **key**, so row order doesn't matter: Logsift suggests one (a column, or two or three together, that is unique and filled in in both files, preferring names like *id* and *…_id*), one click uses it, and you can pick others. Columns are matched by name; a column only one file has is mentioned once. Tiles count what was **added**, **removed**, **changed** and the same, and **key repeats** (a key value on several rows of a file), which are listed, never paired at random. **Changes per column** says which columns changed most; a changed value shows as old → new. Options: trim spaces, ignore case, numbers as numbers within a tolerance (absolute or %), empty = missing. F7 goes to the next difference, a double-click opens the row in its file, and **Export** writes the differences as CSV. Drop a file on a side to compare another one. See [Compare files](docs/guide/diff.md).
+
+## Compare two logs
+
+**File → Compare Logs by Message…** (Ctrl+Shift+D) compares the current log with a baseline, for example the log of a run that went well. Comparing line by line is useless for logs (every timestamp differs), so Logsift compares **kinds of messages** (as in the Messages tab): what is **new** in this log, what is **gone**, and what happens much **more** or **less** often, with counts scaled to the logs' lengths. New errors come first. Double-click a row to find all its lines in the log that has them.
+
+## Highlight bar
+
+A narrow bar beside the scrollbar shows the whole file at a glance. It has red marks for errors (ERROR, FATAL, SEVERE, CRITICAL), amber for warnings, a second lane for Find All hits and colored filters, and a box showing where you are. Click a mark to jump to that line; hover to see it. F8 / Shift+F8 jump to the next or previous error. The marks stay up to date while the file grows.
+
+## Find
+
+**Ctrl+F** (⌘F on macOS) opens a find bar at the top of the log, with the selected text filled in. Matches light up as you type and the log goes to the first one; the bar counts them ("3 of 1,240"). **Enter** and **Shift+Enter** go to the next and previous match, and **Esc** closes the bar. From there:
+
+- **Find All** (Ctrl+Enter) lists every match in **Find results** below the log, where several searches can stay side by side. While the log shows only the lines its filters keep (Matching only), Find All finds in those lines (*in filtered lines*), and follows the filters as they change.
+- **Filter ▾** turns the search into a filter: show only the matching lines, hide them, or color them.
+- The folder button searches for it in a whole folder, zips included (Ctrl+Shift+F).
+
+Each log has its own bar: **Find**, **Filters** and the filters that are on on the left; **Wrap**, **Columns**, **Tree**, **Timeline**, **Follow** and **Reload** on the right. Each log keeps its own view settings, and your last choice is the default for the next log you open. There is no toolbar on top: opening files, remote logs, Search in Folder and Settings are in the menus (with their shortcuts), so a profile, a heap dump or a folder search gets the whole window. With nothing open, the start page has big buttons for the ways to begin (a log, a folder, a remote log, a web address, a JVM, a heap dump, a thread dump, a profile) and your recent files; with logs open, **+** after the tabs shows it again.
+
+## Filters
+
+Filters that are on show as **chips** in the log's bar: click a chip to turn its filter off or on, ✕ to remove it, right-click to change what it does. Chosen levels, a time range and branches hidden in the tree show as chips too.
+
+The **Filters** panel below the log holds any number of filters (up to 26). Each one has:
+
+- a letter (A, B, C, …) for use in the formula
+- an action: **Show** keeps matching lines, **Hide** removes them, **Mark** only colors them
+- where to look: the whole line, or one column of the log's format (CSV, JSON lines, a layout); a column's value can **contain** the text, **=** be it, or be a number **>** above or **<** below it (`1.5 s` is more than `800 ms`)
+- the text to match, with the same `Aa` / `W` / `.*` options as Find
+- a line color, a live count of matching lines, and ▲ ▼ to step through its matches
+
+**Combine** says how filters work together. In **Auto** mode it is "any Show filter, and no Hide filter", for example `(A OR B) AND NOT C`. Type your own to get anything else: `A AND B`, `(A OR B) AND NOT (C OR D)`, `NOT C`. `AND OR NOT ( )` work, and so do `& | ! -`.
+
+**All lines / Matching only** (Ctrl+Shift+H, ⇧⌘H on macOS) switches between every line, with filtered-out lines grayed, and only the lines that pass. Your place in the file is kept when you switch, so you can filter down, click a line, switch back and see everything around it.
+
+**Keep stack traces** (on by default) treats a log line and the lines under it (stack traces, wrapped messages) as one entry: if any line of the entry matches, the whole entry is shown, and Hide filters hide whole entries. Logsift detects how entries start from the first lines of the file (a date, a time, a syslog date, a level word, or `{` for JSON lines); the checkbox tooltip shows what it found. **Context ±N** adds N grayed lines before and after each match, with a dashed line where lines were skipped, like `grep -C`.
+
+**Alerts:** click the bell on a filter to be told when new lines matching it are written (while the file grows). Logsift shows a desktop notification and a popup you can click to jump to the line, beeps, and puts a count on the tab. Bursts are combined (at most one alert per filter every 3 seconds). Lines that were already in the file don't alert.
+
+**Clear All** in the log's bar (lit while anything is set) goes back to the whole log: it removes every filter, turns all levels back on, clears the time range and what the tree hides, and closes the find bar and the Find results. **Clear all** in Filters (next to + Add filter) clears only the filters. In Find results, **Close** removes the selected search, **Close all** removes every one, and Shift+Esc closes the selected search.
+
+Quick ways to add filters: select text in the log, right-click, then choose **Show / Hide / Mark lines with "…"**; in the Columns view, right-click a value for **Show Only Rows Where Host = web-1** or **Hide Rows Where …**, or a column title for **Filter by …**. Filter sets can be saved and loaded (the ⋯ menu), and filters keep working while the file grows.
+
+**Several searches at once:** each Find All is added to the top of the Find results window and opens there, while earlier searches fold to a header line (“ERROR” — 1,234 lines) and stay available. Click a header (or its chevron) to fold or open it; with the keyboard, Enter, Left and Right do the same. **Fold all** / **Unfold all** do every search. Every search has its own color in the log and on the highlight bar. Running a search you already have moves it back to the top. F3 / Shift+F3 step through the selected search's hits.
+
+**Search within results:** select a search (or any of its lines), type in **Search in these results** and press Enter. A nested search like “ERROR › timeout” appears under it, showing only the lines that match both. You can keep narrowing it further, and closing a search also closes the searches nested in it.
+
+Find All keeps running on a growing file. New matching lines show up in the results as they are written, including nested searches.
+
+## Measured speed
+
+These numbers come from `./gradlew visualTest` on an Apple Silicon Mac (10 cores, 32 GB RAM). The file had just been generated, so it was already in the OS file cache. With a cold cache, the disk speed sets the limit.
+
+| | 1 GB, 9.4M lines | 3 GB, 28.1M lines |
+|---|---|---|
+| First lines on screen | 0.12 s | 0.22 s |
+| Full line index built | 0.26 s | 1.1 s |
+| Jump to any line + repaint | ~10 ms | ~6 ms |
+| Find All `ERROR` (literal, 335k / 1M hits) | 0.17 s | 0.58 s |
+| Find All `WARN` (whole word) | 0.15 s | 0.38 s |
+| Find All `müller` (ignore case, non-ASCII) | 0.19 s | 0.45 s |
+| Find All regex `Payment failed .* user=u12\d4 ` | 0.12 s | 0.37 s |
+
+Filters on a 200 MB log (1.8M lines): four filters with formula `(A OR B) AND NOT C` take 0.2 s. Changing only the formula takes about 2 ms, because the filters' results are kept and only merged again.
+
+Heap use stays at a few hundred MB for these sizes. The index costs about 12 MB per 100M lines.
+
+**Stress test** (`./gradlew stress -PstressGb=10`, same Mac, 2 GB heap as in the installed app):
+
+| | Time |
+|---|---|
+| 10 GB log (93.6M lines): first lines / full index | 0.01 s / 2.6 s |
+| Jump to the end, or 20 random jumps | under 10 ms |
+| Find All: 0.9M / 3.4M / 5.1M (regex) hits | 1.7 s / 1.9 s / 3.0 s |
+| Filter `ERROR AND NOT timeout` | 3.5 s |
+| Timeline / tree of loggers | 1.9 s / 10 s (in the background) |
+| One 200 MB line: open / search it | 0.02 s / 0.17 s |
+| 300 million short lines (3 GB): full index | 0.4 s |
+
+The heap stayed under 500 MB through all of it.
+
+## Tests
+
+```bash
+./gradlew test                       # fast unit tests (index, tail, search vs simple reference code)
+./gradlew visualTest                 # opens a generated 1 GB log in the real UI
+./gradlew visualTest -PsizeMb=3072   # same with 3 GB
+```
+
+`visualTest` generates `build/visual/big-<N>mb.log` (and reuses it on later runs). It then drives the real window and checks the following against independent, plain-Java reference code:
+
+- the line count
+- 25 random lines read straight from the file
+- hit counts for literal, whole-word, Unicode and regex searches
+- F3 and Shift+F3 navigation
+- live search while 10k lines are being appended
+- log rotation
+
+It saves screenshots and a timing summary to `build/screenshots/`. Delete `build/visual` when you need the disk space back.
+
+## How it works
+
+For the full, educational explanation (sparse index, SWAR byte search, the regex pre-filter, filter merging, tail and rotation, and lessons learned), see **[docs/how-it-works.md](docs/how-it-works.md)**. Short version:
+
+```
+logsift.core   (no UI code; could later back a VS Code extension or a CLI)
+  FileSource      positional reads (pread), safe from many threads
+  LineIndex       sparse index: chunks of 4 MB; offset of every 64th line
+  LogDocument     open file + index + tail polling (growth, truncation, rotation)
+  ByteScan        newline/byte search 8 bytes at a time (SWAR)
+  LineMatcher     literal byte search, regex, or literal pre-filter + regex
+  RequiredLiteral finds text every regex match must contain (ripgrep's trick)
+  SearchSession   parallel Find All, hits published in line order, follows growth
+  Formula         AND / OR / NOT of filter letters (parser and auto formula)
+  FilterEngine    one live search per filter; merges their sorted hits by the formula
+  FilterResult    the passing lines: a sorted list, or "all lines except a list"
+  FolderSearch    parallel search of a folder's files, streaming; .gz and .zip inside
+  Archives        a zip's files (zips inside too), unpacking one; UrlFetch downloads over HTTP(S)
+  EntryFormat     how entries start (date, time, level...), to keep stack traces together
+  TimeFormat      timestamp formats parsed from bytes; TimeIndex: a time every ~64 lines
+  MessageStats    groups lines into message templates; LogCompare compares two logs
+  LogFormat       columns (regex with named groups, JSON fields, or CSV); ColumnStats counts values
+  LogMerger       merges logs by time; Encoding / Utf16Mirror; RemoteMirror (SFTP)
+  LineExporter    copies chosen lines' original bytes to a file
+logsift.core.diff (comparing files)
+  SequenceDiff    lines up two sequences of hashes (patience anchors, then Myers) into Edits
+  TableDiff       CSV files by key (a hash join on two 64-bit key hashes) or in file order
+  CsvFile         a CSV file's rows streamed; only where each row is, kept; rows read again when shown
+  KeySuggester    columns unique and filled in in both files, id-like names first
+  DiffStatus, ChangeNavigator, DiffOptions: shared by every kind of comparison
+logsift.jvm     (thread dumps and running JVMs)
+  DumpParser      jstack / jcmd / kill -3 text (also inside logs), dump_to_file plain and JSON
+  ThreadAnalysis  deadlocks (cycles of lock waits), lock queues, stuck and busy threads, pools
+  LocalJvms       attach + JMX (the JVM's own diagnostic commands), or jcmd
+  SshJvms         ps, jcmd or async-profiler over SSH, sudo for other users' JVMs
+  JmxJvms         a JMX port: diagnostic commands, Flight Recorder streamed back, heap dumps on the JVM's machine
+  LogOrigin       which JVM writes a log: who has it open, what it says, its file server
+  JvmLink         a log's JVM, remembered by program
+  Profiler        async-profiler (every mode) or Flight Recorder → Profiles (trees of stacks)
+  HeapHistogram   GC.class_histogram, and what grew between two
+  GcLog           GC logs (Java 8 and -Xlog:gc*, every collector) → collections, pauses, stalls, safepoints
+  GcReport        a GC log worked out: time stopped, pauses, allocation, growth of the memory kept, findings
+logsift.heap
+  HeapDump        reads a .hprof: object graph, dominators (Semi-NCA), retained sizes, paths to GC roots
+  HeapFindings    what fills the heap, in sentences
+  HeapWaste       copies of the same strings, empty and mostly empty collections
+  HeapDiff        two dumps compared: what grew, matched by where it is kept
+  HeapMap         what an object holds, as boxes for the map
+  HeapServer      reads a dump on a server, answers the app over one connection (Java 8+)
+  RemoteHeap      the app's side of that connection
+(logsift.heap is built for Java 8 into logsift-heap.jar, which is also copied to servers)
+  Store           big arrays in memory, or in memory-mapped files on disk for big dumps
+logsift.ui
+  LogView         virtual view: paints only visible rows; scrollbar counts rows
+  LogTab          log view + Filters and Find results panels for one file
+  FilterPanel     the filter rows, formula field and All lines / Matching only switch
+  OverviewBar     highlight bar beside the scrollbar (errors, warnings, filters, hits)
+  FolderSearchTab folder search form and results grouped by file
+  TimelineBar, MessagesPanel, BookmarksPanel, DetailsPanel, CompareTab, CsvCompareTab, ColumnLayout ...
+  ThreadsTab, ThreadTimeline, ProfileTab, FlameGraph, HeapTab, HeapDumpTab, GcTab, GcChart, JvmDialog, JvmBar
+  MainFrame       window, menus, status bar, drag & drop
+logsift.tools
+  LogGenerator    realistic reproducible logs (levels, threads, stack traces, Unicode)
+```
+
+Design choices:
+
+- **No memory mapping of logs.** (Only a heap dump's index, in Logsift's own files, is memory-mapped.) On Windows, a memory-mapped file can't be renamed or deleted, which breaks log rotation for the app that writes it. Mappings are also limited to 2 GB each. Positional reads through the OS cache are nearly as fast.
+- **Sparse index.** It stores the position of every 64th line per 4 MB chunk. Chunks are scanned in parallel and published in order, so the top of the file shows up immediately. When following a growing file, a short last chunk is re-scanned together with the new data.
+- **Custom view instead of JList/JTable.** Swing's own lists measure in pixels and overflow at around 100M rows. LogView's scrollbar counts rows, which supports up to about 2.1 billion lines.
+- **Search never decodes lines unless it must.** Plain text is matched on raw UTF-8 bytes. A regex runs only on lines that contain its required text, when there is one.
+- **Tail detection works on every platform.** It polls the file every 500 ms. It detects rotation by a changed file ID (inode), and on Windows by a smaller file appearing at the same path. It detects truncation by a smaller size or changed first 256 bytes. The view and the running search restart automatically.
+
+## Known limits
+
+- **Highlight rules are built in** (ERROR/FATAL, WARN, stack traces, DEBUG/TRACE). Filters with colors cover most needs; there is no rule editor yet.
+- **Very long lines:**
+  - Lines over 64 KB are cut for display. Search still sees the whole line.
+  - A single line over 256 MB is only searched in its first 256 MB.
+- **Logs from zips and the web** are copies made when opened; they don't follow the original.
+- **Merged logs and remote logs** are local copies: they keep up while the sources grow, but entries that arrive late in a merge are appended, not inserted in time order.
+- **Time zones** are not converted: times are shown as written in each log.
+- **Heap dumps** in HotSpot's `.hprof` format are read (not compressed `.hprof.gz`, and not OpenJ9 `.phd`). A dump doesn't say how the JVM laid its objects out (compressed pointers or not, compact headers), so Logsift works it out from the addresses of objects next to each other. A big dump's index needs free disk space up to the dump's size, in `~/.logsift/heap-index` (Logsift says so before it starts when there isn't enough). Comparing two dumps works with dumps on this computer, not with ones read on a server. A server needs `sh`, `nohup` and `nice` (any Linux or macOS has them) and a Java 8 or later. Wasted memory counts the JDK's collections (ArrayList, Vector, HashMap, LinkedHashMap, HashSet, Hashtable, WeakHashMap, IdentityHashMap, ConcurrentHashMap, ArrayDeque, CopyOnWriteArrayList, LinkedList, TreeMap, TreeSet), not those of other libraries.
+- **Thread dumps** of HotSpot JVMs (OpenJDK, Oracle, Temurin, Zulu, Corretto and the like) are read. OpenJ9 `javacore` files are not.
+- **GC logs** of HotSpot JVMs are read (Java 8 and later). OpenJ9's verbose GC (XML) is not. A rotated GC log (`gc.log.0`, `gc.log.1`…) is read one file at a time; merge them first (Merge by Time) to see them together.
+- **async-profiler** runs on Linux (x64, ARM64) and macOS JVMs; for JVMs on Windows, use Flight Recorder.
+- **Tested** on Windows, macOS and Linux by CI (unit and visual tests, including log rotation by logback on Windows). The downloads are not code-signed yet.
+
+## Roadmap
+
+Ideas for next versions: continuous profiling of a running JVM, editable highlight rules and signed installers. Suggestions and bug reports are welcome in [Issues](https://github.com/bdarwin/logsift/issues).
+
+## Contributing
+
+Bug reports, ideas and pull requests are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE) © 2026 bdarwin
+
+Logsift includes [async-profiler](https://github.com/async-profiler/async-profiler) (Apache License 2.0) for profiling and for thread dumps on servers without JDK tools.

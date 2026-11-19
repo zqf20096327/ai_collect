@@ -49,7 +49,7 @@ audit_text_spacing {}
 
 These are MCP tool calls, not shell subcommands. For terminal use, see [interactive mode](#interactive-repl-interactive-subcommand).
 
-`scan_page` returns text findings with JSON node details and remediation links. With `annotateScreenshot: true`, it also saves a full-page annotated PNG and returns a file resource link. It does **not** save a JSON report. `audit_keyboard`, `audit_screen_reader` and `audit_text_spacing` save JSON reports and return summaries and report links; `audit_site` and `scan_page_matrix` also save JSON reports. There is no generated HTML report dashboard. Review incomplete checks, coverage warnings and the page states you haven't tested.
+`scan_page` returns text findings with JSON node details and remediation links. With `annotateScreenshot: true`, it also saves a full-page annotated PNG and returns a file resource link. It does **not** save a JSON report. `audit_keyboard`, `audit_keyboard_operation`, `audit_form_validation`, `audit_screen_reader` and `audit_text_spacing` save JSON reports and return summaries and report links; `audit_site` and `scan_page_matrix` also save JSON reports. There is no generated HTML report dashboard. Review incomplete checks, coverage warnings and the page states you haven't tested.
 
 To reproduce the screenshot, serve the demo from this repository with `python3 -m http.server 8765 --bind 127.0.0.1 --directory docs/assets`, navigate to `http://127.0.0.1:8765/accessibility-demo.html`, then run `scan_page` with `annotateScreenshot: true`. The screenshot used a 1000×720 viewport (`--viewport-size 1000,720`).
 
@@ -641,6 +641,8 @@ Crawls and scans multiple internal pages, then aggregates violations across the 
 ```
 
 #### `scan_page_matrix`
+
+Viewport variants require a configured viewport (for example `--viewport-size=1280,720`). On native-sized browser tabs, use variants without viewport changes; the tool rejects viewport changes rather than permanently converting the tab to a fixed viewport. Cancellation waits for an active Axe scan or page mutation to finish, then stops subsequent variants and restores viewport, media and zoom. Site-audit cancellation stops the crawl and closes its owned tabs. Canceled runs do not write a completed report.
 Runs Axe scans on the same page across viewport/media/zoom variants and compares deltas against baseline.
 - Default variants: baseline, mobile, desktop, forced-colors, reduced-motion, zoom-200
 - Supports custom variants and optional reload between variants
@@ -695,6 +697,48 @@ Audits real keyboard focus behavior by pressing Tab (and optional Shift+Tab) wit
 2. Run audit_keyboard with maxTabs: 50
 3. Review focus findings and open the generated JSON report path
 ```
+
+#### `audit_keyboard_operation`
+Exercises a caller-defined keyboard scenario and checks the outcome after each key. Unlike `audit_keyboard`, this tests operation: opening a menu, selecting an option, dismissing a dialog, or returning focus. It does not discover tasks or decide which outcome your application should produce.
+
+Start from a known page state. Supply `steps`, each with exactly one of `key` or `text` and a nonempty `expect` array. Expectations use stable selectors so they can address elements that appear or rerender during the scenario. Actions use real keyboard input, never programmatic focus, clicks, or fills. Use `Tab` steps to reach the control instead of bypassing keyboard reachability.
+
+```json
+{
+  "steps": [
+    { "key": "Tab", "expect": [{ "selector": "#open-menu", "focused": true }] },
+    { "key": "Enter", "expect": [{ "selector": "#open-menu", "expanded": true }, { "selector": "#menu", "visible": true }] },
+    { "key": "Escape", "expect": [{ "selector": "#menu", "visible": false }, { "selector": "#open-menu", "focused": true }] }
+  ]
+}
+```
+
+**Parameters and bounds:** `steps` accepts 1–20 steps, with 1–10 expectations each. Keys are `Tab`, `Shift+Tab`, `Enter`, `Space`, the four arrow keys, `Escape`, `Home`, `End`, `Backspace`, `Delete` and `ControlOrMeta+A`. A `text` step enters 1–500 characters sequentially into the currently focused editable element. The audit checks that the same element remains focused and editable before and after each character; focus theft, removal or replacement makes the scenario incomplete instead of sending the remaining text elsewhere. Each expectation requires a CSS `selector` and at least one of `focused`, `visible`, `text`, `value`, `expanded`, `checked`, `selected`, `pressed` or `disabled`. Boolean states are exact; `checked` and `pressed` also accept `"mixed"`. Text compares trimmed `textContent`; values compare native form values or `aria-valuenow`. Text/value contents are omitted from reports. Selectors address the main frame and open shadow roots, not iframe contents. The audit compares selector matches before and after the outcome sample. If those matches differ, the step is incomplete. A match that changes and reverts between those checks can be missed. An ambiguous selector or unsupported state is incomplete, not a pass. `visible` checks rendering (content inside a closed `<details>` or `hidden=until-found` is not visible), layout boxes and computed visibility, not opacity or visual occlusion; use `audit_keyboard` separately for focus visibility/obscuration heuristics. `timeoutMs` is the per-step observation window (0–1000 ms, default 300). All outcomes for a step are measured together at the end of that window so a brief focus match before a delayed trap is not accepted immediately; zero samples once without waiting. Changes after the window are not covered. The overall scenario budget is 30 seconds.
+
+This is a **state-changing** tool: a key can submit a form or navigate. It does not undo actions. Use controlled test data and reset the page before repeating a scenario. An assertion mismatch stops the scenario; subsequent steps are not run. An interrupted action or unavailable measurement is not a passing check. JSON reports and structured results distinguish tested outcomes from incomplete work. This supports investigation of WCAG 2.1.1, 2.1.2 and 2.4.3, not certification of keyboard access across the site.
+
+#### `audit_form_validation`
+Exercises one caller-defined invalid-input case: reaches the named text inputs/textarea fields through keyboard navigation, replaces their contents through keyboard input, activates the supplied submit control, and inspects the expected error/status feedback. It does not discover forms, choose invalid values, or submit other forms automatically.
+
+```json
+{
+  "fields": [{ "selector": "#email", "value": "invalid-email" }],
+  "submitSelector": "#submit",
+  "expectedFeedback": [{ "selector": "#email-error", "kind": "error" }]
+}
+```
+
+`interactionMode` defaults to `"keyboard"`: starting from the current focus, it presses Tab to reach each field (up to 50 presses per target), selects existing text with `ControlOrMeta+A`, clears it with Backspace, and enters the supplied value character by character. It then reaches the submit control through Tab and presses Enter. It never calls focus, fill or click in this mode. A target that cannot be reached, focus that moves elsewhere during entry, or a field that does not retain the supplied value makes the scenario incomplete and prevents later submission. Keyboard mode rejects CR/LF in single-line input values before mutation; textarea newlines are supported. Use `interactionMode: "direct"` for the previous fill-and-click behavior; direct mode does not prove keyboard reachability. Both modes verify the supplied field values before activating submit and stop as incomplete on a mismatch. Reports identify the mode used.
+
+Text input follows browser key/input event sequences without randomized timing. It does not reproduce human cadence, an operating-system keyboard layout, IME composition, or a screen reader. Some Unicode characters are inserted by the browser without physical-key-equivalent events.
+
+Supply selectors for the fields and feedback in the main document; expected feedback may appear after validation. The audit examines native/ARIA invalid state, same-root error associations, feedback visibility, focus and changes to live-region content. Unfocused status feedback needs a change within the same live region, with polite or assertive semantics in both the pre-submit and post-submit samples. The JSON report records the current region’s pre-submit value as `baselineLive` when the region was exposed. A message inserted into a pre-existing, exposed live region counts when that same container survives submission. Changes between samples can still be missed. It reports programmatic feedback evidence, **not actual NVDA/VoiceOver announcements**. An associated error does not also have to be a live region; native browser validation and focus-managed feedback must be considered. Human review is still needed to judge whether an error explains the problem and suggests an appropriate correction (WCAG 3.3.1/3.3.3), and whether status feedback is announced usefully (4.1.3).
+
+**Parameters and bounds:** `fields` and `expectedFeedback` each accept 1–20 entries. Field `value` is a string (up to 10,000 characters); supported fields are editable text/email/url/tel/password/search inputs and textareas. CSS selectors are limited to 500 characters and must be unambiguous. Feedback `kind` is `error` or `status`. `timeoutMs` sets the post-activation observation window (100–10,000 ms, default 3000); feedback is read once at its end. Keyboard actions have a 30-second budget; very long inputs may be incomplete. Direct mode retains its observation window plus 5-second overall budget and 1-second individual action bounds. Feedback text follows rendered descendants through open shadow roots and slots, excludes hidden or collapsed disclosure content and slot fallback replaced by assigned content, and retains visually clipped screen-reader-only text. Each target is bounded to 10,000 visited nodes and 10,000 exposed characters; exceeding either limit sets `textTruncated` and makes the audit incomplete. Native validation is reported as a possible browser-managed feedback route, not a verified announcement. Findings describe observed gaps; `completed` means the scenario was measured, not that the form conforms to WCAG. Other frames, transient feedback and message quality need separate review.
+
+This is a **state-changing** tool: supplied values are entered and the submit control is activated. An unexpectedly accepted value can submit the form. Use a test environment and reset its state between cases; the audit cannot undo submissions. Reports omit submitted values and feedback text. Both new interaction audits accept `reportFile` for a JSON report, use the normal MCP output directory and never overwrite an existing explicitly named report.
+
+While either interaction audit runs, overlapping MCP tool calls routed to the same browser context are rejected with a busy error before their actions start. Starting an interaction audit while another tool is active is also rejected; calls are not queued for later mutation. Calls routed to other browser sessions can proceed independently. This coordinates MCP calls, not page scripts, manual browser use, or independently connected clients.
 
 #### `audit_screen_reader`
 Inspects the browser's accessibility tree (`page.ariaSnapshot`), accessible names and element geometry for potential accessibility issues. No actual screen reader is installed or driven, and its announcements and interactions are not tested.
@@ -761,112 +805,4 @@ Every frame is measured, cross-origin iframes included, at most four at a time w
 - Lost *meaning or function* beyond clipping and overlap: a control pushed under a sticky header, a menu that no longer opens, text that is technically visible but has become unreadable. A result with no findings is "no clipped or overlapping text detected", not a WCAG 1.4.12 pass, so look at the `screenshot` as well.
 - Clipping by the viewport itself (`overflow: hidden` on `html`/`body`, which propagates to the viewport), `clip-path` and masks, and text inside form controls (`<input>`/`<textarea>` values), `<svg>`, `<canvas>` and closed shadow roots.
 - Layout that page scripts would only adjust later: measurement waits two animation frames after applying the overrides, which covers `ResizeObserver` callbacks, but not timers or network-driven re-layout.
-- Shadow DOM selectors are written `host-selector >>> inner-selector`: each part is a CSS path within its own tree. Playwright CSS locators pierce open shadow roots, so the inner part alone usually works as a locator.
-
-**Example flow:**
-```text
-1. Navigate to the target page and let it fully load
-2. Run audit_text_spacing (add screenshot: true to see the page with the overrides applied)
-3. Fix the box named in each finding's clippedBy (min-height instead of height, allow wrapping) and re-run until it reports no findings
-```
-
-### Navigation Tools
-
-#### `browser_navigate`
-Navigate to a URL.
-- Parameters: `url` (string)
-- Non-2xx main-document responses are shown as an `HTTP status` line in page state.
-- If a page opens a dialog while loading, navigation returns the pending dialog so you can resolve it with `browser_handle_dialog`. It does not dismiss the dialog automatically, and the interrupted response omits the `page.goto` replay snippet. A navigation attempt while a modal is already open fails with handling guidance. If the interrupted navigation later fails, the error appears in page console messages unless the document has changed.
-
-#### `browser_navigate_back`
-Go back to the previous page.
-- If the page opens a `beforeunload` dialog, the tool returns the pending dialog without dismissing it. Navigation remains pending until you use `browser_handle_dialog` to accept leaving or dismiss it to stay on the page. While the dialog remains open, the response omits the `page.goBack` replay snippet. A later navigation failure appears in page console messages unless the document has changed.
-
-#### `browser_navigation_timeout`
-Set default navigation timeout for existing tabs.
-- Parameters: `timeout` (in ms; 30000-1200000)
-
-#### `browser_default_timeout`
-Set default operation timeout for existing tabs.
-- Parameters: `timeout` (in ms; 30000-1200000)
-
-### Page Interaction Tools
-
-#### `browser_snapshot`
-Capture accessibility snapshot of the current page (better than screenshot for analysis).
-Large `data:` URL payloads in snapshot output are truncated to their media type prefix.
-AI snapshots mark a visually present subtree excluded from accessibility queries with `[aria-hidden]` on its boundary element. Descendants are not marked again.
-- Parameters: `compress` (optional boolean, default false), `boxes` (optional boolean; overrides `snapshot.boxes` for this call)
-  - When `compress` is true, repeated non-interactive ARIA snapshot nodes are collapsed in the rendered response when a repeated structural pattern appears more than 100 times. The first 10 examples of each collapsed pattern are kept.
-  - Use `browser_evaluate()` to retrieve the full uncompressed list when needed.
-  - When `boxes` is true, each element includes `[box=x,y,width,height]` in viewport-relative CSS pixels.
-
-#### `browser_find`
-Search the current page accessibility snapshot without returning the full snapshot.
-- Parameters: `text` (case-insensitive substring) or `regex` (regular expression, supports `/pattern/flags`), `maxResults` (optional positive integer; defaults to all matches), `filename` (optional)
-- Returns matching snapshot lines with surrounding context, shown under their path from the root of the tree; `...` marks truncated off-path context.
-- `maxResults` selects the first matching lines before building context windows and preserves their ancestor paths. Context may include additional matching lines. When truncated, the header reports the total match count and `(showing first Y)`.
-- With `filename`, saves the same text (including no-match messages and total/truncation headers) under the same `maxResults` limit. Returns `Saved find results as <path>` and a `text/plain` resource link instead of inline search results. Without `filename`, the response is unchanged.
-- Filenames follow this server's artifact policy: sanitized names contained in the configured output directory, with existing files rejected. Unlike upstream Playwright MCP, paths are not resolved against the workspace root.
-
-#### `browser_click`
-Perform click on a web page element.
-- Parameters: `element` (description), `ref` (element reference), `doubleClick` (optional)
-
-#### `browser_type`
-Type text into editable element.
-- Parameters: `element`, `ref`, `text`, `submit` (optional), `slowly` (optional)
-
-#### `browser_hover`
-Hover over element on page.
-- Parameters: `element`, `ref`
-
-#### `browser_drag`
-Perform drag and drop between two elements.
-- Parameters: `startElement`, `startRef`, `endElement`, `endRef`
-
-#### `browser_drop`
-Simulate an external drag and drop of files or clipboard-like data onto an element, for testing drop zones that never see a drag start inside the page.
-- Parameters: `element`, `ref`, `paths` (optional array of absolute file paths), `data` (optional map of mime type to value, e.g. `{"text/plain": "hello"}`)
-- At least one of `paths` or `data` is required.
-- Fails if the target's `dragover` handler does not accept the payload.
-- `paths` are read from the filesystem of the machine running the server, exactly as `browser_file_upload` does, and a relative path resolves against the server's working directory. Unlike `browser_file_upload` this needs no file chooser to be open, so any page with a `dragover` handler is a valid target — treat it as a tool that can hand local file contents to the page.
-
-#### `browser_select_option`
-Select an option in a dropdown.
-- Parameters: `element`, `ref`, `values` (array)
-
-#### `browser_fill_form`
-Fill multiple fields with one call. Generated Playwright code preserves checkbox/radio booleans and selects combobox options by label, matching the performed action.
-- Parameters: `fields` (array of objects with `name`, `type`, `ref`, and `value`)
-
-#### `browser_press_key`
-Press a key on the keyboard.
-- Parameters: `key` (e.g., 'ArrowLeft' or 'a')
-- Keys are delivered by Playwright's US keyboard layout: unshifted numpad keys act with NumLock off (`NumpadDecimal` sends `Delete`), `Shift` yields the digit or decimal point, and every event reports the numpad location. On the pinned Playwright 1.65.0 Chromium, Firefox and WebKit on Linux delivered numpad keys this way. Playwright 1.63.0 sent `NumpadDecimal` as key `"\u0000"` (WebKit on macOS also inserted it), and in Chromium dropped the numpad `keyup` location and typed nothing for shifted numpad digits (upstream fixes [#42927](https://github.com/microsoft/playwright/pull/42927) and [#42913](https://github.com/microsoft/playwright/pull/42913)). The server passes keys through unchanged rather than remapping them. `tests/numpad-keys.integration.test.ts` characterizes only the measured paired versions, browser builds and platforms; other environments must satisfy the intended key contract.
-
-#### `browser_start_recording` / `browser_stop_recording`
-Record browser actions and return them as Playwright JavaScript. Start the server with `--caps devtools`, call `browser_start_recording`, perform the flow, then call `browser_stop_recording`.
-
-Multi-tab recordings include the `context.newPage()` declarations needed by generated page aliases.
-Recorded assertions include the `playwright/test` `expect` setup they need to run.
-
-Handshake-free HTTP clients must first call `browser_session_open`, then pass its `browserSessionId` to both recording tools so the recording survives across requests. Modes that cannot open separate browser sessions, such as `--extension` and non-isolated CDP attach, need a stateful MCP connection for recording.
-
-#### `browser_evaluate`
-Evaluate a JavaScript expression on the page, or on a specific element when a `ref` is provided. The function's return value is serialized back as the result.
-
-JSON-compatible values are returned as pretty-printed JSON, including objects that share references without forming a cycle. Values that JSON cannot faithfully represent, such as `undefined`, `NaN`, `Infinity`, `-0`, `BigInt`, dates, or cyclic objects, use readable JavaScript inspection text instead. This formatting applies to the value transferred by Playwright; it does not add support for transferring other browser-side types.
-
-Inspection text is **not JSON**. Clients must not assume every result can be passed to `JSON.parse`; return JSON-compatible values explicitly when machine-readable JSON is required.
-
-- Parameters: `function` (e.g., `() => document.title` or `(element) => element.textContent`), `element` (optional), `ref` (optional)
-- `element` and `ref` must be supplied together, or not at all; supplying one without the other is rejected.
-- A bare expression is also accepted and is wrapped automatically: `document.title` behaves like `() => document.title`, and, when `element` and `ref` are both given, `element.textContent` behaves like `(element) => element.textContent`. The parameter is always named `element`.
-- Whether the input is a function or an expression is decided from its source form, never from what it evaluates to, so an expression such as `window.open` is returned rather than called.
-
-### Screenshot & Visual Tools
-
-#### `browser_take_screenshot`
-Take a screenshot of the current page.
-- Parameters: `filename` (optional), `type` (`png`, `jpeg`, or `webp`), `scale` (`css` or `device`, default `css`), `fullPage` (optional), 
+- Shadow DOM selectors are written `host-selector >>> inner-selector`: each part is a CSS path within its own tree. Playwright CSS locators pie

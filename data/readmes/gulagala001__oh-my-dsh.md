@@ -7,9 +7,9 @@
 <p align="center"><strong>简体中文</strong> · <a href="README_EN.md">English</a></p>
 
 <p align="center">
-  <a href="https://github.com/gulagala001/oh-my-dsh/releases/tag/v0.2.2-rc.5.omd.1.8.0"><img alt="OMD 1.8.0" src="https://img.shields.io/badge/release-OMD%201.8.0-0969da?style=flat-square"></a>
+  <a href="https://github.com/gulagala001/oh-my-dsh/releases/tag/v0.2.2-rc.5.omd.1.9.2"><img alt="OMD 1.9.2" src="https://img.shields.io/badge/release-OMD%201.9.2-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/releases"><img alt="GitHub 累计下载" src="https://img.shields.io/github/downloads/gulagala001/oh-my-dsh/total?style=flat-square&amp;label=GitHub%20total%20downloads&amp;color=0969da"></a>
-  <a href="#readme-install"><img alt="DSH 0.2.2-rc.5" src="https://img.shields.io/badge/DSH-0.2.2--rc.5-0969da?style=flat-square"></a>
+  <a href="#readme-install"><img alt="DSH 0.2.2 rc.3 / rc.4 / rc.5" src="https://img.shields.io/badge/DSH-0.2.2%20rc.3%20%2F%20rc.4%20%2F%20rc.5-0969da?style=flat-square"></a>
   <a href="https://github.com/gulagala001/oh-my-dsh/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/gulagala001/oh-my-dsh?style=flat-square&amp;color=0969da"></a>
 </p>
 
@@ -26,17 +26,17 @@
 
 ## 快速开始
 
-**需要：** DSH **0.2.2-rc.5**，Node.js **24.9.0+**。模型用你在 DSH 里配好的。
+**需要：** DSH 和 Node.js **24.9.0+**。DSH 0.2.2 系列的 rc.3、rc.4、rc.5 都可以使用同一个包，其他版本也可以直接尝试。模型用你在 DSH 里配好的。
 
 ### 1. 安装
 
 在 DSH 里打开 **插件 → ＋ 添加插件**，粘贴：
 
 ```text
-https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.2-rc.5.omd.1.8.0/oh-my-dsh-0.2.2-rc.5.omd.1.8.0.tgz
+https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.2-rc.5.omd.1.9.2/oh-my-dsh-0.2.2-rc.5.omd.1.9.2.tgz
 ```
 
-等手头的任务跑完，按提示启用或重启 DSH，原来的设置和会话都还在。旧版 DSH、升级和卸载见[安装指南](docs/install.md)，校验文件：[SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.2-rc.5.omd.1.8.0/SHA256SUMS)。
+等手头的任务跑完，按提示启用或重启 DSH，原来的设置和会话都还在。旧版 DSH、升级和卸载见[安装指南](docs/install.md)，校验文件：[SHA256SUMS](https://github.com/gulagala001/oh-my-dsh/releases/download/v0.2.2-rc.5.omd.1.9.2/SHA256SUMS)。
 
 > OMD 默认让 AI 直接读写文件、运行命令，不逐条询问。你在 profile 里设过的权限优先生效。
 
@@ -131,10 +131,10 @@ OMD 里的 Workflow、Rewind、Persona、Extensions、DeepSeek Workbench、OpenC
 
 | 功能 | 需要 |
 | --- | --- |
-| 对话、外观、任务、记忆 | DSH 0.2.2-rc.5 和一个可用的模型 |
-| 浏览器和电脑操作 | 系统权限；内嵌浏览器画面需要配套的 DSH 桌面版 |
+| 对话、外观、任务、记忆 | DSH 和一个可用的模型 |
+| 浏览器和电脑操作 | 侧栏内嵌浏览器使用原版 DSH 桌面版，电脑操作按系统提示授权 |
 | DeepSeek 网页聊天和历史导入 | DSH 桌面版，并登录 DeepSeek 官网账号 |
-| 旧版 DSH | 对应的旧版安装包，见[安装指南](docs/install.md) |
+| 回退旧版 OMD | 历史安装包，见[安装指南](docs/install.md) |
 
 `main` 分支可能领先于正式版。安装请用上面的发布包。
 
@@ -150,7 +150,7 @@ OMD 里的 Workflow、Rewind、Persona、Extensions、DeepSeek Workbench、OpenC
 <details>
 <summary>为什么没有内嵌浏览器？</summary>
 
-内嵌浏览器、悬浮预览和侧栏批注需要配套的 DSH 桌面版。只装插件时，AI 仍然可以通过 Chrome／Edge 扩展或独立浏览器操作网页。[电脑与浏览器](docs/computer-use.md)
+在 Windows 或 macOS 的原版 DSH 桌面版安装 OMD 后，打开 **设置 → 电脑与浏览器** 查看当前窗口的侧栏、批注、预览和悬浮监看能力。侧栏不可用时，AI 可以操作独立浏览器或已连接的 Chrome／Edge。[电脑与浏览器](docs/computer-use.md)
 
 </details>
 

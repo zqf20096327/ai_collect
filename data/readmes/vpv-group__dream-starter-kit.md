@@ -5,8 +5,6 @@
   </picture>
 </p>
 
-# Dream Starter Kit
-
 **Free forever. Open source.**
 
 A clone-and-ship starter: one **Turborepo** monorepo shipping a **Next.js web app**
@@ -64,6 +62,7 @@ backend are wired in. Clone it, rename a few things, and extend it into a real p
 - **[`docs/ERD.md`](./docs/ERD.md)** — data model + the canonical RLS pattern every table follows.
 - **[`docs/CMS.md`](./docs/CMS.md)** — the Payload CMS reference: every collection, global, field & access rule.
 - **[`docs/BRAND.md`](./docs/BRAND.md)** — the Dream brand the kit ships with: logo, colour, type, voice, and how to swap in your own.
+- **[`docs/DESIGN-SYSTEM.md`](./docs/DESIGN-SYSTEM.md)** — how signed-in app screens and module pages are built: layout, framed cards, list views, record pages, boards, status tones.
 - **[`docs/MCP.md`](./docs/MCP.md)** — the remote MCP server: enabling it, connecting clients, OAuth, tools & security.
 - **[`docs/UPDATING.md`](./docs/UPDATING.md)** — how to pull upstream kit updates into your fork without losing your changes.
 - **[`CLAUDE.md`](./CLAUDE.md)** — working agreement, the golden security rules, and the "how to add a feature" recipe.
@@ -427,10 +426,14 @@ app needs — including `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_K
      verified explicitly by the page instead of being consumed by following a redirect;
      the default link-style token gets burned by mail-scanner prefetch or a browser
      navigation restart. (`/accept-invite` is covered by the `/**` Redirect URL wildcard
-     above — no extra entry needed.)
+     above — no extra entry needed.) The same template sends **workspace invites**
+     (Teams / Both account models): it switches to "{inviter} invited you to
+     {workspace}" copy from the invite's metadata and carries `redirect_to` so the
+     invitee lands in that workspace. Re-paste it whenever the file changes.
 
    Also consider custom SMTP (**Authentication → Emails → SMTP**): Supabase's built-in
-   sender is heavily rate-limited (~2 emails/hour) and meant for testing only.
+   sender is heavily rate-limited (~2 emails/hour) and meant for testing only — set it
+   up before relying on workspace invites, which each send an email.
 
    > **Signed up before configuring the URLs?** The first confirmation link will have
    > redirected to `localhost` (or expired on a retry) — the account is fine. The

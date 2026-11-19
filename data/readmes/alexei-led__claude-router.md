@@ -52,6 +52,8 @@ Jev 1.14 is the default; a configured model override stays in force. [Configurat
 
 The band above the prompt shows the tier, activity, model, and reason for each turn. `/router` opens a pane to pin a tier, edit the model and effort of each tier, and tune the policy. See the [user guide](docs/user-guide.md#read-the-status-band).
 
+To move one turn without a pin, start the prompt with a keyword: `morethink`, `highthink` or `maxthink` for one effort level up, one tier up or the top tier, and `lessthink`, `lowthink` or `nothink` for the way down. The routing mode and the turn's activity still pick the route. See [prompt keywords](docs/user-guide.md#move-one-turn-with-a-prompt-keyword).
+
 In the desktop app, VS Code and mobile, the band is one fixed row with nothing revealed on hover: a tier meter icon, the route, activity and reason on the left; the readings, a **Pin to a tier** dropdown and **Router** on the right. The pane has a header, five tabs (Now, Routes, Policy, Classifier, Usage), one warnings slot and a save bar. Colours follow the app's theme. These surfaces cannot open the plugin settings dialog, so **Set up** shows a card with the command that saves the classifier's key from a terminal.
 
 <picture>
@@ -116,7 +118,7 @@ sequenceDiagram
   Mod-->>Dev: Status band and router pane
 ```
 
-The active classifier labels each new logical turn. With `table` or `shadow`, the router checks tier and activity routes as the task runs: a turn labelled `ops` that edits code can move up to the `code` route, and a background classifier review can move the tier or activity. With `auto`, it keeps its own demand and route state instead of using activity route-table moves. A cheaper route on the same task waits for a dwell and a checkpoint its work can show: a passed test, build or lint run, or for commands, docs and read-only work the success the router can see. A notification is treated as progress, but cannot justify a downgrade because it may belong to an older task. `/router decisions` lists why each turn ran where it did. See [Changes during a task](docs/user-guide.md#changes-during-a-task). A local policy applies vote, context, failure, and cache-cost rules before the Mod changes the next step. Claude Code owns request construction, model credentials, tools, streaming, and the API cost ledger.
+The active classifier labels each new logical turn. With `table` or `shadow`, the router checks tier and activity routes as the task runs: a turn labelled `ops` that edits code can move up to the `code` route, and a background classifier review can move the tier or activity. With `auto`, it keeps its own demand and route state instead of using activity route-table moves. A cheaper route on the same task waits for a dwell and a checkpoint its work can show: a passed test, build or lint run, or for commands, docs and read-only work the success the router can see. A notification is treated as progress, but cannot justify a downgrade because it may belong to an older task. `/router decisions` lists why each turn ran where it did. When a model fails with an API error, the router holds it, or its whole account for a used-up plan window, spend limit or balance, out of routing, and runs a fallback chain you configure or the nearest tier on another model; `/router holds` and `/router release` show and end holds. See [When a model fails](docs/user-guide.md#when-a-model-fails). See [Changes during a task](docs/user-guide.md#changes-during-a-task). A local policy applies vote, context, failure, and cache-cost rules before the Mod changes the next step. Claude Code owns request construction, model credentials, tools, streaming, and the API cost ledger.
 
 With the Anthropic profile, the base routes are:
 
@@ -201,6 +203,8 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md): set-up and commands, the layer rules, t
 - [Activity routing](docs/activity-routing.md): the default matrix by activity, why each cell, and how to change or turn it off.
 - [Routing modes](docs/routing-modes.md): `cost`, `balanced` and `quality`, where the mode comes from, and every decision per mode.
 - [Native router details](docs/native-router.md): panel semantics, tuning, and accepted limits.
+- [Automatic routing engine](docs/auto-engine.md): the opt-in `auto` engine's inputs, rules and limits.
+- [Provider experiments](docs/provider-experiments.md): MiniMax, MiMo and Kimi evidence behind the default routes.
 - [Evaluation](docs/evaluation.md): limits, text-free trace export and replay, and the paired benchmark proposal.
 - [Contributing](CONTRIBUTING.md): set up, commands, architecture rules, tests, and pull requests.
 - [Changelog](CHANGELOG.md): user-visible changes by version.

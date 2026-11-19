@@ -141,8 +141,8 @@ Arc B-series cards (Xe2: B580, Pro B60, Pro B70) and A-series cards (Alchemist: 
 engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never takes; Alchemist cards take the Arc
 140T's preset (H8 on the 8-lane XMX GEMM). Measured by users (Qwen3.8 27B GSQ-RCO IQ3_S unless named):
 - **One Pro B60** ([issue #4](https://github.com/rizagp/inferzero/issues/4)): 4K prompt 1,726 tok/s (release
-  2026.11.17.08; 1,522 on 2026.11.14.09, 1,322 before the weight prefetch), generation 22.7-23.3 tok/s (two runs,
-  2026.11.14.09), 51.6 with MTP (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation
+  2026.11.17.08; 1,522 on 2026.11.14.09, 1,322 before the weight prefetch), generation 22.7-23.7 tok/s (two runs,
+  2026.11.14.09; 23.7 under Linux, skipzx-lab, issue #58), 51.6 with MTP (2026.11.13.11). Qwen3.6 35B-A3B: 4K prompt 3,536 tok/s (2026.11.14.09), generation
   82.4 tok/s, 111.9 with MTP (2026.11.13.11). What each switch measured there: [docs/xe2-tuning.md](docs/xe2-tuning.md).
 - **One Pro B70** on native Linux ([issue #27](https://github.com/rizagp/inferzero/issues/27), joshdev-de, Fedora 45):
   4K prompt 2,972 tok/s (main 7368768 with `ARC_H8_NORM`, the default on discrete cards since 2026-11-18; 2,897 with the 2D GEMM and its prefetch alone), 8K 2,727
@@ -160,7 +160,8 @@ engine, with switches of their own in `zero/xe2/` that the laptop's iGPU never t
   [issue #36](https://github.com/rizagp/inferzero/issues/36)): 4K prompt 1,223 tok/s (release 2026.11.17.08 with
   `ARC_GEMM_SPLIT=17`, the default on Alchemist since 2026.11.18.02), generation 21.6-22.7 tok/s, 30.1-31.3 with MTP, with `ARC_BATCH=64`, the default on Alchemist on Windows since 2026.11.18.08 (12.6-12.8 without).
   Qwen3.5 4B: 4K prompt 4,821 tok/s through the preset (2026.11.18.02, the default since 2026.11.18.03), generation
-  37.8-38.2; Qwen3.5 9B: 2,969-3,017 (2026.11.17.08).
+  37.8-38.2; Qwen3.5 9B: 2,969-3,017 (2026.11.17.08). Under Linux (skipzx-lab, issue #45, release 2026.11.18.08,
+  xe driver): 27B generation 22.6-22.9 tok/s, **40.4 with MTP**; 4B 80.7-82.1 (105.7 with MTP), 9B 51.2-51.6 (84.4).
 - **Arc 140T** (the Core Ultra 9 285H's iGPU, [issue #5](https://github.com/rizagp/inferzero/issues/5)): 4K prompt
   405 tok/s (release 2026.11.18.07, its defaults; 390 on 2026.11.17.07 with `ARC_GEMM_XW_WGX=2`, 357 on
   2026.11.15.11), generation 6.1 tok/s, 14.6 with MTP (at its memory's limit).

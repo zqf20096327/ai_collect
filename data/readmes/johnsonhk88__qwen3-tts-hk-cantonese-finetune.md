@@ -1,218 +1,248 @@
 # Qwen3-TTS Fine-Tuning for Hong Kong Cantonese 🇭🇰
 
-This repository provides a **complete workflow** for fine-tuning **Qwen3-TTS** (0.6B-Base or 1.7B-Base) to generate high-quality **Hong Kong Cantonese** speech with authentic accent, natural intonation, prosody, and local slang.
+Fine-tune **Qwen3-TTS** (0.6B or 1.7B Base) for Hong Kong Cantonese speech: LoRA or full FT, single- or multi-speaker, evaluation, and a voice-clone UI.
+
+**Rule:** run every command from the **repo root**.  
+**Code** is in `src/qwen3_tts_ft/` (grouped by function).  
+**Data, models, checkpoints** are in `Dataset-Cantonese-Training/` (no Python there).
+
+```bash
+./scripts/run.sh <stage> --config configs/experiments/lora_single.yaml
+```
+
+Stages: `cluster` → `prepare` → `train` → `evaluate` → `serve`  
+Shortcut: `./scripts/run.sh all` = prepare + train + evaluate.
 
 ---
 
-## ✨ Features
+## 1. Project structure
 
-- Single-speaker voice cloning / fine-tuning
-- **Multi-speaker LoRA export** – one checkpoint, many `speaker_id` slots (`sft_12hz_lora_mlflow_multi_speaker.py`)
-- Automatic speaker clustering (`cluster_speakers.py`) → `speaker_id` + matched `ref_audio`
-- **LoRA fine-tuning** (recommended for 8–12 GB GPUs)
-- **Voice Clone Server** – Web UI / API for instant inference
-- **Model Evaluation** – Compare original pre-trained vs. fine-tuned model (WER/CER, speaker similarity, UTMOS)
-- Full Cantonese dataset preparation pipeline
-- Training with **MLflow** experiment tracking
-- Gradient accumulation + Flash Attention-2 support
+```text
+qwen3-tts-hk-cantonese-finetune/
+├── scripts/
+│   ├── run.sh                         # pipeline runner (the only entrypoint you need)
+│   ├── run-full-lora-1epoch-bs6.sh    # known 1-epoch LoRA recipe
+│   └── download-dataset.sh            # optional HF corpus clone
+├── configs/
+│   ├── default.yaml                   # shared paths + hyperparameters
+│   └── experiments/
+│       ├── lora_single.yaml           # start here (8–12 GB GPU)
+│       ├── lora_multi.yaml            # many speakers
+│       └── full_ft.yaml               # full fine-tune (16+ GB)
+├── src/qwen3_tts_ft/                  # installable package
+│   ├── data/                          # cluster, duration, tokenize, split, dataset
+│   ├── train/                         # shared loop, LoRA, speaker export
+│   ├── eval/                          # WER/CER, speaker sim, UTMOS
+│   ├── serve/                         # Gradio + CLI voice clone
+│   ├── tracking/                      # MLflow
+│   └── config.py                      # YAML load + CLI overrides
+├── tests/                             # CPU unit tests
+├── Dataset-Cantonese-Training/        # DATA ONLY
+│   ├── audio/                         # wavs
+│   ├── train_raw.jsonl                # labels
+│   ├── train_prepared.jsonl           # after prepare (gitignored)
+│   ├── Qwen3-TTS-*/  Tokenizer/       # downloaded models
+│   └── output_*/  evaluation_results*/
+├── monitoring/                        # Prometheus + Grafana GPU metrics
+│   ├── gpu_exporter.py                # NVML → :9401/metrics
+│   ├── docker-compose.yml             # Prometheus :9090, Grafana :3000
+│   └── grafana/dashboards/gpu.json
+├── notebooks/
+├── pyproject.toml
+├── requirements.txt
+└── readme.md
+```
 
-## 📋 Requirements
+| Goal | Where |
+|---|---|
+| Run a stage | `./scripts/run.sh …` |
+| Change LR / epochs / paths | `configs/experiments/*.yaml` |
+| Change algorithm | `src/qwen3_tts_ft/{data,train,eval,serve}/` |
+| Add wavs or JSONL | `Dataset-Cantonese-Training/` |
 
-### Hardware (Updated for LoRA)
+`scripts/run.sh` only calls:
 
-| Method                  | GPU VRAM Required     | Recommended Model     | Speed     |
-|-------------------------|-----------------------|-----------------------|-----------|
-| **LoRA (Recommended)** | **8–12 GB**          | 0.6B-Base            | Fast     |
-| Full Fine-Tuning       | 16–24+ GB            | 0.6B or 1.7B         | Slower   |
+```text
+python -m qwen3_tts_ft.data.cluster
+python -m qwen3_tts_ft.data.prepare
+python -m qwen3_tts_ft.train
+python -m qwen3_tts_ft.eval
+python -m qwen3_tts_ft.serve
+```
 
-- NVIDIA GPU with CUDA 12.x
-- ~25 GB+ free disk space
+No Python DAG. The same `-m` commands can later be Kubeflow / Kubernetes container commands.
 
-### Software
+### Function groups (`src/qwen3_tts_ft/`)
 
-- Python 3.11 or 3.12
+| Package | Responsibility |
+|---|---|
+| `data/` | JSONL I/O, 5–30s filter, speaker clustering, `audio_codes`, train/eval split, `TTSDataset` |
+| `train/` | Accelerate loop, LoRA wrap/merge, single- or multi-speaker export |
+| `eval/` | Whisper ASR, mixed Canto–English WER/CER, ECAPA similarity, UTMOS |
+| `serve/` | Model cache, Gradio UI, CLI clone |
+| `tracking/` | MLflow experiment / metrics / artifacts |
+| `config.py` | Merge `default.yaml` + experiment YAML + CLI flags |
+
+---
+
+## 2. Requirements
+
+| Method | GPU VRAM | Model | Notes |
+|---|---|---|---|
+| **LoRA (recommended)** | **8–12 GB** | 0.6B-Base | Start here |
+| Full fine-tune | 16–24+ GB | 0.6B or 1.7B | Lower LR |
+
+- NVIDIA GPU, CUDA 12.x
+- Python **3.11 or 3.12**
 - FFmpeg
-- `pip install -r requirements.txt`
+- ~25 GB free disk
 
-**Install Flash Attention-2 (highly recommended):**
+---
+
+## 3. Step-by-step (single-speaker LoRA)
+
+This is the default path. Use it the first time.
+
+### Step 1 — Clone
+
+```bash
+git clone https://github.com/johnsonhk88/qwen3-tts-hk-cantonese-finetune.git
+cd qwen3-tts-hk-cantonese-finetune
+```
+
+### Step 2 — Install
+
+```bash
+sudo apt update && sudo apt install -y ffmpeg
+# no sudo: put a static ffmpeg/ffprobe on PATH or in "$VIRTUAL_ENV/bin/"
+
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+pip install -e .
+pip install -r requirements.txt
+```
+
+Optional Flash Attention-2 (Ampere or newer GPU):
 
 ```bash
 ./flash-attent-install.sh
 ```
 
-### 🚀 Quick Start
-1. Clone Repository
-```Bash
-git clone https://github.com/johnsonhk88/qwen3-tts-hk-cantonese-finetune.git
-cd qwen3-tts-hk-cantonese-finetune
-```
+Then train with `--attn_implementation flash_attention_2`, or set `train.attn_implementation` in YAML.
 
-### 2. Install Dependencies
+Sanity check (CPU, no GPU):
+
 ```bash
-# System FFmpeg (required by pydub for mp3 and other compressed formats)
-sudo apt update && sudo apt install -y ffmpeg
-# If sudo is unavailable, install a static binary into your venv instead:
-#   curl -L -o /tmp/ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
-#   tar -xJf /tmp/ffmpeg.tar.xz -C /tmp
-#   cp /tmp/ffmpeg-*-amd64-static/ffmpeg /tmp/ffmpeg-*-amd64-static/ffprobe "$VIRTUAL_ENV/bin/"
-
-pip install -r requirements.txt
+python -m unittest discover -s tests -v
 ```
 
-### 3. Download Base Models
+### Step 3 — Download base models
 
-All scripts run from inside `Dataset-Cantonese-Training/`, so download the models there:
+Configs look for these folders under `Dataset-Cantonese-Training/`:
 
 ```bash
 cd Dataset-Cantonese-Training
 
-# Recommended: Start with 0.6B (faster training)
 huggingface-cli download Qwen/Qwen3-TTS-12Hz-0.6B-Base --local-dir Qwen3-TTS-12Hz-0.6B-Base
-
-# Optional: larger model
-huggingface-cli download Qwen/Qwen3-TTS-12Hz-1.7B-Base --local-dir Qwen3-TTS-12Hz-1.7B-Base
-
-# Audio tokenizer (required for data preparation)
 huggingface-cli download Qwen/Qwen3-TTS-Tokenizer-12Hz --local-dir Qwen3-TTS-Tokenizer-12Hz
+
+# optional: larger TTS
+# huggingface-cli download Qwen/Qwen3-TTS-12Hz-1.7B-Base --local-dir Qwen3-TTS-12Hz-1.7B-Base
+
+# optional: only needed for Gradio voice-clone UI
+# huggingface-cli download Qwen/Qwen3-ASR-0.6B --local-dir Qwen3-ASR-0.6B
+
+cd ..
 ```
 
+### Step 4 — Prepare training data
 
+1. Put clean **mono WAV** clips in `Dataset-Cantonese-Training/audio/` (target **5–30 seconds**; prepare drops the rest).
+2. Write `Dataset-Cantonese-Training/train_raw.jsonl` (one JSON object per line).
 
-### 4. Prepare Dataset (Inside Dataset-Cantonese-Training/)
-```bash
-cd Dataset-Cantonese-Training
+Single-speaker: **same** `ref_audio` on every line.
 
-# Put your clean .wav files in audio/
-# Create train_raw.jsonl (see Dataset-Cantonese-Training/README.md)
+```jsonl
+{"audio":"audio/utt0001.wav","text":"喂，你食咗飯未呀？","ref_audio":"audio/ref.wav"}
+{"audio":"audio/utt0002.wav","text":"今晚想唔想去打邊爐？","ref_audio":"audio/ref.wav"}
 ```
 
-**Multi-speaker (recommended when you have many voices):** cluster first so every line gets `speaker_id` + speaker-matched `ref_audio`:
+Paths are relative to `Dataset-Cantonese-Training/` (`data.root`). JSONL field notes: `Dataset-Cantonese-Training/README.md`.
+
+3. Encode `audio_codes` and split train/eval:
 
 ```bash
-python cluster_speakers.py   # writes train_raw.jsonl with speaker_id
+./scripts/run.sh prepare --config configs/experiments/lora_single.yaml
 ```
 
-Then extract codes / split:
+Writes:
+
+- `Dataset-Cantonese-Training/train_prepared.jsonl`
+- `Dataset-Cantonese-Training/eval_prepared.jsonl`
+- `Dataset-Cantonese-Training/train_prepared_audio_lengths.csv`
+
+If VRAM is tight during tokenize, pass `--batch_size 2` (YAML default is 4).
+
+### Step 5 — Start MLflow (recommended)
+
+Default URI is `http://localhost:5000`. In a **second terminal**:
 
 ```bash
-# Option A: single training file (adds audio_codes)
-python prepare_data.py \
-  --device cuda:0 \
-  --tokenizer_model_path Qwen3-TTS-Tokenizer-12Hz \
-  --input_jsonl train_raw.jsonl \
-  --output_jsonl train_with_codes.jsonl \
-  --min_duration 5.0 \
-  --max_duration 30.0
-
-# Option B: auto train/eval split (recommended)
-# Single-speaker: pass --speaker_name
-# Multi-speaker: omit --speaker_name if speaker_id is already on each line (prep keeps it)
-python prepare_train_evaluate_data.py \
-  --device cuda:0 \
-  --tokenizer_model_path Qwen3-TTS-Tokenizer-12Hz \
-  --input_jsonl train_raw.jsonl \
-  --output_train_jsonl train_prepared.jsonl \
-  --output_eval_jsonl eval_prepared.jsonl \
-  --eval_ratio 0.1 \
-  --speaker_name hk_cantonese_speaker \
-  --min_duration 5.0 \
-  --max_duration 30.0 \
-  --batch_size 2
+mlflow ui --port 5000
 ```
 
-`--batch_size` controls tokenizer encode batching (default **4**). Use `1`–`2` if VRAM is tight; higher values need more GPU memory.
+Open http://localhost:5000 . Override with `export MLFLOW_TRACKING_URI=…` or `run.tracking_uri` in YAML.
 
-Prep scripts **filter audio to 5–30 seconds** (Qwen3-TTS fine-tune requirement), add `duration_sec` on each kept sample, and write a CSV report (e.g. `train_prepared_audio_lengths.csv`) with columns: `index`, `audio`, `ref_audio`, `text`, `duration_sec`, `status`, `split`, `reason`.
-
-### Important for HK Cantonese:
-
-- Use clean **5–30 second** mono WAVs (clips outside this range are dropped during prep)
-- **Single-speaker:** one fixed reference audio for all samples
-- **Multi-speaker:** one fixed `ref_audio` **per** `speaker_id` (not one global ref)
-- Include natural HK slang and expressions
-- Multi-speaker training **requires** `speaker_id` on every `train_prepared.jsonl` line
-
-### 5. Fine-Tuning
-
-| Path | Script | Needs |
-|------|--------|--------|
-| Single-speaker LoRA | `sft_12hz_lora_mlflow.py` | `--speaker_name` |
-| Single-speaker full FT | `sft_12hz_mlflow.py` | `--speaker_name` |
-| **Multi-speaker LoRA** | `sft_12hz_lora_mlflow_multi_speaker.py` | `speaker_id` in JSONL (no `--speaker_name`) |
-
-#### Option A: Single-speaker LoRA (Recommended for 8–12 GB GPUs)
+### Step 6 — Train
 
 ```bash
-# Run from inside Dataset-Cantonese-Training/
-python sft_12hz_lora_mlflow.py \
-  --init_model_path ./Qwen3-TTS-12Hz-0.6B-Base \
-  --output_model_path ./output_hk_cantonese_lora \
-  --train_jsonl train_prepared.jsonl \
+./scripts/run.sh train --config configs/experiments/lora_single.yaml
+```
+
+Outputs under `Dataset-Cantonese-Training/output_hk_cantonese_lora/`:
+
+- `checkpoint-epoch-0`, `checkpoint-epoch-1`, …
+- **`final_merged/`** ← use this for inference
+
+Override YAML from the CLI (flags win):
+
+```bash
+./scripts/run.sh train --config configs/experiments/lora_single.yaml \
+  --num_epochs 1 \
   --batch_size 1 \
-  --lr 2e-4 \
-  --num_epochs 10 \
-  --speaker_name hk_cantonese_speaker \
-  --gradient_accumulation_steps 8 \
-  --lora_rank 8
-
-# Add --attn_implementation flash_attention_2 if you installed Flash Attention-2
-```
-
-For the exact 1-epoch safe-run setup used here, see `Dataset-Cantonese-Training/run-full-lora-1epoch-bs6.sh`.
-
-#### Option B: Full Fine-Tuning (16+ GB VRAM)
-
-```bash
-python sft_12hz_mlflow.py \
-  --init_model_path ./Qwen3-TTS-12Hz-0.6B-Base \
-  --output_model_path ./output_hk_cantonese \
-  --train_jsonl train_prepared.jsonl \
-  --batch_size 2 \
-  --lr 2e-6 \
-  --num_epochs 8 \
-  --speaker_name hk_cantonese_speaker \
-  --gradient_accumulation_steps 4
-```
-
-#### Option C: Multi-speaker LoRA
-
-Use `sft_12hz_lora_mlflow_multi_speaker.py` for multi-speaker datasets (e.g. after `cluster_speakers.py`). Every line in `train_prepared.jsonl` must include `speaker_id`.
-
-Export behavior:
-
-- One merged checkpoint with many speaker slots
-- Slots start at `3000`, ordered by sorted `speaker_id`
-- First `ref_audio` per speaker is injected into `codec_embedding`
-- `config.json` → `talker_config.spk_id` so `get_supported_speakers()` lists all ids
-
-```bash
-python sft_12hz_lora_mlflow_multi_speaker.py \
-  --init_model_path ./Qwen3-TTS-12Hz-0.6B-Base \
-  --output_model_path ./output_hk_cantonese_multi_lora \
-  --train_jsonl train_prepared.jsonl \
-  --batch_size 1 \
-  --lr 2e-4 \
-  --num_epochs 10 \
-  --gradient_accumulation_steps 8 \
+  --gradient_accumulation_steps 6 \
   --lora_rank 8
 ```
 
-Quick check of slot-map helpers:
+Known 1-epoch recipe: `./scripts/run-full-lora-1epoch-bs6.sh`
+
+### Step 7 — Evaluate
 
 ```bash
-python test_multi_speaker_export.py
+./scripts/run.sh evaluate --config configs/experiments/lora_single.yaml
 ```
 
-#### Start MLflow dashboard:
+Metrics vs `eval_prepared.jsonl`:
+
+- WER / CER (Cantonese + English code-mixing)
+- Speaker similarity (ECAPA-TDNN)
+- Audio quality (UTMOS)
+
+Writes `results.csv`, `summary.json`, and `sample_XXX.wav` under  
+`Dataset-Cantonese-Training/evaluation_results_lora_single/`.
+
+Compare to the base model:
+
 ```bash
-mlflow ui
+./scripts/run.sh evaluate --config configs/experiments/lora_single.yaml \
+  --checkpoint_dir Dataset-Cantonese-Training/Qwen3-TTS-12Hz-0.6B-Base \
+  --output_dir Dataset-Cantonese-Training/evaluation_results_original
 ```
 
-### 6. Inference (works with LoRA & full checkpoints)
+### Step 8 — Inference (fine-tuned custom voice)
 
-Run from inside `Dataset-Cantonese-Training/`.
-
-**Single-speaker:**
+From the repo root, load **`final_merged`**:
 
 ```python
 import torch
@@ -220,10 +250,10 @@ import soundfile as sf
 from qwen_tts import Qwen3TTSModel
 
 model = Qwen3TTSModel.from_pretrained(
-    "./output_hk_cantonese_lora/final_merged",
+    "Dataset-Cantonese-Training/output_hk_cantonese_lora/final_merged",
     device_map="cuda:0",
     dtype=torch.bfloat16,
-    attn_implementation="sdpa",  # or "flash_attention_2"
+    attn_implementation="sdpa",
 )
 
 wavs, sr = model.generate_custom_voice(
@@ -233,139 +263,274 @@ wavs, sr = model.generate_custom_voice(
 sf.write("output_hk.wav", wavs[0], sr)
 ```
 
-**Multi-speaker** (pass any exported `speaker_id`):
+### Step 9 — Voice-clone UI (optional)
+
+Gradio clones **any reference recording** (ASR → TTS). Separate from `generate_custom_voice`.
+
+```bash
+./scripts/run.sh serve --config configs/experiments/lora_single.yaml --port 7860
+```
+
+Open http://localhost:7860 and pick a TTS path, for example:
+
+- `Dataset-Cantonese-Training/Qwen3-TTS-12Hz-0.6B-Base`
+- `Dataset-Cantonese-Training/output_hk_cantonese_lora/final_merged`
+
+Instruct / multi-line dialogue UI:
+
+```bash
+./scripts/run.sh serve --config configs/experiments/lora_single.yaml --mode app_adv
+```
+
+CLI (no UI):
+
+```bash
+./scripts/run.sh serve --mode clone \
+  --reference_audio /path/to/ref.wav \
+  --generate_text "喂，你食咗飯未呀？" \
+  --qwen3_tts_model Dataset-Cantonese-Training/Qwen3-TTS-12Hz-0.6B-Base \
+  --qwen3_asr_model Dataset-Cantonese-Training/Qwen3-ASR-0.6B \
+  --output_path cloned_voice.wav
+```
+
+### One-shot (steps 4 + 6 + 7)
+
+After models and `train_raw.jsonl` exist:
+
+```bash
+./scripts/run.sh all --config configs/experiments/lora_single.yaml
+```
+
+---
+
+## 4. Other recipes
+
+Same steps; change only the config (and data).
+
+### Multi-speaker LoRA
+
+Needs `speaker_id` on **every** JSONL line, and one `ref_audio` **per** speaker.
+
+```jsonl
+{"audio":"audio/40.wav","text":"喂，你食咗飯未呀？","ref_audio":"audio/40.wav","speaker_id":"spk_115"}
+{"audio":"audio/6858.wav","text":"今晚想唔想去打邊爐？","ref_audio":"audio/5612.wav","speaker_id":"spk_083"}
+```
+
+If wavs are numbered (`audio/0.wav`, `audio/1.wav`, …) and you have parquet `train-00000-of-00001.parquet` with a `sentence` column:
+
+```bash
+./scripts/run.sh cluster --config configs/experiments/lora_multi.yaml
+```
+
+That writes `train_raw.jsonl` with `speaker_id` + matched `ref_audio`. Then:
+
+```bash
+./scripts/run.sh prepare  --config configs/experiments/lora_multi.yaml
+./scripts/run.sh train    --config configs/experiments/lora_multi.yaml
+./scripts/run.sh evaluate --config configs/experiments/lora_multi.yaml
+```
+
+Export: one checkpoint, slots from `3000` in sorted `speaker_id` order, embeddings from each speaker’s first `ref_audio`.  
+Use `Dataset-Cantonese-Training/output_hk_cantonese_multi_lora/final_merged`.
 
 ```python
-import torch
-import soundfile as sf
-from qwen_tts import Qwen3TTSModel
-
-model = Qwen3TTSModel.from_pretrained(
-    "./output_hk_cantonese_multi_lora/final_merged",
-    device_map="cuda:0",
-    dtype=torch.bfloat16,
-    attn_implementation="sdpa",
-)
-
-print(sorted(model.get_supported_speakers()))  # e.g. spk_021, spk_083, ...
-
-wavs, sr = model.generate_custom_voice(
-    text="喂，你食咗飯未呀？今晚想唔想去打邊爐？",
-    speaker="spk_021",
-)
-sf.write("output_multi.wav", wavs[0], sr)
+print(sorted(model.get_supported_speakers()))  # e.g. spk_021, spk_083
+wavs, sr = model.generate_custom_voice(text="喂，你食咗飯未呀？", speaker="spk_021")
 ```
 
-## 7. Voice Clone Server (Web UI / API)
-```bash
-# Run from inside Dataset-Cantonese-Training/
-python voice_clone_server.py \
-  --model_path output_hk_cantonese_lora/checkpoint-epoch-9 \
-  --port 7860
-```
-### Open http://localhost:7860 
-
-## 8. Model Evaluation (New)
-#### Compare the original pre-trained model vs. your fine-tuned model using evaluate_qwen3_tts.py.
+### Full fine-tune (16+ GB)
 
 ```bash
-cd Dataset-Cantonese-Training
-
-# Evaluate original pre-trained model
-python evaluate_qwen3_tts.py \
-  --checkpoint_dir ./Qwen3-TTS-12Hz-0.6B-Base \
-  --test_jsonl eval_prepared.jsonl \
-  --speaker_name hk_cantonese_speaker \
-  --output_dir ./evaluation_results_original
-
-# Evaluate your fine-tuned model (LoRA or full)
-python evaluate_qwen3_tts.py \
-  --checkpoint_dir ./output_hk_cantonese_lora/checkpoint-epoch-9 \
-  --test_jsonl eval_prepared.jsonl \
-  --speaker_name hk_cantonese_speaker \
-  --output_dir ./evaluation_results_finetuned
-
+./scripts/run.sh prepare --config configs/experiments/full_ft.yaml
+./scripts/run.sh train   --config configs/experiments/full_ft.yaml
+./scripts/run.sh evaluate --config configs/experiments/full_ft.yaml
 ```
 
+Checkpoints: `Dataset-Cantonese-Training/output_hk_cantonese/checkpoint-epoch-*` (no `final_merged`).  
+Eval YAML points at `checkpoint-epoch-7` (last of 8 epochs).
 
-## What it computes:
-- Word Error Rate (WER) / Character Error Rate (CER) with Cantonese-English code-mixing support
-- Speaker similarity (ECAPA-TDNN)
-- Audio quality (UTMOS)
-- Saves per-sample results + summary JSON + generated audio
+---
 
+## 5. How to change settings
 
-## 📁 Project Structure (August 2026)
-```text
-qwen3-tts-hk-cantonese-finetune/
-├── Dataset-Cantonese-Training/         ← all scripts + data + models live here
-│   ├── cluster_speakers.py             ← speaker_id + matched ref_audio
-│   ├── prepare_data.py                 ← extract audio_codes (single file)
-│   ├── prepare_train_evaluate_data.py  ← extract codes + train/eval split
-│   ├── dataset.py                      ← TTSDataset + collate_fn
-│   ├── sft_12hz_lora_mlflow.py         ← single-speaker LoRA
-│   ├── sft_12hz_lora_mlflow_multi_speaker.py  ← multi-speaker LoRA (speaker_id)
-│   ├── test_multi_speaker_export.py    ← unit test for speaker slot helpers
-│   ├── sft_12hz_mlflow.py              ← full fine-tuning
-│   ├── evaluate_qwen3_tts.py           ← WER/CER, speaker sim, UTMOS
-│   ├── voice_clone_server.py           ← Gradio web UI / API
-│   ├── qwen3_voice_clone_cli.py        ← CLI inference
-│   ├── run-full-lora-1epoch-bs6.sh     ← safe 1-epoch single-speaker LoRA
-│   ├── train_raw.jsonl / train_prepared.jsonl / eval_prepared.jsonl
-│   ├── audio/                          ← training + reference wavs
-│   ├── Qwen3-TTS-12Hz-0.6B-Base/       ← downloaded base model
-│   ├── Qwen3-TTS-12Hz-1.7B-Base/
-│   ├── Qwen3-TTS-Tokenizer-12Hz/       ← downloaded audio tokenizer
-│   ├── output_hk_cantonese_lora/       ← single-speaker LoRA checkpoints
-│   ├── output_hk_cantonese_multi_lora/ ← multi-speaker LoRA checkpoints
-│   └── output/
-├── Qwen3-TTS/                          ← official upstream submodule
-├── flash-attent-install.sh
-├── requirements.txt
-└── readme.md
+Edit `configs/experiments/lora_single.yaml` (it overlays `configs/default.yaml`):
+
+```yaml
+train:
+  method: lora          # lora | full
+  lr: 2.0e-4
+  num_epochs: 10
+  batch_size: 1
+  gradient_accumulation_steps: 8
+  lora_rank: 8
 ```
 
+Or pass flags on `./scripts/run.sh train` — flags override YAML.
 
-## Recent Updates (August 2026)
+Useful ranges:
 
-- Aug 2026: Multi-speaker LoRA export (`sft_12hz_lora_mlflow_multi_speaker.py`), docs, and helper tests
-- Apr 07: Added LoRA support, Voice Clone Server, and Model Evaluation section
-- Mar 19: Fixed MLflow logging + dataset improvements
+- LoRA lr: `1e-4` – `3e-4`
+- Full FT lr: `2e-6` – `2e-5`
+- `batch_size`: 1–4
+- `num_epochs`: 3–10
 
-## Best Practices for HK Cantonese
+Omit `--config` and `run.sh` uses `configs/experiments/lora_single.yaml` (`CONFIG` env can change that).
 
-- Use clean 5–30 second mono WAVs from native speakers (prep drops out-of-range clips)
-- **Single-speaker:** one fixed reference audio for all samples
-- **Multi-speaker:** run `cluster_speakers.py`, keep one `ref_audio` per `speaker_id`, train with `sft_12hz_lora_mlflow_multi_speaker.py`
+---
+
+## 6. HK Cantonese notes
+
+- Native speakers, clean 5–30s mono WAVs, natural slang
+- Single-speaker: one fixed `ref_audio`
+- Multi-speaker: one `ref_audio` per `speaker_id`
 - Start with LoRA + 0.6B-Base
-- For multi-speaker inference, list speakers with `get_supported_speakers()` then pass a `speaker_id` string
+- Qwen3-TTS language for Cantonese is `chinese` (the UI maps “Cantonese” → `chinese`)
 
-Made for the Hong Kong Cantonese community ❤️
-Pull requests and pre-trained models welcome!
-## References
+---
 
-- Official Qwen3-TTS: https://github.com/QwenLM/Qwen3-TTS
-- License: MIT
+## 7. GPU monitoring (Prometheus + Grafana)
 
+Run this on the **Linux GPU machine** (not macOS). It does not change training code: NVML/DCGM read the driver while `prepare` / `train` / `evaluate` / `serve` run.
 
-#### ⚙️ Hyperparameter Recommendations
+### Start
 
-- batch_size: 1–4 (depending on VRAM)
-- lr (LoRA): 1e-4 – 3e-4 (LoRA needs a higher LR than full fine-tuning)
-- lr (full fine-tuning): 2e-6 – 2e-5 (keep it low to avoid divergence)
-- num_epochs: 3–10 (more data → fewer epochs)
-- Use smaller 0.6B-Base if VRAM-limited
+**Terminal A — exporter** (every ~2s: util %, VRAM, temp, power):
 
-#### Limitations
+```bash
+pip install -r monitoring/requirements.txt
+python monitoring/gpu_exporter.py          # http://localhost:9401/metrics
+```
 
-- Multi-speaker path requires `speaker_id` on every training line (use `cluster_speakers.py`)
-- Base model has strong Chinese support; fine-tuning adapts dialect/accent
+**Terminal B — Prometheus + Grafana:**
 
+```bash
+docker compose -f monitoring/docker-compose.yml up -d
+```
 
-#### License
-MIT License (or your choice)
+| UI | URL | Login |
+|---|---|---|
+| Grafana | http://localhost:3000 | `admin` / `admin` |
+| Prometheus | http://localhost:9090 | — |
+| NVML metrics | http://localhost:9401/metrics | — |
 
-#### Contributing
-Pull requests welcome! Add your HK Cantonese datasets, scripts, or pre-trained checkpoints (upload to Hugging Face).
+Grafana auto-loads **GPU → NVIDIA GPU (Qwen3-TTS train box)**. Watch VRAM during LoRA (8–12 GB cards) and SM util during `train`.
 
+Optional [DCGM](https://github.com/NVIDIA/dcgm-exporter) (NVIDIA Container Toolkit required):
 
+```bash
+docker compose -f monitoring/docker-compose.yml --profile dcgm up -d
+```
+
+Stop:
+
+```bash
+docker compose -f monitoring/docker-compose.yml down
+# Ctrl+C the gpu_exporter.py process
+```
+
+On Kubernetes later: DaemonSet DCGM + Prometheus `ServiceMonitor` + the same Grafana dashboard (see §8).
+
+---
+
+## 8. MLOps today vs full cluster MLOps
+
+This repo is **local MLOps**: one GPU box, YAML experiments, MLflow, stages as CLIs, GPU dashboards. The layout is so **Kubeflow / Kubernetes can reuse the same commands**. It is not a cluster yet.
+
+### What you have now (local MLOps)
+
+| Piece | How |
+|---|---|
+| Pipeline stages | `./scripts/run.sh` → `cluster` / `prepare` / `train` / `evaluate` / `serve` |
+| Config vs code | `configs/default.yaml` + `configs/experiments/*.yaml` |
+| Function groups | `src/qwen3_tts_ft/{data,train,eval,serve,tracking}` |
+| Experiment tracking | MLflow |
+| GPU hardware metrics | `monitoring/` Prometheus + Grafana |
+| Data vs code | `Dataset-Cantonese-Training/` is data only |
+| Reproducible entrypoints | `python -m qwen3_tts_ft.train --config …` |
+| CPU checks | `python -m unittest discover -s tests` |
+
+`scripts/run.sh` is a **local dispatcher**, not a cluster scheduler. There is no Python DAG (`pipeline.run`): Kubeflow Pipelines should own stage order on the cluster.
+
+### What is still missing for full MLOps
+
+| Gap | Why it matters |
+|---|---|
+| **Docker images** | K8s/Kubeflow run containers, not a laptop venv |
+| **`kfp/` pipeline** | Cluster DAG, retries, GPU request, PVC mounts |
+| **`k8s/` manifests** | MLflow Service, PVCs / MinIO, DCGM DaemonSet, Grafana |
+| **Model Registry + gates** | Do not promote a checkpoint if CER / speaker-sim / UTMOS fail |
+| **CI** | Lint + unit tests on every PR (not GPU training) |
+| **Remote artifact store** | Checkpoints and wavs on S3/MinIO/PVC |
+| **Data versioning (optional)** | DVC or object-store hashes for audio + JSONL |
+| **Production serving** | KServe or a Deployment from a Registry URI |
+
+Until those exist you can train, evaluate, and watch GPUs locally; you cannot submit the same job to a GPU node pool or auto-promote a model.
+
+### Next plan — full cluster MLOps
+
+Keep today’s CLIs. Do **not** rewrite `train/` for Kubernetes.
+
+```text
+./scripts/run.sh train --config configs/experiments/lora_single.yaml
+        ↓
+docker run … python -m qwen3_tts_ft.train --config /config/lora_single.yaml
+        ↓
+Kubeflow component (same command, GPU + PVC)
+```
+
+**Phase A — containerize**
+
+- `docker/Dockerfile.train` — prepare + train + evaluate (CUDA)
+- `docker/Dockerfile.serve` — Gradio / later KServe
+- Image command = `python -m qwen3_tts_ft.<stage>`
+
+**Phase B — cluster core**
+
+- MLflow as a Kubernetes Service (`MLFLOW_TRACKING_URI=http://mlflow:5000`)
+- PVCs or MinIO/S3 for audio, JSONL, checkpoints
+- GPU node pool
+- DCGM exporter DaemonSet + Prometheus + Grafana (same dashboard as `monitoring/`)
+
+**Phase C — Kubeflow Pipelines**
+
+- `kfp/pipeline.py`: `prepare` → `train` → `evaluate` → `register?`
+- Optional `cluster` when `speaker_mode: multi`
+
+**Phase D — registry, gates, serve**
+
+- Register only if YAML thresholds pass
+- MLflow Model Registry: Staging → Production
+- Serve from `models:/qwen3-tts-hk-cantonese/Staging`
+
+**Phase E — hygiene**
+
+- GitHub Actions: lint + `unittest` on PR (CPU only)
+- Optional Katib (LoRA rank / LR), optional DVC
+
+Target extras when that work lands:
+
+```text
+docker/Dockerfile.train
+docker/Dockerfile.serve
+kfp/pipeline.py
+k8s/mlflow.yaml
+k8s/pvc.yaml
+k8s/dcgm-exporter.yaml
+k8s/serve.yaml
+.github/workflows/ci.yml
+```
+
+---
+
+## 9. Tests, limits, license
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+- Multi-speaker train **fails** if any line lacks `speaker_id`
+- Base model is strong in Mandarin/Chinese; fine-tuning adapts HK Cantonese
+- Default MLflow URI needs `mlflow ui` (or change `run.tracking_uri`)
+
+MIT. Upstream: [Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS).  
+PRs and pre-trained HK Cantonese checkpoints welcome.

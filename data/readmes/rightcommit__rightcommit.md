@@ -22,7 +22,7 @@ English | [简体中文](README_zh-CN.md)
 </p>
 
 <p align="center">
-  Describe the job, get an editable workflow on a visual canvas, and run Claude Code, Codex and Pi through the tests, reviews and approvals you define. Ships with spec-driven workflows for Spec Kit. Self-hosted.
+  Describe the job, get an editable workflow on a visual canvas, and run Claude Code, Codex and Pi through the tests, reviews and approvals you define. Works with any method or framework. Self-hosted.
 </p>
 
 <p align="center">
@@ -50,9 +50,23 @@ English | [简体中文](README_zh-CN.md)
 
 ## What you can build
 
-- **Spec-driven development with Spec Kit or OpenSpec.** Turn a feature idea into a specification, plan and tasks, get them approved, then implement and verify the code against the spec with tests run on the server. See [Spec-driven development with rightcommit](SPEC-DRIVEN-DEVELOPMENT.md).
-- **GitHub issue triage.** Read an issue and the repository to draft requirements, acceptance criteria and a test plan.
-- **Confluence reporting.** Turn a page into a briefing that cites its source and lists risks, open questions and proposed tests.
+Start from more than 20 ready-made workflows, or describe a new one to the Project Manager.
+
+- **Any agentic setup.** Combine agents, reviews, gates and connections on a canvas. Run steps
+  in parallel, call other workflows, schedule runs, or publish a workflow over A2A.
+- **Your preferred \*-driven development.** Spec-driven, test-driven, behavior-driven or your own method:
+  each phase is a step, and a gate decides when the next one can start. Spec Kit is built in;
+  OpenSpec or any other framework installs with a setup command. See
+  [Spec-driven development](SPEC-DRIVEN-DEVELOPMENT.md).
+- **From tickets to tested code.** Turn GitHub, Jira or ServiceNow tickets into requirements,
+  specs and tests, then deliver features, changes and incident fixes with regression tests.
+- **Legacy code analysis.** Reconstruct behavior, rules and tests from the source, checked by a
+  second agent, as a baseline for new work.
+- **Security reviews.** Run scanners on the server, let an agent triage and fix the findings,
+  and block the commit until the scan is clean or a person accepts the risk.
+- **Release, review and IT service management.** Release notes and rollback plans, pull request
+  review dossiers, Confluence briefings, and ServiceNow ticket classification with a local
+  knowledge base.
 
 ## Quickstart
 
@@ -100,32 +114,11 @@ or see [how to contribute](CONTRIBUTING.md).
 ### AI agents say done. rightcommit proves it.
 
 - **Assign agents and tools.** Pick Claude Code, Codex or Pi for each agent step. Build the workflow on the canvas or edit a draft from Project Manager.
-- **Set quality gates.** Require closed tasks, run tests on the server and require fresh test results if files change. Add agent reviews and human approval before a local commit.
-- **Inspect the work.** See versions of tracked files with SHA-256 fingerprints and line-by-line diffs for supported text files. Route failed checks back for a limited number of retries.
+- **Set quality gates.** Require closed tasks, [run your project's tests on the server](guides/CONFIGURING_LOCAL_CI.md) and require fresh test results if files change. Add agent reviews and human approval before a local commit.
+- **Inspect every artifact.** Each step records the files it creates or changes, with versions, SHA-256 fingerprints and line-by-line diffs for supported text files. Filter, compare and download them from the run view. Route failed checks back for a limited number of retries.
+- **Restart from any step.** Continue a stopped run from the node you choose. Earlier results, files and agent sessions are kept, so only that node and the ones after it run again, and you don't pay twice for work already done. You can also edit the workflow and continue in the same workspace.
 - **Choose when to intervene.** Run in interactive, assisted or unattended mode. Pause for human decisions and resume from the saved state.
 - **Track usage and costs.** FinOps shows recorded tokens and available costs by step, run, workflow, agent and model. It shows reported costs and estimates separately.
-
-### Tests on the server
-
-The **Local CI** step (a Connection node with provider **Local Git / CI** and operation
-**test**) runs your project's tests in the run workspace. Set **Test command** on the node, or
-leave it empty to detect it from the files in the workspace root, in this order:
-
-| File | Command |
-|---|---|
-| `Cargo.toml` | `cargo test` |
-| `package.json` | `npm test` |
-| `pyproject.toml`, `pytest.ini` or `setup.py` | `python3 -m pytest` |
-| `go.mod` | `go test ./...` |
-| `pom.xml` | `mvn -q test` |
-| `build.gradle` or `build.gradle.kts` | `gradle test` |
-| `Makefile` with a `test` target | `make test` |
-
-The command runs without a shell, so pipes, redirects and `&&` don't work: put several steps
-in a script in your repository and call it. The Activity Log shows the command and whether it
-was set on the node or detected. The tool must be installed where rightcommit runs: the Docker
-image includes Rust, Node.js with npm, Python 3 and make, and the
-[Docker install guide](INSTALL.md#tools-for-your-projects-tests) explains how to add others.
 
 ## Connections
 
@@ -186,14 +179,14 @@ provider authorization and credential scope still apply.
 
 | Document | What it covers |
 |---|---|
-| [SPEC-DRIVEN-DEVELOPMENT.md](SPEC-DRIVEN-DEVELOPMENT.md) | Run spec-driven development with Spec Kit or OpenSpec: a worked example and the SDD workflow templates |
+| [SPEC-DRIVEN-DEVELOPMENT.md](SPEC-DRIVEN-DEVELOPMENT.md) | Run spec-driven development with Spec Kit, OpenSpec or any other framework: a worked example and the SDD workflow templates |
 | [CHANGELOG.md](CHANGELOG.md) | What changed in each version |
 | [ADD_A_SKILL.md](ADD_A_SKILL.md) | Give a skill to Claude Code, Codex and Pi in one step |
 | [ADD-PI-PACKAGES.md](ADD-PI-PACKAGES.md) | Add packages from pi.dev to the Pi agent |
 | [ADD-A-FRAMEWORK.md](ADD-A-FRAMEWORK.md) | Use Spec Kit, OpenSpec or another framework with your own project |
 | [ADD-OPENSPEC.md](ADD-OPENSPEC.md) | Use OpenSpec in your workflows |
 | [UPDATE-PI-DEFAULT-PACKAGES.md](UPDATE-PI-DEFAULT-PACKAGES.md) | Update the Pi tools rightcommit ships (maintainers) |
-| [CONFIGURATION GUIDES](guides/README.md) | Configure access and run workflow examples for ServiceNow (ITSM, catalog Requests and Spec Kit), Atlassian (Jira, Bitbucket and Confluence), and GitHub (issues and CI) |
+| [CONFIGURATION GUIDES](guides/README.md) | Configure access and run workflow examples for ServiceNow (ITSM, catalog Requests and Spec Kit), Atlassian (Jira, Bitbucket and Confluence), GitHub (issues and CI) and Local CI tests |
 
 ## License
 
@@ -224,6 +217,7 @@ Questions and feedback: [hello@rightcommit.com](mailto:hello@rightcommit.com).
 
 <a href="https://github.com/Shards-inc"><img src="https://avatars.githubusercontent.com/u/226203219?v=4&amp;s=96" alt="Shards-inc" width="48" height="48"></a>
 <a href="https://github.com/dannyward630"><img src="https://avatars.githubusercontent.com/u/71604164?v=4&amp;s=96" alt="dannyward630" width="48" height="48"></a>
+<a href="https://github.com/Golden007-prog"><img src="https://avatars.githubusercontent.com/u/140976895?v=4&amp;s=96" alt="Golden007-prog" width="48" height="48"></a>
 
 ---
 

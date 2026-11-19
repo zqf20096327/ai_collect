@@ -1,32 +1,37 @@
-<div align="center">
+<h1 align="center"><img alt="Pendant logo" src="https://pendant.sh/readme-logo.png" width="48" height="54" align="absmiddle"> Pendant</h1>
 
-# Pendant
+<h3 align="center">A modern, lightweight workbench for the Pi coding agent.</h3>
 
-<picture>
-  <img alt="Pendant logo" src="https://pendant.sh/icon-bg.png" width="112" height="112">
-</picture>
+<p align="center">Pendant brings the <a href="https://pi.dev">Pi</a> coding agent to a focused workspace, with chat, sessions, files, and editor tools in one place.</p>
 
-### The Pi coding agent, built into VS Code.
+<p align="center">It runs Pi directly and uses your existing configuration, extensions, skills, prompts, and models.</p>
 
-[Visit pendant.sh](https://pendant.sh)
+<p align="center">
+<br>
+<img alt="Pendant Desktop app" src="https://pendant.sh/hero-screenshot-dark.webp" width="100%">
+</p>
 
-</div>
+<p align="center">
+<br>
+<a href="https://pendant.sh">Visit pendant.sh</a>
+</p>
 
-Pendant brings Pi into VS Code as a focused, lightweight sidebar and editor tabs. It uses Pi directly, loads your configuration, extensions, skills and prompts, and supports every model available in your setup. Around it come modern touches: image attachments, Mermaid diagrams and other rich output, a focused view, and more.
+<p align="center">
+  Also available for <a href="https://marketplace.visualstudio.com/items?itemName=cdervis.vscode-pi">VS Code</a> and on <a href="https://open-vsx.org/extension/cdervis/vscode-pi">Open VSX</a>.
+</p>
 
-<div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: light)" srcset="https://pendant.sh/readme-cover-light.webp">
-    <source media="(prefers-color-scheme: dark)" srcset="https://pendant.sh/readme-cover-dark.webp">
-    <img alt="Pendant in VS Code: the session rail, a finished agent run and its edit in the editor" src="https://pendant.sh/readme-cover-dark.webp">
-  </picture>
-</div>
+## Features
 
-## Why Pendant?
+- **Pi built in.** Pi is built into Pendant. No separate Pi or Node installation is required.
+- **Editor context.** Attach files, selections, and diagnostics without copy-paste.
+- **Every edit visible.** Edits show up as diffs in the file as they happen.
+- **Code navigation.** Go to definition, find references and browse symbols in common languages, through your language servers.
+- **Extension interfaces.** Dialogs, widgets and custom views from Pi extensions render in the chat.
+- **Plans & TODOs.** Plans and outstanding work appear in the chat.
+- **Subagents.** Follow subagent runs step by step.
+- **Bring your own model.** Pendant doesn't include models, subscriptions or credits.
+- **Local voice.** Dictate with local voice input, powered by whisper.cpp. Models download automatically, or use your own.
+- **Works offline.** Runs offline with a local model.
+- **Local voice.** Dictate with local voice input, powered by whisper.cpp. Models download automatically, or use your own.
 
-- **Any model.** Use anything your Pi setup supports, from local models to hosted frontier models.
-- **Editor context.** Attach files, folders, selections, diagnostics, images, and Git state without copy-paste.
-- **Rich agent UI.** Follow streaming tools, diffs, plans, subagents, Mermaid diagrams, MathJax, extension widgets, and terminal interfaces in chat.
-- **Persistent sessions.** Pin, search, reorder, fork, steer, and queue conversations from the sidebar or editor tabs.
-- **Local voice and offline work.** Dictate on-device with `whisper.cpp`, or pair Pendant with a local model and work without a network connection.
-- **No lock-in.** Your Pi configuration stays authoritative, and Pendant adds no hosted proxy, telemetry, or remote crash reporting.
+Free, built for the Pi community.

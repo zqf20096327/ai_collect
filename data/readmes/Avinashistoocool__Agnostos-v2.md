@@ -1,5 +1,7 @@
 # Agnostos: AI research internship outreach
 
+![Agnostos — research outreach, done honestly](docs/assets/agnostos-banner.png)
+
 [![tests](https://github.com/Avinashistoocool/Agnostos-v2/actions/workflows/ci.yml/badge.svg)](https://github.com/Avinashistoocool/Agnostos-v2/actions/workflows/ci.yml)
 [![release](https://img.shields.io/github/v/release/Avinashistoocool/Agnostos-v2)](https://github.com/Avinashistoocool/Agnostos-v2/releases)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -24,54 +26,88 @@ Point it at your CV and a spreadsheet of professors. It reads your resume, ranks
 
 **Documentation:** [avinashistoocool.github.io/Agnostos-v2](https://avinashistoocool.github.io/Agnostos-v2/) · [Technical report (PDF)](docs/Agnostos_Technical_Report.pdf), which explains the architecture and every scoring rule (local matcher, discovery ranking, cost estimate, AI-tell score, address confidence, send windows); LaTeX source in [`docs/Agnostos_Technical_Report.tex`](docs/Agnostos_Technical_Report.tex).
 
+## Download
+
+**[⬇ Download the latest Windows installer](https://github.com/Avinashistoocool/Agnostos-v2/releases/latest)**. Open the release page and download `Agnostos-<version>-Windows-Setup.zip`, extract it, and run the setup `.exe`. The ZIP includes `README.md` and `USAGE.md` with install steps and sending policies ([Windows notes](packaging/windows/README.md), [usage](packaging/windows/USAGE.md)).
+
+**macOS:** the installer has to be built on a Mac. Run `./build-mac.sh` to produce a `.dmg`; see [packaging/macos/README.md](packaging/macos/README.md).
+
 ---
 
-## Windows desktop viewer (view/review only)
+## Native Windows desktop app (existing v2 workspace)
 
-This optional standalone app reads your **existing v2 workspace**. Select the
-repository folder on first launch; if started from this checkout it suggests
-the current folder. It remembers the folder in
-`%LOCALAPPDATA%\Agnostos-v2-Review\workspace.json` (only the path, not a copy
-of your workbook). The dashboard reads `output\professors.xlsx`, the
-Conversations tab displays the **last saved** `output\conversations.html`, and
-Reply drafts reads `output\reply_queue.json`. Refresh rereads local files;
-it never connects to IMAP or runs an outreach command.
+The standalone **PySide6/Qt widget application** includes **every public CLI command** under CLI
+tools: profile, models, run (list/scrape), discover, verify, recheck, send,
+resend, stats, check-replies, replies, conversations, archive-sent, legacy
+(also legacy-researchers), replace-failed, calendar-auth and tls-check. It
+invokes the **same v2 CLI code in an isolated subprocess**, not a separate
+v3 server/database. Select your existing repository folder on first launch;
+the current checkout is suggested when found. Only the chosen path is saved
+to `%LOCALAPPDATA%\Agnostos-v2-Review\workspace.json`.
 
-You can edit an unsent reply's body and explicitly approve or unapprove that
-individual draft. **Approval is not sending**, but an approved unsent draft
-can be sent later by your separately scheduled v2 CLI; inspect the recipient
-and text carefully. Sent replies are read-only. The CLI and viewer now share
-cross-process queue locks and atomically replace queue files. If a reply job is
-busy or the queue changed since you loaded it, the viewer rejects the save
-and asks you to reload; it never overwrites a newer send status. Already-running
-pre-upgrade live senders are also detected via their existing lock. A selected
-older checkout without the coordinated v2 CLI stays viewable but editing is
-disabled until its CLI is updated. No send, resend or restart controls exist
-in this app.
+The dashboard reads `output\professors.xlsx`, saved conversations display
+the text of `output\conversations.html` without running its embedded script, and reply review edits individual unsent bodies
+and approvals in `output\reply_queue.json`. The Setup tab reads `.env`
+without changing it. Your per-workspace UI overrides live in AppData;
+secrets are masked in the UI and encrypted using Windows DPAPI. The CLI
+subprocess receives these overrides, runs with the selected workspace as its
+working directory and writes its regular output there. Job logs and status
+live in AppData; after a restart an unfinished job is shown as detached or
+interrupted, never automatically rerun. The bundled subprocess revalidates
+each recorded command and its options before entering the CLI; arbitrary
+raw `--cli` flags are not accepted by the desktop executable.
 
-Windows needs Microsoft Edge WebView2 Runtime. Download the entire distribution
-and launch `Agnostos-v2-Review.exe` beside its `_internal` folder. To build
+**Live SMTP is off by default.** Each live GUI action requires selecting
+Live/Review, typing an exact command-specific confirmation, and answering
+the CLI's own visible `[Y/N]` prompt in Jobs. The GUI does not expose
+`--yes`, blanket approval, no-focus, allow-unverified, weekends, or send
+resend bypasses. It enforces a recipient-local window, focus/robots rules,
+weekday defaults, paced delays and a per-job daily cap of at most 40.
+Legacy live sending has additional CLI guards for verified addresses,
+focus, recipient-local weekdays/hours and a shared daily cap; the GUI still
+requires explicit typed confirmation and the CLI's [Y/N] prompt. Live
+jobs cannot be cancelled mid-delivery (to avoid an unrecorded send).
+Non-live jobs can be cancelled, but inspect the output if cancelled during
+a workbook write.
+
+An approved unsent reply can also be sent later by a separately scheduled v2
+CLI. Queue writes are atomic and coordinated with the CLI; stale or busy
+edits are rejected. The First-email drafts tab edits individual **unsent**
+workbook drafts using a revision check and atomic save, and never edits a
+sent row. If a CLI job is active or the workbook has changed, reload before
+retrying. A selected
+older checkout without coordinated v2 queue support remains viewable but
+cannot edit reply drafts.
+
+This is a native Windows window (no WebView2 or localhost HTTP server).
+Download the entire distribution and launch `Agnostos-v2-Desktop.exe` beside its `_internal` folder. To build
 your own ZIP from a Windows checkout with Python 3.13:
 
 ```powershell
 .\build-desktop-review.ps1 -Python "C:\Path\To\Python313\python.exe"
-.\dist\Agnostos-v2-Review\Agnostos-v2-Review.exe --health-check
-.\dist\Agnostos-v2-Review\Agnostos-v2-Review.exe
-python -m unittest discover -s tests -p desktop_review_test.py -v
+.\dist\Agnostos-v2-Desktop\Agnostos-v2-Desktop.exe --health-check
+.\dist\Agnostos-v2-Desktop\Agnostos-v2-Desktop.exe
+python tests\native_desktop_test.py
+python tests\full_desktop_contract_test.py
 .\tests\check_desktop_review_package.ps1
 ```
 
-Output: `dist\Agnostos-v2-Review.zip` (containing the executable folder).
-After a successful push to `main`, the **Windows desktop review** GitHub
-Actions run also offers this ZIP as a downloadable artifact (Actions →
-workflow run → Artifacts); extract the inner ZIP from the downloaded artifact.
+Output: `dist\Agnostos-v2-Desktop.zip` (containing the executable folder and
+headless Chromium for CLI directory scraping, *not* for the GUI).
+This full native build is currently **local only**. After GitHub access is
+restored and these changes are pushed to `main`, the **Native Windows desktop**
+GitHub Actions run can also offer this ZIP as a downloadable artifact (Actions
+→ workflow run → Artifacts); extract the inner ZIP from the downloaded artifact.
 Artifacts expire after 14 days and are not installer releases.
-The UI uses bundled CSS and Windows system fonts, so viewing works offline.
-The server listens on a random `127.0.0.1` port; private API requests require
-an in-memory desktop token. It is not designed for a public listener or
-untrusted local processes. The ZIP contains only the executable and allowlisted
-viewer assets/dependencies: no `.env`, mailbox keys, workbooks, conversation
-HTML, reply queue or other user data. The app creates **no new v3 database**.
+The native GUI uses Qt widgets and Windows system fonts, so viewing works offline;
+discovery, models, mail and Calendar authorization require internet.
+There is **no listening socket**. The ZIP contains only the executable,
+Qt, CLI code, public `sources.yaml` and dependencies: no `.env`,
+mailbox keys, workbooks, conversation HTML, reply queue or other user data.
+The ZIP includes [third-party license notices](docs/licenses/THIRD_PARTY_NOTICES.md)
+and the applicable Qt LGPL/GPL terms.
+The app creates **no new v3 database**. It only runs while the PC is on;
+existing scheduled CLI tasks remain independent of the GUI.
 
 ## Quick start
 
@@ -232,6 +268,8 @@ Builds a large, ranked list of professors without you naming a single university
 | `--top-universities N` | Only consider people at the region's N best universities, and favour higher-ranked ones (default `DISCOVER_TOP_UNIVERSITIES`, `0` = off) |
 | `--prestige-weight W` | With `--top-universities`: `0` = topic fit only, `1` = balanced (default), `3` = mostly prestige |
 | `--list-universities` | Print the region's top universities and exit |
+| `--funding-weight W` | Blend host funding likelihood into the ranking (`0` = off, `1` = equal to topic fit, default `FUNDING_WEIGHT`) |
+| `--include-companies` | Also search company and industry research labs (default `DISCOVER_INCLUDE_COMPANIES`) |
 
 **Specific universities anywhere (e.g. the Ivy League).** `--also-universities` takes any `;`-separated list and works without `--top-universities`. Use `--countries usa` (or the matching region) so papers from those campuses aren't filtered out. Combine it with a wider `FOCUS_KEYWORDS` when you want more fields than physics:
 
@@ -339,7 +377,29 @@ python -m outreach.cli send --live --top 10 --min-probability 60
 - `--top N` ranks the drafted rows by acceptance probability and mails the best N. This is usually what you want.
 - `--min-probability N` sets a quality floor instead of a count.
 - `--limit N` caps how many emails are actually sent in this run, applied after the `--top` ordering.
-- `DAILY_SEND_CAP` in `.env` is the default for `--limit`: a per-run cap on real sends (it does not count earlier runs that day).
+- `DAILY_SEND_CAP` in `.env` is the default for `--limit`. Cold sends (`send`, `resend`, `legacy`) are also limited by `COLD_DAILY_HARD_CAP` (default 40, configurable from 1 to 90). Invalid ceilings fail explicitly. Raising it does not bypass domain limits or increase the desktop UI's own limits.
+
+**Funding factor.** Every host also gets a 0-1 funding likelihood plus the most likely funded route, from `outreach/funding.py`. The inputs are:
+
+- known paid schemes, such as company research labs (Google/DeepMind, Microsoft Research, NVIDIA, IBM, Ai2...) and funded facilities or programmes (CERN, DESY, PSI, Max Planck, Summer@EPFL, ETH SSRF, OIST, KAUST VSRP, Caltech SURF...);
+- country routes for Indian undergraduates (Charpak for France, DAAD for Germany, TEEP for Taiwan...). The UK scores low;
+- any "no funding" reply, which sets the score to 0.
+
+`FUNDING_WEIGHT` (default 1, so topic fit and funding count equally; 0 turns it off; 2 makes funding count double) controls:
+
+- the order of `run` rankings (the relevance floor `--min-score` still applies to topic fit alone);
+- `discover` batch ranking (`--funding-weight`);
+- `legacy --find` ordering (h-index plus funding);
+- `send --top` ordering (probability + 20 × weight × funding).
+
+The workbooks gain `Funding Score` and `Funding Route` columns. Drafts may name the programme (for example "CERN Summer Student") but still never mention money.
+
+Company and individual-lab research:
+
+- `discover --include-companies` (or `DISCOVER_INCLUDE_COMPANIES=1`, the default) also searches researchers at company labs.
+- `legacy --find --companies --any-field --topics "machine learning; quantum computing"` finds senior researchers at company labs only.
+
+**Who is never cold-mailed.** `send`, `resend` and `legacy` skip, with a reason in the log: any address that bounced on either account (`Reply Status` starting with "bounced", bounce records in `send_log.csv`, `output/FAILURES.json`; reason `skipped: bounced before`); people and domains in `output/no_cold_email.json`; student, alumni and shared mailboxes (`@postgrad.`, `@studenti.`, `@g.harvard.edu`, `name.20@ucl.ac.uk`, `lehre-`, `pec`); addresses without the first initial plus surname; `suspect` addresses (unless `--allow-unverified`); drafts flagged `REJECTED DRAFT`; and any institution domain that already had `MAX_PER_DOMAIN_WEEK` (3) cold emails in the last 7 days.
 
 Rows already marked `sent` are skipped automatically, so an interrupted run is safe to resume. Dry runs never block a later real send.
 
@@ -360,6 +420,42 @@ schtasks /Create /TN AgnostosSend /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 12:30 `
 ```
 
 Each successful send also stores its `Message ID`, which `check-replies` uses to match answers.
+
+**Local Windows recovery setup.** This workstation also uses the tasks
+`Agnostos IITD sender` and `Agnostos Gmail legacy sender`, pointing to the
+local `output\run_iitd_loop.ps1` and `output\run_gmail_loop.ps1` scripts.
+They start at login and retry every 30 minutes if not already running. Each
+script performs one round and exits; Task Scheduler handles the next round
+instead of a long-lived sleeping console. Each script has a mutex to prevent
+duplicate instances, and writes start/end timestamps and its exit code to the log.
+The weekday launcher calls these same scripts; it must not launch identical
+Gmail resends. The Gmail loop sends only approved legacy/CERN letters.
+These are local operational files, not installed by cloning the repository.
+The PC must remain awake, online and signed in. All daily, domain and
+recipient-local window limits still apply: `MAX_PER_DOMAIN_WEEK=3` also
+limits `cern.ch` to three cold emails per rolling week, not three per group.
+
+**Deferred address verification.** The `send`, `resend` and `legacy --send`
+paths do not perform DNS probes or web searches. Unless explicitly overridden
+with `send --allow-unverified`, recipients without `Email Status = ok`, missing
+addresses and identity-check failures are skipped and stored once in
+`output\verification_queue.json`. They do not consume delivery slots; mailing
+continues with verified recipients. Legacy discovery/drafting and sending must
+be separate commands.
+
+Run the verification queue separately later:
+
+```powershell
+python -m outreach.cli verify --deferred --dry-run
+python -m outreach.cli verify --deferred --repair --apply --top 20
+```
+
+The preview performs no network requests or workbook writes. The second command
+checks queued addresses and updates their source workbook; a workbook currently
+used by a sender is postponed, not modified concurrently. Completed checks are
+not repeated unless they need review and `--repair` is specified. Changed or
+already-sent rows are not overwritten. If a legacy address changes, its approval
+is cleared so the new recipient can be reviewed. Verification never sends mail.
 
 ### `check-replies` — who answered
 
@@ -400,6 +496,41 @@ When a professor says they can't fund you (or can only pay part), `replies` does
 
 Without the setup, meeting requests still go out. Only the calendar check and the holds are skipped.
 
+### `program-reminders`: internship deadline reminders
+
+```bash
+python -m outreach.cli program-reminders [--dry-run] [--calendar] [--now YYYY-MM-DD] [--programs PATH]
+```
+
+This reads `output/programs/internship_programs.json` (CERN, EPFL, ITER, ...) and emails reminders only to your own addresses in `REMINDER_RECIPIENTS` (`.env`; blank = disabled, `--dry-run` still previews). Mail goes out from the personal Gmail account (`RESEND_SMTP_*`).
+
+- **Welcome digest.** The first run sends one digest listing every programme, sorted by deadline.
+- **Weekly digest.** After that, a digest goes out once per ISO week (normally Monday). It covers everything due in the next 60 days.
+- **Milestone reminders.** You get an email when applications open, 21 days before the deadline if `referees_needed > 0` ("ask referees now"), and 30/14/7/3/1 days before each deadline. Each email includes the documents checklist, the link and the tailored CV path. The CV is looked up in `output/programs/cvs/<id>.pdf` first, then in `PROGRAM_CV_DIR/CV_<id>.pdf` if `PROGRAM_CV_DIR` is set.
+- **Idempotency.** `output/programs/reminders_sent.json` records every (programme, milestone) pair. Each reminder is sent once. If runs were missed, you get only the most recent missed milestone; older ones are marked "superseded".
+- **Null deadlines.** Programmes with no deadline appear only in the digest.
+- **Phone notifications.** With `--calendar`, the command creates Google Calendar events: an all-day event on each deadline and a 09:00 event (in `REMINDER_TZ`, default `MEET_MY_TZ`) on each milestone day, all with popup and email reminders. The Calendar app on your phone then notifies you. Event ids are stored in `output/programs/calendar_events.json`, so changed events are updated, not duplicated. If the token in `output/gcal_token.json` has expired, run `python -m outreach.cli calendar-auth` again. Email still goes out in the meantime.
+- **Optional SMS.** Set `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and `TWILIO_FROM` (env or `.env`) plus `REMINDER_SMS_TO` to also text that number through Twilio's REST API. If they're not set, SMS is skipped silently.
+- **Daily run.** The Windows Scheduled Task "Agnostos program reminders" runs `output/run_program_reminders.ps1` every day at 09:00. Its log is `output/program_reminders.log`.
+
+Tests: `python tests/program_reminders_test.py`.
+
+### `coordinators`: one email per internship-programme office
+
+```bash
+python -m outreach.cli coordinators [--send] [--live] [--yes] [--only ID ...] [--local-window 9-17] [--wait] [--weekends] [--xlsx PATH]
+```
+
+Reads `output/programs/coordinator_outreach.xlsx` (sheet `Outreach`: id, programme, contact name, role, email, source_url, subject, body, attachment path, approved, sent_at, notes, country, message_id). The drafts and the `Skipped` sheet are built by `output/programs/make_coordinator_outreach.py`.
+
+- Only rows with `approved` = `yes` and an empty `sent_at` are considered. Without `--send` the command only lists them; `--send` builds every message (dry run); `--send --live` asks `[Y/N]` and sends.
+- Mail goes out from the main account (`SMTP_*`). Each message carries only the CV in its row's `attachment path` (the `ATTACHMENTS` setting is ignored); a missing file skips the row. The body already has its sign-off, so no extra signature is added.
+- Rows are sent on weekdays between 9:00 and 17:00 in the office's local time (`country` column). Outside that window a row is left for a later run, or held with `--wait`. `--local-window any` turns this off.
+- The self-funding guard (`CAN_SELF_FUND`) blocks any body that offers to pay one's own way.
+- After each real send, `sent_at` and `message_id` are written back, so a row is never mailed twice.
+
+Tests: `python tests/coordinators_test.py`.
+
 ### Reading every conversation
 
 Mail sent over SMTP doesn't appear in your mail app's **Sent** folder, so a professor's answer shows up without the email it answers. Two fixes:
@@ -421,11 +552,21 @@ python -m outreach.cli legacy --send                      # dry run
 python -m outreach.cli legacy --send --live               # send approved letters from RESEND_SMTP_* (your Gmail)
 ```
 
-`legacy` finds high-impact, still-active researchers in your topics (`--topics`, worldwide by default, `--min-h 60`), plus anyone you name with `--include`. It keeps only physicists and fetches their own small-team papers, so a letter never credits them with a 3,000-author collaboration paper. Addresses come from the same strict finder as `verify`, and an address at an unrelated institution or a non-academic domain is rejected. Public figures with no published address are listed with a note to use their official contact page.
+`legacy` finds high-impact, still-active researchers in your topics (`--topics`, worldwide by default, `--min-h 60`), plus anyone you name with `--include`. It keeps only physicists (pass `--any-field` to keep robotics/ML/interpretability people too, and `--match REGEX` to require a topic match) and fetches their own small-team papers, so a letter never credits them with a 3,000-author collaboration paper. Anyone already in `legacy.xlsx` or already mailed (`professors.xlsx` / `send_log.csv`) is skipped. Addresses come from the same strict finder as `verify`, and an address at an unrelated institution or a non-academic domain is rejected. Public figures with no published address are listed with a note to use their official contact page.
+
+Live legacy sends use `LEGACY_FOCUS_KEYWORDS` (falls back to `FOCUS_KEYWORDS`) as their focus gate, so approved non-physics letters aren't held back.
+
+**Funding and company labs.** `--find` ranks candidates by h-index plus host funding likelihood (`--funding-weight`, default `FUNDING_WEIGHT`). `legacy.xlsx` gains **Funding Score** and **Funding Route** columns. Rows that name a funded route (for example the CERN Summer Student programme) are sent first. `--companies` restricts the search to company research labs such as Google DeepMind, Microsoft Research and NVIDIA; pair it with `--any-field`:
+
+```bash
+python -m outreach.cli legacy --find --companies --any-field --topics "machine learning; quantum computing"
+```
 
 The letter is different from an internship request. It's a short, specific, humble note: one idea of theirs that shaped your thinking, one real project of yours, and a small ask, either a summer visit through a real route (CERN/DESY summer student programmes, DAAD WISE, Mitacs, Charpak, EPFL/ETH summer programmes, Caltech SURF, or their own group) or a pointer to someone who could help. It never invents how you found their work.
 
 Review `output/legacy.xlsx` and set **Approved = yes** for each letter you want to send. `--approve-all` covers only addresses the finder verified; addresses typed in by hand must be approved row by row. Sends are spaced 2-5 minutes apart, 10 per run (`--limit`).
+
+Letters attach nothing by default (cold first emails link `CV_URL` instead; set `COLD_ATTACH_CV=true` to attach the global `ATTACHMENTS`). To send specific files with one letter, fill that row's **Attachment** column with a semicolon-separated list of paths (for example a portfolio PDF and a programme-specific CV); `none` sends that letter without attachments. A row whose listed file is missing is held, not sent.
 
 ### `resend` — re-deliver the original email from a second account
 
@@ -546,6 +687,8 @@ Every setting lives in `.env` (see `.env.example`, which is split into a require
 | `LLM_PROVIDER` | `groq` | `groq` (free) or `openai` |
 | `GROQ_API_KEY` / `OPENAI_API_KEY` | — | Whichever provider you chose |
 | `SMTP_HOST/USER/PASSWORD/FROM` | — | Required only for `send --live` |
+| `SMTP_AUTH` | `password` | `password` (SMTP_PASSWORD) or `xoauth2` (Gmail OAuth, see below) |
+| `GOOGLE_OAUTH_TOKEN_FILE` | — | Token JSON written by the app's "connect Gmail"; used when `SMTP_AUTH=xoauth2` |
 | `OPENAI_BASE_URL` | — | Optional: Azure/OpenRouter/proxy endpoint |
 | `DRAFT_MODEL` | provider default | Leave blank unless you have a preference |
 | `SCORE_MODEL` | provider default | |
@@ -556,7 +699,16 @@ Every setting lives in `.env` (see `.env.example`, which is split into a require
 | `MIN_LOCAL_SCORE` | `0.25` | Local filter threshold |
 | `HUMANIZE_REWRITE` | `true` | Paid rewrite pass for stubborn drafts |
 | `HUMANIZE_THRESHOLD` | `10` | AI-tell score that triggers a rewrite |
-| `ATTACHMENTS` | — | Semicolon-separated; CV, transcript |
+| `ATTACHMENTS` | — | Semicolon-separated; CV, transcript. Attached to replies that say so; cold first emails only with `COLD_ATTACH_CV=true` |
+| `COLD_ATTACH_CV` | `false` | Attach `ATTACHMENTS` to cold first emails (send/resend/legacy) |
+| `CV_URL` | `https://avinashistoocool.github.io/` | CV link quoted in first emails and added to the signature when nothing is attached |
+| `MAX_PER_DOMAIN_WEEK` | `3` | Max cold first emails per institution domain per rolling 7 days (from `send_log.csv`). Raise it (e.g. `40`) to mail many people at one large institution such as CERN or Oxford |
+| `COLD_DAILY_HARD_CAP` | `40` | Code ceiling on cold first emails per day (1-90) |
+| `FUNDING_WEIGHT` | `1.0` | How much host funding likelihood counts against topic fit in ranking (`0` = off, `2` = double) |
+| `DISCOVER_INCLUDE_COMPANIES` | `true` | `discover` also searches company and industry research labs |
+| `NAME_MATCH_STRICT` | `true` | Cold sends need first initial + surname in the address |
+| `NO_COLD_EMAIL_FILE` | `output/no_cold_email.json` | People/domains that never host ad-hoc interns; skipped at send time |
+| `CONFIRMED_FACTS_FILE` | `output/confirmed_facts.md` | Facts and numbers the drafting prompt may quote; other numbers are stripped |
 | `OPENALEX_API_KEY` | — | Free; avoids the shared per-IP rate limit |
 | `DISCOVER_COUNT` / `DISCOVER_BATCHES` | `1000` / `4` | `discover` headcount and batch split |
 | `DISCOVER_QUERIES` | — | `;`-separated topics (default: resume interests) |
@@ -566,12 +718,26 @@ Every setting lives in `.env` (see `.env.example`, which is split into a require
 | `DISCOVER_PRESTIGE_WEIGHT` | `1.0` | How much university rank counts against topic fit |
 | `VERIFY_WORKERS` | `4` | Parallel email lookups |
 | `SEND_DELAY_MIN/MAX` | `90`/`240` | Seconds between emails |
-| `DAILY_SEND_CAP` | `25` | Stay under provider limits |
+| `DAILY_SEND_CAP` | `25` | Stay under provider limits. Cold first emails are also clamped at `COLD_DAILY_HARD_CAP` |
 | `SEND_LOCAL_WINDOW` | — | Recipient-local hours to send in, e.g. `9-11` |
 | `IMAP_HOST/PORT/USER/PASSWORD` | from SMTP | Mailbox for `check-replies` |
 | `IMAP_FOLDERS` | `INBOX;SPAM;Junk;Junk Email` | Folders to scan for replies |
-| `SEND_MIN_PROBABILITY` | `0` | Standing quality floor |
+| `SEND_MIN_PROBABILITY` / `COLD_MIN_PROBABILITY` | `40` / `40` | Standing quality floor; cold sends never go below `COLD_MIN_PROBABILITY` unless `--min-probability` is given |
 | `RESPECT_ROBOTS` | `true` | Mode A |
+
+### Gmail via OAuth (no app password)
+
+The desktop app's **Sign in with Google + connect Gmail** stores a refresh token; the CLI then sends and reads mail with SASL `XOAUTH2` instead of a password:
+
+```
+SMTP_AUTH=xoauth2
+GOOGLE_OAUTH_TOKEN_FILE=C:\path\to\gmail_token.json
+SMTP_HOST=smtp.gmail.com
+SMTP_USER=you@gmail.com
+SMTP_FROM=you@gmail.com
+```
+
+The token file is JSON: `{"client_id": "...", "client_secret": "...", "refresh_token": "...", "token_uri": "https://oauth2.googleapis.com/token"}` (`token_uri` optional). Access tokens are refreshed automatically and cached in memory until a minute before they expire. SMTP, `check-replies`/`replies` (IMAP) and `tls-check` all use it; `SMTP_PASSWORD`/`IMAP_PASSWORD` are ignored. If Google reports `invalid_grant` (access revoked or expired), reconnect Gmail in the app. The `resend` account still uses `RESEND_SMTP_PASSWORD`.
 
 Missing files, missing keys, and placeholder values left over from `.env.example` are all detected up front and reported as a single clear `CONFIG:` message, rather than failing deep inside an API or SMTP call. Never commit `.env` — it is git-ignored.
 

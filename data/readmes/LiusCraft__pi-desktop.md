@@ -203,11 +203,14 @@ Renderer (src/renderer)            Main (src/main)                  Agent host (
 
 ### 会话与项目管理
 
+- **从 PR 开始**：在 Code 的新建会话页粘贴 GitHub.com 的 Open / Draft PR 链接（需在运行项目的电脑上配置 Git 和已登录的 `gh`）。已有匹配项目会复用，否则选择上级目录克隆；Pi 在独立 worktree 里接续原 PR，Diff 对比目标分支，更新时推回来源分支（含 fork）。重复打开同一链接可返回已有会话。不会同步另一台电脑的聊天或未推送修改。
+
 - **新建会话立刻进入对话页**：`sessions:create` 只写元数据就返回；git worktree 和 Agent（扩展、MCP）在第一次启动时后台创建，进度以 `setup` 事件推给界面，对话里显示“正在启动会话…”的步骤卡片，失败时带原因，再发一条消息会重试。打开已有会话时同样显示。
 - **归档 / 删除**（侧边栏会话右侧的「…」、顶栏菜单、More → Archived sessions）：归档只关闭 Agent，对话和 worktree 原样保留，可随时恢复；删除会清掉对话文件和 Pi Desktop 自己创建的 worktree（有未提交改动或未推送提交时先在确认框里说明；有只存在于该分支的提交时分支会保留）。用户自己建的 worktree、从 pi CLI 导入的会话文件永远不会被删。
 - **移除项目**（项目标题右侧「…」）：只是不再出现在 Pi Desktop 里，文件夹不动，它的会话被归档，可以在 Archived sessions 里找回。
 - **打开的文件夹本身是另一个项目的 worktree**：添加项目时会问“作为主仓库项目下的新会话”还是“独立项目”。前者直接在这个 worktree 里工作（不再新建 worktree，Diff 以它离开主分支的位置为基线），需要时一并添加主仓库为项目。
-- **建议任务**：Agent 发现当前任务之外的事时调用 `pidesk_suggest_task`，对话里出现卡片：**Start** 在同一项目里新开一个会话（侧边栏里挂在当前会话下面，你留在原处）、**Do it here** 作为一条消息发给当前会话、忽略；多条时有 **Start all**。选择会记在会话里，重开后不会再点一次。
+- **交给新会话**：可以直接说「把刚讨论的 CI 问题交给新会话，从 `origin/main` 开新 worktree」。Agent 用 `pidesk_create_session` 把相关讨论整理为新会话的首条任务，不复制聊天记录或未提交改动。默认沿用 New Session 页对目标项目的工作树和基准分支选择，不继承父会话的分支。
+- **建议任务**：Agent 发现额外工作时用 `pidesk_suggest_task` 提议，不会自行启动。**Start** 立即打开新会话的启动页，**Do it here** 发给当前会话，也可以忽略。**Start all** 打开第一条，其余在后台启动。子会话挂在来源会话下面，选择会记在卡片上。
 - **会话之间通信**：同一项目的会话可以互相 `pidesk_list_sessions` / `pidesk_read_session` / `pidesk_send_message`。消息以带发送者标记的用户消息送达，接收方显示为“来自会话 …”卡片，可点回发送方；对方正忙时排队到当前一轮结束后；已归档会话收不到；同一对会话 10 分钟内最多 8 条，防止互相回复停不下来。发送受权限模式约束（plan 模式拒绝，default 模式会先问）。
 
 ### 会话命名
@@ -264,10 +267,10 @@ Code 会话输入框上方的 PR 条报告当前分支的 PR：状态颜色、`+
 
 还没建 PR 时也可以说「提前开启 CI 自动修复」。AI 设置当前 Code 会话的开关，PR 出现后由同一个 watcher 接手，不会开启自动合并。AI 预开的事件按会话的常规权限执行；随时可以在 PR 条的 **CI** 面板关闭。
 
-- **Auto-fix CI & address comments**：CI 变红时自动让 agent 读失败日志、修好并推送；同一个提交只触发一次，不会循环。新评论和 `CHANGES_REQUESTED` 也会处理（同一轮的修复会顺带带上它们）。
+- **Auto-fix CI, resolve conflicts & address comments**：CI 失败时读日志并修复；PR 与目标分支有冲突时，即使 CI 没有失败，也会把最新目标分支合入当前分支，解决冲突、测试并推送。同一提交的 CI 失败和冲突各只触发一次；同时发现时，与新评审意见在同一轮处理。此开关不会合并 PR。
 - **Auto-merge when ready**：GitHub 确认可合并、CI 明确通过、当前提交没有排队或运行中的工作流，也没有待处理的评审意见时，自动让 agent 用 `gh pr merge --auto` 开启自动合并；每个 PR 一次。尚未收到检查结果（包括未配置 CI）不会触发自动合并。
 
-**监听发生在 host 里，不是让 agent 去盯着。** 每个打开着的 Code 会话在 agent host 里有一个 PR watcher：`gh pr view` 每 15 秒看一次（CI 已结束就退到 60 秒，`gh` 连续失败则退避到 5 分钟），把状态推给 PR 条，并在 CI 变红、有新的评论/评审、PR 变得可合并时**自己起一个 turn**。这类 turn 的消息不是用户发的，transcript 里渲染成一张事件卡片——`CI 失败 · PR #4`、新评论原文、失败检查列表，下面实时显示「Pi 正在处理…」/「等待你的确认」；展开还能看到交给 Pi 的说明。重开会话后卡片仍在。修复的 turn 在 `push` 后就结束，不会自己去 `gh pr checks --watch` 或轮询 CI：下一次结果仍由 host 的 watcher 看准了再起新 turn。
+**监听发生在 host 里，不是让 agent 去盯着。** 每个打开着的 Code 会话在 agent host 里有一个 PR watcher：`gh pr view` 每 15 秒看一次（CI 已结束就退到 60 秒，`gh` 连续失败则退避到 5 分钟），把状态推给 PR 条，并在 CI 变红、出现合并冲突、有新的评论/评审或 PR 变得可合并时**自己起一个 turn**。这类 turn 的消息不是用户发的，transcript 里渲染成一张事件卡片——`CI 失败 · PR #4`、新评论原文、失败检查列表，下面实时显示「Pi 正在处理…」/「等待你的确认」；展开还能看到交给 Pi 的说明。重开会话后卡片仍在。修复的 turn 在 `push` 后就结束，不会自己去 `gh pr checks --watch` 或轮询 CI：下一次结果仍由 host 的 watcher 看准了再起新 turn。
 
 会话正在跑的时候事件不会插队，等它空闲后的下一次查看再发，所以既不会打断你，也不会丢。因为那是真正的 turn，`git push` 这类高风险命令仍然会先问你（这就是卡片上「等待你的确认」的由来）。
 

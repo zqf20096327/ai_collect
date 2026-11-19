@@ -44,11 +44,11 @@ about your code costs a small fraction of the tokens it takes to read the source
 
 | Capability | What it does | Key tools |
 |---|---|---|
-| **Code intelligence** | Read the code map instead of opening files: what a file contains (`code_outline`), where a name is defined (`code_symbols`), one symbol's body or an exact line span (`code_read`), exact text search over code and text files, literal by default (`code_grep`), search by meaning over indexed chunks (`code_search`, needs `--features code-search`), and usages (`code_refs`): call sites of a name (matched by name), callers of one definition, implementors of a trait / interface / base class, importers of a module, and go-to-definition (scope- and import-aware once a `path` pins the definition: JS/TS via oxc, Python & Java via in-tree [stack-graphs](#how-it-works)). `find_files` locates or lists files, documents included. Layered over [300+ languages](#how-it-works). | `code_outline` · `code_symbols` · `code_read` · `code_grep` · `code_search` · `code_refs` · `find_files` |
+| **Code intelligence** | Read the code map instead of opening files: what a file contains (`code_outline`), where a name is defined (`code_symbols`), one symbol's body or an exact line span (`code_read`), exact text search over code and text files, literal by default (`code_grep`), search by meaning over indexed chunks (`code_search`, needs `--features code-search`), and usages (`code_refs`): call sites of a name (matched by name), callers of one definition, implementors of a trait / interface / base class, importers of a module, the files importing a file (`relation: "importers"` with `path`, up to `depth` hops), the import cycles (`relation: "cycles"`) over the resolved import graph, the HTTP calls reaching a route (a `METHOD /path` name, or a handler pinned by `path`), and go-to-definition (scope- and import-aware once a `path` pins the definition: JS/TS via oxc, Python & Java via in-tree [stack-graphs](#how-it-works)). `find_files` locates or lists files, documents included, or with `min_lines` the code files too long to read whole, largest first. `changed` scopes `code_grep`, `code_symbols`, `code_refs` and `find_files` to the files a revision or `A..B` touched. Layered over [300+ languages](#how-it-works). | `code_outline` · `code_symbols` · `code_read` · `code_grep` · `code_search` · `code_refs` · `find_files` |
 | **Git intelligence** | Ask what changed recently, which commits touched a file, which commit mentions a phrase (full-text over messages and authors at full branch depth), when a symbol's body changed, who last touched a line or a function, and how a file differs between revisions or from the working tree, as text hunks or as symbols added and removed. | `git_log` · `git_blame` · `git_diff` |
 | **Memory & documents** | A per-repo memory agents write to and search by meaning — clones of the same repo share it, unrelated repos stay separate — plus semantic search over PDFs, Office files, HTML, email, and images (OCR included in the published binaries, no extra setup; a source build needs the `documents-ocr` Cargo feature). | `memory_save` · `memory_search` · `docs_search` |
 | **Agent comms** | Threads opened by a post with a subject, open to the repository or invitation-only (`to`); a per-actor inbox whose reads mark messages read (`peek` does not); membership by principal, `as` for subagents; waits in the daemon (`wait_secs`). | `agent_post` · `agent_inbox` · `agent_threads` |
-| **Index** | Check index health and repo identity, and refresh the index after edits. Telemetry and cache maintenance are CLI commands (`basemind admin telemetry`, `basemind cache stats\|gc\|clear`). | `index_status` · `index_rescan` |
+| **Index** | Check index health and repo identity (including `large_files`: how many code files reach 2,000 lines, and the largest; and `most_imported`: the five files most others import), and refresh the index after edits. Telemetry and cache maintenance are CLI commands (`basemind admin telemetry`, `basemind cache stats\|gc\|clear`). | `index_status` · `index_rescan` |
 
 <!-- markdownlint-enable MD013 -->
 
@@ -453,14 +453,17 @@ LSP server.
 
 Resolution **refines, but never shrinks, a result set.** `code_refs` with a `path` (callers of the
 definition in that file) reports every call site whose callee is exactly that name — the same sound
-floor a `code_refs` call without `path` uses — and gives each hit it checked a `resolved` flag: `true`
-when resolution proved it binds to that definition (`resolved_total` counts them), `false` when it
-checked and could not, and no flag at all for a hit it did not check (`resolution` says why when that
-holds for the whole definition). Matching is on the whole identifier, so
+floor a `code_refs` call without `path` uses — and grades each hit with a `resolution`:
+`same_file` or `imported` when resolution proved it binds to that definition (`resolved_total` counts
+them), `elsewhere` when it binds to another one, and `name_only` for a hit nothing checked
+(`resolution_note` says why when that holds for the whole definition). Without `path` a hit is graded
+by what it binds to, and `external` when the index defines no symbol of the name. A row leaves out the
+page's `resolution_default`. Matching is on the whole identifier, so
 `open` no longer counts `open_store`; pass `match: "substring"` for the looser match. It deliberately
 does *not* return only the resolved subset: resolution cannot see through a module-object import
 (`from pkg import mod` then `mod.f()`) or an unresolvable path alias, so filtering to it would drop
-real callers and report the remainder as complete. Filter on `resolved` when you want precision; trust
+real callers and report the remainder as complete. Pass `resolution: "same_file,imported"` when you
+want precision; trust
 `total` when you need completeness.
 
 The code map is **code only**. Prose, data and config files — Markdown, reStructuredText, AsciiDoc,
@@ -708,6 +711,17 @@ instead of nudge.
 </details>
 
 <details>
+<summary><strong>How answers are written</strong></summary>
+
+Each tool's text answer is written in the form that measured fewest tokens on the value-gate
+corpora ([ADR-0053](docs/adr/0053-text-answers-encoded-per-tool.md)): `code_grep` rows under
+`# <path>` and `## <symbol>` headers, as `rg --heading` groups them; `code_outline`, `git_diff` and a
+`find_files` list as [TOON](https://toonformat.dev) tables; compact JSON for the rest. MCP
+`structuredContent` and the CLI's `--json` are JSON for every tool.
+
+</details>
+
+<details>
 <summary><strong>Measure it on your own repo</strong></summary>
 
 `basemind admin eval` runs a task file of lookups through the same code the MCP tools use, scores
@@ -948,6 +962,12 @@ preload = true
 # files (re)scanned after the change.
 precise_resolution = true
 
+[analysis]
+# Extra entry points of `basemind code deadcode` (same glob syntax as [scan] include: a bare name
+# such as "main.py" matches that name at any depth): files a tool, framework or loader runs by name
+# that no build manifest or language convention declares.
+entry_points = []
+
 [documents]
 enabled = true
 # Embed documents for semantic search (ON — embeddings pay off on real prose / OCR).
@@ -1060,6 +1080,7 @@ reach outside the process are gated on the operator's environment:
 | `[scan] follow_symlinks = true` | `BASEMIND_ALLOW_FOLLOW_SYMLINKS=1`; otherwise reset to `false` with a warning (a tracked link can point at `~/.ssh`). |
 | `[scan] floor_allow` (a credential entry: `.env`, `*.pem`, `id_rsa`, ...) | `BASEMIND_ALLOW_REPO_CREDENTIALS=1`; otherwise the entry is ignored with a warning and the secret stays excluded (a clone could otherwise un-exclude your untracked `.env` and have every agent query it). Entries for build artifacts (`build`, `vendor`) need no grant. |
 | `[scan] extra_roots` | `BASEMIND_ALLOW_EXTRA_ROOTS=1` (every workspace this process scans) or a list of absolute workspace roots separated by `:` (`;` on Windows), which grants only those workspaces and their descendants. A relative entry is ignored with a warning, as is any other non-truthy word (`on`). A daemon is one long-lived process serving many repositories, so prefer the list form there: the bare `1` also opens `extra_roots` for any workspace it serves later. Credential directories (`.ssh`, `.aws`, `.gnupg`, `/etc`) and filesystem roots are refused even with the grant. |
+| `[documents.dependencies] enabled = true` | Package roots inside the repository (`node_modules/`, `.venv/`, `vendor/`) need no grant. Roots outside it (the cargo registry under `CARGO_HOME`, the Go module cache under `GOMODCACHE` / `GOPATH`, a `VIRTUAL_ENV` elsewhere, or an in-tree root that resolves outside) are read only under `BASEMIND_ALLOW_DEPENDENCY_ROOTS`, in the same forms as `BASEMIND_ALLOW_EXTRA_ROOTS`; otherwise those packages are listed under `deps_unavailable` as `not_granted`. No setting in the file names a root, and a package that resolves out of its root through a symlink is refused even with the grant. |
 
 Grant variables accept `1`, `true` or `yes` (case-insensitive). They are read from the process
 environment; the env and CLI override layers are operator-supplied and never gated.
@@ -1187,17 +1208,22 @@ degrading to a truncated in-memory view.
 | Command | Purpose |
 |---|---|
 | `outline <path>` | A file's structure: symbols, 1-based lines, signatures, imports (`code_outline`). |
-| `symbols <name> [--kind]` | Find a definition by name, optionally filtered by kind (`code_symbols`). |
+| `symbols <name> [--kind --changed]` | Find a definition by name, optionally filtered by kind (`code_symbols`). |
 | `read <path> --symbol <name> [--kind]` / `read <path> --line <n> [--end-line <m>]` | One symbol's source body, or an inclusive line span (`code_read`; alias `expand`). |
-| `grep <pattern> [--regex --path --language --context]` | Text search; the pattern is literal unless `--regex`. `--path` is a substring of the repo-relative path (`code_grep`). |
+| `grep <pattern> [--regex --path --language --context N --changed]` | Text search; the pattern is literal unless `--regex`. `--path` is a substring of the repo-relative path; `--context N` (0-10) adds the N lines around each match (`code_grep`). |
 | `search <query> [--lane hybrid\|semantic\|keyword]` | Search code by meaning; returns pointers. Needs `--features code-search` (`code_search`; alias `semantic`). |
-| `refs <name> [--relation --path --line --column]` | Usages of a name: call sites by default, or `--relation implementations\|importers\|definition` (`code_refs`; alias `references`). |
+| `refs <name> [--relation --path --line --column --depth]` | Usages of a name: call sites by default, or `--relation implementations\|importers\|definition` (`code_refs`; alias `references`). `refs --relation importers --path <file> [--depth]` lists the files importing a file and `refs --relation cycles [--path]` the import cycles; neither takes a name. |
 | `callers <path> <name>` | Shorthand for `refs <name> --path <path>`: callers of one specific definition. |
 | `implementations <name>` | Shorthand for `refs <name> --relation implementations`. |
 | `dependents <module>` | Shorthand for `refs <module> --relation importers`. |
 | `definition <path> <line> <name> [--column]` | Shorthand for `refs <name> --relation definition`: the definition a reference binds to. |
-| `find [query] [--path-prefix --language]` / `files [--path-prefix --language]` | Locate a file by a fuzzy fragment of its name or path, or list indexed files (`find_files`). |
+| `find [query] [--path-prefix --language --min-lines --changed]` / `files [--path-prefix --language]` | Locate a file by a fuzzy fragment of its name or path, or list indexed files (`find_files`); `--min-lines N` lists code files of at least N lines, largest first, with line and byte counts. |
 | `chunk <path> [--chunk-id --byte-start]` | Fetch one code chunk's source body (CLI only). |
+| `impact <path\|symbol> [--depth]` / `impact --diff <rev\|A..B>` / `impact --changed` | Files that import a file, a symbol's defining files or a change's files, transitively through the file-level import graph, each with its depth and whether it is in a cycle (CLI only). |
+| `cycles [--path --max-size]` / `cycles --check <from> <to>` | Import cycles, smallest first, each with an import chain that closes it; or whether `from` importing `to` would close one. Type-only imports and Rust `mod` declarations count only with `--include-type-imports` / `--include-module-decls` (CLI only). |
+| `explain <symbol\|path\|path:line> [--sections --limit --depth --no-code --max-tokens]` | One briefing: a symbol's definition, short body, graded callers (to depth 3 over resolved edges), callees, importers and history, or a file's outline, imports, importers, calls in and out by file, hotspot signals, recent commits and owners; each cut section names the call that continues it (CLI only). |
+| `deadcode [--path --kind --tier --limit --fail-on-dead-code]` | Files no entry point reaches through the import graph, definitions whose name nothing else spells and imports that resolve to nothing, each with a confidence tier (`high`/`medium`/`low`) and its reason, plus a coverage note per language; `--fail-on-dead-code` exits 1 for CI on a `high` finding (or one at `--tier`), and on a report that judged nothing (CLI only). |
+| `migration check [name] [--fail-on-remaining --ranges]` | Remaining uses of the old forms named in `.basemind/migrations/<name>.toml`, per rule and file, with the share migrated and the progress across runs (history kept in the cache dir). `--fail-on-remaining` exits 1 for CI (CLI only). |
 
 **Git (`basemind git`)**
 
@@ -1210,6 +1236,8 @@ degrading to a truncated in-memory view.
 | `symbol-history <path> <name>` / `blame-symbol <path> <name> [--rev]` / `diff-outline <path> [--rev]` | Shorthands for `log --path --symbol`, `blame --symbol` and `diff --structural`. |
 | `churn [--window --top-k]` | The most frequently changed files (CLI only). |
 | `by-path <regex> [--window]` | Commits whose changed paths match a regex (CLI only). |
+| `hotspots [--since 90d --path --limit]` | Files with two or more of commits, authors, lines, symbols, longest function and importers in their top 10% (CLI only). |
+
 **Memory (`basemind memory`)**
 
 | Command | Purpose |
@@ -1273,8 +1301,10 @@ checkout's principal.
 | `scan [--staged \| --rev <REV>] [--no-git-history] [--rebuild-git-history]` | Full scan, or index the git index / one revision. Ctrl-C stops it cleanly. With a daemon running, a working-tree scan is forwarded to it; a flag it cannot apply (`--rebuild-git-history`, `--verify-shared-base`, a `--documents-*` / `--llm-*` override) is refused with exit 2, and `--staged` / `--rev` exit 3 while the daemon holds the workspace. A scan starts no daemon. |
 | `rescan [<path>…] [--no-git-history] [--rebuild-git-history]` | Update the given paths, or with none the whole tree. Routed through the daemon when one runs. |
 | `status` | Index health for this workspace: file counts, languages, scan age. |
+| `overview [--sections a,b] [--limit N]` | The repository's shape: languages with file and line counts, top-level directories, build manifests (`Cargo.toml`, `package.json`, `pyproject.toml`, `go.mod`, `pom.xml`, `build.gradle`) and the entry points they declare, the largest and most-imported files, HTTP routes, naming conventions per language, the latest commits. CLI only; answered by the daemon when one runs. |
 | `doctor` | Check root, config, index, grammars, pre-commit hook and daemon; exits 1 on a failed check. |
 | `completions <shell>` / `man` | Print a shell completion script (`bash`, `zsh`, `fish`, `elvish`, `powershell`) / the man page (roff) to stdout. |
+| `manual [topic]` | Print the offline manual (an index, or one topic: `code`, `resolution`, `git`, `documents`, `memory`, `agents`, `indexing`, `paging`, `setup`, `exit-codes`, `environment`, `troubleshooting`). Needs no index. |
 | `watch` | Keep the index fresh as files change (no server). |
 | `serve` | Stdio MCP entry point: ensures the daemon and relays to it (needs `--features comms`). The daemon keeps the index fresh by default. |
 | `daemon ensure` | Ensure the daemon and its HTTP transport are up and print the MCP URL (needs `--features comms`). |

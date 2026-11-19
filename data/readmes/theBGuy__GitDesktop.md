@@ -322,10 +322,14 @@ terminal or a CI log finds its commit even when it isn't loaded. Per-file
 history and line blame are reachable from any file list (History, pull
 requests, Compare) or the command palette, pinned at that commit or branch
 where it applies; each blame line's commit gets a hover-card preview and a
-click to jump to it in History. Commits are dated by when they were written
-(the author date), so a range you rebase or reword keeps its dates, and the
-commit detail names the committed date too when the two are a minute or more
-apart.
+click to jump to it in History. The file list beside a diff filters by path:
+on a commit's files, in Compare, on a pull request's Commits tab, on local
+pull requests and in an agent session's changes, type in the field above the
+list, or press `Ctrl`/`⌘`+`F` while the list or the diff has focus, or
+anywhere on the Compare tab while it lists files. Commits are dated by when
+they were written (the author date), so a range you rebase or reword keeps
+its dates, and the commit detail names the committed date too when the two
+are a minute or more apart.
 
 - **Interactive rebase** ⭐: an *Edit history* editor to reword, squash,
   fixup, drop, or reorder unpushed commits behind an atomic replay engine
@@ -1450,6 +1454,10 @@ review via its subscription login. The full list is under
   needs it (git, or the GitHub CLI) gets a warning naming the feature and
   the version it wants, with an Update link. It also shows a live readout
   of the window's current position, size, and display (with copy-coords).
+  **Re-check** runs the check again and has the app reload the data it had
+  cached, so a tool you just installed doesn't wait out each screen's own
+  refresh. On macOS and Linux it also forgets which CLIs your login shell
+  couldn't find, so GitDesktop looks for them afresh.
 - **Narrow windows and split-screen**: the window goes down to 640px wide
   at 100% zoom (the minimum grows with your interface zoom), so GitDesktop
   can sit beside your editor in a tiled layout. The sidebar narrows with
@@ -1588,20 +1596,4 @@ cargo test --manifest-path src-tauri/Cargo.toml   # Rust unit tests
 ## Contributing
 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for setup,
-the conventions we follow (Conventional Commits, Biome, a `changelog.d/`
-fragment for user-facing changes), and how to open a good PR. Please also
-read the [Code of Conduct](CODE_OF_CONDUCT.md). For questions, see
-[SUPPORT.md](.github/SUPPORT.md); to report a vulnerability, follow
-[SECURITY.md](SECURITY.md).
-
-## Sponsor
-
-GitDesktop is free and open source under Apache 2.0. If it earns a place in
-your daily workflow, you can support continued development:
-
-- **[GitHub Sponsors](https://github.com/sponsors/theBGuy)**
-- **[Buy Me a Coffee](https://buymeacoffee.com/theBGuy)**
-
-## Privacy
-
-GitDesktop never collects your code, file contents, or repository details
+the conventions we follow (Conventional Commits, Biome, a `changelog.d

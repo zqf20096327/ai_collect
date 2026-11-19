@@ -40,11 +40,6 @@ Designed for developers, writers, and power users, TxtAIEditor provides a fluid,
 *   **Auto-Completion & Snippets:** Intelligent auto-completion suggesting variables, keywords, and customizable snippets (such as Markdown tables, LaTeX matrices, HTML5 shells, C# notifier properties) that insert seamlessly via Enter or Tab.
 *   **Rich Markdown Toolbar:** Quick-apply styling (bold, italic, underline, list, color, tables) to selected text.
 
-### 💾 Auto-Save
-*   **Smart Background Auto-Save:** Automatically saves modified files within the active Git repository folder every 5 seconds.
-*   **Workspace-Aware:** By default, only triggers when a Git repository folder is opened in the editor.
-*   **Optional Non-Git Folders:** The Editor settings include an opt-in checkbox to allow Autosave in folders that are not Git repositories.
-
 ### 🔐 Encrypted Notes
 *   **Secure Note Compatibility:** Opens and saves `SECURE_NOTE_V1` encrypted note files compatible with the Simple Memo encryption format.
 *   **Password Prompt on Open:** Encrypted files ask for a password before the decrypted text is loaded into the editor.
@@ -63,6 +58,12 @@ Designed for developers, writers, and power users, TxtAIEditor provides a fluid,
 *   **Live Renderer:** View Markdown, HTML, Aozora or LaTeX (powered by KaTeX) in a split view or an external browser.
 *   **Inline Live Preview:** Renders Markdown elements (headers, lists, tables, code blocks, images) directly within the editor area. Non-active lines transition into their styled preview form, and automatically revert to raw source text when focused or edited for a seamless WYSIWYG-like experience.
 *   **Print & Save as PDF:** Print the rendered Markdown/HTML/LaTeX preview directly from the preview panel, or save it as a PDF via the system print dialog (e.g., Microsoft Print to PDF). Use the toolbar **Print** button or `Ctrl + P`.
+
+### 📈 Inline Charts & Function Graphs
+*   **Chart Code Fences:** Tag a fenced code block as `chart` for a simple YAML definition (`type`, `labels`, `series`, `title`, `legend`, `stacked`, `indexAxis`, `beginAtZero`), or as `advanced-chart` for a full Chart.js JSON configuration.
+*   **Supported Chart Types:** Bar, line, pie, doughnut, polar area, radar, bubble and scatter charts, with per-series colors and titles, stacking, horizontal bars, legends and axis options.
+*   **Function Graphs:** Plot mathematical expressions with `type: function` / `type: linear-function`, or by adding an `expression` to a line dataset. Curves are sampled over the `xMin`/`xMax`/`yMin`/`yMax` range, and multiple curves can share a single graph.
+*   **Rendered Inline Everywhere:** The chart block collapses into the rendered graph directly inside the editor canvas (and returns to raw source when edited), and the same graph also renders in the live preview panel, in the Agent chat tab, and in printed/PDF output. Charts repaint automatically when the theme changes.
 
 ### 🖼️ Integrated Media & Document Viewer
 *   **Unified Viewer Workflow:** Open and inspect images, office documents, audio, and video files directly from the Explorer or editor tabs alongside your project files.
@@ -108,6 +109,7 @@ Designed for developers, writers, and power users, TxtAIEditor provides a fluid,
 ### 🤖 AI Agent
 *   **Complex Workspace Tasks:** Executes multi-step workspace tasks using tools (file I/O, terminal execution, web search/fetch, and document text extraction).
 *   **Multisession Management:** Runs and manages parallel, fully isolated agent environments (workspace paths, settings, history, subagent, and background execution).
+*   **Agent Chat Tab:** Stream the live agent conversation into a dedicated editor tab with its own prompt composer, turn navigation, and inline Markdown, math, Mermaid and chart rendering.
 *   **Model Context Protocol (MCP) Support:** Dynamically connects HTTP or stdio MCP servers to expose custom tools to the agent, with built-in support for:
     *   **Browser Use & Computer Use Plugin:** Control the Windows default browser and interact with PC-level application windows using screen capture, clicks, and keyboard inputs.
     *   **ComfyUI Workflow Plugin:** Generate images directly from API JSON/parameters.
@@ -163,6 +165,7 @@ TxtAIEditor is designed for speed and productivity, packing standard IDE shortcu
 | `Ctrl + 1` | Toggle Left Panel |
 | `Ctrl + 2` | Toggle Right Panel |
 | `Ctrl + 3` | Expand Right Panel |
+| `Ctrl + 4` | Toggle Chat Tab |
 | `` Ctrl + ` `` | Toggle Terminal |
 | `Ctrl + Z` | Undo |
 | `Ctrl + Y` | Redo |
@@ -234,7 +237,7 @@ Copyright (c) 2026 **kirinonakar**. All rights reserved.
 
 ### Third-Party Licenses
 
-This software includes Mermaid, Pele, xterm.js, KaTeX, and HarfBuzz.
+This software includes Mermaid, Pele, xterm.js, KaTeX, Chart.js, and HarfBuzz.
 
 **Mermaid**  
 License: MIT License  
@@ -254,6 +257,11 @@ Copyright (c) 2012-2013, Christopher Jeffrey
 **KaTeX**  
 License: MIT License  
 Copyright (c) 2013-2020 Khan Academy and other contributors  
+
+**[Chart.js](https://www.chartjs.org)** (4.6.1)<br>
+License: MIT License<br>
+Copyright (c) 2014-2024 Chart.js Contributors<br>
+The bundled [Chart.js license](TxtAIEditor/WebResources/chart/Chart.js.LICENSE.md) contains the full notice.
 
 **[HarfBuzz](https://github.com/harfbuzz/harfbuzzjs)** (harfbuzzjs 1.6.4)<br>
 License: "Old MIT" License (harfbuzzjs wrapper: MIT License)<br>

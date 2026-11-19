@@ -1,10 +1,12 @@
-# Forkcast
+# Forkcast 
+### Find Meals You Didn't Know You Were Looking For.
 
 > Generate a personalised multi-day meal plan, browse full recipes from real cooking sites, track what's in your pantry, and turn the plan into a shopping checklist with one-click search links to Blinkit, BigBasket and Instamart.
 
 **Live demo:** https://forkcast-frontend.onrender.com
 
 No account needed. Open the demo, answer a few questions about diet, budget and time, and get a full multi-day plan with recipes. A Demo Mode with a sample plan is built in, so the app works even without an AI key.
+
 
 ## Features
 

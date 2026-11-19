@@ -7,18 +7,22 @@
 **Thuerey et al., "Deep Learning Methods for Reynolds-Averaged Navier-Stokes
 Simulations of Airfoil Flows"** (*AIAA Journal*, 2020), which we first
 reproduced on current software: OpenFOAM v2606, gmsh 4 and Docker on Windows
-(about 3% test error, as in the paper). The ground-effect simulations are
+(a 2.96% test error, against 2.6% in the paper). The ground-effect simulations are
 checked against high-resolution LES (skin friction within 7–8%), wind-tunnel
 tests of an F1 wing (downforce gain near the ground within 4%) and finer meshes
 (0.04–3%).
-Trained on 3,096 of these simulations, the U-Net predicts the flow around 30
+Trained on 3,096 of these simulations, the U-Net predicts the flow around 28
 airfoils it has not seen with a 0.9% error, against 20% for the free-air
 model used as it is. The downforce computed from its pressure is off by
-3.9%, with a loss that counts the cells next to the wing more and the
-distance to the wing's surface as an extra input (9.9% with neither). On two
-wings it has never seen, it predicts the downforce at every ride height
-within 4% (the NACA 4412) and within 1.1% (the Tyrrell 026, the F1 wing of
-the wind-tunnel tests), and puts its peak at the same ride height as the CFD.
+3.9%, after three changes: a loss that counts the cells next to the wing
+more, the distance to the wing's surface as an extra input, and random
+starting weights instead of the free-air model's (9.9% before them). On two
+wings it has never seen, its downforce at every ride height is within 4%
+(the NACA 4412) and 1.1% (the Tyrrell 026, the F1 wing of the wind-tunnel
+tests) of the downforce that the simulated pressure gives on the same grid,
+and it puts the NACA 4412's peak at the CFD's ride height. Against
+OpenFOAM's own force, after a straight-line correction for the grid, it is
+within 3.0% and 2.0%.
 For the downforce alone, smaller models that skip the flow do two to three
 times better, and one that predicts the pressure along the wing's surface
 also gives the drag, the moment and where the flow separates.
@@ -51,7 +55,8 @@ The study in fifteen steps, each with its own page:
 6. **[Parameter scan](docs/06-parameter-scan.md):** 200 trial runs showed where
    steady RANS converges and set the rules for keeping a run.
 7. **[The dataset](docs/07-dataset.md):** 4000 runs (3,436 samples on 1,286
-   airfoils), and a test set of 102 samples on 30 airfoils kept out of training.
+   airfoils), and a test set of 102 samples on 28 airfoils kept out of
+   training (from 30 test airfoils; two gave no converged run).
 8. **[U-Net learning curve](docs/08-unet-learning-curve.md):** with 789 samples
    the U-Net predicts airfoils it has not seen with a 1.8% error, against 24%
    for the free-air model as it is.
@@ -62,8 +67,8 @@ The study in fifteen steps, each with its own page:
     and the weighted loss, the downforce error falls to 6.2% and the field
     error to 1.4%. Both still fall as samples are added.
 11. **[A new wing](docs/11-naca4412-sweep.md):** the NACA 4412 at 12 ride
-    heights. The U-Net, which never saw it, predicts the downforce within 5%
-    and puts its peak at the same height as the CFD.
+    heights (11 with a steady flow). The U-Net, which never saw it, predicts
+    the downforce within 5% and puts its peak at the same height as the CFD.
 12. **[The F1 wing](docs/12-tyrrell026-sweep.md):** the Tyrrell 026 at the
     tunnel's ride heights. The U-Net gets the shape of the curve but 10–19%
     too little downforce: it misses part of the suction peak.
@@ -103,18 +108,28 @@ the simulated pressure and velocity.*
 
 | | Result | Details |
 |---|---|---|
-| Reproduction, free air | 2.96% test error with the paper's training length (paper: 2.6%); pressure and velocity errors as in the paper's best model | [Step 1](docs/01-reproduction.md) |
+| Reproduction, free air | 2.96% test error with the paper's training length (paper: 2.6%); the pressure error as in the paper's best model (14.9% against 14.8%), the velocity error close to it | [Step 1](docs/01-reproduction.md) |
 | CFD against high-resolution LES | NACA 4412 in free air, with the settings of the dataset: skin friction within 7.6% (suction side) and 7.3% (pressure side) on average; surface pressure also close (mean \|ΔCp\| 0.009–0.014) | [Step 3](docs/03-mesh-study.md) |
 | CFD against the wind tunnel | Tyrrell 026 F1 wing: the downforce gained near the ground within 4% | [Step 4](docs/04-wind-tunnel.md) |
 | Mesh study | numerical uncertainty of the downforce 0.04–3%, largest closest to the ground | [Steps 3 and 4](docs/03-mesh-study.md) |
 | Airfoil shapes | 1,462 of the 1,497 UIUC files smoothed: pressure wiggles above 0.1 in 453 files before, in none after | [Step 5](docs/05-airfoil-shapes.md) |
 | Where steady RANS converges | Cl becomes steady in 86% of the dataset's runs; close to the ground the flow separates, and part of the range has no steady solution | [Step 6](docs/06-parameter-scan.md) |
-| U-Net in ground effect | 0.9% error on 30 unseen airfoils with 3,096 training samples and the distance input (1.4% without it; the free-air model as it is: 20%) | [Steps 8, 10 and 13](docs/13-distance-input.md) |
-| Downforce from the U-Net | 3.9% error with a loss weighted next to the wing and the distance input (6.2% with the weighting alone; plain loss: 9.9%) | [Steps 9, 10 and 13](docs/13-distance-input.md) |
-| Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.6% error on the 30 test airfoils (1.5% against OpenFOAM's force, where the U-Net is 4.3%); 0.13 ms per prediction | [Step 14](docs/14-downforce-model.md) |
-| Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.3%, drag 8.7% on the test airfoils (2–3% on the two wings), moment 2.5%, the separated part of the surface within 0.3% of it on average | [Step 15](docs/15-surface-model.md) |
-| Unseen wing: NACA 4412 | at 11 ride heights: downforce within 5% (within 4% with the distance input), peak at the same height as the CFD | [Steps 11 and 13](docs/11-naca4412-sweep.md) |
-| Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 1.1% with the distance input (10–19% low without it); the suction peak still too weak | [Steps 12 and 13](docs/13-distance-input.md) |
+| U-Net in ground effect | 0.9% error on 28 unseen airfoils with 3,096 training samples and the distance input (1.4% without it; the free-air model as it is: 20%) | [Steps 8, 10 and 13](docs/13-distance-input.md) |
+| Downforce from the U-Net | 3.9% error with the loss weighted next to the wing, the distance input and random starting weights (from the free-air model: 6.2% with the weighting alone, 9.9% with the plain loss; from random weights without the distance: 6.8%) | [Steps 9, 10 and 13](docs/13-distance-input.md) |
+| Downforce from a model of its own | a small network on the shape, ride height, angle and speed: 1.6% error on the 28 test airfoils (1.5% against OpenFOAM's force, where the U-Net is 4.3%); 0.13 ms per prediction | [Step 14](docs/14-downforce-model.md) |
+| Pressure along the wing | a small network for the pressure and the friction along the surface: downforce 1.3%, drag 8.7% on the test airfoils (2–3% on the two wings), moment 2.5%; the separated part of the surface, 10% of it on average, is off by 0.3% of the surface | [Step 15](docs/15-surface-model.md) |
+| Unseen wing: NACA 4412 | at 11 ride heights: downforce within 5% (within 4% with the distance input)¹, peak at the same height as the CFD | [Steps 11 and 13](docs/11-naca4412-sweep.md) |
+| Unseen wing: Tyrrell 026 (F1) | at the tunnel's 9 ride heights: downforce within 1.1% with the distance input (10–19% low without it)¹; the suction peak still too weak | [Steps 12 and 13](docs/13-distance-input.md) |
+
+¹ Against the downforce that the simulated pressure gives on the same
+128 × 128 grid. Against OpenFOAM's own force, with the straight-line
+correction of [step 14](docs/14-downforce-model.md), the U-Net with the
+distance input is within 3.0% (NACA 4412) and 2.0% (Tyrrell 026).
+
+The test errors are those of all 102 test samples. Two test airfoils are
+near copies of training airfoils (see [step 7](docs/07-dataset.md)); without
+their 7 samples the errors are 3–5% higher (0.9% stays 0.9%, 3.9% becomes
+4.0%).
 
 ---
 

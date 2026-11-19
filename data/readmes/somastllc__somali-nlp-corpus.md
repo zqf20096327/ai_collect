@@ -10,8 +10,8 @@
 </p>
 
 Somali NLP Corpus downloads public Somali datasets, normalizes and filters their text,
-removes exact and near duplicates, and emits training-ready JSONL. The repository also
-contains a corpus-trained ByteLevel BPE tokenizer.
+removes exact and near duplicates, and emits training-ready JSONL. Its ByteLevel BPE
+tokenizer lives in [Somali-Tokenizer](https://github.com/somastllc/Somali-Tokenizer).
 
 *Formerly SomNLP-Corpus.*
 
@@ -25,8 +25,8 @@ Version **1.0.0** is the build of **2026-10-19**, combining **14 public sources*
 
 The pipeline output is `data/final/final_so.jsonl`. Corpus data is not stored in Git;
 build it with the pipeline below or download the release from Hugging Face (see
-[Release and versions](#release-and-versions)). Trained tokenizer artifacts and their
-benchmark summary are tracked for reproducibility.
+[Release and versions](#release-and-versions)). The measured token counts behind the
+dataset card are tracked in `stats/corpus_token_stats.json`.
 
 Public-dataset ingestion, the processing pipeline, and release packaging are complete.
 Targeted web collection is next. See [ROADMAP.md](ROADMAP.md) for milestones and
@@ -44,7 +44,6 @@ Targeted web collection is next. See [ROADMAP.md](ROADMAP.md) for milestones and
 - An export that splits the corpus into commercial-use (`open`) and `non-commercial`
   Parquet configurations from each record's own license
 - Reject sidecars and per-stage statistics for auditing removed records
-- A 48k-vocabulary Somali ByteLevel BPE tokenizer and reproducible training scripts
 
 All pipeline settings live in [`configs/pipeline.toml`](configs/pipeline.toml).
 
@@ -199,7 +198,7 @@ records in the corpus are tagged with a language other than `so`, almost all of 
 
 ## Tokenizer
 
-The repository includes two trained tokenizer artifacts:
+Two trained tokenizer artifacts, now maintained in Somali-Tokenizer:
 
 - **v1:** a retained 32k whitespace BPE baseline
 - **v2:** the recommended 48k ByteLevel BPE with exact encode/decode round trips and
@@ -221,27 +220,30 @@ is slightly above it, and FinePDFs (1.4905) is in line with Wikipedia (1.4971) a
 (1.4725), which v2 was trained on.
 
 The 1,129,084,663-token release total (1.3653 tokens/word over the full corpus) comes from
-`tokenize_corpus.py`, which encodes every document in the corpus rather than extrapolating
+a full-corpus tokenization pass (`tokenize_corpus.py`, now `somali-tokenizer stats`), which
+encodes every document in the corpus rather than extrapolating
 from the holdout ratio.
 
-To run the tokenizer tests and reproduce its preparation, training, and benchmark steps:
+The tokenizer, its training and benchmark code, and the technical note now live in
+[Somali-Tokenizer](https://github.com/somastllc/Somali-Tokenizer): a Rust library, CLI,
+and Python package that load, train, and benchmark it. The v2 artifact is on the Hugging
+Face Hub:
 
-```bash
-cd tokenizer
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+```python
+from somali_tokenizer import SomaliTokenizer      # pip install somali-tokenizer
+tokenizer = SomaliTokenizer.from_pretrained("somast/somali-tokenizer")
 
-pytest
-python prepare_corpus.py --stats
-python train.py
-python benchmark.py
-python tokenize_corpus.py
+from transformers import AutoTokenizer           # or with transformers
+tokenizer = AutoTokenizer.from_pretrained("somast/somali-tokenizer")
 ```
 
-The training corpus and evaluation split are generated locally and ignored by Git. See
-[`tokenizer/PAPER.md`](tokenizer/PAPER.md) for methodology, vocabulary-size experiments,
-baseline comparisons, and Hugging Face export instructions.
+To regenerate the corpus token statistics for a new build, from a Somali-Tokenizer
+checkout:
+
+```bash
+somali-tokenizer stats --corpus ../somali-nlp-corpus/data/final/final_so.jsonl \
+    --output ../somali-nlp-corpus/stats/corpus_token_stats.json
+```
 
 ## Release and versions
 
@@ -290,7 +292,7 @@ somali-nlp-corpus/
 │   └── corpus-pipeline/        # cleaning, LID, dedup, stage runner
 ├── docs/                       # specifications and technical documentation
 ├── reports/                    # selected measurements and local run output
-├── tokenizer/                  # tokenizer scripts, tests, and trained artifacts
+├── stats/                      # measured corpus token statistics (dataset card input)
 └── data/                       # generated corpus data; not tracked
 ```
 

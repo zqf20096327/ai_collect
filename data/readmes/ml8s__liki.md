@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="assets/liki-skill-logo.svg" alt="" width="96" align="absmiddle">
+  <img src="assets/logo.svg" alt="" width="96" align="absmiddle">
   Liki Skill
 </h1>
 
@@ -24,21 +24,15 @@
 > and sources, so you can check it; if your birth hour is unclear, it calibrates
 > against events you know. Free to install and use.
 
-## What is Liki Skill?
+## Overview
 
-Liki Skill is the AI-ecosystem form of **Liki Astrology**. It is powered by a
-professional astrology engine, with AI-assisted interpretation. It covers
+Liki Skill is the assistant-facing distribution of **Liki Astrology**. It is powered by a
+professional calculation engine, with AI-assisted interpretation. It covers
 **BaZi** (Four Pillars of Destiny), **Zi Wei Dou Shu** (Purple Star astrology),
 **Liu Yao** (I Ching divination), **Qi Men Dun Jia** (strategy and timing),
 **Feng Shui**, **date selection**, and **Chinese naming**.
 
 It is not a prompt wrapper around a chatbot. Charts are cast by an astronomical engine, readings come from a rule truth table with classical sources, and unclear birth times are calibrated before any judgment — so the same question gets the same grounded answer, every time.
-
-| Repository | Boundary |
-| --- | --- |
-| [`ml8s/liki`](https://github.com/ml8s/liki) | Installable skill contract, intent routing, and MCP declarations |
-| [`ml8s/liki-mcp`](https://github.com/ml8s/liki-mcp) | Product MCP service and channel variants |
-| [`ml8s/mingligo`](https://github.com/ml8s/mingligo) | Deterministic chart engine and sourced rule core |
 
 The wire protocol is [MCP Streamable HTTP](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports).
 
@@ -48,13 +42,13 @@ The wire protocol is [MCP Streamable HTTP](https://modelcontextprotocol.io/speci
 > npx skills add ml8s/liki -y
 > ```
 
-## Install in 30 seconds
+## Quick start
 
 ```bash
 npx skills add ml8s/liki
 ```
 
-Installing via `npx` requires Node.js; the skill itself has no local Node.js runtime dependency. It talks to the hosted free engine and counsel MCP surfaces — no API keys, no configuration. Paid channel variants can switch to the aggregate `hk.liki/liki` endpoint. Prefer no terminal? Charting is free at [liki.hk](https://liki.hk). Update when prompted:
+Installing via `npx` requires Node.js; the skill itself has no local Node.js runtime dependency. It talks to the hosted free engine and counsel MCP surfaces — no API keys, no configuration. Paid channel variants use the product MCP endpoint. Prefer no terminal? Charting is free at [liki.hk](https://liki.hk). Update when prompted:
 
 ```bash
 npx skills add ml8s/liki -y
@@ -62,7 +56,7 @@ npx skills add ml8s/liki -y
 
 Works in Claude Code, Codex, Cursor, WorkBuddy, and any MCP-compatible assistant or IDE.
 
-## What can you ask?
+## Usage
 
 | You want | Ask like this |
 | --- | --- |
@@ -76,7 +70,7 @@ Works in Claude Code, Codex, Cursor, WorkBuddy, and any MCP-compatible assistant
 
 For destiny readings, provide the birth date, exact time when possible, birth city, and gender. If data is incomplete, the Skill asks follow-up questions or enters time calibration — it never silently guesses.
 
-## Why not just ask the LLM directly?
+## Why Liki Skill?
 
 Ask a general-purpose LLM the same chart question three times and you may get three different answers. Chinese astrology amplifies small errors: miss a solar-term boundary by one day and the year pillar changes — every reading after it shifts.
 
@@ -88,7 +82,7 @@ Ask a general-purpose LLM the same chart question three times and you may get th
 | Output | Plain text | Structured JSON + SHA-256 digests, ready to build on |
 | Verification | None | Open source; the whole chain is auditable |
 
-## How Liki Skill stays accurate
+## How it works
 
 ### Cross-checked chart engine
 
@@ -114,7 +108,7 @@ your time + birthplace → normalize → candidate set (each with reasons)
 
 On top of this, Mingli160 — 160 professional competition questions — is used for rule-chain coverage and zero-hit checks as a manual calibration set.
 
-## Privacy and honest boundaries
+## Security and boundaries
 
 - Birth data stays in the current conversation: no profiles, no real names, no feedback payloads.
 - City lookup uses the built-in WGS-84 table; no external geocoding request is made.
@@ -152,11 +146,29 @@ No. Birth data remains in the current conversation context; it is not written to
 
 A calculator gives you a chart. Liki Skill gives you the chart plus sourced readings, boundary handling, and time calibration — inside the AI assistant you already use, with every conclusion traceable to its factors and classical text.
 
-## Documentation and links
+## Documentation
 
 - Website: [liki.hk](https://liki.hk)
-- Fact core: [ml8s/mingligo](https://github.com/ml8s/mingligo)
+- Calculation library: [ml8s/mingligo](https://github.com/ml8s/mingligo)
 - Product MCP: [ml8s/liki-mcp](https://github.com/ml8s/liki-mcp)
-- License: MIT
+
+## Contributing
+
+Issues and pull requests are welcome. Keep skill prompts factual, cite the
+classical source for every rule, and run:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+make setup-hooks
+make gate
+```
+
+`make setup-hooks` configures this checkout so every `git push` first runs
+`make gate`.
+
+## License
+
+Released under the [MIT License](LICENSE).
 
 > For Astrology, use Liki.

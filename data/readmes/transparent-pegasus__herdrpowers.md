@@ -13,7 +13,7 @@ Coordinates planning, implementation, testing, and review across agent panes.
 
 | | Superpowers | herdrpowers |
 |---|---|---|
-| worker | in-process subagent | idle sibling herdr pane; a profile without a separate coder or reviewer uses a fresh subagent |
+| worker | in-process subagent | idle sibling herdr pane; a profile without a separate coder or reviewer, or a role whose pane is not open, uses a fresh subagent |
 | task loop | `subagent-driven-development` | `pane-driven-development` |
 | parallel work | `dispatching-parallel-agents` | panes, bounded by idle panes and worktrees |
 | entry point | skills trigger themselves | `commands/` workflows, plus the same skills |
@@ -54,6 +54,23 @@ opencode plugin add git+https://github.com/transparent-pegasus/herdrpowers.git
 Use `opencode2` if that is your binary's name.
 For OpenCode 1, see [OpenCode setup](docs/opencode.md).
 
+### Antigravity
+
+```bash
+agy plugin install https://github.com/transparent-pegasus/herdrpowers
+```
+
+Run the same command again to update. Antigravity plugins cannot ship
+commands, so each workflow comes as a skill, listed in the interactive CLI as
+`/herdrpowers:..:.antigravity-plugin:commands:<name>`. Typing
+`/herdrpowers:<name>` selects it, except `/herdrpowers:plan`, which selects
+`/herdrpowers:writing-plans`: pick `plan` from the menu instead.
+
+Install with `agy plugin install`, not `agy plugin import`. Importing
+herdrpowers from Claude Code converts it, drops `commands/`, and leaves the
+workflow skills pointing at files that no longer exist. Running the install
+command over an imported copy replaces it.
+
 ### Initialize your repository
 
 Run the [init workflow](commands/init.md) once per repository:
@@ -88,21 +105,26 @@ Repository settings stay outside the plugin and survive updates:
   review settings, the selected `profile`, `allow_agent_lifecycle`, and
   `reviewer_usage_limit`.
 - `.herdrpowers/profiles/`: presets for role targets, models/effort, and
-  optional fallback, delegation, and assignment overrides. Init installs the six
+  optional fallback, delegation, and assignment overrides. Init installs the
   shipped ones without overwriting yours; their
   [README](.herdrpowers/profiles/README.md) explains the names.
 
 ```yaml
-profile: fable-sol-ultra      # or name one in the task; null selects none
+profile: fable                # or name one in the task; null selects none
 allow_agent_lifecycle: false  # true: the orchestrator may start and end agents in panes
 reviewer_usage_limit: skip    # wait: hold a review gate until a usage-limited reviewer resets
 ```
 
+A profile slot written `any` takes its target from the task, as in
+`solo Opus 5.5 max` or `neon-fable coder: codex`; parts left out stay open.
 A profile overrides only present keys. Omitted keys keep config/default
 values; maps merge per key and lists replace, including empty lists.
 Assignment overrides may change modes and review gates; lifecycle permission
 remains config-only. Model and effort must match what each pane shows in its
-footer. With `allow_agent_lifecycle: true` the orchestrator starts the
+footer; `effort: any` leaves the effort to the orchestrator, which reports its
+choice. A role whose pane is not open, with no usable fallback, runs in a
+fresh subagent of the orchestrator's own kind unless
+`delegation.subagent_fallback` is `false`. With `allow_agent_lifecycle: true` the orchestrator starts the
 selected composition's missing agents in idle shell panes and ends the ones it
 started; with `false`, the default, it never starts or ends an agent. See
 [Roles](docs/roles.md) for the rules.

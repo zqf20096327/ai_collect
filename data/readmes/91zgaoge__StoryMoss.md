@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.0-gold"></a>
+  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.6-gold"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-ISC-blue.svg"></a>
   <a href="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml"><img alt="Build" src="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg">
@@ -115,6 +115,37 @@ npm run build
 ## 🆕 最新动态
 
 > 完整变更日志见 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+### v0.99.6 · 批量/训练 trace 终态收尾（日志巡检）
+
+- **问题**：续写训练/批量续写的 trace 在任务结束后仍显示 `running`（11-17 的 250 步、11-18 的 530 步训练 trace，1 天后仍未收尾）；v0.96.1 的 trace 收尾只覆盖创世/续写/单角色。
+- **结果**：批量路径按结果与取消标记写入 completed/failed/cancelled，与 run 终态一致；新增 1 条三态回归测试。
+
+### v0.99.5 · 用量统计与功能使用页签修复（日志巡检）
+
+- **问题**：用量统计查询 `llm_calls.cost`，但该表从未有 `cost` 列，数据洞察页每次加载都报 `no such column: cost`；功能使用页签调用的 `get_feature_usage_stats` 命令后端从未注册，恒报 `Command not found`（均来自 v0.99.0 真机日志）。
+- **结果**：统计 SQL 只聚合次数与 token（金额字段保留恒 0），`'global'` 恢复跨故事汇总语义；补齐并注册 `get_feature_usage_stats` 命令（默认 30 天、限幅 1–365）；新增 4 条回归测试。
+
+### v0.99.4 · 官网 Release 保留策略 5→3（修复 552 Disk full）
+
+- **问题**：v0.99.2 三平台构建成功，但 `upload-to-website` 在 macOS 更新包 `.sig` 报 `552 Disk full`；retention=5、服务器正好 5 版，清理「nothing to clean up」，官网 latest.json 停在 0.99.1。
+- **结果**：上传脚本默认 `RELEASE_RETENTION_COUNT` 5→3，Cleanup Releases keep 默认 5→3；Cleanup keep=3 已释放空间，v0.99.2 上传重跑，后续 v0.99.3/v0.99.4 按新策略上传。
+
+### v0.99.3 · 训练 compact/blind/probes + brief 预览 + 模型 GPU 诊断
+
+- **问题**：v0.99.2 的 P1/P2 剩余项——本地模型没有 compact 提示词模式、训练页没有盲测开关、资产摘要阶段没有逐章进度、人物/线索/地点/新专名探针未接入报告、摘要缓存无 TTL、报告详情看不到模型实际收到的《前情提要》、模型页不显示 GPU 实测 prompt 上限。
+- **结果**：新增 compact prompt（预算 6000/brief 2200/ledger 600/progress 900）、训练页盲测/紧凑勾选、资产逐章进度（35→40）+日志心跳、记忆探针（人物留存/线索未推进/地点跳切/疑似新专名）、V163 摘要缓存 30 天 TTL、`training_get_story_brief` 报告详情预览、`ModelHealthReport.prompt_limit_tokens` 模型页诊断。
+
+### v0.99.2 · 续写训练资产分阶段 + 网关容量路由 + 进度/评分口径
+
+- **问题**：v0.99.1 真机报告 0.63（承接 7.2）证明长程记忆有效，但资产重建仍失败——单次 26k prompt/8192 tokens 下 deepseek-v4 三次 CoT-only（content 空）、Qwren127 GPU OOM（16,781 tokens 需 9,439MB，仅 3,387MB）；brief 只剩 2042 字首尾摘要/0 白名单/0 cast；147 次 writer 调用 55 次失败；确定性摘要漏第 142 章 81% 的邵卫江；编审把原书后续差距误判为承接断裂；任务 40% 停 45 分钟。
+- **结果**：资产重建改为「逐章小 prompt（并发 3、V163 缓存）→ 聚合 brief（只喂结构化摘要）」；JSON mode 补全 reasoning 截断 JSON；GPU OOM 学习模型 prompt 上限并按大小跳过本地小模型；确定性事件摘要（首句+中段冲突/引号/专名句+尾句）；批内每章 progress/log/heartbeat；judge 分列「承接（沙盒）」与「原书差距 reference_gap」；blind 反馈模式过滤真实后续节点。
+
+### v0.99.1 · 续写训练长程记忆（前情提要 + 本批账本 + 设定白名单）
+
+- **问题**：v0.99.0 后 10 章训练仍 0.40（承接 3.1、情节 3.3），编审结论「缺乏长程记忆与逻辑连贯性」；11-17 那轮资产重建成功（10 条逐章梗概都在库里）也只有 0.24（承接 1.2）——数据生成了，但没进 writer/planner 的 prompt。
+- **根因**：writer 进度块只读最近 3 章正文末 220 字，第 11 章后 `scene_outcomes` 更把上下文整体替换成 3 条 outcome；planner 只读 3 条梗概，1400 字承接锚点又在 3200 字 directive 之外被截掉；资产重建失败时通用兜底用「正文头 600 + 尾 1800」生成「第 134 章单章回顾 + 下一拍规划」，截到 1200 字冒充故事大纲。
+- **结果**：新增《前情提要》（逐章事实/未结线索/人物当前态/设定白名单），protected 全量注入 writer、planner 与编审；进度块改为全量逐章梗概 + outcomes 补充；批次维护滚动账本（第 n 章看到第 11..n-1 章实际发生了什么）；训练路径跳过 `ensure_story_outline` 伪大纲；通用大纲兜底改逐章摘要归纳并拒绝执行规划；红线引用白名单与未结线索。
 
 ### v0.99.0 · 续写训练「跨章复制/原地踏步」根修
 

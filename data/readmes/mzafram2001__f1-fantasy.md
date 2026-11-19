@@ -5,12 +5,11 @@
 ![Format](https://img.shields.io/badge/Format-JSON-orange)
 ![Stack](https://img.shields.io/badge/Stack-Python-yellow)
 ![Last updated](https://img.shields.io/github/last-commit/mzafram2001/f1-fantasy?label=Last%20update)
+[![Update F1 Fantasy data](https://github.com/mzafram2001/f1-fantasy/actions/workflows/get_round_data.yml/badge.svg)](https://github.com/mzafram2001/f1-fantasy/actions/workflows/get_round_data.yml)
 
 An open-source, automated historical dataset of F1 Fantasy statistics.
 
 This repository automatically fetches, cleans, and structures official F1 Fantasy data after every Grand Prix weekend. Providing points breakdowns, value fluctuations, selection trends, and constructor stats for analytics, machine learning and data visualization.
-
----
 
 ## 📂 Repository structure
 
@@ -20,54 +19,89 @@ f1-fantasy/
 ├── .github/
 │   ├── workflows/
 │   │   └── get_round_data.yml
+│   │
 │   └── FUNDING.yml
-│ 
+│
 ├── data/
 │   ├── 2023/
 │   │   ├── round_01.json
 │   │   ├── round_02.json
 │   │   └── ...
+│   │
 │   ├── 2024/
 │   │   ├── round_01.json
 │   │   ├── round_02.json
 │   │   └── ...
+│   │
 │   └── ...
 │
 ├── scripts/
 │   ├── get_round_data.py
-│   └── update_readme.py
+│   ├── meta_utils.py
+│   ├── update_readme.py
+│   └── validate_data.py
+│
+├── src/
+│   ├── circuits/
+│   │   ├── austin.svg
+│   │   ├── bahrain.svg
+│   │   └── ...
+│   │
+│   ├── constructors/
+│   │   ├── alf-2023.svg
+│   │   ├── alp-2023.svg
+│   │   └── ...
+│   │
+│   └── drivers/
+│       ├── alb-wil-2023.svg
+│       ├── ant-mer-2026.svg
+│       └── ...
 │
 ├── AUTHORS.md
 ├── LICENSE.md
 └── README.md
 ```
 
----
-
 ## 📊 Data schema
 
-Each round file (`data/{season}/round_{id}.json`) follows a standardized JSON schema divided into **Meta**, **Drivers**, and **Teams**. Both driver and team arrays share identical attributes:
+Each round file (`data/{season}/round_{id}.json`) follows a standardized JSON schema divided into **Meta**, **Drivers**, and **Teams**.
+
+### `Meta`
+
+| Attribute | Type | Description | Example |
+| :--- | :--- | :--- | :--- |
+| `Id` | `String` | Unique round identifier (`{season}_{round}`) | `"2026_12"` |
+| `Season` | `Integer` | Championship season year | `2026` |
+| `Race_Id` | `Integer` | Official round number within the season | `12` |
+| `Event_Name` | `String` | Official Grand Prix name | `"Dutch Grand Prix"` |
+| `Is_Sprint` | `Boolean` | Whether the weekend includes a Sprint session | `true` |
+| `Circuit` | `Object` | Circuit metadata (`Id`, `City`, `Country_Code`, `Country_Name`, `Svg_Path`) | `{"Id": "zandvoort", ...}` |
+| `Start_Times` | `Object` | Session UTC timestamps (`Qualifying`, `Sprint_Qualifying`, `Sprint`, `Race`) | `{"Race": "2026-08-23T13:00:00Z", ...}` |
+| `Generated_At` | `String` | ISO-8601 timestamp of when the file was generated | `"2026-11-18T10:01:13.873807"` |
+
+### `Drivers` & `Teams`
+
+Both driver and team arrays share standardized attributes:
 
 | Attribute | Type | Description | Example |
 | :--- | :--- | :--- | :--- |
 | `Driver_Name` / `Team_Name` | `String` | Display name of the driver or team | `"K. Antonelli"` / `"Mercedes"` |
 | `Driver_Code` / `Team_Code` | `String` | Three-letter shorthand identifier (TLA) | `"ANT"` / `"MER"` |
 | `Team_Name` *(Drivers only)* | `String` | Constructor associated with the driver | `"Mercedes"` |
+| `Team_Code` *(Drivers only)* | `String` | Three-letter code of the driver's constructor | `"MER"` |
 | `Round_Fantasy_Points` | `Float` | Total fantasy points scored in the current round | `55.0` |
 | `Season_Fantasy_Points` | `Float` | Total cumulative fantasy points scored up to this round | `305.0` |
 | `Selected_Percentage` | `Float` | Player selection rate across fantasy teams | `0.33` *(33%)* |
-| `Value` | `Float` | Current asset price for the round (in $M) | `24.7` |
+| `Value` | `Float` | Current asset price for the round (in \$M) | `24.7` |
 | `Qualifying_Points` | `Float` | Fantasy points earned in qualifying | `10.0` |
 | `Sprint_Points` | `Float` | Fantasy points earned in sprint | `0.0` |
 | `Race_Points` | `Float` | Fantasy points earned in race | `45.0` |
-
----
 
 ## 💻 Data results
 
 <!-- SEASONS_SUMMARY_START -->
 <details open>
-<summary><b>🏎️ 2026 Season — Round 20</b></summary>
+<summary><b>🏎️ 2026 Season — Round 20 · Brazilian Grand Prix</b> <img src='src/circuits/interlagos.svg' width='28' height='20' align='center'></summary>
 
 #### 👤 Drivers Standings
 
@@ -116,7 +150,7 @@ Each round file (`data/{season}/round_{id}.json`) follows a standardized JSON sc
 
 
 <details>
-<summary><b>🏎️ 2025 Season — Round 24</b></summary>
+<summary><b>🏎️ 2025 Season — Round 24 · Abu Dhabi Grand Prix</b> <img src='src/circuits/yas-marina.svg' width='28' height='20' align='center'></summary>
 
 #### 👤 Drivers Standings
 
@@ -162,7 +196,7 @@ Each round file (`data/{season}/round_{id}.json`) follows a standardized JSON sc
 
 
 <details>
-<summary><b>🏎️ 2024 Season — Round 24</b></summary>
+<summary><b>🏎️ 2024 Season — Round 24 · Abu Dhabi Grand Prix</b> <img src='src/circuits/yas-marina.svg' width='28' height='20' align='center'></summary>
 
 #### 👤 Drivers Standings
 
@@ -208,7 +242,7 @@ Each round file (`data/{season}/round_{id}.json`) follows a standardized JSON sc
 
 
 <details>
-<summary><b>🏎️ 2023 Season — Round 22</b></summary>
+<summary><b>🏎️ 2023 Season — Round 22 · Abu Dhabi Grand Prix</b> <img src='src/circuits/yas-marina.svg' width='28' height='20' align='center'></summary>
 
 #### 👤 Drivers Standings
 
@@ -254,25 +288,30 @@ Each round file (`data/{season}/round_{id}.json`) follows a standardized JSON sc
 
 <!-- SEASONS_SUMMARY_END -->
 
----
-
 ## ⚡ Quick start
 
-```
+```python
 import pandas as pd
 
-# Load round data directly from GitHub into a DataFrame
-url = "https://raw.githubusercontent.com/mzafram2001/f1-fantasy/main/data/2026/round_11.json"
-data = pd.read_json(url)
+# Load round data directly from GitHub
+url = "[https://raw.githubusercontent.com/mzafram2001/f1-fantasy/main/data/2026/round_11.json](https://raw.githubusercontent.com/mzafram2001/f1-fantasy/main/data/2026/round_11.json)"
+data = pd.read_json(url, typ="series")
 
 # Convert Drivers into a Pandas DataFrame
-df_drivers = pd.DataFrame(data["Drivers"].tolist())
+df_drivers = pd.DataFrame(data["Drivers"])
 print(df_drivers.sort_values(by="Season_Fantasy_Points", ascending=False).head())
 ```
 
 ---
 
-> [!CAUTION]
+> [!WARNING]
+> **Data sources & credits:**
+>
+> * Fantasy stats fetched via [`skelmis-f1-fantasy`](https://pypi.org/project/skelmis-f1-fantasy/).
+> * Season schedules, session UTC times, and circuit metadata powered by [`jolpica-f1`](https://github.com/jolpica/jolpica-f1).
+> * Circuit SVG layouts sourced from [`TracingInsights/f1db`](https://github.com/TracingInsights/f1db).
+
+> [!IMPORTANT]
 > **Disclaimer:** Data is collected from public sources. This repository is for educational and research purposes only. Not financial advice.
 
 > [!TIP]
@@ -281,4 +320,4 @@ print(df_drivers.sort_values(by="Season_Fantasy_Points", ascending=False).head()
 >
 > ☕ If this dataset saves you time in your analysis or fantasy leagues, you can also [buy me a coffee on Ko-fi](https://ko-fi.com/mzm0102).
 <br>
-<!-- LAST_CHECKED_START -->Last checked: 2026-11-18<!-- LAST_CHECKED_END -->
+<!-- LAST_CHECKED_START -->Last checked: 2026-11-19<!-- LAST_CHECKED_END -->

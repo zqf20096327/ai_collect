@@ -121,6 +121,7 @@ In this step, we will learn the Machine Learning basics that every FDE must know
 - [How does the Bias-Variance Tradeoff work?](https://outcomeschool.com/blog/bias-variance-tradeoff)
 - [What are Epoch, Batch, Batch Size, and Iteration in Machine Learning?](https://outcomeschool.com/blog/epoch-batch-and-iteration)
 - [Epoch, Batch, Batch Size, Iteration](https://www.youtube.com/watch?v=NFLlXE-6vno) (Video)
+- [How does a confusion matrix work?](https://outcomeschool.com/blog/confusion-matrix)
 - [Precision vs Recall](https://outcomeschool.com/blog/precision-vs-recall)
 - [What is a Neural Network and How Does It Work?](https://outcomeschool.com/blog/neural-network)
 - [What are Activation Functions in Neural Networks? Sigmoid, Tanh, ReLU, and Softmax Explained](https://outcomeschool.com/blog/activation-functions)
@@ -189,6 +190,7 @@ In this step, we will learn how to make an LLM answer questions from the custome
 If you want a quick introduction to RAG before starting, watch: [AI Engineering Explained: LLM, RAG, MCP, Agent, Fine-Tuning, Quantization](https://www.youtube.com/watch?v=lnfWvX66FUk)
 
 - [How does RAG work?](https://outcomeschool.com/blog/retrieval-augmented-generation-rag)
+- [How does an embedding model work?](https://outcomeschool.com/blog/embedding-model)
 - [How does a Vector Database work?](https://outcomeschool.com/blog/how-does-a-vector-database-work)
 - [How does Approximate Nearest Neighbor (ANN) Search work?](https://outcomeschool.com/blog/how-does-approximate-nearest-neighbor-ann-search-work)
 - [How does Semantic Search work?](https://outcomeschool.com/blog/how-does-semantic-search-work)
@@ -342,6 +344,7 @@ In this step, we will see everything come together in one of the most requested 
 - [How do SIP and RTP carry a phone call to a voice agent?](https://outcomeschool.com/blog/sip-and-rtp)
 - [How does DTMF keypad input work in a voice agent?](https://outcomeschool.com/blog/dtmf-in-voice-agents)
 - [How does voicemail and answering machine detection work?](https://outcomeschool.com/blog/answering-machine-detection)
+- [How does an outbound calling voice agent work?](https://outcomeschool.com/blog/outbound-calling-voice-agent)
 
 ### Step 14: Prepare for Forward Deployed Engineer Interviews
 

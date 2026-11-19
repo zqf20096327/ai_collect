@@ -114,6 +114,16 @@ Then start the app:
 bash start.sh
 ```
 
+### Windows (PowerShell)
+
+`bash` isn't available in PowerShell or cmd, so use the PowerShell scripts instead:
+
+```powershell
+git clone https://github.com/aionixos/openclip.git; cd openclip
+powershell -ExecutionPolicy Bypass -File .\setup.ps1
+powershell -ExecutionPolicy Bypass -File .\start.ps1
+```
+
 This will start:
 - **Frontend:** http://localhost:3000
 - **Backend:** http://localhost:8000
@@ -172,6 +182,8 @@ This will start:
 ## Contributing
 
 OpenClip is open to contributors of all levels. If you find a bug, have a feature idea, or want to help build the roadmap — open an issue or a PR. All contributions are welcome.
+
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for setup, coding guidelines and the PR process.
 
 ---
 

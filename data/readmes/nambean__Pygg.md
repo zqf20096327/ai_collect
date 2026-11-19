@@ -7,7 +7,7 @@
 
 <h3 align="center">Run your coding agents on cheaper models without losing the answers.</h3>
 
-<p align="center">Pygg is a local gateway that routes each request to a model you connected, and measures what it saved:<br><b><a href="#measured-not-claimed">88% less per solved task</a></b> in our benchmark, with every task still solved.</p>
+<p align="center">Pygg is a local gateway that routes each request to a model you connected, and measures what it saved.<br>Our own first runs: <b><a href="#measured-not-claimed">88% less per solved task</a></b> on 12 small coding tasks, about 40% on a real repository.<br>A small sample: <a href="#benchmark-it-on-your-work">help benchmark it on your work</a>.</p>
 
 <p align="center">
 <a href="https://github.com/nambean/Pygg/actions/workflows/ci.yml"><img src="https://github.com/nambean/Pygg/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -15,7 +15,7 @@
 <img src="https://img.shields.io/badge/licence-MIT-green" alt="Licence: MIT">
 <img src="https://img.shields.io/badge/app-Windows%20x64-blue" alt="Desktop app: Windows x64">
 <img src="https://img.shields.io/badge/CLI-Windows%20%C2%B7%20macOS%20%C2%B7%20Linux-blue" alt="CLI: Windows, macOS and Linux">
-<a href="https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.1"><img src="https://img.shields.io/github/v/release/nambean/Pygg?include_prereleases&label=release" alt="Release: v0.1.0-dev.1"></a>
+<a href="https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.2"><img src="https://img.shields.io/github/v/release/nambean/Pygg?include_prereleases&label=release" alt="Release: v0.1.0-dev.2"></a>
 <img src="https://img.shields.io/badge/status-developer%20preview-orange" alt="Status: developer preview">
 </p>
 
@@ -30,8 +30,10 @@ https://github.com/user-attachments/assets/85708783-8be3-4292-955c-783cc066bbd1
 
 Pygg runs on your computer. Connect your providers once (API keys, coding plans, a local Ollama, even an AI website without an API), point Claude Code, Codex, OpenCode, an editor or an SDK at `127.0.0.1:8741`, and choose the model **`auto`**. Each request goes to an eligible model you connected, free and cheap ones first where they qualify, within the limits you set; when a provider says no, the next one answers. Every attempt lands in a ledger with what it cost and where that figure came from.
 
+Since the router sees every model you connected and what each one did on your own work, it can also be the brain: name the model **`pygg/brain`** and type a requirement, and Pygg has a planner split it into cards with a role each (plan, code, test, review), picks a model per card by rule from public benchmark facts and your own kept results, and shows the proposal in the app, where you approve it into a Kanban board run one card at a time under limits you set.
+
 > [!NOTE]
-> **Developer preview (2026-11-14).** The gateway and the Windows desktop app are built and verified live, from first launch to "my coding tool uses `auto`". The Windows installer is a [prerelease, `v0.1.0-dev.1`](https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.1), **not code-signed**, so Windows SmartScreen warns before it runs. The `pygg` command line is [on npm](https://www.npmjs.com/package/@pygg/cli) for Windows, macOS and Linux. Spending limits rest on prices and token estimates, and clean-machine installs and long-running behaviour still need validation, so Pygg is **not yet for unattended or financially critical use**. What is built and how each part was verified: [Implementation Status](docs/IMPLEMENTATION-STATUS.md).
+> **Developer preview (2026-11-19).** The gateway and the Windows desktop app are built and verified live, from first launch to "my coding tool uses `auto`". The Windows installer is the [prerelease `v0.1.0-dev.2`](https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.2) of 2026-11-19, **not code-signed**, so Windows SmartScreen warns before it runs. The `pygg` command line is [on npm](https://www.npmjs.com/package/@pygg/cli) for Windows, macOS and Linux. Spending limits rest on prices and token estimates, and clean-machine installs and long-running behaviour still need validation, so Pygg is **not yet for unattended or financially critical use**. What is built and how each part was verified: [Implementation Status](docs/IMPLEMENTATION-STATUS.md).
 
 ## Why Pygg
 
@@ -39,9 +41,12 @@ Pygg runs on your computer. Connect your providers once (API keys, coding plans,
 - **Cost you can trace.** Each attempt is recorded with its cost and that cost's source: **actual** (the provider said), **estimated** (a price you or a catalog set) or **unknown**, never shown as $0. Estimated savings compare the same tokens at a model you choose, and say what they left out.
 - **Fallback that does not double-bill.** A 429, 402 or rejected key moves on to the next key or target, only before the agent got its first byte. A timeout stops instead, since the provider may already have billed it. Each attempt is written to disk **before** it is sent.
 - **The provider's cache keeps working.** Anthropic requests from Claude Code pass through unchanged; for OpenAI-format agents such as Codex, Pygg turns on Anthropic's prompt cache. Measured: 30% less in all, 68% less on input ([below](#measured-not-claimed)).
+- **Limits that stop a session, not only a month.** Each Pygg API key can have a monthly limit and, per routing session and per UTC day, a limit that refuses the next request with 402 once reached. A request already running is never cut, and concurrent requests cannot pass a strict limit together.
+- **A receipt for every launch.** When a tool started by `pygg run` exits, Pygg prints what that launch cost, how much came from the cache, which models answered, and what changed in the Git repository it ran in. `pygg launches --by-repo` sums it per repository and week. For Claude Code, cost is split by kind of request (main, subagent, compaction…).
 - **Several accounts, used in turn.** A key ring holds API keys of separate accounts on one connection (in order, round robin, least used or quota aware); a pool groups connections of one provider. Each key cools down on its own.
-- **AI websites as providers, carefully.** Web sessions (Muse, ChatGPT, Perplexity, DeepSeek, Grok) are opt-in and unofficial, signed in by you in Pygg's own window, and held behind a per-site guard: one request at a time, rests between them, a daily cap, longer rests after the site's own warnings.
+- **AI websites as providers, carefully.** Web sessions (Muse, ChatGPT, Perplexity, DeepSeek, Grok, Gemini) are opt-in and unofficial, signed in by you in Pygg's own window, and held behind a per-site guard: one request at a time, rests between them, a daily cap, longer rests after the site's own warnings. Pictures, videos and files a site makes come back with the reply.
 - **Local, with your own accounts.** The gateway listens on 127.0.0.1 only and needs a Pygg API key; provider keys stay in the OS credential store. Each tool's setup is backed up first, and Remove puts it back.
+- **The router as the brain, with a board.** A requirement typed into your own coding agent becomes a proposal: cards with a role, a done criterion and dependencies, each on the model that measured best for that role (Terminal-Bench, SWE-bench Verified, the Arena dataset, in a weekly signed feed) and, from ten of your own runs on, on the model your kept results favour. You pick, change or drop, then approve; the board pulls cards into Running under a WIP limit, holds a finished run while Checking is full, blocks a card that waits for your approval or an answer, and measures cycle time and money per kept result. No step that costs money starts without your click ([BRAIN.md](docs/design/BRAIN.md), ADR-040 to ADR-042).
 
 ## A look at the app
 
@@ -58,6 +63,12 @@ Pygg runs on your computer. Connect your providers once (API keys, coding plans,
 
 <sub>The browser preview with demo data (`pnpm dev`).</sub>
 
+| The board | Its measures | Brain Storming |
+| :---: | :---: | :---: |
+| <img src="docs/images/brain/board-live.png" alt="The board of a workspace: Discovery, Ready, Running with its limit, Checking, Blocked, Review and Done; the first card of an approved brainstorm in Review after its fallback model ran" width="260"> | <img src="docs/images/brain/board-measures.png" alt="The same board at five done cards, with cycle time median, cards done today, time blocked today and money per kept result by role" width="260"> | <img src="docs/images/brain/brain-own-evidence.png" alt="Brain Storming: models by role, the code role ranking a model first on the user's own ten kept runs above the benchmark feed, and the defaults for a new brainstorm" width="260"> |
+
+<sub>The desktop app on a copy of the maintainer's store, as it ran on 2026-11-19 (about $0.5 of real requests in all).</sub>
+
 ## How a request flows
 
 <p align="center">
@@ -68,7 +79,7 @@ Pygg runs on your computer. Connect your providers once (API keys, coding plans,
 </p>
 
 1. **Gateway.** The agent calls `127.0.0.1:8741` with its own Pygg API key, in OpenAI Chat Completions, OpenAI Responses (Codex) or Anthropic Messages, streamed, with tool calls.
-2. **Route.** The model name is `auto` or `auto/cheap`, a **combo** (a name for an ordered list, or cheapest first per request), a pool, or `<connection>/<model>`.
+2. **Route.** The model name is `auto` or `auto/cheap`, a role alias (`auto/plan`, `auto/code`, `auto/test`, `auto/review`, ranked by your own kept results, then public benchmark facts, then the tier table), a **combo** (a name for an ordered list, or cheapest first per request), a pool, `<connection>/<model>`, or `pygg/brain`, which answers with a proposal instead of running the request.
 3. **Policy and budget.** The key's allowed connections, health and cooldowns, quota-group holds; a key with a monthly limit holds the attempt's estimated cost first, so concurrent requests cannot pass the limit together.
 4. **Journal.** The attempt is written to disk before it is sent, and settled with its ledger entry in one transaction.
 5. **Send and fall back.** Same format passes through untouched; other pairs are translated and say what they dropped. A 429 or 402 cools that key or model down for as long as the provider says, a rejected key (401) waits until you replace it, and the next key or target is tried.
@@ -77,7 +88,7 @@ The diagrams are generated by [`scripts/readme-diagrams.mjs`](scripts/readme-dia
 
 ## Install
 
-**Desktop app (Windows 10/11 x64).** It runs the gateway, holds your connections and shows usage. Download `Pygg_0.1.0_x64-setup.exe` (or the MSI) and `SHA256SUMS.txt` from the [`v0.1.0-dev.1` prerelease](https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.1), then check the download before running it:
+**Desktop app (Windows 10/11 x64).** It runs the gateway, holds your connections and shows usage. Download `Pygg_0.1.0_x64-setup.exe` (or the MSI) and `SHA256SUMS.txt` from the [`v0.1.0-dev.2` prerelease](https://github.com/nambean/Pygg/releases/tag/v0.1.0-dev.2), then check the download before running it:
 
 ```powershell
 Get-FileHash .\Pygg_0.1.0_x64-setup.exe -Algorithm SHA256   # compare with the line in SHA256SUMS.txt
@@ -91,7 +102,7 @@ The installer is **not code-signed**, so SmartScreen says "Windows protected you
 npm install -g @pygg/cli@dev
 ```
 
-`0.1.0-dev.7` under the tag `dev`, for **Windows x64**, **macOS** (Apple silicon and Intel) and **Linux x64** (glibc). On Windows the CLI uses the desktop app's store and gateway; on macOS and Linux, where there is no app yet, `pygg gateway serve` runs the gateway in a terminal of its own.
+Published under the tag `dev` (the npm badge above shows the version) for **Windows x64**, **macOS** (Apple silicon and Intel) and **Linux x64** (glibc). On Windows the CLI uses the desktop app's store and gateway; on macOS and Linux, where there is no app yet, `pygg gateway serve` runs the gateway in a terminal of its own.
 
 ## Quick start
 
@@ -101,7 +112,8 @@ Open Pygg, then **Providers → Connect Provider** and paste a key (Gemini, Open
 
 ```bash
 pygg setup claude          # a Pygg key of its own, kept in the credential store; no file changes
-pygg run claude            # this launch through Pygg, model auto
+pygg run claude            # this launch through Pygg, model auto; a receipt when it exits
+pygg run --statusline claude   # the same, with the launch's cost in Claude Code's status line
 ```
 
 **Codex CLI** gets a `pygg` provider and profile, after a backup; its default model is not changed.
@@ -111,7 +123,7 @@ pygg setup codex
 pygg run codex             # or: codex --profile pygg -m auto/cheap
 ```
 
-**OpenCode** gets a Pygg provider listing `auto`, `auto/cheap` and your enabled models, kept current.
+**OpenCode** gets a Pygg provider listing the auto aliases and your enabled models, kept current.
 
 ```bash
 pygg setup opencode
@@ -127,22 +139,31 @@ pygg ask --model auto/cheap "Explain git worktree in two sentences"
 
 **Editors and SDKs** (Cline, Continue, Roo Code, the OpenAI or Anthropic SDKs): base URL `http://127.0.0.1:8741/v1`, a key from **Endpoint → API Keys**, model `auto`.
 
+**Keep spending in bounds** and see where it went:
+
+```bash
+pygg gateway client --name "Claude Code (launcher)" --session-usd 5 --day-usd 20   # or Endpoint → API Keys → Limits…
+pygg launches --by-repo    # cost, commits and cost per commit, per repository and week
+pygg usage --days 7        # requests, known and unknown cost, by client, model and kind of request
+```
+
 Each `setup` takes `--dry-run` to show what would change and `--remove` to undo it. The same set-up is one click in **CLI Tools**. Step by step, with troubleshooting: [Getting started](docs/GETTING-STARTED.md).
 
 ## Measured, not claimed
 
-Real agents, real models, checks the agent cannot edit, about $16.7 of a $20 budget in all. Each report gives its method, raw results and what it does not show; read it before quoting a number. Summary: [BENCHMARKS.md](docs/BENCHMARKS.md).
+Every run below is the maintainer's own check: real agents, real models, checks the agent cannot edit, about $16.7 of a $20 budget in all. Each report gives its method, raw results and what it does not show; read it before quoting a number. Summary: [BENCHMARKS.md](docs/BENCHMARKS.md).
 
 | What was measured | Result | Report |
 | --- | --- | --- |
-| OpenCode on 12 harder coding tasks × 3, through Pygg to Claude Haiku 5.5 instead of Sonnet 5.5 | **88% less per solved task** (95% CI 87–90%); 36/36 solved against 34/36 | [N2](benchmark/reports/2026-11-12-n2-savings.md) |
+| OpenCode on 12 small Node tasks × 3 (3 bug fixes, 8 features, 1 three-file refactor; 20 to 211 lines each), through Pygg to Claude Haiku 5.5 instead of Sonnet 5.5 | **88% less per solved task** (95% CI 87–90%); one attempt per run, no retry: 36/36 passed against 34/36 | [N2](benchmark/reports/2026-11-12-n2-savings.md) |
 | Claude Code on the same tasks, Haiku 5.5 instead of Sonnet 5.5 | **79% less per solved task** (95% CI 74–84%); `auto/cheap` with OpenCode: 34/36 at $0.0129 per solved task | [P0](benchmark/reports/2026-11-12-p0-optimization.md) |
-| Claude Code on six tasks from a real production repository | Haiku 5.5: **6/6 for $1.50**, 96% of input read from cache; Sonnet 5.5: 4/5 for $1.19; OpenCode with `auto/cheap`: 2/6 for $0.35 | [CCHT](benchmark/reports/2026-11-13-ccht-real-repository.md) |
+| Claude Code on six tasks from a real production repository (Express + Prisma API, features across API, reports and Excel export, 124-check end-to-end suite) | Haiku 5.5: **6/6 for $1.50**, one attempt each; Sonnet 5.5: 4/5 for $1.19; on the 4 both solved, Haiku cost **about 40% less**, in 2 to 3 times the requests. OpenCode with `auto/cheap`: 2/6 for $0.35 | [CCHT](benchmark/reports/2026-11-13-ccht-real-repository.md) |
 | Codex on Claude Haiku 5.5, Pygg's prompt caching off vs on | 16/16 either way; **30% less in all, 68% less on input** | [Prompt cache](benchmark/reports/2026-11-14-codex-claude-prompt-cache.md) |
+| An OpenAI-format agent on Claude Haiku 5.5 through OpenRouter, with Pygg's cache marker | After each session's first turn, **99.7% of every prompt read from cache**; $0.0066 in all | [OpenRouter cache](benchmark/reports/2026-11-16-openrouter-cache-live.md) |
 | The gateway's own overhead, against a local fake provider | **About 4 ms** per short request, 5 ms per 400 kB prompt; about 230 requests/s with 16 clients | [Overhead](benchmark/reports/2026-11-14-gateway-overhead.md) |
 | Web sessions on five sites, 48 short tasks | **47/48 correct**, about 18 s each, $0 | [Web sessions](benchmark/reports/2026-11-13-web-sessions.md) |
 
-Not claimed: a quality ranking of models (a handful of tasks each), a provider's bill (costs are the ledger at list prices), or "60–95% fewer tokens". A longer web-session run on coding tasks got the owner's DeepSeek account suspended for three days ([report](benchmark/reports/2026-11-13-web-coding.md)); the guard has been stricter since.
+Not claimed: a quality ranking of models (a handful of tasks each), a provider's bill (costs are the ledger at list prices), "60–95% fewer tokens", or savings on large refactors, database migrations or other languages, which no run has measured yet. The 88% is the whole session pinned to a cheaper model on small tasks; on the real repository the saving narrowed to about 40%, and a cost-first `auto/cheap` over free models solved 2 of 6. A longer web-session run on coding tasks got the owner's DeepSeek account suspended for three days ([report](benchmark/reports/2026-11-13-web-coding.md)); the guard has been stricter since.
 
 **Next to LiteLLM**, measured with the same fake provider and requests (LiteLLM 1.106.2, defaults plus fallbacks; other projects compared from their docs in [BENCHMARKS.md](docs/BENCHMARKS.md#pygg-next-to-other-gateways)):
 
@@ -154,6 +175,10 @@ Not claimed: a quality ranking of models (a handful of tasks each), a provider's
 | sits behind a key ring of several accounts | sessions stay on one key: 60 / 60 | 0 / 60 by default, 60 / 60 with affinity on |
 
 Where Pygg is worse: about 230 requests/s on one PC (LiteLLM publishes 1,170 on four instances), no timeout fallback for a hung provider, and a 5xx or dropped connection reaches your agent as an error by default. Reports: [resilience](benchmark/reports/2026-11-14-resilience.md), [tokens and cost](benchmark/reports/2026-11-14-token-savings.md), [web guard](benchmark/reports/2026-11-14-web-guard.md).
+
+### Benchmark it on your work
+
+One person's runs on a few dozen tasks are a start, not proof. The benchmark needs the community: run the [harness](benchmark/README.md) on the cases here or on your own repositories (they can stay private; only the result lines are published, as in [CCHT](benchmark/reports/2026-11-13-ccht-real-repository.md)), add cases the runs above lack, such as large refactors, database migrations and other languages, and open a pull request with the report and its raw results ([how](CONTRIBUTING.md#benchmark-runs)). A run where the cheaper model loses is as welcome as one where it wins.
 
 ## What's inside
 
@@ -170,7 +195,7 @@ Coding agents ──HTTP──► Gateway 127.0.0.1:8741 (axum) ──► OpenAI
 - **Interface:** React 19, Vite and TypeScript, with a layout check over every screen in CI (`pnpm ui-check`).
 - **Skills & Prompts:** one library of skills in the Agent Skills format, installed into Claude Code's, Codex's and OpenCode's own skills folders, and a count of what each agent sends with every request from its global files (ADR-039).
 - **[`@pygg/cli` on npm](https://www.npmjs.com/package/@pygg/cli):** a Node launcher with one optional package per platform (ADR-037).
-- **Smart tasks** (experimental, on hold): IDE agents hand subtasks to Pygg over MCP; agent CLIs run them in Git worktrees against approved checks ([AGENTS.md](docs/AGENTS.md)).
+- **Smart tasks** (experimental): IDE agents hand subtasks to Pygg over MCP, or send a requirement to `pygg/brain`; agent CLIs run the tasks in Git worktrees against the repository's approved checks, paid steps wait for your approval, and the board (ADR-042) runs an approved brainstorm's cards under WIP limits with the Brain Storming screen holding the picks and defaults for every project ([AGENTS.md](docs/AGENTS.md), [BRAIN.md](docs/design/BRAIN.md)). The model facts feed behind the role ranks is built weekly by [`scripts/model-facts.py`](scripts/model-facts.py) from sources with open licences, signed, and verified by the app before use (ADR-040). Each part has run live once on the maintainer's store, not under the benchmark harness.
 
 ## Is Pygg a fork of 9router?
 
@@ -191,7 +216,7 @@ The full table, with LiteLLM, OpenRouter, OmniRoute and claude-code-router: [BEN
 | | |
 | --- | --- |
 | **Use** | [Getting started](docs/GETTING-STARTED.md) · [Providers](docs/PROVIDERS.md) · [Benchmarks](docs/BENCHMARKS.md) · [Security](docs/SECURITY.md) |
-| **Understand** | [Architecture](docs/ARCHITECTURE.md) · [Decisions (ADR-001 to ADR-039)](docs/DECISIONS.md) · [Schema](docs/SCHEMA.md) · [Screens](docs/design/SCREENS.md) · [Command line](docs/design/CLI.md) |
+| **Understand** | [Architecture](docs/ARCHITECTURE.md) · [Decisions (ADR-001 to ADR-042)](docs/DECISIONS.md) · [The brain, the facts feed and the board](docs/design/BRAIN.md) · [Schema](docs/SCHEMA.md) · [Screens](docs/design/SCREENS.md) · [Command line](docs/design/CLI.md) |
 | **Track** | [Implementation status](docs/IMPLEMENTATION-STATUS.md) · [Roadmap](docs/ROADMAP.md) · [Benchmark reports](benchmark/reports) |
 | **Contribute** | [Contributing](CONTRIBUTING.md) · [Code of conduct](CODE_OF_CONDUCT.md) · [Every document, indexed](docs/README.md) |
 
@@ -210,9 +235,10 @@ pnpm --filter @pygg/desktop tauri:build   # the installers, under apps/desktop/s
 pnpm ui-check                                         # every screen at several window sizes, nothing overflowing
 cd apps/desktop/src-tauri; cargo test --lib --tests   # core, gateway, web-session and task engine tests
 node scripts/readme-diagrams.mjs                      # regenerate the README's animated diagrams
+python scripts/model-facts.py selftest                # the model facts builder on its fixtures (build, sign, verify: see the script)
 ```
 
-`PYGG_DATA_DIR` points the app at another store, for trying it without touching your own.
+`PYGG_DATA_DIR` points the app at another store, for trying it without touching your own; that app runs beside the installed one, with its own window profile, and needs a gateway port of its own (Endpoint → Configure…).
 
 ## Licence
 

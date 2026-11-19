@@ -275,20 +275,20 @@ You might encounter some bugs while using this app. You are more than welcome to
 Useful resources and dependencies that are used in quill.
 
 <!--- DEPENDENCIES_START --->
-- [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai): ^4.0.110
+- [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai): ^4.0.118
 - [@hookform/resolvers](https://www.npmjs.com/package/@hookform/resolvers): ^5.9.1
 - [@kinde-oss/kinde-auth-nextjs](https://www.npmjs.com/package/@kinde-oss/kinde-auth-nextjs): ^2.13.2
 - [@langchain/core](https://www.npmjs.com/package/@langchain/core): ^1.2.10
 - [@langchain/openai](https://www.npmjs.com/package/@langchain/openai): ^1.5.12
 - [@langchain/pinecone](https://www.npmjs.com/package/@langchain/pinecone): ^1.0.3
-- [@mantine/hooks](https://www.npmjs.com/package/@mantine/hooks): ^9.7.3
+- [@mantine/hooks](https://www.npmjs.com/package/@mantine/hooks): ^9.8.1
 - [@napi-rs/canvas](https://www.npmjs.com/package/@napi-rs/canvas): ^1.0.9
 - [@pinecone-database/pinecone](https://www.npmjs.com/package/@pinecone-database/pinecone): ^5.1.2
 - [@prisma/adapter-neon](https://www.npmjs.com/package/@prisma/adapter-neon): ^7.10.1
 - [@prisma/client](https://www.npmjs.com/package/@prisma/client): ^7.10.1
 - [@radix-ui/react-alert-dialog](https://www.npmjs.com/package/@radix-ui/react-alert-dialog): ^1.2.1
 - [@radix-ui/react-avatar](https://www.npmjs.com/package/@radix-ui/react-avatar): ^1.3.1
-- [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.1.23
+- [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.3.1
 - [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.2.1
 - [@radix-ui/react-label](https://www.npmjs.com/package/@radix-ui/react-label): ^2.1.17
 - [@radix-ui/react-progress](https://www.npmjs.com/package/@radix-ui/react-progress): ^1.2.1
@@ -312,7 +312,7 @@ Useful resources and dependencies that are used in quill.
 - [class-variance-authority](https://www.npmjs.com/package/class-variance-authority): ^0.7.1
 - [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
 - [date-fns](https://www.npmjs.com/package/date-fns): ^4.4.0
-- [dotenv](https://www.npmjs.com/package/dotenv): ^18.0.9
+- [dotenv](https://www.npmjs.com/package/dotenv): ^18.0.10
 - [eslint](https://www.npmjs.com/package/eslint): ^9.39.5
 - [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 16.3.4
 - [lucide-react](https://www.npmjs.com/package/lucide-react): ^1.73.0
@@ -325,7 +325,7 @@ Useful resources and dependencies that are used in quill.
 - [react](https://www.npmjs.com/package/react): 19.3.1
 - [react-dom](https://www.npmjs.com/package/react-dom): 19.3.1
 - [react-dropzone](https://www.npmjs.com/package/react-dropzone): ^20.2.0
-- [react-hook-form](https://www.npmjs.com/package/react-hook-form): ^7.89.0
+- [react-hook-form](https://www.npmjs.com/package/react-hook-form): ^7.92.0
 - [react-loading-skeleton](https://www.npmjs.com/package/react-loading-skeleton): ^3.5.0
 - [react-markdown](https://www.npmjs.com/package/react-markdown): ^10.1.0
 - [react-pdf](https://www.npmjs.com/package/react-pdf): ^11.0.0

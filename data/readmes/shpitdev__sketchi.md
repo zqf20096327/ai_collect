@@ -14,7 +14,7 @@
   <a href="https://www.npmjs.com/package/sketchi"><img alt="npm version" src="https://img.shields.io/npm/v/sketchi?logo=npm&color=CB3837" /></a>
   <a href="https://nx.dev/"><img alt="Nx" src="https://img.shields.io/badge/Nx-24-143055?logo=nx" /></a>
   <a href="https://workers.cloudflare.com/"><img alt="Cloudflare Workers" src="https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare&logoColor=white" /></a>
-  <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white" /></a>
+  <a href="https://www.typescriptlang.org/"><img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white" /></a>
   <a href="https://excalidraw.com/"><img alt="Excalidraw" src="https://img.shields.io/badge/output-Excalidraw-6965DB" /></a>
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-2F855A" /></a>
 </p>
@@ -74,7 +74,7 @@ prompt ─▶ model candidate ─▶ typed diagram ─▶ deterministic layout �
 | `tools/scenarios`             | maintained scenarios and the scenario CLI                               |
 | `packages/editor-surface`     | reusable React drawing surface (Nx `editor-surface`)                    |
 | `packages/icons/*`            | the icon catalog and search, community icons, and hand-drawn logos      |
-| `packages/observability`      | span telemetry for every Worker request                                 |
+| `packages/observability`      | best-effort request span export for Studio and Icons                    |
 | `packages/ui`                 | shadcn primitives and tokens for the Tailwind apps                      |
 
 | App (`apps/`) | Nx project   | Serves                                                          |
@@ -96,16 +96,34 @@ Every app except the CLI is a Cloudflare Worker. See the
 ```sh
 mise trust && mise install
 pnpm install
-pnpm dev                    # every app, through Portless
-pnpm nx dev studio          # one app (apps/studio)
+pnpm dev                    # all four Worker apps
+pnpm nx dev studio          # one app
 ```
 
-`pnpm ci:local` is the gate: lint and format, typecheck (TypeScript 6 and the
-native TypeScript 7 compiler), build and test for every project the change
-affects, plus the tooling, deploy and Storybook checks. Remote CI on a pull
+| App    | Local URL             |
+| ------ | --------------------- |
+| Web    | http://127.0.0.1:6201 |
+| Editor | http://127.0.0.1:6202 |
+| Icons  | http://127.0.0.1:6203 |
+| Studio | http://127.0.0.1:6210 |
+
+The dev servers use fixed ports and fail if a port is in use. Icons and Studio
+use remote Cloudflare bindings. If your Cloudflare login can access multiple
+accounts, set `CLOUDFLARE_ACCOUNT_ID` to the Sketchi account before starting dev, e.g. in a
+gitignored `mise.local.toml` `[env]` table alongside `INFISICAL_PROJECT_ID`.
+To make Web link to local Icons and Studio, see
+[Web's local setup](apps/web/README.md#local-sibling-links).
+
+`pnpm ci:local` is the gate: lint and format, typecheck with the native
+TypeScript 7 compiler, build and test for every project the change
+affects, plus the tooling and deploy checks. Remote CI on a pull
 request is one Nx-affected typecheck. [AGENTS.md](AGENTS.md#proof) explains
 unit gates against a verified staging base, the full gate required for signoff,
 and additional checks when their inputs change.
+
+For optional visual review, `pnpm storybook` starts the
+[diagram family gallery](tools/storybook/native-conversion/README.md) and
+`pnpm build-storybook` builds it locally.
 
 A CLI change that should ship gets a changeset (`pnpm changeset`); merging the
 Version Packages pull request publishes it.
@@ -120,7 +138,7 @@ A push to `main` deploys the production Worker apps its changes reach; an
 `app-production-deploy` dispatch deploys every app or one. A pull request gets
 preview Workers when it carries the `preview` label; see
 [preview deployments](docs/preview-deploys.md) and the
-[production domain runbook](docs/production-domain-cutover.md).
+[production domain map and procedures](docs/production-domain-cutover.md).
 
 ## License
 

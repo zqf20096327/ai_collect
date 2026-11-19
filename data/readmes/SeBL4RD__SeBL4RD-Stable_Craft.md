@@ -6,7 +6,7 @@ StableCraft is a companion app for PhotoCraft: draw a lasso around an area, desc
 the change, and the result arrives as a **new masked layer**. Everything runs locally
 on your own GPU, with ComfyUI as the generation engine.
 
-![Version](https://img.shields.io/badge/version-0.2.12-3b82f6)
+![Version](https://img.shields.io/badge/version-0.2.13-3b82f6)
 ![Status](https://img.shields.io/badge/status-working%20MVP-22c55e)
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64%20%2F%20Linux%20x64-6b7280)
 ![License](https://img.shields.io/badge/license-MIT-8b5cf6)
@@ -34,6 +34,12 @@ on your own GPU, with ComfyUI as the generation engine.
 
 <a href="./demo/DEMO_full.jpg" target="_blank">
   <img src="./demo/DEMO_full.jpg" alt="image info" width="600">
+</a>
+
+**▶ [Demo video — 5 min](https://youtu.be/NSQNIQ6Ij0g)**: T2I, object removal, LoRA character, text on a garment, new background.
+
+<a href="https://youtu.be/NSQNIQ6Ij0g" target="_blank">
+  <img src="https://i.ytimg.com/vi/NSQNIQ6Ij0g/maxresdefault.jpg" alt="Watch the StableCraft demo" width="640">
 </a>
 
 ## How it works

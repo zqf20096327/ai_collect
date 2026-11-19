@@ -2,7 +2,7 @@
 
 ### [ImageAI on GitHub](https://github.com/lelandg/ImageAI) Desktop + CLI for multi‑provider AI image and video generation with enterprise auth, prompt tools, and MIDI‑synced karaoke/video workflows.
 
-**Version 0.50.2**
+**Version 0.51.0**
 
 **See [LelandGreen.com](https://www.lelandgreen.com) for links to other code and free stuff**. _Under construction. Implementing social links soon._ 
 - **Chameleon Labs Discord - Support, AI Art & Community: [Chameleon Labs Discord](https://discord.gg/chameleonlabs)**
@@ -290,7 +290,7 @@
   - `pretty-midi` - MIDI file analysis and timing extraction
   - `mido` - Low-level MIDI manipulation for lyrics and events
   - `moviepy` - Video processing and assembly
-  - `litellm` - Unified LLM provider interface (for video prompts)
+  - `core/chameleon_llm` (built in, no extra package) - adapter over the official OpenAI, Anthropic and Google SDKs (for video prompts)
 
 ## 2. Authentication Setup
 
@@ -2202,5 +2202,4 @@ The metadata file (`data/prompts/metadata.json`) contains structured information
       "related_styles": ["Comic Art", "Cartoon Art"],
       "related_moods": ["Satirical", "Humorous"],
       "cultural_keywords": ["MAD Magazine", "fold-in", "satirical cartoons"],
-      "description": "Legendary MAD Magazine cartoonist",
-      "era": "1960s-201
+      "descr

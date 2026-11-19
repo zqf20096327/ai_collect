@@ -1,5 +1,13 @@
 # Jmix DocAI
 
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
+[![Jmix 3.1](https://img.shields.io/badge/Jmix-3.1-blueviolet)](https://www.jmix.io)
+[![Java 21](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/projects/jdk/21/)
+[![Vaadin 25](https://img.shields.io/badge/Vaadin-25-00b4f0)](https://vaadin.com)
+[![Spring AI 2.0](https://img.shields.io/badge/Spring%20AI-2.0-6db33f)](https://spring.io/projects/spring-ai)
+
+🖥️ [Online Demo](https://demo.jmix.io/docai/)
+
 Jmix DocAI is a reference document management system with AI, built on [Jmix](https://www.jmix.io) 3.1. It shows developers how to build a document management system on Jmix and how to add AI to it: filling document cards from their files, assistants that answer from the documents, and search by meaning. You can clone it, run it locally with demo data in English or Russian, and read the code as an example.
 
 ![Jmix DocAI: the dashboard, an upload by drag and drop, Fill with AI, the assistant of a document and the search by meaning](docs/promo/jmix-docai-readme.gif)
@@ -16,6 +24,7 @@ Jmix DocAI is a reference document management system with AI, built on [Jmix](ht
 - [Application Accounts](#-application-accounts)
 - [Domain Model](#️-domain-model)
 - [Role Model](#-role-model)
+- [Related Samples](#-related-samples)
 - [More about Jmix](#ℹ️-more-about-jmix)
 - [License](#-license)
 
@@ -37,7 +46,7 @@ Employees keep documents in a folder tree in the main menu, share them with coll
 **Search**
 
 - Every search starts in the search palette: the search field in the header opens it, and so do ⌘K and Ctrl+K. Before you type, it lists your recent searches, which you can remove, your favorites and, with the AI on, two questions for the AI assistant. As you type, it finds documents, folders and tags, with chips to filter them. A document opens its card over the palette.
-- Full-text search in the names, tags and type fields of documents and in the text of their PDF, DOC, DOCX, XLS, XLSX, ODT, ODS, RTF and TXT files: whole words and their forms in English and Russian first, then word beginnings of three letters or more; a long query finds whole words only
+- Full-text search in the names, tags and type fields of documents and in the text of their PDF, DOC, DOCX, XLS, XLSX, ODT, ODS, RTF, TXT and CSV files: whole words and their forms in English and Russian first, then word beginnings of three letters or more; a long query finds whole words only
 - Search by meaning
 
 **AI**, with an OpenAI key
@@ -181,9 +190,9 @@ Gradle builds the jar, and Compose puts it into an image and runs it next to Ope
 docker compose --profile app up -d --build
 ```
 
-The application answers on port 8080 of the host at `/docai`. Compose passes `DOCAI_ACTIVE_PROFILE`, `DOCAI_DEMO_DATA`, `DOCAI_AI_ENABLED` and `OPENAI_API_KEY` from the environment. The stand runs with a profile of its own, `stand`, unless `DOCAI_ACTIVE_PROFILE` names another. Another profile, for example `prod`, also leaves the login form empty, but keeps one database for everybody and fills it at the first start with the set of `DOCAI_DEMO_DATA`, `en` unless the variable names `ru` or `none`.
+The application answers on port 8080 of the host at `/docai`. Compose passes `DOCAI_ACTIVE_PROFILE`, `DOCAI_DEMO_DATA`, `DOCAI_AI_ENABLED` and `OPENAI_API_KEY` from the environment. The stand runs with a profile of its own, `stand`, unless `DOCAI_ACTIVE_PROFILE` names another; its login form opens with `alice` filled in. Another profile, for example `prod`, leaves the login form empty, keeps one database for everybody and fills it at the first start with the set of `DOCAI_DEMO_DATA`, `en` unless the variable names `ru` or `none`.
 
-The `stand` profile gives every visitor a copy of the demo data of their own, made from a template when they log in: what a visitor uploads, edits or deletes, other visitors never see. The language of the login form or of the user menu chooses the demo set. A logout and a new login in the same browser return to the same copy, and switching the language discards the visitor's changes. A copy is deleted after 30 minutes without requests, and a restart deletes them all. A visitor uploads PDF, DOCX, XLSX, TXT, CSV, PNG and JPEG files only, up to 5 MB each and 20 MB per copy. The settings of the profile are described in `application-stand.properties`.
+The `stand` profile gives every visitor a copy of the demo data of their own, made from a template when they log in: what a visitor uploads, edits or deletes, other visitors never see. The language of the login form or of the user menu chooses the demo set. A logout and a new login in the same browser return to the same copy, and switching the language discards the visitor's changes. A copy is deleted after 30 minutes without requests, which the login form then tells its visitor, and a restart deletes them all. A visitor uploads PDF, DOCX, XLSX, TXT, CSV, PNG and JPEG files only, up to 5 MB each and 20 MB per copy. The settings of the profile are described in `application-stand.properties`.
 
 ### Run the tests
 
@@ -199,7 +208,26 @@ Add the JDBC driver of your database to `build.gradle` and set `DOCAI_DB_URL`, `
 
 ### Develop with AI agents
 
-The repository ships the [Jmix Agent Toolkit](https://github.com/jmix-framework/jmix-agent-toolkit): its Jmix skills live in `.agents/skills/` for Codex and OpenCode, `.claude/skills/` links to them for Claude Code, and [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) point the agents to the `jmix` skill.
+The repository ships the [Jmix Agent Toolkit](https://github.com/jmix-framework/jmix-agent-toolkit), so an AI coding agent follows the Jmix patterns when it changes the code:
+
+- the Jmix skills live in `.agents/skills/` for Codex, OpenCode, Junie, Cursor, GitHub Copilot and the other agents that read [AGENTS.md](AGENTS.md);
+- `.claude/skills/` links to them for Claude Code;
+- [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md) point the agents to the `jmix` skill, which routes each task to the skill of its artifact.
+
+To start, open a terminal in the project root, run your agent and describe the task in Jmix terms: entities, attributes, views, roles. For example: *Add a Project entity with list and detail views, and a project field to the document card*.
+
+The MCP servers of the agents are not part of the repository. They give the agent:
+- the inspections of a running IntelliJ IDEA;
+- the Jmix documentation;
+- a browser to check the running application.
+
+To add them, run the toolkit installer in the project root. Accept its MCP step and skip the skills and guidelines steps, which the repository already has:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jmix-framework/jmix-agent-toolkit/v3/install.sh | bash
+```
+
+On Windows, use the PowerShell command from the [installation guide of the toolkit](https://github.com/jmix-framework/jmix-agent-toolkit/tree/v3#quick-cli-installation). In IntelliJ IDEA, enable **Settings → Tools → MCP Server** and keep the project open. Claude Code asks you to approve the servers of the project. [AI Agent Setup](https://docs.jmix.io/jmix/agent-setup.html) shows how to check that the agent sees the skills and the servers.
 
 ## 🔧 Configuration
 
@@ -207,7 +235,7 @@ The repository ships the [Jmix Agent Toolkit](https://github.com/jmix-framework/
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `DOCAI_ACTIVE_PROFILE` | `local`, `stand` in Compose | Spring profile; `local` pre-fills the login form |
+| `DOCAI_ACTIVE_PROFILE` | `local`, `stand` in Compose | Spring profile; `local` pre-fills the login form with `admin`, `stand` with `alice` |
 | `DOCAI_DEMO_DATA` | `en` | Demo set an empty database gets at the start: `en`, `ru` or `none`; the `stand` profile ignores it and gives every visitor a copy of a set, see [Run on a stand](#run-on-a-stand) |
 | `DOCAI_DB_URL` | `jdbc:hsqldb:file:.jmix/hsqldb/docai` | JDBC URL of the database |
 | `DOCAI_DB_USERNAME` | `sa` | Database user |
@@ -325,6 +353,18 @@ A user gets the highest level among their entries. The root gives the Employee r
 
 > **Warning:** the `access-rl` role comes from the Jmix role assignments. If users sign in through LDAP or SSO and get their roles from a group mapper, add `access-rl` in the mapper, or they will see every folder and document.
 
+## 🧭 Related Samples
+
+| Sample | What it shows |
+|---|---|
+| [B2B CRM](https://github.com/jmix-framework/jmix-crm) | An enterprise CRM with AI: customers, orders, invoicing, finance and analytics |
+| [Bookstore](https://github.com/jmix-framework/jmix-bookstore) | An application for managing a retail bookstore |
+| [UI Samples](https://github.com/jmix-framework/jmix-ui-samples) | Examples of the UI components of Jmix, also [online](https://demo.jmix.io/ui-samples/) |
+| [Petclinic](https://github.com/jmix-framework/jmix-petclinic) | The Petclinic example application, built with Jmix |
+| [Samples](https://github.com/jmix-framework/jmix-samples-2) | Solutions to typical problems in Jmix applications |
+
+⭐ If this example helps you, star the repository: it helps others find it.
+
 ## ℹ️ More about Jmix
 
 | Source | Link |
@@ -333,7 +373,7 @@ A user gets the highest level among their entries. The root gives the Employee r
 | 📚 Documentation | https://docs.jmix.io |
 | 💬 Forum | https://forum.jmix.io |
 | 💻 GitHub | https://github.com/jmix-framework/jmix |
-| 🎥 YouTube | https://www.youtube.com/@jmixframework |
+| 🎥 YouTube | https://www.youtube.com/@JmixPlatform|
 | 💼 LinkedIn | https://www.linkedin.com/company/jmix-framework |
 
 ## 📄 License

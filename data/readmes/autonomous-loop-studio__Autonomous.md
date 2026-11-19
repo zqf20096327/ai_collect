@@ -133,7 +133,11 @@ There is no binary to install — a release is the source folder, and "updating"
 
 | | What it is | Get it |
 |---|---|---|
-| **v482** — current | A read-only storage folder is refused at boot with the exact chown line, so it can never look like a hang again. | [Releases](https://github.com/autonomous-loop-studio/Autonomous/releases) |
+| **v497** — current | The IDE door unfolds pasted envelopes too, so the IDE drill's write step stops refusing every identical retry; its errors name the flat shape instead. | [Releases](https://github.com/autonomous-loop-studio/Autonomous/releases) |
+| **v496** | Pasted tool envelopes unfold instead of failing, the Hard drill teaches the flat call shape, and a same-error hint (toggleable) names it after three identical refusals. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v496) |
+| **v495** | Both clients gate the drill todo plan the same way, through one shared path scrub, so a new pass can't reuse the last pass's file. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v495) |
+| **v494** | A todo list that lost its commas no longer stalls Easy step 2: every quoted item is recovered in order instead of returning a schema error. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v494) |
+| **v482** | A read-only storage folder is refused at boot with the exact chown line, so it can never look like a hang again. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v482) |
 | **v481** | Shell access no longer jails an agent outside the app, so a fresh copy's drill can reach its exec step. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v481) |
 | **v480** | Start can no longer hang on its own drill archive, and a stale jail named like the sandbox lands in the sandbox. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v480) |
 | **v479** | A stale per-agent file jail is cleared instead of merely tolerated, and the IDE drill's pass files are archived like every other drill's. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v479) |
@@ -404,11 +408,11 @@ The same checks ship as a script, so CI or an operator never has to paste them: 
 | ⬇️ | **Scroll to latest** | With Auto Scroll off, scrolling up reveals a `∨` button parked above the composer; clicking it jumps to the newest message and follows new output until you scroll up again, and scrolling up with Auto Scroll on pauses the follow instead of yanking the transcript |
 | 💬 | **Prompt rail** | One short tick per prompt down the right edge of the chat box, newest at the bottom — hovering names it, clicking jumps straight there and flashes the landing |
 | 💾 | **Export / import** | Take a session out, or back up the whole state under a name you choose with one checkbox per section — agents, providers & keys, models, settings, memory, pipelines, conversations, metrics, sessions, shell config, approvals — and restore any of it onto any copy. A section the file lacks is left alone rather than blanked, and a restore keeps this copy's own token |
-| 🧠 | **Dynamic tools** | Teaches each model the environment it's really in — and learns the tool dialect that works |
+| 🧠 | **Dynamic tools** | Teaches each model the environment it's really in — and learns the tool dialect that works, strictly per agent |
 | 🔑 | **API pool** | Rotate a provider's extra keys after N requests; rest them on a 429 |
 | 🌐 | **Built-in browser** | A real Chrome/Edge you and the agents drive — watch, click, type, log in |
 | ♾️ | **Always-On loop** | Standing goals, auto re-prompted on a cadence — caps, hold/release, one master kill switch |
-| 🏋️ | **Training mode** | A paced tool drill for every active agent — ~50% request rate, **Easy 12, Hard 17, Advanced 8, Frontier 6, Browser 9, IDE 8**, or **Custom** in the popup, each Start in a fresh session, sandbox drills in each agent's own `training/` file, retry-until-pass with todo logging — armed from a dumbbell in the Agents header — Start posts the drill into chat so the whole run stays visible, and **`node drill-run.mjs --mode <drill>`** runs any of them headlessly against a real model, graded by the same code |
+| 🏋️ | **Training mode** | A paced tool drill for every active agent — ~50% request rate, **Easy 12, Hard 17, Advanced 8, Frontier 6, Browser 9, IDE 8**, or **Custom** in the popup, each Start in a fresh session, sandbox drills in each agent's own `training/` file, retry-until-pass with todo logging — armed from a dumbbell in the Agents header — Start posts the drill into chat so the whole run stays visible, and **`node drill-run.mjs --mode <drill>`** runs any of them headlessly against a real model, graded by the same code; both clients gate the drill todo plan through one shared path scrub, every object tool unfolds a pasted envelope before it runs, a same-error shape hint (toggleable in the popup) names the flat call after three identical refusals, and an opt-in Real-success only switch stops a think/todo-only run from teaching a dialect |
 | 📖 | **Harness & training guide** | Auto-fit, manual pins and the six- to seventeen-step drills in one place — [Auto Forming Harnesses, Dialects & Training Mode](#-auto-forming-harnesses-dialects--training-mode) |
 | ❝ | **Global pre-prompt** | One instruction for every agent — **prepend** (default) or **replace**, toggled live |
 | 🧠 | **Context assembler** | History & tool output budgeted to each model's *real* window, with live compaction |
@@ -1166,20 +1170,4 @@ runs alike. ✨
 
 - 🧩 **Prepend (default) or Replace — your call.** A toggle **inside the popup**
   (bottom-left) picks the behaviour, and the hint above the box updates to match:
-  - **Prepend (off, default)** — the override is placed **in front of** each agent's own prompt, which still follows. Best for a house rule that everything should obey. 🏠
-  - **Replace (on)** — the override **stands in for** the agent's prompt. Best for a temporary "everyone answer like *this*." 🎭
-- 🪄 **Toggle it live** — **Edit** to write it, **Activate / Deactivate** to arm it without opening the editor. The button **pulses** while it's armed. 💠
-- 🔒 **Stored prompts are never harmed** — the moment you switch it off (or flip back to Prepend), every agent's own prompt returns exactly as it was.
-- ⚠️ **It can fight tools — and the app knows it.** A pre-prompt like *"reply with ONLY text / 9 words"* used to make agents narrate tool calls instead of sending them. The tool instructions now state plainly that a **tool call is the one exception** to any brevity rule, and the loop **re-prompts once** if a model only *says* it will use a tool.
-
-</details>
-
----
-## 🧭 The apps notch — one thumb to everything
-
-A pull-tab centred just under the header **dips into the chat area** — a `\___/`
-notch sized for a thumb. Tapping it drops the **apps menu**: 🧠 **Brain Lab**,
-🧪 **API Lab**, 🔀 the **Routing chart** and 🌐 the **built-in browser** — so a
-phone never has to hunt through the header, and the top rail keeps only what you
-reach for constantly. It closes on an outside tap, on **Esc**, or when you pick
-somethin
+  - **Prepend (off, default)** — the override is placed **in front of** each agent's own 

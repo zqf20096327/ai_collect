@@ -6,7 +6,7 @@
 
 It's a Claude Code plugin that turns Claude into a personal assistant: it keeps looking after the things you hand it, asks before it does anything you haven't allowed, and remembers what you decided.
 
-You give it **goals**, things you want kept true: "fix new issues on my repo and open pull requests", "tell me when the fixes I'm waiting on land in the projects I use", "find me the three best new job ads each week", "unsubscribe me from mailing lists I never read", "clear old installers out of Downloads". Each goal runs on its own schedule in the background of your Claude Code session, on your Claude plan. When it wants to act, it proposes, and you approve or reject from the **Goals pane** beside your chat, or from your phone.
+You give it **goals**: "sell my birdcage on facebook marketplace", "fix new issues on my repo", "find me the three best new job ads each week", "unsubscribe me from mailing lists I never read", "clear old installers out of Downloads". Each goal runs on its own schedule in the background of your Claude Code session, on your Claude plan. When it wants to act, it proposes, and you approve or reject from the **Goals pane** beside your chat, or from your phone.
 
 The idea behind it: persistent intent may matter more than persistent memory.
 
@@ -77,7 +77,7 @@ The pane also keeps **your to-do list** for the project (`/todo <text>`, or ask 
 - **Runs.** Each run is a fresh background subagent in your Claude Code session, with its own context: it doesn't interrupt your conversation, and its report goes to the Goals pane, not your chat. It calls `get_goal_brief` — objective, instructions, memory, your decisions since the last run, open items, recent run summaries, latest health — handles what's new, and ends with `end_run` and a summary for the next run.
 - **Triggers.** Every N minutes (with optional active hours), a cron expression, **Run now**, a **webhook** with a per-goal secret, a failing **health check**, or a **watch**: a command that lists what is there now (open issues, feed entries, files), checked every few minutes, where a line it hasn't printed before starts a run that is told what is new. For mail and other connector-only sources, a watch calls a read-only connector tool instead.
 - **Work items.** Each thing the agent handles is an item, deduplicated by an external ID (e.g. an email's ID) so it's never handled twice. Resolved items are hidden after 7 days.
-- **Autonomy per action category** (e.g. `email.archive`, `email.send`): *off*, *propose* (the agent asks first — the default), or *auto*. Proposals wait under **Needs you**; approve and the next run carries the action out; reject with feedback and the feedback becomes **memory** later runs follow. After 10 approvals in a row, the page suggests switching that category to *auto*.
+- **Autonomy per action category** (e.g. `email.archive`, `email.send`): *off*, *propose* (the agent asks first — the default), or *auto*. Proposals wait under **Needs you**; approve and the next run carries the action out; reject with feedback and the feedback becomes **memory** later runs follow, and a run is queued to redo the proposal or drop it. After 10 approvals in a row, the page suggests switching that category to *auto*.
 - **Enforcement.** With tool rules (`mcp__gmail__send*` → `email.send`), the **quarterdeck-guard** plugin blocks a run's tool call that the goal's autonomy doesn't allow, e.g. sending mail without an approved proposal. A run also can't approve its own proposals or change the goal's settings.
 - **Quarterdeck refuses; Claude Code allows.** The guard never lets a call through on its own. *auto* (or an approved proposal) means Quarterdeck doesn't object, and the call then goes through Claude Code's own permission rules like any other: an allow rule, auto mode's safety review, or a prompt. For a run to act unattended, allow those tools in Claude Code too; an expanded goal in the pane lists the allow rules its *auto* tools need, and Claude can add them for you.
 - **Health.** A command that exits 0 while the goal is being met; the last number it prints is charted (e.g. unread mail older than a day). A failure can start a run.
@@ -100,13 +100,13 @@ The tools for building plans by hand (`create_plan`, `provision_tasks`, `next_ta
 | `list_goals` | Persistent goals with open items and items waiting for review |
 | `get_goal_brief` | Start of a run: everything a fresh agent needs, in one call |
 | `add_item` | Add a work item (deduplicated by `external_ref`); actions are proposed, recorded or refused per the goal's autonomy |
-| `remember` / `forget` | Add a fact, rule or preference to the goal's memory; deactivate one an agent added |
+| `remember` / `forget` | Add a fact, rule or preference to the goal's memory; forget one an agent added (it stays as inactive memory, which you can restore) |
 | `recall` | Read in full the memories the brief only lists (`memory_index`) |
 | `propose_curation` | A memory curation run's one proposal (merge, reword, retire, unpin, add), which the server applies if you approve it |
 | `end_run` | Finish a run with a summary for the next one |
 | `run_goal` | Queue a run now |
 
-The plugins also use `goals_overview`, `goals_tick` (one scheduler pass), `decide_item`, `cancel_run`, `set_goal_status`, `create_goal`, `delete_memory`, `attach_agent`, `fail_run` and `guard_check`. The guard plugin refuses the person's actions among them (approving, cancelling, pausing...) to agents and to Claude.
+The plugins also use `goals_overview`, `goals_tick` (one scheduler pass), `decide_item`, `cancel_run`, `set_goal_status`, `create_goal`, `delete_memory`, `restore_memory`, `restore_goal`, `purge_goal`, `attach_agent`, `fail_run` and `guard_check`. The guard plugin refuses the person's actions among them (approving, cancelling, pausing...) to agents and to Claude.
 
 **Goal items**
 
@@ -272,6 +272,7 @@ The packages use Vitest with `QUARTERDECK_DB=:memory:` so tests are isolated and
 | `QUARTERDECK_TOOLS` | goals | MCP server: `all` also lists the plan tools (hidden by default) |
 | `QUARTERDECK_REQUIRE_DECOMPOSE` | off | MCP server, plan tools: `1` blocks activating a task with no sub-tasks unless `state.atomic` is true |
 | `QUARTERDECK_STRICT_COMPLETE` | off | MCP server, plan tools: `1` blocks completing a task while any child is unresolved (otherwise a warning) |
+| `QUARTERDECK_DELETED_RETENTION_DAYS` | 30 | MCP server: days a deleted goal can be restored before the scheduler erases it for good; `0` keeps deleted goals until you delete them permanently |
 | `QUARTERDECK_ALLOWED_HOSTS` | — | Web server: extra `host:port` values to accept besides localhost (comma-separated) |
 
 The MCP server gets Claude Code's environment, so set its variables where Claude Code starts, or under `env` in `~/.claude/settings.json`.

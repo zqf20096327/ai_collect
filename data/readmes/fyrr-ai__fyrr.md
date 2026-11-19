@@ -1,8 +1,8 @@
 <p align="center">
-  <a href="https://fyrr.dev"><img src="docs/assets/banner.png" alt="fyrr: serverless context layer for AI agents. No database. Just a bucket. The logo over a dithered sea chart of knowledge islands named after the apps it indexes." width="100%"></a>
+  <a href="https://fyrr.dev"><img src="docs/assets/banner.png" alt="fyrr: serverless context layer for software factories and AI agents. No database. Just a bucket. The logo over a dithered sea chart of knowledge islands named after the apps it indexes." width="100%"></a>
 </p>
 
-<p align="center"><b>The serverless, permission-aware context layer for AI agents. No database. Just a bucket.</b></p>
+<p align="center"><b>Blazing-fast, serverless context layer for software factories and AI agents. No database. Just a bucket.</b></p>
 
 <p align="center">
   <a href="https://fyrr.dev">Website</a> ·
@@ -19,7 +19,36 @@
 
 > **Pre-1.0.** Cloud connectors are tested against synthetic APIs only.
 
-## Why fyrr
+## For coding agents
+
+**Coding agents know your code. fyrr gives them everything else.** An agent
+that writes code on its own sees only the repository. It does not know why
+the ticket exists, what the team agreed in chat or what was already tried.
+fyrr lets it look that up.
+
+- **Understand: it reads the ticket and the discussion first.** Before it
+  writes code, the agent searches your tickets, chats, pull requests and docs
+  for what was asked, agreed and already tried
+  ([MCP tools](docs/mcp-tools.md)).
+- **Scale: run as many agents as you like.** Every agent searches the same
+  index straight from your S3 bucket. There is no server to grow when you add
+  more agents ([topology](docs/deployment.md#topology)).
+- **Protect: each agent sees only what it needs.** Let bug-fixing agents read
+  engineering docs and nothing else. If a malicious issue tricks one into
+  looking for salaries, it finds nothing ([security](docs/security.md)).
+- **Trace: see what the agent had read.** Every search result says which
+  version of your knowledge it came from. When a change goes wrong, you can
+  check what the agent knew.
+
+A software factory is a set of coding agents that turn tickets into pull
+requests with nobody watching each step.
+[Set one up with fyrr](docs/software-factory.md).
+
+## For people and their AI
+
+**Ask the whole company. Without asking the whole company.** The same context
+layer answers the AI apps your people already use. Everyone asks in their own
+words and gets only what they are allowed to read.
 
 - **Find: works in the AI you already use.** Plug fyrr into Claude, Cursor or
   any MCP app. Ask there, and it searches your docs, chats, tickets and code
@@ -30,8 +59,7 @@
   not exist, and missing permission data refuses rather than guesses
   ([how](docs/architecture.md#authorization), [security](docs/security.md)).
 - **Scale: as many readers as you need.** Readers only read from the bucket
-  and never coordinate, so you add more as you grow
-  ([topology](docs/deployment.md#topology)).
+  and never coordinate, so you add more as you grow.
 - **Own: your data stays yours.** It runs in your own cloud. Text leaves it
   only for the embedding model you choose.
 
@@ -72,7 +100,11 @@ Every way: no database. See [use cases](https://fyrr.dev/use-cases) and
 
 ## Quick start
 
-Follow the [quickstart](docs/quickstart.md) to search a Markdown folder from
+With Docker, the [published image](docs/quickstart.md#fastest-the-published-image)
+indexes a Markdown folder and answers over MCP in a few commands, with no
+build.
+
+To build from source, follow the [quickstart](docs/quickstart.md) to search a Markdown folder from
 Claude Code using a private local directory. It needs Linux x86-64 and the
 tools git, curl, unzip, openssl, Python 3.11+, rustup, uv, a C compiler, jq,
 binutils, network access and about 10 GiB free; no accounts
@@ -100,7 +132,8 @@ The example's top hit is `notes/backup.md`, with the answer:
 
 - **You need a stable release.** fyrr is pre-1.0: storage formats and the
   MCP schema may break before 1.0; data is then republished, not migrated.
-  Releases (binaries, images, the SDK wheel) will be published from `v*` tags.
+  [Releases](https://github.com/fyrr-ai/fyrr/releases) carry binaries, images
+  and the SDK wheel.
 - **You need proven cloud connectors.** Google Drive, Notion, GitHub, Slack
   and Jira have been tested only against synthetic APIs, not real workspaces.
 - **Your documents are not text.** There is no PDF, Office or image
@@ -125,6 +158,7 @@ The example's top hit is `notes/backup.md`, with the answer:
 | [Deployment](docs/deployment.md) | Production setup, images and scheduling |
 | [AWS Lambda](docs/lambda.md) | Experimental reader deployment |
 | [Operations](docs/operations.md) | Monitor, restore, retire and upgrade |
+| [Software factories](docs/software-factory.md) | Context for a fleet of unattended coding agents |
 | [Configuration](docs/configuration.md) | Storage, embeddings, sources and secrets |
 | [Identity](docs/identity.md) | Users, directories, keys and OIDC |
 | [Tuning](docs/tuning.md) | Namespace and retrieval settings |

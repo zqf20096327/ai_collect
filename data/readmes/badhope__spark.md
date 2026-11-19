@@ -1,159 +1,103 @@
-> 🌐 **English** | [中文](README_zh.md)
+> **English** | [中文](README_zh.md)
 
 # Spark
 
-**A local-first AI coding agent with guardrails you can audit.**
+**Local-first AI coding agent and office workbench, with guardrails you can audit.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-brightgreen.svg)](https://www.python.org/)
-[![Node 18+](https://img.shields.io/badge/node-18%2B-339933.svg)](https://nodejs.org/)
-[![CI](https://github.com/badhope/spark/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/spark/actions/workflows/ci.yml)
-[![Security](https://github.com/badhope/spark/actions/workflows/security.yml/badge.svg)](https://github.com/badhope/spark/actions/workflows/security.yml)
-
-Approval, three-OS sandboxing, checkpoint rollback and provider resilience are
-engineered in — not bolted on. One agent loop, seven surfaces. Bring your own
-OpenAI-compatible endpoint: no account, no telemetry, no vendor lock-in.
+Spark gives you one agent loop across the terminal, browser, desktop, IDE and API. Every write is gated by approval and a sandbox, every turn can be rolled back, and the model layer works with any OpenAI-compatible endpoint.
 
 ```bash
-# Linux / macOS — SHA256-verified
+# Linux / macOS — SHA256-verified installer
 curl -fsSL https://raw.githubusercontent.com/badhope/spark/main/scripts/install.sh | sh
 
 # Windows (PowerShell)
 irm https://raw.githubusercontent.com/badhope/spark/main/scripts/install.ps1 | iex
 
-spark init    # point it at any OpenAI-compatible endpoint
-spark web     # open the UI (auto-picks a free port)
+spark init    # connect any OpenAI-compatible endpoint
+spark web     # open the browser UI
 ```
 
-No API key? Spark starts in **demo mode** with a mock model. Paste a key in
-settings and the next turn uses the real model — no restart.
+No API key? Spark starts in demo mode with a local mock model. Add a key in settings and the next turn uses the real model without a restart.
 
-<p align="center">
-  <img src="assets/screenshots/11-chat.png" alt="Chat with reasoning, tool calls and a live context meter" width="100%">
-</p>
+![Spark chat with reasoning, tool calls and a live context meter](assets/screenshots/11-chat.png)
 
----
+## What it does
 
-## What it does for you
+- **Auditable execution.** Approval modes and sandbox levels are enforced before a write or command runs. Wildcard rules are scoped to user, project and local config; `deny` always wins. Protected credential paths and shell token checks stay on.
+- **Recoverable by design.** Each turn snapshots the workspace and can restore files and conversation together, including outside git repositories.
+- **Task-as-branch.** Start a task, commit each verified step, and finish on green tests; a failed run abandons its branch instead of leaking changes.
+- **Built for real files.** The office workbench turns documents, meeting recordings and spreadsheets into cited minutes, action items, reports and exports. Local OCR and transcription keep the source on your machine.
+- **Provider freedom.** Any OpenAI-compatible endpoint, fallback model chain and credential pool, plus a separate small model for auxiliary calls.
 
-| | |
-|---|---|
-| **Seven surfaces, one brain** | Web UI · desktop window · Textual TUI · scriptable CLI · ACP (Zed & co.) · MCP server · A2A server. Same loop, same tools, same permissions everywhere. |
-| **Approval you can audit** | Six approval modes × four sandbox levels. A wildcard rule engine where `deny` wins across user/project/local scopes. Protected credential paths. Token-level shell checks. |
-| **Rollback without fear** | Every turn snapshots the workspace (tar.gz + manifest verification). Roll back files *and* conversation — works in non-git directories. |
-| **Task-as-branch** | `task_begin` → `task_step_commit` → `task_finish`. Green tests gate each commit; a red run abandons the branch. A first-class tool, not a demo. |
-| **AI reviews AI** | `spark review` audits your diff in a forced read-only, sandbox-only turn and returns severity-ranked findings. `--json` for CI. |
-| **Resilient providers** | A credential pool rotated on failure, a fallback model chain, and a small model for cheap auxiliary calls. One exhausted key never blocks a turn. |
-| **Memory with governance** | AGENTS.md hierarchy (global + project + nested) plus vector long-term memory with dedup merge and capacity eviction, manageable from the UI. |
-
-## See it
-
-**Settings — models.** Any OpenAI-compatible endpoint, saved profiles, a real
-connection probe, three reasoning-effort levels mapped to provider-native params.
-
-<img src="assets/screenshots/12-settings-model.png" alt="Model settings with provider presets and a connection test" width="100%">
-
-**Settings — permissions and sandbox.** Four access levels with explicit
-behaviour descriptions. The protected-path list is user-editable; `.git/hooks`,
-`~/.spark` and Spark's own source always stay protected.
-
-<img src="assets/screenshots/13-settings-permissions.png" alt="Permission and sandbox settings" width="100%">
-
-**Settings — code wiki.** Generate a traceable manual from your source tree:
-one symbol table per module, real line numbers, incremental rebuilds, no
-network and no model required.
-
-<img src="assets/screenshots/14-settings-wiki.png" alt="Code wiki panel showing the generated project overview" width="100%">
-
-**Scheduled tasks.** Cron-triggered prompts that share the same agent. Work
-missed while the process was down is caught up once on the next start; a busy
-agent skips rather than queues.
-
-<img src="assets/screenshots/19-automations.png" alt="Scheduled automations" width="100%">
-
-**Command palette.** `Ctrl+K` fuzzy-jumps to every surface: new session,
-checkpoints, turn replay, file viewer, web reader, share export, theme, language.
-
-<img src="assets/screenshots/15-command-palette.png" alt="Command palette" width="100%">
-
-## Quick start
+## Run it
 
 ```bash
-spark                         # TUI
-spark web                     # browser UI on 127.0.0.1 (auto-picks a port)
+spark                         # terminal TUI
+spark web                     # browser UI on loopback
 spark desktop                 # native window, loopback only
-spark exec "task" --json      # NDJSON event stream for scripts and CI
-spark review                  # audit the uncommitted diff
-spark wiki --refresh          # regenerate the local code wiki
-spark doctor                  # diagnose config, credentials, runtime
-spark uninstall --list        # show exactly what would be removed
+spark exec "task" --json      # NDJSON events for scripts and CI
+spark review                  # inspect the uncommitted diff
+spark doctor                  # check config, credentials and runtime
 ```
 
-`spark exec` streams one JSON object per line and ends with
-`{"type":"final","text":"…"}`, so it pipes into `jq` without post-processing.
-
-## Seven surfaces
-
-| Form | Command | Use case |
-|---|---|---|
-| Web UI | `spark web` | Everyday chat, file viewer, terminal, execution graph |
-| Desktop | `spark desktop` | Native pywebview window, loopback-only |
-| TUI | `spark` | Pure terminal / SSH |
-| CLI | `spark exec "task" --json` | Automation, CI, piping |
-| IDE (ACP) | `spark acp` | Zed and other ACP clients — [docs/ACP.md](docs/ACP.md) |
-| MCP server | `spark mcp-serve` | Expose every built-in tool to other MCP clients |
-| A2A server | `spark a2a-serve` | Agent-to-agent delegation — [docs/A2A.md](docs/A2A.md) |
-
-## How the guardrails fit together
-
-Three layers, each narrowing the previous one:
-
-1. **Approval** — six modes from `plan-only` (plan, change nothing) to
-   `full-auto`. The default `suggest` asks before any write or command.
-2. **Sandbox** — `sandbox-only` / `workspace` (default) / `full-access` /
-   `unrestricted`. Path escapes and protected paths are refused outright.
-3. **Rules** — `[[permission_rules]]` match tool + resource across three scopes.
-   `deny` wins across scopes, so a cloned repository can tighten permissions
-   but never grant itself more.
-
-OS-level isolation is layered on top: bwrap on Linux, a Job Object on Windows
-(process-tree kill-on-close plus a memory ceiling), `sandbox-exec` on macOS.
-Where a platform cannot enforce something, the tool result says so instead of
-pretending.
-
-## Verified locally, not just in CI
+The office workbench runs through the enterprise control plane:
 
 ```bash
-pytest -q                                  # ~1400 tests
-ruff check src tests scripts
-mypy src/spark --ignore-missing-imports
-bandit -r src/spark -ll -ii -c bandit.yaml
-lint-imports                               # 5 architecture contracts
+spark enterprise --host 127.0.0.1 --port 18800
+# http://127.0.0.1:18800/office
 ```
 
-CI additionally runs secret scanning (gitleaks + trufflehog), an OpenAPI
-snapshot freshness check, a coverage floor, a Windows-reserved-path check,
-packaging checks, and a mock-mode agent eval suite on Linux and Windows.
+`spark exec` emits one JSON object per line and ends with `{"type":"final","text":"…"}`, so it pipes directly into `jq`.
+
+## Interfaces
+
+| Interface | Command | Use it for |
+|---|---|---|
+| Web UI | `spark web` | Chat, files, terminal, execution graph |
+| Enterprise API | `spark enterprise` | `/api/v1` control plane and `/office` |
+| Desktop | `spark desktop` | Native window, loopback only |
+| TUI / CLI | `spark` · `spark exec --json` | Terminal work and automation |
+| IDE / ACP | `spark acp` · `spark ide install` | Zed, JetBrains, Neovim |
+| MCP / A2A | `spark mcp-serve` · `spark a2a-serve` | Tool and agent-to-agent integration |
+
+## Safety model
+
+Three layers narrow each other:
+
+1. **Approval** — from plan-only to full-auto. The default asks before writes and commands.
+2. **Sandbox** — workspace isolation by default; escapes and protected paths are refused.
+3. **Rules** — tool and resource matching across user, project and local scopes. A cloned repository can tighten permissions, never grant itself more.
+
+OS-level isolation is used where available: bwrap on Linux, Job Objects on Windows, `sandbox-exec` on macOS. When a platform cannot enforce a control, the tool result says so instead of pretending.
 
 ## Documentation
 
-| Document | Contents |
+| Doc | 中文 |
 |---|---|
-| [docs/INSTALL.md](docs/INSTALL.md) | Install, package, desktop build, auto-update, uninstall |
-| [docs/CONFIG.md](docs/CONFIG.md) | Every config key and environment variable |
-| [docs/API.md](docs/API.md) | HTTP API and SSE event protocol |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layering and module boundaries |
-| [docs/FEATURES.md](docs/FEATURES.md) | Feature-by-feature implementation map |
-| [docs/A2A.md](docs/A2A.md) | A2A agent card, streaming, task lifecycle |
-| [docs/competitive-comparison.md](docs/competitive-comparison.md) | How it compares to Qoder / ZCode / opencode / Codex CLI |
-| [docs/reviews/](docs/reviews/) | Audit reports with findings, fixes and honest limits |
-| [vscode-spark/](vscode-spark/) | VS Code extension |
+| [Install & build](docs/en/INSTALL.md) | [安装与打包](docs/INSTALL.md) |
+| [Configuration](docs/en/CONFIG.md) | [配置](docs/CONFIG.md) |
+| [HTTP API](docs/en/API.md) | [API](docs/API.md) |
+| [Architecture](docs/en/ARCHITECTURE.md) | [架构](docs/ARCHITECTURE.md) |
+| [Features](docs/FEATURES.md) | [功能总览](docs/FEATURES.md) |
+| [Enterprise control plane](docs/ENTERPRISE.md) | [企业控制面](docs/ENTERPRISE.md) |
+| [A2A protocol](docs/A2A.md) | [A2A](docs/A2A.md) |
+| [ACP / IDE setup](docs/ACP.md) | [IDE 接入](docs/ACP.md) |
 
-## Platform requirements
+More: [docs index](docs/README.md) · [English docs](docs/en/README.md) · [VS Code extension](vscode-spark/README.md) · [audit notes](docs/reviews/).
 
-- Python 3.11+ — or the bundled executable, no Python needed
-- Node.js 18+ for frontend development only (release builds ship compiled assets)
-- Windows / macOS / Linux
+## Verify locally
+
+```bash
+pytest -q
+ruff check src tests scripts
+mypy src/spark --ignore-missing-imports
+```
+
+CI also runs a Windows checkout check, frontend build drift, packaging checks, a secret scan, an OpenAPI snapshot check and a mock-mode agent eval.
+
+## Requirements
+
+Python 3.11.5+ (or the bundled executable), Node.js 18+ only for frontend development, Windows / macOS / Linux.
 
 ---
 

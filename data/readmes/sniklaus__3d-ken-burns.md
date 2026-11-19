@@ -38,6 +38,11 @@ To benchmark the depth estimation, run `python benchmark-ibims.py` or `python be
 ## colab
 If you do not have a suitable environment to run this projects then you could give Colab a try. It allows you to run the project in the cloud. There are several people who provide Colab notebooks that should get you started. A few that I am aware of include one from [Arnaldo Gabriel](https://colab.research.google.com/github/agmm/colab-3d-ken-burns/blob/master/automatic-3d-ken-burns.ipynb), one from [Vlad Alex](https://towardsdatascience.com/very-spatial-507aa847179d), and one from [Ahmed Harmouche](https://github.com/wpmed92/3d-ken-burns-colab).
 
+## poses
+We recently extracted camera poses from the save files of the engine to make the dataset even more useful, you can download them [here](http://content.sniklaus.com/kenburns/poses.zip) and you can find some related scripts in the `poses` directory within this repository. Please note that we weren't able to recover all poses reliably (notice the `good` flag for each frame), so I would encourage you to see [#71](https://github.com/sniklaus/3d-ken-burns/issues/71) for more details.
+
+<a href="http://content.sniklaus.com/kenburns/poses.zip"><img src="http://content.sniklaus.com/kenburns/poses.gif" width="640" height="360"></a>
+
 ## dataset
 This dataset is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode) and may only be used for non-commercial purposes. Please see the LICENSE file for more information.
 

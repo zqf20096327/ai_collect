@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml"><img src="https://github.com/h4lo-void/bageo-call/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/release-v1.4.0-brightgreen.svg" alt="Release v1.4.0"></a>
+  <a href="https://github.com/h4lo-void/bageo-call/releases/tag/v1.6.9"><img src="https://img.shields.io/badge/release-v1.6.9-brightgreen.svg" alt="Release v1.6.9"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg" alt="License: AGPL-3.0-only"></a>
   <a href="COMMERCIAL_LICENSE.md"><img src="https://img.shields.io/badge/commercial-dual%20license-gold.svg" alt="Commercial License Available"></a>
 </p>
@@ -220,8 +220,10 @@ Every feature in detail: [Features](docs/en/FEATURES.md).
 
 ## Quick start
 
-1. **Download** the file for your system from [Releases](https://github.com/h4lo-void/bageo-call/releases): `bageo-call-<version>-windows-x64-setup.exe` for Windows, `bageo-call-<version>-macos-arm64.dmg` (Apple chip) or `bageo-call-<version>-macos-x64.dmg` (Intel) for macOS, `bageo-call-<version>-linux-x64.tar.gz` for Linux.
-2. **Install and start it.** Windows: double-click the `setup.exe` and click the **Bageo** shortcut on the desktop. macOS: open the `.dmg`, drag Bageo into Applications and click it. Linux: unpack and run `./start.sh`. The console opens at <http://localhost:8787/>.
+If the phone is already rooted, it takes about 3 minutes from download to the first call the AI answers.
+
+1. **Download** the file for your system from [Releases](https://github.com/h4lo-void/bageo-call/releases): `bageo-call-<version>-windows-x64-setup.exe` for Windows, `bageo-call-<version>-macos-arm64.dmg` (Apple chip) or `bageo-call-<version>-macos-x64.dmg` (Intel) for macOS, `bageo-call-<version>-linux-x64.tar.gz` for Linux. For Docker, ready-made images are on `bageo/bageo-call` and `ghcr.io/h4lo-void/bageo-call`. In Docker the phone pairs by IP address with a code from the web console; see [Phone setup → Wi-Fi](docs/en/PHONE.md#wi-fi).
+2. **Install and start it.** Windows: double-click the `setup.exe` and click the **Bageo** shortcut on the desktop. macOS: open the `.dmg`, drag Bageo into Applications and click it. Linux: unpack and run `./start.sh`. The console opens at <http://localhost:8787/>, and <http://bageo.local/> also works on this computer and on the same Wi-Fi once a console password is set.
 3. **Fill in the basics** under **Settings**: your Gemini API key, your name and the language. Press ▶ to hear the voices and pick one.
 4. **Prepare the phone** once: install `bageo-phone-module-<version>.zip` as a module in Magisk or KernelSU, reboot, open the **Bageo** app, work through its checklist and plug the phone in.
 5. **Call it** from another phone: one ring, and the AI answers.
@@ -234,10 +236,10 @@ Stuck? Every step in detail: [Getting started](docs/en/GETTING_STARTED.md) · [P
 |---|---|
 | **Start** | [Getting started](docs/en/GETTING_STARTED.md) · [Phone setup](docs/en/PHONE.md) · [Troubleshooting & FAQ](docs/en/TROUBLESHOOTING.md) |
 | **Use** | [Features](docs/en/FEATURES.md) · [Chat commands & notifications control](docs/en/CHAT_COMMANDS.md) · [Writing the prompt](docs/en/PROMPTS.md) · [Settings reference](docs/en/SETTINGS.md) · [Notifications](docs/en/NOTIFICATIONS.md) |
-| **Go deeper** | [Architecture](docs/en/ARCHITECTURE.md) · [API](docs/en/API.md) · [Roadmap](docs/en/ROADMAP.md) · [Release notes v1.0](CHANGELOG.md) · [`android/`](android/README.md) · [`tools/sms_forward/`](tools/sms_forward/README.md) |
+| **Go deeper** | [Architecture](docs/en/ARCHITECTURE.md) · [API](docs/en/API.md) · [MCP](docs/en/MCP.md) · [Roadmap](docs/en/ROADMAP.md) · [Changelog](CHANGELOG.md) · [`android/`](android/README.md) · [`tools/sms_forward/`](tools/sms_forward/README.md) |
 | **Legal** | [Privacy, safety and the law](docs/en/PRIVACY_AND_LEGAL.md) · [Legal disclaimer & operator terms](LEGAL.md) · [Dual & commercial licensing](COMMERCIAL_LICENSE.md) · [Project security & compliance audit](AUDIT_REPORT.md) |
 
-**Test status:** more than 520 automated tests in CI, 234 simulated calls in 28 languages, and real calls on Pixel 7, 7a and 9. [Details](docs/en/FEATURES.md#test-status). Reports from other phones and languages help the most: [CONTRIBUTING.md](CONTRIBUTING.md).
+**Test status:** more than 1,400 automated tests in CI, 234 simulated calls in 28 languages, and real calls on Pixel 7, 7a and 9. [Details](docs/en/FEATURES.md#test-status). Reports from other phones and languages help the most: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## FAQ
 

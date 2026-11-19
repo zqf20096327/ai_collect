@@ -1,3 +1,4 @@
+<!-- MICA:INVOKE manifest="mica.yaml" -->
 <p align="center">
   <img src="https://raw.githubusercontent.com/flamehaven01/AI-SLOP-Detector/main/docs/assets/logo.png" alt="AI-SLOP Detector - Ship Code. Not Slop." width="560"/>
 </p>
@@ -12,8 +13,8 @@ Find warning signs of unfinished code in Python, JavaScript/TypeScript, Go, and 
 </p>
 
 <p align="center">
-  <a href="https://pypi.org/project/ai-slop-detector/"><img src="https://img.shields.io/pypi/v/ai-slop-detector.svg?v=3.16.3" alt="PyPI version"/></a>
-  <a href="https://www.npmjs.com/package/ai-slop-detector"><img src="https://img.shields.io/npm/v/ai-slop-detector.svg?v=3.16.3" alt="npm version"/></a>
+  <a href="https://pypi.org/project/ai-slop-detector/"><img src="https://img.shields.io/pypi/v/ai-slop-detector.svg?v=3.17.0" alt="PyPI version"/></a>
+  <a href="https://www.npmjs.com/package/ai-slop-detector"><img src="https://img.shields.io/npm/v/ai-slop-detector.svg?v=3.17.0" alt="npm version"/></a>
   <a href="https://marketplace.visualstudio.com/items?itemName=Flamehaven.vscode-slop-detector"><img src="https://vsmarketplacebadges.dev/version-short/Flamehaven.vscode-slop-detector.svg" alt="VS Code Marketplace version"/></a>
   <a href="https://pypi.org/project/ai-slop-detector/"><img src="https://img.shields.io/pypi/pyversions/ai-slop-detector.svg" alt="Python versions"/></a>
   <a href="https://github.com/flamehaven01/AI-SLOP-Detector/blob/main/docs/PATTERNS.md"><img src="https://img.shields.io/badge/languages-Python%20%7C%20JS%2FTS%20%7C%20Go%20%7C%20Rust-informational" alt="Languages: Python, JS/TS, Go, Rust"/></a>
@@ -54,7 +55,7 @@ tell whether a person or an AI wrote the code; it reports what is in the code.
 - **55 rules** across Python (37), JavaScript/TypeScript (8), Go (6) and Rust (4)
 - **Deterministic**: the same input gives byte-identical JSON
 - **Local only**: no API key, no model download, no network call during a scan
-- **Everywhere you work**: terminal, VS Code, CI gates, pre-commit, AI agents (MCP)
+- **Everywhere you work**: terminal, VS Code, CI gates, pre-commit, AI agents (CLI JSON and a Claude Code skill)
 
 ## Quick Start
 
@@ -281,9 +282,9 @@ more: [CI/CD in the guide](https://github.com/flamehaven01/AI-SLOP-Detector/blob
 
 | Surface | How |
 |---|---|
-| **MCP server** | `slop-detector mcp` (or `npx ai-slop-detector mcp`) for Claude Code and other MCP clients |
 | **Claude Code skill** | `cp -r claude-skills/slop-detector ~/.claude/skills/`: a review loop of `review`, `pulse`, `sweep` with JSON output |
 | **AI work order** | `--format ai-md`, bound to the SHA-256 of each scanned file (see [What You Get](#what-you-get)) |
+| **MCP server** | `slop-detector mcp` frames each message with a `Content-Length` header; the MCP specification's stdio transport is newline-delimited JSON, so a client that follows the specification gets no reply. Use the CLI JSON or the skill; a server on the official MCP SDK is planned for 3.18 |
 | **REST** | A local FastAPI server (`[api]` extra) that binds `127.0.0.1` |
 | **Node** | `npx ai-slop-detector` runs the same Python backend; typed results at `ai-slop-detector/types` |
 
@@ -306,6 +307,14 @@ output is not read as permission for blind edits.
 cp -r claude-skills/slop-detector ~/.claude/skills/
 pip install ai-slop-detector
 ```
+
+**An agent working on this repository** starts from its memory:
+[`mica.yaml`](https://github.com/flamehaven01/AI-SLOP-Detector/blob/main/mica.yaml)
+selects the decisions a change must not undo, each with the test or the
+explicit verification procedure that holds it, and the procedure for
+verifying and releasing. Load it with the context
+emitter of [MICA](https://github.com/flamehaven01/Flamehaven-MICA)
+(`python <MICA_ROOT>/tools/mica_runtime.py . --format context`).
 
 Details: [Claude Code integration](https://github.com/flamehaven01/AI-SLOP-Detector/blob/main/docs/GUIDE.md#claude-code-integration) ·
 [docs/CLAUDE_CODE_SKILL.md](https://github.com/flamehaven01/AI-SLOP-Detector/blob/main/docs/CLAUDE_CODE_SKILL.md) ·
@@ -386,6 +395,11 @@ Use a linter for correctness-of-form. Use this for "is this code real, or just p
 ---
 
 ## Release Highlights
+
+**v3.17.0**: the terminal summary fits one window (score, band and meter,
+`Fix first`, one `Next` step), progress shows in a box, `--interactive` lets
+you pick the reports to save, and six fix texts now recommend only changes
+that resolve their finding. Scoring is unchanged.
 
 **v3.16.3**: a file with an `fp:` declaration stays in every scan; from the
 second scan on it failed to load from the analysis cache (a single-file scan

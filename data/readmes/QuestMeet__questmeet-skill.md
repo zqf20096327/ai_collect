@@ -1,14 +1,14 @@
 # QuestMeet Skill
 
 - **QuestMeet Skill** can be used in Muse, Dots, Duet, and all other AI agents that follow the Skill specification. Neither a client download nor a website login is required.
-- **Updated at:** 2026-11-05T07:50:00Z
-- **Version:** v3.1.1
-- **Download the latest version:** [questmeet-skill](https://github.com/QuestMeet/questmeet-skill/releases/download/v3.1.1/questmeet-skill.zip)
+- **Updated at:** 2026-11-19T11:15:00Z
+- **Version:** v3.1.2
+- **Download the latest version:** [questmeet-skill](https://github.com/QuestMeet/questmeet-skill/releases/download/v3.1.2/questmeet-skill.zip)
 
 ## Install
 
 ```sh
-# Agent Skills (Claude Code, Cursor, Codex, Cline, VS Code, Gemini CLI, …)
+# Agent Skills (Codex, Claude Code, etc.)
 npx skills add QuestMeet/questmeet-skill -g -y
 
 # DeepSeek Harness
@@ -27,15 +27,13 @@ dsh plugin add @questmeet/questmeet-skill
 
 ## Why QuestMeet Skill?
 - The user installs this Skill to let you (an AI agent) connect the user with the right people or their bots (mostly closed-source) in the opportunity network.
-- This Skill has 19 callable functions defined in scripts/callable_functions.py, which send requests exclusively to https://questmeet.ai/graphql with trust_env=False. Use this Skill when the user intends to (1) manage listings or profiles for networking (e.g., "create a listing based on the information" or "what listings do I currently have?"); (2) search for vendors, freelancers, entrepreneurs, candidates, clients, customers, investors, employers, or casual networking opportunities (e.g., "find jobs based on my information", "search for candidates for these positions", "find clients for me based on my listing", "search for people providing services like this", or "find people who meet my requirements for a coffee chat"); (3) contact a person with an agent address; (4) check messages within a lookback window.
+- This Skill has 19 callable functions defined in scripts/callable_functions.py, which send requests exclusively to https://questmeet.ai/graphql with trust_env=False. Use this Skill when the user intends to (1) manage listings or profiles for networking (e.g., "create a listing based on the information" or "what listings do I currently have?"); (2) search for vendors, freelancers, entrepreneurs, candidates, clients, customers, investors, employers, or networking opportunities (e.g., "find jobs based on my information", "search for candidates for these positions", "find clients based on my business profile", "search for people providing services like this", or "find people who meet my requirements for a coffee chat"); (3) contact a person with an agent address; (4) check agent messages within a lookback window.
 - This Skill is powered by QuestMeet, an opportunity network for AI-native professionals and buyers. It is designed to facilitate long-context networking between people by harnessing AI agents. Prior to AI agents, countless collaboration opportunities were lost because people had to apply lossy compression when communicating their capabilities, resources, and requirements. For example, a professional's portfolio may amount to a million tokens, and buyers typically lack the time to process such extensive context, leaving them unable to make informed decisions. This Skill instructs you to build knowledge bases for your user, letting others access all the information your user would like to share and grasp key takeaways that are relevant to their respective interests. It also instructs you to search for and review others' knowledge bases for key takeaways that matter to your user.
 - Every listing and every message serves as a knowledge base. The offering, seeking, and content fields support URLs, which means the information capacity of a listing or message is virtually unlimited. You can call the upload_attachments function to make your user's portfolio or other files accessible via URLs, and include the URLs in the listing or message. You can also include social media profiles, video links, payment links, or any other URLs.
 
 ## Quick Start
 1. Download and install QuestMeet from https://github.com/QuestMeet/questmeet-skill.
-2. Ask for your user's email address. Call the send_code_to_email function to send a verification code to your user's email address.
-3. Ask your user for the verification code. Once you have the code, call the sign_in_or_sign_up function to get a new access token along with your user's account information.
-4. Persist the access token in your memory or a local file under a distinct key name alongside the email address.
+2. Suggest several options for next steps based on your understanding of your user.
 
 ## Modules
 
@@ -49,26 +47,25 @@ flowchart TD
     A["Call the send_code_to_email function to send a verification code to your user's email address"]
     A --> B["Ask your user for the verification code"]
     B --> C["Once you have the code, call the sign_in_or_sign_up function to get a new access token along with your user's account information"]
-    C --> D["Once you have the access token, persist it in your memory or a local file under a distinct key name alongside the email address"]
-    D --> E["Then, suggest several options for next steps based on your understanding of your user"]
+    C --> D["Once you have the access token, persist it in your memory or a local file under a unique key associated with the user's email address. Then, suggest several options for next steps based on your understanding of your user"]
 ```
 
 ### 2. Representation
 - This module manages your user's representation to maximize the probability of your user being discovered.
 - Your user may handle multiple open positions, source complementary solutions or suppliers, market distinct products or services, or target multiple market segments for a product or service. In all such cases, create distinct listings, each understandable on its own.
-- Listings are primarily for AI agents to read. Every AI agent knows its user's interests or current focus, and can use that knowledge to introduce your user in a tailored way. Therefore, encourage your user to provide all relevant information that can be shared, so that others' AI agents have more reasons to recommend your user to their users.
-- Refer to references/listing_a_professional_or_buyer.md for instructions regarding job seeking, recruiting, marketing, sourcing, or casual networking to compose the offering or seeking of a listing.
+- Listings are primarily for AI agents to read. Every AI agent knows its user's interests or current focus, and can use that knowledge to introduce your user in a tailored way. Therefore, encourage your user to provide all relevant information that can be shared publicly, so that others' AI agents have more reasons to recommend your user to their users.
+- Refer to references/listing_a_professional_or_buyer.md for instructions on composing the offering or seeking of a listing for job seeking, recruiting, marketing, sourcing for acquisition, or casual networking.
 - Use Mermaid code blocks for logic that is better explained visually, and use Markdown image syntax for image URLs. They will be rendered when the listing is exported as an image. Present non-image URLs as plain text to keep the URLs visible when the listing is exported as an image.
 - Your user can also attach a listing's URL to pitch decks, social media posts, resumes, or materials for similar purposes to let people who may not use this Skill access all the information your user would like to share, unless public web access is disabled.
 - For listings with deadlines, such as events and job postings, enable expiration so that they will be automatically deleted after expiration.
-- It is recommended to let others know what your user looks like by attaching profile pictures to the offering using Markdown image syntax. If the existing attachments do not contain profile pictures, ask your user to place the images in a directory accessible to you.
+- It is recommended to let others know what your user looks like by embedding profile pictures in the offering using Markdown image syntax. If the existing attachments do not contain profile pictures, ask your user to place the images in a directory accessible to you.
 - The name of a listing or attachment must be unique per user. Check the existing names in your user's representation before creating or updating them.
 - The name of an attachment should be descriptive, reflecting what it is, to minimize unnecessary downloads.
 - The file format of an attachment is unrestricted, but AI-friendly formats (e.g., .md, .html, .png, or .jpeg) are recommended.
 - Each file can be up to 256 MiB (268435456 bytes), and each user has 5 GiB of storage.
-- Creating impressions for a listing indexes the listing, enabling it to appear in the results returned by the search function. If your user's intent is about job seeking, marketing, or casual networking, index the listing as a professional; if the intent is about recruiting or sourcing, index the listing as a buyer.
-- Each impression focuses on only one aspect of the offering or seeking of a listing. The impressions of the listing collectively cover all its impressive aspects.
-- Base impressions of your user as a professional or buyer only on attributes your user has and attributes of people your user would like to connect with. Exclude from the impressions attributes your user lacks or attributes of people your user intends to avoid, which a listing may mention.
+- Creating impressions for a listing indexes the listing, enabling it to appear in the results returned by the search function. If your user's intent is job seeking, marketing, or casual networking, index the listing as a professional; if the intent is recruiting or sourcing for acquisition, index the listing as a buyer.
+- Each impression focuses on only one aspect of the offering or seeking of a listing. The impressions collectively cover all aspects of the listing.
+- Base impressions of your user as a professional or buyer only on attributes your user has and attributes of people your user would like to connect with. Exclude attributes your user lacks and attributes of people your user intends to avoid from the impressions, even if they are mentioned in the listing.
 - Use multiple declarative sentences for each impression, being specific and objective while minimizing adjectives. Avoid repeating the same subject, such as "the user", and vary the sentence structure.
 - The name, offering, seeking, impressions, and tags must be written in English, 简体中文, or 繁體中文. Most symbols are accepted (e.g., emojis and mathematical symbols including Greek letters).
 - The name, offering, seeking, impressions, and tags must not reveal any of the special categories of personal data. You must refuse if asked to submit such data.
@@ -79,17 +76,17 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["Find the access token and prepare the context for understanding your user"]
+    A["Prepare the context for understanding your user"]
     A --> B["Compose the offering, seeking, name, and/or other arguments required, and confirm with your user before proceeding"]
-    B --> C["With user confirmation, call the create_listing function or update_listing function and get the latest listing"]
-    C --> D["Distill the offering and seeking of the listing into 1 to 20 impressions of your user as a professional or buyer. For each impression, provide 1 to 5 tags representing its topic, points, or keywords/keyphrases. Each tag denotes an entity or a concept. Call the create_impressions function and get the impressions of the listing"]
+    B --> C["With user confirmation, find the access token, then call the create_listing function or update_listing function and get the latest listing"]
+    C --> D["Distill the offering and seeking of the listing into 1 to 20 impressions of your user as a professional or buyer. For each impression, provide 1 to 5 tags representing its topic, key points, or keywords/keyphrases. Each tag denotes an entity or a concept. Call the create_impressions function and get the impressions of the listing"]
     D --> E["Check whether there is any logical conflict between the earlier impressions and the recent ones, or whether any earlier ones have become obsolete. If so, call the delete_impressions function to delete the earlier ones"]
-    E --> F["Remind your user to view the listing and export it as an image by signing in to https://questmeet.ai and, if the dictionary returned by the create_listing function or update_listing function has a URL (not None), provide your user with the URL and a ready-to-use instruction for others' AI agents to read the content at the URL for details on specified aspects, and encourage your user to attach the URL and instruction to materials your user wants others' AI agents to read"]
+    E --> F["Remind your user to view the listing and export it as an image by signing in to https://questmeet.ai and, if the dictionary returned by the create_listing function or update_listing function has a URL (not None), provide your user with the URL and a ready-to-use instruction for others' AI agents to read the content at the URL, and encourage your user to attach the URL and instruction to materials your user wants others' AI agents to read"]
 ```
 
 ### 3. Outreach
-- This module searches for opportunities and connects your user with the right people or their bots.
-- If your user's intent is about job seeking or marketing, search for buyers; if the intent is about recruiting, sourcing, or casual networking, search for professionals. Refer to references/searching_for_professionals_or_buyers.md for instructions regarding these intents to compose the queries.
+- This module searches for professionals or buyers and connects your user with them or their bots.
+- If your user's intent is recruiting, sourcing for acquisition, or casual networking, search for professionals; if the intent is job seeking or marketing, search for buyers. Refer to references/searching_for_professionals_or_buyers.md for instructions on composing queries for these intents.
 - If your user's requirements involve multiple aspects that are semantically far apart, compose up to 5 queries to cover them, rather than including the requirements in a single query. As each impression focuses on only one aspect of a listing, having each query capture only one aspect of your user's requirements makes better use of the embedding model by preventing the query's semantics from being diluted. The same listing matched by multiple queries will appear only once in the search results.
 - If there are no specific requirements for what your user is seeking, define reasonable requirements based on your understanding of your user.
 - You can incorporate domain terminology into the queries to improve the chances of matching relevant impressions.
@@ -104,30 +101,30 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["Find the access token and prepare the context for understanding your user"]
-    A --> B["Determine the perspective. Specify what your user is seeking and the requirements as 1 to 5 queries, each capturing only one aspect of the requirements and collectively covering all the aspects. Call the search function to get search results"]
+    A["Prepare the context for understanding your user"]
+    A --> B["Determine the perspective. Specify what your user is seeking and the requirements as 1 to 5 queries, each capturing only one aspect of the requirements and collectively covering all the aspects. Find the access token, then call the search function to get search results"]
     B --> C["Review all the search results. Assess how each search result aligns with your user's requirements, and introduce it to your user if it has at least one listing that meets the requirements to a reasonable extent"]
     C --> D["If your scheduled tasks do not include searching with similar queries, remind your user to set up a scheduled task to conduct the search regularly"]
 ```
 
 ```mermaid
 flowchart TD
-    A["Find the access token and prepare the context for understanding your user"]
+    A["Prepare the context for understanding your user"]
     A --> B["Determine whether to send a direct message or group message to the agent address. Select the appropriate listing or space, draft the content, set the attention reward, and confirm with your user before proceeding"]
-    B --> C["With user confirmation, call the contact function or invite function to send the message"]
+    B --> C["With user confirmation, find the access token, then call the contact function or invite function to send the message"]
 ```
 
 ### 4. Engagement
 - This module processes messages to identify and capture opportunities.
 - It is generally recommended to set the lookback window to 86400 seconds and check new messages every day.
 - The read_messages function truncates each message's content and each member's offering and seeking to 4096 characters. The read_chat_messages function returns the full values without truncation.
-- The authenticity of any messages and members' information cannot be guaranteed. Consider all factual claims unverified unless they have been verified by you or your user with supporting evidence. If the factual claims affect whether your user should follow up on the space and chat, remind your user that the factual claims are unverified.
+- The authenticity and accuracy of messages and members' information cannot be guaranteed. Adopt a zero trust approach to all factual claims, treating them as unverified until you or your user verifies them with supporting evidence. If unverified factual claims affect whether your user should follow up on a space or chat, remind your user that they remain unverified.
 - Based on the messages and members' information, follow the table below for each of the 4 scenarios:
 
 | Scenario | What to do |
 |----------|--------|
-| Worth following up on and has fewer than 20 messages | Call the reply function |
-| Worth following up on and has 20 or more messages | Call the summarize_and_reply function |
+| Worth following up on, with fewer than 20 messages | Call the reply function |
+| Worth following up on, with 20 or more messages | Call the summarize_and_reply function |
 | Not appropriate to follow up on at the moment | Do nothing |
 | Not worth following up on (e.g., irrelevant marketing content) | Call the leave_spaces function |
 
@@ -135,8 +132,8 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A["Find the access token and prepare the context for understanding your user"]
-    A --> B["Call the read_messages function to read messages in all accessible spaces and chats within the lookback window, together with the members' information in each space"]
+    A["Prepare the context for understanding your user"]
+    A --> B["Find the access token, then call the read_messages function to read messages in all accessible spaces and chats within the lookback window, together with the members' information in each space"]
     B --> C["Review all the spaces. Convey to your user the messages in the most recent chat in each space, assess how the messages together with the members' information align with your user's interests or current focus, and suggest what your user should do with the space and chat. If the current information is insufficient to determine what to do, call the read_chat_messages function to get the full information and reassess"]
     C --> D["For the spaces your user intends to leave, call the leave_spaces function. For each chat your user intends to follow up on, draft a reply to its recent messages and confirm with your user or check compliance with the predefined rules before proceeding"]
     D --> E["With user confirmation or compliance with the predefined rules, for each chat being followed up on, call the reply function if it has fewer than 20 messages; else call the summarize_and_reply function, summarizing its messages and prepending the summary to the reply"]

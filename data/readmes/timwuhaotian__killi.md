@@ -120,7 +120,14 @@ Rust 1.94 or later, on macOS (arm64) or Linux (x64/arm64).
   per item of a prompt template, up to 128, several at a time, shown as one live panel (how many,
   which are working on what, how long each has run); swarm mode, on by default and set with
   `[agent] swarm` or `/swarm`, tells the agent to split its work that way, and
-  `[agent] swarm_parallel` (default 8) sets how many run at once. **Background tasks** keep servers and slow builds running. **Undo** puts
+  `[agent] swarm_parallel` (default 8) sets how many run at once. A subagent never holds the
+  conversation hostage: send a message while one works and it moves to the background, your
+  message is answered at once, and its report comes back when it ends, read by the agent on a
+  turn of its own if the session sits idle. `/mode orchestrate` sends every subagent to the
+  background from the start, so the main agent only talks with you and coordinates (forking
+  this conversation into each subagent by default, `agent_message` to correct one mid-task).
+  Quitting asks whether to pause them; resuming the session continues each from its own log.
+  **Background tasks** keep servers and slow builds running. **Undo** puts
   your files back as they were before a turn, including what commands changed.
 - **Sessions that know about each other.** Run several killi at once and each knows where the
   others work and what they are doing. `killi card <pid>` says what a session can be asked to
@@ -333,7 +340,7 @@ killi -p "..." --json        # one JSON summary: tokens, cache hits, time
 | Shift+Enter, Ctrl+J | new line |
 | ! | run a shell command without involving the model; a bare `!` opens your shell |
 | Esc | interrupt; before the reply begins, your message comes back to the prompt as if never sent |
-| Ctrl+S | while the agent works, interrupt it and send your message now; during a swarm the first press only queues it |
+| Ctrl+S | while the agent works, interrupt it and send your message now; during a swarm the first press moves the swarm to the background and your message is read at once |
 | Ctrl+C | copy the prompt's selection, else clear the prompt; on an empty prompt, interrupt, twice to quit |
 | Shift+Tab | plan mode |
 | Ctrl+V | paste an image from the clipboard as `[Image #1]` (Cmd+V too in [Kil](https://github.com/timwuhaotian/kil)) |
@@ -353,7 +360,10 @@ Commands: `/provider [name]` (add a provider from a pasted key), `/model [alias]
 `/new` (or `/clear`), `/resume`, `/btw <question>` (a side question, never kept),
 `/schedule <interval> <task>`, `/compact [focus]`, `/recap`, `/undo`, `/plan`,
 `/swarm [task|on|off|parallel <n>]`,
-`/mode [normal|ultra-concise]` (ultra-concise: replies in the fewest words that keep the meaning),
+`/mode [focus|orchestrate]` (focus: subagents run in the foreground and move to the background
+when you send a message; orchestrate: every subagent runs in the background while you keep
+talking to the main agent), `/verbosity [normal|ultra-concise]` (ultra-concise: replies in the
+fewest words that keep the meaning),
 `/goal [<text>|done|clear]` (a session goal: `/exit`, `/new` and `/resume` wait until it is
 `/goal done`, or `/goal clear` when it is truly impossible or no longer wanted), `/usage`, `/session`
 (copies the session's id, log path and summary for another agent to read), `/sessions` (the

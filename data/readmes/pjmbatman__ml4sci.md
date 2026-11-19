@@ -68,11 +68,11 @@ Every chapter is built around the same loop. You read an idea, try it with your 
 
 | | |
 |---|---|
-| 🧭 **A roadmap, not a pile of chapters** | 226 chapters in 33 parts and 12 tracks, arranged in 7 layers. Each chapter declares what it builds on, so you always know what to read next. |
+| 🧭 **A roadmap, not a pile of chapters** | 226 chapters across 12 tracks in 7 layers: a common book of 27 parts that every field reads, plus 5 field books (physics, earth and climate, chemistry, life sciences, batteries). Each chapter declares what it builds on, so you always know what to read next. |
 | 🐍 **Python in the browser** | Code cells run in place with Pyodide (NumPy, SciPy, pandas, matplotlib, scikit-learn). PyTorch and GPU examples are shown read-only with a copy button; run them on your own machine with each chapter's downloadable lab files. |
 | ✅ **Auto-graded exercises** | A built-in code editor with *Run* and *Grade* buttons and per-test results. Each chapter's lab files also download as a `.zip` to run locally. |
 | 🧠 **Quizzes with feedback** | Every wrong answer explains the misconception behind it, and missed questions go to a review queue. |
-| 📚 **A 3D bookshelf** | The Roadmap lays out the 33 books as a fan you can drag and turn, grouped by field, with your progress on every book. |
+| 📚 **A 3D bookshelf** | The Roadmap has two shelves, the common shelf and the field shelf. Switch between them at the top, then drag and turn the books, with your progress on every book. A field book leads on to its specialization, a path through just the chapters that field needs. |
 | 🖥️ **A learning desktop** | Seven apps open as windows side by side: Roadmap, Recap, Notes, Reference, Code, Terminal and Settings. A dashboard shows your progress and today's tasks. |
 | 🔒 **Private by design** | No login. Progress stays in your browser, and you can export it to a file and import it again. |
 
@@ -103,7 +103,7 @@ Twelve tracks are arranged in seven layers. A track builds only on tracks in the
 | | Machine Learning Systems | How do we track, reproduce and scale experiments? |
 | **L4 Methods** | Research Methodology | What makes a good research question, and how do we validate and communicate a claim? |
 | | Scientific Machine Learning | How do we combine physical laws, simulations and experiments with learning? |
-| **L5 Applications** | Domain Applications | Physics and engineering simulation · Earth and climate · Chemistry and materials · Life sciences · Energy and batteries |
+| **L5 Applications** | Domain Applications (field books) | PHY physics and engineering simulation · EAR earth and climate · CHM chemistry and materials · BIO life sciences · BAT energy and batteries |
 | **L6 Integration** | Capstone Projects | Can you turn what you learned into a research output you can publish? |
 
 </details>

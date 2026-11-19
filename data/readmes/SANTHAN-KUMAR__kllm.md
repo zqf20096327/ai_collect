@@ -64,8 +64,10 @@ That raises a few questions, answered below:
 
 The package is `kllm-gateway` on PyPI. It installs two commands: `kllm` and `claude-kllm`.
 
-**2. Run `kllm`.** It starts the local relay and opens the control panel in your browser. On a first run the
-panel shows a four-step setup: add your Kaggle account, pick a model, connect a tool, say hello.
+**2. Click the kllm icon, or run `kllm`.** Either starts the local relay and opens the control panel in your
+browser. On a first run the panel shows a four-step setup: add your Kaggle account, pick a model, connect a tool,
+say hello. The one-line installers put the icon on your desktop and in the app menu; after a pip, pipx or uv
+install, `kllm shortcut` adds it.
 
 <p align="center">
   <img src="docs/assets/panel-welcome.png" alt="The kllm panel's first-run page: open your Kaggle settings, verify your phone, create a token, then paste it or drop kaggle.json" width="92%">
@@ -79,6 +81,8 @@ If `~/.kaggle/kaggle.json` already exists, kllm finds it and skips the paste.
 
 ```bash
 claude-kllm                                  # Claude Code on the default model
+kllm update                                  # upgrade when a new version is out (kllm tells you)
+kllm uninstall                               # remove kllm completely (shows the list first)
 opencode -m kllm/qwen3.6-35b-abliterated     # opencode
 kllm down                                    # stop the GPU when you are done, to save quota
 ```

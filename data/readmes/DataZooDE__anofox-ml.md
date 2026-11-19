@@ -86,10 +86,10 @@ You can also download a prebuilt binary from a GitHub release, or build it from 
 
 ### From a GitHub Release
 
-Every [release](https://github.com/DataZooDE/anofox-ml/releases) has a zip per platform (Linux, macOS and Windows; amd64 / arm64) and DuckDB version, since DuckDB v1.5.6 and v2.0.0 are both supported. The DuckDB version is part of the file name, e.g. `anofox_ml-v0.3.0-duckdb-v1.5.6-linux_amd64.zip` or `…-duckdb-v2.0.0-linux_amd64.zip`. A binary loads only into the DuckDB version it was built for. Unzip it and keep the file name `anofox_ml.duckdb_extension`, because DuckDB derives the entry point from the name. The binaries are not signed, so DuckDB needs `allow_unsigned_extensions`:
+Every [release](https://github.com/DataZooDE/anofox-ml/releases) has a zip per platform (Linux, macOS and Windows; amd64 / arm64) and DuckDB version, since DuckDB v1.5.6 and v2.0.0 are both supported. The DuckDB version is part of the file name, e.g. `anofox_ml-v0.4.0-duckdb-v1.5.6-linux_amd64.zip` or `…-duckdb-v2.0.0-linux_amd64.zip`. A binary loads only into the DuckDB version it was built for. Unzip it and keep the file name `anofox_ml.duckdb_extension`, because DuckDB derives the entry point from the name. The binaries are not signed, so DuckDB needs `allow_unsigned_extensions`:
 
 ```bash
-unzip anofox_ml-v0.3.0-duckdb-v1.5.6-linux_amd64.zip
+unzip anofox_ml-v0.4.0-duckdb-v1.5.6-linux_amd64.zip
 duckdb -unsigned
 ```
 
@@ -170,6 +170,14 @@ FROM train GROUP BY store;
 SELECT unnest(list(id ORDER BY id)) AS id,
        unnest(ml_outlier_score_agg('IsolationForest', [price, units] ORDER BY id)) AS score
 FROM train ORDER BY score LIMIT 3;
+
+-- clustering on your own distance (here |Δprice|, any pairwise measure works): one row of
+-- distances to every point per point, in the same order; Dbscan with "metric": "Precomputed"
+WITH p AS (SELECT id, price FROM train WHERE store = 'store_0' AND id < 120),
+     d AS (SELECT a.id, list(abs(a.price - b.price) ORDER BY b.id) AS dist FROM p a, p b GROUP BY a.id)
+SELECT unnest(list(id ORDER BY id)) AS id,
+       unnest(ml_cluster_agg('Dbscan', dist, '{"eps": 0.05, "min_samples": 3, "metric": "Precomputed"}' ORDER BY id)) AS cluster
+FROM d;
 ```
 
 More patterns:
@@ -242,6 +250,7 @@ The skills live in [`plugins/anofox-ml/`](plugins/anofox-ml/). For development, 
 | `ml_fit_with_validation_agg(kind, y, [x1, x2, …], is_validation [, params [, weight]])` | `ml_fit_agg` with an explicit validation set: rows with `is_validation = true` are the validation set of early stopping (HistGradientBoosting with `"early_stopping": "Enabled"`), the others train |
 | `ml_fit_with_offset_agg(kind, y, [x1, x2, …], offset [, params [, weight]])` | `ml_fit_agg` for the GLMs with an offset per row on the link scale, e.g. `ln(exposure)` for counts: `PoissonRegressor`, `GammaRegressor`, `TweedieRegressor` and `BinomialRegressor` (proportions `y`, trial counts as `weight`). Rows with a NULL offset are skipped |
 | `ml_fit_with_group_agg(kind, y, [x1, x2, …], query [, params [, weight]])` | Learning to rank: `query` is a numeric query id per row (`dense_rank()` for strings), and `y` the relevance. For `LgbmRanker` (LambdaRank), and the ranking objectives of `LgbmRegressor` / `CatBoostRegressor`. A query's rows need not be consecutive; `ml_predict` gives the ranking scores |
+| `ml_fit_with_features_agg(kind, y, [x1, x2, …], [text1, …], [emb1, …] [, params [, weight]])` | CatBoost text and embedding features besides the numeric ones (`CatBoostRegressor`, `CatBoostClassifier`): a `VARCHAR[]` of text columns and a `DOUBLE[][]` of embedding vectors per row, either may be `[]`. Predict with the same columns: `ml_predict` / `ml_predict_label` / `ml_predict_proba(model, x, text, embeddings)` |
 | `ml_fit_agg(kind, [x1, x2, …] [, params [, weight]])` | The same without a target, for unsupervised estimators (scalers, PCA, clustering, …), and for the kinds fitted on `[X \| Y]` with `y_columns` (`MultiOutputRegressor`, `RegressorChain`, `MultiTask*`, `Cca`, `PlsCanonical`, `PlsSvd`): pass `list_concat(x, y)`; the model then takes `X` alone |
 | `ml_predict(model, [x1, x2, …])` | Predict with a model BLOB (`DOUBLE`; the label index for string labels) |
 | `ml_predict(model, [x1, x2, …], offset)` | GLM prediction with an offset on the link scale (a model from `ml_fit_with_offset_agg`); `ml_predict(model, x)` predicts at offset 0 |
@@ -275,6 +284,8 @@ The skills live in [`plugins/anofox-ml/`](plugins/anofox-ml/). For development, 
 | `ml_explained_variance_ratio(model)` | `DOUBLE[]` of PCA-like decompositions |
 | `ml_feature_importances(model)` | `DOUBLE[]`, one impurity-based importance per feature, summing to 1: decision trees, random forests, extra trees, gradient boosting, histogram gradient boosting, LGBM and bagging. For any model, see `ml_permutation_importance_agg` |
 | `ml_model_kind(model)` | The estimator kind stored in a model BLOB (without decoding the model) |
+| `ml_model_export(model)` | The model as anofox-ml's own bytes (`BLOB`, without this extension's header), for Rust: `anofox_ml_registry::load(kind, &bytes)` with `kind = ml_model_kind(model)`. Not for the VARCHAR encoders or conformalized models |
+| `ml_model_import(kind, bytes, n_features [, classes DOUBLE[] \| labels VARCHAR[]])` | A model BLOB from anofox-ml registry bytes (`DynModel::to_bytes` in Rust; read a file with `read_blob`). `n_features` is the model's input width; a classifier's classes are read from its fitted state where it lists them, otherwise pass them (string `labels` sorted: label `i` is class `i`) |
 | `ml_version()` | Version of the bundled anofox-ml FFI layer |
 
 ### Categorical Features
@@ -343,6 +354,26 @@ FROM (SELECT store, ml_tune_agg('HistGradientBoostingRegressor', sales, [price, 
         '{"max_depth": {"int": [2, 12]}, "learning_rate": {"float": [0.01, 0.3], "log": true}}',
         '{"n_trials": 30, "metric": "rmse"}') AS t
       FROM train GROUP BY store);
+```
+
+### Model Selection
+
+Aggregates over the training rows of a group, `(kind, y, [x1, x2, …] [, params [, options]])` with a `DOUBLE` or `VARCHAR` target, matching scikit-learn's model-selection tools. They fit `kind` many times, so they are as slow as `cv` × the candidates. Common options: `cv` (5 folds, stratified for classifiers unless `"stratify": false`), `metric` (any metric aggregate name; default `accuracy` / `r2`; the probability metrics use a binary classifier's positive-class probability), `metric_options`, `seed`.
+
+| Function | Returns |
+|---|---|
+| `ml_learning_curve_agg` | `STRUCT(train_size, train_score, train_score_std, test_score, test_score_std)[]`, one per `train_sizes` fraction (default `[0.1, 0.325, 0.55, 0.775, 1.0]`) |
+| `ml_validation_curve_agg` | `STRUCT(params, train_score, train_score_std, test_score, test_score_std)[]`, one per parameter set of `options.param_grid`: a list of objects, or an object of value lists (their grid) |
+| `ml_permutation_test_agg` | `STRUCT(score, p_value, permutation_scores DOUBLE[])`: the CV score against `n_permutations` (100) shuffles of the target |
+| `ml_nested_cv_agg` | `STRUCT(score, score_std, folds STRUCT(fold, score, inner_score, params)[])`: a grid search (`param_grid`, `inner_cv` folds, default 3) inside each outer fold, scored on the outer test fold; `score` estimates the whole tuning procedure |
+| `ml_bootstrap_validate_agg` | `STRUCT(apparent, out_of_bag, point632, point632_plus, optimism_corrected, no_information, relative_overfitting, n_skipped)`: Efron's .632 / .632+ and Harrell's optimism-corrected estimates over `n_bootstraps` (200) resamples, on the metric's scale |
+
+```sql
+SELECT unnest(ml_validation_curve_agg('DecisionTreeRegressor', units, [price, promo, dow], '{"seed": 1}',
+                                      '{"param_grid": {"max_depth": [2, 4, 8]}, "metric": "rmse"}'), recursive := true)
+FROM train WHERE store = 'store_0';
+SELECT ml_bootstrap_validate_agg('LogisticRegressor', churned, [tenure, calls], '{}',
+                                 '{"n_bootstraps": 50, "metric": "roc_auc"}') AS validation FROM customers;
 ```
 
 ### Conformal Prediction
@@ -424,6 +455,18 @@ Aggregates over `(y_true, y_pred)`: no model is needed, so they score any predic
 | `ml_brier_score(y, p [, options [, weight]])`, `ml_average_precision(y, score)` | Binary probabilities and scores |
 | `ml_adjusted_rand`, `ml_normalized_mutual_info` `(labels_true, labels_pred)`, `ml_silhouette(x DOUBLE[], label)` | Clustering |
 | `ml_coverage(y, lower, upper)`, `ml_interval_score(y, lower, upper, alpha)` | Prediction intervals |
+| `ml_confusion_matrix(y, y_pred [, options [, weight]])` | `STRUCT(labels VARCHAR[], matrix DOUBLE[][])`: true classes in rows, predicted in columns, labels sorted (or the `labels` option's order). `DOUBLE` or `VARCHAR` labels |
+| `ml_classification_report(y, y_pred [, options [, weight]])` | One `STRUCT(label, precision, recall, f1, support)` per class (`DOUBLE` or `VARCHAR` labels); options `labels`, `beta`, `zero_division` |
+| `ml_roc_curve(y, score)`, `ml_precision_recall_curve(y, score)` | Binary 0/1 `y`: a list of `STRUCT(threshold, fpr, tpr)` (thresholds descending, from a sentinel above the top score) or `STRUCT(threshold, precision, recall)` (thresholds ascending; the final point `(1, 0)` has a NULL threshold) |
+
+```sql
+SELECT ml_confusion_matrix(label, ml_predict_label(model, [price, promo, dow])) AS cm
+FROM test, (SELECT ml_fit_agg('RandomForestClassifier', label, [price, promo, dow]) AS model FROM train);
+SELECT r.threshold, r.fpr, r.tpr
+FROM (SELECT unnest(ml_roc_curve(churned, ml_predict_proba(model, [tenure, calls])[2])) AS r
+      FROM customers, (SELECT ml_fit_agg('LogisticRegressor', churned, [tenure, calls]) AS model FROM customers))
+LIMIT 5;
+```
 
 ### Cross-Validation
 
@@ -440,6 +483,7 @@ Aggregates over `(y_true, y_pred)`: no model is needed, so they score any predic
 | `group_kfold`, `leave_one_group_out`, `leave_p_groups_out`, `group_shuffle_split` | `groups` | `n_splits`, `shuffle`, `seed`, `p`, `test_size` (0.2), `train_size` |
 | `group_time_series` | `groups` (time keys, in `ORDER BY` order) | as `time_series` |
 | `stratified_group_kfold` | `y`, `groups` | `n_splits`, `shuffle`, `seed` |
+| `bootstrap`, `bootstrap_stratified` | — / `y` | `n_splits` (100), `seed`. Training rows are drawn with replacement, so a row repeats once per draw; the out-of-bag rows are the test rows |
 
 Pass `NULL` for `y` when a method only needs `groups`. Rows with a NULL id, or without the `y` / group the method needs, are left out.
 
@@ -647,6 +691,20 @@ CREATE TABLE ranker AS
 SELECT ml_fit_with_group_agg('LgbmRanker', relevance, [x1, x2], query_id, '{"n_estimators": 50}') AS m FROM search_log;
 SELECT query_id, row_number() OVER (PARTITION BY query_id ORDER BY ml_predict(m, [x1, x2]) DESC) AS position, x1, x2
 FROM search_log, ranker ORDER BY query_id, position LIMIT 10;
+```
+
+**Text and embeddings with CatBoost.** `ml_fit_with_features_agg` adds text columns (bag of words with naive Bayes / BM25 estimators) and embedding vectors (LDA / kNN) next to the numeric features; predictions take the same columns:
+
+```sql
+CREATE TABLE tickets AS
+SELECT i, (i % 7)::DOUBLE AS hour, CASE WHEN i % 2 = 0 THEN 'billing' ELSE 'outage' END AS topic,
+       CASE WHEN i % 2 = 0 THEN 'invoice charged twice' ELSE 'site is down again' END AS body,
+       [CASE WHEN i % 2 = 0 THEN 1.0 ELSE -1.0 END, (i % 5) / 5.0] AS emb
+FROM range(200) t(i);
+CREATE TABLE m AS
+SELECT ml_fit_with_features_agg('CatBoostClassifier', topic, [hour], [body], [emb], '{"iterations": 30}') AS model
+FROM tickets;
+SELECT topic, ml_predict_label(model, [hour], [body], [emb]) AS predicted FROM tickets, m LIMIT 4;
 ```
 
 **Pipelines.** `Pipeline` chains transformers and a final estimator into one model (`steps`, as `{estimator, estimator_params}` specs); `FeatureUnion` concatenates transformers' outputs and `ColumnTransformer` applies them to column subsets:

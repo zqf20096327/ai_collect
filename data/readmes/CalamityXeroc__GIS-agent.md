@@ -4,6 +4,29 @@
 
 已适配 **ArcGIS Pro 3.7**（Pro 3.7.0.1901 / Python 3.13，真机实测通过），并保留 **3.6** 兼容；解释器与制图样式目录都按实际安装自动发现，不写死安装路径。
 
+## 关于本仓库（源码纯净版）
+
+这份仓库只放**源码**：不含真实业务数据、`benchmark/reports` 下的基准产物、运行日志、工作区数据，也不含任何 API Key。
+
+- 配置：`cp config/llm_config.example.json config/llm_config.json`，填自己的 key（该文件被 `.gitignore` 挡住，不要提交）。
+- 数据：把你的 GIS 数据放进 `workspace/input/`（同样不入库）。
+- 基准：`benchmark/` 只有跑测代码与任务定义；历史产物留在本地。
+
+## 最近更新（2026-11-19）
+
+**终端乱码（`?[2K?[1A` / `?[38;5;246m`）根治**，三类来源分别处理：
+
+- 流式预览窗调了 `glyph()` 却没导入 → prompt_toolkit 每帧重绘都在事件循环里抛 `NameError`，整段 traceback 打在输入框上。已补导入 + 压真实渲染链的回归用例。
+- 输入框占屏时不再开 rich `Live` 原地重绘（`ESC[2K`/`ESC[1A` 会和输入框互相擦）；流式改由输入框上方的预览窗显示，块结束定型打印。
+- `Console.status()` 本身就是 `Live`（会发 `ESC[?25l`/`ESC[1A`/`ESC[2K`）→ 纯文本模式改为一行提示，零控制序列。
+- 颜色判定收窄：Windows 上单独一个 `TERM`（从 Git Bash/conda 继承来的）不再当作“支持 ANSI”的证据；子命令原本那个裸 `Console()` 也收回统一工厂。
+
+**其它**
+
+- 内核子进程的 stdout/stderr 改道 `.gis_agent/logs/kernel.log`：arcpy/GDAL 的 `Unable to load code page translation table …` 不再直接打进输入框把框拆碎。
+- 状态行在等模型时显示「等待模型响应 · Ns」（上游缓冲/排队时不再只有“运行中 · 未开始 · 4m02s”）。
+- 可视化（Web 控制台的 MapLibre 只读预览）已按 `web/` 重新构建核对，静态资源与源码一致。
+
 ## 架构概览
 
 单一引擎：**有界观察-决策-执行循环** + 原生 tool calling + 代码自修复 + 强制验收。
@@ -29,7 +52,6 @@ src/gis_cli/
 ├── datacatalog/         # SQLite 数据目录（字段名 / 坐标系 / 范围）
 ├── recipes/             # 48 个 GIS 方法论配方（自带验证断言）
 ├── ui/                  # 终端界面（转录 / 状态行 / 输入框 / 命令）
-├── web/                 # Web 控制台后端（FastAPI + SSE，前端产物随包走）
 ├── trace/               # 每次 run 的 JSONL + Markdown 报告
 ├── requirements/        # 需求抽取（任务书 → 可验收清单）
 ├── skills/              # SKILL.md 技能（渐进披露，run_skill 读全文）
@@ -103,7 +125,6 @@ src/gis_cli/
 - 交互式终端：转录 / 状态行 / 输入框 / `@` 文件补全 / `/` 命令 / Esc 中断
 - 运行中再输入 = 排队，本轮结束自动合并继续
 - 会话可续（`--continue` / `--resume`）、导出 Markdown
-- Web 控制台：浏览器里看实时运行、管队列、查数据资产、改模型配置（`gis-agent web`）
 - CI：只跑不依赖 ArcGIS 的部分（`pytest -m "not arcpy"`，约 35s）
 
 ## 快速开始
@@ -128,7 +149,7 @@ src/gis_cli/
 **常见问题**：
 - ✅ **"你好，你可以做什么"** → 得到友好的中文功能介绍
 - ❌ **返回英文工具列表** → 说明意图识别有误，已在最新版修复
-- 💡 **如遇问题**：查看 [CHINESE_FIX.md](CHINESE_FIX.md) 了解修复细节
+- 💡 **如遇问题**：见 [docs/cli.md](docs/cli.md) 与 `giscli doctor` 的自检输出
 
 ### 方式一：使用 AI Agent（推荐）
 
@@ -289,45 +310,6 @@ cp config/llm_config.example.json config/llm_config.json
   实测交互轮用 `low`：首字 5.11s→2.37s、总耗时 8.72s→5.80s，输出质量相当；
   规划/验收类任务刻意保留 `medium`。
 
-## Web 控制台
-
-除了终端，还有一套浏览器界面（`gis-agent web`）：同一个引擎、同一份 workspace、
-同一批 trace，只是把「看过程 / 管运行 / 查数据 / 改配置」搬到了页面上。
-
-```powershell
-pip install -e ".[web]"    # 控制台依赖（fastapi / uvicorn / starlette），可选
-
-gis-agent web              # 默认 127.0.0.1:8760，自动开浏览器（URL 自带 token）
-gis-agent web --stop       # 停掉后台面板
-```
-
-`gis-agent chat` 启动时会在后台自动拉起面板（无窗口、单实例、端口被占自动顺延、
-日志在 `workspace/.gis_agent/web.log`）；不想拉就设 `GIS_NO_WEB=1` 或加 `--no-web`。
-不装 `[web]` 时其余命令照常工作，只有 `gis-agent web` 会提示缺依赖。
-
-| 页面 | 能干什么 |
-|---|---|
-| 概览 `/` | 成功率 / 耗时 / token / 验收缺口的聚合视图，口径全部来自 trace |
-| 运行历史 `/runs` | 筛选回溯所有 trace，下载原始 `.jsonl` / `.md` |
-| 新建运行 `/runs/new` | 提交任务进单 worker 队列排队 |
-| 运行详情 `/runs/<id>` | SSE 实时时间线（模型增量 / 工具调用 / 验收 / 计划卡），可停止、插话、续跑 |
-| 数据资产 `/data` | catalog 里的矢量/栅格：坐标系、范围、字段画像、离线预览 |
-| 成果包 `/packages` | `output/` 的成果包与溯源卡，内嵌预览 + 下载原件 |
-| 配置模型 `/config` | 10 个角色的模型路由与引擎预算；写前自动备份、可回滚、密钥脱敏 |
-| 环境自检 `/env` | 占位页，尚未实现 |
-
-为什么队列是串行的：`ArcpyKernel` 单例 + `llm_max_concurrency=1` + ArcGIS 单实例，
-并发跑两个 run 不是更快而是互相踩，所以队列**可见**、单 worker 执行。
-
-安全模型很简单：只绑 `127.0.0.1`，靠 `<workspace>/.gis_agent/web_token` 放行，
-带路径的接口一律 `resolve()` 后限制在 workspace 内，不提供执行任意代码 / shell 的端点。
-
-前端是 React 19 + Vite + Tailwind 4 + shadcn/ui，**构建产物已进仓**
-（`src/gis_cli/web/static/`），所以用界面不需要装 Node；改前端才需要
-`cd web && npm ci && npm run build`。
-
-参数、状态文件、API 一览与常见问题见 [docs/web-ui.md](docs/web-ui.md)。
-
 ## 直接出图 / 自动化 ArcGIS Pro（推荐）
 
 如果你希望输出真实 GIS 成果（如 `.gdb`、地图导出 JPG/PNG），请使用 ArcGIS Pro Python 环境。
@@ -409,7 +391,6 @@ pytest tests/test_engine_*.py
 - 流式输出、模型熔断、前缀缓存命中率统计
 - 内核往返合并、只读工具并发、覆盖写入自动备份
 - 交互式终端（排队合并、会话续聊、导出）
-- Web 控制台（概览 / 运行历史 / 实时时间线 / 数据资产 / 成果包 / 模型配置）
 - CI（只跑无 ArcGIS 部分）
 
 ### 剩余候选 📋

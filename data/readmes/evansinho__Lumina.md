@@ -3,8 +3,8 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![npm version](https://img.shields.io/npm/v/@uselumina/sdk.svg)](https://www.npmjs.com/package/@uselumina/sdk)
 [![PyPI version](https://img.shields.io/pypi/v/lumina-sdk.svg)](https://pypi.org/project/lumina-sdk/)
-[![CI](https://github.com/use-lumina/Lumina/actions/workflows/ci.yml/badge.svg)](https://github.com/use-lumina/Lumina/actions/workflows/ci.yml)
-[![GitHub stars](https://img.shields.io/github/stars/use-lumina/Lumina?style=social)](https://github.com/use-lumina/Lumina/stargazers)
+[![CI](https://github.com/evansinho/Lumina/actions/workflows/ci.yml/badge.svg)](https://github.com/evansinho/Lumina/actions/workflows/ci.yml)
+[![GitHub stars](https://img.shields.io/github/stars/evansinho/Lumina?style=social)](https://github.com/evansinho/Lumina/stargazers)
 
 **Production-grade observability for AI applications.**
 
@@ -55,7 +55,7 @@ PostgreSQL backend with automatic schema management. NATS-based queue for reliab
 Start Lumina with all services in under 60 seconds:
 
 ```bash
-git clone https://github.com/use-lumina/Lumina.git
+git clone https://github.com/evansinho/Lumina.git
 cd Lumina/infra/docker
 docker compose up -d
 ```
@@ -70,7 +70,7 @@ For development or custom deployments:
 
 ```bash
 # 1. Clone and install dependencies
-git clone https://github.com/use-lumina/Lumina.git
+git clone https://github.com/evansinho/Lumina.git
 cd Lumina
 bun install
 
@@ -406,7 +406,7 @@ For teams preferring a fully managed solution with enterprise features, SSO, and
 - [ ] Multi-tenancy support
 - [ ] Prometheus metrics export
 
-See [GitHub Issues](https://github.com/use-lumina/Lumina/issues) for detailed roadmap and feature requests.
+See [GitHub Issues](https://github.com/evansinho/Lumina/issues) for detailed roadmap and feature requests.
 
 ---
 
@@ -417,13 +417,13 @@ Contributions are welcome from developers of all experience levels.
 **Getting Started**
 
 1. Read the [Contributing Guide](./CONTRIBUTING.md)
-2. Browse [Good First Issues](https://github.com/use-lumina/Lumina/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
-3. Join the discussion in [GitHub Discussions](https://github.com/use-lumina/Lumina/discussions)
+2. Browse [Good First Issues](https://github.com/evansinho/Lumina/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+3. Join the discussion in [GitHub Discussions](https://github.com/evansinho/Lumina/discussions)
 
 **Development Setup**
 
 ```bash
-git clone https://github.com/use-lumina/Lumina.git
+git clone https://github.com/evansinho/Lumina.git
 cd Lumina
 bun install
 createdb lumina
@@ -448,10 +448,10 @@ Lumina is free and open-source software. Use it for any purpose, including comme
 ## Support
 
 - **Documentation:** [docs.uselumina.io](http://docs.uselumina.io/)
-- **Bug Reports:** [GitHub Issues](https://github.com/use-lumina/Lumina/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/use-lumina/Lumina/discussions)
+- **Bug Reports:** [GitHub Issues](https://github.com/evansinho/Lumina/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/evansinho/Lumina/discussions)
 - **Commercial Support:** Contact us at [uselumina.io](https://uselumina.io)
 
 ---
 
-Built by the open-source community. [Star us on GitHub](https://github.com/use-lumina/Lumina) if Lumina helps your team.
+Built by the open-source community. [Star us on GitHub](https://github.com/evansinho/Lumina) if Lumina helps your team.

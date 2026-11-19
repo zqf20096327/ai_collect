@@ -11,7 +11,7 @@
 
 Palier updates the Docker Compose stacks of a machine on its own. It does more than bump a tag: it reads the release notes of every skipped version, has an AI build a plan, checks that plan, then applies it in steps. If a step fails, the whole stack goes back to the last step that worked.
 
-One Go binary, one container, the Docker socket. No agent, no account, no license.
+One Go binary, one container, the Docker socket. No agent, no account, no license key.
 
 ---
 
@@ -93,7 +93,7 @@ name: palier
 
 services:
   palier:
-    image: ghcr.io/kolapsis/palier:0.6.0
+    image: ghcr.io/kolapsis/palier:0.6.1
     restart: unless-stopped
     group_add:
       - ${DOCKER_GID:?}
@@ -207,3 +207,7 @@ docker compose -f docs/compose.yaml up
 ```
 
 then open http://127.0.0.1:8000.
+
+## License
+
+Palier is released under the [Apache License 2.0](LICENSE).

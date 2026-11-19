@@ -8,6 +8,10 @@
 
 What was added, newest first. Each entry links to its commit.
 
+**2026-11-19**
+
+- **FLUX.2 Klein 9B from 8 GB of VRAM** — block swap and **VRAM Profile** as in LTX 2.5: edit LoRAs at 1024² peak at 5.8 GB instead of 11.5 GB, with the same results and a few % slower. If a step runs out of VRAM, it moves 2 more blocks to RAM and goes on. In Klein 9B and LTX 2.5 the profile now also counts the VRAM your other apps already use ([details](#flux2-klein-9b--image-and-edit-loras)) [`555de89`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/555de89) [`001624e`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/001624e) [`95c6879`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/95c6879)
+
 **2026-11-18**
 
 - **Up to 4 custom prompts per preview round, in every trainer** — **Custom Prompts (0-4)** next to Caption Mode: each round makes one preview per prompt, or one with a random prompt. Prompts changed while training are encoded on CPU and the trainer switches to them (LTX and MiniMax-H3 encode them in Pre-Cache only). In edit trainers with several reference images, **One image per prompt** makes each prompt edit its own image. The preview viewer shows the prompt of each preview ([details](#-custom-prompts-in-the-previews)) [`589c917`](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/commit/589c917) ([#87](https://github.com/AcademiaSD/AcademiaSD_LoRAlab-TrainerStudio/issues/87))
@@ -248,7 +252,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 | **Anima** | Anime and illustration LoRAs (characters, styles) | **4 GB** (NF4) / 6 GB (BF16) |
 | **ERNIE-Image** | Image LoRAs (characters, objects, styles); supports rsLoRA, LoRA+ and LoKr | **Under 8 GB** (NF4; verified during training) |
 | **FLUX.1 Dev** | Image LoRAs (characters, objects, styles) | 12 GB (~10 GB measured at 512², ~11 GB at 768²) |
-| **FLUX.2 Klein 9B** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | 12 GB |
+| **FLUX.2 Klein 9B** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | 8 GB |
 | **FLUX.3 Image Klein** | Image LoRAs (characters, objects, styles) **and edit LoRAs** (before → after) | 8 GB |
 | **MOSS-Image** | Image LoRAs (characters, objects, styles) on MOSS-Image Base or SFT **and edit LoRAs** (before → after, on top of armV5, armV4 or Moss-Image-Edit); supports rsLoRA, LoRA+ and LoKr | **6 GB** (512²) / 8 GB |
 | **Ideogram 4** | Image LoRAs (characters, objects, styles), with JSON captions | 12 GB (16 GB for previews with CFG) |
@@ -273,7 +277,7 @@ New trainers are added **here**. One `Update_LoRAlab-TrainerStudio.bat` brings t
 5. **Desde otro equipo:** el botón **🌐 Remote access** del lanzador abre el entrenador a tu red con usuario y contraseña. Con **⬆ Subir** (o arrastrando archivos o un `.zip` al Dataset Manager) mandas el dataset desde ese equipo, y con **⬇ Descargar LoRA** te bajas el resultado.
 6. **Previsualizaciones nítidas en ComfyUI:** algunos de estos modelos son lentos al generar, y conviene ver el resultado de forma anticipada, mientras se genera, para cancelar si no va bien. Para eso hace falta una buena previsualización. Mi recomendación: al usar tus LoRAs de Qwen-Image 2.1, Krea 2 o FLUX.2 / Klein 9B, pon el nodo **Model Preview Override** de [KJNodes](https://github.com/kijai/ComfyUI-KJNodes) con el TAE de AcademiaSD correspondiente ([Qwen-Image 2.1](https://huggingface.co/AcademiaSD/TAE-Qwen-Image-2.1) · [Krea 2](https://huggingface.co/AcademiaSD/TAE-Krea-2) · [FLUX.2](https://huggingface.co/AcademiaSD/TAE_Flux2_AcademiaSD)) en `ComfyUI/models/vae_approx/`. Detalles en la sección *Sharp previews in ComfyUI*.
 7. **Sin GPU potente:** entrena en la nube con **[RunPod](https://console.runpod.io/deploy?template=lfxvtg5rrb&ref=jbvdshm0)**. Es una plantilla ya preparada: eliges una GPU con CUDA 13, entras con el usuario `loralab` y la contraseña que aparece en *Logs → Container*, y al terminar paras y borras el pod. Detalles en la sección *RunPod*.
-8. **Requisitos:** Windows 10/11, GPU NVIDIA **RTX 20xx / GTX 16xx o posterior** con driver **580 o superior** (o AMD **RX 7000 / RX 9000** de 16 GB, experimental), 8 GB de VRAM (4 GB para Anima y SDXL en NF4, 12 GB para LTX-2.3, FLUX.2 Klein 9B, Ideogram 4, SDXL en BF16 y Wan 2.2 con imágenes a 448×448, 16 GB para Wan 2.2 con vídeo) y 16 GB de RAM (32 GB recomendados).
+8. **Requisitos:** Windows 10/11, GPU NVIDIA **RTX 20xx / GTX 16xx o posterior** con driver **580 o superior** (o AMD **RX 7000 / RX 9000** de 16 GB, experimental), 8 GB de VRAM (4 GB para Anima y SDXL en NF4, 12 GB para LTX-2.3, Ideogram 4, SDXL en BF16 y Wan 2.2 con imágenes a 448×448, 16 GB para Wan 2.2 con vídeo) y 16 GB de RAM (32 GB recomendados).
 
 **Cola de trabajos:** con un entrenamiento en marcha, *Iniciar / Reanudar* o *Iniciar Pre-Caché* en cualquier entrenador pregunta si añadirlo a la cola, con una copia de los ajustes de ese momento. Los trabajos se ejecutan uno tras otro en la GPU. El botón **Cola** del lanzador y de cada entrenador abre la página de la cola: lo que entrena ahora (progreso, tiempo restante y curva de loss) y lo que espera, que puedes reordenar arrastrando, pausar, continuar o quitar. Pausar guarda un checkpoint y deja el trabajo pausado en la cola; continuar sigue desde ese paso. Mientras un entrenador entrena, **➕ Nuevo entrenamiento en cola** abre un borrador del mismo entrenador en otro puerto para preparar el siguiente sin tocar el que entrena (ponle otro nombre de proyecto). Si un trabajo falla, se queda en la lista en rojo diciendo por qué (no se encuentra la pre-caché o el dataset, falta VRAM…); corrígelo y pulsa **↻** para reintentarlo. **✎** en un trabajo de la cola abre su entrenador con sus ajustes para cambiarlos: el botón de empezar pasa a ser **💾 Guardar cambios en la cola**. Mientras se hace la pre-caché, *Iniciar / Reanudar* sigue disponible y manda el entrenamiento a la cola. **⏻ Pausar todo y salir**, abajo en el lanzador, pausa el entrenamiento en curso guardando su checkpoint y cierra todo desde el navegador; al volver a abrir el lanzador la cola sigue sola donde estaba, empezando por ese entrenamiento. En RunPod y otras nubes el lanzador sigue abierto, con la cola pausada.
 
@@ -343,7 +347,7 @@ The automatic captioner adds, only the first time you use it: **nothing** for Kr
 | | Minimum | Recommended |
 | :--- | :--- | :--- |
 | **OS** | Windows 10 / 11, or 64-bit Linux ([docs/Linux.md](docs/Linux.md)) | Windows 11 |
-| **GPU** | NVIDIA **RTX 20xx / GTX 16xx or newer** (compute capability 7.5+) with **8 GB VRAM** (4 GB for Anima and SDXL in NF4, 10 GB for MiniMax-H3 Image edit LoRAs, 12 GB for LTX-2.3, FLUX.2 Klein 9B, Ideogram 4, SDXL in BF16 and Wan 2.2 with images at 448×448, 16 GB for Wan 2.2 with video) | 12–24 GB VRAM |
+| **GPU** | NVIDIA **RTX 20xx / GTX 16xx or newer** (compute capability 7.5+) with **8 GB VRAM** (4 GB for Anima and SDXL in NF4, 10 GB for MiniMax-H3 Image edit LoRAs, 12 GB for LTX-2.3, Ideogram 4, SDXL in BF16 and Wan 2.2 with images at 448×448, 16 GB for Wan 2.2 with video) | 12–24 GB VRAM |
 | **AMD GPU** *(experimental)* | Radeon **RX 7000 / RX 9000** or Ryzen AI Max (Strix Halo) with 16 GB of VRAM, using the AMD installer (see *Installation*). Confirmed on an RX 7800 XT 16 GB under Windows with MiniMax-H3 | — |
 | **Driver** | NVIDIA **580 or newer** (CUDA 13). AMD: a recent Adrenalin driver on Windows, or `amdgpu` on Linux | Latest |
 | **RAM** | 16 GB | 32 GB |
@@ -704,8 +708,4 @@ Copying the blocks from RAM costs little on a x16 slot (2.2 against 1.8 s/step a
 - **Normal LoRAs**: one image + one caption each, in Ming-Image's own **Figma-style JSON** format. The captioner writes it for you.
 - **Edit LoRAs**: pairs named `name_before.png` / `name_after.png` plus one instruction in `name.txt`. The model sees the before image and learns to produce the after.
 - **The model:** `inclusionAI/Ming-Image-0.1-Design`, the Design variant, which generates the **alpha channel**: that is what makes the transparent designs. The NF4 build is published as `AcademiaSD/Ming-Image-NF4-for-LoRA-Training` (16.2 GB instead of ~49 GB).
-- **The "text encoder" is a full MLLM**: BailingMoE-V2 (a Mixture-of-Transformers) plus a ViT, 10.3 B parameters, in NF4. It is asked for the conditioning with `image_gen_only_extract_hidden_states` and returns two tensors: the 256 scale tokens the DiT sees, and the direct LLM states.
-- **VAE with alpha**: the VAE is RGBA, so the images are trained **with** their alpha channel; the opaque ones enter with alpha = 1.
-- **Captioner:** the shared Qwen3-VL-8B-Instruct NF4, with **Normal** (the JSON caption) and **Edit** (one instruction per pair) modes. When the image really has an alpha channel it is told so, so it does not invent a background behind a transparent design.
-- **Previews:** 12 steps / CFG 1.0, the official pipeline's `pos + cfg·(pos−neg)`, and up to **4 reference images** for the edit preview (`<image1>`, `<image2>`, …).
-- **Live settings:** the changes saved with *Save JSON* while the traini
+- **The "text encoder" is a full MLLM**: BailingMoE-V2 (a Mixture-of-Transformers) plus a ViT, 10.3 B parameters, in NF4. It is asked for the conditioning with `image_gen_only_extract_hidden_states` and returns two tensors: the 256 scale tokens the DiT sees, and 

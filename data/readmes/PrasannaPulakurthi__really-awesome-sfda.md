@@ -511,7 +511,8 @@ flatters whichever side had more information.
 | [VisDA-C](https://github.com/VisionLearningGroup/taskcv-2017-public/tree/master/classification) | 12 | synthetic → real | Single direction. ResNet-101. **Per-class mean**, not overall. |
 | [DomainNet](http://ai.bu.edu/M3SDA/) | 345 | 6 — Clipart, Infograph, Painting, Quickdraw, Real, Sketch | Cleaned subset; state which domains and tasks. Hardest of the four. |
 | [PACS](https://domaingeneralization.github.io/) | 7 | 4 — Photo, Art, Cartoon, Sketch | Leave-one-domain-out. More common in domain generalization than SFDA. |
-| [Digits](http://yann.lecun.com/exdb/mnist/) | 10 | MNIST, USPS, SVHN | Usually 3 directions. Small, and largely superseded. |
+| [TerraIncognita](https://lila.science/datasets/caltech-camera-traps) | 10 | 4 — camera-trap locations L100, L38, L43, L46 | The DomainBed subset of Caltech Camera Traps, leave-one-domain-out. More common in domain generalization and TTA than SFDA. |
+| [Digits](https://huggingface.co/datasets/ylecun/mnist) | 10 | MNIST, USPS, SVHN | Usually 3 directions. Small, and largely superseded. |
 
 ### Robustness / Distribution Shift
 - [ImageNet-C](https://github.com/hendrycks/robustness) — 15 corruption types at 5 severity levels
@@ -527,7 +528,6 @@ flatters whichever side had more information.
 
 ### Object Detection
 - [Foggy Cityscapes](https://www.cityscapes-dataset.com/) — Cityscapes with simulated fog (clear → foggy adaptation)
-- [Sim10k](https://fcav.engin.umich.edu/projects/driving-in-the-matrix) — 10,000 synthetic images from Grand Theft Auto V
 - [KITTI](https://www.cvlibs.net/datasets/kitti/) — autonomous driving benchmark (stereo, flow, detection, segmentation)
 - [Clipart / Watercolor / Comic](https://naoto0804.github.io/cross_domain_detection/) — cross-domain detection from VOC to artistic styles
 

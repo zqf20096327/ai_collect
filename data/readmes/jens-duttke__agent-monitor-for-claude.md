@@ -12,6 +12,7 @@ A local desktop window that shows every running Claude Code agent at a glance - 
 - **What it is doing** - each entry shows in one line what the agent waits on, what it is running, or the first line of its last answer.
 - **Signals** - each entry shows up to two of: unfinished git work (uncommitted, not pushed, local-only or deleted branch), running processes, subagents or workflow progress, a budget from 80% spent, Auto mode on hold, an available Claude Code update, and queued prompts.
 - **Cost** - an estimated dollar cost per session, including subagents and web searches. Prices are in an editable `pricing.json` (see [docs/configuration.md](docs/configuration.md)).
+- **Prompt cache** - a session waiting for you counts down the time its prompt cache stays warm, with a bar along the entry that turns amber when it is about to expire. Once it has expired, the entry names what your next prompt pays to write the context again. The toolbar adds up what the warm caches hold. The context use can be shown as well (`list_context`).
 
 ### Details
 Select a session to see its details beside the list:
@@ -45,7 +46,7 @@ The *Graph* grouping draws each session with its subagents, workflows, backgroun
 
   <img src="docs/images/compact.png" width="320" alt="The compact view: a narrow strip with one line per agent under the sections Needs you, Stopped, Running and Recent, each with its status and time">
 
-- **Taskbar** - on Windows the taskbar button shows how many sessions wait for you. On Linux the window asks for attention.
+- **Taskbar** - on Windows the taskbar button shows how many sessions wait for you. On Linux the window asks for attention, except on a Wayland session, where GTK cannot.
 - **WSL** - on Windows, sessions running inside WSL distributions are listed too.
 - **13 languages** - English, German, Spanish, French, Hindi, Indonesian, Italian, Japanese, Korean, Brazilian Portuguese, Ukrainian, Simplified and Traditional Chinese, detected from your system locale or chosen in the settings.
 - **Settings** - refresh interval, how long finished sessions stay, language, WSL and window size, changed in a settings dialog (gear in the toolbar).
@@ -141,7 +142,7 @@ To work on the UI in a browser, open `agent_monitor_for_claude/ui/index.html?moc
 
 To refresh the screenshots in `docs/images/`, run `node tools/screenshots.mjs` (optionally with scene names: `overview`, `graph`, `search`, `compact`). It needs Edge or Chrome; set `SCREENSHOT_BROWSER` if it finds neither.
 
-Run the tests with `python -m unittest discover -s tests` and `node --test tests/js/logic.test.js tests/js/global-scope.test.js`.
+Run the tests with `python -m unittest discover -s tests` and `node --test "tests/js/*.test.js"`.
 
 ## License
 

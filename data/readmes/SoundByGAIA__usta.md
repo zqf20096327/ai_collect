@@ -75,8 +75,8 @@ Ayrıntılar, bulunup kapatılan açıklar ve açık bildirme yolu: [SECURITY.md
 - **Modlar:** `manuel` (her riskli adımda sorar), `oto` (sormadan yapar, yasaklar geçerli), `plan` (önce okur ve plan
   yazar; onaylarsan aşama aşama uygular).
 - **Seni tanıyayım:** sana nasıl hitap edeceğini ve nasıl anlatacağını bir kez yazarsın.
-- **Evdeki ortak hafıza:** evdeki birkaç bilgisayar aynı notları paylaşır. Eşleşme 6 haneli kodla yapılır, istekler
-  imzalıdır, dışarıdan gelen not onaylanmadan kullanılmaz.
+- **Evdeki ortak hafıza:** evdeki birkaç bilgisayar aynı notları paylaşır. Eşleşme 6 haneli kodla yapılır, bağlantı
+  şifrelidir, dışarıdan gelen not onaylanmadan kullanılmaz.
 - **Beceriler:** sık yaptığın bir işi Usta'ya bir kez öğretirsin. Usta tarifi önerir, sen kaydedersin.
 - **Başka yapay zekâ programları:** Claude Code, Codex, OpenCode, DeepSeek Harness ya da Hermes kuruluysa Usta işi onlara
   da verebilir. Her seferinde sorar, varsayılan olarak yalnız okuma izniyle verir.
@@ -93,6 +93,7 @@ Terminalde en çok kullanılan komutlar:
 | `/token` | harcanan token ve bağlam doluluğu |
 
 Tek bir görev için: `usta run "not.txt dosyasını özetle" -w ./klasor`. API sunucusu için: `usta serve`.
+Denetim kaydı için: `usta audit show [kayıt]` son işlemleri gösterir (kayıt verilmezse en son değişeni), `usta audit verify` kaydın sonradan değiştirilmediğini denetler.
 
 ## Ölçüm araçları
 

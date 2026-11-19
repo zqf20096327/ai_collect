@@ -1,0 +1,409 @@
+# <img src="docs/logo_4.svg" alt="Riot" width="48" height="48"> Riot
+
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/vcaesar/riot)](https://pkg.go.dev/github.com/vcaesar/riot)
+[![Tests](https://github.com/vcaesar/riot/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/vcaesar/riot/actions/workflows/tests.yml?query=event%3Apush+branch%3Amain)
+[![Lint](https://github.com/vcaesar/riot/actions/workflows/lint.yml/badge.svg?branch=main&event=push)](https://github.com/vcaesar/riot/actions/workflows/lint.yml?query=event%3Apush+branch%3Amain)
+[![codecov](https://codecov.io/gh/vcaesar/riot/branch/main/graph/badge.svg)](https://codecov.io/gh/vcaesar/riot)
+[![GitHub release](https://img.shields.io/github/release/vcaesar/riot.svg)](https://github.com/vcaesar/riot/releases/latest)
+<a href="https://discord.gg/535uZPakJw"><img src="https://img.shields.io/discord/908440023093903432.svg?logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Join the Discord chat at https://discord.gg/535uZPakJw"></a>
+
+English | [简体中文](langs/README.zh.md) | [繁體中文](langs/README.zht.md) | [日本語](langs/README.ja.md) | [한국어](langs/README.ko.md) | [Français](langs/README.fr.md) | [Deutsch](langs/README.de.md) | [Español](langs/README.es.md) | [Русский](langs/README.ru.md) | [Português](langs/README.pt.md)
+
+A fastest, modern text indexing library in Go.
+
+For a distributed search engine and a lightweight alternative to full Elasticsearch built on riot, see [zedsearch](https://github.com/vcaesar/zedsearch).
+
+## Features
+
+- Supported field types:
+  - Text, Numeric, Date, Boolean, IP, Geo Point, Vector
+- Supported query types:
+  - Term, Phrase, Match, Match Phrase, Prefix, Regexp, Wildcard, Fuzzy
+  - Conjunction, Disjunction, Boolean
+  - Numeric Range, Date Range, Term Range, IP Range
+  - Geo Bounding Box, Geo Distance, Geo Polygon, ANN, KNN
+- BM25 Similarity/Scoring with pluggable interfaces
+- HNSW approximate vector search with int8 quantization; graphs persist with segments and are memory-mapped from disk
+- Search result match highlighting
+- Extensible Aggregations:
+  - Bucketing
+    - Terms
+    - Numeric Range
+    - Date Range
+  - Metrics
+    - Min/Max/Count/Sum
+    - Avg/Weighted Avg
+    - Cardinality Estimation ([HyperLogLog++](https://github.com/axiomhq/hyperloglog))
+    - Quantile Approximation ([T-Digest](https://github.com/caio/go-tdigest))
+
+## Installation
+
+```sh
+go get -u github.com/vcaesar/riot
+```
+
+## Usage
+
+Runnable versions of the basic indexing, querying, and CJK programs live in
+[`test/readme_demo`](test/readme_demo). Struct indexing and vector search demos live in
+[`examples`](examples); run their commands below from the repository root.
+
+### Indexing
+
+Save as `write/main.go` and run with `go run ./write`:
+
+```go
+package main
+
+import (
+	"log"
+
+	riot "github.com/vcaesar/riot"
+)
+
+func main() {
+	config := riot.DefaultConfig("./riot_index")
+	writer, err := riot.OpenWriter(config)
+	if err != nil {
+		log.Fatalf("error opening writer: %v", err)
+	}
+	defer writer.Close()
+
+	doc := riot.NewDocument("example").
+		AddField(riot.NewTextField("name", "riot"))
+
+	err = writer.Update(doc.ID(), doc)
+	if err != nil {
+		log.Fatalf("error updating document: %v", err)
+	}
+	log.Printf("indexed: %s", doc.ID())
+}
+```
+
+### Querying
+
+Save as `read/main.go` and run with `go run ./read` against the index written above.
+If you index and search in the same process, use `writer.Reader()` instead of `riot.OpenReader`
+(or `riot.InMemoryOnlyConfig()` for an in-memory index):
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+
+	riot "github.com/vcaesar/riot"
+)
+
+func main() {
+	config := riot.DefaultConfig("./riot_index")
+	reader, err := riot.OpenReader(config)
+	if err != nil {
+		log.Fatalf("error opening reader: %v", err)
+	}
+	defer reader.Close()
+
+	query := riot.NewMatchQuery("riot").SetField("name")
+	request := riot.NewTopNSearch(10, query).
+		WithStandardAggregations()
+	documentMatchIterator, err := reader.Search(context.Background(), request)
+	if err != nil {
+		log.Fatalf("error executing search: %v", err)
+	}
+
+	match, err := documentMatchIterator.Next()
+	for err == nil && match != nil {
+		err = match.VisitStoredFields(func(field string, value []byte) bool {
+			if field == "_id" {
+				fmt.Printf("match: %s\n", string(value))
+			}
+			return true
+		})
+		if err != nil {
+			log.Fatalf("error loading stored fields: %v", err)
+		}
+		match, err = documentMatchIterator.Next()
+	}
+	if err != nil {
+		log.Fatalf("error iterator document matches: %v", err)
+	}
+}
+```
+
+Output:
+
+```
+match: example
+```
+
+### Chinese / Japanese with gse
+
+The [`gse`](gse) package wraps riot with a [gse](https://github.com/go-ego/gse) tokenizer for
+CJK text, plus query-string search and highlighting. Save as `cjk/main.go` and run with
+`go run ./cjk`:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/vcaesar/riot/gse"
+)
+
+func main() {
+	opt := gse.Option{
+		Index: "test.riot",
+		Dicts: "embed, ja", // or "embed, zh"
+		Opt:   "search-hmm",
+	}
+	// Option{Lang: "en"} skips gse and uses a riot analysis/lang analyzer
+	// instead ("en", "cjk", "de", ...; see gse.Langs()).
+	defer os.RemoveAll(opt.Index)
+
+	index, err := gse.New(opt)
+	if err != nil {
+		log.Fatalf("error opening gse index: %v", err)
+	}
+	defer index.Close()
+
+	text := `見解では、謙虚なヴォードヴィリアンのベテランは、運命の犠牲者と悪役の両方の変遷として代償を払っています`
+	docs := map[string]string{
+		"1": text,
+		"3": text + "浮き沈み",
+		"4": `In view, a humble vaudevillian veteran cast vicariously as both victim and villain vicissitudes of fate.`,
+		"2": `It's difficult to understand the sum of a person's life.`,
+		"5": `Riot 是用 Go 语言编写的全文搜索引擎`,
+	}
+	for id, doc := range docs {
+		if err = index.Index(id, doc); err != nil {
+			log.Fatalf("error indexing %s: %v", id, err)
+		}
+	}
+
+	for _, query := range []string{"運命の犠牲者", "搜索引擎", "vaudevillian"} {
+		req := gse.QueryString(query, true)
+		res, err := index.Search(req)
+		if err != nil {
+			log.Fatalf("error searching %q: %v", query, err)
+		}
+		fmt.Printf("query %q: %d hits in %v\n", query, res.Total, res.Took)
+		for _, hit := range res.Hits {
+			fmt.Printf("  %s (%.3f) %v\n", hit.ID, hit.Score, hit.Fragments["text"])
+		}
+	}
+}
+```
+
+Example output (timings may vary):
+
+```
+query "運命の犠牲者": 2 hits in 14.5µs
+  1 (1.899) [見解では、謙虚なヴォードヴィリアンのベテランは、<mark>運命</mark><mark>の</mark><mark>犠</mark><mark>牲</mark><mark>者</mark>と悪役<mark>の</mark>両方<mark>の</mark>変遷として代償を払っています]
+  3 (1.837) [見解では、謙虚なヴォードヴィリアンのベテランは、<mark>運命</mark><mark>の</mark><mark>犠</mark><mark>牲</mark><mark>者</mark>と悪役<mark>の</mark>両方<mark>の</mark>変遷として代償を払っています浮き沈み]
+query "搜索引擎": 1 hits in 19.792µs
+  5 (1.531) [Riot 是用 Go 语言编写的全文<mark>搜索</mark><mark>引擎</mark>]
+query "vaudevillian": 1 hits in 1.958µs
+  4 (0.654) [In view, humble <mark>vaudevillian</mark> veteran cast vicariously as both victim and villain vicissitudes of fate.]
+```
+
+### Indexing structs with gse
+
+```go
+package main
+
+import (
+	"errors"
+	"fmt"
+	"log"
+
+	"github.com/vcaesar/riot/gse"
+)
+
+type Article struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() (err error) {
+	index, err := gse.New(gse.Option{Lang: "en"}) // Empty Index uses memory only.
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, index.Close()) }()
+
+	if err := index.Index("article-1", Article{
+		Title: "Getting started",
+		Text:  "Riot is a search engine written in Go.",
+	}); err != nil {
+		return err
+	}
+
+	request := gse.QueryString("started", true)
+	request.Field = "title"
+	result, err := index.Search(request)
+	if err != nil {
+		return err
+	}
+	for _, hit := range result.Hits {
+		fmt.Printf("%s: %s %v\n", hit.ID, hit.Fields["title"], hit.Fragments["title"])
+	}
+	return nil
+}
+```
+
+Output:
+
+```text
+article-1: Getting started [Getting <mark>started</mark>]
+```
+
+### Vector search: exact KNN and approximate ANN
+
+Run [`examples/knn`](examples/knn) with `go run ./examples/knn`:
+
+```go
+package main
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"log"
+
+	riot "github.com/vcaesar/riot"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() (err error) {
+	writer, err := riot.OpenWriter(riot.InMemoryOnlyConfig())
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, writer.Close()) }()
+
+	for _, item := range []struct {
+		id     string
+		vector []float32
+	}{
+		{"east", []float32{1, 0}},
+		{"northeast", []float32{1, 1}},
+		{"north", []float32{0, 1}},
+	} {
+		field, err := riot.NewVectorField("embedding", item.vector)
+		if err != nil {
+			return err
+		}
+		doc := riot.NewDocument(item.id).AddField(field)
+		if err := writer.Update(doc.ID(), doc); err != nil {
+			return err
+		}
+	}
+
+	reader, err := writer.Reader()
+	if err != nil {
+		return err
+	}
+	defer func() { err = errors.Join(err, reader.Close()) }()
+
+	for _, mode := range []string{"KNN", "ANN"} {
+		query := riot.NewKNNQuery("embedding", []float32{1, 0}, 2).
+			SetMetric(riot.Cosine)
+		if mode == "ANN" {
+			query.SetANN(riot.ANNParams{EfSearch: 100})
+		}
+		matches, err := reader.Search(context.Background(), riot.NewTopNSearch(2, query))
+		if err != nil {
+			return err
+		}
+		for {
+			match, err := matches.Next()
+			if err != nil {
+				return err
+			}
+			if match == nil {
+				break
+			}
+			var id string
+			if err := match.VisitStoredFields(func(name string, value []byte) bool {
+				if name == "_id" {
+					id = string(value)
+				}
+				return true
+			}); err != nil {
+				return err
+			}
+			fmt.Printf("%s: %s (%.3f)\n", mode, id, match.Score)
+		}
+	}
+	return nil
+}
+```
+
+Output:
+
+```text
+KNN: east (1.000)
+KNN: northeast (0.707)
+ANN: east (1.000)
+ANN: northeast (0.707)
+```
+
+### Persisted vector indexes
+
+HNSW graphs are saved with on-disk segments, so a reopened index searches them without rebuilding. `WithVectorStorage` chooses where their vectors live: `riot.VectorStorageDisk` (the default) memory-maps each graph with its vectors, so they sit in the OS page cache instead of the Go heap; `riot.VectorStorageMemory` stores links only and loads vectors onto the heap when a graph opens (smaller files, more memory).
+
+```go
+config := riot.DefaultConfig("./riot_vectors").WithVectorStorage(riot.VectorStorageDisk)
+```
+
+[`examples/ann_disk`](examples/ann_disk) indexes vectors on disk and searches them after reopening: `go run ./examples/ann_disk`.
+
+## Benchmarks
+
+### Riot vs Bleve and Bluge (the engine it forked)
+
+All three engines run the same workload: 100,000 synthetic documents (`body` text with positions, stored; numeric `id`; `category` keyword). Bleve v2.6.2 (scorch, BM25) and Bluge v0.2.2 run against current riot (Go 1.27.3) in its default stream indexing mode, one process at a time on one core (`GOMAXPROCS=1`), median of 5 rotated rounds (Apple M1, load average 2.7 to 6.1). In every run all three returned the same match counts and match sets as a per-document oracle.
+
+| Workload                                  | Bleve v2.6.2 | Bluge v0.2.2 | Riot      | Riot vs Bleve | Riot vs Bluge |
+| ----------------------------------------- | ------------ | ------------ | --------- | ------------- | ------------- |
+| Initial indexing, 100,000 docs            | 6,546 ms     | 5,029 ms     | 500 ms    | 13.1× faster  | 10.1× faster  |
+| 1-doc commit + visible reader             | 0.151 ms     | 0.313 ms     | 0.101 ms§ | 1.5× faster   | 3.1× faster   |
+| Index size on disk                        | 76.71 MB     | 61.06 MB     | 5.76 MB   | 13.3× smaller | 10.6× smaller |
+| Peak memory (RSS)                         | 1,931 MiB    | 1,974 MiB    | 140 MiB   | 13.8× less    | 14.1× less    |
+| Total CPU, whole run                      | 17.84 s      | 19.50 s      | 1.05 s    | 17.0× less    | 18.6× less    |
+| Rare term                                 | 11.90 µs     | 16.98 µs     | 2.19 µs   | 5.4× faster   | 7.8× faster   |
+| Common term, top 10 + count               | 5,848 µs     | 10,861 µs    | 7.17 µs†  | 816× faster   | 1,516× faster |
+| Boolean AND                               | 1,788 µs     | 1,990 µs     | 23.20 µs† | 77× faster    | 86× faster    |
+| Boolean OR                                | 27.18 µs     | 43.61 µs     | 4.46 µs   | 6.1× faster   | 9.8× faster   |
+| Phrase                                    | 60,645 µs    | 61,758 µs    | 2,079 µs  | 29× faster    | 30× faster    |
+| Prefix `term12*` (constant score in riot) | 3,133 µs     | 3,597 µs     | 35.13 µs  | 89× faster    | 102× faster   |
+| Fuzzy `serch`, distance 1                 | 6,798 µs     | 12,035 µs    | 23.70 µs† | 287× faster   | 508× faster   |
+| Typed numeric range                       | 166.2 µs     | 164.6 µs     | 7.84 µs   | 21× faster    | 21× faster    |
+| Keyword / facet term                      | 385.1 µs     | 645.7 µs     | 2.69 µs   | 143× faster   | 240× faster   |
+| Numeric stats‡                            | 45,375 µs    | 105,356 µs   | 433.2 µs  | 105× faster   | 243× faster   |
+
+- Peak memory and CPU cover the whole benchmark process (10K and 100K builds plus every query loop), taken from `wait4` rusage. Index size comes from a separate on-disk build (median of 3).
+
+Scores differ from Bluge's because riot fixed Bluge's BM25 idf to Lucene's `log(1 + (N − n + 0.5)/(n + 0.5))`. Bluge has no vector search; Bleve's needs the `vectors` build tag and FAISS through cgo. These are single-machine numbers on synthetic data, not a formal benchmark.
+
+Riot (Go) is already on par with Tantivy: it is faster on 8 of 10 query workloads in the same run. An even faster Zig version of riot is also in development. It is still beta and not published yet. In the same benchmark run it was about 2–5× faster than riot (Go) on most queries and 2.8× faster at indexing, and it was at least 1.5× faster than Tantivy on every query workload (2–8× on most).
+
+## License
+
+Apache License Version 2.0

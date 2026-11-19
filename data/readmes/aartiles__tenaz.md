@@ -100,7 +100,11 @@ project's own tests.
   in between does not take it). A request the engine refuses for what is
   in it (a 400 for a file it cannot decode) is not retried as it was: a
   fresh session goes on, told what was refused, up to the session's
-  continuations.
+  continuations. A harness that exits before it sends the engine anything
+  (a broken harness installation, say) is rerun once; if the
+  rerun does the same while the engine serves, the run blocks at once
+  with `harness failed:` and the harness's stderr
+  ([ADR 0037](docs/adr/0037-a-harness-that-never-reaches-the-engine.md)).
 - **Watchdogs.** Loops, repeated calls, idle turns, huge outputs and
   sessions that reach their turn or context budget get a steering
   message first (fx and Pi; OpenCode and Qwen Code get none), then the
@@ -660,6 +664,18 @@ ahead, and Tenaz names the file in `orchestrator.log` and in the session's
 journal record (`outside_writes`), and tells the session once that its
 files belong in the project. A bootstrap step whose files are then missing
 says where they went. Writes from shell commands are not seen (ADR 0008).
+
+Neither mode protects `.tenaz/private/`: it is inside the project, and the
+harness keeps its own state there. When a session removes it (`rm -rf`,
+`git clean -fdx`), Tenaz notices after the session: the journal records
+`private-removed` with the session's label, `orchestrator.log` says so,
+and Tenaz writes its prompt file there again. When the run lock's file
+went, Tenaz takes the lock again when the session ends; if another
+`tenaz run` took it before then, this run stops and leaves the run to
+it. Each harness writes its own files there again
+before its next session. The session's logs and what the harness kept
+there are lost
+([ADR 0038](docs/adr/0038-note-a-removed-private-folder.md)).
 
 ### In an existing project
 

@@ -484,6 +484,7 @@ Enjoy 🤩
 
 - [YouTube](https://youtube.com) 油管
   - ![GitHub Repo stars](https://img.shields.io/github/stars/FreeTubeApp/FreeTube) [FreeTube](https://github.com/FreeTubeApp/FreeTube) (Windows, macOS, Linux) YouTube第三方客户端去广告 ⭐
+  - [TubeHaus](https://github.com/biolend83/tubehaus) A private YouTube client
 - [Odysee](https://odysee.com)
 - [Rumble](https://rumble.com)
 - [Max: Stream HBO, TV, &amp; Movies](https://www.max.com)
@@ -1271,16 +1272,16 @@ Enjoy 🤩
 ### ✅To do list, Task, Reminder
 
 - [Clear](https://apps.apple.com/app/id493136154)
-- [Microsoft To Do](https://to-do.live.com/tasks/inbox)
+
 - [Google Tasks](https://tasks.google.com/tasks)
 - [iCloud Reminders](https://www.icloud.com/reminders)
 - [Goblin Tools](https://apps.apple.com/us/app/goblin-tools/id6449003064) (iOS)
 - 🗃️Archived
   - [gTasks Pro for Google Tasks](https://apps.apple.com/us/app/gtasks-pro-for-google-tasks/id672241079)
+  - [Microsoft To Do](https://to-do.live.com/tasks/inbox) 2027.6 关停
 
 ### 📑Note Taking 笔记软件
 
 > 所见即所得（WYSIWYG）编辑器：Marktext、Typora、Obsidian、VS Code（需安装插件）和思源（Siyuan）。本地编辑工具：Typora、Visual Studio Code、Notepad++、Obsidian和Trilium。富文本编辑器（如Word、OneNote）也支持所见即所得。Obsidian、Joplin、Logseq和Typora都扩展了Markdown语法。Typora和Obsidian在Markdown编辑上存在缺陷，如手动换行和某些LaTeX符号无法。
 
-- ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Linux) 使用Rust和Flutter构建
-- ![GitHub Repo stars](https://img.shields.io/github/stars/zed-industri
+- ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Lin

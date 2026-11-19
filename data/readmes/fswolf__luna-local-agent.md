@@ -39,6 +39,8 @@ grew from there.
 
 <img width="1210" alt="How Luna's models work together. The chat model is her mind, in the middle, and the only one required. Whisper (her hearing, on the CPU) and the vision adapter (her eyes) feed what you say and show into it. Kokoro speaks her replies. Every turn, the embedding model and the reranker find the facts, notes and tools that fit. Only when you ask, she can put one short question to a bigger cloud model: Claude, Grok or ChatGPT. Leave the optional parts out and she does without." src="assets/luna-models.png" />
 
+<img width="1210" alt="How Luna's memory works on each turn. Your message comes in at the top. In the middle is this turn: everything she knows while she answers, put together fresh each time, and only what fits goes along. Always along, on the left: who you are, the conversation so far and her open projects. Found by meaning, on the right: the facts that fit (read again by the reranker), her pages, notes on past sessions and lessons that fit, and passages from your own notes. Afterwards, underneath: she saves facts on purpose with when they were true (a change retires the old one, forget scrubs it everywhere), writes notes on a conversation when it goes quiet, and while idle learns lessons from her own mistakes, rewrites pages and merges duplicate facts. Her memory stays on your PC in plain SQLite files." src="assets/luna-memory.png" />
+
 ```bash
 git clone https://github.com/fswolf/luna-local-agent.git ~/luna-ai
 ```
@@ -81,7 +83,7 @@ What she does:
 - **Easy to set up:** the installer picks a model that fits your graphics card, she asks your name the first time she starts, and every setting is on one page in your browser, with presets: Assistant, Companion, Streamer, and Small, Medium or Large to fit your model ([details](docs/configuration.md#the-settings-page))
 - **Knows her own manual:** ask her how to do something and she looks it up and tells you the exact command
 - Linux first, also on macOS and Windows
-- Full-screen terminal interface
+- Full-screen terminal interface, or a web UI in a window of her own with no terminal at all (`./start_web.sh`)
 
 Everything runs locally. No cloud APIs required.
 
@@ -101,6 +103,23 @@ at about 15 frames a second, from a camera of her own, so your screen can
 stay at bust while the fan shows all of her. An HDMI fan just shows the
 portrait page. Which fans work and what to buy:
 [hologram fans](docs/fans.md).
+
+## Web UI or the terminal
+
+<img width="1210" alt="Luna's web window: the chat on the left, with her replies in the middle, your messages on the left and her notes in small yellow boxes on the right, beside her portrait reading a book in her room" src="assets/web-ui.jpg" />
+
+`./start_web.sh` (or `./start.sh --web`) starts her with no terminal at all: the chat opens in
+a window of its own beside her portrait, and the terminal you started her
+from can close. Every one of her pages has the same header: her logo opens
+the menu (portrait, pose studio and the live monitor in windows of their
+own, then settings, thoughts, memory, help, and Exit), Online shows what
+she's running on, and the middle says what she's doing. A file or a picture
+goes in with the paperclip. Closing the window quits her
+([details](docs/controls.md#chatting-in-the-browser)).
+
+`./start.sh` is still the terminal, for a server or an SSH session where
+she works as a tasked bot with no portrait at all. Both are the same
+conversation: `/chat` opens the window beside the terminal.
 
 ## Talk to her from another room
 

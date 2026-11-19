@@ -1,0 +1,534 @@
+# AegisAI
+
+![Version](https://img.shields.io/github/v/release/user6811992/LocalAI) ![License](https://img.shields.io/github/license/user6811992/LocalAI) [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-pink)](https://github.com/sponsors/user6811992)
+
+A local AI web UI powered by [Ollama](https://ollama.com), with a built-in chat interface, search engine integration, model management, and reverse-engineering tools. Runs entirely on your machine — no cloud, no telemetry.
+
+## Features
+
+- **Chat UI** — clean, responsive web interface with thinking-block display, Markdown rendering, and code highlighting
+- **Model management** - pull models from Ollama or HuggingFace, one-click quick-pull for recommended models, installed-models list, scan drives for GGUF files and Ollama/LM Studio model stores
+- **Voice (optional)** - speech-to-text input and text-to-speech output via OpenAI-compatible audio backends (G3_Whisper for STT, G3_TADA for TTS). Set `STT_URL` and `TTS_URL` env vars. Browser-based Web Speech API and speechSynthesis also supported.
+- **Conversation branching** - fork any chat at any message point to explore different approaches. Branches are tracked with parent/child relationships. Navigate between branches with the Parent button. Inspired by context-management patterns from Private_Context_COW.
+- **Default skills** - ships with built-in skills: search-before-re, design-review, pr-review, doc-discipline, android-re, ui-review, context-compress (inspired by agent skill patterns from the community).
+- **Squeeze tool** - read long documents (URLs, files, PDFs) and extract only the answer to a question using a helper model. Keeps the main conversation context small. Inspired by dsh-squeeze.
+- **Search integration** — 9 keyless search engines (DuckDuckGo, Bing, Google, etc.) + optional LangSearch API
+- **Reverse engineering** — 229 RE tools via REA MCP (binaries, JS/Electron, Android, firmware, etc.)
+- **Agent tool-call loop** - automatic tool execution with fallback parsing for uncensored models
+- **Capability-based security** - scope MCP tools per agent session (allowedTools/deniedTools). Inspired by Cloudflare OS Gatekeepers.
+- **Human-in-the-loop via simulation** - simulate tool results so the agent can continue while awaiting bulk approval. Approve/reject queued actions via /api/pending-actions.
+- **PWA** — installable as a progressive web app on mobile and desktop
+- **Mobile-friendly** — safe-area insets, touch targets, install hint banner
+- **No telemetry** — zero phone-home, analytics, or tracking code
+- **Portable** — auto-generates paths on install, no hardcoded usernames
+- **Agent streaming** — live SSE token/thinking/tool events, token usage stats, context meter, compaction indicator, tool log, web citations, reasoning display
+- **Chat management** — auto-save, rename, export, delete; Memory & Skills panels with add/edit/delete
+- **Settings panel** — agent tool budget, enable/disable tool sources (RE, Ghidra, Craft, Awesome-RE), export/import full backup (JSON)
+- **RAG reindex** — re-embed an entire collection with the current embedding model after a model change
+- **Safety** — DOMPurify sanitization for Markdown, client-disconnect abort on proxy, Docker healthchecks and named volumes
+
+## Supported Models
+
+Tested with:
+- `llama3.2:3b`, `qwen2.5:14b`, `qwen2.5-coder:14b`, `qwen2.5-coder:7b`, `mistral:7b`, `phi3:mini`, `gemma2:9b`, `deepseek-coder:6.7b`, `deepseek-coder-v2:16b`, `deepseek-r1:14b`
+- Uncensored: `huihui_ai/qwen2.5-coder-abliterate:7b`, `huihui_ai/deepseek-r1-abliterated:8b`
+- Vision: `moondream`, `gemma3:4b`
+- Embeddings: `nomic-embed-text`
+
+## Quick Start
+
+### Prerequisites
+- [Node.js](https://nodejs.org) 18+
+- **One** AI backend:
+  - [Ollama](https://ollama.com/download) (default, recommended) — installed and running, **or**
+  - [llama.cpp](https://github.com/ggerganov/llama.cpp) server, **or**
+  - [llama.cpp (adaptive fork)](https://github.com/LaurentZuijdwijk/llama.cpp) — adaptive speculative decoding, 4.7x on structured output (AMD Strix Halo), **or**
+  - [LM Studio](https://lmstudio.ai), **or**
+  - [Strata](https://github.com/Niko1221/Strata), **or**
+  - any OpenAI-compatible endpoint
+
+Ollama is only required if you use the default `ollama` backend. Other backends are selected during installation (or via `BACKEND_TYPE`/`BACKEND_URL` env vars) and do not need Ollama.
+
+### Install (Windows — Inno Setup installer, recommended)
+Download `AegisAI-Setup-<version>.exe` from the [Releases](https://github.com/user6811992/LocalAI/releases) page and run it. The installer:
+- Bundles a portable Node.js runtime (zero prerequisites) or uses your installed Node.js
+- Copies the application and runs `npm install`
+- Lets you pick which AI models to download (optional, ~27 GB for the default set; Ollama is started automatically if needed)
+- Creates desktop and Start Menu shortcuts
+- Optionally enables LAN access (generates an auth token) and auto-start
+- Writes `backend.txt` so you can switch to llama.cpp / LM Studio / OpenAI-compatible backends
+
+### Install (Windows — script installer, legacy)
+```bash
+git clone https://github.com/user6811992/LocalAI.git
+cd LocalAI
+npm install
+```
+
+### Install (Linux / macOS — from source)
+```bash
+git clone https://github.com/user6811992/LocalAI.git
+cd LocalAI
+npm install
+```
+
+### Install (macOS — .dmg)
+Download `AegisAI-<version>.dmg` from the [Releases](https://github.com/user6811992/LocalAI/releases) page, open it, and drag AegisAI to Applications. The bundle includes a universal (Intel + Apple Silicon) Node.js runtime. Build locally with `bash installer/build-dmg.sh` (requires `create-dmg`: `brew install create-dmg`).
+
+### Install (Linux — AppImage)
+Download `AegisAI-<version>-x86_64.AppImage` from the [Releases](https://github.com/user6811992/LocalAI/releases) page, make it executable (`chmod +x`), and run it. The bundle includes a portable Node.js runtime. Build locally with `bash installer/build-appimage.sh` (requires `appimagetool`).
+
+### Run
+```bash
+# Start Ollama (if not running)
+ollama serve
+
+# Start the web UI
+node server.js
+```
+
+Open http://127.0.0.1:8080 in your browser.
+
+### Pull a model
+```bash
+ollama pull llama3.2:3b
+```
+Or use the **Models** button in the web UI.
+
+## Backends (multi-backend support)
+
+By default AegisAI talks to Ollama, but the server can also drive any
+OpenAI-compatible backend. Set the environment variables before starting:
+
+| `BACKEND_TYPE` | Backend | Notes |
+|---|---|---|
+| `ollama` (default) | Ollama | Native API |
+| `llamacpp` | llama.cpp server | OpenAI-compatible (`/v1/...`) |
+| `lmstudio` | LM Studio | OpenAI-compatible |
+| `strata` | Strata | OpenAI-compatible, broad hardware support (NVIDIA, AMD, Intel Arc, Apple Silicon) |
+| `robin` | Robin | OpenAI-compatible multi-provider router (round-robin across multiple LLM plans) |
+| `hyperqwen` | HyperQwen | vLLM-based high-throughput Qwen server (127 tok/s single, ~1035 tok/s at 64 concurrent) |
+| `exllamav3` | ExLlamaV3 | OpenAI-compatible, optimized for RTX 20xx (Turing) GPUs |
+| `openai` | Any OpenAI-compatible endpoint | Generic |
+
+### Voice backends (optional)
+
+AegisAI supports optional speech-to-text (STT) and text-to-speech (TTS) via
+OpenAI-compatible audio backends. Set `STT_URL` and `TTS_URL` env vars:
+
+| Variable | Backend | API | Example |
+|---|---|---|---|
+| `STT_URL` | G3_Whisper | `POST /v1/audio/transcriptions` | `http://127.0.0.1:8001` |
+| `TTS_URL` | G3_TADA | `POST /v1/audio/speech` | `http://127.0.0.1:7878` |
+
+Browser-based Web Speech API (input) and speechSynthesis (output) are also
+supported without any backend. Set `BACKEND_API_KEY` if the audio backend
+requires authentication.
+
+```bash
+# Example: llama.cpp
+BACKEND_TYPE=llamacpp BACKEND_URL=http://127.0.0.1:8081 node server.js
+```
+
+**Auto-detection:** if `BACKEND_TYPE` is not set, AegisAI probes common backend
+ports at startup (Ollama 11434, LM Studio 1234, llama.cpp 8081, Strata 8082, OpenAI 8000)
+and auto-selects the first reachable one. Set `BACKEND_TYPE` explicitly to
+disable auto-detection.
+
+**Note:** When using llama.cpp backend, only use proper GGUF files from HuggingFace.
+Do not point llama-server at Ollama's internal blob files (sha256-*) as they may
+have incompatible metadata or tensor layouts.
+
+The adapter normalizes model listing, chat (streaming + tool calls), and model
+info to the Ollama shape the UI expects. Note: the UI's model dropdown is
+proxied to Ollama's `/api/tags`, so for OpenAI-compatible backends the list may
+be empty even though chat works — set the model name in the UI or via the backend.
+
+**Selecting a backend during installation:** the Windows (Inno/VBS/HTA) and
+`install.sh` installers prompt for the backend (Ollama, llama.cpp, LM Studio, or
+OpenAI-compatible) and write a `backend.txt`. The macOS/Linux bundles and Docker
+default to Ollama but read `backend.txt` (or `BACKEND_TYPE`/`BACKEND_URL` env
+vars) if present, so you can switch backends by editing `backend.txt` in the app
+folder or setting the env vars before starting the server.
+
+### Intel Arc GPUs
+
+Intel Arc is best supported through **llama.cpp with the SYCL/oneAPI backend**:
+
+1. Build/run llama.cpp with SYCL enabled (`-DGGML_SYCL=ON`) and start `llama-server`.
+2. Point AegisAI at it:
+   ```bash
+   BACKEND_TYPE=llamacpp BACKEND_URL=http://127.0.0.1:8080 node server.js
+   ```
+   (use the port `llama-server` listens on).
+
+**LM Studio** also supports Intel Arc (via Vulkan/DirectML depending on the
+model) — use `BACKEND_TYPE=lmstudio`.
+
+**Ollama** has experimental/limited Intel Arc support on recent versions via
+oneAPI; if your Ollama build detects the Arc, the default `BACKEND_TYPE=ollama`
+works with no extra configuration.
+
+- **FastFlowLM** (AMD NPU/Ryzen AI) and **llm-scaler** (Intel Arc Pro B60) are
+  OpenAI-compatible servers for specialized hardware. Use `BACKEND_TYPE=openai`
+  (or `llamacpp`) with the appropriate `BACKEND_URL`.
+
+## Docker (cross-platform)
+
+Run LocalAI with Docker (works on Windows, macOS, Linux):
+
+```
+docker compose up -d
+```
+
+This starts:
+- **Ollama** on port 11434
+- **LocalAI** on port 8080
+
+Pull a model:
+```
+docker exec -it <ollama-container> ollama pull llama3.2:3b
+```
+
+Or use the Models button in the web UI.
+
+All app data (memory, chats, RAG store, skills, auth, search config) persists in the `aegisai_data` named volume at `/app/data`, and the reverse-engineering workspace in the `aegisai_workspace` volume at `/app/workspace` — no per-file volume mounts needed. The data directory is overridable via the `AEGISAI_DATA_DIR` env var.
+
+## Remote Access
+
+### Same Wi-Fi (LAN)
+Open `http://<your-pc-ip>:8080` on any device on the same network.
+
+### Tailscale (recommended for remote)
+Install [Tailscale](https://tailscale.com) on your PC and devices for a private VPN. Both will get `100.x.x.x` addresses.
+
+### Cloudflare Quick Tunnel (no domain needed)
+```bash
+cloudflared tunnel --url http://localhost:8080
+```
+
+## Reverse Engineering Tools
+
+Requires [REA](https://github.com/morluto/rea) installed separately. Set the following environment variables:
+
+```bash
+GHIDRA_INSTALL_DIR=C:\Ghidra\ghidra_12.1.4_PUBLIC
+JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-21.0.13.9-hotspot
+REA_JADX_MCP_JAR=C:\Tools\jadx-mcp\jadx-headless-mcp-0.7.1-all.jar
+```
+
+The web UI's "RE tools" checkbox enables agent mode with RE tools from REA, plus Ghidra (GhidrAssistMCP) and Craft Anything when they are running. Each agent request is limited to a tool budget (default 64 tools, including the built-in coding tools) so small models are not overwhelmed. Raise it with `AEGISAI_TOOL_BUDGET`.
+
+### Clean Room / Deep Mode
+
+AegisAI supports two reverse-engineering modes, inspired by [Craft Anything](https://github.com/storytold/craft-anything):
+
+- **Deep mode** (default): Full access to RE tools — reads binaries, source code, files, and memory. Use for your own projects and authorized analysis.
+- **Clean room mode**: The AI agent is instructed NOT to read original source code or files. It works only from visible behavior (screenshots, UI layout, text content, observable functionality). Toggle via the "Clean room" checkbox next to Code/RE. Useful for interoperability work where you need to avoid copying proprietary code.
+
+Toggle in the toolbar: check "Clean room" to enable. The agent's system prompt is automatically updated.
+
+### Reverse-Engineered Project Search
+
+AegisAI includes a searchable index of **17,000+ reverse-engineered projects** from [awesome-reverse-engineered](https://github.com/alexgaoth/awesome-reverse-engineered) by Alex Gao. Access it via the **RE** button in the web UI:
+
+- Search by product name, vendor, or protocol
+- Filter by category (20 categories: RE Tooling, File Formats, Game Decompilations, etc.)
+- Preview project READMEs directly in the UI
+- Data is cached locally (~7.5MB) and refreshed automatically when older than 24 hours
+- Optional: set `GITHUB_TOKEN` env var for higher GitHub API rate limits (README previews)
+
+### Companion RE Tools (Optional)
+
+AegisAI works with several external reverse-engineering tools. These are **not bundled** but can be installed separately for enhanced capabilities:
+
+| Tool | Description | Link |
+|------|-------------|------|
+| **GhidrAssistMCP** | Native MCP server for Ghidra (100+ tools, resources, prompts). Optional integration available when Ghidra 12.0/12.1 + Java 25+ is installed. | [github.com/symgraph/GhidrAssistMCP](https://github.com/symgraph/GhidrAssistMCP) |
+| **GhidrAssist** | LLM extension for Ghidra with built-in chat UI | [github.com/symgraph/GhidrAssist](https://github.com/symgraph/GhidrAssist) |
+| **IDAssist** | AI-powered reverse engineering plugin for IDA Pro | [github.com/symgraph/IDAssist](https://github.com/symgraph/IDAssist) |
+| **BinAssist** | LLM assistance plugin for Binary Ninja | [github.com/symgraph/BinAssist](https://github.com/symgraph/BinAssist) |
+| **REA** | Agentic RE toolset (229 tools) — bundled via MCP | [github.com/morluto/rea](https://github.com/morluto/rea) |
+| **Craft Anything** | 320 RE tools (native, .NET, Java, Android, Apple, Electron/JS, websites, firmware, packet captures, databases, game files) - optional MCP via craft-anything-cli | [github.com/storytold/craft-anything](https://github.com/storytold/craft-anything) |
+| **Ghidra MCP (bethington)** | 219 MCP tools for Ghidra (function analysis, data flow, P-code emulation, debugger integration). Alternative to GhidrAssistMCP. | [github.com/bethington/ghidra-mcp](https://github.com/bethington/ghidra-mcp) |
+| **IDA Pro MCP (mrexodia)** | AI-powered RE assistant for IDA Pro via MCP (decompilation, disassembly, xrefs, patching, debugging). Requires IDA Pro license. | [github.com/mrexodia/ida-pro-mcp](https://github.com/mrexodia/ida-pro-mcp) |
+| **Open ReverseLab** | AI RE workspace with desktop app, red/blue/both analysis, parallel goals, knowledge base, MCP tools for Ghidra/Frida/x64dbg/Rizin. | [github.com/LING71671/open-reverselab](https://github.com/LING71671/open-reverselab) |
+| **Integuru** | AI agent that builds permissionless integrations by reverse engineering platforms' internal APIs. | [github.com/Integuru-AI/Integuru](https://github.com/Integuru-AI/Integuru) |
+| **jshook-reverse-tool** | AI-powered JavaScript reverse engineering tool (TypeScript). | [github.com/wuji66dde/jshook-reverse-tool](https://github.com/wuji66dde/jshook-reverse-tool) |
+| **reverser_ai** | Automated reverse engineering with local LLMs on consumer hardware. | [github.com/mrphrazer/reverser_ai](https://github.com/mrphrazer/reverser_ai) |
+| **android-reverse-engineering-skill** | Claude Code skill for Android APK reverse engineering (jadx, Kotlin name recovery, API extraction). | [github.com/SimoneAvogadro/android-reverse-engineering-skill](https://github.com/SimoneAvogadro/android-reverse-engineering-skill) |
+| **rizin / Cutter** | Free and open-source RE platform powered by rizin (radare2 fork). 20.2k stars. Alternative disassembler/debugger. | [github.com/rizinorg/cutter](https://github.com/rizinorg/cutter) |
+| **binwalk** | Firmware analysis tool. Extracts and analyzes embedded files, entropy analysis. 14.7k stars. MIT License. | [github.com/ReFirmLabs/binwalk](https://github.com/ReFirmLabs/binwalk) |
+| **unblob** | Extract files from any container format (firmware images, archives, etc.). 2.7k stars. MIT License. | [github.com/onekey-sec/unblob](https://github.com/onekey-sec/unblob) |
+| **ubi_reader** | Extract data from UBI/UBIFS images. 649 stars. GPL-3.0. | [github.com/onekey-sec/ubi_reader](https://github.com/onekey-sec/ubi_reader) |
+| **qiling** | Cross-platform multi-architecture binary emulator. 6.2k stars. GPL-2.0. | [github.com/qilingframework/qiling](https://github.com/qilingframework/qiling) |
+| **FirmAE** | Large-scale IoT firmware emulation for dynamic analysis. 970 stars. | [github.com/pr0v3rbs/FirmAE](https://github.com/pr0v3rbs/FirmAE) |
+| **EMBA** | Firmware security analyzer. 3.8k stars. GPL-3.0. | [github.com/e-m-b-a/emba](https://github.com/e-m-b-a/emba) |
+| **reverse-skills (P4nda0s)** | Reverse engineering skills for Claude Code. Complements reverse-skill. | [github.com/P4nda0s/reverse-skills](https://github.com/P4nda0s/reverse-skills) |
+| **LLM4Decompile** | LLM-based binary decompilation (C source from assembly). 7.3k stars. MIT + DeepSeek License. | [github.com/albertan017/LLM4Decompile](https://github.com/albertan017/LLM4Decompile) |
+| **APKLab** | Android RE workbench for VS Code (APK decompilation, smali, manifest analysis). 4.1k stars. | [github.com/APKLab/APKLab](https://github.com/APKLab/APKLab) |
+
+## Local AI / MCP Tools
+
+AegisAI bundles a local-AI and MCP toolset for Ollama-backed workflows, semantic code search, cross-machine sync, and telemetry. Configured in `.opencode/opencode.jsonc` and `mcp-config.json`.
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `opencode-llm-proxy` | Plugin | Expose OpenCode-configured models as OpenAI/Anthropic/Gemini endpoints (reusable by the web UI) |
+| `opencode-synced` | Plugin | Sync global OpenCode configs across machines (mobile access) |
+| `basemind-opencode` | Plugin | AI context layer: tree-sitter code-map (300+ langs), document RAG, agent memory, git history |
+| `opencode-rag-plugin` | Plugin | Local-first RAG with Ollama embeddings; AST-aware chunking; watch mode |
+| `opencode-telemetry` | Plugin | Local SQLite session telemetry, cost rollups, forensic inspection |
+| `lemma` | MCP | Local zero-dependency memory via MCP (no cloud, no API keys) |
+| `netvein` | MCP | Chrome CDP web reverse engineering: 123 tools (traffic capture, AST scoring, crypto fingerprinting) |
+
+See [docs/REVERSE_ENGINEERING_TOOLS.md](docs/REVERSE_ENGINEERING_TOOLS.md) for full usage.
+
+## Installer (Linux / macOS)
+
+A bash installer is included: **`install.sh`**. Works on Linux and macOS.
+
+```
+bash install.sh
+```
+
+It provides:
+- Interactive install location selection
+- Prerequisite checks (Node.js, Ollama)
+- Optional model pull (recommended models in order)
+- Desktop shortcut (`.desktop` on Linux, `.command` on macOS)
+- Optional auto-start (systemd user service on Linux, launchd on macOS)
+- Optional immediate launch
+
+Uninstall with `bash uninstall.sh`.
+
+## Installer (Windows Shell)
+
+A standard Windows-shell installer is included in the repo: **`install.vbs`**. It runs under `wscript.exe` (the standard Windows Script Host) — no PowerShell, no console window. It uses native Windows dialogs and:
+- Asks where to install (interactive folder selection) and copies the app files there
+- Checks for Node.js and Ollama and reports what's missing
+- Optionally pulls all recommended models in the proper order (llama3.2, qwen2.5, mistral, etc.)
+- Prompts whether to create a **desktop shortcut** (your selection)
+- Optionally launches LocalAI immediately after install
+- Detects an existing install and offers a core-file update (preserves models & shortcuts)
+- Scans drives for existing tools (Ghidra, jadx, Ollama, Node, Java) and reports findings
+- Writes an `install.log` for troubleshooting
+- Includes `uninstall.vbs` to remove shortcuts (and optionally the app folder)
+- Includes `tray.vbs` for a system-tray icon (via PowerShell NotifyIcon)
+- Creates `.lnk` shortcuts via `WScript.Shell` (standard Windows shell)
+
+Run it by double-clicking `install.vbs`. Or from a command prompt:
+
+```
+wscript.exe install.vbs
+```
+
+**Alternative: HTA Installer with Progress Bar**
+
+For a richer installation experience with a visual progress bar, use `install.hta` instead. It provides:
+- Visual progress bar showing installation steps
+- Real-time status log
+- Folder browser dialog
+- All the same features as install.vbs (model pull, shortcuts, firewall, auto-start)
+
+Run it by double-clicking `install.hta`. Or from a command prompt:
+
+```
+mshta.exe install.hta
+```
+
+The launcher itself is **`launcher.vbs`** (Windows Script Host / standard Windows shell) and is portable — it resolves all paths relative to its own location and starts Ollama, the web UI, and the Edge app window. Desktop shortcuts created by the installer point at `launcher.vbs`.
+
+> Note: `tray.ps1` is retained (used by `tray.vbs` for the system-tray icon). The legacy `launch-gui.ps1` and `start.bat` have been removed in favor of `install.vbs` + `launcher.vbs`.
+
+## Troubleshooting (Windows)
+
+### "Windows protected your PC" (SmartScreen)
+The installer (`install.vbs`) and launcher are not code-signed, so SmartScreen may warn on first run.
+
+- Click **More info** then **Run anyway**.
+- Or right-click the file → **Properties** → check **Unblock** → OK, then run.
+
+Code signing is not included in this project; if you need it, sign the `.vbs` files with your own certificate (`signtool`).
+
+### Microsoft Defender false positive (trojan detection)
+
+Some antivirus engines (including Microsoft Defender) may flag the unsigned
+installer or `launcher.vbs` as a trojan (e.g. `Bearfoos.A!ml`). This is a
+**false positive** — the installer is built from the public source in this
+repository and contains no malicious code. The detection is heuristic/ML-based
+and triggers on unsigned executables that spawn child processes.
+
+- **Option 1:** Click "Allow on device" / "Restore" in Defender, or add an
+  exclusion for the install folder.
+- **Option 2:** Install from source instead:
+  ```bash
+  git clone https://github.com/user6811992/LocalAI.git
+  cd LocalAI
+  npm install
+  node server.js
+  ```
+  This avoids the installer entirely.
+
+### Ollama / Node not found
+The installer checks for `node` and `ollama` on PATH. If missing, install them:
+- Node.js: https://nodejs.org
+- Ollama: https://ollama.com/download
+
+Then re-run `install.vbs`.
+
+## Screenshots
+
+![Main UI](docs/screenshots/main.png)
+
+![Models dialog](docs/screenshots/models.png)
+
+![Components dialog](docs/screenshots/components.png)
+
+![About dialog](docs/screenshots/about.png)
+
+## Security / Auth
+
+LocalAI **binds to localhost (`127.0.0.1`) by default**. For LAN access, set `HOST=0.0.0.0` (the Windows installer does this when you choose LAN access) and also set a token. Without a token the UI works only on the local machine.
+
+| Variable | Purpose |
+|---|---|
+| `HOST` | Bind address (default `127.0.0.1`) |
+| `LOCALAI_TOKEN` | Require this token on every request |
+| `AEGISAI_PROJECT_ROOT_ALLOWLIST` | Directories the agent project root may point into (`;` separated) |
+| `AEGISAI_MAX_BODY` | Max request body in bytes (default 100 MB) |
+| `AEGISAI_TOOL_BUDGET` | Max tools sent to the model per agent request (default 64) |
+
+To set a token:
+
+**Environment variable:**
+```
+LOCALAI_TOKEN=your-secret-token node server.js
+```
+
+**Or create `auth.json` in the app folder:**
+```json
+{ "token": "your-secret-token" }
+```
+
+When a token is set, all API requests require `X-Auth-Token: <token>` header. The web UI will prompt for the token on first load and store it in localStorage.
+
+**Rate limiting:** 120 requests/minute per IP (built-in).
+
+**LAN access warning:** If no token is set and the server binds to a non-loopback address, a warning is printed to the console. Use Tailscale or Cloudflare Tunnel for secure remote access.
+
+**Code execution:** `/api/run-code` and the Python tools run code without a sandbox by default, as your user. Set `AEGISAI_SANDBOX=docker` to run code in an isolated container (requires Docker). See [SECURITY.md](SECURITY.md).
+
+## Privacy
+
+- No telemetry, analytics, or tracking
+- No cloud dependencies — everything runs locally
+- No hardcoded identifiers — paths auto-generate on install
+- `search-config.json` ships with empty keys — add your own
+
+## Acknowledgments
+
+Special thanks to:
+
+- **[OpenCode](https://opencode.ai)** - the AI coding agent harness that helped build, debug, and ship this project (installer, launcher, UI features, and more).
+- **[Beam.ai](https://beam.ai)** - the model provider powering the coding/reasoning assistance behind this work.
+- **[Ollama](https://ollama.com)** - for making local LLMs easy to run.
+- **[HuggingFace](https://huggingface.co)** - for the model hub and open weights.
+- **[morluto/rea](https://github.com/morluto)** - for the REA reverse-engineering toolset.
+- **[Alex Gao](https://github.com/alexgaoth)** - for [awesome-reverse-engineered](https://github.com/alexgaoth/awesome-reverse-engineered), a curated index of 17,000+ reverse-engineered projects (MIT code license, CC0 data license). Integrated search, category browsing, README preview, and project lookup help users find existing RE work before starting their own. Data is cached locally and refreshed automatically when older than 24 hours.
+- **[symgraph (RevGraph Labs)](https://github.com/symgraph)** - for [GhidrAssistMCP](https://github.com/symgraph/GhidrAssistMCP) (MIT license), a native MCP server extension for Ghidra providing 100+ granular RE tools. Optional integration available when Ghidra 12.0/12.1 + Java 25+ is installed.
+- **[storytold](https://github.com/storytold)** - for [Craft Anything](https://github.com/storytold/craft-anything) (MIT/Apache-2.0), which inspired the Clean Room/Deep mode concept for reverse engineering. Optional MCP integration available when craft-anything-cli is installed.
+- **[Alex Gao](https://github.com/alexgaoth)** - for [awesome-reverse-engineered](https://github.com/alexgaoth/awesome-reverse-engineered), a curated index of 17,000+ reverse-engineered projects (MIT code, CC0 data).
+- All other contributors, testers, and the open-source community.
+
+## Support
+
+If you find LocalAI useful, consider sponsoring the project:
+
+- [GitHub Sponsors](https://github.com/sponsors/user6811992) — recurring or one-time
+- Star the repo to help others discover it
+
+
+## License
+
+MIT License — see [LICENSE](LICENSE) for details.
+
+## Third-Party Notices
+
+AegisAI references and integrates with several third-party projects. Their names, trademarks, and branding are owned by their respective creators. AegisAI is not affiliated with or endorsed by any of these projects:
+
+- **[Ollama](https://ollama.com)** — Local LLM runtime (MIT License)
+- **[HuggingFace](https://huggingface.co)** — Model hub (Apache 2.0)
+- **[morluto/rea](https://github.com/morluto/rea)** — Reverse engineering toolset
+- **[Alex Gao / awesome-reverse-engineered](https://github.com/alexgaoth/awesome-reverse-engineered)** — Curated RE index (MIT code, CC0 data)
+- **[symgraph / GhidrAssistMCP](https://github.com/symgraph/GhidrAssistMCP)** — Ghidra MCP extension (MIT)
+- **[storytold / Craft Anything](https://github.com/storytold/craft-anything)** - RE engine (MIT/Apache-2.0). ArtCraft name/logos are trademarks of the ArtCraft Team.
+- **[bethington / ghidra-mcp](https://github.com/bethington/ghidra-mcp)** - Ghidra MCP server with 219 tools (Apache-2.0). Alternative to GhidrAssistMCP.
+- **[mrexodia / ida-pro-mcp](https://github.com/mrexodia/ida-pro-mcp)** - IDA Pro MCP server (MIT). For users with IDA Pro licenses.
+- **[zhaoxuya520 / reverse-skill](https://github.com/zhaoxuya520/reverse-skill)** - RE skill router pack (MIT). 44+ RE methodology skills.
+- **[LING71671 / open-reverselab](https://github.com/LING71671/open-reverselab)** - AI RE workspace (Apache-2.0)
+- **[Integuru-AI / Integuru](https://github.com/Integuru-AI/Integuru)** - API reverse engineering agent
+- **[wuji66dde / jshook-reverse-tool](https://github.com/wuji66dde/jshook-reverse-tool)** - JS reverse engineering tool (TypeScript)
+- **[SimoneAvogadro / android-reverse-engineering-skill](https://github.com/SimoneAvogadro/android-reverse-engineering-skill)** - Android RE skill (Apache-2.0)
+- **[erkamyaman / unslopovich](https://github.com/erkamyaman/unslopovich)** - UI/UX review agent skill (MIT License)
+- **[headroomlabs-ai / headroom](https://github.com/headroomlabs-ai/headroom)** - Context compression for LLM tool outputs
+- **[thedotmack / claude-mem](https://github.com/thedotmack/claude-mem)** - Persistent context across sessions for agents
+- **[tigerless-labs / agent-memory](https://github.com/tigerless-labs/agent-memory)** - Long-term memory runtime for AI agents
+- **[opensandbox-group / OpenSandbox](https://github.com/opensandbox-group/OpenSandbox)** - Secure sandbox runtime for AI agents
+- **[mrphrazer / reverser_ai](https://github.com/mrphrazer/reverser_ai)** - Automated RE with local LLMs
+- **[rizinorg / rizin](https://github.com/rizinorg/rizin)** - Reverse engineering framework (LGPL-3.0)
+- **[P4nda0s / reverse-skills](https://github.com/P4nda0s/reverse-skills)** - RE skills for Claude Code
+- **[ReFirmLabs / binwalk](https://github.com/ReFirmLabs/binwalk)** - Firmware analysis tool (MIT License)
+- **[onekey-sec / unblob](https://github.com/onekey-sec/unblob)** - Container format extractor (MIT License)
+- **[onekey-sec / ubi_reader](https://github.com/onekey-sec/ubi_reader)** - UBI/UBIFS extractor (GPL-3.0)
+- **[qilingframework / qiling](https://github.com/qilingframework/qiling)** - Binary emulator (GPL-2.0)
+- **[pr0v3rbs / FirmAE](https://github.com/pr0v3rbs/FirmAE)** - IoT firmware emulation
+- **[e-m-b-a / EMBA](https://github.com/e-m-b-a/emba)** - Firmware security analyzer (GPL-3.0)
+- **[albertan017 / LLM4Decompile](https://github.com/albertan017/LLM4Decompile)** - LLM-based decompilation (MIT + DeepSeek License)
+- **[APKLab / APKLab](https://github.com/APKLab/APKLab)** - Android RE workbench (MIT)
+- **[Niko1221 / Strata](https://github.com/Niko1221/Strata)** - Local inference engine (MIT License)
+- **[LaurentZuijdwijk / llama.cpp (adaptive fork)](https://github.com/LaurentZuijdwijk/llama.cpp)** - Adaptive speculative decoding fork (MIT License)
+- **[syv-ai / HyperQwen](https://github.com/syv-ai/HyperQwen)** - High-throughput Qwen server (vLLM-based)
+- **[turboderp-org / ExLlamaV3](https://github.com/turboderp-org/exllamav3)** - Optimized inference for consumer GPUs
+- **[linxuhao / Robin](https://github.com/linxuhao/robin-router)** - Multi-provider LLM router (MIT License)
+- **[havok2-htwo / G3_Whisper](https://github.com/havok2-htwo/G3_Whisper)** - Speech-to-text server
+- **[havok2-htwo / G3_TADA](https://github.com/havok2-htwo/G3_TADA)** - Text-to-speech server
+- **[Cloudflare / Cloudflare OS](https://github.com/cloudflare/cloudflare-os)** - Agent workspace (Apache-2.0). Capability-based security and human-in-the-loop via simulation concepts.
+- **[abduallahJamal / argus](https://github.com/abduallahJamal/argus)** - Zero-dependency RE routing CLI + skill (MIT License)
+- **[dongp06 / netvein](https://github.com/donyst/netvein)** - Web RE MCP server, 123 tools (MIT License)
+- **[xxmisaoxx / T-REX](https://github.com/xxmisaoxx/t-rex)** - RE skill for coding agents (GPL-3.0)
+- **[KelpHect / re-expertise](https://github.com/KelpHect/re-expertise)** - 7 RE skills: workflow, tooling, Ghidra MCP, rea, hooking, runtime introspection, verification (MIT License)
+- **[iemsoft / web-reverse-clone](https://github.com/iemsoft/web-reverse-clone)** - Web RE + UI cloning skill (license per repo)
+- **[rotteng749-lgtm / tech-core](https://github.com/rotteng749-lgtm/tech-core)** - RE/cracking playbook skill (license per repo)
+- **[moiz-73 / glassbox](https://github.com/moiz-73/glassbox)** - 12 RE methodology skills (MIT License)
+- **[Heretek-AI / opencode-rea](https://github.com/Heretek-AI/opencode-rea)** - OpenCode v2 REA plugin (license per repo)
+- **[KochC / opencode-llm-proxy](https://github.com/KochC/opencode-llm-proxy)** - OpenCode-backed API gateway (license per repo)
+- **[iHildy / opencode-synced](https://github.com/iHildy/opencode-synced)** - Sync configs across machines (license per repo)
+- **[Goldziher / basemind](https://github.com/Goldziher/basemind)** - AI context layer over MCP (license per repo)
+- **[MrDoe / OpenCodeRAG](https://github.com/MrDoe/OpenCodeRAG)** - Local-first RAG with Ollama embeddings (license per repo)
+- **[xenitV1 / lemma](https://github.com/xenitV1/lemma)** - Local memory via MCP (MIT License)
+- **[agostinilabsrl / opencode-telemetry](https://github.com/agostinilabsrl/opencode-telemetry)** - Local SQLite telemetry (license per repo)
+
+### Vendored frontend libraries
+
+The web UI bundles a small set of third-party JavaScript/CSS libraries under
+`public/vendor/` so the app works fully offline. Their licenses are retained in
+the files themselves and listed here:
+
+- **[marked](https://marked.js.org)** v12.0.2 — Markdown parser (MIT). Copyright (c) 2011-2024, Christopher Jeffrey.
+- **[DOMPurify](https://github.com/cure53/DOMPurify)** v3.4.17 — HTML sanitizer (Apache 2.0 / MPL 2.0). Copyright (c) Cure53 and other contributors.
+- **[highlight.js](https://highlightjs.org)** — Syntax highlighter (BSD 3-Clause). Copyright (c) 2006-2024, Ivan Sagalaev and other contributors.
+- **GitHub Dark theme** — highlight.js theme (MIT). Copyright (c) github.com / @Hirse.
+
+No third-party logos, trademarks, or branding assets are included in this repository. All references are by name only for factual attribution.
+
+## Special Thanks
+
+A special thank you to **[AiGoesBurr](https://github.com/AiGoesBurr)** for reporting critical issues,
+contributing to the llama.cpp backend integration, and providing detailed feedback on
+Intel Arc support and Ollama compatibility. Your thorough bug reports and testing
+have significantly improved AegisAI's stability and cross-platform support.
+
+## Contributing
+
+Contributions welcome! Please open an issue or pull request.

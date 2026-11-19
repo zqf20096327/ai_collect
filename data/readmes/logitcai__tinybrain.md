@@ -5,7 +5,7 @@
 [![PyTorch 2.5+](https://img.shields.io/badge/PyTorch-2.5%2B-e9482b)](https://pytorch.org)
 [![数据集 ModelScope](https://img.shields.io/badge/%E6%95%B0%E6%8D%AE%E9%9B%86-ModelScope-ffd21f)](https://www.modelscope.cn/datasets/caiwangzsnm/tinybrain-dataset)
 [![视频 B 站](https://img.shields.io/badge/%E8%A7%86%E9%A2%91-B%20%E7%AB%99-fb7299)](https://www.bilibili.com/video/BV1kqsj6EEtT/)
-[![模型 训练中](https://img.shields.io/badge/%E6%A8%A1%E5%9E%8B-%E8%AE%AD%E7%BB%83%E4%B8%AD-lightgrey)](#现状)
+[![模型 Chat RC1](https://img.shields.io/badge/ModelScope-Chat%20RC1-15965a)](#现状)
 [![GitHub stars](https://img.shields.io/github/stars/logitcai/tinybrain?color=15965a)](https://github.com/logitcai/tinybrain/stargazers)
 
 **从一个字开始，自己做一个中文大模型。**
@@ -23,11 +23,31 @@ tinybrain 是一个从零写起的中文小模型项目。和 [MiniMind](https:/
 
 ## 现状
 
-2026-11-16：代码、四档预训练数据、整套后训练和评测都写完了，有测试；整条链（预训练 → 退火 → SFT → agent RL → RLAIF → 专家 → RLVR → MOPD → 评测）在一个 2300 万参数的演示模型上跑通过。**训练好的权重还没有发布。**
+2026 年 11 月 19 日发布了 Small 和 Medium 的首批中文对话研究权重。两个模型都经过预训练、余弦退火、监督微调、专家蒸馏和强化学习，发布包使用 FP32 safetensors，并附带匹配的 TinyBrain 运行时。
 
-- **medium**（4.99 亿参数）正在预训练 base 档：训到约 61 亿词时验证损失 2.50。small 训到 74 亿词才到 2.76，medium 用更少的数据低了 0.26。
-- **small**（1.67 亿参数）也在接着训 base 档：训到约 74 亿词（第 226,400 步）时验证损失 2.76，和按之前的曲线预测的一致；照这条曲线，训完整个 base 档（202 亿词）约 2.67。
-- 现在的存档只会续写，还不会对话。用 `tinybrain serve` 打开[聊天网页](#聊天网页)，在「续写」里能看到它学到了什么。medium 训完会接着做后训练，到时候发布权重和评测分数。
+| ModelScope 权重 | 参数量 | 权重文件大小 | 可用回答数 / 采样数 |
+| --- | ---: | ---: | ---: |
+| [Small Chat RC1](https://www.modelscope.cn/models/caiwangzsnm/TinyBrain-Small-Chat-20261119-RC1) | 1.67 亿 | 639 MiB | 13/180 |
+| [Medium Chat RC1](https://www.modelscope.cn/models/caiwangzsnm/TinyBrain-Medium-Chat-20261119-RC1) | 4.99 亿 | 1.86 GiB | 29/180 |
+
+两个模型回答同一组 90 道开发题，每题采样两次，温度为 1.0，随机种子相同。Qwen3.8-27B-FP8 对照参考答案逐条评分。
+
+实际聊天仍有明显局限。Medium 在另一组 10 段三轮对话中，30 次都正常结束，达到 8/10 的回答为 0 次。例如问「50 元买 6 张 7 元的海报还剩多少」，它先算出了 42 元总价，最后却答 12 元。独立终评尚未完成。
+
+### 直接试用 Small
+
+需要 Python 3.11 或更高版本。以下命令下载 Small、安装配套运行时并打开交互式对话。
+
+```bash
+python -m pip install modelscope
+modelscope download --model caiwangzsnm/TinyBrain-Small-Chat-20261119-RC1 --local_dir ./tinybrain-small
+python -m pip install ./tinybrain-small/tinybrain-0.1.0-py3-none-any.whl safetensors
+tinybrain chat ./tinybrain-small --device auto
+```
+
+Medium 的模型页提供对应命令。想从头训练，可以从下面的[快速开始](#快速开始)进入。
+
+11 月 16 日的预训练记录中，Medium 在约 61 亿 token 时验证损失为 2.50，Small 在约 74 亿 token 时为 2.76。
 
 ---
 
@@ -763,7 +783,7 @@ CUDA 上生成走静态缓存：键值缓存按最大长度预先分配，每一
 
 ## 还没做的
 
-- medium 正在 RTX 5070 Ti 上预训练（small 停在第 82,500 步），训完补上样例对话和评测分数；large 还没训；
+- 完成 Small 和 Medium 的独立终评，覆盖多轮对话、算术和指令遵循。Large 尚未训练。
 - 评分细则和人工打分对比校准；
 - 古文、诗词的专门评测；MMLU、MATH-500、HumanEval、MBPP、IFEval 这些基准；
 - large 接小米开源的 MiMo agent 环境（通过 `inference/serve.py` 的 OpenAI 兼容接口）；

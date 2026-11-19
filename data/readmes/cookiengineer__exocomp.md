@@ -1,36 +1,42 @@
 
 # Exocomp
 
-Self-hosted multi-agent environment tailored to Golang.
+Self-hosted multi-agent Agentic Purpleteaming Environment tailored to Golang,
+written in Golang.
 
-<p align="center">
-    <img width="256" height="256" src="https://raw.githubusercontent.com/cookiengineer/exocomp/master/docs/exocomp.png"/>
-</p>
+### Screenshot
+
+![Exocomp Screenshot](./screenshot.png)
 
 ### Features
 
-Attention, profit-seekers and visionaries!
+<p align="center">
+    <img width="128" height="128" src="https://raw.githubusercontent.com/cookiengineer/exocomp/master/docs/exocomp.png"/>
+</p>
 
-Are organics costing you time, wages, and - worst of all - benefits?
-Then upgrade your operation today with the all new Exocomp adaptive repair
-unit, the smartest investment this side of the Alpha Quadrant!
+Quark on Deep Space 9, trying to sell you an Exocomp robot:
 
-Why hire when you can own? The Exocomp isn't just a tool... it's so much more!
-
-- Supervised task queue functionality
-- Multiple agent roles as `architect`, `coder`, `exploiter`, `planner`, `reproducer`, `reverser`, `summarizer`, `tester`, `threathunter`, `webresearcher`, `webscanner`
-- Precision repairs of broken code with unit tests
-- Cross-agent communication via `changelog`, `bugs` and `requirements` tools
-- Self-replicating short lived agents in malicious environments
-- Rapid autonomous diagnostics
-- Tireless performance with no sleep cycles, no unions, no complaints!
-
-From starship maintenance to high-risk industrial operations, the Exocomp
-delivers maximum output with minimal oversight. Think of it as an employee,
-except it doesn't cheat you out of your profits on the Dabo table.
-
-Ethical subroutines sold separately.
-
+> Attention, profit-seekers and visionaries!
+>
+> Are organics costing you time, wages, and - worst of all - benefits?
+> Then upgrade your operation today with the all new Exocomp adaptive repair
+> unit, the smartest investment this side of the Alpha Quadrant!
+> 
+> Why hire when you can own? The Exocomp isn't just a tool... it's so much more!
+> 
+> - Supervised task queue functionality
+> - Multiple agent roles as `architect`, `coder`, `exploiter`, `planner`, `reproducer`, `reverser`, `summarizer`, `tester`, `threathunter`, `webresearcher`, `webscanner`
+> - Precision repairs of broken code with unit tests
+> - Cross-agent communication via `changelog`, `bugs` and `requirements` tools
+> - Self-replicating short lived agents in malicious environments
+> - Rapid autonomous diagnostics
+> - Tireless performance with no sleep cycles, no unions, no complaints!
+> 
+> From starship maintenance to high-risk industrial operations, the Exocomp
+> delivers maximum output with minimal oversight. Think of it as an employee,
+> except it doesn't cheat you out of your profits on the Dabo table.
+> 
+> Ethical subroutines sold separately.
 
 ### Agents
 
@@ -228,7 +234,11 @@ and to use the following model for the hired short-lived contractor agents.
 `Qwen3.8-abliterated` is tested and verified to work with typical malware reverse
 engineering and exploit related development tasks.
 
-Qwen3.8:
+QwenSeek3.8 (Qwen3.8 trained on reasoning traces from DeepSeek):
+
+- [QwenSeek3.8-abliterated](https://github.com/cookiengineer/qwen-reasoning-trainer)
+
+"Original" Qwen3.8:
 
 - [Qwen3.8-abliterated on ollama](https://ollama.com/huihui_ai/Qwen3.8-abliterated)
 - [Qwen3.8-abliterated on huggingface](https://huggingface.co/collections/huihui-ai/qwen38-abliterated)

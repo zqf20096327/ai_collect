@@ -1,6 +1,6 @@
 # dsh-qwen-paint · (绘图)千问（优化版）
 
-DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（QQ 交流群 454707710）。★ 1.2.1：许可仍为 BSL 1.1（BUSL-1.1），本版是质量与可诊断性收口补丁——历史库搜索升级 SQLite FTS5 全文索引（1 万条实测 0.023ms vs LIKE 1.012ms，约 44×；短词自动回落 / 旧库自动回填 / 查询注入防护）、doctor 8 项自诊断补齐 4 项真探针（未验证一律标未检测、不谎报 pass）、OOM 建议跟上 ComfyUI v0.37 动态显存与社区 8G 抄作业档、构建期作用域检查升级为零依赖 JS 词法分析器；不改生成链契约与工具名，全量 112 套回归全绿。★ 1.2.0：UI 全折叠 + 双拖拽上传、人物替换（Rust 纯 CPU 底座 + 身份节点发现 / 缺件降级引导）、PPT 讲解图片真写进 OOXML；不捆绑模型、不谎称换脸。★ 0.33.0 起许可改为 BSL 1.1（BUSL-1.1，非 OSI 开源许可）：除托管/代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用，2030-11-15 转 Apache-2.0；0.32.1 及更早仍 MIT、不追溯。★ 1.1.2：全量审计整改——安全围栏与出站守卫收口（矢量化端点补本机围栏、ASR 端点回环校验、路径防链接越界复验），长任务超时透传、队列生命周期加固，媒体路由流式化＋Range 拖动，探测结果缓存提速分镜合成；API 与工具名零变更。★ 1.1.0：全面提速——内置 resvg 光栅 7.02× / 静态帧去重+VFR 合成 6.58× / 分镜缓存 34.2× / 草稿档 2.10×，TE-Speed 生图链真机 −17.3%，编码择优纠错（x264 排 AMF 前）、BGM 三缓存、Qwen3-TTS attention 可选 + 低延迟分块；未实测的一律不吹倍率。★ 1.0.0：选模型「假成功」根治（拒绝时如实回未生效 + 原因，不再无条件报已选）、优化面板与素材库白条同源修复（持久化缓存 + 占位 + 错误态）、历史筛选分页与重复请求收口、所有写参数拒绝统一 choiceResult。★ 0.35.0：口语入口别名（「风格卡」「批量出图」…）解析成真实工具、参考图色调取样写进提示词、建议时间轴 / 资源需求声明 / 数据流摘要 / 「刚才那张」产出短引用全部接进主链路。★ 0.34.0：SageAttention / Comfy-WaveSpeed 并入加速链并按真实 /object_info 探测、卡片常驻显示；GPT-SoVITS v5 / IndexTTS2 可选 TTS、拖音频零样本克隆、ACE-Step 1.5 / YuE2 音乐 BGM、手动超分、Worker 热温冷保活。0.33.0 新增媒体格式转换（图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC，生成物可指定输出格式、动图转视频、自有素材转换，Agent 可直接调用 convert_media）与加速链全景（生图/视频缓存后端 + TTS 加速 + 显存预算 + 配置裁决 + 结构化日志，只列探测到的、未实测不写倍率）、本机能力功能区内嵌进 Comfy 控制面板（展开页恒在悬浮球正上方、边框对齐 DSH 右边框、四事件点按兜底）、GIF 转换 / 运行期自诊断 / 优先级任务队列 / 单图迭代优化 / 自适应 DAG 编排 / 生成历史可删改与冷热分离等本机工具与端点；0.32.1 两轮审计加固：ASR 音频路径围栏（只认出图目录内文件）、按包名安装也能执行引导脚本、草图台四事件点按、错误响应消毒收口；视频链清单化 + 生图/TTS 契约对账（改图自动报差异）；生图/视频/混合三模式界面各不同；批量出图带幂等保护（重试不重出）；Qwen3-TTS 语音克隆与可接 ASR 自动字幕；本机实测秒数；会话级模型驻留、显存建议、参数来源表、预设绑定、加载器盘点等本机端点。文生视频 / 图生视频（Wan 2.2 / XT-5B）与图→音→视频混合、导入音频直接合进成片（音轨合成），文生图与 1–16 张参考图编辑、圈选重绘（羽化 / 边缘融合 / 外扩 / 反选 / 重绘强度可调）/ 元素移除 / 四向扩图 / 高清放大，Qwen3-TTS 语音合成（独立 generate_speech，参考音频可复刻音色），模型无关角色参考；草图台手绘参考；生成记录可检索（菜单最上面「历史」，SQLite 索引、软删除不动磁盘文件）。CPU 也能跑：自动识别 AVX2 / AVX512 / AVX512-BF16 指令集并给五档加速（含 --cpu 强制纯 CPU）、按物理核钉线程，任务结束可选自动卸载模型内存；安装入口是常驻的图形化引导面板。对外提供脱敏状态快照与端点目录供外部集成。提供可选、默认关闭的模型自动下载包：视频模型 --video-models、核显档位 --igpu-download、生图主模型 --tier，按服务器权威 size + sha256 双校验；音频权重不自动下载，缺件给明确清单。经本机 ComfyUI 调用，数据仅走 127.0.0.1 回环（联网参考图检索默认拒绝、须逐次同意），无需 API 密钥、零调用费用。Windows / Linux，NVIDIA / Intel Arc / AMD / 核显共享内存，含 8 GB 低内存档位。
+DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS / PPT 全能 · 本机运行（QQ 交流群 454707710）。BSL 1.1（BUSL-1.1，非 OSI 开源许可；0.32.1 及更早仍 MIT、不追溯），2030-11-15 转 Apache-2.0。★ 1.2.4：双独立审计（main + DSH 背靠背）后落地——修复注释外置误吞 schema-defaults 的 4 个 DEFAULTS 字段（真机默认值丢失，测试曾被假值兜底蒙蔽）的真回归并补根因护栏；新增视频裁剪/ProRes 导出/社区能力发现三工具并接入面板可点；删 5 个零引用死执行器；local-portrait 路径围栏 realpath 复验、Windows VRAM 探针参数化。全量 118 套回归全绿；不改生成链契约与工具名。★ 1.2.3：修复三件真 Bug——宿主升级工具契约后面板 404 大面积报错（extras 整组未注册的真根因：缺 render 自动兜底 + 契约锁，真机验证全 200）、ComfyUI 启动识别 46 秒蒸发（常量漂移）、音色样本重启全丢（index.json 写了从不读回，启动读回 + 逐条校验）；GSV.CPP 外接 TTS 全链路打通——backend=gsv_cpp 直调本机 9880 服务（A 卡 Vulkan 实测全句 2.95 秒 ≈23× 实时速率、221 字长文 4.23 秒；参考音频+转写必填、面板下拉可选、音色样本登记带参考转写、服务挂死 abort 收口）；多音色对话链第一步（本机已装 RoleBank/DialogueInference 节点实锤，buildDialogueWorkflow 纯函数就绪）；slim-comments 修复 $ 替换模式陷阱并把设计注释外置，体积余量回升至 25KB+；不改生成链契约与工具名，全量 114 套回归全绿。★ 1.2.1：许可仍为 BSL 1.1（BUSL-1.1），本版是质量与可诊断性收口补丁——历史库搜索升级 SQLite FTS5 全文索引（1 万条实测 0.023ms vs LIKE 1.012ms，约 44×；短词自动回落 / 旧库自动回填 / 查询注入防护）、doctor 8 项自诊断补齐 4 项真探针（未验证一律标未检测、不谎报 pass）、OOM 建议跟上 ComfyUI v0.37 动态显存与社区 8G 抄作业档、构建期作用域检查升级为零依赖 JS 词法分析器；不改生成链契约与工具名，全量 114 套回归全绿。★ 1.2.0：UI 全折叠 + 双拖拽上传、人物替换（Rust 纯 CPU 底座 + 身份节点发现 / 缺件降级引导）、PPT 讲解图片真写进 OOXML；不捆绑模型、不谎称换脸。★ 0.33.0 起许可改为 BSL 1.1（BUSL-1.1，非 OSI 开源许可）：除托管/代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用，2030-11-15 转 Apache-2.0；0.32.1 及更早仍 MIT、不追溯。★ 1.1.2：全量审计整改——安全围栏与出站守卫收口（矢量化端点补本机围栏、ASR 端点回环校验、路径防链接越界复验），长任务超时透传、队列生命周期加固，媒体路由流式化＋Range 拖动，探测结果缓存提速分镜合成；API 与工具名零变更。★ 1.1.0：全面提速——内置 resvg 光栅 7.02× / 静态帧去重+VFR 合成 6.58× / 分镜缓存 34.2× / 草稿档 2.10×，TE-Speed 生图链真机 −17.3%，编码择优纠错（x264 排 AMF 前）、BGM 三缓存、Qwen3-TTS attention 可选 + 低延迟分块；未实测的一律不吹倍率。★ 1.0.0：选模型「假成功」根治（拒绝时如实回未生效 + 原因，不再无条件报已选）、优化面板与素材库白条同源修复（持久化缓存 + 占位 + 错误态）、历史筛选分页与重复请求收口、所有写参数拒绝统一 choiceResult。★ 0.35.0：口语入口别名（「风格卡」「批量出图」…）解析成真实工具、参考图色调取样写进提示词、建议时间轴 / 资源需求声明 / 数据流摘要 / 「刚才那张」产出短引用全部接进主链路。★ 0.34.0：SageAttention / Comfy-WaveSpeed 并入加速链并按真实 /object_info 探测、卡片常驻显示；GPT-SoVITS v5 / IndexTTS2 可选 TTS、拖音频零样本克隆、ACE-Step 1.5 / YuE2 音乐 BGM、手动超分、Worker 热温冷保活。0.33.0 新增媒体格式转换（图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC，生成物可指定输出格式、动图转视频、自有素材转换，Agent 可直接调用 convert_media）与加速链全景（生图/视频缓存后端 + TTS 加速 + 显存预算 + 配置裁决 + 结构化日志，只列探测到的、未实测不写倍率）、本机能力功能区内嵌进 Comfy 控制面板（展开页恒在悬浮球正上方、边框对齐 DSH 右边框、四事件点按兜底）、GIF 转换 / 运行期自诊断 / 优先级任务队列 / 单图迭代优化 / 自适应 DAG 编排 / 生成历史可删改与冷热分离等本机工具与端点；0.32.1 两轮审计加固：ASR 音频路径围栏（只认出图目录内文件）、按包名安装也能执行引导脚本、草图台四事件点按、错误响应消毒收口；视频链清单化 + 生图/TTS 契约对账（改图自动报差异）；生图/视频/混合三模式界面各不同；批量出图带幂等保护（重试不重出）；Qwen3-TTS 语音克隆与可接 ASR 自动字幕；本机实测秒数；会话级模型驻留、显存建议、参数来源表、预设绑定、加载器盘点等本机端点。文生视频 / 图生视频（Wan 2.2 / XT-5B）与图→音→视频混合、导入音频直接合进成片（音轨合成），文生图与 1–16 张参考图编辑、圈选重绘（羽化 / 边缘融合 / 外扩 / 反选 / 重绘强度可调）/ 元素移除 / 四向扩图 / 高清放大，Qwen3-TTS 语音合成（独立 generate_speech，参考音频可复刻音色），模型无关角色参考；GSV.CPP 外接引擎可选（backend=gsv_cpp 直调本机 9880 服务，A 卡 Vulkan 实测 ≈23× 实时速率）；PPT 生成（make_pptx：纯 JS 零依赖零 GPU，大纲级 PPTX 草稿，生成的讲解图片可真写进 PPTX，永远可执行无降级）；草图台手绘参考；生成记录可检索（菜单最上面「历史」，SQLite 索引、软删除不动磁盘文件）。CPU 也能跑：自动识别 AVX2 / AVX512 / AVX512-BF16 指令集并给五档加速（含 --cpu 强制纯 CPU）、按物理核钉线程，任务结束可选自动卸载模型内存；安装入口是常驻的图形化引导面板。对外提供脱敏状态快照与端点目录供外部集成。提供可选、默认关闭的模型自动下载包：视频模型 --video-models、核显档位 --igpu-download、生图主模型 --tier，按服务器权威 size + sha256 双校验；音频权重不自动下载，缺件给明确清单。经本机 ComfyUI 调用，数据仅走 127.0.0.1 回环（联网参考图检索默认拒绝、须逐次同意），无需 API 密钥、零调用费用。Windows / Linux，NVIDIA / Intel Arc / AMD / 核显共享内存，含 8 GB 低内存档位。
 
 ## Features
 
@@ -16,6 +16,7 @@ DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（Q
 | 文生视频 / 图生视频 | `generate_video` | 经本机 ComfyUI 调用 Wan 2.2 / XT-5B 系列视频模型，成品落盘并显示在会话里；支持首帧 I2V（`startImage`）与尾帧参考（`endImage`，仅当本机节点契约有 `end_image` 槽，0.39.0 无 → 如实报错） |
 | 语音合成（TTS） | `generate_speech`（独立） / `generate_hybrid`（三段中的一段） | 本机 `ComfyUI-Qwen-TTS` + Qwen3-TTS 权重，产出 mp3 / flac（按 ComfyUI 返回的真实扩展名）；两条路共用同一条 TTS 段，只想配音不必跑完三段，**插件不自动下载音频模型** |
 | 图→音→视频混合 | `generate_hybrid` | 一张图配一段语音再合成视频，适合做带旁白的短片 |
+| PPT 生成（大纲草稿） | `make_pptx` | 纯 JS 零依赖零 GPU，标题 + 要点列表的大纲级 PPTX；讲解图片可真写进文件（1.2.0 起能力），永远可执行、无降级 |
 | 生成历史（可搜索） | `list_generated_images` | 本机 SQLite 记录每次生成的提示词 / 参数 / 时间 / 路径，支持关键词、类型、日期筛选与分页；界面里可看大图、复制路径、从历史移除（**只划掉记录，不删磁盘文件**） |
 
 - **模型自动下载包（可选）**：`node scripts/setup.mjs --video-models` 提供**视频模型自动下载包** —— 默认不装、需你显式执行，官方仓库文件清单运行时动态列举、由你选档位，多源轮询 + 断点续传 + 服务器权威 size + sha256 双校验，不合格删除；核显档位另有 `--igpu-download`（同样默认关闭）。音频模型权重**不自动下载**，缺件只给清单。
@@ -36,7 +37,7 @@ DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS 全能 · 本机运行（Q
 dsh plugin --profile desktop add link:<本插件目录的绝对路径>
 ```
 
-> 使用 `desktop` profile 时须**先完全退出 DSH**。本包在 npm 的包名为 `dsh-qwen-paint`（仓库当前 `1.2.1`），可直接 `dsh plugin add dsh-qwen-paint` 按包名安装；本地目录 / 本地包形式仅用于开发或试用未发布改动。完整步骤、profile 选择与排错见下文「安装」及 `INSTALL.md`。
+> 使用 `desktop` profile 时须**先完全退出 DSH**。本包在 npm 的包名为 `dsh-qwen-paint`（仓库当前 `1.2.4`），可直接 `dsh plugin add dsh-qwen-paint` 按包名安装；本地目录 / 本地包形式仅用于开发或试用未发布改动。完整步骤、profile 选择与排错见下文「安装」及 `INSTALL.md`。
 
 ## Usage
 
@@ -102,7 +103,7 @@ dsh plugin --profile desktop add link:<本插件目录的绝对路径>
 
 > **QQ 交流群**：`454707710`　｜　**反馈 / 提问 / 提需求**都走这里，issue 也欢迎：<https://github.com/yanfei0725/dsh-qwen-paint/issues>
 
-> **原作者**：@奇迹与你　｜　**优化版作者**：@yanfei0725　｜　**许可协议**：BSL 1.1（BUSL-1.1）　｜　**当前版本**：`1.2.1`　｜　仓库：<https://github.com/yanfei0725/dsh-qwen-paint>
+> **原作者**：@奇迹与你　｜　**优化版作者**：@yanfei0725　｜　**许可协议**：BSL 1.1（BUSL-1.1）　｜　**当前版本**：`1.2.4`　｜　仓库：<https://github.com/yanfei0725/dsh-qwen-paint>
 
 ---
 
@@ -189,9 +190,106 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 
 刻意**不**把 `engines` 提到 `>=22.5`：那会把一批能正常出图的用户直接挡在门外，代价只是少一个可搜索的历史库。
 
+
+## 1.2.4 更新说明
+
+本版主线：**双独立审计 + 真回归修复 + 三个新工具接入面板**。main 与 DSH（Nemotron）背靠背各自独立审计，汇总后逐条回代码核实：DSH 报的 3 个「阻断项」经代码事实核对均为误报（关键帧边界已如实标注且可选重编码、四事件点按有 300ms 冷却去重、junction 穿透有 5 条专项断言）；main 另发现一个 DSH 未报的**真回归**并修复——注释外置脚本吞掉块注释结尾 `*/`，连累 4 个 DEFAULTS 字段落进注释，真机默认值丢失，而 `index.__internal` 用假值兜底让测试假绿。全部离线可回归；**未经真机自证的能力仍不写「通过」**。
+
+### 许可证
+- 维持 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：自 **0.33.0 起**生效，**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版没有改动许可文本，也没有新增任何限制。外部 TTS 服务（GSV.CPP / AnifLive-TTS）的合规边界不变。
+
+### 新工具与端点
+- 新增三个内置最小工具并**接入面板可点**：`video_trim_crop`（按秒截取 + 矩形裁剪，`-c copy` 快切与 libx264 精裁二选一）、`video_prores_export`（ProRes MOV，profile=proxy/lt/standard/hq/4444）、`probe_community_features`（只读发现 VAE dtype / ComfyUI 原生 API / Wan2.2 5B，缺证据明确「需实测」）。全部走真 ffmpeg / 本机 object_info，不装付费节点、不下载模型、不伪造产物；无 ffmpeg 只给参数预览。
+
+### 加速链全景
+- 本版**不改任何倍率结论**。TE-Speed / Speedup / BlockCache / 前缀缓存 / resvg 光栅 / 去重 VFR / 分镜缓存等承接 1.2.3；未经本版真机复测的一律沿用旧口径，不新增倍率声明。
+
+### 工作流清单层
+- `chain-manifest` 与图结构指纹基准继续生效；本版不改生成链，**默认路径逐字节不变**。三个新工具是独立端点，不进入出图工作流 DAG。
+
+### 结构化运行日志
+- `event-log` 落盘 + 生成完成钩子口径不变；后转码**异步失败从静默吞改为 warn 留痕**（不影响出图主链路）。细分耗时口径不变，官方不提供的细分保持 `null`，不编数字。
+
+### UI 与交互
+- 位置口径不变：功能区**内嵌** Comfy 控制面板（不新开浮层），展开页恒在悬浮球**正上方**、**边框对齐** DSH 右边框、小屏**不变形**，四事件点按 + `pointerdown` `preventDefault` 兜底。`UI_BUILD` 升到 `2026-11-19.3`；面板新增折叠卡「内置工具（视频后处理 / 社区发现）」，三个按钮独立语义类名（`cp-vtrim-go` / `cp-vprores-go` / `cp-probe-go`），走既有 `bindTap` 四事件 + 300ms 冷却。真机须刷新 DSH 页面，hover 浮标自证 build。
+
+### 媒体格式转换
+- 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。本版新增的视频裁剪 / ProRes 导出是后处理补充，不改原转换矩阵。
+
+### 联动护栏与回归
+- 全量 **118 套 / 断言项全绿**。`main` + DSH 双独立审计：4 项发现逐条回代码定性（3 误报 + 1 真回归已修）；真回归补了**根因护栏**（直接读 schema-defaults 真值 + 词法级悬空注释检查，并经「改坏→变红→逐字恢复 md5 一致」反向核查）。清理 5 个零引用死执行器；`local-portrait.js` 路径围栏加 realpath 复验挡 junction/symlink 穿透；Windows VRAM 探针改数组 argv 直调 Python，不再拼命令外壳；BGM 缓存键字段与真实指纹逐字对齐。
+- `lib/index.js` 226,153 B / 余量 **35,991 B**（红线 262,144 B）。
+- 当前 **144 个 `lib/*.js`** / 合计 **2,066,998 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
+
+### 文档
+- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.4；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步校验，一处改、多处一起校验。
+
+## 1.2.3 更新说明
+
+本版主线：**三件真 Bug 修复 + GSV.CPP 外接 TTS 全链路 + 稳定性收口**。凌晨场 30 棒接力审计的产出，全部离线可回归、真机验证过的不写「应该」。
+
+### 修复（用户可直接感知）
+- **面板 404 大面积报错（真根因）**：DSH 宿主升级了工具注册契约（每个工具 `output` 必须含 `schema + render`），`convert_to_gif` 缺 `render` 导致 **extras 整组**（44 条端点 + 全部 extras 工具）在每次启动时从未注册——表现为 doctor / tts / media / jobs 等大面积 404/401。修复：`withDeclaredOutput` 对缺 `render` 的工具自动合成兜底（自带 render 的引用原样保留），4 个高频工具手写 render，新增「extras 全部工具满足宿主 output 契约」回归锁（曾一次揪出 26 个漏网）。真机验证 `register.extras OK` + 全部端点 200。
+- **ComfyUI 启动识别「46 秒蒸发」**：启动监视器收摊上限硬编码 46 次，与 120 秒常量漂移——慢加载场景 46 秒后监视静默退出、永远卡 starting。改为按常量推导的快/慢双速（先 1s/次，120s 后降 5s/次一直探），绝不静默退出、绝不抢判超时；顺手修 `Date.now()` 与 `performance.now()` 混钟。新增 `parseImportTimes` 解析 ComfyUI 自带 Import times 报告（实测 40+ 节点包 import 全部 <2s，慢在 torch/ROCm 初始化，报告写日志不猜）。
+- **音色样本重启全丢（0.34.0 起的真遗漏）**：`index.json` 每次登记都写、却**从不读回**——DSH 重启后样本登记全部失效（cloneToken 失效、转写丢失），而音频文件本体一直在磁盘上。修复：启动读回 + 逐条校验（非法 id / 越界路径跳过、音频本体已不在的条目作废、索引损坏空库起步不阻塞）。测试 +4 锁。
+
+### GSV.CPP 外接 TTS（A 卡 Vulkan 实测）
+- `generate_speech` 选 `backend=gsv_cpp` 时**直调本机 9880 服务**（回环围栏同 comfyUrl 口径），不拉 ComfyUI、不建工作流——全句 2.95 秒（≈23× 实时速率）、221 字长文 4.23 秒、热态 0.34 秒；6 小时 uptime 日志干净。
+- 按服务端白纸黑字的 **V5 真契约**实现（`text_lang / ref_audio_path / prompt_text / prompt_lang / streaming_mode`；原版 GPT-SoVITS API 字段名不适用）；参考音频 + 转写必填，缺件明确拒绝、绝不静默降级默认音色。
+- 面板 TTS 下拉可选「★ GSV.CPP（在线/离线探活实测）」；lab 音色样本登记支持「参考转写」（契约的 prompt_text 源）；选中前置提示必填语义；落盘扩展名按响应 content-type 定，文件名永远说真话。
+- 稳定性：探活带 health 标记校验（GSV.CPP 与 AnifLive-TTS 默认端口同为 9880，根治互相误报在线）；调用方取消 / 超时 / 服务挂死三条路收敛到同一 abort（不再永等）；`instruct`（VoiceDesign 专用）明确拒绝不静默吞掉。
+- 9880 端口撞车防护与安装引导按本机实测定稿（解压即含全套模型；sidecar 需 `GSV_G2PW_MODEL` 等环境变量，缺了 zh 前端会静默联网下载挂死）。
+
+### 多角色对话链（第一步，为下版铺垫）
+本机实锤已装 `FB_Qwen3TTSRoleBank`（8 角色槽位）+ `FB_Qwen3TTSDialogueInference` 节点；`buildDialogueWorkflow` 纯函数就绪（每角色一条 VoiceClonePrompt → RoleBank → DialogueInference → SaveAudioMP3），脚本行角色名插件侧提前对账（节点会静默跳过不匹配行，绝不让它糊脸）。刻意不入自动兜底链（必须先上传参考音频才能构造）。
+
+### 其他
+- `slim-comments` 工具修复 `$` 替换模式陷阱（注释里的 shell 语法 `$$` / `$!` 被当替换模式污染零漂移自检，comfy-launch 29 块注释因此被冤枉拒掉）；设计注释外置 `docs/*-design-notes.md` 锚点，体积余量回升。
+- 外部 TTS 上游核实：Sunfish56 已删库（实测 404）、AnifLive-TTS 公开索引搜不到（疑似私有/删库/改名，如实标注「搜索不到≠实测 404」）——引导不再指向死仓库。
+- 首页与两份 llms 的能力主线补上 **PPT 生成**（`make_pptx`，1.2.0 起的能力）与 GSV.CPP 外接引擎——此前介绍完全没提。
+- 反向核查：本轮所有改动均「改坏→精确变红→逐字节恢复」验证过护栏有效性；GSV.CPP 端到端为真机实测（含长文本 / 热态 / 6h 稳定），未实测项不写倍率。
+
+### ★ 许可证：维持 BSL 1.1（BUSL-1.1），本版不改
+- 自 **0.33.0 起**许可为 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：除托管 / 代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用；**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版没有改动许可文本，也没有新增任何限制。
+
+### ★ 新工具与端点：本版零新增工具名，介绍口径补齐
+- 本版没有新增 Agent 工具名或改动 API 语义。`generate_speech` 新增 `backend=gsv_cpp` 可选项；`make_pptx` 是 1.2.0 起的既有能力——本版把它从「只写在更新说明里」提升到首页、两份 llms 与安装引导的**主功能句和能力主线**，明确 PPT 讲解图片可真写进文件，不冒充 1.2.3 新增。
+
+### ★ 加速链全景：本版不改任何倍率结论
+- 1.1.0 的插件层实测数字继续有效：内置 resvg 光栅 **7.02×**、静态帧去重 + VFR + libx264 **6.58×**、草稿档 **2.10×**、分镜缓存命中 **34.2×**；TE-Speed **−17.3%** 仍为唯一稳定正收益。1.2.1 的诊断补齐与本版 GSV.CPP 外接链只说实话，不宣称新倍率。
+
+### ★ 工作流清单层：承接 1.2.1
+- `chain-manifest` 与图结构指纹基准继续生效；本版不改生成链，默认路径逐字节不变。
+
+### ★ 结构化运行日志：承接 1.2.1
+- `event-log` 落盘 + 生成完成钩子不变；细分耗时口径不变（官方不提供的细分保持 `null`，不编数字），单调时钟口径不变。
+
+### ★ UI 与交互：位置口径不变，`UI_BUILD` 维持 `2026-11-18.2`
+- 功能区仍然**内嵌**进 Comfy 控制面板（不新开浮层），展开页恒在悬浮球**正上方**、**边框对齐** DSH 右边框、小屏**不变形**，四事件点按 + `pointerdown` 兜底。本版没有改 UI 资产，`UI_BUILD` 不升；真机刷新后 hover 浮标仍显示 `UI 2026-11-18.2`。1.2.0 的卡片折叠 / 双拖拽上传 / 人物替换 / PPT 图片继续有效。
+
+### ★ 媒体格式转换：格式矩阵不变
+- 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。
+
+### ★ 联动护栏与回归
+- 全量 **118 套 / 断言项全绿**（并发约束层 19 锁 / 测试并行化三方向：heavy 精确标记 + Worker 池真跑 + `--only`·`--phase` 筛选；对话链 4 锁、外接链 12 锁、样本库恢复 4 锁等）。
+
+> 注：并行化去重后，4 个重测试此前被重复登记两次（light 一遍 + heavy 一遍），现只保留 heavy 一遍，故套数由 119 → 115；本轮再补 3 套专项（配置 argv / 视频后处理 / 社区发现）回到 118。`--worker` 模式把"空壳 Worker 池"重写成真能跑：每套测试独立 Worker（patch `process.exit` 为记录退出码、短宽限收尾）避免全局污染，且与 spawnSync **共用同一判定口径**（`judgeFrom`），两种模式逐套断言数实测一致（0 差异）。诚实边界：**实测 Worker 模式没有提速**（51.7 s vs spawnSync 43.4 s，线程创建 + IPC 抵消了收益），其价值是"派生进程被沙箱拒绝时仍可跑"的降级路径与并发入口，不宣称"30s→8s"。
+- `lib/index.js` 226,153 B / 余量 **35,991 B**（红线 262,144 B）。
+- 当前 **144 个 `lib/*.js`** / 合计 **2,066,998 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
+
+### 文档
+- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.4，并把 PPT 生成提升到主功能句；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步升级为含 PPT，一处改、多处一起校验。
+
+### 当前工作树（1.2.3 之上，未发布）
+- 清理 5 个零引用死代码执行器（`draw-executor` / `draw-params` / `hybrid-executor` / `reference-executor` / `video-executor`），孤儿白名单同步去掉谎报条目。
+- 安全与可诊断性：`local-portrait.js` 路径围栏加 realpath 复验（挡 junction/symlink 穿透，未生成输出按最近已存在祖先判定）；Windows VRAM 探针改数组 argv 直接执行 Python，不再拼命令外壳；后转码异步失败补 warn，BGM 缓存键字段与真实指纹逐字对齐。
+- 新增内置最小工具：`video_trim_crop`（按秒截取 + 矩形裁剪，快切 `-c copy` 与重编码精裁二选一）、`video_prores_export`（ProRes MOV，profile=proxy/lt/standard/hq/4444）、`probe_community_features`（只读发现 VAE dtype / ComfyUI 原生 API / Wan2.2 5B，缺证据明确“需实测”）。三项都走真 ffmpeg/本机 object_info，不装付费节点、不下载模型、不伪造产物；工具、端点、agent-guide、描述、self-test、两份 llms 六处接线齐全。
+- **面板也能点了**：`UI_BUILD` 升到 `2026-11-19.3`；Comfy 控制面板内新增折叠卡「内置工具（视频后处理 / 社区发现）」，三个按钮 `cp-vtrim-go` / `cp-vprores-go` / `cp-probe-go` 各自独立语义类名，全部走 `bindTap` 四事件（宿主 `pointerdown` `preventDefault` 下仍可点）。源视频填出图目录内文件名或绝对路径；非法数字/空源在本地拦下，不发起请求；ffmpeg 缺席只显示参数预览，不谎称出文件。真机须刷新 DSH 页面，hover 浮标应显示 `UI 2026-11-19.3`。
+- 这一节描述的是**当前工作树**，不是已发布版本；发版须单独授权，npm 与 GitHub 一起发。
+
 ## 1.2.1 更新说明
 
-> 从 1.2.0 到 1.2.1：这是一个**质量与可诊断性收口**补丁版本——历史库搜索升级 SQLite FTS5、运行期自诊断补齐真探针、OOM 建议跟上 ComfyUI v0.37、构建期作用域检查换成零依赖 JS 词法分析器。本轮全量回归 **112 套 / 0 失败 / 7,401 项断言**全绿。**不改三大能力的生成链契约，既有工具名与 API 语义不变**；1.2.0 及此前全部能力、速度与许可边界继续有效。诚实边界不变：未经真机自证的能力仍标「未检测 / 待自证」，不把离线回归写成真机通过。
+> 从 1.2.0 到 1.2.1：这是一个**质量与可诊断性收口**补丁版本——历史库搜索升级 SQLite FTS5、运行期自诊断补齐真探针、OOM 建议跟上 ComfyUI v0.37、构建期作用域检查换成零依赖 JS 词法分析器。本轮全量回归 **113 套 / 0 失败 / 7,418 项断言**全绿。**不改三大能力的生成链契约，既有工具名与 API 语义不变**；1.2.0 及此前全部能力、速度与许可边界继续有效。诚实边界不变：未经真机自证的能力仍标「未检测 / 待自证」，不把离线回归写成真机通过。
 
 ### ★ 许可证：维持 BSL 1.1（BUSL-1.1），本版不改
 - 自 **0.33.0 起**许可为 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：除托管 / 代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用；**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版没有改动许可文本，也没有新增任何限制。
@@ -216,7 +314,7 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 - 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。
 
 ### ★ 联动护栏与回归
-- 全量回归 **112 套 / 0 失败 / 7,401 项断言**全绿（31.5s）；发布护栏 `test-release-metadata.mjs` 70/0。
+- 全量回归 **113 套 / 0 失败 / 7,418 项断言**全绿（31.5s）；发布护栏 `test-release-metadata.mjs` 70/0。
 - **历史库 FTS5**：`history-store.js` 以外部内容表 + trigram tokenizer + AFTER INSERT 触发器实现全文索引，关键词走 MATCH（1 万条实测 0.023ms vs LIKE 1.012ms，约 44×）；短词（<3 字符）与 FTS 不可用时自动回落 LIKE，旧库首次打开 rebuild 回填，phrase 包裹防查询语法注入。`test-history.mjs` 195/0。
 - **doctor 真探针**：`tool-registry.js` 为 comfyOnline / accelPacks / ffmpeg / attentionBackend 接上真实探测；模型完整性与 TTS 权重仍如实标未检测，`attention_backend` 只查到节点存在时不谎报 pass。`test-accel-config.mjs` 79/0。
 - **OOM 建议**：`diagnose-error.js` 补社区 8G 抄作业档（INT8 + nvfp4 + 低显存 / GGUF Q4_K_M + 768² 起步）与 ComfyUI v0.37 动态显存策略提示；15× 速度差标为社区量级、不承诺固定倍率。`test-batch-guard.mjs` 119/0。
@@ -226,7 +324,7 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 
 ### 文档
 - `package.json` / `meta.description` / README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.1，`scripts/test-release-metadata.mjs` 一处改、多处一起校验。
-- 当前 **138 个 `lib/*.js`** / 合计 **2,066,521 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
+- 当前 **139 个 `lib/*.js`** / 合计 **2,071,170 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
 
 ## 1.2.0 更新说明
 
@@ -258,14 +356,14 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 - 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。PPT 输出新增图片类型，body 上限放宽到 48 MB。
 
 ### ★ 联动护栏与回归
-- 本版新增 `test-local-portrait.mjs`（48/0）并登记进 `scripts/test-all.mjs`；`test-pptx-lite.mjs` 47/0、`test-ui-perf.mjs` 81/0。全量回归 **112 套，各套项全绿**。
+- 本版新增 `test-local-portrait.mjs`（48/0）并登记进 `scripts/test-all.mjs`；`test-pptx-lite.mjs` 47/0、`test-ui-perf.mjs` 81/0。全量回归 **113 套，各套项全绿**。
 - 构建期静态检查升级：`_client_scope_test.mjs` 从「正则 replace 抹字符串」换成零依赖 JS 词法分析器（`scripts/js-lexer.mjs`，token 流隔离字符串/注释/正则/模板）。新增 `test-js-lexer.mjs` 22/0 并登记；仅构建期脚本，不进插件包、不破 0 运行时依赖。反向核查：注入 `${UNDEFINED_PROBE}` 精确变红、逐字节还原后复绿。
 - `lib/index.js` **226,150 B / 上限 262,144 B，余量 35,994 B**。
 - 反向核查：PPT media 写入、人物路径围栏 / 结果解析 / 节点发现、UI_BUILD 与折叠几何均做过「改坏 → 精确变红 → 逐字节恢复」；PPT / 人物替换按钮因误复用 `.cp-ref-search` 触发真实回归，已改独立类名修好并复测，未改测试迁就。
 
 ### 文档
 - `package.json` / `meta.description` / README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.0，`scripts/test-release-metadata.mjs` 一处改、多处一起校验。
-- 当前 **138 个 `lib/*.js`** / 合计 **2,066,521 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径；Windows 工作树受 `core.autocrlf` 影响略高；设计注释外置到 docs 后维持健康余量）。
+- 当前 **138 个 `lib/*.js`** / 合计 **2,077,512 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径；Windows 工作树受 `core.autocrlf` 影响略高；设计注释外置到 docs 后维持健康余量）。
 - Rust CPU 底座源码与锁文件在 `tools-rust/dshqp-portrait/`，产物 `assets/bin/dshqp-portrait.exe` 随 `assets/` 走打包分发；本机 cargo 路径已做等长中性化，不夹带真实用户目录。
 - **历史库关键词搜索升级到 SQLite FTS5**（零新依赖）：`history-store.js` 用 FTS5 外部内容表 + trigram tokenizer + AFTER INSERT 触发器，关键词走 MATCH 索引（1 万条实测 0.023ms vs LIKE 全表 1.012ms，44×）。短词（<3 字符）与 FTS 不可用时自动回落 LIKE；旧库首次打开自动 rebuild 回填；phrase 包裹防查询语法注入。`test-history.mjs` 补 16 项（索引同步/旧库迁移/软删除边界/降级）。
 - **运行期自诊断与 OOM 建议补齐**（社区调研 A 类）：`doctor.js` 原有 8 项检查里 6 项探针空转，现用现有 deps 真接上 4 项（comfyOnline / accelPacks / ffmpeg / attentionBackend，后两者基于 `/object_info` 与 `mediaExec.probe`），模型完整性与 TTS 权重仍如实标未检测；`attention_backend` 只查到节点存在时不谎报 pass。`diagnose-error.js` 的 OOM 建议补上社区 8G 抄作业档（INT8 + nvfp4 + 低显存 / GGUF Q4_K_M + 768²起步）与 ComfyUI v0.37 动态显存策略提示，15× 速度差标为社区量级、不承诺固定倍率。
@@ -307,7 +405,7 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 
 ### ★ 联动护栏与回归
 - 两轮审计全部发现按「确认遗漏才修、刻意设计留痕」处置；新增 / 扩展回归：目录链接穿透回归 4 项、队列生命周期（退避封顶 / 代次号防双执行 / 终态淘汰）6 项、端点围栏与媒体类型闸 8 项、客户端反馈一致性 3 项、媒体路由 Range / 缓存头 8 项等。
-- 全量回归 **112 套，各套项全绿**；`lib/index.js` **226,150 B / 上限 262,144 B，余量 35,994 B**。
+- 全量回归 **113 套，各套项全绿**；`lib/index.js` **226,150 B / 上限 262,144 B，余量 35,994 B**。
 
 ### 文档
 - `package.json` / `meta.description` / README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.1.2，`scripts/test-release-metadata.mjs` 一处改、多处一起校验。
@@ -1514,165 +1612,4 @@ DSH STORE 自动审核在 Issue #1390 的**第二轮**反馈中确认：0.17.2 �
 
 - **新增 `lib/net-guard.js`（网络边界守卫，代码层强制）**：
   - `isLoopbackUrl(url)` / `assertLocalUrl(url)`：只认字面量 `127.0.0.0/8`、`localhost`、`::1`、`0.0.0.0`；
-    **不接受任何域名**（含 `localhost.evil.com` 这类伪装），从根上消除 DNS rebinding 面。
-  - **启动即校验**（`lib/index.js` 的 `apply()`，合并 `rawConfig` 之后第一件事）：
-    `comfyUrl` 非回环 → **抛出错误、拒绝启动**（fail-fast，不静默回退 —— 静默回退会让用户
-    以为远端生效了、实际连的是本机，那更糟）。
-  - **所有出站请求强制 `redirect: 'error'`**：不跟随任何 302/301。回环被重定向到公网是
-    最典型的越界手法，直接抛错比"跟过去再检查"可靠（那时数据已经发出去了）。
-    覆盖 `config.js` 的 `fetchWithTimeout`、`index.js` 的参考图上传、`hipfire-img.js` 的 HTTP 调用。
-- **如实披露可配置的外部端点**：新增 `allowRemoteComfy`（默认 `false`）。
-  用户**显式**开启后才允许 `comfyUrl` 指向局域网/远程地址，且放行时**记 warn 日志**。
-  这是"如实披露"，不是"撒谎说不支持"。
-- **子进程环境变量白名单化**（`net-guard.js` 的 `filteredEnv`）：
-  `hipfire-img.js` 的 `spawn` 与 `config.js` 的 `runShell` 不再直接继承宿主环境，
-  剔除 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` 等代理变量（避免子进程网络去向与声明不一致）
-  与 `*TOKEN*` / `*KEY*` / `*SECRET*` / `*PASSWORD*` / `*CREDENTIAL*` 类变量；
-  保留 `PATH` / `SystemRoot` / `HOME` / `TEMP` 等运行必需项。
-  > 审核员原话：*"spawn 未显式设置 env 会继承宿主环境 —— 这**不构成**拒绝理由"*。
-  > 我们仍然做了，是为了防患于未然。
-- **README 措辞对齐**：顶部「网络边界」段落与「权限与已知风险」表格改为准确描述
-  （默认本机回环 + **代码层强制** + opt-in 开关），**删掉"不访问任何外部地址"这类过度承诺**。
-- **新增回归测试 `scripts/test-net-guard.mjs`（48 项断言，全部通过）**：
-  覆盖回环放行 / 局域网·域名·伪装域名拒绝 / `allowRemote` 语义 / 重定向强制 `error` /
-  代理与凭据环境变量剔除。**纯 JS，不依赖网络与子进程派生**（沙箱会间歇性禁止 spawn）。
-
-## 0.17.0 新增说明（专业卡版：档位 / 精度 / 权重可调 / ControlNet）
-
-面向**专业卡**（显存 ≥ 24 GB 且系统内存 ≥ 64 GB，如 L20 / RTX Pro 6000 / W7900 / Arc Pro B70）做了成体系的增强；
-**轻量版同样能用**（档位可选，只是范围受显存限制）。
-
-- **显存 / 内存档位**（`vramMode`）：`auto` / `resident`（全驻留）/ `standard` / `save`（省显存）/ **`ram`（权重放内存）** / `cpu`。
-  - 「**权重放内存**」= `--novram`：权重常驻内存、按需换入显存 —— **显存不够也能跑**，代价是慢。
-  - ⚠ 这是 **ComfyUI 启动参数**，改完**必须重启 ComfyUI**；macOS 上这组参数不参与（MPS 统一内存）。
-- **模型精度档**（`precisionTier`）：`auto` / **BF16 全精度（24G+）** / `FP8（12G+）` / `int8` / `GGUF`。
-  - 按**文件名标记**从你已装的文件里挑；**挑不到就如实回落并报缺失**，绝不假装已用上。
-- **文本控制档**（`textControl`）：`auto` / `turbo`（8 步 / CFG 1.0）/ **`native`（千问原生工作点 25 步 / CFG 2.5）**。
-  - turbo8 是为速度牺牲文字渲染的；**要更精细的文字就该走原生工作点**（约 3 倍采样时间）。
-- **权重可调**：面板里直接切换**主模型 / LoRA / ControlNet 权重**。
-  - 选项**只能来自 ComfyUI 真实存在的文件**（没有手填文件名的口子 ⇒ 无路径注入）；
-    选了但文件不在时会**如实提示"未采纳"**，不静默换别的。
-- **通用 ControlNet**：新增 `controlImage` 参数（控制图路径），配合面板选中的 ControlNet 权重即可按
-  结构（边缘 / 深度 / 姿态）约束生成。
-  - ⚠ **三个条件缺一不可**：探测到 `ControlNetLoader` + `ControlNetApplyAdvanced` 节点、选了权重、传了控制图；
-    缺任一条都**不会接进工作流**，并在返回值里**如实说明原因**。
-  - ⚠ 与「局部重绘」**完全独立**（后者走 `ControlNetInpaintingMamaApply` + 独立工具）。
-- **面板**：新增「档位」与「权重」两栏下拉；档位/权重**不进优化总账**（它们是配置选择，不是优化点开关）。
-- ⚠ **未实测声明**：开发机是 **AMD RX 7900 XT 20 GB** —— **BF16 / FP8 / ControlNet 的真机效果未在本机验证**，
-  请在你的 24 GB+ 卡上自行验证。Intel（B70，IPEX/XPU）本轮**未**做专属支持。
-
-## 0.16.2 新增说明（记忆消费 / SageAttention 模式 / NVFP4 提示）
-
-- **偏好记忆自动消费**：输出目录下的 `.qwen-paint-preferences.json`（由 `dsh-auto-memory` 或本机工具写入）现在会被真正用起来 —— 当你**没有显式传参**时，按记忆补上画幅、像素档位（MP）、采样步数、每轮张数与负向词。
-  - ⚠ 优先级铁律：**显式参数 > 记忆偏好 > 界面预设 > 插件默认**。你显式传了 `size` / `steps` 就绝不会被记忆覆盖；每次补齐都会在日志里**如实列出补了哪些**，不静默改你的意图。
-  - ⚠ **随机种子不从记忆读** —— 默认每次随机出图；想复现必须自己传 `seed`（否则会每次出同一张）。
-  - 偏好接口不变：`GET/POST /api/qwen-paint/memory/preference`。
-- **SageAttention：性能 / 兼容模式 + 崩溃自动回退**（仅 N 卡）
-  - 新增 `nvidiaSageAttentionMode: 'performance' | 'compatibility'`，面板标题直接标注「性能模式 / 兼容模式」。
-    ⚠ 如实说明：ComfyUI 的 `--use-sage-attention` 是**全局开关、没有官方子模式参数**，所以这两档的差别**只在崩溃兜底策略**，插件没有、也不会编造一个"模式"命令行参数。
-  - **崩溃自动回退**：若启用 SageAttention 后 ComfyUI 启动失败，且启动日志**明确指向 sage-attention**（参数不被当前版本识别、`sageattention` 没装却被强制开启、或 Blackwell / sm_120 构建不匹配），插件会在**当前会话内自动关掉它**，避免反复重启反复崩；同时告知原因与恢复方式。
-    - 判据**宁漏不误**：端口占用、显存不足、普通报错**绝不会**被误判成 SageAttention 的锅，也不会因此关掉你想要的功能。
-- **NVFP4 检测与提示**（仅 50 系 / Blackwell 出现）
-  - 面板会多一条信息项「NVFP4 量化模型（Blackwell 专属，可选）」，指出社区已有 Qwen-Image 2.1 的 NVFP4 checkpoint（`BennyDaBall/Qwen-Image-2.1-NVFP4`），供你在 50 系卡上自行下载、自行选择模型。
-  - ⚠ 只**检测 + 提示**，插件**不会**替你切换模型、也**不下载模型权重**（NVFP4 checkpoint 等一律由你自行下载）；它不是开关。**该路径未在开发机（AMD）上实测**，实际提速请以你的 5060 机器为准。
-- **稳定性修正**：修好了一处"面板说已生效、端点其实不认"的假开关白名单遗漏（SADA / OOM 两个开关）；`lib/config.js` 拆出 `lib/describe.js` 以符合发布体积上限。
-
-## 优化版说明
-
-本版在**不改变输出画质**的前提下，围绕推理性能、显卡适配与平台兼容三个方向对插件进行了系统性增强。
-
-### 一、推理链路性能
-
-1. **按输出尺寸自动选择加速方案。**  
-   三个加速组件（TE-Speed、Speedup、BlockCache T8）需独占同一组模型包装器，同一时刻仅能启用其一。  
-   本版依据本次生成的实际尺寸自动切换：小尺寸（≤1024²）采用 TE-Speed 与 Speedup（实测 **+25.4%**）；  
-   大尺寸（如 1408²）改用 BlockCache T8（实测 **+22.7%**，约节省 27.4 秒）。  
-   该策略基于实测结论——在 1408² 下 TE-Speed 命中率为 **0%**、Speedup 仅 **12.5%**，却占用互斥资源。
-2. **编排阶段并发化。**  
-   提交任务前的队列查询、参考图上传与后端能力探测三项操作改为并发执行；  
-   结果轮询间隔由 1200 ms 缩短至 **400 ms**；后端就绪后立即预热能力探测。
-3. **显存驻留策略自动化。**  
-   依据显存总量自动确定启动参数：≥24 GB 全量驻留；16–24 GB 采用 `--highvram` 并保留少量余量；  
-   <16 GB 不启用驻留参数以规避显存溢出。此举显著减少约 13.5 GB 模型权重的反复装卸开销。
-4. **接入 RDNA3 FlashAttention。**  
-   将已安装但未被引用的 RDNA3-Flash-Attention 节点接入模型链末端。该实现为精确注意力，不改变计算语义。
-5. **支持单次批量生成。**  
-   新增 `count` 参数（1–4），一次提交可生成多张图像，模型权重仅加载一次；默认值仍为 1，原有行为不变。
-
-### 二、显卡厂商适配
-
-插件以**加权评分**方式识别显卡型号与代系（明确型号优先于泛化厂商名，独立显卡优先于核显），  
-并为每一类硬件指定相应的注意力后端与可选加速组件：
-
-| 厂商                 | 识别依据                          | 注意力后端                           | 可选加速组件                                    |
-| ------------------ | ----------------------------- | ------------------------------- | ----------------------------------------- |
-| NVIDIA             | `GeForce` / `RTX` / `A100` 等  | `--use-pytorch-cross-attention` | Triton for Windows、SageAttention、Nunchaku |
-| Intel Arc          | `Arc.*B\d{3}` / `Arc.*A\d{3}` | `--use-pytorch-cross-attention` | IPEX                                      |
-| AMD RDNA3（RX 7000） | `Radeon RX 7xxx`              | `--use-quad-cross-attention`    | A 卡专属内核（可选）、异步卸载（可选）                      |
-| AMD RDNA4（RX 9000） | `Radeon RX 9xxx`              | `--use-pytorch-cross-attention` | A 卡专属内核（可选）、异步卸载（可选）                      |
-| AMD RDNA2（RX 6000） | `Radeon RX 6xxx`              | `--use-pytorch-cross-attention` | A 卡专属内核（可选）、异步卸载（可选）                      |
-| AMD RDNA1（RX 5000）★ | `Radeon RX 5xxx`              | `--use-pytorch-cross-attention` | A 卡专属内核（可选）、异步卸载（可选）                      |
-| Apple Silicon ★      | `Apple M1`–`M5`               | `--use-pytorch-cross-attention` | MPS 算子回退（默认开）、取消显存水位上限（可选）                 |
-| Intel Mac + AMD 独显 ★ | `Radeon Pro 5xxxM` 等         | `--use-pytorch-cross-attention` | 同上（macOS 上 AMD 显卡**走 Metal，不走 ROCm**）        |
-| Intel Mac（核显）★     | `Intel Iris` / `UHD Graphics` | 不指定                             | MPS 算子回退（默认开）                             |
-
-各类硬件的参数与加速组件相互独立，不会交叉套用。
-
-> ★ **平台闸（2026-10-12 新增）**：显卡判定在**平台**这一维上再收一次口。
-> 同一个型号名在不同平台能用的计算栈完全不同 ——
-> Windows/Linux 上的 `Radeon RX 7900 XT` 走 ROCm（quad / CK 那套），
-> 而 **macOS 上的 AMD 显卡只有 Metal/MPS 一条路**（Apple 不提供 ROCm）；
-> Windows/Linux 上的 `Intel Arc` 走 XPU + IPEX，而 **macOS 上根本没有 XPU 后端**。
-> 不收口就会出现"Intel Mac 被建议装 IPEX"这类**照着做必然失败**的建议。
-
-#### A 卡专属优化（可选，默认关）★ 2026-10-11 新增
-
-与 N 卡/I 卡的「厂商专属优化」同一套思路：**只在适用的显卡上、在优化面板里出现**，  
-**默认关闭**，由你自己决定要不要开。两项都是**质量中性**的 —— 换的是后端 / 加载时机，  
-**不改任何计算结果，不牺牲原生画质**。
-
-| 开关          | 作用                | 按代系给什么                                                                                                  |
-| ----------- | ----------------- | ------------------------------------------------------------------------------------------------------- |
-| **A 卡专属内核** | 换用本代的替代注意力内核      | 5000 / 6000 → `--use-quad-cross-attention`；7000 / 9000 → `--use-ck-attention`                            |
-| **A 卡异步卸载** | `--async-offload` | ComfyUI 的 help 原文写着它 *"Enabled by default on Nvidia"* —— 即 **N 卡默认开、A 卡默认关**，这里给 A 卡补上（只改权重加载的时机，与计算重叠） |
-
-> ⚠ 两个都是**启动参数** ⇒ 改完**必须重启 ComfyUI** 才生效（面板提示里也写了）。  
-> ⚠ 5000 / 6000 / 9000 我们**没有硬件实测**，所以一律默认关 —— 属可选档，不合适就关回去。  
-> ⚠ 也**不会**因为默认关而把面板显示成"优化部分启用"：它们被标记为**可选**，  
-> 单独计入总账的「N 项可选（默认关）」。  
-> 想永久生效：把 `amdKernel` / `amdAsyncOffload` 写进 `cordis.patch.yml`（面板开关是内存态）。
-
-### 三、操作系统兼容
-
-启动、停止、进程存活查询与显卡探测均按平台分别实现：
-
-- **Windows**：经 WMI 派生进程（宿主重启不会连带终止 ComfyUI），显卡信息取自 PowerShell；
-- **Linux**：以 `setsid` / `nohup` 脱离会话，显卡信息取自 `nvidia-smi` / `rocm-smi` / `lspci` 及 `/sys`；
-- **macOS（Apple Silicon / Intel Mac）★ 2026-10-11 新增，2026-10-12 补上真正的优化**：
-  显卡信息取自 `system_profiler` / `sysctl`，
-  进程脱离会话**先探测 `setsid` 是否存在**（**macOS 没有这个命令**），没有就退回 `nohup`。
-
-#### macOS 怎么用
-
-ComfyUI 官方对 Apple Silicon（M1–M5）**只提供手动安装**（没有便携包），所以：
-
-1. 装 **pytorch nightly** —— 按 Apple 的 Metal 加速指南：<https://developer.apple.com/metal/pytorch/>
-2. 按 ComfyUI 官方「Manual Installation」装依赖
-3. 启动：`python main.py`（插件会自动补上下面那条参数，你**不需要**手写）
-
-然后 `node scripts/setup.mjs --comfy <你的 ComfyUI 目录>` 就能继续「下模型 + 挂插件」两步。
-（插件**不会**替 macOS 用户去下 Windows 便携包。）
-
-#### macOS 上插件到底做了什么（★ 2026-10-12）
-
-先说清**为什么之前是"零优化"**：ComfyUI 在 MPS 上**不会自动**启用 PyTorch SDPA ——
-它的 `ENABLE_PYTORCH_ATTENTION` 自动开启条件里只有 NVIDIA / Intel XPU / Ascend / MLU
-和一批 AMD gfx 代号，**没有任何一条与 MPS 相关**。于是 Mac 上会落到
-`attention_sub_quad`（那个给 CPU / 低显存场景准备的次二次实现），
-**根本没走 Metal 的融合内核**。
-
-现在插件会做两件事：
-
-| 做什么 | 怎么做的 | 依据 |
-| --- | --- | --- |
-| **切到 Metal 融合 SDPA** | 启动参数加 `-
+    **不接受任何域名**（含 `localh

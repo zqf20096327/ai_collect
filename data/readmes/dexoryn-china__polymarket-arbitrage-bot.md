@@ -265,12 +265,11 @@ make format
 
 ---
 
-## 作者与联系方式
+## 👤 作者与联系方式
 
 **Dexoryn Labs** — Polymarket AI 交易自动化
 
-- **Telegram：** [@dexoryn](https://t.me/dexoryn)（最快回复）
-- **微信：** 扫描添加 **DexorynWe**
+📱 **Telegram：** [@dexoryn](https://t.me/dexoryn) &nbsp; · &nbsp; 🐦 **X：** [@Dexoryn](https://x.com/Dexoryn) &nbsp; · &nbsp; 🎮 **Discord：** `dexoryn_`
 
 <p align="center">
   <img src="dexoryn_tg.jpg" alt="Telegram 二维码 — 扫描添加 @dexoryn" height="280"/>

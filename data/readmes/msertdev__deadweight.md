@@ -93,6 +93,8 @@ deadweight --json          # machine-readable output
 deadweight fix --dry-run   # show what would change
 deadweight fix             # disable unused plugins, hide unused skills (asks first)
 deadweight undo            # put everything back
+
+deadweight card            # save your totals as a PNG to share (no names on it)
 ```
 
 `fix` options:
@@ -106,6 +108,16 @@ deadweight undo            # put everything back
 | `--force` | run even with fewer than 5 sessions of history |
 
 Restart Claude Code after `fix` or `undo` to load the new setup.
+
+### Share your numbers
+
+`deadweight card` writes `deadweight-card.png`: your total, how much of it is your setup, unused skills, and what `fix` would save. It shows totals only, never a plugin, skill or server name. `--output card.svg` gives you the SVG instead.
+
+<p align="center">
+  <img src="assets/card.png" alt="deadweight card: 61.2k tokens on every request, 198 of 214 skills never used, fix saves 6.8k per request" width="600">
+</p>
+
+Post yours. I'd like to see the biggest one.
 
 ## Use it from inside Claude Code
 

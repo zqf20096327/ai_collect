@@ -1,10 +1,12 @@
 # comfy-ts
 
-**Write ComfyUI workflows in TypeScript, then run them from code, one command, a terminal, a browser or an agent.**
+**An efficient way to create, run, maintain and operate your ComfyUI workflows, for humans and agents.**
+
+<a href="https://youtu.be/eniEaCp_NS4"><img src="https://raw.githubusercontent.com/rvion/comfy-ts/main/trailer/comfy-ts/thumbnail.jpg" alt="The comfy-ts trailer on YouTube, 1:39" width="640"></a>
 
 [![CI](https://github.com/rvion/comfy-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/rvion/comfy-ts/actions/workflows/ci.yml) [![npm version](https://img.shields.io/npm/v/comfy-ts.svg)](https://www.npmjs.com/package/comfy-ts) [![npm downloads](https://img.shields.io/npm/dm/comfy-ts.svg)](https://www.npmjs.com/package/comfy-ts) [![GitHub release](https://img.shields.io/github/v/release/rvion/comfy-ts)](https://github.com/rvion/comfy-ts/releases) [![types](https://img.shields.io/npm/types/comfy-ts)](https://www.npmjs.com/package/comfy-ts) [![license](https://img.shields.io/npm/l/comfy-ts.svg)](https://github.com/rvion/comfy-ts/blob/main/LICENSE) [![sponsor](https://img.shields.io/github/sponsors/rvion?label=sponsor&logo=githubsponsors)](https://github.com/sponsors/rvion)
 
-Types come from your own ComfyUI: every node and model it has autocompletes, and a wrong graph is a compile error. Run on your GPU, another machine or Comfy Cloud, and get the images, audio and video back in your code or as files. 73 ready workflows cover 43 model families, from SDXL to Wan video and ACE-Step songs.
+Write ComfyUI workflows in TypeScript, then run them from code, one command, a terminal, a browser or an agent. Types come from your own ComfyUI: every node and model it has autocompletes, and a wrong graph is a compile error. Run on your GPU, another machine or Comfy Cloud, and get the images, audio and video back in your code or as files. 73 ready workflows cover 43 model families, from SDXL to Wan video and ACE-Step songs.
 
 | you want to | start here |
 | --- | --- |
@@ -165,8 +167,10 @@ This is not a ComfyUI type package that someone published once. One command read
 
 ```bash
 bunx comfy-ts gen --id my-gpu --host http://127.0.0.1:8188
-# → .comfy-ts/hosts/my-gpu/{object_info.json, embeddings.json, sdk.d.ts}
+# → .comfy-ts/hosts/my-gpu/{object_info.json, embeddings.json, sdk.d.ts, host.json}
 ```
+
+`host.json` keeps the address, so your code names the host by its id alone and never writes a machine name: `comfy.host({ id: 'my-gpu' })`.
 
 ```ts
 declare global {
@@ -312,7 +316,7 @@ No argument needed: it finds every `*.cflow.ts` under your project AND the examp
 
 ```bash
 bunx comfy-ts gen --id my-gpu --host http://127.0.0.1:8188
-# → .comfy-ts/hosts/my-gpu/{object_info.json, embeddings.json, sdk.d.ts}
+# → .comfy-ts/hosts/my-gpu/{object_info.json, embeddings.json, sdk.d.ts, host.json}
 
 bunx comfy-ts outline              # what is inside that 2MB sdk.d.ts?
 bunx comfy-ts loras                # mirror your loras' names + trigger words (below)
@@ -409,6 +413,9 @@ The honest support matrix: **local and LAN hosts connect directly** when ComfyUI
 Every Comfy works through one identical API: same mechanism, same codegen, same typed SDK, same TUI, whatever answers the protocol:
 
 ```ts
+// the address `comfy-ts gen --id my-gpu --host …` saved: code that names no machine
+comfy.host({ id: 'my-gpu' })
+
 // the box you are on
 comfy.host({ id: 'local', host: '127.0.0.1', port: 8188 })
 
@@ -499,7 +506,7 @@ Both carry the same skills, which read the guide above from the installed packag
 
 Every example is a runnable `*.cflow.ts` module: run it with bun, with `bunx comfy-ts run <name>`, or browse them all with `bunx comfy-ts tui`.
 
-Start with the didactic sequence in [`examples/rvion/`](examples/rvion/). These run against a local host: edit its `comfy.host({...})` line to point at yours, and the models each one names must be on that host.
+Start with the didactic sequence in [`examples/rvion/`](examples/rvion/). These name their host by id only, `comfy.host({ id: 'windows-1' })`: run `bunx comfy-ts gen --id windows-1 --host http://<your-comfy>:8188` once and they find yours. The models each one names must be on that host.
 
 | example                                                                                  | shows                                                                     |
 | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -536,7 +543,7 @@ Every zoo file imports offline and headless (no key, no cache needed: CI proves 
 
 ## 🗂️ The `.comfy-ts/` folder
 
-One folder of local state per consumer repo: `hosts/` (schema dumps + the generated sdk per host), `outputs/`, `drafts/`, TUI settings, lora keywords. Gitignore all of it. `hosts/` is a full dump of that machine's models and paths (~10MB), so a commit of it publishes your setup. In a PRIVATE repo, a commit of it is what buys you typed CI.
+One folder of local state per consumer repo: `hosts/` (schema dumps, the generated sdk and the saved address per host), `outputs/`, `drafts/`, TUI settings, lora keywords. Gitignore all of it. `hosts/` is a full dump of that machine's models and paths (~10MB), so a commit of it publishes your setup. In a PRIVATE repo, a commit of it is what buys you typed CI.
 
 ## ✅ Feature status
 

@@ -10,6 +10,8 @@ Thanks to its simplicity the project has a low footprint: it only has 1 external
 - `numpy` for computation but it is already a dependency of ComfyUI
 - `Pillow` also already used by ComfyUI for image processing
 
+> **This README documents the `main` branch, which is ahead of the latest release.** Some features described here are not in the version served by the Comfy Registry until the next tagged release: install from `main` to use them now (see [Installation](#installation)).
+
 ## Usage
 
 The default `base_url` parameter value targets the official OpenAI API endpoint by default but by changing it, you can also use this project with any OpenAI API compatible servers like Ollama, vLLM, SGLang, etc...
@@ -82,6 +84,14 @@ Example workflows (open them with *Workflow > Open* or drag and drop them in Com
 - [`examples/memory_chat_loop.json`](examples/memory_chat_loop.json): a text only chat that remembers the conversation across queued runs. Change the prompt and queue again; tick `Reset` on the `Load Memory` node for one run to start a new conversation. `Trim History` lets the history grow up to 10 turns (`Max Turns`), then cuts it back to the last 6 (`Keep Turns`): once full, the conversation start changes once every 5 runs instead of on every run.
 - [`examples/memory_image_feedback_loop.json`](examples/memory_image_feedback_loop.json): a prompt writer generates the image prompt, a vision model critiques the generated image, and the next run writes an improved prompt from that critique. Pick your checkpoint in the `Load Checkpoint` node and use a vision capable model. Each run adds 2 turns (prompt, critique) and 1 image: `Trim History` lets the history grow up to 2 runs (`Max Turns` 4, `Max Images` 2), then cuts it back to the last run (`Keep Turns` 2, `Keep Images` 1), once every 2 runs, so a request never holds more than 6 turns and 3 images.
 
+## Skipping a request (conditional execution)
+
+ComfyUI only runs the nodes that an output node needs. Behind the core `If/Else Switch` node, whose inputs are lazy, a chat completion node on the branch not taken does not run: no request is sent.
+
+- **Every** use of its outputs must go through a switch. A chat completion node that also feeds an output node directly (`Save Memory`, `Preview Any`...) always runs. Bypass or remove such previews when you want the request to be skipped.
+- In a memory loop, route the `History` through a second switch before `Save Memory`: the chat completion `History` on the branch that runs it, and the `Load Memory` output on the other one, so that the stored history is saved back unchanged when the request is skipped. **Connect both branches**: a switch with an unconnected branch outputs nothing, and `Save Memory` would wipe the history.
+- Switch nodes without lazy inputs (some custom node packs) run both branches, so both requests are sent.
+
 ## Unloading the model (local servers)
 
 The `Unload Model` node asks a local inference server to unload its model, e.g. to free VRAM before an image generation. Connect the output to unload after (usually the chat completion response) to its `Value` input: the node runs once that value is ready and passes it through unchanged. Connect the same client node as your chat completion node, no change needed (keep the usual `.../v1` base URL): its API key and its connection to the server are reused, and the server root used by the native unload routes below is derived from the base URL automatically.
@@ -126,6 +136,8 @@ Requires ComfyUI 0.10.0 or later.
 ### ComfyUI Manager
 
 Search for `OpenAI API` in the `Custom Nodes Manager` and install it. Its page on the Comfy registry: [registry.comfy.org/nodes/openai-api](https://registry.comfy.org/nodes/openai-api).
+
+The registry only serves tagged releases: to try the features documented here before the next release, install from the `main` branch instead (see [Manually](#manually)).
 
 ### Manually
 

@@ -366,6 +366,12 @@ Wang, L., Brasnett, C., Borges-Araújo, L. et al.
 
 
 
+
+
+* **Quantum-accurate vibrational and conformational dynamics from small molecules to proteins with machine-learned force fields** [2026]  
+SSuárez-Dou, S., Gallegos, M., Han, K. et al.  
+[Nat Commun (2026)](https://doi.org/10.1038/s41467-026-79241-x) | [Zenodo](https://doi.org/10.5281/zenodo.20315304)  
+
 * **SimPoly: Simulation of polymers with machine learning force fields derived from first principles** [2026]  
 Simm, G.N.C., Hélie, J., Schulz, H. et al.  
 [Nat Commun (2026)](https://doi.org/10.1038/s41467-026-78736-x) | [code](https://github.com/microsoft/simpoly)  
@@ -1513,8 +1519,4 @@ Yuxinxin Chen and Pavlo O. Dral.
 [J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c00858) | [code](https://github.com/dralgroup/aio-ani)  
 
 * **Learning Long-Range Interactions in Equivariant Machine Learning Interatomic Potentials via Electronic Degrees of Freedom** [2025]  
-Maruf, Moin Uddin, Sungmin Kim, and Zeeshan Ahmad.  
-[J. Phys. Chem. Lett. (2025)](https://doi.org/10.1021/acs.jpclett.5c02352) | [code](https://github.com/ahmad-research-group/nequip-charge/tree/charge-encoding)  
-
-* **Graph atomic cluster expansion for foundational machine learning interatomic potentials** [2025]  
-Lysogorski
+Maruf, Moin Uddin, Su

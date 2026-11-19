@@ -9,7 +9,7 @@ development principles, and workflow optimizations.
 
 This repository contains personal configurations for Claude AI, including:
 
-- Custom slash commands for systematic development workflows (9 skills)
+- Custom slash commands for systematic development workflows (7 skills)
 - A specialized AI agent that challenges design proposals (1 agent)
 - Core AI operation principles and development best practices
 - Six quality pipeline binaries, none of them wired
@@ -26,7 +26,7 @@ This repository contains personal configurations for Claude AI, including:
 │   ├── core/             # Core AI operation principles
 │   ├── conventions/      # Documentation conventions
 │   └── development/      # Development patterns & methodologies
-├── skills/               # Skill-based knowledge modules (9 skills)
+├── skills/               # Skill-based knowledge modules (7 skills)
 ├── agents/               # Specialized AI agents (1 agent)
 │   └── critics/          # Design proposal challenger (critic-design)
 ├── docs/                  # Design docs & guides (DRs under decisions/)
@@ -69,7 +69,7 @@ install specific workflow sets:
   then hand the Issue to /implement, which carries it through the implement
   workflow to implementation, verification, a draft PR, and CI confirmation.
   Bundles the critic-design agent, the implement workflow, and /sweep,
-  /outcome, /dr, /scribe.
+  /outcome, /dr.
 
 ### Option 2: Manual Installation (Full Configuration)
 
@@ -154,7 +154,9 @@ On macOS with the sandbox enabled, running `gh` inside the sandbox requires `san
 
 `settings.json` wires not one binary in this family, so none of them runs
 automatically (DR-0121, DR-0122). The TypeScript hooks under `hooks/` are not
-wired either (DR-0123). CI and the workflows carry the quality enforcement.
+wired either, except `lifecycle/done_gate.ts stop` on Stop and
+`pre-bash/publish_gate.ts` on PreToolUse(Bash) (DR-0123). CI and
+the workflows carry the quality enforcement.
 Installing them is optional, and the table below
 records what each one carried.
 
@@ -210,7 +212,7 @@ See the complete command reference:
 
 - **AI Processing**: English internally
 - **User Output**: Japanese (configurable)
-- **Documentation**: README.md and `docs/*.md` are available in English and Japanese; the seven `docs/wiki/*.md` files are English-only
+- **Documentation**: README.md and `docs/*.md` are available in English and Japanese
 
 ## 🛠️ Key Features
 

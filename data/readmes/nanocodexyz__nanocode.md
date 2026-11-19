@@ -38,7 +38,7 @@ The same code runs in other languages:
 | Swift, for macOS and iOS | [nanocode-swift](https://github.com/nanocodexyz/nanocode-swift) |
 | C, for a game engine or any other host | [libnanocode](https://github.com/nanocodexyz/libnanocode) |
 
-[The crate layout](crates/README.md) describes the workspace, and `DECISIONS.md` records what each change established.
+[The crate layout](crates/README.md) describes the workspace; git history records what each change established.
 
 ## License
 

@@ -16,7 +16,6 @@
   <a href="https://github.com/KenKaiii/Roamies/releases"><img src="https://img.shields.io/github/downloads/KenKaiii/Roamies/total?style=for-the-badge&label=App%20downloads&color=2ecc71" alt="Desktop app downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-AGPL--3.0-blue.svg?style=for-the-badge" alt="AGPL-3.0 License"></a>
   <a href="https://youtube.com/@kenkaidoesai"><img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube"></a>
-  <a href="https://www.skool.com/raid"><img src="https://img.shields.io/badge/Skool-Free%20community-78ffe2?style=for-the-badge" alt="Free Skool community"></a>
   <a href="https://www.skool.com/kenkai"><img src="https://img.shields.io/badge/Skool-Raid%2B-78ffe2?style=for-the-badge" alt="Raid+ on Skool"></a>
   <a href="https://www.kenkais.com"><img src="https://img.shields.io/badge/Website-kenkais.com-78ffe2?style=for-the-badge" alt="kenkais.com"></a>
 </p>
@@ -26,8 +25,7 @@ voice, keeps track of what you said you'd do and nudges you when it's due.
 
 > [!TIP]
 > **Want to build your own apps with AI?**
-> - **Free community:** setup guides, a 7-day build challenge and 20+ projects: [skool.com/raid](https://www.skool.com/raid)
-> - **Raid+:** make money with AI, a sellable app in 30 days, live every Thursday: [skool.com/kenkai](https://www.skool.com/kenkai)
+> - **Raid+:** land your first paying client in 90 days or your money back, plus private tools you won't find anywhere else: [skool.com/kenkai](https://www.skool.com/kenkai)
 > - **Want it built for you?** [work.kenkais.com](https://work.kenkais.com/)
 
 > ⭐ **If Roamies keeps you on track, give it a star.** It's the main way other people find it.
@@ -306,12 +304,7 @@ to get started, read [CONTRIBUTING.md](CONTRIBUTING.md) before a pull request, a
 
 ## Learn with me
 
-New to building with AI? Start in **[RAID](https://www.skool.com/raid)**, my free community:
-
-- A free 7-day challenge: build your first app, one short lesson a day
-- 20+ step-by-step projects you can build yourself
-
-Want to make money with AI? **[Raid+](https://www.skool.com/kenkai)**: a sellable app in 30 days, live every Thursday.
+Want to make money with AI? **[Raid+](https://www.skool.com/kenkai)**: land your first paying client in 90 days or your money back, plus private tools you won't find anywhere else.
 
 Want it built for you? **[work.kenkais.com](https://work.kenkais.com/)**
 

@@ -17,6 +17,8 @@ Left alone, most agent sessions forget everything between runs, call work done w
 
 > **Want a ready-made version today?** [agent-harness](https://github.com/fainir/agent-harness) packages the operating rules this prompt asks your agent to build (done means verified with evidence, ledgers that keep long work going, one owner action at a time) as installable skills and hooks for Claude Code and Codex. Use this prompt to have your agent build its own system; use agent-harness to start from a working one.
 
+[Request a free setup review](https://aiyourwork.chat/services?utm_source=github&utm_medium=readme&utm_campaign=agent-harness-setup#implementation-request) to plan a harness installation in one repository. Share the coding agent you use and one workflow you want to verify. We agree on scope and price before any paid work.
+
 **Try a working example:** [Apps and starter projects](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#projects) · [Full portfolio and concepts](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#portfolio) · [Open-source tools](https://nirfeinste.in/?utm_source=github&utm_medium=readme&utm_campaign=mcasp-portfolio#open-source).
 
 **Try a pre-launch website check.** The demo site served the page over both HTTP and HTTPS. [Run the free check on your public URL](https://betterloopai.com/check/from-agent-readme) without signing up. Pick one finding to verify and fix. When you rerun the check, allow the 15-minute report cache to expire. [Watch the 30-second redirect walkthrough](https://github.com/fainir#two-things-i-built-and-tested).
@@ -65,6 +67,10 @@ On Linux, replace `| LANG=en_US.UTF-8 pbcopy` with `| xclip -selection clipboard
 ### Try one task with a check
 
 In a new project folder, paste the system prompt into your coding agent. Then [try a six-row CSV cleanup](examples/verified-first-task.md) as its first task. The exercise gives the agent a concrete output to verify before it calls the task done.
+
+[Test whether an assistant can undo its own edit](examples/plainer-assistant-undo.md). Save a manual note, let the assistant create a second one, and check what survives Undo.
+
+[Verify a project handoff in Gemini CLI](examples/plainer-gemini-handoff.md). Give the agent read access to a sample workspace, then check that it can quote the note and spot a missing detail.
 
 **Try a screen-reading task on Android.** Handy AI uses Claude and needs Android 11 or later and Accessibility permission. [Install Handy AI from Google Play](https://play.google.com/store/apps/details?id=com.claudeagent.phone&utm_source=github&utm_campaign=mcasp_handy_screen_read), then [follow the setup guide](https://gethandyai.app/#install). Open a screen with text you know and are comfortable sharing. Say or type “Read the text on this screen,” then check that Handy AI reads a line that is actually there.
 
@@ -2680,27 +2686,4 @@ Allow the system to improve:
 - documentation
 - setup scripts
 
-Require stronger review before it changes:
-- approval policy
-- security policy
-- deployment paths
-- destructive action rules
-- trust thresholds
-
-CONTEXT, COST, AND PERFORMANCE STRATEGIES
-
-Use these strategies to make long-running work practical:
-- stable prefixes for system instructions
-- dynamic retrieval for only relevant skills and rules
-- task-local context windows
-- compression of old transcripts into durable files
-- cheap models for drafts and classification
-- strong models for evaluation and critical reasoning
-- summary streaming for humans
-- file-based long-term memory instead of bloated prompt replay
-
-PORTABILITY REQUIREMENTS
-
-The system must be able to survive:
-- model swaps
-- runtime swap
+Require stro

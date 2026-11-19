@@ -95,6 +95,7 @@ installed, and a Claude and a ChatGPT subscription.
    "what do you think about the answer above?". Codex reads Claude's answer and gives its own.
 
 Every turn and every model call is now in the record, with its cost.
+By default (`-replay`), `agentbus up`, `server` and `runner` continue Claude and Codex sessions by sending the earlier turns' history through the gateway. Pass `-replay=false` when you want to use the vendor's own session resume instead.
 
 ### Sign-ins and keys
 
@@ -114,20 +115,22 @@ Settings apply to every session, from the next turn. Change them on the cockpit'
 through the API (`/api/v0/settings/permissions` and `/api/v0/settings/instructions`; the keys and
 their defaults are in `/docs`, under Settings).
 
-- **Workspace:** each session works in its own copy of your folder, cloned copy-on-write where the
-  disk supports it, so a big `node_modules` costs nothing to copy and a turn may write its own; read
-  folders may be read as well.
+- **Permissions:** whether an agent may apply its own changes (off by default; you always may), then
+  two lists by name, each in three parts: **Commands** and **Tools**. **Allow** runs without asking,
+  **Ask** holds the call, and **Refuse** never runs it. Starting subagents and editing files are
+  tools too (`subagent`, `edit`), so they are ruled like any other. On **Ask** the call is held for
+  up to 60 seconds while a card above the message box waits for you: **Allow once** runs it in the
+  same turn, **Always allow** runs it and allows it from then on, and **Refuse** or no answer in time
+  returns a plain refusal. Refuse wins over Ask, Ask over Allow. **Anything else** decides a call on
+  none of the lists. Agents reach the record, and apply and stop a turn, through `agentbus-api`.
 - **Config:** files from your home copied into each session's own home at each turn: your
   settings, skills, MCP servers and logins. **Use my config** fills the list. Sign-ins are never
   copied.
-- **Permissions:** the AgentBus tools agents may use (ask another agent, review), whether they may
-  start their own subagents (off by default, so the work is recorded), and whether an agent may
-  apply its own changes (off by default; you always may). **Commands** in three lists: **Allow**
-  (agents run them without asking), **Ask** (the agent is told to wait, and a card above the
-  message box lets you allow it, from then on, or refuse it) and **Refuse** (never). Refuse wins
-  over Ask, Ask over Allow.
-- **Isolation:** the sandbox walls each session to its folder and its home. Network contain lets
-  agents reach only the hosts you list. Both are off by default.
+- **Isolation:** each session works in its own copy of your folder, cloned copy-on-write where the
+  disk supports it, so a big `node_modules` costs nothing to copy. To reach a file outside its copy,
+  an agent uses an app that asks you once per folder (**Always for this folder** grants it from then
+  on). The sandbox walls each session to its folder and its home, and network contain lets agents
+  reach only the hosts you list. Both are off by default.
 - **Limits:** how much work one message may cause: how deep agents may ask each other, how many
   turns, and the cost.
 
@@ -135,7 +138,8 @@ their defaults are in `/docs`, under Settings).
 
 - Ask works for plain commands such as `git push origin main`. A Claude Code command chained with `;`
   or `&&`, or started with environment variables, is checked by Claude Code's own rules too, which
-  can block it even after you allow it. One gate for every agent is planned for the next release.
+  can block it even after you allow it. AgentBus runs every command and tool call through one rules
+  list, by name; the vendor's own rules still apply on top.
 - On Ubuntu 24.04 and later, AppArmor allows user namespaces only to a program with a profile, so
   the sandbox and network contain need one. The install script offers it when it installs into a
   folder only root can change: `curl -fsSL https://raw.githubusercontent.com/staysup/agentbus/main/install.sh | sudo AGENTBUS_INSTALL_DIR=/usr/local/bin sh`.
@@ -144,9 +148,12 @@ their defaults are in `/docs`, under Settings).
   the rule off for every program, so the profile is the better choice.
 - On ext4 a copy is a full copy. A clone (APFS) or a reflink (xfs, btrfs) is used where the disk can
   make one.
-- MCP servers in your config load on normal turns, never on read-only ones. On a Mac, a server that
+- MCP servers in your config load on every turn, reviews included. On a Mac, a server that
   signs in with OAuth keeps its token in the Keychain, and macOS asks to let the session read it;
   deny it to keep that server off. What a server does is outside AgentBus's record.
+- Antigravity cannot start with the sandbox on, on macOS: it opens a local port, and the macOS sandbox cannot
+  limit a port to this machine, so AgentBus does not allow it. Turn the sandbox off to use Antigravity on a Mac.
+  Linux runners are not affected. A fix that keeps the sandbox is planned.
 - Claude's browser (Chrome) cannot run in AgentBus sessions: it needs the tool's own sign-in.
 - Antigravity: use it with a Gemini API key (Settings, Subscriptions). Its Google sign-in does not
   work through AgentBus yet: before any work it checks your account with Google directly, outside

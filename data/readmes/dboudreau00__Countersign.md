@@ -1,0 +1,443 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/countersign-logo-dark.png">
+    <img src="docs/brand/countersign-logo.png" alt="Countersign" width="320">
+  </picture>
+</p>
+
+# Countersign: RFP Response Studio
+
+![Countersign's Responses page: the question list with review status and coverage on the left, the selected answer with its cited sources on the right](docs/screenshots/responses.png)
+
+A single-file web app that automates SaaS RFP responses: parse a knowledge base
+(up to 500 sources), extract every question from an RFP (PDF, DOCX, XLSX, CSV or
+pasted text), generate grounded answers with per-question citations and coverage
+scoring, then export to DOCX, XLSX, CSV, or write the answers back into the
+issuer's original spreadsheet.
+
+<p>
+  <img src="docs/screenshots/knowledge-base.png" width="49%" alt="Knowledge base: the sources table with type, chunks, size and the date each was added">
+  <img src="docs/screenshots/export.png" width="49%" alt="Export: approval progress, the four formats and the export options">
+</p>
+<p>
+  <img src="docs/screenshots/responses-dark.png" width="79%" alt="The Responses page in dark mode">
+  <img src="docs/screenshots/settings.png" width="19%" alt="Settings: AI provider, answer tone and length, answer engine, workspace file and storage">
+</p>
+
+The screenshots show a made-up vendor and RFP. `node e2e/scripts/screenshots.js` rebuilds
+them from the real page, using the Playwright install described in
+[`e2e/README.md`](e2e/README.md).
+
+Design trade-offs and known limits are under
+[Architecture and design trade-offs](#architecture-and-design-trade-offs) and
+[Known limits](#known-limits).
+
+## Measured, not assumed
+
+[![eval](https://github.com/dboudreau00/Countersign/actions/workflows/eval.yml/badge.svg)](https://github.com/dboudreau00/Countersign/actions/workflows/eval.yml)
+
+The answer engine ships with its own evaluation harness in [`eval/`](eval/). A held-out set
+of 35 RFP questions runs against a fictional vendor's documentation and reports:
+
+- **Retrieval quality**: precision@k, recall@k and MRR, labelled by anchor phrase so the
+  labels survive changes to chunking.
+- **Gap detection**: whether the coverage score correctly flags the 7 questions the
+  documentation cannot answer, and does not flag the 28 it can.
+- **Groundedness**: every specific claim in a drafted answer (figures, durations,
+  standards such as `ISO 27001`, vendor names) is checked against the context the model was
+  given. An invented SLA or certification is reported by name.
+- **Answer correctness**: facts each answer must state, phrases it must never state, and
+  for gap questions, that it does not open with "Yes".
+
+A GitHub Actions canary re-runs the set on every change to `engine.js` and fails the build
+if any number falls below [`eval/baseline.json`](eval/baseline.json). No API key and no
+dependencies are needed:
+
+```bash
+node eval/run.js
+```
+
+Details, metric definitions and how to add cases: [`eval/README.md`](eval/README.md).
+
+The web app has its own browser suite in [`e2e/`](e2e/): 786 checks that drive the real
+page in headless Chromium, with every LLM endpoint mocked. It needs Playwright, installed
+into that folder only; see [`e2e/README.md`](e2e/README.md).
+
+## Files
+
+| File | What it is |
+|---|---|
+| `index.html` | The entire app: a single self-contained HTML file. |
+| `proxy.php` | Optional server-side API proxy for shared hosting (cPanel / public_html). |
+| `proxy.js` | Optional server-side API proxy for Node 18+ hosts. |
+| `engine.js` | Standalone RAG answer engine (Node 18+): knowledge base + retrieval + grounded `/answer` API, on Claude or Gemini (`PROVIDER`). See `ENGINE.md`. |
+| `ENGINE.md` | Full API reference and deployment guide for the engine. |
+| `countersign-data.json` | Optional "directory file": an exported workspace the app auto-loads. You create this from inside the app. |
+| `kb/` | Plain-text knowledge base folder for `engine.js` (see `kb/README.txt`). |
+| `eval/` | Evaluation harness for the engine: held-out question set, retrieval and groundedness metrics, CI drift canary. See `eval/README.md`. |
+| `test/` | Behaviour checks for `engine.js`, `proxy.js` and `proxy.php` against local fakes of the Anthropic and Gemini APIs. Run `node test/servers.js`; CI runs it on Node 18 to 24. |
+| `e2e/` | Browser end-to-end suite for `index.html` (Playwright, mocked LLM endpoints). See `e2e/README.md`. |
+| `artifact/` | Builds the Claude artifact edition from `index.html`. See [Install it as a Claude artifact](#install-it-as-a-claude-artifact-no-key-no-server). |
+| `LICENSE` | GNU AGPL-3.0. |
+
+## Quick start (no server code at all)
+
+1. Upload `index.html` to any web root, e.g. `public_html/rfp/index.html`.
+2. Open it in a browser. Work persists in each visitor's browser storage (localStorage).
+   Two tabs of the same copy stay in step: each picks up the other's changes, and
+   a save merges rather than overwrites.
+3. Each user opens **Settings** at the foot of the sidebar and picks a provider. Changes
+   apply as you make them.
+   - **Claude API**: paste a key from console.anthropic.com
+     (defaults to `claude-sonnet-5-5`; type `claude-sonnet-4-6` in the Model field
+     to keep the previous default)
+   - **Gemini**: paste a Gemini key (defaults to `gemini-flash-latest`)
+   - **OpenAI-compatible**: base URL + key, for OpenAI or a Copilot endpoint
+   - **Claude** needs no key, but only inside Claude.ai (see
+     [Install it as a Claude artifact](#install-it-as-a-claude-artifact-no-key-no-server))
+4. Optional: the moon icon beside Settings switches to dark mode (it follows the OS
+   preference by default).
+
+> Keys entered this way live only in that browser session's memory and are sent
+> only to the provider. They are never persisted or embedded in the page, which
+> also means you re-enter the key (or team token) after every page reload.
+
+> Leave the **Model** field blank to use the default shown above. Model names go
+> out of date: if generation fails with a 404 naming your model, clear the field
+> or pick a current one from the provider's model list.
+
+## Install it as a Claude artifact (no key, no server)
+
+Countersign also runs inside Claude, as a private artifact in your own Claude account.
+Answers are drafted through that account, so there is no API key to paste and no server
+to run, and your work is saved to the account rather than to one browser.
+
+You need Node 18 or later and [Claude Code](https://claude.com/claude-code), signed in to
+your Claude account: it publishes the page for you.
+
+1. Get the code and build the artifact edition:
+
+   ```bash
+   git clone https://github.com/dboudreau00/Countersign.git
+   cd Countersign
+   node artifact/make-artifact.mjs
+   ```
+
+   The build downloads SheetJS and pdf.js from the URLs `index.html` pins, stops if a
+   file does not match the integrity hash pinned next to its URL, and writes the page and
+   its three library files to `artifact/dist/`.
+
+2. Start Claude Code in the same folder and ask it:
+
+   ```text
+   Publish artifact/dist/index.html as an artifact. Publish the three files under
+   artifact/dist/vendor with it, at the same paths next to the page
+   (vendor/xlsx/xlsx.full.min.js, vendor/pdfjs/pdf.min.mjs, vendor/pdfjs/pdf.worker.min.mjs),
+   and declare the capabilities sample, db, user and downloads.
+   ```
+
+   Claude replies with a claude.ai link. The artifact is private: only you can open it
+   until you share it.
+
+3. Open the link. Claude asks for your permission before the first answer is drafted:
+   allow it. Then add documents on **Knowledge base**, add the questions on **Responses**
+   (import the RFP or add them by hand), and press **Draft remaining**.
+
+**Sharing.** Use the artifact's **Share** menu. Each person who opens it drafts through
+their own Claude account and keeps a private workspace that nobody else can read, not
+even you as the owner. Someone with view-only access can still use it, but their work is
+kept in their browser instead of their account.
+
+**Updating.** After a `git pull`, run `node artifact/make-artifact.mjs` again and ask
+Claude Code to publish `artifact/dist` the same way, to your existing link (paste it).
+The link stays the same and everyone's saved work is kept.
+
+Inside Claude the page cannot reach other servers, so Claude is the only AI provider (the
+API key, team proxy and engine settings are hidden), and exports go through Claude's own
+save prompt. What the build changes, and why: [`artifact/README.md`](artifact/README.md).
+
+## Shipping a shared knowledge base (the directory file)
+
+1. In the app, build your knowledge base, then open **Settings → Workspace file →
+   Export**. This downloads `countersign-data.json` (knowledge base, questions and
+   settings, never API keys).
+2. Upload `countersign-data.json` to the **same directory** as the HTML file.
+3. A visitor with **no saved work** auto-loads it on first open, so the whole team
+   starts from the same knowledge base. Anyone with existing local work is not
+   overwritten: they pull it manually with **Settings → Workspace file → Load from site**, which
+   asks for confirmation first because importing replaces the whole workspace.
+
+> A workspace file imported with **Settings → Workspace file → Import** only carries documents,
+> questions and answer-length targets. The team proxy or engine URL and the model are
+> taken only from the `countersign-data.json` next to the page, so a file received from
+> someone else cannot redirect your key or your prompts to another server.
+
+> The auto-load runs only when browser storage is empty. Once someone has sources
+> or questions saved locally, re-uploading the file does **not** reach them until
+> they press **Load from site**.
+
+Update the shared knowledge base any time by re-exporting and re-uploading the JSON.
+
+## Team proxy: one API key for everyone (recommended)
+
+Instead of every user pasting a key, deploy one of the bundled proxies. The key
+lives on the server; browsers never see it. Both proxies enforce a model
+allowlist and a `max_tokens` cap, and support an optional shared **team token**
+so strangers who find the URL can't spend your credits.
+
+### Option A: PHP (`proxy.php`), for cPanel/shared hosting
+
+Requires PHP 7.1+ with the curl extension (standard on virtually all shared hosts).
+
+1. Upload `proxy.php` next to the HTML file, e.g. `public_html/rfp/proxy.php`.
+2. Give it the key, either:
+   - set `ANTHROPIC_API_KEY` as an environment variable in your hosting panel, **or**
+   - edit the `$API_KEY` line at the top of the file.
+3. Set a team passphrase via the `COUNTERSIGN_TOKEN` env var or the `$TEAM_TOKEN`
+   line. Without one, `proxy.php` refuses every request with a `500`, because a file
+   in `public_html` can be reached by anyone who finds the URL. `ALLOW_NO_TOKEN=1`
+   overrides that, only for a directory that already has its own access control
+   (`.htaccess`, VPN, intranet).
+4. In the app: **Settings → Team proxy**, Proxy URL: `proxy.php`,
+   team token: your passphrase.
+
+Because the proxy sits in the same directory as the page, there is no CORS to
+configure and the relative URL `proxy.php` just works.
+
+### Option B: Node (`proxy.js`), for a VPS or app platform
+
+Requires Node 18+ (uses the built-in `fetch`). Zero npm dependencies.
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...   \
+COUNTERSIGN_TOKEN=your-team-passphrase \
+PORT=8787 \
+node proxy.js
+```
+
+`proxy.js` listens on `127.0.0.1` by default, which is what the reverse-proxy setup
+below needs. To accept connections from other machines directly, add `HOST=0.0.0.0`;
+with any non-loopback `HOST` it refuses to start unless `COUNTERSIGN_TOKEN` is set
+(`ALLOW_NO_TOKEN=1` overrides that, for a trusted network only). Then in the app:
+**Team proxy**, Proxy URL: the reverse proxy's address, or `http://yourhost:8787/proxy`
+when it listens on `0.0.0.0`.
+
+> **`proxy.js` speaks plain HTTP. It has no TLS of its own.** For anything other
+> than a localhost trial, put it behind a reverse proxy that terminates HTTPS. This
+> is a requirement, not a nicety: if the page itself is served over HTTPS (and it
+> should be), the browser blocks a plain `http://` request from it as mixed content,
+> and an `https://yourhost:8787/proxy` URL fails the TLS handshake because nothing
+> is listening for TLS on that port.
+
+- **Recommended:** reverse-proxy it behind the same domain as the HTML
+  (nginx: `location /rfp/proxy { proxy_pass http://127.0.0.1:8787/proxy; }`),
+  then set the app's proxy URL to the relative path `proxy`. TLS is handled once
+  and CORS never comes into play. `proxy.js` accepts `/proxy` at any mount point,
+  so a subpath like `/rfp/proxy` works without extra configuration. Set
+  `COUNTERSIGN_TOKEN` here as well: nginx forwards your site's host name, and a proxy
+  with no token and no `ALLOW_ORIGIN` answers only loopback host names.
+- If the HTML really is served from a *different* origin than the proxy, set
+  `ALLOW_ORIGIN=https://your-site.example` or a team token. With neither, the proxy
+  answers only requests that come from no web page at all (curl, scripts) or from
+  its own origin, and only under a loopback host name: otherwise any site you visit
+  could spend your key through a proxy running on your machine.
+- Keep it alive with `pm2 start proxy.js` or a systemd unit.
+
+### What the proxies enforce
+
+- **POST only**, body capped at ~400 KB and sent as `Content-Type: application/json`
+  (anything else is a `415`). A page on another site can send a `text/plain` POST
+  without a CORS preflight; requiring JSON forces the preflight, so `ALLOW_ORIGIN`
+  really decides which sites can use the proxy.
+- **Model allowlist** (`claude-sonnet-5-5`, `claude-sonnet-4-6`, `claude-haiku-4-5`
+  and its dated ID `claude-haiku-4-5-20251001` by default; edit the array to taste).
+  Unknown models are silently replaced with the default (`claude-sonnet-5-5`) rather
+  than rejected, so the app keeps working.
+- **`max_tokens` ceiling** of 16384 regardless of what the client sends. This has
+  to stay above what the app asks for on its largest call: "Extract questions"
+  returns a JSON array of up to 40 items, current Claude models spend part of the
+  budget thinking before they write, and a tighter ceiling truncates that JSON
+  mid-array.
+- **Team token** check via the `X-Team-Token` header when configured. Both sides are
+  hashed before they are compared, so neither the token nor its length leaks through
+  timing.
+- **`messages`** must be a non-empty array of objects; anything else is a `400`.
+- Unknown fields are stripped before forwarding; only `model`, `max_tokens`,
+  `messages`, and `system` pass through.
+
+## Security notes: read these
+
+- **Never hard-code an API key into the HTML page.** Anyone can View Source.
+  Use the proxy, or have each user paste their own key at runtime.
+- **Always set a team token** on an internet-facing proxy. Without it, anyone
+  who discovers the URL can bill your Anthropic account. For an internal tool,
+  also consider IP-allowlisting the directory (`.htaccess` on Apache).
+- **Serve over HTTPS.** The team token and all RFP content travel in requests.
+  `proxy.js` and `engine.js` speak plain HTTP, so terminate TLS in front of them.
+- **Treat `countersign-data.json` as trusted input.** The app loads it into the
+  knowledge base and question list; only publish files you produced yourself with
+  **Settings → Workspace file → Export**.
+- **Rate limiting is on you.** These are sketch-grade proxies: they cap request
+  size and tokens but do not throttle request *frequency*. On Apache, `mod_ratelimit`
+  or fail2ban helps; on Node, put nginx `limit_req` in front for real traffic.
+- The `countersign-data.json` directory file is **publicly readable** wherever
+  you host it. Don't put anything in the knowledge base you wouldn't hand to whoever can
+  reach that URL; password-protect the directory if the docs are sensitive.
+- Rotate the API key if you ever suspect the proxy was abused; usage is visible
+  in the Anthropic console.
+
+## Troubleshooting
+
+Provider errors now carry the provider's own explanation after the status code,
+so the message itself usually names the fix.
+
+| Symptom | Likely cause / fix |
+|---|---|
+| `Proxy (check the team token) 401: …` | Token in Settings doesn't match the server's `COUNTERSIGN_TOKEN`. |
+| `Proxy 500: Server not configured: set ANTHROPIC_API_KEY` | The key isn't set on the server. |
+| `Proxy 500: Server not configured: set COUNTERSIGN_TOKEN …` | `proxy.php` has no team token. Set `COUNTERSIGN_TOKEN` (or the `$TEAM_TOKEN` line) and enter it in Settings, or set `ALLOW_NO_TOKEN=1` if the directory is already access-controlled. |
+| `Claude API (check your API key) 401: …` | Bad/expired key with the **Claude API** provider. |
+| "Claude declined this request (…)" | The model's safety classifier refused that question (the category is in brackets). Reword the question, or set another model such as `claude-sonnet-4-6` in Settings. The question is marked **Failed**, never saved as an empty answer. |
+| `Gemini API (unknown model "…") 404: …` | The model name in Settings no longer exists. Clear the field to use the current default, or set a model from `GET https://generativelanguage.googleapis.com/v1beta/models`. |
+| `Gemini API 503: This model is currently experiencing high demand` | Google is shedding load on that model. The app already retried once. Wait and retry, or set the Model field in Settings to `gemini-flash-lite-latest`, which has separate capacity. |
+| `Gemini API 429: You exceeded your current quota` | Free-tier rate limit. Wait, switch model, or enable billing. The app already retries once automatically. |
+| `Engine 401 / 404 / 500: …` | Countersign Engine provider: check the URL, the team token, and that `engine.js` is running (**Settings → Answer engine → Check connection** reports its status). |
+| "2 questions can't go to the engine (…)" | The engine takes questions of 3 to 4000 characters, and one outside that range would reject the whole batch. Those rows are marked **Failed** and the rest are sent. Shorten or split the long ones, delete the stray short ones, and generate again. |
+| "The engine stream ended early" | The `/batch` connection dropped mid-stream. Unanswered questions are marked **Failed**. Draft those again one at a time. |
+| Requests fail only when self-hosted with the **Claude** provider | The keyless **Claude** provider only works inside Claude.ai. Self-hosted deployments must use **Claude API**, the team proxy, or the engine. |
+| `Failed to fetch` hitting the Node proxy from a page on another origin | Set `ALLOW_ORIGIN` to your site's origin, or reverse-proxy onto the same domain. |
+| `Engine 403: Requests from web pages need COUNTERSIGN_TOKEN or ALLOW_ORIGIN` (or `Proxy 403`) | The server has no team token and no `ALLOW_ORIGIN`, so it refuses browser requests from other origins. Set `COUNTERSIGN_TOKEN` (and enter it in Settings) or set `ALLOW_ORIGIN` to the page's origin (`null` for a page opened from a file). |
+| Team token is empty after a page reload | Keys and tokens are held in memory for the session only and are never persisted. Re-enter it in **Settings** after a reload. |
+| Browser storage quota errors with a huge knowledge base | localStorage is about 5 to 10 MB in most browsers, and a save briefly needs room for the old and the new copy of the knowledge base, so one above roughly half the quota stops saving (removing a few documents does not help until it is back under that). Keep the master copy in `countersign-data.json` and pull it with **Load from site** rather than relying on local persistence. |
+| `413 Request too large` from the proxy | A single question pulled a very large context. Raise `MAX_BODY_BYTES` in the proxy if you've raised the app's retrieval budget. |
+| "Some libraries didn't load" on open, or "The PDF library didn't load" when adding a PDF | A CDN is blocked. The parsers come from `cdnjs.cloudflare.com` (mammoth), `cdn.jsdelivr.net` (pdf.js, docx) and `cdn.sheetjs.com` (SheetJS), each pinned by an integrity hash, so a proxy that rewrites them also blocks them. The app still runs; the affected formats are unavailable until the CDN is reachable. |
+
+## Deployment layout (typical cPanel)
+
+```
+public_html/
+└── rfp/
+    ├── index.html              <- the app
+    ├── proxy.php               <- holds the API key server-side
+    └── countersign-data.json   <- shared team knowledge base (exported from the app)
+```
+
+That's the whole stack: one page, one proxy, one data file.
+
+## Architecture and design trade-offs
+
+### Architecture
+
+Three tiers, each optional after the first.
+
+- **The page** (`index.html`) is the whole app. It parses the knowledge base and the RFP
+  in the browser, retrieves from the knowledge base locally, calls the chosen provider,
+  and exports DOCX, XLSX or CSV. Work is saved in the browser's localStorage. Keys and
+  team tokens stay in memory and are never persisted.
+- **A proxy** (`proxy.php` or `proxy.js`) holds the provider key server-side. It checks a
+  team token, caps request size, and forwards only `model`, `max_tokens`, `messages` and
+  `system`.
+- **The engine** (`engine.js`) is the proxy plus a server-side knowledge base. A question
+  is tokenized, acronyms are expanded, every chunk is scored with TF-IDF, the best chunks
+  (about 11 KB) are packed into a grounded prompt, and the provider drafts the answer. The
+  reply carries the answer, its sources, a coverage score and the terms it could not find.
+  See [`ENGINE.md`](ENGINE.md).
+
+A team shares one knowledge base through an exported `countersign-data.json` next to the
+page, or through the engine's `kb/` folder. The
+[artifact edition](#install-it-as-a-claude-artifact-no-key-no-server) is built from the
+same `index.html` by `artifact/make-artifact.mjs`.
+
+### Design trade-offs
+
+- **One file, no build step.** The app is a single HTML page you can copy to any web root.
+  The price is that the PDF, DOCX and XLSX libraries load from CDNs, each pinned by an
+  integrity hash. If a CDN is blocked the app still runs, and those formats are
+  unavailable.
+- **Lexical retrieval, not embeddings.** TF-IDF with light stemming and an acronym table is
+  transparent, needs no key or vector store, and can be scored in CI. The price is
+  vocabulary mismatch: a question worded unlike the documentation can score as a gap. It
+  is tuned to over-flag, because reviewing a false gap costs a minute and shipping an
+  unsubstantiated answer costs the bid. In the engine, moving to embeddings means
+  replacing `retrieve()`; the API stays the same.
+- **Grounding is checked, loosely.** The prompt forbids inventing certifications, SLAs,
+  customers or figures, the coverage score flags questions the documentation cannot
+  answer, and the evaluation harness scores a recorded set of drafted answers for
+  groundedness. That scorer is lexical: it catches an invented figure, standard or name,
+  and it misses a paraphrased false claim with no specifics. Every answer is a draft with
+  its sources attached, for a person to review and approve.
+- **State lives in the browser.** The web app has no database and no accounts. A save
+  needs room for two copies of the knowledge base in localStorage, so the master copy
+  belongs in `countersign-data.json`.
+- **Small proxies.** Zero dependencies, a hashed token comparison, an allowlist of
+  forwarded fields, and a loopback default on the Node servers. They do not throttle
+  request frequency, so put a rate limiter in front.
+- **Imported files are not trusted with endpoints.** The proxy or engine URL and the model
+  come only from the `countersign-data.json` next to the page, so a workspace file
+  received from someone else cannot redirect your key or your prompts.
+- **Two retrieval implementations.** The browser and the engine each have their own, with
+  the same design. The evaluation harness exercises the engine's; the browser's is
+  covered by the end-to-end suite.
+
+## Known limits
+
+- **Write back into original rewrites the issuer's workbook through SheetJS.** Cell values,
+  formulas, comments, merged cells, column widths and every other tab survive. Fonts,
+  fills, borders, conditional formatting, data-validation dropdowns, freeze panes, tab
+  colours, images and charts do not. Answers go into empty cells, and the app asks before
+  replacing a cell that already holds text or a formula. Check the guessed response
+  column in the mapping step: it skips flag columns such as "Answered (Y/N)" and columns
+  of formulas, and picks none rather than a doubtful one. If the issuer requires their
+  exact template back, paste the answers into their file from the XLSX export instead.
+- **Retrieval is lexical**, not semantic. A question worded with entirely different
+  vocabulary than your documentation can score as a gap even when the material is there
+  (a gap lists the specific terms it could not find, so this is visible). It is
+  tuned to over-flag rather than miss: reviewing a false gap costs a minute, shipping an
+  unsubstantiated answer costs the bid.
+- **Each document is indexed up to 220,000 characters**, about 35,000 words.
+  The app says so when a file is cut, and the engine logs it, so split a longer
+  document into parts to search all of it.
+- **Question extraction depends on the model.** It asks for at most 40 items and merges
+  duplicates, so a very long RFP may come back consolidated. Check the question list against the
+  source document before generating; the app warns when a reply was cut off mid-list.
+- **Groundedness checks are lexical.** The evaluation harness catches an invented figure,
+  standard or name. A paraphrased false claim with no specifics passes, so every answer
+  still needs a human read.
+- **The engine holds its index in memory.** Budget about 6 to 9 times the raw text in RAM:
+  roughly 580 MB resident for a full 60 MB knowledge base.
+- **Browser storage is small.** localStorage holds about 5 to 10 MB in most browsers, and a
+  save needs room for the old and the new copy, so a knowledge base above roughly half the
+  quota stops saving. Keep the master copy in `countersign-data.json`.
+- **There is no per-user access control.** On the proxies and the engine the shared team
+  token is the only access control, and `countersign-data.json` is readable by anyone who
+  can reach its URL.
+- **There is no request throttling.** The proxies and the engine do not limit request
+  frequency, and every answer costs API credits. Put a rate limiter in front.
+- **The keyless Claude provider only works inside Claude.ai.** A self-hosted deployment
+  uses Claude API, the team proxy or the engine.
+
+## Going further: the answer engine
+
+`engine.js` (documented in `ENGINE.md`) is a superset of `proxy.js`: it also
+loads your knowledge base server-side (from `countersign-data.json` and/or a
+`kb/` folder) and exposes `POST /answer`: question in, documentation-grounded
+answer with sources and a coverage score out. Use it to wire RFP answering into
+anything beyond the web app: portals, bots, scripts. Its `/proxy` endpoint
+works with the app's Team proxy setting at the exact path `/proxy`, so one
+process serves both.
+
+The web app also has a native **Countersign Engine** provider (Settings):
+point it at the engine's URL and generation switches to server-side retrieval.
+"Draft remaining" streams the RFP back into the question list live through `/batch`
+(sent in consecutive batches of 100, the engine's per-call limit), "Check coverage"
+scores questions against the *server's* knowledge base via `/search`, and the
+Answer engine section of Settings has "Check connection" and "Push sources" to
+sync your local documents up with one click.
+
+## Licence
+
+[GNU AGPL-3.0](LICENSE) © 2026 elemosecurity.
+
+You may run, study, change and share it. If you offer a modified version to
+other people over a network, the licence asks you to offer them its source;
+running it for your own organisation asks nothing of you.

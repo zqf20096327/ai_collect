@@ -1,0 +1,1549 @@
+# all-code (`alc`)
+
+**Run Claude Code on the Codex/ChatGPT subscription you already pay for** — and
+seven other coding agents besides, on that same login or on any provider you
+point them at, plus Google's Antigravity CLI, whose Google login every other
+agent can run on too. Any session can be mirrored to a browser page and driven
+from another device.
+
+[![CI](https://github.com/treeleaves30760/all-code/actions/workflows/ci.yml/badge.svg)](https://github.com/treeleaves30760/all-code/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/treeleaves30760/all-code?logo=github)](https://github.com/treeleaves30760/all-code/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#install)
+
+📖 **[Documentation](https://treeleaves30760.github.io/all-code/)** ·
+🇹🇼 **[繁體中文](https://treeleaves30760.github.io/all-code/zh-TW/)**
+
+## Claude Code on your ChatGPT plan, in three commands
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.sh | sh
+codex login
+alc --codex claude
+```
+
+Windows PowerShell: `irm https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.ps1 | iex`
+
+**There is no configuration step.** No `alc config init`, no file to edit. The
+starter configuration is compiled into the binary and already carries a Codex
+profile; `alc --codex claude` reads it in memory and writes no `config.toml`.
+It keeps a model catalog cache, metadata-only usage records, and the runtime
+and settings files that let background sessions survive.
+
+**What it needs** is the `auth.json` that `codex login` writes, and `claude` on
+PATH — alc launches coding agents, it does not bundle them. **What it does not
+need** is an API key, an alc configuration file, or the `codex` binary at launch;
+that one is for running `codex login` itself and for keeping the model catalog
+fresh. alc checks the login before it looks for the agent, so somebody missing
+both is told about `codex login` first:
+
+```text
+error: Codex credentials were not found at ~/.codex/auth.json; run `codex login` and retry
+error: 'claude' is not installed or not on PATH; install it first, then retry `alc claude`: cannot find binary path
+```
+
+**What you get.** Claude Code starts on `gpt-6.1-sol` at `low` effort — or
+on whatever model and effort your own `~/.codex/config.toml` already names, if
+you have used Codex CLI before — with the model's real Codex context window
+(500K for GPT-6.1 Sol, 272K for the others) rather than the 200k Claude Code
+assumes for a model ID it does not recognize, and every GPT model Codex serves
+in its own `/model` picker:
+
+| Model | Beginner-friendly use case | Codex default effort |
+| --- | --- | --- |
+| `gpt-6.1-sol` | GPT-6.1 Sol. Latest workhorse for coding and everyday work; recommended starting point | `low` |
+| `gpt-6-astra` | GPT-6. Complex, demanding work | `medium` |
+| `gpt-6.1-terra` | GPT-6.1 Terra. Balanced everyday coding with the 500K window | `low` |
+| `gpt-6-sol` | GPT-6. Everyday coding and agentic work | `medium` |
+| `gpt-5.6-sol` | Previous generation; complex professional work | `low` |
+| `gpt-5.6-terra` | Previous generation; balanced everyday coding | `medium` |
+| `gpt-5.6-luna` | Previous generation; fast, affordable work | `medium` |
+| `gpt-6-luna` | GPT-6. Fast and the cheapest; quick fixes and high-volume work | `medium` |
+
+Inside the session, `/model` switches the model and its left/right arrows move
+the effort slider; `/effort` sets a level directly. To start somewhere else for
+one run, or in scripts:
+
+```sh
+alc --codex claude --model gpt-6-luna --effort low
+alc --codex claude --context max
+```
+
+`--context max` raises any of them to its 872K maximum window. Past the
+standard window a turn uses your plan limits faster, so that is opt-in;
+[Codex bridge](#codex-bridge) has the trade.
+
+**Your plain `claude` still reaches Anthropic afterwards.** That picker writes
+its choice to `~/.claude/settings.json`, which every Claude Code session on the
+machine reads — including the ones alc did not start, which have no adapter in
+front of them. alc reads that one key before the launch and puts it back when
+the session exits. [Codex bridge](#codex-bridge) has the details, and the two
+cases where it deliberately leaves the file alone.
+
+alc prints nothing at launch — bar one note when an `ultra` effort from your
+Codex config is clamped to `max` — so what you are looking at is Claude Code. The
+adapter in between is a third-party compatibility layer, not an official OpenAI
+or Anthropic integration — review [THIRD_PARTY.md](THIRD_PARTY.md) and your
+provider terms before routing subscription credentials through it.
+
+## One login, every agent
+
+The same `codex login` drives every agent alc launches. No second key, no
+per-agent setup. Google's Antigravity CLI, `agy`, joins it too: it keeps its own
+Google sign-in and gains the Codex models beside its own ([agy on the Codex
+login](#agy-on-the-codex-login)) — and that Google login, in turn, serves every
+other agent: see [Antigravity](#antigravity).
+
+```sh
+alc --codex claude       # in-session /model picker
+alc --codex opencode
+alc --codex pi
+alc --codex copilot
+alc --codex goose
+alc --codex qwen
+alc --codex kimi
+alc --codex agy          # agy's /model gains the Codex models
+alc codex                # Codex CLI itself, on its own login, no adapter
+```
+
+| Agent | Reaches the bridge over | Switching models |
+| --- | --- | --- |
+| Claude Code | Anthropic Messages | `/model` picker, mid-session |
+| OpenCode, Pi, Kimi Code CLI | OpenAI Responses | one model, chosen at launch |
+| Copilot CLI, Goose, Qwen Code | OpenAI Chat Completions | one model, chosen at launch |
+| Antigravity CLI | Google Code Assist | agy's `/model` picker, mid-session, Codex and Google models side by side |
+| Codex CLI | native, no bridge | Codex's own picker |
+
+alc starts its own Codex adapter on a loopback port and points only the launched
+agent's process at it — three wire protocols, one login. For Claude Code the
+adapter is a background process its sessions share (see [Background
+sessions](#background-sessions)); for the others it lives inside alc and stops
+when the session does. Claude Code and agy can switch mid-session, because they
+send the model and effort with every request, so alc never pins either for them;
+the others pick one model and one reasoning effort at launch.
+
+[Codex bridge](#codex-bridge), below, has the model catalog, the effort tiers,
+and what the adapter does with your credentials.
+
+## Drive it from your phone
+
+Any session, any agent, any provider — mirrored to a browser page you can open
+from anywhere that can reach the machine.
+
+```sh
+alc --share claude          # or: alc share claude
+```
+
+```text
+alc session claude-7QK2M9XB4T (claude@all-code)
+  open  http://127.0.0.1:8787/#k=…
+  hub   127.0.0.1:8787 · loopback only (pid 48213) · this link grants input; keep it to yourself
+  keys  ctrl-\ then d detaches; the session keeps running
+```
+
+**Your terminal keeps working.** Sharing mirrors a session, it does not take it
+away. What is mirrored is the terminal itself, which is why every agent and
+every provider works the same way — there is nothing per-agent to support.
+
+**What the page gives you** is the session list, the live screen, a key bar for
+the keys a phone keyboard does not have (Esc, Tab, Shift+Tab, Ctrl, arrows), and
+a composer that sends a whole prompt as one block instead of fighting a mobile
+keyboard inside a raw terminal. On a wide screen with a session open, a button
+beside Back folds the session list away so the terminal gets the full width — a
+`--tmux` session gets the extra columns, a plain one is drawn larger — and that
+browser remembers the choice. The button at the right end of the header opens a
+read-only file panel on the session's folder: walk its folders, and pick a file
+to read it beside the terminal; picking another swaps it, and the open file
+reloads while it changes.
+
+**Sessions outlive the terminal that started them**, because a background hub
+owns them:
+
+```sh
+alc sessions               # the link, then what is running
+alc attach 7QK2            # back on it, from any terminal
+alc kill 7QK2
+```
+
+Ids can be given as any unambiguous prefix, git-short-hash style. `alc sessions`
+lists legacy and retained-generation owners with each owner's page link;
+`attach`, `kill`, and `rename` find the session's actual owner. An ambiguous
+prefix is refused rather than sent to the wrong hub.
+
+**What the link can do.** A shared Claude Code, Codex, OpenCode, or agy session
+starts in **ask** mode — alc passes the flag itself (agy already asks by default,
+so it gets none), so the link does not hand anyone an autonomous agent. Pi,
+Copilot CLI, Goose, Qwen Code, and Kimi start on their own defaults unless you
+name a rung with `--permission`. Loosening a session past the ceiling you
+configure needs `alc confirm <ticket>` typed at a terminal on the host machine.
+[Remote control](#remote-control) has the permission ladder and the threat model.
+
+Remote control works on Windows 10 and 11 as it does on macOS and Linux;
+`--tmux` there needs the native Windows port of tmux, covered in
+[Who owns the size](#who-owns-the-size).
+
+## Background sessions
+
+Claude Code's [agent view](https://code.claude.com/docs/en/agent-view) runs
+sessions in the background - `claude agents`, `claude --bg`, and `←` on an empty
+prompt - under a supervisor of its own that outlives the terminal. Every Claude
+Code session alc starts works there, on the provider alc gave it:
+
+```sh
+alc --codex claude agents                     # agent view; every dispatch runs on Codex
+alc --codex claude --bg "fix the flaky test"  # straight to the background
+alc --codex claude                            # ← on an empty prompt: still on Codex
+```
+
+**How.** alc hands Claude Code its provider in a settings file, passed with
+`--settings`, which Claude Code keeps for a background session and reads again
+each time it restarts one. The file holds no key: where the provider needs one,
+Claude Code asks alc for it through its `apiKeyHelper` setting, and alc reads it
+from where it always has. On Claude Code's own login the login answers, and the
+file carries the endpoint and the model.
+
+**The Codex bridge runs on its own now.** A background session outlives the
+`alc` that started it, so the adapter has to as well: a small alc process per
+runtime generation, on a loopback port it keeps, answering only requests that
+carry its token. A session that needs it starts it, and it stops after an hour
+with nothing to do. Old hosts keep serving their existing sessions after an
+update; new launches use the new generation.
+
+```sh
+alc bridge                         # running or not, and where
+alc --runtime legacy bridge stop   # explicitly stop the legacy owner
+```
+
+New settings pin the helper executable and pass its `--runtime` identity.
+Old, unscoped `claude-credential` calls still use legacy. When several owners
+are running, `bridge stop` requires `--runtime <id|legacy>`; stopping one can
+interrupt its in-flight requests and is not an update prerequisite.
+
+**Every Claude model becomes a Codex model.** Under `alc --codex claude` no
+request reaches a Claude model. The `/model` picker lists Codex models only;
+every alias (`opus`, `sonnet`, `haiku`, `fable`, `best`, `opusplan`) and Claude
+Code's background work land on Codex models; and a Claude model named in full -
+`/model claude-opus-5`, a subagent's `model:`, a fallback chain - is answered by
+the Codex model of the same tier. Fast mode and the advisor exist only on Claude
+models, so they are off in these sessions. `claude ultrareview` and cloud
+sessions run on Anthropic's servers and stay Anthropic features.
+
+`alc claude attach`, `logs`, `stop`, `respawn` and `rm` go straight to Claude
+Code, and so does plain `claude attach`: the session already carries its
+settings file. So do the commands that never reach a model - `mcp`, `doctor`,
+`plugin`, `update` and the like - which start no bridge and count no session.
+
+**API-key metrics can survive background restarts too.** A supported
+`alc --openrouter --metrics claude` launch uses a native-protocol forwarding
+route on the same durable host. Its settings contain the loopback endpoint and
+alc's helper, not a key. The helper authenticates the host using the independent
+owner-only runtime `bridge.observer-key`, registers only a digest, and returns an
+AEAD-sealed surrogate bound to the frozen route/current host instance — not the
+vendor key over local HTTP. The host restores upstream authentication only on
+dispatch. Old surrogates get HTTP 401 after a host restart; rerun the helper.
+Save shell-only keys with `alc config key <profile>` for later restarts. Ordinary
+direct launches stay direct, native Claude login is not observed, and changing
+or disabling the route's provider endpoint requires a fresh launch. Codex
+translation requests are observed automatically. [Usage and
+performance](#ttft-tps-and-estimated-cost) explains what is measured.
+
+## Any provider, not just Codex
+
+`codex login` is the shortest path, not the only one. Point any agent but agy at
+Anthropic, the OpenAI API, OpenRouter, a local Ollama, llama.cpp or vLLM server,
+DeepSeek, Moonshot, Z.ai, MiniMax, Groq, xAI, Google, or a custom endpoint — and
+change it for a single run without editing anything. agy, the Antigravity CLI,
+runs on its own Google login (and the Codex one) instead, and `--agy` puts any other agent on that
+login too ([Antigravity](#antigravity), below).
+
+```sh
+alc config                 # keys and per-agent defaults live here
+alc claude                 # each agent on its configured default
+alc --openrouter codex
+alc --deepseek pi
+alc --ollama claude
+alc --llamacpp claude
+alc -p local-vllm opencode
+```
+
+`--provider` (or `-p`) takes a profile name, or a provider kind when only one
+profile of that kind exists. The shortcut flags `--anthropic`, `--openai`,
+`--openrouter`, `--codex`, `--ollama`, `--vllm`, `--llamacpp`, `--deepseek`,
+`--moonshot`, `--zai`, `--minimax`, `--groq`, `--xai`, `--google`, and `--agy`
+are equivalent. The
+starter configuration ships Anthropic, OpenAI, OpenRouter, Codex, Antigravity,
+Ollama, and a disabled vLLM template; keys are saved locally or read from
+environment variables, and environment variables win.
+
+The nine agents do not all speak the same model protocol, and the sixteen
+provider kinds do not all expose the same one, so alc checks the combination
+before launch instead of sending a request that cannot work.
+[Providers and agents](#providers-and-agents) has the endpoint, key variable,
+and protocol for every kind.
+
+**Auto mode works on every provider.** Claude Code's auto mode checks each tool
+call with a classifier. Anthropic runs that check on its own servers, which no
+other provider can, so everywhere else alc has Claude Code run its local
+classifier on the profile's model: it pins the `sonnet` alias the classifier
+uses to that model (so `/model sonnet` names it too) and skips the server
+attempt. Auto mode then works, and its classifier calls spend that provider's
+quota. The `anthropic` kind — your own Claude login or API key — keeps
+Anthropic's server-side check. A profile whose model is itself a Claude Code
+alias, such as `sonnet`, is not pinned, nor is one whose model is a Claude id in
+full, such as `claude-opus-5` — a gateway in front of Anthropic that already
+serves Sonnet by name. A `--settings` of your own that names
+`ANTHROPIC_DEFAULT_SONNET_MODEL` still wins; one in `~/.claude/settings.json`
+does not, because alc's settings take precedence over it.
+
+### Antigravity
+
+`alc agy` launches Google's Antigravity CLI, `agy`. agy signs in to Google
+itself, and alc launches it on that login without handling any credential; the
+one other place it runs is the Codex login ([below](#agy-on-the-codex-login)),
+never a provider you point it at. The starter configuration ships an enabled `antigravity` profile for
+it, so once agy is signed in there is nothing to set up — for agy, or for any
+other agent on that login ([below](#every-other-agent-on-the-antigravity-login)).
+
+```sh
+alc agy                                   # claude-opus-5-5-high, at agy's own default effort
+alc agy --model gemini-3.8-flash-low      # this run only
+alc config upsert antigravity --model claude-sonnet-5-5-medium --effort high
+alc models --agy                          # the models agy offers
+```
+
+alc passes the profile's model as agy's `--model` and, when the profile sets
+one, its effort as `--effort`; a `--model` or `--effort` you put after
+`alc agy` is forwarded as is, and alc then sends none of its own. agy lists wire
+ids only, so a bare family id on the profile (`claude-opus-5-5`, which the other
+agents' bridge reads too) reaches agy as the wire id for the profile's effort. agy's efforts
+stop at `max`, so a profile set to `ultra` launches on `max`, with a one-line
+note saying so. `alc models --agy` lists what `agy models` reports, kept for a
+day, or a bundled list when agy cannot be asked; `--refresh` asks again now. It
+prints each model's context window, and marks an id that none of the five
+families below serves ` (not bridgeable)`: agy may run it, the other agents
+cannot. In `alc config`, the Model row of an antigravity profile steps through
+the same list with ←/→. `--agy` (or `--antigravity`) is the shortcut for
+`--provider antigravity`.
+
+A `config.toml` written by an older alc has no `antigravity` profile. `alc agy`
+then says so and names the fix, and `alc doctor` warns with the same command:
+
+```sh
+alc config upsert antigravity --kind antigravity
+```
+
+#### agy on the Codex login
+
+```sh
+alc --codex agy                                  # starts on the codex profile's model and effort
+alc --codex agy --model gemini-3.8-flash-low     # or on one of agy's own
+```
+
+agy reads its endpoint from `CLOUD_CODE_URL`, and alc points that at its bridge
+for the session. The bridge adds the Codex models to agy's model list — one
+entry per effort, `gpt-6.1-sol-high`, shown in `/model` as **GPT-6.1-Sol ·
+Codex** behind agy's own effort slider (Codex's `ultra` runs as `max`) — and
+translates their turns to your `codex login`. Everything else agy asks for — its
+own Gemini, Claude and GPT-OSS models, its login and quota checks, the helper
+turns that title a conversation — goes to Google unchanged, signed with the
+token agy itself sent; alc reads and keeps none of it. So agy still needs its
+own sign-in, and a session can move between a Codex model and one of Google's
+with `/model`. Codex turns land in the usage ledger as `agy` on the `codex`
+profile.
+
+#### Every other agent on the Antigravity login
+
+The same login also serves every other agent, through alc's bridge:
+
+```sh
+alc --agy claude                          # Claude Code, on claude-opus-5-5 at high effort
+alc --agy claude --model gemini-3.8-flash --effort low
+alc --agy opencode                        # or pi, kimi, codex, copilot, goose, qwen
+alc --agy claude --context max            # 840K for Claude, 900K Argon, 1,048K Flash
+alc --agy usage                           # what is left of the plan's windows
+```
+
+alc borrows the access token agy already stored — the Windows Credential
+Manager entry `gemini:antigravity`, or the file
+`~/.gemini/antigravity-cli/antigravity-oauth-token` — and keeps nothing else: it
+never stores a refresh token, never writes agy's login, and never runs a Google
+sign-in of its own. agy still owns the login: when the token is about to
+expire, alc runs `agy --output-format json models` (which has agy renew it) and
+reads the store again. A login found in both places is refused rather than
+guessed at; sign out of agy and in again. To Google, alc presents itself as the
+agy client — agy's User-Agent and client header — because the endpoint chooses
+what an account may run by that identity.
+
+Use of this optional integration remains subject to the account provider's
+terms and restrictions. There is no compatibility or account-availability
+guarantee.
+
+Five model families run on this login: `claude-opus-5-5`, `claude-sonnet-5-5`,
+`gemini-4-argon` (Google AI Ultra accounts), `gemini-3.8-flash` and
+`gpt-oss-120b`, each at `low`, `medium` or `high` effort (GPT-OSS at `medium`
+only). The id Google receives is the two joined, such as
+`gemini-3.8-flash-low`. Claude Code switches model and effort per request as
+usual: its `/model` picker lists the five families, its effort picks the
+variant, `opus` lands on Claude Opus 5.5, `sonnet` on the session's model and
+`haiku` on Gemini 3.8 Flash. An effort above `high` runs as `high`, and one a
+family lacks as one it serves, each with a one-line note. `--model`, `--effort`
+and `--context` change one run of `alc --agy claude`; `--save` is refused with
+the `alc config upsert` command that saves the same choice. The other agents run
+one model for the whole session — the profile's model at the profile's effort —
+so choose it on the profile:
+
+```sh
+alc config upsert antigravity --model gemini-3.8-flash-low --effort low --context max
+```
+
+Each family starts on a 256K window (GPT-OSS on 131K). `context = "max"` on the
+profile, or `--context max` for one run of Claude Code, gives 840K for Claude,
+900K for Argon and 1,048K for Flash. Codex CLI is handed the window as
+`model_context_window` (older Codex versions also needed
+`model_auto_compact_token_limit` set by hand in their own config). Codex's
+in-session `/model` picker still offers OpenAI's slugs, which alc's bridge
+refuses on this login: change the model on the profile instead.
+
+Gemini signs its reasoning, and the signature travels with the conversation. A
+Gemini tool round that lost its signature — a session started elsewhere, an
+effort changed mid-task, or a bridge restarted — still goes up as the tool
+calls and results it was: closed rounds unsigned, which Google serves, and the
+round in progress with Google's documented placeholder signature. Reading the login is
+verified on Windows; on macOS and Linux it is best effort, and the token file
+works on every OS.
+
+## Command reference
+
+| Command | What it does |
+| --- | --- |
+| `alc claude`, `codex`, `opencode`, `pi`, `copilot`, `goose`, `qwen`, `kimi`, `agy` | Launch that agent on its configured provider |
+| `alc config` | The configuration TUI; also `init`, `show`, `path`, `upsert`, `key`, `set-default`, `remove` |
+| `alc doctor` | Binaries, credentials, compatibility, defaults, bridge and remote state; interactive on a terminal, `--plain` |
+| `alc models` | The GPT models the Codex bridge offers, or with `--agy` the Antigravity CLI's; `--refresh`, `--json` |
+| `alc usage [weekly\|monthly\|yearly]` | Accounts/quota, the compatibility ledger, and daily token/cost statistics; a tabbed dashboard on a terminal; `--timezone`, `--chart[=PATH]`, `--wrapped[=PATH]`, `--daily`, `--monthly`, `--details`, `--offline`, `--pricing-file`, `--no-tui` (`-nt`), `--json` |
+| `alc tps` | Client-observed TTFT and estimated/E2E tokens per second; a dashboard on a terminal; latest 20 timed requests by default (200 in the dashboard), `--include-unmeasured`, `--limit`, `--no-tui` (`-nt`), `--json` |
+| `alc update` | Verify and activate an immutable alc generation; `--check`, `--force`, `--download-only`, `--from ... --offline`, `--rollback` |
+| `alc share <agent>` | Launch with the session mirrored to a browser page |
+| `alc sessions` | Shared sessions across generations and legacy, with each owner's page link |
+| `alc attach <id>` | Put this terminal back on a shared session |
+| `alc rename <id> <name>` | Rename a session's card on the page |
+| `alc kill <id>` | Stop a shared session |
+| `alc hub` | `status`, `start`, `stop --drain`, `stop -a`/`--all` (every owner and its sessions); otherwise multiple owners require `--runtime <id\|legacy>` to stop |
+| `alc bridge` | Durable Claude Codex/metrics host; `status`, `stop`; multiple owners require `--runtime <id\|legacy>` to stop |
+| `alc remote` | `status`, `url`, `on`/`off`, `auto-share`, `allow-host`, `token --rotate` |
+| `alc confirm <ticket>` | Approve a permission change a shared session asked for |
+
+`alc <command> --help` has the flags for each.
+
+## Running agents
+
+**Forwarding.** Apart from Claude's alc-specific `--model`, `--effort`,
+`--context`, and `--save`, arguments after the agent name are forwarded
+unchanged:
+
+```sh
+alc --codex codex exec "review this repository"
+alc --openrouter claude --print "summarize the diff"
+alc --ollama opencode run "fix the failing test"
+```
+
+To pass an option with one of those same names to Claude itself, put it after
+`--`: `alc claude -- --model sonnet`. A `--settings` you pass is merged into
+alc's, yours winning, because Claude Code reads only one.
+
+alc's own flags — `--metrics`, `--runtime`, `--share`, `--no-share`, `--bind-lan`, `--name`,
+`--permission`, `--tmux`, `-t` — have to come *before* the agent name. After it
+they would be handed to the agent as prompt text, so alc stops and says so
+instead — unless you put `--` straight after the agent name, which says you
+meant the agent's own flag:
+
+```sh
+alc --codex claude -- -p "fix the flaky test"
+alc --codex claude -- --bg --name nightly "run the slow suite"
+```
+
+The `--` goes straight after the agent's name, before all of its flags; later
+in the line it reaches the agent as an argument of its own.
+
+**Previewing.** `alc --codex --dry-run claude` prints the resolved agent and
+provider, the command with secrets redacted, a line for the built-in adapter when
+the launch uses one, and every file it would write — and says when a launch would
+be refused rather than only what would succeed. With `--share` the command
+carries the permission flag a real share would add, on every agent, and a
+mistyped `--permission` fails the dry run as it would the launch. A dry-run
+starts no listener and writes nothing, including with `--metrics`.
+
+## Diagnostics
+
+```sh
+alc doctor
+```
+
+`alc doctor` reports the environment and credential paths, all nine agent
+binaries, every provider profile against all nine agents, the resolved per-agent
+defaults, a leftover GPT model pinned in `~/.claude/settings.json`, the Codex
+bridge's model, effort, context choice, and `codex login` state, the Antigravity
+login (agy's binary, the login's state — an expired token agy can renew is
+healthy, `expired; agy renews it on the next launch` — its Google project, the
+profile, the model source, and whether the bridge serves the other agents), an
+enabled
+Ollama, llama.cpp or vLLM profile checked against its running server, and the
+remote-control posture — then a summary of issues with a fix for each. It exits
+non-zero when it finds one.
+
+**Interactive on a terminal.** `alc doctor`, `alc usage` and `alc tps` open a
+full-screen view when both ends are a terminal; a pipe, a redirect, `--json`,
+`--plain` (`--no-tui` or `-nt` for usage and tps) or `ALC_NO_TUI=1` gets the
+plain report, unchanged. Doctor lists its sections on the left, each marked by the worst status it reports,
+with the summary — every issue and the command that fixes it — first, and fill
+them in as each check finishes. ↑↓ scrolls, tab and 1–9 move between sections,
+←→ pans a wide table, `a` shows every section on one page, `/` searches (`n`/`N`
+for the next hit), `r` runs the report again, `?` lists the keys and `q` leaves.
+
+For named errors and their fixes, see the
+[troubleshooting guide](https://treeleaves30760.github.io/all-code/troubleshooting).
+
+## What is left, and where it went
+
+```sh
+alc usage
+```
+
+```text
+Accounts
+     PROFILE     ACCOUNT          PLAN  LEFT        REMAINING
+  ✓  anthropic   ~/.claude        max   ▰▰▰▰▰▰▰▰▱▱  5h 97% left, resets in 2h 53m — week 79% left, resets in 6d 4h
+  ✓  codex       you@example.com  pro   ▰▰▰▰▰▰▰▱▱▱  week 66% left, resets in 5d 9h — no credits
+  ·  ollama      —                —     —           no quota API
+  ·  openrouter  —                —     —           no API key; run `alc config key openrouter`
+
+Usage by provider and agent
+  ╭──────────┬──────────┬──────────┬───────┬────────┬────────┬─────────┬────────┬─────────╮
+  │ Provider │ Agent    │ Launches │ Turns │  Input │ Cached │ Cache % │ Output │ Last    │
+  ├──────────┼──────────┼──────────┼───────┼────────┼────────┼─────────┼────────┼─────────┤
+  │ codex    │ claude   │        1 │     1 │ 20,800 │ 15,400 │     74% │     35 │ 7m ago  │
+  │ ollama   │ opencode │        1 │     — │      — │      — │       — │      — │ 12m ago │
+  ╰──────────┴──────────┴──────────┴───────┴────────┴────────┴─────────┴────────┴─────────╯
+  ~/.config/alc/usage.jsonl — tokens count only where alc carries the traffic (opt in with --metrics)
+
+✓ ready
+
+Token usage
+  since 2026-10-05 · UTC · 3,412 records · prices alc-curated-2026-10-08-litellm-33d908e0
+  ╭────────────┬───────────────┬──────────────────────┬───────────┬─────────┬─────────────┬────────────┬──────────────┬─────────╮
+  │ Date       │ Agents        │ Models               │     Input │  Output │ Cache write │ Cache read │ Total tokens │    Cost │
+  ├────────────┼───────────────┼──────────────────────┼───────────┼─────────┼─────────────┼────────────┼──────────────┼─────────┤
+  │ 2026-10-05 │ claude, codex │ gpt-5.2-codex,       │ 1,204,330 │  88,410 │     310,201 │ 21,733,090 │   23,336,031 │  $19.42 │
+  │            │               │ sonnet-4-6           │           │         │             │            │              │         │
+  │ 2026-10-06 │ claude        │ sonnet-4-6           │   402,118 │  51,902 │     120,554 │  9,108,422 │   9,682,996+ │  $6.71+ │
+  ├────────────┼───────────────┼──────────────────────┼───────────┼─────────┼─────────────┼────────────┼──────────────┼─────────┤
+  │ Total      │               │                      │ 1,606,448 │ 140,312 │     430,755 │ 30,841,512 │  33,019,027+ │ $26.13+ │
+  ╰────────────┴───────────────┴──────────────────────┴───────────┴─────────┴─────────────┴────────────┴──────────────┴─────────╯
+```
+
+The report continues with a **By model** table (requests, tokens, a share bar
+and cost per agent and model) and a short legend.
+
+alc asks each login's own vendor what is left: chatgpt.com for a Codex login,
+api.anthropic.com for Claude Code's, and the published balance endpoint for an
+OpenRouter, DeepSeek, Moonshot, MiniMax or Z.ai key, and Google's own quota
+endpoint for the `antigravity` row, which shows the Gemini pool and the
+Claude/GPT pool by window (`Gemini: 5h 72% left, resets in 3h 0m — week 40%
+left; Claude/GPT: week 91% left`); an expired agy token reads as unavailable
+until agy renews it on the next launch. Nothing is ever written
+back and no token is refreshed, so a status command cannot invalidate the
+credential a running session is holding.
+
+**Two logins of one kind are two profiles.** `codex_home` and
+`claude_config_dir` pin the directory a profile's credentials live in, and every
+launch through that profile uses that account — so the row you read is the
+account you spend:
+
+```sh
+CODEX_HOME=~/.codex-work codex login
+alc config upsert codex-work --kind codex --codex-home ~/.codex-work
+alc --provider codex-work claude
+```
+
+The compatibility table reads `usage.jsonl`: launch entries plus metadata-only
+request records from the translation bridge (on the Codex login or the
+Antigravity one) and opt-in direct API observation. `CACHED` is the part of
+`INPUT` read from the prompt cache; `CACHE %` is that token share, rounded to a
+whole percent. Unobserved traffic
+shows `—`, not zero. The remote-control page's Usage tab shows Accounts, this
+ledger and charts of the native-history statistics (tokens, cost, hours,
+models); the TPS report is CLI-only.
+
+Global `--provider` / provider shortcuts filter **Accounts only**. The ledger
+remains unfiltered; use `--filter-profile` to filter recorded statistics.
+`alc usage --json` keeps the legacy `schema_version: 1`, `accounts`, and `ledger`
+fields and adds `statistics`.
+
+### TTFT, TPS, and estimated cost
+
+```sh
+alc tps                         # latest 20 matching requests with recorded timing
+alc tps --include-unmeasured --limit 50 --json
+alc usage weekly --offline --timezone Asia/Taipei --chart
+alc usage monthly --offline --chart="$HOME/ai-usage-month.png" --json
+alc usage yearly --offline
+alc usage --offline --daily --since 2026-10-01 --until 2026-10-08
+alc usage --offline --monthly --source claude,codex --json
+alc usage --offline --source alc --filter-profile work --filter-agent claude
+```
+
+**Calendar windows, not rolling periods.** Positional `weekly`, `monthly`, and
+`yearly` select the current calendar week (Monday start), month, or year and
+retain daily details. They conflict with `--since`, `--until`, `--daily`, and
+`--monthly`. No window or date bounds still means all history; the existing
+`--daily` / `--monthly` flags only group that selected history.
+
+Both queries accept `--source all|alc|claude|codex` (comma-separated lists too),
+`--since` inclusive, `--until` exclusive, and exact `--filter-profile`,
+`--filter-agent`, and `--filter-model`. `--timezone UTC|local|<IANA>` defaults to
+UTC and controls date-only `YYYY-MM-DD` bounds, calendar windows, and buckets;
+RFC3339 bounds remain the exact instant their offset specifies. Usage defaults
+to all sources; TPS defaults to `alc` and accepts `--limit` 1–10000.
+`alc usage --offline` reads only local configuration, histories, and pricing:
+no credentials/Keychain, quota calls, refresh, or network (a cached LiteLLM price map is still read). `alc tps` is also a
+local, credential-free read and does not probe running daemons.
+
+On a terminal, `alc usage` opens a dashboard with four tabs (tab, ←→ or 1–4):
+**Overview** — cards for total tokens, estimated cost, requests, input/output
+and the cache-read share, a tokens-per-day chart, tokens by hour of day, and
+share bars for the top models, agents and providers; **Periods** — every day
+(or month) newest first; **Models** — each agent and model, sortable (`o`/`O`)
+and filterable (`/`); **Accounts** — the quota report, which arrives from the
+network while the statistics load. `p` steps the period (this week, month,
+year, then all history by day or by month), `s` the history source (all, alc,
+claude, codex), `c` switches the charts between tokens and cost, and `enter`
+opens a period or model in full — only the statistics reload; the quota lookups
+do not run again. `alc usage --no-tui` (or `-nt`) prints the plain report.
+`alc tps` opens a dashboard over the last 200 requests (or `--limit`):
+TTFT p50/p95 and mean, weighted stream and E2E TPS, a throughput trend scaled to
+its 95th percentile so one cache-burst estimate cannot flatten it, each model's
+median TPS and TTFT, and the request table — `s`/`S` sort, `/` filters by
+profile, agent, model or outcome, `enter` opens a request's tokens, timing and
+ids, `+`/`-` read more or fewer, `u` adds unmeasured history.
+
+The terminal view shows daily (or `--monthly`) rollups and a by-model table in
+boxed tables sized to the terminal: long model lists wrap, then numbers switch
+to `1.23M` form, then optional columns drop. Piped output keeps full integers.
+Where part of a sum is unknown — a checkpoint without token counts, an
+unreadable counter, an unpriced model — the cell shows what is known and marks
+it `+` (at least this much) instead of turning the whole day into `N/A`; `~`
+marks days where alc's ledger and a native history both saw an agent and may
+count a request twice (`--source` picks one). `--details` appends the strict
+per-source table with exact sums or `N/A`, fee components, assumptions and
+coverage gaps; `--json` keeps every exact field and adds `known_tokens`,
+`agents` and `models` to each rollup.
+
+`--wrapped[=PATH]` writes one shareable PNG of the selected history across every
+agent and provider — total tokens, first and busiest days, weekday rhythm, an
+activity heatmap, agent shares, top models and providers, requests, sessions,
+streaks, cache hit rate, peak hour and estimated cost — to `alc-wrapped.png` in
+your home directory by default, and shows it inline in iTerm2, WezTerm, kitty
+and Ghostty. It takes the same filters (`alc usage yearly --wrapped`,
+`--source`, `--since`) and replaces the text report.
+
+`--chart[=PATH]` opts into an offline PNG with three panels: date token bars,
+date USD bars, and an uncached-input/cache/output token pie. Its default path
+is `ai-usage.png` in your home directory. Rendering uses Rust and a bundled font,
+not Python or system fonts. It uses the same selection and timezone as the
+report; longer ranges have labeled coarser chart buckets while CLI details stay
+daily. Unknowns/gaps are not zero, partial costs are known subtotals, and source
+overlap suppresses unsafe pooled totals and the pie. If any selected sources may
+overlap, coarser chart bars are conservatively unavailable; safe daily detail stays.
+`--json --chart` keeps stdout JSON-only and writes the artifact path to stderr.
+
+Repeated `--claude-dir /absolute/config-root` reads `projects/`; repeated
+`--codex-dir /absolute/codex-home` reads `sessions/` and `archived_sessions/`.
+Without explicit roots, alc includes profile-pinned directories plus the
+matching shell directory or `~/.claude` / `~/.codex`. These are read-only,
+metadata-only JSONL sources, bounded to 4 MiB per line: no prompts, generated
+output, tool content, or keys are copied into alc's ledger or an import cache.
+Past native usage is not assigned today's alc profile. Only exact,
+protocol-qualified IDs prove duplicates; unverified overlaps keep source
+subtotals **without an additive grand total**. Reconciliation runs before date
+filtering; overlap safety is then checked for the selected range and each day.
+Codex cumulative deltas and checkpoints are not request counts; checkpoints are
+not summed as token usage. A delta spanning dates belongs to the later checkpoint
+date, not a reconstruction of each day's actual traffic.
+Coverage diagnostics expose skipped or ambiguous records rather than calling
+them zero. In new statistics, each zero input/output counter in legacy v1/v2
+turns is independently unknown; positive counters and compatibility-ledger totals
+remain intact.
+
+**New direct requests need opt-in.** The translation bridge is observed
+automatically, on the Codex login and the Antigravity one alike. Supported direct API launches use `alc --metrics <agent>`;
+without it, their behavior stays unchanged:
+
+```sh
+alc --openrouter --metrics claude
+alc --metrics --provider openai codex --config model_providers.alc_openai.supports_websockets=false
+alc --openrouter --metrics --dry-run claude
+```
+
+Observation uses a supported alc-managed endpoint seam, preserving the SDK,
+protocol, model, and **upstream authentication**; durable Claude metrics uses
+the sealed-helper local credential described above. Codex CLI observation is
+HTTP-only and requires you to **explicitly** pass
+`--config model_providers.alc_<profile-normalized>.supports_websockets=false`
+(profile hyphens become underscores); missing/true is refused. alc neither
+forces WebSockets off nor claims to observe them, and ordinary no-metrics
+WebSocket behavior stays untouched. OpenCode/Copilot, Qwen/Goose's supported
+Anthropic/OpenAI branches, and Kimi's generated temporary config have supported
+seams. Direct Pi, native OAuth/login (agy's included), Qwen Google/Gemini, Goose native
+OpenRouter/Ollama or OpenAI split endpoints with query/fragment, and explicit
+endpoint/helper/config/provider overrides outside those seams are not observed;
+unsafe/unsupported explicit `--metrics` is refused, not silently rerouted.
+Ordinary no-metrics launches are unchanged. A dry-run starts no listener and
+writes nothing.
+
+The durable Claude handshake/control challenges authenticate the host without
+publishing `bridge.observer-key`. New launches require `request-metrics-v3`
+for measured requests and `forward-observer-v2` for durable forwarding, using
+their own generation host rather than stopping an older one. Old hosts continue
+serving old sessions; a matching version string alone is not a capability check.
+Durable Claude observation artifacts never write the plaintext vendor key.
+**The local data plane is still loopback HTTP, not TLS**: trust local processes. The Claude
+surrogate prevents raw vendor-key disclosure, not plaintext request-body
+interception by a hijacked local port; other agents' ephemeral routes do not
+promise sealed credentials.
+
+**What the timing means.** TTFT measures request start to the first nonempty
+generated text/thinking/tool arguments, not headers, roles, usage, or pings; a bridge
+that suppresses reasoning waits for visible content. Streaming TPS estimates
+`(N - 1) / (terminal - first matching content)` only with a known
+output/reasoning basis. `BASIS` shows `gross`, `non-reasoning`, or `unknown`.
+E2E TPS is gross reported output over
+request-start-to-terminal time, including queueing/network/reasoning — **not
+server decode speed**. Nonstreaming TTFT and old/native-history timing are
+`N/A`. Summaries give valid sample counts and duration-weighted TPS, not sums
+of concurrent speeds.
+
+TPS selects actual `Request` records with a timing object **before sorting and
+applying the limit**. Observed failures, cancellations, and requests without
+usage remain rows; each metric still needs its own valid evidence. Coverage
+counts explain excluded legacy, untimed, and non-request records;
+`--include-unmeasured` restores the historical view with unavailable metrics.
+An all-`N/A` old report can be v1/v2 turns from a reused older bridge, not zero
+performance. alc cannot reconstruct their past TTFT/TPS; start a new session
+on the new generation for future measurements without stopping old sessions.
+
+**What the dollars mean.** USD API-token/API-equivalent snapshot estimates,
+not invoices or subscription bills; tax, discounts, tools, and non-token
+charges are excluded. Missing counters or exact rates stay unknown/partial,
+with reasons and nullable totals. Each record is priced with its own tier,
+context, and cache TTL before addition. JSON preserves gross `input_tokens`
+and adds `uncached_input_tokens` and `cost_components` for uncached input,
+cache read, cache write, and output. Money uses exact pico-dollar arithmetic
+and decimal USD strings, not floating-point totals. Reasoning is an output
+subset, not billed again; cache reads/writes and TTLs keep their distinct semantics.
+On the Antigravity login only `gpt-oss-120b` is priced (at 0); the Claude and
+Gemini families run on a Google plan with no verified API-equivalent rate, so
+their cost stays unknown. Prices
+come first from an offline curated LiteLLM subset dated 2026-10-08, pinned to commit
+`33d908e0ae2c0a257eeb5d546df08527d348a670` with SHA-256/MIT provenance. Models it
+lacks are priced from LiteLLM's public price map, the same file `npx ccusage`
+reads: alc downloads it at most once a day to `litellm-prices.json` in the config
+directory, takes only first-party Anthropic and OpenAI rows, and never lets it
+replace a curated or override rate. `--offline` uses only that cached copy. Add
+exact local/custom rates in the separate config-directory
+`pricing.toml`, or use `alc usage --pricing-file PATH`; missing prices are not
+free, and free rates must be explicit `"0"` strings. Historical usage is
+repriced with the named snapshot. See the [pricing sidecar
+schema](https://treeleaves30760.github.io/all-code/configuration#pricing-sidecar).
+
+[Usage](https://treeleaves30760.github.io/all-code/usage) has the full measurement,
+coverage, cost, and JSON reference.
+
+## Providers and agents
+
+The two lookup tables, resolved for your own configuration by `alc doctor`.
+
+### Provider kinds
+
+| Kind | Default endpoint | Key env | Protocols | Claude-ready? |
+| --- | --- | --- | --- | --- |
+| `anthropic` | `https://api.anthropic.com` | `ANTHROPIC_API_KEY` | anthropic | Yes |
+| `openai` | `https://api.openai.com/v1` | `OPENAI_API_KEY` | responses, chat | Yes (bridge) |
+| `openrouter` | `https://openrouter.ai/api/v1` | `OPENROUTER_API_KEY` | anthropic, responses, chat | Yes |
+| `codex` | — (native `codex login`) | — | native | Yes (bridge) |
+| `antigravity` | — (native `agy` login) | — | native (`agy`), bridge (every other agent) | Yes (bridge) |
+| `ollama` | `http://localhost:11434` | — | anthropic, responses, chat | Yes |
+| `vllm` | `http://localhost:8000/v1` | — | responses, chat (+ anthropic) | Yes |
+| `llamacpp` | `http://localhost:8080/v1` | `LLAMA_API_KEY` | anthropic, responses, chat | Yes |
+| `deepseek` | `https://api.deepseek.com/v1` | `DEEPSEEK_API_KEY` | chat (+ anthropic) | Yes |
+| `moonshot` | `https://api.moonshot.ai/v1` | `MOONSHOT_API_KEY` | chat (+ anthropic) | Yes |
+| `zai` | `https://api.z.ai/api/paas/v4` | `ZAI_API_KEY` | chat (+ anthropic) | Yes |
+| `minimax` | `https://api.minimax.io/v1` | `MINIMAX_API_KEY` | chat (+ anthropic) | Yes |
+| `groq` | `https://api.groq.com/openai/v1` | `GROQ_API_KEY` | chat | Yes (bridge) |
+| `xai` | `https://api.x.ai/v1` | `XAI_API_KEY` | chat | Yes (bridge) |
+| `google` | `https://generativelanguage.googleapis.com/v1beta/openai` | `GEMINI_API_KEY` | chat | Yes (bridge) |
+| `custom` | user-defined | user-defined (`--api-key-env`) | configurable | Yes (directly or through the bridge) |
+
+`deepseek`, `moonshot`, `zai`, and `minimax` each also ship a separate
+Anthropic-compatible base URL alongside their primary OpenAI-chat one (see
+`alc config show`) — that is what makes those four "Claude-ready" without any
+extra configuration. `ollama`, `vllm`, and `llamacpp` are local servers: each
+answers Anthropic Messages at its root, beside the OpenAI routes under `/v1`, so
+Claude Code runs on them whichever protocol a profile names for the other
+agents ([Local models](#local-models)). Presets are starting values: run `alc config show` to see
+the exact model ID a profile currently uses, and edit it with `alc config
+upsert` when upstream renames or retires a model.
+
+### Agents
+
+| Agent | Binary | Accepts | alc injects | Codex bridge |
+| --- | --- | --- | --- | --- |
+| [Claude Code](https://code.claude.com/docs/en/setup) | `claude` | Anthropic-compatible endpoint | `--settings` file (endpoint, model aliases, picker) + `apiKeyHelper` | Yes (`/model` picker) |
+| [Codex CLI](https://learn.chatgpt.com/docs/codex/cli) | `codex` | OpenAI Responses API | flags + `--config` overrides | Yes (native login) |
+| [OpenCode](https://opencode.ai/docs) | `opencode` | Any API-compatible provider | inline `OPENCODE_CONFIG_CONTENT` env | Yes |
+| [Pi](https://github.com/earendil-works/pi) | `pi` | Anthropic-, OpenAI-, or OpenAI-compatible endpoint | `models.json` merge + flags | Yes |
+| [Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli) | `copilot` | OpenAI- or Anthropic-compatible endpoint | `COPILOT_PROVIDER_*` env | Yes |
+| [Goose](https://block.github.io/goose/) | `goose` | OpenAI- or Anthropic-compatible endpoint | `GOOSE_*` + provider key env | Yes |
+| [Qwen Code](https://github.com/QwenLM/qwen-code) | `qwen` | OpenAI-, Anthropic-, or Gemini-compatible endpoint | `--auth-type` flag + env | Yes |
+| [Kimi Code CLI](https://github.com/MoonshotAI/kimi-cli) | `kimi` | OpenAI- or Anthropic-compatible endpoint | temp `--config-file` (merged TOML, deleted after the run) | Yes |
+| Antigravity CLI | `agy` | its own Google login, or Google Code Assist | `--model`, `--effort`; `CLOUD_CODE_URL` on Codex | Yes (Codex models join agy's `/model`) |
+
+`alc` launches agents that are already installed — install the ones you plan to
+use from the links above (Pi is `npm install -g @earendil-works/pi-coding-agent`;
+agy you install and sign in per Google's own Antigravity instructions).
+Every agent reaches the Codex bridge with one `codex login` whatever it
+accepts natively — agy through a Code Assist surface that relays its own models
+to Google — and every agent but agy also runs on agy's Google login through the
+same bridge (`alc --agy <agent>`); agy itself runs natively on that login. `ALC_CLAUDE_BIN` and its
+siblings, `ALC_AGY_BIN` among them, override a binary path.
+
+**Any provider, any agent.** Where an agent cannot speak a profile's API —
+Claude Code on OpenAI, Groq, xAI or Gemini; Codex CLI on a Chat Completions or
+Anthropic-only provider; agy on anything but its own login and Codex — alc
+starts its bridge in-process for that session and translates each turn to the
+provider's own wire: OpenAI Responses where the profile's protocol is
+`openai-responses`, Chat Completions where it offers chat, Anthropic Messages
+otherwise. The bridge signs with the profile's key, which never reaches the
+agent. `alc doctor` marks those defaults "through alc's bridge". Claude Code on
+this path runs every model alias on the profile's model, and its background
+sessions end with the alc that started them.
+
+## Codex bridge
+
+alc tracks seven Codex models — the ones in the table above — and syncs their
+details from your ChatGPT account. The bridge itself keeps no allowlist:
+whatever slug it is handed goes upstream, and chatgpt.com decides, so a model alc
+has not been taught about is still reachable by naming it with `--model` on the
+day Codex ships it. That is what made `gpt-6-astra` usable in 1.5.0, when the
+hard-coded list in the bridge alc used to depend on was a release behind.
+
+**Effort.** Every model accepts `low`, `medium`, `high`, `xhigh`, or `max`.
+Higher effort gives the model more room to reason, but can take longer and use
+more quota. Every model but the two Lunas also offers an `ultra` tier above
+`max`. That tier is reachable with native `alc codex`, but **not** through
+the bridge: the built-in helper's own effort range stops at `max`, so alc clamps
+it there and says so at launch rather than letting the request be refused
+mid-session.
+
+See OpenAI's [model selection guide](https://developers.openai.com/api/docs/guides/latest-model),
+[GPT-6.1 Sol reference](https://developers.openai.com/api/docs/models/gpt-6.1-sol),
+and [Luna reference](https://developers.openai.com/api/docs/models/gpt-6-luna)
+for current upstream details.
+
+**Context window.** Each model starts on the window Codex itself gives it:
+500K tokens for GPT-6.1 Sol, 272K for the others. Every one of them can run
+with up to 872K, and `--context max` asks for that:
+
+```sh
+alc --codex claude --context max         # this run only
+alc config upsert codex --context max    # the Codex profile's default
+```
+
+Past the standard window a turn uses your plan limits faster. OpenAI documents
+the larger window as opt-in in Codex too (`model_context_window` in Codex's own
+config), and alc keeps it opt-in the same way: `standard` is the default and is
+never written, `max` is saved as `context = "max"` on the Codex profile, and
+`alc config` has a **Context** row for it right after Reasoning effort.
+`alc models` prints both numbers — `Codex context: 500K (max 872K)` — and
+`alc doctor` adds `/ max context` to the bridge row of a profile set to it. The
+profile's choice reaches every agent on the bridge, not only Claude Code. The
+per-run `--context`, like `--effort`, belongs to `alc claude` and is refused
+off a Codex or Antigravity provider.
+
+**Choosing the defaults.** GPT-6.1 Sol at `low` is the fallback only when no
+model or effort has been chosen; your saved selections stay as they are.
+
+```sh
+alc --codex claude --model gpt-6.1-sol --effort low --save
+```
+
+`--save` stores the model, the effort and the context choice in the selected
+alc provider. Without them the session starts on the alc provider's values,
+then the selected Codex profile's, then the model's documented default; the
+context choice comes only from `--context` or the alc provider, and is the
+standard window otherwise. A `--model` or `--effort` placed after `--` is
+forwarded to Claude Code untouched and wins over what alc would inject; a
+`--settings` of your own is merged into alc's, yours winning, because Claude Code
+reads only one. A model chosen with `/model` applies to that session only; the
+next launch starts from the alc default again, so `alc config` stays the source
+of truth.
+
+**Auto mode and caching.** No extra setup is needed. Auto mode works here as on
+every provider ([Any provider](#any-provider-not-just-codex)): Claude Code's
+classifier runs on the session's model, and its calls use Codex quota. alc also
+keeps each session on a stable cache route automatically, and `alc usage` shows
+how much input Codex actually reused.
+Cache reuse is best-effort, not guaranteed quota or billing savings. See
+[Codex through Claude Code](https://treeleaves30760.github.io/all-code/codex-to-claude)
+for details. Your own `--settings` still wins over alc's Claude Code defaults.
+
+**The picker.** alc passes the model list through Claude Code's
+[`modelPicker`](https://code.claude.com/docs/en/settings-reference#modelpicker)
+setting, added in Claude Code 2.1.243. The picker shows only these GPT models and
+the Default row, because Claude's own lineup cannot be served through the
+adapter; older clients ignore the setting and still get the launch default as a
+selectable entry. Claude Code's built-in aliases stay on Codex as well: the
+Default row follows the alc default, `haiku` and background work use GPT-6 Luna,
+`sonnet` follows the session's starting model, and `opus` and `fable` use
+GPT-6.1 Sol, the first catalog entry.
+
+**Your Claude Code default.** One thing to know about that picker, because it is
+Claude Code's and not alc's: the model it settles on is also written to
+`~/.claude/settings.json` as your default for new sessions. That file is read by
+every Claude Code session on the machine, including the ones alc did not start,
+and those have no adapter in front of them — a plain `claude` afterwards would
+ask Anthropic for a GPT model and be told it does not exist.
+
+alc puts that one key back when the session exits. It reads the value before the
+launch and restores it afterwards, so your own default survives a trip through
+the adapter. Two things it deliberately leaves alone: a real Claude model you
+switched to mid-session, which is your choice and not alc's to overrule, and a
+session that was killed outright, where nothing ran to restore anything. For that
+last case `alc doctor` still reports the file and the line — and the next
+`alc --codex claude` clears it, because a value that is *already* one only the
+adapter can serve is removed rather than put back.
+
+### Every other agent
+
+OpenCode, Pi, and Kimi Code CLI speak the adapter's OpenAI Responses surface
+directly; Copilot CLI, Goose, and Qwen Code speak its OpenAI Chat Completions
+surface. Each is wired in with its own mechanism (`alc-codex` in
+`OPENCODE_CONFIG_CONTENT`, an `alc-codex` `models.json` entry, an `alc-codex`
+temp config, or the same BYOK environment variables and `--auth-type` each
+already uses for the `openai` kind) pointed at the loopback adapter instead of an
+in-session picker.
+
+The model catalog comes from your ChatGPT account - the same party the adapter
+posts every turn to - so a model that account can drive shows up even when the
+installed Codex CLI has never heard of it. `codex debug models` is the fallback
+when that fetch cannot happen, and the catalog bundled into the binary is a
+floor neither of them can drop below: a discovered list may add models, never
+remove one. alc syncs once a day, and again immediately after Codex is
+upgraded:
+
+```sh
+alc models
+alc models --refresh
+alc models --json
+```
+
+The Codex context window — the model's standard one, or its maximum on a
+profile set to `max` — is passed to Claude Code through its documented
+[`CLAUDE_CODE_MAX_CONTEXT_TOKENS`](https://code.claude.com/docs/en/env-vars)
+gateway setting, and to every other agent through its own window field, so a GPT
+ID the agent does not recognize compacts at the correct Codex limit instead of a
+generic fallback.
+
+### How the bridge works
+
+The bridge is alc's own code (`src/bridge/`). For Claude Code it runs as a
+background process of its own on a loopback port it keeps (`alc bridge`); for
+every other agent it runs inside the `alc` process on a random port and stops
+when that session ends. It reads and may refresh `~/.codex/auth.json`;
+credentials are never copied into the `alc` config. New alc-managed runtimes
+coordinate refreshes with a cross-process lock on the canonical auth path and
+reread after locking. Older hosts and external Codex CLI do not use that lock;
+shared-login rotation can still affect them.
+
+## Local models
+
+`alc --ollama claude`, `alc --llamacpp claude` and `alc --vllm claude` point
+Claude Code at the local server's Anthropic Messages endpoint — its root,
+beside the OpenAI routes under `/v1`. A local server serves only the models it
+loaded and answers one request at a time, or a few, so alc sets the session up
+differently from a hosted provider: every model alias (`ANTHROPIC_DEFAULT_MODEL`
+and the sonnet/opus/haiku tiers) pinned to the profile's model so Claude Code
+never asks the server for a model ID it does not have, non-essential traffic
+off, the real context window read from the server, and the first-token timeouts
+raised to thirty minutes.
+
+That last one matters more than it sounds. Claude Code opens every session with a
+request of roughly 25k to 40k tokens — system prompt, tool schemas, project
+context — and a laptop-sized model reads that at a few dozen tokens per second:
+on an M3 MacBook Air, `gemma4:12b` needs about six minutes before the first token
+of a 22k-token request, and fifteen for a 39k one. Without the raised timeouts
+Claude Code abandons each attempt after six minutes and starts over.
+
+What makes it pleasant on a laptop: a model whose `ollama show <model>` lists the
+`tools` capability, a 64k to 128k context window, a first request kept small
+(every MCP server, plugin, and skill adds tool schemas to it), and the model kept
+loaded so the prompt cache survives between turns. `alc doctor` prints an
+**Ollama** section with the server version, whether the model is pulled, whether
+it can call tools, and the context it actually gets.
+
+Full tuning notes — KV cache type, keep-alive, why prompt length costs more than
+linearly on Gemma 4 — are in the
+[provider guide](https://treeleaves30760.github.io/all-code/local-models).
+
+### llama.cpp and vLLM
+
+```sh
+llama-server -m Qwen3.8-27B-UD-Q4_K_XL.gguf --alias qwen3.8-27b --jinja -c 131072 --api-key "$LLAMA_API_KEY"
+
+alc config upsert box --kind llamacpp --base-url http://127.0.0.1:8080/v1 --model qwen3.8-27b
+printf '%s' "$LLAMA_API_KEY" | alc config key box --stdin
+alc -p box claude
+```
+
+The profile keeps the OpenAI-style URL ending in `/v1`, which every other agent
+uses, and Claude Code is given the root. A key saved for the profile — or
+`LLAMA_API_KEY`, the variable llama-server itself reads — goes to every agent,
+and to Claude Code through its `apiKeyHelper`, never into a file. A `vllm`
+profile works the same way with vLLM's `--api-key`, and so does a `vllm` profile
+someone pointed at a llama-server before this kind existed.
+
+Two settings are particular to these servers. Both render the model's own Jinja
+chat template, and many of those — Qwen's among them — refuse a system message
+anywhere but first, while Claude Code sends one mid-conversation to a model it
+does not recognise; alc sets `CLAUDE_CODE_MODEL_CAPABILITIES` so that text rides
+in the first user turn instead. And llama-server sends its response headers at
+once, then nothing until the whole prompt is read — minutes, for a long one —
+which Claude Code's stream watchdogs would end after five;
+`CLAUDE_STREAM_IDLE_TIMEOUT_MS` goes to its thirty-minute ceiling on every local
+server.
+
+The context comes from llama.cpp's `/props` — the per-slot `n_ctx`, which is
+what one request gets on a server running several slots — or from vLLM's
+`max_model_len`. `alc doctor` prints a **llama.cpp and vLLM** section:
+the server and its build, whether it takes the key, whether it lists the model,
+that context, and whether `/v1/messages` exists.
+
+## Remote control
+
+[Drive it from your phone](#drive-it-from-your-phone) has the short version; this
+is the rest.
+
+```sh
+alc sessions                 # sessions across owners, with each owner's page link
+alc attach 7QK2              # any prefix unambiguous across all owners
+alc rename 7QK2 review
+alc kill 7QK2
+alc hub status               # or bare `alc hub`
+alc --runtime legacy hub stop --drain # explicitly stop that owner and its sessions
+alc hub stop --all                    # stop every owner and all of their sessions
+alc remote url               # the selected runtime's link
+alc remote status            # on/off, bind, ceiling, where the files are
+alc remote auto-share on     # share every session without --share
+alc remote off               # refuse to share sessions at all
+alc remote token --rotate    # invalidate links for the selected runtime
+alc remote web check         # validate the page's settings, themes and mods
+```
+
+Sessions are owned by a background hub per runtime generation, which is why they
+survive the terminal that started them; `ctrl-\` then `d` detaches. Each owner's
+browser page shows its own sessions, while `alc sessions` aggregates owners,
+including legacy. Multiple running owners require an explicit global
+`--runtime <id|legacy>` for `hub stop` or `bridge stop`, unless `hub stop --all`
+(`-a`) stops every owner. `hub stop --drain` and `--all` end the sessions too; neither stop is zero-downtime or part of updating.
+Sharing policy in `remote.toml` is still shared across generations, and lives
+in `alc config` on the **Sharing & remote** screen.
+
+### The page: sessions, usage, studio, settings, mods
+
+![The remote page with a session open](website/static/img/remote/session.png)
+
+The page has tabs — **Sessions**, **Usage**, **Studio**, **Settings**, and any a mod adds —
+in the header on a wide screen and as a bottom bar on a phone. `⌘K` (`Ctrl+K`
+outside the terminal) opens a command palette for jumping to a session, a tab,
+a theme, or a mod's command.
+
+- **Usage** draws the same statistics `alc usage` prints: tokens, estimated
+  cost, output, cache hits and sessions over 7, 30 or 90 days; a stacked daily
+  chart (tokens or cost); an hour-of-day strip; and models, agents and
+  providers ranked. Account quotas and the launch ledger sit below. The hub
+  reads alc's ledger and the Claude Code and Codex histories on its machine.
+- **Settings** holds the theme (system, light, dark, Midnight, Daylight,
+  Fjord, Ember, Paper, or your own), accent colour, density, and the terminal's
+  font, size, line height, cursor and scrollback. It is saved on the hub, so
+  every device gets the same look; a view-only link sees it read-only.
+- **Mods** add tabs, palette commands, key-bar buttons, session chips and
+  styles, in the spirit of herdr-app's mods. Each one is a folder of plain
+  files under the config directory's `web/`, next to an `AGENTS.md` written for
+  an agent to read — so "make me a mod that …" is something you can ask the
+  agent you are already running.
+- **Studio** is the page's own mods creator. Mods can offer **widgets** that
+  you drag into slots — the header, above or below the session list, every
+  session card, above or below the terminal, docks beside it, or floating
+  windows — and **backgrounds** (presets, your images, or animated ones). A
+  **package** bundles mods with a layout, background and theme; apply one of
+  the official five (Cockpit, Night shift, Deep focus, Retro terminal,
+  Workbench) or save your own. The session list, file panel and docks can be
+  dragged wider and moved to either side.
+- **Fit to this page** lets the page resize a plain (non `--tmux`) session, so
+  opening the file panel or a dock refits the terminal instead of shrinking
+  it; the launching terminal takes the size back when it is resized.
+
+```text
+<config dir>/web/
+├── AGENTS.md          the mod and theme reference (alc keeps it current)
+├── settings.json      what the Settings tab saves
+├── themes/<id>.json   colour tokens for the page and the terminal
+├── mods/<id>/         mod.json, mod.js, mod.css
+├── packages/<id>.json mods + layout + background + theme
+├── backgrounds/       background images
+└── examples/          official mods, packages, themes, new-mod templates
+```
+
+```js
+// mods/hello/mod.js
+alc.define('hello', (mod) => {
+  mod.addKey({ label: 'Continue', run: () => alc.type('continue') && alc.key('\r') });
+  mod.addCommand({ id: 'wave', title: 'Say hello', run: () => alc.toast('Hello') });
+});
+```
+
+```sh
+alc remote web                                  # print the folder
+alc remote web check                            # validate settings, themes and mods
+alc remote web catalog                          # official mods, packages, themes, templates
+alc remote web add cockpit                      # install an official one
+alc remote web package apply cockpit            # take its mods, layout and look
+alc remote web new my-widget --template widget  # start a mod from a template
+alc remote web install someone/alc-mod-standup  # from GitHub (or @ref, a URL, a folder)
+alc remote web enable standup                   # installed mods arrive off
+alc remote web list                             # what is installed, on or off
+```
+
+A repository is a mod source if it holds `mod.json` + `mod.js`/`mod.css` at its
+root (one mod) or `mods/<id>/…`, `themes/<id>.json` and `packages/<id>.json`
+(a collection). The [Mods and themes guide](https://treeleaves30760.github.io/all-code/mods) covers
+writing a mod, the API, publishing and installing.
+
+The page picks up a saved file within a few seconds — themes and stylesheets
+in place, scripts after a reload it offers. **Mods are not sandboxed:** a mod
+runs with the page's link, so read one before you turn it on. The page runs
+only the exact bytes of each enabled `mod.js` (the hub puts their hashes in the
+content-security policy), and a view-only link runs the same mods but cannot
+type or save through them.
+
+| ![Usage](website/static/img/remote/usage.png) | ![Settings](website/static/img/remote/settings.png) |
+| --- | --- |
+| ![Mods in Settings](website/static/img/remote/mods.png) | ![Command palette](website/static/img/remote/palette.png) |
+
+![On a phone: sessions, usage and a session](website/static/img/remote/phone.png)
+
+### Who owns the size
+
+A plain session is drawn at its own terminal's size; when that has to shrink to
+fit (a 120-column grid on a phone), the page says so and offers
+`alc share --tmux <agent>` to copy, which makes the page own the size instead.
+
+A shared session without `--tmux` is one terminal with two viewers, and a
+terminal has one size. That size belongs to the terminal you launched from, which
+is still sitting there drawing at it — so the page does not touch it. It draws
+the agent's real grid instead, as large as it fits, centred, with black where the
+ratio does not match. Resize your terminal and the page follows within a few
+seconds.
+
+`--tmux` is for when the page is the side you are actually going to use:
+
+```sh
+alc --share --tmux --codex claude    # or -t
+```
+
+Your terminal and the hub each attach as their own tmux client, so nothing has to
+agree on a size. The trade is that it runs the opposite way round — the page sets
+the size, and a narrower or shorter terminal shows the top-left corner of the
+screen (pan with `ctrl-b :refresh-client -L/-R/-U/-D`). With no browser attached
+the size stays where it launched. tmux owns the keyboard too, so detaching is
+`ctrl-b` then `d`, and in exchange you get tmux's scrollback and a session that
+survives an ssh drop.
+
+alc runs its own tmux server per session and starts it with no configuration
+file, so your own tmux is untouched, alc's sessions behave the same for
+everybody, and a `~/.tmux.conf` is never a way into a session's environment.
+Running alc from inside tmux is fine. Needs tmux 3.2 or newer (on Windows, the
+native port below); `alc doctor` says what you have, and `--tmux` only applies to
+a shared session — it says so if you pass it without one. One caveat worth
+stating plainly: your local terminal is now a direct tmux client rather than a
+mirror, so it shows the agent's raw output. The browser still sees API keys alc
+injected masked; your own terminal does not.
+
+**On Windows**, the alc installer automatically checks for and tries to install
+the native Windows port of tmux. If setup was skipped or could not finish, this
+is the manual fallback; then open a new terminal so PATH picks it up:
+
+```powershell
+winget install --id arndawg.tmux-windows --exact
+```
+
+The **tmux** row of `alc doctor` says whether the native port was found. psmux
+also installs a `tmux.exe`, but alc cannot drive it — it cannot run the command
+sequence alc creates a session with — so alc looks past it on PATH and the two
+can be installed side by side; MSYS2, Cygwin, and WSL builds of tmux are not used
+on Windows either.
+
+The native port passes command lines, environment, and working directory through
+the ANSI code page, so on Windows the tmux pane runs a small launcher — alc
+itself — that collects the agent's exact launch from the hub over loopback.
+Non-ASCII folder names, arguments, and environment values work as a result, and
+the provider API key never enters tmux's own environment. If alc is installed
+under a folder whose path is not plain ASCII, it uses the Windows 8.3 short path;
+on a drive with short names turned off, `--tmux` refuses and says to install alc
+under an ASCII path.
+
+On Windows, stopping a `--tmux` session (`alc kill` or `alc hub stop --drain`)
+ends its tmux server and the agent with it. Windows has no hangup signal, so its
+card shows the session ended without an exit status, where macOS and Linux show
+the signal.
+
+### Reaching it from a phone
+
+Three ways, all supported:
+
+```sh
+# Your own Wi-Fi — nothing to install
+alc --share --bind-lan claude          # prints the owner's LAN page link
+
+# Tailscale — alc stays on loopback, HTTPS, no third party
+alc remote allow-host box.tail1a2b.ts.net
+tailscale serve 8787
+
+# Cloudflare Tunnel — works over cellular, no VPN
+alc remote allow-host '*.trycloudflare.com'
+cloudflared tunnel --url http://127.0.0.1:8787
+```
+
+alc answers only to names you allowed. Loopback is always allowed, and
+`--bind-lan` adds this machine's own addresses; `alc remote allow-host` adds a
+tunnel's hostname, exactly or as `*.example.com` for a tunnel that renames itself
+every run. Existing hubs keep their launch-time allowlist; let their sessions
+finish before an explicit owner stop/restart to pick up a new name. A drain ends
+those sessions and is not an update step. With multiple owners, tunnel the port
+from the intended owner's link, not necessarily 8787. A LAN link is plain HTTP,
+so the token crosses your local network in clear — fine at home, use a tunnel
+on café Wi-Fi.
+
+### Permissions
+
+alc has five rungs, loosest last: `plan` (reads and plans, writes nothing), `ask`
+(asks before anything that changes the world), `auto-edit` (edits files without
+asking, still asks for commands), `auto` (acts inside whatever sandbox the agent
+has), and `full` (no gate). `--permission <rung>` sets where a session starts.
+
+A shared session with no `--permission` starts at **ask** on the four agents
+whose flags alc verified against a real `--help` — Claude Code, Codex, OpenCode,
+and agy, whose own default already asks, so alc adds no flag to it — so a link
+opened on a phone is not looking at an autonomous agent there. Pi, Copilot CLI,
+Goose, Qwen Code, and Kimi launch exactly as they would on their own, because guessing
+an unverified flag name into argv produces a session that will not start rather
+than a tightened one; name the rung with `--permission` to have alc pass the
+documented flag anyway, except on Pi, which has no permission model to set. The
+page can change the rung while the session runs, up to a ceiling — `auto-edit` by default, set on the **Sharing
+& remote** screen of `alc config`. Tightening is never gated.
+
+Past the ceiling, the page shows a ticket and you type it at a terminal on the
+host machine:
+
+```sh
+alc confirm 7QK2M9XB4T
+```
+
+It prints `granted: <rung>`, and the page may apply that one change within the
+next minute. Tickets expire unredeemed after five minutes, and `alc confirm`
+refuses to run without a controlling terminal — which is the point: the agent
+cannot redeem its own ticket.
+
+The nine agents do not agree on what a permission mode is, so alc records for
+each one whether it verified the flags against a real `--help`, whether the mode
+can be changed mid-session at all (Kimi and agy are relaunch-only; Pi has no permission
+model and is not sandboxed), and whether the current mode was set at launch, read
+back off the screen, or merely assumed. The page shows the agent's own word
+beside alc's rung — `auto-edit · Accept edits` — because a single
+shared label would mislead.
+
+A shared `alc --codex claude` runs on the same background bridge as an unshared
+one.
+
+### What this actually grants
+
+A page that types into a coding agent is remote code execution on your machine,
+so it is worth being plain about the model:
+
+- The link's fragment (`#k=…`) **is** the credential. Anyone who has it can type
+  into the session. It never reaches the server, a proxy, or an access log — but
+  it is in your clipboard, so treat it like a password.
+- alc checks the `Host` header down to the port, requires an `Origin` on the
+  WebSocket upgrade, and compares tokens in constant time. That is what stops a
+  page at some other origin from driving your agent through your browser.
+- The browser's HTTP plane and the channel that creates processes are different
+  sockets with different credentials — on Unix the control channel is a `0600`
+  unix socket in a `0700` directory, so a browser token cannot reach session
+  creation.
+- A shared session is screen sharing. alc masks the API keys **it** put into the
+  environment, but anything else the agent prints, a viewer sees.
+- The page's file panel reads the session's folder and nothing above it, for a
+  link that can type only; a view-only link is refused. Files are capped at
+  512 KB and masked the same way the screen is.
+- Mods in `web/mods/` run in the page with its link, unsandboxed — the same
+  trust as a script on your PATH. Only enabled `mod.js` files run, by hash; a
+  view-only link can neither save settings nor type through a mod. Never put a
+  secret in a mod: view-only links download mod files too.
+- `alc remote token --rotate` invalidates links for the selected runtime.
+- alc reads no configuration from the working repository, so a checked-in file
+  can never turn sharing on.
+
+`--share` needs a real terminal on both ends and refuses when input or output is
+redirected, so a scripted `alc claude -p … > out.txt` keeps behaving exactly as it
+does today.
+
+## Configuration
+
+| Platform | Config directory |
+| --- | --- |
+| Windows | `%APPDATA%\alc` |
+| macOS/Linux | `${XDG_CONFIG_HOME:-$HOME/.config}/alc` |
+
+- `config.toml`: provider metadata, models, defaults, URLs, and env-var names.
+- `credentials.toml`: locally saved API keys. On Unix, alc writes this file with
+  mode `0600`; on Windows it lives under the current user's AppData.
+- `web/`: the remote page's `settings.json`, `themes/` and `mods/`, with an
+  `AGENTS.md` reference and `examples/`; `alc remote web check` validates it.
+- `remote.toml`: sharing — on/off, share-by-default, bind address, port, and the
+  permission ceiling. `alc config show` prints the sharing and share-by-default
+  values as comments at the end.
+- `usage.jsonl`: launches and metadata-only requests from the Codex translation
+  bridge and opt-in `--metrics` observation. `alc usage` / `alc tps` read it;
+  deleting it resets alc records, not native Claude/Codex histories.
+- `run/` for legacy, `run/g/<shortid>/` for new generations: host sockets,
+  ports, tokens, and frozen routes. Provider configuration, credentials, and
+  `usage.jsonl` stay shared in the real config directory; `remote.toml` remains
+  shared policy, not a generation-specific copy.
+- Runtime `bridge.observer-key`: independent owner-only local observer secret
+  (`0600` on Unix), not an API key. Authenticates host/control challenges and
+  AEAD-seals durable Claude metrics credentials to a frozen route/current host
+  instance; never published by the handshake or sent upstream. It does not
+  provide TLS or local request-body confidentiality.
+- `pricing.toml`: optional exact token-rate overrides, separate from
+  `config.toml`: `version = 1`, `currency = "USD"`,
+  `units = "USD-per-million-tokens"`, and `[[models]]` entries requiring
+  `provider`/`model`. Optional selectors are `profile`, `endpoint`, `tier`,
+  `context_min_tokens`, `context_max_tokens`, and exact `aliases`. Rates are
+  decimal strings `input`, `output`, `cache_read`, and either `cache_write` or
+  `cache_write_5m`/`cache_write_1h`, in USD per million tokens. Selected overrides
+  replace bundled scopes; omitted rates stay unknown. See the [full
+  schema](https://treeleaves30760.github.io/all-code/configuration#pricing-sidecar).
+
+Override the directory with `ALC_CONFIG_DIR`. Useful scripting commands:
+
+```sh
+alc config init
+alc config show
+alc config path
+alc config upsert codex --kind codex --model gpt-6.1-sol --effort low
+alc config upsert work --kind openrouter --model anthropic/claude-sonnet-4.6
+printf '%s' "$OPENROUTER_API_KEY" | alc config key work --stdin
+alc config set-default claude work
+alc config remove work
+```
+
+The TUI keys are shown at the bottom of every screen. `Tab`/`Shift+Tab`, or
+`1`/`2`/`3`, move between the three screens named in the header — Providers,
+Agent defaults, and Sharing & remote. On a Codex profile, `←`/`→` on the Model
+field opens the guided GPT model and effort chooser, which writes the launch
+defaults for `alc --codex claude`, and `←`/`→` on the Context row right after
+Reasoning effort switches between the `standard` and `max` window.
+
+Credential precedence, the full `alc config upsert` flag list, and the
+Codex-to-Claude setting precedence are in the
+[configuration guide](https://treeleaves30760.github.io/all-code/configuration).
+
+## Install
+
+### Windows PowerShell
+
+```powershell
+irm https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.ps1 | iex
+```
+
+### macOS
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.sh | sh
+```
+
+### Linux / WSL
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.sh | sh
+```
+
+The installer puts `alc` in `~/.local/bin` (Windows:
+`%USERPROFILE%\.local\bin`) and adds that directory to your user PATH when
+needed. On macOS/Linux, restart the terminal or source the profile named by the
+installer; PowerShell updates the current session and your User PATH. If PATH
+cannot be changed, the installer prints the exact directory to add manually. To
+install into a different directory, set `ALC_INSTALL_DIR`: on macOS and Linux a
+custom directory is never added to PATH for you, while on Windows it is added to
+your User PATH like the default one. The Windows installer supports Windows
+PowerShell 5.1 and PowerShell 7, including 32-bit PowerShell on 64-bit Windows.
+
+The verified payload is published through alc's internal install transaction.
+`alc` remains a full-binary stable entry point, not a second launcher executable;
+its adjacent `.alc/active.json` selects `.alc/generations/<digest>/alc` (Windows:
+`alc.exe`). After the initial migration, activation changes the manifest rather
+than replacing a locked Windows entry point. Keep the adjacent `.alc` directory.
+
+### Optional tmux setup
+
+After downloading, verifying SHA-256, and installing alc, the installer checks
+`tmux -V` for **3.2 or newer**. A compatible install is left alone; otherwise it
+tries to install or upgrade tmux using an existing system package manager:
+
+- **Windows:** WinGet, package `arndawg.tmux-windows`, user scope, without forcing
+  a CPU architecture. The automatic command accepts package and source
+  agreements and disables interaction. It skips psmux and non-native ports;
+  an old or unparseable first native port on PATH still blocks later ones.
+- **macOS:** Homebrew (`brew install tmux`, or `brew upgrade tmux` if already
+  installed). Homebrew is never run with sudo.
+- **Linux / WSL:** the first available `apt-get`, `dnf`, `yum`, `pacman`,
+  `zypper`, or `apk`. Non-root installs use cached sudo credentials, or ask for
+  them only via a controlling terminal when stdout or stderr is a terminal.
+  Package operations use noninteractive sudo and never read the piped script.
+  pacman does not refresh package indexes on its own, avoiding a partial upgrade.
+
+**tmux is only needed for `--tmux`, not ordinary alc or plain `--share`.** No
+Homebrew/WinGet bootstrap, source build, psmux removal, or tmux configuration
+changes are performed. Missing managers, unavailable privileges, unsupported
+packages/architectures, failed installs, and versions still hidden by an older
+PATH entry produce warnings and manual instructions; they do not fail the alc
+installation. The installer rechecks the version instead of assuming success.
+
+PowerShell appends new User/Machine PATH entries to the current session without
+replacing session-only entries. If tmux is still missing, open a new terminal
+and check `tmux -V` and `alc doctor`. Manual fallbacks (choose your platform):
+
+```powershell
+winget install --id arndawg.tmux-windows --exact
+```
+
+```sh
+brew install tmux                                      # macOS (upgrade if already installed)
+sudo apt-get update && sudo apt-get install -y tmux     # Debian / Ubuntu / WSL
+sudo dnf install -y tmux                               # Fedora / RHEL (or yum)
+sudo pacman -S --needed tmux                           # Arch; keep the system fully updated
+sudo zypper install tmux                               # openSUSE
+sudo apk add --upgrade tmux                            # Alpine
+```
+
+### Installer opt-outs
+
+`ALC_NO_TMUX_INSTALL=1` skips automatic tmux setup; `ALC_NO_PATH_UPDATE=1`
+separately stops **alc's own** PATH edits, including session PATH refresh.
+WinGet can still change persistent PATH itself. To avoid dependency-install
+side effects as well as installer PATH edits, set **both**:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.sh | ALC_NO_TMUX_INSTALL=1 ALC_NO_PATH_UPDATE=1 sh
+```
+
+```powershell
+$env:ALC_NO_TMUX_INSTALL = '1'
+$env:ALC_NO_PATH_UPDATE = '1'
+irm https://raw.githubusercontent.com/treeleaves30760/all-code/main/install.ps1 | iex
+# Optional: clear these overrides for future installs in this session.
+Remove-Item Env:ALC_NO_TMUX_INSTALL, Env:ALC_NO_PATH_UPDATE
+```
+
+### Updating
+
+```sh
+alc update --check
+alc update
+alc update --download-only "$HOME/alc-bundle"
+alc update --from "$HOME/alc-bundle" --offline
+alc update --rollback previous --offline
+```
+
+`alc update` selects the release for the current OS and CPU, verifies its
+published SHA-256 and packaged binary version, publishes an immutable generation,
+and atomically activates it. The stable front reads adjacent `.alc/active.json`;
+new invocations enter `.alc/generations/<digest>/alc[.exe]`. A process already
+in a generation stays there, and helper/daemon executables are hash-pinned.
+Existing agents, hosts, routes, and sessions are not restarted or drained.
+New sessions use their own generation's hub/bridge; no blanket stop/relaunch
+is needed. Old generations are retained without automatic garbage collection.
+
+- `--check` checks online without applying. `--force` reinstalls the selected
+  release even when its version is current.
+- `--download-only BUNDLE_DIR` saves a verified release bundle without applying
+  it, including when the latest version is already installed. The destination
+  must be new or empty; keep each bundle separate.
+- `--from BUNDLE_DIR --offline` applies locally with **no GitHub/network lookup**.
+  Bounded validation checks bundle metadata, archive checksum, platform, and
+  packaged binary version before activation. Keep the complete bundle together.
+- `--rollback previous` or `--rollback <digest>` activates a retained generation;
+  it does not revert configuration, credentials, or the shared usage ledger.
+
+Runtime state is separate from those real shared files: new hosts use
+`<config>/run/g/<shortid>`, legacy hosts keep `<config>/run`. `alc sessions`
+finds both, with a page link per owner. Use global `--runtime <id|legacy>` to
+explicitly stop an owner; a stop can interrupt long requests, and a hub drain
+ends its sessions.
+
+**Scope and migration limits.** `alc --codex update` still updates **alc**, not
+Codex CLI. Self-update does not update Claude Code, any other agent, tmux, or
+PATH. Shared credentials still rotate; older hosts and external Codex do not
+cooperate with the new refresh lock. Updating external packages or rotating
+auth is not guaranteed to leave running work unaffected.
+
+An old 2.0.0 updater cannot be fixed retroactively by the payload it downloads,
+especially its Windows exit-time finalizer. Use a 2.0.1-or-newer installer for the
+one-time stable-front migration. Unix can atomically replace the old front once;
+if Windows has it locked, migration fails explicitly, retains the verified
+payload for retry, and does not activate it, kill processes, or schedule a new
+finalizer. Wait until old processes exit naturally and retry, or install
+side-by-side in a different `ALC_INSTALL_DIR` and invoke that path explicitly.
+A pending migration is not a completed update.
+
+## Build from source
+
+Rust 1.88 or newer:
+
+```sh
+cargo build --release --locked
+```
+
+The Codex bridge is alc's own code (`src/bridge/`), compiled into the binary, so
+a source build is a complete one — `alc --codex <agent>` works with nothing else
+installed. Release archives ship one binary, `alc`, for the same reason, with the
+license notices (`LICENSE`, `THIRD_PARTY.md`, `THIRD_PARTY_LICENSES/`) beside it.
+
+Useful development checks:
+
+```sh
+cargo fmt -- --check
+cargo clippy --all-targets --all-features -- -D warnings
+cargo test --all-targets
+```
+
+## Uninstall
+
+Remove `alc` and its adjacent `.alc` install directory only after sessions and
+helpers using retained generations are done. Then optionally remove the config
+directory listed by `alc config path`. Removing the config also deletes locally
+saved API keys and cannot be undone.
+
+## License
+
+`alc` is MIT licensed. Bundled third-party notices are in
+[THIRD_PARTY.md](THIRD_PARTY.md).

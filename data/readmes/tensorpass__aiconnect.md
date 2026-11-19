@@ -1,5 +1,33 @@
 # AI Connect: the SDK for website AI that runs on your visitors' AI accounts
 
+[![npm](https://img.shields.io/npm/v/@tensorpass/aiconnect)](https://www.npmjs.com/package/@tensorpass/aiconnect)
+[![Licence](https://img.shields.io/github/license/tensorpass/aiconnect)](LICENSE)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/gkmgamdkmlidbjfmheeghkcjdofdafge?label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/ai-wallet/gkmgamdkmlidbjfmheeghkcjdofdafge)
+[![Firefox Add-ons](https://img.shields.io/amo/v/ai-wallet?label=Firefox%20Add-ons)](https://addons.mozilla.org/en-US/firefox/addon/ai-wallet/)
+
+**Add an AI chat to your website that answers on each visitor's own ChatGPT, Claude or Gemini plan. Your site pays nothing per answer and holds no provider key.**
+
+[Try it live](https://tensorpass.app) · [Docs](https://tensorpass.app/docs) · [AI Wallet for Chrome](https://chromewebstore.google.com/detail/ai-wallet/gkmgamdkmlidbjfmheeghkcjdofdafge) · [AI Wallet for Firefox](https://addons.mozilla.org/en-US/firefox/addon/ai-wallet/)
+
+## Try it in one minute
+
+1. Add AI Wallet to your browser from the [Chrome Web Store](https://chromewebstore.google.com/detail/ai-wallet/gkmgamdkmlidbjfmheeghkcjdofdafge) (Chrome, Edge, Brave, Opera) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ai-wallet/).
+2. Connect an AI account in the wallet: ChatGPT, Claude, Gemini, Grok, OpenRouter, an API key, or TensorPass's own plan.
+3. Open https://tensorpass.app and ask the chat a question. The answer runs on your account and reads the docs through the site's MCP server.
+
+## Add it to your site
+
+One script tag and one element add a chat to any page, with the script served from npm by jsDelivr:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@tensorpass/aiconnect-elements@0.1/dist/aiconnect-elements.js" defer></script>
+<aiconnect-chat variant="popup" mcp="/api/mcp" system="You answer questions about this site."></aiconnect-chat>
+```
+
+React, Next.js, Vue, Svelte, WordPress and Shopify have their own quickstarts below and in the [docs](https://tensorpass.app/docs). If AI Connect is useful to you, a star on this repository helps other developers find it.
+
+## What AI Connect is
+
 AI Connect is the open source SDK of [TensorPass](https://tensorpass.app) that lets the AI features of a website run on the AI account each visitor already pays for. The visitor holds a ChatGPT, Claude, Gemini, Grok or OpenRouter account, or an API key, in AI Wallet, a browser extension. Each request from your site goes through the wallet to the provider, signed with the visitor's own account. The inference costs your site nothing. Your site needs no provider key, and the visitor's credentials stay in the wallet.
 
 The full documentation lives at [tensorpass.app/docs](https://tensorpass.app/docs).
@@ -67,7 +95,7 @@ npm install @tensorpass/aiconnect @tensorpass/aiconnect-react
 
 `@tensorpass/aiconnect-react` depends on `@tensorpass/aiconnect-design`, so you do not install the tokens yourself. React 19 or later is needed for the React package.
 
-To try a page, you need a desktop Chrome, Edge, Brave or Opera with AI Wallet installed and one account connected. The [AI Wallet page](https://tensorpass.app/wallet) lists where each browser gets the extension.
+To try a page, you need a desktop Chrome, Edge, Brave, Opera or Firefox with AI Wallet installed and one account connected. AI Wallet is on the [Chrome Web Store](https://chromewebstore.google.com/detail/ai-wallet/gkmgamdkmlidbjfmheeghkcjdofdafge) and on [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ai-wallet/), and the [AI Wallet page](https://tensorpass.app/wallet) names the store for each browser.
 
 ## Quickstart with React
 
@@ -337,7 +365,7 @@ AI Wallet holds the accounts and translates one chat format to each provider's A
 
 The [providers page](https://tensorpass.app/docs/providers) gives each account's default model, its model list and how its sign in finishes. A missing provider can be proposed with the [connector form](https://tensorpass.app/connectors/propose).
 
-AI Wallet runs in desktop Chrome, Edge, Brave and Opera. Firefox and Safari versions are planned. In Safari, on a Mac, an iPhone or an iPad, the install button reads "Add to Safari", and a line under it tells a visitor who already added the wallet to click AI Wallet in Safari's toolbar and choose Always Allow on Every Website among Safari's own options, since Safari runs an extension only on the sites the visitor allowed. In any other browser of a phone, the install button reads "Install AI Wallet" and leads to the AI Wallet page.
+AI Wallet runs in desktop Chrome, Edge, Brave and Opera from the [Chrome Web Store](https://chromewebstore.google.com/detail/ai-wallet/gkmgamdkmlidbjfmheeghkcjdofdafge), and in desktop Firefox from [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/ai-wallet/). A Safari version is planned. In Safari, on a Mac, an iPhone or an iPad, the install button reads "Add to Safari", and a line under it tells a visitor who already added the wallet to click AI Wallet in Safari's toolbar and choose Always Allow on Every Website among Safari's own options, since Safari runs an extension only on the sites the visitor allowed. In any other browser of a phone, the install button reads "Install AI Wallet" and leads to the AI Wallet page.
 
 ## Security and privacy model
 
@@ -402,7 +430,7 @@ A module needs tools only if your AI feature reads your site's data. Give the mo
 
 ### Which browsers does AI Wallet support?
 
-Desktop Chrome, Edge, Brave and Opera run the same build. Firefox and Safari versions are planned.
+Desktop Chrome, Edge, Brave and Opera run the same build from the Chrome Web Store, and desktop Firefox runs its own build from Firefox Add-ons. A Safari version is planned.
 
 ### Who sees the conversation?
 

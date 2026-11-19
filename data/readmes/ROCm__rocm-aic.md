@@ -2,16 +2,16 @@
 
 [![MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/ROCm/rocm-aic/blob/main/LICENSE.md)
 [![Platform](https://img.shields.io/badge/platform-linux-lightgrey.svg)](README.md)
-[![ROCm](https://img.shields.io/badge/ROCm-7.14.1-green.svg)](https://rocm.docs.amd.com)
+[![ROCm](https://img.shields.io/badge/ROCm-7.14.1-green.svg)](https://rocm.docs.amd.com/en/docs-7.14.1/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.13%20%28ec5f3b1%29-ee4c2c.svg)](https://github.com/ROCm/pytorch/tree/ec5f3b1effb14f0e36b66bab4db1c9b49b278f82)
 [![AITER](https://img.shields.io/badge/AITER-v0.1.22.post1-blue.svg)](https://github.com/ROCm/aiter/tree/v0.1.22.post1)
-[![vLLM](https://img.shields.io/badge/vLLM-v0.29.0-blue.svg)](https://github.com/vllm-project/vllm)
-[![LMCache](https://img.shields.io/badge/LMCache-v0.5.6-blue.svg)](https://github.com/LMCache/LMCache)
-[![NIXL](https://img.shields.io/badge/NIXL-v1.4.1-blue.svg)](https://github.com/ai-dynamo/nixl)
-[![hsa-snoop](https://img.shields.io/badge/hsa--snoop-v1.2.0-blue.svg)](https://github.com/sbates130272/hsa-snoop)
-[![rocjitsu](https://img.shields.io/badge/rocjitsu-98f6a72-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-rocm-rocjitsu)
-[![qemu-vfu](https://img.shields.io/badge/qemu--vfu-f91f120-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-qemu-libvfio-user)
-[![rocjitsu-guest](https://img.shields.io/badge/guest-resolute%2Fc079195-red.svg)](https://github.com/sbates130272/batesste-ci-images/tree/main/ubuntu-qcow2-gen)
+[![vLLM](https://img.shields.io/badge/vLLM-v0.29.0-blue.svg)](https://github.com/vllm-project/vllm/tree/v0.29.0)
+[![LMCache](https://img.shields.io/badge/LMCache-v0.5.6-blue.svg)](https://github.com/LMCache/LMCache/tree/v0.5.6)
+[![NIXL](https://img.shields.io/badge/NIXL-v1.4.1-blue.svg)](https://github.com/ai-dynamo/nixl/tree/v1.4.1)
+[![hsa-snoop](https://img.shields.io/badge/hsa--snoop-v1.2.0-blue.svg)](https://github.com/sbates130272/hsa-snoop/tree/v1.2.0)
+[![rocjitsu](https://img.shields.io/badge/rocjitsu-98f6a72-red.svg)](https://github.com/ROCm/rocm-systems/commit/98f6a72dcc49a5f809593deacbe5c9df89cde3b3)
+[![qemu-vfu](https://img.shields.io/badge/qemu--vfu-f91f120-red.svg)](https://github.com/sbates130272/qemu/commit/f91f12068854848cdb248f2a4636ddfe41f3283b)
+[![rocjitsu-guest](https://img.shields.io/badge/guest-resolute%2Fc079195-red.svg)](https://github.com/sbates130272/qemu-minimal/commit/c0791954aec508bfd3f26d11d6960f279d4b175a)
 [![Spelling](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-spell-check.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-spell-check.yml)
 [![Lint](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-lint-check.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-lint-check.yml)
 [![Export Tarball](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-export-tarball.yml/badge.svg)](https://github.com/ROCm/rocm-aic/actions/workflows/rocm-aic-export-tarball.yml)
@@ -52,7 +52,7 @@ platform.
 | PyTorch | `ROCm/pytorch` (source build) | `2.13 (ec5f3b1)` |
 | vLLM | `github.com/vllm-project/vllm` (source build) | `v0.29.0` + 3 AMD patches |
 | AITER | `ROCm/aiter` (source build) | `v0.1.22.post1` (vLLM ROCm-validated) |
-| FlashAttention | `Dao-AILab/flash-attention` (source build) | `0e60e394` (vLLM ROCm-validated) |
+| FlashAttention | `Dao-AILab/flash-attention` (source build) | `v2.8.3.post1` |
 | LMCache | `LMCache/LMCache` (upstream) | `v0.5.6` + 16 AMD patches |
 | NIXL | `ai-dynamo/nixl` (upstream) | `v1.4.1` + `nixl-rocm-ais-mt.patch` |
 | hsa-snoop | `sbates130272/hsa-snoop` (source build) | `v1.2.0` |

@@ -9,7 +9,7 @@
 </div>
 <h1 align="center">GPT-QModel ⚡</h1>
 </p>
-<p align="center"><strong>An extensible platform for LLM quantization, validation, and deployment.</strong><br>Compress, evaluate, and run models across supported GPUs, accelerators, and CPUs.</p>
+<p align="center"><strong>An extensible platform for LLM quantization.</strong><br>Compress, evaluate, and run models across supported GPUs, accelerators, and CPUs.</p>
 <p align="center">
     <a href="https://github.com/ModelCloud/GPTQModel/releases" style="text-decoration:none;"><img alt="GitHub release" src="https://img.shields.io/github/release/ModelCloud/GPTQModel.svg"></a>
     <a href="https://pypi.org/project/gptqmodel/" style="text-decoration:none;"><img alt="PyPI - Version" src="https://img.shields.io/pypi/v/gptqmodel"></a>
@@ -35,10 +35,10 @@
 
 **7.11.4**
 
-- **Quantization:** SmoothMSE keeps the unclipped range when clipping would increase error, and QQQ's GSQ calibration now uses the same FP32 activation scales as inference. AWQ samples routed-expert activations uniformly across the calibration set instead of favoring later batches. Paro retains mixed-shape batches, and SenseNova-Loop calibrates on every pass through its repeated layers.
+- **Quantization:** SmoothMSE weights its shrink search by input saliency (the Hessian diagonal for GPTQ/QQQ fallbacks, weight magnitude for calibration-free RTN) and keeps the unclipped range when clipping would increase that weighted error; QQQ's GSQ calibration now uses the same FP32 activation scales as inference. AWQ samples routed-expert activations uniformly across the calibration set instead of favoring later batches. Paro retains mixed-shape batches, and SenseNova-Loop calibrates on every pass through its repeated layers.
 - **Quantization memory:** AWQ and Paro limit how many activation rows they retain. AWQ reuses its expert sampling buffers and scales experts in place across GPUs, while EXL3 spreads expert Hessians across the configured GPU pool. [ROCm allocator defaults](docs/rocm-default-environment.md) reduce peak reserved VRAM for wide MACaQ layers.
 - **Inference:** Marlin [speeds up large-batch prefill](docs/marlin-hybrid-schedule.md) and fixes GPTQ/AWQ output errors under GPU contention and MXFP8/MXFP4 execution. Portable QQQ and VPTQ Torch kernels now support compiled generation. Fixed crashes when loading another model during compiled inference and improved EXL3 BF16 execution and Paro dispatch for long prefills.
-- **Compat:** Fixed Transformers `device_map="auto"` when GPTQ, RTN, or AWQ layers spill to CPU or disk. Checkpoint loads preserve required FP32 tensors, and re-saves preserve quantized embeddings and output heads. Marlin now requires [NVIDIA Ampere or newer](docs/support-matrix.md).
+- **Compat:** Fixed Transformers `device_map="auto"` when GPTQ, RTN, or AWQ layers spill to CPU or disk. Checkpoint loads preserve required FP32 tensors, and re-saves preserve [quantized embeddings and output heads](docs/embedding-checkpoint-shard-replacement.md). Marlin now requires [NVIDIA Ampere or newer](docs/support-matrix.md).
 
 **7.11.2**
 
@@ -91,13 +91,13 @@ compatible deployment engine.
 | **[MACaQ](https://github.com/ModelCloud/GPTQModel/blob/main/docs/macaq.md)** | Calibrated MXFP4 weights and activations, with native W4A4 inference and a W4A16 option. |
 | **[QQQ](https://github.com/ModelCloud/GPTQModel/wiki/QQQ)** | INT4 weights with dynamic INT8 activation quantization for W4A8 inference. |
 | **[GGUF](https://github.com/ModelCloud/GPTQModel/wiki/GGUF)** | Block-quantized checkpoints for GGUF-oriented workflows and native inference. [Bits and subtype resolution](docs/gguf-config-resolution.md). [Torch fused dispatch](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gguf-torch-fused-dispatch.md). [CPU zero-copy packed weights](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gguf-kernel-selection.md#cpu-zero-copy-packed-weight). [mmap pages after the aligned copy](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gguf-kernel-selection.md#mmap-pages-after-the-aligned-copy). [Checkpoint load policy](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gguf-load-policy.md). [Q8_1 auxiliary-field range](https://github.com/ModelCloud/GPTQModel/blob/main/docs/gguf-q8-1-auxiliary-field-range.md). |
-| **[FP8](https://github.com/ModelCloud/GPTQModel/wiki/FP8-and-NVFP4)** | Floating-point weight quantization with scaled E4M3/E5M2 formats. Native inference is weight-only W8A16; [W8A8 is an explicit per-token opt-in](docs/fp8-weight-only-dispatch.md). [Packed-weight load and move lifecycle](docs/fp8-packed-weight-lifecycle.md). [Lean decode epilogue](docs/fp8-lean-decode-epilogue.md).  NVFP4 decode keeps the [effective-weight range](docs/fp4-effective-weight-range.md) instead of rounding the reconstructed weight to the activation dtype. |
+| **[FP8](https://github.com/ModelCloud/GPTQModel/wiki/FP8-and-NVFP4)** | Floating-point weight quantization with scaled E4M3/E5M2 formats. Native inference is weight-only W8A16; [W8A8 is an explicit per-token opt-in](docs/fp8-weight-only-dispatch.md). [Packed-weight load and move lifecycle](docs/fp8-packed-weight-lifecycle.md). [Lean decode epilogue](docs/fp8-lean-decode-epilogue.md). [Block-scale decode](docs/fp8-block-scale-decode.md).  NVFP4 decode keeps the [effective-weight range](docs/fp4-effective-weight-range.md) instead of rounding the reconstructed weight to the activation dtype. |
 | **[EXL3](https://github.com/ModelCloud/GPTQModel/wiki/EXL3)** | Variable-rate compression with target average bits per weight and mixed-tier allocation. [BF16 activation dispatch and the fused pre-scale](docs/exl3-wide-activation-dispatch.md). |
 | **[VPTQ](https://github.com/ModelCloud/GPTQModel/wiki/VPTQ)** | Vector-codebook quantization for low-bit model compression. [Runtime kernel selection](docs/vptq.md#inference-and-checkpoint-compatibility). |
 | **[BitsAndBytes](https://github.com/ModelCloud/GPTQModel/wiki/BitsAndBytes)** | NF4/FP4 and INT8 quantization options. |
 | **[NF12](https://github.com/ModelCloud/GPTQModel/wiki/NF12)** | Lossless BF16 weight compression, distinct from lossy low-bit quantization. |
 
-Quantized kernels keep only packed weights resident; per-call QQQ and EXL3 kernel scratch, one quantization stream and one tile-scratch pair per device, per-device plan lifetimes and the single GGUF CUDA weight copy are documented in [kernel scratch lifecycle](docs/kernel-scratch-lifecycle.md). CPU layer packing quantizes and packs each bounded input block in one shift/reduce pass; see [CPU block packing](docs/cpu-block-packing.md).
+Quantized kernels keep only packed weights resident; per-call QQQ and EXL3 kernel scratch, one quantization stream and one tile-scratch pair per device, per-device plan lifetimes and the single GGUF CUDA weight copy are documented in [kernel scratch lifecycle](docs/kernel-scratch-lifecycle.md). CPU layer packing quantizes and packs each bounded input block in one shift/reduce pass; see [CPU block packing](docs/cpu-block-packing.md). Compiled CPU int4pack forwards decode the live runtime layout for grad-requiring calls; see [compiled CPU int4pack gradient fallback](docs/cpu-int4pack-compiled-grad.md).
 
 ### Control, scale, and quality ⚙️
 
@@ -125,7 +125,7 @@ Quantized kernels keep only packed weights resident; per-call QQQ and EXL3 kerne
   ([meta fused-expert shell](docs/quantized-moe-reload-meta-shell.md)).
   Distributed EXL3 workflows support durable replay and resume.
 - **Recover accuracy.** Use [GSQ](https://github.com/ModelCloud/GPTQModel/wiki/GSQ) refinement, [EoRA](https://github.com/ModelCloud/GPTQModel/wiki/EoRA) low-rank compensation, [rotation](https://github.com/ModelCloud/GPTQModel/wiki/Rotation-Smoothing-and-Norm-Tuning#rotations),
-  [smoothing](https://github.com/ModelCloud/GPTQModel/wiki/Rotation-Smoothing-and-Norm-Tuning#weight-smoothing), and [norm tuning](https://github.com/ModelCloud/GPTQModel/wiki/Rotation-Smoothing-and-Norm-Tuning#post-quantization-norm-tuning) for supported recipes. [LoRA](https://github.com/ModelCloud/GPTQModel/blob/main/docs/peft.md) training and adapter
+  [smoothing](https://github.com/ModelCloud/GPTQModel/wiki/Rotation-Smoothing-and-Norm-Tuning#weight-smoothing) (see the [smoother applicability contract](docs/smoother-applicability.md)), and [norm tuning](https://github.com/ModelCloud/GPTQModel/wiki/Rotation-Smoothing-and-Norm-Tuning#post-quantization-norm-tuning) for supported recipes. [LoRA](https://github.com/ModelCloud/GPTQModel/blob/main/docs/peft.md) training and adapter
   loading support further task adaptation; exported EoRA `rank_pattern` keys follow the [adapter rank-pattern contract](docs/adapter-rank-pattern-matching.md) so PEFT builds the trained rank per module. [Rotation model support](https://github.com/ModelCloud/GPTQModel/blob/main/docs/rotation-model-support.md) lists the exact definitions that opt in. AWQ GSQ uses the
   [packed-code scoring contract](docs/gsq-awq-code-recovery.md) to evaluate exported candidates.
   QQQ inference and GSQ calibration share one [activation INT8 grid contract](docs/qqq-activation-grid.md). The fused relaxation kernel keeps the [eager precision contract](docs/gsq-fused-relaxation-precision.md)

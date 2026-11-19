@@ -277,6 +277,8 @@ App 免费，代码以 MIT 协议开源，商用需要先取得授权，见[许�
 
 <p align="center">微信扫码加入 Fish Pocket 交流群。</p>
 
+<p align="center">也可以加入我们的 <a href="https://discord.gg/VSzN4jUwWm">Discord 社区</a>。</p>
+
 ## 参与贡献
 
 欢迎提 issue 和 PR，让你的 Agent 看 [CONTRIBUTING.md](CONTRIBUTING.md)。

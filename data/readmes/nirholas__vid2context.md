@@ -1,8 +1,10 @@
 # vid2context
 
-[![npm](https://img.shields.io/npm/v/vid2context-mcp?label=vid2context-mcp)](https://www.npmjs.com/package/vid2context-mcp) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![npm](https://img.shields.io/npm/v/vid2context?label=vid2context)](https://www.npmjs.com/package/vid2context) [![npm](https://img.shields.io/npm/v/vid2context-mcp?label=vid2context-mcp)](https://www.npmjs.com/package/vid2context-mcp) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![Node 22+](https://img.shields.io/badge/node-%3E%3D22-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org)
 
 **Turn any video into context for AI agents.** An MCP server, CLI, HTTP API and library that gives Claude, ChatGPT, Cursor, VS Code Copilot and any other agent the transcript, metadata and chapters of a video, playlist, podcast or media file, with timestamps it can cite.
+
+**Try it now, no install:** paste a link into [vid2context.com/app](https://vid2context.com/app/), or run `npx vid2context <link>` (CLI) or `npx vid2context-mcp` (MCP server). Works with YouTube, X (Twitter) posts, podcasts, Bilibili, Vimeo, Loom, the 1,000+ sites yt-dlp supports, and local files.
 
 [![The vid2context web app: a YouTube link goes in, and the transcript, SRT captions, chapters and a context pack for agents come out](docs/demo/web-app.gif)](https://vid2context.com)
 
@@ -53,7 +55,7 @@ Attempts:
 
 ## Status
 
-First release (0.1.0), on npm as [`vid2context-mcp`](https://www.npmjs.com/package/vid2context-mcp) and [`vid2context`](https://www.npmjs.com/package/vid2context). Everything below is built and covered by tests that replay real recorded responses.
+Version 0.2.0 ([release notes](https://github.com/nirholas/vid2context/releases/tag/v0.2.0)), on npm as [`vid2context-mcp`](https://www.npmjs.com/package/vid2context-mcp) and [`vid2context`](https://www.npmjs.com/package/vid2context). Everything below is built and covered by tests that replay real recorded responses.
 
 | Area | What you get |
 | --- | --- |
@@ -308,6 +310,10 @@ Next up: video mode (a multimodal model watches the video, so on-screen action i
 **What if a video has no captions?** vid2context downloads the audio and runs speech-to-text, preferring a local Whisper server, then free tiers such as Groq, then keyless hosts.
 
 **Can I keep AI processing on my machine?** Point it at a local speech-to-text server and a local LLM and set `VID2CONTEXT_POLICY=local-only`. No hosted AI service is used; fetching a YouTube video still needs the network, a local file does not.
+
+**Can it transcribe X (Twitter) videos?** Yes, from a post link with no X account or key: creator captions when the poster uploaded them, otherwise speech-to-text on the post's audio, plus direct links to every MP4 quality. Try it on [vid2context.com/app](https://vid2context.com/app/) or see [docs/guides/x.md](docs/guides/x.md).
+
+**How is it different from youtube-transcript-api or other YouTube MCP servers?** Those fetch YouTube captions. vid2context also transcribes videos that have none, reads X, podcasts and 1,000+ other sites, keeps the raw transcript next to any summary, and lets agents read long videos chapter by chapter with citations. When a smaller tool is the better fit: [docs/comparison.md](docs/comparison.md).
 
 **Is it a YouTube transcript API?** Yes: a library, a CLI and an HTTP API with OpenAPI (`vid2context serve`, see [docs/guides/http-api.md](docs/guides/http-api.md)). It returns text, JSON and timestamps, keeps the raw transcript, and records every provider it tried.
 

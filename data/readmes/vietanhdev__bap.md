@@ -311,7 +311,7 @@ camera paused. `GET /api/perf` reports per-task CPU, stack headroom, heap, uptim
 
 - **The API key stays on the device** (NVS, or built in from `secrets/`). The browser only sees a
   masked key, and the device sends it only to Google over TLS. Anyone with the device or your built
-  `xiaozhi.bin` can read it, so use a dedicated key with a quota and never share built binaries.
+  `bap.bin` can read it, so use a dedicated key with a quota and never share built binaries.
 - **The settings page is LAN-only**, with an optional password (HTTP Basic, salted and iterated
   SHA-256). Every change needs an `X-Bap` header, which blocks cross-site form posts. Do not expose
   port 80 to the internet.

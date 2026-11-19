@@ -76,8 +76,8 @@ The crate was extracted from [`codex-desktop-linux`](https://github.com/avifenes
 | **Input** | `click` | Click by `element_index`, semantic selector (`role`/`name`/`text`/`states`), or desktop/window-relative coordinates (`left`/`right`/`middle`, `click_count`). |
 | | `drag` | Desktop coordinate drag from `(start_x, start_y)` to `(end_x, end_y)`. |
 | | `scroll` | Page-based vertical/horizontal scroll on an element, window, or pixel coordinate. |
-| | `press_key` | Single keys or chords (`Ctrl+L`, `Alt+F4`, `Return`), optionally focusing a target window or terminal first. |
-| | `type_text` | Literal text entry, optionally targeted at a window or terminal (`tty`, `terminal_pid`, `terminal_command`, `terminal_cwd`). |
+| | `press_key` | Single keys or chords (`Ctrl+L`, `Alt+F4`, `Return`), optionally focusing a target window or terminal first, or with `delivery: "background"` to an element, browser tab or terminal without moving keyboard focus. |
+| | `type_text` | Literal text entry, optionally targeted at a window or terminal (`tty`, `terminal_pid`, `terminal_command`, `terminal_cwd`), or with `delivery: "background"` to an element, browser tab or terminal without moving keyboard focus. |
 | **Semantic actions** | `perform_action` | Invoke any AT-SPI action exposed by an element (`Press`, `Activate`, `Toggle`, `Jump`, …); defaults to the primary action. |
 | | `set_value` | Write directly to a settable accessibility element (text fields, sliders, spinners). |
 | **Window management** | `activate_window` | Focus a window by `window_id`, `pid`, `app_id`, `wm_class`, `title`, or terminal selectors. |
@@ -151,6 +151,37 @@ An `app_id` may be a full desktop ID or its final dot-separated segment; matchin
 On X11, text input sends LF and CRLF line endings as Return, with one newline per CRLF pair.
 
 On GNOME, a read-only keymap preflight rejects the whole string before input if a character is absent or requires a modifier level Mutter cannot synthesize. The background reader cannot establish the active layout group, so every configured group must support the text. This can reject text that works in one of several groups. Then the text goes into the focused editable field of the verified target window through AT-SPI EditableText: it is inserted at the caret, replaces a selection, and counts as typed (`ok: true`) only when the field reads it back with the rest of its text unchanged (in a field over 4096 characters, the 32 on each side of the insert). The field must be in the AT-SPI window that matches the target and that window must be active, so a field left focused in another window of the app is not used. A password field, focus outside an editable field, and text with a newline, tab or other control character keep the refusal; send keys with `press_key`, or fill the field with `set_value`. The check parses the keymap in pure Rust, with no system XKB library, and stops after a two-second keymap read deadline. It does not cover held modifiers or a keymap changed concurrently with typing.
+
+### Background keyboard delivery
+
+`type_text` and `press_key` take `delivery: "background"` to reach a target without moving the user's keyboard focus ([#480](https://github.com/agent-sh/computer-use-linux/issues/480)). The target picks the route. Naming an element or a `browser_tab` selects background delivery on its own, and `delivery: "focus"` with one is refused. The result's `background` field says what happened: `{"requested": true, "used": true, "route": "..."}` when a background route delivered it.
+
+When no route serves the target because the desktop or app lacks one (below, "no route"), the call is not blocked. The first such call in a server session sends nothing and returns a notice: `ok: false` without `isError`, `background: {"requested": true, "used": false, "delivered": false, "reason": "...", "retry_to_continue": true}`, and a message with the reason (and the setting that would open a route, where there is one), that normal input moves the user's keyboard focus and pointer, and that [agent-workspace-linux](https://github.com/agent-sh/agent-workspace-linux) gives the agent its own session. Repeating the call sends it through normal focused input, as without `delivery`, and so does every later call with no route, with only `background: {"requested": true, "used": false}` in the result. For an element, focused input first gives the element keyboard focus with AT-SPI `GrabFocus` and then types into its window (the target fields, or the snapshot's window); for a `browser_tab`, it targets the one window whose title contains the tab's name (with window fields, that window must show it). With Hyprland background mode on, normal input to a window is the same sendkeystate route, so a call with no route there stays an error. A wrong, ambiguous or stale target (an unmatched or ambiguous element, tab, tty or window, a replaced snapshot, a terminal whose pty belongs to another devpts instance, a point outside the target window or screen), the X server's Ctrl+Alt+F-key and Ctrl+Alt+BackSpace chords on the agent seat, and a failure after input started stay errors.
+
+- **Element (AT-SPI).** Pass `element_index` with `snapshot_id`, `element_identifier`, or `role`/`name`/`states`, plus the app target to check the snapshot against, as for `set_value`. `type_text` inserts through EditableText at the element's caret, or at its end when the caret is not in it, and succeeds only when the field reads the text back with the rest unchanged. A selection is left alone and the caret is not moved. A line feed or tab goes in only on a multi-line element; other control characters have no route. A password field takes the text but cannot be read back, and the result says so, as with `set_value`. `press_key` runs the AT-SPI action the key means: Enter or space on a button or menu item, space on a check box, radio button or toggle, Enter on a link, and Enter on a single-line field that has an `activate` action. Other keys and chords with modifiers have no route there.
+- **Browser tab (DevTools).** Start Chrome, Chromium or an Electron app yourself with `--remote-debugging-port` and its own `--user-data-dir`, and set `COMPUTER_USE_LINUX_DEVTOOLS` to the port or to the path of its `DevToolsActivePort` file. The server connects only to that port on 127.0.0.1, only when its listener belongs to the same user, and never starts or restarts a browser. `browser_tab` names the tab: a target id, or text in one tab's URL or title. Text goes in with `Input.insertText` at the tab's focused element, as typing would, and an input or textarea must read it back. Keys go with `Input.dispatchKeyEvent`. The tab needs a focused field for text. Shortcuts the browser handles outside the page, such as Ctrl+T, do not run this way. A field inside a frame from another origin is refused.
+- **Terminal.** Pass `tty`, `terminal_pid`, `terminal_command`, `terminal_cwd`, or a terminal window. The server finds the program on that tty and tries, in order: kitty remote control (the `KITTY_LISTEN_ON` socket kitty gives its shells; needs `allow_remote_control` and `listen_on` in kitty.conf), `wezterm cli`, tmux (a pane on the tty, or the active pane of a client attached on it), GNU screen (the current window of a client on the tty, when no other client may be attached to its session; a screen window's own tty is refused, since window numbers can be swapped), TIOCSTI where `dev.tty.legacy_tiocsti` is 1 and the server has CAP_SYS_ADMIN, and the terminal's pty master through `pidfd_getfd` where ptrace rules allow it. The result names the channel it used. Text reaches kitty, wezterm and tmux on stdin and screen through a private file and its `^_` register, which is cleared after the paste, never as a process argument. A tty taken from a window must have its pty master held by that window's terminal, so a container's pts with the same number is refused. When nothing works, there is no route, and the reason names the terminal found and the setting that would open one. GNOME Terminal, Ptyxis and other VTE terminals and Ghostty have no remote input command, and Konsole's D-Bus route is not supported yet, so a program in them needs tmux or screen. Writing to `/dev/pts/N` only prints on the screen, so the server never does it.
+
+On Hyprland with `COMPUTER_USE_LINUX_HYPRLAND_BACKGROUND=1`, a window target with `delivery: "background"` goes through `send_key_state` as in background mode, and so does a terminal window that no terminal channel reaches.
+
+- **Whole window (agent seat).** A window target that is not an element, a browser tab or a terminal some channel above reaches goes through the agent's own keyboard focus, on desktops that ship one. On X11 the server adds an XInput 2 master pointer and keyboard named `computer-use-linux agent <pid>`, focuses the target with `XISetFocus` for that keyboard only, and types through its XTEST device; the user's master keeps its focus and cursor. Keys come from the user's keymap (first two levels), so a character it lacks has no route, and neither does a key or chord another client grabs on the root window (a window manager shortcut such as openbox's Alt+F4), since through the agent seat the grab would act on the user's session. The check takes and drops a passive grab of each key back to back; a key the user presses in that instant goes nowhere. On sway 1.10 and later the server creates an `ext-transient-seat-v1` seat, focuses the target on it with `zwlr_foreign_toplevel_handle_v1.activate`, and types through a virtual keyboard with its own keymap; `seat0` keeps its focus and its workspace (a target on a workspace the user is not viewing still gets the keys), and sway removes the seat when the server disconnects. Xwayland windows have no route, because Xwayland feeds every seat into one X keyboard that follows the X focus, and neither do scratchpad windows, because activating one shows it on the user's workspace; if seat0's focus moves anyway, no keys are sent. Alt and Super chords, and chords the sway config binds (its included files too), have no route, because sway runs its bindings for the agent seat too. The agent keymap uses keycodes above any real keyboard's, so `bindcode` and `bindsym --to-code` bindings never match an agent key. On Hyprland the route is `sendkeystate`, as in Hyprland background mode below, without the environment variable. On X11 the master appears on first use and goes away after ten idle minutes or when the server exits. On sway the transient seat lives for one call (each call waits 100 ms after creating it, so clients can bind the new seat before input arrives; a client busy for longer misses the input), so no other program sees it between calls: wtype, for one, binds the last seat it sees, and a password or autotype helper using it would otherwise type into the agent's window. The X11 master's name carries a window owned by the server's X connection, so a master left by a killed server is removed by the next one. When input fails partway, the result says it may have been partly delivered and the seat is rebuilt.
+
+`click` and `scroll` take `delivery: "background"` too, with `x` and `y` in screenshot capture pixels and a window target: the agent seat's pointer moves and clicks, and the user's pointer stays. The point must be over that window (on sway, on a visible workspace), or nothing is pressed. On X11 this needs a session with no window manager, because a window manager answers a click from any pointer by focusing that window for the user (openbox did); with one running, background clicks have no route and background keys still work. On sway the click also focuses the window on the agent seat only.
+
+| Desktop | Agent seat | Why |
+| --- | --- | --- |
+| X11 (EWMH window managers) | Keys; pointer only without a window manager | XInput 2 multi-pointer is part of the X server. Checked with xterm, GTK 3 and Chrome under openbox, and the pointer without a window manager. |
+| sway 1.10+ | Keys and pointer | [ext-transient-seat-v1](https://wayland.app/protocols/ext-transient-seat-v1) plus foreign-toplevel activation on a named seat ([sway view.c](https://github.com/swaywm/sway/blob/master/sway/tree/view.c)). GTK 3, GTK 4 and Chromium bind only the seats that exist when they start ([gdkdisplay-wayland.c](https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gdk/wayland/gdkdisplay-wayland.c), [wayland_seat.cc](https://source.chromium.org/chromium/chromium/src/+/main:ui/ozone/platform/wayland/host/wayland_seat.cc)), so they never see the agent seat and have no route; foot and other clients that bind new seats get the keys. Xwayland windows have no route. Older sway has no transient seats. |
+| Hyprland | Keys (`sendkeystate`, US layout) | One seat; `sendkeystate` is its per-window key dispatcher. No second pointer. |
+| GNOME | None | One seat, and Mutter has no per-window input request. |
+| KDE Plasma (KWin) | None | One `SeatInterface` and no per-window input request. |
+| COSMIC | None | cosmic-comp creates one seat and has no transient-seat protocol. |
+| niri | None | One seat and no transient-seat protocol. |
+| labwc, river-classic, other wlroots compositors | None | One seat (labwc activates foreign toplevels on it; river-classic lists multiple seats as a TODO). |
+
+Where there is no agent seat, a window-targeted background call has no route (the notice, then focused input); element, browser tab and terminal targets still work. For full isolation, with its own keyboard and pointer, run the app in an [agent-workspace-linux](https://github.com/agent-sh/agent-workspace-linux) workspace; the notice points there. `doctor` lists the routes this machine has in `capabilities.background_input` (`seat` when the agent seat is available) and the seat's route, pointer support or the reason it has none in `capabilities.background_seat`.
+
+Some clients mishandle a second `wl_seat` (Zed, [zed-industries/zed#66735](https://github.com/zed-industries/zed/issues/66735)); that is one more reason the sway seat exists only during a call. A menu the agent opens on sway closes when its call ends, since the seat that opened it goes away. While sway is in a binding mode other than `default`, background keys have no route, since the mode's bindings would take them.
 
 ### On-screen indicator
 
@@ -538,6 +569,7 @@ Most setups need none of these: the server and installers detect backends and pa
 | `CU_DISABLE_ABS_POINTER` | Set exactly to `1` to disable the uinput absolute pointer. Wayland coordinate actions then need the RemoteDesktop portal; they refuse input rather than use ydotool's relative-motion approximation. Native X11 fallback is unchanged. |
 | `COMPUTER_USE_LINUX_FORCE_PORTAL_POINTER` / `…_KEYBOARD` | Set exactly to `1` to prefer the RemoteDesktop portal on Wayland, skipping auto-detection. Pointer forcing skips the absolute uinput backend. Forced ydotool or XTEST keyboard overrides take precedence; KDE literal text keeps its clipboard route. Portal startup and text conversion failures return errors without replaying through ydotool. |
 | `COMPUTER_USE_LINUX_PORTAL_SCROLL_INVERT` | Set to `1` to reverse vertical scrolling through the RemoteDesktop portal. Defaults to normal direction on both GNOME and KDE Plasma; horizontal direction is unchanged. |
+| `COMPUTER_USE_LINUX_DEVTOOLS` | The loopback DevTools port of a browser you started with `--remote-debugging-port`, or the absolute path of its `DevToolsActivePort` file. With it, `type_text` and `press_key` with `browser_tab` type into that browser's tabs without focusing it. The server connects only to 127.0.0.1 and never starts a browser. Unset, `browser_tab` calls are refused. See [Background keyboard delivery](#background-keyboard-delivery). |
 | `COMPUTER_USE_LINUX_HYPRLAND_BACKGROUND` | Set exactly to `1` on Hyprland to work on a window without focusing it. `type_text` and `press_key` calls that name a target window send keys to it through Hyprland's `send_key_state` dispatcher instead of focusing it and typing, and `get_app_state` and `screenshot` capture an unfocused target alone with `grim -T` instead of raising it or using the portal. The user's focus, cursor and workspace do not change, so the target can sit on a hidden workspace. Text is mapped for a US layout: other keymaps and characters outside printable ASCII, tab and newline are refused before any key is sent. Browser accelerators such as Ctrl+R are ignored by an unfocused Chromium. Unset, input focuses the target as before. |
 | `COMPUTER_USE_LINUX_PERSIST_REMOTE_DESKTOP` | Set exactly to `1` to ask the RemoteDesktop portal to remember pointer and keyboard grants across processes. The first dialog still appears (on GNOME the remember box starts checked). Later processes reuse the single-use restore token from `Start`, stored mode `0600` under `$XDG_STATE_HOME/computer-use-linux/` (or `~/.local/state/computer-use-linux/`). Pointer and keyboard tokens are separate. Needs interface version 2. Unset, every new process is prompted. No effect when input is not using the portal. |
 | `COMPUTER_USE_LINUX_FORCE_YDOTOOL_POINTER` / `…_KEYBOARD` | Set exactly to `1` to always route pointer / keyboard through `ydotool`, skipping the portal and KDE clipboard paths; pointer forcing also skips the absolute uinput backend and native-X11 `xdotool` clicks, scrolls and drags. Coordinate pointer actions on Wayland then refuse input because ydotool cannot position them accurately; scrolling at the current pointer remains available. |
@@ -664,57 +696,4 @@ preserves application accessibility trees.
 
 If `doctor` is green and a specific tool still misbehaves, file an issue with the JSON output of `doctor` and the failing tool's request payload.
 
-For coordinate calibration, launch [the GTK4 probe](examples/coordinate_probe.py)
-in your test desktop and take a targeted screenshot. Choose the center of its
-green 10x10 square from that screenshot, convert by `scale`, and click relative
-to the same target window. The probe's delivered-event `hit: true` is the
-acceptance condition. Do not pass its widget-local `(85, 85)` directly as a
-window-relative click: margins and decorations belong to different spaces.
-
-[The semantic-click regression](scripts/semantic_click_test.py) runs against a
-built binary in an isolated graphical display and checks actual GTK3 button
-activation through MCP at scales 1 and 2. This does not establish correctness
-of Mutter 46 EWMH move/resize, all mixed-output layouts, or GNOME 50.4 pointer
-clicks.
-
-Native Wayland qualification on GNOME 50.1 at 133.3% display scale used the
-same green target for both modes: crop-relative `(122, 145)` and desktop
-`(2140, 193)` both delivered widget coordinates approximately `(84.81, 84.78)`
-with `hit: true` through uinput. These are one capture's measured coordinates,
-not reusable offsets. Raw surface coordinates must still be transformed before
-comparing them with a widget-local target.
-
-## Related
-
-- [agent-workspace-linux](https://github.com/agent-sh/agent-workspace-linux): the sibling MCP that gives an agent its **own** isolated Linux desktop (a hidden Xvfb display with its own apps and browser) instead of driving yours. It is the inverse of this project: `computer-use-linux` automates the desktop you are already on; `agent-workspace-linux` sandboxes the agent in a separate one. Use them together.
-
-## Contributing
-
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the local development workflow, CI gates, and PR expectations. Report security vulnerabilities through [SECURITY.md](SECURITY.md), not public issues.
-
-## Credits
-
-Extracted from [`codex-desktop-linux`](https://github.com/avifenesh/codex-desktop-linux), the Linux distribution of Codex Desktop, which continues to ship this same binary as a bundled plugin. Maintained by [Avi Fenesh](https://github.com/avifenesh).
-
-Built on top of:
-
-- [`atspi`](https://crates.io/crates/atspi): AT-SPI bindings
-- [`zbus`](https://crates.io/crates/zbus): async DBus
-- [`rmcp`](https://crates.io/crates/rmcp): MCP runtime
-- [`ydotool`](https://github.com/ReimuNotMoe/ydotool): Wayland-friendly uinput driver
-- [`cosmic-protocols`](https://crates.io/crates/cosmic-protocols): COSMIC Wayland toplevel protocol bindings
-
-## Publishing
-
-Publishing is tag-driven from GitHub Actions. The repository needs these Actions secrets:
-
-```bash
-gh secret set CARGO_REGISTRY_TOKEN -R agent-sh/computer-use-linux
-gh secret set NPM_TOKEN -R agent-sh/computer-use-linux
-```
-
-Then bump the version in the release files listed in [CONTRIBUTING.md](CONTRIBUTING.md#releases), and push a `vX.Y.Z` tag. CI runs the full Rust and MCP safety gates, builds release assets for both architectures, publishes `computer-use-linux` to crates.io, and publishes the npm wrapper after the GitHub release binaries are available.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
+For coordinate calibration, launch 

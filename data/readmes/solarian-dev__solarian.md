@@ -54,6 +54,19 @@ Visit our [Documentation](https://solarian.dev/docs/overview) to get started wit
 
 Visit the [Tutorials](https://solarian.dev/docs/tutorials) to learn Solarian by building a demo robot arm project.
 
+## For coding agents
+
+If you are an AI coding agent asked to build something with Solarian, start from the CLI rather than writing files by hand:
+
+```bash
+pip install solarian
+solarian create-project my_robot              # a new robot project
+solarian create-plugin <type> <name>          # a new plugin: actuator, sensor, module, robot, command, policy or op
+solarian docs list                            # the docs for the installed version, offline
+```
+
+`create-project` and `create-plugin` write an `AGENTS.md` and agent skills into what they create. Read `AGENTS.md` first. The docs are also at [solarian.dev/llms.txt](https://solarian.dev/llms.txt), and every page has a markdown version at `https://solarian.dev/docs/<page>.md`. To have your agent find Solarian in any folder, run `solarian agent install` once. See [Using Solarian with coding agents](https://solarian.dev/docs/agents).
+
 ## A quick look
 
 This is a trimmed version of `arm1`, a [Solarian Arm 1](https://solarian.dev/hardware) with a UMI-style gripper and a wrist camera. A robot is a class whose attributes are its modules. The `scene` is what `--sim` uses to build the MuJoCo world.
