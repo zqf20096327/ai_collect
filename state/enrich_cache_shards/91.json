@@ -1573,13 +1573,16 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261119"
+  },
+  "commit_90d": 196,
+  "commit_7d": 6
  },
  "The-Flash-7/open-note": {
   "rel_ver": "v1.1.0",

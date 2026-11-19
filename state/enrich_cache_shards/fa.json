@@ -201,10 +201,10 @@
  },
  "natolambert/rlhf-book": {
   "commit_7d": 2,
-  "commit_90d": 19,
+  "commit_90d": 18,
   "rel_ver": "book/v0.12",
   "rel_pub": "2026-09-11",
-  "rel_days": 60,
+  "rel_days": 69,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -220,10 +220,10 @@
    "Makefile": 3,
    "JavaScript": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261110",
-   "release": "20261110",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4463,6 +4463,54 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Open-course-ai/open-course-cli": {
+  "rel_ver": "v0.30.0",
+  "rel_pub": "2026-09-21",
+  "rel_days": 59,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 99,
+   "Python": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "DHURJATI-JS/elvin-autonomous-coding-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 68,
+   "JavaScript": 17,
+   "HTML": 8,
+   "Shell": 3,
+   "CSS": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

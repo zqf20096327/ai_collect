@@ -1551,12 +1551,12 @@
   }
  },
  "HurricaHjz/SecondSelf": {
-  "commit_7d": 0,
-  "commit_90d": 35,
-  "rel_ver": "v0.9.7",
-  "rel_pub": "2026-10-01",
-  "rel_days": 19,
-  "rel_n90": 2,
+  "commit_7d": 2,
+  "commit_90d": 23,
+  "rel_ver": "v0.10.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 11,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1568,10 +1568,10 @@
    "Python": 50,
    "Shell": 50
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

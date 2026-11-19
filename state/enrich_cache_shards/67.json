@@ -63,11 +63,11 @@
   }
  },
  "chaitin/PandaWiki": {
-  "commit_7d": 4,
-  "commit_90d": 27,
-  "rel_ver": "v3.87.5",
-  "rel_pub": "2026-10-21",
-  "rel_days": 16,
+  "commit_7d": 2,
+  "commit_90d": 24,
+  "rel_ver": "v3.87.6",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 7,
   "rel_pre": true,
   "rel_none": false,
@@ -83,10 +83,10 @@
    "JavaScript": 1,
    "EJS": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2044,13 +2044,16 @@
    "Java": 1,
    "C++": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261021",
    "security": "20261021",
    "contrib": "20261021",
-   "lang": "20261021"
-  }
+   "lang": "20261021",
+   "commit": "20261119"
+  },
+  "commit_90d": 77,
+  "commit_7d": 4
  },
  "weAAAre/a11y-agents-kit": {
   "rel_ver": null,

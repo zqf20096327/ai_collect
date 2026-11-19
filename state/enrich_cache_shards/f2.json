@@ -4479,13 +4479,16 @@
    "JavaScript": 99,
    "CSS": 1
   },
-  "enriched_at": "20261025",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261025",
    "security": "20261025",
    "contrib": "20261025",
-   "lang": "20261025"
-  }
+   "lang": "20261025",
+   "commit": "20261119"
+  },
+  "commit_90d": 109,
+  "commit_7d": 31
  },
  "samsara0xgg/Jarvis": {
   "rel_ver": null,
@@ -5457,6 +5460,29 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "pirateface/pirateface_cli": {
+  "rel_ver": "v0.2.27",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

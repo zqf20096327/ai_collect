@@ -1382,10 +1382,10 @@
   }
  },
  "Sallyn0225/eidolon-sc": {
-  "commit_7d": 335,
-  "commit_90d": 1145,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 0,
+  "commit_90d": 1535,
+  "rel_ver": "v0.5.3",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1398,14 +1398,18 @@
    "Shell": 1,
    "CSS": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
-  }
+  },
+  "rel_pub": "2026-11-10",
+  "rel_days": 9,
+  "rel_n90": 12,
+  "rel_pre": false
  },
  "webkubor/voxflow": {
   "rel_ver": "v0.10.0",
@@ -4810,6 +4814,97 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "CipherNoct/douyin-cli": {
+  "commit_90d": 13,
+  "commit_7d": 1,
+  "rel_ver": "basecdp",
+  "rel_pub": "2026-06-05",
+  "rel_days": 167,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 99,
+   "Shell": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "commit": "20261119",
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "shepnerd/vidify": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "Shell": 3,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "Ultra-Smashed/reflexion-skill": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "swayam5342/Folio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 47,
+   "Python": 45,
+   "CSS": 5,
+   "HTML": 2,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

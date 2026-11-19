@@ -4706,5 +4706,29 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "kapildhinwa2010-dev/Spiking_GNN": {
+  "rel_ver": "v0.1.1",
+  "rel_pub": "2026-11-07",
+  "rel_days": 12,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100,
+   "Makefile": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

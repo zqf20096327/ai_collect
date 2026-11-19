@@ -892,11 +892,11 @@
   }
  },
  "NVIDIA-ISAAC-ROS/isaac_ros_dnn_stereo_depth": {
-  "commit_7d": 0,
+  "commit_7d": 2,
   "commit_90d": 4,
-  "rel_ver": "v5.0-0",
-  "rel_pub": "2026-09-22",
-  "rel_days": 26,
+  "rel_ver": "v5.1-0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -910,10 +910,10 @@
    "CMake": 22,
    "Shell": 20
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1306,8 +1306,8 @@
   }
  },
  "ashukae/ComfyUI-MangaScreen": {
-  "commit_7d": 9,
-  "commit_90d": 9,
+  "commit_7d": 0,
+  "commit_90d": 10,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1318,10 +1318,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

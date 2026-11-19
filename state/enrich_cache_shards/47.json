@@ -1997,10 +1997,10 @@
   }
  },
  "MG1937/rust_ASC": {
-  "rel_ver": "v0.1.1",
-  "rel_pub": "2026-10-19",
-  "rel_days": 1,
-  "rel_n90": 2,
+  "rel_ver": "v0.1.2-post1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 22,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2013,9 +2013,9 @@
    "C": 7,
    "Python": 1
   },
-  "enriched_at": "20261030",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -2451,16 +2451,16 @@
    "JavaScript": 8,
    "HTML": 8
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261118",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261112"
+   "commit": "20261119"
   },
-  "commit_90d": 194,
-  "commit_7d": 45,
+  "commit_90d": 207,
+  "commit_7d": 13,
   "rel_pub": "2026-11-06",
   "rel_days": 12,
   "rel_n90": 2,
@@ -4906,6 +4906,23 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "hidecard/YBS-Bus-Data": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

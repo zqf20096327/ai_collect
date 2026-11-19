@@ -5615,5 +5615,26 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "flaco-source/altium-mcp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Pascal": 80,
+   "TypeScript": 17,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

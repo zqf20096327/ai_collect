@@ -200,11 +200,11 @@
   }
  },
  "tensorflow/privacy": {
-  "commit_7d": 5,
-  "commit_90d": 8,
+  "commit_7d": 1,
+  "commit_90d": 9,
   "rel_ver": "v0.9.0",
   "rel_pub": "2024-02-14",
-  "rel_days": 1002,
+  "rel_days": 1009,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -219,10 +219,10 @@
    "Starlark": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1232,8 +1232,8 @@
   }
  },
  "chrisrobison/textweb": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 2,
+  "commit_90d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1246,10 +1246,10 @@
    "HTML": 9,
    "Python": 7
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1349,11 +1349,11 @@
    "PLpgSQL": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261118",
    "release": "20261118",
-   "security": "20261020",
+   "security": "20261119",
    "contrib": "20261020",
    "lang": "20261020"
   }
@@ -1370,9 +1370,9 @@
    "Python": 76,
    "JavaScript": 24
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -1473,12 +1473,12 @@
   "commit_7d": 0
  },
  "sleepinginsummer/agent-browser-cli": {
-  "commit_7d": 2,
-  "commit_90d": 6,
+  "commit_7d": 0,
+  "commit_90d": 5,
   "rel_ver": "v0.3.7",
   "rel_pub": "2026-08-02",
-  "rel_days": 79,
-  "rel_n90": 1,
+  "rel_days": 109,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1491,22 +1491,22 @@
    "JavaScript": 30,
    "HTML": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
   }
  },
  "rustytensor/pi-thinking-steps": {
-  "commit_7d": 0,
-  "commit_90d": 6,
-  "rel_ver": "v1.0.17",
-  "rel_pub": "2026-10-02",
-  "rel_days": 18,
-  "rel_n90": 4,
+  "commit_7d": 1,
+  "commit_90d": 10,
+  "rel_ver": "v1.3.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 3,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1518,10 +1518,10 @@
    "TypeScript": 98,
    "JavaScript": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4570,6 +4570,23 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "fujc683/qwen4-max-api": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {},
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

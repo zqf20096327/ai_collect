@@ -34,12 +34,12 @@
   }
  },
  "AgriciDaniel/claude-seo": {
-  "commit_7d": 86,
-  "commit_90d": 340,
-  "rel_ver": "v2.6.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 2,
-  "rel_n90": 10,
+  "commit_7d": 95,
+  "commit_90d": 472,
+  "rel_ver": "v2.6.2",
+  "rel_pub": "2026-11-15",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 7,
@@ -62,10 +62,10 @@
    "PowerShell": 3,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -421,8 +421,8 @@
   }
  },
  "strands-labs/strands-decider": {
-  "commit_7d": 7,
-  "commit_90d": 53,
+  "commit_7d": 5,
+  "commit_90d": 58,
   "rel_ver": "v0.3.0",
   "rel_none": false,
   "sec_n": 0,
@@ -434,16 +434,16 @@
    "Python": 93,
    "Shell": 7
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
   },
   "rel_pub": "2026-11-05",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 3,
   "rel_pre": false
  },
@@ -1406,8 +1406,8 @@
   }
  },
  "xiaodou-official/xiaodou-open-platform": {
-  "commit_7d": 8,
-  "commit_90d": 8,
+  "commit_7d": 0,
+  "commit_90d": 18,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1416,10 +1416,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

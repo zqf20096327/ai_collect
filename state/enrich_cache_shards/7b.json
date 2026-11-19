@@ -1688,9 +1688,9 @@
   }
  },
  "professorpalmer/bonsai-ada-surgery": {
-  "rel_ver": "bundle-20261019c",
-  "rel_pub": "2026-10-20",
-  "rel_days": 0,
+  "rel_ver": "bundle-20261105",
+  "rel_pub": "2026-11-05",
+  "rel_days": 14,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1706,9 +1706,9 @@
    "HTML": 6,
    "C++": 2
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

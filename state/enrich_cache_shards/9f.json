@@ -1487,13 +1487,16 @@
    "Jupyter Notebook": 6,
    "Julia": 2
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261019",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261119"
+  },
+  "commit_90d": 21,
+  "commit_7d": 0
  },
  "lightbearco/tupper": {
   "rel_ver": "@tupper/sdk@0.1.1",
@@ -4830,12 +4833,12 @@
   }
  },
  "pluja/anysub": {
-  "commit_90d": 252,
-  "commit_7d": 114,
-  "rel_ver": "v4.0.2",
-  "rel_pub": "2026-11-11",
-  "rel_days": 1,
-  "rel_n90": 2,
+  "commit_90d": 295,
+  "commit_7d": 43,
+  "rel_ver": "v4.3.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4850,10 +4853,10 @@
    "JavaScript": 7,
    "Shell": 4
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261112",
    "contrib": "20261112",
    "lang": "20261112"
@@ -5242,6 +5245,26 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "geonodecom/integration-langchain": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 93,
+   "Shell": 7
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

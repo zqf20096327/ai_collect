@@ -1382,11 +1382,11 @@
   }
  },
  "tusKANNy/seismic": {
-  "commit_90d": 12,
-  "commit_7d": 3,
+  "commit_90d": 41,
+  "commit_7d": 0,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-03-25",
-  "rel_days": 209,
+  "rel_days": 239,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1400,10 +1400,10 @@
    "Jupyter Notebook": 23,
    "Python": 12
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -1412,8 +1412,8 @@
  "62656456/ai-film-skills": {
   "rel_ver": "ai-storyboard-director-v5.8.6",
   "rel_pub": "2026-10-18",
-  "rel_days": 2,
-  "rel_n90": 7,
+  "rel_days": 32,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1424,9 +1424,9 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261102",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4864,6 +4864,32 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "jerry-token/serialbot": {
+  "rel_ver": "v0.1.0-alpha.3",
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 62,
+   "TypeScript": 35,
+   "CSS": 2,
+   "HTML": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

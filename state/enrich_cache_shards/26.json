@@ -523,8 +523,8 @@
   }
  },
  "lixus7/Time-Series-Works-Conferences": {
-  "commit_90d": 5,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -533,10 +533,10 @@
   "sec_ids": [],
   "contrib_n": 12,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

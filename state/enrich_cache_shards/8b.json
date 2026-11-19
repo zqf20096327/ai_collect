@@ -23,11 +23,11 @@
   }
  },
  "AI4Finance-Foundation/FinGPT": {
-  "commit_7d": 2,
-  "commit_90d": 34,
+  "commit_7d": 4,
+  "commit_90d": 28,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-04-08",
-  "rel_days": 201,
+  "rel_days": 225,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -43,10 +43,10 @@
    "TypeScript": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261026",
-   "release": "20261026",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1884,7 +1884,7 @@
  "review-bench/ReviewBench": {
   "rel_ver": "harbor-runtime-v0.1.0rc1",
   "rel_pub": "2026-10-16",
-  "rel_days": 4,
+  "rel_days": 34,
   "rel_n90": 1,
   "rel_pre": true,
   "rel_none": false,
@@ -1899,9 +1899,9 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

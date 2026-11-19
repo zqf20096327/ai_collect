@@ -91,12 +91,12 @@
   }
  },
  "fathah/hermes-desktop": {
-  "commit_7d": 1,
-  "commit_90d": 235,
-  "rel_ver": "v0.7.7",
-  "rel_pub": "2026-09-04",
-  "rel_days": 69,
-  "rel_n90": 2,
+  "commit_7d": 33,
+  "commit_90d": 276,
+  "rel_ver": "v0.7.9",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -111,10 +111,10 @@
    "PowerShell": 0,
    "Python": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -612,12 +612,12 @@
   }
  },
  "VelornLabs/velorn": {
-  "commit_90d": 170,
-  "commit_7d": 3,
-  "rel_ver": "v0.3.37",
-  "rel_pub": "2026-10-12",
-  "rel_days": 6,
-  "rel_n90": 12,
+  "commit_90d": 45,
+  "commit_7d": 8,
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -632,10 +632,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1686,10 +1686,10 @@
   }
  },
  "naxhq/NexQ": {
-  "rel_ver": "v2.21.1",
-  "rel_pub": "2026-09-28",
-  "rel_days": 22,
-  "rel_n90": 2,
+  "rel_ver": "v2.37.0",
+  "rel_pub": "2026-11-10",
+  "rel_days": 9,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1704,9 +1704,9 @@
    "CSS": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261103",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4772,6 +4772,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "chekiboy/whaat-ai-identity": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 49,
+   "TypeScript": 41,
+   "CSS": 6,
+   "HTML": 4,
+   "Shell": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

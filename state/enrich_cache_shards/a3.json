@@ -1556,8 +1556,8 @@
   }
  },
  "zexadev/dsh-tether": {
-  "rel_ver": "v0.1.22",
-  "rel_pub": "2026-10-19",
+  "rel_ver": "v0.1.34",
+  "rel_pub": "2026-11-18",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -1574,9 +1574,9 @@
    "CSS": 2,
    "HTML": 2
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4875,6 +4875,59 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "the-protobuf-project/mcp": {
+  "rel_ver": "v1.7.9",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 10,
+  "lang": {
+   "Go": 60,
+   "Go Template": 27,
+   "Protocol Buffer": 8,
+   "Just": 2,
+   "Starlark": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "shuvarie/shuvarie": {
+  "rel_ver": "v0.6.3",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 100,
+   "NSIS": 0,
+   "Just": 0,
+   "Nix": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

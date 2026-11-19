@@ -5447,5 +5447,59 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "rsyumi/RisuNest": {
+  "rel_ver": "sync-v1.1.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 87,
+  "lang": {
+   "TypeScript": 44,
+   "Rust": 43,
+   "Svelte": 7,
+   "JavaScript": 4,
+   "Kotlin": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "Endorpheen/Igorek-Harness": {
+  "rel_ver": "v0.2.44",
+  "rel_pub": "2026-11-13",
+  "rel_days": 6,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 75,
+   "JavaScript": 13,
+   "Kotlin": 9,
+   "CSS": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

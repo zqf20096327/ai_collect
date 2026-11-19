@@ -1749,10 +1749,10 @@
  "ydflow/Trail": {
   "commit_7d": 16,
   "commit_90d": 227,
-  "rel_ver": "v0.4.0-beta.2",
-  "rel_pub": "2026-10-16",
-  "rel_days": 4,
-  "rel_n90": 1,
+  "rel_ver": "v0.4.0-beta.3-windows",
+  "rel_pub": "2026-11-08",
+  "rel_days": 11,
+  "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -1767,10 +1767,10 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

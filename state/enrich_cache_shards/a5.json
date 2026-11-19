@@ -1795,8 +1795,8 @@
   }
  },
  "JosephHampton/awesome-gemini-cli-subagents": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v1.2.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1805,16 +1805,20 @@
   "lang": {
    "Shell": 100
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261111"
   },
   "commit_90d": 12,
-  "commit_7d": 3
+  "commit_7d": 3,
+  "rel_pub": "2026-10-22",
+  "rel_days": 28,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "Thanathip55/AI-LiveStream-Series-Slides-Hub": {
   "rel_ver": null,

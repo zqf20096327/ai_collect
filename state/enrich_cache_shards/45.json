@@ -1892,7 +1892,7 @@
  "KalarisLabs/research-agent-skills": {
   "rel_ver": "v1.1.1",
   "rel_pub": "2026-10-04",
-  "rel_days": 16,
+  "rel_days": 46,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1908,9 +1908,9 @@
    "HTML": 2,
    "TypeScript": 0
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4451,13 +4451,16 @@
    "CSS": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261106",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261106",
    "security": "20261106",
    "contrib": "20261106",
-   "lang": "20261106"
-  }
+   "lang": "20261106",
+   "commit": "20261119"
+  },
+  "commit_90d": 27,
+  "commit_7d": 9
  },
  "chengzhiyi/pi-webapp": {
   "rel_ver": "desktop-v0.1.52-b17",

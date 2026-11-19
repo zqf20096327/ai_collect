@@ -1382,9 +1382,9 @@
   }
  },
  "sakurawwwxh/qq-agent-plus": {
-  "rel_ver": "v0.9.3",
-  "rel_pub": "2026-10-20",
-  "rel_days": 0,
+  "rel_ver": "v0.9.16",
+  "rel_pub": "2026-11-15",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1400,9 +1400,9 @@
    "HTML": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

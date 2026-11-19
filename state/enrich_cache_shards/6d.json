@@ -396,11 +396,11 @@
   }
  },
  "Renumics/spotlight": {
-  "commit_7d": 0,
-  "commit_90d": 111,
+  "commit_7d": 9,
+  "commit_90d": 119,
   "rel_ver": "v1.8.2",
   "rel_pub": "2026-08-03",
-  "rel_days": 101,
+  "rel_days": 108,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -416,10 +416,10 @@
    "Makefile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5300,6 +5300,46 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "LofiSu/dsh-super-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 100,
+   "Python": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "manascb1344/zonos-api": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 95,
+   "Dockerfile": 5
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

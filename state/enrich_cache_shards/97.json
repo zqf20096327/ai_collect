@@ -1100,12 +1100,12 @@
   }
  },
  "skrun-dev/skrun": {
-  "commit_90d": 5,
-  "commit_7d": 0,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-09-22",
-  "rel_days": 26,
-  "rel_n90": 4,
+  "commit_90d": 6,
+  "commit_7d": 1,
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1120,10 +1120,10 @@
    "Dockerfile": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5266,6 +5266,29 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "yiqi-7/robot-dog": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C++": 46,
+   "TypeScript": 24,
+   "Python": 10,
+   "JavaScript": 9,
+   "Shell": 7
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

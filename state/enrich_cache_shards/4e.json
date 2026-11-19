@@ -1436,8 +1436,8 @@
   }
  },
  "Indras-Mirror/Xolotl": {
-  "commit_7d": 203,
-  "commit_90d": 3586,
+  "commit_7d": 40,
+  "commit_90d": 6781,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1452,10 +1452,10 @@
    "Metal": 1,
    "Shell": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -1621,10 +1621,10 @@
   }
  },
  "clawboo/clawboo": {
-  "rel_ver": "clawboo@0.4.0",
-  "rel_pub": "2026-09-28",
-  "rel_days": 22,
-  "rel_n90": 1,
+  "rel_ver": "clawboo@0.9.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1639,9 +1639,9 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

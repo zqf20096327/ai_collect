@@ -1749,10 +1749,10 @@
    "CSS": 4,
    "HTML": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261116",
-   "security": "20261020",
+   "security": "20261119",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261116"
@@ -4710,9 +4710,9 @@
   }
  },
  "kaomei/stickman-video-director": {
-  "commit_90d": 155,
-  "commit_7d": 18,
-  "rel_ver": "v2026.11.11.2",
+  "commit_90d": 223,
+  "commit_7d": 69,
+  "rel_ver": "v2026.11.18",
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -4724,17 +4724,17 @@
    "JavaScript": 39,
    "Shell": 4
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
   },
-  "rel_pub": "2026-11-11",
+  "rel_pub": "2026-11-18",
   "rel_days": 1,
-  "rel_n90": 10,
+  "rel_n90": 12,
   "rel_pre": false
  },
  "AbuZar-Ansarii/Android-GPU": {

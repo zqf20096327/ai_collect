@@ -4059,5 +4059,30 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "sarang-cmd/perplexity-autorename": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 22,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 68,
+   "HTML": 28,
+   "CSS": 4
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

@@ -1511,9 +1511,9 @@
   }
  },
  "Obedience-Corp/festival": {
-  "rel_ver": "v0.3.23",
-  "rel_pub": "2026-10-15",
-  "rel_days": 5,
+  "rel_ver": "v0.3.38",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1529,9 +1529,9 @@
    "JavaScript": 9,
    "HTML": 6
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

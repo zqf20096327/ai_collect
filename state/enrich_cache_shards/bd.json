@@ -200,10 +200,10 @@
  },
  "onnx/onnx-tensorrt": {
   "commit_90d": 3,
-  "commit_7d": 0,
-  "rel_ver": "release/11.4-GA",
-  "rel_pub": "2026-10-09",
-  "rel_days": 8,
+  "commit_7d": 1,
+  "rel_ver": "release/11.5-GA",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -218,10 +218,10 @@
    "CMake": 1,
    "C": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4451,6 +4451,29 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "genius916/CareerSail": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 55,
+   "HTML": 44,
+   "Batchfile": 1,
+   "VBScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

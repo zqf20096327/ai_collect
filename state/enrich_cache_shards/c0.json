@@ -1232,10 +1232,10 @@
    "NSIS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261118",
-   "security": "20261020",
+   "security": "20261119",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261118"

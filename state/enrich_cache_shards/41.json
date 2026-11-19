@@ -1484,10 +1484,10 @@
   }
  },
  "daimonia-ai/STC-Simplified-Technical-Chinese": {
-  "rel_ver": "v0.2.3",
-  "rel_pub": "2026-10-12",
-  "rel_days": 8,
-  "rel_n90": 6,
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1498,9 +1498,9 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261024",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -1588,9 +1588,9 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -1645,9 +1645,9 @@
   }
  },
  "WSL043/DSH-Portable": {
-  "rel_ver": "v0.9.3",
-  "rel_pub": "2026-10-18",
-  "rel_days": 2,
+  "rel_ver": "v0.9.14",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1663,9 +1663,9 @@
    "Shell": 2,
    "Rust": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4553,6 +4553,52 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "cn0xroot/glasshouse": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 76,
+   "Shell": 18,
+   "Swift": 6,
+   "Makefile": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "nimrodfisher/data-factory": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "HTML": 55,
+   "Python": 45
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

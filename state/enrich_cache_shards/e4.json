@@ -1804,7 +1804,7 @@
   "commit_90d": 518,
   "rel_ver": "v0.1.1",
   "rel_pub": "2026-10-18",
-  "rel_days": 2,
+  "rel_days": 32,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1820,10 +1820,10 @@
    "Lua": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4663,6 +4663,49 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "R3LAMP4GO/clipping-gta-6": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "GladLuter/Alethite": {
+  "rel_ver": "v0.9.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "TypeScript": 31
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

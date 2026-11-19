@@ -439,7 +439,7 @@
   "commit_7d": 0,
   "rel_ver": "1.16.0",
   "rel_pub": "2026-01-30",
-  "rel_days": 281,
+  "rel_days": 293,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -452,10 +452,10 @@
    "Python": 100,
    "CSS": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

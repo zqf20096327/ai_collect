@@ -862,8 +862,8 @@
   }
  },
  "stephanecharette/DarkMark": {
-  "commit_90d": 2,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -878,10 +878,10 @@
    "Java": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1075,10 +1075,10 @@
   }
  },
  "Akxan/ppt-agent-skill": {
-  "commit_90d": 0,
-  "commit_7d": 0,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_90d": 11,
+  "commit_7d": 11,
+  "rel_ver": "v2.0.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1088,14 +1088,18 @@
    "Python": 50,
    "HTML": 50
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
-  }
+  },
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "littleCareless/dish-ai-commit": {
   "commit_90d": 0,
@@ -1128,12 +1132,12 @@
   }
  },
  "mordang7/ContextKeep": {
-  "commit_90d": 1,
-  "commit_7d": 0,
-  "rel_ver": "v2.1.0",
-  "rel_pub": "2026-06-17",
-  "rel_days": 123,
-  "rel_n90": 0,
+  "commit_90d": 5,
+  "commit_7d": 4,
+  "rel_ver": "v2.1.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1148,10 +1152,10 @@
    "HTML": 7,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1535,7 +1539,7 @@
   }
  },
  "DevelopersGlobal/ai-agent-skills": {
-  "commit_90d": 0,
+  "commit_90d": 4,
   "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
@@ -1547,10 +1551,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

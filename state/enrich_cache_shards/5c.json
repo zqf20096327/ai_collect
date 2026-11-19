@@ -1929,12 +1929,12 @@
   }
  },
  "AIpRoBuilder/FlowX": {
-  "commit_7d": 15,
-  "commit_90d": 56,
-  "rel_ver": "v1.0.0",
-  "rel_pub": "2026-10-19",
-  "rel_days": 1,
-  "rel_n90": 2,
+  "commit_7d": 8,
+  "commit_90d": 73,
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-06",
+  "rel_days": 13,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1948,10 +1948,10 @@
    "Go Template": 1,
    "Mermaid": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

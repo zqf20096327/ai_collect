@@ -32,9 +32,9 @@
   }
  },
  "KKKKhazix/khazix-skills": {
-  "commit_7d": 8,
-  "commit_90d": 19,
-  "rel_ver": "v1.2.1",
+  "commit_7d": 4,
+  "commit_90d": 20,
+  "rel_ver": "v1.3.1",
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -48,17 +48,17 @@
    "JavaScript": 3,
    "TypeScript": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   },
-  "rel_pub": "2026-11-10",
-  "rel_days": 2,
-  "rel_n90": 3,
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 6,
   "rel_pre": false
  },
  "browser-use/web-ui": {
@@ -4671,6 +4671,52 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "sraodev/awesome-opensource-ai-cheat-sheets": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-08-24",
+  "rel_days": 87,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "rafidaaziz23/assay": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 56,
+   "TypeScript": 42,
+   "Shell": 1,
+   "Dockerfile": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

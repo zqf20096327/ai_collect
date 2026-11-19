@@ -354,13 +354,13 @@
   }
  },
  "amicalhq/amical": {
-  "commit_7d": 31,
-  "commit_90d": 187,
-  "rel_ver": "v1.13.0",
-  "rel_pub": "2026-11-07",
-  "rel_days": 3,
+  "commit_7d": 11,
+  "commit_90d": 170,
+  "rel_ver": "v1.13.3",
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -374,10 +374,10 @@
    "JavaScript": 0,
    "C++": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261110",
-   "release": "20261110",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1519,27 +1519,34 @@
   }
  },
  "aloth/awesome-ai-agents": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v2026.11",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
   "sec_ids": [],
   "contrib_n": 30,
   "lang": {},
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
-   "lang": "20261020"
-  }
+   "lang": "20261020",
+   "commit": "20261119"
+  },
+  "commit_90d": 55,
+  "commit_7d": 10,
+  "rel_pub": "2026-11-07",
+  "rel_days": 12,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "shawnshekari/strixite": {
-  "rel_ver": "v0.4.0",
-  "rel_pub": "2026-10-18",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "rel_ver": "v0.7.1",
+  "rel_pub": "2026-11-16",
+  "rel_days": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1554,9 +1561,9 @@
    "Dockerfile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4727,6 +4734,50 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "mushroomTW/RimAgent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C#": 99,
+   "PowerShell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "NRAD-UKAachen/InterACT": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Python": 51,
+   "JavaScript": 33,
+   "HTML": 11,
+   "CSS": 4,
+   "Shell": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

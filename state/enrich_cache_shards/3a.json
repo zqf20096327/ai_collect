@@ -4560,5 +4560,31 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "NikolayS/pgaibench": {
+  "rel_ver": "v0.1.7",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 98,
+   "CSS": 1,
+   "JavaScript": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

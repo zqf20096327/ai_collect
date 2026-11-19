@@ -1443,8 +1443,8 @@
   }
  },
  "goosehouse-llc/redde": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "redde-push-1.31.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1457,16 +1457,20 @@
    "Shell": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261031"
   },
   "commit_90d": 495,
-  "commit_7d": 91
+  "commit_7d": 91,
+  "rel_pub": "2026-11-15",
+  "rel_days": 4,
+  "rel_n90": 4,
+  "rel_pre": false
  },
  "aimasteracc/tree-sitter-analyzer": {
   "rel_ver": "v2.2.0",
@@ -4165,6 +4169,56 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "amrraedamr/opinionated-genai-starter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 98,
+   "JavaScript": 1,
+   "CSS": 0,
+   "HTML": 0,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "100yenadmin/glasses-platform": {
+  "rel_ver": "v0.6.11",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 86,
+   "JavaScript": 11,
+   "TypeScript": 2,
+   "Shell": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

@@ -1650,9 +1650,9 @@
   }
  },
  "go-taas/go-taas": {
-  "rel_ver": "v1.61.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 0,
+  "rel_ver": "v1.120.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1668,9 +1668,9 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261031",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4561,6 +4561,29 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "SsJjPpHh/data-analysis-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 88,
+   "JavaScript": 7,
+   "R": 3,
+   "CSS": 2,
+   "HTML": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

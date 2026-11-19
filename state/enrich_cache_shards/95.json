@@ -2299,9 +2299,9 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -6297,6 +6297,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "xtdf0224-boop/firefly-harness": {
+  "rel_ver": "v2.2.1",
+  "rel_pub": "2026-11-08",
+  "rel_days": 11,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 59,
+   "JavaScript": 29,
+   "CSS": 10,
+   "PowerShell": 1,
+   "Python": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

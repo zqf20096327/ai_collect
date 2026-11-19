@@ -1704,10 +1704,10 @@
   }
  },
  "xgwangdl/AI-Interview": {
-  "commit_7d": 82,
-  "commit_90d": 85,
-  "rel_ver": null,
-  "rel_none": true,
+  "commit_7d": 0,
+  "commit_90d": 100,
+  "rel_ver": "v0.2.0-beta.1",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1720,14 +1720,18 @@
    "PowerShell": 5,
    "Smalltalk": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
-  }
+  },
+  "rel_pub": "2026-10-26",
+  "rel_days": 24,
+  "rel_n90": 1,
+  "rel_pre": true
  },
  "Takamatsu-Hikaru/AI-Research-Guide": {
   "commit_7d": 5,
@@ -1744,10 +1748,10 @@
    "CSS": 22,
    "HTML": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

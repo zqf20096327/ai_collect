@@ -574,10 +574,10 @@
  },
  "NVIDIA-ISAAC-ROS/isaac_ros_pose_estimation": {
   "commit_90d": 4,
-  "commit_7d": 0,
-  "rel_ver": "v5.0-0",
-  "rel_pub": "2026-09-22",
-  "rel_days": 25,
+  "commit_7d": 2,
+  "rel_ver": "v5.1-0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -593,10 +593,10 @@
    "C": 2,
    "Shell": 1
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5253,6 +5253,32 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "gradetwo/yeban": {
+  "rel_ver": "nightly",
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Rust": 94,
+   "Slint": 4,
+   "Python": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

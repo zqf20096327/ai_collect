@@ -1678,13 +1678,13 @@
   }
  },
  "LumiDesk/verifin": {
-  "commit_7d": 134,
-  "commit_90d": 785,
-  "rel_ver": "v1.20.11",
-  "rel_pub": "2026-10-19",
+  "commit_7d": 55,
+  "commit_90d": 828,
+  "rel_ver": "v1.21.2",
+  "rel_pub": "2026-11-18",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1695,10 +1695,10 @@
    "Dart": 98,
    "Kotlin": 2
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -1813,9 +1813,9 @@
    "PowerShell": 3,
    "Batchfile": 0
   },
-  "enriched_at": "20261027",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

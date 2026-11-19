@@ -3850,10 +3850,10 @@
   }
  },
  "pbakaus/impeccable": {
-  "commit_90d": 1342,
-  "commit_7d": 227,
-  "rel_ver": "loop-v0.1.1",
-  "rel_pub": "2026-11-11",
+  "commit_90d": 2226,
+  "commit_7d": 715,
+  "rel_ver": "skill-v4.10.0",
+  "rel_pub": "2026-11-18",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -3870,10 +3870,10 @@
    "HTML": 0,
    "CSS": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261029",
    "contrib": "20261029",
    "lang": "20261029"
@@ -4306,6 +4306,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "chuxuan861119/zhichan-xiaozhan-work": {
+  "rel_ver": "v1.1.8",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "JavaScript": 6,
+   "CSS": 4,
+   "Rust": 2,
+   "Python": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

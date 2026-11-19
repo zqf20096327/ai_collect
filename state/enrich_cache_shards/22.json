@@ -147,7 +147,7 @@
   }
  },
  "CommandCodeAI/command-code": {
-  "commit_90d": 29,
+  "commit_90d": 30,
   "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
@@ -157,10 +157,10 @@
   "sec_ids": [],
   "contrib_n": 9,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -197,11 +197,11 @@
   }
  },
  "AmberSahdev/Open-Interface": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 2,
+  "commit_7d": 2,
   "rel_ver": "v0.9.0",
   "rel_pub": "2025-03-16",
-  "rel_days": 580,
+  "rel_days": 613,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -214,10 +214,10 @@
    "Python": 100,
    "Standard ML": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2033,9 +2033,9 @@
   "lang": {
    "TypeScript": 100
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4544,6 +4544,53 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "NickalasLight/VibeHarness": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "mickelsamuel/migrationpilot": {
+  "rel_ver": "v1.6.4",
+  "rel_pub": "2026-10-13",
+  "rel_days": 37,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 95,
+   "JavaScript": 4,
+   "Shell": 0,
+   "PLpgSQL": 0,
+   "Python": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

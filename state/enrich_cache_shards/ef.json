@@ -1581,9 +1581,9 @@
   }
  },
  "dreamrec/LivePilot": {
-  "rel_ver": "v1.30.0",
-  "rel_pub": "2026-08-30",
-  "rel_days": 50,
+  "rel_ver": "v1.31.0",
+  "rel_pub": "2026-11-12",
+  "rel_days": 7,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -1598,13 +1598,16 @@
    "Max": 1,
    "Shell": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261119",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261119"
+  },
+  "commit_90d": 34,
+  "commit_7d": 6
  },
  "SolidLao/GenDB": {
   "rel_ver": null,
@@ -4908,6 +4911,32 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "EdouardRichard/dsh-superpowers-preset": {
+  "rel_ver": "v1.0.6",
+  "rel_pub": "2026-11-09",
+  "rel_days": 10,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 79,
+   "Shell": 13,
+   "HTML": 5,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

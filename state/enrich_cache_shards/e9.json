@@ -1291,10 +1291,10 @@
   }
  },
  "PurrPod/purrcat": {
-  "rel_ver": "v1.0.0-beta.4",
-  "rel_pub": "2026-09-17",
-  "rel_days": 33,
-  "rel_n90": 4,
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-11-10",
+  "rel_days": 9,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1309,9 +1309,9 @@
    "CSS": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4461,13 +4461,16 @@
    "Python": 97,
    "C++": 3
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261114",
    "security": "20261114",
    "contrib": "20261114",
-   "lang": "20261114"
-  }
+   "lang": "20261114",
+   "commit": "20261119"
+  },
+  "commit_90d": 38,
+  "commit_7d": 9
  },
  "localixai/localix-cli": {
   "rel_ver": "v0.6.1",
@@ -4690,6 +4693,29 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "vietanhdev/bap": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "C": 35,
+   "C++": 30,
+   "MDX": 16,
+   "Python": 7,
+   "HTML": 6
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

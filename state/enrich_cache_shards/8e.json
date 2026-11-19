@@ -4774,5 +4774,53 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "aws-samples/comfyui-on-amazon-sagemaker": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Jupyter Notebook": 95,
+   "Python": 4,
+   "Shell": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "embeddedos-org/eAI": {
+  "rel_ver": "v1.9.0",
+  "rel_pub": "2026-05-31",
+  "rel_days": 172,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 7,
+  "lang": {
+   "C": 90,
+   "Python": 4,
+   "CMake": 3,
+   "Shell": 1,
+   "C++": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

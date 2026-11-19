@@ -4380,5 +4380,99 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "Token173/doc-token173-api": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "hephaestus-build/Hephaestus": {
+  "rel_ver": "v1.0.0-rc.10",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 13,
+  "lang": {
+   "Java": 64,
+   "TypeScript": 35,
+   "PLpgSQL": 1,
+   "Shell": 0,
+   "Go Template": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "ayumu-ml/Omnitome": {
+  "rel_ver": "v1.1.1",
+  "rel_pub": "2026-11-07",
+  "rel_days": 12,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 66,
+   "TypeScript": 26,
+   "Python": 4,
+   "Rust": 2,
+   "CSS": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "Lightningsobad/hackernews-daily-bot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 39,
+   "JavaScript": 23,
+   "TypeScript": 18,
+   "Shell": 14,
+   "HTML": 5
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

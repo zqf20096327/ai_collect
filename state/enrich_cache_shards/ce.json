@@ -834,11 +834,11 @@
   }
  },
  "dxxzst/mml-book-chinese": {
-  "commit_7d": 0,
-  "commit_90d": 53,
+  "commit_7d": 2,
+  "commit_90d": 55,
   "rel_ver": "v2026.09.30",
   "rel_pub": "2026-09-30",
-  "rel_days": 18,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -848,10 +848,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4772,6 +4772,55 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Blue-B/sidehand": {
+  "rel_ver": "v0.5.2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "PowerShell": 34,
+   "C#": 31,
+   "JavaScript": 27,
+   "TypeScript": 7,
+   "HTML": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "secondstar7/SuperClaude": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 25,
+  "lang": {
+   "Python": 79,
+   "Rust": 17,
+   "Jinja": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

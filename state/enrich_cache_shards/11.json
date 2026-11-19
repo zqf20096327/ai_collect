@@ -1589,10 +1589,10 @@
  "bgts-ai-org/bgts-context-engine": {
   "commit_7d": 0,
   "commit_90d": 92,
-  "rel_ver": "v1.0.2",
-  "rel_pub": "2026-10-09",
-  "rel_days": 11,
-  "rel_n90": 10,
+  "rel_ver": "v1.1.0",
+  "rel_pub": "2026-11-02",
+  "rel_days": 17,
+  "rel_n90": 11,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1607,10 +1607,10 @@
    "PLpgSQL": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261021",
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4648,5 +4648,34 @@
   },
   "commit_90d": 7,
   "commit_7d": 7
+ },
+ "phantomyard/phantombot": {
+  "rel_ver": "v1.1.509",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 1,
+  "sec_worst": "high",
+  "sec_last": "2026-11-07",
+  "sec_ids": [
+   "GHSA-w7w8-rcjc-g6cx(-,high)"
+  ],
+  "contrib_n": 13,
+  "lang": {
+   "TypeScript": 99,
+   "JavaScript": 0,
+   "HTML": 0,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

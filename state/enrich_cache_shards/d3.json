@@ -414,11 +414,11 @@
   }
  },
  "sophgo/tpu-mlir": {
-  "commit_7d": 4,
-  "commit_90d": 69,
+  "commit_7d": 5,
+  "commit_90d": 68,
   "rel_ver": "v1.30.2",
   "rel_pub": "2026-08-31",
-  "rel_days": 65,
+  "rel_days": 80,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -434,10 +434,10 @@
    "HTML": 2,
    "Jupyter Notebook": 2
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1033,12 +1033,12 @@
   }
  },
  "YassWorks/Ally": {
-  "commit_7d": 0,
-  "commit_90d": 0,
-  "rel_ver": "0.7.42",
-  "rel_pub": "2026-04-05",
-  "rel_days": 196,
-  "rel_n90": 0,
+  "commit_7d": 28,
+  "commit_90d": 28,
+  "rel_ver": "0.8.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1052,10 +1052,10 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4470,6 +4470,59 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "EvolvingLMMs-Lab/LLaVA-OneVision-2.5": {
+  "commit_90d": 206,
+  "commit_7d": 35,
+  "rel_ver": "2.0",
+  "rel_pub": "2026-08-06",
+  "rel_days": 105,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "Python": 96,
+   "Shell": 3,
+   "C++": 0,
+   "Cuda": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "commit": "20261119",
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "DHURJATI-JS/podcast-qa-studio": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 72,
+   "HTML": 13,
+   "JavaScript": 11,
+   "PowerShell": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

@@ -491,11 +491,11 @@
   }
  },
  "TsinghuaC3I/Awesome-RL-for-LRMs": {
-  "commit_7d": 0,
-  "commit_90d": 8,
+  "commit_7d": 8,
+  "commit_90d": 23,
   "rel_ver": "TripleR",
   "rel_pub": "2025-09-11",
-  "rel_days": 401,
+  "rel_days": 434,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -507,10 +507,10 @@
   "lang": {
    "TeX": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -861,7 +861,7 @@
  },
  "Superior-Trade/trading-terminal": {
   "commit_7d": 0,
-  "commit_90d": 21,
+  "commit_90d": 5,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -874,10 +874,10 @@
    "JavaScript": 5,
    "CSS": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261107",
-   "release": "20261107",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2018,9 +2018,9 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261107",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -5344,6 +5344,30 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "pratikgh0se/lossless-handoff": {
+  "rel_ver": "v0.12.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 78,
+   "Shell": 22
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

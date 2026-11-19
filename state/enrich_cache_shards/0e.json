@@ -1609,12 +1609,12 @@
   }
  },
  "NVIDIA-NeMo/nemo-helix": {
-  "commit_7d": 242,
-  "commit_90d": 1842,
-  "rel_ver": "0.7.3",
-  "rel_pub": "2026-10-16",
-  "rel_days": 4,
-  "rel_n90": 11,
+  "commit_7d": 100,
+  "commit_90d": 2149,
+  "rel_ver": "0.10.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1629,10 +1629,10 @@
    "Go": 0,
    "Open Policy Agent": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

@@ -1058,8 +1058,8 @@
   }
  },
  "python279/stock-predict": {
-  "commit_90d": 4,
-  "commit_7d": 0,
+  "commit_90d": 3,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1071,10 +1071,10 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1556,9 +1556,9 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -1681,7 +1681,7 @@
  "Vxtzq/CrowdGPT": {
   "rel_ver": "CrowdGPT",
   "rel_pub": "2026-10-16",
-  "rel_days": 4,
+  "rel_days": 34,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -1696,9 +1696,9 @@
    "Shell": 14,
    "PowerShell": 1
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -1795,9 +1795,9 @@
   }
  },
  "linuztx/alter-zero": {
-  "rel_ver": "v0.15.0",
-  "rel_pub": "2026-10-20",
-  "rel_days": 0,
+  "rel_ver": "v0.19.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 6,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1813,9 +1813,9 @@
    "JavaScript": 2,
    "Dockerfile": 0
   },
-  "enriched_at": "20261029",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4885,6 +4885,54 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Edge-AI-HQ/proactive-assistant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 9,
+  "lang": {
+   "TypeScript": 50,
+   "Python": 42,
+   "Swift": 4,
+   "MDX": 1,
+   "PLpgSQL": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "Bozheng-Li/dsh-Wechat-Agent": {
+  "rel_ver": "v0.2.0-preview.11",
+  "rel_pub": "2026-11-12",
+  "rel_days": 7,
+  "rel_n90": 3,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 94,
+   "TypeScript": 4,
+   "Python": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

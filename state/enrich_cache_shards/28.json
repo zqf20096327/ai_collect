@@ -1206,12 +1206,12 @@
   }
  },
  "MeXenon/codex-session-export": {
-  "commit_7d": 0,
-  "commit_90d": 2,
-  "rel_ver": "v2.6.5",
-  "rel_pub": "2026-09-09",
-  "rel_days": 39,
-  "rel_n90": 2,
+  "commit_7d": 5,
+  "commit_90d": 9,
+  "rel_ver": "v2.7.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1222,10 +1222,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1491,10 +1491,19 @@
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 0,
-  "sec_worst": null,
-  "sec_last": null,
-  "sec_ids": [],
+  "sec_n": 8,
+  "sec_worst": "high",
+  "sec_last": "2026-11-12",
+  "sec_ids": [
+   "GHSA-8rm8-p5c5-g3mr(-,medium)",
+   "GHSA-qh83-449g-hwm5(-,medium)",
+   "GHSA-cg4w-p5w5-57w5(-,high)",
+   "GHSA-c4xj-63wm-4jj9(-,medium)",
+   "GHSA-6rw7-4fcr-r6j3(-,high)",
+   "GHSA-pjrr-m43f-m5g3(-,high)",
+   "GHSA-rhrj-pgm8-2686(-,high)",
+   "GHSA-58x5-jq4h-h6rr(-,high)"
+  ],
   "contrib_n": 3,
   "lang": {
    "Rust": 87,
@@ -1503,11 +1512,11 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261118",
    "release": "20261118",
-   "security": "20261020",
+   "security": "20261119",
    "contrib": "20261020",
    "lang": "20261020"
   }
@@ -4907,6 +4916,36 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "nejib1/Free-LLM": {
+  "commit_90d": 110,
+  "commit_7d": 18,
+  "rel_ver": "router-v1.0.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 63,
+   "Python": 13,
+   "Shell": 12,
+   "HTML": 9,
+   "PHP": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "commit": "20261119",
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

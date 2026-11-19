@@ -34,11 +34,11 @@
  },
  "danielmiessler/LifeOS": {
   "commit_7d": 1,
-  "commit_90d": 11,
+  "commit_90d": 8,
   "rel_ver": "v8.761.0",
   "rel_pub": "2026-10-27",
-  "rel_days": 10,
-  "rel_n90": 2,
+  "rel_days": 23,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -53,10 +53,10 @@
    "CSS": 2,
    "Python": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

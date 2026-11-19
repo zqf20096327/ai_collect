@@ -52,11 +52,11 @@
   }
  },
  "tensorflow/tensorboard": {
-  "commit_90d": 10,
+  "commit_90d": 9,
   "commit_7d": 1,
   "rel_ver": "2.21.0",
   "rel_pub": "2026-06-29",
-  "rel_days": 130,
+  "rel_days": 143,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -72,10 +72,10 @@
    "Rust": 3,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -135,11 +135,11 @@
   }
  },
  "jtablesaw/tablesaw": {
-  "commit_90d": 9,
-  "commit_7d": 9,
+  "commit_90d": 12,
+  "commit_7d": 3,
   "rel_ver": "v0.44.4",
   "rel_pub": "2026-01-09",
-  "rel_days": 304,
+  "rel_days": 314,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -153,10 +153,10 @@
    "HTML": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4755,6 +4755,27 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "yaoleifly/smart-homelab": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 60,
+   "JavaScript": 38,
+   "Shell": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

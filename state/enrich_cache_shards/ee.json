@@ -291,11 +291,11 @@
    "Python": 99,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
    "commit": "20261116",
    "release": "20261116",
-   "security": "20261017",
+   "security": "20261119",
    "contrib": "20261017",
    "lang": "20261017"
   }
@@ -1561,8 +1561,8 @@
   }
  },
  "BedtimeNewsStudio/BedtimeNews-Agent": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v0.5.9",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1575,16 +1575,20 @@
    "HTML": 2,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261021"
   },
   "commit_90d": 158,
-  "commit_7d": 26
+  "commit_7d": 26,
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false
  },
  "Ninnix/q36": {
   "rel_ver": null,
@@ -1754,13 +1758,13 @@
   }
  },
  "WestFox-AwA/dsh-wish-specializer": {
-  "commit_90d": 642,
-  "commit_7d": 116,
-  "rel_ver": "v0.9.0-beta-1",
-  "rel_pub": "2026-10-19",
-  "rel_days": 1,
+  "commit_90d": 794,
+  "commit_7d": 0,
+  "rel_ver": "v0.9.1",
+  "rel_pub": "2026-11-04",
+  "rel_days": 15,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -1771,10 +1775,10 @@
    "JavaScript": 99,
    "HTML": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4484,13 +4488,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261108",
    "security": "20261108",
    "contrib": "20261108",
-   "lang": "20261108"
-  }
+   "lang": "20261108",
+   "commit": "20261119"
+  },
+  "commit_90d": 5,
+  "commit_7d": 0
  },
  "taublast/AgentSignals": {
   "rel_ver": "v0.6.7",
@@ -4697,6 +4704,50 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "antoine-galataud/rllib-energyplus": {
+  "rel_ver": "v0.11",
+  "rel_pub": "2026-07-03",
+  "rel_days": 139,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 90,
+   "Dockerfile": 10
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "punit2911/AI-Powered-Detection-of-Malicious-Phishing-Links": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 98,
+   "Python": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

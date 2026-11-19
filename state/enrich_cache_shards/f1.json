@@ -1591,8 +1591,8 @@
   }
  },
  "vllm-project/vllm-torchtpu": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v0.33.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -1603,16 +1603,20 @@
    "Shell": 5,
    "Dockerfile": 0
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261023"
   },
   "commit_90d": 1091,
-  "commit_7d": 94
+  "commit_7d": 94,
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false
  },
  "Jason2Brownlee/MachineLearningMischief": {
   "rel_ver": null,
@@ -4896,6 +4900,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "TandemLLM/TandemEngine": {
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 8,
+  "lang": {
+   "Python": 96,
+   "Cuda": 2,
+   "Shell": 2,
+   "C++": 0,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

@@ -1480,12 +1480,12 @@
   }
  },
  "marcuspat/turbo-flow": {
-  "commit_90d": 284,
-  "commit_7d": 69,
-  "rel_ver": "v5.2.0",
-  "rel_pub": "2026-10-07",
-  "rel_days": 13,
-  "rel_n90": 3,
+  "commit_90d": 315,
+  "commit_7d": 3,
+  "rel_ver": "v5.4.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 19,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1497,10 +1497,10 @@
    "Shell": 72,
    "Python": 28
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

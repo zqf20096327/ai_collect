@@ -396,8 +396,8 @@
   }
  },
  "TheAlgorithms/R": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -408,10 +408,10 @@
   "lang": {
    "R": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -478,11 +478,11 @@
   }
  },
  "EmbeddedLLM/JamAIBase": {
-  "commit_90d": 10,
+  "commit_90d": 9,
   "commit_7d": 1,
   "rel_ver": "v0.4",
   "rel_pub": "2025-02-13",
-  "rel_days": 618,
+  "rel_days": 644,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -498,10 +498,10 @@
    "HTML": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5060,6 +5060,50 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "aminoy77/HelloChusquis": {
+  "rel_ver": "v5.5",
+  "rel_pub": "2026-11-01",
+  "rel_days": 18,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 90,
+   "HTML": 10,
+   "Shell": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "B4K2/WhatsApp-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

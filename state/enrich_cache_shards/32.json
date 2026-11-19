@@ -2117,8 +2117,8 @@
   }
  },
  "ryuxdsgn/design-intelligence": {
-  "rel_ver": null,
-  "rel_none": true,
+  "rel_ver": "v2.23.0",
+  "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
   "sec_last": null,
@@ -2131,16 +2131,20 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261108",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
    "commit": "20261108"
   },
   "commit_90d": 435,
-  "commit_7d": 52
+  "commit_7d": 52,
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false
  },
  "mclucy/lucy": {
   "rel_ver": null,
@@ -4969,6 +4973,62 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "iblai/base": {
+  "commit_90d": 422,
+  "commit_7d": 13,
+  "rel_ver": "v2.24.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "TypeScript": 32,
+   "JavaScript": 31,
+   "Rust": 28,
+   "Python": 4,
+   "Shell": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "commit": "20261119",
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "naimkatiman/continuous-improvement": {
+  "rel_ver": "v3.26.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 5,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 54,
+   "TypeScript": 42,
+   "HTML": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

@@ -135,11 +135,11 @@
   }
  },
  "mlpack/mlpack": {
-  "commit_7d": 1,
-  "commit_90d": 15,
+  "commit_7d": 5,
+  "commit_90d": 20,
   "rel_ver": "4.8.0",
   "rel_pub": "2026-06-09",
-  "rel_days": 156,
+  "rel_days": 163,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -155,10 +155,10 @@
    "Python": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4962,8 +4962,8 @@
   }
  },
  "Jwuthri/Tracely-ai": {
-  "commit_90d": 166,
-  "commit_7d": 1,
+  "commit_90d": 129,
+  "commit_7d": 12,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -4978,10 +4978,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261112",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261105",
    "contrib": "20261105",
    "lang": "20261105"
@@ -5356,13 +5356,16 @@
    "CSS": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261118",
    "security": "20261118",
    "contrib": "20261118",
-   "lang": "20261118"
-  }
+   "lang": "20261118",
+   "commit": "20261119"
+  },
+  "commit_90d": 6,
+  "commit_7d": 6
  },
  "Sorsax/ai--manus2.0": {
   "rel_ver": null,

@@ -1061,11 +1061,11 @@
   }
  },
  "chenxiachan/textfold": {
-  "commit_90d": 560,
-  "commit_7d": 55,
-  "rel_ver": "v0.10.50",
-  "rel_pub": "2026-11-09",
-  "rel_days": 3,
+  "commit_90d": 602,
+  "commit_7d": 39,
+  "rel_ver": "v0.10.57",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1083,10 +1083,10 @@
    "TypeScript": 4,
    "HTML": 1
   },
-  "enriched_at": "20261117",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261117",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4698,6 +4698,32 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "gxx950224/SapBuddy": {
+  "rel_ver": "v2.9.1",
+  "rel_pub": "2026-10-28",
+  "rel_days": 22,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 53,
+   "TypeScript": 35,
+   "CSS": 7,
+   "HTML": 4
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

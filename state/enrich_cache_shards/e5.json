@@ -193,11 +193,11 @@
   }
  },
  "DeadWaveWave/opencove": {
-  "commit_90d": 233,
-  "commit_7d": 117,
-  "rel_ver": "v0.4.0-nightly.20261111.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 1,
+  "commit_90d": 325,
+  "commit_7d": 111,
+  "rel_ver": "v0.5.0-nightly.20261119.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -213,10 +213,10 @@
    "PowerShell": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1467,8 +1467,8 @@
   }
  },
  "nicorobinreal/llmspeed": {
-  "commit_90d": 31,
-  "commit_7d": 18,
+  "commit_90d": 32,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1483,10 +1483,10 @@
    "Dockerfile": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -4435,6 +4435,49 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "ddk103/strata-ddkRDNA3": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "C++": 45,
+   "Python": 28,
+   "Cuda": 11,
+   "JavaScript": 8,
+   "TypeScript": 3
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "axisvela/praxo-core-rust": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "Rust": 97,
+   "Python": 3
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

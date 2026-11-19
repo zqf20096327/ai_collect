@@ -1289,8 +1289,8 @@
   }
  },
  "heyongjun666/AICU-Graph": {
-  "commit_7d": 8,
-  "commit_90d": 198,
+  "commit_7d": 0,
+  "commit_90d": 200,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1305,10 +1305,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"
@@ -1378,10 +1378,10 @@
   }
  },
  "LudwigKienle/ai-video-production-editor": {
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-10-08",
-  "rel_days": 12,
-  "rel_n90": 1,
+  "rel_ver": "v3.2.0",
+  "rel_pub": "2026-10-28",
+  "rel_days": 22,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1396,9 +1396,9 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261022",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4665,6 +4665,55 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "dropps07/forkcast": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 4,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 74,
+   "CSS": 26,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "heiye-vn/enterprise-knowledge-assistant": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 70,
+   "TypeScript": 24,
+   "CSS": 6,
+   "Dockerfile": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

@@ -404,8 +404,8 @@
   }
  },
  "BobMcDear/attorch": {
-  "commit_90d": 12,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -416,10 +416,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -794,10 +794,10 @@
  },
  "NVIDIA-ISAAC-ROS/isaac_ros_image_segmentation": {
   "commit_90d": 4,
-  "commit_7d": 0,
-  "rel_ver": "v5.0-0",
-  "rel_pub": "2026-09-22",
-  "rel_days": 26,
+  "commit_7d": 2,
+  "rel_ver": "v5.1-0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 1,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -812,10 +812,10 @@
    "Shell": 3,
    "Cuda": 3
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1200,9 +1200,9 @@
   }
  },
  "obris-dev/openmagpie": {
-  "rel_ver": "v0.11.0",
-  "rel_pub": "2026-10-13",
-  "rel_days": 7,
+  "rel_ver": "v0.12.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -1218,9 +1218,9 @@
    "JavaScript": 1,
    "Makefile": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",
@@ -4382,6 +4382,56 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "createdbyadham/LiteDB": {
+  "rel_ver": "v2.6.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 7,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 87,
+   "Rust": 11,
+   "Shell": 1,
+   "CSS": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "luolin1024/chalkpress-skill": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-11",
+  "rel_days": 8,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

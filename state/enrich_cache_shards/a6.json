@@ -5142,5 +5142,58 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "LittlePyx/Pi_zaya": {
+  "commit_90d": 108,
+  "commit_7d": 0,
+  "rel_ver": "v0.1.0-beta.13",
+  "rel_pub": "2026-08-25",
+  "rel_days": 86,
+  "rel_n90": 2,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 78,
+   "TypeScript": 20,
+   "CSS": 2,
+   "PowerShell": 0,
+   "C#": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "commit": "20261119",
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
+ },
+ "debs-obrien/grading-buddy-lfm3-demo": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 90,
+   "CSS": 5,
+   "HTML": 3,
+   "JavaScript": 1,
+   "Shell": 1
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

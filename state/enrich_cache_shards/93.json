@@ -4533,13 +4533,16 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261105",
+  "enriched_at": "20261119",
   "dim_ts": {
    "release": "20261105",
    "security": "20261105",
    "contrib": "20261105",
-   "lang": "20261105"
-  }
+   "lang": "20261105",
+   "commit": "20261119"
+  },
+  "commit_90d": 2,
+  "commit_7d": 0
  },
  "KyuRish/patreon-mcp-server": {
   "rel_ver": "v0.1.1",
@@ -4997,6 +5000,29 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "waswrsis/Quant-Strategy-Tokenizer": {
+  "rel_ver": "v0.4.0-agent-handoff-final",
+  "rel_pub": "2026-05-18",
+  "rel_days": 185,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
   }
  }
 }

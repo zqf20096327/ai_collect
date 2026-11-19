@@ -351,12 +351,12 @@
   }
  },
  "filtalgo/Filtmall-Shopping-Skill": {
-  "commit_7d": 15,
+  "commit_7d": 1,
   "commit_90d": 26,
-  "rel_ver": "v2.1.2",
-  "rel_pub": "2026-11-10",
-  "rel_days": 2,
-  "rel_n90": 9,
+  "rel_ver": "v2.2.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 3,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -367,10 +367,10 @@
   "lang": {
    "JavaScript": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

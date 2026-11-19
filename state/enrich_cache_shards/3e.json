@@ -4689,5 +4689,42 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "eclipse-theia/theia": {
+  "commit_90d": 256,
+  "commit_7d": 27,
+  "rel_ver": "next",
+  "rel_pub": "2026-11-19",
+  "rel_days": 0,
+  "rel_n90": 6,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 6,
+  "sec_worst": "high",
+  "sec_last": "2026-08-11",
+  "sec_ids": [
+   "GHSA-f3w9-qfw3-xr32(CVE-2026-14574,medium)",
+   "GHSA-62f6-wcvg-54h3(CVE-2026-60009,high)",
+   "GHSA-qqc8-9538-25v4(CVE-2026-61891,high)",
+   "GHSA-qmm6-p8q4-2g48(CVE-2026-12609,high)",
+   "GHSA-2m57-xxmh-v696(CVE-2026-10055,high)",
+   "GHSA-78g8-vm3p-97c6(CVE-2026-10054,high)"
+  ],
+  "contrib_n": 368,
+  "lang": {
+   "TypeScript": 96,
+   "CSS": 2,
+   "JavaScript": 2,
+   "Shell": 0,
+   "C": 0
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "commit": "20261119",
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

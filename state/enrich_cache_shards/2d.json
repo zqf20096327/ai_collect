@@ -4587,5 +4587,28 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "guvense/hellyee": {
+  "rel_ver": "v0.6.0",
+  "rel_pub": "2026-08-21",
+  "rel_days": 90,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261119",
+  "dim_ts": {
+   "release": "20261119",
+   "security": "20261119",
+   "contrib": "20261119",
+   "lang": "20261119"
+  }
  }
 }

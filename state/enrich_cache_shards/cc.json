@@ -1631,8 +1631,8 @@
   }
  },
  "ufo-ai/ufo-core": {
-  "commit_7d": 3,
-  "commit_90d": 48,
+  "commit_7d": 7,
+  "commit_90d": 78,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1647,9 +1647,9 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
+   "commit": "20261119",
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
@@ -1775,8 +1775,8 @@
   }
  },
  "summarizepaper/summarizepaper": {
-  "commit_7d": 2,
-  "commit_90d": 2,
+  "commit_7d": 31,
+  "commit_90d": 434,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1791,10 +1791,10 @@
    "CSS": 20,
    "Procfile": 0
   },
-  "enriched_at": "20261020",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261020",
-   "release": "20261020",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020"

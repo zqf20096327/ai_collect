@@ -1779,9 +1779,9 @@
   }
  },
  "Fazmin/cve-intel": {
-  "rel_ver": "v0.3.10",
-  "rel_pub": "2026-10-20",
-  "rel_days": 0,
+  "rel_ver": "v0.3.39",
+  "rel_pub": "2026-11-17",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -1796,9 +1796,9 @@
    "Shell": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261028",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "release": "20261020",
+   "release": "20261119",
    "security": "20261020",
    "contrib": "20261020",
    "lang": "20261020",

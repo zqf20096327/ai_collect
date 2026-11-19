@@ -343,12 +343,12 @@
   }
  },
  "SanMuzZzZz/LuaN1aoAgent": {
-  "commit_90d": 47,
-  "commit_7d": 0,
+  "commit_90d": 10,
+  "commit_7d": 2,
   "rel_ver": "v2.0.0",
   "rel_pub": "2026-07-20",
-  "rel_days": 89,
-  "rel_n90": 2,
+  "rel_days": 122,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -363,10 +363,10 @@
    "CSS": 2,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -507,11 +507,11 @@
   }
  },
  "chriswritescode-dev/opencode-manager": {
-  "commit_90d": 581,
-  "commit_7d": 25,
+  "commit_90d": 599,
+  "commit_7d": 19,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-10-26",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -529,10 +529,10 @@
    "Dockerfile": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261112",
-   "release": "20261112",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2576,7 +2576,7 @@
  },
  "deepseek-ai/DeepInfer": {
   "commit_90d": 6,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2590,10 +2590,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261104",
+  "enriched_at": "20261119",
   "dim_ts": {
-   "commit": "20261104",
-   "release": "20261104",
+   "commit": "20261119",
+   "release": "20261119",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
