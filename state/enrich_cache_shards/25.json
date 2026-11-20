@@ -1,7 +1,7 @@
 {
  "punkpeye/awesome-mcp-servers": {
-  "commit_7d": 3,
-  "commit_90d": 3764,
+  "commit_7d": 458,
+  "commit_90d": 4567,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -10,10 +10,10 @@
   "sec_ids": [],
   "contrib_n": 446,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -230,10 +230,10 @@
   }
  },
  "letta-ai/letta-code": {
-  "commit_90d": 1026,
-  "commit_7d": 106,
-  "rel_ver": "v0.34.58",
-  "rel_pub": "2026-11-13",
+  "commit_90d": 1022,
+  "commit_7d": 69,
+  "rel_ver": "v0.34.67",
+  "rel_pub": "2026-11-20",
   "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
@@ -250,10 +250,10 @@
    "Python": 0,
    "MDX": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4996,6 +4996,29 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Leizhidong-creator/CreateWorld": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 36,
+   "TypeScript": 31,
+   "JavaScript": 26,
+   "HTML": 5,
+   "CSS": 2
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "unslothai/unsloth": {
-  "commit_7d": 656,
-  "commit_90d": 6757,
-  "rel_ver": "v0.1.917-beta",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 807,
+  "commit_90d": 7305,
+  "rel_ver": "v0.1.920-beta",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -20,20 +20,20 @@
    "Shell": 2,
    "Rust": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "can1357/oh-my-pi": {
-  "commit_7d": 2133,
-  "commit_90d": 20485,
-  "rel_ver": "v18.20.0",
-  "rel_pub": "2026-11-12",
+  "commit_7d": 1641,
+  "commit_90d": 21445,
+  "rel_ver": "v19.0.1",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -50,10 +50,10 @@
    "CSS": 0,
    "Nix": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -111,11 +111,11 @@
   }
  },
  "vllm-project/semantic-router": {
-  "commit_90d": 1503,
-  "commit_7d": 219,
+  "commit_90d": 1744,
+  "commit_7d": 264,
   "rel_ver": "v0.4.0",
   "rel_pub": "2026-09-27",
-  "rel_days": 47,
+  "rel_days": 54,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -133,10 +133,10 @@
    "CSS": 2,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -462,10 +462,10 @@
   "lang": {
    "C#": 100
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4860,6 +4860,30 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "badchars/satellite-mcp": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-06-30",
+  "rel_days": 143,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 3
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

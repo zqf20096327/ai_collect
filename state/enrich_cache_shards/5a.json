@@ -60,12 +60,12 @@
   }
  },
  "openai/tart": {
-  "commit_90d": 54,
-  "commit_7d": 2,
-  "rel_ver": "2.41.1",
-  "rel_pub": "2026-10-15",
-  "rel_days": 29,
-  "rel_n90": 8,
+  "commit_90d": 60,
+  "commit_7d": 11,
+  "rel_ver": "2.42.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -80,20 +80,20 @@
    "Shell": 1,
    "ANTLR": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "wiltodelta/remove-ai-watermarks": {
-  "commit_90d": 334,
-  "commit_7d": 19,
-  "rel_ver": "v0.59.0",
-  "rel_pub": "2026-11-12",
+  "commit_90d": 343,
+  "commit_7d": 32,
+  "rel_ver": "v0.64.0",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -107,10 +107,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1996,12 +1996,12 @@
   }
  },
  "T-Crypt/berth": {
-  "commit_90d": 379,
-  "commit_7d": 368,
-  "rel_ver": "v0.3.3",
-  "rel_pub": "2026-10-21",
-  "rel_days": 0,
-  "rel_n90": 6,
+  "commit_90d": 945,
+  "commit_7d": 67,
+  "rel_ver": "v0.6.1",
+  "rel_pub": "2026-11-15",
+  "rel_days": 5,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -2016,10 +2016,10 @@
    "Python": 3,
    "HTML": 2
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4895,6 +4895,27 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "hufs24lsh/ShallowFrontier": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 97,
+   "ANTLR": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

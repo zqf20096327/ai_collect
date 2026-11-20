@@ -1,11 +1,11 @@
 {
  "tt-a1i/archify": {
-  "commit_7d": 3,
-  "commit_90d": 1617,
+  "commit_7d": 12,
+  "commit_90d": 1618,
   "rel_ver": "archify-dsh-v1.1.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 5,
-  "rel_n90": 8,
+  "rel_days": 12,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,22 +20,22 @@
    "Astro": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "netdata/netdata": {
-  "commit_7d": 92,
-  "commit_90d": 1060,
-  "rel_ver": "v2.12.3",
-  "rel_pub": "2026-11-04",
-  "rel_days": 9,
-  "rel_n90": 5,
+  "commit_7d": 117,
+  "commit_90d": 1107,
+  "rel_ver": "v2.13.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 10,
@@ -59,10 +59,10 @@
    "Python": 3,
    "Shell": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,11 +148,11 @@
   }
  },
  "TingsongYu/PyTorch-Tutorial-2nd": {
-  "commit_90d": 15,
+  "commit_90d": 14,
   "commit_7d": 1,
   "rel_ver": "v1.0.0",
   "rel_pub": "2024-05-20",
-  "rel_days": 907,
+  "rel_days": 914,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -168,10 +168,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -205,12 +205,12 @@
   }
  },
  "opensolon/solon": {
-  "commit_90d": 128,
-  "commit_7d": 6,
+  "commit_90d": 56,
+  "commit_7d": 1,
   "rel_ver": "v4.1.1",
   "rel_pub": "2026-10-01",
-  "rel_days": 39,
-  "rel_n90": 4,
+  "rel_days": 50,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 1,
@@ -227,10 +227,10 @@
    "FreeMarker": 0,
    "Kotlin": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261109",
-   "release": "20261109",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -2590,11 +2590,11 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261119",
+  "enriched_at": "20261120",
   "dim_ts": {
    "commit": "20261119",
    "release": "20261119",
-   "security": "20261021",
+   "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021"
   }
@@ -5296,6 +5296,25 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "KutalVolkan/ai_recruiter": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "tensorflow/tensorflow": {
-  "commit_7d": 487,
-  "commit_90d": 5647,
-  "rel_ver": "v2.22.0-rc0",
-  "rel_pub": "2026-09-24",
-  "rel_days": 50,
-  "rel_n90": 1,
+  "commit_7d": 476,
+  "commit_90d": 5991,
+  "rel_ver": "v2.22.0-rc1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 30,
@@ -29,21 +29,21 @@
    "Starlark": 4,
    "HTML": 4
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Arize-ai/phoenix": {
-  "commit_7d": 58,
-  "commit_90d": 1076,
-  "rel_ver": "@arizeai/phoenix-otel@3.0.0",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 52,
+  "commit_90d": 1035,
+  "rel_ver": "arize-phoenix-v21.3.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -61,10 +61,10 @@
    "C": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,12 +95,12 @@
   }
  },
  "Project-MONAI/MONAI": {
-  "commit_7d": 1,
-  "commit_90d": 111,
-  "rel_ver": "1.6.1",
-  "rel_pub": "2026-09-27",
-  "rel_days": 47,
-  "rel_n90": 1,
+  "commit_7d": 7,
+  "commit_90d": 112,
+  "rel_ver": "1.6.2",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 18,
@@ -124,21 +124,21 @@
    "Shell": 0,
    "C": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "HelixDB/helix-db": {
-  "commit_7d": 122,
-  "commit_90d": 1644,
+  "commit_7d": 130,
+  "commit_90d": 1614,
   "rel_ver": "v3.7.0",
   "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -154,10 +154,10 @@
    "Go": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

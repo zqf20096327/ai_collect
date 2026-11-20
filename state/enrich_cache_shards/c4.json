@@ -2095,9 +2095,9 @@
    "HTML": 5,
    "CSS": 1
   },
-  "enriched_at": "20261023",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
@@ -4955,6 +4955,26 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "xCodeWraith/GoogleMapAIagent": {
+  "commit_90d": 0,
+  "commit_7d": 0,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {},
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "commit": "20261120",
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -59,11 +59,11 @@
   }
  },
  "OpenNMT/CTranslate2": {
-  "commit_90d": 44,
-  "commit_7d": 7,
+  "commit_90d": 51,
+  "commit_7d": 9,
   "rel_ver": "v4.9.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -79,10 +79,10 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -101,10 +101,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -171,8 +171,8 @@
   }
  },
  "amitshekhariitbhu/llm-internals": {
-  "commit_90d": 10,
-  "commit_7d": 1,
+  "commit_90d": 11,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -181,10 +181,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4832,6 +4832,116 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "OpenGigantic/hachi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Python": 81,
+   "TypeScript": 16,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "somastllc/Somali-Tokenizer": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 54,
+   "Python": 46
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "PAIR-Systems-Inc/goodmem-claude-code-plugin": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 96,
+   "Shell": 4
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "esammostafa9-cloud/Varro-Agentic-RAG-System2": {
+  "rel_ver": "v2.0.1",
+  "rel_pub": "2026-11-13",
+  "rel_days": 7,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 69,
+   "JavaScript": 20,
+   "CSS": 6,
+   "HTML": 5,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "danieleteti/systemone-delphi": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Pascal": 84,
+   "Python": 16
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

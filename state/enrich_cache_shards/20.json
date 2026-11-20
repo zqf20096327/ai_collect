@@ -56,11 +56,11 @@
   }
  },
  "BitterSecurity/Decepticon": {
-  "commit_90d": 849,
-  "commit_7d": 83,
+  "commit_90d": 914,
+  "commit_7d": 66,
   "rel_ver": "v2.2.2",
   "rel_pub": "2026-10-28",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "Go": 4,
    "JavaScript": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

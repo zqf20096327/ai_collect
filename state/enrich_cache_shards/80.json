@@ -1,11 +1,11 @@
 {
  "codewhale-hq/Codewhale": {
-  "commit_7d": 557,
-  "commit_90d": 7373,
+  "commit_7d": 391,
+  "commit_90d": 7058,
   "rel_ver": "v0.10.2",
   "rel_pub": "2026-10-24",
-  "rel_days": 20,
-  "rel_n90": 9,
+  "rel_days": 27,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 15,
@@ -29,10 +29,10 @@
    "Python": 1,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,11 +95,11 @@
   }
  },
  "cube-js/cube": {
-  "commit_7d": 100,
-  "commit_90d": 852,
-  "rel_ver": "v1.8.22",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 90,
+  "commit_90d": 908,
+  "rel_ver": "v1.8.30",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -124,10 +124,10 @@
    "JavaScript": 3,
    "Python": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -194,8 +194,8 @@
   }
  },
  "thuquant/awesome-quant": {
-  "commit_7d": 8,
-  "commit_90d": 68,
+  "commit_7d": 13,
+  "commit_90d": 82,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -204,10 +204,10 @@
   "sec_ids": [],
   "contrib_n": 34,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5218,6 +5218,30 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "greypapl/shotrans": {
+  "rel_ver": "v1.2.1",
+  "rel_pub": "2026-11-05",
+  "rel_days": 15,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

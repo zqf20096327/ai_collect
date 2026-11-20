@@ -1,10 +1,10 @@
 {
  "github/spec-kit": {
-  "commit_7d": 64,
-  "commit_90d": 633,
-  "rel_ver": "v1.4.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "commit_7d": 49,
+  "commit_90d": 623,
+  "rel_ver": "v1.4.3",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "PowerShell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5277,13 +5277,16 @@
    "CSS": 3,
    "Go": 3
   },
-  "enriched_at": "20261111",
+  "enriched_at": "20261120",
   "dim_ts": {
    "release": "20261111",
    "security": "20261111",
    "contrib": "20261111",
-   "lang": "20261111"
-  }
+   "lang": "20261111",
+   "commit": "20261120"
+  },
+  "commit_90d": 41,
+  "commit_7d": 31
  },
  "alphaexposure/kapitsa-launcher": {
   "rel_ver": "v0.2.0",

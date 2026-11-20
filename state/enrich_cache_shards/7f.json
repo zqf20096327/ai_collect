@@ -1,10 +1,10 @@
 {
  "EverMind-AI/EverOS": {
-  "commit_7d": 17,
-  "commit_90d": 87,
-  "rel_ver": "v1.6.0",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 8,
+  "commit_90d": 93,
+  "rel_ver": "v1.7.0",
+  "rel_pub": "2026-11-13",
+  "rel_days": 7,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -23,10 +23,10 @@
    "HTML": 2,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4645,6 +4645,49 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "zhulaoqi/robot": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 71,
+   "Vue": 25,
+   "JavaScript": 1,
+   "Shell": 1,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "Umair0092/embed_sync": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Ruby": 100,
+   "Shell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

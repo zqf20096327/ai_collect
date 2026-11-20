@@ -1,10 +1,10 @@
 {
  "headroomlabs-ai/headroom": {
-  "commit_7d": 105,
-  "commit_90d": 1100,
+  "commit_7d": 89,
+  "commit_90d": 1117,
   "rel_ver": "v0.44.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -23,21 +23,21 @@
    "JavaScript": 2,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "yamadashy/repomix": {
-  "commit_7d": 34,
-  "commit_90d": 459,
+  "commit_7d": 19,
+  "commit_90d": 456,
   "rel_ver": "v1.19.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -208,11 +208,11 @@
   }
  },
  "snap-stanford/Biomni": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 4,
+  "commit_7d": 4,
   "rel_ver": "v0.0.8",
   "rel_pub": "2025-10-27",
-  "rel_days": 382,
+  "rel_days": 389,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -227,10 +227,10 @@
    "Shell": 2,
    "R": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -910,8 +910,8 @@
   }
  },
  "zhaoyang97/Paper-Notes-en": {
-  "commit_90d": 6,
-  "commit_7d": 0,
+  "commit_90d": 5,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -923,10 +923,10 @@
    "Python": 54,
    "HTML": 46
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5279,6 +5279,32 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "Ultimate-Multisite/superdav-ai-agent": {
+  "rel_ver": "v1.26.0",
+  "rel_pub": "2026-11-08",
+  "rel_days": 12,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "PHP": 79,
+   "JavaScript": 18,
+   "CSS": 2,
+   "Shell": 2
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

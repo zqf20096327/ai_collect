@@ -10,21 +10,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "FlorianBruniaux/claude-code-ultimate-guide": {
-  "commit_7d": 33,
-  "commit_90d": 466,
+  "commit_7d": 5,
+  "commit_90d": 456,
   "rel_ver": "v3.45.2",
   "rel_pub": "2026-11-01",
-  "rel_days": 12,
+  "rel_days": 19,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -40,10 +40,10 @@
    "TypeScript": 12,
    "Shell": 10
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -80,11 +80,11 @@
   }
  },
  "yvgude/lean-ctx": {
-  "commit_7d": 46,
-  "commit_90d": 1224,
-  "rel_ver": "v3.12.4",
-  "rel_pub": "2026-11-13",
-  "rel_days": 0,
+  "commit_7d": 11,
+  "commit_90d": 1066,
+  "rel_ver": "v3.12.6",
+  "rel_pub": "2026-11-15",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -109,10 +109,10 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4891,6 +4891,28 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "d-sigal/agentic-data-room": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 72,
+   "Python": 23,
+   "CSS": 5,
+   "Makefile": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -112,11 +112,11 @@
   }
  },
  "memgraph/memgraph": {
-  "commit_7d": 19,
-  "commit_90d": 373,
+  "commit_7d": 21,
+  "commit_90d": 357,
   "rel_ver": "v3.14.0",
   "rel_pub": "2026-10-21",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
@@ -132,10 +132,10 @@
    "Gherkin": 4,
    "Shell": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1713,12 +1713,12 @@
   }
  },
  "maximpri/mlxtop": {
-  "commit_7d": 52,
-  "commit_90d": 108,
-  "rel_ver": "v3.1.1",
-  "rel_pub": "2026-10-20",
-  "rel_days": 1,
-  "rel_n90": 10,
+  "commit_7d": 106,
+  "commit_90d": 326,
+  "rel_ver": "v3.4.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1733,10 +1733,10 @@
    "PowerShell": 0,
    "Ruby": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"

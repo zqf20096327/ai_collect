@@ -1,10 +1,10 @@
 {
  "OpenHands/OpenHands": {
-  "commit_7d": 143,
-  "commit_90d": 1052,
-  "rel_ver": "v1.40.0",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "commit_7d": 88,
+  "commit_90d": 1090,
+  "rel_ver": "v1.42.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -22,10 +22,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,11 +63,11 @@
  },
  "microsoft/data-formulator": {
   "commit_7d": 0,
-  "commit_90d": 5,
+  "commit_90d": 0,
   "rel_ver": "0.8b1",
   "rel_pub": "2026-08-15",
-  "rel_days": 90,
-  "rel_n90": 1,
+  "rel_days": 97,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -82,10 +82,10 @@
    "Shell": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4927,6 +4927,33 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "usecastor/castor": {
+  "rel_ver": "v1.5.0",
+  "rel_pub": "2026-11-09",
+  "rel_days": 11,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "Rust": 87,
+   "HTML": 6,
+   "Python": 4,
+   "Batchfile": 2,
+   "Shell": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

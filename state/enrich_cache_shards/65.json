@@ -1,10 +1,10 @@
 {
  "ollama/ollama": {
-  "commit_7d": 18,
-  "commit_90d": 355,
-  "rel_ver": "v0.40.17-rc0",
+  "commit_7d": 10,
+  "commit_90d": 341,
+  "rel_ver": "v0.40.17-rc2",
   "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "C++": 1,
    "Objective-C": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "tesseract-ocr/tesseract": {
-  "commit_7d": 5,
-  "commit_90d": 103,
+  "commit_7d": 59,
+  "commit_90d": 138,
   "rel_ver": "5.5.4",
   "rel_pub": "2026-10-28",
-  "rel_days": 16,
+  "rel_days": 23,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -59,10 +59,10 @@
    "Makefile": 1,
    "NSIS": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -122,10 +122,10 @@
  },
  "deepseek-ai/DeepGEMM": {
   "commit_90d": 5,
-  "commit_7d": 1,
+  "commit_7d": 0,
   "rel_ver": "nv_dev_f8e8fb5",
   "rel_pub": "2026-07-20",
-  "rel_days": 95,
+  "rel_days": 123,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -141,22 +141,22 @@
    "Shell": 0,
    "CMake": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261023",
-   "release": "20261023",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "0xPlaygrounds/rig": {
-  "commit_90d": 476,
-  "commit_7d": 121,
+  "commit_90d": 545,
+  "commit_7d": 113,
   "rel_ver": "v0.46.0",
   "rel_pub": "2026-10-31",
-  "rel_days": 13,
-  "rel_n90": 6,
+  "rel_days": 20,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -171,10 +171,10 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2217,13 +2217,17 @@
   "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
-  "sec_n": 4,
+  "sec_n": 9,
   "sec_worst": "critical",
-  "sec_last": "2026-10-13",
+  "sec_last": "2026-11-01",
   "sec_ids": [
+   "GHSA-2xq5-x376-qqh2(-,critical)",
    "GHSA-ffh4-qv86-xfxv(-,critical)",
    "GHSA-q5xm-fr98-g4j5(-,high)",
    "GHSA-q5m4-94jr-jwrq(-,medium)",
+   "GHSA-4cj6-vfwp-8pq7(-,high)",
+   "GHSA-4rj2-cgv9-3jf9(-,critical)",
+   "GHSA-r2pq-mqwg-m575(-,critical)",
    "GHSA-55pr-c85h-3p9q(-,high)"
   ],
   "contrib_n": 29,
@@ -2234,11 +2238,11 @@
    "Shell": 2,
    "Jinja": 1
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261120",
   "dim_ts": {
    "commit": "20261118",
    "release": "20261118",
-   "security": "20261021",
+   "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021"
   }
@@ -4799,6 +4803,33 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "ilovemajiaqi/pi-gui-cn": {
+  "rel_ver": "v1.0.2",
+  "rel_pub": "2026-11-10",
+  "rel_days": 10,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 21,
+  "lang": {
+   "TypeScript": 91,
+   "JavaScript": 5,
+   "CSS": 3,
+   "Shell": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

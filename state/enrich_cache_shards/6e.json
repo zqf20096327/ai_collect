@@ -204,12 +204,12 @@
   }
  },
  "alpic-ai/skybridge": {
-  "commit_90d": 60,
-  "commit_7d": 1,
-  "rel_ver": "v2.1.1",
-  "rel_pub": "2026-11-09",
-  "rel_days": 2,
-  "rel_n90": 8,
+  "commit_90d": 64,
+  "commit_7d": 5,
+  "rel_ver": "v2.1.2",
+  "rel_pub": "2026-11-12",
+  "rel_days": 8,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -224,10 +224,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261111",
-   "release": "20261111",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4395,6 +4395,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Kdevos12/seshat": {
+  "rel_ver": "v1.0.0-beta.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "Lean": 0,
+   "HTML": 0,
+   "CSS": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

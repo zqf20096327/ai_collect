@@ -60,7 +60,7 @@
   "commit_90d": 8,
   "rel_ver": "web-v0.136.0",
   "rel_pub": "2026-10-09",
-  "rel_days": 35,
+  "rel_days": 42,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -78,22 +78,22 @@
    "Shell": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apache/seatunnel": {
-  "commit_7d": 51,
-  "commit_90d": 735,
-  "rel_ver": "v3.0.0",
-  "rel_pub": "2026-09-29",
-  "rel_days": 45,
-  "rel_n90": 1,
+  "commit_7d": 45,
+  "commit_90d": 737,
+  "rel_ver": "3.1.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -108,21 +108,21 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "jacklandrin/OnlySwitch": {
-  "commit_90d": 302,
-  "commit_7d": 51,
-  "rel_ver": "release_3.6.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "commit_90d": 357,
+  "commit_7d": 56,
+  "rel_ver": "release_3.7.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -137,21 +137,21 @@
    "Python": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "h2oai/h2o-llmstudio": {
-  "commit_90d": 46,
-  "commit_7d": 7,
-  "rel_ver": "v1.15.4",
-  "rel_pub": "2026-11-04",
-  "rel_days": 9,
+  "commit_90d": 45,
+  "commit_7d": 5,
+  "rel_ver": "v1.15.5",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -167,10 +167,10 @@
    "Gherkin": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -201,11 +201,11 @@
   }
  },
  "deepflowio/deepflow": {
-  "commit_90d": 8,
+  "commit_90d": 7,
   "commit_7d": 1,
   "rel_ver": "v7.2.4",
   "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -221,21 +221,21 @@
    "C++": 1,
    "xBase": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "vllm-project/llm-compressor": {
-  "commit_90d": 263,
-  "commit_7d": 25,
+  "commit_90d": 252,
+  "commit_7d": 20,
   "rel_ver": "0.10.0.5",
   "rel_pub": "2026-11-09",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -249,10 +249,10 @@
    "Shell": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -664,8 +664,8 @@
   }
  },
  "microsoft/LangChain4j-for-Beginners": {
-  "commit_90d": 8,
-  "commit_7d": 0,
+  "commit_90d": 6,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -680,10 +680,10 @@
    "JavaScript": 8,
    "Shell": 8
   },
-  "enriched_at": "20261017",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261017",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4228,12 +4228,12 @@
   }
  },
  "stfc/qiskit-machine-learning": {
-  "commit_90d": 2,
-  "commit_7d": 1,
+  "commit_90d": 3,
+  "commit_7d": 2,
   "rel_ver": "0.9.1",
   "rel_pub": "2026-08-19",
-  "rel_days": 86,
-  "rel_n90": 1,
+  "rel_days": 93,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -4246,10 +4246,10 @@
    "Makefile": 0,
    "Shell": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261030",
    "contrib": "20261030",
    "lang": "20261030"
@@ -4923,6 +4923,45 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "kamesha12/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 43,
+   "Go": 27,
+   "C": 18,
+   "Python": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "bensafifatima57-svg/coregold-usdt-vcc-okx-binance-fiat-crypto-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

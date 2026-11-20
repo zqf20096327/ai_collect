@@ -28,11 +28,11 @@
   }
  },
  "modular/modular": {
-  "commit_7d": 579,
-  "commit_90d": 5934,
+  "commit_7d": 542,
+  "commit_90d": 6201,
   "rel_ver": "max/v26.7.0",
   "rel_pub": "2026-10-22",
-  "rel_days": 22,
+  "rel_days": 29,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -48,20 +48,20 @@
    "Starlark": 4,
    "MDX": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "strands-agents/harness-sdk": {
-  "commit_7d": 79,
-  "commit_90d": 861,
-  "rel_ver": "mcp/v0.4.0",
-  "rel_pub": "2026-11-12",
+  "commit_7d": 88,
+  "commit_90d": 900,
+  "rel_ver": "typescript/v1.26.0",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -82,10 +82,10 @@
    "Astro": 2,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4225,11 +4225,11 @@
   }
  },
  "Sandflow-ai/sand3d": {
-  "commit_90d": 25,
-  "commit_7d": 8,
+  "commit_90d": 27,
+  "commit_7d": 2,
   "rel_ver": "v1.6.3",
   "rel_pub": "2026-11-06",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -4243,10 +4243,10 @@
    "Python": 11,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261106",
    "contrib": "20261106",
    "lang": "20261106"
@@ -4432,6 +4432,28 @@
    "security": "20261115",
    "contrib": "20261115",
    "lang": "20261115"
+  }
+ },
+ "hanataki41-ui/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 43,
+   "Go": 27,
+   "C": 18,
+   "Python": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

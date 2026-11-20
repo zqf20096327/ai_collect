@@ -26,11 +26,11 @@
   }
  },
  "huggingface/pytorch-image-models": {
-  "commit_7d": 0,
-  "commit_90d": 238,
+  "commit_7d": 11,
+  "commit_90d": 247,
   "rel_ver": "v1.0.31",
   "rel_pub": "2026-11-03",
-  "rel_days": 10,
+  "rel_days": 17,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -44,10 +44,10 @@
    "MDX": 13,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -231,11 +231,11 @@
   }
  },
  "1186258278/OpenClawChineseTranslation": {
-  "commit_7d": 11,
-  "commit_90d": 42,
-  "rel_ver": "v2026.11.3-zh.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 6,
+  "commit_90d": 48,
+  "rel_ver": "v2026.11.5-zh.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -251,10 +251,10 @@
    "TypeScript": 11,
    "CSS": 9
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4960,6 +4960,53 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "vndee/vnondb-extractor": {
+  "rel_ver": "v1.0",
+  "rel_pub": "2018-12-14",
+  "rel_days": 2898,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "vishal2559/supply-chain-control-tower": {
+  "rel_ver": "v3.0",
+  "rel_pub": "2026-05-31",
+  "rel_days": 173,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

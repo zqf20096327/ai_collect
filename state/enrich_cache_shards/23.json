@@ -1,10 +1,10 @@
 {
  "danielmiessler/Fabric": {
-  "commit_7d": 28,
-  "commit_90d": 615,
-  "rel_ver": "v1.4.571",
-  "rel_pub": "2026-11-13",
-  "rel_days": 0,
+  "commit_7d": 35,
+  "commit_90d": 664,
+  "rel_ver": "v1.4.578",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -24,10 +24,10 @@
    "Python": 5,
    "Shell": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -72,12 +72,12 @@
   }
  },
  "mindee/doctr": {
-  "commit_7d": 7,
-  "commit_90d": 91,
+  "commit_7d": 6,
+  "commit_90d": 89,
   "rel_ver": "v1.1.0",
   "rel_pub": "2026-08-21",
-  "rel_days": 84,
-  "rel_n90": 1,
+  "rel_days": 91,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -90,10 +90,10 @@
    "Dockerfile": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4217,6 +4217,54 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "later-3/lifeos": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 52,
+   "JavaScript": 47,
+   "CSS": 1,
+   "HTML": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "RiceAI88/shushu-research-skills": {
+  "rel_ver": "v2.0.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 0,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 54,
+   "Python": 19,
+   "CSS": 16,
+   "HTML": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "ultralytics/ultralytics": {
-  "commit_7d": 98,
-  "commit_90d": 981,
-  "rel_ver": "v8.4.211",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 88,
+  "commit_90d": 1021,
+  "rel_ver": "v8.4.216",
+  "rel_pub": "2026-11-20",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -19,18 +19,18 @@
    "HTML": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "KKKKhazix/AIHOT": {
-  "commit_90d": 283,
-  "commit_7d": 66,
+  "commit_90d": 336,
+  "commit_7d": 53,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 2,
@@ -47,10 +47,10 @@
    "PLpgSQL": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4850,6 +4850,32 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "developerz-ai/ts23d": {
+  "rel_ver": "v0.16.0",
+  "rel_pub": "2026-11-20",
+  "rel_days": 0,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 3,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 0,
+   "HTML": 0,
+   "Shell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

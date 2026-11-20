@@ -651,8 +651,8 @@
   }
  },
  "hikari0511/awesome-amazon-ec-skills": {
-  "commit_90d": 0,
-  "commit_7d": 0,
+  "commit_90d": 1,
+  "commit_7d": 1,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -661,10 +661,10 @@
   "sec_ids": [],
   "contrib_n": 1,
   "lang": {},
-  "enriched_at": "20261018",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -1793,8 +1793,8 @@
   }
  },
  "MemTensor/MemT-1.0": {
-  "commit_90d": 2,
-  "commit_7d": 2,
+  "commit_90d": 6,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -1806,10 +1806,10 @@
    "Python": 100,
    "Shell": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4765,6 +4765,62 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "lululu811/zettaranc-skill": {
+  "commit_90d": 47,
+  "commit_7d": 1,
+  "rel_ver": "v4.3.1",
+  "rel_pub": "2026-09-30",
+  "rel_days": 51,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 4,
+  "lang": {
+   "Python": 85,
+   "TypeScript": 10,
+   "Rust": 4,
+   "Shell": 0,
+   "CSS": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "commit": "20261120",
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "eshan-chawla/elfhub-mac": {
+  "rel_ver": "v0.1.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 98,
+   "HTML": 1,
+   "Shell": 1,
+   "Python": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -1,10 +1,10 @@
 {
  "docmost/docmost": {
-  "commit_7d": 35,
-  "commit_90d": 158,
+  "commit_7d": 44,
+  "commit_90d": 191,
   "rel_ver": "v0.97.0",
   "rel_pub": "2026-10-25",
-  "rel_days": 19,
+  "rel_days": 26,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -29,10 +29,10 @@
    "Dockerfile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -65,11 +65,11 @@
   }
  },
  "netease-youdao/LobsterAI": {
-  "commit_7d": 11,
-  "commit_90d": 1148,
-  "rel_ver": "2026.11.6",
-  "rel_pub": "2026-11-06",
-  "rel_days": 7,
+  "commit_7d": 48,
+  "commit_90d": 1251,
+  "rel_ver": "2026.11.16",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -85,10 +85,10 @@
    "PowerShell": 1,
    "NSIS": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -936,7 +936,7 @@
   "commit_90d": 0,
   "rel_ver": "0.6.0",
   "rel_pub": "2026-04-02",
-  "rel_days": 199,
+  "rel_days": 232,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -950,10 +950,10 @@
    "Cython": 1,
    "C++": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -5000,6 +5000,54 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "Adamovix/ComfyUI-Character-Helper": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 73,
+   "JavaScript": 21,
+   "CSS": 5
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "intel/toolkit-manager": {
+  "rel_ver": "v1.2.0",
+  "rel_pub": "2026-11-06",
+  "rel_days": 14,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 16,
+  "lang": {
+   "Python": 51,
+   "Shell": 27,
+   "TypeScript": 11,
+   "Jinja": 10,
+   "Go Template": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

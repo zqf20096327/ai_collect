@@ -1,7 +1,7 @@
 {
  "microsoft/ai-agents-for-beginners": {
-  "commit_7d": 1,
-  "commit_90d": 313,
+  "commit_7d": 5,
+  "commit_90d": 280,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "PowerShell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -75,8 +75,8 @@
   }
  },
  "Thysrael/Horizon": {
-  "commit_7d": 9,
-  "commit_90d": 98,
+  "commit_7d": 16,
+  "commit_90d": 121,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -89,10 +89,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4686,6 +4686,25 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "cookllm/AI-PhD-Internships-2027": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -1,9 +1,9 @@
 {
  "HumanSignal/label-studio": {
-  "commit_7d": 49,
-  "commit_90d": 408,
+  "commit_7d": 63,
+  "commit_90d": 434,
   "rel_ver": "nightly",
-  "rel_pub": "2026-11-13",
+  "rel_pub": "2026-11-20",
   "rel_days": 0,
   "rel_n90": 3,
   "rel_pre": true,
@@ -29,10 +29,10 @@
    "CSS": 8,
    "HTML": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -68,11 +68,11 @@
   }
  },
  "InternLM/xtuner": {
-  "commit_7d": 17,
-  "commit_90d": 148,
+  "commit_7d": 9,
+  "commit_90d": 139,
   "rel_ver": "v1.0.1",
   "rel_pub": "2026-05-15",
-  "rel_days": 182,
+  "rel_days": 189,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -86,10 +86,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -482,11 +482,11 @@
   }
  },
  "microsoft/Biodiversity": {
-  "commit_7d": 4,
-  "commit_90d": 9,
+  "commit_7d": 15,
+  "commit_90d": 22,
   "rel_ver": "pw_v1.3.0",
   "rel_pub": "2026-04-22",
-  "rel_days": 205,
+  "rel_days": 212,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -501,10 +501,10 @@
    "HTML": 1,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -1214,12 +1214,12 @@
   }
  },
  "rayl15/OpenVision": {
-  "commit_7d": 0,
-  "commit_90d": 62,
+  "commit_7d": 3,
+  "commit_90d": 20,
   "rel_ver": "v2.14.0",
   "rel_pub": "2026-10-02",
-  "rel_days": 16,
-  "rel_n90": 6,
+  "rel_days": 49,
+  "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -1232,10 +1232,10 @@
    "Makefile": 0,
    "Objective-C": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -4676,6 +4676,28 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "vikasthakurr/ai-for-devs-batch-1": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "HTML": 35,
+   "Python": 30,
+   "JavaScript": 26,
+   "CSS": 8
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

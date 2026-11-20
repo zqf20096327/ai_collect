@@ -1,7 +1,7 @@
 {
  "anthropics/claude-plugins-official": {
-  "commit_7d": 78,
-  "commit_90d": 1528,
+  "commit_7d": 39,
+  "commit_90d": 1444,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "JavaScript": 8,
    "Shell": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -162,11 +162,11 @@
   }
  },
  "tech-leads-club/agent-skills": {
-  "commit_90d": 89,
-  "commit_7d": 7,
-  "rel_ver": "skills-catalog-v0.17.20",
-  "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "commit_90d": 93,
+  "commit_7d": 4,
+  "rel_ver": "skills-catalog-v0.17.21",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -182,10 +182,10 @@
    "Shell": 2,
    "HTML": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4725,6 +4725,32 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "ChukarAI/Vibe_Assembly": {
+  "rel_ver": "v2.4.0",
+  "rel_pub": "2026-10-31",
+  "rel_days": 20,
+  "rel_n90": 6,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 99,
+   "CSS": 0,
+   "JavaScript": 0,
+   "HTML": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

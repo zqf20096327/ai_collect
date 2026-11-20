@@ -1,11 +1,11 @@
 {
  "emcie-co/parlant": {
-  "commit_7d": 47,
-  "commit_90d": 128,
-  "rel_ver": "v4.0.5",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
-  "rel_n90": 3,
+  "commit_7d": 60,
+  "commit_90d": 188,
+  "rel_ver": "v4.0.6",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
+  "rel_n90": 4,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "CSS": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1303,8 +1303,8 @@
   }
  },
  "Jueze-2019/dsh-redteam-mode": {
-  "commit_7d": 5,
-  "commit_90d": 100,
+  "commit_7d": 2,
+  "commit_90d": 137,
   "rel_ver": "v0.15.8",
   "rel_pub": "2026-11-04",
   "rel_days": 14,
@@ -1320,9 +1320,9 @@
    "JavaScript": 98,
    "Shell": 2
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261021",
+   "commit": "20261120",
    "release": "20261118",
    "security": "20261019",
    "contrib": "20261019",
@@ -4068,6 +4068,45 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "hasan6969macho-bit/vectorbt-avoria-analysis": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 80,
+   "CSS": 20
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "haoyu8717-ship-it/muse-local-agent": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Shell": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

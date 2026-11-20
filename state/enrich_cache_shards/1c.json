@@ -63,11 +63,11 @@
   }
  },
  "jeinlee1991/chinese-llm-benchmark": {
-  "commit_90d": 31,
-  "commit_7d": 4,
+  "commit_90d": 34,
+  "commit_7d": 5,
   "rel_ver": "v5.10",
   "rel_pub": "2026-04-21",
-  "rel_days": 206,
+  "rel_days": 213,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -77,21 +77,21 @@
   "sec_ids": [],
   "contrib_n": 2,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "buxuku/SmartSub": {
-  "commit_90d": 295,
-  "commit_7d": 6,
+  "commit_90d": 302,
+  "commit_7d": 9,
   "rel_ver": "v3.12.2",
   "rel_pub": "2026-11-05",
-  "rel_days": 8,
+  "rel_days": 15,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -107,10 +107,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

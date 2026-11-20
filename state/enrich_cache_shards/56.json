@@ -50,11 +50,11 @@
   }
  },
  "humanlayer/humanlayer": {
-  "commit_7d": 1,
-  "commit_90d": 33,
+  "commit_7d": 15,
+  "commit_90d": 55,
   "rel_ver": "nightly-0.1.0-nightly-20260227142452",
   "rel_pub": "2026-02-27",
-  "rel_days": 259,
+  "rel_days": 266,
   "rel_n90": 0,
   "rel_pre": true,
   "rel_none": false,
@@ -70,20 +70,20 @@
    "JavaScript": 2,
    "Rust": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "logancyang/obsidian-copilot": {
-  "commit_7d": 97,
-  "commit_90d": 626,
-  "rel_ver": "4.0.20-canary.2772",
-  "rel_pub": "2026-11-12",
+  "commit_7d": 26,
+  "commit_90d": 604,
+  "rel_ver": "4.1.0-canary.3390",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -99,21 +99,21 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "WenyuChiou/awesome-agentic-ai-zh": {
-  "commit_7d": 2,
-  "commit_90d": 307,
+  "commit_7d": 13,
+  "commit_90d": 313,
   "rel_ver": "v2026.10.29-3",
   "rel_pub": "2026-10-29",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -128,10 +128,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -232,12 +232,12 @@
   }
  },
  "ngxson/wllama": {
-  "commit_7d": 4,
-  "commit_90d": 28,
+  "commit_7d": 14,
+  "commit_90d": 37,
   "rel_ver": "3.13.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 5,
-  "rel_n90": 4,
+  "rel_days": 12,
+  "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -252,10 +252,10 @@
    "CMake": 1,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4528,6 +4528,52 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "zalman-ua/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 43,
+   "Go": 27,
+   "C": 18,
+   "Python": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "OneCreditMY/mle-take-home": {
+  "rel_ver": "mle-v2026.11",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 80,
+   "Just": 20
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

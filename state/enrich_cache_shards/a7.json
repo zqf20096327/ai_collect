@@ -1,7 +1,7 @@
 {
  "asgeirtj/system_prompts_leaks": {
-  "commit_7d": 20,
-  "commit_90d": 232,
+  "commit_7d": 27,
+  "commit_90d": 228,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,21 +16,21 @@
    "Jinja": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "langchain-ai/langgraph": {
-  "commit_7d": 23,
-  "commit_90d": 264,
-  "rel_ver": "1.2.21",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "commit_7d": 17,
+  "commit_90d": 277,
+  "rel_ver": "1.2.24",
+  "rel_pub": "2026-11-20",
+  "rel_days": 0,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -55,10 +55,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4876,6 +4876,54 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "bobazooba/xllm": {
+  "commit_90d": 1,
+  "commit_7d": 1,
+  "rel_ver": "0.1.8",
+  "rel_pub": "2023-12-06",
+  "rel_days": 1080,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Python": 99,
+   "Makefile": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "commit": "20261120",
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "context-dot-dev/enrichable": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

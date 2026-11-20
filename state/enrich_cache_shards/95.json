@@ -30,11 +30,11 @@
   }
  },
  "supabase/supabase": {
-  "commit_7d": 167,
-  "commit_90d": 1954,
+  "commit_7d": 170,
+  "commit_90d": 1986,
   "rel_ver": "v1.26.08",
   "rel_pub": "2026-08-07",
-  "rel_days": 98,
+  "rel_days": 105,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,10 +50,10 @@
    "CSS": 1,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -134,11 +134,11 @@
   }
  },
  "ThinkInAIXYZ/deepchat": {
-  "commit_90d": 774,
-  "commit_7d": 26,
+  "commit_90d": 691,
+  "commit_7d": 4,
   "rel_ver": "v1.1.4",
   "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "rel_days": 8,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -162,22 +162,22 @@
    "Python": 1,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Eigenwise/atomic-agents": {
-  "commit_90d": 118,
-  "commit_7d": 2,
-  "rel_ver": "v2.15.0",
-  "rel_pub": "2026-10-21",
-  "rel_days": 23,
-  "rel_n90": 10,
+  "commit_90d": 252,
+  "commit_7d": 142,
+  "rel_ver": "v2.16.2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -189,23 +189,23 @@
    "Python": 100,
    "PowerShell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "NVIDIA/Model-Optimizer": {
-  "commit_90d": 559,
-  "commit_7d": 31,
-  "rel_ver": "0.47.1",
-  "rel_pub": "2026-11-06",
-  "rel_days": 7,
+  "commit_90d": 607,
+  "commit_7d": 57,
+  "rel_ver": "0.49.0rc0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
   "sec_worst": null,
@@ -219,21 +219,21 @@
    "Jinja": 0,
    "C++": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ag2ai/ag2": {
-  "commit_90d": 313,
-  "commit_7d": 30,
-  "rel_ver": "v.1.3.1",
-  "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "commit_90d": 325,
+  "commit_7d": 24,
+  "rel_ver": "v1.3.3",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -258,21 +258,21 @@
    "JavaScript": 0,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "intuitem/ciso-assistant-community": {
-  "commit_90d": 451,
-  "commit_7d": 33,
-  "rel_ver": "v4.2.3",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_90d": 488,
+  "commit_7d": 55,
+  "rel_ver": "v4.3.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -288,10 +288,10 @@
    "HTML": 3,
    "Typst": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

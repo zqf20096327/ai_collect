@@ -98,10 +98,10 @@
    "JavaScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -128,12 +128,12 @@
   }
  },
  "crate/crate": {
-  "commit_7d": 12,
-  "commit_90d": 352,
+  "commit_7d": 23,
+  "commit_90d": 323,
   "rel_ver": "6.5.1",
   "rel_pub": "2026-11-04",
-  "rel_days": 9,
-  "rel_n90": 7,
+  "rel_days": 16,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 16,
@@ -156,10 +156,10 @@
    "ANTLR": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -279,7 +279,7 @@
   "commit_90d": 0,
   "rel_ver": "First",
   "rel_pub": "2024-12-03",
-  "rel_days": 710,
+  "rel_days": 717,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -295,10 +295,10 @@
    "Makefile": 1,
    "Vue": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

@@ -1,7 +1,7 @@
 {
  "ahmedkhaleel2004/gitdiagram": {
-  "commit_7d": 25,
-  "commit_90d": 467,
+  "commit_7d": 8,
+  "commit_90d": 475,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,10 +16,10 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,11 +56,11 @@
   }
  },
  "aipoch/open-science": {
-  "commit_90d": 2595,
-  "commit_7d": 181,
-  "rel_ver": "v1.2.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_90d": 2432,
+  "commit_7d": 117,
+  "rel_ver": "v1.3.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -76,21 +76,21 @@
    "CSS": 0,
    "R": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "LazyAGI/LazyLLM": {
-  "commit_90d": 75,
-  "commit_7d": 8,
-  "rel_ver": "v1.5.2a3",
-  "rel_pub": "2026-11-13",
-  "rel_days": 0,
+  "commit_90d": 76,
+  "commit_7d": 5,
+  "rel_ver": "v1.5.2a4",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -106,18 +106,18 @@
    "CMake": 0,
    "TeX": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "morphik-org/morphik-core": {
-  "commit_90d": 19,
-  "commit_7d": 0,
+  "commit_90d": 21,
+  "commit_7d": 2,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -132,10 +132,10 @@
    "PowerShell": 1,
    "Rust": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4458,6 +4458,145 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "aws-samples/churn-prediction-with-text-and-interpretability": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Jupyter Notebook": 72,
+   "Python": 28
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "YusufX-sys/turkod-ide": {
+  "rel_ver": "v3.3.0",
+  "rel_pub": "2026-11-14",
+  "rel_days": 6,
+  "rel_n90": 5,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 71,
+   "Dart": 26,
+   "PowerShell": 1,
+   "C++": 1,
+   "Inno Setup": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "EndoTheDev/omega": {
+  "rel_ver": "v0.17.5-nightly.20261119",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "Go": 49,
+   "TypeScript": 24,
+   "Shell": 18,
+   "Vue": 8,
+   "CSS": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "kaso-shit/claude-purge": {
+  "rel_ver": "v1.0.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "JavaScript": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "YFrisch/Generative_Models_Lecture": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Jupyter Notebook": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "DHURJATI-JS/kisansetu-farmers-webapp": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 77,
+   "HTML": 14,
+   "JavaScript": 7,
+   "CSS": 2,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

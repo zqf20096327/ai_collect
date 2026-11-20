@@ -56,11 +56,11 @@
   }
  },
  "cocoindex-io/cocoindex": {
-  "commit_7d": 94,
-  "commit_90d": 361,
+  "commit_7d": 17,
+  "commit_90d": 377,
   "rel_ver": "v1.2.0",
   "rel_pub": "2026-11-09",
-  "rel_days": 4,
+  "rel_days": 11,
   "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
@@ -78,22 +78,22 @@
    "Astro": 0,
    "Handlebars": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "wonderwhy-er/DesktopCommanderMCP": {
-  "commit_7d": 18,
-  "commit_90d": 867,
-  "rel_ver": "v0.3.3",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
-  "rel_n90": 8,
+  "commit_7d": 4,
+  "commit_90d": 870,
+  "rel_ver": "v0.3.4",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -108,21 +108,21 @@
    "PowerShell": 1,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Open-Less/openless": {
-  "commit_90d": 411,
-  "commit_7d": 87,
-  "rel_ver": "v2.0.2-Beta.6-tauri",
-  "rel_pub": "2026-11-09",
-  "rel_days": 4,
+  "commit_90d": 384,
+  "commit_7d": 12,
+  "rel_ver": "v2.0.3-Beta.1-tauri",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -138,18 +138,18 @@
    "JavaScript": 4,
    "CSS": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "polyaxon/polyaxon": {
-  "commit_90d": 132,
-  "commit_7d": 21,
+  "commit_90d": 145,
+  "commit_7d": 19,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -160,10 +160,10 @@
   "lang": {
    "MDX": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4575,6 +4575,53 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "kemans35/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 58,
+   "Python": 42
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "goroute-ai/ai-gateway-go": {
+  "rel_ver": "v1.22.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 92,
+   "TypeScript": 6,
+   "Shell": 1,
+   "Lua": 1,
+   "JavaScript": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

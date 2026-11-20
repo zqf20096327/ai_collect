@@ -22,11 +22,11 @@
   }
  },
  "dotnet/machinelearning": {
-  "commit_7d": 8,
-  "commit_90d": 95,
+  "commit_7d": 5,
+  "commit_90d": 100,
   "rel_ver": "v6.0.0",
   "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "rel_days": 9,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -42,10 +42,10 @@
    "PowerShell": 1,
    "CMake": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -105,11 +105,11 @@
   }
  },
  "mistralai/mistral-vibe": {
-  "commit_90d": 26,
-  "commit_7d": 2,
-  "rel_ver": "v3.1.2",
-  "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "commit_90d": 25,
+  "commit_7d": 1,
+  "rel_ver": "v3.1.3",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -125,10 +125,10 @@
    "Nix": 0,
    "Makefile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4776,6 +4776,29 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "LrGenius/LrGeniusTagAI": {
+  "rel_ver": "v1.9.2",
+  "rel_pub": "2026-09-06",
+  "rel_days": 75,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Lua": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

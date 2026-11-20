@@ -59,11 +59,11 @@
   "rel_pre": false
  },
  "data-privacy-stack/presidio": {
-  "commit_7d": 3,
-  "commit_90d": 35,
+  "commit_7d": 5,
+  "commit_90d": 40,
   "rel_ver": "2.2.366",
   "rel_pub": "2026-10-27",
-  "rel_days": 17,
+  "rel_days": 24,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -79,10 +79,10 @@
    "Jinja": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -121,12 +121,12 @@
   }
  },
  "apache/hertzbeat": {
-  "commit_90d": 122,
-  "commit_7d": 9,
-  "rel_ver": "v1.9.0",
-  "rel_pub": "2026-09-13",
-  "rel_days": 61,
-  "rel_n90": 1,
+  "commit_90d": 111,
+  "commit_7d": 6,
+  "rel_ver": "v1.9.1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 6,
@@ -148,10 +148,10 @@
    "Shell": 1,
    "Python": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -334,12 +334,12 @@
   }
  },
  "kubeflow/pipelines": {
-  "commit_90d": 658,
-  "commit_7d": 39,
-  "rel_ver": "2.18.0",
-  "rel_pub": "2026-10-28",
-  "rel_days": 16,
-  "rel_n90": 6,
+  "commit_90d": 736,
+  "commit_7d": 109,
+  "rel_ver": "2.18.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 23,
@@ -363,21 +363,21 @@
    "JavaScript": 2,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "groupultra/telegram-search": {
-  "commit_90d": 42,
-  "commit_7d": 5,
-  "rel_ver": "v1.7.0",
-  "rel_pub": "2026-11-09",
-  "rel_days": 4,
+  "commit_90d": 48,
+  "commit_7d": 12,
+  "rel_ver": "v1.8.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 8,
   "rel_pre": false,
   "rel_none": false,
@@ -393,21 +393,21 @@
    "CSS": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mne-tools/mne-python": {
-  "commit_90d": 289,
-  "commit_7d": 17,
+  "commit_90d": 290,
+  "commit_7d": 19,
   "rel_ver": "v1.13.2",
   "rel_pub": "2026-09-11",
-  "rel_days": 63,
+  "rel_days": 70,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -423,10 +423,10 @@
    "Csound Document": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -643,7 +643,7 @@
   "commit_7d": 0,
   "rel_ver": "v1.5.13-es9.3.5",
   "rel_pub": "2026-06-16",
-  "rel_days": 123,
+  "rel_days": 157,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -656,10 +656,10 @@
    "Java": 97,
    "Python": 3
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"

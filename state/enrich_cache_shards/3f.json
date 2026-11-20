@@ -80,11 +80,11 @@
   }
  },
  "alibaba/page-agent": {
-  "commit_7d": 0,
-  "commit_90d": 18,
+  "commit_7d": 22,
+  "commit_90d": 40,
   "rel_ver": "v1.12.4",
   "rel_pub": "2026-09-06",
-  "rel_days": 68,
+  "rel_days": 75,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -99,10 +99,10 @@
    "CSS": 4,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4401,6 +4401,47 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "gm365/shuita-ai-price": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "TypeScript": 73,
+   "JavaScript": 26,
+   "Dockerfile": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "LeonMarzollDev/local-llm-rtx-spark": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 76,
+   "Shell": 24
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -1,11 +1,11 @@
 {
  "apache/airflow": {
-  "commit_7d": 221,
-  "commit_90d": 2651,
-  "rel_ver": "3.4.0",
-  "rel_pub": "2026-11-06",
+  "commit_7d": 192,
+  "commit_90d": 2708,
+  "rel_ver": "ts-sdk/1.0.0",
+  "rel_pub": "2026-11-13",
   "rel_days": 7,
-  "rel_n90": 2,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,18 +20,18 @@
    "Kotlin": 1,
    "JavaScript": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "GoogleCloudPlatform/generative-ai": {
-  "commit_7d": 5,
-  "commit_90d": 109,
+  "commit_7d": 13,
+  "commit_90d": 111,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -46,10 +46,10 @@
    "JavaScript": 2,
    "TypeScript": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2312,7 +2312,7 @@
  },
  "handbook-academy/engineering-handbook": {
   "commit_90d": 12,
-  "commit_7d": 12,
+  "commit_7d": 0,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2324,10 +2324,10 @@
    "JavaScript": 95,
    "Shell": 5
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4676,6 +4676,33 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "CelkMehmett/kalkan": {
+  "rel_ver": "v0.3.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 2,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 66,
+   "Python": 20,
+   "HTML": 7,
+   "JavaScript": 6,
+   "Shell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

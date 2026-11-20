@@ -30,12 +30,12 @@
   }
  },
  "HKUDS/Vibe-Trading": {
-  "commit_7d": 95,
-  "commit_90d": 2216,
+  "commit_7d": 156,
+  "commit_90d": 2195,
   "rel_ver": "v0.1.19",
   "rel_pub": "2026-11-05",
-  "rel_days": 8,
-  "rel_n90": 6,
+  "rel_days": 15,
+  "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
@@ -54,10 +54,10 @@
    "HTML": 1,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -88,12 +88,12 @@
   }
  },
  "vllm-project/vllm-omni": {
-  "commit_90d": 1720,
-  "commit_7d": 174,
-  "rel_ver": "v0.33.0rc1",
-  "rel_pub": "2026-11-04",
-  "rel_days": 9,
-  "rel_n90": 9,
+  "commit_90d": 1876,
+  "commit_7d": 244,
+  "rel_ver": "v0.34.0rc1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": true,
   "rel_none": false,
   "sec_n": 0,
@@ -108,10 +108,10 @@
    "Jinja": 0,
    "Cuda": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -315,8 +315,8 @@
   }
  },
  "fetchai/innovation-lab-examples": {
-  "commit_90d": 51,
-  "commit_7d": 0,
+  "commit_90d": 369,
+  "commit_7d": 366,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -331,10 +331,10 @@
    "TypeScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4915,6 +4915,30 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "Leonlee114514/dsh-local-trim": {
+  "rel_ver": "v0.4.9",
+  "rel_pub": "2026-11-06",
+  "rel_days": 14,
+  "rel_n90": 8,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 2,
+  "lang": {
+   "JavaScript": 100,
+   "PowerShell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

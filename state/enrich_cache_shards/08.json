@@ -1,11 +1,11 @@
 {
  "MochiDiffusion/MochiDiffusion": {
-  "commit_7d": 0,
-  "commit_90d": 232,
-  "rel_ver": "v6.3",
-  "rel_pub": "2026-11-02",
-  "rel_days": 11,
-  "rel_n90": 5,
+  "commit_7d": 27,
+  "commit_90d": 294,
+  "rel_ver": "v7.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 5,
+  "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -18,10 +18,10 @@
    "Shell": 1,
    "Objective-C": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -84,13 +84,13 @@
   }
  },
  "rcourtman/Pulse": {
-  "commit_7d": 861,
-  "commit_90d": 9651,
-  "rel_ver": "v6.8.0",
-  "rel_pub": "2026-11-13",
-  "rel_days": 0,
+  "commit_7d": 1011,
+  "commit_90d": 10449,
+  "rel_ver": "v6.9.0-rc.1",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 23,
   "sec_worst": "high",
@@ -113,10 +113,10 @@
    "JavaScript": 2,
    "Shell": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2364,16 +2364,16 @@
    "Python": 49,
    "Batchfile": 0
   },
-  "enriched_at": "20261021",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
-   "commit": "20261021"
+   "commit": "20261120"
   },
-  "commit_90d": 19,
-  "commit_7d": 19
+  "commit_90d": 121,
+  "commit_7d": 20
  },
  "MCP-Manager/MCP-Security-Checklists": {
   "commit_90d": 1,
@@ -4724,6 +4724,55 @@
    "security": "20261116",
    "contrib": "20261116",
    "lang": "20261116"
+  }
+ },
+ "qwerthegoe-hash/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 43,
+   "Go": 27,
+   "C": 18,
+   "Python": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "magicrulerr-art/Nazarick-agent": {
+  "rel_ver": "enginepack-nazarick-engine-llamacpp-1",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 7,
+  "rel_pre": true,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 57,
+  "lang": {
+   "Kotlin": 93,
+   "TypeScript": 3,
+   "Java": 1,
+   "JavaScript": 1,
+   "C++": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

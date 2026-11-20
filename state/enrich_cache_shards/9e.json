@@ -26,11 +26,11 @@
   }
  },
  "TykTechnologies/tyk": {
-  "commit_7d": 2,
-  "commit_90d": 66,
+  "commit_7d": 4,
+  "commit_90d": 62,
   "rel_ver": "v5.8.20",
   "rel_pub": "2026-11-06",
-  "rel_days": 7,
+  "rel_days": 14,
   "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
@@ -46,10 +46,10 @@
    "JavaScript": 0,
    "Java": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

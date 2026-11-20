@@ -1,11 +1,11 @@
 {
  "vllm-project/vllm": {
-  "commit_7d": 523,
-  "commit_90d": 5269,
-  "rel_ver": "v0.33.0rc3",
-  "rel_pub": "2026-11-02",
-  "rel_days": 11,
-  "rel_n90": 6,
+  "commit_7d": 616,
+  "commit_90d": 5594,
+  "rel_ver": "v0.34.0",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 30,
@@ -29,20 +29,20 @@
    "C++": 3,
    "Shell": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "meilisearch/meilisearch": {
-  "commit_7d": 17,
-  "commit_90d": 334,
-  "rel_ver": "v1.56.2",
-  "rel_pub": "2026-11-09",
+  "commit_7d": 22,
+  "commit_90d": 367,
+  "rel_ver": "v1.57.0",
+  "rel_pub": "2026-11-16",
   "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
@@ -57,21 +57,21 @@
    "Shell": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "electerm/electerm": {
-  "commit_7d": 32,
-  "commit_90d": 404,
-  "rel_ver": "v5.10.0",
-  "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "commit_7d": 31,
+  "commit_90d": 401,
+  "rel_ver": "v5.11.8",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -95,21 +95,21 @@
    "Shell": 2,
    "Pug": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "thesysdev/openui": {
-  "commit_7d": 36,
-  "commit_90d": 356,
-  "rel_ver": "@openuidev/server@0.4.2",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "commit_7d": 26,
+  "commit_90d": 339,
+  "rel_ver": "@openuidev/intelligent-ui-library@0.0.2",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -125,10 +125,10 @@
    "CSS": 0,
    "Vue": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

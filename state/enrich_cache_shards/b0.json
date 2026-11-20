@@ -1,10 +1,10 @@
 {
  "D4Vinci/Scrapling": {
-  "commit_7d": 4,
-  "commit_90d": 243,
+  "commit_7d": 1,
+  "commit_90d": 227,
   "rel_ver": "v0.5.1",
   "rel_pub": "2026-11-04",
-  "rel_days": 9,
+  "rel_days": 16,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -17,10 +17,10 @@
    "Python": 100,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -53,11 +53,11 @@
   }
  },
  "Tencent/ncnn": {
-  "commit_7d": 13,
-  "commit_90d": 158,
+  "commit_7d": 15,
+  "commit_90d": 171,
   "rel_ver": "20261020",
   "rel_pub": "2026-10-20",
-  "rel_days": 24,
+  "rel_days": 31,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -76,10 +76,10 @@
    "Python": 4,
    "CMake": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -115,11 +115,11 @@
   }
  },
  "crynta/terax-ai": {
-  "commit_7d": 30,
-  "commit_90d": 232,
+  "commit_7d": 5,
+  "commit_90d": 221,
   "rel_ver": "v0.9.0",
   "rel_pub": "2026-10-16",
-  "rel_days": 28,
+  "rel_days": 35,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -135,22 +135,22 @@
    "Zig": 2,
    "JavaScript": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "google/adk-go": {
-  "commit_7d": 78,
-  "commit_90d": 433,
-  "rel_ver": "v2.7.1",
-  "rel_pub": "2026-11-04",
-  "rel_days": 9,
-  "rel_n90": 11,
+  "commit_7d": 63,
+  "commit_90d": 482,
+  "rel_ver": "v1.10.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -165,10 +165,10 @@
    "JavaScript": 0,
    "Dockerfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -205,11 +205,11 @@
   }
  },
  "pytorch/rl": {
-  "commit_7d": 11,
-  "commit_90d": 342,
+  "commit_7d": 17,
+  "commit_90d": 341,
   "rel_ver": "v0.15.0",
   "rel_pub": "2026-11-10",
-  "rel_days": 3,
+  "rel_days": 10,
   "rel_n90": 3,
   "rel_pre": false,
   "rel_none": false,
@@ -225,10 +225,10 @@
    "Cuda": 0,
    "Batchfile": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -4812,6 +4812,48 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "eluyonga/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Go": 58,
+   "Python": 42
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "mecidovv/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 43,
+   "Go": 27,
+   "C": 18,
+   "Python": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

@@ -57,10 +57,10 @@
   }
  },
  "google/adk-python": {
-  "commit_7d": 75,
-  "commit_90d": 1496,
-  "rel_ver": "v2.14.1",
-  "rel_pub": "2026-11-12",
+  "commit_7d": 67,
+  "commit_90d": 1460,
+  "rel_ver": "v2.15.0",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -77,21 +77,21 @@
    "JavaScript": 0,
    "HCL": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "iii-hq/iii": {
-  "commit_7d": 33,
-  "commit_90d": 286,
-  "rel_ver": "iii/v0.26.1-rc.1",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_7d": 18,
+  "commit_90d": 293,
+  "rel_ver": "iii/v0.26.1-rc.2",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -107,10 +107,10 @@
    "Go": 2,
    "CSS": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2078,8 +2078,8 @@
   }
  },
  "jentic/jentic-public-apis": {
-  "commit_90d": 2211,
-  "commit_7d": 795,
+  "commit_90d": 2884,
+  "commit_7d": 86,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -2088,10 +2088,10 @@
   "sec_ids": [],
   "contrib_n": 32,
   "lang": {},
-  "enriched_at": "20261021",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261021",
-   "release": "20261021",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021"
@@ -4702,6 +4702,23 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "JL-GUO/skill-siphon": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

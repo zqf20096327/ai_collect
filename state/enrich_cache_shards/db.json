@@ -1,7 +1,7 @@
 {
  "Developer-Y/cs-video-courses": {
   "commit_7d": 4,
-  "commit_90d": 33,
+  "commit_90d": 37,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -10,21 +10,21 @@
   "sec_ids": [],
   "contrib_n": 117,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "mastra-ai/mastra": {
-  "commit_7d": 471,
-  "commit_90d": 5164,
-  "rel_ver": "@mastra/core@1.82.0",
-  "rel_pub": "2026-11-04",
-  "rel_days": 9,
+  "commit_7d": 417,
+  "commit_90d": 5330,
+  "rel_ver": "@mastra/core@1.84.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -43,10 +43,10 @@
    "Shell": 0,
    "MDX": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -79,11 +79,11 @@
   }
  },
  "flwrlabs/flower": {
-  "commit_90d": 460,
-  "commit_7d": 26,
-  "rel_ver": "framework-1.43.0",
-  "rel_pub": "2026-11-04",
-  "rel_days": 9,
+  "commit_90d": 439,
+  "commit_7d": 34,
+  "rel_ver": "framework-1.44.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -99,20 +99,20 @@
    "Shell": 1,
    "C++": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lemonade-sdk/lemonade": {
-  "commit_90d": 345,
-  "commit_7d": 18,
-  "rel_ver": "v2026.46.2",
-  "rel_pub": "2026-11-11",
+  "commit_90d": 310,
+  "commit_7d": 28,
+  "rel_ver": "v2026.47.1",
+  "rel_pub": "2026-11-18",
   "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
@@ -129,23 +129,23 @@
    "CSS": 3,
    "CMake": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "TabularisDB/tabularis": {
-  "commit_90d": 1053,
-  "commit_7d": 79,
-  "rel_ver": "nightly-20261112-066e41c",
-  "rel_pub": "2026-11-12",
+  "commit_90d": 1162,
+  "commit_7d": 159,
+  "rel_ver": "v0.33.1",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
-  "rel_pre": true,
+  "rel_pre": false,
   "rel_none": false,
   "sec_n": 3,
   "sec_worst": "high",
@@ -163,21 +163,21 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "qixing-jk/all-api-hub": {
-  "commit_90d": 471,
-  "commit_7d": 33,
+  "commit_90d": 454,
+  "commit_7d": 13,
   "rel_ver": "nightly",
   "rel_pub": "2026-03-15",
-  "rel_days": 243,
+  "rel_days": 250,
   "rel_n90": 11,
   "rel_pre": true,
   "rel_none": false,
@@ -193,10 +193,10 @@
    "CSS": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1289,11 +1289,11 @@
   }
  },
  "jonigl/ollama-mcp-bridge": {
-  "commit_90d": 11,
+  "commit_90d": 7,
   "commit_7d": 0,
   "rel_ver": "v0.12.2",
   "rel_pub": "2026-09-18",
-  "rel_days": 30,
+  "rel_days": 63,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1307,10 +1307,10 @@
    "HTML": 45,
    "Dockerfile": 0
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -2059,9 +2059,9 @@
    "PLpgSQL": 0,
    "CSS": 0
   },
-  "enriched_at": "20261026",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
@@ -4971,6 +4971,57 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "christofilojohn/MacPercept": {
+  "rel_ver": "1.0",
+  "rel_pub": "2026-05-02",
+  "rel_days": 202,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 68,
+   "HTML": 23,
+   "CSS": 5,
+   "Python": 4
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "Tonieeie/sparedroid": {
+  "rel_ver": "v0.4.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 4,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 54,
+   "Kotlin": 46,
+   "Dockerfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

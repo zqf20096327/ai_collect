@@ -4701,5 +4701,32 @@
    "contrib": "20261118",
    "lang": "20261118"
   }
+ },
+ "catzoidhub/DialCatz": {
+  "rel_ver": "v1.2.32",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
+  "rel_n90": 12,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 54,
+   "Vue": 40,
+   "CSS": 4,
+   "JavaScript": 1,
+   "HTML": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
  }
 }

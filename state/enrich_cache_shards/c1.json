@@ -28,11 +28,11 @@
   }
  },
  "vastsa/PI-Desktop": {
-  "commit_90d": 5368,
-  "commit_7d": 318,
-  "rel_ver": "v0.22.0",
-  "rel_pub": "2026-11-08",
-  "rel_days": 5,
+  "commit_90d": 5475,
+  "commit_7d": 274,
+  "rel_ver": "v0.23.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -48,10 +48,10 @@
    "CSS": 3,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -243,12 +243,12 @@
   }
  },
  "JoasASantos/NeuroSploit": {
-  "commit_90d": 143,
-  "commit_7d": 2,
-  "rel_ver": "v4.4.0",
-  "rel_pub": "2026-10-19",
-  "rel_days": 25,
-  "rel_n90": 11,
+  "commit_90d": 173,
+  "commit_7d": 30,
+  "rel_ver": "v4.4.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
+  "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -263,10 +263,10 @@
    "HTML": 3,
    "Shell": 1
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4718,6 +4718,28 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "ashishpatel26/co-scientist": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 50,
+   "TypeScript": 46,
+   "CSS": 3,
+   "JavaScript": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

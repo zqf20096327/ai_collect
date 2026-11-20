@@ -1,7 +1,7 @@
 {
  "f/prompts.chat": {
-  "commit_7d": 266,
-  "commit_90d": 3018,
+  "commit_7d": 217,
+  "commit_90d": 3119,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -16,21 +16,21 @@
    "JavaScript": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ggml-org/llama.cpp": {
-  "commit_7d": 188,
-  "commit_90d": 1914,
-  "rel_ver": "b12340",
-  "rel_pub": "2026-11-13",
-  "rel_days": 0,
+  "commit_7d": 205,
+  "commit_90d": 1984,
+  "rel_ver": "b12556",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -55,10 +55,10 @@
    "Cuda": 5,
    "TypeScript": 4
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -95,11 +95,11 @@
   }
  },
  "coze-dev/coze-loop": {
-  "commit_7d": 5,
-  "commit_90d": 59,
+  "commit_7d": 0,
+  "commit_90d": 55,
   "rel_ver": "v1.5.1",
   "rel_pub": "2026-01-20",
-  "rel_days": 297,
+  "rel_days": 304,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -115,10 +115,10 @@
    "JavaScript": 0,
    "Less": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -151,8 +151,8 @@
   }
  },
  "Sumanth077/Hands-On-AI-Engineering": {
-  "commit_7d": 2,
-  "commit_90d": 117,
+  "commit_7d": 4,
+  "commit_90d": 120,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -167,10 +167,10 @@
    "JavaScript": 1,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

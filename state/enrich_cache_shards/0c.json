@@ -74,11 +74,11 @@
   }
  },
  "basicmachines-co/basic-memory": {
-  "commit_7d": 42,
-  "commit_90d": 888,
+  "commit_7d": 14,
+  "commit_90d": 881,
   "rel_ver": "v1.0.0",
   "rel_pub": "2026-10-29",
-  "rel_days": 15,
+  "rel_days": 22,
   "rel_n90": 6,
   "rel_pre": false,
   "rel_none": false,
@@ -97,21 +97,21 @@
    "Just": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "ai-robots-txt/ai.robots.txt": {
-  "commit_7d": 1,
-  "commit_90d": 87,
-  "rel_ver": "v2.1",
-  "rel_pub": "2026-10-17",
-  "rel_days": 27,
+  "commit_7d": 6,
+  "commit_90d": 83,
+  "rel_ver": "v2.2",
+  "rel_pub": "2026-11-16",
+  "rel_days": 4,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -123,10 +123,10 @@
   "lang": {
    "Python": 100
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1047,11 +1047,11 @@
   }
  },
  "sthamann/nyx-local-ai": {
-  "commit_7d": 0,
-  "commit_90d": 0,
+  "commit_7d": 1,
+  "commit_90d": 1,
   "rel_ver": "v0.29.0",
   "rel_pub": "2026-07-07",
-  "rel_days": 103,
+  "rel_days": 136,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -1067,10 +1067,10 @@
    "HTML": 4,
    "Shell": 1
   },
-  "enriched_at": "20261018",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261018",
-   "release": "20261018",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261018",
    "contrib": "20261018",
    "lang": "20261018"
@@ -2240,21 +2240,21 @@
    "JavaScript": 72,
    "Shell": 28
   },
-  "enriched_at": "20261118",
+  "enriched_at": "20261120",
   "dim_ts": {
    "commit": "20261118",
    "release": "20261118",
-   "security": "20261021",
+   "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021"
   }
  },
  "Kamra-PMS/kamra-pms": {
-  "rel_ver": "v2.6.19",
-  "rel_pub": "2026-10-21",
+  "rel_ver": "nightly",
+  "rel_pub": "2026-11-20",
   "rel_days": 0,
   "rel_n90": 12,
-  "rel_pre": false,
+  "rel_pre": true,
   "rel_none": false,
   "sec_n": 3,
   "sec_worst": "high",
@@ -2272,9 +2272,9 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261113",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "release": "20261021",
+   "release": "20261120",
    "security": "20261021",
    "contrib": "20261021",
    "lang": "20261021",
@@ -4948,6 +4948,29 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "offline-ant/phimacs": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Emacs Lisp": 61,
+   "TypeScript": 33,
+   "JavaScript": 4,
+   "Python": 1,
+   "CSS": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

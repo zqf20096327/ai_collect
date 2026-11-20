@@ -1,10 +1,10 @@
 {
  "TencentCloud/TencentDB-Agent-Memory": {
-  "commit_7d": 3,
+  "commit_7d": 2,
   "commit_90d": 65,
-  "rel_ver": "v2.0.3",
-  "rel_pub": "2026-10-26",
-  "rel_days": 18,
+  "rel_ver": "v2.0.4",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
@@ -20,21 +20,21 @@
    "CSS": 2,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "lancedb/lancedb": {
-  "commit_7d": 68,
-  "commit_90d": 746,
-  "rel_ver": "v0.42.0-beta.12",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "commit_7d": 76,
+  "commit_90d": 779,
+  "rel_ver": "v0.42.0-beta.20",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": true,
   "rel_none": false,
@@ -53,10 +53,10 @@
    "TypeScript": 8,
    "Java": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -67,7 +67,7 @@
   "commit_7d": 0,
   "rel_ver": "v2.14.0",
   "rel_pub": "2026-10-01",
-  "rel_days": 43,
+  "rel_days": 50,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -83,21 +83,21 @@
    "TypeScript": 1,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Marker-Inc-Korea/AutoRAG": {
-  "commit_90d": 448,
-  "commit_7d": 31,
-  "rel_ver": "v2.13.12",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_90d": 460,
+  "commit_7d": 39,
+  "rel_ver": "v2.14.0",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -113,10 +113,10 @@
    "Makefile": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -2040,10 +2040,10 @@
    "TypeScript": 0,
    "JavaScript": 0
   },
-  "enriched_at": "20261114",
+  "enriched_at": "20261120",
   "dim_ts": {
    "release": "20261114",
-   "security": "20261021",
+   "security": "20261120",
    "contrib": "20261021",
    "lang": "20261021",
    "commit": "20261114"
@@ -4400,6 +4400,33 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Echoxiawan/echobench": {
+  "rel_ver": "v1.0.1",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 3,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 85,
+   "CSS": 8,
+   "HTML": 6,
+   "JavaScript": 1,
+   "Shell": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

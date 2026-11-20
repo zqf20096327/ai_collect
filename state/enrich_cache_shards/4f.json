@@ -29,12 +29,12 @@
   }
  },
  "fivetran/great_expectations": {
-  "commit_7d": 19,
-  "commit_90d": 163,
+  "commit_7d": 1,
+  "commit_90d": 149,
   "rel_ver": "1.25.0",
   "rel_pub": "2026-11-12",
-  "rel_days": 1,
-  "rel_n90": 8,
+  "rel_days": 8,
+  "rel_n90": 7,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -49,10 +49,10 @@
    "Shell": 0,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -63,7 +63,7 @@
   "commit_90d": 1208,
   "rel_ver": "v1.5.8",
   "rel_pub": "2026-11-02",
-  "rel_days": 11,
+  "rel_days": 18,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -79,22 +79,22 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "MakazhanAlpamys/Soup": {
-  "commit_7d": 219,
-  "commit_90d": 2010,
-  "rel_ver": "v0.77.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 8,
-  "rel_n90": 11,
+  "commit_7d": 341,
+  "commit_90d": 2255,
+  "rel_ver": "v0.78.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 2,
@@ -112,10 +112,10 @@
    "CSS": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -148,12 +148,12 @@
   }
  },
  "agentscope-ai/ReMe": {
-  "commit_7d": 16,
-  "commit_90d": 194,
-  "rel_ver": "v0.4.2.2",
-  "rel_pub": "2026-11-05",
-  "rel_days": 8,
-  "rel_n90": 8,
+  "commit_7d": 9,
+  "commit_90d": 191,
+  "rel_ver": "v0.4.2.3",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
+  "rel_n90": 9,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -168,10 +168,10 @@
    "CSS": 1,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -322,8 +322,8 @@
   }
  },
  "aws-samples/amazon-bedrock-samples": {
-  "commit_7d": 1,
-  "commit_90d": 22,
+  "commit_7d": 2,
+  "commit_90d": 11,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -338,10 +338,10 @@
    "HTML": 0,
    "Shell": 0
   },
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261024",
-   "release": "20261024",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -5207,6 +5207,66 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "chrisjq/AICoderNetBeansPlugin": {
+  "rel_ver": "v1.6.6",
+  "rel_pub": "2026-11-14",
+  "rel_days": 6,
+  "rel_n90": 7,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Java": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "thebozturk/yokla": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "TypeScript": 99,
+   "HTML": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "nofrizal05/makefun-guide": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {},
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

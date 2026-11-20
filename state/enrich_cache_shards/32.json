@@ -28,10 +28,10 @@
   }
  },
  "osaurus-ai/osaurus": {
-  "commit_7d": 56,
-  "commit_90d": 750,
-  "rel_ver": "1.0.2",
-  "rel_pub": "2026-11-12",
+  "commit_7d": 72,
+  "commit_90d": 792,
+  "rel_ver": "1.0.8",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
@@ -48,21 +48,21 @@
    "Python": 0,
    "Go": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "Gentleman-Programming/gentle-ai": {
-  "commit_7d": 138,
-  "commit_90d": 2397,
-  "rel_ver": "v4.4.0",
-  "rel_pub": "2026-11-07",
-  "rel_days": 6,
+  "commit_7d": 19,
+  "commit_90d": 2274,
+  "rel_ver": "v4.6.0",
+  "rel_pub": "2026-11-18",
+  "rel_days": 2,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -78,10 +78,10 @@
    "JavaScript": 1,
    "TypeScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -140,12 +140,12 @@
   }
  },
  "Countly/countly-server": {
-  "commit_7d": 78,
-  "commit_90d": 1140,
-  "rel_ver": "24.05.55",
-  "rel_pub": "2026-10-30",
-  "rel_days": 14,
-  "rel_n90": 9,
+  "commit_7d": 54,
+  "commit_90d": 1106,
+  "rel_ver": "25.03.59",
+  "rel_pub": "2026-11-13",
+  "rel_days": 7,
+  "rel_n90": 10,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 7,
@@ -168,10 +168,10 @@
    "SCSS": 3,
    "Shell": 2
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5029,6 +5029,28 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "SandyPandyMandy/GTA-6-Switch-Version--PC-Emulator-2026": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Rust": 43,
+   "Go": 27,
+   "C": 18,
+   "Python": 12
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

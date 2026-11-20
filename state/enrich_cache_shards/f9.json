@@ -1,9 +1,9 @@
 {
  "1jehuang/jcode": {
-  "commit_7d": 319,
-  "commit_90d": 3329,
-  "rel_ver": "v1.0.0-preview.424",
-  "rel_pub": "2026-11-12",
+  "commit_7d": 565,
+  "commit_90d": 3659,
+  "rel_ver": "selfdev-linux-18b502ca3c3f3fd10bb21866191d396758e0293c",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": true,
@@ -20,10 +20,10 @@
    "JavaScript": 1,
    "TypeScript": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -34,7 +34,7 @@
   "commit_90d": 1,
   "rel_ver": "promptflow_1.17.1",
   "rel_pub": "2025-01-09",
-  "rel_days": 673,
+  "rel_days": 680,
   "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
@@ -50,20 +50,20 @@
    "Jupyter Notebook": 0,
    "Shell": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "fengshao1227/ccg-workflow": {
-  "commit_90d": 32,
-  "commit_7d": 1,
+  "commit_90d": 34,
+  "commit_7d": 5,
   "rel_ver": "preset",
-  "rel_pub": "2026-11-02",
+  "rel_pub": "2026-11-19",
   "rel_days": 1,
   "rel_n90": 1,
   "rel_pre": true,
@@ -80,10 +80,10 @@
    "Python": 4,
    "CSS": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261103",
-   "release": "20261103",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"

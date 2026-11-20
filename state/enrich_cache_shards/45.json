@@ -1,10 +1,10 @@
 {
  "voicepaw/so-vits-svc-fork": {
-  "commit_7d": 5,
-  "commit_90d": 63,
+  "commit_7d": 0,
+  "commit_90d": 61,
   "rel_ver": "v4.3.0",
   "rel_pub": "2026-11-08",
-  "rel_days": 5,
+  "rel_days": 12,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -20,10 +20,10 @@
    "Nix": 1,
    "JavaScript": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -80,11 +80,11 @@
   }
  },
  "Ontos-AI/knowhere": {
-  "commit_90d": 666,
-  "commit_7d": 116,
-  "rel_ver": "v1.2.55",
-  "rel_pub": "2026-11-11",
-  "rel_days": 2,
+  "commit_90d": 645,
+  "commit_7d": 55,
+  "rel_ver": "v1.2.63",
+  "rel_pub": "2026-11-19",
+  "rel_days": 1,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -100,10 +100,10 @@
    "Makefile": 0,
    "PLpgSQL": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -377,12 +377,12 @@
   }
  },
  "lobehub/awesome-rsi": {
-  "commit_90d": 96,
-  "commit_7d": 14,
+  "commit_90d": 62,
+  "commit_7d": 5,
   "rel_ver": "v2026.08",
   "rel_pub": "2026-08-17",
-  "rel_days": 61,
-  "rel_n90": 1,
+  "rel_days": 95,
+  "rel_n90": 0,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -391,10 +391,10 @@
   "sec_ids": [],
   "contrib_n": 17,
   "lang": {},
-  "enriched_at": "20261116",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261017",
-   "release": "20261017",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261116",
    "contrib": "20261017",
    "lang": "20261017"
@@ -4842,6 +4842,52 @@
    "security": "20261118",
    "contrib": "20261118",
    "lang": "20261118"
+  }
+ },
+ "Voltolini-SPACE/pocketself": {
+  "rel_ver": "v0.2.0",
+  "rel_pub": "2026-10-12",
+  "rel_days": 39,
+  "rel_n90": 1,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Swift": 94,
+   "Python": 3,
+   "Shell": 2,
+   "Jinja": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
+  }
+ },
+ "nazmijavier/uistacks": {
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 0,
+  "lang": {
+   "TypeScript": 99,
+   "CSS": 1
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

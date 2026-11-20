@@ -1,11 +1,11 @@
 {
  "dmlc/xgboost": {
-  "commit_7d": 18,
-  "commit_90d": 226,
+  "commit_7d": 17,
+  "commit_90d": 230,
   "rel_ver": "v3.4.2",
   "rel_pub": "2026-09-15",
-  "rel_days": 59,
-  "rel_n90": 3,
+  "rel_days": 66,
+  "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
   "sec_n": 0,
@@ -20,10 +20,10 @@
    "R": 7,
    "Scala": 5
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -56,11 +56,11 @@
   }
  },
  "doocs/md": {
-  "commit_7d": 11,
-  "commit_90d": 66,
+  "commit_7d": 6,
+  "commit_90d": 60,
   "rel_ver": "@doocs/md-cli@2.1.4",
   "rel_pub": "2026-10-30",
-  "rel_days": 14,
+  "rel_days": 21,
   "rel_n90": 1,
   "rel_pre": false,
   "rel_none": false,
@@ -76,21 +76,21 @@
    "CSS": 1,
    "Less": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
   }
  },
  "apify/apify-mcp-server": {
-  "commit_7d": 43,
-  "commit_90d": 387,
-  "rel_ver": "v0.21.7",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "commit_7d": 64,
+  "commit_90d": 425,
+  "rel_ver": "v0.21.12",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -112,10 +112,10 @@
    "Shell": 0,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -182,11 +182,11 @@
   }
  },
  "mock-server/mockserver-monorepo": {
-  "commit_90d": 1916,
-  "commit_7d": 165,
-  "rel_ver": "mockserver-9.2.0",
-  "rel_pub": "2026-10-27",
-  "rel_days": 17,
+  "commit_90d": 1899,
+  "commit_7d": 96,
+  "rel_ver": "mockserver-9.3.0",
+  "rel_pub": "2026-11-15",
+  "rel_days": 5,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -208,10 +208,10 @@
    "Shell": 5,
    "JavaScript": 3
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -1557,7 +1557,7 @@
  "Noveum/ai-gateway": {
   "rel_ver": "v2.0.1",
   "rel_pub": "2026-08-24",
-  "rel_days": 56,
+  "rel_days": 88,
   "rel_n90": 2,
   "rel_pre": false,
   "rel_none": false,
@@ -1572,13 +1572,16 @@
    "Python": 3,
    "Dockerfile": 0
   },
-  "enriched_at": "20261019",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "release": "20261019",
+   "release": "20261120",
    "security": "20261019",
    "contrib": "20261019",
-   "lang": "20261019"
-  }
+   "lang": "20261019",
+   "commit": "20261120"
+  },
+  "commit_90d": 15,
+  "commit_7d": 1
  },
  "sensoris/semcache": {
   "rel_ver": null,
@@ -5422,6 +5425,29 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "jason-lequyer/SpillOT": {
+  "rel_ver": "v3",
+  "rel_pub": "2026-06-11",
+  "rel_days": 162,
+  "rel_n90": 0,
+  "rel_pre": false,
+  "rel_none": false,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 1,
+  "lang": {
+   "Python": 100
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

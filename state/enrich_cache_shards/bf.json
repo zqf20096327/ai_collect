@@ -1,10 +1,10 @@
 {
  "RSSNext/Folo": {
-  "commit_7d": 3,
-  "commit_90d": 715,
-  "rel_ver": "mobile/v0.6.2",
-  "rel_pub": "2026-11-02",
-  "rel_days": 11,
+  "commit_7d": 11,
+  "commit_90d": 725,
+  "rel_ver": "mobile/v0.6.3",
+  "rel_pub": "2026-11-15",
+  "rel_days": 5,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -25,10 +25,10 @@
    "JavaScript": 1,
    "HTML": 0
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -36,7 +36,7 @@
  },
  "ai-collection/ai-collection": {
   "commit_7d": 2,
-  "commit_90d": 125,
+  "commit_90d": 127,
   "rel_ver": null,
   "rel_none": true,
   "sec_n": 0,
@@ -45,10 +45,10 @@
   "sec_ids": [],
   "contrib_n": 45,
   "lang": {},
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261106",
-   "release": "20261106",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -57,9 +57,9 @@
  "google/agents-cli": {
   "commit_7d": 1,
   "commit_90d": 15,
-  "rel_ver": "v1.14.0",
-  "rel_pub": "2026-11-12",
-  "rel_days": 1,
+  "rel_ver": "v1.15.0",
+  "rel_pub": "2026-11-17",
+  "rel_days": 3,
   "rel_n90": 12,
   "rel_pre": false,
   "rel_none": false,
@@ -75,10 +75,10 @@
    "Makefile": 1,
    "Java": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
@@ -5237,6 +5237,32 @@
    "security": "20261119",
    "contrib": "20261119",
    "lang": "20261119"
+  }
+ },
+ "rvion/CushyStudio": {
+  "commit_90d": 4,
+  "commit_7d": 4,
+  "rel_ver": null,
+  "rel_none": true,
+  "sec_n": 0,
+  "sec_worst": null,
+  "sec_last": null,
+  "sec_ids": [],
+  "contrib_n": 19,
+  "lang": {
+   "TypeScript": 97,
+   "JavaScript": 2,
+   "CSS": 1,
+   "Shell": 0,
+   "Batchfile": 0
+  },
+  "enriched_at": "20261120",
+  "dim_ts": {
+   "commit": "20261120",
+   "release": "20261120",
+   "security": "20261120",
+   "contrib": "20261120",
+   "lang": "20261120"
   }
  }
 }

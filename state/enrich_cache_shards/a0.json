@@ -95,11 +95,11 @@
   }
  },
  "NVIDIA/cutlass": {
-  "commit_7d": 7,
-  "commit_90d": 36,
+  "commit_7d": 8,
+  "commit_90d": 42,
   "rel_ver": "v4.8.1",
   "rel_pub": "2026-10-21",
-  "rel_days": 23,
+  "rel_days": 30,
   "rel_n90": 5,
   "rel_pre": false,
   "rel_none": false,
@@ -115,10 +115,10 @@
    "MLIR": 4,
    "HTML": 1
   },
-  "enriched_at": "20261115",
+  "enriched_at": "20261120",
   "dim_ts": {
-   "commit": "20261113",
-   "release": "20261113",
+   "commit": "20261120",
+   "release": "20261120",
    "security": "20261115",
    "contrib": "20261016",
    "lang": "20261016"
