@@ -15,7 +15,7 @@ claude plugin marketplace add archid21/rightsize
 claude plugin install rightsize@archid21 --scope user
 ```
 
-Works with a Claude subscription (Pro, Max, Ultra) or an API key · MIT license · **New in 0.16.0:** more savings on Opus and Fable, fewer false "stuck" signs, and a clean record for each new model version ([changelog](CHANGELOG.md)).
+Works with a Claude subscription (Pro, Max, Ultra) or an API key · MIT license · **New in 0.16.2:** a simpler band, a cache bar with the clock time, and the session total on the status line ([changelog](CHANGELOG.md)).
 
 ## Contents
 
@@ -85,7 +85,7 @@ A band above the prompt says what rightsize did and why, with buttons to undo it
 
 ![Band: Goes cold in 55 min (19:10) · coming back after costs about $1.56. Buttons: Keep warm 8 h, Wrap up](docs/images/d-warm.png)
 
-![Band with two rows: Sent to Haiku, $0.04 vs ~$0.31 on Fable; Context is 60% full (120K of 200K tokens), with a Compact now button](docs/images/d-context.png)
+![Band with two rows: Sent to Haiku, $0.04 vs ~$0.31 on Fable; Context is 60% full (120K of 200K tokens), with a Compact Now button](docs/images/d-context.png)
 
 <details>
 <summary>In the terminal</summary>

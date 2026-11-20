@@ -11,10 +11,10 @@
 
 **Tater** is a local-first AI platform that can run local models through **llama.cpp**, or connect to remote OpenAI-compatible and llama.cpp APIs. It supports voice satellites like **VoicePE**, **Sat1**, **S3Box**, and **ReSpeaker XVF3800**, plus portals for **Discord**, **Home Assistant**, **HomeKit**, **IRC**, **macOS**, **Matrix**, **Meshtastic**, **Telegram**, and **XBMC4Xbox**.
 
-**New in 3.0.3:** Flat, Warm, Voice, and Manual sound presets in satellite EQ
-settings, with existing tuning preserved and device changes kept in sync.
-The Integrations manager now uses visible Installed, Store, Manage, and
-Repositories tabs, matching the other sections.
+**New in 3.0.5:** Bluetooth discovery now starts only when requested and stops
+automatically. Active device connections keep the radio enabled while needed.
+The new Bluetooth workspace replaces room presence tracking. Requires matching
+satellite firmware; see the [Bluetooth guide](docs/native_bluetooth_api.md).
 [Read the release notes](macos/Tater/RELEASE_NOTES.md).
 
 ---
@@ -45,6 +45,11 @@ Tater handles speech recognition, conversation, tools and spoken replies.
 Pair and manage your devices from Tater's Voice settings, with wake words,
 volume, device preferences and firmware updates where supported.
 
+In **Voice & devices → Satellites → Room & audio**, edit **Satellite name** and
+**Room / Area**, then save. Updated Native, Echo, and ThirdReality firmware saves
+both values on the satellite and applies them live, without resetting or pairing
+again. The satellite must be connected; older firmware shows an update message.
+
 In **Model Settings → Wake Word → STT wake verification**, the **Verification
 audio window** chooses 500–2000 ms of buffered audio to check (default 1000 ms).
 Try 2000 ms if short clips return empty text. **Wait for wake check** separately
@@ -56,6 +61,13 @@ installation. Empty STT results, provider errors, and timeouts allow listening.
 **Send audio to trainer** uses the trainer URL for direct satellite uploads.
 The separate **Auto-training link** is optional and lets the trainer publish
 new wake models back to Tater. Linking is not required to send audio.
+
+In **Voice & devices → Satellites → Bluetooth**, choose **Scan for devices**
+for a 15-second discovery window. Opening the page does not scan. Updated
+firmware keeps Bluetooth off when unused, while active connections such as
+Meshtastic keep it enabled until disconnected. Automatic room presence tracking
+has been removed. See the [Bluetooth guide](docs/native_bluetooth_api.md) for
+firmware requirements, pairing, and API details.
 
 Choose the firmware or runtime for your hardware:
 

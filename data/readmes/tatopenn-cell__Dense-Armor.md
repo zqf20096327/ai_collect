@@ -14,6 +14,7 @@
   <img alt="backend" src="https://img.shields.io/badge/backend-JAX-orange.svg">
   <img alt="nan" src="https://img.shields.io/badge/NaN--safe-yes-brightgreen.svg">
   <a href="https://tatopenn-cell.github.io/Dense-Armor/"><img alt="docs" src="https://img.shields.io/badge/docs-tatopenn--cell.github.io-00e5ff?style=flat-square"></a>
+  <a href="https://pypistats.org/packages/dense-armor"><img alt="PyPI - Downloads" src="https://shields.io/pypi/dm/dense-armor.svg"></a>
 </p>
 
 <h3 align="center">Library of Primitives from__Robot__to__AI__ </h3>
@@ -24,6 +25,12 @@
 <p align="center">📖 <a href="https://tatopenn-cell.github.io/Dense-Armor/"><strong>Full documentation, API reference, quick guide →</strong></a></p>
 
 <p align="center"><a href="https://github.com/tatopenn-cell/Dense-Armor/archive/refs/heads/master.zip"><img alt="Download for Windows" src="https://img.shields.io/badge/Download-for_Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white"></a> <a href="#dashboard-one-command"><img alt="How to run" src="https://img.shields.io/badge/Dashboard-how_to_run-2ea44f?style=for-the-badge&logo=gitbook&logoColor=white"></a></p>
+
+
+Check out [the API](https://tatopenn-cell.github.io/Dense-Armor/api/) for a comprehensive overview.
+
+<!-- usable-map:start -->
+<p align="center"><a href="https://tatopenn-cell.github.io/Dense-Armor/api/general/"><img src="docs/assets/maps/jobs.png" alt="The map of Dense-Armor by job: what you want to do, and the domains that serve it" width="860"></a></p>
 
 ---
 
@@ -225,11 +232,6 @@ Dense-Armor also provides other online utilities:
 - Bridges: scikit-learn, PyTorch and TensorFlow
 - Checks (`check_estimator`, p99 budget, memory growth, clone, pickle, state dict, roc_auc)
 - Core engine (`UniversalMemoryGuard`, `AdaptiveSignalStabilizer`, `AIHardwareProfiler`)
-
-Check out [the API](https://tatopenn-cell.github.io/Dense-Armor/api/) for a comprehensive overview.
-
-<!-- usable-map:start -->
-<p align="center"><a href="https://tatopenn-cell.github.io/Dense-Armor/api/general/"><img src="docs/assets/maps/jobs.png" alt="The map of Dense-Armor by job: what you want to do, and the domains that serve it" width="860"></a></p>
 
 *What you want to do, and the domains of Dense-Armor that serve it, as `usable` knows them (14 jobs). Click the picture for the interactive map, where a domain opens its page and its classes are listed; the table below has the same links.*
 

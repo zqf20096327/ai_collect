@@ -3,23 +3,21 @@
 <div align="center">
   <img src="public/brand/feronavi-icon.svg" alt="Feronavi" width="64" height="64" />
   <h1>Feronavi</h1>
-  <h3>项目协作，进入 Agent 时代。</h3>
-  <p><strong>为人和 Agent 而生的开源项目协作平台。</strong><br />从需求到交付，连接团队、知识与执行。</p>
-  <p>完整 MCP Server · 内置 RAG · 业务流程闭环 · 自托管</p>
+  <h3>让团队与 Agent，一起推进项目。</h3>
+  <p><strong>开源项目协作平台，连接需求、知识与交付。</strong><br />多人一起写文档，项目知识随问随用，Agent 直接参与业务执行。</p>
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-526178?style=flat" alt="许可证：AGPL-3.0-only" /></a>
     <a href="#mcp"><img src="https://img.shields.io/badge/MCP-Server-4f6bed?style=flat" alt="完整 MCP Server" /></a>
     <a href="#rag"><img src="https://img.shields.io/badge/RAG-Built--in-247a73?style=flat" alt="内置 RAG 助手" /></a>
+    <a href="#collaboration"><img src="https://img.shields.io/badge/CRDT-Collaboration-7861a8?style=flat" alt="CRDT 多人文档协作" /></a>
     <a href="#get-started"><img src="https://img.shields.io/badge/deploy-Self--hosted-526178?style=flat" alt="支持自托管部署" /></a>
   </p>
   <p>
     <strong><a href="#get-started">开始部署</a></strong> ·
     <a href="#overview">产品亮点</a> ·
-    <a href="#mcp">MCP 接入</a> ·
-    <a href="#rag">RAG 助手</a> ·
-    <a href="#more-views">更多界面</a> ·
-    <a href="#documentation">文档导航</a> ·
-    <a href="#feedback">问题反馈</a>
+    <a href="#collaboration">多人协作</a> ·
+    <a href="#mcp">Agent 接入</a> ·
+    <a href="#feedback">反馈</a>
   </p>
   <p><strong>简体中文</strong> / <a href="README.en.md">English</a></p>
 </div>
@@ -27,45 +25,37 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/01-workbench-dark.png" />
   <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/10-workbench-light.png" />
-  <img src="docs/screenshots/10-workbench-light.png" alt="Feronavi 工作台，界面与 iMac 外框随明暗主题切换" width="100%" />
+  <img src="docs/screenshots/10-workbench-light.png" alt="Feronavi 工作台，界面与自绘窄边外框随明暗主题切换" width="100%" />
 </picture>
 
-<p align="center"><sub>当前版本的真实界面 · 独立演示数据 · 随明暗主题切换</sub></p>
+<p align="center"><sub>真实界面 · 演示数据 · 明暗自适应</sub> · <a href="#more-views">更多界面&nbsp;→</a></p>
 
 <a id="overview"></a>
 
 ## 从一个想法，到下一次交付。
 
-一项需求背后，有计划、讨论、方案，也有一次次推动它向前的行动。Feronavi 把它们连成完整的工作流：团队在平台里协作，Agent 通过 MCP 参与执行，内置 RAG 为对话提供项目知识与来源依据。
-
-你可以自己推进一项工作，也可以让智能体带着真实项目上下文一起完成。
+从需求拆解、迭代推进，到方案沉淀与版本发布，Feronavi 把项目工作放在一个空间。团队在平台里协作，Agent 带着真实项目上下文参与执行，积累下来的知识随时可查、可引用。
 
 | 核心能力 | 带来的改变 |
 | --- | --- |
-| **完整 MCP Server** | 把业务能力交给 Agent，从发现上下文、执行操作到核验结果，走完业务流程 |
-| **内置 RAG 助手** | 让项目知识进入对话，跨项目检索、结合业务分析，答案附有来源 |
-| **贯穿交付的协作** | 需求、工作项、文档、迭代与版本相互关联，进展和决策都有迹可循 |
-| **自主部署与接入** | 源码开放，数据、身份体系、模型供应商与集成由团队管理 |
+| **完整 MCP Server** | 让 Agent 读取上下文、执行业务操作并核验结果 |
+| **内置 RAG 助手** | 跨项目检索知识，结合当前业务回答，引用可回到原文 |
+| **多人实时协作** | 一起编辑文档、自动合并修改，短时断网后恢复同步 |
+| **自主部署与接入** | 数据留在自己的环境，模型与身份体系由团队选择 |
 
 <a id="mcp"></a>
 
 ## 完整 MCP Server，让 Agent 参与交付
 
-**从理解任务，到执行操作，再到确认结果。** Feronavi 为 Agent 提供可完成业务闭环的标准入口，让项目协作成为智能体可以实际参与的工作。
+**读取上下文、执行操作、核验结果。** Agent 可以创建工作项、调整指派与状态、维护文档、管理迭代和版本，并在操作后重新读取数据，确认执行结果。
 
 例如，你可以这样安排一次版本准备：
 
 > 检查本次迭代的未完成事项，梳理发布风险。先给我调整建议，确认后更新指派和状态，整理发布文档，最后核对执行结果。
 
-| 环节 | Agent 可以做什么 |
-| --- | --- |
-| **理解上下文** | 发现业务工具，读取项目、成员、字段与工作流，明确任务范围 |
-| **推进业务** | 创建和更新工作项、推进状态、维护文档、管理迭代与版本 |
-| **核验结果** | 写入后重新读取业务数据，确认持久化结果，处理版本冲突与安全重试 |
-
 服务器提供 MCP **工具、资源和提示词**，支持 **Streamable HTTP 与 stdio**。Codex、Claude Desktop、Cursor、VS Code 等支持 MCP 的客户端均可按协议接入，按任务动态发现所需能力。
 
-平台界面、内置助手与 MCP 共用业务服务和权限规则。账号权限、令牌范围、幂等写入和操作审计贯穿执行过程；登录、2FA 等身份验证通过专门入口完成。
+平台界面、内置助手与 MCP 共用业务服务、权限和审计规则。Agent 的操作受账号权限与令牌范围约束，并支持幂等执行和版本冲突处理。
 
 [**连接你的 MCP 客户端 →**](packages/feronavi-mcp/README.md)
 
@@ -81,19 +71,50 @@
 - **对话够顺手**：流式输出、Markdown、Mermaid 图表，多会话按账号保存在服务端。
 - **分析能落地**：查询分析直接执行，业务修改先展示操作内容，确认后执行并核验结果。
 
-知识问答同时提供 MCP 工具与 OpenAPI 3.1 描述的公共 API，内置助手和外部 Agent 可以使用同一套检索与业务能力。配置自己的兼容模型与嵌入供应商后，即可使用。
+配置兼容的聊天模型与嵌入模型后，即可使用知识助手；检索与问答也通过 MCP 和公共 API 开放给外部应用。
 
-[**了解 RAG 助手与 API →**](#rag)
+<a id="rag-integration"></a>
+
+<details>
+<summary>接入 RAG：模型配置、MCP 与 API</summary>
+
+1. **在平台内使用**：配置聊天模型与嵌入模型，发布需要检索的项目文档并确认索引完成，再到知识助手选择项目范围提问。
+2. **通过 Agent 使用**：按 [MCP 接入说明](packages/feronavi-mcp/README.md)连接实例，使用 `rag.projects` 查看可访问项目、`rag.search` 检索资料、`rag.chat` 获取带引用的回答。
+3. **接入自己的应用**：从实例的 `GET /api/v1/openapi.json` 获取 OpenAPI 3.1 描述。使用平台 API 令牌进行 Bearer 认证，通过 `POST /api/v1/rag/search` 检索、`POST /api/v1/rag/chat` 问答；请求与响应结构、会话及流式接口见该描述。
+
+OpenAPI 描述覆盖 RAG 公共 API。检索与引用遵循当前身份、令牌项目范围和文档权限。
+
+</details>
+
+<a id="collaboration"></a>
+
+## 同一份文档，一起写；同一个项目，一起推进
+
+一起完善方案、记录讨论、准备交付手册，也让 Agent 同时整理工作项、推进迭代。
+
+- **多人一起写**：同时编辑项目文档，修改自动合并，历史版本可查看、可回滚。
+- **断网后接着写**：已加载的文档可以在短时断网时继续编辑，修改暂存在当前浏览器，恢复连接后同步合并。
+- **人与 Agent 一起推进**：业务修改遵循同一套权限和版本规则；出现冲突时，明确反馈，供操作者核对最新状态后重试。
+- **进展自动到达**：业务变更和站内通知自动更新，跨标签、跨服务实例同步。
+
+<details>
+<summary>了解协作机制与离线条件</summary>
+
+文档正文使用 Yjs CRDT 合并并发编辑。工作项、排期、审批等结构化业务通过版本校验、幂等执行、事务和提交后事件协同；同步与通知遵循各自的访问权限。
+
+文档首次打开需要联网。离线修改暂存在当前浏览器；关闭页面后的恢复依赖站点本地存储可用，浏览器同时禁用 IndexedDB 和 localStorage 时无法保留这些记录。
+
+</details>
 
 ## 为完整的交付节奏而设计
 
-从个人今天要做的事，到团队下一次要交付的版本，Feronavi 提供相互连接的工作视角。
+从今天要完成的任务，到下一次要发布的版本，每一步都有对应的工作视图。
 
 | 工作环节 | 平台能力 |
 | --- | --- |
 | **收集与拆解** | 想法、需求、任务、缺陷、子任务，保留讨论与附件 |
 | **计划与推进** | 里程碑、迭代、版本；看板、表格、日历与时间线 |
-| **沉淀与交接** | 项目文档、目录、版本历史、权限与回滚 |
+| **沉淀与交接** | 多人文档编辑、断网恢复、目录、版本历史、权限与回滚 |
 | **规则与协作** | 自定义工作流、审批、自动化、SLA 与站内通知 |
 | **洞察与统筹** | 个人工作台、燃尽图、累积流、项目集与审计记录 |
 
@@ -105,9 +126,18 @@
 
 ## 能力，经过实际验证
 
-MCP 与内置助手均已完成 **22 条代表性业务流程验收**，覆盖交付、计划、文档、工作流、协作、项目组合和组织管理等场景。真实 Codex 联调完成 **68 次 MCP 调用、18 项业务结果核验**。
+多人编辑与断网恢复、真实 Codex 的业务操作、Docker 部署与备份恢复，均已有执行验证。相关自动化脚本随源码提供，可在自己的环境中复验。
 
-这些验证覆盖业务执行、权限和写后结果；各客户端的任务规划与交互体验取决于其 MCP 支持和所用模型。
+<details>
+<summary>查看验证范围</summary>
+
+- **协作验证**：多人并发编辑、离线恢复、多标签与跨实例同步，以及权限隔离。
+- **Agent 验证**：MCP 业务流程、操作确认、幂等执行与写后复读，并已通过真实 Codex 客户端执行验证。
+- **部署验证**：Docker 全新安装、服务重启、备份恢复，以及源码与镜像构建产物的一致性。
+
+这些验证针对业务行为和数据一致性；各客户端的任务规划与交互体验取决于其 MCP 支持和所用模型。
+
+</details>
 
 ## 源码开放，部署由你掌握
 
@@ -119,29 +149,57 @@ MCP 与内置助手均已完成 **22 条代表性业务流程验收**，覆盖�
 
 ## 开始使用
 
-准备好 Docker Compose，在源码根目录执行以下命令，构建并启动一个新实例：
+准备好 Docker Compose，下载编排文件即可启动一个新实例，无需安装 Node.js 或编译源码：
 
 ```bash
+mkdir feronavi && cd feronavi
+curl -fL https://raw.githubusercontent.com/JasperPengC/feronavi/v0.2.0/compose.yaml -o compose.yaml
+
 # 首次安装：生成本地数据库密码
 (umask 077; test -e .env || echo "DB_PASSWORD=$(openssl rand -hex 24)" > .env)
 
-docker compose -f compose.yaml -f compose.source.yaml up -d --build
-docker compose -f compose.yaml -f compose.source.yaml ps
+docker compose pull
+docker compose up -d --wait
+docker compose ps
 ```
 
-启动后打开 [http://127.0.0.1:3000/setup](http://127.0.0.1:3000/setup)，按向导创建组织和管理员。首次构建会编译数据库扩展，需要一些时间。
+启动后打开 [http://127.0.0.1:3000/setup](http://127.0.0.1:3000/setup)，按向导创建组织和管理员。
+
+默认拉取应用 `ghcr.io/feronavi/feronavi-app:0.2.0` 与数据库 `ghcr.io/feronavi/feronavi-db:16-0.2.0`。本版预构建镜像支持并验证了 **Linux x86-64（amd64）**；其他架构尚未完成验收。
 
 生产部署请将实例放在 HTTPS 反向代理之后；升级已有实例前，请先备份数据库和数据卷，并核对数据库镜像的迁移要求。
 
+<details>
+<summary>从源码构建</summary>
+
+需要修改源码时，可单独克隆本版并构建：
+
+```bash
+git clone --branch v0.2.0 --depth 1 https://github.com/JasperPengC/feronavi.git feronavi-source
+cd feronavi-source
+(umask 077; test -e .env || echo "DB_PASSWORD=$(openssl rand -hex 24)" > .env)
+docker compose -f compose.yaml -f compose.source.yaml up -d --build --wait
+```
+
+首次构建会编译数据库扩展，需要一些时间。已有实例请继续使用原有目录、项目名和数据卷；版本升级时可在 `.env` 中显式设置 `FERONAVI_VERSION` 与 `FERONAVI_DB_VERSION`。
+
+</details>
+
+第一次使用，可以从这三步开始：
+
+1. 创建项目、邀请成员，把第一项需求拆成可执行的工作项。
+2. 发布一篇项目文档，按 [RAG 配置说明](#rag-integration)完成索引，再让知识助手回答一个需要引用资料的问题。
+3. 创建 API 令牌，按 [MCP 接入说明](packages/feronavi-mcp/README.md)连接 Agent，让它检查项目进展并给出下一步建议。
+
 <a id="documentation"></a>
 
-## 文档导航
+## 接入与帮助
 
 | 我想要…… | 从这里开始 |
 | --- | --- |
 | **部署与运维** | [安装与首次配置](#get-started) |
 | **连接 Agent** | [MCP 客户端配置与接入](packages/feronavi-mcp/README.md) |
-| **接入知识与对话** | [RAG 助手与公共 API](#rag) |
+| **接入知识与对话** | [模型配置、RAG 工具与公共 API](#rag-integration) |
 | **报告安全问题** | [安全报告说明](SECURITY.md) |
 
 <a id="more-views"></a>
@@ -159,7 +217,7 @@ docker compose -f compose.yaml -f compose.source.yaml ps
 | [交付时间线](docs/screenshots/08-timeline.png) | [登录页面](docs/screenshots/06-login.png) |
 | [深色工作台](docs/screenshots/01-workbench-dark.png) | [深色文档](docs/screenshots/04-wiki-dark.png) |
 
-截图使用独立演示环境中的虚构团队与业务内容，界面以 3840 × 2160 分辨率拍摄，整图为 4400 × 3000，背景透明。外框为自绘的无品牌窄边框设计，四边等宽，搭配简洁支架；正文截图随阅读主题切换，浅色使用银色外框，深色使用灰色外框。
+截图来自独立演示环境，使用虚构团队与业务数据。透明背景搭配自绘无品牌外框，正文截图随明暗主题切换。
 
 </details>
 

@@ -17,7 +17,7 @@ You slept 5 hours, your knee has an old injury, and you only packed one pair of 
 
 Open source · Use it online or run it yourself · Uses your own LLM
 
-**👉 Try it now: <https://test-ironm.mirobody.ai>** (no install, works in a phone browser)
+**👉 Try it now: <https://ironm.mirobody.ai>** (no install, works in a phone browser)
 
 **English** · [简体中文](README.zh-CN.md)
 
@@ -181,7 +181,7 @@ Five tabs at the bottom: Home, IronM, Library, Records, Me. The mobile app in pr
 
 ### 🌐 Use it online (nothing to install)
 
-1. Open <https://test-ironm.mirobody.ai> on your phone or computer
+1. Open <https://ironm.mirobody.ai> on your phone or computer
 2. Sign up with your email (you'll get a verification code), then enter your height, date of birth and weight
 3. Under "Me → Model and API", enter your own LLM API key. DeepSeek, Qwen, Zhipu, Doubao, Kimi and OpenAI all work, as does anything with an OpenAI-compatible API; a few yuan of DeepSeek credit lasts a long time. Without a key you can still log workouts and meals and browse the libraries; you just can't ask IronM
 4. Tell it: "I want to start training, three times a week, at the gym."
@@ -228,7 +228,7 @@ The backend is Python 3.13 + FastAPI + PostgreSQL (pgvector), running as a plugi
 
 **💰 Does it cost anything?** IronM is free. Model costs go through your own account; with DeepSeek, a question costs about one fen (well under one US cent), and turning a creator's video into plans costs a few fen. Speech and video transcription run on a self-hosted model on the server, and the camera form check and workout video analysis run on your own phone, so they cost nothing.
 
-**📱 Can I use it on my phone?** Yes: open <https://test-ironm.mirobody.ai> in your phone's browser; the pages are designed for phone screens. A native app is in progress (the code is in `app/`; it hasn't been released yet).
+**📱 Can I use it on my phone?** Yes: open <https://ironm.mirobody.ai> in your phone's browser; the pages are designed for phone screens. A native app is in progress (the code is in `app/`; it hasn't been released yet).
 
 **🔒 Where is my data?** On the online version, it's stored in the test server's database, with sensitive content encrypted. If you run it yourself, it stays in a database on your own computer. Either way, only your questions and the photos you take are sent to the model provider you configured, and the weather lookup only sends coordinates rounded to about 1 km. Voice and videos are transcribed on the server and deleted right after; a video's text is only used to make the plans and is deleted once you choose (after 7 days at most).
 

@@ -95,8 +95,8 @@ dashboard at http://127.0.0.1:8082. On Ubuntu, `sudo sh scripts/docker-dashboard
 installs Docker and starts the published images. See
 [Docker operations](docs/DOCKER-OPERATIONS.md#first-deployment).
 
-Azure Container Apps: [experimental deployment](deploy/azure-container-apps/README.md)
-with a separate Azure Files share in ASENDME's existing storage account.
+Azure Container Apps: the [single-server deployment](deploy/azure-container-apps/README.md) uses a dedicated Azure Files share. The experimental [HA mode](docs/HA-ACA.md) adds a gateway, Blob-backed readers and optional writer fencing.
+There is still one writer per database. Failover is manual; [measurement results](docs/HA-ACA.md#what-has-been-measured) are not production guarantees.
 
 ### Embedded Rust
 
@@ -200,7 +200,7 @@ Prebuilt packages: [PyPI](docs/INSTALL.md#pypi) and [release assets](docs/INSTAL
 | Webhooks | [WEBHOOKS](docs/WEBHOOKS.md) |
 | Property graphs, expiry and algorithms | [GRAPH](docs/GRAPH.md) |
 | Benchmarks | [Methodology](benchmarks/README.md), [results](benchmarks/RESULTS.md) |
-| Upgrade notes | [Release notes](docs/RELEASE-0.7.8.md) |
+| Upgrade notes | [Release notes](docs/RELEASE-0.7.10.md) |
 
 ## Status and limitations
 

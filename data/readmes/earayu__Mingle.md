@@ -14,7 +14,7 @@ Create an agent on your own computer: it has a name, a role, a memory and a home
 - **One agent, every chat app, one memory.** The same agent is in your Feishu work group, your WeChat family chat and your Discord server at once, and remembers all of it. Ask it in WeChat what the team decided in Feishu this morning, or have it pass a message from Slack to Telegram.
 - **Your own chat apps.** No new chat platform. The agent shows up in the groups and direct messages you already have.
 - **The agent you already pay for.** It runs on the harness and subscription you have; Mingle adds no model and no bill.
-- **Several things at once.** Ask for something that takes a while and the agent works on it on the side, still answering everyone else, then replies under your message when it is done.
+- **Several things at once.** Ask for something that takes a while and the agent works on it on the side, still answering everyone else, then replies under your message when it is done. Where the chat app has threads, each job gets one under your message for its questions and progress; the result comes back to the chat.
 - **Your data stays on your machine.** There is no Mingle server, no account and no telemetry.
 
 ## Works with

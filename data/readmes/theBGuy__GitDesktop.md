@@ -445,23 +445,32 @@ in one click.
 
 - **Open, edit, merge**: review, comment, approve, edit, and merge (merge &
   squash on all three; rebase on GitHub, fast-forward on Bitbucket) without
-  the browser. Labels and assignees on GitHub & GitLab (set them when you
-  open a PR/MR or any time after), request reviewers across GitHub, GitLab &
-  Bitbucket, see, link, and unlink a PR's **GitHub Projects** in its header
-  (open, closed, and merged alike) and set each board's **Status**,
-  **Priority**, **Iteration** and custom fields right there, with **Edit
-  projects…** and **Edit project fields…** in the command palette opening
-  either popup, flip a PR between **draft and ready for review**
-  either way on all three, and **create new PRs as drafts by default**
-  (Settings → General). Creating first checks the branch for an already-open
-  PR and offers the link instead of opening a duplicate. A new PR is visible
-  in the list it's headed for from the moment you start creating it: a **pending entry** holds its place with
+  the browser. The merge dialog shows the **commit message** the merge will
+  write and lets you edit it first: a summary row with the forge's default
+  title (Bitbucket doesn't report one, so its row reads **Bitbucket's
+  default message**), **Edit** for the title and description, and **Reset
+  to default** once you've changed it. A message you leave alone stays the
+  forge's own default or template; a GitLab merge that writes both a squash
+  commit and a merge commit gets a row for each, GitLab auto-merge keeps
+  your message until it lands, and a merge with no single commit to word
+  (rebase, fast-forward, a GitHub stack) says so. Labels and assignees on
+  GitHub & GitLab (set them when you open a PR/MR or any time after),
+  request reviewers across GitHub, GitLab & Bitbucket, see, link, and
+  unlink a PR's **GitHub Projects** in its header (open, closed, and merged
+  alike) and set each board's **Status**, **Priority**, **Iteration** and
+  custom fields right there, with **Edit projects…** and **Edit project
+  fields…** in the command palette opening either popup, flip a PR between
+  **draft and ready for review** either way on all three, and **create new
+  PRs as drafts by default** (Settings → General). Creating first checks
+  the branch for an already-open PR and offers the link instead of opening
+  a duplicate. A new PR is visible in the list it's headed for from the
+  moment you start creating it: a **pending entry** holds its place with
   the title, branches and draft state, picks up the number as the PR opens,
   and hands over to the real row once the list catches up. A locked
-  conversation shows a **locked** badge, and when GitHub or GitLab refuses a
-  comment, the comment box, reactions, and AI-review posting turn read-only
-  and say why, with the reason on its own line above the open comment box
-  (on an archived GitHub pull request, your draft is kept).
+  conversation shows a **locked** badge, and when GitHub or GitLab refuses
+  a comment, the comment box, reactions, and AI-review posting turn
+  read-only and say why, with the reason on its own line above the open
+  comment box (on an archived GitHub pull request, your draft is kept).
 - **Check out to review**: Checkout switches to the request's branch, and
   **Check out in a worktree…** opens it in its own folder without touching
   your branch or uncommitted files (see [Worktree manager](#branches)).
@@ -506,17 +515,19 @@ in one click.
   permission can merge anyway), and a refused merge repeats the same line
   beside the forge's own message.
 - **Local PR merges**: an open local PR keeps a merge strip like hosted
-  PRs: whether merging will **conflict** (with the files that clash),
-  how far the branch is **behind its base** (with **Update branch** beside it
-  unless a conflict is predicted), or that there are no conflicts. **Approve**
-  sits beside **Merge** on every tab. A merge that does conflict is resolved
-  in the in-app editor, in an isolated worktree that never touches your
-  working tree, then **Finish** or **Abort**. A predicted conflict can be
-  resolved before the PR is approved: **Resolve conflicts** merges the base
-  into the PR's branch in an isolated worktree, and **Finish update** moves
-  the branch while the PR stays open. Unlike the hosted strip, this one
-  keeps a failed or unavailable check, a conflict it can't resolve here, and
-  a promotion gap on more than one line instead of cutting them short.
+  PRs: whether merging will **conflict** (with the files that clash), how
+  far the branch is **behind its base** (with **Update branch** beside it
+  unless a conflict is predicted), or that there are no conflicts.
+  **Approve** sits beside **Merge** on every tab, and **Merge** opens the
+  same dialog as a hosted PR, its commit message starting from the PR's
+  title and description. A merge that does conflict is resolved in the
+  in-app editor, in an isolated worktree that never touches your working
+  tree, then **Finish** or **Abort**. A predicted conflict can be resolved
+  before the PR is approved: **Resolve conflicts** merges the base into the
+  PR's branch in an isolated worktree, and **Finish update** moves the
+  branch while the PR stays open. Unlike the hosted strip, this one keeps a
+  failed or unavailable check, a conflict it can't resolve here, and a
+  promotion gap on more than one line instead of cutting them short.
 - **Activity feed**: a PR's Conversation is a **date-sorted timeline** of
   reviews, comments, grouped **pushed commits** (each SHA clickable), and
   events, every entry carrying a relative **timestamp** (hover for the exact
@@ -768,9 +779,16 @@ note was written and when it last changed, and an item you can't see says so
 rather than thinning the board silently. Open an issue or pull request
 straight from its card, or press **Space** for a **details peek**: its title,
 what it is, and when it was opened, joined this board, and last changed,
-without leaving the columns. **Go back** (`Alt`+`←`, `⌘`+`[` on macOS, or the
-mouse's back button) returns you to the board on the same project, view and
-card. Page through a large board with **Load more**, and move around the whole
+without leaving the columns. A card from another repository opens in the app
+too when a clone of that repository is among your repositories: GitDesktop
+switches to it (a pull request lands in the worktree that has its branch,
+when there is one), and a card from the other side of a fork switches sides.
+The card menu names where each open lands (**Open in** the repository,
+**Open in Upstream** or **Open in Fork**) and always offers **Open on GitHub**
+as well. **Go back** (`Alt`+`←`, `⌘`+`[` on macOS, or the mouse's back
+button) returns you to the board on the same project, view and card, even
+when the item opened in another repository.
+Page through a large board with **Load more**, and move around the whole
 thing from the keyboard. **Add item** puts work on the board without a trip to
 the browser: search this repository's issues and pull requests and add several
 in a row, or write a **draft** — a Markdown note that lives on the board alone
@@ -1049,10 +1067,11 @@ active forks. GitHub is unchanged.
   drafted comment posted alongside, edit title and description, retarget the
   target branch, react with emoji (on descriptions and comments), edit labels
   and assignees, **approve / unapprove**, request changes, and **merge**
-  (merge/squash), including **auto-merge** when the pipeline succeeds
-  (cancelable in place). Plus **create**: push-and-open, drafts,
-  duplicate-MR detection. GitLab's own merge status drives the **conflict**
-  strip, the list's **Conflicts** chip, and in-app conflict resolution.
+  (merge/squash, with a commit message you can edit first), including
+  **auto-merge** when the pipeline succeeds (cancelable in place). Plus
+  **create**: push-and-open, drafts, duplicate-MR detection. GitLab's own
+  merge status drives the **conflict** strip, the list's **Conflicts** chip,
+  and in-app conflict resolution.
 - **Issues**: create, comment, close/reopen with a drafted comment posted
   alongside, edit labels and assignees, set **milestone**, **due date**
   (past-due cue), **confidential**, and **linked related issues**;
@@ -1081,7 +1100,8 @@ limit), and issues live in **Jira**; link a project (below).
 <summary><strong>The full Bitbucket surface</strong>: pull requests, tasks, Pipelines, repo settings</summary>
 
 - **Pull requests**: comment (edit/delete your own), decline, merge (merge /
-  squash / fast-forward, optionally deleting the source branch), edit, and
+  squash / fast-forward, optionally deleting the source branch; merge and
+  squash take a commit message you can edit first), edit, and
   **create** (drafts, reviewers pickable at create time). **Approve /
   unapprove**, **request changes** (a true toggle that revokes on every
   plan), pick reviewers from your workspace, and flip **draft ↔ ready**
@@ -1273,12 +1293,13 @@ agents read this repo through GitDesktop.
     app-data artifacts; nothing is pushed)
   - **`--allow-remote-write`**: real forge writes under your identity (`gh`
     / `glab` / Bitbucket token): create/merge/update PRs (creating a PR
-    pushes its head branch, so it also needs `--allow-git-write`),
-    create/extend/dissolve GitHub PR stacks, request reviewers, edit labels
-    and assignees, approve or resolve review threads, rerun or dispatch CI,
-    cut releases, file or comment on issues, and on GitHub project boards
-    add cards and drafts, move, archive or restore them, set their fields,
-    edit drafts and post status updates
+    pushes its head branch, so it also needs `--allow-git-write`; a merge
+    can carry its own commit message, tied on GitHub and GitLab to the head
+    commit it was written for), create/extend/dissolve GitHub PR stacks,
+    request reviewers, edit labels and assignees, approve or resolve review
+    threads, rerun or dispatch CI, cut releases, file or comment on issues,
+    and on GitHub project boards add cards and drafts, move, archive or
+    restore them, set their fields, edit drafts and post status updates
   - **`--allow-git-write`**: recoverable git ops (stage, commit, branch,
     push/pull/fetch, stash, merge, rebase, revert, cherry-pick, tags)
   - **`--allow-destructive`**: the irreversible ones (discard, reset,
@@ -1371,9 +1392,10 @@ review via its subscription login. The full list is under
   GitHub-Desktop-compatible defaults, a generated cheat sheet (`Ctrl`/`⌘`+`/`),
   a command palette (`Ctrl`/`⌘`+`K`), a filterable shortcut list in Settings
   (by name, category, or key), **Back** and **Forward** through the tabs and
-  items you visited in a repository (`Alt`+`←` / `→`, `⌘`+`[` / `]` on macOS,
-  or the mouse's side buttons; on a roadmap row `Alt`+`←` / `→` shift the
-  item's dates instead), and arrow-key navigation everywhere.
+  items you visited, across repositories when a board card or a notification
+  took you to another one (`Alt`+`←` / `→`, `⌘`+`[` / `]` on macOS, or the
+  mouse's side buttons; on a roadmap row `Alt`+`←` / `→` shift the item's
+  dates instead), and arrow-key navigation everywhere.
 - **Themes**: System, Light, Dark, and a softer **Slate** (a cool, lifted
   blue-gray) that eases eye strain; switch in **Settings → Appearance** or
   cycle from the command palette.
@@ -1560,40 +1582,4 @@ by the app, separately from OS code signing.
   (you add it under Settings → Accounts for Bitbucket; a Jira link is set
   up per repo and can reuse it); optional.
 - An **AI provider** for the AI features (all optional): an API key
-  (Anthropic / OpenAI / **Google AI Studio** / OpenRouter / **Ollama
-  Cloud**), a local **Ollama** server, or a signed-in agent CLI (**Claude
-  Code / Codex / GitHub Copilot / opencode**).
-
-## Development
-
-Prereqs: Rust toolchain, Node 24.15+ or 26+, pnpm.
-
-```sh
-pnpm install
-pnpm tauri dev    # run the app
-pnpm build        # typecheck + bundle the frontend
-pnpm lint         # biome
-cargo test --manifest-path src-tauri/Cargo.toml   # Rust unit tests
-```
-
-### Architecture
-
-- `src-tauri/src/git/`: typed Tauri commands that shell out to system `git`
-  (porcelain v2 parsing, per-repo mutation locks, timeouts).
-- `src-tauri/src/github/`: `gh`-backed commands: pull requests (`pr.rs`) and
-  GitHub Actions (`actions.rs`).
-- `src-tauri/src/{hooks,secrets,instructions}.rs`: git-hook management, OS
-  keychain storage, and repo instruction/rule files.
-- `src-tauri/src/agent.rs`: drives local coding-agent CLIs (Claude Code /
-  Codex / GitHub Copilot / opencode) for keyless AI review, sessions, and CI
-  debugging.
-- `src/lib/`: invoke bindings + TanStack Query hooks (`git/`, `github/`),
-  the AI layer (`ai/`, Vercel AI SDK over the Tauri HTTP plugin so requests
-  bypass webview CORS), settings, and the hotkey registry.
-- `src/features/`: the screens: repository, changes/diff, commit, history,
-  compare, pulls, actions, hooks, branch-rules, settings, and updates.
-
-## Contributing
-
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for setup,
-the conventions we follow (Conventional Commits, Biome, a `changelog.d
+  (Anthropic / OpenAI /

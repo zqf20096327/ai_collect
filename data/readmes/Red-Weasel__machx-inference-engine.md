@@ -17,6 +17,11 @@
 
 </div>
 
+☕ **Buy me a coffee.** -- Unemployed and extremely grateful for any support -- If Mach X saves you time — or you want to see more fast local inference on Intel Arc —
+donations are welcome, one-time or monthly. All donations support the project.
+
+[![Buy me a coffee on Ko-fi](https://img.shields.io/badge/Buy%20me%20a%20coffee-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/redweasel) **[ko-fi.com/redweasel](https://ko-fi.com/redweasel)**
+
 > [!IMPORTANT]
 > ## 🚀 Qwen 4 — ready to run on Intel Arc the day it is released
 >
@@ -39,6 +44,8 @@
 
 **Latest**
 
+- **v0.2.45, November 20 — Hy4-flash gives its spare VRAM to experts:** the context cache is backed for 32K tokens and grows in steps to the full context only when a conversation gets that long (and shrinks again for the next short one), and the image tower loads at the first image. Until then that VRAM holds expert slots: 160 / 156 → 176 / 164 a layer on two Arc Pro B70 at `--ctx 262144`, 5–8 % fewer experts computed on the CPU per token. [Details](#-new-in-v0245)
+- **v0.2.44, November 19 — Tencent Hy4-flash runs, with images, tool calls and long prompts:** the 220B model (512 experts a layer, 16 a token, four n-gram memories) is served from an 8-bit expert pack made from Tencent's full-precision release: a 25,000-token prompt reads at 462–470 tok/s and replies decode at 20–26 tok/s on two Arc Pro B70 cards, with the output closer to exact arithmetic than the reference is in bfloat16. Also: sampling with no top-p cut no longer sorts the whole vocabulary every token (DeepSeek-V4.1, MiMo-V2.6, Hy4-flash: 9.3 → 1.3 ms a token), and DeepSeek-V4.1 keeps a parked conversation in RAM down to 12 GiB free (it was 24, which a 256 GB machine never had). [Details](#-new-in-v0244)
 - **v0.2.43, November 13 — DeepSeek-V4.1 reads images again:** from v0.2.36 through v0.2.42 every image request to DeepSeek-V4.1 failed with `the prompt holds fewer image placeholders than images`. The guard that keeps control-token spellings in a request plain text also caught the engine's own image placeholder. Fixed, with a test; a placeholder typed by a client still stays text. Also new: `IE_DS41_ACT_DUMP=<dir>` records DeepSeek-V4.1's internal activations (the stream entering every layer) while a file `RECORD` exists in that folder, for work on the weights; `scripts/ds41_acts.py` reads them.
 - **v0.2.42, November 13 — DeepSeek-V4.1's VRAM expert set follows the conversation too:** a hot RAM expert trades places with the coldest expert of the fixed VRAM set, about once a token and card, with no extra memory: **16.4 → 17.7 tok/s** on one conversation, **13.8 → 17.2 tok/s** with three requests at once, greedy replies identical on and off. Also: Flash-Next honours `--no-prompt-cache` at one request lane and says when it does not take `--prefill-chunk`, a contributed container build (`Containerfile.b70`), and the first four-card numbers measured by a user. [Details](#new-in-v0242).
 - **v0.2.41, November 12 — DeepSeek-V4.1 and MiMo-V2.6 keep the experts the conversation is using in fast memory:** both models held a fixed set of experts in VRAM and RAM, chosen by a ranking file. On real traffic expert use is strongly recent, so the sets now follow it. **DeepSeek-V4.1** (default on): an expert read from the NVMe tier takes the RAM place of the layer's coldest RAM expert, with no extra memory: one conversation of prose / code / prose turns decodes at **12.4 / 6.9 / 10.6 → 14.1 / 13.1 / 14.6 tok/s**, and greedy replies are identical with it on and off. **MiMo-V2.6** (opt-in, `IE_MIMO26_ADAPTIVE=1`, 34 GiB more RAM): every VRAM slot follows recent use: **19.0 → 23.9 tok/s**. [Details](#new-in-v0241). Also in v0.2.41: a Flash-Next load without its image encoder file is text-only again, not an error: v0.2.40 refused to load Flash-Next when no mmproj file was beside the model. The encoder is still loaded at the start whenever the file is there; without it the model now loads text-only with a warning that says what to add. `IE_VISION_REQUIRED=1` keeps v0.2.40's behaviour for a deployment where a model that cannot see must not load, and a file `ie.env` beside the `ie` binary can hold such `IE_NAME=value` defaults for one machine.
@@ -141,6 +148,13 @@ experts that do not fit. Dates, workloads and methods are in [Benchmarks](#bench
 <td align="left" valign="middle" nowrap><b>27.8–28.3</b> <sub>with drafter</sub><br><b>16.9–18.9</b> <sub>plain</sub></td>
 </tr>
 <tr>
+<td width="48" align="center" valign="middle"></td>
+<td align="left" valign="middle" nowrap><b>Tencent Hy4-flash</b><br><sub>MoE + n-gram memories · measured Nov 19<br>native vision · tool calls · 262K context</sub></td>
+<td align="left" valign="middle" nowrap>8-bit expert pack<br><sub>225 GB, made from the BF16 release</sub></td>
+<td align="left" valign="middle" nowrap><b>487</b> <sub>at 4.9K</sub><br><b>462–470</b> <sub>at 25K</sub></td>
+<td align="left" valign="middle" nowrap><b>22.6–25.8</b> <sub>short prompt</sub><br><b>22.4–24.2</b> <sub>after 25K</sub></td>
+</tr>
+<tr>
 <td width="48" align="center" valign="middle"><img src="docs/images/logo-deepseek.png" width="36" height="36" alt="DeepSeek"></td>
 <td align="left" valign="middle" nowrap><b>DeepSeek-V4.1-Flash</b><br><sub>MoE · measured Sep 16–27<br>native vision · tool calls · 223K context</sub></td>
 <td align="left" valign="middle" nowrap>FP8 + MXFP4<br><sub>475 GB safetensors</sub></td>
@@ -225,6 +239,87 @@ class ([New in v0.2.6](#new-in-v026)).
 ---
 
 <a id="new-in-v0242"></a>
+## 🆕 New in v0.2.45
+
+### Hy4-flash: the VRAM a short conversation does not need holds experts
+
+Two allocations sat on the cards from the load on, whether a request used them or not: the indexed layers' context cache for the whole `--ctx` (2.4 GiB a card at 262,144) and the image tower (1.2 GiB on the first card). Both are now taken when needed.
+
+- **Elastic context.** An indexed layer's cache is a reserved address range backed for 32,768 tokens. When a conversation grows past a tier (64K, 128K, the full context) the expert slots give up a piece of their VRAM in every layer and the cache maps it; when a conversation at most half the lower tier follows, the piece goes back and its slots are refilled with the best-scoring experts. A page remap, not a copy. A 50,654-token prompt grows the cache in the middle of the read (461–469 tok/s) and, with every expert on the cards' arithmetic (`IE_HY4F_Q8_CPU=0`), produces the same reply token for token as the whole-cache allocation. `IE_HY4F_ELASTIC_CTX=0` allocates the whole cache at load, as before.
+- **The image tower loads at the first image.** It is still built at load (so a load that cannot see fails or warns there), measured and freed; the first image of a load takes about 3 s longer, once, and the tower stays resident after it. `IE_HY4F_VISION_LAZY=0` keeps it resident from the load.
+- **What it gives.** At `--ctx 262144` on 2 × Arc Pro B70: 160 / 156 → 176 / 164 expert slots a layer. On one reply replayed token for token, 5–8 % fewer experts miss the cards per token and a token takes 2–4 % less time; `ie serve` replies measured 22–28 tok/s that evening on a desktop with other work going on, so the gain is inside the run-to-run spread there. A conversation past 32K tokens gives part of it back, one past 128K all of it.
+- **Also in the source:** `ie-hy4flash-run` prints the decode alone by 50 tokens (experts computed on the CPU, their time, the token's time) and can replay a reply from a file for like-for-like timing.
+
+Not kept: the slot count rounded to a multiple of 2 instead of 4 (one card came up with 164 slots on one load and 166 on the next, which changes which experts run where and with it the exact tokens); a smaller prompt workspace (no slots gained).
+
+## 🆕 New in v0.2.44
+
+### Tencent Hy4-flash
+
+Hy4-flash (released November 18: 220B parameters, about 12B active a token) is a 42-layer model with 512 small routed experts a layer of which a token uses 16, four n-gram memories, sliding-window and indexed attention, a SigLIP2 image tower and a draft head. `ie serve <directory>` now runs it: text and images, reasoning split from the reply, tool calls in the OpenAI shape, a prompt cache. One request at a time, two cards.
+
+Measured in `ie serve` on 2 × Arc Pro B70 + 256 GB RAM, `--ctx 262144`, thinking on, November 19. Single runs on a desktop with other work going on; decode moves by about ±2 tok/s between runs.
+
+| | |
+|---|---|
+| Prompt read, 4,882 tokens | **487 tok/s** |
+| Prompt read, 25,332 tokens | **462–470 tok/s** (54 s) |
+| Decode, short prompt, greedy | 23.8–25.8 tok/s |
+| Decode, short prompt, temperature 0.9 | 22.6–23.0 tok/s |
+| Decode after the 25,332-token prompt | 22.4–24.2 tok/s |
+| Decode after the 4,882-token prompt | 18.2–21.6 tok/s |
+| Load | 73–79 s |
+| An image (336 prompt rows) | read correctly; the tower matches the reference within 1.0e-3 to 2.2e-3 |
+
+**The format, and why 8 bits.** The release is bfloat16 and was not trained for a low-bit format, and the model is touchy: on most tokens the 16th and 17th expert candidates are nearly tied, so a small change in the weights changes which experts run. Measured against Tencent's reference code in exact arithmetic on a 554-token chat sample (KL divergence of the next-token distribution, lower is better):
+
+| Experts | KL, the reference's expert picks forced | KL, free-running | Same top token |
+|---|---|---|---|
+| The reference itself in bfloat16 | | 0.0195 | 525 of 554 |
+| 8-bit integers, one scale per 32 weights (what is served) | 0.0002 | 0.0124 | 529 of 554 |
+| 5-bit, error-fed rounding plus code flips, all three matrices | 0.0104 | 0.0379 | 512 of 554 |
+| 5-bit gate / up, 8-bit down | 0.0057 | 0.0336 | 521 of 554 |
+| MXFP4 (the format DeepSeek-V4.1 and MiMo ship in) | | 0.125 | 476 of 554 |
+
+So the experts are served at 8 bits, where the engine sits closer to exact arithmetic than the reference does in bfloat16. The large matrices outside the experts are 8-bit too (KL 0.0007 with the picks forced). The n-gram tables are stored as the exact FP8 values the reference rounds them to (61.5 GB instead of 127 GB, every row compared). 5 bits would put about 60 % more experts on the cards; it was measured and not adopted. `ie-hy4flash-quant` (experts at 4 / 5 / 8 bits on the card, the whole model in under five minutes on two cards) stays in the tree for anyone who wants to try another format against the same yardstick.
+
+**Where the time goes.** At 8 bits an expert is 7.5 MB and a layer's 512 are 3.6 GiB, so two 32 GB cards hold about 160 of each layer's 512. The engine keeps the ones the conversation is using on the cards and computes the rest on the CPU from RAM:
+
+- *Decode:* 130–200 of a token's 656 expert picks miss the cards. Reading them from RAM is 17–25 ms of a 40–47 ms token, at 58–65 GB/s on a machine whose plain read test tops out at 81. The cards' own work is about 30 ms of kernels a token, shared between two cards that take turns. With the CPU work skipped (a timing test with wrong output) decode is 34–35 tok/s: that is the bound for a machine with enough VRAM for every expert.
+- *Prompt reading:* a chunk of prompt rows touches nearly every expert, so the missed ones are streamed to the cards over PCIe (from a pinned copy of the pack, about 21 GB/s a card) while the CPU takes the least-used ones. Each expert on a card is read once per 32 of its picks, on the XMX units. For a long prompt the expert slots lend part of their VRAM to an 8,192-row workspace (a page remap, under a millisecond) and get it back, refilled, before the reply starts: 154–163 → 474–487 tok/s on the 4,882-token prompt. Decode right after is about 4 % slower than after the old path.
+- *Attention* runs on the XMX units in both phases (decode: 74 → 15 µs a layer-half); the sliding layers' attention runs on both cards at once; the indexed layers pick their keys on the card.
+
+**What did not pay, for the record.** The draft head is ported and matches a PyTorch forward, but it keeps about 1.4 of 5 drafts a round and a multi-token check touches more experts than the cards hold: 8–16 % slower in the server with thinking on, +36–48 % on plain code in the test tool. It is off by default (`IE_HY4F_DRAFT=1`). Merging the small kernels of a layer (2,349 → 2,026 launches a token) gave identical tokens and no speed. Moving experts onto the cards faster during a reply: +1–2 %.
+
+**Making the directory.** The engine reads its own directory, built once from `tencent/Hy4-flash` (the 440 GB bfloat16 release), with the reference environment the model card describes (PyTorch and the transformers build with Hy4-flash):
+
+```bash
+python scripts/hy4flash_oracle/pack.py     <download> <dir> --no-experts   # sidecar, config, tokenizer, template
+python scripts/hy4flash_oracle/pack_q8.py  <download> <dir>                # the 8-bit expert pack, 147 GiB
+python scripts/hy4flash_oracle/make_selfcontained.py <download> <dir> --link-tables
+ie-hy4flash-run <dir> --pack-tables                                        # the n-gram tables as exact FP8, 61.5 GB
+python scripts/hy4flash_oracle/make_selfcontained.py <download> <dir>      # drops the links to the download
+cp scripts/hy4flash_oracle/expert_ranking.u32 <dir>/                       # which experts start on the cards
+ie serve <dir> --ctx 262144
+```
+
+The directory is 225 GB and no longer needs the download. These are the steps the measured directory was built with over two days; the sequence as a whole has not been re-run from a fresh download.
+
+**Requirements and limits.**
+
+- The 8-bit pack is pinned in RAM (about 158 GB) so the cards can pull experts from it directly: this is a 256 GB machine's configuration. `IE_HY4F_PIN_PACK=0` maps the file instead (prompt reading is then slower).
+- One request at a time; no request lanes yet.
+- Two cards were measured. One card and three or more were not.
+- The Tencent Hy licence applies to the weights and to anything made from them.
+
+### Sampling without a top-p cut
+
+The host sampler shared by DeepSeek-V4.1, MiMo-V2.6 and Hy4-flash sorts only as far as the top-p nucleus reaches. With `top_p` 1 there is no nucleus to reach, and it grew its sorted prefix to the whole vocabulary: a full sort a token. It now stops as soon as the draw (or the `min_p` floor) is settled inside the prefix: 9.3 → 1.3 ms a row in its test, the same pick for the same seed in 720 of 720 cases, and Hy4-flash at temperature 0.9 goes 20.0 → 22.7 tok/s. Requests that set `top_p` below 1 were already fast.
+
+### DeepSeek-V4.1: a parked conversation stays in RAM
+
+The prompt cache keeps other conversations' state in host RAM only while a floor of memory stays available. The floor was 24 GiB, and the expert tier leaves 20–24 GiB on a 256 GB machine, so nearly every slot was refused: a 145K-token conversation was re-read in full twelve times in one day whenever another conversation had used the lane. The default is 12 GiB (`IE_DS41_CACHE_KEEP_FREE_GIB`); with it the same switch back takes a quarter of a second.
+
 ## 🆕 New in v0.2.42
 
 ### DeepSeek-V4.1: the fixed VRAM expert set follows the conversation
@@ -615,102 +710,4 @@ Gates on the 35B-A3B: the standalone outputs (`ie-attn-profile --mode xmx --dump
 |---|---|---|
 | `ie serve` ctx 262144, 6 lanes: a 9.8K-token conversation, turns 1 / 2 / 3 | 83.7 / 82.9 / 78.7 | **86.5 / 86.1 / 83.3** |
 | the same, a 17.3K-token document | 77.2 | **82.0** |
-| `ie-prompt-bench` (greedy, prompt cache off), prompts of 2K / 9.8K / 17K / 32K tokens | 89.2 / 83.8 / 77.2 / 62.8 | **89.0 / 86.6 / 82.4 / 69.8** |
-| `ie-qwen35moe-bench`, 8.3K context | 85.3 | **88.2** |
-| three requests at once, short prompts | 71.7 | 71.7 |
-
-The gain grows with context (+3 % at 10K, +7 % at 17K, +11 % at 32K); prompt reading is unchanged. Standalone, the partial pass at the 35B shape takes 0.07 / 0.10 / 0.25 ms a layer at 8K / 16K / 32K against 0.12 / 0.15 / 0.34 (−35–40 %). Two intermediate variants stay in the code for the A/B: `IE_FA2_XMX_V2=1` (two 16-lane work-groups per chunk with the scores and the softmax computed by both — bit-identical but slower in the engine, 83.7 → 78.9 at 9.8K: the duplicated K reads cost more than the SLM traffic saved) and `=2` (the new kernel without the pipelining); `=0` is the old kernel. The 27B uses the same kernel at head_dim 256; it was byte-checked standalone, not timed in the engine.
-
-`ie-attn-profile` gained `--dump-y FILE` (the output vector after every context's sweep, the byte check) beside `--mode xmx`; time it with `--layers 10` — one short kernel a step lets the GPU's clock drift and the numbers do not repeat.
-
-### What is still slow
-- For one request the two cards still take turns (4.3 + 5.2 ms a token); expert-parallel across both is the larger lever.
-- The router's two kernels (1.3 ms a token on the 35B-A3B), the rows path's per-lane DeltaNet conv and recurrence launches, and this kernel's combine pass.
-
-<a id="new-in-v0231"></a>
-## 🆕 New in v0.2.31
-
-### Qwen3.8-35B-A3B decodes 5–6 % faster, byte-identically
-
-At `ie serve --ctx 262144 --parallel 6 --slot-ctx 40000` the 35B-A3B's request lanes and prompt cache were already in good shape (0.41 GiB a lane, 4.8 GiB of snapshots a card), so the work went to the decode step: 12.4 ms a token, of which 10.4 ms GPU-busy in **705 kernel launches a card**, the expert and dense weight streams near the memory roofline and about 1.7 ms a card in small kernels at the launch floor. Five changes bring the launches to ~460 a card with the same tokens — the greedy texts of one lane and of three concurrent lanes equal v0.2.30's byte for byte:
-
-- one `quantize_q8_1` per activation: each norm quantizes its own row in the same launch (`rms_norm_f32w_quant_q8_1`, `residual_add_rms_norm_{exact,fused}_quant_q8_1`), and the projections and the MoE read it (`pre_q8` on the dense GEMV routes; the q projection's quantization serves k and v, the qkv projection's the DeltaNet gate, the MoE's the shared expert);
-- the shared-expert gate's serial chain runs as an extra work-group of the router's dot launch (`moe_router`'s `sh_gate_w` / `sh_gate_out`), not as its own ~14 µs kernel;
-- the DeltaNet prepare (split, two L2 norms, two tiled repeats) is one launch, `dn_qkv_split_norm_fused` (its B70 kernel is `l2_128`'s lane order and fma chain), on the single-lane and the rows path; the padded alpha/beta row is read in place;
-- `x += moe_y` rides with the next layer's norm (`residual_add_rms_norm_exact`: `residual_add`'s clamp and fp16 rounding, then `rms_norm_f32w`'s loop);
-- the SiLU product and `sh_down`'s activation quantize are one launch (`swiglu_quant_q8_1`).
-
-| `ie serve`, two B70s, ctx 262144, 6 lanes, temperature 0.6 | v0.2.30 | v0.2.31 |
-|---|---|---|
-| one request, short prompts | 85.4 tok/s | **90.6** |
-| a 9.8K-token conversation, turns 1 / 2 / 3 (TTFT 3.6 / 0.4 / 0.3 s) | 80.0 / 79.5 / 75.0 | **83.7 / 82.9 / 78.7** |
-| a 17.3K-token document (TTFT 5.3 s) | 73.8 | **77.2** |
-| three requests at once, each | 69.7 | **71.7** |
-| `ie-qwen35moe-bench`, 8.3K context | 80.7 | **85.3** |
-| `ie-prompt-bench` (greedy, prompt cache off), prompts of 2K / 9.8K / 17K / 32K tokens | 84.4 / 78.9 / 73.4 / 60.5 | **89.2 / 83.8 / 77.2 / 62.8** |
-
-Prompt reading is unchanged (the prefill path keeps every kernel: 2,465 / 2,677 / 2,643 / 2,219 tok/s at those four prompts on both builds). The per-token profile (`IE_DECODE_PROF=1 IE_QUEUE_PROFILING=1`) after the third set: 705 → 491 launches a card, GPU-busy 4.72 / 5.65 → 4.34 / 5.18 ms, the idle gaps between kernels down to ~0.06 ms a card. The MTP head in the GGUF is not used on this model: a 4-row verify re-reads up to four times the experts, so a round costs ~1.8 steps for ~2.1 tokens.
-
-### What is still slow
-- The XMX decode attention's partial pass: one sub-group per 64-key chunk with the running output in local memory, ~0.16 ms a layer at 8K (about 17 % of the card's bandwidth), growing with context — at a 32K-token prompt this release gains only 4 % (60.5 → 62.8) because the attention owns the step there. A register-resident rewrite that keeps the bits is next.
-- For one request the two cards still take turns (4.3 + 5.2 ms a token); expert-parallel across both is the larger lever.
-- `ie-attn-profile` gained `--mode xmx` (the 27B/35B decode kernel at head_dim 256); its partials scratch is now sized for that kernel — the old sizing overran under it and could take the card down at 32K.
-
-<a id="new-in-v0230"></a>
-## 🆕 New in v0.2.30
-
-### Flash-Next reads 35–45 % faster, byte-identically
-
-A 2,048-token chunk routes nearly every one of a layer's 512 experts, and the VRAM expert cache holds about 257 of them, so the LRU, walked in ascending expert order, evicted each resident expert just before its turn: every chunk uploaded the whole bank again (~40 GiB per card). Now the experts resident at a chunk's start keep their slots for the pass, misses stream through a 96-slot ring, and the resident experts' jobs run first (`IE_Q4E_PF_RING`, 0 = the old LRU). The per-token sums keep their order, so the output is byte-identical: the greedy text of five prompts and a 4,096-token perplexity equal to every digit.
-
-| unique text, two cards, `ie-prompt-bench` | 2K | 8K | 16K | 32K |
-|---|---|---|---|---|
-| v0.2.29, `--ctx 40000` | 461 | 677 | 712 | 725 |
-| **v0.2.30**, `--ctx 40000` | **628** | **978** | **1,031** | **1,006** |
-| v0.2.29, `--ctx 262000` | 466 | 666 | 698 | 711 |
-| **v0.2.30**, `--ctx 262000` | **589** | **897** | **946** | **945** |
-
-Served at `--ctx 262000` (temperature 1.0, top_k 20): a 9.8K-token conversation reaches its first token in 13.0 s (was 16.7), a 17.3K-token document in 21.1 s (was 26.9). A 4,096-token pipeline chunk reads 16–32K prompts another 6–10 % faster but is not the same arithmetic (perplexity 1.0841 → 1.0854 over 8,192 tokens), so it stays an opt-in (`IE_Q4E_PIPE_CHUNK=4096`) until that is understood.
-
-### Flash-Next's MTP draft head is on by default, and exact at any sampler
-
-The head loads by itself when `mtp-head.gguf` sits beside the model (`scripts/fetch_mtp_head.py` and `scripts/mtp_to_gguf.py` make the 5.2 GB file from the official checkpoint; `IE_Q4E_MTP=0` = off), 3 rows a round. Its ingest ran the head's whole layer for every prompt token it read and nothing used the result (−17 % prefill): the ingest now stops after the attention half. Its experts load as a Q8_0 bank (the tail card keeps 186 instead of 157 expert slots at `--ctx 262000`). Greedy requests keep the bit-exact compare path: 35.6 → 38.9 tok/s on short prompts, 26.4 → 31.4 at 8–64K of context, the tokens plain decoding's. A sampled request used to lose with it (argmax drafts kept only when the sampled token happened to match: 31.0 → 26.1 tok/s at temperature 1.0 / top_k 20); now the drafts are drawn from the head's own distribution and verified by speculative sampling, a confidence gate ends an unsure draft (`IE_Q4E_MTP_QMIN`, 0.5), and a guard measures each request's plain step against its rounds and pauses them while they do not pay (`IE_Q4E_MTP_ADAPT=0` = always on). On this MoE a 4-row verify streams about 27 distinct experts against a step's 10, so a round costs about 2.6 plain steps and pays above about 2.6 tokens a round: maths and document conversations gain, free prose at temperature 1.0 comes out about even (30.7 / 29.6 / 33.4 against 31.4 / 31.1 / 30.8 plain). `IE_Q4E_LOOKUP_STATS=1` prints the rounds and the guard's yardstick per request.
-
-### Qwen3.8-27B: the request lanes no longer starve the rounds and the prompt cache
-
-At a launch like `--ctx 222222 --parallel 8 --slot-ctx 60000 --spec` on Q8_0, the seven idle lanes allocated 13.3 GiB a card at the load, the MTP rounds were then refused on "32 MiB free" and the prompt cache sized itself at 0 GB: the 27B decoded plain (17.5 tok/s) and re-read every turn (4.0 s for 10K tokens), where `--parallel 1` gave 29. Now a lane's state is allocated when a request first lands on it (`IE_QWEN35_LANES_EAGER=1` = at the load as before), the lane choice prefers an idle lane that is already allocated, and the prompt cache hands back what a filling lane takes (its budget re-fits to the cards' measured free memory). At those flags, served at temperature 1.0 / top_k 20: decode 17.4 / 17.5 / 17.5 → 20.7 / 28.7 / 29.5 on short prompts and 16.6 / 16.6 / 16.2 → 19.8 / 20.8 / 20.3 on a 9.8K-token conversation, whose turns 2 and 3 come from the cache in 0.75 / 0.61 s (were 4.0 s re-reads); a 17K prompt reads at 2,552 tok/s as before; two concurrent requests 17.1 / 16.5 each (as before). The engine's load log says what it allocates: `[27b-split-cache] lane N filled: the cache's budget a → b GB a card`.
-
-### What is still slow, and not checked
-
-- The 4,096-token pipeline chunk on Flash-Next (+6–10 % at 16–32K) changes the logits; opt-in until the differing kernel is found.
-- Flash-Next's draft head still takes 52 expert slots of the tail card at `--ctx 262000` (7–8 % of prefill there); a smaller bank or the head on the roomier card would recover it. Its rounds on this MoE cost ~2.6 plain steps for 4 rows; a verify that reuses the step's routed experts would raise the sampled gain above "about even".
-- The 27B's two concurrent lanes with rounds decode 17.1 / 16.5 each at the launch above, not the `--parallel 2` figure of 53 together; the round checkpoints are sized for every lane (1.7 GiB for 8 at K = 3) where a pool for the two that draft at once would be 0.4 GiB.
-- None of the other models changed code; their tokens are v0.2.29's.
-
-<a id="new-in-v0229"></a>
-## 🆕 New in v0.2.29
-
-Everything since [v0.2.28](https://github.com/Red-Weasel/machx-inference-engine/releases/tag/v0.2.28). Measured
-October 21, 2026, on two Arc Pro B70 cards. All of it is the Qwen3.8-27B (and the 35B-A3B class's Q6_K / Q5_K
-experts); every other model gives v0.2.28's tokens.
-
-### Qwen3.8-27B: MTP checks cost less on the K-quants, and every file drafts 2 tokens a round
-
-The decode kernel for Q4_K, Q5_K and Q6_K weights now takes its integer dot products from the GPU's own integer dot
-instruction instead of building them byte by byte. The integers are the same, so the results are the same bit for bit,
-and each extra row of an MTP check costs much less: Q4_K `ffn_down` at 1 / 3 / 4 rows went from 95 / 148 / 179 µs to
-88 / 119 / 135. With that, every file now checks 3 rows a round (2 drafted tokens) by default, on the request lanes and
-at `--parallel 1`; `--spec-k` still sets it.
-
-| Qwen3.8-27B, `--spec`, two cards, 256 tokens a reply | v0.2.28 | v0.2.29 |
-|---|---|---|
-| Q4_K_M, one request (`--parallel 2`) | 37.2 tok/s | **41.9** |
-| Q4_K_M, two at once, together | 63.2 | **67.8** |
-| Q6_K, one request / two together | 31.8 / 52.5 | **37.4 / 61.8** |
-| `--parallel 1`, one request: Q4_K_M / Q6_K / Q8_0 | 36.0 / 29.9 / 26.8 | **38.9 / 34.7 / 29.4** |
-
-- Plain decoding is unchanged or a little faster (Q4_K_M two lanes 27.2 / 51.8 → 27.7 / 53.5); the 35B-A3B class's
-  Q6_K experts take the same kernel change (two lanes 94.6 / 173.9 → 95.8 / 176.6 tok/s, the same text).
-- **A better Q4 file for `--spec`:** huihui-ai's own `Huihui-Qwen3.8-27B-abliterated-Q4_K.gguf`, quantized from BF16,
-  accepts more drafts than a Q4_K_M we re-quantized from the Q8_0 (2.00 against 1.92 tokens a round): **43.4 / 74.0**
-  tok/s on
+| `ie-prompt-bench` (greedy, prompt cache off), prompts of 2K / 9.8K / 17K / 32K tokens | 89.2 / 83.8 / 77.2 / 62.8 | **89.0 / 86.6 / 82.4

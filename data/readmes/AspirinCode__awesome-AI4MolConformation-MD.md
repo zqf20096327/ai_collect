@@ -296,7 +296,9 @@ David S. Cerutti, Rafal Wiewiora, Simon Boothroyd, Woody Sherman.
 
 
 
-
+* **SMartini: automated small molecule parametrization for Martini 3 force field** [2026]  
+Danis Yangaliev, S. Banu Ozkan.  
+[bioRxiv(2026)](https://doi.org/10.64898/2026.09.29.755481) | [code](https://github.com/DanYev/SMartini)  
 
 * **SO3LR Tauri: Generally Applicable Force Fields for Reactive (Bio)Molecular Simulations Covering the Periodic Table** [2026]  
 Adil Kabylda, Florian N. Brünig, Miguel Gallegos, J. Thorben Frank, Evgeny Moerman, Oliver T. Unke, Stefan Chmiela, Klaus-Robert Müller, Alexandre Tkatchenko.  
@@ -367,6 +369,15 @@ Wang, L., Brasnett, C., Borges-Araújo, L. et al.
 
 
 
+
+
+* **Scaling a Universal Graph Neural Network Force Field to Billions of Atoms on Desk-Side GPUs** [2026]  
+Jaehyung Lee, Kamal Choudhary.  
+[arXiv:2611.20585(2026)](https://doi.org/10.48550/arXiv.2611.20585) | [Zenodo](https://github.com/atomgptlab/scalingmat)  
+
+* **tmol: a GPU-accelerated implementation of the Rosetta energy function for machine learning** [2026]  
+Andrew Leaver-Fay, Kieran Didi, Jeff Flatten, Alex Ford, Guangfeng Zhou, Nathaniel Corley, Hahnbeom Park, Maxwell W. Kazman, Rafael I. Brent, Joseph Kleinhenz, Henry Solberg, Andrew M. Watkins, Brian Kuhlman, David Baker, Frank DiMaio.  
+[arXiv:2611.21857(2026)](https://doi.org/10.48550/arXiv.2611.21857) | [code](https://github.com/RosettaCommons/tmol)  
 
 * **Quantum-accurate vibrational and conformational dynamics from small molecules to proteins with machine-learned force fields** [2026]  
 SSuárez-Dou, S., Gallegos, M., Han, K. et al.  
@@ -598,7 +609,7 @@ Gregory Fonseca, Igor Poltavsky, Valentin Vassilev-Galindo, Alexandre Tkatchenko
 * [STORMM](https://github.com/Psivant/stormm) - Structure and TOpology Replica Molecular Mechanics.
 * [multiSMD](https://github.com/kszewc/multiSMD) - A Python Toolset for Multidirectional Steered Molecular Dynamics.
 * [CCD2MD](https://github.com/keb721/CCD2MD) - A Suite of Packages for Preparing Co-Folded Outputs for Molecular Dynamics Simulations.
-
+* [cuPotential](https://github.com/nvidia/cupotential) - A CUDA-X library for efficient computation of molecular interactions found in standard forcefields for molecular dynamics.
 
 
 
@@ -748,6 +759,19 @@ https://github.com/ipudu/awesome-molecular-dynamics
 
 
 
+
+
+
+
+
+
+* **MemBack: An Equivariant Graph Neural Network for Backmapping Lipid Membranes** [2026]  
+Y. Eren Tunç, Rainer A. Böckmann.  
+[J. Chem. Theory Comput.(2026)](https://doi.org/10.1021/acs.jctc.6c01711) | [code](https://github.com/BioMemPhys-FAU/memback)  
+
+* **SMartini: automated small molecule parametrization for Martini 3 force field** [2026]  
+Danis Yangaliev, S. Banu Ozkan.  
+[bioRxiv(2026)](https://doi.org/10.64898/2026.09.29.755481) | [code](https://github.com/DanYev/SMartini)  
 
 * **A unified coarse-grained neural network potential for the dynamics of biomolecular complexes** [2026]  
 Antonio Mirarchi, Stephen E. Farr, Adrià Peréz, Gianni De Fabritiis.  
@@ -1496,27 +1520,4 @@ Nicholas Casetti, Dylan Anstine, Olexandr Isayev, and Connor W. Coley.
 
 * **Weighted active space protocol for multireference machine-learned potentials** [2025]  
 A. Seal,S. Perego,M.R. Hennefarth,U. Raucci,L. Bonati,A.L. Ferguson,M. Parrinello, & L. Gagliardi.  
-[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2513693122) | [code](https://github.com/GagliardiGroup/wasp)  
-
-* **Machine learning of charges and long-range interactions from energies and forces** [2025]  
-King, D.S., Kim, D., Zhong, P. et al.  
-[Nat Commun 16, 8763 (2025)](https://doi.org/10.1038/s41467-025-63852-x) | [code](https://github.com/BingqingCheng/cace-lr-fit)  
-
-* **Learning non-local molecular interactions via equivariant local representations and charge equilibration** [2025]  
-Fuchs, P., Sanocki, M. & Zavadlav, J.  
-[npj Comput Mater 11, 287 (2025)](https://doi.org/10.1038/s41524-025-01790-4) | [code](https://github.com/tummfm/chemtrain)  
-
-* **Scalable Foundation Interatomic Potentials via Message-Passing Pruning and Graph Partitioning** [2025]  
-Lingyu Kong, Jaeheon Shim, Guoxiang Hu, Victor Fung.  
-[arXiv:2509.21694 (2025)](https://doi.org/10.48550/arXiv.2509.21694) | [code](https://github.com/Fung-Lab/MatterTune)  
-
-* **Weighted active space protocol for multireference machine-learned potentials** [2025]  
-A. Seal,S. Perego,M.R. Hennefarth,U. Raucci,L. Bonati,A.L. Ferguson,M. Parrinello, & L. Gagliardi.  
-[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2513693122) | [code](https://github.com/GagliardiGroup/wasp)  
-
-* **One to Rule Them All: A Universal Interatomic Potential Learning across Quantum Chemical Levels** [2025]  
-Yuxinxin Chen and Pavlo O. Dral.  
-[J. Chem. Theory Comput. (2025)](https://doi.org/10.1021/acs.jctc.5c00858) | [code](https://github.com/dralgroup/aio-ani)  
-
-* **Learning Long-Range Interactions in Equivariant Machine Learning Interatomic Potentials via Electronic Degrees of Freedom** [2025]  
-Maruf, Moin Uddin, Su
+[Proc. Natl. Acad. Sci. (2025)](https://doi.org/10.1073/pnas.2513693122) 

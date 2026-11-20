@@ -2,7 +2,7 @@
 
 **A local-first desktop workspace for branching AI conversations.** Ask a question, fork a reply into two lines of inquiry, then bring their answers together. Each branch keeps its own conversation history. Notes, sources, code, charts, and model replies sit next to the question they came from.
 
-[Install Graphlink](#getting-started) · [Connect a model](#connect-a-model) · [Build your first graph](#build-your-first-graph) · [API providers](#api-providers) · [Developer guide](#development)
+[Install Graphlink](#getting-started) · [Connect a model](#connect-a-model) · [Build your first graph](#build-your-first-graph) · [Workspace agent guide](docs/WORKSPACE_AGENT.md) · [API providers](#api-providers) · [Developer guide](#development)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/screenshots/node-detail.png">
@@ -100,6 +100,8 @@ Enable **Scientific Core** and a domain pack in **Settings → Plugins**. Open *
 
 Ten biology packs sit under **Plugins → Biology Workbench**: Biology and Ecology, Plate Assays, Cell Culture, Enzyme Kinetics, Genetics, Epidemiology and Biostatistics, Pharmacokinetics, Physiology, Gene Expression and Phylogenetics. Each is enabled separately in **Settings → Plugins**. They cover quantitative work such as 4PL/5PL standard curves, qPCR ΔΔCt and Pfaffl ratios, inhibition model selection, Kaplan–Meier and Cox survival analysis, differential expression with volcano plots, population projection and tree building. Results carry verifiable receipts and typed views (plate maps, survival curves, forest plots, trees, volcano plots), and any result can be discussed in chat or turned into a methods paragraph. The packs analyse the numbers you supply; they do not fetch data from biological databases. [Biology Workbench user guide with five end-to-end workflows](docs/BIOLOGY_WORKBENCH.md) · [Pack reference pages](docs/biology/README.md).
 
+![Creating a Plate Assays node from Plugins, fitting a 4PL standard curve to seven ELISA standards, reading the two dilution-corrected unknowns from the result table, and opening Discuss in chat with the verified result.](assets/gifs/biology-workbench.gif)
+
 ## API providers
 
 The directory includes **26 named providers** and a **Custom endpoint** for OpenAI Chat Completions-compatible servers. Search by service or model family, such as Claude, Grok, Kimi, or Qwen. You can browse another provider’s settings while your current connection stays active.
@@ -138,7 +140,11 @@ If **Load available models** is unavailable or your deployment is missing from t
 
 Open **Builder** to give the graph a goal. Choose **Plan the build**, edit the checklist on its plan card, then choose **Start build**. **Co-pilot** asks before edits to the canvas. **Autopilot** can make ordinary canvas edits on its own within your step, token, and time budgets. Python execution and web fetches still require approval. A paused or interrupted build can resume from its plan card. **Stop** ends the run. [View the Builder and a recipe](assets/screenshots/builder-launcher.png).
 
-Open **Agent** for tasks that need files. It starts in a private scratch folder, or you can choose an existing project with **Choose folder…**. The agent can read files, propose edits, and request approval to run shell commands or Python. Its activity appears on the canvas.
+Open **Agent** for tasks involving files. It starts in a private scratch folder, or you can grant an existing project with **Choose folder…**. Its activity and approvals appear on the canvas. **Ask** is the default permission mode; **Auto-edit** skips approval for confined file edits, and **Autonomous** is Isolated-only (Docker/Podman) with narrowly vetted offline shell commands, cached-package installs and session-management exemptions. Every `python.exec` call still needs approval. The launcher's first task uses **Host**; switch to Isolated before sending subsequent work. **Always allow** stores v2 exact shell-command rules bound to the workspace, shell and profile—not prefixes—but cannot bypass sensitive-command checks. Reopening a graph resets permissions to Ask and clears saved approval grants. Models without native tool calling can use the Agent when constrained JSON output is supported.
+
+[Workspace agent user guide](docs/WORKSPACE_AGENT.md) · [Permission modes](docs/WORKSPACE_PERMISSION_MODES.md) · [Isolated execution](docs/WORKSPACE_ISOLATION.md) · [Shell approvals](docs/WORKSPACE_SHELL_APPROVAL_AUDIT_2026-11-20.md) · [JSON tool protocol](docs/WORKSPACE_JSON_TOOLS.md).
+
+Put reusable skills in `.graphlink/skills/<package>/SKILL.md` within your selected workspace, or in `~/.graphlink/skills/<package>/SKILL.md` to make them available to all your workspace agents. Each file needs YAML frontmatter with `name` and `description`. The agent sees only these summaries in its prompt and reads the full instructions with `skills.load` when relevant; skills cannot override tool approvals.
 
 ## Local data and privacy
 

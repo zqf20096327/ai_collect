@@ -50,6 +50,14 @@ tokspur serve --speed-preset --drafter dflash2 --shared-prefix-cache
 
 Add `--dflash2-vocab-gather cjk64k --dflash2-lookup hybrid --ple-ram-resident` when serving multilingual or CJK prompts alongside `<think>` reasoning.
 
+With the MTP drafter, the shared prefix cache on and SSD checkpoints off, `--speed-preset` parks up to 4 GiB of conversation state in host RAM. Chats become eligible at 2,048 committed tokens. To resume a parked chat, send the previous messages with the same sampling settings. The server can fill in omitted `reasoning_content` when it retains the matching conversation history. An explicit `seed` must match the parked chat. If you omit it, a unique matching chat resumes its sampling stream. Set `--parked-lanes-mib` to change the budget, or `--parked-lanes-mib 0` to turn it off.
+
+With MTP, the worker imports the full 85.9 GB Pack v3 as 22 Metal buffers over one read-only file mapping. DFlash2 skips the MTP tensors and uses 21 buffers for this pack. Each buffer holds up to 4 GiB of whole tensors. Metal can release the weights between requests. Packs with a tensor that exceeds the cap after page alignment keep their existing import settings. The parking budget covers the saved conversation state. The [parked-chat benchmark](scripts/benchmark_parked_chats.py) compares interleaved Japanese and Rust replies with an uninterrupted run.
+
+With MTP or DFlash2 and the checkpoint broker off, the worker can stop a request with `host_memory_pressure` when macOS reports a warning or critical pressure. The client receives HTTP 503 if streaming has yet to start, or an error in the existing stream. The server discards the interrupted generation. After pressure clears, a fresh request can use the same worker.
+
+DFlash2 parking is experimental. An explicit `--parked-lanes-mib` budget, `--shared-prefix-cache` and `--native-dflash2-defer-context off` are required for a parked restore.
+
 ### Pack formats
 
 [`san-digital/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF`](https://huggingface.co/san-digital/Qwen3.8-Flash-Next-Q4_K-Tokspur-GGUF) includes Planar Pack v3 (`Qwen3.8-Flash-Next-Q4_K.tokspur.gguf`), which Tokspur uses directly from the model directory with no local pack build. The pinned asset profile requires this pre-built pack and its matching base GGUF and MTP sidecar. `--pack-v3` on `serve` refuses fallback to an older layout.

@@ -1,6 +1,6 @@
 # dsh-qwen-paint · (绘图)千问（优化版）
 
-DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS / PPT 全能 · 本机运行（QQ 交流群 454707710）。BSL 1.1（BUSL-1.1，非 OSI 开源许可；0.32.1 及更早仍 MIT、不追溯），2030-11-15 转 Apache-2.0。★ 1.2.4：双独立审计（main + DSH 背靠背）后落地——修复注释外置误吞 schema-defaults 的 4 个 DEFAULTS 字段（真机默认值丢失，测试曾被假值兜底蒙蔽）的真回归并补根因护栏；新增视频裁剪/ProRes 导出/社区能力发现三工具并接入面板可点；删 5 个零引用死执行器；local-portrait 路径围栏 realpath 复验、Windows VRAM 探针参数化。全量 118 套回归全绿；不改生成链契约与工具名。★ 1.2.3：修复三件真 Bug——宿主升级工具契约后面板 404 大面积报错（extras 整组未注册的真根因：缺 render 自动兜底 + 契约锁，真机验证全 200）、ComfyUI 启动识别 46 秒蒸发（常量漂移）、音色样本重启全丢（index.json 写了从不读回，启动读回 + 逐条校验）；GSV.CPP 外接 TTS 全链路打通——backend=gsv_cpp 直调本机 9880 服务（A 卡 Vulkan 实测全句 2.95 秒 ≈23× 实时速率、221 字长文 4.23 秒；参考音频+转写必填、面板下拉可选、音色样本登记带参考转写、服务挂死 abort 收口）；多音色对话链第一步（本机已装 RoleBank/DialogueInference 节点实锤，buildDialogueWorkflow 纯函数就绪）；slim-comments 修复 $ 替换模式陷阱并把设计注释外置，体积余量回升至 25KB+；不改生成链契约与工具名，全量 114 套回归全绿。★ 1.2.1：许可仍为 BSL 1.1（BUSL-1.1），本版是质量与可诊断性收口补丁——历史库搜索升级 SQLite FTS5 全文索引（1 万条实测 0.023ms vs LIKE 1.012ms，约 44×；短词自动回落 / 旧库自动回填 / 查询注入防护）、doctor 8 项自诊断补齐 4 项真探针（未验证一律标未检测、不谎报 pass）、OOM 建议跟上 ComfyUI v0.37 动态显存与社区 8G 抄作业档、构建期作用域检查升级为零依赖 JS 词法分析器；不改生成链契约与工具名，全量 114 套回归全绿。★ 1.2.0：UI 全折叠 + 双拖拽上传、人物替换（Rust 纯 CPU 底座 + 身份节点发现 / 缺件降级引导）、PPT 讲解图片真写进 OOXML；不捆绑模型、不谎称换脸。★ 0.33.0 起许可改为 BSL 1.1（BUSL-1.1，非 OSI 开源许可）：除托管/代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用，2030-11-15 转 Apache-2.0；0.32.1 及更早仍 MIT、不追溯。★ 1.1.2：全量审计整改——安全围栏与出站守卫收口（矢量化端点补本机围栏、ASR 端点回环校验、路径防链接越界复验），长任务超时透传、队列生命周期加固，媒体路由流式化＋Range 拖动，探测结果缓存提速分镜合成；API 与工具名零变更。★ 1.1.0：全面提速——内置 resvg 光栅 7.02× / 静态帧去重+VFR 合成 6.58× / 分镜缓存 34.2× / 草稿档 2.10×，TE-Speed 生图链真机 −17.3%，编码择优纠错（x264 排 AMF 前）、BGM 三缓存、Qwen3-TTS attention 可选 + 低延迟分块；未实测的一律不吹倍率。★ 1.0.0：选模型「假成功」根治（拒绝时如实回未生效 + 原因，不再无条件报已选）、优化面板与素材库白条同源修复（持久化缓存 + 占位 + 错误态）、历史筛选分页与重复请求收口、所有写参数拒绝统一 choiceResult。★ 0.35.0：口语入口别名（「风格卡」「批量出图」…）解析成真实工具、参考图色调取样写进提示词、建议时间轴 / 资源需求声明 / 数据流摘要 / 「刚才那张」产出短引用全部接进主链路。★ 0.34.0：SageAttention / Comfy-WaveSpeed 并入加速链并按真实 /object_info 探测、卡片常驻显示；GPT-SoVITS v5 / IndexTTS2 可选 TTS、拖音频零样本克隆、ACE-Step 1.5 / YuE2 音乐 BGM、手动超分、Worker 热温冷保活。0.33.0 新增媒体格式转换（图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC，生成物可指定输出格式、动图转视频、自有素材转换，Agent 可直接调用 convert_media）与加速链全景（生图/视频缓存后端 + TTS 加速 + 显存预算 + 配置裁决 + 结构化日志，只列探测到的、未实测不写倍率）、本机能力功能区内嵌进 Comfy 控制面板（展开页恒在悬浮球正上方、边框对齐 DSH 右边框、四事件点按兜底）、GIF 转换 / 运行期自诊断 / 优先级任务队列 / 单图迭代优化 / 自适应 DAG 编排 / 生成历史可删改与冷热分离等本机工具与端点；0.32.1 两轮审计加固：ASR 音频路径围栏（只认出图目录内文件）、按包名安装也能执行引导脚本、草图台四事件点按、错误响应消毒收口；视频链清单化 + 生图/TTS 契约对账（改图自动报差异）；生图/视频/混合三模式界面各不同；批量出图带幂等保护（重试不重出）；Qwen3-TTS 语音克隆与可接 ASR 自动字幕；本机实测秒数；会话级模型驻留、显存建议、参数来源表、预设绑定、加载器盘点等本机端点。文生视频 / 图生视频（Wan 2.2 / XT-5B）与图→音→视频混合、导入音频直接合进成片（音轨合成），文生图与 1–16 张参考图编辑、圈选重绘（羽化 / 边缘融合 / 外扩 / 反选 / 重绘强度可调）/ 元素移除 / 四向扩图 / 高清放大，Qwen3-TTS 语音合成（独立 generate_speech，参考音频可复刻音色），模型无关角色参考；GSV.CPP 外接引擎可选（backend=gsv_cpp 直调本机 9880 服务，A 卡 Vulkan 实测 ≈23× 实时速率）；PPT 生成（make_pptx：纯 JS 零依赖零 GPU，大纲级 PPTX 草稿，生成的讲解图片可真写进 PPTX，永远可执行无降级）；草图台手绘参考；生成记录可检索（菜单最上面「历史」，SQLite 索引、软删除不动磁盘文件）。CPU 也能跑：自动识别 AVX2 / AVX512 / AVX512-BF16 指令集并给五档加速（含 --cpu 强制纯 CPU）、按物理核钉线程，任务结束可选自动卸载模型内存；安装入口是常驻的图形化引导面板。对外提供脱敏状态快照与端点目录供外部集成。提供可选、默认关闭的模型自动下载包：视频模型 --video-models、核显档位 --igpu-download、生图主模型 --tier，按服务器权威 size + sha256 双校验；音频权重不自动下载，缺件给明确清单。经本机 ComfyUI 调用，数据仅走 127.0.0.1 回环（联网参考图检索默认拒绝、须逐次同意），无需 API 密钥、零调用费用。Windows / Linux，NVIDIA / Intel Arc / AMD / 核显共享内存，含 8 GB 低内存档位。
+DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS / PPT 全能 · 本机运行（QQ 交流群 454707710）。 BSL 1.1（BUSL-1.1，非 OSI 开源许可； 0.32.1 及更早仍 MIT、不追溯），2030-11-15 转 Apache-2.0。 ★ 1.2.6：画质两档预设真正接进生成链+面板可选； 修复 query_history/doctor/run_dag 缺 parameters 致整轮 run 失败； 140 套回归全绿。 ★ 1.2.5：34 笔提交质量收口——修复 5 个真缺陷（后台启动日志重定向失效/ASR 死文案/TTS 取消原因被吞/attention 节点号撞车/A 卡 SageAttention 门+GGUF loader 按后缀）； 全量回归 118→135 套、新增 17 套行为护栏全走「存在→登记→注入咬合」； index.js 减重约 40KB（余量升至 76KB），多批端点 handler 外置工厂； 不改生成链契约与工具名。 ★ 1.2.4：双独立审计（main + DSH 背靠背）后落地——修复注释外置误吞 schema-defaults 的 4 个 DEFAULTS 字段（真机默认值丢失，测试曾被假值兜底蒙蔽）的真回归并补根因护栏； 新增视频裁剪/ProRes 导出/社区能力发现三工具并接入面板可点； 删 5 个零引用死执行器； local-portrait 路径围栏 realpath 复验、Windows VRAM 探针参数化。 全量 118 套回归全绿； 不改生成链契约与工具名。 ★ 1.2.3：修复三件真 Bug——宿主升级工具契约后面板 404 大面积报错（extras 整组未注册的真根因：缺 render 自动兜底 + 契约锁，真机验证全 200）、ComfyUI 启动识别 46 秒蒸发（常量漂移）、音色样本重启全丢（index.json 写了从不读回，启动读回 + 逐条校验）； GSV.CPP 外接 TTS 全链路打通——backend=gsv_cpp 直调本机 9880 服务（A 卡 Vulkan 实测全句 2.95 秒 ≈23× 实时速率、221 字长文 4.23 秒； 参考音频+转写必填、面板下拉可选、音色样本登记带参考转写、服务挂死 abort 收口）； 多音色对话链第一步（本机已装 RoleBank/DialogueInference 节点实锤，buildDialogueWorkflow 纯函数就绪）； slim-comments 修复 $ 替换模式陷阱并把设计注释外置，体积余量回升至 25KB+； 不改生成链契约与工具名，全量 114 套回归全绿。 ★ 1.2.1：许可仍为 BSL 1.1（BUSL-1.1），本版是质量与可诊断性收口补丁——历史库搜索升级 SQLite FTS5 全文索引（1 万条实测 0.023ms vs LIKE 1.012ms，约 44×； 短词自动回落 / 旧库自动回填 / 查询注入防护）、doctor 8 项自诊断补齐 4 项真探针（未验证一律标未检测、不谎报 pass）、OOM 建议跟上 ComfyUI v0.37 动态显存与社区 8G 抄作业档、构建期作用域检查升级为零依赖 JS 词法分析器； 不改生成链契约与工具名，全量 114 套回归全绿。 ★ 1.2.0：UI 全折叠 + 双拖拽上传、人物替换（Rust 纯 CPU 底座 + 身份节点发现 / 缺件降级引导）、PPT 讲解图片真写进 OOXML； 不捆绑模型、不谎称换脸。 ★ 0.33.0 起许可改为 BSL 1.1（BUSL-1.1，非 OSI 开源许可）：除托管/代管服务与直接竞品捆绑两类「竞争性使用」外免费生产使用，2030-11-15 转 Apache-2.0； 0.32.1 及更早仍 MIT、不追溯。 ★ 1.1.2：全量审计整改——安全围栏与出站守卫收口（矢量化端点补本机围栏、ASR 端点回环校验、路径防链接越界复验），长任务超时透传、队列生命周期加固，媒体路由流式化＋Range 拖动，探测结果缓存提速分镜合成； API 与工具名零变更。 ★ 1.1.0：全面提速——内置 resvg 光栅 7.02× / 静态帧去重+VFR 合成 6.58× / 分镜缓存 34.2× / 草稿档 2.10×，TE-Speed 生图链真机 −17.3%，编码择优纠错（x264 排 AMF 前）、BGM 三缓存、Qwen3-TTS attention 可选 + 低延迟分块； 未实测的一律不吹倍率。 ★ 1.0.0：选模型「假成功」根治（拒绝时如实回未生效 + 原因，不再无条件报已选）、优化面板与素材库白条同源修复（持久化缓存 + 占位 + 错误态）、历史筛选分页与重复请求收口、所有写参数拒绝统一 choiceResult。 ★ 0.35.0：口语入口别名（「风格卡」「批量出图」…）解析成真实工具、参考图色调取样写进提示词、建议时间轴 / 资源需求声明 / 数据流摘要 / 「刚才那张」产出短引用全部接进主链路。 ★ 0.34.0：SageAttention / Comfy-WaveSpeed 并入加速链并按真实 /object_info 探测、卡片常驻显示； GPT-SoVITS v5 / IndexTTS2 可选 TTS、拖音频零样本克隆、ACE-Step 1.5 / YuE2 音乐 BGM、手动超分、Worker 热温冷保活。 0.33.0 新增媒体格式转换（图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC，生成物可指定输出格式、动图转视频、自有素材转换，Agent 可直接调用 convert_media）与加速链全景（生图/视频缓存后端 + TTS 加速 + 显存预算 + 配置裁决 + 结构化日志，只列探测到的、未实测不写倍率）、本机能力功能区内嵌进 Comfy 控制面板（展开页恒在悬浮球正上方、边框对齐 DSH 右边框、四事件点按兜底）、GIF 转换 / 运行期自诊断 / 优先级任务队列 / 单图迭代优化 / 自适应 DAG 编排 / 生成历史可删改与冷热分离等本机工具与端点； 0.32.1 两轮审计加固：ASR 音频路径围栏（只认出图目录内文件）、按包名安装也能执行引导脚本、草图台四事件点按、错误响应消毒收口； 视频链清单化 + 生图/TTS 契约对账（改图自动报差异）； 生图/视频/混合三模式界面各不同； 批量出图带幂等保护（重试不重出）； Qwen3-TTS 语音克隆与可接 ASR 自动字幕； 本机实测秒数； 会话级模型驻留、显存建议、参数来源表、预设绑定、加载器盘点等本机端点。 文生视频 / 图生视频（Wan 2.2 / XT-5B）与图→音→视频混合、导入音频直接合进成片（音轨合成），文生图与 1–16 张参考图编辑、圈选重绘（羽化 / 边缘融合 / 外扩 / 反选 / 重绘强度可调）/ 元素移除 / 四向扩图 / 高清放大，Qwen3-TTS 语音合成（独立 generate_speech，参考音频可复刻音色），模型无关角色参考； GSV.CPP 外接引擎可选（backend=gsv_cpp 直调本机 9880 服务，A 卡 Vulkan 实测 ≈23× 实时速率）； PPT 生成（make_pptx：纯 JS 零依赖零 GPU，大纲级 PPTX 草稿，生成的讲解图片可真写进 PPTX，永远可执行无降级）； 草图台手绘参考； 生成记录可检索（菜单最上面「历史」，SQLite 索引、软删除不动磁盘文件）。 CPU 也能跑：自动识别 AVX2 / AVX512 / AVX512-BF16 指令集并给五档加速（含 --cpu 强制纯 CPU）、按物理核钉线程，任务结束可选自动卸载模型内存； 安装入口是常驻的图形化引导面板。 对外提供脱敏状态快照与端点目录供外部集成。 提供可选、默认关闭的模型自动下载包：视频模型 --video-models、核显档位 --igpu-download、生图主模型 --tier，按服务器权威 size + sha256 双校验； 音频权重不自动下载，缺件给明确清单。 经本机 ComfyUI 调用，数据仅走 127.0.0.1 回环（联网参考图检索默认拒绝、须逐次同意），无需 API 密钥、零调用费用。 Windows / Linux，NVIDIA / Intel Arc / AMD / 核显共享内存，含 8 GB 低内存档位。
 
 ## Features
 
@@ -37,7 +37,7 @@ DSH 插件 / DeepSeek Harness：视频 / 生图 / TTS / PPT 全能 · 本机运�
 dsh plugin --profile desktop add link:<本插件目录的绝对路径>
 ```
 
-> 使用 `desktop` profile 时须**先完全退出 DSH**。本包在 npm 的包名为 `dsh-qwen-paint`（仓库当前 `1.2.4`），可直接 `dsh plugin add dsh-qwen-paint` 按包名安装；本地目录 / 本地包形式仅用于开发或试用未发布改动。完整步骤、profile 选择与排错见下文「安装」及 `INSTALL.md`。
+> 使用 `desktop` profile 时须**先完全退出 DSH**。本包在 npm 的包名为 `dsh-qwen-paint`（仓库当前 `1.2.6`），可直接 `dsh plugin add dsh-qwen-paint` 按包名安装；本地目录 / 本地包形式仅用于开发或试用未发布改动。完整步骤、profile 选择与排错见下文「安装」及 `INSTALL.md`。
 
 ## Usage
 
@@ -103,7 +103,7 @@ dsh plugin --profile desktop add link:<本插件目录的绝对路径>
 
 > **QQ 交流群**：`454707710`　｜　**反馈 / 提问 / 提需求**都走这里，issue 也欢迎：<https://github.com/yanfei0725/dsh-qwen-paint/issues>
 
-> **原作者**：@奇迹与你　｜　**优化版作者**：@yanfei0725　｜　**许可协议**：BSL 1.1（BUSL-1.1）　｜　**当前版本**：`1.2.4`　｜　仓库：<https://github.com/yanfei0725/dsh-qwen-paint>
+> **原作者**：@奇迹与你　｜　**优化版作者**：@yanfei0725　｜　**许可协议**：BSL 1.1（BUSL-1.1）　｜　**当前版本**：`1.2.6`　｜　仓库：<https://github.com/yanfei0725/dsh-qwen-paint>
 
 ---
 
@@ -191,6 +191,71 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 刻意**不**把 `engines` 提到 `>=22.5`：那会把一批能正常出图的用户直接挡在门外，代价只是少一个可搜索的历史库。
 
 
+
+## 1.2.6 更新说明
+
+本版主线：**修掉一个「测试全绿但整轮 run 全失败」的工具契约事故 + 让画质两档预设真正接进生成链与面板**。Don-0017 报的 `query_history` 缺 `parameters` 不只是单工具不可用——宿主在工具表枚举/投影阶段对 undefined 做无损 JSON 快照直接抛错，整轮 run 与其他工具一起挂掉；排查发现同一个漏写共有 3 个工具。画质预设此前只改 steps/cfg/negative，Fix LoRA 强度、sigma、后处理、分段 CFG 从未流到图里；本版把它接成真链路，并给面板加档位下拉。未经真机自证的加速倍率一律沿用旧口径，不新增声明。
+
+### 许可证
+- 维持 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：自 **0.33.0 起**生效，**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版不改许可文本、不新增限制；外部 TTS 服务合规边界不变，官方未提供的加速收益仍标 unverified。
+
+### 新工具与端点
+- 不新增 Agent 工具名（`query_history` / `doctor` / `run_dag` 都是既有工具）。给三者 definition 补齐与各自 `execute()` 实参对齐的 `parameters`，`query_history` 覆盖 15 个过滤字段（含 `kind` enum）。两个画质档位不改端点，只复用 `draw_image` 的 `preset` 参数，schema→渲染→payload→后端白名单→出图参数整链对齐。
+
+### 加速链全景
+- 不改任何倍率结论。TE-Speed / Speedup / BlockCache / 前缀缓存 / resvg 光栅 / 去重 VFR / 分镜缓存等承接 1.2.5；画质档位里的 SageAttention / VAE tiling 只是既有开关的配方选择，不新增驱动层能力，未经本版真机复测的收益沿用旧口径。
+
+### 工作流清单层
+- `chain-manifest` 与图结构指纹基准继续生效，默认路径逐字节不变。high 档用局部配置副本 `planCfg` 强制关闭 `officialTurboEnabled/turbo8Enabled`，避免被官方 Turbo 链吞掉；只接真实节点，缺失节点一律降级并如实回报。
+
+### 结构化运行日志
+- `event-log` 落盘 + 生成完成钩子口径不变；细分耗时官方不提供的保持 `null`。画质接线把生效/降级项写进 `__plan.quality`，可在运行元信息里回查哪几项真正生效；工具契约事故在投影阶段即抛错，这也促成下面的发布前自测护栏。
+
+### UI 与交互
+- 位置口径不变：功能区**内嵌** Comfy 控制面板（不新开浮层），展开页恒在悬浮球**正上方**、**边框对齐** DSH 右边框、小屏**不变形**，四事件点按 + `pointerdown` `preventDefault` 兜底。本版在「高级设置」新增「画质档位」下拉（默认 / 快速预览 / 高质量成品），真机须刷新 DSH 页面自证 build。
+
+### 媒体格式转换
+- 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头承接前版。画质档位只影响生图采样链与解码后处理，不碰格式矩阵。
+
+### 联动护栏与回归
+- 全量 **140 套 / 7833 项断言 / 0 失败**。新增 `test-tool-parameters.mjs`：用宿主同款 `projectToolSchema` 投影逻辑遍历全部 30 个外置工具，任何一个缺 `parameters` 或不可无损 JSON 快照即红（已反向核查：删掉一个字段会红）；新增 `test-quality-wiring.mjs` 32 项覆盖 high 档强制原生链、后处理节点、sigma 接管、分段 CFG 探测与降级、非画质档零副作用；`test-pipeline-panel.mjs` 同步新增画质下拉断言。全部已进回归清单——不进清单的测试等于没测试。
+- `lib/index.js` 186,523 B / 余量 **75,621 B**（红线 262,144 B）。当前 **150 个 `lib/*.js`** / 合计 **2,095,793 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。接线层并入 `quality-pipeline.js`，设计说明外置到 `docs/quality-wiring-design-notes.md` 等三份文件，不新增 lib 文件守住体积红线。
+- 画质两档：`preset=qualityfix-fast`（T8 + Fix LoRA 0.75 / 8 步 / CFG=1 / 官方 Turbo sigma / 无后处理）与 `preset=qualityfix-high`（原版 2.1 + Fix LoRA 1.0 / 20 步 / CFG=2.8 / 优化 sigma / 弱 S 曲线 + USM）。后处理只接本机 1686 节点实测存在的 `AdjustBrightness` / `AdjustContrast` / `ImageSharpen`，不编造 class_type；分段 CFG 需自行安装 ComfyUI-Inspire-Pack 的 `ScheduledCFGGuider //Inspire`，未装降级固定 CFG 并如实回报。本机官方八步 `qwen_image_2.1_turbo_int8_convrot.safetensors` 与社区八步 `turbo8_lora_step2500.safetensors` 均已在位，无需额外下载；权重目录登记按服务器权威 size/sha256，默认不下载。
+
+### 文档
+- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.6；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步校验，一处改、多处一起校验。
+
+## 1.2.5 更新说明
+
+本版主线：**34 笔提交的质量收口——真缺陷修复 + 回归护栏扩容 + 结构瘦身**。这 34 笔来自 zcode 通宵优化接力与 main 接手收尾，全程「存在→登记→注入咬合」验证，未靠堆代码凑消耗。修复的 5 个真缺陷里，nohup 后台日志重定向失效曾让 macOS/Linux 启动诊断全瞎，ASR 死文案让未配置提示被短路吞掉，TTS 取消原因被通用 aborted 掩盖，attention 节点号与 4 路 ControlNet 加载器撞车（默认关故潜伏未爆），A 卡 SageAttention 选档门与 GGUF loader 按后缀切换有官方出处与反向核查。**未经真机自证的能力仍不写「通过」**。
+
+### 许可证
+- 维持 **BSL 1.1**（`BUSL-1.1`，非 OSI 开源许可）：自 **0.33.0 起**生效，**Change Date 2030-11-15** 自动转 **Apache-2.0**。**0.32.1 及更早版本仍按 MIT 授权，永久、不可撤销、不追溯**。本版没有改动许可文本，也没有新增任何限制。外部 TTS 服务（GSV.CPP / AnifLive-TTS）的合规边界不变；SageAttention A 卡路径的放行仅基于厂商公开权重（LightX2V gfx1100/gfx1201），未在本机实测的加速收益一律标 unverified，不新增倍率声明。
+
+### 新工具与端点
+- 承接 1.2.4 的三个内置最小工具（`video_trim_crop` / `video_prores_export` / `probe_community_features`）保持可点、不降级、不伪造产物。本版不新增对外端点；controls/library/skills/schema 四端点 handler 从 index.js 逐字外置到 misc-endpoints.js（**reg 行留守 index.js、锁形态不变**），新增 `test-misc-endpoints.mjs` 行为护栏专治「手抄漏分支」，并经反向核查注入变红、逐字恢复 md5 一致。
+
+### 加速链全景
+- 本版**不改任何倍率结论**。A 卡 SageAttention 选档门放宽（A 卡走 Triton 路径，有 LightX2V 官方验证；rdna2/核显/Arc 维持），GGUF loader 按后缀切换修白名单放行但加载器硬编码的潜在 bug，二者都做了反向核查；hw-route 与 accel-profiles 的 vendor 判定经独立审计逐项核对。TE-Speed / Speedup / BlockCache / 前缀缓存 / resvg 光栅 / 去重 VFR / 分镜缓存等承接前版，未经本版真机复测的一律沿用旧口径。
+
+### 工作流清单层
+- `chain-manifest` 与图结构指纹基准继续生效；本版不改生成链，**默认路径逐字节不变**。attention 节点号 40→43 修掉与 4 路 ControlNet loaderId=40 的潜在撞车（两开关默认关故未爆），并补双防线 + gap-fill 断言。runVideo 块的 9 项加速注入抽成 `planWanAccel` 纯函数买回可测试性（含 sage 别名分支）。
+
+### 结构化运行日志
+- `event-log` 落盘 + 生成完成钩子口径不变；后台启动日志重定向 bug 修复后，macOS/Linux 的 `readLaunchLog` 不再恒空，stderr 摘要尾 3 行与 POSIX 双层转义有专项锁。TTS 外接合成在 AbortError 时浮出 `ctrl.signal.reason` 具体取消/超时文案，不再只显示通用 aborted；细分耗时口径不变，官方不提供的细分保持 `null`，不编数字。
+
+### UI 与交互
+- 位置口径不变：功能区**内嵌** Comfy 控制面板（不新开浮层），展开页恒在悬浮球**正上方**、**边框对齐** DSH 右边框、小屏**不变形**，四事件点按 + `pointerdown` `preventDefault` 兜底。`UI_BUILD` 承接 `2026-11-19.3`；面板折叠卡「内置工具（视频后处理 / 社区发现）」与三个独立语义按钮（`cp-vtrim-go` / `cp-vprores-go` / `cp-probe-go`）不变。真机须刷新 DSH 页面，hover 浮标自证 build。
+
+### 媒体格式转换
+- 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。本版的视频裁剪 / ProRes 导出仍是后处理补充，不改原转换矩阵；GGUF loader 后缀切换只影响视频生成链的模型加载，不改用户可见的转换参数。
+
+### 联动护栏与回归
+- 全量 **140 套 / 断言项全绿**（较 1.2.4 的 118 套新增 22 套；本轮补登画质修复预设 1 套 = `test-quality-fix.mjs` 32 项、画质管线 1 套 = `test-quality-pipeline.mjs` 39 项、参数桥 1 套 = `test-quality-args.mjs` 18 项、画质接线 1 套 = `test-quality-wiring.mjs` 32 项）。新增行为护栏覆盖：status-handler 跨站 403 / ping 双封顶、ASR 状态文案、comfy-launch（含 nohup bug 注入）、attention 后端优先级、PPTX zip 字节级 + python zipfile 标准解析、music/model/graph/prune 等纯函数与图结构，均走「缺陷注入→变红→恢复绿」验证。`test-mode-schema` 判据从「源码含 buildSchemaSnapshot」升级为验证真实链路（reg 指向工厂 + 工厂体含该函数），判据升级非放松。
+- `lib/index.js` 186,523 B / 余量 **75,621 B**（红线 262,144 B），较 1.2.4 减重约 40 KB（多批 handler 外置 + 注释外置）；画质预设接入 resolveDrawParams + 透传 quality 配方微增约 725 B。
+### 文档
+- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.5；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步校验，一处改、多处一起校验。测试夹具里的本机 K: 盘占位符统一改成中性 X: 盘，pack 隐私扫描零命中。
+
 ## 1.2.4 更新说明
 
 本版主线：**双独立审计 + 真回归修复 + 三个新工具接入面板**。main 与 DSH（Nemotron）背靠背各自独立审计，汇总后逐条回代码核实：DSH 报的 3 个「阻断项」经代码事实核对均为误报（关键帧边界已如实标注且可选重编码、四事件点按有 300ms 冷却去重、junction 穿透有 5 条专项断言）；main 另发现一个 DSH 未报的**真回归**并修复——注释外置脚本吞掉块注释结尾 `*/`，连累 4 个 DEFAULTS 字段落进注释，真机默认值丢失，而 `index.__internal` 用假值兜底让测试假绿。全部离线可回归；**未经真机自证的能力仍不写「通过」**。
@@ -217,12 +282,12 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 - 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。本版新增的视频裁剪 / ProRes 导出是后处理补充，不改原转换矩阵。
 
 ### 联动护栏与回归
-- 全量 **118 套 / 断言项全绿**。`main` + DSH 双独立审计：4 项发现逐条回代码定性（3 误报 + 1 真回归已修）；真回归补了**根因护栏**（直接读 schema-defaults 真值 + 词法级悬空注释检查，并经「改坏→变红→逐字恢复 md5 一致」反向核查）。清理 5 个零引用死执行器；`local-portrait.js` 路径围栏加 realpath 复验挡 junction/symlink 穿透；Windows VRAM 探针改数组 argv 直调 Python，不再拼命令外壳；BGM 缓存键字段与真实指纹逐字对齐。
-- `lib/index.js` 226,153 B / 余量 **35,991 B**（红线 262,144 B）。
-- 当前 **144 个 `lib/*.js`** / 合计 **2,066,998 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
+- 全量 **135 套 / 断言项全绿**。`main` + DSH 双独立审计：4 项发现逐条回代码定性（3 误报 + 1 真回归已修）；真回归补了**根因护栏**（直接读 schema-defaults 真值 + 词法级悬空注释检查，并经「改坏→变红→逐字恢复 md5 一致」反向核查）。清理 5 个零引用死执行器；`local-portrait.js` 路径围栏加 realpath 复验挡 junction/symlink 穿透；Windows VRAM 探针改数组 argv 直调 Python，不再拼命令外壳；BGM 缓存键字段与真实指纹逐字对齐。本工作树之上另完成 controls/library/skills/schema 四端点 handler 从 index.js 外置到 misc-endpoints.js（reg 行留守、handler 体逐字搬），新增 `test-misc-endpoints.mjs` 行为护栏专治手抄漏分支（反向核查已验）。
+- `lib/index.js` 185,796 B / 余量 **76,348 B**（红线 262,144 B）。
+- 当前 **147 个 `lib/*.js`** / 合计 **2,074,855 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
 
 ### 文档
-- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.4；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步校验，一处改、多处一起校验。
+- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.5；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步校验，一处改、多处一起校验。
 
 ## 1.2.3 更新说明
 
@@ -271,14 +336,14 @@ VAE 优先复用解码节点已有的 `vae` 接线，`denoise` 只改本来就�
 - 图片 JPG/PNG/WebP、视频 MP4/MKV/MOV/WebM、音频 MP3/AAC/WAV/FLAC 互转不变；媒体路由流式化 + Range 与缓存头口径承接 1.1.2。
 
 ### ★ 联动护栏与回归
-- 全量 **118 套 / 断言项全绿**（并发约束层 19 锁 / 测试并行化三方向：heavy 精确标记 + Worker 池真跑 + `--only`·`--phase` 筛选；对话链 4 锁、外接链 12 锁、样本库恢复 4 锁等）。
+- 全量 **120 套 / 断言项全绿**（并发约束层 19 锁 / 测试并行化三方向：heavy 精确标记 + Worker 池真跑 + `--only`·`--phase` 筛选；对话链 4 锁、外接链 12 锁、样本库恢复 4 锁等）。
 
 > 注：并行化去重后，4 个重测试此前被重复登记两次（light 一遍 + heavy 一遍），现只保留 heavy 一遍，故套数由 119 → 115；本轮再补 3 套专项（配置 argv / 视频后处理 / 社区发现）回到 118。`--worker` 模式把"空壳 Worker 池"重写成真能跑：每套测试独立 Worker（patch `process.exit` 为记录退出码、短宽限收尾）避免全局污染，且与 spawnSync **共用同一判定口径**（`judgeFrom`），两种模式逐套断言数实测一致（0 差异）。诚实边界：**实测 Worker 模式没有提速**（51.7 s vs spawnSync 43.4 s，线程创建 + IPC 抵消了收益），其价值是"派生进程被沙箱拒绝时仍可跑"的降级路径与并发入口，不宣称"30s→8s"。
-- `lib/index.js` 226,153 B / 余量 **35,991 B**（红线 262,144 B）。
-- 当前 **144 个 `lib/*.js`** / 合计 **2,066,998 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
+- `lib/index.js` 191,013 B / 余量 **65,131 B**（红线 262,144 B）。
+- 当前 **146 个 `lib/*.js`** / 合计 **2,072,991 B**（按规范化 LF 字节计，与 git blob / CI checkout 同口径）。
 
 ### 文档
-- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.4，并把 PPT 生成提升到主功能句；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步升级为含 PPT，一处改、多处一起校验。
+- `package.json`（description + meta.description）/ README 首段 / 两份 llms 首段 / `pyproject.toml` / `docs/index.html` / `给DSH安装的话.md` 全部同步到 1.2.5，并把 PPT 生成提升到主功能句；`scripts/test-release-metadata.mjs` 的唯一真相源口径同步升级为含 PPT，一处改、多处一起校验。
 
 ### 当前工作树（1.2.3 之上，未发布）
 - 清理 5 个零引用死代码执行器（`draw-executor` / `draw-params` / `hybrid-executor` / `reference-executor` / `video-executor`），孤儿白名单同步去掉谎报条目。
@@ -1465,151 +1530,4 @@ Host 和 socket 仍然是本机** —— 单纯"只允许本机连接"并不证�
   而 **`API` 这个标识符在 `client.js` 里从未定义** ⇒ 拼出来是 `undefined/status.json`，
   请求必然失败（此前被 `window.prompt` 被拦后提前 `return` 掩盖了）。
 
-### ③ 回归测试（`scripts/test-request-trust.mjs`，34 项）
-
-覆盖审核的验收条件：本机 Host + `Origin: https://untrusted.example` / `Sec-Fetch-Site: cross-site`
-**必须被拒**；同源 Origin 与"无 Origin"正常放行；`Origin: null` / `file:` / 伪装域名
-（`localhost.evil.com`）/ Host 缺失 一律拒绝；跨站标记**压过**同源 Origin；
-以及源码级回归锁（服务端 GET 只读 + 客户端无 GET 写调用 + 不再引用未定义的 `${API}`）。
-
-> 三套测试合计 **170 项**（net-guard 62 + workflow-contract 74 + request-trust 34），全部通过。
-
-## 0.17.6 新增说明（修正一处"注释与实现不一致"）
-
-审核在 Issue #1390 复核 `0.17.5` 后，确认基础预检与有界文本读取完整、
-`lib/net-guard.js` 的回环检查与 `redirect: 'error'` **有源码依据**，
-并确认 `ACCEL_SOURCES` / `runInstallSource` 的装包行为**会访问外部供应链**
-（因此不能概括成"全部网络只有回环" —— 这一点已在 0.17.3 起如实披露）。
-
-**本版只改一处**：`lib/config.js` 里 `check_acceleration` 工具上方的注释原写
-*"默认 `accelAutoInstall: false`，让'装不装'由人决定"*，而**实际默认值是 `true`**
-（插件加载后会自动检测并安装白名单内的加速包）—— 属"注释与实现相反"。
-已改为与实现一致，并写明"要恢复'只报告、不自动下载'请显式设 `accelAutoInstall: false`"。
-
-同时做了一次**同类问题自查**：扫描 `DEFAULTS` 里全部 25 个布尔配置项，
-比对"注释里说的默认值"与"实际默认值"，**未发现其它矛盾**。
-
-> ⚠ 能力本身**保留不变**（审核也说明"保留该能力可以走受审路径"）：
-> 自动触发、白名单包与来源、子进程参数与环境、用户关闭路径、Tool-view key 作用域，
-> 均已在 README「权限与已知风险」与「0.17.3 / 0.17.5」章节中逐项披露。
-
-## 0.17.5 新增说明（真实用户反馈 → 3 个致命 bug 修复 + 契约测试）
-
-**来源：插件市场的真实用户反馈（A 卡用户）**，不是审核意见。逐条回代码 + 回 ComfyUI 源码核实后，
-**3 个致命 bug 全部属实** —— 这也是本项目一直标注的「真机端到端未验证」所付出的实际代价。
-
-### 🔴 三个致命 bug（放大 / 局部重绘在真机上必崩）
-
-| 症状 | 根因 | 位置 |
-| --- | --- | --- |
-| **放大**（`upscale_image`）必崩 | `LoadImage` 的输入名写成了 `upload`，正确是 **`image`** | `lib/index.js` 3 处 |
-| **局部重绘**（`inpaint_image`）必崩 | ① 同上 `upload`；② `LoadImageMask` 漏了必需的 **`channel`**；③ `ControlNetInpaintingAliMamaApply` 漏了 **`strength` / `start_percent` / `end_percent`** | `lib/index.js` |
-
-**判定依据（不是推测，是 ComfyUI 源码）**：
-- `nodes.py` 的 `LoadImage.INPUT_TYPES` → `{"required": {"image": ...}}`
-- `nodes.py` 的 `LoadImageMask.INPUT_TYPES` → 在父类基础上追加 `"channel": (["alpha","red","green","blue"],)`；
-  取值 `'red'` 与官方 blueprint「Image Inpainting (Qwen-image).json」里 `ImageToMask` 的 channel 一致
-- `comfy_extras/nodes_controlnet.py` 的 `define_schema()` → 三个 Float.Input；
-  取值 `1.0 / 0.0 / 1.0` 与官方 blueprint 里该节点的 widget `[1, 0, 1]` 一致
-
-> ⚠ **为什么只有这两条链崩、主链路却是好的**：同一份工作流代码在 `config.js` 与 `lib/index.js`
-> 各写了一遍，`config.js` 那处用的是**正确**的 `image`。这是典型的"复制粘贴时只改了一处"。
-
-### 🟡 其余修复
-
-- **「改目录」按钮点了没反馈**（用户原话）：根因是那段依赖 `window.prompt` / `window.alert` 做交互与回执，
-  而 **DSH 桌面端会拦这两个**；更糟的是 `window.prompt` 写在 `try` 外面，一抛错连 `catch` 都进不去。
-  ⇒ 改为**面板内联输入**（点一下就地长出输入框，回车/点确定提交，回执显示在同一行），**全程不依赖原生弹窗**。
-- **ControlNet 与 2.1 底模不兼容**（用户实测：InstantX 公开权重是给 **Qwen-Image 1.0** 的，
-  latent 16ch vs 2.1 的 64ch，执行层 unpack 崩）：`inpaint_image` 的工具描述现在**在动手之前**就写明这一点；
-  并新增 `readSafetensorsConvInChannels()` 读权重 header 做**保守**提示 ——
-  **只在"只见到 16、没见到 64"时才警告**，其余一律不吭声（宁可漏报，绝不误报）。
-- **`steps` 在 turbo8 链是"假控制"**（用户实测）：`forceTurbo8Steps` 默认为 `true`，
-  此时用户传的 `steps` 会被丢弃、强制 8 步。这是**设计如此**（turbo8 是 8 步蒸馏 LoRA），
-  但 schema 原先没说明 ⇒ 现在 `steps` 的参数描述里写明该条件下无效及如何解除。
-
-### 🟢 新增：节点输入名「契约测试」（这才是能拦住这类错的东西）
-
-三个 bug 之所以能溜到用户手里，是因为**当时所有测试都只验"结构"、从不验"输入名"**。
-
-- `scripts/extract_comfy_schema.py` —— 用 Python `ast` 解析本机 ComfyUI 的
-  `nodes.py` / `comfy_extras/*.py`，提取每个节点 `INPUT_TYPES()` 的 `required` / `optional` 键
-  （新式 `io.ComfyNode.define_schema()` 也支持），并**正确处理继承** ——
-  仅当子类调用了 `super().INPUT_TYPES()` 才合并基类键（`LoadImageMask` 是这种），
-  完整重写的（如 `LoraLoaderModelOnly`）**不合并**，否则会污染契约。
-  本机实测：扫描 150 个 `.py`、提取 **631 个节点**。
-- `scripts/comfy-node-contract.json` —— 上述解析结果，固化成文件。
-- `scripts/test-workflow-contract.mjs` —— **74 项断言**，读契约比对 `lib/` 里构建的所有工作流：
-  ① 必需输入必须齐全；② 不得出现 ComfyUI 不认识的输入名；③ **回归锁**（三个坑必须保持修好）。
-  **纯 JS、不需要 ComfyUI 在跑、不需要联网、不派生任何子进程**。
-
-## 0.17.3 新增说明（第二轮复核整改：补上第二个端点 + 装包/Shell 披露对齐）
-
-DSH STORE 自动审核在 Issue #1390 的**第二轮**反馈中确认：0.17.2 的整改**已被读到并采信** ——
-*"ComfyUI 的启动校验、三处 HTTP helper 的 `redirect: 'error'` 和子进程环境过滤均已读到，
-旧的'完全没有拦截 comfyUrl'结论已撤换"*。
-
-但它同时指出**两处我上一轮漏掉的**，且都属实。本版逐条修复：
-
-### ① `hipfireUrl` —— 独立于 `comfyUrl` 的**第二个外部端点**（已接入守卫）
-
-审核原文：
-> `lib/hipfire-img.js` 的 `probeHipfireHttp` / `generateViaHttp` 直接使用可配置 `cfg.hipfireUrl`，
-> 没有调用回环校验，也不受 `allowRemoteComfy` 控制；`guardedFetch` 目前只有定义、没有调用。
-
-**完全属实。** 上一轮我只收口了 `comfyUrl`，而 hipfire 出图后端有**自己的一条 HTTP 链路**。
-本版：
-
-- `guardedFetch` **从"只有定义"变成"所有出站的唯一出口"**：`config.js` 的 `fetchWithTimeout`、
-  `hipfire-img.js` 的 `fetchJson`、`index.js` 的参考图上传，**全部改走它** ——
-  回环校验与禁重定向收口在一处，不会再有"某条链路只做了一半"。
-- `apply()` 启动校验**扩成两个端点**：`comfyUrl` 与 `hipfireUrl` 都过 `assertLocalUrl`。
-  - `imageBackend: 'hipfire'` 时 `hipfireUrl` 非回环 → **拒绝启动**；
-  - 当前用 comfyui 后端时**不阻断**（避免误伤），但如实记 `warn` 告知"切到 hipfire 就会被拦"。
-- `generateWithHipfire` 在**进入 HTTP 路径前**显式校验并返回**结构化可读错误** ——
-  否则错误会被 `probeHipfireHttp` 的 `catch` 吞成 `online=false`，用户看到的是
-  *"hipfire HTTP 服务不在线，请先启动它"*，**报错指错方向**（会去反复重启一个根本不该连的地址）。
-- 新增**全局开关** `setAllowRemote()`：`allowRemoteComfy` 是启动时确定的全局配置，
-  而 `fetchWithTimeout` 在 `config.js` 内有 8 处调用 —— 逐处传参**漏一处就是一个未受控出口**，
-  故由 `apply()` 设置一次、所有守卫自动继承（显式传参仍可覆盖，收紧优先）。
-
-### ② 装包与 Shell 能力 —— 披露与实现对齐（**不改功能**）
-
-审核原文：
-> README 权限表仍写"不装包"，但 `lib/index.js` 的 `runInstallSource` 会经 `runShell` 执行
-> `pip install --upgrade`；`lib/config.js` 使用 PowerShell / `sh -c`。请对齐网络、装包与 Shell
-> 能力的披露和实际确认边界，无需删掉正常功能或把真实信号标为 false。
-
-**也属实，而且比"措辞不准"更严重**：`accelAutoInstall` **默认为 `true`**，
-插件加载后会自动 `pip install --upgrade` / `git clone` 从 **pip 源与 GitHub** 下载厂商加速包。
-这意味着 README 里"默认仅本机回环"的说法**本身也不完整** —— 装包是一条真实的**外部网络出口**。
-
-本版按"如实披露 + 明确边界"处理（**不删功能**）：
-
-- **权限表重写**：网络拆成**两类出口**（出图数据流 / 加速包下载），命令行如实写明
-  `runShell` 走 PowerShell 或 `sh -c`、且默认会 `pip install` / `git clone`。
-- **新增已知风险第 4 条**：明确 `accelAutoInstall: true`（默认）会装包、会出网、
-  **不发送提示词或图片**，并给出**关闭方法**（`accelAutoInstall: false`，关掉后出图不受影响）。
-- **顶部「网络边界」段落重写**为两类出口，不再用"不依赖外部网络"这种绝对化说法。
-- **区分清楚"不下载什么"**：插件**不自动下载任何模型权重**（提供的是可选、默认关闭、需你显式执行的下载包：`--video-models` / `--igpu-download` / `--tier`），也**不自动安装第三方自定义节点**。
-  ⚠ 2026-11-13 订正：早期版本写成「插件不下载模型权重」，容易让人误读成「不支持视频模型下载包」；  实际视频模型自动下载包一直随插件提供，只是从不默认开启。
-
-### 回归测试
-
-`scripts/test-net-guard.mjs` 从 48 项扩到 **62 项**，新增覆盖：
-全局开关语义（含"显式传参收紧优先"）、`hipfireUrl` 作为第二端点被拒/放行、
-`guardedFetch` 在非回环时**底层 fetch 调用次数为 0**（证明确实没发出去）。
-
-## 0.17.2 新增说明（网络边界代码层强制 + 文档对齐）
-
-**本版修复的是"文档声明与代码行为不符"** —— 这是 DSH STORE 自动审核在 Issue #1390 给出的
-**本轮唯一拒绝理由**（原文：*"当前 README 仍将网络能力声明为'仅本机回环、不访问外部地址'，
-但 `lib/index.js` 直接合并 `rawConfig`，随后使用可配置的 `comfyUrl` 发起请求，
-未证明回环约束及重定向边界"*）。
-
-审核员同时明确：**不要删除功能，也不要把真实能力声明为 false**；请正面解决 —— 
-要么**落地限制并处理重定向**，要么**如实披露可配置的外部端点**。本版**两条都做了**。
-
-- **新增 `lib/net-guard.js`（网络边界守卫，代码层强制）**：
-  - `isLoopbackUrl(url)` / `assertLocalUrl(url)`：只认字面量 `127.0.0.0/8`、`localhost`、`::1`、`0.0.0.0`；
-    **不接受任何域名**（含 `localh
+### ③ 回归测试（`scripts/test-request-trust.

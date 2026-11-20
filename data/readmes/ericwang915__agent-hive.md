@@ -59,7 +59,7 @@ npm start
 ### Requirements
 
 - macOS 12 or later
-- At least one agent CLI on your `PATH`: [`claude`](https://docs.claude.com/en/docs/claude-code), `codex`, `gemini`, `agy`, `dsh` or Cursor's `agent` (older installs: `cursor-agent`). Queen, the daily report and the night bees need `claude`.
+- At least one agent CLI on your `PATH`: [`claude`](https://docs.claude.com/en/docs/claude-code), `codex`, `gemini`, `agy`, `dsh` or Cursor's `agent` (older installs: `cursor-agent`). Queen, the daily report and the night bees use whichever of these CLIs works: Claude Code first, then the next one that answers. A CLI that is installed but not usable (not logged in, for example) is skipped.
 - `git` for diffs, commits, branches and pull requests. `gh` is optional and used to open pull requests.
 
 ## What you can do with it
@@ -74,7 +74,7 @@ A group works without Queen too. `@mention` a bee and it starts right away. Leav
 
 ### Chain bees into a relay team
 
-Up to six bees share a folder and pass work down the line. A reviewer can send its findings back to the writer until it approves, for at most three rounds. Bees on the same step run in parallel, each in its own git worktree, and a final bee merges their results. A bee that is already in the hive can join a team too: pick it from the Relay menu, or drag it onto the bee it should follow, and onto a second one to have it merge both (it moves into the team's folder and goes back to its own when it leaves), and a link between two bees can be taken out without deleting either. The clip at the top is one such team.
+Up to six bees share a folder and pass work down the line. A reviewer can send its findings back to the writer until it approves, for at most three rounds. A handoff can carry a condition: write it in one sentence under "Only when" ("the conversion rate is below 5%", "tests failed"). When the bee before finishes, one small model call checks the sentence against its reply; if it does not hold the next bee is not started, and the chat says what was found. The same field is there for a bee that runs when another bee finishes. Bees on the same step run in parallel, each in its own git worktree, and a final bee merges their results. A bee that is already in the hive can join a team too: pick it from the Relay menu, or drag it onto the bee it should follow, and onto a second one to have it merge both (it moves into the team's folder and goes back to its own when it leaves), and a link between two bees can be taken out without deleting either. The clip at the top is one such team.
 
 **Build one by dragging.** Drag a bee onto the bee it should follow. Drop two bees on the same one and they work in parallel; drag a bee onto a second one and it waits for both and merges their work.
 
@@ -84,7 +84,7 @@ A relay team is also a **squad** with a name. Queen can hand it a whole job with
 
 ### Read every step, then review the diff
 
-Each bee has its own chat window with the full conversation. Replies stream in as they are written, edits show as inline diffs, sub-agents are nested, and every round shows its cost. Type `@` to point at a file, `/` for commands, Shift-Tab to switch between Ask, Auto-edit and Plan. The bee's folder sits in a sidebar on the left, and file paths in the conversation are clickable: they open at the line mentioned. The Files tab is a small editor: create, rename and delete files and folders, edit and save, find in a file, and search the whole folder by name or text. The Changes tab shows the diff. Commit, discard, push and open a pull request from there, or keep a bee on its own branch and merge when you are happy.
+Each bee has its own chat window with the full conversation. Replies stream in as they are written, edits show as inline diffs, sub-agents are nested, and every round shows its cost. Type `@` to point at a file, `/` for commands, Shift-Tab to switch between Ask, Auto-edit and Plan. The bee's folder sits in a sidebar on the left, and file paths in the conversation are clickable: they open at the line mentioned. The Files tab is a small editor: create, rename and delete files and folders, edit and save, find in a file, and search the whole folder by name or text. The Media tab gathers what the bee made to be looked at: pictures, documents, web pages, video and audio from anywhere in the folder, newest first, each previewed in place. Press ⌃` (or View → Terminal in the menu bar) for a terminal panel under the conversation: shells in the bee's folder, several in tabs, and a button that puts the selected output into the message box. The Changes tab shows the diff. Commit, discard, push and open a pull request from there, or keep a bee on its own branch and merge when you are happy.
 
 ![A bee's chat, then its diff](docs/chat.gif)
 
@@ -106,6 +106,7 @@ Pick a folder and an engine. Give it a prompt and a schedule, or leave both empt
 - **Event triggers.** Instead of a time, a bee can wait for something to happen: new commits on a branch (in its folder or on the remote), a GitHub event (new pull request, new comment, CI failure, through the `gh` CLI), or another bee finishing or failing. What happened is attached to its prompt. Its own commits and comments do not wake it, and a cooldown keeps bursts to one run.
 - **Sleep-safe.** Running bees stop when the lid closes and pick up where they left off when it opens, or when the app restarts.
 - **Permissions.** Approve each action from the app (Claude Code), auto-accept edits, allow everything, or plan first and change nothing. Switch at any time from the chat.
+- **Your own Chrome.** A Claude Code bee can open pages, click, fill in forms and read the console in the Chrome you are signed in to. Switch on "Use my Chrome" in the bee's settings; it needs the [Claude in Chrome](https://claude.ai/chrome) extension.
 - **Context.** A meter shows how full a Claude Code bee's session is. `/compact` summarises it on the spot, and `/new` starts over.
 - **Token savers.** A session that is half full (100k tokens at most), or large and idle for an hour, is compacted before its next round. Scheduled runs start a new session. Each bee's settings list your MCP servers, so you tick only the ones it needs. Reports and the night bees use a smaller model. All adjustable.
 - **Spend.** Cost and tokens per round, and a daily budget that holds back automatic runs once it is used up.
@@ -164,7 +165,7 @@ Yes. If the CLI works in your terminal, it works as a bee, with the same account
 
 ### Which coding agents does it support?
 
-Claude Code, Codex CLI, Gemini CLI, Antigravity (`agy`), DeepSeek Harness (`dsh`) and Cursor Agent out of the box, plus any command line that accepts a prompt (a custom template with `{prompt}`). Queen, the daily report and the night bees need Claude Code.
+Claude Code, Codex CLI, Gemini CLI, Antigravity (`agy`), DeepSeek Harness (`dsh`) and Cursor Agent out of the box, plus any command line that accepts a prompt (a custom template with `{prompt}`). Queen, the daily report and the night bees use whichever of these CLIs works: Claude Code first, then the next one that answers. A CLI that is installed but not usable (not logged in, for example) is skipped. In a group's settings you can also pick the CLI and the model Queen runs on.
 
 ### How is it different from Claude Code subagents or agent teams?
 
@@ -188,7 +189,7 @@ An Upgrade button appears in the sidebar when a new release is out. Settings can
 
 ## How it is built
 
-No build step and no framework: plain HTML, CSS and JS in the renderer, Electron in the main process, two small dependencies for Markdown.
+No build step and no framework: plain HTML, CSS and JS in the renderer, Electron in the main process, two small dependencies for Markdown, and xterm.js with node-pty for the terminal panel.
 
 | File | Role |
 |---|---|

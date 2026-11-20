@@ -1,8 +1,17 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/slavabars/decision-cascade/main/docs/assets/logo-animated.gif" width="128" alt="decision-cascade">
+</p>
+
 # decision-cascade
 
+<p align="center"><b>Локальные калиброванные решения; внешняя модель — только когда это выгодно.</b></p>
+
 [![CI](https://github.com/slavabars/decision-cascade/actions/workflows/ci.yml/badge.svg)](https://github.com/slavabars/decision-cascade/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/decision-cascade)](https://pypi.org/project/decision-cascade/)
+[![PyPI](https://img.shields.io/pypi/v/decision-cascade?logo=pypi&logoColor=white)](https://pypi.org/project/decision-cascade/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/decision-cascade?logo=pypi&logoColor=white)](https://pypi.org/project/decision-cascade/)
 [![Python](https://img.shields.io/pypi/pyversions/decision-cascade)](https://pypi.org/project/decision-cascade/)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-decision--cascade--packs-yellow)](https://huggingface.co/slavabars/decision-cascade-packs)
+[![Nightly quality](https://github.com/slavabars/decision-cascade/actions/workflows/nightly.yml/badge.svg)](https://github.com/slavabars/decision-cascade/actions/workflows/nightly.yml)
 [![Coverage gate](https://img.shields.io/badge/coverage_gate-%E2%89%A590%25-brightgreen)](https://github.com/slavabars/decision-cascade/blob/main/pyproject.toml)
 [![License](https://img.shields.io/pypi/l/decision-cascade)](https://github.com/slavabars/decision-cascade/blob/main/LICENSE)
 
@@ -12,7 +21,7 @@ Machine-native система принятия решений в духе **Jev 
 
 Вместо того чтобы заставлять LLM генерировать текст ответа, модель **решает**: state-состояние превращается в признаки, а головы решений возвращают **типизированные, вероятностные и калибруемые** ответы — Noul (да/нет), Choice (выбор из опций) и Score (оценка на шкале) — без единого токена генерации.
 
-**Статус: stable (1.7.0).** Контракт API (`schema_version = "1"`), формат паков и смысл переменных `DECISION_*` не ломаются: изменения — только в major, с окном депрекации в две минорные версии. Что именно обещает `1.x`, какие поверхности остаются beta и как объявляется депрекация — в [`docs/stability.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/stability.md).
+**Статус: stable (1.8.0).** Контракт API (`schema_version = "1"`), формат паков и смысл переменных `DECISION_*` не ломаются: изменения — только в major, с окном депрекации в две минорные версии. Что именно обещает `1.x`, какие поверхности остаются beta и как объявляется депрекация — в [`docs/stability.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/stability.md).
 
 ## Демо: две игры
 
@@ -78,7 +87,21 @@ curl -sS -X POST http://127.0.0.1:8000/decisions \
 }
 ```
 
-Вероятности почти равномерные и `trained: false` — это честно: энкодер `hash`, головы не обучены, шаг нужен, чтобы увидеть форму ответа и то, что всё работает локально и детерминированно. Осмысленные числа — с обученным паком (веса из релиза, ~0.5 ГБ модели):
+Вероятности почти равномерные и `trained: false` — это честно: энкодер `hash`, головы не обучены, шаг нужен, чтобы увидеть форму ответа и то, что всё работает локально и детерминированно. Осмысленные числа — с обученным паком (головы ~66 КБ, энкодер скачивается отдельно):
+
+```bash
+python - <<'PY'
+from huggingface_hub import snapshot_download
+snapshot_download("slavabars/decision-cascade-packs", revision="v1.5.0",
+                  local_dir="hf", allow_patterns=["packs/public-gpt2/*"])
+PY
+
+DECISION_CHECKPOINT_DIR=hf/packs/public-gpt2 \
+DECISION_MODEL_ID=openai-community/gpt2 DECISION_FEATURE_DIM=768 \
+  python -m uvicorn api.server.main:app --port 8000
+```
+
+Запасной путь — архив из GitHub Release:
 
 ```bash
 gh release download v1.5.0 --pattern '*-weights.tar.gz' \
@@ -239,8 +262,6 @@ uv pip install --python .venv/bin/python -r requirements.txt
 uv pip install --python .venv/bin/python -e .
 ```
 
-Процесс релиза (версия → тег → PyPI → артефакты) — в [`docs/release.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/release.md).
-
 ## Запуск сервера
 
 ### Вариант 1 — без сети / для мгновенной проверки (hash-энкодер)
@@ -323,6 +344,11 @@ DECISION_MODEL_ID=google/gemma-4-12B \
 | `DECISION_RISK_GATE_DELTA` | допуск к сертификату hard gate (`> 0` ослабляет, `< 0` ужесточает) | `0.0` |
 | `DECISION_CASCADE_POLICY` | политика эскалации: `""`/`threshold`/`confidence`, `benefit`, `conformal` | `""` (порог) |
 | `DECISION_CONFORMAL_PATH` | файл conformal-сертификата (порог с гарантией доли ошибок) | `<checkpoint>/conformal.json` |
+| `DECISION_FEEDBACK_PATH` | файл журнала обратной связи (JSONL): примеры few-shot и счётчики `q` переживают рестарт | пусто — только память |
+| `DECISION_PACK_REPO` | паки с Hugging Face: `owner/name@revision` (beta); взаимоисключающе с `DECISION_CHECKPOINT_DIR` | — (локальные паки) |
+| `DECISION_PACK_CACHE` | кэш скачанных паков | `~/.cache/decision-cascade/packs` |
+| `DECISION_CASCADE_EXPLORE` | доля исследовательских эскалаций: решения, которые политика оставила бы локально, уходят наружу ради честной оценки `q` (0–1) | `0` |
+| `DECISION_CASCADE_EXPLORE_SEED` | зерно генератора исследовательских эскалаций | — (случайное) |
 | `DECISION_VISION_MODEL_ID` | CLIP/SigLIP для локальных `images` | — (без vision) |
 | `DECISION_VISION_DIM` | размерность признаков vision-энкодера (1–8192) | `512` |
 | `DECISION_MEDIA_ROOT` | allow-list каталог для чтения `images`/`videos` с диска | — (любой путь) |
@@ -463,7 +489,9 @@ curl -s -X POST http://127.0.0.1:8000/v1/feedback -H 'Content-Type: application/
 #                    "retrained": false, "remote_accuracy": 0.9577, ...}]}
 ```
 
-`retrained = false` — модель не переобучается, меняется только оценка качества внешней модели; новое `q` сразу применяется к следующим решениям. `W` — это сколько наблюдений нужно, чтобы сдвинуть оценку: 50 (по умолчанию) — поток фидбэка меняет политику за десятки ответов, пара случайных — нет.
+`retrained = false` — модель не переобучается, меняется только оценка качества внешней модели; новое `q` сразу применяется к следующим решениям. `W` — это сколько наблюдений нужно, чтобы сдвинуть оценку: 50 (по умолчанию) — поток фидбэка меняет политику за десятки ответов, пара случайных — нет. Счётчики ответов сохраняются в журнале `DECISION_FEEDBACK_PATH` и поднимаются при старте, поэтому рестарт не откатывает `q` к срезу, снятому при развёртывании. А вот журнал отпечатков выданных решений живёт в памяти процесса: фидбэк по эскалациям действует в пределах жизни процесса, и после рестарта новые отпечатки начинают копиться заново.
+
+**Смещение оценки `q`.** Фидбэк приходит по ответам, которые ушли наружу, то есть по трудным случаям; если трудность коррелирует с качеством внешней модели, `q` оценивается по смещённой выборке, порог уезжает и цикл замыкается. Симуляция (`python -m eval.feedback.run`) показывает, что без исследования оценка уходит на 21 п.п., случайная подвыборка без весов не спасает, а исследовательские эскалации с IPS-весами при 5% возвращают оценку в ±0.005 и снижают потерю полезности с 0.068 до 0.017. Включается `DECISION_CASCADE_EXPLORE=0.05` (по умолчанию 0 — поведение не меняется); замер, ограничения и как это устроено — [`docs/exploration.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/exploration.md).
 
 Политика видна в `GET /info → engine`: `policy`, `remote_accuracy` и `remote_accuracy_default`, стоимости `escalation_cost`/`error_cost`, `feedback_shrinkage`, пороги `benefit_threshold`/`benefit_thresholds` и накопленный фидбэк `benefit_feedback`. Benefit важнее risk-бюджета: если заданы обе настройки, работает benefit, и файл `risk.json` не нужен. Неизвестная политика и недопустимая граница `q` — ошибка старта, а не молчаливый откат на порог уверенности. Контракт зафиксирован в [`docs/stability.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/stability.md) §8.
 
@@ -486,7 +514,7 @@ DECISION_CASCADE_FALLBACK_URL=http://127.0.0.1:30000 \
   uvicorn api.server.main:app --port 8000
 ```
 
-На публичном наборе с gpt2 сертификат даёт покрытие 0.915 при риске 0.0711 и верхней границе 0.0999 (`alpha=0.1`); на тесте — покрытие 0.918 и риск 0.0785. Строгий `alpha=0.05` держит покрытие 0.547 при риске 0.0175, а на тесте — 0.534 при риске 0.0226 против 0.0413 у ранжирования по уверенности. Сертификат несёт вердикт гейта «не навреди»: если на тесте порог хуже уверенности или не добирает покрытие, каскад фолбэчит на `DECISION_CASCADE_THRESHOLD`, `usage.reason = "conformal_gate"`, причина видна в `GET /info → engine.conformal_gate_worse`. Conformal важнее risk-бюджета, но уступает benefit; обратную связь такой каскад не принимает (`409 FEEDBACK_UNSUPPORTED`). Методика, числа и ограничения — в [`docs/conformal.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/conformal.md), контракт — в [`docs/stability.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/stability.md) §9.
+Порог выбирается fixed-sequence тестом по фиксированной сетке (Learn then Test), а не максимумом по всем прошедшим порогам: иначе multiplicity съедает заявленный `delta`. На публичном наборе с gpt2 (`alpha=0.1`) сертификат даёт покрытие 0.913 при риске 0.0698 и верхней границе 0.0986; на тесте — покрытие 0.916 и риск 0.0782 против 0.0790 у ранжирования по уверенности. Строгий `alpha=0.05` требует вдвое больше калибровки: на 2400 решениях (`limit 16000`) он честно отказывает, на 4800 (`limit 32000`) даёт покрытие 0.650 при риске 0.0244 и верхней границе 0.0470, на тесте — 0.635 и 0.0290. Прежние числа 0.547/0.0175 получены без поправки и отозваны. Сертификат несёт вердикт гейта «не навреди»: если на тесте порог хуже уверенности или не добирает покрытие, каскад фолбэчит на `DECISION_CASCADE_THRESHOLD`, `usage.reason = "conformal_gate"`, причина видна в `GET /info → engine.conformal_gate_worse`. Conformal важнее risk-бюджета, но уступает benefit; обратную связь такой каскад не принимает (`409 FEEDBACK_UNSUPPORTED`). Методика, числа и ограничения — в [`docs/conformal.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/conformal.md), контракт — в [`docs/stability.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/stability.md) §9.
 
 **Подстройка под новый вопрос (`POST /v1/feedback`).** На новом вопросе коэффициенты, снятые с других вопросов, работают хуже — модель нужно переобучать на примерах этого вопроса. Сервис принимает обратную связь: вы повторяете решение, которое вам отдали, и говорите, верным ли оно было; набрав `DECISION_RISK_FEW_SHOT_N` примеров (по умолчанию 10), каскад переобучает модель и применяет её к этому вопросу:
 
@@ -504,7 +532,7 @@ curl -s -X POST http://127.0.0.1:8000/v1/feedback \
       }'
 ```
 
-В ответе по каждому вопросу — сколько примеров накоплено (`examples`) и сколько чужих строк (примеров других вопросов) ушло в обучение (`reference`): пока чужих примеров нет, модель учится только на своих, а замер показывает, что это хуже, пока своих немного. Поэтому примеры выгоднее собирать **по нескольким вопросам**, а не только по целевому. `GET /info → accepts_feedback` показывает, что сервис принимает обратную связь (это возможно только в risk-aware каскаде); без неё эндпоинт отвечает `409 FEEDBACK_UNSUPPORTED`. Подстройка не ослабляет hard gate: если риск-вариант измерен и оказался не лучше порога уверенности, примеры его не спасают. Что лечат примеры и сколько их нужно — `docs/risk-aware-cascade.md`.
+В ответе по каждому вопросу — сколько примеров накоплено (`examples`) и сколько чужих строк (примеров других вопросов) ушло в обучение (`reference`): пока чужих примеров нет, модель учится только на своих, а замер показывает, что это хуже, пока своих немного. Поэтому примеры выгоднее собирать **по нескольким вопросам**, а не только по целевому. `GET /info → accepts_feedback` показывает, что сервис принимает обратную связь (это возможно только в risk-aware каскаде); без неё эндпоинт отвечает `409 FEEDBACK_UNSUPPORTED`. Примеры сохраняются в журнале `DECISION_FEEDBACK_PATH` (JSONL, лимит на вопрос с вытеснением старых) и поднимаются при старте, а если примеров для вопроса уже достаточно, few-shot модель переобучается сразу — рестарт не откатывает подстройку к базовой модели. Подстройка не ослабляет hard gate: если риск-вариант измерен и оказался не лучше порога уверенности, примеры его не спасают. Что лечат примеры и сколько их нужно — `docs/risk-aware-cascade.md`.
 
 **Голова выбора по эмбеддингам вариантов.** Обычная голова выбора — линейный слой с отдельным весом на каждый вариант: набор вариантов зашит на обучении. Режим `DECISION_CHOICE_HEAD=option_scoring` включает голову, которая оценивает вариант общим скорером по его текстовому эмбеддингу — число параметров не зависит от числа вариантов, а набор вариантов можно подменить без переобучения:
 
@@ -904,12 +932,7 @@ SFTTrainer(heads, lr=0.1).fit(
 bash training/recipe/train_weight_packs.sh
 ```
 
-Обученные веса весят мало и публикуются как **артефакт GitHub Release** (а не в git) — либо один пак, либо вся матрица одним архивом + манифестом:
-
-```bash
-training/recipe/publish_release.sh v1.5.0 checkpoints/support       # один пак
-training/recipe/publish_weight_packs.sh v1.5.0 checkpoints/packs    # матрица + manifest.json
-```
+Обученные веса в git не кладутся: готовые паки лежат в архиве GitHub Release и на [Hugging Face](https://huggingface.co/slavabars/decision-cascade-packs), как их скачать и запустить — в [`docs/huggingface.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/huggingface.md).
 
 RLCD-калибровка `noul`-голов на реальных признаках энкодера принимает изменение только если оно улучшает калибровку на **отложенном** val (гейт «не навреди»):
 
@@ -920,6 +943,8 @@ RLCD-калибровка `noul`-голов на реальных признак
 ```
 
 ### Готовые паки весов (release)
+
+Паки также опубликованы на Hugging Face: [`slavabars/decision-cascade-packs`](https://huggingface.co/slavabars/decision-cascade-packs). Это отдельный репозиторий с головами, манифестом и карточкой (не `transformers`-модель): скачивание и запуск — в [`docs/huggingface.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/huggingface.md). GitHub Release остаётся зеркалом.
 
 Релиз [`v1.5.0`](https://github.com/slavabars/decision-cascade/releases/tag/v1.5.0) содержит архив `v1.5.0-weights.tar.gz` (и `v1.5.0-manifest.json`) с семью обученными паками: `{support, public} × {gpt2, distilgpt2, gpt2-medium}` плюс `routerbench-gpt2`. Все числа — на честном train/val/test (для `public` — настоящий test-сплит AG News):
 
@@ -965,7 +990,7 @@ svc.save_heads(dim=768, questions=QUESTIONS)      # -> checkpoints/<schema>.pt
 
 При старте сервер читает каталог из `DECISION_CHECKPOINT_DIR` (по умолчанию `checkpoints/`) и, если для схемы есть чекпоинт с подходящей размерностью, загружает веса. Это делает качество воспроизводимым между перезапусками, а латентность — без повторного прогона энкодера по неизменному состоянию (кэш признаков по промпту).
 
-**Несколько доменов в одном процессе.** Помимо плоской раскладки `<dir>/<signature>.pt`, сервер понимает каталоги паков `<dir>/<домен>/heads.pt` + `metadata.json` (так их публикует `training/recipe/publish_weight_packs.sh`). Пак выбирается по `questions_signature` из `metadata.json`, а не по имени каталога, поэтому `DECISION_CHECKPOINT_DIR=checkpoints/packs` обслуживает сразу все домены: запрос с вопросами поддержки получает `support-*`, запрос с вопросами маршрутизации — `routerbench-*`. Если два пака объявляют одну подпись, побеждает первый по сортировке, а в лог пишется `WARNING` — дубли не подменяют друг друга молча. Источник каждой загруженной головы виден в `GET /info` → `engine.heads[].source`.
+**Несколько доменов в одном процессе.** Помимо плоской раскладки `<dir>/<signature>.pt`, сервер понимает каталоги паков `<dir>/<домен>/heads.pt` + `metadata.json` . Пак выбирается по `questions_signature` из `metadata.json`, а не по имени каталога, поэтому `DECISION_CHECKPOINT_DIR=checkpoints/packs` обслуживает сразу все домены: запрос с вопросами поддержки получает `support-*`, запрос с вопросами маршрутизации — `routerbench-*`. Если два пака объявляют одну подпись и одинаковую размерность, сервис сверяет `encoder` из метаданных с id загруженного энкодера (алиасы `gpt2` и `openai-community/gpt2` считаются одной моделью); без id энкодера остаётся сортировка, а в лог пишется `WARNING` — дубли не подменяют друг друга молча. Источник каждой загруженной головы виден в `GET /info` → `engine.heads[].source`.
 
 Если под **новую** схему вопросов чекпоинта нет, головы создаются со случайной инициализацией — их `confidence` ничего не значит, и отдавать по ним решения (тем более эскалировать в каскаде) нельзя. Поэтому сервер явно сообщает статус (`trained: false`) и управляется переменной `DECISION_UNTRAINED`:
 
@@ -1075,7 +1100,6 @@ CHANGELOG.md, SECURITY.md
 - **Устройство**: `DECISION_DEVICE`/`DECISION_DTYPE` выбирают CPU/GPU и тип; gemma-4-12B требует ~24 ГБ и CUDA, на CPU используйте gpt2.
 - **Мультимодальность**: локальная CLIP поддерживает только изображения; видео требует отдельного декодирования кадров.
 - **Честная оценка**: синтетические сплиты тривиально разделимы (`1.000` — это про конвейер, а не про домен). Публичные числа — на AG News (accuracy 0.425 → 0.88) и в бенчмарке против конкурентов; для своего домена нужна своя разметка.
-- **Публикация весов**: релизом через `training/recipe/publish_release.sh` (один пак) или `training/recipe/publish_weight_packs.sh` (матрица).
 - **Выход из беты**: критерии `1.0` (контракт, покрытие, эксплуатация, политика депрекации) — в [`docs/stability.md`](https://github.com/slavabars/decision-cascade/blob/main/docs/stability.md).
 
 ## Лицензия

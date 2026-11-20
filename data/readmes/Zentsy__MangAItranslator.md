@@ -11,8 +11,8 @@ Desktop app para localização assistida de mangá e quadrinhos. Conheça a demo
   <a href="https://github.com/Zentsy/MangAItranslator/releases/latest">
     <img alt="Baixar para Windows x64" src="https://img.shields.io/badge/Baixar-Windows%20x64-00A884?style=for-the-badge&logo=windows&logoColor=white">
   </a>
-  <a href="https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.1">
-    <img alt="Release atual v0.4.1" src="https://img.shields.io/badge/Release-v0.4.1-2F3342?style=for-the-badge">
+  <a href="https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.2">
+    <img alt="Release atual v0.4.2" src="https://img.shields.io/badge/Release-v0.4.2-2F3342?style=for-the-badge">
   </a>
   <a href="https://ko-fi.com/zentsy">
     <img alt="Apoiar no Ko-fi" src="https://img.shields.io/badge/Apoiar-Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white">
@@ -30,7 +30,7 @@ O MangAI Translator ajuda você a importar um capítulo, gerar um rascunho com I
 
 - **Site Oficial**: [zentsy.github.io/MangAItranslator](https://zentsy.github.io/MangAItranslator/) — Apresentação visual detalhada, fluxo de trabalho, galeria e download rápido.
 - **Baixar a versão mais recente**: [GitHub Releases (Instalador Windows x64)](https://github.com/Zentsy/MangAItranslator/releases/latest)
-- **Release atual**: [v0.4.1](https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.1)
+- **Release atual**: [v0.4.2](https://github.com/Zentsy/MangAItranslator/releases/tag/v0.4.2)
 
 Se o projeto te ajudar e você quiser apoiar o desenvolvimento contínuo, você pode contribuir no [Ko-fi](https://ko-fi.com/zentsy).
 
@@ -78,6 +78,15 @@ Se você baixou o app deste repositório oficial e quiser testar mesmo assim, re
 ### Importante sobre modelos grátis
 
 No OpenRouter, a qualidade depende do modelo gratuito disponível no momento. O app tenta corrigir respostas duplicadas, vazias ou mal formatadas, filtra automaticamente blocos internos de raciocínio (`<think>`) e tem fallback inteligente, mas alguns modelos pequenos podem apenas transcrever o texto em vez de traduzir.
+
+## 🛠️ Novidades da Versão 0.4.2
+
+Esta atualização de manutenção reúne correções críticas de estabilidade, segurança e experiência de uso:
+
+- **Ajuste de Zoom na Prancheta do Editor**: correção no cálculo responsivo do visualizador (`ResizeObserver` + limites explícitos por altura/largura) para que páginas verticais e páginas duplas apareçam inteiras em `100%` (e no botão *Ajustar à Tela*), preservando o alinhamento das caixas de balões (`bbox`) e mantendo largura legível em tiras webtoon longas.
+- **Proteção Anti-Transcrição em Inglês (Gemini & Prompts)**: integração com `systemInstruction` nativo no Gemini, preservação do `TranslationProfile` nas retentativas, prompts diretos para traduzir até mesmo falas ou notas (`T/N:`) em inglês para o idioma-alvo e reparo automático pós-OCR caso modelos leves (como o `Gemini 3.5 Flash-Lite`) devolvam blocos sem traduzir.
+- **Correções de Segurança (38 Alertas do Dependabot Zerados)**: atualização das dependências Rust/Tauri (`tauri` 2.12.7, `tauri-plugin-updater` 2.14.1, `zip` 9.7.3, `rustls` 0.23.46, `quinn-proto` 0.11.19, `serde_with` 3.24.0, `tar` 0.4.46) e dos pacotes npm do app principal e da landing page (`npm audit` com 0 vulnerabilidades), mantendo paridade completa entre Rust e `@tauri-apps/*`.
+- **Atalho Sem CMD para Desenvolvimento (`Abrir-MangAI.vbs`)**: adicionado launcher na raiz do projeto para iniciar o modo DEV no Windows sem janela preta de terminal e sem rodar `npm install` a cada abertura.
 
 ## ✒️ Novidades da Versão 0.4.1
 
@@ -128,7 +137,7 @@ O editor é o coração do app, agora com monitor de tradução em lote em tempo
 
 | Tradução em Lote (Batch) | Glossário por Projeto |
 | --- | --- |
-| ![Fila de tradução em lote](screenshots/batch.png) | ![Modal de glossário persistente](screenshots/Glossario-v3.png) |
+| ![Fila de tradução em lote](screenshots/batch.png) | ![Modal de glossário persistente](screenshots/glossario.png) |
 | Enfileire múltiplas páginas e acompanhe o progresso em tempo real enquanto revisa. | Defina termos, nomes e golpes persistidos em SQLite injetados nos prompts. |
 
 | Dashboard e Projetos | Exportação Editorial |
@@ -140,7 +149,7 @@ O editor é o coração do app, agora com monitor de tradução em lote em tempo
 
 | Modelos e Motores | Tema Paper Light |
 | --- | --- |
-| ![Seleção de modelos e motores](screenshots/configs_v3.png) | ![Dashboard no tema claro](screenshots/tema%20branco%20-%20home.png) |
+| ![Seleção de modelos e motores](screenshots/configs.png) | ![Dashboard no tema claro](screenshots/tema%20branco%20-%20home.png) |
 | Gemini 4 Argon, Gemini 3.8 Flash, Claude Fable 5.2, GPT-6 Astra, Groq LPU e modelos locais. | Interface editorial inspirada em papel Washi cru e Nanquim tradicional. |
 
 ## Fluxo rápido
@@ -156,17 +165,23 @@ O editor é o coração do app, agora com monitor de tradução em lote em tempo
 
 ### Próximo Ciclo: Fase v0.5.0 (Colaboração & Typesetting Assistido)
 
-- **Typesetter Helper Visual**: renderização prévia do texto traduzido diretamente dentro dos balões na imagem com tipografias clássicas de mangá.
-- **Dicionário de Onomatopeias (SFX)**: catálogo integrado de efeitos sonoros japoneses (擬音語・擬態語) com sugestões de adaptação para quadrinhos.
-- **Pacote de Projeto .mangai**: compartilhamento fácil de projetos completos (imagens, cache, SQLite e histórico) entre equipes de scanlation.
-- **Detecção Local de Coordenadas de Balões (WASM)**: pré-detecção de bounding boxes de balões no cliente via WebAssembly para ordenação visual imediata.
+- **Typesetter Helper Visual**: renderização prévia do texto traduzido diretamente dentro dos balões na imagem com tipografias clássicas de mangá embutidas.
+- **Dicionário de Onomatopeias (SFX)**: catálogo interativo integrado de efeitos sonoros japoneses (擬音語・擬態語) com sugestões de adaptação para quadrinhos.
+- **Pacote de Projeto `.mangai`**: exportação e importação empacotada de projetos completos (imagens, cache, SQLite e histórico) para troca rápida entre equipes de scanlation.
+- **Detecção Local de Coordenadas de Balões (WASM)**: pré-detecção de bounding boxes de balões no cliente via WebAssembly para seleção e ordenação visual imediata.
 
 ### Futuro (v1.0.0)
 
-- Code signing de distribuição no Windows para eliminar por completo os avisos do SmartScreen.
-- Leitura de mangás direto da fonte via extensões independentes (estilo Mihon).
-- Suporte a múltiplos idiomas de saída (JP, KO, ZH direto para EN e ES).
-- Distribuição multiplataforma oficial (Linux e macOS).
+- **Code signing no Windows**: certificado de assinatura de distribuição para eliminar os avisos do Windows SmartScreen.
+- **Extensões de fonte (estilo Mihon)**: leitura de mangás direto da fonte via extensões independentes.
+- **Distribuição multiplataforma oficial**: instaladores nativos para Linux (`.deb` / `AppImage`) e macOS (`.dmg`).
+- **Tradução 100% offline embarcada**: runtime e modelos locais integrados sem depender de servidores externos.
+
+### Em pesquisa (Backlog contínuo)
+
+- Limpeza inteligente de balões e *redraw* automático assistido.
+- Importação e exportação de glossários em CSV/JSON para reutilização entre capítulos.
+- Personalização tipográfica no editor e modo leitor mobile para revisão remota.
 
 ## Desenvolvimento
 
@@ -177,6 +192,14 @@ O editor é o coração do app, agora com monitor de tradução em lote em tempo
 - Dependências de compilação do Tauri instaladas no sistema
 
 ### Rodando em desenvolvimento
+
+**Atalho rápido no Windows (sem abrir CMD):**
+
+Dê dois cliques no arquivo [`Abrir-MangAI.vbs`](Abrir-MangAI.vbs) na raiz do repositório (ou execute `wscript Abrir-MangAI.vbs`). Ele inicia o ambiente `tauri dev` com o console oculto, pula reinstalações repetidas quando `node_modules` já existe (rodando `npm ci` automaticamente apenas se faltar) e aproveita o cache incremental do Cargo.
+
+> **Dica:** o servidor de desenvolvimento usa a porta fixa `1420`; se já houver uma instância aberta, feche-a antes de abrir novamente pelo atalho.
+
+**Via terminal (manual):**
 
 ```bash
 npm install
@@ -211,7 +234,7 @@ O deploy para produção gera um bundle standalone unificado (`site/index.html`)
 
 ## Status do projeto
 
-O app está funcional e pronto para uso real no Windows. Com a entrega da **v0.4.0**, a interface atinge sua maturidade visual Nanquim & Washi e ganha recursos profissionais de controle editorial e refinamento de linguagem.
+O app está funcional e pronto para uso real no Windows. Com a chegada da **v0.4.2**, o projeto consolida a identidade visual Nanquim & Washi, suporte a Gemini 4, zoom responsivo na prancheta, proteção anti-transcrição em inglês e zero alertas conhecidos de segurança.
 
 ## Uso responsável
 

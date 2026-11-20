@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.6-gold"></a>
+  <a href="./CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/version-v0.99.9-gold"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-ISC-blue.svg"></a>
   <a href="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml"><img alt="Build" src="https://github.com/91zgaoge/StoryMoss/actions/workflows/build.yml/badge.svg"></a>
   <img alt="Platform" src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg">
@@ -115,6 +115,21 @@ npm run build
 ## 🆕 最新动态
 
 > 完整变更日志见 [`CHANGELOG.md`](./CHANGELOG.md)。
+
+### v0.99.9 · 训练报告与编审裁决健壮性（日志巡检）
+
+- **问题**：11-20 真机 10 章训练总分 0.70、承接 9.1、编审 10/10 可用，但仍有 2 章质检降级；日志显示模型返回合法 JSON 却被判解析失败——`suggestions` 被模型写成对象数组而解析器只接受字符串；报告把诊断维度「原书差距」当短板并注入空修正；记忆探针误报跨词垃圾专名、线索只显示内部 ID。
+- **结果**：`EditorVerdict` 宽容解析（对象 suggestions / 字符串分值 / null 维度不再拖垮整份裁决）；诊断维度不再进入短板与下一轮指令；记忆探针输出可读线索描述并过滤跨词边界噪声。新增 6 条回归测试。
+
+### v0.99.8 · 章节标题统一（中文数字解析 + 第二章 铜钱与脚印）
+
+- **问题**：历史库/训练沙盒同时存在 `第 134 章`、`第12章`、`香炉边的银镯与铜钱` 等混合标题；中文数字无法解析门禁章号，自动取名只写裸标题，展示层混用。
+- **结果**：新增章节标题纯函数与中文数字转换；`parse_chapter_number` 支持阿拉伯/中文/空格/带后缀；训练源章标题从正文首行恢复；自动取名写「第二章 雨夜叩门」；幕前统一展示「第二章 铜钱与脚印」；V164 迁移归一旧库标题。新增 10 条回归测试。
+
+### v0.99.7 · 续写训练真机复盘修复（编辑审计/门禁记录/deadline/资产）
+
+- **问题**：v0.99.6 真机 10 章训练总分 0.683（承接 8.89、情节 7.0），但 9/10 章质检降级、10 章只有 1 行门禁记录；编辑审计 tool_loop 连续解析失败，Ds10/deepseek-v4 CoT-only 空正文、Qwren GPU OOM；run deadline 10×240s+120s 在第 17 章撞线；进度日志每章「0 字」；聚合漏世界观/角色。
+- **结果**：训练编辑审计直连 JSON（带参照资产 + CoT JSON 提取，成功跳过 tool_loop）；失败门禁统一落 `editor_gate_records`；批量 deadline 600s/章+600s、上限 4h；`chapter_chars` 显示真实字数；世界观/角色用逐章事实与 grounded cast 确定性兜底；编审第三次短采样 + 换路由。新增 6 条回归测试。
 
 ### v0.99.6 · 批量/训练 trace 终态收尾（日志巡检）
 

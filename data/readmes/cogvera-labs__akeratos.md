@@ -10,7 +10,7 @@ uv sync
 uv run bake bench
 ```
 
-You need an Apple silicon Mac on macOS 14 or later, and [uv](https://docs.astral.sh/uv/) 0.13.6 or newer. `bake bench` trains a 10M model twice on synthetic tokens, table off and table on, and prints what the table costs per step on your Mac. On the same M4 Max (48 GB) it took 74 seconds and peaked at 6.2 GiB of memory. Smaller Macs are untested: [send your Mac's row](https://github.com/cogvera-labs/akeratos/blob/main/docs/speedrun.md#bake-bench).
+You need an Apple silicon Mac on macOS 14 or later, and [uv](https://docs.astral.sh/uv/) 0.13.6 or newer. `bake bench` trains a 10M model twice on synthetic tokens, table off and table on, and prints what the table costs per step on your Mac. On the same M4 Max (48 GB) it took 74 seconds and peaked at 6.2 GiB of memory. [Smaller Macs are untested](https://github.com/cogvera-labs/akeratos/blob/main/docs/reproduce.md#your-mac): [send your Mac's row](https://github.com/cogvera-labs/akeratos/blob/main/docs/speedrun.md#bake-bench).
 
 ## What you can do
 
@@ -18,6 +18,7 @@ You need an Apple silicon Mac on macOS 14 or later, and [uv](https://docs.astral
 - **Enter the five-minute speedrun.** `bake speedrun` trains the model in [`speedrun/train.py`](https://github.com/cogvera-labs/akeratos/blob/main/speedrun/train.py) for 300 seconds of step time and scores it on held-out text. Change the file, beat the record, send your runs by pull request: [the Mac speedrun](https://github.com/cogvera-labs/akeratos/blob/main/docs/speedrun.md).
 - **Rerun Billet in four and a half days.** `bake train billet` trains the 162M model in 24.1 GiB of memory, and `bake evaluate` scores it. Its twin takes as long again: [Reproduce](https://github.com/cogvera-labs/akeratos/blob/main/docs/reproduce.md).
 - **Use Billet's weights with no training.** `bake generate` continues a prompt with [the released weights](https://huggingface.co/Cogvera-Labs/Akeratos-Billet): a 14.4 GB download, 13.0 GiB of memory. `The capital of France is` gives, greedily, ` Paris. It is the largest city in France and the second largest in Europe.` The 41-minute starter gives ` the capital of the world.` Billet is a base model: fluent, and often wrong.
+- **Score the released weights in 36 minutes.** With no training and no data build, `bake evaluate` gives both published scores; the twin's takes 18 minutes: [Score](https://github.com/cogvera-labs/akeratos/blob/main/docs/reproduce.md#4-score).
 
 Akeratos's models run in its own code, not in mlx-lm or llama.cpp. To fine-tune or chat with an existing model, start with [the options on a Mac](https://github.com/cogvera-labs/akeratos/blob/main/docs/mac-options.md).
 

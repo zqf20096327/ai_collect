@@ -16,11 +16,11 @@ TACC AgentForge is the course project for **Advanced AI Computing and Systems (C
   <img src="docs/images/browser-demo.gif" width="900" alt="Live run with the real model on TACC (about 3x speed): asked what to buy for a trip to Bali with a $200 budget, the agent asks what is needed, then searches the catalog and returns a backpack, earbuds and a power bank with photos, an itemised receipt checked against the budget, and the sources.">
 </p>
 
-*Recorded on TACC with the real model: the agent recommends earbuds at **$22.99 before tax** and shows the **$77.01** left in the budget. Idle waits are shortened.*
+*Recorded on TACC with the real model: asked what to buy for a trip to Bali with a $200 budget, the agent asks what is needed, then recommends a backpack, earbuds and a power bank for **$87.34 before tax** and shows the **$112.66** left in the budget. Idle waits are shortened.*
 
-![Evaluated deployment: browser page and local backend, an SSH tunnel to one TACC GPU job that runs the agent harness, the budget validator, vLLM and the pinned knowledge snapshot; the evaluation runner and the SerpApi data pipeline below](docs/images/evaluated-architecture.png)
+<p align="center"><img src="docs/images/architecture.png" width="900" alt="Dual-branch architecture of TACC AgentForge: Branch A (main, evaluated) connects a local backend over SSH to a two-GPU TACC job running the agent harness, budget validator, frozen SQLite/FTS5 snapshot and vLLM; Branch B (feat/cloud-agent-service, extension) runs the public frontend, backend, agent and 7-category GCS snapshot on Cloudflare Pages, Tailscale Funnel and GCE while sharing the TACC vLLM engine; right shows offline SerpApi collection, frozen evaluation (C1–C3, C7) and serving/SFT experiments (C4–C6)."></p>
 
-*The evaluated deployment. Post-training is a pilot and quantization is not implemented; see [Project status](#project-status-what-is-and-is-not-done). The diagram is generated from `report/figures/architecture.tex`.*
+*Dual-branch system architecture: evaluated local/TACC deployment (`main`) and public cloud extension (`feat/cloud-agent-service`), sharing the 2-GPU TACC vLLM server. Post-training is a pilot; see [Project status](#project-status-what-is-and-is-not-done).*
 
 In the evaluated deployment, the browser talks to a local Python backend (`app/`), which reaches TACC over SSH. One two-GPU TACC job runs vLLM and the agent harness (`agent/`) side by side. The agent queries a pinned SQLite/FTS5 catalog snapshot (`knowledge/`) and only returns plans approved by the budget validator (`agent/budget.py`).
 
@@ -38,17 +38,16 @@ In the evaluated deployment, the browser talks to a local Python backend (`app/`
 | `deploy/tacc/` | TACC job definitions: vLLM service with hourly handover, evaluation job, serving experiments, private vLLM build, SFT jobs |
 | `deploy/benchmark/` | Container and helpers for the public ShoppingBench track of the v1 benchmark |
 | `training/` | LoRA SFT pilot on the INT4 checkpoint: data pipeline, trainer, raw results ([report](training/README.md)) |
-| `quantization/` | **Placeholder only, not implemented** (see [status](#project-status-what-is-and-is-not-done)) |
 | `scripts/check_artifact.py` | **One command that runs every stage below that needs no GPU** and prints `SUCCESS`/`FAILED` per stage |
 | `scripts/reproduce_results.py` | One command that recomputes the reported numbers from the committed raw data |
 | `docs/experiments/` | Experiment reports (baseline, private vLLM, LoRA feasibility, data collection) |
-| `tests/`, `agent/tests/` | About 690 automated tests that run offline |
+| `tests/`, `agent/tests/` | About 700 automated tests that run offline |
 
 No model weights, adapters or credentials are in the repository. The base model is the course-provided checkpoint on TACC. The trained LoRA adapter (about 218 MB) stays on the cluster.
 
 ## Main Results
 
-All numbers come from runs on TACC. The raw data is committed, and `scripts/reproduce_results.py` recomputes each one (see [Step 1](#step-1-recompute-every-reported-number-under-1-minute)). The *Project report* column gives the section, table or figure of the group's project report (submitted as a PDF; its source and build script are in [`report/`](https://github.com/atlasmarkz/tacc-agentforge/tree/a1ca3dc61feed1e757855c9da793c541b324aa0b/report), and its appendix reproduces this README) that reports each result.
+All numbers come from runs on TACC. The raw data is committed, and `scripts/reproduce_results.py` recomputes each one (see [Step 1](#step-1-recompute-every-reported-number-under-1-minute)). The *Project report* column gives the section, table or figure of the group's project report (submitted as a PDF; its source and build script are in [`report/`](report/), and its appendix reproduces this README) that reports each result.
 
 | ID | Result | Project report | Evidence in this repo |
 |---|---|---|---|
@@ -108,7 +107,7 @@ uv pip install --python .venv/bin/python -r agent/requirements.lock pytest pytho
 ```text
 [1/7] environment          SUCCESS (0 s): Python 3.12.x, dependencies import
 [2/7] catalog snapshot     SUCCESS (1 s): snapshot_5bcd00723fb0b7589cbe50c8 installed and verified (FTS5: True)
-[3/7] automated tests      SUCCESS (85 s): 686 passed, 2 skipped, 14 subtests passed in ...
+[3/7] automated tests      SUCCESS (85 s): 697 passed, 1 skipped, 14 subtests passed in ...
 [4/7] harness self-test    SUCCESS (1 s): SELFTEST OK (10/10 checks true)
 [5/7] end-to-end request   SUCCESS (3 s): verified plan offer_640a303bc366430cfd53139e: total 16.87 USD, 83.13 left; without a budget the run asks for one
 [6/7] main results         SUCCESS (1 s): ALL MATCH (6 comparisons: C1-C7 recomputed from the committed raw data)
@@ -125,7 +124,7 @@ A failed stage prints the reason and the end of the failing command's output, an
 .venv/bin/python -m pytest tests agent/tests -q
 ```
 
-**Expected:** `686 passed, 2 skipped` and no failures. The two skips are expected: `test_quantization.py` because quantization is not implemented, and one `test_sft.py` test because PyTorch is not installed (training runs on TACC). Without `python-dotenv` (part of the Setup command), six more tests are skipped.
+**Expected:** `697 passed, 1 skipped` and no failures. The single skip is expected: one `test_sft.py` test because PyTorch is not installed (training runs on TACC). Without `python-dotenv` (part of the Setup command), six more tests are skipped.
 
 ## Example 2: end-to-end request without a GPU (about 1 minute)
 
@@ -270,6 +269,8 @@ unzip -oq assets/knowledge/pilot-snapshot.zip -d /tmp/agentforge-snapshot
 
 ```bash
 git checkout cc6059d
+# Keep the portable Miniconda path from main so any TACC account can install harness deps (not part of freeze.json)
+git checkout main -- deploy/tacc/service/agent-e2e/job.sh deploy/tacc/service/app-service/harness-lib.sh
 .venv/bin/python -m evaluations.freeze check      # expected: "matches the freeze"
 ```
 
@@ -391,7 +392,6 @@ A new run needs a model endpoint (`BENCHMARK_BASE_URL` or `BENCHMARK_ADDRESS_FIL
 | Evaluation: cases, independent ground truth, frozen baselines | Done (C1–C3) |
 | Serving experiments, private vLLM build and MTP fix | Done (C4–C5); n-gram speculation was not retested after the fix |
 | SFT | Pilot only (C6); no end-to-end evaluation of the adapter |
-| **Quantization** (`quantization/`, Task 8) | **Not implemented.** The code is a stub. All results use the course's pre-quantized AWQ INT4 model; no precision comparison was run. |
 | Fifth, unseen category; human ratings of explanations; retrieval Recall@5/MRR@5 | Not done. The 602-row relevance pool in `evaluations/relevance_pool.jsonl` is unlabeled. |
 | v1 benchmark (synthetic fixtures, six configurations, ShoppingBench track) | Dev runs and tooling done; held-out split not run; its fifth category (`desk_lamps`) is not released. Not used for C1–C7. |
 | Fix for the model-call limit (issue #21) | Fixed on `main` after the freeze (PR #29, C7) and checked in 9 targeted real-model replays. The frozen system (`cc6059d`) still has this failure mode, and the held-out split was not rerun with the fix. |

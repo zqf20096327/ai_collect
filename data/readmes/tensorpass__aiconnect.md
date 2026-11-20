@@ -83,7 +83,7 @@ The SDK is four packages under the `@tensorpass` scope, plus a demo, a WordPress
 | `@tensorpass/aiconnect-design` | The `--aic-*` CSS tokens in light and dark, the TensorPass mark, the providers' marks and the key card colours shared by the wallet and the website. |
 | `apps/demo` | A bookshop playground on port 4605, with every module at `?module=panel`, `popup`, `inline`, `page` or `search`, and the Web Components at `/elements.html`. |
 | `integrations/wordpress` | The WordPress plugin: the chat as a block and a shortcode, and the site's posts served as an MCP server. |
-| `integrations/claude-code` | The Claude Code plugin: the four skills of `skills` and the two TensorPass MCP servers. |
+| `integrations/claude-code` | The Claude Code plugin: the five skills of `skills` and the two TensorPass MCP servers. |
 
 ## Install AI Connect
 
@@ -266,7 +266,7 @@ The tool loop of `useAiChat` and `runConversation` calls the tools the model ask
 
 ## Skills for coding agents
 
-The `skills` folder holds four [Agent Skills](https://agentskills.io/specification) for Claude Code, Cursor, Codex, Gemini CLI and any agent that reads skills:
+The `skills` folder holds five [Agent Skills](https://agentskills.io/specification) for Claude Code, Cursor, Codex, Gemini CLI and any agent that reads skills:
 
 | Skill | Use it to |
 | --- | --- |
@@ -274,6 +274,7 @@ The `skills` folder holds four [Agent Skills](https://agentskills.io/specificati
 | `aiconnect-mcp-tools` | Turn a site's server, API or OpenAPI file into MCP tools a model uses well, and check them with a script |
 | `aiconnect-rag-chatbot` | Build a chatbot that answers from the site's own pages: a search index, the MCP server and the chat |
 | `aiconnect-hardening` | Guard a chat against prompt injection and leaks, and pen test it in English, French and Hebrew |
+| `aiconnect-auth` | Harden the site's login before its MCP server serves signed in or staff tools, and migrate live users |
 
 Install them from this repository or from https://tensorpass.app, which serves the same skills:
 
@@ -284,7 +285,7 @@ npx skills add https://tensorpass.app
 
 ## Claude Code plugin
 
-This repository is also the `tensorpass` plugin marketplace for Claude Code. Its `aiconnect` plugin, in `integrations/claude-code`, installs the four skills with two MCP servers: the AI Connect docs at `https://tensorpass.app/mcp`, and the TensorPass account at `https://plan.tensorpass.app/mcp`, which creates the site key once you sign in from `/mcp`. In Claude Code, run:
+This repository is also the `tensorpass` plugin marketplace for Claude Code. Its `aiconnect` plugin, in `integrations/claude-code`, installs the five skills with two MCP servers: the AI Connect docs at `https://tensorpass.app/mcp`, and the TensorPass account at `https://plan.tensorpass.app/mcp`, which creates the site key once you sign in from `/mcp`. In Claude Code, run:
 
 ```
 /plugin marketplace add tensorpass/aiconnect

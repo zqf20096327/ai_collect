@@ -7,10 +7,10 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This crate is its nat
 | Field | Value |
 | --- | --- |
 | Package | `praxo-core` |
-| Registry | [crates.io](https://crates.io/crates/praxo-core/0.9.2) |
-| Install | `cargo add praxo-core@0.9.2` |
+| Registry | [crates.io](https://crates.io/crates/praxo-core/0.10.0) |
+| Install | `cargo add praxo-core@0.10.0` |
 | Source version | `0.10.0` |
-| Published version | `0.9.2` |
+| Published version | `0.10.0` |
 | Source tag | `rust/v0.10.0` |
 | Tier | Core |
 | Contract | `SPEC_VERSION` `0.2.0` |
@@ -33,7 +33,7 @@ PRAXO-CORE is an embeddable, MIT-licensed agent framework. This crate is its nat
 Install the published package:
 
 ```bash
-cargo add praxo-core@0.9.2
+cargo add praxo-core@0.10.0
 ```
 
 ```rust
@@ -78,21 +78,21 @@ Runnable examples live under [`language/rust/examples`](language/rust/examples).
 
 | Example | What it shows |
 | --- | --- |
-| [advanced-delegation](language/rust/examples/advanced-delegation) | This example shows an application-level parent/child agent pattern using published crates.io `praxo-core@0.9.2`. The parent agent may call a `delegate` tool but not the child's... |
-| [checkpoint](language/rust/examples/checkpoint) | This example uses published crates.io `praxo-core@0.9.2` to keep checkpoint storage application-owned while using the SDK allowlist for payload encoding. |
-| [consumer](language/rust/examples/consumer) | This starter installs the published crates.io package `praxo-core@0.9.2` and verifies an allow/deny governed tool path. |
-| [event-sink](language/rust/examples/event-sink) | This example uses published crates.io `praxo-core@0.9.2` to observe agent lifecycle and tool events without coupling the agent to a logging or telemetry backend. |
-| [hitl](language/rust/examples/hitl) | This example uses published crates.io `praxo-core@0.9.2` to demonstrate a write tool that requires human approval: |
-| [identity-policy](language/rust/examples/identity-policy) | This example uses published crates.io `praxo-core@0.9.2` to bind a trusted principal to Core policy authorization. The application owns authentication and principal storage; Cor... |
+| [advanced-delegation](language/rust/examples/advanced-delegation) | This example shows an application-level parent/child agent pattern using published crates.io `praxo-core@0.10.0`. The parent agent may call a `delegate` tool but not the child's... |
+| [checkpoint](language/rust/examples/checkpoint) | This example uses published crates.io `praxo-core@0.10.0` to keep checkpoint storage application-owned while using the SDK allowlist for payload encoding. |
+| [consumer](language/rust/examples/consumer) | This starter installs the published crates.io package `praxo-core@0.10.0` and verifies an allow/deny governed tool path. |
+| [event-sink](language/rust/examples/event-sink) | This example uses published crates.io `praxo-core@0.10.0` to observe agent lifecycle and tool events without coupling the agent to a logging or telemetry backend. |
+| [hitl](language/rust/examples/hitl) | This example uses published crates.io `praxo-core@0.10.0` to demonstrate a write tool that requires human approval: |
+| [identity-policy](language/rust/examples/identity-policy) | This example uses published crates.io `praxo-core@0.10.0` to bind a trusted principal to Core policy authorization. The application owns authentication and principal storage; Co... |
 | [live-model](language/rust/examples/live-model) | This source-mode example connects the Rust Core to an OpenAI-compatible endpoint and registers one low-risk `get_time` tool. |
-| [mcp](language/rust/examples/mcp) | This example uses published crates.io `praxo-core@0.9.2` with an in-process `McpHttpTransport`. It needs no server process and no network endpoint. |
-| [provider-fallback](language/rust/examples/provider-fallback) | This example uses published crates.io `praxo-core@0.9.2` to fall back to a second model when the primary model call fails. |
+| [mcp](language/rust/examples/mcp) | This example uses published crates.io `praxo-core@0.10.0` with an in-process `McpHttpTransport`. It needs no server process and no network endpoint. |
+| [provider-fallback](language/rust/examples/provider-fallback) | This example uses published crates.io `praxo-core@0.10.0` to fall back to a second model when the primary model call fails. |
 | [representative-chain](language/rust/examples/representative-chain) | This deterministic example exercises the same application seams as the Go representative chain without a live provider or network: |
-| [retry](language/rust/examples/retry) | This example uses published crates.io `praxo-core@0.9.2` to retry transient model failures without changing the agent loop. |
-| [service](language/rust/examples/service) | This example embeds published crates.io `praxo-core@0.9.2` in a standard-library TCP/HTTP service. The application supplies a principal and tenant, restricts tools, and returns... |
-| [session-checkpoint](language/rust/examples/session-checkpoint) | This example uses published crates.io `praxo-core@0.9.2` and saves and restores a conversation history across two agent turns. It uses the Core allowlist for payload encoding an... |
-| [streaming](language/rust/examples/streaming) | This example uses published crates.io `praxo-core@0.9.2` to consume deltas while the agent loop keeps running normally. |
-| [structured-output](language/rust/examples/structured-output) | This example uses published crates.io `praxo-core@0.9.2` to validate the final answer against a JSON Schema. |
+| [retry](language/rust/examples/retry) | This example uses published crates.io `praxo-core@0.10.0` to retry transient model failures without changing the agent loop. |
+| [service](language/rust/examples/service) | This example embeds published crates.io `praxo-core@0.10.0` in a standard-library TCP/HTTP service. The application supplies a principal and tenant, restricts tools, and returns... |
+| [session-checkpoint](language/rust/examples/session-checkpoint) | This example uses published crates.io `praxo-core@0.10.0` and saves and restores a conversation history across two agent turns. It uses the Core allowlist for payload encoding a... |
+| [streaming](language/rust/examples/streaming) | This example uses published crates.io `praxo-core@0.10.0` to consume deltas while the agent loop keeps running normally. |
+| [structured-output](language/rust/examples/structured-output) | This example uses published crates.io `praxo-core@0.10.0` to validate the final answer against a JSON Schema. |
 
 ## Verify
 

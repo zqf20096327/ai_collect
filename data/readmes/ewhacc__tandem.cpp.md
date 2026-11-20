@@ -21,6 +21,8 @@ We tuned for Qwen3.8 only, but other MoE models that do not fit in VRAM gain too
 
 [Strata](https://github.com/Niko1221/Strata) is a dedicated MoE offload engine for a few models. Its default skips low-ranked experts (`STRATA_ROUTE_TAIL_SKIP`), which is faster but approximate (127.1 tok/s in the RTX 4090 Qwen3.8 row); the tables show its exact mode (`STRATA_ROUTE_TAIL_SKIP=0`, every routed expert computed, as llama.cpp and tandem.cpp do). Full tables per machine are [below](#results).
 
+[Project Maya](https://github.com/mw00/project-maya) is the DeepSeek-V4.1 engine with its own quants. On Maya's quants, the same files on both engines (RTX 5090 + 128 GB, no drafting on either side), tandem.cpp decodes faster: **Maya-S 25.3 vs 20.4 tok/s** (1.24×; Maya's default quant, larger than this PC's RAM) and **Maya-XS 60.5 vs 39.3** (1.5×). Maya reads the first long prompt faster when the model does not fit in RAM ([details](#deepseek-v41-maya-s-and-maya-xs-the-same-weights-on-both-engines)).
+
 For a big card serving many concurrent streams, use [Tandem-vLLM](https://github.com/ewhacc/tandem) instead; tandem.cpp is for one user on a 16–32 GB card with the experts in RAM.
 
 ## What's new in v0.4.0 (2026-11-18)
@@ -71,7 +73,7 @@ For a big card serving many concurrent streams, use [Tandem-vLLM](https://github
   CUDA's virtual memory management; on AMD (ROCm builds have it off) the cache is simply sized for the larger buffers.
   `LLAMA_MOE_UBATCH=0` restores 512-token batches.
 - **Project Maya's DeepSeek-V4.1 GGUFs run on tandem.cpp** after a one-time conversion ([`tools/maya_ds41_convert.py`](tools/maya_ds41_convert.py),
-  [below](#deepseek-v41-maya-xs-the-same-weights-on-both-engines)): the same Maya-XS files on both engines, RTX 5090 + 128 GB,
+  [below](#deepseek-v41-maya-s-and-maya-xs-the-same-weights-on-both-engines)): the same Maya-XS files on both engines, RTX 5090 + 128 GB,
   **tandem.cpp 60.3 / 59.4 tok/s vs Maya's 39.0 / 39.6** (1.5×; 54.9 with Maya's DSpark drafter, which tandem.cpp does not have).
 - Store mode: when the RAM store is a few slots short of holding every expert next to the VRAM cache, it now holds all but
   those few instead of none (`LLAMA_MOE_ARENA_FILL_PART=0`: the old behaviour).
@@ -248,6 +250,26 @@ llama-server -m model.gguf -ngl 99 -cmoe --moe-cache-mib auto -lm none -np 1 -c 
 - **Much less RAM (e.g. a 16 GB PC):** also pass `--cache-ram 0`. llama-server's prompt cache otherwise takes up to 8 GiB of RAM and pushes the experts out of the page cache.
 - Supported expert types for the CPU path: SwiGLU experts (fused or separate gate/up, optional clamp) and gpt-oss's SwiGLU-OAI with biases. For other types the server logs a warning and uploads every miss instead (correct, slower).
 
+### Which model file
+
+Pick by RAM. Quality is the KL divergence of the next-token distribution against the original weights (Qwen3.8: the FP8 release; DeepSeek-V4.1: the official checkpoint), teacher-forced over about 8.6k tokens of greedy answers to 36 prompts; lower is better. Decode speed: tandem.cpp, cold start, greedy, 40 questions (16 for DeepSeek-V4.1), Qwen3.8 with the MTP head below.
+
+| Model | File | Size | KL | Top-1 agreement | RTX 5090 + 128 GB | RTX 5070 Ti + 64 GB | Pick |
+|---|---|---|---|---|---|---|---|
+| Qwen3.8-Flash-Next | bartowski [Q4_K_M](https://huggingface.co/bartowski/Qwen3.8-Flash-Next-GGUF) | 111 GiB | **0.0173** | 95.4% | 102 tok/s | — | best quality, 128 GB+ |
+| Qwen3.8-Flash-Next | bartowski [IQ4_XS](https://huggingface.co/bartowski/Qwen3.8-Flash-Next-GGUF) | 91 GiB | 0.0216 | 95.3% | 144 tok/s | 26 tok/s | balance, 128 GB |
+| Qwen3.8-Flash-Next | ISTA [IQ3_S](https://huggingface.co/ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF) | 78 GiB | 0.0259 | 94.8% | 191 tok/s | **76 tok/s** | fastest; the pick for 64 GB and 32 GB PCs |
+| DeepSeek-V4.1-Flash | ISTA [IQ2_XS](https://huggingface.co/ISTA-DASLab/DeepSeek-V4.1-Flash-1017-GSQ-RCO-GGUF) | 139 GiB of experts | 0.1495 | 88.1% | 26–33 tok/s | 14 tok/s | balance; the pick for 64 GB |
+| DeepSeek-V4.1-Flash | Maya [Maya-S](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF) | 157 GiB of experts | **0.1017** | 89.9% | 25 tok/s | 8.7 tok/s | best quality, 128 GB+ (Maya's engine: 20 tok/s) |
+| DeepSeek-V4.1-Flash | Maya [Maya-XS](https://huggingface.co/peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF) | 102 GiB of experts | 0.2504 | 84.7% | 60 tok/s | — | fastest on 128 GB, lowest quality (Maya's engine: 39 tok/s) |
+
+- On 64 GB, IQ4_XS's experts and Engram table no longer fit in RAM and are read from the SSD: 3× slower than IQ3_S, so IQ3_S is the pick there.
+- Maya's DeepSeek-V4.1 quants run on tandem.cpp after a one-time conversion ([below](#deepseek-v41-maya-s-and-maya-xs-the-same-weights-on-both-engines)), which with `--link` writes about 210 GB beside Maya's files (the first shard and the joined Engram table). Maya-S's experts are larger than 128 GB of RAM, so both engines read part of every token from the SSD; on 64 GB it runs at 8.7 tok/s where IQ2_XS runs at 11.9 in the same session. IQ2_XS on 128 GB is a range: its experts just miss fitting in the page cache, so its speed depends on what the SSD has to re-read (two runs in one session: 31.6 and 25.5).
+- Qwen3.8 below 3 bits loses too much (IQ2_XS: KL 0.126, 89.0%); DeepSeek-V4.1, a much larger model, holds up at 2 bits.
+- Bartowski's Q4_K_M keeps the expert down-projections at 5–8 bits (5.3 bits per expert weight on average), which is where most of its lead comes from; IQ4_XS is 4.25.
+- A better DeepSeek-V4.1 quant is coming: VQ2 + FP4, the main quant of [Tandem-vLLM](https://github.com/ewhacc/tandem), already on Hugging Face for that engine. Its GGUF comes out together with Tandem-vLLM's support for both the original DeepSeek-V4.1 and VQ2.
+- The same MTP head works with all three Qwen3.8 files. For the bartowski files: `hf download bartowski/Qwen3.8-Flash-Next-GGUF --include 'Qwen3.8-Flash-Next-IQ4_XS/*' --local-dir models` (or `Q4_K_M`), then pass the first shard to `-m`.
+
 Qwen3.8-Flash-Next with its MTP head (the head as a separate GGUF). Download the model (IQ3_S, 78 GiB, two files) and the head (Q4_K):
 
 ```
@@ -337,7 +359,7 @@ about twice the RAM, so most experts are read from the SSD; at 128 GB it fits.
 All cells answered 39–40 of 40 correctly. Two numbers for tandem.cpp are two runs (the ratio uses the first); the 32 GB row
 splits the layers over both cards (the RTX 5060 Ti sits in an x4 slot).
 
-### DeepSeek-V4.1 Maya-XS: the same weights on both engines
+### DeepSeek-V4.1 Maya-S and Maya-XS: the same weights on both engines
 
 [Project Maya](https://github.com/mw00/project-maya) v1.1.64 (`d93d149`) is a MoE engine built for big models such as
 DeepSeek-V4.1, with its own quants. Its Maya-XS v2 GGUF (routed experts IQ1_S/IQ2_XXS, 1.63 bpw, 117 GB; Engram tables Q6_K,
@@ -354,16 +376,30 @@ prompts at 5.6k and 15.7k tokens (the same text for both):
 | **tandem.cpp v0.4.0** | **60.0 / 60.9** | 15, 15 of 16 | **4.4 / 8.6 s** | **59–64** |
 
 Maya's own installer and settings (reasoning effort high), DSpark off for the first row. The whole model fits in this PC's
-VRAM + RAM, so neither engine reads the SSD after loading. To run it: download `peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF` (folder
-`Maya-XS/`, MIT), then
+VRAM + RAM, so neither engine reads the SSD after loading. Maya-S (routed experts IQ2_XXS/IQ3_XXS, the first and last four layers
+IQ2_S/IQ3_S, 2.49 bpw, 178 GB; the same Engram tables) does not fit, so both engines read experts from the SSD. Same PC
+and recipe, tandem.cpp v0.4.0:
+
+| Maya-S | decode tok/s | GSM8K | first token, 5.6k / 15.7k | decode after the long prompts |
+|---|---|---|---|---|
+| Maya, no drafting (as tandem.cpp) | 19.8 / 21.0 | 15, 15 of 16 | **12.5 / 14.0 s** | 7–11 |
+| Maya with its DSpark drafter | 17.2 | 15 of 16 | 12.5 / 14.2 s | 9–13 |
+| **tandem.cpp v0.4.0** | **25.4 / 25.2** | 15, 15 of 16 | 15–17 / 30–40 s | **29–34** |
+
+Maya reads a long prompt faster here; the first long prompt is the one place tandem.cpp still loses when the experts do
+not fit in RAM. To run it: download `peasantsmith/DeepSeek-V4.1-Flash-1017-Maya-GGUF` (folder
+`Maya-XS/` or `Maya-S/`, MIT), then
 
 ```
-python3 tools/maya_ds41_convert.py --maya-dir models/Maya-XS --out models/Maya-XS-llama
+python3 tools/maya_ds41_convert.py --maya-dir models/Maya-XS --out models/Maya-XS-llama --link
 llama-server -m models/Maya-XS-llama/DeepSeek-V4.1-Flash-1017-Maya-XS-v2-IQ1_S-00001-of-00004.gguf \
   -ngl 99 -cmoe --moe-cache-mib auto -np 1 -c 32768
 ```
 
-The converted copy needs as much disk again as the download (278 GB). Maya-S has the same layout (not tested here).
+`--link` copies only the first shard (its metadata changes) and links the other main shards to Maya's files, so keep
+those; it writes about 210 GB (the first shard and the two Engram tables joined), against a full copy without it (278 GB
+for Maya-XS, 340 GB for Maya-S). If you run only tandem.cpp, Maya's two Engram shards can be deleted after the conversion.
+Maya-S converts the same way (`--maya-dir models/Maya-S`; its first shard gets the Engram metadata names tandem.cpp reads).
 
 ### Consumer PC: i5-12400F (6 cores), 64 GB DDR4 (43 GB/s), RTX 4090 24 GB, PCIe 4.0 x16
 

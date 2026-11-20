@@ -167,9 +167,11 @@ passwords and cookies before it writes anything.
 from the next; in CI, set `VLLM_SR_API_KEY`.
 
 **What if System One is unreachable?** Your agent carries on. A guarded call falls back to `guardOnError` (`allow` by
-default) while DeepSeek Harness's own sandbox and approvals still apply, and a tool call that finds System One
-unavailable shows one calm **Unavailable** line. When privacy cannot run, a **Privacy** card says why, and tool
-results reach System Two unmasked until System One answers again, 15 seconds later at the earliest.
+default), also when System One answers the guard's questions with an error, while DeepSeek Harness's own sandbox and
+approvals still apply, and a tool call that finds System One unavailable shows one calm **Unavailable** line. When
+privacy cannot run, a **Privacy** card says why, and tool results reach System Two unmasked until System One answers
+again, 15 seconds later at the earliest. What System One could not answer is never read as safe: the cards say what
+was not screened, masked or checked.
 
 **How much do the reflexes read?** Shield screens every result of the tools that bring in file, shell, web or MCP
 text, of any length, all of its first 60,000 characters; System Two gets none of the rest, only a note to read it in

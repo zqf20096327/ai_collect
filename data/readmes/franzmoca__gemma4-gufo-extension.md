@@ -127,6 +127,31 @@ With Nix, `nix build` in this repository builds the Gufo revision pinned in
 The vision sidecar `mmproj-BF16.gguf` is found beside the model, or given with
 `--mmproj`.
 
+## Releases
+
+Each release is tagged `vX.Y.Z` with its notes from
+[CHANGELOG.md](CHANGELOG.md) on the
+[releases page](https://github.com/franzmoca/gemma4-gufo-extension/releases).
+Its `flake.lock` pins the Gufo revision it was validated with, so a flake can
+pin a release, and Renovate can raise the tag:
+
+```nix
+inputs.gemma4.url = "github:franzmoca/gemma4-gufo-extension/v0.2.1";
+# packages: gemma4.packages.x86_64-linux.default
+```
+
+Leave out `inputs.gemma4.inputs.gufo.follows`: overriding Gufo builds a pair
+the release was not checked with.
+
+A release is one `chore(gemma4): release X.Y.Z` commit on `main` that sets
+`version` in `extension.json` and moves `Unreleased` in the changelog to
+`## X.Y.Z (YYYY-MM-DD)`, naming the Gufo pin and the extension API it needs.
+After it merges, `git tag -a vX.Y.Z -m X.Y.Z <commit> && git push origin
+vX.Y.Z` publishes it: `.github/workflows/release.yml` checks the tag against
+`extension.json` and posts the changelog section. Raise the minor version
+when the Gufo pin or the extension API requirement changes, and the patch
+version for fixes on the same pin.
+
 ## Tests
 
 Test and probe executables link Gufo's public implementation targets

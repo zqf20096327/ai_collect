@@ -64,6 +64,7 @@ docker run -d --name mcp-victoriatraces \
   -e VT_INSTANCE_ENTRYPOINT=https://localhost:10428 \
   -e MCP_SERVER_MODE=http \
   -e MCP_LISTEN_ADDR=:8081 \
+  -e MCP_AUTH_TOKEN=your-secret-token \
   -p 8081:8081 \
   ghcr.io/victoriametrics-community/mcp-victoriatraces
 ```
@@ -114,13 +115,18 @@ MCP Server for VictoriaTraces is configured via environment variables:
 | `VT_INSTANCE_ENTRYPOINT`   | URL to VictoriaTraces instance                            | Yes | -      | -                      |
 | `VT_INSTANCE_BEARER_TOKEN` | Authentication token for VictoriaTraces API               | No | -      | -                      |
 | `VT_INSTANCE_HEADERS`      | Custom HTTP headers to send with requests (comma-separated key=value pairs) | No | -      | -                      |
+| `VT_INSTANCE_CA_CERT`      | PEM-encoded CA certificate(s) to verify the TLS certificate of VictoriaTraces with, instead of the system CA bundle. Useful when mounting a CA file is not possible. Literal `\n` sequences are treated as newlines. Cannot be used with `VT_INSTANCE_CA_CERT_FILE` | No | - | - |
+| `VT_INSTANCE_CA_CERT_FILE` | Path to a file with PEM-encoded CA certificate(s) to verify the TLS certificate of VictoriaTraces with, instead of the system CA bundle. The file is re-read automatically, so CA rotation does not need a restart. Cannot be used with `VT_INSTANCE_CA_CERT` | No | - | - |
+| `MCP_PASSTHROUGH_HEADERS`  | HTTP header names to forward from incoming MCP requests to VictoriaTraces (comma-separated list). Overrides `VT_INSTANCE_HEADERS` on collision. Only applies in `sse`/`http` modes. | No | - | - |
 | `VT_DEFAULT_TENANT_ID`     | Default tenant ID used when tenant is not specified in requests (format: `AccountID:ProjectID` or `AccountID`) | No       | `0:0`            | -                      |
 | `MCP_SERVER_MODE`          | Server operation mode. See [Modes](#modes) for details. | No | `stdio` | `stdio`, `sse`, `http` |
 | `MCP_LISTEN_ADDR`          | Address for SSE or HTTP server to listen on             | No | `localhost:8081` | -                      |
 | `MCP_DISABLED_TOOLS`       | Comma-separated list of tools to disable                | No | -      | -                      |
 | `MCP_HEARTBEAT_INTERVAL`   | Defines the heartbeat interval for the streamable-http protocol. <br /> It means the MCP server will send a heartbeat to the client through the GET connection, <br /> to keep the connection alive from being closed by the network infrastructure (e.g. gateways) | No | `30s`  | -                      |
 | `MCP_LOG_FORMAT`           | Log output format                                                                                                                                                                                                                                                   | No | `text` | `text`, `json`         |
-| `MCP_LOG_LEVEL`            | Minimum log level                                                                                                                                                                                                                                                   | No | `info` | `debug`, `info`, `warn`, `error` |
+| `MCP_LOG_LEVEL`            | Minimum log level. `debug` also logs MCP request and result payloads                                                                                                                                                                                                | No | `info` | `debug`, `info`, `warn`, `error` |
+| `MCP_INSTRUCTIONS_OVERRIDE` | Text that fully replaces the default MCP server instructions sent to clients. Useful for tailoring the server to a particular instance (environment, tenants, naming conventions, etc.) | No | - | - |
+| `MCP_AUTH_TOKEN`           | Bearer token for authenticating incoming MCP requests. Clients must send `Authorization: Bearer <token>`. Public paths (`/health/*`, `/metrics`, `/`, static assets) are excluded from authentication. Only applies in `sse`/`http` modes. | No | - | - |
 
 ### Modes
 
@@ -140,9 +146,15 @@ More info about traqnsports you can find in MCP docs:
 ```bash
 export VT_INSTANCE_ENTRYPOINT="https://localhost:10428"
 
+# Require clients to send "Authorization: Bearer <token>" (optional, only for sse/http modes)
+export MCP_AUTH_TOKEN="your-secret-token"
+
 # Custom headers for authentication (e.g., behind a reverse proxy)
 # Expected syntax is key=value separated by commas
 export VT_INSTANCE_HEADERS="<HEADER>=<HEADER_VALUE>,<HEADER>=<HEADER_VALUE>"
+
+# Forward specific headers from incoming MCP requests to VictoriaTraces (sse/http modes only)
+export MCP_PASSTHROUGH_HEADERS="X-Token,X-Access-Key"
 
 # Server mode
 export MCP_SERVER_MODE="sse"
@@ -217,6 +229,64 @@ claude mcp add victoriatraces -- /path/to/mcp-victoriatraces \
 ```
 
 See [Claude Code MCP docs](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/tutorials#set-up-model-context-protocol-mcp) for more info.
+
+### Codex
+
+Codex CLI and the IDE extension use the same MCP configuration file: `~/.codex/config.toml`
+(or `.codex/config.toml` in a trusted project).
+
+Run the command:
+
+```sh
+codex mcp add victoriatraces \
+  --env VT_INSTANCE_ENTRYPOINT=<YOUR_VT_INSTANCE> \
+  --env VT_INSTANCE_BEARER_TOKEN=<YOUR_VT_BEARER_TOKEN> \
+  --env VT_INSTANCE_HEADERS="<HEADER>=<HEADER_VALUE>,<HEADER>=<HEADER_VALUE>" \
+  -- /path/to/mcp-victoriatraces
+```
+
+Or add the following to your Codex `~/.codex/config.toml` file:
+
+```toml
+[mcp_servers.victoriatraces]
+command = "/path/to/mcp-victoriatraces"
+
+[mcp_servers.victoriatraces.env]
+VT_INSTANCE_ENTRYPOINT = "<YOUR_VT_INSTANCE>"
+VT_INSTANCE_BEARER_TOKEN = "<YOUR_VT_BEARER_TOKEN>"
+VT_INSTANCE_HEADERS = "<HEADER>=<HEADER_VALUE>,<HEADER>=<HEADER_VALUE>"
+```
+
+If you run the server in Streamable HTTP mode, you can register it with:
+
+```sh
+codex mcp add victoriatraces --url http://localhost:8081/mcp
+```
+
+See [Codex MCP docs](https://developers.openai.com/codex/mcp) for more info.
+
+### OpenCode
+
+Add the following to your OpenCode config file in `~/.config/opencode/opencode.json`:
+
+```json
+{
+  "mcp": {
+    "victoriatraces": {
+      "type": "local",
+      "command": ["/path/to/mcp-victoriatraces"],
+      "enabled": true,
+      "environment": {
+        "VT_INSTANCE_ENTRYPOINT": "<YOUR_VT_INSTANCE>",
+        "VT_INSTANCE_BEARER_TOKEN": "<YOUR_VT_BEARER_TOKEN>",
+        "VT_INSTANCE_HEADERS": "<HEADER>=<HEADER_VALUE>,<HEADER>=<HEADER_VALUE>"
+      }
+    }
+  }
+}
+```
+
+See [OpenCode MCP docs](https://opencode.ai/docs/mcp-servers/) for more info.
 
 ### Visual Studio Code
 
@@ -372,6 +442,20 @@ These are just examples at the moment, the prompt library will be added to in th
 | Prompt          | Description                                             |
 |-----------------|---------------------------------------------------------|
 | `documentation` | Search VictoriaTraces documentation for specific topics |
+
+## FAQ
+
+### How to use one MCP server instance for several VictoriaTraces instances?
+
+Set `MCP_PASSTHROUGH_HEADERS` on the MCP server and put [vmauth with header-based routing](https://docs.victoriametrics.com/victoriametrics/vmauth/#routing-by-header) in front of your VictoriaTraces instances.
+Each MCP client then sends its own header value in its config, and vmauth routes the request to the matching instance.
+
+### Which headers win when the same header is set in several places?
+
+Headers listed in `MCP_PASSTHROUGH_HEADERS` override the same headers from `VT_INSTANCE_HEADERS`.
+A forwarded `Authorization` header also replaces the one built from `VT_INSTANCE_BEARER_TOKEN`.
+
+The `AccountID` and `ProjectID` headers are the exception. The server always sets them from the `tenant` tool argument or from `VT_DEFAULT_TENANT_ID`, so forwarding them from the client has no effect.
 
 ## Roadmap
  

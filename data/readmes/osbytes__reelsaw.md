@@ -42,7 +42,7 @@ Pure TypeScript. Any AI vendor via the [AI SDK](https://ai-sdk.dev). One-step de
 <p align="center">
   <img src="docs/assets/editor.png" alt="Clip editor with 9:16 preview, captions panel, and multi-lane timeline" width="450">
   &nbsp;
-  <img src="docs/assets/transcript-fixes.png" alt="Transcript with filler cuts and the fixes list" width="450">
+  <img src="docs/assets/transcript-fixes.png" alt="Transcript with a name fix open and the fixes list" width="450">
 </p>
 
 ## Features
@@ -850,4 +850,4 @@ cp .env.example .env   # set DATABASE_URL=postgres://reelsaw:reelsaw@localhost:5
 pnpm dev               # server on :3000 (tsx watch), web on :5173 (vite, proxies /api and /media)
 ```
 
-Requires ffmpeg, ffprobe and yt-dlp on your PATH for
+Requires ffmpeg, ffprobe and yt-dlp on your PATH

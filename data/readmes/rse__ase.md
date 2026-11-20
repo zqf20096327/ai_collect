@@ -375,26 +375,30 @@ see whether **ASE** is right for you:
 - **Collaborative Brainstorming**:
   You want to figure out *what* to build before *how*, by diverging on
   a broad space of ideas and then converging through clustering and
-  scoring into a recommended direction?
+  scoring into a recommended direction, optionally grounded in your
+  project artifacts and Web facts?
   &rarr; [`/ase-meta-brainstorm`](plugin/skills/ase-meta-brainstorm/help.md)
   `an offline-first sync layer for the mobile app`
 
 - **Root-Cause Analysis**:
   You want to understand the reason for a fact with the help of the
-  "Five-Whys" root-cause determination method?
+  "Five-Whys" root-cause determination method, optionally grounded in
+  your project artifacts and Web facts?
   &rarr; [`/ase-meta-why`](plugin/skills/ase-meta-why/help.md)
   `is the Decibel (dB) unit a logarithmic one?`
 
 - **Devil's Advocate Challenge**:
   You want a thesis or statement relentlessly challenged and criticised,
-  and finally resolved into a balanced Hegelian synthesis?
+  and finally resolved into a balanced Hegelian synthesis, optionally
+  backed by evidence from your project artifacts and Web facts?
   &rarr; [`/ase-meta-diaboli`](plugin/skills/ase-meta-diaboli/help.md)
   `The Decibel (dB) is an intuitive unit.`
 
 - **Steelman Argument**:
   You want a thesis or statement charitably strengthened with the
   strongest possible case, and finally consolidated into a fortification
-  argument?
+  argument, optionally backed by evidence from your project artifacts
+  and Web facts?
   &rarr; [`/ase-meta-steelman`](plugin/skills/ase-meta-steelman/help.md)
   `ASE is one of the best Anthropic Claude Code CLI add-ons.`
 
@@ -436,7 +440,8 @@ see whether **ASE** is right for you:
 
 - **Multi-Criteria Decision Matrices**:
   You want to be supported in the evaluation of alternatives with the
-  methodological help of a weighted multi-criteria decision matrix?
+  methodological help of a weighted multi-criteria decision matrix,
+  optionally grounded in your project artifacts and Web facts?
   &rarr; [`/ase-meta-evaluate`](plugin/skills/ase-meta-evaluate/help.md)
   `Vue vs. React vs. Angular, focus on TypeScript support and extensibility`
 

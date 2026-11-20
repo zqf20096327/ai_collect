@@ -186,7 +186,7 @@ use_frameworks! :linkage => :static
 target 'YourApp' do
   pod 'XmaxSDK',
       :git => 'https://github.com/Xmax-AI/XmaxSDK-MacOS.git',
-      :tag => '1.1.4'
+      :tag => '1.1.5'
 end
 
 post_install do |installer|
@@ -207,7 +207,7 @@ pod install --repo-update
 ### Manual
 
 Download
-[`XmaxSDK-1.1.4.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.4/XmaxSDK-1.1.4.xcframework.zip)
+[`XmaxSDK-1.1.5.xcframework.zip`](https://github.com/Xmax-AI/XmaxSDK-MacOS/releases/download/1.1.5/XmaxSDK-1.1.5.xcframework.zip)
 and add the SDK and its required dependencies to your Xcode target.
 
 <br>
@@ -237,7 +237,10 @@ let videoView = XmaxRealtimeDualVideoView(frame: view.bounds)
 view.addSubview(videoView)
 
 // Create a camera stream and bind the preview
-let localStream = try await realtime.createLocalCameraStream()
+let localStream = try await realtime.createLocalCameraStream(
+    videoFormat: .resolution1920x1080,
+    camera: .position(.front)
+)
 videoView.localTrack = localStream.videoTrack
 
 // Once the preview is ready, start generation and display the result

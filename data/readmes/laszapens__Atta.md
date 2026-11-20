@@ -11,15 +11,19 @@ numbers back (bounding box, volume, wall thickness, topology) instead of having
 to judge a screenshot, and it can confirm the part is a closed solid before it
 says it's done.
 
-**Current release: atta-1.2.2beta** (`1.2.2b3` on the Python side,
-`1.2.2-beta.3` for the plugin packages). 12 tools, 23 recipes, 47 feature ops.
-Blender is optional.
+**Current release: atta-1.2.3beta** (`1.2.3b1` on the Python side,
+`1.2.3-beta.1` for the plugin packages). 12 tools, 46 recipes, 56+ feature ops,
+53 materials. Blender is optional.
 
-New in this beta: rational NURBS patches, exact CAD fillets/chamfers with
-matching STEP output, bounded fields, oriented module assembly, and a set of
-bio-inspired morphology ops. Cameras, textures and appearance moved out into a
-separate program, `basid` (see [BASID.md](docs/BASID.md)). Full details and
-known limits are in the [release notes](docs/RELEASE-1.2.2beta.md).
+New in this beta: 46 closed recipes across 11/12 categories, 56+ feature ops,
+3D metrology (`self_intersection` SIR, `dangling_edge_length_mm`,
+`flux_enclosure_error`) & 3D diff (`chamfer_mm`, `hausdorff_p95_mm`,
+`volumetric_iou`), 2D DXF/SVG engineering drawings (`dxf`, `svg_drawing`),
+declarative 2D sketch `segments` + KCL-style face `tags` / `common_edge_of`,
+locate-then-infill `patch`/`preflight` graph editing, `stability` design rule,
+and Antigravity host integration. Cameras, textures and appearance live in the
+separate `basid` program (see [BASID.md](docs/BASID.md)). Full details and
+known limits are in the [release notes](docs/RELEASE-1.2.3beta.md).
 
 ## How it works
 
@@ -57,7 +61,7 @@ Needs **Python ≥ 3.10**. The core dependencies (`numpy`, `scipy`, `trimesh`,
 
 ```bash
 python3 -m atta doctor --deep                 # 1. check the environment
-python3 -m atta catalog --verbose             # 2. list what it can build (23 recipes)
+python3 -m atta catalog --verbose             # 2. list what it can build (46 recipes)
 python3 -m atta model --recipe product.mug    # 3. build a draft (well under a second)
 python3 -m atta describe --wall               # 4. read the measurements
 python3 -m atta perceive --res 24             # 5. look at it as ASCII, no render
@@ -101,24 +105,30 @@ Each CLI verb is also exposed as an agent tool with an `atta_` prefix.
 |---|---|
 | `atta_doctor` | Environment and capability check. Run this first. |
 | `atta_catalog` | Lists recipes, feature ops, materials, views and formats, with parameter schemas. |
-| `atta_spec` | `validate` / `propose` / `compile` / `schema` for Spec v3 documents. Doesn't build geometry. |
-| `atta_model` | Builds from a recipe, a spec or a feature graph. `patches=` edits an existing spec. |
+| `atta_spec` | `validate` / `preflight` / `propose` / `compile` / `patch` / `schema` for Spec v3 documents. Doesn't build geometry. |
+| `atta_model` | Builds from a recipe, a spec or a feature graph. `patches=` edits recipe params or graph/assembly nodes. |
 | `atta_variant` | Samples the parameter space, or solves for target values of measured metrics. |
-| `atta_describe` | Measurements, spatial probes, ASCII perception, construction trace, silhouette diff. |
+| `atta_describe` | Measurements (incl. SIR/DangEL/FluxEE), spatial probes, ASCII perception, trace, 2D+3D diff (`chamfer_mm`, `volumetric_iou`). |
 | `atta_verify` | Returns the verdict and a receipt you can keep. |
 | `atta_preview` | Studio and diagnostic renders plus image stats. Needs Blender. |
-| `atta_deliver` | Verifies, then exports GLB/OBJ/STL/BLEND (and analytic STEP for part of the graph ops) with a manifest. |
+| `atta_deliver` | Verifies, then exports GLB/OBJ/STL/BLEND, 2D `dxf`/`svg_drawing`, and analytic STEP for the supported graph subset. |
 | `atta_run` | Runs a multi-step pipeline in one call, passing `model_id` between steps. |
 | `atta_conjure` | Generates a parametric build from an archetype, and records where each value came from. |
-| `atta_design` | Design-rule and manufacturing checks, kept separate from geometric verification. |
+| `atta_design` | Design-rule checks (`stability`, `printability`, `moldability`, `machinability`, etc.), separate from geometric validity. |
 
 ## Beyond primitives
 
-- **Exact CAD**: geometric edge selection, shared OCCT tessellation, and STEP
-  built from the same `fillet`/`chamfer` construction. See [CAD_FEATURES.md](docs/CAD_FEATURES.md).
-- **NURBS and fields**: sampled rational patches and bounded composable fields,
-  with error and budget reported. See [NURBS.md](docs/NURBS.md) and
-  [FIELD_TREE.md](docs/FIELD_TREE.md).
+- **Exact CAD & 2D sketches**: typed 2D `segments` (`line`/`arc`/`tangent_arc`/`circle`),
+  KCL-style face `tags` + `common_edge_of` / `on_face` / `from_feature` edge
+  selection, shared OCCT tessellation, and STEP built from the same
+  `fillet`/`chamfer` construction. See [CAD_FEATURES.md](docs/CAD_FEATURES.md).
+- **2D engineering drawings**: `deliver(formats=["dxf","svg_drawing"])` exports
+  layered DXF (`VISIBLE`/`HIDDEN`/`CENTER`/`ANNOTATION`) and 3-view + iso SVG
+  sheets using OCCT HLR when B-rep applies or pure-numpy mesh HLR fallback.
+- **NURBS, fields & grammars**: sampled rational patches, bounded composable
+  fields (`field_tree`), and procedural `shape_grammar`/`lsystem` ops with error
+  and budget reported. See [NURBS.md](docs/NURBS.md),
+  [FIELD_TREE.md](docs/FIELD_TREE.md), and [GRAMMAR.md](docs/GRAMMAR.md).
 - **Modules and assemblies**: oriented ports, deterministic attach, mates/DOF,
   collision checks, and mixed exact/mesh STEP. See [MODULE_ASSEMBLY.md](docs/MODULE_ASSEMBLY.md).
 - **Bio morphology**: capsid, diatom, neuron, valve, lattice-shell and ring-stack
@@ -175,13 +185,16 @@ python3 -m atta model --spec-file examples/bracket/spec.json
 python3 -m atta deliver --formats step          # analytic B-rep, no Blender needed
 ```
 
-The 47 ops cover primitives, `revolve`/`loft`/`loft2`/`sweep`/`sweep2`, Coons and
-Gordon patches, `nurbs_surface`, `extrude`, `thicken`, booleans, patterns,
-`transform`/`mirror`, `fillet`/`chamfer`, `offset`/`repair`/`subdivide`, implicit
-`gyroid`/`sdf`/`sdf_blend`/`field_tree`, text, and the bio morphology set
-(`capsid`, `branch_tree`, `pyramidal_neuron`, `diatom_frustule`, `perforated_valve`,
-`perforated_cylinder`, `lattice_shell`, `pore_field_shell`, `ring_stack`).
-Arguments can reference parameters with `{"$param": "w"}` or `{"$expr": "w/2 + 4"}`.
+The 56+ ops cover primitives (`box`, `cylinder`, `sphere`, `cone`, `torus`,
+`polyhedron`, `heightmap`), `revolve`/`loft`/`loft2`/`sweep`/`sweep2`/`pipe`,
+Coons and Gordon patches, `nurbs_surface`, `extrude`/`projection_extrude`,
+`thicken`, booleans + `hull`/`minkowski`, patterns, `transform`/`mirror`/
+`deform`/`morph`, `fillet`/`chamfer`, `offset`/`repair`/`subdivide`, implicit
+`gyroid`/`sdf`/`sdf_blend`/`field_tree`, `shape_grammar`/`lsystem`, text, and
+the bio morphology set (`capsid`, `branch_tree`, `pyramidal_neuron`,
+`diatom_frustule`, `perforated_valve`, `perforated_cylinder`, `lattice_shell`,
+`pore_field_shell`, `ring_stack`, `skeleton`, `silhouette`). Arguments can
+reference parameters with `{"$param": "w"}` or `{"$expr": "w/2 + 4"}`.
 `atta_catalog --verbose` lists the required and optional keys for every op.
 
 The third kind, `assembly`, adds `parts[]`, ports and 13 mate types. It's solved
@@ -234,6 +247,17 @@ subdirectory directly also works on pnpm 9+, but you shouldn't need it:
 dsh plugin --profile web add 'https://github.com/laszapens/Atta.git#path:/plugin'
 ```
 
+### Antigravity
+
+```bash
+python3 -m atta.agent.install antigravity --print    # preview plugin.json + mcp_config.json
+python3 -m atta.agent.install antigravity --create   # install/sync ~/.gemini/config/plugins/atta
+```
+
+This writes `plugin.json` (from [`plugins/antigravity/plugin.json`](plugins/antigravity/plugin.json)),
+`mcp_config.json` (with absolute Python, `ATTA_ROOT`, and `PYTHONPATH`),
+`assets/logo.svg`, and syncs `skills/atta/` cleanly without touching `_atta/`.
+
 ### ZCode
 
 You can either use the standalone MCP entry above (enough to get the tools), or
@@ -272,6 +296,7 @@ agents, so don't expose the port.
 | `doctor`, `catalog`, `spec` | yes | yes |
 | `model`, `variant`, `describe`, `perceive`, `verify`, `run` | yes | yes |
 | `deliver --formats step` (graph specs + `build123d`) | yes | yes |
+| `deliver --formats dxf,svg_drawing` | yes (OCCT HLR or `mesh_hlr`) | yes |
 | `deliver --formats glb,obj,stl,blend` | no (each file reports `blender_unavailable`, `status: "partial"`) | yes |
 | `preview` (any mode) | no (`blender_unavailable`) | yes |
 
@@ -289,7 +314,7 @@ rather than falling back to another one. `doctor` shows what it found.
 |---|---|
 | `blender_unavailable` | Blender isn't installed or isn't on `PATH`. Geometry, measurements, verify and `perceive` still work. You only need Blender (or `ATTA_BLENDER`) for renders and mesh export; `deliver --formats step` doesn't need it. |
 | `no_models` | No model in the workspace yet, or `ATTA_HOME` points somewhere else. Run `model` first, or pass a `model_id` from an earlier result. |
-| `unknown_recipe` | Typo in the id. The error's `fix` lists all 23 valid ids; `catalog` shows their parameters. |
+| `unknown_recipe` | Typo in the id. The error's `fix` lists all 46 valid ids; `catalog` shows their parameters. |
 | Build returns `status: "repaired"` | A parameter was out of range and got clamped. Check `applied_patches` / `issues`: the model you got isn't exactly what you asked for. |
 | `deliver` returns `status: "blocked"` | `verify` didn't pass. Fix the first item in `verify.issues` (it has a `fix`) and rebuild. `degraded` needs `allow_degraded=true`. |
 | Host plugin can't `import atta` | The host uses a different Python than your venv. Point `ATTA_PYTHON` at the venv's python, or run `pip install -e .` with the host's interpreter. |

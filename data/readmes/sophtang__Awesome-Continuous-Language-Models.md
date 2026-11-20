@@ -5,7 +5,7 @@
 **The paper collection for our survey, *A Survey on Continuous Diffusion and Flow Language Models*.**
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-![Papers](https://img.shields.io/badge/papers-137-blue)
+![Papers](https://img.shields.io/badge/papers-139-blue)
 [![alphaXiv](https://img.shields.io/badge/alphaXiv-Survey-b31b1b)](https://www.alphaxiv.org/abs/2611.continuous-diffusion-flow-language-models)
 [![Project Page](https://img.shields.io/badge/Project-Page-blue)](https://continuous-lm.github.io/)
 
@@ -78,11 +78,12 @@ Papers added after the survey's literature cutoff (November 2, 2026) will appear
 
 | Added | Paper | Links | Family |
 |:--|:--|:--|:--|
-|  | No papers yet. |  |  |
+| 2026‑11‑20 | <b>ChainFlow</b>: Few-Step Latent Flow Matching for Speculative Decoding | <a href="https://arxiv.org/abs/2611.08669">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2611.08669">alphaXiv</a> | 🧭 Guidance &amp; inference |
+| 2026‑11‑20 | <b>StepTune</b>: A Step in the Right Place: Understanding and Optimizing Timestep Placement in Continuous Diffusion Language Models | <a href="https://arxiv.org/abs/2610.15527">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.15527">alphaXiv</a> · <a href="https://github.com/collapsar-z/StepTune-reproducibility"><img src="https://img.shields.io/github/stars/collapsar-z/StepTune-reproducibility?style=social&label=Code" alt="Code"></a> | 🧭 Guidance &amp; inference |
 
 ## 📚 More papers
 
-These are the remaining 114 papers, grouped by model family and listed newest first. Click a family to open its table.
+These are the remaining 116 papers, grouped by model family and listed newest first. Click a family to open its table.
 
 <details>
 <summary><b>🌊 Vocabulary embeddings</b> (12 papers)</summary>
@@ -225,15 +226,17 @@ These are the remaining 114 papers, grouped by model family and listed newest fi
 </details>
 
 <details>
-<summary><b>🧭 Guidance &amp; inference</b> (14 papers)</summary>
+<summary><b>🧭 Guidance &amp; inference</b> (16 papers)</summary>
 <br>
 
 | Date | Paper | Links | Venue |
 |:--|:--|:--|:--|
+| 2026‑11‑05 | <b>ChainFlow</b>: Few-Step Latent Flow Matching for Speculative Decoding | <a href="https://arxiv.org/abs/2611.08669">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2611.08669">alphaXiv</a> | arXiv 2026 |
 | 2026‑10‑30 | <b>RangeSWA</b>: Training-Free Length Extrapolation for Continuous Diffusion Language Models | <a href="https://arxiv.org/abs/2610.42084">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.42084">alphaXiv</a> | arXiv 2026 |
 | 2026‑10‑21 | <b>GRAFT</b>: Restoring the Missing Sampling Interface in Continuous Diffusion Language Models | <a href="https://arxiv.org/abs/2610.29136">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.29136">alphaXiv</a> | arXiv 2026 |
 | 2026‑10‑17 | <b>FlashMap</b>: Flow Map Speculative Decoding | <a href="https://arxiv.org/abs/2610.24365">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.24365">alphaXiv</a> · <a href="https://github.com/al-jshen/flashmap"><img src="https://img.shields.io/github/stars/al-jshen/flashmap?style=social&label=Code" alt="Code"></a> | arXiv 2026 |
 | 2026‑10‑13 | <b>Verifier Backprop</b>: Backpropagating Verifier Rewards Through Continuous Flow Language Models | <a href="https://arxiv.org/abs/2610.19080">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.19080">alphaXiv</a> | arXiv 2026 |
+| 2026‑10‑11 | <b>StepTune</b>: A Step in the Right Place: Understanding and Optimizing Timestep Placement in Continuous Diffusion Language Models | <a href="https://arxiv.org/abs/2610.15527">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.15527">alphaXiv</a> · <a href="https://github.com/collapsar-z/StepTune-reproducibility"><img src="https://img.shields.io/github/stars/collapsar-z/StepTune-reproducibility?style=social&label=Code" alt="Code"></a> | arXiv 2026 |
 | 2026‑10‑09 | <b>DoubleCat / SemiCat</b>: On the Design Space of Continuous Diffusion Language Models | <a href="https://arxiv.org/abs/2610.13834">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2610.13834">alphaXiv</a> | arXiv 2026 |
 | 2026‑09‑16 | <b>Probe Guidance</b>: How to Guide Your Language Flow | <a href="https://arxiv.org/abs/2609.19356">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2609.19356">alphaXiv</a> | arXiv 2026 |
 | 2026‑08‑23 | <b>Untied Self-Cond.</b>: Improving Few-Step Language Flows with Untied Self-Conditioning | <a href="https://arxiv.org/abs/2608.22244">arXiv</a> · <a href="https://www.alphaxiv.org/abs/2608.22244">alphaXiv</a> | arXiv 2026 |

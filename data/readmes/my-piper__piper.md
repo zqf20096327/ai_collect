@@ -105,6 +105,19 @@ make up
 cp backend/.env.template backend/.env
 ```
 
+Local object storage uses [SeaweedFS](https://github.com/seaweedfs/seaweedfs/blob/4.53/README.md), started by `make up` with data persisted in the
+`seaweedfs-data` Docker volume. It creates the `piper-media`, `assets`, `artefacts`,
+`outputs` and private `piper-registry` buckets on startup. The development S3
+credentials in `tools/compose/seaweedfs/s3.json` match `backend/.env.template`.
+
+For an existing `backend/.env`, change `S3_ENDPOINT_URL` to
+`http://127.0.0.1:8333`, set `S3_DEFAULT_BUCKET_NAME=piper-media`, and keep
+`S3_BASE_URL=http://localhost/storage`.
+Restart backend processes after changing their environment. The S3 API is
+bound to localhost; nginx serves anonymous media reads under `/storage/`.
+Package code requires signed S3 requests and is served to Deno by the Package
+Registry, rather than through public media URLs.
+
 #### Apply migrations
 
 ```shell
@@ -123,31 +136,24 @@ Select and start "-- all --" debug configuration.
 
 #### From terminal
 
-##### Run socket server
+Keep `make up` running in one terminal, then start everything else in another:
 
 ```shell
-cd backend
-npm run sockets
-npm run server
-./worker.sh -i
+make dev
 ```
 
-##### Run backend
+`make dev` runs the backend processes (server, worker, periodic, sockets) and the frontend dev server in the foreground. Ctrl-C stops them all.
+
+To run components one at a time, in separate terminals:
 
 ```shell
-cd backend && npm run server
-```
-
-##### Run workers
-
-```shell
-cd backend && ./worker.sh
-```
-
-##### Run frontend
-
-```shell
-cd frontend && npm start
+make run-backend    # server, worker, periodic and sockets, with labeled logs
+make run-server
+make run-worker     # all workers; a subset: make run-worker WORKERS="process_rapid_nodes"
+make run-periodic
+make run-sockets
+make run-oauth      # optional, only for OAuth sign-in
+make run-frontend
 ```
 
 #### After start services
@@ -167,7 +173,7 @@ make schemas
 #### Add admin user
 
 ```shell
-npm --prefix backend run cli users add admin admin@piper.my admin admin
+npm --prefix backend run cli users add admin admin@piper.my admin123 admin
 ```
 
 ## CLI

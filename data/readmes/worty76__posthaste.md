@@ -127,6 +127,13 @@ stays out of the way.
 
 Platform notes and architecture details: [docs/platform-notes.md](docs/platform-notes.md) and [docs/sync.md](docs/sync.md).
 
+## Code signing policy
+
+Free Windows code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+
+- **Builds and signing:** All official release installers are built from this repository's `main` branch via GitHub Actions (`.github/workflows/release.yml`). Releases are reviewed and approved by the repository maintainer (`@worty76`).
+- **Privacy:** Posthaste is local-first and collects no telemetry, analytics, or user data. All notes stay in a local SQLite database on your own machine.
+
 ## Licence
 
 MIT

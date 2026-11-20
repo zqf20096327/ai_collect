@@ -17,7 +17,7 @@ The market is full of single-purpose tools: CV builders, auto-appliers, intervie
 
 It's not a CV tool with extras. It covers six things, and it decides which one you need by talking to you:
 
-- **📋 Benefits & the legal clock** *(Bulgaria-specific)* — Are you owed unemployment benefit, how much, and by when must you act? It works out your **actual** Бюро по труда deadline (7 working days) and НОИ deadline (3 months) from your termination date, estimates your benefit, and orients you on severance and the electronic trudova kniga at НАП. The dates and amounts are computed deterministically and **verified against official НОИ/НАП sources** — never guessed.
+- **📋 Benefits & the legal clock** *(Bulgaria-specific)* — Are you owed unemployment benefit, how much, and by when must you act? It works out your **actual** Бюро по труда deadline (7 working days) and НОИ deadline (3 months) from your termination date, estimates your benefit, and orients you on severance and the electronic trudova kniga at НАП. It finds **your** Дирекция „Бюро по труда" from the address on your ID card (address, phone, hours, link, plus the online option). It covers **health insurance** after the layoff: who pays while you're on benefit, the minimum monthly contribution if you pay it yourself, your декларация обр. 7 and payment deadlines as real dates, and links to the right НАП pages. It also explains the **чл. 222, ал. 1 КТ** compensation and how it interacts with your unemployment benefit (pausing and resuming it at НОИ). The dates and amounts are computed deterministically and **verified against official НОИ/НАП sources** — never guessed.
 - **📄 CV / resume** — Build one from scratch or clean up what you have, tailor it to a specific posting, sanity-check it for ATS, and reframe the layoff honestly. You get a finished `.docx` **and** a `.pdf`.
 - **🎯 Job-search strategy** — A networking-first plan, a living application **tracker** the assistant maintains for you, and outreach drafts — so you're not just firing CVs into the void.
 - **🗣️ Interview practice** — Mock interviews with real feedback, the "why did you leave?" story worked out until it lands, and delivery.
@@ -56,6 +56,8 @@ You steer it in plain language. A few examples of what to say and what happens:
 |---|---|
 | „Съкратиха ме вчера, откъде да започна?" | Steadies you, then lays out the first days — with your benefit deadlines if the clock is ticking |
 | „Полагат ли ми се пари и до кога да се регистрирам?" | Works out eligibility, your **exact** Бюро/НОИ deadlines and a benefit estimate — verified against official sources |
+| „Кой ми плаща здравните осигуровки сега?" | Tells you who pays while you're on benefit, the minimum contribution if you pay it yourself, your обр. 7 deadline, and links to НАП |
+| „Къде да отида да се регистрирам?" | Finds the Бюро по труда for your address — address, phone, hours — and the online option |
 | „Нямам CV, помогни ми да си направя" / „Оправи ми автобиографията" | Builds your CV from scratch (or cleans up the one you have) into an ATS-friendly `.docx` + `.pdf` — no job ad needed |
 | „Помогни ми да стегна CV-то за тази обява" *(paste the job ad)* | Takes your CV and tailors it to that specific posting, ATS-clean, as `.docx` + `.pdf` |
 | „Имам интервю в петък, дай да порепетираме" | Runs a mock interview with feedback and helps you tell the layoff story |
@@ -69,6 +71,8 @@ Everything produced **for you** lives in a private, **git-ignored** `Personal/<d
 - your tailored **CV** (`.docx` + `.pdf`)
 - a job-search **tracker**
 - **interview** notes
+
+**Coming back later.** Close the session and open a new one whenever you like: the assistant finds your dossier, greets you by name, says where things stand (your stage, next step, any open deadline) and asks only what's new. It doesn't start over.
 
 ## CV Only
 

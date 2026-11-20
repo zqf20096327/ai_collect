@@ -6,7 +6,7 @@
 >
 > Fresh papers land every day, grouped by topic so you can pick what matters to you and skim the rest.
 
-**6591 papers** across **141 days** · **1086** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
+**6617 papers** across **142 days** · **1094** flagged as notable (⭐) · Chronological log → [`papers.md`](./papers.md)
 
 **Star scale:** most papers carry no star. ⭐ = clearly notable; ⭐⭐ = exceptional (rare); ⭐⭐⭐ = landmark (very rare — often zero per day).
 
@@ -41,6 +41,9 @@ Hand-picked work, including some of my own, that anchors the four topics this fe
 
 _LLMs simulating humans, personas, or societies for scientific study._
 
+- ⭐ [**A Foundation Model to Measure and Predict Human Behaviour**](https://arxiv.org/abs/2611.24830) — LLM foundation model fine-tuned to represent psychological constructs and simulate human behavior across 78 social science experiments with population statistics alignment. <sub>_Haoran Ye, 2026-11-19_</sub>
+- ⭐ [**ABSClaw: From Invented Worlds to Reality-Grounded Social Simulation**](https://arxiv.org/abs/2611.24517) — LLM-based framework grounding personas and environments in real survey/census/geospatial data to simulate large-scale populations, demonstrating behavioral fidelity and societal dynamics. <sub>_Shaobin He, 2026-11-19_</sub>
+- ⭐ [**MANGO Arena: Same Seeds, Different Chains Evaluating LLM Agents in a Disrupted Supply Chain**](https://arxiv.org/abs/2611.23613) — Multi-agent LLM supply-chain simulation studying emergent economic behavior (bullwhip effect) and agent rule adherence under coordination pressure. <sub>_Sara Amar, 2026-11-19_</sub>
 - ⭐ [**SimAI: Mechanistic User Simulation through Psychological Network Models**](https://arxiv.org/abs/2611.21808) — LLM-based user simulator representing humans (therapy patients) for behavioral study and clinical training purposes. <sub>_Cheng Li, 2026-11-18_</sub>
 - ⭐ [**Do Machines Learn Deviance From Their Peers? A Randomized Test of Differential Association With AI Agents**](https://arxiv.org/abs/2611.18098) — Uses LLM agents in multi-agent teams to simulate human social learning and deviance propagation, testing criminological theory through controlled behavioral experiment. <sub>_Murat Ozer, 2026-11-16_</sub>
 - ⭐ [**When Should Agents Remember? Falsification-Gated Self-Evolution for LLM Agents**](https://arxiv.org/abs/2611.14326) — Framework for safely integrating learned experiences into LLM agent memory via hypothesis testing, with explicit focus on reducing falsification failures and harmful updates—core alignment concern in <sub>_Runxuan Tang, 2026-11-11_</sub>
@@ -327,7 +330,4 @@ _LLMs simulating humans, personas, or societies for scientific study._
 - [**Large Language Models and Augmented Democracy**](https://arxiv.org/abs/2610.04412) — LLM-based digital twins simulate citizens' and lawmakers' political preferences; deliberation agents test emergent collective behavior; studies vulnerability to prompt-injection attacks on multi-agent <sub>_Jairo Gudiño-Rosero, 2026-10-06_</sub>
 - [**Mitigating Social Desirability Bias in Random Silicon Sampling**](https://arxiv.org/abs/2512.22725) — Uses LLMs to simulate human population responses via Silicon Sampling and systematically studies behavioral bias mitigation to improve alignment with real human survey data. <sub>_Sashank Chapala, 2026-10-06_</sub>
 - [**PB-GRPO: Learning Socially Adaptive LLM Agents from Persona-Driven Simulation with Preference-Batched GRPO**](https://arxiv.org/abs/2610.04132) — Paper uses LLM-based user simulators in a persona-driven simulation to train socially adaptive agents via preference-based RL, combining agent simulation with alignment-motivated post-training. <sub>_Jingquan Wang, 2026-10-06_</sub>
-- [**VIRENA: Virtual Arena for Research, Education, and Democratic Innovation**](https://arxiv.org/abs/2602.12207) — Platform enabling controlled behavioral experiments where LLM agents with personas interact with humans in realistic social media simulations for studying deliberation and human-AI dynamics. <sub>_Emma Hoes, 2026-10-06_</sub>
-- [**Who Keeps the Gains from Personal AI Assistants? Seller Adaptation and the Unassisted in a Language-Model Market Simulation**](https://arxiv.org/abs/2610.05823) — LLM-based agents simulate consumers, sellers, and assistants in an economic market to study emergent behavior and wealth distribution effects. <sub>_Haonan Huang, 2026-10-06_</sub>
-- [**CUEing User Simulators: Calibrated User Embeddings for Multi-Turn Benchmarking**](https://arxiv.org/abs/2610.02460) — Uses LLMs to simulate human users for multi-turn interactive benchmarking of AI agents, calibrating simulators to match real-user behavior and failure patterns. <sub>_Anjali Kantharuban, 2026-10-05_</sub>
-- [**EpiWorld: Grounding LLM Policy Agents in Epidemiological World Models**](https://arxiv.org/abs/2610.0
+- [**VIRENA: Virtual Arena for Research, Education, and Democratic Innovation**](https://arxiv.org/abs/2602.12207) — Platform enabling controlled behaviora

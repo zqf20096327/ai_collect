@@ -463,7 +463,7 @@ Creates a new note in Apple Notes.
 | `folder` | string | No | Folder to create the note in. Supports nested paths like `"Work/Clients"`. **The folder must already exist** — create it first with [`create-folder`](#create-folder). A smart folder is refused (see [`move-note`](#move-note)). Defaults to account root |
 | `account` | string | No | Account name (defaults to Notes.app's default account; matched exactly or by a *unique* prefix — an ambiguous prefix is refused). Must be an account Notes.app already has configured — see [`list-accounts`](#list-accounts) |
 | `format` | string | No | Content format: `"plaintext"` (default), `"html"`, or `"markdown"`. In all formats, the title is automatically prepended as the note's title line. In plaintext mode, newlines become `<br>`, tabs become `<br>`, and backslashes are preserved as HTML entities. `"markdown"` produces real Title/Heading/Subheading styles through a Shortcut; see [Markdown notes](#markdown-notes) |
-| `markdownRoute` | string | No | With `format: "markdown"` only: `"shortcut"` (default) or `"html"`. See [Markdown through HTML](#markdown-through-html) |
+| `markdownRoute` | string | No | With `format: "markdown"` only: `"shortcut"` (default) or `"html"`. When omitted on a Notes build whose Create Note action has no "Interpret as Markdown" option (macOS 26.6.2 / Notes 4.13), the server uses `"html"` and an explicit `"shortcut"` is refused; the response's `markdownRoute` says which route ran. See [Markdown through HTML](#markdown-through-html) |
 | `timeoutSeconds` | number | No | Whole seconds, 1–120, for each Notes.app automation step this call runs; overrides `APPLE_NOTES_MCP_TIMEOUT_MS` for this call only. A timed-out write is uncertain, not failed: read the note by id before any retry. Also accepted by `get-note-content`, `update-note`, `append-to-note`, `delete-note` and `move-note` |
 
 **Example (with inline textual hashtags):**
@@ -589,7 +589,12 @@ title line, with no seed line.
 ##### Markdown through HTML
 
 `markdownRoute: "html"` imports the same bounded Markdown subset without the
-Shortcut: the server converts it to HTML and creates the note through AppleScript,
+Shortcut. It is also the default on a Notes build whose Create Note action has
+no "Interpret as Markdown" option, such as macOS 26.6.2 (Notes 4.13), where the
+Shortcut would save the Markdown as literal text; the server detects that from
+Notes' App Intents metadata, `doctor` and `setup --check` warn about it, and
+[`shortcuts/README.md`](https://github.com/sweetrb/apple-notes-mcp/blob/main/shortcuts/README.md#notes-builds-without-interpret-as-markdown-337)
+has the detail (#337). The server converts it to HTML and creates the note through AppleScript,
 like `format: "html"`. It works in any account, accepts `tags`, and needs no
 Shortcut, but headings get the plain bold styling described in the known
 limitation above rather than real Heading and Subheading styles.
@@ -1622,26 +1627,4 @@ Lists all notes, optionally filtered by folder, date, and limit.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `account` | string | No | Account to list notes from (defaults to Notes.app's default account; exact or unique-prefix match) |
-| `folder` | string | No | Filter to notes in this folder only (supports nested paths like `"Work/Clients"`) |
-| `modifiedSince` | string | No | ISO 8601 date string to filter notes modified on or after this date (e.g., `"2025-01-01"`) |
-| `limit` | number | No | Maximum number of notes to return |
-| `includeRecentlyDeleted` | boolean | No | Also list notes in Recently Deleted, each flagged `inRecentlyDeleted: true` (default `false`) |
-
-**Example - All notes:**
-```json
-{}
-```
-
-**Example - Notes in a folder:**
-```json
-{
-  "folder": "Work"
-}
-```
-
-**Example - Recent notes with limit:**
-```json
-{
-  "modifiedSince": "2025-06-01",
-  "limit"
+| `account` | string | No | Account to list notes from (d

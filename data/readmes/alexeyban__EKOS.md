@@ -180,6 +180,12 @@ cannot check it"): right-click the .pkg → **Open** → **Open**, or System Set
 Security → **Open Anyway**. The checksums in `SHA256SUMS` and the signed build provenance below
 cover the installers too.
 
+**Plain ASCII output on Windows.** On Windows `ekos` writes its rules, dashes and arrows as ASCII
+(`-`, `--`, `->`), so `ekos doctor > log.txt` reads the same in any shell: PowerShell would decode
+the UTF-8 symbols with its own code page and turn `─` into `â”€`. Other text, such as paths and
+names, and JSON output are not changed. `EKOS_ASCII=0` keeps the symbols; `EKOS_ASCII=1` asks for
+ASCII on other systems.
+
 **Removing.** First `ekos uninstall` if you want to undo what setup did for you (the login entry,
 agent entries; `--purge --yes` also deletes your projects) — it leaves the program to the OS
 uninstaller and says how to run it. Then: Windows — Settings → Apps → Installed apps → EKOS →
@@ -1577,11 +1583,4 @@ conflict is also linked to the table its column belongs to, so a question about 
 it. The web console's **Conflicts** tab lists every conflict with each claim's file and line, lets a
 write-role user pick the right claim or mark both valid, and the graph rings objects with an open
 conflict (RFC 0174). On LedgerSMB: 3 conflicts — `user_preference` (re-created by a 1.9 migration)
-and 2 order-class labels where an API query names the counterparty (`customer`) rather than the
-order type. The detector first surfaced a CASE that swaps `'A'`↔`'L'` misread as a label; the
-extractor no longer reads a rewrite as a meaning. `[conflicts]
-enabled = false` restores the old behaviour.
-
-**Broken references across systems (RFC 0233).** Every name a routine, a view, a Kettle step, SQL
-built in a Java method or a dbt `source()` points at is resolved against every compiled relation —
-DDL, live cata
+and 2 order-class labels where an API query names the counterparty (`customer`) rather than th

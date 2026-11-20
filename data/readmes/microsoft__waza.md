@@ -179,8 +179,15 @@ results stay local and are not sent as product analytics. Events are retained
 for 30 days.
 
 To turn it off, use any one of: `WAZA_TELEMETRY_OPTOUT=1`, `DO_NOT_TRACK=1`,
-`--no-telemetry`, `waza telemetry disable`, or `telemetry.disabled: true` in
-`.waza.yaml`. Turning off telemetry does not change any other Waza behavior. Run
+`--no-telemetry`, `waza telemetry disable`, or this nested configuration in
+`.waza.yaml`:
+
+```yaml
+telemetry:
+  disabled: true
+```
+
+Turning off telemetry does not change any other Waza behavior. Run
 `waza telemetry status` to see the current state. See
 [docs/USAGE-TELEMETRY.md](docs/USAGE-TELEMETRY.md) for the closed event
 contract and the
@@ -1988,4 +1995,4 @@ older executables reject it before running. Results and tasks remain `1.x`,
 so existing result readers and the dashboard keep working. Optional `skill:`
 retains existing skill/custom-agent context and discovery precedence. Without
 a target, enabled eval skill directories or explicit task skill directories,
-scenarios disable ambient skill loading. Named disabled entries f
+scenarios disable ambien

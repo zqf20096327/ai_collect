@@ -12,7 +12,7 @@ combine contexts, or branch and save state for later use.
   <img src="https://raw.githubusercontent.com/LatentPort/latentport/main/docs/assets/latentport-ascii.gif" alt="LatentPort: programmable model state" width="640">
 </p>
 
-[Website](https://latentport.com) | [Get started](#get-started) | [State operations](#state-operations) | [Supported transformations](#supported-transformations) | [Cookbook](docs/cookbook.md) | [API](docs/api.md)
+[Website](https://latentport.com) | [Get started](#get-started) | [State operations](#state-operations) | [Supported transformations](#supported-transformations) | [vLLM](integrations/vllm/README.md) | [Cookbook](docs/cookbook.md) | [API](docs/api.md)
 
 ![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)
 [![PyPI](https://img.shields.io/pypi/v/latentport)](https://pypi.org/project/latentport/)
@@ -65,6 +65,8 @@ conversation. [State ownership and persistence](docs/api.md#memory-and-ownership
 
 ## Transfer working memory
 
+[LPBridge quickstart and supported model pairs](https://latentport.com/lpbridge).
+
 A bridge lets the target model continue from the source model's working memory.
 Pass the bridge repository to `lp.load()` to select the model pair.
 [Supported bridges](#supported-transformations)
@@ -81,6 +83,8 @@ with lp.load("latentport/LPBridge-Qwen3.5-4b-Qwen3.5-9b", backend="bf16") as por
 
 ## Compact working memory
 
+[LPCompact quickstart and benchmarks](https://latentport.com/lpcompact).
+
 LPCompact uses a learned selector to reduce attention KV storage while preserving
 original token positions, recurrent state and convolution state. After capturing
 a long history, compact its snapshot and continue with the same open model.
@@ -93,6 +97,15 @@ with model.session(compacted) as session:
 
 By default, compaction retains one eighth of attention KV once the snapshot has
 at least 65,536 retained positions. [Compaction guide](docs/compaction.md)
+
+### Serve LPCompact with vLLM
+
+All seven supported LPCompact base model profiles accept **BF16, NF4, and GGUF
+weights** in vLLM. BF16 is the default in the stock NVIDIA image. NF4 and GGUF
+require additional plugins and are experimental, with GPU qualification
+pending. All three formats use BF16 compute and a BF16 KV cache. The L40S
+benchmarks used BF16 weights.
+[vLLM setup and model profiles](integrations/vllm/README.md)
 
 ## Supported transformations
 
@@ -107,23 +120,27 @@ boundaries.
 
 For compaction, pass the base model ID to `lp.load_model()`. The runtime matches
 the selector to the snapshot. For combination, pass an LPCombine profile ID to
-`lp.load_model()` and use two snapshots from the same model and runtime. All six
-profiles support retained-token replay with BF16, NF4 and GGUF. Cache-only replay
-(`method="cache"`) depends on the profile and backend.
+`lp.load_model()` and use two snapshots from the same model and runtime.
 
-| Base model ID | LPCompact selector | LPCombine profile ID | LPCombine cache-only backends |
-| --- | --- | --- | --- |
-| `Qwen/Qwen3.5-4B` | [LPCompact-Qwen3.5-4B](https://huggingface.co/latentport/LPCompact-Qwen3.5-4B) | [`latentport/LPCombine-Qwen3.5-4B`](https://huggingface.co/latentport/LPCombine-Qwen3.5-4B) | BF16, NF4 |
-| `Qwen/Qwen3.5-9B` | [LPCompact-Qwen3.5-9B](https://huggingface.co/latentport/LPCompact-Qwen3.5-9B) | [`latentport/LPCombine-Qwen3.5-9B`](https://huggingface.co/latentport/LPCombine-Qwen3.5-9B) | BF16, NF4 |
-| `Qwen/Qwen3.8-27B` | [LPCompact-Qwen3.8-27B](https://huggingface.co/latentport/LPCompact-Qwen3.8-27B) | [`latentport/LPCombine-Qwen3.8-27b`](https://huggingface.co/latentport/LPCombine-Qwen3.8-27b) | NF4 |
-| `Qwen/Qwen3.8-Flash-Next` | [LPCompact-Qwen3.8-Flash-Next](https://huggingface.co/latentport/LPCompact-Qwen3.8-Flash-Next) | [`latentport/LPCombine-Qwen3.8-Flash-Next`](https://huggingface.co/latentport/LPCombine-Qwen3.8-Flash-Next) | BF16 |
-| `google/gemma-4-31B-it` | [LPCompact-Gemma-4-31B-it](https://huggingface.co/latentport/LPCompact-Gemma-4-31B-it) | [`latentport/LPCombine-Gemma-4-31B-it`](https://huggingface.co/latentport/LPCombine-Gemma-4-31B-it) | BF16 |
-| `Qwen/Qwen3-14B` | [LPCompact-Qwen3-14B](https://huggingface.co/latentport/LPCompact-Qwen3-14B) | [`latentport/LPCombine-Qwen3-14B`](https://huggingface.co/latentport/LPCombine-Qwen3-14B) | BF16 |
-| `Qwen/Qwen3.6-35B-A3B` | [LPCompact-Qwen3.6-35B-A3B](https://huggingface.co/latentport/LPCompact-Qwen3.6-35B-A3B) (BF16, NF4, GGUF) | — | — |
+| Base model ID | LPCompact selector | LPCompact backends | LPCombine profile ID | LPCombine backends | LPCombine legacy cache-only backends |
+| --- | --- | --- | --- | --- | --- |
+| `Qwen/Qwen3.5-4B` | [LPCompact-Qwen3.5-4B](https://huggingface.co/latentport/LPCompact-Qwen3.5-4B) | BF16, NF4, GGUF | [`latentport/LPCombine-Qwen3.5-4B`](https://huggingface.co/latentport/LPCombine-Qwen3.5-4B) | BF16, NF4, GGUF | BF16, NF4 |
+| `Qwen/Qwen3.5-9B` | [LPCompact-Qwen3.5-9B](https://huggingface.co/latentport/LPCompact-Qwen3.5-9B) | BF16, NF4, GGUF | [`latentport/LPCombine-Qwen3.5-9B`](https://huggingface.co/latentport/LPCombine-Qwen3.5-9B) | BF16, NF4, GGUF | BF16, NF4 |
+| `Qwen/Qwen3.8-27B` | [LPCompact-Qwen3.8-27B](https://huggingface.co/latentport/LPCompact-Qwen3.8-27B) | BF16, NF4, GGUF | [`latentport/LPCombine-Qwen3.8-27b`](https://huggingface.co/latentport/LPCombine-Qwen3.8-27b) | BF16, NF4, GGUF | NF4 |
+| `Qwen/Qwen3.8-Flash-Next` | [LPCompact-Qwen3.8-Flash-Next](https://huggingface.co/latentport/LPCompact-Qwen3.8-Flash-Next) | BF16, NF4, GGUF | [`latentport/LPCombine-Qwen3.8-Flash-Next`](https://huggingface.co/latentport/LPCombine-Qwen3.8-Flash-Next) | BF16, NF4, GGUF | BF16 |
+| `google/gemma-4-31B-it` | [LPCompact-Gemma-4-31B-it](https://huggingface.co/latentport/LPCompact-Gemma-4-31B-it) | BF16, NF4, GGUF | [`latentport/LPCombine-Gemma-4-31B-it`](https://huggingface.co/latentport/LPCombine-Gemma-4-31B-it) | BF16, NF4, GGUF | BF16 |
+| `Qwen/Qwen3-14B` | [LPCompact-Qwen3-14B](https://huggingface.co/latentport/LPCompact-Qwen3-14B) | BF16, NF4, GGUF | [`latentport/LPCombine-Qwen3-14B`](https://huggingface.co/latentport/LPCombine-Qwen3-14B) | BF16, NF4, GGUF | BF16 |
+| `Qwen/Qwen3.6-35B-A3B` | [LPCompact-Qwen3.6-35B-A3B](https://huggingface.co/latentport/LPCompact-Qwen3.6-35B-A3B) | BF16, NF4, GGUF | — | — | — |
+
+All LPCombine backends support replay from retained token IDs or from input
+embeddings captured in newer snapshots. The legacy cache-only column applies to
+older snapshots that lack the input-embedding cache.
 
 For a standalone GGUF model, pass the file as `model_path`. For split
 checkpoints, keep the shards together and pass the first file. Runtime
-requirements depend on the model and operation.
+requirements depend on the model and operation. LPCompact checks exact weight
+identity and requires `allow_unqualified=True` for compatible files outside its
+qualification catalog.
 [Compaction compatibility](docs/compaction.md#supported-weights) · [Combination API](docs/api.md#combine)
 
 ## Validation and performance
@@ -138,8 +155,6 @@ Published measurements describe specific checkpoints, hardware and workloads.
   [Compaction results](docs/lpcompact-qwen35-validation.json) · [Backend validation](docs/compaction-validation.json)
 
 ## Demos and documentation
-
-- Serve supported LPCompact text models with the [vLLM integration](integrations/vllm/README.md).
 
 - Chat through a supported bridge with the [chat example](examples/chat.py).
 - Query two saved snapshots with the [combination example](examples/combine.py).

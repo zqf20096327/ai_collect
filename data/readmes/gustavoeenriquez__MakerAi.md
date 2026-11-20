@@ -1,4 +1,4 @@
-# MakerAI Suite v3.8 — The AI Ecosystem for Delphi
+# MakerAI Suite v4.0 — The AI Ecosystem for Delphi
 
 🌐 **Official Website:** [https://makerai.cimamaker.com](https://makerai.cimamaker.com)
 📖 **Manual:** [https://www.gustavoenriquez.com/book-makerai](https://www.gustavoenriquez.com/book-makerai) — available in English and Spanish
@@ -36,462 +36,93 @@ Whether you need a simple one-provider integration or a multi-agent, multi-provi
 
 ---
 
-## 🚀 What's New in v3.9
+## 🚀 What's New in v4.0
 
-### OpenAI GPT-Live — full-duplex voice with delegation
-`TAiOpenAiLiveChat` (`gpt-live-1`, DriverName `OpenAiLive`) listens while it speaks: you can interrupt it, and it hands the heavy thinking to another model — a Responses model run by OpenAI (web search, your `TAiFunctions` and MCP tools executed locally) or **any `TAiChatConnection`** through `DelegateChat` (Claude, Ollama, an agent graph). Conversation turns are rebuilt from the session timeline, so overlapping speech no longer splits answers. Demo `092-GPTLiveVoice`: microphone, speaker, local functions, RAG over MCP with a read-only guardrail, anti-echo speaker mode and a quick guide. Tested live.
+### October 2026 model refresh — checked against the live APIs
+Every provider was compared with what its API actually serves today (not only its docs), and every model we could call was tested live from the Delphi drivers. Retired models stay usable as **aliases of their successors**, so forms and configurations saved with an old name keep working.
 
-### Jev decisions on local models (Ollama)
-Ollama 0.35+ serves the Jev contract at `/v1/systemone` with local decision models — `nimble`, `tev1` and Cloudflare's `clef`/`clef-flash`. `TAiJev` only needs `Url := 'http://localhost:11434/v1/'`; the eight Jev adapters gained `Url`, `TAiJev.Ask` takes images for Clef (PNG/JPEG/WebP), and the TypeSafe price is no longer charged on other servers. Tested with `nimble` (routing, prompt guard, batch labeling) and `clef` 27B on images.
+| Provider | New models | Retired → now an alias of |
+|----------|------------|---------------------------|
+| Anthropic | **`claude-haiku-5-5`** (1M context, $0.10/$0.50 up to 100K-token prompts), **`claude-fable-5-2`** ($8/$40, added in November) | `claude-sonnet-4-20250514` → `claude-sonnet-5-5`, `claude-opus-4-20250514` → `claude-opus-5-5` |
+| OpenAI | **`gpt-6.1-sol`** ($2/$10), **`gpt-6.1-terra`** ($1/$5) | `o3-pro` → `gpt-5.5-pro`, `o3/o4-mini-deep-research` → `gpt-6.1-sol`, `dall-e-2/3` → `gpt-image-1` |
+| Google | **`gemini-4-argon`**, **`gemini-nano-banana-2.1`**, `gemini-omni-1.1-flash` | `gemini-3.5-flash` → `3.6-flash`, `gemini-3.7-flash` → `3.8-flash`, `gemini-2.5-computer-use-preview` → `3.8-flash` |
+| Moonshot | **`kimi-k3.1-pro`**, `kimi-k3.1-pro-highspeed` | `kimi-k2.5`, `moonshot-v1-*` → `kimi-k3`; `kimi-latest` → `kimi-k3.1-pro` |
+| Zhipu / Z.ai | **`glm-5.3-flash`**, `glm-5.3-flashx` (multimodal, MIT weights) | — |
 
-### Memory leaks fixed
-An MCP server leaked every tool schema on each `tools/list` (it grew forever in production), the MCP client leaked the `tools/list` response on each `Initialize`, and `TAiRealtimeFactory` never freed its dictionary.
+Fixes found on the way (each one returned HTTP 400 or used the wrong setting):
+- **Claude Haiku 5.5** was sent down the legacy path (`budget_tokens` + `temperature`); it now uses adaptive thinking with `effort`, accepts mid-conversation `system` messages, and `RefusalFallbackModel` is skipped (Haiku 5.5 has no server-side fallback).
+- **OpenAI:** `tlNone` is sent as `low` to `gpt-6-astra` and `gpt-6.1-sol` (they reject `none`); `gpt-5.x-pro` only accepts `medium`/`high`/`xhigh`, so lower levels go up to `medium` and `tlMax` down to `xhigh`.
+- **Gemini 4 Argon** was routed to the Gemini 2.5 `thinkingBudget` path; the driver now picks `thinkingLevel` by model version.
+- **Kimi:** every current model (k2.6, k2.7, k3, k3.1) accepts only `temperature = 1` and `top_p = 0.95`; the driver no longer sends them.
+- **GLM:** `tlNone`/`tlMinimal`/`tlXHigh`/`tlMax` sent no `reasoning_effort`, so the API used `max`, the most expensive level.
+
+Tested live: Claude 7/7, OpenAI 9/9, Kimi + GLM + DeepSeek 12/13 (`kimi-k3.1-pro-highspeed` answered *engine overloaded*). Gemini was checked against the official docs only (no account).
+
+### MiniMax — new provider
+`TAiMiniMaxChat` (`DriverName = 'MiniMax'`, `@MINIMAX_API_KEY`) on MiniMax's OpenAI-compatible endpoint: `MiniMax-M3` (default; 1M context, image and video input), `MiniMax-M3.1-Flash` (tunable reasoning depth) and the M2.x family. Reasoning comes back in `reasoning_content` (`reasoning_split` is always on) and is re-sent in the history, as MiniMax requires. Thinking follows `cap_Reasoning`, except on M3.1-Flash, which cannot turn it off; `reasoning_effort` is only sent to M3.1-Flash. *Written against the official docs; not runtime-tested yet (no API key).*
+
+### Agents — a complete fluent API
+`AddEdge` now adds targets to an existing link (before it replaced it, so a fluent fan-out only ran its last branch), and the builder gained `AddNode`, `AddToolNode`, `AddExpressionEdge`, `AddFallbackEdge` and `SetJoinMode`, with construction errors raised as `EAiGraphError`. `TLLMNode` runs on the new protected `ExecuteNode`, has its own `Guardrails` and is owned by the manager. Forms saved with older versions load again: properties that are no longer published are read and applied (or dropped) instead of raising `EReadError`.
+
+### PPM — A2A agents as packages, and your own registry
+A2A defines the Agent Card (`/.well-known/agent-card.json`) but not where to find an agent. The PPM registry now works as that catalog: a new package type **`agent`** holds only the agent's card and its URL (`agent-card.json` + `pai.package` with `[agent] url`) — no code, the agent keeps running as a service.
+
+- **Publish** from the live agent: `ppm publish --desde-url http://host:port` reads its card and builds the package. The registry validates the card and indexes name, description and skills (`GET /v1/a2a/discover?q=`, `GET /v1/packages/:name/:version/card`).
+- **In code:** `TAiFunctions.SearchPPMAgents`, `GetAgentCardFromPPM` and `InstallAgentFromPPM` — the agent becomes one more function of the `TAiFunctions` (a `TAiA2AAgentTool`).
+- **AutoMCP:** with `uMakerAi.A2A.Client` in the project, `ppm_search` also lists agents, `ppm_install` recognises an `agent` package, and the model gets **`call_agent(agent_name, message)`**. The same `AutoMCPConfig.Allowed` / `Blocked`, `OnAutoMCPRequest` and guardrails apply.
+- **Keys never travel in the package:** if the agent needs one, it is read from the environment of whoever installs it (`PPM_AGENT_KEY_<NAME>`).
+- **Your own registry:** a company can run PPMServer in its own network with its own MCP servers, skills and agents, and point `AutoMCPConfig.RegistryUrl` at it. Ready-to-run example in `Demos/Libro/cap33-registry-corporativo/registro-local` (a local registry with an MCP server, a skill, a prompt and an A2A agent of *Café La Ladera*).
+- **Agents are for private registries, by design.** An `agent` package is the URL of someone's running service, not code you can review, and a public registry cannot vouch for whoever operates it — with AutoMCP, installing one means sending your users' conversations there. So PPMServer accepts agents only when started with `PPM_ALLOW_AGENTS=1` (plus `migration_003_agent_type.sql`); **the public `registry.cimamaker.com` keeps them off** (publishing an agent returns 400, `/v1/a2a/discover` returns an empty list, `/v1/health` reports `"agents": false`).
+- Demo: `093-A2AChatAgentTool --ppm` — the chat does not know the agent's URL; it finds it in the registry, installs it from its card and asks it over A2A.
+
+### Chat UI
+`TAIChatView` messages gain a **footer**, **action buttons** inside the bubble (`OnMessageAction`, e.g. *Approve / Reject*) and collapsible **task steps** with durations (`AddStep` / `FinishStep`), all persisted in the message JSON. Consecutive messages of the same role merge into one bubble (`MergeConsecutive`), `AddAssistantMessage` shows generated images, audio and files, and `TAIChatInput` has a voice-call button wired for realtime sessions.
+
+### Computer Use runs the model's actions in order
+With `computer_toolset_20260801` Claude sends several screen actions per turn that are steps of one sequence; the driver ran them in parallel, so two `type` actions mixed their letters in the same field. A batch with a screen action now runs serially, in arrival order — the same form took 14 actions and 26 s instead of 114 actions and 322 s. `key` honours `repeat`.
+
+### Telemetry — one trace per turn
+Tool calls run in their own tasks, and OpenAI streaming executes functions on the HTTP thread; none of them carried the turn's span, so every `execute_tool` (and an agent graph or MCP call behind it) showed up as a separate trace. `TAiTelemetry.ContextEnter` / `ContextLeave` carry the parent across threads: a turn that delegates to a graph went from 5 loose traces to one trace of 14 spans.
+
+### Production fixes
+- **Bridges actually reach the model:** the web-search result is injected as context (the model used to answer "I can't browse" with the search already done), the input bridges (audio, image, PDF) no longer fire `OnReceiveDataEnd` with the raw tool output, and `TAiOpenAiWebSearchTool` moved to the Responses API (`gpt-4o-mini-search-preview` was retired).
+- **`TAiShell` security list** checks every segment of a chained command (`&`, `|`, `;`, new lines); before, `cd x && del /f /q *` passed an allow-list of `[cd, dir]`.
+- **Prompt filter:** a message blocked by the sanitizer or the prompt guard no longer stays in the history (it reached the model on the next turn), and injection phrases are recognised in Spanish too.
+- **OpenAI:** `apply_patch` works in streaming and can create files; strict schemas are enforced on nested objects and arrays, and tools with a free-form object are sent without `strict` (both were 400s); `PromptCacheMode` → `prompt_cache_options.mode`.
+- **Concurrency:** a new question asked right after `OnReceiveDataEnd` waits for the previous request to close (intermittent *Stream read error*); `TAudioPushStream` no longer deadlocks the app when interrupted mid-playback.
+- **Connections and costs:** a `Model` saved in the form is applied on load even when it is not the driver default; `ResetTokenCounters` (#135); `Cost_usd` accumulates what the MakerAI broker charges per call.
+- **MCP:** the SSE client retries a dropped POST (except `tools/call`), reports `IsConnected`, and streams over `https`; freeing a running `TAiMCPSSEHttpServer` no longer raises an AV.
+- **WebSocket:** `ws://` uses plain TCP (it opened TLS and hung against a plain HTTP server); `wss://` works on Android.
+- **Evals:** the judge receives the case's question and starts a fresh chat for every verdict.
+- **Build:** packages and the regression suite compile without the IDE Library Path (PR #132), and Delphi sources check out with CRLF, also in the GitHub ZIP (#133).
+
+### Demos for the book's 4.0 edition
+`Demos/Libro` holds one project per chapter of *IA con Delphi* 4.0 (chapters 3 to 37: from the first chat to agents, federation, voice, Computer Use and every bridge), and demos `093`–`105` follow the *Café La Ladera* video series (see **Demo Projects** below).
+
+### English, Spanish and Portuguese
+Chat UI texts, design-time editors, exception messages, `OnError` messages and status messages now follow the OS language (or `MAKERAI_LANG`, or `TAiLocale.Language := 'pt'` at runtime): English, Spanish and Brazilian Portuguese, 653 texts in `Source/Core/uMakerAi.Lang.*.pas`. Prompts sent to the model stay in English and ask it to answer in the user's language. An application can add its own language with `TAiLocale.RegisterTable`.
+
+> **Portuguese speakers:** the Portuguese texts were not written by a native speaker. If something reads wrong, please open an issue or a pull request — every text is in `Source/Core/uMakerAi.Lang.Pt.pas`, one line per text (keep the key and the `%s`/`%d` markers as they are).
+>
+> **Para quem fala português:** os textos em português não foram escritos por um falante nativo. Se algo soar estranho, abra uma issue ou um pull request — todos os textos estão em `Source/Core/uMakerAi.Lang.Pt.pas`, uma linha por texto (mantenha a chave e os marcadores `%s`/`%d` como estão).
 
 ### ⚠️ Behaviour changes
-- **OpenAI audio defaults:** `TAiOpenAiAudio` / `TAiOpenAiSpeechTool` use `gpt-transcribe` and `gpt-4o-mini-tts` (OpenAI shuts down `whisper-1` on 2027-02-26 and `tts-1` on 2027-01-06). `gpt-transcribe` returns JSON only — srt/vtt/timestamps are reported in `TTranscriptionResult.Warning`; set `tmWhisper1` to keep them until the shutdown.
-- **Custom MCP tools:** `IAiMCPTool.GetInputSchema` returns a new object owned by the caller (what the built-in tools already did). A custom tool that returned a cached field must return a copy.
-- **OpenAI Responses driver:** `Max_Tokens` is now sent as `max_output_tokens` (it was silently ignored), so a low limit can cut answers that used to be complete.
+- **Claude no longer searches the web by default.** Every Claude model in the registry used to declare `cap_WebSearch`, so the driver sent the web-search tool (and Anthropic added its code-execution tool) on every call: a one-line question cost about 2,400 input tokens on `claude-haiku-4-5` and 6,000 on `claude-fable-5-2`, against 20–30 without it. Web search is now opt-in: add `cap_WebSearch` to both `ModelCaps` and `SessionCaps` (on the connection, or per model with `RegisterUserParam`). The `aa_claude-opus-4-6-agent` and `aa_claude-opus-5-agent` profiles keep it. An app that relied on Claude looking things up on its own must turn it on.
+- **`imagen-4.0-*` aliases now generate with `gemini-nano-banana-2.1`** (before `gemini-3.1-flash-image`, deprecated on 2026-10-06).
+- **Kimi ignores `Temperature` and `Top_p`** — the API only accepts its fixed values, so any other value used to fail.
+- **`gpt-5.x-pro` and `gpt-6-astra` / `gpt-6.1-sol` adjust the requested effort** to the nearest level the model accepts instead of failing.
+- **`TAiShell` in allow-list mode rejects redirections and substitutions** (`>`, `<`, `` ` ``, `$( )`), and checks each segment of a chained command.
+- **`TAiChat.Run` waits up to 15 s for the previous request to close** before starting a new one (it does not wait when called from inside `OnReceiveDataEnd`).
+- **Setting a typed `ModelConfig` field to its current value now pins it** (`Tool_Active := True` was overwritten by the driver registry when it already was `True`).
+- **Internal prompts are in English** and ask the model to answer in the user's language: the default `SystemPrompt` of a new chat component (*"You are a helpful assistant. Always answer in the same language the user writes in."*), the JSON-format hint, the AutoMCP instructions, the evals judge, the `TAiMemory` analyzer, the bridge prompts (vision, document, transcription), the context labels added to the user message (audio transcription, web search, memory, knowledge graph), and the descriptions and results of the built-in tools (Computer Use, text editor, memory MCP tools, A2A agent tool). A `SystemPrompt` saved in a form keeps its text. Code that searched for the old Spanish labels (e.g. `Contexto extraído del grafo`) must look for the English ones.
+- **An MCP server without `ServerVersion` reports its executable's version** in `serverInfo` instead of `1.0.0`.
+- **Chat UI and design-time texts follow the OS language** (`MAKERAI_LANG` or `TAiLocale.Language` to force one) instead of a fixed mix of English and Spanish.
+- **Exception messages follow the OS language too**, so their text changed (several were in Spanish, others in English). Code that compared `E.Message` with a fixed text should check the exception class instead. For HTTP errors from a provider there is now `EAiHttpError` (`StatusCode`, `ResponseText`), and `TAiChat`/`TAiChatConnection` expose `LastHttpStatus` for synchronous callers; in English the message is still `Error Received: <code>, <body>`.
+
+## Earlier versions
+
+What came in each release from v3.4 to v3.9 (GPT-Live, Jev, Qwen, Skills, Computer Use on Linux, MCP 2026-07-28, OpenTelemetry, A2A 1.0, guardrails and evals, the full-duplex voice suite, selective driver registration…) is in [Docs/WHATS-NEW-3.x.md](Docs/WHATS-NEW-3.x.md). The *Changelog* at the end of this page lists every version.
 
-## What came in v3.8
-
-Released 2026-09-29. Six items change existing behaviour; they are marked ⚠️ below — two of them
-(TLS certificate checks on POSIX and the `IAiMemoryStorage` signature) can require code changes.
-
-### Jev — calibrated decisions before spending an LLM
-
-`TAiJev` (`Source/Tools/uMakerAi.Jev.pas`) wraps **Jev**, TypeSafe AI's "System One" model.
-Jev does not generate text: it answers typed questions — *Choice*, *Score*, *Noul* (yes/no) —
-with calibrated probabilities and a confidence value your code can threshold. It is meant for
-the fast, cheap decisions that today cost a full LLM round-trip: routing a query to the right
-specialised agent, deciding whether that agent needs its RAG variant, classifying, gating.
-Several questions travel in one request (~700 input tokens at US$0.042 per million). Questions
-are validated locally, 429/529 are retried with backoff, and the model is pinned to
-`jev-1.13.0` so thresholds stay valid. Demo: `084-JevRouter`.
-
-For agent graphs, `TAiJevRouterTool` (`Source/Agents/uMakerAi.Agents.Tools.JevRouter.pas`) is a
-node tool that writes the chosen route to `Blackboard['next_route']`, so an existing
-`lmConditional` link follows it — no engine change. Low confidence or a failing API falls back
-to `NextNo` instead of breaking the graph, and yes/no flags asked in the same call land in the
-blackboard for `lmExpression` or an `OnRoute` handler. Twenty-one new regression cases run all
-of it offline against a fake transport.
-
-Two more hand-offs make Jev a drop-in for decisions the framework already takes:
-
-- **SmartDispatch without the classification LLM call.** `ChatTools.DispatchClassifier` (new,
-  provider-neutral) receives the tags whose tools are assigned; `TAiJevDispatchClassifier` answers
-  with Jev. Tool requests skip one LLM round-trip, and CHAT replies are now generated **with the
-  conversation history** (the LLM pass answered in an isolated two-message context). Unsure or
-  failing → the usual LLM pass. 15/15 on Spanish and English requests.
-- **Semantic guardrails.** `TAiGuardrails.Classifier` (new) judges the tool calls the allow/block
-  lists let through; `TAiJevGuardrailClassifier` blocks when P(risk) ≥ 0.5. Lists still catch the
-  enumerable (`rm -rf`) for free; Jev catches what no list anticipates — an e-mail carrying a
-  password to an outside address, a transfer to an unknown account. Safe calls scored ≤ 0.17 and
-  harmful ones ≥ 0.88 across 13 calibration cases. Fails closed by default. Optional **permission
-  categories** (`read`, `write`, `financial`, `system`, …) are judged in the same call: block whole
-  categories, audit each call via `OnCategorized`, and describe domain-named tools with
-  `ToolDescriptions` (20/20 on 20 calibration calls).
-
-- **Input guardrail.** `ChatTools.PromptGuard` (new) checks the user's message *before* it reaches
-  the LLM, right after the existing regex sanitizer. `TAiJevPromptGuard` asks in one call about
-  prompt injection, credentials in the message, harmful requests and — given a `Scope` — off-topic
-  questions. On nine test messages the regex caught 1 of 6 problematic ones; Jev caught all 6 and
-  let the greeting and the legitimate questions through. A blocked message never touches the network.
-
-Demo: `085-JevDispatchGuard`.
-
-And two more for quality and retrieval:
-
-- **Calibrated eval judge.** `TAiEvalRunner.Scorer` (new) answers `ExpectScore('criterion', 0.7)`
-  with the probability that the output meets the criterion — faster and cheaper than an LLM
-  judge, and the bar is set in code. `TAiJevEvalScorer`: passing answers ≥ 0.97, failing ≤ 0.02
-  on 10 calibration pairs.
-- **Semantic reranking for RAG.** `TAiRAGVector.Reranker` (new) replaces the cosine second stage
-  of VQL `RERANK`: `TAiJevRAGReranker` scores each passage for usable evidence and **drops
-  passages that try to instruct the model** (prompt injection). No embeddings are recomputed;
-  if the reranker fails, the search falls back to cosine. Demo: `086-JevEvalsRag`.
-- **Bulk labeling.** `TAiJevBatchLabeler` runs the same questions over many rows in parallel and
-  returns labels, confidence, top-3 suggestions, total cost and the rows worth a human look; a
-  failing row never stops the batch. Validated by reproducing the prototype: 126 accounting
-  entries against 225 chart-of-accounts codes in 4.2 s for US$0.05 — 92.9% overall and **100% on
-  the 61% it would book automatically** (confidence ≥ 0.8). Demo: `087-JevBatchLabeling`.
-- **Model routing.** `TAiJevModelRouter` sends each request to the cheapest model that can handle
-  it. Jev describes the request (task, difficulty, sensitivity); readable rules in code pick the
-  tier. Switching provider on a `TAiChatConnection` used to drop the conversation — the router
-  migrates the text history, so a chat can start on Groq and escalate to Claude and still
-  remember the first turn. Live, with Groq → DeepSeek → Claude Sonnet → Opus: 7 of 8 answers
-  judged useful, the trivial ones in under a second. Demo: `088-JevModelRouter`.
-- **Metering for usage-based billing.** `TAiJev` and all eight adapters expose `Usage` (requests,
-  input/output tokens, cost in USD) and an `OnUsage` event fired once per operation — one guard
-  check, one rerank, one batch — on the thread that ran it, so a server can charge the right
-  customer. The parallel reranker reports a single total after joining its calls. Previously only
-  the batch labeler exposed tokens; the other adapters received them and dropped them.
-
-**Also fixed:** `lmExpression` parsed numbers with the regional settings only, so on a Windows
-using a decimal comma `'10.25' > 9.5` was compared as text and returned `False`. It now falls
-back to a decimal point.
-
-### Computer Use on Linux
-
-`TAiLinuxExecutor` (`Source/Tools/uMakerAi.Tools.ComputerUse.Linux.pas`) drives X11 through
-**xdotool** and captures with **scrot**, covering the 19 canonical actions with the same
-public interface as the Windows and macOS executors. The framework itself needed no change:
-`TAiComputerUseTool` only ever used the RTL and delegates everything to
-`OnExecuteAction` / `OnRequestScreenshot`, so it cross-compiled to Linux64 untouched — what
-was missing was only the executor. Runtime-tested on Xvfb with `gpt-6-astra` and
-`claude-opus-4-8`, driving both a text editor and Chrome. Demo: `083-ComputerUseLinux`.
-
-### Computer Use delegation — handing the call to a remote client
-
-A headless process (a broker on a VPS) can now claim a `computer_call` and forward it to
-whoever actually owns a screen. The contract already existed in the base class and in Claude
-— fill `ToolCall.Response` from `OnCallToolFunction` and the driver does not execute
-locally — but **OpenAI ignored it and Gemini never even fired the event**. Both now honour
-it. For OpenAI the delegation is *atomic over the batch*: `gpt-6-astra` sends an array of
-actions that admits a single `computer_call_output`, so splitting it between a local and a
-remote executor would leave the final screenshot ownerless. Demo: `082-ComputerUsePassthru`.
-
-### ⚠️ TLS certificates are now verified on POSIX
-
-`TOpenSSLTransport` used to run with `SSL_VERIFY_NONE` — it accepted **any** certificate,
-from anyone, and that is the transport the Realtime module uses on Linux and macOS. It now
-verifies the chain against the system CA store **and the hostname** (`SSL_set1_host`;
-`SSL_VERIFY_PEER` alone validates the chain but not that the certificate was issued for the
-host you dialed). Verified against badssl.com, 7/7, including the `wrong.host` case.
-
-> **Breaking**: pointing Realtime at an endpoint with a self-signed certificate (a local LM
-> Studio, an internal proxy) now fails until you set `InsecureSkipVerify := True`.
-
-### ⚠️ Gemini executed no user functions at all
-
-`TAiGeminiChat.DoCallFunction` had its `inherited` commented out and answered
-`'Command <name> not found'` to every non-Computer-Use tool call — and it is the driver's
-only dispatch point. Neither `AiFunctions` nor `OnCallToolFunction` ever ran. Restored.
-
-> **Behaviour change**: tools that silently returned "not found" with Gemini now execute.
-
-### ⚠️ TAiShell crashed on non-English Windows
-
-Shell output was decoded with `TEncoding.UTF8.GetString`, which *validates* its input and
-raises `EEncodingError`. `cmd.exe` writes in the console **OEM** codepage (cp850 on a Spanish
-Windows) and even its own banner carries accents, so the component died on the **first
-command**. Invisible in English (pure ASCII) and on Linux (bash does emit UTF-8). Decoding
-now falls back to the OEM codepage. Two more, found while exercising it on Linux: stderr was
-dropped whenever the sentinel arrived in the same read, and a timeout left the session
-permanently unusable (the `Restart` was written but commented out).
-
-### ⚠️ TAiMemory: namespaces are now enforced on id-based operations
-
-`TAiMemory` isolated namespaces in its searches, but `Get`, `Update`, `Delete`, `Link` and
-`Unlink` addressed memories by id alone — and ids are sequential, so an agent could read,
-change or delete another namespace's memories by guessing one, including through the
-`memory_delete` / `memory_link` MCP tools. `ImportFromJSON` also honoured the `namespace` field
-of the JSON and could write into another namespace. Every id-based operation now requires the
-active namespace (a foreign id behaves exactly like a missing one), and imports always land in
-the active namespace. Reported responsibly in #127.
-
-> **Breaking for custom storages**: the id-based methods of `IAiMemoryStorage` now take the
-> namespace. The bundled SQLite storage is updated; a custom implementation must add the
-> parameter.
-
-### ⚠️ A forced tool_choice applies to the first call only
-
-With `Tool_choice := 'required'` (or a named function) the driver re-sent the forcing on
-every round, including the one that returns tool results, so the model had to call a tool
-again each time and the agentic loop never ended — 231 requests on `claude-sonnet-5` before
-it was killed. `TAiChat.Tool_choice` now reads `auto` in those rounds, which fixes every driver
-at once. The first call of a turn is still forced.
-
-### ⚠️ TLLMNode.DriverName now defaults to empty
-
-The constructor used to set `DriverName := 'Claude'`, which always overrode the driver of an
-assigned `TAiSkill`. It is now empty and resolves node → skill → `'Claude'`, so a node without
-a skill behaves exactly as before and forms saved with the old default keep `'Claude'`
-explicitly. See the skills section below for the rest of the precedence fix.
-
-### Qwen — native Alibaba Model Studio driver
-
-`TAiQwenChat` (`Source/Chat/uMakerAi.Chat.Qwen.pas`, driver name `Qwen`) talks to DashScope's
-OpenAI-compatible endpoint (international region by default; key in `DASHSCOPE_API_KEY`).
-Hybrid Qwen models think by default on the API side, so the driver always sends
-`enable_thinking`: off unless `cap_Reasoning` is in `ModelCaps`, with `ThinkingLevel` mapped to
-`thinking_budget`. Thinking-only models (`qwq-plus`, `*-thinking-*`) and open-weight models
-(which only think when streaming) are handled for you. Registered models are the ones tested
-live: `qwen3.8-flash` (default), `qwen3.8-max`, `qwen3.7-plus`, `qwen3-vl-flash`,
-`qwen3.8-omni-flash` with vision; `qwen3-max`, `qwen-plus/flash/turbo`, `qwen3-coder-plus/flash`;
-and `qwq-plus`, which only answers when streaming and is registered as asynchronous.
-
-Beyond chat, the same key covers the rest of Model Studio, all tested live from Delphi:
-
-- **Image generation and editing** (`cap_GenImage`): `qwen-image-3.0`, `qwen-image-2.0`,
-  `qwen-image-max`, `z-image-turbo`, `wan2.7-image`. Attach one to three images to the prompt and
-  the same call edits them (`qwen-image-edit-plus` by default), keeping the original aspect ratio
-  unless you set a size. The driver downloads the result into `MediaFiles`.
-- **Video** (`cap_GenVideo`, Wan): text to video, image to video (attach one image) or first
-  and last frame (attach two). 720p by default instead of the API's 1080p; `VideoParams.Params`
-  passes through (duration, audio, seed...). Wan 2.5+ videos come with an audio track.
-- **Text to speech** (`cap_GenAudio`): `qwen3-tts-flash`, voice and language from `TtsParams`.
-- **Transcription**: `qwen3-asr-flash` in `cmTranscription`, where the prompt is passed as
-  context so proper names come out right. A text model with `cap_Audio` in `SessionCaps` uses it
-  to transcribe before answering, and `qwen3.8-omni-flash` understands audio natively.
-- **Realtime** (`TAiRealtimeConnection`, new unit `uMakerAi.Realtime.Qwen`): `DriverName := 'Qwen'`
-  for voice conversation, `'QwenSTT'` for live transcription and `'QwenTranslate'` for simultaneous
-  translation with a translated voice. Same events as the Grok and OpenAI drivers; nothing in the
-  realtime module changed. Driver-specific settings (voice, instructions, target language) go in
-  the connector's new `DriverParams`, which works for every realtime driver. `TAiQwenRealtimeTTS` goes the other way — text in, audio out while it
-  is generated — so an LLM answer can be spoken as it streams (first audio ~0.5 s after the first
-  text; 2.5 s from question to voice with qwen3.8-flash).
-- **Text translation** with `qwen-mt-plus/flash/turbo/lite`: set `TranslateTo` (and optionally
-  `TranslateFrom`, `TranslateDomain`, a `TranslateTerms` glossary) and each message is translated.
-  The driver sends only the latest message, as the API requires, and fixes plus/turbo streaming,
-  which repeats the accumulated text in every chunk.
-Demo `089-QwenShowcase` walks through all of it with one key.
-
-- **Custom voices**: `TAiQwenVoices` clones a voice from a sample or designs one from a text
-  description, and lists or deletes them. Put the returned id in `TtsParams.Voice`; the driver
-  switches to the TTS model that voice requires. Clone only voices you have consent to use.
-- **Embeddings**: `TAiQwenEmbeddings` (driver `Qwen`), `text-embedding-v4` by default.
-- **Rerank**: `TAiQwenRAGReranker` plugs `qwen3-rerank` into `TAiRAGVector.Reranker`, up to 500
-  passages per call, with an optional task instruction.
-
-### Skills — SKILL.md, loaded on demand
-
-MakerAI now speaks **SKILL.md**, the format of Claude's Agent Skills and of the PPM registry's
-`skill` packages: YAML frontmatter (name, when to use it) plus Markdown instructions. One parser
-(`uMakerAi.Skills.Format`) serves the whole framework, from a string, a file, a folder or the
-registry.
-
-- **`TAiSkills`** (new, `Source/Tools/uMakerAi.Tools.Skills.pas`) gives any chat with function
-  calling on-demand skills. The model sees only a one-line-per-skill catalog in the description
-  of `use_skill` and loads the full instructions when it needs them, so dozens of skills cost no
-  tokens until used. Folder-based skills can ship supporting files, read with `read_skill_file`,
-  which is confined to the skill folder (no `..`, absolute paths, links or binaries, never
-  executes anything). Veto and audit events; guardrails apply as to any tool. Live, 9/9 on
-  OpenAI, Claude and Groq: the right skill for each request, none for an unrelated one, and
-  `use_skill` → `read_skill_file` chained when the instructions asked for it.
-- **`TAiSkill.FromPPM` works.** It requested a URL that returns the website's HTML and a JSON
-  format no package publishes; it now downloads the real SKILL.md (`'code-review'` also finds
-  `skill-code-review`). New `FromFolder` / `FromSkillFile`; the JSON format still works for local
-  files. A SKILL.md never supplies an API key.
-- **`TLLMNode` respects its skill.** New `ResolveConfig`: driver from the node, else the skill,
-  else Claude; the skill's model only if it belongs to that driver; the skill's system prompt
-  followed by the node's. Previously the skill's driver was always overridden and switching
-  driver lost the skill's model and key.
-- **`TAiPrompts`** loads local skills (`LoadSkillFromFile`, `LoadSkillsFromFolder`) and
-  `ApplySkill` copies one into any `SystemPrompt`. Registry versions are now picked by semver.
-
-Guides: `Docs/Version 3/uMakerAi-Skills.EN.md` (Spanish: `uMakerAi-Skills.md`). Demo `091-Skills`.
-
-### Also
-
-- **Every driver on the shared streaming parser returned the answer twice.** In asynchronous
-  mode `OnReceiveDataEnd` received `'Done'#13#10'Done'`: the end of the stream re-added the
-  accumulated text. Affected all drivers built on the common parser (verified on Groq and
-  DeepSeek; Kimi, Grok and Mistral now return it once too).
-- **Files generated by Groq's code interpreter were lost when streaming.** `gpt-oss` sends
-  `executed_tools` inside each delta, in two chunks per tool; the parser only looked at the
-  top level, the format of the retired `groq/compound`. They are now merged and delivered as
-  in the synchronous path.
-- **Groq catalog brought up to date with the API.** `llama-3.1-8b-instant` and
-  `llama-3.3-70b-versatile` no longer exist and were the driver's default, so a Groq connection
-  without an explicit model came back empty. The default is now `openai/gpt-oss-20b`, and both
-  old names are aliases (to `gpt-oss-20b` and `gpt-oss-120b`), so existing code keeps working.
-  `groq/compound` was removed without a replacement. `qwen/qwen3.6-27b` was registered with a
-  token limit the API rejects; fixed, and `qwen/qwen3.8-27b` added. Demo 014 now runs Groq's
-  code interpreter on `gpt-oss-20b` (`--groq`).
-- **Claude sometimes sends coordinates as a JSON array and sometimes as a string** containing
-  one — *within the same turn*. `TryGetValue<TJSONArray>` missed the second form, the
-  coordinate was lost and the action landed on (0,0): a click in the screen corner, after
-  which the model retried until it ran out of turns. Affected `coordinate`,
-  `start_coordinate` and `region`, i.e. click, double/triple click, drag and zoom.
-- **OpenTelemetry validated against a real collector** for the first time (Jaeger): the trace
-  crosses the A2A boundary, so `traceparent` propagation through `_meta` works. Fixed
-  `otel.scope.version`, hardcoded to `3.5` while the framework was on 3.7.
-- **Demos 031 and 077 now build and run on Linux64** — which also makes FireDAC on Linux a
-  tested path (PostgreSQL 18 + pgvector 0.8.1 through `libpq.so.5`).
-- Documented that the Realtime module needs `CheckSynchronize` in console apps and services:
-  every event is dispatched with `TThread.Queue`, so without a message loop **no event ever
-  fires** — not even `OnError`.
-
----
-
-## What's New in v3.7
-
-### Computer Use, Refreshed on Both Live Providers
-
-Both vendor APIs changed under our feet, and one of them had gone silently dead. **Claude was broken**: the driver still declared `computer_20251124`, a tool type the Anthropic API now rejects for *every* model. It is now `computer_toolset_20260801`, which takes **no parameters** and explodes the old single `computer` tool into **17 individually named tools**. **OpenAI joins natively** with `gpt-6-astra` and the parameterless `computer` tool, which sends a whole **batch of actions per turn** — the driver runs them in order and answers with one final screenshot.
-
-Both APIs converged on the same design: the tool declares no screen dimensions (the model infers them from the screenshot) and coordinates come back as pixels of the image you sent.
-
-### GLM (Zhipu AI / Z.ai) — New Provider
-
-`TAiGLMChat` brings a 14th provider: OpenAI-compatible endpoint, explicit thinking control (the API ships it ON by default, the driver decides), `reasoning_content` captured and re-sent across turns, and free tiers (`glm-4.7-flash`, `glm-4.6v-flash`).
-
-### Correctness Pass
-
-RAG on pgvector (`OFFSET` was trimming instead of paginating; the vector did not survive the round trip), token and cache accounting across OpenAI, Claude and MakerAi streams, a race where the model travelled through the global registry, tool-calling continuation off the main thread, and reasoning no longer leaking into the user-visible answer.
-
----
-
-## What's New in v3.6
-
-### MCP Specification 2026-07-28 — Stateless, Dual-Era
-
-The Model Context Protocol dropped sessions and the `initialize` handshake. MakerAI implements the new **stateless** revision on both sides *and* keeps talking to legacy peers: clients probe with `server/discover` and fall back automatically; the server serves modern per-request `_meta` requests statelessly while the legacy handshake and session gating keep working. Includes the **MRTR** pattern, so a tool can pause and ask the user for confirmation (`OnInputRequired` on the client, `TAiAuthContext.InputResponses` on the server).
-
-### Observability — OpenTelemetry Tracing
-
-**`TAiTelemetry`** exports OTLP traces to any standard collector (Jaeger, Grafana Tempo, Langfuse, Arize Phoenix) following the **GenAI semantic conventions**. Spans cover chat turns with token usage, tool executions, agent graphs and nodes, RAG retrieval and MCP requests — with W3C `traceparent` propagated through MCP `_meta`, so a client and a server in different processes share one distributed trace. Opt-in, zero overhead when disabled.
-
-### A2A — Agent-to-Agent Protocol (first Delphi implementation)
-
-If MCP is the agent-to-*tool* layer, **A2A** (Linux Foundation) is the agent-to-*agent* layer. `TAiA2AServer` publishes any agent graph as a standard A2A agent (Agent Card + JSON-RPC), `TAiA2AClient` consumes remote agents, and `TAiA2ARemoteAgentTool` **federates**: a node in your graph can delegate its work to a remote agent — including one written in another language or framework. Demo: `072-A2AFederation`.
-
-### Guardrails & Evals
-
-**`TAiGuardrails`** intercepts every tool call before it executes (allowlists, blocklists, forbidden argument patterns, programmatic veto) — blocked calls never run and the LLM gets the reason so it can replan. **`TAiEvalRunner`** brings systematic evaluation: fluent test cases against any target, deterministic checks plus optional LLM-as-judge, with `ToJSON` reports for CI.
-
-### First Automated Regression Suite
-
-`Tests/RegressionSuite/` — 17 in-process cases covering MCP, agents, A2A, guardrails and evals. No API keys, under a second, exit code for CI. Built on `TAiEvalRunner` itself.
-
----
-
-## What's New in v3.5
-
-### Typed ModelConfig Channel
-
-Capability configuration now lives in a single typed surface: `ModelConfig.ModelCaps` / `SessionCaps` / `Tool_Active` / `ThinkingLevel` moved out of the string-based Params/RTTI channel, with per-field user pins and transparent compatibility migration — existing code keeps working unchanged.
-
-### Full-Duplex Voice Suite
-
-- **`TAiGrokRealtimeChat`** — xAI Grok Voice speech-to-speech (function calling, session resumption with replay, binary audio transport, ephemeral tokens)
-- **`TAiOpenAiRealtimeTranslate`** — continuous streaming speech translation (one WebSocket per direction; demo 071-VoiceBridgeTranslate)
-- **`TAiRealtimeVoiceBase`** — shared full-duplex base; voice events flow through the universal `TAiRealtimeConnection`
-- **gpt-transcribe / gpt-live-transcribe** — OpenAI's Whisper successors, fully integrated
-
-### August 2026 Provider Refresh — All 9 Cloud Providers, Runtime-Tested
-
-Claude 5 family (adaptive thinking, FastMode, compaction, server-side fallbacks) · Gemini 3.5/3.6 + Nano Banana GA · Mistral Voxtral TTS + OCR 4 · Kimi K3 · DeepSeek V4 (explicit thinking control) · Cohere Command A+ · Groq qwen3.6 · xAI grok-4.3/4.5/build — with retired-model cleanup and compatibility aliases throughout.
-
-### Grok Native Video & Image Generation
-
-`TAiGrokChat` now generates video with grok-imagine (async job + polling + mp4 as `TAiMediaFile`, new `VideoDurationSeconds` property) and images with `grok-imagine-image` — activated by `cmVideoGeneration`/`cmImageGeneration` or the `[cap_GenVideo]`/`[cap_GenImage]` gaps.
-
----
-
-## What's New in v3.4
-
-### Delphi 13.1 Florence Support
-
-v3.4 is fully tested and compatible with **Delphi 13.1 Florence** (CompilerVersion 37.1), in addition to the existing range from Delphi 10.4 Sydney through Delphi 13 Florence.
-
-### Selective Driver Registration
-
-The biggest infrastructure change in v3.4: **`TAiChatConnection` no longer force-loads all providers at startup**. Each driver now self-registers only when explicitly imported, eliminating unnecessary initialization overhead:
-
-```pascal
-// Load only what you need
-uses uMakerAi.Chat.AiConnection, uMakerAi.Chat.OpenAi, uMakerAi.Chat.Claude;
-
-// Load all drivers at once (legacy behavior)
-uses uMakerAi.Chat.Initializations;
-```
-
-### Real-Time STT — TAiRealtimeConnection
-
-New universal connector for real-time speech-to-text via WebSocket:
-
-- **`TAiRealtimeConnection`** — provider-agnostic STT connector; switch providers via `DriverName`
-- **`TAiOpenAiRealtimeSTT`** — full OpenAI Realtime API implementation (24 kHz PCM16, VAD modes, streaming transcription)
-- Pure-Pascal WebSocket client with native TLS via Windows SChannel — no extra DLLs required
-- Thread-safe PCM16 resampler; supports push-based audio streaming from any source
-
-### GPT-Transcribe — Next-Gen OpenAI Transcription (Whisper successors) 🆕
-
-OpenAI's new transcription models (Aug 2026) are fully integrated — better accuracy on real-world audio, accents, numbers, specialized terminology and loud background noise:
-
-| Model | Use case | Word Error Rate |
-|-------|----------|-----------------|
-| `gpt-live-transcribe` | Live low-latency STT (Realtime WebSocket) | 9.60% (vs 11.65% Whisper) |
-| `gpt-transcribe` | Completed files and batch workloads | 8.98% (vs 15.21% Whisper) |
-
-- **`TAiOpenAiRealtimeSTT`** now defaults to `gpt-live-transcribe`, with new context properties: `TranscriptionPrompt` (free-form topic), `TranscriptionKeywords` (domain terms), `Languages` (multi-language guided autodetection) and `LowDelay`
-- **`TAiOpenAiAudio`** gains `tmGptTranscribe` / `tmGptLiveTranscribe` with `TranscriptionKeywords` + `TranscriptionLanguages` for REST/batch transcription
-- Legacy models (`whisper-1`, `gpt-4o-transcribe`) remain available — they're still required for subtitles (SRT/VTT), word timestamps and diarization (`gpt-4o-transcribe-diarize`), which the new models don't support; the components degrade formats safely per model
-- VoiceBridge demos (062–065) migrated: live channels use `gpt-live-transcribe` with contextual prompts and guided language detection; diarized channels stay on `gpt-4o-transcribe-diarize`
-
-### Grok Voice — Real-Time Speech-to-Speech (xAI) 🆕
-
-Full-duplex voice conversation with xAI's **Grok Voice** models (`grok-voice-think-fast-2.0`) over a single WebSocket — the user speaks, Grok listens, reasons and answers back with voice:
-
-- **`TAiGrokRealtimeChat`** — complete driver for `wss://api.x.ai/v1/realtime` (OpenAI Realtime-compatible protocol, 24 kHz PCM16)
-- **`TAiRealtimeVoiceBase`** — new base class for full-duplex voice drivers; adds `OnAssistantText`, `OnAssistantTextDelta`, `OnAudioChunk`, `OnAudioDone` (shared with `TAiMakerAiRealtimeChat`)
-- Live user transcription (`OnTranscriptDelta` / `OnTranscriptCompleted`), server VAD, streamed assistant text and TTS audio
-- **Function calling by voice**: assign a `TAiFunctions` component (local functions + MCP) and Grok invokes your Delphi code mid-conversation — the driver handles the whole round-trip (execution on worker threads, `function_call_output`, continuation)
-- **xAI native tools**: `EnableWebSearch` / `EnableXSearch` — executed server-side by xAI
-- Session options: `Voice` (eva, ara, rex, sal, leo or custom voice_id), `Instructions`, `ReasoningEffort` (high / none for lower latency), `OutputSpeed`, `Keyterms` (transcription biasing), `PronunciationReplace` (TTS corrections), automatic regional language hints (`es`→`es-MX`, `pt`→`pt-BR`)
-- `ForceMessage()` — scripted TTS utterance bypassing the model (IVR prompts, disclosures)
-- **Session resumption**: `EnableResumption` + `ConversationId` — reconnect and the server replays the cached turns (transcripts, tool calls and outputs; 30-min window)
-- **Binary audio transport**: `BinaryAudio := True` — raw PCM over WebSocket binary frames, ~33% less bandwidth than base64
-- **Ephemeral tokens** for mobile/browser clients: `MintEphemeralToken()` on your backend + `EphemeralToken` on the client — the API key never leaves the server
-- **`file_search`** over xAI Collections (`FileSearchCollections`) and remote MCP servers via `CustomToolsJson`
-- Works through `TAiRealtimeConnection` too — just set `DriverName := 'Grok'`
-
-```pascal
-uses uMakerAi.Realtime.AiConnection, uMakerAi.Realtime.Grok;
-
-Voice := TAiRealtimeConnection.Create(nil);
-Voice.DriverName   := 'Grok';
-Voice.ApiKey       := '@GROK_API_KEY';
-Voice.Language     := 'es';
-Voice.OnTranscriptCompleted := HandleUserText;   // what the user said
-Voice.OnAssistantText       := HandleGrokText;   // what Grok answered
-Voice.OnAudioChunk          := HandleGrokAudio;  // Grok's voice (PCM16 24 kHz)
-Voice.Connect;
-// ... stream microphone audio via Voice.SendAudioChunk(Data) ...
-// For file-based audio (non-continuous), close the turn explicitly:
-// Voice.CommitAudio; TAiGrokRealtimeChat(Voice.Instance).CreateResponse;
-```
-
-### cmSmartDispatch — Intelligent Chat Routing
-
-New `ChatMode` value for automatic two-pass routing:
-
-- **Pass 1** — classifies the user intent and rewrites the prompt for the target capability (image generation, speech synthesis, web search, etc.)
-- **Pass 2** — dispatches to the appropriate bridge or tool based on classification
-- Works with all existing ChatTools (`IAiImageTool`, `IAiSpeechTool`, `IAiWebSearchTool`, etc.)
-
-### Models Updated (May 2026)
-
-| Provider | New / Updated Models |
-|----------|----------------------|
-| OpenAI | **gpt-5.4**, **gpt-5.4-mini**, **gpt-5.5**, gpt-image-1 |
-| Claude | **claude-opus-4-7** (Adaptive Thinking), claude-sonnet-4-6, claude-haiku-4-5 |
-| Gemini | **gemini-3.1-pro**, **gemini-3-flash**, gemini-3.1-flash-lite, gemini-3.1-flash-image |
-| Grok | **grok-4-fast**, grok-3, grok-code-fast-1 |
-| Mistral | magistral-medium/small, devstral, voxtral |
-| Groq | llama-4-scout/maverick, kimi-k2, qwen3, compound-beta |
-| Kimi | **kimi-k2**, kimi-k2.5, kimi-k2-thinking |
-| Cohere | command-a-03-2025, command-a-reasoning, command-a-vision |
-
-### Agent Improvements
-
-- **`TAiAgentManager.Run`** declared `virtual` — proper subclassing now supported
-- **jmAll join node fix** — `FJoinInputs` cleared after each execution; eliminates premature firing on retries and loops
-- **`TChatInput.EnterAsSend`** — new property (default `False`): Enter sends the prompt, Shift+Enter / Ctrl+Enter inserts a line break
-- **`TChatBubble`** — eliminated spurious vertical scrollbar (`ShowScrollBars := False`)
-
-### Bug Fixes
-
-- **Claude Opus 4.7 Adaptive Thinking** — temperature, top_p, top_k and the `thinking` block are now correctly omitted for `claude-opus-4-7` models. Anthropic manages sampling internally for these models; sending these parameters caused HTTP 400 errors.
-- **`RegisterDefaultParams` — Max_Tokens key** — corrected in 10 drivers (Claude, Gemini, Mistral, Groq, DeepSeek, Grok, Kimi, LMStudio, GenericLLM, Ollama). The wrong key `MaxTokens` was never resolved by RTTI to the `Max_tokens` property, causing `Max_Tokens` to be silently ignored when set via `RegisterDefaultParams`.
-- **`ApplyParamsToChat` — locale-independent float parsing** — `TryStrToFloat` now tries invariant format (dot decimal) first, then falls back to the system locale. Both `Temperature=0.7` and `Temperature=0,7` are valid regardless of regional settings.
-
-### Bug Fixes (March 2026)
-
-- **MCP concurrent tool calls — race condition** (`uMakerAi.MCPClient.Core.pas`): When a model responded with two or more tools from the same MCP server in a single turn, `ParseChat` launched all tool calls as parallel `TTask`s. Since `TMCPClientStdIo` shares a single process/pipe per instance (no synchronization), concurrent calls corrupted the JSON-RPC communication, causing intermittent failures. Fixed by adding `FCallLock: TCriticalSection` to `TMCPClientCustom` — calls to the same server are now serialized while calls to different servers still run in parallel.
-
-- **`EAggregateException` on tool errors — Claude driver** (`uMakerAi.Chat.Claude.pas`): The local `_CreateTask` procedure in `TAiClaudeChat.ParseChat` lacked the `try/except` present in the base class. Any exception raised inside a tool task (MCP timeout, network error, etc.) escaped unhandled, causing `TTask.WaitForAll` to wrap it in an `EAggregateException` and crash the application. Fixed to match base class behavior: exceptions are caught, reported via `OnError`, and the tool receives an error response so the conversation can continue.
 
 ---
 
@@ -512,13 +143,14 @@ New `ChatMode` value for automatic two-pass routing:
      │                  │
 ┌────▼──────────────────▼──────────────────────────────────────────┐
 │  TAiChatConnection  — Universal Connector                        │
-│  Switch provider at runtime via DriverName property             │
+│  Switch provider at runtime via DriverName property              │
 └──────────────────────────────┬───────────────────────────────────┘
                                │
 ┌──────────────────────────────▼───────────────────────────────────┐
 │  Native Provider Drivers  (direct API access, full fidelity)     │
-│  OpenAI · Claude · Gemini · Grok · Mistral · DeepSeek · Kimi    │
-│  GLM · Qwen · Groq · Cohere · Ollama · LM Studio · GenericLLM   │
+│  OpenAI · Claude · Gemini · Grok · Mistral · DeepSeek · Kimi     │
+│  GLM · MiniMax · Qwen · Groq · Cohere · Ollama · LM Studio       │
+│  GenericLLM (any OpenAI-compatible endpoint)                     │
 └──────────────────────────────┬───────────────────────────────────┘
                                │
      ┌─────────────────────────┼────────────────────────┐
@@ -541,6 +173,7 @@ New `ChatMode` value for automatic two-pass routing:
 ┌──────────────────────────────────────────────────────────────────┐
 │  Realtime Voice — parallel WebSocket stack                       │
 │  TAiRealtimeConnection · OpenAI STT/Translate · Grok Voice S2S   │
+│  OpenAI GPT-Live (full-duplex voice that delegates the thinking) │
 │  Qwen voice/STT/translate/TTS · MakerAI                          │
 │  Pure-Pascal RFC 6455 + TLS (SChannel / OpenSSL / Android)       │
 └──────────────────────────────────────────────────────────────────┘
@@ -557,14 +190,15 @@ Full, provider-specific access to every API feature. Use when you need complete 
 
 | Component | Provider | Latest Models |
 |-----------|----------|---------------|
-| `TAiOpenChat` | OpenAI | **gpt-6-sol** (default), gpt-6-luna, gpt-6-astra, gpt-5.6-sol/-terra/-luna, gpt-image-2.5 |
-| `TAiClaudeChat` | Anthropic | claude-opus-5-5, claude-sonnet-5-5, claude-fable-5-1, **claude-haiku-4-5** (default) |
-| `TAiGeminiChat` | Google | **gemini-3.8-flash** (default), gemini-3.7-flash, gemini-3.1-pro, gemini-3.8-flash-tts, Nano Banana |
+| `TAiOpenChat` | OpenAI | **gpt-6-sol** (default), gpt-6.1-sol, gpt-6.1-terra, gpt-6-luna, gpt-6-astra, gpt-5.6, gpt-image-2.5 |
+| `TAiClaudeChat` | Anthropic | claude-opus-5-5, claude-sonnet-5-5, claude-fable-5-2, claude-fable-5-1, claude-haiku-5-5, **claude-haiku-4-5** (default) |
+| `TAiGeminiChat` | Google | **gemini-3.8-flash** (default), gemini-4-argon, gemini-3.1-pro, gemini-3.8-flash-tts, Nano Banana 2.1 |
 | `TAiGrokChat` | xAI | grok-4.3, grok-4.5, grok-build, grok-imagine (image/video) |
 | `TAiMistralChat` | Mistral AI | mistral-large/medium/small, magistral, devstral, voxtral (STT/TTS) |
 | `TAiDeepSeekChat` | DeepSeek | deepseek-flash, deepseek-v4-pro |
-| `TAiKimiChat` | Moonshot | kimi-k3, kimi-k2.7-code, kimi-k2.6 |
-| `TAiGLMChat` | GLM (Zhipu / Z.ai) | glm-4.7, glm-5.3, glm-5v-turbo, free tiers: glm-4.7-flash / glm-4.6v-flash |
+| `TAiKimiChat` | Moonshot | kimi-k3, kimi-k3.1-pro, kimi-k2.7-code, kimi-k2.6 |
+| `TAiGLMChat` | GLM (Zhipu / Z.ai) | glm-4.7, glm-5.3, glm-5.3-flash, glm-5v-turbo, free tiers: glm-4.7-flash / glm-4.6v-flash |
+| `TAiMiniMaxChat` | MiniMax | **MiniMax-M3** (default), MiniMax-M3.1-Flash, MiniMax-M2.7 |
 | `TAiQwenChat` | Qwen (Alibaba Model Studio) | qwen3.8-flash, qwen3.8-max, qwen3.7-plus, qwq-plus, qwen3-coder-plus, qwen3-vl-flash |
 | `TAiGroqChat` | Groq | openai/gpt-oss-20b, openai/gpt-oss-120b, qwen3.8, whisper-large-v3 |
 | `TCohereChat` | Cohere | command-a-plus, command-a-03-2025, north-mini-code |
@@ -604,7 +238,7 @@ AiConn.Params.Values['ApiKey'] := '@GLM_API_KEY';
 | Image Input | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
 | PDF / Files | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ⚠️ |
 | Image Generation | ✅ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Video Generation | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Video Generation | ❌ ² | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ |
 | Extended Thinking | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ |
 | Speech (TTS/STT) | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ⚠️ |
 | Realtime Voice (WebSocket) | ✅ STT | ❌ | ⚠️ | ✅ S2S | ❌ | ❌ | ❌ |
@@ -619,20 +253,24 @@ AiConn.Params.Values['ApiKey'] := '@GLM_API_KEY';
 > ¹ **Computer Use is opt-in.** `cap_ComputerUse` hands the model the real mouse and
 > keyboard, so no model enables it by default — you add the capability yourself (see
 > the **Computer Use** section below). Native support: OpenAI
-> `gpt-6-astra`; Claude `claude-opus-4-8` / `-opus-5` / `-sonnet-5` / `-fable-5`.
-> Gemini is marked ⚠️ because the registry still points at the
-> `gemini-2.5-computer-use-preview` model (3.7/3.8 Flash list computer use as a preview
-> tool, not yet wired or tested). The Claude 5.5 / Fable 5.1 models use the same
-> `computer_toolset` but have not been runtime-tested with it yet.
+> `gpt-6-astra`; Claude `claude-opus-4-8` / `-opus-5` / `-sonnet-5` / `-fable-5`, and
+> `claude-sonnet-5-5` (tested live on Xvfb). Gemini is marked ⚠️: the dedicated
+> `gemini-2.5-computer-use-preview` model was shut down and is now an alias of
+> `gemini-3.8-flash`, which lists computer use as a preview tool — not runtime-tested.
+> The other Claude 5.5 / Fable 5.1 / Haiku 5.5 models use the same `computer_toolset`
+> but have not been runtime-tested with it yet.
+
+> ² **OpenAI shut Sora down**, so there is no video generation through OpenAI any more (the
+> Sora classes are kept only so old projects compile). Use Veo through Gemini or Grok Imagine.
 
 ---
 
 ## 🎨 Component Palette
 
-Every one of the 108 components has its own palette icon. The tile color identifies the
+Every one of the 111 components has its own palette icon. The tile color identifies the
 provider (maroon = MakerAI framework, black = OpenAI, blue = Gemini, purple = Qwen, teal = Jev…).
 
-![MakerAI 3.8 component palette](Docs/Version%203/images/social/MakerAI-3.8-palette-1200x675.png)
+![MakerAI component palette](Docs/Version%203/images/social/MakerAI-palette-1200x675.png)
 
 The **[full sheet](Docs/Version%203/images/MakerAI-Component-Palette.png)** groups them by
 category, with the class name and the palette tab each one lands on. Icons are generated by
@@ -654,10 +292,10 @@ Two complementary retrieval engines with their own query languages:
 - Reranking and Lost-in-the-Middle reordering for LLM context
 - **VQL** (Vector Query Language) — SQL-like DSL for complex retrieval queries:
   ```sql
-  MATCH documents SEARCH 'machine learning'
-  USING HYBRID WEIGHTS(semantic: 0.7, lexical: 0.3) FUSION RRF
+  MATCH (documents) SEARCH 'machine learning'
+  USING HYBRID WITH WEIGHTS(0.7, 0.3) FUSION RRF
   WHERE category = 'tech' AND date > '2025-01-01'
-  RERANK 'neural networks' WITH REGENERATE
+  RERANK 'neural networks' REGENERATE
   LIMIT 10
   ```
 - Drivers: PostgreSQL/pgvector, SQLite, in-memory
@@ -733,12 +371,12 @@ ChatTools bridge the gap between AI reasoning and real-world operations. They ac
 
 | Tool Interface | What it does | Implementations |
 |----------------|-------------|-----------------|
-| `IAiPdfTool` | Extract text from PDFs | Mistral OCR, Ollama OCR |
+| `IAiPdfTool` | Extract text from PDFs | Mistral OCR, Ollama OCR, native PDF parser (`TAiNativePdfTool`, in the `MakerAi.ChatTools` repo) |
 | `IAiVisionTool` | Describe / analyze images | Any vision model |
-| `IAiSpeechTool` | Text-to-speech / speech-to-text | Whisper, Gemini Speech, OpenAI TTS |
-| `IAiWebSearchTool` | Live web search | Gemini Web Search |
+| `IAiSpeechTool` | Text-to-speech / speech-to-text | OpenAI (`gpt-transcribe`, `gpt-4o-mini-tts`), Whisper (local server), Gemini Speech, ElevenLabs |
+| `IAiWebSearchTool` | Live web search | OpenAI (Responses API), Gemini |
 | `IAiImageTool` | Generate images | gpt-image-2.5, Gemini (Nano Banana), Grok Imagine, Qwen Image |
-| `IAiVideoTool` | Generate video | Sora, Gemini Veo, Grok Imagine, Qwen Wan |
+| `IAiVideoTool` | Generate video | Gemini Veo, Grok Imagine, Qwen Wan (OpenAI shut Sora down; its class stays only for compatibility) |
 | `TAiShell` | Execute shell commands | Windows/Linux |
 | `TAiTextEditorTool` | Read/write/patch files | Diff-based editing |
 | `TAiComputerUseTool` | Control mouse and keyboard | Claude `computer_toolset`, OpenAI `computer` (gpt-6-astra) |
@@ -797,6 +435,7 @@ A parallel component stack for live audio over WebSocket, with the same universa
 |--------|------|----------|
 | `TAiOpenAiRealtimeSTT` | STT only — streaming transcription (`gpt-live-transcribe` default) | OpenAI Realtime API |
 | `TAiOpenAiRealtimeTranslate` | **Simultaneous translation** — translated text and voice in one stream | OpenAI Realtime API |
+| `TAiOpenAiLiveChat` | **GPT-Live full-duplex voice** (`gpt-live-1`) — can be interrupted, delegates the thinking to a Responses model or any `TAiChatConnection` (`DelegateChat`) | OpenAI Realtime API |
 | `TAiGrokRealtimeChat` | **Full-duplex speech-to-speech** — the user talks, Grok answers with voice | xAI `wss://api.x.ai/v1/realtime` |
 | `TAiQwenRealtimeChat` / `…STT` / `…Translate` | Voice conversation, live transcription and simultaneous translation (`DriverName` `Qwen` / `QwenSTT` / `QwenTranslate`) | Alibaba DashScope |
 | `TAiQwenRealtimeTTS` | Streaming text-to-speech: speak an LLM answer while it is generated | Alibaba DashScope |
@@ -816,7 +455,8 @@ First Delphi implementation of **A2A 1.0** (Linux Foundation), certified against
 
 - **`TAiA2AServer`** exposes any `TAIAgentManager` graph as an A2A agent: Agent Card at `/.well-known/agent-card.json`, `SendMessage` / `GetTask` / `CancelTask` / `ListTasks`, SSE streaming, push notifications, bearer auth, a pool of managers for concurrent tasks, and human-in-the-loop (a suspended node becomes `input-required`)
 - **`TAiA2AClient`** consumes remote agents; **`TAiA2ARemoteAgentTool`** federates a graph node to a remote agent, and **`TAiA2AAgentTool`** exposes a remote agent to a chat as a function
-- Demos: `072-A2AFederation`, `074-A2AOrchestration`, `079-A2ASutAgent`, `080-A2APushNotifications`
+- **Discovery through PPM:** agents published as `agent` packages are found and installed by name (`InstallAgentFromPPM`) or by the model itself with AutoMCP (`call_agent`) — see *PPM — A2A agents as packages* above
+- Demos: `072-A2AFederation`, `074-A2AOrchestration`, `079-A2ASutAgent`, `080-A2APushNotifications`, `093-A2AChatAgentTool` (an agent as a chat tool) and `099-VozPedidoLadera` (voice order through federated agents)
 
 ### 📚 Skills — Reusable Instructions on Demand
 
@@ -832,7 +472,7 @@ Skills use the **SKILL.md** format (Claude Agent Skills / PPM registry): YAML fr
 
 - **`TAiGuardrails`** — assigned to `TAiFunctions.Guardrails`, it checks every tool call (local, MCP or AutoMCP) **before** it runs: allow/block lists with wildcards, forbidden argument patterns, a pluggable semantic `Classifier` and an `OnCheckToolCall` veto. A blocked call never executes; the model gets the reason and can replan
 - **`ChatTools.PromptGuard`** — the input-side guardrail: checks the user's message before it reaches the model
-- **`TAiEvalRunner`** — fluent test cases (`ExpectContains`, `ExpectRegex`, `ExpectEquals`, `ExpectJudge` with an LLM judge, `ExpectScore` with a calibrated scorer) against any target, with text and JSON reports. The framework's own regression suite (117 cases, no API keys) is built on it
+- **`TAiEvalRunner`** — fluent test cases (`ExpectContains`, `ExpectRegex`, `ExpectEquals`, `ExpectJudge` with an LLM judge, `ExpectScore` with a calibrated scorer) against any target, with text and JSON reports. The framework's own regression suite (158 cases, no API keys) is built on it
 - Demo: `073-GuardrailsEvals`
 
 ### 📈 Observability — OpenTelemetry
@@ -853,7 +493,7 @@ Introduced in v3.3 and refined in v3.4, the `TAiCapabilities` system replaces al
 
 - **`ModelCaps`** — what the model natively supports (e.g., `[cap_Image, cap_Reasoning]`)
 - **`SessionCaps`** — what the session needs
-- **Gap = SessionCaps − ModelCaps** — any missing capability activates an automatic ChatTool bridge; for example, a text-only model with `cap_GenImage` in `SessionCaps` automatically routes image generation requests through a DALL-E or Gemini bridge
+- **Gap = SessionCaps − ModelCaps** — any missing capability activates an automatic ChatTool bridge; for example, a text-only model with `cap_GenImage` in `SessionCaps` automatically routes image generation requests through a `gpt-image` or Gemini (Nano Banana) bridge
 
 ```pascal
 // Default capabilities for all models of a provider
@@ -873,20 +513,14 @@ Available capabilities:
 
 ### 🎨 FMX Visual Components
 
-Two generations of FireMonkey components for building multimodal chat UIs:
-
-**Next-generation (v3.4) — Skia-native, virtualized, zero FMX child controls:**
+**Current (since v3.4) — Skia-native, virtualized, zero FMX child controls:**
 
 - **`TAIChatView`** — single-canvas virtualized conversation renderer; only visible messages are painted; supports multi-message text selection, dark/light theme, context menu, long-press (mobile), copy-button feedback with timer, and a scrollbar that doesn't interfere with content
 - **`TAIChatInput`** — fully Skia-painted input bar with custom dropdown overlay (no `TPopupMenu` required), voice-mode indicator, file attachment chips, and `TAIVoiceMonitor` integration; layout adapts from 1 to N attachment chips automatically
 
-**Classic components — FMX-layout-based, simpler to subclass:**
+Both work with every provider and with streaming; messages also carry a footer, action buttons and collapsible task steps (see *Chat UI* in What's New).
 
-- **`TChatList`** — scrollable message container with Markdown rendering, code blocks, copy buttons
-- **`TChatBubble`** — individual message bubble (user / assistant / tool)
-- **`TChatInput`** — text input bar with voice recording, file attachment, and send button
-
-Both sets are compatible with all providers and work with streaming responses.
+**Deprecated — classic components:** `TChatList`, `TChatBubble`, `TChatInput` and `uMakerAi.Utils.ScreenCapture` are marked `deprecated` and kept only so existing applications still compile; no demo uses them since 4.0. When migrating, note that `TAIChatView.AddBubble(..., AInbound)` treats `AInbound = True` as the **user** (prefer `AddUserMessage` / `BeginAssistantMessage` + `AppendToken`), and that `ActiveMediaFile` has no equivalent: use `OnAttachmentOpen`. Demos `012-ChatAllFunctions` and `041-GeminiVeo` show the migrated code.
 
 ### 📐 Design-Time Integration
 
@@ -965,42 +599,186 @@ AiConn.Params.Values['ApiKey'] := 'sk-...';             // or set a literal key 
 
 ## 🗂️ Demo Projects
 
-Open `Demos/DemosVersion31.groupproj` to access all demos.
+Open `Demos/DemosVersion31.groupproj` to load all 63 demo projects in the IDE. Every demo folder has a `CLAUDE.md` (or a section in `Demos/CLAUDE.md`) with what it shows, how to run it and which API keys it needs. Demos from earlier versions that no longer apply live in [`DeprecatedDemos/`](DeprecatedDemos/README.md), for reference only.
 
-| Demo | Description |
-|------|-------------|
-| `010-Minimalchat` | Minimal chat with Ollama and TAiChatConnection |
-| `012-ChatAllFunctions` | Full-featured multimodal chat (images, audio, streaming, tools) |
-| `012-ChatWebList` | Chat with web-based content list |
-| `021-RAG+Postgres-UpdateDB` | Build a vector RAG database with PostgreSQL/pgvector |
-| `022-1-RAG_SQLite` | Lightweight vector RAG with SQLite |
-| `023-RAGVQL` | VQL query language for semantic search |
-| `025-RAGGraph` | Knowledge graph RAG with GQL queries |
-| `026-RAGGraph-Basic` | Simplified graph RAG patterns |
-| `027-DocumentManager` | Document ingestion and management |
-| `031-MCPServer` | Multi-protocol MCP server (HTTP, SSE, StdIO) |
-| `032-MCP_StdIO_FileManager` | File manager exposed via MCP StdIO |
-| `032-MCPServerDataSnap` | MCP server using DataSnap transport |
-| `034-MCPServer_Http_FileManager` | File manager via MCP HTTP |
-| `035-MCPServerWithTAiFunctions` | TAiFunctions bridge to MCP |
-| `036-MCPServerStdIO_AiFunction` | StdIO MCP server with AI functions |
+**New to MakerAI?** Start with the *Café La Ladera* series (`094`–`105`): twelve small demos, one per step, from the first streaming chat to a voice order that travels through federated agents. The book projects in `Demos/Libro/` follow the same path chapter by chapter.
+
+### Café La Ladera series (start here)
+
+| Demo | What it shows |
+|------|---------------|
+| `094-ChatStreaming` | Console chat: system prompt, streaming with time to first token, history, save/load the conversation |
+| `095-ChatViewLadera` | FMX chat with `TAIChatView`/`TAIChatInput`: streaming bubbles, reasoning step, token footer, images, PDF and voice notes |
+| `096-ChatToolsLadera` | Native web search, a text editor confined to a folder and an allow-listed shell, including the attempt that gets blocked |
+| `097-ChatMemoryLadera` | `TAiMemory`: the customer's preferences are remembered in a new session with a fresh chat |
+| `098-AgentGraphLadera` | An order through an agent graph: fan-out, `jmAll`, expression and conditional edges, and a `TLLMNode` (`--sin-llm` without a key) |
+| `099-VozPedidoLadera` | The summit: a voice order through GPT-Live, a chat that calls the Orders agent over A2A, whose inventory node is federated to the Warehouse agent |
+| `100-MCPLadera` | The same `.exe` is an MCP stdio server (also for Claude Desktop/Code and as a PPM package) and a chat that launches it and uses its tools |
+| `101-SkillsLadera` | Three SKILL.md skills loaded on demand with `TAiSkills` |
+| `102-AgenteLadera` | A `TLLMNode` with a skill and two tools serves a customer; a second node reviews the answer |
+| `103-AprobacionLadera` | A large order waits for approval, the program exits, and `--responder` resumes it from the checkpoint on disk |
+| `104-GuardrailsLadera` | Guardrails on the agent's tools (maximum discount, blocked cancellation) and evals with a judge model |
+| `105-EnrutadorLadera` | Jev routes each customer message to the right agent, without an LLM, with time and cost. Needs `TYPESAFE_API_KEY` |
+
+### Chat, multimodal and providers
+
+| Demo | What it shows |
+|------|---------------|
+| `012-ChatAllFunctions` | Full-featured multimodal chat: images, audio, streaming and tools across providers |
 | `041-GeminiVeo` | Video generation with Google Veo |
-| `051-AgentDemo` | Visual agent graph builder and runner |
-| `052-AgentConsole` | Console-based agent execution (conditional and parallel flows) |
-| `053-DemoAgentesTools` | Agents with integrated tool use |
-| `054-AgentCheckpointDB` | Durable agent execution: suspend/resume with `TAiDatabaseCheckpointer` (SQLite via FireDAC) |
-| `060-AIChatUI` | Next-generation `TAIChatView` + `TAIChatInput` components — full multimodal demo |
-| `072-A2AFederation` | Agent federation over the A2A 1.0 protocol: expose a graph as an A2A agent, consume it, and delegate a local node to a remote agent (no LLM required; `--otel` for tracing) |
-| `077-RagPostgresConsole` | Headless vector RAG on PostgreSQL + pgvector with local Ollama embeddings — no API key. Runs on Windows and Linux64 |
-| `082-ComputerUsePassthru` | Who executes a `computer_call`: delegated to a remote client, missing tool, or local. Self-verifying with an exit code; never touches the screen |
-| `083-ComputerUseLinux` | Computer Use on Linux/X11 over Xvfb — the headless counterpart of `066` |
-| `084-JevRouter` … `088-JevModelRouter` | Jev (TypeSafe AI): agent routing, SmartDispatch and guardrails, evals and RAG reranking, bulk labeling, model routing. Need `TYPESAFE_API_KEY` |
 | `089-QwenShowcase` | Everything Qwen (Alibaba Model Studio) with one key: chat, vision, image editing, voice, translation, embeddings + rerank, realtime |
+| `090-Varios/ListAllModels` | Lists the models available from each provider |
+| `090-Varios/CompareEmbeddings` | Compares embedding models side by side |
+| `090-Varios/Dalle_Generate` | Image generation |
+| `090-Varios/VoiceMonitorAndWhisperDemo` | `TAiVoiceMonitor` + speech-to-text |
+
+### RAG and memory
+
+| Demo | What it shows |
+|------|---------------|
+| `021-RAG+Postgres-UpdateDB` | Build a vector RAG database on PostgreSQL + pgvector |
+| `022-1-RAG_SQLite` | Lightweight vector RAG on SQLite |
+| `023-RAGVQL` | VQL, the vector query language |
+| `025-RAGGraph` | Knowledge-graph RAG with GQL queries |
+| `026-RAGGraph-Basic` | The essentials of graph RAG |
+| `027-DocumentManager` | Document manager over graph RAG, 100% local with Ollama |
+| `070-ChatRAGTools` | Multi-provider chat + SQLite RAG + a tool that draws charts, in one form |
+| `076-Memory` | `TAiMemory` on SQLite/FTS5; hybrid search when `OPENAI_API_KEY` is set |
+| `077-RagPostgresConsole` | Headless vector RAG on pgvector with local Ollama embeddings, no API key. Windows and Linux64 |
+| `078-RagChatOllama` | Complete local RAG: pgvector retrieval answered by Ollama, each question with and without context |
+
+### MCP
+
+| Demo | What it shows |
+|------|---------------|
+| `031-MCPServer` | Multi-protocol MCP server (HTTP, SSE, StdIO). Also compiles for Linux64 |
+| `032-MCP_StdIO_FileManager` | File manager MCP server in three projects: StdIO, HTTP and SSE |
+| `036-MCPServerStdIO_AiFunction` | StdIO MCP server built from `TAiFunctions` |
+| `037-MCPServerRAG` | Semantic RAG served over MCP, on SQL Server 2025 or PostgreSQL + pgvector |
+| `075-MCPElicitation` | Client side of MCP elicitation (MRTR) with `OnInputRequired` |
+
+### Agents and A2A
+
+| Demo | What it shows |
+|------|---------------|
+| `051-AgentDemo` | Visual fan-out + join: one task calls the model while another runs locally, in parallel |
+| `052-AgentConsole` | Conditional and fork/join flows with the fluent API |
+| `054-AgentCheckpointDB` | Durable execution: suspend and resume a graph with `TAiDatabaseCheckpointer` |
+| `072-A2AFederation` | A2A 1.0 federation: expose a graph as an agent, consume it, delegate a local node to it (no LLM; `--otel` for tracing) |
+| `074-A2AOrchestration` | A2A orchestration: manager pool, human-in-the-loop, federated HITL, non-blocking tasks |
+| `079-A2ASutAgent` | The agent used to certify MakerAI against the official A2A TCK (MUST 89/89, SHOULD 8/8) |
+| `080-A2APushNotifications` | A2A push notifications: the agent posts to your webhook when it finishes |
+| `081-AgentChatHITL` | Human-in-the-loop inside the chat, without modal windows, resumable after restarting the app |
+| `093-A2AChatAgentTool` | A chat that calls a remote A2A agent as a tool; `--ppm` discovers it in a PPM registry |
+
+### Guardrails, evals and Jev (TypeSafe AI)
+
+| Demo | What it shows |
+|------|---------------|
+| `073-GuardrailsEvals` | `TAiGuardrails` (the blocked tool never runs) and `TAiEvalRunner` with a report and exit code, no LLM |
+| `084-JevRouter` | Route queries to specialized agents before spending an LLM call |
+| `085-JevDispatchGuard` | Jev in SmartDispatch and in tool and input guardrails |
+| `086-JevEvalsRag` | Jev as an eval scorer and as a RAG reranker that discards injections |
+| `087-JevBatchLabeling` | Bulk labeling: 126 accounting entries against 225 ledger accounts in seconds |
+| `088-JevModelRouter` | Send each request to the cheapest model that can handle it |
+
+Demos `084`–`088` need `TYPESAFE_API_KEY`.
+
+### Skills
+
+| Demo | What it shows |
+|------|---------------|
 | `091-Skills` | SKILL.md skills three ways: on demand in a chat (`TAiSkills`), as the base of an agent node (`TAiSkill`), copied into the prompt (`TAiPrompts.ApplySkill`) |
+
+### Voice and audio
+
+| Demo | What it shows |
+|------|---------------|
+| `060-ElevenLabsTTS` | Text-to-speech with ElevenLabs |
+| `061-LoopbackAudioCapture` | Capture what the PC is playing (WASAPI loopback) to a WAV file |
+| `064-VoiceBridgeDiarized` | Meeting voice bridge with speaker diarization: a stable label and a distinct voice per participant |
+| `071-VoiceBridgeTranslate` | Live call translation with `gpt-realtime-translate`: speak Spanish, the meeting hears English, and the other way round |
+| `092-GPTLiveVoice` | OpenAI GPT-Live full-duplex voice: interruptible, with delegation to Responses or any `TAiChatConnection`, local functions and RAG over MCP |
+
+### Computer Use
+
+| Demo | What it shows |
+|------|---------------|
+| `066-ComputerUseTest` | Computer Use on the Windows desktop (three projects, including a manual loop against a server) |
+| `082-ComputerUsePassthru` | Who executes a `computer_call`: a remote client, nobody, or a local executor. Self-verifying; never touches the screen |
+| `083-ComputerUseLinux` | Computer Use on Linux/X11 over Xvfb, the headless counterpart of `066` |
+
+### Integration checks against real APIs
+
+More of these, which used to be demos 014, 068 and 069, now live in [`Tests/Integration/`](Tests/Integration/CLAUDE.md) with their own group project.
+
+Small consoles with asserts that reproduce a specific issue against the live API (they need the provider's key). For the in-process suite without keys, see `Tests/RegressionSuite`.
+
+| Demo | What it checks |
+|------|----------------|
+| `067-PromptCacheTest` | Claude prompt caching: the second request reads from the cache |
+
+### The book: *Inteligencia Artificial con Delphi* (4.0 edition)
+
+`Demos/Libro/cap03-primer-chat` … `Demos/Libro/cap37-los-demas-puentes`: one folder per chapter, 64 projects in all.
 
 ---
 
 ## 🔄 Changelog
+
+### v4.0.0 (2026-11-20)
+- ⚠️ Change (Claude): **web search is opt-in** — `cap_WebSearch` removed from every Claude model and profile in the registry except `aa_claude-opus-4-6-agent` / `aa_claude-opus-5-agent`. With it, each call carried `web_search_20260209` plus Anthropic's auto-injected `code_execution`: measured live, a trivial question on `claude-fable-5-2` went from 5,994 input tokens to 30, and on `claude-haiku-5-5` an opt-in search still works (`cap_WebSearch` in `ModelCaps` and `SessionCaps`)
+- New: **`claude-fable-5-2`** registered ($8/$40, cache read $0.20; 1M context, 128K output) — the successor of Fable 5.1 at a lower price. Forcing a tool is downgraded to `auto` (the API returns 400) and `FastMode` is allowed on it (fast mode is GA there). Tested live (7/7: text, streaming, a forced tool call, image, a mid-conversation `system` message, `tlNone`, fast mode)
+- Fix (memory): **`TAiMemoryContext.Build` freed every semantic hit twice** — the `SearchSemantic` list owns its entries, which had already been handed to the candidate list, so each semantic match ended in an access violation (or a corrupted heap). Present since v3.9. Fix (MCP): a client borrowed from a shared pool (`AddBorrowedMCPClient`) is no longer rewritten (`Params`, `EnvVars`, `Name`) or recreated by its `TAiFunctions` item, so two threads no longer overwrite each other's settings
+- Fix (agents): **`OnSuspend` could call a freed manager** — it is queued to the main thread with `TThread.Queue`, and the closure read `Self`/`OnSuspend` when the queue was served; if the owner freed the manager first (an immediate resume in a server), that was an AV. A queued `OnSuspend` is now dropped once its manager is destroyed. Case `agents.suspend.after-free`
+- ⚠️ Fix (MCP): **`serverInfo.version` was always `1.0.0`** whatever program hosted the server. `ServerVersion` now defaults to empty, which reports the host executable's product version (Windows; `1.0.0` when it has none or on other platforms); an assigned `ServerVersion` is sent as before. `TAiMCPLogicServer.EffectiveServerVersion` returns the value actually sent
+- New: **`TAiA2AServer` can host an agent it does not run** — `Executor: IAiA2AExecutor` hands each task to the host's own engine (an orchestrator with its own locks, policy, run log, spend caps or suspensions persisted on disk) and the host pushes the state back with `AReport` (`TAiA2AExecUpdate.Completed` / `Failed` / `InputRequired`); `input-required` frees the slot and the next `SendMessage` with that `taskId` arrives as `Execute` with `Resume=True`. Cancel marks the task first and then tells the host, so a late report never resurrects it. **`AgentPaths`** serves several agents on one port under `/<agent>/` (own card and URL each, tasks isolated: another agent's `taskId` is `TaskNotFound`), resolved and customized by `OnResolveAgent`. **`BindAddress`** (or `A2A_BIND_ADDRESS`) binds to one local IP — it always listened on 0.0.0.0. Fix: the bridge between `SendMessage` and the `message` arm of the response was a server field, so two concurrent calls could swap their structured answers; it is per thread now. Regression cases `a2a.executor.*`, `a2a.paths.multi-agent`, `a2a.bind-address`
+- New: **localization groundwork** — `uMakerAi.Localization` (`TAiLocale`, `AiStr` / `AiFmt`) looks texts up by key in per-language tables (`uMakerAi.Lang.En`, the base, `uMakerAi.Lang.Es` and `uMakerAi.Lang.Pt`, Brazilian Portuguese registered as `pt`, so `pt-BR` and `pt-PT` both use it). The language comes from `MAKERAI_LANG`, then the OS (Windows UI language; `LC_ALL`/`LC_MESSAGES`/`LANG` on Linux/macOS; `Locale.getDefault` on Android), and can be switched at runtime with `TAiLocale.Language := 'es'`; lookup falls back region → language → English → the key. An application adds its own language with `TAiLocale.RegisterTable('pt', [...])`. Framework texts move to the tables in stages: **done** for `TAIChatView` (context menu, code-block and media buttons, steps, "Copy conversation" role labels), `TAIChatInput` (attachment menu, file dialog filter) and the design-time editors (MCP client editor, connection editors, About), which now follow the OS language. Internal prompts are **not** localized: they are written in English and tell the model to answer in the user's language (see *Behaviour changes*). Exception messages are in the tables too (437 keys across Core, chat drivers, Tools, RAG including the VQL/GQL parser errors, Agents, MCP client, Embeddings, Utils and WebSocket). Errors that an MCP server sends back over JSON-RPC stay in English, since the other side is usually a model. The status messages that reach `OnStateChange` and the MCP client's `OnStatusUpdate` ("Sending request...", "Generating video...", "Calling tool: ...") are translated too, and so are the messages that reach `OnError` (`DoError`, `ReportError`, `HandleError`): 653 keys in English, Spanish and Portuguese. The deprecated `TChatList`/`TChatBubble`/`TChatInput` are not translated. Regression cases `locale.*` check every table has the base keys and the same `Format` specifiers; `Tests/Localization/hardcoded_strings.py` reports the texts still hard-coded
+- New: **A2A agents as PPM packages** — package type `agent` (Agent Card + URL, no code). `TAiFunctions.SearchPPMAgents` / `GetAgentCardFromPPM` / `InstallAgentFromPPM`; AutoMCP lists agents in `ppm_search`, installs them with `ppm_install` and adds `call_agent` when `uMakerAi.A2A.Client` is in the project (`TAiPPMAgentHandler` keeps `uMakerAi.Tools.Functions` free of A2A). Allowed/Blocked, `OnAutoMCPRequest` and guardrails apply; an agent key comes only from `PPM_AGENT_KEY_<NAME>`. `TAiA2AAgentTool.Ask` is now public. Private registries only: PPMServer with `PPM_ALLOW_AGENTS=1` and `migration_003_agent_type.sql`; the public `registry.cimamaker.com` does not accept agents
+- New: **company registry example** — `Demos/Libro/cap33-registry-corporativo/registro-local`: PPMServer on `127.0.0.1:8766` with the *Café La Ladera* packages (`mcp-bodega-ladera` = demo 100's MCP server, a skill, a prompt and the A2A catalog agent); `RegistryLadera --automcp` points AutoMCP at it
+- New: demo `093` `--ppm [url]` (the chat discovers the agent in the registry) and `--solo-agente [--segundos N]`; demo `100` `--trafico` (every JSON-RPC message) and `--http` (`TAiMCPHttpServer` + `tpHttp`), `--protocol stdio` for `InstallMCPFromPPM`; demo `104` `--detalle` (question and answer of each eval)
+- Fix: **Claude Haiku 5.5 with `ThinkingLevel = tlNone` now turns thinking off** (`thinking: disabled`); it was sent as effort `low`, which only applies to Opus/Sonnet 5.5 and Fable — a 250-token JSON answer went from ~1,200 to ~300 output tokens
+- Fix: **Claude `code_execution`** — a data file returned by a tool (Excel, Word…) now reaches the sandbox (`container_upload` next to the `tool_result`); before, only images and PDFs did
+- New: **MiniMax driver** — `TAiMiniMaxChat` (`DriverName='MiniMax'`, `@MINIMAX_API_KEY`), OpenAI-compatible endpoint `https://api.minimax.io/v1/`. `reasoning_split` always on (reasoning in `reasoning_content`, re-sent in the history), thinking `adaptive`/`disabled` from `cap_Reasoning` (`MiniMax-M3.1-Flash` cannot disable it and is left at the API default), `reasoning_effort` only on M3.1-Flash (`tlNone` → `low`, since `none` is rejected; registry default `tlMedium` instead of the API's `max`), `max_completion_tokens`, `stream_options.include_usage` when streaming, no sampling parameters (ignored by the API). Registered: `MiniMax-M3` (default), `MiniMax-M3.1-Flash`, `MiniMax-M2.7/2.5/2.1(-highspeed)`, `MiniMax-M2`. Package, registry and palette icon. Regression case `chat.minimax.request`. *Not runtime-tested yet (no API key)*
+- ⚠️ Fix: **`claude-haiku-5-5` returned 400** — the driver treated it as a legacy Haiku and sent `thinking.budget_tokens` and `temperature`. It is now adaptive-only (`effort` from `ThinkingLevel`, default `medium`), accepts mid-conversation `system` messages, and `RefusalFallbackModel` is skipped with a log line (Haiku 5.5 has classifiers but no server-side fallback; a fallback list is a 400). Forced `tool_choice` still works on it. Registered and tested live (7/7). The driver default stays `claude-haiku-4-5`
+- Retired (Anthropic): **`claude-sonnet-4-20250514` and `claude-opus-4-20250514`** (and their `-4-0` names) answer `not_found_error`; they are aliases of `claude-sonnet-5-5` / `claude-opus-5-5`
+- New: **`gpt-6.1-sol`** ($2/$10, cache read $0.10) and **`gpt-6.1-terra`** ($1/$5) registered; both reject `temperature`/`top_p`, which the driver already omits for GPT-6. Tested live (9/9)
+- ⚠️ Fix: **OpenAI effort per model** — `gpt-6-astra` and `gpt-6.1-sol` reject `reasoning.effort: none` (400), so `tlNone` is sent as `low`; `gpt-5.2/5.4/5.5-pro` accept only `medium`/`high`/`xhigh` (`gpt-5.5-pro` with `tlLow` was a 400), so lower levels become `medium` and `tlMax` becomes `xhigh`
+- Retired (OpenAI): **`o3-pro`** → alias of `gpt-5.5-pro`; **`o3-deep-research` / `o4-mini-deep-research`** → `gpt-6.1-sol` with web search and code interpreter; **`dall-e-2` / `dall-e-3`** → `gpt-image-1` in the chat driver; `gpt-4o-audio-preview` / `gpt-4o-mini-audio-preview` removed (their `gpt-audio*` successors speak audio only through Chat Completions, while the driver uses the Responses API). `TAiDalleImageTool` with `imDallE2`/`imDallE3` still sends the retired names
+- Fix: **`gemini-4-argon` was sent `thinkingBudget`** — the driver chose the thinking format with `Contains('gemini-3')`, so a 4.x model fell to the Gemini 2.5 path. It now goes by model version (≥ 3 → `thinkingLevel`). `gemini-4-argon` registered (unified 1M window, 32K output per non-streaming call, explicit `cachedContents` unsupported, 20-minute timeout), plus **`gemini-nano-banana-2.1`** and `gemini-omni-1.1-flash`. Deprecated and already rerouted by Google: `gemini-3.5-flash` → `gemini-3.6-flash`, `gemini-3.7-flash` → `gemini-3.8-flash` (now registry aliases); `gemini-2.5-computer-use-preview-10-2025` (shut down) → `gemini-3.8-flash`. ⚠️ The `imagen-4.0-*` aliases now point to Nano Banana 2.1 (`gemini-3.1-flash-image` is deprecated). Note: since 2026-10-26 new **paid** Gemini projects store `generateContent` requests by default (`store=true`); the driver does not send `store`. *Checked against the official docs; not runtime-tested (no Gemini account)*
+- ⚠️ Fix: **Kimi rejected any `Temperature` other than 1** — every current model (`kimi-k2.6`, `k2.7`, `k3`, `k3.1`) accepts only `temperature = 1` and `top_p = 0.95`, but the base request sent the component's value. `TAiKimiChat` now omits sampling for the `kimi-k*` family. New: **`kimi-k3.1-pro`** ($2/$10, 1M, vision + reasoning) and `kimi-k3.1-pro-highspeed` ($4/$20). Retired: `kimi-k2.5`, `kimi-latest` and the six `moonshot-v1-*` → aliases (`kimi-latest` → `kimi-k3.1-pro`, the rest → `kimi-k3`). Tested live
+- Fix: **GLM sent no `reasoning_effort` for `tlNone`/`tlMinimal`/`tlXHigh`/`tlMax`**, so the API used `max` (the most expensive); they now map to `low` / `max`. New: **`glm-5.3-flash`** and `glm-5.3-flashx` (MoE 320B/18B, MIT weights, 1M, native vision, forced thinking like `glm-5.3`). First live test of the GLM driver (text, vision, thinking on and off)
+- New: **fluent agent API completed** — `AddEdge` adds targets to the existing link (it replaced `StartNode.Next`, orphaned the old link and a fluent fan-out ran only its last branch); new `AddNode(node)`, `AddToolNode`, `AddExpressionEdge`, `AddFallbackEdge` (`NextNo`) and `SetJoinMode`; construction errors raise `EAiGraphError`. `TAIAgentsNode.ExecuteNode` is virtual and protected and `TLLMNode` overrides it instead of reimplementing `DoExecute`; `OnEnterNode` runs after the join. `TLLMNode` gains `Guardrails`, gets the manager as `Owner` and sets capabilities through the typed channel
+- ⚠️ Fix: **typed `ModelConfig` setters** (`ModelCaps`, `SessionCaps`, `ThinkingLevel`, `Tool_Active`) pin the field even when the value equals the current one — `Tool_Active := True` was overwritten by the driver registry
+- Fix: **forms saved with older versions raised `EReadError`** (demos 012, 021, 051): `TAiChat.DefineProperties` reads the properties that are no longer published (`NativeInputFiles`, `Logprobs`, `Top_p`, `Voice`…), applies those with a destination and drops the rest. `TAiMCPStdioServer.WaitForInputClosed`; `Stop` releases the reader thread. Sample VQL in the README and guides fixed (it did not parse)
+- Fix: **a `Model` saved in the form was lost on load** — `TAiChatConnection.Loaded` created the chat without it, so `DriverName=Claude` + `Model=claude-sonnet-5-5` started with `claude-haiku-4-5`. Case `conn.form-model-nondefault`
+- Fix: **Claude Computer Use ran the actions of a turn in parallel** and in dictionary order — with `computer_toolset_20260801` two `type` actions mixed their letters and a five-field form took 114 actions and 322 s. A batch with a screen action now runs serially, in arrival order, on the parsing thread (14 actions, 26 s); normal tool calls stay parallel. `TAiComputerUseTool` honours the `repeat` of `key`. Case `chat.claude.computer-use-sequential`
+- Fix: **the trace of a turn was split across threads** — tool calls (one `TTask` each), the tool-calling continuation and OpenAI's streaming function calls did not carry the turn's `chat` span. New `TAiTelemetry.ContextEnter` / `ContextLeave` / `CurrentTraceParent` (helpers `AiTraceContextEnter` / `Leave`); a turn delegating to a graph went from 5 traces to one of 14 spans. Case `telemetry.task-inherits-trace`
+- Fix: **input bridges** — during the Phase 1 bridges (audio, image or PDF the model cannot read) the tool runs synchronously and its `DoData`/`DoDataEnd` are ignored; before, the SpeechTool fired `OnReceiveDataEnd` with the raw transcription and the UI closed the turn before the model answered. **Web search** results are injected as context for the model (they were overwritten by Phase 3) and `cmWebSearch` no longer searches twice. `TAiOpenAiWebSearchTool` moved to `/v1/responses` with `web_search` (default `gpt-6-luna`), since `gpt-4o-mini-search-preview` was retired. ElevenLabs and Gemini TTS generate inline (a synchronous chat returned without audio). Tools release their weak chat reference when replaced or when the chat is freed (AV on the next direct call). `TAiOllamaOcrTool` strips deepseek-ocr control tokens
+- ⚠️ Fix (security): **`TAiShell` checked only the first token** — with an allow-list of `[cd, dir]`, `cd x && del /f /q *` passed. Every segment (`&`, `|`, `;`, new line) is now checked without quotes, `^`, path or extension; in `ssmAllowList` mode `>`, `<`, `` ` `` and `$( )` are rejected
+- Fix: **a blocked message stayed in the history** — a prompt rejected by the sanitizer or the `PromptGuard` reached the model on the next turn (`TAiChat.DiscardBlockedMessage`). The sanitizer recognises injection phrases in Spanish as well
+- Fix (OpenAI): `apply_patch_call` was not executed in **streaming** (*No tool output found for apply patch call*), and `create_file` went to `apply_diff` on a missing file, so the model could not create files; `EnforceStrictSchema` (now public) walks `items`, `anyOf`/`oneOf`/`allOf` and `$defs` (an array of objects was a 400), and tools with a free-form object are sent with `strict: false`. New `PromptCacheMode` → `prompt_cache_options.mode` (GPT-5.6+)
+- Fix: **`Mistral Small 4` only accepts `reasoning_effort` `none`/`high`** — `tlLow` → `none`, `tlMedium`/`tlHigh` → `high` (`medium` was a 400). `TAiRagGraph.SearchText` returned only the header; it now returns the nodes and their neighbours
+- ⚠️ Fix: **`TAiChat.Run` waits (up to 15 s) for the previous HTTP request to close** — its late close freed the new request's stream (intermittent *Stream read error*); it does not wait when called from the thread delivering the previous one. **`TAudioPushStream`** no longer deadlocks: `waveOutReset` is called without the lock and buffers are fed from a thread (`CALLBACK_EVENT`) instead of the winmm callback
+- Fix (evals): **`ExpectJudge` sent the judge only the answer and the criterion**, without the case's question, and reused the judge's history between cases; each verdict now includes the question and starts a new chat
+- Fix (MCP): `TMCPClientSSE` retries a POST dropped by the server (up to 3 times, not `tools/call`), exposes `IsConnected` (false when the SSE stream dropped) and streams over `https` with the credential on the GET too; freeing a running `TAiMCPSSEHttpServer` raised an AV (double `Stop`)
+- Fix (WebSocket): **`ws://` opened TLS anyway** and hung forever against a plain HTTP server — new `uMakerAi.WebSocket.Plain` (`TPlainTransport`, ws2_32 / POSIX); OpenSSL connect and handshake time out after 10 s, and transport exceptions reach `OnError`. **Android:** the WebSocket TLS transport and `TAudioPushStream` compile for Android64, and the JNI signature of `SSLSocketFactory.getDefault` was wrong (every `wss://` failed)
+- New: **`TAIChatView`** — `Footer`, `Actions` (buttons inside the bubble, `OnMessageAction`, `DisableMessageActions`), `Steps` (`AddStep` / `FinishStep`, collapsible with durations), `MergeConsecutive` (consecutive messages of the same role in one bubble), attachments in `AddAssistantMessage`; **`TAIChatInput`** voice-call button (`CallVisible`, `OnCallToggle`, `CallState`, mute while in a call)
+- New: **`ResetTokenCounters`** on `TAiChat` and `TAiChatConnection` (#135); **`Cost_usd`** read from `usage.cost_usd` (MakerAI broker) and accumulated like the tokens; read-only `TAiChatConnection.Chat`
+- New (realtime, MakerAI driver): `ExtraSessionJson`, `OnAssistantTextDelta` / `OnTranscriptDelta` from the live engine, and `Say` with optional audio
+- Fix (A2A): `TAiA2AAgentTool` registers once when set up in the Object Inspector (it registered a second function on load); `TAiA2ARemoteAgentTool` is on the palette
+- Fix (agents): **`TAIAgentManager.LoadFromStream` crashed on any graph with tools** — it called `TAiToolBase(LToolClass).Create(LNode)`, a cast of the class reference to an instance that runs the constructor without allocating the object (access violation). It now creates the tool through `TComponentClass`, as `TGraphBuilder` already did
+- ⚠️ Fix (RAG, Postgres on Linux): **text with non-ASCII characters failed** (*invalid byte sequence for encoding "UTF8": 0x00*) in `TAiRagGraphPostgresDriver` (every insert, update and search) and in three queries of `TAiRAGVectorPostgresDriver` — FireDAC's `AsString` types the parameter as `ftString` (ANSI) except on iOS/Android, and the conversion breaks it on Linux; the parameters now go through `AsWideString`. Windows was not affected
+- Fix (RAG): **`TAiRagGraphPostgresDriver.SearchNodes` with `Depth > 0` always failed** — the neighbour expansion (`traversal`) references itself but the query started with `WITH`, not `WITH RECURSIVE`. Runtime-tested with PostgreSQL 17 + pgvector 0.8.1 on Windows and Linux
+- ⚠️ Fix (RAG): **in-memory vector search with `TAIBasicIndex` returned stale or empty results** — the fast path rebuilt each hit's score from `Node.Idx`, which this index never writes (its search is thread-safe and leaves the nodes alone). A query came back with what the previous hybrid search or rerank had left in `Idx` (another query's hit and score) or with zeros and nothing. New virtual `TAIEmbeddingIndex.SearchScored` returns each hit with its score; the basic index returns its own, the others keep reading `Idx`. Regression case `rag.index.basic-score`
+- ⚠️ Fix (OpenAI): **speech, image and transcription endpoints were sent the chat model** — a chat on `gpt-6.1-sol` asking for audio or an image (`cap_GenAudio` / `cap_GenImage` gap, or `cmSpeechGeneration` / `cmImageGeneration`) reached `/audio/speech` or `/images/generations` with `gpt-6.1-sol` and got 404 *Invalid URL*. As video already did with `sora`, a session model that is not one of the endpoint's falls back to `gpt-4o-mini-tts`, `gpt-image-1` or `gpt-transcribe`; an endpoint model (`gpt-image-2`, `gpt-4o-mini-tts`…) is kept. Regression case `chat.openai.media-model` (fake server); runtime-tested with `gpt-image-1-mini`, `gpt-4o-mini-tts` and `gpt-4o-mini-transcribe` from PascalAI
+- ⚠️ Fix: **TTS through `TAiChatConnection` sent an empty voice** — `SyncMediaParams` copied the connection's empty `TtsParams` over the voice the model's registry entry had set on the chat (`gpt-4o-mini-tts`: `Voice=alloy`) on every `Run`, and OpenAI answered 400 *Invalid value: ''* unless the voice was set by hand. Empty TTS and transcription fields on the connection no longer overwrite the chat's. Regression case `chat.tts.registry-voice`
+- Build: **packages and the regression suite compile without the IDE Library Path** (PR #132; `uMakerAi.Version.inc` included by relative path, missing search paths added, `MakerAI.dproj` synced with the `.dpk`); **Delphi sources check out with CRLF**, also in the GitHub ZIP (#133); PDF and audio marked as binary
+- New demos: **`Demos/Libro`** (chapters 3–37 of the 4.0 edition of the book), **`093-A2AChatAgentTool`** and **`094`–`105`** (*Café La Ladera* series); 012, 023, 036, 051 and 052 updated
+- Demos cleanup: the demo sets of 3.1, 3.4 and the previous book edition, plus six demos superseded by newer ones (010, 032-MCPServerDataSnap, 035, 062, 063, 065), moved to [`DeprecatedDemos/`](DeprecatedDemos/README.md); the demo list above is regrouped by topic and covers every project; the test consoles 014, 068 and 069 moved to `Tests/Integration/` (`IntegrationTests.groupproj`)
+- Demos `012-ChatAllFunctions` and `041-GeminiVeo` moved to `TAIChatView` / `TAIChatInput` (the last ones on the deprecated `TChatList`); `041` keeps the metadata to extend a video under the MD5 of its content and no longer leaks the result; `012` no longer pops up its connection parameters (with the resolved API key) when the driver changes
+- Demos on current models: `021` (`gpt-transcribe`, `gpt-4o-mini-tts`), Computer Use `066`/`083` (`claude-opus-5-5`, `gemini-3.8-flash`), `067`/`068` (`claude-haiku-5-5`, re-run live)
+- Regression suite: 158 cases (among the new ones: `a2a.executor.*`, `a2a.paths.multi-agent`, `a2a.bind-address`, `agents.suspend.after-free`, `chat.tts.registry-voice`, `rag.index.basic-score`, `chat.openai.media-model`, `chat.minimax.request`; `chat.gemini.request` now covers Argon and the new image alias)
 
 ### v3.9.0 (2026-10-05)
 - Changed: **the PPM registry moved to `https://registry.cimamaker.com`** — new default in `TAiFunctions` (AutoMCP, PPM search), `TAiPrompts`, `TAiSkill`, the SKILL.md client and the demos. Code that sets `registry.pascalai.org` explicitly keeps working while that host stays up
@@ -1063,15 +841,4 @@ Open `Demos/DemosVersion31.groupproj` to access all demos.
 
 ### v3.7.0 (2026-09-10)
 - Fix: **Claude Computer Use was broken, not merely outdated** — the driver still declared `computer_20251124`, a tool type the Anthropic API now rejects for *every* model (`does not match any of the expected tags`). Updated to **`computer_toolset_20260801`**, which changed shape as well as date: it is a *toolset* entry taking **no parameters** at all (no `name`, no `display_width_px`/`display_height_px`, no `enable_zoom` — the API answers *"Extra inputs are not permitted"*) and it needs no beta header. Structurally the single `computer` tool with an `action` discriminator was exploded into **17 individually named tools** (`left_click`, `right_click`, `middle_click`, `double_click`, `triple_click`, `left_click_drag`, `left_mouse_down`, `left_mouse_up`, `mouse_move`, `cursor_position`, `key`, `hold_key`, `type`, `scroll`, `wait`, `screenshot`, `zoom`), so dispatch now goes by `tool_use.name`; Claude emits several of them per turn. Coordinates arrive as **pixels of the submitted screenshot**. Supported only on `claude-opus-4-8`, `claude-opus-5`, `claude-sonnet-5` and `claude-fable-5` — every older model lost computer use entirely. Also removed `TAiClaudeChat.TranslateClaudeComputerArgs`, dead private code that had silently diverged from the live translator
-- New: **OpenAI Computer Use — `gpt-6-astra`** — the Responses API tool `{"type":"computer"}` (no parameters; it replaces `computer_use_preview`, whose dedicated model was shut down on 2026-07-23 and which astra rejects). Unlike Claude and Gemini, astra sends a **batch**: one `computer_call` carrying an `actions` array (e.g. `keypress[WIN,r]` → `type "notepad"` → `keypress[ENTER]`). The driver runs them in order and answers with a **single** `computer_call_output` holding the final screenshot, which is what the API expects per `call_id` — and as a side effect avoids the screenshot amplification the per-action providers suffer. Implemented on **both** the synchronous and the streaming paths, including history serialisation of `computer_call` / `computer_call_output`. New `TAiComputerUseTool.TranslateOpenAIToolCall` keeps the canonical action model in the tool, next to the Claude translator. Runtime-tested end-to-end (screenshot → click → type → screenshot, against a real desktop)
-- Fix: **agentic loop stalled after the first Computer Use step (OpenAI)** — the synchronous continuation condition was `(last message is 'tool') and (FLastContent = '')`, written for shell/patch calls, which never emit commentary. astra *does* emit text (`phase:'commentary'`) in the same turn as the `computer_call`, so `FLastContent` was never empty and the loop stopped after one action. Recursion is now forced when a computer call was processed
-- New: **`gpt-6-astra` registered** — 1.05M context (272K before surcharge), 128K output, vision + reasoning + tools. Note: astra accepts `xhigh` and `max` reasoning efforts, which `TAiThinkingLevel` (`tlDefault`/`tlLow`/`tlMedium`/`tlHigh`) cannot yet express — capped at `tlHigh`
-- Update: **demo `066-ComputerUseTest`** — third provider option (`OpenAI (gpt-6-astra)`), command-line startup (`-provider=`, `-prompt=`, `-autorun`) and a `run.log` next to the executable, so the loop can be exercised without touching the GUI
-- New: **GLM driver (Zhipu AI / Z.ai)** — `TAiGLMChat` (`DriverName='GLM'`, `@GLM_API_KEY`), OpenAI-compatible endpoint `https://api.z.ai/api/paas/v4/` (mainland China via the `URL` property). The API ships with thinking ON by default — the driver controls it explicitly (`cap_Reasoning` → `thinking:{enabled}`, disabled otherwise; `glm-5.3` uses forced thinking and is always sent enabled); `reasoning_effort` (`low`/`high`/`max`) sent on glm-5.2/5.3 per `ThinkingLevel`; `reasoning_content` captured in parse and streaming and re-sent in multi-turn history (required by Z.ai). Registered models: `glm-4.7` (driver default), `glm-4.7-flash` (**free**), `glm-4.7-flashx`, `glm-5.3`/`glm-5.2`/`glm-5.1`/`glm-5` (reasoning), `glm-5-turbo`, and vision `glm-5v-turbo`/`glm-4.6v` (native tool calling)/`glm-4.6v-flash` (**free**)/`glm-4.6v-flashx`/`glm-4.5v` (no tools, 16K output). Sampling clamped to the Z.ai ranges (temperature [0,1], top_p [0.01,1], max_tokens ≤131072); `tool_choice` supports only `auto`. Capabilities verified against the official docs; *not runtime-tested yet*
-
-### v3.6.0 (2026-08-02)
-- New: **Regression suite — `Tests/RegressionSuite/`** — the framework finally has an automated safety net: 17 cases covering MCP dual-era + MRTR, agent graphs, A2A 1.0 + federation, guardrails and the evals runner itself. Fully in-process (spins up its own MCP and A2A servers, plus a legacy-only MCP server to exercise the dual-era fallback), no API keys, runs in under a second. Built **on `TAiEvalRunner`**, so it doubles as the canonical usage example. `--json` writes a CI-friendly report; `--otel` traces every case as an `eval.case` span
-- New: **Guardrails — `TAiGuardrails`** — policy layer that intercepts every tool call *before* execution (the single choke point in `TAiFunctions.DoCallFunction`, so it covers local functions, MCP tools and AutoMCP alike). Strict allowlist and blocklist with wildcard masks, forbidden substring patterns in tool arguments, and a programmatic `OnCheckToolCall` veto; blocked calls never execute and the LLM receives the reason as a JSON error so it can replan. `OnBlocked` for auditing, `BlockedCount` for metrics, and a `guardrail.blocked` span attribute. Assign via `TAiFunctions.Guardrails` (opt-in, zero impact when unassigned)
-- New: **Evals — `TAiEvalRunner`** — lightweight evaluation framework for AI pipelines: fluent test cases (`AddCase('x').Input(...).ExpectContains(...).ExpectRegex(...).ExpectMaxLength(...)`) run against a generic target function, so the same suite can evaluate a `TAiChat`, an agent graph, an MCP tool or an A2A agent. Deterministic checks plus optional **LLM-as-judge** (`ExpectJudge('criteria')` with a `Judge` chat). Reports offer `ToText` for consoles and `ToJSON` for CI, and each case emits an `eval.case` OTel span
-- New: **A2A protocol (Agent-to-Agent, Linux Foundation) — MVP** — first Delphi implementation of the A2A 1.0 spec: `TAiA2AServer` exposes any `TAIAgentManager` graph as an A2A agent (Agent Card at `/.well-known/agent-card.json`, JSON-RPC `SendMessage`/`GetTask`/`CancelTask` with 0.x method aliases; graph suspension maps to `TASK_STATE_INPUT_REQUIRED` for human-in-the-loop) and `TAiA2AClient` consumes remote A2A agents (`FetchAgentCard`, `SendText`, task lifecycle). No streaming/push yet (declared `false` per spec, `UnsupportedOperationError` on streaming calls). OTel spans `a2a.client`/`a2a.server` included. **Agent federation**: `TAiA2ARemoteAgentTool` lets any graph node delegate its input to a remote A2A agent (assign it as the node's `Tool`). Runtime-tested e2e (card + SendMessage → COMPLETED + GetTask, plus a local graph federating to a remote A2A graph)
-- New: **OpenTelemetry tracing — `TAiTelemetry`** (observability phase 1) — opt-in OTLP/HTTP JSON exporter (standard collector endpoint `localhost:4318`; works with Jaeger, Grafana Tempo, Langfuse, Arize Phoenix). Spans follow the OpenTelemetry **GenAI semantic conventions**: chat turns (`chat <model>` with `gen_ai.request.model`, `gen_ai.system`, `gen_ai.usage.input/output_tokens`, sync and async), tool executions (`execute_tool <name>`), agent graphs (`agent.graph` + `agent.node <name>` nested across pool
+- New: **OpenAI Computer Use — `gpt-6-astra`** — the Responses API tool `{"type":"computer"}` (no parameters; it replaces `computer_use_preview`, whose dedicated model was shut down on 2026-07-23 and which astra rejects). Unlike Claude and Gemini, astra sends a **batch**: one `computer_call` carrying an `actions` array (e.g. `keypress[WIN,r]` → `type "notepad"` → `keypress[ENTER]`). The driver runs them in order and answers with a **single** `computer_call_output` holding the final screenshot, which is what the API expects per `call

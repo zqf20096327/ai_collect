@@ -177,10 +177,14 @@ pass and its own high-res pass on top.
    video into its Load Video node (optional `start_s` / `end_s` on Prepare: recast only that part, cut with its
    sound), connect the character pictures, write the mapping ("图1换左二" / "picture 1 ->
    left 2"; people are numbered left to right in the first clear frame - check the people sheet) and one description
-   line per picture. **H3MD Keyframe 1: Prepare** tracks the people (core SAM3.1), picks keyframe moments at most
-   about 5 s apart where the people stand apart, and crops every recast person; any image-edit model redraws the crops
-   (the example uses Qwen Image 2.1 Edit with a 2-step LoRA, prompts straight from Prepare - swap in Flux or another
-   editor if you like); **H3MD Keyframe 2: Assemble** colour-matches and pastes them back, writes the Remake plan and
+   line per picture: race, age, face, hair, every garment, **shoes and legwear, and what she does not wear** ("bare
+   legs and black stiletto heels; no socks, no boots, no apron") - otherwise the editor copies the original's.
+   **H3MD Keyframe 1: Prepare** tracks the people (core SAM3.1), finds the source's cuts and picks keyframe moments:
+   **at least one in every shot** (0.5.8), at most about 5 s apart, where the people stand apart.
+   **H3MD Keyframe 1b: Recast** (0.5.7) redraws them with Qwen Image 2.1 Edit (2-step LoRA), **one person after
+   another**: each crop is cut from the keyframe where the people before her are already recast, so nothing of the
+   originals is pasted back. Raise its `mask_grow` (default 0.25) to 0.3-0.35 when bits of a big original (wig, ears,
+   tail, wide skirt) are still left around the new person. **H3MD Keyframe 2: Assemble** writes the Remake plan and
    saves a plan .zip to `output/H3MD_plans/`. Check the keyframe sheet; redo with another seed if a pose or hand is off.
    Instead of this workflow, an agent can paint the keyframes and write the plan (`skills/h3md-prompt`, section 12d).
    Remake follows the keyframes closely, so their quality decides the result.
@@ -271,6 +275,7 @@ videos or audio; untick **prompts** to leave the prompts out. It is only saved o
 | [ComfyUI-VFI](https://github.com/GACLove/ComfyUI-VFI) | RIFE interpolation in `H3MD Save Video Interp` | optional | keep `interpolate` off: 24 fps output |
 | [ComfyUI-VOSR2](https://github.com/ylchen333/ComfyUI-VOSR2) (simple) / TE-Speed-VOSR2 (full) | face refine in `H3MD Save Video Interp` | optional | keep `face_refine` off (default) |
 | SAM3.1 (`sam3.1_multiplex_fp16.safetensors` in `checkpoints/`, ComfyUI core) | face refine (0.5.3): finds the head on the face crop; H3 then redraws inside it. The save node's `redraw_model` / `redraw_clip` / `redraw_vae` / `redraw_audio_vae` take the sampler's H3 model (with the 768 turbo LoRA), text encoder and VAEs (wired in the examples) | needed for face refine | keep `face_refine` off |
+| [ComfyUI-H3-FaceRefine](https://github.com/Carasibana/ComfyUI-H3-FaceRefine) + a face detector (e.g. `face_yolov8m.pt` / `face_yolov8n.pt`) in `models/ultralytics/bbox/` | face refine: finds and follows the face (`detector`), shot cuts (`cut_detection = auto`, needs its `scenedetect` requirement). Since 0.5.9 H3MD registers `models/ultralytics/bbox` itself, so ComfyUI-Impact-Subpack is not needed for the detector list. It needs a recent ComfyUI and its requirements (`ultralytics scipy insightface scenedetect`): an old ComfyUI or missing requirements make it fail to load (look for `IMPORT FAILED` in the startup log), and then `detector` / `cut_detection` only show what H3MD can offer | needed for face refine | since 0.5.9 the save node no longer stops: it saves the video WITHOUT face refine and says why (missing pack, `detector = none`, detector file not found); or keep `face_refine` off |
 | [ComfyUI-H3-FaceRefine-Plus](https://github.com/AnniCodex/ComfyUI-H3-FaceRefine-Plus) (AnniCodex, MIT) + ComfyUI-H3-FaceRefine | face refine save node, optional inputs `stitch_mode = plus` (antialiased paste, light from the original, detail from the refined face) and `flow_lock` (pins the refined features back onto the original frames, less face wobble); needs opencv-python | optional | leave both at their defaults (`standard` / off); if the pack is missing the node falls back and says so in the report |
 | [ComfyUI-SeedVR2_VideoUpscaler](https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler) | face refine with `refine_model = SeedVR2`: its DiT / VAE loaders go to `seedvr2_model` / `seedvr2_vae` (TE-Speed SeedVR2 also works) | optional | use VOSR2, or keep `face_refine` off |
 | T8 semantic bridge (MiniMax H3 prompt enhancer T8) | its "Semantic Bridge" config or multi-bridge stack can go straight into the Loop's `semantic_bridge` input (same math as our own bridge node) | optional | our H3MD Semantic Bridge node (in the example workflows: wired, bypassed - select it and press Ctrl+B to use it; the style buttons no longer switch a bridge on). The bridge's author does not recommend it with reference pictures or lip-sync to a reference audio |

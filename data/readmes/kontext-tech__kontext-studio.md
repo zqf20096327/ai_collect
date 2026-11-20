@@ -40,17 +40,18 @@ ready to inspect and re-run.
 
 ## Install
 
-### macOS desktop app
+### Desktop app
 
-Download the latest DMG from
-[GitHub Releases](https://github.com/kontext-tech/kontext-studio/releases/latest):
+Download the latest installer from
+[GitHub Releases](https://github.com/kontext-tech/kontext-studio/releases/latest)
+for your machine:
 
-- Apple Silicon: `Kontext-Studio-<version>-macOS-arm64.dmg`
+- macOS Apple Silicon: `Kontext-Studio-<version>-macOS-arm64.dmg`
+- Windows x64: `Kontext-Studio-<version>-Windows-x64.exe`
 
-The beta supports Apple Silicon Macs. Intel Macs can use the command-line
-install below. The app bundles Python and the analysis packages; no toolchain is
-required. The current build is an unsigned beta, so on first launch use System
-Settings → Privacy & Security → Open Anyway. See the
+Intel Macs can use the command-line install below. The app bundles Python and
+the analysis packages; no toolchain is required. First-launch notes for the
+unsigned beta (macOS) and Windows are in the
 [desktop guide](docs/user-guide/16-desktop-app.md).
 
 ### Command-line install
@@ -120,8 +121,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow and
 - `ts/`: TypeScript packages published as `@kontext-tech/*`; `ts/schema` is the
   contract hub and `ts/schema/src/generated/` holds the committed API types.
 - `py/`: Python packages built as `kontext-*`.
-- `examples/`: development-only sample apps that consume the packages and are
-  not distributed (e.g. the notebook demo).
 - `tools/`: repo-level validators and local development helpers.
 - `docs/`: user guide and developer reference sources published to
   [docs.kontext.tech](https://docs.kontext.tech).

@@ -133,7 +133,7 @@ There is no binary to install — a release is the source folder, and "updating"
 
 | | What it is | Get it |
 |---|---|---|
-| **v497** — current | The IDE door unfolds pasted envelopes too, so the IDE drill's write step stops refusing every identical retry; its errors name the flat shape instead. | [Releases](https://github.com/autonomous-loop-studio/Autonomous/releases) |
+| **v501** — current | Captcha drills (Lev.1/2/3), LAN TTS endpoints, smarter forced-tool-choice memory, and config moved into the sidebar. | [Releases](https://github.com/autonomous-loop-studio/Autonomous/releases) |
 | **v496** | Pasted tool envelopes unfold instead of failing, the Hard drill teaches the flat call shape, and a same-error hint (toggleable) names it after three identical refusals. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v496) |
 | **v495** | Both clients gate the drill todo plan the same way, through one shared path scrub, so a new pass can't reuse the last pass's file. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v495) |
 | **v494** | A todo list that lost its commas no longer stalls Easy step 2: every quoted item is recovered in order instead of returning a schema error. | [Release](https://github.com/autonomous-loop-studio/Autonomous/releases/tag/v494) |
@@ -1079,7 +1079,8 @@ One switch writes **the same nine settings the controls above already own** — 
 | Section | Defaults |
 | --- | --- |
 | 🖥️ **Desktop** | tuck panels away **on** · chat background **4%** · glass blur **1px** · glow **100%** · ambient motion **100%** · background fog **on** · bloom **on** · floating floor **on** · floor **pinned** · auto-rotate **on** · map detail **100%** · **60fps** · performance mode **off** |
-| 🧪 **Labs** | dynamic tools **on** · dialect memo **on** · API pool **on** · Keep Live when hidden **on** · built-in **Browser off** |
+| 🧪 **Labs** | API pool **on** · Keep Live when hidden **on** · built-in **Browser off** |
+| 🛠️ **Harness / Dialect** | dynamic tools **on** · dialect memo **on** · negative memo **on** · cold hint **on** · telemetry **on** · durable lock · real-success only · drill gate · clone inherit **off** |
 | 🧮 **Resource Manager** | all four switches **off** |
 
 Saved settings always win: a fresh copy starts here, and an existing install keeps whatever you already chose until you move that control. 💾
@@ -1111,7 +1112,7 @@ Talk to the team, and let them talk back. 🗣️🔊
 
 - 🎤 **Speech to text** — the mic button turns your voice into a message in the composer.
 - 🔊 **Speak replies** — a speaker button reads any reply aloud; flip **Speak every reply automatically** to hear them all.
-- 🧰 **Two engines** — use your provider's TTS, or the browser's 🏠 built-in voices (works offline, no API, no key). Pick the engine, provider and voice.
+- 🧰 **Three engine choices** — Auto (provider when usable, built-in voices otherwise), your provider's TTS via API key, or the browser's 🏠 built-in voices (works offline, no API, no key). A custom endpoint field takes an OpenAI-compatible TTS server — e.g. `http://localhost:8000/v1` for a local model — so no cloud is needed at all.
 - ⏩ **Speed** and 🎚️ **pitch** — tune playback; pitch reads higher as female, lower as male. 🤖 **Each agent can override the pitch**, so a whole roster can sound distinct.
 
 </details>
@@ -1166,8 +1167,4 @@ system prompt**, on every call path — main chat, ask-directly and routing-char
 runs alike. ✨
 
 <details>
-<summary>Prepend or replace, live toggle and the tool-fight fix</summary>
-
-- 🧩 **Prepend (default) or Replace — your call.** A toggle **inside the popup**
-  (bottom-left) picks the behaviour, and the hint above the box updates to match:
-  - **Prepend (off, default)** — the override is placed **in front of** each agent's own 
+<summary>Prepend

@@ -22,7 +22,7 @@
 
 ---
 
-> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.161) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> 🌳 **Stable and in production.** loomcycle is past v1.0 (currently v1.164) — feature-complete, hardened, and distribution-ready (Homebrew, multi-arch Docker, a Claude Code plugin, TS + Python adapters, a TrueNAS app). **Validated by two months of continuous production operation at JobEmber.ai** under real user load, with multi-replica HA on Postgres. Development since v1.0 has been new primitives plus hardening — see [`REVISIONS.md`](REVISIONS.md) for recent releases and [the releases page](https://github.com/denn-gubsky/loomcycle/releases) for the full history. Apache-2.0. We welcome bug reports, security disclosures, feature contributions, downstream consumers, and forks. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ---
 
@@ -212,14 +212,14 @@ been primitives plus hardening: memory, documents, teams, sandboxing, retention
 and erasure. The agentic-memory subsystem and the document surfaces built on it
 remain the main direction.
 
-The most recent line (v1.161.0) reads books: `File op=extract` takes EPUB,
-FB2, RTF and a DjVu book's text layer, and returns a book's own metadata. An
-agent can name its own OCR model, and an ontology entry is retired instead of
-deleted. Read the upgrade notes in [`REVISIONS.md`](REVISIONS.md).
+The most recent line (v1.164.0) stops an in-run fork that changes an agent's
+code from keeping grants its author lacks, plans every directive change of an
+ontology entry in use, and gives workspace workers streamed file transfer and a
+disk quota. Read the upgrade notes in [`REVISIONS.md`](REVISIONS.md).
 
-Before it, v1.160.0 drew Mermaid diagrams as pictures in rendered files,
-extracted a sample of a file (chosen PDF pages, a character limit), and
-planned an ontology change before it is made.
+Before it, v1.163.0 made workspace workers usable on one machine
+(`workspace.mode: local`), let the knowledge-base walker walk the taxonomy and
+place a set of documents, and read Russian CHM files that name no encoding.
 
 Before that, v1.155.0 rendered a Document back into a file: `File op=render`
 writes Markdown, HTML, Word or PDF (typeset by Typst in the conversion
@@ -747,6 +747,7 @@ Repo-side docs (this directory):
 - [`docs/DECISION-MODELS.md`](docs/DECISION-MODELS.md). Decision models: models that answer typed questions (pick one, yes/no, a score) about a piece of state with probabilities instead of prose — the `kind` tag and the `decision:` block, the request and answer formats, the four surfaces (the `Decision` tool, `POST /v1/_decide`, gRPC `Decide`, the MCP `decision` tool), and who pays.
 - [`docs/MEMORY-ARCHITECTURE.md`](docs/MEMORY-ARCHITECTURE.md). How memory actually works: the four kinds (chats, the pending queue, distilled facts, in-run context), a structure diagram and two state diagrams (a fact's lifecycle, the consolidator's pass), scopes and the per-scope Postgres isolation, the ontology and placement — plus **what has been measured**, the known limitations, and what is left to do.
 - [`docs/CUSTOMIZING_AGENTS.md`](docs/CUSTOMIZING_AGENTS.md). Adding a skill, tool, or whole MCP server to a chat agent: the capability model (who may widen a tool ceiling and why), when a skill is free vs when you must derive a new agent, `mcp__<server>__*` grants, in-place widening of dynamic agents, and delegation.
+- [`docs/WORKSPACES.md`](docs/WORKSPACES.md). Workspaces (RFC GW): directories on a workspace worker where an agent runs shell commands and works on files, pinned to the run that opened it — running a remote worker, `workspace.mode: local`, the agent grant, the `Workspace` tool, limits, and what its refusals mean. The `host` engine is not a sandbox.
 - [`docs/PATH.md`](docs/PATH.md). The Path primitive (RFC AL): a Unix-like VFS over Memory / Volumes / Documents — the dirent model, the six ops, and the off-run cross-transport surface (HTTP / gRPC / MCP / TS / Python).
 - [`docs/DOCUMENTS.md`](docs/DOCUMENTS.md). The Document primitive (RFC AK): chunked-graph documents — content/structure split, the 13 ops, optimistic concurrency, atomic deletes, and the off-run cross-transport surface.
 - [`docs/MCP_INTEGRATION.md`](docs/MCP_INTEGRATION.md). End-to-end MCP HTTP pipeline: request lifecycle, `${run.user_bearer}` substitution, model-visibility boundary, recipe for wrapping a REST API as an MCP server consumable by loomcycle.

@@ -1,242 +1,83 @@
-<div align="center">
-  <img src="packages/ui/assets/banners/elizaos_banner.svg" alt="elizaOS" width="100%" />
-  <h1>elizaOS</h1>
-  <p><strong>Your agentic operating system.</strong></p>
-  <p>
-    <a href="https://eliza.app">Eliza</a> ·
-    <a href="https://cloud.eliza.app">Eliza Cloud</a> ·
-    <a href="https://os.eliza.app">elizaOS downloads</a> ·
-    <a href="https://docs.elizaos.ai/">Documentation</a>
-  </p>
-</div>
+# Eliza on Vibestack
 
-elizaOS is an open-source TypeScript framework and product stack for autonomous
-AI agents. This monorepo contains the core runtime, the Eliza app, the CLI,
-cloud services, native bridges, and first-party plugins. Android
-distribution tooling lives in [`packages/os`](packages/os/README.md).
+This workspace specifies Eliza v4 on Vibestack: the kernel, the agent host,
+the device image, the cloud services and the assistant plugins. Agents run
+on the device; the cloud serves identity, billing and model access. The
+specification covers requirements, Quint models, and the generated
+contracts for the VibeLang and Effect implementation.
 
-## Choose a starting point
+Start with [the package specifications](spec/index.md),
+[the agent procedure](AGENTS.md) and [the spec reference](SPEC.md).
+The source baseline is Eliza commit
+`72fed7e4069ecd35d61d886ab6eec5c02c137517`. The orphan `vibestack` branch
+starts from elizaOS/eliza-vibestack commit
+`71d7b30f404b91d7ec48741ac288d6c8d911f3e2`; its toolchain is merged from
+lalalune/vibestack commit `45cc5c35d58b8dc18b0a57b116fde2386eef5528`.
 
-| Goal | Start here |
-| --- | --- |
-| Use Eliza | [Open the web app](https://cloud.eliza.app), visit [Eliza downloads](https://eliza.app/downloads), or use a published [GitHub release](https://github.com/elizaOS/eliza/releases) |
-| Run this repository | Follow [Run Eliza from source](#run-eliza-from-source) |
-| Build an agent or plugin | Start with [the runtime](#build-an-agent) and the [developer docs](https://docs.elizaos.ai/) |
-| Contribute | Read the [required contribution rules](#contributing) and [AGENTS.md](AGENTS.md) |
-| Run a whole device as elizaOS | Start with the build requirements and target guides in [`packages/os`](packages/os/README.md) |
+The vendored Vibestack toolchain is synchronized with upstream commit
+`146bd656ebc88851676bba744fdf247ec5399b33`.
 
-## Run Eliza from source
+## Setup and verification
 
-The repository pins Bun and Node versions in [`package.json`](package.json).
-Install Bun, then:
+Use Node 26, pnpm 10.24.0 and Dafny 4.11.
 
-```bash
-git clone --filter=blob:none https://github.com/elizaos/eliza.git
-cd eliza
-bun install
-bun run dev
+```sh
+pnpm install --frozen-lockfile
+pnpm gen
+pnpm check
+pnpm verify
 ```
 
-`bun install` also prepares submodules and patches, provisions supported host
-build prerequisites, and builds or verifies the staged host
-`libelizainference`. The embedding GGUF remains runtime-managed and downloads
-automatically during local-inference warmup. Fetch archived artifact fixtures explicitly with
-`bun packages/scripts/fetch-archive-artifacts.ts` when needed.
+`pnpm check` generates the contracts, checks model traces and replay,
+proves safety obligations, runs available journeys, and lists changes for
+review. `pnpm accept` records the user's review. Each package's shell is
+implemented from its accepted specification.
 
-Common repository commands:
+### Android password recovery fixture
 
-```bash
-bun run dev:local   # app + API with the runtime chooser (local agent, own provider keys; Cloud sign-in not required)
-bun run start       # run the standalone agent host (API only, no UI; use bun run dev for the app)
-bun run build       # build the workspace with Turbo
-bun run verify      # dependency, type, lint, and audit gates
-bun run test:quint  # application state models and invariants
-bun run test:lemma  # verified TypeScript helpers (Dafny 4.11.0 required)
-bun run test        # repository end-to-end test lane
-bun run test:e2e    # end-to-end lane
-bun run cloud:mock  # local Eliza Cloud stack with mocks
+The Passwords instrumentation uses Android Keystore and a disposable PGlite
+Cloud Worker. Use an unlocked Android 15 or later test emulator with a screen
+lock and install the test APK from the portable module:
+
+```sh
+ANDROID_SERIAL=emulator-5554 gradle -p packages/os/android/passwords/test/fixture \
+  -PcapacitorAndroidDir=/path/to/installed/@capacitor/android \
+  :elizaos-capacitor-passwords:installDebugAndroidTest
 ```
 
-Package build/test commands are in each package's README. Use
-`bun run --cwd <package> <script>` to scope a command.
+Run the focused journey from the Eliza root after `pnpm gen --owner cloud`:
 
-### Runtimes
-
-Bun 1.4.2 (`packageManager`) runs the product, the build, `bun run verify`, and
-the repository scripts: run a script with `bun <script>.ts`. Node 24.15.0
-(`engines.node`) is needed only for the lanes below. They fail on Bun 1.4.2,
-could not be shown to pass on it, or must prove behavior on Node:
-
-- Vitest. `packages/scripts/run-vitest.ts` always starts Vitest on Node. Bun
-  fails suites that Node passes (`fetch` of an uppercase `DATA:` URL,
-  `http.Server.closeAllConnections`, child Node ESM probes).
-- LemmaScript checks use pinned LemmaScript 0.6.8 and Dafny 4.11.0. The
-  checked helpers and solver options are in `LemmaScript-files.txt`.
-- Quint conformance replays (`check-quint.ts` without `--inventory`), because
-  they run Vitest.
-- `node --test` suites that use `module.stripTypeScriptTypes`, built-in module
-  mocks, or a nested Wrangler. Their package scripts still start with `node`.
-- `node --test --test-reporter=tap` suites whose TAP output a Quint conformance
-  check reads case by case (`plugins/plugin-assistant` `test:files-review`).
-  `bun test` has no TAP reporter.
-- Wrangler (`wrangler dev --local` accepts no request on Bun).
-- `packages/app` launchers that load `tsx` (`run-node-tsx.ts`,
-  `run-release-check.ts`) and the `node:test` half of `run-script-tests.ts`.
-- CI: the Bun download in `.github/actions/setup-bun-workspace`, and workflow
-  jobs that install no Bun.
-- Syntax checks. `node --check` parses a file without running it; `bun --check`
-  runs the file. The Pages Functions checks in `cloud-cf-release.yml` and
-  `pr-validation.yml` use Node.
-- Packed-package consumer checks (`packages/core/scripts/verify-package.ts`,
-  the `plugin-elizacloud` `verify-built-package.ts`, and
-  `packages/ui/scripts/verify-batch-voice-package.ts`). The packages declare
-  `engines.node`, so the consumer runs on a real Node found on `PATH`.
-- Install scripts of published packages (`plugins/plugin-computeruse`
-  `postinstall`), because npm users have no Bun.
-- Native and device build paths that still start `node` and were not proven on
-  Bun: the `packages/os/android` Makefile, AOSP and
-  Pixel scripts in `packages/os/scripts/android`, `compile-libllama.ts` (patch
-  step), the iOS xcframework and engine scripts (`build-xcframework.ts`,
-  `mobile/ios/engine.ts`), `paradee-voice/build-native.ts`, and the Cloud gateway
-  maintenance scripts.
-
-## Benchmark
-
-Use Python 3.11+ and install the dependencies required by the selected suite, then run from
-the repository root:
-
-```bash
-PYTHONPATH=packages python3 -m benchmarks.orchestrator list-benchmarks
-PYTHONPATH=packages python3 -m benchmarks.orchestrator run --benchmarks <id> --provider <provider> --model <model>
+```sh
+PASSWORD_ANDROID_FIXTURE=emulator-5554 pnpm --filter @elizaos/cloud exec \
+  vitest run test/password-backup.test.vibe -t 'Android cold start'
 ```
 
-See [benchmarks](packages/benchmarks/README.md) for setup. Live benchmarks require
-the selected provider's credentials and may incur usage costs.
+For a restore into a second Android Keystore, prepare two independently created
+emulators using the steps above. Set `PASSWORD_ANDROID_FIXTURE=emulator-5554,emulator-5556`
+in the same command. The first device saves the vault and the second enrolls a
+fresh device grant and restores into its empty vault. A single serial exercises
+both phases in separate processes on that emulator.
 
-## What is in the stack?
+Each phase uses a temporary HTTPS reverse mapping on its selected emulator
+and removes it when the phase ends. The test process trusts only its disposable cert
+for these calls. The fixture browser approves a synthetic account through
+the same Worker routes that the production app uses.
 
-### Eliza
-
-Eliza is the user-facing agent app for web and mobile targets. Its
-capabilities are supplied by the runtime and installed plugins, including:
-
-- chat, voice, memory, knowledge, and document workflows;
-- messaging and workspace connectors;
-- calendar, reminders, inbox, goals, health, and other personal-assistant
-  domains;
-- browser and desktop automation;
-- camera, phone, messages, contacts, location, and other native device bridges;
-- non-custodial EVM and Solana wallet operations with approval boundaries; and
-- scheduled workflows, coding-agent orchestration, and installable app views.
-
-Availability depends on the operating system, installed plugins, granted
-permissions, and configured model or service providers. Package-level READMEs
-document the exact support and setup for each capability.
-
-### The framework
-
-The framework is model-agnostic and extended through plugins:
-
-- [`@elizaos/core`](packages/core) defines `AgentRuntime`, the canonical types,
-  authorization, memory and state primitives, and plugin contracts.
-- [`@elizaos/agent`](packages/agent) assembles a standalone agent and HTTP
-  backend around the core runtime.
-- [`@elizaos/app`](packages/app) provides shared application hosting,
-  API, and platform orchestration for Eliza app targets.
-- [`@elizaos/ui`](packages/ui) contains the shared React UI used by app
-  surfaces.
-
-A plugin exports a `Plugin` object. Plugins can register actions, providers,
-evaluators, services, model handlers, routes, events, tests, and app views. See
-the [plugin component guide](https://docs.elizaos.ai/plugins/components) and
-the first-party implementations under `plugins/`.
-
-### Local inference
-
-[`@elizaos/plugin-local-inference`](plugins/plugin-local-inference) provides the
-Eliza-1 on-device path. The current Eliza-1 registry contains 2B, 4B, 9B, and
-27B text tiers based on Gemma 4, plus local embeddings, speech, vision, and
-image-generation assets. Hardware detection and model routing select supported
-backends; after the required assets are downloaded, eligible operations can run
-without a network connection.
-
-Local inference is not forced on hardware that cannot support it. Eliza can
-route each model capability to local, direct-provider, or Eliza Cloud backends.
-
-### Eliza Cloud
-
-[Eliza Cloud](https://cloud.eliza.app) is optional. It provides account and
-authentication services, hosted model routing, application and agent
-deployment, remote connectivity, and cross-device product services. The local
-runtime and direct model-provider configuration remain first-class paths.
-
-### elizaOS distributions
-
-[`packages/os`](packages/os/README.md) owns the bootable AOSP distribution,
-release manifests, and OS toolchains. Application shells and native
-runtime bridges live in their owning app and plugin packages.
-
-## Build an agent
-
-To embed the runtime directly without an application host, import
-`@elizaos/core`. The scenario runner provides executable integration coverage
-against a real runtime and, when configured, live models.
-
-## Repository map
-
-```text
-packages/        runtime, hosts, UI, CLI, docs, cloud, native code, and tooling
-plugins/         first-party model, connector, domain, app, and device plugins
-packages/scripts/ repository-wide checks, test orchestration, and release tools
-patches/         dependency patches applied during installation
-```
-
-Every maintained package or plugin should explain its public surface, scripts,
-configuration, and local constraints in its own `README.md`. Read that README
-before making changes. The root [AGENTS.md](AGENTS.md) is the only repository
-agent guide; do not add nested `AGENTS.md` files.
+[The Vibestack toolchain guide](vibestack/README.md) explains Studio,
+commands, examples and generated files. The MIT license is in [LICENSE](LICENSE).
 
 ## Contributing
 
-> [!IMPORTANT]
-> **The [contribution rules](CONTRIBUTING.md) are required for all issues and PRs.**
-> Stay within the approved minimum viable product (MVP) and product requirements
-> document (PRD). Maintainers will close unnecessary work and apply contributor
-> penalties.
+`vibestack` is the primary branch and the base for every pull request.
+Verify through the application's normal entry points that the top-level
+stories, rules, and Quint models are fully implemented and integrated.
+Every change must follow them exactly. Run the full `pnpm verify` suite
+and confirm that all checks pass, including Quint, Dafny, Bombadil, and
+the rest of the repository tests.
 
-- Contributors must write and submit issues by hand on GitHub. Agents must not
-  draft or create issues. See [the human-only issue rule](CONTRIBUTING.md#human-only-issue-creation).
-- Report real bugs or missing approved MVP requirements. Link the PRD and MVP
-  plan. New features need human maintainer discussion and approval, then updates
-  to both plans before implementation issues or PRs are opened.
-- Prove a useful improvement with before-and-after behavior or relevant scores.
-  Prefer cleanup, removal, reuse, and combined types and functions. Add new types
-  or code only when necessary. Explain the research, alternatives, and choice.
-- Do not add unnecessary tests, defensive code, validation, or truncation.
-  Provide real end-to-end test results. Use existing tests first. Avoid new unit
-  tests, mock-only proof, and tests that repeat the implementation.
-- Every UI PR needs an uploaded MP4 explainer and walkthrough, video evidence of
-  the changed flow, desktop and mobile screenshots, the app visual audit, and
-  detailed steps to test the change.
-- Write issues and PRs in ASD-STE100 Simplified Technical English. Use short,
-  direct sentences and explain technical terms for a non-technical reader.
-- Slop bounty work: star and fork the repository first, use real LLM calls,
-  make no UI changes, and test in more than one agent client. See
-  [Slop bounty contributions](CONTRIBUTING.md#slop-bounty-contributions).
-
-elizaOS focuses on its first-party runtime, applications, and maintained integrations.
-We no longer accept third-party plugins or registry items, including new listings,
-listing updates, and registry submission tooling. Related issues and pull requests
-will be closed as out of scope.
-
-Submit changes through a pull request against `develop`; follow
-[AGENTS.md](AGENTS.md) and the owning package's README. Include verification of
-the changed behavior.
-
-Report vulnerabilities privately through
-[GitHub Security Advisories](https://github.com/elizaOS/eliza/security/advisories/new)
-or `security@elizalabs.ai`.
-
-## License
-
-[MIT](LICENSE)
+In the PR description, show reproducible before-and-after results for code
+changes and attach before-and-after screenshots for UI changes. Keep the
+diff tidy by removing unnecessary files and dead, redundant, or superseded
+code. Prose comments in code are banned. Every PR must satisfy the
+Vibestack requirements and TypeScript conventions before merge.
+[Contributing guide](CONTRIBUTING.md#pull-requests) · [Agent procedure](AGENTS.md#pull-requests)

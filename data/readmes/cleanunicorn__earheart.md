@@ -383,12 +383,23 @@ click any text field and press the hotkey shown in Settings to dictate.
 model; cleanup is optional and raw transcripts work without it. **Skip setup**
 also stops wizard-started downloads and opens Speech-to-text with Download in
 view if speech is missing. Independently started Settings transfers keep running.
-After quitting, downloads do not restart automatically. Missing cleanup is
-quietly bypassed, with one notice per launch pointing to Settings → Cleanup.
-Explicit Download resumes a saved partial file when possible.
+On the next launch, Earheart downloads any selected built-in model that is
+still missing: the speech model first, then the cleanup model if cleanup is
+on, one at a time, resuming a saved partial file when possible. A notice says
+the speech model is downloading and another says when Earheart is ready (or
+why the download failed). Settings shows the progress and can cancel it.
+Until cleanup lands, dictations stay raw, with one notice per launch pointing
+to Settings → Cleanup.
 
 You can choose another built-in model later in Settings — int8 Parakeet
-(≈ 670 MB) or Gemma 3 1B (≈ 0.8 GB), for example. Pick it and press **Save**:
+(≈ 670 MB), Fluid Speech Pro (≈ 801 MB), or Gemma 3 1B (≈ 0.8 GB), for example.
+Built-in choices show both their resource tier (Small, Medium, or Large) and
+original model name, including in the wizard and selected-model summary.
+[Fluid Speech Pro by FluidVoice](https://huggingface.co/FluidVoice-Labs/fluid-speech-pro)
+is available for speech-to-text in 25 European languages through its official
+int8 ONNX export, running locally on CPU under CC BY 4.0. It uses verbatim
+transcription; Earheart's separate cleanup step remains optional.
+Pick a model and press **Save**:
 a model that isn't downloaded yet downloads first, with its progress and
 **Cancel** in the model row, and Settings saves once it is installed. If the
 download fails or you cancel it, nothing is saved and Settings says why, so

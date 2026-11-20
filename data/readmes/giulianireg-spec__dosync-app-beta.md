@@ -33,9 +33,13 @@ are signed differently and don't update each other.
 
 ## DoSync hub (optional)
 
-If you want your home to keep responding when you leave with your phone, install a **DoSync hub**
-on a Raspberry Pi or an old computer: one command, it runs the same engine as the app, and the app
-reaches it from outside through an encrypted relay. See [the hub guide](hub/README.md).
+If you want your home to keep responding when you leave with your phone, set up a **DoSync hub**:
+- **on an Android phone you no longer use**: install DoSync on it (Google Play or the APK) and turn on
+  **Settings → This phone as a hub**. It stays at home, plugged in and on Wi-Fi;
+- **or on a Raspberry Pi or an old computer**, with one command.
+
+Either way it runs the same engine as the app, and your everyday phone reaches it from outside
+through an encrypted relay. See [the hub guide](hub/README.md), step by step.
 
 ## What it does
 
@@ -108,9 +112,13 @@ firmadas distinto y no se actualizan una a la otra.
 
 ## Hub DoSync (opcional)
 
-Si quieres que tu casa siga respondiendo cuando sales con el teléfono, instala un **hub DoSync**
-en una Raspberry Pi o una computadora vieja: un solo comando, corre el mismo motor que la app y
-la app lo alcanza desde afuera por un relevo cifrado. Ver [la guía del hub](hub/LEEME.md).
+Si quieres que tu casa siga respondiendo cuando sales con el teléfono, arma un **hub DoSync**:
+- **en un teléfono Android que ya no usas**: instálale DoSync (de Google Play o el APK) y prende
+  **Ajustes → Este teléfono como hub**. Queda en casa, enchufado y en el WiFi;
+- **o en una Raspberry Pi o una computadora vieja**, con un solo comando.
+
+En los dos casos corre el mismo motor que la app, y tu teléfono de siempre lo alcanza desde afuera
+por un relevo cifrado. Ver [la guía del hub](hub/LEEME.md), paso a paso.
 
 ## Qué hace
 

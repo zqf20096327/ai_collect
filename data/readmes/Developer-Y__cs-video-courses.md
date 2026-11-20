@@ -219,6 +219,7 @@ Table of Contents
 - [18.225 - Graph Theory and Additive Combinatorics - MIT - Fall 2023](https://ocw.mit.edu/courses/18-225-graph-theory-and-additive-combinatorics-fall-2023/)
 - [Extremal graph theory at KAIST](https://www.youtube.com/playlist?list=PLu06QHBZ8gatHvSQIApVQCCQmtPTiIQhP)
 - [Advanced graph theory, KAIST 2020](https://www.youtube.com/playlist?list=PLu06QHBZ8gavJ4UJqiXn8nYJbENQ_cAJP)
+- [CS3510 Algorithms SU25 - Abrahim Ladha - Georgia Tech](https://www.youtube.com/playlist?list=PLerMEx1Met7ugIMoHZojyqhWe8X5S3Dzb)
 
 
 ------------------------------
@@ -232,6 +233,8 @@ Table of Contents
 - [CS 4400 – Computer Systems   Fall 2016 - UoUtah](https://www.eng.utah.edu/~cs4400/)
 - [Systems - Aduni](http://aduni.org/courses/systems/index.php?view=cw)
 - [CS110: Principles of Computer Systems - Stanford](https://web.stanford.edu/class/archive/cs/cs110/cs110.1202/)
+- [CMU Principles of Computing (Spring 2026)](https://www.youtube.com/playlist?list=PLB27aM0tkAQs)
+- [CMU Principles of Software Construction (Spring 2026)](https://www.youtube.com/playlist?list=PLBDTyW_Uan_k)
 - #### **Operating Systems**
   - [Gatech CS6200 Intro to OS](https://www.youtube.com/playlist?list=PLTsf9UeqkReZbK7xqIYn_mXmsQZIb011T)
   - [APS 105 - Computer Fundamentals - Winter 2025 - Jon Eyolfson - University of Toronto](https://www.youtube.com/playlist?list=PLunILarQwxnm3ycdZKCg5Ex6DeuJhEWaG) ([Winter 2024](https://www.youtube.com/playlist?list=PLunILarQwxnma-0Z_0DZ3nkWKpZN7HGbw))
@@ -352,6 +355,7 @@ Table of Contents
   - [CS 411 - Software Architecture Design - Bilkent University](http://video.bilkent.edu.tr/course_videos.php?courseid=10)
   - [MOOC - Software Architecture & Design - Udacity](https://www.youtube.com/playlist?list=PLAwxTw4SYaPkMTetlG7xKWaI5ZAZFX8fL)
   - [CS-310 Scalable Software Architectures](https://www.youtube.com/playlist?list=PLWl7jvxH18r0u5VRZsOjhghNXc_Ec4dZz)
+  - [CMU Software Architectures (Spring 2026)](https://www.youtube.com/playlist?list=PLBXWgYnejeLU)
 - #### **Concurrency**
   - [CS176 - Multiprocessor Synchronization - Brown University](http://cs.brown.edu/courses/cs176/course_information.shtml) ([Videos from 2012](http://www.brown.edu/cis/sta/dev/herlihy_csci1760_fa12/#vid))
   - [CS 282 (2014): Concurrent Java Network Programming in Android](https://www.youtube.com/playlist?list=PLZ9NgFYEMxp4KSJPUyaQCj7x--NQ6kvcX)
@@ -542,6 +546,9 @@ Table of Contents
   - [Introduction to Data Science (IDS) - Wil van der Aalst (RWTH Aachen University)](https://www.youtube.com/playlist?list=PLG_1ZxIPXO0vReKHuzL-n--f4iO2JIjcJ) ([2021-2022 edition](https://www.youtube.com/playlist?list=PLG_1ZxIPXO0vTTfheRNDhq4vNYAdJBUyC))
   - [Machine Learning Class (Winter 2019-2020) - UniHeidelberg](https://www.youtube.com/playlist?list=PLuRaSnb3n4kTOLHk3a2ySNujmjan_AcZ1)
   - [Toronto ECE 1513 Introduction to Machine Learning winter 2026, by Ali Bereyhi](https://youtube.com/playlist?list=PLcFgNUo9s_Aj9a8fXwMdqfEk3_h5RtoLs)
+  - [CMU Machine Learning with Large Datasets (Fall 2026)](https://www.youtube.com/playlist?list=PLOz411Ejgqdw)
+  - [CMU Machine Learning in Production (Fall 2026)](https://www.youtube.com/playlist?list=PLDOc_XHH9ABE)
+  - [CMU Machine Learning Systems (Spring 2026)](https://www.youtube.com/playlist?list=PLSH_5v_OOfP8)
 
   
 - #### **Data Mining**
@@ -575,6 +582,7 @@ Table of Contents
   - [Full Stack Deep Learning - Course 2021](https://www.youtube.com/watch?v=fGxWfEuUu0w&list=PL1T8fO7ArWlcWg04OgNiJy91PywMKT2lv)
   - [NYU Deep Learning Spring 2020](https://www.youtube.com/playlist?list=PLLHTzKZzVU9eaEyErdV26ikyolxOsz6mq)
   - [NYU Deep Learning Spring 2021](https://www.youtube.com/playlist?list=PLLHTzKZzVU9e6xUfG10TkTWApKSZCzuBI)
+  - [NYU CSCI-UA 480 075 Introduction to Deep Learning Research Fall 2025](https://atcold.github.io/NYU-DLFL25U/)
   - [6.S191: Introduction to Deep Learning - MIT](http://introtodeeplearning.com/)
   - [15.773: Hands-On Deep Learning Spring 2024 - MIT](https://ocw.mit.edu/courses/15-773-hands-on-deep-learning-spring-2024/video_galleries/lecture-videos/)
   - [6.7960: Deep Learning Fall 2024 - MIT](https://ocw.mit.edu/courses/6-7960-deep-learning-fall-2024/video_galleries/lecture-videos/)
@@ -691,6 +699,7 @@ Table of Contents
   - [CS 224N -Natural Language Processing with Deep Learning - Stanford University](http://web.stanford.edu/class/cs224n/) ([Lectures -  Winter 2019](https://youtube.com/playlist?list=PLoROMvodv4rOhcuXMZkNm7j3fVwBBY42z)) ([Lectures -  Winter 2021](https://youtube.com/playlist?list=PLoROMvodv4rOSH4v6133s9LFPRHjEmbmJ)) ([Lectures - Spring 2024](https://www.youtube.com/playlist?list=PLoROMvodv4rOaMFbaqxPDoLWjDaRAdP9D))
   - [CS 224N - Natural Language Processing, Stanford University](https://web.stanford.edu/~jurafsky/NLPCourseraSlides.html) ([Lecture videos](https://academictorrents.com/details/d2c8f8f1651740520b7dfab23438d89bc8c0c0ab))
   - [Stanford XCS224U: Natural Language Understanding I Spring 2023](https://www.youtube.com/playlist?list=PLoROMvodv4rOwvldxftJTmoR3kRcWkJBp)
+  - [Johns Hopkins CS 601.471/671 NLP: Self-supervised Models Fall 2026](https://self-supervised.cs.jhu.edu/fa2026/)
   - [CS388: Natural Language Processing - UT Austin](https://www.cs.utexas.edu/~gdurrett/courses/online-course/materials.html)
   - [CS 124 - From Languages to Information - Stanford University](https://www.youtube.com/channel/UC_48v322owNVtORXuMeRmpA/playlists?view=50&sort=dd&shelf_id=2)
   - [CS 6340/5340 - Natural Language Processing - University of Utah - Spring 2024](https://utah-intro-nlp.github.io/) ([Youtube](https://www.youtube.com/playlist?list=PLbuogVdPnkCrPZ4Vc-GRnk730SLhC1L43))
@@ -723,10 +732,4 @@ Table of Contents
   - [Mathematical Foundations of Generative AI - IIT Madras](https://www.youtube.com/playlist?list=PLZ2ps__7DhBa5xCmncgH7kPqLqMBq7xlu)
   - [Deep Generative Models - IISC](https://www.youtube.com/playlist?list=PLL1s8qiaGy0LwIajdxKZr_FRL7KZeQK9r)
   - [A Course on Generative AI - Diffusion Models - Israel Institute of Technology](https://www.youtube.com/playlist?list=PL0H3pMD88m8XPBlWoWGyal45MtnwKLSkQ)
-  - [MIT 6.S184 Flow Matching and Diffusion Models, 2025](https://diffusion.csail.mit.edu)
-  - [Course on Diffusion Models for Generative AI - UT Austin](https://www.youtube.com/playlist?list=PL8lIiiIWuabLxhJreBRZwNW-d02dJwbMb)
-  - [CS 492(C) Diffusion and Flow Models - Fall 2025 - KAIST](https://diffusion.kaist.ac.kr/) ([YouTube](https://www.youtube.com/playlist?list=PLyi5FHzX7hBzC698EjqgxQJG7pNPQyYyc))
-  - [Stanford CS329A Self-Improving AI Agents 2025 - Stanford](https://cs329a.stanford.edu/#schedule) ([YouTube](https://www.youtube.com/playlist?list=PLangBM27OtEA))
-  - [Stanford CS329Z Engineering AI Agents 2026 - Stanford](https://cs329z.stanford.edu/#schedule) ([YouTube](https://www.youtube.com/playlist?list=PLPRcF5HR02_U))
-  - [Stanford CS336 Language Modeling from Scratch I 2025 - Stanford](https://www.youtube.com/playlist?list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_) ([2026](https://www.youtube.com/playlist?list=PLoROMvodv4rMqXOcazWaTUHhq-yembLCV))
-  - [Stanford CME295 Transfor
+  

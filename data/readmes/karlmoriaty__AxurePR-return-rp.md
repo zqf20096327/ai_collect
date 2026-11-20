@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src="assets/readme/cover.svg" alt="return_rp · AI-native canvas. Editable Axure RP 9 / RP 11 output." width="100%">
-
 # 给 AI 一张自由画布。<br>把设计带回 Axure。
 
 **用 RP/1 写下设计，让 AI 起稿、你来精修，交付可继续编辑的 `.rp`。**
@@ -13,15 +11,6 @@
 [![Release](https://img.shields.io/github/v/release/karlmoriaty/AxurePR-return-rp?style=flat-square&label=release&labelColor=202825&color=D5FF70)](https://github.com/karlmoriaty/AxurePR-return-rp/releases) [![Checks](https://img.shields.io/github/actions/workflow/status/karlmoriaty/AxurePR-return-rp/test.yml?branch=main&style=flat-square&label=checks&labelColor=202825&color=637E51)](https://github.com/karlmoriaty/AxurePR-return-rp/actions) [![Axure RP 9 | 11](https://img.shields.io/badge/Axure_RP-9_%7C_11-637E51?style=flat-square&labelColor=202825)](docs/version-parity.md) [![MIT](https://img.shields.io/badge/MIT-open_source-D5FF70?style=flat-square&labelColor=202825)](LICENSE)
 
 </div>
-
-<br>
-
-<img src="assets/readme/showcase.png" alt="栖羽 QIYU：由 return_rp 生成的探索首页、鸟种详情和观鸟手记，完整案例共九页" width="100%">
-
-<p align="center"><b>栖羽 / QIYU</b>　从探索、鸟种详情，到留下自己的观鸟手记。</p>
-<p align="center"><sub>9 页原生原型示例 · 文字、按钮与输入保留为独立元件 · 识别与统计使用演示数据 · <a href="assets/readme/README.md">素材与案例说明</a></sub></p>
-
-<br>
 
 <a id="overview"></a>
 
@@ -53,8 +42,6 @@
 
 ## 01　一条链路，从想法到 Axure。
 
-<img src="assets/readme/pipeline.svg" alt="工作流：需求或截图 → RP/1 源码 → Studio 画布 → 原生 .rp → Axure 与浏览器" width="100%">
-
 1. **把意图写成源码。** 截图走临摹管线，需求与 PRD 直接写成 RP/1；页面、组件、变量、交互都在同一份文本里。
 2. **在画布里推敲。** Agent 搭第一版，你直接点选、改字、调整布局；也可以把局部交还 AI，继续探索另一种构图。
 3. **在交付前验证。** 真实截图、交互场景、结构检查分别运行，确认跳转、状态与保存回显。
@@ -67,8 +54,6 @@
 ## 02　在画布里，把设计推敲到位。
 
 Studio 是一块 AI 和人都能编辑的自由画布。让 Agent 搭好第一版，再直接点选、改字、调整布局；也可以把局部交还 AI，继续探索另一种构图。
-
-<img src="assets/readme/studio.png" alt="真实 Studio 界面：另一版栖羽设计、独立图层、文字选择框与可编辑的位置尺寸属性" width="100%">
 
 **AI 起稿。** RP/1 或命令创作，按图层、语义和范围查询，局部改稿。<br>
 **人来精修。** 双击改字、Shift 框选、Option / Alt 悬停测距，撤销重做。<br>

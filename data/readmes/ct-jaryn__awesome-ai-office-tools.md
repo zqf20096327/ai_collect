@@ -1,10 +1,35 @@
 # Awesome AI Office Tools · AI 办公工具导航
 
-面向中文用户的 AI Agent（AI 智能体）、AI 办公助手和效率工具导航：收录百智办公、WorkBuddy、DeepSeek Harness 等办公工作台，以及文档、调研、会议和自动化工具，按工作场景查找。欢迎社区推荐与纠错。
+面向中文用户的 AI Agent（AI 智能体）、AI 办公助手和效率工具导航：按工作场景收录办公工作台、文档、调研、会议和自动化工具，欢迎社区推荐与纠错。
 
 [English](README.en.md) · [隐私与选型](docs/privacy-and-selection.md#选择-ai-办公工具隐私与实用检查) · [推荐工具](https://github.com/ct-jaryn/awesome-ai-office-tools/issues/new/choose) · [贡献指南](CONTRIBUTING.md)
 
 寻找适合工作场景的工具，推荐新产品，或帮助更新现有信息。不懂代码也可以通过[推荐工具或纠错](https://github.com/ct-jaryn/awesome-ai-office-tools/issues/new/choose)参与。这里同时收录开源和商业产品；本导航开放共享，所列产品各自适用其许可和使用条款。
+
+## 项目简介
+
+本仓库是一份面向中文用户的 AI 办公工具导航，条目按知识工作任务组织：从委派多步骤工作的 AI 工作台与智能体，到文档、调研、会议和工作流自动化工具。条目描述以公开的官方产品或源码资料为依据；收录同时包含开源与商业产品，分类只反映主要用途，不代表排名、实测或认证。
+
+- **形式：** 单个 Markdown 列表；`README.md` 为中文主版本，`README.en.md` 为英文版本
+- **核验：** 离线校验脚本 `scripts/check_directory.py`，需要时在 CI 中手动运行
+- **许可：** 原创内容采用 CC BY 4.0；所列产品适用各自的许可与条款
+
+## 目录
+
+- [从工作任务开始](#从工作任务开始)
+- [实用选型指南](#实用选型指南)
+- [常见选型问题](#常见选型问题)
+- [AI 工作台与智能体](#ai-工作台与智能体)
+- [写作、文档与演示](#写作文档与演示)
+- [调研与知识管理](#调研与知识管理)
+- [会议与协作](#会议与协作)
+- [工作流自动化](#工作流自动化)
+- [快速开始](#快速开始)
+- [校验](#校验)
+- [生产部署](#生产部署)
+- [收录与排序说明](#收录与排序说明)
+- [参与贡献](#参与贡献)
+- [许可](#许可)
 
 ## 从工作任务开始
 
@@ -31,20 +56,6 @@
 - **如何判断工具是否适合处理工作资料？** 先核对所需文件格式、权限、数据处理方式及方案，再使用虚构材料测试；详见[隐私与选型指南](docs/privacy-and-selection.md#选择-ai-办公工具隐私与实用检查)。
 
 本项目是产品导航，不是 AI Agent 软件；收录包含开源和商业产品，不表示已实测、认证或推荐排名。
-
-## 目录
-
-- [从工作任务开始](#从工作任务开始)
-- [实用选型指南](#实用选型指南)
-- [常见选型问题](#常见选型问题)
-- [AI 工作台与智能体](#ai-工作台与智能体)
-- [写作、文档与演示](#写作文档与演示)
-- [调研与知识管理](#调研与知识管理)
-- [会议与协作](#会议与协作)
-- [工作流自动化](#工作流自动化)
-- [收录与排序说明](#收录与排序说明)
-- [参与贡献](#参与贡献)
-- [许可](#许可)
 
 ## AI 工作台与智能体
 
@@ -161,6 +172,31 @@
 | [Make](https://www.make.com/ai-automation) | <strong>场景：</strong>跨应用流程<br><strong>功能：</strong>构建含 AI 步骤和智能体工具的多步骤场景。 |
 | [n8n](https://n8n.io/) | <strong>场景：</strong>业务流程自动化<br><strong>功能：</strong>连接应用 API、转换数据并搭建 AI 工作流。 |
 | [Dify](https://github.com/langgenius/dify) | <strong>场景：</strong>构建办公 AI 应用<br><strong>功能：</strong>使用智能体、工作流及知识检索，发布 Web 应用或 API。 |
+
+## 快速开始
+
+本仓库只有 Markdown 与校验脚本：没有依赖安装、构建步骤或运行时。要本地校验，需要 Python 3.9 或更新版本（校验脚本只使用标准库）：
+
+```bash
+git clone https://github.com/ct-jaryn/awesome-ai-office-tools.git
+cd awesome-ai-office-tools
+python3 scripts/check_directory.py
+```
+
+直接编辑 `README.md` 与 `README.en.md`；新增或修改条目时，两边的分类、链接与顺序必须一致，提交前运行上面的校验。提交格式与审核标准见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 校验
+
+| 命令 | 检查内容 |
+| --- | --- |
+| `python3 scripts/check_directory.py` | 分类标题与顺序、中英两个 README 的产品链接与顺序是否一致、本地 Markdown 链接与标题锚点，以及部分常见跟踪参数；不联网 |
+| `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts -p 'test_*.py' -v` | 校验脚本自身的单元测试 |
+
+CI 只在手动触发时运行这两条命令（`.github/workflows/check.yml`，`workflow_dispatch`），push 和 pull request 都不会自动启动；该检查不验证外链是否可访问、产品事实、翻译质量或全部隐私风险，这些需要依据公开来源人工核对。新增或重命名分类时，还要同步更新两份 README 的章节标题和 `scripts/check_directory.py` 中的 `CATEGORY_HEADINGS`。
+
+## 生产部署
+
+本仓库没有部署目标、环境变量或发布流水线。内容以 Markdown 保存在 GitHub 上，仓库页面即发布版本：合并到 `main` 后由 GitHub 直接渲染。仓库里没有任何自动流程：唯一的 CI 校验任务也需要手动触发。
 
 ## 收录与排序说明
 

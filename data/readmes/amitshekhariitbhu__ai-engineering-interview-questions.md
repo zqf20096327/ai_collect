@@ -171,6 +171,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - Why do modern Transformers use Pre-LayerNorm (Pre-Norm) instead of Post-LayerNorm?
   - Answer: [RMSNorm (Root Mean Square Layer Normalization)](https://outcomeschool.com/blog/rmsnorm-root-mean-square-layer-normalization)
 - What are scaling laws (Chinchilla), and how do they guide model size vs training data decisions?
+  - Answer: [What are the Chinchilla scaling laws?](https://outcomeschool.com/blog/chinchilla-scaling-laws)
 - Your LLM keeps ignoring your instructions. How do you make it follow structured output formats?
 - Your LLM-powered tool hits the context window limit on long documents. How do you handle it?
 - Your LLM does not admit when it does not know the answer. How do you make it say "I don't know"?
@@ -407,6 +408,7 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
 - How do you implement state management in complex agent workflows?
   - Answer: [How does LangGraph work?](https://outcomeschool.com/blog/how-does-langgraph-work)
 - How do you build a customer support agent with escalation logic?
+  - Answer: [How does a voice agent transfer a call to a human with context?](https://outcomeschool.com/blog/call-transfer-with-context)
 - What is agent orchestration, and how do you implement it?
   - Answer: [AI Orchestration](https://outcomeschool.com/blog/ai-orchestration)
 - What is Sakana Fugu, and how does it orchestrate a team of AI models?
@@ -828,6 +830,8 @@ Learn about the LLM, RAG, MCP, Agent, Fine-tuning & Quantization: [AI Engineerin
   - Answer: [How do filler phrases hide latency in a voice agent?](https://outcomeschool.com/blog/filler-phrases-in-voice-agents)
 - How do you handle a slow or long-running tool call in a voice agent?
   - Answer: [How does a voice agent hide the delay of a slow tool call?](https://outcomeschool.com/blog/slow-tool-calls-in-voice-agents)
+- How is writing a system prompt for a voice agent different from writing one for a text chatbot?
+  - Answer: [How do you write a system prompt for a voice agent, not a chat bot?](https://outcomeschool.com/blog/voice-agent-system-prompt)
 - How do you handle barge-in (user interruptions) in a voice agent?
   - Answer: [Design a Real-Time Voice AI Agent](https://outcomeschool.com/blog/design-a-real-time-voice-ai-agent), [What is turn-taking in a voice AI agent?](https://outcomeschool.com/blog/what-is-turn-taking-in-a-voice-ai-agent), [What is barge-in in a voice AI agent?](https://outcomeschool.com/blog/what-is-barge-in-in-a-voice-ai-agent), [How does a voice agent tell a real interruption from a cough or background noise?](https://outcomeschool.com/blog/interruption-vs-background-noise) , [How does a voice agent stop speaking instantly when interrupted?](https://outcomeschool.com/blog/stopping-speech-on-interruption), [How does a voice agent truncate its memory to only what the user actually heard?](https://outcomeschool.com/blog/truncating-context-on-interruption), [How does a voice agent recover from a false interruption?](https://outcomeschool.com/blog/false-interruption-recovery) and [How does a voice agent handle the user and agent talking at the same time?](https://outcomeschool.com/blog/overlapping-speech-in-voice-agents)
 - Cascaded ASR + LLM + TTS vs native speech-to-speech models: what are the trade-offs?

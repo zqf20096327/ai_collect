@@ -173,13 +173,27 @@ On Hyprland with `COMPUTER_USE_LINUX_HYPRLAND_BACKGROUND=1`, a window target wit
 | X11 (EWMH window managers) | Keys; pointer only without a window manager | XInput 2 multi-pointer is part of the X server. Checked with xterm, GTK 3 and Chrome under openbox, and the pointer without a window manager. |
 | sway 1.10+ | Keys and pointer | [ext-transient-seat-v1](https://wayland.app/protocols/ext-transient-seat-v1) plus foreign-toplevel activation on a named seat ([sway view.c](https://github.com/swaywm/sway/blob/master/sway/tree/view.c)). GTK 3, GTK 4 and Chromium bind only the seats that exist when they start ([gdkdisplay-wayland.c](https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gdk/wayland/gdkdisplay-wayland.c), [wayland_seat.cc](https://source.chromium.org/chromium/chromium/src/+/main:ui/ozone/platform/wayland/host/wayland_seat.cc)), so they never see the agent seat and have no route; foot and other clients that bind new seats get the keys. Xwayland windows have no route. Older sway has no transient seats. |
 | Hyprland | Keys (`sendkeystate`, US layout) | One seat; `sendkeystate` is its per-window key dispatcher. No second pointer. |
-| GNOME | None | One seat, and Mutter has no per-window input request. |
-| KDE Plasma (KWin) | None | One `SeatInterface` and no per-window input request. |
+| GNOME | Pointer through a virtual pen (below); no keys | One seat, and Mutter has no per-window input request. A tablet has its own cursor. |
+| KDE Plasma (KWin) | None | One `SeatInterface` and no per-window input request. KWin 6.2+ gives a tablet its own cursor too, but maps a tablet with no configured output to the active output, which follows the user's pointer. |
 | COSMIC | None | cosmic-comp creates one seat and has no transient-seat protocol. |
 | niri | None | One seat and no transient-seat protocol. |
 | labwc, river-classic, other wlroots compositors | None | One seat (labwc activates foreign toplevels on it; river-classic lists multiple seats as a TODO). |
 
-Where there is no agent seat, a window-targeted background call has no route (the notice, then focused input); element, browser tab and terminal targets still work. For full isolation, with its own keyboard and pointer, run the app in an [agent-workspace-linux](https://github.com/agent-sh/agent-workspace-linux) workspace; the notice points there. `doctor` lists the routes this machine has in `capabilities.background_input` (`seat` when the agent seat is available) and the seat's route, pointer support or the reason it has none in `capabilities.background_seat`.
+Where there is no agent seat, a window-targeted background call has no route (the notice, then focused input); element, browser tab and terminal targets still work. For full isolation, with its own keyboard and pointer, run the app in an [agent-workspace-linux](https://github.com/agent-sh/agent-workspace-linux) workspace; the notice points there. `doctor` lists the routes this machine has in `capabilities.background_input` (`seat` when the agent seat is available) and the seat's route, pointer support or the reason it has none in `capabilities.background_seat`. `capabilities.background_pointer` shows the GNOME pen route and its limits, or why there is none.
+
+On GNOME Wayland (and KDE Plasma, below), background `click`, `drag` and `scroll` go through a virtual pen and a virtual touchscreen instead of the user's pointer ([#480](https://github.com/agent-sh/computer-use-linux/issues/480); the idea and the tested approach are [@Ondra-Zik](https://github.com/Ondra-Zik)'s). Mutter gives a tablet tool its own cursor and sends its events through the tablet protocol, not `wl_pointer`, so the user's mouse stays where it is. Clicks are pen taps (left), the upper barrel button (right) and the lower one (middle); `click_count` repeats them. GNOME 48 and later default the lower button to a right click and the upper one to a middle click, so before each action the server sets its own pen's button actions to match the buttons it presses, and resets them when the pen goes away. A drag is the pen tip pressed at the start, moved and lifted at the end. The pen leaves proximity after each action: libinput pairs a pen with a touchscreen and ignores that screen's touches while the pen is near, and that screen can be the user's. A scroll is a one-finger touch pan, 60 logical pixels per wheel notch (5 notches per page), split into strokes that stay inside the window and 48 pixels from the monitor's edges, where GNOME Shell starts its edge swipes; the finger rests before it lifts, so the app does not fling further. Before any input, the server checks through the GNOME Shell extension that the point is on the target window, on the workspace the user sees, and that no window stacked above it covers the point; both ends of a drag and every pan stroke must be on the window, and a pan always starts at the point. The results report the route as `gnome-pen` or `gnome-touch`. The devices need write access to `/dev/uinput`, as the uinput pointer does; without it, or without the extension, the call gets the notice and then focused input.
+
+Limits:
+
+- A pen tap or a touch focuses the window it lands on, as a click does, so the user's typing goes there after it. The result says when the keyboard focus moved.
+- The window check sees windows, not GNOME Shell's own UI. The call is refused while the screen is locked, while no window has focus (the overview may be open), and when the target is not on the workspace of the focused window, but a Shell dialog, notification banner or open menu over the point is not seen.
+- Mutter sends tablet events only to clients that support the tablet protocol (GTK 3 and 4, Qt, Chromium, Firefox and Xwayland do). Other clients never see the pen, and the call cannot tell: re-observe the window. This is also why the pen is not the default route: the uinput pointer reaches every client.
+- A drag stays inside one window. A touch pan scrolls only where the app pans on touch.
+- The pen leaves proximity right after each action, so hover effects such as tooltips end with it.
+- Mutter maps an unconfigured tablet across the whole layout, and an unconfigured touchscreen to the builtin panel. When a device maps elsewhere than the point needs, the server writes that device's `output` setting (`org.gnome.desktop.peripherals.tablet` or `.touchscreen`, at the path keyed by the devices' own vendor and product ids, `6375:7065` and `6375:7463`), waits for mutter's `org.gnome.Mutter.InputMapping` to confirm the new mapping, and resets the setting when the device goes away. No other device's setting is touched.
+- The devices appear on first use and go away after ten idle minutes or when the server exits.
+
+On KDE Plasma Wayland with KWin 6.3 or later the same route runs as `kwin-pen` and `kwin-touch`. KWin gives a tablet its own cursor from 6.3 (it tracks the tablet cursor itself and moves it whether or not the client under it supports tablets). KWin maps a tablet with no setting to the active output, which follows the user's pointer, and a touchscreen to the internal panel or the first output. So before input the server sets the pen's `mapToWorkspace` and the touchscreen's `outputName` (the output under the point) through `org.kde.KWin.InputDevice`, reads them back, and once the devices are gone removes what KWin wrote for them into `kcminputrc` (the groups keyed by these devices' vendor, product and name) with `kwriteconfig6`. The window check goes through KWin scripting: the point must be on the target, on the desktop and activity the user sees, not minimized or hidden, with no window, panel, popup or notification stacked above it. The call is refused while KWin shows the desktop or runs a full-screen effect such as the Overview (`org.kde.kwin.Effects.activeEffects`), and when another setting for the device moves where input lands (calibration, input or output area, rotation). A scroll reads the output's rotation with `kscreen-doctor` and refuses a rotated or flipped output; without `kscreen-doctor` there is no touch route. There is no route at all when KWin's `SyncWithMouse` tablet option (`kcminputrc` `[Tablet]`) is on, since it moves the user's pointer to where the pen was, when KWin runs with `KWIN_WAYLAND_EMULATE_TABLET`, which sends pen input over apps without tablet support through the user's pointer, or without `kreadconfig6` and `kwriteconfig6`.
 
 Some clients mishandle a second `wl_seat` (Zed, [zed-industries/zed#66735](https://github.com/zed-industries/zed/issues/66735)); that is one more reason the sway seat exists only during a call. A menu the agent opens on sway closes when its call ends, since the seat that opened it goes away. While sway is in a binding mode other than `default`, background keys have no route, since the mode's bindings would take them.
 
@@ -654,46 +668,4 @@ This option currently applies only to directly spawned MCP hosts. The native Pi
 extension does not forward the flag or include this optional tool in its catalog.
 
 `setup` and `setup_accessibility` write and read back GNOME's
-`org.gnome.desktop.interface toolkit-accessibility` setting, even if AT-SPI
-is already enabled at runtime. A runtime-only success is reported as a warning:
-newly launched GTK apps may still have no tree. Enabling the saved key may
-require restarting target apps. Other accessibility tools can change that key
-later; setup does not continuously override user settings.
-
-For an explicit foreground guard while using desktop automation, run:
-
-```bash
-computer-use-linux guard-accessibility
-```
-
-The guard registers a passive AT-SPI window-activation listener and watches
-GNOME's saved `toolkit-accessibility` key. It re-enables the key after a reset
-and verifies it by readback, with periodic checks as well as change monitoring.
-This affects all applications using the current user's GNOME setting, not just
-the target app. It does not start a screen reader or change focus.
-
-`mcp`, `setup`, `setup_accessibility`, and `get_app_state` never start this guard.
-Stop it with Ctrl-C or SIGTERM **before** intentionally disabling accessibility.
-Stopping ends setting writes and removes its listener without disabling other
-accessibility clients or restoring an old saved value. A reset and reassertion
-are not atomic: an app launched in that interval may still need restarting.
-This is an opt-in mitigation, not a guarantee that every GNOME toggle sequence
-preserves application accessibility trees.
-
-`computer-use-linux doctor` is the source of truth. Common failure modes and fixes:
-
-- **`accessibility.at_spi_bus.ok = false`**: the AT-SPI registry isn't running or the toolkit bridge is off. Fix: `computer-use-linux setup` (or call the `setup_accessibility` MCP tool). Restart the apps you want to drive.
-- **`windowing.gnome_shell_introspect.ok = false` and `windowing.computer_use_linux_gnome_shell_extension.ok = false`**: GNOME blocks introspection and the extension isn't installed. Fix: `computer-use-linux setup-window-targeting`, then log out and log back in.
-- **`input.ydotool_socket.ok = false` while ydotool is the selected fallback**: the daemon isn't running. On systemd, run `systemctl --user enable --now ydotoold` after `./install.sh`, or `systemctl --user enable --now ydotool` with Ubuntu's package. On other init systems, rerun `./install.sh` and configure your per-user supervisor with the command it prints. If `ydotool` is not packaged for your distro, use another input backend or install a compatible ydotool release manually.
-- **`input.ydotool.ok = false` with an unsupported CLI message**: install ydotool 1.0.3 or newer. A running daemon or socket alone is not enough; `doctor` verifies the raw key, wheel, stdin typing, and absolute-movement command family before advertising the backend.
-- **`input.uinput.ok = false`**: `/dev/uinput` isn't accessible to your user. Fix: add yourself to the `input` group (`sudo usermod -aG input $USER`) and re-login. On distros that ship `uinput` as a kernel module without auto-loading it, add `uinput` to `/etc/modules-load.d/`. Direct uinput supplies absolute pointer input only, so `doctor` also requires a keyboard-capable portal, wtype (on compatible Wayland compositors), xdotool, or ydotool backend.
-- **Portal calls hang or time out**: `xdg-desktop-portal` or its backend (`-gnome`, `-gtk`, `-kde`, `-wlr`) crashed. Fix: check `journalctl --user -u xdg-desktop-portal -u xdg-desktop-portal-gnome --since '5 min ago'` and restart the relevant unit.
-- **KWin / Hyprland / niri / Umbriel / i3 / Sway / COSMIC / X11 windowing is unavailable**: check `doctor.windowing.backends`. KWin needs session-bus scripting; Hyprland needs `hyprctl`; niri needs `NIRI_SOCKET` (passed by the host, or read from the server's parent processes or the systemd user environment), or an unambiguous matching `niri.*.sock` in `XDG_RUNTIME_DIR`; Umbriel needs the `umbriel` binary and `UMBRIEL_SOCKET`, or `umbriel-$WAYLAND_DISPLAY.sock` in `XDG_RUNTIME_DIR`; i3 and Sway need `i3-msg` or `swaymsg` and the IPC socket; generic X11 needs `wmctrl` and `xprop`. COSMIC needs `computer-use-linux-cosmic`, which the standard installers provide automatically; if you copied binaries by hand, copy the helper too or set `COMPUTER_USE_LINUX_COSMIC_HELPER`.
-- **niri windows list correctly but targeted screenshots or relative clicks fail**: niri may omit window positions, leaving `bounds.x`/`bounds.y` as `null`. Unknown or mixed output scaling also leaves bounds unavailable. Focus the window first (`activate_window`) and use full-screen coordinates after checking a fresh screenshot.
-- **Screenshots return black frames on multi-monitor setups**: a known portal / compositor edge case. Use `get_app_state` with `include_screenshot: false` and rely on AT-SPI until the portal backend is healthy.
-- **`type_text` types into the wrong window**: pass an explicit target (`window_id`, `pid`, `wm_class`, `title`, or for terminals `tty` / `terminal_pid` / `terminal_command` / `terminal_cwd`). Without a target, input goes to whatever window currently has compositor focus.
-- **Wayland pointer actions miss an unfocused window**: injected pointer input is subject to the compositor's input-focus rules. Call `activate_window` for the target before `click`, `drag`, or coordinate `scroll`; a pointer can land at the requested coordinate without the unfocused surface receiving the action.
-
-If `doctor` is green and a specific tool still misbehaves, file an issue with the JSON output of `doctor` and the failing tool's request payload.
-
-For coordinate calibration, launch 
+`org.gnome.desktop.interfa

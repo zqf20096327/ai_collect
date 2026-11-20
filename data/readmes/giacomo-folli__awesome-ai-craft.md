@@ -33,6 +33,8 @@
 - [FigCraft](https://github.com/storytold/figcraft) - Clean-room interface design and prototyping tool written in Rust as an alternative to Figma.
 - [AniCraft](https://github.com/storytold/AniCraft) - 2D animation editor written from scratch in Rust as a clean-room alternative to Adobe Animate.
 - [PdfCraft](https://github.com/storytold/pdfcraft) - High-performance PDF reader, annotator, form filler, and page organizer replacing Adobe Acrobat Pro.
+- [TextureCraft](https://github.com/storytold/texturecraft) - 3D texture painting workflow tool written in pure Rust as a clean-room alternative to Adobe Substance 3D Painter, featuring cross-seam painting, PBR material layers, and native AI agent control.
+- [MaterialCraft](https://github.com/storytold/materialcraft) - Node-based procedural material and PBR texture designer built in pure Rust as a clean-room alternative to Adobe Substance 3D Designer, featuring live 2D/3D previews and MCP integration.
 
 ## Office & Productivity Suite (Microsoft Alternatives)
 
@@ -54,6 +56,7 @@
 *Underlying engine architectures and agent bridges.*
 
 - [ArtCraft](https://github.com/storytold/artcraft) - The core intentional crafting engine and unified UI framework that powers the entire Craft suite, with native Model Context Protocol (MCP) servers and JSON-RPC automation channels.
+- [Craft Launcher](https://github.com/storytold/craft-launcher) - Native desktop application manager and installer built in Rust for discovering, installing, and updating the Craft suite.
 
 ## AI-Built Software Reimplementations
 
@@ -66,6 +69,9 @@
 - [FastRender](https://github.com/wilsonzlin/fastrender) - Experimental browser engine written by thousands of parallel agents in Cursor's research on long-running autonomous coding.
 - [JustHTML](https://github.com/EmilStenstrom/justhtml) - Pure-Python HTML5 parser built with coding agents that passes the full html5lib test suite.
 - [justjshtml](https://github.com/simonw/justjshtml) - JavaScript port of JustHTML, produced by a coding agent and checked against the same test suite.
+- [OpenIDEA](https://github.com/openidea/openidea) - Native IDE with a Rust core that reimplements IntelliJ IDEA’s keymap, tool windows, debugger, Git, terminal, and database-client workflow.
+- [claurst](https://github.com/alexcode-cc/claurst) - Clean-room Rust reimplementation of Claude Code’s behavior, produced in two phases: AI-generated behavioral specifications followed by an implementation agent that did not reference the original TypeScript.
+- [Craft Anything](https://github.com/craft-anything/craft-anything) - Agent-driven application that studies how existing software works and produces clean-room or deep-mode rebuilds.
 
 ## Parametric 3D Engineering & Simulation
 
@@ -73,6 +79,7 @@
 
 - [SolidCraft](https://github.com/tangency-labs/solidcraft) - Open-source, parametric 3D CAD application written in pure Rust by Tangency Labs as a clean-room alternative to Dassault Systèmes SolidWorks and Autodesk Fusion 360. Features a parametric history timeline, 2D constraint solver, multi-platform runtime, STEP/IGES/STL/3MF export, and a built-in Model Context Protocol (MCP) server.
 - [FieldCraft](https://github.com/tangency-labs/fieldcraft) - Open-source multi-physics modeler and simulation workbench written from scratch in pure Rust by Tangency Labs as a clean-room alternative to Abaqus/CAE, ANSYS, and COMSOL Multiphysics. Features automated meshing, nonlinear implicit and explicit FEA, heat transfer, lattice Boltzmann CFD, and native Model Context Protocol (MCP) and CLI interfaces.
+- [BIMCraft](https://github.com/tangency-labs/bimcraft) - Clean-room building-information-modeling application in pure Rust, built as an agent-native alternative to Autodesk Revit.
 
 ## Game Reimplementations
 
@@ -88,6 +95,9 @@
 - [Snowboard Kids decompilation](https://github.com/cdlewis/snowboardkids-decomp) - 100% matching decompilation of Snowboard Kids (N64, 1998) using the same agent-driven approach as its sequel, with several AI models.
 - [Little Planet](https://github.com/carl0srmz/littleplanet) - Static recompilation of Sonic CD (Mega-CD, 1993) into a native PC program, built with AI assistance.
 - [Klonoa: Empire of Dreams decompilation](https://github.com/Dream-Atelier/kl-eod-decomp) - Matching decompilation of Klonoa: Empire of Dreams (GBA, 2001), in progress, with Claude Code credited in its commits.
+- [Rook](https://github.com/AsyncFinn/rook) - Rust reimplementation of the Roblox engine, validated against Studio recordings.
+- [Free Heroes IV](https://github.com/tallowmere/free-heroes4) - C++23 reimplementation of the *Heroes of Might and Magic IV* engine; requires the player’s own GOG game files.
+- [Ocarina Recomp](https://github.com/sostenesfreitas/ocarina-recomp) - Static recompilation of *The Legend of Zelda: Ocarina of Time* for native Windows play, built from a user-owned copy.
 
 ## Reverse Engineering & Agent Tooling
 

@@ -4,7 +4,7 @@
 
 **Security Scan orchestrator for AI Agents.**
 
-Parsentry analyzes repository structure, enumerates attack surfaces, and generates per-surface analysis prompts. Pipe them to any CLI agent for parallel security analysis.
+Parsentry analyzes repository structure, enumerates attack surfaces, and generates per-surface analysis prompts. An agent runtime (Claude Code, Codex CLI, OpenCode, Crush) drives the scan loop for parallel security analysis.
 
 </div>
 
@@ -20,11 +20,11 @@ Once installed, just ask your agent to scan a repository — the skill dispatche
 
 ### Usage
 
-```bash
-parsentry scan owner/repo | claude -p
-```
+Ask your agent to scan a target (e.g. "scan owner/repo with parsentry"). The agent runtime runs `parsentry scan owner/repo`, dispatches the emitted prompts (one agent per surface, in parallel), and re-runs `parsentry scan` until it prints `PARSENTRY_SCAN_COMPLETE`.
 
-`scan` is the only command you need. It inspects the cache and emits the prompt for the next phase (threat model → per-surface analysis → report). Every prompt tells the agent to re-run `parsentry scan` until it prints `PARSENTRY_SCAN_COMPLETE`, so one pipe runs the whole pipeline. Add `-o report.pdf` to also render a PDF.
+`scan` is the only command you need. It inspects the cache and emits the prompt for the next phase (threat model → per-surface analysis → report).
+
+> **Deprecated:** pipe mode (`parsentry scan owner/repo | claude -p`) still works but prints a deprecation warning on stderr. Use the agent runtime (skill) instead. Add `-o report.pdf` to also render a PDF.
 
 The scan mode is decided from state, not flags:
 
@@ -49,6 +49,14 @@ parsentry log   →  monitor scan progress in real-time
 2. **Surfaces** — Read source code per surface, generate focused `prompt.md` files and an orchestrator prompt that launches parallel subagents — each writes SARIF results. Surfaces whose definition and sources are unchanged are skipped.
 3. **Report** — Merge SARIF of the current model's surfaces and write `report.md` (with a model diff section when a previous model exists).
 4. **Log** — Stream scan progress like `docker compose logs -f`.
+
+### Webhook server
+
+`parsentry serve [--host 127.0.0.1] [-p 8765] [--token TOKEN]` serves `GET /api/runs` and `GET /api/findings?run=&verdict=&level=&cwe=` over cached scans. A non-loopback `--host` is refused unless `--token` (or `PARSENTRY_API_TOKEN`) is set, and with a token every `/api/` request needs `Authorization: Bearer TOKEN`. It also listens on `POST /webhooks/github` and enqueues an incremental scan for `push` and `pull_request` (opened / synchronize / reopened) events. Set `GITHUB_WEBHOOK_SECRET` to verify `X-Hub-Signature-256`.
+
+```bash
+docker run -p 8080:8080 -e GITHUB_WEBHOOK_SECRET=... ghcr.io/hikaruegashira/parsentry
+```
 
 ### Install
 

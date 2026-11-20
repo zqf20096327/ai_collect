@@ -383,7 +383,7 @@ docker run -d -p 3000:8080 \
 
 ```bash
 # Clone this repository
-git clone https://github.com/yourusername/vibe-coding-zero-to-hero.git
+git clone https://github.com/hacrex/the-vibe-coding-handbook.git
 cd vibe-coding-zero-to-hero
 
 # Install essential tools
@@ -415,6 +415,10 @@ Follow the project-based learning approach:
 
 This is a **community-driven** project. We welcome contributions of all kinds!
 
+### Security operations references
+
+The handbook includes practical operational references in [Best Practices](Best%20Practices/), [Threat Modeling](Threat-Modeling/), [Monitoring and Logging](Monitoring-and-Logging/), and [Incident Response](Incident-Response/). These references complement the numbered learning sections with security baselines, deployment threat models, telemetry guidance, and incident playbooks.
+
 ### How to Contribute
 
 - 📝 **Write guides** - Share your expertise in any section
@@ -426,15 +430,14 @@ This is a **community-driven** project. We welcome contributions of all kinds!
 ### Contribution Guidelines
 
 1. Read our [Contributing Guide](CONTRIBUTING.md)
-2. Check existing [Issues](../../issues) before starting
+2. Check existing [Issues](https://github.com/hacrex/the-vibe-coding-handbook/issues) before starting
 3. Follow our [Markdown Style Guide](CONTRIBUTING.md#markdown-standards)
 4. Submit a Pull Request with clear description
 
 ### Join the Community
 
-- 💬 Discussions: [GitHub Discussions](../../discussions)
-- 🐦 Twitter: [@YourHandle](#) *(coming soon)*
-- 💻 Discord: *(coming soon)*
+- 💬 Discussions: [GitHub Discussions](https://github.com/hacrex/the-vibe-coding-handbook/discussions)
+- 💬 Community: [GitHub Discussions](https://github.com/hacrex/the-vibe-coding-handbook/discussions)
 
 ---
 

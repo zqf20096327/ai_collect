@@ -47,7 +47,7 @@ You stay in charge. Every change to a port needs your approval, and every line t
 - 💻 Windows, macOS (Apple Silicon and Intel) and Linux (x64 and arm64, Raspberry Pi included).
 
 **Connect**
-- 🗂️ Many ports at once: one tab per port, each with its own log and counters.
+- 🗂️ Many ports at once: one tab per port, each with its own log and counters; double-click a tab (or ⧉) to watch that port in a window of its own. Close stops the port but keeps the tab and log; Open continues there, and × on the tab closes it.
 - 🌐 TCP client, TCP server (several clients at once; sending goes to all of them, and the log shows who sent what) and UDP besides serial ports; pick the type at the left of the connection bar.
 - 🔁 Unplug and replug the adapter and the session carries on; the port list follows hot-plug.
 - 🎛️ DTR / RTS switches, CTS / DSR / RI / CD lamps, **BRK** for a BREAK, and **⏱** for a timed DTR/RTS sequence such as `DTR=0 RTS=1, 100, RTS=0` (a reset pulse). Every change is marked in the log.
@@ -71,7 +71,7 @@ You stay in charge. Every change to a port needs your approval, and every line t
 - 🤖 A built-in MCP server lets Claude Code, Claude Desktop and other agents list and open ports, send data, wait for replies and drive DTR / RTS, on the same sessions you see in the window.
 - ✅ Before an agent sends data, toggles a line or opens, closes or reconfigures a port, SerialBot asks you: **allow once**, **allow for the session**, or **deny** (unanswered requests are refused after 60 s).
 - 🟣 Everything an agent did is tagged **AI** in the log; **AI access** in the status bar keeps a session away from agents.
-- 🔒 The server is off until you turn it on, listens on `127.0.0.1` only and needs a token.
+- 🔒 The server is off until you turn it on, listens on `127.0.0.1` by default and always needs a token. It can also serve the local network (`0.0.0.0`) when you choose to.
 
 **Comfortable**
 - 🌗 Light, dark or system theme; log font size; lines kept per session; keep the window on top.
@@ -82,7 +82,11 @@ You stay in charge. Every change to a port needs your approval, and every line t
 
 | Dark | Light |
 |:---:|:---:|
-| <img src="docs/images/terminal-dark.png" alt="Terminal in the dark theme: an agent's commands tagged AI next to a command sent from the list, line numbers, Δt, a bookmarked line and the command list"> | <img src="docs/images/terminal-light.png" alt="The same terminal in the light theme"> |
+| <img src="docs/images/terminal-dark.png" alt="Terminal in the dark theme: an agent's commands tagged AI next to a command sent from the list, line numbers, Δt, a bookmarked line and the command list; the gps tab's blue dot marks new data"> | <img src="docs/images/terminal-light.png" alt="The same terminal in the light theme"> |
+
+**🪟 Several ports side by side**: double-click a tab to move that port into a window of its own.
+
+<img src="docs/images/windows.png" alt="The main window showing a GPS port, and esp32 in a window of its own with its log, toolbar and send box">
 
 | 📈 Plot | 🖥️ Terminal mode |
 |:---:|:---:|
@@ -100,7 +104,7 @@ You stay in charge. Every change to a port needs your approval, and every line t
 <details>
 <summary>🤖 AI page: MCP server settings</summary>
 
-<img src="docs/images/ai-dark.png" width="800" alt="AI page with the MCP server enabled, the confirmation setting and the Claude Code and Claude Desktop snippets">
+<img src="docs/images/ai-dark.png" width="800" alt="AI page with the MCP server enabled, the confirmation setting, Reachable from set to this computer only, and the Claude Code and Claude Desktop snippets">
 
 </details>
 
@@ -152,7 +156,7 @@ Get the file for your system from [Releases](https://github.com/jerry-token/seri
 
 ## 🤖 Let AI agents use your ports (MCP)
 
-1. Open **AI** on the left and tick **Enable MCP server**. It listens on `127.0.0.1` only and requires a token.
+1. Open **AI** on the left and tick **Enable MCP server**. It listens on `127.0.0.1` only and requires a token. To let agents on other computers in your network use it, set **Reachable from** to *The local network too*; the AI page then shows the address and command for those computers. Use that only on networks you trust: HTTP is not encrypted, and the token is the only protection.
 2. Press **Copy** and run the command in a terminal, for example:
    ```sh
    claude mcp add --transport http serialbot http://127.0.0.1:9633/mcp \
@@ -177,7 +181,7 @@ On Windows the command is the path of `serialbot.exe` (installed or portable); o
 | `io.wait_for` | Wait until received data matches a regex |
 | `io.send_and_expect` | Send a command and wait for the expected reply |
 | `io.signals` | Set DTR / RTS, read CTS / DSR / RI / CD |
-| `session.close` | Close a session's port; its log stays readable |
+| `session.close` | Close a session's port; the session and log stay so you can look back, and `session.open` on that port continues it |
 | `session.release` / `session.reopen` | Hand the port to another tool (a flasher) and take it back; the log continues |
 | `session.configure` | Change the baud rate without closing the port |
 | `log.mark` / `log.query` | Set a named marker; summarize or search what happened after it |

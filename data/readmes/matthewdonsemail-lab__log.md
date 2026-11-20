@@ -3,8 +3,8 @@
 </p>
 
 <p align="center">
-  <a href="https://x.com/xAccount/status/2120938715820474690"><img src="media/readme/hermesIntro.gif" alt="Introducing log by ListeningKit, in collaboration with Hermes Agent: Hermes asks who is waiting for a reply, log reads every inbox, and the answer lands on Discord in your own voice" width="100%" /></a>
-  <br><sub>Introducing log, in collaboration with Hermes Agent. <a href="https://x.com/xAccount/status/2120938715820474690">Watch the launch video with sound on X →</a></sub>
+  <a href="https://x.com/i/status/2120938715820474690"><img src="media/readme/hermesIntro.gif" alt="Introducing log by ListeningKit, in collaboration with Hermes Agent: Hermes asks who is waiting for a reply, log reads every inbox, and the answer lands on Discord in your own voice" width="100%" /></a>
+  <br><sub>Introducing log, in collaboration with Hermes Agent. <a href="https://x.com/i/status/2120938715820474690">Watch the launch video with sound on X →</a></sub>
 </p>
 
 <h3 align="center">One command for every social account you run.</h3>
@@ -152,10 +152,17 @@ Then ask in plain words: *"read my X DMs and tell me who's waiting on me"*. log'
 ## Highlights
 
 - **Start from a play.** Each [use case](docs/useCases/README.md) is a workflow written step by step: what to run, and what tells you each step worked. With `--skills all`, your agent picks the right one from what you say.
-- **Your voice, checked.** A draft is read against how you really write to that person, for AI phrasing and for hidden characters, before it can be sent.
+- **Your voice, checked.** A draft is read against how you really write to that person, grounded in your own past replies, and scored once against a bar set on your own messages. It's also checked for hidden characters, and for an agent copying the other person's style instead of yours ([#238](https://github.com/matthewdonsemail-lab/log/pull/238)).
+- **AI writing caught, trained on you.** A small detector learns the difference between your messages and drafts that frontier models wrote for your chats, with a separate bar for short, medium and long messages. It runs on your machine in about 6 ms; `log voice train` builds it ([#245](https://github.com/matthewdonsemail-lab/log/pull/245)).
+- **Who each person is, and where they are.** Every chat is labelled with who the person is (community, lead, client, partner, friend, bot) and where they are in your sales cycle. A small model labels them on your CPU, and asks a larger model only when it's unsure. The same person on different platforms is suggested as one, and you approve each link ([#242](https://github.com/matthewdonsemail-lab/log/pull/242), [#249](https://github.com/matthewdonsemail-lab/log/pull/249)).
+- **What actually gets replies.** `log inbox outcomes` compares the reply rate of messages log sent with yours, matched by person and stage, and shows which plays work ([#246](https://github.com/matthewdonsemail-lab/log/pull/246)).
 - **One session per account.** Each account keeps one connection open, the way the platform's own app does, never a new one per command.
 - **Live inbox.** New messages are pushed into your agent's context as they arrive, and two agents never answer the same chat.
 - **Kept human.** Every account has its own daily limits, pacing and local waking hours. A refusal from the platform stops the run, and nothing is retried.
+- **A judge on every message in.** The voice gate checks what goes out; the judge checks what comes in. Token stealers, encoded scripts and prompt injection are held before your agent reads them, and a small local model marks what the rules miss ([#189](https://github.com/matthewdonsemail-lab/log/pull/189), [#190](https://github.com/matthewdonsemail-lab/log/pull/190)).
+- **Turn aware.** On Discord and Slack a multi-line reply waits while they are typing, and holds the rest if they write back or keep typing ([#199](https://github.com/matthewdonsemail-lab/log/pull/199), [#202](https://github.com/matthewdonsemail-lab/log/pull/202)).
+- **Search knows where it was said.** Every hit names a DM, a group or a server channel, and you can search only one of them ([#198](https://github.com/matthewdonsemail-lab/log/pull/198)).
+- **It watches its own tools.** Tool health shows which tools are used, which fail and which guides went stale, and suggests the fix ([#203](https://github.com/matthewdonsemail-lab/log/pull/203)).
 - **Your machine, your data.** Accounts and sessions stay in `~/.logCli`. Many accounts? Keep them in [Twenty](docs/twenty.md), an open-source CRM, so every machine, agent and teammate sees the same ones.
 
 ## Works in every harness
@@ -166,7 +173,7 @@ A harness is the agent app you talk to log through. log is the same MCP server i
 |---|---|---|---|---|
 | [Claude Code](docs/harnesses/claudeApp.md#claude-code) | local or hosted | its prompt hook runs the router on every prompt | hooks on every prompt and after every tool call | text; sign-in in the window on your screen |
 | [Codex](docs/harnesses/codex.md) | local or hosted | its prompt hook | hooks on every prompt and around tool calls | text |
-| [Hermes](docs/harnesses/hermes.md) | local or hosted | the `logHooks` plugin's `pre_llm_call`, before every model call | the same hook, before every model call | text, plus a **log tab** in the Hermes dashboard |
+| [Hermes](docs/harnesses/hermes.md) | local or hosted | the `log` plugin's `pre_llm_call`, before every model call | the same hook, before every model call | text, plus a **log tab** in the Hermes dashboard |
 | [OpenCode](docs/harnesses/README.md) | local | its prompt hook | its plugin's hooks | text |
 | [Antigravity](docs/harnesses/README.md) | local | its prompt hook | its hooks | text |
 | [Cursor](docs/harnesses/cursor.md) | local or hosted | `getGuide({ ask })` (Cursor's prompt hook can't add context) | `sessionStart` and `postToolUse` hooks | MCP Apps: `report` and `browserView` inline |
@@ -233,21 +240,24 @@ flowchart LR
     H["One session per account<br/>like the platform's own app"]
     W["One live watcher per account<br/>holds the platform's push channel"]
     DB[("log.db<br/>every event, once")]
-    V["Derived tables<br/>messages, people, media text,<br/>transcripts, search"]
+    V["Worked out from the events<br/>chats, messages, people, search,<br/>with media text and transcripts beside them"]
+    J["The judge<br/>reads what other people wrote"]
+    K["Hooks and the push loop<br/>put new messages in front of the agent"]
     P["logMcp<br/>reload proxy"]
     M["log MCP server"]
-    K["Hooks<br/>put new messages in front of the agent"]
+    G["Play gate, voice gate<br/>and the chat claim"]
   end
   subgraph agents["Your agent"]
     C["Claude Code, Codex, Cursor,<br/>Hermes, OpenCode, ChatGPT..."]
   end
   X & D & S & I -- "push: new message, reaction, media" --> W
-  W -- "append once" --> DB
+  W -- "append once, by its id" --> DB
+  W -- "after a gap, catch up through the session" --> H
   DB --> V
+  DB -- "new since this session last looked" --> J --> K --> C
   C -- "tool call" --> P --> M
   M -- "reads in about 1 ms" --> V
-  M -- "send, react, voice note" --> H --> X & D & S & I
-  V --> K --> C
+  M -- "send, react, voice note" --> G --> H --> X & D & S & I
 ```
 
 In plain words:
@@ -255,29 +265,35 @@ In plain words:
 2. **One watcher per account.** It holds the platform's own push channel (X Chat's socket, Discord's gateway, Slack's socket, Instagram's realtime connection). Everything that arrives is written to `log.db` once, as an event.
 3. **Everything else is worked out from those events.** That covers the chats, who said what, what a picture or video shows, what a voice note said, and the search index. The chats and messages can be rebuilt from the events at any time.
 4. **Your agent asks the database, not the platform.** A tool call reads the database. The platform is only called to send something, or to catch up after a gap.
-5. **Hooks push new things to your agent.** When someone writes, the agent sees it in its context straight away, without asking.
+5. **Hooks push new things to your agent.** When someone writes, the judge reads it first, and then the agent sees it in its context straight away, without asking.
+6. **Every send passes the gates.** The play gate, the voice gate and the chat claim come before anything goes out through the account's session.
 
 ### How your agent connects, and why you never restart it
 
 ```mermaid
 sequenceDiagram
-  participant C as Claude Code
+  participant C as Your agent, e.g. Claude Code
   participant P as logMcp, the reload proxy
   participant A as log server, old code
   participant B as log server, new code
   C->>P: initialize, then tool calls over stdio
   P->>A: passes every call through
   Note over P: log's code changes on disk
-  P->>P: waits until no call or job is running
+  P->>P: waits until no call is in flight, holding new calls
   P->>B: starts the new server and replays initialize
-  B-->>P: ready
-  P->>A: stops the old server
+  B-->>P: ready within 30 s
+  alt the old server is running a job
+    Note over A: keeps running it to its end, then stops
+  else nothing is running
+    P->>A: stops the old server
+  end
   P-->>C: tools/list_changed
   C->>P: next tool call
   P->>B: runs on the new code
+  Note over P,B: no answer in 30 s and the new server is stopped, the old code keeps serving
 ```
 
-Claude Code starts `logMcp` once. `logMcp` is a small proxy that never exits, and it runs the real server as a child process. When log's code changes, it waits until nothing is running, starts the new code, and swaps it in. A long job, like a queue sending over an hour, is never cut off. Your agent keeps working without a restart. This design was picked from four open-source options by a SubQ matrix ([`docs/decisions/mcpReload`](docs/decisions/mcpReload)).
+Claude Code starts `logMcp` once. `logMcp` is a small proxy that never exits, and it runs the real server as a child process. When log's code changes, it waits until no call is in flight, starts the new code, and swaps it in. A long job, like a queue sending over an hour, is never cut off: it keeps running in the old server until it ends, and every new call goes to the new code. If the new code doesn't start within 30 s, the old code keeps serving. Your agent keeps working without a restart. This design was picked from four open-source options by a SubQ matrix ([`docs/decisions/mcpReload`](docs/decisions/mcpReload)).
 
 ### How the router tells your agent what to do
 
@@ -288,44 +304,52 @@ flowchart TD
   ASK["You: who's waiting on me on X?"] --> HOOK{"Does the harness<br/>have a prompt hook?"}
   HOOK -- "yes: Claude Code, Codex, Hermes,<br/>OpenCode, Antigravity" --> H["The hook runs the router<br/>on every prompt, by itself"]
   HOOK -- "no: Cursor, Claude, ChatGPT, Grok" --> G["The model calls getGuide({ ask })<br/>the same router, on the server"]
-  H & G --> R["The router<br/>your words against every play's phrases,<br/>plus a meaning score from a local model"]
+  H & G --> R["The router<br/>fixes typos, then scores your words against every play's phrases,<br/>plus a meaning score from MiniLM in the warm context service"]
   R -- "clear match" --> M["PLAY MATCH<br/>the play's steps load with<br/>getGuide({ useCase })"]
-  R -- "near tie" --> T["MAYBE A PLAY<br/>a short menu, nothing loaded"]
+  R -- "close, but below the bar or a near tie" --> T["MAYBE A PLAY<br/>a short menu, nothing loaded"]
   R -- "no match" --> N["No play<br/>the agent answers as usual"]
   M --> PG["Play gate<br/>only the sends the loaded play names go through"]
-  PG --> VG["Voice gate<br/>the draft is checked against how you write"]
+  PG --> VG["Voice gate<br/>already answered? the same as sent?<br/>then the draft is read against how you write"]
   VG --> LIVE["Sent as you, only with --live<br/>and your approval"]
 ```
 
-1. **The hook runs it for you.** In a harness with a prompt hook, the router runs before the model sees your message, and its answer is added to the turn. In Hermes this is the `logHooks` plugin's `pre_llm_call`.
+1. **The hook runs it for you.** In a harness with a prompt hook, the router runs before the model sees your message, and its answer is added to the turn. In Hermes this is the `log` plugin's `pre_llm_call`.
 2. **Or the model asks.** Everywhere else, the server's instructions and every tool's description tell the model to call `getGuide({ ask: "<your words>" })` first. It's the same router, so the same prompt gets the same play. A golden set of prompts checks that (`src/useCases/router/fixtures/golden.json`).
 3. **Words, then meaning.** Each play lists how people ask for it. The hook's warm context service adds a meaning score from MiniLM, a small model on your machine, in about 12 ms. If the service is down, the hook falls back to the word score, so a play is still named.
-4. **A clear match loads the play. A near tie doesn't.** A clear match names the play and its steps load with `getGuide({ useCase })`. A near tie shows a short menu and loads nothing. Building or fixing log itself is never a play.
+4. **A clear match loads the play. A near one doesn't.** A clear match clears its play's bar with room to spare over the next one, and its steps load with `getGuide({ useCase })`. A play that is close but below the bar, or a near tie, shows a short menu and loads nothing. Building or fixing log itself is never a play.
 5. **The play gate.** A send only goes through when the play that's loaded names it. An agent can't wander from "read my DMs" into sending.
 
 ### How notifications stream into your agent
 
-Your agent doesn't have to ask what's new. Every account's watcher holds the platform's own push channel, and the hooks put what arrived in front of the agent before its next step:
+Your agent doesn't have to ask what's new. Every account's watcher holds the platform's own push channel, and the hooks put what arrived in front of the agent before its next step. In Hermes, OpenCode and Claude Code (through a `Monitor`), a push loop also starts a turn when a message lands while the agent is idle ([docs/liveInbox.md](docs/liveInbox.md)). The hooks are answered by the warm context service on your machine (port 47317), or by a one-off process when it's down:
 
 ```mermaid
 sequenceDiagram
   participant P as The platform
   participant W as Your account's watcher
   participant DB as log.db
-  participant K as Hook
+  participant K as Hook or push loop
+  participant J as The judge
   participant A as Your agent
   participant S as Your account's session
   Note over K,W: a hook starts any signed-in account's watcher that isn't running
   P->>W: push: new message, reaction, notification
   W->>DB: append the event once, by its id
-  A->>K: you type, a tool call ends, or (Hermes) a model call starts
+  alt a hook
+    A->>K: you type, a tool call ends, or (Hermes) a model call starts
+  else the push loop
+    K->>K: wakes on every watcher write, or every 15 s
+  end
   K->>DB: what's new since this session last looked?
+  K->>J: the new messages, a voice note as its transcript
+  J-->>K: clean, marked as data, or the chat held behind one alert
   K-->>A: NEW MESSAGE, who said what and what to do
+  K-->>A: the conversation from log.db, each of their lines judged again
   K-->>A: each account's session, today's limits, X's unread counts
   K-->>A: a gap, a refused catch-up, a second watcher refused
   A->>DB: claim the chat, so no other agent answers it
   A->>DB: read the conversation, about 1 ms
-  A->>S: send the reply through the one session
+  A->>S: send the reply, past the catch-up check, the voice gate and the claim
   S-->>DB: the platform's answer, recorded with the reply
 ```
 
@@ -349,6 +373,34 @@ Its steps load with getGuide({ useCase: "twitter/dmInbox" }).
 - **Every session has its own cursor.** Nothing is shown twice, and nothing is missed between turns.
 - **Gaps are caught up, never guessed.** When a connection drops, the watcher pulls what it missed through the account's own session, paced like a person. Until it has, a send that needs that context waits. If the platform refuses, the run stops and you're told.
 - **Two agents never answer the same chat.** An agent claims a chat before it drafts, and every claim, send and release is written down in `log.db`.
+- **Judged before it's shown.** Everything other people wrote passes the judge first. A strong hit, or two weak ones, holds the whole chat behind one alert (who, where, why); one weak hit or a model flag is shown marked as data, never as an instruction. How it decides is below.
+- **It waits its turn.** While they are typing, a reply waits; their message stops the rest of a multi-line reply, so it never talks over them.
+
+### How the judge reads what comes in
+
+The voice gate checks what goes out. The judge checks what comes in, before your agent reads a word of it. It runs where every new message is picked up for a session, so the hooks and the push loop both get judged text:
+
+```mermaid
+flowchart TD
+  NEW["New messages since this session last looked<br/>ignored chats left out, a voice note as its transcript"] --> RULES["The rules<br/>each message, and each chat's messages joined"]
+  NEW --> MODEL["The local injection model<br/>wolf-defender small, on your machine<br/>every text of 12 characters or more"]
+  RULES --> STRONG["Strong hits<br/>token stealers: Windows credential decryption,<br/>saved login stores, a Discord webhook,<br/>encoded or downloaded PowerShell, writing into another process<br/>prompt injection: drop your instructions, fake harness markers,<br/>asks for keys or account files, names log's send tools"]
+  RULES --> WEAK["Weak hits<br/>a script piped into a shell, code with scrambled names,<br/>a long base64 blob, a new role or mode"]
+  MODEL -- "scores 0.9 or more" --> FLAG["A model flag<br/>counts as one weak hit"]
+  MODEL -. "down: the rules decide alone, and it is started" .-> VERDICT
+  STRONG & WEAK & FLAG --> VERDICT{"The chat's verdict"}
+  VERDICT -- "a strong hit, or two weak ones" --> HELD["Held<br/>every message in the chat withheld,<br/>one alert: who, where, why<br/>the agent tells you and drafts nothing"]
+  VERDICT -- "one weak hit or a model flag" --> MARKED["Shown marked as data<br/>the judge flagged this, never an instruction"]
+  VERDICT -- "nothing" --> CLEAN["Shown as it is"]
+  HELD & MARKED & CLEAN --> CONV["The conversation from log.db<br/>each of their lines checked by the rules again"]
+  CONV --> AGENT["Your agent"]
+  AGENT -- "a reply" --> VG["The voice gate, on the way out<br/>already answered? the same as sent?<br/>does it sound like you?"]
+  VG --> SEND["Sent through the account's one session"]
+```
+
+- **Rules first.** Each rule is strong or weak. Strong rules catch token stealers (the Windows credential decryption they use, an app's saved logins, a Discord webhook to send the loot to), encoded or downloaded PowerShell, code that writes into another process, and prompt injection: text that tells the agent to drop its instructions, imitates the harness's own markers, asks for your keys or account files, or names log's send tools.
+- **Then a small model.** A prompt injection classifier runs on your machine as a warm service, with no key ([#190](https://github.com/matthewdonsemail-lab/log/pull/190)). A score of 0.9 or more is a flag, counted as one weak hit. If the model isn't running, the rules still decide, and the model is started for the next time. `LOG_JUDGE_MODEL_OFF=1` turns it off.
+- **A held chat stays held.** Its text never reaches the agent: you read it on the platform yourself.
 
 ### Pictures, voice notes and videos
 
@@ -356,9 +408,10 @@ Every model can read text, even one that can't see images. So every piece of med
 
 ```mermaid
 flowchart LR
-  IN["A picture, voice note or video arrives"] --> REC["Kept in log.db: size, length, a small preview"]
+  IN["A picture, voice note or video arrives"] --> Q["The describer, one warm process<br/>takes one at a time from a queue of 20"]
+  Q --> REC["Kept in log.db: size, length, hash, a small preview"]
   REC --> PIC["Picture: what is in it,<br/>its words read out"]
-  REC --> AUD["Voice note: what was said"]
+  REC --> AUD["Voice note: what was said, by AssemblyAI"]
   REC --> VID["Video: cut where the picture changes,<br/>each scene described,<br/>its sound transcribed"]
   PIC & AUD & VID --> TXT["One line of text<br/>any model can read"]
   TXT --> DEL["The downloaded file is deleted"]
@@ -378,14 +431,17 @@ A video with no sound, like motion graphics, says `no sound` and is told by what
 
 ### The models it uses
 
-Two models run on your own machine, with no key. Four are hosted, and each needs its key:
+Five models run on your own machine, with no key. Four are hosted, and each needs its key:
 
 | Model | Runs | What it does |
 |---|---|---|
 | all-MiniLM-L6-v2 (23 MB) | your machine | meaning search over every conversation, your voice index, matching what you typed to a play |
 | LFM2.5-VL-450M (352 MB) | your machine | describes every picture and video frame as text |
-| SubQ `subq-snap-1.1` | hosted, `SUBQ_API_KEY` | the voice gate: does a draft sound like you |
-| Jina embeddings v5 and reranker v3.5 | hosted, `JINA_API_KEY` | the AI tells check, and ranking a chat's history for the gate |
+| wolf-defender prompt injection small | your machine | the judge's model: flags prompt injection in what comes in |
+| Your AI-writing detector | your machine, trained by `log voice train` | the voice gate's AI reading: your messages against drafts frontier models wrote for your chats, a bar per message length |
+| Your pipeline labeller | your machine, trained by `log inbox label train` | who each person is and where they are in your sales cycle, on MiniLM's vectors |
+| SubQ `subq-snap-1.1` | hosted, `SUBQ_API_KEY` | the voice gate: does a draft sound like you; and the teacher for the labeller, asked when the local one is unsure |
+| Jina embeddings v5 and reranker v3.5 | hosted, `JINA_API_KEY` | ranking a chat's history for the gate (capped at 4 s, with a local fallback), and a meaning vector for each piece of media |
 | AssemblyAI | hosted, `ASSEMBLYAI_API_KEY` | what was said in a voice note or a video |
 | Inworld or Fish Audio | hosted, `INWORLD_API_KEY` or `FISH_API_KEY` | a voice note in your cloned voice, only when you ask |
 
@@ -395,19 +451,21 @@ flowchart LR
   IN -->|picture or video| VL["LFM2.5-VL, your machine"] --> DB
   IN -->|voice| AA["AssemblyAI"] --> DB
   DB --> ML["MiniLM, your machine"] --> IDX["search and voice indexes"]
-  IDX --> DRAFT["your agent drafts"] --> GATE["voice gate: SubQ and Jina"] --> SEND["sent as you"]
+  DB --> WD["the judge: wolf-defender, your machine"] --> READ["your agent reads it"]
+  READ & IDX --> DRAFT["your agent drafts"] --> GATE["voice gate: SubQ and Jina"] --> SEND["sent as you"]
 ```
 
 **What your machine needs,** measured here on 2026-11-09 (16 threads, CPU only):
-- **A 64-bit machine.** There's no GPU: both local models run on the CPU.
+- **A 64-bit machine.** There's no GPU: the local models run on the CPU.
 - **About 2 GB of free memory.** The picture model peaked at 1.25 GB and takes 6 to 7 s a picture. It stops itself past 4 GB.
-- **About 400 MB of disk** for the two models, downloaded the first time they're needed.
+- **About 400 MB of disk** for MiniLM and the picture model, plus the judge's model, each downloaded the first time it's needed.
 - **ffmpeg on your PATH** for videos and voice notes.
 
 **Building the indexes** on a new machine, in this order:
 1. `log search index` reads every conversation once and builds the keyword and meaning indexes.
 2. `log voice index` builds your voice from what step 1 saved.
-3. `log voice aiIndex` builds the AI tells check.
+3. `log voice train` trains your AI-writing detector.
+4. `log inbox label teach --apply`, then `log inbox label train`, labels your chats and trains the local labeller.
 
 After that, new messages are added as they arrive, and pictures are described as they land.
 
@@ -435,9 +493,29 @@ Measured on this project's own `log.db` on 2026-11-08, not estimated:
 | Claim a chat so no other agent answers it | 1 ms | 5 ms | 16 ms | 27 ms | `log timing` (79 claims) |
 | Lock the account for one call | 0.2 ms | 0.3 ms | 0.4 ms | 0.5 ms | `log timing` (62 calls) |
 | Match what you typed to a play (in the warm service) | 12 ms | 36 ms | 47 ms | n/a | `bun scripts/useCases/benchRouter.ts` |
+| A new message reaches the session's push (watcher store to push loop, 25 messages, 2026-11-20) | 248 ms | 354 ms | 408 ms | n/a | inbox push bench, see `docs/browsers.md` |
+| First live-browser or report card resource in Hermes (warm host) | 16 ms | 31 ms | 31 ms | n/a | `scripts/browserView/routeBench.py` |
 | Read the same Discord chat from Discord itself | 2.3 s | 3.6 s | 5.1 s | 6.0 s | `log timing` (190 reads) |
 
 That last row is why log reads its own database: asking the platform takes thousands of times longer. Sends are slower again, on purpose. Each account keeps human pacing between actions, and a refusal from a platform stops the run.
+
+#### The agent's own paths: hooks, router, MCP and Python
+
+Every prompt and tool call also passes through log's hooks, the play router and the MCP proxy. `bun scripts/bench/agentPaths.ts` times them on scratch state (no account is touched); `--repo` points it at another checkout, so a branch can be compared with `main`. Measured 2026-11-20 on the same machine, 40 prompts per run, two runs per side taken in turn while another agent's benchmark held the CPU near 100%, so read the ranges, not single numbers:
+
+| Path | Before p50 / p95 / p99 | After p50 / p95 / p99 | What changed |
+|---|---|---|---|
+| Prompt hook, whole answer (UserPromptSubmit) | 383-665 ms / 2.0-7.4 s / 12.6-28.1 s | 389-655 ms / 0.8-2.1 s / 1.8-5.2 s | the runs-size walk (1.3 s idle, 17 s under load) and `git status` left the hook's path |
+| The router inside it | 181-324 ms / 1.3-2.4 s / 7.0-27.5 s | 197-306 ms / 0.55-1.5 s / 1.2-3.9 s | no longer held up by the other hooks; a window both routers ask for is embedded once (a typo fix makes the play route's windows differ). Under this load it still missed its 150 ms budget on 18 of 80 prompts, against 16 of 80 before |
+| Storage notice inside it | 2-3 ms / 40-142 ms / 0.24-17.2 s | 4-15 ms / 19-80 ms / 54-118 ms | the size is answered from cache and measured again behind |
+| Engines notice inside it | 7-8 ms / 0.24-1.6 s / 5.5-8.6 s | 10-23 ms / 61-120 ms / 85-183 ms | the uncommitted-files listing and code stamp refresh behind |
+| After-tool hook (PostToolUse) | 170-205 ms / 0.74-2.5 s / 1.4-5.4 s | 112-309 ms / 0.49-0.67 s / 0.86-1.06 s | no hook in the same service blocks it any more |
+| Hand-rolled check per terminal call (Hermes) | a Bun process: 470-790 ms / 0.94-1.2 s / 1.07-1.21 s | 18-28 ms / 99-138 ms / 200-258 ms | served by the warm service |
+| MCP tools/list (proxy + server) | 92 ms / 108 ms / 123 ms | unchanged | |
+| MCP cheap call (accountsList) | 35 ms / 46 ms / 51 ms | unchanged | |
+| Python engine start + imports (a call no host serves) | 838 ms / 876 ms | unchanged | |
+
+On the owner's real sessions (`log timing`, 48 h before this change) the prompt hook was p50 598 ms, p95 3.40 s, p99 3.64 s, and the router missed its 150 ms budget on 168 of 186 prompts because the other hooks held the event loop. The same check found 26, then 29, `push.ts` loops running for one Hermes session reader: the plugin started another each time a prompt arrived while its loop was between restarts. It now keeps one per session.
 
 Every call is timed: `log timing` shows p50, p95 and p99 for every tool and each step inside it, and `log timing --call <id>` shows one call step by step.
 
@@ -447,6 +525,37 @@ Every call is timed: `log timing` shows p50, p95 and p99 for every tool and each
 - **Gentle on your accounts.** The platform isn't asked again every time your agent looks something up. One account was disabled after an agent read a server too much, too fast (rule 94), and reading from `log.db` keeps that from happening.
 - **Yours.** Your messages, sessions and media text stay on your machine in one file you can back up.
 - **Shareable when you need it.** Accounts can live in [Twenty](docs/twenty.md) so several machines share them. A hosted version, with a login per user, is planned.
+
+## Roadmap
+
+What's built, what's next and what's planned is kept in one pinned issue: **[Roadmap #200](https://github.com/matthewdonsemail-lab/log/issues/200)**. In short:
+
+| Area | Built | Next |
+|---|---|---|
+| Security | the judge's rules and local model | judging images, a guard before tool calls, taint, a canary token, an attack-set benchmark, an encrypted account store |
+| The record ([soron](docs/proposals/soron.md), [#197](https://github.com/matthewdonsemail-lab/log/issues/197)) | search by DM, group or channel | keeping edits and deletions, capturing the conversation around a personal mention (kept after a ban), judging each message the moment it arrives |
+| Turn awareness ([spec](https://github.com/matthewdonsemail-lab/log/blob/turnAware/docs/proposals/turnAware.md)) | typing on Discord and Slack | X Chat |
+| Tools | tool health | recording which tools the router offered, so unused tools can be told apart from unseen ones |
+| Your day | the hottest deals in your DMs, from the pipeline labels | a morning debrief: who is waiting, what you owe, what was held overnight |
+| Voice | cloned voice notes; the grounding pack and one calibrated score; an AI-writing detector trained on you | a higher catch rate on short messages, voice-note replies in your voice, then calls, with your yes per call |
+| Pipeline ([#236](https://github.com/matthewdonsemail-lab/log/issues/236)) | who and where per chat on the CPU, the larger model when unsure, one person across platforms (suggested), reply outcomes | your own labels to measure the labeller against, the next step suggested per stage |
+| Browser | human mouse: Fitts's-law timing, corrective moves, tremor ([#201](https://github.com/matthewdonsemail-lab/log/pull/201)) | sign-ins moving from AdsPower to Camoufox, browser-fingerprinted HTTP for X and Discord |
+| Every harness ([spec](https://github.com/matthewdonsemail-lab/log/blob/genuiEverywhere/docs/proposals/genuiEverywhere.md), [#196](https://github.com/matthewdonsemail-lab/log/pull/196)) | views in Cursor, Claude and ChatGPT where the host draws MCP Apps | a ChatGPT connector, a smaller inbox tool profile, a Claude Desktop extension, a render test on every PR |
+| Speed | hooks off the slow paths, one push loop per session, Discord catch-up in 4 calls, watchers that stay up | the prompt hook under 150 ms |
+
+Built means merged into `main`. It reaches npm in the next release (see [Releases](#releases)).
+
+## Releases
+
+Newest first. Work merged into `main` collects in the open release PR, and merging that PR tags the version and publishes it to npm. Each release pins the local models it runs with (`log models`), and `log update` moves code, harness plugins and models to the release together ([docs/updates.md](docs/updates.md)).
+
+<!-- releases:start: written by `bun run docs:releases` from CHANGELOG.md and src/models/manifest, not edited by hand -->
+| Version | Date | What's in it | Models |
+| --- | --- | --- | --- |
+| [0.3.0](https://github.com/matthewdonsemail-lab/log/pull/212) | 2026-11-20 | one live browser view for console and chat, hidden window when streamed (+41 more) | first pinned: wolf-defender-prompt-injection-small@2484cc9, all-MiniLM-L6-v2@751bff3, roberta-base-go_emotions-onnx@90ee0c1, LFM2.5-VL-450M-ONNX@24e6300, myuri@5.0.0 |
+| [0.2.1](https://github.com/matthewdonsemail-lab/log/pull/179) | 2026-11-20 | The relate graph, the live inbox push (messages during tool calls, burst batching, late copies dropped), inbox labels and ignoring a server or chat (+2 more) | not pinned (newest by name) |
+| [0.2.0](https://github.com/matthewdonsemail-lab/log/pull/166) | 2026-11-15 | The one-command Hermes pack, the catalog review, the README rewrite and the catch-up machine (+1 more) | not pinned (newest by name) |
+<!-- releases:end -->
 
 ## CLI
 

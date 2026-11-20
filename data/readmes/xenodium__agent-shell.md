@@ -66,6 +66,10 @@ Works with 24 agents today, and any other that speaks ACP:
 
 Do take a look at all these blog posts as they showcase most =agent-shell= features.
 
+- [[https://xenodium.com/agent-shell-0-98-updates][agent-shell 0.98 updates]].
+- [[https://xenodium.com/agent-shell-0-87-updates][agent-shell 0.87 updates]].
+- [[https://xenodium.com/agent-shell-0-78-updates][agent-shell 0.78 updates]].
+- [[https://xenodium.com/agent-shell-0-73-updates][agent-shell 0.73 updates]].
 - [[https://xenodium.com/agent-shell-0-63-updates][agent-shell 0.63 updates]].
 - [[https://xenodium.com/agent-shell-0-55-updates][agent-shell 0.55 updates]].
 - [[https://xenodium.com/agent-shell-0-47-1-updates][agent-shell 0.47 updates]].
@@ -1495,5 +1499,4 @@ always go to Evil modes if you need to with ~C-z~).
 |                                                       | agent-shell-viewport-quote-reply                        | Reply with the entire response block-quoted.                                  |
 |                                                       | agent-shell-viewport-refresh                            | Refresh viewport buffer content with current item from shell.                 |
 |                                                       | agent-shell-viewport-reply                              | Reply as a follow-up and compose another prompt/query.                        |
-|                                                       | agent-shell-viewport-reply-1                            | Reply with "1" and send immediately.                                          |
-|                                                       | agent-shell-viewport-reply-2                            | Reply with "2" and send immedia
+|                          

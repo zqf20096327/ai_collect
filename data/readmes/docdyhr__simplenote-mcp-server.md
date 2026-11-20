@@ -12,7 +12,7 @@
 
 ![Simplenote MCP Server Logo](assets/logo.png)
 
-A lightweight MCP server that integrates [Simplenote](https://simplenote.com/) with [Claude Desktop](https://github.com/johnsmith9982/claude-desktop) using the [MCP Python SDK](https://github.com/johnsmith9982/mcp-python-sdk).
+A lightweight MCP server that integrates [Simplenote](https://simplenote.com/) with [Claude Desktop](https://claude.ai/download) using the [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk).
 
 This allows Claude Desktop to interact with your Simplenote notes as a memory backend or content source.
 
@@ -22,8 +22,8 @@ This allows Claude Desktop to interact with your Simplenote notes as a memory ba
 
 <!-- Project Info Badges -->
 [![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)](https://github.com/docdyhr/simplenote-mcp-server)
-[![Version](https://img.shields.io/badge/version-1.18.4-blue.svg)](./CHANGELOG.md)
-[![Test Coverage](https://img.shields.io/badge/coverage-77%25-brightgreen)](./htmlcov/index.html)
+[![Version](https://img.shields.io/badge/version-1.18.5-blue.svg)](./CHANGELOG.md)
+[![Test Coverage](https://codecov.io/gh/docdyhr/simplenote-mcp-server/branch/main/graph/badge.svg)](https://codecov.io/gh/docdyhr/simplenote-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <!-- Download & Stats Badges -->
@@ -35,7 +35,6 @@ This allows Claude Desktop to interact with your Simplenote notes as a memory ba
 [![MCP Server](https://img.shields.io/badge/MCP-Server-purple.svg)](https://github.com/modelcontextprotocol)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Smithery](https://smithery.ai/badge/@docdyhr/simplenote-mcp-server)](https://smithery.ai/server/@docdyhr/simplenote-mcp-server)
 
 [![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/docdyhr-simplenote-mcp-server)
 ---
@@ -153,17 +152,7 @@ export SIMPLENOTE_PASSWORD=your-password
 docker-compose up -d
 ```
 
-### Option 2: Smithery (One-click install)
-
-Install automatically via [Smithery](https://smithery.ai/server/@docdyhr/simplenote-mcp-server):
-
-```bash
-npx -y @smithery/cli install @docdyhr/simplenote-mcp-server --client claude
-```
-
-This method automatically configures Claude Desktop with the MCP server.
-
-### Option 3: Traditional Python Install
+### Option 2: Traditional Python Install
 
 ```bash
 git clone https://github.com/docdyhr/simplenote-mcp-server.git
@@ -217,7 +206,7 @@ docker-compose up -d
 Available tags:
 
 - `latest` - Latest stable release
-- `v1.18.4` - Specific version
+- `v1.18.5` - Specific version
 - `main` - Latest development build
 
 ### Production Deployment

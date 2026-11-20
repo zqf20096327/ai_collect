@@ -30,7 +30,7 @@
 <p align="center">
   <a href="https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss"><b>Start free, no card required &rarr;</b></a>
   <br/>
-  <b>Cut agent token spend by 80%.</b> Graphify Cloud is always-on memory that governs your agents, keeps code quality high, and proves correctness with formal verification.
+  <b>Graphify Cloud</b> is always-on memory that governs your agents, keeps code quality high, and proves correctness with formal verification.
 </p>
 
 Type `/graphify` in your AI coding assistant and it maps your entire project (code, docs, PDFs, images, videos) into a **knowledge graph** you can **query instead of grepping** through files.
@@ -125,7 +125,7 @@ What you get out of the box:
 | **Local-first** | Code is parsed locally with tree-sitter (no LLM, nothing leaves your machine); only the semantic pass over docs/media calls a backend, and only if you configure one |
 
 > [!TIP]
-> Running this across many repos or a monorepo? [Graphify Cloud](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss) does it continuously and cuts agent token spend by 80%, with cross-repo links, SDLC-wide code review, formal verification, and Sentry/Jira connectors. [Start free, no card required &rarr;](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss)
+> Running this across many repos or a monorepo? [Graphify Cloud](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss) does it continuously, with cross-repo links, SDLC-wide code review, formal verification, and Sentry/Jira connectors. [Start free, no card required &rarr;](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss)
 
 ---
 
@@ -332,6 +332,38 @@ Both encourage scoped graph queries before broad source searches. Choose the ins
 
 ---
 
+## Connect your agent over MCP
+
+Point any MCP-capable agent at a Graphify graph and it queries the graph directly instead of grepping files. Connect to the hosted graph (Graphify Cloud, free plan, no card):
+
+```bash
+# Claude Code
+claude mcp add --transport http graphify https://api.graphify.com/mcp
+
+# Codex
+codex mcp add graphify --url https://api.graphify.com/mcp
+
+# Gemini CLI
+gemini extensions install https://github.com/Graphify-Labs/Graphify-gemini-extension
+```
+
+Prefer to stay local? Install the stdio server with `uv tool install "graphifyy[mcp]"` and run `graphify-mcp` against your own `graph.json` — no account needed.
+
+Once connected, your agent gets these tools:
+
+| Tool | What it does |
+|---|---|
+| `query_graph` | Ask a question in natural language, get back the relevant subgraph |
+| `shortest_path` | Trace how two nodes connect |
+| `get_node` / `get_neighbors` | Look up a node and what it touches |
+| `get_community` / `god_nodes` | Detected clusters and the most-connected hubs |
+| `get_section` | Read a labeled region of the graph |
+| `graph_stats` | Size, languages, and edge breakdown of the graph |
+
+The server also exposes PR tooling (`list_prs`, `get_pr_impact`, `triage_prs`) so your agent can review pull requests with graph context.
+
+---
+
 ## What's in the report
 
 `GRAPH_REPORT.md` summarizes the god nodes, communities, and key paths for broad architecture review. How the graph is built and what it contains: **[How graphify works](https://docs.graphify.com/concepts/architecture)**.
@@ -489,7 +521,7 @@ Every command and flag, with examples: **[CLI reference](https://docs.graphify.c
 
 [**Graphify Cloud**](https://app.graphify.com/signup?utm_source=github&utm_medium=readme&utm_campaign=oss) is the always-on layer built on top of graphify. Instead of a graph you rebuild on demand per folder, it keeps one live graph across your entire software development lifecycle:
 
-- **80% fewer tokens**: always-on memory means your agents stop re-reading and re-explaining the codebase every session.
+- **Less re-reading**: always-on memory means your agents stop re-reading and re-explaining the codebase every session.
 - **Monorepo and cross-repo**: one connected graph across every service and repository, not a graph per folder.
 - **Formal verification**: check architectural and dependency invariants against the live graph.
 - **Code review with a bird's-eye view of your SDLC**: see how a change ripples across the whole system before you merge.

@@ -1,237 +1,194 @@
+<!--
+  Flowork OS: The Sovereign Autonomous AI Linux Operating System (Linux 7.3.0 Rust).
+  Features built-in Mr. Flow autonomous AI agent, native Android APK runner, Blender 3D AI automation,
+  60s video shorts creation foundry, 320+ reverse engineering tools, anti-detect browser, and Windows apps compatibility.
+  100% Free, Private, Telemetry-Free, and Open Source.
+-->
+
 <div align="center">
 
-# 👑 Flowork OS
-### The Sovereign AI-Native Linux Operating System
-**Powered by Linux 7.3.0 Rust Kernel (Eust Kernel) • Autonomous Desktop AI Agent • 320+ Clean-Room Reverse Engineering Tools • Sovereign Quantum Glass HUD**
+<img src="assets/flowork-hero-cover.jpg" width="100%" alt="Flowork OS: The Autonomous AI Operating System. Sovereign desktop running native Android APK mobile apps, AI-driven Blender 3D viewport, and translucent glass terminal HUD with Exit Code 0." />
 
-[![Kernel](https://img.shields.io/badge/Kernel-Linux%207.3.0%20Rust-00ff66.svg?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/flowork-os/flowork-os/releases/tag/v1.0.1)
-[![Release](https://img.shields.io/badge/Release-v1.0.1%20Official%20ISO-00f2fe.svg?style=for-the-badge&logo=github&logoColor=black)](https://github.com/flowork-os/flowork-os/releases/tag/v1.0.1)
-[![Architecture](https://img.shields.io/badge/Arch-x86__64%20Preempt%20Dynamic-7928ca.svg?style=for-the-badge&logo=rust&logoColor=white)]()
-[![Security](https://img.shields.io/badge/Security-Landlock%20LSM%20Pure-ff0080.svg?style=for-the-badge)]()
-[![Kernel License](https://img.shields.io/badge/Kernel%20License-GPL--2.0-blue.svg?style=for-the-badge&logo=gnu)](https://github.com/Rust-for-Linux/linux)
-[![OS License](https://img.shields.io/badge/OS%20License-GPL--3.0-yellow.svg?style=for-the-badge&logo=gnu)]()
+<h1 align="center">Autonomous AI Operating System (AI OS)</h1>
+<p align="center"><b>The Open-Source Desktop AI Co-Pilot That Controls Your PC, Runs Android APKs, Automates Blender 3D, and Boots from USB</b></p>
+<p align="center"><i>Powered by Flowork OS · 100% Free, Private, and Telemetry-Free Sovereign Desktop</i></p>
 
-[**🌐 Official Website**](https://floworkos.com) • [**📥 Download Official ISO (v1.0.1)**](https://github.com/flowork-os/flowork-os/releases/tag/v1.0.1) • [**📖 Architecture Spec**](core/ARCHITECT.md) • [**⚡ All Releases (v1.0.1 / v1.0.0)**](https://github.com/flowork-os/flowork-os/releases)
+<p align="center">
+  <a href="#-quick-test-drive-live-usb-in-5-minutes"><b>⚡ Try Live USB</b></a> ·
+  <a href="#-why-flowork-os-the-real-problems-we-solve"><b>🎯 Why Flowork OS?</b></a> ·
+  <a href="#-killer-superpowers-you-wont-find-in-any-other-os"><b>🚀 7 Superpowers</b></a> ·
+  <a href="#-download-official-live-iso-v110"><b>📥 Download ISO</b></a> ·
+  <a href="#%EF%B8%8F-productivity-shortcuts"><b>⌨️ Shortcuts</b></a> ·
+  <a href="#-frequently-asked-questions-faq"><b>❓ FAQ</b></a>
+</p>
 
----
+[![Release](https://img.shields.io/badge/Release-v1.1.0%20Official%20ISO-00f2fe.svg?style=for-the-badge&logo=github&logoColor=black)](https://github.com/flowork-os/flowork-os/releases)
+[![Live USB](https://img.shields.io/badge/Live%20USB-Plug%20%26%20Play-00ff66.svg?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/flowork-os/flowork-os/releases)
+[![Android APK](https://img.shields.io/badge/Android%20Subsystem-Native%20APK-34d399.svg?style=for-the-badge&logo=android&logoColor=white)](https://github.com/flowork-os/flowork-os)
+[![Blender 3D](https://img.shields.io/badge/Blender%203D-AI%20Automated-ea580c.svg?style=for-the-badge&logo=blender&logoColor=white)](https://github.com/flowork-os/flowork-os)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25%20Telemetry%20Free-ff0080.svg?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-GPL--3.0-yellow.svg?style=for-the-badge&logo=gnu)]()
+
 </div>
 
-> **“FLOWORK IS NOT AN APPLICATION ON LINUX; FLOWORK IS LINUX ITSELF.”**  
-> Flowork OS is an open-source, sovereign, AI-native operating system where autonomous AI reasoning is directly fused into the Linux kernel and userspace runtime. It eliminates SaaS dependencies, protects privacy via Landlock LSM sandboxing, and provides automated self-evolving agent loops.
+---
+
+> **“A Chatbot only gives you advice. Flowork OS actually does the work.”**  
+> Instead of spending hours juggling terminal commands, broken Python environments, expensive AI subscriptions, bloated emulators, and heavy operating systems, Flowork OS fuses an autonomous AI agent directly into your desktop environment.
 
 ---
 
-## ⚡ Quick Download & Flash Guide (Official ISO v1.0.1)
+## 🎯 Why Flowork OS? (The Real Problems We Solve)
 
-Flowork OS `v1.0.1` is a **hardened, physically USB boot-verified hybrid live image** compatible with both **Legacy BIOS** and **Modern UEFI (Secure Boot Supported)** across 64-bit Intel and AMD systems (previous [`v1.0.0` archive](https://github.com/flowork-os/flowork-os/releases/tag/v1.0.0) remains preserved intact).
+| The Old, Frustrating Way | The Flowork OS Way |
+| :--- | :--- |
+| ❌ **Chatbots That Only Talk:** You ask a chatbot for code, copy it to your editor, get an error, paste it back, repeat 20 times. | ✅ **Autonomous Hands-On Execution:** Tell Mr. Flow *"Build this app"* or *"Fix my Wi-Fi"*. The AI creates files, executes terminal commands, inspects outputs, and self-corrects until it works. |
+| ❌ **Android Emulators Are Slow & Full of Ads:** Running Android apps on PC means installing 5GB emulators (BlueStacks, Nox) that lag your CPU and spam notifications. | ✅ **Native Android APK Subsystem & AI Control:** Run `.apk` files directly on your desktop with zero bloat. Plus, Mr. Flow can automate, tap, and control Android apps programmatically. |
+| ❌ **3D Modeling & Animation Learning Curve:** Using Blender requires months of learning complex nodes, keyframes, and python scripts. | ✅ **AI-Driven 3D Studio (Blender Live):** Instruct Mr. Flow in plain language to model 3D assets, generate procedural geometry nodes, set up PBR materials, and render photo-real scenes. |
+| ❌ **Expensive AI Subscriptions & Rate Limits:** Paying $20–$100/month for cloud AI tools that cut you off mid-task when you hit a rate limit. | ✅ **Smart Multi-Account Failover:** Connect your free or developer keys once into a local encrypted vault. Flowork automatically rotates accounts on the fly so your tasks never stall. |
+| ❌ **Manual Video & Content Production:** Creating animated educational videos or YouTube Shorts takes 3–4 hours of scripting, voiceover, keyframing, and rendering. | ✅ **1-Click Video Foundry:** Feed it any GitHub repository link or topic. In 60 seconds, Flowork generates the script, voiceover, animated stickman visuals, subtitles, and renders a 1080p video ready to upload. |
+| ❌ **Windows App Lock-In:** Stuck on Windows because of specific `.exe` software (like FL Studio or specialized tools). | ✅ **Seamless Windows Apps & Drive Access:** Run Windows applications out of the box with pre-configured wine environments, and access all your existing Windows drives without formatting. |
 
-📦 **Download the Official ISO Parts (5.8 GiB / 6.24 GB Total):**  
-👉 **[Download Flowork OS v1.0.1 Release Assets](https://github.com/flowork-os/flowork-os/releases/tag/v1.0.1)**
+---
 
-| File Asset | Size | Description |
-| :--- | :---: | :--- |
-| **`flowork-os-v1.0.1-amd64.iso.00.part`** | 1.76 GiB | Hybrid ISO Archive Part 1 |
-| **`flowork-os-v1.0.1-amd64.iso.01.part`** | 1.76 GiB | Hybrid ISO Archive Part 2 |
-| **`flowork-os-v1.0.1-amd64.iso.02.part`** | 1.76 GiB | Hybrid ISO Archive Part 3 |
-| **`flowork-os-v1.0.1-amd64.iso.03.part`** | 548 MiB | Hybrid ISO Archive Part 4 |
-| **`flowork-os-v1.0.1-amd64.iso.sha256`** | 94 B | Authoritative SHA-256 Checksum |
-| **`join-iso.bat`** | 598 B | Windows 1-Click Reassembly Script |
-| **`join-iso.sh`** | 465 B | Linux / macOS 1-Click Reassembly Script |
-| **`README.txt`** | 663 B | Quick flashing cheat sheet |
+## 🚀 Killer Superpowers You Won't Find in Any Other OS
 
-### 🔨 1-Click Reassembly & Verification
+### 1. 🤖 The Truly Autonomous Co-Pilot (Hands-On Execution & Self-Healing)
+* **The Pain:** Web-based AI chatbots (ChatGPT, Claude, Gemini Web) are confined inside a browser tab. They cannot create files on your hard drive, run tests, or touch your desktop applications. When code fails, you are stuck manually copying logs back and forth.
+* **The Flowork Solution:** Mr. Flow has direct system and GUI actuation authority (`desktop_actuator`, `run_command`, `write_to_file`):
+  * **Self-Healing Sentinel:** If a build command or script throws an error, Mr. Flow automatically inspects the terminal traceback, edits the file, and retries recursively until it passes with Exit Code 0.
+  * **Dynamic Tool Foundry:** When confronted with a novel problem, Mr. Flow can synthesize, compile, and execute brand-new tools on the fly.
+  * **Desktop Automation:** Interacts directly with windows, clicks buttons, and automates repetitive administrative desktop workflows.
 
-#### Windows:
-1. Download all parts into the same folder.
-2. Double-click **`join-iso.bat`**. It will instantly produce `flowork-os-v1.0.1-amd64.iso`.
-3. Open **[Rufus](https://rufus.ie)**, select your USB drive (min 8 GB), choose `flowork-os-v1.0.1-amd64.iso`, set Partition Scheme to **MBR**, and click **START**.
+### 2. 📱 Native Android Subsystem & AI App Control (`flowork-apk` & `apk-actuator`)
+* **The Pain:** Running mobile apps on a PC usually requires installing heavy third-party emulators (BlueStacks, Nox, LDPlayer) that consume 6GB+ RAM, install unwanted sponsored apps, and run sluggishly. Moreover, there is no way for an AI agent to interact with them.
+* **The Flowork Solution:**
+  * **Run APKs Directly on Desktop:** Install, launch, and manage Android `.apk` packages natively via `flowork-apk` without virtualized emulator bloatware.
+  * **AI App Automation (`apk-actuator`):** Mr. Flow can directly navigate and automate Android applications (TikTok, CapCut, Shopee, Instagram, etc.). He can tap UI elements, swipe, type inputs, extract mobile data, and execute mobile automation sequences completely hands-free.
 
-#### Linux / macOS:
-```bash
-# 1. Reassemble and verify checksum
-bash join-iso.sh
+### 3. 🎨 AI-Driven 3D Studio via Blender Live (`blender-live` & `blender-mastering`)
+* **The Pain:** Creating 3D scenes, procedural meshes, character rigs, and photorealistic renders in Blender takes years of technical expertise. Doing it programmatically requires complex `bpy` Python scripting.
+* **The Flowork Solution:**
+  * **Live Blender IPC Bridge (`blender-live`):** Mr. Flow connects directly to Blender's runtime engine via a real-time command socket.
+  * **Automated 3D Generation:** Simply ask Mr. Flow to build 3D environments, configure procedural geometry nodes, set up PBR materials, rig models, and trigger high-speed EEVEE or Cycles GPU hardware renders automatically.
 
-# 2. Flash to USB flash drive (replace /dev/sdX with your USB drive)
-sudo dd if=flowork-os-v1.0.1-amd64.iso of=/dev/sdX bs=4M oflag=direct conv=fsync status=progress
+### 4. 🎬 Automated 60-Second Video Creation Foundry (`githubtoyoutube`)
+* **The Pain:** Turning open-source projects or educational topics into engaging short-form video content (YouTube Shorts, TikTok, Reels) normally takes 3 to 5 hours of scriptwriting, voice recording, asset sourcing, subtitle alignment, and rendering.
+* **The Flowork Solution:**
+  * Provide a single GitHub repository URL or topic name.
+  * In under **60 seconds**, Flowork OS autonomously:
+    1. Analyzes the codebase and crafts a viral, high-retention narration script.
+    2. Synthesizes natural, human-quality voice narration.
+    3. Procedurally animates stickman cartoon characters and explanatory UI cards frame-by-frame.
+    4. Burns precise, word-by-word synchronized color subtitles.
+    5. Masters and mixes background audio (`kamidi-mastering`).
+    6. Hardware-encodes a vertical 1080x1920 MP4 via GPU NVENC acceleration.
+    7. Produces an algorithmic SEO package (clickable titles, descriptions, hashtags, and a 12-tile contact sheet thumbnail).
+
+### 5. 🪟 Windows Apps & Zero-Risk Drive Integration (`wine-staging` & NTFS Access)
+* **The Pain:** Switching to a new OS often means losing access to your favorite Windows software or worrying about losing your existing Windows files.
+* **The Flowork Solution:**
+  * **Built-in Windows App Runtime:** Pre-tuned `wine-staging` environment ready to run `.exe` software and digital audio workstations (like FL Studio) out of the box with low-latency audio.
+  * **Passwordless Windows Drive Access:** When running in Live USB mode, Flowork OS automatically detects and mounts your existing Windows NTFS and exFAT partitions. You can edit your Windows documents, copy files, and work on your projects without modifying your Windows installation.
+
+### 6. ⚡ Zero-Setup & Unlimited Multi-Account AI (Free from Subscriptions & Limits)
+* **The Pain:** Setting up open-source AI agents on Windows or Ubuntu requires hours of dependency debugging (conflicting Python wheels, CUDA version hell, Docker overhead). Meanwhile, paid SaaS subscriptions enforce strict hourly caps.
+* **The Flowork Solution:**
+  * **Instant Zero-Setup:** Boots ready to roll. Zero virtualenv creation, zero CUDA driver debugging.
+  * **Multi-Account Failover Vault (`flowork-connector`):** Securely stores multiple free or developer API accounts in a local encrypted vault. Flowork monitors latency and rate limits, continuously prioritizing healthy accounts. When an account enters a cooldown window, it silently rotates to the next account, delivering uninterrupted, high-speed AI assistance without recurring monthly bills.
+
+### 7. 🔬 320+ Tool Reverse Engineering & Anti-Detect Stealth Browser
+* **The Pain:** Analyzing an Android application, inspecting a binary, or managing multiple web identities usually requires expensive anti-detect browsers ($50–$200/mo) and dozens of shady tools. Everyday browsing is constantly interrupted by unskippable video ads.
+* **The Flowork Solution:**
+  * **320+ Clean-Room Inspection Tools (`craft-anything`):** Instantly decompile APKs, inspect ELF/PE binaries, unpack Electron ASAR, and extract Unity/Unreal game assets.
+  * **Hardware Fingerprint Spoofing (`flowork-stealth`):** Camoufox-powered engine spoofs WebGL, Canvas, system audio, and fonts at the OS level.
+  * **100% Video Ad Eradication:** System-wide kernel DNS filter and browser blocker wipe out video ads on YouTube and Twitch completely.
+
+---
+
+## ⚡ Quick Test Drive (Live USB in 5 Minutes)
+
+> [!TIP]
+> **You do NOT need to wipe your hard drive or delete Windows/macOS!**  
+> Flowork OS runs directly from a USB flash drive in **Live Mode**. Your existing files, Windows installation, and personal documents remain 100% untouched.
+
+```mermaid
+graph LR
+    A[1. Download ISO Parts] --> B[2. Run 1-Click Reassembly]
+    B --> C[3. Flash to USB Stick]
+    C --> D[4. Boot & Enjoy Sovereign AI]
 ```
 
-🔒 **Official SHA-256 Integrity Hash:**  
-`501771af269db261d6afe9c9c4a25a3e859e2d1e3a6f825b7a159145adbac0c5`
+### 📥 3-Step Quick Start:
+
+1. **Download the ISO Release Parts:**  
+   👉 **[Download Flowork OS v1.1.0 ISO](https://github.com/flowork-os/flowork-os/releases)**
+
+2. **Reassemble the ISO (1-Click):**
+   * **Windows:** Put all parts in one folder and double-click `join-iso.bat`.
+   * **Linux / Mac:** Run `bash join-iso.sh` in the terminal.
+
+3. **Flash to USB Flashdrive (min 8 GB):**
+   * Open **[Rufus](https://rufus.ie)** (Windows) or **[BalenaEtcher](https://etcher.balena.io)** (Mac/Linux).
+   * Select your USB drive and the reassembled `.iso` file, then click **Start**.
+   * Restart your computer, press your boot key (`F12`, `F11`, or `Esc`), select your USB drive, and boot straight into Flowork OS!
 
 ---
 
-## 🌟 Core Pillars & Key Features
+## ⌨️ Productivity Shortcuts
 
-### ��� 1. Linux 7.3.0 Rust Kernel (Eust Kernel)
-- **Ring-0 Memory Safety:** Critical kernel abstractions, drivers, and scheduler modules authored in 100% Safe Rust.
-- **Landlock LSM Hardened:** Kernel-level sandbox confining agent tool executions to strict territorial bounds without root escalation.
-- **Dynamic Preemption (`PREEMPT_DYNAMIC`):** Ultra-low desktop latency tailored for real-time AI inference and 120Hz display refresh rates.
-
-### 🧠 2. Mr. Flow: Autonomous Sovereign AI Agent
-- **Full Operational Authority:** Autonomously self-evolves, synthesizes tools via Dynamic Tool Foundry, authors subagents, and repairs system components.
-- **Direct Vision-Action Actuation:** Zero-copy DRM framebuffer perception and native `uinput` virtual HID events for instant GUI control without fragile cloud vision models.
-- **Zero Token Bloat Invariant:** Uses just-in-time passive triggers and native compiled Rust rule sensors (`rules/.bin/*`) to ensure prompts remain razor-sharp (0 token waste on quiescent turns).
-
-### 🔬 3. Built-in Clean-Room Reverse Engineering (`craft-anything-cli`)
-- **320+ Inspection Tools:** Complete native suite for inspecting binaries (ELF, PE, Mach-O), Android APK/DEX, Electron ASAR, JavaScript Webpack bundles, and game archives (Unity, Unreal).
-- **Zero Prompt Bloat:** CLI-driven engine executing on-demand without spamming AI context with hundreds of static tool schemas.
-
-### 🌐 4. Google Agent Skills Sovereign Navigator
-- **100+ On-Demand Skills:** Instant lookup and execution for official Google Cloud, Gemini API, GKE AI inference, BigQuery, and Safe Rust migration workflows.
-- **Air-Gapped & Resilient:** Cached offline catalog with automatic multi-tier fallback (local cache -> curl -> unverified SSL).
-
-### 🛡️ 5. Flowork Stealth Anti-Detect Browser
-- **Native C++ Camoufox Engine:** Built-in hardware fingerprint spoofing (WebGL, Canvas, audio, fonts) replacing commercial paid tools like AdsPower or Multilogin.
-- **Dual-Shield Ad Eradication:** System-wide DNS blackhole (77,700+ domains) combined with in-DOM uBlock Origin for 100% video ad eradication (YouTube, Twitch).
-
-### 🔄 6. Autonomous Git-Stream Rolling OTA Updates
-- **One-Command Updating:** Built-in background timer (`flowork-updater.timer`) checks remote git HEAD in sub-milliseconds.
-- **Anti-Brick Health Checks:** Automatically validates Python syntax and binary integrity before applying updates, with instant rollback if validation fails.
-```bash
-flowork-update --check    # Check for available OTA updates
-sudo flowork-update --force  # Force instant sync
-```
-
----
-
-## 📊 Comparison Matrix
-
-| Capability | Traditional Linux (Ubuntu/Debian) | Commercial OS (Windows/macOS) | Flowork OS |
-| :--- | :---: | :---: | :---: |
-| **Kernel Core** | Standard C Monolithic | Proprietary Closed Kernel | **Linux 7.3.0 Safe Rust (Eust)** |
-| **Native AI Agent** | ❌ None (Third-party app) | ⚠️ Cloud Copilot (Telemetry) | **👑 Sovereign Local/Remote Mr. Flow** |
-| **Prompt Overhead** | ❌ N/A | ❌ Rigid Cloud Prompts | **⚡ Anti-Bloat Law (0 Token Waste)** |
-| **Reverse Engineering** | Requires manual installs | Proprietary Paid Tools | **🔬 320+ Built-in Tools (`craft-anything`)** |
-| **Ad & Tracker Shield** | Browser extension only | Built-in OS Telemetry & Ads | **🛡️ Dual-Shield (DNS + DOM Eradication)** |
-| **OTA System Updating** | APT package managers | Forcible Reboot Updates | **🔄 Git-Stream Three-Tier Atomic Sync** |
-| **Desktop Aesthetics** | Standard Themes | Static Windows UI | **🪟 Obsidian Quantum Glass (0.60 HUD)** |
-
----
-
-
----
-
-## 🎨 Built-in Pure Rust Creative Suite (15 Native Apps)
-
-Flowork OS bundles a comprehensive, professional creative suite built from scratch in **pure, memory-safe Rust with GPU hardware acceleration** (powered by Storytold & Tangency Labs). All applications are fully integrated into the desktop shell, Start Menu, and Launchpad:
-
-| Application | Category | Description | Upstream |
-| :--- | :--- | :--- | :--- |
-| **PhotoCraft** | Raster Graphics | Professional photo editor & raster manipulation studio | [storytold/photocraft](https://github.com/storytold/photocraft) |
-| **VectorCraft** | Vector Graphics | SVG design & high-precision vector illustration | [storytold/vectorcraft](https://github.com/storytold/vectorcraft) |
-| **FilmCraft** | Video Editing | Non-linear video editor & multi-track timeline compositor | [storytold/filmcraft](https://github.com/storytold/filmcraft) |
-| **LightCraft** | Photography | RAW photo developer & non-destructive color darkroom | [storytold/lightcraft](https://github.com/storytold/lightcraft) |
-| **PdfCraft** | Publishing | Ultra-fast PDF document editor, annotator, & reader | [storytold/pdfcraft](https://github.com/storytold/pdfcraft) |
-| **EffectCraft** | VFX & Motion | Visual effects, particle systems, & motion graphics studio | [storytold/effectcraft](https://github.com/storytold/effectcraft) |
-| **DesignCraft** | Graphic Design | Layout, brand asset creator, & desktop publishing studio | [storytold/designcraft](https://github.com/storytold/designcraft) |
-| **FigCraft** | UI/UX Prototyping | Vector interface designer & interactive prototype builder | [storytold/figcraft](https://github.com/storytold/figcraft) |
-| **WordCraft** | Word Processing | Typography workbench & document publishing editor | [storytold/wordcraft](https://github.com/storytold/wordcraft) |
-| **SoundCraft** | Digital Audio (DAW)| Multi-track audio workstation, sound design, & synthesizer | [storytold/soundcraft](https://github.com/storytold/soundcraft) |
-| **DeckCraft** | Presentations | Interactive pitch deck & presentation slide architect | [storytold/deckcraft](https://github.com/storytold/deckcraft) |
-| **CadCraft** | Parametric CAD | 2D/3D Computer-Aided Design & engineering modeler | [storytold/cadcraft](https://github.com/storytold/cadcraft) |
-| **GridCraft** | Spreadsheets | Reactive computation spreadsheet & data analytics suite | [storytold/gridcraft](https://github.com/storytold/gridcraft) |
-| **TextureCraft** | PBR Materials | Procedural PBR material generator & 3D texture synthesizer | [storytold/texturecraft](https://github.com/storytold/texturecraft) |
-| **SolidCraft** | Mechanical CAD | Precision boundary representation (B-Rep) solid CAD | [tangency-labs/solidcraft](https://github.com/tangency-labs/solidcraft) |
-
-## 🏛️ System Architecture Layers
-
-The repository is structured into atomic layers reflecting the live OS layout:
-
-```
-flowork-os/
-├── core/                     # /opt/floworkos (Core AI agent, tools, skills, session)
-│   ├── apps/                 # Sovereign applications (craft-anything, flowork-stealth)
-│   ├── bin/                  # Core executable binaries (mrflow, flowork-update)
-│   ├── skills/               # Sovereign skills (google-skills-navigator, clean-room)
-│   ├── system_promp/         # Prompts engine, passive triggers, and Rust rules
-│   └── tools/                # Dynamic Tool Foundry and native system tools
-├── skel/                     # /etc/skel (Canonical user configuration skeleton)
-│   ├── .config/              # Alacritty obsidian HUD, Plank dock, XFCE4 glass panel
-│   └── Desktop/              # Sovereign desktop launchers
-├── system/                   # Host overlays (systemd services, LightDM autologin, bin)
-├── kernel/                   # Linux 7.3.0 Rust Kernel packages and initramfs builder
-├── packages/                 # Authoritative installed-packages.list manifest
-└── iso-builder/              # Bootable ISO generation recipe and boot-skeleton
-    └── boot-skeleton/        # Tested UEFI (BOOTX64.EFI) and BIOS (isolinux) tree
-```
-
----
-
-## ⌨️ Desktop Shortcuts & Productivity Cheat Sheet
-
-| Shortcut | Action | Subsystem |
+| Shortcut | Action | Description |
 | :--- | :--- | :--- |
-| `Super + A` / `F4` | Open Sovereign Launchpad (Card Drawer) | `flowork-launchpad.py` |
-| `Super + Space` | Spotlight Application & Command Search | `spotlight.rasi` / Rofi |
-| `Alt + F1` / `Super` | Open Start Menu (Whisker Glass Menu) | `xfce4-popup-whiskermenu` |
-| `Super + Return` | Open Alacritty Obsidian Glass Terminal (0.60) | Alacritty HUD |
-| Hover Right Edge | Open Mr. Flow AI Autonomous Assistant | `mrflow-sidebar.py` |
+| **`Super + Space`** | **Spotlight Search** | Instant application launcher and system command finder |
+| **`Super + A` / `F4`** | **Sovereign Launchpad** | Visual card drawer showcasing all installed tools & creative apps |
+| **`Super + Return`** | **Glass Terminal** | Ultra-low latency translucent terminal HUD |
+| **`Super` / `Alt + F1`**| **Start Menu** | Clean, searchable application menu |
+| **Hover Right Edge** | **Mr. Flow AI Drawer** | Instant sidebar to give natural language instructions to your AI co-pilot |
 
 ---
 
 ## 💻 System Requirements
 
-- **Processor:** 64-bit x86_64 CPU (Intel Core i3/i5/i7/i9 or AMD Ryzen).
-- **Memory (RAM):** 4 GB minimum (8 GB+ recommended for large AI agent pipelines).
-- **Storage:** 16 GB free space (SSD recommended).
-- **Boot Firmware:** Compatible with both **Legacy BIOS (MBR)** and **UEFI (64-bit)** with Secure Boot ON or OFF.
-- **Installation Media:** USB Flash Drive (8 GB or larger).
+* **Processor:** 64-bit x86_64 CPU (Intel Core i3/i5/i7/i9 or AMD Ryzen).
+* **RAM:** 4 GB minimum (8 GB+ recommended for heavy multitasking and local pipelines).
+* **Storage:** 16 GB free space (only if you choose to install permanently; 0 GB needed for Live USB mode).
+* **Boot Compatibility:** Compatible with **Legacy BIOS (MBR)** and **Modern UEFI (Secure Boot supported)**.
 
 ---
 
+## ❓ Frequently Asked Questions (FAQ)
+
+<details>
+<summary><b>Will booting Flowork OS erase my Windows files or personal photos?</b></summary>
+<br>
+<b>No.</b> When you boot from the USB flash drive, Flowork OS runs entirely in RAM (Live Mode). It does not touch, modify, or format your internal hard drive unless you explicitly open the Calamares Installer and choose to install it.
+</details>
+
+<details>
+<summary><b>Can I run my Android apps and Windows software on Flowork OS?</b></summary>
+<br>
+<b>Yes.</b> Flowork OS features a native Android Subsystem (<code>flowork-apk</code>) to run and automate APKs without heavy emulators, as well as built-in Wine compatibility to run Windows <code>.exe</code> software directly.
+</details>
+
+<details>
+<summary><b>Do I need an expensive high-end NVIDIA GPU to run Mr. Flow?</b></summary>
+<br>
+<b>No.</b> Flowork OS is engineered with ultra-lightweight native binaries. The system AI co-pilot connects seamlessly to lightweight endpoints or free API tiers without requiring a $2,000 graphics card.
+</details>
+
+<details>
+<summary><b>Is Flowork OS really 100% free and open source?</b></summary>
+<br>
+<b>Yes.</b> Flowork OS is built entirely under open-source licenses (GPL-3.0 / MIT / Apache-2.0). There are zero paywalls, zero subscription tiers, and zero locked features.
+</details>
 
 ---
-
-## ⚖️ Open Source Licenses & Upstream Attribution
-
-Flowork OS stands on the shoulders of giants. We deeply respect and honor the work of open-source authors and maintainers.  
-All collected upstream licenses, notices, and attributions are consolidated publicly in the repository under [**`licenses/`**](licenses/) and indexed in [**`THIRD_PARTY_LICENSES.md`**](THIRD_PARTY_LICENSES.md):
-- **Linux Kernel (`Rust-for-Linux`) & Zstandard:** `GPL-2.0 WITH Linux-syscall-note`, `BSD-3-Clause OR GPL-2.0`
-- **Storytold / Tangency Pure Rust Creative Suite & `craft-anything`:** Dual `Apache-2.0 OR MIT`
-- **Audacity 4 Portable & DownFlow:** `GPL-3.0` (`+ bundled audio/UI notices`)
-- **OpenScreen & GPUTaskMan:** `MIT` (`getopenscreen/openscreen` + BtbN FFmpeg `LGPL-2.1+` & fonts `OFL-1.1`; `shanselman/gputaskman` + Python/PyInstaller notices)
-- **uBlock Origin & WhiteSur Theme:** `GPL-3.0`
-- **Camoufox Engine:** `MPL-2.0` / `MIT`
-- **CutVii & Bundled FFmpeg:** `MIT` (CutVii) / `GPL-3.0-or-later` (FFmpeg)
-- **CLI & Agent Toolchain:** `Mr. Flow` (Native Sovereign Rust Engine, `MIT`), `agent-browser` (`Apache-2.0`, Native Rust ELF), `agent-desktop` (`Apache-2.0`, Native Rust ELF), `open-code-review` (`Apache-2.0`), `yt-dlp` (`Unlicense`), `uv` (`MIT OR Apache-2.0`), `edge-tts` (`LGPL-3.0`)
-- **Chromium & Electron Core:** `BSD-3-Clause`, `LGPL-2.1`, `Apache-2.0`, and `MIT`
-
-👉 **Detailed Attribution Table:** [**`THIRD_PARTY_LICENSES.md`**](THIRD_PARTY_LICENSES.md) • [**`licenses/` Archive**](licenses/)
-
-## 🤝 Community & Contributing
-
-Flowork OS is developed autonomously under the direction of **Architect AWENKAUDICO** and sovereign agent **Mr. Flow**.  
-We welcome pull requests, custom tools, and kernel enhancements!
-
-1. Fork the Project.
-2. Create your Feature Branch (`git checkout -b feature/SovereignEnhancement`).
-3. Commit your Changes (`git commit -m "feat: Add sovereign enhancement"`).
-4. Push to the Branch (`git push origin feature/SovereignEnhancement`).
-5. Open a Pull Request.
-
----
-
-## 👑 Doktrin Pengembangan Sistem & Perubahan Berkas (3 Sovereign Rules)
-
-Setiap modifikasi sistem, refaktorisasi, atau penambahan fitur baru WAJIB mematuhi 3 aturan mutlak berikut:
-
-### 1. Push ke GitHub (Auto-Updater OTA)
-- Perubahan telah di-commit ke repositori utama (`/home/awenkaudico/flowork-os-repo`).
-- Berhasil dipush ke GitHub via `upload-flowork-os.sh` (`main -> main`, Exit Code 0) sehingga sistem auto-updater (Delta OTA) langsung mendistribusikan pembaruan ke seluruh pengguna.
-
-### 2. Persistensi Sistem (Anti-Reset Saat Restart)
-- Seluruh perubahan dikunci permanen pada lokasi sistem (`/opt/floworkos/bin/flowork-apk-window`, `/opt/floworkos/bin/flowork-apk`, `/etc/skel`, dan `/usr/share/themes/`).
-- Konfigurasi pengguna baru dan template desktop dipersistensikan di `/etc/skel` agar tidak pernah ter-reset saat sistem di-reboot.
-
-### 3. Inklusi ISO Builder
-- Seluruh berkas baru maupun yang dimodifikasi berada di dalam root `/opt/floworkos` dan path sistem yang otomatis di-bundle ke dalam berkas squashfs saat `build-live-iso.sh` dijalankan untuk membangun Live ISO resmi Flowork OS.
-
----
-
 
 <div align="center">
 
 **Flowork OS — The Autonomous Future of Personal Computing.**  
-*Crafted with 100% Safe Rust, Sovereign Intelligence, and Zero Prompt Bloat.*
+*Freedom, Privacy, and Built-In Intelligence.*
+
+[**⭐ Star this repo on GitHub**](https://github.com/flowork-os/flowork-os) • [**💬 Join the Community**](https://github.com/flowork-os/flowork-os/discussions)
 
 </div>

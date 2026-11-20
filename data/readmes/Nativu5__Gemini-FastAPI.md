@@ -124,21 +124,24 @@ services:
 | `GET /health` | Readiness: storage and per-account status. |
 | `GET /media/{filename}` | Generated images and media. Responses link here with a signed token. |
 
-If `server.api_key` is set, send it as `Authorization: Bearer <key>`. The `/v1beta` endpoints also accept the `x-goog-api-key` header and the `key` query parameter. With no key set, the API and the media links are open to anyone who can reach the server.
+If `server.api_key` is set, send it as `Authorization: Bearer <key>`. The Gemini-native endpoints also accept the `x-goog-api-key` header and the `key` query parameter. A request to `/v1/models…` that sends its key either of those two ways is served by them as if it were `/v1beta/models…`, because that is where Google's SDKs send requests unless told otherwise. With no key set, the API and the media links are open to anyone who can reach the server.
 
 ### Compatibility
 
 Gemini Web offers fewer controls than the APIs this server imitates. A valid request is not rejected because of an option that cannot be forwarded.
 
 - **Ignored options.** `temperature`, `top_p`, output-token limits, `parallel_tool_calls`, Gemini `generationConfig` fields and safety settings are accepted and have no effect.
-- **Rejected input.** Malformed requests, and content the server cannot resolve at all, such as a Files API `file_id` or a `cachedContent` handle.
+- **Rejected input.** Malformed requests, and anything the server cannot resolve at all: a Files API `file_id`, a `cachedContent` handle, or earlier turns referenced by `previous_response_id` or `conversation` on `/v1/responses`. Send those turns in `input` instead.
+- **Errors use the envelope of the API that was called**: `{"error": {"message", "type", "param", "code"}}` on the OpenAI endpoints, `{"error": {"code", "message", "status"}}` on the Gemini-native endpoints. A malformed request is a `400` on both.
+- **Generated videos and audio are returned as links** in the reply text on every endpoint. Images are links too on the OpenAI endpoints, where `/v1/responses` adds an `image_generation_call` item for each; the Gemini-native endpoints return them as `inlineData` parts instead.
 - **Structured output is requested in the prompt** and checked by the server afterwards, because Gemini Web has no constrained decoding.
   - With `strict: true`, a reply that does not match the schema is an error: `502`, or an error event when streaming.
   - With `strict: false` (the default on both OpenAI surfaces) or JSON mode, the reply is returned as it is.
   - Gemini-native `responseSchema` and `responseJsonSchema` are always best effort.
   - A turn that returns a tool call is not checked.
-- **Schemas the server cannot evaluate are not enforced** and never fail a request. That covers invalid JSON Schema, a `$ref` that does not resolve (remote references are never fetched), and regex keywords that exceed `server.schema_validation_budget_seconds`.
+- **Schemas the server cannot evaluate are still sent to the model, but not enforced**, and do not fail the request. That covers invalid JSON Schema, a `responseSchema` that does not translate to JSON Schema, a `$ref` that does not resolve (remote references are never fetched), and regex keywords that exceed `server.schema_validation_budget_seconds`. The one exception is a `responseJsonSchema` that is not valid JSON Schema, which is a `400`.
 - **Streaming with a schema** delivers the answer as one chunk, since JSON can only be validated once it is complete.
+- **Google's SDKs work with their default settings** for chats with text and images, streamed or not, and for `responseSchema` and function tools. Field names are accepted in camelCase or snake_case, as Google accepts them.
 
 ## Configuration
 
@@ -208,7 +211,10 @@ Models are discovered from each account at startup, so there is nothing to confi
 
 ### Gems
 
-Off by default. To use it, set `gemini.gems.enabled: true` and choose a `gemini.gems.policy`. The system prompt at the start of a `/v1/chat/completions` or `/v1/responses` request is then stored once as a gem (Gemini's saved custom instructions) in the Google account and referenced from then on, instead of being sent inside the message. Conversations with the same system prompt share one gem.
+> [!WARNING]
+> Google has announced the [retirement of Gems](https://support.google.com/gemini/answer/18560919): for personal accounts they become read-only from 2026-11-17 and are removed on 2026-12-17; Workspace accounts follow in March 2027 and education accounts in June 2027. This feature only works while the account still has Gems. Once it does not, set the policy back to `off`: a gem request that Google rejects is retried for up to about 15 seconds, restarting the client each time, before the prompt is sent inline. That happens on every request.
+
+Off by default; set `gemini.gems.policy` to turn it on. The system prompt at the start of a `/v1/chat/completions` or `/v1/responses` request is then stored once as a gem (Gemini's saved custom instructions) in the Google account and referenced from then on, instead of being sent inside the message. Conversations with the same system prompt share one gem.
 
 | `policy` | System prompt |
 | --- | --- |
@@ -221,8 +227,8 @@ Off by default. To use it, set `gemini.gems.enabled: true` and choose a `gemini.
 
 - There is one gem per distinct prompt, so use this for stable prompts. A prompt that changes with every request, for example one that contains the time, creates a new gem each time.
 - Creation is limited by `create_rate_limit_per_minute` (default `4`) and `managed_gems_max_total` (default `200`). Past a limit, or whenever a gem cannot be used, the prompt is sent inline.
-- Gems stay in the account until you delete them. With `cleanup.enabled: true`, under either policy, gems unused for `cleanup.unused_days` (default `7`) are deleted when a client starts, and each gem's description is updated to record when it was last used.
-- Guest sessions and `/v1beta` requests always send the prompt inline.
+- Gems stay in the account until you delete them. With `cleanup.enabled: true`, under either policy, gems unused for `cleanup.unused_days` (default `7`) are deleted by a cleanup that runs at startup and every 6 hours after that, and each gem's description is updated to record when it was last used.
+- Guest sessions and Gemini-native requests always send the prompt inline.
 
 ### Input size
 
@@ -230,7 +236,7 @@ Input longer than 90% of `gemini.max_chars_per_request` (81% in `temporary` mode
 
 ### Removed settings
 
-`gemini.models`, `gemini.model_strategy`, `gemini.oversized_context_strategy` and `storage.images_path` no longer exist and are ignored if present. Generated media is stored under `storage.media_path`.
+`gemini.models`, `gemini.model_strategy`, `gemini.oversized_context_strategy`, `storage.images_path` and, under `gemini.gems`, `enabled`, `fetch_on_init`, `include_hidden_on_fetch`, `policies.default_policy` and `cleanup.require_managed_marker` no longer exist and are ignored if present. `gemini.gems.policy` alone now turns gems on, but a config that still says `gemini.gems.enabled: false` keeps them off. Generated media is stored under `storage.media_path`.
 
 ## Maintenance
 

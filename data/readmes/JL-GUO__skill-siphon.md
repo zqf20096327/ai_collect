@@ -86,6 +86,14 @@
 > 从 https://github.com/JL-GUO/skill-siphon 安装吸星大法技能，并确认本环境能发现它。
 ```
 
+### 📦 从 skills.sh 安装
+
+技能已收录于 [skills.sh 目录](https://www.skills.sh/jl-guo/skill-siphon/skill-siphon)，一行命令安装：
+
+```bash
+npx skills add https://github.com/jl-guo/skill-siphon --skill skill-siphon
+```
+
 ### 👤 手动安装
 
 ```bash

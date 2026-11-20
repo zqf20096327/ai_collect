@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version 0.13.0" src="https://img.shields.io/badge/version-0.13.0-58c7a0">
+  <img alt="Version 0.16.0" src="https://img.shields.io/badge/version-0.16.0-58c7a0">
   <img alt="Windows" src="https://img.shields.io/badge/platform-Windows-0078D4?logo=windows">
   <img alt="macOS" src="https://img.shields.io/badge/platform-macOS-222222?logo=apple">
   <img alt="Linux" src="https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black">
@@ -74,7 +74,7 @@ With several AI coding tools running, you spend time sending requests, checking 
 
 ## Get started on Windows, macOS or Linux
 
-1. **[Download v0.13.0](https://github.com/gemron/Termexo/releases/tag/v0.13.0)** — choose Windows EXE/MSI, the Mac DMG for Apple Silicon (`aarch64`) or Intel (`x64`), or the Linux x64 Debian package. No Rust or build tools needed.
+1. **[Download v0.16.0](https://github.com/gemron/Termexo/releases/tag/v0.16.0)** — choose Windows EXE/MSI, the Mac DMG for Apple Silicon (`aarch64`) or Intel (`x64`), or the Linux x64 Debian package. No Rust or build tools needed.
 2. Open Termexo and create a workspace for a project folder on your PC.
 3. Start a terminal with an installed agent. If none is installed, check detection and install a CLI from Settings.
 4. Run a task and watch its status in the terminal tab and right panel. Enable phone access later if you need it.
@@ -140,7 +140,7 @@ Keep the token private. Closing Termexo or stopping the PC ends the running proc
 
 ## Latest release
 
-**[v0.13.0](https://github.com/gemron/Termexo/releases/tag/v0.13.0)** simplifies model settings, workspace tabs and terminal controls, and adds saved remote hosts. A terminal can fill its layout or expand to the whole window. [GitHub Actions](docs/releases.md) builds and publishes the desktop and npm packages together.
+**[v0.16.0](https://github.com/gemron/Termexo/releases/tag/v0.16.0)** expands multi-account isolation to OpenCode, Pi, and Grok Build, adds `/v1/models` provider API model fetching, and improves multi-account login and switching reliability.
 [Full changelog](CHANGELOG.md).
 
 If Termexo helps your workflow, a **Star on this repository** helps other developers discover it.
@@ -478,7 +478,10 @@ identifiers still use a legacy name. This does not affect the Termexo product na
 | V0.11.0 | Content preview tabs, saved actions, notifications, macOS builds, automated releases | Released |
 | V0.12.1 | Remove built-in workflow engine and runtime; smaller desktop and npm packages | Released |
 | V0.12.0 | Linux, read-only links, command environments, account and mobile input improvements | Released |
-| V0.13.0 | Simpler model settings, compact workbench, terminal layout controls and saved remote hosts | Current |
+| V0.13.0 | Simpler model settings, compact workbench, terminal layout controls and saved remote hosts | Released |
+| V0.14.0 | Tab overflow, terminal tools menu, wrapped paths and Git branch history | Released |
+| V0.15.0 | App updates, China mirror downloads, notice layout and narrow-window improvements | Released |
+| V0.16.0 | Multi-account isolation for OpenCode / Pi / Grok, provider API model fetching, and login/switch fixes | Current |
 | V1.0 | Stability, security hardening, and recovery experience | Planned |
 
 See [open issues](https://github.com/gemron/Termexo/issues) for ongoing work and

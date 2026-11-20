@@ -278,6 +278,7 @@ Tracing, monitoring, and debugging tools for agents in production.
 | [Little Canary](https://github.com/hermes-labs-ai/little-canary)                  | ![](https://img.shields.io/github/stars/hermes-labs-ai/little-canary)       | Sacrificial-canary prompt-injection preflight (block / flag / pass)                        |
 | [AffixIO](https://github.com/AffixIO/SDK)                                         | ![](https://img.shields.io/github/stars/AffixIO/SDK)                        | Policy gate for agent tool calls with signed allow or deny decisions, verified offline     |
 | [Dark-Moon](https://github.com/ASCIT31/Dark-Moon)                                 | ![](https://img.shields.io/github/stars/ASCIT31/Dark-Moon)                  | Autonomous AI pentest CLI/SDK with 50 specialist agents and an OWASP LLM Top 10 agent      |
+| [Agent Payment Node](https://github.com/nuanu-ai/agent-payment-node)              | ![](https://img.shields.io/github/stars/nuanu-ai/agent-payment-node)        | Local payment runtime for agents with owner-set spending limits and per-command approval   |
 
 ### 🔌 Protocols
 
@@ -309,6 +310,8 @@ Key research papers, benchmarks, and surveys on AI agents.
 | OptimAI: Optimization from Natural Language Using LLM-Powered AI Agents | [arXiv](https://arxiv.org/abs/2504.16918) | Four-agent pipeline with bandit scheduling turns optimization problems into solver code                         |
 | Training Agents to Evolve with Their Harness (HAT)                      | [arXiv](https://arxiv.org/abs/2608.15763) | Harness-aware training for a live-commerce agent, with evaluation on changing skills, tools, prompts, and hooks |
 | The Agent Loop: A Survey of Control Strategies, Skills, and Harnesses   | [SSRN](https://ssrn.com/abstract=7186738) | Control strategies, agentic RL, termination and recovery, skills, and harnesses around the agent loop           |
+| AgonAlpha: Autonomous Alpha Discovery                                   | [arXiv](https://arxiv.org/abs/2608.11250) | Alpha-mining agents with an adversarial reviewer that re-runs and can veto results                              |
+| AutoSR: Automatic Symbolic Regression by Searching Research States      | [arXiv](https://arxiv.org/abs/2608.16876) | Proposer and reviewer agents that search research states for symbolic regression                                |
 
 ### 📊 Benchmarks
 
@@ -318,6 +321,7 @@ Key research papers, benchmarks, and surveys on AI agents.
 | [SOTOPIA-π](https://github.com/sotopia-lab/sotopia-pi)                | ![](https://img.shields.io/github/stars/sotopia-lab/sotopia-pi)           | Social intelligence benchmark for multi-agent systems                                                  |
 | [PerspectiveGap](https://github.com/WhymustIhaveaname/PerspectiveGap) | ![](https://img.shields.io/github/stars/WhymustIhaveaname/PerspectiveGap) | Benchmark for writing orchestration prompts in multi-agent systems, 110 scenarios across 10 topologies |
 | [ClawBench](https://github.com/TIGER-AI-Lab/ClawBench)                | ![](https://img.shields.io/github/stars/TIGER-AI-Lab/ClawBench)           | Live-web browser-agent benchmark with 283 tasks across 163 real websites                               |
+| [SciΠvot](https://github.com/AutoResearch-Factory/SciPIvot)           | ![](https://img.shields.io/github/stars/AutoResearch-Factory/SciPIvot)    | Benchmark of 248 research-judgment calls from real research projects                                   |
 
 ---
 

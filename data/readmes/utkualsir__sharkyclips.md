@@ -19,7 +19,7 @@ No account, no cloud, no credits, no watermark.<br>
 
 <p align="center">
   <a href="https://github.com/utkualsir/sharkyclips/actions/workflows/ci.yml"><img src="https://github.com/utkualsir/sharkyclips/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://github.com/utkualsir/sharkyclips/releases/latest"><img src="https://img.shields.io/badge/version-1.2.56-1F6FE5" alt="Version 1.2.56"></a>
+  <a href="https://github.com/utkualsir/sharkyclips/releases/latest"><img src="https://img.shields.io/badge/version-1.2.58-1F6FE5" alt="Version 1.2.58"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-0E1A33" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/Windows%20%7C%20macOS-0E1A33?logo=windows&logoColor=white" alt="Windows and macOS">
   <img src="https://img.shields.io/badge/runs-100%25%20locally-2ea043" alt="Runs 100% locally">
@@ -193,6 +193,10 @@ it stopped. Details: **[docs/how-it-works.md](docs/how-it-works.md)**.
   into: when a recording is finished, the best clips are found, rendered and titled, only while your
   PC isn't busy. Mark moments while you play with **Ctrl+Alt+C** (works in games, no focus change) or
   **!clip** in your Twitch / YouTube chat (you and your mods): they become the first clips.
+- **Connect your channel, no recording needed.** Paste your Kick, Twitch or YouTube channel once
+  (Settings → Channels): when a stream ends, its VOD is downloaded and clipped by itself, only new
+  streams, one download at a time, public pages only (no login). "Your stream is over, 6 clips are
+  ready" comes to the tray and Telegram. Details: [docs/channel-monitor.md](docs/channel-monitor.md).
 - **Approve from your phone.** Your own free Telegram bot sends each ready clip with Upload / Plan /
   Skip buttons, or swipe through them on the approval page on your Wi-Fi (PIN protected).
 - **Instant replay, chat bubbles, meme effects.** The big moment again in smooth slow motion with a
@@ -270,11 +274,11 @@ subtitles are then translated with their timing kept.
 
 ### Windows 10 / 11: one-click installer
 
-1. Download **`SharkyClips-Setup-<version>.exe`** (about __SETUP_MB__ MB) from the
+1. Download **`SharkyClips-Setup-<version>.exe`** (about 375 MB) from the
    [latest release](https://github.com/utkualsir/sharkyclips/releases/latest).
 2. Double-click it, press **Next** and **Install**. No administrator rights are needed: SharkyClips
    installs for your user only (`%LOCALAPPDATA%\Programs\SharkyClips`), with a Start menu entry and,
-   if you tick it, a desktop shortcut. Installing takes about __INSTALL_S__ seconds.
+   if you tick it, a desktop shortcut. Installing takes about 70 seconds.
 3. SharkyClips opens in your browser. The first start asks for your language and checks your PC,
    then downloads the AI parts that fit it (speech-to-text model, GPU libraries on an NVIDIA PC,
    the local AI for titles), with a progress bar and the time left. After that it works offline.
@@ -540,6 +544,10 @@ Eski adı ClipForge'du: eski bağlantılar yeni adrese yönlenir, ayarlarınız 
   iyi klipleri bulur, hazırlar ve başlıklarını yazar (sadece bilgisayar meşgul değilken). Oynarken
   **Ctrl+Alt+C** (oyunda çalışır, odağı çalmaz) ya da Twitch / YouTube sohbetinde **!clip** (siz ve
   moderatörleriniz) ile anı işaretleyin: ilk klipler o anlar olur.
+- **Kanalınızı bağlayın, kayıt gerekmez:** Kick, Twitch veya YouTube kanalınızı bir kez yapıştırın
+  (Ayarlar → Kanallar): yayın bitince VOD indirilir ve kendiliğinden kliplenir; yalnızca yeni yayınlar,
+  aynı anda tek indirme, sadece herkese açık sayfalar (giriş yok). "Yayının bitti, 6 klip hazır"
+  bildirimi sistem tepsisine ve Telegram'a gelir.
 - **Telefondan onay:** ücretsiz kendi Telegram botunuz her hazır klibi Yükle / Planla / Atla
   düğmeleriyle gönderir; ya da Wi-Fi'daki onay sayfasında (PIN korumalı) kaydırarak karar verin.
 - **Anlık tekrar, sohbet balonları, meme efektleri:** büyük an akıcı ağır çekimde REPLAY etiketiyle bir
@@ -567,7 +575,7 @@ Twitch / YouTube canlı sohbetinizi okumak (sadece "!clip" ve sohbet balonları 
 ### Kurulum (Windows 10 / 11)
 
 1. [Son sürüm](https://github.com/utkualsir/sharkyclips/releases/latest) sayfasından
-   **`SharkyClips-Setup-<sürüm>.exe`** dosyasını (yaklaşık __SETUP_MB__ MB) indirin.
+   **`SharkyClips-Setup-<sürüm>.exe`** dosyasını (yaklaşık 375 MB) indirin.
 2. Çift tıklayın, **İleri** ve **Kur**'a basın. Yönetici izni gerekmez; SharkyClips yalnızca sizin
    kullanıcınıza kurulur, Başlat menüsüne ve isterseniz masaüstüne kısayol ekler.
 3. SharkyClips tarayıcıda açılır. İlk açılışta dili sorar, bilgisayarınızı kontrol eder ve ona uygun

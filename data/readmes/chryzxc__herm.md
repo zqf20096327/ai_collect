@@ -25,6 +25,8 @@ Performance captures record callback timing and workspace updates locally; optio
 
 Unread session badges and the floating “new messages” control count AI responses only. User messages, tools, activity, system notices, errors, and empty streaming placeholders do not increase the count. Opening an unread session takes you to its first unread reply and marks the captured updates reviewed; a blue-tinted unread divider remains visible for that visit. A session you already viewed since Herm launched reopens where you left it instead; the divider still marks the first unread reply. The Bot picker counts unread sessions per Bot in a red badge, with a plus sign when the available session inventory is incomplete. Scrolling to the latest reply clears the floating count.
 
+An unread failed turn also shows a warning triangle on its conversation row, including in All profiles; it does not increase the reply count. Opening the conversation acknowledges the history warning and retains the error details in the transcript.
+
 [![Herm driving a shared browser with a live agent cursor](docs/media/browser-demo-poster.webp)](docs/media/browser-demo.mp4)
 
 *▶ [Play the recording](docs/media/browser-demo.mp4)*
@@ -156,7 +158,7 @@ The notch changes to reflect what Hermes is doing, so you don't have to keep a t
 | **Idle** | A thin, quiet rail on the screen edge. |
 | **Working** | A live indicator while Hermes is running a turn, a tool, or a background task. |
 | **Needs you** | An attention state when Hermes is waiting for an approval (for example, a dangerous command) or has asked you a clarifying question. |
-| **Finished** | A short announcement when a task completes, which stays marked until you open the result. |
+| **Finished** | A short announcement when a session completes, which stays marked until you open the result. Tool and background-task progress stays compact. |
 | **Offline** | A clear indicator when the local Hermes runtime isn't reachable. |
 
 The Tasks preview opens on **Activity** by default. Its list/grid toggle switches between session activity and **Kanban** cards, using the same controls as Quota. Both views use Herm’s compact status cards. Kanban shows running, blocked, and review cards across boards. Confirmed card moves and edits automatically expand the Kanban preview without changing your selected view; click a card to open its board and inspector. Kanban refreshes every five seconds while the workspace is closed. The initial load stays quiet, and unchanged or failed refreshes do not announce. Up to 30 recent card updates remain until opened; active cards stay visible.
@@ -387,6 +389,12 @@ uses airy porcelain surfaces, hairline cards, neutral graphite actions, and stab
 automatically when macOS switches between Light and Dark, including while the
 workspace is open. Skin changes also apply to the side notch and its open preview.
 
+Dragging files over an editable composer traces its outline once. Staged items settle into the attachment tray, and dragging a queued prompt marks the insertion point above the destination row.
+
+In chat, the send arrow folds into the stop control while a reply is running. Thinking dots pass a highlight between them, and context compaction draws three lines together. Both indicators run in Core Animation. When a tool changes in a chat without a bot avatar, its icon draws once inside a continuous breathing halo.
+
+Search, task details, and new columns open from their respective edges. Bot motion pauses during live resizing. Warm Light, Clay, and Dusk use shallower card relief. Switching skins reveals the new material from the pointer. Switch thumbs stretch between stops, checkmarks draw into place, and a side notch curves toward a pet as you drag it home.
+
 Herm uses a content-first layout across skins: shared spacing and action sizes, quiet dividers, and cards reserved for distinct objects or tasks. Selected list rows follow the active skin’s selection surface.
 
 Active navigation, icon rails, inspector tabs, and open sidebar toggles keep
@@ -446,8 +454,9 @@ a row missing from that window is inconclusive. Status appears in user-message m
 and there is no permanent stored badge or read receipt.
 
 Recently viewed conversations can show their last loaded messages immediately while
-Herm refreshes them from Hermes. The title shows when the conversation is refreshing
-or not current; session actions become available after the refresh succeeds. Drafts
+Herm refreshes them from Hermes. Herm also preloads a bounded set of recent and pinned
+conversation previews across profiles in the background. The title shows when the
+conversation is refreshing or not current; session actions become available after the refresh succeeds. Drafts
 remain editable, and the conversation menu offers retry if loading fails.
 
 The session-title popover reuses the sidebar session row, with matching typography,
@@ -475,7 +484,7 @@ or focus the handle and use the arrow keys. The order is saved locally across re
 selected profile or its conversations. Choose **All** at the top of the
 bot picker to merge every bot's pinned and recent conversations into one list; each
 row then shows a pill with its bot's avatar and name, and opening it switches to
-that bot. Each section header stays at the top of the scrolling
+that bot. The sidebar reuses the loaded session list for unread counts while you hover, scroll, or search. Each section header stays at the top of the scrolling
 list until the next section replaces it; rows remain lazily rendered.
 Background polls and runtime notifications refresh the latest history page,
 reusing older loaded sessions for up to a minute. Explicit refreshes reconcile
@@ -517,7 +526,8 @@ Pull requests also collapse as a group, with a count and a bounded list of indiv
 PR membership comes from explicit links in the selected chat or targeted PR tool operations;
 repository listings, searches, and other sessions' history do not add their results.
 Live results must belong to the selected response. Switching sessions or profiles resets
-rail state and its cached workspace folder; tasks, outputs, attention, and pins use that session's data.
+rail state and its cached workspace folder; tasks, plans, outputs, attention, and pins use that session's data.
+The Plan section lists the `.hermes/plans/` files the chat names and any plan you added with **Add to rail**, with progress from their checkboxes or else the session's task list, and a Track progress action when neither has any; selecting one opens it in Plan view.
 Workspace uses a colored folder icon, a project name and path, and labelled branch
 and latest-commit details.
 Changes reflects Git status for the session's worktree. Explorer and Source Control follow the folder
@@ -592,6 +602,7 @@ unavailable items, and links to anchors or subpages retain the browser fallback.
   Message pin updates open the pinned list after verification. Errors remain visible across refreshes until another attempt or conversation reset; an unavailable or mismatched reread leaves the saved state uncertain.
 - **Dangerous-command approvals**: *Deny*, *Allow once*, or *Always allow*. *Always allow* is saved to the Hermes allowlist.
 - **Split session panes**: drag a session from the sidebar into the chat area, or use **Open in Split View**, to work in up to three columns side by side. Each column is a tab group with its own transcript and composer. Click any tab to make it the active session; the header and session menu move to its column, and the inspector opens beside it. Drop onto a column to add a tab, or at the trailing edge to open a new column. New tabs and columns open beside the session you came from. Bot main chats split the same way from the Bots page, and group chats can be dragged in or picked from the **Group chat** menu as tabs. Tabs show the same status as the sidebar (working spinner, unread count), and Bot tabs show the Bot's avatar and name. Columns last for the current app run.
+- **Pop-out conversations**: choose **Pop Out Conversation** from a session's, Bot's or group chat's context menu (or **Pop out conversation** in the Conversation actions menu) to move that conversation into its own small floating window, which you can drag to any screen. It shows the transcript and composer with the same chat tools as the main window (folder and worktree bar, ⌘F search, quota), without the inspector, and stays above other apps. Clicking the session in the sidebar brings its window forward. Closing the window keeps any running work going in Hermes Agent, but discards an unsent draft and any queued follow-up prompts. Group chat rows also offer **Open in Split View**, like Bot rows.
 
 ### Chat views
 
@@ -646,6 +657,7 @@ while Herm is open. Switch sessions, pages, or bots and return to continue your
 draft. Drafts are separate for each bot/profile and are cleared when Herm quits.
 Drafts are saved during navigation; typing continues to update only the composer.
 Short drafts keep the composer compact; it grows as text wraps.
+Typing a leading `/` immediately opens the command menu while Hermes loads its commands.
 
 Background processes listed for the current chat can be stopped after confirmation,
 even when the general activity capability probe is unavailable. Process output
@@ -670,7 +682,7 @@ The composer’s **@** picker shows each bot’s actual name, with its descripti
 - **Queued messages**: when the current conversation has queued messages, every subsequent send joins the end of that queue, including plain text during a running turn. New submissions also wait behind a redirect still awaiting Hermes' reply. During a turn, text and attachments queue together. Submitting clears the composer immediately while preserving images, PDFs, context, and reply quotes with the message.
 - **Attachments**: files, pasted images, prompt snippets, several images or PDFs at once (up to 25 MB per PDF). PDFs are sent as original files for the agent to read, without requiring `pdftoppm`; sent images show previews and documents show file-type labels. Drop Markdown, text, source, and other files into the composer as removable attachments (up to 8 MB each); uploads require Hermes protected file attachment support. **Files** and **Images** open a native attachment picker; **Folder** opens a directory picker and inserts its path into the draft.
 - **Video replies** play inline with native playback, seeking, volume, and fullscreen controls. Playback starts when you press Play and stops when the attachment leaves the view. Open and Download remain available; formats or codecs macOS cannot play show an unavailable message.
-- **Model picker** grouped by provider, with search. **Edit available models… → Unselect All** hides every model except the active one; selections are saved locally.
+- **Model picker** grouped by provider, with search. A conversation's reported model can appear before the model catalog finishes loading; provider routing still comes from the catalog. **Edit available models… → Unselect All** hides every model except the active one; selections are saved locally.
 - Confirmed model switches appear inline in chat with the model, provider, and time. Notices come from Hermes session history and return when you reopen the chat.
 - **Mixture of Agents**: Settings → Models & tools edits Hermes' MoA presets (reference models, aggregator, enabled). Enabled presets appear in model pickers as `MoA · <preset>`; while a MoA turn runs, advisor output, fan-out progress and the aggregating phase stream into the thinking block. Settings → Models & tools also sets the default thinking level for new sessions.
 - **Context guardrails**: the composer shows context progress without a session token total. Its percentage measures the full context window; Hermes can compact earlier based on its configured token limit or other runtime triggers. During compaction, the composer shows **Compacting**, including during streaming turns, and refreshes usage afterward. Context usage is labelled normal, warning (80%), or critical (90%), with actions to branch, compress, or hand off.
@@ -946,21 +958,4 @@ Source control alongside a real Herm conversation:
   addresses, supports Refresh, and labels stale results. Nothing runs or opens automatically.
 - PR watching is opt-in and passive while Herm runs. It never starts agent work.
 
-Review actions group pull-request watching and guide actions in a compact menu. Raw submission diagnostics stay in the guide; startup shows a loading indicator. New review sessions wait briefly for project-directory confirmation, and active first turns wait for saved history.
-
-### File previews and revision notes
-
-- Chat file rows keep the filename and status on the left, with Download, Open, and available Open diff actions on the right. **Open** shows Markdown (such as plans), text, and images in a session tab beside Timeline and Terminal; other files open in their default app. The tab is a plain preview until you turn on the labeled **Annotate** switch beside **Copy** in its header (or beside **Open in** for files): then selected text takes notes that go back to the chat as one revision request. The annotation footer accommodates larger interface scales. Turning the switch off leaves annotation mode while keeping saved notes; the header controls keep their size as modes change. A file with unsent notes reopens with Annotate on. Messages opened with **Open message in new tab** use the same annotator: Annotate swaps the rich rendering for selectable text, and notes go back to the chat quoting that message. **Open in** opens the file in any app macOS registers for it, or reveals it in Finder.
-- Preview **Markdown, text/code, and images** inside Herm. Unsupported file types open in their default app.
-- Select text in a document to add a quoted review note, or add a general note. Notes are saved locally and remain highlighted in the preview.
-- Send draft notes as one **revision request to the session the preview came from**, rather than manually copying excerpts into a different conversation.
-- Inspect changes against the file contents saved when notes were sent. A removed quote can be marked addressed; that is a matching heuristic, not proof that the requested revision is correct.
-- Use **Open diff** on chat file attachments with local Git changes to open a dedicated **Diff** tab in the third panel. It shows current staged and working-tree changes separately, or the added contents of a new file, from the attachment's own worktree. **Open** remains available for the file itself. These are current Git changes, which may include edits beyond the AI response. Source Control keeps its inline file previews. Both use the shared diff viewer, which wraps long lines by default without horizontal scrolling.
-
-### Agentic browser
-
-The session inspector's **Browser** tab is a real Chromium browser that you and Hermes share, so you can watch it work.
-
-![The Herm browser tab with the agent cursor on a page](docs/media/workspace-browser.webp)
-
-- **Attach browser context.** Click **Attach Page** in the browser toolbar to add the page 
+Review actions group pull-request watching and guide actions in a compact menu. Raw submission diagnostics stay in the guide; startup shows a loading indicator. New review sessions wait 

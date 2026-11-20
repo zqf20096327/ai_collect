@@ -523,6 +523,7 @@ On a Mac it also checks that the helper is native, starts, and is signed with th
 ./bin/glasshouse pull                          # review the diff and bring changes back
 ./bin/glasshouse logs --verify                 # verify the audit hash chain
 ./bin/glasshouse stop                          # stop the session
+./bin/glasshouse ui                            # local control panel in the browser
 ```
 
 Typical flow: `run` → let the agent work in the guest → `pull` to review and fetch changes → `logs --verify` → `stop`.
@@ -597,6 +598,39 @@ Session data lives in `$GLASSHOUSE_HOME` (default `~/.local/share/glasshouse`). 
 - `glasshouse stop [session]` shuts the VM down and **deletes its disk: everything that was only inside the guest is gone.** `pull` first. The audit log and the session record stay.
 - `glasshouse run --keep` keeps the disk after stop; `glasshouse start <session>` boots it again.
 - `glasshouse rm <session>` removes a stopped, failed or dead session's directory, including the audit log.
+
+### `glasshouse ui`: the control panel
+
+`glasshouse ui [--port N] [--no-open]` opens a local control panel in your browser, for people who prefer buttons to commands. It is one page served by the `glasshouse` binary itself (no extra install, no native GUI toolkit), so it works the same on Linux and macOS.
+
+```bash
+./bin/glasshouse ui            # prints http://127.0.0.1:<port>/?t=<token> and opens it
+./bin/glasshouse ui --no-open  # only print the URL (for example over a remote desktop)
+```
+
+What the page does:
+
+| Area | What you can do |
+| --- | --- |
+| New session | Shell or desktop, offline, keep data after stop, an optional project directory (same as `run --shell/--gui [--offline] [--keep] [dir]`) |
+| Sessions | Live list (refreshes every 3 seconds) with state, profile, age, egress and project. Per session: **Shell** (opens a terminal running `glasshouse ssh`), **Desktop** (`glasshouse gui`), **Pull**, **Logs**, **Stop**, **Start** (kept sessions), **Remove** |
+| Pull | Shows the change list first, like `glasshouse pull`; nothing is written until you click **Apply changes** |
+| Logs | The audit log, **Verify audit chain** (`logs --verify`) and the console log |
+| Environment check | The output of `glasshouse doctor` |
+| Local virtual machines | Everything glasshouse can find on this machine, with source, state, CPU and memory, disk space used and location, refreshed every 10 seconds (and by **Scan again**). It reads the data directory the panel manages, the other glasshouse data directories it can see (the default one, other users' defaults that are readable, and the ones running VMs point at), and the running QEMU and Virtualization.framework processes. So it also shows **VMs glasshouse did not start** and **broken records** (a session directory without a readable `session.json`). Sessions of another data directory are listed with the command to manage them (`GLASSHOUSE_HOME=<dir> glasshouse ui`) |
+| Settings (⚙) | **Language** (follow the browser, 中文 or English), **color theme** (System, CC-Monitor, Light, Dark, Dracula, Nord, Midnight, Ocean, Forest, Sunset, Rose; the palettes are CC-Monitor's own, so the two UIs match), **font** (system, monospace, serif, rounded, Kaiti, Heiti, Songti) and **font size** (12 to 18 px). Saved in the browser's local storage, with a reset button |
+| Recent operations | Output of the commands the page started (start, stop, remove) |
+
+By default the page follows your browser's language and its light or dark theme; the settings above override both. Closing the page or stopping `glasshouse ui` does not stop any session.
+
+How it is kept safe:
+
+- It listens on **127.0.0.1 only** and needs a random token: the URL printed at start carries it, the page then keeps it in an `HttpOnly`, `SameSite=Strict` cookie. Anyone without that URL gets `401`.
+- Requests whose `Host` is not `127.0.0.1:<port>` or `localhost:<port>` are refused (DNS rebinding), and every write needs a custom header and a matching `Origin`, which another website cannot send.
+- The page can run only `glasshouse`'s own subcommands (`run`, `start`, `stop`, `rm`, `gui`, `pull`, `logs`, `doctor`, `ssh` through a terminal) with validated arguments: session IDs must look like `s-xxxxxx`, the mode is `shell` or `gui`, and a project path may not start with `-`. There is no way to type an arbitrary command. The policy is the normal one (`~/.config/glasshouse/policy.yaml`), so everything the policy forbids stays forbidden.
+- Anyone who can open the URL on your machine can start and stop sessions as you. Do not forward the port to other machines.
+
+Checked on Linux x86 against the real machine: starting a shell session with a project, listing it, `pull` preview (nothing written) then apply, the audit verification, stop and remove, the environment check, every refusal above (no cookie, wrong token, bad Host, missing header, bad Origin, bad session ID, unknown action), and the page itself rendered in headless Chrome at desktop and phone width. 6 unit tests cover the guard, the argument builder and the job runner. **Not checked:** the **Shell** button (opening a terminal emulator: `x-terminal-emulator`, `gnome-terminal`, `konsole`, `xfce4-terminal` or `xterm` on Linux, Terminal.app on macOS), the **Desktop** button from the page, the **Start** button of a kept session from the page, and everything on macOS.
 
 ### Typical workflows
 

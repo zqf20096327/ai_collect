@@ -20,6 +20,8 @@
   <img alt="Platform" src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg">
 </p>
 
+> **Archived**: No further development is planned (archived 2026-11-21). This project is read-only; its GitHub repository is archived.
+
 ---
 
 ## Table of Contents
@@ -78,7 +80,9 @@ NeuralDeck/
 ├── .github/
 ├── anki_addon/              <- Anki bridge add-on
 ├── screenshots/             <- README images
+├── ui_review/               <- before/after UI change evidence
 ├── tests/                   <- regression suite
+├── start.bat                <- one-click launcher for Windows (double-click)
 ├── main.py
 ├── ui.py
 ├── document_processor.py

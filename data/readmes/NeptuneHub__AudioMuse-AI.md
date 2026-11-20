@@ -10,7 +10,7 @@
 <details open>
 <summary>💛 <a href="https://liberapay.com/NeptuneHub/donate">Donate to AudioMuse-AI this Christmas</a></summary>
 
-**Over 2,521 Navidrome users rely on AudioMuse-AI today** ([based on Navidrome anonymous usage statistics](https://www.navidrome.org/docs/usage/admin/insights/)), and that's before counting all our Jellyfin, Emby, Plex, LMS and Lyrion users.
+**Over 2,725 Navidrome users rely on AudioMuse-AI today** ([based on Navidrome anonymous usage statistics](https://www.navidrome.org/docs/usage/admin/insights/)), and that's before counting all our Jellyfin, Emby, Plex, LMS and Lyrion users.
 
 What started as a personal project now powers music libraries all over the world. AudioMuse-AI will always remain free and open source because I believe sonic analysis should be accessible to everyone, regardless of their budget. No ads, no paywalls, no subscriptions. Your music library is analyzed on your own server, keeping your data completely under your control.
 
@@ -93,6 +93,7 @@ We are **not affiliated with, endorsed by, or sponsored by** the owners of `audi
 - [Native Deployment](#native-deployment)
 - [Hardware Requirements](#hardware-requirements)
 - [Docker Image Tagging Strategy](#docker-image-tagging-strategy)
+- [AudioMuse-AI Supported Clients](#audiomuse-ai-supported-clients)
 - [How To Contribute](#how-to-contribute)
 - [Code Mirror](#code-mirror)
 
@@ -235,6 +236,9 @@ Our GitHub Actions workflow automatically builds and publishes Docker images wit
 
 > Versioning is Major.Minor.Patch release. Eventually (rare) model change that could require a new analysis could happen in Major and Minor release.
 > Read the [release note](https://github.com/NeptuneHub/AudioMuse-AI/releases) before any update especially for Major and Minor release.
+
+## **AudioMuse-AI Supported Clients**
+- **[Lumae Music](https://lumaemusic.app):** a **free** player for Android and iPhone, with Android Auto and CarPlay, for Navidrome and Jellyfin, built around **AudioMuse-AI from the start**. The goal is to bring AudioMuse-AI features natively to your phone, like: (offline) similar-song queues, search by lyrics or recording, chat with AI, and **crossfades**.
 
 ## **How To Contribute**
 

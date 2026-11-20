@@ -158,13 +158,13 @@ A chain stops at its first unproven link and after 8 calls. An unannotated retur
 
 ### Architecture view
 
-The Architecture view draws the whole workspace as **units** (projects: folders holding a `package.json`, `pyproject.toml`, `go.mod` or other project manifest, else top-level folders) in layers, with the import edges between them, their roles and their cycles. It answers three questions: what are my layers, who depends on this, and does the code follow my rules. The [architecture guide](docs/architecture.md) defines every term, explains the marks of each view and how to fix what they raise: cycles, rule violations, unmatched files.
+The Architecture view draws the whole workspace as **units** (the elements declared in `graphit.architecture.json`, else the projects: folders holding a `package.json`, `pyproject.toml`, `go.mod` or other project manifest, else top-level folders) in layers, with the import edges between them, their roles (`application`, `function`, `micro-frontend`, `frontend`, `service`, `library`, `test`, `fixture`, `tooling`, `unknown`) and their cycles. It answers three questions: what are my layers, who depends on this, and does the code follow my rules. The [architecture guide](docs/architecture.md) defines every term, explains the marks of each view and how to fix what they raise: cycles, rule violations, unmatched files.
 
 <div align="center">
-<img src="media/architecture-units-overview.png" alt="Architecture view of an npm-workspaces monorepo: units in layers, a cycle between two shared libraries, rule violations in red" width="800"/>
+<img src="media/architecture-declared-elements.png" alt="Architecture view of Graph-It-Live itself: its 8 declared elements as units in 5 layers (tooling on top; extension, cli and mcp applications; analyzer and webview; shared at the bottom), all 9 rules passing; the assets unit has a dashed border because its library role is inferred" width="800"/>
 </div>
 
-*Units in layers with their roles, a cycle outlined, and rule violations (test fixture monorepo). Open it with *Switch to Architecture View* in the *Dependency Graph* view title bar.*
+*Graph-It-Live's own declared elements as units in layers, with their roles and the rules of its `graphit.architecture.json`. Open it with *Switch to Architecture View* in the *Dependency Graph* view title bar.*
 
 Quick start:
 
@@ -177,10 +177,10 @@ Quick start:
 The CLI (`graph-it architecture --level units`) and the MCP tool `explore_architecture` report the same counts.
 
 <div align="center">
-<img src="media/architecture-roles-filter.png" alt="Units legend with role badges; the libraries filter keeps only the five library units" width="800"/>
+<img src="media/architecture-diagram-roles.png" alt="Exported diagram of the workspaces-project test fixture: 7 detected projects in 3 layers, each node naming its role in words (function, library, tooling, unknown), every role inferred so every border is dashed, and the runtime cycle between @ws/types and @ws/core outlined" width="800"/>
 </div>
 
-*Role badges: `[library?]` inferred, `[library]` declared. Click a role in the units legend to filter.*
+*`graph-it diagram` on a test fixture with no config: each node names its role, and a dashed border marks an inferred role (in the view, hover a unit for its evidence); a role declared under `roles` gets a solid border. Click a role in the units legend to filter.*
 
 <div align="center">
 <img src="media/architecture-navigate-groups.gif" alt="Navigating Graph-It-Live's architecture: enter src, then analyzer, Fit the whole level, go back with the breadcrumb" width="800"/>
@@ -219,6 +219,14 @@ To share the drawn level as a picture, click *Export Architecture Diagram* (icon
 </div>
 
 *An exported diagram with the role filter on `library`: the caption names the filter.*
+
+To see what one function does step by step, draw its call flow: `graph-it diagram --view flow src/mcp/worker/invokeTool.ts#invokeTool --format svg`. Each column is one step in call order (a file's symbols), and each row a lane: main, alternative (a branch that returns) or error (a `catch`, or a branch that throws). `--maxSteps` (up to 12) and `--startLine` (1-based, for same-name symbols) refine it; the `export_architecture_diagram` MCP tool draws the same with `view: "flow"`.
+
+<div align="center">
+<img src="media/cli-diagram-flow.png" alt="Flow diagram of invokeTool: eight steps in call order, postMessage on the alternative lane, closestPathsHint on the error lane, each edge labelled with its call line" width="900"/>
+</div>
+
+*`graph-it diagram --view flow` on this repository: one step per column, one lane per row.*
 
 ### Architecture rules
 
@@ -316,7 +324,7 @@ graph-it check [path]                 Find unused exported symbols
 graph-it architecture --groups        Show the workspace architecture by folder or community
 graph-it init                         Generate graphit.architecture.json from the current code, plus quick wins
 graph-it check-architecture           Check imports against graphit.architecture.json
-graph-it diagram                      Write a static architecture diagram (SVG, HTML or diagram spec)
+graph-it diagram                      Write a static architecture diagram or one symbol's call flow (SVG, HTML or diagram spec)
 graph-it query "<question>"           Ask a natural-language graph question
 graph-it context "<question>"         Retrieve bounded graph context
 graph-it wiki                         Generate a navigable Markdown wiki

@@ -7,6 +7,7 @@ effects, music and voices.
 ```sh
 npm install -g @ludoai/cli      # or run without installing: npx @ludoai/cli ...
 ludo login                      # log in with your browser (you can create an account there)
+# no account yet? ludo signup --email you@example.com --plan indie   (see "Signing up from the terminal")
 ludo image create --prompt "a knight with a red cape" --image-type sprite
 ```
 
@@ -34,7 +35,7 @@ ludo <group> <command> --help
 | `image` | `create`, `generate-with-style`, `edit`, `remove-background` |
 | `sprite` | `animate`, `animate-keyframes`, `generate-pose`, `rotate`, `transfer-motion`, `list-animation-presets`, `edit`, `create-audio` |
 | `video` | `create`, `create-from-references`, `edit`, `upscale` |
-| `model` | `create`, `rig`, `animate`, `animate-preset` |
+| `model` | `create`, `rig`, `animate`, `animate-preset`, `animation`, `animations` |
 | `audio` | `sound-effect`, `ambiance`, `music`, `transform`, `voice`, `speech`, `speech-preset` |
 | `jobs` | `list`, `get`, `cancel`, `wait` |
 | `generations` | `list` |
@@ -75,6 +76,9 @@ ludo docs search --query "which animation model should I use for pixel art?"
 - `--open` opens the result in its default app (Aseprite, say), `--play` plays generated audio,
   `--copy` puts the saved file paths on the clipboard.
 - WebP results are also saved as PNG, side by side (engines and most tools want PNG).
+  `--image-format png` keeps the PNG only and `--image-format webp` the WebP only (`"image_format"` in `.ludo.json`
+  sets it for a project). A spritesheet's grid is stored in its PNG and `--engine` files are made
+  from it, so keep the PNG for sheets.
 - `--engine godot` also writes a Godot 4 `SpriteFrames` resource (`.tres`) next to a spritesheet:
   drop it on an `AnimatedSprite2D`. Inside a Godot project it uses a `res://` path.
 - `--engine texturepacker` writes a TexturePacker JSON atlas (`.json`) next to a spritesheet, with
@@ -151,9 +155,10 @@ ludo toolbox sprite join ludo-output/knight-walk/ --cols 4 --fps 12
 # Edit the frames of a sheet: drop frame 7, hold frame 4 for three frames, play as a ping-pong
 ludo toolbox sprite frames knight-walk.png --drop 7 --hold 4x3 --pingpong
 
-# How well it loops, 0 to 1: the seam from the last frame back to the first, against the clip's
-# pace (0.8 and up is clean, under 0.5 a hitch you see). It only measures; Ludo's sheets come cut to
-# their loop, and `ludo sprite edit --edit-mode fix_loop` repairs one that does not loop.
+# How well it loops, 0 to 1: how alike the last frame and the first are (0.85 and up is clean,
+# under 0.7 a seam you see). It approximates the loop_score Ludo's API returns, offline. It only
+# measures; Ludo's sheets come cut to their loop, and `ludo sprite edit --edit-mode fix_loop`
+# repairs one that does not loop.
 ludo toolbox sprite loop knight-walk.png
 # Several takes of one animation (like --n 4): which loops cleanest, the cleanest first.
 ludo toolbox sprite loop walk-1.png walk-2.png walk-3.png walk-4.png
@@ -203,6 +208,8 @@ ludo toolbox sprite sequence idle.png jump.png --mode separate --engine godot
 ludo toolbox sprite slice dance.gif
 
 # Video (needs ffmpeg): a clip to a sheet, and a sheet to WebM or MOV with transparency, or MP4.
+# ffmpeg is found on the PATH or where brew, winget, scoop and choco put it; LUDO_FFMPEG names another.
+# A sheet holds 64 megapixels: without --width, a longer clip's frames are shrunk to fit.
 ludo toolbox sprite from-video knight-walk.mp4 --fps 12
 ludo toolbox sprite video knight-walk.png --format webm --loops 3
 
@@ -250,7 +257,7 @@ project uses Claude Code). Every command run anywhere below that folder uses it:
   "style_image": "art/style.png",
   "defaults": {
     "image create": { "image_type": "sprite" },
-    "animateSprite": { "model": "forge" }
+    "animateSprite": { "model": "ignis" }
   }
 }
 ```
@@ -294,6 +301,9 @@ the log points to them.
   `<name>-v1` to `<name>-v4`). At a terminal
   you then pick which to keep; the rest move to `<out>/.discarded/`. Where the API takes `n`
   (images) one job makes them; elsewhere the jobs run side by side.
+- `--save-normals` saves each normal map beside the image or sheet it belongs to, as `<file>_n`
+  (`crate-v1.png` and `crate-v1_n.png`). It is not a variation of its own: the JSON lists it under
+  the variation's `normal_maps`, and in `files` with `"normal_map": true`.
 - `ludo batch jobs.json` runs a list of different generations side by side (`ludo batch --help`
   shows the format; a job's `"name"` names its files). The price of the whole list is checked first.
   A failed item does not stop the others. When the account's queue is full (50 generations queued
@@ -319,6 +329,49 @@ logout` revokes it too.
 On a machine without a browser, open the printed link on any device. For CI, set `LUDO_API_KEY`, or
 save a key with `ludo login --with-key` (it reads the key from a prompt or stdin).
 
+## Signing up from the terminal
+
+No Ludo account yet? `ludo signup` creates one and subscribes it to a plan in one payment, without
+opening the web app. It is made for coding agents setting Ludo up for someone, and works the same
+for a person.
+
+```sh
+ludo pricing                                         # the plans and what they include
+ludo signup --email you@example.com --plan indie     # add --interval year for annual billing
+```
+
+1. It prints a Stripe checkout link for that email and plan, and waits. Nothing is created or
+   charged until the link is paid.
+2. Pay the link (you, or an agent with a wallet of its own). Cards only.
+3. We email that address a connect code and a link to set a password for the web app.
+4. Type the code when the CLI asks, or pass it later with `ludo signup --continue --code <code>`.
+   The CLI is then logged in.
+
+The key is only issued for the code from the mailbox, so starting a signup for someone else's
+address gets you nothing. For an agent that works in turns, `--no-wait` prints the link and returns;
+`ludo signup --continue` checks on it, and `--restart` drops a signup that is still waiting. Only
+single-user plans with API access can be bought here; team plans are bought in the web app.
+
+### Paying with Link, without a browser
+
+An agent with [Link](https://link.com/agents)'s CLI (`link-cli`, Stripe's agent wallet;
+[where it works](https://docs.stripe.com/agentic-commerce/concepts/shared-payment-tokens)) can pay with a Shared Payment Token instead of a checkout link:
+
+```sh
+ludo signup --plan indie --email you@example.com --quote   # the price and the link-cli command to run
+# run that command; the account holder approves the spend in Link, then:
+link-cli spend-request retrieve <lsrq_id> --include shared_payment_token --format json
+ludo signup --email you@example.com --plan indie --payment-token -   # reads the spt_... token from stdin
+```
+
+Ludo charges the token, creates the account and logs the CLI in, in one step: no checkout page and
+no emailed code. The address still gets a link to set a password. A token created with
+`--recurring-interval` (as the quoted command does) pays each renewal within the limit its holder
+approved; revoking it in Link stops that, and the web app then asks for a card. A one-time token buys
+one period, and the plan ends after it. A token buys one account, and is as good as money to whoever
+holds it: keep it out of logs and shell history (`--payment-token -` reads it from stdin, or set
+`LUDO_PAYMENT_TOKEN`).
+
 Keys are used in this order: `--api-key`, the `LUDO_API_KEY` environment variable, then the key saved
 by `ludo login` (in `~/.config/ludo/config.json`, readable only by you).
 
@@ -327,9 +380,24 @@ by `ludo login` (in `~/.config/ludo/config.json`, readable only by you).
 `ludo account` shows your balance, plan and auto top-up settings. `ludo billing` opens the page to
 buy credits, change plan or set up auto top-up. `ludo pricing` (no login needed) lists the plans, what
 each includes, what each call costs, and the billing rules: generating through the CLI, API or MCP needs
-Pro or Studio, and costs credits on every plan. When a generation fails for lack of credits (exit
+a paid plan, and costs credits on every plan. When a generation fails for lack of credits (exit
 code 5) at a terminal, the CLI offers to open that page.
 
+### Buying credits from the terminal
+
+`ludo topup` buys extra credits for the logged-in account, at your plan's top-up price. Someone
+approves every purchase; it never charges the card saved on the account (auto top-up, set in the web
+app, is for that).
+
+```sh
+ludo topup --credits 1000              # prints a Stripe payment link and waits for it to be paid
+ludo topup --credits 1000 --no-wait    # prints the link and returns; `ludo topup --continue` checks later
+ludo topup --credits 1000 --quote      # the price, and a one-time link-cli command for Link
+ludo topup --credits 1000 --payment-token -   # pays with the approved Link token, read from stdin
+```
+
+With a Link token the credits are added at once (the command says if they are still on their way), and a token buys one
+top-up.
 ## Feedback
 
 `ludo feedback "<message>"` sends a note to the Ludo team: a limitation you hit, a bug, something

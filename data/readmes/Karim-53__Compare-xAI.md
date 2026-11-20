@@ -13,6 +13,19 @@
 
 `Compare-xAI` benchmarks feature-attribution / feature-importance explainability methods (SHAP, LIME, MAPLE, Archipelago, and more) against a curated battery of **functional unit tests**. Each test encodes one concrete end-user expectation, so instead of trusting an explainer blindly you get a reproducible, evidence-based comparison of which method to use, and when.
 
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <a href="https://www.youtube.com/watch?v=0kTCpItXQDs"><img src="img/readme/video_thumbnail.png" alt="Watch the Compare-xAI talk at the XAI 2023 Conference on YouTube" /></a><br/>
+      <b>▶ <a href="https://www.youtube.com/watch?v=0kTCpItXQDs">Watch the talk</a></b> (6:43, XAI 2023 Conference)
+    </td>
+    <td width="50%" align="center">
+      <a href="https://karim-53.github.io/cxai/"><img src="img/readme/interactive_benchmark.png" alt="Open the interactive Compare-xAI benchmark" /></a><br/>
+      <b>↗ <a href="https://karim-53.github.io/cxai/">Open the interactive benchmark</a></b>
+    </td>
+  </tr>
+</table>
+
 ### 🔎 Explore the results
 
 **➡️ Interactive benchmark: [karim-53.github.io/cxai](https://karim-53.github.io/cxai/)** — sort explainers by comprehensibility, portability, and runtime.

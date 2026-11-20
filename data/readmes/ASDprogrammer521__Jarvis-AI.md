@@ -16,7 +16,7 @@
 
 <br><br>
 
-**[Download](#download)** · **[Quick start](#quick-start)** · **[Features](#features)** · **[Hand Space](#hand-space)** · **[Tools](#built-in-tools)** · **[Phone](#phone-connection)** · **[Security](#security)**
+**[Download](#download)** · **[Quick start](#quick-start)** · **[Features](#features)** · **[Live camera](#live-camera)** · **[Offline mode](#offline-mode)** · **[3D with Blender](#3d-with-blender)** · **[Hand Space](#hand-space)** · **[Tools](#built-in-tools)** · **[Phone](#phone-connection)** · **[Security](#security)**
 
 </div>
 
@@ -24,14 +24,14 @@
 
 ## Overview
 
-**Jarvis AI** is an intelligent assistant that automates your workflow and simplifies everyday computer tasks. A clean, modern interface sits on top of serious tools: **voice control, screen awareness, desktop automation, a holographic HUD, hand-controlled Hand Space, profiles, plugins and a full phone companion** — one system, version **5.x**.
+**Jarvis AI** is an intelligent assistant that automates your workflow and simplifies everyday computer tasks. A clean, modern interface sits on top of serious tools: **voice control, screen and live-camera awareness, desktop automation, a holographic HUD, hand-controlled Hand Space, 3D modelling in Blender, a speedcubing site, an offline mode, profiles, plugins and a full phone companion that can even unlock your phone** — one system, version **5.x**.
 
 <table>
 <tr>
 <td width="25%" valign="top" align="center"><h3>🎙️ Voice</h3>Push-to-talk, open mic and an optional local <i>"Hey Jarvis"</i> wake word.</td>
-<td width="25%" valign="top" align="center"><h3>👁️ Vision</h3>Reads your screen, scans receipts, recognises faces and hands through the webcam.</td>
+<td width="25%" valign="top" align="center"><h3>👁️ Vision</h3>Reads your screen, solves what you write on a board in front of the camera, scans receipts, recognises faces and hands.</td>
 <td width="25%" valign="top" align="center"><h3>🖥️ Control</h3>Apps, windows, files, browser, system settings, Gmail and Calendar — by voice or text.</td>
-<td width="25%" valign="top" align="center"><h3>📱 Phone</h3>Native Android app: calls, SMS, find my phone, big file transfer — over an encrypted link.</td>
+<td width="25%" valign="top" align="center"><h3>📱 Phone</h3>Native Android app: calls, SMS, <b>unlock</b>, find my phone, big file transfer — over an encrypted link.</td>
 </tr>
 </table>
 
@@ -94,8 +94,13 @@ python main.py
 | 💎 **Modern & clean UI** | Dashboard · Chat · Settings tabs with a cinematic HUD |
 | 🧑‍🚀 **HUD modes & 3D models** | Holo · Crystal · Globe · Knot · Helix · Face — or drop in your own `.obj` |
 | ✋ **Hand Space** | Browse drives, folders, pictures, notes, 3D models and videos as glass cards you grab with your bare hands — and design your own cards |
+| 📷 **Live camera** | "Open the camera" — a live view that stays open until *you* close it. Say "full screen" (or press the button) for a full-screen picture with a light Jarvis in the corner. Write a task on a board, say "solve it", and Jarvis reads and solves it. [Details](#live-camera) |
+| 📴 **Offline mode** | When the internet is down or too poor for the live voice session, Jarvis switches by itself to local voice and text commands — and switches back when the line is good again. [Details](#offline-mode) |
+| 🧊 **3D with Blender** | "Create a low-poly castle in Blender" — Jarvis builds, edits, recolours, renders and exports real 3D models, and can model a picture you give it. [Details](#3d-with-blender) |
+| 🧩 **Speedcubing site** | Your own Rubik's-cube timer (2×2–7×7, inspection, scrambles, ao5 / ao12) and an OLL / PLL / F2L algorithm trainer — "open my cubing timer" |
+| 🔓 **Phone unlock** | "Unlock my phone" — the Jarvis App draws your pattern, taps your PIN or types your password. The secret never leaves the phone. [Details](#phone-unlock) |
 | 🎙️ **Voice + wake word** | Push-to-talk, open mic, mute, optional local "Hey Jarvis" wake word |
-| 📱 **Jarvis App (phone)** | Native Android app — **call by name or number**, incoming-call alerts on the PC, find my phone, big file transfer, SMS, lock, locate — no ADB. A lightweight browser page covers chat and basic commands |
+| 📱 **Jarvis App (phone)** | Native Android app — **call by name or number**, incoming-call alerts on the PC, find my phone, big file transfer, SMS, lock, **unlock**, locate — no ADB. A lightweight browser page covers chat and basic commands |
 | 🔒 **Encrypted link** | HTTPS / WSS by default. Jarvis makes its own certificate automatically — nothing to buy or install |
 | 🧩 **Modes** | "Work mode" opens and arranges a whole set-up; save your own by voice |
 | 🪟 **Window control by name** | "Minimize Discord", "snap Chrome left", "Chrome and Discord side by side", "move Chrome to the other monitor" act on *that* app's window |
@@ -113,6 +118,80 @@ python main.py
 | 🔄 **Self-update** | Checks GitHub for updates and applies them |
 | 🖥️ **Compact mode** | Floating always-on-top mic (F12) |
 | 💻 **Windows EXE** | Single-folder build via GitHub Releases — no Python install |
+
+<img src="assets/divider.svg" width="100%" alt="">
+
+## Live camera
+
+Jarvis can show your webcam live and look through it.
+
+| Say | What happens |
+| --- | ------------ |
+| "Open the camera" | The live view opens on the HUD and **stays open until you close it** — it never closes by itself after Jarvis answers |
+| "Camera full screen" | The picture fills the whole screen (no black bars). A small, light **Jarvis** sits in the bottom-right corner: it pulses and animates while he talks, spins faster while he thinks. What he says is also shown as a caption |
+| "Make it smaller" / **Esc** | Back to the small panel |
+| "Close the camera" | Closes it and releases the webcam |
+| Write on a board or paper → "solve it" / "what's written here?" | Jarvis takes a frame from the live view, reads the task (maths, physics, code, a question) and says the key steps and the answer |
+
+The full-screen button on the camera panel (or a double-click on the picture) does the same as the voice command, and **Esc** leaves full screen.
+
+**Picture quality and speed**
+
+* While the live view is open the camera runs in the biggest size it supports that fits your monitor (up to 1920×1080, otherwise 1280×720), so handwriting is readable. When you close the view it drops back to 640×480.
+* Hand tracking and Face ID always get a small 640-pixel picture, so HD does not slow them down.
+* In full screen the animated HUD behind the camera is paused, and nothing is converted while the window is minimized.
+* Tips for boards: write large, use good light, and keep the board flat to the camera. If part of it is unreadable, Jarvis tells you which part.
+
+<img src="assets/divider.svg" width="100%" alt="">
+
+## Offline mode
+
+Jarvis normally talks to Gemini Live. When the internet is **down or too poor** for a live voice session, it does not spam errors — it quietly switches to **offline mode** and keeps answering local commands. When the line is good again (two good checks in a row) it reconnects by itself.
+
+* **Switching is automatic.** Jarvis checks the connection to the Live server; a dead or very slow line (about 25 s of it during a session) moves you to offline mode. If the line looks fine but Live keeps failing (blocked network, VPN needed), it waits 30 s before trying again.
+* **Quiet terminal.** Dropped connections no longer print tracebacks or library log noise. Real problems (a wrong API key, a bug) are still shown.
+* **What works offline** (Uzbek, Russian and English, no need to say "Jarvis"): *open / full screen / close the camera* · *what time is it* · *what's the date* · *volume up / down / mute* · *brightness* · *screenshot* · *open Chrome* · *timer 5 minutes* · *remind me in 10 minutes* · *note buy milk* · *2 plus 3* · *battery* · *system status* · *check the internet* · *help*. Things that need the internet ("solve this", translate) get an honest "that needs the internet".
+* **Voice offline** uses [Vosk](https://alphacephei.com/vosk/). `pip install vosk` (it is in `requirements.txt`); the small language model downloads **once, in the background, while the internet works**, and then runs fully offline. Without Vosk, type the commands into the input bar — they work the same way.
+* **Answers** are shown in the chat and spoken with your system voice (Windows speech, `say` on macOS, `espeak` on Linux). Windows has no Uzbek voice, so spoken Uzbek can sound odd — the text is always shown.
+
+Settings in `config/api_keys.json`:
+
+| Key | Default | Meaning |
+| --- | ------- | ------- |
+| `offline_auto` | `true` | `false` turns the automatic switch off |
+| `offline_lang` | `"uz"` | Vosk language: `uz`, `ru`, `en-us` |
+| `offline_stt_path` | — | Path of your own downloaded Vosk model folder |
+| `offline_tts` | `true` | `false` = offline answers are text only |
+
+<img src="assets/divider.svg" width="100%" alt="">
+
+## 3D with Blender
+
+Jarvis builds real 3D models in [Blender](https://www.blender.org) from plain language. Blender runs in the background (no window), the project is saved as a `.blend` file and a rendered preview is shown.
+
+| Say | What happens |
+| --- | ------------ |
+| "Create a medieval castle with four towers" | Gemini writes a short Blender script, Jarvis runs it and renders a preview. If the script fails, the error goes back to Gemini and it is fixed (up to 3 tries); a failed build never touches your project |
+| "Make the roof red" · "add a chimney" | Edits the current model — Jarvis sees which objects are in it |
+| "Make the wheels metallic" · "move the door left" · "delete the fence" | Direct operations — colour, metal / roughness, glow, transparency, move / scale / rotate, delete (fast, no AI call) |
+| "Change the lighting" · "render it from the front" | Lights, background and renders |
+| **Image → model:** give a picture (a photo, drawing or screenshot) and say "model this" | Gemini looks at the image and builds a Blender model that copies its subject, proportions, colours and art style |
+| "Export it as glb / fbx / obj / stl" | Exports the model (`glb`, `gltf`, `fbx`, `obj`, `stl`) |
+| "Open it in Blender" | Opens the `.blend` in the normal Blender window to finish by hand |
+| "Undo" · "list my projects" · "switch to castle" | Every change keeps a history; several projects |
+
+Projects live in `Documents/Jarvis/blender/<project>/` (`model.blend`, `renders/`, `exports/`, `history/`).
+
+> The image feature **models** what it sees from a script — it is not photogrammetry. Simple and stylised subjects work best.
+
+**Setup:** install Blender from blender.org. Jarvis finds it in the usual folders; otherwise set `"blender_path": "C:\\Program Files\\Blender Foundation\\Blender 4.2\\blender.exe"` in `config/api_keys.json`.
+
+### 🧩 Speedcubing site
+
+A page just for Rubik's-cube practice, open it by voice ("open my cubing timer", "let me time a solve", "practice OLL") or in a browser at `https://<PC-IP>:8000/cubing`.
+
+* **Timer:** hold Space, release to start, press Space to stop · inspection · scramble generator for **2×2 to 7×7** · **ao5 / ao12** stats and session history.
+* **Algorithm trainer:** **OLL (57)** and **PLL (21)** cases, plus F2L; practice mode lets you hide the algorithm and reconstruct it from memory.
 
 <img src="assets/divider.svg" width="100%" alt="">
 
@@ -209,10 +288,12 @@ The **Show hand outline** switch on the Hand Space page draws the thin bones of 
 | Area | Tools — try saying |
 | ---- | ------------------ |
 | **Computer** | `computer_settings` volume, brightness, dark mode, Wi-Fi · `app_manager` close / **minimize / maximize / restore / focus / snap / tile / next monitor** for a named app, minimize everything, top RAM/CPU apps, startup list · `macros` **modes** (work, game, relax, clean, or your own) · `screen_process` "what does this error mean?" — it looks at your screen and explains · `power_tools` battery, uptime, lock, sleep · `network_tools` IP, Wi-Fi, speed · `storage_analyzer` biggest folders and file types · `file_tools` duplicates and cleanup · `clipboard_tools` · `screen_capture` screenshots and recordings · `appearance_tools` wallpaper |
-| **Phone** | `phone_control` — "call Akam" · "call +998 90 123 45 67" · "answer" / "reject" / "hang up" · "who called?" · "find my phone" · "send report.pdf to my phone" · "text 901234567: I'm late" · "lock my phone" |
+| **Phone** | `phone_control` — "call Akam" · "call +998 90 123 45 67" · "answer" / "reject" / "hang up" · "who called?" · "find my phone" · "send report.pdf to my phone" · "text 901234567: I'm late" · "lock my phone" · **"unlock my phone"** |
+| **Camera & vision** | `screen_process` "what's on my screen?" · "look at the camera" · "solve what I wrote on the board" · `open_camera` / `camera_fullscreen` / `close_camera` — "open the camera", "camera full screen", "close the camera" |
+| **3D & creative** | `blender_3d` — "create a 3D pine tree in Blender" · "make the roof red" · "model this picture" (with a reference image) · "export it as glb" · "open it in Blender" · `cubing_timer` — "open my cubing timer", "practice OLL" |
 | **Productivity** | `notes_tasks` to-do list and notes · `reminder` · `focus_timer` Pomodoro · `habit_tracker` streaks · `finance_tracker` expenses, income and **receipt photos** · `google_workspace` **Gmail and Calendar** · `study_cards` spaced-repetition flashcards · `text_assistant` translate, summarize, rewrite, fix grammar |
 | **Office** | PowerPoint decks · Word documents · Excel workbooks with formulas and charts · PDF merge / split / convert / OCR |
-| **Fitness & health** | `pushup_counter` webcam rep counting with form checks · `calorie_counter` meals by text or photo |
+| **Fitness & health** | `pushup_counter` live **workout coach** — push-ups, squats, sit-ups, pull-ups and plank (timed) with form checks; workout plans ("3 sets of 15") with an automatic rest countdown; opens **full screen** with a big animated counter in the top-left corner (say "make it smaller" or press Esc to leave it); a **new-record celebration** (confetti + big number); weekly chart and records on the Dashboard · `calorie_counter` meals by text or photo |
 | **Media & games** | `spotify_controller` · `youtube_video` summaries · `play_hud_video` video with sound in the HUD (mpv; by link or just by describing it, full screen with F) · `game_updater` Steam / Epic installs and updates |
 | **Info** | `web_search` · `knowledge_lookup` · `weather_report` · `flight_finder` · `utility_tools` calculator, units, live currency |
 | **Developer** | `code_helper` write / edit / run code · `dev_agent` multi-file projects |
@@ -418,9 +499,13 @@ File-level options use `#@hud 1`, `#@glow 1`, `#@rim 1`, `#@palette gold`. The b
 * **GPU hologram:** with GPU acceleration on, the Holo model is drawn by a shader on the graphics card. If the shader cannot run, Jarvis checks itself and switches to the standard renderer automatically (Settings → Appearance → Performance).
 * **Profiles:** Settings → General → Profile (or "switch to work mode") changes the 3D model, push-to-talk / open mic and graphics quality: Home = Holo, Work = Crystal, Game = Globe + lightweight.
 * **HUD video (`play_hud_video`)** uses [mpv](https://mpv.io): `pip install python-mpv` (already in `requirements.txt`) plus the libmpv library. Windows: download libmpv from <https://sourceforge.net/projects/mpv-player-windows/files/libmpv/> and copy `libmpv-2.dll` (or `mpv-2.dll`) into the Jarvis folder next to `main.py`. Linux: `sudo apt install libmpv2`. macOS: `brew install mpv`. Say "play a good Minecraft video" or give a YouTube link. In the video: Space pause, ←/→ seek, ↑/↓ volume, F / F11 / double-click full screen, Esc leaves full screen.
-* **Push-up counter** needs `opencv-python` and `mediapipe`. On first use it downloads a small pose model (about 6 MB) to `config/models/`. Place the camera at your side so your whole body is visible.
+* **Workouts:** say "let's do squats", "plank for 60 seconds", "today 3 sets of 15 push-ups, rest 45 seconds" or "pull-ups". Jarvis runs the sets one after another and counts the rest down on screen ("skip rest" ends it early). Plank shows a big m:ss clock. Every finished workout is saved to `memory/workouts.json`; the **Dashboard → Workouts** card shows a 7-day bar chart, your personal records and your day streak. Beating your best total plays a full-screen record animation (needs at least one earlier session of that exercise). On a wide screen with a 4:3 camera, two side panels fill the free strips beside the picture: **today** (daily-goal ring, streak, sets done, record to beat) on the left and **technique** (live angle gauge, form verdict, one bar per rep) on the right; the goals are `DAILY_GOAL_REPS` / `DAILY_GOAL_PLANK` in `core/workout_stats.py`. Squats / sit-ups / push-ups work best from the side, pull-ups facing the camera.
+* **Workout counter** needs `opencv-python` and `mediapipe`. It starts full screen (say "start push-ups, not full screen" to keep the small panel); closing the view ends the workout. On first use it downloads a small pose model (about 6 MB) to `config/models/`. Place the camera at your side so your whole body is visible.
 * **Gmail & Calendar** need a Google OAuth client — see [Receipts, Gmail, gestures and Face ID](#receipts-gmail-gestures-and-face-id). `google-api-python-client` and `google-auth-oauthlib` are already in `requirements.txt`.
 * **Receipt scanner** uses your Gemini key — no extra setup.
+* **Blender (`blender_3d`)** needs [Blender](https://www.blender.org) installed — see [3D with Blender](#3d-with-blender). Modelling uses your Gemini key.
+* **Offline voice** needs `vosk` (in `requirements.txt`); its small model downloads once while online — see [Offline mode](#offline-mode).
+* **Live camera** needs `opencv-python` and a webcam; Gestures, Face ID and the live view share one camera — see [Live camera](#live-camera).
 * **PDF OCR** needs the free [Tesseract](https://github.com/tesseract-ocr/tesseract) program installed. Converting Word/PowerPoint/Excel to PDF needs [LibreOffice](https://www.libreoffice.org) (or Microsoft Word with `docx2pdf` on Windows).
 * **Spotify** works out of the box with the desktop app (media keys, volume, search page). For one-step "play my chill playlist", add `spotify_client_id` and `spotify_client_secret` (free, from developer.spotify.com/dashboard) to `config/api_keys.json`, register `http://127.0.0.1:8888/callback` as the Redirect URI, then say "log in to Spotify" once.
 * Generated files are saved under `Documents/Jarvis/` (change with `"output_dir"` in `config/api_keys.json`). Workout and nutrition logs live in `memory/`.
@@ -477,6 +562,24 @@ Jarvis connects **out** from the phone to your PC (reverse WebSocket), so there 
 
 Caller names need **Contacts** and caller numbers need **Call log** (Android 9+ hides the number without it). Calls need the **Phone** permission. Without it Jarvis opens the dialer with the number filled in instead of dialling. Answer / reject / hang up need **Answer phone calls** (Android 8+); on some phones the system dialer may still refuse to be controlled.
 
+### Phone unlock
+
+Say **"unlock my phone"** and the Jarvis App unlocks the screen the way you would: it swipes up, then **draws your pattern, taps your PIN or types your password**.
+
+**One-time setup on the phone**
+
+1. Open **Jarvis App → Unlock setup**.
+2. Choose how your phone unlocks — **Pattern**, **PIN** or **Password** — and enter it once.
+3. Turn on **Accessibility → Jarvis phone unlock**. If Android says *"Restricted setting"*: Settings → Apps → Jarvis App → ⋮ → *Allow restricted settings*, then turn it on again.
+
+**How it stays safe**
+
+* The code is encrypted with a **non-exportable Android Keystore key** and stored **only on the phone**. It is never sent to the PC or over the network.
+* The phone acts **only** when the paired PC sends an `unlock` command over the encrypted link.
+* Before typing a PIN, the app checks that every digit key is on screen, so it never types half a code. It then checks the result and reports whether the phone really unlocked.
+
+> Fingerprint / face-only unlock cannot be entered by an app, and some phone makers restrict accessibility gestures on the lock screen. If your phone refuses, Jarvis tells you why instead of failing silently.
+
 ### Option B — Browser page (no install)
 
 ```text
@@ -499,6 +602,7 @@ Same Wi‑Fi required. Enter the pairing key (or scan the QR code from Remote Co
 | Chat with Jarvis | Type in the bottom bar and send |
 | Files, phone → PC | **+** or **Send file** — any size (up to the server limit) over the encrypted link; saved in the dashboard uploads folder |
 | Files, PC → phone | "Send report.pdf to my phone" — a one-file link that expires in 15 minutes; the file lands in `Downloads/Jarvis` |
+| Unlock | "Unlock my phone" — the phone draws your pattern / taps your PIN / types your password (set up once in **Unlock setup**; stored only on the phone — see [Phone unlock](#phone-unlock)) |
 | Find my phone | Rings on the alarm channel at full volume (even when silent) for up to 90 s; "stop ringing" or the tile stops it |
 | Quick actions | YouTube, Lock, Home, Notifs, Location, Camera, Voice, Torch, Screenshot |
 | Message previews | Enable **Notification access**; SMS, WhatsApp and Telegram previews show in the Phone section on the PC (read-only — no replies, SMS storage is never read) |
@@ -589,8 +693,8 @@ Jarvis-ai/
 ├── requirements.txt        # the only requirements file
 ├── actions/                # built-in tools
 ├── plugins/                # drop-in plugins
-├── core/                   # avatar, audio, LLM, updater, camera hub (gestures + Face ID), Hand Space, live card feeds…
-├── dashboard/              # remote server + web companion
+├── core/                   # avatar, audio, LLM, updater, camera hub (live view + gestures + Face ID), offline mode, Hand Space, live card feeds…
+├── dashboard/              # remote server + web companion (+ static/cubing.html — the speedcubing site)
 ├── android/JarvisApp/      # native Android companion (Kotlin) — dialer, calls, quick actions
 ├── scripts/build_exe.ps1   # local Windows packaging
 ├── memory/                 # config + long-term memory
@@ -600,12 +704,36 @@ Jarvis-ai/
 
 <img src="assets/divider.svg" width="100%" alt="">
 
+### Smart nudges (proactive Jarvis)
+
+Jarvis can speak up on its own — a toast on screen and, if you want, one short spoken sentence:
+
+| Nudge | When |
+|---|---|
+| 📅 Upcoming meeting | a Google Calendar event starts in N minutes (default 15; needs Google connected) |
+| 🔋 Low battery | battery at or below N % (default 15) and not charging |
+| 💪 Workout reminder | nothing logged today and it is N o'clock or later (default 18:00) |
+| 🔥 Streak at risk | your streak of 2+ days ends tonight (default from 21:00) |
+
+Everything is optional: **Settings → Nudges** has a switch and a value for each one, *say them aloud*, **quiet hours** (default 23:00–07:00) and *pause for 1 / 4 hours*. By voice: "turn off the battery reminders", "remind me about meetings 10 minutes before", "be quiet for an hour". A nudge is never repeated, never interrupts while Jarvis is talking (it waits, then falls back to a toast), and at most one is spoken per check. The engine is `core/nudges.py`; its settings live under `nudges` in `config/api_keys.json`.
+
+### Look & feel
+
+* **Themes:** Settings → Appearance → *Theme* switches the whole palette instantly — **Jarvis**, **Iron Man**, **Neon**, **Minimal** and **Emerald**. The accent picker still works and replaces the theme with your own colour. The choice is saved in `config/api_keys.json` (`ui_theme`, `ui_color`).
+* **Design tokens:** corner radii, spacing, type sizes and animation times live in one place, `ui/theme.py` (`T.R_MD`, `T.S4`, `T.D_BASE` …), together with the colours (`C`) and two QSS helpers (`card_css()`, `button_css()`). Build new widgets from these so they match everything else.
+* **Notifications:** every message goes through `ui/toasts.py` (`ToastCenter`): they slide up from the bottom, stack (max four, the oldest fades out), an identical message is not shown twice, and the colour follows the meaning (✅ green, ⚠ amber, ⬆ violet).
+* **Transitions:** switching pages fades in over about 200 ms.
+* **Full-screen camera:** soft shading at the top and bottom, thin viewfinder corners and a LIVE badge (picture size and frame rate); the mini Jarvis sits bottom-right.
+* **One camera:** the workout counter, Face ID, hand gestures and the camera view share a single capture (`CameraHub`) — two programs opening the same webcam is what caused the OpenCV "Unknown C++ exception" on Windows.
+
 ## Security
 
 * **Encrypted link.** The dashboard serves HTTPS and the app connects over WSS. Jarvis creates a self-signed certificate in `config/certs/` automatically (and a new one if your PC's LAN address changes). The private key is never shipped with the project. The Android app pins its SHA-256 fingerprint the first time it pairs and refuses any other certificate afterwards — it never silently drops back to plain HTTP once a certificate is pinned.
 * **Pairing key.** A one-time key (valid ten minutes) turns into a session token; "revoke devices" ends all sessions.
 * **Confirmations.** Shutdown, restart and outgoing messages need your click on the PC. A shutdown asked for from the phone starts a 15-second countdown (`shutdown /a` cancels it).
 * **Google & camera.** Gmail access is read-only; the Google token lives in `config/google_token.json` (owner-only). Hand gestures, Hand Space and Face ID are off until you enable them, process the camera locally and store no photos.
+* **Phone unlock.** The phone's unlock code is encrypted with a non-exportable Android Keystore key and never leaves the phone; unlocking happens only on an `unlock` command from the paired PC.
+* **Offline mode.** Offline speech recognition (Vosk) and the offline commands run entirely on your PC; nothing is sent anywhere. The camera view is processed locally and no pictures are stored — a frame goes to Gemini only when you ask Jarvis to look (for example "solve it").
 * **Files.** PC → phone transfers are single-file links that expire; keys, certificates and `api_keys.json` are never sent.
 
 ## License

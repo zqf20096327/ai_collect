@@ -7,7 +7,7 @@
 **BibleMate AI** is a groundbreaking, autonomous AI agent designed to revolutionize your Bible study. It can create study plans, coordinate multiple Bible tools, and take multi-step actions to complete complex Bible-related tasks, such as conducting an in-depth study of a particular Bible passage.
 
 **🌐 Website:** https://biblemate.ai
-**📺 Public Demo:** https://biblemate.gospelchurch.uk
+**📺 Public Demo:** https://web.biblemate.ai
 **🔌 MCP Server:** https://bible.gospelchurch.uk/mcp
 **📡 API Server:** https://biblemate.gospelchurch.uk/api/data
 
@@ -73,7 +73,7 @@ biblemateapi -h
 
 **Access Web Interface:**
 - Local: http://localhost:33355
-- Public Demo: https://biblemate.gospelchurch.uk
+- Public Demo: https://web.biblemate.ai
 
 ## Key Features
 
@@ -211,6 +211,11 @@ BibleMate AI provides access to extensive Bible data resources across multiple r
 - [LXX Rahlfs 1935](https://github.com/eliranwong/LXX-Rahlfs-1935) - Septuagint (Rahlfs edition)
 - [LXX Swete 1930](https://github.com/eliranwong/LXX-Swete-1930) - Septuagint (Swete edition)
 - [SBLGNT Add-ons](https://github.com/eliranwong/SBLGNT-add-ons) - SBL Greek New Testament enhancements
+
+### BibleMate Data Extensions
+- [Tagged Bibles](https://github.com/eliranwong/biblematedata-tagged-bibles) - Word-level tagged Bible SQLite databases mapped to original Hebrew/Aramaic and Greek words
+- [Lexicon Headword Mappings](https://github.com/eliranwong/biblematedata-mapping-HALOT-CHALOT-BDBE-BDAG-LSJ) - Headword and Extended Strong's (`eStrong`) mappings linking HALOT, CHALOT, BDBE, BDAG, and LSJ lexicons to BibleMate's original language data
+- [Biblical Names Mapping](https://github.com/eliranwong/biblematedata-names) - Mapping biblical names from English to Traditional and Simplified Chinese, and numbered book IDs
 
 ### AI-Generated Content
 - [Bible Book Analysis](https://github.com/eliranwong/BibleBookStudies) - AI analysis of every book

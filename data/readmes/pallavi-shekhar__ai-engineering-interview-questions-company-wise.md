@@ -139,6 +139,7 @@
   - Answer: [Math Behind RoPE (Rotary Position Embedding)](https://outcomeschool.com/blog/math-behind-rope-rotary-position-embedding)
 - What do the Chinchilla scaling laws say, and how do they differ from earlier scaling intuitions?
   - Asked at: [Anthropic](#anthropic)
+  - Answer: [What are the Chinchilla scaling laws?](https://outcomeschool.com/blog/chinchilla-scaling-laws)
 - What is a mixture-of-experts architecture and how does it scale capacity without scaling FLOPs?
   - Asked at: [Mistral AI](#mistral-ai), [Cohere](#cohere), [DeepSeek](#deepseek), [Moonshot AI](#moonshot-ai-kimi), [Zhipu AI](#zhipu-ai-glm), [Alibaba](#alibaba-qwen)
   - Answer: [Mixture of Experts Explained](https://outcomeschool.com/blog/mixture-of-experts)
@@ -1289,8 +1290,4 @@
 
 #### Evaluation and Observability
 
-- Disengagement rate is a weak proxy. How would you actually measure whether an autonomy release is safer than the last one?
-
-#### Multimodal, Speech and Voice AI
-
-- How would you fuse camera, 
+- Disengagement rate is a weak proxy. How would you actually measure whether an auton

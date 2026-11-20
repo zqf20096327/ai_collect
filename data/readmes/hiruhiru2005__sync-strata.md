@@ -111,6 +111,7 @@ In the app: "Start settings", then "Context settings"; it shows "up to about N t
 - **Memory squeeze**: at start, and once each time you switch models, the app pushes the RAM used by other apps out of memory (to disk) and gives it to the model (on by default). It does not close any app. The amount is shown in the start reason. Turn it off with the `ram_squeeze` setting.
 - **Chat saves**: the saved state (K/V) that lets a chat resume quickly is kept on the same drive as the models. The total is capped at the smaller of 20 GiB and 10% of the free space on that drive by default; beyond that, the oldest are deleted. Change the folder and the cap with the `sessions_dir` and `sessions_max_gib` settings.
 - **Web search**: the chat screen can search the web. The search engine, [RustXNG](https://github.com/sahenjp/RustXNG) (AGPL-3.0), is not in the release: it is downloaded from upstream the first time you search. The dsh plug-in that connects it, [dsh-rustxng](https://github.com/kgmkm/dsh-rustxng), is MIT.
+- **Fewer refusals (uncensored, experimental)**: turned on in Strata settings, the same control vector as upstream Strata makes the model decline less often (off by default). The model weights are not changed. Its safety behavior is weakened too, so you are responsible for what you have it write. From the command line: `sync.cmd settings set refusal_reduction on`.
 
 ## Update and uninstall
 

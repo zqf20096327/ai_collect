@@ -24,7 +24,7 @@
 - **A model does the slow, clever work:** it writes the app you asked for. It is not part of the kernel. It is reached over the internet.
 - **What the model writes is a script, plain text.** It runs locked in a box, where it can ask the kernel for a few things and touch nothing else. A clumsy app, one that never ends or eats its memory, is stopped, and the kernel carries on.
 
-**The last step is built, in its first and simplest form: an app is written on request.** Type `make` and what you want into the chat box, such as `make a dice that rolls`, and the model writes the app as a script, which the kernel runs once in the box; what the app shows appears on the screen. The app is not kept, and it can do little: show one line and print to the terminal. Most of this page is about the ground under the idea: the kernel itself, an encrypted link to the outside, the questions to a model, the box, an interpreter that runs scripts, a screen to show things on, a chat box to type into, and a disk to keep things on.
+**The last step is built, in its first and simplest form: an app is written on request.** Type `make` and what you want into the chat box, such as `make a dice that rolls`, and the model writes the app as a script, which the kernel runs once in the box; what the app shows appears on the screen. An app that ran to its end is kept on the disk and listed on the screen, but it cannot be run again yet, and it can do little: show one line and print to the terminal. Most of this page is about the ground under the idea: the kernel itself, an encrypted link to the outside, the questions to a model, the box, an interpreter that runs scripts, a screen to show things on, a chat box to type into, and a disk to keep things on.
 
 ## What is there
 
@@ -44,7 +44,7 @@ kernel                      shares the processor and the memory, talks to device
 **The machine**
 
 - Starts with no bootloader: the firmware loads the kernel's file, the kernel asks it for the memory map and the screen, and then tells it to step aside.
-- Reports a processor failure (an exception) in one line of words, and then stops.
+- Reports a processor failure (an exception), or its own code giving up (a panic), in one line of words, shows that line on a dark red stop screen above the lines it said before it, and then stops.
 - Listens to the timer and the keyboard, Shift keys included.
 - Manages memory itself: a pile of free frames, its own page tables, a heap.
 - Runs several tasks that take turns under the timer. A task that waits uses no processor time.
@@ -78,6 +78,7 @@ kernel                      shares the processor and the memory, talks to device
   ```
 
 - Runs the app the model wrote: the kernel takes the script out of the model's answer, checks that the answer came whole and that the script fits the box, lists the script in the terminal line by line, and runs it once. What the app shows appears in the box in the middle of the screen, what it prints comes out in the terminal, and the chat box says in one plain sentence how the run went, or why the app was stopped.
+- Keeps an app that ran to its end on the disk, with the words it was asked for, and reads the script back to check that it was written whole. A panel near the top left of the screen lists the apps kept, five a page, the newest first, and it is there again after a restart. Asking for the same app again has the model write it again, and the new one takes the old one's place.
 
 **The screen and the chat box**
 
@@ -96,7 +97,8 @@ kernel                      shares the processor and the memory, talks to device
   ```
 
 - Shows an app's text in a box. The app only says which text; the kernel decides how the box looks.
-- Has a chat box along the bottom of the screen: type a line, press Enter, and the kernel answers. The line `fetch` makes it fetch the web page again and say how the site answered. The line `key` makes it take a secret, which shows as stars and is kept in memory only. The line `ask` makes it ask the model, with that secret as the key. A line that begins with `make`, such as `make a dice that rolls`, asks the model, with the same key, to write that app, and runs it.
+- Has a chat box along the bottom of the screen: type a line, press Enter, and the kernel answers. The line `fetch` makes it fetch the web page again and say how the site answered. The line `key` makes it take a secret, which shows as stars and is kept in memory only. The line `ask` makes it ask the model, with that secret as the key. A line that begins with `make`, such as `make a dice that rolls`, asks the model, with the same key, to write that app, and runs it. The line `look` lists four looks for the screen, Blue, Night, Paper and Contrast; the number of one paints the whole screen in it at once, and the look picked is kept on the disk.
+- Shows its own lines on the screen as well as in the terminal, since many PCs have no serial port: while the machine starts they cover the screen, white on dark blue, one below the other, and when the start is over the usual picture takes their place. F1 shows them again, and any key brings the usual picture back.
 
 **The disk**
 
@@ -106,12 +108,12 @@ kernel                      shares the processor and the memory, talks to device
 
 ## What a start looks like
 
-The kernel's lines appear in the terminal, through the serial port. Some of them:
+The kernel's lines appear in the terminal, through the serial port, and on the screen while the machine starts. Some of them:
 
 ```text
 Hello from my kernel!
 The firmware has stepped aside. This machine is mine.
-Free memory: 198 MB
+Free memory: 197 MB
 Page tables: the kernel's own, covering 4 GB
 Screen: found, 1280 dots wide and 800 dots high, its memory starts at 0x80000000
 Encryption: 8 of 8 checks of the arithmetic are right, and 112 trusted roots are on board
@@ -130,7 +132,7 @@ Network: example.com answered "HTTP/1.1 200 OK". Its page begins:
 
 Some numbers differ from one computer and one start to the next. The whole listing, with what each line means and what it reads when something is missing, is in [docs/startup.md](docs/startup.md).
 
-The QEMU window shows what the kernel paints. Drawn here with signs; on the screen it is white letters on dark blue, and light boxes with orange frames:
+The QEMU window shows what the kernel paints. Drawn here with signs; in the first look it is white letters on dark blue, and light boxes with orange frames:
 
 ```text
 ┌────────────────────────────────────────────────────────────────────┐
@@ -212,17 +214,22 @@ Seven crates are kept as copies in `vendor/`. Six of them came with a build scri
 | `vendor/` | The copies of outside code |
 | `run.bat` | Builds both, makes the disk file the first time, starts QEMU |
 | `make-disk.ps1` | Divides a new disk file into parts, with one part for the kernel |
+| `LICENSE-MIT`, `LICENSE-APACHE` | The licence of the project's own code: either one, whichever you choose |
 
 ## What it cannot do
 
 Said plainly, because a list of what works is only half the picture:
 
-- An app runs once and is gone. Nothing keeps it, so the same app asked for again is written again by the model.
-- An app can show one line of 40 signs and print to the terminal, and nothing else. It cannot wait, read a key or be run again. A request for one has at most 45 signs.
+- A kept app cannot be run again yet: the same app asked for again is written again by the model, and the new one takes the old one's place.
+- An app can show one line of 40 signs and print to the terminal, and nothing else. It cannot wait or read a key. A request for one has at most 45 signs.
 - The model is told the same fixed text with every request for an app, and whether it keeps to it is not checked: an answer in words instead of a script is taken as the script. Apart from apps, the model can be asked one fixed question, and its answer is only said, not used.
 - It has run in QEMU only. What a real PC may do differently is collected in [docs/open-points.md](docs/open-points.md).
 - Its network card is a virtio card, a kind that exists only in virtual machines.
-- The kernel answers a typed line by giving it back. Only a few words do more, such as `fetch`, `key`, `ask` and `make`.
-- The mouse is switched off, and the look of the screen is fixed when the kernel is built.
+- The kernel answers a typed line by giving it back. Only a few words do more, such as `fetch`, `key`, `ask`, `make` and `look`.
+- The mouse is switched off, and the look of the screen is one of four built into the kernel.
 
 Start with [docs/README.md](docs/README.md) if you want to read the code or change it.
+
+## Licence
+
+The project's own code may be used under the MIT licence ([LICENSE-MIT](LICENSE-MIT)) or the Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE)), whichever you choose. The outside code keeps its own licences; [vendor/README.md](vendor/README.md) lists those of the copies.

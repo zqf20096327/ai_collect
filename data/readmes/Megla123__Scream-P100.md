@@ -15,7 +15,7 @@ Flash-Next IQ3_S: **~67 tok/s writing · 110+ tok/s edits · ~1,000 tok/s readin
 ![Context 512k](https://img.shields.io/badge/context-524%2C288%20tokens-orange)
 ![API: OpenAI-compatible](https://img.shields.io/badge/API-OpenAI--compatible-412991)
 
-[Quick start](#-quick-start) · [Speed](#-speed) · [Models](#-models) · [How it works](#-how-it-works) · [Full guide](docs/GUIDE.md)
+[Quick start](#-quick-start) · [Speed](#-speed) · [Models](#-models) · [2× M40 test build](#-test-build-two-tesla-m40-24-gb) · [How it works](#-how-it-works) · [Full guide](docs/GUIDE.md)
 
 </div>
 
@@ -141,6 +141,18 @@ One data folder holds one profile, so give each model its own folder (`--models`
 expert types have no P100 kernels here (Q6_K, Q3_K, Q2_K, ...) run slower than Strata itself, or not at all. On other
 cards, use [Strata](https://github.com/Niko1221/Strata).
 
+## 🧪 Test build: two Tesla M40 24 GB
+
+> ⚠️ **Test build, measured on one machine only**, on branch [`m40-2x`](https://github.com/Megla123/Scream-P100/tree/m40-2x)
+> ([docs/M40.md](https://github.com/Megla123/Scream-P100/blob/m40-2x/docs/M40.md)). We ran it on our second server until we
+> sold it, so we cannot measure it again or test fixes.
+
+The same split engine on two **Tesla M40 24 GB** (Maxwell, sm_52, 2015), with f32 expert kernels of its own (Maxwell has no
+f16 arithmetic), on **32 GB of RAM**: ISTA-DASLab's GSQ-RCO IQ3_XXS, 256k context, pictures. On our M40 server (220 W, 1114 MHz):
+**45.7 tok/s** fresh writing, **62.9 / 66.7** edits (Python / Markdown), **420 tok/s** reading a 38,862-token prompt. Strata's
+layer-split engine did 35.2 tok/s writing and 275 tok/s reading on the same machine. Build with `bash build.sh --m40`, set up
+with `setup.sh DATA --model iq3_xxs`. Only the 24 GB M40 was run.
+
 ## 🔧 How it works
 
 ```mermaid
@@ -169,7 +181,8 @@ The build-by-build story, with the gain of each step, is in [docs/HISTORY.md](do
 
 - **Linux x86-64.**
 - **Two Tesla P100 16 GB (PCIe)**, ideally each in a **Gen3 x16** slot. The engine is built for exactly two cards of
-  compute capability 6.0 and refuses other cards. P40 and GTX 10x0 (sm_61) are not supported.
+  compute capability 6.0 and refuses other cards. P40 and GTX 10x0 (sm_61) are not supported. Two Tesla M40 24 GB: only
+  the [test build](#-test-build-two-tesla-m40-24-gb) on branch `m40-2x`.
 - **Above 4G Decoding** on in the BIOS, so each card gets its 16 GiB BAR1. The engine refuses a card without one.
 - **96 GB of RAM**, or 64 GB with the IQ3_S 64 GB mode or the exact UD-Q4_K_XL's 64 GB mode (model files on an SSD), or
   32 GB with the fast UD-Q4_K_XL's 32 GB mode (lossy, model files on an SSD).
@@ -192,12 +205,16 @@ settles. What has and has not been tested is in [Known limitations](docs/GUIDE.m
 | [docs/HISTORY.md](docs/HISTORY.md) | How the port came about, build by build, plus what was tried and dropped |
 | [tune/README.md](tune/README.md) | `check.py` and `tune.py`: diagnose and tune your own machine |
 | [Branch `poc-4x-p100`](https://github.com/Megla123/Scream-P100/tree/poc-4x-p100/docs/POC-4X.md) | ⚠️ **Unverified proof of concept**, never run on four cards: a build for four P100 behind one PCIe switch (`build.sh --4x`) |
+| [Branch `m40-2x`](https://github.com/Megla123/Scream-P100/blob/m40-2x/docs/M40.md) | ⚠️ **Test build** for two Tesla M40 24 GB (sm_52), measured on one machine only: IQ3_XXS, 256k, 32 GB of RAM (`build.sh --m40`) |
 | [NOTICE.md](NOTICE.md) · [docs/PROVENANCE.md](docs/PROVENANCE.md) · [docs/upstream-v0.2.10.diff](docs/upstream-v0.2.10.diff) | What is ours and what is Strata's, file by file and line by line |
 
 Our scripts and docs refer to sections as *(README, "Section")*. Those sections are now in [docs/GUIDE.md](docs/GUIDE.md).
 
 ## 📰 News
 
+- **20 Nov 2026:** ⚠️ a **test build for two Tesla M40 24 GB** (Maxwell) on branch [`m40-2x`](https://github.com/Megla123/Scream-P100/blob/m40-2x/docs/M40.md):
+  the engine we ran on our second server until we sold it. ISTA-DASLab's IQ3_XXS, 256k context, 32 GB of RAM: 45.7 tok/s
+  fresh writing, 62.9 / 66.7 edits, 420 tok/s reading 38.9k tokens. Measured on that one machine only.
 - **19 Nov 2026 (evening):** the **exact UD-Q4_K_XL on 64 GB of RAM**, with the full 512k context (`bash build.sh --32g`,
   then `setup.sh ... --model q4_k_xl --ram 64`): the 32 GB mode's low-RAM engine with the profile's own settings, the
   experts the cards do not hold in a RAM tier of up to 25 GiB a card and in the model files. The same answers as with

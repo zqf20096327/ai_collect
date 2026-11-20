@@ -54,7 +54,7 @@ pi --no-extensions -e /absolute/path/to/pi-ollama/src/index.ts
 OLLAMA_HOST=192.168.1.20:11434 pi
 ```
 
-If that server sits behind a proxy that checks a token, see [Using a remote Ollama with an API key](#using-a-remote-ollama-with-an-api-key).
+If you'd rather not set that every time, save the address instead (see [The config file](#the-config-file)). If that server sits behind a proxy that checks a token, see [Using a remote Ollama with an API key](#using-a-remote-ollama-with-an-api-key).
 
 ---
 
@@ -73,7 +73,7 @@ If you've already manually deleted the package directory (find it with `npm root
 Optional cleanup of the model discovery cache and saved settings:
 
 ```bash
-rm -f ~/.pi/agent/cache/pi-ollama-models.json ~/.pi/agent/cache/pi-ollama-config.json
+rm -f ~/.pi/agent/cache/pi-ollama-models.json ~/.pi/agent/pi-ollama.json
 ```
 
 ---
@@ -90,8 +90,10 @@ You should see something like:
 
 ```
 Ollama base URL: http://localhost:11434
-keep_alive: defer to server (default)
-Warm-up: on (/ollama-warm-up to change)
+Model loading (/ollama-preload to change):
+  Preload on Select: on
+  Idle Timeout: server default
+  Unload on Swap or Exit: immediate
 ✓ Ollama reachable - 3 model(s) registered
   qwen2.5-coder:7b               ctx:32,768  [tools]
   gemma4:26b                     ctx:32,768  [tools, vision, reasoning]
@@ -110,8 +112,8 @@ Switch to one of the discovered models and use pi normally.
 | `/ollama-refresh` | Re-discover models from `/api/tags` + `/api/show` and re-register the provider. Useful after `ollama pull <model>`. |
 | `/ollama-info [model-id]` | Show capability details for a model. Omit the argument to pick from a list of currently registered models. |
 | `/ollama-context` | Set the context length (`num_ctx`) pi-ollama sends to `/api/chat`. Picker with common presets + custom input. Persists across pi launches. |
-| `/ollama-keep-alive` | Set the `keep_alive` pi-ollama sends to `/api/chat`, or (the default) send none and let the Ollama server's own setting decide. Picker with presets + custom input. Persists across pi launches. |
-| `/ollama-warm-up` | Turn warm-up on or off (see [Warm-up](#warm-up)). Persists across pi launches. |
+| `/ollama-preload` | Model loading settings in one menu: Preload on Select, Idle Timeout, and Unload on Swap or Exit (see [Model loading](#model-loading)). Global and persistent. Replaces `/ollama-keep-alive` and `/ollama-warm-up`. |
+| `/ollama-think` | Set the thinking level a model loads with, from the levels that model supports (see [A thinking level per model](#a-thinking-level-per-model)). Per-model and persistent. |
 | `/ollama-stats` | Show tok/s throughput for this session's Ollama generations, per model: last, session average, fastest, tokens generated. |
 
 ---
@@ -120,11 +122,11 @@ Switch to one of the discovered models and use pi normally.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `OLLAMA_HOST` | `localhost:11434` | Ollama server host[:port]. May include or omit protocol. |
+| `OLLAMA_HOST` | the saved `host`, else `localhost:11434` | Ollama server host[:port]. May include or omit protocol. When set, it overrides a `host` saved in the config file. |
 | `OLLAMA_CONTEXT_LENGTH` | unset | Override the `num_ctx` pi-ollama sends to `/api/chat`. Matches the env var Ollama itself respects, so a single setting works across tools. Superseded by `/ollama-context` if used. |
-| `OLLAMA_KEEP_ALIVE` | unset | `keep_alive` for `/api/chat` requests (`"10m"`, `"1h30m"`, or an integer; `-1` = keep loaded forever). Matches the env var Ollama itself respects. **Unset (default): the field is omitted from requests and the server's own setting decides** - a per-request `keep_alive` overrides the server, so earlier versions' hardcoded `5m` silently defeated server-side keep-warm. Superseded by `/ollama-keep-alive` if used. |
+| `OLLAMA_KEEP_ALIVE` | unset | `keep_alive` for `/api/chat` requests (`"10m"`, `"1h30m"`, or an integer; `-1` = keep loaded forever). Matches the env var Ollama itself respects. **Unset (default): the field is omitted from requests and the server's own setting decides** - a per-request `keep_alive` overrides the server, so earlier versions' hardcoded `5m` silently defeated server-side keep-warm. Superseded by the Idle Timeout setting in `/ollama-preload` if one has been saved. |
 | `OLLAMA_API_KEY` | unset | Bearer token for an Ollama behind a token-checking proxy. Only sent to `OLLAMA_HOST`, and only after you approve it (see [Using a remote Ollama with an API key](#using-a-remote-ollama-with-an-api-key)). |
-| `OLLAMA_NATIVE_WARM` | on | Warm-up at session start and on model or thinking-level changes. Set to `0` to switch it off. Superseded by `/ollama-warm-up` if used. |
+| `OLLAMA_NATIVE_WARM` | on | Warm-up at session start and on model or thinking-level changes. Set to `0` to switch it off. Superseded by the Preload on Select setting in `/ollama-preload` if one has been saved. |
 | `OLLAMA_NATIVE_DEBUG` | unset | Set to `1` to enable per-chunk debug logging. Writes to a **file** (see below) - not stderr, since stderr writes corrupt pi's TUI rendering. |
 | `OLLAMA_NATIVE_DEBUG_LOG` | `~/.pi/agent/cache/pi-ollama-debug.log` | Override the default debug log path. |
 | `OLLAMA_NATIVE_DUMP_DIR` | unset | If set, writes paired `req-*.json` / `res-*.ndjson` files per request - exact replay artifacts for diagnostics. |
@@ -146,6 +148,8 @@ pi-ollama sends a context size (`num_ctx`) with every request, and registers the
 By default it's the model's trained context window, capped at 32,768 tokens. Some models report 262,144 or more, and asking Ollama for all of it would take more memory than most machines have.
 
 To change it, run `/ollama-context` and pick a preset or enter your own number. It applies from the next request and is saved across pi launches. To go back to the default, pick "Use system default" in the same picker. You can also set `OLLAMA_CONTEXT_LENGTH` in the environment, which works the same way for Ollama itself; a value chosen in `/ollama-context` takes priority over it.
+
+A size larger than a model's own maximum is brought down to that maximum for that model only, so the footer still matches what Ollama allocates. Your saved number is kept, and a model with more room gets all of it when you switch. If Ollama didn't report a maximum for a model, your number is used as it is.
 
 A bigger window holds more of the conversation but uses more memory, and a model that doesn't fit in memory will fail to load. If you hit that, step the size down. Changing the size makes Ollama reload the model on the next request.
 
@@ -175,7 +179,7 @@ If pi starts and nothing is listening at a local `OLLAMA_HOST` (localhost, `127.
 - **macOS:** it opens the Ollama app hidden, the same way Ollama's own CLI does. You get the menu-bar icon and no window. Quit it from that icon when you're done.
 - **Linux:** it starts `ollama serve` in the background and tells you its PID, so `kill <pid>` stops it. The prompt also mentions the manual routes: `ollama serve` in another terminal, or `sudo systemctl start ollama`.
 
-The choices are Start Ollama now, Always start it automatically, Not now, and Never ask again. Always and Never are remembered in `~/.pi/agent/cache/pi-ollama-config.json`; delete the `"autostart"` line there to be asked again. In headless modes (rpc, print) it only starts Ollama if you've chosen Always. After a launch, `/ollama-status` repeats how to stop it.
+The choices are Start Ollama now, Always start it automatically, Not now, and Never ask again. Always and Never are remembered in `~/.pi/agent/pi-ollama.json`; delete the `"autostart"` line there to be asked again. In headless modes (rpc, print) it only starts Ollama if you've chosen Always. After a launch, `/ollama-status` repeats how to stop it.
 
 It never offers when Ollama is on another machine, or when a server is there but not answering, since a second one couldn't share its port.
 
@@ -193,7 +197,196 @@ It can't make the read itself any faster. If you send a message before the warm-
 ⠹ warming gemma4:12b · reading pi's prompt · 23s
 ```
 
-Warm-up loads the model as soon as a session starts, which costs memory whether or not you use it. Turn it off with `/ollama-warm-up` (saved across launches) or `OLLAMA_NATIVE_WARM=0`.
+Switching models doesn't stack warm-ups. When you pick another model, the warm-up for the one you left is stopped, and the new one waits a couple of seconds before it starts, so cycling through the list with Ctrl+P only warms the model you land on. If you send a prompt before that wait is over, the warm-up is skipped, since your prompt loads the model anyway. If the warm-up is what loaded a model and you never sent it anything, moving on unloads it again. A model that was already in memory is left alone. What happens to one you've had a turn with is set by Unload on Swap or Exit, in the next section.
+
+Warm-up loads the model as soon as a session starts, which costs memory whether or not you use it. Turn it off with Preload on Select in `/ollama-preload` (saved across launches) or `OLLAMA_NATIVE_WARM=0`.
+
+---
+
+## Model loading
+
+`/ollama-preload` holds the three settings that decide when a model is loaded into memory and when it is unloaded. All three are global (they apply to every model) and persistent (saved across pi launches). `/ollama-status` prints the same three rows.
+
+```text
+Model loading (global, persistent)
+
+  Preload on Select: on
+  Idle Timeout: server default
+  Unload on Swap or Exit: immediate
+```
+
+**Preload on Select.** Whether the model is loaded when a session starts or a model is selected. This is the [warm-up](#warm-up).
+
+| Option | Effect |
+|---|---|
+| On (default) | The model and pi's prompt are loaded in the background. |
+| Off | The first request loads the model. |
+
+**Idle Timeout.** Time since the last request to the active model. This is Ollama's `keep_alive`.
+
+| Option | Effect |
+|---|---|
+| Server default (OLLAMA_KEEP_ALIVE) | No `keep_alive` is sent. The server's own setting applies; Ollama's factory value is 5 minutes. |
+| Never sleep | The model is not unloaded for being idle (`keep_alive: -1`). |
+| 5m, 30m, 1h, Custom | The model is unloaded that long after the last request. |
+
+Any option other than the first overrides the server's `OLLAMA_KEEP_ALIVE`. Setting `OLLAMA_KEEP_ALIVE` in pi's environment has the same effect and is used when nothing has been saved here.
+
+**Unload on Swap or Exit.** Time since the model was deselected, either by selecting another model or by exiting pi.
+
+| Option | Effect |
+|---|---|
+| Immediate (default) | The model is unloaded when it is deselected. |
+| After 5m, After 30m, Custom | The model is unloaded that long after it was deselected, unless it is selected again first. |
+| Never unload | Deselecting the model does not unload it. Idle Timeout still applies. |
+
+Idle Timeout cannot do this job alone. It only counts from the last request, so with Never sleep a model would stay loaded through every swap and after pi has exited.
+
+Notes:
+
+- Unload on Swap or Exit only applies to a model that has handled a request in this session. Swapping away and back within a couple of seconds does not count.
+- The timer runs in Ollama, so it does not need pi to stay open.
+- On a shared Ollama server, unloading a model unloads it for every client. It loads again on the next request.
+- If the active model has its own entry in the config file (next section), the menu title says so, and that entry takes precedence.
+
+### Renamed commands
+
+`/ollama-keep-alive` and `/ollama-warm-up` were removed in favour of `/ollama-preload`. Their settings are the Idle Timeout and Preload on Select rows, and anything already saved carries over.
+
+The default for a model that has been used also changed. It used to stay loaded after a swap or exit for as long as `keep_alive` allowed. It is now unloaded immediately. Choose Never unload under Unload on Swap or Exit to get the earlier behaviour.
+
+---
+
+## The config file
+
+You don't need this file. With Ollama running on the same machine, pi-ollama works with nothing configured, and the slash commands cover the everyday settings. The config file is for the cases they don't reach: a different Ollama server, or models that each want their own treatment. Everything in it is optional, and anything you leave out behaves as it does by default.
+
+The file is `~/.pi/agent/pi-ollama.json`. It's the same file the slash commands save to, so add to whatever is already there. Restart pi after editing it.
+
+Before this release the file was `~/.pi/agent/cache/pi-ollama-config.json`. If you have one, it's moved to the new place the first time pi starts, with nothing changed in it.
+
+### A different default server
+
+To use an Ollama on another machine without setting `OLLAMA_HOST` each time, save its address:
+
+```json
+{
+  "host": "192.168.1.20:11434"
+}
+```
+
+It takes what `OLLAMA_HOST` takes: a bare host, `host:port`, or a full `http://` or `https://` URL, which can include a reverse-proxy path. A bare host gets Ollama's port, 11434. If `OLLAMA_HOST` is set, it wins. `/ollama-status` shows which server is in use and where the address came from.
+
+The idea of a saved host, and the rules for what counts as a safe address, came from [dwhacks](https://github.com/dwhacks) in [#16](https://github.com/CaptCanadaMan/pi-ollama/pull/16).
+
+### Per-model settings
+
+`/ollama-preload` sets one value for every model. If you switch between models that want different treatment - a small one you keep loaded all day, a big one you'd rather have unloaded when you're done - you can give a model its own values with a `models` block:
+
+```json
+{
+  "models": {
+    "gemma4:12b": { "keepAlive": -1 },
+    "muse-glimmer:30b": { "keepAlive": "10m", "warm": false }
+  }
+}
+```
+
+The key is the model's exact id, as `/ollama-status` lists it. A model's own value wins over the global one, and a model with no entry uses the global one as before.
+
+| Setting | Values | What it does |
+|---|---|---|
+| `keepAlive` | a duration like `"10m"` or `"1h30m"`, or whole seconds (`-1` is Never sleep) | Idle Timeout for this model |
+| `warm` | `true` or `false` | Preload on Select for this model |
+| `releaseAfter` | `0`, a duration like `"10m"`, whole seconds, or `"keep"` | Unload on Swap or Exit for this model: `0` is Immediate, a duration is After that long, `"keep"` is Never unload |
+| `server` | the name of an entry in `servers` | The Ollama server this model is on (see below) |
+| `thinkingLevel` | `off`, `minimal`, `low`, `medium`, `high`, `xhigh` or `max` | The thinking level that loads when you select this model |
+
+Any key that starts with `_` is ignored, which gives you somewhere to leave yourself a note.
+
+### A thinking level per model
+
+pi keeps one thinking level and carries it from model to model, so a level you pick for one model is what the next one gets. If you'd rather each model came up at its own level, give it one.
+
+The quick way is `/ollama-think`. It shows the levels the model you're on actually supports, as Ollama reports them, and saves your pick for that model:
+
+```text
+Thinking level: muse-glimmer:30b (per-model, persistent) - not set
+
+  off
+  low
+  medium
+  high
+  max
+  Not set
+  Other model
+```
+
+Not set removes the saved level, so pi's own level applies to that model again. Other model lets you set a level for a model you aren't on. pi's `/thinking` still works as before: it changes the level for now, and `/ollama-think` decides what the model comes up with each time.
+
+The same thing in the config file:
+
+```json
+{
+  "models": {
+    "muse-glimmer:30b": { "thinkingLevel": "high" },
+    "gemma4:e4b": { "thinkingLevel": "off" }
+  }
+}
+```
+
+Selecting a model then sets pi's thinking level to that model's, so switching back and forth gets you each one's level in a single step. It's a starting point, not a lock: pi's picker shows the level, and you can change it for as long as you stay on that model. Selecting the model again loads its own level again.
+
+- It applies when you select a model and to the model a new session starts on. A resumed session keeps the level it was saved with.
+- A level the model doesn't support is reported at startup and not applied.
+- If another extension chooses a level for you when it switches model, that extension's choice is kept.
+- Models without a `thinkingLevel` are left as pi has them.
+
+### Models on another Ollama server
+
+A model can live on a different Ollama from your default one. Name the server once under `servers`, then pin models to it:
+
+```json
+{
+  "servers": {
+    "jetson": { "host": "10.0.0.5:11434" }
+  },
+  "models": {
+    "gemma4:12b": { "server": "jetson" }
+  }
+}
+```
+
+The pinned model shows up in pi's model list next to your local ones, and its requests go to that server. `/ollama-status` marks it with the server's address.
+
+- `host` follows the same rules as the default `host` above.
+- An address with a username and password in it, a query string or a fragment is refused.
+- Only the models you pin are looked up on a named server. pi-ollama doesn't list everything that server has.
+- If a pinned model has the same id as a local one, the pinned one is used.
+- `OLLAMA_API_KEY` is never sent to a named server. It belongs to the default server it was approved for.
+- If a named server can't be reached at startup, pi says so and uses what it last knew about that model. If your main server is the one that's down, the pinned models still load.
+
+The file is checked when pi starts. A value that doesn't make sense is left out and pi tells you which one and why, so a typo doesn't quietly do nothing. If the file can't be read at all (a stray comma is the usual cause), pi-ollama runs on its defaults and the slash commands refuse to save until you fix it, so they can't overwrite what you wrote.
+
+Two things you might look for here live elsewhere. A per-model context window or output limit goes in pi's own `models.json`, which already handles it for extension models:
+
+```json
+{
+  "providers": {
+    "ollama": {
+      "modelOverrides": {
+        "gemma4:e4b": { "contextWindow": 16384 }
+      }
+    }
+  }
+}
+```
+
+Sampling and GPU options (temperature, top_p, num_gpu and so on) belong in an Ollama Modelfile as `PARAMETER` lines. pi-ollama doesn't override them, so what the Modelfile says is what the model gets.
+
+Per-model settings came out of [TRex22](https://github.com/TRex22)'s work in [#14](https://github.com/CaptCanadaMan/pi-ollama/pull/14).
+
+If you've moved pi's agent directory with `PI_CODING_AGENT_DIR`, the config file, the model cache and the debug log move with it.
 
 ---
 
@@ -209,7 +402,7 @@ To set it up:
 OLLAMA_HOST=https://ollama.home.example:11434 OLLAMA_API_KEY=your-token pi
 ```
 
-Approve the key when pi asks. If you answer No, pi runs without it for that session and asks again next time. To stop sending the key, unset `OLLAMA_API_KEY`. To withdraw an approval, delete the `"apiKeyApproval"` line from `~/.pi/agent/cache/pi-ollama-config.json`.
+Approve the key when pi asks. If you answer No, pi runs without it for that session and asks again next time. To stop sending the key, unset `OLLAMA_API_KEY`. To withdraw an approval, delete the `"apiKeyApproval"` line from `~/.pi/agent/pi-ollama.json`.
 
 ---
 
@@ -306,7 +499,7 @@ Thanks to [@TRex22](https://github.com/TRex22) for the feature request (#10).
 
 ## Compatibility
 
-- **pi**: Tested against `@earendil-works/pi-coding-agent` v0.87.x, and works back to v0.75.5. pi 0.86 moved the system prompt and tool declarations out of the request context and into the conversation transcript (gh#11); pi-ollama reads both shapes, so older versions keep working. Should work with any version exposing the standard `ExtensionAPI` (`registerProvider` with `streamSimple`, `registerCommand` with `ctx.ui.notify`). The footer displays, session records, startup prompts and warm-up use `pi.on`, `ctx.ui.setStatus`, `ctx.ui.select` and `pi.appendEntry`; on a pi without them those parts quietly do nothing. On a pi that can't report its system prompt, warm-up loads the model weights only.
+- **pi**: Tested against `@earendil-works/pi-coding-agent` v1.6.0. Earlier versions were last tested with pi-ollama 0.2.0 (pi 0.87.x, and working back to 0.75.5); this release has not been run on them, though nothing in it is known to need a newer pi. pi 0.86 moved the system prompt and tool declarations out of the request context and into the conversation transcript (gh#11); pi-ollama reads both shapes, so older versions keep working. Should work with any version exposing the standard `ExtensionAPI` (`registerProvider` with `streamSimple`, `registerCommand` with `ctx.ui.notify`). The footer displays, session records, startup prompts and warm-up use `pi.on`, `ctx.ui.setStatus`, `ctx.ui.select` and `pi.appendEntry`; on a pi without them those parts quietly do nothing. On a pi that can't report its system prompt, warm-up loads the model weights only.
 - **Ollama**: Requires Ollama with `/api/chat` support (most versions). Overflow handling needs 0.12.5+, and per-model thinking levels need 0.34+. `/api/ps` is used opportunistically and tolerates older versions that don't expose it.
 - **Starting Ollama**: macOS needs the Ollama app installed; Linux needs the `ollama` binary. Other platforms don't get the offer.
 - **Node**: Requires Node 22.19+.
@@ -338,7 +531,7 @@ No build step - pi loads the TypeScript source directly. Both commands should pa
 ## Limitations / not yet implemented
 
 - **Ollama Cloud (`https://ollama.com`) directly.** Not tested. `OLLAMA_API_KEY` may be enough for it, but this extension is built and tested for local and self-hosted Ollama. A local Ollama signed in with `ollama signin` already serves `:cloud` models without a key. For cloud-only use, see [`fgrehm/pi-ollama-cloud`](https://github.com/fgrehm/pi-ollama-cloud).
-- **Per-model `temperature` / `top_p` defaults.** Sampling parameters are passed through from pi's options when set, but there's no extension-level config for default values per model. Open an issue if you need this.
+- **Per-model `temperature` / `top_p` defaults.** Not configured here. Sampling parameters are passed through from pi when it sets them; for a per-model default, put `PARAMETER` lines in an Ollama Modelfile, which pi-ollama leaves alone.
 - **Auto-pull.** If you select a model that isn't pulled, you'll get an error from Ollama. The extension doesn't offer to `ollama pull` it for you.
 
 ---

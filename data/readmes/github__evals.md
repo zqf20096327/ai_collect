@@ -153,7 +153,8 @@ The built plugin includes `mcp.json` at the plugin root (`https://agent-plugins.
       "type": "stdio",
       "command": "node",
       "args": [
-        "${PLUGIN_ROOT}/dist/mcp/server.mjs"
+        "${PLUGIN_ROOT}/dist/mcp/server.mjs",
+        "--no-skills"
       ]
     }
   }
@@ -167,7 +168,13 @@ plugin's tools without requiring you to clone this repository or edit
 with its working directory set to `PLUGIN_ROOT`, `copilot-evals` resolves the
 project workspace from the host launch environment (`INIT_CWD`, `VSCODE_CWD` or
 `PWD`), uses `PLUGIN_DATA` for private temporary staging, and refuses startup if
-the project workspace is not resolved.
+the project workspace is not resolved. The Plugin launch passes `--no-skills`
+because the host already installs the plugin's skills.
+
+The server speaks only MCP protocol revision `2026-07-28` and refuses legacy
+`initialize` handshakes with error `-32022`, so clients must pin that revision.
+Standalone launches also publish the six skills through the MCP Skills
+extension (`io.modelcontextprotocol/skills`).
 
 For standalone MCP clients that do not support Agent Plugins 1.0, extract the
 release archive (`github-copilot-evals-plugin-<version>.zip`) and configure
@@ -197,7 +204,8 @@ comparisons. `evals_save_draft` validates and saves new files under your host's
 normal tool permissions without an extra save form, while execution and runtime
 tools (`evals_run`, `evals_test_graders`, `evals_grader_catalog` and
 `evals_configure_runtime`) require host form approval before running commands,
-graders or models.
+graders or models. Approvals are multi-round-trip form elicitations, and run
+approval starts with a compact summary with complete details on request.
 
 ### Verify an extracted release archive
 

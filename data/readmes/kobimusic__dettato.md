@@ -124,12 +124,14 @@ Set `DETTATO_WEIGHTS` to a folder holding the four model repos (`dettato/`, `det
 ![The pipeline: transcriber, evidence repairer, grouper and drum model](https://raw.githubusercontent.com/kobimusic/dettato/main/docs/figures/pipeline.png)
 
 1. **Transcriber.** A pitch-equivariant lane network reads a harmonic log-frequency spectrogram and gives onset, frame and offset
-   probabilities for every key, for two voices per key, at 20 ms. The song is processed in overlapping 8 s windows, and notes come
-   from peak picking.
+   probabilities for every key, for two voices per key, at 20 ms. The song is processed in overlapping 8 s windows (one every
+   2 s, averaged with a Hann taper), and notes come from peak picking. The network runs once per recording: that one pass feeds
+   the repairer and the grouper (below). The recording's tuning is estimated first, and the pass runs on the retuned audio when
+   it sits clearly off A440.
 2. **Evidence repairer.** A note-level transformer reads each note together with the transcriber's evidence for it (its probability
    maps around the note and its last hidden state) and decides which notes to keep, where they start and end, and which notes are
    missing.
-3. **Grouper.** The recording's tuning is estimated and corrected, the transcriber's internal features are gathered at every
+3. **Grouper.** The transcriber's internal features (the same pass, averaged over every other window) are gathered at every
    repaired note, and a note-level transformer gives each note an instrument and a track embedding. Notes are clustered into
    tracks. A track is kept only when it is clearly its own instrument, and tracks with the same instrument are merged.
 4. **Drums.** A small drum-kit model and an orchestral-percussion model. A router listens to the whole recording and picks one.
@@ -137,8 +139,9 @@ Set `DETTATO_WEIGHTS` to a folder holding the four model repos (`dettato/`, `det
 
 ## Requirements
 
-- Python 3.10+, PyTorch 2.2+. A CUDA GPU is recommended: on an RTX 5060 (8 GB) a 5-minute song takes about 40 s and peaks under
-  4 GB of GPU memory, which grows with the song's length. The CPU works but is slow (a 15 s clip took 87 s on a laptop CPU,
+- Python 3.10+, PyTorch 2.2+. A CUDA GPU is recommended: on an RTX 5060 (8 GB) a 4-minute song takes about 15 s and a 6-minute song
+  about 25 s, and both peak under 4 GB of GPU memory (above 250 s the transcriber's feature buffers are kept in host memory,
+  about 10 MB per second of audio, so GPU memory stops growing with the song's length). The CPU works but is slow (a 15 s clip took 87 s on a laptop CPU,
   model loading included).
 - Audio is read with `soundfile`. Formats it cannot read (m4a / aac, some mp3s) go through `ffmpeg`, which must then be on the PATH.
 

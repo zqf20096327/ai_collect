@@ -2,51 +2,54 @@
 
 # PPT
 
-**在 DeepSeek Harness 中将材料整理为有审美品味、可直接交付的演示文稿，导出离线 HTML、可编辑 PPTX 与工程包，内置可切换五套明亮风格的工作台界面。**
+**DeepSeek Harness 大师级演示文稿引擎与工作台：支持零资料调研核验与 SLOP-13 事实溯源、20 套标杆范本与弱模型零调用自检修复、24 主题 / 35+ 原生可编辑图谱与 Office 直吞，一键导出离线 HTML 放映、100% 可编辑 PPTX、PDF/PNG 与讲义包。**
 
 [![npm](https://img.shields.io/npm/v/dsh-ppt)](https://www.npmjs.com/package/dsh-ppt) [![downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-ppt-downloads.svg)](https://www.npmjs.com/package/dsh-ppt) [![total downloads](https://raw.githubusercontent.com/STARDUSTLC666/dsh-suite/npm-downloads/assets/dsh-ppt-total-downloads.svg)](https://www.npmjs.com/package/dsh-ppt)
 
 **[安装使用](#安装) · [使用流程](#开始使用) · [完整说明](https://github.com/STARDUSTLC666/dsh-ppt/blob/master/docs/REFERENCE.zh.md)**
 
 <picture>
-  <source media="(prefers-color-scheme: dark) and (max-width: 640px)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-mobile-dark.svg?v=0.27.0">
-  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-mobile-light.svg?v=0.27.0">
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-dark.svg?v=0.27.0">
-  <img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-light.svg?v=0.27.0" alt="从文档、表格、流程图或旧 PPTX 出发，一键生成高审美可交付全套产物。 · 流程示意" width="100%">
+  <source media="(prefers-color-scheme: dark) and (max-width: 640px)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-mobile-dark.svg?v=0.28.0">
+  <source media="(max-width: 640px)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-mobile-light.svg?v=0.28.0">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-dark.svg?v=0.28.0">
+  <img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/docs/assets/intro/workflow-zh-light.svg?v=0.28.0" alt="从文档、表格、流程图或旧 PPTX 出发，一键生成高审美可交付全套产物。 · 流程示意" width="100%">
 </picture>
 
 ## 功能
 
-- **大师审美工坊（8 套品味配方 + 61 枚原生矢量图标 + 标杆 PPTX 品味学习）**：内置 **8 套大师级 Taste Recipes**（`mckinsey-partner`、`apple-keynote-dark`、`apple-keynote-light`、`swiss-editorial`、`linear-craft`、`ft-data-journal`、`nature-academic`、`oriental-zen`），一键驱动 **4 套海报级封面**（径向光晕 `keynote-glow` / 瑞士网格 `editorial-grid` / 建筑深色侧翼 `architectural` / `split-bleed`）、**`section[agenda]` 实时章节进度页**、**4 种卡片材质**（`solid` / `frameless` / `glass` 玻璃拟态 / `editorial-rule` 双发丝）、**反单调主次构图**（`kpi[spotlight]` / `cards[bento-hero]`）、**61 枚零依赖原生矢量图标**（HTML `<svg>` + PPTX 原生 `<a:custGeom>` + 中英语义自动配图）及出版级图表精修（`spotlight` 焦点染色、`referenceLine` 目标虚线、`showGrowthCallout` 增长飞线）；上传任意优秀 `.pptx` 还可提取留白率/材质/字阶比等深层审美 DNA（`styleRecipe`）持久化复用。
-- **零品味负担自动导演 & 原生可编辑 Mermaid 流程图**：无需懂排版配色，一句话或文档自动匹配 **24 套大师主题**（16 套明亮投影友好 + 8 套沉浸深色，涵盖麦肯锡、BCG 翡翠战略、经济学人、金融时报、红杉创投、Stripe 工程、Apple 空间白与故宫霁蓝政务）与 **6 套差异化母版骨架**，覆盖 **20 套行业场景蓝图**、**原生 `<m:oMath>` 数学公式**、**Mermaid 流程图/时序图直转原生可编辑 PPTX 形状与吸附连接线（`<p:cxnSp>`）**，以及 **29+ 种原生可编辑版式与专业图示**（麦肯锡不等宽市场图 `marimekko`、财报级多层桑基图 `sankey`、波特价值链 `value-chain`、SWOT 十字矩阵 `swot`、价值链箭头 `chevron`、Bento 网格、KPI 大数字、2×2 矩阵、痛点对比、飞轮/漏斗、甘特图路线图、分层系统架构、哈维球竞品矩阵、TAM/SAM/SOM 同心圆、组织图谱、学术三线表、13 种出版级图表与矢量瀑布桥）。
-- **全格式直吞与生态联动（Word / Excel / CSV / PPTX / Cite / Remotion）**：新增 `ppt_from_office` 支持零外部依赖直吞 **`.xlsx` 多工作表 / `.csv` / `.tsv` 与 `.docx` Word 报告**（自动识别流向表→桑基图、排期→甘特图、份额→Mekko、增减桥→瀑布图、指标→组合图与三线表）；保留 `ppt_import` 外部 `.pptx` 一键翻新与 Office 双向导回（≤24 MiB 内存解析，保留撤销历史）；新增 `ppt_cite` 联动 **`dsh-cite`** 核验文献并生成真实参考文献页，以及 `ppt_remotion` 导出 **`dsh-remotion`** 动画视频分镜包。
-- **符合直觉的工作台、`? 引导` 交互导览与全场景交付**：适配 DeepSeek Harness `>=0.2.2-rc.3`，内置五套明亮主题切换；支持右上角 **`? 引导`** 四步聚光灯交互导览、空态/新建向导 **「一键体验旗舰示例」** 与 **「导入 Office / PPTX」**、点击预览画面直定位编辑文字 / LaTeX 公式 / Mermaid 代码、**演讲时长预算器（Speaking-Pace Budgeter，设置目标分钟数并实时标记超预算页）**；导出除原生 PPTX / 工程包 / 讲义 `.handout.md` 外，新增 **高管一页纸（Executive One-Pager，支持 A4 打印 PDF 与长图战报切换）**、**Remotion 视频分镜包（`.zip`）** 与独立 HTML 放映 **`P` 键双屏演讲者提词台 + `L` 键虚拟激光笔**。
-- **可选高阶能力**：数字溯源与现场推演（支持卡片/甘特图/TAM/哈维球/架构绑定）、24 页双层 AI 视觉审查（含 12 种无损排版修复与全宽前后对比）、高管叙事预审与模拟答辩。
+- **视觉与信息图智能（全球/中国点阵地图、2.5D 等轴测架构/柱碑、封面矢量底纹与智能配图协作）**：零外部依赖新增 **37+ 原生可编辑图谱**——主题自适应 **全球/中国战略矢量点阵地图 `map`**（`world` / `china`，脉冲枢纽、互联虚线、防碰撞标注与右侧排行比例栏）、**2.5D 等轴测立体信息图 `isometric`**（`stack` 立体平台架构堆叠与 `pillars` 3D 柱碑对比，100% 原生 `<a:custGeom>` 可编辑）、**高定封面程序化矢量底纹**（`coverPattern` 新增 `waves` / `isometric-mesh` / `editorial-arcs`），以及 **智能配图协作槽位（`imageBrief` / `visualBriefs`）**、`image.focalPoint` 焦距安全裁切与 `image[full-bleed]` 自动暗色渐变护眼层（WCAG AAA）。
+- **零资料深度调研、事实核验与策划出稿协议（Evidence Ledger + `SLOP-13` 门禁）**：针对「用户无现成文档/数据，仅给主题要求 Agent 自主检索、查准数据、先出方案再做 PPT」的场景，`ppt_templates({ topic })` / CLI `--plan` 一键输出匹配标杆、3 轮定向检索清单、量化槽位缺口诊断与逐页分镜策划表；确认后经 `ppt_create({ evidence, evidenceAppendix: true })` / CLI `--evidence --evidence-appendix` 将交叉核验后的 `E1..En` 证据账本自动绑定为清爽单行 `source` 脚注、演讲备注完整 URL/口径溯源卡、封底前零溢出 4 列 `booktabs` 核验附录页及讲义总表，并由 **`SLOP-13` 事实出处门禁**自动拦截悬空引用、未注明口径差异的冲突数据、「网络整理」等空洞假出处及无出处量化页。
+- **20 套标杆范本槽位契约（含 12 套 GitHub 开源实机蒸馏）、Few-Shot JSON 样板、标杆弧线重排与零模型自检修复闭环**：内置 **20 套满分标杆范本**（8 套核心场景 + 12 套源自 Apache-2.0/MIT/CC-BY-4.0 开源 GitHub `.pptx` 实机筛查蒸馏的 `mckinsey-evolution` / `luxury-budget-review` / `swiss-bauhaus-workshop` / `dark-stage-investor` / `blueprint-ai-factory` / `warm-brand-story` / `ted-storytelling-keynote` / `msft-enterprise-discovery` / `daylight-earnings-research` / `okr-performance-review` / `quiet-canvas-keynote` / `medical-clinical-course`），支持 `exemplar: "auto"` 智能匹配、`alignOrder: true` 按标杆叙事弧线重排乱序草稿，以及通过 `ppt_templates({ exemplarId })` 返回逐页槽位契约与 **Few-Shot 满分 JSON 样板**；支持 `ppt_absorb` / `--ingest-exemplars <dir>` 离线批量吸收本地或开源 `.pptx` 目录沉淀至 `.dsh-ppt/exemplars.json`；内置 **确定性弱模型补偿器 + 零模型自检修复闭环（`autoUpgrade` / `selfRepairDeck`）**，落盘前自动执行 `checkManifest` + `SLOP-01..12` 复检修复，0 额外模型调用、100% 无损解决标题溢出、超长文字墙、卡片/表格过载、碎块饼图、图表缺结论/聚光灯及低对比刺眼配色，直出零告警成品。
+- **大师审美工坊（8 套品味配方 + 61 枚原生矢量图标 + 封面主图分屏与几何肌理）**：内置 **8 套大师级 Taste Recipes**（`mckinsey-partner`、`apple-keynote-dark`、`apple-keynote-light`、`swiss-editorial`、`linear-craft`、`ft-data-journal`、`nature-academic`、`oriental-zen`），一键驱动 **4 套海报级封面**（径向光晕 `keynote-glow` / 瑞士网格 `editorial-grid` / 建筑深色侧翼 `architectural` / `split-bleed`）、**Hero Photo Split 全出血主图分屏封面** 与 **程序化几何肌理**（`coverPattern: 'dots' | 'grid' | 'rings'`）、**`section[agenda]` 实时章节进度页**、**4 种卡片材质**（`solid` / `frameless` / `glass` / `editorial-rule`）、**反单调主次构图**（`kpi[spotlight]` / `cards[bento-hero]`）、**61 枚零依赖原生矢量图标**（HTML `<svg>` + PPTX 原生 `<a:custGeom>`）及出版级图表精修；上传任意优秀 `.pptx` 还可提取 6 维深层审美 DNA（`styleRecipe`）持久化复用。
+- **科技产品展示 & 35+ 原生可编辑商业分析图谱**：自动匹配 **24 套大师主题**、**6 套差异化母版骨架** 与 **20 套行业蓝图**，新增原生矢量 **设备原型展示 `mockup`**（`browser` / `mobile` 灵动岛 / `split`，支持截图嵌入与内置 UI 卡片）、**9 语言零依赖语法高亮代码窗 `code`**（自动晋升 Markdown ```` ```lang ```` 代码块，PPTX 生成多色可编辑 Consolas 文本流），以及 **四大顶级商业分析矢量图谱**：**魔力象限 `quadrant`**、**多维雷达图 `radar`**、**麦肯锡哑铃跃迁图 `dumbbell`** 与 **WCAG 自适应热力矩阵 `heatmap`**；同时涵盖原生 `<m:oMath>` 数学公式、Mermaid 流程图/时序图直转原生吸附连线、不等宽市场图 `marimekko`、多层桑基图 `sankey`、波特价值链、SWOT、甘特图、分层架构、哈维球、TAM 同心圆、三线表与 13 种出版级图表。
+- **全格式直吞与生态联动（Word / Excel / CSV / PPTX / Cite / Remotion）**：`ppt_from_office` 零外部依赖直吞 **`.xlsx` 多工作表 / `.csv` / `.tsv` 与 `.docx` Word 报告**；`ppt_import` 支持外部 `.pptx` 一键翻新与 Office 双向导回（≤24 MiB 内存解析，保留撤销历史）；`ppt_cite` 联动 **`dsh-cite`** 生成核验参考文献页，`ppt_remotion` 导出 **`dsh-remotion`** 动画视频分镜包。
+- **直接操纵工作台与一键全格式导出**：适配 DeepSeek Harness `>=0.2.2-rc.3`，内置多套明亮风格与字体切换；支持左侧目录 **拖拽排序（Drag-and-Drop）**、画布 **双击文字原地改写并原子同步 PPTX**、右上角 **`? 引导`** 交互导览、**「一键体验旗舰示例」** 与 **演讲时长预算器**；导出面板支持 **最新 PPTX**、**高精 PDF（`.pdf`）**、**逐页 PNG 图包（`.zip`）**、**高管一页纸（`.onepager.html`）**、**Remotion 分镜包（`.zip`）**、**讲义（`.handout.md`）** 与独立 HTML **`P` 键双屏提词台 + `L` 键虚拟激光笔**。
+- **可选高阶能力**：数字溯源与现场推演、24 页双层 AI 视觉审查（含 12 种无损排版修复与全宽前后对比）、高管叙事预审与模拟答辩。
 
 ## 风格预览
 
-这些画面来自插件生成的 PPTX（覆盖 6 套母版骨架与高密度专业图示）。点击查看大图。
+以下画面均由 `dsh-ppt` 生成的 **100% 原生可编辑 `.pptx`** 经 LibreOffice 零缺字直接渲染。点击查看大图。
 
 <table>
 <tr>
-  <th>系统架构评审（Architecture）</th>
-  <th>研发 PMO 跨季排期（Gantt）</th>
-  <th>医学临床三期试验（Beamer 三线表）</th>
+  <th>发布会光晕海报封面（Keynote Glow）</th>
+  <th>玻璃拟态 Bento + 原生矢量图标</th>
+  <th>零依赖语法高亮代码窗（Code Split）</th>
 </tr>
 <tr>
-  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-arch-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-arch-zh.webp" alt="Consulting 直角母版三层解耦智能编排架构图与全域零信任安全侧翼" width="100%"></a></td>
-  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-gantt-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-gantt-zh.webp" alt="四季度五泳道云原生重构甘特图，含条尾与独立菱形里程碑" width="100%"></a></td>
-  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-clinical-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-clinical-zh.webp" alt="Medical Clean Beamer 通栏页眉配 NEJM 级临床终点三线表与三区学术底栏" width="100%"></a></td>
+  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-cover-keynote-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-cover-keynote-zh.webp" alt="Apple Keynote 暗夜双色径向光晕封面与极简排印" width="100%"></a></td>
+  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-bento-glass-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-bento-glass-zh.webp" alt="非对称反白主卡 Bento 搭配玻璃拟态高光表面与原生 OOXML 矢量图标" width="100%"></a></td>
+  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-code-showcase-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-code-showcase-zh.webp" alt="macOS 暗色代码终端窗搭配多色可编辑 Consolas 语法高亮与右侧架构解析卡" width="100%"></a></td>
 </tr>
 <tr>
-  <th>CFO 财务利润桥与归因（FT Waterfall）</th>
-  <th>政企选型技术盲测矩阵（Harvey）</th>
-  <th>集团治理与双线政务章回（Org Tree）</th>
+  <th>SaaS 浏览器原型展示（Device Mockup）</th>
+  <th>战略魔力象限（Magic Quadrant）</th>
+  <th>六维能力雷达评估（Multi-Series Radar）</th>
 </tr>
 <tr>
-  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-finance-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-finance-zh.webp" alt="Financial FT 暖鲑底色配 EBIT 利润桥矢量瀑布图与财务动因拆解卡片" width="100%"></a></td>
-  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-harvey-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-harvey-zh.webp" alt="6×4 政企技术盲测哈维球矩阵，含高亮主列与矢量饼形哈维球" width="100%"></a></td>
-  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-gov-org-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v22-gov-org-zh.webp" alt="霁蓝政务双线页眉配【05 · 组织保障】绶带标签与 CDO 组织架构树" width="100%"></a></td>
+  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-mockup-browser-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-mockup-browser-zh.webp" alt="原生矢量浏览器窗口原型，内置地址栏、侧边栏与可编辑 SaaS 经营指标卡片" width="100%"></a></td>
+  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-quadrant-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-quadrant-zh.webp" alt="Gartner 魔力象限战略气泡矩阵，含领航者高光象限与竖排坐标轴" width="100%"></a></td>
+  <td width="33%"><a href="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-radar-zh.webp"><img src="https://raw.githubusercontent.com/STARDUSTLC666/dsh-ppt/master/assets/gallery/v28-radar-zh.webp" alt="六维多系列能力对比雷达图，含四层同心蛛网、半透明叠加多边形与刻度标尺" width="100%"></a></td>
 </tr>
 </table>
 

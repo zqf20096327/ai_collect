@@ -1,7 +1,7 @@
 # Alzeo: one command turns a DGX Spark into a private AI server
 
 <p align="center">
-  <img src="docs/img/tour.webp" width="270" alt="The cockpit in ten seconds: a laptop and a phone driving the box, the live memory, a coding agent whose test passes, an image and a video made on the box, the seven lanes">
+  <img src="docs/img/tour.webp" width="270" alt="The cockpit in ten seconds: a laptop and a phone driving the box, the live memory, a coding agent whose test passes, an image and a video made on the box, the fourteen lanes">
 </p>
 <p align="center"><a href="#see-it-in-49-seconds">Watch the 49-second tour, with sound</a></p>
 <p align="center"><a href="https://alzeo.ai/">The website: every model measured, guides, every GB10 machine</a></p>
@@ -19,6 +19,10 @@ uses, and run `./install.sh` there: that is all the one-liner does ([Quickstart]
 get.alzeo.ai is only a redirect to get.sh on GitHub: to trust GitHub alone, run the same file from
 there with `curl -fsSL https://raw.githubusercontent.com/hasso5703/alzeo/main/get.sh | bash`.
 
+The same command installs and updates, on the **stable channel**: the latest published release,
+nothing newer. To follow main instead, say so once and the box keeps the choice:
+`curl -fsSL https://get.alzeo.ai | bash -s -- --edge` (back with `--stable`).
+
 Alzeo was named dgx-spark-qwen38 until 2026-11-01. A box installed before updates as it always did,
 its folder and services keep their names, and every old address of the repository leads here.
 
@@ -31,7 +35,7 @@ its folder and services keep their names, and every old address of the repositor
 A second ASUS Ascent GX10, set up from scratch with that one command: [what it measured](docs/asus-gx10.md).
 
 **Why this rather than a recipe.** A recipe starts one model. On a Spark the hard part comes
-after: ten lanes take turns in one 128 GB pool, SGLang's memory accounting misses 25-40 GB of
+after: fourteen lanes take turns in one 128 GB pool, SGLang's memory accounting misses 25-40 GB of
 transient allocations in it, and a pool pushed to zero freezes the box until a power cycle
 ([the unified-memory trap](docs/gb10-memory.md)). This repo is what lets them live on one box:
 
@@ -79,7 +83,7 @@ its test on the 27B, Qwen-Image 2.1 made the image in 40 steps and MiniMax-H3 th
 ## In detail
 
 One command installs a boot-persistent, hardened serving stack on a single DGX Spark,
-and it is not one model: **large language models** (the Qwen3.8 family, eight
+and it is not one model: **large language models** (the Qwen3.8 family, nine
 switchable targets, 27B at 65 to 68 tok/s and Qwen3.8 Flash-Next (176B) on one box), **typed decisions**
 (a System One endpoint speaking TypeSafe's Jev contract: calibrated probabilities
 instead of generated text), **image generation** (Qwen-Image 2.1) and **video generation**
@@ -88,10 +92,10 @@ Bolt** since v1.34, **Nemotron 3.5 Super VL** since v1.35, **NVIDIA's FP4-Local 
 Flash-Next** since v1.37, **Ornith AI's Ornith 1.5 122B** since v1.38 and **Liquid AI's LFM3 1.7B** since
 v1.51, with, on SGLang, **Liquid AI's LFM2.5 24B-A2B** since v1.51 too. The one command installs
 all of it: the lane that serves, proved before the run ends, and every other lane on demand,
-built at its first Load from the cockpit (`--all-weights` builds and proves them all at install). One cockpit drives the ten lanes, one Load button moves
+built at its first Load from the cockpit (`--all-weights` builds and proves them all at install). One cockpit drives the fourteen lanes, one Load button moves
 between them, and text answers on the same OpenAI-compatible API.
 
-The two Qwen text lanes come with **eight switchable targets**, and speculation costs **no quality** on any of them (NVFP4 is the quantization floor, Qwen's own FP8 is available above it; every speculative path is lossless by construction). Since v1.8 the flash lane serves an **official SGLang image** for this hardware with nothing added, serves **8 concurrent requests** by default where it used to serve one (since v1.19; opencode keeps a 205,000-token window on it since v1.20.3, and eight sessions that outgrow the pool queue rather than fail; `FLASH_TIER=context` keeps 4, so fewer sessions share the pool), and got **14 to 25% of its decode back from one flag** (`--speculative-token-map`, see below):
+The two Qwen text lanes come with **nine switchable targets**, and speculation costs **no quality** on any of them (NVFP4 is the quantization floor, Qwen's own FP8 is available above it; every speculative path is lossless by construction). Since v1.8 the flash lane serves an **official SGLang image** for this hardware with nothing added, serves **8 concurrent requests** by default where it used to serve one (since v1.19; opencode keeps a 205,000-token window on it since v1.20.3, and eight sessions that outgrow the pool queue rather than fail; `FLASH_TIER=context` keeps 4, so fewer sessions share the pool), and got **14 to 25% of its decode back from one flag** (`--speculative-token-map`, see below):
 
 | target | model | engine | headline (measured here) |
 |---|---|---|---|
@@ -100,6 +104,7 @@ The two Qwen text lanes come with **eight switchable targets**, and speculation 
 | `fp8` | Qwen3.8 27B FP8 · Qwen, Qwen's own release | SGLang 0.5.22 + DFlash2 | the quantization reference: 108 tok/s aggregate at 8 streams, ~92K less KV pool |
 | `uncensored-fp8` | Qwen3.8 27B abliterated FP8 · edp1096 | SGLang 0.5.22 + DFlash2 | same serving path and same cost as `fp8` |
 | `arete` | Arete 27B NVFP4 · atakans, Nous Research's fine-tune of the 27B | SGLang 0.5.22 + DFlash2 | the serving path of `stock`: 69 to 72 tok/s alone, GSM8K 99.2% (2026-11-14) |
+| `daisyrose` | DaisyRose 27B NVFP4 · RadixArk, RadixArk's RL-only fine-tune of the 27B | SGLang 0.5.22 + DFlash2 | the serving path of `stock`: 55.5 tok/s decode median against 60.6 for `stock` under the same 2,000 MHz clock cap, the 8 clients and the prefix cache proven (2026-11-20) |
 | `flash` (default of its lane) | **Qwen3.8 Flash-Next NVFP4 · RadixArk**, a 176B hybrid MoE | SGLang nightly 53295c6 + NEXTN | **47.9 tok/s on code, 47.1 on math, 29-31 on prose, 27.0 ms/tok on an agent loop (all at the `context` tier), prefix caching, vision**, 262K on ONE box |
 | `flash-uncensored` | Qwen3.8 Flash-Next abliterated NVFP4 · dealignai, the **abliterated** build of that same tree | SGLang nightly 53295c6 + NEXTN | 205 of 206 shards identical in size to `flash`, so the same flags: 45-46 on code, **0 refusals of 5** |
 | `flash-nvda` | Qwen3.8 Flash-Next NVFP4 · NVIDIA, the same 176B from NVIDIA's mixed-precision export | SGLang nightly 53295c6 + NEXTN | same N-gram table byte for byte, its own expert calibration: ties `flash` on every quality probe, with a KV pool about 9% smaller |
@@ -252,7 +257,7 @@ Everything below is optional and combinable. Variables ride on the `bash` side o
 
 | Choice | How | Default | Notes |
 |---|---|---|---|
-| Model | `MODEL_CHOICE=stock`, `uncensored`, `fp8`, `uncensored-fp8`, `arete`, `flash`, `flash-uncensored`, `flash-nvda` | `stock` | Qwen3.8 27B in NVFP4 (RadixArk's build, or edp1096's abliterated one), the same pair in FP8 (Qwen's own, or edp1096's abliterated one), Nous Research's fine-tune Arete 27B in atakans's NVFP4, or Qwen3.8 Flash-Next in one of three NVFP4 builds (RadixArk, dealignai's abliterated one, NVIDIA) (see the eight targets) |
+| Model | `MODEL_CHOICE=stock`, `uncensored`, `fp8`, `uncensored-fp8`, `arete`, `daisyrose`, `flash`, `flash-uncensored`, `flash-nvda` | `stock` | Qwen3.8 27B in NVFP4 (RadixArk's build, or edp1096's abliterated one), the same pair in FP8 (Qwen's own, or edp1096's abliterated one), Nous Research's fine-tune Arete 27B in atakans's NVFP4, RadixArk's RL-only fine-tune DaisyRose 27B in RadixArk's own NVFP4, or Qwen3.8 Flash-Next in one of three NVFP4 builds (RadixArk, dealignai's abliterated one, NVIDIA) (see the nine targets) |
 | Reduced draft vocabulary | `SPEC_TOKEN_MAP_SIZE=65536`, or `0` to serve without it | `65536` | flash only: hands the speculative draft the target's `lm_head` sliced to that many rows, which is 14 to 25% of decode and cannot change what the model may say |
 | Flash serving tier | `FLASH_TIER=context`, `concurrency`, `throughput` | **`concurrency`** since 2026-09-30 | flash only: 8 concurrent requests with 2 states per path (default; pool measured 477,056 tokens, so a full 262K prompt fits at 8 too, and opencode gets 205,000 tokens of context and 32,000 of output on it as on `context`), 4 requests so that long sessions queue less, or 24 without speculation |
 | Reasoning effort | `lean` (default), `xhigh`, `medium`, `low` | **`lean`** | the level this repo adds and defaults to: 74 words in the chat template that cost 0.71x the thinking tokens of `medium` on 364 public problems and 0.436x on 58 underspecified requests, with no measured quality cost. Qwen's three levels are left byte-identical. `LEAN_DEFAULT=0 ./install.sh` installs it without taking the default (the 27B and flash lanes; the Qwen3.8 Flash-Next FP4-Local lane's is its own installer's, `FLASH_LOCAL_EFFORT=xhigh ./install-flash-local.sh --units-only`, [docs/flash-local-lane.md](docs/flash-local-lane.md)). Numbers, method and negative results in [LEAN.md](LEAN.md) |
@@ -433,7 +438,7 @@ A second image lane, **MiniMax-H3-Image**, makes images from 2048 x 2048 (15.6 s
 venv on SGLang's main ([docs/image-h3-lane.md](docs/image-h3-lane.md)). Its licence, the MiniMax-H3-Image Community License, is not granted in the European Union, the United Kingdom, South Korea or the United States (its Excluded Territories: definition 5 and clause V.4 of its LICENSE).
 
 31 GiB of weights do not fit beside a serving LLM, so the lanes take turns: the cockpit refuses
-to start any engine while another is busy, for the ten lanes alike, and the unit's `Conflicts=` is
+to start any engine while another is busy, for the fourteen lanes alike, and the unit's `Conflicts=` is
 a second belt for a `systemctl start` typed at a terminal.
 
 **Measured on a Spark, not copied from the cookbook** (SGLang v0.5.21, 2026-10-10):
@@ -772,7 +777,7 @@ engine: **[docs/opencode.md](docs/opencode.md)**.
 
 The same generated config is also the single source for **[pi](https://pi.dev)** and **[omp](https://omp.sh) (oh-my-pi)**: `./pi-gen.py` derives their ready configs (`~/.config/qwen38/pi/` JSON, `~/.config/qwen38/omp/` YAML converted from it, one build), and once you ran it, a switch and a fit regenerate them; copying them into the agent's directory stays yours. **[docs/pi.md](docs/pi.md)**.
 
-## The eight targets of the Qwen lanes, and switching between them
+## The nine targets of the Qwen lanes, and switching between them
 
 | choice | version, as the cockpit names it | checkpoint | revision | engine, unit |
 |---|---|---|---|---|
@@ -781,6 +786,7 @@ The same generated config is also the single source for **[pi](https://pi.dev)**
 | `fp8` | Qwen3.8 27B FP8 · Qwen | `Qwen/Qwen3.8-27B-FP8` | `017b9c7` | SGLang 0.5.22, `qwen38-sglang` |
 | `uncensored-fp8` | Qwen3.8 27B abliterated FP8 · edp1096 | `edp1096/Huihui-Qwen3.8-27B-abliterated-FP8` | `603028a` | SGLang 0.5.22, `qwen38-sglang` |
 | `arete` | Arete 27B NVFP4 · atakans | `atakans/Arete-27B-NVFP4` | `50235ef` | SGLang 0.5.22, `qwen38-sglang` |
+| `daisyrose` | DaisyRose 27B NVFP4 · RadixArk | `RadixArk/DaisyRose-27B-NVFP4` | `c4d85c5` | SGLang 0.5.22, `qwen38-sglang` |
 | `flash` | Qwen3.8 Flash-Next NVFP4 · RadixArk | `RadixArk/Qwen3.8-Flash-Next-NVFP4` | `7b71922` | SGLang nightly 53295c6, `qwen38-flash` |
 | `flash-uncensored` | Qwen3.8 Flash-Next abliterated NVFP4 · dealignai | `dealignai/Qwen3.8-Flash-Next-ABLITERATED-NVFP4` | `be794b9` | SGLang nightly 53295c6, `qwen38-flash` |
 | `flash-nvda` | Qwen3.8 Flash-Next NVFP4 · NVIDIA | `nvidia/Qwen3.8-Flash-Next-NVFP4` | `fc694b5` | SGLang nightly 53295c6, `qwen38-flash` |
@@ -846,7 +852,7 @@ times, and the run stopped on a failure naming four causes that were all the
 wrong one, over a traceback that did name `hf_xet` (seen 2026-09-18, cache left
 holding 74 GB of the 124). Both downloaders now answer that one refusal by
 retrying the repo that hit it with Xet, then turning Xet back off, so this
-target installs with the same command as the other six.
+target installs with the same command as the other eight.
 
 The `uncensored` target, Qwen3.8 27B abliterated NVFP4 · edp1096, is huihui-ai's abliteration of Qwen3.8 27B
 re-quantized with the identical RadixArk modelopt NVFP4 recipe (verified: same
@@ -870,6 +876,25 @@ code and reasoning prompts, the needle exact at 120,000 and 300,000 tokens, and 
 905,941 and 902,974 tokens on its two boots, its target's cache in fp8 and its draft's in bf16,
 as `stock` serves them.
 
+The `daisyrose` target, DaisyRose 27B NVFP4 · RadixArk, is
+[DaisyRose 27B](https://huggingface.co/RadixArk/DaisyRose-27B), RadixArk's
+reinforcement-learning-only fine-tune of Qwen3.8 27B (Apache-2.0; no SFT, no
+distillation), in [its own NVFP4](https://huggingface.co/RadixArk/DaisyRose-27B-NVFP4):
+RadixArk's recipe for the 27B, layer for layer the one of
+`RadixArk/Qwen3.8-27B-NVFP4` (MIXED_PRECISION, 401 layers: 208 FP8 and 193 NVFP4,
+21.95 GB), with the same architecture, its tokenizer files and chat template byte for
+byte (its tokenizer_config marks nine more tokens special, none of the think or tool tags:
+the same text encodes and decodes the same), and its config loads with the lane image's
+transformers 5.19.0, so it
+takes the lane's unit, image and DFlash2 draft as they are. Its checkpoint declares no
+KV cache either: its switch (and `MODEL_CHOICE=daisyrose ./install.sh`) writes the
+declaration RadixArk's NVFP4 carries into its cached config with `patch-kv.py`, after
+the YaRN step, as for `arete`. Nothing is measured on the reference box yet. RadixArk
+publishes, at xhigh reasoning and temperature 1.0: Terminal-Bench 2.1 at 75.5 against
+73.0 for Qwen3.8-27B, Terminal-Bench 4.1 at 12.0 against 5.6, SWE Bench Pro v2 at 94.7
+against 91.3, GPQA Diamond at 90.7 against 89.2; several of the Qwen3.8-27B scores come
+from model cards or an article, not a paired run.
+
 **NVIDIA published its own 27B NVFP4 export on 2026-09-08**
 ([`nvidia/Qwen3.8-27B-NVFP4`](https://huggingface.co/nvidia/Qwen3.8-27B-NVFP4)), and it
 is not a new option here, for a reason worth writing down. Its quantization map is the
@@ -888,7 +913,7 @@ accuracy table, measured by NVIDIA on GB300 under vLLM, prices this recipe again
 **GPQA Diamond 88.01 against 88.92, Terminal-Bench 74.02 against 75.56, IFBench 78.93
 against 80.07, MMMU-Pro 74.86 against 75.14**, with **AA-LCR 73.38 against 72.63** and
 **SciCode 48.41 against 47.93** landing the other way. That is the size of the NVFP4
-question on this model, from the people who quantized it. Adding a ninth target for a
+question on this model, from the people who quantized it. Adding a tenth target for a
 recipe-identical export would cost 22 GB and a validation cycle for, at best, a tie: say
 so in an issue if you want it, the switch surface has room.
 
@@ -900,8 +925,8 @@ carry their own KV scales so SGLang picks it up on its own, while Qwen's FP8
 release does not and would otherwise fall back to a bf16 KV cache costing about
 half the pool (measured on the same 1m unit: 771,139 tokens with the flag,
 382,706 without). `install.sh` and `run.sh` add it for these two targets only.
-Arete's NVFP4 declares none either, and gets RadixArk's declaration in its config
-instead (above).
+Arete's and DaisyRose's NVFP4 declare none either, and get RadixArk's declaration in
+their config instead (above).
 
 The [SGLang cookbook](https://docs.sglang.io/cookbook/autoregressive/Qwen/Qwen3.8-27B)
 states the mechanism directly: "Both NVFP4 checkpoints declare
@@ -940,11 +965,11 @@ and the keepalive proxy stay put.
   `MODEL_CHOICE=flash ./install.sh` (one-liner: `curl -fsSL https://get.alzeo.ai |
   MODEL_CHOICE=flash bash`). Upgrades keep the installed choice.
 - Existing install, within the 27B lane (`stock`, `uncensored`, `fp8`,
-  `uncensored-fp8`, `arete`, in any direction): `./switch-model.sh uncensored` (or
-  `stock`, `fp8`, `uncensored-fp8`, `arete`), as many times as you like. It downloads the
+  `uncensored-fp8`, `arete`, `daisyrose`, in any direction): `./switch-model.sh uncensored` (or
+  `stock`, `fp8`, `uncensored-fp8`, `arete`, `daisyrose`), as many times as you like. It downloads the
   checkpoint (cached after the first time), applies the 1M YaRN config patch if
-  the installed unit uses `--context-length 1010000` (and, for `arete`, the fp8 KV
-  cache declaration its checkpoint lacks), regenerates the patched
+  the installed unit uses `--context-length 1010000` (and, for `arete` and `daisyrose`, the fp8 KV
+  cache declaration their checkpoints lack), regenerates the patched
   chat template from the target's own snapshot, rewrites the `--model-path`,
   `--revision` and KV cache lines of `/etc/systemd/system/qwen38-sglang.service`
   and daemon-reloads.
@@ -1006,7 +1031,7 @@ fresh box.
 ## Operations
 
 ```bash
-systemctl status qwen38-sglang          # 27B server state (the 27B lane, whichever of its five targets serves)
+systemctl status qwen38-sglang          # 27B server state (the 27B lane, whichever of its six targets serves)
 systemctl status qwen38-flash           # Flash-Next server state (target flash)
 systemctl status qwen38-lfm25           # Liquid AI LFM2.5 24B-A2B server state (SGLang)
 systemctl status qwen38-kolibri qwen38-nemotron qwen38-nemotron-super qwen38-flash-local qwen38-ornith-122b qwen38-lfm3   # the vLLM text lanes
@@ -1019,37 +1044,4 @@ python3 systemone-check.py              # /v1/systemone: every shape, every refu
 sudo systemctl restart qwen38-sglang    # 27B: ~3.5-6.5 min boot (7-8 for its FP8 and abliterated versions); the radix (prefix) cache starts empty
 sudo systemctl restart qwen38-flash     # flash: ~12-15 min boot (weight load, and the PLE table written from scratch)
 journalctl -u qwen38-sglang -f          # server logs (or the unit of the lane that serves)
-journalctl -u qwen38-keepalive -f       # one line per proxied request (bytes, first/last event, outcome)
-./bench.sh                              # re-measure this config
-./bench-matrix.sh                       # per-workload profile, works on any engine
-./uninstall.sh --list                   # inventory: everything any version of this repo left here, with sizes
-./uninstall.sh                          # removes services + config; prints reclaim commands for data it found
-./uninstall.sh --yes                    # same, and deletes ~/.config/qwen38 (API key) without asking; opencode's config loses this box's providers
-# the images the installer pulls by digest are tagged qwen38-pinned:<lane>-<digest>, so a docker image prune leaves them alone
-```
-
-Killing an abandoned generation, reading a dead decode from both sides of the wire, the opt-in
-extras, and what an upgrade from an earlier version actually does:
-**[docs/operations.md](docs/operations.md)**.
-
-## The cockpit (installed by default)
-
-A local dashboard for this stack: what is served right now, whether it is healthy for real, and
-the handful of actions you would otherwise type by hand. A stdlib backend (cockpit.py and six modules beside it), no pip and no
-venv. Since v1.12 `install.sh` installs it as step 10/10, once the engine has answered a real
-generation, and prints its URL as the last thing it says:
-
-```bash
-curl -fsSL https://get.alzeo.ai | bash
-# ... ends with:  ▶ OPEN THE COCKPIT:  http://<address>:30090
-# the login is the API key from ~/.config/qwen38/api-key
-```
-
-On a first install it binds the box's **tailnet address** when there is one, so the page opens
-from a laptop or a phone over a private network, and `127.0.0.1` otherwise. A re-run never changes
-that. The login is the same API key over plain HTTP, so this belongs on a tailnet or a LAN you
-trust and never on the open internet.
-
-![The Lanes view: the lane that serves edged in green with its Stop button, and each lane with its maker's mark, every version it can load in one row of buttons with the chosen one lit, its Load button, its facts and its last five boots](docs/img/cockpit-lanes.png)
-
-*Lanes: every version of each lane in sight, what its boots took on this box and the KV pool each one won, and one button that loads it: switch, stop, start,
+journalctl -u qwen38-keepalive -f       # one line per proxied request (bytes, first/last eve

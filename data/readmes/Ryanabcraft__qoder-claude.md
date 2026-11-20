@@ -88,6 +88,84 @@ write `bridge.config.json` and the Claude user settings with backups; analytics 
 Accounts cards show real Qoder credits per profile, and Analytics adds credits, burn rate and a
 quota forecast.
 
+## Shorter conversations (optional)
+
+A local compression proxy shrinks tool output before it reaches the model. Install
+[Headroom](https://github.com/headroomlabs-ai/headroom), run its proxy, and point the bridge at it:
+
+```bash
+uv tool install --python 3.13 "headroom-ai[proxy]"
+scripts/headroom-proxy.cmd      # or scripts/headroom-proxy.sh on macOS/Linux
+```
+
+```bash
+# stored in bridge.config.json as "compressProxy", or in the environment:
+QODER_COMPRESS_PROXY=http://127.0.0.1:8790 qclaude
+```
+
+The system prompt and the message you just sent are never rewritten; a slow or failing
+proxy is ignored after 800 ms. `QODER_COMPRESS=0` turns it off. The request log prints
+`compact=NN%(NNNms)` or `compact=off`.
+
+The proxy is only called when one message carries **at least 8 KB** of content
+(`QODER_COMPRESS_MIN_BLOCK`), because that is where the gain lives — a log or a JSON dump.
+Prose spread across small messages compresses to nothing and used to cost 100–600 ms per turn.
+
+## Web search
+
+When the client asks for Anthropic's server-side search tool (`web_search_20250305`), the
+bridge runs the search itself and streams the standard `server_tool_use` and
+`web_search_tool_result` blocks, then answers with the results in context. No API key and no
+MCP: the The same applies to Anthropic's `web_fetch_20250910`: the bridge fetches the page, strips scripts and styles, and keeps the title plus the visible text (24k chars, 5 redirects). Private and local addresses are refused before any connection. The search backends are the **Exa MCP endpoint** (`https://mcp.exa.ai/mcp`, works without a
+key) and **DuckDuckGo HTML** as fallback. Results are cached for five minutes, and the
+tool's `allowed_domains` / `blocked_domains` are applied before anything is returned.
+
+```bash
+QODER_SEARCH=exa qclaude     # pin a backend: exa | ddg | auto (default)
+```
+
+## Speed
+
+Throughput is set by the model, not by the bridge. Measured on the bridge, same prompt,
+`max_tokens=300`:
+
+| model | first text | text tok/s | where the time goes |
+| --- | --- | --- | --- |
+| DeepSeek-Flash | 1.1–1.7 s | ~46 | no thinking at all |
+| Auto | 62–115 s | ~130 | 92–94% reasoning before the first word |
+| Efficient / Lite / Performance | 71–85 s | ~130–140 | 86–92% reasoning |
+
+All flash models measured within 1 tok/s of each other (~46 tok/s, ~1 s to the first
+text); the ~108 ms between chunks is the provider cadence, not the bridge. A 35k-token
+conversation that used to take 25–84 s answers in **4.9 s** after the model-header fix.
+
+`reasoning_effort` is accepted and forwarded, but the upstream ignores it — a model that
+thinks will think. If the answer feels slow, switch the model; the first word is what you
+wait for, and a thinking model spends a minute on it.
+
+The model you pick in the client always wins. The bridge matches it against its catalog
+case-insensitively and forwards anything it does not recognize exactly as sent; only a
+request with no model at all falls back to Auto. `QODER_MODEL` remains the explicit
+override for the whole bridge.
+
+Every request now logs what the user feels:
+
+```
+chat/completions model=DeepSeek-Flash ttft=1141ms total=11552ms in=55 out=475 tok/s=46.5 textTok=503 think=0% gap=133ms compact=off
+```
+
+Measure any model yourself:
+
+```bash
+npm run bench -- --api chat --models Auto,DeepSeek-Flash --turns 3
+npm run bench -- --api messages --models DeepSeek-Flash --turns 3
+```
+
+`think=` is the share of the stream spent reasoning, `gap=` the worst pause between
+chunks. Some names in the live model list are not routable for every account (`Fast`
+returned an empty answer here); the bench reports that as zero tokens instead of hiding it.
+
+
 ## OpenAI-compatible API
 
 Any tool that speaks OpenAI can use the same bridge — OpenBot, Cursor, an SDK, a script:

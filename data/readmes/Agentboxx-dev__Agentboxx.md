@@ -14,6 +14,8 @@
 
 </div>
 
+> **Demo:** `agentbox demo` runs a scripted stuck-agent scenario locally (no Docker, no API key). To re-record the terminal GIF, see [`docs/RECORDING.md`](docs/RECORDING.md).
+
 > [!NOTE]
 > **v0.3.1.** Live on [PyPI](https://pypi.org/project/agentboxx/) (`pip install agentboxx`). Validated end-to-end with sandboxed execution, cryptographic signing, loop detection, and live model execution. Interfaces may evolve before v1.0. Known gaps are listed under [Limitations](#limitations).
 
@@ -30,6 +32,8 @@ Most agent tooling records what the agent *says* it did, from inside the agent's
 | **State-aware loop detection** | A repeated command only counts when the workspace did not change, which separates retrying from making progress. |
 | **Hint feedback** | When the detector fires, a hint is added to the agent's next observation so it can change approach. |
 | **Hardened sandbox** | Docker backend with no network, read-only root filesystem, dropped capabilities, non-root user and resource limits. |
+
+Already using LangSmith, Langfuse or a cloud sandbox such as E2B? See [how agentbox compares and how they fit together](docs/comparisons.md).
 
 ## Architecture
 
@@ -397,6 +401,14 @@ agentbox verify ./runs/my-run.ndjson -k ./runs/key
 ## Contributing
 
 Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md) and the issues labeled [`good first issue`](https://github.com/Agentboxx-dev/Agentboxx/labels/good%20first%20issue).
+
+## Used by / experiments
+
+If you use agentboxx in a project or experiment, open a pull request to add your entry here:
+
+| Project | Description | Author |
+|---|---|---|
+| *(add yours)* | *(one line summary)* | *(your GitHub handle)* |
 
 ## License
 

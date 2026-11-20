@@ -19,9 +19,9 @@
 </p>
 
 <p align="center">
-  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.22.15" alt="Support on Patreon" height="28"/></a>
+  <a href="https://patreon.com/OpenPublisher"><img src="https://openpublisher.app/ui/icons/patreon.png?v=5.23.1" alt="Support on Patreon" height="28"/></a>
   &nbsp;
-  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.22.15" alt="Facebook Page" height="28"/></a>
+  <a href="https://www.facebook.com/people/OpenPublisher-Free-Desktop-Publishing/61595980781121/"><img src="https://openpublisher.app/ui/icons/facebook.png?v=5.23.1" alt="Facebook Page" height="28"/></a>
 </p>
 
 ---
@@ -65,11 +65,10 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
 <tr>
   <td align="center" valign="top">
     <img src="https://download.openpublisher.app/images/icon_windows_installer.png" width="48" height="48" alt="Windows"/><br/>
-    <a href="https://openpublisher.app/setup.exe"><strong>Gecko Edition (.exe)</strong></a><br/>
-    <sub>5.22.15 · 77 MB · Portable coming soon</sub><br/>
     <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows.exe"><strong>NW.js Installer (.exe)</strong></a><br/>
-    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows-portable.exe">NW.js Portable (.zip)</a><br/>
-    <a href="https://github.com/rmellis/open-publisher/releases/download/5.8.0/OpenPublisher5-i386-windowsXP.exe"><strong>Windows XP</strong> (.exe)</a>
+    <a href="https://github.com/rmellis/open-publisher/releases/download/5.1.4/openpublisher5_amd64-windows-portable.exe"><strong>NW.js Portable (.exe)</strong></a><br/>
+    <a href="https://github.com/rmellis/open-publisher/releases/download/5.8.0/OpenPublisher5-i386-windowsXP.exe"><strong>Windows XP</strong> (.exe)</a><br/>
+    <sub>Gecko build removed - <a href="#what-happened-to-the-gecko-windows-build">read why</a></sub>
   </td>
   <td align="center" valign="top">
     <img src="https://download.openpublisher.app/images/icon_macos_dmg.png" width="48" height="48" alt="macOS"/><br/>
@@ -96,6 +95,24 @@ Open Publisher is a WYSIWYG (What You See Is What You Get) desktop publishing ap
 
 </div>
 
+
+---
+
+<a id="what-happened-to-the-gecko-windows-build"></a>
+## What Happened to the Experimental Gecko Windows Build (and Why v5.23.1 Rolls Back to NW.js)
+
+Over the last 41 updates, I built an experimental Mozilla Gecko-based desktop shell for OpenPublisher on Windows. It delivered roughly half the installer size, faster startup, smoother canvas performance on older hardware (including Windows 7), and a built-in wrapper updater.
+
+However, as a 100% free, self-funded GNU GPL v2 open-source project, OpenPublisher does not pay for commercial EV code-signing certificates. When the new build was promoted across software directories, the unsigned 48 KB C# launcher (`OpenPublisher.exe`) triggered an automated cloud machine-learning false positive in Microsoft Defender. Although Microsoft's security team reviewed the dispute and cleared the binary as clean (followed by Malwarebytes), the brief delay allowed automated threat feeds and dozens of third-party heuristic scanners to mirror the initial flag on VirusTotal.
+
+That automated cascade triggered software directory rejections and automated link filtering on Facebook (including retroactive removals of older release posts), even though the source code is completely public and clean.
+
+Rather than fighting an endless game of whack-a-mole with dozens of automated heuristic feeds, I made the pragmatic call to:
+1. **Retire the experimental Gecko Windows packages** and strip those binaries from all 41 historical GitHub Releases.
+2. **Restore our proven, clean NW.js Windows Installer and Portable builds** as the primary Windows release, keeping the compiled executables completely frozen so their clean binary reputation stays intact.
+3. **Deliver desktop fixes downstream through the web application (`v5.23.1`):** Instead of rebuilding `setup.exe`, `v5.23.1` eliminates the NW.js cold-start `.opub` file-association blank-canvas bug (caused by orphaned `#paper.paper-pouring` transitions and startup timing races) 100% inside the web app while preserving the wrapper's 4-step atomic save system untouched.
+
+The web app at `openpublisher.app` remains completely clean on Google Safe Browsing and VirusTotal URL scanners, and all NW.js desktop users receive `v5.23.0` (Variable Font Studio) and `v5.23.1` (cold-start `.opub` fix) automatically on launch.
 
 ---
 
@@ -349,11 +366,9 @@ Version 5 is the most significant release in Open Publisher's history - a comple
 
 ### Windows
 
-Open Publisher is available in Gecko and NW.js editions for Windows, alongside a dedicated Windows XP build:
+Open Publisher is available in NW.js editions for Windows, alongside a dedicated Windows XP build:
 
-- **Gecko Edition Installer ([`setup.exe`](https://openpublisher.app/setup.exe) - v5.22.15)** - New chromeless Gecko 115.21.0 ESR runtime for Windows 7 through Windows 11. Shrinks the installer from 161 MB to 77 MB, supports clean in-place upgrades over existing NW.js installs, includes a built-in SHA-256 manifest OTA auto-updater, and resolves image-heavy zoom lag, `Ctrl+V` double-pasting, and print reliability issues. *(Gecko Portable `.exe` coming soon.)*
-- **3-Phase Windows Rollout** - Offered side-by-side with the NW.js build during Phase 1; once validated, Gecko will become the primary Windows download (Phase 2), and the NW.js edition will transition to a legacy archive release while future desktop updates focus exclusively on Gecko (Phase 3).
-- **Standard NW.js Installer (`.exe`)** - Full NW.js installer with Start Menu and Desktop shortcuts, multi-resolution 10-frame high-DPI icon embedding (up to 256x256), and `.opub` registry file association.
+- **NW.js Installer (`.exe`)** - Full NW.js installer with Start Menu and Desktop shortcuts, multi-resolution 10-frame high-DPI icon embedding (up to 256x256), and `.opub` registry file association.
 - **NW.js Portable Version (`.exe`)** - Self-contained zero-install executable. Ideal for USB drives, restricted workstations, or running without administrator rights.
 - **Windows XP Client (`.exe`)** - Dedicated standalone client for Windows XP SP3, featuring a customized chromeless runtime, integrated window controls, and full native branding.
 - **Safe Mode Startup** - Launch with `--safe-mode` or `--reset` from the command line to purge cached data, reset layout bounds, and troubleshoot faulty extensions.

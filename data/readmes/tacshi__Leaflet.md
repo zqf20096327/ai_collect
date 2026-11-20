@@ -176,8 +176,9 @@ iPad app is SwiftUI and UIKit, on the same Go core.
 - To-do reminders, a menu bar icon, light and dark themes, and updates
   from GitHub Releases.
 - In English, Simplified Chinese and Japanese: Leaflet follows the
-  system's language, or the one chosen in Settings › Appearance, and its
-  welcome guide is written in the language of the first run.
+  system's language, or the one chosen in Settings › General (Settings ›
+  Appearance on iPhone and iPad), and its welcome guide is written in the
+  language of the first run.
 
 ## Requirements
 
@@ -280,7 +281,7 @@ claude mcp add -s user leaflet -e LEAFLET_DATA_DIR=<data folder> -- <executable>
 | --- | --- |
 | `list_pages`, `search_pages` | Find pages by title, tag and text, and recordings and comments |
 | `current_page` | See the page open in the app, with the selected text and its text color |
-| `read_page` | Read a page's blocks, with their IDs |
+| `read_page` | Read a page's blocks, with their IDs and versions |
 | `create_page`, `rename_page` | Make and rename pages |
 | `set_page_tags` | Set a page's tags |
 | `move_page` | Move a page into a folder, inside another page, or to the top level |
@@ -291,7 +292,12 @@ claude mcp add -s user leaflet -e LEAFLET_DATA_DIR=<data folder> -- <executable>
 The server opens the same database as the app, so it works with the app
 open or closed. Pages shared with you to view are read-only. Edits keep a
 history snapshot before an agent's first edit of a page, then one per ten
-minutes of its edits, and sync like any other change. The open app picks up
+minutes of its edits, or sooner when someone else changed the page in
+between, and sync like any other change. An edit given the version
+`read_page` shows for a block leaves the block as it is if someone changed
+it since, and answers with what it holds now. One without that replaces a
+change the agent never read is kept as a conflict in the page's history,
+and its answer says so. The open app picks up
 what they write within a second and merges it with what is being typed.
 With the app closed, or no page open, `current_page` gives the page opened
 last on this device, with no selection.

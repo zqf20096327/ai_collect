@@ -16,6 +16,7 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://github.com/CoWork-OS/CoWork-OS/discussions"><img src="https://img.shields.io/github/discussions/CoWork-OS/CoWork-OS" alt="Discussions"></a>
   <a href="https://discord.gg/UjykKwjhRC"><img src="https://img.shields.io/discord/1561115815695097986?label=Discord&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://x.com/Cowork_os"><img src="https://img.shields.io/badge/X-%40Cowork__os-black?logo=x&logoColor=white" alt="X: @Cowork_os"></a>
   <a href="https://github.com/CoWork-OS/CoWork-OS/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/CoWork-OS/CoWork-OS/good%20first%20issue" alt="Good first issues"></a>
 </p>
 
@@ -146,6 +147,7 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 ## Community
 
 - **Chat:** [Discord](https://discord.gg/UjykKwjhRC): #help for questions, #show-and-tell for what you built, #contributors for working on CoWork OS
+- **News and updates:** [@Cowork_os on X](https://x.com/Cowork_os)
 - **Questions and ideas:** [GitHub Discussions](https://github.com/CoWork-OS/CoWork-OS/discussions)
 - **Bugs and requests:** [Issues](https://github.com/CoWork-OS/CoWork-OS/issues). We reply within a day.
 - **Contribute:** start with a [good first issue](https://github.com/CoWork-OS/CoWork-OS/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) and read [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -157,15 +159,15 @@ Use `--from openclaw` for OpenClaw, or **Settings > Import** in the app; first-r
 
 | Signal | Current | All time |
 |---|---:|---:|
-| GitHub stars | 554 | n/a |
-| GitHub forks | 101 | n/a |
-| Installer/server downloads | 3,648 | 3,648 |
-| Download delta | +88 | n/a |
-| npm downloads | 346 (last week) | 11,041 |
-| GitHub views, last 14-ish days | 1,512 total / 825 unique | n/a |
-| GitHub clones, last 14-ish days | 4,327 total / 689 unique | n/a |
+| GitHub stars | 555 | n/a |
+| GitHub forks | 102 | n/a |
+| Installer/server downloads | 3,690 | 3,690 |
+| Download delta | +42 | n/a |
+| npm downloads | 320 (last week) | 11,122 |
+| GitHub views, last 14-ish days | 1,472 total / 792 unique | n/a |
+| GitHub clones, last 14-ish days | 4,700 total / 687 unique | n/a |
 
-Generated 2026-11-19T11:34:42.207Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
+Generated 2026-11-20T11:32:45.420Z. These are public GitHub/npm adoption signals, not active-user or in-app telemetry numbers. All-time values are shown only where the source API provides lifetime coverage. [Full report](docs/public-adoption-stats.md).
 <!-- COWORK_PUBLIC_ADOPTION_STATS_END -->
 
 ## License

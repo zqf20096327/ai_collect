@@ -1,24 +1,37 @@
 # Google Antigravity 中文本地化工具
 
-[简体中文](README.md) | [English](README.en.md) · [Release](https://github.com/yiheng8023/antigravity-chinese/releases/latest) · [CI](https://github.com/yiheng8023/antigravity-chinese/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://github.com/yiheng8023/antigravity-chinese/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/yiheng8023/antigravity-chinese/ci.yml?branch=main&amp;label=CI&amp;logo=github" alt="CI 状态"></a>
+  <a href="https://github.com/yiheng8023/antigravity-chinese/releases/latest"><img src="https://img.shields.io/github/v/release/yiheng8023/antigravity-chinese?color=blue&amp;label=Release" alt="最新发行版"></a>
+  <a href="https://github.com/yiheng8023/antigravity-chinese/releases"><img src="https://img.shields.io/github/downloads/yiheng8023/antigravity-chinese/total?color=3388ff&amp;logo=github&amp;label=Asset%20downloads" alt="发行版附件下载量"></a>
+  <a href="https://github.com/yiheng8023/antigravity-chinese/stargazers"><img src="https://img.shields.io/github/stars/yiheng8023/antigravity-chinese?logo=github&amp;color=ffaa00" alt="GitHub 星标数"></a>
+  <a href="https://github.com/yiheng8023/antigravity-chinese/network/members"><img src="https://img.shields.io/github/forks/yiheng8023/antigravity-chinese?logo=github&amp;color=grey" alt="GitHub 派生数"></a>
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D18-brightgreen?logo=node.js" alt="最低 Node.js 版本为 18">
+  <a href=".github/workflows/ci.yml"><img src="https://img.shields.io/badge/CI%20platforms-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="CI 平台为 Windows、macOS 和 Linux"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/yiheng8023/antigravity-chinese?color=green" alt="MIT 许可证"></a>
+</p>
 
-当前源码版本 **v3.3.53**，维护目标为 **Antigravity App 2.33.0 / VS Code 扩展 1.12.0**。这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。
+<p align="center">
+  <a href="README.md">简体中文</a> | <a href="README.en.md">English</a>
+</p>
 
-本版补齐桌面登录页的欢迎标题，并优先处理新挂载的设置侧栏。主机别名、仓库内容、分支名、命令和用户正文保留原文。继续使用 [#8 的分帧扫描修复](docs/maintenance/settings-performance-2.32.1.md)，桌面 2.33.0 的适配和实测范围见 [维护记录](docs/maintenance/antigravity-2.33.0.md)。
+当前源码版本 **v3.3.55**，维护目标为 **Antigravity App 2.33.1 / VS Code 扩展 1.13.0**。这是社区开源项目，提供桌面客户端与 VS Code 扩展的本地中文补丁、备份还原，以及可选的中文交互插件。
 
-VS Code 扩展更新会覆盖本地汉化。更新扩展后请重新执行 `node cli.js install:vscode`，再重新加载 VS Code 窗口。相关适配与验证见 [1.11.0 维护记录](docs/maintenance/vscode-1.11.0.md) 和 [桌面 2.29.0 维护记录](docs/maintenance/antigravity-2.29.0.md)。
+本版补齐 Linux 便携安装路径探测，支持把 `--path` 等参数传给安装和还原脚本。验证范围见 [Linux 便携安装维护记录](docs/maintenance/linux-portable-install.md)。桌面 2.33.1 与 VS Code 扩展 1.13.0 的界面适配见 [上一版维护记录](docs/maintenance/antigravity-2.33.1.md)。
+
+VS Code 扩展更新会覆盖本地汉化。更新扩展后请重新执行 `node cli.js install:vscode`，再重新加载 VS Code 窗口。
 
 ## 支持与验证范围
 
 | 组件 | 实现 | 当前验证范围 |
 | --- | --- | --- |
-| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows 2.33.0 安装、重复安装、还原及实际界面和设置页性能采样，范围见维护记录 |
-| VS Code 扩展 | 清单、原生菜单和通知翻译、Webview 本地代理、独立备份/还原 | Windows 1.12.0 安装包验证与通知按钮回归；代理和实机检查范围见本次维护记录 |
+| Antigravity App | ASAR preload、原生菜单和弹窗文本补丁；版本备份与还原 | Windows 2.33.1 的界面与安装验证见上一版记录。本轮在 Ubuntu WSL 2 上验证 Linux x64 2.33.0 安装、重复安装、还原与外置文件 |
+| VS Code 扩展 | 清单、原生菜单和通知翻译、Webview 本地代理、独立备份/还原 | Windows 1.13.0 安装、重复安装、还原；命令和快捷键设置检查范围见上一版维护记录 |
 | 社区中文插件 | 中文交互规则与维护诊断技能 | 可选安装；不代表 Google 官方插件 |
 | 独立 IDE、其他 IDE 扩展 | 尚无专用汉化安装器 | 不声明已适配 |
 | Antigravity CLI | 保留官方原生行为 | 不修改 CLI 二进制或终端界面 |
 
-macOS/Linux 有跨平台模拟回归，真实客户端未在本次验收。语音、远程智能体等官方灰度功能以实际账号开放情况为准。静态检查与候选字符串匹配均不代表整个上游产品的翻译覆盖率。
+本轮 Linux 验证覆盖官方安装包和 CLI。macOS 的验证范围为跨平台自动化。语音、远程智能体等官方灰度功能以实际账号开放情况为准。静态检查与候选字符串匹配均不代表整个上游产品的翻译覆盖率。
 
 ## 安装与使用
 
@@ -50,6 +63,15 @@ node cli.js help
 node cli.js install --path "<安装目录或 app.asar>"
 node cli.js install:vscode --path "<扩展目录>"
 ```
+
+Linux 解压版支持自动探测 `~/Applications/Portable`、`~/Applications` 和汉化工具同级目录下的 `Antigravity`、`antigravity` 或对应架构的官方解压目录（`Antigravity-x64` 或 `Antigravity-arm64`）。多个安装目录共存时，传入 `--path` 指定要处理的副本。
+
+```bash
+bash install.sh --path "$HOME/Applications/Portable/Antigravity"
+bash uninstall.sh --path "$HOME/Applications/Portable/Antigravity"
+```
+
+`install.sh` 同时安装社区中文插件。只安装指定桌面补丁时可以直接使用 `node cli.js install --path`。带 `--path` 的还原只处理该目标。
 
 安装器保留原有 unpacked 标记，替换前逐文件比对外置文件；不支持安全保留的布局时中止。当前 CLI 的桌面流程使用 ASAR；`core/cdp-client.js` 是供开发集成的独立协议模块。
 
@@ -107,6 +129,7 @@ npm run scan:drift -- "<frontend-bundle.js>" --report "<report.json>"
 
 - 感谢 **a705876883-arch** 提交用户内容保护修复方案，并提供误译复现与回归用例。 [PR #6](https://github.com/yiheng8023/antigravity-chinese/pull/6)
 - 感谢 **[fansID512](https://github.com/fansID512)** 提供详细环境、复现步骤和对照观察，帮助定位设置页掉帧问题。 [Issue #8](https://github.com/yiheng8023/antigravity-chinese/issues/8)
+- 感谢 **[MizuIro-H](https://github.com/MizuIro-H)** 在 Bazzite 上复现 Linux 解压版探测问题，提出修复方案并验证安装。 [Issue #9](https://github.com/yiheng8023/antigravity-chinese/issues/9)
 
 <p align="center">
   <a href="https://github.com/yiheng8023/antigravity-chinese/graphs/contributors">
@@ -114,6 +137,9 @@ npm run scan:drift -- "<frontend-bundle.js>" --report "<report.json>"
   </a>
   <a href="https://github.com/fansID512">
     <img src="https://avatars.githubusercontent.com/u/103017881?v=4" width="64" height="64" alt="fansID512 - 问题复现与性能诊断" title="fansID512：问题复现与性能诊断" />
+  </a>
+  <a href="https://github.com/MizuIro-H">
+    <img src="https://avatars.githubusercontent.com/u/123630455?v=4" width="64" height="64" alt="MizuIro-H - Linux 便携安装复现与修复建议" title="MizuIro-H - Linux 便携安装复现与修复建议" />
   </a>
 </p>
 

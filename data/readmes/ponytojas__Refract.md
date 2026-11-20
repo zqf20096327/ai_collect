@@ -92,7 +92,7 @@ Select text and a toolbar offers **Improve**, **Shorten**, **Fix grammar**, **Ta
 - **New → From a template…** starts a project from an article, thesis, Beamer presentation, letter or CV. The starters include styled typography, a restrained colour palette and editable metadata at the top of `main.tex`: an article with equations, a results table and references; a thesis with a cover, contents, research chapters and appendix; eight widescreen slides; a formal letter with a personal letterhead; and a one-page CV. Choose **English** or **Español** for a built-in starter; the picker defaults to the current Refract interface language and lets you switch before creating the project. Metadata and layout stay in `main.tex`, which uses `\input` to assemble separate files in `sections/` for English or `secciones/` for Spanish. Section filenames also follow the selected language: for example `sections/introduction.tex` and `sections/methods.tex`, or `secciones/introduccion.tex` and `secciones/metodos.tex`. Sample text, headings, automatic labels and dates use the selected language. Saved personal templates keep their original content and language. Sample text and clearly labelled illustrative data show how to use each layout. All five compile with Tectonic without external images or bibliography tools; standard TeX packages may download on first use. You can still choose **Blank project** in the same picker. Changes to built-in starters apply to newly created projects; existing projects and saved templates keep their source.
 - **Save as template…** in a project's menu (or its row in the project list) keeps a private copy of its current source files and selected main file. Open editor changes are saved first. Your templates appear in the new-project picker, are visible only to you, and can be deleted there. Each project created from one has independent files and a fresh history; chats, remote connections and build output are not copied. Editing or deleting the original or template does not change projects already created from it. Deleted templates move to the trash and can be restored there; restored templates return to the template picker. Saved templates count toward hosted project and storage limits.
 - Every project is a git repository. Compiling, accepting AI changes and restoring old versions all create commits. The history view shows each version's diff and restores a file or the whole project, as a new commit.
-- Push and pull to any https git remote with a token, or connect a GitHub account and pick or create repositories from Refract. Optional auto-push after each commit. On the hosted service (`REFRACT_MODE=saas`), remotes must be public addresses and redirects aren't followed: a renamed repository needs its new URL.
+- Push and pull to any https git remote with a token, or connect a GitHub account and pick or create repositories from Refract. Optional auto-push after each commit. A saved token is only sent to the host and port it was saved for (changing the remote to another host asks for a new one), the GitHub account's token only to GitHub, and git doesn't follow any redirect while sending a token, not even within the same server: a renamed or moved repository needs its new URL. Git runs these commands without the server's `GIT_*` environment (except `GIT_EXEC_PATH`, `GIT_SSL_CAINFO` and `GIT_SSL_CAPATH`), and refuses a project whose own git configuration has `url`, `http`, `include` or `credential` settings. On the hosted service (`REFRACT_MODE=saas`), remotes must be public addresses and redirects aren't followed: a renamed repository needs its new URL.
 - Export any project as a .zip at any time.
 - Deleting a project moves it to the trash. Restore it within 30 days, or delete it forever from there; after 30 days it is deleted for good.
 
@@ -143,38 +143,122 @@ The paper in these screenshots is a made-up example, and the AI responses come f
 
 ## Quick start
 
-Try Refract on your own computer in a few minutes. You need [Docker](https://docs.docker.com/get-docker/).
+Try Refract on your own computer in a few minutes, either with the `refract` program or with Docker.
 
 > **Using an AI coding agent?** Ask it to follow [AGENTS.md](AGENTS.md): a step-by-step guide for agents to get Refract running for you, whether you want to try it, work on the code or put it on a server.
 
+### Run it on your computer
+
+[Install the `refract` program](#install-the-cli), plus [Tectonic](https://tectonic-typesetting.github.io/book/latest/installation/) to compile and git for project history, then run:
+
 ```sh
+refract local
+```
+
+It needs no configuration. It opens Refract in your browser and keeps running until you press <kbd>Ctrl</kbd>+<kbd>C</kbd>. By default the address is <http://127.0.0.1:8080>, or another free port if 8080 is taken; it prints the one it uses. `--port` chooses the port and fails if it is taken; `--no-browser` doesn't open the browser.
+
+- **Your data** goes in your user folder: `~/Library/Application Support/Refract` on macOS, `~/.local/share/refract` on Linux (or `$XDG_DATA_HOME/refract`), `%LocalAppData%\Refract` on Windows. `REFRACT_DATA_DIR` chooses another folder.
+- **The secret key** that protects stored passwords and API keys is created on first run as `secret.key` in that folder, readable only by you (Refract refuses to start if other users can read it). Back it up with the folder: without it, stored credentials can't be read back. If `REFRACT_SECRET_KEY` is set, Refract uses it instead and doesn't create the file. On Windows the file has the folder's permissions; `%LocalAppData%` is private to your account, so choose an equally private folder if you set `REFRACT_DATA_DIR`.
+- **There is no sign-in**, so Refract only listens on this computer's loopback address: other computers can't reach it. `REFRACT_ADDR` may choose another address on `127.0.0.1` or `[::1]` instead of `--port` (not both); any other address is refused before anything listens. `REFRACT_AUTH` is ignored, and `REFRACT_MODE=saas` and `REFRACT_PROFILE=team` are refused: they are for the server, `refract` without `local`. Other `REFRACT_*` variables work as for the server.
+
+Run one `refract local` per data folder at a time. To share Refract with other people, [deploy](#deploy) it with sign-in instead.
+
+### Run it with Docker
+
+You need [Docker](https://docs.docker.com/get-docker/).
+
+```sh
+openssl rand -base64 32 > refract.key && chmod 600 refract.key   # once: keep this file
 docker run -d --name refract -p 127.0.0.1:8080:8080 -v refract-data:/data \
-  -e REFRACT_SECRET_KEY="$(openssl rand -base64 32)" \
+  -e REFRACT_SECRET_KEY="$(cat refract.key)" \
   -e REFRACT_AUTH=none \
+  -e REFRACT_SECRET_KEY="$(openssl rand -base64 32)" \
+  -e REFRACT_AUTH=none -e REFRACT_ALLOWED_HOSTS=localhost \
   ghcr.io/ponytojas/refract
 ```
+
+The key encrypts the credentials you'll save (AI keys, git tokens), so use the same `refract.key` whenever you start the container again: with another key they can't be read back.
 
 Open <http://localhost:8080>, create a project or drop a Prism .zip on the page, and press <kbd>⌘↵</kbd> to compile. The first compile downloads the LaTeX packages it needs, so it takes longer than the next ones.
 
 To use the assistant, connect an AI in **Settings → Assistant** (see [AI models](#ai-models)).
 
-`REFRACT_AUTH=none` means no sign-in at all: keep it to your own machine (the `127.0.0.1:` above makes sure of that). To put Refract on a server, read [Deploy](#deploy).
+`REFRACT_AUTH=none` means no sign-in at all: keep it to your own machine (the `127.0.0.1:` above makes sure of that). Inside the container Refract can't see that limit, so it refuses to start without sign-in unless you name the hosts you open it at: that is what `REFRACT_ALLOWED_HOSTS=localhost` says. To put Refract on a server, read [Deploy](#deploy).
 
 ## Deploy
 
-Refract is a single container: the Go server with the web app built in, Tectonic, SyncTeX and git. It listens on port 8080 and keeps everything under `/data`.
+Refract is a single container: the Go server with the web app built in, Tectonic, SyncTeX and git. Inside the container it listens on port 8080 on every interface (`REFRACT_ADDR=:8080`, set by the image) and keeps everything under `/data`. `-p 127.0.0.1:8080:8080` maps the port on the Docker host to IPv4 loopback only, for a reverse proxy in front; other containers on a shared Docker network can still reach port 8080 directly.
 
 ```sh
 docker run -d --name refract --restart unless-stopped --stop-timeout 30 \
   -p 127.0.0.1:8080:8080 -v refract-data:/data \
-  -e REFRACT_SECRET_KEY="<the output of: openssl rand -base64 32>" \
+  -e REFRACT_SECRET_KEY="$(cat refract.key)" \
   -e REFRACT_AUTH=builtin \
-  ghcr.io/ponytojas/refract:0.1
+  -e REFRACT_PUBLIC_URL=https://refract.example.com \
+  ghcr.io/ponytojas/refract:0.2
 ```
+
+`refract.key` holds the secret key: create it once with `openssl rand -base64 32 > refract.key && chmod 600 refract.key`, and keep it with your backups.
+Set `REFRACT_PUBLIC_URL` to the address people open Refract at: Refract then refuses requests for other host names (see [Security](#security)). Add LAN names or IP addresses with `REFRACT_ALLOWED_HOSTS`.
 
 Each release publishes the image for amd64 and arm64 as `latest`, as `0.1` (the newest 0.1.x, which only gets fixes) and as the exact version, such as `0.1.0`. To build it yourself instead, run `docker build -t refract .` in this repository, or `make docker`, which also tests it for both architectures.
 
 **Keep `REFRACT_SECRET_KEY` safe and stable.** It encrypts the stored ChatGPT credentials, API keys and git tokens. With a different key, those can't be read back and users have to connect again.
+
+**Decide who you trust before you invite anyone.** By default (`REFRACT_PROFILE=personal`) Tectonic runs with the server's own permissions: a document can `\input` any file the server can read, including the database (accounts, sessions, encrypted credentials) and every other account's projects. That is fine for one person, or for people who would trust each other with all of that. If the people signing in don't, run the [team profile](#run-it-for-a-team): every compile is isolated, and Refract refuses to start if it can't be. Without it, Refract warns at startup when several accounts compile without isolation.
+
+### Run it for a team
+
+`REFRACT_PROFILE=team` is for people who must not read each other's files: a lab, a class, a department. It requires sign-in (`REFRACT_AUTH=builtin` or `cloudflare`), runs every compile in the [compile sandbox](#compile-sandbox), the editor's and the assistant's alike, and refuses to start, saying what is missing, without sign-in, with `REFRACT_SANDBOX=none`, or when the sandbox can't compile its self-test document. It runs on Linux hosts (amd64 and arm64) with Docker, or directly with the [systemd unit](packaging/server/refract.service). Verified end to end with Docker 29 on arm64 and, on every change to the sandbox and weekly, on GitHub's Ubuntu runners (amd64, `.github/workflows/team-sandbox.yml`).
+
+The sandbox has no network, so Tectonic needs the whole TeX bundle on disk (about 3 GB, prepared once):
+
+```sh
+# 1. The offline TeX bundle, into its own volume (downloads 2.7 GB).
+docker run --rm -v refract-tex:/opt/refract/tex --entrypoint refract-prepare-bundle \
+  ghcr.io/ponytojas/refract:0.2 /opt/refract/tex
+
+# 2. Refract, with the bundle read-only and the options bubblewrap needs.
+docker run -d --name refract --restart unless-stopped --stop-timeout 30 \
+  -p 127.0.0.1:8080:8080 -v refract-data:/data -v refract-tex:/opt/refract/tex:ro \
+  --security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt systempaths=unconfined \
+  -e REFRACT_SECRET_KEY="$(cat refract.key)" \
+  -e REFRACT_PROFILE=team -e REFRACT_AUTH=builtin \
+  -e REFRACT_TECTONIC_BUNDLE=/opt/refract/tex/bundle -e TECTONIC_CACHE_DIR=/opt/refract/tex/cache \
+  ghcr.io/ponytojas/refract:0.2
+```
+
+Then create the accounts (`docker exec refract refract users add <email>`), put it [behind a reverse proxy](#behind-a-reverse-proxy) with https, and [back it up](#data-backups-and-upgrades) with the key. When you upgrade to an image with another Tectonic or bundle, prepare a new volume.
+
+What the three `--security-opt` do, and why: bubblewrap builds each compile's sandbox from Linux user namespaces, which Docker's default seccomp and AppArmor profiles block, and mounts its own `/proc`, which Docker's masked `/proc` paths (`systempaths`) prevent. They loosen the container's own confinement, not the sandbox's: each compile still sees only its project, the bundle and a read-only system, with no network. Refract itself still runs as an unprivileged user (uid 10001). If your host restricts user namespaces (Ubuntu 24.04 and later: `kernel.apparmor_restrict_unprivileged_userns=1`), the startup check fails with a `uid map` or `Operation not permitted` error: see [Compile sandbox](#compile-sandbox).
+
+To run it for a team without Docker, see [Run it without Docker](#run-it-without-docker).
+
+`scripts/smoke-team.sh <image>` checks a deployment like this one end to end: the refusals, a compile, and that one account's document can't see the database or another account's project (while the same probe sees both without the profile). Biber isn't available in the sandbox: bibliographies need BibTeX (`natbib`, or `biblatex` with `backend=bibtex`).
+
+### Run it without Docker
+
+The `refract` executable is the whole server: the release's `.deb` (Debian, Ubuntu) or `.tar.gz` (other Linux) has it, and it needs Tectonic, SyncTeX, git and ripgrep beside it. These steps set up a team server on Debian or Ubuntu with systemd, with the [team profile](#run-it-for-a-team)'s isolation. Run them as root, from a clone of this repository at the release's tag (for the scripts):
+
+```sh
+# 1. Refract, and the tools it runs.
+apt install ./refract_<version>_<arch>.deb git ripgrep bubblewrap curl build-essential zlib1g-dev
+scripts/install-tex-tools.sh /usr/local/bin          # Tectonic and SyncTeX, at the image's versions
+
+# 2. Its user, the offline TeX bundle (2.7 GB download) and the secret key.
+useradd --system --home-dir /var/lib/refract --shell /usr/sbin/nologin refract
+packaging/server/prepare-bundle.sh /opt/refract/tex
+mkdir -p /etc/refract && openssl rand -base64 32 > /etc/refract/refract.key && chmod 600 /etc/refract/refract.key
+
+# 3. The service: set REFRACT_PUBLIC_URL in the unit first.
+cp packaging/server/refract.service /etc/systemd/system/ && systemctl daemon-reload
+systemctl enable --now refract && journalctl -u refract -n 20
+
+# 4. Accounts, with the server's key and data folder (the key stays out of the command line).
+sh -c 'REFRACT_SECRET_KEY="$(cat /etc/refract/refract.key)" REFRACT_DATA_DIR=/var/lib/refract exec runuser -u refract -- refract users add you@example.com'
+```
+
+Then put it [behind a reverse proxy](#behind-a-reverse-proxy) with https: the unit listens on `127.0.0.1:8080` only. The unit keeps the data in `/var/lib/refract` and gives the key to the service through systemd's credentials, so it is never in the unit or a process listing. If Refract refuses to start, the journal says why: [Compile sandbox](#compile-sandbox) lists the usual causes (user namespaces on Ubuntu 24.04 and later, the bundle's permissions). For a single person on their own server, the sandbox is optional: remove the `REFRACT_PROFILE`, `REFRACT_TECTONIC_BUNDLE` and `TECTONIC_CACHE_DIR` lines from the unit and skip the bundle (Tectonic then downloads packages as it needs them).
 
 ### Choose how people sign in
 
@@ -232,6 +316,7 @@ By default nobody can create an account: you add them with `refract users add`. 
 Put Refract behind a proxy that terminates https. Two things matter:
 
 - **Send `X-Forwarded-Proto` and `X-Forwarded-For`.** Refract marks its session cookie `Secure` when the request came over https, and limits sign-in attempts per client address. It reads that address from `X-Forwarded-For` only when the request comes from the same machine or a private network, where your proxy is; otherwise anyone could forge it.
+- **Keep the `Host` header**, or set `REFRACT_PUBLIC_URL`. Refract checks the host name of every request (see [Security](#security)) and the `Origin` of every change. Caddy and the nginx example below pass the public name through; if your proxy rewrites `Host` to the upstream address (`127.0.0.1:8080`), set `REFRACT_PUBLIC_URL` to the public address, or changes are refused with `403`.
 - **Don't buffer responses.** The assistant streams its answer (server-sent events); a buffering proxy holds it back until the end.
 
 [Caddy](https://caddyserver.com) does all of this by default:
@@ -258,7 +343,7 @@ location / {
 
 ### Compile sandbox
 
-Tectonic runs as the same user as the server, so a document could `\input` any file that user can read: the database, other accounts' projects, the server's environment. With `REFRACT_SANDBOX=bwrap` (Linux, [bubblewrap](https://github.com/containers/bubblewrap)) every compile runs in a sandbox instead: no network, a read-only view of the system, the TeX bundle and the one project being built (only `.refract/build` is writable), nothing else of the host, and limits of CPU time (the compile timeout plus a margin), 1 GiB of memory, 64 processes and 200 MiB per file. **`REFRACT_MODE=saas` requires it.** Whether or not it is on, compiles go through a queue: `REFRACT_COMPILE_WORKERS` at once, one per account (with `REFRACT_AUTH=none` everyone is the same account, so projects compile one after another), and a compile that waits longer than `REFRACT_COMPILE_MAX_WAIT` seconds is answered "the server is busy" (or, when only the account's own running compile is in the way, "another of your compiles is still running"). A newer compile replaces a waiting one of the same project; other projects of the account wait their turn. `REFRACT_COMPILE_MAX_WAIT=0` waits without limit, which `REFRACT_MODE=saas` refuses. The CPU limit is `REFRACT_COMPILE_TIMEOUT` plus 5 s, and a compile that hits it is reported as timed out. A project whose `.refract` or `.refract/build` is a symbolic link is not compiled, and the folder checked is the one mounted, even if the path changes during the compile (a `git pull`, for example).
+Tectonic runs as the same user as the server, so a document could `\input` any file that user can read: the database, other accounts' projects, the server's environment. With `REFRACT_SANDBOX=bwrap` (Linux, [bubblewrap](https://github.com/containers/bubblewrap)) every compile runs in a sandbox instead: no network, a read-only view of the system, the TeX bundle and the one project being built (only `.refract/build` is writable), nothing else of the host, and limits of CPU time (the compile timeout plus a margin), 1 GiB of memory, 64 processes and 200 MiB per file. **`REFRACT_PROFILE=team` and `REFRACT_MODE=saas` require it.** Whether or not it is on, compiles go through a queue: `REFRACT_COMPILE_WORKERS` at once, one per account (with `REFRACT_AUTH=none` everyone is the same account, so projects compile one after another), and a compile that waits longer than `REFRACT_COMPILE_MAX_WAIT` seconds is answered "the server is busy" (or, when only the account's own running compile is in the way, "another of your compiles is still running"). A newer compile replaces a waiting one of the same project; other projects of the account wait their turn. `REFRACT_COMPILE_MAX_WAIT=0` waits without limit, which `REFRACT_MODE=saas` refuses. The CPU limit is `REFRACT_COMPILE_TIMEOUT` plus 5 s, and a compile that hits it is reported as timed out. A project whose `.refract` or `.refract/build` is a symbolic link is not compiled, and the folder checked is the one mounted, even if the path changes during the compile (a `git pull`, for example).
 
 Because the sandbox has no network, Tectonic can't download packages: it needs the whole TeX bundle as a local folder, with its format file built once. On the server:
 
@@ -267,7 +352,7 @@ sudo apt install bubblewrap                       # and util-linux's prlimit, al
 packaging/server/prepare-bundle.sh /opt/refract/tex   # downloads 2.7 GB, needs 3 GB; tectonic on the PATH
 ```
 
-then set `REFRACT_SANDBOX=bwrap`, `REFRACT_TECTONIC_BUNDLE=/opt/refract/tex/bundle` and `TECTONIC_CACHE_DIR=/opt/refract/tex/cache`. Run the script again when Tectonic or the bundle changes. [`packaging/server/refract.service`](packaging/server/refract.service) is a systemd unit for the hosted service, with the secret key given through `LoadCredential=`; its comments list what to prepare. The unit leaves out `RestrictNamespaces=`, `PrivateUsers=`, `ProtectKernelTunables=`, `ProtectProc=` and `ProcSubset=` because bubblewrap needs user namespaces and its own `/proc`.
+then set `REFRACT_SANDBOX=bwrap`, `REFRACT_TECTONIC_BUNDLE=/opt/refract/tex/bundle` and `TECTONIC_CACHE_DIR=/opt/refract/tex/cache`. Run the script again when Tectonic or the bundle changes. [`packaging/server/refract.service`](packaging/server/refract.service) is a systemd unit for a team server (see [Run it without Docker](#run-it-without-docker)), with the secret key given through `LoadCredential=`; its comments list what to prepare. The unit leaves out `RestrictNamespaces=`, `PrivateUsers=`, `ProtectKernelTunables=`, `ProtectProc=` and `ProcSubset=` because bubblewrap needs user namespaces and its own `/proc`.
 
 The sandbox needs bubblewrap 0.5 or later (for `--bind-fd`). The process limit needs Linux 5.14 or later (which counts processes per user namespace) and a `bwrap` that is not setuid; Refract refuses to start with a setuid one. Fontconfig's configuration (`/etc/fonts`) and the loader cache (`/etc/ld.so.cache`) are mounted read-only; nothing else of `/etc` is.
 
@@ -287,7 +372,7 @@ At startup Refract compiles a one-line document in the sandbox and refuses to st
 - **`Permission denied` reading the bundle.** The bundle's files must be readable by the server's user: `prepare-bundle.sh` sets them to `0444`.
 - **A format file error, or `Read-only file system` under the cache.** The cache has no format file for this Tectonic and bundle: run `prepare-bundle.sh` again with the Tectonic the server uses.
 
-The Docker image keeps `REFRACT_SANDBOX=none`: bubblewrap needs user namespaces, which the default container profile blocks, so using it in a container takes a host or privileged setup (`--security-opt seccomp=unconfined --security-opt apparmor=unconfined`) and the bundle on a volume. Biber isn't available inside the sandbox.
+The Docker image includes bubblewrap and prlimit but keeps `REFRACT_SANDBOX=none` unless you choose the team profile: in a container the sandbox needs `--security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt systempaths=unconfined` and the bundle on a volume, as [Run it for a team](#run-it-for-a-team) shows. Biber isn't available inside the sandbox.
 
 ### Data, backups and upgrades
 
@@ -303,7 +388,7 @@ Everything lives in the `/data` volume:
 
 To back up, stop the container, copy the volume, and keep `REFRACT_SECRET_KEY` with the copy.
 
-To upgrade, pull the new image (`docker pull ghcr.io/ponytojas/refract:0.1`, or a newer version's tag) and start a new container on the same volume. Database changes are applied automatically at startup.
+To upgrade, pull the new image (`docker pull ghcr.io/ponytojas/refract:0.2`, or a newer version's tag) and start a new container on the same volume. Database changes are applied automatically at startup.
 
 To go back to an older version after an upgrade:
 
@@ -399,10 +484,11 @@ All settings are environment variables.
 | `REFRACT_SECRET_KEY` | **Required.** 32 bytes, base64 (`openssl rand -base64 32`). Encrypts stored credentials and keys. |
 | `REFRACT_AUTH` | `cloudflare` (default), `builtin` (Refract's own sign-in; `password` still works) or `none`. See [Choose how people sign in](#choose-how-people-sign-in). |
 | `REFRACT_DATA_DIR` | Where projects, the database and caches live. Default `/data`. |
-| `REFRACT_ADDR` | Listen address. Default `:8080`. |
+| `REFRACT_ADDR` | Listen address. Default `127.0.0.1:8080`, this computer only; the container image sets `:8080` (every interface), where `-p` decides the mapping on the Docker host and containers on a shared Docker network can still connect. Use `:8080` or a LAN address to serve other computers directly. |
+| `REFRACT_ALLOWED_HOSTS` | Extra host names or IP addresses people open Refract at, separated by commas, e.g. `refract.lan,192.168.1.20` (a port is ignored). `localhost`, `127.0.0.1`, `[::1]`, `*.localhost` and the host of `REFRACT_PUBLIC_URL` are always allowed; requests for other names get `421`. When Refract listens on an address other computers can reach (judged by the address it actually binds) and neither this nor `REFRACT_PUBLIC_URL` is set, any name is accepted, with a warning in the log, and `REFRACT_AUTH=none` refuses to start. An invalid entry, or an invalid `REFRACT_PUBLIC_URL`, stops startup. |
 | `REFRACT_MODE` | `selfhost` (default) or `saas`, for the hosted service. With `saas`, the ChatGPT plan is off (OpenAI's plan usage covers self-hosted apps): people use the assistant with API providers only. Refract refuses to start with `REFRACT_AUTH=none` or without an https `REFRACT_PUBLIC_URL`. AI providers and git remotes must be public https addresses (no loopback, private or metadata addresses, no local models), and proxy settings are ignored for them. Needs git 2.37 or later. With `saas`, each account has a plan (`free` by default) that limits its projects, storage and assistant turns; self-hosted installs have no limits. Storage counts a project's files, git history and the assistant's pending-review worktrees (full copies of the project until you accept or reject the turn), but not build output or caches; trashed projects count until deleted forever. A pull, an accepted assistant turn and a restore of an older version are only measured after they ran, so each of these can take an account past its limit once; it stands, and further growth is refused until the account is back under. A save that grows a file is refused once the account is at or over its limit, whether saves arrive one by one or in parallel; the save that crosses the line is the last, and it can't exceed the file size limit. Saves that keep a file the same size or make it smaller always work. |
 | `REFRACT_CF_TEAM_DOMAIN`, `REFRACT_CF_AUD` | Cloudflare Access team domain and application AUD tag. |
-| `REFRACT_PUBLIC_URL` | The address users open Refract at, e.g. `https://refract.example.com`. Needed for OpenID Connect and for the links in emails, and required with `REFRACT_MODE=saas`. |
+| `REFRACT_PUBLIC_URL` | The address users open Refract at, e.g. `https://refract.example.com`. Its host is allowed by the host check (see `REFRACT_ALLOWED_HOSTS`). Needed for OpenID Connect and for the links in emails, and required with `REFRACT_MODE=saas`. |
 | `REFRACT_SIGNUP` | `open` or `closed` (default): whether people can create their own account. Only with `REFRACT_AUTH=builtin`; needs the three mail settings. See [Let people sign up](#let-people-sign-up). |
 | `REFRACT_SMTP_URL` | The mail server, `smtp://user:pass@host:587` (URL-encode special characters). STARTTLS is required except to `localhost`, `127.0.0.1` and `::1`. |
 | `REFRACT_MAIL_FROM` | The sender, e.g. `Refract <no-reply@refract.example.com>`. Set both mail variables or neither. |
@@ -413,7 +499,8 @@ All settings are environment variables.
 | `REFRACT_MODEL_AGENT` | Default model for the assistant. |
 | `REFRACT_MODEL_QUICK` | Default model for quick actions and citations. |
 | `REFRACT_COMPILE_TIMEOUT` | Seconds per compile. Default 90. |
-| `REFRACT_SANDBOX` | `none` (default) or `bwrap`: run every compile in a [sandbox](#compile-sandbox). Required with `REFRACT_MODE=saas`. |
+| `REFRACT_PROFILE` | `personal` (default) or `team`: people who must not read each other's files. `team` requires sign-in and the [compile sandbox](#compile-sandbox) (it turns `REFRACT_SANDBOX=bwrap` on), and refuses to start without them. See [Run it for a team](#run-it-for-a-team). |
+| `REFRACT_SANDBOX` | `none` (default; `bwrap` with `REFRACT_PROFILE=team`) or `bwrap`: run every compile in a [sandbox](#compile-sandbox). Required with `REFRACT_PROFILE=team` and `REFRACT_MODE=saas`. |
 | `REFRACT_COMPILE_WORKERS` | Compiles running at once, across all accounts. Default: the number of CPUs minus one, at least 1. Each account runs one compile at a time. |
 | `REFRACT_COMPILE_MAX_WAIT` | Seconds a compile waits for its turn before the server answers "busy, try again". Default 20. With `REFRACT_MODE=saas`, this plus `REFRACT_COMPILE_TIMEOUT` must not exceed 95, because a proxy cuts a request with no response at about 100 s. |
 | `REFRACT_FONT_DOWNLOADS` | `0` disables Google Fonts requests; project, TeX bundle and cached fonts still work. Default: downloads enabled. |
@@ -433,6 +520,8 @@ Without this, any project can still push to and pull from an https git remote wi
 
 ```text
 refract                         run the server (configured with REFRACT_* variables)
+refract local                   run Refract on this computer with no configuration: data in your
+                                user folder, no sign-in, loopback only (--port, --no-browser)
 refract login                   sign in with ChatGPT on this computer and write a credential
                                 file to upload in Settings → Assistant (refract login -h)
 refract users add <email>       create a confirmed account or reset its password (REFRACT_AUTH=builtin)
@@ -466,7 +555,7 @@ On Windows and Linux, read <kbd>Ctrl</kbd> for <kbd>⌘</kbd>. Hold <kbd>⌘</kb
 
 - **Sign-in:** Cloudflare Access tokens are verified on every request. Passwords are hashed with PBKDF2-SHA256 (600,000 iterations). Repeated failures for an account, or from one address, are refused for 15 minutes; the counts survive restarts. Sessions are random tokens stored only as hashes, in `HttpOnly`, `SameSite=Lax` cookies (named `__Host-refract_session` over https). A session ends 30 days after signing in, or after 7 days without use; Settings → Account lists where you're signed in and signs out one device or all the others. Changing the password signs out every other device.
 - **Account links:** confirmation and reset links are random, expire, work once and are stored only as hashes. Setting a password by any means cancels reset links. Sign-up and reset answer the same for addresses with and without an account, email goes out after the answer, and emails are limited per address and per network address.
-- **Requests:** every API call must carry a custom header that browsers can't add cross-site, which blocks cross-site request forgery.
+- **Requests:** every API call must carry a custom header that browsers can't add cross-site, which blocks cross-site request forgery. Refract answers only to the host names it expects (`localhost` and the loopback addresses, the host of `REFRACT_PUBLIC_URL` and `REFRACT_ALLOWED_HOSTS`) and refuses others with `421`, so a website can't use DNS rebinding to reach a Refract running on your computer. The exception is a server that listens on an address other computers can reach with neither setting: it accepts any name and warns in the log, and with `REFRACT_AUTH=none` it refuses to start. Changes (anything but `GET`, `HEAD` and `OPTIONS`) must carry no `Origin` or exactly one from an allowed host (in that exception, the host asked for); others get `403`. The host check doesn't limit who can connect: the listen address, a firewall and sign-in do that.
 - **Browser:** a strict Content-Security-Policy lets the app run only its own scripts and connect only to its own server. Refract can't be embedded in other sites, and over https it sends `Strict-Transport-Security`.
 - **Secrets at rest:** ChatGPT credentials, API keys and git tokens are encrypted with AES-GCM under `REFRACT_SECRET_KEY`, each bound to its owner.
 - **Isolation between users:** projects, chats and connections are checked against their owner on every access.
@@ -480,7 +569,7 @@ Found a vulnerability? Please report it privately through the repository's **Sec
 You need Go, Node.js, git, ripgrep, Tectonic and `synctex` (and Google Chrome for the browser test). The image bundles all of them. Packaging tests also use Python 3.11+; `dpkg-deb` is optional locally and required in Linux CI to verify Debian packages. [AGENTS.md](AGENTS.md) lists how to check and install the development tools, and the conventions to follow when changing the code.
 
 ```sh
-make dev                                  # API on :8080 and Vite on :5173; open http://localhost:5173
+make dev                                  # API on 127.0.0.1:8080 (REFRACT_ADDR overrides) and Vite on :5173; open http://localhost:5173
 make dev AUTH=builtin                     # the same, with the sign-in page
 make users ARGS="add you@example.com"     # accounts in the development data
 make login                                # refract login, for ChatGPT
@@ -513,7 +602,17 @@ Development data lives in `./data`, with its own key in `data/dev.key`. To contr
 
 Every push to `main` and every pull request runs the Go tests (with the race detector), the web tests and the browser tests (`.github/workflows/ci.yml`).
 
-Pushing a tag such as `v0.1.0` builds `refract` for macOS, Linux and Windows (amd64 and arm64) and publishes the archives with checksums on GitHub Releases. It also tests and publishes the Docker image for amd64 and arm64 to GitHub Container Registry (`.github/workflows/release.yml`).
+Pushing a tag such as `v0.1.0` builds `refract` for macOS, Linux and Windows (amd64 and arm64) and publishes the archives with checksums on GitHub Releases. It also builds, smoke-tests and scans the Docker image for amd64 and arm64 before publishing it to GitHub Container Registry (`.github/workflows/release.yml`): see [Release image scanning](#release-image-scanning).
+
+#### Release image scanning
+
+Each architecture's image is pushed by digest only, with no public tag, and then scanned exactly as pushed. The public tags (`latest`, `0.1`, the exact version) move to those digests only once both architectures pass. The GitHub release waits for the scan too. `security.yml` runs the same gate on every pull request, on `main` and weekly, against an image it builds and never pushes.
+
+- **What is scanned.** [Syft](https://github.com/anchore/syft) lists everything in the image as an SBOM: Alpine's packages (git, ripgrep, bubblewrap, OpenSSL, zlib, busybox…) and the Go modules in `refract`. [Grype](https://github.com/anchore/grype) matches that list against vulnerability databases. Both are free, Apache-2.0 tools by Anchore. `scripts/install-scanners.sh` installs them at pinned versions and checks their checksums.
+- **What it can't see.** Tectonic (a static Rust binary downloaded from its releases, checked against a pinned SHA-256) and SyncTeX (built from a pinned commit and statically linked with Alpine's zlib) carry no package metadata, so the scanner doesn't recognise them. The report lists them with their pins, the version the image reports and where to look for advisories. Check those by hand when either changes and before each release: [Tectonic's advisories](https://github.com/tectonic-typesetting/tectonic/security/advisories) and the Rust crates it uses ([RustSec](https://rustsec.org)), and zlib's advisories, since SyncTeX embeds the zlib version the SBOM shows.
+- **What blocks.** A finding of Critical severity stops the release, unless `security/image-scan-exceptions.json` has a reviewed exception for it. Other findings are listed in the report and don't block.
+- **Recording an exception.** Add an entry with the vulnerability's id (as Grype reports it), the package, the reason it can't be exploited in Refract (or why waiting for a fix is acceptable), your GitHub login and the dates of the review and of expiry (at most 90 days apart). Merge it through a pull request like any other change. An expired or incomplete entry blocks the gate until someone reviews it again.
+- **The report.** It stays with the build: each architecture's `refract-image-<version>-<arch>-scan.tar.gz` has `report.md` (the decision, the findings and the native tools), both SBOMs, Grype's full results and `image.txt` with the digest it covers. It is attached to the GitHub release and kept for 90 days as a workflow artifact, also when the scan blocks. Run it locally with `scripts/scan-image.sh <image> <folder>`.
 
 Releases also include Debian packages for amd64 and arm64, a Homebrew formula (`refract.rb`) and WinGet manifests (`refract-winget-manifests.tar.gz`). CLI smoke tests run on macOS, Linux and Windows before the release is published. Stable releases can update the Homebrew tap automatically once its repository token is configured. [Packaging maintenance](packaging/README.md) describes the setup and manual publication steps.
 

@@ -27,8 +27,8 @@ AIfred runs on your own machine and works for you across every channel you use: 
 - 🔒 **Security built into the framework** — permission tiers per channel, prompt-injection defences, credential broker, audit log
 
 <p align="center">
-  <img src="docs/images/multi-agent-debate.webp" alt="Auto-Consensus debate in AIfred: AIfred answers, Sokrates criticises, Salomo synthesises" width="820">
-  <br><sub>Auto-Consensus mode: AIfred answers, Sokrates criticises, Salomo synthesises — local DeepSeek-V4-Flash via vLLM, with timings per answer.</sub>
+  <img src="docs/images/interface-overview.webp" alt="AIfred's web interface: saved chats, status line, an Auto-Consensus debate, input with dictation, agents and modes" width="820">
+  <br><sub>The web interface: saved chats, the status line of models and services, an Auto-Consensus debate (AIfred answers, Sokrates criticises) with timings per answer, playback, input with dictation, the agents and the mode selector.</sub>
 </p>
 
 ---
@@ -108,7 +108,7 @@ Every plugin is a directory under `aifred/plugins/tools/` or `aifred/plugins/cha
 Details — flows, prompt files, perspectives, labels: [Multi-Agent System](docs/en/architecture/multi-agent.md).
 
 <p align="center">
-  <img src="docs/images/agent-editor.webp" alt="Agent Editor: identity, voice and tool selection with permission tiers" width="400">
+  <img src="docs/images/agent-editor.webp" alt="Agent editor: tool rights per agent, grouped by plugin, with permission tiers" width="400">
   <img src="docs/images/plugin-manager.webp" alt="Plugin Manager: channels with security tier, tool plugins switchable at runtime" width="400">
   <br><sub>Agent Editor (tools per agent with tier badges) and Plugin Manager (channels with security tier, plugins on/off at runtime).</sub>
 </p>

@@ -534,6 +534,7 @@ LLM-based:
 - [GPT-4 vs Human Translators](https://arxiv.org/abs/2308.03245) - quality comparison on professional MT.
 - [Multilingual MT with Open LLMs at Practical Scale](https://arxiv.org/abs/2502.02481) (2025) - benchmarks sub-10B open LLMs on 28-language MT; matches GPT-4-turbo and Google Translate.
 - [Bridging the Linguistic Divide: Survey on LLMs for MT](https://arxiv.org/abs/2504.01919) (2025) - survey of how instruction-following, in-context learning, and preference alignment have restructured MT methodology.
+- [Translate-and-Revise: Boosting Large Language Models for Constrained Translation](https://aclanthology.org/2024.ccl-1.82/) (CCL 2024) - Checks translations for unmet lexical or structural constraints and prompts an LLM to revise them.
 
 ### Question Answering and Reading Comprehension
 
@@ -629,6 +630,7 @@ Pretraining-scale corpora (open):
 - [CulturaX](https://huggingface.co/datasets/uonlp/CulturaX) - 6.3T tokens across 167 languages.
 - [Common Corpus](https://huggingface.co/datasets/PleIAs/common_corpus) (2024) - 2T-token open-license multilingual corpus.
 - [FineWeb2](https://arxiv.org/abs/2506.20920) (2025) - multilingual web corpus covering 1,000+ languages, with language-adaptive filtering, deduplication, and data balancing; [dataset](https://huggingface.co/datasets/HuggingFaceFW/fineweb-2) and [code](https://github.com/huggingface/fineweb-2).
+- [Global Law](https://github.com/lexifina/global-law) - legislation of 208 jurisdictions (714 corpora) in their original languages, each act a folder with one file per provision and every version a git commit dated the day it took effect; index and tools CC0.
 
 Task and instruction datasets:
 
@@ -1252,11 +1254,4 @@ Resources organized by human language. Click a section to expand.
 ### Models
 
 - [WangchanBERTa](https://github.com/vistec-AI/thai2transformers) - pretrained Thai language model.
-- [Typhoon](https://huggingface.co/scb10x) (SCB 10X, 2024) - open Thai LLM family.
-- [OpenThaiGPT](https://huggingface.co/openthaigpt) (2023-2024) - open Thai instruction-tuned models.
-- [Sailor](https://github.com/sail-sg/sailor-llm) - open Southeast-Asian LM family covering Thai.
-
-### Data
-
-- [Inter-BEST](https://www.nectec.or.th/corpus/index.php?league=pm) - text corpus with 5M words and word segmentation.
-- [Prime Minister 29](https://github.com/PyThaiNLP/lexicon-thai/tree/master/thai-corpus/Prime%20Minister%2029) - datase
+- [Typhoon](https://huggingface.co/scb10x) (SCB 10X, 2024) - op

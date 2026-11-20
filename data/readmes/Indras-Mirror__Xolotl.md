@@ -12,6 +12,16 @@
 
 ## Latest
 
+- **21 Nov (later)** - LoRA training **proven end to end**: a QFN adapter trained on the RTX 4090 from the served
+  engine's own activations lowers the loss on held-out agent transcripts 1.4116 -> 1.3197 (-6.5 %) in ~6 min. How to
+  train LoRAs on the big MoE models with Xolotl's engine: [docs/LORA_TRAINING.md](docs/LORA_TRAINING.md). Option, not
+  yet matching: fast capture through `--serve` (~3 s per window).
+  [CHANGELOG](docs/xolotl/CHANGELOG.md#lora-training-proven-end-to-end-on-qfn-a-harness-adapter-trained-from-the-served-engines-activations-21-nov-later).
+- **21 Nov** - LoRA training, **experimental**: backward kernels and training graphs for adapters on the served MoE
+  models (base frozen, quantized as served), a Hy4-flash trainer and QFN trainers on real weights, adapters in llama.cpp's
+  format. Real fine-tuning is not proven yet. Also: the Hy4-flash engine, FP8 Qwen4-Exp GGUFs from upstream's converter,
+  and the Windows build fix (#143). [docs/LORA_TRAINING.md](docs/LORA_TRAINING.md),
+  [CHANGELOG](docs/xolotl/CHANGELOG.md#lora-training-experimental-the-hy4-flash-engine-fp8-qwen4-exp-n-gram-tables-windows-build-fix-21-nov).
 - **19 Nov** - DeepSeek-V4.1 decodes faster by default: Keisawaakira's decode switches cut the verify pass 98.8 -> 89.1
   ms (-10 %) on an 8K probe and lift fast-mode agent tasks from ~40 to **42.7 tok/s** (+5-8 %) on one 4090, quality
   inside the noise. Also new, opt-in: two-layers-ahead NVMe reads (TokenWing's idea) and GLM-5.3-Flash on a second
@@ -196,6 +206,7 @@ pruning; the Qwen models get MTP speculative decoding. **[Read the full write-up
 | [DeepSeek-V4.1 fast mode](docs/XOLOTL_FAST.md)     | the 2-bit expert sidecar: build, serve, switches, what it costs and what we tried |
 | [DeepSeek-V4.1 on Windows](docs/WINDOWS.md)        | native MSVC + CUDA build, configs, RTX 50 notes                                   |
 | [GLM-5.3-Flash engine](docs/glm)                   | KDA + MLA attention, the LoRA on routed experts, soft pruning                     |
+| [Prune masking](docs/EXPERT_KEEP.md)               | `STRATA_EXPERT_KEEP` task profiles: keep lists, how to build and gate one, results |
 | [LFM3-Omni engine](docs/LFM3.md)                   | pictures, audio, video and speech on a 2B model, park/unpark beside a big one     |
 | [Muse Glimmer engine](docs/GLIMMER.md)             | Meta's dense 30B at 512K on 24 GB, its channel / ATEM tool-call format, pictures  |
 | [Qwen3.8-27B dense howto](docs/dense/HOWTO.md)     | dense vs MoE paths, binaries, configs, MTP (by Mirko Perrone, also in Italian)    |

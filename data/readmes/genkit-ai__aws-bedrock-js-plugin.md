@@ -33,7 +33,7 @@ Install the plugin in your project with your favourite package manager
 
 ### Versions
 
-if you are using Genkit version `<v0.9.0`, please use the plugin version `v1.9.0`. If you are using Genkit `>=v0.9.0`, please use the plugin version `>=v1.10.0`.
+If you are using Genkit version `<v0.9.0`, please use the plugin version `v1.9.0`. If you are using Genkit `>=v0.9.0`, please use the plugin version `>=v1.10.0`.
 
 ## Usage
 
@@ -132,7 +132,11 @@ const ai = genkit({
 });
 ```
 
-You can check more information about the available models in the [AWS Bedrock PLugin documentation](https://xavidop.github.io/genkitx-aws-bedrock/).
+The plugin registers its models under the inference-profile prefix for your region's geography: `us.` for `us-*`, `us-gov.` for `us-gov-*`, `eu.` for `eu-*` and `apac.` for `ap-*`. The region comes from the AWS SDK's usual chain: the plugin's `region` option (a string or a provider function), `AWS_REGION`, or your AWS config profile. If no region resolves, the plugin uses `us.` names as before. In regions with no inference-profile geography, such as `ca-central-1`, models are registered by their in-region IDs.
+
+To use another profile, such as `global.`, `jp.` or `au.`, pass its ID to `awsBedrock.model()` (see [Using Custom Models](#using-custom-models)).
+
+You can check more information about the available models in the [AWS Bedrock plugin documentation](https://xavidop.github.io/genkitx-aws-bedrock/).
 
 ### Basic examples
 
@@ -199,6 +203,22 @@ const result = ai.generate({
 console.log(result.then((res) => res.text));
 ```
 
+#### Tool choice
+
+Genkit's `toolChoice` is passed to Bedrock: `'auto'` lets the model decide, `'required'` makes it call a tool, and `'none'` sends no tools. To make the model call one specific tool, name it in `config.toolChoice`:
+
+```typescript
+const result = await ai.generate({
+  tools: [specialTool],
+  prompt: "What's for breakfast?",
+  config: { toolChoice: 'specialTool' },
+});
+```
+
+`'required'` and the named tool are forced only until a tool result (the named tool's, for a named choice) is in the conversation after the last user message. After that the choice is `auto`, so the model can answer with the tool's result instead of being forced to call a tool again on every turn of Genkit's tool loop.
+
+Bedrock accepts a forced choice (`'required'` or a named tool) only on some models, and the plugin declares `supports.toolChoice` for exactly those: Anthropic Claude 3 and later, Amazon Nova and Mistral Large. Other models (Llama, Cohere Command, AI21, Gemma, the other Mistral models) and models the plugin doesn't know are not declared, so Genkit warns that they don't support `toolChoice`, and the plugin sends their tools with no `toolChoice`. Bedrock's default is `auto`, so tools still work there; `'required'` and named choices just aren't enforced. Converse has no "none" choice, and it rejects tool calls and results in the conversation unless tools are sent. So with `'none'`, earlier tool calls and results are sent to the model as text, and no tools are sent: the model sees what was called and returned but can't call a tool.
+
 ### Structured Output
 
 In order to use [Genkit structured output](https://genkit.dev/docs/js/models/#structured-output) with the Bedrock APIs, the schema sent to Bedrock needs to have `additionalProperties` set to false. If you have your schemas defined as `zod` schemas you can use `zodToJsonSchema` along with `schema.strict()` to get it in the correct format
@@ -215,7 +235,8 @@ const structuredOutputSchema = zodToJsonSchema(
     outputSchema.strict()
 );
 
-// Results in an error:
+// Results in an error: Genkit turns a plain zod object into a schema with
+// additionalProperties: true, which the plugin sends as-is, and Bedrock rejects it:
 // output_config.format.schema: For 'object' type, 'additionalProperties: true' is not supported. Please set 'additionalProperties' to false
 const response = await ai.generate({
   prompt: 'Tell me a joke.',
@@ -232,13 +253,176 @@ const response = await ai.generate({
     jsonSchema: structuredOutputSchema
   }
 });
+
+// Also works: a strict zod object passed as the schema
+const strictResponse = await ai.generate({
+  prompt: 'Tell me a joke.',
+  output: {
+    schema: outputSchema.strict()
+  }
+});
+```
+
+### Per-call configuration
+
+Every model accepts Genkit's common config (`temperature`, `maxOutputTokens`, `topP`, `stopSequences`) plus these Converse request fields:
+
+| Field | What it does |
+|---|---|
+| `additionalModelRequestFields` | Model-specific fields, such as Claude `thinking` or Nova `inferenceConfig.topK` |
+| `additionalModelResponseFieldPaths` | JSON pointers to model-specific response fields to return |
+| `guardrailConfig` | A Bedrock guardrail: `guardrailIdentifier`, `guardrailVersion`, `trace`, and `streamProcessingMode` when streaming |
+| `performanceConfig` | `{ latency: 'optimized' }` for latency-optimized inference |
+| `serviceTier` | `'default'`, `'priority'`, `'flex'` or `'reserved'` |
+| `requestMetadata` | String key-value pairs logged with the request |
+
+```typescript
+const response = await ai.generate({
+  model: anthropicClaudeSonnet45V1('us'),
+  prompt: 'Prove that there are infinitely many primes.',
+  config: {
+    maxOutputTokens: 4096,
+    additionalModelRequestFields: {
+      thinking: { type: 'enabled', budget_tokens: 2048 },
+    },
+    guardrailConfig: { guardrailIdentifier: 'my-guardrail', guardrailVersion: '1' },
+  },
+});
+```
+
+The schema is exported as `AwsBedrockConfigSchema`.
+
+### Reasoning
+
+Turn on extended thinking through `additionalModelRequestFields` (for Claude, `thinking`). The model's reasoning comes back as `reasoning` parts, streamed as it is generated, and `response.text` leaves it out:
+
+```typescript
+const response = await ai.generate({
+  model: anthropicClaudeSonnet45V1('us'),
+  prompt: 'What is 17 * 23?',
+  config: {
+    maxOutputTokens: 4096,
+    additionalModelRequestFields: { thinking: { type: 'enabled', budget_tokens: 1024 } },
+  },
+});
+console.log(response.reasoning); // the model's thinking
+console.log(response.text); // the answer
+```
+
+Claude signs its reasoning and sometimes redacts it, and rejects a follow-up turn unless that reasoning is sent back unchanged. The plugin keeps the signature in the part's `metadata.bedrockReasoningSignature` and redacted reasoning in `metadata.bedrockRedactedContent`, and sends both back when the message is in the history. This matters for tool calls with thinking turned on. Reasoning from other providers has no signature, so it is not sent to Bedrock.
+
+### Prompt caching
+
+Mark a part with `metadata.cachePoint` to put a Bedrock cache point after it. Use `true` for the default cache point, or `{ ttl: '1h' }` to set the TTL on models that support it. Cache points work in system and conversation messages. Cache reads are reported in `usage.cachedContentTokens`, and cache writes in `usage.custom.cacheWriteInputTokens`.
+
+```typescript
+const response = await ai.generate({
+  model: anthropicClaudeSonnet45V1('us'),
+  system: [{ text: longInstructions, metadata: { cachePoint: true } }],
+  prompt: 'Summarise the instructions.',
+});
+```
+
+### Media input
+
+Images, documents and videos are sent to Bedrock as the part's bytes, picked by the part's content type:
+
+- images: `png`, `jpeg`, `gif`, `webp`
+- documents: `pdf`, `csv`, `txt`, `html`, `md`, `doc`, `docx`, `xls`, `xlsx`
+- videos (Nova models): `mp4`, `mov`, `mkv`, `webm`, `flv`, `mpeg`, `mpg`, `wmv`, `3gp`
+
+Pass media as a base64 data URL, or as an `s3://` URI that your Bedrock role can read. Bedrock does not fetch `http(s)://` URLs, so the plugin rejects them; download the file and pass it as a data URL instead.
+
+```typescript
+const response = await ai.generate({
+  model: amazonNovaLiteV1,
+  prompt: [
+    { text: 'What is in this picture?' },
+    { media: { url: `data:image/jpeg;base64,${imageBase64}` } },
+    { media: { url: 's3://my-bucket/report.pdf', contentType: 'application/pdf' } },
+  ],
+});
 ```
 
 For more detailed examples and the explanation of other functionalities, refer to the [official Genkit documentation](https://genkit.dev/).
 
+### Embeddings
+
+Each document gets its own embedding, in the order you pass them. The plugin sends each model family its own request shape:
+
+| Embedder | Input | Config |
+|---|---|---|
+| `amazonTitanEmbedTextV2`, `amazonTitanEmbedTextG1V1` | text | `dimensions` (v2: 256, 512, 1024), `normalize` (v2) |
+| `amazonTitanEmbedMultimodalV2` | text, png/jpeg image, or both | `dimensions` (256, 384, 1024) |
+| `cohereEmbedEnglishV3`, `cohereEmbedMultilingualV3`, `cohereEmbedV4` | text (batched, 96 per call) or image | `inputType`, `truncate`, `dimensions` (v4) |
+| `amazonNova2MultimodalEmbeddingsV1` | text, image or video | `embeddingPurpose`, `dimensions` (256, 384, 1024 (default), 3072), `truncate` |
+
+```typescript
+const embeddings = await ai.embedMany({
+  embedder: cohereEmbedV4,
+  content: ['first document', 'second document'],
+  options: { inputType: 'search_document', dimensions: 1024 },
+});
+```
+
+Images are passed as base64 data URLs in a document's media. A document with no text or media is rejected.
+
+### Reranking
+
+Cohere Rerank 3.5 is registered as a Genkit reranker. Documents come back most relevant first, with the score in `metadata.score`. Set `k` to keep only the top documents:
+
+```typescript
+import { cohereRerank35 } from 'genkitx-aws-bedrock';
+
+const ranked = await ai.rerank({
+  reranker: cohereRerank35,
+  query: 'What is the capital of France?',
+  documents: [
+    Document.fromText('Berlin is the capital of Germany.'),
+    Document.fromText('Paris is the capital of France.'),
+  ],
+  options: { k: 1 },
+});
+```
+
+Amazon Rerank 1.0 (`amazon.rerank-v1:0`) isn't supported. AWS documents it only for the `bedrock-agent-runtime` Rerank API, not for InvokeModel, and this plugin only calls `bedrock-runtime`; asking for it throws a clear error.
+
+The `cohereRerank35V1` model reference is deprecated: rerank models can't be called through `generate()`, so it is no longer registered as a model.
+
+### Image generation
+
+Titan Image Generator v2, Nova Canvas, Stable Diffusion 3.5 Large, Stable Image Core and Stable Image Ultra are registered as image models. The prompt is the text of the latest user message, and each image comes back as a media part, `image/png` unless a Stable Diffusion 3.5 or Stable Image model is asked for another `output_format`:
+
+```typescript
+import { amazonNovaCanvasV1 } from 'genkitx-aws-bedrock';
+
+const response = await ai.generate({
+  model: amazonNovaCanvasV1,
+  prompt: 'A watercolour of a lighthouse at dawn',
+  config: { numberOfImages: 1, width: 1024, height: 1024, negativePrompt: 'people' },
+});
+const image = response.media; // { url: 'data:image/png;base64,...', contentType: 'image/png' }
+```
+
+Config fields a family doesn't take are ignored for it. For Titan and Nova Canvas, `imageGenerationConfig` is merged over the typed fields. Unknown fields are sent as-is to Stability models; set `output_format: 'jpeg'` or `'webp'` on Stable Diffusion 3.5 and Stable Image models and the media part is labelled `image/jpeg` or `image/webp`. Titan, Nova Canvas and Stable Diffusion XL always return PNG, and an `output_format` is ignored for them. Other image model IDs, including Stable Diffusion XL, can be added with `customModels` and are routed to the right request shape. Filtered output finishes with `finishReason: 'blocked'`.
+
 ## Using Custom Models
 
-If you want to use a model that is not exported by this plugin, you can register it using the `customModels` option when initializing the plugin:
+Any Bedrock model ID works, including newer models and cross-region inference profiles (`us.`, `eu.`, `apac.`, `jp.`, `au.`, `global.`, `us-gov.`). Reference it with `awsBedrock.model()` or by name, and the plugin defines it on first use:
+
+```typescript
+const response = await ai.generate({
+  model: awsBedrock.model('global.anthropic.claude-sonnet-4-5-20250929-v1:0'),
+  prompt: 'Hello!',
+});
+
+// or by name
+await ai.generate({ model: 'aws-bedrock/openai.gpt-oss-20b-1:0', prompt: 'Hello!' });
+```
+
+The plugin looks up a model's capabilities (tools, media, system prompt, structured output) by its ID without the inference-profile prefix, and sends the full ID to Bedrock. Models it doesn't know get modern Converse defaults, except that they aren't declared to support a forced `toolChoice`. `awsBedrock.embedder()` and `awsBedrock.reranker()` work the same way for embedding and rerank models.
+
+You can also register models up front with the `customModels` option when initializing the plugin:
 
 ```typescript
 import { genkit, z } from 'genkit';
@@ -486,7 +670,24 @@ See the [Lambda example](./examples/lambda) for a complete working project with 
 
 ## Supported models
 
-This plugin supports all currently available **Chat/Completion** and **Embeddings** models from AWS Bedrock. This plugin supports image input and multimodal models.
+| Kind | What the plugin supports |
+|---|---|
+| Chat | Every Converse model: Anthropic Claude, Amazon Nova, Meta Llama, Mistral, Cohere Command, AI21 Jamba, Google Gemma and newer models by ID. Text, images, documents and video in; text, JSON, tool calls and reasoning out; streaming |
+| Embeddings | Titan Text v1/v2, Titan Multimodal, Cohere Embed v3/v4, Nova Multimodal Embeddings |
+| Reranking | Cohere Rerank 3.5 |
+| Image generation | Titan Image Generator, Nova Canvas, Stable Diffusion XL, Stable Diffusion 3.5, Stable Image Core and Ultra |
+
+Your AWS account needs [model access](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) to each model in the region you call it from. Many newer models, including Claude 4.x, are only offered through cross-region inference profiles; see [Configuration with Inference Endpoint](#configuration-with-inference-endpoint).
+
+### Known limitations
+
+- Bedrock does not fetch remote media. Pass images, documents and videos as base64 data URLs or `s3://` URIs.
+- Converse has no "none" tool choice. With `toolChoice: 'none'`, no tools are sent and earlier tool calls and results reach the model as text.
+- `toolChoice: 'required'` and a named tool (`config.toolChoice`) are sent only to models that support them: Claude 3 and later, Nova and Mistral Large. Other models, and models the plugin doesn't know, get their tools with no `toolChoice` (Bedrock's default is `auto`). Both forced choices hold only until a tool result is in the conversation after the last user message, then the choice is `auto`, so Genkit's tool loop can finish.
+- Amazon Rerank 1.0 isn't supported: AWS documents it only for the `bedrock-agent-runtime` Rerank API, not InvokeModel.
+- In JSON mode, a response cut off by `maxOutputTokens`, or one that isn't valid JSON, comes back as text with no data part, as with Genkit's other model plugins. Empty output (for example when a guardrail intervenes) also comes back as text, not as an empty object. Genkit then parses and validates `response.output` itself, so check `finishReason` (`'length'`) before trusting the output of a cut-off response.
+- Image generation takes a text prompt; image-to-image tasks (inpainting, variations) aren't supported yet.
+- Embeddings and image generation call `InvokeModel` once per document or request, so large batches are bounded by your Bedrock quotas.
 
 ## API Reference
 
@@ -494,7 +695,7 @@ You can find the full API reference in the [API Reference Documentation](https:/
 
 ## Contributing
 
-Want to contribute to the project? That's awesome! Head over to our [Contribution Guidelines](https://github.com/genkit-ai/aws-bedrock-js-plugin/blob/main/CONTRIBUTING.md).
+Want to contribute to the project? That's awesome! Head over to our [Contribution Guidelines](https://github.com/genkit-ai/aws-bedrock-js-plugin/blob/main/CONTRIBUTING.md), which cover building, formatting, the unit tests (`npm test`) and the opt-in live tests against Bedrock (`npm run test:live`).
 
 ## Need support?
 

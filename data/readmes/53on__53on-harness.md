@@ -10,6 +10,8 @@ The open desktop shell of [53ON](https://53on.com/harness/): an Electron app tha
 
 ![53ON Harness: the home, the chat with its model and live metrics, the AI load with its complements, and the chat menu with its effort and Ultracode](assets/screenshots.png)
 
+[![The AI walks into a Babylon.js world and builds a tower of three crates on its own, with MemoriaBios live above it](assets/ai_plays.gif)](https://forum.babylonjs.com/t/64718)
+
 This repository is the shell, and only the shell. What fills it stays private and is not here: the PC commands, the Harness Cable and the other complements are downloaded separately, each one signed (ed25519) and verified before it is installed. Your memories are files on your own PC: the memory engine is signed code that 53on.com serves and that runs inside the app. The store is 53on.com itself.
 
 ## The memory: MemoriaBios
@@ -20,6 +22,7 @@ Most AI memory tools log everything. That's a logbook. **MemoriaBios** copies ho
 - **It forgets on a curve.** Memories fade unless they're used. Recalling one makes it last longer; what matters most moves to deep memory.
 - **It sleeps.** The day is consolidated during sleep. Before sleeping it writes who it is and one goal, and wakes up with them.
 - **It knows what it knows.** "Got it", "rings a bell" or "nothing comes to mind": it can say it doesn't remember instead of inventing.
+- **You can see it.** MemoriaBios Maps draws the whole memory live with Babylon.js, with a level of detail of its own, like cluster-based LOD: a cold memory melts into its nearest hotter one, and the screen keeps a fixed budget of 2,200 points, hottest first. [See it on the Babylon.js forum](https://forum.babylonjs.com/t/64718).
 
 MemoriaBios is a 53ON complement: the shell here is free and open source, and the memory comes with a [53ON plan](https://53on.com/plans). How it works and the science behind it: [53on.com/memoriabios](https://53on.com/memoriabios/) · [MemoriaBios on GitHub](https://github.com/53on/memoriabios).
 
@@ -64,6 +67,16 @@ It is one AI with one memory, whether it works inside 53ON or outside it.
 - Light or dark: one switch in Options for the whole Harness.
 
 It installs per user, without administrator rights, and updates itself. Windows Settings > Apps removes it.
+
+## Plugins
+
+Anything that runs from a command line becomes a command your AI sees and uses: a script, a `.exe`, a `.bat`, a Node or Python tool, a CLI. Read your mail, back up a folder, drive a device. You make it at home or clone it from GitHub, and you or your AI plug it in.
+
+- **By hand:** Options › Plugins › Add a plugin › Choose folder. The pencil opens its options: name and version, its folder, its options menu (whatever its author put in its folder, or a web address) and a table of its commands. Save applies it all at once, and Cancel drops it.
+- **By your AI:** one list, `plugins.json`, in the Harness's data folder (`%LOCALAPPDATA%\Programs\53on\data`). `plugins.example.json`, beside it, is the guide: each entry has a `name`, a `version`, a `dir`, `on`, a `conf` (its options menu), a `comment` and its `commands`, and each command has its `cmd` (the command line it runs, up to 100 characters), its `help` (up to 80), and `active`, `helper`, `cable` and `perm`. The Harness reads the list again when it changes. A plugin that brings routes for the Body adds `main`.
+- **Where its commands show:** `m` (the helper) lists them under `## Plugins`. The AI inside sees the ones marked Helper. Claude Code and Codex, through the Harness Cable, see the ones marked Cable.
+- **Permissions:** each command has its own level, with the words of the permission button. The default is Bypass permissions. The Harness Cable puts a Bypass command line into Claude Code's `allow` and takes it out when it changes. A line that chains, pipes or redirects (`&&`, `;`, `|`, `>`, `$( )`) never counts as the plugin's own: the button decides it.
+- **What is not edited:** Body, Cable and Ear come signed from the store. A plugin only adds; it never covers a command of theirs.
 
 ## Permission modes
 

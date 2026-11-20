@@ -10,6 +10,14 @@ I wanted a small model running on my own computer to make 3D printable parts tha
 
 LFM3-1.7B made every part above on my own CPU through smoothstone, and each one passed every print check. I did not want to fool myself with requests I had tuned for, so a fresh agent that never saw the code wrote new requests from the parameter list alone and I sealed them before the run. Each request ran five times. On the last blind set the model finished the right part with the right sizes 39 out of 40 times, and 38 out of 40 when I wiped its memory in the middle of the job. Writing the 3D code itself it went 0 out of 15. Every set, every failed run and every fix is in [LOG.md](LOG.md), and the sets are in [evals](evals).
 
+## Try it
+
+```
+stone go "A mini figure of Sam Altman, 90 mm tall, with \"SAM\" on the base"
+```
+
+One command runs the whole job: it follows stone's own NEXT lines, shows each step as it runs (a figure prints each long step as it starts), and ends with the STL and the views opened. When a step needs you, such as the size of the hole a cover must fit, it stops with a "Needs you:" line; do that and run `stone go` again. The request alone works too: `stone "A guard for a 120 mm PC fan"`.
+
 ## How it works
 
 Every stone message ends with one line that says what to run next, and `stone status` prints that line again along with the request, the recipe, the sizes so far and the last build. A model that forgets everything runs `stone status` and keeps going.
@@ -113,6 +121,16 @@ Views: stone-job/build/views.png (look at every panel before you call it done)
 In the slicer: filament 2 must be white, filament 4 must be black.
 NEXT: none, the part is ready
 ```
+
+## References
+
+A small model cannot research the web well, so stone carries a reference library in `recipes/lib/refs` and applies it on its own. Every fact there has its value, the page it came from and the date it was checked: filament temperatures, heat deflection, UV, drying and food contact from Prusament and Polymaker data sheets, ISO 273 clearance holes, US screw clearances, fan screw spacing from Noctua, Gridfinity, keystone and wall plate sizes, the IP2X test finger, ADA 703.5 sign letters, WCAG contrast and FDM design guides. `stone show` prints the references that apply to the part, and a passing build picks the filament from the request and says why:
+
+```
+Material: PETG, nozzle 240 to 260 C, bed 70 to 90 C (outdoors in sun: PLA softens near 55 C, PETG holds to 68 C; Prusament PETG datasheet, Prusament PLA datasheet)
+```
+
+`stone refs PETG` or `stone refs fan` lists the facts on a topic with their sources. No FDM print is certified food safe, and stone says so rather than call one safe.
 
 ## Recipes
 

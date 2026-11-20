@@ -1427,6 +1427,48 @@ Let's get started: [How does an outbound calling voice agent work?](https://outc
 
 ---
 
+## How does a voice agent transfer a call to a human with context?
+
+In this blog, we will learn about how a voice agent transfers a call to a human with context. We will also see why a voice agent needs to hand off a call at all, how it decides the right moment to transfer, what context it must pass along, the difference between a cold transfer and a warm transfer, how the call and the context travel together, and what happens when no human is free to take the call.
+
+We will cover the following:
+
+- The problem: transferring a call without context
+- What is a call transfer with context?
+- When does a voice agent decide to transfer?
+- What context must travel with the call?
+- Cold transfer vs Warm transfer
+- How do the call and the context travel together?
+- Putting it all together in code
+- What if no human is available?
+
+Let's get started: [How does a voice agent transfer a call to a human with context?](https://outcomeschool.com/blog/call-transfer-with-context)
+
+---
+
+## How do you write a system prompt for a voice agent, not a chat bot?
+
+In this blog, we will learn about how to write a system prompt for a voice agent, not a chat bot. We will also see what a system prompt is, why text written for a screen fails on a call, how to keep replies short and free of formatting, how to make the agent speak numbers and names correctly, how to handle mishearing, tool waits, and the end of the call, and how to put all of it together into one complete prompt.
+
+We will cover the following:
+
+- What is a system prompt?
+- How is a voice agent different from a chat bot?
+- Why does a chat bot prompt fail on a voice call?
+- Rule 1: Keep every reply short
+- Rule 2: No formatting, only plain spoken text
+- Rule 3: Write numbers, dates, and symbols the way we speak them
+- Rule 4: Ask one question at a time
+- Rule 5: Plan for mishearing
+- Rule 6: Confirm the important details
+- Rule 7: Fill the silence while a tool runs
+- Rule 8: Know how to end the call
+- Putting it all together: a complete voice agent system prompt
+
+Let's get started: [How do you write a system prompt for a voice agent, not a chat bot?](https://outcomeschool.com/blog/voice-agent-system-prompt)
+
+---
+
 ## More blogs and videos coming soon!
 
 ### License

@@ -10,7 +10,7 @@ Effort Pilot switches the reasoning effort for every turn, automatically: plans 
 [![stars](https://img.shields.io/github/stars/vadympetryshyn/effort-pilot?style=flat&color=d97757)](https://github.com/vadympetryshyn/effort-pilot/stargazers)
 [![last commit](https://img.shields.io/github/last-commit/vadympetryshyn/effort-pilot)](https://github.com/vadympetryshyn/effort-pilot/commits/main)
 
-<img src="assets/hero-6.svg" alt="Effort Pilot switching effort: high to plan and to investigate, medium to build, low for a question about the work" width="820">
+<img src="assets/hero-6.svg" alt="Effort Pilot switching effort: high to plan and to investigate, medium to build (a question during the build too), low for a tiny task of its own" width="820">
 
 ## What you get
 
@@ -69,9 +69,10 @@ Before each turn a small, fast model (Haiku, ≈ $0.0004 a turn) reads your mess
 | approve a plan | implement | `medium` — the thinking went into the plan |
 | ask to commit, run a command or the tests | implement | `medium` |
 | ask to push, merge, deploy or delete | implement | `high` — it can't be taken back |
-| ask a quick question, or a question about the work | chat / trivial | `low` |
+| ask a quick question, or a question about a plan or an analysis | chat / trivial | `low` |
+| ask a question or make a remark during a build | chat | the build's (`medium`) — the agent goes on building |
 
-A band above the prompt shows the effort now, how it got there and why. Follow-ups that push the work on keep its effort (a word to go on, like "done" or "continue", too), and a side question doesn't drag it down; a plain question about the work (what was found, where it stands) runs at `low` — the answer is already there. A skill or prompt command you type (`/create-plan …`) is read like any message, and with nothing after it by what the command says it does; built-in commands (`/clear`, `/model`) are left alone. Asked for a plan and its build in one message ("plan it, then implement")? Once the agent loads a skill that carries the plan out, the build goes at the build effort, as an approved plan does.
+A band above the prompt shows the effort now, how it got there and why. Follow-ups that push the work on keep its effort (a word to go on, like "done" or "continue", too). During a build, a question, a remark or a side question keeps the build's effort, since the agent answers it in the middle of that work and goes on building; only a new task (a tiny one of its own goes at `low`) moves off it. A plain question about a plan or an analysis (what was found, where it stands) runs at `low` — the answer is already there — and a side question doesn't drag the work down. A skill or prompt command you type (`/create-plan …`) is read like any message, and with nothing after it by what the command says it does; built-in commands (`/clear`, `/model`) are left alone. Asked for a plan and its build in one message ("plan it, then implement")? Once the agent loads a skill that carries the plan out, the build goes at the build effort, as an approved plan does.
 
 ## Features
 

@@ -1,434 +1,132 @@
-# Nexus
+# WebAgent (Web AI MCP Bridge)
 
-<p align="center">
-  <b>Dedicated Local AI Control Plane for ChatGPT, DeepSeek & Modern Web AI Assistants</b><br>
-  <i>Powered by the LocalBridge 332 Canonical MCP Tool Architecture & Durable Action Ledger</i>
-</p>
+**当前版本：1.3.4**
 
-<p align="center">
-  <a href="#english"><b>English</b></a> | <a href="#简体中文"><b>简体中文</b></a>
-</p>
+WebAgent 是一个专为网页端大模型（DeepSeek、Gemini、智谱 BigModel/清言/Z.ai、Google AI Studio、ChatGPT、Kimi、通义千问、豆包、Duck.ai、Dola、Perplexity、Copilot、当贝 AI 等）打造的浏览器扩展，提供原生浮动交互面板与本地 MCP 工具调度桥接。
 
-<p align="center">
-  <a href="https://github.com/ysunyang4/Nexus/releases/tag/v1.3.1"><img src="https://img.shields.io/badge/version-1.3.1-blue.svg" alt="Version 1.3.1"></a>
-  <img src="https://img.shields.io/badge/MCP_Tools-332_Canonical-success.svg" alt="332 MCP Tools">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-red.svg" alt="License AGPL-3.0"></a>
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-brightgreen.svg" alt="Platforms">
-  <img src="https://img.shields.io/badge/tests-190%2B_suites_%7C_1200%2B_tests-purple.svg" alt="Tests">
-</p>
+本项目由 [LINUX DO](https://linux.do) 社区认可。
 
----
+## 🆕 1.3.4 更新说明（当前版本）
 
-<a name="english"></a>
-## English
+- 新增 **Perplexity**（`perplexity.ai`）、**Microsoft Copilot**（`copilot.cloud.microsoft`）、**当贝 AI**（`ai.dangbei.com`）网页端适配。
+- 版本号升级为 **1.3.4**。
 
-### 1. Overview
+## 1.3.3 更新说明
 
-**Nexus** is an enterprise-grade Local AI Control Plane designed specifically for ChatGPT, DeepSeek, and modern AI coding assistants. It securely bridges remote LLMs to your local workstation through a high-performance **Secure MCP Tunnel** (Streamable HTTP / SSE with OAuth 2.0 & Bearer tokens).
+- 版本号升级为 **1.3.3**。
+- 已加入 **Google AI Studio**（`aistudio.google.com`，含 `prompts/new_chat` 新对话页）网页端适配：专属主题、输入框、Run/Stop 按钮识别与模型回复代码块解析。
+- 已加入 **Z.ai**（`zchat.z.ai`、`chat.z.ai`）网页端适配：专属主题、输入框、发送/停止按钮识别与回复解析。
 
-Nexus allows AI agents to inspect, edit, build, debug, and orchestrate complex local engineering workflows within strictly enforced sandbox boundaries—without exposing your full filesystem or transmitting proprietary code to untrusted cloud intermediaries.
+## 🆕 1.3.2 更新说明
 
-```text
- ChatGPT / DeepSeek / Web AI Assistants
-               │
-               │ Secure MCP Tunnel (Streamable HTTP / SSE, Bearer lb_xxx, OAuth 2.0)
-               ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Nexus Desktop Control Center (Tauri 2)               │
-│                                                                        │
-│  Fastify MCP & REST API Server (Port 18080)   SQLite Persistence (WAL) │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │ Bidirectional JSON-RPC 2.0 (WebSocket)
-                                   ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Nexus Local Runner Daemon                            │
-│                                                                        │
-│  ├── 332 Canonical MCP Tools Across 24 Capabilities                    │
-│  ├── Action Ledger WAL (Crash Recovery & Idempotent Replay)            │
-│  ├── Native Windows Computer Use (WinRT OCR, UI Automation)            │
-│  ├── Sandboxed Workspaces & Managed Git Worktrees                      │
-│  ├── Persistent Development Runtimes & Windows Job Objects             │
-│  ├── Language Server Protocol (LSP - TypeScript / Python)              │
-│  ├── Headless & Interactive Browser Automation Engine                  │
-│  └── Local Intelligence Store (Memory, Rules, Knowledge, Prompts)      │
-└────────────────────────────────────────────────────────────────────────┘
+- 新增 **智谱开放平台体验中心（`bigmodel.cn` GLM-5.3）、智谱清言（`chatglm.cn`）与 Z.ai（`z.ai/chat`）** 网页端深度适配及专属主题。
+- 新增 **Google AI Studio（`aistudio.google.com`）** 原生适配，覆盖 Chat Prompt 与 Freeform 运行、中断与代码块解析。
+- 版本规范化进入 **1.3.2**，全套测试扩充至 **140 项** 并保持 100% 通过。
+
+## 1.3.12 更新说明
+
+- 新增独立的 **熔断保护** 开关，浏览器扩展弹窗和页面面板均可设置，默认开启，保存用户选择。
+- 连续工具调用默认上限由 **4 轮提高到 20 轮**；成功和失败都按实际调用计数，拒绝或取消不计数。
+- 关闭熔断后，不再按轮次、重复结果或连续失败暂停；不会自动开启执行/发送，也不会绕过 Nexus 项目权限。
+- 重复保护同时核对工具、参数和返回结果，返回结果在变化的轮询/滚动不再仅因参数相同而暂停。
+- 连续失败 5 次时真正暂停调度，并保留第 5 次错误反馈；新任务或用户切换熔断开关开始新的预算。
+- 本版新增 18 项熔断回归测试，总计 **136 项测试**；升级后需保存草稿、重新加载扩展并刷新 AI 网页。
+
+## 1.3.11 更新说明
+
+本次更新新增 **Gemini 网页端适配**，并修复工具结果不自动发送、长代码 MCP 调用无法识别和项目权限提示不准确的问题。
+
+- **Gemini 可用**：适配 `gemini.google.com` 的多行输入、发送按钮、最新回复“重做”和新会话首条回复。
+- **开关由用户选择**：自动执行工具、自动发送工具结果独立设置，首次配置均默认关闭，更新保留已有选择。
+- **结果直填发送栏**：使用轻量角落确认，保留已有草稿；不再弹出大段结果窗口。
+- **长代码完整解析**：支持完整长 JSON，定向修复字符串转义问题；格式错误或截断的调用不会执行。
+- **扩展内管理权限**：查询并区分文件权限与命令权限，由用户在扩展弹窗确认修改，AI 不能自行提升权限。
+- **Windows/Linux 测试**：1.3.11 包含 118 项测试，CI 覆盖 Node 22/24，并修复 Windows CRLF 换行兼容问题。
+
+首次使用请看 **[详细使用指南](USAGE.md)**；版本变更见 **[更新日志](CHANGELOG.md)**。
+
+> 更新扩展后，请先保存草稿，再重新加载扩展并刷新 AI 网页。只替换文件或只刷新扩展不会更新已经打开的网页脚本。
+
+## 📦 安装使用指南
+
+1. 下载或克隆本项目到本地；
+2. 在 Chromium 内核浏览器（Chrome、Edge、Brave 等）中打开扩展程序管理页面：`chrome://extensions/`（Edge 为 `edge://extensions/`）；
+3. 开启右上角「开发者模式」；
+4. 点击左上角「加载已解压的扩展程序」，选择本项目文件夹；
+5. 打开任意支持的网页大模型对话页面（如智谱、AI Studio、DeepSeek、Gemini 等），页面顶部即可看到 WebAgent 浮动控制卡片；
+6. 在扩展弹窗填写本机 Nexus MCP 地址、已注册的项目 ID 和工作目录，然后检测连接。项目 ID 与工作目录默认留空，不预设任何用户项目。
+7. 更新扩展后需要重新加载扩展并刷新 AI 网页；先保存未提交草稿。
+
+## 🌟 核心特性
+
+- **多模型原生适配**：DeepSeek、Gemini、智谱 (BigModel / 清言 / Z.ai)、Google AI Studio、ChatGPT、Kimi、通义千问 (Qwen)、豆包 (Doubao)、Duck.ai、Dola、Perplexity、Copilot、当贝 AI 等。
+- **本地 MCP 桥接**：支持标准 MCP 工具调用（文件读写、命令行运行、网页快照等）。
+- **极简交互设计**：自适应明暗主题、可自由拖拽位置与收起抽屉。
+- **用户可控自动化**：自动执行工具与自动发送结果是独立开关，记住用户选择；结果直接追加到发送栏，不覆盖已有草稿。
+- **可靠长代码调用**：保留完整文件内容，定向修复 JSON 字符串中的未转义控制字符；截断调用明确提示未执行，不猜补源码。
+- **本地权限设置**：项目文件与命令权限仅可从扩展弹窗确认修改，网页消息不能提升权限。
+- **隐私边界**：MCP 请求仅连接获准的本地 loopback 地址，不包含第三方遥测。工具结果回填到第三方 AI 网页后，网页可以读取它；请勿读取或回填凭证、密钥等敏感内容。
+
+## 🔧 配置与行为（1.3.2）
+
+默认服务基址为 `http://127.0.0.1:8787`，请求使用 `/mcp`；也支持配置允许的本机 18080 / 21888 端口。先运行 Nexus 并注册项目，在弹窗填写实际项目 ID，再检测连接。网页端账号由用户自行登录，不需要 DeepSeek / Gemini API Key；Gemini 指 `gemini.google.com`，不包括 Google AI Studio。
+
+### 自动执行与自动发送
+
+| 自动执行 | 自动发送 | 行为 |
+| --- | --- | --- |
+| 关闭 | 关闭 | 逐次轻量角落确认，结果直填，手动发送 |
+| 开启 | 关闭 | 自动调用已提议工具，结果直填，手动发送 |
+| 关闭 | 开启 | 逐次确认工具，结果随后自动发送 |
+| 开启 | 开启 | 自动调用工具并自动发送工具反馈 |
+
+- 两个开关在未配置时均默认关闭；已保存的选择不会因为更新被重置。页面设置面板与扩展弹窗都能修改并持久保存。
+- 原草稿保留并追加工具结果。**开启自动发送后，原草稿也会一起发送**；首次开启会提示这一点。
+- 延迟期间关闭开关、修改草稿、手动提交或导航会取消待发送结果。按钮未就绪时有限等待；不使用 Enter 兜底，不重复发送不确定是否已提交的消息。
+- 自动发送只处理工具反馈，不替用户自动发送协作协议。自动限流重试、自动切新会话及自动补发续写不启用。
+- **熔断保护**默认开启，连续工具调用默认上限为 **20 轮**；关闭后取消轮次、重复结果和连续失败这三类自动暂停。关闭时会提示持续调用的费用/副作用风险，不改变其他开关或项目权限。
+- 只有真正的用户新任务或用户切换熔断开关会重置计数，草稿回填和自动反馈不会重置；关闭不重放之前被拦截的调用，重新开启从新预算计数。
+- 自动执行不会赋予 Nexus 项目权限，Nexus 自身的校验与审批策略保持生效。用户应先理解命令可能产生的副作用。
+
+### 项目权限与令牌
+
+扩展弹窗可查询实时 `accessMode`（文件读写）和 `executionMode`（命令执行），不能从命令关闭推断文件只读。权限修改需要独立的 **Nexus 管理令牌**，在本机扩展密码框填写或导入本机令牌文件；它不是 Bridge Token，也不是网页 AI API Key。
+
+- 仅扩展自己的 action popup 可调用管理端点；普通网页、内容脚本消息及扩展普通标签页无权修改权限。
+- 管理令牌保存在扩展私有存储，不进入网页配置、协作提示词或剪贴板。Bridge Token 仅用于配置的 MCP 源，不发送给其他本地服务。
+- 文件改成只读会关闭命令；开启项目命令会要求可读写。每次更改需用户确认，并在更改后读取真实状态。
+- “项目代码执行”不是操作系统级沙箱，命令仍可能影响项目外资源；不要将这个开关视为 OS 隔离。
+
+### 提示词与 Gemini
+
+点击“复制增强协作协议”（或页面面板填入协议），自行发送给 AI。协议约束每次只输出一个 `nexus` 代码块、一个完整 JSON 对象，工具名与参数类型遵守真实 schema。长源码必须完整，字符串里的换行、引号和反斜杠按 JSON 规则转义；不接受半截调用、源码省略号或 JSON 注释。
+
+Gemini 适配支持 Quill 多行输入的逻辑段落回读、最新回复的“重做”，以及新建会话分配 ID 时保留待响应状态。首次回复迁移须与实际提交的第一条用户消息匹配；刷新、切换历史、上一/下一版本不会重放旧工具调用。
+
+扩展弹窗显示页面版本、MCP 连接与最近解析/自动发送状态。输入框重建、草稿变化、AI 仍在生成或发送按钮未就绪会显示具体原因，不收集草稿正文或令牌。
+
+## 🧪 测试
+
+当前包含 136 项测试；CI 在 Windows/Linux × Node 22/24 上运行。
+
+需要 Node.js 22+，无第三方测试依赖：
+
+```sh
+npm test
 ```
 
----
+测试覆盖 MCP initialize/session/SSE/分页/超时、只允许本地端点、权限来源校验与令牌隔离、独立自动化开关、草稿保留与取消、防历史重放、新会话路由迁移和超长 JSON。普通测试完全使用本地 fixtures/mock，不连接真实账号或执行用户工具。
 
-### 2. Core Capabilities & Architectural Highlights
+真实 Gemini 对话已另外验证项目查询和长文件创建的“模型输出 → MCP 执行 → 反馈自动发送 → 模型确认”闭环；46,299 字符、48,919 UTF-8 字节的文件与模型 `content` 逐字符一致。个人对话链接、截图、项目配置与实测文件不随代码发布。
 
-#### 1. 332 Canonical MCP Tools
-- **Single Source of Truth**: All 332 tools are formally defined in `@localbridge/protocol`, with strict input schemas, risk ratings, and automated evidence tracking.
-- **Zero Hallucination Guarantee**: Covers 24 capability dimensions: Filesystem, Advanced FS, Git Operations, Command Execution, Persistent Background Jobs, LSP Code Intelligence, Managed Worktrees, Browser Automation, Windows Computer Use, Vision Analysis, Document Engineering, Local Intelligence (Memory/Rules/Knowledge), Agent Orchestration, and System Discovery.
+## 📄 开源许可证
 
-#### 2. ACID-Compliant Action Ledger WAL
-- **Write-Ahead Logging**: Every critical tool execution is recorded in a write-ahead log (`.wal`) prior to side-effect application.
-- **Crash Recovery & State Replay**: Automatically recovers pending operations and restores consistent workspace states after host reboot or runner crashes.
-- **Idempotency Guard**: Eliminates duplicate execution and resource waste during intermittent network reconnections.
+本项目的原创源代码依据 **[GNU General Public License v3.0 only（GPL-3.0-only）](LICENSE)** 发布。
 
-#### 3. Native Windows Computer Use & Vision
-- **Semantic UI Locating**: Combines WinRT Native OCR and UI Accessibility trees to locate screen elements without relying on fragile pixel coordinates.
-- **Multi-Monitor Control**: Window switching, foregrounding, mouse tracking, drag-and-drop, and keystroke dispatching with non-bypassable human takeover controls.
-- **Visual Validation**: Screenshot capture, image comparison, and difference inspection for automated UI testing.
+- 允许个人和企业使用、学习、修改及商业使用，也允许在遵守 GPL-3.0 条件的前提下分发原版或修改版。
+- 分发受 GPL 约束的程序时，应按许可证要求保留版权及许可声明，并提供对应源代码；修改版的分发还须遵守相应的 GPL 要求。
+- 仅在自己设备上使用或私下修改，通常不需要对公众发布修改后的源码。
+- 欢迎通过 Issue 和 Pull Request 参与协作。贡献者通常保留其原创贡献的版权，并按照适用许可证授权贡献。
+- 第三方代码、字体、图标或其他素材（如有）仍受各自合法许可证约束，不因本项目添加 GPL 而自动变成 GPL 作品。
 
-#### 4. Durable Execution & Process Isolation
-- **Windows Job Objects**: Enforces hard process hierarchy isolation, CPU quotas, and memory caps on spawned commands.
-- **Terminal Daemon (node-pty)**: Stateful pseudo-terminal sessions with ANSI log streaming and exit code tracking.
-- **Command Risk Engine**: AST-based command classification (`SAFE`, `CAUTION`, `DANGEROUS`) that blocks destructive system calls (`rm -rf /`, `format`, `reg delete`) by default.
-
-#### 5. Local Intelligence Store
-- **Vectorless & Vector Hybrid**: SQLite-backed fast exact-match and semantic retrieval for persistent project memory, team rules, knowledge documentation, and custom prompt templates.
-- **Context Compactor**: Automatic token reduction and conversational compaction for extended multi-turn agent tasks.
-- **Extensible Skills Engine**: Declarative deterministic workflows with dynamic candidate proposal, automated validation, and live hot-reloading.
-
-#### 6. Multi-Tier Path Sandbox & Enterprise Security
-- **Physical Canonical Containment**: Enforces containment inside authorized project roots via `fs.realpathSync.native` to eliminate directory traversal (`../`) and prefix-confusion attacks.
-- **Symlink & Junction Escape Shield**: Blocks malicious symlinks and Windows NTFS directory junctions pointing outside project boundaries.
-- **Dual Token Cryptographic Isolation**: MCP client tokens (`lb_...`) and Runner daemon tokens (`lbr_...`) are generated with 256-bit entropy and stored exclusively as SHA-256 hashes. Timing side-channel attacks are mitigated via `crypto.timingSafeEqual`.
-- **Sensitive File Shield**: Automatically masks `.env*`, `*.pem`, `*.key`, `id_rsa`, `.git`, and cloud credentials.
-
----
-
-### 3. Monorepo Project Layout
-
-```text
-Nexus/
-├── apps/
-│   ├── desktop/          # Tauri 2 + React + Vite Desktop Control Center
-│   ├── runner/           # Local execution daemon (332 tools, Action Ledger, Computer Use)
-│   ├── server/           # Fastify MCP Server with SQLite WAL persistence & REST API
-│   └── bridge/           # Standalone Nexus MCP Bridge (OAuth 2.0 / ChatGPT / DeepSeek)
-├── packages/
-│   ├── protocol/         # Pure protocol types, 332 Canonical tool definitions, RPC schemas
-│   ├── security/         # Sandboxing, path verification, and command risk engine
-│   └── shared/           # Structured logger (Pino), config loader, crypto utilities
-├── tests/                # Comprehensive test suites (190+ suites, 1200+ tests)
-├── docs/                 # Architectural specifications, security models, and guides
-├── artifacts/            # Production truth evidence, capability matrices, and audit ledgers
-└── scripts/              # Build automation, bundling tools, and release scripts
-```
-
----
-
-### 4. Quick Start
-
-#### Option A: Desktop Installer (when a verified build is available)
-1. Open the [v1.3.1 release page](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.1) and check the **Assets** section for available downloads and their exact file names. The source tag and later `main` documentation updates may not contain the same changes.
-2. Download only an asset actually listed for your platform. Verify any published checksum or signature before running it. **Do not assume a Windows, macOS, Linux or userscript asset exists unless it appears on the release page.**
-3. If no verified installer is listed, use the source-build steps below instead. Builds from the historical `v1.3.1` tag and from `main` may differ.
-
-#### Option B: Build & Run from Source
-Prerequisites: **Node.js >= 24**, **pnpm >= 10**, **Rust stable**.
-
-```powershell
-# 1. Clone the repository
-git clone https://github.com/ysunyang4/Nexus.git
-cd Nexus
-
-# 2. Install workspace dependencies
-pnpm install
-
-# Optional: create an untracked, machine-local configuration file.
-# The application also has built-in defaults if config.json is absent.
-# PowerShell: Copy-Item config.example.json config.json
-
-# 3. Build core packages and applications
-pnpm run build
-
-# 4. Launch Desktop Control Center
-pnpm --filter @localbridge/desktop dev
-```
-
----
-
-### 5. Connecting AI Clients
-
-#### Step 1: Authorize a Local Project
-1. Open Nexus Desktop Control Center.
-2. Under **Workspace -> Projects**, click **Authorize Project** and select your directory (e.g., `D:\projects\my-app`).
-3. Set **Access Mode** (`read-only` or `read-write`) and **Execution Mode** (`disabled`, `safe-only`, or `project-code`)—both can be dynamically switched at any time without restarting.
-
-#### Step 2: Generate an MCP Client Token
-1. Go to **Settings -> Tokens**.
-2. Click **Generate Token**, choose `MCP Client Token` (`lb_...`), and copy the displayed token.
-
-#### Step 3: Configure Your AI Client
-
-**ChatGPT / Custom GPT Actions**:
-Add the Streamable HTTP endpoint:
-```text
-http://127.0.0.1:18080/mcp
-```
-Header: `Authorization: Bearer lb_your_token_here`
-
-**Standard MCP Client Configuration (`mcp_config.json` / Client Settings)**:
-```json
-{
-  "mcpServers": {
-    "nexus": {
-      "url": "http://127.0.0.1:18080/mcp",
-      "headers": {
-        "Authorization": "Bearer lb_your_token_here",
-        "MCP-Protocol-Version": "2024-11-05"
-      }
-    }
-  }
-}
-```
-
-**Cursor / Windsurf / Any MCP Client**:
-- Transport: `Streamable HTTP` or `SSE`
-- URL: `http://127.0.0.1:18080/mcp`
-- Headers: `{"Authorization": "Bearer lb_your_token_here"}`
-
----
-
-### 6. Development & Quality Verification
-
-```powershell
-# Typecheck across all 7 workspace packages (0 errors)
-pnpm run typecheck
-
-# Build all packages, bundles, and Tauri resources
-pnpm run build
-
-# Run the test suite
-pnpm run test
-
-# Run Rust desktop check
-cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
-```
-
----
-
-### 7. License, Anti-Rebranding & Security Disclaimer
-
-- **Software license ([GNU AGPL-3.0](LICENSE))**: Nexus v1.3.1 is distributed under the GNU Affero General Public License v3.0 (AGPL-3.0-only), which permits personal **and commercial** use, modification and redistribution subject to its terms.
-  - **When source obligations apply**: Distributing covered works (including modified binaries), and allowing users to interact over a network with a modified version, can trigger the license's corresponding-source and notice requirements. Private modifications not conveyed or offered as a modified network service are not automatically required to be publicly published. Refer to the actual [AGPL-3.0 license](LICENSE), especially Sections 4–6 and 13, for the precise scope.
-  - **Attribution and accurate origin**: Preserve copyright, license and other legal notices as the AGPL requires, indicate relevant changes, and do not falsely represent modified builds as official releases. The AGPL's termination and reinstatement provisions are governed by Section 8; this README does not add an automatic-termination rule.
-  - **Branding**: The software license does not automatically grant trademark rights or permission to imply official endorsement. See [Brand Guidelines](BRAND_GUIDELINES.md). These guidelines do not override AGPL-granted software freedoms.
-  - **Third-party notices**: See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for dependencies and a separate architecture-reference acknowledgement.
-- **Security & Unrestricted Mode Disclaimer ([SECURITY.md](SECURITY.md))**:
-  - By default, Nexus enforces strict path sandboxing (`read-only`) and AST command risk filtering (`safe-only`).
-  - If you explicitly enable `read-write`, `project-code`, Computer Use UI automation, or **Unrestricted / Full-Control Mode**, you assume full responsibility for all commands executed and files modified by connected AI models. Always back up critical work or use Git version control.
-
----
-
-<a name="简体中文"></a>
-## 简体中文
-
-### 1. 项目概述
-
-**Nexus** 是一套专为 ChatGPT、DeepSeek 及新一代 AI 编程智能体量身打造的企业级**本地 AI 控制中枢（Local AI Control Plane）**。它通过高性能**安全 MCP 隧道**（基于 OAuth 2.0 与 Bearer 令牌的 Streamable HTTP / SSE 协议），将远端大模型安全连接至开发者的本地工作站。
-
-Nexus 赋予 AI 智能体在严格沙箱边界内检索、编辑、构建、测试与编排完整研发工作流的能力，从根本上杜绝整盘泄露风险，且绝不将私有源码转传给任何不可信第三方云端中继。
-
-```text
- ChatGPT / DeepSeek / Web AI Assistants 客户端
-               │
-               │ 安全 MCP 隧道 (Streamable HTTP / SSE, Bearer lb_xxx, OAuth 2.0)
-               ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Nexus 桌面控制中心 (Tauri 2 + React)                 │
-│                                                                        │
-│  Fastify MCP & REST 核心服务 (Port 18080)    SQLite 持久化引擎 (WAL)   │
-└──────────────────────────────────┬─────────────────────────────────────┘
-                                   │ 双向强类型 JSON-RPC 2.0 (WebSocket)
-                                   ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Nexus 本地执行守护进程 (Runner Daemon)               │
-│                                                                        │
-│  ├── 332 项规范 MCP 工具 (覆盖 24 类工程与智能能力)                    │
-│  ├── Action Ledger 事务日志 (WAL 崩溃恢复与幂等安全跳过)               │
-│  ├── 原生 Windows Computer Use (WinRT OCR, UI 自动化定位)              │
-│  ├── 沙箱隔离工作区与 Git Managed Worktree (独立分支隔离开发)          │
-│  ├── 长稳持久开发运行时 (Persistent Runtime & Windows Job Object)       │
-│  ├── 语言服务器协议 (LSP - TypeScript / Python 代码智能)               │
-│  ├── 无头及交互式浏览器自动化引擎 (Deep Research 深度调研)             │
-│  └── 本地智能知识中枢 (记忆库、全局规则、知识库、提示词库)             │
-└────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-### 2. 核心技术支柱与特性
-
-#### 1. 332 项规范 MCP 工具（Canonical Tools）
-- **唯一真值源定义**：全量 332 项工具统一定义于 `@localbridge/protocol`，具备严格的 Zod Schema 校验、权限分级和执行证据链。
-- **全方位工程覆盖**：涵盖文件系统、高级文件操作、Git 版本控制、命令安全执行、后台长稳作业、LSP 代码智能、Worktree 隔离、浏览器自动化、Windows 桌面控制（Computer Use）、图像视觉分析、多格式文档处理、本地记忆知识库、任务规划编排与系统环境发现等 24 个维度。
-
-#### 2. ACID 级 Action Ledger 事务账本
-- **预写式日志（WAL）**：所有对文件系统或外部状态产生副作用的操作均在预写日志落盘后执行。
-- **崩溃自动恢复与重放**：守护进程异常终止或系统断电重启后，系统能够检测未提交事务并实现一致性回滚或安全重试。
-- **幂等性防护机制**：自动识别重复指令，防止在弱网重连时造成重复执行。
-
-#### 3. 原生 Windows Computer Use 桌面接管与视觉感知
-- **语义级 UI 定位**：深度融合 WinRT 原生 OCR 与 Windows UI 辅助功能树（Accessibility Tree），摆脱脆弱的绝对像素坐标定位。
-- **完整人机交互**：窗口激活与置顶、鼠标平滑移动、拖拽交互、键盘按键派发，配备桌面一键紧急熔断机制。
-- **视觉对比与判定**：支持截屏捕获、图像差异比对，为桌面自动化操作提供真实反馈。
-
-#### 4. 长稳执行与企业级进程隔离
-- **Windows Job Object 隔离**：子进程与作业严格挂载至 Windows 作业对象，精确限制 CPU 配额与内存上限，防止僵尸进程驻留。
-- **全状态终端会话（node-pty）**：提供原生伪终端会话，支持 ANSI 实时日志流式推送与退出码追踪。
-- **AST 语法级命令风控**：将命令划分为 `SAFE`（安全）、`CAUTION`（注意）、`DANGEROUS`（危险）三级，默认拦截 `rm -rf /`、`format`、`reg delete` 等破坏性指令。
-
-#### 5. 本地智能知识中枢（Local Intelligence Store）
-- **混合检索能力**：基于 SQLite 构建持久化记忆库、工程规则库、技术知识库与提示词模板，支持超低延迟精确检索。
-- **上下文压缩器（Context Compactor）**：智能识别关键实体与上下文摘要，在多轮高负荷对话下大幅降低 Token 消耗。
-- **技能引擎（Skills System）**：支持确定性声明式工作流、动态候选技能提议、自动化验证与热重载。
-
-#### 6. 多层沙箱与企业级安全护栏
-- **物理规范路径包含**：借助 `fs.realpathSync.native` 解析真实路径，彻底阻断跨目录遍历（`../`）与前缀混淆攻击。
-- **符号链接与 Junction 逃逸防御**：拦截指向受控目录外的软链接与 Windows 目录连接点（NTFS Junction）。
-- **双令牌密码学隔离**：MCP 客户端令牌（`lb_...`）与 Runner 令牌（`lbr_...`）采用 256 位熵生成，仅以 SHA-256 哈希存储；比对均使用恒定时间比较（`crypto.timingSafeEqual`），防止时序侧信道反推。
-- **敏感凭证智能屏蔽**：默认拦截并隐藏 `.env*`、`*.pem`、`*.key`、`id_rsa`、`.git` 及各类云平台凭据文件。
-
----
-
-### 3. 代码仓库结构
-
-```text
-Nexus/
-├── apps/
-│   ├── desktop/          # Tauri 2 + React + Vite 桌面控制中心
-│   ├── runner/           # 本地执行守护进程（332 工具集、Action Ledger、Computer Use）
-│   ├── server/           # Fastify MCP 服务端（SQLite WAL 持久化 & REST API）
-│   └── bridge/           # Nexus MCP 独立网桥（兼容 OAuth 2.0 / ChatGPT / DeepSeek）
-├── packages/
-│   ├── protocol/         # 纯协议类型层、332 工具规范定义、RPC JSON-Schema
-│   ├── security/         # 沙箱隔离防护、路径规范化验证、命令风控引擎
-│   └── shared/           # 结构化日志（Pino）、配置解析、密码学工具库
-├── tests/                # 自动化测试矩阵（190+ 模块，1200+ 项测试）
-├── docs/                 # 架构设计规范、安全模型与协议文档
-├── artifacts/            # 生产真值审计凭据、能力矩阵与证据账本
-└── scripts/              # 构建编译、依赖捆绑与版本打包脚本
-```
-
----
-
-### 4. 快速上手
-
-#### 方式 A：使用桌面端安装包（推荐）
-1. 从 [GitHub Releases (v1.3.1)](https://github.com/ysunyang4/Nexus/releases/tag/v1.3.1) 下载对应平台的最新安装包：
-   - **Windows (x64 安装包)**：[`Nexus_1.3.1_x64-setup.exe`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.1_x64-setup.exe)
-   - **macOS (Universal 通用 DMG)**：[`Nexus_1.3.1_universal.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.1_universal.dmg)
-   - **macOS (Apple Silicon DMG)**：[`Nexus_1.3.1_aarch64.dmg`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.1_aarch64.dmg)
-   - **Linux (Debian/Ubuntu `.deb`)**：[`Nexus_1.3.1_amd64.deb`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.1_amd64.deb)
-   - **Linux (通用 `.AppImage`)**：[`Nexus_1.3.1_amd64.AppImage`](https://github.com/ysunyang4/Nexus/releases/latest/download/Nexus_1.3.1_amd64.AppImage)
-   - **油猴脚本 (Tampermonkey)**：[`nexus-1.3.1.user.js`](https://github.com/ysunyang4/Nexus/releases/latest/download/nexus-1.3.1.user.js)
-2. 双击安装。Nexus 随系统托盘启动，内置自包含 Node.js 运行时、语言服务器和后台执行守护进程，开箱即用。
-
-#### 方式 B：从源码编译与启动
-环境要求：**Node.js >= 24**、**pnpm >= 10**、**Rust stable**。
-
-```powershell
-# 1. 克隆代码仓库
-git clone https://github.com/ysunyang4/Nexus.git
-cd Nexus
-
-# 2. 安装项目依赖
-pnpm install
-
-# 3. 编译协议包与各子项目
-pnpm run build
-
-# 4. 启动桌面控制中心
-pnpm --filter @localbridge/desktop dev
-```
-
----
-
-### 5. 接入 AI 客户端
-
-#### 步骤 1：授权本地工程项目
-1. 打开 Nexus 桌面端。
-2. 进入 **工作区 -> 项目管理**，点击 **授权项目** 并选择本地文件夹（如 `D:\projects\my-app`）。
-3. 配置 **访问模式**（只读 `read-only` 或 读写 `read-write`）与 **执行模式**（禁用 `disabled`、仅安全命令 `safe-only` 或 完整工程代码 `project-code`），支持在运行期随时二次切换，立即生效。
-
-#### 步骤 2：生成 MCP 访问令牌
-1. 进入 **设置 -> 访问令牌**。
-2. 点击 **生成令牌**，选择 `MCP 客户端令牌`（`lb_...`），复制显示的凭据。
-
-#### 步骤 3：在 AI 工具中配置
-
-**ChatGPT / 自定义 GPT Actions**：
-添加 Streamable HTTP 接口：
-```text
-http://127.0.0.1:18080/mcp
-```
-Header 添加：`Authorization: Bearer lb_your_token_here`
-
-**标准 MCP 客户端配置（`mcp_config.json` 或客户端设置）**：
-```json
-{
-  "mcpServers": {
-    "nexus": {
-      "url": "http://127.0.0.1:18080/mcp",
-      "headers": {
-        "Authorization": "Bearer lb_your_token_here",
-        "MCP-Protocol-Version": "2024-11-05"
-      }
-    }
-  }
-}
-```
-
-**Cursor / Windsurf / 通用 MCP 客户端**：
-- 传输类型：`Streamable HTTP` 或 `SSE`
-- 请求地址：`http://127.0.0.1:18080/mcp`
-- 标头参数：`{"Authorization": "Bearer lb_your_token_here"}`
-
----
-
-### 6. 质量保障与验证指令
-
-```powershell
-# 全局 7 个工作区强类型校验（0 错误）
-pnpm run typecheck
-
-# 构建各端产物、自包含资源与独立启动器
-pnpm run build
-
-# 运行自动化测试套件
-pnpm run test
-
-# 验证桌面 Rust 端编译状态
-cargo check --manifest-path apps/desktop/src-tauri/Cargo.toml
-```
-
----
-
-### ☕ Sponsor & Support (赞助与支持)
-
-If Nexus has helped your workflow, research, or daily development, consider buying the author a coffee ☕!
-
-Your generous support helps sustain active open-source maintenance, feature evolution, and bug fixes.
-
-<div align="center">
-  <table>
-    <tr>
-      <td align="center" width="260">
-        <img src="docs/assets/wechat-pay.jpg" width="220" alt="WeChat Pay (微信支付)" /><br />
-        <br />
-        <b>WeChat Pay (微信支付)</b>
-      </td>
-      <td align="center" width="260">
-        <img src="docs/assets/alipay.jpg" width="220" alt="Alipay (支付宝)" /><br />
-        <br />
-        <b>Alipay (支付宝)</b>
-      </td>
-    </tr>
-  </table>
-</div>
-
----
-
-### 7. 开源许可证、署名与安全说明
-
-- **软件许可证**：Nexus v1.3.1 依据 [GNU AGPL-3.0](LICENSE) 发布，允许个人与商业使用、学习、修改和再分发，但须遵守许可证原文。
-  - **源码提供义务的适用范围**：分发受 AGPL 约束的程序或修改版，以及让用户通过网络与修改版交互等适用情形，可能触发相应源码和许可声明义务。仅在本地私下修改、不进行相应分发或网络交互服务，并不当然要求公开源码。具体以 AGPL 第 4–6、13 条等规定为准。
-  - **署名与来源**：依许可证保留必须保留的版权、许可证和法律声明，标明适用的修改；不得冒充 Nexus 官方版本。许可终止及恢复遵循 AGPL 第 8 条，而非 README 单方面规定立即终止。
-  - **品牌保护**：[BRAND_GUIDELINES.md](BRAND_GUIDELINES.md) 仅用于说明独立的商标、品牌标识及防混淆问题，不剥夺 AGPL 授予的软件权利。
-  - **第三方归属**：[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 列明第三方组件，并将概念性架构参考与实际代码依赖分开说明。
-- **安全提醒**：请阅读 [SECURITY.md](SECURITY.md)。启用读写、命令执行、桌面接管或全盘访问会扩大远程 AI 可执行操作的范围，应采取备份、审批和最小权限措施。
+**注意：** GPL-3.0 允许符合许可条件的商业使用；它不是“禁止商用”许可证。

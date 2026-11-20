@@ -93,7 +93,7 @@ More detailed installation instructions:
     file has a correct environment, tested to work correctly with TorchANI-Amber. It
     contains:
     - TorchANI's required dependencies, including PyTorch
-    - CUDA Toolkit and cuDNN libraries necessary to build the extensions and interface
+    - CUDA Toolkit libraries necessary to build the extensions and interface
     - GFortran and OpenMPI, which are needed to compile Sander and Pmemd (serial and MPI)
     ```bash
     conda env create --file ./environment.yaml
@@ -151,8 +151,18 @@ Amber prints when installing.
 
 ## CPU-only support
 
-TorchANI-Amber can run CPU-only, but even in this case it depends on the the CUDA
-Toolkit, cuDNN and LibTorch.
+TorchANI-Amber can run CPU-only. By default it is built with CUDA support, and in this
+case it depends on the CUDA Toolkit and LibTorch even when running on CPU.
+
+To build without any CUDA dependency use `./run-cmake -c` (or configure with
+`-DTORCHANI_BUILD_CUDA=OFF`). This requires a CPU-only PyTorch (or LibTorch), e.g.
+installed with `pip install torch --index-url https://download.pytorch.org/whl/cpu`,
+and the `nvidia::cuda-toolkit` dependency in `environment.yaml` is not needed. The
+resulting build can't use CUDA devices or the cuAEV CUDA kernels.
+
+When running on CPU, set `export OMP_NUM_THREADS=1` before calling Sander or Pmemd. By
+default LibTorch (and OpenBLAS, if Amber links against it) spawn one thread per core,
+and the resulting oversubscription can make dynamics more than 10x slower.
 
 ## Usage
 
@@ -181,7 +191,7 @@ The `&ani` namelist supports the following basic options:
 
 There are also some advanced options:
 - `use_cuaev` (*bool*)
-   Whether to use the cuAEV cuda extension to accelerate potentials that support it.
+   Whether to use the cuAEV compiled extension to accelerate potentials that support it.
 - `use_amber_neighborlist` (*bool*)
    Whether to let Sander | Pmemd handle the neighborlist calculation.
 - `use_all_amber_nonbond` (*bool*)

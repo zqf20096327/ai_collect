@@ -1,0 +1,284 @@
+# AICallAgent · AI 通话接管
+
+`io.github.cherry1jay.aicallagent`
+
+把小米「AI 通话」的大脑换成你自己的大模型。
+
+一个 LSPosed 模块：接管 HyperOS 的 AI 自动接听，用任意 OpenAI 兼容接口（DeepSeek / Kimi / Qwen / GLM / Ollama / one-api 中转…）生成对话，并按来电话类型分流——想接的走你的模型，不想接的交回小米原生话术。
+
+> 只在 **小米 17 Pro / HyperOS 4.0 / Android 17 / 小爱同学 8.2.70** 上实测。其它机型可能可用，也可能会失效，见「已知限制」。
+
+---
+
+## 它解决什么问题
+
+小米的 AI 通话本身能自动接、能说话，但说什么由小爱决定：话术固定、不会随机应变、不能接入你自己的模型，也没法按来电类型区分对待——推销电话和外卖小哥听到的是同一套词。
+
+本模块把「生成回复」这一步换掉，接听、字幕、语音合成都还是系统原生，所以：
+
+- 界面、录音、字幕不变，通话记录照常写；
+- 不碰音频流，全程在文本态工作，不需要任何音频权限；
+- 换成任何 OpenAI 兼容模型，提示词随你写；
+- 外卖、快递、推销、客服、联系人、陌生号分别配置，每类可单独关掉（关掉就是原生小米回复）。
+
+---
+
+## 为什么 hook 在这里
+
+网上流传的方案说「AI 通话逻辑在 `com.android.incallui`」，本机实测**不成立**。把三个 APK 全部反编译比对后的实际分工：
+
+| 包 | 实际职责 |
+|---|---|
+| `com.xiaomi.phone`（HyperPhone） | 只有配置 Provider `content://ai-assist-call-config`，一张 SQLite 键值表 |
+| `com.android.incallui` | 只画字幕 UI，**没有 ASR、没有 TTS**，那几个 `KEY_AI_CALL_*` 只是读配置 |
+| **`com.miui.voiceassist`（小爱）** | **ASR → LLM → TTS 全在这里**，`classes29.dex` |
+
+真正的实现是明文、未混淆的：
+
+```
+com.aios.osbot.tools.phone.service.OsbotInCallService    // InCallService，状态机
+com.aios.osbot.tools.phone.engine.CallConversationEngine // Agent 引擎
+  └─ handleCallerSentence(String)                        // 单轮对话入口 ← 唯一 hook 点
+       ├─ 私有字段 speakFn(Function2, suspend)            // 协程 TTS，AudioTrack 注入通话
+       └─ 私有字段 onAgentTurnComplete(Function0)         // 回合结束信号
+```
+
+来电类型来自系统黄页：`miui.yellowpage.YellowPageUtils.getPhoneInfo(ctx, number, true).getTag()`，返回「外卖」「快递」「骚扰电话」这类标签，模块直接复用，不自己猜。
+
+---
+
+## 工作原理
+
+```
+对方说话
+  └─ 系统 ASR 出文本
+       └─ CallConversationEngine.handleCallerSentence(text)   ← 这里被拦下
+            ├─ [原生] 小爱 LLM 生成回复          → 换成 →
+            ├─ [本模块] 查来电类型 → 挑提示词 → HTTP 调你的模型
+            ├─ 写 ai_call_reply_log_content（字幕照常显示）
+            └─ 借引擎自己的 speakFn 播报（系统 TTS + 音频通道）
+                 └─ 播完补发 onAgentTurnComplete，状态机继续监听下一轮
+```
+
+三个设计要点：
+
+1. **只换大脑，不换嘴**。播报调用引擎自己的 `speakFn`，音频注入、回声消除、打断处理全部原生，不需要碰 AudioTrack，也不会和系统抢麦克风。
+2. **必须补发回合结束信号**。接管后原生状态机收不到 `onAgentTurnComplete` 会停在「思考中」不再监听，所以播报完成后反射调用它收尾。
+3. **超时必兜底**。整轮（分类 + 模型）有 9 秒硬上限，超时就自己说一句过渡话术把状态机推下去；播报本身另有 8 秒兜底补发回合结束信号。这两道保险缺一不可——回合已经被拦下，卡住就意味着整通电话停在「AI 自动回复中」。
+4. **日志绝不阻塞通话线程**。跨进程写通话记录走独立线程，否则模块进程被回收时，一个 `ContentResolver.call` 就能把引擎线程一起卡死。
+
+---
+
+## 功能
+
+**按来电类型分流**（6 类，各自独立开关）
+
+| 类型 | 识别依据（黄页标签关键词） | 默认 |
+|---|---|---|
+| 外卖送餐 | 外卖、送餐、美团、饿了么、配送、跑腿、闪送… | 接入 |
+| 快递物流 | 快递、物流、驿站、顺丰、圆通、中通、菜鸟、包裹… | 接入 |
+| 广告推销 | 骚扰、推销、广告、中介、保险、贷款、理财、催收、诈骗… | **交回原生** |
+| 客服官方 | 客服、官方、银行、航空、运营商、政务、医院、售后… | 接入 |
+| 通讯录联系人 | 号码在通讯录里（模块自己查 `PhoneLookup`） | 接入 |
+| 陌生号码 | 以上都不命中 | 接入 |
+
+黄页查不到标签时按号码特征兜底：5–6 位短号、`400`/`800` 开头判客服，`95` 开头短号判客服。
+
+**每类可自定义提示词**
+
+点类别名（蓝色字）直接编辑，改过的会标「· 已改」，弹窗里有「恢复默认」。内置 6 套按语音场景写的默认话术——纯口语、短句、不带列表符号，因为这句话是要被 TTS 念出来的。
+
+**通话中「小爱帮我回」**
+
+人工接听的通话，点通话页右上角 AI 应答 → 选「小爱帮我回」，系统会把普通通话升级为 AI 帮接。这条路径走 `OsbotInCallService.takeOverCallWithAi()`，内部同样 `createEngine(Call)` 建出 `CallConversationEngine`——和自动接听是同一个引擎，所以对话回合照样被本模块拦下。
+
+设置页那张卡片控制三件事：
+
+| 项 | 作用 |
+|---|---|
+| 手动接管 · 小爱帮我回 | 开 = 点按钮后由你的大模型应答；关 = 仍用小爱原生模型 |
+| 忽略来电类型开关 | 手动点了就代表你要 AI 接，不再被上面的类型分流挡回原生（默认开） |
+| 开场白（选填） | 接管后说的第一句。写进小爱的 `ai_custom_opening_acquaintance` / `ai_custom_opening_stranger`，留空保留系统默认。熟人开场白默认内置了一句猫娘口吻的短句，可自行改写 |
+
+两个实现细节值得记一笔：
+
+- **接管前必须清掉 `isAiAssistPaused`**。否则 `takeOverCallWithAi` 开头第一个 `shouldContinueAiAssist("start takeover")` 就会中断，表现为「点了小爱帮我回没反应」。
+- **开场白不是硬编码文案**。原生 `playGreeting()` 先读 `ai_custom_opening_acquaintance`（熟人）/ `ai_custom_opening_stranger`（陌生号），有值就用，没有才回落到系统字符串。所以模块只是写这两个键，不需要 hook 播报，也不会串音。
+
+> 自动接听（响铃时由小爱接管）不经过这个入口，走的是 `onCallActive()` → `createEngine()`，但落到的还是同一个引擎，同样被模块接管。
+
+**模型接入**
+
+- 任意 OpenAI 兼容 `/chat/completions` 端点，填 Base URL + 模型名 + API Key
+- 默认 `https://api.deepseek.com/v1` + `deepseek-chat`
+- **允许模型思考（默认关闭）**：关闭时请求里明确要求直接作答、token 预算压到 320，并且**绝不把 `reasoning_content` 当回复**——正文为空就判这轮失败、走兜底话术，宁可不说话也不念内心戏。打开后预算放宽到 700，才会从思考过程里提取台词
+- 输出统一净化：剥掉思考区块和 markdown，按句子边界截到 80 字以内（TTS 对超长文本会静默放弃播放，这是「有字幕没声音」的主因）
+- 超时秒数、保留对话轮数、全局人设提示词均可配
+
+**通话记录**
+
+每次通话逐轮记录「对方说 / 我说 / 耗时 / 判定类型」，用于调提示词和排查。
+
+---
+
+## 安装
+
+**前提**：已 root（KernelSU / Magisk / APatch）+ LSPosed，Android 12 以上；系统「AI 通话」本身可用（设置 → 电话 → AI 通话，开启自动接听）。
+
+1. 安装 `AICallAgent-x.x.apk`（应用列表里显示为「AI 通话接管」，包名 `io.github.cherry1jay.aicallagent`）
+2. 打开 LSPosed → 模块 → 启用 **AICallAgent**
+3. 作用域**只勾选「小爱同学」**（`com.miui.voiceassist`），不需要勾系统框架或拨号
+4. 软重启小爱（**不用重启手机**）：
+   ```bash
+   adb shell am force-stop com.miui.voiceassist
+   adb shell am start -n com.miui.voiceassist/com.xiaomi.voiceassistant.ShareReceiverActivity
+   ```
+5. 打开 AICallAgent → 填 Base URL / 模型 / API Key → **保存设置**
+6. 打一通电话，开 AI 接听，听它说的是不是你的模型的话
+
+验证注入成功：
+
+```bash
+adb logcat | grep AICallAgent
+# AICallAgent: 注入成功：com.miui.voiceassist (com.miui.voiceassist)
+# AICallAgent: Hook 就绪，suspend 哨兵=COROUTINE_SUSPENDED
+```
+
+> 手机刚开机时小爱进程起得早，可能拿不到模块配置；遇到「注入了但没生效」，强停小爱再拉起即可。
+
+### 配置示例
+
+| 服务 | Base URL | 模型 |
+|---|---|---|
+| DeepSeek | `https://api.deepseek.com/v1` | `deepseek-chat` |
+| 月之暗面 | `https://api.moonshot.cn/v1` | `moonshot-v1-8k` |
+| 智谱 | `https://open.bigmodel.cn/api/paas/v4` | `glm-4-flash` |
+| Ollama（局域网） | `http://192.168.1.x:11434/v1` | `qwen2.5:7b` |
+| one-api 中转 | 你的中转地址 + `/v1` | 对应模型名 |
+
+---
+
+## 构建
+
+不需要 Gradle / Android Studio，只要有 JDK 11+ 和 Android SDK（build-tools + 任一 platform）：
+
+```bash
+export ANDROID_HOME=/path/to/Android/Sdk
+bash build.sh
+# 产物：AICallAgent-1.4.apk
+
+# 指定版本号（tag 与 APK 名都跟着变）
+VERSION_CODE=6 VERSION_NAME=1.5 bash build.sh
+```
+
+脚本流程：`aapt2 compile` → `aapt2 link` → `javac` → `d8` → `jar` 塞 dex → `zipalign` → `apksigner`。
+
+- 首次构建会自动生成 `keystore.jks`（密码 `aicallagent`），**请自行保管**，后续升级要用同一个签名
+- 已有 keystore 时用 `KS_PASS=你的密码 bash build.sh`
+- `libs/api82.jar` 是 Xposed API 82（Apache-2.0），已内置，clone 即可构建
+- 换图标：改 `genicon.py` 后 `python genicon.py`
+
+---
+
+## 更新日志
+
+### v1.4 — 修复「字幕有字、听不到声音」，新增思考开关
+
+对方一口气说一大段（连问七八个问题）时，会出现字幕显示一长串、通话像卡住、但一点声音都没有。根因不是 TTS 也不是网络，是模型返回的内容本身：
+
+```
+对方连问 9 个问题 → 推理型模型把 max_tokens=320 全烧在思考上
+→ content 为空 → 代码兜底拿 reasoning_content 顶上去（bug）
+→ 520 字思维链写进字幕 + 塞给 TTS
+→ TTS 读不动直接放弃，2.1 秒"播报完成"却一声不出，状态机被带歪
+```
+
+改动：
+
+- **删除 `content = reasoning_content` 兜底**。正文为空就判这轮失败，不再把思考当答案
+- **新增「允许模型思考」开关，默认关闭**。关闭时提示词要求直接作答、`max_tokens` 压到 320、正文为空直接兜底；打开才放宽到 700 并允许从思考里提取台词
+- **播报超时改为按字数动态计算**：`6s + 字数 × 400ms`，上限 60s。原来写死 8 秒，只够播 24 个字，回复稍长就被掐断
+- **播报文本硬性上限 80 字**，按句子边界截断
+- **两道净化**：有「回复：」标记时只取标记之后；正文超 90 字且命中 3 个以上元话语词（“我需要”“规则说”“检查”…）时只认引号里的台词
+- 修掉 `build.sh` 的老问题：版本号被 `AndroidManifest.xml` 写死的值覆盖，传 `VERSION_CODE` 实际不生效（之前构建出来的 APK 一直是 3/1.2）
+- 日志增加 `模型原始：content=X字 reason=Y字`，一眼看出模型到底返回了什么
+
+> 实测：对方连问 6 轮（最长 95 字），模型 `reason` 仍有 36–412 字（`deepseek-flash` 属强制思考，开关关不掉），但 `content` 都有正文，字幕与语音一致、无卡顿。若你的模型顽固思考到正文为空，换 `deepseek-chat` 或把开关打开。
+
+### v1.2 — 包名变更，上架 LSPosed 模块仓库
+
+- **包名**：`com.cherryjay.aicallagent` → `io.github.cherry1jay.aicallagent`
+  LSPosed 模块仓库要求应用 ID 反写的域名归开发者所有，旧包名对应的 `cherryjay.com` 并不属于本作者，因此改用 `io.github.` 前缀。
+  **这是一次全新安装**：请先卸载旧版再装 1.2，配置（API Key、人设、各类提示词）需要重新填一次。
+- 构建脚本支持 `VERSION_CODE` / `VERSION_NAME` 环境变量，产物名跟随版本号
+
+### v1.1 — 修复「填了 Key 却不生效」和「连续对话卡住」
+
+v1.0 在真机上跑不通，两个致命 bug：
+
+**1. 配置永远读不到（表现为一直走原生回复、token 不消耗）**
+
+Hook 跑在小爱进程里，`AndroidAppHelper.currentApplication()` 拿到的是**小爱自己的 Context**，`getSharedPreferences` 读的是小爱私有目录 → 永远是空的。同时 `AndroidManifest.xml` 里压根没声明那个用来跨进程读配置的 `ContentProvider`，所以原本设计的读取通道一直是静默失败。
+
+修法：`Config.load()` 判断当前进程包名，不是自己就走 `ContentResolver.call` 让模块进程代读；补上 provider 声明，并在 provider 里用 `getCallingPackage()` 只放行 `com.miui.voiceassist`，防止 API Key 被任意应用读走。
+
+> 顺带踩到一个坑：模块的 prefs 落点不是 `/data/data/<pkg>/shared_prefs/`，而在 `/data/misc/apexdata/<uuid>/prefs/<pkg>/`，手工改配置要认准这个路径。
+
+**2. 连续对话会卡死（界面停在「AI 自动回复中」）**
+
+三个原因叠在一起：
+
+| 原因 | 修法 |
+|---|---|
+| 分类 + 模型调用是裸调用，DNS 解析或通讯录查询一卡，回合就永远不结束 | 整轮放进 `FutureTask`，9 秒硬超时，超时播一句过渡话术 |
+| 跨进程写通话日志是同步 `ContentResolver.call`，阻塞引擎线程 | 日志全部改走独立线程，绝不阻塞通话线程 |
+| 播报兜底等 60 秒才补发 `onAgentTurnComplete` | 压到 8 秒，另加 15 秒看门狗强制收尾 |
+
+**3. 熟人被当成陌生号码**
+
+Telecom 给的 `callerDisplayName` 日常来电基本都是空的，靠它判断「是否联系人」必然失败，结果熟人听到的是陌生号话术。改成模块自己用号码查 `ContactsContract.PhoneLookup`（小爱进程本身就有 `READ_CONTACTS`）。
+
+**4. 其它**
+
+- 内置提示词调整：通讯录联系人默认改为猫娘口吻（每句结尾带「喵」、自称「人家」），可在设置页逐字改
+- 熟人开场白内置默认值，短句 + 句号停顿，避免 TTS 念长句吞字
+- `takeOverCallWithAi` 在一通电话里会被回调七八次，每次重置对话历史会丢掉多轮上下文 → 按通话去重，实测降为 1 次
+
+---
+
+## 已知限制
+
+- **强依赖类名**。`CallConversationEngine`、`handleCallerSentence`、`speakFn` 都是按名字反射找的。小爱版本升级后如果改名或混淆，模块会静默失效（日志里有「引擎钩子失败」）。目前没做方法签名兜底。
+- **`speakFn` 的协程语义**。模块传了一个手搓的 `Continuation` 去调这个 suspend 函数。如果某版本改成非 `suspendCancellableCoroutine` 实现，可能出现「话播了但回合信号没回来」，表现是这一轮之后不再监听。日志里会缺「播报完成」。
+- **只在文本态工作**。语音识别错误、方言、噪音，模块无能为力——它拿到的就是 ASR 的输出。
+- **强制思考的模型关不掉思考**。像 `deepseek-flash` 这类推理模型，即使「允许模型思考」关着、提示词要求直接作答，响应里仍会出现 `reasoning_content`，并占用 token 预算。正文一旦被挤空，这一轮会走兜底话术而不是念思考。要彻底避免就用非推理模型（`deepseek-chat`、`qwen-plus` 等），或把开关打开让它走提取逻辑。
+- **不做身份伪装**。默认话术是「机主现在不方便接电话」，但模型仍可能被套话。涉及验证码、转账、密码的场景，建议直接关掉对应类型的接入。
+
+## 免责声明
+
+仅供个人学习与研究。通话录音、语音内容涉及他人隐私，各地法律对自动接听与录音的规定不同，请自行确保合法合规使用。因使用本模块产生的一切后果由使用者承担。
+
+## License
+
+MIT
+
+<!-- donate:start -->
+---
+
+## 支持作者 / Support the author
+
+本项目**完全免费**，不设付费版、不做功能阉割，也没有任何强制署名或引流要求。你可以在遵守许可证的前提下自由使用、修改和分发。
+
+如果它确实帮到了你，欢迎**自愿打赏**，金额随意；不打赏完全不影响使用，也不影响后续更新。
+
+<table>
+  <tr>
+    <td align="center"><b>支付宝（推荐）</b><br>
+      <img src="assets/donate/alipay.jpg" width="240" alt="支付宝收款码"></td>
+    <td align="center"><b>微信支付</b><br>
+      <img src="assets/donate/wechat.jpg" width="240" alt="微信收款码"></td>
+  </tr>
+</table>
+
+<sub>Free to use — this project is and stays free. A voluntary tip is appreciated, never required.</sub>
+<!-- donate:end -->

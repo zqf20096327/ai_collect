@@ -12,15 +12,15 @@ included.
 
 **[▶ Read a finished report — no key, no sign-up](https://academic-agent.cc/samples)** · [Open the application](https://academic-agent.cc) · [Run locally](#quick-start) · [中文](README.zh-CN.md)
 
-![Demo: a finished CAR-T assessment opened from the history list, its scorecard, risks and opportunities with citations, the cited report, and one saved source excerpt](assets/demo.gif)
+![Demo: a topic and a decision context are entered; the finished assessment then shows the conclusion its report states (DEFER), the decision brief with the score, the scorecard, risks with citations, the paragraph of the report that states the conclusion, and one saved source excerpt](assets/demo.gif)
 
-*A real run from 2026-08-14 (CAR-T cell therapy for blood cancers, `deepseek-chat`), opened from a local copy in the current interface and captured 2026-10-23; no model or search request was made. It predates today's automated checks, which the panel states; it is not a current-model result.*
+*A real run from 2026-11-20 (perovskite-silicon tandem solar cells, `claude-opus-5-5`, for a technology transfer office deciding whether to license), captured the same day in the current interface from a local copy. The form shows the topic and context the run was started with; the finished run is then opened from the history list. The recording made no model or search request. It is one run on one model, not a benchmark.*
 
 ## Try it
 
 | Way in | What you need | |
 |---|---|---|
-| **Read sample reports** | Nothing. Six finished assessments, one in Chinese; opening one makes no model or search request | [Open samples](https://academic-agent.cc/samples) |
+| **Read sample reports** | Nothing. Seven finished assessments, one in Chinese and one with a decision context and its stated conclusion; opening one makes no model or search request | [Open samples](https://academic-agent.cc/samples) |
 | **Run a new analysis online** | A free account (email and password; sign-up is open) with your own LLM API key and model plus a Tavily or Serper search key, which your runs are billed to. Incurs provider usage | [Open the app](https://academic-agent.cc) |
 | **Run it on your machine** | Python 3.11 or 3.12, [uv](https://docs.astral.sh/uv/) and your own keys | [Quick start](#quick-start) |
 

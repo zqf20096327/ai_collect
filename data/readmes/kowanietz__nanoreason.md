@@ -116,7 +116,6 @@ sbatch slurm/train/sft-repetition-3k2.sh 12
 sbatch slurm/train/sft-repetition-3k2.sh 16
 sbatch slurm/train/rlvr-512.sh
 ```
-TODO: merge repetition job steps?
 
 Run repetition data preparation after SFT. Prepare RLVR data before the last command.
 

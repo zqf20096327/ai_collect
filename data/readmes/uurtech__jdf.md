@@ -14,7 +14,7 @@ JDF runs in three places:
 | Surface | What it is | Install |
 |---|---|---|
 | **JDF Reader** | Native desktop app — read, edit, import PDF/MD, export PDF | macOS: `brew tap uurtech/jdf && brew install jdf` · Windows: `.exe` / `.msi` from the [latest release](https://github.com/uurtech/jdf/releases/latest) |
-| **jdf.js** | JavaScript library — embed `.jdf` files on any web page | `npm install @uurtech/jdf` or `<script src="https://unpkg.com/@uurtech/jdf@0.2.10">` |
+| **jdf.js** | JavaScript library — embed `.jdf` files on any web page | `npm install @uurtech/jdf` or `<script src="https://unpkg.com/@uurtech/jdf@0.2.11">` |
 | **`@uurtech/jdf-cli`** | CLI — validate, convert PDF/JSON/MD→JDF, and RAG-native `chunk` + `embed` | `brew tap uurtech/jdf && brew install jdf-cli`, `npm i -g @uurtech/jdf-cli`, or `npx @uurtech/jdf-cli convert paper.pdf` |
 
 ## Why JDF
@@ -94,8 +94,8 @@ Download `.deb`, `.AppImage`, or `.rpm` from the [latest release](https://github
 Embed JDF documents on any web page with one tag:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@uurtech/jdf@0.2.10/dist/jdfjs.css">
-<script type="module" src="https://unpkg.com/@uurtech/jdf@0.2.10"></script>
+<link rel="stylesheet" href="https://unpkg.com/@uurtech/jdf@0.2.11/dist/jdfjs.css">
+<script type="module" src="https://unpkg.com/@uurtech/jdf@0.2.11"></script>
 
 <jdf src="/whitepaper.jdf"></jdf>
 ```
@@ -140,7 +140,9 @@ NO_STRIP=true pnpm tauri build --bundles appimage
 
 **Open**: drag any `.jdf`, `.jdfx`, `.pdf`, or `.md` onto the welcome screen, double-click in Finder (file associations are registered for both `.jdf` and `.jdfx`), or `Cmd+O`.
 
-**Edit a paragraph**: double-click it. The whole paragraph (or heading, list item, table cell, collapsible title, image src/alt) becomes an inline editor. Type. Press `Enter` or click anywhere else — the change saves to disk in ~150 ms.
+**Edit a paragraph**: double-click it. The whole paragraph (or heading, list item, table cell, collapsible title) opens in a wrapping editor that grows with the text. In a paragraph `Enter` is a new line and `Cmd+Enter` / click-away commits; elsewhere `Enter` commits and `Shift+Enter` breaks the line. The change saves to disk in ~150 ms.
+
+**Edit Markdown**: open a `.md`, pick **Edit** in the toolbar — source left, live preview right, auto-saved to the `.md` file. `Cmd+B/I/K`, list continuation on `Enter`.
 
 **Restructure**: hover any element. A floating toolbar pops up in the top-right corner with **↑ Move up · ↓ Move down · ⧉ Duplicate · × Delete**. No right-click, no menu hunting.
 
@@ -218,7 +220,7 @@ Editing lives in the desktop Reader only — jdf.js is a viewer, the CLI is non-
 | Import `.pdf` → `.jdf` (full fidelity: positions, fonts, colors, shapes, embedded images) | ✓ | — | ✓ (`jdf convert file.pdf`) — same algorithm via `@jdf/pdf-import` |
 | Wrap raw / LLM JSON → validated `.jdf` | — | — | ✓ (`jdf convert file.json`) — full doc, element array, or `{ pages: [...] }` partial |
 | JSON Schema validation | ✓ (live, in-app) | — | ✓ (`jdf validate file.jdf`) |
-| Markdown viewer (native render, no conversion) | ✓ | — | — |
+| Markdown viewer + editor (native render, live preview, saves to the `.md`) | ✓ | — | — |
 
 ### Export
 
@@ -235,7 +237,7 @@ Editing lives in the desktop Reader only — jdf.js is a viewer, the CLI is non-
 | **JDF Reader** (macOS) | `brew tap uurtech/jdf && brew install jdf` — DMG / `.app`, signed via GitHub release |
 | **JDF Reader** (Windows) | `.exe` / `.msi` from the [latest release](https://github.com/uurtech/jdf/releases/latest) (community-maintained) |
 | **JDF Reader** (Linux) | `.deb` / `.AppImage` / `.rpm` from the [latest release](https://github.com/uurtech/jdf/releases/latest) |
-| **jdf.js** | `npm install @uurtech/jdf` or `<script src="https://unpkg.com/@uurtech/jdf@0.2.10">` |
+| **jdf.js** | `npm install @uurtech/jdf` or `<script src="https://unpkg.com/@uurtech/jdf@0.2.11">` |
 | **`@uurtech/jdf-cli`** | `brew tap uurtech/jdf && brew install jdf-cli`, `npm i -g @uurtech/jdf-cli`, or `npx @uurtech/jdf-cli validate file.jdf` (no install) |
 
 ## Page model
@@ -298,7 +300,7 @@ Round-trip back to `.pdf` via the toolbar (or `Cmd+Shift+E`). Respects:
 
 ## Markdown
 
-`.md` opens with a continuous-scroll, GitHub-style render (`marked`, full GFM: tables, blockquotes, code, links, images, task lists, hr, strikethrough). Toolbar toggle flips to the paged JDF render of the same content. `Cmd+F` highlights matches inline with `<mark>` tags in the live MD output, line-by-line.
+`.md` opens with a continuous-scroll, GitHub-style render (`marked`, full GFM: tables, blockquotes, code, links, images, task lists, hr, strikethrough). The **Edit** toggle shows the source beside a live preview and auto-saves to the `.md`. **Paged** flips to the JDF render of the same content. `Cmd+F` highlights matches inline with `<mark>` tags in the live MD output, line-by-line.
 
 **Images in Markdown** — `![alt](path/to/picture.png)` works with relative paths (`komojam_target_architecture.drawio.png`), absolute paths, and `http(s)://` URLs. On import the relative ones are read from disk and base64-embedded into the document so the resulting `.jdf` is self-contained and portable. Both the JDF Reader app and the CLI (`jdf convert file.md`) follow the same rule.
 
@@ -840,7 +842,7 @@ Done:
 - JSON Schema, CLI validate, CI on all three OSes.
 - Homebrew tap (`uurtech/jdf`).
 - **jdf.js — web embed library** with auto-init, single `<jdf src="...">` form, feature parity with the desktop renderer.
-- Published to npm as [`@uurtech/jdf`](https://www.npmjs.com/package/@uurtech/jdf) — install via `npm install @uurtech/jdf` or load from CDN at `https://unpkg.com/@uurtech/jdf@0.2.10` (always pin a version in production).
+- Published to npm as [`@uurtech/jdf`](https://www.npmjs.com/package/@uurtech/jdf) — install via `npm install @uurtech/jdf` or load from CDN at `https://unpkg.com/@uurtech/jdf@0.2.11` (always pin a version in production).
 - **`.jdfx` zip bundles** — automatic for documents with embedded images/fonts. Reader, jdf.js, and CLI all read and write the format; manifest schema at [`spec/jdfx-manifest-schema.json`](spec/jdfx-manifest-schema.json).
 - **Markdown image imports** — `![alt](relative.png)` works in both the desktop importer and `jdf convert file.md`. Relative paths are resolved against the source file's directory and embedded into the output bundle.
 - **RAG tooling in the CLI** — `jdf chunk` (deterministic, section-aware, offline) and `jdf embed` (local via Ollama or remote via OpenAI, with `--incremental` re-embedding). Tables serialize as `Header: value` rows; chunk index can be inlined into the `.jdf`.

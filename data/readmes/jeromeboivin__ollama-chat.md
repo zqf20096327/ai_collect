@@ -87,10 +87,26 @@ Ollama-Chat comes with a built-in feature that allows you to search the web usin
    cd ollama-chat
    ```
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+2. Create and activate a virtual environment using Python 3.11. On Windows,
+   use PowerShell:
+   ```powershell
+   py -3.11 -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   python -m pip install -r requirements.txt
    ```
+
+   On macOS or Linux:
+   ```bash
+   python3.11 -m venv .venv
+   source .venv/bin/activate
+   python -m pip install -r requirements.txt
+   ```
+
+   Python 3.15 on Windows cannot currently install the required ChromaDB
+   dependency `onnxruntime`. If you already have an older ChromaDB installation,
+   install the requirements in the virtual environment rather than using the
+   global Python interpreter. Back up existing ChromaDB data before upgrading;
+   newer ChromaDB versions may migrate the database.
 
 3. Start the Ollama or Llama-Cpp server, then run the CLI:
    ```bash

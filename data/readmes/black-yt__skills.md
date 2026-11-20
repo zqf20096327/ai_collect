@@ -22,7 +22,7 @@ skill-name/
 | `bilibili-video-download` | [`bilibili-video-download/SKILL.md`](bilibili-video-download/SKILL.md) | 下载哔哩哔哩普通 BV 投稿视频为 MP4，选择画质和分 P，或导出 MP3；附完整 Python 标准库脚本、ffmpeg 安装、私有 Cookie 文件调用与结果验证。 |
 | `browser-render-visualization` | [`browser-render-visualization/SKILL.md`](browser-render-visualization/SKILL.md) | 使用 Playwright 渲染网页前端并保存桌面/移动端截图，检查 GitHub Pages、本地静态页面、Canvas/Three.js 空白渲染、布局溢出和浏览器报错。 |
 | `cloudflare-flux-image-generation` | [`cloudflare-flux-image-generation/SKILL.md`](cloudflare-flux-image-generation/SKILL.md) | 注册并调用 Cloudflare Workers AI 的 FLUX.1 schnell 文生图；附完整 Python 标准库脚本、临时凭据配置、免费额度核算和排错。 |
-| `codex-app-troubleshooting` | [`codex-app-troubleshooting/SKILL.md`](codex-app-troubleshooting/SKILL.md) | 排查 Codex App 登录、更新中断、代理、CLI/WSL 后端、项目迁移与 MCP 故障，收录 CC Switch、Claude/Gemini 和 IDE 相关经验，保护认证、活动对话与历史。 |
+| `codex-app-troubleshooting` | [`codex-app-troubleshooting/SKILL.md`](codex-app-troubleshooting/SKILL.md) | 排查 Codex App 登录、更新中断、模型列表未刷新、CLI/远程后台版本、npm 安装慢、代理、WSL、项目迁移与 MCP 故障，收录 CC Switch、Claude/Gemini 和 IDE 相关经验，保护认证、活动对话与历史。 |
 | `codex-history-sync` | [`codex-history-sync/SKILL.md`](codex-history-sync/SKILL.md) | 使用保守的一向同步脚本，把一个 `.codex` 的 Codex 会话记录、`history.jsonl`、`sessions/` 和 thread title 元数据同步到另一个用户或目录，默认排除敏感配置并要求先 dry-run。 |
 | `context-overlay` | [`context-overlay/SKILL.md`](context-overlay/SKILL.md) | 配置和验证 OpenAI-compatible context overlay proxy，覆盖 rule matching、prompt/context 注入、prompt patch、routing、reject、skill_dir 检索和转发安全。 |
 | `docx-splitting` | [`docx-splitting/SKILL.md`](docx-splitting/SKILL.md) | 在 Windows + Microsoft Word 环境中，通过 [`scripts/split_docx.py`](docx-splitting/scripts/split_docx.py) 按页无损拆分 `.docx` 文档。 |
@@ -35,7 +35,7 @@ skill-name/
 | `lab-cluster-1-web-portal` | [`lab-cluster-1-web-portal/SKILL.md`](lab-cluster-1-web-portal/SKILL.md) | 访问、登录和只读查询 lab-cluster-1 的 `h.pjlab.org.cn` 集群管理网站，覆盖 OIDC 会话、token 安全、Prometheus/DCGM 监控、pod/rjob 映射和报告数据分层。 |
 | `latex-compiling` | [`latex-compiling/SKILL.md`](latex-compiling/SKILL.md) | 使用系统级 `latexmk` + `pdflatex` 编译 LaTeX，并隔离 build 目录与 TeX 缓存。 |
 | `latex-template-migration` | [`latex-template-migration/SKILL.md`](latex-template-migration/SKILL.md) | 将 arXiv、旧会议、旧期刊或自定义 LaTeX 论文工程迁移到目标投稿模板，覆盖全匿名检查、只换模板、页数判断、压页、压行、文本/图表/公式守恒和 PDF 可视化检查；包含按目标会议/track 校准的独立模拟审稿及改稿后再验收。 |
-| `llm-deploy-training` | [`llm-deploy-training/SKILL.md`](llm-deploy-training/SKILL.md) | 部署和训练 LLM/VLM，覆盖 vLLM OpenAI-compatible 服务、多模态限制、Qwen3.5 工具调用、thinking/reasoning 控制、CUDA Graph 策略，以及 ms-swift SFT/DPO/GRPO full training、Megatron 长序列训练和 messages loss/loss mask。 |
+| `llm-deploy-training` | [`llm-deploy-training/SKILL.md`](llm-deploy-training/SKILL.md) | 部署和训练 LLM/VLM，覆盖 vLLM OpenAI-compatible 服务、多模态限制、Qwen3.5 工具调用、thinking/reasoning 控制、CUDA Graph 策略、DeepSeek SGLang 多实例与 SMG 前缀路由，以及 ms-swift SFT/DPO/GRPO full training、Megatron 长序列训练和 messages loss/loss mask。 |
 | `llm-image-generation` | [`llm-image-generation/SKILL.md`](llm-image-generation/SKILL.md) | 通过 OpenAI-compatible LLM 网关生成图片，优先读取 `LLM_API_KEY`/`LLM_BASE_URL`，覆盖图像模型选择、长等待时间、base64/URL 保存和排错。 |
 | `markdown-to-docx` | [`markdown-to-docx/SKILL.md`](markdown-to-docx/SKILL.md) | 使用 [`scripts/build_docx.py`](markdown-to-docx/scripts/build_docx.py) 将 Markdown 文档转为 Word `.docx`，支持本地图片、caption、标题样式、列表、引用、图文块表格和可见字数估算。 |
 | `markdown-to-pdf` | [`markdown-to-pdf/SKILL.md`](markdown-to-pdf/SKILL.md) | 使用 [`scripts/md_to_pdf.py`](markdown-to-pdf/scripts/md_to_pdf.py) 将 Markdown 转为 PDF，支持表格、代码块、图片路径和基础 CSS。 |

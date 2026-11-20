@@ -1,14 +1,15 @@
 # asitpofborscht <img src="sitp/src/assets/borscht.webp" width="32">
 
-This repository hosts the https://sitp.ai textbook and the `borscht` teaching deep learning framework ([`nanogpt`](https://github.com/karpathy/nanogpt) complete!)<br>
+This repository hosts the https://sitp.ai textbook under [./sitp](./sitp) where you will train [`nanogpt`](https://github.com/karpathy/nanogpt)
+*using* the `borscht` teaching deep learning framework and then *implement* the framework itself.
 
-If you prefer to "just show me the code" mode, you can read the [literary programmed](http://www.literateprogramming.com/)
-source of the deep neural network architecture under [./models](./models) and the deep learning framework under [./borscht](./borscht/)
-Reading the source provides a condensed version of the SITP textbook, which spend a lot more time on intuition and motivation
-via visualizations, figures, and prose.
+While the SITP textbook spends a lot more time on intuition and motivation via visualizations, figures, and prose,
+you can get a condensed "just show me the code" version of the textbook by reading the [literary programmed](http://www.literateprogramming.com/)
+source below.
 
 ![](./sitp/src/assets/models_banner.png)
 ## Deep Neural Networks
+Deep neural networks you train throughout the SITP textbook, which are located in [`./models`](./models):
 - Model 1: Bigram
 - Model 2: Discriminative Perceptron
 - Model 3: Probabilistic Perceptron
@@ -27,22 +28,22 @@ From SITP to SOTA [FS2S Part 1 (ARCH/OPT): From modded-nanogpt to dsv3 and k3]()
 
 ![](./sitp/src/assets/gpu_banner.png)
 ## Deep Learning Framework
-
-Reading a literary program also involves running files (modules) as scripts.<br>
+Deep neural framework you both use and implement throughout the SITP textbook, located in [`./borscht`](./borscht):
 Ensure you have Python and Rust toolchains on your machine by running [`borscht/setup.sh`](./borscht/setup.sh) in your shell.
 
-```sh
+<!-- ```sh
 docker ps
 docker exec -it
 cuda oxide doctor
 cuda oxide run
-```
+``` -->
 
-- File 1. Hello borscht: [`python/borscht/__init__.py`](./borscht/python/borscht/__init__.py)
-- File 2. Hello Tensor: [`python/borscht/tensor_managed.py`](./borscht/python/borscht/tensor_managed.py)
+- File 1. Hello borscht [(`__init__.py`)](./borscht/python/borscht/__init__.py)
+- File 2. Hello Tensor [(`tensor_managed.py`)](./borscht/python/borscht/tensor_managed.py)
 - File 3. Accelerate Tensor
-  - File 3A: From Python to Rust [`python/borscht/tensor_nativecpu.py`](./borscht/python/borscht/tensor_nativecpu.py), [`pyproject.toml`](./borscht/pyproject.toml), [`Cargo.toml`](./borscht/Cargo.toml), [`rust/lib.rs`](./borscht/rust/lib.rs)
-  - File 3B: From Rust to RISC-V:  [`rust/kernelscpu.rs`](./borscht/rust/kernelscpu.rs)
+  - File 3A: From Analytical Big-O to Empirical Rooflines [(`tensor_nativecpu.py`)](./borscht/python/borscht/tensor_nativecpu.py)
+  - File 3B: From Managed Python to Native Rust [(`pyproject.toml/Cargo.toml`)](./borscht/pyproject.toml)
+  - File 3C: From Rust to RISC-V [(`kernelscpu.rs`)](./borscht/rust/kernelscpu.rs)
 - File 4. Accelerate++ Tensor
   - File 4A: From Rust to CUDA Rust:
   - File 4B: Accelerate Tensor on GPU: [`python/borscht/tensor_nativegpu.py`](), [`rust/kernelsgpu.rs`]()

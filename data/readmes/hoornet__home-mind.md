@@ -180,7 +180,7 @@ That repository is the current, maintained integration: v0.10.1+, with a field f
 cp -r src/ha-integration/custom_components/home_mind /config/custom_components/
 ```
 
-> The copy vendored here is an older snapshot (v0.9.3) kept for offline installs. It predates API token support, so if you've set `API_TOKEN` on the server every request from it returns 401. Use HACS in that case.
+> The copy vendored here is an older snapshot (v0.9.3) kept for offline installs. It predates API token support, so once the server requires a token (`API_TOKEN`, or since 0.21.0 the generated `API_TOKEN_AUTO` after its first use) every request from it returns 401. Use HACS instead.
 
 ### 4. Configure in Home Assistant
 
@@ -307,8 +307,6 @@ Both install paths for this repo, the add-on and Docker Compose, are in the [Qui
 - [x] Per-entity device overrides (`DEVICE_OVERRIDES`) for firmware quirks
 - [x] Home Layout Index (floor/room awareness via HA template API)
 - [x] Conversational forgetting (`forget_memory`, confirmed before deleting)
-- [x] Server-side STT (`POST /api/stt`, OpenAI Whisper)
-- [x] Server-side TTS (`POST /api/tts`, OpenAI TTS API)
 - [x] Home Assistant add-on (amd64; no long-lived access token, via the Supervisor proxy)
 - [x] Nives HA Add-on (one-click install, cloud + BYOK; formerly HomeMind PRO)
 - [ ] Multi-user support (OIDC)

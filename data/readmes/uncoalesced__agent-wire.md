@@ -580,7 +580,7 @@ wire library feed
 Asked for sources, agents tend to fail in two ways: they make one up, or they give a real-looking link that's dead or doesn't say what they claim. agent-wire handles both.
 
 - The skill and server instructions tell the agent to write `[[UNSOURCED]]` after any claim it has no source for, instead of inventing one. `wire_cite` lists every marked claim, so the agent finds a source or tells you the claim is unverified.
-- `wire_cite` opens every cited link, with the archive fallback switched off so a dead page can't hide behind its Wayback copy, and returns one verdict per link: `OK`, `DEAD`, `ARCHIVED` with the snapshot to cite instead, `SOFT_404` (a 200 page that says "not found" or bounces to the home page), `BLOCKED` (exists, but refuses bots), or `QUOTE_MISSING`. Dead links come with a ready replacement search, and the agent is told to ask you or a sub-agent rather than drop the citation quietly.
+- `wire_cite` opens every cited link, with the archive fallback switched off so a dead page can't hide behind its Wayback copy, and returns one verdict per link: `OK`, `DEAD`, `ARCHIVED` with the snapshot to cite instead, `SOFT_404` (a 200 page that says "not found" or bounces to the home page), `BLOCKED` (exists, but refuses bots), `UNREACHABLE` (timed out or a server error, so retry before calling it dead), or `QUOTE_MISSING`. Dead links come with a ready replacement search, and the agent is told to ask you or a sub-agent rather than drop the citation quietly.
 - Links that agent-wire never returned during the session are flagged, because those usually came from the model's memory.
 - `wire_research` opens the web and news links it shows and marks failures with ⚠. `--no-verify-links` skips it.
 
@@ -613,6 +613,14 @@ The result header shows the saving on every call:
 ```bash
 wire run -e "return (await wire.search('sqlite wal', {platforms: ['hn', 'stackoverflow']})).map(h => h.title)"
 ```
+
+### Claude Code's own Code Mode
+
+Claude Code has a Code Mode of its own, and it is a different thing. There Claude writes JavaScript that calls its tools (Bash, Edit, MCP tools) and reads only what the script returns. It is experimental and off by default. You turn it on with `CLAUDE_CODE_EXPERIMENTAL_CODE_MODE=1` (see the [Claude Code docs](https://code.claude.com/docs/en/code-mode)), and it only runs in the terminal `claude` session, not in the Desktop app, the VS Code panel, `-p` or the Agent SDK.
+
+`wire_run` doesn't depend on it. The script runs inside agent-wire, so it works in every client. A reasonable rule: use `wire serve --code-mode` in any client that has no Code Mode of its own, and in terminal Claude Code either one works.
+
+We haven't tested the two together. Claude's docs also don't say whether MCP tool definitions still load into context when its Code Mode is on, so we can't promise the smaller tool list there. If you try it, tell us what you see.
 
 ## Privacy and prompt injection
 
@@ -648,7 +656,7 @@ A lot of recent malware has arrived through package registries: a hijacked npm p
 
 - **No npm, no Node.** agent-wire is a Python package on PyPI. `uvx` or `pip` installs it, and nothing runs `npm` or `npx`.
 - **No install scripts.** Every package in the lockfile ships prebuilt wheels, and installing a wheel unpacks files without running any of its code. Only the optional extras fetch more later, and only when you ask: `stealth` needs `playwright install chromium`, and `local-whisper` downloads a speech model on first use.
-- **Small direct list.** 13 direct dependencies (12 on Python 3.13 and newer), all long-standing projects. The youngest is `quickjs-ng`, the Code Mode sandbox engine, first released in February 2026. With everything they pull in, that is 94 packages, or 117 with every optional extra.
+- **Small direct list.** 13 direct dependencies, all long-standing projects. The youngest is `quickjs-ng`, the Code Mode sandbox engine, first released in February 2026. With everything they pull in, that is 94 packages, or 117 with every optional extra.
 - **Pinned and hashed.** `uv.lock` pins every package to one version with sha256 hashes, and CI installs from it. `pip install` and `uvx` resolve fresh versions within the ranges in `pyproject.toml`, so if you want our exact set, install from a checkout with `uv sync --locked`.
 - **Scanned.** `pip-audit` over the full locked set (runtime plus every extra) found one advisory: CVE-2026-119284 in `joserfc`, pulled in through `fastmcp`. agent-wire never parses the JSON web tokens it concerns, and the lock now uses the fixed version, so there are no known vulnerabilities. Bandit found nothing at medium severity or above, and zizmor finds nothing in the workflows. CodeQL flagged seven host checks that matched by substring (so `evilnpmjs.com` counted as npm); those now match the exact host or its subdomains. Cookies were never at risk, because the vault picks them by the real request host.
 - **Routine upgrades wait.** Dependabot holds routine dependency and Actions upgrades for 7 days after a release, so a hijacked version usually gets yanked before we take it. Security fixes still arrive straight away.

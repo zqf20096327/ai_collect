@@ -1,0 +1,249 @@
+# Φ phi
+
+**A terminal multiplexer and browser-based control center for AI coding assistants.**
+
+Phi gives you a single web UI to run, monitor, and switch between multiple AI coding agents — [OpenCode](https://opencode.ai), [Claude Code](https://claude.com/claude-code), [Antigravity](https://antigravity.google) (Agy), and [Pi Coder](https://github.com/badlogic/pi-mono) — each running in a real PTY, alongside a live git diff of your work. Think of it as mission control for AI coders.
+
+![Phi screenshot](screenshot.png)
+
+## Features
+
+- **One UI, many agents** — spawn and tab between OpenCode, Claude Code, Antigravity, Pi Coder, and plain shell sessions, all in the browser.
+- **Real terminals** — each session is a genuine PTY rendered with [xterm.js](https://xtermjs.org) (WebGL with canvas fallback), so the agent TUIs render exactly as they would in your terminal.
+- **Session resume** — Phi reads each tool's on-disk history (OpenCode's SQLite DB, Claude Code's project JSONL, Antigravity's conversation files, Pi's session files) and lets you reattach to a past conversation with one click.
+- **Detach & survive** — closing a browser tab detaches the PTY but keeps the process alive for a 30-minute grace period. Reopen the session to reattach to the still-running agent.
+- **Live git diff** — a read-only side panel streams `git diff` and `git log` for the active workspace so you can watch the agent's changes land.
+- **Git worktree aware** — browse and switch between git worktrees per workspace.
+- **Quick-action presets** — one-tap buttons for common agent commands (`/exit`, `/model`, `/compact`, `ctrl+c`, …), plus a staged input bar for composing longer prompts.
+- **Multiple workspaces & themes** — register several project directories and pick a UI accent color.
+- **Optional desktop pet** — an animated companion overlay for the Electron shell (`desktop/pet/`), ported from [dsh-pet](https://github.com/PC2005-cloud/dsh-pet). Released builds install it from the tray.
+- **Optional access password** — set it from **Config** to gate Phi's APIs and terminal WebSockets; trusted browsers stay unlocked without repeated prompts.
+- **Vikunja Kanban Board** — a drag-and-drop Kanban dashboard (using SortableJS) embedded as a custom tab type, synced directly to your local Vikunja REST API via a backend HTTP proxy.
+
+## Architecture
+
+Phi is a single Go binary serving a vanilla-JS frontend (no build step, no framework).
+
+```
+phi/
+├── main.go                 HTTP server, API routes, static file server, config
+├── pkg/
+│   ├── pty/                PTY spawning, process registry, 30-min detach timer
+│   ├── session/            Per-tool session parsers (opencode/claude/agy/pi) + worktrees
+│   ├── ws/                 Binary WebSocket hub + PTY⇄browser I/O bridge
+│   ├── diff/               git diff / git log streamers
+│   └── coders/             Command definitions & preset buttons per assistant
+└── web/                    index.html, *.js (xterm.js client), style.css, vendor/
+```
+
+**WebSocket protocol** (binary, type-prefixed frames):
+
+| Prefix | Client → Server | Server → Client |
+| ------ | --------------- | --------------- |
+| `0x01` | stdin bytes → PTY | PTY output → xterm.js |
+| `0x02` | resize `{cols, rows}` | control / metadata JSON |
+| `0x03` | ping | pong |
+| `0x07` | — | `md-changed` push `{"dir"}` (fsnotify: a watched markdown dir changed) |
+
+See [`PLAN.md`](PLAN.md) for the full design notes and locked decisions.
+
+## Installation & Quickstart
+
+### Method 1: Using NPM (Easiest, Cross-Platform)
+
+Phi is distributed as the `@hypernewbie/phi-code` package on NPM. The installer automatically downloads the correct precompiled binary for your operating system (macOS, Linux, or Windows) and architecture (arm64 or amd64).
+
+```bash
+# Install globally
+npm install -g @hypernewbie/phi-code
+
+# Launch in your project directory
+cd ~/code/my-project
+phi
+```
+
+### Method 2: Using Go Install
+
+If you have Go 1.26+ installed:
+
+```bash
+go install github.com/hypernewbie/phi@latest
+cd ~/code/my-project
+phi
+```
+
+After launching, open <http://localhost:7070> in your browser. The web UI is fully embedded, so you can run it from any directory.
+
+## Getting started
+
+### Prerequisites
+
+- Go 1.26+
+- A supported C compiler, only for `phic`: the console client links a native VT engine (Windows source builds use `zig cc`). The `phi` server is pure Go and needs no C toolchain.
+- Whichever agent CLIs you want to drive, on your `PATH`: `opencode`, `claude`, `agy`, `pi`
+- `git` (for the diff/log panels)
+
+### Build from source
+
+```bash
+git clone https://github.com/hypernewbie/phi.git
+cd phi
+go build -o phi .
+```
+
+Then run `./phi` from any project directory (or move the binary onto your `PATH`) and open <http://localhost:7070>.
+
+The directory you launch Phi from becomes the default workspace; switch between projects from the workspace picker in the UI and add more with the **+** button.
+
+### Native terminal client (macOS/Linux)
+
+Build the separate client and start Phi before connecting:
+
+```bash
+go build -o phic ./cmd/phic
+./phic .
+```
+
+`phic` reads the desktop client's saved servers. Backend output stays raw; Ctrl-] opens inline server, session, diff, worktree, and help views. The next release that includes the client also installs the `phic` npm command on macOS/Linux.
+
+`phic -s` starts with the sessions panel focused, the same view as `Ctrl-] s`. The client reads retained output from the server's bounded `/replay` pages, so it resumes a pane at the exact byte and event cursor it left, and it never asks the server for a rendered screen.
+
+In `phic`, `Ctrl-] PgUp` loads one older terminal history book. `Ctrl-] End` returns to live output. Wheel scrolling does not load older books.
+
+### phi-cmd — drive Phi from scripts and agents
+
+`phi-cmd` is a one-shot command client for the same servers: list them, see what each is doing, send prompts, type into panes, switch models, read diffs. It links no terminal emulation (unlike `phic`), builds pure Go everywhere `phi` does, and adds no server endpoints — every command rides the existing HTTP and WebSocket APIs.
+
+```bash
+phi-cmd servers --json                       # configured backends, health, live counts
+phi-cmd status                               # live sessions, panes, coders
+phi-cmd use pi --cwd /repo                   # remember the target
+phi-cmd send "add a test for X" --json       # prompt a chat session, stream NDJSON
+phi-cmd input --pane p1 "make test\r"        # type into a live pane
+phi-cmd model set anthropic/claude-3         # chat / pi-bridge / recipe switch
+phi-cmd git diff | run "make check" | raw GET /api/version
+phi-cmd syncboard post job "done"        # shared board: upsert a key
+phi-cmd syncboard wait job --for change  # sleep until the board moves
+```
+
+The board also carries the desktop `PHI_NOTIF` / `PHI_ALARM` conventions: `syncboard notify` and `syncboard alarm` append the marker to the key, and `syncboard wait --alarm-only` sleeps until any alarm entry appears. Waiting honors `--poll` and `--timeout`; deleting an absent key is success (`deleted: false`), reading one is exit `3`. Any phi address works as `--server`, including a `PHI_COORDINATOR` URL — and when no `--server`, state file, or profile selects one, `PHI_COORDINATOR` is the fallback.
+
+`--json` on every command emits one stable document; exit codes are a contract (`0` ok, `1` error, `2` usage, `3` not found, `4` auth, `5` timeout); output is byte-bounded (`--max-bytes`, `--tail`). It reads the same desktop profile document as `phic` and writes only its own state file. Access-protected servers log in with `PHI_CMD_PASSWORD`, `--password-file`, or a TTY prompt. `phi-cmd help` lists everything.
+
+### Frontend development (disk assets)
+
+From the checkout, install the development tools and start Phi:
+
+```bash
+pnpm install --frozen-lockfile
+make dev-server
+```
+
+Open <http://localhost:7070>. This target compiles TypeScript once, then serves `web/` from disk on loopback.
+Refresh the browser after an asset edit. No Go rebuild or Phi restart is necessary.
+For TypeScript edits, run `pnpm watch:web` in another terminal to compile `web-src/` into `web/`.
+This workflow does not automatically reload the browser. The watcher does not rebuild or overwrite the generated browser codecs in `web/proto/`.
+For a WebSocket schema change, run `pnpm gen:websocket` and then `pnpm build:web`; run `pnpm check:websocket-generated` to verify generated files. This terminal-only state is not deployable: the completed migration requires coordinated server/frontend builds, a server restart, frontend reload, and a matching `phic` binary.
+
+To serve a checkout's frontend from another workspace, use an absolute directory:
+
+```bash
+phi --web=/absolute/path/to/phi/web --ip=127.0.0.1
+```
+
+Relative directories resolve from Phi's startup directory. The asset directory does not change the active workspace.
+For another port, add `--port=8080` and open <http://localhost:8080>. No Vite proxy or coordinated `PHI_PORT` values are necessary.
+For a separate test server, add `--data-dir=/absolute/path/to/phi-state`. This moves only Phi's config, tabs, recordings, and other Phi-owned files; `HOME` and Pi's own settings stay unchanged. The flag is not passed to processes launched by Phi.
+Without `--web`, Phi serves embedded assets as before. The binary retains those assets even with disk mode selected.
+Use loopback for development because connected clients can access files in the selected directory.
+
+Use `make dev-desktop` for the existing frontend, pet, and Electron build-and-start sequence.
+This target does not add automatic reload to Electron.
+
+- Browser vendor bundles are synchronized only from the pinned root catalog with `pnpm run sync:vendors -- --group <xterm|content|preview|kanban|auth>`; `pnpm run check:vendors` verifies checked-in bytes without writing. Fonts, logos, media, and the local PDF wrapper remain repository-owned assets.
+
+**Enable the pre-commit hook** (once per clone) so frontend checks run before you commit:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook (`.githooks/pre-commit`) only acts on commits that touch frontend files: it syntax-checks staged `web/*.js`, and when `*.ts` sources change it runs `typecheck` + `build:web` and blocks if the emitted `web/` tree drifts from `web-src/` (stage the rebuilt files and recommit). It's advisory — bypass with `git commit --no-verify`; CI (`.github/workflows/test.yml`) is the enforced backstop.
+
+### Flags
+
+| Flag              | Default | Description                                                                                                                        |
+| ----------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `-port`           | `7070`  | Port for the web server                                                                                                            |
+| `-web`            | `""`    | Serve assets from this directory instead of embedded assets. Relative paths use the startup directory. |
+| `-data-dir`       | `~/.phi` | Absolute directory for Phi-owned state. Does not change `HOME` or assistant settings. |
+| `-diagnostics-dir` | (disabled) | Enable private, loopback-only server diagnostics. Requires a binary built with `-tags=profiling`; normal builds log one warning and start no listener. Writes short-lived connection files under this absolute directory. See [server profiling](docs/server-profiling.md). |
+| `-ip`             | `lan`   | Bind target. `lan` binds loopback plus every RFC 1918 LAN and Tailscale interface; use `127.0.0.1` for local-only access, `0.0.0.0` for every interface, or an explicit address. |
+| `-log-level`      | `info`  | Log level: `debug`\|`info`\|`warn`\|`error` (or `PHI_LOG` env var). `debug` also enables WS/PTY frame traces and span timing lines. |
+| `-otel-endpoint`  | (none)  | OTLP/gRPC collector endpoint (`host:port`) for OpenTelemetry export (or `PHI_OTEL_ENDPOINT` env var). Setting it enables tracing: HTTP, WebSocket, Pi-bridge gRPC, and outbound HTTP spans. Release binaries include the instrumentation; a build without `-tags=otel` parses and ignores the flag, adding zero OTel dependencies. Tracing stays off and costs nothing until an endpoint is set. |
+
+Flags also accept double-dash forms, such as `--web=./web`. Diagnostics are disabled by default and unavailable on Windows.
+
+> **Network access:** By default Phi is available on localhost, private LAN, and Tailscale addresses—not public interfaces. Phi does not add authentication, so use `-ip 127.0.0.1` for local-only access and do not use `-ip 0.0.0.0` unless you deliberately want to expose it on every interface.
+
+## Configuration
+
+State is stored in `~/.phi/`:
+
+- `config.toml` — registered workspaces, theme color, and per-workspace worktree state. Existing `config.json` is a read-only fallback used only when TOML is absent.
+- `auth.db` — sensitive access verifier and session state; authoritative after migration.
+- `sessions.json` — local names/timestamps for Antigravity sessions (its conversation files are binary, so Phi keeps a sidecar map).
+
+These files are created automatically. Set or clear the optional browser-derived access password from **Config** rather than editing files by hand. During one-time migration, Phi imports the legacy verifier and session state into `auth.db`; after verified completion it omits the verifier from TOML and removes `auth-v2-state.json`. A cleanup failure is logged and does not restore Config as authority. Copy `auth.db` only while Phi is stopped, unless you use a consistent SQLite backup mechanism. If `auth.db` is missing or corrupt, restore a matching backup; Phi will not treat that as disabled authentication. Direct downgrade to an older Phi binary is unsupported, and built-in rollback is blocked after migration. Phi's access password protects casual LAN/Tailnet access, but HTTPS is still required against an active hostile-network attacker.
+
+When `config.toml` exists, it takes precedence over `config.json`; an unreadable or invalid selected config stops startup rather than disabling access protection. TOML comments and unknown keys survive no-op saves, but a real settings change rewrites the complete file and drops them. Once TOML exists, legacy JSON can become stale, so an older Phi may load stale settings.
+
+### Terminal history retention
+
+Phi runs a retention sweep at startup and hourly: terminal histories older than seven days are deleted, except live panes and saved tabs, and each retained history keeps the newest 32 MiB of terminal output. That is roughly 10k lines of plain text output, more for plain output and fewer for redraw-heavy TUIs. Histories converted from older Phi versions keep their newest segment (about 4 MiB) instead, because the importer builds a single segment. Histories written by older Phi versions are converted into the versioned namespace on the first sweep. Converting a large legacy library can delay startup; allow a startup grace period before health checks must pass. Disk usage can exceed that window because manifests, checkpoints, and resize records also consume space. If a sweep cannot establish a durable replacement, it preserves the originals for a later retry. Before upgrading, stop older Phi binaries first: versions without the recordings-namespace lease can write beside the new server and defeat its cleanup guarantees.
+
+### OpenCode 2 (default)
+
+Phi starts OpenCode 2's full-screen TUI with `opencode` by default. To use Mini for one launch, right-click the OpenCode sidebar or quick-launch button, **New Session**, or a saved OpenCode session, then choose **Open Mini**. This does not change the default. Both v1 and v2 use the `opencode` executable name. Install v2 on the machine that runs Phi, following the [official migration guide](https://opencode.ai/v2/docs/migrate-v1/). Phi does not install or replace either CLI.
+
+The default in `~/.phi/config.toml` is:
+
+```toml
+opencode_legacy = false
+```
+
+To keep using v1:
+
+```toml
+opencode_legacy = true
+opencode_legacy_command = "opencode-v1"
+```
+
+If v1 is still the `opencode` on Phi's `PATH`, only `opencode_legacy = true` is needed. For separate installations, set `opencode_command` to the v2 executable and `opencode_legacy_command` to the v1 executable. These values are executable names or absolute paths, not shell commands. Keep a working v1 installation before replacing it; copying a package-manager wrapper alone may not preserve its dependencies.
+
+Restart Phi and refresh the browser after changing these options or installing v2. Phi checks the selected CLI generation before launch. It does not silently fall back to v1. An explicit Mini launch never falls back to the full TUI.
+
+Mini uses normal terminal scrollback and atomic slash-command pastes. The keyboard-scroll and delayed-Enter workarounds remain scoped to full-TUI tabs. Each pane retains its launch mode through reload, reattach, and restart. Its preset buttons use Mini's supported commands. Model presets must use `provider/model`; selection uses Mini's native Ctrl+P menu. Select model variants through that menu rather than putting `#variant` in a Phi model preset. Custom Mini keybindings can require manual menu selection.
+
+V2 history uses its `session_v2` and `session_message` tables. Phi asks `opencode debug paths db` for the database location and reads it without writing or migrating it. Start a new OpenCode 2 session once to let OpenCode migrate v1 history, then refresh Phi's session list. A missing resume ID is rejected rather than creating an empty conversation. The legacy option keeps the original v1 history reader; it does not convert v2 sessions back to v1.
+
+Custom backend files still override the built-in defaults. Keep `"mini"` as the first argument when overriding v2 Mini's argv.
+
+### Codex CLI
+
+Install the official CLI with `npm install -g @openai/codex`, then run `codex login` on the Phi server's computer. Phi opens its interactive CLI with native scrollback and resumes saved conversations by UUID. **Models** opens Codex's own model/reasoning picker; no stale model-name list or guessed selection sequence is shipped. Current official options include `gpt-6.1-sol`, `gpt-6-astra`, and `gpt-6-luna`, subject to account availability.
+
+## Supported assistants
+
+| ID         | Name         | Command    | Session source                                   |
+| ---------- | ------------ | ---------- | ------------------------------------------------ |
+| `opencode` | OpenCode 2 | `opencode` (Mini via right-click) | CLI-resolved SQLite v2 database; v1 reader with `opencode_legacy` |
+| `claude`   | Claude Code  | `claude`   | `~/.claude/projects/` (JSONL)                    |
+| `agy`      | Antigravity  | `agy`      | `~/.gemini/antigravity-cli/conversations/` (`.pb`)|
+| `pi`       | Pi Coder     | `pi`       | Pi session files                                 |
+| `codex`    | Codex        | `codex --no-alt-screen` | Native read-only Codex thread index |
+| `bash`     | Shell        | `bash -l` | —                                                |
+
+## Acknowledgments
+
+- **Desktop pet overlay** — the optional animated pet companion bundled with the Electron shell (`desktop/pet/`) is a port of [dsh-pet](https://github.com/PC2005-cloud/dsh-pet) by [PC2005-cloud](https://github.com/PC2005-cloud). Used under the MIT License; see [`desktop/pet/LICENSE-dsh-pet.txt`](desktop/pet/LICENSE-dsh-pet.txt).

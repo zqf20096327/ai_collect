@@ -26,8 +26,8 @@
 | 项 | 内容 |
 |---|---|
 | 版本 | 2.0.0-alpha |
-| 状态 | 内测阶段：macOS 可构建可运行，Web 可构建，核心功能完成 |
-| 平台 | macOS（可运行）· Web（可构建） |
+| 状态 | 内测阶段：三端（macOS / Windows / Android）CI 全绿并随版发布，Web 可构建 |
+| 平台 | macOS（可运行）· Windows（发布包自带运行时）· Android（内核已上机，待真机握手）· Web（可构建） |
 | 仓库 | <https://github.com/ntars/Ondra> |
 | 许可 | Apache-2.0 / MIT（按目录分层） |
 
@@ -213,6 +213,46 @@ cd Ondra && flutter pub get
 flutter run -d macos
 ```
 
+### 8.2.1 安卓端的现状（如实）
+
+**内核在安卓上可以跑起来了（v3.0.0-alpha.5 起）**。做法是业界标准的
+jniLibs 路线：node 二进制（Termux 编译的 bionic ELF，node 26）伪装成
+`libnode.so` 放进 jniLibs——安卓 10+ 只禁数据目录的 exec，nativeLibraryDir
+允许执行；node 的动态依赖（openssl/icu/sqlite 等 9 个库）同源同包，DT_NEEDED
+的版本号在打包时用 pyelftools 原地改短（APK 只收 lib*.so 结尾）。dsh 依赖
+闭包打 assets，首次启动解压到应用私有目录，MANIFEST 按构建号幂等。
+
+已知边界（真机验证前如实记录）：
+- node-pty / koffi / sharp 等原生模块没有 android-arm64 编译件——对话链路
+  不依赖它们，用到时会按插件加载失败降级；
+- **尚未在真机/模拟器上跑过端到端握手**（本机与 CI 都没有安卓运行环境），
+  第一次真机启动请看 logcat 里的 transport 日志确认内核握手；
+- universal 包含全部 ABI，arm64 包只含 arm64。
+
+安卓版可用的是**界面与本地数据**：聊天外壳、主题/语言/字号、模型与密钥的
+CRUD、状态/记忆/历史/日志/插件页的展示与空态、反馈、备份的本地创建。
+
+**v3.0.0-alpha.8 补齐的原生能力**：换头像（系统选图 + 原生裁切落盘）、
+系统通知（API 33+ 运行时授权）、阻止空闲睡眠（FLAG_KEEP_SCREEN_ON）、
+内嵌浏览器（系统 WebView，白名单协议与桌面一致）。
+
+**仍不可用且已在界面上如实提示**：导入导出与打开目录（没有系统文件面板）、
+llama 本地模型、开机自启（安卓没有系统级 API）。
+
+时间线两栏折叠、触控 44dp、教程文案分派已在 v3.0.0-alpha.4 完成。
+
+**签名与包名**：包名 `cn.ntars.ai`（域名反推，自 v3.0.0-alpha.7 锁定，
+不再变更）。签名从 v3.0.0-alpha.3 起用固定的 release keystore（仓库不存
+密钥，CI 经 secrets 注入）。指纹 `04:D5:19:FF:…:3D:7F`——所有版本一致。
+
+**覆盖安装的分界线**：v3.0.0-alpha.6 及更早是旧包名 `com.example.ondra`，
+与现包名互不覆盖——装 alpha.7 前要先卸载旧版；alpha.7 起内部互相覆盖安装。
+旧版卸载会带走其私有数据目录，需要保留数据的先用应用内备份导出再装新版。
+
+**产物名**：构建产物与 CI artifact 里是 `空谷 Ondra-<版本>-<架构>.apk`；
+GitHub Release 会把非 ASCII 的资产名转写成 `Ondra-<版本>-<架构>.apk`
+（平台对 asset name 的限制），下载下来的 APK 安装后桌面图标名仍是「空谷 Ondra」。
+
 ### 8.3 直接下载
 
 三端安装包在 [Releases](https://github.com/ntars/Ondra/releases) 里，附 `SHA256SUMS.txt`：
@@ -220,7 +260,8 @@ flutter run -d macos
 | 平台 | 文件 | 说明 |
 |---|---|---|
 | macOS（通用二进制） | `Ondra-3.0.0-alpha-macos-universal.dmg` | Intel 与 Apple Silicon 同一个包 |
-| Windows（x64） | `Ondra-3.0.0-alpha-windows-x64.zip` | 解压后运行 `ondra.exe`，必须整目录解压 |
+| Windows（x64） | `Ondra-<tag>-windows-x64.zip` | 解压后运行 `ondra.exe`，必须整目录解压。导入导出 / 打开目录走系统文件面板（PowerShell + WinForms，中文路径 UTF-8 解码） |
+   | 轮次取消 | `stop`/插话走内核命令 `/cancel-turn`（ondra-turn-control 插件）：正常生成中立即中断且连接保持；模型 API 失联等无法中断的场景自动退回内核重启（上下文由 resume 保留） |
 | Android | `Ondra-3.0.0-alpha-android-arm64.apk` | 常规手机；`-universal.apk` 含 32 位与模拟器 |
 
 校验：`shasum -a 256 -c SHA256SUMS.txt`。三个包都没有正式签名，首次打开按发行版说明处理系统拦截。
@@ -481,7 +522,9 @@ Ondra/
 | 计划项 | 目标版本 | 状态 |
 |---|---|---|
 | 钥匙串写入与密钥管理 | 2.0.0-beta | 计划中 |
-| Windows / Linux 原生窗口入口 | 2.0.0-beta | 计划中 |
+| Windows 发布包自带运行时（装配与缓存接入 workflow） | 2.0.0-beta | 构建中 |
+| Windows 原生窗口入口 | 2.0.0-beta | 构建中 |
+| Linux 原生窗口入口 | 2.0.0-beta | 计划中 |
 | 五处 `schema.register()` 改为 effect 包裹 | 2.0.1 | 计划中 |
 | 记忆链路端到端可视化 | 2.1.0 | 计划中 |
 | 帧率与冷启动基准测试 | 2.1.0 | 计划中 |
@@ -498,6 +541,7 @@ Ondra/
 - 提交信息：`<type>(<scope>): <subject>`，scope 取 `ui` / `plugin` / `core` / `design` / `docs`。
 - 新增插件须提供 `plugin.json` 与 README，并在装配层登记依赖。
 - 详细流程见 [CONTRIBUTING.md](CONTRIBUTING.md)，行为准则见 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)。
+- 贡献者及其职责范围见 [CONTRIBUTORS.md](CONTRIBUTORS.md)。
 
 ---
 
@@ -508,8 +552,12 @@ Copyright © 2024-2026 星玖工作室 Ntarstudio. Licensed under Apache-2.0 / M
 | 路径 | 许可 |
 |---|---|
 | `lib/plugins/ondra-core/` `ondra-extensions/` `ondra-custom/` `dsh-base/` | Apache-2.0 |
-| `lib/app/` `lib/design/` `lib/main.dart` `tool/` `test/` | MIT |
+| `plugin-profile/`（插件装配快照）`assets/plugins/manifest.json` | Apache-2.0 |
+| `lib/app/` `lib/design/` `lib/main.dart` `tool/` `test/` `docs/` `assets/locales/` | MIT |
 | `assets/brand/` `assets/personas/` `assets/icons/` 与品牌界面 | 保留所有权利 |
+
+**默认归属**：上表未列出的本项目自研文件，一律适用根 `LICENSE`（Apache-2.0）。
+逐路径路由、平台脚手架的归属、再分发须保留的文件清单，见 [LICENSING.md](LICENSING.md)。
 
 `lib/plugins/cordis/` 是上游 Cordis 4.1.0 的发行包副本，许可为 MIT，版权归其作者，不适用本仓库分层授权。
 

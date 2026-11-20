@@ -11,6 +11,8 @@ optional chat with ready-made agents, and a secure connection for the AI apps th
 use (Claude, ChatGPT, Grok). The consultant starts every engagement 80 to 90 percent of the way
 there and spends their time on the client's actual workflows.
 
+**Website:** [operationkit.com](https://operationkit.com) · **Guides and articles:** [operationkit.com/blog](https://operationkit.com/blog/)
+
 ## Why the client owns the install
 
 - **Their server, their data.** Every client has its own copy on its own server. There is no shared
@@ -87,6 +89,7 @@ list and keep both locks:
 
 | For | Read |
 |---|---|
+| Guides and articles on running AI inside a business | [operationkit.com/blog](https://operationkit.com/blog/) |
 | Setting up from nothing: server size, OVH, Cloudflare, B2 backups, seats, GitHub, updates | [docs/RECOMMENDED-STACK.md](./docs/RECOMMENDED-STACK.md) |
 | Installing for a client | [INSTALL.md](./INSTALL.md) |
 | Connecting Claude, ChatGPT, Grok or another AI app | [docs/CONNECT-YOUR-AGENT.md](./docs/CONNECT-YOUR-AGENT.md) |

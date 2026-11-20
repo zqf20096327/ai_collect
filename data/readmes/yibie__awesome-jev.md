@@ -68,18 +68,18 @@ Found something wrong? Open an issue or a pull request — **removal is as valid
 - [Agent Decisions](categories/agent-decisions.md) — 70 entries
 - [Data Labeling & Curation](categories/data-labeling-curation.md) — 12 entries
 - [Evaluation & Benchmarking](categories/evaluation-benchmarking.md) — 53 entries
-- [Calibration & Research](categories/calibration-research.md) — 62 entries
-- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 137 entries
+- [Calibration & Research](categories/calibration-research.md) — 63 entries
+- [Infra / SDKs / Integrations](categories/infra-sdks-integrations.md) — 138 entries
 - [Game & Simulation](categories/game-simulation.md) — 30 entries
 - [Robotics & Physical](categories/robotics-physical.md) — 11 entries
 - [Finance & Trading](categories/finance-trading.md) — 11 entries
 - [Compliance & Legal](categories/compliance-legal.md) — 7 entries
-- [Content Moderation](categories/content-moderation.md) — 15 entries
-- [Related Practices / Discussions](categories/related-practices-discussions.md) — 112 entries
+- [Content Moderation](categories/content-moderation.md) — 16 entries
+- [Related Practices / Discussions](categories/related-practices-discussions.md) — 113 entries
 
 ### Open categories still being seeded
 
-- [Scientific Pipelines](categories/scientific-pipelines.md) — 0 entries
+- [Scientific Pipelines](categories/scientific-pipelines.md) — 1 entry
 
 Each entry lives in exactly one category. When a project could fit multiple categories, we choose the one closest to its direct application domain.
 
@@ -344,4 +344,4 @@ Source file: [`categories/scoring-ranking.md`](categories/scoring-ranking.md)
 
 Source file: [`categories/agent-decisions.md`](categories/agent-decisions.md)
 
-- [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.s
+- [Learn Jev end to end](https://github.com/harshithsunku/learn-jev-end-to-end) ![stars](https://img.shi

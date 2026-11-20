@@ -176,7 +176,7 @@ Signing starts with the first release after the certificate is issued; earlier r
 - **Approvers:** [PowerUserZ](https://github.com/PowerUserZ) (owner) approves every signing request.
 - **Privacy:** see [Privacy](#privacy).
 - **System changes:** it installs for the current Windows user in `%LOCALAPPDATA%\OpenTokenUsage`, without admin rights. Start on login is on by default (a value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`); turn it off in Settings. It asks Windows to show its tray icon next to the clock, only if you haven't chosen yourself. Updates come only from this repository's releases, are checked against the updater signing key, and install when you choose.
-- **Uninstall:** Windows Settings > Apps > Installed apps > OpenTokenUsage. The uninstaller can also delete the app's data folders; `%USERPROFILE%\.openusage\config.json` (proxy and custom balance settings) stays, delete it by hand. Turn off Start on login first to remove its Run value too.
+- **Uninstall:** Windows Settings > Apps > Installed apps > OpenTokenUsage. The uninstaller can also delete the app's data folders, proxy and custom balance settings included. Turn off Start on login first to remove its Run value too.
 
 ## Privacy
 
@@ -219,6 +219,7 @@ The app follows Windows' language when it has it, English otherwise, and Setting
 - **Add a provider.** Each one is just a plugin. See the [Plugin API](docs/plugins/api.md).
 - **Fix a bug.** PRs welcome. Provide before/after screenshots.
 - **Request a feature.** [Open an issue](https://github.com/PowerUserZ/OpenTokenUsage/issues/new) and make your case.
+- **Accessibility.** What works with a keyboard, a screen reader, contrast themes and larger text, and what doesn't yet: [ACCESSIBILITY.md](ACCESSIBILITY.md).
 
 ## Support
 

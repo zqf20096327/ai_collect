@@ -17,7 +17,7 @@ The agent decides what to remember and writes it; Whaat saves it, puts the right
 | | |
 |---|---|
 | Category | AI Identity Runtime: persistent AI memory and identity continuity for AI agents |
-| Version | 0.3.1, early software: the API, the CLI and the file formats may change before 1.0 |
+| Version | 0.4.0, early software: the API, the CLI and the file formats may change before 1.0 |
 | Platform | macOS; other systems are not supported yet |
 | Integrations | Claude Code (plugin with skills and hooks); any MCP client that runs servers over stdio |
 | Storage | Local and file-based: markdown memories and JSON reports, one Git repository per identity |
@@ -63,7 +63,7 @@ Most memory systems focus on retrieval: store information, find relevant notes, 
 
 Whaat treats memory as an **inspectable, versioned and self-correcting knowledge lifecycle**. A memory is more than a piece of text: it has a source, a validity score, an outcome history and a place in an identity's evolving knowledge.
 
-- **Epistemic scoring (`Truthness & Validity`).** Whaat distinguishes where a memory came from from whether it is still valid. `Truthness` captures its source and subsequent outcomes (`held`, `misled`, `irrelevant`); `Validity` tracks its level, score and age. The validity score decays by 0.2 per 120 days, with confirmation and successful use feeding back into its lifecycle. Personal memories, the core included, are not scored and do not decay.
+- **Epistemic scoring (`Truthness & Validity`).** Whaat distinguishes where a memory came from from whether it is still valid. `Truthness` captures its source and subsequent outcomes (`held`, `misled`, `irrelevant`); `Validity` tracks its level, score and age. The validity score decays by 0.2 per 30 days, with confirmation and successful use feeding back into its lifecycle. Personal memories, the core included, are not scored and do not decay.
 
 - **Enforced recall, not passive retrieval (`Recall & Write Guards`).** An agent should not have to remember to remember. Whaat's Claude Code hooks route memory access through the runtime: a direct read of a memory file is turned into a logged recall with a stated reason, an opened memory is put into the session's context, and writes into other memory folders are pointed back to Whaat's validated storage. Every hook is listed in [docs/claude-code-plugin.md](docs/claude-code-plugin.md).
 
@@ -138,7 +138,7 @@ The pictures show generated sample data.
 
 ## Status: what works, what is experimental
 
-Version 0.3.1: early software. Until 1.0, the API, the CLI and the file formats may change from one version to the next. The app shows the running version in its status bar. What changed in each version is in [`CHANGELOG.md`](CHANGELOG.md).
+Version 0.4.0: early software. Until 1.0, the API, the CLI and the file formats may change from one version to the next. The app shows the running version in its status bar. What changed in each version is in [`CHANGELOG.md`](CHANGELOG.md).
 
 - **Works today:** layered memory with recall and scoring, saving through the agent, curation, migration, the journal and session reports, several identities, the Claude Code plugin, the MCP layer and the app.
 - **Experimental:** the terminal, which runs agent sessions inside the app.
@@ -308,7 +308,7 @@ Yes. The migration reads a memory store, a personal memory folder, Claude Code's
 macOS. Other systems are not supported yet.
 
 ### What license does Whaat use?
-Version 0.2.0 and later, including 0.3.1, are licensed under the Business Source License 1.1, which makes the code source-available, not open source. Release 0.1.0 remains under the Apache License 2.0. See [License](#license).
+Version 0.2.0 and later, including 0.4.0, are licensed under the Business Source License 1.1, which makes the code source-available, not open source. Release 0.1.0 remains under the Apache License 2.0. See [License](#license).
 
 ## Author
 

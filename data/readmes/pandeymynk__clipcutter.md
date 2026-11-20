@@ -50,6 +50,16 @@ uv run clipcutter site-worker     # background worker
 ```
 Deploy on a free Oracle Cloud server or Hetzner: [docs/DEPLOY.md](docs/DEPLOY.md) · design: [docs/SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md)
 
+## Live mode: clip while the stream is still live
+
+```bash
+uv run clipcutter live https://www.twitch.tv/<channel>          # or a YouTube live link, or kick.com/<channel>
+```
+The stream is recorded in 5-minute chunks (no re-encode) while chat is captured live (Twitch IRC, YouTube live
+chat). Every finished chunk is scored (loudness + smart chat votes: one viewer can't spam a highlight, super
+chats/gifts count more, sudden bursts get a bonus), and only strong moments become clips, about 5 minutes behind
+the stream. On the website: **Create → Live clipping → Start**. Clips show up in My clips as they're made.
+
 ## Command line
 
 ```bash

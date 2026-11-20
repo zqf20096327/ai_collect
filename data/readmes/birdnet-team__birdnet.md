@@ -145,9 +145,10 @@ The V3.0 acoustic and geo models are both available in four backends (TFLite/Lit
 | `encode(..)` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
 | **INT8** | ❌ | ❌ | ❌ | ❌ | CPU | ❌ | ❌ | ❌ |
 | **FP16** | CPU | ❌ | ❌ | CPU/GPU | CPU | ❌ | ❌ | CPU/GPU |
-| **FP32** | CPU | CPU/GPU | CPU/GPU | CPU/GPU | CPU | CPU/GPU | CPU/GPU | CPU/GPU |
+| **FP32** | CPU | CPU/GPU | CPU/GPU | CPU/GPU | CPU | CPU/GPU* | CPU/GPU | CPU/GPU |
 
-✅ = Supported ❌ = Not supported
+✅ = Supported ❌ = Not supported\
+**The geo ProtoBuf model runs on a GPU only while TensorFlow's oneDNN optimizations are off: set `TF_ENABLE_ONEDNN_OPTS=0` before TensorFlow is imported ([#167](https://github.com/birdnet-team/birdnet/issues/167)).*
 
 Load a V3.0 model by passing the version and backend, e.g. `birdnet.load("acoustic", "3.0", "onnx")` or `birdnet.load("geo", "3.0", "tf")`.
 
@@ -298,7 +299,7 @@ Depending on the model version, this project provides up to four model formats: 
 * **TFLite Model** (`tf`): Limited to CPU execution only. Requires `birdnet[tf]` for the default TFLite interpreter; the LiteRT interpreter (`library="litert"`) is part of the base install where wheels exist.
 * **ProtoBuf Model** (`pb`): Can be executed on both GPU and CPU. Requires `birdnet[tf]` (`birdnet[and-cuda]` for GPU).
 * **PyTorch Model** (`pt`, V3.0 only): Can be executed on both GPU and CPU. Requires `birdnet[pt]`.
-* **ONNX Model** (`onnx`, V3.0 only): Can be executed on both GPU and CPU. Part of the base install (CPU build); for GPU replace it with the GPU build after installing, since only one of the two may be installed: `pip uninstall onnxruntime && pip install onnxruntime-gpu` (`pip check` will then report the missing `onnxruntime`, and every later `pip install`/upgrade of `birdnet` puts the CPU build back — redo the swap).
+* **ONNX Model** (`onnx`, V3.0 only): Can be executed on both GPU and CPU. Part of the base install (CPU build); for GPU replace it with the GPU build after installing, since only one of the two may be installed: `pip uninstall onnxruntime && pip install onnxruntime-gpu` (`pip check` will then report the missing `onnxruntime`, and every later `pip install`/upgrade of `birdnet` puts the CPU build back — redo the swap). The GPU build has to match the installed CUDA: from 1.27 on, the `onnxruntime-gpu` wheels on PyPI are built for CUDA 13, so on a CUDA 12 system install an earlier release (`pip install "onnxruntime-gpu<1.27"`), see ONNX Runtime's [CUDA requirements](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements). Where the GPU build cannot load its GPU libraries, `device="GPU"` raises an error instead of running on the CPU.
 
 Ensure your environment is configured to utilize the appropriate model and available hardware optimally.
 

@@ -65,11 +65,11 @@ Supports any OpenAI-compatible embedding API.
 
 [OpenRouter](https://openrouter.ai) offers embedding models from multiple vendors through one OpenAI-compatible API, often at very low cost (a whole vault typically indexes for well under a dollar). Configure it through the OpenAI provider:
 
-1. **Model provider**: OpenAI API
+1. **Model provider**: OpenAI / Compatible
 2. **Server URL**: `https://openrouter.ai/api/v1`
 3. **API key**: your OpenRouter key (`sk-or-...`)
 4. **Model**: Custom model..., then enter the model ID from OpenRouter (e.g. `perplexity/pplx-embed-v1-0.6b`, `qwen/qwen3-embedding-8b`, or `openai/text-embedding-3-small`)
-5. Use **Test connection** to verify before Load & Apply.
+5. Use **Test connection** to verify, then select **Apply Changes**.
 
 > **Privacy note**: OpenRouter routes your note content to the model vendor, and each vendor has its own data retention policy. OpenRouter accounts have a Zero Data Retention (ZDR) option that restricts routing to providers who confirmed they do not store your data; requests that would hit a non-ZDR endpoint fail with an error instead of going through silently. If your vault contains sensitive material, enable it once at [openrouter.ai/settings/privacy](https://openrouter.ai/settings/privacy) (Data Policies, Zero Data Retention) before indexing. It applies account-wide, so no plugin configuration is needed. (Thanks to David Torrens for testing OpenRouter and researching the ZDR setting.)
 
@@ -128,6 +128,26 @@ On error (e.g. no active markdown file, search failure), the same file is writte
 
 For driving the command from an agent (CLI flow, validation tips, drop-in skill snippet), see [docs/agent-export.md](docs/agent-export.md).
 
+## Tips
+
+### Keep the bottom list in view while you scroll
+
+By default the similar notes list sits at the end of the note, so in a long note you only see it after scrolling to the bottom. To keep it pinned to the bottom of the editor while you read and write, add this [CSS snippet](https://obsidian.md/help/snippets) and turn it on in **Settings → Appearance → CSS snippets**:
+
+```css
+/* Keep the Similar Notes list at the bottom of the editor while scrolling */
+.cm-sizer > .embedded-similar-notes {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: var(--background-primary);
+}
+```
+
+Change `200px` to give the list more or less room. This works in the editing view (Live Preview and Source mode), where the list appears.
+
 ## Technical Details
 
 - **Transformers.js**: Runs Hugging Face models directly in Obsidian
@@ -140,7 +160,8 @@ For driving the command from an agent (CLI flow, validation tips, drop-in skill 
 The plugin makes network requests only for the provider you choose:
 
 - **Built-in models (default)**: downloads the model files from `huggingface.co` the first time a model is loaded, and the ONNX Runtime JavaScript loader (`ort-wasm-simd-threaded.jsep.mjs`) and WebAssembly file (`ort-wasm-simd-threaded.jsep.wasm`) from `cdn.jsdelivr.net`, as part of [Transformers.js](https://github.com/huggingface/transformers.js) / [ONNX Runtime Web](https://github.com/microsoft/onnxruntime). The JavaScript module is imported and executed at runtime to load the WebAssembly engine. Model files are cached by Transformers.js; runtime files rely on the browser's HTTP cache and may be downloaded again. Your notes are not sent anywhere. The model picker also reads model details from the `huggingface.co` API.
-- **OpenAI-compatible, Gemini, Ollama**: sends note text to the server URL you configure (by default `api.openai.com`, `generativelanguage.googleapis.com`, or `localhost:11434`).
+- **OpenAI-compatible, Ollama**: sends note text to the server URL you configure (by default `api.openai.com` or `localhost:11434`).
+- **Gemini**: sends note text to Google (`generativelanguage.googleapis.com`).
 - **github.com**: only the "Report a bug" button in settings, which opens this repository's issue page in your browser.
 
 There is no telemetry or analytics. The downloaded JavaScript loader and WebAssembly engine run the built-in embedding model; they come from those upstream libraries and are not built from this repository's source. Release assets (`main.js`, `manifest.json`, `styles.css`) are built by GitHub Actions from this repository and, from 1.8.0 on, carry GitHub artifact attestations.

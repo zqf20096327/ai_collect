@@ -24,7 +24,7 @@
 
 **Update:** on a Linux server `sudo sara update` (backs up first, rolls back if she doesn't answer) · Docker: `sudo git pull && sudo docker compose up -d --build` · Windows and Mac apps: Settings → Privacy & system → Updates · Android: Google Play. [Upgrading](docs/INSTALL.md#upgrading).
 
-> **Status:** 3.35.0, [Language practice, health coach, family screen, local-only proven, carry backups, kid mode, why](https://github.com/farena-ai/sara/releases/tag/v3.35.0). Practice a language out loud with words checked as you speak; a private weekly health coach that never gives medical advice; a family screen for a kitchen tablet; local-only mode with a test that proves nothing leaves; backups you carry on a USB drive with a printed recovery sheet; kid mode by age band with a parent dashboard; Why did you do this? on every action; and a second security review. Completes ROADMAP_W. [See what changed](#whats-new)
+> **Status:** 3.36.0, [Enter sends, stocks on Today, smoother chat, fresh look](https://github.com/farena-ai/sara/releases/tag/v3.36.0). Enter sends and Shift+Enter makes a new line everywhere; watched stocks get charts and trackers on Today; a long reply no longer freezes the page; asking for a long document no longer ends the turn; 25 small fixes and a fresh, consistent look. [See what changed](#whats-new)
 >
 > Windows installer: unsigned ([SmartScreen guidance](docs/INSTALL.md)). The macOS release process requires signed and notarized downloads; each build is qualified separately. Android: [Google Play](https://play.google.com/store/apps/details?id=com.backstagecoding.sara). iPhone: [home-screen web app](docs/PHONE.md).
 
@@ -164,20 +164,22 @@ Recent releases · 6 November 2026. [Full changelog](CHANGELOG.md) · [All downl
 
 | Release | What changed for you |
 |---|---|
+| **[3.36.0](https://github.com/farena-ai/sara/releases/tag/v3.36.0)** | **[Enter sends, stocks on Today, smoother chat, fresh look](docs/design/POLISH_FIXES.md)** — Enter to send in every box (setting per device); Stocks tile with 1D-1Y charts, add/reorder trackers and alert lines; streaming redraws only what changed and the busy glow no longer repaints the page; big tool arguments never crash a turn; per-chat drafts, focus, menus, copy and scroll fixes; visual refresh (Sara Classic unchanged). |
+| **[3.35.1](https://github.com/farena-ai/sara/releases/tag/v3.35.1)** | **[Sara knows who you're linked with, and names follow renames](docs/MESSAGES.md)** — Linked friends awareness (names, unread counts, times, request kinds; never message text; switch in Messages settings); one friend-name lookup for all friend tools; signed rename events with "formerly" names for 30 days; Rename in a chat's Options. |
 | **[3.35.0](https://github.com/farena-ai/sara/releases/tag/v3.35.0)** | **[Language practice, health coach, family screen, local-only proven, carry backups, kid mode, why](docs/LANGUAGE_PRACTICE.md)** — Learn a language (cards, listening, say it back, practice talking, all local); Your week health card with small goals; Family screen with chores, meals, shopping and kid-safe Talk; Local-only mode with allowances and a proof test; carry backups, send to a linked Sara, restore on a new computer; kid age bands, time requests and dashboard; why on every timeline row; 6 security fixes. |
 | **[3.34.0](https://github.com/farena-ai/sara/releases/tag/v3.34.0)** | **[Public records report, Handle it, memory lane, MCP both ways, team workspace](docs/RECORDS.md)** — Public records report (free sources only, no paid brokers, grows its list of places); Handle it on renewals, returns, bills and forms (never pays); memory lane stories (local models only); MCP catalog and scoped keys; team roles, inbox and approvals; help search in six languages; recommended models; add-on kit; agent goals and caps; receptionist v2. |
 | **[3.33.0](https://github.com/farena-ai/sara/releases/tag/v3.33.0)** | **[One personality, weekly check-in, easier installs, first ten minutes, host a friend](docs/HOSTING_FRIENDS.md)** — How Sara comes across with a live preview; weekly check-in with one-tap Accept and Undo; installer preflight with fix-it cards on Linux, Pi, Docker and Windows; first ten minutes with hardware-based model picks and quick wins; Host a Sara for a friend with their own models, keys and spending limit. |
-| **[3.32.0](https://github.com/farena-ai/sara/releases/tag/v3.32.0)** | **[What Sara knows, polite nudges, continue on another device, Mac parity](docs/WHAT_SARA_KNOWS.md)** — What Sara knows (search, Why, That's wrong, Forget with Undo, merge duplicates); nudge budget with an evening roundup and Fewer like this; Continue where you left off and Continue on my phone; Mac Always allow, screen helper and Turn off in the menu bar; renewals from chat; light share pages. |
-| **[3.31.0](https://github.com/farena-ai/sara/releases/tag/v3.31.0)** | **[She knows the time, Always allow, six languages everywhere](docs/ALWAYS_ALLOW.md)** — Time awareness with automatic correction of wrong "yesterday" phrases; Always allow everything (1 hour, 1 day or until off, password to turn on, timeline keeps every step); live words in es/fr/de/pt/it (optional download); untranslated messages fixed; the email bridge never answers twice. |
 | **[3.22.1](https://github.com/farena-ai/sara/releases/tag/v3.22.1)** | **[Settings and the new windows open again](docs/MONEY.md)** — Settings, Health, Family and every window after Money open again; a test now checks every window in the page is closed. |
 
 <!-- sara:recent-releases:end -->
 
 <details>
-<summary><b>Earlier 2.6x releases</b>: 3.30.1 back to 2.61.5</summary>
+<summary><b>Earlier 2.6x releases</b>: 3.32.0 back to 2.61.5</summary>
 
 | Release | What changed for you |
 |---|---|
+| **[3.32.0](https://github.com/farena-ai/sara/releases/tag/v3.32.0)** | **[What Sara knows, polite nudges, continue on another device, Mac parity](docs/WHAT_SARA_KNOWS.md)** — What Sara knows (search, Why, That's wrong, Forget with Undo, merge duplicates); nudge budget with an evening roundup and Fewer like this; Continue where you left off and Continue on my phone; Mac Always allow, screen helper and Turn off in the menu bar; renewals from chat; light share pages. |
+| **[3.31.0](https://github.com/farena-ai/sara/releases/tag/v3.31.0)** | **[She knows the time, Always allow, six languages everywhere](docs/ALWAYS_ALLOW.md)** — Time awareness with automatic correction of wrong "yesterday" phrases; Always allow everything (1 hour, 1 day or until off, password to turn on, timeline keeps every step); live words in es/fr/de/pt/it (optional download); untranslated messages fixed; the email bridge never answers twice. |
 | **[3.30.1](https://github.com/farena-ai/sara/releases/tag/v3.30.1)** | **[She knows what she did, second opinion from chat, sharper memory](docs/design/FIXRECEIPTS.md)** — The claim checker knows every tool that changes something (a test checks all of them); "get a second opinion" in chat offers the panel and waits for your tap; memories and learned skills need real topic words in six languages; quiet changes like a posted checklist are on the timeline. |
 | **[3.30.0](https://github.com/farena-ai/sara/releases/tag/v3.30.0)** | **[Offline answers on the phone, teach by showing, Wear OS, live views, second opinion](docs/LIVE_VIEWS.md)** — Answers while offline (Android, downloaded on request); Watch me do this in the browser extension (passwords never recorded); Wear OS tile with Talk; live checklists, tables and charts in chat; Second opinion with cost first and differences highlighted. Completes ROADMAP_V. |
 | **[3.29.0](https://github.com/farena-ai/sara/releases/tag/v3.29.0)** | **[Photo search, interpreter, health imports, captions, action timeline, privacy ledger, legacy access](docs/TIMELINE.md)** — Photo folder search by place, text and people (nothing leaves); two-language interpreter; health trends from watch and phone exports; meeting captions with a translated line; screen companion; Action timeline with Revert; What left this server; legacy and emergency access; caregiver check-ins and Simple home; accessibility mode. |
@@ -391,12 +393,4 @@ Small and readable: TypeScript that Node runs directly, no build step, zero runt
 | Build a Store add-on or a tool-server recipe | [Add-ons library](docs/ADDONS_LIBRARY.md) · [Sara Store: submit your own](docs/STORE.md) · [Plugins](docs/PLUGINS.md) |
 | Run the checks | `npm run check` (typecheck and every test, with a scripted model and no provider calls) · `node scripts/check-links.ts` · [CONTRIBUTING.md](CONTRIBUTING.md) |
 | Write a plugin or a skill | [Plugins](docs/PLUGINS.md) (`sara-plugin.json`, hooks, fenced processes) · [Skills](docs/SKILLS.md) (the open Agent Skills format) · [Submit to the Store](docs/STORE.md) |
-| Call Sara from your own code | [Other apps](docs/OTHER_APPS.md): OpenAI-compatible API and MCP server · [Other agents (A2A)](docs/A2A.md) · [Webhooks](docs/WEBHOOKS.md) |
-| Check the numbers | [Results](docs/RESULTS.md): benchmarks and evals, and how to re-run them |
-| Contribute | [CONTRIBUTING.md](CONTRIBUTING.md) · [Good first issues](docs/GOOD_FIRST_ISSUES.md) · [Translating](docs/TRANSLATING.md) · [Security policy](SECURITY.md) |
-
-### How it fits together
-
-<img src="docs/architecture.svg" alt="Architecture: apps and bridges talk to one Sara server; each turn passes the always-on safety layer, gathers memory and library context, calls the chosen model provider and runs tools in a sandboxed workspace; data stays in one folder on your server" width="860">
-
-M
+| Call Sara from your own code | [Other apps](docs/OTHER_APPS.md): OpenAI

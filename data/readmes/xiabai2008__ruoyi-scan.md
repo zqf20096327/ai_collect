@@ -99,7 +99,7 @@ pip install ruoyi-scan
 
 ## 桌面端 · 单个 exe，双击即用
 
-> 引擎、58 个 POC、Web 控制台全部在**编译期嵌入同一个文件**。无需 Python、无需 Docker、无需任何环境配置 —— 对没有开发环境的机器，这是最省事的用法。
+> 引擎、63 个 POC 与全部报告模板都在**编译期嵌入同一个文件**。无需 Python、无需 Docker、无需任何环境配置 —— 对没有开发环境的机器，这是最省事的用法。
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/xiabai2008/ruoyi-scan/main/docs/images/desktop-01-overview.png" alt="桌面端 · 总览：三态判定分布、扫描趋势与最新发现" width="900" />
@@ -118,10 +118,10 @@ pip install ruoyi-scan
 <br />
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/xiabai2008/ruoyi-scan/main/docs/images/desktop-03-vulndb.png" alt="漏洞库：58 个 POC 插件与 CVE / CNVD 映射" width="900" />
+  <img src="https://raw.githubusercontent.com/xiabai2008/ruoyi-scan/main/docs/images/desktop-03-vulndb.png" alt="漏洞库：63 个 POC 插件与 CVE / CNVD 映射" width="900" />
 </p>
 
-**漏洞库** —— 58 个 POC 插件一览，含严重度、CVE / CNVD 编号、影响版本区间、WAF 绕过支持标记。
+**漏洞库** —— 63 个 POC 插件一览，含严重度、CVE / CNVD 编号、影响版本区间、WAF 绕过支持标记。
 
 <br />
 
@@ -147,6 +147,7 @@ pip install ruoyi-scan
 | 单文件分发 | PyInstaller 引擎在 cargo 编译期由 `build.rs` 嵌入壳二进制；运行时自解压到 `%LOCALAPPDATA%\Ruoyi-Scan\engine\`，按校验和版本戳自动覆盖升级 |
 | 进程回收 | 引擎子进程挂 Windows JobObject（`KILL_ON_JOB_CLOSE`），壳被强杀 / 崩溃时引擎树自动回收，不留孤儿进程 |
 | 卸载清理 | NSIS `installerHooks` 在卸载后清除运行时自解压缓存，避免残留约 30 MB 引擎文件 |
+| 在线更新 | 桌面端启动自动检查 + 设置页一键升级（Tauri updater / Ed25519 验签）；CLI `--check-update` / `--self-update`；清单与签名见[在线更新文档](docs/updates.md) |
 
 > 更多细节见[桌面端文档](docs/desktop.md)。
 
@@ -166,7 +167,7 @@ pip install ruoyi-scan
 | 合规映射 | — | — | 等保 2.0 / OWASP **报告级章节** |
 | 安服交付物 | — | 部分 | 7 种格式 + **docx 模板引擎 + 整改复测** |
 | nuclei 模板 | 原生 | 不支持 | **兼容执行**（http 协议子集 + 安全白名单） |
-| **模板存量** | **数千个社区模板** | 内置规则库 | **58 个专项 POC**（数量级劣势） |
+| **模板存量** | **数千个社区模板** | 内置规则库 | **63 个专项 POC**（数量级劣势） |
 | **跨框架广度** | **数十种框架** | 通用 Web | **若依 / Spring Boot / JeecgBoot / 芋道 yudao**（仅 Java 生态） |
 | **社区规模** | **数千贡献者** | 活跃社区 | **单人维护**（响应与迭代速度受限） |
 
@@ -215,7 +216,7 @@ pip install ruoyi-scan
 | v1.5.5（盲测 v3） | 46 / 54 | +17，v2 产出 0 丢失，B 类误报 0 |
 | v1.5.6（盲测 v4） | 48 / 54 | +2，v3 产出 0 丢失，B 类误报 0 |
 
-> **口径声明**：上表的 `29/54`、`46/54`、`48/54` 是「插件至少报过一次 CONFIRMED」的**覆盖率代理指标**，不是检出率，也不覆盖 v1.6.0 之后的 56 个插件。历史数据保持原样，不做机械替换。
+> **口径声明**：上表的 `29/54`、`46/54`、`48/54` 是「插件至少报过一次 CONFIRMED」的**覆盖率代理指标**，不是检出率，也不覆盖 v1.6.0 之后新增的插件。历史数据保持原样，不做机械替换。
 
 v1.7 起改用带 Ground Truth 的标准指标（自建靶场、匿名视角，**不外推到生产环境**）：
 
@@ -240,7 +241,7 @@ v1.7 起改用带 Ground Truth 的标准指标（自建靶场、匿名视角，*
 | [用户指南](docs/usage.md) | 安装配置、扫描模式、CLI 参数详解 |
 | [使用指导](docs/promo/ruoyi-scan-usage-guide.txt) | 什么时候该用、六个场景怎么打、20 条技巧、合规边界（纯文本） |
 | [操作命令手册](docs/promo/ruoyi-scan-command-manual.txt) | 一页纸命令速查：四模式 / 报告 / 批量 / 认证 / 分布式 / FAQ |
-| [插件清单](docs/promo/ruoyi-scan-plugins.txt) | 58 个 POC 的名称、严重度、影响版本与 CVE 索引 |
+| [插件清单](docs/promo/ruoyi-scan-plugins.txt) | 63 个 POC 的名称、严重度、影响版本与 CVE 索引 |
 | [插件开发教程](docs/plugin_dev.md) | PluginBase、三态判定、entry_points 注册 |
 | [API 文档](docs/api.md) | REST 端点、WebSocket 事件、OpenAPI 规范 |
 | [桌面端](docs/desktop.md) | 单 exe 免安装双击即用（引擎内嵌） |
@@ -253,7 +254,7 @@ v1.7 起改用带 Ground Truth 的标准指标（自建靶场、匿名视角，*
 ## 项目定位
 
 - **作者**：XIABAI
-- **版本**：1.8.0
+- **版本**：2.0.0
 - **仓库**：https://github.com/xiabai2008/Ruoyi-Scan
 - **技术栈**：Python 3.8+ / requests / FastAPI / Docker
 - **许可**：MIT License
@@ -264,9 +265,9 @@ v1.7 起改用带 Ground Truth 的标准指标（自建靶场、匿名视角，*
 
 | 模块 | 说明 |
 |------|------|
-| `plugins/ruoyi/` | 若依 21 个插件（含 2 个 RuoYi-Plus 变体专属；文件读取、SQL 注入、RCE、SSTI、未授权等）+ 5 变体识别（Vue3/App/Plus/Cloud-Plus/Magic） |
+| `plugins/ruoyi/` | 若依 23 个插件（含 2 个 RuoYi-Plus 变体专属；文件读取、SQL 注入、RCE、SSTI、未授权等）+ 5 变体识别（Vue3/App/Plus/Cloud-Plus/Magic） |
 | `plugins/spring/` | Spring Boot 14 个 POC（Actuator、Gateway、Jolokia、Spring4Shell 等） |
-| `plugins/common/` | 通用漏洞包 13 个插件（.git/.env 泄露、备份文件、CORS、Swagger、中间件未授权、Shiro 指纹等） |
+| `plugins/common/` | 通用漏洞包 16 个插件（.git/.env 泄露、备份文件、CORS、Swagger、中间件未授权、Shiro 指纹等） |
 | `plugins/jeecgboot/` | JeecgBoot 拓展框架插件包（8 个插件，首个非若依框架拓展实证） |
 | `plugins/yudao/` | 芋道 yudao 插件包（2 个插件：租户列表未授权、Druid 监控未授权；真实 Y1 站验证） |
 | 指纹识别 | favicon hash + 特征路径 + 关键字，多 CMS 数据驱动 + 若依变体细分 |
@@ -281,23 +282,24 @@ v1.7 起改用带 Ground Truth 的标准指标（自建靶场、匿名视角，*
 | AI 报告解读 | `--ai-report zh\|en` 自动生成漏洞分析与修复优先级 |
 | 批量扫描 | `-f targets.txt` 多目标 + 批量汇总报告 |
 | 报告输出 | HTML（SVG 图表）/ JSON / CSV / PDF / Word / Excel / SARIF + 版本对照表 + docx 模板引擎 + 整改复测（`--remediation`） |
-| Web API | FastAPI REST + WebSocket 实时推送 + Web 控制台 + 权限分级（read/scan/admin）+ 定时扫描 |
+| Web API | FastAPI REST + WebSocket 实时推送 + OpenAPI 交互文档（`/docs`）+ 权限分级（read/scan/admin）+ 定时扫描 |
 | 并发限速 | ThreadPoolExecutor + 令牌桶（锁外 sleep，无并发退化） |
 | 验证码处理 | 自动探测 / OCR 识别 / 跳过 三模式 |
 | 多版本适配 | RuoYi 4.2 / 4.7 / v5 / v3.9.x 版本感知 POC 过滤 |
 | 端口扫描 | TCP 端口扫描 + 服务识别 + Banner 抓取 |
 | 被动代理 | HTTP/HTTPS 代理，捕获流量自动扫描 |
-| OAST 带外检测 | 自建回调服务器 + 6 种 payload 模板（SSRF/XXE/SQL盲注/RCE盲注/LDAP/命令注入） |
+| OAST 带外验证 | `--oast` 扫描侧接线：Log4j JNDI / 盲 SSRF / 盲 XXE；HTTP + 按需 TCP 回调，回调命中才 CONFIRMED |
+| Cloud 能力包 | Gateway 路由表泄露 / Nacos 控制台默认口令（8080/8848 探测）/ job·gen Cloud 路由别名 |
+| 性能与成本归因 | 无登录页自动跳过 brute 字典；默认 top100 + 锁定/429 自动停止；插件级 requests/duration 埋点；request_count 统计全部会话 |
 | 业务逻辑检测 | IDOR / 越权 / 参数篡改 / 竞争条件 4 类检测器 |
 | 认证后深度扫描 | `--auth-surface` 登录态接口资产盘点 + 越权矩阵（匿名重放判未授权 / 低权重放判垂直越权） |
 | CVE 同步 | NVD + GHSA 双源回退 + 24h TTL 缓存 + CWE→OWASP/等保 合规映射 |
 | SIEM 集成 | ECS / CEF / LEEF / JSON 4 格式导出 + Syslog 转发 |
-| 异步引擎 | ThreadPoolExecutor 并发扫描 + aiohttp 可选异步 HTTP |
+| 异步引擎 | ThreadPoolExecutor 批量并发扫描（`--async`，仅批量模式） |
 | 分布式扫描 | Redis Master-Worker 队列 + Standalone 降级模式 |
-| 结果缓存 | SQLite 持久化 + SHA256 键 + TTL + 命中率统计 |
+| 代理池 | `--proxy-file` 每行一个代理 + round-robin/random/least-fail 轮换 |
 | 扫描模板 | quick / deep / compliance / dengbao 4 种预设策略 |
 | 认证扫描 | Cookie / Token / Bearer / 自动登录 4 种认证注入 |
-| 国际化 | 中英文报告切换（`--lang zh|en`） |
 | 插件 SDK | 模板生成 + 验证 + 枚举（`--plugin-init` / `--plugin-check`） |
 | CI/CD 集成 | 严重度阈值退出 + GitHub Code Scanning（SARIF）+ GitLab/Jenkins 模板 |
 | 漏洞知识库 | 离线 HTML Wiki + JSON API |
@@ -315,7 +317,6 @@ pip install ruoyi-scan
 # 可选功能依赖（按需安装）
 pip install pyyaml          # --config YAML 配置文件
 pip install redis           # --distributed Redis 分布式扫描
-pip install aiohttp         # --async 异步 HTTP 客户端
 pip install "ruoyi-scan[adversarial]"  # --adversarial-transport 对抗型传输层（Scrapling）
 
 # 运行扫描
@@ -336,7 +337,7 @@ ruoyi-scan -p http://target:8080/
 - **已有 Python、想离线装包**：下载最新 `.whl`，然后：
 
   ```bash
-  pip install ruoyi_scan-1.5.2-py3-none-any.whl
+  pip install ruoyi_scan-2.0.0-py3-none-any.whl
   ```
 
 ### 方式三：源码安装
@@ -383,16 +384,15 @@ python main.py -p http://target:8080/ --nuclei examples/nuclei/
 python main.py --nuclei-validate examples/nuclei/  # 模板校验（不扫描）
 
 # AI 生成插件（LLM 自验证回灌；无 Key 时降级规则模板）
-python main.py --ai "检测若依任意文件读取漏洞" --category ruoyi
+python main.py --ai "检测若依任意文件读取漏洞" --framework ruoyi
 
 # 插件模板仓库（社区分发）
 python main.py --plugin-export ./ruoyi-scan-templates
 python main.py --plugin-manifest ./ruoyi-scan-templates  # 生成/校验 manifest（Ed25519 签名）
 python main.py --plugin-update  # 从官方仓库更新插件
 
-# Web API 服务
+# Web API 服务（人机界面用桌面端；服务侧交互文档在 /docs）
 python main.py --serve
-# 访问 http://localhost:8000/ (Web 控制台)
 # 访问 http://localhost:8000/docs (OpenAPI 文档)
 
 # 端口扫描 + 漏洞检测
@@ -458,7 +458,7 @@ docker compose down
 | 服务 | 端口 | 说明 |
 |------|------|------|
 | scanner | - | 扫描器 CLI（通过 `docker compose run` 调用） |
-| api | 8000 | FastAPI Web API + WebSocket + Web 控制台 |
+| api | 8000 | FastAPI Web API + WebSocket（交互文档 `/docs`） |
 | lab-ruoyi | 8080 | 若依签名靶场（vuln 模式） |
 | lab-spring | 8091 | Spring Boot 签名靶场（vuln 模式） |
 | prometheus | 9090 | 指标采集（`--profile monitor`） |
@@ -483,7 +483,7 @@ docker compose down
 | `-l <url>` | 登录爆破 |
 | `-f <file>` | 批量扫描（从文件读取目标列表） |
 | `--cms <ruoyi\|spring>` | 手动指定 CMS（跳过指纹识别） |
-| `--pass-level <lvl>` | 口令字典级别 top100/top1000/full |
+| `--pass-level <lvl>` | 口令字典级别 top100/top1000/full（默认 top100；full 需显式开启） |
 | `--template <name>` | 扫描模板（quick/deep/compliance/dengbao） |
 | `--template-list` | 列出所有可用模板 |
 | `--config <path>` | YAML 配置文件（CLI 参数优先级高于配置） |
@@ -526,7 +526,6 @@ docker compose down
 | `--report <dir>` | 报告输出目录 |
 | `--report-format <f>` | 报告格式 html/json/csv/pdf/docx/xlsx/sarif |
 | `--no-dedup` | 关闭结果去重聚合 |
-| `--lang <zh\|en>` | 报告语言（默认 zh） |
 | `--diff <old.json>` | 与历史扫描报告对比 |
 | `--diff-only <old> <new>` | 仅对比两个 JSON 报告 |
 | `--save-baseline` | 保存本次扫描结果为基线 |
@@ -548,7 +547,6 @@ docker compose down
 | 参数 | 说明 |
 |------|------|
 | `--components` | 组件版本检测（20 个 Java 组件 → CVE 比对） |
-| `--no-components` | 关闭组件版本检测 |
 | `--nuclei <dir\|file>` | 加载 nuclei YAML 模板（可多次指定） |
 | `--nuclei-tags <a,b>` | 仅加载含指定 tag 的模板 |
 | `--nuclei-severity <s>` | 仅加载指定严重度模板（high/medium/low） |
@@ -567,7 +565,7 @@ docker compose down
 
 | 参数 | 说明 |
 |------|------|
-| `--serve` | 启动 Web API 服务（FastAPI + WebSocket + Web 控制台） |
+| `--serve` | 启动 Web API 服务（FastAPI + WebSocket；交互文档 `/docs`） |
 | `--host <addr>` | API 服务监听地址（默认 127.0.0.1，仅本机可访问；对外监听需显式指定 0.0.0.0） |
 | `--port <n>` | API 服务监听端口（默认 8000） |
 | `--api-key <key>` | API Key 鉴权 |
@@ -583,10 +581,13 @@ docker compose down
 
 | 参数 | 说明 |
 |------|------|
-| `--oast` | 启用 OAST 带外检测 |
-| `--oast-server` | 启动 OAST 回调服务器 |
-| `--oast-host <addr>` | OAST 服务器监听地址 |
-| `--oast-port <n>` | OAST 服务器监听端口 |
+| `--oast` | 扫描时启用带外验证（Log4j JNDI / 盲 SSRF / 盲 XXE）；回调命中才判 CONFIRMED |
+| `--oast-host <addr>` | 写进 payload、目标可达的回调地址（远程目标填本机公网/内网 IP） |
+| `--oast-bind <addr>` | 回调监听地址（默认同 `--oast-host`；远程目标常需 `0.0.0.0`） |
+| `--oast-port <n>` | 回调 HTTP 端口（0/不填=自动；`--oast-server` 默认 5555） |
+| `--oast-tcp-port <n>` | Log4j JNDI 的 TCP 回调端口（0=每次探测自动；远程目标需固定并放行） |
+| `--oast-timeout <s>` | 单次带外回调等待秒数（默认 8） |
+| `--oast-server` | 只启动独立 OAST 回调服务器，不扫描 |
 
 #### 业务逻辑检测（D31）
 
@@ -639,16 +640,8 @@ docker compose down
 
 | 参数 | 说明 |
 |------|------|
-| `--async` | 启用异步扫描引擎（ThreadPoolExecutor） |
+| `--async` | 批量模式并发（仅 `-f` 生效，单目标自动忽略并提示） |
 | `--async-workers <n>` | 异步并发线程数（默认 10） |
-
-#### Web UI 控制台（D35）
-
-| 参数 | 说明 |
-|------|------|
-| `--web-ui` | 生成 Web UI 控制台（单页 HTML） |
-| `--web-ui-output <path>` | Web UI 输出路径 |
-| `--web-ui-api <url>` | Web UI 连接的 API 地址 |
 
 #### 分布式扫描（D36）
 
@@ -659,17 +652,6 @@ docker compose down
 | `--distributed-rate <n>` | 分布式全局限速（每秒请求数，0 不限速） |
 | `--worker-max-tasks <n>` | Worker 最大任务数（0 不限） |
 | `--distributed-timeout <n>` | 分布式超时秒数（默认 600） |
-
-#### 结果缓存（D37）
-
-| 参数 | 说明 |
-|------|------|
-| `--cache` | 启用扫描结果缓存（SQLite） |
-| `--cache-ttl <n>` | 缓存有效期秒数（默认 3600） |
-| `--cache-db <path>` | 缓存数据库路径 |
-| `--cache-stats` | 查看缓存统计 |
-| `--cache-clear` | 清除过期缓存 |
-| `--cache-clear-all` | 清除全部缓存 |
 
 #### 通知（D21）
 
@@ -682,11 +664,10 @@ docker compose down
 | 参数 | 说明 |
 |------|------|
 | `--plugin-init <name>` | 生成插件模板 |
-| `--plugin-new <name>` | 创建新插件脚手架 |
 | `--plugin-path <dir>` | 加载第三方插件目录 |
 | `--plugin-check <path>` | 验证插件文件完整性 |
 | `--plugin-list` | 列出所有已加载插件 |
-| `--category <cat>` | 插件类别 ruoyi/spring/common |
+| `--framework <f>` | 插件所属框架（`--category` 为兼容别名） |
 
 #### 插件模板仓库（E5）
 
@@ -695,6 +676,14 @@ docker compose down
 | `--plugin-export <dir>` | 导出插件源码与元信息到目录（模板仓库） |
 | `--plugin-manifest <dir>` | 生成/校验 manifest.json（Ed25519 签名） |
 | `--plugin-update [url]` | 从模板仓库更新插件（强制 Ed25519 验签，需 cryptography + 可信公钥） |
+
+#### 在线更新（F1）
+
+| 参数 | 说明 |
+|------|------|
+| `--check-update` | 检查新版本，不修改当前安装 |
+| `--self-update` | 检查并升级（pip 版走 pip；Windows 单文件 exe 自动替换并重启） |
+| `--update-url <url>` | 覆盖更新清单地址 |
 
 #### CI/CD 集成（D28）
 
@@ -739,7 +728,7 @@ python main.py -u http://target:8080/
 
 ```
 Ruoyi-Scan/
-├── main.py                  # CLI 入口（542 行，纯参数解析+分发）
+├── main.py                  # CLI 入口（651 行，纯参数解析+分发）
 ├── config/settings.py       # 全局配置
 ├── cli/                     # CLI 控制层
 │   ├── dispatcher.py        # 模式分发（工具/服务/扫描三段）
@@ -761,17 +750,16 @@ Ruoyi-Scan/
 │   └── logger.py            # 日志配置
 ├── plugins/                 # 插件系统
 │   ├── base.py              # PluginBase 抽象基类
-│   ├── ruoyi/               # 若依 21 个插件（含 2 个 Plus 变体专属）
+│   ├── ruoyi/               # 若依 23 个插件（含 2 个 Plus 变体专属）
 │   ├── spring/              # Spring 14 个 POC
 │   ├── jeecgboot/           # JeecgBoot 8 个插件
-│   ├── common/              # 通用 13 个插件
+│   ├── common/              # 通用 16 个插件
 │   └── chain/               # 3 条利用链
-├── lib/                     # 工具库（41 个模块）
+├── lib/                     # 工具库（按能力分组）
 ├── api/                     # Web API（FastAPI + WebSocket）
 ├── data/                    # 字典文件
-├── tests/                   # 67 个测试文件 / 1300+ 条用例
+├── tests/                   # 127 个测试文件 / 1798 条用例
 ├── lab/                     # 内置签名靶场（CI 用）；完整仿真靶场见 ruoyi-lab 仓库
-├── web/                     # Web 控制台前端
 ├── monitoring/              # Grafana + Prometheus
 ├── desktop/                 # Tauri 桌面端（React 前端 + Rust 壳 + 内嵌引擎）
 ├── scripts/                 # 构建 / 验收 / OpenAPI 导出脚本

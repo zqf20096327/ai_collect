@@ -68,9 +68,9 @@ Why use our gallery?
 
 | Metric | Count |
 |--------|-------|
-| 📝 Total Prompts | **3440** |
+| 📝 Total Prompts | **3442** |
 | ⭐ Featured Prompts | **3** |
-| 🔄 Last Updated | **2026-11-19** |
+| 🔄 Last Updated | **2026-11-20** |
 
 ---
 
@@ -189,19 +189,57 @@ A mystical and noble celestial Valkyrie, a dignified and beautiful woman with lo
 
 > 📝 Sorted by publish date (newest first)
 
-### Sorceress with Silver Wings Prompt
+### Biomechanical Muse Cathedral
 
-![日本語](https://img.shields.io/badge/lang-日本語-green)
+![English](https://img.shields.io/badge/lang-English-blue)
 
-> A prompt for generating a female sorceress with long black hair, silver wings, and a gradient dress, used with Grok Imagine after initial image generation by ChatGPT.
+> A prompt for a wide cinematic render of a dancer in a cathedral built from biomechanical bones and pipe organs.
 
 #### 📝 Prompt
 
 ```
-A female sorceress with long flowing black hair and shining silver wings, wearing a dress with a three-color gradient of mediumpurple, mediumslateblue, and slateblue. A round green glowing energy floats in one hand. Aspect ratio 9:16. Please do not include any text. 🪽🟢
+Wide cinematic render of a dancer arching gracefully backward at the center of a vast cathedral built from biomechanical ribs, vertebrae columns and towering pipe organs, wearing a sculpted black bodysuit of ribbed plating, one arm reaching upward. A single shaft of amber light cuts through the darkness and lands on her. Monochrome obsidian and gunmetal, wet sheen, atmospheric haze, dark surrealism, airbrushed, photorealistic 3D render.
 ```
 
-<img src="https://cms-assets.youmind.com/media/1795073931938_ifxvjy_HXd8Fr9bsAAGfP3.jpg" width="600" alt="Sorceress with Silver Wings Prompt">
+<img src="https://pbs.twimg.com/amplify_video_thumb/2123423555601743872/img/1B6IIBzQhRi6lI5Z.jpg" width="600" alt="Biomechanical Muse Cathedral">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14076)**
+
+**Author:** [AI Aimee](https://x.com/RockGrokAI) | **Source:** [Link](https://x.com/RockGrokAI/status/2123575803376259559) | **Published:** Nov 20, 2026
+
+---
+### BMW M50 Lucia Drive Video
+
+![English](https://img.shields.io/badge/lang-English-blue)
+
+> A video generation prompt featuring Lucia driving a BMW M50 with specific cultural elements.
+
+#### 📝 Prompt
+
+```
+BMW M50 competition with Lucia driving through the hood listening to loud anthony santos music and a Dominican flag on the hood of the car
+```
+
+<img src="https://pbs.twimg.com/amplify_video_thumb/2123306455491022848/img/nenoTAnFbPU9D6P_.jpg" width="600" alt="BMW M50 Lucia Drive Video">
+
+**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14075)**
+
+**Author:** [ViceCityClipsX](https://x.com/ViceCityClipsX) | **Source:** [Link](https://x.com/ViceCityClipsX/status/2123306479797330326) | **Published:** Nov 19, 2026
+
+---
+### Fantasy Sorceress Video Prompt
+
+![日本語](https://img.shields.io/badge/lang-日本語-green)
+
+> A prompt used to generate a video of a fantasy sorceress with silver wings and a gradient dress, mentioning Grok Imagine as part of the workflow.
+
+#### 📝 Prompt
+
+```
+A female sorceress with long flowing black hair and shining silver wings, wearing a dress with a three-color gradient of mediumpurple, mediumslateblue, and slateblue. A round energy glowing green floats in one hand. Aspect ratio 9:16. Please no text 🪽🟢
+```
+
+<img src="https://cms-assets.youmind.com/media/1795159952790_m9jmw4_HXd8Fr9bsAAGfP3.jpg" width="600" alt="Fantasy Sorceress Video Prompt">
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=14033)**
 
@@ -1985,38 +2023,4 @@ bright blue sky, grass with flowers, yellow ribbon caught in grass blowing in th
 
 **[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13644)**
 
-**Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2118934426633785350) | **Published:** Nov 7, 2026
-
----
-### Rainy Car Window Mood Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video prompt for Grok Imagine creating a moody scene of a man looking out a rainy car window, noting the image source was Gemini.
-
-#### 📝 Prompt
-
-```
-the camera zooms slowly into the window of the moving car, showing a man looking bored outside the window, his face partly shaded  dark mood, the reflection of the landscape showing in the window faintly, the weather is dark and rainy, the camera mov...
-```
-
-<img src="https://pbs.twimg.com/amplify_video_thumb/2118927202855399424/img/J-681UUyaK-mmP5a.jpg" width="600" alt="Rainy Car Window Mood Video Prompt">
-
-**[🎬 View Video →](https://youmind.com/grok-imagine-prompts?id=13825)**
-
-**Author:** [Zidan �丹](https://x.com/liluocheng13) | **Source:** [Link](https://x.com/liluocheng13/status/2118927245159157921) | **Published:** Nov 7, 2026
-
----
-### SpaceX Beyond Earth Documentary Style Video Prompt
-
-![English](https://img.shields.io/badge/lang-English-blue)
-
-> A video generation prompt for Grok Imagine creating a cinematic montage of SpaceX technologies and human explorers beyond Earth, including specific narration lines and atmospheric details.
-
-#### 📝 Prompt
-
-```
-SpaceX – Beyond Earth
-A visionary montage of SpaceX technologies and human explorers working beyond Earth, from orbital outposts and deep-space craft to the first permanent footholds among the stars.
-The visuals present a cinematic, high-tech documentary style: sleek metallic hardware, Earthrise and starfields, clean white and black SpaceX design language, soft volumetric light, and a sense of quiet determination and awe.
-The camera moves with sweeping orbital tracking shots
+**Author:** [Lindy Hawkinson](https://x.com/HawkinsonLindy) | **Source:** [Link](https://x.com/HawkinsonLindy/status/2118934426633785

@@ -47,6 +47,8 @@ away and comes to find you when she wants attention. Nobody scripts her day.
 on your machine, and comes over when she needs a yes from you. Her brain is the real thing: an agent
 session on [Synaps](https://github.com/HaseebKhalid1507/SynapsCLI). The installer brings it.
 
+**And she's free.** Sign her in with a free ChatGPT account: no API key, no card, no GPU.
+
 **Linux and Windows.** She's click-through, so your windows stay yours. She just sits on them.
 
 <p align="center"><img src="docs/media/card-glitch.png" width="100%" alt="01 // GLITCH. Glitch, don't fade. Mood swings break into scanlines and snap back. She arrives on a red bolt."></p>
@@ -172,7 +174,7 @@ SETTINGS from her right-click menu. A change is written the moment you make it.
 </p>
 
 <p align="center">
-  <img src="docs/media/still-brain.png" width="100%" alt="Settings, Brain: three ways in, SIGN IN (IN USE · CLAUDE), API KEY and RUN LOCAL; and MODEL, her model">
+  <img src="docs/media/still-brain.png" width="100%" alt="Settings, Brain: three ways in, SIGN IN (IN USE · CLAUDE), API KEY and RUN LOCAL; and MODEL open as a menu of every model she can use, by provider: Claude's SONNET 4.6 (IN USE), FABLE 5.2 and the rest">
   <br><b>Settings ▸ Brain</b> · <sub>Pick what she thinks with.</sub>
 </p>
 
@@ -189,6 +191,21 @@ SETTINGS from her right-click menu. A change is written the moment you make it.
   <img src="docs/media/still-tray-tooltip.png" width="28%" alt="Her tray icon's tooltip, her name and her status: capri-syn · SPEAKING">
   <br><sub>On Windows she's in the tray too. Click for the Line, right-click for her menu.</sub>
 </p>
+
+## Requirements
+
+| | Minimum | Recommended |
+|---|---|---|
+| **OS** | Windows 11 x64, or Linux x86_64 with glibc 2.35+ (Ubuntu 22.04, Debian 12, Fedora 36, Arch) on X11, Hyprland 0.40+, or GNOME, KDE or sway through XWayland. Windows 10 (1809+) and Windows 11 on Arm: untested ([Platforms](#platforms)) | X11 with a compositor, or Windows 11 |
+| **Graphics** | Linux: a Vulkan 1.1+ driver (OpenGL ES is GPUI's fallback). Windows: Direct3D 11, feature level 10.1, with compute shaders and structured buffers | A GPU with its driver. CI and the Windows VM run on software rendering (WARP): fine for layout, not for colour or timing |
+| **Tools** (Linux) | `curl` and Python 3 with `venv` (`python3-venv` on Debian and Ubuntu), for her art pack; the installer fetches what's missing, asking first | |
+| **CPU, RAM, disk** | x86_64. RAM: about 84 MB idle on Linux, measured once during development; Windows not measured. Disk: about 120 MB for her and her art on Linux (binary 43 MB, built art pack 77 MB); Windows: a 10 MB setup, installed size not measured | CPU speed: not measured |
+| **Her brain** | [Synaps](https://github.com/HaseebKhalid1507/SynapsCLI) 0.11.0 or newer (the installers fetch 0.12.0) and one of: an account (ChatGPT, Claude, Copilot, Gemini, Grok, Kimi, Muse; Gemini needs Synaps' Google client, and Grok can't be signed in on Windows yet), an API key, or a local model: Ollama or LM Studio, with tool calling and a 16k+ context (`qwen3:8b`: ~5 GB) | A GPU for a local model; without one it is slow |
+| **Voice** (optional) | A microphone. Linux: PipeWire's `pw-record` and `pw-play`, and Python 3.10 to 3.13 (yours, else uv fetches 3.13: 105 MB more); ~540 MB (venv 169 MB, models 375 MB). Windows: Python comes with it; a 40 MB installer, 143 MB installed, 375 MB of models | Runs on the CPU, no GPU; speed not measured |
+| **Network** | To install (Synaps, her release, ~100 MB of art, the voice models) and for an account or an API key | A local model needs none once installed |
+
+"Untested" means the installers accept it but she has never run there; "not measured" means nobody has measured it.
+Older glibc builds her from source (`install.sh` does it).
 
 ## Get her
 
@@ -221,10 +238,16 @@ Both do the same steps, and a rerun is an upgrade:
   <img src="docs/media/still-first-words.png" width="36%" alt="Capri's bubble: Hey. I'm Capri. Give me a brain and I'll talk back. A red SET ME UP button under it">
 </p>
 
-`SET ME UP ▸` opens **Settings ▸ Brain**. For now a sign-in there copies its one `synaps login` line
-for you to run in a terminal (Claude's opens your browser); she notices the login by herself. Windows
-setup's last page offers the Claude sign-in too. No account?
-[Run a local model](docs/UNDER-THE-HOOD.md#her-brain). Without a brain she still perches, naps and plays.
+`SET ME UP ▸` opens **Settings ▸ Brain**: sign in to an account (she runs the sign-in, your browser
+opens on it), add an API key or run a local model. Her installers ask first: an account, a model on
+your PC, an API key, or later.
+
+**Free:** pick ChatGPT and sign in with a ChatGPT account, a free one too: a free account runs her
+on GPT-5.6 Terra (Luna works too); the bigger models need a paid plan. No API key, no card, no GPU.
+Free accounts have usage limits: when hers is used up she says she's hit her model's limit (her tag
+flashes AT THE LIMIT). Wait for it to reset, or pick another brain in Settings ▸ Brain. No account
+at all? [Run a local model](docs/UNDER-THE-HOOD.md#her-brain). Without a brain she still perches,
+naps and plays.
 
 <details>
 <summary><b>Flags, voice, uninstalling, the manual route</b></summary>
@@ -429,7 +452,7 @@ machine needs a look): [docs/WATCH.md](docs/WATCH.md).
 | **Linux, GNOME, KDE, sway** | Through XWayland, which she picks herself. She perches on X apps only, and may nap while you type in native Wayland ones ([limits](docs/INSTALL.md#gnome-kde-and-other-wayland-desktops)). Untested on a real GNOME or KDE session. |
 | **Windows 11** | Her installer, her tray, her own keys, her voice. Checked by hand in a Windows 11 VM ([the VM day](docs/WINDOWS.md#the-vm-day-2026-11-18)); live audio is still to check on real hardware. CI runs her installers end to end on every pull request. |
 | **Windows 10, Windows 11 on Arm** | Both installers get through (Windows 10 1809 or newer; Arm through x64 emulation), but she has never been run on either. Untested, so not supported yet. |
-| **macOS** | Not planned. |
+| **macOS** | Planned. Being scoped now, to be tested on a real Mac before anything ships. No build yet. |
 
 - **Names.** The repository and the Windows installers are `capri-syn`. The crate, the binary and the
   config and state paths are still `synaps-avatar`.

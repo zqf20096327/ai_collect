@@ -118,10 +118,11 @@ After setup in the quickstart:
 fyrr writer namespace create
 fyrr writer sync
 fyrr writer commit
-claude mcp add fyrr --scope user -e FYRR_IDENTITY_KEY="$FYRR_IDENTITY_KEY" -- "$PWD/target/debug/fyrr" --config "$FYRR_CONFIG" reader serve
+claude mcp add fyrr --scope user -- "$PWD/target/debug/fyrr" --config "$FYRR_CONFIG" reader serve
 ```
 
-Ask Claude:
+Start Claude Code from the same shell, so that the reader gets
+`FYRR_IDENTITY_KEY`, and ask:
 
 > Use fyrr search and fetch to answer: How do I restore a backup? Quote the handbook.
 
@@ -159,6 +160,7 @@ The example's top hit is `notes/backup.md`, with the answer:
 | [AWS Lambda](docs/lambda.md) | Experimental reader deployment |
 | [Operations](docs/operations.md) | Monitor, restore, retire and upgrade |
 | [Software factories](docs/software-factory.md) | Context for a fleet of unattended coding agents |
+| [Connect an agent](docs/connect.md) | Add fyrr to Claude Code, Codex or another MCP client |
 | [Configuration](docs/configuration.md) | Storage, embeddings, sources and secrets |
 | [Identity](docs/identity.md) | Users, directories, keys and OIDC |
 | [Tuning](docs/tuning.md) | Namespace and retrieval settings |

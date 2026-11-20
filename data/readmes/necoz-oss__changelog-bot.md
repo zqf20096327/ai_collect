@@ -62,6 +62,7 @@ Using it in CI? Jump to [GitHub Actions integration](#github-actions-integration
 | `--instructions`         | Additional changelog writing/grouping instructions       | unset                                  |
 | `--instructions-file`    | Path to a file with additional instructions              | unset                                  |
 | `--output`               | Delivery destination (`pull-request`, `file`, `stdout`)  | `pull-request`                         |
+| `--check`                | Fail when the CHANGELOG differs from generated content   | `false`                                |
 | `--dry-run`              | Print updated CHANGELOG to stdout, don’t write file      | `false`                                |
 | `--dry-run-json-report`  | Print dry-run provider diagnostics as JSON               | `false`                                |
 | `--fail-on-llm-error`    | Fail instead of falling back when provider calls fail    | `false`                                |
@@ -116,6 +117,14 @@ Dry-runs print provider diagnostics before the generated changelog so you can
 confirm whether an LLM request was used or the run fell back. Add
 `--dry-run-json-report` to print that diagnostics block as JSON with `provider`,
 `model`, `aiUsed`, `fallbackReasons`, and prompt customization diagnostics.
+
+Use `--check` in CI to verify that the committed changelog matches what the CLI
+would generate. It writes no file, creates no branch or pull request, exits `0`
+when the changelog is current, and exits non-zero with a diff when it is missing
+or out of date. The diff preview lists only added and removed lines. Because it
+never writes or delivers anything, `--check` cannot be combined with
+`--dry-run`, `--dry-run-json-report`, or `--output file|stdout`; those
+combinations exit with a usage error instead of being ignored.
 
 **Output destinations**
 
@@ -394,14 +403,14 @@ Codes `64` and `65` follow the common POSIX `sysexits` convention
 for changelog-bot-specific provider and schema failures. Code `1` is kept for
 unexpected errors that are not yet classified.
 
-| Code | Meaning                   | Typical cause                                                             |
-| ---- | ------------------------- | ------------------------------------------------------------------------- |
-| `0`  | Success                   | Changelog was generated, or dry-run completed.                            |
-| `1`  | Unexpected error          | Unclassified runtime failure.                                             |
-| `64` | Usage/configuration error | Invalid CLI/config values, missing repo identity, or missing GitHub auth. |
-| `65` | Repository/data error     | Invalid repository state or Git data needed for changelog generation.     |
-| `66` | Provider failure          | LLM generation/classification/WHY extraction failed in strict mode.       |
-| `67` | Output validation failure | Provider output did not match the expected schema after retry.            |
+| Code | Meaning                   | Typical cause                                                                 |
+| ---- | ------------------------- | ----------------------------------------------------------------------------- |
+| `0`  | Success                   | Changelog was generated, dry-run completed, or `--check` found no drift.      |
+| `1`  | Unexpected error          | Unclassified runtime failure.                                                 |
+| `64` | Usage/configuration error | Invalid CLI/config values, missing repo identity, or missing GitHub auth.     |
+| `65` | Repository/data error     | Invalid repository state, Git data needed for generation, or `--check` drift. |
+| `66` | Provider failure          | LLM generation/classification/WHY extraction failed in strict mode.           |
+| `67` | Output validation failure | Provider output did not match the expected schema after retry.                |
 
 The CLI prints the actionable error message to stderr before exiting. Use
 `--dry-run` to preview without requiring GitHub write authentication, or provide
@@ -608,6 +617,7 @@ precedence are treated as the public compatibility contract.
 | Extra instructions      | `--instructions`                                     | `instructions`             | `instructions`             | `instructions`, unset                                       |
 | Instructions file       | `--instructions-file`                                | `instructions-file`        | `instructions_file`        | `instructionsFile`, unset                                   |
 | Output destination      | `--output`                                           | `output`                   | `output`                   | `output`, default `pull-request`                            |
+| Changelog drift check   | `--check` / `--no-check`                             | none                       | none                       | `check`, default `false`                                    |
 | Preview only            | `--dry-run` / `--no-dry-run`                         | `dry-run`                  | `dry_run`                  | `dryRun`, default `false`                                   |
 | JSON dry-run report     | `--dry-run-json-report` / `--no-dry-run-json-report` | `dry-run-json-report`      | `dry_run_json_report`      | `dryRunJsonReport`, default `false`                         |
 | Fail on provider errors | `--fail-on-llm-error` / `--no-fail-on-llm-error`     | `fail-on-llm-error`        | `fail_on_llm_error`        | `failOnLlmError`, default `false`                           |

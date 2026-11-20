@@ -191,37 +191,67 @@ right in Instagram's 4:5 feed crop.
 
 ## 🚀 Quick start
 
-**You need:** a Mac or Windows PC, about 3 GB free, and **Claude** (Claude Code / Claude
-desktop app) or **ChatGPT** (desktop app with Codex). The normal claude.ai / chatgpt.com
-websites can't run it.
+### Where it works
+
+| | |
+|---|---|
+| ✅ **Claude Code** or the **Claude desktop app** (Code tab) on Mac or Windows | works |
+| ✅ **ChatGPT desktop app with Codex**, or the **Codex CLI**, on Mac or Windows | works |
+| ✅ **ChatGPT Work in the desktop app**, with the task set to run **on your computer** | works |
+| ✅ **Windows 11 with Smart App Control on** (keep it on!) | works, see [WINDOWS.md](WINDOWS.md) |
+| ✅ **GitHub Copilot agent mode** in VS Code | should work with `--brain agent` (not tested yet) |
+| ❌ **chatgpt.com**, **ChatGPT Work in the cloud** ("Skills" upload), **claude.ai** website | won't work |
+
+The websites run in a cloud sandbox: they can't run the video tools, keep your clips or download
+streams, and ChatGPT's skill upload can reject it ("did not pass the safety scan"). Install it
+**on your computer** instead. It's free and takes about 5 minutes.
+
+### Easiest: let your assistant install it
+
+Open Claude Code or Codex on your computer and paste this:
+
+```text
+Install the beyondgtaclips skill from https://github.com/beyondtahir/beyondgtaclips into your skills folder, then set it up.
+```
+
+It downloads the skill, asks before installing ffmpeg and deno, sets everything up and tells you
+when it's **READY**. Then say *"make GTA 6 clips"*. 🎉
+
+### Or do it yourself (3 steps)
 
 **1. Install two free tools** (Terminal on Mac, PowerShell on Windows):
 
 ```bash
-# Mac
 brew install ffmpeg deno
 ```
 
 ```powershell
-# Windows
 winget install Gyan.FFmpeg
 winget install DenoLand.Deno
 ```
 
-**2. Add the skill:**
+🛡️ Windows with **Smart App Control** on? Don't turn it off: follow [WINDOWS.md](WINDOWS.md).
+
+**2. Add the skill** to your assistant's skills folder:
 
 ```bash
-# Claude
-git clone https://github.com/beyondtahir/beyondgtaclips ~/.claude/skills/beyondgtaclips
-# ChatGPT (Codex)
-git clone https://github.com/beyondtahir/beyondgtaclips ~/.codex/skills/beyondgtaclips
+git clone --depth 1 https://github.com/beyondtahir/beyondgtaclips ~/.claude/skills/beyondgtaclips
 ```
 
-On Windows the folders are `C:\Users\<you>\.claude\skills\` and `C:\Users\<you>\.codex\skills\`.
+```bash
+git clone --depth 1 https://github.com/beyondtahir/beyondgtaclips ~/.codex/skills/beyondgtaclips
+```
 
-**3. Say** *"set up beyondgtaclips"* (once, about 5 minutes), then *"make GTA 6 clips"*. 🎉
+The first line is for Claude, the second for Codex (newer Codex versions also read
+`~/.agents/skills`). On Windows the folders are `C:\Users\<you>\.claude\skills\` and
+`C:\Users\<you>\.codex\skills\`.
 
-ChatGPT will ask for permission to use the internet and save files: choose **Allow**.
+**3. Say** *"set up beyondgtaclips"* (once, about 5 minutes), then *"make GTA 6 clips"*.
+
+Codex asks for permission to use the internet and save files: choose **Allow**.
+
+🔒 **Safe by design:** no logins, no browser cookies, no API keys, nothing uploaded. Everything it
+touches is listed in [SECURITY.md](SECURITY.md). It never asks you to turn off Windows security.
 
 👉 **Full step-by-step guide:** [GUIDE.md](GUIDE.md)
 
@@ -243,6 +273,24 @@ ChatGPT will ask for permission to use the internet and save files: choose **All
 ---
 
 ## ❓ FAQ
+
+<details>
+<summary><b>ChatGPT says the skill "did not pass the safety scan" or couldn't be saved. Why?</b></summary>
+
+You added it to ChatGPT on the web (or ChatGPT Work "Skills"). That runs in OpenAI's cloud: its
+automatic scan can reject skills that download and edit video, and the cloud can't run the video
+tools anyway. Install it in the **ChatGPT desktop app (Codex)** or the **Codex CLI** on your own
+computer instead ([Quick start](#-quick-start)). It works there with the same steps.
+
+</details>
+
+<details>
+<summary><b>Is it safe?</b></summary>
+
+It runs only on your computer, never asks for a login, password, cookie or API key, and never
+uploads anything. [SECURITY.md](SECURITY.md) lists every site it connects to and every folder it writes.
+
+</details>
 
 <details>
 <summary><b>Is it really free?</b></summary>
@@ -302,7 +350,7 @@ python3 scripts/beyondgtaclips.py clip --pick 1,2 --total 4 --styles 1
 python3 scripts/beyondgtaclips.py remake "<folder>" --clip 2 --hook "New *hook* here"
 ```
 
-Assistant instructions: [SKILL.md](SKILL.md) · Change log: [docs/CHANGES.md](docs/CHANGES.md)
+Assistant instructions: [SKILL.md](SKILL.md) · Security: [SECURITY.md](SECURITY.md) · Change log: [docs/CHANGES.md](docs/CHANGES.md)
 
 ---
 

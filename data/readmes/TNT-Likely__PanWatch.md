@@ -39,7 +39,7 @@
 
 <a href="https://modelflare.dev/sign-up?utm_source=github&utm_campaign=panwatch"><img src="./docs/sponsors/modelflare_banner_en.png" alt="Modelflare" width="720"></a>
 
-Thanks to **Modelflare** for sponsoring this project! Operated by Havenbyte LLC in the US, Modelflare delivers full-capability, stable models at low cost, with access to GPT, Claude, Gemini, Grok, and 40+ image/video models. The designated OpenAI group comes with a **65% / 75% / 85% daily cache-hit-rate guarantee**; a single top-up of **US$20 unlocks GPT at 0.015x**, and **US$50 unlocks Claude at 0.03x**. [**Sign up via the dedicated link**](https://modelflare.dev/sign-up?utm_source=github&utm_campaign=panwatch)
+Thanks to **Modelflare** for sponsoring this project! Full-capability, stable models without dilution, for low-cost access to global SOTA models. The site is operated by the US LLC entity Havenbyte LLC, supporting mainstream models such as GPT, Claude, Gemini, and Grok along with common compatibility protocols, plus 40+ image and video models, and compliant business cooperation with mainland China. The designated OpenAI group comes with a **65% / 75% / 85% daily cache-hit-rate guarantee**; a single top-up of **US$20 unlocks GPT at 0.015x**, and **US$50 unlocks Claude at 0.03x**. [**Sign up via the dedicated link**](https://modelflare.dev/sign-up?utm_source=github&utm_campaign=panwatch)
 
 <table>
   <tr>
@@ -158,6 +158,14 @@ The image includes Playwright's system dependencies. Chromium's headless shell f
 If you do not need browser features such as screenshots, set `PLAYWRIGHT_SKIP_BROWSER_INSTALL=1` to skip this installation.
 
 </details>
+
+## Upgrade PanWatch for the mobile app
+
+The native app needs a compatible PanWatch server reachable over HTTPS. The first compatible server release is [0.21.0](https://github.com/TNT-Likely/PanWatch/releases/tag/0.21.0).
+
+1. Back up your existing data mount and keep it mounted at `/app/data`.
+2. For Docker Compose, set the existing service image to `sunxiao0721/panwatch:0.21.0`, then run `docker compose pull panwatch` and `docker compose up -d panwatch`. For `docker run`, pull that image and recreate the container with your existing environment, ports, and data mount.
+3. Sign in on the web and confirm your holdings are present. In the app, recheck the same HTTPS address and sign in with your existing server credentials, or open **Settings → Connect a phone** on the web to create and approve a new QR connection.
 
 ## Reference
 

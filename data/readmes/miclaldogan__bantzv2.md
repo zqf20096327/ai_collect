@@ -112,7 +112,7 @@ Supporting systems run alongside the main loop:
 - Browser control via subprocess + xdotool
 
 **External integrations**
-- Gmail: read, search, compose, reply (Google OAuth2 PKCE flow)
+- Gmail: read, search, compose, reply (Google OAuth2 PKCE flow; local callback on `localhost:8766`)
 - Google Calendar: read events, create, check conflicts
 - Google Classroom: assignments, deadlines, announcements
 - Telegram bot: full two-way remote access, screenshot-on-request, whitelist by user ID
@@ -180,7 +180,7 @@ Supporting systems run alongside the main loop:
 
 ### What's missing or incomplete
 
-**Wake word**: requires a Porcupine access key from Picovoice (free). Without it the wake listener logs a warning and stays off while the rest of the voice stack (TTS/STT) keeps working. A fully local openWakeWord engine with a custom "Bantz" model — no external account at all — is the next planned replacement (epic [#563](https://github.com/miclaldogan/bantzv2/issues/563)).
+**Wake word**: the default `openwakeword` engine uses a locally trained "Bantz" model at `~/.local/share/bantz/wakewords/bantz_clf.pkl`; set `BANTZ_WAKE_MODEL_PATH` to use another file. It does not need a Picovoice account. If the local model is unavailable, the listener tries Porcupine when a Picovoice access key is configured. The rest of the voice stack (TTS/STT) can still work without wake detection.
 
 **VLM / vision analysis**: runs locally by default via Ollama (`BANTZ_VLM_BACKEND=ollama`). Bantz uses a built-in multimodal path — the same local model that handles chat also reads the screen (e.g. `gemma4:e4b-it-qat`), with `moondream` as a lightweight fallback. A remote VLM endpoint (`BANTZ_VLM_BACKEND=remote` + `BANTZ_VLM_ENDPOINT`, e.g. a Jetson/Colab box) is optional for offloading.
 
@@ -224,10 +224,13 @@ bantz --doctor
 
 **Voice pipeline** (all optional — install only what you need):
 ```bash
-pip install pvporcupine pyaudio webrtcvad  # wake word + capture
-pip install faster-whisper                  # STT
+pip install openwakeword pyaudio webrtcvad  # local wake word + capture
+pip install pvporcupine                     # optional Picovoice wake engine
+pip install faster-whisper                   # STT
 # Piper TTS: install binary from https://github.com/rhasspy/piper/releases
 #            put 'piper' in PATH, download a voice model .onnx file
+# To train the local wake model, also install scikit-learn and SoX, place the
+# Piper voices at the paths in scripts/train_wakeword.py, then run that script.
 ```
 
 **MemPalace memory**:
@@ -289,8 +292,10 @@ BANTZ_GEMINI_MODEL=gemini-2.0-flash
 BANTZ_OPENAI_API_KEY=your_key_here
 BANTZ_OPENAI_MODEL=gpt-4o-mini
 
-# Voice (wake word)
-BANTZ_PORCUPINE_ACCESS_KEY=your_picovoice_key
+# Voice (wake word): openwakeword is the local default; set porcupine to use Picovoice
+BANTZ_WAKE_ENGINE=openwakeword
+# Needed only with BANTZ_WAKE_ENGINE=porcupine
+# BANTZ_PORCUPINE_ACCESS_KEY=your_picovoice_key
 
 # Primary language (default Turkish)
 BANTZ_LANGUAGE=tr
@@ -448,6 +453,7 @@ Core (always installed):
 
 Optional (install as needed):
 - `openwakeword`, `pyaudio` — local wake word detection (default engine)
+- `scikit-learn`, SoX, Piper, and local Piper voices — train the local wake model with `python scripts/train_wakeword.py`
 - `pvporcupine` — optional Porcupine wake engine (`BANTZ_WAKE_ENGINE=porcupine`)
 - `webrtcvad` — voice activity detection
 - `faster-whisper` — local STT

@@ -94,7 +94,7 @@ alpacawork setup
 
 - **It is free (MIT License).** AI usage is billed under your existing Claude Code, Codex or other plan.
 - **It runs on your PC.** The AI runs on your PC, so keep the PC on and set it not to sleep while you use alpacawork.
-- **It runs AI agents with full permissions, so they don't stop to ask for approval.** You can write what the AI should not do, or should ask you about first, in the [project policy](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#4-write-the-ground-rules-for-the-ai).
+- **It starts AI agents in the same no-approval mode as Claude Code's `bypassPermissions` and Codex's `danger-full-access`, so they don't stop to ask.** You can write what the AI should not do, or should ask you about first, in the [project policy](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#4-write-the-ground-rules-for-the-ai).
 - **Tasks, conversations and result files are kept on your PC.** alpacawork does not send them to any outside server run by its developers. Your instructions to the AI, and what the AI reads, are sent to the AI's provider, just as when you use each AI agent directly ([more on how data is handled](https://github.com/alpacakit/alpacawork/blob/main/docs/getting-started.md#what-is-stored-and-what-is-sent-out)).
 
 ## Documentation

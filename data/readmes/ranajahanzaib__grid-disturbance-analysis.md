@@ -4,11 +4,15 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Tests: Pytest](https://img.shields.io/badge/tests-31%20passed-brightgreen.svg)](./tests)
+[![Tests: Pytest](https://img.shields.io/badge/tests-32%20passed-brightgreen.svg)](./tests)
 [![Code Style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
 [![Type Checked: Mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy-lang.org/)
 
 `grid-disturbance-analysis` is a scientifically grounded, production-quality open-source engine for identifying, characterizing, classifying, and isolating the origins of oscillatory disturbances and stability events in electric power systems.
+
+<p align="center">
+  <img src="docs/screenshots/overview.png" alt="Power Grid Disturbance Analysis Engine - Overview Dashboard" width="100%">
+</p>
 
 ---
 
@@ -204,37 +208,44 @@ print(f"Summary: {diag.summary}")
 
 ## 8. Command Line Interface (CLI)
 
-The `grid-disturbance` CLI supports the end-to-end analytical workflow:
+The `grid-disturbance` CLI provides a robust terminal interface with rich tabular output for automated and batch workflows:
+
+<p align="center">
+  <img src="docs/screenshots/cli-demo.svg" alt="grid-disturbance CLI Demo" width="100%">
+</p>
 
 ```bash
 # 1. Prepare and register a benchmark dataset
-grid-disturbance data prepare --samples 30
+grid-disturbance data prepare --samples 15
 
 # 2. Inspect dataset quality, schema, and class balance
 grid-disturbance data inspect
 
 # 3. Analyze a synchrophasor signal file
-grid-disturbance signal analyze sample.csv --sr 30.0
+grid-disturbance signal analyze data/processed/waveforms/forced_oscillation_0000.npy --sr 30.0
 
 # 4. Extract 34-dimensional feature vector as JSON
-grid-disturbance signal features sample.csv --json
+grid-disturbance signal features data/processed/waveforms/forced_oscillation_0000.npy --json
 
-# 5. Train a machine learning model (e.g. Random Forest, Temporal CNN)
+# 5. Run full disturbance diagnosis and classification
+grid-disturbance predict data/processed/waveforms/forced_oscillation_0000.npy
+
+# 6. Train a machine learning model (e.g. Random Forest, Temporal CNN)
 grid-disturbance train --model random_forest --samples 25
 
-# 6. Run unsupervised clustering and anomaly discovery
+# 7. Run unsupervised clustering and anomaly discovery
 grid-disturbance cluster --samples 15 --k 4
 
-# 7. Generate and export a structured HTML diagnostic report
-grid-disturbance report sample.csv --format html --output-dir reports
+# 8. Generate and export a structured HTML diagnostic report
+grid-disturbance report data/processed/waveforms/forced_oscillation_0000.npy --format html --output-dir reports
 
-# 8. Launch the interactive Streamlit diagnostic app
+# 9. Launch the interactive Streamlit diagnostic app
 grid-disturbance app --port 8501
 ```
 
 ---
 
-## 9. Interactive Streamlit Application
+## 9. Interactive Visual Diagnostic Suite
 
 Launch the engineering diagnostic dashboard:
 
@@ -242,16 +253,47 @@ Launch the engineering diagnostic dashboard:
 grid-disturbance app
 ```
 
-### Dashboard Sections:
+### Visual Feature Showcase
 
-1. **Overview & Statistics:** Dataset distributions, class taxonomy, and provenance tracking.
-2. **Signal Explorer:** Upload CSV files, configure sampling frequency, inspect missing samples, preview raw traces.
-3. **Signal Analysis:** Interactive waveforms, Hilbert amplitude envelopes, Welch PSD, and 2D STFT spectrogram heatmaps.
-4. **Disturbance Diagnosis:** Multi-tab quantitative evidence for forced vs. natural discrimination, frequency instability, overlapping modes, and source origin assessment.
-5. **Event Comparison:** Side-by-side comparison of dominant frequencies, envelopes, and spectral signatures across events.
-6. **Event Clustering:** 2D PCA latent projections, cluster silhouette scores, and Isolation Forest anomaly detection.
-7. **Model Laboratory:** Interactive training and benchmarking of Random Forest, Extra Trees, GBDT, Temporal CNN, and Spectrogram CNN with confusion matrices.
-8. **Analysis History:** Local SQLite database review to inspect, compare, and reopen past analyses.
+#### Disturbance Diagnosis & Source Assessment
+
+Provides quantitative hypothesis testing between sustained forced oscillations and natural transient ring-downs, multi-channel cross-spectral source direction assessment, frequency stability indices, and overlapping mode decomposition.
+
+<p align="center">
+  <img src="docs/screenshots/disturbance-diagnosis.png" alt="Disturbance Diagnosis and Source Assessment" width="100%">
+</p>
+
+#### Spectral & Time-Frequency Analysis
+
+Computes analytic Hilbert amplitude envelopes, Welch Power Spectral Density with automated peak prominence identification, spectral metrics, and 2D Short-Time Fourier Transform (STFT) spectrogram heatmaps.
+
+<p align="center">
+  <img src="docs/screenshots/spectral-analysis.png" alt="Spectral and Time-Frequency Analysis" width="100%">
+</p>
+
+#### Signal Explorer & Ingestion
+
+Inspects and visualizes synchrophasor measurement streams, missing data proportions, sampling consistency, and multi-channel bus topologies.
+
+<p align="center">
+  <img src="docs/screenshots/signal-explorer.png" alt="Signal Explorer and Data Ingestion" width="100%">
+</p>
+
+#### Unsupervised Event Clustering & Anomaly Discovery
+
+Extracts 34-dimensional physical and spectral feature vectors, projects them into 2D latent space via Principal Component Analysis (PCA), clusters them via K-Means / DBSCAN, and flags physical outliers with Isolation Forests.
+
+<p align="center">
+  <img src="docs/screenshots/event-clustering.png" alt="Unsupervised Event Clustering and Anomaly Discovery" width="100%">
+</p>
+
+#### Multi-Event Comparison
+
+Side-by-side comparison of oscillatory signatures, dominant spectral modes, and damping profiles across distinct grid disturbance events.
+
+<p align="center">
+  <img src="docs/screenshots/event-comparison.png" alt="Multi-Event Comparison" width="100%">
+</p>
 
 ---
 
@@ -276,7 +318,7 @@ The built-in `SyntheticSignalGenerator` deterministically produces 12 physically
 
 ## 11. Testing & Verification
 
-The suite contains **31 unit and integration tests** validating mathematical and physical properties:
+The suite contains **32 unit and integration tests** validating mathematical and physical properties:
 
 ```bash
 # Run full test suite
@@ -291,6 +333,7 @@ All algorithms recover known ground-truth parameters:
 - FFT frequency recovery error: \(< 0.05\text{ Hz}\).
 - Damping ratio recovery: \(|\hat{\zeta} - \zeta| < 0.02\).
 - Cross-spectral phase delay recovery: \(< 1.0^\circ\).
+- Sliding-window persistence accuracy across arbitrary off-bin frequencies: \(\ge 80\%\).
 
 ---
 

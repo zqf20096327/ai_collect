@@ -1,0 +1,195 @@
+
+
+[![Documentation Status](https://readthedocs.org/projects/contrxt/badge/?version=latest)](https://contrxt.readthedocs.io/en/latest/?badge=latest)
+[![Pypi Downloads](https://img.shields.io/pypi/dm/contrxt.svg?label=Pypi%20downloads)](https://pypi.org/project/contrxt/)
+[![DOI:10.1016/j.inffus.2021.11.016](http://img.shields.io/badge/DOI-10.1016/j.inffus.2021.11.016-blue.svg)](https://doi.org/10.1016/j.inffus.2021.11.016)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1hb4KN0SYxdj9SaExqqFGmAXAIyUnBVnA?usp=sharing)
+
+[![Stars](https://img.shields.io/github/stars/Crisp-Unimib/ContrXT?style=social)](https://github.com/Crisp-Unimib/ContrXT)
+[![Watchers](https://img.shields.io/github/watchers/Crisp-Unimib/ContrXT?style=social)](https://github.com/Crisp-Unimib/ContrXT)
+
+# ContrXT
+***A global, model-agnostic, contrastive explainer for any text classifier***
+
+* TOC
+{:toc}
+
+## Why do we might need ContrXT?
+Imagine we have a text classifier, let's say M1, that is retrained with new data generating M2.
+
+1. Can we estimate to what extent M2 classifies new data coherently to the past predictions made by the previous model M1?
+2. Why do the criteria used by M1 result in class _c_, but M2 does not use the same criteria to classify as _c_ anymore?
+3. Can we use natural language to explain the differences between models making them more comprehensible to final users?
+
+## What can ContrXT do?
+
+ContrXT is about **explaining how a classifier changed its predictions through time. Also, it can be used to explain the differences in the classification behaviours of two distinct classifiers at a time.**
+
+ContrXT takes as input the training data and predictions of two distinct classifiers M1 and M2. Then, it traces the decision criteria of both classifiers by encoding the changes in the decision logic through Binary Decision Diagrams. Then (ii) it provides "global, model-agnostic, time-contrastive (T-contrast) "explanations in natural language, estimating why -and to what extent- the model has modified its behaviour over time.
+
+Details on how ContrXT works can be found in [this paper](https://www.sciencedirect.com/science/article/pii/S1566253521002426)
+Below a link to the [demo video (4K)](https://www.youtube.com/watch?v=Dnw2M995lus)
+
+
+<video src="https://user-images.githubusercontent.com/12170307/159011649-04277ac0-d040-4108-adfd-998e65c4bf4b.mp4" controls="controls" style="max-width: 600px;">
+</video>
+
+## What ContrXT needs as input?
+ContrXT takes as input the _"feature data"_ (can be training or test, labelled or unlabelled)  and the corresponding _"labels"_ predicted by the classifier. This means you don't need to wrap ContrXT within your code at all!
+As optional parameters, the user can specify:
+- the coverage of the dataset to be used (default is 100%); otherwise, a sampling procedure is used;
+- to obtain explanations either for the multiclass case (default: one class vs all) or the two-class case (class vs class, by restricting the surrogate generation  to those classes);
+
+## What ContrXT provides as output?
+ContrXT provides two outputs:
+### (1) Indicators to estimate which classes are changing more!
+Indicators estimating the differences among the classification criteria of both classifiers M1 and M2, that are **Add** and **Del** values. To estimate the degree of changes *among classes*, ContrXT also provides **add_global** and ***del_global*** in `explain.csv`. These values can be plotted to identify classes with larger changes.
+
+![](/img/Add_Del_Magnitude_20N.png)
+
+The picture above illustrates the indicators reported in the paper for each _20newsgroup_ class, using a DT as a surrogate (0.8 fidelity) to explain two BERT classifiers. This repository exports the indicators as CSV; it does not include the plotting code for this figure.
+### (2) Natural Language Explanations for each class
+The indicators allow the user to concentrate on classes that have changed more. For example, one might closely look at class _atheism_ as for this class, the number of deleted paths is higher than the added ones
+
+![](/img/alt.atheism.png)
+
+The Natural Language Explanation (NLE) for _atheism_ reveals the presence of the word _bill_ leads the retrained classifier M2 to assign the label _atheism_ to a specific record, whilst the presence of such a feature was not a criterion for the previous classifier M1.
+Conversely, the explanation shows that M1 used the feature _keith_ to assign the label, whilst M2 discarded this rule.
+
+Both terms refer to the name of the posts' authors: _Bill_'s posts are only contained within the dataset used to retrain whilst _Keith_'s ones are more frequent in the initial dataset rather than the second one (dataset taken from _Jin, P., Zhang, Y., Chen, X., & Xia, Y. Bag-of-embeddings for text classification. In IJCAI-2016_).
+
+Finally, M2 discarded the rule _having political atheist_ that was sufficient for M1 for classifying the instance.
+
+### (3) Inspect Rule Coverage
+`paths_add_del.csv` contains the added, deleted, and unchanged rules, together with their combined occurrence counts across both input datasets. To count a rule in one dataset, use `exp.data_manager['time_1'].count_rule_occurrence("{'Apple': 1}")`, using the feature names from the exported rule. The example retrieval interface shown in the demo video is not included in this Python package.
+
+## Do explanations lead to new insights?
+Our experiments reveal Add/Del is not correlated with the models' accuracy.
+For example, we assessed a correlation between _Add/Del_ and the change in performance of the classifiers in terms of F1-score on _20newsgroup_. To this end, we computed the Spearman's \rho between the _Add_ of every class and its change in f1-score between the two classifiers.
+The correlation values are not significant, p=0.91$, ro=-0.11 for the _Add_ and p=0.65, ro=-0.04 for _Del_ indicator. This confirms that Add/Del are not related to the f1-score of the  trained model. Instead, they estimate its behaviour change handling new data, considering which rules have been added or deleted to the past.
+
+## Installation
+
+Use Python 3.10, 3.11, or 3.12. Python 3.13 and newer are currently excluded because of [an upstream PyEDA compatibility issue](https://github.com/cjdrake/pyeda/issues/195).
+
+Install this checkout in a virtual environment:
+
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m pip install --upgrade pip
+```
+
+PyEDA is a required dependency. It includes a C extension, so a C compiler and Python development headers are needed when a compatible wheel is unavailable. On macOS with recent Apple Clang, install PyEDA first with the workaround for [its upstream build issue](https://github.com/cjdrake/pyeda/issues/186), then install ContrXT:
+
+```bash
+CFLAGS="-Wno-error=incompatible-function-pointer-types" python -m pip install 'pyeda==0.29.0'
+python -m pip install .
+```
+
+On other platforms, install ContrXT and all dependencies with `python -m pip install .`. Recent GCC versions may need `CFLAGS="-Wno-error=incompatible-pointer-types" python -m pip install 'pyeda==0.29.0'` before installing ContrXT; the same upstream issue describes this compiler compatibility problem.
+
+On Windows, use a compatible C/C++ compiler or a PyEDA wheel matching your Python version and architecture. The historical Python 3.6/3.9 wheels in `installation/` do not match the supported Python versions above. See the [PyEDA installation documentation](https://pyeda.readthedocs.io/en/latest/install.html) for build requirements.
+
+To produce surrogate images or BDD PDFs, install the Graphviz executable and make sure `dot -V` works. The Python `graphviz` package alone does not install this executable. On macOS use `brew install graphviz`; on Debian/Ubuntu use `sudo apt-get install graphviz`.
+Full documentation on how to install Graphviz on any platform is available
+[here](https://graphviz.org/download/).
+
+## Tutorials and Usage
+
+A complete example of ContrXT usage is provided in the notebook ["ContrXT Demo"](/ContrXT%20Demo.ipynb) inside of the main repository folder. A notebook example with ML model training is also available in this repository, which can also be accessed in this [Google Colab notebook](https://colab.research.google.com/drive/1hb4KN0SYxdj9SaExqqFGmAXAIyUnBVnA?usp=sharing). Run the notebooks from the repository root so their bundled dataset paths resolve. Notebook execution requires Jupyter in addition to the package dependencies.
+
+A small example that does not download data:
+
+```python
+from contrxt.contrxt import ContrXT
+
+texts = ['apple sweet', 'apple fresh', 'lemon sour', 'lemon fresh'] * 10
+old_predictions = ['fruit', 'fruit', 'citrus', 'citrus'] * 10
+new_predictions = ['fruit', 'citrus', 'citrus', 'fruit'] * 10
+
+exp = ContrXT(texts, old_predictions, texts, new_predictions,
+             save_path='results', save_surrogates=False, save_bdds=False)
+exp.run_trace()
+exp.run_explain()
+exp.explain.BDD2Text()
+```
+
+The default output directory contains `trace.csv` (surrogate rules and fidelity), `surrogate_paths.csv` (surrogate paths), `explain.csv` (change indicators), and `paths_add_del.csv` (explanation rules and occurrence counts). Enable `save_surrogates` and `save_bdds` to render graphics with Graphviz.
+
+## Running tests
+
+Install the development and documentation tools, then run the suite, build the distribution, and check the documentation from the repository root:
+
+```bash
+python -m pip install -e '.[dev,docs]'
+python -m unittest discover -v
+python -m pip check
+python -m build
+python -m twine check dist/*
+python -m sphinx -W --keep-going -b html docs/source docs/_build/html
+```
+
+GitHub Actions runs the tests and distribution checks on Linux with Python 3.10–3.12 and on macOS with Python 3.12. Windows builds require separate validation.
+
+## ContrXT as a Service through REST-API
+ContrXT provides REST-API to generate explanations for any text classifier.  Our API enables users to get the outcome of ContrXT as discussed above (i.e., Indicators and Natural language explanations) with no need to install or configure the tool locally. The required input from a user are (i) the training data and (ii) the predicted labels by the classifier of their choice.
+Users are required to upload two csv files for two datasets for which the schema is shown in the following JSON.
+```
+schema = {
+         "type" : "csv",
+         "columns" : {
+             "corpus" : {"type" : "string"},
+             "predicted" : {"type" : "string"},
+         },
+     }
+```
+The ContrXT's API can be invoked using a few lines code shown in Code below.
+```
+import requests, io
+from zipfile import ZipFile
+files = {
+    'time_1': open(t1_csv_path, 'rb'),
+    'time_2': open(t2_csv_path, 'rb')
+}
+r = requests.post('[URLandPort]', files=files)
+result = ZipFile(io.BytesIO(r.content))
+```
+**Notice**. To avoid improper use of ContrXT'server resources, we ask users to ask for free credentials through this [link](https://tinyurl.com/contrxt-request-form).
+
+## Limitation
+Text classification and binary tabular features (`data_type='tabular'`) are supported. Continuous-valued tabular features must be discretized before use: the BDD rules encode presence/absence, not numeric thresholds. Only labels present in both time periods are compared.
+
+## References
+To cite ContrXT please refer to [the following paper](https://www.sciencedirect.com/science/article/pii/S1566253521002426)
+```
+@article{ContrXT,
+	author = {Lorenzo Malandri and Fabio Mercorio and Mario Mezzanzanica and Andrea Seveso and Navid Nobani},
+	title = {ContrXT: Generating Contrastive Explanations from any Text Classifier},
+	year = {2021},
+	publisher = {Elsevier},
+	issn = {1566-2535},
+    year = {2021},
+	issn = {1566-2535},
+	doi = {https://doi.org/10.1016/j.inffus.2021.11.016},
+	url = {https://www.sciencedirect.com/science/article/pii/S1566253521002426},
+	journal = {Information Fusion}
+}
+
+@inproceedings{ContrXTdemo,
+  author    = {Lorenzo Malandri and
+               Fabio Mercorio and
+               Mario Mezzanzanica and
+               Navid Nobani and
+               Andrea Seveso},
+  title     = {The Good, the Bad, and the Explainer: {A} Tool for Contrastive Explanations
+               of Text Classifiers},
+  booktitle = {Proceedings of the Thirty-First International Joint Conference on
+               Artificial Intelligence, {IJCAI} 2022, Vienna, Austria, 23-29 July
+               2022},
+  pages     = {5936--5939},
+  year      = {2022},
+  url       = {https://doi.org/10.24963/ijcai.2022/858},
+  doi       = {10.24963/ijcai.2022/858}
+}
+```

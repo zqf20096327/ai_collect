@@ -85,7 +85,7 @@ Open <http://127.0.0.1:4747>.
 
 ## Quick start
 
-1. Open the board: <http://127.0.0.1:8080> with Docker Compose, <http://127.0.0.1:4747> on bare metal.
+1. Open the board: <http://127.0.0.1:8080> with Docker Compose, <http://127.0.0.1:4747> on bare metal. When you also run the Alate dashboard, open it on a different hostname from the board (for example <http://localhost:4570>), because browsers send a host's cookies to every port on that host.
 2. **Add project** opens one wizard: Source, Automation, Runners, Project, and Rules. In Source, select **New** or **Git URL** (`https://…`, `git@host:…`, `ssh://host[:port]/…`). **Next** and **Back** retain your drafts. Before **Finish**, **Cancel**, the close button, or Escape discard those drafts without a project or clone.
 3. **Finish** creates or clones the project, prepares `.tasks/` and `.worktrees/`, and saves the settings you explicitly change. It then starts a rules interview card if needed. For a project without `AGENTS.md`, the card writes the file with you. An existing project's **Open setup** still offers **Finish later**.
 4. Type a task in plain language. The card waits in **Todo** for a free slot: 20 total runs, no per-project cap by default (`OMP_TRACKER_MAX_TOTAL`).
@@ -131,7 +131,7 @@ See the [service quota specification](docs/specs/service-quotas.md) for the inte
 
 ## Contribute
 
-Run Ottr on your own projects and check the result against [docs/development.md](docs/development.md). Report a vulnerability per [SECURITY.md](SECURITY.md).
+Run Ottr on your own projects and check the result against [docs/development.md](docs/development.md). To change Ottr itself, start with [CONTRIBUTING.md](CONTRIBUTING.md). The project follows its [code of conduct](CODE_OF_CONDUCT.md), and [ACCESSIBILITY.md](ACCESSIBILITY.md) states the accessibility commitment. Report a vulnerability per [SECURITY.md](SECURITY.md).
 
 ## Built with Ottr
 

@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![MCP Ready](https://img.shields.io/badge/MCP-130%20Tools-blue)](https://modelcontextprotocol.io)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue.svg)](https://www.typescriptlang.org/)
-[![Node](https://img.shields.io/badge/Node-%3E%3D20.9-green.svg)](https://nodejs.org/)
+[![Node](https://img.shields.io/badge/Node-20.19%2B%20%7C%2022.12%2B-green.svg)](https://nodejs.org/)
 
 ```bash
 npx cbrowser agent-ready-audit "https://your-site.com" --html
@@ -18,7 +18,7 @@ npx cbrowser agent-ready-audit "https://your-site.com" --html
 ## Quickstart
 
 ```bash
-# 1. Install (Node.js 20.9 or newer). Installing also downloads Chromium.
+# 1. Install (Node.js 20.19+ or 22.12+). Installing also downloads Chromium.
 npm install -g cbrowser
 
 # 2. Check the environment
@@ -459,7 +459,7 @@ See the [Skill Installation Guide](https://cbrowser.ai/docs/claude-skill-install
 }
 ```
 
-The local stdio server registers the same 130 tools as the hosted one, plus 7 that keep their state in the local process (`empathy_audit_init`, `empathy_audit_record_barrier`, `empathy_audit_complete_persona`, `empathy_audit_summarize`, `get_emotional_state`, `list_emotional_personas`, `trigger_emotional_event`). `cbrowser mcp-remote` runs your own HTTP server for remote clients.
+The local stdio server registers the 130-tool set every cbrowser server shares (a hosted server may add its own; the Pro server adds `web_security_scan`), plus 7 that keep their state in the local process (`empathy_audit_init`, `empathy_audit_record_barrier`, `empathy_audit_complete_persona`, `empathy_audit_summarize`, `get_emotional_state`, `list_emotional_personas`, `trigger_emotional_event`). `cbrowser mcp-remote` runs your own HTTP server for remote clients.
 
 **The remote server opens only public internet addresses.** A server started with `cbrowser mcp-remote` does not open `localhost`, a private network (`10.x`, `172.16` to `172.31`, `192.168.x`, link-local, the IPv6 local ranges) or any address of the machine it runs on. That holds for the pages its browsers load, including what a page redirects to or loads itself (images, frames, workers, WebSockets), and for the requests the server makes without a browser (the redirect check before a tool runs, the agent-ready audit's fetch of the page without JavaScript, the `llms.txt` tools, the WebMCP checks, `coverage_map`'s sitemap, `security_audit`'s `mcp_url`). The address is checked when the connection is made, so a name that points at a private address is refused however it is reached. When a tool loads a page by its URL and the server does not open it, nothing of the site is loaded and the tool says why in one sentence: the host cannot be reached from the hosted server, or the connection to it failed. `navigate`, `agent_ready_audit`, `llms_txt_generate`, `structured_data_suggest`, `empathy_audit` and `load_session` fail with that sentence; `site_cognitive_assessment`, `cross_browser_diff` and `chaos_test` give it in their result; `manage_tabs` leaves the new tab blank; tools that load the page through `navigate` get its error. A link the page follows by itself to such a host (a click, a script) shows the server's short refusal (plain http) or the browser's own error page (https) in place of the page. The stdio server (`cbrowser mcp-server`) and the CLI are unchanged: they open whatever your machine can reach, so use one of them to test `localhost` or a site inside your network. Two environment variables matter when you run the remote server yourself, `CBROWSER_OWN_ADDRESSES` and `PLAYWRIGHT_DISABLE_FORCED_CHROMIUM_PROXIED_LOOPBACK`; both are in the [Configuration](#configuration) table.
 

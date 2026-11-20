@@ -26,9 +26,9 @@ the existing workspace or pane. Muxboard detects Orca and Herdr automatically,
 including named Herdr sessions and saved SSH machines.
 
 The LCD touch strip shows usage for every provider you enable in CodexBar, such
-as Codex, Claude, MiniMax, Kimi, CommandCode, and Perplexity. You get quotas with
-reset countdowns and pace, today's spend and tokens when CodexBar has them, and
-credit balances.
+as Codex, Claude, MiniMax, Kimi, CommandCode, Perplexity, and Antigravity.
+You get quotas with reset countdowns and pace, today's spend and tokens when
+CodexBar has them, and credit balances.
 
 [Install](#install) · [Controls](#how-it-works) · [Sources](#sources) ·
 [Configuration](#configuration) · [Troubleshooting](#troubleshooting) ·
@@ -41,8 +41,8 @@ You need macOS, Node.js ≥ 20, a Stream Deck+, the
 agent source: cmux, Orca, or Herdr. CodexBar is only needed for the LCD.
 
 The packaged [v0.2.0 release](https://github.com/mrshu/muxboard/releases/tag/v0.2.0)
-supports cmux, Orca, Herdr, and all the controls described here. To change the
-plugin itself, [build from source](#build-from-source).
+supports cmux, Orca, and Herdr. This README also describes changes made since
+that release; [build from source](#build-from-source) to use them.
 
 Connect your device and open Stream Deck once, so the app knows about it. Then
 install the latest release:
@@ -100,7 +100,8 @@ permission requests, and agents that asked for input.
   just the `W` row. When Claude has no 5h session, its segment shows the weekly
   gauge and the weekly limit for Fable (`F`) instead. MiniMax adds its 5h prompt
   count at the bottom, as a small `5h` tag and the number of prompts used (for
-  example **49** / 100 prompts). CommandCode can show
+  example **49** / 100 prompts). Antigravity shows Gemini's 5h and weekly
+  windows. Other Antigravity model limits remain in CodexBar. CommandCode can show
   its monthly grant next to its rolling quotas. Credit-only accounts and
   Perplexity show one credit gauge with the amount spent and the allowance.
   Four providers fit at once, and dial 4 scrolls through the rest.
@@ -264,7 +265,7 @@ the plugin starts. Poll intervals and timeouts are in milliseconds.
 | `codexbarProviders` | `[]` | Optional allow-list/order. Empty = auto-discover all |
 | `cmuxPollMs` | `1500` | cmux poll interval |
 | `codexbarPollMs` | `45000` | CodexBar poll interval |
-| `codexbarTimeoutMs` | `30000` | Per-request HTTP timeout |
+| `codexbarTimeoutMs` | `75000` | Per-request HTTP timeout (server deadline: 60 seconds) |
 | `agentAliases` | `{}` | Manual override (name substring → agent). Process detection is primary |
 | `busyCpuPercent` | `40` | Workspace CPU% (from `cmux top`) at/above which a running command counts as "working" |
 | `enableOrca` / `enableHerdr` | `"auto"` | Start each optional source when reachable. `true` forces polling, `false` disables it |

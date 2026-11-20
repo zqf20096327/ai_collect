@@ -36,7 +36,7 @@
   <a href="INSTALL.md">Install guide</a>
 </p>
 
-![cerne's own dashboard: features by state, a calendar of project activity, open lint debts and the share of the documentation kept out of the agent's context](docs/assets/ui-dashboard.png)
+![cerne's own dashboard: features by state, a calendar of project activity, open lint debts and the corpus reduction: the share of the documentation the agent does not have to search](docs/assets/ui-dashboard.png)
 
 *cerne's own dashboard, captured in November 2026 when the project had 403 features. cerne is developed with cerne, and the open lint debts on screen are real. The figures elsewhere in this README were measured later, on 2026-11-16.*
 
@@ -78,14 +78,15 @@ flowchart LR
 
 - **History: the backend.** A plain git repository you own, separate from your code's: a folder on your machine, a git server you run, or a private repository on GitHub or GitLab. Entities are JSON, document content is markdown, and every state transition is an event in an NDJSON log. Nothing is deleted: rejected features and superseded decisions stay, with the reason they left.
 - **State: lifecycle data.** Every feature, decision, note, runbook and reference has a state that only a gated command can change (`cerne feature approve`, `cerne decision supersede`…). A document never declares its own status.
-- **Context: the `.docs/` projection.** `cerne pull` writes a gitignored `.docs/` folder with a generated `CONTEXT.md` (the roster of features and their states, the work in progress, the active decisions, notes, runbooks and references) and the documents of live entities only: features still in candidate, approved or in development, active decisions, runbooks and notes, current references. Implemented and done features keep one line in the roster; their documents stay in the backend. Rejected and superseded work does not appear at all.
+- **Context: the `.docs/` projection and the task package.** `cerne pull` writes a gitignored `.docs/` folder with a generated `CONTEXT.md`, the map of what is live (features not yet done, epics with a live child, active decisions and runbooks, the work in progress, and the components of the active notes, within 16 KB; done features are a count), and the documents of live entities only: features still in candidate, approved or in development, active decisions, runbooks and notes, current references. The documents of implemented and done features stay in the backend. Rejected and superseded work does not appear at all. For one task, `cerne context <id>` is its package: its stage document whole, its epic, and the notes, decisions and sources that inform it (linked, matching a path its plan cites, sharing a component, or ranked by the search index), within a token budget: the notes and decisions linked to the task come with their body, the rest as id, title and one-line gist.
 
 Keeping history does not mean the agent reads it. This is what reaches an agent, and how:
 
 | Layer | What it holds | How the agent gets it |
 |---|---|---|
 | Backend | Everything ever written, in every state | Never automatically. On demand, through `cerne search`, `cerne ask` and `cerne show <id>` |
-| `.docs/` | The current state only | Files on disk. The installed skill tells the agent to start at `CONTEXT.md` and open what its task needs |
+| `.docs/` | The current state only | Files on disk. The installed skill tells the agent to start with `cerne next` and keeps `CONTEXT.md` as the map of what is live, read when it needs the map |
+| Task package | One task's document, its epic and what informs it: the linked notes and decisions with their body, the rest as id, title and gist | `cerne context <id>` on demand. Starting a task (`cerne feature start`, `cerne work start --ref`, `cerne handoff take`) prints the index of the notes that inform it and that command, and a subagent of the session gets the same; a body comes with `cerne show <id>` |
 | Session start (hooks) | A short block of workflow rules and the board of work in progress | Injected automatically by the hooks `cerne init` installs |
 
 Measured with `cerne savings` on this repository on 2026-11-16, when its backend held 459 features (439 of them done):
@@ -95,7 +96,7 @@ Measured with `cerne savings` on this repository on 2026-11-16, when its backend
 | Everything in the backend, all states | 663 | 2,193,000 |
 | Projected into `.docs/` | 206 | 79,000 |
 
-96.4% of the stored documentation stays out of the projection, and none of it is lost. Two caveats. Token figures are a bytes/4 estimate, not a tokenizer count. And the projected figure counts entity documents only, not the generated `CONTEXT.md`, which was about 100 KB here on the same day, mostly one roster line per feature. It is what the projection makes available, not what a session loads. Run `cerne savings` on your own project to get your numbers.
+96.4% of the stored documentation stays out of the projection, and none of it is lost. Two caveats. Token figures are a bytes/4 estimate, not a tokenizer count. And the projected figure counts entity documents only, not the generated `CONTEXT.md`, which was about 100 KB here on the same day, mostly one roster line per feature; the map now lists only what is live, within 16 KB, and `cerne savings` prints its size. It is what the projection makes available, not what a session loads. Run `cerne savings` on your own project to get your numbers.
 
 ### The lifecycle, and where the human decides
 
@@ -201,7 +202,7 @@ cerne ui        # your dashboard, at http://localhost:7717
 
 Commit the files `init` wrote at the root (`.cernerc`, `docs.lock`, `.gitattributes`, `.gitignore`). For a team, pass `--backend` an empty private repository on GitHub or GitLab instead; `init` prints how to move a local backend to a remote later. Documents are scaffolded in English; add `--docs-language pt-BR` for Portuguese.
 
-Now open your agent in the project and ask for something: *"add sign in with Google"*. It registers the feature and drafts the spec, and the card shows up on your board, waiting for your approval. Claude Code picks up everything `init` installed; for the other agents, see [Agent integrations](#agent-integrations).
+Now open your agent in the project and ask for something: *"add sign in with Google"*. It registers the feature and drafts the spec, and the card shows up on your board, waiting for your approval. Claude Code picks up everything `init` installed; for the other agents, see [Agent integrations](#agent-integrations). What to do in your first week, from the first spec to the daily routine: [first-week guide](docs/first-week.md).
 
 You do not type the commands below. This is your agent's shell: what it runs when you ask for a feature, and what it reads after you reject one. The rejected feature leaves its context and stays one search away.
 
@@ -235,11 +236,11 @@ cerne import --agent --ingest --yes   # apply it
 
 `--root <dir>` points it at a docs folder other than the project root. With a subscription CLI or an API key set, cerne drafts the plan itself; in delegation mode it hands the mapping prompt to the agent you already run.
 
-A project with only code needs no import: run `cerne init`, then ask your agent to register the features in progress and the decisions in force (`cerne feature new`, `cerne decision new`). From there, new work follows the normal flow.
+A project with only code needs no import: run `cerne init`, then ask your agent to register the features in progress and the decisions in force (`cerne feature new`, `cerne decision new`). From there, follow the [first-week guide](docs/first-week.md): the first feature, the backlog and the daily routine.
 
 ### Agents without a shell: MCP
 
-`cerne mcp` serves the project to any MCP client over stdio, with seven read-only tools: `status`, `brief`, `next`, `search`, `show` and `ask` return exactly what the command of the same name prints with `--json`, and `guide` answers how to use cerne itself from its skill, help and FAQ. None writes anything, and `ask` returns the ranked sources without calling a model.
+`cerne mcp` serves the project to any MCP client over stdio, with eight read-only tools: `status`, `brief`, `next`, `search`, `show`, `context` and `ask` return exactly what the command of the same name prints with `--json`, and `guide` answers how to use cerne itself from its skill, help and FAQ. None writes anything, and `ask` returns the ranked sources without calling a model.
 
 In a project-scoped config (for example a `.mcp.json` at the project root, which the client starts from there):
 
@@ -271,12 +272,12 @@ Clients that install MCP Bundles (MCPB) can take the server straight from a rele
 |---|---|
 | **Lifecycle and governance** | Gated feature lifecycle with human approve and accept; epics, tasks and bug reports on the same lifecycle; ideas (`I-`) triaged before they become demand; pendings (`P-`) for known delivery debts; a capability taxonomy (`C-`) of what the product does; the optional Gauntlet. |
 | **Decisions and knowledge** | ADRs with supersession and periodic review, notes and conventions, runbooks, references as provenance, errata on concluded work. |
-| **Context for agents** | The `.docs/` projection and `CONTEXT.md`; cheap views for priming (`cerne brief`, `cerne status --active`, `cerne next`); `cerne show <id>` for any entity, projected or not. |
+| **Context for agents** | The `.docs/` projection and `CONTEXT.md`, the map of what is live; cheap views for priming (`cerne brief`, `cerne status --active`, `cerne next`); `cerne context <id>`, the package of one task within a token budget; `cerne show <id>` for any entity, projected or not. |
 | **Search and Q&A over history** | Full-text search (SQLite FTS5) over everything, rejected and superseded included. `cerne ask` answers with citations, or returns only the sources. `cerne graph` exports the relationships between entities. |
 | **Deterministic lint** | Rules over state, not prose: references to superseded decisions, broken links, orphans, missing gate documents, results without evidence, unregistered sources, stale decisions and notes, duplicate live features, epics out of step with their children. `cerne drift` flags implemented features whose code changed since. |
 | **Parallel agents** | Per-document 3-way merge on `pull`, auto-rebase on `push`, `cerne sync` as one forward path, a conflict-free `docs.lock` across branches and worktrees, work entries and handoffs, commit-message checks through git hooks. |
-| **Dashboard** | `cerne ui`: what waits on you, the kanban board, epics, decisions, conventions, agent activity, flow metrics, token costs, lint debts, context savings, settings. English and Portuguese. |
-| **Measurement** | `cerne savings` (what the projection keeps out), `cerne stats` (lead time, cycle time, throughput from the event log), `cerne cost` (tokens a feature consumed, read from Claude Code transcripts). |
+| **Dashboard** | `cerne ui`: what waits on you, the kanban board, epics, decisions, conventions, agent activity, flow metrics, token costs, lint debts, corpus reduction, settings. English and Portuguese. |
+| **Measurement** | `cerne savings` (the corpus reduction: full corpus vs the documents the agent searches), `cerne stats` (lead time, cycle time, throughput from the event log), `cerne cost` (tokens a feature consumed, read from Claude Code transcripts). |
 | **Adoption** | `cerne init`, `cerne import --agent`, `cerne demo`, documents in English or Portuguese, an optional Open Knowledge Format–compatible projection (`cerne pull --okf`). |
 
 ## Agent integrations
@@ -292,7 +293,7 @@ cerne is built for Claude Code, Cursor, Codex CLI, Gemini CLI and GitHub Copilot
 | **GitHub Copilot** | An instructions file in `.github/instructions/cerne.instructions.md`, hooks in `.github/hooks/cerne.json`, the guide in `.github/skills/` | **Early testing.** Hooks probed on Copilot CLI; VS Code agent mode and the cloud agent are not verified |
 | **Any MCP client** | `cerne mcp`, read-only, over stdio | Covered by automated tests through the MCP Go SDK client; not validated against specific clients |
 
-`init` delivers the guide to Claude Code always, and to the other agents only when their config folder (`.cursor/`, `.codex/`, `.gemini/`) exists in the project; it prints one line per agent, including the ones not detected. To add one whose folder is missing:
+`init` delivers the guide to Claude Code always, and to the other agents only when their config folder (`.cursor/`, `.codex/`, `.gemini/`) exists in the project; it closes with the agents it connected and how to connect the others (`init --verbose` prints one line per agent and per installed file). To add one whose folder is missing:
 
 ```bash
 cerne hook install --provider cursor,codex,gemini   # hooks; creates each agent's config folder
@@ -333,17 +334,19 @@ The founding design document is [docs/process/cases/0001_founding-spec/spec.md](
 
 ## Where your data goes
 
-cerne has no hosted service. There is no account to create, and no usage telemetry, crash reporting or update check: the binary talks to the places you point it at, and to nothing else.
+cerne has no hosted service. There is no account to create, and no usage telemetry or crash reporting. There are two version checks: `cerne update`, only when you run it, and the `cerne ui` panel, which asks for the latest release when it starts and every 24 hours while it is open, to show an Update button when a newer one exists (turn it off with `cerne settings set ui.update_check false --scope host`). No other command, hook or screen asks for a new version. Otherwise the binary talks to the places you point it at, and to nothing else.
 
 | What | Where it goes | When |
 |---|---|---|
 | Specs, plans, results, decisions, notes, runbooks, references, the event log | The backend git repository you chose: a folder on your machine, a git server you host, or a private repository on a hosting service | Always. It is the only place cerne stores your documentation. `cerne ui` syncs with it every 15 s by default (`--pull-interval`) |
+| The latest release tag and, when it is newer, its binary and `SHA256SUMS` | The cerne repository on GitHub, or the `CERNE_BASE_URL` you set. Under Homebrew, `brew upgrade` asks the tap instead | Only when you run `cerne update`, never with `--check` |
+| The latest release tag, read by the panel; on the Update button, the same download as `cerne update` | The cerne repository on GitHub, or the `CERNE_BASE_URL` you set. Under Homebrew, the button runs `brew upgrade` | While `cerne ui` runs: when it starts and every 24 hours while it is open, unless `ui.update_check` is off. The download only when you press **Update** |
 | `.docs/`, the search index, the cached backend clone | Your disk | Always. All are rebuilt from the backend |
 | The dashboard | Served by the binary on `127.0.0.1:7717`, with every asset embedded | While `cerne ui` runs |
 | Prompts for `cerne ask`, the authoring helpers, `compile`, `import --agent` and the Backlog chat | With no `llm.mode` set, the first subscription CLI cerne finds on your `PATH` (`claude`, `codex`, `gemini`, then `cursor-agent` on `main`), so the prompt goes to that vendor under your subscription. With an API key or a gateway set in Settings › AI, to that provider (Anthropic, OpenAI, Gemini, OpenRouter or any OpenAI-compatible endpoint, including a local one). With `llm.mode` set to `delegation`, nowhere: the agent you already run answers | Only when you use those features. Settings › AI shows which mode is in use and where that choice came from |
 | PR/MR lookups for a feature's delivery commit | Your forge, through `gh` or `glab`, or the Gitea API | Only when `[delivery]` is configured in `.cernerc` |
-| The public title and summary, id and state of a card a human mirrored | The issue tracker named in `mirror.trackers`: GitHub through `gh`, GitLab (gitlab.com or self-hosted) through `glab`, Gitea through its API with the login `git credential` holds for the host | Only after `cerne feature mirror`, with `mirror.enabled` on. Off by default |
-| The list of open issues of each tracker in `mirror.trackers`, read only | The same tracker, through `gh`, `glab` or the Gitea API | Only when you press **Check now** in the Mirror tab of `cerne ui`, a read-only view of the mirrored cards, their imported ideas and the commits citing each card, plus the last `cerne mirror sync` on this computer. Opening the tab calls nothing |
+| The public title and summary, id and state of a card a human mirrored | The issue tracker named in `mirror.trackers`: GitHub through `gh`, GitLab (gitlab.com or self-hosted) through `glab`, Gitea through its API with the login `git credential` holds for the host, Trello through `api.trello.com` with the API key and token `git credential` holds for that host, Jira Cloud or Data Center through its REST API with the login `git credential` holds for the site | Only after `cerne feature mirror`, with `mirror.enabled` on. Off by default |
+| The list of open issues of each tracker in `mirror.trackers`, read only | The same tracker, through `gh`, `glab`, or the Gitea, Trello or Jira API | Only when you press **Check now** in the Mirror tab of `cerne ui`, a read-only view of the mirrored cards, their imported ideas and the commits citing each card, plus the last `cerne mirror sync` on this computer. Opening the tab calls nothing |
 | Traces | An OTLP endpoint you set (`[telemetry] otlp_endpoint` or `OTEL_EXPORTER_OTLP_ENDPOINT`) | Off by default. Prometheus metrics are exposed on the local server and sent nowhere |
 | Webhook notifications on state transitions | A URL you set | Off by default |
 
@@ -362,7 +365,7 @@ A tool is often easier to judge by what it leaves out. The first list is by desi
 - **It does not approve or accept on the agent's behalf.** Both are human acts by default (see [the lifecycle](#the-lifecycle-and-where-the-human-decides)); a project can opt into `auto`.
 - **It does not rewrite history.** A wrong conclusion gets an erratum appended. Superseded and rejected documents leave the agent's path and stay searchable.
 - **It does not replace `CLAUDE.md` or `AGENTS.md`.** Fixed rules still belong there. cerne handles what has a lifecycle: work, decisions, and knowledge that can go stale.
-- **It does not shrink the conversation.** Most of an agent's tokens are the conversation re-read at every step, with or without cerne; on one feature measured from its transcripts, cerne accounted for about 5% of what the agent re-read. What it saves is the documentation it keeps out of reach, which `cerne savings` measures.
+- **It does not shrink the conversation.** Most of an agent's tokens are the conversation re-read at every step, with or without cerne; on one feature measured from its transcripts, cerne accounted for about 5% of what the agent re-read. What it reduces is the corpus the agent has to search, from every document to the current ones, which `cerne savings` measures.
 - **It does not check your code against your decisions.** Lint checks the documentation. The closest it comes is `drift-suspect`: with module or component paths configured, it flags a shipped feature whose code changed since, so its spec may be stale.
 
 **Not yet**
@@ -383,10 +386,10 @@ cerne is young and pre-1.0: commands and file formats can still change between r
 - The human gate keeps the configured agent from approving its own work; it is not access control. It refuses a process that carries `CERNE_ACTOR=agent`, which cerne sets up for agent sessions. A process without it, human or not, passes.
 - Outside Claude Code, some hooks are degraded or missing (handoff through compaction, subagent context, the stop closeout on Gemini). The [parity matrix](docs/provider-parity.md) lists each one.
 - `cerne cost` reads Claude Code transcripts only.
-- Token figures in `cerne savings` are bytes/4 estimates, and they leave out the generated `CONTEXT.md`.
+- Token figures in `cerne savings` and the budget of `cerne context` are bytes/4 estimates, not a tokenizer count.
 - Without a `git` executable, the built-in fallback is much slower.
 
-**What is measured, and what is not.** `cerne savings` measures what the projection keeps out of reach. `cerne cost <id>` measures what a feature consumed, documents included. There is no side-by-side run of the same work with and without cerne, so the claim that reviewing a one-page spec before the build avoids rework is reasoning, not a measurement.
+**What is measured, and what is not.** `cerne savings` measures the corpus reduction: the documents the agent searches against the full corpus. `cerne cost <id>` measures what a feature consumed, documents included. There is no side-by-side run of the same work with and without cerne, so the claim that reviewing a one-page spec before the build avoids rework is reasoning, not a measurement.
 
 Feedback from early users shapes what comes next: please [open an issue](https://github.com/henriquesakata/cerne/issues) when you hit a rough edge.
 

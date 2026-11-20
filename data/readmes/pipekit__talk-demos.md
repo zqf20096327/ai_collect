@@ -2,6 +2,9 @@
 
 This repo contains demos from ArgoCon, KubeCon, Open Source Summit, and Observability Summit.
 
+## ArgoCon NA 2026
+* [Demystifying an Argo Workflows Pod — And How We Stopped Needing an Init Container](argocon-demos/2026-demystifying-an-argo-workflows-pod-and-how-we-stopped-needing-an-init-container)
+
 ## Observability Summit Europe 2026
 * [Trace Context Beyond HTTP: Environment Variables as OpenTelemetry Propagation Carriers](observability-summit-demos/2026-trace-context-beyond-http-environment-variables-as-opentelemetry-propagation-carriers)
 

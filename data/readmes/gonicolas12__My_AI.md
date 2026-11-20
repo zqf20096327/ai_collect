@@ -210,7 +210,7 @@ If you notice unexpected behavior or errors after several launches, this script 
 ### 🧠 Memory you control
 
 - **Vector memory of up to 10,485,760 tokens** (ChromaDB + SQLite), semantic search (sentence-transformers + cosine HNSW), smart chunking with overlap (256-token chunks, 32 overlap), automatic rolling summary at half of the context window (16k tokens out of 32k).
-- **"Remember that…"** in the chat: the fact is really saved (Facts tab of the Memory panel), and useful facts then come with every answer.
+- **"Remember that…"** in the chat: the fact is really saved (Facts tab of the Memory panel), and useful facts then come with every answer. The model works out what to remember: "forget that…" removes a fact, "remember instead that…" replaces it, and something lasting you say about yourself in passing ("I'm a vegetarian") is kept on its own, in the window and on the phone. In the Code conversation (VS Code, Code page, phone), it applies to the project open in VS Code (or to all your projects, if you say so): your coding conventions stay with the code, your personal facts with the chat; "remember it for all my projects" extends what you just had it remember.
 - A **Memory** panel to **see, edit and delete** what the AI knows about you, with **real** CRUD operations, 100% local. **3 tabs**: **Facts** (SQLite), **Documents** and **Conversations** (ChromaDB vectors), with search, category filter, pagination and provenance (which session, which document). Files attached in the chat land in Documents on their own, images included (described by the vision model and read by OCR once the answer is over); its **Add** button, or a drop on the panel, saves any PDF, Word, Excel, PowerPoint, code file or image, or a whole folder. Each document shows as one row with its date, each dropped folder as one row that unfolds into its files; two files with the same name both stay, and putting back one whose name is taken asks whether to update it or keep both. When a question names a document in memory, the model gets its content under its name, folder and date, so it doesn't mix up two files called the same.
 - Deleting a vector entry is a **real deletion in ChromaDB** (`collection.delete`). For conversations, the **"delete at the source"** option removes the original message from the workspace for good.
 
@@ -300,7 +300,7 @@ relay:
 
 | Feature | Details |
 |---|---|
-| 🤖 **Agentic mode** | 9 tools exposed to the LLM (`read_file`, `write_file`, `edit_file`, `list_dir`, `glob`, `grep`, `run_command`, `get_active_editor`, `open_file`) with a multi-step reasoning loop |
+| 🤖 **Agentic mode** | 10 tools exposed to the LLM (`read_file`, `write_file`, `edit_file`, `list_dir`, `glob`, `grep`, `run_command`, `get_active_editor`, `open_file`, and `search_memory` run on the PC) with a multi-step reasoning loop; "remember that…" saves a fact for the open project |
 | 📎 **`@` menu** | Typing `@` attaches a file to the message, or a **folder** as a persistent **@codebase** context (indexed on the host, one context per project) |
 | ⚡ **Slash commands** | `/` autocompletion of the My_AI prompts, expanded into a detailed prompt when sent (the bubble keeps the short command) |
 | ⏹️ **STOP button** | Stops the whole turn in one click: the LLM **and** the agentic tool loop (pending calls included). **Clear** during a generation stops it too |

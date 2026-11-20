@@ -35,7 +35,7 @@ Firefox under the hood, a quiet sidebar, nothing to sign up for, nothing to swit
 *Ressac* is French for backwash: the wave that comes back to the shore. Send the agent out on the web, and it comes back with the answer.
 
 **An agent that browses with you**
-- Claude Code or Codex runs in a sandboxed container, with **your own account**, inside a small Linux machine that Ressac downloads once (about 500 MB) and stops after 5 minutes without use (adjustable in Réglages › Atelier). Docker is not needed.
+- Claude Code or Codex runs in a sandboxed container, with **your own account**, inside a small Linux machine that Ressac downloads once (about 500 MB) and stops after 5 minutes without use (adjustable in Settings › Workshop). Docker is not needed.
 - The container sees only `~/Ressac/workspace`. Its network goes through an allowlist proxy: Claude, OpenAI, npm, PyPI and GitHub, plus the domains you add in Settings › Agent. On your Mac it reaches only Ressac's own ports; an Ollama you set up as the engine is reached through them, for inference only. The allowlist checks names, so a site sharing a CDN with an allowed domain may still be reached by name tricks over TLS. It gets 2.5 GB of memory (1 GB on an 8 GB Mac) and 1024 processes.
 - Limits, plainly: this stops ordinary leaks, not a targeted and patient injection. An allowed domain can still serve as a channel (a gist with the attacker's token on `api.github.com`, `npm publish`), and Ressac's browsing tools (`open_tab`, `navigate`) open pages in the browser, outside this firewall.
 - It browses in its own tab, which you can watch; a thumbnail shows what it is doing while you keep working.
@@ -72,7 +72,7 @@ Firefox under the hood, a quiet sidebar, nothing to sign up for, nothing to swit
 - **AI stays off until you switch it on.** The agent's machine, the local models and the agent start only once you say yes.
 - **Open source.** Built on Firefox, under the MPL 2.0.
 
-During the beta, Ressac sends crash and error reports (without page addresses) and an anonymous install id to its developer, to fix bugs; turn it off in Réglages › Confidentialité.
+During the beta, Ressac sends crash and error reports (without page addresses) and an anonymous install id to its developer, to fix bugs; turn it off in Settings › Privacy.
 
 ## Get Ressac
 

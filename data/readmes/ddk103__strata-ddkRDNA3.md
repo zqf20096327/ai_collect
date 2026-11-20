@@ -77,9 +77,10 @@ gfx1100/
 ## Tested configuration
 
 **Every number below was measured on this exact setup.** Change the model, the quant,
-the engine flags or the driver and the figures no longer compare. The full list — all 44
+the engine flags or the driver and the figures no longer compare. The full list — all 47
 environment variables, every launch flag — is in
-[gfx1100/docs/test-environment.md](gfx1100/docs/test-environment.md).
+[gfx1100/docs/test-environment.md](gfx1100/docs/test-environment.md) and
+[gfx1100/configs/fork-8090.example.json](gfx1100/configs/fork-8090.example.json).
 
 | | |
 |---|---|
@@ -144,8 +145,34 @@ or VRAM, so the worst case is zero gain — which is why they are kept.
 | `queue_timeout` | 270 | Requests waiting longer than 270 s get `429 queue_wait_timeout`, inside the client's 300 s idle timeout |
 
 Lesson learned: `max_queue: 0` (cap of 1) makes a client exhaust its 5 retries on 429s;
-no cap at all lets the queue grow without bound until the client aborts at 300 s and the
+no cap at all lets the queue grow unbounded until the client aborts at 300 s and the
 GPU work is wasted.
+
+### 4. Decode and prefill by prompt length (2026-11-20)
+
+Measured after four warm-up requests, `max_tokens=600`, `temperature 0`, on the UD-IQ4_XS
+pack. Prompts built from **random words** so the conversation cache could not serve them.
+Full method and the pitfalls: [gfx1100/docs/benchmarks-20261120.md](gfx1100/docs/benchmarks-20261120.md).
+
+| Prompt tokens | Prefill | Decode | Expert cache |
+|---|---|---|---|
+| 325 | **325** tok/s | 90.5 tok/s | 76.5% |
+| 1,111 | **1,111** tok/s | 95.4 tok/s | 86.2% |
+| 5,426 | **1,809** tok/s | 99.6 tok/s | 86.5% |
+| 21,722 | **2,715** tok/s | 87.8 tok/s | 85.6% |
+| 50,628 | **2,531** tok/s | 95.0 tok/s | 85.7% |
+
+Steady state after warming, short prompt, 600-token output: **108 tok/s** (median of five,
+range 96.5–109.3), expert cache 78–82%. At 21,864 prompt tokens: **93.8 tok/s** decode,
+**2,733 tok/s** prefill.
+
+```
+prefill scales with length:   325 → 2,715 tok/s (8.4x), saturating around 5K
+decode is flat in length:     88–100 tok/s from 325 to 50,628 tokens (no decay)
+```
+
+**Decode that does not sag over 50K tokens** is the result of `--kv int8` (93% of KV block
+reads hit VRAM) plus the self-adapting expert cache (`--adapt-every 1 --adapt-swaps 32`).
 
 ---
 
@@ -173,21 +200,39 @@ GPU work is wasted.
 7. Every figure is a **single-machine, single-session measurement with 3–5% noise**. It is
    not an authoritative benchmark; repeating it on the same machine can swing more than the
    difference being measured.
-8. **Short and long contexts differ a lot**: ~88 tok/s at 1.5K context, ~68 tok/s at 100K
-   (long contexts do KV streaming). Comparing figures across context lengths is meaningless.
+8. **Short and long contexts differ a lot for prefill, little for decode**: prefill goes from
+   325 tok/s at a 325-token prompt to 2,715 at 22K (the fixed setup cost is amortised), while
+   decode stays at 88–100 tok/s all the way to 50K. Always say which you mean.
+9. **A `tok/s` figure without its conditions is meaningless.** The same build produced 57, 78,
+   90, 108 and 121 tok/s in one afternoon. The three conditions that move it: **output length**
+   (first-token latency dominates a 16-token answer), **content predictability** (MTP drafts are
+   accepted more often on repetitive text), and **cache warmth** (cold 72% → warm 82% expert
+   cache, worth >10%).
+10. **The engine's `done:` line reports two different clocks**: `600 tokens in 7 s (111.1 tok/s)`
+    means 7 s of wall time including prefill, while 111.1 tok/s is decode only
+    (600 / 111.1 = 5.4 s decode + 1.6 s prefill). Computing 600/7 = 85.7 yourself is wrong.
+11. **Measuring prefill needs unique prompt text.** A first pass filled with structurally
+    identical code reported 8,979 and 13,580 tok/s at 26K and 54K — the conversation cache was
+    serving the shared prefix. Randomised content dropped it to the true 2,715 tok/s. See
+    [benchmarks-20261120.md](gfx1100/docs/benchmarks-20261120.md) §5.
 
 ### Output quality
 
-9. **Some changes alter the output**, notably `STRATA_VERIFY_DEFER_CPU` (the code comment
-   literally says "changes the output"). Turn those off before a bit-identical A/B.
-10. `STRATA_RDNA_Q6K` and `STRATA_TSUM` are summation-order optimisations. They are
+12. **Some changes alter the output**, notably `STRATA_VERIFY_DEFER_CPU` (the code comment
+    literally says "changes the output"). Turn those off before a bit-identical A/B.
+13. `STRATA_RDNA_Q6K` and `STRATA_TSUM` are summation-order optimisations. They are
     mathematically equivalent but **not guaranteed bit-identical**.
+14. **Set `sampling.presence_penalty = 0` explicitly.** The model card for Qwen3.8-Flash-Next
+    adds **1.5** when thinking is off, and a careful sweep on this engine's lineage measured
+    that as **11% slower code decode** (177.2 → 157.1 tok/s) with **no quality gain** (40/40
+    reasoning, 24/24 tool calls, zero loops either way). A request that sends its own value
+    still overrides it. See [benchmarks-20261120.md](gfx1100/docs/benchmarks-20261120.md).
 
 ### Security
 
-11. The example configs have a placeholder `api_key`. Replace it with your own strong random
+15. The example configs have a placeholder `api_key`. Replace it with your own strong random
     value before deploying, and never commit a real key.
-12. The sample config listens on `0.0.0.0`. Switch it back to `127.0.0.1` if you do not need
+16. The sample config listens on `0.0.0.0`. Switch it back to `127.0.0.1` if you do not need
     LAN access.
 
 ---

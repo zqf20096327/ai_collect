@@ -14,7 +14,7 @@ Rather than making users choose between backends OR skills, these skills detect 
 |---------|-----------|-------------|----------------|----------------|
 | **Built-in** (default) | `memory.provider` empty/null | `memory()` | 2,200 char limit | Phase 2.5 Condensation (built into dreaming) |
 | **Holographic** | `memory.provider: holographic` | `fact_store()` + `fact_feedback()` | Trust scores (0.0–1.0) | `fact_feedback(action='unhelpful')` decay |
-| **Honcho, Mem0, etc.** | Detected but unsupported | Falls back to built-in `memory()` | Built-in limits apply | Built-in condensation |
+| **Other providers** | Detected but unsupported | No promotion until supported | — | — |
 
 ## Skills
 
@@ -36,7 +36,7 @@ Phase 3:   REM — extract patterns, propose structural changes
 - Capacity check adapts: char limit for built-in, trust score distribution for holographic
 - New entries in holographic always include `entities` for compositional recall
 - **Phase 2.5 Condensation** built in — no separate `memory-lean-check` skill needed
-- Honcho/Mem0/other backends gracefully fall back to built-in
+- Unsupported providers are reported as blocked; no fallback writes
 
 ## Installation
 
@@ -73,35 +73,21 @@ hermes cron create \
 ```
 
 > **No separate lean-check cron needed.** Phase 2.5 Condensation runs as part of dreaming whenever capacity thresholds are breached (built-in >60%) or every cycle (holographic).
->
-> ### ⚠️ Cron Limitation: Memory Providers Unavailable
->
-> **Detection works, but promotion to holographic is blocked in cron.**
->
-> Hermes Agent's cron scheduler hardcodes `skip_memory=True` for **all** cron jobs
-> (`cron/scheduler.py:1686`). This disables the entire memory subsystem —
-> `memory()`, `fact_store`, and `fact_feedback` are all unavailable.
->
-> | Context | Holographic tools | Built-in `memory()` | File patching |
-> |---------|-------------------|---------------------|---------------|
-> | **Interactive session** | ✅ `fact_store` / `fact_feedback` | ✅ | ✅ |
-> | **Manual run** (`hermes cron run`) | ✅ | ✅ | ✅ |
-> | **Scheduled cron** | ❌ blocked by `skip_memory=True` | ❌ blocked | ✅ fallback |
->
-> **What this means in practice:**
-> - Phase 0 detection correctly identifies holographic ✓
-> - Phase 2 promotions degrade to direct `patch` on MEMORY.md (works, just not holographic)
-> - Holographic facts from interactive sessions are **never condensed by cron runs**
-> - Built-in MEMORY.md stays healthy via file patching
->
-> **Workarounds:**
-> - **Increase cron frequency** — daily catches MEMORY.md bloat before it hits 80%+
-> - **Run manually** — `hermes cron run <job-id>` uses the interactive toolset (holographic available)
-> - **Switch to built-in** — `hermes memory off` eliminates the split-brain entirely
-> - **Hybrid** — keep holographic for interactive sessions, accept MEMORY.md patching for cron
->
-> This is a Hermes core limitation (tracked in [NousResearch/hermes-agent#34094](https://github.com/NousResearch/hermes-agent/issues/34094),
-> [#18885](https://github.com/NousResearch/hermes-agent/issues/18885)), not a skill bug.
+
+### Cron and memory-provider contract
+
+Cron runs use normal tool resolution, and memory tools are available to scheduled
+jobs. Hermes Agent PR [#91447](https://github.com/NousResearch/hermes-agent/pull/91447)
+(merge `ef04d846e9505388d8eab61b7c6608acb652bf59`) changed the cron contract: the
+scheduler no longer skips memory (`skip_memory=False`), memory is not denylisted,
+and user `agent.disabled_toolsets` restrictions are still respected. `allow_memory`
+is not a supported flag and is not needed.
+
+`hermes cron run <job-id>` is a cron execution, not an interactive bypass or a
+way to recover tools excluded by the configured tool restrictions. Follow the
+configured backend and available tools; if the required tool is unavailable,
+stage candidates and report `BLOCKED`. Never patch MEMORY.md or access provider
+files/SQLite as a workaround.
 
 ## Requirements
 
@@ -129,10 +115,10 @@ The detection logic:
 ```
 memory.provider == "" or null → built-in
 memory.provider == "holographic" → holographic
-memory.provider == "honcho" or "mem0" or ... → built-in (fallback)
+unsupported provider → BLOCKED; stage candidates and report
 ```
 
-Fallback is intentional — better to write to MEMORY.md than to nothing.
+Never route an unsupported provider to another backend or storage layer.
 
 ## Architecture
 

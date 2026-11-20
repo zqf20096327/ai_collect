@@ -5,7 +5,7 @@
 ScraperAPI's official Claude Code plugin — a growing library of agent skills that cover the full ScraperAPI surface: onboarding, product primitives, SDK best practices, command-line and workflow tooling, and end-to-end data pipelines.
 
 - **Onboarding & product routing** — `scraperapi-agent-onboarding` decides which ScraperAPI product fits the job.
-- **Product primitives** — first-class skills for the [Standard API](https://docs.scraperapi.com/), [Async Jobs](https://docs.scraperapi.com/making-async-requests), [Crawler](https://docs.scraperapi.com/crawler), [DataPipeline](https://docs.scraperapi.com/data-pipeline), and [MCP](skills/scraperapi-mcp/SKILL.md) tools.
+- **Product primitives** — first-class skills for the [Standard API](https://docs.scraperapi.com/), [Async Jobs](https://docs.scraperapi.com/asynchronous-api), [Crawler](https://docs.scraperapi.com/scraperapi-crawler-v2.0), [DataPipeline](https://docs.scraperapi.com/data-pipeline), and [MCP](skills/scraperapi-mcp/SKILL.md) tools.
 - **SDK best practices** — language-specific guides for Python, Node.js, Ruby, PHP, and Java.
 - **Tools** — official ScraperAPI [CLI](skills/scraperapi-cli/SKILL.md) and [n8n](https://n8n.io/integrations/scraperapi/) community node.
 - **Workflows** — opinionated, ready-to-run recipes: scraper building, lead enrichment, autonomous research, market research, SEO audits, SERP intelligence, and price monitoring.
@@ -28,7 +28,7 @@ export SCRAPERAPI_API_KEY="your-key-here"
 
 ### 3. Install the plugin
 
-The plugin ships with ScraperAPI's [hosted MCP server](https://mcp.scraperapi.com/mcp) so all 22 MCP tools become available to the agent, authed via your `SCRAPERAPI_API_KEY`.
+The plugin ships with ScraperAPI's [hosted MCP server](https://mcp.scraperapi.com/mcp) so all 28 MCP tools become available to the agent. In Claude Code, the plugin asks for your API key when you enable it and stores it securely.
 
 **Claude Code community marketplace:**
 
@@ -73,6 +73,7 @@ Once installed, the skills load automatically — start an agent session and try
 | **[`scraperapi-java-sdk`](skills/scraperapi-java-sdk/SKILL.md)** | Best-practices reference for the Java SDK (`com.scraperapi:sdk`): fluent builder API, escalation ladder, async jobs, structured data. |
 | **[`scraperapi-cli`](skills/scraperapi-cli/SKILL.md)** | Use the official `sapi` command-line tool from shells, pipelines, cron, and CI. Covers install, auth, every command, JSON / piping behaviour, and common recipes. |
 | **[`scraperapi-n8n`](skills/scraperapi-n8n/SKILL.md)** | Generate n8n workflows that use the official ScraperAPI community node (`n8n-nodes-scraperapi-official`). Produces importable workflow JSON or step-by-step build guides. |
+| **[`scraperapi-zapier`](skills/scraperapi-zapier/SKILL.md)** | Guide users to build Zaps with the official ScraperAPI Zapier integration: add web scraping, SERP data, or e-commerce data to a Zapier workflow. |
 | **[`scraperapi-scraper-builder`](skills/scraperapi-scraper-builder/SKILL.md)** | Build a runnable scraper end-to-end: picks structured endpoint vs raw HTML, JS rendering, proxy tier, sync vs async, then generates a complete Python or Node.js script with retries, pagination, and credit estimation. |
 | **[`scraperapi-lead-enrichment`](skills/scraperapi-lead-enrichment/SKILL.md)** | Enrich a contact or company from any seed (name, domain, LinkedIn URL, email) and produce a structured contact card with person and company fields. |
 | **[`scraperapi-research-agent`](skills/scraperapi-research-agent/SKILL.md)** | Autonomous research agent: takes a question, uses ScraperAPI to search and scrape relevant pages, uploads content as file artifacts to the Anthropic Files API, then feeds everything to Claude for a cited markdown report. |
@@ -148,8 +149,8 @@ Each skill's `SKILL.md` documents its full set of trigger phrases and behaviour.
 │   ├── scraperapi-ruby-sdk/
 │   ├── scraperapi-scraper-builder/
 │   ├── scraperapi-seo-audit/
-│   └── scraperapi-serp-intelligence/
-├── dist/                        # packaged .skill artifacts (for distribution)
+│   ├── scraperapi-serp-intelligence/
+│   └── scraperapi-zapier/
 ├── LICENSE
 └── README.md
 ```

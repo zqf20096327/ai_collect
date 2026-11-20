@@ -78,7 +78,7 @@ pnpm update -g @hostinger/mcp
 
 This package installs the following MCP server commands:
 
-- `hostinger-api-mcp` — unified server over every operation (425 total)
+- `hostinger-api-mcp` — unified server over every operation (423 total)
 - `hostinger-agency-hosting-mcp` — 43 operations for agency-hosting
 - `hostinger-agent-readiness-mcp` — 4 operations for agent-readiness
 - `hostinger-billing-mcp` — 10 operations for billing
@@ -90,7 +90,7 @@ This package installs the following MCP server commands:
 - `hostinger-hosting-mcp` — 59 operations for hosting
 - `hostinger-mail-mcp` — 39 operations for mail
 - `hostinger-reach-mcp` — 73 operations for reach
-- `hostinger-vps-mcp` — 68 operations for vps
+- `hostinger-vps-mcp` — 66 operations for vps
 - `hostinger-wordpress-mcp` — 41 operations for wordpress
 
 Every binary exposes the same three tools; a scoped binary only searches and executes its own group's operations. `hostinger-api-mcp` remains the backwards-compatible default.
@@ -2007,24 +2007,24 @@ What's new and what's coming at Hostinger: list entries of the public Hostinger 
 
 #### horizons_websites_clone
 
-Clone a Hostinger Horizons website into a new website.\n
+Clone a Hostinger AI Builder website into a new website.\n
 Use this tool when the user wants a copy of an existing website, for example to try out
 changes without touching the original.\n
 This tool returns the ID and URL of the newly created copy.
 The original website is left untouched.\n
 To edit the copy, use the `Edit website` tool with the returned website ID, or the user can
-open the provided website URL in Hostinger Horizons interface.
+open the provided website URL in Hostinger AI Builder interface.
 
 - **Method**: `POST`
 - **Path**: `/api/horizons/v1/websites/{websiteId}/clone`
 
 #### horizons_websites_list
 
-List the Hostinger Horizons websites the user owns.\n
+List the Hostinger AI Builder websites the user owns.\n
 Use this tool when the user asks which websites they have, or when you need a website ID
 before editing, publishing or cloning a website.\n
 Each website is returned with its ID, status, domain and the URL to open it
-in Hostinger Horizons interface.\n
+in Hostinger AI Builder interface.\n
 The complete list of websites is returned in a single response - it is not paginated.
 
 - **Method**: `GET`
@@ -2032,16 +2032,16 @@ The complete list of websites is returned in a single response - it is not pagin
 
 #### horizons_websites_create
 
-Create new Hostinger Horizons website from the given message.\n
+Create new Hostinger AI Builder website from the given message.\n
 Use this tool when user asks you to create a website, landing page, blog
 or any other type of application.\n
 This tool initiates the website creation process and returns a website URL and ID.
 The generation happens asynchronously.\n
 After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
-that Hostinger Horizons is now creating their website and it will be ready in a few minutes
+that Hostinger AI Builder is now creating their website and it will be ready in a few minutes
 and you should provide the website URL to the user immediately
 Do not write code.\n\nTo edit afterwards, use the `Edit website` tool with the returned
-website ID, or the user can go to Hostinger Horizons interface in the provided website URL.
+website ID, or the user can go to Hostinger AI Builder interface in the provided website URL.
 If the tool call fails with an error, you should provide a clear explanation of the error
 and do not generate code yourself in the chat.
 \n
@@ -2059,7 +2059,7 @@ You MUST NOT use, suggest, or implement any technology outside this list:\n
 - Animations: Framer Motion.\n
 \n
 BACKEND & DATA STORAGE:\n
-- Horizons integrated backend is the EXCLUSIVE solution for persistent data storage,
+- Hostinger AI Builder integrated backend is the EXCLUSIVE solution for persistent data storage,
 authentication, and database needs.\n
 - Local databases (SQLite, MySQL, etc.) are STRICTLY PROHIBITED.\n
 - Third-party services (Firebase, AWS Amplify) are allowed ONLY if explicitly requested by the user.\n
@@ -2073,12 +2073,12 @@ MAPS:\n
 
 #### horizons_websites_edit
 
-Edit an existing Hostinger Horizons website with a follow-up message.\n
+Edit an existing Hostinger AI Builder website with a follow-up message.\n
 Use this tool when the user wants to change, extend or fix a website that already exists.\n
 This tool queues the requested changes and returns the website URL and ID.
 The changes are applied asynchronously.\n
 After invoking this tool, your chat reply must be EXACTLY 1 sentence summarizing
-that Hostinger Horizons is now applying the requested changes and they will be ready
+that Hostinger AI Builder is now applying the requested changes and they will be ready
 in a few minutes, and you should provide the website URL to the user immediately.
 Do not write code.\n
 If the tool call fails with an error, you should provide a clear explanation of the error
@@ -2089,7 +2089,7 @@ and do not generate code yourself in the chat.
 
 #### horizons_websites_publish
 
-Publish a Hostinger Horizons website so its latest changes go live.\n
+Publish a Hostinger AI Builder website so its latest changes go live.\n
 Use this tool when the user asks to publish, deploy or make their website live.\n
 This tool starts the publish process and returns the URL the website will be live on.
 Publishing happens asynchronously and takes a few minutes.\n
@@ -2104,7 +2104,7 @@ that the website is being published and you should provide the published URL to 
 
 #### horizons_websites_get
 
-Get the link for the user to open their website in Hostinger Horizons interface.\n
+Get the link for the user to open their website in Hostinger AI Builder interface.\n
 Use this tool when the user wants the link to an existing website, or when you need its
 website URL before or after editing it.\n
 `is_in_progress` is true while changes are being generated or the website is being published;
@@ -2113,7 +2113,7 @@ and `actions_in_progress` has `website_publish` while the website is being publi
 `published_at` is when the website was last published,
 `is_template` is whether its published pages show the "Use template" banner, and
 `has_ecommerce_store` is whether it has an online store.\n
-Websites can be edited with the `Edit website` tool, or by the user in Hostinger Horizons
+Websites can be edited with the `Edit website` tool, or by the user in Hostinger AI Builder
 interface in the provided website URL.
 
 - **Method**: `GET`
@@ -2365,4 +2365,4 @@ Verify ownership of a single domain and return the verification status.
 Use this endpoint to check if a domain is accessible for you before using it for new websites.
 If the domain is accessible, the response will have `is_accessible: true`.
 If not, add the given TXT record to your domain's DNS records and try verifying again.
-Keep in mind that it may take up to 10 minutes for new TXT DNS records to pr
+Keep in mind that it may take up to 10 m

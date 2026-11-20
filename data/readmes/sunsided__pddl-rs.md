@@ -170,6 +170,13 @@ universal and existential preconditions, conditional effects and action costs.
 It rejects other constructs with an error instead of dropping them. See the
 [`sas_plus` module docs](https://docs.rs/pddl/latest/pddl/sas_plus/index.html).
 
+### Validating Plans
+
+[`pddl-validate`](pddl-validate), a separate crate in this repository, checks
+plans against a domain and problem, independently of any planner, and explains
+the first step that fails in the style of VAL's repair advice. See its
+[README](pddl-validate/README.md) for the supported PDDL levels.
+
 ### Caveat Emptor
 
 At this point the parser supports all domain and problem definition
@@ -185,3 +192,12 @@ Parsers were implemented based on the BNF elements listed in the paper:
 > _Daniel L. Kovacs_
 
 See [ELEMENTS.md](ELEMENTS.md) for a graph of BNF elements.
+
+## License
+
+Licensed under either of
+
+- the European Union Public Licence 1.2 ([LICENSE-EUPL-1.2.md](https://github.com/sunsided/pddl-rs/blob/main/LICENSE-EUPL-1.2.md)), or
+- the Mozilla Public License 2.0 ([LICENSE-MPL-2.0.txt](https://github.com/sunsided/pddl-rs/blob/main/LICENSE-MPL-2.0.txt)),
+
+at your option.

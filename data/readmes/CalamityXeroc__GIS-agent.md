@@ -4,29 +4,6 @@
 
 已适配 **ArcGIS Pro 3.7**（Pro 3.7.0.1901 / Python 3.13，真机实测通过），并保留 **3.6** 兼容；解释器与制图样式目录都按实际安装自动发现，不写死安装路径。
 
-## 关于本仓库（源码纯净版）
-
-这份仓库只放**源码**：不含真实业务数据、`benchmark/reports` 下的基准产物、运行日志、工作区数据，也不含任何 API Key。
-
-- 配置：`cp config/llm_config.example.json config/llm_config.json`，填自己的 key（该文件被 `.gitignore` 挡住，不要提交）。
-- 数据：把你的 GIS 数据放进 `workspace/input/`（同样不入库）。
-- 基准：`benchmark/` 只有跑测代码与任务定义；历史产物留在本地。
-
-## 最近更新（2026-11-19）
-
-**终端乱码（`?[2K?[1A` / `?[38;5;246m`）根治**，三类来源分别处理：
-
-- 流式预览窗调了 `glyph()` 却没导入 → prompt_toolkit 每帧重绘都在事件循环里抛 `NameError`，整段 traceback 打在输入框上。已补导入 + 压真实渲染链的回归用例。
-- 输入框占屏时不再开 rich `Live` 原地重绘（`ESC[2K`/`ESC[1A` 会和输入框互相擦）；流式改由输入框上方的预览窗显示，块结束定型打印。
-- `Console.status()` 本身就是 `Live`（会发 `ESC[?25l`/`ESC[1A`/`ESC[2K`）→ 纯文本模式改为一行提示，零控制序列。
-- 颜色判定收窄：Windows 上单独一个 `TERM`（从 Git Bash/conda 继承来的）不再当作“支持 ANSI”的证据；子命令原本那个裸 `Console()` 也收回统一工厂。
-
-**其它**
-
-- 内核子进程的 stdout/stderr 改道 `.gis_agent/logs/kernel.log`：arcpy/GDAL 的 `Unable to load code page translation table …` 不再直接打进输入框把框拆碎。
-- 状态行在等模型时显示「等待模型响应 · Ns」（上游缓冲/排队时不再只有“运行中 · 未开始 · 4m02s”）。
-- 可视化（Web 控制台的 MapLibre 只读预览）已按 `web/` 重新构建核对，静态资源与源码一致。
-
 ## 架构概览
 
 单一引擎：**有界观察-决策-执行循环** + 原生 tool calling + 代码自修复 + 强制验收。
@@ -50,6 +27,7 @@ src/gis_cli/
 │   └── hygiene.py       # 交付卫生（过程文件 / 重做残留）
 ├── cartography/         # 制图：facts → design → render → qc
 ├── datacatalog/         # SQLite 数据目录（字段名 / 坐标系 / 范围）
+├── web/                 # 本地 Web 服务（FastAPI）：catalog / rows / distinct / raster bands / 预览
 ├── recipes/             # 48 个 GIS 方法论配方（自带验证断言）
 ├── ui/                  # 终端界面（转录 / 状态行 / 输入框 / 命令）
 ├── trace/               # 每次 run 的 JSONL + Markdown 报告
@@ -57,6 +35,13 @@ src/gis_cli/
 ├── skills/              # SKILL.md 技能（渐进披露，run_skill 读全文）
 ├── legacy/              # 旧引擎（已下线，不参与打包）
 └── agent/               # CLI 入口（chat / loop）
+```
+
+Web 控制台前端是独立的 `web/` 工程（Vite + React + MapLibre）：
+
+```
+web/
+└── src/components/gis/    # 「数据资产」GIS 工作台前端（目录树 / 图层栈 / 地图 / 右 dock / 属性表 / 状态栏）
 ```
 
 ### 一次任务的执行链路

@@ -35,11 +35,15 @@ It is **not**:
   confirm.
 - **investment advice.** Alerts, plans, briefs, backtests and the assistant
   report numbers and rules you set; none of them tells you what to buy.
-- **a real-time feed.** Quotes come from public endpoints (Eastmoney first,
-  Yahoo as fallback). Measured once on 2026-11-17: Eastmoney mainland and Hong
-  Kong prices arrived in about 2 seconds, Yahoo's about 15 minutes late, exchange
-  rates in about 10 seconds. Every price is labelled with its status, so a late
-  price is never shown as live.
+- **a real-time feed.** Quotes come from public endpoints: Eastmoney first,
+  then Tencent, then Yahoo, each asked for what the one before could not price.
+  Measured once on 2026-11-17: Eastmoney mainland and Hong Kong prices arrived in
+  about 2 seconds, Yahoo's about 15 minutes late, exchange rates in about 10
+  seconds. Tencent, measured on 2026-11-19 from mainland hosts where Eastmoney's
+  endpoints did not answer, replied in about 0.2 seconds with New York prices
+  seconds old (how late its Hong Kong prices are during trading was not
+  measured). Every price is labelled with its source and status, so a late price
+  is never shown as live.
 - **a multi-user service.** It has no login. Keep it on your own machine (see
   [SECURITY.md](SECURITY.md)).
 
@@ -167,6 +171,11 @@ Under Docker the automatic close snapshot reports 不可用 because the backend
 image does not contain the engine scripts; see
 [docs/ALERTS_AND_ROUTINES.md](docs/ALERTS_AND_ROUTINES.md#running-it).
 
+On a slow or busy machine the backend can need longer to start than the 30
+seconds `start.sh` waits (`Backend did not become ready within 30 seconds`), or
+than its Compose health check allows (`docker compose up` reports the backend
+`unhealthy`): set `BACKEND_START_TIMEOUT` (see [Configuration](#configuration)).
+
 ## Demo mode
 
 ```bash
@@ -201,6 +210,7 @@ by default).
 |---|---|---|
 | **Data and modes** | | |
 | `PORTFOLIO_DIR` | `engine/portfolio` (`/app/portfolio` in Docker) | ledger, desk store, legacy holdings and snapshots |
+| `TRACKER_REPORTS_DIR` | `engine/reports` | the daily Markdown reports (`portfolio-YYYYMMDD.md`) the pipeline saves and the close snapshot, the extensions' close reports and the Feishu workbench read; an absolute path, for example `PORTFOLIO_DIR/reports` so that they are backed up with the data |
 | `TRACKER_CONFIG_FILE` | `config.json` in the backend's working directory (`dashboard/`) | chat model settings and keys written by the wizard |
 | `TRACKER_BACKTEST_DIR` | `dashboard/data` | the backtest's bar cache and run history |
 | `TRACKER_LAB_DIR` | `dashboard/data/lab` | research lab storage |
@@ -211,9 +221,11 @@ by default).
 | `BACKEND_HOST`, `BACKEND_PORT` | `127.0.0.1`, `8000` | backend address (`start.sh`; the port also in Compose) |
 | `FRONTEND_HOST`, `FRONTEND_PORT` | `127.0.0.1`, `3000` | web app address (`start.sh`; the port also in Compose) |
 | `PYTHON` | `python3` | interpreter used by `start.sh` and the engine shell scripts |
+| `BACKEND_START_TIMEOUT` | `30` (`start.sh`), none (Compose) | seconds the backend may take to answer `/health` at start-up. `start.sh` gives up after it (a whole number from 1 to 3600, from the shell, e.g. `BACKEND_START_TIMEOUT=120 make start`); Compose does not count failed health checks during it (`start_period`, from `.env`) |
 | **Quotes** | | |
-| `TRACKER_QUOTE_SOURCE` | Eastmoney, then Yahoo | `eastmoney` or `yahoo`: only that source; `fake`: scripted quotes from `PORTFOLIO_DIR/fake_quotes.json` |
+| `TRACKER_QUOTE_SOURCE` | Eastmoney, then Tencent, then Yahoo | `eastmoney`, `tencent` or `yahoo`: only that source for quotes (Tencent has no exchange rates: with `tencent`, rates still come from Yahoo, then Eastmoney); `fake`: scripted quotes from `PORTFOLIO_DIR/fake_quotes.json` |
 | `TRACKER_EASTMONEY_PROXY` | off | `1`: reach Eastmoney through the proxy in the environment |
+| `TRACKER_TENCENT_PROXY` | off | `1`: reach Tencent through the proxy in the environment |
 | `TRACKER_YAHOO_PROXY` | `HTTPS_PROXY` | proxy URL for Yahoo |
 | `TRACKER_SYMBOL_INDEX` | on | `0`: no A-share / ETF name list for search (codes still work) |
 | **Alerts and routines** | | |
@@ -230,6 +242,8 @@ by default).
 | **Backtest and research** | | |
 | `TRACKER_ALLOW_CUSTOM_STRATEGIES` | off | `1`: allow uploading Python strategies (runs with the backend's privileges) |
 | `TRACKER_LAB_PLUGINS`, `TRACKER_LAB_URL` | none, `http://127.0.0.1:8000` | research extensions and the CLI's backend; see [docs/RESEARCH.md](docs/RESEARCH.md) |
+| **Extensions** | | |
+| `TRACKER_EXTENSIONS` | none | comma-separated Python modules that add routes, background tasks, chat tools, delivery channels and a hook for each finished close report; they run with the backend's privileges; see [docs/EXTENSIONS.md](docs/EXTENSIONS.md) |
 | **Legacy engine scripts** | | |
 | `CONDA_ENV`, `CONDA_EXE` | none, `conda` | run the engine's child scripts in a conda environment |
 
@@ -263,6 +277,7 @@ Everything stays on your machine:
 | `PORTFOLIO_DIR/ledger.sqlite3` | every confirmed event (opening balance, trades, dividends, deposits and withdrawals, exchanges, splits, reversals), unconfirmed ledger proposals and research notes |
 | `PORTFOLIO_DIR/desk.sqlite3` | alert rules and fired alerts, trade plans and their links to trades, the watchlist, the assistant's proposals (including rejected lessons), briefs and routine runs, import sessions and column mappings, fee profiles, notifications and the setup flags |
 | `PORTFOLIO_DIR/snapshots/`, `history.csv`, `holdings/` | daily close snapshots and legacy holdings files |
+| `engine/reports/` (`TRACKER_REPORTS_DIR`) | the daily Markdown reports |
 | `dashboard/data/memory.json` | the assistant's memory (profile, triggers, lessons) |
 | `TRACKER_CONFIG_FILE`, `.env` | model settings and keys |
 | `TRACKER_BACKTEST_DIR`, `TRACKER_LAB_DIR` | backtest and research data |
@@ -346,8 +361,9 @@ the same history; it is not a forecast.
 ## Feishu workbench and research lab
 
 - [docs/FEISHU_WORKBENCH.md](docs/FEISHU_WORKBENCH.md): private-chat cards for
-  daily updates, assets, reports and research through OpenClaw. Its card writes
-  edit the legacy holdings files and are refused once the ledger is active.
+  daily updates, assets, reports and research through OpenClaw. With an active
+  ledger the daily card records into it: its preview is the ledger's proposal and
+  confirming on the card books it; without one it edits the legacy holdings files.
 - [docs/RESEARCH.md](docs/RESEARCH.md) ([中文](docs/RESEARCH_CN.md)): the research lab,
   its data sources, templates, agent mode, CLI and MCP bridge.
 
@@ -492,7 +508,7 @@ Known in 4.0.0 and left as they are for now:
 [Full guide (中文)](docs/FULL_GUIDE_CN.md) · [Ledger](docs/LEDGER.md) ·
 [Import](docs/IMPORT.md) · [Alerts and routines](docs/ALERTS_AND_ROUTINES.md) ·
 [Accounting conventions](docs/ACCOUNTING.md) · [Security](docs/SECURITY.md) ·
-[Roadmap](docs/ROADMAP.md) · [Changelog](CHANGELOG.md)
+[Extensions](docs/EXTENSIONS.md) · [Roadmap](docs/ROADMAP.md) · [Changelog](CHANGELOG.md)
 
 ## Versions
 

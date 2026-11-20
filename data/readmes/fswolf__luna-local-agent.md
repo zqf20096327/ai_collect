@@ -1,8 +1,8 @@
-<img src="assets/luna-github-banner-v1.png" alt="Luna: Your voice. Your machine. Your Luna." width="100%">
+<img src="assets/luna-github-banner-v2.png" alt="Luna Local AI: Voice, Memory, Tools" width="100%">
 
 <hr>
 
-<img width="1210" alt="Luna in the terminal beside her animated Live2D portrait" src="assets/luna-desktop.png" />
+<img width="1210" alt="Luna in her web chat beside her animated portrait, reading a book" src="assets/luna-web-desktop.png" />
 
 # luna-local-agent
 
@@ -78,7 +78,7 @@ What she does:
 - **Streams with you:** answers pomf.tv, Twitch, YouTube and IRC chat out loud ([details](docs/chat.md))
 - **Plays games:** chess against you on a board you drag the pieces around on, and Minecraft, Zork, Vibe City, REALITI and Game Boy games you own (Pokemon Red and Blue and The Final Fantasy Legend come to her as text too) on her own when you go quiet; she remembers how she felt about them ([details](docs/games.md))
 - **Runs your home:** lights, plugs, sensors and the thermostat through Home Assistant on your own network; locks and garage doors always ask first ([details](docs/home.md))
-- **Adult toys (18+):** Lovense, and most other brands through Buttplug.io, so she can use them in a roleplay, with limits you set ([details](docs/devices.md#lovense))
+- **Adult toys (18+):** Lovense, and most other brands through Intiface Central (Buttplug.io), so she can use them in a roleplay, with limits you set ([details](docs/devices.md#lovense))
 - **From your phone:** Discord, with approvals answered right in the chat, and scheduled jobs ([details](docs/sysadmin.md))
 - **Easy to set up:** the installer picks a model that fits your graphics card, she asks your name the first time she starts, and every setting is on one page in your browser, with presets: Assistant, Companion, Streamer, and Small, Medium or Large to fit your model ([details](docs/configuration.md#the-settings-page))
 - **Knows her own manual:** ask her how to do something and she looks it up and tells you the exact command
@@ -108,13 +108,16 @@ portrait page. Which fans work and what to buy:
 
 <img width="1210" alt="Luna's web window: the chat on the left, with her replies in the middle, your messages on the left and her notes in small yellow boxes on the right, beside her portrait reading a book in her room" src="assets/web-ui.jpg" />
 
+<img width="1210" alt="Luna in the terminal: her status box and the conversation on the left, beside her animated portrait" src="assets/luna-desktop.png" />
+
 `./start_web.sh` (or `./start.sh --web`) starts her with no terminal at all: the chat opens in
 a window of its own beside her portrait, and the terminal you started her
 from can close. Every one of her pages has the same header: her logo opens
 the menu (portrait, pose studio and the live monitor in windows of their
 own, then settings, thoughts, memory, help, and Exit), Online shows what
 she's running on, and the middle says what she's doing. A file or a picture
-goes in with the paperclip. Closing the window quits her
+goes in with the paperclip. Her icon in the system tray opens her chat,
+the portrait and settings, switches her voice and quits her
 ([details](docs/controls.md#chatting-in-the-browser)).
 
 `./start.sh` is still the terminal, for a server or an SSH session where
@@ -305,7 +308,7 @@ The installer asks before anything that touches your system, and can be run agai
 - [Plugins](docs/plugins.md): how they work, writing your own, scheduled jobs and Discord
 - [Stream chat](docs/chat.md): pomf.tv, Twitch, YouTube and IRC, and what viewers can and can't reach
 - [Games](docs/games.md): chess, Minecraft, Zork, Vibe City, REALITI, Game Boy, playing on her own
-- [Home and devices](docs/devices.md): Home Assistant, Lovense, toys of most brands through Buttplug.io
+- [Home and devices](docs/devices.md): Home Assistant, Lovense, toys of most brands through Intiface Central
 - [Development](docs/development.md): project structure, extras
 
 The same pages are on the [wiki](https://github.com/fswolf/luna-local-agent/wiki), and there's a

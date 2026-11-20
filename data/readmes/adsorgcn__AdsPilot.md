@@ -1,0 +1,152 @@
+# AdsPilot：开源免费 AI Agent 搜索广告（SEM / Google Ads）与联盟投流无人值守系统
+
+**开源、免费。** 把整套搜索广告（SEM / PPC）与广告联盟（CJ、Impact）投放能力做成基座加插件，交给你自己的 Agent（DeepSeek Harness、Claude Code、Codex、Cursor、OpenClaw、Hermes 或任何 MCP 客户端），在你自己的账号、你自己的机器上无人值守地跑。不登录、不托管、不收费。
+
+**合规姿态，与开源免费并排写在第一屏。** 本人真实身份、单账号，平台要 KYC 照实做；不造流量、不模拟点击、不做 cloaking、不绕平台资格与封禁、不冒充身份、不做多账号；凭据零留存，一切在你自己的机器与账号里。做不到这几条的，这个仓库帮不上。
+
+**[iLang 官网 (ilang.ai)](https://ilang.ai)** · **[DSH 插件指南 (dsh.ilang.guide)](https://dsh.ilang.guide)** · **[GitHub 源码](https://github.com/adsorgcn/AdsPilot)** · **[npm (`adspilot`)](https://www.npmjs.com/package/adspilot)** · *English: [README.en.md](https://github.com/adsorgcn/AdsPilot/blob/main/README.en.md)*
+
+## 这是什么，为什么这么做
+
+传统的投放 SaaS 是「平台替你干活」：你登录它的后台，把账号托管给它，按月付费，它替你建广告、看报表、调预算。这个架构下登录、计费、多租户、托管 token 一样都少不了，而且它永远在替你做判断，你看不见它怎么判的。
+
+AdsPilot 反过来，是「你的 Agent 替你干活」。仓库里没有一个要编译的程序、没有后台、没有账号系统。它是一套写给 Agent 看的使用方法，加一组只用 Python 标准库的小脚本（同时提供 39 个标准 JSON / MCP 工具与 DeepSeek Harness 插件组合包 `adspilot`）。使用方法用 [iLang](https://ilang.ai) 写，所以 Claude Code、Codex、DSH 或别的 Agent 读到的是同一份，执行出来也是同一个样子。你的 Agent 读完入口文件，先自检这台机器够不够格，然后按使用方法在你自己的 Google Ads 和 CJ / Impact 账号上建广告、拉报表、对账、把转化灌回去，每天自己跑一轮。
+
+它分两块，一条判据切开：**凡是要对外部 API 说话的，就是插件；剩下的全是主干。** 主干不依赖任何一家外部服务，任何一个插件消失，主干照样跑，只是笨一点。加一家平台或一家联盟，只加一个目录，主干一行不改。
+
+能跑起来是主干保证的；跑得好不好取决于 SOUL。SOUL 是所有判断规则和阈值的集合，仓库自带一个通用默认 SOUL，本地、开源、零成本。每到要做决定的地方（选哪个 offer、要不要上线、今天加预算还是暂停、这个词要不要停、转化要不要灌、账号异常要不要停），主干把状态打成 [iLang v5](https://ilang.ai) 的 11 维向量，按冻结的 f_v5 算出 M1 到 M8。判断给的是建议，不是闸门：你明确说了要投什么、要怎么调，就照你的做，判断照算，作为建议写进输出和账本；你没说，Agent 才按判断自己拿主意，M1 和 M2 执行，其余只提议。唯一不因一句话放行的是第一屏那几条合规姿态。公益期 [iLang Inc.](https://ilang.ai) 托管一个判断服务（便宜模型加 Jev），免费给大家用，用真实数据把判断磨准。这也是 [iLang 协议](https://ilang.ai)（[规范与校验器仓库](https://github.com/ilang-ai/ilang-spec)）第一个较大的商用应用：v3 通信层、v4 执行层、v5 判断层各管一段。
+
+人只在三处出现：证件与 KYC、付款与绑卡、平台要求本人申诉。其余全是 Agent 与脚本。
+
+## 一个学员的一天
+
+早上六点半，调度器把 `core/loop/daily.py` 拉起来。它先自检，再从自有域名的中转拉回昨天的点击映射，读 Google Ads 的报表，拉 CJ 的佣金明细，把佣金按 token 对回 gclid 和关键词，生成能直接灌回 Google Ads 的转化文件。然后逐个系列、逐个词过一遍判断：这条系列均价超了就降价，那条连花一百块没转化就暂停，这条谷歌推荐了新预算就照推荐改。判断出来的动作，凭据齐的话通过 API 直接做掉，转化通过 Data Manager 传上去；凭据不齐就写成一张清单，Agent 在后台照着做。最后在 `runs/<id>/` 留一份 `report.json` 和 `run.log`，退出码 0 是正常，2 是要本人出手，教练要看就把这两个文件贴过去。没有任何东西自动往外发。
+
+## 骨架一眼看
+
+```
+core/         主干：agent 适配与 MCP · launch 开局 · lp 落地页 · judge 判断（f_v5 冻结）与评测/校准 · ledger 归因对账 · loop 无人值守循环与哨兵 · selfcheck 与 preflight 总检
+plugins/      插件：traffic/google-ads（含 oauth_helper） · affiliate/{cj,impact} · judgment/{llm,jev,soul-api,_template} · deploy/cloudflare · keywords · ipintel
+skills/       DSH 运行时技能定义（sem，触发词 SEM / 付费投流）
+BOOK.md       iLang v5 工程书（M0_SETUP 到 M5_REPORT，由 adspilot_book 分段读取）
+integrations/ 宿主接入：DSH Cordis 插件入口（index.mjs）、MCP 模板、handoff 与测试
+soul/         默认 SOUL、SOUL 接口、SOUL API 接口说明
+schemas/      manifest · judgment · report · traffic-spec · traffic-report · commissions · 39 项接口 schema
+reference/    iLang runtime 与语法校验器（钉版本） · affiliate-design · v1 交接
+```
+
+架构总图在 `ARCHITECTURE.md`，一页纸，改它要老板点头。
+
+## 走到哪了
+
+截至 2026-11-20，版本 2.2.2。下面每一块都有代码、有使用方法、有自测，区别只在有没有碰过真实世界。
+
+| 部件 | 状态 | 真实世界 |
+|---|---|---|
+| Agent 适配与能力自检 | 完成 | 三份入口正文一致，十四项自检（快速模式十二项），iLang runtime 钉版本校验；Windows 11 与 Linux 自测全过 |
+| OAuth 双作用域助手与上线前总检 | 完成 | `oauth_helper.py`（PKCE 一次性获取 `adwords` + `datamanager`）与 `preflight.py`（币种、scope、落地位鉴权）通过离线及本地回环自测；实盘需用户账号 |
+| 开局（三把钥匙进，一条系列出） | **真实账号实测通过** | 在 reviews.aixray.dev 从零建落地位、发页、建系列、真点一次进账本，全程无人，然后拆净（2.0.9 历史记录） |
+| 落地页 | 完成 | 模板与合规检查通过自测，开局时在真域名上发过一页 |
+| 判断（f_v5 冻结）与 L2 评测 | 完成 | 判断块用 iLang 正典校验器核过；`provider_chain` 回退、`eval_provider.py` L2 门槛评测与动态边界检查通过离线自测 |
+| 归因与对账 | 完成 | 增加 `schema_version=1`、已上传转化游标、拒付对账与拉取截断保护；跑过样例与游标回归自测 |
+| 无人值守循环与哨兵 | 完成 | 外部写统一收口至双开关门控（显式 `--apply` 且配置布尔 `true`），随附 cron/systemd/Windows 调度模板默认显式 `--dry-run`，支持 `retry_later`、7 天模拟验收与哨兵脱敏告警；真实七天待学员环境 |
+| 默认 SOUL | 完成 | 金额按美元定义、按账户币种折算；出价与预算照谷歌推荐；出价方式默认尽可能多点击；自定义边界由代码强制执行；阈值校准仍待真实数据 |
+| 插件 Google Ads | **真实账号实测通过** | 建系列、改预算改出价暂停词加否定词、删系列、拉报表、Data Manager 转化上传（validate-only）在 2.0.x 核通；新增 `oauth_helper.py` 走离线自测 |
+| 插件 CJ | **真实账号实测通过** | offers 187 家分页取齐、link 装 sid、commissions 切段查询、chargebacks，全通（只读） |
+| 插件 Impact | **真凭据只读实测** | 认证通；账号零个已加入项目时 0 行返回并按设计降级；API 不给 EPC，由用户指定后按实跑报表校准 |
+| 插件 判断 llm / jev / soul-api / _template | 完成 | 统一 `--soul` 与 JSON 契约，附 `_template` 与本地回环自测；未连真付费端点 |
+| 插件 Cloudflare 落地位 | **真实账号实测通过** | 一把钥匙建 KV、Worker、域名证书；页面 200、/go 302 带 sid、/export 进账本，全通 |
+| 选品第一条（词的出价 < 每次点击赚的钱） | **真实账号实测通过** | CJ 前 10 家查词算账，3 家过、7 家出局，过线的词直接带给建系列 |
+| 插件 关键词（Google Ads Keyword Planner） | **真实账号实测通过** | 用商家首页当种子出品类词，带月搜索与首页出价 |
+| DSH 3.1 插件包、工程书与交接 | 完成 | 同仓提供 npm `adspilot` 组合包（对齐 `ilang.ai` 主页与中英双语检索词）、`BOOK.md`、`sem` 技能（触发 `SEM` / `付费投流`）、`adspilot_book` 分页工具与 `dsh.handoff`；16 项 Node 测试与严格 iLang 校验全过 |
+| 统一 JSON 接口与 MCP | 完成 | 39 个接口与 `daily.py` 共用集中式双开关写门控（`write_gate.py`），137 项真值表与跨通道隔离回归自测全过 |
+| 插件 IP 情报（ipapi.is） | alpha | 离线样例 |
+| 七天验收与校准提议 | 完成 | 结合只读账本 P90 归因窗口与轮次汇率/去重输出提议；7 天模拟验收与校准自测通过，真实七天待学员环境 |
+
+以往的开局记录见上表，覆盖落地位、系列和账本。2.2.2 补齐了 npm 包与双语 README 的检索词及 `ilang.ai` 官方链接对齐，未新增真实账号实盘运行；SOUL 阈值校准和真实七天运行仍需学员环境。
+
+## 进度记录
+
+**2026-11-20，2.2.2**。补齐 npm `adspilot` 包与仓库文档的检索元数据及 [ilang.ai](https://ilang.ai) 官方链接对齐。`package.json` 的 `homepage` 与 `author.url` 指向 `https://ilang.ai`，补上中英双语描述、`bugs` 地址与涵盖 SEM / Google Ads / Affiliate / MCP / DSH / iLang 的检索词；`README.md`、`README.en.md`、`BOOK.md` 与技能说明补齐 `ilang.ai`、`dsh.ilang.guide` 及跨语言完整链接，消除在 npm 页面渲染时的相对链接断裂。投放与判断逻辑一行未动，`tests/run.sh` 全绿，没有碰真实账号。
+
+**2026-11-20，2.2.1**。把日常循环、统一 JSON 接口、MCP 与随附调度器的外部写门控收口成同一条双开关规则，`f_v5` 冻结层逐字未动。之前 `daily.py` 允许单独靠配置里的 `"apply": true` 或单独传 `--apply` 触发外部写入，预览轮次也会写出 `actions-todo.json` 与 `outbox` 转化表。现在新增 `core/selfcheck/write_gate.py` 由两路入口共用：只有请求显式带 `--apply`（或 `"apply": true`）且无 `--dry-run`，同时本机 `config/adspilot.json` 中 `"apply"` 为严格布尔 `true` 才允许执行外部写或生成可执行交付文件；任何非布尔值、缺失配置或冲突参数直接拦截，预览轮次只写本地报告且 `--ack` 确认 0 项。仓库自带的 cron、systemd 与 Windows 任务模板默认一律显式传 `--dry-run`（旧版只靠配置跑实盘的调度升级后会留在预览，须由所有者显式加 `--apply`），三份入口、`BOOK.md` 与使用方法同步对齐。全套离线回归（含新增 137 项门控矩阵与桩测试）、7 天模拟验收、16 项 Node 测试与严格 iLang 语法检查全部通过，没有碰真实账号。
+
+**2026-11-19，2.2.0**。把单线无人值守闭环、判断感知插件生态、冷启动引导总检和 DSH 3.1 工程书插件包一次收口，主干 `f_v5` 冻结层逐字未动。一，主干与账本围绕真实长跑补齐了断点续跑与防护：日循环支持转化操作传播期 `retry_later` 自动延续、负额拒付对账以及每轮汇率与去重快照；账本加入版本号与已上传游标、拉取截断保护与只读 P90 校准窗口；哨兵脚本在写本地日志之外可选通过 `ADSPILOT_NOTIFY_WEBHOOK` 发送不含凭据和点击标识的安全告警。二，判断生态接上多提供者回退链（`provider_chain`）、对照正典校验器的 L2 对比评测（`eval_provider.py` 与 benchmark 样例）、通用插件模板 `_template` 与三家提供者的契约统一测试。三，冷启动补上 `oauth_helper.py`（PKCE 一次拿齐 `adwords` 与 `datamanager` 双作用域）和上线前总检 `preflight.py`（离线查配置/FX/变量，加 `--apply` 实测账户币种一致、scope 与落地位鉴权）。四，在原仓库内直接按 DSH 3.1 规范包入 npm 插件组合包（包名 `adspilot`、`cordis.patch.yml`、`BOOK.md`、`skills/sem.md` 与 `integrations/dsh/index.mjs`），在 DSH 对话里说「SEM」或「付费投流」即可装载 `sem` 技能并用 `adspilot_book` 按段读完工程书、对接 39 个本地工具/MCP 与 DSH 3.1 凭据账本。全量离线测试、39 项接口校验、16 项 Node 插件测试与严格 iLang 语法检查全部通过，未新增真实账号实测。
+
+**2026-11-06，2.1.4**。补齐 302291f 的测试改动记录。Windows 任务模板自测同时检查 PowerShell 退出码与完成标记，避免仅返回 0 的占位程序被误判为执行成功；失败时显示捕获的错误输出。补充默认同盘 runs 与 data/outbox 路径引用保持原格式的回归断言，并仅在该路径回归用例内忽略旧脚本的 ResourceWarning。该测试提交已通过 Linux、Windows 的 Python 3.9 与 3.12 CI；没有新增真实账号实测。
+
+**2026-11-06，2.1.3**。贡献文件列出各插件的契约、schema、自测和证据要求。新增 PR、问题模板与关键文件所有者。CI 配置覆盖 Linux、Windows 和两个 Python 版本，运行完整测试、接口及 schema 校验、密钥形态扫描。扫描覆盖 Git 已跟踪文件及 UTF-16 文本，命中时仅报告数量；跨磁盘的 Windows 运行目录使用可定位的相对引用。本地证据为自测。v2.1/interfaces 的每次推送会触发托管作业，逐项结果见该提交的 GitHub Actions 检查及本批 REPORT。
+
+**2026-11-06，2.1.2**。DSH 技能、MCP 配置和三份入口说明如何把 AdsPilot 放在记忆仓库旁。handoff 工具只向 CURRENT.md 写一行运行摘要，同一轮可重复执行。证据为本地样例。 K3 使用方法列出十个 DSH stdio 配置字段和创造模式的一句话。已在离线的官方 DSH 客户端列出 36 个工具并调用本地判断。
+
+**2026-11-06，2.1.1**。ipintel 首发 ipapi.is，提供过滤用的 country、数据中心与代理标志。日循环支持按样例模拟连续七天，验收器检查运行记录，校准工具从报告和账本输出阈值提议。另附 Windows 每日任务与小时哨兵模板。注册表纳入模拟、验收、校准与 IP 查询四项能力，CLI 与 MCP 均可调用。CJ 与 Impact 的 offers 筛选参数按提供者区分。证据为样例和自测，真实七天须在学员环境完成。
+
+**2026-11-06，2.1.0**。`schemas/interfaces.json` 登记 9 项主干和 23 项插件动作；`docs/接口盘点.md` 对照原脚本参数及证据。CLI 和本地 MCP 共用同一份请求、响应和自测样例。对外执行要求调用者显式开启 apply，且本机配置同意。三份入口补充使用方法，严格检查使用钉版的 iLang 校验器。证据为离线自测。
+
+**2026-10-20，2.0.21**。第二家联盟：Impact。`plugins/affiliate/impact/` 照契约的四个动作接 impact.com 伙伴 API：已加入项目与合同条款出 offer，追踪链接后追加 subId1 装 token，Actions 按最后更新时间开窗出佣金，撤销是同一笔 Action 的 State 变 REVERSED，出成一行负额拒付，金额取 ActionUpdates 的 DeltaPayout。两处要知道：Impact 伙伴 API 不给任何项目层面的 EPC，所以 epc 一律 null、不编数，选品第一条算不出来，开局第一轮只能用户指定，跑起来以后用自己的报表算；PPC 政策仍是合同里的自由文本，只有 HasStandDownPolicy 能直接映射成不许竞价品牌词。主干只动两处：开局写 offer 表时参数名改为取插件 manifest，落地页检查按路径形状认 Impact 追踪链接。用老板的真凭据只读跑了一遍：认证通，账号还没加入任何项目，三个动作各 0 行，Contracts 因 token 没勾作用域回 403 并按设计降级；没有写任何东西。
+
+**2026-10-19，2.0.20**。Windows 上能跑。这一版没有碰投放逻辑，修的全是环境与仓库的接缝。在一台 Windows 11 机器上第一次跑 `tests/run.sh`，二十九项全红；换成真 Python 后还剩七项，四个原因：`python3` 是微软商店的占位别名；系统级 `core.autocrlf` 把钉版本的 iLang runtime 检出成 CRLF，整文件 sha256 对不上，自检与循环自测跟着停；GBK 控制台编不出判断与规格自测里的「⇒」，脚本崩在打印上；Windows 的 `zoneinfo` 没有时区库，两个转化脚本的自测要 Asia/Tokyo。四处都修了：`tests/run.sh` 自己找解释器并开 UTF-8 模式；runtime 文件与 shell 脚本在 `.gitattributes` 钉成 LF，老检出遇 CRLF 也按 LF 再核一次；判断、规格、循环、开局四个入口的输出流编不出的字符打成问号不再崩，拉起子脚本时统一带 `PYTHONUTF8=1` 并按 UTF-8 读回；时区查不到就按 UTC 带偏移写并在 stderr 说一句，自检加一项 `timezone` 给 `WARN`，两个转化自测没有时区库时用固定 +09:00 核同一条格式化路径。另去掉 Google Ads 插件 manifest 里 2.0.15 与 2.0.16 已拔掉的两个常数。同一台机器上 `tests/run.sh` 两条路都 ALL OK：系统 Python 没装 tzdata 的一路，与装了 tzdata 的 venv 一路。没有碰真实账号。
+
+**2026-09-27，2.0.19**。只补一条实测记录，不动代码。2.0.18 说改已有系列的每次点击上限要一条真系列才核得了，09-26 当天老板点头后就核了：建一条日预算 1 港币、建好即暂停的尽可能多点击系列，只建预算与系列，走日常循环同一条降价路把每次点击上限从 4.56 港币改成 4.00，读回是 4.00；再跑一次同样的动作，什么都不改。测完系列连预算删净，账号里原有的系列没碰。到此 2.0.18 的降价路在真实账号上全核过。
+
+**2026-09-26，2.0.18**。出价方式默认改成尽可能多点击。第二轮真实账号核验查明，谷歌对手动出价的系列不给推荐预算，换成尽可能多点击就给（同一组词每天 84.76 港币）。预算照谷歌推荐，所以默认跟着改：谷歌在预算内自动出价争取最多点击，系列的每次点击上限就是出价上限，买一次点击的钱仍然不超过它能赚的钱，选品的账不变。用户要手动出价就在 brief 里写，照做，那时预算由用户定。日常降价跟着变：尽可能多点击的系列把每次点击上限设成出价上限，不再按词降价。另修了建系列的「只校验不落库」：原来谷歌在预算引用上就退回，出价根本没校验到，现在整条系列一批校验。真实账号上核过：默认请求拿到推荐预算，整条尽可能多点击的系列校验通过；改已有系列的每次点击上限，要一条真系列才核得了。
+
+**2026-09-26，2.0.17**。谷歌推荐预算的接口第一次在真实账号上核了一轮，核出三处按文档猜错的地方：建系列前取推荐要带地区 ID，查已有系列的推荐要整个选推荐对象，金额要标账户币种而不是 brief 里写的币种。三处都改了，币种对不上的推荐不用。那次谷歌没给推荐，推荐值还等有推荐时再核。
+
+**2026-09-26，2.0.16**。预算照谷歌推荐。之前预算是 AdsPilot 自己定的：首日 5 美元、每天最多 10 美元、赚钱就加 20%，一个谷歌推荐 60 港币的新账号会被卡住不让建。现在不写预算常数：建系列时用谷歌给这条系列的推荐预算，跑起来以后谷歌推荐新预算就按推荐改；用户要别的数自己改（brief 里写预算，或在配置里设上限）；谷歌没给推荐，开局就请用户定，日常不动。亏损的止损规则照旧先管。这版没有碰真实账号，谷歌推荐预算的接口还没在真实账号上核过。
+
+**2026-09-26，2.0.15**。出价的兜底改成谷歌推荐出价。之前一条系列要是没有 offer 算出来的出价上限，主干就拿 SOUL 里随手写的 0.25 美元当上限，于是一条均价 3.5 港币、正在赚钱的系列会被天天降价。现在 SOUL 里不再写出价常数：没有 offer 上限、用户也没填上限时，用谷歌给的首页出价估计（开局时是 Keyword Planner 的出价，日常是报表里每个词的估计）；连这个也没有，就不按出价动，开局只提议不执行。另修了一处老问题：一条系列被判「维持」以后，改动计时每天归零，永远加不了预算；现在维持不算改动。这版没有碰真实账号，只跑了自测与样例数据。
+
+**2026-09-26，2.0.14**。换 SOUL 现在真的会生效。之前自定义 SOUL 里加的边界，代码只读了名字，从不执行；判断插件 llm 的提示词也总是从默认 SOUL 里取规则，配置里换成别的 SOUL，它看到的还是老规则。现在边界可以写条件（比如「均价过 2 且没有转化时不许加预算」），命中就停下，并且按类别区分：运营边界用户明确说了就照做，合规姿态用户说了也不做；写坏了的 SOUL 直接报错，不带病跑。默认 SOUL 里那五条内置边界写在代码里，SOUL 删了照样生效。判断插件现在读的是配置里的那份 SOUL。默认 SOUL 里日常调整的规则顺序也改成和代码一致，并加了守卫，以后哪边先改都会报红。这版没有碰真实账号，只跑了自测与样例数据。
+
+**2026-09-26，2.0.13**。用户的决定有了期限和钱的边界。之前用户说一句「这些系列都别动」，循环会一直照做下去：没有期限，也不管后来又花了多少，一条系列越过测试总额以后还在照那句话跑。现在每条决定默认 7 天到期（用户说了期限就按用户的）；一条系列从循环第一次看到这条决定起再多花 100 美元，或者越过测试总额，这条决定就失效，交回判断重新定。花钱的两个节点不再接受「全部」这种写法，要逐条说是哪个系列、哪个词。每轮用了哪些、哪些失效、为什么，写进本轮报告。这版没有碰真实账号，只跑了自测与样例数据。
+
+**2026-09-26，2.0.12**。钱有了单位，出价只剩一条规则。之前 SOUL 里的金额（出价 0.25、预算 5 与 10、止损 100 与 300）不带单位，在港币账户里直接当港币用，于是一条已经赚钱、均价 3.5 港币的系列每天被自动降价，选品说能投的 3.79 港币的词，建系列时又被判不能投。现在 SOUL 的金额一律按美元写，主干按 `config.currency` 与 `config.fx` 折成账户币种；出价上限由这个 offer 每次点击赚的钱推出来，选品第一条、建系列、日常调价用同一个数。`config.caps` 默认留空，填了才是账户币种的绝对上限。用我们的港币账户对 Roborock 跑开局 offers 与 campaign 两步 dry-run：出价上限 4.56 港币，系列出价取第一个过线词的首页出价低位 4.42，首日预算 5 美元折成 39 港币，判断 go。
+
+**2026-09-26，2.0.11**。改正一处逻辑错：判断做成了闸门，用户要投的它会拦（账没过的 offer 指定了也不投、页面检查没过不发、判 hold 不建系列）。现在判断只给建议：用户明确说了就照做，判断照算，作为建议写进输出与账本；用户没说，Agent 才按判断自己拿主意。日常循环也一样，用户说「这条先别停」，循环就不停，判断的意见记下来。只有第一屏合规姿态那几条不因一句话放行。
+
+**2026-09-26，2.0.10**。选品第一条：有一个词的出价小于每次点击赚的钱，这个 offer 才能投。每次点击赚的钱是 EPC÷100 换成广告账户币种，词的出价用 Keyword Planner 的首页出价低位，品牌词只在联盟许竞价品牌词时才算。首发关键词插件。用我们的账号对 CJ 前 10 家实测：Roborock 每次点击赚 4.56 港币，6 个品类词出价在它下面（最低 vacuum mop 3.79），过；ContactsDirect 每次点击赚 12.52，最便宜的非品牌词要 18.96，出局。前 10 家 3 家过。
+
+**2026-09-25，2.0.9**。接入改成交钥匙：三把钥匙放进环境变量，其余全是 Agent。新增主干「开局」七步（建落地位、选 offer、写页发页、建系列、真点一次、启用、拆），Cloudflare 插件改成一把钥匙建全部（不再要 wrangler、不再要人在控制台点任何东西）。用我们自己的钥匙在真域名上从零到一条系列全程无人跑通并拆净，整条链第一次在真实世界闭合。
+
+**2026-09-25，2.0.8**。README 改成这份叙事版，加「走到哪了」状态表与「进度记录」；此后每版两处都写，细节在 `CHANGELOG.md`，叙事在这里。
+
+**2026-09-25，2.0.7**。CJ 插件用真实发布者凭据只读实测：四个动作全部通过。按实测改正三处：Commission Detail 集合字段叫 `records`，单次查询窗口不超过 31 天（按 30 天切段），Link Search 要推广媒介 ID（新增 `CJ_WEBSITE_ID`）。仓库旧分支各打 `archive/` tag 后删除，main 加保护。
+
+**2026-09-25，2.0.6**。Data Manager 转化上传在真实账号 validate-only 通过。钉下一条：新建的「点击上传」转化操作要传播约一小时 Data Manager 才看得到，脚本判 `retry_later` 自动重试。
+
+**2026-09-25，2.0.5**。Data Manager 请求按实测改正：事件带 `destinationReferences`，`eventSource` 必填，`DUPLICATE_NAME` 自动加后缀。
+
+**2026-09-25，2.0.4**。Data Manager 请求按官方字段映射核对：`accountType` 替代已废弃的 `product`，`encoding`，数字 `productDestinationId`，整包快速失败。
+
+**2026-09-25，2.0.3**。Google Ads api 路补齐并在真实账号实测：建一条日预算 1 港币、建好即暂停的系列，改预算改出价暂停词加否定词，最后连预算一起删净。发现 v25 不认 `startDate`，出价必须是计费单位整数倍，`uploadClickConversions` 对新接入已关闭。
+
+**2026-09-25，2.0.2**。对齐 Google 新政策：developer token 2026-09-09 起废弃，权限级别由 OAuth 所属的 Cloud 项目决定，REST 默认 v25。
+
+**2026-09-25，2.0.1**。拆掉回流通道，循环不往外发任何东西，报告只留本地。学员会不会用看社区机器人的对话日志。
+
+**2026-09-25，2.0.0**。第一个 AI 范式版本。定位改为开源免费的基座加插件，旧 Go 代码归档到 `v1-go-archive`。主干七个部件、首发插件、六份 schema、默认 SOUL、21 项自测。
+
+**2026-09-24 之前**。1.x Go 版本，见 `reference/HANDOFF-v1.md`。
+
+## 三分钟上手（给你的 Agent）
+
+```bash
+# DeepSeek Harness (DSH) 插件安装（说「SEM」或「付费投流」即可启动）
+npm install adspilot
+
+# 本机执行仓克隆与首轮只读预览
+git clone https://github.com/adsorgcn/AdsPilot && cd AdsPilot
+python3 core/agent/selfcheck.py                       # 够不够格无人值守
+cp config/adspilot.example.json config/adspilot.json  # 填自己的值，凭据放环境变量或 DSH 3.1 账本
+python3 core/selfcheck/preflight.py                   # 上线前总检（加 --apply 实测账户币种、scope 与落地位）
+python3 core/loop/daily.py --dry-run                  # 跑一轮，什么都不写外部
+```
+
+Claude Code 读 `CLAUDE.md`，Codex 与其他读 `AGENTS.md`，Cursor 读 `.cursor/rules/`（三份正文一致、各自保留抬头）。在 DeepSeek Harness（DSH）里也可直接加载 `adspilot` 插件包（详见 [dsh.ilang.guide](https://dsh.ilang.guide)）并说「SEM」或「付费投流」，按工程书 `BOOK.md` 从装机走到日循环；之后按 `core/loop/使用方法.md` 装调度器，每天一轮。
+
+## 版本与许可
+
+`VERSION` 三位号。日常改动只动末位；「迭代小版本」动中间位；大版本第一位单独决定。每一版的细节在 `CHANGELOG.md`。
+
+MIT。基于 [iLang (ilang.ai)](https://ilang.ai) 协议构建，iLang runtime 副本来自 [ilang-spec](https://github.com/ilang-ai/ilang-spec)（MIT）。

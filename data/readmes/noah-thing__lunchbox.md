@@ -48,7 +48,7 @@ https://github.com/user-attachments/assets/92e057ae-6206-4a41-ae07-bffed98bee19
 
 Lunchbox is a shared agent room: a desktop app where AI agents from different vendors work in one conversation with one memory, hand tasks to each other, and check each other's results. Most tools for running several agents start each one in its own window or copy of the code. In Lunchbox they work on the same task together, and when one hits its usage limit the next carries on with the same memory.
 
-It supports Claude Code, Codex, Grok Build and Gemini CLI, OpenCode and other command line agents, local models through Ollama, LM Studio or llama.cpp, and API keys from 16 providers including Anthropic, OpenAI, xAI and Google. Lunchbox is free; get it at [mylunchbox.dev](https://mylunchbox.dev).
+It supports Claude Code, Codex, Grok Build, Antigravity, OpenCode and other command line agents, local models through Ollama, LM Studio or llama.cpp, and API keys from 16 providers including Anthropic, OpenAI, xAI and Google. Lunchbox is free; get it at [mylunchbox.dev](https://mylunchbox.dev).
 
 Each tool uses your own login and plan. Your work goes from your computer to the company behind the tool, with no Lunchbox server in between. Once a day Lunchbox sends an anonymous count: a random ID, the version and the system. Nothing about your rooms, files, prompts or keys. Turn it off in Settings.
 
@@ -112,7 +112,7 @@ You can also download the dmg, the Windows installer, the deb or the AppImage fr
 | --- | --- | --- |
 | Claude Code | `npm install -g @anthropic-ai/claude-code` | `claude` |
 | Codex | `npm install -g @openai/codex` | `codex login` |
-| Gemini CLI | `npm install -g @google/gemini-cli` | `gemini` |
+| Antigravity | `curl -fsSL https://antigravity.google/cli/install.sh \| bash` | A Gemini API key, on the Agents page |
 | Grok Build | [x.ai/cli](https://x.ai/cli) | `grok login` |
 | Local models | [Ollama](https://ollama.com), [LM Studio](https://lmstudio.ai) or `llama-server` | none |
 | API keys | Anthropic, OpenAI, xAI, Google, OpenRouter and more | Agents page in the app |

@@ -29,20 +29,34 @@ word is marked low confidence instead of pretending. A faded 1904 invoice is in 
 
 ## Results
 
-Five public benchmarks (about 4,250 pages and 10 long documents), each scored with the benchmark's own grader (no AI judge). Same
-documents and same requests for all three systems. Details and caveats: [BENCHMARKS.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/BENCHMARKS.md).
+ReadAnyDoc 0.4.5 against Reducto on public benchmarks, same documents and same requests, every score from the
+benchmark's own grader or from code (no AI judge). Details, per-document scores and caveats:
+[BENCHMARKS.md](https://github.com/arpitpatel25/ReadAnyDoc/blob/main/BENCHMARKS.md).
 
-| Benchmark | Reducto r-1 | Model only (Haiku 5.5) | ReadAnyDoc engine (Haiku 5.5) |
-|---|---|---|---|
-| olmOCR-bench, overall (1,403 pages) | 80.9 | 82.2 | **84.2** |
-| OmniDocBench, text error, lower is better (1,651 pages) | 0.095 | **0.081** | **0.081** |
-| OmniDocBench, layout: block types right | **84.6%** | 55.6% | 78.3% |
-| RD-TableBench (1,000 tables) | **88.9** | 88.2 | 88.2 |
-| FUNSD, form question/answer pairs (199 forms) | **78.6** | 71.6 | 77.4 |
-| Cost per page | $0.010 | $0.001-0.002 | $0.003-0.005 |
+**Parsing**
 
-Where Reducto is ahead: page layout (by about 6 points), formulas, header and footer removal, and speed
-(about 5 s a page against 20-50 s here).
+| Benchmark | Reducto | ReadAnyDoc |
+|---|---|---|
+| olmOCR-bench, overall (1,403 pages) | 80.9 | **84.3** |
+| OmniDocBench, text error, lower is better (1,651 pages) | 0.095 | **0.073** |
+| OmniDocBench, layout: block types right | **84.6%** | 79.0% |
+| RD-TableBench (1,000 tables) | 88.85 | 88.84 |
+| FUNSD, form question/answer pairs (199 forms) | **78.6** | 77.4 |
+| Cost per page | $0.010 | $0.003-0.005 |
+
+**Extraction** (share of the answer key found, cost per document)
+
+| Test set | Reducto | ReadAnyDoc |
+|---|---|---|
+| Long reports, table rows (LongExtract, 6 documents) | 9.1%, $1.02 | **56.4%**, $0.44 |
+| 10-Q and 10-K filings (ExtractBench, 5) | 48.9%, $1.24 | **79.1%**, $0.34 |
+| Research papers (ExtractBench, 3) | 49.9%, $0.33 | **68.4%**, $0.074 |
+| Credit agreements, 97-218 pages (ExtractBench, 3) | 83.3%, $2.83 | 82.2%, $0.20 |
+| Invoices: photos, scans, handwriting (20) | 99.8%, $0.027 | 99.8%, $0.0045 |
+| Commercial contracts (CUAD, 10) | not run | 86.5%, $0.026 |
+
+Where Reducto is ahead: page layout (about 6 points), formulas, header and footer removal, precision on 10-Q
+filings (ReadAnyDoc writes more values than the answer key holds), and speed (seconds a page against 20-50 s here).
 
 ## Install
 

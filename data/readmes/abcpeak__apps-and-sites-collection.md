@@ -644,6 +644,7 @@ Enjoy 🤩
 
 ## 💰Finance 财务
 
+- [Google Wallet](https://apps.apple.com/us/app/google-wallet/id6761386270?l=zh-Hant-TW) (iOS) Google钱包, 集中管理购物记录、门票和登机牌
 - [Cash App](https://apps.apple.com/us/app/cash-app/id711923939)
 - [PayPal](https://www.paypal.com)
 - [Venmo](https://venmo.com) American mobile payment service
@@ -1284,4 +1285,4 @@ Enjoy 🤩
 
 > 所见即所得（WYSIWYG）编辑器：Marktext、Typora、Obsidian、VS Code（需安装插件）和思源（Siyuan）。本地编辑工具：Typora、Visual Studio Code、Notepad++、Obsidian和Trilium。富文本编辑器（如Word、OneNote）也支持所见即所得。Obsidian、Joplin、Logseq和Typora都扩展了Markdown语法。Typora和Obsidian在Markdown编辑上存在缺陷，如手动换行和某些LaTeX符号无法。
 
-- ![GitHub Repo stars](https://img.shields.io/github/stars/AppFlowy-IO/AppFlowy) [AppFlowy](https://github.com/AppFlowy-IO/AppFlowy) (Windows, macOS, Lin
+- ![GitHub Repo stars](https://i

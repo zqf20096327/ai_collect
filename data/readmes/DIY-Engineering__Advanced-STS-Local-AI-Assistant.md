@@ -25,12 +25,12 @@ System Requirements :
 |-----------|-----------------------------|
 | OS        | Windows 10 / 11 (64-Bit)    |
 | Python    | 3.12.6 X64                  | 
-| CPU       | 4 Core 8 Threads or Better  |
-| GPU       | GTX 1060 6GB or better      |
+| CPU       | 6 Core 12 Threads or Better |
+| GPU       | RTX 3060 12GB or better     |
 | CUDA      | 12.8                        |
 | cuDNN     | 9.12                        |
-| RAM       | 16GB or more                |
-| Storage   | 20GB Free space             |
+| RAM       | 32GB or more                |
+| Storage   | 25GB Free space             |
 | LLM Server| LM Studio                   |
 
  
@@ -146,7 +146,7 @@ All dependencies are installed automatically by ```Setup.py```. For reference, h
 | Audio                    | PyAudio, pydub, soundfile, librosa          |
 | RAG / Vector DB          | chromadb, sentence-transformers             |
 | Deep Learning            | PyTorch 2.7.0 + CUDA 12.8                   |
-| Google APIs              | google-auth, google-api-python-client       |
+| Tavily APIs              | tavily 1.1.0                                |
 | MCP Protocol             | mcp                                         |
 | UI Server                | uvicorn, starlette, websockets              |
 

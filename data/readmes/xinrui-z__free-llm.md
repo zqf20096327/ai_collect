@@ -4,10 +4,10 @@
 
 Free LLM API directory with sourced limits, prices and probe monitoring, including status, latency and 90-day daily probe history.
 
-**Website: https://free-llm-apis.pages.dev**
+**Website: https://free-llm-site.free-llm-status.workers.dev**
 
-[![Live Site](https://img.shields.io/badge/Live_Site-free--llm--apis.pages.dev-22c55e?style=flat-square)](https://free-llm-apis.pages.dev)
-[![Providers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffree-llm-apis.pages.dev%2Fdata%2Fstatus_summary.json&query=%24.total&label=providers&style=flat-square&color=3b82f6)](https://free-llm-apis.pages.dev/providers)
+[![Live Site](https://img.shields.io/badge/Live_Site-free--llm--site.free--llm--status.workers.dev-22c55e?style=flat-square)](https://free-llm-site.free-llm-status.workers.dev)
+[![Providers](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Ffree-llm-site.free-llm-status.workers.dev%2Fdata%2Fstatus_summary.json&query=%24.total&label=providers&style=flat-square&color=3b82f6)](https://free-llm-site.free-llm-status.workers.dev/providers/)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
 ---
@@ -48,7 +48,7 @@ A provider is listed as `active` only when its official documentation describes 
 
 Evidence rules:
 
-- Every active provider needs a nonempty `sources` array of official HTTPS URLs with a label and `checked_at` date.
+- `sources` is optional: an array of official HTTPS URLs with a label and `checked_at` date, kept for maintainers (not shown on the site). When present it must be nonempty and valid.
 - Missing, blank or boolean prices never count as zero. A model API's `:free`/`-free` suffix alone is not evidence; automated free classification also requires explicit zero billing values.
 - A `null` RPM/RPD means unpublished or account-dependent, never unlimited. Monthly credit or token budgets go in `quota_note`, not invented daily request limits.
 - Catalog `active` means listed, not operational. Health checks sample specific models with the monitoring account; missing or stale observations and account/quota errors (401/402/403/429) are `unknown`, not outages. Daily history records the worst result each day; the percentage is healthy days / observed days, not a time-based uptime SLA.
@@ -108,7 +108,7 @@ The authoritative rules are in [`scripts/lib/catalog-validation.mjs`](scripts/li
     }
   ],
   "paid_models": [],                // optional, same shape; curated paid comparison, IDs must not repeat models
-  "sources": [                      // required (nonempty) for active providers
+  "sources": [                      // optional; nonempty when present
     { "label": "Official free tier", "url": "https://example.com/pricing", "checked_at": "2026-11-16" }
   ],
   "last_verified": "2026-11-16",    // YYYY-MM-DD: date the policy claims were reviewed
@@ -161,7 +161,8 @@ The dev server reads `site/src/data/providers/` (aggregated by `index.ts`). For 
 |----------|-------|---------|
 | `CATALOG_MODE` | Repository variable / build env | `static` (default) or `dynamic`; any other value fails the build |
 | `PUBLIC_STATUS_WORKER_URL` | Repository secret / build env / `site/.env.local` | Checker origin for browser status and changelog requests; dynamic-mode catalog fallback |
-| `CATALOG_API_URL` | Site Worker runtime variable (or build env) | Catalog API origin for dynamic server rendering; defaults to `PUBLIC_STATUS_WORKER_URL` |
+| `CATALOG_API_URL` | Site Worker runtime variable (or build env) | HTTP catalog API origin for dynamic rendering when the Worker has no `CHECKER` service binding (`astro dev`, or a build with `CATALOG_CHECKER_BINDING=off`); defaults to `PUBLIC_STATUS_WORKER_URL` |
+| `CATALOG_CHECKER_BINDING` | Build env | `on` (default) or `off`; `off` builds a dynamic site that ignores the `CHECKER` binding and always uses `CATALOG_API_URL` |
 | `CATALOG_CACHE_TTL_MS` | Site Worker runtime variable (or build env) | Dynamic-mode per-isolate catalog cache, default 60000; `0` disables |
 | `PUBLIC_SITE_URL` | Repository variable / build env | Canonical site URL for canonical links, sitemap and `robots.txt` |
 | `CATALOG_ALLOW_EXPIRED` | Build env | `1` makes expired promotional prices warnings instead of errors (deploy and sync use this) |
@@ -186,7 +187,9 @@ The site is prerendered from the provider JSON files and deployed to Cloudflare 
 
 ### Dynamic mode
 
-Pages are rendered on Cloudflare Workers from a catalog API (`GET /api/catalog`), so new providers appear without a rebuild. Set `CATALOG_MODE=dynamic` and set `CATALOG_API_URL` on the `free-llm-site` Worker with `wrangler secret put` (`keep_vars` preserves it across deploys). If the API is unreachable or returns invalid data, pages fall back to the last validated catalog and then to the bundled provider JSON, with a visible notice.
+Pages are rendered on Cloudflare Workers from a catalog API (`GET /api/catalog`), so new providers appear without a rebuild. Set `CATALOG_MODE=dynamic`. The `free-llm-site` Worker reads the catalog from the `free-llm-checker` Worker through the `CHECKER` service binding in [`site/wrangler.jsonc`](site/wrangler.jsonc), because a `workers.dev` Worker cannot fetch another `workers.dev` Worker on the same account; deploy the checker first. Browsers still call the checker's public `/api/status` and `/api/changelog` over HTTPS. Without the binding (`astro dev`) the site uses `CATALOG_API_URL`. A production build keeps the binding in a local preview as well, so without a running `free-llm-checker` the preview shows the bundled snapshot; build with `CATALOG_CHECKER_BINDING=off` for a preview that reads `CATALOG_API_URL`. If the catalog is unreachable or invalid, pages fall back to the last validated catalog and then to the bundled provider JSON, with a visible notice.
+
+After the dynamic cutover the site is served at https://free-llm-site.free-llm-status.workers.dev, and https://free-llm-apis.pages.dev redirects there with a 301 (see [`redirect/`](redirect/README.md)). The links at the top of this README change at cutover.
 
 ### GitHub Actions secrets
 

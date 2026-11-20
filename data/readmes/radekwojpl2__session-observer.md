@@ -185,6 +185,12 @@ The server starts automatically on the first `SessionStart`. Open
 
 Run it manually: `node server/server.js`.
 
+The dashboard speaks English, French, German, Italian, Polish, Portuguese, Spanish, Japanese, Korean
+and Simplified Chinese. It follows your
+browser's language; the menu next to **Theme** picks another one and remembers it. Tool names, hook
+event names and your own prompts stay as they are. **Copy** in the Context view always writes English
+Markdown.
+
 ![Dashboard layout: 1 filters, 2 sessions, 3 views, 4 route, 5 event types and replay, 6 details](docs/layout.jpg)
 
 The session list shows each session's title and a dot for its state (working, live or ended). Hover a
@@ -304,28 +310,45 @@ claude plugin validate .           # plugin + marketplace manifests
 CI (`.github/workflows/ci.yml`) runs all of them on every push and PR, on Node 18–24 (Linux)
 and Node 22 on macOS and Windows.
 
-The dashboard is `server/dashboard.html` (markup only) plus the files in `server/dashboard/`,
-which `server.js` serves as they are. There is still no build step: the scripts are plain
-browser scripts that share one global scope and load in the order the page lists them, so a
-file can use anything from the files above it. `node test/check.js` fails if the page and the
-folder don't list the same files, or if a script doesn't start with `'use strict';`.
+Both the server and the dashboard are laid out the same way, in three layers:
 
-| File | What is in it |
+- **`building-blocks/`**: generic pieces that know nothing about any feature, such as reading a growing file,
+  formatting, languages, icons, badges, JSON and code display.
+- **`features/<feature>/`**: one folder per feature, and inside it the code grouped by function: `model` (data and
+  logic), `render` (HTML), `controls` (clicks, keys, hovers).
+- **`app/`** (dashboard only): the page around the features: the stage, the header, render scheduling, data loading
+  and start-up.
+
+The server is `server/server.js` (it loads the log and starts listening) plus `server/lib/`:
+
+| Folder | What is in it |
+|---|---|
+| `building-blocks/` | `config` (settings, paths, version), `file-tail` (new lines of a growing file), `token-usage`, `live-updates` (Server-Sent Events) |
+| `features/sessions/` | `event-categories`, `sessions` (sessions in memory and their totals), `transcript-steps` (model steps and usage from the transcripts) |
+| `features/context/` | `/api/context`: a transcript read in full, its system prompt and listings, attachments, the "as sent" messages |
+| `features/web/` | `routes` (the page, its files and the JSON API), `request-guard` (Host / Origin / token checks, headers, CSP) |
+
+The dashboard is `server/dashboard.html` (markup only) plus `server/dashboard/`, which the server serves as it is.
+There is still no build step: the scripts are plain browser scripts that share one global scope and load in the order
+the page lists them (building blocks, then features, then the app), so a file can use anything from the files above
+it. `node test/check.js` fails if the page and the folder don't list the same files, or if a script doesn't start
+with `'use strict';`.
+
+| Folder | What is in it |
 |---|---|
 | `dashboard.css` | all styles, light and dark |
-| `core.js` | icons, tool groups, event categories, small helpers |
-| `tech.js` | language / tool badges: detection and drawing |
-| `model.js` | what events mean: groups and labels, filters, turns, replayable state |
-| `stage.js` | switching Overview / Route / Chat / Context, activity-by-group cards |
-| `chat.js` | Chat view |
-| `route.js` | Route view |
-| `panels.js` | event rows, replay bar, sessions panel |
-| `overview.js` | Overview: tiles, charts, lists |
-| `detail-parts.js` | Details building blocks: sections, colour key, JSON, card parts |
-| `code.js` | syntax colouring, tool input and output |
-| `details.js` | Details panel: tool, event and model-step cards |
-| `context.js` | Context view: one session's whole conversation, from `/api/context` |
-| `app.js` | header, render scheduling, loading and live updates, controls, start-up |
+| `building-blocks/language/` | the language list and plural helper (`i18n`), one table per language (`translations/<code>`), the chosen language |
+| `building-blocks/` | `dom` (elements, storage), `icons`, `format` (escaping, numbers, times), `tech-badges`, `code-highlight`, `json-view`, `card-parts` |
+| `features/events/` | the event model shared by every view: tool groups, what an event means, the page state, turns, running activity, the context window; tool input / output and the context badge |
+| `features/sessions/` | the sessions panel and its hover card |
+| `features/filters/` | search, tool group, problems, range, event-type chips |
+| `features/replay/` | the replay bar |
+| `features/overview/` | Overview: tiles, charts and lists |
+| `features/route/` | Route: stops and lanes, the SVG, the header and turn navigator |
+| `features/chat/` | Chat |
+| `features/details/` | Details: the event cards, the event rows and the panel |
+| `features/context/` | Context: data from `/api/context`, its cards, the pinned prompt, usage, messages, Copy as Markdown |
+| `app/` | the stage and its views, hover links, header, render scheduling, data and live updates, start-up |
 
 ### Releasing
 

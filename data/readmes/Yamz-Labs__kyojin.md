@@ -19,7 +19,7 @@
 <tr><td align="center" width="25%"><a href="https://huggingface.co/yamz-labs/GLM-5.3-Flash-EXL3-Yamz"><picture><source media="(prefers-color-scheme: dark)" srcset="doc/img/home/card-glm-dark.svg"><img src="doc/img/home/card-glm-light.svg" alt="GLM-5.3-Flash on Strix Halo: 32 tok/s decode, 633 tok/s prefill" width="100%"></picture></a></td><td align="center" width="25%"><a href="https://huggingface.co/yamz-labs/Qwen3.8-Flash-Next-EXL3-Yamz"><picture><source media="(prefers-color-scheme: dark)" srcset="doc/img/home/card-flash-next-dark.svg"><img src="doc/img/home/card-flash-next-light.svg" alt="Qwen3.8-Flash-Next on Strix Halo: 53 tok/s decode, 1,576 tok/s prefill" width="100%"></picture></a></td><td align="center" width="25%"><a href="https://huggingface.co/turboderp/Qwen3.8-27B-exl3/tree/SC_4.00bpw_H5_V6"><picture><source media="(prefers-color-scheme: dark)" srcset="doc/img/home/card-qwen27-dark.svg"><img src="doc/img/home/card-qwen27-light.svg" alt="Qwen3.8-27B on RTX 3090: 75 tok/s decode, 1,621 tok/s prefill" width="100%"></picture></a></td><td align="center" width="25%"><a href="https://huggingface.co/yamz-labs/DeepSeek-V4.1-Flash-EXL3-Yamz"><picture><source media="(prefers-color-scheme: dark)" srcset="doc/img/home/card-ds41-dark.svg"><img src="doc/img/home/card-ds41-light.svg" alt="DeepSeek V4.1 Flash on Mac Studio M5 Ultra: 62 tok/s decode, 3,001 tok/s prefill" width="100%"></picture></a></td></tr>
 </table>
 
-<p align="center"><sub>Decode and prefill tok/s at 8K (RTX: 5K), served. Kyojin 1.8.10 on Strix Halo, 1.8.9 on RTX and Mac.</sub></p>
+<p align="center"><sub>Decode and prefill tok/s at 8K (RTX: 5K), served. Measured on Kyojin 1.8.10 (Strix Halo) and 1.8.9 (RTX, Mac); the Hy4-flash numbers in the table below are 1.9.1.</sub></p>
 
 ## Quick start
 
@@ -30,6 +30,35 @@ git clone https://github.com/Yamz-Labs/kyojin && cd kyojin
 hf download yamz-labs/GLM-5.3-Flash-EXL3-Yamz --local-dir ./glm-pack
 python tools/glm/serve.py --model ./glm-pack --port 8000 -c 131072 --num-draft 2
 ```
+
+Hy4-flash (GGUF Q3_K, 64K context, one Strix Halo machine): after the install of [doc/install.md](doc/install.md), download the publisher's GGUF, build the kernels once and run `tools/hy4/serve.py` ([doc/hy4.md](doc/hy4.md)):
+
+```bash
+hf download AngelSlim/Hy4-flash-GGUF --include "Hy4-flash-Q3_K-*.gguf" --local-dir ./hy4
+bash tools/hy4/install_strix.sh        # once: builds the Hy4 kernels, prints "install_strix: OK"
+python tools/hy4/serve.py --model ./hy4/Hy4-flash-Q3_K-00001-of-00002.gguf --port 8300 -c 65536
+```
+
+At this setting, on a 128 GB machine with nothing else large resident, the server peaked at 102.7 GiB of GTT and kept about 16 GiB of memory free (15 GiB during a 64K prefill); a smaller `-c` leaves more ([doc/hy4.md](doc/hy4.md)). Close other GPU or memory-heavy apps first.
+
+### New in 1.9.1 (Hy4-flash)
+
+- Prefill: lazy layer residual, head-major attention operands, Q3_K gate-up kernel V2. Decode: Q8_0 output head, shared-expert branch forked inside the HIP graph, router launch tuning, absorb v2.
+- Each lever is on by default and has an environment switch: `HY4_<FLAG>=0` restores the 1.9.0 behaviour ([flag table](doc/env_vars.md), [changelog](CHANGELOG.md)). Rebuild the kernels with `bash tools/hy4/install_strix.sh` after the update.
+- The start-up warm-up now fits any `-c`.
+- Decensor preset (opt-in, off by default): a small run-time edit of the Hy4 forward that changes no weights. Switch it on with `HY4_ABLIT_SPEC=on`. Note: validated in no_think mode (judge NO 2-4 of 17 on the dev tree); in the default thinking mode answers can run long (2 of 17 hit the 4096-token cap in our check), a fix is in progress.
+
+Served numbers, one Strix Halo machine, shipped settings, seeded prompts, tok/s (speculative decode is the best speculative setting, plain is no speculation, tau is accepted tokens per round):
+
+| depth | prefill 1.9.0 | prefill 1.9.1 | decode spec 1.9.0 | decode spec 1.9.1 | tau 1.9.1 | decode plain 1.9.0 | decode plain 1.9.1 |
+|---|---|---|---|---|---|---|---|
+| 4K | 785 | 928 | 22.5 | 23.3 | 2.66 | 14.6 | 15.7 |
+| 16K | 869 | 987 | 23.7 | 24.2 | 2.80 | - | - |
+| 32K | 859 | 982 | 22.7 | 21.0 | 2.77 | 14.5 | 15.3 |
+| 64K | 842 | 962 | 23.9 | 24.0 | 2.87 | - | - |
+
+
+Decode depends on the generated text through tau (accepted tokens per round), so one served point moves by a few tok/s between prompts. On the same prompt the decode changes of this release give +7 % speculative decode at 4K and a 5 % shorter verify round (paired A/B in one run). Rows 4K to 32K: one Strix Halo machine, the shipped defaults of the release tip (decensor preset off); 64K: a second identical machine, measured one tip earlier with the preset on (cross-check within 3 %). The 32K decode cell is lower than 1.9.0 because that prompt's tau and generated text differ; the same-prompt paired A/B above is the like-for-like measure.
 
 RTX 3090 (NVIDIA): build for CUDA once ([tools/cuda/README.md](tools/cuda/README.md)), then Qwen3.8-27B with 245K of context (the served settings, one session), with turboderp's 4.0 bpw pack:
 
@@ -49,12 +78,33 @@ Every server speaks the OpenAI API. More commands: [doc/models.md](doc/models.md
 
 ### Test it
 
-With a server running on port 8000 (the Mac command above uses 8080):
+With a server running, use its port: GLM on 8000 (the command above), Hy4-flash on 8300, the Mac command above on 8080.
 
 ```bash
 curl http://localhost:8000/v1/chat/completions -H "Content-Type: application/json" \
   -d '{"messages": [{"role": "user", "content": "Say hello in five words."}]}'
 ```
+
+Hy4-flash thinks before it answers: the reasoning comes back in `reasoning_content` and the answer in `content`, so a small `max_tokens` can end inside the reasoning and leave `content` empty. For a direct answer add `"reasoning_effort": "no_think"` (or `"chat_template_kwargs": {"reasoning_effort": "no_think"}`), or leave room for the reasoning with a larger `max_tokens`:
+
+```bash
+curl http://localhost:8300/v1/chat/completions -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "Say hello in five words."}], "reasoning_effort": "no_think", "max_tokens": 64}'
+```
+
+### Tool calling
+
+The Hy4-flash server speaks the OpenAI tool-calling API: `tools` (and the legacy `functions`), `tool_choice` (`none`, `auto`, `required` or a named function; `required` and a named function are forced: the reply skips the reasoning and starts with the call, the model writes only the arguments, and the name too for `required`), assistant messages with `tool_calls`, and `tool` messages with the result. A reply that calls a function has `finish_reason` `"tool_calls"` and `message.tool_calls`; streamed, the calls arrive as `delta.tool_calls`. The reasoning stays in `reasoning_content`.
+
+```bash
+curl http://localhost:8300/v1/chat/completions -H "Content-Type: application/json" -d '{
+  "messages": [{"role": "user", "content": "What is the weather in Paris?"}],
+  "tools": [{"type": "function", "function": {"name": "get_weather", "description": "Current weather of a city.",
+    "parameters": {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]}}}],
+  "reasoning_effort": "low", "max_tokens": 1024}'
+```
+
+Send the result back with the call: add the assistant message with its `tool_calls` and a `{"role": "tool", "tool_call_id": "<id of the call>", "content": "<result>"}` message, and the model answers in text. `python tools/hy4/tool_smoke.py --base http://localhost:8300` checks a running server end to end (tool call, stream, round trip, a client that closes the stream). `response_format` `json_object` / `json_schema` is not supported yet (a 400); several system messages are merged into one, and a last assistant message is continued (prefill).
 
 ## Speed by context
 
@@ -91,9 +141,10 @@ It prints a Markdown block. Paste it in a [benchmark report](https://github.com/
 ## What is inside
 
 - Speculative decoding, on by default; it returns the same tokens as plain decoding.
+- Hy4-flash (public GGUF, Q3_K) on one Strix Halo machine: sparse-attention prefill, graph decode with MTP drafts, 64K context, 128K opt-in ([doc/hy4.md](doc/hy4.md), [changelog](CHANGELOG.md)).
 - Long context: up to 983K tokens (DeepSeek V4.1 Flash on a Mac Studio), 500K on GLM-5.3-Flash.
 - Image input on Qwen3.8-27B.
-- Optional uncensored mode: a small run-time preset on the normal packs, off by default; it edits no weights. How it works: [doc/refusal_hook.md](doc/refusal_hook.md).
+- Optional uncensored mode: a small run-time preset on the normal packs, off by default; it edits no weights. How it works: [doc/refusal_hook.md](doc/refusal_hook.md). Hy4-flash ships a small run-time uncensor preset, off by default; it edits no weights ([presets/hy4-uncensor](presets/hy4-uncensor/README.md)). Switch it on with `HY4_ABLIT_SPEC=on`.
 
 ## Made with our models
 
@@ -121,6 +172,7 @@ All packs are EXL3 on Hugging Face: ours on [yamz-labs](https://huggingface.co/y
 
 - Strix Halo needs Linux (Ubuntu/Debian tested), a gfx1151 machine with 128 GB and ROCm 7.0 or newer; ROCm 6.4 has no gfx1151 code ([install](doc/install.md)).
 - NVIDIA needs sm_80 or newer; tested on one RTX 3090 with 24 GB ([RTX](doc/rtx.md)).
+- Hy4-flash: one request at a time, greedy decoding, 64K context measured, with about 15 GiB of memory free at `-c 65536` on a 128 GB machine; 128K is opt-in and not measured under a 128K prefill (110.4 GiB of GTT and 7.8 GiB free at load) ([doc/hy4.md](doc/hy4.md)).
 - The first GLM launch tunes its kernels for about 10 minutes, and the port stays closed until it finishes ([install](doc/install.md)).
 - GLM at `-c 131072` leaves about 10 GiB free on a 128 GB machine ([install](doc/install.md)).
 - The 763B model on one 128 GB machine is experimental: real decode is about 5 to 11 tokens per second ([Strix Halo](doc/strix.md)).

@@ -7,7 +7,7 @@
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/brianirish/laravel-mcp-companion/pkgs/container/laravel-mcp-companion)
 [![GitHub Stars](https://img.shields.io/github/stars/brianirish/laravel-mcp-companion?style=social)](https://github.com/brianirish/laravel-mcp-companion)
 
-**Every Laravel version, the whole ecosystem, fully local.**
+**Every Laravel version since 6.x, its first-party services and popular packages, fully local.**
 
 Laravel MCP Companion is an [MCP](https://modelcontextprotocol.io) server that keeps Laravel's
 documentation on your machine and lets an AI assistant search and read it. It holds the framework
@@ -15,7 +15,8 @@ docs for every version from 6.x to the newest, the first-party services, and wid
 No documentation is fetched while you work, so it answers without a network connection.
 
 > **Status:** pre-1.0. The tools listed below, with their arguments and results, are the ones 1.0
-> will promise not to break. Upgrading from 0.14 or earlier? See [MIGRATING.md](MIGRATING.md).
+> will promise not to break, apart from the two marked *experimental*. Upgrading from 0.14 or
+> earlier? See [MIGRATING.md](MIGRATING.md).
 
 ## What it is for
 
@@ -48,7 +49,8 @@ project open, or where the documentation has to stay on the machine.
 The project refetches the documentation every night and publishes it;
 [Keeping the documentation current](#keeping-the-documentation-current) says how it reaches you.
 The catalog is revised by hand. Ask your assistant how current its documentation is, or call
-`laravel_docs_info`, to see the date and page count of every source.
+`laravel_docs_info`, to see the date of each Laravel version's documentation and the page count
+and sync date of every other source.
 
 ## Installation
 
@@ -59,8 +61,7 @@ and in the
 [official MCP Registry](https://registry.modelcontextprotocol.io/?search=laravel-mcp-companion)
 as `io.github.brianirish/laravel-mcp-companion`.
 
-**Cursor and VS Code** add it from a link, using `uvx`. Each shows the configuration before
-it installs anything.
+**Cursor and VS Code** add it from a link, using `uvx`.
 
 [![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/link/mcp/install?name=laravel-mcp-companion&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJsYXJhdmVsLW1jcC1jb21wYW5pb24iXX0=)
 [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=for-the-badge)](https://vscode.dev/redirect?url=vscode%3Amcp%2Finstall%3F%257B%2522name%2522%253A%2522laravel-mcp-companion%2522%252C%2522command%2522%253A%2522uvx%2522%252C%2522args%2522%253A%255B%2522laravel-mcp-companion%2522%255D%257D)
@@ -77,7 +78,7 @@ claude mcp add laravel-mcp-companion -- docker run --rm -i ghcr.io/brianirish/la
 ```
 
 **Claude Desktop, and most other MCP clients:** add one of these to the client's MCP
-configuration (Settings → Developer → Edit Config in Claude Desktop), then restart it.
+configuration, then restart it.
 
 With uv:
 
@@ -117,7 +118,7 @@ Twelve tools. [API.md](API.md) documents every argument and result field.
 
 | Tool | What it does |
 |------|--------------|
-| `search_laravel_docs` | Ranked search over everything held; returns sections, each with a snippet |
+| `search_laravel_docs` | Ranked search over the framework docs, services, packages and learning material; returns sections, each with a snippet |
 | `read_laravel_doc_section` | Reads one section of a page |
 | `read_laravel_doc_content` | Reads a whole page, or lists its headings |
 | `list_laravel_docs` | Lists what is held, or the files of one collection |
@@ -131,8 +132,8 @@ Twelve tools. [API.md](API.md) documents every argument and result field.
 | `browse_docs_by_category` | Lists pages by topic and difficulty *(experimental)* |
 
 - **Ranked sections, not files.** Ask in plain language ("how do I retry a failed queue job") and
-  get the sections that answer it. A section is usually a few hundred tokens where the whole page
-  is tens of thousands.
+  get the sections that answer it. A section is usually under a thousand tokens; a whole page is
+  usually several thousand, and the longest run past 30,000.
 - **Unified search** - One search covers the core framework docs, the services, the package docs
   and the learning resources, and labels each result with its source. `sources` narrows it.
 - **Results a program can use.** Every tool returns a JSON object matching a declared schema, as
@@ -150,7 +151,7 @@ find and run the rest. That keeps tool descriptions out of the model's context.
 
 The project refetches every source each night.
 
-- **Docker:** each night's documentation is published as a new image. Pull it:
+- **Docker:** each night the documentation changes, it is published as a new image. Pull it:
 
   ```bash
   docker pull ghcr.io/brianirish/laravel-mcp-companion:latest
@@ -159,7 +160,8 @@ The project refetches every source each night.
 - **`uvx` or `pip`:** the package carries the documentation as it was on its release date, and
   the nightly documentation is not published to PyPI. Ask your assistant to update its Laravel
   docs and the server fetches them from their sources. The update is kept in a directory of your
-  own, so it outlasts an upgrade.
+  own, where a reinstall leaves it alone. Installing a version that ships newer documentation
+  replaces it with that version's copy.
 
 Asking the assistant works with Docker too, but a container started with `--rm` loses the update
 when it stops. [OPERATIONS.md](OPERATIONS.md#keeping-the-documentation-current) covers image

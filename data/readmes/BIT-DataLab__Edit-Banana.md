@@ -390,7 +390,12 @@ Feature Suggestions: [Discussions](https://github.com/BIT-DataLab/Edit-Banana/di
 
 ---
 
+## 🤩 Contributors
+Thanks to all developers who have contributed to the project and promoted its iteration!
 
+Chai Chengliang, Zhang Chi, Lin Zheng, Rao Sijing, Yi Xiangjian, Zhou Nan, Yuan Weishuo, Wang Kejin, Li Jianhui, Zhang Junkai, Han Junyi, You Zirui, Xu Haochen, Yu Xinjiang
+
+---
 
 ## 📄 License
 

@@ -29,7 +29,7 @@ OpenVorld gives a project a place and its agents a presence. Your crew has names
 Use a vorld for a software project, a company, a content studio, or an activity you want help running. The files remain real files. The world helps you see who is doing what.
 
 - **Assemble a crew.** Give each member a role, a personality, and a brain. Talk to them individually or bring them into a party.
-- **Work together in parties.** Give a group a goal. Members share a conversation, hand work to teammates with `@mentions`, and gather around you.
+- **Work together in parties.** Give a group a goal. Members share a conversation, hand work to teammates with `@mentions`, answer all together when you write `@all`, share files through a folder of their own, and gather around you.
 - **Follow the work.** Read task balloons, inspect tool activity, and watch a member's browser preview when they use the web.
 - **Keep the decisions.** A writ is an approval for access: a folder, a command, or a site. Members ask when they need more.
 - **Earn progress.** Finished work earns XP, levels, and deeds. Your profile adds your name and background while your founder character stays unique.

@@ -4,7 +4,7 @@ Every open internship and graduate role at 31 AI labs and AI & machine learning 
 
 From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you can filter these by city, firm and focus, and see experienced roles too. Also: [2027 Quant Internships & Graduate Roles](https://github.com/quant-scraper/Quant-Student-Roles) · [2027 Big Tech Internships & Graduate Roles](https://github.com/quant-scraper/Big-Tech-Student-Roles).
 
-**31** internships · **28** graduate roles · updated 2026-11-19 14:27 UTC
+**31** internships · **28** graduate roles · updated 2026-11-20 23:06 UTC
 
 ## Where the roles are
 
@@ -90,7 +90,7 @@ From **[QuantScraper](https://quant-scraper.com/ai?for=students)**, where you ca
 | **Sierra** | [Software Engineer, Agent (New Grad 2027)](https://jobs.ashbyhq.com/Sierra/79953d72-60d4-43e0-8c8c-6eccda422dce) | Singapore | Agents | — | Sep 7 |
 | **Applied Intuition** | [Cybersecurity Software Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/a561fff8-aa38-4a5d-8b29-66c191f7328e) | Sunnyvale | Security | USD 130k–158k | Sep 2 |
 | ↳ | [Forward Deployed Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/31140958-d768-452c-8498-0b1c7f403943) | Sunnyvale | Forward deployed & solutions | USD 130k–158k | Sep 2 |
-| **Sierra** | [Software Engineer, Agent (New Grad 2027)](https://jobs.ashbyhq.com/Sierra/149f368c-52d5-408f-ba26-ad888f318a00) | San Francisco, New York | Agents | USD 150k–180k | Aug 31 |
+| **Sierra** | [Software Engineer, Agent (New Grad 2027)](https://jobs.ashbyhq.com/Sierra/149f368c-52d5-408f-ba26-ad888f318a00) | San Francisco, New York | Agents | USD 160k–190k | Aug 31 |
 | **Applied Intuition** | [Build & Release Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/9534b49a-9feb-4063-ac33-a9c4d94a1352) | Sunnyvale | General | USD 90k–115k | Aug 25 |
 | ↳ | [OTA/Cloud Validation Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/e5ec6599-5ae4-4f0f-b0fd-cd6f4cad8d95) | Sunnyvale | Systems | USD 90k–115k | Aug 25 |
 | ↳ | [UX Test Engineer - New Grad (2027)](https://jobs.ashbyhq.com/applied/c222bb2f-893d-455b-8dd2-f585205632e4) | Sunnyvale | General | USD 90k–115k | Aug 25 |

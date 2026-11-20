@@ -18,6 +18,9 @@ goes straight to your YouTube channel, now or on a schedule.
 A free alternative to Opus Clip, Klap and Vizard —
 **[see how it compares](docs/compare.md)**, including where they do more.
 
+Streaming GTA VI? **[Turn GTA 6 streams into Shorts](docs/gaming-clips.md)**:
+your reactions ranked, your webcam over the gameplay, clipped the same day.
+
 
 [![Download](https://img.shields.io/badge/⬇_Download_for_Windows-224_MB-ff0033?style=for-the-badge)](https://github.com/kleZ799/clipmint/releases/latest/download/ClipMint.exe)
 [![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
@@ -108,7 +111,8 @@ at, from the start, middle and end of what is said plus the video's own title
 and description, and picks the moments that kind of video is known for:
 
 - **Stream or gaming:** your reaction to the game, never a stretch of game
-  narration with you nowhere in it.
+  narration with you nowhere in it. GTA VI, Fortnite, Minecraft, any game:
+  [clipping game streams](docs/gaming-clips.md).
 - **Vlog:** the payoff of what happened, a plan falling apart, a first time.
 - **Podcast or interview:** the hot take, the confession, the argument while
   it is still heated, opened on the answer rather than the question.
@@ -646,6 +650,15 @@ picks up where it stopped — nothing already downloaded, transcribed or ranked
 is done twice — and a run that finished with a clip missing offers **Retry
 failed clips**, which renders just those. Errors that trying again cannot fix,
 like a wrong API key, fail straight away so you are not kept waiting for them.
+
+If the model you chose is busy and the run moves on to another one you set up,
+and that one fails too, the error says what happened to each of them, not just
+the last. A key pasted under the wrong provider (a Gemini key with OpenAI
+selected, say) is caught when you save it, not halfway through a run.
+
+A video whose picture stops before its sound does only gets clips from the
+part you can see, and the log says where the picture stops. Before, clips from
+the rest came out as a black screen with sound.
 
 Asking for **best** quality when a lower-quality copy is already downloaded
 makes the app try for a better one. If YouTube won't serve it, the run now
@@ -1274,8 +1287,8 @@ before it in the feed reads as lower production value before a word of it is
 heard. And a clip whose loudest moment lands late opens with **two and a half
 seconds of that moment first**, then a quick white flash back to the start, and
 plays in full: the payoff arrives before the viewer has
-decided whether to stay. It skips itself when the peak is already at the front,
-where a replay would just be a stutter, and the length it adds is reserved
+decided whether to stay. It skips itself when the peak is already in the first
+six seconds, where a replay would just be a stutter, and the length it adds is reserved
 before the cut is chosen — so 30-second clips are still 30 seconds with it on.
 Turn it off with the switch in the Render panel, or by writing *no hook repeat*
 in the prompt.
@@ -1470,6 +1483,8 @@ The **Edit** box under Render works the other way round: when the prompt names a
 caption style or an edit, the words win, and the box shows it with a *set by
 your words* tag.
 
+Clip length can be said the way you'd say it: `30 second clips`, `about a minute`, `2 minutes`, `1.5 minutes`, `20-40s`, `more than a minute` or `1 minute+` (a minimum, so every clip comes out at least that long), `under 45 seconds` or `up to a minute` (a maximum). Cutting pauses never takes a clip below the length you asked for.
+
 While you type, the preview uses a keyword pass that runs in about 70ms and costs no quota. About a second after you stop, the model reads the whole thing; its answer is cached, so starting the run doesn't ask again. Where both read the same setting, your literal words win.
 
 ### Naming an exact span
@@ -1641,19 +1656,4 @@ shorts_generator/
 ├── framing.py             # where the crop window sits, and moving it by hand
 ├── performance.py         # what the channel's view counts say, tested against chance
 ├── words.py               # word timings for a finished clip
-├── autoedit.py            # pause cuts, punch-ins, emoji, B-roll, logo — one encode
-├── captions.py            # burned-in captions: four styles, ten fonts, fixable afterwards
-├── broll.py               # where stock footage fits, and fetching it from Pexels
-├── brand.py               # the channel's logo
-├── profiles.py            # several channels: each its own sign-in, logo and look
-├── scorecard.py           # a clip's score split into Hook / Moment / Energy / Pace
-├── content_kinds.py       # stream / vlog / podcast / tutorial / sports / other
-├── vision.py              # what each clip shows, from its frames
-├── seo.py                 # Shorts, Reels and TikTok packaging, all ranked
-├── playbook.py            # the growth playbook: bundled, fetched daily, overridable
-└── local/
-    ├── downloader.py      # yt-dlp + download cache
-    ├── transcriber.py     # faster-whisper + .srt cache
-    ├── llm.py             # Gemini / Groq / OpenRouter / OpenAI / Claude / Ollama, spare keys, text and vision
-    ├── clipper.py         # face-following crop on a planned camera path
-    
+├──

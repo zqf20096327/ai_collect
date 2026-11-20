@@ -63,6 +63,8 @@ Skele runs as a **desktop app** for Windows, macOS and Linux, and as an installa
   OpenAI API key. Nothing is sent until you send a message. See [docs/AI.md](docs/AI.md)
 - **Colour themes:** Claude, ChatGPT, VS Code, GitHub, Nord, Dracula, Catppuccin and more,
   each in light and dark
+- **Optional Gmail:** read, search, send and reply, save emails as pages, and let the AI look
+  things up in your mail (your own Google Cloud client, straight from your device)
 - **Optional Spotify** playback controls (your own Spotify app, PKCE, no secrets)
 - **Desktop app:** native window, menus and file dialogs, workspaces stored as SQLite files,
   a portable mode, and optional signed in-app updates
@@ -287,6 +289,8 @@ Zustand · Zod 4 · Tauri 2 · Vitest · Playwright.
 - **Portable mode** on macOS isn't available: the `.zip` is a normal app bundle that uses the
   standard data folder.
 - **Sync** between devices isn't built in. Use backups, or put exports in a folder you sync.
+- **Gmail** needs your own Google Cloud OAuth client, and Google ends sign-ins after 7 days
+  while that app is in Testing (see [docs/GMAIL.md](docs/GMAIL.md)).
 - **Spotify** needs your own Spotify developer app (see [docs/SPOTIFY.md](docs/SPOTIFY.md)).
 - The web build and the desktop app keep separate data. Move a workspace between them with a
   `.skele` backup.

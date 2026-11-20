@@ -10,6 +10,16 @@ redb.Route is the .NET equivalent of [Apache Camel](https://camel.apache.org/) �
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-8%20%7C%209%20%7C%2010-purple)](https://dotnet.microsoft.com)
 
+<a href="https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/721846393/eDelivery+AS4+v1.x+conformant+products"><img src="https://raw.githubusercontent.com/redbase-app/redb-route/main/redb.Route.As4/images/as4-ec-conformance-certificate.png" width="340" alt="Certificate of the eDelivery AS4 conformance tests passed by redb.Route.As4 4.6.1"></a>
+
+**eDelivery AS4 conformance.** [redb.Route.As4](https://github.com/redbase-app/redb-route/tree/main/redb.Route.As4)
+4.6.1 is listed by the European Commission among
+[eDelivery AS4 v1.x conformant products](https://ec.europa.eu/digital-building-blocks/sites/spaces/DIGITAL/pages/721846393/eDelivery+AS4+v1.x+conformant+products):
+it passed the eDelivery conformance tests of the eDelivery AS4 Profile 1.16, Common Profile, 76 of 76 required tests,
+on 2026-11-04 ([certificate, PDF](https://redbase.app/files/as4/redb-route-as4-4.6.1-ec-conformance-certificate.pdf)).
+The certificate is for version 4.6.1; later versions have not gone through the conformance service again. It attests
+the eDelivery Common Profile, not Peppol.
+
 > **Production runtime:** routes are packaged as `.tpkg` modules and deployed to **[redb.Tsak](https://github.com/redbase-app/redb-tsak)** — the runtime container with hot-reload, clustering, REST management API, CLI and Blazor dashboard. redb.Route handles the _what_ (pipeline logic); redb.Tsak handles the _where_, _when_ and _how many_ (deployment lifecycle). See [Running Routes in Production](#running-routes-in-production--redbtsak).
 
 ```csharp
@@ -1931,10 +1941,4 @@ For transports that support transactions, combine with `.Transacted()` to wrap p
 | `redb.Route.Soap` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Soap?label=)](https://www.nuget.org/packages/redb.Route.Soap) | SOAP 1.1/1.2 — WS-Security, MTOM attachments, WSDL-first services |
 | `redb.Route.File` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.File?label=)](https://www.nuget.org/packages/redb.Route.File) | File system — polling, atomic writes, locking |
 | `redb.Route.Sftp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Sftp?label=)](https://www.nuget.org/packages/redb.Route.Sftp) | SFTP (SSH.NET) |
-| `redb.Route.MqttNet` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.MqttNet?label=)](https://www.nuget.org/packages/redb.Route.MqttNet) | MQTT 5.0 (MQTTnet) |
-| `redb.Route.Amqp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Amqp?label=)](https://www.nuget.org/packages/redb.Route.Amqp) | AMQP 1.0 (Artemis, Azure SB, Amazon MQ) |
-| `redb.Route.Mail` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Mail?label=)](https://www.nuget.org/packages/redb.Route.Mail) | Email — SMTP, IMAP, POP3 (MailKit) |
-| `redb.Route.Tcp` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Tcp?label=)](https://www.nuget.org/packages/redb.Route.Tcp) | Raw TCP — text-line, length-prefixed, TLS |
-| `redb.Route.WebSocket` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.WebSocket?label=)](https://www.nuget.org/packages/redb.Route.WebSocket) | WebSocket — client and Kestrel server |
-| `redb.Route.Quartz` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Quartz?label=)](https://www.nuget.org/packages/redb.Route.Quartz) | Quartz.NET scheduling (Cron + Timer) |
-| `redb.Route.Core` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.Core?label=)](https://www.n
+| `redb.Route.MqttNet` | [![NuGet](https://img.shields.io/nuget/v/redb.Route.MqttNet?l

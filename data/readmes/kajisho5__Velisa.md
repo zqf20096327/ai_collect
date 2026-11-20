@@ -1,0 +1,533 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/velisa/velisa-readme-banner-dark.svg">
+    <img src="brand/velisa/velisa-readme-banner-light.svg" width="640" alt="Velisa">
+  </picture>
+</p>
+
+<div align="center">
+
+# Velisa
+
+**Verified Execution Layer for Intent, Skills & Agents**
+
+An open foundation for AI-native video production — not another AI video generator.
+<sub>Formerly AI Video Production OS.</sub>
+
+[Website](https://kajisho5.github.io/Velisa/) · [Dashboard](https://kajisho5.github.io/Velisa/dashboard/) · [Architecture](#the-core-idea) · [Status](#current-status) · [Ecosystem](#the-ecosystem-today) · [Build a Skill](#skill-author-experience) · [Roadmap](#roadmap) · [Docs](docs/)
+
+</div>
+
+---
+
+> **Mostly architecture and contracts, not a running system.** This repository is
+> MIT-licensed ([`LICENSE`](LICENSE)) and has CI: nine GitHub Actions workflows in
+> [`.github/workflows/`](.github/workflows/) (installer and registry tests, dashboard
+> build and deploy, SkillPact conformance, CodeQL, releases, ecosystem audit, update
+> notices, project sync, PR labels). What runs here is the installer, the reference
+> Capability registry ([`registry/`](registry/)), the dashboard and the plugin
+> marketplace. See [Current status](#current-status) before assuming anything below is
+> already built. The Skill repositories it describes are real, tested, and independently
+> released — see [The ecosystem today](#the-ecosystem-today).
+
+## What this is, in one sentence
+
+A set of open contracts and shared execution infrastructure that let independent
+Skills, Providers, and Agents — human or AI — turn video-production intent into
+deterministic, verifiable, reproducible changes to a project's artifacts.
+
+## Why it exists
+
+Video production today is fragmented: editing, color, audio, subtitles, QC, and
+delivery each live in different tools with no shared, inspectable record of what
+happened or why. AI is entering this space mostly as **Prompt → Model → MP4** — a
+closed box with no verification, no provenance, and no way to plug in a better
+component later without rewriting everything around it.
+
+This project starts from a different question, and answers it with evidence rather
+than a pitch: eleven real, independently-built repositories
+([`video-production-agent`](https://github.com/kajisho5/video-production-agent) plus
+ten Skill repos) already do meaningful production work today. They were cloned and
+audited directly — source, tests, CI, security code, commit history, not just READMEs
+(full findings: [`docs/REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md)). That audit found
+real, already-occurred problems a shared contract layer fixes and ad hoc patches would
+not — for example, `qc-skill` and `media-analysis-skill` had independently
+reimplemented the same loudness-measurement logic with no shared identity between them,
+because nothing in the ecosystem could even *notice* it was duplication. This project
+is the contract layer that makes facts like that visible and fixable, and lets Skills,
+Providers, and Agents nobody has built yet join without anyone redesigning the core.
+
+### This is not
+
+- another AI video generator (Prompt → Model → MP4, no verification, no provenance);
+- a Premiere / DaVinci Resolve / Final Cut replacement;
+- an FFmpeg wrapper pretending to be an operating system;
+- a single monolithic AI agent;
+- a closed AI-video SaaS;
+- an open marketplace for third-party Skills (this repository is a Claude Code plugin
+  marketplace for the ecosystem's own Skills — see [Quick start](#quick-start) — but a
+  marketplace anyone can publish to is deliberately not built yet);
+- a collection of unrelated prompts.
+
+Adjacent, real projects solve pieces of this space well — AI video generation tools,
+agentic editing frameworks, pipeline orchestrators, media QC tools, skill registries.
+[`docs/COMPETITIVE_ANALYSIS.md`](docs/COMPETITIVE_ANALYSIS.md) names them specifically
+and says plainly where this project's focus differs (deeper verification/provenance
+rigor and a contract-first, permissive-license interoperability story) rather than
+claiming to be "first" or "the only one" at anything.
+
+## The core idea
+
+```mermaid
+graph TD
+    A["Human Intent<br/>(Goals · Hard/Soft Constraints · Preferences · Policy · Permissions)"] --> B["Agent<br/>(Observation → Inference → Decision, evidence required)"]
+    B --> C["ProductionPlan<br/>(a DAG of typed Operations over Artifacts)"]
+    C --> D["Capability Discovery<br/>(Skill / Provider registry)"]
+    D --> E["Runtime<br/>(subprocess isolation · path policy · no shell · no raw filters)"]
+    E --> F["Artifact<br/>(content-addressed identity · provenance)"]
+    F --> G["QC / Verification<br/>(PASS / WARN / FAIL / UNKNOWN — measures, never decides)"]
+    G -->|accept| H["Delivery"]
+    G -->|replan, with QC findings as evidence| B
+    H --> I["Production Receipt"]
+```
+
+Only two pieces of this diagram are genuinely new, unimplemented ideas
+(`ProductionPlan`-as-DAG and `Production Receipt`); the rest generalizes mechanisms
+that already exist and run today inside `video-production-agent` and `qc-skill` — see
+[`docs/CORE_PRIMITIVES.md`](docs/CORE_PRIMITIVES.md) for exactly which is which.
+
+**The division of responsibility is the whole point:**
+
+| | Owns | Never does |
+|---|---|---|
+| **Human** | Intent, creative direction, goals, constraints, approval | — |
+| **Agent** (AI or human-driven) | Observation, reasoning, planning, capability selection, replanning | Execute a raw shell command or unvalidated filter string |
+| **Skills / Runtime** (deterministic) | Execution, media processing, rendering | Make a production decision |
+| **QC** (deterministic) | Measurement, verification | Decide what to do about a failure |
+
+An Agent decides *what*; the Runtime controls *how*. This split is not aspirational —
+it is already enforced, verified by grep across the entire real codebase: zero
+occurrences of `shell=True` or a raw filter string accepted from a caller anywhere in
+the eleven audited repositories.
+
+## Why "OS"?
+
+Not a literal comparison to Windows or macOS. "OS" here means the same thing it means
+in "the OS for X" generally: the underlying coordination layer — contracts, discovery,
+execution, artifacts, verification, provenance — that independent programs build on
+without depending on each other's internals. The kernel is deliberately small: seven
+components ([`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) §8), none of which contain a
+specific editing algorithm, a specific AI model, or a specific media engine.
+
+## Current status
+
+Never assume something below is shipped just because it's designed. Every document in
+[`docs/`](docs/) tags every claim `CURRENT` / `FUTURE` / `EXPERIMENTAL` / `UNKNOWN`, and
+this table follows the same rule:
+
+| Area | Status |
+|---|---|
+| 11-repository audit, evidence base | **Implemented** — [`REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md) |
+| Architecture, contracts, 45 design docs, 15 ADRs | **Implemented** (as documentation — see [Documentation](#documentation)) |
+| `video-production-agent` (Observation→Decision→Plan→Execution pipeline) | **Implemented, incomplete** — real, tested, no LLM wired in yet ([`NullProvider`](docs/REPOSITORY_MAP.md) only) |
+| 10 Skill repos (editing, audio, color, subtitle, motion graphics, thumbnail, QC, analysis, transcription, ffmpeg execution) | **Implemented** — independently, each with real tests and CI |
+| Capability Contract format | **Implemented** — JSON Schema [`registry/capability_contract.schema.json`](registry/capability_contract.schema.json), read by [`registry/contract.py`](registry/contract.py) / [`registry/schema.py`](registry/schema.py) ([`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 1) |
+| Reference Capability registry | **Implemented** — [`registry/registry.py`](registry/registry.py): who provides Capability X, collision detection, the 3-tier collision policy; tested in CI ([`install.yml`](.github/workflows/install.yml)) |
+| Conformance checks | **Implemented** — all eight `SKILL_SPEC.md` §8 checks in [`registry/conformance.py`](registry/conformance.py), verified live against `qc-skill`; plus a weekly, non-blocking SkillPact conformance job over every Skill with a `skill.contract.json` ([`skillpact-conformance.yml`](.github/workflows/skillpact-conformance.yml), [ADR-014](docs/adr/ADR-014-skillpact-conformance-job.md)) |
+| Cross-ecosystem Provider collision resolution | **Planned** — Phase 3 (the registry detects collisions and applies the policy as a library; no cross-ecosystem resolution yet) |
+| `ProductionReceipt` | **Implemented in `video-production-agent`** — [`audit/receipt.py`](https://github.com/kajisho5/video-production-agent/blob/main/src/video_agent/audit/receipt.py), one receipt per finished execution (its ADR-040, [`docs/ROADMAP.md`](docs/ROADMAP.md) Phase 6) |
+| Edit-Timeline artifact | **Planned / designed, not built** |
+| A second Agent, a second media-engine Provider, a real third-party Skill | **Vision, unverified** — architecturally designed for; nobody has built one yet. This is the single most important open question in the whole project — see [`docs/FINAL_REVIEW.md`](docs/FINAL_REVIEW.md). |
+| Plugin marketplace for the ecosystem's Skills | **Implemented** — [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json), generated by [`scripts/marketplace.py`](scripts/marketplace.py) from [`ecosystem.json`](ecosystem.json) ([ADR-013](docs/adr/ADR-013-marketplace-updates-and-fallback.md)) |
+| Open third-party Skill marketplace, self-evolving OS | **Vision** — see [Built to evolve](#built-to-evolve) below |
+
+Nothing here is described as "production-ready" or "complete," because it isn't, and
+this project's own principles argue against saying so prematurely
+([`docs/PRINCIPLES.md`](docs/PRINCIPLES.md)).
+
+## The ecosystem today
+
+[`ecosystem.json`](ecosystem.json) is the authoritative list of components and their
+status (active, scaffold, optional); this README does not restate the count. The table
+below is the core that the original audit cloned and verified directly, not taken on
+faith from a README ([`REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md)), plus
+`remotion-ffmpeg-skill`, which is easy to mistake for Remotion:
+
+| Repo | Role | Depends on |
+|---|---|---|
+| [`ffmpeg-skill`](https://github.com/kajisho5/ffmpeg-skill) | Typed FFmpeg execution — the shared media-execution substrate. Published on npm as `ffmpeg-skill`. | — |
+| [`video-editing-skill`](https://github.com/kajisho5/video-editing-skill) | Trim / cut / concat / resize | ffmpeg-skill |
+| [`audio-production-skill`](https://github.com/kajisho5/audio-production-skill) | Gain / mix / normalize / dynamics | ffmpeg-skill |
+| [`color-grading-skill`](https://github.com/kajisho5/color-grading-skill) | HDR→SDR / LUT / color tagging | ffmpeg-skill |
+| [`subtitle-skill`](https://github.com/kajisho5/subtitle-skill) | Subtitle generation + burn-in | ffmpeg-skill (burn-in only) |
+| [`motion-graphics-skill`](https://github.com/kajisho5/motion-graphics-skill) | Title cards / lower-thirds / overlays | ffmpeg-skill |
+| [`thumbnail-skill`](https://github.com/kajisho5/thumbnail-skill) | Raster thumbnail composition | ffmpeg-skill (frame extraction only) |
+| [`qc-skill`](https://github.com/kajisho5/qc-skill) | Deterministic QC — `PASS`/`WARN`/`FAIL`/`UNKNOWN`, never decides | ffmpeg/ffprobe directly |
+| [`media-analysis-skill`](https://github.com/kajisho5/media-analysis-skill) | Deterministic observation, never mutates media | ffmpeg/ffprobe directly |
+| [`transcription-skill`](https://github.com/kajisho5/transcription-skill) | Local ASR (faster-whisper), no cloud path | — |
+| [`video-production-agent`](https://github.com/kajisho5/video-production-agent) | Orchestrator — Observation → Inference → Decision → Plan → IR → Execution. **Usable but incomplete: the first consumer of this OS, not the OS itself.** | all of the above |
+| [`remotion-ffmpeg-skill`](https://github.com/kajisho5/remotion-ffmpeg-skill) | Motion graphics on real footage, timed from ffmpeg-skill's measurements. **Not Remotion itself:** a Skill that renders with Remotion and measures and delivers with ffmpeg-skill. npm: `remotion-ffmpeg-skill` (`npx remotion-ffmpeg-skill`). Not yet wired into the agent. | ffmpeg-skill, Remotion |
+
+What `ffmpeg-skill` adds over calling `ffmpeg` yourself: inputs are checked and every tool
+has a `--dry-run`, results report what was measured on the output rather than what was
+intended, and an existing output is refused unless `--overwrite` is passed — see its
+[README](https://github.com/kajisho5/ffmpeg-skill#readme) for the rest.
+
+`transcription-skill` is real, working, released — and was never part of this project's
+original "9 Skills" framing. That is direct, load-bearing evidence: the Skill count was
+never fixed, and this architecture is built specifically so it never has to be. Two
+concrete gaps this audit found (a naming collision between two different meanings of
+"Skill" inside `video-production-agent`'s own source, and the loudness-measurement
+duplication mentioned above) are the reason `docs/CAPABILITY_MODEL.md` exists in the
+shape it does — not invented problems, found ones.
+
+Only verified repositories are listed above; `ecosystem.json` carries the rest. Future
+Skills (`voice-production-skill`, `dubbing-skill`, and others) are discussed as *examples
+of what the architecture must support*, in [`docs/SKILL_EVOLUTION.md`](docs/SKILL_EVOLUTION.md)
+and [`docs/DELIVERY_AND_INTEROP.md`](docs/DELIVERY_AND_INTEROP.md) — where one appears in
+`ecosystem.json` at all, its `status` follows the one definition in that file's `$comment`
+(`active`: working operations behind its contract, released or not; `scaffold`: the repository
+exists but no operation works yet; `planned`: no repository yet), and this README does not
+pretend otherwise.
+
+## Quick start
+
+Installing the OS installs the whole ecosystem — the agent and every Skill listed in
+[`ecosystem.json`](ecosystem.json) — with one command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kajisho5/Velisa/main/install.sh | bash
+# options:  ... | bash -s -- --dir ~/work/velisa --with-optional --no-claude-skills --no-codex-skills
+```
+
+Into the workspace — `--dir`, else `$VELISA_HOME`, else `~/velisa-workspace` (an install made
+before the rename keeps working: `$AVOS_HOME` is still read, and `~/ai-video-os` is used when it
+is the only workspace there; see [`docs/RENAMING.md`](docs/RENAMING.md)) — this clones every
+repository (or fast-forwards an existing clone to the latest), `pip install -e`s the Python ones
+into `<workspace>/.venv`,
+links every Skill that has a `SKILL.md` into `~/.claude/skills/` (Claude Code) and
+`~/.agents/skills/` (Codex),
+checks `ffmpeg`/`ffprobe` (FFmpeg 6.1+) and Python (3.10+) — a missing or too old one is a
+note with the `apt`/`brew` command, it never installs system packages itself; on macOS the hint
+is `brew install ffmpeg-full`, because the plain `ffmpeg` formula lacks filters the Skills use, and
+`npx ffmpeg-skill doctor` lists exactly which — and finishes with a real `video-agent doctor`. Re-running it
+updates everything. It never deletes, resets or overwrites: a clone with local changes, or
+a `~/.claude/skills` entry that points elsewhere, is reported and left alone. A Skill
+repository with no package yet is cloned and reported as such. DVD/Blu-ray authoring
+(`bdmvkit`, `vtskit`, `udfkit`, `dvdcc`, `oncemore`) is optional: add `--with-optional`. From a checkout,
+`./install.sh` does the same. To add a Skill to the ecosystem, add it to `ecosystem.json`
+(and to `docs/ecosystem/registry.json`; a test checks they agree).
+
+**Before you run it.** Read what it would do first, without changing anything:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kajisho5/Velisa/main/install.sh | bash -s -- --dry-run
+```
+
+`--dry-run` prints every `git clone`/`pull`, `pip install`, `npm ci` and `ln -s` it would run and
+the environment checks, and writes nothing (piped from `curl`, `install.sh` itself still clones or
+fast-forwards this repository into the workspace first, to read `ecosystem.json`; from a checkout
+it does not). What it fetches is **not pinned**: every repository is cloned at, or fast-forwarded
+to, the latest commit of the default branch (`main`) of `github.com/kajisho5/<repo>`, so two runs a day apart can install
+different code — pin a Skill yourself (`git -C <workspace>/<repo> checkout <tag>` — `~/velisa-workspace` or
+`$VELISA_HOME` unless you passed `--dir` — then `--no-update`) when you need a fixed version. It writes only to the workspace (the clones and
+`.venv`), `~/.claude/skills/` and `~/.agents/skills/` (symlinks; `--no-claude-skills` /
+`--no-codex-skills` skip them) and, through `npm ci`, the npm cache.
+
+**Windows.** The installer is bash and is not tested on Windows. Use WSL (then follow the Linux
+steps) or Git Bash; native Windows support for the Skills themselves is tracked per Skill — for
+`ffmpeg-skill`, see its README's Windows notes and
+[kajisho5/ffmpeg-skill#143](https://github.com/kajisho5/ffmpeg-skill/issues/143).
+
+### From Claude Code: the plugin marketplace
+
+This repository is also a Claude Code plugin marketplace, generated from `ecosystem.json`
+(`scripts/marketplace.py`):
+
+```text
+/plugin marketplace add kajisho5/Velisa
+/plugin install velisa@velisa       # everything: the agent, every Skill, the routing skill
+/plugin install qc-skill@velisa     # or just one Skill
+```
+
+`velisa` depends on every non-optional Skill, so it installs them all; its routing
+skill (`/velisa:wakeup`, or just say "Velisa, ...") prefers the OS Skills that are installed and says so when it falls back to another skill,
+a plain tool or the model itself. Plugins carry the skills (`SKILL.md`); the Python packages and
+CLIs behind them still come from `install.sh` — run it with `--no-claude-skills` so Claude Code
+does not see each skill twice. Updates: turn on **auto-update** for `velisa`
+under `/plugin` → Marketplaces (off by default for every non-Anthropic marketplace), and Claude
+Code reports `Plugin updated: <name>`; or run `/plugin marketplace update velisa`.
+Installed before the rename (`@ai-video-production-os`)? Reinstall once — the commands are in
+[`docs/RENAMING.md`](docs/RENAMING.md#plugin-marketplace-name).
+
+**Maintainer tools** (ADR-028, decision D42). `/plugin install velisa-maintainer@velisa` adds a skill and three
+commands for whoever maintains these repositories, not for producing video: `/repin` (dispatch the agent's re-pin and
+report its pull request), `/release <repo>` (how that repository releases and what the next release would hold) and
+`/roadmap <repo>` (its open roadmap steps). The skill's references cover re-pins, releases, contract diffs, the specs,
+the schemas and what a Claude Code session cannot do on GitHub. `velisa` does not install it.
+
+**Field tests** (ADR-028, decision D43). Steps that need real hardware, software, accounts or consented media (a GPU
+with weights, Premiere Pro / Resolve, platform test accounts, a set-top disc player, venue recordings) are listed in
+[`docs/field-test/`](docs/field-test/README.md) with the procedure; `python3 scripts/field_test.py record <step>`
+writes a result file to commit.
+
+**One repository per component** (ADR-029, decision D44). The repositories stay separate; the ADR compares a
+monorepo and says when to ask again.
+
+**1.0 for a Skill** (ADR-031, decision D46). From 1.0.0, a breaking change to a `STABLE` entry ships only in a major release;
+`EXPERIMENTAL` entries may still change in a minor release; deprecation lasts at least one minor release and 30 days. The
+ADR ranks the 0.x Skills by stability, and they move to 1.0 in that order, one at a time.
+
+**Editing by transcript** (ADR-032, decision D47). A selection is word indices and sentences, never seconds;
+transcription-skill gives the words' times and the gaps, video-editing-skill places each cut in its gap, on a silence and on
+a frame, and retimes the transcript and subtitles; the agent shows what goes and waits for a yes.
+
+**Batch selects** (ADR-033, decision D48). media-analysis-skill and qc-skill measure each shot (cuts, blur, exposure,
+shake, black and frozen frames, silence, speech); the agent keeps or rejects each shot by its rule `selects@1`, lists why,
+and renders the selects sequence through its existing trim and join only after a yes.
+
+**Update notices.** `.github/workflows/skill-updates.yml` checks every repository daily and
+posts what changed (new commits with their subjects, new version tags) on the issue labelled
+`skill-updates`, mentioning the owner, so GitHub notifies by mail and in the app. Locally:
+`python3 scripts/skill-updates.py --state ~/.velisa/updates.json` (any path; it is only where
+the last-seen state is kept).
+
+**Ecosystem health.** `.github/workflows/ecosystem-health.yml` checks every repository daily: a
+workflow that is red on a default branch (and since when), a repository without automatic CI, pull
+requests open for two weeks, duplicated and slow pull-request runs. The report is the body of the issue
+labelled `ecosystem-health`; a comment mentioning the owner is added only when something turns red.
+Locally: `python3 scripts/ecosystem-health.py`. The launch gates built on it are in
+[`docs/LAUNCH_READINESS.md`](docs/LAUNCH_READINESS.md).
+
+**SkillPact conformance.** `.github/workflows/skillpact-conformance.yml` checks, weekly, every
+repository in `ecosystem.json` that has a `skill.contract.json` with
+[SkillPact](https://github.com/kajisho5/skillpact)'s Action and reports the level (L1 / L2 / L3)
+in the run's summary, with which Skills declare progress events and error classes. It never blocks
+anything (ADR-014).
+
+**Contract shape.** `.github/workflows/contract-shape.yml` checks every Capability Contract that
+video-production-agent pins against [`registry/capability_contract.schema.json`](registry/capability_contract.schema.json)
+with [System Intelligence](https://github.com/kajisho5/system-intelligence)'s `si contract-check`
+(decision D31). It fails on a contract that breaks the schema, except the violations
+[`registry/contract-shape-baseline.json`](registry/contract-shape-baseline.json) lists with a reason
+(ADR-018). The weekly ecosystem audit (`ecosystem-audit.yml`) also reports roadmap drift
+(`si roadmap-drift`) and field readiness (`si diagnose --field`), read-only.
+
+**Layers.** Every component in `ecosystem.json` has a `layer`: `engine`, `skill`, `app`, `orchestrator` or
+`governance`, lowest first. A component calls only lower layers; a same-layer or upward call must be listed
+with its reason in [`registry/layering.json`](registry/layering.json). Data contracts are not calls
+(ADR-019, decision D33). `.github/workflows/layering.yml` checks the calls the agent's pinned contracts
+declare with System Intelligence's `si layer-check`. It reports only for now and does not fail.
+
+**Contract diff.** `.github/workflows/contract-diff.yml` is a reusable workflow a Skill calls on pull requests
+that change its `contract/contract.json`. It compares the contract at the merge base with the one at the head with
+System Intelligence's `si contract-diff`, labels the pull request `contract:none`, `contract:additive` or
+`contract:breaking`, and keeps one comment with every change and the release bump it needs (ADR-020, decision D34).
+It reports only for now and does not fail. Callers group runs per pull request with `concurrency`, so an older
+run never writes last.
+
+**Reusable checks.** Three more reusable workflows (ADR-022, decision D36):
+- `contract-file-check.yml` runs a Skill's `contract/generate.py --check` (or `generate.mjs`).
+- `changelog-check.yml` checks the CHANGELOG headings, and that a pull request that moves the version adds its heading.
+- `release-guard.yml` checks that a release tag's `contract/contract.json` says the tag's version.
+
+The release workflows themselves stay per repository; ADR-022 lists how each Skill releases.
+
+**Release commits are tested before they are pushed** (ADR-023, decision D37). A Skill's release job commits locally, then runs its fast tests on that commit (step "Test the release commit before pushing it"). Only then does it push. A push that merges only chore / ci / docs / test pull requests releases nothing; this is imagemagick-skill's rule. A Dependabot pull request (`dependencies`) releases, as a patch, in every Skill (addendum to D37). In the release-drafter repositories, `.github/scripts/release_gate.py` decides this.
+
+**Shared data formats, checked** (ADR-024, decision D38; ADR-025, D39). `kit@1`, `title.json`, `stinger.json`, the licence record and the sidecar envelope each have a JSON Schema in `registry/schemas/` and valid / invalid examples in `registry/conformance/`. `spec-conformance.yml` fails a pull request when an example does not behave as its directory says. A Skill copies them into its tests with `python3 -m registry.spec_conformance --export`; hyperframes-skill and motion-graphics-skill do so first. ADR-024 lists where the Skills differ from the specs.
+
+**Timebase** (ADR-026, decision D40). [`docs/specs/timebase.md`](docs/specs/timebase.md) says how frame rates, times,
+frames and SMPTE timecode are written and converted: exact `N/D` rates (29.97 is 30000/1001, never 2997/100), one
+rounding rule (a half up), positions counted in whole frames, drop-frame at 29.97 and 59.94 only. Its conformance
+vectors are [`docs/specs/timebase-vectors.json`](docs/specs/timebase-vectors.json); `scripts/timebase.py` is the
+reference implementation (`python3 scripts/timebase.py vectors`).
+
+**Error taxonomy** (ADR-027, decision D41). [`docs/specs/error-taxonomy.md`](docs/specs/error-taxonomy.md) puts every
+Skill's error codes in 15 shared classes, each with a retry policy and a rule for its message to a person.
+`scripts/error_taxonomy.py` lists codes the taxonomy does not know; `.github/workflows/error-taxonomy.yml` runs it
+weekly on the contracts the agent pins. It reports only and does not fail.
+
+**GitHub Project.** `.github/workflows/project-sync.yml` adds the issues and pull requests of
+every repository in `ecosystem.json` to the project *AI Video Production Ecosystem* (kajisho5 #1)
+every hour, from this repository alone. It needs one secret here, `PROJECT_TOKEN`: a classic token
+with the `project` and `repo` scopes
+([create it](https://github.com/settings/tokens/new?scopes=project,repo&description=velisa-project-sync)).
+Then add it under Settings → Secrets and variables → Actions → New repository secret. Each run
+looks back 60 days and adds only what the project does not have yet. Additions are paced for
+GitHub's write limits, so the first backfill finishes over a few hourly runs.
+
+**Codex** reads skills from `~/.agents/skills`; `install.sh` links every Skill there too
+(`--no-codex-skills` to skip).
+
+If you only want one piece rather than the whole ecosystem, the Skills are also usable
+standalone. `ffmpeg-skill` is genuinely published and installable on its own:
+
+```bash
+npx ffmpeg-skill                    # install (or refresh) the skill into ~/.claude/skills/ffmpeg-skill
+npx ffmpeg-skill doctor             # check your environment's ffmpeg/ffprobe capabilities
+npx ffmpeg-skill contract --json    # machine-readable capability declaration
+```
+
+It needs FFmpeg and Python at the versions in its
+[Requirements](https://github.com/kajisho5/ffmpeg-skill#requirements).
+
+(Skill packages are released independently of each other and of this repository —
+`ffmpeg-skill`'s own npm and GitHub versions can briefly differ; see
+[`docs/DISTRIBUTION_MODEL.md`](docs/DISTRIBUTION_MODEL.md) for what that actually looks
+like today.)
+
+The Python Skills are packages (`pip install`-able from source per each
+repo's own `pyproject.toml` — none are currently published to PyPI, marked `UNKNOWN`
+rather than assumed; `install.sh` above does this step for all of them at once).
+`video-production-agent` is the closest thing to a full end-to-end entry point — see
+its own README for the current CLI. To understand the architecture behind all of them,
+the path is:
+
+```
+This README → docs/ARCHITECTURE.md → docs/REPOSITORY_MAP.md → the repo you care about
+```
+
+## Skill author experience
+
+A Skill in this ecosystem is not a prompt. It is a small, typed, independently-tested
+package with a real security boundary:
+
+```mermaid
+graph LR
+    S[Skill] --> C[Capability Contract]
+    C --> Cap[Capability]
+    Cap --> P[Provider / Tool]
+    P --> R[Runtime]
+    R --> A[Artifact]
+    A --> V[Verification]
+```
+
+If you're wondering "could I build a new production capability for this?" — start at
+[`docs/SKILL_PROPOSAL.md`](docs/SKILL_PROPOSAL.md), which gives an ordered decision
+procedure before you ever create a new repository: is this really just a new parameter
+on an existing Capability? A new Capability inside an existing Skill? A new Provider of
+a Capability that already exists (exactly the pattern `transcription-skill`'s own
+engine registry already uses one level down)? Only if none of those fit do you propose
+a new Skill — this ordering exists specifically to prevent the ecosystem from
+sprawling into dozens of near-duplicate repositories.
+[`docs/SKILL_SPEC.md`](docs/SKILL_SPEC.md) defines what makes a Skill conformant
+regardless of implementation language — checked by structural, black-box tests, not by
+an OS maintainer reading your source line by line
+([ADR-009](docs/adr/ADR-009-plugin-conformance-over-code-review.md)).
+
+## Built to evolve
+
+AI in this architecture is not only meant to *use* Skills — the direction this project
+is built toward is an ecosystem where AI can help find what the production system
+itself is still missing:
+
+```
+Observe → Understand → Find gaps → Plan → Build / integrate → Verify → Learn ↺
+```
+
+**Today:** AI agents (currently `video-production-agent`, which has no real AI model
+wired in yet — only a `NullProvider` stub — and runs its deterministic operations with
+zero LLM involvement) can plan and orchestrate against the Skills that exist.
+
+**Direction, not current behavior:** the architecture is deliberately shaped —
+Capabilities as a discoverable registry rather than a hardcoded list, Skills as
+conformance-checked rather than hand-reviewed, gaps like the qc-skill/media-analysis-skill
+duplication as visible registry facts rather than silent bugs — so that an AI agent
+could eventually help *identify* a missing Capability and *propose* a new Skill to fill
+it, through the same [`docs/SKILL_PROPOSAL.md`](docs/SKILL_PROPOSAL.md) process a human
+contributor would use, with any repository-creating or otherwise hard-to-reverse step
+surfaced explicitly for a human to approve
+([`docs/IMPLEMENTATION_PROTOCOL.md`](docs/IMPLEMENTATION_PROTOCOL.md) — never taken
+silently, by an AI or otherwise).
+
+This repository does not autonomously rewrite itself today. Nothing here claims it
+does.
+
+## Mission
+
+Make professional and creative video production more interoperable, reproducible,
+inspectable, and automatable — without making automation opaque or removing human
+creative control. Concretely, that means: reducing fragmented, tool-specific
+workflows; giving AI-assisted production an actual verification and provenance trail
+instead of "trust the model"; and making new production capabilities addable to a
+shared ecosystem without every contributor re-deriving the same security and contract
+boundaries from scratch (which, per the audit, is exactly what happened independently
+across seven-plus Skill repos before this project existed — see
+[`docs/SECURITY_MODEL.md`](docs/SECURITY_MODEL.md)).
+
+## Roadmap
+
+| | |
+|---|---|
+| **Now** | Phase 0 (this research) is substantially complete. Phase 1: a reference Capability Contract format + registry library — requires zero changes to any existing Skill or Agent. |
+| **Next** | Phase 2: retrofit existing Skills to publish the new contract (independently, repo by repo — the one phase that's genuinely parallelizable). Phase 3: resolve the qc-skill/media-analysis-skill Provider collision for real. |
+| **Later** | Cross-Skill Artifact/Execution model, QC-verifies-Plan-conformance, `ProductionReceipt`. |
+| **Vision** | Third-party Skill support with a published conformance harness; AI-assisted gap discovery (see [Built to evolve](#built-to-evolve)). Deliberately last — a plugin model designed before any real Skill has used it is guessing. |
+
+Full phased plan with real dependencies between phases (not everything here can run in
+parallel, and the roadmap says exactly which parts can't):
+[`docs/ROADMAP.md`](docs/ROADMAP.md) · what changes / doesn't change for
+`video-production-agent` specifically: [`docs/MIGRATION_STRATEGY.md`](docs/MIGRATION_STRATEGY.md).
+
+## Contributing
+
+Single-maintainer, pre-1.0, lightweight ADR-based decision process — see
+[`docs/GOVERNANCE.md`](docs/GOVERNANCE.md). This project doesn't need users so much as
+it needs the second Skill, the second Agent, or the second media-engine Provider that
+would actually prove the independence claims above true in practice, not just in
+design.
+
+## Support
+
+This project is, and will stay, open. Its creator ([@kajisho5](https://github.com/kajisho5))
+also needs to be able to sustain building it — several Skill repositories already point
+to [GitHub Sponsors](https://github.com/sponsors/kajisho5) for exactly this reason. No
+other funding mechanism is claimed here beyond what's already configured in those
+repos; nothing here should be read as a request layered on top of the architecture
+itself. The intended order is mission first, then the ecosystem's value to users, then
+whatever sustains the person building it — not the reverse.
+
+## Documentation
+
+The full architecture is documented across [`docs/`](docs/) (~50 files) and
+[`docs/adr/`](docs/adr/) (15 decision records). Start with these five, in order:
+
+1. [`REPOSITORY_MAP.md`](docs/REPOSITORY_MAP.md) — the evidence base
+2. [`CORE_PRIMITIVES.md`](docs/CORE_PRIMITIVES.md) — what everything is
+3. [`CAPABILITY_MODEL.md`](docs/CAPABILITY_MODEL.md) — Capability vs. Skill vs. Provider vs. Runtime
+4. [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) — the OS/Agent boundary, the kernel, the red-team pass
+5. [`FINAL_REVIEW.md`](docs/FINAL_REVIEW.md) — the honest accounting of what's verified vs. assumed
+
+Then: [`GLOSSARY.md`](docs/GLOSSARY.md) (every term, defined once) and
+[`ARCHITECTURE_DECISIONS.md`](docs/ARCHITECTURE_DECISIONS.md) (a scannable ADOPT /
+DEFER / REJECT table, if you want the conclusions before the reasoning).
+
+Watching the ecosystem from outside (this repo included) and don't want to track eleven
+separate repos' commit histories individually? [`ECOSYSTEM_CHANGELOG.md`](docs/ECOSYSTEM_CHANGELOG.md)
+is a single running log of every cross-repository change made under this project's
+architecture, newest first, with links to the real PR/diff for each one.
+
+Picking this project back up (a new session, or a human returning after a break)?
+[`docs/ecosystem/HANDOFF.md`](docs/ecosystem/HANDOFF.md) is the one page to read first —
+current state, what's in flight, and where the rest of the operational documentation
+(`CURRENT_STATE.md`, `CROSS_REPO_STATUS.md`, `WORK_QUEUE.md`, `DECISION_LOG.md`) lives.
+
+Want to *see* the ecosystem's status rather than read about it? [`dashboard/`](dashboard/)
+is a read-only, mobile-first web dashboard over the ecosystem's real GitHub state — see
+[`dashboard/README.md`](dashboard/README.md) and
+[`docs/adr/ADR-011-ecosystem-dashboard.md`](docs/adr/ADR-011-ecosystem-dashboard.md).
+
+Want the actual code, not just the design? [`registry/`](registry/) is a small, tested,
+dependency-free Python library — Phase 1 of `ROADMAP.md` — that loads real
+`CapabilityContract` documents, answers "who provides Capability X", and detects the
+ecosystem's real Capability collisions. `python3 -m unittest discover -s registry/tests -t .`
+runs its 62 tests — 21 of them (`test_registry.py`) against real captured data from five Skills —
+and CI runs them too ([`install.yml`](.github/workflows/install.yml)). 21 skip on a machine
+without the optional pieces, and say so: 11 need `qc-skill`'s `qc` on `PATH` (live conformance
+checks) and 10 need the optional `jsonschema` package (schema validation).
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). The individual Skill and Agent repositories linked above
+carry their own licenses — check each one directly rather than assuming they match.

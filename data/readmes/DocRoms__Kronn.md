@@ -25,16 +25,16 @@
 - **Code where code is enough:** workflows run the mechanical steps without tokens and give each agent a small, bounded prompt. See [the Kronn way](docs/guides/the-kronn-way.md).
 - **Your machine, your rules:** agents run in an OS sandbox that hides Kronn's vault, at the trust level you choose; with Ollama, nothing leaves your laptop.
 
-> **Status: 0.15.2 (current release).** Functional but pre-1.0. Breaking changes happen between minor versions; patch versions are safe.
+> **Status: 0.15.3 (current release).** Functional but pre-1.0. Breaking changes happen between minor versions; patch versions are safe.
 > **License: AGPL-3.0.** Using Kronn locally to build *your own* product is fine; the copyleft only kicks in if you distribute a modified Kronn to others. See [License notes](#license-notes-agpl-30).
 
-## What's new in 0.15.2
+## What's new in 0.15.3
 
-- **Secrets out of agents' reach:** trust levels, an OS sandbox on Kronn's data directory, strong confirmation and a safe plugin export.
-- **Quotas without lost work:** work waits, then returns to its original provider; no silent fallback.
-- **Rooms that code across projects, Docker without compiling:** grant a room `code` on another project's checkout; `start` pulls multi-arch release images.
+- **Workflows that decide and compare:** a Decide step with its own decision model, shadows per step with an optional merged result, and one "Models and fallbacks" chain per mode on every agent card.
+- **Workers that fit your project:** lanes follow the project's own toolchains (Cargo, Node, Composer, Xcode, Make), a worker stopped by the time limit keeps its work, and an integration never touches your checkout.
+- **Safer by default, easier to share:** git on a worker's worktree runs nothing the worker wrote, a possible secret in a document is reported, and an export says what it names but does not carry.
 
-Full list of changes in the [CHANGELOG](CHANGELOG.md#0152---2026-11-08).
+Full list of changes in the [CHANGELOG](CHANGELOG.md#0153---2026-11-19).
 
 ## One workflow, any engine
 
@@ -51,7 +51,7 @@ Import a lane: [cloud](docs/examples/design-system-first-visual.cloud.json), [10
 
 ## Contents
 
-- [What's new in 0.15.2](#whats-new-in-0152)
+- [What's new in 0.15.3](#whats-new-in-0153)
 - [One workflow, any engine](#one-workflow-any-engine)
 - [Key capabilities](#key-capabilities)
 - [The Kronn way](#the-kronn-way-engineering-not-incantation)
@@ -111,15 +111,16 @@ An image or a clip can start from several source images, on ComfyUI too (FLUX.2 
 ## The Kronn way: engineering, not incantation
 
 Decompose: code does what code can do (fetch, transform, run a command) without spending a token, and an agent only steps in where judgement is needed, with a small, bounded prompt.
-Measure: skills and Quick Prompts are versioned, and a shadow run shows whether a new version is really better before it goes live. See [the Kronn way](docs/guides/the-kronn-way.md).
+Measure: skills and Quick Prompts are versioned, and a step shadow shows whether a new version is really better before it goes live. See [the Kronn way](docs/guides/the-kronn-way.md).
 
-### Test a new version without risk (shadow runs)
+### Test a new version without risk (step shadows)
 
-Each normal run of a workflow can start a shadow run on the same real inputs, loading the skill or Quick Prompt version you are testing.
-Every step marked as acting outside Kronn (posting, sending, writing elsewhere) is skipped in the shadow, and so is every Gate: it publishes and breaks nothing.
-The run list compares both runs step by step, and one click promotes the better version. See the [shadow runs guide](docs/guides/shadow-runs.md).
+A step can carry shadows: each one re-runs that step beside its main execution, on exactly the same input, with another agent, model, prompt or skill versions (or with none of these, to see how deterministic the step is).
+Only the main output continues the workflow. A shadow never runs a step marked as acting outside Kronn (posting, sending, writing elsewhere), nor a Gate, and a shadow that fails or overspends never fails the step.
+The run view compares the main execution and its shadows step by step (what differs, tokens, cost, duration, output diff, and how many distinct outputs an identical shadow gives), and one click promotes the better version.
+Optionally, a step can also merge its main execution with one, several or all of its shadows (off by default): a condense pass dedups their points, verifies each point a shadow raised and keeps the provenance of every point, and the merged result becomes the step's output. A point it cannot verify is never published: the main output then stays the step's output. See the [shadow runs guide](docs/guides/shadow-runs.md).
 
-<p align="center"><img src="docs/screenshots/shadow-runs.svg" alt="The same real inputs start a normal run, published, with Prompt v2 and Skill v1, and a shadow run without side effects, with Prompt v2 and Skill v2. Both feed a step-by-step comparison, then the better version is promoted in one click" /></p>
+<p align="center"><img src="docs/screenshots/shadow-runs.svg" alt="One step receives its input. The main execution, published, is the step as it is. Beside it, an identical shadow and a varied shadow (another agent, model, prompt or skills) re-run only that step on the same input, without side effects. A per-step comparison shows what differs, tokens, cost, duration, an output diff and a determinism summary, and the tested version can be promoted in one click. An optional merge condenses the main execution with the chosen shadows, with verification and provenance, and the merged result becomes the step output" /></p>
 
 ---
 
@@ -134,7 +135,7 @@ Download the installer for your OS from [Releases](https://github.com/DocRoms/Kr
 ### Docker: published images
 
 ```bash
-git clone --branch 0.15.2 --depth 1 https://github.com/DocRoms/Kronn.git   # latest stable release
+git clone --branch 0.15.3 --depth 1 https://github.com/DocRoms/Kronn.git   # latest stable release
 cd Kronn
 ./kronn start        # guided setup & launch (Docker) → http://localhost:3140
 ```
@@ -174,7 +175,7 @@ Docker on macOS cannot run your host agents or read the Keychain, so on a Mac us
 | **Worker** | An agent that executes one task in its own worktree and sub-discussion, reviewed by the room's principal. |
 | **Quick Prompt / Quick API / Quick Exec** | Reusable prompt template with `{{variables}}`; saved API call; bounded, shell-free CLI collector. |
 | **Workflow** | A multi-step pipeline (15 step types) started manually, by cron, a tracker or a Watch. |
-| **Shadow run** | A side-effect-free replay of a real run on other skill or Quick Prompt versions. |
+| **Step shadow** | A side-effect-free re-run of one step beside its main execution, on the same input, with another agent, model, prompt or skill versions (or none, to measure determinism); optionally merged into the step's output. |
 | **Artifact (Live Page)** | A sandboxed, versioned HTML report backed by JSON datasets. |
 | **Profile / Skill / Directive** | Who the agent is, what it knows, how it talks: 18 built-in profiles, 30 built-in skills, plus your own. |
 | **Plugin** | MCP, API, hybrid or Custom API integration with encrypted secrets: 55+ built in (GitHub, GitLab, Jira, Slack, Stripe…), any REST API through Custom API. |
@@ -218,6 +219,7 @@ Full text in [LICENSE](LICENSE). If your legal team wants more nuance, dual-lice
 
 - [Website](https://docroms.github.io/Kronn/): the Kronn pitch site (FR / EN / ES)
 - [docs/install.md](docs/install.md): install per OS, Docker, WSL2, Tauri desktop
+- [docs/install-by-agent.md](docs/install-by-agent.md): the install an AI agent can run end to end, and how to check that agents have Kronn's tools
 - [The Kronn way](docs/guides/the-kronn-way.md): decomposition, batches, compare-agents, local models
 - [docs/architecture/overview.md](docs/architecture/overview.md): backend/frontend topology, workflow engine reference
 - [docs/architecture/trust-levels.md](docs/architecture/trust-levels.md): trust levels, sandbox, strong confirmation

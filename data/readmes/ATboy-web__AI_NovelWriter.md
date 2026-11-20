@@ -1,14 +1,14 @@
-# AI小说创作工坊 v3.2.0
+# AI小说创作工坊 v3.4.1
 
 [![CI](https://github.com/ATboy-web/AI_NovelWriter/actions/workflows/ci.yml/badge.svg)](https://github.com/ATboy-web/AI_NovelWriter/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/ATboy-web/AI_NovelWriter?label=release&color=blue)](https://github.com/ATboy-web/AI_NovelWriter/releases/latest)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT%20Modified-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-2985%20collected-brightgreen.svg)](#开发)
+[![Tests](https://img.shields.io/badge/tests-4277%20passed-brightgreen.svg)](#开发)
 
 基于 AI 的长篇小说创作工坊 —— **135 类内置题材（可自定义）**、**5 Agent 协作**、
-**18 面板工作台**、**世界线分支与世代传承**、**多 AI 服务适配与用量成本统计**、
-**插件扩展与 MCP 接入**。
+**20 面板工作台**、**世界线分支与世代传承**、**多 AI 服务适配与用量成本统计**、
+**插件扩展 / MCP 接入 / SKILL.md 技能库**。
 
 桌面端为 Windows 单文件 EXE；另有 Android 应用、FastAPI 后端集群与 React Web 前端。
 
@@ -18,7 +18,7 @@
 
 | 平台 | 版本 | 大小 | 链接 |
 |------|------|------|------|
-| **Windows** | **v3.2.0** | ~25 MB | [AI_NovelWriter.exe](https://github.com/ATboy-web/AI_NovelWriter/releases/latest) |
+| **Windows** | **v3.4.1** | ~28 MB | [AI_NovelWriter.exe](https://github.com/ATboy-web/AI_NovelWriter/releases/latest) |
 | Android | v4.0.1（沿用上一次构建） | ~10.9 MB | [AI_NovelWriter_v4.0.1.apk](https://github.com/ATboy-web/AI_NovelWriter/releases/tag/v2.16.0) |
 
 > 单文件免安装：下载后直接双击运行。首次启动需在 **设置** 里配置 AI 服务。
@@ -29,7 +29,7 @@
 2. 打开 **设置 → AI 服务**，选择服务商并填入 API Key（或使用本地 Ollama，无需密钥）
 3. 点击 **新建小说**，输入标题、题材、核心概念
 4. 点击 **自动创作**：大纲 → 角色 → 章节全自动生成
-5. 在 **创作工具** 页用 15 个面板精修设定、时间线、角色传记与世代传承
+5. 在 **创作工具** 页用 20 个面板精修设定、时间线、角色传记与世代传承
 
 ## 功能特性
 
@@ -43,7 +43,7 @@
   并配 204 条创作标签（8 大类）。**可在「管理题材…」里任意增删**，配置存于本地 `genres.json`。
 - **续写**：已完成的作品可续写新章，上下文无缝衔接
 
-### 面板化工作台（18 个面板 / 5 个分组）
+### 面板化工作台（20 个面板 / 5 个分组）
 
 | 分组 | 面板 |
 |------|------|
@@ -51,7 +51,18 @@
 | 结构分析（2） | 故事流 · 章节分析 |
 | 记忆与摘要（2） | 记忆可视化 · 摘要管理 |
 | **世界与世代（3）** | **世界线与时间线 · 角色传记 · 世代传承** |
-| 运维（3） | 批量操作 · **插件中心** · **MCP 服务器** |
+| 运维（5） | 批量操作 · **插件中心** · **MCP 服务器** · **技能库** · **回炉重造** |
+
+- **技能库**：导入 / 登记 `SKILL.md` 技能包，自动解析出规则分级、适用场景、
+  触发词与调用参数；按当前稿件**自动匹配**技能，**一键应用**后把规则注入写作提示词
+  （X 级「已否决」与 H 级「人审」规则永不注入）。详见 `docs/SKILL_LIBRARY.md`。
+
+- **回炉重造**：扫描存量低质量章节（质检阻断 / 评审低分 / 标题占位），
+  **先把原文快照归档**再送进重写队列；状态走「待重写 → 重写中 → 待审核 →
+  已通过 → 已定稿」，也可直接废弃。归档只增不删，随时可回看历史版本。
+  同一面板还有 **整书重写**：真正调模型按章重写正文（保留情节骨架、统一文风），
+  支持进度条、暂停/取消、断点续跑，结果写到 `chapters_rewritten/` 不覆盖原文。
+  详见 `docs/REWORK.md`。
 
 - 面板框架统一提供**面包屑 + 刷新按钮 + 状态栏 + F5 / Ctrl+F / Esc**，
   新增面板只需在注册表加一行。
@@ -140,7 +151,7 @@
 ai-novel-writer/
 ├── novel_app.py              # 桌面端薄编排层
 ├── app/                      # 桌面端应用包（唯一需要安装的发行包）
-│   ├── panels/               #   ├─ 面板框架：registry / host / base / legacy / ui_kit + 15 个面板
+│   ├── panels/               #   ├─ 面板框架：registry / host / base / legacy / ui_kit + 20 个面板
 │   ├── providers/            #   ├─ 多 AI 服务：注册表 / 适配器 / 价目表 / 余额 / 推理模型
 │   ├── events/               #   ├─ 线程感知事件总线
 │   ├── ai_client.py          #   ├─ 统一 AI 客户端与路由

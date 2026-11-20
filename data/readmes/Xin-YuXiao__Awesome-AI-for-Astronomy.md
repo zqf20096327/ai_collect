@@ -17,7 +17,7 @@
 </div>
 
 > [!TIP]
-> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 443 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
+> The [searchable web page](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/) filters all 452 papers and 66 software packages by section, year, venue type, public code, model weights or data, and data modality, and shows a one-sentence summary for every paper. The full list can also be downloaded as [JSON](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/entries.json) or [CSV](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/papers.csv).
 >
 > [AstroAI Today](https://xin-yuxiao.github.io/Awesome-AI-for-Astronomy/today.html) collects new arXiv papers on machine learning in astronomy every day. A language model (DeepSeek V4.1 Flash) screens them and writes a one-line TL;DR for each paper and a TL;DR for each week and month. These papers are not reviewed; the curated list below is.
 >
@@ -118,6 +118,7 @@ This list tracks machine learning work in astronomy with public papers, linking 
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | **JEPA Astronomy** [JEPA for astronomy: multi-survey spectral alignment puts stellar parameters on the leading principal axes](https://arxiv.org/abs/2611.23492 "Non-contrastive JEPA alignment across Gaia XP, LAMOST LRS, DESI and APOGEE makes stellar parameters linearly legible and reproduces the Milky Way abundance structure for 8.0 million Gaia XP giants.") | arXiv 2026 | [Code](https://github.com/Xiaosheng-Zhao/SpecCLIP) | - |
 | 2026.01 | [OmniSpectra: A Unified Foundation Model for Universal Spectra Representation Learning](https://arxiv.org/abs/2601.15351 "Masked-modeling transformer pretrained on 5.5 million spectra from eight surveys at native resolution.") | arXiv 2026 | - | - |
 | 2025.10 | [Universal Spectral Tokenization via Self-Supervised Panchromatic Representation Learning](https://arxiv.org/abs/2510.17959 "Transformer tokenizer that reads spectra on their native wavelength grids, pretrained on SDSS, DESI, GALAH and APOGEE and adapted to object classification and stellar parameter regression.") | arXiv 2025 | - | - |
 | 2025.07 | [SpecCLIP: Aligning and Translating Spectroscopic Measurements for Stars](https://arxiv.org/abs/2507.01939 "Contrastive alignment of LAMOST low-resolution and Gaia XP spectra foundation models for parameter estimation and cross-spectrum prediction.") | arXiv 2025 | - | [LoRA Fine-tuning](https://arxiv.org/abs/2507.20972) |
@@ -174,6 +175,7 @@ This list tracks machine learning work in astronomy with public papers, linking 
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [automodel: A Skill for Agentic Model Discovery](https://arxiv.org/abs/2611.24347 "An agent skill gives general-purpose coding agents a model-discovery recipe; with it, commercial agents identify new models in case studies from astrophysics and four other fields.") | arXiv 2026 | [Code](https://github.com/unlayer-ai/automodel) | - |
 | 2026.11 | **GalaxyWiki** [Extracting Published Discussions of 13,616 Galaxies with Language Models](https://arxiv.org/abs/2611.13118 "GPT-5.5 agents extract source-linked discussions from arXiv papers and coordinate matching groups the evidence into 13,616 galaxy entries.") | **WASP 2026 Workshop** | [Code](https://github.com/NolanKoblischke/galaxywiki-paper) | [ACL Anthology](https://aclanthology.org/2026.wasp-1.19/) [Project](https://galaxywiki.nolank.ca/) |
 | 2026.11 | **auto\_research** [A Semi-autonomous Multi-agent Pipeline for High-energy Astrophysics Research with Enforced Provenance and Verifiable Self-extension](https://arxiv.org/abs/2611.05251 "Multi-agent pipeline that retrieves HEASARC data and writes its own tools, tested by reproducing IXPE polarimetry results.") | arXiv 2026 | - | - |
 | 2026.04 | [Competing with AI Scientists: Agent-Driven Approach to Astrophysics Research](https://arxiv.org/abs/2604.09621 "Cmbagent multi-agent workflow with human intervention that builds a weak lensing inference pipeline and took first place in the FAIR Universe Weak Lensing Uncertainty Challenge.") | arXiv 2026 | - | - |
@@ -288,6 +290,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [Cross-Dataset Inference of Central-Satellite Classification and Host Halo Masses from Galaxy neighbours with Machine Learning](https://arxiv.org/abs/2611.24803 "XGBoost models trained on IllustrisTNG use ten-neighbour distances and stellar masses with domain alignment to classify centrals and satellites and infer host halo masses in EAGLE.") | arXiv 2026 | - | - |
 | 2026.11 | [The Role of Galactic Shear in Regulating Local Star Formation Efficiency: A Combined MaNGA DynPop and ALMaQUEST Study](https://arxiv.org/abs/2611.22300 "Random forest regression on spatially resolved MaNGA and ALMaQUEST measurements ranks galactic shear as the strongest dynamical correlate of lower local star-formation efficiency, with modest predictive power.") | arXiv 2026 | - | - |
 | 2026.11 | [Unsupervised learning reveals a small number of galaxy formation pathways in IllustrisTNG](https://arxiv.org/abs/2611.17559 "Uses UMAP and k-means on star-formation histories of roughly 10,000 IllustrisTNG galaxies to identify six groups with distinct assembly histories.") | arXiv 2026 | - | - |
 | 2026.11 | [MAHA-z: A Mahalanobis distance kNN estimator for photometric redshifts](https://arxiv.org/abs/2611.14582 "A k-nearest-neighbour estimator with a Mahalanobis metric learned from the reference-sample covariance returns photometric-redshift point estimates and kernel-density posteriors, validated on Euclid Flagship 2, Legacy-KiDZ, VIPERS and DES Y3.") | arXiv 2026 | - | - |
@@ -385,6 +388,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | **GINN** [Geodesic-informed neural networks for testing spacetimes with S2](https://arxiv.org/abs/2611.24370 "A geodesic-constrained differentiable orbit network recovers S2 parameters and uncertainties in one optimization and finds no significant departure from Schwarzschild across six static spherical spacetimes.") | arXiv 2026 | - | - |
 | 2026.11 | **TDSM** [Model-Driven Stellar Spectroscopy with the Total Differential Spectral Model (TDSM): Framework and Its Application to 11 Million LAMOST Low-Resolution Spectra](https://arxiv.org/abs/2611.20633 "A neural emulator of Kurucz fluxes and their first-order derivatives infers eight stellar labels from 11 million low-resolution LAMOST DR10 spectra of eight million stars.") | **ApJS 2026** | - | [Journal](https://doi.org/10.3847/1538-4365/aeab87) [Data](https://www.lamost.org/dr10/) |
 | 2026.11 | [Symbolic Regression Fitting for Roche Lobe Radius](https://arxiv.org/abs/2611.17997 "Symbolic regression on radii computed from the full Roche potential gives a compact Roche-lobe formula that lowers the RMS error of Eggleton's approximation from 1.97e-3 to 5.95e-4 over mass ratios from 1e-5 to 1e5.") | arXiv 2026 | [Code](https://github.com/Iceberg0716/SRLochelobe) | - |
 | 2026.11 | [Variations in the Extinction Curve at High Galactic Latitudes as seen by the Dark Energy Spectroscopic Instrument](https://arxiv.org/abs/2611.14639 "An XGBoost model predicts intrinsic stellar colors from DESI spectroscopic parameters to estimate reddening and constrain extinction curves at high Galactic latitude.") | arXiv 2026 | - | - |
@@ -410,6 +414,7 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [Interpretable attention-based neural posterior estimation for fast radio burst cosmology](https://arxiv.org/abs/2611.24542 "Attention encoding plus a conditional masked autoregressive flow reproduces seven-parameter FRB posteriors and generates 50,000 samples in 0.036 seconds after training.") | arXiv 2026 | - | - |
 | 2026.11 | [Unsupervised Machine Learning Classification of FRB 20121102A across Distinct Active Episodes: Implications for FRB Emission Physics and Source Environments](https://arxiv.org/abs/2611.18056 "Unsupervised clustering of FAST bursts from three active episodes of FRB 20121102A finds four clusters separated mainly by spectral properties, with cluster fractions changing between 2019, 2022 and 2023.") | arXiv 2026 | - | - |
 | 2026.11 | [Moving Beyond the DRW Model: Learning Quasar Variability with Generative Models](https://arxiv.org/abs/2611.15040 "Nullasar uses flow matching to generate quasar light curves for period-search null distributions, with tests on damped random walk and autoregressive simulations.") | arXiv 2026 | - | - |
 | 2026.07 | [NAPTIME: A Neural-Process Framework for Rubin Alert Classification](https://arxiv.org/abs/2607.19236 "Neural process that jointly reconstructs and classifies sparse multiband light curves on ELAsTiCC2 and MALLORN.") | arXiv 2026 | - | - |
@@ -443,6 +448,8 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 
 | Date | Paper | Venue | Code | Links |
 |:--|:--|:--|:--|:--|
+| 2026.11 | [NEXONN: Advancing the NEXOTRANS Exoplanet Atmospheric Retrieval Framework with Transformer-Based Neural Posterior Estimation for JWST Transmission Spectroscopy of WASP-39b](https://arxiv.org/abs/2611.23818 "Transformer-conditioned normalizing flows match PyMultiNest posteriors for simulated and JWST WASP-39 b spectra while reducing trained inference to seconds.") | arXiv 2026 | - | - |
+| 2026.11 | [A Homogeneous Benchmark of Exoplanet Mass-Radius Relations](https://arxiv.org/abs/2611.24812 "A unified 963-planet benchmark finds a multi-feature random forest reaches 0.329 dex mass RMSE versus 0.368 dex for a two-parameter power law, with gains concentrated below 1.6 Earth radii.") | arXiv 2026 | - | - |
 | 2026.11 | [Learning a model of non-stationary nuisances with non-local correlations for object detection](https://arxiv.org/abs/2611.14479 "Learns a sparse precision matrix for correlated stellar residuals and tests likelihood-ratio exoplanet detection on 13 VLT/SPHERE datasets.") | **EUSIPCO 2026** | - | - |
 | 2026.06 | **ExoVeil** [One Transit Is All You Need: Detecting Exoplanets Through Learned Stellar Behaviour with ExoVeil](https://arxiv.org/abs/2606.02778 "Transformer world model trained on 16,499 Kepler light curves predicts stellar flux, with matched filtering on residuals reaching AUC 0.938 on DR25 and recovering 47 TESS planets zero-shot.") | arXiv 2026 | - | - |
 | 2026.04 | [ExoNet: Calibrated Multimodal Deep Learning for TESS Exoplanet Candidate Vetting Using Phase-Folded Light Curves, Stellar Parameters, and Multi-Head Attention](https://arxiv.org/abs/2604.15560 "Late fusion of light-curve CNN features with attention and stellar parameters, calibrated by temperature scaling.") | arXiv 2026 | - | - |
@@ -464,18 +471,4 @@ Benchmarks are grouped by input type. Data and modality benchmarks provide obser
 | 2021.01 | **BNN Chaos** [A Bayesian Neural Network Predicts the Dissolution of Compact Planetary Systems](https://arxiv.org/abs/2101.04117 "Bayesian neural network that predicts instability times of compact planetary systems.") | **PNAS 2021** | [Code](https://github.com/MilesCranmer/bnn_chaos_model) | - |
 | 2021 | **MARGE** [Accurate Machine-learning Atmospheric Retrieval via a Neural-network Surrogate Model for Radiative Transfer](https://doi.org/10.3847/PSJ/abe3fd "Neural surrogate for radiative transfer that accelerates exoplanet atmospheric retrieval.") | **PSJ 2021** | [Code](https://github.com/exosports/MARGE) | - |
 | 2020.07 | **SPOCK** [Predicting the Long-term Stability of Compact Multiplanet Systems](https://arxiv.org/abs/2007.06521 "Gradient boosted classifier on short N-body integrations that predicts multiplanet stability.") | **PNAS 2020** | [Code](https://github.com/dtamayo/spock) | [Follow-up](https://arxiv.org/abs/2408.08873) |
-| 2019.04 | **Astronet-Triage** [Identifying Exoplanets with Deep Learning III: Automated Triage and Vetting of TESS Candidates](https://arxiv.org/abs/1904.02726 "Neural networks for triage and vetting of TESS transit signals.") | **AJ 2019** | [Code](https://github.com/yuliang419/Astronet-Triage) | [Journal](https://doi.org/10.3847/1538-3881/ab21d6) |
-| 2019.03 | **AstroNet-K2** [Identifying Exoplanets with Deep Learning II: Two New Super-Earths Uncovered by a Neural Network in K2 Data](https://arxiv.org/abs/1903.10507 "AstroNet adapted to K2 light curves.") | **AJ 2019** | [Code](https://github.com/aedattilo/models_K2) | - |
-| 2018.06 | **HELA** [Supervised Machine Learning for Analysing Spectra of Exoplanetary Atmospheres](https://arxiv.org/abs/1806.03944 "Random forest atmospheric retrieval for exoplanet transmission spectra.") | **Nature Astronomy 2018** | [Code](https://github.com/exoclime/HELA) | - |
-| 2018.06 | [ExoGAN: Retrieving Exoplanetary Atmospheres Using Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1806.02906 "Generative adversarial network for atmospheric retrieval.") | **AJ 2018** | [Code](https://github.com/ucl-exoplanets/ExoGAN_public) | - |
-| 2018 | **AstroNet** [Identifying Exoplanets with Deep Learning: A Five-planet Resonant Chain around Kepler-80 and an Eighth Planet around Kepler-90](https://doi.org/10.3847/1538-3881/aa9e09 "CNN transit classifier for Kepler threshold crossing events.") | **AJ 2018** | [Code](https://github.com/google-research/exoplanet-ml) | - |
-| 2017.06 | **Pearson Exoplanet AI** [Searching for Exoplanets Using Artificial Intelligence](https://arxiv.org/abs/1706.04319 "Neural networks that detect transit signals in simulated and Kepler light curves.") | **MNRAS 2018** | [Code](https://github.com/pearsonkyle/Exoplanet-Artificial-Intelligence) | - |
-
-<p align="right"><a href="#contents">Back to contents</a></p>
-
-## Cosmology and Large-Scale Structure
-
-| Date | Paper | Venue | Code | Links |
-|:--|:--|:--|:--|:--|
-| 2026.11 | [Effects of QCD Equation of State on Cosmological Parameters and Stochastic Gravitational-Waves Spectrum](https://arxiv.org/abs/2611.22719 "Gaussian process regression generates 1,000 thermodynamically consistent HotQCD-based equations of state to propagate QCD and electroweak effects into early-Universe expansion and stochastic gravitational-wave spectra.") | arXiv 2026 | - | - |
-| 2026.11 | **Cosmo-PINN** [Testing General Relativity by Reconstructing Dark Energy and the Growth Index with Physics-Informed Neural Networks](https://arxiv.org/abs/2611.19117 "Cosmo-PINN reconstructs the dark-energy equation of state and the growth index from DESI DR2 BAO, cosmic chronometers, SNe Ia and redsh
+| 2019.04 | **Astronet-Triage** [Identifying Exoplanets with Deep Learning III: Automated Triage and Vetting of TESS Candidates](https://arxiv.org/

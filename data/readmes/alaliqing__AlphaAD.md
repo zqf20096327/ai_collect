@@ -3,8 +3,8 @@
 # 🚗 AlphaAD · Autonomous Driving Research
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--19-blue)
-![Total Papers](https://img.shields.io/badge/Papers-1397-green)
+![Last Update](https://img.shields.io/badge/Last%20Updated-2026--11--20-blue)
+![Total Papers](https://img.shields.io/badge/Papers-1393-green)
 ![Auto Update](https://img.shields.io/badge/Auto--Update-Daily-brightgreen)
 
 **A daily, explainable research signal for autonomous driving.**<br>
@@ -20,20 +20,20 @@ Browse one primary topic per paper, then refine the signal with method and resou
 
 ## Browse by topic
 
-All 1397 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
+All 1393 papers remain in this README. For full-text search, filters, and sorting, use the [interactive index](https://alaliqing.github.io/AlphaAD/).
 
 | Topic | Papers | Latest | Jump |
 |:--|--:|:--|:--|
-| Perception & Sensor Fusion | 218 | 2026-11-18 | [View papers](#category-perception-sensor-fusion) |
+| Perception & Sensor Fusion | 217 | 2026-11-19 | [View papers](#category-perception-sensor-fusion) |
 | Prediction & World Models | 114 | 2026-11-18 | [View papers](#category-prediction-world-models) |
-| Planning & Decision-Making | 96 | 2026-11-18 | [View papers](#category-planning-decision-making) |
+| Planning & Decision-Making | 94 | 2026-11-18 | [View papers](#category-planning-decision-making) |
 | Control & Vehicle Dynamics | 60 | 2026-11-16 | [View papers](#category-control-vehicle-dynamics) |
 | Mapping & Localization | 48 | 2026-11-14 | [View papers](#category-mapping-localization) |
-| End-to-End & VLA | 161 | 2026-11-18 | [View papers](#category-end-to-end-vla) |
-| Safety, Security & Verification | 201 | 2026-11-18 | [View papers](#category-safety-security-verification) |
-| Systems, Deployment & Connectivity | 157 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
-| Human Factors & Policy | 31 | 2026-11-18 | [View papers](#category-human-factors-policy) |
-| Cross-cutting / Other | 311 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
+| End-to-End & VLA | 163 | 2026-11-19 | [View papers](#category-end-to-end-vla) |
+| Safety, Security & Verification | 200 | 2026-11-18 | [View papers](#category-safety-security-verification) |
+| Systems, Deployment & Connectivity | 156 | 2026-11-18 | [View papers](#category-systems-deployment-connectivity) |
+| Human Factors & Policy | 32 | 2026-11-19 | [View papers](#category-human-factors-policy) |
+| Cross-cutting / Other | 309 | 2026-11-18 | [View papers](#category-cross-cutting-other) |
 
 ---
 
@@ -45,16 +45,16 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 | Tag | Papers | Filter |
 |:--|--:|:--|
-| Dataset | 102 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
+| Dataset | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Dataset) |
 | Benchmark | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Benchmark) |
-| Simulation | 196 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
-| Synthetic Data | 32 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
-| Cooperative / V2X | 111 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
-| VLA | 85 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
+| Simulation | 195 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Simulation) |
+| Synthetic Data | 31 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Synthetic+Data) |
+| Cooperative / V2X | 110 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Cooperative+%2F+V2X) |
+| VLA | 87 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=VLA) |
 | World Model | 121 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=World+Model) |
 | Reinforcement Learning | 142 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Reinforcement+Learning) |
 | Imitation Learning | 28 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Imitation+Learning) |
-| Hardware / Real-Time | 100 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
+| Hardware / Real-Time | 99 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Hardware+%2F+Real-Time) |
 | Survey | 29 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Survey) |
 | Explainability | 105 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Explainability) |
 | Human Interaction | 17 | [Open filter](https://alaliqing.github.io/AlphaAD/?tag=Human+Interaction) |
@@ -63,7 +63,17 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="category-perception-sensor-fusion"></a>
 
-## Perception & Sensor Fusion · 218 papers
+## Perception & Sensor Fusion · 217 papers
+
+<a id="paper-2611-26191"></a>
+
+### Backbone Matters: Benchmarking Encoder-Decoder Networks for Semantic Segmentation of Driving Scenes on BDD100K ![New](https://img.shields.io/badge/New-red)
+
+**Authors:** Ehsan Rassekh<br>
+**Published:** 2026-11-19<br>
+**Links:** [arXiv abstract](https://arxiv.org/abs/2611.26191) | [PDF](https://arxiv.org/pdf/2611.26191.pdf) | [↑ BackToTop](#browse-by-topic)
+
+**Abstract:** Semantic segmentation gives an autonomous vehicle a dense, pixel-level description of its surroundings and is a core part of scene understanding. Most segmentation networks consist of an encoder (the...
 
 <a id="paper-2611-24327"></a>
 
@@ -108,7 +118,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2611-16742"></a>
 
-### Fog-FWL: A Large-Scale Full-Waveform LiDAR Dataset for Recovering Fog-Hidden Objects ![New](https://img.shields.io/badge/New-red)
+### Fog-FWL: A Large-Scale Full-Waveform LiDAR Dataset for Recovering Fog-Hidden Objects ![Recent](https://img.shields.io/badge/Recent-orange)
 
 **Authors:** Kazuma Ikeda, Kotaro Oishi, Ryosei Hara, Ryo Yoshida, Takahiro Kado, et al.<br>
 **Published:** 2026-11-12<br>
@@ -417,7 +427,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-28508"></a>
 
-### Deep Learning-Based Road Lane Quality Assessment from Egocentric Dashcam Video ![Recent](https://img.shields.io/badge/Recent-orange)
+### Deep Learning-Based Road Lane Quality Assessment from Egocentric Dashcam Video ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Shaif Chowdhury, Akhila Yeruvasu, Moshiur Rahman Tonmoy, Ayush Goyal, Dunren Che<br>
 **Published:** 2026-10-20<br>
@@ -428,7 +438,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2610-27617"></a>
 
-### Provisioning Robust and Efficient LiDAR Perception for Autonomous Driving ![Recent](https://img.shields.io/badge/Recent-orange)
+### Provisioning Robust and Efficient LiDAR Perception for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
 
 **Authors:** Tingxu Han, Zijie Shen, An Guo, Lyuke Wang, Chunrong Fang, et al.<br>
 **Published:** 2026-10-20<br>
@@ -1168,7 +1178,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-21099"></a>
 
-### A2DINOv3: Rethinking Multi-Modal Object Detection via Socialized Collaboration ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### A2DINOv3: Rethinking Multi-Modal Object Detection via Socialized Collaboration
 
 **Authors:** Jiekang Feng, Zhihe Fan, Yunqi Zhu, Xinjie Yao, Yueying Zhang, et al.<br>
 **Published:** 2026-08-21<br>
@@ -1179,7 +1189,7 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2608-20874"></a>
 
-### Multi-Modal Traffic Sign Detection with Semantic Attributes for Autonomous Driving ![Fresh](https://img.shields.io/badge/Fresh-yellow)
+### Multi-Modal Traffic Sign Detection with Semantic Attributes for Autonomous Driving
 
 **Authors:** Meda Lazar, Sourab Sridhar, Shashwata Gupta, Alexandra Tripcea, Varun Ravi, et al.<br>
 **Published:** 2026-08-21<br>
@@ -1650,10 +1660,4 @@ Each paper has one primary topic and may carry several method or resource tags. 
 
 <a id="paper-2607-09787"></a>
 
-### Adversarially Guided Diffusion for LiDAR Range Image Synthesis
-
-**Authors:** Stavros Bouras, Antonios Makris, Alexandros Gkillas, Aris S. Lalos, Konstantinos Tserpes<br>
-**Published:** 2026-07-08<br>
-**Links:** [arXiv abstract](https://arxiv.org/abs/2607.09787) | [PDF](https://arxiv.org/pdf/2607.09787.pdf) | [↑ BackToTop](#browse-by-topic)
-
-**Abstract:** LiDAR semantic segmentation is a key perception task in autonomous driving, where false predictions can affect downstream planning and safety-critical decisio
+### A

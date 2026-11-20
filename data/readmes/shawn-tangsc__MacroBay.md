@@ -41,6 +41,16 @@ what changed, with the source and the cutoff time attached to every number.
 A claim that cannot be traced to a source record and a timestamp is supposed to be reported as a gap.
 That is the whole product: **not a paragraph you have to take on faith.**
 
+It is not your charting tool: candles, indicators and order tickets stay in the software you already
+use. It does two other things — it watches for the **changes that would move a call**, and it uses AI to
+say what the change means: which reading moved, by how much, what it is tied to, and what would prove
+the call wrong. Then it pushes a notification to your phone, with the source and the cutoff.
+
+**841 economic indicator codes and 524 collected release events are built in** — the official schedules
+of the U.S. Bureau of Labor Statistics, BEA, the Fed, Japan and Canada, with prior values and consensus
+aligned in one table. The data comes from public endpoints that are good enough on their own, so you do
+not also need the expensive institutional data and alert subscriptions.
+
 ### The daily briefing
 
 One page a morning, about three minutes: what the market is pricing, what changed overnight, and what
@@ -75,13 +85,15 @@ and whatever could not be collected is reported as a gap instead of being quietl
 This build is **not code-signed and not notarized**, so the first launch takes two steps:
 
 1. **macOS** — drag the app into *Applications*, then **right-click (Control-click) the app → Open**
-   and confirm **Open** in the dialog. Double-clicking is blocked by Gatekeeper. If macOS still
-   refuses, run `xattr -dr com.apple.quarantine /Applications/MacroBay.app` in Terminal and open it
-   again.
+   and confirm **Open** in the dialog. Double-clicking is blocked by Gatekeeper. **If the menu has no
+   Open item** (macOS 15 and later removed it), open **System Settings → Privacy & Security**, find
+   the app near the bottom of the page and click **Open Anyway**.
 2. **Windows** — run the installer. When SmartScreen says *Windows protected your PC*, click
    **More info → Run anyway**.
 
-Every update you download repeats those same two steps, until a signed build ships.
+Every update you download repeats those same two steps, until a signed build ships. When neither
+path works, the fallback is in
+[Download and install](docs/getting-started/download-and-install.md).
 
 The Intel build is `MacroBay-x64.dmg`: **built, but not yet verified on Intel hardware**. The Apple
 Silicon download link above is unchanged, and `latest-mac.yml` is produced only by the arm64 job.
@@ -127,6 +139,14 @@ time on every reading, and make the AI show its work.
 
 The desk is where a briefing's evidence lives. Open any claim on the page and you land here: the same
 reading, its window, its source and its cutoff — plus the panels the brief draws from.
+
+The desk is the "don't miss the change" layer, not a trading terminal: it draws no intraday tape and
+gives no levels. Once AI has turned a change into a sentence you can read, the notification goes out
+through the channels you enabled — a briefing finished, an intelligence signal fired, a story above the
+strength threshold, or a calendar event before and after its release.
+
+Notifications can go to **Telegram, Slack, Discord, QQ and Lark**; several channels can be enabled at
+once, each gets its own copy, and a channel that did not receive it says why.
 
 <p align="center">
   <img src="./docs/assets/screenshots/dashboard-window-en.png" alt="MacroBay dashboard: AI conclusion, market status, common-anchor returns, market sentiment and capital conditions, perpetual positioning and funding, source status, and the policy path and key sentiment rail" width="100%">
@@ -189,8 +209,8 @@ it at 21:00 should produce two different, defensible answers — not one answer 
 - **Not a trading bot.** No order execution, no position management, no brokerage connection.
 - **Not a hosted account.** No MacroBay server holds your data or your keys; there is nothing to sign
   up for and nothing to cancel.
-- **Not a data bundle.** No bundled feeds and no bundled credentials — you enable the sources you
-  have access to.
+- **Not a data bundle.** What is built in is the adapter, not the data: no subscription bought on your
+  behalf and no credentials — you enable the sources you have access to.
 
 ## Data sources
 
@@ -230,10 +250,12 @@ boundary it used.
 
 ## Status
 
-MacroBay is **alpha** (`0.4.3`). macOS is the verified platform. Panels still need your own provider
-credentials; anything that cannot be read is reported as a gap. The macOS `.dmg` is unsigned;
-Windows installers build in CI and on Windows 11 x64 hardware, but the installed app is not verified
-there yet, and Linux has no packaging. See [Status and limitations](./docs/reference/status-and-limitations.md).
+MacroBay is **alpha** (`0.4.4`). macOS is the primary development and build platform; it was actually
+installed and used during 0.4.0, and has not been re-verified by a real install since. Panels still
+need your own provider credentials; anything that cannot be read is reported as a gap. The macOS `.dmg`
+is unsigned; Windows installers build in CI and on Windows 11 x64 hardware, but the installed app is
+not verified there yet, and Linux has no packaging.
+See [Status and limitations](./docs/reference/status-and-limitations.md).
 
 ## Roadmap
 

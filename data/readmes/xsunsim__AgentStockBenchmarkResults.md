@@ -12,24 +12,61 @@
 
 **View detailed rankings, model status, and technical notes in the [Full Leaderboard](leaderboard/leaderboard.md).**
 
-### LATEST AI PREDICTIONS (Generated September 21, for September 22 cycle)
+### LATEST AI PREDICTIONS (Generated November 19, for November 20 cycle)
 Here is what the **Top Model from each Company** is betting on for tomorrow's market:
 
 | Company | Model | 📈 Top Pick (Rank 1) | 📉 Top Short (Bottom 1) |
 |:---|:---|:---|:---|
-| **OpenAI** | O3 | **PSKY** (Paramount Skydance Corporation) | **TGT** (Target Corporation) |
-| **Anthropic** | Sonnet 4.6 | **BE** (Bloom Energy Corporation) | **TMO** (Thermo Fisher Scientific Inc.) |
-| **Google** | Gemini 3.1 Pro | **UPS** (United Parcel Service, Inc.) | **MRNA** (Moderna, Inc.) |
+| **OpenAI** | O3 | **WSM** (WSM) | **CMG** (CMG) |
+| **Anthropic** | Sonnet 4.6 | **ACN** (ACN) | **TSN** (TSN) |
+| **Google** | Gemini 3.1 Pro | **WSM** (WSM) | **PANW** (PANW) |
 
 ---
 
 ### WEEKLY SUMMARY: May 18 – May 26, 2026
 **The Live Arena Takes Shape:** This week we officially navigated the transition from backtesting to real-world execution. Anthropic and Google models showed incredible surge capacity, challenging the cumulative lead of OpenAI. We reiterate that our results since 2025 are a genuine test of reasoning—not overfitting—because agents were strictly limited to data ending in 2024. [Read the full weekly summary here.](daily_digest/weekly_20260526.md) ([中文版](daily_digest/weekly_20260526_CN.md))
 
-### LATEST DAILY DIGEST: September 21, 2026
-**OpenAI O3 Takes the Crown:** Today we realized the PnL for the September 17 rankings. **OpenAI's O3** led the arena with a **$221.92** day. [Read the full digest here.](daily_digest/20260921.md) ([中文版](daily_digest/20260921_CN.md))
+### LATEST DAILY DIGEST: November 19, 2026
+**Anthropic Haiku4_5 Takes the Crown:** Today we realized the PnL for the November 17 rankings. **Anthropic's Haiku4_5** led the arena with a **$62.10** day. [Read the full digest here.](daily_digest/20261119.md) ([中文版](daily_digest/20261119_CN.md))
 
 ### ARCHIVE: DAILY DIGESTS
+*   [November 19, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261119.md) ([中文版](daily_digest/20261119_CN.md))
+*   [November 18, 2026: Anthropic Sonnet4_6 Takes the Crown](daily_digest/20261118.md) ([中文版](daily_digest/20261118_CN.md))
+*   [November 17, 2026: Anthropic Opus4_8 Takes the Crown](daily_digest/20261117.md) ([中文版](daily_digest/20261117_CN.md))
+*   [November 16, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261116.md) ([中文版](daily_digest/20261116_CN.md))
+*   [November 13, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261113.md) ([中文版](daily_digest/20261113_CN.md))
+*   [November 12, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261112.md) ([中文版](daily_digest/20261112_CN.md))
+*   [November 11, 2026: OpenAI O3 Takes the Crown](daily_digest/20261111.md) ([中文版](daily_digest/20261111_CN.md))
+*   [November 10, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261110.md) ([中文版](daily_digest/20261110_CN.md))
+*   [November 09, 2026: Google Gemini3_1Pro Takes the Crown](daily_digest/20261109.md) ([中文版](daily_digest/20261109_CN.md))
+*   [November 06, 2026: Anthropic Opus4_7 Takes the Crown](daily_digest/20261106.md) ([中文版](daily_digest/20261106_CN.md))
+*   [November 05, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261105.md) ([中文版](daily_digest/20261105_CN.md))
+*   [November 04, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261104.md) ([中文版](daily_digest/20261104_CN.md))
+*   [November 03, 2026: Anthropic Opus4_8 Takes the Crown](daily_digest/20261103.md) ([中文版](daily_digest/20261103_CN.md))
+*   [November 02, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261102.md) ([中文版](daily_digest/20261102_CN.md))
+*   [October 30, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261030.md) ([中文版](daily_digest/20261030_CN.md))
+*   [October 29, 2026: OpenAI GPT5_3_Codex Takes the Crown](daily_digest/20261029.md) ([中文版](daily_digest/20261029_CN.md))
+*   [October 28, 2026: Anthropic Sonnet4_6 Takes the Crown](daily_digest/20261028.md) ([中文版](daily_digest/20261028_CN.md))
+*   [October 27, 2026: Anthropic Sonnet4_6 Takes the Crown](daily_digest/20261027.md) ([中文版](daily_digest/20261027_CN.md))
+*   [October 26, 2026: OpenAI GPT5_3_Codex Takes the Crown](daily_digest/20261026.md) ([中文版](daily_digest/20261026_CN.md))
+*   [October 23, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261023.md) ([中文版](daily_digest/20261023_CN.md))
+*   [October 22, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261022.md) ([中文版](daily_digest/20261022_CN.md))
+*   [October 21, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261021.md) ([中文版](daily_digest/20261021_CN.md))
+*   [October 20, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261020.md) ([中文版](daily_digest/20261020_CN.md))
+*   [October 19, 2026: OpenAI O3 Takes the Crown](daily_digest/20261019.md) ([中文版](daily_digest/20261019_CN.md))
+*   [October 16, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261016.md) ([中文版](daily_digest/20261016_CN.md))
+*   [October 15, 2026: OpenAI GPT5_3_Codex Takes the Crown](daily_digest/20261015.md) ([中文版](daily_digest/20261015_CN.md))
+*   [October 14, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261014.md) ([中文版](daily_digest/20261014_CN.md))
+*   [October 13, 2026: Anthropic Opus4_8 Takes the Crown](daily_digest/20261013.md) ([中文版](daily_digest/20261013_CN.md))
+*   [October 12, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261012.md) ([中文版](daily_digest/20261012_CN.md))
+*   [October 09, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261009.md) ([中文版](daily_digest/20261009_CN.md))
+*   [October 08, 2026: Google Gemini3_1Pro Takes the Crown](daily_digest/20261008.md) ([中文版](daily_digest/20261008_CN.md))
+*   [October 07, 2026: Google Gemini2_5Pro Takes the Crown](daily_digest/20261007.md) ([中文版](daily_digest/20261007_CN.md))
+*   [October 06, 2026: OpenAI O3 Takes the Crown](daily_digest/20261006.md) ([中文版](daily_digest/20261006_CN.md))
+*   [October 05, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20261005.md) ([中文版](daily_digest/20261005_CN.md))
+*   [September 29, 2026: Anthropic Opus4_8 Takes the Crown](daily_digest/20260929.md) ([中文版](daily_digest/20260929_CN.md))
+*   [September 28, 2026: Google Gemini3_1Pro Takes the Crown](daily_digest/20260928.md) ([中文版](daily_digest/20260928_CN.md))
+*   [September 25, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20260925.md) ([中文版](daily_digest/20260925_CN.md))
 *   [September 21, 2026: OpenAI O3 Takes the Crown](daily_digest/20260921.md) ([中文版](daily_digest/20260921_CN.md))
 *   [September 18, 2026: Anthropic Sonnet4_6 Takes the Crown](daily_digest/20260918.md) ([中文版](daily_digest/20260918_CN.md))
 *   [September 17, 2026: Anthropic Haiku4_5 Takes the Crown](daily_digest/20260917.md) ([中文版](daily_digest/20260917_CN.md))

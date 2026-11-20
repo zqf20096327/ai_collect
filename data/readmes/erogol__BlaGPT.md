@@ -1,213 +1,135 @@
 # BlaGPT
 
-Experimental playground for benchmarking language model (LM) architectures, layers, and tricks on smaller datasets. Designed for flexible experimentation and exploration.
-
-## 📚 Technique Documentation
-
-See the [**techniques/**](./techniques/) directory for technical explanations and code snippets for various techniques and models implemented in the project.
-
-## Techniques under BlaGPT
-BlaGPT is a flexible Transformer implementation that you can turn on/off following things in the config.
-
-I basically do a greedy architecture search and add every new technique on top of the best model config and see if it improves the performance or not.
-I know it is now the best way but it is fun and help have at least some intuition about what works and what doesn't.
-
-Multi-token prediction - [link](https://arxiv.org/pdf/2404.19737)
-
-Weight tying - [link](https://arxiv.org/abs/1608.05859v3)
-
-Grouped query attention - [link](https://arxiv.org/pdf/2305.13245)
-
-Capping logits - [link](https://arxiv.org/pdf/2408.00118)
-
-QKV bias - [link](https://arxiv.org/abs/2407.10671)
-
-Zero-init projection layer - [link](https://arxiv.org/abs/2407.10671)
-
-Post and pre-RMSNorm - [link](https://arxiv.org/pdf/2408.00118)
-
-Setting base theta to 1_000_000 - [llama3](https://github.com/meta-llama/llama3/blob/main/llama/model.py#L49) - increased the final validation loss - best `3.3324`
-
-Z-loss regularization - [link](https://arxiv.org/pdf/2309.14322) - increased the final validation loss by 0.02 - loss: `3.3527`
-
-KV-Shifting attention - [link](https://arxiv.org/abs/2411.19574) - seems to improve performance - loss: `3.3310` -> `3.3138` - peak memory consumption: `42858 MiB`
-
-Dilated Attention (LongNet) - [link](https://arxiv.org/pdf/2307.02486)
-
-Multi-Head Latent Attention - [link](https://arxiv.org/abs/2502.07864) - loss: `3.3479` - peak memory consumption: `42192 MiB`
-
-Per token output bias - [link]() - loss: `3.3257` - peak memory consumption: `42120 MiB`
-
-DyT Norm - [link](https://arxiv.org/html/2503.10622v1) - didn't really work. Loss stuck too high
-
-Forgetting Transformer (Vanilla and Pro vers) - [link](https://openreview.net/pdf?id=q2Lnyegkr8) - vanilla loss: `3.3243`, pro loss: `OOM`
-
-Multi-Token Attention - [link](https://arxiv.org/pdf/2504.00927) - loss: `3.3357` - peak memory: `42136 MiB`
-
-Differential Attention - [link](https://arxiv.org/abs/2410.05258) - best_model_loss: `3.2411` -> loss: `3.2460` - peak memory: `41521 MiB`
-
-Softpick - [link](https://arxiv.org/abs/2504.20966) - loss: `3.3446` - peak memory: `59417 MiB`
-
-Canon Layer - [link](https://physics.allen-zhu.com/part-4-architecture-design/part-4-1) - loss: `3.3217` - peak memory: `43199 MiB`
-
-Parallel Transformer Block - [link](https://arxiv.org/abs/2204.02311) - loss: `3.3473` - peak memory: `40302 MiB`
-
-Per Layer Token Embedding - [link](https://blog.google/technology/developers/gemma-3/) - loss: `3.2411` - peak memory: `40916 MiB`
-
-PolyNorm - [link](https://arxiv.org/html/2411.03884v1) - best_model_loss: `3.2411` -> loss: `3.3017` - peak memory: `40895 MiB`
-
-PolyReLU - [link](https://arxiv.org/html/2411.03884v1) - best_model_loss: `3.2411` -> loss: `3.2642` - peak memory: `40890 MiB`
-
-TOP loss - [paper](https://arxiv.org/abs/2508.19228) | [explanation](./techniques/top.md) - best_model_loss: `3.2411` -> loss: `3.2636` - peak memory: `47816 MiB`
-
-Simplified RoPe - [link](https://x.com/zhaisf/status/1999050766691205363?s=20) - best_model_loss: `3.2411` -> loss: `3.2620` - peak memory: `43585 MiB` - step_avg: `388.54ms`
-
-Gated Attention - [paper](https://arxiv.org/abs/2505.06708) | [explanation](./techniques/gated_attention.md) - best_model_loss: `3.2411` -> new_best_model_loss: `3.2327` - peak memory: `45968 MiB` - step_avg: `413.01ms`
-
-ResFormer (Plus) - [paper](https://arxiv.org/html/2410.17897v5) | [explanation](./techniques/resformer.md) - best_model_loss: `3.2327` -> model_loss: `3.3538` - peak memory: `38223 MiB` - step_avg: `326.32ms`
-
-Engram (My Simple Variant) - [paper](https://github.com/deepseek-ai/Engram/blob/main/Engram_paper.pdf) | [explanation](./techniques/engram.md) - best_model_loss: `3.2327` -> new_best_model_loss: `3.2296` - peak memory: `50488 MiB` - step_avg: `504.09ms`
-
-Differential Attention v2 - [paper](https://spiky-homegrown-4cb.notion.site/Differential-Transformer-V2-2e7baa052def80ecaa93d4d67d125417) | [explanation](./techniques/diff_attn_v2.md) - best_model_loss: `3.2296` -> new_best_model_loss: `3.2274` - peak memory: `52829 MiB` - step_avg: `535.16`
-
-Exclusive Self Attention - [paper](https://arxiv.org/html/2603.09078v1) - best_model_loss: `3.2327` -> new_best_model_loss: `3.2303` - train_loss: `3.1987` - peak memory: `49859 MiB` - step_avg: `424.54ms`
-
-Hyper-Connections - [paper](https://arxiv.org/abs/2409.19606) | [explanation](./techniques/hyper_connections.md) - best_model_loss: `3.2327` -> loss: `3.2741` - train_loss: `3.2388` - peak memory: `68729 MiB` - step_avg: `928.26ms` - did not beat the old best
-
-
-### Auto Research Results
-
-Each row adds one change on top of the best model so far. `best_model_loss` is the loss before the change, the second number is the loss after it.
-
-GOAT Sink Prior - [paper](https://arxiv.org/abs/2601.15380) | [explanation](./techniques/goat_sink_prior.md) - best_model_loss: `3.2354` -> new_best_model_loss: `3.2298` - peak memory: `52231 MiB` - step_avg: `377.61ms`
-
-GatedNorm - [paper](https://arxiv.org/abs/2601.22966) | [explanation](./techniques/gated_norm.md) - best_model_loss: `3.2298` -> new_best_model_loss: `3.2230` - peak memory: `50023 MiB` - step_avg: `410.68ms`
-
-HybridNorm - [paper](https://arxiv.org/abs/2503.04598) | [explanation](./techniques/hybrid_norm.md) - best_model_loss: `3.2230` -> new_best_model_loss: `3.2224` - peak memory: `50495 MiB` - step_avg: `474.82ms`
-
-Composable Gated Attention - [paper](https://arxiv.org/abs/2505.06708) | [explanation](./techniques/composable_gated_attention.md) - best_model_loss: `3.2224` -> new_best_model_loss: `3.2128` - peak memory: `58553 MiB` - step_avg: `489.07ms`
-
-Composable Value Residual - [paper](https://arxiv.org/abs/2410.17897) | [explanation](./techniques/value_residual.md) - best_model_loss: `3.2128` -> new_best_model_loss: `3.2011` - peak memory: `58988 MiB` - step_avg: `497.55ms`
-
-U-net Long Skips - [source](https://github.com/KellerJordan/modded-nanogpt) | [explanation](./techniques/unet_skips.md) - best_model_loss: `3.2011` -> new_best_model_loss: `3.1979` - peak memory: `58632 MiB` - step_avg: `494.31ms`
-
-Learning rate 0.001 -> 0.0014 - [Muon source](https://kellerjordan.github.io/posts/muon/) - best_model_loss: `3.1979` -> new_best_model_loss: `3.1965` - peak memory: `58632 MiB` - step_avg: `491.00ms`
-
-GRAPE-A Positional Encoding - [paper](https://arxiv.org/abs/2512.07805) | [explanation](./techniques/grape_a_qgate.md) - best_model_loss: `3.1965` -> new_best_model_loss: `3.1897` - peak memory: `59643 MiB` - step_avg: `580.32ms` - replaces RoPE; later replaced again by RoPE + RoVE
-
-Aurora Optimizer - [paper](https://arxiv.org/abs/2606.27715) | [explanation](./techniques/aurora.md) - best_model_loss: `3.1897` -> new_best_model_loss: `3.1603` - peak memory: `59643 MiB` - step_avg: `721.25ms` - replaces Muon, `learning_rate=0.03`
-
-Weight EMA + LR floor - best_model_loss: `3.1603` -> new_best_model_loss: `3.1487` - peak memory: `61239 MiB` - step_avg: `731.65ms` - LR decays to 15% of peak, not to 0, and eval uses the average weights of the last 300 steps; later removed, no gain on the newer model
-
-Token normalization for Engram - [PR #375](https://github.com/KellerJordan/modded-nanogpt/pull/375) | [explanation](./techniques/engram.md) - best_model_loss: `3.1603` -> loss: `3.1564` - peak memory: `59643 MiB` - step_avg: `719.88ms` - tokens with the same first 2 bytes share one Engram entry; did not beat the EMA result above; off by default
-
-Engram vocab ×20 - [paper](https://github.com/deepseek-ai/Engram/blob/main/Engram_paper.pdf) | [explanation](./techniques/engram.md) - best_model_loss: `3.1603` -> new_best_model_loss: `3.1446` - step_avg: `1077.31ms` - 4x larger Engram table (`engram_vocab_mult` 5 -> 20); about 49% slower
-
-Fixed seed re-run - best_model_loss: `3.1446` -> new_best_model_loss: `3.1265` - peak memory: `85625 MiB` - step_avg: `1065.74ms` - same config with `seed=1337` and newer code; the cause of the gain is not clear; second seed: `3.1241`
-
-Multi-Head Attention Residuals - [paper](https://arxiv.org/abs/2607.27230) | [explanation](./techniques/mhar.md) - best_model_loss: `3.1265` -> loss: `3.1238` - peak memory: `93225 MiB` - step_avg: `1149.40ms` - about 8% slower; on top of RoPE + RoVE: `3.1106` -> `3.1113`, no gain
-
-RoPE instead of GRAPE-A - [paper](https://arxiv.org/abs/2104.09864) - best_model_loss: `3.1265` -> new_best_model_loss: `3.1134` - peak memory: `85160 MiB` - step_avg: `993.42ms` - about 7% faster; no loss gain on a second seed
-
-RoVE - [paper](https://arxiv.org/abs/2606.11275) | [explanation](./techniques/rove.md) - best_model_loss: `3.1134` -> new_best_model_loss: `3.1106` - peak memory: `85258 MiB` - step_avg: `1018.28ms` - applies the rotary rotation to the values too; no new parameters; small gain on two seeds
-
-LM-head SGD-M - [paper](https://arxiv.org/abs/2610.38277) - best_model_loss: `3.1106` -> loss: `3.1782` - peak memory: `85774 MiB` - step_avg: `1010.87ms` - trains the output layer with SGD + momentum; output logits stay smaller, but loss is 0.07-0.09 worse
-
-Embedding value residual - [Ripple-65B](https://huggingface.co/ricursiveAI/Ripple-65B-Preview) - best_model_loss: `3.1106` -> loss: `3.1136` - peak memory: `86422 MiB` - step_avg: `1014.35ms` - mixes the token embedding into the values of each layer
-
-SAMuon-lite in Aurora - [paper](https://arxiv.org/abs/2608.25990) - best_model_loss: `3.1106` -> loss: `3.2877` - peak memory: `85258 MiB` - step_avg: `1115.44ms` - most update directions get 10x larger steps, and the LR was not lowered for it; 11% slower
-
-Cautious weight decay in Aurora - [paper](https://arxiv.org/abs/2510.12402) - best_model_loss: `3.1106` -> loss: `3.1134` - peak memory: `85258 MiB` - step_avg: `1020.17ms` - better in mid-training, but the gap closes at the end
-
-NorMuon + cautious weight decay in Aurora - [paper](https://arxiv.org/abs/2510.05491) - best_model_loss: `3.1106` -> loss: `3.1159` - peak memory: `85263 MiB` - step_avg: `1035.27ms`
-
-Latent Lattice - [paper](https://arxiv.org/abs/2611.21608) | [explanation](./techniques/latent_lattice.md) - best_model_loss: `3.1106` -> loss: `3.1139` - peak memory: `92059 MiB` - step_avg: `1194.26ms` - one recurrent latent (width 256) per middle layer 3-7 that modulates q/k/v and the MLP; +20M params, about 15% slower per step; much better before step 1250, slightly worse after; at equal wall-clock time worse (3.22 vs 3.11 when the baseline ends)
-
-Multi-Branch Transformer - [paper](https://arxiv.org/abs/2611.19800) - best_model_loss: `3.1106` -> loss: `3.1324` - peak memory: `82511 MiB` - step_avg: `999.70ms` - blocks 3-4 and 5-6 run as two parallel branches on the same input; one RMSNorm per branch, concat and a linear layer join them (layout 3/(2+2)/3, sequential depth 8); +1.18M params, same speed; much better before step 1250 (-0.08 at step 1000), 0.02-0.03 worse after; MBT inside E7b: AttnRes and the U-net 2->7 skip still go around the branches
-
-👑 Latent Lattice F107b - [paper](https://arxiv.org/abs/2611.21608) | [explanation](./techniques/latent_lattice.md) - best_model_loss: `3.1106` -> new_best_model_loss: `3.1067` - peak memory: `94160 MiB` - step_avg: `1149.82ms` - fixes the first try above: FiLM on q/k after the QK norm, Lattice params in AdamW (lr 1e-3, wd 0.1), vstream, Lattice layers 2-7; second seed: `3.1035` vs `3.1240`; +25M params (984.14M), about 15% slower per step, so at equal train time still worse than E7b (about 3.185 vs 3.1113)
-
-
-## Other Models
-MegaByte - [link](https://arxiv.org/abs/2305.07185) - loss: `3.810`
-
-FTP (heavily modified) - [link](https://arxiv.org/pdf/2410.18160) - loss: `3.901`
-
-Rene - [link](https://huggingface.co/cartesia-ai/Rene-v0.1-1.3b-pytorch) - loss: `3.340`
-
-Rwkv7 - [link](https://github.com/BlinkDL/RWKV-LM) - loss: `4.450`
-
-Zamba2 - [link](https://huggingface.co/Zyphra/Zamba2-2.7B) - Zamba2 > Rene > Rwkv7
-
-Hourglass Transformer (modified) - [link](https://arxiv.org/abs/2110.13711) - Hourglass > MegaByte > FTP - loss: `3.710`
-
-Hymba - [link](https://arxiv.org/html/2411.13676v1) - train step time is significantly slower than the transformers. Best validation loss so far: `4.7505`
-
-Tokenformer (in BlaGPT model) - [link](https://github.com/Haiyang-W/TokenFormer) - loss: `3.390`
-
-LLaDa (dLLM) - [link](https://arxiv.org/abs/2502.09992) - val-loss: `8.6930`, xentropy-loss: `4.2891` (comparable to other models and estimated by `llada_validation_cross_entropy.py`),
-
-Avey - [link](https://arxiv.org/pdf/2506.11305v1) - loss: `3.323`, peak memory: `51962 MiB` (batch size 8), step_time: `2871ms` (very slow to train and uses >3x more memory than other models)
-
-LFM2 - [link](https://huggingface.co/LiquidAI/LFM2-1.2B) - TBD
-
-Kimi Delta Attention (1:3 interleaved Full Attention) - [link](https://arxiv.org/abs/2510.26692) - best_model_loss: `3.2411` -> loss: `3.2532`, peak_memory:`47391`,  step_time: `568.1ms`
-
+A playground to test language model architectures, layers and training tricks on a small budget.
+Each new idea goes on top of the best config. It stays only if the final val loss drops.
+
+## 👑 Current best
+
+| Item | Value |
+|---|---|
+| **Val loss** | **3.1153** (5100 steps, 8x H200) |
+| **Model** | 10 layers, d=768, 404.64M params (193M of them in the Engram table) |
+| **Main parts** | Latent Lattice · RoPE + RoVE · Aurora optimizer · Engram (vocab ×5) |
+| **Speed** | 732 ms/step, peak 70,569 MiB per GPU |
+| **Config** | [`best_model_config.py`](./bla_gpt/best_model_config.py) · [`ar/best_config.json`](./ar/best_config.json) |
+
+```bash
+torchrun --standalone --nproc_per_node=8 bla_gpt/train.py --run_name best_model --model_name best
+```
+
+![Best val loss after each kept change](./assets/progress.svg)
+
+**Contents:** [Progression](#progression) · [Alternative architectures](#alternative-architectures) · [Byte-level models](#byte-level-models) · [Optimizers](#optimizers) · [Adding a new model](#adding-a-new-model) · [Training](#training) · [Techniques](./techniques/)
+
+## Progression
+
+Each row adds one change to the best model at that time. ✅ = kept, ❌ = discarded, 👑 = current best. — = not recorded in the original run.
+
+| Technique | | Val loss | Δ | Peak MiB | ms/step | Notes |
+|---|---|---|---|---|---|---|
+| Setting base theta to 1_000_000<br><sub>[llama3](https://github.com/meta-llama/llama3/blob/main/llama/model.py#L49)</sub> | — | 3.3324 | — | — | — | increased the final validation loss |
+| Z-loss regularization<br><sub>[link](https://arxiv.org/pdf/2309.14322)</sub> | — | 3.3527 | — | — | — | increased the final validation loss by 0.02 |
+| KV-Shifting attention<br><sub>[link](https://arxiv.org/abs/2411.19574)</sub> | — | 3.3138 | -0.0172 | 42858 | — | lower loss than its base (3.3310) |
+| Dilated Attention (LongNet)<br><sub>[link](https://arxiv.org/pdf/2307.02486)</sub> | — | — | — | — | — | — |
+| Multi-Head Latent Attention<br><sub>[link](https://arxiv.org/abs/2502.07864)</sub> | — | 3.3479 | — | 42192 | — | — |
+| Per token output bias | — | 3.3257 | — | 42120 | — | — |
+| DyT Norm<br><sub>[link](https://arxiv.org/html/2503.10622v1)</sub> | — | — | — | — | — | loss stayed high; did not train well |
+| Forgetting Transformer (Vanilla and Pro vers)<br><sub>[link](https://openreview.net/pdf?id=q2Lnyegkr8)</sub> | — | 3.3243 | — | — | — | vanilla version; the Pro version ran out of memory |
+| Multi-Token Attention<br><sub>[link](https://arxiv.org/pdf/2504.00927)</sub> | — | 3.3357 | — | 42136 | — | — |
+| Differential Attention<br><sub>[link](https://arxiv.org/abs/2410.05258)</sub> | ❌ | 3.2460 | +0.0049 | 41521 | — | — |
+| Softpick<br><sub>[link](https://arxiv.org/abs/2504.20966)</sub> | — | 3.3446 | — | 59417 | — | — |
+| Canon Layer<br><sub>[link](https://physics.allen-zhu.com/part-4-architecture-design/part-4-1)</sub> | — | 3.3217 | — | 43199 | — | — |
+| Parallel Transformer Block<br><sub>[link](https://arxiv.org/abs/2204.02311)</sub> | — | 3.3473 | — | 40302 | — | — |
+| Per Layer Token Embedding<br><sub>[link](https://blog.google/technology/developers/gemma-3/)</sub> | — | 3.2411 | — | 40916 | — | — |
+| PolyNorm<br><sub>[link](https://arxiv.org/html/2411.03884v1)</sub> | ❌ | 3.3017 | +0.0606 | 40895 | — | — |
+| PolyReLU<br><sub>[link](https://arxiv.org/html/2411.03884v1)</sub> | ❌ | 3.2642 | +0.0231 | 40890 | — | — |
+| TOP loss<br><sub>[paper](https://arxiv.org/abs/2508.19228) · [explanation](./techniques/top.md)</sub> | ❌ | 3.2636 | +0.0225 | 47816 | — | — |
+| Simplified RoPe<br><sub>[link](https://x.com/zhaisf/status/1999050766691205363?s=20)</sub> | ❌ | 3.2620 | +0.0209 | 43585 | 388.54 | — |
+| Gated Attention<br><sub>[paper](https://arxiv.org/abs/2505.06708) · [explanation](./techniques/gated_attention.md)</sub> | ✅ | **3.2327** | -0.0084 | 45968 | 413.01 | — |
+| ResFormer (Plus)<br><sub>[paper](https://arxiv.org/html/2410.17897v5) · [explanation](./techniques/resformer.md)</sub> | ❌ | 3.3538 | +0.1211 | 38223 | 326.32 | — |
+| Engram (My Simple Variant)<br><sub>[paper](https://github.com/deepseek-ai/Engram/blob/main/Engram_paper.pdf) · [explanation](./techniques/engram.md)</sub> | ✅ | **3.2296** | -0.0031 | 50488 | 504.09 | — |
+| Differential Attention v2<br><sub>[paper](https://spiky-homegrown-4cb.notion.site/Differential-Transformer-V2-2e7baa052def80ecaa93d4d67d125417) · [explanation](./techniques/diff_attn_v2.md)</sub> | ✅ | **3.2274** | -0.0022 | 52829 | 535.16 | — |
+| Exclusive Self Attention<br><sub>[paper](https://arxiv.org/html/2603.09078v1)</sub> | ✅ | **3.2303** | -0.0024 | 49859 | 424.54 | tested on the Gated Attention base (3.2327), in parallel with the two rows above |
+| Hyper-Connections<br><sub>[paper](https://arxiv.org/abs/2409.19606) · [explanation](./techniques/hyper_connections.md)</sub> | ❌ | 3.2741 | +0.0414 | 68729 | 928.26 | tested on the Gated Attention base (3.2327) |
+| All keeps combined (5100 steps) | ✅ | **3.2354** | — | — | — | new 5100-step base: all kept techniques above in one config (`ar/full_train/combined_keeps.json`); every row below uses this 5100-step setup |
+| GOAT Sink Prior<br><sub>[paper](https://arxiv.org/abs/2601.15380) · [explanation](./techniques/goat_sink_prior.md)</sub> | ✅ | **3.2298** | -0.0056 | 52231 | 377.61 | — |
+| GatedNorm<br><sub>[paper](https://arxiv.org/abs/2601.22966) · [explanation](./techniques/gated_norm.md)</sub> | ✅ | **3.2230** | -0.0068 | 50023 | 410.68 | — |
+| HybridNorm<br><sub>[paper](https://arxiv.org/abs/2503.04598) · [explanation](./techniques/hybrid_norm.md)</sub> | ✅ | **3.2224** | -0.0006 | 50495 | 474.82 | — |
+| Composable Gated Attention<br><sub>[paper](https://arxiv.org/abs/2505.06708) · [explanation](./techniques/composable_gated_attention.md)</sub> | ✅ | **3.2128** | -0.0096 | 58553 | 489.07 | — |
+| Composable Value Residual<br><sub>[paper](https://arxiv.org/abs/2410.17897) · [explanation](./techniques/value_residual.md)</sub> | ✅ | **3.2011** | -0.0117 | 58988 | 497.55 | — |
+| U-net Long Skips<br><sub>[source](https://github.com/KellerJordan/modded-nanogpt) · [explanation](./techniques/unet_skips.md)</sub> | ✅ | **3.1979** | -0.0032 | 58632 | 494.31 | — |
+| Learning rate 0.001 -> 0.0014<br><sub>[Muon source](https://kellerjordan.github.io/posts/muon/)</sub> | ✅ | **3.1965** | -0.0014 | 58632 | 491.00 | — |
+| GRAPE-A Positional Encoding<br><sub>[paper](https://arxiv.org/abs/2512.07805) · [explanation](./techniques/grape_a_qgate.md)</sub> | ✅ | **3.1897** | -0.0068 | 59643 | 580.32 | replaces RoPE; later replaced again by RoPE + RoVE |
+| Aurora Optimizer<br><sub>[paper](https://arxiv.org/abs/2606.27715) · [explanation](./techniques/aurora.md)</sub> | ✅ | **3.1603** | -0.0294 | 59643 | 721.25 | replaces Muon, `learning_rate=0.03` |
+| Weight EMA + LR floor | ✅ | **3.1487** | -0.0116 | 61239 | 731.65 | LR decays to 15% of peak, not to 0, and eval uses the average weights of the last 300 steps; removed in F107b_e5 |
+| Token normalization for Engram<br><sub>[PR #375](https://github.com/KellerJordan/modded-nanogpt/pull/375) · [explanation](./techniques/engram.md)</sub> | ❌ | 3.1564 | -0.0039 | 59643 | 719.88 | tested on the Aurora base (3.1603), in parallel with Weight EMA + LR floor; tokens with the same first 2 bytes share one Engram entry; off by default |
+| RoPE + RoVE + Latent Lattice (F107b_e5)<br><sub>[RoPE](https://arxiv.org/abs/2104.09864) · [RoVE](https://arxiv.org/abs/2606.11275) · [Latent Lattice](https://arxiv.org/abs/2611.21608) · [explanation](./techniques/latent_lattice.md)</sub> | 👑 | **3.1153** | -0.0334 | 70569 | 732.44 | 404.64M params; RoPE + RoVE replace GRAPE-A; one recurrent latent (width 256) on layers 2-7 modulates q/k/v and the MLP (FiLM after the QK norm, Lattice params in AdamW lr 1e-3, vstream); weight EMA and LR floor removed; second seed: `3.1230` |
+
+Early techniques with no recorded loss: [Multi-token prediction](https://arxiv.org/pdf/2404.19737) · [Weight tying](https://arxiv.org/abs/1608.05859v3) · [Grouped query attention](https://arxiv.org/pdf/2305.13245) · [Capping logits](https://arxiv.org/pdf/2408.00118) · [QKV bias](https://arxiv.org/abs/2407.10671) · [Zero-init projection layer](https://arxiv.org/abs/2407.10671) · [Post and pre-RMSNorm](https://arxiv.org/pdf/2408.00118).
+
+Run logs: `ar/full_results.tsv` (full runs), `ar/results.tsv` (short runs), `ar/best_config.json` (best config). Technique notes: [`techniques/`](./techniques/).
+
+## Alternative Architectures
+
+| Model | Val loss | Peak MiB | ms/step | Notes |
+|---|---|---|---|---|
+| MegaByte<br><sub>[link](https://arxiv.org/abs/2305.07185)</sub> | 3.810 | — | — | — |
+| FTP (heavily modified)<br><sub>[link](https://arxiv.org/pdf/2410.18160)</sub> | 3.901 | — | — | — |
+| Rene<br><sub>[link](https://huggingface.co/cartesia-ai/Rene-v0.1-1.3b-pytorch)</sub> | 3.340 | — | — | — |
+| Rwkv7<br><sub>[link](https://github.com/BlinkDL/RWKV-LM)</sub> | 4.450 | — | — | — |
+| Zamba2<br><sub>[link](https://huggingface.co/Zyphra/Zamba2-2.7B)</sub> | — | — | — | no loss recorded; ranked Zamba2 > Rene > Rwkv7 |
+| Hourglass Transformer (modified)<br><sub>[link](https://arxiv.org/abs/2110.13711)</sub> | 3.710 | — | — | token-level run; ranked Hourglass > MegaByte > FTP |
+| Hymba<br><sub>[link](https://arxiv.org/html/2411.13676v1)</sub> | 4.7505 | — | — | much slower per step than the Transformer |
+| Tokenformer (in BlaGPT model)<br><sub>[link](https://github.com/Haiyang-W/TokenFormer)</sub> | 3.390 | — | — | — |
+| LLaDa (dLLM)<br><sub>[link](https://arxiv.org/abs/2502.09992)</sub> | 8.6930 | — | — | diffusion loss; cross-entropy `4.2891` compares with the other models (from `bla_gpt/llada_validation_cross_entropy.py`) |
+| Avey<br><sub>[link](https://arxiv.org/pdf/2506.11305v1)</sub> | 3.323 | 51962 | 2871 | batch size 8; very slow to train; more than 3x the memory of other models |
+| LFM2<br><sub>[link](https://huggingface.co/LiquidAI/LFM2-1.2B)</sub> | — | — | — | TBD |
+| Kimi Delta Attention (1:3 interleaved Full Attention)<br><sub>[link](https://arxiv.org/abs/2510.26692)</sub> | 3.2411→3.2532 | 47391 | 568.1 | — |
 
 ## Byte-Level Models
-Hourglass Transformer (modified) - [link](https://arxiv.org/abs/2110.13711) - `val_loss:1.0048 train_time:2671049ms step_avg:524.76ms`
 
-AUNet - [link](https://arxiv.org/abs/2506.14761) - `val_loss:1.1502 train_time:7246104ms step_avg:1423.60ms`
+Val loss here is per byte, not per BPE token. Do not compare it with the tables above.
 
-SpaceByte - [link](https://arxiv.org/abs/2404.14408) - `val_loss:1.6755 train_time:2154923ms step_avg:423.36ms peak memory consumption: 27781 MiB`
-
-HNet - [link](https://arxiv.org/pdf/2507.07955) - `val_loss:1.4554 train_time:2207809ms step_avg:433.75ms peak memory consumption: 23948 MiB`
-
+| Model | Val loss | Peak MiB | ms/step | Notes |
+|---|---|---|---|---|
+| Hourglass Transformer (modified)<br><sub>[link](https://arxiv.org/abs/2110.13711)</sub> | 1.0048 | — | 524.76 | byte-level run of the token-level model above |
+| AUNet<br><sub>[link](https://arxiv.org/abs/2506.14761)</sub> | 1.1502 | — | 1423.60 | — |
+| SpaceByte<br><sub>[link](https://arxiv.org/abs/2404.14408)</sub> | 1.6755 | 27781 | 423.36 | — |
+| HNet<br><sub>[link](https://arxiv.org/pdf/2507.07955)</sub> | 1.4554 | 23948 | 433.75 | — |
 
 ## Optimizers
-PaLMForeachSOAP - [link](https://github.com/ClashLuke/HeavyBall) - almost 2 times slower than Adam but the best results
 
-Ademamix - [link](https://github.com/nanowell/AdEMAMix-Optimizer-Pytorch/blob/main/AdEMAMix.py) - Unstable even after trying different learning rates.
-
-Adopt - [link](https://github.com/iShohei220/adopt) - straight up Nan
-
-CAdamW - [link](https://github.com/kyleliang919/C-Optim/blob/main/c_adamw.py) - loss: `3.3517`
-
-AdamW with independent weight decay - [link](https://arxiv.org/pdf/2309.14322) - loss: `3.320`
-
-Adam - loss: `3.3224`
-
-AdamW - loss: `3.3310`, peak VRAM: `42053 MiB`, step_time: `533ms`
-
-DeMo - [link](https://arxiv.org/abs/2411.19870) - Saves 7 GB per GPU, loss is higher than baseline, step time is slower than Adam -  loss: `3.4676`, peak VRAM: `41534 MiB`, step_time: `820ms`
-
-Adam-Mini - [link]() - loss is higher than Adam and AdamW and also slower ??, saved a bit of VRAM  - loss: `3.3324`, peak VRAM: `41534 MiB`, step_time: `610ms`
-
-MARS - [link](https://github.com/AGI-Arena/MARS) - loss: `3.3459`, peak VRAM: 40953 MiB, step_time: `628ms`
-
-Muon - [link](https://kellerjordan.github.io/posts/muon/) - loss: `3.2923`, peak VRAM: `40332MB`, step_time: `620.24ms`
-
-AdaMuon - [paper](https://arxiv.org/abs/2507.11005) | [explanation](./techniques/adamuon.md) - Adaptive Muon with second-moment estimation (default optimizer)
-
-Aurora - [paper](https://arxiv.org/abs/2606.27715) | code from [tilde-research/aurora-release](https://github.com/tilde-research/aurora-release) - matrix weights use Aurora, other weights use AdamW - `lr=0.03, weight_decay=0.025` - loss: `3.1965` -> `3.1603` - peak VRAM: `59643 MiB`, step_time: `721ms`
-
-BiClip - [link](https://arxiv.org/pdf/2502.04164) - (not working well) loss: `7.2292`, peak VRAM: `39751 MiB`, step_time: `510ms`
-
-NorMuon - [paper](https://arxiv.org/html/2510.05491v1) | [explanation](./techniques/normuon.md) - best_model_loss: `3.2411` -> loss: `3.4630`, peak VRAM: `44154 MiB`, step_time: `387.46 ms`
-
-Cautious Weight Decay - [paper](https://arxiv.org/pdf/2510.12402v1) | [explanation](./techniques/cautious_weight_decay.md) - best_model_loss: `3.2327` -> loss: `3.2334`, peak VRAM: `45971 MiB`, step_time: `434.2 ms`
+| Optimizer | Val loss | Peak MiB | ms/step | Notes |
+|---|---|---|---|---|
+| PaLMForeachSOAP<br><sub>[link](https://github.com/ClashLuke/HeavyBall)</sub> | — | — | — | best loss of the early optimizers, but almost 2x slower than Adam |
+| Ademamix<br><sub>[link](https://github.com/nanowell/AdEMAMix-Optimizer-Pytorch/blob/main/AdEMAMix.py)</sub> | — | — | — | unstable at all tested learning rates |
+| Adopt<br><sub>[link](https://github.com/iShohei220/adopt)</sub> | — | — | — | loss became NaN |
+| CAdamW<br><sub>[link](https://github.com/kyleliang919/C-Optim/blob/main/c_adamw.py)</sub> | 3.3517 | — | — | — |
+| AdamW with independent weight decay<br><sub>[link](https://arxiv.org/pdf/2309.14322)</sub> | 3.320 | — | — | — |
+| Adam | 3.3224 | — | — | — |
+| AdamW | 3.3310 | 42053 | 533 | — |
+| DeMo<br><sub>[link](https://arxiv.org/abs/2411.19870)</sub> | 3.4676 | 41534 | 820 | saves 7 GB per GPU; higher loss and slower steps than Adam |
+| Adam-Mini | 3.3324 | 41534 | 610 | higher loss and slower steps than Adam and AdamW; saves a little memory |
+| MARS<br><sub>[link](https://github.com/AGI-Arena/MARS)</sub> | 3.3459 | 40953 | 628 | — |
+| Muon<br><sub>[link](https://kellerjordan.github.io/posts/muon/)</sub> | 3.2923 | 40332 | 620.24 | — |
+| AdaMuon<br><sub>[paper](https://arxiv.org/abs/2507.11005) · [explanation](./techniques/adamuon.md)</sub> | — | — | — | Adaptive Muon with second-moment estimation |
+| Aurora<br><sub>[paper](https://arxiv.org/abs/2606.27715) · [tilde-research/aurora-release](https://github.com/tilde-research/aurora-release)</sub> | 3.1897→3.1603 | 59643 | 721 | matrix weights use Aurora, other weights use AdamW; `lr=0.03, weight_decay=0.025` |
+| BiClip<br><sub>[link](https://arxiv.org/pdf/2502.04164)</sub> | 7.2292 | 39751 | 510 | did not train well |
+| NorMuon<br><sub>[paper](https://arxiv.org/html/2510.05491v1) · [explanation](./techniques/normuon.md)</sub> | 3.2411→3.4630 | 44154 | 387.46 | — |
+| Cautious Weight Decay<br><sub>[paper](https://arxiv.org/pdf/2510.12402v1) · [explanation](./techniques/cautious_weight_decay.md)</sub> | 3.2327→3.2334 | 45971 | 434.2 | — |
 
 ## Adding a New Model
 
-- Implement the model
-- Return the loss in the forward function
-- Add model to `model_registry.py`
-- And start training
+- Implement the model. The forward function must return the loss.
+- Add a function `register_<name>` with the `@register_model` decorator in [`bla_gpt/model_registers.py`](./bla_gpt/model_registers.py).
+- Start training with `--model_name <name>`.
 
-See one of the implementations for details.
-
+See the existing functions in `model_registers.py` for examples.
 
 ## Training
+
+<details>
+<summary>Training scripts, quick start, datasets, tokenizers, LR finder</summary>
 
 BlaGPT provides two training scripts:
 
@@ -315,22 +237,7 @@ Plot saved to: logs/lr_finder_blagpt/lr_finder_plot.png
 Results saved to: logs/lr_finder_blagpt/lr_finder_results.pt
 ```
 
-
-## Autoresearch results
-
-The automatic experiment logs are in `ar/`. `ar/results.tsv` has the short runs, `ar/full_results.tsv` has the full runs, and `ar/best_config.json` has the best config.
-
-The best loss so far is `3.1067`: Latent Lattice (F107b) on top of RoPE + RoVE, the Aurora optimizer and a large Engram table.
-
-## Best Model So Far
-
-- Check `best_model_config.py` for the best model configuration so far.
-
-- You can run the training with the best model config by running:
-
-```bash
-torchrun --standalone --nproc_per_node=8 train.py --run_name best_model --model_name best
-```
+</details>
 
 ## Acknowledgements
 

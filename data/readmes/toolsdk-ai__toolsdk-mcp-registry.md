@@ -14,6 +14,7 @@ Structured JSON, STDIO and Streamable HTTP, with built-in Sandbox and OAuth 2.1 
 [![MCP servers](https://img.shields.io/badge/MCP_servers-5856-0078D4?style=flat-square)](https://toolsdk-ai.github.io/toolsdk-mcp-registry/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-239B56?style=flat-square)](./LICENSE)
 [![ToolSDK MCP Community](https://badges.toolsdk.ai/badge/toolsdk-mcp-registry)](https://github.com/toolsdk-ai/toolsdk-mcp-badges)
+[![Listed on SubmitMCP](https://img.shields.io/badge/SubmitMCP-Listed-2563eb?style=flat-square)](https://submitmcp.com/#lists)
 
 <a href="https://www.producthunt.com/products/toolsdk-ai">
   <img src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=997428&theme=light&period=daily" alt="ToolSDK on Product Hunt" height="40" />
@@ -753,5 +754,4 @@ Simplify data analysis and exploration with tools for data science workflows.
 - [✅ code-context-provider-mcp](https://github.com/ab498/code-context-provider-mcp): Analyzes project directories to extract code structure and symbols using Tree-sitter parsers, providing tools for generating directory trees and performing deep code analysis of JavaScript, TypeScript, and Python files.  (1 tools) (node)
 - [✅ kaggle-mcp](https://github.com/54yyyu/kaggle-mcp): Integrates with Kaggle's API to enable competition participation, dataset management, kernel operations, and model submissions for data scientists and machine learning practitioners.  (1 tools) (python)
 - [✅ mcp-excel-server](https://github.com/yzfly/mcp-excel-server): Enables Excel file operations and data analysis with tools for statistical analysis, data filtering, pivot table creation, and visualization through charts and plots.  (8 tools) (python)
-- [✅ optuna-mcp](https://github.com/optuna/optuna-mcp): Provides automated hyperparameter optimization and analysis using Optuna framework with support for multiple samplers, multi-objective optimization, parameter importance analysis, and interactive visualizations including optimization history and Pareto fronts.  (26 tools) (python)
-- [✅ scmcp](https://github.com/huang-sh/scmcp): Provides natural language access to single-cell RNA sequencing a
+- [✅ optuna-mcp](https://github.com/optuna/optuna-mcp): Provides automated hyperparameter optimization and analysis using Optuna framework with support for multiple samplers, multi-objective optimization, parameter importance analysis, and interactive visualizations including optimization history and Pareto fronts.  (26 t

@@ -786,22 +786,74 @@ raises coverage pressure but still cannot bypass path, render, semantic, or QA f
 
 ### `vex generate-video`
 
-Generate a new HyperFrames video without a source clip. Vex writes an audio-first native-motion project with a narration script, TTS audio, timed beat graph, director crew contract, video-generation skill graph, per-beat HyperFrames compositions, motion cues, transitions, captions, portfolio QA report, manifest, and final render.
+Generate a video from a prompt or script without a source clip. Vex writes an
+editable production project with a timed edit, renderer source, QA, and the
+final render.
 
-The generator now uses a deterministic Video Generation Skill Graph before
-cinematography. It classifies the whole video into a production skill, assigns
-every beat a source-grounded visual skill, seeds HyperFrames semantic frames,
-steers proof tournaments and native motion, writes `VIDEO_SKILL_GRAPH.json`, and
-makes skill coverage part of portfolio and generated-video QA.
+The default `--renderer auto` selects hybrid production when a text model is
+configured, and uses the offline HyperFrames workflow otherwise. In hybrid
+production the model writes the film and draws its
+original animated vector scenes. It can choose HyperFrames, Remotion, or a
+specialist Manim shot. Remotion assembles the edit. DeepSeek Flash can review
+encoded frames and guide one shot-level repair. [Hybrid film production](docs/hybrid-film-production.md)
+
+A hybrid film can hold on one shot or use uneven pacing for a silent sequence.
+The standalone HyperFrames workflow uses the Video Generation Skill Graph to
+build transcript-based scenes and records assignments in
+`VIDEO_SKILL_GRAPH.json`.
 
 ```bash
 vex generate-video "explain retrieval augmented generation in 30 seconds" --duration 30
 vex generate-video "show why KV cache compression matters" --aspect portrait --voice af_nova
-vex generate-video "show sparse attention becoming a focused reasoning path" --quality high --fps 60 --render-resolution 4k
+vex generate-video "show sparse attention becoming a focused reasoning path" --renderer remotion --quality high --fps 60 --render-resolution 4k
 vex generate-video "turn this into a project only" --no-render --no-audio --output-dir D:\renders\vex-tests
 ```
 
 The generated project is stored under `~/.video-agent/generated_videos` unless `--output-dir` is provided.
+With `--renderer remotion`, Vex writes `remotion/entry.jsx` and
+`remotion/input_props.json`. The composition plays frame-addressed scenes,
+word-timed captions, narration, and optional looped music. The production uses
+HyperFrames TTS when narration is requested. Install the pinned local runtime
+with `vex renderers install remotion`.
+Prompt-only Remotion projects use the configured text provider to write
+narration and shot focus. Supply `--script` to direct the spoken track
+yourself. Vex can plan offline and records when it uses the offline script.
+The Remotion shot director tests grounded layout candidates per beat and records
+its decisions in `remotion/shot_direction.json`. Export QA decodes frames from
+the final video, checks the delivery format and clock, and records output and
+frame digests in `generated_video_qa.json`.
+`--gemini-production` adds Gemini shot authoring and required review of
+rendered frames. Run `vex gemini-models` to inspect the catalog for the
+configured Gemini API project key.
+`--quality high` also renders the two leading candidates for up to four shots.
+Vex uses those frames and browser text measurements to refine shot selection
+before rendering the full composition.
+
+Inspect, preview, and deliver a saved Remotion or hybrid production.
+
+```bash
+vex render-video-project ./generated-project
+vex render-video-project ./generated-project --replace-shot "beat_02=./footage.mp4"
+vex inspect-video-project ./generated-project --json
+vex render-video-project ./generated-project --stage-only
+vex render-video-project ./generated-project/revisions/remotion-example --frame 0 --frame 72
+vex render-video-project ./generated-project/revisions/remotion-example --format mov --quality draft --add-to-studio
+```
+
+Use the shot IDs in `remotion/input_props.json`. A replacement image fills the
+shot and a replacement video must cover its entire frame interval. Revisions
+keep the shot clock, narration, music, and captions, and store their own export
+and evidence in `revisions/`. Edit the timeline JSON to adjust caption text,
+shot lengths, clip fit, or a clip's `trim_start_frame` before re-rendering.
+The revision command rebuilds the composition with the installed Vex renderer
+using the saved timeline and local assets.
+Plans created with `--no-render` can finish their pending HyperFrames and Manim
+shots from saved direction. Pass the prepared folder to subsequent commands to
+reuse those clips and the audio. Both `generate-video` and
+`render-video-project` can add a verified video export to Studio.
+
+[Remotion production architecture](docs/remotion-video-production.md)
+
 Generated videos use a Director Crew pass before rendering. The director repairs
 weak prompt-only scripts, writes `DIRECTOR_CREW.json`, assigns each beat a
 source-grounded visual contract, then the skill graph converts those contracts

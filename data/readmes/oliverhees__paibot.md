@@ -4,7 +4,7 @@ PaiBot – Startseite des Projekts: was PaiBot ist, Status, Schnellstart und Liz
 Autor:     Oliver Hees
 Website:   https://paibot.de
 Copyright: 2026 Oliver Hees. Alle Urheberrechte liegen beim Autor.
-Lizenz:    PaiBot Fair-Code-Lizenz 1.0 – siehe Datei LICENSE im Projektstamm
+Lizenz:    PaiBot Fair-Code-Lizenz 1.1 – siehe Datei LICENSE im Projektstamm
 Seit:      2026-11-07
 -->
 
@@ -32,13 +32,38 @@ Seit:      2026-11-07
 
 ---
 
+## So sieht PaiBot aus
+
+<p align="center">
+  <img src="docs/assets/screenshots/vorschau-app-rechner-arbeitsflaeche.png" alt="PaiBot am Rechner: links die Navigation mit dem Bot Pai und seinen Unterhaltungen, in der Mitte ein Chat mit einem Antwort-Entwurf an Max Mustermann, rechts die Arbeitsfläche mit der Liste der Belege" width="76%">
+  <img src="docs/assets/screenshots/vorschau-app-handy-belege.png" alt="PaiBot auf dem Handy: derselbe Chat, von unten ist das Blatt „Belege“ mit vier Belegen geöffnet" width="21%">
+</p>
+
+<p align="center">
+  <sub><b>Vorschau mit Beispiel-Daten – die App ist im Bau.</b> Die Bilder zeigen den App-Rahmen mit erfundenen Inhalten; Chat und Seiten werden gerade angeschlossen (siehe <a href="#stand">Stand</a>).</sub>
+</p>
+
+<details>
+<summary><b>Weitere Bilder: helles Design und Handy</b></summary>
+
+<p align="center">
+  <img src="docs/assets/screenshots/vorschau-app-rechner-hell.png" alt="PaiBot am Rechner im hellen Design mit demselben Beispiel-Chat" width="76%">
+  <img src="docs/assets/screenshots/vorschau-app-handy-hell.png" alt="PaiBot auf dem Handy im hellen Design" width="21%">
+</p>
+
+</details>
+
+Alle Bilder entstehen per Skript aus der App, nicht von Hand (`pnpm doku:screenshots`, siehe [Doku](docs/README.md#screenshots)).
+
 ## Inhalt
 
+- [So sieht PaiBot aus](#so-sieht-paibot-aus)
 - [Was ist PaiBot?](#was-ist-paibot)
 - [Warum PaiBot?](#warum-paibot)
 - [Funktionen](#funktionen)
 - [So funktioniert es](#so-funktioniert-es)
-- [Status und Roadmap](#status-und-roadmap)
+- [Stand](#stand)
+- [Roadmap](#roadmap)
 - [Schnellstart](#schnellstart)
 - [Projektaufbau](#projektaufbau)
 - [Lizenz: Fair-Code, für eine Person](#lizenz-fair-code-für-eine-person)
@@ -50,10 +75,10 @@ Seit:      2026-11-07
 
 **PaiBot** (Personal AI Bot) ist ein persönlicher KI-Agent für eine Person – nicht ein einzelner Chatbot, sondern ein ganzes Team: Bots mit eigenen Rollen, die miteinander reden, sich Aufgaben übergeben, selbst im Browser surfen und für dich in deinen Apps arbeiten.
 
-Das Vorbild sind KI-Teammates wie Grok Bot. Der Unterschied: PaiBot läuft **bei dir** – auf deinem eigenen Server oder direkt auf deinem Rechner –, nutzt **Modelle aus der EU oder dein eigenes lokales Modell**, und eine **Datenschleuse** ersetzt persönliche Daten durch Platzhalter, bevor sie eine KI erreichen.
+PaiBot läuft **bei dir** – auf deinem eigenen Server oder direkt auf deinem Rechner –, nutzt **Modelle aus der EU oder dein eigenes lokales Modell**, und eine **Datenschleuse** ersetzt persönliche Daten durch Platzhalter, bevor sie eine KI erreichen.
 
 <p align="center">
-  <img src="docs/assets/idee.jpg" alt="Die Idee: Vorbild, Problem, Lösung, Bauplan" width="90%">
+  <img src="docs/assets/idee.jpg" alt="Die Idee: Problem, Lösung, Bauplan" width="90%">
 </p>
 
 ## Warum PaiBot?
@@ -74,7 +99,7 @@ Die neuesten KI-Agenten kommen oft gar nicht oder nur eingeschränkt nach Europa
 |     | Funktion                                                       | Status                                                                                                                               |
 | --- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | 🖥️  | Läuft auf eigenem Server (Coolify) oder lokal                  | Server: vorhanden (Docker Compose, Coolify, siehe [`docs/installation.md`](docs/installation.md)); lokal mit lokalem Modell: geplant |
-| 🛡️  | Datenschleuse für persönliche Daten, zuschaltbar               | geplant · Folge 3                                                                                                                    |
+| 🛡️  | Datenschleuse für persönliche Daten, zuschaltbar               | im Bau · Basisversion                                                                                                                |
 | 🤖  | Eigene Bots mit Rollen, Gedächtnis und Live-Antworten          | geplant                                                                                                                              |
 | 🔌  | Apps per MCP verbinden, Freigabe vor jeder schreibenden Aktion | geplant                                                                                                                              |
 | 🌐  | Browser-Agent: der Bot surft selbst, du schaust live zu        | geplant                                                                                                                              |
@@ -97,9 +122,30 @@ flowchart LR
 
 Mit eingeschalteter Datenschleuse sieht das Modell zum Beispiel nur `<PERSON_0>` statt „Max Mustermann“. Die Antwort enthält trotzdem wieder den echten Namen.
 
-## Status und Roadmap
+## Stand
 
-> 🚧 **Aktueller Stand: Folge 0 – das Gerüst steht.** Ab Folge 2 wird daraus Schritt für Schritt der echte Agent.
+> 🚧 **PaiBot ist im Bau.** Die Grundlage im Hintergrund steht und ist getestet. Die Oberfläche zum Benutzen (Einrichtung, Chat, Seiten) wird gerade angeschlossen. **Wer heute installiert, sieht die Startseite mit dem Status** („PaiBot läuft“, Datenbank ok) – noch keinen Chat.
+
+| Was                                                                                      | Stand                  |
+| ---------------------------------------------------------------------------------------- | ---------------------- |
+| Server-Grundlage mit Docker Compose und Datenbank ([Installation](docs/installation.md)) | ✅ fertig und getestet |
+| Das [Tor](docs/funktion-tor.md): jede Aktion läuft durch feste Regeln ohne KI            | ✅ fertig und getestet |
+| Das [Beleg-Protokoll](docs/funktion-belege.md) mit Prüfer                                | ✅ fertig und getestet |
+| Verschlüsselung der gespeicherten Schlüssel ([Sicherheit](docs/sicherheit.md))           | ✅ fertig und getestet |
+| [Anbieter und Modelle](docs/funktion-anbieter-und-modelle.md) mit Ausgangs-Liste         | ✅ fertig und getestet |
+| KI-Laufzeit, die die Antworten der Bots erzeugt                                          | ✅ fertig und getestet |
+| Design und Bausteine der Oberfläche (siehe Bilder oben)                                  | ✅ fertig und getestet |
+| Einrichtung und Anmeldung                                                                | 🔨 im Bau              |
+| Chat mit deinem Bot                                                                      | 🔨 im Bau              |
+| Seiten für Belege, Modelle, Datenschleuse und Einstellungen                              | 🔨 im Bau              |
+| Release zum Installieren                                                                 | 🔨 im Bau              |
+| Apps anbinden                                                                            | 🗓️ geplant danach      |
+| Bots im Team                                                                             | 🗓️ geplant danach      |
+
+- 🛠️ **Was gerade gebaut wird:** jede Aufgabe ist ein Issue, sortiert nach [Meilensteinen](https://github.com/oliverhees/paibot/milestones).
+- 📖 **Wie es funktioniert:** die [Doku](docs/README.md) beschreibt jede fertige Funktion; Abschnitte, die erst mit der Oberfläche kommen, sind dort so gekennzeichnet.
+
+## Roadmap
 
 Gebaut wird zwischen den Folgen der YouTube-Serie, in Coding-Sessions der Community auf [aiianer.de](https://aiianer.de) und im Livestream. Die Folgen zeigen, wie man PaiBot installiert, benutzt und ausbaut. Jede Folge bekommt einen eigenen Git-Tag (`folge-00`, `folge-01`, …), so kannst du jeden Stand nachbauen. Die Reihenfolge kann sich ändern, und die Community stimmt ab, welche Funktion als Nächstes kommt.
 
@@ -122,7 +168,7 @@ Gebaut wird zwischen den Folgen der YouTube-Serie, in Coding-Sessions der Commun
 
 ## Schnellstart
 
-> PaiBot ist noch in früher Entwicklung. Der Schnellstart startet aktuell das Gerüst.
+> PaiBot ist im Bau. Der Schnellstart zeigt heute die Startseite mit dem Status, noch keinen Chat. Für einen Server mit Datenbank: [Installation mit Docker Compose](docs/installation.md).
 
 **Voraussetzungen:** Node.js 22 und pnpm 10
 
@@ -145,14 +191,17 @@ pnpm dev          # startet PaiBot auf http://localhost:3000
 ## Projektaufbau
 
 ```
-apps/web/          PaiBot-App (Next.js: Oberfläche, API, Agenten)
-packages/shared/   gemeinsame Typen, Konstanten, Sprachen
-packages/db/       Datenbank (ab Folge 2)
-packages/llm/      KI-Modelle und Datenschleuse (ab Folge 3)
-packages/agents/   Bots, Router, Team-Werkzeuge
-packages/mcp/      App-Anbindungen per MCP
-packages/jobs/     Hintergrund-Jobs und Routinen
-packages/ui/       UI-Komponenten
+apps/web/          PaiBot-App (Next.js: Oberfläche, API)
+packages/shared/   gemeinsame Typen, Texte und Konstanten
+packages/db/       Datenbank: Schema, Migrationen, Zugriff
+packages/gate/     das Tor: feste Regelprüfung für jede Aktion
+packages/receipts/ Beleg-Protokoll: verketten, signieren, prüfen, exportieren
+packages/crypto/   Verschlüsselung, Passwörter, Tokens, Signaturen
+packages/llm/      Anbieter und Modelle, Ausgangs-Liste, Anbindung der Datenschleuse
+packages/agents/   KI-Laufzeit (Motor) für die Bots
+packages/jobs/     Warteschlange für Läufe im Hintergrund
+packages/ui/       Design und Bausteine der Oberfläche
+packages/mcp/      App-Anbindungen per MCP (geplant)
 services/browser/  Browser-Dienst (Python)
 deploy/            Docker Compose und Coolify
 docs/              Dokumentation
@@ -160,33 +209,34 @@ docs/              Dokumentation
 
 ## Lizenz: Fair-Code, für eine Person
 
-PaiBot ist **Fair-Code** („Source Available“), nicht Open Source. Kurz gesagt:
+PaiBot ist **Fair-Code** („Source Available“), nicht Open Source. Es gilt die PaiBot Fair-Code-Lizenz, Version 1.1. Kurz gesagt:
 
 **Du darfst**
 
 - PaiBot für dich herunterladen, installieren und nutzen: privat **und für deine eigene Arbeit**, auch als Selbstständiger oder Freiberufler
 - als Angestellter für deine eigenen Aufgaben nutzen, solange nicht dein Arbeitgeber PaiBot bereitstellt oder vorgibt
 - den Code für dich anpassen und erweitern
-- ihn kostenlos weitergeben, z. B. als Fork, solange die Lizenz dabei bleibt
+- ihn kostenlos weitergeben, z. B. als Fork, solange die Lizenz dabei bleibt, der Fork kostenlos bleibt, einen eigenen Namen trägt und „Powered by PaiBot“ mit Verweis auf [paibot.de](https://paibot.de) zeigt
+- Kurse, Bücher, Videos und Beratung dazu machen, die zeigen, wie man PaiBot selbst nutzt
 
 **Du darfst nicht**
 
 - PaiBot mit mehreren Personen nutzen – nicht im Team, nicht in einer Firma, auch nicht intern
 - PaiBot oder eine angepasste Fassung verkaufen oder vermieten
-- ihn als gehosteten Dienst für andere anbieten oder für Kunden einrichten
-- ihn umbenennen und als eigenes Produkt ausgeben
+- ihn als gehosteten Dienst für andere anbieten oder gegen Entgelt für andere einrichten, betreiben oder supporten
+- eine angepasste Fassung unter dem Namen „PaiBot“ oder ohne Herkunftshinweis als eigenes Produkt ausgeben
 - Lizenz- und Markenhinweise oder „Powered by PaiBot“ entfernen
 
 > **PaiBot ist für eine Person: für dich und deine eigene Arbeit.** Sobald mehrere Personen damit arbeiten sollen, im Team oder im Unternehmen, brauchst du **PaiBot Enterprise** mit Support (in Vorbereitung). Mehr dazu: [paibot.de/enterprise](https://paibot.de/enterprise).
 
-Rechtlich gilt nur der Text in [`LICENSE`](LICENSE). Bausteine Dritter behalten ihre eigenen Lizenzen, siehe [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+Rechtlich gilt nur der Text in [`LICENSE`](LICENSE). Wer einen Beitrag einreichen will, findet die [Beitragsvereinbarung](docs/BEITRAGSVEREINBARUNG.md). Bausteine Dritter behalten ihre eigenen Lizenzen, siehe [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 ## FAQ
 
 <details>
 <summary><b>Ist PaiBot Open Source?</b></summary>
 
-Nein. Der Code ist öffentlich einsehbar und für eine Person kostenlos („Fair-Code“), aber die Nutzung mit mehreren Personen, Verkauf und Hosting für andere sind nicht erlaubt.
+Nein. Der Code ist öffentlich einsehbar und für eine Person kostenlos („Fair-Code“), aber die Nutzung mit mehreren Personen, Verkauf sowie bezahlter Betrieb oder Support für andere sind nicht erlaubt.
 </details>
 
 <details>
@@ -196,9 +246,9 @@ Ja, wenn du es allein nutzt: als Selbstständiger, als Freiberufler oder für de
 </details>
 
 <details>
-<summary><b>Warum nicht einfach OpenMausBot?</b></summary>
+<summary><b>Was unterscheidet PaiBot?</b></summary>
 
-[OpenMausBot](https://github.com/milind-soni/OpenMausBot) ist ein starkes offenes Projekt mit einer ähnlichen Idee. PaiBot setzt andere Schwerpunkte: KI-Modelle aus der EU oder lokal als Standard statt US-Abos, eine Datenschleuse, die persönliche Daten vor dem Modell maskiert, eine eigene MCP-Verwaltung ohne fremden Dienst dazwischen, und jeder Schritt wird auf Deutsch erklärt, damit du verstehst, was dein Agent tut.
+PaiBot setzt diese Schwerpunkte: KI-Modelle aus der EU oder lokal als Standard, eine Datenschleuse, die persönliche Daten vor dem Modell maskiert, eine eigene MCP-Verwaltung ohne fremden Dienst dazwischen, ein Beleg für jede Aktion, und jeder Schritt wird auf Deutsch erklärt, damit du verstehst, was dein Agent tut.
 </details>
 
 <details>

@@ -369,6 +369,10 @@ The rule is the same for `document`, `lint-all`, `lint-project` and the
 exporters, so one `--db` list works across verbs: a block written by
 `document --db P --db L` is accepted by `lint-all --db P --db L`.
 
+### First install and updates: the library re-index
+
+After the first install, and after any update that bumps the extractor (1.52.1 is one: extractor 1.42.0-alpha), drag-lint re-indexes the platform libraries (Win32 and Win64) in the background. Measured on 1.52 this takes about 2.5 hours per platform and uses a lot of CPU, but the machine stays usable. Later indexing is incremental.
+
 ### Indexing the Delphi RTL/VCL libraries
 
 To build one index over everything Delphi itself knows about - the IDE's
@@ -1053,7 +1057,7 @@ Win64 build.
 | `hover --qname <q>` | Hover card for a symbol (incl. declared type; a re-published property names its declaring ancestor) | `--format plain\|md\|json` |
 | `typeat <file>:<line>:<col>` | Resolve the type of the expression at a cursor position | `--format text\|json` |
 | [`find-unit`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/find-unit) `--name <X> --in <file>` | Find which unit declares `X`, to add to `uses` | `--apply` |
-| [`find-callees`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/find-callees) `--qname <X>` | Resolved outgoing calls of a routine, one line per call site; exits 1 when the routine calls nothing (1.52, GitHub #17) (a target called N times repeats; for the distinct list use `callgraph --qname <X> --direction callees --depth 1`); library-bound callees follow, marked `(library`, bound from a stored `refs.external_target` or at read time through a second `--db` / `--library-db`; with no library open the text says `M external (library not open)` | `--json` (`external`, `via`: `edge`\|`oracle`), `--library-db` |
+| [`find-callees`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/find-callees) `--qname <X>` or `--name <bare>` | Resolved outgoing calls of a routine (`--name` = every routine of that bare name, each under a `# <qname>` header when several; 1.52.1), one line per call site; exits 1 when the routine calls nothing (1.52, GitHub #17) (a target called N times repeats; for the distinct list use `callgraph --qname <X> --direction callees --depth 1`); library-bound callees follow, marked `(library`, bound from a stored `refs.external_target` or at read time through a second `--db` / `--library-db`; with no library open the text says `M external (library not open)` | `--json` (`external`, `via`: `edge`\|`oracle`), `--library-db` |
 | [`call-path`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/call-path) `--from <A> --to <B>` | Shortest resolved call path A -> B | `--max-depth N` |
 | [`ambiguous-calls`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/ambiguous-calls) | Resolver-coverage diagnostic: unresolved/ambiguous call sites | `--qname`, `--in` |
 | [`helpers-of`](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/helpers-of) `<T>` | Record/class helper edges targeting type `T` | `--json` |
@@ -1066,7 +1070,7 @@ Win64 build.
 
 #### Lint
 
-**435 rules across 18 categories -- 322 built-in + 113 external `.scm`, 355
+**435 rules across 18 categories -- 322 built-in + 113 external `.scm`, 356
 enabled by default, 131 with an auto-fix.**
 
 | Command | What it does | Notable flags |
@@ -1110,12 +1114,4 @@ Only for 2+ owners (or unknown ownership) the run prints its plan --
 `rename-target: L<line> <old> -> <new> apply|dropped ...`, `rename-unknown:`,
 `rename-dropped-at-write:` -- and `--json` gains `projects` and
 `dropped_reason`. The IDE's Fix it / Fix all in unit preview first and confirm
-before writing. Details: [Multi-Project-Rename](https://github.com/Alexl-git/Delphi-RAG-Lint/wiki/Multi-Project-Rename).
-
-An autofix with several edits (a uses-clause move, `unused-unit-in-uses`) is an
-atomic group: every edit is validated against the on-disk file before anything is
-written, and one that would not apply drops the whole group. `lint --fix --json`
-marks such a finding `"declined": true` with a `"decline_reason"` (and `applied:
-false`); text output ends `, N declined (...)`.
-
-`lint` / `lint-all` / `lint-project` /
+before writing. Details: [M

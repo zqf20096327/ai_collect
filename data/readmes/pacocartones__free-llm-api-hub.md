@@ -1,84 +1,30 @@
 <div align="center">
 
-<img src="assets/logo-full.svg" alt="Free LLM API Hub" width="240">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+  <img src="assets/logo-light.svg" alt="Free LLM API Hub" width="320">
+</picture>
 
 **A continuously-verified dataset of free LLM & AI-model APIs you can build on.**
 
-Free LLM APIs plus adjacent model APIs — image, speech, embeddings, rerank and OCR. Free tiers, trial credits and no-cost quotas, every entry dated, sourced, and machine-readable.
-Every entry is dated and sourced to the provider's own docs; what we could not confirm is marked. Just what's actually free, and the fine print that bites.
+Free LLM APIs plus adjacent model APIs — image, speech, embeddings, rerank and OCR: free tiers, trial credits and no-cost quotas.
+Every entry is dated and sourced to the provider's own docs, and what we could not confirm is marked. Just what's actually free, and the fine print that bites.
 
 <img src="assets/demo.svg" alt="Terminal demo: curl freellmapihub.com/api/v1/no-card.json returns Google Gemini, Groq, Cloudflare Workers AI, OpenRouter and Cohere" width="740">
 
 [![Verify](https://github.com/pacocartones/free-llm-api-hub/actions/workflows/verify.yml/badge.svg)](https://github.com/pacocartones/free-llm-api-hub/actions/workflows/verify.yml)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/pacocartones/free-llm-api-hub/badge)](https://scorecard.dev/viewer/?uri=github.com/pacocartones/free-llm-api-hub)
 [![Freshness](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pacocartones/free-llm-api-hub/main/badge-freshness.json)](#how-verification-works)
 [![Verified providers](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/pacocartones/free-llm-api-hub/main/badge-verified.json)](docs/methodology.md)
 [![Website](https://img.shields.io/badge/explorer-freellmapihub.com-0b7285.svg)](https://freellmapihub.com/)
-[![Dataset: JSON](https://img.shields.io/badge/dataset-JSON%20%2B%20schema-blue.svg)](data/providers.json)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Contributors](https://img.shields.io/github/contributors/pacocartones/free-llm-api-hub)](https://github.com/pacocartones/free-llm-api-hub/graphs/contributors)
-[![Good first issues](https://img.shields.io/badge/contribute-good%20first%20issues-9c4668.svg)](https://github.com/pacocartones/free-llm-api-hub/contribute)
 
 **[🔎 Interactive explorer](https://freellmapihub.com/)** &nbsp;·&nbsp; **[📊 Dataset](data/providers.json)** &nbsp;·&nbsp; **[🧪 How we verify](docs/methodology.md)** &nbsp;·&nbsp; **[➕ Add a provider](CONTRIBUTING.md)**
 
-⭐ **Useful? [Star the repo](https://github.com/pacocartones/free-llm-api-hub)** so other builders find it. &nbsp;·&nbsp; 🛠 **Want to help?** Pick a [good first issue](https://github.com/pacocartones/free-llm-api-hub/contribute) or a [help wanted](https://github.com/pacocartones/free-llm-api-hub/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) issue; follow its named files and check. New here? Follow the [first-contribution steps](CONTRIBUTING.md#your-first-contribution-step-by-step).
-
+⭐ **Useful? [Star the repo](https://github.com/pacocartones/free-llm-api-hub)** so other builders find it. &nbsp;·&nbsp; 🛠 **Want to help?** Start with a [good first issue](https://github.com/pacocartones/free-llm-api-hub/contribute) or the [first-contribution steps](CONTRIBUTING.md#your-first-contribution-step-by-step).
 
 </div>
 
 ---
-
-## Why this exists
-
-Most "free LLM API" lists are a snapshot someone took once and never touched again. Rate limits get cut, docs URLs move, "free forever" quietly becomes "free for 30 days" — and the list keeps recommending it, confidently, for another year.
-
-This project treats the list as a **maintained open dataset**, not a blog post:
-
-- **Every entry is dated and sourced.** No `Last verified` date and a link to the provider's *own* docs? It doesn't ship as verified.
-- **Freshness is measured, not claimed.** The build grades the *oldest* re-verification against the 90-day SLA. The explorer calculates current ages in the browser; the README badge shows the last committed refresh.
-- **Links are checked, not scheduled.** Every change runs the integrity gate, and each re-verification pass opens the provider's own docs — a dead source link is the earliest signal a provider changed something.
-- **Uncertainty is labelled, not hidden.** Entries we couldn't independently confirm are marked ⚠️ and say exactly what's unconfirmed, instead of being dressed up as fact.
-- **The data is the source of truth.** [`data/providers.json`](data/providers.json) is validated against a [schema](data/schema.json); the marked data sections of this README, the badge and the provider site are generated from canonical inputs and checked for drift. Authored prose remains subject to review; see the [input map](docs/architecture.md).
-
-If you're picking an API to prototype on this afternoon, you want the fine print more than the marketing. That's the whole point of this repo.
-
-> [!WARNING]
-> Independent, community-maintained list — **not affiliated with, endorsed by, or sponsored by any provider below.** Free-tier terms change without notice. Always confirm against the provider's own docs (linked in every row) before you rely on anything here. Entries marked ⚠️ are sourced from community tracking and not yet independently re-confirmed — treat them as indicative.
-
-## What's covered
-
-Primarily **free LLM (text) APIs** — plus the adjacent model APIs a builder reaches for next: **image generation, speech (STT/TTS), embeddings, rerank and OCR**. Every category is held to the same verification bar. Breakdown is generated from the data:
-
-<!-- AUTOGEN:coverage:start -->
-| Category | Providers | Examples |
-|---|---|---|
-| **Text / LLM** | 43 | Google Gemini API, Groq, OpenRouter |
-| **Speech (STT / TTS)** | 26 | Google Gemini API, Groq, Cloudflare Workers AI |
-| **Embeddings** | 13 | Google Gemini API, Cloudflare Workers AI, Cohere |
-| **Image generation** | 11 | Cloudflare Workers AI, HuggingFace, OVHcloud AI Endpoints |
-| **Vision** | 11 | Google Gemini API, OpenRouter, Z.ai |
-| **OCR / documents** | 8 | OCR.space, LlamaParse, Nanonets |
-| **Rerank** | 6 | Cohere, Jina AI, Mixedbread |
-<!-- AUTOGEN:coverage:end -->
-
-Filter any category live in the [interactive explorer](https://freellmapihub.com/) or the [multimodal collection](collections/multimodal.md).
-
-## Browse by API requirement
-
-The [guides and collections](https://freellmapihub.com/guides-and-collections/) compare dated provider rows, limits and catches.
-
-| Requirement | Compare |
-|---|---|
-| No payment card | [No-card tiers and trials](https://freellmapihub.com/collections/no-credit-card) |
-| No signup | [Account requirements explained](https://freellmapihub.com/guides/free-llm-api-no-signup) — no phone and no card does **not** mean no account |
-| OpenAI SDK | [OpenAI-compatible endpoints](https://freellmapihub.com/collections/openai-compatible) — feature support can differ |
-| Embeddings / RAG | [Embedding APIs](https://freellmapihub.com/guides/free-embeddings-apis) |
-| OCR / documents | [OCR and document parsing](https://freellmapihub.com/guides/free-ocr-document-ai-apis) |
-| Voice | [Speech-to-text and text-to-speech](https://freellmapihub.com/guides/free-speech-to-text-apis) |
-| Images | [Image generation and editing](https://freellmapihub.com/guides/free-image-generation-apis) — check which operations each tier includes |
-
-Video generation is not currently a tracked modality in the dataset. There is no verified video comparison here; image or vision support does not establish video-generation access.
 
 ## TL;DR — pick by what you actually need
 
@@ -88,94 +34,120 @@ Each pick links to its full verified profile on the live site.
 |---|---|---|
 | **The smartest model, free** | [Google Gemini](https://freellmapihub.com/p/google-gemini) | The only genuinely frontier-class model with a real free tier here — not just open weights |
 | **The fastest inference** | [Groq](https://freellmapihub.com/p/groq) or [SambaNova](https://freellmapihub.com/p/sambanova) | Purpose-built inference chips — far faster than typical GPU-served APIs |
-| **The most free volume/day** | [Cloudflare Workers AI](https://freellmapihub.com/p/cloudflare-workers-ai) (10k Neurons) or [OpenRouter](https://freellmapihub.com/p/openrouter) (1k req/day) | Highest ceilings for a side project with real traffic |
-| **No card *and* no phone** | [OpenRouter](https://freellmapihub.com/p/openrouter) or [Google Gemini](https://freellmapihub.com/p/google-gemini) | Groq, SiliconFlow and NVIDIA all gate signup behind phone verification |
+| **The most free volume/day** | [Cloudflare Workers AI](https://freellmapihub.com/p/cloudflare-workers-ai) (10k Neurons) or [OpenRouter](https://freellmapihub.com/p/openrouter) (50 req/day, 1,000 once you have bought $10 of credit) | Highest ceilings for a side project with real traffic |
+| **No card *and* no phone** | [OpenRouter](https://freellmapihub.com/p/openrouter) or [Google Gemini](https://freellmapihub.com/p/google-gemini) | Groq and SiliconFlow gate signup behind phone verification |
 | **Open weights** (Llama, DeepSeek, Qwen, GLM) | [OpenRouter](https://freellmapihub.com/p/openrouter) or [Cloudflare Workers AI](https://freellmapihub.com/p/cloudflare-workers-ai) | Widest open-model selection on an ongoing free tier |
 | **Permanently free, no trial clock** | [Z.ai (GLM)](https://freellmapihub.com/p/zai-glm), or [SiliconFlow](https://freellmapihub.com/p/siliconflow) if you can pass China real-name verification | Several models priced at $0 indefinitely, not just for a trial window |
 | **An OpenAI-compatible endpoint** | [Groq](https://freellmapihub.com/p/groq), [OpenRouter](https://freellmapihub.com/p/openrouter), [Cloudflare Workers AI](https://freellmapihub.com/p/cloudflare-workers-ai) | Point the OpenAI SDK at a new `base_url` and you're done |
 | **EU / data-sovereignty hosting** | [OVHcloud](https://freellmapihub.com/p/ovhcloud-ai-endpoints) or [Scaleway](https://freellmapihub.com/p/scaleway) | French/EU providers; OVHcloud even has an anonymous, no-account tier |
 | **Free embeddings & rerank** | [Jina AI](https://freellmapihub.com/p/jina-ai) or [Cohere](https://freellmapihub.com/p/cohere) | 10M free tokens (Jina, OpenAI-compatible) or 1,000 calls/mo (Cohere) |
-| **Free speech-to-text / TTS** | [Deepgram](https://freellmapihub.com/p/deepgram) or [AssemblyAI](https://freellmapihub.com/p/assemblyai) | $200 / $50 in no-card credit for Whisper-class STT and TTS |
-| **A bigger one-time credit** | [Deepgram](https://freellmapihub.com/p/deepgram) ($200, speech) or [AI21 Labs](https://freellmapihub.com/p/ai21) ($10 for 3 months, LLMs) | Large one-time credits that start without a card |
+| **Free speech-to-text / TTS** | [Deepgram](https://freellmapihub.com/p/deepgram) or [AssemblyAI](https://freellmapihub.com/p/assemblyai) | $200 (STT and TTS) / $50 (STT) in no-card signup credit |
+| **A bigger one-time credit** | [Deepgram](https://freellmapihub.com/p/deepgram) ($200, speech) or [AI21 Labs](https://freellmapihub.com/p/ai21) ($10 trial, LLMs) | Large one-time credits that start without a card |
 | **Something safe to ship commercially** | [Cloudflare Workers AI](https://freellmapihub.com/p/cloudflare-workers-ai) or [Groq](https://freellmapihub.com/p/groq) | Don't restrict the free tier to personal/eval use, the way Cohere and NVIDIA do |
 
 Starting points, not guarantees — read the full profile before you build on it.
 
-## Browse by need
-
-Focused, always-current collections — each is generated from the dataset and has a live web page too.
-
-<!-- AUTOGEN:collections:start -->
-- **[Free LLM APIs with no credit card](collections/no-credit-card.md)** (54) — start without a payment method · [live page ↗](https://freellmapihub.com/collections/no-credit-card)
-- **[Free LLM APIs with no phone verification](collections/no-phone.md)** (22) — no SMS/phone verification · [live page ↗](https://freellmapihub.com/collections/no-phone)
-- **[Free LLM APIs for commercial use](collections/commercial-use.md)** (26) — safe to ship, not eval-only · [live page ↗](https://freellmapihub.com/collections/commercial-use)
-- **[OpenAI-compatible free LLM APIs](collections/openai-compatible.md)** (32) — drop-in OpenAI SDK swap · [live page ↗](https://freellmapihub.com/collections/openai-compatible)
-- **[Permanently free LLM APIs](collections/always-free.md)** (5) — $0 models, no trial clock · [live page ↗](https://freellmapihub.com/collections/always-free)
-- **[Free multimodal LLM APIs](collections/multimodal.md)** (50) — vision, audio, embeddings · [live page ↗](https://freellmapihub.com/collections/multimodal)
-- **[Free LLM APIs that say they do not train on your prompts](collections/no-training.md)** (18) — says it does not train on your prompts (some only without opt-in) · [live page ↗](https://freellmapihub.com/collections/no-training)
-- **[Free LLM APIs whose free tier renews](collections/renewing-free-tier.md)** (28) — free quotas or credits that reset · [live page ↗](https://freellmapihub.com/collections/renewing-free-tier)
-- **[Free LLM APIs with a free signup credit](collections/free-signup-credit.md)** (32) — one-time signup credits, not renewing allowances · [live page ↗](https://freellmapihub.com/collections/free-signup-credit)
-<!-- AUTOGEN:collections:end -->
-
-Every provider also has its own page with the full details and a copy-ready quickstart — e.g. [Groq](https://freellmapihub.com/p/groq), [Deepgram](https://freellmapihub.com/p/deepgram), [Jina AI](https://freellmapihub.com/p/jina-ai).
+> [!WARNING]
+> Independent, community-maintained list — **not affiliated with, endorsed by, or sponsored by any provider below.** Free-tier terms change without notice. Always confirm against the provider's own docs (linked in every row) before you rely on anything here. Entries marked ⚠️ are sourced from community tracking and not yet independently re-confirmed — treat them as indicative.
 
 ## Contents
 
+- [The best free LLM APIs](#the-best-free-llm-apis) — the top picks by score
+- [Browse by need](#browse-by-need) — collections and guides by constraint
 - [What's covered](#whats-covered) — the categories, by the numbers
-- [Browse by need](#browse-by-need) — curated collections by constraint
-- [The best free LLM APIs](#the-best-free-llm-apis) — our top 10 by score
 - [Notably NOT free](#notably-not-free) — so this list doesn't waste your time
-- [How verification works](#how-verification-works) — the trust engine
+- [How verification works](#how-verification-works) — why you can trust a row, and its limits
 - [How this project is maintained](#how-this-project-is-maintained) — agents under human oversight
-- [Use the data](#use-the-data) — dataset, exports, badge
+- [Use the data](#use-the-data) — dataset, JSON API, badge, widget
 - [Contributing](#contributing) · [Project docs](#project-docs)
 
 ---
 
 ## The best free LLM APIs
 
-Our top 10 by score — computed from the [<!-- FIG:verified -->65<!-- /FIG --> verified providers](data/providers.json) every time the site is built, never hand-ordered and never padded to ten. The three best form the podium. Money adds nothing to the score. Every row links to its full verified profile: free tier, rate limits and the catch are checked against the provider's own docs. The podium and the method are on the [**/best page ↗**](https://freellmapihub.com/best/) and in [how the score works ↗](https://freellmapihub.com/best/methodology/).
+Our top 10 by score — computed from the [<!-- FIG:verified -->62<!-- /FIG --> verified providers](data/providers.json) every time the site is built, never hand-ordered and never padded to ten. The three best form the podium. Money adds nothing to the score. Every row links to its full verified profile: free tier, rate limits and the catch are checked against the provider's own docs. The podium and the method are on the [**/best page ↗**](https://freellmapihub.com/best/) and in [how the score works ↗](https://freellmapihub.com/best/methodology/).
 
 <sub>💳 no card · 📵 no phone · 📱 phone required · 🏢 commercial OK · 🔬 eval only · 🔌 OpenAI-compatible</sub>
 
 <!-- AUTOGEN:best:start -->
 | # | Provider | Score | What's free | The catch | Verified |
 |---|---|---|---|---|---|
-| 1 | **[OpenRouter](https://openrouter.ai/docs/api-reference/limits)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 67.2<br><sub>5 of 6 inputs</sub> | A rotating set of models with a :free suffix, single API across many providers; availability fluctuates | Terms prohibit reselling API access or developing a competing service; per-model terms still apply. Upstream providers may train on inputs/outputs. Separate settings for free and paid models can exclude providers that train; router-level opt-in logging and safety/legal retention exceptions still apply (official terms, privacy and provider-logging docs read 2026-11-14). | ✅ 2026-11-14 |
+| 1 | **[OpenRouter](https://openrouter.ai/docs/api-reference/limits)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 67.2<br><sub>5 of 6 inputs</sub> | A rotating set of models with a :free suffix, single API across many providers; availability fluctuates | Terms prohibit reselling API access or developing a competing service; per-model terms still apply. Upstream providers may train on inputs/outputs. [More ↗](https://freellmapihub.com/p/openrouter) | ✅ 2026-11-14 |
 | 2 | **[Groq](https://console.groq.com/docs/rate-limits)**<br><sub>💳 no card · 📱 phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 64.3<br><sub>5 of 6 inputs</sub> | Open-weight models (GPT-OSS, Qwen) plus Whisper, no credit card required | Limits apply at the organization level, not per API key. Phone verification required at signup | ✅ 2026-11-14 |
-| 3 | **[SambaNova Cloud](https://cloud.sambanova.ai/plans)**<br><sub>🏢 commercial OK · 🔌 OpenAI-compat</sub> | 58.8<br><sub>4 of 6 inputs</sub> | Rate-limited free tier (applies when no payment method is linked) across the models listed in the Free Tier table | Free Tier applies when no payment method is linked to the account; SambaCloud ToS grants a commercial license (no evaluation-only clause). The previously-listed "$5 / 3 months" trial could not be re-confirmed on official pages (2026-07-30). card_required is unconfirmed because SambaNova's own pages disagree (read 2026-10-08): the rate-limits doc (https://docs.sambanova.ai/docs/en/models/rate-limits) says "Free Tier: Applied when there is no payment method linked with your account", while the plans page (https://cloud.sambanova.ai/plans) says "Add a payment method and purchase credits to run your first requests". Settling it needs a real signup, which has not been done. The rate-limits doc (read 2026-10-09) also lists two preview models on the Free Tier at the same 20 RPM / 20 RPD / 200,000 TPD (DeepSeek-V3.2, gemma-4-31B-it), described there as having limited capacity and removable at short notice; they are not in models_free. | ✅ 2026-10-09 |
-| 4 | **[Google Gemini API (AI Studio)](https://ai.google.dev/gemini-api/docs/rate-limits)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 57.5<br><sub>4 of 6 inputs</sub> | Gemini 2.5 Flash, 2.5 Flash-Lite, 2.5 Pro (limited), embeddings, TTS models | Free-tier prompts/outputs may be used by Google to improve its products outside the UK/CH/EEA/EU. Since the 2026-03-23 terms, only Paid Services may serve API clients to end users in the EEA/CH/UK. Gemini 2.5 Pro and 2.5 Flash are deprecated; the pricing page announces automatic routing to Gemini 3.8 Flash and 3.5 Flash-Lite respectively, billed at their rates, from 2026-12-01 | ✅ 2026-11-14 |
+| 3 | **[SambaNova Cloud](https://cloud.sambanova.ai/plans)**<br><sub>🏢 commercial OK · 🔌 OpenAI-compat</sub> | 58.8<br><sub>4 of 6 inputs</sub> | Rate-limited free tier (applies when no payment method is linked) across the models listed in the Free Tier table | Free Tier applies when no payment method is linked to the account; SambaCloud ToS grants a commercial license (no evaluation-only clause). [More ↗](https://freellmapihub.com/p/sambanova) | ✅ 2026-10-09 |
+| 4 | **[Google Gemini API (AI Studio)](https://ai.google.dev/gemini-api/docs/rate-limits)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 57.5<br><sub>4 of 6 inputs</sub> | Gemini 2.5 Flash, 2.5 Flash-Lite, 2.5 Pro (limited), embeddings, TTS models | Free-tier prompts/outputs may be used by Google to improve its products outside the UK/CH/EEA/EU. Since the 2026-03-23 terms, only Paid Services may serve API clients to end users in the EEA/CH/UK. [More ↗](https://freellmapihub.com/p/google-gemini) | ✅ 2026-11-14 |
 | 5 | **[Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/platform/pricing/)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 52.0<br><sub>4 of 6 inputs</sub> | 10,000 Neurons/day, all account plans | Resets daily at 00:00 UTC; overage on a Workers Paid plan bills at $0.011/1,000 Neurons. Some models require a paid billing method: Workers Paid or prepaid AI Gateway credits; these are outside no-card free access | ✅ 2026-11-14 |
-| 6 | **[Z.ai (Zhipu AI / GLM)](https://docs.z.ai/guides/overview/pricing)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 52.0<br><sub>4 of 6 inputs</sub> | GLM-4.5-Flash, GLM-4.7-Flash (text), and GLM-4.6V-Flash (vision) are officially listed as $0 cost (input, cached input, and output) on a permanent basis | Terms of Use prohibit using Z.ai to "develop, train, or enhance any algorithms, models, or technologies that directly or indirectly compete with us" — otherwise general use, including commercial, isn't restricted | ✅ 2026-10-08 |
-| 7 | **[ModelScope (API-Inference)](https://www.modelscope.cn/docs/model-service/API-Inference/intro)**<br><sub>💳 no card · 🔬 eval only · 🔌 OpenAI-compat</sub> | 51.4<br><sub>4 of 6 inputs</sub> | Free API-Inference calls paid with daily 'Magicubes': 200/day for signing in + 50/day after linking an Alibaba Cloud account (do not roll over); calls cost ~0.5 / 1 / 2 Magicubes for lightweight / standard / flagship models | Alibaba's model hub — a different product from Alibaba Model Studio. Requires a ModelScope account bound to an Alibaba Cloud account with real-name (ID) verification — a practical barrier for non-China users. Explicitly non-commercial ("for developers to experience"). No card. | ✅ 2026-10-08 |
-| 8 | **[Cohere](https://docs.cohere.com/docs/rate-limits)**<br><sub>💳 no card · 📵 no phone · 🔬 eval only · 🔌 OpenAI-compat</sub> | 46.1<br><sub>5 of 6 inputs</sub> | Trial (evaluation) API keys covering chat, embed and rerank | Free evaluation key; production use requires upgrading to a production key. Cohere privacy policy says trial inputs and outputs may be used for research and product improvement; no trial-specific retention duration is confirmed | ✅ 2026-11-14 |
+| 6 | **[Z.ai (Zhipu AI / GLM)](https://docs.z.ai/guides/overview/pricing)**<br><sub>💳 no card · 📵 no phone · 🏢 commercial OK · 🔌 OpenAI-compat</sub> | 52.0<br><sub>4 of 6 inputs</sub> | GLM-4.5-Flash, GLM-4.7-Flash (text), and GLM-4.6V-Flash (vision) are officially listed as $0 cost (input, cached input, and output) on a permanent basis | Terms of Use prohibit using Z.ai to "develop, train, or enhance any algorithms, models, or technologies that directly or indirectly compete with us" — otherwise general use, including commercial, isn't restricted | ✅ 2026-11-19 |
+| 7 | **[ModelScope (API-Inference)](https://www.modelscope.cn/docs/model-service/API-Inference/intro)**<br><sub>💳 no card · 🔬 eval only · 🔌 OpenAI-compat</sub> | 51.4<br><sub>4 of 6 inputs</sub> | Free API-Inference calls paid with daily 'Magicubes': 200/day for signing in + 50/day after linking an Alibaba Cloud account (do not roll over); calls cost ~0.5 / 1 / 2 Magicubes for lightweight / standard / flagship models | Alibaba's model hub — a different product from Alibaba Model Studio. Requires a ModelScope account bound to an Alibaba Cloud account with real-name (ID) verification — a practical barrier for non-China users. [More ↗](https://freellmapihub.com/p/modelscope) | ✅ 2026-11-20 |
+| 8 | **[Cohere](https://docs.cohere.com/docs/rate-limits)**<br><sub>💳 no card · 📵 no phone · 🔬 eval only · 🔌 OpenAI-compat</sub> | 46.1<br><sub>5 of 6 inputs</sub> | Trial (evaluation) API keys covering chat, embed and rerank | Free evaluation key; production use requires upgrading to a production key. [More ↗](https://freellmapihub.com/p/cohere) | ✅ 2026-11-14 |
 <!-- AUTOGEN:best:end -->
 
-That's the shortlist. The full dataset — all <!-- FIG:providers -->67<!-- /FIG --> providers, every ongoing tier and one-time credit, filterable and machine-readable — lives in [**data/providers.json**](data/providers.json) and the [interactive explorer ↗](https://freellmapihub.com/).
+That's the shortlist. The full dataset — all <!-- FIG:providers -->62<!-- /FIG --> providers, every ongoing tier and one-time credit, filterable and machine-readable — lives in [**data/providers.json**](data/providers.json) and the [interactive explorer ↗](https://freellmapihub.com/).
+
+## Browse by need
+
+Focused, always-current collections — each is generated from the dataset and has a live web page too.
+
+<!-- AUTOGEN:collections:start -->
+- **[Free LLM APIs with no credit card](collections/no-credit-card.md)** (52) — start without a payment method · [live page ↗](https://freellmapihub.com/collections/no-credit-card)
+- **[Free LLM APIs with no phone verification](collections/no-phone.md)** (21) — no SMS/phone verification · [live page ↗](https://freellmapihub.com/collections/no-phone)
+- **[Free LLM APIs for commercial use](collections/commercial-use.md)** (24) — safe to ship, not eval-only · [live page ↗](https://freellmapihub.com/collections/commercial-use)
+- **[OpenAI-compatible free LLM APIs](collections/openai-compatible.md)** (30) — drop-in OpenAI SDK swap · [live page ↗](https://freellmapihub.com/collections/openai-compatible)
+- **[Permanently free LLM APIs](collections/always-free.md)** (5) — $0 models, no trial clock · [live page ↗](https://freellmapihub.com/collections/always-free)
+- **[Free multimodal LLM APIs](collections/multimodal.md)** (49) — vision, audio, embeddings · [live page ↗](https://freellmapihub.com/collections/multimodal)
+- **[Free LLM APIs that say they do not train on your prompts](collections/no-training.md)** (19) — says it does not train on your prompts (some only without opt-in) · [live page ↗](https://freellmapihub.com/collections/no-training)
+- **[Free LLM APIs whose free tier renews](collections/renewing-free-tier.md)** (26) — free quotas or credits that reset · [live page ↗](https://freellmapihub.com/collections/renewing-free-tier)
+- **[Free LLM APIs with a free signup credit](collections/free-signup-credit.md)** (31) — one-time signup credits, not renewing allowances · [live page ↗](https://freellmapihub.com/collections/free-signup-credit)
+<!-- AUTOGEN:collections:end -->
+
+**Guides:** [no signup?](https://freellmapihub.com/guides/free-llm-api-no-signup) (no phone and no card does **not** mean no account) · [embeddings / RAG](https://freellmapihub.com/guides/free-embeddings-apis) · [OCR and documents](https://freellmapihub.com/guides/free-ocr-document-ai-apis) · [speech](https://freellmapihub.com/guides/free-speech-to-text-apis) · [image generation](https://freellmapihub.com/guides/free-image-generation-apis) · [all guides and collections ↗](https://freellmapihub.com/guides-and-collections/). Video generation is not a tracked modality; image or vision support does not mean video-generation access.
+
+Every provider also has its own page with the full details and a copy-ready quickstart — e.g. [Groq](https://freellmapihub.com/p/groq), [Deepgram](https://freellmapihub.com/p/deepgram), [Jina AI](https://freellmapihub.com/p/jina-ai).
+
+## What's covered
+
+Primarily **free LLM (text) APIs** — plus the adjacent model APIs a builder reaches for next: **image generation, speech (STT/TTS), embeddings, rerank and OCR**. Every category is held to the same verification bar. Breakdown is generated from the data:
+
+<!-- AUTOGEN:coverage:start -->
+| Category | Providers | Examples |
+|---|---|---|
+| **Text / LLM** | 39 | Google Gemini API, Groq, OpenRouter |
+| **Speech (STT / TTS)** | 25 | Google Gemini API, Groq, Cloudflare Workers AI |
+| **Embeddings** | 12 | Google Gemini API, Cloudflare Workers AI, Cohere |
+| **Image generation** | 10 | Cloudflare Workers AI, HuggingFace, OVHcloud AI Endpoints |
+| **Vision** | 9 | Google Gemini API, OpenRouter, Z.ai |
+| **OCR / documents** | 8 | OCR.space, LlamaParse, Nanonets |
+| **Rerank** | 6 | Cohere, Jina AI, Mixedbread |
+<!-- AUTOGEN:coverage:end -->
+
+Filter any category live in the [interactive explorer](https://freellmapihub.com/).
 
 ## Notably NOT free
 
-Worth saying plainly. As of the last verification pass, **OpenAI, Anthropic and xAI do not offer an ongoing free API tier.** Several providers people *assume* are free — **Together AI, DeepInfra, Perplexity's API, Replicate, Featherless AI** — currently require a card or prepayment before any API use, per their own docs. Some have handed out small one-time trial credits at various points, but that's changed repeatedly; check each provider's billing page before assuming anything.
+Worth saying plainly. As checked on 2026-11-20 against their own billing docs, **OpenAI, Anthropic and xAI do not offer an ongoing free API tier**: API use is paid in advance with credits and stops when they run out. Their "Free" or "Tier 0" rows are rate-limit tiers, not free usage, and any recurring API credits are promotional or come with paid plans ([quotes](docs/sources.md#checked-with-what-each-page-says)). Several providers people *assume* are free — **Together AI, DeepInfra, Perplexity's API, Replicate, Featherless AI** — currently require a card or prepayment before any API use, per their own docs. Some have handed out small one-time trial credits at various points, but that's changed repeatedly; check each provider's billing page before assuming anything.
 
 For genuinely free access to strong models, your best bets here are **Gemini** (frontier-class) and the free open-weight models on **Groq, OpenRouter, Cloudflare and Z.ai** (SiliconFlow's free models are on its China platform and need real-name verification).
 
-Retired or removed after re-verification: **Mistral** ([Free mode no longer includes API access](https://docs.mistral.ai/admin/billing-usage/usage-limits); API keys require billing activation and pay-as-you-go, checked 2026-11-14), **GitHub Models** (fully retired by GitHub on 2026-07-30 — playground, catalog and inference API shut down for all customers), **Cerebras** (now listed as a trial credit: the ongoing free tier became a payment-method-gated $5/30-day trial), **Inference.net** (the free tier is gateway/observability only, not free model tokens), and **Hyperbolic** (not included pending a complete inclusion review; the [current public-access check](docs/sources.md#checked-with-what-each-page-says) supersedes the earlier deposit finding).
+Retired or removed after re-verification: **Arli AI** (paid plans only), **Nebius** (no published trial credit) and **Hume** (no published pricing), all checked 2026-11-19/20; **Clarifai** (its documentation domain no longer resolves) and **Ollama Cloud** (no official page states the free terms; its public model catalogue does not mark a free subset), removed 2026-11-20 after being unverified; **Mistral** ([Free mode no longer includes API access](https://docs.mistral.ai/admin/billing-usage/usage-limits); API keys require billing activation and pay-as-you-go, checked 2026-11-14), **GitHub Models** (fully retired by GitHub on 2026-07-30 — playground, catalog and inference API shut down for all customers), **Cerebras** (now listed as a trial credit: the ongoing free tier became a payment-method-gated $5/30-day trial), **Inference.net** (the free tier is gateway/observability only, not free model tokens), and **Hyperbolic** (not included pending a complete inclusion review; the [current public-access check](docs/sources.md#checked-with-what-each-page-says) supersedes the earlier deposit finding).
 
 ## How verification works
 
-Free-tier terms move fast, and most lists go stale silently. This one is built to surface drift instead of hiding it. Full details in **[docs/methodology.md](docs/methodology.md)**; the short version:
+Most "free LLM API" lists are a snapshot someone took once and never touched again. Rate limits get cut, docs URLs move, "free forever" quietly becomes "free for 30 days" — and the list keeps recommending it for another year. This one is a maintained open dataset, built to surface drift instead of hiding it. Full details in **[docs/methodology.md](docs/methodology.md)**; the short version:
 
 1. **Every verified entry carries a `last_verified` date** and a link to the provider's *own* docs. No date + primary source → it ships as ⚠️ unverified, not as fact.
 2. **A local re-verification pass** ([docs/update-playbook.md](docs/update-playbook.md)) re-checks each provider's own docs on a rolling basis — a dead or changed source is an early warning that a provider changed something.
 3. **The freshness badge is computed from the data,** not written by hand: it is graded on the **oldest** verification in the list, straight from [`providers.json`](data/providers.json). Green while every verified entry is at most 60 days old and at least 70% of rows are verified (see the [freshness rules](docs/freshness-sla.md)), amber once any entry is due for re-verification, red once any entry breaches the 90-day SLA. One forgotten row is enough to move it on rebuild. The README badge reads the last committed `badge-freshness.json`; it can age between committed refreshes even though Pages deploys daily.
-4. **The dataset is schema-validated in CI.** A verified entry that's missing its date or source link fails the build — the honesty rule is enforced by machine, not by good intentions.
+4. **The dataset is schema-validated in CI.** A verified entry that's missing its date or source link fails the build — the honesty rule is enforced by machine, not by good intentions. The marked README sections, the badge and the site are generated from the data and checked for drift ([input map](docs/architecture.md)).
 5. **Reporting a stale entry takes under a minute** via a [structured form](../../issues/new?template=inaccuracy.yml) that asks for the provider, what changed and a source link.
 
 What "verified" covers and where its limits are: [docs/methodology.md](docs/methodology.md) · what earns a spot on the list: [docs/inclusion-criteria.md](docs/inclusion-criteria.md).
 
 ## How this project is maintained
 
-The maintainers are [@pacocartones](https://github.com/pacocartones) and [@LeonMAG](https://github.com/LeonMAG). AI agents assist under human oversight with repository checks, human-authored data updates and code. Provider re-verification dossiers are human-review material only; transfer the reviewed edit into a fresh worktree before agent-assisted regeneration, as described in the [playbook](docs/update-playbook.md). Every change still goes through a pull request, a human maintainer reviews it and is responsible for every merge, and every data change carries a link to the provider's own page and the date it was checked. Commit messages carry no AI signature or trailer; this section is where we say it.
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/pacocartones/free-llm-api-hub/badge)](https://scorecard.dev/viewer/?uri=github.com/pacocartones/free-llm-api-hub)
+[![Dataset: JSON](https://img.shields.io/badge/dataset-JSON%20%2B%20schema-blue.svg)](data/providers.json)
+
+The maintainers are [@pacocartones](https://github.com/pacocartones) and [@LeonMAG](https://github.com/LeonMAG). AI agents assist under human oversight with repository checks, human-authored data updates and code. Re-verification is done by a maintainer or, at the owner's request, with AI assistance: official pages are read by isolated read-only fetchers that return verbatim quotes, and the pull request says which method was used ([playbook](docs/update-playbook.md)). Every change still goes through a pull request, a human maintainer reviews it and is responsible for every merge, and every data change carries a link to the provider's own page and the date it was checked. Commit messages carry no AI signature or trailer; this section is where we say it.
 
 ## Use the data
 
@@ -195,7 +167,7 @@ curl -s https://raw.githubusercontent.com/pacocartones/free-llm-api-hub/main/dat
 **Pin a snapshot for reproducible builds.** `main` moves; depend on an immutable tag instead:
 
 ```bash
-curl -s https://raw.githubusercontent.com/pacocartones/free-llm-api-hub/v2.11.0/data/providers.json   # v2.11.0 was the latest on 2026-10-17; see Releases
+curl -s https://raw.githubusercontent.com/pacocartones/free-llm-api-hub/v2.14.0/data/providers.json   # v2.14.0 was the latest on 2026-11-20; see Releases
 ```
 
 Tags track the dataset `version` in [`data/providers.json`](data/providers.json) (see [CHANGELOG.md](CHANGELOG.md)) — pin `vX.Y.Z` and bump deliberately. The [live JSON API](https://freellmapihub.com/api/v1/providers.json) always serves the latest `main`.
@@ -221,6 +193,9 @@ Self-contained (inline styles, no CSS conflicts). All attributes are optional: `
 
 ## Contributing
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Good first issues](https://img.shields.io/badge/contribute-good%20first%20issues-9c4668.svg)](https://github.com/pacocartones/free-llm-api-hub/contribute)
+
 Found an outdated limit, a dead link, or a provider that belongs here? You'll keep this useful for everyone.
 
 - **Your first PR:** [choose a task, coordinate and run its checks](CONTRIBUTING.md#your-first-contribution-step-by-step).
@@ -233,31 +208,12 @@ Full guidelines, including what counts as an acceptable source: **[CONTRIBUTING.
 
 Use AI tools if they help you — we do too. We ask for good judgement: understand and test what you send, and check every fact at its source. See [AI_POLICY.md](AI_POLICY.md).
 
-## 🙋 Contributions wanted right now
+### Where to start
 
-Provider facts need checking, and the docs and site need care too. Three ways to help:
+1. Pick a [*good first issue*](https://github.com/pacocartones/free-llm-api-hub/contribute). Each one names the files and the check. A `good first issue` also labelled `data` is not claimed; for other issues, comment `/take` before starting (`/release` frees it).
+2. Confirm a provider fact from the umbrella issues: [**`phone_required`**](https://github.com/pacocartones/free-llm-api-hub/issues/7) or [**`commercial_ok`**](https://github.com/pacocartones/free-llm-api-hub/issues/8) (read the provider's terms).
 
-1. Pick a [*good first issue*](https://github.com/pacocartones/free-llm-api-hub/contribute). These include provider facts, docs and code; each issue names the files and the check. For a provider fact, including a docs source check, cite the official page and the day you read it (UTC). For code or other docs, follow the issue's evidence and acceptance criteria. A `good first issue` also labelled `data` is not claimed; for other issues, comment `/take` before starting. Ready for a larger task? Follow the [path from good first issue to help wanted](CONTRIBUTING.md#from-good-first-issue-to-help-wanted).
-2. Pick a provider from the umbrella issue [**confirm `phone_required`**](https://github.com/pacocartones/free-llm-api-hub/issues/7).
-3. Do the same for [**confirm `commercial_ok`**](https://github.com/pacocartones/free-llm-api-hub/issues/8), reading the provider's terms.
-
-For a provider fact, use the provider's own docs and a real date; if you cannot confirm it, leave the data unchanged and tell us what you read. `/release` frees an issue you claimed. We read every pull request and reply as soon as we can; see [CONTRIBUTING.md](CONTRIBUTING.md#claiming-an-issue).
-
-**October:** help us verify, in the open, which AI APIs are really free. Contributions are welcome all year; Hacktoberfest 2026 no longer rewards pull requests, so none is promised here. One sourced fact beats ten cosmetic edits; see [CONTRIBUTING.md](CONTRIBUTING.md#hacktoberfest).
-
-## Contributors
-
-Thanks to everyone who has verified an entry, fixed a link, or improved the project:
-
-<!-- AUTOGEN:contributors:start -->
-- [Jhansi Oruganti](https://github.com/JhansiOruganti-43) — data: confirm Novita AI free tier is not commercial-use allowed ([PR #27](https://github.com/pacocartones/free-llm-api-hub/pull/27))
-- [Victoria Odalo](https://github.com/OdaloV) — docs: verify Clarifai commercial_ok status ([PR #112](https://github.com/pacocartones/free-llm-api-hub/pull/112))
-- [MikeGatsby](https://github.com/MikeGatsby) — data: verify Datalab hosted-API commercial-use terms (no explicit statement found) ([PR #117](https://github.com/pacocartones/free-llm-api-hub/pull/117))
-- [bcabreraike-cmyk](https://github.com/bcabreraike-cmyk) — docs: explain paced re-verification batches ([PR #169](https://github.com/pacocartones/free-llm-api-hub/pull/169))
-- [Swarnabha Nandi](https://github.com/Swarnabha753) — fix: show clear button when sort is changed ([PR #183](https://github.com/pacocartones/free-llm-api-hub/pull/183))
-- [Manan Bharti](https://github.com/mananbharti) — test: check serializer ORDER against the provider schema ([PR #201](https://github.com/pacocartones/free-llm-api-hub/pull/201))
-- [Piyush](https://github.com/piyusshhjangid) — data: verify Datalab phone requirement and free-tier rate limit ([PR #198](https://github.com/pacocartones/free-llm-api-hub/pull/198))
-<!-- AUTOGEN:contributors:end -->
+For a provider fact, cite the provider's own page and the day you read it (UTC); if you cannot confirm it, leave the data unchanged and tell us what you read. Ready for more? Follow the [path from good first issue to help wanted](CONTRIBUTING.md#from-good-first-issue-to-help-wanted).
 
 ## Project docs
 

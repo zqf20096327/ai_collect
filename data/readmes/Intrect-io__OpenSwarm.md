@@ -80,6 +80,9 @@ openswarm start                  # Start full daemon (requires config.yaml)
 openswarm run "Fix the bug" -p ~/my-project   # Run a single task
 openswarm exec "Run tests" --local --pipeline # Execute via daemon
 openswarm exec --issue INT-123    # Deploy one Linear issue's pipeline async; await/answer elevate
+openswarm pause [--project <path>] [--now] [--reason "..."]  # Kill switch: stop claiming new work, no restart
+openswarm pause --list           # Show current pauses (global and per repository)
+openswarm unpause [--project <path>]  # Lift a pause (also: openswarm resume --factory / --project <path>)
 openswarm init                   # Interactive setup wizard (provider auth, Linear OAuth, config)
 openswarm provider               # Show/switch the active provider (interactive picker)
 openswarm provider claude        # Switch straight to a provider — a running daemon switches in place
@@ -239,6 +242,12 @@ On Linux, verification runs each command inside bubblewrap and **fails closed
 when it cannot** — running a worker's code unsandboxed to decide whether to
 trust it defeats the point. On macOS it uses the platform sandbox and needs no
 setup.
+
+Worktrees can share repository paths through `openswarm.json`'s
+`sandbox.sharedPaths`. Do not list `.env*`, `*.pem`, `*.key`, or
+`credentials*` paths there. OpenSwarm warns when a shared path matches one of
+these names. To keep a path out of worker worktrees, remove it from
+`sandbox.sharedPaths` and make sure it is not an auto-detected dependency path.
 
 Installing the package is not always enough, and CI is where that bites:
 
@@ -688,6 +697,62 @@ served at `GET /api/usage?since=24h&by=model`.
 
 > **From source / development** (contributors): clone the repo and use the `npm run …` scripts (`npm run dev`, `npm start`, `npm run service:install` for a macOS launchd service, `docker compose up -d`). See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+The daemon serves its dashboard and API on port 3847. Set `OPENSWARM_WEB_PORT` to move it. The
+daemon, its duplicate-instance check, and every CLI command that talks to it (`status`, `stop`,
+`board`, `threads`, `dash`, `exec`, `provider`) read the same variable.
+
+### Standalone bundle
+
+A standalone bundle is OpenSwarm with its own Node.js runtime. It runs on a machine with no
+Node.js, npm or Docker. Each bundle targets one platform. Bundles exist for `linux-x64` and
+`darwin-arm64`.
+
+| Path | Contents |
+|------|----------|
+| `bin/openswarm` | The launcher. It runs only the bundled Node.js, never a `node` found on `PATH`. |
+| `node/` | The official Node.js 22 runtime, checked against a pinned SHA-256. |
+| `app/` | The npm package and its production dependencies, with native modules built for that runtime. |
+| `VERSION`, `COMMIT`, `BUILD-INFO.json` | What the bundle was built from. |
+
+To build one for the platform you are on, from a checkout:
+
+```bash
+bash scripts/build-standalone.sh             # dist-standalone/openswarm-<version>-<os>-<arch>/
+bash scripts/build-standalone.sh --tarball   # also a .tar.gz and its .sha256
+```
+
+To check a bundle, use `scripts/smoke-standalone.sh <bundle-dir>`. It checks three things:
+
+1. The launcher prints the version while a decoy `node` sits first on `PATH`.
+2. `better-sqlite3` and `@lancedb/lancedb` load in the bundled runtime.
+3. A daemon started from the bundle answers `/api/health` with that version.
+
+The check isolates the daemon from the operator's setup:
+
+- an empty environment;
+- a temporary `HOME` and working directory;
+- a generated config with no tracker, chat or autonomous section;
+- telemetry off;
+- a free port that is not 3847.
+
+The [Standalone bundles](.github/workflows/standalone.yml) workflow builds and checks both
+platforms on CI. It keeps the tarballs as workflow artifacts and publishes nothing.
+
+To install a bundle on the current machine, run `scripts/deploy-standalone.sh`:
+
+- It builds the bundle, installs it under
+  `~/.local/share/openswarm-standalone/releases/<version>-<commit>`, and points the `current`
+  symlink at it in one atomic step.
+- `OPENSWARM_STANDALONE_HOME` changes the install root.
+- It keeps the three newest releases.
+- It leaves the existing `openswarm` on `PATH` and any running daemon alone.
+
+Inside a bundle, the npm self-update is off. To update, install a newer bundle.
+
+```bash
+~/.local/share/openswarm-standalone/current/bin/openswarm --version
+```
+
 ### Run with Docker
 
 The repository ships a production image for the headless daemon (web dashboard on `:3847`, `openswarm` CLI on `PATH`). Published images live at `ghcr.io/unohee/openswarm` (tagged per release); building locally works the same way:
@@ -727,6 +792,8 @@ same `OPENSWARM_IMAGE` image ID; keep the prior immutable image tag for
 rollback. Do not rely on a pre-existing mutable `openswarm:latest` image.
 
 Without `OPENSWARM_WEB_TOKEN` the dashboard binds only inside the container — an unauthenticated all-interfaces bind is refused by design — so the published port answers nothing while the daemon itself keeps running. With the token set, browser/API access from the host sends it as the `X-OpenSwarm-Token` header (`/api/health` stays token-less).
+
+**Web terminal (opt-in).** `OPENSWARM_WEB_TERMINAL=1` adds a `/terminal` page: a `bash -l` shell inside the daemon's container (same uid, cwd `OPENSWARM_WORKSPACE_ROOT`, default `/work`). Unset, neither the page nor its WebSocket exists. It also stays off, with one log line saying why, when the daemon runs as root (override: `OPENSWARM_WEB_TERMINAL_ALLOW_ROOT=1`) or outside a container (detected by `/.dockerenv`, `/run/.containerenv` or the image's `OPENSWARM_CONTAINER=1`; override: `OPENSWARM_WEB_TERMINAL_ALLOW_HOST=1`, which makes it a host shell that can read `~/.ssh` and the daemon token file). Every upgrade needs the daemon web token, from every address: loopback and trusted Tailscale peers get no shell without it, and a browser upgrade must also carry a same-host `Origin`. The browser sends the token as a `Sec-WebSocket-Protocol` entry, never in the URL; the page asks for it when none is stored. At most 4 sessions, each closed after 15 minutes without input; output pauses the shell while more than 1 MiB is unsent; closing a session kills the shell's whole process group; starts and stops are logged with the peer address. **Terminal access is access to the container's environment, including every token the daemon holds** — enable it only where the web gate already limits access to the operator.
 
 The compose file wires the persistent and local-data mounts that matter:
 

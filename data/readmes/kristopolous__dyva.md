@@ -13,6 +13,8 @@
 https://github.com/user-attachments/assets/9417c9fc-2e13-4844-9b17-5fc4cdbefcee
 
 
+[Discord invite](https://discord.gg/tw3Fsq4mqb)
+
 **Dyva** is a dynamic proxy that routes to 
 [Ollama](https://ollama.com/), [vLLM](https://github.com/vllm-project/vllm), [LM Studio](https://lmstudio.ai/), [LocalAI](https://localai.io/), [SGLang](https://github.com/sgl-project/sglang), [KTransformers](https://github.com/kvcache-ai/ktransformers), [Axon](https://github.com/HaseebKhalid1507/axon), [ExLlamaV3](https://github.com/turboderp-org/exllamav3), [oMLX](https://github.com/jundot/omlx), [MLX](https://github.com/ml-explore/mlx), [llama.cpp](https://github.com/ggml-org/llama.cpp), [ds4 (DwarfStar)](https://github.com/antirez/ds4), [Colibrì](https://github.com/JustVugg/colibri), [Strata](https://github.com/Niko1221/Strata), [Fooocus](https://github.com/lllyasviel/Fooocus), [ComfyUI](https://comfy.org), [A1111 (stable-diffusion-webui)](https://github.com/AUTOMATIC1111/stable-diffusion-webui), [FishAudio](https://github.com/fishaudio), [Chatterbox](https://github.com/resemble-ai/chatterbox), and [Gradio](https://gradio.app/) hosts from [Shodan](https://www.shodan.io/), [ZoomEye](https://www.zoomeye.org/), [Censys](https://search.censys.io/), [Hunter.how](https://hunter.how/) and [FOFA](https://fofa.info/) with graceful failover, context-window scaling and compression, and honeypot detection. 
 
@@ -43,6 +45,9 @@ Memory footprint is under 200MB. Has both light and dark mode. Out of whim and m
 </div>
 
 ## Querying for models
+<a href="https://github.com/user-attachments/assets/d3cd9d65-b373-494d-a58d-25ed3de848bb">
+  <img  align="left"  src="https://github.com/user-attachments/assets/d3cd9d65-b373-494d-a58d-25ed3de848bb"  alt="Thumbnail" width="25%">
+</a>
 The varieties of models and heterogeneity of installations are unified through a model query syntax which allows any tool to leverage any subslice of the pool by specifying the query *as* the model to use. 
 
 This is designed so you can slice and dice the pool in any application.

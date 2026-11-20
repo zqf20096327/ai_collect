@@ -22,6 +22,8 @@
 
 The optional [standalone Rust camera pipeline](native/pipeline/README.md) supports camera capture, TensorRT inference, hazard analysis, multilingual overlays, and PostgreSQL-backed event delivery. The guide covers building, running, and validating the pipeline.
 
+The [isolated Rust release preview](deploy/rust-runtime/README.md) packages the camera pipeline and the Rust HTTP API for validation with separate service units and data stores.
+
 <div align="center">
    <a href="https://www.python.org/downloads/">
       <img src="https://img.shields.io/badge/python-3.15-blue?logo=python" alt="Python 3.15">
@@ -160,6 +162,9 @@ flowchart LR
 
 - `main.py`: supervises configured streams and worker processes.
 - `src/`: production runtime modules.
+- `native/pipeline/` and `native/api/`: standalone Rust camera and API executables.
+- `native/inference/`, `native/postprocess-core/` and `native/stream-contract/`: shared inference, hazard analysis and metadata code.
+- `bindings/python/`: compatibility wheels for the Python applications.
 - `examples/bff/`: Web session, CSRF, media capability, and API gateway.
 - `examples/db_management/`: users, groups, sites, stream configuration API.
 - `examples/local_notification_server/`: FCM token and site notification API.
@@ -204,7 +209,7 @@ The stream processor can use a Rust/PyO3 backend for centroid tracking and
 PPE/person-to-machine proximity checks. The stream Docker image includes it;
 host installations can build the optional wheel. Set `POSTPROCESS_BACKEND` to
 `auto` (default), `python`, or `rust`, then restart the stream processor.
-See [build instructions, scope and measured results](native/postprocess/README.md).
+See [build instructions, scope and measured results](bindings/python/postprocess/README.md).
 
 The shared YOLO worker also supports a Rust TensorRT backend for verified,
 compatible INT8 engines. `YOLO_WORKER_BACKEND=auto|rust|python` selects inference
@@ -217,7 +222,7 @@ snapshot. Geometry libraries load when an area check needs them. See the
 
 The next increment adds reusable inference workspaces, cached safety-area
 geometry, native MST selection and overlay blending, plus an opt-in Rust/FFmpeg
-capture backend. See [pipeline changes and validation](native/postprocess/README.md).
+capture backend. See [pipeline changes and validation](bindings/python/postprocess/README.md).
 
 GPU admission now shares NVENC sessions and optional inference/memory budgets
 between participating processes. An optional two-slot pinned-memory pipeline

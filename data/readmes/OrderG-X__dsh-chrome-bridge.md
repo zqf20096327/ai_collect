@@ -110,6 +110,8 @@ cb tabs
 
 Until step 2 is done the `browser_*` tools fail **loudly with exactly these steps** — never silently.
 
+**To let DSH upload files into web pages**: in `chrome://extensions` open DSH Bridge's **Details** and turn on **Allow access to file URLs** (Chrome keeps it off by default, and uploads fail while it is off; the extension popup also shows a "File uploads · Open" row). With it on, when DSH clicks a page's upload button the system file picker stays closed and DSH hands the file over itself.
+
 ### 🧩 The twelve native tools
 
 | Tool | What it does |
@@ -131,9 +133,9 @@ Until step 2 is done the `browser_*` tools fail **loudly with exactly these step
 > `dsh plugin add` from the CLI refuses the app-managed profile — use the sidebar there.
 > Updating: on DSH 0.2.2 or later, open the bundle on the Plugins page and click "Update to …"; on older DSH, uninstall and install again. A new version can be installed about a day after release, because the pnpm that DSH uses skips brand-new versions by default; to get it right away, use the release tarball (a tarball install can't use Update later).
 
-### 🌍 Tool descriptions in English or Russian
+### 🌍 Tool text in English or Russian
 
-What the model reads for the `browser_*` tools — descriptions, parameter docs, and the errors for bad arguments or a missing connection — is Chinese by default. Point `config.locale` at `en` or `ru` and DSH hands the model English / Russian text instead; tool names, arguments and results stay exactly the same:
+What the model reads for the `browser_*` tools — descriptions, parameter docs, the errors for bad arguments or a missing connection, the result messages the tools write themselves (tabs, snapshots, waits, clicks, downloads, DevTools…; page text and captured DevTools data stay as they are), and the install steps shown when Chrome isn't connected — is Chinese by default. Point `config.locale` at `en` or `ru` and DSH hands the model English / Russian text instead; tool names and arguments stay exactly the same:
 
 ```yaml
 # the profile's patch layer, e.g. ~/.dsh/profiles/<profile>/cordis.patch.yml
@@ -142,7 +144,7 @@ What the model reads for the `browser_*` tools — descriptions, parameter docs,
     locale: en      # en | ru | zh (default)
 ```
 
-Restart DSH after changing it — the descriptions are part of the context a session gets when it starts. A translation that misses a key, or drops a `%placeholder` the Chinese text needs, falls back to Chinese for that one string, so nothing ever comes out half-empty or with a missing detail. Not translated yet: tool results, the install steps shown when Chrome isn't connected, errors raised deeper inside some actions (snapshot refs, navigation, drag, downloads, DevTools), the settings card, the popup and the native host messages — that is a separate change. The model handles those Chinese messages fine; they just aren't in your language yet.
+Restart DSH after changing it — the descriptions are part of the context a session gets when it starts. A translation that misses a key, or drops a `%placeholder` the Chinese text needs, falls back to Chinese for that one string, so nothing ever comes out half-empty or with a missing detail. Still Chinese: the state words inside snapshot lines (checked, expanded, disabled, read-only…, the option count and the cross-site frame note); the few texts the browser extension assembles itself (some of its own error messages and the truncation notes on very long page text) and the native host's own messages (for example when the extension doesn't answer in time) — those live in the extension / host and get their own change; the reason the host writes to `launch-error.txt` when it can't start; and the trace logs that only show up in DSH's log for developers.
 
 ### 👀 What you see while it works
 

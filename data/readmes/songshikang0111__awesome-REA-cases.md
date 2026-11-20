@@ -8,9 +8,9 @@
 
 A curated collection of **AI-assisted reverse-engineering projects, experiments, and ideas** for device interoperability, behavior-preserving app rebuilding and game preservation—including failed attempts and author corrections.
 
-# 2510 cases & projects
+# 2569 cases & projects
 
-**Latest case update:** November 20, 2026, 04:13 · **Last maintained:** November 20, 2026, 04:13 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
+**Latest case update:** November 21, 2026, 04:18 · **Last maintained:** November 21, 2026, 04:18 · Beijing time (UTC+8). Counts as of this maintenance; source dates and the continuous evidence cutoff are separate.
 
 Updates **6× daily** · [Full index](INDEX.en.md) · [Browse categories](#browse-by-category)
 
@@ -22,18 +22,18 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 ## Recent picks
 
-**10 worth reading**: rebuild old binaries, query a circuit, make devices usable and slow an endless feed. Concrete work and candid limits take priority over launch promises; the full index also includes ideas and failed attempts. Dates identify sources or author updates, not collection dates.
+**10 worth reading**: rebuild old binaries, compare Windows behavior, check arcade timing and make devices usable. Specific methods and candid test limits matter more than launch claims; the full index also preserves early ideas and failed attempts. Dates identify sources or author updates, not collection dates.
 
 1. **[borland-reborn: recover a 1991 compiler](cases/en/borland-reborn-bcc20-exhume-byte-matching.md)** · `2026-11-14` report and pinned docs — Exhume's Claude Code skills support **reportedly byte-identical BCC.EXE/CPP.EXE rebuilds**. A separate modding build has 1,836 compile comparisons and 83% coverage, not every path or uniquely recovered original source. Not rebuilt here. `Unverified here`
 2. **[Proteus: ask Claude about an existing circuit](cases/en/arpit-proteus-pdsprj-mcp-project-research.md)** · `2026-11-17` author thread — Arpit researches **undocumented .pdsprj files for an MCP bridge**, reporting schematic queries, connection tracing, value edits and bills of materials. Placement and wiring remain planned; headless simulation returns no waveforms. Thread read, code and circuits not tested here. `In progress`
 3. **[Darmoshark TOP75: keyboard control on Mac](cases/en/darmoshark-top75-macos-ai-protocol-report.md)** · `2026-11-18` author reply and pinned docs — **AI-assisted Windows-utility research plus IOKit checks** support RGB, remapping, macros and lights-off scheduling over Bluetooth. Project docs record readback, rollback and failed writes; display uploads use USB and on-device GIF playback remains unvalidated. Not tested here. `Unverified here`
 4. **[Horizon: Minecraft Java behavior, rebuilt in Rust](cases/en/horizon-minecraft-java-rust-ai-differential-reimplementation.md)** · `2026-11-16` report and pinned docs — **AI-assisted reconstruction with 281 reported differential harnesses**, existing saves and vanilla multiplayer. Public docs and a Codex-credited commit were read, not the full test results; performance claims are hardware-specific. Own game required; not built here. `In progress`
 5. **[Underworld Exhumed: preserve two DOS worlds](cases/en/underworld-exhumed-ultima-claude-skills-byte-matching.md)** · `2026-11-20` introduction; `2026-11-17` pinned docs — Exhume's Claude Code skills support **reported byte-identical UW.EXE/UW2.EXE rebuilds**, plus native/web ports checked against 17/13 DOS recordings. Project reports, not checks rerun here; native ports need your own game data. `Unverified here`
-6. **[Lemmings for Windows 95: match functions, not headlines](cases/en/lemmings-win95-human-led-ai-reconstruction-report.md)** · `2026-11-12` report; `2026-11-09` pinned docs — Human-led REA/Claude/Codex work reports **696/696 functions matched across eight modules**. Whole EXE/DLL files still differ; portable builds and original-compiler matching are separate. Own assets required; not built here. `In progress`
-7. **[DecBench: what does “exact” decompilation measure?](cases/en/decbench-llm-decompiler-exactness-benchmark.md)** · `2026-11-19` report; `2026-11-11` pinned docs — Compare **control flow, types and normalized recompilation** separately. Union means perfect on any one metric, not all three or a byte-identical executable. Fixups matter; the live leaderboard and benchmark were not verified here. `Analysis / test`
-8. **[X6200: update the radio without swapping back to stock](cases/en/x6200-claude-base-firmware-upgrade-reimplementation.md)** · `2026-11-16` report and PR merge — **Claude-assisted reconstruction of Xiegu's updater** reaches OpenX6X00. The project CI passed; the author reports upgrades and rollback on one radio. No flash readback, recovery not hardware-tested, and no reproduction here. `Unverified here`
+6. **[rust-anything: rebuild Prettier without guessing its output](cases/en/rust-anything-claude-behavior-capture-rust-migration.md)** · `2026-11-20` report and pinned docs — Agents write Rust against recorded behavior. The project reports **17,224 byte-identical runs, only 15,837 fully in Rust**; others fall back to Prettier. Roughly 19× CLI speedup includes process startup, versus 4.2× warmed in-process on the stated M4 test. Not rerun here. `Unverified here`
+7. **[CPS-2 Recomp: arcade games, with timing checked](cases/en/cps2recomp-claude-native-arcade-recompilation.md)** · `2026-11-20` report and pinned docs — **Claude-credited work on native C++ ports** adds board waits and DMA timing alongside training and rollback play. SFA2 reportedly matches reference work RAM on **5,634/5,671 frames**, with an eleven-frame offset; another game diverges. The reference is a model, not hardware, and the harness is not public. Own ROMs required; not run here. `In progress`
+8. **[LiberNT: study Windows behavior, not copy its code](cases/en/libernt-ai-windows11-blackbox-compatibility.md)** · `2026-11-21` report; `2026-11-19` pinned docs — This ReactOS fork describes **AI-assisted documentation/behavior comparisons and Windows 11 black-box tests** for application compatibility. Docs require human review; that is not proof every test passed. Debug pre-releases, not a daily-use replacement; performance promotion unchecked here. `In progress`
 9. **[NotTheInstagram: make endless scrolling less effortless](cases/en/nottheinstagram-rea-codex-flex-friction-hooks.md)** · `2026-11-15` author article and pinned code — **FLEX gives Codex a map; REA connects Hopper** to find hooks adding three-post waits and a two-minute Reels pause. Signature checks are visible in code; individual device checks remain incomplete. Instagram 455.0.0 only reported tested; modified-client risks remain. `Unverified here`
-10. **[rea-video: a convincing explanation still did not explain the trick](cases/en/pamela-rea-video-codex-food-video-analysis-failure.md)** · `2026-11-17` author report — Pamela asks **Codex to decode seamless food-video edits**, then requests diagrams and more concrete images. Several rounds leave the filming method unresolved; she says the model also admits failure. One reported attempt, not a general verdict; video and session unchecked here. `Failed attempt`
+10. **[Kirby to PPSSPP: reuse GameShare from homebrew](cases/en/xitrix-kirby-rea-gameshare-ppsspp-homebrew.md)** · `2026-11-20` author thread — XITRIX says **REA revealed Kirby's system-SDK startup calls**, reused to share a second PPSSPP instance with another Switch. A concrete interoperability report, not full Kirby source recovery; API code, demo and consoles not tested here. `Unverified here`
 
 ## Classic cases
 
@@ -50,10 +50,10 @@ Covers [REA](https://github.com/morluto/rea) and other AI-assisted work. REA con
 
 | Category | Entries |
 | :--- | ---: |
-| [Games & preservation](categories/en/games.md) | **489** |
-| [Hardware & interoperability](categories/en/hardware.md) | **665** |
-| [Applications & clients](categories/en/apps.md) | **1051** |
-| [Algorithms & feature recovery](categories/en/algorithms.md) | **305** |
+| [Games & preservation](categories/en/games.md) | **502** |
+| [Hardware & interoperability](categories/en/hardware.md) | **674** |
+| [Applications & clients](categories/en/apps.md) | **1070** |
+| [Algorithms & feature recovery](categories/en/algorithms.md) | **323** |
 
 [**View all cases →**](INDEX.en.md) · [Contribute (中文)](CONTRIBUTING.md) · [Maintenance (中文)](MAINTENANCE.md)
 

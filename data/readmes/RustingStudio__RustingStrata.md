@@ -6,14 +6,39 @@ compiled at run time with NVRTC through cudarc, and the same kernels also run on
 build step, no ggml. Experts that do not fit in VRAM run on the CPU at the same time as the GPU work, and the expert
 placement adapts to the routing it sees.
 
-Version 1.2.5. Docs: [usage and server API](docs/USAGE.md), [hosting for other people](docs/HOSTING.md),
+Version 1.2.6. Docs: [usage and server API](docs/USAGE.md), [hosting for other people](docs/HOSTING.md),
 [supported GPUs](docs/SUPPORTED_GPUS.md), [AMD notes](docs/AMD.md), [LoRA](docs/LORA.md),
 [all benchmarks](docs/BENCHMARKS.md), [benchmark history](docs/README.md).
 
 ## Numbers
 
-Reference machine: RTX 3060 12 GB, Ryzen 5 7600X, 32 GB RAM. Model: `Qwen3.6-35B-A3B-UD-Q2_K_XL.gguf` (11.7 GiB,
-does not fit in VRAM). llama.cpp is the 2026-10-28 build 11876, tuned for the same file (`-ncmoe 12 -ub 2048
+Reference machine: RTX 3060 12 GB, Ryzen 5 7600X, 32 GB RAM.
+
+### Qwen3.6-35B-A3B UD-Q5_K_M
+
+`Qwen3.6-35B-A3B-UD-Q5_K_M.gguf` (25.2 GiB, does not fit in VRAM: a third of the experts are on the GPU). llama.cpp
+is build 12191, tuned for the same file (`-cmoe --moe-cache-mib 7500 -ngl 99 -fa on -t 6 -ub 2048 -b 2048`, the best
+decode of a 9-config sweep over `-ncmoe`, `--moe-cache-mib` and `--moe-cache-cpu-share`).
+
+| | CUDA | llama.cpp |
+|---|---|---|
+| Decode after 4K prompt | **80.5 tok/s** (75.1-82.0) | 64.4 (58.8-66.0) |
+| Prefill, 4K prompt | **1530 tok/s** (1451-1596) | 1118-1122 with `-ncmoe 27`, its best prefill flags (2 runs, one load); 793 (367-1063) with the decode flags above |
+
+Measured at commit 5a27ed1 (1.2.5) with `rustingstrata serve --gpu --ctx 8192 --mtp 0` and `llama-server`: the same
+4241-token prompt file and the same script for both, greedy, thinking off, 128 tokens, no drafts in either engine.
+Two loads per engine in alternating order; in each load a warm-up and the first 4K request are thrown away. Decode is
+the mean of runs 4-8 of each load (10 runs, range in brackets). Both engines climb for the first runs after a load;
+over all 16 runs it is 78.8 (63.6-82.0) against 60.3 (31.3-66.0). Prefill is 4 new prompts per load (8 runs).
+
+Not equal: the replies were 128 tokens (RustingStrata) and 125 (llama.cpp, ended by itself). About 20 GiB of RAM was
+free for the 25.2 GiB file, so neither engine had the whole file in the page cache. Perplexity against llama.cpp was
+not run on this file; for UD-Q3_K_M it is in
+[docs/BENCHMARKS.md](docs/BENCHMARKS.md#quality-vs-llamacpp-qwen36-35b-a3b-ud-q3_k_m).
+
+### Qwen3.6-35B-A3B UD-Q2_K_XL
+
+`Qwen3.6-35B-A3B-UD-Q2_K_XL.gguf` (11.7 GiB, does not fit in VRAM). llama.cpp is the 2026-10-28 build 11876, tuned for the same file (`-ncmoe 12 -ub 2048
 -b 2048`, flash attention; with its default ubatch its 4K prefill is ~1550).
 
 | | CUDA | Vulkan | llama.cpp |
@@ -51,7 +76,13 @@ Other models, greedy "The capital of France is" with `--gpu` (CUDA / Vulkan, sec
 | Qwen3.8-Flash-Next GSQ-RCO IQ2_XS (64 GB in two files, pass the `-00001-of-00002` one; 18% of experts fit in VRAM, and with 32 GB RAM the rest are partly read from disk) | Q2_0, IQ1_M to IQ4_XS, Q6_K, Q8_0, F16, BF16 | 22 / 20 tok/s |
 
 Supported GGUF types: F32, F16, BF16, Q8_0, Q4_0, Q4_1, Q5_0, Q5_1, Q2_0, TQ1_0, TQ2_0, Q2_K-Q6_K, IQ1_S, IQ1_M,
-IQ2_XXS, IQ2_XS, IQ2_S, IQ3_XXS, IQ3_S, IQ4_XS, IQ4_NL.
+IQ2_XXS, IQ2_XS, IQ2_S, IQ3_XXS, IQ3_S, IQ4_XS, IQ4_NL, and the trellis types TQ2_T, TQK6 and TQK7 of agentionai's
+llama.cpp fork.
+
+The Gyro files of agentionai load too. Their names say TQ1_0 and TQ2_0, but the experts are stored in the trellis
+types and read inputs rotated by a Hadamard transform (`prism.hadamard.*`). `Gyro-S-TQ1_0` (TQK6, TQK7) is tested on
+CPU, CUDA and Vulkan. `Gyro-M-TQ2_0` (TQ2_T) has the same layout and only supported types, but was not run here.
+Gyro-L (TQP5 to TQP7, PTQ1_0) is not supported yet.
 
 ## Build
 
@@ -166,8 +197,9 @@ rustingstrata serve    --model $M --addr 127.0.0.1:8080 [--api-key K]
 The GPU is CUDA when an NVIDIA card and driver are present and Vulkan otherwise (AMD, Intel); `--backend vulkan` or
 `--backend cuda` picks one, `--device 0,1` spreads the expert cache over several cards, and `STRATA_DS_GPU=0` runs
 everything on the CPU. Experts that are not in VRAM are split between the CPU (straight from the mapped file) and the
-GPU (uploaded for the token), and the split follows the measured time of each side. `--fixed-experts` (or
-`STRATA_DS_CPU_SHARE=0`) sends every expert to the GPU, which is slower here but gives the same text on every run.
+GPU (during decoding, uploaded into the VRAM cache in place of the least recently used expert), and the split
+follows the measured time of each side. `--fixed-experts` (or `STRATA_DS_CPU_SHARE=0`) sends every expert to the GPU,
+which is slower here but gives the same text on every run.
 The prompt runs layer by layer in chunks of `STRATA_DS_CHUNK` tokens (default 1024), so a routed expert is read once
 for all the tokens of a chunk that picked it. When the files fit in RAM with 4 GiB to spare they are read into the
 page cache in the background from the start (`STRATA_PRELOAD=0` turns that off).
@@ -181,7 +213,11 @@ warm page cache:
 | Vulkan (same card) | 1.3 / 8.5 / 13.5 | 2.0 / 3.6 / 3.7 |
 | CPU only (`STRATA_DS_GPU=0`) | 2.5 / 3.0 / 4.1 | 2.4 / 2.2 / 1.7 |
 
-A token reads about 2.6 GB of expert weights and the model is larger than this box's RAM, so the numbers move with
+A 20,000-token prompt of text that does not repeat (this repository's documentation followed by Rust source,
+`bench --prompt-file F --pp 20000 --tg 64 --reps 1`, one run each) prefilled at 11.6 tok/s on CUDA and 10.6 tok/s on
+Vulkan, and the 64 tokens after it decoded at 3.3 and 1.9 tok/s.
+
+A token reads about 1.3 GB of expert weights and the model is larger than this box's RAM, so the numbers move with
 the page cache; the expert cache policy knobs (`STRATA_DS_LFU`, `STRATA_DS_NOEVICT`) changed nothing measurable. A
 CPU-only build of the llama.cpp pull request that adds the model (#32517) decoded at 0.28 tok/s on the same box (one
 run, not side by side). Not measured: an AMD or Intel card (the Vulkan path was run on the RTX 3060 only), more than

@@ -2,13 +2,7 @@
 > If you need an enterprise-level database MCP server with built-in guardrails like approval flow, access control, data masking, and audit logging beyond what DBHub offers, check out [Bytebase](https://www.bytebase.com/).
 
 <p align="center">
- <a href="https://www.star-history.com/bytebase/dbhub">
-  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=bytebase/dbhub&type=trending&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=bytebase/dbhub&type=trending" />
-   <img alt="GitHub Trending Repository of the Day" src="https://api.star-history.com/badge?repo=bytebase/dbhub&type=trending" />
-  </picture>
- </a>
+ <a href="https://www.star-history.com/bytebase/dbhub"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/badge?repo=bytebase/dbhub&type=trending&theme=dark" /><source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/badge?repo=bytebase/dbhub&type=trending" /><img alt="GitHub Trending Repository of the Day" src="https://api.star-history.com/badge?repo=bytebase/dbhub&type=trending" /></picture></a>&emsp;&emsp;<a href="https://code.claude.com/docs/en/mcp#example-query-your-postgresql-database"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/images/featured-by-claude-code-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="docs/images/featured-by-claude-code-light.svg" /><img alt="Featured in the official Claude Code docs — read the DBHub example" src="docs/images/featured-by-claude-code-light.svg" width="280" height="64" /></picture></a>
 </p>
 
 <p align="center">
@@ -50,7 +44,9 @@ DBHub is a minimal MCP server: token-efficient, zero-dependency, and just two to
 - **Guardrails**: Read-only mode, row limiting, and query timeout to prevent runaway operations
 - **Secure Access**: SSH tunneling and SSL/TLS encryption
 
-> DBHub is the official example in the [Claude Code docs](https://code.claude.com/docs/en/mcp#example-query-your-postgresql-database) for connecting to PostgreSQL via MCP.
+<p align="center">
+ <img src="docs/images/community-logo-wall.png" alt="Our community includes developers from 24 companies and 10 universities, including Microsoft, NVIDIA, Amazon, Google, Oxford, Cornell, Duke, Tsinghua, Peking, KAIST, UBC, and Waseda." width="100%" />
+</p>
 
 ## Token Efficiency
 

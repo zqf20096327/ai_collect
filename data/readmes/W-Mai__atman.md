@@ -49,9 +49,9 @@ atman upgrade       # update with the official installer
 atman               # launch the TUI
 ```
 
-On Windows PowerShell, run `irm https://atman.run/install.ps1 | iex`; the installer places `atman.exe` in the user executable directory. The matching `atman-daemon` Windows artifact is published separately for daemon/Web use. Windows uses `%APPDATA%\atman\config` for configuration and `%LOCALAPPDATA%\atman` for session data.
+On Windows PowerShell, run `irm https://atman.run/install.ps1 | iex`. The installer places `atman.exe` in `$env:CARGO_HOME\bin` when configured, or `$HOME\.cargo\bin` by default. The matching `atman-daemon` Windows artifact is published separately for daemon/Web use. Windows uses `%APPDATA%\atman\config` for configuration and `%LOCALAPPDATA%\atman` for session data.
 
-`atman upgrade` downloads the official installer over HTTPS before executing it. On macOS and Linux it installs to Cargo home, usually `~/.cargo/bin`; it does not upgrade a Homebrew installation. Use `brew upgrade atman-cli` for Homebrew, or `cargo install atman-cli --locked` for a Cargo-managed installation.
+`atman upgrade` downloads the official installer over HTTPS and updates the executable in Cargo home. On Windows, running Atman processes continue with their original executable and new launches use the installed version. Use `brew upgrade atman-cli` for Homebrew, or `cargo install atman-cli --locked` for a Cargo-managed installation.
 
 Set an API key via env var (`ANTHROPIC_API_KEY` / `OPENAI_API_KEY`) or inline in `~/.config/atman/config.toml`:
 
@@ -88,13 +88,25 @@ The main conversation and floating windows use the same Flow view. New floating 
 
 The input floats independently of document width, with a square outline, terminal-default background, a 96-column width that adapts to the viewport, and 4 editable rows by default. Its position and size use spring motion when switching focus or resizing; dragging the focused window carries the input synchronously. A fixed-width meter at the lower left selects reasoning intensity directly, with hover comparisons and a **⋯** menu for all supported choices, including default, auto, and none. The highest supported intensity displays a rainbow using the current theme's palette, including during hover previews. The model label opens a compact selector. Permissions occupy the upper-right border and open inside the existing text rows; drafts remain intact, saves use host acknowledgements, and Esc returns to editing. Escalation appears only in Eager mode without reserving a gap in other modes. Model, reasoning, and permission controls use the selected view's settings, along with its draft, quotes, attachments, and submission acknowledgements. The input itself cannot be dragged.
 
+Session composer choices inherit global defaults independently. An explicit change to a model, reasoning choice, or permission setting pins that field to the Session and updates the global default. Open or return to a Session to load the latest defaults for its inherited fields.
+
 Click **↓ N new** in the input border or press `Ctrl+End` to animate to the latest output and resume following it. Scrolling or selecting transcript text interrupts the transition. Main and floating conversations retain separate reading positions.
 
 On TUI exit, a themed summary shows the final session's identity, invocation usage, work metrics, Goal, Plan, and `atman --continue <uuid>` command after restoring the terminal. Its layout adapts to terminal width and preserves aligned columns and padded identity and resume blocks. Unused automatic startup sessions are discarded without a summary or resume command.
 
 The TUI retains direct access to its runtime and exposes authenticated loopback RPC for other clients. Sessions transfer individually between TUI and daemon hosts at safe execution boundaries; other sessions keep running. Exiting the UI leaves accepted work in its original background worker, then returns settled sessions to an available daemon. [Shared hosts and ownership transfer](docs/storage.md#shared-native-and-rpc-hosts) describes discovery, credentials and crash recovery. Opening immutable history alone starts neither RPC nor a Profile writer.
 
-Start the daemon with `atman daemon start` and open [http://127.0.0.1:65099/](http://127.0.0.1:65099/) for local web chat. Connect with the `auth_token` from the daemon configuration. Expand a project to open an existing Session, search by project or Session, or create a Session. Refreshing the same tab restores the connection and last opened Session. The browser can switch Flows, page through recent messages and send text. Connected views update when the host commits a message.
+Start the daemon with `atman daemon start` and open the local Web workbench. Connect with the `auth_token` from the daemon configuration. Projects appear on the left, the transcript and four-row Console are centered, and Overview in the right rail switches Flows and Activity shows the focused Flow’s execution state. Collapse the desktop Projects panel from the top bar, or press `Ctrl+K` / `Cmd+K` to open Projects and focus search. Projects lists registered workspaces, including those without Sessions. Use the diamond on a project row to pin or unpin it, or the plus on the same row to create a Session in that workspace. Each expanded project shows all open Sessions and up to five recent Sessions. Search includes the rest of the loaded directory. The close action removes a Session’s views from the tab while its accepted work continues. On narrow screens, the Overview and Activity controls move below the top bar and open in the workspace. Use Back or `Esc` to return to the conversation. Projects opens from its drawer button. You can open an existing Session, page through messages, and send text or images. Choose images with the Console’s `+` button or paste them into the editor. Pending attachments appear above the input and can be removed individually. The input queue sits above the pending approval shortcut and attachments. Select the approval count to review requests for the focused Flow in Activity. For a single request, choose an available approval scope: this call, the same tool in this run, or the same tool and workspace path in this run. Group approval applies to the selected calls only. Sending normally queues input for the next turn; use the row’s Insert control to deliver it at a boundary of the current turn, or Undo insert to return it to the next turn while it is still pending. Refreshing the same tab restores the connection, last opened Session and Flow, and the branch draft within the tab's storage budget. The Console checks unresolved sends by their original request ID and keeps any newer draft. Reopening a recently viewed conversation shows its cached transcript while the host checks for updates. [Open the local workbench](http://127.0.0.1:65099/)
+
+Use the panel icon beside a Flow in Web Overview to keep its conversation in a separate window. In Projects, the panel icon beside a Session opens its default Flow alongside your main conversation. Desktop windows start in a cascade and remember their size and position while connected. The Console docks below the focused window and uses that Flow's draft and settings. On narrow screens, panels open as full-width views. Closing a panel leaves the Flow and its accepted work running.
+
+Open Activity to check execution for the focused Flow. **Stop** requests cancellation and shows completion when that invocation finishes stopping. **Recover** is available when the host reports that the interrupted Flow can resume. An uncertain request can be checked by its original identity. Pending approvals appear in Activity for the same Flow. Open a request or group to review its scope and decide. A pending provider tool call also has a `◇` control on its row inside Work that opens the matching request. The decision receipt and the subsequent tool result are displayed separately.
+
+To review a Web conversation Revert, hover or focus the turn's **↶** control. The Console's **⑂** opens the focused Flow's branches and any pending history operation. After applying a Revert, **Recover draft** can bring the original text, quote, and images into an empty Console.
+
+Select the model label in the Web Console to open **Browse Models**. Search installed model keys, aliases, and providers. Use the reasoning meter and the permissions controls to change settings for the focused Flow. Each change pins that field to its Session and updates the global default. Fields that have never been changed for the Session inherit the global values when opened. If a save response is lost, reopen the settings to check the original request.
+
+The Web transcript groups live Thinking and tool calls in the current Work panel. Work starts collapsing when the final answer appears. The Work heading and individual Thinking and tool groups can be reopened for reading.
 
 Interrupted conversations retain pending input in Inbox and expose **Recover R** with mouse and keyboard controls. [Input queue and execution recovery](docs/input-queue.md) describes routing, insertion eligibility, cancellation, pauses, and recovery.
 
@@ -123,7 +135,7 @@ Unbound legacy TUI views discover sessions in bounded background workers with th
 
 The right sidebar combines Goal / Plan / Todos and Context / MCP in Overview, with Tasks / Flow / History in Activity. Main and floating views share this layout. FlowHub, Links, WatchHub, Inbox History, Worktrees, Flow Workspace, and the management Session panel require the optional `atman-tui/extended-panels` Cargo feature. Runtime messaging, watchers, and storage remain active in default builds.
 
-The left sidebar shows globally pinned projects, every opened session, five additional recent sessions per project and project-specific session creation. Opening a project's session pins that project. Pins persist across restarts; hiding the sidebar preserves them, and unpinning offers Undo. A project with open sessions remains visible until those sessions close. Sessions without project metadata appear in a local **Sessions** group. Use `:project-sidebar`, **Toggle Project Sidebar** in `Ctrl+P`, or the **P** tab to reopen it. Narrow terminals use a drawer. `Ctrl+L` opens the full project directory; **Sort** or `S` selects newest first, oldest first or name A–Z on both pages.
+The left sidebar shows globally pinned projects, every opened session, five additional recent sessions per project and project-specific session creation. Use the **+** next to **Pinned Projects** to choose a workspace directory and open a new session there. Opening a project's session pins that project. Pins persist across restarts; hiding the sidebar preserves them, and unpinning offers Undo. A project with open sessions remains visible until those sessions close. Sessions without project metadata appear in a local **Sessions** group. Use `:project-sidebar`, **Toggle Project Sidebar** in `Ctrl+P`, or the **P** tab to reopen it. Narrow terminals use a drawer. `Ctrl+L` opens the full project directory; **Sort** or `S` selects newest first, oldest first or name A–Z on both pages.
 
 Project directory refresh and history search display compact animated progress while waiting for their replies. Visible conversation windows share the animation clock; hidden or completed loading indicators stop requesting frames.
 
@@ -433,6 +445,8 @@ In the TUI, `:panel` opens the same command palette as `Ctrl+P`, including when 
 
 ## Configuration
 
+Commit co-author attribution is enabled by default. Use `:co-author` in the TUI or **Settings → Commit co-author** in the Web workbench, or set `co_author = false` under `[git]`. This setting applies to all Sessions and only changes the system prompt for subsequent model requests.
+
 `~/.config/atman/config.toml`:
 
 ```toml
@@ -442,8 +456,8 @@ base_url = "https://gateway.example/v1"
 api = "chat-completions"
 # Applies to models using Chat Completions.
 reasoning_format = "reasoning-effort"
-# Enable only when the gateway accepts OpenAI's prompt_cache_key field.
-# prompt_cache_key = true
+# Enabled by default. Uncomment if the gateway rejects the field.
+# prompt_cache_key = false
 
 [models.reasoning]
 provider = "openai-compatible"

@@ -21,7 +21,7 @@ A type‑first, extensible toolkit that automates LLM‑based newsletter creatio
 - Type-first design (TypeScript, ESM) with strong contracts
 - Flexible dependency injection: easily swap Crawling/Analysis/ContentGenerate/Task/Logging/Email
 - Operational features built-in: retries, chain options, preview email sending, etc.
-- Rollup build (ESM+d.ts), Vitest 100% coverage, GitHub Actions CI included
+- tsdown build (ESM+d.ts), Vitest 100% coverage, GitHub Actions CI included
 
 ## Project Background
 
@@ -85,7 +85,7 @@ Install the OpenAI adapter for this example:
 npm i @ai-sdk/openai@^4
 ```
 
-Set `OPENAI_API_KEY` and `OPENAI_MODEL` to your API key and an available model ID that supports structured output. Save the following as `example.ts` in an ESM TypeScript project and run it with your TypeScript runner (for example, `npx tsx example.ts`). This example uses one fictional, preloaded article and in-memory storage; crawling is empty so you can try analysis and generation before connecting a scraper or database. It makes real LLM requests.
+Set `OPENAI_API_KEY` and `OPENAI_MODEL` to your API key and an available model ID that supports structured output. Save the following as `example.ts` in an ESM TypeScript project and run it with Node.js, which strips TypeScript types natively (for example, `node example.ts`). This example uses one fictional, preloaded article and in-memory storage; crawling is empty so you can try analysis and generation before connecting a scraper or database. It makes real LLM requests.
 
 ```ts
 import type {
@@ -581,7 +581,7 @@ Playground scripts let you run individual LLM query classes in isolation — no 
 
 ### Setup
 
-1. From a checkout of this repository, install dependencies (the four provider adapters and `tsx` are already declared):
+1. From a checkout of this repository, install dependencies (the four provider adapters and the `@oxc-node/core` TypeScript loader are already declared):
 
    ```bash
    npm ci
@@ -702,7 +702,7 @@ npm run build
 npm run test:ci
 ```
 
-The [CI workflow](./.github/workflows/ci.yml) runs these checks on pull requests to any branch and manual dispatches, using the minimum supported versions for Node.js 24 and 26 (24.22.1 and 26.12.1), the latest 24.x, and the latest 26.x. Rollup emits ESM JavaScript, a source map, and bundled declarations in `dist/`. Vitest uses the Node environment and V8 coverage with 100% thresholds for lines, branches, functions, and statements; the entry point and model/type files are excluded from coverage.
+The [CI workflow](./.github/workflows/ci.yml) runs these checks on pull requests to any branch and manual dispatches, using the minimum supported versions for Node.js 24 and 26 (24.22.1 and 26.12.1), the latest 24.x, and the latest 26.x. tsdown (Rolldown) emits ESM JavaScript, a source map, and bundled declarations in `dist/`. Vitest uses the Node environment and V8 coverage with 100% thresholds for lines, branches, functions, and statements; the entry point and model/type files are excluded from coverage.
 
 For local iteration, use `npm run test:watch`, `npm run test:coverage`, `npm run lint:fix`, and `npm run format`. For the contribution workflow and release scripts, see [CONTRIBUTING.md](./CONTRIBUTING.md); [package.json](./package.json) defines the current runtime requirement and commands.
 

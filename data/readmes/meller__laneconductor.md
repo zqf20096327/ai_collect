@@ -102,13 +102,7 @@ claude plugin install laneconductor-board@laneconductor
 **Moving from the all-in-one plugin (0.x):** version 1.0.0 of `laneconductor` no longer holds the connector or the board. Uninstall
 the old one (`claude plugin uninstall laneconductor`), install the base and the add-ons you want, and restart your sessions (a running
 connector keeps the version it started with). Your track files are unchanged. To try all three in a scratch repository:
-`scripts/try-local.sh --dry-run <scratch-repo-path>`. Hooks are planned as a separate opt-in extension and are not available yet.
-
-### Other ways to get it
-
-A zip of the plugin can be built with `node scripts/make-zip.mjs --out <dir>` (a deterministic zip of
-`plugins/laneconductor`). It can be loaded with "Upload plugin" in the Claude desktop app or claude.ai
-(Customize, Plugins, Add). No release zip has been published yet, so use the marketplace route above for now.
+`scripts/try-local.sh --dry-run <scratch-repo-path>`. The board add-on has hooks that keep the board current (on by default once a board exists; `board.auto_update: false` turns them off).
 
 ### What works where
 
@@ -222,7 +216,7 @@ Each plugin is installed from its own source with the platform's own install com
 
 ## Skill packs
 
-Besides the process, the marketplace `meller/laneconductor` carries five small skill packs: one author's own conventions and the incidents behind them, grouped by technology, so you install only the stack you use. They are Markdown only (skills and template files: no script, hook or MCP server), advice and never orders, and each works on its own, without the base plugin. The same skills live in this repository under `skills/<name>/SKILL.md`; the format and how to attach them to lanes are in [docs/skills.md](docs/skills.md).
+Besides the process, the marketplace `meller/laneconductor` carries six small skill packs: one author's own conventions and the incidents behind them, grouped by technology, so you install only the stack you use. They are Markdown only (skills and template files: no script, hook or MCP server), advice and never orders, and each works on its own, without the base plugin. The same skills live in this repository under `skills/<name>/SKILL.md`; the format and how to attach them to lanes are in [docs/skills.md](docs/skills.md).
 
 | Pack | What it is for | Install |
 | :--- | :--- | :--- |
@@ -230,7 +224,8 @@ Besides the process, the marketplace `meller/laneconductor` carries five small s
 | `laneconductor-firebase` | One shared GCP project with a Hosting site and Functions codebase per product; cache busting after deploys; Google-only sign-in | `claude plugin install laneconductor-firebase@laneconductor` |
 | `laneconductor-node-postgres` | Local Postgres and Neon in production with the secret in Secret Manager; Prisma in Cloud Functions; an isolated test database; a Makefile for local runs | `claude plugin install laneconductor-node-postgres@laneconductor` |
 | `laneconductor-gemini` | Every LLM call through TokenTalos; Gemini on Vertex AI with Application Default Credentials; image generation with retry and a GCS upload | `claude plugin install laneconductor-gemini@laneconductor` |
-| `laneconductor-skill-from-code` | Turn a pattern or a verified incident, shown by working code, into a new skill | `claude plugin install laneconductor-skill-from-code@laneconductor` |
+| `laneconductor-skill-from-code` | Authoring: turn a pattern or a verified incident, shown by working code, into a new skill, and package your skills as a plugin ready for Anthropic's directory | `claude plugin install laneconductor-skill-from-code@laneconductor` |
+| `laneconductor-analytics-monitoring` | Google Analytics 4 behind a consent choice, advertising features off, with Search Console ownership and a tested sitemap and robots.txt (monitoring and logging skills follow) | `claude plugin install laneconductor-analytics-monitoring@laneconductor` |
 
 Add the marketplace first with `claude plugin marketplace add meller/laneconductor`. Each pack's page lists its skills; `docs/plugin-map.md` lists them all.
 
@@ -258,10 +253,10 @@ commands; they are not documented here. Use that tag if you want to run it.
 
 - `plugins/laneconductor/`, `plugins/laneconductor-parallel/`, `plugins/laneconductor-board/`: the built plugins (generated; do not edit by hand).
 - `connector/`: the connector's source, its tests and the plugin's extra files.
-- `scripts/`: the plugin generator and the zip script.
+- `scripts/`: the plugin generator.
 - `.claude/skills/laneconductor/`: the source of the skill (lane guides and operations).
 - `conductor/tracks/`: this project's own tracks.
-- Experimental tier, currently unmaintained (tag `v1-legacy`): `bin/` (its command-line tool, `lc`, which is deprecated: no new features; use the plugin commands), `conductor/` (the sync worker), `ui/`, `cloud/`, `migrations/`.
+- Experimental tier, currently unmaintained (tag `v1-legacy`): `bin/` (its command-line tool, which is deprecated: no new features, use the plugin commands), `conductor/` (the sync worker), `ui/`, `cloud/`, `migrations/`.
 
 ## License
 

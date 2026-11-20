@@ -20,6 +20,17 @@ For an existing installation, follow the [ComfyUI setup guide](https://ariadnema
 
 ![Image export completed in ComfyUI](assets/comfy-export-completed.png)
 
+## Keep an ordinary PNG and a signed copy
+
+[Download the two-output workflow JSON](https://raw.githubusercontent.com/ariadne-mark/ComfyUI-Ariadne-Mark/main/examples/keep-original-and-sign.json) and drop it onto the ComfyUI canvas with the adapter installed and the kit configured. Choose your image in **Load Image**, then run the workflow once.
+
+| Output | Node | Where to look |
+| --- | --- | --- |
+| Ordinary PNG of the final pixels | Save Image | `output/original_*.png` |
+| Watermarked PNG with signed Content Credentials | Export Images with Ariadne | `output/ariadne/signed_*/`, alongside its receipt |
+
+In your own graph, connect the output of your last upscaler or image edit to both nodes. **Save Image** writes a new PNG from those pixels. To keep the exact bytes of an existing file, keep that file and use **Mark Saved File with Ariadne** on it. [Download the signed PNG from this workflow](https://raw.githubusercontent.com/ariadne-mark/ComfyUI-Ariadne-Mark/main/examples/keep-original-and-sign-output.png) and upload it to [Verifier](https://ariadnemark.xyz/verify/). The development-signed example returns watermark ID `014dbc9eb148720e`.
+
 ## Connect your SDK kit once
 
 1. Follow the [SDK deployment-kit setup](https://ariadnemark.xyz/docs/deployment-kit/). Build/download the exact qualified artifacts and initialize a kit with your public publisher/system information. Provision models explicitly. Keep the kit outside Comfy input, output, temp and web directories.

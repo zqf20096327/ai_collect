@@ -75,6 +75,8 @@ Each method renders the same profile. The serializers do not re read the DataFra
 
 Oribi profiles the DataFrame in memory and does not keep a reference to it in the returned context. The in-memory `DatasetContext` retains local `top_values` and exact bounds for inspection.
 
+Top values are ranked by frequency using pandas equality and counts. Ties use a stable value order for supported types, including strings, built-in numbers, and common date and time values. Tied opaque objects without a stable value key follow pandas count order, so reordering rows or categories can change which of them appears at the cutoff. Profiling does not call their `repr()` to rank them.
+
 By default, `to_dict`, `to_json`, `to_markdown`, and `to_context` omit sampled cell values and exact bounds. Dictionary and JSON exports retain top frequency counts and omit strings in evidence details. They also omit means, medians, standard deviations, skewness, and quantiles when fewer than three non-missing values were observed.
 
 You can explicitly include local values and bounds when exporting:
@@ -84,6 +86,8 @@ json_text = context.to_json(include_values=True)
 ```
 
 The other export methods accept the same option. Treat opt-in output as containing raw data details. Column and index names and aggregates can disclose information, so review context before sharing it, especially when the source is sensitive.
+
+Opt-in text reports quote string category labels to distinguish them from numeric values. Compact reports include category lists when space remains after analytical guidance and evidence.
 
 Since Oribi 0.2.0, dictionary and JSON exports use `schema_version: "2"`. Update consumers that expect schema version 1 or depend on the previous Markdown or compact text layout. Use `include_values=True` when callers need local samples and bounds in version 2.
 

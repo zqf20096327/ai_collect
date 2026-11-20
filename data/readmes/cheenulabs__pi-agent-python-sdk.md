@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/cheenulabs/pi-agent-python-sdk">
-    <img alt="Pi Agent Python SDK" src="https://raw.githubusercontent.com/cheenulabs/pi-agent-python-sdk/v0.3.0/docs/logo.svg" width="160">
+    <img alt="Pi Agent Python SDK" src="https://raw.githubusercontent.com/cheenulabs/pi-agent-python-sdk/v0.4.0/docs/logo.svg" width="160">
   </a>
 </p>
 
@@ -54,8 +54,9 @@ with PiClient() as pi:
 
 [Prerequisites](#prerequisites) · [Quick start](#quick-start) ·
 [Streaming](#streaming) · [Async](#async-usage) ·
-[Configuration](#configuration) · [Thinking](#models-and-thinking) ·
-[RPC](#rpc-access) · [Durable (experimental)](#pi-durable-experimental) ·
+[Configuration](#configuration) · [Unattended](#run-unattended) ·
+[Thinking](#models-and-thinking) · [RPC](#rpc-access) · [Testing](#test-without-a-model) ·
+[Durable (experimental)](#pi-durable-experimental) ·
 [Documentation](#documentation) · [Further reading](#further-reading) ·
 [Troubleshooting](#troubleshooting) · [Support](#support)
 
@@ -75,11 +76,14 @@ with PiClient() as pi:
 
 ## Prerequisites
 
+These requirements apply to running the real coding agent. For scripted tests
+with only Python, see [Test without a model](#test-without-a-model).
+
 | Requirement | Notes |
 | --- | --- |
 | Python **3.11+** | Package metadata requires 3.11 or newer |
-| Node.js **22.19.0+** | Required by the coding-agent baseline **1.5.2** |
-| Pi CLI **0.85.1+** | **1.5.2** is the tested baseline |
+| Node.js **22.19.0+** | Required by the coding-agent baseline **1.6.0** |
+| Pi CLI **0.85.1+** | **1.6.0** is the tested baseline |
 | Model provider | Configure your provider and model with the Pi CLI |
 
 ## Quick start
@@ -87,7 +91,7 @@ with PiClient() as pi:
 Install Pi with Node.js **22.19.0 or newer** (pin matches the tested baseline):
 
 ```sh
-npm install -g @earendil-works/pi-coding-agent@1.5.2
+npm install -g @earendil-works/pi-coding-agent@1.6.0
 pi --version
 ```
 
@@ -214,6 +218,74 @@ either client. See [using your own extensions][extensions] for details and
 
 </details>
 
+## Run unattended
+
+For scripts, services, and CI, choose exactly what Pi loads instead of inheriting
+your `~/.pi/agent` setup. Requires 0.4.0 or newer.
+
+```python
+from pi_agent import AgentConfig, headless_args
+from pi_agent.coding import PiClient
+
+models = {
+    "providers": {
+        "local": {
+            "baseUrl": "http://127.0.0.1:8000/v1",
+            "api": "openai-completions",
+            "models": [{"id": "my-model"}],
+        }
+    }
+}
+auth = {"local": {"type": "api_key", "key": "local"}}
+
+with AgentConfig(models=models, auth=auth) as config:
+    with PiClient(
+        env=config.env,
+        provider="local",
+        model="my-model",
+        no_session=True,
+        extra_args=headless_args(tools=["read", "grep"]),
+    ) as pi:
+        print(pi.run("Summarise data.csv.").raise_for_incomplete().text)
+```
+
+- `AgentConfig` writes your configuration to a private temporary folder. **Pass
+  `env=config.env`**, or the client still uses `~/.pi/agent`. The folder is
+  deleted when the `with` block ends.
+- `headless_args()` loads only the tools, extensions, and skills you name.
+- `raise_for_incomplete()` raises if the run ended without a complete answer.
+
+<details>
+<summary>What AgentConfig writes and removes</summary>
+
+- Each mapping is written unchanged as `models.json`, `settings.json`, or
+  `auth.json`; Pi owns their format. Omitted files are not written, so Pi uses
+  its built-in defaults.
+- A provider's models appear only once it has a credential: in `auth`, as an
+  `apiKey` in `models`, or as an environment variable.
+- The folder is private and `auth.json` is owner-only. Values never appear in
+  `repr` or errors.
+- Everything Pi writes there is deleted on exit, including session files. Pass
+  `session_dir=` to keep sessions elsewhere, or `no_session=True` to write none.
+- Packages and logins from your own `~/.pi/agent` are not available inside it.
+- Combine with other overrides as `env={**config.env, "PATH": path}`.
+
+</details>
+
+<details>
+<summary>What headless_args disables</summary>
+
+Discovery of extensions, skills, prompt templates, themes, `AGENTS.md`/`CLAUDE.md`
+and project-local files; `SYSTEM.md`/`APPEND_SYSTEM.md` (unless
+`prompt_files=True`); MCP; and startup network work. Named extensions and skills
+still load. With no `tools`, all tools are off. Pi before 1.3.0 rejects
+`--no-mcp`; pass `mcp=True` there.
+
+</details>
+
+See [unattended runs](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/usage.md#unattended-headless-runs) and
+[configure Pi from code](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/usage.md#configure-pi-from-code) for every option.
+
 ## Models and thinking
 
 By default the SDK uses whatever model you already configured in the Pi CLI.
@@ -316,6 +388,29 @@ the [command reference][commands] for every method.
 
 </details>
 
+## Test without a model
+
+`pi_agent.testing.FakePi` lets your tests use the real `PiClient` or
+`AsyncPiClient` with scripted replies, without a model, credentials, Node.js,
+or network access. Requires 0.4.0 or newer.
+
+```python
+from pi_agent.coding import PiClient
+from pi_agent.testing import FakePi, FakeReply
+
+with FakePi(["Hello!", FakeReply("cut off", stop_reason="length")]) as fake:
+    with PiClient(executable=fake.executable) as pi:
+        assert pi.run("Hi").text == "Hello!"
+        assert pi.run("Again").stop_reason == "length"
+    assert fake.prompts() == ["Hi", "Again"]
+```
+
+Each prompt consumes the next reply; an exhausted script or unsupported command
+raises `PiCommandError`. Each client starts again from the first reply. The fake
+does not simulate tool calls, extension UI, compaction, or session branching.
+See the [testing guide](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/usage.md#test-without-a-model) for reply options,
+request recording, and supported commands.
+
 ## Pi Durable (experimental)
 
 The source checkout adds Python APIs for the original upstream Durable Harness,
@@ -351,8 +446,8 @@ with DurableClient(
     print(durable.answer_text(settled))
 ```
 
-The complete [sync example](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/examples/durable_sync.py)
-and [async example](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/examples/durable_async.py)
+The complete [sync example](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/examples/durable_sync.py)
+and [async example](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/examples/durable_async.py)
 use temporary SQLite storage and need no provider credentials. Both accept
 `PI_DURABLE_HOST` as a JSON argv array to override the file-relative host.
 
@@ -474,20 +569,20 @@ CI uses only faux models and a local HTTP stub, never live providers.
 
 Use one writer per storage path and retry uncertain submissions only with the
 same conversation-scoped request key. See the
-[Durable API, failure semantics and host setup](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/durable.md)
-and [credential-free crash recovery example](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/examples/durable_recovery.py).
+[Durable API, failure semantics and host setup](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/durable.md)
+and [credential-free crash recovery example](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/examples/durable_recovery.py).
 
 ## Documentation
 
 | Guide | Contents |
 | --- | --- |
-| [Usage][usage] | Sessions, images, concurrency, events, and extension UI |
+| [Usage](https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/usage.md) | Sessions, images, concurrency, events, extension UI, and testing without a model |
 | [API reference][api] | Constructors, commands, types, and results |
 | [Errors and cancellation][errors] | Deadlines, partial results, cleanup, and recovery |
 | [RPC structure][rpc] | How the Python client maps to Pi's protocol |
 | [Compatibility][compatibility] | Runtime versions and platform validation |
 | [Examples][examples] | Runnable sync, async, streaming, sessions, steering, and UI examples |
-| [Release notes][release] | Changes included in 0.3.0 |
+| [Release notes][release] | Changes included in 0.4.0 |
 
 Coding-agent examples use your configured Pi and may make provider calls.
 Development checks use an isolated local test provider; see
@@ -503,7 +598,7 @@ Development checks use an isolated local test provider; see
 | Symptom | What to check |
 | --- | --- |
 | `pi` not found / launch fails | Ensure the Pi CLI is on `PATH`, or pass `executable=` to the client |
-| Version rejected | Upgrade to Pi **0.85.1+**; prefer the tested baseline **1.5.2** |
+| Version rejected | Upgrade to Pi **0.85.1+**; prefer the tested baseline **1.6.0** |
 | No model / auth errors | Run `pi` once and complete provider setup |
 | Unexpected file or command changes | Review Pi tool/extension settings before automation |
 
@@ -518,20 +613,20 @@ Development checks use an isolated local test provider; see
 [MIT][license]
 
 [pypi]: https://pypi.org/project/pi-agent-python-sdk/
-[release]: https://github.com/cheenulabs/pi-agent-python-sdk/releases/tag/v0.3.0
-[metadata]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/pyproject.toml
-[license]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/LICENSE
-[compatibility]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/compatibility.md
-[errors]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/errors.md
-[stream-example]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/examples/stream.py
-[constructor-options]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/api.md#constructor-options
-[extensions]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/usage.md#using-your-own-extensions
-[ui-example]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/examples/ui.py
-[rpc]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/rpc.md
-[commands]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/api.md#all-33-rpc-commands
-[usage]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/usage.md
-[api]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/docs/api.md
-[examples]: https://github.com/cheenulabs/pi-agent-python-sdk/tree/v0.3.0/examples
-[contributing]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.3.0/CONTRIBUTING.md
+[release]: https://github.com/cheenulabs/pi-agent-python-sdk/releases/tag/v0.4.0
+[metadata]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/pyproject.toml
+[license]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/LICENSE
+[compatibility]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/compatibility.md
+[errors]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/errors.md
+[stream-example]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/examples/stream.py
+[constructor-options]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/api.md#constructor-options
+[extensions]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/usage.md#using-your-own-extensions
+[ui-example]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/examples/ui.py
+[rpc]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/rpc.md
+[commands]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/api.md#all-33-rpc-commands
+[usage]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/usage.md
+[api]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/docs/api.md
+[examples]: https://github.com/cheenulabs/pi-agent-python-sdk/tree/v0.4.0/examples
+[contributing]: https://github.com/cheenulabs/pi-agent-python-sdk/blob/v0.4.0/CONTRIBUTING.md
 [issues]: https://github.com/cheenulabs/pi-agent-python-sdk/issues
 [security]: https://github.com/cheenulabs/pi-agent-python-sdk/security/advisories/new

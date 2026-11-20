@@ -2,7 +2,7 @@
 
 **Pronounced** `/ˈfaɪmɪnt/` ("fie-mint", phi + mint) — a terminal AI coding agent built on [phi-agent](https://docs.phiagent.dev/), the agent runtime beneath it. *Not just good at chat — it gets the job done right.*
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT OR Apache-2.0](https://img.shields.io/badge/License-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE-MIT)
 [![Rust](https://img.shields.io/badge/Rust-edition%202024-orange.svg)](https://www.rust-lang.org)
 [![中文](https://img.shields.io/badge/README-中文-blue.svg)](README_CN.md)
 
@@ -26,7 +26,7 @@ Project page: [hibuka-labs.github.io/phimint](https://hibuka-labs.github.io/phim
 - **Design canvas & `ask_user`** — the agent can *show* you options instead of describing them: 2–4 candidates land as a screen in your browser (layout mockups, option sets, comparisons) and your click comes back as a real user turn; `ask_user` asks concept picks right in the terminal picker. The browser opens only after a one-time consent, busy clicks queue at the turn boundary, and while a screen awaits your pick the run parks — the agent never decides your design choices for you.
 - **Desktop with consent** — the agent can look at your screen and move the pointer. *Looking* and *moving* never ask; changing the machine asks every time, through the same approval gate the tool path already uses.
 - **Three approval modes** — `auto` (full auto), `ask` (prompt on writes/risky shell), `deny` (read-only). Sub-agents inherit the main agent's mode: in `ask`, every sub-agent write prompts in a popup that names the requesting sub-agent.
-- **Guardrails** — reasoning-only spin correction, max-turns nudge, provider truncation guard (lying `finish_reason` tolerance, from agent-base), 16k tool-output cap, and a verify gate: a hand-back with no green compile newer than the last edit is intercepted once, then carries a visible marker.
+- **Guardrails** — reasoning-only spin correction, max-turns nudge, provider truncation guard (lying `finish_reason` tolerance, from agent-base), 16k tool-output cap.
 - **Multi-language** — `code-intel` registry (extension → LSP server → build-command fallback): Rust, TypeScript, JavaScript, C, C++ out of the box.
 - **Modular base** — chat UI components and language intelligence are distilled into their own crates: [`phi-tui`](https://github.com/hibuka-labs/phi-tui) (chat TUI components) and [`code-intel`](https://github.com/hibuka-labs/code-intel) (LSP/repomap/ripgrep cores). phimint keeps only the product shell.
 
@@ -263,7 +263,7 @@ Commands:
   | `Ctrl+End` | jump to the newest lines |
 
 - **Mouse** — wheel scrolls; left-drag selects lines; right-click opens a copy menu.
-- **Terminal notes** — In macOS Terminal.app, enable **View → Allow Mouse Reporting** for wheel/trackpad scrolling. If it is disabled, use `fn+Up` / `fn+Down` to page through the transcript. Terminal.app does not report the Kitty keyboard protocol, so `Cmd+C` cannot be detected as a copy shortcut; use `Ctrl+C` while a selection is active or the right-click copy menu instead.
+- **Terminal.app** — turn on **View → Allow Mouse Reporting** or the wheel will not scroll the transcript; without it, page with `fn+Up` / `fn+Down`. This terminal also skips the Kitty keyboard protocol, so it never sees `Cmd+C` as copy — select first, then press `Ctrl+C`, or use the right-click menu.
 - **Approvals**
 
   | Mode | Behavior |
@@ -307,7 +307,7 @@ you: "investigate questions X / Y / Z"
 | `search_content` | ripgrep content search (regex) |
 | `repo_map` | tree-sitter symbol/structure index (multi-language, pull-based context) |
 | `diagnostics` | LSP diagnostics (fast loop without recompiling; degrades to shell) |
-| `verify` | run the project's own compile-level check (`cargo check`, `tsc --noEmit`) and report the compiler's real exit code — the command comes from the project (its config, then a convention it already uses, then the language default), never from the model; behind it, a gate holds a hand-back until there is a green light newer than the last edit |
+| `verify` | run the project's own compile-level check (`cargo check`, `tsc --noEmit`) and report the compiler's real exit code — the command comes from the project (its config, then a convention it already uses, then the language default), never from the model. Verification is advisory: nothing forces it, and a hand-back trusts an honest report |
 | `update_plan` | structured checklist for complex tasks (display-only, Codex-style; agent-base) |
 | `current_model` | the model serving this session (the agent calls it before answering "which model are you") |
 | `spawn_agent` / `send_message` / `wait_agent` / `list_agents` / `close_agent` | sub-agent primitives (agent-works; preferred pattern: spawn, end turn, await push) |
@@ -386,9 +386,17 @@ Dependencies are pure crates.io version references. To hack on a sibling crate (
 
 The README demo GIF is rebuilt from a recorded session: `cargo test frame_reel -- --ignored` writes ANSI frames to `target/reel/`, then `python3 scripts/readme_reel.py` renders them to `docs/assets/readme-demo.gif`.
 
+## Versioning
+
+phimint is on **0.x**: every released version installs, runs, and self-updates, but the **public API is not
+guaranteed to be backward compatible**. If you use it as a library, pin the exact version
+(`phimint = "=0.12.0"`); API stability is promised from 1.0 onwards.
+
+Details: [docs/versioning-policy.md](docs/versioning-policy.md).
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT OR Apache-2.0 — see [LICENSE-MIT](LICENSE-MIT) and [LICENSE-APACHE](LICENSE-APACHE).
 
 ## Contact
 

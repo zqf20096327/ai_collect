@@ -2,11 +2,12 @@
 
 # Axiom
 
-**A free, local-first AI assistant and agentic workspace for Windows.**
+**One native Windows workspace for offline local models, codebase work, and optional `$9/mo` cloud speed.**
 
-Run GGUF models on your own hardware, point Axiom at a self-hosted endpoint, or use
-cloud models with your own key. Your chats, models, and data stay on your computer
-unless you deliberately reach out to a cloud model or a connected service.
+Built cleanly in C# and `.NET 10 WPF` (zero Electron or web wrapper). Run GGUF models
+offline on your own GPU/CPU, point Axiom at a project folder for autonomous Workplace edits
+with Project Canvas previews and 1-click Undo, or enable **Axiom Cloud (`DeepSeek 4.1F-1017`, `$9/mo`)**
+with `$5.25/mo` in paced upstream credits and zero API-key setup.
 
 ![License](https://img.shields.io/badge/license-PolyForm%20Noncommercial-lightgrey)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
@@ -15,20 +16,13 @@ unless you deliberately reach out to a cloud model or a connected service.
 
 ### [⬇ Download Axiom for Windows](https://github.com/YoMosa2009/Axiom/releases/latest)
 
-Free · Windows 10/11 (64-bit) · one-click installer
+Free local + BYOK · Signed upcoming releases · Windows 10/11 (64-bit) · `winget install YoMosa2009.Axiom`
 
-[Getting started](#getting-started) · [Report a bug](https://github.com/YoMosa2009/Axiom/issues/new/choose) · [Contributing](#contributing) · [Feedback](#feedback)
+[Website](docs/index.html) · [Getting started](#getting-started) · [Terms](TERMS.md) · [Privacy](PRIVACY.md) · [Contributing](#contributing)
 
 </div>
 
-Source status (2026-11-18): the repository includes newer managed Axiom subscription
-integration (`DeepSeek 4.1F-1017` across Chat and Workplace), Settings **Usage** pacing
-(3-hour session and 7-day weekly meters), Workplace reliability, Project Canvas multi-format
-file viewing with underlined clickable links, Settings modal isolation, and autonomous
-`Auto-Review` command safety decisions. These changes are **unreleased** and are not part
-of the V1.11.0 download. See the [unreleased changelog](CHANGELOG.md#unreleased),
-[roadmap](ROADMAP.md) and [implementation tracker](AXIOM_IMPLEMENTATION_TRACKER.md) for
-verification and limits.
+*See [CHANGELOG.md](CHANGELOG.md#unreleased) for recent changes in `main` ahead of the next release.*
 
 ![Axiom Chat](docs/images/chat.png)
 
@@ -43,7 +37,16 @@ memory behave the same way regardless of which one is selected.
 |---|---|---|---|
 | **Local** | Your GPU/CPU via llama.cpp | A GGUF model | Full privacy, offline work, no per-token cost |
 | **Hybrid Local** | Your own server | An OpenAI-compatible endpoint | Your own hardware, accessed from anywhere |
-| **Cloud** | OpenRouter or Axiom Gateway | Personal API key or optional Axiom subscription (`DeepSeek 4.1F-1017`, with 3-hour & weekly **Usage** pacing) | Managed or frontier-class cloud models when you want them |
+| **Cloud** | Axiom Cloud or OpenRouter | Optional `$9/mo` Axiom subscription (`DeepSeek 4.1F-1017`, `$5.25/mo` credit, 1M ctx, vision, 3-hour & weekly **Usage** pacing) or personal OpenRouter API key | Zero-setup speed or frontier-class cloud models when you want them |
+
+### Exact positioning vs. alternatives
+
+| Workspace | Price | Offline GGUF & BYOK | Native Windows Folder Agent & Undo | Included Cloud Engine |
+|---|---|---|---|---|
+| **Axiom Cloud** | **$9/mo** | Yes (free forever) | Yes (`.NET 10 WPF`, Workplace, Project Canvas, `@ComputerUse`) | `$5.25/mo` DeepSeek 4.1F-1017 (`1M` ctx, native vision, auto-renews) |
+| **LM Studio Bionic+** | `$20/mo` | Yes (GGUF/MLX) | No desktop GUI automation or WPF Canvas | Hosted open-weight tier |
+| **T3 Chat Pro** | `$8/mo` | No (Web only) | No filesystem or repo workflow | Web chat with 4h meter |
+| **Cherry Studio / Jan** | `$0` | Yes (BYOK only) | Requires user-managed API keys | None |
 
 Axiom adapts to the model it is given. It measures a local model's parameter count and
 scales context budgets, tool routing, and prompt complexity accordingly — so a 0.5B
@@ -302,8 +305,6 @@ Settings, chats, local models, connectors, and Workplace data are left untouched
 ZIP installation still works for first-time setup and recovery.
 
 Set `AXIOM_UPDATE_DIR` to an absolute path to stage downloads outside `%LOCALAPPDATA%`.
-Maintainers: see [RELEASING.md](RELEASING.md) — update ZIPs need a matching version tag,
-packaged executable version, and `AXIOM_UPDATE_MANIFEST.txt`.
 
 ## System requirements
 
@@ -351,7 +352,7 @@ under CC BY-NC-ND 4.0.
 `PolyForm Noncommercial 1.0.0` applies to third-party use of this repository. The author and
 copyright holder ([YoMosa2009](https://github.com/YoMosa2009)) retains all rights to distribute
 official Axiom builds commercially and to operate paid hosted services, including the optional
-managed Axiom cloud subscription. Third-party commercial use requires the author's written
+managed Axiom cloud subscription ([Terms of Service](TERMS.md) · [Privacy Policy](PRIVACY.md)). Third-party commercial use requires the author's written
 permission; see [CONTRIBUTING.md](CONTRIBUTING.md#licensing-of-contributions) for contributor terms.
 
 ## Author

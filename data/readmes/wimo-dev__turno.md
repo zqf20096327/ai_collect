@@ -49,7 +49,8 @@ whole story, with a small working picture of each part.
 ## Install
 
 ```sh
-npx turno-cli demo              # try it first, in a throwaway HOME; your own setup is not touched
+# try it first, in a throwaway HOME; your own setup is not touched
+npx turno-cli demo
 ```
 
 Then install it with the package manager you already use (macOS or Linux, Node 22.11+):
@@ -58,7 +59,8 @@ Then install it with the package manager you already use (macOS or Linux, Node 2
 npm install --global turno-cli
 pnpm add --global turno-cli
 bun add --global turno-cli
-yarn global add turno-cli        # yarn 1 (classic); yarn 2 and later have no global installs
+# yarn 1 (classic); yarn 2 and later have no global installs
+yarn global add turno-cli
 brew tap wimo-dev/turno && brew trust wimo-dev/turno && brew install turno
 ```
 
@@ -122,11 +124,15 @@ Linux. Nothing leaves your machine: no account, no telemetry, no proxy for model
 ## Quick start
 
 ```sh
-turno init                    # finds your agents, profiles, folders and MCP servers, shows the diff,
-                              # then starts the gateway and points every profile at it
-claude-work                   # sign in once per profile (/login)
-cd ~/code/acme && turno auto  # Claude Code, with this folder's account
-turno                         # where you stand: this folder, accounts, gateway, what to do next
+# finds your agents, profiles, folders and MCP servers, shows the diff,
+# then starts the gateway and points every profile at it
+turno init
+# sign in once per profile (/login)
+claude-work
+# Claude Code, with this folder's account
+cd ~/code/acme && turno auto
+# where you stand: this folder, accounts, gateway, what to do next
+turno
 ```
 
 `turno init` asks before it adopts anything and writes everything as one change, so one
@@ -135,14 +141,21 @@ systemd --user on Linux); `turno init --no-start` leaves it for later (`turno mc
 then `turno mcp sync`). Step by step instead:
 
 ```sh
-turno profile add work --color violet     # ~/.claude-work and the claude-work command
+# ~/.claude-work and the claude-work command
+turno profile add work --color violet
 turno profile add personal
-claude-work                               # sign in once per profile (/login)
-turno profile assign ~/code/acme work     # this folder and everything under it
-turno config set default personal         # folders without a rule
-turno mcp import --move-secrets --write   # mcp.toml from the servers you already have
-turno mcp daemon start && turno mcp sync  # the gateway, and every profile pointed at it
-cd ~/code/acme && turno auto              # Claude Code, signed in as work
+# sign in once per profile (/login)
+claude-work
+# this folder and everything under it
+turno profile assign ~/code/acme work
+# folders without a rule
+turno config set default personal
+# mcp.toml from the servers you already have
+turno mcp import --move-secrets --write
+# the gateway, and every profile pointed at it
+turno mcp daemon start && turno mcp sync
+# Claude Code, signed in as work
+cd ~/code/acme && turno auto
 ```
 
 Codex, Copilot and Cursor profiles are the same with `--agent codex|copilot|cursor`. Point your
@@ -344,9 +357,12 @@ then npx runs it, with a warning in the server's log. Details: [docs/mcp.md](doc
 ### Browser with real profiles
 
 ```sh
-npm install --global turno-browser   # separate package, not installed with turno
-turno identity add browser:school    # an identity and its mcp.toml entry
-turno identity login browser:school  # sign in by hand once; cookies persist
+# separate package, not installed with turno
+npm install --global turno-browser
+# an identity and its mcp.toml entry
+turno identity add browser:school
+# sign in by hand once; cookies persist
+turno identity login browser:school
 ```
 
 `turno-browser` is its own MCP server. It drives the installed Google Chrome, headed, with a
@@ -394,8 +410,10 @@ go to a hash-chained audit log (`turno identity log`, `--verify` checks the chai
 ![The turno status line with Nerd Font icons and with Unicode icons](docs/assets/statusline.png)
 
 ```sh
-turno ui install                     # font + statusLine in the shared settings.json
-turno ui install --terminal current  # also set the font in this terminal
+# font + statusLine in the shared settings.json
+turno ui install
+# also set the font in this terminal
+turno ui install --terminal current
 ```
 
 Row 1: profile and plan, 5 h and weekly usage of that account with time to reset, context, and
@@ -477,8 +495,10 @@ category). Security issues: [SECURITY.md](SECURITY.md).
 
 ```sh
 pnpm install && pnpm build
-pnpm check       # typecheck, lint (Biome, knip), tests (sandboxed HOME), text rules, licenses
-pnpm test:e2e    # also the end-to-end test that needs the network (Cursor)
+# typecheck, lint (Biome, knip), tests (sandboxed HOME), text rules, licenses
+pnpm check
+# also the end-to-end test that needs the network (Cursor)
+pnpm test:e2e
 ```
 
 ## License
